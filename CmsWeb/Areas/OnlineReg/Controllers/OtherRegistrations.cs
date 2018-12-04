@@ -1,11 +1,11 @@
-using System;
-using System.Linq;
-using System.Web.Mvc;
 using CmsData;
 using CmsData.API;
 using CmsData.Codes;
 using CmsData.Registration;
 using CmsWeb.Areas.OnlineReg.Models;
+using System;
+using System.Linq;
+using System.Web.Mvc;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.OnlineReg.Controllers
@@ -23,7 +23,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             var li = new LinkInfo(votelinkSTR, landingSTR, id);
             if (li.error.HasValue())
+            {
                 return Message(li.error);
+            }
 
             ViewBag.Id = id;
             ViewBag.Message = message;
@@ -39,17 +41,23 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             var li = new LinkInfo(votelinkSTR, confirmSTR, id);
             if (li.error.HasValue())
+            {
                 return Message(li.error);
+            }
 
             try
             {
                 var smallgroup = li.a[4];
 
                 if (!li.oid.HasValue)
+                {
                     throw new Exception("orgid missing");
+                }
 
                 if (!li.pid.HasValue)
+                {
                     throw new Exception("peopleid missing");
+                }
 
                 var q = (from pp in DbUtil.Db.People
                          where pp.PeopleId == li.pid
@@ -72,18 +80,26 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     throw new Exception("org missing, bad link");
                 }
                 if ((q.org.RegistrationTypeId ?? RegistrationTypeCode.None) == RegistrationTypeCode.None)
+                {
                     throw new Exception("votelink is no longer active");
+                }
 
                 if (q.om == null && q.org.Limit <= q.org.RegLimitCount(DbUtil.Db))
+                {
                     throw new Exception("sorry, maximum limit has been reached");
+                }
 
                 if (q.om == null &&
                     (q.org.RegistrationClosed == true || q.org.OrganizationStatusId == OrgStatusCode.Inactive))
+                {
                     throw new Exception("sorry, registration has been closed");
+                }
 
                 var setting = DbUtil.Db.CreateRegistrationSettings(li.oid.Value);
                 if (IsSmallGroupFilled(setting, li.oid.Value, smallgroup))
+                {
                     throw new Exception("sorry, maximum limit has been reached for " + smallgroup);
+                }
 
                 var omb = OrganizationMember.Load(DbUtil.Db, li.pid.Value, li.oid.Value) ??
                           OrganizationMember.InsertOrgMembers(DbUtil.Db,
@@ -146,7 +162,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             var li = new LinkInfo(rsvplinkSTR, landingSTR, id, false);
             if (li.error.HasValue())
+            {
                 return Message(li.error);
+            }
 
             ViewBag.Id = id;
             ViewBag.Message = message;
@@ -162,12 +180,16 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             var li = new LinkInfo(rsvplinkSTR, landingSTR, id, false);
             if (li.error.HasValue())
+            {
                 return Message(li.error);
+            }
 
             try
             {
                 if (!li.pid.HasValue)
+                {
                     throw new Exception("missing peopleid");
+                }
 
                 var meetingid = li.a[0].ToInt();
                 var emailid = li.a[2].ToInt();
@@ -181,7 +203,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                                     orderby mm.MeetingDate
                                     select mm).FirstOrDefault();
                     if (nextmeet == null)
+                    {
                         return Message("no meeting");
+                    }
+
                     meetingid = nextmeet.MeetingId;
                 }
                 var q = (from pp in DbUtil.Db.People
@@ -191,18 +216,27 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                          select new { p = pp, org, meeting }).Single();
 
                 if (q.org.RegistrationClosed == true || q.org.OrganizationStatusId == OrgStatusCode.Inactive)
+                {
                     throw new Exception("sorry, registration has been closed");
+                }
 
                 if (q.org.RegistrationTypeId == RegistrationTypeCode.None)
+                {
                     throw new Exception("rsvp is no longer available");
+                }
 
                 if (q.org.Limit <= q.meeting.Attends.Count(aa => aa.Commitment == 1))
+                {
                     throw new Exception("sorry, maximum limit has been reached");
+                }
+
                 var omb = OrganizationMember.Load(DbUtil.Db, li.pid.Value, q.meeting.OrganizationId) ??
                           OrganizationMember.InsertOrgMembers(DbUtil.Db,
                               q.meeting.OrganizationId, li.pid.Value, MemberTypeCode.Member, DateTime.Now, null, false);
                 if (smallgroup.HasValue())
+                {
                     omb.AddToGroup(DbUtil.Db, smallgroup);
+                }
 
                 li.ot.Used = true;
                 DbUtil.Db.SubmitChanges();
@@ -238,20 +272,28 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             var li = new LinkInfo(registerlinkSTR, landingSTR, id);
             if (li.error.HasValue())
+            {
                 return Message(li.error);
+            }
 
             try
             {
                 if (!li.pid.HasValue)
+                {
                     throw new Exception("missing peopleid");
+                }
 
                 if (!li.oid.HasValue)
+                {
                     throw new Exception("missing orgid");
+                }
 
                 var linktype = li.a.Length > 3 ? li.a[3].Split(':') : "".Split(':');
                 int? gsid = null;
                 if (linktype[0].Equal("supportlink"))
+                {
                     gsid = linktype.Length > 1 ? linktype[1].ToInt() : 0;
+                }
 
                 var q = (from pp in DbUtil.Db.People
                          where pp.PeopleId == li.pid
@@ -270,13 +312,19 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 }
 
                 if (q.org == null)
+                {
                     throw new Exception("org missing, bad link");
+                }
 
                 if (q.om == null && !gsid.HasValue && q.org.Limit <= q.org.RegLimitCount(DbUtil.Db))
+                {
                     throw new Exception("sorry, maximum limit has been reached");
+                }
 
                 if (q.om == null && (q.org.RegistrationClosed == true || q.org.OrganizationStatusId == OrgStatusCode.Inactive))
+                {
                     throw new Exception("sorry, registration has been closed");
+                }
 
                 DbUtil.LogActivity($"{registerlinkSTR}{landingSTR}", li.oid, li.pid);
 
@@ -284,9 +332,15 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     ? $"/OnlineReg/{li.oid}?registertag={id}"
                     : $"/OnlineReg/{li.oid}?registertag={id}&source={source}";
                 if (gsid.HasValue)
+                {
                     url += "&gsid=" + gsid;
+                }
+
                 if (showfamily == true)
+                {
                     url += "&showfamily=true";
+                }
+
                 return Redirect(url);
             }
             catch (Exception ex)
@@ -301,7 +355,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             var li = new LinkInfo(sendlinkSTR, landingSTR, id);
             if (li.error.HasValue())
+            {
                 return Message(li.error);
+            }
 
             ViewBag.Id = id;
             DbUtil.LogActivity($"{sendlinkSTR}{landingSTR}", li.oid, li.pid);
@@ -314,15 +370,21 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             var li = new LinkInfo(sendlinkSTR, landingSTR, id);
             if (li.error.HasValue())
+            {
                 return Message(li.error);
+            }
 
             try
             {
                 if (!li.pid.HasValue)
+                {
                     throw new Exception("missing peopleid");
+                }
 
                 if (!li.oid.HasValue)
+                {
                     throw new Exception("missing orgid");
+                }
 
                 var queueid = li.a[2].ToInt();
                 var linktype = li.a[3]; // for supportlink, this will also have the goerid
@@ -341,10 +403,14 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 }
 
                 if (q.org.RegistrationClosed == true || q.org.OrganizationStatusId == OrgStatusCode.Inactive)
+                {
                     throw new Exception("sorry, registration has been closed");
+                }
 
                 if (q.org.RegistrationTypeId == RegistrationTypeCode.None)
+                {
                     throw new Exception("sorry, registration is no longer available");
+                }
 
                 DbUtil.LogActivity($"{sendlinkSTR}{confirmSTR}", li.oid, li.pid);
 
@@ -398,7 +464,7 @@ or contact the church if you need help.</p>
                    || setting.AskItems.Where(aa => aa.Type == "AskCheckboxes").Any(aa => ((AskCheckboxes)aa).IsSmallGroupFilled(GroupTags, sg));
         }
 
-        const string otherRegisterlinkmaster = "Other/RegisterLinkMaster";
+        private const string otherRegisterlinkmaster = "Other/RegisterLinkMaster";
         public ActionResult RegisterLinkMaster(int id)
         {
             var pid = TempData["PeopleId"] as int?;
@@ -406,10 +472,14 @@ or contact the church if you need help.</p>
 
             var m = new OnlineRegModel { Orgid = id };
             if (User.Identity.IsAuthenticated)
+            {
                 return View(otherRegisterlinkmaster, m);
+            }
 
             if (pid == null)
+            {
                 return Message("Must start with a registerlink");
+            }
 
             SetHeaders(id.ToInt());
             return View(otherRegisterlinkmaster, m);
@@ -432,17 +502,28 @@ or contact the church if you need help.</p>
                 try
                 {
                     if (!id.HasValue())
+                    {
                         throw LinkException("missing id");
+                    }
+
                     var guid = id.ToGuid();
                     if (guid == null)
+                    {
                         throw LinkException("invalid id");
+                    }
+
                     ot = DbUtil.Db.OneTimeLinks.SingleOrDefault(oo => oo.Id == guid.Value);
                     if (ot == null)
+                    {
                         throw LinkException("missing link");
+                    }
 
                     a = ot.Querystring.SplitStr(",", 5);
                     if (hasorg)
+                    {
                         oid = a[0].ToInt();
+                    }
+
                     pid = a[1].ToInt();
 #if DEBUG
 #else
@@ -479,17 +560,25 @@ or contact the church if you need help.</p>
         {
             var li = new LinkInfo("dropfromorg", confirmSTR, id);
             if (li.error.HasValue())
+            {
                 return Message(li.error);
+            }
 
             if (!li.oid.HasValue)
+            {
                 throw new Exception("orgid missing");
+            }
 
             if (!li.pid.HasValue)
+            {
                 throw new Exception("peopleid missing");
+            }
 
             var org = DbUtil.Db.LoadOrganizationById(li.oid);
-            if(org == null)
+            if (org == null)
+            {
                 throw new Exception("no such organization");
+            }
 
             var om = DbUtil.Db.OrganizationMembers.SingleOrDefault(mm => mm.OrganizationId == li.oid && mm.PeopleId == li.pid);
 

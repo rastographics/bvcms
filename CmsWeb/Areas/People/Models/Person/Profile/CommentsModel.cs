@@ -1,6 +1,6 @@
+using CmsData;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using CmsData;
 
 namespace CmsWeb.Areas.People.Models
 {

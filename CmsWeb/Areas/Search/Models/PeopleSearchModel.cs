@@ -5,15 +5,15 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
 
+using CmsData;
+using CmsWeb.Areas.Search.Models;
+using CmsWeb.Code;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web.Mvc;
-using CmsData;
-using CmsWeb.Code;
-using UtilityExtensions;
 using System.Text.RegularExpressions;
-using CmsWeb.Areas.Search.Models;
+using System.Web.Mvc;
+using UtilityExtensions;
 
 namespace CmsWeb.Models
 {
@@ -45,7 +45,7 @@ or just Last or *First*`space` for first name match only.
 
     public class PeopleSearchModel : PagerModel2
     {
-        private CMSDataContext Db;
+        //private readonly CMSDataContext Db;
         private int TagTypeId { get; set; }
         private string TagName { get; set; }
         private int? TagOwner { get; set; }
@@ -55,7 +55,7 @@ or just Last or *First*`space` for first name match only.
 
         public PeopleSearchModel()
         {
-            Db = DbUtil.Db;
+            //Db = Db;
             Direction = "asc";
             Sort = "Name";
             TagTypeId = DbUtil.TagTypeId_Personal;
@@ -65,10 +65,10 @@ or just Last or *First*`space` for first name match only.
             GetCount = Count;
         }
 
-        public PeopleSearchModel( bool fromAddGuest = false )
+        public PeopleSearchModel(bool fromAddGuest = false)
             : this()
         {
-		    MobileAddGuest = fromAddGuest;
+            MobileAddGuest = fromAddGuest;
         }
 
         public bool usersonly { get; set; }
@@ -78,7 +78,9 @@ or just Last or *First*`space` for first name match only.
         public IQueryable<Person> FetchPeople()
         {
             if (people != null)
+            {
                 return people;
+            }
 
             DbUtil.Db.SetNoLock();
 
@@ -87,12 +89,17 @@ or just Last or *First*`space` for first name match only.
                 : DbUtil.Db.People.AsQueryable();
 
             if (usersonly)
+            {
                 people = people.Where(p => p.Users.Any());
+            }
 
             if (m.memberstatus > 0)
+            {
                 people = from p in people
                          where p.MemberStatusId == m.memberstatus
                          select p;
+            }
+
             if (m.name.HasValue())
             {
                 if (m.name.StartsWith("e:"))
@@ -107,6 +114,7 @@ or just Last or *First*`space` for first name match only.
                     string first, last;
                     Util.NameSplit(m.name, out first, out last);
                     if (first.HasValue())
+                    {
                         people = from p in people
                                  where p.LastName.StartsWith(last) || p.MaidenName.StartsWith(last) || p.AltName.StartsWith(last)
                                        || p.LastName.StartsWith(m.name) || p.MaidenName.StartsWith(m.name) // gets Bob St Clair
@@ -114,18 +122,25 @@ or just Last or *First*`space` for first name match only.
                                      p.FirstName.StartsWith(first) || p.NickName.StartsWith(first) || p.MiddleName.StartsWith(first)
                                      || p.LastName.StartsWith(m.name) || p.MaidenName.StartsWith(m.name) // gets Bob St Clair
                                  select p;
+                    }
                     else if (last.AllDigits())
+                    {
                         people = from p in people
                                  where p.PeopleId == last.ToInt()
                                  select p;
+                    }
                     else if (DbUtil.Db.Setting("UseAltnameContains"))
+                    {
                         people = from p in people
                                  where p.LastName.StartsWith(m.name) || p.MaidenName.StartsWith(m.name) || p.AltName.Contains(last)
                                  select p;
+                    }
                     else
+                    {
                         people = from p in people
                                  where p.LastName.StartsWith(m.name) || p.MaidenName.StartsWith(m.name) || p.AltName.StartsWith(last)
                                  select p;
+                    }
                 }
             }
             if (m.address.IsNotNull())
@@ -137,17 +152,21 @@ or just Last or *First*`space` for first name match only.
                 }
                 m.address = m.address.Trim();
                 if (m.address.HasValue())
+                {
                     people = from p in people
                              where p.Family.AddressLineOne.Contains(m.address)
                                    || p.Family.AddressLineTwo.Contains(m.address)
                                    || p.Family.CityName.Contains(m.address)
                                    || p.Family.ZipCode.Contains(m.address)
                              select p;
+                }
             }
             if (m.statusflags != null)
             {
                 if (m.statusflags.Length >= 1 && m.statusflags[0] == "0")
+                {
                     m.statusflags = m.statusflags.Where(cc => cc != "0").ToArray();
+                }
             }
             if (m.statusflags != null && m.statusflags.Length > 0)
             {
@@ -160,6 +179,7 @@ or just Last or *First*`space` for first name match only.
             {
                 m.communication = m.communication.Trim();
                 if (m.communication.HasValue())
+                {
                     people = from p in people
                              where p.CellPhone.Contains(m.communication)
                                    || p.EmailAddress.Contains(m.communication)
@@ -167,33 +187,57 @@ or just Last or *First*`space` for first name match only.
                                    || p.Family.HomePhone.Contains(m.communication)
                                    || p.WorkPhone.Contains(m.communication)
                              select p;
+                }
             }
             if (m.birthdate.HasValue() && m.birthdate.NotEqual("na"))
             {
                 DateTime dt;
                 if (DateTime.TryParse(m.birthdate, out dt))
+                {
                     if (Regex.IsMatch(m.birthdate, @"\d+/\d+/\d+"))
+                    {
                         people = people.Where(p => p.BirthDay == dt.Day && p.BirthMonth == dt.Month && p.BirthYear == dt.Year);
+                    }
                     else
+                    {
                         people = people.Where(p => p.BirthDay == dt.Day && p.BirthMonth == dt.Month);
+                    }
+                }
                 else
                 {
                     int n;
                     if (int.TryParse(m.birthdate, out n))
+                    {
                         if (n >= 1 && n <= 12)
+                        {
                             people = people.Where(p => p.BirthMonth == n);
+                        }
                         else
+                        {
                             people = people.Where(p => p.BirthYear == n);
+                        }
+                    }
                 }
             }
             if (m.campus > 0)
+            {
                 people = people.Where(p => p.CampusId == m.campus);
+            }
             else if (m.campus == -1)
+            {
                 people = people.Where(p => p.CampusId == null);
+            }
+
             if (m.gender != 99)
+            {
                 people = people.Where(p => p.GenderId == m.gender);
+            }
+
             if (m.marital != 99)
+            {
                 people = people.Where(p => p.MaritalStatusId == m.marital);
+            }
+
             return people;
         }
 
@@ -201,7 +245,10 @@ or just Last or *First*`space` for first name match only.
         {
             var people = FetchPeople();
             if (!_count.HasValue)
+            {
                 _count = people.Count();
+            }
+
             people = ApplySort(people)
                 .Skip(StartRow).Take(PageSize);
             return PeopleList(people);
@@ -331,7 +378,7 @@ or just Last or *First*`space` for first name match only.
             return query;
         }
 
-        CodeValueModel cv = new CodeValueModel();
+        private CodeValueModel cv = new CodeValueModel();
 
         public SelectList GenderCodes()
         {
@@ -378,7 +425,10 @@ or just Last or *First*`space` for first name match only.
         public int Count()
         {
             if (!_count.HasValue)
+            {
                 _count = FetchPeople().Count();
+            }
+
             return _count.Value;
         }
 
@@ -397,8 +447,10 @@ or just Last or *First*`space` for first name match only.
             cc.Reset();
 
             if (m.memberstatus > 0)
+            {
                 cc.AddNewClause(QueryType.MemberStatusId, CompareType.Equal,
                     IdValue(cv.MemberStatusCodes(), m.memberstatus));
+            }
 
             if (m.name.HasValue())
             {
@@ -419,12 +471,14 @@ or just Last or *First*`space` for first name match only.
                 else
                 {
                     if (Last.AllDigits())
+                    {
                         cc.AddNewClause(QueryType.PeopleId, CompareType.Equal, Last.ToInt());
+                    }
                     else
                     {
                         var g = cc.AddNewGroupClause();
                         g.SetComparisonType(CompareType.AnyTrue);
-                        var compareTypeAltname = DbUtil.Db.Setting("UseAltnameContains") 
+                        var compareTypeAltname = DbUtil.Db.Setting("UseAltnameContains")
                             ? CompareType.Contains : CompareType.StartsWith;
                         g.AddNewClause(QueryType.AltName, compareTypeAltname, m.name);
                         g.AddNewClause(QueryType.LastName, CompareType.StartsWith, m.name);
@@ -468,35 +522,63 @@ or just Last or *First*`space` for first name match only.
             {
                 DateTime dt;
                 if (DateTime.TryParse(m.birthdate, out dt))
+                {
                     if (Regex.IsMatch(m.birthdate, @"\d+/\d+/\d+"))
+                    {
                         cc.AddNewClause(QueryType.Birthday, CompareType.Equal, m.birthdate);
+                    }
                     else
+                    {
                         cc.AddNewClause(QueryType.Birthday, CompareType.Equal, m.birthdate);
+                    }
+                }
                 else
                 {
                     int n;
                     if (int.TryParse(m.birthdate, out n))
+                    {
                         if (n >= 1 && n <= 12)
+                        {
                             cc.AddNewClause(QueryType.Birthday, CompareType.Equal, m.birthdate);
+                        }
                         else
+                        {
                             cc.AddNewClause(QueryType.Birthday, CompareType.Equal, m.birthdate);
+                        }
+                    }
                 }
             }
             if (m.campus > 0)
+            {
                 cc.AddNewClause(QueryType.CampusId, CompareType.Equal,
                     IdValue(cv.AllCampuses(), m.campus));
+            }
             else if (m.campus == -1)
+            {
                 cc.AddNewClause(QueryType.CampusId, CompareType.IsNull,
                     IdValue(cv.AllCampuses(), m.campus));
+            }
+
             if (m.gender != 99)
+            {
                 cc.AddNewClause(QueryType.GenderId, CompareType.Equal,
                     IdValue(cv.GenderCodes(), m.gender));
+            }
+
             if (m.marital != 99)
+            {
                 cc.AddNewClause(QueryType.MaritalStatusId, CompareType.Equal,
                     IdValue(cv.MaritalStatusCodes(), m.marital));
+            }
+
             if (m.statusflags != null)
+            {
                 foreach (var f in m.statusflags)
+                {
                     cc.AddNewClause(QueryType.StatusFlag, CompareType.Equal, f);
+                }
+            }
+
             cc.AddNewClause(QueryType.IncludeDeceased, CompareType.Equal, "1,True");
 
             cc.Save(DbUtil.Db);
@@ -507,7 +589,10 @@ or just Last or *First*`space` for first name match only.
         {
             count = 0;
             if (!first.HasValue() || !last.HasValue())
+            {
                 return null;
+            }
+
             first = first.Trim();
             last = last.Trim();
             var fone = Util.GetDigits(phone);
@@ -529,13 +614,18 @@ or just Last or *First*`space` for first name match only.
             {
                 var dt = DOB.Value;
                 if (dt > Util.Now)
+                {
                     dt = dt.AddYears(-100);
+                }
+
                 var q2 = from p in q
                          where p.BirthDay == dt.Day && p.BirthMonth == dt.Month && p.BirthYear == dt.Year
                          select p;
                 count = q2.Count();
                 if (count == 1) // use only birthday if there and unique
+                {
                     return PersonFound(ctx, q2);
+                }
             }
             if (email.HasValue())
             {
@@ -544,7 +634,9 @@ or just Last or *First*`space` for first name match only.
                          select p;
                 count = q2.Count();
                 if (count == 1)
+                {
                     return PersonFound(ctx, q2);
+                }
             }
             if (phone.HasValue())
             {
@@ -553,7 +645,9 @@ or just Last or *First*`space` for first name match only.
                          select p;
                 count = q2.Count();
                 if (count == 1)
+                {
                     return PersonFound(ctx, q2);
+                }
             }
             return null;
         }

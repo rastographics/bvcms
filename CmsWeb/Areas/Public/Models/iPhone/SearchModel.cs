@@ -1,7 +1,7 @@
+using CmsData;
 using System.Collections.Generic;
 using System.Linq;
 using UtilityExtensions;
-using CmsData;
 
 
 namespace CmsWeb.Models.iPhone
@@ -59,15 +59,22 @@ namespace CmsWeb.Models.iPhone
         public IQueryable<Person> ApplySearch(bool fromAddGuest = false)
         {
             if (query.IsNotNull())
+            {
                 return query;
-            var db = DbUtil.Db;
+            }
+
+            //var db = Db;
             var ignoreOrgleadersonly = DbUtil.Db.Setting("RelaxAppAddGuest", "false").ToBool() && fromAddGuest;
-            if(ignoreOrgleadersonly)
-                query = db.People.Select(p => p);
+            if (ignoreOrgleadersonly)
+            {
+                query = DbUtil.Db.People.Select(p => p);
+            }
             else
+            {
                 query = Util2.OrgLeadersOnly
-                    ? db.OrgLeadersOnlyTag2().People(db) 
-                    : db.People.Select(p => p);
+                    ? DbUtil.Db.OrgLeadersOnlyTag2().People(DbUtil.Db)
+                    : DbUtil.Db.People.Select(p => p);
+            }
 
             //query = query.Where(pp => pp.DeceasedDate == null);
 
@@ -77,6 +84,7 @@ namespace CmsWeb.Models.iPhone
                 Util.NameSplit(Name, out first, out last);
                 DbUtil.LogActivity($"iphone search '{first}' '{last}'");
                 if (first.HasValue())
+                {
                     query = from p in query
                             where p.LastName.StartsWith(last) || p.MaidenName.StartsWith(last)
                                 || p.LastName.StartsWith(Name) || p.MaidenName.StartsWith(Name) // gets Bob St Clair
@@ -84,37 +92,46 @@ namespace CmsWeb.Models.iPhone
                                 p.FirstName.StartsWith(first) || p.NickName.StartsWith(first) || p.MiddleName.StartsWith(first)
                                 || p.LastName.StartsWith(Name) || p.MaidenName.StartsWith(Name) // gets Bob St Clair
                             select p;
+                }
                 else
                     if (last.AllDigits())
-                        query = from p in query
-                                where p.PeopleId == last.ToInt()
-                                select p;
-                    else
-                        query = from p in query
-                                where p.LastName.StartsWith(Name) || p.MaidenName.StartsWith(Name)
-                                || p.FirstName.StartsWith(Name) || p.NickName.StartsWith(Name) || p.MiddleName.StartsWith(Name)
-                                select p;
+                {
+                    query = from p in query
+                            where p.PeopleId == last.ToInt()
+                            select p;
+                }
+                else
+                {
+                    query = from p in query
+                            where p.LastName.StartsWith(Name) || p.MaidenName.StartsWith(Name)
+                            || p.FirstName.StartsWith(Name) || p.NickName.StartsWith(Name) || p.MiddleName.StartsWith(Name)
+                            select p;
+                }
             }
             if (Addr.IsNotNull())
             {
                 Addr = Addr.Trim();
                 if (Addr.HasValue())
+                {
                     query = from p in query
                             where p.Family.AddressLineOne.Contains(Addr)
                                || p.Family.AddressLineTwo.Contains(Addr)
                                || p.Family.CityName.Contains(Addr)
                                || p.Family.ZipCode.Contains(Addr)
                             select p;
+                }
             }
             if (Comm.IsNotNull())
             {
                 Comm = Comm.Trim();
                 if (Comm.HasValue())
+                {
                     query = from p in query
                             where p.CellPhone.Contains(Comm) || p.EmailAddress.Contains(Comm)
                             || p.Family.HomePhone.Contains(Comm)
                             || p.WorkPhone.Contains(Comm)
                             select p;
+                }
             }
             return query;
         }

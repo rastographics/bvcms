@@ -1,11 +1,11 @@
+using CmsData;
+using CmsData.Codes;
+using CmsWeb.Code;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using CmsData;
-using CmsData.Codes;
-using CmsWeb.Code;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Org.Models
@@ -52,7 +52,7 @@ namespace CmsWeb.Areas.Org.Models
                     where e.MemberTagId == id
                     where om.PeopleId == e.PeopleId
                     where om.OrganizationId == e.OrgId
-                    group new {e, om} by e.MemberTagId
+                    group new { e, om } by e.MemberTagId
                     into grp
                     select new GroupDetails
                     {
@@ -123,17 +123,23 @@ namespace CmsWeb.Areas.Org.Models
         public IEnumerable<SelectListItem> MemberTypeCodesWithNotSpecified()
         {
             var mt = MemberTypes().ToList();
-            mt.Insert(0, new SelectListItem {Value = "0", Text = "(not specified)"});
+            mt.Insert(0, new SelectListItem { Value = "0", Text = "(not specified)" });
             return mt;
         }
 
         public IEnumerable<PersonInfo> FetchOrgMemberList()
         {
             if (ingroup == null)
+            {
                 ingroup = string.Empty;
+            }
+
             var q = OrgMembers();
             if (memtype != 0)
+            {
                 q = q.Where(om => om.MemberTypeId == memtype);
+            }
+
             if (ingroup.HasValue())
             {
                 var groups = ingroup.Split(',');
@@ -144,14 +150,23 @@ namespace CmsWeb.Areas.Org.Models
                 }
             }
             if (notgroupactive)
+            {
                 if (notgroup.HasValue())
+                {
                     q = q.Where(om => !om.OrgMemMemTags.Any(omt => omt.MemberTag.Name.StartsWith(notgroup)));
+                }
                 else
+                {
                     q = q.Where(om => !om.OrgMemMemTags.Any());
+                }
+            }
 
             count = q.Count();
             if (!sort.HasValue())
+            {
                 sort = "Name";
+            }
+
             switch (sort)
             {
                 case "Request":
@@ -243,7 +258,7 @@ namespace CmsWeb.Areas.Org.Models
         {
             var cv = new CodeValueModel();
             var tg = CodeValueModel.ConvertToSelect(cv.UserTags(Util.UserPeopleId), "Id").ToList();
-            tg.Insert(0, new SelectListItem {Value = "0", Text = "(not specified)"});
+            tg.Insert(0, new SelectListItem { Value = "0", Text = "(not specified)" });
             return tg;
         }
 
@@ -259,7 +274,10 @@ namespace CmsWeb.Areas.Org.Models
                 var name = "TM: " + coach.Person.Name;
 
                 var group = DbUtil.Db.MemberTags.SingleOrDefault(g => g.Name == name && g.OrgId == orgid);
-                if (group != null) continue;
+                if (group != null)
+                {
+                    continue;
+                }
 
                 group = new MemberTag
                 {
@@ -286,8 +304,8 @@ namespace CmsWeb.Areas.Org.Models
 
             var teams = teamList.Count();
             var players = p.Count();
-            var perTeam = Math.Floor((double) players/teams);
-            var passes = Math.Floor(perTeam/2);
+            var perTeam = Math.Floor((double)players / teams);
+            var passes = Math.Floor(perTeam / 2);
 
             for (var iX = 0; iX < passes; iX++)
             {
@@ -322,7 +340,10 @@ namespace CmsWeb.Areas.Org.Models
                     var tagBot = new OrgMemMemTag();
 
                     var bot = p.OrderBy(t => t.Score).ThenBy(t => t.PeopleId).Take(1).SingleOrDefault();
-                    if (bot == null) break;
+                    if (bot == null)
+                    {
+                        break;
+                    }
 
                     tagBot.MemberTagId = team.Id;
                     tagBot.OrgId = orgid;
@@ -341,7 +362,10 @@ namespace CmsWeb.Areas.Org.Models
                     var tagBot = new OrgMemMemTag();
 
                     var bot = p.OrderBy(t => t.Score).ThenBy(t => t.PeopleId).Take(1).SingleOrDefault();
-                    if (bot == null) break;
+                    if (bot == null)
+                    {
+                        break;
+                    }
 
                     tagBot.MemberTagId = team.Id;
                     tagBot.OrgId = orgid;

@@ -1,11 +1,11 @@
-﻿using System;
+﻿using CmsData;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Threading;
 using System.Web.Hosting;
-using CmsData;
-using Newtonsoft.Json;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Models
@@ -55,12 +55,12 @@ namespace CmsWeb.Areas.Dialog.Models
             db.LongRunningOperations.InsertOnSubmit(lop);
             db.SubmitChanges();
             HostingEnvironment.QueueBackgroundWorkItem(ct => DoMoveWork(this));
-		}
+        }
         public static void DoMoveWork(MoveOrgMembersModel model)
         {
-			var db = DbUtil.Create(model.Host);
+            var db = DbUtil.Create(model.Host);
             db.CommandTimeout = 2200;
-		    var cul = db.Setting("Culture", "en-US");
+            var cul = db.Setting("Culture", "en-US");
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
             LongRunningOperation lop = null;
@@ -69,13 +69,22 @@ namespace CmsWeb.Areas.Dialog.Models
             {
                 var a = i.Split('.');
                 if (a.Length != 2)
+                {
                     continue;
+                }
+
                 var pid = a[0].ToInt();
                 var oid = a[1].ToInt();
 
                 if (oid == model.TargetId)
+                {
                     continue;
+                }
+
                 OrganizationMember.MoveToOrg(db, pid, oid, model.TargetId, model.MoveRegistrationData, model.ChangeMemberType == true ? model.MoveToMemberTypeId : -1);
+                //Once member has been inserted into the new Organization then update member in Organizations as enrolled / not enrolled accordingly
+                db.RepairTransactions(oid);
+                db.RepairTransactions(model.TargetId);
                 lop = FetchLongRunningOperation(db, Op, model.QueryId);
                 Debug.Assert(lop != null, "r != null");
                 lop.Processed++;
@@ -87,6 +96,6 @@ namespace CmsWeb.Areas.Dialog.Models
             lop.Completed = DateTime.Now;
             db.SubmitChanges();
             db.UpdateMainFellowship(model.TargetId);
-		}
+        }
     }
 }

@@ -542,14 +542,12 @@ namespace CmsWeb {
         /// <summary>
         ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
         ///&lt;ReportsMenu&gt;
-        ///  &lt;Header&gt;Statistics&lt;/Header&gt;
-        ///  &lt;Report link=&quot;/Reports/VitalStats&quot;&gt;Vital Stats&lt;/Report&gt;
+        ///  &lt;Header excludedRoles=&quot;OrgLeadersOnly&quot;&gt;Statistics&lt;/Header&gt;
+        ///  &lt;Report excludedRoles=&quot;OrgLeadersOnly&quot; link=&quot;/Reports/VitalStats&quot;&gt;Vital Stats&lt;/Report&gt;
+        ///  &lt;Report excludedRoles=&quot;OrgLeadersOnly&quot; link=&quot;/Figures/Figures/Index&quot;&gt;Vital Stats Graphs&lt;/Report&gt;
         ///  &lt;Header&gt;Attendance Summary&lt;/Header&gt;
         ///  &lt;Report link=&quot;/Reports/ChurchAttendance&quot; target=&quot;_blank&quot;&gt;Week at a Glance&lt;/Report&gt;
-        ///  &lt;Report link=&quot;/Reports/ChurchAttendance2&quot; target=&quot;_blank&quot;&gt;Average Week at a Glance&lt;/Report&gt;
-        ///  &lt;Header&gt;Decisions&lt;/Header&gt;
-        ///  &lt;Report link=&quot;/Reports/WeeklyDecisions&quot; target=&quot;_blank&quot;&gt;Weekly Decisions&lt;/Report&gt;
-        ///  &lt;Report link=&quot;/Reports/Decisio [rest of string was truncated]&quot;;.
+        ///  &lt;Report link=&quot;/Reports/ChurchAttendance2&quot; target=&quot;_blank&quot;&gt;Average Week at a Gl [rest of string was truncated]&quot;;.
         /// </summary>
         public static string ReportsMenu {
             get {

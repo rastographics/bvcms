@@ -4,16 +4,16 @@
  * you may not use this code except in compliance with the License.
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
+using CmsData;
+using CmsData.Codes;
+using CmsWeb.Models;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using iTextSharp.text;
-using iTextSharp.text.pdf;
-using CmsData;
-using CmsData.Codes;
-using UtilityExtensions;
 using System.Web.Mvc;
-using CmsWeb.Models;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Reports.Models
 {
@@ -24,11 +24,11 @@ namespace CmsWeb.Areas.Reports.Models
         private DateTime dt;
         private PdfContentByte dc;
         private ColumnText ct;
-        private Font bfont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 10);
-        private Font font = FontFactory.GetFont(FontFactory.HELVETICA, 10);
-        private Font smallfont = FontFactory.GetFont(FontFactory.HELVETICA, 8);
-        private bool ShowForm;
-        private bool AlphaSort;
+        private readonly Font bfont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 10);
+        private readonly Font font = FontFactory.GetFont(FontFactory.HELVETICA, 10);
+        private readonly Font smallfont = FontFactory.GetFont(FontFactory.HELVETICA, 8);
+        private readonly bool ShowForm;
+        private readonly bool AlphaSort;
 
         private Guid qid;
         public ProspectResult(Guid id, bool ShowForm, bool Alpha)
@@ -144,13 +144,18 @@ namespace CmsWeb.Areas.Reports.Models
 
             pageEvents.StartPageSet($"Outreach/Inreach Report: {dt:d}");
             if (qid == null)
+            {
                 doc.Add(new Phrase("no data"));
+            }
             else
             {
                 IQueryable<ProspectInfo> q = GetProspectInfo(AlphaSort);
                 if (!q.Any())
+                {
                     doc.Add(new Phrase("no data"));
+                }
                 else
+                {
                     foreach (var p in q)
                     {
                         doc.NewPage();
@@ -189,22 +194,37 @@ namespace CmsWeb.Areas.Reports.Models
                         t2.CompleteRow();
 
                         if (p.ChristAsSavior.HasValue())
+                        {
                             t2.Add(p.ChristAsSavior, 2, font);
+                        }
+
                         if (p.InfoBecomeAChristian.HasValue())
+                        {
                             t2.Add(p.InfoBecomeAChristian, 2, font);
+                        }
+
                         if (p.InterestedInJoining.HasValue())
+                        {
                             t2.Add(p.InterestedInJoining, 2, font);
+                        }
+
                         if (p.PleaseVisit.HasValue())
+                        {
                             t2.Add(p.PleaseVisit, 2, font);
+                        }
 
                         t.AddCell(t2);
 
                         t3.Add("Member Status:", font);
 
-                        if( p.MemberStatusID == MemberStatusCode.Member )
+                        if (p.MemberStatusID == MemberStatusCode.Member)
+                        {
                             t3.Add(p.MemberStatus + " (" + (p.Joined?.ToString("d") ?? "Unknown") + ")", font);
+                        }
                         else
+                        {
                             t3.Add(p.MemberStatus, font);
+                        }
 
                         t3.Add("Origin:", font);
                         t3.Add(p.Origin, font);
@@ -318,8 +338,11 @@ namespace CmsWeb.Areas.Reports.Models
                             doc.Add(t);
                         }
                         if (ShowForm)
+                        {
                             ContactForm(p);
+                        }
                     }
+                }
             }
             pageEvents.EndPageSet();
             doc.Close();
@@ -327,119 +350,123 @@ namespace CmsWeb.Areas.Reports.Models
 
         private IQueryable<ProspectInfo> GetProspectInfo(bool Alpha = false)
         {
-            var Db = DbUtil.Db;
-            var q = Db.PeopleQuery(qid);
+            //var Db = Db;
+            var q = DbUtil.Db.PeopleQuery(qid);
             if (Alpha)
+            {
                 q = q.OrderBy(pp => pp.Name2);
+            }
             else
+            {
                 q = q.OrderBy(pp => pp.PrimaryZip).ThenBy(pp => pp.Name2);
+            }
 
-            var EvCommentFields = Db.Setting("EvCommentFields", "").Split(',');
+            var EvCommentFields = DbUtil.Db.Setting("EvCommentFields", "").Split(',');
             var q2 = from p in q
-                        select new ProspectInfo
-                        {
-                            PeopleId = p.PeopleId,
-                            Name = p.Name,
-                            Address = p.PrimaryAddress,
-                            Address2 = p.PrimaryAddress2,
-                            Age = Person.AgeDisplay(p.Age, p.PeopleId).ToString(),
-                            MemberStatusID = p.MemberStatusId,
-                            MemberStatus = p.MemberStatus.Description,
-                            CityStateZip = Util.FormatCSZ4(p.PrimaryCity, p.PrimaryState, p.PrimaryZip),
-                            Gender = p.GenderId == 1 ? "Male" : p.GenderId == 2 ? "Female" : "",
-                            MaritalStatus = p.MaritalStatus.Description,
-                            PositionInFamily = p.FamilyPosition.Description,
-                            Origin = p.Origin.Description,
-                            Comment = p.Comments,
-                            ChristAsSavior = p.ChristAsSavior ? "Prayed to receive Christ as Savior" : "",
-                            InterestedInJoining = p.InterestedInJoining ? "Interested in joining Church" : "",
-                            PleaseVisit = p.PleaseVisit ? "Requests a visit" : "",
-                            InfoBecomeAChristian = p.InfoBecomeAChristian ? "Interested in becoming a Christian" : "",
-                            CellPhone = p.CellPhone,
-                            HomePhone = p.HomePhone,
-                            WorkPhone = p.WorkPhone,
-                            EMail = p.EmailAddress,
-                            Joined = p.JoinDate,
+                     select new ProspectInfo
+                     {
+                         PeopleId = p.PeopleId,
+                         Name = p.Name,
+                         Address = p.PrimaryAddress,
+                         Address2 = p.PrimaryAddress2,
+                         Age = Person.AgeDisplay(p.Age, p.PeopleId).ToString(),
+                         MemberStatusID = p.MemberStatusId,
+                         MemberStatus = p.MemberStatus.Description,
+                         CityStateZip = Util.FormatCSZ4(p.PrimaryCity, p.PrimaryState, p.PrimaryZip),
+                         Gender = p.GenderId == 1 ? "Male" : p.GenderId == 2 ? "Female" : "",
+                         MaritalStatus = p.MaritalStatus.Description,
+                         PositionInFamily = p.FamilyPosition.Description,
+                         Origin = p.Origin.Description,
+                         Comment = p.Comments,
+                         ChristAsSavior = p.ChristAsSavior ? "Prayed to receive Christ as Savior" : "",
+                         InterestedInJoining = p.InterestedInJoining ? "Interested in joining Church" : "",
+                         PleaseVisit = p.PleaseVisit ? "Requests a visit" : "",
+                         InfoBecomeAChristian = p.InfoBecomeAChristian ? "Interested in becoming a Christian" : "",
+                         CellPhone = p.CellPhone,
+                         HomePhone = p.HomePhone,
+                         WorkPhone = p.WorkPhone,
+                         EMail = p.EmailAddress,
+                         Joined = p.JoinDate,
 
-                            Family = from m in p.Family.People
-                                        where m.DeceasedDate == null
-                                        where m.PeopleId != p.PeopleId
-                                        orderby m.PositionInFamilyId, m.Age descending
-                                        select new FamilyMember
-                                        {
-                                            Id = m.PeopleId,
-                                            Name = m.Name,
-                                            Age = Person.AgeDisplay(m.Age, m.PeopleId),
-                                            Deceased = m.DeceasedDate != null,
-                                            PositionInFamily = m.FamilyPosition.Description,
-                                            MemberStatus = m.MemberStatus.Description,
-                                            CellPhone = m.CellPhone
-                                        },
-                            Memberships = from om in p.OrganizationMembers
-                                              where dt > om.EnrollmentDate
-                                              let o = om.Organization
-                                              let sc = o.OrgSchedules.FirstOrDefault() // SCHED
-                                              let l = Db.People.SingleOrDefault(l => l.PeopleId == o.LeaderId)
-                                              orderby om.Organization.OrganizationName
-                                              select new OrganizationView
-                                              {
-                                                  Id = o.OrganizationId,
-                                                  Name = o.OrganizationName,
-                                                  Location = o.Location,
-                                                  LeaderName = l.Name,
-                                                  MeetingTime = sc.MeetingTime,
-                                                  MemberType = om.MemberType.Description,
-                                                  EnrollDate = om.EnrollmentDate,
-                                                  DivisionName = o.Division.Name
-                                              },
-                            Contacts = from ch in p.contactsHad
-                                          let c = ch.contact
-                                          where (c.LimitToRole ?? "") == ""
-                                          orderby c.ContactDate descending
-                                          select new ContactInfo
-                                          {
-                                              ContactId = c.ContactId,
-                                              Comments = c.Comments,
-                                              ContactDate = c.ContactDate,
-                                              ContactReason = c.ContactReason.Description,
-                                              TypeOfContact = c.ContactType.Description,
-                                              Team = string.Join(",", c.contactsMakers.Select(cm => cm.person.Name).ToArray())
-                                          },
-                            Comments = from ex in p.PeopleExtras
+                         Family = from m in p.Family.People
+                                  where m.DeceasedDate == null
+                                  where m.PeopleId != p.PeopleId
+                                  orderby m.PositionInFamilyId, m.Age descending
+                                  select new FamilyMember
+                                  {
+                                      Id = m.PeopleId,
+                                      Name = m.Name,
+                                      Age = Person.AgeDisplay(m.Age, m.PeopleId),
+                                      Deceased = m.DeceasedDate != null,
+                                      PositionInFamily = m.FamilyPosition.Description,
+                                      MemberStatus = m.MemberStatus.Description,
+                                      CellPhone = m.CellPhone
+                                  },
+                         Memberships = from om in p.OrganizationMembers
+                                       where dt > om.EnrollmentDate
+                                       let o = om.Organization
+                                       let sc = o.OrgSchedules.FirstOrDefault() // SCHED
+                                       let l = DbUtil.Db.People.SingleOrDefault(l => l.PeopleId == o.LeaderId)
+                                       orderby om.Organization.OrganizationName
+                                       select new OrganizationView
+                                       {
+                                           Id = o.OrganizationId,
+                                           Name = o.OrganizationName,
+                                           Location = o.Location,
+                                           LeaderName = l.Name,
+                                           MeetingTime = sc.MeetingTime,
+                                           MemberType = om.MemberType.Description,
+                                           EnrollDate = om.EnrollmentDate,
+                                           DivisionName = o.Division.Name
+                                       },
+                         Contacts = from ch in p.contactsHad
+                                    let c = ch.contact
+                                    where (c.LimitToRole ?? "") == ""
+                                    orderby c.ContactDate descending
+                                    select new ContactInfo
+                                    {
+                                        ContactId = c.ContactId,
+                                        Comments = c.Comments,
+                                        ContactDate = c.ContactDate,
+                                        ContactReason = c.ContactReason.Description,
+                                        TypeOfContact = c.ContactType.Description,
+                                        Team = string.Join(",", c.contactsMakers.Select(cm => cm.person.Name).ToArray())
+                                    },
+                         Comments = from ex in p.PeopleExtras
+                                    where EvCommentFields.Contains(ex.Field)
+                                    select new CommentInfo
+                                    {
+                                        CommentField = ex.Field,
+                                        Comments = ex.Data,
+                                    },
+                         FamilyComments = from ex in p.Family.FamilyExtras
                                           where EvCommentFields.Contains(ex.Field)
                                           select new CommentInfo
                                           {
                                               CommentField = ex.Field,
                                               Comments = ex.Data,
                                           },
-                            FamilyComments = from ex in p.Family.FamilyExtras
-                                                  where EvCommentFields.Contains(ex.Field)
-                                                  select new CommentInfo
-                                                  {
-                                                      CommentField = ex.Field,
-                                                      Comments = ex.Data,
-                                                  },
-                            Attends = (from a in p.Attends
-                                          where a.AttendanceFlag == true
-                                          let o = a.Meeting.Organization
-                                          orderby a.MeetingDate descending, o.OrganizationName
-                                          select new AttendInfo
-                                          {
-                                              MeetingId = a.MeetingId,
-                                              OrganizationName = o.OrganizationName,
-                                              Teacher = o.LeaderName,
-                                              AttendType = a.AttendType.Description,
-                                              MeetingName = o.Division.Name + ": " + o.OrganizationName,
-                                              MeetingDate = a.MeetingDate,
-                                              MemberType = a.MemberType.Description,
-                                          }).Take(10)
-                        };
+                         Attends = (from a in p.Attends
+                                    where a.AttendanceFlag == true
+                                    let o = a.Meeting.Organization
+                                    orderby a.MeetingDate descending, o.OrganizationName
+                                    select new AttendInfo
+                                    {
+                                        MeetingId = a.MeetingId,
+                                        OrganizationName = o.OrganizationName,
+                                        Teacher = o.LeaderName,
+                                        AttendType = a.AttendType.Description,
+                                        MeetingName = o.Division.Name + ": " + o.OrganizationName,
+                                        MeetingDate = a.MeetingDate,
+                                        MemberType = a.MemberType.Description,
+                                    }).Take(10)
+                     };
             return q2;
         }
 
         private const float cm2pts = 28.34f;
-        private Font h1font = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 14);
-        private Font h2font = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 12);
+        private readonly Font h1font = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 14);
+        private readonly Font h2font = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 12);
 
 
         public void ContactForm(ProspectInfo p)
@@ -452,9 +479,9 @@ namespace CmsWeb.Areas.Reports.Models
              * However, because the results are hardcoded, there will be no translation between the results on this form and the results on the Contact page itself.
              * We will implement extra values for this table to accomodate this at some point.
              * */
-            var Db = DbUtil.Db;
+            //var Db = Db;
             List<string> ContactResult =
-                Db.Setting(
+                DbUtil.Db.Setting(
                 "ContactFormResults",
                 "Not at Home;Left Door Hanger;Left Message;Contact Made;Gospel Shared;Profession of Faith;Prayer Request Rec'd;Prayed for Person;Already Saved"
                 ).Split(';').ToList();
@@ -472,8 +499,8 @@ namespace CmsWeb.Areas.Reports.Models
 
             doc.Add(t);
 
-            var ContactReason = Db.ContactReasons.Select(rr => rr.Description).Take(10).ToList();
-            var ContactType = Db.ContactTypes.Select(rr => rr.Description).Take(10).ToList();
+            var ContactReason = DbUtil.Db.ContactReasons.Select(rr => rr.Description).Take(10).ToList();
+            var ContactType = DbUtil.Db.ContactTypes.Select(rr => rr.Description).Take(10).ToList();
 
             DisplayTable("Contact Reason", 5.7f, 1.2f, 24.2f, ContactReason);
             DisplayTable("Type of Contact", 5.7f, 8f, 24.2f, ContactType);
@@ -523,11 +550,14 @@ namespace CmsWeb.Areas.Reports.Models
 
             t.AddPlainRow(title, bfont);
             for (int r = 0; r < nrows; r++)
+            {
                 t.AddCell("");
+            }
+
             t.WriteSelectedRows(0, -1, x * cm2pts, y * cm2pts, dc);
         }
 
-        class PageEvent : PdfPageEventHelper
+        private class PageEvent : PdfPageEventHelper
         {
             private PdfTemplate npages;
             private PdfWriter writer;
@@ -547,7 +577,10 @@ namespace CmsWeb.Areas.Reports.Models
             public void EndPageSet()
             {
                 if (npages == null)
+                {
                     return;
+                }
+
                 npages.BeginText();
                 npages.SetFontAndSize(font, 8);
                 npages.ShowText((writer.PageNumber + 1).ToString());

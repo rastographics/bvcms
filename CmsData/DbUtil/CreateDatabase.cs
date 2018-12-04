@@ -161,9 +161,9 @@ GO
             return retVal;
         }
 
+        static string currentFile;
         public static string CreateDatabase(string hostName, string sqlScriptsPath, string masterConnectionString, string imageConnectionString, string elmahConnectionString, string standardConnectionString)
         {
-            var currentFile = string.Empty;
             try
             {
                 RunScripts(masterConnectionString, "create database CMS_" + hostName);
@@ -216,7 +216,8 @@ GO
                     {
                         currentFile = migrationsFolder;
                         RunMigrations(cn, migrationsFolder);
-                    } else
+                    }
+                    else
                     {
                         throw new DirectoryNotFoundException(migrationsFolder + " was not found");
                     }
@@ -235,7 +236,8 @@ GO
             var files = new DirectoryInfo(migrationsFolder).EnumerateFiles();
             foreach (var f in files)
             {
-                var script = File.ReadAllText(f.FullName);
+                currentFile = f.FullName;
+                var script = File.ReadAllText(currentFile);
                 RunScripts(connection, script);
             }
         }

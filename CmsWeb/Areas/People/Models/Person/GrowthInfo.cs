@@ -1,8 +1,8 @@
+using CmsData;
+using CmsWeb.Code;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
-using CmsData;
-using CmsWeb.Code;
 
 namespace CmsWeb.Areas.People.Models
 {
@@ -55,11 +55,19 @@ namespace CmsWeb.Areas.People.Models
 
 
             if (InterestPointId == 0)
+            {
                 InterestPointId = null;
+            }
+
             if (OriginId == 0)
+            {
                 OriginId = null;
+            }
+
             if (EntryPointId == 0)
+            {
                 EntryPointId = null;
+            }
 
             p.InterestPointId = InterestPointId;
             p.OriginId = OriginId;

@@ -1,15 +1,15 @@
+using CmsData;
+using CmsData.Codes;
+using CmsWeb.Lifecycle;
+using CmsWeb.Models;
+using ImageData;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Web.Mvc;
 using System.Xml.Serialization;
-using CmsData;
-using CmsData.Codes;
-using CmsWeb.Models;
-using ImageData;
 using UtilityExtensions;
 using DbUtil = CmsData.DbUtil;
 
@@ -21,6 +21,10 @@ namespace CmsWeb.Areas.Public.Controllers
         public const int ADD_ERROR_EXISTS = 1;
         public const int ADD_ERROR_OTHER = 2;
 
+        public APICheckin2Controller(IRequestManager requestManager) : base(requestManager)
+        {
+        }
+
         private static bool Authenticate(string role = "Checkin")
         {
             return AccountModel.AuthenticateMobile("Checkin").IsValid;
@@ -29,35 +33,52 @@ namespace CmsWeb.Areas.Public.Controllers
         public ActionResult Match(string id, int campus, int thisday, int? page, string kiosk, bool? kioskmode)
         {
             if (!Authenticate())
+            {
                 return Content("not authorized");
+            }
+
             Response.NoCache();
-            DbUtil.Db.SetNoLock();
+            CurrentDatabase.SetNoLock();
             DbUtil.LogActivity("checkin " + id);
 
-            var matches = DbUtil.Db.CheckinMatch(id).ToList();
+            var matches = CurrentDatabase.CheckinMatch(id).ToList();
 
             if (!matches.Any())
+            {
                 return new FamilyResult(0, campus, thisday, 0, false); // not found
+            }
+
             if (matches.Count() == 1)
+            {
                 return new FamilyResult(matches.Single().Familyid.Value, campus, thisday, 0, matches[0].Locked ?? false);
+            }
+
             return new MultipleResult(matches, page);
         }
 
         public ActionResult Find(string id, string building, int? page, string querybit)
         {
             if (!Authenticate())
+            {
                 return Content("not authorized");
+            }
+
             Response.NoCache();
-            DbUtil.Db.SetNoLock();
+            CurrentDatabase.SetNoLock();
             DbUtil.LogActivity("CheckinFind " + building + " " + id);
 
             var m = new CheckInModel();
             var matches = m.Find(id);
 
             if (!matches.Any())
+            {
                 return new FindResult(0, building, querybit);
+            }
+
             if (matches.Count() == 1)
+            {
                 return new FindResult(matches.Single().Familyid.Value, building, querybit);
+            }
 
             return new MultipleResult(matches, page);
         }
@@ -65,9 +86,12 @@ namespace CmsWeb.Areas.Public.Controllers
         public ActionResult Family(int id, int campus, int thisday, string kiosk, bool? kioskmode)
         {
             if (!Authenticate())
+            {
                 return Content("not authorized");
+            }
+
             Response.NoCache();
-            DbUtil.Db.SetNoLock();
+            CurrentDatabase.SetNoLock();
             DbUtil.LogActivity("checkin fam " + id);
             return new FamilyResult(id, campus, thisday, 0, false);
         }
@@ -75,9 +99,12 @@ namespace CmsWeb.Areas.Public.Controllers
         public ActionResult SingleFamily(int id, string building, string querybit)
         {
             if (!Authenticate())
+            {
                 return Content("not authorized");
+            }
+
             Response.NoCache();
-            DbUtil.Db.SetNoLock();
+            CurrentDatabase.SetNoLock();
             DbUtil.LogActivity("checkin fam " + building + " " + id);
             return new FindResult(id, building, querybit);
         }
@@ -85,9 +112,12 @@ namespace CmsWeb.Areas.Public.Controllers
         public ActionResult Class(int id, int thisday)
         {
             if (!Authenticate())
+            {
                 return Content("not authorized");
+            }
+
             Response.NoCache();
-            DbUtil.Db.SetNoLock();
+            CurrentDatabase.SetNoLock();
             DbUtil.LogActivity("checkin class " + id);
             return new ClassResult(id, thisday);
         }
@@ -95,9 +125,12 @@ namespace CmsWeb.Areas.Public.Controllers
         public ActionResult Classes(int id, int campus, int thisday, bool? noagecheck, bool? kioskmode)
         {
             if (!Authenticate())
+            {
                 return Content("not authorized");
+            }
+
             Response.NoCache();
-            DbUtil.Db.SetNoLock();
+            CurrentDatabase.SetNoLock();
             DbUtil.LogActivity("checkin classes " + id);
             return new ClassesResult(id, thisday, campus, noagecheck ?? false, kioskmode ?? false);
         }
@@ -105,9 +138,12 @@ namespace CmsWeb.Areas.Public.Controllers
         public ActionResult NameSearch(string id, int? page)
         {
             if (!Authenticate())
+            {
                 return Content("not authorized");
+            }
+
             Response.NoCache();
-            DbUtil.Db.SetNoLock();
+            CurrentDatabase.SetNoLock();
             DbUtil.LogActivity("checkin namesearch " + id);
             return new NameSearchResult2(id, page ?? 1);
         }
@@ -116,14 +152,17 @@ namespace CmsWeb.Areas.Public.Controllers
         public ActionResult AddPerson(int id, PersonInfo m)
         {
             if (!Authenticate())
+            {
                 return Content("not authorized");
+            }
+
             DbUtil.LogActivity($"checkin AddPerson {m.first} {m.last} ({m.dob})");
 
             var f = id > 0
-                ? DbUtil.Db.Families.Single(fam => fam.FamilyId == id)
+                ? CurrentDatabase.Families.Single(fam => fam.FamilyId == id)
                 : new Family();
 
-            var position = DbUtil.Db.ComputePositionInFamily(m.Birthdate.Age0(), m.marital == 20, id) ?? 10;
+            var position = CurrentDatabase.ComputePositionInFamily(m.Birthdate.Age0(), m.marital == 20, id) ?? 10;
             var p = Person.Add(f, position,
                 null, m.first, m.goesby, m.last, m.Birthdate.ToString2("d"), false, m.gender,
                 OriginCode.Visit, null);
@@ -136,9 +175,12 @@ namespace CmsWeb.Areas.Public.Controllers
         public ActionResult EditPerson(int id, PersonInfo m)
         {
             if (!Authenticate())
+            {
                 return Content("not authorized");
+            }
+
             DbUtil.LogActivity($"checkin EditPerson {m.first} {m.last} ({m.dob})");
-            var p = DbUtil.Db.LoadPersonById(id);
+            var p = CurrentDatabase.LoadPersonById(id);
             UpdatePerson(p, m, false);
             return Content(p.FamilyId.ToString());
         }
@@ -146,7 +188,10 @@ namespace CmsWeb.Areas.Public.Controllers
         private string Trim(string s)
         {
             if (s.HasValue())
+            {
                 return s.Trim();
+            }
+
             return s;
         }
 
@@ -157,7 +202,9 @@ namespace CmsWeb.Areas.Public.Controllers
             var keys = Request.Form.AllKeys.ToList();
 
             if (!m.home.HasValue() && m.cell.HasValue())
+            {
                 m.home = m.cell;
+            }
 
             if (keys.Contains("zip") || keys.Contains("addr"))
             {
@@ -169,13 +216,16 @@ namespace CmsWeb.Areas.Public.Controllers
                     UpdateField(fsb, p.Family, "CityName", result.City);
                     UpdateField(fsb, p.Family, "StateCode", result.State);
                     UpdateField(fsb, p.Family, "ZipCode", result.Zip.GetDigits().Truncate(10));
-                    var rc = DbUtil.Db.FindResCode(result.Zip, null);
+                    var rc = CurrentDatabase.FindResCode(result.Zip, null);
                     UpdateField(fsb, p.Family, "ResCodeId", rc.ToString());
                 }
                 else
                 {
                     if (keys.Contains("addr"))
+                    {
                         UpdateField(fsb, p.Family, "AddressLineOne", m.addr);
+                    }
+
                     UpdateField(fsb, p.Family, "ZipCode", m.zip.Zip5());
                     UpdateField(fsb, p.Family, "CityName", null);
                     UpdateField(fsb, p.Family, "StateCode", null);
@@ -183,77 +233,151 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             if (keys.Contains("home"))
+            {
                 UpdateField(fsb, p.Family, "HomePhone", m.home.GetDigits());
+            }
+
             if (keys.Contains("goesby"))
+            {
                 UpdateField(psb, p, "NickName", Trim(m.goesby));
+            }
+
             if (keys.Contains("first"))
+            {
                 UpdateField(psb, p, "FirstName", Trim(m.first));
+            }
+
             if (keys.Contains("last"))
+            {
                 UpdateField(psb, p, "LastName", Trim(m.last));
+            }
+
             if (keys.Contains("dob") && m.Birthdate.HasValue)
             {
                 if (p.BirthDate != m.Birthdate)
+                {
                     UpdateField(psb, p, "DOB", m.dob);
+                }
             }
             if (keys.Contains("email"))
+            {
                 UpdateField(psb, p, "EmailAddress", Trim(m.email));
+            }
+
             if (keys.Contains("cell"))
+            {
                 UpdateField(psb, p, "CellPhone", m.cell.GetDigits());
+            }
+
             if (keys.Contains("marital"))
+            {
                 UpdateField(psb, p, "MaritalStatusId", m.marital);
+            }
+
             if (keys.Contains("gender"))
+            {
                 UpdateField(psb, p, "GenderId", m.gender);
+            }
 
             var rr = p.GetRecReg();
             if (keys.Contains("allergies"))
+            {
                 if (m.allergies != rr.MedicalDescription)
+                {
                     p.SetRecReg().MedicalDescription = m.allergies;
+                }
+            }
+
             if (keys.Contains("grade"))
+            {
                 if (m.AskGrade)
+                {
                     if (m.grade.ToInt2() != p.Grade)
+                    {
                         p.Grade = m.grade.ToInt2();
+                    }
+                }
+            }
+
             if (m.AskEmFriend)
             {
                 if (keys.Contains("parent"))
+                {
                     if (m.parent != rr.Mname)
+                    {
                         p.SetRecReg().Mname = m.parent;
+                    }
+                }
+
                 if (keys.Contains("emfriend"))
+                {
                     if (m.emfriend != rr.Emcontact)
+                    {
                         p.SetRecReg().Emcontact = m.emfriend;
+                    }
+                }
+
                 if (keys.Contains("emphone"))
+                {
                     if (m.emphone != rr.Emphone)
+                    {
                         p.SetRecReg().Emphone = m.emphone.Truncate(50);
+                    }
+                }
             }
             if (isNew)
             {
                 if (keys.Contains("campusid"))
+                {
                     if (m.campusid > 0)
+                    {
                         UpdateField(psb, p, "CampusId", m.campusid);
+                    }
+                }
             }
             if (m.AskChurch)
+            {
                 if (keys.Contains("activeother"))
+                {
                     if (m.activeother.ToBool() != rr.ActiveInAnotherChurch)
+                    {
                         p.SetRecReg().ActiveInAnotherChurch = m.activeother.ToBool();
-            if (m.AskChurchName)
-                if (keys.Contains("churchname"))
-                    UpdateField(psb, p, "OtherPreviousChurch", Trim(m.churchname));
+                    }
+                }
+            }
 
-            p.LogChanges(DbUtil.Db, psb);
-            p.Family.LogChanges(DbUtil.Db, fsb, p.PeopleId, Util.UserPeopleId ?? 0);
-            DbUtil.Db.SubmitChanges();
-            if (DbUtil.Db.Setting("NotifyCheckinChanges", "true").ToBool() && (psb.Count > 0 || fsb.Count > 0))
+            if (m.AskChurchName)
+            {
+                if (keys.Contains("churchname"))
+                {
+                    UpdateField(psb, p, "OtherPreviousChurch", Trim(m.churchname));
+                }
+            }
+
+            p.LogChanges(CurrentDatabase, psb);
+            p.Family.LogChanges(CurrentDatabase, fsb, p.PeopleId, Util.UserPeopleId ?? 0);
+            CurrentDatabase.SubmitChanges();
+            if (CurrentDatabase.Setting("NotifyCheckinChanges", "true").ToBool() && (psb.Count > 0 || fsb.Count > 0))
             {
                 var sb = new StringBuilder();
                 foreach (var c in psb)
+                {
                     sb.AppendFormat("<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>\n", c.Field, c.Before, c.After);
+                }
+
                 foreach (var c in fsb)
+                {
                     sb.AppendFormat("<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>\n", c.Field, c.Before, c.After);
-                var np = DbUtil.Db.GetNewPeopleManagers();
+                }
+
+                var np = CurrentDatabase.GetNewPeopleManagers();
                 if (np != null)
-                    DbUtil.Db.EmailRedacted(p.FromEmail, np,
+                {
+                    CurrentDatabase.EmailRedacted(p.FromEmail, np,
                         "Basic Person Info Changed during checkin on " + Util.Host, $@"
-<p><a href=""{DbUtil.Db.ServerLink("/Person2/" + p.PeopleId)}"">{Util.UserName} ({p.PeopleId})</a> changed the following information for {p.PreferredName} ({p.LastName}):</p>
+<p><a href=""{CurrentDatabase.ServerLink("/Person2/" + p.PeopleId)}"">{Util.UserName} ({p.PeopleId})</a> changed the following information for {p.PreferredName} ({p.LastName}):</p>
 <table>{sb}</table>");
+                }
             }
         }
 
@@ -284,13 +408,13 @@ namespace CmsWeb.Areas.Public.Controllers
 #endif
             DbUtil.LogActivity($"checkin {AccountModel.UserName2} authenticated");
 
-            var list = (from c in DbUtil.Db.Campus
+            var list = (from c in CurrentDatabase.Campus
                         where c.Organizations.Any(o => o.CanSelfCheckin == true)
                         orderby c.Id
                         select new CampusItem
                         {
                             Campus = c,
-                            password = DbUtil.Db.Setting("kioskpassword" + c.Id, "kio.")
+                            password = CurrentDatabase.Setting("kioskpassword" + c.Id, "kio.")
                         }).ToList();
 
             if (list.Count > 0)
@@ -298,7 +422,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 list.Insert(0, new CampusItem
                 {
                     Campus = new Campu { Id = 0, Description = "All Campuses" },
-                    password = DbUtil.Db.Setting("kioskpassword" + 0, "kio.")
+                    password = CurrentDatabase.Setting("kioskpassword" + 0, "kio.")
                 });
             }
 
@@ -309,7 +433,9 @@ namespace CmsWeb.Areas.Public.Controllers
         public ContentResult RecordAttend(int PeopleId, int OrgId, bool Present, int thisday, string kiosk)
         {
             if (!Authenticate())
+            {
                 return Content("not authorized");
+            }
 
             DbUtil.LogActivity($"checkin {PeopleId}, {OrgId}, {(Present ? "attend0" : "unattend0")}");
             var m = new CheckInModel();
@@ -323,21 +449,27 @@ namespace CmsWeb.Areas.Public.Controllers
         public ContentResult RecordAttend2(int PeopleId, int OrgId, bool Present, string hour, string kiosk)
         {
             if (!Authenticate())
+            {
                 return Content("not authorized");
-            
+            }
+
             DbUtil.LogActivity($"checkin {PeopleId}, {OrgId}, {(Present ? "attend" : "unattend")}");
             DateTime dt;
-            if(Util.IsCultureUS())
+            if (Util.IsCultureUS())
             {
-                if(!hour.DateTryParse(out dt))
+                if (!hour.DateTryParse(out dt))
+                {
                     return Content("date not parsed");
+                }
             }
             else
             {
                 if (!hour.DateTryParseUS(out dt))
+                {
                     return Content("date not parsed");
+                }
             }
-            Attend.RecordAttend(DbUtil.Db, PeopleId, OrgId, Present, dt);
+            Attend.RecordAttend(CurrentDatabase, PeopleId, OrgId, Present, dt);
             var r = new ContentResult();
             r.Content = "success";
             return r;
@@ -347,7 +479,10 @@ namespace CmsWeb.Areas.Public.Controllers
         public ContentResult Membership(int PeopleId, int OrgId, bool Member)
         {
             if (!Authenticate())
+            {
                 return Content("not authorized");
+            }
+
             DbUtil.LogActivity($"checkin {PeopleId}, {OrgId}, {(Member ? "join" : "unjoin")}");
             var m = new CheckInModel();
             m.JoinUnJoinOrg(PeopleId, OrgId, Member);
@@ -369,7 +504,7 @@ namespace CmsWeb.Areas.Public.Controllers
         public JsonResult PostCheckIn(int id, string KeyCode)
         {
             Session["CheckInOrgId"] = id;
-            var q = from kc in DbUtil.Db.CardIdentifiers
+            var q = from kc in CurrentDatabase.CardIdentifiers
                     where KeyCode == kc.Id
                     select kc.PeopleId;
             var pid = q.SingleOrDefault();
@@ -382,8 +517,8 @@ namespace CmsWeb.Areas.Public.Controllers
                     PeopleId = pid
                     //KeyCode = KeyCode
                 };
-                DbUtil.Db.CheckInTimes.InsertOnSubmit(ck);
-                DbUtil.Db.SubmitChanges();
+                CurrentDatabase.CheckInTimes.InsertOnSubmit(ck);
+                CurrentDatabase.SubmitChanges();
             }
             return Json(new { pid });
         }
@@ -392,21 +527,27 @@ namespace CmsWeb.Areas.Public.Controllers
         public ContentResult NewKeyCard(int pid, string KeyCode)
         {
             if (!Authenticate())
+            {
                 return Content("not authorized");
-            var p = DbUtil.Db.LoadPersonById(pid);
+            }
+
+            var p = CurrentDatabase.LoadPersonById(pid);
             if (p == null)
+            {
                 return Content("No person to associate card with");
-            var q = from kc in DbUtil.Db.CardIdentifiers
+            }
+
+            var q = from kc in CurrentDatabase.CardIdentifiers
                     where KeyCode == kc.Id
                     select kc;
             var card = q.SingleOrDefault();
             if (card == null)
             {
                 card = new CardIdentifier { Id = KeyCode };
-                DbUtil.Db.CardIdentifiers.InsertOnSubmit(card);
+                CurrentDatabase.CardIdentifiers.InsertOnSubmit(card);
             }
             card.PeopleId = pid;
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
             return Content("Card Associated");
         }
 
@@ -414,25 +555,28 @@ namespace CmsWeb.Areas.Public.Controllers
         public ContentResult Edit(string id, string value)
         {
             if (!Authenticate())
+            {
                 return Content("not authorized");
+            }
+
             var a = id.Split('.');
             var c = new ContentResult();
             c.Content = value;
             var pid = a[1].ToInt();
-            var p = DbUtil.Db.People.Single(pp => pp.PeopleId == pid);
+            var p = CurrentDatabase.People.Single(pp => pp.PeopleId == pid);
             switch (a[0][0])
             {
                 case 's':
-                p.SchoolOther = value;
-                break;
+                    p.SchoolOther = value;
+                    break;
                 case 'y':
-                p.Grade = value.ToInt();
-                break;
+                    p.Grade = value.ToInt();
+                    break;
                 case 'n':
-                p.CheckInNotes = value;
-                break;
+                    p.CheckInNotes = value;
+                    break;
             }
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
             return c;
         }
 
@@ -440,14 +584,19 @@ namespace CmsWeb.Areas.Public.Controllers
         public ContentResult UploadImage(int id)
         {
             if (!AccountModel.AuthenticateMobile().IsValid)
+            {
                 return Content("not authorized");
+            }
             //		    if (!User.IsInRole("Edit") && !User.IsInRole("Checkin"))
             //				return Content("not authorized");
 
             DbUtil.LogActivity("checkin uploadpic " + id);
-            var person = DbUtil.Db.People.Single(pp => pp.PeopleId == id);
+            var person = CurrentDatabase.People.Single(pp => pp.PeopleId == id);
             if (person.Picture == null)
+            {
                 person.Picture = new Picture();
+            }
+
             var bits = new byte[Request.InputStream.Length];
             Request.InputStream.Read(bits, 0, bits.Length);
 
@@ -458,16 +607,19 @@ namespace CmsWeb.Areas.Public.Controllers
             p.SmallId = Image.NewImageFromBits(bits, 120, 120).Id;
             p.MediumId = Image.NewImageFromBits(bits, 320, 400).Id;
             p.LargeId = Image.NewImageFromBits(bits).Id;
-            person.LogPictureUpload(DbUtil.Db, Util.UserPeopleId ?? 1);
-            DbUtil.Db.SubmitChanges();
+            person.LogPictureUpload(CurrentDatabase, Util.UserPeopleId ?? 1);
+            CurrentDatabase.SubmitChanges();
             return Content("done");
         }
 
         public ActionResult FetchImage(int id)
         {
             if (!Authenticate())
+            {
                 return Content("not authorized");
-            var person = DbUtil.Db.People.Single(pp => pp.PeopleId == id);
+            }
+
+            var person = CurrentDatabase.People.Single(pp => pp.PeopleId == id);
             if (person.PictureId != null)
             {
                 DbUtil.LogActivity("checkin picture " + id);
@@ -478,7 +630,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
         public ActionResult CheckInList()
         {
-            var m = from t in DbUtil.Db.CheckInTimes
+            var m = from t in CurrentDatabase.CheckInTimes
                     orderby t.CheckInTimeX descending
                     select t;
             return View(m.Take(200));
@@ -488,12 +640,15 @@ namespace CmsWeb.Areas.Public.Controllers
         public ActionResult UnLockFamily(int fid)
         {
             if (!Authenticate())
+            {
                 return Content("not authorized");
-            var lockf = DbUtil.Db.FamilyCheckinLocks.SingleOrDefault(f => f.FamilyId == fid);
+            }
+
+            var lockf = CurrentDatabase.FamilyCheckinLocks.SingleOrDefault(f => f.FamilyId == fid);
             if (lockf != null)
             {
                 lockf.Locked = false;
-                DbUtil.Db.SubmitChanges();
+                CurrentDatabase.SubmitChanges();
             }
             return new EmptyResult();
         }
@@ -502,18 +657,25 @@ namespace CmsWeb.Areas.Public.Controllers
         public ActionResult ReportPrinterProblem(string kiosk, int campusid)
         {
             if (!Authenticate())
+            {
                 return Content("not authorized");
+            }
+
             var setting = "KioskNotify";
             if (campusid > 0)
+            {
                 setting += campusid;
-            var address = DbUtil.Db.Setting(setting, null);
+            }
+
+            var address = CurrentDatabase.Setting(setting, null);
             if (address.HasValue())
             {
                 try
                 {
 
                     var msg = kiosk + " at " + DateTime.Now.ToShortTimeString();
-                    DbUtil.Db.SendEmail(Util.TryGetMailAddress(DbUtil.AdminMail),
+                    //todo: check logic
+                    CurrentDatabase.SendEmail(Util.TryGetMailAddress(DbUtil.AdminMail),
                         "Printer Problem", msg, Util.ToMailAddressList(address));
                 }
                 catch (Exception)
@@ -528,7 +690,9 @@ namespace CmsWeb.Areas.Public.Controllers
         public ContentResult UploadPrintJob(string id)
         {
             if (!Authenticate())
+            {
                 return Content("not authorized");
+            }
 
             var reader = new StreamReader(Request.InputStream);
             var job = reader.ReadToEnd();
@@ -541,7 +705,10 @@ namespace CmsWeb.Areas.Public.Controllers
         public ActionResult FetchPrintJobs(string id)
         {
             if (!Authenticate())
+            {
                 return Content("not authorized");
+            }
+
             var m = new CheckInModel();
             var b = m.GetNextPrintJobs(id);
             return Content(b, "text/xml");
@@ -550,9 +717,12 @@ namespace CmsWeb.Areas.Public.Controllers
         public ActionResult FetchBuildingActivities(string id)
         {
             if (!Authenticate())
+            {
                 return Content("not authorized");
+            }
+
             var m = new CheckInModel();
-            return Content(DbUtil.Db.Content($"BuildingCheckin-{id}.xml",
+            return Content(CurrentDatabase.Content($"BuildingCheckin-{id}.xml",
                 "<BuildingActivity/>"), "text/xml");
         }
 
@@ -563,7 +733,7 @@ namespace CmsWeb.Areas.Public.Controllers
             var dtStart = dt.Date;
             var dtEnd = dt.Date.AddHours(24);
 
-            var count = (from e in DbUtil.Db.CheckInTimes
+            var count = (from e in CurrentDatabase.CheckInTimes
                          where e.CheckInTimeX >= dtStart
                          where e.CheckInTimeX < dtEnd
                          where e.GuestOfPersonID == id.ToInt()
@@ -578,7 +748,7 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             var error = ADD_ERROR_NONE;
 
-            var card = (from e in DbUtil.Db.CardIdentifiers
+            var card = (from e in CurrentDatabase.CardIdentifiers
                         where e.Id == cardid
                         select e).FirstOrDefault();
 
@@ -588,13 +758,13 @@ namespace CmsWeb.Areas.Public.Controllers
                 ci.Id = cardid;
                 ci.PeopleId = personid;
 
-                DbUtil.Db.CardIdentifiers.InsertOnSubmit(ci);
-                DbUtil.Db.SubmitChanges();
+                CurrentDatabase.CardIdentifiers.InsertOnSubmit(ci);
+                CurrentDatabase.SubmitChanges();
             }
             else if (overwrite)
             {
                 card.PeopleId = personid;
-                DbUtil.Db.SubmitChanges();
+                CurrentDatabase.SubmitChanges();
             }
             else
             {
@@ -609,10 +779,13 @@ namespace CmsWeb.Areas.Public.Controllers
         [ValidateInput(false)]
         public ContentResult FetchLabelFormat(string sName, int iSize)
         {
-            if (!Authenticate()) return Content("");
+            if (!Authenticate())
+            {
+                return Content("");
+            }
 
             // Size -30 and +30 is because some labels are a few tenths of inches different in the driver
-            var label = (from e in DbUtil.Db.LabelFormats
+            var label = (from e in CurrentDatabase.LabelFormats
                          where e.Name == sName
                          where e.Size >= (iSize - 49) && e.Size <= (iSize + 50)
                          select e).FirstOrDefault();
@@ -628,9 +801,12 @@ namespace CmsWeb.Areas.Public.Controllers
         [ValidateInput(false)]
         public ContentResult SaveLabelFormat(string sName, int iSize, string sFormat)
         {
-            if (!Authenticate()) return Content("2");
+            if (!Authenticate())
+            {
+                return Content("2");
+            }
 
-            var label = (from e in DbUtil.Db.LabelFormats
+            var label = (from e in CurrentDatabase.LabelFormats
                          where e.Name == sName
                          where e.Size == iSize
                          select e).FirstOrDefault();
@@ -641,13 +817,13 @@ namespace CmsWeb.Areas.Public.Controllers
                 lfNew.Name = sName;
                 lfNew.Size = iSize;
                 lfNew.Format = sFormat;
-                DbUtil.Db.LabelFormats.InsertOnSubmit(lfNew);
-                DbUtil.Db.SubmitChanges();
+                CurrentDatabase.LabelFormats.InsertOnSubmit(lfNew);
+                CurrentDatabase.SubmitChanges();
             }
             else
             {
                 label.Format = sFormat;
-                DbUtil.Db.SubmitChanges();
+                CurrentDatabase.SubmitChanges();
             }
 
             return Content("0");
@@ -655,10 +831,14 @@ namespace CmsWeb.Areas.Public.Controllers
 
         public ContentResult FetchLabelList()
         {
-            if (!Authenticate()) return Content("Not Authorized");
+            if (!Authenticate())
+            {
+                return Content("Not Authorized");
+            }
+
             Response.NoCache();
 
-            var list = from e in DbUtil.Db.LabelFormats
+            var list = from e in CurrentDatabase.LabelFormats
                        orderby e.Size, e.Name
                        select string.Concat(e.Name, "~", e.Size);
 
@@ -675,13 +855,15 @@ namespace CmsWeb.Areas.Public.Controllers
         public ContentResult BuildingCheckin(int id, string location, int accesstype, int? guestof)
         {
             if (!Authenticate())
+            {
                 return Content("not authorized");
+            }
 
             CheckInTime g = null;
 
             if (guestof != null)
             {
-                g = (from e in DbUtil.Db.CheckInTimes
+                g = (from e in CurrentDatabase.CheckInTimes
                      where e.Id == guestof
                      select e).FirstOrDefault();
             }
@@ -690,12 +872,14 @@ namespace CmsWeb.Areas.Public.Controllers
             var s = reader.ReadToEnd();
 
             if (!s.HasValue())
+            {
                 s = "<Activities />";
+            }
 
             var xs = new XmlSerializer(typeof(List<Activity>), new XmlRootAttribute("Activities"));
             var activities = xs.Deserialize(new StringReader(s)) as List<Activity>;
 
-            var last = from e in DbUtil.Db.CheckInTimes
+            var last = from e in CurrentDatabase.CheckInTimes
                        where e.PeopleId == id
                        where e.CheckInTimeX <= DateTime.Now
                        where e.CheckInTimeX >= DateTime.Now.AddHours(-1.5)
@@ -721,12 +905,16 @@ namespace CmsWeb.Areas.Public.Controllers
                 ac = last.Single();
 
                 foreach (var e in ac.CheckInActivities)
-                    DbUtil.Db.CheckInActivities.DeleteOnSubmit(e);
+                {
+                    CurrentDatabase.CheckInActivities.DeleteOnSubmit(e);
+                }
 
-                DbUtil.Db.SubmitChanges();
+                CurrentDatabase.SubmitChanges();
 
                 foreach (var a in activities)
+                {
                     ac.CheckInActivities.Add(new CheckInActivity { Activity = a.Name });
+                }
 
                 ac.AccessTypeID = accesstype;
             }
@@ -743,18 +931,22 @@ namespace CmsWeb.Areas.Public.Controllers
                 };
 
                 foreach (var a in activities)
+                {
                     ac.CheckInActivities.Add(new CheckInActivity { Activity = a.Name });
+                }
 
-                DbUtil.Db.CheckInTimes.InsertOnSubmit(ac);
+                CurrentDatabase.CheckInTimes.InsertOnSubmit(ac);
             }
 
 
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
 
             foreach (var a in activities)
             {
                 if (a.org > 0)
-                    Attend.RecordAttend(DbUtil.Db, id, a.org, true, DateTime.Today);
+                {
+                    Attend.RecordAttend(CurrentDatabase, id, a.org, true, DateTime.Today);
+                }
             }
 
             return Content(ac.Id.ToString());
@@ -765,12 +957,14 @@ namespace CmsWeb.Areas.Public.Controllers
         public ContentResult BuildingUnCheckin(int id)
         {
             if (!Authenticate())
+            {
                 return Content("not authorized");
+            }
 
-            var ct = DbUtil.Db.CheckInTimes.SingleOrDefault(cc => cc.Id == id);
-            DbUtil.Db.CheckInActivities.DeleteAllOnSubmit(ct.CheckInActivities);
-            DbUtil.Db.CheckInTimes.DeleteOnSubmit(ct);
-            DbUtil.Db.SubmitChanges();
+            var ct = CurrentDatabase.CheckInTimes.SingleOrDefault(cc => cc.Id == id);
+            CurrentDatabase.CheckInActivities.DeleteAllOnSubmit(ct.CheckInActivities);
+            CurrentDatabase.CheckInTimes.DeleteOnSubmit(ct);
+            CurrentDatabase.SubmitChanges();
 
             return Content("done");
         }

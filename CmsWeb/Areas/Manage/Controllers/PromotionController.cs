@@ -1,17 +1,16 @@
-using System;
-using System.Data;
-using System.Web.Mvc;
-using CmsData;
+using CmsWeb.Lifecycle;
 using CmsWeb.Models;
-using OfficeOpenXml;
-using OfficeOpenXml.Style;
-using OfficeOpenXml.Table;
+using System.Web.Mvc;
 
 namespace CmsWeb.Areas.Manage.Controllers
 {
-    [RouteArea("Manage", AreaPrefix= "Promotion"), Route("{action=index}/{id?}")]
+    [RouteArea("Manage", AreaPrefix = "Promotion"), Route("{action=index}/{id?}")]
     public class PromotionController : CmsStaffController
     {
+        public PromotionController(IRequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [HttpGet]
         public ActionResult Index()
         {

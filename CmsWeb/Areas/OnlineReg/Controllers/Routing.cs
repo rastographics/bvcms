@@ -60,7 +60,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             // ready to answer questions, make sure registration is ok to go
             m.Log("Authorized");
             if (!m.SupportMissionTrip)
-                p.IsFilled = p.org.RegLimitCount(DbUtil.Db) >= p.org.Limit;
+                p.IsFilled = p.org.RegLimitCount(CurrentDatabase) >= p.org.Limit;
             if (p.IsFilled)
             {
                 m.Log("Closed");

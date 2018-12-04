@@ -786,7 +786,7 @@ AND a.PeopleId = {2}
 
             if (om.OrganizationId != tom.OrganizationId)
                 tom.Moved = true;
-            om.Drop(db, skipTriggerProcessing: true);
+            om.Drop(db, skipTriggerProcessing: true);            
             db.SubmitChanges();
         }
     }

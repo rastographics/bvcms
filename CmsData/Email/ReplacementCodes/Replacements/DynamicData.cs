@@ -13,7 +13,7 @@ namespace CmsData
         {
             var match = PythonDataRe.Match(code);
             var name = match.Groups["name"].Value;
-            return pythonData[name];
+            return pythonData[name].ToString();
         }
     }
 }

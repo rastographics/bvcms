@@ -1,3 +1,6 @@
+using CmsData;
+using CmsData.Codes;
+using CmsWeb.Code;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -7,9 +10,6 @@ using System.Linq;
 using System.Threading;
 using System.Web.Hosting;
 using System.Web.Mvc;
-using CmsData;
-using CmsData.Codes;
-using CmsWeb.Code;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Models
@@ -89,8 +89,8 @@ namespace CmsWeb.Areas.Dialog.Models
             LongRunningOperation lop = null;
             foreach (var pid in model.pids)
             {
-                db.Dispose();
-                db = DbUtil.Create(model.Host);
+                //DbUtil.Db.Dispose();
+                //db = DbUtil.Create(model.Host);
                 switch (model.filter.GroupSelect)
                 {
                     case GroupSelectCode.Member:
@@ -124,7 +124,9 @@ namespace CmsWeb.Areas.Dialog.Models
         public void Validate(ModelStateDictionary modelState)
         {
             if (Tag != null && Tag.Value == "0") // They did not choose a tag
+            {
                 modelState.AddModelError("Tag", "Must choose a tag");
+            }
         }
 
         public bool ShowCount(CMSDataContext db)

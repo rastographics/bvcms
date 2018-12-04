@@ -1,15 +1,20 @@
+using CmsWeb.Areas.Dialog.Models;
+using CmsWeb.Lifecycle;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
-using CmsWeb.Areas.Dialog.Models;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Controllers
 {
     // todo: use bootstrap
-    [RouteArea("Dialog", AreaPrefix= "SearchOrgs"), Route("{action}/{id?}")]
+    [RouteArea("Dialog", AreaPrefix = "SearchOrgs"), Route("{action}/{id?}")]
     public class SearchOrgsController : CmsStaffController
     {
+        public SearchOrgsController(IRequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [HttpGet, Route("~/SearchOrgs/{id:int}")]
         public ActionResult Index(int id, bool? singlemode)
         {

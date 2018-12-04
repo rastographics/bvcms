@@ -14,8 +14,8 @@ namespace CmsWeb.Models
     {
         public static EpplusResult FetchExcelLibraryList(Guid queryid)
         {
-            var Db = DbUtil.Db;
-            var query = Db.PeopleQuery(queryid);
+            //var Db = Db;
+            var query = DbUtil.Db.PeopleQuery(queryid);
             var q = from p in query
                     let om = p.OrganizationMembers.SingleOrDefault(om => om.OrganizationId == p.BibleFellowshipClassId)
                     select new
@@ -40,8 +40,8 @@ namespace CmsWeb.Models
         }
         public static DataTable FetchExcelList(Guid queryid, int maximumRows, bool useMailFlags)
         {
-            var Db = DbUtil.Db;
-            var query = Db.PeopleQuery(queryid);
+            //var Db = Db;
+            var query = DbUtil.Db.PeopleQuery(queryid);
             if (useMailFlags)
             {
                 query = MailingController.FilterMailFlags(query);
@@ -196,7 +196,9 @@ namespace CmsWeb.Models
                          Count = r.Count ?? 0,
                          Amount = r.Amount ?? 0m,
                          Pledged = r.PledgeAmount ?? 0m,
-                         Name = r.HeadName,
+                         r.Email,
+                         FirstName = r.Head_FirstName,
+                         LastName = r.Head_LastName,
                          Spouse = r.SpouseName ?? "",
                          MainFellowship = r.MainFellowship ?? "",
                          MemberStatus = r.MemberStatus ?? "",
@@ -277,13 +279,13 @@ namespace CmsWeb.Models
         }
         public static EpplusResult FetchExcelListFamily(Guid queryid)
         {
-            var Db = DbUtil.Db;
-            var query = Db.PeopleQuery(queryid);
+            //var Db = Db;
+            var query = DbUtil.Db.PeopleQuery(queryid);
 
-            var q = from f in Db.Families
+            var q = from f in DbUtil.Db.Families
                     where query.Any(ff => ff.FamilyId == f.FamilyId)
-                    let p = Db.People.Single(pp => pp.PeopleId == f.HeadOfHouseholdId)
-                    let spouse = Db.People.SingleOrDefault(sp => sp.PeopleId == f.HeadOfHouseholdSpouseId)
+                    let p = DbUtil.Db.People.Single(pp => pp.PeopleId == f.HeadOfHouseholdId)
+                    let spouse = DbUtil.Db.People.SingleOrDefault(sp => sp.PeopleId == f.HeadOfHouseholdSpouseId)
                     let children = from pp in f.People
                                    where pp.PeopleId != f.HeadOfHouseholdId
                                    where pp.DeceasedDate == null
@@ -313,10 +315,10 @@ namespace CmsWeb.Models
         }
         public static EpplusResult FetchExcelListFamily2(Guid queryid)
         {
-            var Db = DbUtil.Db;
-            var query = Db.PeopleQuery(queryid);
+            //var Db = Db;
+            var query = DbUtil.Db.PeopleQuery(queryid);
 
-            var q = from p in Db.People
+            var q = from p in DbUtil.Db.People
                     where query.Any(ff => ff.FamilyId == p.FamilyId)
                     orderby p.LastName, p.FamilyId, p.FirstName
                     where p.DeceasedDate == null
@@ -355,11 +357,11 @@ namespace CmsWeb.Models
 
         public static IEnumerable<ExcelPic> FetchExcelListPics(Guid queryid, int maximumRows)
         {
-            var Db = DbUtil.Db;
-            var query = Db.PeopleQuery(queryid);
+            //var Db = Db;
+            var query = DbUtil.Db.PeopleQuery(queryid);
             var q = from p in query
                     let om = p.OrganizationMembers.SingleOrDefault(om => om.OrganizationId == p.BibleFellowshipClassId)
-                    let spouse = Db.People.Where(pp => pp.PeopleId == p.SpouseId).Select(pp => pp.PreferredName).SingleOrDefault()
+                    let spouse = DbUtil.Db.People.Where(pp => pp.PeopleId == p.SpouseId).Select(pp => pp.PreferredName).SingleOrDefault()
                     select new ExcelPic
                     {
                         PeopleId = p.PeopleId,

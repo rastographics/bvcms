@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.Dynamic;
 using System.IO;
@@ -72,6 +73,13 @@ namespace CmsData
         public DynamicData DynamicData(PythonDictionary dict)
         {
             return new DynamicData(dict);
+        }
+        /// <summary>
+        /// Creates a new DynamicData instance populated with a previous instance
+        /// </summary>
+        public DynamicData DynamicData(DynamicData dd)
+        {
+            return new DynamicData(dd);
         }
 
         public void DictionaryAdd(string key, string value)
@@ -232,6 +240,11 @@ namespace CmsData
         {
             var json = data.ToString();
             return FormatJson(json);
+        }
+        public string FormatJson(Dictionary<string, object> data)
+        {
+            var s = JsonConvert.SerializeObject(data, Formatting.Indented);
+            return s.Replace("\r\n", "\n");
         }
 
         public string Md5Hash(string s)
@@ -428,5 +441,6 @@ DELETE dbo.Tag WHERE TypeId = 101 AND Name LIKE @namelike
         {
             return string.Join(",", APIContributionSearchModel.GetCustomStatementsList(db, name));
         }
+        
     }
 }

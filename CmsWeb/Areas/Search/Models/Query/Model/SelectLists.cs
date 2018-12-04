@@ -186,12 +186,12 @@ namespace CmsWeb.Areas.Search.Models
         {
             if (!ScheduleVisible)
                 return null;
-            var q = from o in Db.Organizations
+            var q = from o in DbUtil.Db.Organizations
                     let sc = o.OrgSchedules.FirstOrDefault() // SCHED
                     where sc != null && sc.MeetingTime != null
                     group o by new { ScheduleId = sc.ScheduleId ?? 10800, sc.MeetingTime } into g
                     orderby g.Key.ScheduleId
-                    let text = Db.GetScheduleDesc(g.Key.MeetingTime)
+                    let text = DbUtil.Db.GetScheduleDesc(g.Key.MeetingTime)
                     select new SelectListItem
                     {
                         Value = $"{g.Key.ScheduleId},{text}",
@@ -208,7 +208,7 @@ namespace CmsWeb.Areas.Search.Models
             if (!CampusVisible && fieldMap.DataSource != "Campuses") 
                 return null;
 
-            var q = from o in Db.Organizations
+            var q = from o in DbUtil.Db.Organizations
                 where o.CampusId != null
                 group o by o.CampusId into g
                 orderby g.Key
@@ -228,7 +228,7 @@ namespace CmsWeb.Areas.Search.Models
         {
             if (!OrgTypeVisible)
                 return null;
-            var q = from t in Db.OrganizationTypes
+            var q = from t in DbUtil.Db.OrganizationTypes
                     orderby t.Code
                     let orgtypeid = t.Id.ToString()
                     select new SelectListItem
@@ -245,7 +245,7 @@ namespace CmsWeb.Areas.Search.Models
         {
             if (!ProgramVisible)
                 return null;
-            var q = from t in Db.Programs
+            var q = from t in DbUtil.Db.Programs
                     orderby t.Name
                     select new SelectListItem
                     {
@@ -307,7 +307,7 @@ namespace CmsWeb.Areas.Search.Models
                 var lines = SavedQuery.Split(":".ToCharArray(), 2);
                 Guid.TryParse(lines[0], out g);
             }
-            var q1 = from qb in Db.Queries
+            var q1 = from qb in DbUtil.Db.Queries
                      where qb.Owner == uname
                      orderby qb.Name
                      select new SelectListItem
@@ -316,7 +316,7 @@ namespace CmsWeb.Areas.Search.Models
                          Selected = qb.QueryId == g,
                          Text = qb.Name
                      };
-            var q2 = from qb in Db.Queries
+            var q2 = from qb in DbUtil.Db.Queries
                      where qb.Owner != uname && qb.Ispublic
                      orderby qb.Owner, qb.Name
                      select new SelectListItem
@@ -332,7 +332,7 @@ namespace CmsWeb.Areas.Search.Models
         {
             if (!MinistryVisible)
                 return null;
-            var q = from t in Db.Ministries
+            var q = from t in DbUtil.Db.Ministries
                     orderby t.MinistryDescription
                     select new SelectListItem
                     {
@@ -351,7 +351,7 @@ namespace CmsWeb.Areas.Search.Models
         }
         public IEnumerable<SelectListItem> StatusIds()
         {
-            var q = from s in Db.OrganizationStatuses
+            var q = from s in DbUtil.Db.OrganizationStatuses
                     select new SelectListItem
                     {
                         Value = $"{s.Id},{s.Description}",

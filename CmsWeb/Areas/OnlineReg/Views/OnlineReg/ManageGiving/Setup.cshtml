@@ -4,13 +4,14 @@
 @using CmsWeb
 @using UtilityExtensions
 @{
-  ViewBag.Title = "Online Registration";
-  Layout = "~/Views/Shared/onlinereg2.cshtml";
-  var funame = Html.NameFor2(m => m.FundItem);
-  decimal? tot = 0;
-  var funds = CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel.FundList();
-  var specialFunds = CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel.SpecialFundList();
-  var debitcredit = DbUtil.Db.Setting("DebitCreditLabel", "Debit/Credit Card");
+    ViewBag.Title = "Online Registration";
+    Layout = "~/Views/Shared/onlinereg2.cshtml";
+    var funame = Html.NameFor2(m => m.FundItem);
+    decimal? tot = 0;
+    var peopleId = Model.person.PeopleId;
+    var funds = CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel.FundListByPeopleId(Model.person.PeopleId);
+    var specialFunds = CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel.SpecialFundList();
+    var debitcredit = DbUtil.Db.Setting("DebitCreditLabel", "Debit/Credit Card");
 }
 @section head
 {

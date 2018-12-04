@@ -1,10 +1,10 @@
+using CmsData;
+using CmsData.API;
+using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
 using System.Linq;
-using CmsData;
-using CmsData.API;
-using OfficeOpenXml;
 using UtilityExtensions;
 
 namespace CmsWeb.Models
@@ -38,6 +38,17 @@ namespace CmsWeb.Models
             Host = host;
             PeopleSheetName = "People";
         }
+
+        public UploadPeopleModel(CMSDataContext db, string host, int peopleId, bool noupdate, bool testing = false)
+        {
+            Db2 = db;
+
+            PeopleId = peopleId;
+            Noupdate = noupdate;
+            Testing = testing;
+            Host = host;
+            PeopleSheetName = "People";
+        }
         public virtual bool DoUpload(ExcelPackage pkg)
         {
             var rt = Db2.UploadPeopleRuns.OrderByDescending(mm => mm.Id).First();
@@ -52,7 +63,7 @@ namespace CmsWeb.Models
         }
         internal void UploadPeople(UploadPeopleRun rt, ExcelWorksheet ws)
         {
-            var db = DbUtil.Create(Host);
+            //var db = DbUtil.Create(Host);
 
             Extravaluenames = (from name in Names
                                where !Standardnames.Contains(name.Key, StringComparer.OrdinalIgnoreCase)
@@ -70,27 +81,37 @@ namespace CmsWeb.Models
                                   where campus.Key.HasValue()
                                   select campus.Key).ToList();
                 var dbc = from c in campuslist
-                          join cp in db.Campus on c equals cp.Description into j
+                          join cp in Db2.Campus on c equals cp.Description into j
                           from cp in j.DefaultIfEmpty()
                           select new { cp, c };
                 var clist = dbc.ToList();
                 if (clist.Count > 0)
                 {
                     var maxcampusid = 0;
-                    if (db.Campus.Any())
-                        maxcampusid = db.Campus.Max(c => c.Id);
+                    if (Db2.Campus.Any())
+                    {
+                        maxcampusid = Db2.Campus.Max(c => c.Id);
+                    }
+
                     foreach (var i in clist)
+                    {
                         if (i.cp == null)
                         {
                             var cp = new Campu { Description = i.c, Id = ++maxcampusid };
                             if (!Testing)
-                                db.Campus.InsertOnSubmit(cp);
+                            {
+                                Db2.Campus.InsertOnSubmit(cp);
+                            }
                         }
+                    }
                 }
             }
             if (!Testing)
-                db.SubmitChanges();
-            Campuses = db.Campus.ToDictionary(cp => cp.Description, cp => cp.Id);
+            {
+                Db2.SubmitChanges();
+            }
+
+            Campuses = Db2.Campus.ToDictionary(cp => cp.Description, cp => cp.Id);
 
             var q = (from li in Datalist
                      group li by li.FamilyId
@@ -108,32 +129,41 @@ namespace CmsWeb.Models
                 {
                     if (!Testing)
                     {
-                        db.SubmitChanges();
-                        db.Dispose();
-                        db = DbUtil.Create(Host);
+                        Db2.SubmitChanges();
+                        //DbUtil.Db.Dispose();
+                        //db = DbUtil.Create(Host);
                     }
 
                     Family f = null;
                     var potentialdup = false;
-                    int? pid = FindRecord(db, a, ref potentialdup);
+                    int? pid = FindRecord(Db2, a, ref potentialdup);
                     if (pid == -1) // no data: no first or last name
+                    {
                         continue;
+                    }
+
                     var p = pid.HasValue
-                        ? UpdateRecord(db, pid.Value, a)
-                        : NewRecord(db, ref f, a, prevpid, potentialdup);
+                        ? UpdateRecord(Db2, pid.Value, a)
+                        : NewRecord(Db2, ref f, a, prevpid, potentialdup);
                     prevpid = p.PeopleId;
 
                     if (Recregnames.Any())
+                    {
                         SetRecRegs(p, a);
+                    }
 
                     if (Extravaluenames.Any())
-                        ProcessExtraValues(db, p, a);
+                    {
+                        ProcessExtraValues(Db2, p, a);
+                    }
 
                     rt.Processed++;
                     Db2.SubmitChanges();
                 }
                 if (!Testing)
-                    db.SubmitChanges();
+                {
+                    Db2.SubmitChanges();
+                }
             }
         }
         internal Person UpdateRecord(CMSDataContext db, int pid, dynamic a)
@@ -162,7 +192,9 @@ namespace CmsWeb.Models
             UpdateField(p, "MaritalStatusId", Marital(a.Marital));
             UpdateField(p, "PositionInFamilyId", Position(a.Position));
             if (!Testing)
+            {
                 UpdateField(p, "CampusId", Campus(a.Campus));
+            }
 
             UpdateField(p.Family, "AddressLineOne", GetString(a.Address));
             UpdateField(p.Family, "AddressLineTwo", GetString(a.Address2));
@@ -184,8 +216,12 @@ namespace CmsWeb.Models
         internal Person NewRecord(CMSDataContext db, ref Family f, dynamic a, int prevpid, bool potentialdup)
         {
             if (!Testing)
+            {
                 if (prevpid > 0)
+                {
                     f = db.LoadFamilyByPersonId(prevpid);
+                }
+            }
 
             if (f == null)
             {
@@ -200,7 +236,9 @@ namespace CmsWeb.Models
                 };
                 db.Families.InsertOnSubmit(f);
                 if (!Testing)
+                {
                     db.SubmitChanges();
+                }
             }
 
             DateTime? dob = GetDate(a.Birthday);
@@ -245,7 +283,10 @@ namespace CmsWeb.Models
                 p.CampusId = Campus(a.Campus);
                 p.AddEditExtraBool("InsertPeopleAdded", true);
                 if (potentialdup)
+                {
                     p.AddEditExtraBool("FoundDup", true);
+                }
+
                 db.SubmitChanges();
             }
             return p;
@@ -256,7 +297,9 @@ namespace CmsWeb.Models
         internal void ProcessExtraValues(CMSDataContext db, Person p, dynamic a)
         {
             if (!Extravaluenames.Any())
+            {
                 return;
+            }
 
             foreach (var name in Extravaluenames)
             {
@@ -279,15 +322,26 @@ namespace CmsWeb.Models
                     case "org":
 
                         if (Testing)
+                        {
                             continue;
+                        }
+
                         var d = ((string)a[name])?.Trim()?.Trim();
                         if (!d.HasValue())
+                        {
                             continue;
+                        }
+
                         if (d.Equal("true"))
+                        {
                             d = "Member";
+                        }
+
                         var oid = 0;
                         if (Orgs.ContainsKey(name))
+                        {
                             oid = Orgs[name];
+                        }
                         else
                         {
                             var prog = Organization.FetchOrCreateProgram(db, "InsertPeople");
@@ -298,7 +352,9 @@ namespace CmsWeb.Models
                         }
                         var mtid = 0;
                         if (Membertypes.ContainsKey(d))
+                        {
                             mtid = Membertypes[d];
+                        }
                         else
                         {
                             var mt = Organization.FetchOrCreateMemberType(db, d);
@@ -309,16 +365,25 @@ namespace CmsWeb.Models
                         break;
                     case "dt":
                         if (o is DateTime)
+                        {
                             p.AddEditExtraDate(name, (DateTime)o);
+                        }
+
                         var dt = o.ToDate();
                         if (dt == null)
+                        {
                             continue;
+                        }
+
                         p.AddEditExtraDate(name, dt);
                         break;
                     case "int":
                         var i = GetInt(o);
-                        if(i.HasValue)
+                        if (i.HasValue)
+                        {
                             p.AddEditExtraInt(name, i.Value);
+                        }
+
                         break;
                     case "bit":
                         p.AddEditExtraBool(name, IsTrue(o));
@@ -329,15 +394,30 @@ namespace CmsWeb.Models
         private static bool IsTrue(object arg)
         {
             if (arg == null)
+            {
                 return false;
+            }
+
             if (arg is int && (int)arg != 0)
+            {
                 return true;
+            }
+
             if (arg is double && arg.ToInt() != 0)
+            {
                 return true;
+            }
+
             if (arg.ToString().Equal("true"))
+            {
                 return true;
+            }
+
             if (arg.ToString().Equal("1"))
+            {
                 return true;
+            }
+
             return false;
         }
         internal void SetRecRegs(Person p, dynamic a)
@@ -391,7 +471,10 @@ namespace CmsWeb.Models
         {
             var s = o as string;
             if (!s.HasValue())
+            {
                 return;
+            }
+
             var qms = from mm in db.MemberStatuses
                       where mm.Description == s
                       select mm;
@@ -408,7 +491,10 @@ namespace CmsWeb.Models
         {
             var ms = o as string;
             if (ms == null)
+            {
                 return;
+            }
+
             var qms = from mm in db.MemberStatuses
                       where mm.Description == ms
                       select mm;
@@ -421,7 +507,7 @@ namespace CmsWeb.Models
             }
             p.UpdateValue("MemberStatusId", m.Id);
         }
-        
+
         public void FetchData(ExcelWorksheet ws)
         {
             FetchHeaderColumns(ws);
@@ -432,7 +518,10 @@ namespace CmsWeb.Models
             {
                 var dict = new Dictionary<string, object>();
                 foreach (var kv in Names)
+                {
                     dict[kv.Key] = ws.Cells[r, kv.Value].Value;
+                }
+
                 Datalist.Add(new DynamicData(dict));
                 r++;
             }
@@ -449,11 +538,17 @@ namespace CmsWeb.Models
                 if (c.Text.HasValue())
                 {
                     var colname = c.Text;
-                    if(colname.Equal("IndividualId") && colname != "IndividualId")
-                        throw(new Exception($"Must Use IndividualId, not {colname}, case sensitive"));
-                    if(colname.Equal("FamilyId") && colname != "FamilyId")
-                        throw(new Exception($"Must Use FamilyId, not {colname}, case sensitive"));
-                    var b = colname.SplitStr(".",2);
+                    if (colname.Equal("IndividualId") && colname != "IndividualId")
+                    {
+                        throw (new Exception($"Must Use IndividualId, not {colname}, case sensitive"));
+                    }
+
+                    if (colname.Equal("FamilyId") && colname != "FamilyId")
+                    {
+                        throw (new Exception($"Must Use FamilyId, not {colname}, case sensitive"));
+                    }
+
+                    var b = colname.SplitStr(".", 2);
                     if (b.Length > 1)
                     {
                         Evtypes[b[0]] = b[1];
@@ -467,7 +562,9 @@ namespace CmsWeb.Models
         internal void CheckColumn(string name, string sheet)
         {
             if (!Names.ContainsKey(name))
+            {
                 throw new Exception($"Missing {name} column on {sheet} sheet");
+            }
         }
 
 
@@ -479,17 +576,22 @@ namespace CmsWeb.Models
         {
             var id = (int?)GetPeopleId(a);
             if (id > 0)
+            {
                 return id; // existing person's PeopleId
+            }
 
             string first = a.First as string;
             string last = a.Last as string;
             if (!first.HasValue() && !last.HasValue())
+            {
                 return -1;
+            }
+
             DateTime? dt = GetDate(a.Birthday);
             string email = GetStringTrimmed(a.Email);
             string cell = GetDigits(a.CellPhone);
             string home = GetDigits(a.HomePhone);
-            
+
             var pid = db.FindPerson3(first, last, dt, email, cell, home, null).FirstOrDefault();
 
             if (Noupdate && pid?.PeopleId != null)
@@ -507,12 +609,16 @@ namespace CmsWeb.Models
         internal void UpdateField(Family f, string prop, object o)
         {
             if (o != null)
+            {
                 f.UpdateValue(Fsb, prop, o);
+            }
         }
         internal void UpdateField(Person p, string prop, object o)
         {
             if (o != null)
+            {
                 p.UpdateValue(Psb, prop, o);
+            }
         }
         internal string GetDigits(object o)
         {
@@ -541,8 +647,13 @@ namespace CmsWeb.Models
             //DateTime dt = DateTime.FromOADate(39938);
             var dt = o.ToDate();
             if (dt.HasValue)
+            {
                 if (dt.Value < SqlDateTime.MinValue)
+                {
                     dt = null;
+                }
+            }
+
             return dt;
         }
         internal int Gender(object o)
@@ -568,9 +679,9 @@ namespace CmsWeb.Models
         {
             string s = o as string;
             s = s.trim()?.ToLower();
-            int? a = (from m in DbUtil.Db.MaritalStatuses
-                     where m.Description == s
-                     select m.Id).SingleOrDefault();
+            int? a = (from m in Db2.MaritalStatuses
+                      where m.Description == s
+                      select m.Id).SingleOrDefault();
             if (a == null)
             {
                 return 0;
@@ -602,11 +713,17 @@ namespace CmsWeb.Models
         {
             var s = o as string;
             if (!s.HasValue())
+            {
                 return null;
+            }
+
             s = s.trim().ToLower();
             int i;
             if (!Campuses.TryGetValue(s, out i))
+            {
                 return null;
+            }
+
             return i;
         }
         internal readonly List<string> Standardnames = new List<string>

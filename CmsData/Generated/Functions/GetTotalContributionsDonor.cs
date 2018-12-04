@@ -21,8 +21,14 @@ namespace CmsData.View
 		private int? _CreditGiverId2;
 		
 		private string _HeadName;
-		
-		private string _SpouseName;
+
+        private string _Head_FirstName;
+
+        private string _Head_LastName;
+
+        private string _Email;
+
+        private string _SpouseName;
 		
 		private int? _Count;
 		
@@ -107,8 +113,56 @@ namespace CmsData.View
 
 		}
 
-		
-		[Column(Name="SpouseName", Storage="_SpouseName", DbType="nvarchar(139)")]
+        [Column(Name = "Head_LastName", Storage = "_Head_LastName", DbType = "nvarchar(139)")]
+        public string Head_LastName
+        {
+            get
+            {
+                return this._Head_LastName;
+            }
+
+            set
+            {
+                if (this._Head_LastName != value)
+                    this._Head_LastName = value;
+            }
+
+        }
+
+        [Column(Name = "Head_FirstName", Storage = "_Head_FirstName", DbType = "nvarchar(139)")]
+        public string Head_FirstName
+        {
+            get
+            {
+                return this._Head_FirstName;
+            }
+
+            set
+            {
+                if (this._Head_FirstName != value)
+                    this._Head_FirstName = value;
+            }
+
+        }
+
+        [Column(Name = "Email", Storage = "_Email", DbType = "nvarchar(139)")]
+        public string Email
+        {
+            get
+            {
+                return this._Email;
+            }
+
+            set
+            {
+                if (this._Email != value)
+                    this._Email = value;
+            }
+
+        }
+
+
+        [Column(Name="SpouseName", Storage="_SpouseName", DbType="nvarchar(139)")]
 		public string SpouseName
 		{
 			get

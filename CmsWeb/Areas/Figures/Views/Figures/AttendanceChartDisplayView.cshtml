@@ -1,0 +1,89 @@
+﻿@model List<CmsData.LineChartDTO>
+@{
+    Layout = null;
+}
+@ViewExtensions2.jQuery()
+@ViewExtensions2.jQueryUI()
+
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+
+
+<script type="text/javascript">
+
+    var chartData;
+    var chartData2;
+    // get the chart data from the server.
+    google.load("visualization", "1", { packages: ["corechart"] });
+    $(document).ready(function () {
+        //debugger;
+        var model = '@Html.Raw(Json.Encode(Model))';
+        chartData = JSON.parse(model);
+
+        // Instantiate and draw our chart, passing in some options
+        var chartwidth = $('#Attendance_chart_display').width();
+        var chartheight = $('#Attendance_chart_display').height();
+        var options = {
+            title: chartData[0].ChartName,
+            legend: 'top',
+            vAxis: {
+                gridlines: { color: '#e3e3e3', count: 6 },
+                textStyle: { color: 'grey' }
+            },
+            hAxis: {
+                gridlines: { color: '#e3e3e3', count: 12 },
+                textStyle: { color: '#3F5F9F' }
+            },
+            lineWidth: 3,
+            colors: ['#002266', '#ffe066'],
+            chartArea: {
+                width: chartwidth,
+                left: 50,
+                top: 50,
+                right: 50,
+                bottom: 25,
+                height: chartheight,
+                backgroundColor: { stroke: '#e3e3e3', strokeWidth: 10 }
+            }
+        };
+
+
+        var data4 = new google.visualization.DataTable();
+        //Adding columns to data table to insert the chart data
+        data4.addColumn('string', 'Name');
+        data4.addColumn('number', chartData[0].CurYear);
+        data4.addColumn('number', chartData[0].PreYear);
+        //bind the data to the data table using for loop
+        var getTotalAttendance = 0;
+        for (var i = 0; i < chartData.length; i++) {
+            data4.addRow([chartData[i].Name, chartData[i].Count, chartData[i].Count2]);
+            getTotalAttendance += chartData[i].Count;
+        }
+
+        var attendanceChartDisplay = new google.visualization.LineChart(document.getElementById('Attendance_chart_display'));
+        attendanceChartDisplay.draw(data4, options);
+
+        var formatter = new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+            minimumFractionDigits: 2
+        });
+
+        var getTable = document.getElementById('Total_Attendance');
+        getTable.innerHTML = getTotalAttendance;
+
+        var getFund = document.getElementById('Total_Fund2').innerText;
+  
+        var getPercent = document.getElementById('Total_Percent');
+        var result = getFund / getTotalAttendance;
+        if (isNaN(result)){
+            getPercent.innerHTML = '-';
+        }
+        else
+        {
+            getPercent.innerHTML = formatter.format(result);
+        }
+
+    });
+</script>
+
+

@@ -5,13 +5,13 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
 
+using CmsData;
+using CmsWeb.Code;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using CmsData;
-using CmsWeb.Code;
 using UtilityExtensions;
 
 namespace CmsWeb.Models
@@ -61,7 +61,7 @@ namespace CmsWeb.Models
                 "School",
                 "Statement Options",
                 "Title"
-            }.Select(x => new {value = x, text = x}),
+            }.Select(x => new { value = x, text = x }),
                 "value", "text").ToList();
         }
 
@@ -69,20 +69,26 @@ namespace CmsWeb.Models
         {
             var cv = new CodeValueModel();
             var tg = cv.UserTags(Util.UserPeopleId);
-            tg = tg.Select(tt => new CodeValueItem {Value = $"tag: {tt.Id}:{tt.Value}"}).ToList();
+            tg = tg.Select(tt => new CodeValueItem { Value = $"tag: {tt.Id}:{tt.Value}" }).ToList();
             var q = from e in DbUtil.Db.PeopleExtras
                     where e.StrValue != null
                     group e by e.FieldValue
                     into g
-                    select new CodeValueItem {Value = "exval: " + g.Key};
+                    select new CodeValueItem { Value = "exval: " + g.Key };
             tg.AddRange(q);
             if (HttpContext.Current.User.IsInRole("Admin"))
-                tg.Insert(0, new CodeValueItem {Value = "last query"});
-            tg.Insert(0, new CodeValueItem {Value = "(not specified)"});
+            {
+                tg.Insert(0, new CodeValueItem { Value = "last query" });
+            }
+
+            tg.Insert(0, new CodeValueItem { Value = "(not specified)" });
             var list = tg.ToSelect("Value");
             var sel = list.SingleOrDefault(mm => mm.Value == Tag);
             if (sel != null)
+            {
                 sel.Selected = true;
+            }
+
             return list;
         }
 
@@ -90,31 +96,34 @@ namespace CmsWeb.Models
         {
             var a = Tag.SplitStr(":", 2);
             if (a.Length > 1)
+            {
                 a[1] = a[1].TrimStart();
+            }
+
             IQueryable<Person> q = null;
             switch (a[0])
             {
                 case "last query":
-                {
-                    var id = DbUtil.Db.FetchLastQuery().Id;
-                    q = DbUtil.Db.PeopleQuery(id);
-                }
+                    {
+                        var id = DbUtil.Db.FetchLastQuery().Id;
+                        q = DbUtil.Db.PeopleQuery(id);
+                    }
                     break;
                 case "tag":
-                {
-                    var b = a[1].SplitStr(":", 2);
-                    var tag = DbUtil.Db.TagById(b[0].ToInt());
-                    q = tag.People(DbUtil.Db);
-                }
+                    {
+                        var b = a[1].SplitStr(":", 2);
+                        var tag = DbUtil.Db.TagById(b[0].ToInt());
+                        q = tag.People(DbUtil.Db);
+                    }
                     break;
                 case "exval":
-                {
-                    var b = a[1].SplitStr(":", 2);
-                    q = from e in DbUtil.Db.PeopleExtras
-                        where e.Field == b[0]
-                        where e.StrValue == b[1]
-                        select e.Person;
-                }
+                    {
+                        var b = a[1].SplitStr(":", 2);
+                        q = from e in DbUtil.Db.PeopleExtras
+                            where e.Field == b[0]
+                            where e.StrValue == b[1]
+                            select e.Person;
+                    }
                     break;
             }
             Count = q.Count();
@@ -131,10 +140,14 @@ namespace CmsWeb.Models
                 return;
             }
             if (Field == "(not specified)")
+            {
                 model.AddModelError("Field", "Select a Field");
+            }
 
             if (!model.IsValid)
+            {
                 return;
+            }
 
             if (Field == "Bad Address Flag")
             {
@@ -170,7 +183,10 @@ namespace CmsWeb.Models
                         break;
                     case "Deceased Date":
                         if (DateValid())
+                        {
                             p.DeceasedDate = NewValue.ToDate();
+                        }
+
                         break;
                     case "Decision Type":
                         p.DecisionTypeId = NewValue.ToInt2();
@@ -227,12 +243,12 @@ namespace CmsWeb.Models
                         if (p.AddressTypeId == CmsData.Codes.AddressTypeCode.Personal)
                         {
                             var psb = new List<ChangeDetail>();
-                            p.UpdateValue(psb,"AddressLineOne", null);
-                            p.UpdateValue(psb,"AddressLineTwo", null);
-                            p.UpdateValue(psb,"CityName", null);
-                            p.UpdateValue(psb,"StateCode", null);
-                            p.UpdateValue(psb,"ZipCode", null);
-                            p.UpdateValue(psb,"ResCodeId", null);
+                            p.UpdateValue(psb, "AddressLineOne", null);
+                            p.UpdateValue(psb, "AddressLineTwo", null);
+                            p.UpdateValue(psb, "CityName", null);
+                            p.UpdateValue(psb, "StateCode", null);
+                            p.UpdateValue(psb, "ZipCode", null);
+                            p.UpdateValue(psb, "ResCodeId", null);
                             p.LogChanges(DbUtil.Db, psb);
                         }
                         else
@@ -268,7 +284,10 @@ namespace CmsWeb.Models
                         break;
                 }
                 if (!model.IsValid)
+                {
                     return;
+                }
+
                 DbUtil.Db.SubmitChanges();
             }
         }
@@ -276,28 +295,40 @@ namespace CmsWeb.Models
         private void DoGrade(Person p)
         {
             if (NewValue == "+1")
+            {
                 p.Grade = p.Grade + 1;
+            }
             else if (NewValue.Equal("none"))
+            {
                 p.Grade = null;
+            }
             else
+            {
                 p.Grade = NewValue.ToInt2();
+            }
         }
 
         private bool DateValid()
         {
             if (!Util.DateValid(NewValue))
+            {
                 modelState.AddModelError("NewValue", "Must be Date");
+            }
+
             return modelState.IsValid;
         }
 
         private void DoBackgroundChecks(Person p)
         {
             if (!DateValid())
+            {
                 return;
+            }
+
             var i = p.Volunteers.SingleOrDefault();
             if (i == null)
             {
-                i = new Volunteer {PeopleId = p.PeopleId};
+                i = new Volunteer { PeopleId = p.PeopleId };
                 DbUtil.Db.Volunteers.InsertOnSubmit(i);
                 DbUtil.Db.SubmitChanges();
             }
@@ -315,7 +346,7 @@ namespace CmsWeb.Models
             var i = p.Volunteers.SingleOrDefault();
             if (i == null)
             {
-                i = new Volunteer {PeopleId = p.PeopleId};
+                i = new Volunteer { PeopleId = p.PeopleId };
                 DbUtil.Db.Volunteers.InsertOnSubmit(i);
                 DbUtil.Db.SubmitChanges();
             }
@@ -328,12 +359,16 @@ namespace CmsWeb.Models
             if (code < 0)
             {
                 if (app != null)
+                {
                     DbUtil.Db.VoluteerApprovalIds.DeleteOnSubmit(app);
+                }
             }
             else if (code > 0)
             {
                 if (app == null)
-                    p.VoluteerApprovalIds.Add(new VoluteerApprovalId {ApprovalId = code});
+                {
+                    p.VoluteerApprovalIds.Add(new VoluteerApprovalId { ApprovalId = code });
+                }
             }
             else if (code == 0)
             {

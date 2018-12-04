@@ -5,15 +5,15 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
 
+using CmsData;
+using CmsData.Codes;
+using CmsData.Registration;
+using MoreLinq;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Web.Mvc;
-using CmsData;
-using CmsData.Codes;
-using CmsData.Registration;
-using MoreLinq;
 using UtilityExtensions;
 
 namespace CmsWeb.Models
@@ -58,13 +58,18 @@ namespace CmsWeb.Models
                     break;
             }
             if (name.HasValue())
+            {
                 q = q.Where(c => c.Name.Contains(name) || c.Person.Name.Contains(name));
+            }
+
             if (startdate.HasValue() && enddate.HasValue())
             {
                 DateTime bd;
                 DateTime ed;
                 if (DateTime.TryParse(startdate, out bd) && DateTime.TryParse(enddate, out ed))
+                {
                     q = q.Where(c => c.Created.Date >= bd && c.Created.Date <= ed);
+                }
             }
 
             var q2 = from c in q
@@ -109,13 +114,18 @@ namespace CmsWeb.Models
                     break;
             }
             if (name.HasValue())
+            {
                 q = q.Where(c => c.Name.Contains(name) || c.Person.Name.Contains(name));
+            }
+
             if (startdate.HasValue() && enddate.HasValue())
             {
                 DateTime bd;
                 DateTime ed;
                 if (DateTime.TryParse(startdate, out bd) && DateTime.TryParse(enddate, out ed))
+                {
                     q = q.Where(c => c.Created.Date >= bd && c.Created.Date <= ed);
+                }
             }
 
             var q2 = from c in q

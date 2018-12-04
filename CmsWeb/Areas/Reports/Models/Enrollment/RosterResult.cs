@@ -4,15 +4,15 @@
  * you may not use this code except in compliance with the License.
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
+using CmsData;
+using CmsWeb.Areas.Search.Models;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using iTextSharp.text;
-using iTextSharp.text.pdf;
-using CmsData;
-using UtilityExtensions;
 using System.Web.Mvc;
-using CmsWeb.Areas.Search.Models;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Reports.Models
 {
@@ -63,35 +63,54 @@ namespace CmsWeb.Areas.Reports.Models
                              rr.MedicalDescription
                          };
                 foreach (var i in q2)
+                {
                     AddRow(i.MembertypeCode, i.Name, i.MedicalDescription, i.PeopleId, font);
+                }
+
                 if (t.Rows.Count > 1)
+                {
                     doc.Add(t);
+                }
                 else
+                {
                     doc.Add(new Phrase("no data"));
+                }
             }
             else
+            {
                 foreach (var o in ReportList())
                 {
                     var q = from m in RollsheetModel.FetchOrgMembers(o.OrgId, null)
                             orderby m.Name2
                             select new
                             {
-                                 m.Name,
-                                 m.MemberType,
-                                 m.PeopleId,
-                                 m.MedicalDescription
+                                m.Name,
+                                m.MemberType,
+                                m.PeopleId,
+                                m.MedicalDescription
                             };
                     if (!q.Any())
+                    {
                         continue;
+                    }
+
                     StartPageSet(o);
                     foreach (var i in q)
+                    {
                         AddRow(i.MemberType, i.Name, i.MedicalDescription, i.PeopleId, font);
+                    }
 
                     if (t.Rows.Count > 1)
+                    {
                         doc.Add(t);
+                    }
                     else
+                    {
                         doc.Add(new Phrase("no data"));
+                    }
                 }
+            }
+
             if (!pagesetstarted)
             {
                 w.PageEvent = null;
@@ -109,9 +128,9 @@ namespace CmsWeb.Areas.Reports.Models
             public string MemberType { get; set; }
         }
 
-        private Font boldfont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD);
-        private Font font = FontFactory.GetFont(FontFactory.HELVETICA);
-        private Font smallfont = FontFactory.GetFont(FontFactory.HELVETICA, 7);
+        private readonly Font boldfont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD);
+        private readonly Font font = FontFactory.GetFont(FontFactory.HELVETICA);
+        private readonly Font smallfont = FontFactory.GetFont(FontFactory.HELVETICA, 7);
         private PageEvent pageEvents = new PageEvent();
         private PdfPTable t;
         private Document doc;
@@ -166,7 +185,8 @@ namespace CmsWeb.Areas.Reports.Models
                     };
             return q;
         }
-        class CellEvent : IPdfPCellEvent
+
+        private class CellEvent : IPdfPCellEvent
         {
             public void CellLayout(PdfPCell cell, Rectangle pos, PdfContentByte[] canvases)
             {
@@ -178,7 +198,8 @@ namespace CmsWeb.Areas.Reports.Models
                 cb.ResetRGBColorStroke();
             }
         }
-        class PageEvent : PdfPageEventHelper
+
+        private class PageEvent : PdfPageEventHelper
         {
             private PdfTemplate npages;
             private PdfWriter writer;
@@ -199,7 +220,10 @@ namespace CmsWeb.Areas.Reports.Models
             public void EndPageSet()
             {
                 if (npages == null)
+                {
                     return;
+                }
+
                 npages.BeginText();
                 npages.SetFontAndSize(font, 8);
                 npages.ShowText((writer.PageNumber + 1).ToString());

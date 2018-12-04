@@ -1,3 +1,6 @@
+using CmsData;
+using CmsData.Codes;
+using CmsWeb.Code;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -7,9 +10,6 @@ using System.Linq;
 using System.Threading;
 using System.Web.Hosting;
 using System.Web.Mvc;
-using CmsData;
-using CmsData.Codes;
-using CmsWeb.Code;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Models
@@ -35,7 +35,7 @@ namespace CmsWeb.Areas.Dialog.Models
                      where m.MeetingId == id
                      select new
                      {
-                         m.Organization.OrganizationName, 
+                         m.Organization.OrganizationName,
                          m.OrganizationId,
                          m.MeetingDate
                      }).Single();
@@ -78,12 +78,15 @@ namespace CmsWeb.Areas.Dialog.Models
             LongRunningOperation lop = null;
             foreach (var pid in model.pids)
             {
-                db.Dispose();
-                db = DbUtil.Create(model.Host);
-				if (model.AddAsMembers)
-					OrganizationMember.InsertOrgMembers(db, model.OrgId, pid, 
+                //db.Dispose();
+                //db = db.Create(model.Host);
+                if (model.AddAsMembers)
+                {
+                    OrganizationMember.InsertOrgMembers(db, model.OrgId, pid,
                         MemberTypeCode.Member, model.JoinDate, null, false);
-				db.RecordAttendance(model.MeetingId, pid, true);
+                }
+
+                db.RecordAttendance(model.MeetingId, pid, true);
                 lop = FetchLongRunningOperation(db, Op, model.QueryId);
                 Debug.Assert(lop != null, "r != null");
                 lop.Processed++;
@@ -98,7 +101,9 @@ namespace CmsWeb.Areas.Dialog.Models
         public void Validate(ModelStateDictionary modelState)
         {
             if (Tag != null && Tag.Value == "0") // They did not choose a tag
+            {
                 modelState.AddModelError("Tag", "Must choose a tag");
+            }
         }
 
         public bool ShowCount(CMSDataContext db)

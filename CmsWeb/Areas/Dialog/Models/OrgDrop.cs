@@ -1,3 +1,5 @@
+using CmsData;
+using CmsData.Codes;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -5,8 +7,6 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Web.Hosting;
-using CmsData;
-using CmsData.Codes;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Models
@@ -61,7 +61,7 @@ namespace CmsWeb.Areas.Dialog.Models
 
         private List<int> pids;
         private List<int> Pids => pids ?? (pids = (from p in DbUtil.Db.OrgFilterIds(QueryId)
-                                      select p.PeopleId.Value).ToList());
+                                                   select p.PeopleId.Value).ToList());
 
         public void Process(CMSDataContext db)
         {
@@ -75,7 +75,7 @@ namespace CmsWeb.Areas.Dialog.Models
                 Processed = 0,
                 Operation = Op,
             };
-            db.LogActivity($"OrgDrop {lop.Count} records", Filter.Id, uid: UserId);
+            DbUtil.Db.LogActivity($"OrgDrop {lop.Count} records", Filter.Id, uid: UserId);
             db.LongRunningOperations.InsertOnSubmit(lop);
             db.SubmitChanges();
             HostingEnvironment.QueueBackgroundWorkItem(ct => DoWork(this));
@@ -91,16 +91,24 @@ namespace CmsWeb.Areas.Dialog.Models
             LongRunningOperation lop = null;
             foreach (var pid in model.Pids)
             {
-                db.Dispose();
-                db = DbUtil.Create(model.Host);
+                //DbUtil.Db.Dispose();
+                //db = DbUtil.Create(model.Host);
                 var om = db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == model.filter.Id);
                 if (model.DropDate.HasValue)
+                {
                     om.Drop(db, model.DropDate.Value);
+                }
                 else
+                {
                     om.Drop(db);
+                }
+
                 db.SubmitChanges();
                 if (model.RemoveFromEnrollmentHistory)
+                {
                     db.ExecuteCommand("DELETE dbo.EnrollmentTransaction WHERE PeopleId = {0} AND OrganizationId = {1}", pid, model.filter.Id);
+                }
+
                 lop = FetchLongRunningOperation(db, Op, model.QueryId);
                 Debug.Assert(lop != null, "r != null");
                 lop.Processed++;

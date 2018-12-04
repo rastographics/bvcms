@@ -1,7 +1,7 @@
-using System.Linq;
-using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.People.Models;
+using System.Linq;
+using System.Web.Mvc;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Controllers
@@ -17,7 +17,7 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpPost]
         public ActionResult AddContactMade(int id)
         {
-            var p = DbUtil.Db.LoadPersonById(id);
+            var p = CurrentDatabase.LoadPersonById(id);
             DbUtil.LogPersonActivity($"Adding contact from: {p.Name}", id, p.Name);
             var c = new Contact
             {
@@ -26,8 +26,8 @@ namespace CmsWeb.Areas.People.Controllers
                 ContactDate = Util.Now.Date
             };
 
-            DbUtil.Db.Contacts.InsertOnSubmit(c);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.Contacts.InsertOnSubmit(c);
+            CurrentDatabase.SubmitChanges();
 
             var cp = new Contactor
             {
@@ -35,12 +35,14 @@ namespace CmsWeb.Areas.People.Controllers
                 ContactId = c.ContactId
             };
 
-            DbUtil.Db.Contactors.InsertOnSubmit(cp);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.Contactors.InsertOnSubmit(cp);
+            CurrentDatabase.SubmitChanges();
 
-            var defaultRole = DbUtil.Db.Setting("Contacts-DefaultRole", null);
-            if (!string.IsNullOrEmpty(defaultRole) && DbUtil.Db.Roles.Any(x => x.RoleName == defaultRole))
+            var defaultRole = CurrentDatabase.Setting("Contacts-DefaultRole", null);
+            if (!string.IsNullOrEmpty(defaultRole) && CurrentDatabase.Roles.Any(x => x.RoleName == defaultRole))
+            {
                 TempData["SetRole"] = defaultRole;
+            }
 
             TempData["ContactEdit"] = true;
             return Content("/Contact2/" + c.ContactId);
@@ -55,7 +57,7 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpPost]
         public ActionResult AddContactReceived(int id)
         {
-            var p = DbUtil.Db.LoadPersonById(id);
+            var p = CurrentDatabase.LoadPersonById(id);
             DbUtil.LogPersonActivity($"Adding contact to: {p.Name}", id, p.Name);
             var c = new Contact
             {
@@ -64,16 +66,18 @@ namespace CmsWeb.Areas.People.Controllers
                 ContactDate = Util.Now.Date
             };
 
-            DbUtil.Db.Contacts.InsertOnSubmit(c);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.Contacts.InsertOnSubmit(c);
+            CurrentDatabase.SubmitChanges();
 
-            c.contactees.Add(new Contactee {PeopleId = p.PeopleId});
-            c.contactsMakers.Add(new Contactor {PeopleId = Util.UserPeopleId.Value});
-            DbUtil.Db.SubmitChanges();
+            c.contactees.Add(new Contactee { PeopleId = p.PeopleId });
+            c.contactsMakers.Add(new Contactor { PeopleId = Util.UserPeopleId.Value });
+            CurrentDatabase.SubmitChanges();
 
-            var defaultRole = DbUtil.Db.Setting("Contacts-DefaultRole", null);
-            if (!string.IsNullOrEmpty(defaultRole) && DbUtil.Db.Roles.Any(x => x.RoleName == defaultRole))
+            var defaultRole = CurrentDatabase.Setting("Contacts-DefaultRole", null);
+            if (!string.IsNullOrEmpty(defaultRole) && CurrentDatabase.Roles.Any(x => x.RoleName == defaultRole))
+            {
                 TempData["SetRole"] = defaultRole;
+            }
 
             TempData["ContactEdit"] = true;
             return Content($"/Contact2/{c.ContactId}");
@@ -88,11 +92,14 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpPost]
         public ActionResult AddTaskAbout(int id)
         {
-            var p = DbUtil.Db.LoadPersonById(id);
+            var p = CurrentDatabase.LoadPersonById(id);
             if (p == null || !Util.UserPeopleId.HasValue)
+            {
                 return Content("no id");
-            var t = p.AddTaskAbout(DbUtil.Db, Util.UserPeopleId.Value, "Please Contact");
-            DbUtil.Db.SubmitChanges();
+            }
+
+            var t = p.AddTaskAbout(CurrentDatabase, Util.UserPeopleId.Value, "Please Contact");
+            CurrentDatabase.SubmitChanges();
             return Content($"/Task/{t.Id}");
         }
 

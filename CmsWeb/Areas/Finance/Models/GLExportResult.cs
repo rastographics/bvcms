@@ -1,8 +1,8 @@
+using CmsData;
+using CmsData.Codes;
 using System;
 using System.Linq;
 using System.Web.Mvc;
-using CmsData;
-using CmsData.Codes;
 
 namespace CmsWeb.Models
 {
@@ -34,12 +34,12 @@ namespace CmsWeb.Models
                 where d.BundleHeader.BundleStatusId == 0
                 where !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
                 where c.ContributionTypeId != ContributionTypeCode.Pledge
-                group c by new {d.BundleHeaderId, c.ContributionFund, c.ContributionDate}
+                group c by new { d.BundleHeaderId, c.ContributionFund, c.ContributionDate }
                 into g
                 select new ExtractInfo
                 {
                     Fund = g.Key.ContributionFund.FundIncomeFund,
-                    Month = ((g.Max(c => c.PostingDate.Value.Month) + 8)%12) + 1,
+                    Month = ((g.Max(c => c.PostingDate.Value.Month) + 8) % 12) + 1,
                     HeaderId = g.Key.BundleHeaderId + "",
                     ContributionDate = g.Key.ContributionDate.Value,
                     FundName = g.Key.ContributionFund.FundName,
@@ -56,12 +56,12 @@ namespace CmsWeb.Models
                 where d.BundleHeader.BundleStatusId == 0
                 where !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId) // no 6,7(reversals, returns)
                 where c.ContributionTypeId != ContributionTypeCode.Pledge
-                group c by new {d.BundleHeaderId, c.ContributionFund, c.ContributionDate}
+                group c by new { d.BundleHeaderId, c.ContributionFund, c.ContributionDate }
                 into g
                 select new ExtractInfo
                 {
                     Fund = g.Key.ContributionFund.FundCashFund,
-                    Month = ((g.Max(c => c.PostingDate.Value.Month) + 8)%12) + 1,
+                    Month = ((g.Max(c => c.PostingDate.Value.Month) + 8) % 12) + 1,
                     HeaderId = g.Key.BundleHeaderId + "",
                     ContributionDate = g.Key.ContributionDate.Value,
                     FundName = g.Key.ContributionFund.FundName,
@@ -79,7 +79,7 @@ namespace CmsWeb.Models
                 select new ExtractInfo
                 {
                     Fund = c.ContributionFund.FundIncomeFund,
-                    Month = ((c.PostingDate.Value.Month + 8)%12) + 1,
+                    Month = ((c.PostingDate.Value.Month + 8) % 12) + 1,
                     HeaderId = "0",
                     ContributionDate = c.ContributionDate.Value,
                     FundName = c.ContributionFund.FundName,
@@ -97,7 +97,7 @@ namespace CmsWeb.Models
                 select new ExtractInfo
                 {
                     Fund = c.ContributionFund.FundCashFund,
-                    Month = (c.PostingDate.Value.Month + 8)%12 + 1,
+                    Month = (c.PostingDate.Value.Month + 8) % 12 + 1,
                     HeaderId = "0",
                     ContributionDate = c.ContributionDate.Value,
                     FundName = c.ContributionFund.FundName,
@@ -118,7 +118,7 @@ namespace CmsWeb.Models
             foreach (var i in q)
             {
                 Response.Write(
-                    $"\"00000\",\"001{i.Fund}{i.Month:00}{GLBundlePrefix}{i.HeaderId.PadLeft(5, '0')}\",\"000\",\"{i.ContributionDate:MMddyy}\",\"{i.FundName}\",\"\",\"{i.FundDept}0000{i.FundAcct}\",\"{i.Amount*100:00000000000}\",\"\"\r\n");
+                    $"\"00000\",\"001{i.Fund}{i.Month:00}{GLBundlePrefix}{i.HeaderId.PadLeft(5, '0')}\",\"000\",\"{i.ContributionDate:MMddyy}\",\"{i.FundName}\",\"\",\"{i.FundDept}0000{i.FundAcct}\",\"{i.Amount * 100:00000000000}\",\"\"\r\n");
             }
             Response.Flush();
             Response.Close();

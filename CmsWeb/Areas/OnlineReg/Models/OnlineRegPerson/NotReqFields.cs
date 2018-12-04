@@ -1,35 +1,40 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using CmsData;
+using System.Linq;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.OnlineReg.Models
 {
     public partial class OnlineRegPersonModel
     {
-    	public bool RequiredAddr()
-    	{
-    	    return org != null 
-                       ? setting.NotReqAddr == false 
+        public bool RequiredAddr()
+        {
+            return org != null
+                       ? setting.NotReqAddr == false
                        : settings == null || !settings.Values.Any(o => o.NotReqAddr);
-    	}
-    	public bool RequiredCampus()
-    	{
-    	    return org != null 
-                       ? setting.NotReqCampus == false 
+        }
+        public bool RequiredCampus()
+        {
+            return org != null
+                       ? setting.NotReqCampus == false
                        : settings == null || !settings.Values.Any(o => o.NotReqCampus);
-    	}
-    	public bool ShowCampusOnRegistration => DbUtil.Db.Setting("ShowCampusOnRegistration", "false").ToBool();
+        }
+        public bool ShowCampusOnRegistration => DbUtil.Db.Setting("ShowCampusOnRegistration", "false").ToBool();
 
         public bool StillNeedBirthday()
         {
             if (RequiredDOB())
-                if(!DateOfBirth.HasValue() || byear == null)
+            {
+                if (!DateOfBirth.HasValue() || byear == null)
+                {
                     return true;
+                }
+            }
+
             if (NoAppropriateOrgFound())
+            {
                 return true;
+            }
+
             return false;
         }
         public bool ShowOptionalBirthday()
@@ -40,24 +45,30 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public bool BirthYearRequired()
         {
             if (ComputesOrganizationByAge())
+            {
                 return true;
-            return org != null 
-                       ? setting.NoReqBirthYear == false : 
+            }
+
+            return org != null
+                       ? setting.NoReqBirthYear == false :
                        settings == null || !settings.Values.Any(i => i.NoReqBirthYear);
         }
         public bool RequiredDOB()
         {
             if (ComputesOrganizationByAge())
+            {
                 return true;
-            return org != null 
-                       ? setting.NotReqDOB == false : 
+            }
+
+            return org != null
+                       ? setting.NotReqDOB == false :
                        settings == null || !settings.Values.Any(i => i.NotReqDOB);
         }
 
         public bool RequiredZip()
         {
-            var req = org != null 
-                       ? setting.NotReqZip == false 
+            var req = org != null
+                       ? setting.NotReqZip == false
                        : settings == null || !settings.Values.Any(o => o.NotReqZip);
             return req;
         }

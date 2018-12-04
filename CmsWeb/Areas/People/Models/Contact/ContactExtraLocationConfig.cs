@@ -1,9 +1,9 @@
-﻿using System;
+﻿using CmsData;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
-using CmsData;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Models
@@ -17,7 +17,9 @@ namespace CmsWeb.Areas.People.Models
         {
             _xmlContent = configContent;
             if (string.IsNullOrWhiteSpace(configContent))
+            {
                 _xmlContent = DbUtil.Db.ContentOfTypeText("ContactExtraLocationConfig.xml");
+            }
         }
 
         public IEnumerable<ContactExtraLocation> Locations
@@ -25,7 +27,10 @@ namespace CmsWeb.Areas.People.Models
             get
             {
                 if (_locations == null)
+                {
                     _locations = GetLocationsFromContent();
+                }
+
                 return _locations;
             }
         }
@@ -58,13 +63,19 @@ namespace CmsWeb.Areas.People.Models
         private static bool ValueMatches(string left, string right)
         {
             if (string.Compare(left, right, StringComparison.OrdinalIgnoreCase) == 0)
+            {
                 return true;
+            }
 
             if (string.Compare(left, right.SlugifyString(), StringComparison.OrdinalIgnoreCase) == 0)
+            {
                 return true;
+            }
 
             if (left == null)
+            {
                 return true;
+            }
 
             return false;
         }
@@ -74,7 +85,9 @@ namespace CmsWeb.Areas.People.Models
             try
             {
                 if (string.IsNullOrWhiteSpace(_xmlContent))
+                {
                     return new List<ContactExtraLocation>();
+                }
 
                 var xml = XDocument.Parse(_xmlContent);
 

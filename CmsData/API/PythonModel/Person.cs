@@ -355,5 +355,19 @@ namespace CmsData
         {
             return FindAddPerson((string)first, (string)last, (string)dob, (string)email, (string)phone).PeopleId;
         }
+        public int? FindPersonId(dynamic first, dynamic last, dynamic dob, dynamic email, dynamic phone)
+        {
+            string digits = (string)phone;
+
+            var list = db.FindPerson((string)first, (string)last, null, (string)email, digits.GetDigits()).ToList();
+            if (list.Count > 0)
+            {
+                return list[0].PeopleId ?? 0;
+            }
+            else
+            {
+                return null;
+            }
+        }
     }
 }

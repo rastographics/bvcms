@@ -29,14 +29,14 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CmsWeb</RootNamespace>
     <AssemblyName>CmsWeb</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>4.0</OldToolsVersion>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <TargetFrameworkProfile />
-    <MvcBuildViews>false</MvcBuildViews>
+    <MvcBuildViews>true</MvcBuildViews>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -178,7 +178,7 @@
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.8.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.8\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.CSharp" />    
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Dynamic, Version=1.2.0.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
       <HintPath>..\packages\DynamicLanguageRuntime.1.2.1\lib\net45\Microsoft.Dynamic.dll</HintPath>
     </Reference>
@@ -239,6 +239,15 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="RestSharp, Version=106.2.1.0, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
       <HintPath>..\packages\RestSharp.106.2.1\lib\net452\RestSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="SimpleInjector, Version=4.4.0.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
+      <HintPath>..\packages\SimpleInjector.4.4.0\lib\net45\SimpleInjector.dll</HintPath>
+    </Reference>
+    <Reference Include="SimpleInjector.Integration.Web, Version=4.4.0.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
+      <HintPath>..\packages\SimpleInjector.Integration.Web.4.4.0\lib\net40\SimpleInjector.Integration.Web.dll</HintPath>
+    </Reference>
+    <Reference Include="SimpleInjector.Integration.Web.Mvc, Version=4.4.0.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
+      <HintPath>..\packages\SimpleInjector.Integration.Web.Mvc.4.4.0\lib\net40\SimpleInjector.Integration.Web.Mvc.dll</HintPath>
     </Reference>
     <Reference Include="SimpleRESTServices, Version=1.3.0.0, Culture=neutral, PublicKeyToken=541c51dcbcf0ec3c, processorArchitecture=MSIL">
       <HintPath>..\packages\SimpleRESTServices.1.3.0.2\lib\net40\SimpleRESTServices.dll</HintPath>
@@ -389,6 +398,7 @@
   <ItemGroup>
     <Compile Include="App_Start\ApiMessageLoggingHandler.cs" />
     <Compile Include="App_Start\ApiAuthorizeAttribute.cs" />
+    <Compile Include="App_Start\DependencyConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Areas\Coordinator\Models\CheckinActionDto.cs" />
@@ -451,6 +461,14 @@
     <Compile Include="Areas\Dialog\Models\SearchOrgsModel.cs" />
     <Compile Include="Areas\Dialog\Models\SearchUsersModel.cs" />
     <Compile Include="Areas\Dialog\Models\TransactionHistoryModel.cs" />
+    <Compile Include="Areas\Figures\Controllers\FiguresController.cs" />
+    <Compile Include="Areas\Figures\FiguresAreaRegistration.cs" />
+    <Compile Include="Areas\Figures\Models\DivViewModel.cs" />
+    <Compile Include="Areas\Figures\Models\FundViewModel.cs" />
+    <Compile Include="Areas\Figures\Models\GoogleChartsDataTable.cs" />
+    <Compile Include="Areas\Figures\Models\OrgViewModel.cs" />
+    <Compile Include="Areas\Figures\Models\ProgDivOrgModel.cs" />
+    <Compile Include="Areas\Figures\Models\ProgViewModel.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\AchImporter.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\ForestvilleImporter.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\LongViewHeightsImporter.cs" />
@@ -868,6 +886,7 @@
     <Compile Include="Controllers\ScriptController.cs" />
     <Compile Include="Controllers\MobileAppMenuController.cs" />
     <Compile Include="Controllers\WebHookController.cs" />
+    <Compile Include="Lifecycle\RequestManager.cs" />
     <Compile Include="Models\Api\ApiChAiGift.cs" />
     <Compile Include="Models\Api\ApiOrganization.cs" />
     <Compile Include="Models\Api\ApiLookup.cs" />
@@ -1068,7 +1087,25 @@
     <Compile Include="Code\PaymentValidator.cs" />
     <Compile Include="Code\SmartBinder.cs" />
     <Compile Include="Code\Image.cs" />
+    <Compile Include="Services\CommunicationService.cs" />
+    <Compile Include="Services\ConfigurationProvider.cs" />
+    <Compile Include="Services\ICommunicationService.cs" />
+    <Compile Include="Services\IConfigurationProvider.cs" />
+    <Compile Include="Services\ILoggingService.cs" />
+    <Compile Include="Services\ITokenizationService.cs" />
+    <Compile Include="Services\LoggingService.cs" />
+    <Compile Include="Services\TokenizationService.cs" />
     <Content Include="Areas\Dialog\Views\AddToOrgFromTag\Index.cshtml" />
+    <Content Include="Areas\Figures\Views\Figures\AttendanceChartDisplayView.cshtml" />
+    <Content Include="Areas\Figures\Views\Figures\ChartDisplayView.cshtml" />
+    <Content Include="Areas\Figures\Views\Figures\DivisionView.cshtml" />
+    <Content Include="Areas\Figures\Views\Figures\FundView.cshtml" />
+    <Content Include="Areas\Figures\Views\Figures\Index.cshtml" />
+    <Content Include="Areas\Figures\Views\Figures\OrganizationView.cshtml" />
+    <Content Include="Areas\Figures\Views\Figures\ProgramView.cshtml" />
+    <Content Include="Areas\Figures\Views\Figures\RefineAttendanceView.cshtml" />
+    <Content Include="Areas\Figures\Views\Figures\RefineFundView.cshtml" />
+    <Content Include="Areas\Figures\Views\Index.cshtml" />
     <Content Include="Areas\Main\Views\Email\SelectTemplate.cshtml" />
     <Content Include="Areas\Main\Views\Email\Compose.cshtml" />
     <Content Include="Areas\Manage\Views\Display\EditTemplate.cshtml" />
@@ -1592,6 +1629,7 @@
     <Content Include="Content\touchpoint\lib\jquery-globalize\js\cultures\globalize.culture.zu.js" />
     <Content Include="Content\touchpoint\lib\jquery-globalize\js\cultures\globalize.cultures.js" />
     <Content Include="Content\touchpoint\lib\jquery-globalize\js\globalize.js" />
+    <Content Include="Content\touchpoint\lib\jquery-multi-select\css\multi-select.css" />
     <Content Include="Content\touchpoint\lib\jquery-scrollintoview\js\jquery.scrollintoview.js" />
     <Content Include="Content\touchpoint\lib\jquery-sortable-min.js" />
     <Content Include="Content\touchpoint\lib\jquery-ui-custom\css\images\ui-bg_flat_0_aaaaaa_40x100.png" />
@@ -1711,6 +1749,8 @@
     <Content Include="Areas\Manage\Views\Batch\BatchUpdate.cshtml" />
     <Content Include="Areas\Manage\Views\Batch\UpdateRegOptions.cshtml" />
     <Content Include="Content\VitalStats.py" />
+    <Content Include="Lib\ensurepip\_bundled\setuptools-20.10.1-py2.py3-none-any.whl" />
+    <Content Include="Lib\ensurepip\_bundled\pip-8.1.1-py2.py3-none-any.whl" />
     <Content Include="Areas\Dialog\Views\GetCheckImage\GetCheckImage.cshtml" />
     <Content Include="Areas\People\Views\Person\Giving\CustomStatments.cshtml" />
     <Content Include="Areas\Search\Views\SavedQuery\PythonCode.cshtml" />
@@ -1732,9 +1772,14 @@
     <Content Include="Areas\Org\Views\OrgGroups\_OrgScheduleSelect.cshtml" />
     <Content Include="Areas\Org\Views\OrgGroups\_SubgroupFormBody.cshtml" />
     <Content Include="Areas\Finance\Views\FinanceReports\ChaiDonorsReport.cshtml" />
+    <Content Include="Content\touchpoint\lib\jquery-multi-select\js\jquery.multi-select.js" />
+    <Content Include="Content\touchpoint\lib\jquery-multi-select\css\multi-select.dev.css" />
+    <Content Include="Content\touchpoint\lib\jquery-multi-select\css\multi-select.dist.css" />
     <Content Include="Areas\Setup\Views\Pushpay\Finish.cshtml" />
     <Content Include="Areas\Setup\Views\Twilio\DeleteGroupDialog.cshtml" />
     <Content Include="Content\touchpoint\js\polyfills.urlSearchParams.js" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\OnePageGiving\NotActive.cshtml" />
+    <Content Include="Areas\Figures\Web.config" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\staging.pubxml" />
     <None Include="Properties\PublishProfiles\TeamCity.pubxml" />
@@ -2504,7 +2549,9 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <Content Include="Views\Shared\Menu\ReportsMenuCustom.xml" />
-    <Content Include="Views\Shared\Menu\ReportsMenu.xml" />
+    <Content Include="Views\Shared\Menu\ReportsMenu.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Views\Shared\Pager3.cshtml" />
     <Content Include="Views\Shared\NotFound.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\Boolean.cshtml" />
@@ -3274,6 +3321,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Areas\Dialog\Views\Shared\" />
+    <Folder Include="Areas\Figures\Views\Shared\" />
     <Folder Include="Areas\Finance\Views\Shared\" />
     <Folder Include="Areas\Main\Views\Shared\" />
     <Folder Include="Areas\Manage\Views\Shared\" />

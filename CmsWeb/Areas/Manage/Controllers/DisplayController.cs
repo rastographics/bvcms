@@ -4,29 +4,28 @@
  * you may not use this code except in compliance with the License.
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.IO;
-using System.Text;
-using System.Web.Mvc;
-using System.Web.UI;
-using System.Windows.Forms;
 using CmsData;
 using CmsData.Codes;
-using UtilityExtensions;
+using CmsWeb.Code;
+using CmsWeb.Lifecycle;
 using CmsWeb.Models;
+using Elmah;
+using System;
+using System.Data;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
+using System.IO;
+using System.Linq;
+using System.Text;
 // Used for HTML Image Capture
 using System.Threading;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.Drawing.Drawing2D;
-using System.Linq;
 using System.Web;
+using System.Web.Mvc;
+using System.Web.UI;
 using System.Web.UI.WebControls;
-using CmsWeb.Code;
-using Dapper;
-using Elmah;
+using System.Windows.Forms;
+using UtilityExtensions;
 using Content = CmsData.Content;
 using Encoder = System.Drawing.Imaging.Encoder;
 using Image = System.Drawing.Image;
@@ -38,6 +37,10 @@ namespace CmsWeb.Areas.Manage.Controllers
     [RouteArea("Manage", AreaPrefix = "Display"), Route("{action}/{id?}")]
     public class DisplayController : CmsStaffController
     {
+        public DisplayController(IRequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [Route("~/Display")]
         [Route("~/Manage/Display")]
         public ActionResult Index()
@@ -48,10 +51,15 @@ namespace CmsWeb.Areas.Manage.Controllers
         [HttpPost]
         public ActionResult SetContentKeywordFilter(string keywordfilter, string tab)
         {
-            if(keywordfilter.HasValue())
+            if (keywordfilter.HasValue())
+            {
                 Session["ContentKeywordFilter"] = keywordfilter.trim();
+            }
             else
+            {
                 Session.Remove("ContentKeywordFilter");
+            }
+
             return Redirect($"/Display#tab_{tab}");
         }
 
@@ -59,19 +67,23 @@ namespace CmsWeb.Areas.Manage.Controllers
         public ActionResult ContentEdit(int? id, bool? snippet)
         {
             if (!id.HasValue)
+            {
                 throw new HttpException(404, "No ID found.");
+            }
 
-            var q = from c in DbUtil.Db.Contents
+            var q = from c in CurrentDatabase.Contents
                     where c.Id == id.Value
-                    select new {content = c, keywords = string.Join(",", c.ContentKeyWords.Select(vv => vv.Word))};
+                    select new { content = c, keywords = string.Join(",", c.ContentKeyWords.Select(vv => vv.Word)) };
             var i = q.SingleOrDefault();
-            if(i == null)
+            if (i == null)
+            {
                 throw new HttpException(404, "No ID found.");
+            }
 
             if (snippet == true)
             {
                 i.content.Snippet = true;
-                DbUtil.Db.SubmitChanges();
+                CurrentDatabase.SubmitChanges();
             }
             ViewBag.ContentKeywords = i.keywords;
             return RedirectEdit(i.content);
@@ -79,11 +91,16 @@ namespace CmsWeb.Areas.Manage.Controllers
         public ActionResult Content(int? id)
         {
             if (!id.HasValue)
+            {
                 throw new HttpException(404, "No ID found.");
+            }
 
             var content = DbUtil.ContentFromID(id.Value);
             if (content == null)
+            {
                 throw new HttpException(404, "No ID found.");
+            }
+
             return Content(content.Body);
         }
 
@@ -98,11 +115,13 @@ namespace CmsWeb.Areas.Manage.Controllers
             content.Body = "";
             content.DateCreated = DateTime.Now;
             var ContentKeywordFilter = Session["ContentKeywordFilter"] as string;
-            if(ContentKeywordFilter.HasValue())
-                content.SetKeyWords(DbUtil.Db, new []{ContentKeywordFilter});
+            if (ContentKeywordFilter.HasValue())
+            {
+                content.SetKeyWords(CurrentDatabase, new[] { ContentKeywordFilter });
+            }
 
-            DbUtil.Db.Contents.InsertOnSubmit(content);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.Contents.InsertOnSubmit(content);
+            CurrentDatabase.SubmitChanges();
             ViewBag.ContentKeywords = ContentKeywordFilter ?? "";
 
             return RedirectEdit(content);
@@ -118,7 +137,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             content.RemoveGrammarly();
             content.RoleID = roleid ?? 0;
             content.Snippet = snippet;
-            content.SetKeyWords(DbUtil.Db, contentKeyWords.SplitStr(",").Select(vv => vv.trim()).ToArray());
+            content.SetKeyWords(CurrentDatabase, contentKeyWords.SplitStr(",").Select(vv => vv.trim()).ToArray());
 
             if (content.TypeID == ContentTypeCode.TypeEmailTemplate)
             {
@@ -127,7 +146,10 @@ namespace CmsWeb.Areas.Manage.Controllers
                     var captureWebPageBytes = CaptureWebPageBytes(body, 100, 150);
                     var ii = ImageData.Image.UpdateImageFromBits(content.ThumbID, captureWebPageBytes);
                     if (ii == null)
+                    {
                         content.ThumbID = ImageData.Image.NewImageFromBits(captureWebPageBytes).Id;
+                    }
+
                     content.DateCreated = DateTime.Now;
                 }
                 catch (Exception ex)
@@ -136,7 +158,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                     errorLog.Log(new Error(ex));
                 }
             }
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
 
             if (string.Compare(content.Name, "CustomReportsMenu", StringComparison.OrdinalIgnoreCase) == 0)
             {
@@ -147,36 +169,44 @@ namespace CmsWeb.Areas.Manage.Controllers
                 catch (Exception ex)
                 {
                     if (ex is System.Xml.XmlException)
+                    {
                         return Content(Util.EndShowMessage(ex.Message, "javascript: history.go(-1)", "There is invalid XML in this document. Go Back to Repair"));
+                    }
                 }
             }
             else if (string.Compare(content.Name, "CustomReports", StringComparison.OrdinalIgnoreCase) == 0)
             {
                 try
                 {
-                    var list = DbUtil.Db.ViewCustomScriptRoles.ToList();
+                    var list = CurrentDatabase.ViewCustomScriptRoles.ToList();
                 }
                 catch (Exception ex)
                 {
                     if (ex.Message.Contains("XML parsing", ignoreCase: true))
+                    {
                         return Content(Util.EndShowMessage(ex.InnerException?.Message, "javascript: history.go(-1)", "There is invalid XML in this document. Go Back to Repair"));
+                    }
                 }
             }
             else if (string.Compare(content.Name, "StandardExtraValues2", StringComparison.OrdinalIgnoreCase) == 0)
             {
                 try
                 {
-                    CmsData.ExtraValue.Views.GetStandardExtraValues(DbUtil.Db, "People");
+                    CmsData.ExtraValue.Views.GetStandardExtraValues(CurrentDatabase, "People");
                 }
                 catch (InvalidOperationException ex)
                 {
                     if (ex.InnerException is System.Xml.XmlException)
+                    {
                         return Content(Util.EndShowMessage(ex.InnerException.Message, "javascript: history.go(-1)", "There is invalid XML in this document. Go Back to Repair"));
+                    }
                 }
             }
 
             if (stayaftersave == "true")
+            {
                 return RedirectToAction("ContentEdit", new { id, snippet });
+            }
 
             var url = GetIndexTabUrl(content);
             return Redirect(url);
@@ -185,8 +215,8 @@ namespace CmsWeb.Areas.Manage.Controllers
         public ActionResult ContentDelete(int id)
         {
             var content = DbUtil.ContentFromID(id);
-            DbUtil.Db.ExecuteCommand("DELETE FROM dbo.ContentKeywords WHERE Id = {0}", id);
-            DbUtil.Db.ExecuteCommand("DELETE FROM dbo.Content WHERE Id = {0}", id);
+            CurrentDatabase.ExecuteCommand("DELETE FROM dbo.ContentKeywords WHERE Id = {0}", id);
+            CurrentDatabase.ExecuteCommand("DELETE FROM dbo.Content WHERE Id = {0}", id);
             var url = GetIndexTabUrl(content);
             return Redirect(url);
         }
@@ -194,7 +224,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         public ActionResult ContentDeleteDrafts(string[] draftID)
         {
             string deleteList = String.Join(",", draftID);
-            DbUtil.Db.ExecuteCommand("DELETE FROM dbo.Content WHERE Id IN(" + deleteList + ")", "");
+            CurrentDatabase.ExecuteCommand("DELETE FROM dbo.Content WHERE Id IN(" + deleteList + ")", "");
             return Redirect("/Display#tab_savedDrafts");
         }
 
@@ -213,7 +243,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                     return View("EditSqlScript", cContent);
 
                 case ContentTypeCode.TypePythonScript:
-                    ViewBag.SimpleTextarea = DbUtil.Db.UserPreference("SimpleTextarea", "false");
+                    ViewBag.SimpleTextarea = CurrentDatabase.UserPreference("SimpleTextarea", "false");
                     return View("EditPythonScript", cContent);
 
                 case ContentTypeCode.TypeEmailTemplate:
@@ -248,9 +278,9 @@ namespace CmsWeb.Areas.Manage.Controllers
         [HttpPost]
         public ActionResult SavePythonScript(string name, string body, string contentKeyWords)
         {
-            var content = DbUtil.Db.Content(name, "", ContentTypeCode.TypePythonScript);
+            var content = CurrentDatabase.Content(name, "", ContentTypeCode.TypePythonScript);
             content.Body = body;
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
             return new EmptyResult();
         }
 
@@ -286,7 +316,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             return data;
         }
 
-        static byte[] CaptureWebPageBytesP(string body, int width, int height)
+        private static byte[] CaptureWebPageBytesP(string body, int width, int height)
         {
             byte[] data;
 
@@ -297,7 +327,9 @@ namespace CmsWeb.Areas.Manage.Controllers
 
                 web.DocumentText = body;
                 while (web.ReadyState != System.Windows.Forms.WebBrowserReadyState.Complete)
+                {
                     System.Windows.Forms.Application.DoEvents();
+                }
 
                 web.Width = web.Document.Body.ScrollRectangle.Width;
                 web.Height = web.Document.Body.ScrollRectangle.Height;
@@ -342,8 +374,15 @@ namespace CmsWeb.Areas.Manage.Controllers
                         }
                         finally
                         {
-                            if (encoderParams != null) encoderParams.Dispose();
-                            if (qualityParam != null) qualityParam.Dispose();
+                            if (encoderParams != null)
+                            {
+                                encoderParams.Dispose();
+                            }
+
+                            if (qualityParam != null)
+                            {
+                                qualityParam.Dispose();
+                            }
                         }
                         b.Save(stream, System.Drawing.Imaging.ImageFormat.Jpeg);
                         stream.Position = 0;
@@ -363,7 +402,9 @@ namespace CmsWeb.Areas.Manage.Controllers
             for (j = 0; j < encoders.Length; ++j)
             {
                 if (encoders[j].MimeType == mimeType)
+                {
                     return encoders[j];
+                }
             }
             return null;
         }

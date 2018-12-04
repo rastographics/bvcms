@@ -1,9 +1,9 @@
+using CmsData;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Xml.Serialization;
-using CmsData;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.OnlineReg.Models
@@ -71,7 +71,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
             get
             {
                 if (_transaction == null && TranId.HasValue)
+                {
                     _transaction = DbUtil.Db.Transactions.SingleOrDefault(tt => tt.Id == TranId);
+                }
+
                 return _transaction;
             }
         }
@@ -82,7 +85,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
             get
             {
                 if (_user == null && UserPeopleId.HasValue)
+                {
                     _user = DbUtil.Db.LoadPersonById(UserPeopleId.Value);
+                }
+
                 return _user;
             }
         }

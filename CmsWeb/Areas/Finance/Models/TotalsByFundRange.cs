@@ -1,15 +1,10 @@
+using CmsData;
+using CmsData.API;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
-using CmsData;
-using CmsData.API;
-using CmsData.Codes;
-using CmsData.View;
-using CmsWeb.Code;
 using UtilityExtensions;
-using System.Text;
-using System.Web.Security;
 
 namespace CmsWeb.Models
 {
@@ -29,7 +24,10 @@ namespace CmsWeb.Models
             var today = Util.Now.Date;
             var first = new DateTime(today.Year, today.Month, 1);
             if (today.Day < 8)
+            {
                 first = first.AddMonths(-1);
+            }
+
             Dt1 = first;
             Dt2 = first.AddMonths(1).AddDays(-1);
         }

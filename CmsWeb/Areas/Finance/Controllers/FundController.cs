@@ -1,20 +1,25 @@
+using CmsData;
+using CmsWeb.Lifecycle;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
-using CmsData;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Finance.Controllers
 {
     [Authorize(Roles = "Admin,Finance,FinanceViewOnly")]
-    [RouteArea("Finance", AreaPrefix= "Fund"), Route("{action}/{id?}")]
+    [RouteArea("Finance", AreaPrefix = "Fund"), Route("{action}/{id?}")]
     public class FundController : CmsStaffController
     {
+        public FundController(IRequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [Route("~/Funds")]
         public ActionResult Index(string sort, int? status)
         {
-            var m = from f in DbUtil.Db.ContributionFunds
+            var m = from f in CurrentDatabase.ContributionFunds
                     where f.FundStatusId == (status ?? 1)
                     select f;
             ViewBag.status = status ?? 1;
@@ -64,16 +69,22 @@ namespace CmsWeb.Areas.Finance.Controllers
         {
             var id = fundid.ToInt();
             if (id == 0)
+            {
                 return Json(new { error = "expected an integer (account number)" });
-            var f = DbUtil.Db.ContributionFunds.SingleOrDefault(ff => ff.FundId == id);
+            }
+
+            var f = CurrentDatabase.ContributionFunds.SingleOrDefault(ff => ff.FundId == id);
             if (f != null)
+            {
                 return Json(new { error = $"fund already exists: {f.FundName} ({fundid})" });
+            }
+
             try
             {
                 f = new ContributionFund
                 {
                     FundName = "new fund",
-                    FundId=id,
+                    FundId = id,
                     CreatedBy = Util.UserId1,
                     CreatedDate = Util.Now,
                     FundStatusId = 1,
@@ -81,42 +92,51 @@ namespace CmsWeb.Areas.Finance.Controllers
                     FundPledgeFlag = false,
                     NonTaxDeductible = false
                 };
-                DbUtil.Db.ContributionFunds.InsertOnSubmit(f);
-                DbUtil.Db.SubmitChanges();
-                return Json(new {edit = "/Fund/Edit/" + id});
+                CurrentDatabase.ContributionFunds.InsertOnSubmit(f);
+                CurrentDatabase.SubmitChanges();
+                return Json(new { edit = "/Fund/Edit/" + id });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                return Json(new {error = ex.Message});
+                return Json(new { error = ex.Message });
             }
         }
 
         public ActionResult Edit(int id)
         {
-            var fund = DbUtil.Db.ContributionFunds.SingleOrDefault(f => f.FundId == id);
+            var fund = CurrentDatabase.ContributionFunds.SingleOrDefault(f => f.FundId == id);
             if (fund == null)
+            {
                 RedirectToAction("Index");
+            }
+
             return View(fund);
         }
 
         public ActionResult Delete(int id)
         {
-            var f = DbUtil.Db.ContributionFunds.SingleOrDefault(fu => fu.FundId == id);
+            var f = CurrentDatabase.ContributionFunds.SingleOrDefault(fu => fu.FundId == id);
             if (f != null)
-                DbUtil.Db.ContributionFunds.DeleteOnSubmit(f);
-            DbUtil.Db.SubmitChanges();
+            {
+                CurrentDatabase.ContributionFunds.DeleteOnSubmit(f);
+            }
+
+            CurrentDatabase.SubmitChanges();
             return RedirectToAction("Index");
         }
 
         [HttpPost]
         public ActionResult Update(int fundId)
         {
-            var fund = DbUtil.Db.ContributionFunds.SingleOrDefault(f => f.FundId == fundId);
+            var fund = CurrentDatabase.ContributionFunds.SingleOrDefault(f => f.FundId == fundId);
             if (fund != null)
+            {
                 UpdateModel(fund);
+            }
+
             if (ModelState.IsValid)
             {
-                DbUtil.Db.SubmitChanges();
+                CurrentDatabase.SubmitChanges();
                 TempData["SuccessMessage"] = "Fund was successfully saved.";
                 return RedirectToAction("Index");
             }
@@ -127,9 +147,9 @@ namespace CmsWeb.Areas.Finance.Controllers
         public ContentResult EditOrder(string id, int? value)
         {
             var iid = id.Substring(1).ToInt();
-            var fund = DbUtil.Db.ContributionFunds.SingleOrDefault(m => m.FundId == iid);
+            var fund = CurrentDatabase.ContributionFunds.SingleOrDefault(m => m.FundId == iid);
             fund.OnlineSort = value;
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
             return Content(value.ToString());
         }
 
@@ -137,9 +157,9 @@ namespace CmsWeb.Areas.Finance.Controllers
         public ContentResult EditStatus(string id, int value)
         {
             var iid = id.Substring(1).ToInt();
-            var fund = DbUtil.Db.ContributionFunds.SingleOrDefault(m => m.FundId == iid);
+            var fund = CurrentDatabase.ContributionFunds.SingleOrDefault(m => m.FundId == iid);
             fund.FundStatusId = value;
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
             return Content(value == 1 ? "Open" : "Closed");
         }
 
@@ -162,6 +182,7 @@ namespace CmsWeb.Areas.Finance.Controllers
 
         public static List<SelectListItem> GetRolesList()
         {
+            //todo: static?
             var roles = DbUtil.Db.Roles.OrderBy(r => r.RoleName).Select(r => new SelectListItem { Value = r.RoleId.ToString(), Text = r.RoleName }).ToList();
             roles.Insert(0, new SelectListItem { Value = "-1", Text = "(not assigned)" });
             roles.Insert(0, new SelectListItem { Value = "0", Text = "(not specified)", Selected = true });
