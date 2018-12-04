@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
@@ -11,25 +12,44 @@ namespace CmsData.Classes.GoogleCloudMessaging
 {
     public class GCMHelper
     {
-        public static int TYPE_TASK = 1;
+        private string _host;
+        private readonly CMSDataContext _dataContext;
 
-        public static int ACTION_REFRESH = 1;
-        public static int ACTION_REFRESH_AND_NOTIFY = 2;
-
+        public const int ACTION_REFRESH = 1;
+        public const int ACTION_REFRESH_AND_NOTIFY = 2;
+        public const int TYPE_TASK = 1;
         private const string GCM_URL = "https://fcm.googleapis.com/fcm/send";
 
-        private static void send(GCMMessage message)
+        public GCMHelper(string host, CMSDataContext db)
         {
-            if (!Util.Host.HasValue())
-                return ;
-            string gcmkey = DbUtil.Db.Setting("GCMKey", ConfigurationManager.AppSettings["GCMKey"]);
+            if (!host.HasValue())
+            {
+                throw new ArgumentException("Host must be supplied.", nameof(host));
+            }
 
-            if (message.registration_ids.Count == 0 || gcmkey.Length == 0) return;
+            _host = host;
+            _dataContext = db ?? throw new ArgumentException("Db must be supplied.", nameof(db));
+        }
+
+        private void send(GCMMessage message)
+        {
+            if (!_host.HasValue())
+            {
+                return;
+            }
+
+            string gcmkey = _dataContext.Setting("GCMKey", ConfigurationManager.AppSettings["GCMKey"]);
+
+            if (message.registration_ids.Count == 0 || gcmkey.Length == 0)
+            {
+                return;
+            }
 
             HostingEnvironment.QueueBackgroundWorkItem(ct =>
             {
+                var threadDb = DbUtil.Create(_host);
+
                 string json = JsonConvert.SerializeObject(message);
-                string host = Util.Host;
 
                 using (var webClient = new WebClient())
                 {
@@ -41,81 +61,91 @@ namespace CmsData.Classes.GoogleCloudMessaging
 
                     GCMResponse response = JsonConvert.DeserializeObject<GCMResponse>(results);
 
-                    var Db = DbUtil.Create(host);
-
                     for (int iX = 0; iX < message.registration_ids.Count; iX++)
                     {
-                        if (response.results.Count > iX)
+                        if (response.results.Count <= iX)
                         {
-                            string registrationId = message.registration_ids[iX];
-                            GCMResponseResult result = response.results[iX];
+                            continue;
+                        }
 
-                            if (!string.IsNullOrEmpty(result.error))
+                        string registrationId = message.registration_ids[iX];
+                        GCMResponseResult result = response.results[iX];
+
+                        if (!string.IsNullOrEmpty(result.error))
+                        {
+                            switch (result.error)
                             {
-                                switch (result.error)
-                                {
-                                    case "InvalidRegistration":
-                                    case "NotRegistered":
+                                case "InvalidRegistration":
+                                case "NotRegistered":
                                     {
-                                        var record = (from r in Db.MobileAppPushRegistrations
+                                        var record = (from r in threadDb.MobileAppPushRegistrations
                                                       where r.RegistrationId == registrationId
                                                       select r).SingleOrDefault();
 
                                         if (record != null)
-                                            Db.MobileAppPushRegistrations.DeleteOnSubmit(record);
+                                        {
+                                            threadDb.MobileAppPushRegistrations.DeleteOnSubmit(record);
+                                        }
 
                                         break;
                                     }
-                                }
                             }
-                            else if (result.error != null && result.registration_id.Length > 0)
-                            {
-                                var record = (from r in Db.MobileAppPushRegistrations
-                                              where r.RegistrationId == registrationId
-                                              select r).SingleOrDefault();
+                        }
+                        else if (result.error != null && result.registration_id.Length > 0)
+                        {
+                            var record = (from r in threadDb.MobileAppPushRegistrations
+                                          where r.RegistrationId == registrationId
+                                          select r).SingleOrDefault();
 
-                                if (record != null)
-                                    record.RegistrationId = result.registration_id;
+                            if (record != null)
+                            {
+                                record.RegistrationId = result.registration_id;
                             }
                         }
                     }
 
-                    Db.SubmitChanges();
+                    threadDb.SubmitChanges();
                 }
             });
         }
 
-        public static void sendRefresh(int peopleID, int type)
+        public void sendRefresh(int peopleID, int type)
         {
             GCMData data = new GCMData(type, ACTION_REFRESH, 0, "", "");
-            GCMMessage msg = new GCMMessage(peopleID, null, data, null);
+            GCMMessage msg = new GCMMessage(peopleID, null, data, null, _host, _dataContext);
             send(msg);
         }
 
-        public static void sendRefresh(List<int> peopleIDs, int type)
+        public void sendRefresh(List<int> peopleIDs, int type)
         {
-            if (peopleIDs.Count == 0) return;
+            if (peopleIDs.Count == 0)
+            {
+                return;
+            }
 
             GCMData data = new GCMData(type, ACTION_REFRESH, 0, "", "");
-            GCMMessage msg = new GCMMessage(peopleIDs, null, data, null);
+            GCMMessage msg = new GCMMessage(peopleIDs, null, data, null, _host, _dataContext);
             send(msg);
         }
 
-        public static void sendNotification(int peopleID, int type, int id, string title, string message)
+        public void sendNotification(int peopleID, int type, int id, string title, string message)
         {
             GCMPayload notification = new GCMPayload(title, message);
             GCMData data = new GCMData(type, ACTION_REFRESH_AND_NOTIFY, id, title, message);
-            GCMMessage msg = new GCMMessage(peopleID, null, data, notification);
+            GCMMessage msg = new GCMMessage(peopleID, null, data, notification, _host, _dataContext);
             send(msg);
         }
 
-        public static void sendNotification(List<int> peopleIDs, int type, int id, string title, string message)
+        public void sendNotification(List<int> peopleIDs, int type, int id, string title, string message)
         {
-            if (peopleIDs.Count == 0) return;
+            if (peopleIDs.Count == 0)
+            {
+                return;
+            }
 
             GCMPayload notification = new GCMPayload(title, message);
             GCMData data = new GCMData(type, ACTION_REFRESH_AND_NOTIFY, id, title, message);
-            GCMMessage msg = new GCMMessage(peopleIDs, null, data, notification);
+            GCMMessage msg = new GCMMessage(peopleIDs, null, data, notification, _host, _dataContext);
             send(msg);
         }
     }
