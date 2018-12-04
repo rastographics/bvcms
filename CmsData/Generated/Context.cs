@@ -1632,15 +1632,21 @@ namespace CmsData
 		{
 			get	{ return this.GetTable<Program>(); }
 
-		}
+        }
 
-		public Table<Promotion> Promotions
-		{
-			get	{ return this.GetTable<Promotion>(); }
+        public Table<Promotion> Promotions
+        {
+            get { return this.GetTable<Promotion>(); }
 
-		}
+        }
 
-		public Table<QBConnection> QBConnections
+        public Table<PushPayLog> PushPayLogs
+        {
+            get { return this.GetTable<PushPayLog>(); }
+
+        }
+
+        public Table<QBConnection> QBConnections
 		{
 			get	{ return this.GetTable<QBConnection>(); }
 
