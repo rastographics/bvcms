@@ -1295,6 +1295,7 @@
     <Content Include="Migrations\20181019_add_pushpay_pk.sql" />
     <Content Include="Migrations\20181015_add_pushpay_schema.sql" />
     <Content Include="Migrations\20181011_update_spouseId_function.sql" />
+    <Content Include="Migrations\20181128_upd_enrolled_before_the_meetingdate.sql" />
     <Content Include="Migrations\20181106_alter_SMSList_Message_column.sql" />
     <Content Include="Migrations\20181031_add_viewvolunteerapplication_role.sql" />
     <Content Include="Migrations\20181115_add_recurring_amounts_disabled_column.sql" />
