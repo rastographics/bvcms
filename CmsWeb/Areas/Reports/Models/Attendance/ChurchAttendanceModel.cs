@@ -10,7 +10,7 @@ namespace CmsWeb.Areas.Reports.Models
     public class ChurchAttendanceModel
     {
         public DateTime Sunday { get; set; }
-
+        public ChurchAttendanceModel() { }
         public ChurchAttendanceModel(DateTime sunday)
         {
             Sunday = sunday;

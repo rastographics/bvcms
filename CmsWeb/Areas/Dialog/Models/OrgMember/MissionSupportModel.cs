@@ -13,6 +13,7 @@ namespace CmsWeb.Areas.Dialog.Models
     {
         private int? orgId;
         private int? peopleId;
+        public MissionSupportModel() { }
         private void Populate()
         {
             var i = (from mm in DbUtil.Db.OrganizationMembers

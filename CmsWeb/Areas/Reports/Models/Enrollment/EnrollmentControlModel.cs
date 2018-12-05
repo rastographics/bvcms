@@ -15,7 +15,7 @@ using System.Linq;
 namespace CmsWeb.Areas.Reports.Models
 {
     public class EnrollmentControlModel
-    {
+    {        
         public class MemberInfo
         {
             public int Id { get; set; }
@@ -24,6 +24,7 @@ namespace CmsWeb.Areas.Reports.Models
             public string Location { get; set; }
             public string MemberType { get; set; }
         }
+        public EnrollmentControlModel() { }
         public static IEnumerable<MemberInfo> List(OrgSearchModel model, string na = "", bool usecurrenttag = false)
         {
             var orgs = model.FetchOrgs();

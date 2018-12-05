@@ -24,6 +24,8 @@ namespace CmsWeb.Models
         public string NewValue { get; set; }
         public int? Count { get; set; }
 
+        public UpdateFieldsModel() { }
+        
         public List<SelectListItem> Fields()
         {
             return new SelectList(new[]

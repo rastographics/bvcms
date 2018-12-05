@@ -28,7 +28,7 @@ namespace CmsWeb.Models
         internal List<dynamic> Datalist;
         internal Dictionary<string, string> Evtypes;
         internal string PeopleSheetName { get; set; }
-
+        public UploadPeopleModel() { }
         public UploadPeopleModel(string host, int peopleId, bool noupdate, bool testing = false)
         {
             Db2 = DbUtil.Create(host);

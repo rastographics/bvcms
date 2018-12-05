@@ -53,6 +53,7 @@ namespace CmsWeb.Models
 
         //        public string FormattedHtmlBody => TidyLib.FormatHtml(queue.Body);
 
+        public EmailModel() { }
 
         public FilterType FilterType { get; private set; }
 

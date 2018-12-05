@@ -6,6 +6,7 @@ namespace CmsWeb.Areas.People.Models
 {
     public class EmailSentModel : EmailModel
     {
+        public EmailSentModel() { }
         public override IQueryable<EmailQueue> DefineModelList()
         {
             var q = from e in DbUtil.Db.EmailQueues

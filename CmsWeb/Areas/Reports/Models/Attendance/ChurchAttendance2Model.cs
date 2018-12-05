@@ -14,7 +14,7 @@ namespace CmsWeb.Areas.Reports.Models
         public DateTime? Dt2 { get; set; }
 
         private readonly List<DateTime> weeks;
-
+        public ChurchAttendance2Model() { }
         public ChurchAttendance2Model(DateTime? dt1, DateTime? dt2, string skipWeeks)
         {
             Dt1 = dt1;

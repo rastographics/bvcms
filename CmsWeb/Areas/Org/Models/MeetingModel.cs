@@ -37,6 +37,7 @@ namespace CmsWeb.Areas.Org.Models
         public bool ShowOtherAttend => RoleChecker.HasSetting(SettingName.Meeting_ShowOtherAttend, true);
         public bool ShowCurrentMemberType => RoleChecker.HasSetting(SettingName.Meeting_ShowCurrentMemberType, true);
 
+        public MeetingModel() { }
         public MeetingModel(int id)
         {
             var i = (from m in DbUtil.Db.Meetings

@@ -28,6 +28,8 @@ namespace CmsWeb.Areas.Reports.Models
         private readonly Guid queryid;
         public readonly string Report;
 
+        public CustomReportsModel() { }
+
         public CustomReportsModel(CMSDataContext db, int? orgId = null)
         {
             this.db = db;

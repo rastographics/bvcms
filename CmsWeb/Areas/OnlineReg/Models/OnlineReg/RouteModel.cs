@@ -16,6 +16,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public string AmtDue;
         public Transaction Transaction;
 
+        public RouteModel() { }
         public static RouteModel ViewAction(string view)
         {
             return new RouteModel()

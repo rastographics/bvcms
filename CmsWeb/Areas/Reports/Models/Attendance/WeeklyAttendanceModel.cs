@@ -16,6 +16,7 @@ namespace CmsWeb.Areas.Reports.Models
 {
     public class WeeklyAttendanceModel : OrgSearchModel
     {
+        public WeeklyAttendanceModel() { }
         public IEnumerable<AttendInfo> Attendances()
         {
             var Orgs = FetchOrgs();

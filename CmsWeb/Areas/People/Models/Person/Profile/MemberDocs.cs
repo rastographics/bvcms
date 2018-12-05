@@ -42,7 +42,7 @@ namespace CmsWeb.Areas.People.Models
                 return "/Image/" + ThumbId;
             }
         }
-
+        public MemberDocModel() { }
         public static IEnumerable<MemberDocModel> DocForms(int id)
         {
             return from f in DbUtil.Db.MemberDocForms

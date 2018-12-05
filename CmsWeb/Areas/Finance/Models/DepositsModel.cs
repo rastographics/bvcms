@@ -15,7 +15,7 @@ namespace CmsWeb.Models
     public class DepositsModel
     {
         public DateTime Dt1 { get; set; }
-
+        public DepositsModel() { }
         public DepositsModel(DateTime dt1)
         {
             Dt1 = dt1;

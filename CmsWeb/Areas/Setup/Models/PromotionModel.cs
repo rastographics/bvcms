@@ -9,6 +9,7 @@ namespace CmsWeb.Areas.Setup.Models
 {
     public class PromotionModel
     {
+        public PromotionModel() { }
         public IEnumerable<Promotion> Promotions()
         {
             return DbUtil.Db.Promotions.OrderBy(p => p.Sort).ThenBy(p => p.Description);

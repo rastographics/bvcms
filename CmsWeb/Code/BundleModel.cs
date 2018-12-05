@@ -140,6 +140,9 @@ namespace CmsWeb.Models
             public int? Count { get; set; }
             public decimal? Amount { get; set; }
         }
+
+        public BundleModel() { }
+
         [DataObjectMethod(DataObjectMethodType.Select, true)]
         public IEnumerable<BundleInfo> FetchBundles(int startRowIndex, int maximumRows, string sortExpression)
         {

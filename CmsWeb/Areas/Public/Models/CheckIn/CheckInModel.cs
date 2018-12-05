@@ -12,6 +12,7 @@ namespace CmsWeb.Models
 {
     public class CheckInModel
     {
+        public CheckInModel() { }
         public string GetNextPrintJobs(string kiosks)
         {
             var a = (kiosks ?? "unknown").Replace(" ", "").Split(',');

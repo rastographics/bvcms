@@ -63,6 +63,7 @@ namespace CmsWeb.Areas.Org.Models.Org
 
     public class OrgSearchFieldsModel
     {
+        public OrgSearchFieldsModel() { }
         private static readonly List<string> standardFields = new List<string>()
         {
             "Name",

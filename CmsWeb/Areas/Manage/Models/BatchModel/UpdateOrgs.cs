@@ -8,6 +8,7 @@ namespace CmsWeb.Areas.Manage.Models.BatchModel
 {
     public partial class BatchModel
     {
+        public BatchModel() { }
         public static void UpdateOrgs(string text)
         {
             text = text.trim();

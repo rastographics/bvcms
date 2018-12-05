@@ -11,6 +11,7 @@ namespace CmsWeb.Areas.People.Models
     public class ContactorsModel
     {
         public Contact Contact;
+        public ContactorsModel() { }
         public ContactorsModel(int id)
         {
             Contact = DbUtil.Db.Contacts.SingleOrDefault(cc => cc.ContactId == id);

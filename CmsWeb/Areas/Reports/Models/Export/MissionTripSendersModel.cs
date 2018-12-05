@@ -24,6 +24,7 @@ namespace CmsWeb.Models
             public decimal? Amt { get; set; }
             public string NoticeSent { get; set; }
         }
+        public MissionTripSendersModel() { }
         public static EpplusResult List(int id)
         {
             return Result(SenderGifts(id.ToString()));

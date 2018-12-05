@@ -11,6 +11,8 @@ namespace CmsWeb.Areas.Manage.Models
         public Resource Resource { get; set; }
         public List<ResourceAttachment> Attachments { get; set; }
 
+        public ResourceModel() { }
+
         public ResourceModel(int resourceId)
         {
             ResourceId = resourceId;

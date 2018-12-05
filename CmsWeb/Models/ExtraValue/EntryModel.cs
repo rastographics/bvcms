@@ -11,7 +11,7 @@ namespace CmsWeb.Models.ExtraValues
         public CodeInfo Origin { get; set; }
         public CodeInfo EntryPoint { get; set; }
         public CodeInfo InterestPoint { get; set; }
-
+        public EntryModel() { }
         public EntryModel(int id)
         {
             var q = from p in DbUtil.Db.People

@@ -11,6 +11,7 @@ namespace CmsWeb.Areas.People.Models
         public override string AddContact { get { return "/Person2/AddContactReceived/" + PeopleId; } }
         public override string AddContactButton { get { return "Add Contact Received By This Person"; } }
 
+        public ContactsReceivedModel() { }
         override public IQueryable<Contact> DefineModelList()
         {
             return from c in FilteredModelList()

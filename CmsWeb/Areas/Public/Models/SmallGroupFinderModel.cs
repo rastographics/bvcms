@@ -61,6 +61,8 @@ namespace CmsWeb.Areas.Public.Models
 
         public bool UseShell { get; private set; }
 
+        public SmallGroupFinderModel() { }
+
         public SmallGroupFinderModel(Controller controller, bool useShell = true)
         {
             _controller = controller;

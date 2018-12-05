@@ -11,6 +11,7 @@ namespace CmsWeb.Areas.People.Models
     {
         public Person person { get; set; }
         public List<PotentialDup> MatchThis { get; set; }
+        public DuplicatesModel() { }
         public DuplicatesModel(int id)
         {
             person = DbUtil.Db.LoadPersonById(id);

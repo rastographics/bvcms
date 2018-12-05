@@ -54,6 +54,7 @@ namespace CmsWeb.Areas.People.Models
 
     public class InvolvementTableModel
     {
+        public InvolvementTableModel() { }
         public static List<InvolvementTableColumn> GetColumns(string page)
         {
             var columnset = GetColumnSet(page);

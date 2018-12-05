@@ -130,6 +130,7 @@ namespace CmsWeb.Areas.Dialog.Models
                 return list;
             }
         }
+        public NewResourceModel() { }
     }
 
     public class EditResourceModel

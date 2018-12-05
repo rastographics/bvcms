@@ -40,7 +40,7 @@ namespace CmsWeb.Models.ExtraValues
                       select p.BibleFellowshipClassId).SingleOrDefault();
             return qb;
         }
-
+        public ExtraValueModel() { }
         public ExtraValueModel(int id, string table)
             : this(id, table, null)
         {

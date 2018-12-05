@@ -17,7 +17,7 @@ namespace CmsWeb.Models
     {
         public int ProgramId { get; set; }
         public int? TagProgramId { get; set; }
-
+        public DivisionModel() { }
         public IEnumerable<DivisionInfo> DivisionList()
         {
             var q = from d in DbUtil.Db.Divisions

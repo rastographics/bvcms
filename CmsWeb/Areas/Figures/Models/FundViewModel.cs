@@ -17,5 +17,6 @@ namespace CmsWeb.Areas.Figures.Models
                 return new SelectList(Fundlist, "ID", "FundName");
             }
         }
+        public FundViewModel() { }
     }
 }

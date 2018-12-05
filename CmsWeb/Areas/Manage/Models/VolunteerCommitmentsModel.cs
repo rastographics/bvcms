@@ -66,6 +66,8 @@ namespace CmsWeb.Areas.Manage.Models
         }
         public List<TimeSlots.TimeSlot> TimeSlots { get; set; }
         public DragDropInfo ddinfo { get; set; }
+
+        public VolunteerCommitmentsModel() { }
         public VolunteerCommitmentsModel(int id)
         {
             OrgName = (from o in DbUtil.Db.Organizations where o.OrganizationId == id select o.OrganizationName).Single();

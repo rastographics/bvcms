@@ -26,6 +26,7 @@ namespace CmsWeb.Areas.Reports.Models
             public DateTime MeetingTime { get; set; }
             public string AttendType { get; set; }
         }
+        public CheckinControlModel() { }
         public IEnumerable<AttendInfo> list()
         {
             var orgs = FetchOrgs();

@@ -13,6 +13,7 @@ namespace CmsWeb.Models
 {
     public class ScriptModel
     {
+        public ScriptModel() { }
         internal static string RunScriptSql(string parameter, string body, DynamicParameters p, dynamic ViewBag)
         {
             if (!CanRunScript(body))

@@ -32,7 +32,7 @@ namespace CmsWeb.Models
             public DateTime? LetterDateRequested { get; set; }
             public DateTime? LetterDateReceived { get; set; }
         }
-
+        public MembershipExportModel() { }
         public static EpplusResult MembershipInfoList(Guid queryid)
         {
             var q = from p in DbUtil.Db.PeopleQuery(queryid)

@@ -14,6 +14,7 @@ namespace CmsWeb.Areas.Figures.Models
     {
         public Int32 Id { get; set; }
         public String OrgName { get; set; }
+        public OrgModel() { }
     }
 
     public class DivModel
@@ -21,6 +22,7 @@ namespace CmsWeb.Areas.Figures.Models
         public Int32 Id { get; set; }
         public String DivName { get; set; }
         public List<OrgModel> OrgList = new List<OrgModel>();
+        public DivModel() { }
     }
 
     public class ProgModel
@@ -28,12 +30,14 @@ namespace CmsWeb.Areas.Figures.Models
         public Int32 Id { get; set; }
         public String ProgName { get; set; }
         public List<DivModel> DivList = new List<DivModel>();
+        public ProgModel() { }
     }
 
     public class FundModel
     {
         public Int32 Id { get; set; }
         public String FundName { get; set; }
+        public FundModel() { }
     }
 
 }

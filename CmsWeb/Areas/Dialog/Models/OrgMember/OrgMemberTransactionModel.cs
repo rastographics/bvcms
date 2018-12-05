@@ -16,6 +16,7 @@ namespace CmsWeb.Areas.Dialog.Models
         private bool isMissionTrip;
         public CmsData.View.TransactionSummary TransactionSummary;
         public decimal Due;
+        public OrgMemberTransactionModel() { }
         private void Populate()
         {
             var q = from mm in DbUtil.Db.OrganizationMembers

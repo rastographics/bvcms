@@ -18,5 +18,6 @@ namespace CmsWeb.Models
         public CodeInfo Fund { get; set; }
 
         public CodeInfo FundSet { get; set; }
+        public DonorTotalSummaryOptionsModel() { }
     }
 }

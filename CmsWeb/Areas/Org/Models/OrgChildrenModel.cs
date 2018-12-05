@@ -27,6 +27,7 @@ namespace CmsWeb.Areas.Org.Models
             }
         }
 
+        public OrgChildrenModel() { }
         public IEnumerable<OrgInfo> FetchOrgList()
         {
             var showAllChildOrgs = DbUtil.Db.Setting("UX-ManageShowAllChildOrgs", true);

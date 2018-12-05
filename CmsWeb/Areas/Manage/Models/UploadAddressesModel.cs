@@ -15,6 +15,8 @@ namespace CmsWeb.Models
         public Dictionary<string, int> NcoaCols;
         private List<ChangeDetail> fsb;
 
+        public UploadAddressesModel() { }
+
         public UploadAddressesModel(CMSDataContext db, int peopleId)
         {
             this.db = db;

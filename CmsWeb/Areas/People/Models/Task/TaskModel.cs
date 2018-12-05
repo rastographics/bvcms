@@ -15,7 +15,7 @@ namespace CmsWeb.Areas.People.Models.Task
     {
         internal Person Who;
         private DateTime? SortDue { get; set; }
-
+        public TaskModel() { }
         public string About
         {
             get { return Who?.Name ?? ""; }

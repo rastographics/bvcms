@@ -18,5 +18,7 @@ namespace CmsWeb.Areas.Figures.Models
             }
         }
 
+        public DivViewModel() { }
+
     }
 }

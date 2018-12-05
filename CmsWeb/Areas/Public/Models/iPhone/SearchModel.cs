@@ -11,7 +11,7 @@ namespace CmsWeb.Models.iPhone
         public string Name { get; set; }
         public string Comm { get; set; }
         public string Addr { get; set; }
-
+        public SearchModel() { }
         public SearchModel(string name, string comm, string addr)
         {
             Name = name;

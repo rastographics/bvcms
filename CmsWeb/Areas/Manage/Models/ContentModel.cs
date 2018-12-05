@@ -13,7 +13,7 @@ namespace CmsWeb.Models
     {
         private string filter;
         public string Filter => filter ?? (filter = HttpContext.Current.Session["ContentKeywordFilter"] as string ?? "");
-
+        public ContentModel() { }
         public IQueryable<Content> fetchHTMLFiles()
         {
             return from c in DbUtil.Db.Contents
