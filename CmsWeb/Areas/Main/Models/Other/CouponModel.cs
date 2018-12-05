@@ -31,6 +31,7 @@ namespace CmsWeb.Models
         public string startdate { get; set; }
         public string enddate { get; set; }
 
+        public CouponModel() { }
         public string Registration()
         {
             return OnlineRegs().Single(r => r.Value == regid).Text;

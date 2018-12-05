@@ -11,6 +11,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 {
     public class SpecialRegModel
     {
+        public SpecialRegModel() { }
         public static Dictionary<string, string> ParseResults(NameValueCollection elements)
         {
             var q = (from e in elements.AllKeys

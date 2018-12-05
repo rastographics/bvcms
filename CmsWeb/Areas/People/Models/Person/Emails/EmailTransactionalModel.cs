@@ -5,6 +5,8 @@ namespace CmsWeb.Areas.People.Models
 {
     public class EmailTransactionalModel : EmailModel
     {
+    public EmailTransactionalModel() { }
+        
         public override IQueryable<EmailQueue> DefineModelList()
         {
             var q = from e in DbUtil.Db.EmailQueues

@@ -14,6 +14,9 @@ namespace CmsWeb.Models
         private Dictionary<string, int> peopleidsa;
         internal bool AlphaNumericIds = false;
         internal bool IgnoreMissingGifts = false;
+
+        public UploadExcelIpsModel() { }
+
         public UploadExcelIpsModel(CMSDataContext db, string host, int peopleId, bool noupdate, bool ignoremissinggifts, bool testing = false)
             : base(db, host, peopleId, noupdate, testing)
         {

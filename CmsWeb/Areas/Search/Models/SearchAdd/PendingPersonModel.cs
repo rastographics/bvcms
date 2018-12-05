@@ -125,7 +125,7 @@ namespace CmsWeb.Areas.Search.Models
         public AddressInfo AddressInfo { get; set; }
 
         public string PotentialDuplicate { get; set; }
-
+        public PendingPersonModel() { }
         internal void CheckDuplicate()
         {
             var pids = DbUtil.Db.FindPerson(FirstName, LastName, Birthday, null, CellPhone.GetDigits()).Select(pp => pp.PeopleId).ToList();

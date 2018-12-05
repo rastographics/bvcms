@@ -12,6 +12,8 @@ namespace CmsWeb.Areas.Dialog.Models
         public string Name { get; set; }
         public string Org { get; set; }
 
+        public TransactionHistoryModel() { }
+
         public TransactionHistoryModel(int id, int oid)
         {
             this.id = id;

@@ -13,6 +13,7 @@ namespace CmsWeb.Areas.Finance.Models.Report
         public DateTime FromDate { get; set; }
         public DateTime ToDate { get; set; }
 
+        public ContributionModel() { }
         public ContributionModel(int pid)
         {
             person = DbUtil.Db.LoadPersonById(pid);

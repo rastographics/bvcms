@@ -28,6 +28,8 @@ namespace CmsWeb.Models
             public string Url => "/Person2/" + PeopleId;
         }
 
+        public HomeModel() { }
+
         public IEnumerable<BirthdayInfo> Birthdays()
         {
             if (Util.UserPeopleId == null)

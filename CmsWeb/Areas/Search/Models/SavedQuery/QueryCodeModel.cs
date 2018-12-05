@@ -16,6 +16,8 @@ namespace CmsWeb.Areas.Search.Models
         public string Code;
         public string Sql;
 
+        public QueryCodeModel() { }
+
         public QueryCodeModel(string queries, List<Guid> guids = null)
         {
             var all = DbUtil.Db.Connection.Query(queries).ToList();

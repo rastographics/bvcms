@@ -18,6 +18,8 @@ namespace CmsWeb.Areas.Figures.Models
             }
         }
 
+        public ProgViewModel() { }
+
     }
 
 }

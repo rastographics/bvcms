@@ -12,6 +12,7 @@ namespace CmsWeb.Areas.Reports.Models
         private DateTime? dt2;
         private OrgSearchModel Model;
 
+        public AttendanceDetailModel() { }
         public AttendanceDetailModel(DateTime dt1, DateTime? dt2, OrgSearchModel model)
         {
             if (dt2.HasValue)

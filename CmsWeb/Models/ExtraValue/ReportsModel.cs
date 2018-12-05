@@ -9,6 +9,7 @@ namespace CmsWeb.Models.ExtraValues
 {
     public class ReportsModel
     {
+        public ReportsModel() { }
         public static Condition QueryCodesCondition(string field, string value)
         {
             var c = DbUtil.Db.ScratchPadCondition();

@@ -10,6 +10,7 @@ namespace CmsWeb.Areas.People.Models
     public class FamilyModel : PagedTableModel<FamilyMember, FamilyMember>
     {
         public CmsData.Person Person;
+        public FamilyModel() { }
         public FamilyModel(int id)
         {
             Person = DbUtil.Db.LoadPersonById(id);

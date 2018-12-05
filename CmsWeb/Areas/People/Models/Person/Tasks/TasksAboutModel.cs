@@ -8,6 +8,7 @@ namespace CmsWeb.Areas.People.Models
 {
     public class TasksAboutModel : TasksModel
     {
+        public TasksAboutModel() { }
         public override IQueryable<CmsData.Task> DefineModelList()
         {
             return from t in FilteredModelList()

@@ -10,6 +10,7 @@ namespace CmsWeb.Models
 {
     public class MissionTripFundingModel
     {
+        public MissionTripFundingModel() { }
         public static List<MissionTripTotal> List(int id)
         {
             var q = from t in DbUtil.Db.ViewMissionTripTotals

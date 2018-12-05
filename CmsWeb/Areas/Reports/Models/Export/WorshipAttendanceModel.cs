@@ -13,6 +13,8 @@ namespace CmsWeb.Models
 {
     public class WorshipAttendanceModel
     {
+        public WorshipAttendanceModel() { }
+        
         public class WorshipAttendInfo
         {
             public int PeopleId { get; set; }

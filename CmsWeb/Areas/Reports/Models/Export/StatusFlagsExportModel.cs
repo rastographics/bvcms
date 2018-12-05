@@ -13,6 +13,7 @@ namespace CmsWeb.Models
 {
     public class StatusFlagsExportModel
     {
+        public StatusFlagsExportModel() { }
         public static EpplusResult StatusFlagsList(Guid qid, string flags)
         {
             var collist = from ss in DbUtil.Db.ViewStatusFlagNamesRoles.ToList()

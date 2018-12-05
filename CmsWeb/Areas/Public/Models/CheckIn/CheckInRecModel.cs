@@ -9,6 +9,7 @@ namespace CmsWeb.Models
 {
     public class CheckInRecModel
     {
+        public CheckInRecModel() { }
         public CheckInRecModel(int orgId, int? pid)
         {
             var q = from o in DbUtil.Db.Organizations

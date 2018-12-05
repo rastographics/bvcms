@@ -16,7 +16,7 @@ namespace CmsWeb.Areas.Reports.Models
     public class CheckinControlResult : ActionResult
     {
         public CheckinControlModel model { get; set; }
-
+        public CheckinControlResult() { }
         public override void ExecuteResult(ControllerContext context)
         {
             var Response = context.HttpContext.Response;

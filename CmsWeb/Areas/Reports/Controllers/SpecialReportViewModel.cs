@@ -20,7 +20,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         public int? Qtagid { get; set; }
         public string Results { get; set; }
         public string ExcelUrl => $"/Reports/SqlReportExcel/{Report}/{Id}";
-
+        public SpecialReportViewModel() { }
         public SpecialReportViewModel(string report, Guid id)
         {
             Report = report;

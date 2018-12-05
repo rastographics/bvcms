@@ -18,6 +18,7 @@ namespace CmsWeb.Models
 {
     public class AccountModel
     {
+        public AccountModel() { }
         public string GetNewFileName(string path)
         {
             while (File.Exists(path))

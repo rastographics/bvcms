@@ -17,6 +17,7 @@ namespace CmsWeb.Areas.Main.Models
         public Guid QueryId { get; set; }
         public int? OrgId { get; set; }
 
+        public EmailTemplatesModel() { }
         public IQueryable<Content> FetchTemplates()
         {
             var currentRoleIds = DbUtil.Db.CurrentRoleIds();

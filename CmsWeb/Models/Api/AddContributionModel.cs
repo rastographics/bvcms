@@ -20,6 +20,7 @@ namespace CmsWeb.Models.Api
         public string Source;
         public int? Fundid;
 
+        public AddContributionModel() { }
         public Result Add(CMSDataContext db)
         {
             if (!Util.ValidEmail(Email))

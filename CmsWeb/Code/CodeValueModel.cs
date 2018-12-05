@@ -30,7 +30,7 @@ namespace CmsWeb.Code
                 Code = "0"
             }
         };
-
+        public CodeValueModel() { }
         public List<CodeValueItem> Activities()
         {
             var q = from a in DbUtil.Db.CheckInActivities

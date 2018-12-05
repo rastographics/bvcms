@@ -51,6 +51,7 @@ namespace CmsWeb.Areas.Reports.Models
         public string Sort { get; set; }
         public string Dir { get; set; }
 
+        public AttendanceModel() { }
         public IEnumerable<AttendInfo> Attendances()
         {
             var q = from om in DbUtil.Db.OrganizationMembers

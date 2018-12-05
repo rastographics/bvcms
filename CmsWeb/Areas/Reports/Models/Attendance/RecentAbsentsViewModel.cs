@@ -11,6 +11,7 @@ namespace CmsWeb.Areas.Reports.Models
 {
     public class RecentAbsentsViewModel
     {
+        public RecentAbsentsViewModel() { }
         public RecentAbsentsViewModel(int id, Guid queryid, int? otherorgfilterid)
         {
             QueryId = queryid;

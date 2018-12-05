@@ -18,7 +18,7 @@ namespace CmsWeb.Areas.People.Models
         private Picture picture;
         private AddressInfo primaryAddr;
         private IEnumerable<User> users;
-
+        public PersonModel() { }
         public PersonModel(int id)
         {
             var flags = DbUtil.Db.Setting("StatusFlags", "F04,F01,F02,F03");

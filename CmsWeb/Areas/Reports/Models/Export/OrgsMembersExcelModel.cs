@@ -13,6 +13,7 @@ namespace CmsWeb.Models
 {
     public class OrgsMembersExcelModel
     {
+        public OrgsMembersExcelModel() { }
         public static EpplusResult Export(Guid queryid)
         {
             var filter = DbUtil.Db.OrgFilter(queryid);

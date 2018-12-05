@@ -60,6 +60,7 @@ namespace CmsWeb.Areas.Reports.Models
             public string NameParent2 { get; set; }
         }
 
+        public RollsheetModel() { }
         // This gets current org members
         public static IEnumerable<PersonMemberInfo> FetchOrgMembers(int orgid, int[] groups)
         {

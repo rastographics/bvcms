@@ -20,6 +20,7 @@ namespace CmsWeb.Areas.Reports.Models
 {
     public class RallyRollsheetResult : ActionResult
     {
+        public RallyRollsheetResult() { }
         public class PersonVisitorInfo
         {
             public int PeopleId { get; set; }
