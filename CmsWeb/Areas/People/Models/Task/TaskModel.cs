@@ -13,9 +13,25 @@ namespace CmsWeb.Areas.People.Models.Task
 {
     public class TaskModel
     {
+        private readonly string _host;
+        private readonly CMSDataContext _cmsDataContext;
+
+        public TaskModel()
+        {
+            _host = Util.Host;
+            _cmsDataContext = DbUtil.Create(_host);
+
+        }
+        public TaskModel(string host, CMSDataContext db)
+        {
+            _host = host;
+            _cmsDataContext = db;
+        }
+         
+
         internal Person Who;
         private DateTime? SortDue { get; set; }
-        public TaskModel() { }
+        
         public string About
         {
             get { return Who?.Name ?? ""; }
@@ -605,14 +621,7 @@ namespace CmsWeb.Areas.People.Models.Task
             }
         }
 
-        private readonly string _host;
-        private readonly CMSDataContext _cmsDataContext;
-
-        public TaskModel(string host, CMSDataContext db)
-        {
-            _host = host;
-            _cmsDataContext = db;
-        }
+        
 
         public static TaskModel FetchModel(int id, string host, CMSDataContext db)
         {
