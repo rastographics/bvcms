@@ -198,7 +198,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public bool NotActive()
         {
-            return org.OrganizationStatusId == OrgStatusCode.Inactive;    
+            return org == null || org.OrganizationStatusId == OrgStatusCode.Inactive;    
         }
 
         public bool UserSelectsOrganization()
