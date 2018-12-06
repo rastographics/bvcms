@@ -1319,6 +1319,7 @@
     <Content Include="Migrations\20181115_add_recurring_amounts_disabled_column.sql" />
     <Content Include="Migrations\20181120_Update_GetContributionDetails_func.sql" />
     <Content Include="Migrations\20181206_create_RemoveFromEnrollmentHistory_proc.sql" />
+    <Content Include="Migrations\20181205_create_CreateZipCodesRange_proc.sql" />
     <Content Include="QueryBuilder\CompareMap.xml">
       <SubType>Designer</SubType>
     </Content>
