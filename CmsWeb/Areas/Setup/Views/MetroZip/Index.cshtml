@@ -2,7 +2,7 @@
 @{
     Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Metro Zip Codes";
-    ViewBag.PageHeader = "Zip Codes";
+    ViewBag.PageHeader = "Zip Codes";    
 }
 @section head{
     @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
@@ -27,6 +27,7 @@
         <div class="box box-responsive">
             <div class="box-title-btn">
                 <div class="box-tools">
+                    <a href="#" class="btn btn-success create-range"><i class="fa fa-plus-circle"></i> Add Range of Zip Codes</a>
                     <a href="#" class="btn btn-success create-new"><i class="fa fa-plus-circle"></i> Add Zip Code</a>
                 </div>
             </div>
@@ -54,6 +55,7 @@
                         }
                     </table>
                 </div>
+                <a href="#" class="btn btn-success btn-block visible-xs-block create-range"><i class="fa fa-plus-circle"></i> Add Range of Zip Codes</a>
                 <a href="#" class="btn btn-success btn-block visible-xs-block create-new"><i class="fa fa-plus-circle"></i> Add Zip Code</a>
             </div>
         </div>
@@ -73,6 +75,41 @@
                     <div class="form-group">
                         <label for="zipcode" class="control-label">Zip Code</label>
                         @Html.TextBox("zipcode", "", new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="button" value="Cancel" class="btn btn-default" data-dismiss="modal" />
+                    <input type="submit" value="Submit" class="btn btn-primary" />
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="range-modal">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            @using (Html.BeginForm("CreateRange", "MetroZip", FormMethod.Post, new { id = "createRange" }))
+            {
+                @Html.Hidden("type", ViewData["type"])
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Add Range of Zip Codes</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="startwith" class="control-label">Start with</label>
+                        @Html.TextBox("startwith", "", new { @class = "form-control" })
+                        <label id="startwithError" class="control-label error"></label>
+                    </div>
+                    <div class="form-group">
+                        <label for="endwith" class="control-label">End with</label>
+                        @Html.TextBox("endwith", "", new { @class = "form-control" })
+                        <label id="endwithError" class="control-label error"></label>
+                    </div>
+                    <div class="form-group">
+                        <label for="marginalcode" class="control-label">Metro Marginal Code</label>
+                        <select class="form-control" id="marginaldd" name="marginalcode"></select>
+                        <label id="marginaldbError" class="control-label error"></label>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -141,6 +178,63 @@
                 $('#new-modal').modal();
                 return false;
             });
+
+            $("a.create-range").click(function (ev) {
+                ev.preventDefault();
+                $('#range-modal').modal();
+                $.getJSON('/MetroZips/ResidentCodes/', function (data) {
+                    let dropdown = $('#marginaldd');
+                    dropdown.empty();
+                    dropdown.append('<option selected="true" value="0" disabled>Choose Metro Maginal Code</option>');
+                    dropdown.prop('selectedIndex', 0);
+                    $.each(data, function (key, entry) {
+                        dropdown.append($('<option></option>').attr('value', entry.value).text(entry.text));
+                    })
+                });
+                return false;
+            });
+
+            //add zip codes range validation
+
+            var totalZipsAdded = @ViewBag.TotalZipCodesAdded;
+            alert(totalZipsAdded);
+
+            //var createRangeForm = $('form#createRange'),
+            //    inputStartWith = createRangeForm.find('input#startwith').val(),
+            //    inputEndWith = createRangeForm.find('input#endwith').val(),
+            //    labelStartWith = createRangeForm.find('label#startwithError'),
+            //    labelEndWith = createRangeForm.find('label#endwithError'),
+            //    sendRange = false;
+                
+            //createRangeForm.submit(function (e) {
+            //    if (!sendRange) {
+            //        e.preventDefault();
+            //    }                
+            //    sendRange = true;
+            //    //if (inputStartWith == '') {
+            //    //    labelStartWith.text('This field is required');
+            //    //    sendRange = false;
+            //    //}
+            //    //if (inputEndWith == '') {
+            //    //    labelEndWith.text('This field is required');
+            //    //    sendRange = false;
+            //    //}
+            //    if (inputStartWith.match(/^\d+$/)) {
+            //        labelStartWith.text('Not Zip Code valid');
+            //        sendRange = false;
+            //    }
+            //    if (inputEndWith.match(/^\d+$/)) {
+            //        labelEndWith.text('Not Zip Code valid');
+            //        sendRange = false;
+            //    }
+            //    //if (parseInt(inputEndWith) <= parseInt(inputStartWith)) {
+            //    //    labelEndWith.text('"Start with" field must be greater than "End with" field');
+            //    //    sendRange = false;
+            //    //}
+            //    if (sendRange) {
+            //        createRangeForm.submit();
+            //    }               
+            //});
 
             $('#new-modal').on('shown.bs.modal', function () {
                 $("#zipcode").val('').focus();

@@ -1322,6 +1322,7 @@
     <Content Include="Migrations\20181206_create_RemoveFromEnrollmentHistory_proc.sql" />
     <Content Include="Migrations\20181218_ja-members-not-included-attendance-fix.sql" />
     <Content Include="Migrations\20181211_update_inactive_recurring_amounts.sql" />
+    <Content Include="Migrations\20181205_create_CreateZipCodesRange_proc.sql" />
     <Content Include="QueryBuilder\CompareMap.xml">
       <SubType>Designer</SubType>
     </Content>
