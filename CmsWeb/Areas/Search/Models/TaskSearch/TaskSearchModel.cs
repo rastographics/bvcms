@@ -35,7 +35,7 @@ namespace CmsWeb.Areas.Search.Models
             Search = new TaskSearchInfo();
 
             _host = Util.Host;
-            _dataContext = DbUtil.Db;
+            _dataContext = DbUtil.Create(_host);
             _gcm = new GCMHelper(_host, _dataContext);
         }
 
