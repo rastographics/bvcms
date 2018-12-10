@@ -1,6 +1,7 @@
 using CmsData;
 using CmsWeb.Lifecycle;
 using CmsWeb.Models;
+using Elmah;
 using OfficeOpenXml;
 using System;
 using System.Linq;
@@ -38,25 +39,33 @@ namespace CmsWeb.Areas.Manage.Controllers
             {
                 try
                 {
-                    var localDbInstance = DbUtil.Create(host);
+                    using (var testdb = DbUtil.Create(host))
+                    {
+                        UploadPeopleRun testrun = ProcessImport(testdb, noupdate, ignoremissinggifts, host, pid, package, true);
+                    }
 
-                    UploadPeopleRun testrun = ProcessImport(localDbInstance, noupdate, ignoremissinggifts, host, pid, package, true);
-                    UploadPeopleRun realrun = ProcessImport(localDbInstance, noupdate, ignoremissinggifts, host, pid, package, false);
+                    using (var realdb = DbUtil.Create(host))
+                    {
+                        UploadPeopleRun realrun = ProcessImport(realdb, noupdate, ignoremissinggifts, host, pid, package, false);
+                    }
                 }
                 catch (Exception ex)
                 {
-                    //CurrentDatabase.Dispose();
-                    //db = DbUtil.Create(host);
+                    var db = DbUtil.Create(host);
 
-                    //var q = from r in CurrentDatabase.UploadPeopleRuns
-                    //        where r.Id == CurrentDatabase.UploadPeopleRuns.Max(rr => rr.Id)
-                    //        select r;
-                    Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
-                    //var rt = q.Single();
-                    //rt.Error = ex.Message.Truncate(200);
-                    //CurrentDatabase.SubmitChanges();
+                    var q = from r in db.UploadPeopleRuns
+                            where r.Id == db.UploadPeopleRuns.Max(rr => rr.Id)
+                            select r;
+
+                    var rt = q.Single();
+                    rt.Error = ex.Message.Truncate(200);
+
+                    db.SubmitChanges();
+
+                    ErrorLog.GetDefault(null).Log(new Error(ex));
                 }
             });
+
             return Redirect("/UploadExcelIps/Progress");
         }
 
@@ -68,6 +77,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 
             var upload = new UploadExcelIpsModel(db, host, pid ?? 0, noupdate, ignoremissinggifts, testing);
             upload.DoUpload(package);
+
             return rt;
         }
 
