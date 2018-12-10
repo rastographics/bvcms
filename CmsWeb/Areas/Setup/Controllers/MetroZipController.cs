@@ -36,14 +36,12 @@ namespace CmsWeb.Areas.Setup.Controllers
             return Redirect($"/MetroZips/#{zipcode}");
         }
 
-        [AcceptVerbs(HttpVerbs.Post)]
-        public ActionResult CreateRange(int startwith, int endwith, int marginalcode)
+        [AcceptVerbs(HttpVerbs.Get)]
+        public int CreateRange(int startwith, int endwith, int marginalcode)
         {
             int totalZipCodesAdded = CurrentDatabase.CreateZipCodesRange(startwith, endwith, marginalcode);
             ViewBag.TotalZipCodesAdded = totalZipCodesAdded;
-            var m = CurrentDatabase.Zips.AsEnumerable();
-            //ViewData["msg"] = msg;
-            return View("Index", m);
+            return 6;
         }
 
         [AcceptVerbs(HttpVerbs.Post)]

@@ -2,7 +2,7 @@
 @{
     Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Metro Zip Codes";
-    ViewBag.PageHeader = "Zip Codes";    
+    ViewBag.PageHeader = "Zip Codes";
 }
 @section head{
     @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
@@ -98,12 +98,12 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="startwith" class="control-label">Start with</label>
-                        @Html.TextBox("startwith", "", new { @class = "form-control" })
+                        @Html.TextBox("startwith", "", new { @class = "form-control zipcode" })
                         <label id="startwithError" class="control-label error"></label>
                     </div>
                     <div class="form-group">
                         <label for="endwith" class="control-label">End with</label>
-                        @Html.TextBox("endwith", "", new { @class = "form-control" })
+                        @Html.TextBox("endwith", "", new { @class = "form-control zipcode" })
                         <label id="endwithError" class="control-label error"></label>
                     </div>
                     <div class="form-group">
@@ -123,14 +123,16 @@
 @section scripts
 {
     @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-editable/js/bootstrap-editable.min.js")
+    @Fingerprint.Script("/Content/touchpoint/js/metro-zip.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/jquery-mask/js/jquery-mask.min.js")
     <script type="text/javascript">
         $(function () {
             $.fn.editableform.buttons = '<button type="submit" class="btn btn-primary btn-sm editable-submit">' +
-                                            '<i class="fa fa-fw fa-check"></i>' +
-                                        '</button>' +
-                                        '<button type="button" class="btn btn-default btn-sm editable-cancel">' +
-                                            '<i class="fa fa-fw fa-times"></i>' +
-                                        '</button>';
+                '<i class="fa fa-fw fa-check"></i>' +
+                '</button>' +
+                '<button type="button" class="btn btn-default btn-sm editable-cancel">' +
+                '<i class="fa fa-fw fa-times"></i>' +
+                '</button>';
 
             $(".clickSelect").editable({
                 mode: 'inline',
@@ -156,21 +158,21 @@
                     confirmButtonText: "Yes, delete it!",
                     closeOnConfirm: false
                 },
-                function () {
-                    $.post("/MetroZips/Delete/" + id, null, function (ret) {
-                        if (ret && ret.error)
-                            swal("Error!", ret.error, "error");
-                        else {
-                            swal({
-                                title: "Deleted!",
-                                type: "success"
-                            },
-                            function () {
-                                window.location = "/MetroZips/";
-                            });
-                        }
+                    function () {
+                        $.post("/MetroZips/Delete/" + id, null, function (ret) {
+                            if (ret && ret.error)
+                                swal("Error!", ret.error, "error");
+                            else {
+                                swal({
+                                    title: "Deleted!",
+                                    type: "success"
+                                },
+                                    function () {
+                                        window.location = "/MetroZips/";
+                                    });
+                            }
+                        });
                     });
-                });
             });
 
             $("a.create-new").click(function (ev) {
@@ -193,48 +195,6 @@
                 });
                 return false;
             });
-
-            //add zip codes range validation
-
-            var totalZipsAdded = @ViewBag.TotalZipCodesAdded;
-            alert(totalZipsAdded);
-
-            //var createRangeForm = $('form#createRange'),
-            //    inputStartWith = createRangeForm.find('input#startwith').val(),
-            //    inputEndWith = createRangeForm.find('input#endwith').val(),
-            //    labelStartWith = createRangeForm.find('label#startwithError'),
-            //    labelEndWith = createRangeForm.find('label#endwithError'),
-            //    sendRange = false;
-                
-            //createRangeForm.submit(function (e) {
-            //    if (!sendRange) {
-            //        e.preventDefault();
-            //    }                
-            //    sendRange = true;
-            //    //if (inputStartWith == '') {
-            //    //    labelStartWith.text('This field is required');
-            //    //    sendRange = false;
-            //    //}
-            //    //if (inputEndWith == '') {
-            //    //    labelEndWith.text('This field is required');
-            //    //    sendRange = false;
-            //    //}
-            //    if (inputStartWith.match(/^\d+$/)) {
-            //        labelStartWith.text('Not Zip Code valid');
-            //        sendRange = false;
-            //    }
-            //    if (inputEndWith.match(/^\d+$/)) {
-            //        labelEndWith.text('Not Zip Code valid');
-            //        sendRange = false;
-            //    }
-            //    //if (parseInt(inputEndWith) <= parseInt(inputStartWith)) {
-            //    //    labelEndWith.text('"Start with" field must be greater than "End with" field');
-            //    //    sendRange = false;
-            //    //}
-            //    if (sendRange) {
-            //        createRangeForm.submit();
-            //    }               
-            //});
 
             $('#new-modal').on('shown.bs.modal', function () {
                 $("#zipcode").val('').focus();

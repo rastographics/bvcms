@@ -1219,6 +1219,7 @@
     <Content Include="Content\touchpoint\js\finance\transactions.js" />
     <Content Include="Content\touchpoint\js\form-ajax.js" />
     <Content Include="Content\touchpoint\js\main.js" />
+    <Content Include="Content\touchpoint\js\metro-zip.js" />
     <Content Include="Content\touchpoint\js\onlineregister.min.js" />
     <Content Include="Content\touchpoint\js\people\merge.js" />
     <Content Include="Content\touchpoint\js\search\export-query.js" />
@@ -1625,6 +1626,7 @@
     <Content Include="Content\touchpoint\lib\jquery-globalize\js\cultures\globalize.culture.zu.js" />
     <Content Include="Content\touchpoint\lib\jquery-globalize\js\cultures\globalize.cultures.js" />
     <Content Include="Content\touchpoint\lib\jquery-globalize\js\globalize.js" />
+    <Content Include="Content\touchpoint\lib\jquery-mask\js\jquery-mask.min.js" />
     <Content Include="Content\touchpoint\lib\jquery-multi-select\css\multi-select.css" />
     <Content Include="Content\touchpoint\lib\jquery-scrollintoview\js\jquery.scrollintoview.js" />
     <Content Include="Content\touchpoint\lib\jquery-sortable-min.js" />
@@ -1644,6 +1646,7 @@
     <Content Include="Content\touchpoint\lib\jquery-ui-custom\css\jquery-ui.min.css" />
     <Content Include="Content\touchpoint\lib\jquery-ui-custom\js\jquery-ui.min.js" />
     <Content Include="Content\touchpoint\lib\jquery-validate-globalize\js\jquery.validate.globalize.js" />
+    <Content Include="Content\touchpoint\lib\jquery.mask.js" />
     <Content Include="Content\touchpoint\lib\magnific-popup\jquery.magnific-popup.min.js" />
     <Content Include="Content\touchpoint\lib\magnific-popup\magnific-popup.css" />
     <Content Include="Content\touchpoint\lib\mousetrap\js\mousetrap.min.js" />
