@@ -13,7 +13,8 @@ using UtilityExtensions;
 namespace CmsWeb.Areas.Manage.Controllers
 {
     [Authorize(Roles = "Developer,UploadBridgePlus")]
-    [RouteArea("Manage", AreaPrefix = "UploadExcelIps"), Route("{action=index}")]
+    [RouteArea("Manage", AreaPrefix = "UploadExcelIps")]
+    [Route("{action=index}")]
     public class UploadExcelIpsController : CmsStaffController
     {
         public UploadExcelIpsController(IRequestManager requestManager) : base(requestManager)
@@ -30,7 +31,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         [ValidateInput(false)]
         public ActionResult Index(HttpPostedFileBase file, bool noupdate, bool ignoremissinggifts)
         {
-            string host = Util.Host;
+            var host = Util.Host;
             var pid = Util.UserPeopleId;
 
             var package = new ExcelPackage(file.InputStream);
@@ -41,12 +42,12 @@ namespace CmsWeb.Areas.Manage.Controllers
                 {
                     using (var testdb = DbUtil.Create(host))
                     {
-                        UploadPeopleRun testrun = ProcessImport(testdb, noupdate, ignoremissinggifts, host, pid, package, true);
+                        var testrun = ProcessImport(testdb, noupdate, ignoremissinggifts, host, pid, package, true);
                     }
 
                     using (var realdb = DbUtil.Create(host))
                     {
-                        UploadPeopleRun realrun = ProcessImport(realdb, noupdate, ignoremissinggifts, host, pid, package, false);
+                        var realrun = ProcessImport(realdb, noupdate, ignoremissinggifts, host, pid, package, false);
                     }
                 }
                 catch (Exception ex)
@@ -94,7 +95,5 @@ namespace CmsWeb.Areas.Manage.Controllers
             var r = CurrentDatabase.UploadPeopleRuns.OrderByDescending(mm => mm.Id).First();
             return Json(new { r.Count, r.Error, r.Processed, Completed = r.Completed.ToString(), r.Running, r.Description });
         }
-
     }
 }
-
