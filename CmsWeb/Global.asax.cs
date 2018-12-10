@@ -6,6 +6,7 @@ using Elmah;
 using SimpleInjector;
 using SimpleInjector.Integration.Web;
 using SimpleInjector.Integration.Web.Mvc;
+using SimpleInjector.Integration.WebApi;
 using System;
 using System.Configuration;
 using System.Data.SqlClient;
@@ -33,10 +34,13 @@ namespace CmsWeb
             container.Options.DefaultScopedLifestyle = new WebRequestLifestyle();
 
             DependencyConfig.RegisterSimpleInjector(container);
-            container.RegisterMvcControllers();
+
+            container.RegisterWebApiControllers(GlobalConfiguration.Configuration);
+            container.RegisterMvcControllers(Assembly.GetExecutingAssembly());
 
             //container.Verify();
 
+            GlobalConfiguration.Configuration.DependencyResolver = new SimpleInjectorWebApiDependencyResolver(container);
             DependencyResolver.SetResolver(new SimpleInjectorDependencyResolver(container));
 
             MvcHandler.DisableMvcResponseHeader = true;
