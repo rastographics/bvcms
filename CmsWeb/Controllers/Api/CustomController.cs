@@ -20,6 +20,7 @@ namespace CmsWeb.Controllers.Api
         {
             _requestManager = requestManager;
         }
+
         [HttpGet, Route("~/CustomAPI/{name}")]
         public IEnumerable<dynamic> Get(string name)
         {
