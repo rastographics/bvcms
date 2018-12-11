@@ -1,6 +1,7 @@
 using CmsData;
 using CmsWeb.Lifecycle;
 using CmsWeb.Models;
+using Elmah;
 using OfficeOpenXml;
 using System;
 using System.Linq;
@@ -12,7 +13,8 @@ using UtilityExtensions;
 namespace CmsWeb.Areas.Manage.Controllers
 {
     [Authorize(Roles = "Developer,UploadPeople")]
-    [RouteArea("Manage", AreaPrefix = "UploadPeople"), Route("{action=index}")]
+    [RouteArea("Manage", AreaPrefix = "UploadPeople")]
+    [Route("{action=index}")]
     public class UploadPeopleController : CmsStaffController
     {
         public UploadPeopleController(IRequestManager requestManager) : base(requestManager)
@@ -30,10 +32,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         [ValidateInput(false)]
         public ActionResult Index(HttpPostedFileBase file, bool noupdate)
         {
-            string host = Util.Host;
-            var runningtotals = new UploadPeopleRun { Started = DateTime.Now, Count = 0, Processed = 0 };
-            CurrentDatabase.UploadPeopleRuns.InsertOnSubmit(runningtotals);
-            CurrentDatabase.SubmitChanges();
+            var host = Util.Host;
             var pid = Util.UserPeopleId;
 
             var package = new ExcelPackage(file.InputStream);
@@ -42,36 +41,48 @@ namespace CmsWeb.Areas.Manage.Controllers
             {
                 try
                 {
-                    var db = DbUtil.Create(host);
+                    using (var testdb = DbUtil.Create(host))
+                    {
+                        var testrun = ProcessImport(testdb, noupdate, host, pid, package, true);
+                    }
 
-                    var m = new UploadPeopleModel(host, pid ?? 0, noupdate, testing: true);
-                    m.DoUpload(package);
-                    CurrentDatabase.Dispose();
-                    db = DbUtil.Create(host);
-
-                    runningtotals = new UploadPeopleRun { Started = DateTime.Now, Count = 0, Processed = 0 };
-                    db.UploadPeopleRuns.InsertOnSubmit(runningtotals);
-                    db.SubmitChanges();
-
-                    m = new UploadPeopleModel(host, pid ?? 0, noupdate);
-                    m.DoUpload(package);
+                    using (var realdb = DbUtil.Create(host))
+                    {
+                        var realrun = ProcessImport(realdb, noupdate, host, pid, package, false);
+                    }
                 }
                 catch (Exception ex)
                 {
-                    //CurrentDatabase.Dispose();
                     var db = DbUtil.Create(host);
 
                     var q = from r in db.UploadPeopleRuns
                             where r.Id == db.UploadPeopleRuns.Max(rr => rr.Id)
                             select r;
-                    Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+
                     var rt = q.Single();
                     rt.Error = ex.Message.Truncate(200);
+
                     db.SubmitChanges();
+
+                    ErrorLog.GetDefault(null).Log(new Error(ex));
                 }
             });
-            return Redirect("/UploadPeople/Progress");
+
+            return Redirect("/UploadExcelIps/Progress");
         }
+
+        private UploadPeopleRun ProcessImport(CMSDataContext db, bool noupdate, string host, int? pid, ExcelPackage package, bool testing)
+        {
+            var rt = new UploadPeopleRun { Started = DateTime.Now, Count = 0, Processed = 0 };
+            db.UploadPeopleRuns.InsertOnSubmit(rt);
+            db.SubmitChanges();
+
+            var upload = new UploadPeopleModel(db, host, pid ?? 0, noupdate, testing);
+            upload.DoUpload(package);
+
+            return rt;
+        }
+
 
         [HttpGet]
         public ActionResult Progress()
@@ -86,7 +97,5 @@ namespace CmsWeb.Areas.Manage.Controllers
             var r = CurrentDatabase.UploadPeopleRuns.OrderByDescending(mm => mm.Id).First();
             return Json(new { r.Count, r.Error, r.Processed, Completed = r.Completed.ToString(), r.Running });
         }
-
     }
 }
-

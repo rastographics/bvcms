@@ -1,6 +1,7 @@
 using CmsData;
 using CmsWeb.Lifecycle;
 using CmsWeb.Models;
+using Elmah;
 using OfficeOpenXml;
 using System;
 using System.Linq;
@@ -12,7 +13,8 @@ using UtilityExtensions;
 namespace CmsWeb.Areas.Manage.Controllers
 {
     [Authorize(Roles = "Developer,UploadBridgePlus")]
-    [RouteArea("Manage", AreaPrefix = "UploadExcelIps"), Route("{action=index}")]
+    [RouteArea("Manage", AreaPrefix = "UploadExcelIps")]
+    [Route("{action=index}")]
     public class UploadExcelIpsController : CmsStaffController
     {
         public UploadExcelIpsController(IRequestManager requestManager) : base(requestManager)
@@ -29,7 +31,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         [ValidateInput(false)]
         public ActionResult Index(HttpPostedFileBase file, bool noupdate, bool ignoremissinggifts)
         {
-            string host = Util.Host;
+            var host = Util.Host;
             var pid = Util.UserPeopleId;
 
             var package = new ExcelPackage(file.InputStream);
@@ -38,25 +40,33 @@ namespace CmsWeb.Areas.Manage.Controllers
             {
                 try
                 {
-                    var localDbInstance = DbUtil.Create(host);
+                    using (var testdb = DbUtil.Create(host))
+                    {
+                        var testrun = ProcessImport(testdb, noupdate, ignoremissinggifts, host, pid, package, true);
+                    }
 
-                    UploadPeopleRun testrun = ProcessImport(localDbInstance, noupdate, ignoremissinggifts, host, pid, package, true);
-                    UploadPeopleRun realrun = ProcessImport(localDbInstance, noupdate, ignoremissinggifts, host, pid, package, false);
+                    using (var realdb = DbUtil.Create(host))
+                    {
+                        var realrun = ProcessImport(realdb, noupdate, ignoremissinggifts, host, pid, package, false);
+                    }
                 }
                 catch (Exception ex)
                 {
-                    //CurrentDatabase.Dispose();
-                    //db = DbUtil.Create(host);
+                    var db = DbUtil.Create(host);
 
-                    //var q = from r in CurrentDatabase.UploadPeopleRuns
-                    //        where r.Id == CurrentDatabase.UploadPeopleRuns.Max(rr => rr.Id)
-                    //        select r;
-                    Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
-                    //var rt = q.Single();
-                    //rt.Error = ex.Message.Truncate(200);
-                    //CurrentDatabase.SubmitChanges();
+                    var q = from r in db.UploadPeopleRuns
+                            where r.Id == db.UploadPeopleRuns.Max(rr => rr.Id)
+                            select r;
+
+                    var rt = q.Single();
+                    rt.Error = ex.Message.Truncate(200);
+
+                    db.SubmitChanges();
+
+                    ErrorLog.GetDefault(null).Log(new Error(ex));
                 }
             });
+
             return Redirect("/UploadExcelIps/Progress");
         }
 
@@ -68,6 +78,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 
             var upload = new UploadExcelIpsModel(db, host, pid ?? 0, noupdate, ignoremissinggifts, testing);
             upload.DoUpload(package);
+
             return rt;
         }
 
@@ -84,7 +95,5 @@ namespace CmsWeb.Areas.Manage.Controllers
             var r = CurrentDatabase.UploadPeopleRuns.OrderByDescending(mm => mm.Id).First();
             return Json(new { r.Count, r.Error, r.Processed, Completed = r.Completed.ToString(), r.Running, r.Description });
         }
-
     }
 }
-
