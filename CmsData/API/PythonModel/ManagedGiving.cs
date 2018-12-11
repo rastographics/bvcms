@@ -23,6 +23,7 @@ namespace CmsData
                     else
                     {
                         ra.Disabled = true;
+                        ra.Amt = 0;
                         db2.SubmitChanges();
                     }
                 }

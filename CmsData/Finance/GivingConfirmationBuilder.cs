@@ -42,7 +42,7 @@ namespace CmsData.Finance
 
             foreach (var g in fundItems)
             {
-                if (g.Amt <= 0)
+                if (g.Amt < 0)
                     continue;
                 if(row.HasValue())
                     sb.AppendFormat(row, g.Desc, g.Amt);
