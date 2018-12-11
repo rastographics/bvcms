@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Runtime.Serialization;
+using Newtonsoft.Json.Linq;
 
 namespace CmsData.API
 {
@@ -122,6 +123,43 @@ namespace CmsData.API
             foreach (var kv in dict)
             {
                 info.AddValue(kv.Key, kv.Value);
+            }
+        }
+        /// <summary>
+        /// This constructor is used by JsonConvert.DeserializeObject
+        /// </summary>
+        public DynamicData(SerializationInfo info, StreamingContext context)
+        {
+            dict = new Dictionary<string, object>();
+            foreach (var kv in info)
+            {
+                if (kv.Value is JObject)
+                {
+                    var dd = JsonConvert.DeserializeObject<DynamicData>(kv.Value.ToString());
+                    dict.Add(kv.Name, dd);
+                }
+                else // Must be a JValue Type which inherits from JToken
+                {
+                    var t = kv.Value as JToken;
+                    switch (t?.Type)
+                    {
+                        case JTokenType.Integer:
+                            dict.Add(kv.Name, Convert.ToInt32(kv.Value));
+                            break;
+                        case JTokenType.Date:
+                            dict.Add(kv.Name, Convert.ToDateTime(kv.Value));
+                            break;
+                        case JTokenType.String:
+                            dict.Add(kv.Name, kv.Value.ToString());
+                            break;
+                        case JTokenType.Float:
+                            dict.Add(kv.Name, Convert.ToDecimal(kv.Value));
+                            break;
+                        default:
+                            dict.Add(kv.Name, kv.Value);
+                            break;
+                    }
+                }
             }
         }
 
