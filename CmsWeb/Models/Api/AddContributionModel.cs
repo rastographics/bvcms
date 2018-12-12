@@ -34,11 +34,11 @@ namespace CmsWeb.Models.Api
             }
 
             Person person = null;
-            var list = DbUtil.Db.FindPerson(First, Last, null, Email, Phone.GetDigits()).ToList();
+            var list = db.FindPerson(First, Last, null, Email, Phone.GetDigits()).ToList();
             var count = list.Count;
             if (count > 0)
             {
-                person = DbUtil.Db.LoadPersonById(list[0].PeopleId ?? 0);
+                person = db.LoadPersonById(list[0].PeopleId ?? 0);
             }
 
             var result = new Result();
@@ -63,11 +63,10 @@ namespace CmsWeb.Models.Api
                     f.StateCode = amsresult.State;
                     f.ZipCode = amsresult.Zip.GetDigits().Truncate(10);
                 }
-                DbUtil.Db.SubmitChanges();
+                db.SubmitChanges();
 
                 var position = 10;
-                person = Person.Add(DbUtil.Db, true, f, position, null, First.Trim(), null, Last.Trim(), "", 0, 0,
-                    OriginCode.Contribution, null);
+                person = Person.Add(db, true, f, position, null, First.Trim(), null, Last.Trim(), "", 0, 0, OriginCode.Contribution, null);
                 person.EmailAddress = Email.Trim();
                 person.SendEmailAddress1 = true;
 
@@ -77,10 +76,10 @@ namespace CmsWeb.Models.Api
                 }
             }
 
-            var c = person.PostUnattendedContribution(DbUtil.Db, Amount, Fundid, Notes);
+            var c = person.PostUnattendedContribution(db, Amount, Fundid, Notes);
             c.ContributionDate = Date ?? DateTime.Now;
             c.MetaInfo = Source;
-            DbUtil.Db.SubmitChanges();
+            db.SubmitChanges();
             result.PeopleId = person.PeopleId;
             result.ContributionId = c.ContributionId;
             result.Source = Source;

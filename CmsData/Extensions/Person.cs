@@ -865,8 +865,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
         }
 
         // Used for Conversions
-        public static Person Add(CMSDataContext db, Family fam, string firstname, string nickname, string lastname,
-                                 DateTime? dob)
+        public static Person Add(CMSDataContext db, Family fam, string firstname, string nickname, string lastname, DateTime? dob)
         {
             return Add(db, false, fam, 20, null, firstname, nickname, lastname, dob.ToString2("M/d/yyyy"), 0, 0, 0, 0);
         }
@@ -875,35 +874,19 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                                  string firstname, string nickname, string lastname, string dob, int marriedCode,
                                  int gender, int originId, int? entryPointId, bool testing = false)
         {
-            var p = new Person();
-            p.CreatedDate = Util.Now;
-            p.CreatedBy = Util.UserId;
+            var p = new Person { CreatedDate = Util.Now, CreatedBy = Util.UserId };
             db.People.InsertOnSubmit(p);
             p.PositionInFamilyId = position;
             p.AddressTypeId = 10;
 
-            if (firstname.HasValue())
-            {
-                p.FirstName = firstname.Trim().ToProper().Truncate(25);
-            }
-            else
-            {
-                p.FirstName = "";
-            }
+            p.FirstName = firstname.HasValue() ? firstname.Trim().ToProper().Truncate(25) : "";
 
             if (nickname.HasValue())
             {
                 p.NickName = nickname.Trim().ToProper().Truncate(15);
             }
 
-            if (lastname.HasValue())
-            {
-                p.LastName = lastname.Trim().ToProper().Truncate(100);
-            }
-            else
-            {
-                p.LastName = "?";
-            }
+            p.LastName = lastname.HasValue() ? lastname.Trim().ToProper().Truncate(100) : "?";
 
             p.GenderId = gender;
             if (p.GenderId == 99)
@@ -913,8 +896,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
 
             p.MaritalStatusId = marriedCode;
 
-            DateTime dt;
-            if (Util.BirthDateValid(dob, out dt))
+            if (Util.BirthDateValid(dob, out var dt))
             {
                 if (dt.Year == Util.SignalNoYear)
                 {
@@ -975,10 +957,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 fam.People.Add(p);
             }
 
-            if (tag != null)
-            {
-                tag.PersonTags.Add(new TagPerson { Person = p });
-            }
+            tag?.PersonTags.Add(new TagPerson { Person = p });
 
             p.OriginId = originId;
             p.EntryPointId = entryPointId;
@@ -993,25 +972,27 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 db.SubmitChanges();
             }
 
-            if (sendNotices)
+            if (!sendNotices)
             {
-                if (Util.UserPeopleId.HasValue
-                    && Util.UserPeopleId.Value != db.NewPeopleManagerId
-                    && HttpContext.Current.User.IsInRole("Access")
-                    && !HttpContext.Current.User.IsInRole("OrgMembersOnly")
-                    && !HttpContext.Current.User.IsInRole("OrgLeadersOnly"))
+                return p;
+            }
+
+            if (Util.UserPeopleId.HasValue
+                && Util.UserPeopleId.Value != db.NewPeopleManagerId
+                && HttpContext.Current.User.IsInRole("Access")
+                && !HttpContext.Current.User.IsInRole("OrgMembersOnly")
+                && !HttpContext.Current.User.IsInRole("OrgLeadersOnly"))
+            {
+                Task.AddNewPerson(db, p.PeopleId);
+            }
+            else
+            {
+                var np = db.GetNewPeopleManagers();
+                if (np != null)
                 {
-                    Task.AddNewPerson(db, p.PeopleId);
-                }
-                else
-                {
-                    var np = db.GetNewPeopleManagers();
-                    if (np != null)
-                    {
-                        db.Email(Util.AdminMail, np,
-                            $"Just Added Person on {db.Host}",
-                            $"<a href='{db.ServerLink("/Person2/" + p.PeopleId)}'>{p.Name}</a>");
-                    }
+                    db.Email(Util.AdminMail, np,
+                        $"Just Added Person on {db.Host}",
+                        $"<a href='{db.ServerLink("/Person2/" + p.PeopleId)}'>{p.Name}</a>");
                 }
             }
             return p;
