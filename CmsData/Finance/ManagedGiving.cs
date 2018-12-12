@@ -47,9 +47,10 @@ namespace CmsData
         {
             var q = (from a in db.RecurringAmounts
                      where a.PeopleId == PeopleId
+                     where a.Disabled == false
                      where a.ContributionFund.FundStatusId == 1
                      where a.ContributionFund.OnlineSort != null
-                     where a.Amt >= 0
+                     where a.Amt > 0
                      select new GivingConfirmation.FundItem()
                      {
                          Amt = a.Amt.Value,
