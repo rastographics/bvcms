@@ -5,7 +5,7 @@ namespace CmsData
 {
     public partial class PythonModel
     {
-        public void SetRecurringGivingEnabled(int peopleId, int fundId, bool enable)
+        public void DisableRecurringGiving(int peopleId, int fundId)
         {
             using (var db2 = NewDataContext())
             {
@@ -14,18 +14,9 @@ namespace CmsData
                                       where m.FundId == fundId
                                       select m).SingleOrDefault();
                 if (ra != null)
-                {                
-                    if (enable == true)
-                    {
-                        ra.Disabled = false;
-                        db2.SubmitChanges();
-                    }
-                    else
-                    {
-                        ra.Disabled = true;
-                        ra.Amt = 0;
-                        db2.SubmitChanges();
-                    }
+                {
+                    ra.Amt = 0;
+                    db2.SubmitChanges();
                 }
             }
         }
