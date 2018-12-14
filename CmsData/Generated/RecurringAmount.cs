@@ -23,10 +23,6 @@ namespace CmsData
 		private int _FundId;
 		
 		private decimal? _Amt;
-
-        private bool _Disabled;
-		
-   		
     	
 		private EntityRef<ContributionFund> _ContributionFund;
 		
@@ -47,9 +43,6 @@ namespace CmsData
 		
 		partial void OnAmtChanging(decimal? value);
 		partial void OnAmtChanged();
-
-        partial void OnDisabledChanging(bool value);
-        partial void OnDisabledChanged();
 
         #endregion
         public RecurringAmount()
@@ -138,28 +131,6 @@ namespace CmsData
 			}
 
 		}
-
-        [Column(Name = "Disabled", UpdateCheck = UpdateCheck.Never, Storage = "_Disabled", DbType = "bit NOT NULL")]
-        public bool Disabled
-        {
-            get { return this._Disabled; }
-
-            set
-            {
-                if (this._Disabled != value)
-                {
-
-                    this.OnDisabledChanging(value);
-                    this.SendPropertyChanging();
-                    this._Disabled = value;
-                    this.SendPropertyChanged("Disabled");
-                    this.OnDisabledChanged();
-                }
-
-            }
-
-        }
-
 
         #endregion
 

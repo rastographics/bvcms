@@ -581,17 +581,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     }).ToArray();
         }
 
-        public static SelectListItem[] FundListByPeopleId(int PeopleId)
-        {
-            return (from f in GetOnlineFundsByPeopleId(PeopleId)
-                    where (f.OnlineSort > 0 && f.OnlineSort <= 99)
-                    select new SelectListItem
-                    {
-                        Text = $"{f.FundName}",
-                        Value = f.FundId.ToString()
-                    }).ToArray();
-        }
-
         public static SelectListItem[] SpecialFundList()
         {
             return (from f in GetAllOnlineFunds()
@@ -609,25 +598,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
                    where f.FundStatusId == 1
                    orderby f.OnlineSort
                    select f;
-        }
-
-        private static IQueryable<ContributionFund> GetOnlineFundsByPeopleId(int PeopleId)
-        {
-            IQueryable<int> disabledFunds = DisabledFundsByPeopleId(PeopleId);
-
-            return from f in DbUtil.Db.ContributionFunds
-                   where f.FundStatusId == 1
-                   where !disabledFunds.Contains(f.FundId)
-                   orderby f.OnlineSort
-                   select f;
-        }
-
-        private static IQueryable<int> DisabledFundsByPeopleId(int PeopleId)
-        {
-            return from r in DbUtil.Db.RecurringAmounts
-                   where r.PeopleId == PeopleId
-                   where r.Disabled == true
-                   select r.ContributionFund.FundId;
         }
 
         private PythonModel pythonModel;

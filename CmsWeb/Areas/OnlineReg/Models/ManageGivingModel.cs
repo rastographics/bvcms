@@ -453,7 +453,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 mg.NextDate = mg.FindNextDate(DateTime.Today);
             }
 
-            DbUtil.Db.RecurringAmounts.DeleteAllOnSubmit(person.RecurringAmounts.Where(s=>s.Disabled == false));
+            DbUtil.Db.RecurringAmounts.DeleteAllOnSubmit(person.RecurringAmounts);
             DbUtil.Db.SubmitChanges();
 
             person.RecurringAmounts.AddRange(chosenFunds.Select(c => new RecurringAmount { FundId = c.fundid, Amt = c.amt }));
