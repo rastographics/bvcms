@@ -75,6 +75,37 @@ namespace CmsWeb.Areas.People.Controllers
             return View(m);
         }
 
+        [HttpGet, Route("~/Person2/{id:int}/Resources")]
+        [Route("~/Person/Index/{id:int}/Resources")]
+        [Route("~/Person/{id:int}/Resources")]
+        public ActionResult Resources(int? id)
+        {
+            if (!id.HasValue)
+            {
+                return Content("no id");
+            }
+
+            if (id == 0 && Util.UserPeopleId.HasValue)
+            {
+                id = Util.UserPeopleId;
+            }
+
+            var m = new PersonModel(id.Value);
+            var noview = m.CheckView();
+            if (noview.HasValue())
+            {
+                return Content(noview);
+            }
+
+            ViewBag.Comments = Util.SafeFormat(m.Person.Comments);
+            ViewBag.PeopleId = id.Value;
+            Util2.CurrentPeopleId = id.Value;
+            Session["ActivePerson"] = m.Person.Name;
+            DbUtil.LogPersonActivity($"Viewing Person: {m.Person.Name}", id.Value, m.Person.Name);
+            InitExportToolbar(id);
+            return View("Resources/Index", m);
+        }
+
         private void InitExportToolbar(int? id)
         {
             var qb = CurrentDatabase.QueryIsCurrentPerson();
