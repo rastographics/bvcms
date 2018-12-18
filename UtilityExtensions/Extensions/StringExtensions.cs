@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -354,6 +355,15 @@ namespace UtilityExtensions
         public static string HtmlEncode(this string s)
         {
             return HttpUtility.HtmlEncode(s);
+        }
+
+        public static Dictionary<string, object> ToDictionary(this string value)
+        {
+            if (value == null)
+            {
+                return new Dictionary<string, object>();
+            }
+            return JsonConvert.DeserializeObject<Dictionary<string, object>>(value);
         }
     }
 }
