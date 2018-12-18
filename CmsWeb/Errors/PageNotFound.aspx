@@ -1,4 +1,5 @@
-﻿<%@ Page Language="C#" AutoEventWireup="True" %>
+﻿<% Response.StatusCode = 404; %>
+<%@ Page Language="C#" AutoEventWireup="True" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
