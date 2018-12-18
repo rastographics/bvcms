@@ -1048,6 +1048,11 @@ namespace CmsWeb
             return new HtmlString("<script src=\"//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js\" type=\"text/javascript\"></script>\n");
         }
 
+        public static HtmlString Humanize()
+        {
+            return new HtmlString("<script src=\"//cdnjs.cloudflare.com/ajax/libs/humanize-plus/1.8.2/humanize.min.js\" type=\"text/javascript\"></script>\n");
+        }
+
         public static HtmlString Velocity()
         {
             return new HtmlString("<script src=\"//cdnjs.cloudflare.com/ajax/libs/velocity/1.2.3/velocity.min.js\" type=\"text/javascript\"></script>\n");

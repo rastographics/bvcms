@@ -312,16 +312,16 @@
     const string radius = "17px";
     if (Model.PaymentForm.Type == type)
     {
-        <label class="btn btn-primary active"
-               style="border-top-@side-radius: @radius; border-bottom-@side-radius: @radius">
-            <input type="radio" name="Type" value="@type" checked="checked" /> @label
-        </label>
+            <label class="btn btn-primary active"
+                   style="border-top-@side-radius: @radius; border-bottom-@side-radius: @radius">
+                <input type="radio" name="Type" value="@type" checked="checked" /> @label
+            </label>
     }
     else
     {
-        <label class="btn btn-primary"
-               style="border-top-@side-radius: @radius; border-bottom-@side-radius: @radius">
-            <input type="radio" name="Type" value="@type" /> @label
-        </label>
+            <label class="btn btn-primary"
+                   style="border-top-@side-radius: @radius; border-bottom-@side-radius: @radius">
+                <input type="radio" name="Type" value="@type" /> @label
+            </label>
     }
 }

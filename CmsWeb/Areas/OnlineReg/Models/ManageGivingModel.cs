@@ -22,10 +22,13 @@ namespace CmsWeb.Areas.OnlineReg.Models
     {
         public int pid { get; set; }
         public int orgid { get; set; }
+
         public string RepeatPattern { get; set; }
 
         [DisplayName("Start On or After")]
         public DateTime? StartWhen { get; set; }
+
+        public bool StartWhenIsNew { get; set; } = true;
 
         public DateTime? StopWhen { get; set; }
         public string SemiEvery { get; set; }
@@ -215,6 +218,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             RepeatPattern = rg.SemiEvery != "S" ? rg.Period : rg.SemiEvery;
             SemiEvery = rg.SemiEvery;
             StartWhen = rg.StartWhen;
+            StartWhenIsNew = false;
             StopWhen = null; //rg.StopWhen;
             Day1 = rg.Day1;
             Day2 = rg.Day2;
@@ -351,10 +355,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             if (!StartWhen.HasValue)
                 modelState.AddModelError("StartWhen", "StartDate must have a value");
-            else if (StartWhen <= DateTime.Today)
+            else if (StartWhenIsNew && StartWhen <= DateTime.Today)
                 modelState.AddModelError("StartWhen", "StartDate must occur after today");
-            //            else if (StopWhen.HasValue && StopWhen <= StartWhen)
-            //                modelState.AddModelError("StopWhen", "StopDate must occur after StartDate");
 
             if (!Util.HasValue(FirstName))
                 modelState.AddModelError("FirstName", "Needs first name");
