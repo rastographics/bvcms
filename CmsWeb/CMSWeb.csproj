@@ -1799,6 +1799,7 @@
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
+    <Content Include="Content\touchpoint\src\less\modals.less" />
     <Content Include="Areas\People\Views\Person\Resources\Index.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\staging.pubxml" />

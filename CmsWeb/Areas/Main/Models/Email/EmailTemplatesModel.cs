@@ -44,7 +44,7 @@ namespace CmsWeb.Areas.Main.Models
             var currentRoleIds = DbUtil.Db.CurrentRoleIds();
             return drafts ?? (drafts =
                    (from c in DbUtil.Db.Contents
-                    where c.TypeID == ContentTypeCode.TypeSavedDraft
+                    where c.TypeID == ContentTypeCode.TypeSavedDraft || c.TypeID == ContentTypeCode.TypeUnlayerSavedDraft
                     let u = DbUtil.Db.Users.First(vv => vv.UserId == c.OwnerID)
                     let r = DbUtil.Db.Roles.FirstOrDefault(vv => vv.RoleId == c.RoleID)
                     let isshared = (from tt in DbUtil.Db.Tags
@@ -63,7 +63,8 @@ namespace CmsWeb.Areas.Main.Models
                         owner = u.Person.Name,
                         ownerID = c.OwnerID,
                         role = r.RoleName,
-                        roleID = c.RoleID
+                        roleID = c.RoleID,
+                        isUnlayer = c.TypeID == ContentTypeCode.TypeUnlayerSavedDraft
                     }).ToList());
         }
     }

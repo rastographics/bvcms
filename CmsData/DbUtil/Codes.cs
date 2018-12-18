@@ -38,6 +38,7 @@ namespace CmsData.Codes
         public const int TypeSavedDraft = 3;
         public const int TypeSqlScript = 4;
         public const int TypePythonScript = 5;
+        public const int TypeUnlayerSavedDraft = 6;
     }
     public static class MemberStatusCode
     {

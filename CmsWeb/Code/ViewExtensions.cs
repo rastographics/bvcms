@@ -1003,13 +1003,18 @@ namespace CmsWeb
 
         public static HtmlString FontAwesome()
         {
-            return new HtmlString("<link href=\"//netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.css\" rel=\"stylesheet\">\n");
+            return new HtmlString("<link href=\"//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css\" rel=\"stylesheet\">\n");
         }
 
         public static HtmlString CkEditor()
         {
             //            return new HtmlString("<script src=\"//cdnjs.cloudflare.com/ajax/libs/ckeditor/4.5.11/ckeditor.js\" type=\"text/javascript\"></script>\n");
             return new HtmlString("<script src=\"//cdn.ckeditor.com/4.5.11/full/ckeditor.js\" type=\"text/javascript\"></script>\n");
+        }
+
+        public static HtmlString UnlayerEditor()
+        {
+            return new HtmlString("<script src=\"//editor.unlayer.com/embed.js\"></script>");
         }
 
         public static HtmlString jQueryMobile()

@@ -15,6 +15,17 @@
     @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-tabdrop/css/tabdrop.css")
 }
 <div class="row">
+    @{
+        var empty = Model.FetchTemplateByName("Empty Template");
+    }
+    @if (User.IsInRole("EmailBuilder") && empty != null)
+    {
+        <div class="col-md-12" id="emailBuilder">
+            <div class="pull-right">
+                <a href="#" class="btn btn-primary templateItem" template="@empty.Id" useUnlayer="true"><i class="fa fa-envelope"></i>&nbsp;&nbsp;Email Builder</a>
+            </div>
+        </div>
+    }
     <div class="col-md-12" id="templates">
         <ul class="nav nav-tabs" id="template-tabs">
             <li class="active"><a href="#emailTemplates" aria-controls="emailTemplates" data-toggle="tab"><i class="fa fa-envelope"></i>&nbsp;&nbsp;Email Templates</a></li>
@@ -29,20 +40,20 @@
                 @Html.Hidden("ccparents", @Model.CcParents)
                 @Html.Hidden("nodups", @Model.NoDups)
                 @Html.Hidden("orgid", @Model.OrgId)
+                @Html.Hidden("useUnlayer", false)
             </form>
             <div class="tab-pane fade in active" id="emailTemplates">
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="row">
                             @{
-                                var empty = Model.FetchTemplateByName("Empty Template");
                                 if (empty != null)
                                 {
                                     <div class="col-sm-6 col-md-4 col-lg-3" style="margin-top: 5px; margin-bottom: 5px;" bvtemplate template="@empty.Id">
                                         <div class="row">
                                             <div class="col-xs-4">
                                                 <a href="#" class="templateItem" template="@empty.Id">
-                                                    <img src="/Image/@empty.ThumbID" class="img-responsive img-thumbnail" />
+                                                    <img src="/Image/@empty.ThumbID" class="img-responsive img-thumbnail"/>
                                                 </a>
                                             </div>
                                             <div class="col-xs-8">
@@ -57,7 +68,7 @@
                                         <div class="row">
                                             <div class="col-xs-4">
                                                 <a href="#" class="templateItem" template="0">
-                                                    <img src="/Image/0" class="img-responsive img-thumbnail" />
+                                                    <img src="/Image/0" class="img-responsive img-thumbnail"/>
                                                 </a>
                                             </div>
                                             <div class="col-xs-8">
@@ -73,7 +84,7 @@
                                     <div class="row">
                                         <div class="col-xs-4">
                                             <a href="#" class="templateItem" template="@t.Id">
-                                                <img src="/Image/@t.ThumbID" class="img-responsive img-thumbnail" />
+                                                <img src="/Image/@t.ThumbID" class="img-responsive img-thumbnail"/>
                                             </a>
                                         </div>
                                         <div class="col-xs-8">
@@ -102,32 +113,43 @@
                             <div class="table-responsive">
                                 <table class="table table-striped">
                                     <thead>
-                                        <tr>
-                                            <th style="width: 5px;"><input type="checkbox" id="draftAll" value="all" /></th>
-                                            <th>Name</th>
-                                            <th>Role</th>
-                                            <th>Created Date</th>
-                                        </tr>
+                                    <tr>
+                                        <th style="width: 5px;"><input type="checkbox" id="draftAll" value="all"/></th>
+                                        <th>Name</th>
+                                        <th>Role</th>
+                                        <th>Created Date</th>
+                                        <th style="width: 50px;">Action</th>
+                                    </tr>
                                     </thead>
                                     @foreach (var item in sdMine)
                                     {
-                                        <tr>
-                                            <td style="width: 5px;">
-                                                <input draft="yes" type="checkbox" name="draftID" value="@item.id" />
-                                            </td>
-                                            <td>
-                                                <a href="#" class="templateItem" template="@item.id">@item.name</a>
-                                            </td>
-                                            <td>
-                                                @if (item.roleID != 0)
-                                                {
-                                                    @item.role
-                                                }
-                                            </td>
-                                            <td>
-                                                @item.created.FormatDate()
-                                            </td>
-                                        </tr>
+                                        if (item.isUnlayer && !User.IsInRole("EmailBuilder"))
+                                        {
+                                            continue;
+                                        }
+                                        else
+                                        {
+                                            <tr>
+                                                <td style="width: 5px;">
+                                                    <input draft="yes" type="checkbox" name="draftID" value="@item.id"/>
+                                                </td>
+                                                <td>
+                                                    <a href="#" class="templateItem" template="@item.id" useUnlayer="@item.isUnlayer.ToString().ToLower()">@item.name</a>
+                                                </td>
+                                                <td>
+                                                    @if (item.roleID != 0)
+                                                    {
+                                                        @item.role
+                                                    }
+                                                </td>
+                                                <td>
+                                                    @item.created.FormatDate()
+                                                </td>
+                                                <td style="width: 50px;">
+                                                    <button class="btn btn-default btn-sm clone" type="button" template="@item.id" data-toggle="modal" data-target="#clone-modal"><i class="fa fa-clone"></i> Clone</button>
+                                                </td>
+                                            </tr>
+                                        }
                                     }
                                 </table>
                             </div>
@@ -142,28 +164,39 @@
                         <div class="table-responsive">
                             <table class="table table-striped">
                                 <thead>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Role</th>
-                                        <th>Created Date</th>
-                                    </tr>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Role</th>
+                                    <th>Created Date</th>
+                                    <th style="width: 50px;">Action</th>
+                                </tr>
                                 </thead>
                                 @foreach (var item in sdRole)
                                 {
-                                    <tr>
-                                        <td>
-                                            <a href="#" class="templateItem" template="@item.id">@item.name</a>
-                                        </td>
-                                        <td>
-                                            @if (item.roleID != 0)
-                                            {
-                                                @item.role
-                                            }
-                                        </td>
-                                        <td>
-                                            @item.created.FormatDate()
-                                        </td>
-                                    </tr>
+                                    if (item.isUnlayer && !User.IsInRole("EmailBuilder"))
+                                    {
+                                        continue;
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td>
+                                                <a href="#" class="templateItem" template="@item.id" useUnlayer="@item.isUnlayer.ToString().ToLower()">@item.name</a>
+                                            </td>
+                                            <td>
+                                                @if (item.roleID != 0)
+                                                {
+                                                    @item.role
+                                                }
+                                            </td>
+                                            <td>
+                                                @item.created.FormatDate()
+                                            </td>
+                                            <td style="width: 50px;">
+                                                <button class="btn btn-default btn-sm clone" type="button" template="@item.id" data-toggle="modal" data-target="#clone-modal"><i class="fa fa-clone"></i> Clone</button>
+                                            </td>
+                                        </tr>
+                                    }
                                 }
                             </table>
                         </div>
@@ -177,25 +210,36 @@
                         <div class="table-responsive">
                             <table class="table table-striped">
                                 <thead>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Owner</th>
-                                        <th>Created Date</th>
-                                    </tr>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Owner</th>
+                                    <th>Created Date</th>
+                                    <th style="width: 50px;">Action</th>
+                                </tr>
                                 </thead>
                                 @foreach (var item in sdShared)
                                 {
-                                    <tr>
-                                        <td>
-                                            <a href="#" class="templateItem" template="@item.id">@item.name</a>
-                                        </td>
-                                        <td>
-                                            @item.owner
-                                        </td>
-                                        <td>
-                                            @item.created.FormatDate()
-                                        </td>
-                                    </tr>
+                                    if (item.isUnlayer && !User.IsInRole("EmailBuilder"))
+                                    {
+                                        continue;
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td>
+                                                <a href="#" class="templateItem" template="@item.id" useUnlayer="@item.isUnlayer.ToString().ToLower()">@item.name</a>
+                                            </td>
+                                            <td>
+                                                @item.owner
+                                            </td>
+                                            <td>
+                                                @item.created.FormatDate()
+                                            </td>
+                                            <td style="width: 50px;">
+                                                <button class="btn btn-default btn-sm clone" type="button" template="@item.id" data-toggle="modal" data-target="#clone-modal"><i class="fa fa-clone"></i> Clone</button>
+                                            </td>
+                                        </tr>
+                                    }
                                 }
                             </table>
                         </div>
@@ -204,6 +248,31 @@
                 </div>
             </div>
         </div>
+    </div>
+</div>
+<div class="modal fade" id="clone-modal">
+    <div class="modal-dialog modal-sm">
+        <form action="/Email/CloneDraft" method="post">
+            @Html.Hidden("QueryId", Model.QueryId)
+            <input type="hidden" name="id" id="id" value=""/>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Clone Draft</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-info">The new draft will be saved in My Drafts.</div>
+                    <div class="form-group">
+                        <label for="name" class="control-label">Draft Name</label>
+                        <input type="text" id="name" name="name" class="form-control"/>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="button" value="Cancel" class="btn btn-default" data-dismiss="modal"/>
+                    <input type="submit" value="Submit" class="btn btn-primary"/>
+                </div>
+            </div>
+        </form>
     </div>
 </div>
 @section scripts
@@ -224,12 +293,22 @@
 
             function setSpecialContentCol(className) {
                 $('#templates').removeClass('col-md-9').removeClass('col-md-12').addClass(className);
+                $('#emailBuilder').removeClass('col-md-9').removeClass('col-md-12').addClass(className);
             }
 
             $("body").on("click", 'a.templateItem', function (e) {
                 e.preventDefault();
                 $("#templateID").val($(this).attr("template"));
+
+                if ($(this).attr("useUnlayer")) {
+                    $("#useUnlayer").val($(this).attr("useUnlayer"));
+                }
+
                 $("#selectTemplate").submit();
+            });
+
+            $('#clone-modal').on('shown.bs.modal', function (e) {
+                $("#id").val($(e.relatedTarget).attr("template"));
             });
 
             var lastChecked = null;

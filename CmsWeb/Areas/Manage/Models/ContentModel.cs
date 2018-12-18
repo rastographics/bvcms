@@ -112,6 +112,7 @@ namespace CmsWeb.Models
             public int roleID { get; set; }
             public DateTime? created { get; set; }
             public bool shared { get; set; }
+            public bool isUnlayer { get; set; }
 
             public bool Owner => ownerID == Util.UserId;
             public bool Shared => !Owner && shared;
