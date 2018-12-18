@@ -40,7 +40,9 @@ namespace UtilityExtensions
                 var conv = new NullableConverter(type);
                 type = conv.UnderlyingType;
             }
-            return Convert.ChangeType(value, type);
+            return value == null
+                ? null
+                : Convert.ChangeType(value, type);
         }
         public static int ToInt(this string s)
         {
