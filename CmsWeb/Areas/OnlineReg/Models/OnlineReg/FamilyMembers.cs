@@ -1,3 +1,4 @@
+using System;
 using CmsData;
 using System.Collections.Generic;
 using System.Linq;
@@ -75,6 +76,13 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 {
                     modelState.AddModelError(this.GetNameFor(mm => mm.List[List.IndexOf(p)].Found),
                         "Sorry, but registration is filled.");
+                }
+
+                if (p.IsCommunityGroup() && DbUtil.Db.Setting("RestrictCGSignupsTo24Hrs"))
+                {
+                    if (!p.CanRegisterInCommunityGroup(DateTime.Today.AddDays(-1)))
+                        modelState.AddModelError(this.GetNameFor(mm => mm.List[List.IndexOf(p)].Found),
+                            "Sorry, but cannot register for multiple community groups on same day.");
                 }
 
                 if (p.Found == true)

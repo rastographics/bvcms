@@ -12,6 +12,7 @@
     var model = (OrganizationModel)ViewBag.model;
     var o = model.Org;
     var showAdvanced = !RoleChecker.HasSetting(SettingName.LimitToolbar, false);
+    var showAltCalOnly = DbUtil.Db.Setting("ShowAltVolunteerCalendarOnly");
 }
 
 @if (showAdvanced)
@@ -32,7 +33,10 @@
                 <li><a id="tryreg" href="#TryRegDialog" data-toggle="modal"><span class="org-context">Try Registration</span></a></li>
                 @if (model.IsVolunteerLeader && o.RegistrationTypeId == RegistrationTypeCode.ChooseVolunteerTimes && model.ShowBlueToolbarVolunteerCalendar)
                 {
-                    <li><a id="VolunteerCalendar" href="/Volunteers/Calendar/@oid" target="calendar"><span class="org-context">Volunteer Calendar</span></a></li>
+                    if (!showAltCalOnly)
+                    {
+                        <li><a id="VolunteerCalendar" href="/Volunteers/Calendar/@oid" target="calendar"><span class="org-context">Volunteer Calendar</span></a></li>
+                    }
                     <li><a id="AltVolunteerCalendar" href="/Volunteers/AltCalendar/@oid" target="calendar"><span class="org-context">Simple Volunteer Calendar</span></a></li>
                 }
                 @if (edit)

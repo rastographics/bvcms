@@ -147,6 +147,20 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 IsFilled = org.RegLimitCount(DbUtil.Db) >= org.Limit;
             return IsFilled;
         }
+
+        public bool CanRegisterInCommunityGroup(DateTime enrollmentCutoff)
+        {
+            if (PeopleId == null)
+                return false;
+
+            var results = from om in DbUtil.Db.OrganizationMembers
+                join org in DbUtil.Db.Organizations on om.OrganizationId equals org.OrganizationId
+                where om.PeopleId == PeopleId && om.EnrollmentDate >= enrollmentCutoff && org.OrganizationType.Code == "CG"
+                select om.PeopleId;
+            
+            return !results.Any();
+        }
+
         public string GetSpecialScript()
         {
             if (org == null) return "Organization not found.";
