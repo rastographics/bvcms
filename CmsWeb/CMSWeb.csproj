@@ -1219,7 +1219,7 @@
     <Content Include="Content\touchpoint\js\finance\transactions.js" />
     <Content Include="Content\touchpoint\js\form-ajax.js" />
     <Content Include="Content\touchpoint\js\main.js" />
-    <Content Include="Content\touchpoint\js\metro-zip.js" />
+    <Content Include="Content\touchpoint\js\metrozip\metro-zip.js" />
     <Content Include="Content\touchpoint\js\onlineregister.min.js" />
     <Content Include="Content\touchpoint\js\people\merge.js" />
     <Content Include="Content\touchpoint\js\search\export-query.js" />
@@ -1646,7 +1646,6 @@
     <Content Include="Content\touchpoint\lib\jquery-ui-custom\css\jquery-ui.min.css" />
     <Content Include="Content\touchpoint\lib\jquery-ui-custom\js\jquery-ui.min.js" />
     <Content Include="Content\touchpoint\lib\jquery-validate-globalize\js\jquery.validate.globalize.js" />
-    <Content Include="Content\touchpoint\lib\jquery.mask.js" />
     <Content Include="Content\touchpoint\lib\magnific-popup\jquery.magnific-popup.min.js" />
     <Content Include="Content\touchpoint\lib\magnific-popup\magnific-popup.css" />
     <Content Include="Content\touchpoint\lib\mousetrap\js\mousetrap.min.js" />
