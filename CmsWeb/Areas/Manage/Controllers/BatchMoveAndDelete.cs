@@ -11,7 +11,8 @@ using UtilityExtensions;
 namespace CmsWeb.Areas.Manage.Controllers
 {
     [ValidateInput(false)]
-    [RouteArea("Manage", AreaPrefix = "BatchMoveAndDelete"), Route("{action}/{id?}")]
+    [RouteArea("Manage", AreaPrefix = "BatchMoveAndDelete")]
+    [Route("{action}/{id?}")]
     public class BatchMoveAndDeleteController : CmsStaffAsyncController
     {
         private readonly IRequestManager _requestManager;
@@ -58,6 +59,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                             db.Dispose();
                             continue;
                         }
+
                         var tp = db.LoadPersonById(toid);
                         if (tp == null)
                         {
@@ -65,6 +67,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                             db.Dispose();
                             continue;
                         }
+
                         try
                         {
                             p.MovePersonStuff(db, toid);
@@ -76,6 +79,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                             db.Dispose();
                             continue;
                         }
+
                         try
                         {
                             db.PurgePerson(fromid);
@@ -91,6 +95,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                         }
                     }
                 }
+
                 AsyncManager.Parameters["results"] = sb.ToString();
                 AsyncManager.OutstandingOperations.Decrement();
             });
@@ -100,6 +105,5 @@ namespace CmsWeb.Areas.Manage.Controllers
         {
             return Content(results);
         }
-
     }
 }
