@@ -1180,6 +1180,14 @@ This search uses multiple steps which cannot be duplicated in a single query.
             var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), startwith, endwith, marginalcode);
             return ((int)(result.ReturnValue));
         }
+        [Function(Name = "dbo.DeleteZipCodesRange")]
+        public int DeleteZipCodesRange(
+            [Parameter(DbType = "Int")] int startwith,
+            [Parameter(DbType = "Int")] int endwith)
+        {
+            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), startwith, endwith);
+            return ((int)(result.ReturnValue));
+        }
         [Function(Name = "dbo.InsertDuplicate")]
         public int InsertDuplicate([Parameter(DbType = "Int")] int i1, [Parameter(DbType = "Int")] int i2)
         {
