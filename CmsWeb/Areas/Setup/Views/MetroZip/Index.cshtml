@@ -38,7 +38,7 @@
                         <thead>
                             <tr>
                                 <th style="width: 100px;">Zip Code</th>
-                                <th style="width: 500px;">Metro Marginal Code</th>
+                                <th style="width: 500px;">Resident Code</th>
                                 <th style="width: 50px;">Action</th>
                             </tr>
                         </thead>
@@ -109,9 +109,9 @@
                         <label id="endwithError" class="control-label error"></label>
                     </div>
                     <div class="form-group">
-                        <label for="marginalcode" class="control-label">Metro Marginal Code</label>
-                        <select class="form-control" id="marginaldd" name="marginalcode"></select>
-                        <label id="marginaldbError" class="control-label error"></label>
+                        <label for="residentcode" class="control-label">Resident Code</label>
+                        <select class="form-control" id="residentcodedd" name="residentcode"></select>
+                        <label id="residentcodeError" class="control-label error"></label>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -217,9 +217,9 @@
                 ev.preventDefault();
                 $('#range-modal').modal();
                 $.getJSON('/MetroZips/ResidentCodes/', function (data) {
-                    let dropdown = $('#marginaldd');
+                    let dropdown = $('#residentcodedd');
                     dropdown.empty();
-                    dropdown.append('<option selected="true" value="0" disabled>Choose Metro Maginal Code</option>');
+                    dropdown.append('<option selected="true" value="0" disabled>Choose Resident Code</option>');
                     dropdown.prop('selectedIndex', 0);
                     $.each(data, function (key, entry) {
                         dropdown.append($('<option></option>').attr('value', entry.value).text(entry.text));

@@ -1,10 +1,10 @@
-﻿$('document').ready(function () {
+﻿$(function () {
 
     var addRangeForm = $('#createRange');
     var sendRangeBtn = addRangeForm.find('input[type="submit"]');
     var arStartWithInput = addRangeForm.find('input#startwith');
     var arEndWithInput = addRangeForm.find('input#endwith');
-    var residentCodeDD = addRangeForm.find('select#marginaldd');
+    var residentCodeDD = addRangeForm.find('select#residentcodedd');
 
     $('.zipcode').mask('00000');
     sendRangeBtn.prop('disabled', true);
@@ -20,11 +20,7 @@
         if (residentCodeDD.val() == null) {
             valid = false;
         }
-        if (!valid) {
-            sendRangeBtn.prop('disabled', true);
-        } else {
-            sendRangeBtn.prop('disabled', false);
-        }
+        sendRangeBtn.prop('disabled', !valid);
     }
 
     arStartWithInput.keyup(function () {
@@ -51,12 +47,8 @@
         }
         if (parseInt(drStartWithInput.val()) > parseInt(drEndWithInput.val())) {
             valid = false;
-        }        
-        if (!valid) {
-            delRangeBtn.prop('disabled', true);
-        } else {
-            delRangeBtn.prop('disabled', false);
         }
+        delRangeBtn.prop('disabled', !valid);
     }
 
     drStartWithInput.keyup(function () {
