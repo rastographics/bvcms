@@ -319,7 +319,7 @@ AND a.PeopleId = {2}
                     if (m != null)
                     {
                         m.Pending = pending;
-                        if (m.MemberTypeId == MemberTypeCode.Member || m.MemberTypeId == 0)
+                        if (m.MemberTypeId == MemberTypeCode.Member || m.MemberTypeId == 0 || m.MemberTypeId == MemberTypeCode.Prospect)
                         {
                             m.MemberTypeId = memberTypeId;
                         }
