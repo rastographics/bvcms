@@ -137,6 +137,8 @@ namespace CmsWeb.Areas.People.Models
         public CodeInfo Campus { get; set; }
 
         [DisplayName("Birthday")]
+        [DateEmptyOrValid]
+        [BirthdateValid]
         public string DOB { get; set; }
 
         public CodeInfo MaritalStatus { get; set; }

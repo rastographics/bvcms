@@ -6,8 +6,7 @@
     if (help.HasValue())
     {
         help = $"<span class='help-block'>{help}</span>";
-    }
-    var requiredBirthYear = DbUtil.Db.Setting("RequiredBirthYear");
+    }   
 }
 <div class="form-group">
     @Html.LabelFor(m => m, new { @class = "control-label" })
@@ -19,19 +18,3 @@
         @Html.ValidationMessageLabelFor(m => m)
     </div>
 </div>
-@if (requiredBirthYear)
-{
-    <script>
-    $('.birthdate').find('input').keydown(function (e) {
-        var key = e.charCode || e.keyCode;
-        if (key == 9) {
-            // tab key still working
-        } else {
-            e.preventDefault();
-        }
-    });
-    $('.birthdate').bind("cut copy paste", function (e) {
-        e.preventDefault();
-    });
-    </script>
-}
