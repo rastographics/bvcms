@@ -7,30 +7,28 @@ namespace CmsWeb.Code
 {
     public class BirthdateValidAttribute : ValidationAttribute
     {
-        private DateTime _dt;
-        private bool _required = false;
-        
-        public BirthdateValidAttribute() : base("Not valid birthdate")
-        {                        
+        public BirthdateValidAttribute() : base("Not a valid birthdate")
+        {
         }
 
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
-            _required = DbUtil.Db.Setting("RequiredBirthYear");
-
-            if (_required && value == null)
+            if (value == null)
             {
-                return new ValidationResult(FormatErrorMessage(validationContext.DisplayName));
-            }            
+                return ValidationResult.Success;
+            }
 
-            string[] formats = { "MM/dd/yyyy", "MM/d/yyyy","M/dd/yyyy","M/d/yyyy"};
+            string[] formats = { "MM/dd/yyyy", "MM/d/yyyy", "M/dd/yyyy", "M/d/yyyy" };
 
-            bool validDate = DateTime.TryParseExact(value.ToString(), formats,
-                CultureInfo.InvariantCulture, DateTimeStyles.None, out _dt);
-
-            if (_required && !validDate)
+            bool requireBirthYear = DbUtil.Db.Setting("RequiredBirthYear");
+            if (requireBirthYear)
             {
-                return new ValidationResult(FormatErrorMessage(validationContext.DisplayName));
+                bool validDate = DateTime.TryParseExact(value.ToString(), formats,
+                   CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime _temp);
+                if (!validDate)
+                {
+                    return new ValidationResult(FormatErrorMessage(validationContext.DisplayName));
+                }
             }
             return ValidationResult.Success;
         }
