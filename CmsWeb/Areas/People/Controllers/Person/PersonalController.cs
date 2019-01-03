@@ -34,6 +34,11 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpPost]
         public ActionResult PersonalUpdate(int id, BasicPersonInfo m)
         {
+            if (!ModelState.IsValid)
+            {
+                return View("Personal/Edit", m);
+            }
+            
             m.UpdatePerson();
             DbUtil.LogPersonActivity($"Update Basic Info for: {m.person.Name}", m.Id, m.person.Name);
             InitExportToolbar(id);
