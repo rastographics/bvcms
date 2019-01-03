@@ -32,7 +32,7 @@ namespace CmsData
                     return pi?.AmountPaid.ToString2("c") ?? code;
 
                 case "{missiontripamtdue}":
-                    return (pi?.AmountDue ?? 0 - pi?.AmountPaidWithSupporters ?? 0).ToString("c") ?? code;
+                    return (pi?.Amount ?? 0 - pi?.AmountPaidWithSupporters ?? 0).ToString("c") ?? code;
 
                 case "{amount}":
                     if (pi != null)
