@@ -28,6 +28,8 @@
             <div class="box-title-btn">
                 <div class="box-tools">
                     <a href="#" class="btn btn-success create-new"><i class="fa fa-plus-circle"></i> Add Zip Code</a>
+                    <a href="#" class="btn btn-success create-range"><i class="fa fa-plus-circle"></i> Add Range of Zip Codes</a>
+                    <a href="#" class="btn btn-danger delete-range"><i class="fa fa-plus-circle"></i> Delete Range of Zip Codes</a>
                 </div>
             </div>
             <div class="box-content">
@@ -36,7 +38,7 @@
                         <thead>
                             <tr>
                                 <th style="width: 100px;">Zip Code</th>
-                                <th style="width: 500px;">Metro Marginal Code</th>
+                                <th style="width: 500px;">Resident Code</th>
                                 <th style="width: 50px;">Action</th>
                             </tr>
                         </thead>
@@ -55,6 +57,8 @@
                     </table>
                 </div>
                 <a href="#" class="btn btn-success btn-block visible-xs-block create-new"><i class="fa fa-plus-circle"></i> Add Zip Code</a>
+                <a href="#" class="btn btn-success btn-block visible-xs-block create-range"><i class="fa fa-plus-circle"></i> Add Range of Zip Codes</a>
+                <a href="#" class="btn btn-danger btn-block visible-xs-block delete-range"><i class="fa fa-plus-circle"></i> Delete Range of Zip Codes</a>
             </div>
         </div>
     </div>
@@ -83,17 +87,84 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="range-modal">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            @using (Html.BeginForm("CreateRange", "MetroZip", FormMethod.Post, new { id = "createRange" }))
+            {
+                @Html.Hidden("type", ViewData["type"])
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Add Range of Zip Codes</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="startwith" class="control-label">Start with</label>
+                        @Html.TextBox("startwith", "", new { @class = "form-control zipcode" })
+                        <label id="startwithError" class="control-label error"></label>
+                    </div>
+                    <div class="form-group">
+                        <label for="endwith" class="control-label">End with</label>
+                        @Html.TextBox("endwith", "", new { @class = "form-control zipcode" })
+                        <label id="endwithError" class="control-label error"></label>
+                    </div>
+                    <div class="form-group">
+                        <label for="residentcode" class="control-label">Resident Code</label>
+                        <select class="form-control" id="residentcodedd" name="residentcode"></select>
+                        <label id="residentcodeError" class="control-label error"></label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="button" value="Cancel" class="btn btn-default" data-dismiss="modal" />
+                    <input type="submit" value="Submit" class="btn btn-primary" />
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="delete-range-modal">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            @using (Html.BeginForm("DeleteRange", "MetroZip", FormMethod.Post, new { id = "deleteRange" }))
+            {
+                @Html.Hidden("type", ViewData["type"])
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Delete Range of Zip Codes</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="startwith" class="control-label">Start with</label>
+                        @Html.TextBox("startwith", "", new { @class = "form-control zipcode" })
+                        <label id="startwithError" class="control-label error"></label>
+                    </div>
+                    <div class="form-group">
+                        <label for="endwith" class="control-label">End with</label>
+                        @Html.TextBox("endwith", "", new { @class = "form-control zipcode" })
+                        <label id="endwithError" class="control-label error"></label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="button" value="Cancel" class="btn btn-default" data-dismiss="modal" />
+                    <input type="submit" value="Delete" class="btn btn-primary btn-danger" />
+                </div>
+            }
+        </div>
+    </div>
+</div>
 @section scripts
 {
     @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-editable/js/bootstrap-editable.min.js")
+    @Fingerprint.Script("/Content/touchpoint/js/metrozip/metro-zip.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/jquery-mask/js/jquery-mask.min.js")
     <script type="text/javascript">
         $(function () {
             $.fn.editableform.buttons = '<button type="submit" class="btn btn-primary btn-sm editable-submit">' +
-                                            '<i class="fa fa-fw fa-check"></i>' +
-                                        '</button>' +
-                                        '<button type="button" class="btn btn-default btn-sm editable-cancel">' +
-                                            '<i class="fa fa-fw fa-times"></i>' +
-                                        '</button>';
+                '<i class="fa fa-fw fa-check"></i>' +
+                '</button>' +
+                '<button type="button" class="btn btn-default btn-sm editable-cancel">' +
+                '<i class="fa fa-fw fa-times"></i>' +
+                '</button>';
 
             $(".clickSelect").editable({
                 mode: 'inline',
@@ -119,26 +190,47 @@
                     confirmButtonText: "Yes, delete it!",
                     closeOnConfirm: false
                 },
-                function () {
-                    $.post("/MetroZips/Delete/" + id, null, function (ret) {
-                        if (ret && ret.error)
-                            swal("Error!", ret.error, "error");
-                        else {
-                            swal({
-                                title: "Deleted!",
-                                type: "success"
-                            },
-                            function () {
-                                window.location = "/MetroZips/";
-                            });
-                        }
+                    function () {
+                        $.post("/MetroZips/Delete/" + id, null, function (ret) {
+                            if (ret && ret.error)
+                                swal("Error!", ret.error, "error");
+                            else {
+                                swal({
+                                    title: "Deleted!",
+                                    type: "success"
+                                },
+                                    function () {
+                                        window.location = "/MetroZips/";
+                                    });
+                            }
+                        });
                     });
-                });
             });
 
             $("a.create-new").click(function (ev) {
                 ev.preventDefault();
                 $('#new-modal').modal();
+                return false;
+            });
+
+            $("a.create-range").click(function (ev) {
+                ev.preventDefault();
+                $('#range-modal').modal();
+                $.getJSON('/MetroZips/ResidentCodes/', function (data) {
+                    let dropdown = $('#residentcodedd');
+                    dropdown.empty();
+                    dropdown.append('<option selected="true" value="0" disabled>Choose Resident Code</option>');
+                    dropdown.prop('selectedIndex', 0);
+                    $.each(data, function (key, entry) {
+                        dropdown.append($('<option></option>').attr('value', entry.value).text(entry.text));
+                    })
+                });
+                return false;
+            });
+
+            $("a.delete-range").click(function (ev) {
+                ev.preventDefault();
+                $('#delete-range-modal').modal();
                 return false;
             });
 

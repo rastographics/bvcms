@@ -301,16 +301,16 @@
       <HintPath>..\packages\AuthorizeNet.1.9.4\lib\AuthorizeNet.dll</HintPath>
     </Reference>
     <Reference Include="CsvHelper, Version=12.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
-      <HintPath>..\..\provisioning\src\packages\CsvHelper.12.1.0\lib\net45\CsvHelper.dll</HintPath>
+      <HintPath>..\packages\CsvHelper.12.1.0\lib\net45\CsvHelper.dll</HintPath>
     </Reference>
     <Reference Include="Dapper, Version=1.50.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\provisioning\src\packages\Dapper.1.50.5\lib\net451\Dapper.dll</HintPath>
+      <HintPath>..\packages\Dapper.1.50.5\lib\net451\Dapper.dll</HintPath>
     </Reference>
     <Reference Include="Elmah, Version=1.2.14706.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\elmah.corelibrary.1.2.2\lib\Elmah.dll</HintPath>
     </Reference>
     <Reference Include="EPPlus, Version=4.5.2.1, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
-      <HintPath>..\..\provisioning\src\packages\EPPlus.4.5.2.1\lib\net40\EPPlus.dll</HintPath>
+      <HintPath>..\packages\EPPlus.4.5.2.1\lib\net40\EPPlus.dll</HintPath>
     </Reference>
     <Reference Include="Handlebars, Version=1.8.1.0, Culture=neutral, PublicKeyToken=22225d0bf33cd661, processorArchitecture=MSIL">
       <HintPath>..\packages\Handlebars.Net.1.9.0\lib\net40\Handlebars.dll</HintPath>
@@ -1322,6 +1322,9 @@
     <Content Include="Migrations\20181206_create_RemoveFromEnrollmentHistory_proc.sql" />
     <Content Include="Migrations\20181218_ja-members-not-included-attendance-fix.sql" />
     <Content Include="Migrations\20181211_update_inactive_recurring_amounts.sql" />
+    <Content Include="Migrations\20181205_create_CreateZipCodesRange_proc.sql" />
+    <Content Include="Migrations\20181220_create_CompleteZip_func.sql" />
+    <Content Include="Migrations\20181220_create_DeleteZipCodesRange_proc.sql" />
     <Content Include="QueryBuilder\CompareMap.xml">
       <SubType>Designer</SubType>
     </Content>

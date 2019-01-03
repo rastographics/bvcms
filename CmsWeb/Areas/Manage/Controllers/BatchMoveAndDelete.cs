@@ -1,4 +1,5 @@
 using CmsData;
+using CmsWeb.Lifecycle;
 using LumenWorks.Framework.IO.Csv;
 using System;
 using System.IO;
@@ -10,9 +11,17 @@ using UtilityExtensions;
 namespace CmsWeb.Areas.Manage.Controllers
 {
     [ValidateInput(false)]
-    [RouteArea("Manage", AreaPrefix = "BatchMoveAndDelete"), Route("{action}/{id?}")]
-    public class BatchMoveAndDelete : CmsStaffAsyncController
+    [RouteArea("Manage", AreaPrefix = "BatchMoveAndDelete")]
+    [Route("{action}/{id?}")]
+    public class BatchMoveAndDeleteController : CmsStaffAsyncController
     {
+        private readonly IRequestManager _requestManager;
+
+        public BatchMoveAndDeleteController(IRequestManager requestManager)
+        {
+            _requestManager = requestManager;
+        }
+
         [Authorize(Roles = "Admin")]
         public ActionResult MoveAndDelete()
         {
@@ -41,36 +50,39 @@ namespace CmsWeb.Areas.Manage.Controllers
 
                         var fromid = csv[0].ToInt();
                         var toid = csv[1].ToInt();
-                        var Db = DbUtil.Create(host);
-                        var p = DbUtil.Db.LoadPersonById(fromid);
+                        var db = DbUtil.Create(host);
+                        var p = db.LoadPersonById(fromid);
 
                         if (p == null)
                         {
                             sb.AppendFormat("fromid {0} not found<br/>\n", fromid);
-                            DbUtil.Db.Dispose();
+                            db.Dispose();
                             continue;
                         }
-                        var tp = DbUtil.Db.LoadPersonById(toid);
+
+                        var tp = db.LoadPersonById(toid);
                         if (tp == null)
                         {
                             sb.AppendFormat("toid {0} not found<br/>\n", toid);
-                            DbUtil.Db.Dispose();
+                            db.Dispose();
                             continue;
                         }
+
                         try
                         {
-                            p.MovePersonStuff(DbUtil.Db, toid);
-                            DbUtil.Db.SubmitChanges();
+                            p.MovePersonStuff(db, toid);
+                            db.SubmitChanges();
                         }
                         catch (Exception ex)
                         {
                             sb.AppendFormat("error on move ({0}, {1}): {2}<br/>\n", fromid, toid, ex.Message);
-                            DbUtil.Db.Dispose();
+                            db.Dispose();
                             continue;
                         }
+
                         try
                         {
-                            DbUtil.Db.PurgePerson(fromid);
+                            db.PurgePerson(fromid);
                             sb.AppendFormat("moved ({0}, {1}) successful<br/>\n", fromid, toid);
                         }
                         catch (Exception ex)
@@ -79,10 +91,11 @@ namespace CmsWeb.Areas.Manage.Controllers
                         }
                         finally
                         {
-                            DbUtil.Db.Dispose();
+                            db.Dispose();
                         }
                     }
                 }
+
                 AsyncManager.Parameters["results"] = sb.ToString();
                 AsyncManager.OutstandingOperations.Decrement();
             });
@@ -92,6 +105,5 @@ namespace CmsWeb.Areas.Manage.Controllers
         {
             return Content(results);
         }
-
     }
 }

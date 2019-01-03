@@ -1,5 +1,6 @@
 using CmsData;
 using CmsWeb.Lifecycle;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using UtilityExtensions;
@@ -18,6 +19,7 @@ namespace CmsWeb.Areas.Setup.Controllers
         {
             var m = CurrentDatabase.Zips.AsEnumerable();
             ViewData["msg"] = msg;
+            ViewBag.TotalZipCodesAdded = 0;
             return View(m);
         }
 
@@ -32,6 +34,14 @@ namespace CmsWeb.Areas.Setup.Controllers
                 CurrentDatabase.SubmitChanges();
             }
             return Redirect($"/MetroZips/#{zipcode}");
+        }
+
+        [AcceptVerbs(HttpVerbs.Post)]
+        public ActionResult CreateRange(int? startwith=0, int? endwith=0, int? marginalcode=10)
+        {
+            int totalZipCodesAdded = CurrentDatabase.CreateZipCodesRange(startwith.Value, endwith.Value, marginalcode.Value);
+            string firstZipCode = startwith.Value.ToString("00000");
+            return Redirect($"/MetroZips/#{firstZipCode}");
         }
 
         [AcceptVerbs(HttpVerbs.Post)]
@@ -58,6 +68,13 @@ namespace CmsWeb.Areas.Setup.Controllers
 
             CurrentDatabase.Zips.DeleteOnSubmit(zip);
             CurrentDatabase.SubmitChanges();
+            return new EmptyResult();
+        }
+
+        [AcceptVerbs(HttpVerbs.Post)]
+        public EmptyResult DeleteRange(int? startwith = 0, int? endwith = 0)
+        {
+            int totalZipCodesRemoved = CurrentDatabase.DeleteZipCodesRange(startwith.Value, endwith.Value);
             return new EmptyResult();
         }
 
