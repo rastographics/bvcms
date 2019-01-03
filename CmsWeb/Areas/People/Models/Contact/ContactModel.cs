@@ -65,7 +65,12 @@ namespace CmsWeb.Areas.People.Models
                 Selected = !string.IsNullOrWhiteSpace(LimitToRole) && LimitToRole == rolename
             }).ToList();
 
-            list.Insert(0, new SelectListItem { Value = "0", Text = "(not specified)", Selected = true });
+            var roleSelected = false;
+            foreach (SelectListItem i in list)
+            {
+                roleSelected = i.Selected ? true : roleSelected;
+            }
+            list.Insert(0, new SelectListItem { Value = "0", Text = "(not specified)", Selected = roleSelected ? false : true });
             return list;
         }
 
