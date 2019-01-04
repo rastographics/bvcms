@@ -36,7 +36,7 @@ namespace CmsWeb.Areas.Search.Models
 
         [DisplayName("Birthday")]
         [DateEmptyOrValid]
-        [BirthdateValid]
+        //[BirthdateValid]
         public string DOB { get; set; }
 
         [StringLength(20), RemoveNA]
