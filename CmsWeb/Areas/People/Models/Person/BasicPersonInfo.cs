@@ -138,7 +138,7 @@ namespace CmsWeb.Areas.People.Models
 
         [DisplayName("Birthday")]
         [DateEmptyOrValid]
-        //[BirthdateValid]
+        [BirthdateValid]
         public string DOB { get; set; }
 
         public CodeInfo MaritalStatus { get; set; }

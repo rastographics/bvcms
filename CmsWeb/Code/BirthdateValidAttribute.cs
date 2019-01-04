@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using CmsData;
+using UtilityExtensions;
 
 namespace CmsWeb.Code
 {
@@ -13,19 +14,9 @@ namespace CmsWeb.Code
 
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
-            if (value == null)
+            if (value != null && Util.BirthDateValid(value.ToString(), out var dt))
             {
-                return ValidationResult.Success;
-            }
-
-            string[] formats = { "MM/dd/yyyy", "MM/d/yyyy", "M/dd/yyyy", "M/d/yyyy" };
-
-            bool requireBirthYear = DbUtil.Db.Setting("RequiredBirthYear");
-            if (requireBirthYear)
-            {
-                bool validDate = DateTime.TryParseExact(value.ToString(), formats,
-                   CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime _temp);
-                if (!validDate)
+                if (dt.Year == Util.SignalNoYear && DbUtil.Db.Setting("RequiredBirthYear"))
                 {
                     return new ValidationResult(FormatErrorMessage(validationContext.DisplayName));
                 }
