@@ -1123,8 +1123,6 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Areas\Search\Views\PictureDirectory\PictureDirectory.sql" />
-    <Content Include="bin\CmsTwilio.exe" />
-    <Content Include="bin\CmsTwilio.exe.config" />
     <Content Include="Content\css\bootstrap-datetimepicker.css" />
     <Content Include="Content\css\bootstrap-datetimepicker.min.css">
       <DependentUpon>bootstrap-datetimepicker.css</DependentUpon>
@@ -1782,6 +1780,12 @@
     <Content Include="Content\touchpoint\js\polyfills.urlSearchParams.js" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\OnePageGiving\NotActive.cshtml" />
     <Content Include="Areas\Figures\Web.config" />
+    <Content Include="..\CmsTwilio\bin\$(Configuration)\CmsTwilio.exe">
+      <Link>bin\CmsTwilio.exe</Link>
+    </Content>
+    <Content Include="..\CmsTwilio\bin\$(Configuration)\CmsTwilio.exe.config">
+      <Link>bin\CmsTwilio.exe.config</Link>
+    </Content>
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
