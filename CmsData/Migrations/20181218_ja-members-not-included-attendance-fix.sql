@@ -1,6 +1,6 @@
 IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[RepairEnrollmentDate]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
 BEGIN
-    DROP PROCEDURE [dbo].[MyProc]
+    DROP PROCEDURE [dbo].[RepairEnrollmentDate]
 END
 GO
 
