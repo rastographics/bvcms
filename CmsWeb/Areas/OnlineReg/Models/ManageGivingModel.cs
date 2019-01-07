@@ -150,8 +150,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (rg != null)
                 PopulateSetup(rg);
             else if (Util.HasValue(Setting.ExtraValueFeeName))
+                PopulateExtraValueDefaults();
+            else
                 PopulateReasonableDefaults();
-
+            
             var pi = PopulatePaymentInfo();
             PopulateBillingName(pi);
             PopulateBillingAddress(pi);
@@ -200,17 +202,24 @@ namespace CmsWeb.Areas.OnlineReg.Models
             return pi;
         }
 
-        private void PopulateReasonableDefaults()
+        private void PopulateExtraValueDefaults()
         {
             var f = OnlineRegPersonModel.FullFundList().SingleOrDefault(ff => ff.Text == Setting.ExtraValueFeeName);
+            PopulateReasonableDefaults();
+
+            var evamt = person.GetExtra(Setting.ExtraValueFeeName).ToDecimal();
+            if (f != null && evamt > 0)
+                FundItem.Add(f.Value.ToInt(), evamt);
+        }
+
+        private void PopulateReasonableDefaults()
+        {
             // reasonable defaults
             RepeatPattern = "M";
             Period = "M";
             SemiEvery = "E";
             EveryN = 1;
-            var evamt = person.GetExtra(Setting.ExtraValueFeeName).ToDecimal();
-            if (f != null && evamt > 0)
-                FundItem.Add(f.Value.ToInt(), evamt);
+            StartWhen = DateTime.Today.AddDays(1);
         }
 
         private void PopulateSetup(ManagedGiving rg)
