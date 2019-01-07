@@ -31,9 +31,19 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 Goer = CurrentDatabase.LoadPersonById(goerid ?? 0);
             }
 
+            // prepare supporter data
             OrganizationMember OrgMember = CurrentDatabase.OrganizationMembers.Single(mm => mm.OrganizationId == org.OrganizationId && mm.PeopleId == Goer.PeopleId);
             var transactions = new TransactionsModel(OrgMember.TranId) { GoerId = Goer.PeopleId };
             Supporters = transactions.Supporters().Where(s => s.OrgId == org.OrganizationId).ToArray();
+
+            // prepare date data
+            if (org.FirstMeetingDate.HasValue)
+            {
+            }
+            if (org.LastMeetingDate.HasValue)
+            {
+                MissionTripDates = org.FirstMeetingDate.Value.ToString("MMMM d, yyyy");
+            }
         }
 
         public int CheckRegisterLink(string regtag)

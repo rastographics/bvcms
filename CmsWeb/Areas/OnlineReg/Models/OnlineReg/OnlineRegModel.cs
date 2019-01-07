@@ -63,6 +63,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public Person Goer { get; set; }
 
         public bool SupportMissionTrip => GoerSupporterId.HasValue || GoerId.HasValue;
+        public string MissionTripDates { get; set; }
 
         public TransactionsModel.SupporterInfo[] Supporters { get; set; }
 

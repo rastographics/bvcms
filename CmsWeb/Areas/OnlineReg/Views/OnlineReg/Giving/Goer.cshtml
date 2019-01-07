@@ -1,0 +1,25 @@
+@using CmsData
+@model CmsWeb.Areas.OnlineReg.Models.OnlineRegModel
+@{
+    Layout = "~/Views/Shared/onlinereg2.cshtml";
+    ViewBag.Title = Model.Header;
+
+}
+<div class="row content">
+    <div class="col-sm-8">
+        <h1>@Model.org.OrganizationName</h1>
+        <h2>@Model.org.Location - @Model.org.FirstMeetingDate - @Model.org.LastMeetingDate</h2>
+        <p>@Model.Goer.Name</p>
+        <p>@Model.org.Description</p>
+    </div>
+    <div class="col-sm-4">
+        @if(Model.Supporters.Any()) {
+        <h3>Your Supporters</h3>
+        } else {
+        <h3>No Supporters yet.</h3>
+        }
+        <h4>Get more supporters! Share:</h4>
+        <p>Or copy this link:</p>
+        <input type="text" value="@Model.URL" readonly />
+    </div>
+</div>
