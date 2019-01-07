@@ -29,7 +29,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             Response.NoCache();
             try
             {
-                var m = new OnlineRegModel(Request, id, testing, email, login, source);
+                var m = new OnlineRegModel(Request, CurrentDatabase, id, testing, email, login, source);
                 if (m.org != null && m.org.IsMissionTrip == true)
                     m.PrepareMissionTrip(gsid, goerid);
 
@@ -375,6 +375,21 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             base.Initialize(requestContext);
             requestContext.HttpContext.Items["controller"] = this;
+        }
+
+        [HttpGet]
+        [Route("~/OnlineReg/{id:int}/Giving/{goerid:int}")]
+        public ActionResult Giving(int? id, int? goerid)
+        {
+            var m = new OnlineRegModel(Request, CurrentDatabase, id, false, null, null, null);
+            if (m.org != null && m.org.IsMissionTrip == true)
+            {
+                m.PrepareMissionTrip(null, goerid);
+            }
+
+            SetHeaders(m);
+
+            return View("Giving/Goer", m);
         }
     }
 }

@@ -3,6 +3,7 @@ using System;
 using System.Linq;
 using System.Web;
 using UtilityExtensions;
+using CmsWeb.Models;
 
 namespace CmsWeb.Areas.OnlineReg.Models
 {
@@ -10,12 +11,13 @@ namespace CmsWeb.Areas.OnlineReg.Models
     {
         public void PrepareMissionTrip(int? gsid, int? goerid)
         {
-            if (gsid.HasValue) // this means that the person is a suppoter who got a support email
+            if (gsid.HasValue) // this means that the person is a supporter who got a support email
             {
-                var goerSupporter = DbUtil.Db.GoerSupporters.SingleOrDefault(gg => gg.Id == gsid); // used for mission trips
+                var goerSupporter = CurrentDatabase.GoerSupporters.SingleOrDefault(gg => gg.Id == gsid); // used for mission trips
                 if (goerSupporter != null)
                 {
-                    GoerId = goerSupporter.GoerId; // suppoert this particular goer
+                    GoerId = goerSupporter.GoerId; // support this particular goer
+                    Goer = CurrentDatabase.LoadPersonById(goerSupporter.GoerId);
                     GoerSupporterId = gsid;
                 }
                 else
@@ -26,7 +28,12 @@ namespace CmsWeb.Areas.OnlineReg.Models
             else if (goerid.HasValue)
             {
                 GoerId = goerid;
+                Goer = CurrentDatabase.LoadPersonById(goerid ?? 0);
             }
+
+            OrganizationMember OrgMember = CurrentDatabase.OrganizationMembers.Single(mm => mm.OrganizationId == org.OrganizationId && mm.PeopleId == Goer.PeopleId);
+            var transactions = new TransactionsModel(OrgMember.TranId) { GoerId = Goer.PeopleId };
+            Supporters = transactions.Supporters().Where(s => s.OrgId == org.OrganizationId).ToArray();
         }
 
         public int CheckRegisterLink(string regtag)
@@ -40,7 +47,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     throw new Exception("invalid link");
                 }
 
-                var ot = DbUtil.Db.OneTimeLinks.SingleOrDefault(oo => oo.Id == guid.Value);
+                var ot = CurrentDatabase.OneTimeLinks.SingleOrDefault(oo => oo.Id == guid.Value);
                 if (ot == null)
                 {
                     throw new Exception("invalid link");

@@ -19,7 +19,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             Response.NoCache();
             try
             {
-                var m = new OnlineRegModel(Request, id, testing, null, null, source);
+                var m = new OnlineRegModel(Request, CurrentDatabase, id, testing, null, null, source);
 
                 var pid = Util.UserPeopleId;
                 if (pid.HasValue)
@@ -103,7 +103,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 if((pf.CampusId ?? 0) == 0)
                     ModelState.AddModelError("CampusId", "Campus is Required");
 
-            var m = new OnlineRegModel(Request, pf.OrgId, pf.testing, null, null, pf.source)
+            var m = new OnlineRegModel(Request, CurrentDatabase, pf.OrgId, pf.testing, null, null, pf.source)
             { URL = "/OnePageGiving/" + pf.OrgId };
 
             var pid = Util.UserPeopleId;
@@ -243,7 +243,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         public ActionResult OnePageGivingThankYou(int id, bool? testing, string source)
         {
             Response.NoCache();
-            var m = new OnlineRegModel(Request, id, testing, null, null, source)
+            var m = new OnlineRegModel(Request, CurrentDatabase, id, testing, null, null, source)
             { URL = "/OnePageGiving/" + id };
             return View("OnePageGiving/ThankYou", m);
         }
@@ -251,7 +251,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [HttpGet, Route("~/OnePageGiving/Login/{id:int}")]
         public ActionResult OnePageGivingLogin(int id, bool? testing, string source)
         {
-            var m = new OnlineRegModel(Request, id, testing, null, null, source);
+            var m = new OnlineRegModel(Request, CurrentDatabase, id, testing, null, null, source);
             SetHeaders(m);
             return View("OnePageGiving/Login", m);
         }
@@ -264,7 +264,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (ret is string)
             {
                 ModelState.AddModelError("loginerror", ret.ToString());
-                var m = new OnlineRegModel(Request, id, testing, null, null, source);
+                var m = new OnlineRegModel(Request, CurrentDatabase, id, testing, null, null, source);
                 SetHeaders(m);
                 return View("OnePageGiving/Login", m);
             }
