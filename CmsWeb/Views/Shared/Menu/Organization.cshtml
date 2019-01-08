@@ -1,6 +1,5 @@
 ﻿@{
     var recentOrgs = Util2.MostRecentOrgs;
-    var showCheckingCoordinator = DbUtil.Db.Setting("EnableCheckinCoordinator");
 }
 <li class="dropdown dropdown-large">
     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -18,7 +17,7 @@
                 {
                     <li>@Helper.JQueryIdLink("Add New Organization", "addorg")</li>
                 }
-                @if (User.IsInRole("Checkin") && showCheckingCoordinator)
+                @if (User.IsInRole("Checkin") && DbUtil.Db.Setting("EnableCheckinCoordinator"))
                 {
                     <li>@Helper.LiAnchorLink("Check-In Coordinator", "/CheckInCoordinator")</li>
                 }
