@@ -154,8 +154,10 @@ namespace UtilityExtensions
         }
         public static bool BirthDateValid(string dob, out DateTime dt2)
         {
+            string[] formats = { "MM/dd/yyyy", "MM/d/yyyy", "M/dd/yyyy", "M/d/yyyy" };
+
             dt2 = DateTime.MinValue;
-            if (DateTime.TryParseExact(dob, "m", CultureInfo.CurrentCulture, DateTimeStyles.None, out dt2))
+            if (!DateTime.TryParseExact(dob.ToString(), formats, CultureInfo.CurrentCulture, DateTimeStyles.None, out dt2))
             {
                 dt2 = new DateTime(SignalNoYear, dt2.Month, dt2.Day);
                 return true;
@@ -190,7 +192,7 @@ namespace UtilityExtensions
         public static DateTime SundayForWeek(int year, int weekNum)
         {
             var firstSunday = Sunday(1, year);
-            var result = firstSunday.AddDays((weekNum-1) * 7);
+            var result = firstSunday.AddDays((weekNum - 1) * 7);
             return result;
         }
 
@@ -274,7 +276,7 @@ namespace UtilityExtensions
 
         public static DateTime GetNextDayOfWeek(this DateTime start, DayOfWeek nextDayOfWeek)
         {
-            var daysToAdd = ((int) nextDayOfWeek - (int) start.DayOfWeek + 7) % 7;
+            var daysToAdd = ((int)nextDayOfWeek - (int)start.DayOfWeek + 7) % 7;
             return start.AddDays(daysToAdd);
         }
 
