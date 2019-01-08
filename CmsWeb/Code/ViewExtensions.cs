@@ -967,7 +967,7 @@ namespace CmsWeb
 
         public static HtmlString GoogleReCaptcha()
         {
-            return new HtmlString("<script src='//www.google.com/recaptcha/api.js' async defer></script>\n");
+            return new HtmlString("<script src=\"https://www.google.com/recaptcha/api.js\"></script>");
         }
 
         public static HtmlString OldStyles()

@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
 using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.OnlineReg.Models;
+using CmsWeb.Code;
 using CmsWeb.Models;
 using Elmah;
 using UtilityExtensions;
@@ -54,7 +54,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 #endif
 
                 var p = m.List[0];
-                if(pf.ShowCampusOnePageGiving)
+                if (pf.ShowCampusOnePageGiving)
                     pf.Campuses = p.Campuses().ToList();
 
                 var designatedFund = p.DesignatedDonationFund().FirstOrDefault();
@@ -100,12 +100,14 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 ModelState.AddModelError("Email", "Need a valid email address");
             if (pf.IsUs && !pf.Zip.HasValue())
                 ModelState.AddModelError("Zip", "Zip is Required for US");
-            if(pf.ShowCampusOnePageGiving)
-                if((pf.CampusId ?? 0) == 0)
+            if (pf.ShowCampusOnePageGiving)
+                if ((pf.CampusId ?? 0) == 0)
                     ModelState.AddModelError("CampusId", "Campus is Required");
 
             var m = new OnlineRegModel(Request, pf.OrgId, pf.testing, null, null, pf.source)
-                { URL = "/OnePageGiving/" + pf.OrgId };
+            {
+                URL = $"/OnePageGiving/{pf.OrgId}"
+            };
 
             var pid = Util.UserPeopleId;
             if (pid.HasValue)
@@ -115,7 +117,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             m.List[0].RetrieveEntireFundList = true;
 
             // first re-build list of fund items with only ones that contain a value (amt).
-            var fundItems = fundItem.Where(f => f.Value.GetValueOrDefault() > 0).ToDictionary(f => f.Key, f=> f.Value);
+            var fundItems = fundItem.Where(f => f.Value.GetValueOrDefault() > 0).ToDictionary(f => f.Key, f => f.Value);
 
             var designatedFund = m.settings[id.Value].DonationFundId ?? 0;
             if (designatedFund != 0)
@@ -170,7 +172,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             p.State = pf.State;
             p.ZipCode = pf.Zip;
             p.Country = pf.Country;
-            if(pf.ShowCampusOnePageGiving)
+            if (pf.ShowCampusOnePageGiving)
                 p.Campus = pf.CampusId.ToString();
 
             p.IsNew = p.person == null;
@@ -198,17 +200,18 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 pf.AmtToPay = amtToPay;
                 return View("OnePageGiving/Index", new OnePageGivingModel() { OnlineRegPersonModel = m.List[0], PaymentForm = pf });
             }
-
-            if (DbUtil.Db.Setting("UseRecaptcha", true))
+            
+            if (CurrentDatabase.Setting("UseRecaptcha"))
             {
-                if (!Program.IsValidCaptcha(HttpContext.Request.Form["g-recaptcha-response"],
-                    HttpContext.Request.UserHostAddress))
+                if (!GoogleRecaptcha.IsValidResponse(HttpContext, CurrentDatabase))
                 {
                     m.List[0].FundItem = fundItem;
                     pf.AmtToPay = amtToPay;
-                    ModelState.AddModelError("TranId", "RaCaptcha validation failed.");
-                    return View("OnePageGiving/Index",
-                        new OnePageGivingModel() {OnlineRegPersonModel = m.List[0], PaymentForm = pf});
+                    ModelState.AddModelError("TranId", "ReCaptcha validation failed.");
+                    return View("OnePageGiving/Index", new OnePageGivingModel {
+                        OnlineRegPersonModel = m.List[0],
+                        PaymentForm = pf
+                    });
                 }
             }
 
@@ -258,7 +261,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             Response.NoCache();
             var m = new OnlineRegModel(Request, id, testing, null, null, source)
-                { URL = "/OnePageGiving/" + id };
+            { URL = "/OnePageGiving/" + id };
             return View("OnePageGiving/ThankYou", m);
         }
 

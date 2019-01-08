@@ -8,14 +8,9 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.ComponentModel;
 using CmsData.Infrastructure;
-using System.Net;
-using System.IO;
-using System.Net.Http;
-using System.Web.Script.Serialization;
 
 namespace CmsData
 {
-
 	[Table(Name="dbo.Program")]
 	public partial class Program : INotifyPropertyChanging, INotifyPropertyChanged
 	{
@@ -87,93 +82,93 @@ namespace CmsData
 				{
 				
                     this.OnIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._Id = value;
-                    this.SendPropertyChanged("Id");
-                    this.OnIdChanged();
-                }
+					this.SendPropertyChanging();
+					this._Id = value;
+					this.SendPropertyChanged("Id");
+					this.OnIdChanged();
+				}
 
-            }
+			}
 
-        }
+		}
 
+		
+		[Column(Name="Name", UpdateCheck=UpdateCheck.Never, Storage="_Name", DbType="nvarchar(50)")]
+		public string Name
+		{
+			get { return this._Name; }
 
-        [Column(Name="Name", UpdateCheck=UpdateCheck.Never, Storage="_Name", DbType="nvarchar(50)")]
-        public string Name
-        {
-            get { return this._Name; }
-
-            set
-            {
-                if (this._Name != value)
-                {
-
+			set
+			{
+				if (this._Name != value)
+				{
+				
                     this.OnNameChanging(value);
-                    this.SendPropertyChanging();
-                    this._Name = value;
-                    this.SendPropertyChanged("Name");
-                    this.OnNameChanged();
-                }
+					this.SendPropertyChanging();
+					this._Name = value;
+					this.SendPropertyChanged("Name");
+					this.OnNameChanged();
+				}
 
-            }
+			}
 
-        }
+		}
 
+		
+		[Column(Name="RptGroup", UpdateCheck=UpdateCheck.Never, Storage="_RptGroup", DbType="nvarchar(200)")]
+		public string RptGroup
+		{
+			get { return this._RptGroup; }
 
-        [Column(Name="RptGroup", UpdateCheck=UpdateCheck.Never, Storage="_RptGroup", DbType="nvarchar(200)")]
-        public string RptGroup
-        {
-            get { return this._RptGroup; }
-
-            set
-            {
-                if (this._RptGroup != value)
-                {
-
+			set
+			{
+				if (this._RptGroup != value)
+				{
+				
                     this.OnRptGroupChanging(value);
-                    this.SendPropertyChanging();
-                    this._RptGroup = value;
-                    this.SendPropertyChanged("RptGroup");
-                    this.OnRptGroupChanged();
-                }
+					this.SendPropertyChanging();
+					this._RptGroup = value;
+					this.SendPropertyChanged("RptGroup");
+					this.OnRptGroupChanged();
+				}
 
-            }
+			}
 
-        }
+		}
 
+		
+		[Column(Name="StartHoursOffset", UpdateCheck=UpdateCheck.Never, Storage="_StartHoursOffset", DbType="real")]
+		public decimal? StartHoursOffset
+		{
+			get { return this._StartHoursOffset; }
 
-        [Column(Name="StartHoursOffset", UpdateCheck=UpdateCheck.Never, Storage="_StartHoursOffset", DbType="real")]
-        public decimal? StartHoursOffset
-        {
-            get { return this._StartHoursOffset; }
-
-            set
-            {
-                if (this._StartHoursOffset != value)
-                {
-
+			set
+			{
+				if (this._StartHoursOffset != value)
+				{
+				
                     this.OnStartHoursOffsetChanging(value);
-                    this.SendPropertyChanging();
-                    this._StartHoursOffset = value;
-                    this.SendPropertyChanged("StartHoursOffset");
-                    this.OnStartHoursOffsetChanged();
-                }
+					this.SendPropertyChanging();
+					this._StartHoursOffset = value;
+					this.SendPropertyChanged("StartHoursOffset");
+					this.OnStartHoursOffsetChanged();
+				}
 
-            }
+			}
 
-        }
+		}
 
+		
+		[Column(Name="EndHoursOffset", UpdateCheck=UpdateCheck.Never, Storage="_EndHoursOffset", DbType="real")]
+		public decimal? EndHoursOffset
+		{
+			get { return this._EndHoursOffset; }
 
-        [Column(Name="EndHoursOffset", UpdateCheck=UpdateCheck.Never, Storage="_EndHoursOffset", DbType="real")]
-        public decimal? EndHoursOffset
-        {
-            get { return this._EndHoursOffset; }
-
-            set
-            {
-                if (this._EndHoursOffset != value)
-                {
-
+			set
+			{
+				if (this._EndHoursOffset != value)
+				{
+				
                     this.OnEndHoursOffsetChanging(value);
 					this.SendPropertyChanging();
 					this._EndHoursOffset = value;
@@ -256,36 +251,7 @@ namespace CmsData
 			entity.Program = null;
 		}
 
-    public static bool IsValidCaptcha(string responseData, string hostIpAddress)
-        {
-            var secret = System.Web.Configuration.WebConfigurationManager.AppSettings["googleReCaptchaSecretKey"];
-            var strGoogleApi = System.Web.Configuration.WebConfigurationManager.AppSettings["googleReCaptchaApi"];
-            var req = (HttpWebRequest) WebRequest.Create(String.Format(strGoogleApi, secret, responseData,
-                hostIpAddress));
+		
+	}
 
-            using (var wResponse = req.GetResponse())
-            {
-                var stream = wResponse.GetResponseStream();
-                if (stream != null)
-                {
-                    using (StreamReader readStream = new StreamReader(stream))
-                    {
-                        string jsonResponse = readStream.ReadToEnd();
-                        JavaScriptSerializer js = new JavaScriptSerializer();
-                        // Deserialize Json
-                        CaptchaResult data = js.Deserialize<CaptchaResult>(jsonResponse);
-                        if (Convert.ToBoolean(data.success))
-                        {
-                            return true;
-                        }
-                    }
-                }
-            }
-            return false;
-        }
-    }
-
-    public class CaptchaResult
-    {
-        public string success { get; set; }
-    }
+}

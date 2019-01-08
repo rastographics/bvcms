@@ -87,7 +87,7 @@ $(function () {
         var isFormValid = $("form").valid();
         if (isFormValid) {
             $("#submitit").attr("disabled", "disabled");
-            var usecaptcha = $("#useRecaptcha").val();
+            var usecaptcha = $("#useRecaptcha").val() == 'true';
             if (usecaptcha) {
                 grecaptcha.execute();
             } else {
@@ -348,6 +348,3 @@ $(function () {
     });
 
 });
-
-
-

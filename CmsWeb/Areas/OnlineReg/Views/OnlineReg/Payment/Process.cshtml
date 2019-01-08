@@ -2,14 +2,16 @@
 @using CmsData
 @using CmsData.Finance
 @using CmsWeb.Areas.OnlineReg.Models
+@using System.Configuration
 @model CmsWeb.Areas.OnlineReg.Models.PaymentForm
 @{
     ViewBag.Title = "Online Registration";
     Layout = "~/Views/Shared/onlinereg2.cshtml";
-    var VaultDisabled = DbUtil.Db.Setting("VaultDisabled");
-    var debitcredit = DbUtil.Db.Setting("DebitCreditLabel", "Debit/Credit Card");
-    var greSiteKey = System.Web.Configuration.WebConfigurationManager.AppSettings["googleReCaptchaSiteKey"];
-    var useRecaptcha = DbUtil.Db.Setting("UseRecaptcha", true);        
+    var db = DbUtil.Db;
+    var VaultDisabled = db.Setting("VaultDisabled");
+    var debitcredit = db.Setting("DebitCreditLabel", "Debit/Credit Card");
+    var recaptchaSiteKey = db.Setting("googleReCaptchaSiteKey", ConfigurationManager.AppSettings["googleReCaptchaSiteKey"]);
+    var useRecaptcha = db.Setting("UseRecaptcha", false);
 }
 @section scripts
 {
@@ -115,10 +117,11 @@
               <input type="hidden" id="hdnExpiresOnFile" data-value="@Model.Expires" />
           </div>
       }
-        @if (useRecaptcha){
+        @if (useRecaptcha && recaptchaSiteKey.HasValue())
+        {
             <div class="g-recaptcha"
-                 data-sitekey= @greSiteKey
-                 data-callback ="recaptcha_callback"
+                 data-sitekey="@recaptchaSiteKey"
+                 data-callback="recaptcha_callback"
                  data-size="invisible">
             </div>
         }
