@@ -36,6 +36,7 @@ namespace CmsWeb.Models
             }
         }
 
+        public PagerModel() { }
         public IEnumerable<int> PageSizeList()
         {
             int[] pagesizes = {10, 25, 50, 100, 200};

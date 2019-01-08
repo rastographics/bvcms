@@ -1,24 +1,26 @@
-using System;
-using System.Collections.Generic;
-using System.Xml;
-using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.Reports.Models;
+using System;
+using System.Collections.Generic;
+using System.Web.Mvc;
+using System.Xml;
 
 namespace CmsWeb.Models.iPhone
 {
     public class RollListResult : ActionResult
     {
-        int? NewPeopleId;
+        private int? NewPeopleId;
         private int MeetingId;
-        private IEnumerable<RollsheetModel.AttendInfo> people;
+        private readonly IEnumerable<RollsheetModel.AttendInfo> people;
 
         public RollListResult(Meeting meeting, int? PeopleId = null)
         {
             MeetingId = meeting.MeetingId;
-			NewPeopleId = PeopleId;
+            NewPeopleId = PeopleId;
             if (meeting.MeetingDate != null)
+            {
                 people = RollsheetModel.RollList(MeetingId, meeting.OrganizationId, meeting.MeetingDate.Value);
+            }
         }
         public RollListResult(int orgid, DateTime dt)
         {
@@ -36,8 +38,10 @@ namespace CmsWeb.Models.iPhone
             {
                 w.WriteStartElement("RollList");
                 w.WriteAttributeString("MeetingId", MeetingId.ToString());
-				if(NewPeopleId.HasValue)
-					w.WriteAttributeString("NewPeopleId", NewPeopleId.ToString());
+                if (NewPeopleId.HasValue)
+                {
+                    w.WriteAttributeString("NewPeopleId", NewPeopleId.ToString());
+                }
 
                 foreach (var p in people)
                 {

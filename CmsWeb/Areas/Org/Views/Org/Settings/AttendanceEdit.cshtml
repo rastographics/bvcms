@@ -4,117 +4,115 @@
   ViewBag.ShowHelp = DbUtil.Db.UserPreference("ShowAttendanceHelp");
 }
 <form class="ajax" data-init="timepicker">
-  @if (!Html.ViewData.ModelState.IsValid)
-  {
-    <div class="alert alert-danger">
-      @Html.ValidationMessage("Form")
-    </div>
-  }
-  <div class="row">
-    <div class="col-sm-6">
-      <h4>Schedules</h4>
-    </div>
-    <div class="col-sm-6">
-      @FormAction()
-    </div>
-  </div>
-  @Html.EditorFor(m => m.Schedules)
-  <h4>Basic Setup</h4>
-  <div class="well">
-    <div class="row">
-      <div class="col-sm-6 col-md-4 col-lg-3">
-        @Html.EditorFor(m => m.FirstMeetingDate)
-      </div>
-      <div class="col-sm-6 col-md-4 col-lg-3">
-        @Html.EditorFor(m => m.LastMeetingDate)
-      </div>
-      <div class="col-sm-4 col-md-4 col-lg-3">
-        @Html.EditorFor(m => m.RollSheetVisitorWks)
-      </div>
-      <div class="col-sm-5 col-md-4 col-lg-3">
-        <br class="hidden-xs visible-sm-block hidden-md visible-lg-block"/>
-        @Html.EditorFor(m => m.NotWeekly)
-      </div>
-      <div class="col-sm-5 col-md-4 col-lg-3">
-        <br class="hidden-xs visible-sm-block hidden-md visible-lg-block"/>
-        @Html.EditorFor(m => m.AttendanceBySubGroups)
-      </div>
-    </div>
-  </div>
-  <h4>Absents Control</h4>
-  <div class="well">
-    <div class="row">
-      <div class="col-sm-5 col-md-4">
-        @Html.EditorFor(m => m.ConsecutiveAbsentsThreshold)
-      </div>
-      <div class="col-sm-7 col-md-8">
-        <br class="hidden-xs"/>
-        <label class="checkbox-inline control-label">
-          @Html.CheckBoxFor(m => m.Offsite) Offsite trip
-        </label>
-        <label class="checkbox-inline control-label">
-          @Html.CheckBoxFor(m => m.AllowAttendOverlap) Allow attendance overlap
-        </label>
-      </div>
-    </div>
-  </div>
-  <h4>Check-in</h4>
-  <div class="well">
-    <div class="row">
-      <div class="col-sm-6 col-md-6 col-lg-6">
-        @Html.EditorFor(m => m.NumCheckInLabels)
-      </div>
-      <div class="col-sm-6 col-md-6 col-lg-6">
-        @Html.EditorFor(m => m.NumWorkerCheckInLabels)
-      </div>
-      <div class="col-sm-6 col-md-6 col-lg-6">
-        @Html.EditorFor(m => m.BirthDayStart)
-      </div>
-      <div class="col-sm-6 col-md-6 col-lg-6">
-        @Html.EditorFor(m => m.BirthDayEnd)
-      </div>
-      <div class="col-sm-12 col-md-12 col-lg-12">
-        <label class="checkbox-inline control-label">
-          @Html.CheckBoxFor(m => m.CanSelfCheckin) Allow self check-in
-        </label>
-        <label class="checkbox-inline control-label">
-          @Html.CheckBoxFor(m => m.SuspendCheckin) Suspend check-in
-        </label>
-        <label class="checkbox-inline control-label">
-          @Html.CheckBoxFor(m => m.NoSecurityLabel) No security label required
-        </label>
-      </div>
-      <div class="col-sm-6 col-md-6 col-lg-6">
-        <br/>
+    @if (!Html.ViewData.ModelState.IsValid)
+    {
         <div class="alert alert-danger">
-          <b>Warning:</b>
-          The <i>Allow non campus check-in</i> setting below will have a negative impact on your normal check-in.
-          Do not use until you understand what it does from the documentation.
+            @Html.ValidationMessage("Form")
         </div>
-        <label class="checkbox-inline control-label">
-          @Html.CheckBoxFor(m => m.AllowNonCampusCheckIn) Allow non campus check-in
-        </label><br/>
-      </div>
+    }
+    <div class="row">
+        <div class="col-sm-6">
+            <h4>Schedules</h4>
+        </div>
+        <div class="col-sm-6">
+            <div class="pull-right hidden-xs">
+                <a href="/Org/Attendance/@Model.Id" class="btn btn-default ajax">Cancel</a>
+                <a href="/Org/AttendanceUpdate/@Model.Id" class="btn btn-primary ajax validate">Save</a>
+            </div>
+        </div>
     </div>
-  </div>
-  @FormAction()
-  @FormAction(true)
-  <br/><br/>
-</form>
-@helper FormAction(bool xs = false)
-{
-  if (xs)
-  {
-    <div class="visible-xs-block">
-      <a href="/Org/AttendanceUpdate/@Model.Id" class="btn btn-primary btn-block ajax validate">Save</a>
-      <a href="/Org/Attendance/@Model.Id" class="btn btn-default btn-block ajax">Cancel</a>
+    @Html.EditorFor(m => m.Schedules)
+    <h4>Basic Setup</h4>
+    <div class="well">
+        <div class="row">
+            <div class="col-sm-6 col-md-4 col-lg-4">
+                @Html.EditorFor(m => m.FirstMeetingDate)
+            </div>
+            <div class="col-sm-6 col-md-4 col-lg-4">
+                @Html.EditorFor(m => m.LastMeetingDate)
+            </div>
+            <div class="col-sm-4 col-md-4 col-lg-4">
+                @Html.EditorFor(m => m.RollSheetVisitorWks)
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4 col-md-4 col-lg-4">
+                <br class="hidden-xs visible-sm-block hidden-md visible-lg-block" />
+                @Html.EditorFor(m => m.SendAttendanceLink)
+            </div>
+            <div class="col-sm-4 col-md-4 col-lg-4">
+                <br class="hidden-xs visible-sm-block hidden-md visible-lg-block" />
+                @Html.EditorFor(m => m.AttendanceBySubGroups)
+            </div>
+            <div class="col-sm-4 col-md-4 col-lg-4">
+                <br class="hidden-xs visible-sm-block hidden-md visible-lg-block" />
+                @Html.EditorFor(m => m.NotWeekly)
+            </div>
+        </div>
     </div>
-  }
-  else
-  {
+    <h4>Absents Control</h4>
+    <div class="well">
+        <div class="row">
+            <div class="col-sm-5 col-md-4">
+                @Html.EditorFor(m => m.ConsecutiveAbsentsThreshold)
+            </div>
+            <div class="col-sm-7 col-md-8">
+                <br class="hidden-xs" />
+                <label class="checkbox-inline control-label">
+                    @Html.CheckBoxFor(m => m.Offsite) Offsite trip
+                </label>
+                <label class="checkbox-inline control-label">
+                    @Html.CheckBoxFor(m => m.AllowAttendOverlap) Allow attendance overlap
+                </label>
+            </div>
+        </div>
+    </div>
+    <h4>Check-in</h4>
+    <div class="well">
+        <div class="row">
+            <div class="col-sm-6 col-md-6 col-lg-6">
+                @Html.EditorFor(m => m.NumCheckInLabels)
+            </div>
+            <div class="col-sm-6 col-md-6 col-lg-6">
+                @Html.EditorFor(m => m.NumWorkerCheckInLabels)
+            </div>
+            <div class="col-sm-6 col-md-6 col-lg-6">
+                @Html.EditorFor(m => m.BirthDayStart)
+            </div>
+            <div class="col-sm-6 col-md-6 col-lg-6">
+                @Html.EditorFor(m => m.BirthDayEnd)
+            </div>
+            <div class="col-sm-12 col-md-12 col-lg-12">
+                <label class="checkbox-inline control-label">
+                    @Html.CheckBoxFor(m => m.CanSelfCheckin) Allow self check-in
+                </label>
+                <label class="checkbox-inline control-label">
+                    @Html.CheckBoxFor(m => m.SuspendCheckin) Suspend check-in
+                </label>
+                <label class="checkbox-inline control-label">
+                    @Html.CheckBoxFor(m => m.NoSecurityLabel) No security label required
+                </label>
+            </div>
+            <div class="col-sm-6 col-md-6 col-lg-6">
+                <br />
+                <div class="alert alert-danger">
+                    <b>Warning:</b>
+                    The <i>Allow non campus check-in</i> setting below will have a negative impact on your normal check-in.
+                    Do not use until you understand what it does from the documentation.
+                </div>
+                <label class="checkbox-inline control-label">
+                    @Html.CheckBoxFor(m => m.AllowNonCampusCheckIn) Allow non campus check-in
+                </label><br />
+            </div>
+        </div>
+    </div>
     <div class="pull-right hidden-xs">
-      <a href="/Org/Attendance/@Model.Id" class="btn btn-default ajax">Cancel</a>
-      <a href="/Org/AttendanceUpdate/@Model.Id" class="btn btn-primary ajax validate">Save</a>
+        <a href="/Org/Attendance/@Model.Id" class="btn btn-default ajax">Cancel</a>
+        <a href="/Org/AttendanceUpdate/@Model.Id" class="btn btn-primary ajax validate">Save</a>
     </div>
-  }
-}
+    <div class="visible-xs-block">
+        <a href="/Org/AttendanceUpdate/@Model.Id" class="btn btn-primary btn-block ajax validate">Save</a>
+        <a href="/Org/Attendance/@Model.Id" class="btn btn-default btn-block ajax">Cancel</a>
+    </div>
+    <br /><br />
+</form>

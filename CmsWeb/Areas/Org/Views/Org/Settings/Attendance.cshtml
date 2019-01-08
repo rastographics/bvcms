@@ -19,20 +19,25 @@
     <h4>Basic Setup</h4>
     <div class="well">
         <div class="row">
-            <div class="col-sm-4 col-md-4 col-lg-3">
+            <div class="col-sm-4 col-md-4 col-lg-4">
                 @Html.DisplayFor(m => m.FirstMeetingDate)
             </div>
-            <div class="col-sm-4 col-md-4 col-lg-3">
+            <div class="col-sm-4 col-md-4 col-lg-4">
                 @Html.DisplayFor(m => m.LastMeetingDate)
             </div>
-            <div class="col-sm-4 col-md-4 col-lg-3">
+            <div class="col-sm-4 col-md-4 col-lg-4">
                 @Html.DisplayFor(m => m.RollSheetVisitorWks)
             </div>
-            <div class="col-sm-4 col-md-4 col-lg-3">
-                @Html.DisplayFor(m => m.NotWeekly, new { FalseValue = "n/a" })
+        </div>
+        <div class="row">
+            <div class="col-sm-4 col-md-4 col-lg-4">
+                @Html.DisplayFor(m => m.SendAttendanceLink, new { FalseValue = "No", TrueValue = "Yes" })
             </div>
-            <div class="col-sm-4 col-md-4 col-lg-3">
+            <div class="col-sm-4 col-md-4 col-lg-4">
                 @Html.DisplayFor(m => m.AttendanceBySubGroups, new { FalseValue = "n/a" })
+            </div>
+            <div class="col-sm-4 col-md-4 col-lg-4">
+                @Html.DisplayFor(m => m.NotWeekly, new { FalseValue = "n/a" })
             </div>
         </div>
     </div>

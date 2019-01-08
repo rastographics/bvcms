@@ -47,8 +47,9 @@ RETURN
 		,InactiveDate
 		,MemberCode
 		,MemberType
-		,CAST(Hidden AS BIT) Hidden
+		,cast(Hidden as bit) Hidden
 		,Groups
+		,tt.Grade
 		,mi.LastContactMadeDt
 		,mi.LastContactMadeId
 		,mi.LastContactReceivedDt
@@ -118,6 +119,7 @@ RETURN
 				) tabt)
 	)
 )
+
 
 
 

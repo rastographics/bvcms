@@ -33,14 +33,14 @@ namespace CmsData
 		private int? _AccessTypeID;
 		
    		
-   		private EntitySet< CheckInActivity> _CheckInActivities;
+   		private EntitySet<CheckInActivity> _CheckInActivities;
 		
-   		private EntitySet< CheckInTime> _Guests;
+   		private EntitySet<CheckInTime> _Guests;
 		
     	
-		private EntityRef< Person> _Person;
+		private EntityRef<Person> _Person;
 		
-		private EntityRef< CheckInTime> _GuestOf;
+		private EntityRef<CheckInTime> _GuestOf;
 		
 	#endregion
 	
@@ -74,14 +74,14 @@ namespace CmsData
 		public CheckInTime()
 		{
 			
-			this._CheckInActivities = new EntitySet< CheckInActivity>(new Action< CheckInActivity>(this.attach_CheckInActivities), new Action< CheckInActivity>(this.detach_CheckInActivities)); 
+			this._CheckInActivities = new EntitySet<CheckInActivity>(new Action< CheckInActivity>(this.attach_CheckInActivities), new Action< CheckInActivity>(this.detach_CheckInActivities)); 
 			
-			this._Guests = new EntitySet< CheckInTime>(new Action< CheckInTime>(this.attach_Guests), new Action< CheckInTime>(this.detach_Guests)); 
+			this._Guests = new EntitySet<CheckInTime>(new Action< CheckInTime>(this.attach_Guests), new Action< CheckInTime>(this.detach_Guests)); 
 			
 			
-			this._Person = default(EntityRef< Person>); 
+			this._Person = default(EntityRef<Person>); 
 			
-			this._GuestOf = default(EntityRef< CheckInTime>); 
+			this._GuestOf = default(EntityRef<CheckInTime>); 
 			
 			OnCreated();
 		}
@@ -256,7 +256,7 @@ namespace CmsData
     #region Foreign Key Tables
    		
    		[Association(Name="FK_CheckInActivity_CheckInTimes", Storage="_CheckInActivities", OtherKey="Id")]
-   		public EntitySet< CheckInActivity> CheckInActivities
+   		public EntitySet<CheckInActivity> CheckInActivities
    		{
    		    get { return this._CheckInActivities; }
 
@@ -266,7 +266,7 @@ namespace CmsData
 
 		
    		[Association(Name="Guests__GuestOf", Storage="_Guests", OtherKey="GuestOfId")]
-   		public EntitySet< CheckInTime> Guests
+   		public EntitySet<CheckInTime> Guests
    		{
    		    get { return this._Guests; }
 

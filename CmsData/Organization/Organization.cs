@@ -1,12 +1,10 @@
 using System;
-using System.CodeDom;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using CmsData.Codes;
-using UtilityExtensions;
 using System.Text;
 using System.Text.RegularExpressions;
+using UtilityExtensions;
 
 namespace CmsData
 {
@@ -103,17 +101,17 @@ namespace CmsData
                 DivOrgs.Add(new DivOrg { DivId = divid });
         }
 
-        public bool PurgeOrg(CMSDataContext db)
+        public string PurgeOrg(CMSDataContext db)
         {
             try
             {
                 db.PurgeOrganization(OrganizationId);
             }
-            catch
+            catch (Exception e)
             {
-                return false;
+                return e.Message;
             }
-            return true;
+            return null;
         }
         public void CopySettings(CMSDataContext db, int fromid)
         {
@@ -314,14 +312,14 @@ namespace CmsData
         public static Organization FetchOrCreateOrganization(CMSDataContext db, int divid, string organization)
         {
             var o = db.LoadOrganizationByName(organization, divid);
-            if(o == null)
+            if (o == null)
                 return CreateOrganization(db, divid, organization);
             return o;
         }
         public static Organization FetchOrCreateOrganization(CMSDataContext db, Division division, string organization)
         {
             var o = db.LoadOrganizationByName(organization, division.Id);
-            if(o == null)
+            if (o == null)
                 return CreateOrganization(db, division, organization);
             return o;
         }
@@ -354,7 +352,7 @@ namespace CmsData
         {
             var o = new Organization
             {
-                OrganizationName = organization,
+                OrganizationName = organization.Truncate(100),
                 SecurityTypeId = 0,
                 CreatedDate = Util.Now,
                 CreatedBy = Util.UserId1,
@@ -397,7 +395,8 @@ namespace CmsData
 
         public OrganizationExtra GetExtraValue(string field)
         {
-            var ev = OrganizationExtras.AsEnumerable().FirstOrDefault(ee => ee.Field.Equal(field));
+            field = field.Trim();
+            var ev = OrganizationExtras.AsEnumerable().FirstOrDefault(ee => ee.Field == field);
             if (ev == null)
             {
                 ev = new OrganizationExtra()
@@ -412,7 +411,7 @@ namespace CmsData
         }
         public static OrganizationExtra GetExtraValue(CMSDataContext db, int id, string field)
         {
-            //field = field.Replace('/', '-');
+            field = field.Trim();
             var q = from v in db.OrganizationExtras
                     where v.Field == field
                     where v.OrganizationId == id
@@ -423,7 +422,7 @@ namespace CmsData
                 ev = new OrganizationExtra
                 {
                     OrganizationId = id,
-                    Field =  field,
+                    Field = field,
                     TransactionTime = DateTime.Now
                 };
                 db.OrganizationExtras.InsertOnSubmit(ev);
@@ -458,7 +457,7 @@ namespace CmsData
                 ev.Data = value;
         }
 
-        public static string GetExtra(CMSDataContext db, int id, string field)
+        public static string GetExtra(CMSDataContext db, int? id, string field)
         {
             var oev = db.OrganizationExtras.SingleOrDefault(oe => oe.OrganizationId == id && oe.Field == field);
             if (oev == null)
@@ -638,9 +637,9 @@ namespace CmsData
         public void AddMemberTag(string sg)
         {
             sg = sg.trim();
-            if(MemberTags.Any(vv => vv.Name == sg))
+            if (MemberTags.Any(vv => vv.Name == sg))
                 return;
-            MemberTags.Add(new MemberTag() {Name = sg});
+            MemberTags.Add(new MemberTag() { Name = sg });
         }
     }
 }

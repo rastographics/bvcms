@@ -1,10 +1,19 @@
-﻿using System;
+﻿using Elmah;
+using System;
 using System.Collections.Generic;
+using System.Data.Linq;
+using System.Data.SqlClient;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Web.Hosting;
 using Twilio;
+using Twilio.Base;
+using Twilio.Exceptions;
+using Twilio.Rest.Api.V2010;
+using Twilio.Rest.Api.V2010.Account;
+using Twilio.Types;
 using UtilityExtensions;
 
 namespace CmsData.Classes.Twilio
@@ -81,104 +90,228 @@ namespace CmsData.Classes.Twilio
 
             DbUtil.Db.SubmitChanges();
 
-            ProcessQueue(list.Id);
+            ExecuteCmsTwilio(list.Id);
         }
 
-        public static void ProcessQueue(int iNewListID)
+        public static bool IsConfigured(CMSDataContext db)
         {
-            var sHost = Util.Host;
-            var sSID = GetSid();
-            var sToken = GetToken();
-            var iListID = iNewListID;
+            bool isConfigured = false;
+            string sSID = GetSid(db);
+            string sToken = GetToken(db);
 
-            if (sSID.Length == 0 || sToken.Length == 0) return;
-
-            HostingEnvironment.QueueBackgroundWorkItem(ct =>
+            if (sSID.HasValue() && sToken.HasValue())
             {
-                var stSID = sSID;
-                var stToken = sToken;
-                var itListID = iListID;
-
-                try
+                SMSNumber smsNumber = db.SMSNumbers.FirstOrDefault();
+                if (smsNumber != null)
                 {
-                    var db = DbUtil.Create(sHost);
-
-                    var smsList = (from e in db.SMSLists
-                                   where e.Id == itListID
-                                   select e).Single();
-
-                    var smsItems = from e in db.SMSItems
-                                   where e.ListID == itListID
-                                   select e;
-
-                    var smsGroup = (from e in db.SMSNumbers
-                                    where e.GroupID == smsList.SendGroupID
-                                    select e).ToList();
-
-                    var iCount = 0;
-
-                    foreach (var item in smsItems)
-                    {
-                        if (item.NoNumber || item.NoOptIn) continue;
-
-                        var btSent = SendSms(stSID, stToken, smsGroup[iCount].Number, item.Number, smsList.Message);
-
-                        if (btSent)
-                        {
-                            item.Sent = true;
-                            db.SubmitChanges();
-                        }
-
-                        iCount++;
-                        if (iCount >= smsGroup.Count()) iCount = 0;
-                    }
+                    isConfigured = true;
                 }
-                catch (Exception ex)
+            }
+
+            return isConfigured;
+        }
+
+        public static List<SMSNumber> GetSystemSMSGroup(CMSDataContext db)
+        {
+            var groups = db.SMSGroups.Where(g => g.SystemFlag == true).Select(g => g.Id).Take(1);
+            return db.SMSNumbers.Where(m => groups.Contains(m.GroupID)).ToList();
+        }
+
+        public static bool SendSMS(CMSDataContext db, string toNumber, SMSNumber fromNumber, string message)
+        {
+            bool success = false;
+            string sSID = GetSid(db);
+            string sToken = GetToken(db);
+
+            if (sSID.HasValue() && sToken.HasValue())
+            {
+                SMSNumber smsNumber = fromNumber ?? db.SMSNumbers.FirstOrDefault();
+                if (smsNumber != null)
                 {
-                    Debug.WriteLine(ex);
+                    var response = SendSmsInternal(sSID, sToken, smsNumber.Number, toNumber, message);
+                    success = new[] {
+                        MessageResource.StatusEnum.Accepted,
+                        MessageResource.StatusEnum.Queued,
+                        MessageResource.StatusEnum.Sending
+                    }.Contains(response.Status);
                 }
+            }
+            return success;
+        }
+
+        private static void ExecuteCmsTwilio(int listID)
+        {
+            string cmstwilio = System.Web.HttpContext.Current.Server.MapPath("~/bin/cmstwilio.exe");
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = cmstwilio,
+                Arguments = $"{listID} --host {Util.Host}",
+                CreateNoWindow = true,
+                UseShellExecute = false,
+                WorkingDirectory = Path.GetDirectoryName(cmstwilio)
             });
         }
 
-        private static bool SendSms(string sSID, string sToken, string sFrom, string sTo, string sBody)
+        public static void ProcessQueue(int iListID, string sHost)
+        {
+            var db = DbUtil.Create(sHost);
+            var sSID = GetSid(db);
+            var sToken = GetToken(db);
+
+            if (sSID.Length == 0 || sToken.Length == 0) return;
+
+            var cb = new SqlConnectionStringBuilder(db.ConnectionString) { InitialCatalog = "ELMAH" };
+            var ErrorLog = new SqlErrorLog(cb.ConnectionString) { ApplicationName = "BVCMS" };
+            
+            var smsList = (from e in db.SMSLists
+                           where e.Id == iListID
+                           select e).Single();
+
+            var smsItems = from e in db.SMSItems
+                           where e.ListID == iListID
+                           select e;
+
+            var smsGroup = (from e in db.SMSNumbers
+                            where e.GroupID == smsList.SendGroupID
+                            select e).ToList();
+
+            var iCount = 0;
+
+            var hostUrl = db.Setting("DefaultHost", "");
+
+            foreach (var item in smsItems)
+            {
+                try
+                {
+                    if (item.NoNumber || item.NoOptIn) continue;
+
+                    var callbackUrl = hostUrl.HasValue() ? $"{hostUrl}/WebHook/Twilio/{item.Id}" : null;
+                    var response = SendSmsInternal(sSID, sToken, smsGroup[iCount].Number, item.Number, smsList.Message, callbackUrl);
+
+                    UpdateSMSItemStatus(db, item, response);
+
+                    iCount++;
+                    if (iCount >= smsGroup.Count()) iCount = 0;
+                }
+                catch (ApiException ae)
+                {
+                    if (ae.Code == 21610) // https://www.twilio.com/docs/api/errors/21610
+                    {
+                        var person = db.People.FirstOrDefault(p => p.PeopleId == item.PeopleID);
+                        person.ReceiveSMS = false;
+                        item.ErrorMessage = "User opt-out";
+                    }
+                    else
+                    {
+                        Console.WriteLine(ae);
+                        ErrorLog.Log(new Error(ae));
+                        item.ErrorMessage = $"({ae.Code}) {ae.Message}".MaxString(150);
+                    }
+
+                    item.ResultStatus = $"error";
+                    db.SubmitChanges();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                    ErrorLog.Log(new Error(ex));
+
+                    item.ResultStatus = $"error";
+                    item.ErrorMessage = $"{ex.Message}".MaxString(150);
+                    db.SubmitChanges();
+                }
+            }
+        }
+
+        /// <summary>
+        /// This checks that the Twilio web hook didn't already update the status
+        /// If so, we update just the Sent flag
+        /// </summary>
+        public static void UpdateSMSItemStatus(CMSDataContext db, SMSItem item, MessageResource response)
+        {
+            if (IsSmsFailed(response))
+            {
+                item.ErrorMessage = $"({response.ErrorCode}) {response.ErrorMessage}".MaxString(150);
+            }
+
+            bool failed = true;
+            item.ResultStatus = $"{response.Status}";
+            do
+            {
+                try
+                {
+                    item.Sent = true;
+                    db.SubmitChanges(ConflictMode.FailOnFirstConflict);
+                    failed = false;
+                }
+                catch (ChangeConflictException)
+                {
+                    db.Refresh(RefreshMode.OverwriteCurrentValues, item);
+                }
+            } while (failed);
+        }
+
+        private static MessageResource SendSmsInternal(string sSID, string sToken, string sFrom, string sTo, string sBody, string callbackUrl = null)
         {
             // Needs API keys. Removed to keep private
 
-            var twilio = new TwilioRestClient(sSID, sToken);
-            var msg = twilio.SendMessage(sFrom, sTo, sBody);
-            if (msg.Status != "failed") return true;
-            return false;
+            TwilioClient.Init(sSID, sToken);
+            Uri callbackUri = callbackUrl.HasValue() ? new Uri(callbackUrl) : null;
+
+            //For testing numbers outside of U.S.
+            //sTo = string.Format("+{0}", sTo);
+
+            MessageResource response = MessageResource.Create(new PhoneNumber(sTo), from: new PhoneNumber(sFrom), body: sBody, statusCallback: callbackUri);
+
+            if (IsSmsSent(response))
+            {
+                Console.WriteLine($"Message to {sTo} succeeded with status {response.Status}");
+            }
+            else if (IsSmsFailed(response))
+            {
+                Console.WriteLine($"Message to {sTo} failed with status {response.Status} Err:({response.ErrorCode}) {response.ErrorMessage}");
+            }
+            else // Accepted || Queued || Sending
+            {
+                Console.WriteLine($"Message to {sTo} is queued with status {response.Status}");
+            }
+
+            return response;
         }
 
-        public static List<IncomingPhoneNumber> GetNumberList()
+        public static bool IsSmsFailed(MessageResource response)
         {
-            var twilio = new TwilioRestClient(GetSid(), GetToken());
-            var numbers = twilio.ListIncomingPhoneNumbers();
+            return MessageResource.StatusEnum.Undelivered.Equals(response.Status) || MessageResource.StatusEnum.Failed.Equals(response.Status);
+        }
 
-            return numbers.IncomingPhoneNumbers;
+        public static bool IsSmsSent(MessageResource response)
+        {
+            return MessageResource.StatusEnum.Sent.Equals(response.Status) || MessageResource.StatusEnum.Delivered.Equals(response.Status);
         }
 
         public static List<TwilioNumber> GetUnusedNumberList()
         {
-            var available = new List<TwilioNumber>();
+            List<TwilioNumber> available = new List<TwilioNumber>();
 
-            var twilio = new TwilioRestClient(GetSid(), GetToken());
-            var numbers = twilio.ListIncomingPhoneNumbers();
+            TwilioClient.Init(GetSid(DbUtil.Db), GetToken(DbUtil.Db));
+            var numbers = IncomingPhoneNumberResource.Read().ToList();
 
-            var used = (from e in DbUtil.Db.SMSNumbers
-                        select e).ToList();
+            var used = (from number in DbUtil.Db.SMSNumbers
+                        join g in DbUtil.Db.SMSGroups on number.GroupID equals g.Id
+                        where g.IsDeleted == false
+                        select number).ToList();
 
-            for (var iX = numbers.IncomingPhoneNumbers.Count() - 1; iX > -1; iX--)
+            for (var iX = numbers.Count - 1; iX > -1; iX--)
             {
-                if (used.Any(n => n.Number == numbers.IncomingPhoneNumbers[iX].PhoneNumber))
-                    numbers.IncomingPhoneNumbers.RemoveAt(iX);
+                if (used.Any(n => n.Number == numbers[iX].PhoneNumber.ToString()))
+                    numbers.RemoveAt(iX);
             }
 
-            foreach (var item in numbers.IncomingPhoneNumbers)
+            foreach (var item in numbers)
             {
                 var newNum = new TwilioNumber();
                 newNum.Name = item.FriendlyName;
-                newNum.Number = item.PhoneNumber;
+                newNum.Number = item.PhoneNumber.ToString();
 
                 available.Add(newNum);
             }
@@ -194,7 +327,6 @@ namespace CmsData.Classes.Twilio
 
             // If no results on the role, send back empty list
             if (role == null) return new List<UserRole>();
-
 
             var assigned = (from e in DbUtil.Db.SMSGroupMembers
                             where e.GroupID == id
@@ -216,7 +348,7 @@ namespace CmsData.Classes.Twilio
         public static List<SMSGroup> GetAvailableLists(int iUserID)
         {
             var groups = (from e in DbUtil.Db.SMSGroups
-                          where e.SMSGroupMembers.Any(f => f.UserID == iUserID)
+                          where e.IsDeleted == false && e.SMSGroupMembers.Any(f => f.UserID == iUserID)
                           select e).ToList();
 
             return groups;
@@ -254,14 +386,14 @@ namespace CmsData.Classes.Twilio
             return groups.Any();
         }
 
-        private static string GetSid()
+        private static string GetSid(CMSDataContext db)
         {
-            return DbUtil.Db.Setting("TwilioSID", "");
+            return db.Setting("TwilioSID", "");
         }
 
-        private static string GetToken()
+        private static string GetToken(CMSDataContext db)
         {
-            return DbUtil.Db.Setting("TwilioToken", "");
+            return db.Setting("TwilioToken", "");
         }
 
         public class TwilioNumber

@@ -104,6 +104,7 @@
       <Link>SolutionInfo.cs</Link>
     </Compile>
     <Compile Include="Arguments.cs" />
+    <Compile Include="CodeGeneration\ColumnAttributes.cs" />
     <Compile Include="DbmlBuilder.cs" />
     <Compile Include="CodeGeneration\CodeService.cs" />
     <Compile Include="CodeGeneration\CompileEngine.cs" />

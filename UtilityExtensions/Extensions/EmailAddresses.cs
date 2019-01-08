@@ -6,10 +6,10 @@
  */
 using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
-using System.Linq;
 using System.Configuration;
+using System.Linq;
 using System.Net.Mail;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Web;
 
@@ -20,14 +20,20 @@ namespace UtilityExtensions
         public static string EmailHref(this string addr, string name)
         {
             if (!addr.HasValue())
+            {
                 return "";
+            }
+
             return $"mailto:{addr}";
         }
         public static string FullEmail(string email, string name)
         {
             if (email.HasValue())
-                if (name.Contains("?"))
+            {
+                if (!name.HasValue() || name.Contains("?"))
+                {
                     return email;
+                }
                 else
                 {
                     var na = Regex.Replace(name, @";|,|\""", "");
@@ -36,16 +42,29 @@ namespace UtilityExtensions
                             select na + " <" + ad.Trim() + ">";
                     return string.Join(";", q);
                 }
+            }
+
             return string.Empty;
         }
         public static List<MailAddress> DistinctEmails(this List<MailAddress> list)
         {
             for (var i = 0; i < list.Count; i++)
+            {
                 if (list[i] != null)
+                {
                     for (var j = i + 1; j < list.Count; j++)
+                    {
                         if (list[j] != null)
+                        {
                             if (string.Compare(list[i].Address, list[j].Address, ignoreCase: true) == 0)
+                            {
                                 list[j] = null;
+                            }
+                        }
+                    }
+                }
+            }
+
             return list.Where(ll => ll != null).ToList();
         }
         private class MailAddressComparer : IEqualityComparer<MailAddress>
@@ -53,9 +72,15 @@ namespace UtilityExtensions
             public bool Equals(MailAddress x, MailAddress y)
             {
                 if (x == null)
+                {
                     return y == null;
+                }
+
                 if (y == null)
+                {
                     return false;
+                }
+
                 var eq = string.Compare(x.Address, y.Address, ignoreCase: true) == 0;
                 return eq;
             }
@@ -68,7 +93,10 @@ namespace UtilityExtensions
         {
             var list = new List<MailAddress>();
             foreach (var ad in addresses.SplitStr(",;"))
+            {
                 AddGoodAddress(list, ad);
+            }
+
             return list;
         }
         public static List<MailAddress> ToMailAddressList(string address, string name)
@@ -79,13 +107,19 @@ namespace UtilityExtensions
         {
             return new List<MailAddress> { ma };
         }
-        public static void AddGoodAddress(List<MailAddress> list, string a)
+
+        public static void AddGoodAddress(List<MailAddress> list, string emailAddress)
         {
-            var ma = Util.TryGetMailAddress(a);
-            if (ma != null)
-                if (!list.Any(mm => mm.Address == a))
-                    list.Add(ma);
+            MailAddress mailAddress;
+            if (Util.TryGetMailAddress(emailAddress, out mailAddress))
+            {
+                if (!list.Any(mm => mm.Address == emailAddress))
+                {
+                    list.Add(mailAddress);
+                }
+            }
         }
+
         public static string EmailAddressListToString(this List<MailAddress> list)
         {
             var addrs = string.Join(", ", list.Select(tt => tt.ToString()));
@@ -94,47 +128,93 @@ namespace UtilityExtensions
         public static List<MailAddress> SendErrorsTo()
         {
             var a = ConfigurationManager.AppSettings["senderrorsto"];
-            return EmailAddressListFromString(a.HasValue() ? a : "david@touchpointsoftware.com");
+            return EmailAddressListFromString(a.HasValue() ? a : AdminMail);
         }
         public static List<MailAddress> EmailAddressListFromString(string addresses)
         {
             var a = addresses.SplitStr(",;");
             var list = new List<MailAddress>();
             foreach (var ad in a)
+            {
                 AddGoodAddress(list, ad);
+            }
+
             return list;
         }
+
+        public static bool TryGetMailAddress(string address, out MailAddress mailAddress)
+        {
+            var valid = true;
+            mailAddress = null;
+            try
+            {
+                mailAddress = TryGetMailAddress(address);
+                valid = mailAddress != null;
+            }
+            catch
+            {
+                valid = false;
+            }
+            return valid;
+        }
+
         public static MailAddress TryGetMailAddress(string address)
         {
             if (address.HasValue())
+            {
                 address = address.Trim();
+            }
+
             try
             {
                 if (!address.HasValue())
+                {
                     return null;
+                }
+
                 var ma = new MailAddress(address);
                 if (ValidEmail(ma.Address))
+                {
                     return ma;
+                }
             }
             catch (Exception)
             {
+                throw new Exception($"bad email address: {address}");
             }
             return null;
         }
         public static MailAddress TryGetMailAddress(string address, string name)
         {
             if (address.HasValue())
+            {
                 address = address.Trim();
+            }
+
             if (name.HasValue())
+            {
                 name = name.Replace("\"", "");
+            }
+
             if (ValidEmail(address))
+            {
                 return Util.FirstAddress(address, name);
+            }
+
             return null;
         }
         public static bool ValidEmail(string email)
         {
             if (!email.HasValue())
+            {
                 return false;
+            }
+
+            if (email.Contains(" "))
+            {
+                return false;
+            }
+
             var re1 = new Regex(@"^(.*\b(?=\w))\b[A-Z0-9._%+-]+(?<=[^.])@[A-Z0-9.-]+(?<!\.)\.[A-Z]{2,}\b\b(?!\w)$", RegexOptions.IgnoreCase);
             var re2 = new Regex(@"^[A-Z0-9._%+-]+(?<=[^.])@[A-Z0-9.-]+(?<!\.)\.[A-Z]{2,}$", RegexOptions.IgnoreCase);
             var a = email.SplitStr(",;");
@@ -142,7 +222,9 @@ namespace UtilityExtensions
             {
                 var b = re1.IsMatch(m) || re2.IsMatch(m);
                 if (b)
+                {
                     return true; // at least one good email address
+                }
             }
             return false;
         }
@@ -153,19 +235,33 @@ namespace UtilityExtensions
         public static MailAddress FirstAddress(string addrs, string name)
         {
             if (!addrs.HasValue())
+            {
                 addrs = AdminMail;
+            }
+
             var a = addrs.SplitStr(",;");
             try
             {
                 var ma = new MailAddress(a[0]);
                 if (name.HasValue())
+                {
                     return new MailAddress(ma.Address, name);
+                }
+
                 return ma;
             }
             catch (Exception)
             {
+                if (!ValidEmail(AdminMail))
+                {
+                    throw new Exception($"bad AdminMail address <{AdminMail}>");
+                }
+
                 if (name.HasValue())
+                {
                     return new MailAddress(AdminMail, name);
+                }
+
                 return new MailAddress(AdminMail);
             }
         }
@@ -173,7 +269,10 @@ namespace UtilityExtensions
         public static MailAddress FirstAddress2(string addrs, string name)
         {
             if (!addrs.HasValue())
+            {
                 addrs = AdminMail;
+            }
+
             var a = addrs.SplitStr(",;");
             try
             {
@@ -181,15 +280,26 @@ namespace UtilityExtensions
             }
             catch (Exception)
             {
+                if (!ValidEmail(AdminMail))
+                {
+                    throw new Exception($"bad AdminMail address <{AdminMail}>");
+                }
+
                 if (name.HasValue())
+                {
                     return new MailAddress(AdminMail, name);
+                }
+
                 return new MailAddress(AdminMail);
             }
         }
         public static string ObscureEmail(string email)
         {
             if (!ValidEmail(email))
+            {
                 return email;
+            }
+
             var a = email.Split('@');
             var rest = new string('.', 6);
             return a[0].Substring(0, 1) + rest + "@" + a[1];
@@ -206,20 +316,30 @@ namespace UtilityExtensions
             {
                 var tag = ConfigurationManager.AppSettings["senderrorsto"];
                 if (HttpContext.Current != null)
+                {
                     if ((HttpContext.Current.Items[STR_AdminMail] as string).HasValue())
+                    {
                         tag = HttpContext.Current.Items[STR_AdminMail].ToString();
+                    }
+                }
+
                 return tag;
             }
             set
             {
                 if (HttpContext.Current != null)
+                {
                     HttpContext.Current.Items[STR_AdminMail] = value;
+                }
             }
         }
         public static void AddAddr(this MailMessage msg, MailAddress a)
         {
             if (IsInRoleEmailTest)
+            {
                 a = new MailAddress(UserEmail, a.DisplayName + " (test)");
+            }
+
             msg.To.Add(a);
         }
         private const string STR_UserEmail = "UserEmail";
@@ -232,11 +352,18 @@ namespace UtilityExtensions
                 if (HttpContext.Current != null)
                 {
                     if (HttpContext.Current.Session != null)
+                    {
                         if (HttpContext.Current.Session[STR_UserEmail] != null)
+                        {
                             email = HttpContext.Current.Session[STR_UserEmail] as String;
+                        }
+                    }
                 }
                 else
-                    email = (string) Thread.GetData(Thread.GetNamedDataSlot("UserEmail"));
+                {
+                    email = (string)Thread.GetData(Thread.GetNamedDataSlot("UserEmail"));
+                }
+
                 return email;
             }
             set
@@ -244,10 +371,14 @@ namespace UtilityExtensions
                 if (HttpContext.Current != null)
                 {
                     if (HttpContext.Current.Session != null)
+                    {
                         HttpContext.Current.Session[STR_UserEmail] = value;
+                    }
                 }
                 else
+                {
                     Thread.SetData(Thread.GetNamedDataSlot(STR_UserEmail), value);
+                }
             }
         }
         public static bool IsInRoleEmailTest
@@ -255,18 +386,25 @@ namespace UtilityExtensions
             get
             {
                 if (HttpContext.Current != null)
-                    return HttpContext.Current.User.IsInRole("EmailTest") || ((bool?) HttpContext.Current.Session?["IsInRoleEmailTest"] ?? false);
-                return (bool?) Thread.GetData(Thread.GetNamedDataSlot("IsInRoleEmailTest")) ?? false;
+                {
+                    return HttpContext.Current.User.IsInRole("EmailTest") || ((bool?)HttpContext.Current.Session?["IsInRoleEmailTest"] ?? false);
+                }
+
+                return (bool?)Thread.GetData(Thread.GetNamedDataSlot("IsInRoleEmailTest")) ?? false;
             }
             set
             {
                 if (HttpContext.Current != null)
                 {
                     if (HttpContext.Current.Session != null)
+                    {
                         HttpContext.Current.Session["IsInRoleEmailTest"] = value;
+                    }
                 }
                 else
+                {
                     Thread.SetData(Thread.GetNamedDataSlot("IsInRoleEmailTest"), value);
+                }
             }
         }
     }

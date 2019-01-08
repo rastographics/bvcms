@@ -6,10 +6,14 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Data.Linq.SqlClient;
+using System.Data.SqlClient;
 using System.Data.SqlTypes;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Text.RegularExpressions;
+using CmsData.API;
 using Dapper;
 using UtilityExtensions;
 
@@ -23,14 +27,29 @@ namespace CmsData
             var q = db.ViewStatusFlagLists.ToList();
             if (!db.FromBatch)
                 q = (from f in q
-                    where f.RoleName == null || db.CurrentRoles().Contains(f.RoleName)
-                    select f).ToList();
+                     where f.RoleName == null || db.CurrentRoles().Contains(f.RoleName)
+                     select f).ToList();
             var codes = (from f in q
-                join c in codes0 on f.Flag equals c into j
-                from c in j
-                select c).ToList();
+                         join c in codes0 on f.Flag equals c into j
+                         from c in j
+                         select c).ToList();
             Expression<Func<Person, bool>> pred =
                 p => p.Tags.Any(tt => codes.Contains(tt.Tag.Name) && tt.Tag.TypeId == DbUtil.TagTypeId_StatusFlags);
+            Expression expr = Expression.Invoke(pred, parm); // substitute parm for p
+            if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
+                expr = Expression.Not(expr);
+            return expr;
+        }
+        internal Expression QueryTag()
+        {
+            var names = CodeText.Split(',');
+            var q = (from t in db.Tags
+                     where t.TypeId == DbUtil.TagTypeId_QueryTags
+                     where names.Contains(t.Name)
+                     select t.Name).ToList();
+
+            Expression<Func<Person, bool>> pred =
+                p => p.Tags.Any(tt => q.Contains(tt.Tag.Name) && tt.Tag.TypeId == DbUtil.TagTypeId_QueryTags);
             Expression expr = Expression.Invoke(pred, parm); // substitute parm for p
             if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
                 expr = Expression.Not(expr);
@@ -43,7 +62,7 @@ namespace CmsData
             Expression<Func<Person, bool>> pred = p =>
                     p.Tags.Any(t => t.Tag.Name == db.CurrentTagName && t.Tag.PeopleId == db.CurrentTagOwnerId);
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }
@@ -55,7 +74,7 @@ namespace CmsData
             Expression<Func<Person, bool>> pred = p =>
                     p.Tags.Any(t => a.Contains(t.Id));
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }
@@ -66,7 +85,7 @@ namespace CmsData
             Expression<Func<Person, bool>> pred = p =>
                     p.MemberDocForms.Any();
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }
@@ -84,7 +103,7 @@ namespace CmsData
 
             Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
             Expression expr = Expression.Invoke(pred, parm);
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }
@@ -92,17 +111,20 @@ namespace CmsData
         internal Expression InSqlList()
         {
             var tf = CodeIds == "1";
-            var s = Quarters;
-            var sql = db.ContentOfTypeSql(s);
+            var scriptname = Quarters;
+            var cn = db.ReadonlyConnection();
+
+            var sql = db.ContentOfTypeSql(scriptname);
             if (!sql.HasValue())
                 return AlwaysFalse();
 
-            var cn = db.ReadonlyConnection();
-            var list = cn.Query<int>(sql);
+
+            var list = cn.Query<int>(sql).ToList();
+
             var tag = db.PopulateTempTag(list);
             Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
             Expression expr = Expression.Invoke(pred, parm);
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }
@@ -115,7 +137,7 @@ namespace CmsData
                     && p.RecRegs.Any();
             Expression expr1 = Expression.Convert(Expression.Invoke(hasapp, parm), typeof(bool));
             Expression expr2 = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr2 = Expression.Not(expr2);
             return Expression.And(expr1, expr2);
         }
@@ -128,7 +150,7 @@ namespace CmsData
                     && p.RecRegs.Any();
             Expression expr1 = Expression.Convert(Expression.Invoke(hasapp, parm), typeof(bool));
             Expression expr2 = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr2 = Expression.Not(expr2);
             return Expression.And(expr1, expr2);
         }
@@ -141,9 +163,10 @@ namespace CmsData
                     db.OrganizationMembers.Any(um =>
                         um.OrganizationId == m.OrganizationId && um.PeopleId == uid)
                 );
-            Expression left = Expression.Invoke(pred, parm);
-            var right = Expression.Convert(Expression.Constant(tf), left.Type);
-            return Compare(left, right);
+            Expression expr = Expression.Invoke(pred, parm);
+            if (op == CompareType.Equal ^ tf)
+                expr = Expression.Not(expr);
+            return expr;
         }
         internal Expression CheckInVisits()
         {
@@ -219,7 +242,7 @@ namespace CmsData
             Expression<Func<Person, bool>> pred = p =>
                 db.EmailQueueToFails.Any(f => f.PeopleId == p.PeopleId && (f.Time >= StartDate || StartDate == null));
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }

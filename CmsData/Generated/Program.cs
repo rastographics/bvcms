@@ -15,76 +15,77 @@ using System.Web.Script.Serialization;
 
 namespace CmsData
 {
-    [Table(Name="dbo.Program")]
-    public partial class Program : INotifyPropertyChanging, INotifyPropertyChanged
-    {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
 
-        #region Private Fields
+	[Table(Name="dbo.Program")]
+	public partial class Program : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+	#region Private Fields
+		
+		private int _Id;
+		
+		private string _Name;
+		
+		private string _RptGroup;
+		
+		private decimal? _StartHoursOffset;
+		
+		private decimal? _EndHoursOffset;
+		
+   		
+   		private EntitySet<Division> _Divisions;
+		
+   		private EntitySet<ProgDiv> _ProgDivs;
+		
+    	
+	#endregion
+	
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+		
+		partial void OnIdChanging(int value);
+		partial void OnIdChanged();
+		
+		partial void OnNameChanging(string value);
+		partial void OnNameChanged();
+		
+		partial void OnRptGroupChanging(string value);
+		partial void OnRptGroupChanged();
+		
+		partial void OnStartHoursOffsetChanging(decimal? value);
+		partial void OnStartHoursOffsetChanged();
+		
+		partial void OnEndHoursOffsetChanging(decimal? value);
+		partial void OnEndHoursOffsetChanged();
+		
+    #endregion
+		public Program()
+		{
+			
+			this._Divisions = new EntitySet<Division>(new Action< Division>(this.attach_Divisions), new Action< Division>(this.detach_Divisions)); 
+			
+			this._ProgDivs = new EntitySet<ProgDiv>(new Action< ProgDiv>(this.attach_ProgDivs), new Action< ProgDiv>(this.detach_ProgDivs)); 
+			
+			
+			OnCreated();
+		}
 
-        private int _Id;
+		
+    #region Columns
+		
+		[Column(Name="Id", UpdateCheck=UpdateCheck.Never, Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int Id
+		{
+			get { return this._Id; }
 
-        private string _Name;
-
-        private string _RptGroup;
-
-        private decimal? _StartHoursOffset;
-
-        private decimal? _EndHoursOffset;
-
-
-        private EntitySet< Division> _Divisions;
-
-        private EntitySet< ProgDiv> _ProgDivs;
-
-
-        #endregion
-
-        #region Extensibility Method Definitions
-        partial void OnLoaded();
-        partial void OnValidate(System.Data.Linq.ChangeAction action);
-        partial void OnCreated();
-
-        partial void OnIdChanging(int value);
-        partial void OnIdChanged();
-
-        partial void OnNameChanging(string value);
-        partial void OnNameChanged();
-
-        partial void OnRptGroupChanging(string value);
-        partial void OnRptGroupChanged();
-
-        partial void OnStartHoursOffsetChanging(decimal? value);
-        partial void OnStartHoursOffsetChanged();
-
-        partial void OnEndHoursOffsetChanging(decimal? value);
-        partial void OnEndHoursOffsetChanged();
-
-        #endregion
-        public Program()
-        {
-
-            this._Divisions = new EntitySet< Division>(new Action< Division>(this.attach_Divisions), new Action< Division>(this.detach_Divisions));
-
-            this._ProgDivs = new EntitySet< ProgDiv>(new Action< ProgDiv>(this.attach_ProgDivs), new Action< ProgDiv>(this.detach_ProgDivs));
-
-
-            OnCreated();
-        }
-
-
-        #region Columns
-
-        [Column(Name="Id", UpdateCheck=UpdateCheck.Never, Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-        public int Id
-        {
-            get { return this._Id; }
-
-            set
-            {
-                if (this._Id != value)
-                {
-
+			set
+			{
+				if (this._Id != value)
+				{
+				
                     this.OnIdChanging(value);
                     this.SendPropertyChanging();
                     this._Id = value;
@@ -174,88 +175,88 @@ namespace CmsData
                 {
 
                     this.OnEndHoursOffsetChanging(value);
-                    this.SendPropertyChanging();
-                    this._EndHoursOffset = value;
-                    this.SendPropertyChanged("EndHoursOffset");
-                    this.OnEndHoursOffsetChanged();
-                }
+					this.SendPropertyChanging();
+					this._EndHoursOffset = value;
+					this.SendPropertyChanged("EndHoursOffset");
+					this.OnEndHoursOffsetChanged();
+				}
 
-            }
+			}
 
-        }
+		}
 
+		
+    #endregion
+        
+    #region Foreign Key Tables
+   		
+   		[Association(Name="FK_Division_Program", Storage="_Divisions", OtherKey="ProgId")]
+   		public EntitySet<Division> Divisions
+   		{
+   		    get { return this._Divisions; }
 
-        #endregion
+			set	{ this._Divisions.Assign(value); }
 
-        #region Foreign Key Tables
+   		}
 
-        [Association(Name="FK_Division_Program", Storage="_Divisions", OtherKey="ProgId")]
-        public EntitySet< Division> Divisions
-        {
-            get { return this._Divisions; }
+		
+   		[Association(Name="FK_ProgDiv_Program", Storage="_ProgDivs", OtherKey="ProgId")]
+   		public EntitySet<ProgDiv> ProgDivs
+   		{
+   		    get { return this._ProgDivs; }
 
-            set { this._Divisions.Assign(value); }
+			set	{ this._ProgDivs.Assign(value); }
 
-        }
+   		}
 
+		
+	#endregion
+	
+	#region Foreign Keys
+    	
+	#endregion
+	
+		public event PropertyChangingEventHandler PropertyChanging;
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+				this.PropertyChanging(this, emptyChangingEventArgs);
+		}
 
-        [Association(Name="FK_ProgDiv_Program", Storage="_ProgDivs", OtherKey="ProgId")]
-        public EntitySet< ProgDiv> ProgDivs
-        {
-            get { return this._ProgDivs; }
+		public event PropertyChangedEventHandler PropertyChanged;
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+		}
 
-            set { this._ProgDivs.Assign(value); }
+   		
+		private void attach_Divisions(Division entity)
+		{
+			this.SendPropertyChanging();
+			entity.Program = this;
+		}
 
-        }
+		private void detach_Divisions(Division entity)
+		{
+			this.SendPropertyChanging();
+			entity.Program = null;
+		}
 
+		
+		private void attach_ProgDivs(ProgDiv entity)
+		{
+			this.SendPropertyChanging();
+			entity.Program = this;
+		}
 
-        #endregion
+		private void detach_ProgDivs(ProgDiv entity)
+		{
+			this.SendPropertyChanging();
+			entity.Program = null;
+		}
 
-        #region Foreign Keys
-
-        #endregion
-
-        public event PropertyChangingEventHandler PropertyChanging;
-        protected virtual void SendPropertyChanging()
-        {
-            if ((this.PropertyChanging != null))
-                this.PropertyChanging(this, emptyChangingEventArgs);
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
-        {
-            if ((this.PropertyChanged != null))
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-
-        private void attach_Divisions(Division entity)
-        {
-            this.SendPropertyChanging();
-            entity.Program = this;
-        }
-
-        private void detach_Divisions(Division entity)
-        {
-            this.SendPropertyChanging();
-            entity.Program = null;
-        }
-
-
-        private void attach_ProgDivs(ProgDiv entity)
-        {
-            this.SendPropertyChanging();
-            entity.Program = this;
-        }
-
-        private void detach_ProgDivs(ProgDiv entity)
-        {
-            this.SendPropertyChanging();
-            entity.Program = null;
-        }
-
-        public static bool IsValidCaptcha(string responseData, string hostIpAddress)
+    public static bool IsValidCaptcha(string responseData, string hostIpAddress)
         {
             var secret = System.Web.Configuration.WebConfigurationManager.AppSettings["googleReCaptchaSecretKey"];
             var strGoogleApi = System.Web.Configuration.WebConfigurationManager.AppSettings["googleReCaptchaApi"];
@@ -288,6 +289,3 @@ namespace CmsData
     {
         public string success { get; set; }
     }
-
-}
-

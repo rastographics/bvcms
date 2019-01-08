@@ -8,6 +8,7 @@
     Layout = "~/Views/Shared/onlinereg2.cshtml";
     var funame = Html.NameFor2(m => m.FundItem);
     decimal? tot = 0;
+    var peopleId = Model.person.PeopleId;
     var funds = CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel.FundList();
     var specialFunds = CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel.SpecialFundList();
     var debitcredit = DbUtil.Db.Setting("DebitCreditLabel", "Debit/Credit Card");
@@ -39,7 +40,7 @@
 <div class="regform">
   <h2>@Model.Organization.OrganizationName</h2>
   <div>@Html.Raw(Model.Instructions)</div>
-  <h4>for @Model.person.Name &lt;@Model.person.EmailAddress&gt;</h4>
+  <h4>for @(Model.person?.Name) &lt;@(Model.person?.EmailAddress)&gt;</h4>
   @Html.ValidationSummary()
   <form id="managegivingform" method="post" class="form-horizontal" action="/OnlineReg/ManageGiving">
     @Html.Hidden("specialedit", 0)
@@ -225,6 +226,8 @@
           @Html.EditorFor(m => m.CreditCard, new { autocomplete = Model.AutocompleteOnOff, Label = debitcredit })
           @Html.EditorFor(m => m.Expires, new { classes = "narrow" })
           @Html.EditorFor(m => m.CVV, new { classes = "narrow", autocomplete = Model.AutocompleteOnOff })
+            <input type="hidden" id="hdnCreditCardOnFile" data-value="@Request.RequestContext.HttpContext.Session["CreditCardOnFile"]" />
+            <input type="hidden" id="hdnExpiresOnFile" data-value="@Request.RequestContext.HttpContext.Session["ExpiresOnFile"]" />
         </div>
       }
         @if (useRecaptcha){
@@ -243,6 +246,12 @@
           @Html.Partial("Flow2/EmptyRow")
         </div>
       }
+        <div class="form-group">
+            <div class="col-sm-9 col-sm-offset-3">
+                <a id="CancelUpdateText">cancel</a>
+                    
+            </div>
+        </div>
     </div>
 
     <div class="well">

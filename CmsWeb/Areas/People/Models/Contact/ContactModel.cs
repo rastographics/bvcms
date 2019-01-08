@@ -1,3 +1,6 @@
+using CmsData;
+using CmsWeb.Code;
+using Dapper;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -5,12 +8,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
-using CmsData;
-using CmsWeb.Code;
-using Dapper;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Models
@@ -19,6 +18,7 @@ namespace CmsWeb.Areas.People.Models
     {
         private bool? canViewComments;
         private string _incomplete;
+        private string _limitToRole;
 
         [NoUpdate]
         public int ContactId { get; set; }
@@ -37,7 +37,10 @@ namespace CmsWeb.Areas.People.Models
 
         [UIHint("TextArea")]
         public string Comments { get; set; }
-        public string LimitToRole { get; set; }
+        public string LimitToRole {
+            get { return _limitToRole; }            
+            set { _limitToRole = value?.Trim(); }
+        }
 
         public CodeInfo ContactType { get; set; }
         public CodeInfo ContactReason { get; set; }
@@ -49,17 +52,25 @@ namespace CmsWeb.Areas.People.Models
 
         public IEnumerable<SelectListItem> Roles()
         {
-            var roles = DbUtil.Db.Setting("LimitToRolesForContacts", "").SplitStr(",").Where(rr => rr.HasValue()).ToArray();
+            var roles = DbUtil.Db.Setting("LimitToRolesForContacts", "").trim().SplitStr(",").Where(rr => rr.HasValue()).ToArray();
             if (roles.Length == 0)
+            {
                 roles = DbUtil.Db.Roles.OrderBy(r => r.RoleName).Select(r => r.RoleName).ToArray();
+            }
+
             var list = roles.Select(rolename => new SelectListItem
             {
-                Value = rolename,
-                Text = rolename,
+                Value = rolename.trim(),
+                Text = rolename.trim(),
                 Selected = !string.IsNullOrWhiteSpace(LimitToRole) && LimitToRole == rolename
             }).ToList();
 
-            list.Insert(0, new SelectListItem { Value = "0", Text = "(not specified)", Selected = true });
+            var roleSelected = false;
+            foreach (SelectListItem i in list)
+            {
+                roleSelected = i.Selected ? true : roleSelected;
+            }
+            list.Insert(0, new SelectListItem { Value = "0", Text = "(not specified)", Selected = roleSelected ? false : true });
             return list;
         }
 
@@ -68,7 +79,11 @@ namespace CmsWeb.Areas.People.Models
         {
             get
             {
-                if (!OrganizationId.HasValue) return "";
+                if (!OrganizationId.HasValue)
+                {
+                    return "";
+                }
+
                 var name = DbUtil.Db.LoadOrganizationById(OrganizationId);
                 return name != null ? name.OrganizationName : "";
             }
@@ -91,6 +106,11 @@ namespace CmsWeb.Areas.People.Models
             return list;
         }
 
+        public IEnumerable<ContactExtraLocation> Locations
+        {
+            get { return ContactExtraConfig.Locations; }
+        }
+
         internal Contact contact;
         private void LoadContact(int id)
         {
@@ -103,7 +123,9 @@ namespace CmsWeb.Areas.People.Models
                     select c;
             contact = q.SingleOrDefault();
             if (contact == null)
+            {
                 return;
+            }
 
             ContactId = id;
             MinisteredTo = new ContacteesModel(id);
@@ -121,7 +143,9 @@ namespace CmsWeb.Areas.People.Models
         {
             LoadContact(id);
             if (contact != null)
+            {
                 this.CopyPropertiesFrom(contact);
+            }
 
             SetLocationOnContact();
         }
@@ -133,10 +157,14 @@ namespace CmsWeb.Areas.People.Models
         public void UpdateContact()
         {
             if (LimitToRole == "0")
+            {
                 LimitToRole = null;
+            }
 
             if (OrganizationId == 0)
+            {
                 OrganizationId = null;
+            }
 
             LoadContact(ContactId);
             this.CopyPropertiesTo(contact);
@@ -172,7 +200,10 @@ namespace CmsWeb.Areas.People.Models
                     where cor.ContactId == contact.ContactId
                     select cor;
             foreach (var p in q)
+            {
                 c.contactsMakers.Add(new Contactor { PeopleId = p.PeopleId });
+            }
+
             DbUtil.Db.Contacts.InsertOnSubmit(c);
             DbUtil.Db.SubmitChanges();
             return c.ContactId;
@@ -183,7 +214,9 @@ namespace CmsWeb.Areas.People.Models
             get
             {
                 if (canViewComments.HasValue)
+                {
                     return canViewComments.Value;
+                }
 
                 if (!Util2.OrgLeadersOnly)
                 {
@@ -210,49 +243,33 @@ namespace CmsWeb.Areas.People.Models
             var results = new List<ValidationResult>();
 
             if (DbUtil.Db.Ministries.Any() && Ministry.Value == "0")
+            {
                 results.Add(ModelError("Ministry is required", "MinistryId"));
+            }
 
             if (ContactType.Value == "0")
+            {
                 results.Add(ModelError("ContactType is required", "ContactTypeId"));
+            }
 
             if (ContactReason.Value == "0")
+            {
                 results.Add(ModelError("ContactReason is required", "ContactReasonId"));
+            }
 
             return results;
         }
 
         public void SetLocationOnContact()
         {
-            var list = new List<string>
-            {
-                Ministry.ToString(),
-                ContactType.ToString(),
-                ContactReason.ToString()
-            };
-
-            Location = ComputeLocationString(list);
+            Location = ContactExtraConfig
+                .GetLocationFor(OrganizationId, Ministry.ToString(), ContactType.ToString(), ContactReason.ToString());
         }
 
         public void SetLocationOnContact(string ministry, string contactType, string contactReason)
         {
-            var list = new List<string>
-            {
-                ministry,
-                contactType,
-                contactReason
-            };
-
-            Location = ComputeLocationString(list);
-        }
-
-        private string ComputeLocationString(IEnumerable<string> list)
-        {
-            list = list.Where(x => x != null)
-                       .Select(x => x.SlugifyString());
-            var location = string.Join("-", list);
-            if (location != string.Empty) return location;
-
-            return OrganizationId.HasValue ? "Organization" : "Person";
+            Location = ContactExtraConfig
+                .GetLocationFor(OrganizationId, ministry, contactType, contactReason);
         }
 
         private static ValidationResult ModelError(string message, string field)
@@ -265,7 +282,10 @@ namespace CmsWeb.Areas.People.Models
             get
             {
                 if (_incomplete == null)
+                {
                     _incomplete = GetIncomplete();
+                }
+
                 return _incomplete;
             }
         }
@@ -274,10 +294,15 @@ namespace CmsWeb.Areas.People.Models
 
         public bool ShowContactExtraFeature => DbUtil.Db.Setting("Feature-ContactExtra");
 
+        private ContactExtraLocationConfig ContactExtraConfig => new ContactExtraLocationConfig();
+
         private string GetIncomplete()
         {
             if (contact == null)
+            {
                 LoadContact(ContactId);
+            }
+
             var sb = new StringBuilder();
             Append(Ministry.Value == "0", sb, "no ministry");
             Append(ContactType.Value == "0", sb, "no type");
@@ -285,15 +310,24 @@ namespace CmsWeb.Areas.People.Models
             Append(Ministers.Count() == 0, sb, "no contactors");
             Append(MinisteredTo.Count() == 0 && OrganizationId < 1, sb, "no contactees");
             if (sb.Length > 0)
+            {
                 return sb.ToString();
+            }
+
             return "";
         }
         private void Append(bool tf, StringBuilder sb, string text)
         {
             if (!tf)
+            {
                 return;
+            }
+
             if (sb.Length > 0)
+            {
                 sb.Append(", ");
+            }
+
             sb.Append(text);
         }
     }

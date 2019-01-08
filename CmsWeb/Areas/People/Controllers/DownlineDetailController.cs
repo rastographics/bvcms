@@ -1,16 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using CmsWeb.Areas.People.Models;
+using CmsWeb.Lifecycle;
 using System.Web.Mvc;
-using CmsData;
-using CmsWeb.Areas.People.Models;
 
 namespace CmsWeb.Areas.People.Controllers
 {
     [RouteArea("People", AreaPrefix = "DownlineDetail")]
     public class DownlineDetailController : CmsStaffController
     {
+        public DownlineDetailController(IRequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [HttpGet, Route("~/DownlineDetail/{category}/{peopleid:int}/{level:int}")]
         public ActionResult Index(int category, int peopleid, int level)
         {

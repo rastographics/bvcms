@@ -1,23 +1,25 @@
-﻿using System.Linq;
-using System.Web.Http;
-using System.Web.OData;
-using AutoMapper;
+﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using CmsData;
+using CmsWeb.Lifecycle;
 using CmsWeb.Models.Api.Lookup;
+using System.Web.Http;
 
 namespace CmsWeb.Controllers.Api.Lookup
 {
-    public class BundleHeaderTypesController : ODataController
+    public class BundleHeaderTypesController : CMSBaseODataController
     {
-        public BundleHeaderTypesController()
+        public BundleHeaderTypesController(IRequestManager requestManager) : base(requestManager)
         {
-            Mapper.CreateMap<BundleHeaderType, ApiLookup>();
         }
 
         public IHttpActionResult Get()
         {
-            return Ok(DbUtil.Db.BundleHeaderTypes.Project().To<ApiLookup>().AsQueryable());
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<BundleHeaderType, ApiLookup>();
+            });
+            return Ok(CurrentDatabase.BundleHeaderTypes.ProjectTo<ApiLookup>(config));
         }
     }
 }

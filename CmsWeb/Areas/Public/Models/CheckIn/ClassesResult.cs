@@ -1,11 +1,11 @@
+using CmsData;
+using CmsData.Codes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Web.Mvc;
 using System.Xml;
-using CmsData;
-using CmsData.Codes;
 using UtilityExtensions;
 
 namespace CmsWeb.Models
@@ -34,7 +34,9 @@ namespace CmsWeb.Models
                          p.Grade
                      }).SingleOrDefault();
             if (i == null)
+            {
                 return;
+            }
 
             familyid = i.FamilyId;
             peopleid = id;
@@ -49,7 +51,10 @@ namespace CmsWeb.Models
         public override void ExecuteResult(ControllerContext context)
         {
             if (!peopleid.HasValue)
+            {
                 return;
+            }
+
             context.HttpContext.Response.ContentType = "text/xml";
             var settings = new XmlWriterSettings();
             settings.Encoding = new UTF8Encoding(false);
@@ -131,9 +136,13 @@ namespace CmsWeb.Models
                             int dayDiff = thisday - DateTime.Now.DayOfWeek.ToInt();
 
                             if (dayDiff < 0)
+                            {
                                 theirTime = theirTime.AddDays(7 + dayDiff);
+                            }
                             else
+                            {
                                 theirTime = theirTime.AddDays(dayDiff);
+                            }
                         }
 
                         leadtime = o.Hour.Value.Subtract(theirTime).TotalHours;
@@ -148,19 +157,33 @@ namespace CmsWeb.Models
                     w.WriteAttributeString("orgid", o.OrganizationId.ToString());
                     var loc = o.Location;
                     if (loc.HasValue())
+                    {
                         loc = ", " + loc;
+                    }
+
                     var leader = o.LeaderName;
                     if (leader.HasValue())
+                    {
                         leader = ":" + leader;
+                    }
+
                     var bdays = $" [{o.BirthDayStart:d}-{o.BirthDayEnd:d}]";
                     if (bdays == " [-]")
+                    {
                         bdays = null;
+                    }
+
                     if (kioskmode)
+                    {
                         w.WriteAttributeString("display", $"{o.OrganizationName}{leader}{loc}{bdays} ({((o.Limit ?? 0) == 0 ? "" : o.Limit + "max, ")}{o.MemberCount})");
+                    }
                     else
+                    {
                         w.WriteAttributeString("display", $"{o.Hour:t} {o.OrganizationName}{leader}{loc}{bdays}");
+                    }
+
                     w.WriteAttributeString("nlabels", o.NumCheckInLabels.ToString());
-                    w.WriteAttributeString("hour", o.Hour.ToString2("g"));
+                    w.WriteAttributeString("hour", Util.IsCultureUS() ? o.Hour.FormatDateTm() : o.Hour.FormatDateTmUS());
                     w.WriteAttributeString("leadtime", leadtime.ToString());
                     w.WriteEndElement();
                 }

@@ -16,6 +16,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public string AmtDue;
         public Transaction Transaction;
 
+        public RouteModel() { }
         public static RouteModel ViewAction(string view)
         {
             return new RouteModel()
@@ -65,6 +66,16 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 Route = RouteType.Redirect,
                 View = @where,
                 RouteData = new RouteValueDictionary(d),
+            };
+        }
+
+        public static RouteModel Invalid(string where, string message)
+        {
+            return new RouteModel()
+            {
+                Route = RouteType.ValidationError,
+                View = @where,
+                Message = message
             };
         }
 

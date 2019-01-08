@@ -57,24 +57,24 @@ namespace CmsData
 		private int? _OrganizationId;
 		
    		
-   		private EntitySet< Contactee> _contactees;
+   		private EntitySet<Contactee> _contactees;
 		
-   		private EntitySet< Contactor> _contactsMakers;
+   		private EntitySet<Contactor> _contactsMakers;
 		
-   		private EntitySet< ContactExtra> _ContactExtras;
+   		private EntitySet<ContactExtra> _ContactExtras;
 		
-   		private EntitySet< Task> _TasksAssigned;
+   		private EntitySet<Task> _TasksAssigned;
 		
-   		private EntitySet< Task> _TasksCompleted;
+   		private EntitySet<Task> _TasksCompleted;
 		
     	
-		private EntityRef< Organization> _organization;
+		private EntityRef<Organization> _organization;
 		
-		private EntityRef< ContactType> _ContactType;
+		private EntityRef<ContactType> _ContactType;
 		
-		private EntityRef< Ministry> _Ministry;
+		private EntityRef<Ministry> _Ministry;
 		
-		private EntityRef< ContactReason> _ContactReason;
+		private EntityRef<ContactReason> _ContactReason;
 		
 	#endregion
 	
@@ -144,24 +144,24 @@ namespace CmsData
 		public Contact()
 		{
 			
-			this._contactees = new EntitySet< Contactee>(new Action< Contactee>(this.attach_contactees), new Action< Contactee>(this.detach_contactees)); 
+			this._contactees = new EntitySet<Contactee>(new Action< Contactee>(this.attach_contactees), new Action< Contactee>(this.detach_contactees)); 
 			
-			this._contactsMakers = new EntitySet< Contactor>(new Action< Contactor>(this.attach_contactsMakers), new Action< Contactor>(this.detach_contactsMakers)); 
+			this._contactsMakers = new EntitySet<Contactor>(new Action< Contactor>(this.attach_contactsMakers), new Action< Contactor>(this.detach_contactsMakers)); 
 			
-			this._ContactExtras = new EntitySet< ContactExtra>(new Action< ContactExtra>(this.attach_ContactExtras), new Action< ContactExtra>(this.detach_ContactExtras)); 
+			this._ContactExtras = new EntitySet<ContactExtra>(new Action< ContactExtra>(this.attach_ContactExtras), new Action< ContactExtra>(this.detach_ContactExtras)); 
 			
-			this._TasksAssigned = new EntitySet< Task>(new Action< Task>(this.attach_TasksAssigned), new Action< Task>(this.detach_TasksAssigned)); 
+			this._TasksAssigned = new EntitySet<Task>(new Action< Task>(this.attach_TasksAssigned), new Action< Task>(this.detach_TasksAssigned)); 
 			
-			this._TasksCompleted = new EntitySet< Task>(new Action< Task>(this.attach_TasksCompleted), new Action< Task>(this.detach_TasksCompleted)); 
+			this._TasksCompleted = new EntitySet<Task>(new Action< Task>(this.attach_TasksCompleted), new Action< Task>(this.detach_TasksCompleted)); 
 			
 			
-			this._organization = default(EntityRef< Organization>); 
+			this._organization = default(EntityRef<Organization>); 
 			
-			this._ContactType = default(EntityRef< ContactType>); 
+			this._ContactType = default(EntityRef<ContactType>); 
 			
-			this._Ministry = default(EntityRef< Ministry>); 
+			this._Ministry = default(EntityRef<Ministry>); 
 			
-			this._ContactReason = default(EntityRef< ContactReason>); 
+			this._ContactReason = default(EntityRef<ContactReason>); 
 			
 			OnCreated();
 		}
@@ -608,7 +608,7 @@ namespace CmsData
     #region Foreign Key Tables
    		
    		[Association(Name="contactees__contact", Storage="_contactees", OtherKey="ContactId")]
-   		public EntitySet< Contactee> contactees
+   		public EntitySet<Contactee> contactees
    		{
    		    get { return this._contactees; }
 
@@ -618,7 +618,7 @@ namespace CmsData
 
 		
    		[Association(Name="contactsMakers__contact", Storage="_contactsMakers", OtherKey="ContactId")]
-   		public EntitySet< Contactor> contactsMakers
+   		public EntitySet<Contactor> contactsMakers
    		{
    		    get { return this._contactsMakers; }
 
@@ -628,7 +628,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_ContactExtra_Contact", Storage="_ContactExtras", OtherKey="ContactId")]
-   		public EntitySet< ContactExtra> ContactExtras
+   		public EntitySet<ContactExtra> ContactExtras
    		{
    		    get { return this._ContactExtras; }
 
@@ -638,7 +638,7 @@ namespace CmsData
 
 		
    		[Association(Name="TasksAssigned__SourceContact", Storage="_TasksAssigned", OtherKey="SourceContactId")]
-   		public EntitySet< Task> TasksAssigned
+   		public EntitySet<Task> TasksAssigned
    		{
    		    get { return this._TasksAssigned; }
 
@@ -648,7 +648,7 @@ namespace CmsData
 
 		
    		[Association(Name="TasksCompleted__CompletedContact", Storage="_TasksCompleted", OtherKey="CompletedContactId")]
-   		public EntitySet< Task> TasksCompleted
+   		public EntitySet<Task> TasksCompleted
    		{
    		    get { return this._TasksCompleted; }
 

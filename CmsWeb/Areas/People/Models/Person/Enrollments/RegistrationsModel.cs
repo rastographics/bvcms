@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using CmsData;
+using CmsData.Codes;
+using CmsWeb.Code;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using CmsData;
-using CmsData.Codes;
-using CmsWeb.Code;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Models
@@ -33,7 +33,10 @@ namespace CmsWeb.Areas.People.Models
             get
             {
                 if (person == null && PeopleId.HasValue)
+                {
                     person = DbUtil.Db.LoadPersonById(PeopleId.Value);
+                }
+
                 return person;
             }
         }
@@ -105,7 +108,7 @@ namespace CmsWeb.Areas.People.Models
                     select new GoerItem
                     {
                         Id = m.OrganizationId,
-                        Trip = m.Organization.OrganizationName,
+                        Trip = m.Organization?.OrganizationName,
                         Cost = ts.TripCost ?? 0,
                         Paid = ts.Raised ?? 0
                     }).ToList();

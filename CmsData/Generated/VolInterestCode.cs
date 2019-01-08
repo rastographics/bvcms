@@ -27,7 +27,7 @@ namespace CmsData
 		private string _Org;
 		
    		
-   		private EntitySet< VolInterestInterestCode> _VolInterestInterestCodes;
+   		private EntitySet<VolInterestInterestCode> _VolInterestInterestCodes;
 		
     	
 	#endregion
@@ -53,7 +53,7 @@ namespace CmsData
 		public VolInterestCode()
 		{
 			
-			this._VolInterestInterestCodes = new EntitySet< VolInterestInterestCode>(new Action< VolInterestInterestCode>(this.attach_VolInterestInterestCodes), new Action< VolInterestInterestCode>(this.detach_VolInterestInterestCodes)); 
+			this._VolInterestInterestCodes = new EntitySet<VolInterestInterestCode>(new Action< VolInterestInterestCode>(this.attach_VolInterestInterestCodes), new Action< VolInterestInterestCode>(this.detach_VolInterestInterestCodes)); 
 			
 			
 			OnCreated();
@@ -155,7 +155,7 @@ namespace CmsData
     #region Foreign Key Tables
    		
    		[Association(Name="FK_VolInterestInterestCodes_VolInterestCodes", Storage="_VolInterestInterestCodes", OtherKey="InterestCodeId")]
-   		public EntitySet< VolInterestInterestCode> VolInterestInterestCodes
+   		public EntitySet<VolInterestInterestCode> VolInterestInterestCodes
    		{
    		    get { return this._VolInterestInterestCodes; }
 

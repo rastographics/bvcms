@@ -102,7 +102,7 @@
 
             @if (Model.ShowContactExtraFeature)
             {
-                @:WireUpExtraValues(@Model.ContactId);
+                @:WireUpExtraValues(@Model.ContactId, @Html.Raw(Json.Encode(Model.Locations)));
             }
         });
     </script>

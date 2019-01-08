@@ -1,7 +1,7 @@
+using CmsData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using CmsData;
 
 namespace CmsWeb.Areas.People.Models
 {
@@ -22,7 +22,10 @@ namespace CmsWeb.Areas.People.Models
             get
             {
                 if (IsDocument == true)
+                {
                     return "/Image/" + Docid;
+                }
+
                 return "/Image/" + LargeId;
             }
         }
@@ -32,11 +35,14 @@ namespace CmsWeb.Areas.People.Models
             get
             {
                 if (IsDocument == true)
+                {
                     return "/Content/images/adobe.png";
+                }
+
                 return "/Image/" + ThumbId;
             }
         }
-
+        public MemberDocModel() { }
         public static IEnumerable<MemberDocModel> DocForms(int id)
         {
             return from f in DbUtil.Db.MemberDocForms

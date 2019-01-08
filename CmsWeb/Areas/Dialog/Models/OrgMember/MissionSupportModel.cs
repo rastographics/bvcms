@@ -1,12 +1,11 @@
+using CmsData;
+using CmsData.Codes;
+using CmsWeb.Areas.OnlineReg.Models;
+using CmsWeb.Code;
 using System;
 using System.Linq;
 using System.Web.Mvc;
-using CmsData;
-using CmsData.Codes;
-using CmsData.Registration;
-using CmsWeb.Code;
 using UtilityExtensions;
-using CmsWeb.Areas.OnlineReg.Models;
 
 namespace CmsWeb.Areas.Dialog.Models
 {
@@ -14,19 +13,22 @@ namespace CmsWeb.Areas.Dialog.Models
     {
         private int? orgId;
         private int? peopleId;
+        public MissionSupportModel() { }
         private void Populate()
         {
             var i = (from mm in DbUtil.Db.OrganizationMembers
                      where mm.OrganizationId == OrgId && mm.PeopleId == PeopleId
                      select new
-                         {
-                             mm.Person.Name,
-                             mm.Organization.OrganizationName,
-                         }).Single();
+                     {
+                         mm.Person.Name,
+                         mm.Organization.OrganizationName,
+                     }).Single();
             Name = i.Name;
             OrgName = i.OrganizationName;
             if (Goer == null)
+            {
                 Goer = new CodeInfo(0, GoerList());
+            }
         }
 
         //public OrgMemberModel OrgMemberModel { get { return new OrgMemberModel() { PeopleId = PeopleId, OrgId = OrgId };} }
@@ -42,7 +44,9 @@ namespace CmsWeb.Areas.Dialog.Models
             {
                 orgId = value;
                 if (peopleId.HasValue)
+                {
                     Populate();
+                }
             }
         }
         public int? PeopleId
@@ -52,7 +56,9 @@ namespace CmsWeb.Areas.Dialog.Models
             {
                 peopleId = value;
                 if (orgId.HasValue)
+                {
                     Populate();
+                }
             }
         }
         public string Name { get; set; }
@@ -64,23 +70,26 @@ namespace CmsWeb.Areas.Dialog.Models
         public SelectList GoerList()
         {
             var q = from om in DbUtil.Db.OrganizationMembers
-                where om.OrgMemMemTags.Any(mm => mm.MemberTag.Name == "Goer")
-                where om.OrganizationId == OrgId
-                orderby om.Person.Name2
-                select new CodeValueItem
-                {
-                    Id = om.PeopleId,
-                    Value = om.Person.Name2,
-                };
+                    where om.OrgMemMemTags.Any(mm => mm.MemberTag.Name == "Goer")
+                    where om.OrganizationId == OrgId
+                    orderby om.Person.Name2
+                    select new CodeValueItem
+                    {
+                        Id = om.PeopleId,
+                        Value = om.Person.Name2,
+                    };
             var list = q.ToList();
-            list.Insert(0, new CodeValueItem { Id=0, Value = "(please select a Goer)" });
+            list.Insert(0, new CodeValueItem { Id = 0, Value = "(please select a Goer)" });
             return list.ToSelect();
         }
 
         public string ToGoerName;
         internal void PostContribution()
         {
-            if (!(AmountGeneral > 0) && !(AmountGoer > 0)) return;
+            if (!(AmountGeneral > 0) && !(AmountGoer > 0))
+            {
+                return;
+            }
 
             var org = DbUtil.Db.LoadOrganizationById(OrgId);
             var notifyIds = DbUtil.Db.NotifyIds(org.GiftNotifyIds);
@@ -130,8 +139,11 @@ namespace CmsWeb.Areas.Dialog.Models
                 var c = person.PostUnattendedContribution(DbUtil.Db,
                     AmountGeneral ?? 0, fund,
                     $"SupportMissionTrip: org={OrgId}", typecode: BundleTypeCode.MissionTrip);
-                if(CheckNo.HasValue())
+                if (CheckNo.HasValue())
+                {
                     c.CheckNo = (CheckNo ?? "").Trim().Truncate(20);
+                }
+
                 DbUtil.LogActivity("OrgMem SupportMissionTrip", OrgId, PeopleId);
             }
             DbUtil.Db.SubmitChanges();

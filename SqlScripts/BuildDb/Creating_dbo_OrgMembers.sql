@@ -50,7 +50,7 @@ JOIN
 			dbo.FmtPhone(p.HomePhone) AS HomePhone,
 			dbo.FmtPhone(p.CellPhone) AS CellPhone,
 			dbo.FmtPhone(p.WorkPhone) AS WorkPhone,
-			CAST(p.Age AS nvarchar(3)) AS Age,
+			CAST(p.Age AS nvarchar(10)) AS Age,
 			CAST(dbo.Birthday(p.PeopleId) AS nvarchar(20)) AS Birthday,
 			CONVERT(nvarchar(12), p.JoinDate, 101) AS JoinDate,
 			ms.Description AS MemberStatus,
@@ -88,6 +88,7 @@ PRINT @PivotTableSQL
 EXECUTE(@PivotTableSQL)
 
 END
+
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

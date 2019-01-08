@@ -24,10 +24,10 @@ namespace <%=Db.Service.GeneratedNamespace %>
 			}
 		%>
    		<%foreach (Relationship rel in tbl.ForeignKeyTables) { %>
-   		private EntitySet< <%=rel.ClassNameMany%>> _<%=rel.PropertyNameMany%>;
+   		private EntitySet<<%=rel.ClassNameMany%>> _<%=rel.PropertyNameMany%>;
 		<% } %>
     	<%foreach (Relationship rel in tbl.ForeignKeys) { %>
-		private EntityRef< <%=rel.ClassNameOne%>> _<%=rel.PropertyNameOne%>;
+		private EntityRef<<%=rel.ClassNameOne%>> _<%=rel.PropertyNameOne%>;
 		<% } %>
 	#endregion
 	
@@ -49,10 +49,10 @@ namespace <%=Db.Service.GeneratedNamespace %>
 		public <%=tbl.ClassName%>()
 		{
 			<%foreach (Relationship rel in tbl.ForeignKeyTables) { %>
-			this._<%=rel.PropertyNameMany%> = new EntitySet< <%=rel.ClassNameMany%>>(new Action< <%=rel.ClassNameMany%>>(this.attach_<%=rel.PropertyNameMany%>), new Action< <%=rel.ClassNameMany%>>(this.detach_<%=rel.PropertyNameMany%>)); 
+			this._<%=rel.PropertyNameMany%> = new EntitySet<<%=rel.ClassNameMany%>>(new Action< <%=rel.ClassNameMany%>>(this.attach_<%=rel.PropertyNameMany%>), new Action< <%=rel.ClassNameMany%>>(this.detach_<%=rel.PropertyNameMany%>)); 
 			<% } %>
 			<%foreach (Relationship rel in tbl.ForeignKeys) { %>
-			this._<%=rel.PropertyNameOne%> = default(EntityRef< <%=rel.ClassNameOne%>>); 
+			this._<%=rel.PropertyNameOne%> = default(EntityRef<<%=rel.ClassNameOne%>>); 
 			<% } %>
 			OnCreated();
 		}
@@ -62,7 +62,7 @@ namespace <%=Db.Service.GeneratedNamespace %>
             foreach (TableColumn col in tbl.Columns)
 			{
         %>
-		[Column(Name="<%=col.ColumnName%>", UpdateCheck=UpdateCheck.Never, Storage="_<%=col.Name%>"<%=col.FullDbType%>)]<% if (col.IsForeignKey) { %>
+		[Column(Name="<%=col.ColumnName%>", UpdateCheck=UpdateCheck.<%=col.UpdateCheck%>, Storage="_<%=col.Name%>"<%=col.FullDbType%>)]<% if (col.IsForeignKey) { %>
 		[IsForeignKey]<% } %>
 		public <%=col.VarType%> <%=col.Name%>
 		{
@@ -91,7 +91,7 @@ namespace <%=Db.Service.GeneratedNamespace %>
     #region Foreign Key Tables
    		<%foreach (Relationship rel in tbl.ForeignKeyTables) { %>
    		[Association(Name="<%=rel.Name%>", Storage="_<%=rel.PropertyNameMany%>", OtherKey="<%=rel.ForeignKey%>")]
-   		public EntitySet< <%=rel.ClassNameMany%>> <%=rel.PropertyNameMany%>
+   		public EntitySet<<%=rel.ClassNameMany%>> <%=rel.PropertyNameMany%>
    		{
    		    get { return this._<%=rel.PropertyNameMany%>; }
 			set	{ this._<%=rel.PropertyNameMany%>.Assign(value); }

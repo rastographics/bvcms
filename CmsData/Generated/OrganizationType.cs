@@ -27,11 +27,11 @@ namespace CmsData
 		private bool? _Hardwired;
 		
    		
-   		private EntitySet< Organization> _Organizations;
+   		private EntitySet<Organization> _Organizations;
 		
-   		private EntitySet< Resource> _Resources;
+   		private EntitySet<Resource> _Resources;
 		
-   		private EntitySet< ResourceOrganizationType> _ResourceOrganizationTypes;
+   		private EntitySet<ResourceOrganizationType> _ResourceOrganizationTypes;
 		
     	
 	#endregion
@@ -57,11 +57,11 @@ namespace CmsData
 		public OrganizationType()
 		{
 			
-			this._Organizations = new EntitySet< Organization>(new Action< Organization>(this.attach_Organizations), new Action< Organization>(this.detach_Organizations)); 
+			this._Organizations = new EntitySet<Organization>(new Action< Organization>(this.attach_Organizations), new Action< Organization>(this.detach_Organizations)); 
 			
-			this._Resources = new EntitySet< Resource>(new Action< Resource>(this.attach_Resources), new Action< Resource>(this.detach_Resources)); 
+			this._Resources = new EntitySet<Resource>(new Action< Resource>(this.attach_Resources), new Action< Resource>(this.detach_Resources)); 
 			
-			this._ResourceOrganizationTypes = new EntitySet< ResourceOrganizationType>(new Action< ResourceOrganizationType>(this.attach_ResourceOrganizationTypes), new Action< ResourceOrganizationType>(this.detach_ResourceOrganizationTypes)); 
+			this._ResourceOrganizationTypes = new EntitySet<ResourceOrganizationType>(new Action< ResourceOrganizationType>(this.attach_ResourceOrganizationTypes), new Action< ResourceOrganizationType>(this.detach_ResourceOrganizationTypes)); 
 			
 			
 			OnCreated();
@@ -163,7 +163,7 @@ namespace CmsData
     #region Foreign Key Tables
    		
    		[Association(Name="FK_Organizations_OrganizationType", Storage="_Organizations", OtherKey="OrganizationTypeId")]
-   		public EntitySet< Organization> Organizations
+   		public EntitySet<Organization> Organizations
    		{
    		    get { return this._Organizations; }
 
@@ -173,7 +173,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_Resource_OrganizationType", Storage="_Resources", OtherKey="OrganizationTypeId")]
-   		public EntitySet< Resource> Resources
+   		public EntitySet<Resource> Resources
    		{
    		    get { return this._Resources; }
 
@@ -183,7 +183,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_ResourceOrganizationType_OrganizationType", Storage="_ResourceOrganizationTypes", OtherKey="OrganizationTypeId")]
-   		public EntitySet< ResourceOrganizationType> ResourceOrganizationTypes
+   		public EntitySet<ResourceOrganizationType> ResourceOrganizationTypes
    		{
    		    get { return this._ResourceOrganizationTypes; }
 

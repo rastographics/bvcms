@@ -1,0 +1,180 @@
+﻿@model List<CmsData.LineChartDTO>
+@{
+    Layout = null;
+}
+@ViewExtensions2.jQuery()
+@ViewExtensions2.jQueryUI()
+
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+        var chartData;
+        var chartData2;
+        // get the chart data from the server.
+        google.load("visualization", "1", { packages: ["corechart"] });
+        $(document).ready(function () {
+            //debugger;
+            var model = '@Html.Raw(Json.Encode(Model))';
+            chartData = JSON.parse(model);
+            //Creates a data table for storing the map data .chart api access this data for displaying            
+            var data2 = new google.visualization.DataTable();
+            //Adding columns to data table to insert the chart data
+            data2.addColumn('string', 'Name');
+            data2.addColumn('number', chartData[0].CurYear);
+            data2.addColumn('number', chartData[0].PreYear);
+            var getTotalfund = 0;
+            //bind the data to the data table using for loop
+            for (var i = 0; i < chartData.length; i++) {
+                data2.addRow([chartData[i].Name, chartData[i].Count, chartData[i].Count2]);
+                getTotalfund += chartData[i].Count;
+            }
+            // Instantiate and draw our chart, passing in some options
+            var chartwidth = $('#Fund_chart_display').width()-150;
+            var chartheight = $('#Fund_chart_display').height() - 100;
+
+            var options = {
+                title: 'MONTHLY GIVING ANALYSIS',
+                legend: 'top',
+                vAxis: {
+                    gridlines: { color: '#e3e3e3', count: 6 },                   
+                    textStyle: { color: 'grey' },
+                    format: 'currency'
+                },
+                hAxis: {
+                    gridlines: { color: '#e3e3e3', count: 12 },
+                    textStyle: { color: '#3F5F9F' }
+                },
+                lineWidth: 3,
+                colors: ['#002266', '#ffe066'],
+                chartArea: {
+                    width: chartwidth,
+                    left: 100,
+                    top: 80,
+                    bottom: 25,
+                    height: chartheight,
+                    backgroundColor: { stroke: '#e3e3e3', strokeWidth: 8 }
+        },
+                pieSliceText: 'label',
+                slices: {  4: {offset: 0.2},
+                    12: {offset: 0.3},
+                    14: {offset: 0.4},
+                    15: {offset: 0.5}
+                }
+            };
+
+            var chart = new google.visualization.LineChart(document.getElementById('Fund_chart_display'));
+            chart.draw(data2, options);
+
+            var data3 = new google.visualization.DataTable();
+            //Adding columns to data table to insert the chart data
+            data3.addColumn('string', 'Name');
+            data3.addColumn('number', chartData[0].CurYear);
+            data3.addColumn({ type: 'string', role: 'annotation' });
+            //bind the data to the data table using for loop
+            for (var i = 0; i < chartData.length; i++) {
+                var percentChange = ((chartData[i].Count / chartData[i].Count2) - 1);
+                var strPercentage = percentChange.toFixed(2).toString();
+                data3.addRow([chartData[i].Name, percentChange, strPercentage]);
+            }
+            chartwidth = $('#Fund_chart_display2').width() - 150;
+            chartheight = $('#Fund_chart_display2').height();
+            var options2 = {
+                title: '',
+                legend: 'none',               
+                annotations: {
+                    alwaysOutside: true,
+                    textStyle: {
+                        fontSize: 14,
+                        color: '#000',
+                        auraColor: 'none'
+            }},
+                vAxis: {
+                    title: 'Change',
+                    gridlines: { color: '#e3e3e3', count: 6 },
+                    textStyle: {
+                        color: 'grey'
+                    },
+                    format: "#.#'%'"
+                },
+                hAxis: {
+                    gridlines: { color: '#e3e3e3', count: 12 },
+                    textStyle: { color: '#3F5F9F' }
+                },
+                lineWidth: 3,
+                colors: ['#006600'],
+                chartArea: {
+                    backgroundColor: { stroke: '#e3e3e3', strokeWidth: 1 },
+                    width: chartwidth,
+                    left: 100,
+                    top: 10,
+                    height: 150                  
+                }
+
+            };
+            var chart2 = new google.visualization.ColumnChart(document.getElementById('Fund_chart_display2'));
+            chart2.draw(data3, options2);
+
+            var formatter = new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                minimumFractionDigits: 2
+            });
+
+            var getTotalFund = document.getElementById('Total_Fund');
+            getTotalFund.innerHTML = formatter.format(getTotalfund);
+
+            var getTotalFund2 = document.getElementById('Total_Fund2');
+            getTotalFund2.innerHTML = getTotalfund;
+
+        });
+    </script>
+
+
+@*<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript">
+
+    var chartData;
+    // get the chart data from the server.
+    google.load("visualization", "1", {packages:["corechart"]});
+    $(document).ready(function () {
+        $.ajax({
+            url: "/Figures/Figures/GetMapData/",
+            data: "{}",
+            dataType: "json",
+            type: "POST",
+            contentType: "application/json; chartset=utf-8",
+            success: function (data) {
+                debugger;
+                chartData = data;
+                // Callback that creates and populates a data table,
+                // instantiates the pie chart, passes in the data and draws it.
+                //Creates a data table for storing the map data .chart api access this data for displaying
+                var data2 = new google.visualization.DataTable();
+                //Adding columns to data table to insert the chart data
+                data2.addColumn('string', 'Name');
+                data2.addColumn('number', 'Count');
+                //bind the data to the data table using for loop
+                for (var i = 0; i < chartData.length; i++) {
+                    data2.addRow([chartData[i].Name, chartData[i].Count]);
+                }
+                // Instantiate and draw our chart, passing in some options
+
+                var options = {
+                    title: 'Sunday Morning Worship',
+                    legend: 'none',
+                    pieSliceText: 'label',
+                    slices: {  4: {offset: 0.2},
+                        12: {offset: 0.3},
+                        14: {offset: 0.4},
+                        15: {offset: 0.5}
+                    }
+                };
+                var chart = new google.visualization.LineChart(document.getElementById('chart_display'));
+                chart.draw(data2, options);
+            },
+            // ajax error display
+            error: function () {
+                alert("Error loading data! Please try again.");
+            }
+        });
+    });
+</script>*@

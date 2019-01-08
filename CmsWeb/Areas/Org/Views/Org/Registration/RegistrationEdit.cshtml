@@ -98,10 +98,14 @@
         <div class="col-sm-4 col-md-4">
           @Html.EditorFor(m => m.AddToSmallGroupScript)
         </div>
+        <div class="col-sm-4 col-md-4">
+          @Html.EditorFor(m => m.OnEnrollScript)
+        </div>
       }
       else
       {
         <text>@Html.HiddenFor(m => m.AddToSmallGroupScript)</text>
+        <text>@Html.HiddenFor(m => m.OnEnrollScript)</text>
       }
 
       <div class="col-sm-4 col-md-4">

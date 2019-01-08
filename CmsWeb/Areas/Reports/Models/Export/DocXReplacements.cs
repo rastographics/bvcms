@@ -1,14 +1,11 @@
+using CmsData;
 using System;
-using System.Data;
-using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.ServiceModel.Channels;
 using System.Web.Mvc;
-using Novacode;
-using CmsData;
 using UtilityExtensions;
+using Xceed.Words.NET;
 
 namespace CmsWeb.Models
 {
@@ -41,7 +38,10 @@ namespace CmsWeb.Models
                 ? DbUtil.Db.PeopleQuery2(peopleId)
                 : DbUtil.Db.PeopleQuery(guid);
             if (!q.Any())
+            {
                 throw new Exception("no people in query");
+            }
+
             var finaldoc = replacements.DocXReplacements(q.First());
             foreach (var p in q.Skip(1))
             {
@@ -49,10 +49,15 @@ namespace CmsWeb.Models
                 var doc = replacements.DocXReplacements(p);
                 finaldoc.InsertDocument(doc);
             }
-            context.HttpContext.Response.Clear();
-            context.HttpContext.Response.ContentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-            context.HttpContext.Response.AddHeader("Content-Disposition", $"attachment;filename={filename}-{DateTime.Now.ToSortableDateTime()}.docx");
-            finaldoc.SaveAs(context.HttpContext.Response.OutputStream);
+            var response = context.HttpContext.Response;
+            response.Clear();
+            response.ContentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+            response.AddHeader("content-disposition", $"attachment;filename={filename}-{DateTime.Now.ToSortableDateTime()}.docx");
+
+            ms = new MemoryStream();
+            finaldoc.SaveAs(ms);
+            ms.WriteTo(response.OutputStream);
+            response.End();
         }
     }
 }

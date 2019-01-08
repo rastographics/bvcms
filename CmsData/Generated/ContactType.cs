@@ -27,7 +27,7 @@ namespace CmsData
 		private bool? _Hardwired;
 		
    		
-   		private EntitySet< Contact> _Contacts;
+   		private EntitySet<Contact> _Contacts;
 		
     	
 	#endregion
@@ -53,7 +53,7 @@ namespace CmsData
 		public ContactType()
 		{
 			
-			this._Contacts = new EntitySet< Contact>(new Action< Contact>(this.attach_Contacts), new Action< Contact>(this.detach_Contacts)); 
+			this._Contacts = new EntitySet<Contact>(new Action< Contact>(this.attach_Contacts), new Action< Contact>(this.detach_Contacts)); 
 			
 			
 			OnCreated();
@@ -155,7 +155,7 @@ namespace CmsData
     #region Foreign Key Tables
    		
    		[Association(Name="FK_Contacts_ContactTypes", Storage="_Contacts", OtherKey="ContactTypeId")]
-   		public EntitySet< Contact> Contacts
+   		public EntitySet<Contact> Contacts
    		{
    		    get { return this._Contacts; }
 

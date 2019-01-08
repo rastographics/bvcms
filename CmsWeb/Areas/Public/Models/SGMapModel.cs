@@ -16,6 +16,8 @@ namespace CmsWeb.Models
     {
         public StringBuilder sb = new StringBuilder();
 
+        public SGMapModel() { }
+
         public SGMapModel(int? id)
         {
             divid = id;
@@ -121,7 +123,7 @@ namespace CmsWeb.Models
 
             var addlist = new List<GeoCode>();
 
-            foreach (var i in qlist.Where(ii => ii.gc == null))
+            foreach (var i in qlist)
             {
                 i.gc = addlist.SingleOrDefault(g => g.Address == i.addr)
                     ?? DbUtil.Db.GeoCodes.FirstOrDefault(g => g.Address == i.addr);
@@ -130,7 +132,13 @@ namespace CmsWeb.Models
                     i.gc = GetGeocode(i.addr);
                     addlist.Add(i.gc);
                 }
-            }
+                else if(i.gc.Latitude == 0)
+                {
+                    GeoCode gcMod = GetGeocode(i.addr);
+                    i.gc.Latitude = gcMod.Latitude;
+                    i.gc.Longitude = gcMod.Longitude;
+                }               
+            }            
             if (addlist.Count > 0)
                 DbUtil.Db.GeoCodes.InsertAllOnSubmit(addlist);
             DbUtil.Db.SubmitChanges();
@@ -238,16 +246,24 @@ Meeting Time: [SGF:Day] at [SGF:Time]<br />
 
         private GeoCode GetGeocode(string address)
         {
-            var wc = new WebClient();
-            var uaddress = HttpUtility.UrlEncode(address);
-            var uri = new Uri($"http://maps.googleapis.com/maps/api/geocode/xml?address={uaddress}&sensor=false");
-            var xml = wc.DownloadString(uri);
-            var xdoc = XDocument.Parse(xml);
-            var status = xdoc.Descendants("status").Single().Value;
-            if (status == "ZERO_RESULTS")
-                return new GeoCode {Address = address};
+            string status = "";
             try
             {
+                string ApiKey = DbUtil.Db.GetSetting("GoogleGeocodeAPIKey", "");
+                if (ApiKey == "")
+                {
+                    throw new Exception("No Geocode API Key provided");
+                }
+                var wc = new WebClient();
+                var uaddress = HttpUtility.UrlEncode(address);
+                var uri = new Uri($"https://maps.googleapis.com/maps/api/geocode/xml?address={uaddress}&sensor=false&key="+ApiKey);
+                var xml = wc.DownloadString(uri);
+                var xdoc = XDocument.Parse(xml);
+                status = xdoc.Descendants("status").Single().Value;
+                if (status == "ZERO_RESULTS")
+                {
+                    return new GeoCode { Address = address };
+                }
                 var loc = xdoc.Document.Descendants("location");
                 var lat = Convert.ToDouble(loc.Descendants("lat").First().Value);
                 var lng = Convert.ToDouble(loc.Descendants("lng").First().Value);

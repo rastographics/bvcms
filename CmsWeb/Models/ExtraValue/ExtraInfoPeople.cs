@@ -1,10 +1,9 @@
-﻿using System;
+﻿using CmsData;
+using CmsData.ExtraValue;
+using CmsWeb.Code;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using CmsData;
-using CmsData.ExtraValue;
-using CmsWeb.Code;
 
 namespace CmsWeb.Models.ExtraValues
 {
@@ -15,7 +14,10 @@ namespace CmsWeb.Models.ExtraValues
             get
             {
                 if (Type == "Bit" || Type == "Code")
+                {
                     return $"/ExtraValue/QueryCodes?field={HttpUtility.UrlEncode(Field)}&value={HttpUtility.UrlEncode(Value)}";
+                }
+
                 return $"/ExtraValue/QueryData?field={HttpUtility.UrlEncode(Field)}&type={Type}";
             }
         }
@@ -96,7 +98,10 @@ namespace CmsWeb.Models.ExtraValues
         {
             var ev = DbUtil.Db.PeopleExtras.FirstOrDefault(ee => ee.Field == field);
             if (ev == null)
+            {
                 return "error: no field";
+            }
+
             switch (type.ToLower())
             {
                 case "code":
@@ -133,7 +138,7 @@ SET Field = {0}
 FROM dbo.PeopleExtra e
 WHERE e.Field = {1}
 AND NOT EXISTS(SELECT NULL FROM dbo.PeopleExtra ee WHERE ee.Field = {0} AND ee.PeopleId = e.PeopleId)
-", newname, field);
+", newname.Trim(), field);
             DbUtil.LogActivity($"EV RenameAll {Field}>{newname}");
         }
     }

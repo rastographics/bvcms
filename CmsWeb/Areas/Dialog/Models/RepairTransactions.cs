@@ -1,7 +1,7 @@
-﻿using System;
+﻿using CmsData;
+using System;
 using System.Linq;
 using System.Web.Hosting;
-using CmsData;
 
 namespace CmsWeb.Areas.Dialog.Models
 {
@@ -42,6 +42,6 @@ namespace CmsWeb.Areas.Dialog.Models
             var lop = FetchLongRunningOperation(db, Op, model.QueryId);
             lop.Completed = DateTime.Now;
             db.SubmitChanges();
-		}
+        }
     }
 }

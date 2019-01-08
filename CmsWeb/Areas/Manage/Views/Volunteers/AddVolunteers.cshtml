@@ -1,0 +1,185 @@
+﻿@model CmsWeb.Areas.Manage.Models.VolunteerCommitmentsModel
+@using System.Linq
+@using UtilityExtensions
+@Html.Hidden("OrgId", Model.OrgId)
+@Html.Hidden("SortByWeek", Model.SortByWeek)
+@Html.Hidden("Week", TempData["selectedWeek"])
+@Html.Hidden("Time", TempData["selectedTime"])
+@{
+    var isChecked = "checked";
+    var isCheckedWeek = "";
+    if ((bool)TempData["isWeek"])
+    {
+        isCheckedWeek = "checked";
+        isChecked = "";
+    }
+}
+<div class="modal-dialog" id="detailsModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>            
+            <h4 style="display:inline-block"><strong>All Volunteers</strong></h4> 
+        </div>
+        <div class="modal-body" style="display: inline-block; width: 100%;overflow-y: auto; max-height: 400px">
+            <div align="center">
+                <input type="radio" name="target" @isCheckedWeek value="week"> Week @TempData["selectedWeek"] &nbsp; <input type="radio" name="target" @isChecked value="meeting"> Meeting - @TempData["selectedTime"] &nbsp;<br/>
+            </div>
+            <br/>
+            @if (Model.IsLeader)
+            {
+            <p align="center">
+                <strong>Sub-Group Filters:</strong>&nbsp;&nbsp;@Html.DropDownList("sg1", Model.SmallGroups(), new { @class = "smallgroup", id = "sg1" })&nbsp;&nbsp;@Html.DropDownList("sg2", Model.SmallGroups(), new { @class = "smallgroup", id = "sg2" })
+            </p>
+            var vlist = Model.Volunteers().ToList();
+
+                <div class="volunteers">
+                    @if (vlist.Any(vv => vv.Conflicts == true))
+                    {
+                        <div class="checkbox" source="conflicts">
+                            <label style="font-weight: bold; font-size: larger;text-decoration-line: underline"><input type="checkbox" id="checkedAllConflicts">With Conflicts</label>         
+                        @foreach (var v in vlist.Where(vv => vv.Conflicts == true).OrderBy(vv => vv.Name))
+                        {
+                            <br />
+                            <label><input type="checkbox" class="checkSingleConflicts" source="person" pid="@v.PeopleId" value="">@v.Name</label>                                      
+                        }
+                        </div>
+                    }
+                    <div style="float: left; width: 50%">
+                        <div class="checkbox" source="commits">
+                            <label style="font-weight: bold; font-size: larger;text-decoration-line: underline"><input type="checkbox" id="checkedAllCommits">With Commitments</label> 
+                            @foreach (var v in vlist.Where(vv => vv.Commits == true && vv.Conflicts != true).OrderBy(vv => vv.Name))
+                            {<br />
+                                <label><input type="checkbox" class="checkSingleCommits" source="person" pid="@v.PeopleId" value="">@v.Name</label>                                
+                            }
+                        </div>
+                    </div>
+                    <div style="float: left; width: 50%">
+                        <div class="checkbox" source="nocommits">
+                            <label style="font-weight: bold; font-size: larger;text-decoration-line: underline"><input type="checkbox" id="checkedAllNoCommits">With No Commitments</label>                        
+                            @foreach (var v in vlist.Where(vv => vv.Commits != true).OrderBy(vv => vv.Name))
+                            {   <br />
+                                <label><input type="checkbox" class="checkSingleNoCommits" source="person" pid="@v.PeopleId" value="">@v.Name</label>                                
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="modal-footer">
+            <div float="right" style="display: inline-block;width: 60%;text-align: right"><a href="#" class="btn btn-default" data-dismiss="modal">Close</a>&nbsp;&nbsp;<input type="button" id="addVolunteer" class="btn btn-primary" value="Add"></div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">    
+        $('#sg1, #sg2').change(function() {         
+            var isWeek = false;
+            if ($('input[type="radio"][name="target"]:checked').val() === 'week') {
+                isWeek = true;
+            };
+            $.post('/Volunteers/AddVolunteers/' + $('#OrgId').val(),
+                    {
+                        week: $('#Week').val(),
+                        time: $('#Time').val(),
+                        sg1: $('#sg1').val(),
+                        sg2: $('#sg2').val(),
+                        isWeek : isWeek
+                    })
+                .done(function(result) {
+                    $('#detailsModal').html(result).modal('show');
+                });
+        });
+
+
+        $('#addVolunteer').on('click',
+            function() {
+                var list = [];
+                $('input:checked').each(function() {
+                    if (typeof $(this).attr('pid') != 'undefined') {
+                        list.push({
+                            source: $(this).attr('source'),
+                            pid: $(this).attr('pid'),
+                            mid: $(this).attr('mid')
+                        });
+                    }
+                });
+
+                if (list.length === 0)
+                    return;
+                var $info = {
+                    id: $('#OrgId').val(),
+                    sg1: $('#sg1').val(),
+                    sg2: $('#sg2').val(),
+                    target: $('input[type="radio"][name="target"]:checked').val(),
+                    week: $('#Week').val(),
+                    time: $('#Time').val(),
+                    SortByWeek: $('#SortByWeek').val(),
+                    list: list
+                };
+
+                $.ajax({
+                    url: '/Volunteers/ManageArea/',
+                    data: JSON.stringify($info),
+                    success: function(ret) {
+                        $('#detailsModal').modal('hide');
+                        window.location.reload(true);
+                    },
+                    error: function(ret) {
+                        swal('Error!', ret, 'error');
+                    },
+                    type: 'POST',
+                    contentType: 'application/json, charset=utf-8',
+                    dataType: 'html'
+                });
+            });
+
+        $('#checkedAllCommits').change(function () {
+            var checked = this.checked;            
+            $('.checkSingleCommits').each(function() {
+                    this.checked = checked;
+            });
+            
+        });
+
+        $('.checkSingleCommits').click(function() {
+            if ($(this).is(':checked')) {
+                var isAllChecked = 0;
+
+                $('.checkSingleCommits').each(function() {
+                    if (!this.checked)
+                        isAllChecked = 1;
+                });
+
+                if (isAllChecked === 0) {
+                    $('#checkedAllCommits').prop('checked', true);
+                }
+            } else {
+                $('#checkedAllCommits').prop('checked', false);
+            }
+        });
+
+        $('#checkedAllNoCommits').change(function () {
+            var checked = this.checked;
+            $('.checkSingleNoCommits').each(function() {
+                this.checked = checked;
+            });
+        });
+
+        $('.checkSingleNoCommits').click(function() {
+            if ($(this).is(':checked')) {
+                var isAllChecked = 0;
+
+                $('.checkSingleNoCommits').each(function() {
+                    if (!this.checked)
+                        isAllChecked = 1;
+                });
+
+                if (isAllChecked === 0) {
+                    $('#checkedAllNoCommits').prop('checked', true);
+                }
+            } else {
+                $('#checkedAllNoCommits').prop('checked', false);
+            }
+        });
+</script>
+

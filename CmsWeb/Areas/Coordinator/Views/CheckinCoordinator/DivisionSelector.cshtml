@@ -1,0 +1,24 @@
+﻿@model IEnumerable<CmsWeb.Areas.Coordinator.Controllers.CheckinDivisionDto>
+
+<div class="form-group">
+    <select class="form-control" id="checkin-division">
+        <option value="0" selected="selected">Show all divisions</option>
+
+        @foreach (var item in Model)
+        {
+            <option value="@item.DivisionId">@item.DivisionName</option>
+        }
+    </select>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $('#checkin-division').change(function () {
+            var selectedTimeslot = $('#checkin-timeslot option:selected').val();
+            var selectedProgram = $('#checkin-program option:selected').val();
+            var selectedDivision = this.value;
+            $('#OrganizationContainer').load('@Url.Action("OrganizationSelector")?selectedTimeslot=' + selectedTimeslot + '&programId=' + selectedProgram + '&divisionId=' + selectedDivision);
+            $("#DetailsContainer").empty();
+        });
+    });
+</script>

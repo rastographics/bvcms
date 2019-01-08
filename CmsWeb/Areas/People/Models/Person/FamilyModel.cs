@@ -1,15 +1,16 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using CmsData;
 using CmsData.View;
 using CmsWeb.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace CmsWeb.Areas.People.Models
 {
     public class FamilyModel : PagedTableModel<FamilyMember, FamilyMember>
     {
         public CmsData.Person Person;
+        public FamilyModel() { }
         public FamilyModel(int id)
         {
             Person = DbUtil.Db.LoadPersonById(id);
@@ -21,29 +22,32 @@ namespace CmsWeb.Areas.People.Models
             get
             {
                 if (family != null)
+                {
                     return family;
+                }
+
                 return family = DbUtil.Db.Families.SingleOrDefault(ff => ff.FamilyId == Person.FamilyId);
             }
         }
-        override public IQueryable<FamilyMember> DefineModelList()
+        public override IQueryable<FamilyMember> DefineModelList()
         {
             return from m in DbUtil.Db.FamilyMembers(Person.PeopleId)
-                select m;
+                   select m;
         }
 
-        override public IQueryable<FamilyMember> DefineModelSort(IQueryable<FamilyMember> q)
+        public override IQueryable<FamilyMember> DefineModelSort(IQueryable<FamilyMember> q)
         {
             var mindt = DateTime.Parse("1/1/1900");
             return from m in q
-                orderby m.DeceasedDate ?? mindt,
-                    m.PositionInFamilyId,
-                    m.PositionInFamilyId == 10 ? m.GenderId : 0,
-                    m.Age descending,
-                    m.Name
-                select m;
+                   orderby m.DeceasedDate ?? mindt,
+                       m.PositionInFamilyId,
+                       m.PositionInFamilyId == 10 ? m.GenderId : 0,
+                       m.Age descending,
+                       m.Name
+                   select m;
         }
 
-        override public IEnumerable<FamilyMember> DefineViewList(IQueryable<FamilyMember> q)
+        public override IEnumerable<FamilyMember> DefineViewList(IQueryable<FamilyMember> q)
         {
             return q;
         }

@@ -1,3 +1,4 @@
+using CmsData;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -5,7 +6,6 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Web.Hosting;
-using CmsData;
 
 namespace CmsWeb.Areas.Dialog.Models
 {
@@ -57,8 +57,8 @@ namespace CmsWeb.Areas.Dialog.Models
             LongRunningOperation lop = null;
             foreach (var pid in model.pids)
             {
-                db.Dispose();
-                db = DbUtil.Create(model.Host);
+                //db.Dispose();
+                //db = DbUtil.Create(model.Host);
                 Attend.RecordAttendance(db, pid, model.MeetingId, false);
                 lop = FetchLongRunningOperation(db, Op, model.QueryId);
                 Debug.Assert(lop != null, "r != null");

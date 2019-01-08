@@ -26,8 +26,10 @@ namespace CmsData
 		
 		private bool? _Hardwired;
 		
+		private bool _Active;
+		
    		
-   		private EntitySet< Organization> _Organizations;
+   		private EntitySet<Organization> _Organizations;
 		
     	
 	#endregion
@@ -49,11 +51,14 @@ namespace CmsData
 		partial void OnHardwiredChanging(bool? value);
 		partial void OnHardwiredChanged();
 		
+		partial void OnActiveChanging(bool value);
+		partial void OnActiveChanged();
+		
     #endregion
 		public OrganizationStatus()
 		{
 			
-			this._Organizations = new EntitySet< Organization>(new Action< Organization>(this.attach_Organizations), new Action< Organization>(this.detach_Organizations)); 
+			this._Organizations = new EntitySet<Organization>(new Action< Organization>(this.attach_Organizations), new Action< Organization>(this.detach_Organizations)); 
 			
 			
 			OnCreated();
@@ -150,12 +155,34 @@ namespace CmsData
 		}
 
 		
+		[Column(Name="Active", UpdateCheck=UpdateCheck.Never, Storage="_Active", DbType="bit NOT NULL")]
+		public bool Active
+		{
+			get { return this._Active; }
+
+			set
+			{
+				if (this._Active != value)
+				{
+				
+                    this.OnActiveChanging(value);
+					this.SendPropertyChanging();
+					this._Active = value;
+					this.SendPropertyChanged("Active");
+					this.OnActiveChanged();
+				}
+
+			}
+
+		}
+
+		
     #endregion
         
     #region Foreign Key Tables
    		
    		[Association(Name="FK_ORGANIZATIONS_TBL_OrganizationStatus", Storage="_Organizations", OtherKey="OrganizationStatusId")]
-   		public EntitySet< Organization> Organizations
+   		public EntitySet<Organization> Organizations
    		{
    		    get { return this._Organizations; }
 

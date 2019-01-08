@@ -37,12 +37,12 @@ namespace CmsData
 		private string _Title;
 		
    		
-   		private EntitySet< SMSItem> _SMSItems;
+   		private EntitySet<SMSItem> _SMSItems;
 		
     	
-		private EntityRef< Person> _Person;
+		private EntityRef<Person> _Person;
 		
-		private EntityRef< SMSGroup> _SMSGroup;
+		private EntityRef<SMSGroup> _SMSGroup;
 		
 	#endregion
 	
@@ -82,12 +82,12 @@ namespace CmsData
 		public SMSList()
 		{
 			
-			this._SMSItems = new EntitySet< SMSItem>(new Action< SMSItem>(this.attach_SMSItems), new Action< SMSItem>(this.detach_SMSItems)); 
+			this._SMSItems = new EntitySet<SMSItem>(new Action< SMSItem>(this.attach_SMSItems), new Action< SMSItem>(this.detach_SMSItems)); 
 			
 			
-			this._Person = default(EntityRef< Person>); 
+			this._Person = default(EntityRef<Person>); 
 			
-			this._SMSGroup = default(EntityRef< SMSGroup>); 
+			this._SMSGroup = default(EntityRef<SMSGroup>); 
 			
 			OnCreated();
 		}
@@ -213,7 +213,7 @@ namespace CmsData
 		}
 
 		
-		[Column(Name="Message", UpdateCheck=UpdateCheck.Never, Storage="_Message", DbType="nvarchar(160) NOT NULL")]
+		[Column(Name="Message", UpdateCheck=UpdateCheck.Never, Storage="_Message", DbType="nvarchar(1600) NOT NULL")]
 		public string Message
 		{
 			get { return this._Message; }
@@ -306,7 +306,7 @@ namespace CmsData
     #region Foreign Key Tables
    		
    		[Association(Name="FK_SMSItems_SMSList", Storage="_SMSItems", OtherKey="ListID")]
-   		public EntitySet< SMSItem> SMSItems
+   		public EntitySet<SMSItem> SMSItems
    		{
    		    get { return this._SMSItems; }
 

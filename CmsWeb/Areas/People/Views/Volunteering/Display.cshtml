@@ -7,64 +7,71 @@
     var mvrStatusCode = Model.Volunteer.MVRStatusId == null ? "Unknown" : Model.Volunteer.StatusMvr.Description;
 }
 <form class="ajax" method="post">
-  <div class="row hidden-xs">
-    <div class="col-sm-12">
-      <div class="pull-right">
-        <a href="/Volunteering/Edit/@Model.Volunteer.PeopleId" class="edit-basic btn btn-default ajax">
-          <i class="fa fa-pencil"></i> Edit
-        </a>
-      </div>
+    <div class="row hidden-xs">
+        @if (User.IsInRole("ApplicationReview"))
+        {
+            <div class="col-sm-12">
+                <div class="pull-right">
+                    <a href="/Volunteering/Edit/@Model.Volunteer.PeopleId" class="edit-basic btn btn-default ajax">
+                        <i class="fa fa-pencil"></i> Edit
+                    </a>
+                </div>
+            </div>
+        }
     </div>
-  </div>
-  <div class="row">
-    <div class="col-md-6 col-lg-4">
-      Approvals
-      @foreach (var ck in Model.ApprovalList)
-      {
-        <div class="checkbox">
-          <label>
-            <input type="checkbox" @(ck.Approved ? "checked='checked'" : "") disabled="disabled"/>
-            @ck.Description<br/>
-          </label>
+    <div class="row">
+        <div class="col-md-6 col-lg-4">
+            Approvals
+            @foreach (var ck in Model.ApprovalList)
+            {
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" @(ck.Approved ? "checked='checked'" : "") disabled="disabled" />
+                        @ck.Description<br />
+                    </label>
+                </div>
+            }
         </div>
-      }
+        <div class="col-md-6 col-lg-8">
+            <dl>
+                <dt>Comments</dt>
+                <dd style="height: 75px;">@Model.Volunteer.Comments</dd>
+            </dl>
+        </div>
     </div>
-    <div class="col-md-6 col-lg-8">
-      <dl>
-        <dt>Comments</dt>
-        <dd style="height: 75px;">@Model.Volunteer.Comments</dd>
-      </dl>
+    <div class="row">
+        <div class="col-md-6 col-lg-3">
+            <dl>
+                <dt>Last Background Check</dt>
+                <dd>@lastBackgroundCheck</dd>
+            </dl>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <dl>
+                <dt>Status Code</dt>
+                <dd>@statusCode</dd>
+            </dl>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <dl>
+                <dt>Last MVR Check</dt>
+                <dd>@lastMvrCheck</dd>
+            </dl>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <dl>
+                <dt>MVR Status Code</dt>
+                <dd>@mvrStatusCode</dd>
+            </dl>
+        </div>
     </div>
-  </div>
-  <div class="row">
-    <div class="col-md-6 col-lg-3">
-      <dl>
-        <dt>Last Background Check</dt>
-        <dd>@lastBackgroundCheck</dd>
-      </dl>
-    </div>
-    <div class="col-md-6 col-lg-3">
-      <dl>
-        <dt>Status Code</dt>
-        <dd>@statusCode</dd>
-      </dl>
-    </div>
-    <div class="col-md-6 col-lg-3">
-      <dl>
-        <dt>Last MVR Check</dt>
-        <dd>@lastMvrCheck</dd>
-      </dl>
-    </div>
-    <div class="col-md-6 col-lg-3">
-      <dl>
-        <dt>MVR Status Code</dt>
-        <dd>@mvrStatusCode</dd>
-      </dl>
-    </div>
-  </div>
-  <div class="visible-xs-block">
-    <a href="/Volunteering/Edit/@Model.Volunteer.PeopleId" class="edit-basic btn btn-block btn-default ajax">
-      <i class="fa fa-pencil"></i> Edit
-    </a>
-  </div>
+    @if (User.IsInRole("ApplicationReview"))
+    {
+        <div class="visible-xs-block">
+            <a href="/Volunteering/Edit/@Model.Volunteer.PeopleId" class="edit-basic btn btn-block btn-default ajax">
+                <i class="fa fa-pencil"></i> Edit
+            </a>
+        </div>
+    }
+
 </form>

@@ -17,6 +17,7 @@ namespace CmsData
     {
         internal Expression IsMemberOf()
         {
+            var tf = CodeIds == "1";
             Expression<Func<Person, bool>> pred = p =>
                     p.OrganizationMembers.Any(m =>
                     m.MemberTypeId != MemberTypeCode.InActive
@@ -27,12 +28,13 @@ namespace CmsData
                     && (ProgramInt == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == ProgramInt)))
                     );
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            if (!(op == CompareType.Equal && CodeIds == "1"))
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }
         internal Expression IsMemberOfDirectory()
         {
+            var tf = CodeIds == "1";
             Expression<Func<Person, bool>> pred = p =>
                     p.OrganizationMembers.Any(m =>
                     m.Organization.PublishDirectory > 0
@@ -49,7 +51,7 @@ namespace CmsData
                     && (ProgramInt == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == ProgramInt)))
                     );
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            if (!(op == CompareType.Equal && CodeIds == "1"))
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }
@@ -176,7 +178,7 @@ namespace CmsData
                     && m.MemberTypeId != MemberTypeCode.Prospect
                     && (m.Pending ?? false) == false);
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }
@@ -289,7 +291,7 @@ namespace CmsData
                     && (ProgramInt == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == ProgramInt)))
                     );
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }
@@ -304,7 +306,7 @@ namespace CmsData
                     && (ProgramInt == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == ProgramInt)))
                     );
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }
@@ -319,7 +321,7 @@ namespace CmsData
                     && (ProgramInt == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == ProgramInt)))
                     );
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }
@@ -336,12 +338,13 @@ namespace CmsData
         }
         internal Expression RecentIncompleteRegistrations()
         {
+            var tf = CodeIds == "1";
             var mindt = Util.Now.AddDays(-Days).Date;
             var q = db.HasIncompleteRegistrations(ProgramInt, DivisionInt, OrganizationInt, mindt, Util.Now);
             var tag = db.PopulateTemporaryTag(q.Select(pp => pp.PeopleId ?? 0));
             Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
             Expression expr = Expression.Invoke(pred, parm);
-            if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }
@@ -360,7 +363,7 @@ namespace CmsData
                         select ts.IndDue).FirstOrDefault() > 0);
 
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }

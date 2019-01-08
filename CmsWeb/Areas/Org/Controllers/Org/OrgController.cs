@@ -31,10 +31,10 @@ namespace CmsWeb.Areas.Org.Controllers
 
             if (Util2.OrgLeadersOnly)
             {
-                var oids = DbUtil.Db.GetLeaderOrgIds(Util.UserPeopleId);
+                var oids = CurrentDatabase.GetLeaderOrgIds(Util.UserPeopleId);
                 if (!oids.Contains(m.Org.OrganizationId))
                     return NotAllowed("You must be a leader of this organization", m.Org.OrganizationName);
-                var sgleader = DbUtil.Db.SmallGroupLeader(id, Util.UserPeopleId);
+                var sgleader = CurrentDatabase.SmallGroupLeader(id, Util.UserPeopleId);
                 if (sgleader.HasValue())
                     m.SgFilter = sgleader;
             }
@@ -63,13 +63,14 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost]
         public ActionResult Delete(int id)
         {
-            var org = DbUtil.Db.LoadOrganizationById(id);
+            var org = CurrentDatabase.LoadOrganizationById(id);
             if (org == null)
                 return Content("error, bad orgid");
             if (id == 1)
                 return Content("Cannot delete first org");
-            if (!org.PurgeOrg(DbUtil.Db))
-                return Content("error, not deleted");
+            var err = org.PurgeOrg(CurrentDatabase);
+            if(err.HasValue())
+                return Content($"error, {err}");
             DbUtil.LogActivity($"Delete Org {Session["ActiveOrganization"]}");
             Session.Remove("ActiveOrganization");
             return Content("ok");
@@ -84,12 +85,12 @@ namespace CmsWeb.Areas.Org.Controllers
             ViewBag.AddContact = "/Org/AddContact/" + m.QueryId;
             ViewBag.AddTasks = "/Org/AddTasks/" + m.QueryId;
             ViewBag.OrganizationContext = true;
-            if (!DbUtil.Db.Organizations.Any(oo => oo.ParentOrgId == m.Id))
+            if (!CurrentDatabase.Organizations.Any(oo => oo.ParentOrgId == m.Id))
                 return;
 
             ViewBag.ParentOrgContext = true;
-            ViewBag.leadersqid = DbUtil.Db.QueryLeadersUnderCurrentOrg().QueryId;
-            ViewBag.membersqid = DbUtil.Db.QueryMembersUnderCurrentOrg().QueryId;
+            ViewBag.leadersqid = CurrentDatabase.QueryLeadersUnderCurrentOrg().QueryId;
+            ViewBag.membersqid = CurrentDatabase.QueryMembersUnderCurrentOrg().QueryId;
         }
 
         [HttpPost]
@@ -145,7 +146,7 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost]
         public ActionResult AddContactReceived(int id)
         {
-            var o = DbUtil.Db.LoadOrganizationById(id);
+            var o = CurrentDatabase.LoadOrganizationById(id);
             DbUtil.LogPersonActivity($"Adding contact to organization: {o.FullName}", id, o.FullName);
             var c = new Contact
             {
@@ -155,14 +156,14 @@ namespace CmsWeb.Areas.Org.Controllers
                 OrganizationId = o.OrganizationId
             };
 
-            DbUtil.Db.Contacts.InsertOnSubmit(c);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.Contacts.InsertOnSubmit(c);
+            CurrentDatabase.SubmitChanges();
 
             c.contactsMakers.Add(new Contactor { PeopleId = Util.UserPeopleId.Value });
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
 
-            var defaultRole = DbUtil.Db.Setting("Contacts-DefaultRole", null);
-            if (!string.IsNullOrEmpty(defaultRole) && DbUtil.Db.Roles.Any(x => x.RoleName == defaultRole))
+            var defaultRole = CurrentDatabase.Setting("Contacts-DefaultRole", null);
+            if (!string.IsNullOrEmpty(defaultRole) && CurrentDatabase.Roles.Any(x => x.RoleName == defaultRole))
                 TempData["SetRole"] = defaultRole;
 
             TempData["ContactEdit"] = true;

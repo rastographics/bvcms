@@ -1,23 +1,28 @@
-﻿using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Web.Mvc;
-using CmsWeb.Areas.Public.Models;
+﻿using CmsWeb.Areas.Public.Models;
+using CmsWeb.Lifecycle;
+using System.Collections.Generic;
 using System.Linq;
-using CmsData;
 using System.Web;
+using System.Web.Mvc;
 
 namespace CmsWeb.Areas.Public.Controllers
 {
-    public class SmallGroupFinderController : Controller
+    public class SmallGroupFinderController : CMSBaseController
     {
+        public SmallGroupFinderController(IRequestManager requestManager) : base(requestManager)
+        {
+        }
+
         public ActionResult Index(string id, bool useShell = true)
         {
-            var check = (from e in DbUtil.Db.Contents
+            var check = (from e in CurrentDatabase.Contents
                          where e.Name == "SGF-" + id + ".xml"
                          select e).SingleOrDefault();
 
             if (check == null)
+            {
                 return new HttpNotFoundResult("Page not found!");
+            }
 
             var sgfm = BuildSmallGroupFinderModel(id, useShell);
 
@@ -29,9 +34,9 @@ namespace CmsWeb.Areas.Public.Controllers
                 return View("MapShell", sgfm);
             }
 
-            if (DbUtil.Db.Setting("SGF-UseEmbeddedMap"))
+            if (CurrentDatabase.Setting("SGF-UseEmbeddedMap"))
             {
-                var template = DbUtil.Db.ContentHtml("ShellDefaultSGF", "<!-- CONTAINER -->");
+                var template = CurrentDatabase.ContentHtml("ShellDefaultSGF", "<!-- CONTAINER -->");
                 ViewBag.Shell = template;
                 return View("MapShell", sgfm);
             }
@@ -54,7 +59,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             var search = new Dictionary<string, SearchItem>();
 
-            var loadAllValues = DbUtil.Db.Setting("SGF-LoadAllExtraValues");
+            var loadAllValues = CurrentDatabase.Setting("SGF-LoadAllExtraValues");
 
             if (Request.Form.Count != 0)
             {
@@ -62,10 +67,16 @@ namespace CmsWeb.Areas.Public.Controllers
 
                 foreach (var item in encoded.Split('&'))
                 {
-                    if (!item.StartsWith("SGF") && !loadAllValues) continue;
+                    if (!item.StartsWith("SGF") && !loadAllValues)
+                    {
+                        continue;
+                    }
 
                     var parts = item.Split('=');
-                    if (parts.Count() != 2) continue;
+                    if (parts.Count() != 2)
+                    {
+                        continue;
+                    }
 
                     parts[0] = HttpUtility.UrlDecode(parts[0]);
                     parts[1] = HttpUtility.UrlDecode(parts[1]);
@@ -84,7 +95,10 @@ namespace CmsWeb.Areas.Public.Controllers
 
             foreach (var query in Request.QueryString.AllKeys.Where(x => x.ToLower() != "id"))
             {
-                if (!query.StartsWith("SGF") && !loadAllValues) continue;
+                if (!query.StartsWith("SGF") && !loadAllValues)
+                {
+                    continue;
+                }
 
                 if (search.ContainsKey(query))
                 {

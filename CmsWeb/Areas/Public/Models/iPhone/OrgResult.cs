@@ -1,11 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Xml;
-using System.Web.Mvc;
-using UtilityExtensions;
-using System.Linq;
 using CmsData;
 using CmsData.Codes;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web.Mvc;
+using System.Xml;
+using UtilityExtensions;
 
 namespace CmsWeb.Models.iPhone
 {
@@ -19,18 +19,21 @@ namespace CmsWeb.Models.iPhone
         private IEnumerable<OrgInfo> OrgList()
         {
             var oids = DbUtil.Db.GetLeaderOrgIds(pid);
-			var dt = DateTime.Parse("8:00 AM");
+            var dt = DateTime.Parse("8:00 AM");
 
-        	var roles = DbUtil.Db.CurrentRoles();
+            var roles = DbUtil.Db.CurrentRoles();
             IQueryable<Organization> q = null;
             if (Util2.OrgLeadersOnly)
+            {
                 q = from o in DbUtil.Db.Organizations
                     where o.LimitToRole == null || roles.Contains(o.LimitToRole)
                     where oids.Contains(o.OrganizationId)
                     where o.SecurityTypeId != 3
                     where o.OrganizationStatusId == OrgStatusCode.Active
                     select o;
+            }
             else
+            {
                 q = from o in DbUtil.Db.Organizations
                     where o.LimitToRole == null || roles.Contains(o.LimitToRole)
                     where o.OrganizationStatusId == OrgStatusCode.Active
@@ -39,19 +42,21 @@ namespace CmsWeb.Models.iPhone
                               && (om.Pending ?? false) == false
                               && (om.MemberTypeId != MemberTypeCode.InActive)
                               && (om.MemberType.AttendanceTypeId == AttendTypeCode.Leader)
-                              )					 
+                              )
                           || oids.Contains(o.OrganizationId)) // or a leader of a parent org
                     where o.SecurityTypeId != 3
                     select o;
+            }
+
             return from o in q
-                    let sc = o.OrgSchedules.FirstOrDefault() // SCHED
-                    select new OrgInfo
-                    {
-                        OrgId = o.OrganizationId,
-                        OrgName = o.OrganizationName,
-                        MeetingTime = sc.SchedTime ?? dt,
-                        MeetingDay = sc.SchedDay ?? 0
-                    };
+                   let sc = o.OrgSchedules.FirstOrDefault() // SCHED
+                   select new OrgInfo
+                   {
+                       OrgId = o.OrganizationId,
+                       OrgName = o.OrganizationName,
+                       MeetingTime = sc.SchedTime ?? dt,
+                       MeetingDay = sc.SchedDay ?? 0
+                   };
         }
         public class OrgInfo
         {
@@ -89,7 +94,10 @@ namespace CmsWeb.Models.iPhone
             d = d.AddDays(-(int)d.DayOfWeek); // prev sunday
             d = d.AddDays(day ?? 0);
             if (d > Util.Now.Date)
+            {
                 d = d.AddDays(-7);
+            }
+
             return d;
         }
     }

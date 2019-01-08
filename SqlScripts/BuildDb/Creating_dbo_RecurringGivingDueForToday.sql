@@ -1,42 +1,43 @@
-CREATE VIEW [dbo].[RecurringGivingDueForToday]
-AS 
-WITH amt AS (
-	SELECT ra.PeopleId, 
-		Amt = SUM(ra.Amt) 
-	FROM dbo.RecurringAmounts ra 
-	JOIN dbo.ContributionFund f ON f.FundId = ra.FundId
-	WHERE f.FundStatusId = 1
-	AND f.OnlineSort IS NOT NULL
-	GROUP BY ra.PeopleId
-), VaultIds AS (
-	SELECT PeopleId
-		, VaultId = CASE 
-				WHEN s.Setting = 'Sage' AND PreferredGivingType = 'b' THEN CONVERT(VARCHAR(50), SageBankGuid)
-				WHEN s.Setting = 'Sage' AND PreferredGivingType = 'c' THEN CONVERT(VARCHAR(50), SageCardGuid)
-				WHEN s.Setting = 'AuthorizeNet' THEN CONVERT(VARCHAR(50), AuNetCustId)
-				WHEN s.Setting = 'Transnational' AND PreferredGivingType = 'b' THEN CONVERT(VARCHAR(50), TbnBankVaultId)
-				WHEN s.Setting = 'Transnational' AND PreferredGivingType = 'c' THEN CONVERT(VARCHAR(50), TbnCardVaultId)
-				END
-	FROM dbo.PaymentInfo
-	JOIN dbo.Setting s ON s.Id = 'TransactionGateway' AND NOT EXISTS(SELECT NULL FROM dbo.Setting WHERE id = 'TemporaryGatway')
+CREATE view [dbo].[RecurringGivingDueForToday]
+as 
+with amt as (
+	select ra.PeopleId, 
+		Amt = sum(ra.Amt) 
+	from dbo.RecurringAmounts ra 
+	join dbo.ContributionFund f on f.FundId = ra.FundId
+	where f.FundStatusId = 1
+	and f.OnlineSort is not null
+	group by ra.PeopleId
+), VaultIds as (
+	select PeopleId
+		, VaultId = case 
+				when s.Setting = 'Sage' and PreferredGivingType = 'b' then convert(varchar(50), SageBankGuid)
+				when s.Setting = 'Sage' and PreferredGivingType = 'c' then convert(varchar(50), SageCardGuid)
+				when s.Setting = 'AuthorizeNet' then convert(varchar(50), AuNetCustId)
+				when s.Setting = 'Transnational' and PreferredGivingType = 'b' then convert(varchar(50), TbnBankVaultId)
+				when s.Setting = 'Transnational' and PreferredGivingType = 'c' then convert(varchar(50), TbnCardVaultId)
+				end
+	from dbo.PaymentInfo
+	join dbo.Setting s on s.Id = 'TransactionGateway' and not exists(select null from dbo.Setting where id = 'TemporaryGatway')
 )
-SELECT 
+select 
 	mg.PeopleId
 	,p.Name2
 	,a.Amt
-FROM dbo.ManagedGiving mg
-JOIN amt a ON a.PeopleId = mg.PeopleId
-LEFT JOIN VaultIds v ON v.PeopleId = mg.PeopleId
-JOIN dbo.People p ON p.PeopleId = mg.PeopleId
-WHERE mg.NextDate = CONVERT(DATE, GETDATE())
-AND a.amt > 0
-AND (v.VaultId IS NOT NULL OR v.PeopleId = NULL)
-AND NOT EXISTS(
-	SELECT NULL 
-	FROM dbo.[Transaction] t 
-	WHERE t.LoginPeopleId = p.PeopleId 
-	AND CONVERT(DATE, t.TransactionDate) = CONVERT(DATE, GETDATE())
-	AND t.Approved = 0)
+from dbo.ManagedGiving mg
+join amt a on a.PeopleId = mg.PeopleId
+left join VaultIds v on v.PeopleId = mg.PeopleId
+join dbo.People p on p.PeopleId = mg.PeopleId
+where mg.NextDate = convert(date, getdate())
+and a.amt > 0
+and (v.VaultId is not null or v.PeopleId is null)
+and not exists(
+	select null 
+	from dbo.[Transaction] t 
+	where t.LoginPeopleId = p.PeopleId 
+	and convert(date, t.TransactionDate) = convert(date, getdate())
+	and t.Approved = 0)
+
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO

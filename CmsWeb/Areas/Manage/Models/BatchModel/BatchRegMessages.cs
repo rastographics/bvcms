@@ -1,8 +1,8 @@
-﻿using System.Linq;
-using System.Xml.Linq;
-using CmsData;
+﻿using CmsData;
 using CmsData.Registration;
 using CmsWeb.Code;
+using System.Linq;
+using System.Xml.Linq;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Manage.Models.BatchModel
@@ -18,7 +18,9 @@ namespace CmsWeb.Areas.Manage.Models.BatchModel
         {
             var xdoc = XDocument.Parse(text.TrimStart());
             if (xdoc.Root == null)
+            {
                 throw new UserInputException("could not parse xml document");
+            }
 
             foreach (var x in xdoc.Root.Elements("Messages"))
             {
@@ -83,8 +85,11 @@ namespace CmsWeb.Areas.Manage.Models.BatchModel
                         os.Terms = ee.Value;
                         break;
                     default:
-                        if(instrutions.Contains(nname))
+                        if (instrutions.Contains(nname))
+                        {
                             Util.SetProperty(os, "Instruction" + nname, ee.Value);
+                        }
+
                         break;
                 }
             }

@@ -1,15 +1,15 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Xml.Serialization;
-using System.IO;
-using System.Text.RegularExpressions;
-using CmsData;
+﻿using CmsData;
 using CmsData.Classes.SmallGroupFinder;
-using System.Web;
-using System;
-using System.Web.Mvc;
 using CmsWeb.Models;
 using MoreLinq;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Web;
+using System.Web.Mvc;
+using System.Xml.Serialization;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Public.Models
@@ -36,7 +36,9 @@ namespace CmsWeb.Areas.Public.Models
             {
                 string title = null;
                 if (_sgf != null)
+                {
                     title = getSetting("Title")?.value;
+                }
 
                 return title ?? "Small Group Finder";
             }
@@ -59,6 +61,8 @@ namespace CmsWeb.Areas.Public.Models
 
         public bool UseShell { get; private set; }
 
+        public SmallGroupFinderModel() { }
+
         public SmallGroupFinderModel(Controller controller, bool useShell = true)
         {
             _controller = controller;
@@ -73,7 +77,7 @@ namespace CmsWeb.Areas.Public.Models
             var sr = new StringReader(xml);
             _sgf = (SmallGroupFinder)xs.Deserialize(sr);
 
-            var divs = _sgf.divisionid?.Split(',') ?? new string [] {};
+            var divs = _sgf.divisionid?.Split(',') ?? new string[] { };
             foreach (var div in divs)
             {
                 _divList.Add(Convert.ToInt32(div));
@@ -125,29 +129,41 @@ namespace CmsWeb.Areas.Public.Models
 
         public bool IsSelectedValue(string key, string value)
         {
-            if (_search == null) return false;
+            if (_search == null)
+            {
+                return false;
+            }
 
             if (_search.ContainsKey(key))
             {
                 if (_search[key].values.Contains(value))
+                {
                     return true;
+                }
                 else
+                {
                     return false;
+                }
             }
             else
+            {
                 return false;
+            }
         }
 
         public List<Division> getDivisions()
         {
             return (from e in DbUtil.Db.Divisions
-                      where _divList.Contains(e.Id)
-                      select e).ToList();
+                    where _divList.Contains(e.Id)
+                    select e).ToList();
         }
 
         public int getCount(int type)
         {
-            if (_sgf == null) return 0;
+            if (_sgf == null)
+            {
+                return 0;
+            }
 
             switch (type)
             {
@@ -223,21 +239,21 @@ namespace CmsWeb.Areas.Public.Models
                 }
                 else if (f.timeofdayonly)
                 {
-                    i.AddRange(new [] {"AM", "PM"}.Select(x => new FilterItem
+                    i.AddRange(new[] { "AM", "PM" }.Select(x => new FilterItem
                     {
                         value = x
                     }));
                 }
                 else if (f.name == "Campus")
                 {
-                    var campusExclusions = f.exclude?.Split(',') ?? new string [] {};
+                    var campusExclusions = f.exclude?.Split(',') ?? new string[] { };
                     i = (from campus in DbUtil.Db.Campus
                          orderby campus.Description
                          where !campusExclusions.Contains(campus.Description)
-                        select new FilterItem
-                        {
-                            value = campus.Description
-                        }).ToList();
+                         select new FilterItem
+                         {
+                             value = campus.Description
+                         }).ToList();
                 }
                 else
                 {
@@ -270,7 +286,9 @@ namespace CmsWeb.Areas.Public.Models
         public SmallGroupSearchResult getGroups()
         {
             if (_search == null)
-                return new SmallGroupSearchResult {Organizations = new List<Organization>(), IsInitialSearch = true};
+            {
+                return new SmallGroupSearchResult { Organizations = new List<Organization>(), IsInitialSearch = true };
+            }
 
             var orgTypes = DbUtil.Db.Setting("SGF-OrgTypes", "").Split(',').Select(x => x.Trim()).Where(x => !string.IsNullOrEmpty(x)).ToList();
 
@@ -278,19 +296,24 @@ namespace CmsWeb.Areas.Public.Models
             if (!orgTypes.Any())
             {
                 orgs = from o in DbUtil.Db.Organizations
-                       where o.DivOrgs.Any(ee => _divList.Contains(ee.DivId))
+                       where o.OrganizationStatusId == 30
+                       && o.DivOrgs.Any(ee => _divList.Contains(ee.DivId))
                        select o;
             }
             else
             {
                 orgs = from o in DbUtil.Db.Organizations
-                       where orgTypes.Contains(o.OrganizationType.Description)
+                       where o.OrganizationStatusId == 30
+                       && orgTypes.Contains(o.OrganizationType.Description)
                        select o;
             }
 
             foreach (var filter in _search)
             {
-                if (filter.Value.values.Contains(SHOW_ALL)) continue;
+                if (filter.Value.values.Contains(SHOW_ALL))
+                {
+                    continue;
+                }
 
                 if (filter.Key == "Campus")
                 {
@@ -424,8 +447,8 @@ namespace CmsWeb.Areas.Public.Models
         public void populateFromOrg(Organization org)
         {
             var leader = (from e in DbUtil.Db.People
-                              where e.PeopleId == org.LeaderId
-                              select e).SingleOrDefault();
+                          where e.PeopleId == org.LeaderId
+                          select e).SingleOrDefault();
 
             values["SGF:OrgID"] = org.OrganizationId.ToString();
             values["SGF:Name"] = org.OrganizationName;
@@ -437,16 +460,24 @@ namespace CmsWeb.Areas.Public.Models
             values["SGF:Campus"] = org.Campu?.Description;
 
             if (leader != null && leader.PictureId != null)
+            {
                 values["SGF:LeaderPicSrc"] = "/Portrait/" + leader.Picture.SmallId.Value + "?v=" + DateTime.Now.ToString("yyyyMMddHHmmssffff");
+            }
             else
+            {
                 values["SGF:LeaderPicSrc"] = "/Portrait/-3";
+            }
 
             if (org.OrgSchedules.Count > 0)
             {
                 int count = 0;
                 foreach (var schedule in org.OrgSchedules)
                 {
-                    if (count > 0) values["SGF:Schedule"] += "; ";
+                    if (count > 0)
+                    {
+                        values["SGF:Schedule"] += "; ";
+                    }
+
                     values["SGF:Schedule"] += DAY_LAST[schedule.SchedDay ?? 0] + ", " + schedule.SchedTime.ToString2("t"); ;
                     count++;
                 }
@@ -463,9 +494,13 @@ namespace CmsWeb.Areas.Public.Models
                           extra.BitValue?.ToString();
 
                 if (extra.Field.StartsWith("SGF:"))
+                {
                     values[extra.Field] = val;
-                else if(loadAllValues)
+                }
+                else if (loadAllValues)
+                {
                     values[$"SGF:{extra.Field}"] = val;
+                }
             }
         }
     }

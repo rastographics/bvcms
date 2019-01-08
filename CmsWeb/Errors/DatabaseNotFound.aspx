@@ -1,4 +1,5 @@
-﻿<%@ Page Language="C#" AutoEventWireup="True" %>
+﻿<% Response.StatusCode = 503; %>
+<%@ Page Language="C#" AutoEventWireup="True" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -33,7 +34,7 @@
     </div>
     <div id="footer" class="container-fluid hidden-print">
         <div class="text-center">
-            &copy; 2015 TouchPoint Software, LLC.
+            &copy; <%=DateTime.Today.Year %> <%=Resource1.CompanyName %>
         </div>
     </div>
     <script src='//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js'></script>

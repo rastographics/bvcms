@@ -104,6 +104,10 @@ namespace CmsData
         }
         public IEnumerable<int> QuerySqlPeopleIds(string query)
         {
+            return QuerySqlInts(query);
+        }
+        public IEnumerable<int> QuerySqlInts(string query)
+        {
             var cn = GetReadonlyConnection();
             return cn.Query<int>(query);
         }
@@ -148,13 +152,28 @@ namespace CmsData
         {
             var cn = GetReadonlyConnection();
             var parameters = new DynamicParameters();
-            if(p1 != null)
-                parameters.Add("@p1", p1 ?? "");
+            if (p1 != null)
+                sql = AddP1Parameter(sql, p1, parameters);
             if (declarations != null)
                 AddParameters(declarations, parameters);
             ApplyStandardParameters(sql, parameters);
 
             return cn.Query(sql, parameters, commandTimeout: 300);
+        }
+
+        /// <summary>
+        /// This function looks for 'declare @p1 ...' and comments it out since the @p1 parameter is added through the Dynamic parameters.
+        /// This allows the sql to be run in SSMS for testing 
+        /// and also allows it to run via Touchpoint scripts using the q.QuerySql functions without having to edit it.
+        /// </summary>
+        public static string AddP1Parameter(string sql, object p1, DynamicParameters parameters)
+        {
+            const string pattern = "(?m:^)declare @p1 .*$";
+            var regexOptions = RegexOptions.IgnoreCase | RegexOptions.Multiline;
+            if (Regex.IsMatch(sql, pattern, regexOptions))
+                sql = Regex.Replace(sql, pattern, "--$&", regexOptions);
+            parameters.Add("@p1", p1 ?? "");
+            return sql;
         }
 
         private static void AddParameters(object declarations, DynamicParameters parameters)
@@ -294,6 +313,51 @@ namespace CmsData
         {
             var q = db.PeopleQuery2(code);
             return db.GetWhereClause(q);
+        }
+
+        /// <summary>
+        /// Creates a new DynamicData instance populated with name value columns from sql
+        /// </summary>
+        public DynamicData SqlNameValues(string sql, string NameCol, string ValueCol)
+        {
+            var rd = db.Connection.ExecuteReader(sql);
+            var dd = new DynamicData();
+            while (rd.Read())
+                dd.dict.Add(rd[NameCol].ToString(), rd[ValueCol]);
+            return dd;
+        }
+
+        /// <summary>
+        /// Creates a new DynamicData instance 
+        /// where each element is named as the value of the first column of the row 
+        /// and the value of that element is another DynamicData instance 
+        /// populated with name/value pairs corresponding to the columns of the row.
+        /// This is useful for summary data needed for a dashboard report.
+        /// Note that the first column data should be unique to avoid overwriting previous rows.
+        /// The number of rows is limited to 100 to avoid slurping into memory an entire table of People for example.
+        /// </summary>
+        public DynamicData SqlFirstColumnRowKey(string sql, object declarations)
+        {
+            var cn = GetReadonlyConnection();
+            var parameters = new DynamicParameters();
+            if (declarations != null)
+                AddParameters(declarations, parameters);
+            var ret = new DynamicData();
+            using (var rd = cn.ExecuteReader(sql, parameters))
+            {
+                var maxn = 100;
+                while (rd.Read())
+                {
+                    var dd = new DynamicData();
+                    for (var i = 0; i < rd.FieldCount; i++)
+                        dd.AddValue(rd.GetName(i), rd.GetValue(i));
+                    ret.AddValue(rd.GetString(0), dd);
+                    maxn--;
+                    if (maxn == 0)
+                        break;
+                }
+            }
+            return ret;
         }
 
         public class NameValuePair

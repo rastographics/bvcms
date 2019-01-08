@@ -33,7 +33,7 @@ namespace CmsData
 		private bool? _Abandoned;
 		
    		
-   		private EntitySet< OrganizationMember> _OrganizationMembers;
+   		private EntitySet<OrganizationMember> _OrganizationMembers;
 		
     	
 	#endregion
@@ -68,7 +68,7 @@ namespace CmsData
 		public RegistrationDatum()
 		{
 			
-			this._OrganizationMembers = new EntitySet< OrganizationMember>(new Action< OrganizationMember>(this.attach_OrganizationMembers), new Action< OrganizationMember>(this.detach_OrganizationMembers)); 
+			this._OrganizationMembers = new EntitySet<OrganizationMember>(new Action< OrganizationMember>(this.attach_OrganizationMembers), new Action< OrganizationMember>(this.detach_OrganizationMembers)); 
 			
 			
 			OnCreated();
@@ -236,7 +236,7 @@ namespace CmsData
     #region Foreign Key Tables
    		
    		[Association(Name="FK_OrganizationMembers_RegistrationData", Storage="_OrganizationMembers", OtherKey="RegistrationDataId")]
-   		public EntitySet< OrganizationMember> OrganizationMembers
+   		public EntitySet<OrganizationMember> OrganizationMembers
    		{
    		    get { return this._OrganizationMembers; }
 

@@ -35,7 +35,11 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
                 SetHeaders(m);
                 var pid = m.CheckRegisterLink(registertag);
-                if(m.MissionTripSelfSupportPaylink.HasValue() && m.GoerId > 0)
+                if (m.NotActive())
+                {
+                    return View("OnePageGiving/NotActive", m);
+                }
+                if (m.MissionTripSelfSupportPaylink.HasValue() && m.GoerId > 0)
                     return Redirect(m.MissionTripSelfSupportPaylink);
                 return RouteRegistration(m, pid, showfamily);
             }
@@ -257,7 +261,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [Route("~/OnlineReg/CompleteRegistration/{id:int}")]
         public ActionResult CompleteRegistration(int id)
         {
-            var ed = DbUtil.Db.RegistrationDatas.SingleOrDefault(e => e.Id == id);
+            var ed = CurrentDatabase.RegistrationDatas.SingleOrDefault(e => e.Id == id);
             var m = Util.DeSerialize<OnlineRegModel>(ed?.Data);
             TempData["onlineregmodel"] = Util.Serialize(m);
             return Redirect("/OnlineReg/CompleteRegistration");
@@ -309,7 +313,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [HttpPost]
         public JsonResult CityState(string id)
         {
-            var z = DbUtil.Db.ZipCodes.SingleOrDefault(zc => zc.Zip == id);
+            var z = CurrentDatabase.ZipCodes.SingleOrDefault(zc => zc.Zip == id);
             if (z == null)
                 return Json(null);
             return Json(new {city = z.City.Trim(), state = z.State});
@@ -349,7 +353,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             {
             }
 
-            var ex2 = new Exception($"{errorDisplay}, {DbUtil.Db.ServerLink("/OnlineReg/RegPeople/") + m.DatumId}", ex);
+            var ex2 = new Exception($"{errorDisplay}, {CurrentDatabase.ServerLink("/OnlineReg/RegPeople/") + m.DatumId}", ex);
             ErrorSignal.FromCurrentContext().Raise(ex2);
             m.Log(ex2.Message);
             TempData["error"] = errorDisplay;

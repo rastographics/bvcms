@@ -28,15 +28,19 @@ namespace CmsData
 		
 		private bool? _Hardwired;
 		
+		private bool _Pending;
+		
+		private bool _Inactive;
+		
    		
-   		private EntitySet< Attend> _Attends;
+   		private EntitySet<Attend> _Attends;
 		
-   		private EntitySet< EnrollmentTransaction> _EnrollmentTransactions;
+   		private EntitySet<EnrollmentTransaction> _EnrollmentTransactions;
 		
-   		private EntitySet< OrganizationMember> _OrganizationMembers;
+   		private EntitySet<OrganizationMember> _OrganizationMembers;
 		
     	
-		private EntityRef< AttendType> _AttendType;
+		private EntityRef<AttendType> _AttendType;
 		
 	#endregion
 	
@@ -60,18 +64,24 @@ namespace CmsData
 		partial void OnHardwiredChanging(bool? value);
 		partial void OnHardwiredChanged();
 		
+		partial void OnPendingChanging(bool value);
+		partial void OnPendingChanged();
+		
+		partial void OnInactiveChanging(bool value);
+		partial void OnInactiveChanged();
+		
     #endregion
 		public MemberType()
 		{
 			
-			this._Attends = new EntitySet< Attend>(new Action< Attend>(this.attach_Attends), new Action< Attend>(this.detach_Attends)); 
+			this._Attends = new EntitySet<Attend>(new Action< Attend>(this.attach_Attends), new Action< Attend>(this.detach_Attends)); 
 			
-			this._EnrollmentTransactions = new EntitySet< EnrollmentTransaction>(new Action< EnrollmentTransaction>(this.attach_EnrollmentTransactions), new Action< EnrollmentTransaction>(this.detach_EnrollmentTransactions)); 
+			this._EnrollmentTransactions = new EntitySet<EnrollmentTransaction>(new Action< EnrollmentTransaction>(this.attach_EnrollmentTransactions), new Action< EnrollmentTransaction>(this.detach_EnrollmentTransactions)); 
 			
-			this._OrganizationMembers = new EntitySet< OrganizationMember>(new Action< OrganizationMember>(this.attach_OrganizationMembers), new Action< OrganizationMember>(this.detach_OrganizationMembers)); 
+			this._OrganizationMembers = new EntitySet<OrganizationMember>(new Action< OrganizationMember>(this.attach_OrganizationMembers), new Action< OrganizationMember>(this.detach_OrganizationMembers)); 
 			
 			
-			this._AttendType = default(EntityRef< AttendType>); 
+			this._AttendType = default(EntityRef<AttendType>); 
 			
 			OnCreated();
 		}
@@ -193,12 +203,56 @@ namespace CmsData
 		}
 
 		
+		[Column(Name="Pending", UpdateCheck=UpdateCheck.Never, Storage="_Pending", DbType="bit NOT NULL")]
+		public bool Pending
+		{
+			get { return this._Pending; }
+
+			set
+			{
+				if (this._Pending != value)
+				{
+				
+                    this.OnPendingChanging(value);
+					this.SendPropertyChanging();
+					this._Pending = value;
+					this.SendPropertyChanged("Pending");
+					this.OnPendingChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="Inactive", UpdateCheck=UpdateCheck.Never, Storage="_Inactive", DbType="bit NOT NULL")]
+		public bool Inactive
+		{
+			get { return this._Inactive; }
+
+			set
+			{
+				if (this._Inactive != value)
+				{
+				
+                    this.OnInactiveChanging(value);
+					this.SendPropertyChanging();
+					this._Inactive = value;
+					this.SendPropertyChanged("Inactive");
+					this.OnInactiveChanged();
+				}
+
+			}
+
+		}
+
+		
     #endregion
         
     #region Foreign Key Tables
    		
    		[Association(Name="FK_Attend_MemberType", Storage="_Attends", OtherKey="MemberTypeId")]
-   		public EntitySet< Attend> Attends
+   		public EntitySet<Attend> Attends
    		{
    		    get { return this._Attends; }
 
@@ -208,7 +262,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_ENROLLMENT_TRANSACTION_TBL_MemberType", Storage="_EnrollmentTransactions", OtherKey="MemberTypeId")]
-   		public EntitySet< EnrollmentTransaction> EnrollmentTransactions
+   		public EntitySet<EnrollmentTransaction> EnrollmentTransactions
    		{
    		    get { return this._EnrollmentTransactions; }
 
@@ -218,7 +272,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_ORGANIZATION_MEMBERS_TBL_MemberType", Storage="_OrganizationMembers", OtherKey="MemberTypeId")]
-   		public EntitySet< OrganizationMember> OrganizationMembers
+   		public EntitySet<OrganizationMember> OrganizationMembers
    		{
    		    get { return this._OrganizationMembers; }
 

@@ -1,7 +1,7 @@
+using CmsData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using CmsData;
 using System.Web.Mvc;
 using UtilityExtensions;
 
@@ -9,6 +9,7 @@ namespace CmsWeb.Areas.Setup.Models
 {
     public class PromotionModel
     {
+        public PromotionModel() { }
         public IEnumerable<Promotion> Promotions()
         {
             return DbUtil.Db.Promotions.OrderBy(p => p.Sort).ThenBy(p => p.Description);
@@ -17,7 +18,7 @@ namespace CmsWeb.Areas.Setup.Models
         {
             var q = from c in DbUtil.Db.Programs
                     orderby c.Name
-                    select new 
+                    select new
                     SelectListItem
                     {
                         Value = c.Id.ToString(),
@@ -69,11 +70,14 @@ namespace CmsWeb.Areas.Setup.Models
                 list[i.pc.OrganizationId] = i.pc.Organization;
             }
             foreach (var o in list.Values)
+            {
                 if (o.PendingLoc.HasValue())
                 {
                     o.Location = o.PendingLoc;
                     o.PendingLoc = null;
                 }
+            }
+
             DbUtil.Db.SubmitChanges();
         }
     }

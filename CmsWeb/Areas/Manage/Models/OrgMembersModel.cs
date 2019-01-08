@@ -1,18 +1,18 @@
+using CmsData;
+using CmsData.Codes;
+using MoreLinq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
-using CmsData;
-using CmsData.Codes;
-using MoreLinq;
 using UtilityExtensions;
-using System.Text.RegularExpressions;
 
 namespace CmsWeb.Models
 {
-    public class OrgMembersModel
+    public class OrgMembersModel : LongRunningOperation
     {
         private IQueryable<OrganizationMember> members;
 
@@ -67,11 +67,15 @@ namespace CmsWeb.Models
             var a = pref.Split('.').Select(s => s.ToInt()).ToArray();
             var prog = DbUtil.Db.Programs.SingleOrDefault(p => p.Id == a[0]);
             if (prog != null)
+            {
                 ProgId = a[0];
+            }
 
             var div = DbUtil.Db.Divisions.SingleOrDefault(d => d.Id == a[1] && d.ProgId == ProgId);
             if (div != null)
+            {
                 SourceDivId = a[1];
+            }
 
             var source = DbUtil.Db.Organizations.Where(o => o.OrganizationId == a[2]).Select(o => o.OrganizationId).SingleOrDefault();
             SourceId = a[2];
@@ -84,20 +88,29 @@ namespace CmsWeb.Models
                     let div = DbUtil.Db.Divisions.SingleOrDefault(d => d.Id == SourceDivId && d.ProgId == ProgId)
                     let org = DbUtil.Db.Organizations.SingleOrDefault(o => o.OrganizationId == SourceId && o.DivOrgs.Any(d => d.DivId == SourceDivId))
                     let org2 = DbUtil.Db.Organizations.SingleOrDefault(o => o.OrganizationId == SourceId && o.DivOrgs.Any(d => d.DivId == SourceDivId))
-                    select new {div, noorg = org == null, noorg2 = org2 == null};
+                    select new { div, noorg = org == null, noorg2 = org2 == null };
             var i = q.SingleOrDefault();
             if (i == null)
+            {
                 ProgId = SourceDivId = SourceId = TargetDivId = TargetId = 0;
+            }
             else
             {
                 if (i.div == null)
+                {
                     SourceDivId = SourceId = TargetDivId = TargetId = 0;
+                }
                 else
                 {
                     if (i.noorg)
+                    {
                         SourceId = 0;
+                    }
+
                     if (i.noorg2)
+                    {
                         TargetId = 0;
+                    }
                 }
             }
         }
@@ -154,7 +167,7 @@ namespace CmsWeb.Models
                         Text = o.OrganizationName + sctime
                     };
             var list = q.ToList();
-            list.Insert(0, new SelectListItem {Value = "0", Text = "(not specified)"});
+            list.Insert(0, new SelectListItem { Value = "0", Text = "(not specified)" });
             return list;
         }
 
@@ -177,7 +190,7 @@ namespace CmsWeb.Models
                         Text = o.OrganizationName + sctime + " (" + cmales + "+" + cfemales + "=" + (cmales + cfemales) + ")"
                     };
             var list = q.ToList();
-            list.Insert(0, new SelectListItem {Value = "0", Text = "(not specified)"});
+            list.Insert(0, new SelectListItem { Value = "0", Text = "(not specified)" });
             return list;
         }
 
@@ -185,7 +198,7 @@ namespace CmsWeb.Models
         {
             if (members == null)
             {
-                var glist = new int[] {};
+                var glist = new int[] { };
                 var smallGroupList = new List<string>();
                 var matchAllSubgroups = false;
                 if (null != SmallGroup)
@@ -198,19 +211,24 @@ namespace CmsWeb.Models
                     if (SmallGroup.Contains(";"))
                     {
                         smallGroupList.AddRange(SmallGroup.Split(';').Select(x => x.Trim()));
-                    } else if (SmallGroup.Contains(","))
+                    }
+                    else if (SmallGroup.Contains(","))
                     {
                         smallGroupList.AddRange(SmallGroup.Split(';').Select(x => x.Trim()));
-                    } else
+                    }
+                    else
                     {
                         smallGroupList.Add(SmallGroup);
                     }
                 }
-				
+
                 if (Grades.HasValue())
+                {
                     glist = (from g in (Grades ?? "").Split(new char[] { ',', ';' })
                              select g.ToInt()).ToArray();
-                var typesToShowForMembersOnly = new [] {MemberTypeCode.Member, MemberTypeCode.Prospect, MemberTypeCode.InActive};
+                }
+
+                var typesToShowForMembersOnly = new[] { MemberTypeCode.Member, MemberTypeCode.Prospect, MemberTypeCode.InActive };
                 var q = from om in DbUtil.Db.OrganizationMembers
                         where om.Organization.DivOrgs.Any(di => di.DivId == SourceDivId)
                         where SourceId == 0 || om.OrganizationId == SourceId
@@ -331,7 +349,7 @@ namespace CmsWeb.Models
             return q2;
         }
 
-        public int Count()
+        public new int Count()
         {
             return GetMembers().Count();
         }
@@ -378,6 +396,7 @@ namespace CmsWeb.Models
             var q = GetMembers();
 
             if (Dir == "asc")
+            {
                 switch (Sort)
                 {
                     default:
@@ -412,7 +431,9 @@ namespace CmsWeb.Models
                             select om;
                         break;
                 }
+            }
             else
+            {
                 switch (Sort)
                 {
                     default:
@@ -447,25 +468,9 @@ namespace CmsWeb.Models
                             select om;
                         break;
                 }
-            return q;
-        }
-
-        public void Move()
-        {
-            foreach (var i in List)
-            {
-                if (!i.HasValue())
-                    continue;
-                var a = i.Split('.');
-                if (a.Length != 2)
-                    continue;
-                var pid = a[0].ToInt();
-                var oid = a[1].ToInt();
-                if (oid == TargetId)
-                    continue;
-                OrganizationMember.MoveToOrg(DbUtil.Db, pid, oid, TargetId, MoveRegistrationData, ChangeMemberType == true ? MoveToMemberTypeId : -1);
             }
-            DbUtil.Db.UpdateMainFellowship(TargetId);
+
+            return q;
         }
 
         public int MovedCount()
@@ -502,7 +507,7 @@ WHERE EXISTS(SELECT NULL FROM dbo.DivOrg WHERE OrgId = OrganizationId AND DivId 
         {
             var Db = DbUtil.Db;
 
-            var q = from om in Db.OrganizationMembers
+            var q = from om in DbUtil.Db.OrganizationMembers
                     where om.Organization.DivOrgs.Any(di => di.DivId == SourceDivId)
                     where om.Moved == true || EmailAllNotices
                     select new
@@ -532,7 +537,9 @@ WHERE EXISTS(SELECT NULL FROM dbo.DivOrg WHERE OrgId = OrganizationId AND DivId 
                 DbUtil.Db.SubmitChanges();
             }
             if (content.Title == "SendMovedNotices") // replace old Title with new, improved version
+            {
                 content.Title = "Room Assignment for {name} in {org}"; // this will be the subject
+            }
 
             var sb = new StringBuilder("Org Assignment Notices sent to:\r\n<pre>\r\n");
             foreach (var i in q)
@@ -553,7 +560,7 @@ WHERE EXISTS(SELECT NULL FROM dbo.DivOrg WHERE OrgId = OrganizationId AND DivId 
                 {
                     if (i.RegisterEmail.HasValue())
                     {
-                        Db.Email(Db.CurrentUser.Person.FromEmail,
+                        DbUtil.Db.Email(DbUtil.Db.CurrentUser.Person.FromEmail,
                             i.om.Person, Util.ToMailAddressList(i.RegisterEmail),
                             subj, msg, false);
                         sb.Append($"\"{i.Name}\" [{i.FromEmail}]R ({i.PeopleId}): {i.Location}\r\n");
@@ -565,7 +572,7 @@ WHERE EXISTS(SELECT NULL FROM dbo.DivOrg WHERE OrgId = OrganizationId AND DivId 
                                  where fm.EmailAddress != i.RegisterEmail
                                  where fm.PositionInFamilyId == PositionInFamily.PrimaryAdult
                                  select fm).ToList();
-                    Db.Email(Db.CurrentUser.Person.FromEmail, flist, subj, msg);
+                    DbUtil.Db.Email(DbUtil.Db.CurrentUser.Person.FromEmail, flist, subj, msg);
                     foreach (var m in flist)
                     {
                         sb.Append($"{m}P ({i.PeopleId}): {i.Location}\r\n");
@@ -575,7 +582,7 @@ WHERE EXISTS(SELECT NULL FROM dbo.DivOrg WHERE OrgId = OrganizationId AND DivId 
             }
             sb.Append("</pre>\n");
 
-            var q0 = from o in Db.Organizations
+            var q0 = from o in DbUtil.Db.Organizations
                      where o.DivOrgs.Any(di => di.DivId == SourceDivId)
                      where o.NotifyIds.Length > 0
                      where o.RegistrationTypeId > 0
@@ -583,14 +590,19 @@ WHERE EXISTS(SELECT NULL FROM dbo.DivOrg WHERE OrgId = OrganizationId AND DivId 
             var onlineorg = q0.FirstOrDefault();
 
             if (onlineorg == null)
-                Db.Email(Db.CurrentUser.Person.FromEmail,
-                    Db.CurrentUserPerson,
+            {
+                DbUtil.Db.Email(DbUtil.Db.CurrentUser.Person.FromEmail,
+                    DbUtil.Db.CurrentUserPerson,
                     "Org Assignment notices sent to:", sb.ToString());
+            }
             else
-                Db.Email(Db.CurrentUser.Person.FromEmail,
-                    Db.PeopleFromPidString(onlineorg.NotifyIds),
+            {
+                DbUtil.Db.Email(DbUtil.Db.CurrentUser.Person.FromEmail,
+                    DbUtil.Db.PeopleFromPidString(onlineorg.NotifyIds),
                     "Org Assignment notices sent to:", sb.ToString());
-            Db.SubmitChanges();
+            }
+
+            DbUtil.Db.SubmitChanges();
         }
 
         public EpplusResult ToExcel(int oid)

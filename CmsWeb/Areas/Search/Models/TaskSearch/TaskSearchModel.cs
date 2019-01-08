@@ -5,125 +5,162 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
 
+using CmsData;
+using CmsData.Classes.GoogleCloudMessaging;
+using CmsData.Codes;
+using CmsData.View;
+using CmsWeb.Areas.People.Models.Task;
+using CmsWeb.Models;
+using Dapper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using CmsData.View;
-using CmsWeb.Models;
-using CmsData;
-using CmsData.Classes.GoogleCloudMessaging;
-using CmsData.Codes;
-using CmsWeb.Areas.People.Models.Task;
-using Dapper;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Search.Models
 {
     public class TaskSearchModel : PagedTableModel<TaskSearch, TaskSearch>
     {
-        public TaskSearchInfo Search { get; set; }
+        private readonly GCMHelper _gcm;
+        private readonly string _host;
+        private readonly CMSDataContext _dataContext;
 
-        public TaskSearchModel()
-            : base("Date", "desc", true)
-        {
-            Search = new TaskSearchInfo();
-        }
+        public TaskSearchInfo Search { get; set; }
 
         public int[] SelectedItem { get; set; }
 
+        public TaskSearchModel() : base("Date", "desc", true)
+        {
+            Search = new TaskSearchInfo();
+
+            _host = Util.Host;
+            _dataContext = DbUtil.Create(_host);
+            _gcm = new GCMHelper(_host, _dataContext);
+        }
+
         public override IQueryable<TaskSearch> DefineModelList()
         {
-            var db = DbUtil.Db;
-
-            var q = GetBaseResults(db, Search.GetOptions());
+            var q = GetBaseResults(_dataContext, Search.GetOptions());
 
             if (Search.About.HasValue())
+            {
                 if (Search.About.AllDigits())
+                {
                     q = from t in q
                         where t.WhoId == Search.About.ToInt()
                         select t;
+                }
                 else
+                {
                     q = from t in q
                         where t.About2.StartsWith(Search.About)
                         select t;
+                }
+            }
 
             if (Search.Owner.HasValue())
+            {
                 if (Search.Owner.AllDigits())
+                {
                     q = from t in q
                         where t.OwnerId == Search.Owner.ToInt()
                         select t;
+                }
                 else
+                {
                     q = from t in q
                         where t.Owner2.StartsWith(Search.Owner)
                         select t;
+                }
+            }
 
             if (Search.Delegate.HasValue())
+            {
                 if (Search.Delegate.AllDigits())
+                {
                     q = from t in q
                         where t.CoOwnerId == Search.Delegate.ToInt()
                         select t;
+                }
                 else
+                {
                     q = from t in q
                         where t.Delegate2.StartsWith(Search.Delegate)
                         select t;
+                }
+            }
 
             if (Search.Originator.HasValue())
+            {
                 if (Search.Originator.AllDigits())
+                {
                     q = from t in q
                         where t.OrginatorId == Search.Originator.ToInt()
                         select t;
+                }
                 else
+                {
                     q = from t in q
                         where t.Originator2.StartsWith(Search.Originator)
                         select t;
+                }
+            }
 
             if (Search.Description.HasValue())
+            {
                 q = from t in q
                     where t.Description.Contains(Search.Description)
                     select t;
+            }
 
             if (Search.Notes.HasValue())
+            {
                 q = from t in q
                     where t.Notes.Contains(Search.Notes)
                     select t;
+            }
 
             if (Search.IsPrivate)
+            {
                 q = from t in q
                     where (t.LimitToRole ?? "") != ""
                     select t;
+            }
 
             return q;
         }
 
         internal void Archive()
         {
-            DbUtil.Db.Connection.Execute("UPDATE dbo.Task SET Archive = 1 WHERE Id IN @ids", new {ids = SelectedItem});
+            _dataContext.Connection.Execute("UPDATE dbo.Task SET Archive = 1 WHERE Id IN @ids", new { ids = SelectedItem });
         }
 
         internal void UnArchive()
         {
-            DbUtil.Db.Connection.Execute("UPDATE dbo.Task SET Archive = 0 WHERE Id IN @ids", new {ids = SelectedItem});
+            _dataContext.Connection.Execute("UPDATE dbo.Task SET Archive = 0 WHERE Id IN @ids", new { ids = SelectedItem });
         }
 
         internal void Delete()
         {
-            DbUtil.Db.Connection.Execute("DELETE dbo.Task WHERE Id IN @ids", new {ids = SelectedItem});
+            _dataContext.Connection.Execute("DELETE dbo.Task WHERE Id IN @ids", new { ids = SelectedItem });
         }
 
         internal void Delegate(int toPeopleId)
         {
-            var owners = (from o in DbUtil.Db.Tasks
-                where SelectedItem.Contains(o.Id)
-                select o.OwnerId).Distinct().ToList();
+            var owners = (from o in _dataContext.Tasks
+                          where SelectedItem.Contains(o.Id)
+                          select o.OwnerId).Distinct().ToList();
 
-            var delegates = (from o in DbUtil.Db.Tasks
-                where SelectedItem.Contains(o.Id)
-                where o.CoOwnerId != null
-                select o.CoOwnerId ?? 0).Distinct().ToList();
+            var delegates = (from o in _dataContext.Tasks
+                             where SelectedItem.Contains(o.Id)
+                             where o.CoOwnerId != null
+                             select o.CoOwnerId ?? 0).Distinct().ToList();
 
             foreach (var tid in SelectedItem)
-                TaskModel.Delegate(tid, toPeopleId, true, true);
+            {
+                TaskModel.Delegate(tid, toPeopleId, _host, _dataContext, true, true);
+            }
 
             if (Util.UserPeopleId.HasValue)
             {
@@ -135,19 +172,19 @@ namespace CmsWeb.Areas.Search.Models
 
             string taskString = SelectedItem.Count() > 1 ? "tasks" : "a task";
 
-            GCMHelper.sendNotification(owners, GCMHelper.TYPE_TASK, 0, "Tasks Redelegated",
-                $"{Util.UserFullName} has redelegated {taskString} you own");
-            GCMHelper.sendNotification(delegates, GCMHelper.TYPE_TASK, 0, "Tasks Redelegated",
-                $"{Util.UserFullName} has redelegated {taskString} to someone else");
-            GCMHelper.sendNotification(toPeopleId, GCMHelper.TYPE_TASK, 0, "Task Delegated",
-                $"{Util.UserFullName} delegated you {taskString}");
-            if (Util.UserPeopleId.HasValue)
-                GCMHelper.sendRefresh(Util.UserPeopleId.Value, GCMHelper.ACTION_REFRESH);
+            _gcm.sendNotification(owners, GCMHelper.TYPE_TASK, 0, "Tasks Redelegated", $"{Util.UserFullName} has redelegated {taskString} you own");
+            _gcm.sendNotification(delegates, GCMHelper.TYPE_TASK, 0, "Tasks Redelegated", $"{Util.UserFullName} has redelegated {taskString} to someone else");
+            _gcm.sendNotification(toPeopleId, GCMHelper.TYPE_TASK, 0, "Task Delegated", $"{Util.UserFullName} delegated you {taskString}");
 
-            DbUtil.Db.SubmitChanges();
+            if (Util.UserPeopleId.HasValue)
+            {
+                _gcm.sendRefresh(Util.UserPeopleId.Value, GCMHelper.ACTION_REFRESH);
+            }
+
+            _dataContext.SubmitChanges();
         }
 
-        private static IQueryable<TaskSearch> GetBaseResults(CMSDataContext db, TaskSearchInfo.OptionInfo opt)
+        private IQueryable<TaskSearch> GetBaseResults(CMSDataContext db, TaskSearchInfo.OptionInfo opt)
         {
             var u = db.CurrentUser;
             var roles = u.UserRoles.Select(uu => uu.Role.RoleName.ToLower()).ToArray();
@@ -155,42 +192,55 @@ namespace CmsWeb.Areas.Search.Models
             var manageTasks = HttpContext.Current.User.IsInRole("ManageTasks") && !opt.MyTasksOnly;
             var uid = Util.UserPeopleId;
             var q = from t in db.ViewTaskSearches
-                where (t.LimitToRole ?? "") == "" || roles.Contains(t.LimitToRole) || managePrivateContacts
-                where manageTasks || t.OrginatorId == uid || t.OwnerId == uid || t.CoOwnerId == uid
-                where t.Archive == opt.Archived
-                select t;
+                    where (t.LimitToRole ?? "") == "" || roles.Contains(t.LimitToRole) || managePrivateContacts
+                    where manageTasks || t.OrginatorId == uid || t.OwnerId == uid || t.CoOwnerId == uid
+                    where t.Archive == opt.Archived
+                    select t;
 
             if (opt.Status == 99)
+            {
                 q = from t in q
-                    where new[] {TaskStatusCode.Active, TaskStatusCode.Pending}.Contains(t.StatusId ?? 0)
+                    where new[] { TaskStatusCode.Active, TaskStatusCode.Pending }.Contains(t.StatusId ?? 0)
                     select t;
+            }
             else if (opt.Status > 0)
+            {
                 q = from t in q
                     where t.StatusId == opt.Status
                     select t;
+            }
 
             if (opt.ExcludeNewPerson)
+            {
                 q = from t in q
                     where !t.Description.StartsWith("New Person")
                     select t;
+            }
 
             if (opt.MyTasksOnly)
+            {
                 q = from t in q
                     select t;
+            }
 
             if (opt.Lookback.HasValue)
             {
                 var ed = opt.EndDt;
                 if (!ed.HasValue)
+                {
                     ed = DateTime.Today.AddDays(1);
+                }
+
                 q = from t in q
                     where t.Created >= ed.Value.AddDays(-opt.Lookback.Value)
                     select t;
             }
             if (opt.EndDt.HasValue)
+            {
                 q = from t in q
                     where t.Created <= opt.EndDt
                     select t;
+            }
 
             return q;
         }
@@ -232,29 +282,29 @@ namespace CmsWeb.Areas.Search.Models
             return q;
         }
 
-        public static string[] FindNames(string type, string term, int limit, string optionstring)
+        public string[] FindNames(string type, string term, int limit, string optionstring)
         {
             var options = TaskSearchInfo.GetOptions(optionstring);
-            var q = GetBaseResults(DbUtil.Db, options);
+            var q = GetBaseResults(_dataContext, options);
 
             switch (type)
             {
                 case "Delegate":
                     return (from t in q
-                        where t.Delegate2.StartsWith(term)
-                        select t.Delegate2).Distinct().Take(limit).ToArray();
+                            where t.Delegate2.StartsWith(term)
+                            select t.Delegate2).Distinct().Take(limit).ToArray();
                 case "About":
                     return (from t in q
-                        where t.About2.StartsWith(term)
-                        select t.About2).Distinct().Take(limit).ToArray();
+                            where t.About2.StartsWith(term)
+                            select t.About2).Distinct().Take(limit).ToArray();
                 case "Owner":
                     return (from t in q
-                        where t.Owner2.StartsWith(term)
-                        select t.Owner2).Distinct().Take(limit).ToArray();
+                            where t.Owner2.StartsWith(term)
+                            select t.Owner2).Distinct().Take(limit).ToArray();
                 case "Originator":
                     return (from t in q
-                        where t.Originator2.StartsWith(term)
-                        select t.Originator2).Distinct().Take(limit).ToArray();
+                            where t.Originator2.StartsWith(term)
+                            select t.Originator2).Distinct().Take(limit).ToArray();
             }
             return new string[0];
         }
@@ -266,7 +316,7 @@ namespace CmsWeb.Areas.Search.Models
 
         public void Complete()
         {
-            DbUtil.Db.Connection.Execute("UPDATE dbo.Task SET StatusId = 40, CompletedOn = GETDATE() WHERE Id IN @ids", new {ids = SelectedItem});
+            _dataContext.Connection.Execute("UPDATE dbo.Task SET StatusId = 40, CompletedOn = GETDATE() WHERE Id IN @ids", new { ids = SelectedItem });
         }
     }
 }

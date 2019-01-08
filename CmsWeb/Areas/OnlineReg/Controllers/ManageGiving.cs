@@ -22,7 +22,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 				var guid = id.ToGuid();
 				if (guid == null)
 					return Content("invalid link");
-				var ot = DbUtil.Db.OneTimeLinks.SingleOrDefault(oo => oo.Id == guid.Value);
+				var ot = CurrentDatabase.OneTimeLinks.SingleOrDefault(oo => oo.Id == guid.Value);
 				if (ot == null)
 					return Content("invalid link");
 				if (ot.Used)
@@ -32,7 +32,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 				var a = ot.Querystring.Split(',');
 				m = new ManagePledgesModel(a[1].ToInt(), a[0].ToInt());
 				ot.Used = true;
-				DbUtil.Db.SubmitChanges();
+				CurrentDatabase.SubmitChanges();
 			}
 			SetHeaders(m.orgid);
 		    m.Log("Start");
@@ -43,17 +43,21 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 		public ActionResult ManageGiving(string id, bool? testing)
 		{
 			if (!id.HasValue())
-				return Content("bad link");
+				return Message("bad link");
 			ManageGivingModel m = null;
 			var td = TempData["PeopleId"];
-			if (td != null)
+		    if (td != null)
+		    {
 				m = new ManageGivingModel(td.ToInt(), id.ToInt());
+		        if (m.person == null)
+		            return Message("person not found");
+		    }
 			else
 			{
 				var guid = id.ToGuid();
 				if (guid == null)
 					return Content("invalid link");
-				var ot = DbUtil.Db.OneTimeLinks.SingleOrDefault(oo => oo.Id == guid.Value);
+				var ot = CurrentDatabase.OneTimeLinks.SingleOrDefault(oo => oo.Id == guid.Value);
 				if (ot == null)
 					return Content("invalid link");
 #if DEBUG2
@@ -65,10 +69,14 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 					return Content("link expired");
 				var a = ot.Querystring.Split(',');
 				m = new ManageGivingModel(a[1].ToInt(), a[0].ToInt());
+			    if (m.person == null)
+			        return Message("person not found");
 				ot.Used = true;
-				DbUtil.Db.SubmitChanges();
+				CurrentDatabase.SubmitChanges();
 			}
-			if (!m.testing)
+            Session["CreditCardOnFile"] = m.CreditCard;
+            Session["ExpiresOnFile"] = m.Expires;
+            if (!m.testing)
 				m.testing = testing ?? false;
 			SetHeaders(m.orgid);
             m.Log("Start");
@@ -86,6 +94,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 m.ValidateModel(ModelState);
                 if (!ModelState.IsValid)
                 {
+                    if(m.person == null)
+                        return Message("person not found");
                     m.total = 0;
                     foreach (var ff in m.FundItemsChosen())
                         m.total += ff.amt;

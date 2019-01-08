@@ -59,16 +59,16 @@ namespace CmsData
 		private int? _MaxCount;
 		
    		
-   		private EntitySet< Attend> _Attends;
+   		private EntitySet<Attend> _Attends;
 		
-   		private EntitySet< MeetingExtra> _MeetingExtras;
+   		private EntitySet<MeetingExtra> _MeetingExtras;
 		
-   		private EntitySet< VolRequest> _VolRequests;
+   		private EntitySet<VolRequest> _VolRequests;
 		
     	
-		private EntityRef< AttendCredit> _AttendCredit;
+		private EntityRef<AttendCredit> _AttendCredit;
 		
-		private EntityRef< Organization> _Organization;
+		private EntityRef<Organization> _Organization;
 		
 	#endregion
 	
@@ -141,16 +141,16 @@ namespace CmsData
 		public Meeting()
 		{
 			
-			this._Attends = new EntitySet< Attend>(new Action< Attend>(this.attach_Attends), new Action< Attend>(this.detach_Attends)); 
+			this._Attends = new EntitySet<Attend>(new Action< Attend>(this.attach_Attends), new Action< Attend>(this.detach_Attends)); 
 			
-			this._MeetingExtras = new EntitySet< MeetingExtra>(new Action< MeetingExtra>(this.attach_MeetingExtras), new Action< MeetingExtra>(this.detach_MeetingExtras)); 
+			this._MeetingExtras = new EntitySet<MeetingExtra>(new Action< MeetingExtra>(this.attach_MeetingExtras), new Action< MeetingExtra>(this.detach_MeetingExtras)); 
 			
-			this._VolRequests = new EntitySet< VolRequest>(new Action< VolRequest>(this.attach_VolRequests), new Action< VolRequest>(this.detach_VolRequests)); 
+			this._VolRequests = new EntitySet<VolRequest>(new Action< VolRequest>(this.attach_VolRequests), new Action< VolRequest>(this.detach_VolRequests)); 
 			
 			
-			this._AttendCredit = default(EntityRef< AttendCredit>); 
+			this._AttendCredit = default(EntityRef<AttendCredit>); 
 			
-			this._Organization = default(EntityRef< Organization>); 
+			this._Organization = default(EntityRef<Organization>); 
 			
 			OnCreated();
 		}
@@ -611,7 +611,7 @@ namespace CmsData
     #region Foreign Key Tables
    		
    		[Association(Name="FK_AttendWithAbsents_TBL_MEETINGS_TBL", Storage="_Attends", OtherKey="MeetingId")]
-   		public EntitySet< Attend> Attends
+   		public EntitySet<Attend> Attends
    		{
    		    get { return this._Attends; }
 
@@ -621,7 +621,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_MeetingExtra_Meetings", Storage="_MeetingExtras", OtherKey="MeetingId")]
-   		public EntitySet< MeetingExtra> MeetingExtras
+   		public EntitySet<MeetingExtra> MeetingExtras
    		{
    		    get { return this._MeetingExtras; }
 
@@ -631,7 +631,7 @@ namespace CmsData
 
 		
    		[Association(Name="VolRequests__Meeting", Storage="_VolRequests", OtherKey="MeetingId")]
-   		public EntitySet< VolRequest> VolRequests
+   		public EntitySet<VolRequest> VolRequests
    		{
    		    get { return this._VolRequests; }
 

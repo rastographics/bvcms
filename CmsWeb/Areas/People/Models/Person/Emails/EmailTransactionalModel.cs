@@ -1,11 +1,12 @@
-﻿using System.Linq;
-using CmsData;
-using CmsWeb.Models;
+﻿using CmsData;
+using System.Linq;
 
 namespace CmsWeb.Areas.People.Models
 {
     public class EmailTransactionalModel : EmailModel
     {
+    public EmailTransactionalModel() { }
+        
         public override IQueryable<EmailQueue> DefineModelList()
         {
             var q = from e in DbUtil.Db.EmailQueues

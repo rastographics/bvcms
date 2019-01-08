@@ -1,12 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using CmsData;
 using CmsData.View;
 using CmsWeb.Areas.Search.Models;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using OfficeOpenXml.Table;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace CmsWeb.Models
 {
@@ -24,6 +24,7 @@ namespace CmsWeb.Models
             public decimal? Amt { get; set; }
             public string NoticeSent { get; set; }
         }
+        public MissionTripSendersModel() { }
         public static EpplusResult List(int id)
         {
             return Result(SenderGifts(id.ToString()));
@@ -37,7 +38,7 @@ namespace CmsWeb.Models
         public static IEnumerable<SenderGift> SenderGifts(string orgids)
         {
             var q = from sg in DbUtil.Db.SenderGifts(orgids)
-                select sg;
+                    select sg;
             return q;
         }
 

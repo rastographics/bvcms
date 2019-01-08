@@ -1,10 +1,10 @@
-﻿using System;
+﻿using CmsData;
+using CmsData.Codes;
+using CmsWeb.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using CmsData;
-using CmsData.Codes;
-using CmsWeb.Models;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Main.Models
@@ -17,6 +17,7 @@ namespace CmsWeb.Areas.Main.Models
         public Guid QueryId { get; set; }
         public int? OrgId { get; set; }
 
+        public EmailTemplatesModel() { }
         public IQueryable<Content> FetchTemplates()
         {
             var currentRoleIds = DbUtil.Db.CurrentRoleIds();
@@ -47,8 +48,8 @@ namespace CmsWeb.Areas.Main.Models
                     let u = DbUtil.Db.Users.First(vv => vv.UserId == c.OwnerID)
                     let r = DbUtil.Db.Roles.FirstOrDefault(vv => vv.RoleId == c.RoleID)
                     let isshared = (from tt in DbUtil.Db.Tags
-                    				where tt.Name == "SharedDrafts"
-                    				where tt.PersonOwner.Users.Any(uu => uu.UserId == c.OwnerID)
+                                    where tt.Name == "SharedDrafts"
+                                    where tt.PersonOwner.Users.Any(uu => uu.UserId == c.OwnerID)
                                     where tt.PersonTags.Any(vv => vv.PeopleId == Util.UserPeopleId)
                                     select tt.Id).Any()
                     where c.RoleID == 0 || c.OwnerID == Util.UserId || currentRoleIds.Contains(c.RoleID)

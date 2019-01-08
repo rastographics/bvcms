@@ -1,9 +1,8 @@
+using CmsData;
+using CmsWeb.Code;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using CmsData;
-using CmsWeb.Code;
-using CmsWeb.Models;
 using System.Linq;
 using System.Web.Mvc;
 using UtilityExtensions;
@@ -13,13 +12,15 @@ namespace CmsWeb.Areas.Org.Models
     public class SettingsAttendanceModel
     {
         public Organization Org;
-        public int Id 
+        public int Id
         {
             get { return Org != null ? Org.OrganizationId : 0; }
             set
             {
                 if (Org == null)
+                {
                     Org = DbUtil.Db.LoadOrganizationById(value);
+                }
             }
         }
 
@@ -34,6 +35,10 @@ namespace CmsWeb.Areas.Org.Models
         }
         public void Update()
         {
+            if (!HasSchedules())
+            {
+                schedules = new List<ScheduleInfo>();
+            }
             this.CopyPropertiesTo(Org);
             DbUtil.Db.SubmitChanges();
         }
@@ -48,7 +53,10 @@ namespace CmsWeb.Areas.Org.Models
             {
                 var sc = Org.OrgSchedules.FirstOrDefault(); // SCHED
                 if (sc != null && sc.SchedTime != null)
+                {
                     return sc.SchedTime.ToString2("t");
+                }
+
                 return "08:00 AM";
             }
         }
@@ -59,10 +67,13 @@ namespace CmsWeb.Areas.Org.Models
                 var sc = Org.OrgSchedules.FirstOrDefault(); // SCHED
                 if (sc != null && sc.SchedTime != null && sc.SchedDay < 9)
                 {
-					var dt = Util.Now.Date.Sunday().AddDays(sc.SchedDay ?? 0);
-			        if (dt >= Util.Now)
-			            dt = dt.AddDays(-7);
-                    return dt.Add(sc.SchedTime.Value.TimeOfDay); 
+                    var dt = Util.Now.Date.Sunday().AddDays(sc.SchedDay ?? 0);
+                    if (dt >= Util.Now)
+                    {
+                        dt = dt.AddDays(-7);
+                    }
+
+                    return dt.Add(sc.SchedTime.Value.TimeOfDay);
                 }
                 return Util.Now.Date;
             }
@@ -73,19 +84,49 @@ namespace CmsWeb.Areas.Org.Models
         }
         public void UpdateSchedules()
         {
-            DbUtil.Db.OrgSchedules.DeleteAllOnSubmit(Org.OrgSchedules);
-            Org.OrgSchedules.Clear();
-            DbUtil.Db.SubmitChanges();
-            foreach (var s in Schedules.OrderBy(ss => ss.Id))
-                Org.OrgSchedules.Add(new OrgSchedule
+            var db = DbUtil.Db;
+            var orgSchedules = Org.OrgSchedules.ToList();
+            for(int i = orgSchedules.Count - 1; i>=0; i--)
+            {
+                var s = orgSchedules[i];
+                if (!schedules.Any(ss => ss.Id == s.Id))
                 {
-                    OrganizationId = Id,
-                    Id = s.Id,
-                    SchedDay = s.SchedDay.Value.ToInt(),
-                    SchedTime = s.Time.ToDate(),
-                    AttendCreditId = s.AttendCredit.Value.ToInt()
-                });
-            DbUtil.Db.SubmitChanges();
+                    foreach (var memtag in Org.MemberTags.Where(m => m.ScheduleId == s.Id))
+                    {
+                        memtag.ScheduleId = null;
+                        db.SubmitChanges();
+                    }
+                    db.OrgSchedules.DeleteOnSubmit(s);
+                    orgSchedules.Remove(s);
+                }
+            }
+            db.SubmitChanges();
+            foreach (var s in schedules.OrderBy(ss => ss.Id))
+            {
+                if (s.Id == 0)
+                {
+                    s.Id = (orgSchedules.Count > 0) ? orgSchedules.Max(ss => ss.Id) + 1 : 1;
+                }
+                var schedule = orgSchedules.FirstOrDefault(ss => ss.Id == s.Id);
+                if (schedule == null)
+                {
+                    schedule = new OrgSchedule
+                    {
+                        OrganizationId = Id,
+                        Id = s.Id,
+                        SchedDay = s.SchedDay.Value.ToInt(),
+                        SchedTime = s.Time.ToDate(),
+                        AttendCreditId = s.AttendCredit.Value.ToInt()
+                    };
+                    Org.OrgSchedules.Add(schedule);
+                    orgSchedules.Add(schedule);
+                }
+                else
+                {
+                    schedule.Update(s.ToOrgSchedule());
+                }
+            }
+            db.SubmitChanges();
         }
         public SelectList SchedulesPrev()
         {
@@ -110,27 +151,45 @@ Schedules can be 'Every Meeting' for 100% credit or they can be 'One a Week' for
                 if (schedules == null && Id != 0)
                 {
                     var q = from sc in DbUtil.Db.OrgSchedules
-                        where sc.OrganizationId == Id
-                        select sc;
+                            where sc.OrganizationId == Id
+                            select sc;
                     var u = from s in q
-                        orderby s.Id
-                        select new ScheduleInfo(s);
+                            orderby s.Id
+                            select new ScheduleInfo(s);
                     schedules = u.ToList();
                 }
                 if (schedules == null)
+                {
                     throw new Exception("missing schedules");
+                }
+
                 return schedules;
+            }
+            set
+            {
+                schedules = value ?? new List<ScheduleInfo>();
             }
         }
         private List<ScheduleInfo> schedules;
 
+        public bool HasSchedules()
+        {
+            return schedules != null;
+        }
 
-        [Display(Name="Does NOT meet weekly", 
+        [Display(Name = "Does NOT meet weekly",
             Description = @"
 **Check** this if the org does not meet weekly. 
 Leave **unchecked** for weekly meetings.
 ")]
         public bool NotWeekly { get; set; }
+
+        [Display(Name = "Send an attendance link to leaders at the start of each meeting",
+            Description = @"
+Allows Sub-Group leaders to receive a text message or email with
+a link to the attendance roster page for the group.
+")]
+        public bool SendAttendanceLink { get; set; }
 
         [Display(Name = "Filter Attendance Roster By Subgroup",
             Description = @"
@@ -139,14 +198,14 @@ These leaders' attendance rosters will be filtered by Sub-Group in the Mobile Ap
 ")]
         public bool AttendanceBySubGroups { get; set; }
 
-        [Display(Name="Allow Attendance Overlap", 
+        [Display(Name = "Allow Attendance Overlap",
             Description = @"
 This allows persons to attend two different orgs that start at the same time.
 e.g. a meeting that spans several hours vs another that is one hour.
 ")]
         public bool AllowAttendOverlap { get; set; }
 
-        [Display(Name = "Allow Self Check-In", 
+        [Display(Name = "Allow Self Check-In",
             Description = @"
 Causes this meeting to show up on the Touchscreen Checkin.
 ")]
@@ -155,7 +214,7 @@ Causes this meeting to show up on the Touchscreen Checkin.
         [Display(Description = @"
 Causes this meeting to show up only when the magic button is pressed
 ")]
-        public bool SuspendCheckin { get; set; }  
+        public bool SuspendCheckin { get; set; }
 
         [Display(Description = @"
 If you are using self-checkin and you have multiple campuses, 
@@ -170,27 +229,27 @@ they will display without this box being checked.
 ")]
         public bool AllowNonCampusCheckIn { get; set; }
 
-        [Display(Name="Offsite Trip", 
+        [Display(Name = "Offsite Trip",
             Description = @"
 This causes any absents during the period of an offsite trip start and end dates 
 to not be counted negatively for attendance purposes.
 ")]
         public bool Offsite { get; set; }
 
-        [Display(Name="No security label required", 
+        [Display(Name = "No security label required",
             Description = @"
 Used for when children are old enough 
 to not need a security label to be picked up.
 ")]
         public bool NoSecurityLabel { get; set; }
 
-        [Display(Name="Number of CheckIn Labels", 
+        [Display(Name = "Number of CheckIn Labels",
             Description = @"
 Default is 1, use 0 if no labels needed.
 ")]
         public int? NumCheckInLabels { get; set; }
 
-        [Display(Name="Number of Worker CheckIn Labels", 
+        [Display(Name = "Number of Worker CheckIn Labels",
             Description = @"
 Allows workers to get 1 or 0 labels when checking in.
 ")]
@@ -208,7 +267,7 @@ Used to display the meeting dates on 'User Chooses Class' type registrations.
 ")]
         public DateTime? LastMeetingDate { get; set; }
 
-        [Display(Name="Rollsheet Guest Weeks", 
+        [Display(Name = "Rollsheet Guest Weeks",
             Description = @"
 Default is 3 weeks.
 Guests will drop off the rollsheet or checkin screen if they haven't visited in this number of weeks.
@@ -222,14 +281,14 @@ Number of consecutive absents that causes person to show on Recent Absents repor
 ")]
         public int? ConsecutiveAbsentsThreshold { get; set; }
 
-        [Display(Name="Start Birthday", 
+        [Display(Name = "Start Birthday",
             Description = @"
 Used on Touchscreen Checkin for when a guest needs to choose a class.
 Also used to prevent someone joining an organization during registration if they are outside the birthday range.
 ")]
         public DateTime? BirthDayStart { get; set; }
 
-        [Display(Name="End Birthday", 
+        [Display(Name = "End Birthday",
             Description = @"
 Used on Touchscreen Checkin for when a guest needs to choose a class.
 Also used to prevent someone joining an organization during registration if they are outside the birthday range.

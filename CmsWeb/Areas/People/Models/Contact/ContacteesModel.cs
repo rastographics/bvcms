@@ -1,19 +1,18 @@
+using CmsData;
+using CmsData.Codes;
+using Dapper;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Web;
-using CmsData;
-using CmsWeb.Models;
-using Dapper;
 using UtilityExtensions;
-using CmsData.Codes;
 
 namespace CmsWeb.Areas.People.Models
 {
     public class ContacteesModel
     {
         public Contact Contact;
+        public ContacteesModel() { }
         public ContacteesModel(int id)
         {
             Contact = DbUtil.Db.Contacts.Single(cc => cc.ContactId == id);
@@ -24,17 +23,24 @@ namespace CmsWeb.Areas.People.Models
         private IQueryable<Contactee> FetchContactees()
         {
             if (_contactees == null)
+            {
                 _contactees = from c in DbUtil.Db.Contactees
                               where c.ContactId == Contact.ContactId
                               orderby c.person.Name2
                               select c;
+            }
+
             return _contactees;
         }
-        int? _count;
+
+        private int? _count;
         public int Count()
         {
             if (!_count.HasValue)
+            {
                 _count = FetchContactees().Count();
+            }
+
             return _count.Value;
         }
         public IEnumerable<ContactInfo> Contactees()
@@ -73,7 +79,7 @@ namespace CmsWeb.Areas.People.Models
                 }
             }
 
-            return q2; 
+            return q2;
         }
         public Guid ConvertToQuery()
         {
@@ -89,13 +95,16 @@ namespace CmsWeb.Areas.People.Models
             var cn = new SqlConnection(Util.ConnectionString);
             cn.Open();
             cn.Execute("delete Contactees where ContactId = @cid and PeopleId = @pid",
-                new {cid = Contact.ContactId, pid = peopleId});
+                new { cid = Contact.ContactId, pid = peopleId });
         }
 
         public int AddTask(int peopleId)
         {
             if (!Util.UserPeopleId.HasValue)
+            {
                 throw new Exception("missing user on AddFollowup Task");
+            }
+
             var uid = Util.UserPeopleId.Value;
             var task = new CmsData.Task
             {

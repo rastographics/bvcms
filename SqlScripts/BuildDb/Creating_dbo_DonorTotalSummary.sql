@@ -5,7 +5,8 @@ CREATE PROC [dbo].[DonorTotalSummary]
 	@years INT,
 	@medianMin MONEY,
 	@fund INT,
-	@campus INT
+	@campus INT,
+	@fundids VARCHAR(MAX)
 )
 AS
 BEGIN
@@ -29,6 +30,13 @@ DECLARE @ts TABLE
 	NonMemberMedian MONEY
 )
 
+	DROP TABLE IF EXISTS #ff
+	CREATE TABLE #ff ( FundId INT PRIMARY KEY )
+	IF @fundids IS NOT NULL 
+		INSERT #ff (FundId) SELECT Value FROM dbo.SplitInts(@fundids)
+	ELSE
+		INSERT #ff (FundId) SELECT FundId FROM dbo.ContributionFund
+
 	DECLARE @t DonorTotalsTable
 	DECLARE @n INT
 	SET @n = 0
@@ -46,9 +54,10 @@ DECLARE @ts TABLE
 				Amount, 
 				CASE WHEN p.MemberStatusId = 10 AND c.Date >= JoinDate THEN 1 ELSE 0 END memb
 			FROM dbo.Contributions2(@fd, @td, @campus, 0, NULL, 1) c
+			JOIN #ff f ON f.FundId = c.FundId
 			JOIN dbo.People p ON p.PeopleId = c.PeopleId
 			WHERE Amount > 0
-			AND (FundId = @fund OR @fund = 0)
+			AND (c.FundId = @fund OR @fund = 0)
 		) tt
 		GROUP BY FamilyId, memb
 
@@ -74,6 +83,7 @@ DECLARE @ts TABLE
 	END
 	SELECT * FROM @ts
 END
+
 
 
 GO

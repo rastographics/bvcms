@@ -1,10 +1,9 @@
+using CmsData;
+using Dapper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using CmsData;
-using CmsWeb.Code;
-using Dapper;
 using UtilityExtensions;
 
 namespace CmsWeb.Models
@@ -18,7 +17,10 @@ namespace CmsWeb.Models
             get
             {
                 if (_Queue == null)
+                {
                     _Queue = DbUtil.Db.EmailQueues.SingleOrDefault(ee => ee.Id == Id);
+                }
+
                 return _Queue;
             }
         }
@@ -49,8 +51,9 @@ namespace CmsWeb.Models
             }
         }
 
-//        public string FormattedHtmlBody => TidyLib.FormatHtml(queue.Body);
+        //        public string FormattedHtmlBody => TidyLib.FormatHtml(queue.Body);
 
+        public EmailModel() { }
 
         public FilterType FilterType { get; private set; }
 
@@ -66,7 +69,7 @@ namespace CmsWeb.Models
 
         public PagerModel2 Pager { get; set; }
 
-        int _count;
+        private int _count;
         public int Count()
         {
             return _count;
@@ -131,7 +134,10 @@ WHERE eqt.Id = @emailQueueId
         {
             Pager = new PagerModel2(Count);
             if (pageSize.HasValue)
+            {
                 Pager.PageSize = pageSize.Value;
+            }
+
             Pager.Page = page;
         }
 
@@ -247,9 +253,15 @@ OFFSET (@currentPage-1)*@pageSize ROWS FETCH NEXT @pageSize ROWS ONLY
         public bool CanDelete()
         {
             if (HttpContext.Current.User.IsInRole("Admin"))
+            {
                 return true;
+            }
+
             if (queue.QueuedBy == Util.UserPeopleId)
+            {
                 return true;
+            }
+
             var u = DbUtil.Db.LoadPersonById(Util.UserPeopleId ?? 0);
             return queue.FromAddr == u.EmailAddress;
         }

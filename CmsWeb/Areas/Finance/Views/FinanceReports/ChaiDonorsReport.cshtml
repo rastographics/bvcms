@@ -1,0 +1,25 @@
+﻿@using CmsData
+@model CmsWeb.Models.DonorTotalSummaryOptionsModel
+<div class="modal-dialog">
+    <div class="modal-content">
+        <form id="ChaiDonorsReport" target="_blank" method="GET">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Chai Donors Report-Download</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            @Html.EditorFor(m => m.Fund)
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-default" data-dismiss="modal">Cancel</a>
+                <input type="submit" class="btn btn-primary" value="OK" />
+            </div>
+        </form>
+    </div>
+</div>

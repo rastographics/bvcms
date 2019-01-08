@@ -53,7 +53,7 @@ namespace CmsData
                 if (!defaultHost.HasValue())
                     defaultHost = Util.URLCombine(ConfigurationManager.AppSettings["cmshost"], "");
 
-                if (defaultHost.HasValue())
+                if (Host.HasValue())
                     return defaultHost.Replace("{church}", Host, ignoreCase: true);
 
                 throw (new Exception("No URL for Server in CmsHost"));
@@ -98,12 +98,14 @@ namespace CmsData
         }
         public string Setting(string name, string defaultvalue)
         {
+            if (name == null)
+                return defaultvalue;
             var list = HttpRuntime.Cache[Host + "Setting"] as Dictionary<string, string>;
             if (list == null)
             {
                 try
                 {
-                    list = Settings.ToDictionary(c => c.Id.Trim(), c => c.SettingX,
+                    list = Settings.ToList().ToDictionary(c => c.Id.Trim(), c => c.SettingX,
                         StringComparer.OrdinalIgnoreCase);
                     HttpRuntime.Cache.Insert(Host + "Setting", list, null,
                         DateTime.Now.AddSeconds(15), Cache.NoSlidingExpiration);

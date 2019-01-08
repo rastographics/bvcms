@@ -77,22 +77,22 @@ namespace CmsData
 		private DateTime? _ResetPasswordExpires;
 		
    		
-   		private EntitySet< Coupon> _Coupons;
+   		private EntitySet<Coupon> _Coupons;
 		
-   		private EntitySet< MobileAppDevice> _MobileAppDevices;
+   		private EntitySet<MobileAppDevice> _MobileAppDevices;
 		
-   		private EntitySet< SMSGroupMember> _SMSGroupMembers;
+   		private EntitySet<SMSGroupMember> _SMSGroupMembers;
 		
-   		private EntitySet< Preference> _Preferences;
+   		private EntitySet<Preference> _Preferences;
 		
-   		private EntitySet< UserRole> _UserRoles;
+   		private EntitySet<UserRole> _UserRoles;
 		
-   		private EntitySet< ApiSession> _ApiSessions;
+   		private EntitySet<ApiSession> _ApiSessions;
 		
-   		private EntitySet< VolunteerForm> _VolunteerFormsUploaded;
+   		private EntitySet<VolunteerForm> _VolunteerFormsUploaded;
 		
     	
-		private EntityRef< Person> _Person;
+		private EntityRef<Person> _Person;
 		
 	#endregion
 	
@@ -192,22 +192,22 @@ namespace CmsData
 		public User()
 		{
 			
-			this._Coupons = new EntitySet< Coupon>(new Action< Coupon>(this.attach_Coupons), new Action< Coupon>(this.detach_Coupons)); 
+			this._Coupons = new EntitySet<Coupon>(new Action< Coupon>(this.attach_Coupons), new Action< Coupon>(this.detach_Coupons)); 
 			
-			this._MobileAppDevices = new EntitySet< MobileAppDevice>(new Action< MobileAppDevice>(this.attach_MobileAppDevices), new Action< MobileAppDevice>(this.detach_MobileAppDevices)); 
+			this._MobileAppDevices = new EntitySet<MobileAppDevice>(new Action< MobileAppDevice>(this.attach_MobileAppDevices), new Action< MobileAppDevice>(this.detach_MobileAppDevices)); 
 			
-			this._SMSGroupMembers = new EntitySet< SMSGroupMember>(new Action< SMSGroupMember>(this.attach_SMSGroupMembers), new Action< SMSGroupMember>(this.detach_SMSGroupMembers)); 
+			this._SMSGroupMembers = new EntitySet<SMSGroupMember>(new Action< SMSGroupMember>(this.attach_SMSGroupMembers), new Action< SMSGroupMember>(this.detach_SMSGroupMembers)); 
 			
-			this._Preferences = new EntitySet< Preference>(new Action< Preference>(this.attach_Preferences), new Action< Preference>(this.detach_Preferences)); 
+			this._Preferences = new EntitySet<Preference>(new Action< Preference>(this.attach_Preferences), new Action< Preference>(this.detach_Preferences)); 
 			
-			this._UserRoles = new EntitySet< UserRole>(new Action< UserRole>(this.attach_UserRoles), new Action< UserRole>(this.detach_UserRoles)); 
+			this._UserRoles = new EntitySet<UserRole>(new Action< UserRole>(this.attach_UserRoles), new Action< UserRole>(this.detach_UserRoles)); 
 			
-			this._ApiSessions = new EntitySet< ApiSession>(new Action< ApiSession>(this.attach_ApiSessions), new Action< ApiSession>(this.detach_ApiSessions)); 
+			this._ApiSessions = new EntitySet<ApiSession>(new Action< ApiSession>(this.attach_ApiSessions), new Action< ApiSession>(this.detach_ApiSessions)); 
 			
-			this._VolunteerFormsUploaded = new EntitySet< VolunteerForm>(new Action< VolunteerForm>(this.attach_VolunteerFormsUploaded), new Action< VolunteerForm>(this.detach_VolunteerFormsUploaded)); 
+			this._VolunteerFormsUploaded = new EntitySet<VolunteerForm>(new Action< VolunteerForm>(this.attach_VolunteerFormsUploaded), new Action< VolunteerForm>(this.detach_VolunteerFormsUploaded)); 
 			
 			
-			this._Person = default(EntityRef< Person>); 
+			this._Person = default(EntityRef<Person>); 
 			
 			OnCreated();
 		}
@@ -862,7 +862,7 @@ namespace CmsData
     #region Foreign Key Tables
    		
    		[Association(Name="FK_Coupons_Users", Storage="_Coupons", OtherKey="UserId")]
-   		public EntitySet< Coupon> Coupons
+   		public EntitySet<Coupon> Coupons
    		{
    		    get { return this._Coupons; }
 
@@ -872,7 +872,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_MobileAppDevices_Users", Storage="_MobileAppDevices", OtherKey="UserID")]
-   		public EntitySet< MobileAppDevice> MobileAppDevices
+   		public EntitySet<MobileAppDevice> MobileAppDevices
    		{
    		    get { return this._MobileAppDevices; }
 
@@ -882,7 +882,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_SMSGroupMembers_Users", Storage="_SMSGroupMembers", OtherKey="UserID")]
-   		public EntitySet< SMSGroupMember> SMSGroupMembers
+   		public EntitySet<SMSGroupMember> SMSGroupMembers
    		{
    		    get { return this._SMSGroupMembers; }
 
@@ -892,7 +892,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_UserPreferences_Users", Storage="_Preferences", OtherKey="UserId")]
-   		public EntitySet< Preference> Preferences
+   		public EntitySet<Preference> Preferences
    		{
    		    get { return this._Preferences; }
 
@@ -902,7 +902,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_UserRole_Users", Storage="_UserRoles", OtherKey="UserId")]
-   		public EntitySet< UserRole> UserRoles
+   		public EntitySet<UserRole> UserRoles
    		{
    		    get { return this._UserRoles; }
 
@@ -912,7 +912,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_Users_ApiSession", Storage="_ApiSessions", OtherKey="UserId")]
-   		public EntitySet< ApiSession> ApiSessions
+   		public EntitySet<ApiSession> ApiSessions
    		{
    		    get { return this._ApiSessions; }
 
@@ -922,7 +922,7 @@ namespace CmsData
 
 		
    		[Association(Name="VolunteerFormsUploaded__Uploader", Storage="_VolunteerFormsUploaded", OtherKey="UploaderId")]
-   		public EntitySet< VolunteerForm> VolunteerFormsUploaded
+   		public EntitySet<VolunteerForm> VolunteerFormsUploaded
    		{
    		    get { return this._VolunteerFormsUploaded; }
 

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿
 <CustomColumns>
   <Joins>
     <join name="g">
@@ -214,6 +214,7 @@
     </column>
     <column name="SpouseFirst" join="sp"> sp.preferredname </column>
     <column name="SpouseLast" join="sp"> sp.lastname </column>
+    <column name="SpouseAltname" join="sp"> sp.altname</column>
     <column name="SpouseEmail" join="sp"> sp.emailaddress </column>
     <column name="SpouseCell" join="sp"> dbo.fmtphone(sp.cellphone) </column>
     <column name="Father" join="fa"> fa.name </column>
@@ -315,6 +316,9 @@
     </column>
     <column name="OrgMemberLastAttDt" join="op" context="org"> 
       op.LastAttended
+    </column>
+    <column name="OrgMemberGrade" join="op" context="org"> 
+      op.Grade 
     </column>
   </SpecialColumns>
 </CustomColumns>

@@ -1,14 +1,15 @@
+using CmsData;
+using CmsData.Codes;
+using CmsWeb.Areas.Finance.Models.BatchImport;
+using CmsWeb.Lifecycle;
+using CmsWeb.Models;
+using OfficeOpenXml;
+using OfficeOpenXml.Style;
 using System;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using CmsData;
-using OfficeOpenXml;
-using OfficeOpenXml.Style;
 using UtilityExtensions;
-using CmsWeb.Models;
-using CmsData.Codes;
-using CmsWeb.Areas.Finance.Models.BatchImport;
 
 namespace CmsWeb.Areas.Finance.Controllers
 {
@@ -17,16 +18,29 @@ namespace CmsWeb.Areas.Finance.Controllers
     [RouteArea("Finance", AreaPrefix = "PostBundle"), Route("{action}/{id?}")]
     public class PostBundleController : CmsStaffController
     {
+        public PostBundleController(IRequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [Route("~/PostBundle/{id:int}")]
         public ActionResult Index(int id)
         {
             var m = new PostBundleModel(id);
             if (m.Bundle == null)
+            {
                 return Message("no bundle " + m.id);
+            }
+
             if (m.Bundle.BundleStatusId == BundleStatusCode.Closed)
+            {
                 return Message("Bundle Closed");
+            }
+
             if (User.IsInRole("FinanceDataEntry") && m.Bundle.BundleStatusId != BundleStatusCode.OpenForDataEntry)
+            {
                 return Message("Bundle is no longer open for data entry");
+            }
+
             m.fund = m.Bundle.FundId ?? 1;
             return View(m);
         }
@@ -59,17 +73,20 @@ namespace CmsWeb.Areas.Finance.Controllers
         [HttpPost]
         public ActionResult Move(int id, int? moveto)
         {
-            var b = (from h in DbUtil.Db.BundleHeaders
+            var b = (from h in CurrentDatabase.BundleHeaders
                      where h.BundleStatusId == BundleStatusCode.Open
                      where h.BundleHeaderId == moveto
                      select h).SingleOrDefault();
             if (b == null)
+            {
                 return Content("cannot find bundle, or not open");
-            var bd = DbUtil.Db.BundleDetails.Single(dd => dd.ContributionId == id);
+            }
+
+            var bd = CurrentDatabase.BundleDetails.Single(dd => dd.ContributionId == id);
             var pbid = bd.BundleHeaderId;
             bd.BundleHeaderId = b.BundleHeaderId;
-            DbUtil.Db.SubmitChanges();
-            var q = (from d in DbUtil.Db.BundleDetails
+            CurrentDatabase.SubmitChanges();
+            var q = (from d in CurrentDatabase.BundleDetails
                      where d.BundleHeaderId == pbid
                      group d by d.BundleHeaderId into g
                      select new
@@ -78,7 +95,7 @@ namespace CmsWeb.Areas.Finance.Controllers
                          itemcount = g.Count(),
                      }).Single();
 
-            var sh = (from h in DbUtil.Db.BundleHeaders
+            var sh = (from h in CurrentDatabase.BundleHeaders
                       where h.BundleHeaderId == pbid
                       select h).Single();
 
@@ -119,7 +136,7 @@ namespace CmsWeb.Areas.Finance.Controllers
         [HttpPost]
         public ActionResult BatchUpload(DateTime? date, HttpPostedFileBase file, int? fundid, string text)
         {
-            if(!date.HasValue)
+            if (!date.HasValue)
             {
                 ModelState.AddModelError("date", "Date is required");
                 return View("Batch");
@@ -146,13 +163,18 @@ namespace CmsWeb.Areas.Finance.Controllers
                 fromFile = true;
             }
             else
+            {
                 s = text;
+            }
 
             try
             {
                 var id = BatchImportContributions.BatchProcess(s, date.Value, fundid, fromFile);
                 if (id.HasValue)
+                {
                     return Redirect("/PostBundle/" + id);
+                }
+
                 return RedirectToAction("Batch");
             }
             catch (Exception ex)
@@ -163,23 +185,35 @@ namespace CmsWeb.Areas.Finance.Controllers
 
         public JsonResult Funds()
         {
-            var q = from f in DbUtil.Db.ContributionFunds
-                    where f.FundStatusId == 1
-                    orderby f.FundId
-                    select new
-                    {
-                        value = f.FundId,
-                        text = $"{f.FundId} - {f.FundName}",
-                    };
+            var fundSortSetting = CurrentDatabase.Setting("SortContributionFundsByFieldName", "FundId");
 
-            return Json(q.ToList(), JsonRequestBehavior.AllowGet);
+            var query = CurrentDatabase.ContributionFunds.Where(cf => cf.FundStatusId == 1);
+
+            if (fundSortSetting == "FundName")
+            {
+                query = query.OrderBy(cf => cf.FundName).ThenBy(cf => cf.FundId);
+            }
+            else
+            {
+                query = query.OrderBy(cf => cf.FundId);
+            }
+
+            // HACK: Change text based on sorting option for funds. If sorting by name, make it show first otherwise leave the id first to enable selecting by keystroke until ui adjusted
+            if (fundSortSetting == "FundId")
+            {
+                return Json(query.ToList().Select(x => new { text = $"{x.FundId} . {x.FundName}", value = x.FundId.ToString() }), JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                return Json(query.ToList().Select(x => new { text = $"{x.FundName} ({x.FundId})", value = x.FundId.ToString() }), JsonRequestBehavior.AllowGet);
+            }
         }
 
         [HttpPost]
         public ActionResult Edit(string id, string value)
         {
             var iid = id.Substring(1).ToInt();
-            var c = DbUtil.Db.Contributions.SingleOrDefault(co => co.ContributionId == iid);
+            var c = CurrentDatabase.Contributions.SingleOrDefault(co => co.ContributionId == iid);
             if (c != null)
             {
                 var m = new PostBundleModel();
@@ -187,15 +221,15 @@ namespace CmsWeb.Areas.Finance.Controllers
                 {
                     case "a":
                         c.ContributionAmount = value.ToDecimal();
-                        DbUtil.Db.SubmitChanges();
+                        CurrentDatabase.SubmitChanges();
                         return Json(m.ContributionRowData(this, iid));
                     case "f":
                         c.FundId = value.ToInt();
-                        DbUtil.Db.SubmitChanges();
+                        CurrentDatabase.SubmitChanges();
                         return Content($"{c.ContributionFund.FundId} - {c.ContributionFund.FundName}");
                     case "k":
                         c.CheckNo = value;
-                        DbUtil.Db.SubmitChanges();
+                        CurrentDatabase.SubmitChanges();
                         return Json(m.ContributionRowData(this, iid));
                 }
             }
@@ -204,7 +238,7 @@ namespace CmsWeb.Areas.Finance.Controllers
 
         public ActionResult BankAccountAssociations()
         {
-            var q = from c in DbUtil.Db.CardIdentifiers
+            var q = from c in CurrentDatabase.CardIdentifiers
                     orderby c.Person.Name2
                     select new
                     {

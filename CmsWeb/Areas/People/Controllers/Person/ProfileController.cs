@@ -1,9 +1,9 @@
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
 using CmsData;
 using CmsData.Codes;
 using CmsWeb.Areas.People.Models;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
 
 namespace CmsWeb.Areas.People.Controllers
 {
@@ -16,7 +16,10 @@ namespace CmsWeb.Areas.People.Controllers
         {
             var m = new MemberInfo(id);
             if (m.person == null)
+            {
                 return Content("Cannot find person");
+            }
+
             return View("Profile/Membership/Display", m);
         }
 
@@ -30,9 +33,9 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpPost]
         public ActionResult JustAddedNotMember(int id)
         {
-            var p = DbUtil.Db.LoadPersonById(id);
+            var p = CurrentDatabase.LoadPersonById(id);
             p.MemberStatusId = MemberStatusCode.NotMember;
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
             var m = new MemberInfo(id);
             return View("Profile/Membership/Display", m);
         }
@@ -42,9 +45,14 @@ namespace CmsWeb.Areas.People.Controllers
         {
             var ret = m.UpdateMember();
             if (ret != "ok")
+            {
                 m.AutomationError = ret;
+            }
+
             if (!ModelState.IsValid || ret != "ok")
+            {
                 return View("Profile/Membership/Edit", m);
+            }
 
             DbUtil.LogPersonActivity($"Update Membership Info for: {m.person.Name}", m.PeopleId, m.person.Name);
             return View("Profile/Membership/Display", m);
@@ -62,10 +70,13 @@ namespace CmsWeb.Areas.People.Controllers
         public ActionResult UploadDocument(int id, HttpPostedFileBase doc)
         {
             if (doc == null)
+            {
                 return Redirect("/Person2/" + id);
-            var person = DbUtil.Db.People.Single(pp => pp.PeopleId == id);
+            }
+
+            var person = CurrentDatabase.People.Single(pp => pp.PeopleId == id);
             DbUtil.LogPersonActivity($"Uploading Document for {person.Name}", id, person.Name);
-            person.UploadDocument(DbUtil.Db, doc.InputStream, doc.FileName, doc.ContentType);
+            person.UploadDocument(CurrentDatabase, doc.InputStream, doc.FileName, doc.ContentType);
             return Redirect("/Person2/" + id);
         }
 

@@ -5,13 +5,13 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
 
+using CmsData;
+using CmsData.Codes;
+using LumenWorks.Framework.IO.Csv;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using CmsData;
-using CmsData.Codes;
-using LumenWorks.Framework.IO.Csv;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Finance.Models.BatchImport
@@ -23,11 +23,15 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             if (fromFile)
             {
                 using (var csv = new CsvReader(new StringReader(text), false))
+                {
                     return BatchProcessStewardshipTechnology(csv, date, fundid);
+                }
             }
 
             using (var csv = new CsvReader(new StringReader(text), false, '\t'))
+            {
                 return BatchProcessStewardshipTechnology(csv, date, fundid);
+            }
         }
 
         private static int? BatchProcessStewardshipTechnology(CsvReader csv, DateTime date, int? fundid)
@@ -46,6 +50,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             var list = new List<DepositRecord>();
             csv.ReadNextRecord();
             while (csv.ReadNextRecord())
+            {
                 list.Add(new DepositRecord()
                 {
                     Date = csv[1].ToDate(),
@@ -54,13 +59,18 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                     CheckNo = csv[0],
                     Type = csv[3],
                 });
+            }
+
             DateTime? prevbatch = null;
             foreach (var r in list.OrderBy(rr => rr.Date))
             {
                 if (r.Date != prevbatch)
                 {
                     if (bh != null)
+                    {
                         BatchImportContributions.FinishBundle(bh);
+                    }
+
                     bh = BatchImportContributions.GetBundleHeader(r.Date ?? date, DateTime.Now, BundleTypeCode.Online);
                     bh.DepositDate = r.Date;
                     prevbatch = r.Date;
@@ -69,10 +79,12 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                 BundleDetail bd;
 
                 var fid = (from f in fundList
-                    where f.FundName == r.Type
-                    select f.FundId).SingleOrDefault();
+                           where f.FundName == r.Type
+                           select f.FundId).SingleOrDefault();
                 if (fid > 0)
+                {
                     bd = BatchImportContributions.AddContributionDetail(r.Date ?? date, fid, r.Amount, r.CheckNo, "", r.Account);
+                }
                 else
                 {
                     bd = BatchImportContributions.AddContributionDetail(r.Date ?? date, fundid ?? firstfund, r.Amount, r.CheckNo, "", r.Account);

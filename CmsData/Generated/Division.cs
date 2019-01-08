@@ -39,22 +39,22 @@ namespace CmsData
 		private bool? _NoDisplayZero;
 		
    		
-   		private EntitySet< Coupon> _Coupons;
+   		private EntitySet<Coupon> _Coupons;
 		
-   		private EntitySet< DivOrg> _DivOrgs;
+   		private EntitySet<DivOrg> _DivOrgs;
 		
-   		private EntitySet< Organization> _Organizations;
+   		private EntitySet<Organization> _Organizations;
 		
-   		private EntitySet< ProgDiv> _ProgDivs;
+   		private EntitySet<ProgDiv> _ProgDivs;
 		
-   		private EntitySet< Resource> _Resources;
+   		private EntitySet<Resource> _Resources;
 		
-   		private EntitySet< Promotion> _FromPromotions;
+   		private EntitySet<Promotion> _FromPromotions;
 		
-   		private EntitySet< Promotion> _ToPromotions;
+   		private EntitySet<Promotion> _ToPromotions;
 		
     	
-		private EntityRef< Program> _Program;
+		private EntityRef<Program> _Program;
 		
 	#endregion
 	
@@ -97,22 +97,22 @@ namespace CmsData
 		public Division()
 		{
 			
-			this._Coupons = new EntitySet< Coupon>(new Action< Coupon>(this.attach_Coupons), new Action< Coupon>(this.detach_Coupons)); 
+			this._Coupons = new EntitySet<Coupon>(new Action< Coupon>(this.attach_Coupons), new Action< Coupon>(this.detach_Coupons)); 
 			
-			this._DivOrgs = new EntitySet< DivOrg>(new Action< DivOrg>(this.attach_DivOrgs), new Action< DivOrg>(this.detach_DivOrgs)); 
+			this._DivOrgs = new EntitySet<DivOrg>(new Action< DivOrg>(this.attach_DivOrgs), new Action< DivOrg>(this.detach_DivOrgs)); 
 			
-			this._Organizations = new EntitySet< Organization>(new Action< Organization>(this.attach_Organizations), new Action< Organization>(this.detach_Organizations)); 
+			this._Organizations = new EntitySet<Organization>(new Action< Organization>(this.attach_Organizations), new Action< Organization>(this.detach_Organizations)); 
 			
-			this._ProgDivs = new EntitySet< ProgDiv>(new Action< ProgDiv>(this.attach_ProgDivs), new Action< ProgDiv>(this.detach_ProgDivs)); 
+			this._ProgDivs = new EntitySet<ProgDiv>(new Action< ProgDiv>(this.attach_ProgDivs), new Action< ProgDiv>(this.detach_ProgDivs)); 
 			
-			this._Resources = new EntitySet< Resource>(new Action< Resource>(this.attach_Resources), new Action< Resource>(this.detach_Resources)); 
+			this._Resources = new EntitySet<Resource>(new Action< Resource>(this.attach_Resources), new Action< Resource>(this.detach_Resources)); 
 			
-			this._FromPromotions = new EntitySet< Promotion>(new Action< Promotion>(this.attach_FromPromotions), new Action< Promotion>(this.detach_FromPromotions)); 
+			this._FromPromotions = new EntitySet<Promotion>(new Action< Promotion>(this.attach_FromPromotions), new Action< Promotion>(this.detach_FromPromotions)); 
 			
-			this._ToPromotions = new EntitySet< Promotion>(new Action< Promotion>(this.attach_ToPromotions), new Action< Promotion>(this.detach_ToPromotions)); 
+			this._ToPromotions = new EntitySet<Promotion>(new Action< Promotion>(this.attach_ToPromotions), new Action< Promotion>(this.detach_ToPromotions)); 
 			
 			
-			this._Program = default(EntityRef< Program>); 
+			this._Program = default(EntityRef<Program>); 
 			
 			OnCreated();
 		}
@@ -349,7 +349,7 @@ namespace CmsData
     #region Foreign Key Tables
    		
    		[Association(Name="FK_Coupons_Division", Storage="_Coupons", OtherKey="DivId")]
-   		public EntitySet< Coupon> Coupons
+   		public EntitySet<Coupon> Coupons
    		{
    		    get { return this._Coupons; }
 
@@ -359,7 +359,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_DivOrg_Division", Storage="_DivOrgs", OtherKey="DivId")]
-   		public EntitySet< DivOrg> DivOrgs
+   		public EntitySet<DivOrg> DivOrgs
    		{
    		    get { return this._DivOrgs; }
 
@@ -369,7 +369,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_Organizations_Division", Storage="_Organizations", OtherKey="DivisionId")]
-   		public EntitySet< Organization> Organizations
+   		public EntitySet<Organization> Organizations
    		{
    		    get { return this._Organizations; }
 
@@ -379,7 +379,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_ProgDiv_Division", Storage="_ProgDivs", OtherKey="DivId")]
-   		public EntitySet< ProgDiv> ProgDivs
+   		public EntitySet<ProgDiv> ProgDivs
    		{
    		    get { return this._ProgDivs; }
 
@@ -389,7 +389,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_Resource_Division", Storage="_Resources", OtherKey="DivisionId")]
-   		public EntitySet< Resource> Resources
+   		public EntitySet<Resource> Resources
    		{
    		    get { return this._Resources; }
 
@@ -399,7 +399,7 @@ namespace CmsData
 
 		
    		[Association(Name="FromPromotions__FromDivision", Storage="_FromPromotions", OtherKey="FromDivId")]
-   		public EntitySet< Promotion> FromPromotions
+   		public EntitySet<Promotion> FromPromotions
    		{
    		    get { return this._FromPromotions; }
 
@@ -409,7 +409,7 @@ namespace CmsData
 
 		
    		[Association(Name="ToPromotions__ToDivision", Storage="_ToPromotions", OtherKey="ToDivId")]
-   		public EntitySet< Promotion> ToPromotions
+   		public EntitySet<Promotion> ToPromotions
    		{
    		    get { return this._ToPromotions; }
 

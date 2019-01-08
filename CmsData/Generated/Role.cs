@@ -25,7 +25,7 @@ namespace CmsData
 		private bool? _Hardwired;
 		
    		
-   		private EntitySet< UserRole> _UserRoles;
+   		private EntitySet<UserRole> _UserRoles;
 		
     	
 	#endregion
@@ -48,7 +48,7 @@ namespace CmsData
 		public Role()
 		{
 			
-			this._UserRoles = new EntitySet< UserRole>(new Action< UserRole>(this.attach_UserRoles), new Action< UserRole>(this.detach_UserRoles)); 
+			this._UserRoles = new EntitySet<UserRole>(new Action< UserRole>(this.attach_UserRoles), new Action< UserRole>(this.detach_UserRoles)); 
 			
 			
 			OnCreated();
@@ -128,7 +128,7 @@ namespace CmsData
     #region Foreign Key Tables
    		
    		[Association(Name="FK_UserRole_Roles", Storage="_UserRoles", OtherKey="RoleId")]
-   		public EntitySet< UserRole> UserRoles
+   		public EntitySet<UserRole> UserRoles
    		{
    		    get { return this._UserRoles; }
 

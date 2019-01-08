@@ -1,9 +1,11 @@
 ﻿@model CmsWeb.Models.TotalsByFundModel
 @using CmsData
+@using CmsWeb.Areas.Finance.Models.Report
 @{
     Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Donor Totals By Range";
     ViewBag.ReportPageHeader = "Donor Totals By Range";
+    var customFundsList = ContributionStatements.CustomFundSetSelectList(DbUtil.Db);
 }
 <div class="report box box-responsive">
     <div class="box-content">
@@ -36,6 +38,17 @@
                             </div>
                         </div>
                     </div>
+                    @if (customFundsList != null)
+                    {
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label for="FundSet" class="control-label">Fund Set</label>
+                                <div class="input-group">
+                                    @Html.DropDownList("FundSet", customFundsList, new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                    }
                 </div>
                 <div class="row">
                     <div class="col-sm-9">
@@ -100,7 +113,7 @@
                 $('#nontaxDed').text($("#NonTaxDeductible").prop('checked'));
                 $('#pledge').text($("#Pledges").prop('checked'));
                 $('#includeUnClosedBundles').text($("#IncUnclosedBundles").prop('checked'));
-                
+
                 var f = $(this).closest('form');
                 var q = f.serialize();
                 $.post("/FinanceReports/DonorTotalsByRangeResults", q, function (ret) {

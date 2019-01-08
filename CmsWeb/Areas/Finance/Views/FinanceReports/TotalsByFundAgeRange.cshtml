@@ -1,9 +1,11 @@
 ﻿@using CmsData
+@using CmsWeb.Areas.Finance.Models.Report
 @model CmsWeb.Models.TotalsByFundAgeRangeModel
 @{
     Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Totals By Age Range";
     ViewBag.ReportPageHeader = "Totals By Age Range";
+    var customFundsList = ContributionStatements.CustomFundSetSelectList(DbUtil.Db);
 }
 <div class="report box box-responsive">
     <div class="box-content">
@@ -36,6 +38,17 @@
                             </div>
                         </div>
                     </div>
+                    @if (customFundsList != null)
+                    {
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label for="FundSet" class="control-label">Fund Set</label>
+                                <div class="input-group">
+                                    @Html.DropDownList("FundSet", customFundsList, new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                    }
                 </div>
                 <div class="row">
                     <div class="col-sm-12">
@@ -54,6 +67,10 @@
             <strong>@Util2.CampusLabel:</strong> <span id="campusName">@campusName</span><br />
             <strong>From Date:</strong> <span id="fromDate">@Model.Dt1.GetValueOrDefault().ToShortDateString()</span><br />
             <strong>To Date:</strong> <span id="toDate">@Model.Dt2.GetValueOrDefault().ToShortDateString()</span><br />
+            @if (customFundsList != null)
+            {
+                <strong>Fund Set:</strong> <span id="fundSet">@Model.FundSet</span><br />
+            }
         </div>
         <div id="results" style="margin-top: 25px;"></div>
     </div>
@@ -74,6 +91,7 @@
                 $('#campusName').text($("#CampusId option:selected").text());
                 $('#fromDate').text($("#Dt1").val());
                 $('#toDate').text($("#Dt2").val());
+                $('#fundSet').text($("#FundSet").val());
                 
                 var f = $(this).closest('form');
                 var q = f.serialize();

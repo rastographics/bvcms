@@ -1,0 +1,22 @@
+﻿@model IEnumerable<CmsWeb.Areas.Coordinator.Controllers.CheckinTimeslotDto>
+
+<div class="form-group">
+    <select id="checkin-timeslot" class="form-control">
+        <option value="" selected="selected">Show all times</option>
+
+        @foreach (var item in Model)
+        {
+            <option value="@item.NextMeetingDate.ToString("s")">@item.NextMeetingDate.ToString("g")</option>
+        }
+    </select>
+</div>
+
+<script type="text/javascript">
+        $('#checkin-timeslot').change(function () {
+            var selectedTimeslot = this.value;
+            $("#ProgramContainer").load('@Url.Action("ProgramSelector")?selectedTimeslot=' + selectedTimeslot)
+            $('#DivisionContainer').load('@Url.Action("DivisionSelector")?selectedTimeslot=' + selectedTimeslot);
+            $('#OrganizationContainer').load('@Url.Action("OrganizationSelector")?selectedTimeslot=' + selectedTimeslot);
+            $("#DetailsContainer").empty();
+        });
+</script>

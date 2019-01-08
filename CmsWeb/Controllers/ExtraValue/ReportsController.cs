@@ -11,8 +11,11 @@ namespace CmsWeb.Controllers
         [HttpGet, Route("ExtraValue/Summary/{table}")]
         public ActionResult Summary(string table)
         {
+            if (Util2.OrgLeadersOnly)
+                return Redirect("/Home");
+
             var m = ExtraInfo.CodeSummary(table);
-            var c = DbUtil.Db.Content("StandardExtraValues2", "<Views />", ContentTypeCode.TypeText);
+            var c = CurrentDatabase.Content("StandardExtraValues2", "<Views />", ContentTypeCode.TypeText);
             ViewBag.EvSpecId = c.Id;
             return View("Reports/Summary", m);
         }

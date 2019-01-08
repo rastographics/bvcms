@@ -1,3 +1,4 @@
+
 CREATE VIEW [dbo].[TransactionBalances]
 AS
 WITH trans AS (
@@ -15,13 +16,13 @@ WITH trans AS (
 		,ISNULL((SELECT amt + ISNULL(amtdue, 0) - ISNULL(donate, 0)
 			FROM dbo.[Transaction] 
 			WHERE Id = t.OriginalId
-			AND (Approved = 1 OR TransactionId LIKE 'Coupon%')), 0)
+			AND (Approved = 1 OR TransactionId LIKE 'Coupon%' OR (TransactionId LIKE 'zero due%' AND amtdue > 0))), 0)
 			- ISNULL((SELECT SUM(Amt - ISNULL(donate,0)) 
 				FROM dbo.[Transaction] 
 				WHERE OriginalId = t.OriginalId 
 				AND TransactionDate <= t.TransactionDate 
 				AND amt IS NOT NULL
-				AND (Approved = 1 OR TransactionId LIKE 'Coupon%')), 0)
+				AND ((Approved = 1 or TransactionId like 'Coupon%') or (TransactionId like 'zero due%' and amtdue > 0))), 0)
 			TotDue
 		,(SELECT COUNT(*) 
 			FROM dbo.TransactionPeople
@@ -75,6 +76,9 @@ SELECT BalancesId
 			THEN 1 ELSE 0 END) CanCredit
 		,IsAdjustment
 FROM trans
+
+
+
 
 GO
 IF @@ERROR <> 0 SET NOEXEC ON

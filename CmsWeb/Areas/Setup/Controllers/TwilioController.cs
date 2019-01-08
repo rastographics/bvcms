@@ -1,65 +1,86 @@
-﻿using System;
+﻿using CmsData;
+using CmsWeb.Lifecycle;
+using System;
 using System.Linq;
 using System.Web.Mvc;
-using CmsData;
 
 namespace CmsWeb.Areas.Setup.Controllers
 {
     [RouteArea("Setup", AreaPrefix = "Twilio"), Route("{action}/{id?}")]
     public class TwilioController : CmsStaffController
     {
+        public TwilioController(IRequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [Route("~/Twilio")]
-        public ActionResult Index( int activeTab = 0 )
+        public ActionResult Index(int activeTab = 0)
         {
             ViewBag.Tab = activeTab;
             return View();
         }
 
-        public ActionResult GroupCreate( string name, string description )
+        public ActionResult GroupCreate(string name, string description, bool systemFlag)
         {
-            var n = new SMSGroup();
+            var group = new SMSGroup
+            {
+                Name = name,
+                Description = description,
+                SystemFlag = systemFlag,
+                IsDeleted = false
+            };
 
-            n.Name = name;
-            n.Description = description;
+            CurrentDatabase.SMSGroups.InsertOnSubmit(group);
+            CurrentDatabase.SubmitChanges();
 
-            DbUtil.Db.SMSGroups.InsertOnSubmit(n);
-            DbUtil.Db.SubmitChanges();
-
-            return RedirectToAction( "Index" );
+            return RedirectToAction("Index");
         }
 
-        public ActionResult GroupUpdate( int id, string name, string description)
+        public ActionResult GroupUpdate(int id, string name, string description, bool systemFlag)
         {
-            var g = (from e in DbUtil.Db.SMSGroups
+            var g = (from e in CurrentDatabase.SMSGroups
                      where e.Id == id
                      select e).Single();
 
             g.Name = name;
             g.Description = description;
+            g.SystemFlag = systemFlag;
 
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
+
+            return RedirectToAction("Index");
+        }
+
+        public ActionResult GroupHide(int groupId)
+        {
+            var group = (from e in CurrentDatabase.SMSGroups
+                         where e.Id == groupId
+                         select e).Single();
+            group.IsDeleted = true;
+            group.SystemFlag = false;
+            CurrentDatabase.SubmitChanges();
 
             return RedirectToAction("Index");
         }
 
         public ActionResult GroupRemove(int id)
         {
-            var g = (from e in DbUtil.Db.SMSGroups
+            var g = (from e in CurrentDatabase.SMSGroups
                      where e.Id == id
                      select e).Single();
 
-            var u = from e in DbUtil.Db.SMSGroupMembers
+            var u = from e in CurrentDatabase.SMSGroupMembers
                     where e.GroupID == id
                     select e;
 
-            var n = from e in DbUtil.Db.SMSNumbers
+            var n = from e in CurrentDatabase.SMSNumbers
                     where e.GroupID == id
                     select e;
 
-            DbUtil.Db.SMSNumbers.DeleteAllOnSubmit(n);
-            DbUtil.Db.SMSGroupMembers.DeleteAllOnSubmit(u);
-            DbUtil.Db.SMSGroups.DeleteOnSubmit(g);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SMSNumbers.DeleteAllOnSubmit(n);
+            CurrentDatabase.SMSGroupMembers.DeleteAllOnSubmit(u);
+            CurrentDatabase.SMSGroups.DeleteOnSubmit(g);
+            CurrentDatabase.SubmitChanges();
 
             return RedirectToAction("Index");
         }
@@ -72,20 +93,20 @@ namespace CmsWeb.Areas.Setup.Controllers
             n.GroupID = groupID;
             n.Number = newNumber;
 
-            DbUtil.Db.SMSNumbers.InsertOnSubmit(n);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SMSNumbers.InsertOnSubmit(n);
+            CurrentDatabase.SubmitChanges();
 
             return RedirectToAction("Index");
         }
 
         public ActionResult NumberRemove(int id)
         {
-            var n = (from e in DbUtil.Db.SMSNumbers
+            var n = (from e in CurrentDatabase.SMSNumbers
                      where e.Id == id
                      select e).First();
 
-            DbUtil.Db.SMSNumbers.DeleteOnSubmit(n);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SMSNumbers.DeleteOnSubmit(n);
+            CurrentDatabase.SubmitChanges();
 
             return RedirectToAction("Index");
         }
@@ -97,20 +118,20 @@ namespace CmsWeb.Areas.Setup.Controllers
             n.GroupID = groupID;
             n.UserID = userID;
 
-            DbUtil.Db.SMSGroupMembers.InsertOnSubmit(n);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SMSGroupMembers.InsertOnSubmit(n);
+            CurrentDatabase.SubmitChanges();
 
             return Redirect("/Twilio");
         }
 
         public ActionResult UserRemove(int id)
         {
-            var p = (from e in DbUtil.Db.SMSGroupMembers
+            var p = (from e in CurrentDatabase.SMSGroupMembers
                      where e.Id == id
                      select e).First();
 
-            DbUtil.Db.SMSGroupMembers.DeleteOnSubmit(p);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SMSGroupMembers.DeleteOnSubmit(p);
+            CurrentDatabase.SubmitChanges();
 
             return RedirectToAction("Index");
         }

@@ -1,26 +1,32 @@
+using CmsData;
+using CmsWeb.Areas.Search.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using CmsData;
-using CmsWeb.Areas.Search.Models;
 
 namespace CmsWeb.Areas.Reports.Models
 {
     public class AttendanceDetailModel
     {
-        DateTime dt1;
-        DateTime? dt2;
+        private readonly DateTime dt1;
+        private DateTime? dt2;
         private OrgSearchModel Model;
 
+        public AttendanceDetailModel() { }
         public AttendanceDetailModel(DateTime dt1, DateTime? dt2, OrgSearchModel model)
         {
             if (dt2.HasValue)
             {
                 if (dt2.Value.TimeOfDay == TimeSpan.Zero)
+                {
                     dt2 = dt2.Value.AddDays(1);
+                }
             }
             else
+            {
                 dt2 = dt1.AddDays(1);
+            }
+
             this.dt1 = dt1;
             this.dt2 = dt2;
             Model = model;
@@ -71,11 +77,11 @@ namespace CmsWeb.Areas.Reports.Models
         }
         public class MeetingRow
         {
-//            public int MeetingId { get; set; }
+            //            public int MeetingId { get; set; }
             public string OrgName { get; set; }
             public string Leader { get; set; }
             public DateTime DateTime { get; set; }
-//            public string OrgId { get; set; }
+            //            public string OrgId { get; set; }
             public int Present { get; set; }
             public int Visitors { get; set; }
             public int OutTowners { get; set; }

@@ -164,7 +164,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             if (subtext.Contains("AMOUNT,FRB,CHECK NUMBER,ACCOUNT NUMBER,CAPTUREDATE"))
                 return new HunterStreetImporter();
 
-            if (text.Substring(0, Math.Min(text.Length, 20)).Contains("10444063,"))
+            if (subtext.Contains("Funded  Date,Trans. #,Trans. Date,Payer,Designation,Payment,Last 4,Gross Amount,Fees Withheld,Net Amount,Misc,Merchant Order #,Batch Id"))
                 return new AbundantLifeImporter();
 
             if (subtext.Contains("Type,Date,Num,Name,Memo,Class,Split,Amount"))
@@ -173,14 +173,26 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             if (subtext.Contains("!TRNS	TRNSID	TRNSTYPE	DATE	ACCNT	NAME	AMOUNT	DOCNUM	MEMO	CLASS	PAYMETH	PONUM	ADDR1	ADDR2	ADDR3	ADDR4	ADDR5	SADDR1	SADDR2	SADDR3	SADDR4	SADDR5	TOPRINT"))
                 return new SimpleGiveImporter();
 
+            if (subtext.Contains("date,time,transaction_id,transfer_id,transfer_date,transfer_net,first_name,last_name,email,give_amount,net_amount,fee_amount,status,member_id,campus_id,fund,fund_id,cause,cause_id,refund_amount,fund_code"))
+                return new SubSplashImporter();
             if (subtext.Contains("date,transaction_id,transfer_id,transfer_date,transfer_net,first_name,last_name,email,give_amount,net_amount,fee_amount,status,member_id,campus_id,fund,fund_id,cause,cause_id,refund_amount"))
                 return new SubSplashImporter();
 
             if (subtext.Contains("Posting Date,Account #,Deposit Ticket Sequence #,Deposit Amount,Debit Account,Item Serial #,Item Sequence #,Item Amount"))
                 return new LongViewHeightsImporter();
 
+            if (subtext.Contains("Site ID,Customer Name,Deposit ID,Processing Date,Deposit Account,Deposit Report,Batch ID,Transaction IDs,Type,AUX/Serial,RIC,RT,WAUX/FLD4,Account,Check,Amount,Item Type"))
+                return new ForestvilleImporter();
+
+            if (subtext.Contains("paymentID,orderID,userID,terminalID,terminalType,transType,transDate,settleDate,transID,batchNum,apiResponse,paymentType,paymentTotal,splitPayment,cash,credit,lastfour,nameonCard,echeck,checknum,giftcard,amountpaid,balance,cartid,status,firstName,lastName"))
+                return new ClearGiveImporter();
+
             switch (DbUtil.Db.Setting("BankDepositFormat", "none").ToLower())
             {
+                case "crossroadsbaptist":
+                    return new CrossroadsBaptistImporter();
+                case "stonyrunfriends":
+                    return new StonyRunFriendsImporter();
                 case "fcchudson":
                     return new FcchudsonImporter();
                 case "fbcfayetteville":

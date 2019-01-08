@@ -36,11 +36,11 @@ namespace CmsData
 		
    		
     	
-		private EntityRef< Organization> _Organization;
+		private EntityRef<Organization> _Organization;
 		
-		private EntityRef< Person> _Goer;
+		private EntityRef<Person> _Goer;
 		
-		private EntityRef< Person> _Sender;
+		private EntityRef<Person> _Sender;
 		
 	#endregion
 	
@@ -78,11 +78,11 @@ namespace CmsData
 		{
 			
 			
-			this._Organization = default(EntityRef< Organization>); 
+			this._Organization = default(EntityRef<Organization>); 
 			
-			this._Goer = default(EntityRef< Person>); 
+			this._Goer = default(EntityRef<Person>); 
 			
-			this._Sender = default(EntityRef< Person>); 
+			this._Sender = default(EntityRef<Person>); 
 			
 			OnCreated();
 		}

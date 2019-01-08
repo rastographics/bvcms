@@ -1,16 +1,16 @@
+using CmsWeb.Areas.Reports.Models;
+using CmsWeb.Areas.Search.Models;
+using CmsWeb.Lifecycle;
+using CmsWeb.Models;
+using Dapper;
+using MoreLinq;
+using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web.Mvc;
-using CmsData;
-using CmsWeb.Areas.Reports.Models;
-using CmsWeb.Areas.Search.Models;
-using CmsWeb.Models;
-using Dapper;
-using MoreLinq;
-using OfficeOpenXml;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Reports.Controllers
@@ -18,6 +18,10 @@ namespace CmsWeb.Areas.Reports.Controllers
     [RouteArea("Reports", AreaPrefix = "Export2"), Route("{action}/{id?}")]
     public class ExportController : CmsStaffController
     {
+        public ExportController(IRequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [HttpGet]
         public ActionResult StatusFlags(Guid id, string flags = "")
         { // ?flags=F35,F03,F01,F04
@@ -40,7 +44,7 @@ namespace CmsWeb.Areas.Reports.Controllers
             return MembershipExportModel.MembershipInfoList(id);
         }
 
-        [Authorize(Roles = "Finance")]
+        [Authorize(Roles = "Finance,FinanceViewOnly")]
         [HttpPost]
         public ActionResult Contributions(string id, ContributionsExcelResult m)
         {
@@ -59,19 +63,25 @@ namespace CmsWeb.Areas.Reports.Controllers
                 startdate = dt1,
                 enddate = dt2,
             }, commandType: CommandType.StoredProcedure, commandTimeout: 600);
-            var entity = (IDictionary<string, object>) q.First();
+            var entity = (IDictionary<string, object>)q.First();
             var cols = entity.Keys.Cast<string>().ToList();
             var ep = new ExcelPackage();
             var ws = ep.Workbook.Worksheets.Add("Sheet1");
             int row = 1;
             for (var i = 0; i < cols.Count; i++)
-                ws.Cells[row, i+1].Value = cols[i];
+            {
+                ws.Cells[row, i + 1].Value = cols[i];
+            }
+
             row++;
             foreach (var r in q)
             {
-                var rr = (IDictionary<string, object>) r;
+                var rr = (IDictionary<string, object>)r;
                 for (var i = 0; i < cols.Count; i++)
-                    ws.Cells[row, i+1].Value = rr[cols[i]];
+                {
+                    ws.Cells[row, i + 1].Value = rr[cols[i]];
+                }
+
                 row++;
             }
             ws.Cells[ws.Dimension.Address].AutoFitColumns();
@@ -82,19 +92,28 @@ namespace CmsWeb.Areas.Reports.Controllers
         {
             var dt = ChurchAttendanceModel.MostRecentAttendedSunday();
             if (!dt1.HasValue)
+            {
                 dt1 = new DateTime(dt.Year, 1, 1);
+            }
+
             if (!dt2.HasValue)
+            {
                 dt2 = dt;
+            }
+
             var m2 = new AttendanceDetailModel(dt1.Value, dt2, m);
             return m2.FetchMeetings().ToDataTable().ToExcel("MeetingsExport.xlsx");
         }
         [HttpPost]
         public ActionResult OrgDayStats(DateTime? dt, OrgSearchModel m)
         {
-            if(!dt.HasValue)
+            if (!dt.HasValue)
+            {
                 dt = ChurchAttendanceModel.MostRecentAttendedSunday();
+            }
+
             var orgs = string.Join(",", m.FetchOrgs().Select(oo => oo.OrganizationId));
-            var q = DbUtil.Db.OrgDayStats(orgs, dt);
+            var q = CurrentDatabase.OrgDayStats(orgs, dt);
             return q.ToDataTable().ToExcel("OrgDatStats.xlsx");
         }
 
@@ -109,7 +128,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         [Route("Excel/{format}/{id:guid}")]
         public ActionResult Excel(Guid id, string format, bool? titles, bool? useMailFlags)
         {
-            var ctl = new MailingController {UseTitles = titles ?? false, UseMailFlags = useMailFlags ?? false};
+            var ctl = new MailingController { UseTitles = titles ?? false, UseMailFlags = useMailFlags ?? false };
             switch (format)
             {
                 case "Individual":
@@ -154,11 +173,13 @@ namespace CmsWeb.Areas.Reports.Controllers
         [HttpGet]
         public ActionResult Csv(Guid id, string format, bool? sortzip, bool? titles, bool? useMailFlags)
         {
-            var ctl = new MailingController {UseTitles = titles ?? false, UseMailFlags = useMailFlags ?? false};
+            var ctl = new MailingController { UseTitles = titles ?? false, UseMailFlags = useMailFlags ?? false };
 
             var sort = "Name";
             if (sortzip ?? false)
+            {
                 sort = "Zip";
+            }
 
             switch (format)
             {
@@ -180,9 +201,9 @@ namespace CmsWeb.Areas.Reports.Controllers
 
         }
 
-        private static int maxExcelRows
+        private int maxExcelRows
         {
-            get { return DbUtil.Db.Setting("MaxExcelRows", "10000").ToInt(); }
+            get { return CurrentDatabase.Setting("MaxExcelRows", "10000").ToInt(); }
         }
 
         [HttpGet]

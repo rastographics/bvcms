@@ -1,14 +1,11 @@
-using System;
+using CmsData;
+using CmsWeb.Areas.Manage.Models;
+using CmsWeb.Code;
+using MoreLinq;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
-using CmsData;
-using CmsData.Codes;
-using CmsData.Resources;
-using CmsWeb.Areas.Manage.Models;
-using CmsWeb.Code;
-using MoreLinq;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Models
@@ -21,7 +18,7 @@ namespace CmsWeb.Areas.People.Models
         private Picture picture;
         private AddressInfo primaryAddr;
         private IEnumerable<User> users;
-
+        public PersonModel() { }
         public PersonModel(int id)
         {
             var flags = DbUtil.Db.Setting("StatusFlags", "F04,F01,F02,F03");
@@ -39,20 +36,27 @@ namespace CmsWeb.Areas.People.Models
                          memberStatus = pp.MemberStatus.Description
                      }).FirstOrDefault();
             if (i == null)
+            {
                 return;
+            }
 
             string statusflags;
             if (isvalid)
+            {
                 statusflags = string.Join(",", from s in DbUtil.Db.StatusFlagsPerson(id).ToList()
                                                where s.RoleName == null || HttpContext.Current.User.IsInRole(s.RoleName)
                                                orderby s.TokenID
                                                select s.Name);
+            }
             else
+            {
                 statusflags = "invalid setting in status flags";
+            }
 
             Person = i.pp;
             var p = Person;
             var fam = i.f;
+            HttpContext.Current.Items["FamilyFromMyDataPage"] = fam; // for when Family is needed deep down in the call stack from this page
 
             MemberStatus = i.memberStatus;
             PeopleId = p.PeopleId;
@@ -132,10 +136,17 @@ namespace CmsWeb.Areas.People.Models
             get
             {
                 if (primaryAddr == null)
+                {
                     if (FamilyAddr.Preferred)
+                    {
                         primaryAddr = FamilyAddr;
+                    }
                     else if (PersonalAddr.Preferred)
+                    {
                         primaryAddr = PersonalAddr;
+                    }
+                }
+
                 return primaryAddr;
             }
         }
@@ -145,10 +156,17 @@ namespace CmsWeb.Areas.People.Models
             get
             {
                 if (otherAddr == null)
+                {
                     if (FamilyAddr.Preferred)
+                    {
                         otherAddr = PersonalAddr;
+                    }
                     else if (PersonalAddr.Preferred)
+                    {
                         otherAddr = FamilyAddr;
+                    }
+                }
+
                 return otherAddr;
             }
         }
@@ -161,7 +179,10 @@ namespace CmsWeb.Areas.People.Models
             get
             {
                 if (Person.EmailAddress.HasValue())
+                {
                     return $"<a href='mailto:{Person.EmailAddress}' target='_blank'>{Person.EmailAddress}</a>";
+                }
+
                 return null;
             }
         }
@@ -171,7 +192,10 @@ namespace CmsWeb.Areas.People.Models
             get
             {
                 if (Person.CellPhone.HasValue())
+                {
                     return Person.CellPhone.FmtFone("C").Replace(" ", "&nbsp;");
+                }
+
                 return null;
             }
         }
@@ -181,7 +205,10 @@ namespace CmsWeb.Areas.People.Models
             get
             {
                 if (Person.HomePhone.HasValue())
+                {
                     return Person.HomePhone.FmtFone("H").Replace(" ", "&nbsp;");
+                }
+
                 return null;
             }
         }
@@ -189,10 +216,17 @@ namespace CmsWeb.Areas.People.Models
         public string CheckView()
         {
             if (Person == null)
+            {
                 return "person not found";
+            }
+
             if (!HttpContext.Current.User.IsInRole("Access"))
+            {
                 if (Person == null || !Person.CanUserSee)
+                {
                     return "no access";
+                }
+            }
 
             if (Util2.OrgLeadersOnly)
             {
@@ -211,7 +245,10 @@ namespace CmsWeb.Areas.People.Models
         {
             get
             {
-                if (_resourceTypes != null) return _resourceTypes;
+                if (_resourceTypes != null)
+                {
+                    return _resourceTypes;
+                }
 
                 _resourceTypes = new List<ResourceTypeModel>();
 
@@ -224,7 +261,11 @@ namespace CmsWeb.Areas.People.Models
                 // Ensure child level orgs also show up, too
                 foreach (var org in memberOrgs.Select(o => o.Organization))
                 {
-                    if (!org.ChildOrgs.Any()) continue;
+                    if (!org.ChildOrgs.Any())
+                    {
+                        continue;
+                    }
+
                     orgIds.AddRange(org.ChildOrgs.Select(o => o.OrganizationId));
                 }
 
@@ -258,7 +299,10 @@ namespace CmsWeb.Areas.People.Models
 
                 foreach (var resource in resources)
                 {
-                    if (!ShouldShowResource(resource)) continue;
+                    if (!ShouldShowResource(resource))
+                    {
+                        continue;
+                    }
 
                     var noMemberTypesSet = string.IsNullOrEmpty(resource.MemberTypeIds);
 
@@ -278,8 +322,10 @@ namespace CmsWeb.Areas.People.Models
                         var okayToAdd = false;
                         foreach (var ro in resource.ResourceOrganizations)
                         {
-                            if (!resource.MemberTypeIds.Split(',').Contains(orgLevels[ro.OrganizationId].ToString()))
+                            if (!resource.MemberTypeIds.Split(',').Contains(GetDictionaryValueOrDefault(orgLevels, ro.OrganizationId)))
+                            {
                                 continue;
+                            }
 
                             if (resource.ResourceOrganizationTypes
                                 .Select(rot => rot.OrganizationTypeId)
@@ -289,7 +335,9 @@ namespace CmsWeb.Areas.People.Models
                             }
                         }
                         if (okayToAdd)
+                        {
                             resourceModels.Add(resource);
+                        }
                     }
                     else if (orgRestrictionsSet && noOrgTypeRestrictionsSet)
                     {
@@ -297,11 +345,13 @@ namespace CmsWeb.Areas.People.Models
                         var okayToAdd = false;
                         foreach (var ro in resource.ResourceOrganizations)
                         {
-                            if (resource.MemberTypeIds.Split(',').Contains(orgLevels[ro.OrganizationId].ToString()))
-                                okayToAdd = true;
+                            okayToAdd = resource.MemberTypeIds.Split(',').Contains(GetDictionaryValueOrDefault(orgLevels, ro.OrganizationId));
                         }
+
                         if (okayToAdd)
+                        {
                             resourceModels.Add(resource);
+                        }
                     }
                     else if (noOrgRestrictionsSet && orgTypeRestrictionsSet)
                     {
@@ -311,14 +361,16 @@ namespace CmsWeb.Areas.People.Models
                         {
                             if (memberOrgs.Any(mo =>
                                     mo.Organization.OrganizationTypeId == rot.OrganizationTypeId &&
-                                    resource.MemberTypeIds.Split(',').Contains(orgLevels[mo.OrganizationId].ToString())
+                                    resource.MemberTypeIds.Split(',').Contains(GetDictionaryValueOrDefault(orgLevels, mo.OrganizationId))
                             ))
                             {
                                 okayToAdd = true;
                             }
                         }
                         if (okayToAdd)
+                        {
                             resourceModels.Add(resource);
+                        }
                     }
                     else if (noOrgRestrictionsSet && noOrgTypeRestrictionsSet)
                     {
@@ -345,6 +397,15 @@ namespace CmsWeb.Areas.People.Models
             }
         }
 
+        private string GetDictionaryValueOrDefault(Dictionary<int, int> dictionary, int key, int defaultValue = 0)
+        {
+            int value = defaultValue;
+
+            dictionary.TryGetValue(key, out value);
+
+            return value.ToString();
+        }
+
         private bool ShouldShowResource(Resource resource)
         {
             var resourceStatusFlags = resource.StatusFlagIds?.Split(',') ?? new string[] { };
@@ -354,7 +415,9 @@ namespace CmsWeb.Areas.People.Models
             foreach (var flag in resourceStatusFlags.Where(x => !string.IsNullOrWhiteSpace(x)))
             {
                 if (!personStatusFlags.Contains(flag))
+                {
                     shouldShow = false;
+                }
             }
 
             return shouldShow;

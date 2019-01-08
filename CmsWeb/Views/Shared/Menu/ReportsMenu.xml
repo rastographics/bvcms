@@ -1,19 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ReportsMenu>
-  <Header>Statistics</Header>
-  <Report link="/Reports/VitalStats">Vital Stats</Report>
+  <Header excludedRoles="OrgLeadersOnly">Statistics</Header>
+  <Report excludedRoles="OrgLeadersOnly" link="/Reports/VitalStats">Vital Stats</Report>
+  <Report excludedRoles="OrgLeadersOnly" link="/Figures/Figures/Index">Vital Stats Graphs</Report>
   <Header>Attendance Summary</Header>
   <Report link="/Reports/ChurchAttendance" target="_blank">Week at a Glance</Report>
   <Report link="/Reports/ChurchAttendance2" target="_blank">Average Week at a Glance</Report>
-  <Header>Decisions</Header>
-  <Report link="/Reports/WeeklyDecisions" target="_blank">Weekly Decisions</Report>
-  <Report link="/Reports/Decisions" target="_blank">Decision Summary</Report>
+  <Header excludedRoles="OrgLeadersOnly">Decisions</Header>
+  <Report excludedRoles="OrgLeadersOnly" link="/Reports/WeeklyDecisions" target="_blank">Weekly Decisions</Report>
+  <Report excludedRoles="OrgLeadersOnly" link="/Reports/Decisions" target="_blank">Decision Summary</Report>
   <Header>New Guests</Header>
   <Report link="/Home/NthTimeAttenders/1">First Attendance</Report>
   <Report link="/Home/NthTimeAttenders/2">Second Attendance</Report>
   <Report link="/Home/NthTimeAttenders/3">Third Attendance</Report>
-  <Header>Extra Value Summary</Header>
-  <Report link="/ExtraValue/Summary/People">People</Report>
-  <Report link="/ExtraValue/Summary/Family">Family</Report>
-  <Report link="/ExtraValue/Summary/Organization">Organizations</Report>
+  <Header excludedRoles="OrgLeadersOnly">Extra Value Summary</Header>
+  <Report excludedRoles="OrgLeadersOnly" link="/ExtraValue/Summary/People">People</Report>
+  <Report excludedRoles="OrgLeadersOnly" link="/ExtraValue/Summary/Family">Family</Report>
+  <Report excludedRoles="OrgLeadersOnly" link="/ExtraValue/Summary/Organization">Organizations</Report>
 </ReportsMenu>

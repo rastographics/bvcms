@@ -24,7 +24,7 @@ namespace CmsData
 		
    		
     	
-		private EntityRef< ResidentCode> _ResidentCode;
+		private EntityRef<ResidentCode> _ResidentCode;
 		
 	#endregion
 	
@@ -44,7 +44,7 @@ namespace CmsData
 		{
 			
 			
-			this._ResidentCode = default(EntityRef< ResidentCode>); 
+			this._ResidentCode = default(EntityRef<ResidentCode>); 
 			
 			OnCreated();
 		}

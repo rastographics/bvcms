@@ -1,17 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Xml;
-using System.Web.Mvc;
-using System.Xml.Linq;
-using UtilityExtensions;
-using System.Linq;
 using CmsData;
+using System.Linq;
+using System.Web.Mvc;
+using System.Xml;
+using UtilityExtensions;
 
 namespace CmsWeb.Models.iPhone
 {
     public class DetailResult : ActionResult
     {
-        private int PeopleId;
+        private readonly int PeopleId;
         public DetailResult(int PeopleId)
         {
             this.PeopleId = PeopleId;

@@ -64,6 +64,18 @@
         });
     });
 
+    $('body').on('click', '#promoteToHeadOfHousehold', function (ev) {
+        ev.preventDefault();
+        var href = $(this).attr("href");
+        bootbox.confirm("Are you sure you want to make this person the head of the household?", function (result) {
+            if (result === true) {
+                $.post(href, {}, function (ret) {
+                    window.location = ret;
+                });
+            }
+        });
+    });
+
     $('body').on('click', '#deletePerson', function (ev) {
         ev.preventDefault();
         var href = $(this).attr("href");
@@ -628,6 +640,14 @@
         } else {
             $('#myDataUserRole').prop('checked', true);
         }
+        var viewVolApp = $('#role-list input[value="ViewVolunteerApplication"]');
+        var appRev = $('#role-list input[value="ApplicationReview"]');
+        if ($(this).attr('value') == appRev.attr('value')) {    
+            viewVolApp.prop('checked', false);
+        }
+        if ($(this).attr('value') == viewVolApp.attr('value')) {
+            appRev.prop('checked', false);
+        }
     });
 
     $('body').on('click', '#myDataUserRole', function (ev) {
@@ -654,6 +674,27 @@
             $('#role-list input[name="role"]').prop('checked', false);
             $('#myDataUserRole').prop('checked', true);
         }
+    });
+    
+    $(".customstatements").click(function (ev) {
+        ev.preventDefault();
+        $('#statement-href').val(this.href);
+        $('#customstatements-modal').modal('show');
+        return true;
+    });
+    $('#customstatements-modal').on('hidden.bs.modal', function () {
+        $("#attdetail2").off("click");
+    });
+
+    $('#customstatements-modal').on('shown.bs.modal', function () {
+        $('#attdetail2').on("click", function (ev2) {
+            ev2.preventDefault();
+            $('#customstatements-modal').modal('hide');
+            var args = "?dt1=" + $('#MeetingDate1').val() + "&dt2=" + $('#MeetingDate2').val();
+            $("#orgsearchform").attr("action", $('#meetings-daterange-action').val() + args);
+            $("#orgsearchform").submit();
+            return false;
+        });
     });
 
 });

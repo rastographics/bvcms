@@ -63,7 +63,7 @@ CmsWeb/StagingConnectionStrings.config
 cassette-cache/
 CmsDataSqlClr.dbmdl
 CmsWeb/Upload/
-Web*.config
+Web.*.config
 CmsDataSqlClr_.*.sqlproj
 
 /.gitignore~
@@ -84,3 +84,5 @@ CmsWeb/LocalConnectionStrings.config
 CmsWeb/test.py
 ttt.json
 /IronPythonApplication1/test.py
+HTMLPage1.html
+/CmsWeb/package-lock.json

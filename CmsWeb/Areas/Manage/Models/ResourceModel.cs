@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using CmsData;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using CmsData;
 
 namespace CmsWeb.Areas.Manage.Models
 {
@@ -10,6 +10,8 @@ namespace CmsWeb.Areas.Manage.Models
         public int ResourceId { get; set; }
         public Resource Resource { get; set; }
         public List<ResourceAttachment> Attachments { get; set; }
+
+        public ResourceModel() { }
 
         public ResourceModel(int resourceId)
         {
@@ -39,11 +41,14 @@ namespace CmsWeb.Areas.Manage.Models
         [DisplayName("Member Types")]
         public string MemberTypes
         {
-            get {
+            get
+            {
                 if (string.IsNullOrWhiteSpace(Resource.MemberTypeIds))
+                {
                     return string.Empty;
+                }
 
-                var memberTypeIds = Resource.MemberTypeIds.Split(',').Select(int.Parse) ;
+                var memberTypeIds = Resource.MemberTypeIds.Split(',').Select(int.Parse);
                 return string.Join(", ", DbUtil.Db.MemberTypes.Where(x => memberTypeIds.Contains(x.Id)).Select(x => x.Description));
             }
         }
@@ -54,7 +59,9 @@ namespace CmsWeb.Areas.Manage.Models
             get
             {
                 if (string.IsNullOrWhiteSpace(Resource.StatusFlagIds))
+                {
                     return string.Empty;
+                }
 
                 var statusFlagIds = Resource.StatusFlagIds.Split(',');
                 return string.Join(", ", DbUtil.Db.ViewStatusFlagLists.Where(x => statusFlagIds.Contains(x.Flag)).Select(x => x.Name));

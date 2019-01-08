@@ -27,7 +27,7 @@ namespace CmsData
 		private bool? _Hardwired;
 		
    		
-   		private EntitySet< Contribution> _Contributions;
+   		private EntitySet<Contribution> _Contributions;
 		
     	
 	#endregion
@@ -53,7 +53,7 @@ namespace CmsData
 		public ContributionStatus()
 		{
 			
-			this._Contributions = new EntitySet< Contribution>(new Action< Contribution>(this.attach_Contributions), new Action< Contribution>(this.detach_Contributions)); 
+			this._Contributions = new EntitySet<Contribution>(new Action< Contribution>(this.attach_Contributions), new Action< Contribution>(this.detach_Contributions)); 
 			
 			
 			OnCreated();
@@ -155,7 +155,7 @@ namespace CmsData
     #region Foreign Key Tables
    		
    		[Association(Name="FK_Contribution_ContributionStatus", Storage="_Contributions", OtherKey="ContributionStatusId")]
-   		public EntitySet< Contribution> Contributions
+   		public EntitySet<Contribution> Contributions
    		{
    		    get { return this._Contributions; }
 

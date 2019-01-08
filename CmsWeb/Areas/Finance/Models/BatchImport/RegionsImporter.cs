@@ -5,14 +5,14 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
 
+using CmsData;
+using CmsData.Codes;
+using LumenWorks.Framework.IO.Csv;
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using CmsData;
-using CmsData.Codes;
-using LumenWorks.Framework.IO.Csv;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Finance.Models.BatchImport
@@ -22,7 +22,9 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
         public int? RunImport(string text, DateTime date, int? fundid, bool fromFile)
         {
             using (var csv = new CsvReader(new StringReader(text), true))
+            {
                 return BatchProcessRegions(csv, date, fundid);
+            }
         }
 
         private static int? BatchProcessRegions(CsvReader csv, DateTime date, int? fundid)
@@ -43,9 +45,11 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
 
             while (csv.ReadNextRecord())
             {
-                
                 if (!csv[12].Contains("Check"))
+                {
                     continue;
+                }
+
                 var bd = new CmsData.BundleDetail
                 {
                     CreatedBy = Util.UserId,
@@ -72,6 +76,10 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                     {
                         case "deposit number":
                             curbundle = csv[c].ToInt();
+                            if (prevbundle == -1)
+                            {
+                                prevbundle = curbundle;
+                            }
                             if (curbundle != prevbundle)
                             {
                                 if (curbundle == 3143)
@@ -91,7 +99,6 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                         case "post amount":
                             bd.Contribution.ContributionAmount = csv[c].GetAmount();
                             break;
-                        //    break;
                         case "micr":
                             var m = re.Match(csv[c]);
                             rt = m.Groups["rt"].Value;
@@ -106,7 +113,10 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                         select kc.PeopleId;
                 var pid = q.SingleOrDefault();
                 if (pid != null)
+                {
                     bd.Contribution.PeopleId = pid;
+                }
+
                 bd.Contribution.BankAccount = eac;
                 bh.BundleDetails.Add(bd);
             }

@@ -1,12 +1,11 @@
 ﻿@model CmsWeb.Areas.Org.Models.OrgGroupsModel
-@using CmsData
 @using CmsWeb
-@using UtilityExtensions
 @{
     Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Manage Sub-Groups";
     ViewBag.PageHeader = "Manage Sub-Groups";
     ViewBag.PageSubHeader = $"<a href=\"/Org/{Model.orgid}\">{Model.OrgName}</a>";
+    var checkinFeaturesEnabled = Setting("EnableSubgroupCheckin") == "true";
 }
 @section head
 {
@@ -33,45 +32,24 @@
                     <div class="modal-dialog modal-sm">
                         <div class="modal-content">
                             <form action="/OrgGroups/MakeNewGroup/@Model.orgid" method="post">
-                                @Html.HiddenFor(m => m.orgid)
                                 <div class="modal-header">
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                                     <h4 class="modal-title">Create New Sub-Group</h4>
                                 </div>
-                                <div class="modal-body">
-                                    <div class="form-group">
-                                        <label for="GroupName" class="control-label">Sub-Group Name</label>
-                                        <input type="text" id="GroupName" name="GroupName" class="form-control new-group-name" />
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <input type="button" value="Cancel" class="btn btn-default" data-dismiss="modal" />
-                                    <input type="submit" class="btn btn-primary" value="Submit" />
-                                </div>
+                                @Html.Partial("_SubgroupFormBody", Model)
                             </form>
                         </div>
                     </div>
                 </div>
-                <div class="modal fade" id="rename-group-modal">
+                <div class="modal fade" id="edit-group-modal">
                     <div class="modal-dialog modal-sm">
                         <div class="modal-content">
-                            <form action="/OrgGroups/RenameGroup/@Model.orgid" method="post">
-                                @Html.HiddenFor(m => m.orgid)
+                            <form action="/OrgGroups/EditGroup/@Model.orgid" method="post">
                                 <div class="modal-header">
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                    <h4 class="modal-title">Rename Sub-Group</h4>
+                                    <h4 class="modal-title">Edit Sub-Group</h4>
                                 </div>
-                                <div class="modal-body">
-                                    <div class="form-group">
-                                        <label for="GroupName" class="control-label">Group Name</label>
-                                        <input type="text" id="GroupName" name="GroupName" class="form-control rename-group-name" />
-                                        <input type="hidden" id="groupid" name="groupid" class="rename-group-id"/>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <input type="button" value="Cancel" class="btn btn-default" data-dismiss="modal" />
-                                    <input type="submit" class="btn btn-primary" value="Submit" />
-                                </div>
+                                @Html.Partial("_SubgroupFormBody", Model)
                             </form>
                         </div>
                     </div>

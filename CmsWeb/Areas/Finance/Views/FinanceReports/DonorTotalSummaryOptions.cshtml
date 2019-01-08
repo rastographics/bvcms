@@ -14,8 +14,12 @@
                             @Html.EditorFor(m => m.StartDate)
                             @Html.EditorFor(m => m.NumberOfYears)
                             @Html.EditorFor(m => m.Fund)
-                            @Html.EditorFor(m => m.Campus, new {label = Util2.CampusLabel})
+                            @Html.EditorFor(m => m.Campus, new { label = Util2.CampusLabel })
                             @Html.EditorFor(m => m.MinimumMedianTotal)
+                            @if (Model.FundSet != null)
+                            {
+                                @Html.EditorFor(m => m.FundSet)
+                            }
                         </div>
                     </div>
                 </div>

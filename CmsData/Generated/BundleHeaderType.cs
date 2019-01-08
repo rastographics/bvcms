@@ -27,7 +27,7 @@ namespace CmsData
 		private bool? _Hardwired;
 		
    		
-   		private EntitySet< BundleHeader> _BundleHeaders;
+   		private EntitySet<BundleHeader> _BundleHeaders;
 		
     	
 	#endregion
@@ -53,7 +53,7 @@ namespace CmsData
 		public BundleHeaderType()
 		{
 			
-			this._BundleHeaders = new EntitySet< BundleHeader>(new Action< BundleHeader>(this.attach_BundleHeaders), new Action< BundleHeader>(this.detach_BundleHeaders)); 
+			this._BundleHeaders = new EntitySet<BundleHeader>(new Action< BundleHeader>(this.attach_BundleHeaders), new Action< BundleHeader>(this.detach_BundleHeaders)); 
 			
 			
 			OnCreated();
@@ -155,7 +155,7 @@ namespace CmsData
     #region Foreign Key Tables
    		
    		[Association(Name="FK_BUNDLE_HEADER_TBL_BundleHeaderTypes", Storage="_BundleHeaders", OtherKey="BundleHeaderTypeId")]
-   		public EntitySet< BundleHeader> BundleHeaders
+   		public EntitySet<BundleHeader> BundleHeaders
    		{
    		    get { return this._BundleHeaders; }
 

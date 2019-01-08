@@ -1,13 +1,17 @@
-using System.Web.Mvc;
-using CmsData;
+using CmsWeb.Lifecycle;
 using CmsWeb.Models;
+using System.Web.Mvc;
 
 namespace CmsWeb.Areas.Manage.Controllers
 {
-    [Authorize(Roles="Edit")]
-    [RouteArea("Manage", AreaPrefix= "OrgMembers"), Route("{action=index}/{id?}")]
+    [Authorize(Roles = "ManageOrgMembers")]
+    [RouteArea("Manage", AreaPrefix = "OrgMembers"), Route("{action=index}/{id?}")]
     public class OrgMembersController : CmsStaffController
     {
+        public OrgMembersController(IRequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [HttpGet]
         public ActionResult Index()
         {
@@ -16,14 +20,10 @@ namespace CmsWeb.Areas.Manage.Controllers
             return View(m);
         }
 
-        [HttpPost]
-        public ActionResult Move(OrgMembersModel m)
-        {
-            if (m.TargetId == 0)
-                return Content("!Target required");
-            m.Move();
-            return View("List", m);
-        }
+        //        [HttpPost]
+        //        public ActionResult ProcessMove(OrgMembersModel model)
+        //        {
+        //		}
         [HttpPost]
         public ActionResult EmailNotices(OrgMembersModel m)
         {
@@ -41,9 +41,9 @@ namespace CmsWeb.Areas.Manage.Controllers
         public ActionResult List(OrgMembersModel m)
         {
             m.ValidateIds();
-            DbUtil.Db.SetUserPreference("OrgMembersModelIds", $"{m.ProgId}.{m.SourceDivId}.{m.SourceId}");
-            DbUtil.DbDispose();
-            DbUtil.Db.SetNoLock();
+            CurrentDatabase.SetUserPreference("OrgMembersModelIds", $"{m.ProgId}.{m.SourceDivId}.{m.SourceId}");
+            //DbDispose();
+            CurrentDatabase.SetNoLock();
             return View(m);
         }
         [HttpPost]

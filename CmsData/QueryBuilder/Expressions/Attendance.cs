@@ -6,6 +6,7 @@
  */
 
 using System;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Linq.Expressions;
 using CmsData.Codes;
@@ -168,7 +169,7 @@ namespace CmsData
                 p.Attends.Any(aa => aa.SeqNo == n && aa.MeetingDate > dt);
             Expression expr = Expression.Invoke(pred, parm);
 
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }
@@ -179,9 +180,11 @@ namespace CmsData
             var days0 = Quarters.ToInt2();
             var tag = db.NewTemporaryTag();
             db.TagRecentStartAttend(ProgramInt ?? 0, DivisionInt ?? 0, OrganizationInt, OrgTypeInt ?? 0, days0 ?? 365, Days, tag.Id);
-            Expression<Func<Person, bool>> pred = p => op == CompareType.Equal && tf
-                ? p.Tags.Any(t => t.Id == tag.Id)
-                : p.Tags.All(t => t.Id != tag.Id);
+            Expression<Func<Person, bool>> pred = null;
+            if (op == CompareType.Equal ^ tf)
+                pred = p => p.Tags.All(t => t.Id != tag.Id);
+            else
+                pred = p => p.Tags.Any(t => t.Id == tag.Id);
             Expression expr = Expression.Invoke(pred, parm);
             return expr;
         }
@@ -245,6 +248,7 @@ namespace CmsData
         }
         internal Expression RecentFirstFamilyVisit()
         {
+            var tf = CodeIds == "1";
             var cdt = db.Setting("DbConvertedDate", "1/1/1900").ToDate();
 
             var mindt = Util.Now.AddDays(-Days).Date;
@@ -256,7 +260,7 @@ namespace CmsData
 
             Expression<Func<Person, bool>> pred = p => q.Contains(p.FamilyId);
             Expression expr = Expression.Invoke(pred, parm);
-            if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }
@@ -270,7 +274,7 @@ namespace CmsData
             var tag = db.PopulateTemporaryTag(q);
             Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
             Expression expr = Expression.Invoke(pred, parm);
-            if (!(op == CompareType.Equal && tf))
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }

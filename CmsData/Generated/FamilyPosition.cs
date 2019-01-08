@@ -26,8 +26,14 @@ namespace CmsData
 		
 		private bool? _Hardwired;
 		
+		private int _PrimaryAdult;
+		
+		private int _SecondaryAdult;
+		
+		private int _Child;
+		
    		
-   		private EntitySet< Person> _People;
+   		private EntitySet<Person> _People;
 		
     	
 	#endregion
@@ -49,11 +55,20 @@ namespace CmsData
 		partial void OnHardwiredChanging(bool? value);
 		partial void OnHardwiredChanged();
 		
+		partial void OnPrimaryAdultChanging(int value);
+		partial void OnPrimaryAdultChanged();
+		
+		partial void OnSecondaryAdultChanging(int value);
+		partial void OnSecondaryAdultChanged();
+		
+		partial void OnChildChanging(int value);
+		partial void OnChildChanged();
+		
     #endregion
 		public FamilyPosition()
 		{
 			
-			this._People = new EntitySet< Person>(new Action< Person>(this.attach_People), new Action< Person>(this.detach_People)); 
+			this._People = new EntitySet<Person>(new Action< Person>(this.attach_People), new Action< Person>(this.detach_People)); 
 			
 			
 			OnCreated();
@@ -150,12 +165,78 @@ namespace CmsData
 		}
 
 		
+		[Column(Name="PrimaryAdult", UpdateCheck=UpdateCheck.Never, Storage="_PrimaryAdult", DbType="int NOT NULL")]
+		public int PrimaryAdult
+		{
+			get { return this._PrimaryAdult; }
+
+			set
+			{
+				if (this._PrimaryAdult != value)
+				{
+				
+                    this.OnPrimaryAdultChanging(value);
+					this.SendPropertyChanging();
+					this._PrimaryAdult = value;
+					this.SendPropertyChanged("PrimaryAdult");
+					this.OnPrimaryAdultChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="SecondaryAdult", UpdateCheck=UpdateCheck.Never, Storage="_SecondaryAdult", DbType="int NOT NULL")]
+		public int SecondaryAdult
+		{
+			get { return this._SecondaryAdult; }
+
+			set
+			{
+				if (this._SecondaryAdult != value)
+				{
+				
+                    this.OnSecondaryAdultChanging(value);
+					this.SendPropertyChanging();
+					this._SecondaryAdult = value;
+					this.SendPropertyChanged("SecondaryAdult");
+					this.OnSecondaryAdultChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="Child", UpdateCheck=UpdateCheck.Never, Storage="_Child", DbType="int NOT NULL")]
+		public int Child
+		{
+			get { return this._Child; }
+
+			set
+			{
+				if (this._Child != value)
+				{
+				
+                    this.OnChildChanging(value);
+					this.SendPropertyChanging();
+					this._Child = value;
+					this.SendPropertyChanged("Child");
+					this.OnChildChanged();
+				}
+
+			}
+
+		}
+
+		
     #endregion
         
     #region Foreign Key Tables
    		
    		[Association(Name="FK_People_FamilyPosition", Storage="_People", OtherKey="PositionInFamilyId")]
-   		public EntitySet< Person> People
+   		public EntitySet<Person> People
    		{
    		    get { return this._People; }
 

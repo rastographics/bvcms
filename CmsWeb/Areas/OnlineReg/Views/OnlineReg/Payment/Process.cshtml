@@ -1,6 +1,7 @@
 ﻿@using UtilityExtensions
 @using CmsData
 @using CmsData.Finance
+@using CmsWeb.Areas.OnlineReg.Models
 @model CmsWeb.Areas.OnlineReg.Models.PaymentForm
 @{
     ViewBag.Title = "Online Registration";
@@ -32,9 +33,7 @@
         <small class="showform">Uncheck the agreement box to display the terms again.</small>
       </p>
       <div id="Terms" title="Terms of Agreement">
-        <p>
-          You must agree to the terms below for you or your minor child before you can complete your registration.
-        </p>
+        @Html.Raw(OnlineRegModel.YouMustAgreeStatement(Model.OrgId))
         @Html.Raw(Model.Terms)
       </div>
   }
@@ -84,7 +83,7 @@
       @Html.EditorFor(m => m.Country, "Dropdown", new { items = Model.Countries })
       @Html.EditorFor(m => m.Zip)
       @Html.EditorFor(m => m.Phone)
-      @Html.EditorFor(m => m.Email)
+      @Html.EditorFor(m => m.Email, "EmailAddress")
     </div>
     <div class="well">
       @if (Model.NoCreditCardsAllowed || Model.NoEChecksAllowed)
@@ -109,9 +108,11 @@
       @if (Model.NoCreditCardsAllowed == false)
       {
           <div class="Card">
-            @Html.EditorFor(m => m.CreditCard, new { autocomplete = Model.AutocompleteOnOff, Label = debitcredit })
-            @Html.EditorFor(m => m.Expires, new { classes = "narrow" })
-            @Html.EditorFor(m => m.CVV, new { classes = "narrow", autocomplete = Model.AutocompleteOnOff })
+              @Html.EditorFor(m => m.CreditCard, new { autocomplete = Model.AutocompleteOnOff, Label = debitcredit })
+              @Html.EditorFor(m => m.Expires, new { classes = "narrow" })
+              @Html.EditorFor(m => m.CVV, new { classes = "narrow", autocomplete = Model.AutocompleteOnOff })
+              <input type="hidden" id="hdnCreditCardOnFile" data-value="@Model.CreditCard" />
+              <input type="hidden" id="hdnExpiresOnFile" data-value="@Model.Expires" />
           </div>
       }
         @if (useRecaptcha){
@@ -135,7 +136,7 @@
         <div>
           @if (Model.IsLoggedIn == true && !VaultDisabled)
           {
-              <span style="margin-right: 2em;">@Html.CheckBoxFor(m => m.SavePayInfo) Save Payment Information</span>
+              <span id="savePayArea" style="margin-right: 2em;">@Html.CheckBoxFor(m => m.SavePayInfo) Save Payment Information</span>
           }
           @Helper.OnlineRegSubmitButton("Make Payment", onlyoneallowed: true, style: "btn-primary min-width15em")
         </div>
@@ -162,6 +163,7 @@
         </div>
     }
   </form>
+    <form id="success_form" action="" method="post" style="display:none;"></form>
 </div>
 <div id="findid" style="display:none">
   <h2>Card Identification #</h2>

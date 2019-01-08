@@ -10,13 +10,8 @@ SELECT
     q.created ,
     q.lastRun ,
     q.name ,
-    q.ispublic ,
-    qa.Seconds ,
-    qa.OriginalCount ,
-    qa.ParsedCount ,
-    qa.Message
+    q.ispublic
 FROM dbo.Query q
-left join QueryAnalysis qa ON qa.Id = q.QueryId
 where name <> 'scratchpad'
 ORDER BY q.name
 ";

@@ -1,9 +1,9 @@
-using System;
-using System.Web;
-using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Code;
 using Newtonsoft.Json;
+using System;
+using System.Web;
+using System.Web.Mvc;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Search.Models
@@ -26,11 +26,11 @@ namespace CmsWeb.Areas.Search.Models
         public string Description { get; set; }
         public string Notes { get; set; }
 
-//        public TaskSearchInfo()
-//        {
-//            if (TaskStatus == null)
-//                TaskStatus = new CodeInfo("TaskSearchStatus");
-//        }
+        //        public TaskSearchInfo()
+        //        {
+        //            if (TaskStatus == null)
+        //                TaskStatus = new CodeInfo("TaskSearchStatus");
+        //        }
 
         private static string NewTaskSearchString => JsonConvert.SerializeObject(new TaskSearchInfo());
 
@@ -41,7 +41,9 @@ namespace CmsWeb.Areas.Search.Models
             var os = JsonConvert.DeserializeObject<TaskSearchInfo>(
                 DbUtil.Db.UserPreference(StrTaskSearch, NewTaskSearchString));
             if (os != null)
+            {
                 this.CopyPropertiesFrom(os);
+            }
         }
 
         internal void SavePreference()
@@ -105,7 +107,10 @@ namespace CmsWeb.Areas.Search.Models
                 i.AddCssClass("green");
             }
             else
+            {
                 i.AddCssClass("fa-filter");
+            }
+
             return new HtmlString(i.ToString());
         }
     }

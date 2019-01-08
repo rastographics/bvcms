@@ -28,20 +28,20 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         }
         private void SetHeaders2(int id)
         {
-            var org = DbUtil.Db.LoadOrganizationById(id);
+            var org = CurrentDatabase.LoadOrganizationById(id);
             var shell = "";
             if ((settings == null || !settings.ContainsKey(id)) && org != null)
             {
-                var setting = DbUtil.Db.CreateRegistrationSettings(id);
-                shell = DbUtil.Db.ContentOfTypeHtml(setting.ShellBs)?.Body;
+                var setting = CurrentDatabase.CreateRegistrationSettings(id);
+                shell = CurrentDatabase.ContentOfTypeHtml(setting.ShellBs)?.Body;
             }
             if (!shell.HasValue() && settings != null && settings.ContainsKey(id))
-                shell = DbUtil.Db.ContentOfTypeHtml(settings[id].ShellBs)?.Body;
+                shell = CurrentDatabase.ContentOfTypeHtml(settings[id].ShellBs)?.Body;
             if (!shell.HasValue())
             {
-                shell = DbUtil.Db.ContentOfTypeHtml("ShellDefaultBs")?.Body;
+                shell = CurrentDatabase.ContentOfTypeHtml("ShellDefaultBs")?.Body;
                 if(!shell.HasValue())
-                    shell = DbUtil.Db.ContentOfTypeHtml("DefaultShellBs")?.Body;
+                    shell = CurrentDatabase.ContentOfTypeHtml("DefaultShellBs")?.Body;
             }
 
 
@@ -61,7 +61,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         private void SetHeaders(int id)
         {
             Settings setting = null;
-            var org = DbUtil.Db.LoadOrganizationById(id);
+            var org = CurrentDatabase.LoadOrganizationById(id);
             if (org != null)
             {
                 SetHeaders2(id);
@@ -70,7 +70,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             var shell = "";
             if ((settings == null || !settings.ContainsKey(id)))
             {
-                setting = DbUtil.Db.CreateRegistrationSettings(id);
+                setting = CurrentDatabase.CreateRegistrationSettings(id);
                 shell = DbUtil.Content(setting.Shell, null);
             }
             if (!shell.HasValue() && settings != null && settings.ContainsKey(id))

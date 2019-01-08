@@ -1,12 +1,11 @@
+using CmsData;
+using CmsData.View;
+using MoreLinq;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Web;
-using CmsData;
-using CmsData.Finance;
-using CmsData.View;
-using MoreLinq;
 using UtilityExtensions;
 
 namespace CmsWeb.Models
@@ -22,7 +21,9 @@ namespace CmsWeb.Models
         {
             name = tranid.ToString();
             if (!tranid.HasValue)
+            {
                 GoerId = null;
+            }
 
             if (!string.IsNullOrWhiteSpace(reference))
             {
@@ -64,7 +65,10 @@ namespace CmsWeb.Models
         public int Count()
         {
             if (!_count.HasValue)
+            {
                 _count = FetchTransactions().Count();
+            }
+
             return _count.Value;
         }
 
@@ -94,9 +98,15 @@ namespace CmsWeb.Models
         private IQueryable<TransactionList> FetchTransactions()
         {
             if (_transactions != null)
+            {
                 return _transactions;
+            }
+
             if (!name.HasValue())
+            {
                 name = null;
+            }
+
             string first, last;
             Util.NameSplit(name, out first, out last);
             var hasfirst = first.HasValue();
@@ -113,12 +123,16 @@ namespace CmsWeb.Models
                   where (t.Financeonly ?? false) == false || finance
                   select t;
             if (name != null)
+            {
                 if (name == "0")
+                {
                     // special case, return no transactions, all we are interested in is the Senders on a Mission Trip
                     _transactions = from t in _transactions
                                     where t.OriginalId == nameid
                                     select t;
+                }
                 else
+                {
                     _transactions = from t in _transactions
                                     where
                                         (
@@ -127,12 +141,20 @@ namespace CmsWeb.Models
                                             )
                                         || t.Batchref == name || t.TransactionId == name || t.OriginalId == nameid || t.Id == nameid
                                     select t;
+                }
+            }
+
             if (!HttpContext.Current.User.IsInRole("Finance"))
+            {
                 _transactions = _transactions.Where(tt => (tt.Financeonly ?? false) == false);
+            }
 
             var edt = enddt;
             if (!edt.HasValue && startdt.HasValue)
+            {
                 edt = startdt;
+            }
+
             edt = edt?.AddHours(24);
             if (usebatchdates && startdt.HasValue && edt.HasValue)
             {
@@ -144,10 +166,12 @@ namespace CmsWeb.Models
                                 select t;
             }
             else
+            {
                 _transactions = from t in _transactions
                                 where t.TransactionDate >= startdt || startdt == null
                                 where t.TransactionDate <= edt || edt == null
                                 select t;
+            }
             //			var q0 = _transactions.ToList();
             //            foreach(var t in q0)
             //                Debug.WriteLine("\"{0}\"\t{1}\t{2}", t.Description, t.Id, t.Amt);
@@ -210,7 +234,10 @@ namespace CmsWeb.Models
         {
             var gateway = DbUtil.Db.Gateway();
             if (!gateway.CanGetSettlementDates)
+            {
                 return;
+            }
+
             if (gateway.UseIdsForSettlementDates)
             {
                 var tranids = (from t in _transactions
@@ -222,13 +249,16 @@ namespace CmsWeb.Models
                 gateway.CheckBatchSettlements(tranids);
             }
             else
+            {
                 gateway.CheckBatchSettlements(start, end);
+            }
         }
 
         public IQueryable<TransactionList> ApplySort()
         {
             var q = FetchTransactions();
             if (Pager.Direction == "asc")
+            {
                 switch (Pager.Sort)
                 {
                     case "Id":
@@ -272,7 +302,9 @@ namespace CmsWeb.Models
                             select t;
                         break;
                 }
+            }
             else
+            {
                 switch (Pager.Sort)
                 {
                     case "Id":
@@ -316,6 +348,7 @@ namespace CmsWeb.Models
                             select t;
                         break;
                 }
+            }
 
             return q;
         }
@@ -369,6 +402,20 @@ namespace CmsWeb.Models
                        GoerId = gp.PeopleId,
                        TripName = o.OrganizationName
                    };
+        }
+        public List<MissionTripBalanceInfo> MissionTripBalances()
+        {
+            var q = from gs in DbUtil.Db.GoerSenderAmounts
+                    where gs.GoerId == GoerId
+                    group gs by new { gs.GoerId, gs.OrgId, gs.Organization.OrganizationName } into g
+                    select new MissionTripBalanceInfo
+                    {
+                        GoerId = g.Key.GoerId ?? 0,
+                        OrgId = g.Key.OrgId,
+                        TripName = g.Key.OrganizationName,
+                        Balance = OrganizationMember.AmountDue(DbUtil.Db, g.Key.OrgId, g.Key.GoerId ?? 0)
+                    };
+            return q.ToList().Where(vv => vv.Balance > 0).ToList();
         }
 
         public IQueryable<SupporterInfo> SelfSupports()
@@ -458,6 +505,13 @@ namespace CmsWeb.Models
             public int? GoerId { get; set; }
             public int? SupporterId { get; set; }
             public string TripName { get; set; }
+        }
+        public class MissionTripBalanceInfo
+        {
+            public int GoerId { get; set; }
+            public int OrgId { get; set; }
+            public string TripName { get; set; }
+            public decimal Balance { get; set; }
         }
     }
 }

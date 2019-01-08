@@ -37,7 +37,7 @@
                 @foreach (var m in Model.ViewList())
                 {
                     var active = m.Id == Model.Person.PeopleId ? "active" : "";
-                    var ifdeceased = !active.HasValue() && m.IsDeceased == true ? "alert alert-danger" : "";
+                    var ifdeceased = !active.HasValue() && m.IsDeceased == true ? "alert-danger" : "";
                     var picdt = (m.PicDate ?? DateTime.Now);
                     var portraitUrl = $"/Portrait/{m.PortraitId}?v={picdt.Ticks}";
                     var portraitBgPos = m.PicXPos.HasValue || m.PicYPos.HasValue ? $"{m.PicXPos ?? 0}% {m.PicYPos ?? 0}%" : "top";
@@ -47,7 +47,10 @@
                             <span class="name">@m.Name @Html.Raw(m.SpouseIndicator)</span><br />
                             <span class="meta">
                                 <span class="age">@m.AgeDisplay</span>
-                                &bull; <span class="status">@m.MemberStatus</span>
+                                @if (User.IsInRole("Access") || !DbUtil.Db.Setting("HideMyDataMemberBadge"))
+                                {
+                                    <text>&bull; <span class="status">@m.MemberStatus</span></text>
+                                }
                                 &bull; <span class="role">@m.PositionInFamily</span>
                             </span>
                             <div class="email email_display truncate">@m.Email</div>

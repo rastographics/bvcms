@@ -1,0 +1,29 @@
+﻿@model CmsWeb.Areas.People.Models.ContributionsModel
+@using CmsWeb.Areas.Finance.Models.Report
+@using CmsData
+
+<div class="modal fade" id="customstatements-modal">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Custom Statements</h4>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="" />
+                <div>
+                    <ul>
+                        @foreach (var cs in ContributionStatements.CustomStatementsList(DbUtil.Db))
+                        {
+                            <li><a href="url?custom=@cs" data-customstatement="@cs">@cs</a></li>
+                        }
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <input type="button" value="Cancel" class="btn btn-default" data-dismiss="modal" />
+                    <input type="button" id="attdetail2" name="attdetail2" value="Run" class="btn btn-primary" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

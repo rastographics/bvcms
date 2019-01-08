@@ -17,7 +17,7 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost]
         public ActionResult GeneralHelpToggle(int id)
         {
-            DbUtil.Db.ToggleUserPreference("ShowGeneralHelp");
+            CurrentDatabase.ToggleUserPreference("ShowGeneralHelp");
             var m = new SettingsGeneralModel(id);
             return PartialView("Settings/General", m);
         }
@@ -33,11 +33,13 @@ namespace CmsWeb.Areas.Org.Controllers
         public ActionResult GeneralUpdate(SettingsGeneralModel m)
         {
             if (!m.Org.LimitToRole.HasValue())
+            {
                 m.Org.LimitToRole = null;
+            }
             DbUtil.LogActivity($"Update SettingsGeneral {m.Org.OrganizationName}");
             if (ModelState.IsValid)
             {
-                m.Update();
+                m.Update(User.IsInRole("Admin"));
                 return View("Settings/General", m);
             }
             return PartialView("Settings/GeneralEdit", m);

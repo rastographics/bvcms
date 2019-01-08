@@ -1,10 +1,10 @@
+using CmsData;
+using Dapper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using CmsData;
-using UtilityExtensions;
 using System.Text.RegularExpressions;
-using Dapper;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Reports.Models
 {
@@ -14,19 +14,24 @@ namespace CmsWeb.Areas.Reports.Models
         public DateTime? Dt2 { get; set; }
 
         private readonly List<DateTime> weeks;
-
+        public ChurchAttendance2Model() { }
         public ChurchAttendance2Model(DateTime? dt1, DateTime? dt2, string skipWeeks)
         {
             Dt1 = dt1;
             Dt2 = dt2;
             weeks = DbUtil.Db.SundayDates(Dt1, Dt2).Select(w => w.Dt.Value).ToList();
             if (!skipWeeks.HasValue())
+            {
                 return;
+            }
+
             foreach (var wk in skipWeeks.Split(','))
             {
                 var dt = wk.ToDate();
                 if (dt.HasValue)
+                {
                     weeks.Remove(dt.Value);
+                }
             }
         }
 
@@ -58,9 +63,14 @@ namespace CmsWeb.Areas.Reports.Models
                         cols = new List<ColInfo>();
                         Regex re = null;
                         if (RptGroup.TrimEnd().EndsWith(")"))
+                        {
                             re = new Regex(@"(?<re>\d+:\d+ [AP]M)");
+                        }
                         else
+                        {
                             re = new Regex(@"\((?<re>[^)]*)\)=(?<na>[^,)]*)|(?<re>\d+:\d+ [AP]M)");
+                        }
+
                         var m = re.Match(RptGroup);
                         while (m.Success)
                         {
@@ -68,9 +78,14 @@ namespace CmsWeb.Areas.Reports.Models
                             cols.Add(ci);
                             var a = m.Groups["re"].Value.Split('|');
                             if (m.Groups["na"].Value.HasValue())
+                            {
                                 ci.Heading = m.Groups["na"].Value;
+                            }
                             else
+                            {
                                 ci.Heading = m.Groups[1].Value;
+                            }
+
                             foreach (var s in a)
                             {
                                 var dt = DateTime.Parse(s);
@@ -90,7 +105,10 @@ namespace CmsWeb.Areas.Reports.Models
                 get
                 {
                     if (!line.HasValue)
+                    {
                         line = Regex.Match(RptGroup, @"\A\d+").Value.ToInt();
+                    }
+
                     return line.Value;
                 }
             }
@@ -109,8 +127,8 @@ namespace CmsWeb.Areas.Reports.Models
                                 Sunday = w,
                                 Meetings = (from d in Divs
                                             from m in d.Meetings
-                                            where m.Date >= w.AddHours((double) (StartHour ?? 0))
-                                            where m.Date <= w.AddHours((double) (EndHour ?? 0))
+                                            where m.Date >= w.AddHours((double)(StartHour ?? 0))
+                                            where m.Date <= w.AddHours((double)(EndHour ?? 0))
                                             select m).ToList()
                             };
                     return q.Where(w => w.Meetings.Sum(m => m.Present) > 0).ToList();
@@ -171,8 +189,8 @@ namespace CmsWeb.Areas.Reports.Models
                             {
                                 Sunday = w,
                                 Meetings = (from m in Meetings
-                                            where m.Date >= w.AddHours((double) (Prog.StartHour ?? 0))
-                                            where m.Date <= w.AddHours((double) (Prog.EndHour ?? 0))
+                                            where m.Date >= w.AddHours((double)(Prog.StartHour ?? 0))
+                                            where m.Date <= w.AddHours((double)(Prog.EndHour ?? 0))
                                             select m).ToList()
                             };
                     return q.Where(w => w.Meetings.Sum(m => m.Present) > 0).ToList();
@@ -272,7 +290,7 @@ meetings AS (
 SELECT * FROM meetings
 ORDER BY RptGroup, ReportLine
 ";
-            var j = DbUtil.Db.Connection.Query<Data>(sql, new {Dt1, Dt2}).ToList();
+            var j = DbUtil.Db.Connection.Query<Data>(sql, new { Dt1, Dt2 }).ToList();
             var q = from prog in j
                     group prog by prog.RptGroup
                     into g

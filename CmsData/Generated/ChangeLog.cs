@@ -37,7 +37,7 @@ namespace CmsData
 		private string _After;
 		
    		
-   		private EntitySet< ChangeDetail> _ChangeDetails;
+   		private EntitySet<ChangeDetail> _ChangeDetails;
 		
     	
 	#endregion
@@ -78,7 +78,7 @@ namespace CmsData
 		public ChangeLog()
 		{
 			
-			this._ChangeDetails = new EntitySet< ChangeDetail>(new Action< ChangeDetail>(this.attach_ChangeDetails), new Action< ChangeDetail>(this.detach_ChangeDetails)); 
+			this._ChangeDetails = new EntitySet<ChangeDetail>(new Action< ChangeDetail>(this.attach_ChangeDetails), new Action< ChangeDetail>(this.detach_ChangeDetails)); 
 			
 			
 			OnCreated();
@@ -290,7 +290,7 @@ namespace CmsData
     #region Foreign Key Tables
    		
    		[Association(Name="FK_ChangeDetails_ChangeLog", Storage="_ChangeDetails", OtherKey="Id")]
-   		public EntitySet< ChangeDetail> ChangeDetails
+   		public EntitySet<ChangeDetail> ChangeDetails
    		{
    		    get { return this._ChangeDetails; }
 

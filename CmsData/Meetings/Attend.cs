@@ -46,16 +46,17 @@ namespace CmsData
 				}
 			}
 		}
-		public static void MarkRegistered(CMSDataContext Db, int OrgId, int PeopleId, DateTime MeetingDate, int? CommitId, bool AvoidRegrets = false)
+		public static int? MarkRegistered(CMSDataContext Db, int OrgId, int PeopleId, DateTime MeetingDate, int? CommitId, bool AvoidRegrets = false)
 		{
 			if (CommitId == null)
 			{
 				var m = Db.Meetings.SingleOrDefault(mm => mm.OrganizationId == OrgId && mm.MeetingDate == MeetingDate);
 				if (m == null)
-					return;
+					return null;
 			}
 			var mid = Db.CreateMeeting(OrgId, MeetingDate);
 			MarkRegistered(Db, PeopleId, mid, CommitId, AvoidRegrets);
+		    return mid;
 		}
 		public static void MarkRegistered(CMSDataContext Db, int PeopleId, int MeetingId, int? CommitId, bool AvoidRegrets = false)
 		{
@@ -164,6 +165,8 @@ namespace CmsData
 				PeopleId = PeopleId,
 				OrganizationId = OrgId,
 				CreatedDate = DateTime.Now,
+                SubGroupName = "",
+                Pager = ""
 			};
 			Db.Attends.InsertOnSubmit(a);
 		}

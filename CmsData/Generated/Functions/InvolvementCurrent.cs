@@ -58,6 +58,8 @@ namespace CmsData.View
 		
 		private int _SecurityTypeId;
 		
+		private bool? _IsMissionTripOrg;
+		
 		
 		public InvolvementCurrent()
 		{
@@ -417,6 +419,23 @@ namespace CmsData.View
 			{
 				if (this._SecurityTypeId != value)
 					this._SecurityTypeId = value;
+			}
+
+		}
+
+		
+		[Column(Name="IsMissionTripOrg", Storage="_IsMissionTripOrg", DbType="bit")]
+		public bool? IsMissionTripOrg
+		{
+			get
+			{
+				return this._IsMissionTripOrg;
+			}
+
+			set
+			{
+				if (this._IsMissionTripOrg != value)
+					this._IsMissionTripOrg = value;
 			}
 
 		}

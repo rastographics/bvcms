@@ -1,12 +1,17 @@
-using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.Dialog.Models;
+using CmsWeb.Lifecycle;
+using System.Web.Mvc;
 
 namespace CmsWeb.Areas.Dialog.Controllers
 {
-    [RouteArea("Dialog", AreaPrefix= "SearchDivisions"), Route("{action}/{id?}")]
+    [RouteArea("Dialog", AreaPrefix = "SearchDivisions"), Route("{action}/{id?}")]
     public class SearchDivisionsController : CmsStaffController
     {
+        public SearchDivisionsController(IRequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [HttpPost, Route("~/SearchDivisions/{id:int}")]
         public ActionResult Index(int id)
         {
@@ -21,7 +26,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
         [HttpPost]
         public ActionResult MoveToTop(SearchDivisionsModel m)
         {
-            DbUtil.Db.SetMainDivision(m.Id, m.TargetDivision);
+            CurrentDatabase.SetMainDivision(m.Id, m.TargetDivision);
             return View("ModalDialog", m);
         }
         [HttpPost]

@@ -1,8 +1,8 @@
+using CmsData;
+using CmsWeb.Areas.People.Models;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using CmsData;
-using CmsWeb.Areas.People.Models;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Controllers
@@ -34,6 +34,11 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpPost]
         public ActionResult PersonalUpdate(int id, BasicPersonInfo m)
         {
+            if (!ModelState.IsValid)
+            {
+                return View("Personal/Edit", m);
+            }
+
             m.UpdatePerson();
             DbUtil.LogPersonActivity($"Update Basic Info for: {m.person.Name}", m.Id, m.person.Name);
             InitExportToolbar(id);
@@ -51,37 +56,39 @@ namespace CmsWeb.Areas.People.Controllers
         public ActionResult UploadPicture(int id, HttpPostedFileBase picture)
         {
             if (picture == null)
+            {
                 return Redirect("/Person2/" + id);
-            var person = DbUtil.Db.LoadPersonById(id);
+            }
+
+            var person = CurrentDatabase.LoadPersonById(id);
             DbUtil.LogPersonActivity($"Uploading Picture for {person.Name}", id, person.Name);
-            person.UploadPicture(DbUtil.Db, picture.InputStream);
-            person.LogPictureUpload(DbUtil.Db, Util.UserPeopleId ?? 1);
+            person.UploadPicture(CurrentDatabase, picture.InputStream);
             return Redirect("/Person2/" + id);
         }
 
         [HttpPost]
         public ActionResult DeletePicture(int id)
         {
-            var person = DbUtil.Db.LoadPersonById(id);
-            person.DeletePicture(DbUtil.Db);
+            var person = CurrentDatabase.LoadPersonById(id);
+            person.DeletePicture(CurrentDatabase);
             return Redirect("/Person2/" + id);
         }
 
         [HttpPost]
         public ActionResult RefreshThumbnail(int id)
         {
-            var person = DbUtil.Db.LoadPersonById(id);
-            person.DeleteThumbnail(DbUtil.Db);
+            var person = CurrentDatabase.LoadPersonById(id);
+            person.DeleteThumbnail(CurrentDatabase);
             return Redirect("/Person2/" + id);
         }
 
         [HttpPost]
         public ActionResult UpdateCropPosition(int id, int pictureId, int xPos, int yPos)
         {
-            var picture = DbUtil.Db.Pictures.Single(pp => pp.PictureId == pictureId);
+            var picture = CurrentDatabase.Pictures.Single(pp => pp.PictureId == pictureId);
             picture.X = xPos;
             picture.Y = yPos;
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
 
             // if we are updating the current user update their thumbnail pic position in session also.
             if (Util.UserPeopleId == id)
@@ -94,14 +101,14 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpPost]
         public ActionResult PostData(int pk, string name, string value)
         {
-            var p = DbUtil.Db.LoadPersonById(pk);
+            var p = CurrentDatabase.LoadPersonById(pk);
             switch (name)
             {
                 case "position":
-                    p.UpdatePosition(DbUtil.Db, value.ToInt());
+                    p.UpdatePosition(CurrentDatabase, value.ToInt());
                     break;
                 case "campus":
-                    p.UpdateCampus(DbUtil.Db, value.ToInt());
+                    p.UpdateCampus(CurrentDatabase, value.ToInt());
                     break;
             }
             return new EmptyResult();

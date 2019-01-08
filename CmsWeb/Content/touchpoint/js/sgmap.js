@@ -52,9 +52,17 @@ $(function () {
 
     function submitForm() {
         var data = $('#search-form').serialize();
+        var urlParams = new URLSearchParams(window.location.search);
+
+        var sgfId = 'main';
+        if (urlParams.has('id')) {
+            sgfId = urlParams.get('id');
+        }
+
+
         $.ajax({
             type: 'POST',
-            url: '/SmallGroupFinder/GetMapContent?id=Main',
+            url: '/SmallGroupFinder/GetMapContent?id=' + sgfId,
             data: data,
             success: function(ret) {
                 $('.map-content').replaceWith(ret);

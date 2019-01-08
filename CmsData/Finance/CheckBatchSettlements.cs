@@ -60,6 +60,13 @@ namespace CmsData.Finance
                     // get the original transaction.
                     var originalTransaction = db.Transactions.SingleOrDefault(t => t.TransactionId == transactionToInsert.Reference && transactionToInsert.TransactionDate >= notbefore && t.PaymentType == (batchType == BatchType.Ach ? PaymentType.Ach : PaymentType.CreditCard));
 
+                    if (originalTransaction == null)
+                    {
+                        DbUtil.LogActivity(
+                            string.Format("OriginalTransactionNotFoundWithReference {0} and Batch {1}",
+                            transactionToInsert.Reference, transactionToInsert.BatchReference));
+                    }
+
                     // get the first and last name.
                     string first, last;
                     Util.NameSplit(transactionToInsert.Name, out first, out last);

@@ -42,7 +42,8 @@ RETURN
 		,o.Location
 		,MeetingTime = (SELECT TOP 1 os.MeetingTime
 					FROM dbo.OrgSchedule os
-					WHERE os.OrganizationId = o.OrganizationId)
+					WHERE os.OrganizationId = o.OrganizationId
+					ORDER BY os.Id)
 		,MemberType = mt.[Description]
 		,EnrollDate = om.EnrollmentDate
 		,om.AttendPct
@@ -54,6 +55,7 @@ RETURN
 		,om.Pending
 		,o.LimitToRole
 		,o.SecurityTypeId
+		,o.IsMissionTrip IsMissionTripOrg
 	FROM dbo.OrganizationMembers om
 	JOIN dbo.Organizations o ON o.OrganizationId = om.OrganizationId
 	JOIN lookup.MemberType mt ON mt.Id = om.MemberTypeId

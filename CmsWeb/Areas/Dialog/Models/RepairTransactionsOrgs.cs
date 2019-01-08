@@ -1,13 +1,13 @@
-﻿using System;
+﻿using CmsData;
+using CmsWeb.Areas.Search.Models;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Web.Hosting;
-using CmsData;
-using CmsWeb.Areas.Search.Models;
-using Newtonsoft.Json;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Models
@@ -54,28 +54,28 @@ namespace CmsWeb.Areas.Dialog.Models
             db.LongRunningOperations.InsertOnSubmit(lop);
             db.SubmitChanges();
             HostingEnvironment.QueueBackgroundWorkItem(ct => DoWork(this));
-		}
+        }
         public static void DoWork(RepairTransactionsOrgs model)
         {
-			var db = DbUtil.Create(model.Host);
+            var db = DbUtil.Create(model.Host);
             db.CommandTimeout = 2200;
-		    var cul = db.Setting("Culture", "en-US");
+            var cul = db.Setting("Culture", "en-US");
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
             LongRunningOperation lop = null;
             foreach (var orginfo in model.orginfos)
-		    {
-	            db.RepairTransactionsOrgs(orginfo.Id);
+            {
+                db.RepairTransactionsOrgs(orginfo.Id);
                 lop = FetchLongRunningOperation(db, Op, model.QueryId);
                 Debug.Assert(lop != null, "r != null");
                 lop.Processed++;
                 lop.CustomMessage = $"Working on {orginfo.Name.Truncate(170)} ({orginfo.Id})";
                 db.SubmitChanges();
-		    }
+            }
             // finished
             lop = FetchLongRunningOperation(db, Op, model.QueryId);
             lop.Completed = DateTime.Now;
             db.SubmitChanges();
-		}
+        }
     }
 }

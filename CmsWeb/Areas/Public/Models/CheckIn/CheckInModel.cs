@@ -1,17 +1,18 @@
+using CmsData;
+using CmsData.Codes;
+using CmsData.View;
 using System;
 using System.Collections.Generic;
 using System.Data.Linq.SqlClient;
 using System.Linq;
 using System.Xml.Linq;
-using CmsData;
-using CmsData.Codes;
-using CmsData.View;
 using UtilityExtensions;
 
 namespace CmsWeb.Models
 {
     public class CheckInModel
     {
+        public CheckInModel() { }
         public string GetNextPrintJobs(string kiosks)
         {
             var a = (kiosks ?? "unknown").Replace(" ", "").Split(',');
@@ -23,7 +24,7 @@ namespace CmsWeb.Models
             foreach (var j in q)
             {
                 var d = XDocument.Parse(j.Data);
-                var jobs = (XElement) x.Root.FirstNode;
+                var jobs = (XElement)x.Root.FirstNode;
                 jobs.Add(d.Root);
             }
             DbUtil.Db.PrintJobs.DeleteAllOnSubmit(q);
@@ -34,8 +35,11 @@ namespace CmsWeb.Models
         public void SavePrintJob(string kiosk, string xml)
         {
             if (!kiosk.HasValue())
+            {
                 return;
-            var d = new PrintJob {Id = kiosk.Replace(" ", ""), Data = xml, Stamp = DateTime.Now};
+            }
+
+            var d = new PrintJob { Id = kiosk.Replace(" ", ""), Data = xml, Stamp = DateTime.Now };
             DbUtil.Db.PrintJobs.InsertOnSubmit(d);
             DbUtil.Db.SubmitChanges();
         }
@@ -64,7 +68,10 @@ namespace CmsWeb.Models
                      };
             var matches = q1.ToList();
             if (matches.Count > 1)
+            {
                 matches = matches.Where(m => m.Areacode == ac || ac == "000").ToList();
+            }
+
             return matches;
         }
 
@@ -81,9 +88,15 @@ namespace CmsWeb.Models
                      };
             var matches = q2.ToList();
             if (matches.Count > 0)
+            {
                 return matches;
+            }
+
             if (DbUtil.Db.Setting("UseOldCheckinMatch", "false").ToBool())
+            {
                 return MatchOld(id);
+            }
+
             return DbUtil.Db.CheckinMatch(id).ToList();
         }
 
@@ -186,7 +199,7 @@ namespace CmsWeb.Models
                 where a.AttendanceFlag && (a.MeetingDate >= a.Meeting.Organization.VisitorDate.Value)
                 where Attend.VisitAttendTypes.Contains(a.AttendanceTypeId.Value)
                 where !a.Meeting.Organization.OrganizationMembers.Any(om => om.PeopleId == a.PeopleId)
-                group a by new {a.PeopleId, a.Meeting.OrganizationId}
+                group a by new { a.PeopleId, a.Meeting.OrganizationId }
                 into g
                 let a = g.OrderByDescending(att => att.MeetingDate).First()
                 let meetingHours = DbUtil.Db.GetTodaysMeetingHours(a.Meeting.OrganizationId, thisday)
@@ -264,7 +277,7 @@ namespace CmsWeb.Models
             {
                 VisitorOrgName = PleaseVisit,
                 VisitorOrgId = 0,
-                VisitorOrgHour = (DateTime?) null
+                VisitorOrgHour = (DateTime?)null
             };
             var otherfamily =
                 from p in DbUtil.Db.People
@@ -347,7 +360,9 @@ namespace CmsWeb.Models
             {
                 var p = DbUtil.Db.LoadPersonById(PeopleId);
                 if (info.OrgEntryPoint > 0)
+                {
                     p.EntryPointId = info.OrgEntryPoint;
+                }
             }
             if (meeting == null)
             {
@@ -377,10 +392,15 @@ namespace CmsWeb.Models
         {
             var om = DbUtil.Db.OrganizationMembers.SingleOrDefault(m => m.PeopleId == PeopleId && m.OrganizationId == OrgId);
             if (om == null && Member)
+            {
                 om = OrganizationMember.InsertOrgMembers(DbUtil.Db,
                     OrgId, PeopleId, MemberTypeCode.Member, DateTime.Now, null, false);
+            }
             else if (om != null && !Member)
+            {
                 om.Drop(DbUtil.Db);
+            }
+
             DbUtil.Db.SubmitChanges();
 
             var org = DbUtil.Db.LoadOrganizationById(OrgId);
@@ -388,10 +408,10 @@ namespace CmsWeb.Models
             {
                 var p = DbUtil.Db.LoadPersonById(PeopleId);
                 var what = Member ? "joined" : "dropped";
-//                DbUtil.Db.Email(DbUtil.AdminMail,
-//                    DbUtil.Db.PeopleFromPidString(org.NotifyIds),
-//                    $"cms check-in, {what} class on " + DbUtil.Db.CmsHost,
-//                    $"<a href='{Util.ServerLink("/Person2/" + PeopleId)}/Person2/{PeopleId}'>{p.Name}</a> {what} {org.OrganizationName}");
+                //                DbUtil.Db.Email(DbUtil.Db.Util.AdminMail,
+                //                    DbUtil.Db.PeopleFromPidString(org.NotifyIds),
+                //                    $"cms check-in, {what} class on " + DbUtil.Db.CmsHost,
+                //                    $"<a href='{Util.ServerLink("/Person2/" + PeopleId)}/Person2/{PeopleId}'>{p.Name}</a> {what} {org.OrganizationName}");
                 DbUtil.LogActivity($"cms check-in, {what} class ({p.PeopleId})");
             }
         }

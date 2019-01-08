@@ -1,0 +1,138 @@
+﻿@model CmsWeb.Areas.Coordinator.Models.SubgroupModel
+@{
+    var selectedCount = Model.SelectedOrgMembers(Model.SelectedPeopleIds).Count();
+    var opengroupCount = Model.GetAllGroupDetails().Count(k => k.CheckInOpen && k.GroupId != Model.groupid);
+    var closedGroupcount = Model.GetAllGroupDetails().Count(k => k.CheckInOpen == false && k.GroupId != Model.groupid);
+}
+<style>
+    .localheader {
+        display: block;
+        width: 100%;
+        height: 25px;
+        background: gainsboro;
+        color: black;
+        font-weight: bolder;
+        text-align: center;
+        border: 0;
+        line-height: 1.5;
+        margin-bottom: 20px;
+    }
+
+    .highlighted {
+        background: rgba(0,25,150,0.2);
+    }
+    .move-subgroup .item {
+        display: flex;
+        align-content: center;
+        justify-content: flex-start;
+        height: 60px;
+    }
+    .move-subgroup .item label {
+        width: 100%;
+    }
+</style>
+@Html.Hidden("OrgId", Model.orgid)
+@Html.Hidden("GroupId", Model.groupid)
+<div class="move-subgroup">
+    <div id="SubgroupDataContainer">
+        <div class="box box-primary">
+            <div class="box-title" style="height: 50px; background: #f5f5f5;">
+                <h3 class="title" style="margin:0;">Move Rooms (@Model.OrgName - @Model.GroupName)</h3>
+            </div>
+            <div class="box-content">
+                <div class="form-group">
+                    <span class="localheader">People to Move</span>
+                    <div id="selectedPeople" class="row">
+                        @foreach (var om in Model.SelectedOrgMembers(Model.SelectedPeopleIds))
+                        {
+                            <div class="item col-sm-3">
+                                <label class="highlighted"><input style="width: 20px; height: 15px" type="checkbox" checked class="checkSingleConflicts" value="@om.PeopleId">&nbsp;&nbsp;@om.Name</label>
+                            </div>
+                        }
+                    </div>
+                    @if (opengroupCount > 0)
+                    {
+                        <span class="localheader">Open Rooms</span>
+                    }
+                    <div id="openSubgroups" class="row">
+                        @foreach (var om in Model.GetAllGroupDetails().Where(k => k.CheckInOpen))
+                        {
+                            if (om.GroupId != Model.groupid)
+                            {
+                                <div class="item col-sm-3">
+                                    <label><input class="checkRadio" style="width: 20px; height: 15px" type="radio" name="group" value="@om.GroupId">@om.Name</label>
+                                </div>
+                            }
+                        }
+                    </div>
+                    @if (closedGroupcount > 0)
+                    {
+                        <span class="localheader">Closed Rooms</span>
+                    }
+                    <div id="closedSubgroups" class="row">
+                        @foreach (var om in Model.GetAllGroupDetails())
+                        {
+                            if (!om.CheckInOpen && om.GroupId != Model.groupid)
+                            {
+                                <div class="item col-sm-3">
+                                    <label><input class="checkRadio" style="width: 20px; height: 15px" type="radio" name="group" value="@om.GroupId">@om.Name</label>
+                                </div>
+                            }
+                        }
+                    </div>
+                    <input style="width: 100%; height: 50px; background: #003f72; color: white; font-weight: bolder; text-align: center; line-height: 3" type="button" id="moveconfirmbtn" class="btn btn-primary" value="MOVE">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $('.checkSingleConflicts').on('click', function () {
+        if ($(this).is(':checked')) {
+            $(this).parent().addClass('highlighted');
+        } else {
+            $(this).parent().removeClass('highlighted');
+        }
+    });
+    $('.checkRadio').on('click', function () {
+        $('.checkRadio').parent().removeClass('highlighted');
+        $(this).parent().addClass('highlighted');
+    });
+    $('#moveconfirmbtn').on('click',
+        function () {
+            var list = [];
+            $('input[type="checkbox"]:checked').each(function () {
+                if (typeof $(this).val() != 'undefined') {
+                    list.push($(this).val());
+                }
+            });
+            if (list.length === 0)
+                return;
+                
+            $.ajax({
+                url: '@Url.Action("UpdateSmallGroup")',
+                data: JSON.stringify({
+                    id: $('#OrgId').val(),
+                    curgrpid: $('#GroupId').val(),
+                    targrpid: $('input[type="radio"][name="group"]:checked').val(),
+                    list: list.toString()
+                }),
+                success: function (ret) {
+                    var query = '?' + $.param({
+                        organizationId: ret.orgid,
+                        subgroupId: ret.groupid,
+                        subgroupName: ret.ingroup,
+                        selectedTimeslot: '@Model.TimeSlot'
+                    });
+                    $("#DetailsContainer").load('@Url.Action("Details")' + query);
+                    refreshOrgList();
+                },
+                error: function (ret) {
+                    alert('Error moving people!');
+                },
+                type: 'POST',
+                contentType: 'application/json, charset=utf-8',
+                dataType: 'json'
+            });
+        });
+</script>

@@ -5,19 +5,19 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
 
+using CmsData;
+using CmsData.API;
+using CmsData.Codes;
+using CmsWeb.Code;
+using MoreLinq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
-using CmsData.API;
-using CmsData.Codes;
-using CmsWeb.Code;
-using MoreLinq;
-using UtilityExtensions;
 using System.Web.Mvc;
-using CmsData;
+using UtilityExtensions;
 
 namespace CmsWeb.Models
 {
@@ -32,9 +32,12 @@ namespace CmsWeb.Models
             get
             {
                 if (!_name.HasValue())
+                {
                     _name = (from p in DbUtil.Db.People
                              where p.PeopleId == SearchInfo.PeopleId
                              select p.Name).SingleOrDefault() ?? "";
+                }
+
                 return _name;
             }
         }
@@ -78,6 +81,7 @@ namespace CmsWeb.Models
         public IQueryable<Contribution> ApplySort(IQueryable<Contribution> q)
         {
             if ((Direction ?? "desc") == "asc")
+            {
                 switch (Sort)
                 {
                     case "Date":
@@ -109,7 +113,9 @@ namespace CmsWeb.Models
                             select c;
                         break;
                 }
+            }
             else
+            {
                 switch (Sort)
                 {
                     case "Date":
@@ -141,6 +147,8 @@ namespace CmsWeb.Models
                             select c;
                         break;
                 }
+            }
+
             return q;
         }
 
@@ -155,7 +163,7 @@ namespace CmsWeb.Models
         {
             var q = (from c in api.FetchContributions()
                      let bhid = c.BundleDetails.First().BundleHeaderId
-                     group c by new {bhid, c.ContributionDate.Value.Date} into g
+                     group c by new { bhid, c.ContributionDate.Value.Date } into g
                      select new BundleInfo()
                      {
                          Id = g.Key.bhid,
@@ -184,16 +192,16 @@ namespace CmsWeb.Models
         {
             return new SelectList(
                 new List<CodeValueItem>
-    			{
-    				new CodeValueItem { Id = 2, Value = "Both Online & Not" },
-    				new CodeValueItem { Id = 1, Value = "Online" },
-    				new CodeValueItem { Id = 0, Value = "Not Online" },
+                {
+                    new CodeValueItem { Id = 2, Value = "Both Online & Not" },
+                    new CodeValueItem { Id = 1, Value = "Online" },
+                    new CodeValueItem { Id = 0, Value = "Not Online" },
                 }, "Id", "Value", SearchInfo.Online.ToString());
         }
         public IEnumerable<SelectListItem> BundleTypes()
         {
             var list = new CodeValueModel().BundleHeaderTypes0().ToList();
-            list.Add(new CodeValueItem {Id = 9999, Value = "No Bundle"});
+            list.Add(new CodeValueItem { Id = 9999, Value = "No Bundle" });
             return new SelectList(list, "Id", "Value", SearchInfo.Type.ToString());
         }
         public IEnumerable<SelectListItem> Years()
@@ -202,8 +210,8 @@ namespace CmsWeb.Models
                     where c.PeopleId == SearchInfo.PeopleId || SearchInfo.PeopleId == null
                     group c by c.ContributionDate.Value.Year
                         into g
-                        orderby g.Key descending
-                        select new SelectListItem { Text = g.Key.ToString() };
+                    orderby g.Key descending
+                    select new SelectListItem { Text = g.Key.ToString() };
             var list = q.ToList();
             list.Insert(0, new SelectListItem { Text = "(not specified)", Value = "0" });
             return list;
@@ -215,12 +223,12 @@ namespace CmsWeb.Models
                         where c.PeopleId == SearchInfo.PeopleId || SearchInfo.PeopleId == null
                         group c by new { c.FundId, c.ContributionFund.FundName }
                             into g
-                            orderby g.Key.FundName
-                            select new SelectListItem
-                            {
-                                       Value = g.Key.FundId.ToString(),
-                                       Text = g.Key.FundName
-                                   }).ToList();
+                        orderby g.Key.FundName
+                        select new SelectListItem
+                        {
+                            Value = g.Key.FundId.ToString(),
+                            Text = g.Key.FundName
+                        }).ToList();
             list.Insert(0, new SelectListItem { Text = "(not specified)", Value = "0" });
             return list;
         }
@@ -255,7 +263,7 @@ namespace CmsWeb.Models
             DbUtil.Db.SubmitChanges();
         }
 
-        private static Contribution CreateContributionRecord(Contribution c)
+        public static Contribution CreateContributionRecord(Contribution c)
         {
             var now = Util.Now;
             var r = new Contribution
@@ -276,31 +284,44 @@ namespace CmsWeb.Models
         {
             return new SelectList(
                 new List<CodeValueItem>
-    			{
-    				new CodeValueItem { Code = "TaxDed", Value = "Tax Deductible" },
-    				new CodeValueItem { Code = "NonTaxDed", Value = "Non-Tax Deductible" },
-    				new CodeValueItem { Code = "Both", Value = "Both Tax & Non-Tax" },
-    				new CodeValueItem { Code = "Pledge", Value = "Pledges" },
-    				new CodeValueItem { Code = "All", Value = "All Items" },
+                {
+                    new CodeValueItem { Code = "TaxDed", Value = "Tax Deductible" },
+                    new CodeValueItem { Code = "NonTaxDed", Value = "Non-Tax Deductible" },
+                    new CodeValueItem { Code = "Both", Value = "Both Tax & Non-Tax" },
+                    new CodeValueItem { Code = "Pledge", Value = "Pledges" },
+                    new CodeValueItem { Code = "All", Value = "All Items" },
                 }, "Code", "Value", SearchInfo.TaxNonTax);
         }
 
         public string CheckConversion()
         {
             if (!HttpContext.Current.User.IsInRole("conversion"))
+            {
                 return null;
+            }
+
             if (!SearchInfo.Name.HasValue())
+            {
                 return null;
+            }
+
             if (SearchInfo.FundId == 0)
+            {
                 return null;
+            }
+
             var re = new Regex(@"move to fundid (\d+)");
             var match = re.Match(SearchInfo.Name);
             if (!match.Success)
+            {
                 return null;
+            }
 
             var newfundid = match.Groups[1].Value.ToInt2();
             if (!(newfundid > 0))
+            {
                 return null;
+            }
 
             var oldfund = DbUtil.Db.ContributionFunds.Single(ff => ff.FundId == SearchInfo.FundId);
             var newfund = DbUtil.Db.ContributionFunds.SingleOrDefault(ff => ff.FundId == newfundid) ??
@@ -314,7 +335,7 @@ namespace CmsWeb.Models
                 sb.AppendFormat(@"
 -- for pid = {3}, moving {4:c} from '{5}' to '{6}'
 UPDATE dbo.Contribution SET FundId = {0} WHERE ContributionId = {1} AND FundId = {2}
-",              newfundid, c.ContributionId, c.FundId,
+", newfundid, c.ContributionId, c.FundId,
                 c.PeopleId, c.ContributionAmount, oldfund.FundDescription, newfund.FundDescription);
             }
             var sql = sb.ToString();

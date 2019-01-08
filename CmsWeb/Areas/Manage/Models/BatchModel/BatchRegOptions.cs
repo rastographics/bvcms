@@ -1,8 +1,8 @@
-﻿using System.IO;
-using CmsData;
+﻿using CmsData;
 using CmsData.Registration;
 using CmsWeb.Code;
 using LumenWorks.Framework.IO.Csv;
+using System.IO;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Manage.Models.BatchModel
@@ -18,18 +18,27 @@ namespace CmsWeb.Areas.Manage.Models.BatchModel
         }
         private void DoUpdate(string text)
         {
+            text = text.Trim();
             csv = new CsvReader(new StringReader(text), true, '\t');
-            if(csv.GetFieldIndex("OrganizationId") == -1)
+            if (csv.GetFieldIndex("OrganizationId") == -1)
+            {
                 throw new UserInputException("Missing required OrganizationId column");
+            }
+
             while (csv.ReadNextRecord())
             {
                 var oid = csv["OrganizationId"].ToInt();
                 var o = DbUtil.Db.LoadOrganizationById(oid);
                 rs = DbUtil.Db.CreateRegistrationSettings(oid);
 
-                var name = FindColumn("OrganizationName");
-                if (name.HasValue())
-                    o.OrganizationName = name;
+                string name;
+                if (FindColumnString("OrganizationName", out name))
+                {
+                    if (name.HasValue())
+                    {
+                        o.OrganizationName = name;
+                    }
+                }
 
                 UpdateAsk("AskAllergies");
                 UpdateAsk("AnswersNotRequired");
@@ -49,146 +58,299 @@ namespace CmsWeb.Areas.Manage.Models.BatchModel
                 UpdateAskLabel("AskRequest");
                 UpdateAskLabel("AskTickets");
 
-                var b = FindColumn("NoReqBirthYear").ToBool2();
-                if (b.HasValue)
-                    rs.NoReqBirthYear = b.Value;
-                b = FindColumn("NotReqDOB").ToBool2();
-                if (b.HasValue)
-                    rs.NotReqDOB = b.Value;
-                b = FindColumn("NotReqAddr").ToBool2();
-                if (b.HasValue)
-                    rs.NotReqAddr = b.Value;
-                b = FindColumn("NotReqGender").ToBool2();
-                if (b.HasValue)
-                    rs.NotReqGender = b.Value;
-                b = FindColumn("NotReqMarital").ToBool2();
-                if (b.HasValue)
-                    rs.NotReqMarital = b.Value;
-                b = FindColumn("NotReqCampus").ToBool2();
-                if (b.HasValue)
-                    rs.NotReqCampus = b.Value;
-                b = FindColumn("NotReqPhone").ToBool2();
-                if (b.HasValue)
-                    rs.NotReqPhone = b.Value;
-                b = FindColumn("NotReqZip").ToBool2();
-                if (b.HasValue)
-                    rs.NotReqZip = b.Value;
+                bool? b = null;
 
-                b = FindColumn("AllowOnlyOne").ToBool2();
-                if (b.HasValue)
-                    rs.AllowOnlyOne = b.Value;
-                b = FindColumn("MemberOnly").ToBool2();
-                if (b.HasValue)
-                    rs.MemberOnly = b.Value;
-                b = FindColumn("AddAsProspect").ToBool2();
-                if (b.HasValue)
-                    rs.AddAsProspect = b.Value;
-                b = FindColumn("TargetExtraValues").ToBool2();
-                if (b.HasValue)
-                    rs.TargetExtraValues = b.Value;
-                b = FindColumn("AllowReRegister").ToBool2();
-                if (b.HasValue)
-                    rs.AllowReRegister = b.Value;
-                b = FindColumn("AllowSaveProgress").ToBool2();
-                if (b.HasValue)
-                    rs.AllowSaveProgress = b.Value;
-                b = FindColumn("DisallowAnonymous").ToBool2();
-                if (b.HasValue)
-                    rs.DisallowAnonymous = b.Value;
-                b = FindColumn("ApplyMaxToOtheFees").ToBool2();
-                if (b.HasValue)
-                    rs.ApplyMaxToOtherFees = b.Value;
-                b = FindColumn("IncludeOtherFeesWithDeposit").ToBool2();
-                if (b.HasValue)
-                    rs.IncludeOtherFeesWithDeposit = b.Value;
-                b = FindColumn("OtherFeesAddedToOrgFee").ToBool2();
-                if (b.HasValue)
-                    rs.OtherFeesAddedToOrgFee = b.Value;
-                b = FindColumn("AskDonation").ToBool2();
-                if (b.HasValue)
-                    rs.AskDonation = b.Value;
+                if (FindColumnBool("NoReqBirthYear", out b))
+                {
+                    if (b.HasValue)
+                    {
+                        rs.NoReqBirthYear = b.Value;
+                    }
+                }
 
-                var s = FindColumn("ConfirmationTrackingCode");
-                rs.ConfirmationTrackingCode = s;
+                if (FindColumnBool("NotReqDOB", out b))
+                {
+                    if (b.HasValue)
+                    {
+                        rs.NotReqDOB = b.Value;
+                    }
+                }
 
-                s = FindColumn("ValidateOrgs");
-                rs.ValidateOrgs = s;
+                if (FindColumnBool("NotReqAddr", out b))
+                {
+                    if (b.HasValue)
+                    {
+                        rs.NotReqAddr = b.Value;
+                    }
+                }
 
-                s = FindColumn("Shell");
-                rs.Shell = s;
+                if (FindColumnBool("NotReqGender", out b))
+                {
+                    if (b.HasValue)
+                    {
+                        rs.NotReqGender = b.Value;
+                    }
+                }
 
-                s = FindColumn("ShellBs");
-                rs.ShellBs = s;
+                if (FindColumnBool("NotReqMarital", out b))
+                {
+                    if (b.HasValue)
+                    {
+                        rs.NotReqMarital = b.Value;
+                    }
+                }
 
-                s = FindColumn("FinishRegistrationButton");
-                rs.FinishRegistrationButton = s;
+                if (FindColumnBool("NotReqCampus", out b))
+                {
+                    if (b.HasValue)
+                    {
+                        rs.NotReqCampus = b.Value;
+                    }
+                }
 
-                s = FindColumn("SpecialScript");
-                rs.SpecialScript = s;
+                if (FindColumnBool("NotReqPhone", out b))
+                {
+                    if (b.HasValue)
+                    {
+                        rs.NotReqPhone = b.Value;
+                    }
+                }
 
-                s = FindColumn("GroupToJoin");
-                rs.GroupToJoin = s;
+                if (FindColumnBool("NotReqZip", out b))
+                {
+                    if (b.HasValue)
+                    {
+                        rs.NotReqZip = b.Value;
+                    }
+                }
 
-                s = FindColumn("TimeOut");
-                rs.TimeOut = s.ToInt();
+                if (FindColumnBool("AllowOnlyOne", out b))
+                {
+                    if (b.HasValue)
+                    {
+                        rs.AllowOnlyOne = b.Value;
+                    }
+                }
 
-                s = FindColumn("Fee");
-                rs.Fee = s.ToDecimal();
+                if (FindColumnBool("MemberOnly", out b))
+                {
+                    if (b.HasValue)
+                    {
+                        rs.MemberOnly = b.Value;
+                    }
+                }
 
-                s = FindColumn("MaximumFee");
-                rs.MaximumFee = s.ToDecimal();
+                if (FindColumnBool("AddAsProspect", out b))
+                {
+                    if (b.HasValue)
+                    {
+                        rs.AddAsProspect = b.Value;
+                    }
+                }
 
-                s = FindColumn("ExtraFee");
-                rs.ExtraFee = s.ToDecimal();
+                //                if (FindColumnBool("TargetExtraValues", out b))
+                //                    if (b.HasValue)
+                //                        rs.TargetExtraValues = b.Value;
 
-                s = FindColumn("Deposit");
-                rs.Deposit = s.ToDecimal();
+                if (FindColumnBool("AllowReRegister", out b))
+                {
+                    if (b.HasValue)
+                    {
+                        rs.AllowReRegister = b.Value;
+                    }
+                }
 
-                s = FindColumn("AccountingCode");
-                rs.AccountingCode = s;
+                if (FindColumnBool("AllowSaveProgress", out b))
+                {
+                    if (b.HasValue)
+                    {
+                        rs.AllowSaveProgress = b.Value;
+                    }
+                }
 
-                s = FindColumn("ExtraValueFeeName");
-                rs.ExtraValueFeeName = s;
+                if (FindColumnBool("DisallowAnonymous", out b))
+                {
+                    if (b.HasValue)
+                    {
+                        rs.DisallowAnonymous = b.Value;
+                    }
+                }
 
-                s = FindColumn("DonationLabel");
-                rs.DonationLabel = s;
+                if (FindColumnBool("ApplyMaxToOtheFees", out b))
+                {
+                    if (b.HasValue)
+                    {
+                        rs.ApplyMaxToOtherFees = b.Value;
+                    }
+                }
 
-                s = FindColumn("DonationFundId");
-                rs.DonationFundId = s.ToInt();
+                if (FindColumnBool("IncludeOtherFeesWithDeposit", out b))
+                {
+                    if (b.HasValue)
+                    {
+                        rs.IncludeOtherFeesWithDeposit = b.Value;
+                    }
+                }
+
+                if (FindColumnBool("OtherFeesAddedToOrgFee", out b))
+                {
+                    if (b.HasValue)
+                    {
+                        rs.OtherFeesAddedToOrgFee = b.Value;
+                    }
+                }
+
+                if (FindColumnBool("AskDonation", out b))
+                {
+                    if (b.HasValue)
+                    {
+                        rs.AskDonation = b.Value;
+                    }
+                }
+
+                string s;
+
+                if (FindColumnString("ConfirmationTrackingCode", out s))
+                {
+                    rs.ConfirmationTrackingCode = s;
+                }
+
+                if (FindColumnString("ValidateOrgs", out s))
+                {
+                    rs.ValidateOrgs = s;
+                }
+
+                if (FindColumnString("Shell", out s))
+                {
+                    rs.Shell = s;
+                }
+
+                if (FindColumnString("ShellBs", out s))
+                {
+                    rs.ShellBs = s;
+                }
+
+                if (FindColumnString("FinishRegistrationButton", out s))
+                {
+                    rs.FinishRegistrationButton = s;
+                }
+
+                if (FindColumnString("SpecialScript", out s))
+                {
+                    rs.SpecialScript = s;
+                }
+
+                if (FindColumnString("OnEnrollScript", out s))
+                {
+                    rs.OnEnrollScript = s;
+                }
+
+                if (FindColumnString("GroupToJoin", out s))
+                {
+                    rs.GroupToJoin = s;
+                }
+
+                if (FindColumnString("TimeOut", out s))
+                {
+                    rs.TimeOut = s.ToInt2();
+                }
+
+                if (FindColumnString("Fee", out s))
+                {
+                    rs.Fee = s.ToDecimal();
+                }
+
+                if (FindColumnString("MaximumFee", out s))
+                {
+                    rs.MaximumFee = s.ToDecimal();
+                }
+
+                if (FindColumnString("ExtraFee", out s))
+                {
+                    rs.ExtraFee = s.ToDecimal();
+                }
+
+                if (FindColumnString("Deposit", out s))
+                {
+                    rs.Deposit = s.ToDecimal();
+                }
+
+                if (FindColumnString("AccountingCode", out s))
+                {
+                    rs.AccountingCode = s;
+                }
+
+                if (FindColumnString("ExtraValueFeeName", out s))
+                {
+                    rs.ExtraValueFeeName = s;
+                }
+
+                if (FindColumnString("DonationLabel", out s))
+                {
+                    rs.DonationLabel = s;
+                }
+
+                if (FindColumnString("DonationFundId", out s))
+                {
+                    rs.DonationFundId = s.ToInt();
+                }
 
                 o.UpdateRegSetting(rs);
                 DbUtil.Db.SubmitChanges();
             }
         }
 
-        private string FindColumn(string col)
+        private bool FindColumnBool(string col, out bool? ret)
         {
             var i = csv.GetFieldIndex(col);
-            if (i >= 0)
-                return csv[i];
-            return null;
+            ret = i >= 0 ? csv[i].ToBool2() : null;
+            return i >= 0;
+        }
+        private bool FindColumnString(string col, out string ret)
+        {
+            var i = csv.GetFieldIndex(col);
+            ret = i >= 0 ? csv[i] : null;
+            return i >= 0;
         }
         private void UpdateAskLabel(string name)
         {
-            var val = FindColumn(name);
-            if (val.HasValue())
+            string val;
+            if (!FindColumnString(name, out val))
             {
-                var askrequest = rs.AskItem(name) as AskRequest;
-                if (askrequest == null)
-                    rs.AskItems.Add(new AskRequest { Label = val });
-                else
-                    askrequest.Label = val;
+                return;
+            }
+
+            if (!val.HasValue())
+            {
+                return;
+            }
+
+            var askrequest = rs.AskItem(name) as AskRequest;
+            if (askrequest == null)
+            {
+                rs.AskItems.Add(new AskRequest { Label = val });
+            }
+            else
+            {
+                askrequest.Label = val;
             }
         }
 
         private void UpdateAsk(string name)
         {
-            var b = FindColumn(name).ToBool2();
-            var a = rs.AskItem(name);
-            if (a == null && b == true)
-                rs.AskItems.Add(new Ask(name));
-            else if (a != null && b == false)
-                rs.AskItems.Remove(a);
+            bool? b;
+            if (FindColumnBool(name, out b))
+            {
+                var a = rs.AskItem(name);
+                if (a == null && b == true)
+                {
+                    rs.AskItems.Add(new Ask(name));
+                }
+                else if (a != null && b == false)
+                {
+                    rs.AskItems.Remove(a);
+                }
+            }
         }
     }
 }

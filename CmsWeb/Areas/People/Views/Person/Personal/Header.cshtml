@@ -18,8 +18,12 @@
             @Html.DisplayFor(m => m.basic.Campus, "InlineCodeEditCampus", new { label = Util2.CampusLabel, canedit = Model.Person.CanUserEditCampus })
         }
 
+
         @Html.DisplayFor(m => m.basic.PositionInFamily, "InlineCode")
-        @Badge(true, @Model.MemberStatus, "label-success")
+        @if (User.IsInRole("Access") || !DbUtil.Db.Setting("HideMyDataMemberBadge"))
+        {
+            @Badge(true, @Model.MemberStatus, "label-success")
+        }
         @foreach (var status in Model.StatusFlags)
         {
             @Badge(Model.MemberStatus != status, status, "label-success")
@@ -31,25 +35,33 @@
 </ul>
 @helper ShowAddress(AddressInfo a)
 {
-var editHide = Model.Person.CanUserEditFamilyAddress ? "" : "hide";
-if (a.AddressLineOne.HasValue() || a.Preferred)
-{
-    var icon = a.Name == "FamilyAddr" ? "fa-home" : "fa-male";
-    var addr = a.AddrCityStateZipLine();
-    var start = DbUtil.StartAddress;
-        <div class="dropdown">
-            <i class="fa @icon fa-fw"></i>
-            <a href="#" class="dropdown-toggle @a.BadAddressClass" data-toggle="dropdown">@addr</a>&nbsp;&nbsp;
-            <a href="/Address/Edit/@a.Name/@Model.PeopleId" class="editaddr @editHide"><i class="fa fa-pencil"></i></a>
-            <ul class="dropdown-menu">
-                <li class="@editHide"><a href="/Address/Edit/@a.Name/@Model.PeopleId" class="editaddr">Edit Address</a></li>
-                <li><a href="http://www.google.com/maps?q=@addr" target="_blank">Google Map</a></li>
-                <li><a href="http://www.bing.com/maps/?q=@addr" target="_blank">Bing Map</a></li>
-                <li><a href='http://www.bing.com/maps/?rtp=adr.@start~adr.@addr' target="_blank">Driving Directions (Bing)</a></li>
-                <li><a href='https://www.google.com/maps/dir/@start.Replace(' ','+')/@addr.Replace(' ', '+')' target="_blank">Driving Directions (Google)</a></li>
-            </ul>
-        </div>
-}
+
+    if(a == null)
+    {
+        <span class="label label-info">No address information available.</span>
+    }
+    else
+    {
+        var editHide = Model.Person.CanUserEditFamilyAddress ? "" : "hide";
+        if (a.AddressLineOne.HasValue() || a.Preferred)
+        {
+            var icon = a.Name == "FamilyAddr" ? "fa-home" : "fa-male";
+            var addr = a.AddrCityStateZipLine();
+            var start = DbUtil.StartAddress;
+                <div class="dropdown">
+                    <i class="fa @icon fa-fw"></i>
+                    <a href="#" class="dropdown-toggle @a.BadAddressClass" data-toggle="dropdown">@addr</a>&nbsp;&nbsp;
+                    <a href="/Address/Edit/@a.Name/@Model.PeopleId" class="editaddr @editHide"><i class="fa fa-pencil"></i></a>
+                    <ul class="dropdown-menu">
+                        <li class="@editHide"><a href="/Address/Edit/@a.Name/@Model.PeopleId" class="editaddr">Edit Address</a></li>
+                        <li><a href="http://www.google.com/maps?q=@addr" target="_blank">Google Map</a></li>
+                        <li><a href="http://www.bing.com/maps/?q=@addr" target="_blank">Bing Map</a></li>
+                        <li><a href='http://www.bing.com/maps/?rtp=adr.@start~adr.@addr' target="_blank">Driving Directions (Bing)</a></li>
+                        <li><a href='https://www.google.com/maps/dir/@start.Replace(' ','+')/@addr.Replace(' ', '+')' target="_blank">Driving Directions (Google)</a></li>
+                    </ul>
+                </div>
+        }
+    }
 }
 @helper ContactLine()
 {

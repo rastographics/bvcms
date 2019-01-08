@@ -6,6 +6,7 @@ namespace CmsWeb.Areas.People.Models
 {
     public class TasksAssignedModel : TasksModel
     {
+        public TasksAssignedModel() { }
         override public IQueryable<CmsData.Task> DefineModelList()
         {
             return from t in FilteredModelList()

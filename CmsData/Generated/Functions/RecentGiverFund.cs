@@ -10,7 +10,7 @@ using System.ComponentModel;
 
 namespace CmsData.View
 {
-	[Table(Name="RecentGiverFund")]
+	[Table(Name="RecentGiverFunds")]
 	public partial class RecentGiverFund
 	{
 		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);

@@ -62,19 +62,23 @@ namespace CmsData
 		
 		private int _ImageID;
 		
+		private string _MetaInfo;
+		
+		private int _Origin;
+		
    		
-   		private EntitySet< BundleDetail> _BundleDetails;
+   		private EntitySet<BundleDetail> _BundleDetails;
 		
     	
-		private EntityRef< ContributionFund> _ContributionFund;
+		private EntityRef<ContributionFund> _ContributionFund;
 		
-		private EntityRef< ContributionStatus> _ContributionStatus;
+		private EntityRef<ContributionStatus> _ContributionStatus;
 		
-		private EntityRef< ContributionType> _ContributionType;
+		private EntityRef<ContributionType> _ContributionType;
 		
-		private EntityRef< ExtraDatum> _ExtraDatum;
+		private EntityRef<ExtraDatum> _ExtraDatum;
 		
-		private EntityRef< Person> _Person;
+		private EntityRef<Person> _Person;
 		
 	#endregion
 	
@@ -149,22 +153,28 @@ namespace CmsData
 		partial void OnImageIDChanging(int value);
 		partial void OnImageIDChanged();
 		
+		partial void OnMetaInfoChanging(string value);
+		partial void OnMetaInfoChanged();
+		
+		partial void OnOriginChanging(int value);
+		partial void OnOriginChanged();
+		
     #endregion
 		public Contribution()
 		{
 			
-			this._BundleDetails = new EntitySet< BundleDetail>(new Action< BundleDetail>(this.attach_BundleDetails), new Action< BundleDetail>(this.detach_BundleDetails)); 
+			this._BundleDetails = new EntitySet<BundleDetail>(new Action< BundleDetail>(this.attach_BundleDetails), new Action< BundleDetail>(this.detach_BundleDetails)); 
 			
 			
-			this._ContributionFund = default(EntityRef< ContributionFund>); 
+			this._ContributionFund = default(EntityRef<ContributionFund>); 
 			
-			this._ContributionStatus = default(EntityRef< ContributionStatus>); 
+			this._ContributionStatus = default(EntityRef<ContributionStatus>); 
 			
-			this._ContributionType = default(EntityRef< ContributionType>); 
+			this._ContributionType = default(EntityRef<ContributionType>); 
 			
-			this._ExtraDatum = default(EntityRef< ExtraDatum>); 
+			this._ExtraDatum = default(EntityRef<ExtraDatum>); 
 			
-			this._Person = default(EntityRef< Person>); 
+			this._Person = default(EntityRef<Person>); 
 			
 			OnCreated();
 		}
@@ -676,12 +686,56 @@ namespace CmsData
 		}
 
 		
+		[Column(Name="MetaInfo", UpdateCheck=UpdateCheck.Never, Storage="_MetaInfo", DbType="varchar(100)")]
+		public string MetaInfo
+		{
+			get { return this._MetaInfo; }
+
+			set
+			{
+				if (this._MetaInfo != value)
+				{
+				
+                    this.OnMetaInfoChanging(value);
+					this.SendPropertyChanging();
+					this._MetaInfo = value;
+					this.SendPropertyChanged("MetaInfo");
+					this.OnMetaInfoChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="Origin", UpdateCheck=UpdateCheck.Never, Storage="_Origin", DbType="int NOT NULL")]
+		public int Origin
+		{
+			get { return this._Origin; }
+
+			set
+			{
+				if (this._Origin != value)
+				{
+				
+                    this.OnOriginChanging(value);
+					this.SendPropertyChanging();
+					this._Origin = value;
+					this.SendPropertyChanged("Origin");
+					this.OnOriginChanged();
+				}
+
+			}
+
+		}
+
+		
     #endregion
         
     #region Foreign Key Tables
    		
    		[Association(Name="BUNDLE_DETAIL_CONTR_FK", Storage="_BundleDetails", OtherKey="ContributionId")]
-   		public EntitySet< BundleDetail> BundleDetails
+   		public EntitySet<BundleDetail> BundleDetails
    		{
    		    get { return this._BundleDetails; }
 

@@ -1,4 +1,7 @@
 ﻿@model CmsWeb.Areas.Org.Models.OrgGroupsModel
+@{
+    var checkinFeaturesEnabled = Setting("EnableSubgroupCheckin") == "true";
+}
 @Html.HiddenFor(m => m.orgid)
 <input type="hidden" id="groupid" name="groupid" class="delete-group-id" />
 <div class="row">
@@ -20,34 +23,48 @@
                     <th class="text-center">Score Total</th>
                     <th class="text-right">Score Average</th>
                 }
+                @if (checkinFeaturesEnabled)
+                {
+                    <th>Schedule</th>
+                    <th>Allow checkin</th>
+                    <th>Default Open</th>
+                    <th>Default Capacity</th>
+                }
                 <th style="width: 100px;" colspan="2">Actions</th>
             </tr>
         </thead>
         @foreach (var g in Model.GroupsList())
         {
             var d = Model.GetGroupDetails(g.Id);
-            <tr>
-                <td class="text-center" style="width: 10px;">
-                    <input id="@g.Id" name="groups" type="checkbox" value="@g.Id" />
-                </td>
-                <td>
-                    @g.Name
-                </td>
+        <tr>
+            <td class="text-center" style="width: 10px;">
+                <input id="@g.Id" name="groups" type="checkbox" value="@g.Id" />
+            </td>
+            <td>
+                @g.Name
+            </td>
+            <td class="text-center">
+                @( d != null ? d.members : 0)
+            </td>
+            @if (Model.isRecreationTeam)
+            {
                 <td class="text-center">
-                    @( d != null ? d.members : 0)
+                    @( d != null ? d.total : 0)
                 </td>
-                @if (Model.isRecreationTeam)
-                {
-                    <td class="text-center">
-                        @( d != null ? d.total : 0)
-                    </td>
-                    <td class="text-right">
-                        @( d != null ? d.average : 0)
-                    </td>
-                }
-                <td style="width: 50px;"><a class="rename-group btn btn-default btn-sm" href="/OrgGroups/RenameGroup/@Model.orgid" groupId="@g.Id" groupName="@g.Name"><i class="fa fa-pencil"></i> Rename</a></td>
-                <td style="width: 50px;"><a class="delete-group btn btn-danger btn-sm" href="/OrgGroups/DeleteGroup/@Model.orgid" groupId="@g.Id"><i class="fa fa-trash"></i> Delete</a></td>
-            </tr>
+                <td class="text-right">
+                    @( d != null ? d.average : 0)
+                </td>
+            }
+            @if (checkinFeaturesEnabled)
+            {
+                <td>@g.Schedule</td>
+                <td><a class="toggle-checkin btn @(g.CheckIn ? "btn-success" : "btn-warning") btn-sm" href="@Url.Action(controllerName: "OrgGroups", actionName: "ToggleCheckin", routeValues: new { orgId = Model.orgid, groupId = g.Id })">@(g.CheckIn ? "Enabled" : "Disabled")</a></td>
+                <td>@(g.CheckInOpenDefault ? "Yes" : "No")</td>
+                <td>@g.CheckInCapacityDefault</td>
+            }
+            <td style="width: 50px;"><a class="edit-group btn btn-default btn-sm" href="/OrgGroups/EditGroup/@Model.orgid" groupId="@g.Id" groupName="@g.Name" checkinOpenDefault="@g.CheckInOpenDefault" checkinCapacityDefault="@g.CheckInCapacityDefault" scheduleId="@g.ScheduleId"><i class="fa fa-pencil"></i> Edit</a></td>
+            <td style="width: 50px;"><a class="delete-group btn btn-danger btn-sm" href="/OrgGroups/DeleteGroup/@Model.orgid" groupId="@g.Id"><i class="fa fa-trash"></i> Delete</a></td>
+        </tr>
         }
     </table>
 </div>

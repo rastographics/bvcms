@@ -51,14 +51,14 @@ namespace CmsData
 		private int? _FundId;
 		
    		
-   		private EntitySet< BundleDetail> _BundleDetails;
+   		private EntitySet<BundleDetail> _BundleDetails;
 		
     	
-		private EntityRef< ContributionFund> _Fund;
+		private EntityRef<ContributionFund> _Fund;
 		
-		private EntityRef< BundleHeaderType> _BundleHeaderType;
+		private EntityRef<BundleHeaderType> _BundleHeaderType;
 		
-		private EntityRef< BundleStatusType> _BundleStatusType;
+		private EntityRef<BundleStatusType> _BundleStatusType;
 		
 	#endregion
 	
@@ -119,14 +119,14 @@ namespace CmsData
 		public BundleHeader()
 		{
 			
-			this._BundleDetails = new EntitySet< BundleDetail>(new Action< BundleDetail>(this.attach_BundleDetails), new Action< BundleDetail>(this.detach_BundleDetails)); 
+			this._BundleDetails = new EntitySet<BundleDetail>(new Action< BundleDetail>(this.attach_BundleDetails), new Action< BundleDetail>(this.detach_BundleDetails)); 
 			
 			
-			this._Fund = default(EntityRef< ContributionFund>); 
+			this._Fund = default(EntityRef<ContributionFund>); 
 			
-			this._BundleHeaderType = default(EntityRef< BundleHeaderType>); 
+			this._BundleHeaderType = default(EntityRef<BundleHeaderType>); 
 			
-			this._BundleStatusType = default(EntityRef< BundleStatusType>); 
+			this._BundleStatusType = default(EntityRef<BundleStatusType>); 
 			
 			OnCreated();
 		}
@@ -503,7 +503,7 @@ namespace CmsData
     #region Foreign Key Tables
    		
    		[Association(Name="BUNDLE_DETAIL_BUNDLE_FK", Storage="_BundleDetails", OtherKey="BundleHeaderId")]
-   		public EntitySet< BundleDetail> BundleDetails
+   		public EntitySet<BundleDetail> BundleDetails
    		{
    		    get { return this._BundleDetails; }
 

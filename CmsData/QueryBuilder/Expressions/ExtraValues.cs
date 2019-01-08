@@ -116,6 +116,7 @@ namespace CmsData
 
         internal Expression RecentPeopleExtraFieldChanged()
         {
+            var tf = CodeIds == "1";
             var mindt = Util.Now.AddDays(-Days).Date;
             var sev = Views.GetViewableNameTypes(db, "People", true).SingleOrDefault(nn => nn.Name == Quarters);
             if (!db.FromBatch)
@@ -127,7 +128,7 @@ namespace CmsData
                     where e.TransactionTime.Date >= mindt
                     select e).Any();
             Expression expr = Expression.Invoke(pred, parm);
-            if (op == CompareType.NotEqual)
+            if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }

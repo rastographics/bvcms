@@ -1,9 +1,8 @@
+using CmsData.ExtraValue;
+using CmsWeb.Models.ExtraValues;
 using System;
 using System.Collections.Generic;
 using System.Web.Mvc;
-using CmsData;
-using CmsData.ExtraValue;
-using CmsWeb.Models.ExtraValues;
 
 namespace CmsWeb.Controllers
 {
@@ -26,12 +25,12 @@ namespace CmsWeb.Controllers
         [HttpPost, Route("ExtraValue/SaveEditedStandard")]
         public ActionResult SaveEditedStandard(NewExtraValueModel m)
         {
-            var i = Views.GetViewsViewValue(DbUtil.Db, m.ExtraValueTable, m.ExtraValueName, m.ExtraValueLocation);
+            var i = Views.GetViewsViewValue(CurrentDatabase, m.ExtraValueTable, m.ExtraValueName, m.ExtraValueLocation);
             i.value.VisibilityRoles = m.VisibilityRoles;
             i.value.EditableRoles = m.EditableRoles;
             i.value.Codes = m.ConvertToCodes();
             i.value.Link = Server.HtmlEncode(m.ExtraValueLink);
-            i.views.Save(DbUtil.Db);
+            i.views.Save(CurrentDatabase);
             return View("ListStandard", new ExtraValueModel(m.Id, m.ExtraValueTable, m.ExtraValueLocation));
         }
 
@@ -66,9 +65,13 @@ namespace CmsWeb.Controllers
             try
             {
                 if (ModelState.IsValid)
+                {
                     m.AddAsNewStandard();
+                }
                 else
+                {
                     ViewBag.Error = "not saved, errors in form";
+                }
             }
             catch (Exception ex)
             {

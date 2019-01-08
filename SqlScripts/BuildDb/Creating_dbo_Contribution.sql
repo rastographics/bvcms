@@ -21,7 +21,8 @@ CREATE TABLE [dbo].[Contribution]
 [TranId] [int] NULL,
 [Source] [int] NULL,
 [CampusId] [int] NULL,
-[ImageID] [int] NOT NULL CONSTRAINT [DF_Contribution_ImageID] DEFAULT ((0))
+[ImageID] [int] NOT NULL CONSTRAINT [DF_Contribution_ImageID] DEFAULT ((0)),
+[MetaInfo] [varchar] (100) NULL
 ) ON [PRIMARY]
 GO
 IF @@ERROR <> 0 SET NOEXEC ON

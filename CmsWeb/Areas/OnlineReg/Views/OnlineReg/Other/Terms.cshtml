@@ -1,4 +1,5 @@
-﻿@model CmsWeb.Areas.OnlineReg.Models.OnlineRegModel
+﻿@using CmsWeb.Areas.OnlineReg.Models
+@model CmsWeb.Areas.OnlineReg.Models.OnlineRegModel
 @{
   Layout = "~/Views/Shared/onlinereg2.cshtml";
   ViewBag.Title = "Online Registration";
@@ -69,10 +70,8 @@
 @Html.Raw(Model.Terms)
 <form action="/OnlineReg/Confirm/@Model.DatumId" method="post">
   @Html.Hidden("TransactionID", "zero due")
-  <p>@Html.CheckBox("IAgree") I agree to the above terms and conditions.</p>
-  <p>
-    You must agree to the terms above for you or your minor child before you can continue with confirmation.
-  </p>
+    <p>@Html.CheckBox("IAgree") I agree to the above terms and conditions.</p>
+    @Html.Raw(OnlineRegModel.YouMustAgreeStatement(Model.Orgid)) 
   <p></p>
   <p><input type="submit" id="Submit" value="@Model.GetFinishRegistrationButton()" /></p>
 </form>

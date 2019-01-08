@@ -4,15 +4,15 @@
  * you may not use this code except in compliance with the License.
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
-using System;
-using System.Linq;
+using CmsData;
+using CmsWeb.Models;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
-using CmsData;
-using UtilityExtensions;
-using System.Web.Mvc;
+using System;
 using System.Collections.Generic;
-using CmsWeb.Models;
+using System.Linq;
+using System.Web.Mvc;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Reports.Models
 {
@@ -35,11 +35,11 @@ namespace CmsWeb.Areas.Reports.Models
             public string AttendStr { get; set; }
             public string AttendType { get; set; }
         }
-        private Font monofont = FontFactory.GetFont(FontFactory.COURIER, 8);
-        private Font boldfont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 10);
-        private Font bigboldfont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 12);
-        private Font font = FontFactory.GetFont(FontFactory.HELVETICA, 10);
-        private Font smallfont = FontFactory.GetFont(FontFactory.HELVETICA, 8, new GrayColor(50));
+        private readonly Font monofont = FontFactory.GetFont(FontFactory.COURIER, 8);
+        private readonly Font boldfont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 10);
+        private readonly Font bigboldfont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 12);
+        private readonly Font font = FontFactory.GetFont(FontFactory.HELVETICA, 10);
+        private readonly Font smallfont = FontFactory.GetFont(FontFactory.HELVETICA, 8, new GrayColor(50));
         private Document doc;
         private DateTime dt;
 
@@ -81,7 +81,9 @@ namespace CmsWeb.Areas.Reports.Models
             var q = Attendees(orgid.Value);
 
             if (!orgid.HasValue || i == null || !q.Any())
+            {
                 doc.Add(new Phrase("no data"));
+            }
             else
             {
                 var mt = new PdfPTable(1);
@@ -109,9 +111,13 @@ namespace CmsWeb.Areas.Reports.Models
                 foreach (var p in q)
                 {
                     if (color == BaseColor.WHITE)
+                    {
                         color = new GrayColor(240);
+                    }
                     else
+                    {
                         color = BaseColor.WHITE;
+                    }
 
                     t = new PdfPTable(widths);
                     t.SetNoBorder();
@@ -119,7 +125,10 @@ namespace CmsWeb.Areas.Reports.Models
                     t.DefaultCell.BackgroundColor = color;
 
                     if (v != p.visitor)
+                    {
                         t.Add($"             ------ {(p.visitor ? "Guests and Previous Members" : "Members")} ------", 6, bigboldfont);
+                    }
+
                     v = p.visitor;
 
                     t.Add(p.Name, font);
@@ -174,6 +183,6 @@ namespace CmsWeb.Areas.Reports.Models
                     };
             return q;
         }
-   }
+    }
 }
 

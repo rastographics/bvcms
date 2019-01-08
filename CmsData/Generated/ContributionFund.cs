@@ -56,12 +56,14 @@ namespace CmsData
 		
 		private int _QBAssetAccount;
 		
+		private int _FundManagerRoleId;
+		
    		
-   		private EntitySet< BundleHeader> _BundleHeaders;
+   		private EntitySet<BundleHeader> _BundleHeaders;
 		
-   		private EntitySet< Contribution> _Contributions;
+   		private EntitySet<Contribution> _Contributions;
 		
-   		private EntitySet< RecurringAmount> _RecurringAmounts;
+   		private EntitySet<RecurringAmount> _RecurringAmounts;
 		
     	
 	#endregion
@@ -128,15 +130,18 @@ namespace CmsData
 		partial void OnQBAssetAccountChanging(int value);
 		partial void OnQBAssetAccountChanged();
 		
+		partial void OnFundManagerRoleIdChanging(int value);
+		partial void OnFundManagerRoleIdChanged();
+		
     #endregion
 		public ContributionFund()
 		{
 			
-			this._BundleHeaders = new EntitySet< BundleHeader>(new Action< BundleHeader>(this.attach_BundleHeaders), new Action< BundleHeader>(this.detach_BundleHeaders)); 
+			this._BundleHeaders = new EntitySet<BundleHeader>(new Action< BundleHeader>(this.attach_BundleHeaders), new Action< BundleHeader>(this.detach_BundleHeaders)); 
 			
-			this._Contributions = new EntitySet< Contribution>(new Action< Contribution>(this.attach_Contributions), new Action< Contribution>(this.detach_Contributions)); 
+			this._Contributions = new EntitySet<Contribution>(new Action< Contribution>(this.attach_Contributions), new Action< Contribution>(this.detach_Contributions)); 
 			
-			this._RecurringAmounts = new EntitySet< RecurringAmount>(new Action< RecurringAmount>(this.attach_RecurringAmounts), new Action< RecurringAmount>(this.detach_RecurringAmounts)); 
+			this._RecurringAmounts = new EntitySet<RecurringAmount>(new Action< RecurringAmount>(this.attach_RecurringAmounts), new Action< RecurringAmount>(this.detach_RecurringAmounts)); 
 			
 			
 			OnCreated();
@@ -563,12 +568,34 @@ namespace CmsData
 		}
 
 		
+		[Column(Name="FundManagerRoleId", UpdateCheck=UpdateCheck.Never, Storage="_FundManagerRoleId", DbType="int NOT NULL")]
+		public int FundManagerRoleId
+		{
+			get { return this._FundManagerRoleId; }
+
+			set
+			{
+				if (this._FundManagerRoleId != value)
+				{
+				
+                    this.OnFundManagerRoleIdChanging(value);
+					this.SendPropertyChanging();
+					this._FundManagerRoleId = value;
+					this.SendPropertyChanged("FundManagerRoleId");
+					this.OnFundManagerRoleIdChanged();
+				}
+
+			}
+
+		}
+
+		
     #endregion
         
     #region Foreign Key Tables
    		
    		[Association(Name="BundleHeaders__Fund", Storage="_BundleHeaders", OtherKey="FundId")]
-   		public EntitySet< BundleHeader> BundleHeaders
+   		public EntitySet<BundleHeader> BundleHeaders
    		{
    		    get { return this._BundleHeaders; }
 
@@ -578,7 +605,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_Contribution_ContributionFund", Storage="_Contributions", OtherKey="FundId")]
-   		public EntitySet< Contribution> Contributions
+   		public EntitySet<Contribution> Contributions
    		{
    		    get { return this._Contributions; }
 
@@ -588,7 +615,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_RecurringAmounts_ContributionFund", Storage="_RecurringAmounts", OtherKey="FundId")]
-   		public EntitySet< RecurringAmount> RecurringAmounts
+   		public EntitySet<RecurringAmount> RecurringAmounts
    		{
    		    get { return this._RecurringAmounts; }
 

@@ -1,13 +1,13 @@
+using CmsData;
+using CmsWeb.Areas.People.Models;
+using CmsWeb.Code;
 using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using CmsWeb.Areas.People.Models;
-using CmsWeb.Code;
-using UtilityExtensions;
-using CmsData;
-using System.Text;
 using System.Data.Linq;
+using System.Linq;
+using System.Text;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Search.Models
 {
@@ -36,6 +36,7 @@ namespace CmsWeb.Areas.Search.Models
 
         [DisplayName("Birthday")]
         [DateEmptyOrValid]
+        [BirthdateValid]
         public string DOB { get; set; }
 
         [StringLength(20), RemoveNA]
@@ -58,14 +59,20 @@ namespace CmsWeb.Areas.Search.Models
         public string HomePhone { get; set; }
 
         private DateTime? birthday;
+
         public DateTime? Birthday
         {
             get
             {
                 DateTime dt;
                 if (!birthday.HasValue && DOB.NotEqual("na"))
+                {
                     if (Util.DateValid(DOB, out dt))
+                    {
                         birthday = dt;
+                    }
+                }
+
                 return birthday;
             }
         }
@@ -75,7 +82,10 @@ namespace CmsWeb.Areas.Search.Models
             get
             {
                 if (Birthday.HasValue)
+                {
                     return Birthday.Value.AgeAsOf(Util.Now);
+                }
+
                 return null;
             }
         }
@@ -90,7 +100,10 @@ namespace CmsWeb.Areas.Search.Models
             get
             {
                 if (_family == null && FamilyId > 0)
+                {
                     _family = DbUtil.Db.Families.Single(f => f.FamilyId == FamilyId);
+                }
+
                 return _family;
             }
         }
@@ -103,7 +116,10 @@ namespace CmsWeb.Areas.Search.Models
             get
             {
                 if (person == null && PeopleId.HasValue)
+                {
                     person = DbUtil.Db.LoadPersonById(PeopleId.Value);
+                }
+
                 return person;
             }
         }
@@ -111,7 +127,7 @@ namespace CmsWeb.Areas.Search.Models
         public AddressInfo AddressInfo { get; set; }
 
         public string PotentialDuplicate { get; set; }
-
+        public PendingPersonModel() { }
         internal void CheckDuplicate()
         {
             var pids = DbUtil.Db.FindPerson(FirstName, LastName, Birthday, null, CellPhone.GetDigits()).Select(pp => pp.PeopleId).ToList();
@@ -122,11 +138,16 @@ namespace CmsWeb.Areas.Search.Models
             foreach (var p in q)
             {
                 if (sb.Length == 0)
+                {
                     sb.AppendLine("<ul>\n");
+                }
+
                 sb.AppendFormat("<li><a href=\"/Person2/{1}\" target=\"_blank\">{0}</a> ({1}), {2}, age:{3}</li>\n", p.Name, p.PeopleId, p.PrimaryAddress, p.Age);
             }
             if (sb.Length > 0)
+            {
                 PotentialDuplicate = sb + "</ul>\n";
+            }
         }
 
         public bool IsNewFamily { get; set; }
@@ -135,7 +156,9 @@ namespace CmsWeb.Areas.Search.Models
         {
             Family f;
             if (FamilyId > 0)
+            {
                 f = Family;
+            }
             else
             {
                 f = new Family();
@@ -149,7 +172,10 @@ namespace CmsWeb.Areas.Search.Models
 
             FirstName = FirstName.Trim();
             if (FirstName == "na")
+            {
                 FirstName = "";
+            }
+
             person = Person.Add(f, position,
                                  null, FirstName.Trim(), NickName, LastName.Trim(), DOB, false, Gender.Value.ToInt(),
                                  originid, entrypointid);
@@ -158,10 +184,15 @@ namespace CmsWeb.Areas.Search.Models
             Person.CellPhone = CellPhone.GetDigits();
 
             if (campusid == 0)
+            {
                 campusid = null;
+            }
+
             Person.CampusId = Util.PickFirst(campusid.ToString(), DbUtil.Db.Setting("DefaultCampusId", "")).ToInt2();
             if (Person.CampusId == 0)
+            {
                 Person.CampusId = null;
+            }
 
             DbUtil.Db.SubmitChanges();
             DbUtil.LogActivity($"AddPerson {person.PeopleId}");

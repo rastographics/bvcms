@@ -29,6 +29,11 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 SetHeaders(m);
                 m.CheckRegisterLink(null);
 
+                if (m.NotActive())
+                {
+                    return View("OnePageGiving/NotActive", m);
+                }
+
                 var pf = PaymentForm.CreatePaymentForm(m);
                 pf.AmtToPay = null;
                 pf.Type = pf.NoCreditCardsAllowed ? "B" : "C";
@@ -235,11 +240,11 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     pf.AmtToPay = amtToPay;
                     return View("OnePageGiving/Index", new OnePageGivingModel() { OnlineRegPersonModel = m.List[0], PaymentForm = pf });
                 case RouteType.Error:
-                    DbUtil.Db.LogActivity("OnePageGiving Error " + ret.Message, pf.OrgId);
+                    CurrentDatabase.LogActivity("OnePageGiving Error " + ret.Message, pf.OrgId);
                     return Message(ret.Message);
                 default: // unexptected Route
                     ErrorSignal.FromCurrentContext().Raise(new Exception("OnePageGiving Unexpected route"));
-                    DbUtil.Db.LogActivity("OnlineReg Unexpected Route " + ret.Message, pf.OrgId);
+                    CurrentDatabase.LogActivity("OnlineReg Unexpected Route " + ret.Message, pf.OrgId);
                     ModelState.AddModelError("TranId", "unexpected error in payment processing");
 
                     m.List[0].FundItem = fundItem;
@@ -280,7 +285,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             Session["OnlineRegLogin"] = true;
 
 
-            var ev = DbUtil.Db.OrganizationExtras.SingleOrDefault(vv => vv.OrganizationId == id && vv.Field == "LoggedInOrgId");
+            var ev = CurrentDatabase.OrganizationExtras.SingleOrDefault(vv => vv.OrganizationId == id && vv.Field == "LoggedInOrgId");
             id = ev?.IntValue ?? id;
             var url = $"/OnePageGiving/{id}{(testing == true ? "?testing=true" : "")}";
             return Redirect(url);
