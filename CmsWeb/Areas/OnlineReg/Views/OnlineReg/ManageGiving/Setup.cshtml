@@ -15,7 +15,7 @@
     var specialFunds = CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel.SpecialFundList();
     var debitcredit = db.Setting("DebitCreditLabel", "Debit/Credit Card");
     var recaptchaSiteKey = db.Setting("googleReCaptchaSiteKey", ConfigurationManager.AppSettings["googleReCaptchaSiteKey"]);
-    var useRecaptcha = db.Setting("UseRecaptcha") && recaptchaSiteKey.HasValue();
+    var useRecaptcha = db.Setting("UseRecaptchaForManageGiving") && recaptchaSiteKey.HasValue();
 }
 @section head
 {
@@ -32,7 +32,6 @@
           document.getElementById("managegivingform").submit();
       }
   </script>
-  @Fingerprint.Script("/Content")
   @Fingerprint.Script("/Content/touchpoint/js/onlinereg/OnlineReg2.js")
   @Fingerprint.Script("/Content/touchpoint/js/onlinereg/onlineregpayment2.js")
   @Fingerprint.Script("/Content/touchpoint/lib/select2/js/select2.min.js")

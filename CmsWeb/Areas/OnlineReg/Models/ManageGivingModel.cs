@@ -376,6 +376,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public void Update()
         {
+            var db = DbUtil.Db;
             // first check for total amount greater than zero.
             // if so we skip everything except updating the amounts.
             var chosenFunds = FundItemsChosen().ToList();
@@ -392,7 +393,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 // first need to do a $1 auth if it's a credit card and throw any errors we get back
                 // from the gateway.
                 var vaultSaved = false;
-                var gateway = DbUtil.Db.Gateway(testing);
+                var gateway = db.Gateway(testing);
                 if (Type == PaymentType.CreditCard)
                 {
                     // perform $1 auth.
@@ -453,11 +454,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 mg.NextDate = mg.FindNextDate(DateTime.Today);
             }
 
-            DbUtil.Db.RecurringAmounts.DeleteAllOnSubmit(person.RecurringAmounts);
-            DbUtil.Db.SubmitChanges();
+            db.RecurringAmounts.DeleteAllOnSubmit(person.RecurringAmounts);
+            db.SubmitChanges();
 
             person.RecurringAmounts.AddRange(chosenFunds.Select(c => new RecurringAmount { FundId = c.fundid, Amt = c.amt }));
-            DbUtil.Db.SubmitChanges();
+            db.SubmitChanges();
         }
 
         private bool IsCardTester(PaymentForm pf, string from)
@@ -465,12 +466,17 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (!Util.IsHosted || !pf.CreditCard.HasValue())
                 return false;
             var hash = Pbkdf2Hasher.HashString(pf.CreditCard);
-            DbUtil.Db.InsertIpLog(HttpContext.Current.Request.UserHostAddress, hash);
+            var db = DbUtil.Db;
+            db.InsertIpLog(HttpContext.Current.Request.UserHostAddress, hash);
 
             if (pf.IsProblemUser())
                 return OnlineRegController.LogRogueUser("Problem User", from);
             var iscardtester = ConfigurationManager.AppSettings["IsCardTester"];
-            var result = DbUtil.Db.Connection.ExecuteScalar<string>(iscardtester, new {ip = HttpContext.Current.Request.UserHostAddress});
+            if (!iscardtester.HasValue())
+            {
+                return false;
+            }
+            var result = db.Connection.ExecuteScalar<string>(iscardtester, new {ip = HttpContext.Current.Request.UserHostAddress});
             if(result.Equal("OK"))
                 return false;
             return OnlineRegController.LogRogueUser(result, from);
@@ -599,14 +605,15 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public void CancelManagedGiving(int peopleId)
         {
-            var p = DbUtil.Db.LoadPersonById(peopleId);
-            DbUtil.Db.RecurringAmounts.DeleteAllOnSubmit(p.RecurringAmounts);
+            var db = DbUtil.Db;
+            var p = db.LoadPersonById(peopleId);
+            db.RecurringAmounts.DeleteAllOnSubmit(p.RecurringAmounts);
 
             var mg = p.ManagedGiving();
             if (mg != null)
-                DbUtil.Db.ManagedGivings.DeleteOnSubmit(mg);
+                db.ManagedGivings.DeleteOnSubmit(mg);
 
-            DbUtil.Db.SubmitChanges();
+            db.SubmitChanges();
 
             ManagedGivingStopped = true;
         }

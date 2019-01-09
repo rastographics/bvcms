@@ -103,7 +103,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     return View("ManageGiving/Setup", m);
                 }
             }
-            if (CurrentDatabase.Setting("UseRecaptcha"))
+            if (CurrentDatabase.Setting("UseRecaptchaForManageGiving"))
             {
                 if (!GoogleRecaptcha.IsValidResponse(HttpContext, CurrentDatabase))
                 {
