@@ -14,12 +14,9 @@ namespace CmsWeb.Code
 
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
-            if (value != null && Util.BirthDateValid(value.ToString(), out var dt))
+            if (value != null && DbUtil.Db.Setting("RequiredBirthYear") && !RequiredYear(value.ToString()))
             {
-                if (dt.Year == Util.SignalNoYear || !RequiredYear(value.ToString()))
-                {
-                    return new ValidationResult(FormatErrorMessage(validationContext.DisplayName));
-                }
+                return new ValidationResult(FormatErrorMessage(validationContext.DisplayName));
             }
             return ValidationResult.Success;
         }
@@ -28,7 +25,7 @@ namespace CmsWeb.Code
         {
             DateTime dt2 = DateTime.MinValue;
             string[] formats = { "MM/dd/yyyy", "MM/d/yyyy", "M/dd/yyyy", "M/d/yyyy" };
-            if (DbUtil.Db.Setting("RequiredBirthYear") && !DateTime.TryParseExact(dob, formats, CultureInfo.CurrentCulture, DateTimeStyles.None, out dt2))
+            if (!DateTime.TryParseExact(dob, formats, CultureInfo.CurrentCulture, DateTimeStyles.None, out dt2))
             {
                 return false;
             }
