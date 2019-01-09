@@ -11,7 +11,7 @@
     var VaultDisabled = db.Setting("VaultDisabled");
     var debitcredit = db.Setting("DebitCreditLabel", "Debit/Credit Card");
     var recaptchaSiteKey = db.Setting("googleReCaptchaSiteKey", ConfigurationManager.AppSettings["googleReCaptchaSiteKey"]);
-    var useRecaptcha = db.Setting("UseRecaptcha", false);
+    var useRecaptcha = db.Setting("UseRecaptcha", false) && recaptchaSiteKey.HasValue();
 }
 @section scripts
 {
@@ -117,7 +117,7 @@
               <input type="hidden" id="hdnExpiresOnFile" data-value="@Model.Expires" />
           </div>
       }
-        @if (useRecaptcha && recaptchaSiteKey.HasValue())
+        @if (useRecaptcha)
         {
             <div class="g-recaptcha"
                  data-sitekey="@recaptchaSiteKey"
