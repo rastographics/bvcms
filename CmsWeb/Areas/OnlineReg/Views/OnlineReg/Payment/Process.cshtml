@@ -88,7 +88,7 @@
             @Html.EditorFor(m => m.Country, "Dropdown", new { items = Model.Countries })
             @Html.EditorFor(m => m.Zip)
             @Html.EditorFor(m => m.Phone)
-            @Html.EditorFor(m => m.Email, "EmailAddress")
+            @Html.EditorFor(m => m.Email)
         </div>
         <div class="well">
             @if (Model.NoCreditCardsAllowed || Model.NoEChecksAllowed)
@@ -99,7 +99,7 @@
             {
                 <div class="form-group" style="text-align: center; margin-bottom: 1em;">
                     <div class="btn-group" data-toggle="buttons">
-                        @TypeRadio(PaymentType.CreditCard, debitcredit, "left", Model.Type == PaymentType.CreditCard)
+                        @TypeRadio(PaymentType.CreditCard, debitcredit, "left", Model.Type == PaymentType.CreditCard || string.IsNullOrWhiteSpace(Model.Type))
                         @TypeRadio(PaymentType.Ach, "Bank Account", "right", Model.Type == PaymentType.Ach)
                         @Html.Hidden("allowcc", "true")
                     </div>

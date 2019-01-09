@@ -253,7 +253,7 @@
             {
                 <div class="form-group" style="text-align: center; margin-bottom: 1em;">
                     <div class="btn-group" data-toggle="buttons">
-                        @TypeRadio(PaymentType.CreditCard, debitcredit, "left", Model.Type == PaymentType.CreditCard)
+                        @TypeRadio(PaymentType.CreditCard, debitcredit, "left", Model.Type == PaymentType.CreditCard || string.IsNullOrWhiteSpace(Model.Type))
                         @TypeRadio(PaymentType.Ach, "Bank Account", "right", Model.Type == PaymentType.Ach)
                         @Html.Hidden("allowcc", "true")
                     </div>
