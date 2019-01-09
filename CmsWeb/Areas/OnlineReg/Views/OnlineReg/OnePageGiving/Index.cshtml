@@ -13,7 +13,7 @@
     var processorerror = Html.ErrorMessage("TranId");
     var designatedFund = Model.OnlineRegPersonModel.DesignatedDonationFund().FirstOrDefault();
     var recaptchaSiteKey = db.Setting("googleReCaptchaSiteKey", ConfigurationManager.AppSettings["googleReCaptchaSiteKey"]);
-    var useRecaptcha = db.Setting("UseRecaptcha", false);
+    var useRecaptcha = db.Setting("UseRecaptcha");
     var disableAdditionalFunds = Model.OnlineRegPersonModel.org.GetExtra(db, "DisableFundsDropdown") == "true";
 }
 @section head{

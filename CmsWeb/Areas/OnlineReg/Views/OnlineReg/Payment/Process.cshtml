@@ -11,7 +11,7 @@
     var VaultDisabled = db.Setting("VaultDisabled");
     var debitcredit = db.Setting("DebitCreditLabel", "Debit/Credit Card");
     var recaptchaSiteKey = db.Setting("googleReCaptchaSiteKey", ConfigurationManager.AppSettings["googleReCaptchaSiteKey"]);
-    var useRecaptcha = db.Setting("UseRecaptcha", false) && recaptchaSiteKey.HasValue();
+    var useRecaptcha = db.Setting("UseRecaptcha") && recaptchaSiteKey.HasValue();
 }
 @section scripts
 {

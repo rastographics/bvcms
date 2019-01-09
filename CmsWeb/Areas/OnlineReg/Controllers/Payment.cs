@@ -55,7 +55,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return Message("Found Card Tester");
             }
 
-            if (CurrentDatabase.Setting("UseRecaptcha", true))
+            if (CurrentDatabase.Setting("UseRecaptcha"))
             {
                 if (!GoogleRecaptcha.IsValidResponse(HttpContext, CurrentDatabase))
                 {
