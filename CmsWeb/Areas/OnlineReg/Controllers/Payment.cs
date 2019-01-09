@@ -1,6 +1,7 @@
 using CmsData;
 using CmsData.Classes;
 using CmsWeb.Areas.OnlineReg.Models;
+using CmsWeb.Code;
 using Dapper;
 using Elmah;
 using System;
@@ -21,9 +22,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
 #if DEBUG
 #else
-			if (Session["FormId"] != null)
-				if ((Guid)Session["FormId"] == pf.FormId)
-					return Message("Already submitted");
+            if (Session["FormId"] != null)
+                if ((Guid)Session["FormId"] == pf.FormId)
+                    return Message("Already submitted");
 #endif
 
             OnlineRegModel m = null;
@@ -36,7 +37,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 #if DEBUG
 #else
             if (m != null && m.History.Any(h => h.Contains("ProcessPayment")))
-				return Content("Already submitted");
+                return Content("Already submitted");
 #endif
 
             int? datumid = null;
@@ -54,13 +55,12 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return Message("Found Card Tester");
             }
 
-            if (DbUtil.Db.Setting("UseRecaptcha", true))
+            if (CurrentDatabase.Setting("UseRecaptcha", true))
             {
-                if (!Program.IsValidCaptcha(HttpContext.Request.Form["g-recaptcha-response"],
-                    HttpContext.Request.UserHostAddress))
+                if (!GoogleRecaptcha.IsValidResponse(HttpContext, CurrentDatabase))
                 {
-                    DbUtil.Db.LogActivity("OnlineReg Error RaCaptcha validation failed.", pf.OrgId, did: datumid);
-                     ModelState.AddModelError("form", "RaCaptcha validation failed.");
+                    CurrentDatabase.LogActivity("OnlineReg Error RaCaptcha validation failed.", pf.OrgId, did: datumid);
+                    ModelState.AddModelError("form", "RaCaptcha validation failed.");
                     return View("Payment/Process", pf);
                 }
             }
