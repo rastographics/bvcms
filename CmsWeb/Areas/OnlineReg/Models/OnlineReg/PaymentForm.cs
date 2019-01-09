@@ -326,6 +326,13 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     (r.payinfo.MaskedAccount != null && r.payinfo.MaskedAccount.StartsWith("X"))
                     || (r.payinfo.MaskedCard != null && r.payinfo.MaskedCard.StartsWith("X"));
                 pf.Type = r.payinfo.PreferredPaymentType;
+
+                // if no preferred payment type pick credit card or ach if we have anything.
+                if (string.IsNullOrWhiteSpace(pf.Type))
+                    pf.Type = !string.IsNullOrWhiteSpace(pf.CreditCard) ? PaymentType.CreditCard : null;
+
+                if (string.IsNullOrWhiteSpace(pf.Type))
+                    pf.Type = !string.IsNullOrWhiteSpace(pf.Account) ? PaymentType.Ach : null;
             }
 
             ClearMaskedNumbers(pf, r.payinfo);
