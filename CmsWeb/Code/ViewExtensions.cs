@@ -1089,6 +1089,11 @@ namespace CmsWeb
             return "~/Views/Shared/_Layout.cshtml";
         }
 
+        public static string TouchPointLayoutWithoutHeaderFooter()
+        {
+            return "~/Views/Shared/_LayoutNoHeaderFooter.cshtml";
+        }
+
         public static string DbSetting(string name, string def)
         {
             return DbUtil.Db.Setting(name, def);
