@@ -83,11 +83,11 @@ $(function () {
         placement: 'bottom'
     });
 
-    if ($('#Day1').val().length > 0) {
+    if ($('#Day1').length && $('#Day1').val().length > 0) {
         $('#twiceAMonthDay1').editable('setValue', $('#Day1').val());
     }
 
-    if ($('#Day2').val().length > 0) {
+    if ($('#Day2').length && $('#Day2').val().length > 0) {
         $('#twiceAMonthDay2').editable('setValue', $('#Day2').val());
     }
    
