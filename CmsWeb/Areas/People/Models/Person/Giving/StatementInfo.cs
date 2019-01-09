@@ -6,7 +6,13 @@ namespace CmsWeb.Areas.People.Models
     {
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public Decimal Amount { get; set; }
+        public decimal Amount { get; set; }
         public int Count { get; set; }
+    }
+
+    public class StatementInfoWithFund : StatementInfo
+    {
+        public int FundId { get; set; }
+        public string FundName { get; set; }
     }
 }
