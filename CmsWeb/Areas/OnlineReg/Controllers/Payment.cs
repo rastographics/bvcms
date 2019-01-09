@@ -106,6 +106,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
 
             var iscardtester = ConfigurationManager.AppSettings["IsCardTester"];
+            if (!iscardtester.HasValue())
+            {
+                return false;
+            }
             var result = CurrentDatabase.Connection.ExecuteScalar<string>(iscardtester, new { ip = Request.UserHostAddress });
             if (result.Equal("OK"))
             {
