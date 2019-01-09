@@ -153,11 +153,9 @@ namespace UtilityExtensions
             return false;
         }
         public static bool BirthDateValid(string dob, out DateTime dt2)
-        {
-            string[] formats = { "MM/dd/yyyy", "MM/d/yyyy", "M/dd/yyyy", "M/d/yyyy" };
-
+        {           
             dt2 = DateTime.MinValue;
-            if (!DateTime.TryParseExact(dob.ToString(), formats, CultureInfo.CurrentCulture, DateTimeStyles.None, out dt2))
+            if (DateTime.TryParseExact(dob, "m", CultureInfo.CurrentCulture, DateTimeStyles.None, out dt2))
             {
                 dt2 = new DateTime(SignalNoYear, dt2.Month, dt2.Day);
                 return true;
