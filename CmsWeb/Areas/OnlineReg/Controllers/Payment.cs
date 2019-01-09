@@ -59,8 +59,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             {
                 if (!GoogleRecaptcha.IsValidResponse(HttpContext, CurrentDatabase))
                 {
-                    CurrentDatabase.LogActivity("OnlineReg Error RaCaptcha validation failed.", pf.OrgId, did: datumid);
-                    ModelState.AddModelError("form", "RaCaptcha validation failed.");
+                    CurrentDatabase.LogActivity("OnlineReg Error ReCaptcha validation failed.", pf.OrgId, did: datumid);
+                    ModelState.AddModelError("form", "ReCaptcha validation failed.");
                     return View("Payment/Process", pf);
                 }
             }
