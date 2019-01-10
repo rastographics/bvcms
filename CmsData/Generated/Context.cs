@@ -1358,7 +1358,13 @@ namespace CmsData
 
 		}
 
-		public Table<MeetingExtra> MeetingExtras
+        public Table<MeetingCategory> MeetingCategories
+        {
+            get { return this.GetTable<MeetingCategory>(); }
+
+        }
+
+        public Table<MeetingExtra> MeetingExtras
 		{
 			get	{ return this.GetTable<MeetingExtra>(); }
 

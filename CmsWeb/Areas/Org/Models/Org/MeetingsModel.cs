@@ -80,8 +80,8 @@ namespace CmsWeb.Areas.Org.Models
         {
             var q2 = from m in q
                      let o = m.Organization
-                     let mc = Future && DbUtil.Db.ViewMeetingConflicts.Any(mm => 
-                         mm.MeetingDate == m.MeetingDate 
+                     let mc = Future && DbUtil.Db.ViewMeetingConflicts.Any(mm =>
+                         mm.MeetingDate == m.MeetingDate
                          && (mm.OrgId1 == m.OrganizationId || mm.OrgId2 == m.OrganizationId))
                      select new MeetingInfo
                      {

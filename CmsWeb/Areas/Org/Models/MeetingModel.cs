@@ -37,6 +37,23 @@ namespace CmsWeb.Areas.Org.Models
         public bool ShowOtherAttend => RoleChecker.HasSetting(SettingName.Meeting_ShowOtherAttend, true);
         public bool ShowCurrentMemberType => RoleChecker.HasSetting(SettingName.Meeting_ShowCurrentMemberType, true);
 
+        // Added to support a pick list of meeting descriptions
+        public bool UseMeetingDescriptionPickList => DbUtil.Db.Setting("CheckinUseMeetingCategory", false);
+        public bool ShowDescriptionOnCheckin => DbUtil.Db.Setting("CheckinShowDescription", false);
+
+        public string DisplayText()
+        {
+            if (!UseMeetingDescriptionPickList)
+            {
+                return meeting.Description;
+            }
+            else
+            {
+                var category = DbUtil.Db.MeetingCategories.FirstOrDefault(x => x.Description == meeting.Description);
+                return category.Description;
+            }
+        }
+
         public MeetingModel() { }
         public MeetingModel(int id)
         {
