@@ -848,6 +848,7 @@
     <Compile Include="Areas\Setup\Controllers\ResourceTypeController.cs" />
     <Compile Include="Code\AuthHelper.cs" />
     <Compile Include="Code\CodeValueList.cs" />
+    <Compile Include="Code\GoogleRecaptcha.cs" />
     <Compile Include="Code\JsonNetResult.cs" />
     <Compile Include="Code\CustomHeader.cs" />
     <Compile Include="Code\DateAndTimeValidAttribute.cs" />
@@ -894,6 +895,7 @@
     <Compile Include="Models\Api\ApiPerson.cs" />
     <Compile Include="Models\Api\ApiOrganizationMember.cs" />
     <Compile Include="Models\Api\AddContributionModel.cs" />
+    <Compile Include="Models\ErrorMessage.cs" />
     <Compile Include="Models\ExtraValue\EntryModel.cs" />
     <Compile Include="Models\ExtraValue\ExtraInfo.cs" />
     <Compile Include="Models\ExtraValue\ExtraInfoOrganization.cs" />

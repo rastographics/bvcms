@@ -2,20 +2,28 @@
 @using CmsData
 @using CmsData.Finance
 @using CmsWeb.Areas.OnlineReg.Models
+@using System.Configuration
 @model CmsWeb.Areas.OnlineReg.Models.PaymentForm
 @{
     ViewBag.Title = "Online Registration";
     Layout = "~/Views/Shared/onlinereg2.cshtml";
-    var VaultDisabled = DbUtil.Db.Setting("VaultDisabled");
-    var debitcredit = DbUtil.Db.Setting("DebitCreditLabel", "Debit/Credit Card");
+    var db = DbUtil.Db;
+    var VaultDisabled = db.Setting("VaultDisabled");
+    var debitcredit = db.Setting("DebitCreditLabel", "Debit/Credit Card");
+    var recaptchaSiteKey = db.Setting("googleReCaptchaSiteKey", ConfigurationManager.AppSettings["googleReCaptchaSiteKey"]);
+    var useRecaptcha = db.Setting("UseRecaptcha") && recaptchaSiteKey.HasValue();
 }
 @section scripts
 {
   @Fingerprint.Script("/Content/touchpoint/js/onlinereg/bootstrap-datepicker.js")
   <script type="text/javascript">
-    $.dtoptions = { format: '@Util.jQueryDateFormat2' };
+      $.dtoptions = { format: '@Util.jQueryDateFormat2' };
+      function recaptcha_callback(token) {
+          document.getElementById("OnlineRegProcessPayment").submit();
+      }
   </script>
   @Fingerprint.Script("/Content/touchpoint/js/onlinereg/onlineregpayment2.js")
+  @ViewExtensions2.GoogleReCaptcha()
 }
 <div class="regform">
   <h2>Payment Processing</h2>
@@ -31,7 +39,7 @@
         @Html.Raw(Model.Terms)
       </div>
   }
-  <form class="showform form-horizontal" action="/OnlineReg/ProcessPayment" method="post">
+  <form class="showform form-horizontal" id="OnlineRegProcessPayment" action="/OnlineReg/ProcessPayment" method="post">
     @Html.ValidationSummary()
     <div class="form-group" style="font-size: 1.5em;">
       @Html.LabelFor(m => m.AmtToPay, new { @class = "control-label col-sm-3" })
@@ -109,6 +117,15 @@
               <input type="hidden" id="hdnExpiresOnFile" data-value="@Model.Expires" />
           </div>
       }
+        @if (useRecaptcha)
+        {
+            <div class="g-recaptcha"
+                 data-sitekey="@recaptchaSiteKey"
+                 data-callback="recaptcha_callback"
+                 data-size="invisible">
+            </div>
+        }
+        <input type="hidden" id="useRecaptcha" value="@useRecaptcha" />
       @if (Model.NoEChecksAllowed == false)
       {
           <div class="Bank">

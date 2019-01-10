@@ -965,6 +965,11 @@ namespace CmsWeb
             return null;
         }
 
+        public static HtmlString GoogleReCaptcha()
+        {
+            return new HtmlString("<script src=\"https://www.google.com/recaptcha/api.js\"></script>");
+        }
+
         public static HtmlString OldStyles()
         {
             return Fingerprint.Css("/content/styles/bundle.stylecss.css");

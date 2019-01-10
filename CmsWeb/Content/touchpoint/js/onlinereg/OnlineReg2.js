@@ -162,6 +162,7 @@
             return false;
         }
     });
+
     function updateTotal() {
         var sum = 0;
         $("input.sum").each(function () {

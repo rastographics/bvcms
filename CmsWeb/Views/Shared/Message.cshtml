@@ -1,8 +1,11 @@
-﻿@model string
+﻿@model CmsWeb.Models.ErrorMessage
 @{
-  Layout = "~/Views/Shared/onlinereg2.cshtml";
-  ViewBag.Title = "Notification";
+    Layout = "~/Views/Shared/onlinereg2.cshtml";
+    ViewBag.Title = "Notification";
 }
-  <div class="regform alert alert-warning">
-    <h2>@Model</h2>
-  </div>
+<div class="regform alert alert-warning">
+    <h2>@Model.text</h2>
+    <!--@Model.stacktrace-->
+</div>
+
+

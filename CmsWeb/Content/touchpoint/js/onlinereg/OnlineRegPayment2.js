@@ -76,16 +76,23 @@ $(function () {
         return false;
     });
     var agreeterms = true;
-    $("form").submit(function () {
+    $("form").submit(function() {
         if (!agreeterms) {
             alert("must agree to terms");
             return false;
         }
         if (!$("#submitit").val())
             return false;
-        if ($("form").valid()) {
+
+        var isFormValid = $("form").valid();
+        if (isFormValid) {
             $("#submitit").attr("disabled", "disabled");
-            return true;
+            var usecaptcha = $("#useRecaptcha").val();
+            if (usecaptcha) {
+                grecaptcha.execute();
+            } else {
+                return true;
+            }
         }
         return false;
     });
@@ -341,4 +348,3 @@ $(function () {
     });
 
 });
-

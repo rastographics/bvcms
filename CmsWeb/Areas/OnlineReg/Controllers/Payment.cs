@@ -1,6 +1,7 @@
 using CmsData;
 using CmsData.Classes;
 using CmsWeb.Areas.OnlineReg.Models;
+using CmsWeb.Code;
 using Dapper;
 using Elmah;
 using System;
@@ -21,9 +22,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
 #if DEBUG
 #else
-			if (Session["FormId"] != null)
-				if ((Guid)Session["FormId"] == pf.FormId)
-					return Message("Already submitted");
+            if (Session["FormId"] != null)
+                if ((Guid)Session["FormId"] == pf.FormId)
+                    return Message("Already submitted");
 #endif
 
             OnlineRegModel m = null;
@@ -36,7 +37,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 #if DEBUG
 #else
             if (m != null && m.History.Any(h => h.Contains("ProcessPayment")))
-				return Content("Already submitted");
+                return Content("Already submitted");
 #endif
 
             int? datumid = null;
@@ -52,6 +53,16 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (IsCardTester(pf, "Payment Page"))
             {
                 return Message("Found Card Tester");
+            }
+
+            if (CurrentDatabase.Setting("UseRecaptcha"))
+            {
+                if (!GoogleRecaptcha.IsValidResponse(HttpContext, CurrentDatabase))
+                {
+                    CurrentDatabase.LogActivity("OnlineReg Error ReCaptcha validation failed.", pf.OrgId, did: datumid);
+                    ModelState.AddModelError("form", "ReCaptcha validation failed.");
+                    return View("Payment/Process", pf);
+                }
             }
 
             SetHeaders(pf.OrgId ?? 0);
@@ -95,6 +106,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
 
             var iscardtester = ConfigurationManager.AppSettings["IsCardTester"];
+            if (!iscardtester.HasValue())
+            {
+                return false;
+            }
             var result = CurrentDatabase.Connection.ExecuteScalar<string>(iscardtester, new { ip = Request.UserHostAddress });
             if (result.Equal("OK"))
             {
