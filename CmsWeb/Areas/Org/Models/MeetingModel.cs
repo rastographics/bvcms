@@ -47,11 +47,9 @@ namespace CmsWeb.Areas.Org.Models
             {
                 return meeting.Description;
             }
-            else
-            {
-                var category = DbUtil.Db.MeetingCategories.FirstOrDefault(x => x.Description == meeting.Description);
-                return category.Description;
-            }
+
+            var category = DbUtil.Db.MeetingCategories.FirstOrDefault(x => x.Description == meeting.Description);
+            return category?.Description ?? meeting.Description;
         }
 
         public MeetingModel() { }
