@@ -1326,6 +1326,7 @@
     <Content Include="Migrations\20181205_create_CreateZipCodesRange_proc.sql" />
     <Content Include="Migrations\20181220_create_CompleteZip_func.sql" />
     <Content Include="Migrations\20181220_create_DeleteZipCodesRange_proc.sql" />
+    <Content Include="Migrations\20190114_ja_create_fnc_FindPersonByPayerKey.sql" />
     <Content Include="QueryBuilder\CompareMap.xml">
       <SubType>Designer</SubType>
     </Content>
