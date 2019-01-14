@@ -25,7 +25,7 @@ namespace CmsWeb.Areas.People.Controllers
                 return Content("No permission to view statement");
             }
 
-            return View("Giving/Statements", m);
+            return View(CurrentDatabase.Setting("EnableContributionFundsOnStatementDisplay") ? "Giving/StatementsWithFund" : "Giving/Statements", m);
         }
 
         public ActionResult Statement(int id, string fr, string to)

@@ -1795,6 +1795,7 @@
     <Content Include="..\CmsTwilio\bin\$(Configuration)\CmsTwilio.exe.config">
       <Link>bin\CmsTwilio.exe.config</Link>
     </Content>
+    <Content Include="Areas\People\Views\Person\Giving\Statements.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
@@ -2070,7 +2071,7 @@
     <Content Include="Areas\People\Views\Person\Profile\Membership\UploadDocument.cshtml" />
     <Content Include="Views\Script\RunScript.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\Value.cshtml" />
-    <Content Include="Areas\People\Views\Person\Giving\Statements.cshtml" />
+    <Content Include="Areas\People\Views\Person\Giving\StatementsWithFund.cshtml" />
     <Content Include="Areas\People\Views\Person\DisplayTemplates\DeceasedDate.cshtml" />
     <Content Include="Areas\People\Views\Person\Family\ExtraValues.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Other\SpecialRegistrationResults.cshtml" />
