@@ -8,9 +8,6 @@ CREATE FUNCTION [dbo].[FindPersonByExtraValue](@key nvarchar(100), @value nvarch
 RETURNS @t TABLE ( PeopleId INT)
 AS
 BEGIN
---DECLARE @t TABLE ( PeopleId INT)
---DECLARE @key nvarchar(100) = 'GatewayPayerKey', 
---		@value nvarchar(max) = 'MzpMNU9YSTIwSmt4REN5ZWluUlhSbGNvLV9lUk0', 
 
 	INSERT INTO @t
 	SELECT PeopleId 
@@ -32,11 +29,7 @@ CREATE FUNCTION [dbo].[FindPersonByEmail](@email nvarchar(max))
 RETURNS @t TABLE ( PeopleId INT)
 AS
 BEGIN
---DECLARE @t TABLE ( PeopleId INT)
---DECLARE @email nvarchar(max) = 'jenefa1912@gmail.com', 
-
-
-	INSERT INTO @t
+    INSERT INTO @t
 	SELECT top 1 PeopleId 
 	FROM dbo.People
 	WHERE EmailAddress = @email OR EmailAddress2 = @email
