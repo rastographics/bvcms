@@ -15,7 +15,7 @@ namespace CmsData.Classes.HealthChecker
                 .Where(x => x.ContactReason.Code == "CG")
                 .OrderByDescending(x => x.ContactDate)
                 .ThenByDescending(x => x.CreatedDate)
-                .First();
+                .FirstOrDefault();
             if (latestContact?.ContactExtras == null) return string.Empty;
 
             // calculate and return the lowest health grade from the contact as Org health
@@ -50,7 +50,7 @@ namespace CmsData.Classes.HealthChecker
                 .Where(x => x.ContactReason.Code == "CG")
                 .OrderByDescending(x => x.ContactDate)
                 .ThenByDescending(x => x.CreatedDate)
-                .First();
+                .FirstOrDefault();
 
             return latestContact?.ContactDate;
         }
