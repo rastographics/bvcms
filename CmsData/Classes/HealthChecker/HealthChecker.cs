@@ -12,7 +12,7 @@ namespace CmsData.Classes.HealthChecker
 
             // only want to look at the most recent Contact for CG Health Assessment reason (Code: CG)
             var latestContact = organization?.contactsHad
-                .Where(x => x.ContactReason.Code == "CG")
+                .Where(x => x.ContactReason != null && x.ContactReason.Code == "CG")
                 .OrderByDescending(x => x.ContactDate)
                 .ThenByDescending(x => x.CreatedDate)
                 .FirstOrDefault();
@@ -47,7 +47,7 @@ namespace CmsData.Classes.HealthChecker
 
             // only want to look at the most recent Contact for CG Health Assessment reason (Code: CG)
             var latestContact = organization?.contactsHad
-                .Where(x => x.ContactReason.Code == "CG")
+                .Where(x => x.ContactReason != null && x.ContactReason.Code == "CG")
                 .OrderByDescending(x => x.ContactDate)
                 .ThenByDescending(x => x.CreatedDate)
                 .FirstOrDefault();
