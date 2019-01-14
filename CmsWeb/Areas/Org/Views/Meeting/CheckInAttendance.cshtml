@@ -88,7 +88,7 @@
         <div class="box-title" style="background:#fff!important;border: 1px solid #003f72 !important;border-width: 4px 0 0 0!important;">
             <div class="logo-md"></div>
             <h4 class="title" style="display:inline-block;color:#333!important;margin:0;">@Model.org.OrganizationName</h4>
-            <p style="color:#4a4a4a!important;">@Model.meeting.MeetingDate.Value.ToString("g")</p>
+            <p style="color:#4a4a4a!important;">@Model.meeting.MeetingDate.Value.ToString("g") @(Model.ShowDescriptionOnCheckin ? " | " + Model.meeting.Description : "")</p>
         </div>
         <div data-role="content">
             @{var inAttendanceRole = User.IsInRole("Attendance");}

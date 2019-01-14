@@ -568,6 +568,7 @@
     <Compile Include="Areas\Manage\Models\UploadExcelIpsModel.cs" />
     <Compile Include="Areas\Manage\Models\UserValidationResult.cs" />
     <Compile Include="Areas\Manage\Models\UserValidationStatus.cs" />
+    <Compile Include="Areas\MeetingCategory\Controllers\MeetingCategoryController.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\OnePageGiving.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\SaveAndContinue.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\Routing.cs" />
@@ -1087,6 +1088,8 @@
     <Compile Include="Code\PaymentValidator.cs" />
     <Compile Include="Code\SmartBinder.cs" />
     <Compile Include="Code\Image.cs" />
+    <Compile Include="Services\MeetingCategory\MeetingCategoryService.cs" />
+    <Compile Include="Services\MeetingCategory\IMeetingCategoryService.cs" />
     <Compile Include="Services\CommunicationService.cs" />
     <Compile Include="Services\ConfigurationProvider.cs" />
     <Compile Include="Services\ICommunicationService.cs" />
@@ -1782,6 +1785,10 @@
     <Content Include="Content\touchpoint\js\polyfills.urlSearchParams.js" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\OnePageGiving\NotActive.cshtml" />
     <Content Include="Areas\Figures\Web.config" />
+    <Content Include="Areas\MeetingCategory\Views\web.config" />
+    <Content Include="Areas\MeetingCategory\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\MeetingCategory\Views\MeetingCategory\Index.cshtml" />
+    <Content Include="Areas\MeetingCategory\Views\MeetingCategory\Editor.cshtml" />
     <Content Include="..\CmsTwilio\bin\$(Configuration)\CmsTwilio.exe">
       <Link>bin\CmsTwilio.exe</Link>
     </Content>
@@ -3333,11 +3340,12 @@
     <Folder Include="Areas\Finance\Views\Shared\" />
     <Folder Include="Areas\Main\Views\Shared\" />
     <Folder Include="Areas\Manage\Views\Shared\" />
+    <Folder Include="Areas\MeetingCategory\Models\" />
+    <Folder Include="Areas\MeetingCategory\Views\Shared\" />
     <Folder Include="Areas\OnlineReg\Views\Shared\" />
     <Folder Include="Areas\Public\Views\Shared\" />
     <Folder Include="Areas\Public\Views\TestMobile\" />
     <Folder Include="Areas\Search\Views\Shared\" />
-    <Folder Include="Areas\Setup\Views\Shared\" />
     <Folder Include="Pushpay\Enums\" />
     <Folder Include="Pushpay\Exceptions\" />
   </ItemGroup>

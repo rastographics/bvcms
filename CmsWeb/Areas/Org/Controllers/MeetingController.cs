@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Data.Linq;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Web;
 using System.Web.Mvc;
 using UtilityExtensions;
 
@@ -130,6 +131,30 @@ namespace CmsWeb.Areas.Org.Controllers
                     };
             return Json(q.ToDictionary(k => k.Code, v => v.Value));
         }
+
+        [HttpPost]
+        public ContentResult EditMeetingCategory(string id, string value)
+        {
+            var i = id.Substring(2).ToInt();
+            var m = new MeetingModel(i);
+            m.meeting.Description = HttpUtility.HtmlDecode(value);
+            CurrentDatabase.SubmitChanges();
+            return Content(HttpUtility.HtmlAttributeEncode(m.meeting.Description ?? string.Empty));
+        }
+
+        [HttpPost]
+        public JsonResult MeetingCategories()
+        {
+            var q = from c in CurrentDatabase.MeetingCategories
+                    select new
+                    {
+                        Code = HttpUtility.HtmlAttributeEncode(c.Description),
+                        Value = HttpUtility.HtmlAttributeEncode(c.Description)
+                    };
+            var result = Json(q.ToDictionary(k => k.Code, v => v.Value));
+            return result;
+        }
+
 
         [HttpPost]
         public JsonResult MeetingTypes()
@@ -606,21 +631,29 @@ namespace CmsWeb.Areas.Org.Controllers
         public ActionResult CheckInAttendance(int? id, bool? currentMembers)
         {
             if (!id.HasValue)
+            {
                 return RedirectShowError("no id");
+            }
+
             var m = new MeetingModel(id.Value)
             {
                 currmembers = currentMembers ?? false
             };
             m.showall = true;
             if (m.meeting == null)
+            {
                 return RedirectShowError("no meeting");
+            }
 
             if (Util2.OrgLeadersOnly
                 && !DbUtil.Db.OrganizationMembers.Any(om =>
                     om.OrganizationId == m.meeting.OrganizationId
                     && om.PeopleId == Util.UserPeopleId
                     && om.MemberType.AttendanceTypeId == AttendTypeCode.Leader))
+            {
                 return RedirectShowError("You must be a leader of this organization to have access to this page");
+            }
+
             DbUtil.LogActivity($"CheckIn attendance for Meeting for {m.meeting.OrganizationId}({m.meeting.MeetingDate:d})");
             return View(m);
         }

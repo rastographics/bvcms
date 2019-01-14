@@ -779,6 +779,7 @@
     <Compile Include="Generated\IpWarmup.cs" />
     <Compile Include="Generated\LongRunningOp.cs" />
     <Compile Include="Generated\LongRunningOperation.cs" />
+    <Compile Include="Generated\MeetingCategory.cs" />
     <Compile Include="Generated\MergeHistory.cs" />
     <Compile Include="Generated\MobileAppAction.cs" />
     <Compile Include="Generated\MobileAppActionType.cs" />
@@ -1307,7 +1308,7 @@
     <Content Include="Migrations\20180919_add-sms-groups-deleted-flag.sql" />
     <Content Include="Migrations\20180831_add_fundmanager_role.sql" />
     <Content Include="Migrations\20180831_add-description-to-contribution-functions.sql" />
-    <Content Include="Migrations\20181105_fix_contributions2_func_for_individuals.sql" />
+    <Content Include="Migrations\20181022-1_fix_contributions2_func_for_individuals.sql" />
     <Content Include="Migrations\20181031_split_first_lastname_add_Email_GetTotalContributionsDonor.sql" />
     <Content Include="Migrations\20181019_add_pushpay_pk.sql" />
     <Content Include="Migrations\20181015_add_pushpay_schema.sql" />
@@ -1326,6 +1327,7 @@
     <Content Include="Migrations\20181205_create_CreateZipCodesRange_proc.sql" />
     <Content Include="Migrations\20181220_create_CompleteZip_func.sql" />
     <Content Include="Migrations\20181220_create_DeleteZipCodesRange_proc.sql" />
+    <Content Include="Migrations\20190107_meetingcategory.sql" />
     <Content Include="QueryBuilder\CompareMap.xml">
       <SubType>Designer</SubType>
     </Content>
