@@ -994,7 +994,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                         $"Just Added Person on {db.Host}",
                         $"<a href='{db.ServerLink("/Person2/" + p.PeopleId)}'>{p.Name}</a>");
                 }
-            }
+            }            
             return p;
         }
 
@@ -2396,10 +2396,29 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
         }
 
         public static Person FindAddPerson(CMSDataContext db, string context, string first, string last, string dob,
-                                           string email, string phone, string streetaddress = null, string zip = null)
+                                           string email, string phone, string streetaddress = null, string zip = null,
+                                           string payerKey = null)
         {
             Person person = null;
-            var list = db.FindPerson(first, last, null, email, phone.GetDigits()).ToList();
+            List<View.FindPerson> list = null;
+
+            if (!String.IsNullOrEmpty(payerKey))
+            {
+                // 1.Do we have a pushpay key that matches a peopleextra
+                list = db.FindPersonByPayerKey("GatewayPayerKey", payerKey).ToList();
+            }
+            else if (!String.IsNullOrEmpty(email))
+            {
+                // 2.Do we have an email address that matches one person
+                list = db.FindPerson(first, last, null, email, phone.GetDigits()).ToList();
+            }
+            else if (!String.IsNullOrEmpty(first) && !String.IsNullOrEmpty(last))
+            {
+                //3.Do we have a person with the first / last name specified
+                list = db.FindPerson(first, last, null, null, null).ToList();
+            }
+                
+     
             var count = list.Count;
             if (count > 0)
             {
@@ -2426,11 +2445,16 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             };
             db.SubmitChanges();
 
+            //4.Create a new person record            
             var position = 10;
             person = Add(db, true, f, position, null, first.Trim(), null, last.Trim(), "", 0, 0,
                 OriginCode.Contribution, null);
             person.EmailAddress = email?.Trim();
             person.SendEmailAddress1 = true;
+
+            //5.Associate the pushpay key to the person's record (if it's not already there)
+            if (!String.IsNullOrEmpty(payerKey))
+                db.AddExtraValueData(person.PeopleId, "GatewayPayerKey", payerKey, null, null, null, null);
 
             if (count == 0)
             {

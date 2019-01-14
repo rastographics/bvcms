@@ -3152,7 +3152,20 @@ namespace CmsData
                 );
 		}
 
-		[Function(Name="dbo.FindPerson", IsComposable = true)]
+        [Function(Name = "dbo.FindPersonByPayerKey", IsComposable = true)]
+        public IQueryable<View.FindPerson> FindPersonByPayerKey(
+            [Parameter(DbType = "nvarchar")] string payerKey,
+            [Parameter(DbType = "nvarchar")] string payerValue
+            )
+        {
+            return this.CreateMethodCallQuery<View.FindPerson>(this,
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                payerKey,
+                payerValue
+                );
+        }
+
+        [Function(Name="dbo.FindPerson", IsComposable = true)]
 		public IQueryable<View.FindPerson > FindPerson(
             [Parameter(DbType="nvarchar")] string first,
             [Parameter(DbType="nvarchar")] string last,
@@ -3170,7 +3183,7 @@ namespace CmsData
                 phone
                 );
 		}
-
+        
 		[Function(Name="dbo.FindPerson2", IsComposable = true)]
 		public IQueryable<View.FindPerson2 > FindPerson2(
             [Parameter(DbType="nvarchar")] string first,
