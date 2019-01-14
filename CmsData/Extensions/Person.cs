@@ -2405,7 +2405,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             if (!String.IsNullOrEmpty(payerKey))
             {
                 // 1.Do we have a pushpay key that matches a peopleextra
-                list = db.FindPersonByPayerKey("GatewayPayerKey", payerKey).ToList();
+                list = db.FindPersonByExtraValue("GatewayPayerKey", payerKey).ToList();
             }
             else if (!String.IsNullOrEmpty(email))
             {

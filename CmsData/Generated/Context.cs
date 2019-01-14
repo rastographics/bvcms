@@ -3152,16 +3152,16 @@ namespace CmsData
                 );
 		}
 
-        [Function(Name = "dbo.FindPersonByPayerKey", IsComposable = true)]
-        public IQueryable<View.FindPerson> FindPersonByPayerKey(
-            [Parameter(DbType = "nvarchar")] string payerKey,
-            [Parameter(DbType = "nvarchar")] string payerValue
+        [Function(Name = "dbo.FindPersonByExtraValue", IsComposable = true)]
+        public IQueryable<View.FindPerson> FindPersonByExtraValue(
+            [Parameter(DbType = "nvarchar")] string key,
+            [Parameter(DbType = "nvarchar")] string value
             )
         {
             return this.CreateMethodCallQuery<View.FindPerson>(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                payerKey,
-                payerValue
+                key,
+                value
                 );
         }
 
