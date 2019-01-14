@@ -20,7 +20,29 @@ BEGIN
 
 	RETURN
 END
-
-
 GO
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[dbo].[FindPersonByEmail]') AND type in (N'FN', N'IF',N'TF', N'FS', N'FT'))
+BEGIN	
+	DROP FUNCTION [dbo].[FindPersonByEmail]	
+END
+GO
+
+CREATE FUNCTION [dbo].[FindPersonByEmail](@email nvarchar(max))
+RETURNS @t TABLE ( PeopleId INT)
+AS
+BEGIN
+--DECLARE @t TABLE ( PeopleId INT)
+--DECLARE @email nvarchar(max) = 'jenefa1912@gmail.com', 
+
+
+	INSERT INTO @t
+	SELECT top 1 PeopleId 
+	FROM dbo.People
+	WHERE EmailAddress = @email OR EmailAddress2 = @email
+	order by CreatedDate 
+
+	RETURN
+END
+
 

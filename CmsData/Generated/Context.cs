@@ -3165,6 +3165,17 @@ namespace CmsData
                 );
         }
 
+        [Function(Name = "dbo.FindPersonByEmail", IsComposable = true)]
+        public IQueryable<View.FindPerson> FindPersonByEmail(
+            [Parameter(DbType = "nvarchar")] string email
+            )
+        {
+            return this.CreateMethodCallQuery<View.FindPerson>(this,
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                email
+                );
+        }
+
         [Function(Name="dbo.FindPerson", IsComposable = true)]
 		public IQueryable<View.FindPerson > FindPerson(
             [Parameter(DbType="nvarchar")] string first,

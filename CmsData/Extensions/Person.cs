@@ -2410,7 +2410,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             else if (!String.IsNullOrEmpty(email))
             {
                 // 2.Do we have an email address that matches one person
-                list = db.FindPerson(first, last, null, email, phone.GetDigits()).ToList();
+                list = db.FindPersonByEmail(email).ToList();
             }
             else if (!String.IsNullOrEmpty(first) && !String.IsNullOrEmpty(last))
             {
