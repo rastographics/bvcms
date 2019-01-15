@@ -22,7 +22,7 @@
             return data;
         },
         success: function (response, newValue) {
-            if (newValue == 'True') {
+            if (newValue === 'True') {
                 $(".headcount").editable("enable");
             } else {
                 $(".headcount").editable($("#RegularMeetingHeadCount").val());
@@ -35,6 +35,22 @@
         type: 'select',
         url: "/Meeting/EditAttendCredit/",
         source: "/Meeting/AttendCredits/",
+        sourceOptions: {
+            type: 'post'
+        },
+        params: function (params) {
+            var data = {};
+            data['id'] = params.pk;
+            data['value'] = params.value;
+            return data;
+        }
+    });
+
+    $(".clickSelectD").editable({
+        mode: 'popup',
+        type: 'select',
+        url: "/Meeting/EditMeetingCategory/",
+        source: "/Meeting/MeetingCategories/",
         sourceOptions: {
             type: 'post'
         },
@@ -106,7 +122,7 @@
         });
     });
 
-    if ($("#showbuttons input[name=show]:checked").val() == "attends") {
+    if ($("#showbuttons input[name=show]:checked").val() === "attends") {
         $(".atck:not(:checked)").parent().parent().hide();
     }
 
@@ -156,7 +172,7 @@
     });
 
     $('#sortbyname').click(function () {
-        if ($("#sort").val() == "false") {
+        if ($("#sort").val() === "false") {
             $("#sort").val("true");
             $('#attends > tbody > tr').sortElements(function (a, b) {
                 return $(a).find("td.name a").text() > $(b).find("td.name a").text() ? 1 : -1;
@@ -240,7 +256,7 @@
     };
 
     $("#wandtarget").keypress(function (ev) {
-        if (ev.which != 13)
+        if (ev.which !== 13)
             return true;
         if (!$("#editing").is(':checked'))
             $("#editing").click();
