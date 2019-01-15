@@ -172,18 +172,42 @@ namespace CmsWeb.Areas.People.Models
             {
                 contributions = contributions.Where(c => includedFundIds.Contains(c.FundId)).ToList();
             }
-            var result = (from c in contributions
-                          group c by new { c.DateX.Value.Year, c.FundName, c.FundId } into g
-                          orderby g.Key.Year descending, g.Key.FundName ascending
+
+            var shouldGroupByFunds = dbContext.Setting("EnableContributionFundsOnStatementDisplay");
+
+            IEnumerable<StatementInfoWithFund> result;
+
+            if (shouldGroupByFunds)
+            {
+                result = (from c in contributions
+                              group c by new { c.DateX.Value.Year, c.FundName, c.FundId } into g
+                              orderby g.Key.Year descending, g.Key.FundName ascending
+                              select new StatementInfoWithFund()
+                              {
+                                  Count = g.Count(),
+                                  Amount = g.Sum(cc => cc.Amount ?? 0),
+                                  StartDate = new DateTime(g.Key.Year, 1, 1),
+                                  EndDate = new DateTime(g.Key.Year, 12, 31),
+                                  FundName = g.Key.FundName,
+                                  FundId = g.Key.FundId
+                              }).ToList();
+            }
+            else
+            {
+                result = (from c in contributions
+                          group c by new { c.DateX.Value.Year } into g
+                          orderby g.Key.Year descending
                           select new StatementInfoWithFund()
                           {
                               Count = g.Count(),
                               Amount = g.Sum(cc => cc.Amount ?? 0),
                               StartDate = new DateTime(g.Key.Year, 1, 1),
                               EndDate = new DateTime(g.Key.Year, 12, 31),
-                              FundName = g.Key.FundName,
-                              FundId = g.Key.FundId
+                              FundName = string.Empty,
+                              FundId = 0
                           }).ToList();
+            }
+
             return result;
         }
     }
