@@ -158,7 +158,8 @@ namespace CmsWeb.Models
             edt = edt?.AddHours(24);
             if (usebatchdates && startdt.HasValue && edt.HasValue)
             {
-                CheckBatchDates(startdt.Value, edt.Value);
+                // Apply an offset to the startdate to get those records that occurred prior to the batch date and haven't been batched at present
+                CheckBatchDates(startdt.Value.AddDays(-7), edt.Value);
                 _transactions = from t in _transactions
                                 where t.Batch >= startdt || startdt == null
                                 where t.Batch <= edt || edt == null
