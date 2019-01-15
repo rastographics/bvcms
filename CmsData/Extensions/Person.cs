@@ -2397,7 +2397,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
 
         public static Person FindAddPerson(CMSDataContext db, string context, string first, string last, string dob,
                                            string email, string phone, string streetaddress = null, string zip = null,
-                                           string extraValue = null)
+                                           string extraValue = null, string extraValueField = null)
         {
             Person person = null;
             List<View.FindPerson> list = null;
@@ -2405,7 +2405,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             if (!String.IsNullOrEmpty(extraValue))
             {
                 // 1.Do we have a pushpay key that matches a peopleextra
-                list = db.FindPersonByExtraValue("GatewayPayerKey", extraValue).ToList();
+                list = db.FindPersonByExtraValue(extraValueField, extraValue).ToList();
             }
             else if (!String.IsNullOrEmpty(email))
             {
