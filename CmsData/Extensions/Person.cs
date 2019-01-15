@@ -2454,7 +2454,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
 
             //5.Associate the pushpay key to the person's record (if it's not already there)
             if (!String.IsNullOrEmpty(extraValue))
-                db.AddExtraValueData(person.PeopleId, "GatewayPayerKey", extraValue, null, null, null, null);
+                db.AddExtraValueData(person.PeopleId, extraValueField, extraValue, null, null, null, null);
 
             if (count == 0)
             {
