@@ -115,7 +115,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             var errors = ModelState.Values.Where(v => v.Errors.Count > 0).Select(x => x.Errors.FirstOrDefault()).ToList();
             if (errors.Any())
-                return Message(errors.FirstOrDefault()?.ErrorMessage);
+                return Content(errors.FirstOrDefault()?.ErrorMessage);
             
             // show errors or take them to the Questions page
             return FlowList(m);
