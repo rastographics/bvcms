@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Web.Security;
+using System.Xml.Linq;
 
 namespace CmsWeb.Areas.People.Models
 {
@@ -189,8 +190,28 @@ namespace CmsWeb.Areas.People.Models
                                   StartDate = new DateTime(g.Key.Year, 1, 1),
                                   EndDate = new DateTime(g.Key.Year, 12, 31),
                                   FundName = g.Key.FundName,
-                                  FundId = g.Key.FundId
+                                  FundId = g.Key.FundId,
+                                  FundGroupName = string.Empty
                               }).ToList();
+
+                var displayNameHelper = new CustomFundSetDisplayHelper(dbContext);
+                displayNameHelper.ProcessList(result);
+
+                // hack: grouping done in memory since these fundids are stored as XML and not easily accessed in SQL
+                // task: FundGrouping table to avoid using XML for this data in the future with UI to make management easier?
+                result = (from c in result
+                         group c by new { c.StartDate.Year, c.FundGroupName } into g
+                         orderby g.Key.Year descending, g.Key.FundGroupName ascending
+                         select new StatementInfoWithFund()
+                         {
+                             Count = g.Sum(cc => cc.Count),
+                             Amount = g.Sum(cc => cc.Amount),
+                             StartDate = new DateTime(g.Key.Year, 1, 1),
+                             EndDate = new DateTime(g.Key.Year, 12, 31),
+                             FundName = "",
+                             FundId = 0,
+                             FundGroupName = g.Key.FundGroupName
+                         }).ToList();
             }
             else
             {

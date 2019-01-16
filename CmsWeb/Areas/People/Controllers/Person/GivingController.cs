@@ -25,7 +25,13 @@ namespace CmsWeb.Areas.People.Controllers
                 return Content("No permission to view statement");
             }
 
-            return View(CurrentDatabase.Setting("EnableContributionFundsOnStatementDisplay") ? "Giving/StatementsWithFund" : "Giving/Statements", m);
+            var hasCustomStatementsXml = CurrentDatabase.Content("CustomStatements", "") != string.Empty;
+            var hasStandardFundLabel = CurrentDatabase.Setting("StandardFundSetName", string.Empty) != string.Empty;
+            var hasContributionFundStatementsEnabled = CurrentDatabase.Setting("EnableContributionFundsOnStatementDisplay", false);
+
+            var useNewStatementView = hasCustomStatementsXml && hasStandardFundLabel && hasContributionFundStatementsEnabled;
+
+            return View(useNewStatementView ? "Giving/StatementsWithFund" : "Giving/Statements", m);
         }
 
         public ActionResult Statement(int id, string fr, string to)
