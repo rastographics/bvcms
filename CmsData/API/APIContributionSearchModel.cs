@@ -343,9 +343,14 @@ namespace CmsData.API
                             ret.Add(i);
                 }
                 var id = matchResult.Groups["id"].Value;
-                if (id.HasValue())
+                if (id.HasValue()) {
                     ret.Add(id.ToInt());
+                }
                 matchResult = matchResult.NextMatch();
+            }
+            if (ret.Count ==0)
+            {
+                return null;
             }
             return ret;
         }
