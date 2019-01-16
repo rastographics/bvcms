@@ -121,6 +121,7 @@ function WireUpExtraValues(cid, locations) {
 
     function valueMatches(left, right) {
         return typeof left === 'undefined' ||
+            left === null ||
             sameStr(left, right) ||
             sameStr(left, right.replace(/[^a-zA-Z0-9]/g, ''));
     }
