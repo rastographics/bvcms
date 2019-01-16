@@ -32,13 +32,13 @@
                         decimal aggregateYearlyAmount = 0.0m;
                         <table class="table table-striped">
                             <tbody>
-                                @foreach (var fund in statementEntries.Where(s => s.StartDate.Year == year).Select(s => s.FundName))
+                                @foreach (var fund in statementEntries.Where(s => s.StartDate.Year == year).Select(s => s.FundGroupName))
                                 {
-                                    var yearlyFundEntry = statementEntries.SingleOrDefault(s => s.FundName == fund && s.StartDate.Year == year);
+                                    var yearlyFundEntry = statementEntries.SingleOrDefault(s => s.FundGroupName == fund && s.StartDate.Year == year);
                                     aggregateYearlyCount += yearlyFundEntry.Count;
                                     aggregateYearlyAmount += yearlyFundEntry.Amount;
                                     <tr>
-                                        <td class="text-left">@yearlyFundEntry.FundName (@yearlyFundEntry.FundId)</td>
+                                        <td class="text-left">@yearlyFundEntry.FundGroupName</td>
                                         <td class="text-right">@yearlyFundEntry.Count.ToString("N0")</td>
                                         <td class="text-right">
                                             @if (finance)

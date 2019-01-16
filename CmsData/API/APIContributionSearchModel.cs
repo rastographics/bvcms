@@ -347,8 +347,6 @@ namespace CmsData.API
                     ret.Add(id.ToInt());
                 matchResult = matchResult.NextMatch();
             }
-            if (ret.Count == 0)
-                return null;
             return ret;
         }
         public static List<int> GetCustomStatementsList(CMSDataContext db, string name)
