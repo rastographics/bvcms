@@ -40,7 +40,7 @@ namespace CmsData
                 ids = attendtype.Replace(" ", ""); // remove whitespace
             else // match on strings = description
             {
-                var a = attendtype.Split(',').Select(aa => aa.trim());
+                var a = attendtype.Split(',').Select(aa => aa.Trim());
                 var qt = from t in db.AttendTypes select t;
                 if (attendtype != "All")
                     qt = qt.Where(t => a.Contains(t.Description));
@@ -152,7 +152,7 @@ namespace CmsData
                 ids = membertypes.Replace(" ", ""); // remove whitespace
             else // match on strings = description
             {
-                var a = membertypes.Split(',').Select(aa => aa.trim());
+                var a = membertypes.Split(',').Select(aa => aa.Trim());
 
                 var qt = from t in db.MemberTypes select t;
                 if (membertypes != "All")

@@ -52,7 +52,7 @@ namespace CmsWeb.Areas.People.Models
 
         public IEnumerable<SelectListItem> Roles()
         {
-            var roles = DbUtil.Db.Setting("LimitToRolesForContacts", "").trim().SplitStr(",").Where(rr => rr.HasValue()).ToArray();
+            var roles = DbUtil.Db.Setting("LimitToRolesForContacts", "").Trim().SplitStr(",").Where(rr => rr.HasValue()).ToArray();
             if (roles.Length == 0)
             {
                 roles = DbUtil.Db.Roles.OrderBy(r => r.RoleName).Select(r => r.RoleName).ToArray();
@@ -60,8 +60,8 @@ namespace CmsWeb.Areas.People.Models
 
             var list = roles.Select(rolename => new SelectListItem
             {
-                Value = rolename.trim(),
-                Text = rolename.trim(),
+                Value = rolename?.Trim(),
+                Text = rolename?.Trim(),
                 Selected = !string.IsNullOrWhiteSpace(LimitToRole) && LimitToRole == rolename
             }).ToList();
 

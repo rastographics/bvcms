@@ -11,7 +11,7 @@ namespace CmsWeb.Areas.Manage.Models.BatchModel
         public BatchModel() { }
         public static void UpdateOrgs(string text)
         {
-            text = text.trim();
+            text = text.Trim();
             var csv = new CsvReader(new StringReader(text));
             csv.Configuration.Delimiter = "\t";
 

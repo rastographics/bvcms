@@ -119,7 +119,7 @@ namespace CmsData
                 var ntoks = args.Length > 2 ? args[2].ToInt() : 2;
                 var sep = args.Length > 3 ? args[3].ToString() : " ";
                 var a = s.SplitStr(sep, ntoks);
-                writer.Write(a[n].trim());
+                writer.Write(a[n]?.Trim() ?? "");
             });
 
             Handlebars.RegisterHelper("FmtMDY", (writer, context, args) =>

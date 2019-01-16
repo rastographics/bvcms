@@ -53,7 +53,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         {
             if (keywordfilter.HasValue())
             {
-                Session["ContentKeywordFilter"] = keywordfilter.trim();
+                Session["ContentKeywordFilter"] = keywordfilter.Trim();
             }
             else
             {
@@ -137,7 +137,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             content.RemoveGrammarly();
             content.RoleID = roleid ?? 0;
             content.Snippet = snippet;
-            content.SetKeyWords(CurrentDatabase, contentKeyWords.SplitStr(",").Select(vv => vv.trim()).ToArray());
+            content.SetKeyWords(CurrentDatabase, contentKeyWords.SplitStr(",").Select(vv => vv.Trim()).ToArray());
 
             if (content.TypeID == ContentTypeCode.TypeEmailTemplate)
             {

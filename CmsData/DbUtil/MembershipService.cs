@@ -72,7 +72,7 @@ namespace CmsData
         }
         public static string FetchUsername(CMSDataContext db, string first, string last)
         {
-            var firstinitial = first.trim();
+            var firstinitial = first?.Trim();
             if (firstinitial.HasValue())
             {
                 firstinitial = firstinitial.ToLower();

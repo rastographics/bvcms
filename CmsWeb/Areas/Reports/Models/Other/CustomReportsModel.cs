@@ -382,7 +382,7 @@ namespace CmsWeb.Areas.Reports.Models
             var coid = DbUtil.Db.CurrentSessionOrgId;
             foreach (var j in joins)
             {
-                var join = mc.Joins[j].trim();
+                var join = mc.Joins[j].Trim();
                 if (join.Contains("{orgid}"))
                 {
                     isorg = true;

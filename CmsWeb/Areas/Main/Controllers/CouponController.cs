@@ -26,8 +26,8 @@ namespace CmsWeb.Areas.Main.Controllers
         [HttpPost]
         public ActionResult Create(CouponModel m)
         {
-            m.name = m.name.trim();
-            m.couponcode = m.couponcode.trim();
+            m.name = m.name?.Trim() ?? "";
+            m.couponcode = m.couponcode?.Trim() ?? "";
             if (m.couponcode.HasValue())
             {
                 if (CouponModel.IsExisting(m.couponcode))

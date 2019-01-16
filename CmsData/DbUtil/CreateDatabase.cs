@@ -268,7 +268,7 @@ GO
                 var scripts = Regex.Split(script, "^GO.*$", RegexOptions.Multiline | RegexOptions.IgnoreCase);
                 foreach (var s in scripts)
                 {
-                    if (s.HasValue())
+                    if (s.Trim().HasValue())
                     {
                         cmd.CommandText = s;
                         cmd.ExecuteNonQuery();
