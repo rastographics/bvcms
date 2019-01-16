@@ -81,8 +81,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 if (p.IsCommunityGroup() && DbUtil.Db.Setting("RestrictCGSignupsTo24Hrs"))
                 {
                     if (!p.CanRegisterInCommunityGroup(DateTime.Today.AddDays(-1)))
-                        modelState.AddModelError(this.GetNameFor(mm => mm.List[List.IndexOf(p)].Found),
-                            "Sorry, but cannot register for multiple community groups on same day.");
+                    {
+                        var message = DbUtil.Db.Setting("RestrictCGSignupsTo24HrsMessage", "Sorry, but you cannot register for multiple community groups on same day.");
+                        modelState.AddModelError(this.GetNameFor(mm => mm.List[List.IndexOf(p)].Found), message);
+                    }
+                        
                 }
 
                 if (p.Found == true)
