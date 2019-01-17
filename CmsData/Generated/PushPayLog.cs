@@ -20,17 +20,21 @@ namespace CmsData
 		
 		private long _Id;
 		
-		private int? _BatchPage;
-		
 		private DateTime? _BatchDate;
 		
 		private string _BatchKey;
 		
-		private string _MerchantKey;
-		
 		private string _TransactionId;
 		
 		private DateTime? _ImportDate;
+		
+		private int? _PeopleId;
+		
+		private int? _BundleHeaderId;
+		
+		private string _ContributionId;
+		
+		private string _SettlementKey;
 		
    		
     	
@@ -44,23 +48,29 @@ namespace CmsData
 		partial void OnIdChanging(long value);
 		partial void OnIdChanged();
 		
-		partial void OnBatchPageChanging(int? value);
-		partial void OnBatchPageChanged();
-		
 		partial void OnBatchDateChanging(DateTime? value);
 		partial void OnBatchDateChanged();
 		
 		partial void OnBatchKeyChanging(string value);
 		partial void OnBatchKeyChanged();
 		
-		partial void OnMerchantKeyChanging(string value);
-		partial void OnMerchantKeyChanged();
-		
 		partial void OnTransactionIdChanging(string value);
 		partial void OnTransactionIdChanged();
 		
 		partial void OnImportDateChanging(DateTime? value);
 		partial void OnImportDateChanged();
+		
+		partial void OnPeopleIdChanging(int? value);
+		partial void OnPeopleIdChanged();
+		
+		partial void OnBundleHeaderIdChanging(int? value);
+		partial void OnBundleHeaderIdChanged();
+		
+		partial void OnContributionIdChanging(string value);
+		partial void OnContributionIdChanged();
+		
+		partial void OnSettlementKeyChanging(string value);
+		partial void OnSettlementKeyChanged();
 		
     #endregion
 		public PushPayLog()
@@ -73,7 +83,7 @@ namespace CmsData
 		
     #region Columns
 		
-		[Column(Name="Id", IsPrimaryKey = true, UpdateCheck = UpdateCheck.Never, Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="bigint NOT NULL IDENTITY", IsDbGenerated=true)]
+		[Column(Name="Id", UpdateCheck=UpdateCheck.Never, Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="bigint NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
 		public long Id
 		{
 			get { return this._Id; }
@@ -88,28 +98,6 @@ namespace CmsData
 					this._Id = value;
 					this.SendPropertyChanged("Id");
 					this.OnIdChanged();
-				}
-
-			}
-
-		}
-
-		
-		[Column(Name="BatchPage", UpdateCheck=UpdateCheck.Never, Storage="_BatchPage", DbType="int")]
-		public int? BatchPage
-		{
-			get { return this._BatchPage; }
-
-			set
-			{
-				if (this._BatchPage != value)
-				{
-				
-                    this.OnBatchPageChanging(value);
-					this.SendPropertyChanging();
-					this._BatchPage = value;
-					this.SendPropertyChanged("BatchPage");
-					this.OnBatchPageChanged();
 				}
 
 			}
@@ -161,28 +149,6 @@ namespace CmsData
 		}
 
 		
-		[Column(Name="MerchantKey", UpdateCheck=UpdateCheck.Never, Storage="_MerchantKey", DbType="nvarchar(100)")]
-		public string MerchantKey
-		{
-			get { return this._MerchantKey; }
-
-			set
-			{
-				if (this._MerchantKey != value)
-				{
-				
-                    this.OnMerchantKeyChanging(value);
-					this.SendPropertyChanging();
-					this._MerchantKey = value;
-					this.SendPropertyChanged("MerchantKey");
-					this.OnMerchantKeyChanged();
-				}
-
-			}
-
-		}
-
-		
 		[Column(Name="TransactionId", UpdateCheck=UpdateCheck.Never, Storage="_TransactionId", DbType="nvarchar(100)")]
 		public string TransactionId
 		{
@@ -220,6 +186,94 @@ namespace CmsData
 					this._ImportDate = value;
 					this.SendPropertyChanged("ImportDate");
 					this.OnImportDateChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="PeopleId", UpdateCheck=UpdateCheck.Never, Storage="_PeopleId", DbType="int")]
+		public int? PeopleId
+		{
+			get { return this._PeopleId; }
+
+			set
+			{
+				if (this._PeopleId != value)
+				{
+				
+                    this.OnPeopleIdChanging(value);
+					this.SendPropertyChanging();
+					this._PeopleId = value;
+					this.SendPropertyChanged("PeopleId");
+					this.OnPeopleIdChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="BundleHeaderId", UpdateCheck=UpdateCheck.Never, Storage="_BundleHeaderId", DbType="int")]
+		public int? BundleHeaderId
+		{
+			get { return this._BundleHeaderId; }
+
+			set
+			{
+				if (this._BundleHeaderId != value)
+				{
+				
+                    this.OnBundleHeaderIdChanging(value);
+					this.SendPropertyChanging();
+					this._BundleHeaderId = value;
+					this.SendPropertyChanged("BundleHeaderId");
+					this.OnBundleHeaderIdChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="ContributionId", UpdateCheck=UpdateCheck.Never, Storage="_ContributionId", DbType="nvarchar(100)")]
+		public string ContributionId
+		{
+			get { return this._ContributionId; }
+
+			set
+			{
+				if (this._ContributionId != value)
+				{
+				
+                    this.OnContributionIdChanging(value);
+					this.SendPropertyChanging();
+					this._ContributionId = value;
+					this.SendPropertyChanged("ContributionId");
+					this.OnContributionIdChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="SettlementKey", UpdateCheck=UpdateCheck.Never, Storage="_SettlementKey", DbType="nvarchar(100)")]
+		public string SettlementKey
+		{
+			get { return this._SettlementKey; }
+
+			set
+			{
+				if (this._SettlementKey != value)
+				{
+				
+                    this.OnSettlementKeyChanging(value);
+					this.SendPropertyChanging();
+					this._SettlementKey = value;
+					this.SendPropertyChanged("SettlementKey");
+					this.OnSettlementKeyChanged();
 				}
 
 			}
