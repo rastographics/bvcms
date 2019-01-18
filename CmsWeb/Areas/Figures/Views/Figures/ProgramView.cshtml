@@ -1,12 +1,6 @@
 ﻿@model CmsWeb.Areas.Figures.Models.ProgViewModel
-@{
-    Layout = null;
-}
-@Html.DropDownListFor(p => p.SelectedProgId,
-    Model.ProgIEnum,
-    "Select a Program",
-    new { @id="Program-DropdownID", 
-        @class="Program-DropdownCls"})
+
+@Html.DropDownListFor(p => p.SelectedProgId, Model.ProgIEnum, "Select a Program", new { @id="Program-DropdownID",  @class="Program-DropdownCls"})
 
 <script type="text/javascript">
     $(function () {
