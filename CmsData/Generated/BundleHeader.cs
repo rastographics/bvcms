@@ -50,7 +50,7 @@ namespace CmsData
 		
 		private int? _FundId;
 		
-		private int? _ReferenceId;
+		private string _ReferenceId;
 		
 		private int? _ReferenceIdType;
 		
@@ -119,7 +119,7 @@ namespace CmsData
 		partial void OnFundIdChanging(int? value);
 		partial void OnFundIdChanged();
 		
-		partial void OnReferenceIdChanging(int? value);
+		partial void OnReferenceIdChanging(string value);
 		partial void OnReferenceIdChanged();
 		
 		partial void OnReferenceIdTypeChanging(int? value);
@@ -508,8 +508,8 @@ namespace CmsData
 		}
 
 		
-		[Column(Name="ReferenceId", UpdateCheck=UpdateCheck.Never, Storage="_ReferenceId", DbType="int")]
-		public int? ReferenceId
+		[Column(Name="ReferenceId", UpdateCheck=UpdateCheck.Never, Storage="_ReferenceId", DbType="nvarchar(100)")]
+		public string ReferenceId
 		{
 			get { return this._ReferenceId; }
 

@@ -12,7 +12,7 @@ BEGIN
 	SettlementKey [nvarchar](100) NULL
 
     ALTER TABLE dbo.BundleHeader
-    ADD ReferenceId int NULL,
+    ADD ReferenceId [nvarchar](100) NULL,
     ReferenceIdType int NULL
 END
 GO
