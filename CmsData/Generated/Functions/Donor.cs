@@ -55,6 +55,8 @@ namespace CmsData.View
 		private bool? _GiftInKind;
 		
 		private string _SpouseName;
+
+        private string _SpouseNameWithoutNickname;
 		
 		private string _SpouseTitle;
 		
@@ -420,8 +422,26 @@ namespace CmsData.View
 
 		}
 
-		
-		[Column(Name="SpouseTitle", Storage="_SpouseTitle", DbType="nvarchar(10)")]
+
+        [Column(Name = "SpouseNameWithoutNickname", Storage = "_SpouseNameWithoutNickname", DbType = "nvarchar(138)")]
+        public string SpouseNameWithoutNickname
+        {
+            get
+            {
+                return this._SpouseNameWithoutNickname;
+            }
+
+            set
+            {
+                if (this._SpouseNameWithoutNickname != value)
+                    this._SpouseNameWithoutNickname = value;
+            }
+
+        }
+
+
+
+        [Column(Name="SpouseTitle", Storage="_SpouseTitle", DbType="nvarchar(10)")]
 		public string SpouseTitle
 		{
 			get
