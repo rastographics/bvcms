@@ -32,7 +32,7 @@ namespace CmsData
 		
 		private int? _BundleHeaderId;
 		
-		private string _ContributionId;
+		private int? _ContributionId;
 		
 		private string _SettlementKey;
 		
@@ -66,7 +66,7 @@ namespace CmsData
 		partial void OnBundleHeaderIdChanging(int? value);
 		partial void OnBundleHeaderIdChanged();
 		
-		partial void OnContributionIdChanging(string value);
+		partial void OnContributionIdChanging(int? value);
 		partial void OnContributionIdChanged();
 		
 		partial void OnSettlementKeyChanging(string value);
@@ -237,8 +237,8 @@ namespace CmsData
 		}
 
 		
-		[Column(Name="ContributionId", UpdateCheck=UpdateCheck.Never, Storage="_ContributionId", DbType="nvarchar(100)")]
-		public string ContributionId
+		[Column(Name="ContributionId", UpdateCheck=UpdateCheck.Never, Storage="_ContributionId", DbType="int")]
+		public int? ContributionId
 		{
 			get { return this._ContributionId; }
 

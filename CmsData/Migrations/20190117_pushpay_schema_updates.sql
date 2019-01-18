@@ -8,7 +8,7 @@ BEGIN
     ALTER TABLE dbo.PushPayLog
     ADD PeopleId int NULL,
 	BundleHeaderId int NULL,
-	ContributionId [nvarchar](100) NULL,
+	ContributionId int NULL,
 	SettlementKey [nvarchar](100) NULL
 
     ALTER TABLE dbo.BundleHeader
