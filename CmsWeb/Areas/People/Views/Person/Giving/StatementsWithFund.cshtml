@@ -19,9 +19,9 @@
     <h4>Statements</h4>
     <div class="row">
         <div class="col-md-8">
-            <div class="table-responsive">
+            <div>
                 @{
-                    var statementEntries = ContributionsModel.Statements(Model.PeopleId);
+                    var statementEntries = ContributionsModel.Statements(Model.PeopleId).ToList();
                     foreach (var year in statementEntries.Select(s => s.StartDate.Year).Distinct())
                     {
                         var startDate = new DateTime(year, 1, 1);
@@ -30,20 +30,22 @@
                         <h4><a href="/Person2/ContributionStatement/@Model.PeopleId/@startDate.ToSortableDate()/@endDate.ToSortableDate()" class="@(includeCustomStatementsClass ? "customstatements" : "")">@year</a></h4>
                         int aggregateYearlyCount = 0;
                         decimal aggregateYearlyAmount = 0.0m;
-                        <table class="table table-striped">
-                            <tbody>
+
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <tbody>
                                 @foreach (var fund in statementEntries.Where(s => s.StartDate.Year == year).Select(s => s.FundGroupName))
                                 {
                                     var yearlyFundEntry = statementEntries.SingleOrDefault(s => s.FundGroupName == fund && s.StartDate.Year == year);
                                     aggregateYearlyCount += yearlyFundEntry.Count;
                                     aggregateYearlyAmount += yearlyFundEntry.Amount;
                                     <tr>
-                                        <td class="text-left">@yearlyFundEntry.FundGroupName</td>
+                                        <td class="text-left"><a href="/Person2/ContributionStatement/@Model.PeopleId/@startDate.ToSortableDate()/@endDate.ToSortableDate()?custom=@yearlyFundEntry.FundGroupName">@yearlyFundEntry.FundGroupName</a></td>
                                         <td class="text-right">@yearlyFundEntry.Count.ToString("N0")</td>
                                         <td class="text-right">
                                             @if (finance)
                                             {
-                                                <a href="/Contributions/@Model.PeopleId?year=@year&fundId=@yearlyFundEntry.FundId">@yearlyFundEntry.Amount.ToString("c")</a>
+                                                <a href="/Contributions/@Model.PeopleId?year=@year&fundSet=@yearlyFundEntry.FundGroupName">@yearlyFundEntry.Amount.ToString("c")</a>
                                             }
                                             else
                                             {
@@ -52,15 +54,16 @@
                                         </td>
                                     </tr>
                                 }
-                            </tbody>
-                        <tfoot>
-                            <tr>
-                                <th class="text-left">Total</th>
-                                <td class="text-right">@aggregateYearlyCount.ToString("N0")</td>
-                                <td class="text-right">@aggregateYearlyAmount.ToString("c")</td>
-                            </tr>
-                        </tfoot>
-                        </table>
+                                </tbody>
+                                <tfoot>
+                                <tr>
+                                    <th class="text-left">Total</th>
+                                    <td class="text-right">@aggregateYearlyCount.ToString("N0")</td>
+                                    <td class="text-right">@aggregateYearlyAmount.ToString("c")</td>
+                                </tr>
+                                </tfoot>
+                            </table>
+                        </div>
                     }
                 }
             </div>
