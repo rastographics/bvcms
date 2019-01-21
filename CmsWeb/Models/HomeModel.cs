@@ -363,8 +363,9 @@ namespace CmsWeb.Models
             internal int peopleid;
             internal int? age;
 
-            internal string displayname => (showaltname ? $"{name2} {altname}" : name2);
+            internal string displayname => (showaltname ? $"{(name2.HasValue()? name2:lastname)} {altname}" : name2.HasValue()?name2:lastname);
             internal string name2;
+            internal string lastname;
             internal string nonPersonName;
             internal string altname;
             internal bool showaltname;
@@ -449,23 +450,24 @@ namespace CmsWeb.Models
                       {
                           url = "/Person2/" + p.PeopleId,
                           line2 = p.PrimaryAddress ?? "",
-
                           peopleid = p.PeopleId,
                           age = p.Age,
                           name2 = p.Name2,
-                          altname = p.AltName
+                          altname = p.AltName,
+                          lastname = p.LastName
                       }).Take(6);
             }
             else
             {
                 if (first.HasValue())
                 {
+                    //Util.NameSplit(text, out first, out last) returns both first and last.
                     qp = from p in qp
                          where p.LastName.StartsWith(last) || p.MaidenName.StartsWith(last)
                              || p.LastName.StartsWith(text) || p.MaidenName.StartsWith(text) // gets Bob St Clair
                          where
-                             p.FirstName.StartsWith(first) || p.NickName.StartsWith(first) || p.MiddleName.StartsWith(first)
-                             || p.LastName.StartsWith(text) || p.MaidenName.StartsWith(text) // gets Bob St Clair
+                             p.FirstName.StartsWith(first) || p.NickName.StartsWith(first) || p.MiddleName.StartsWith(first) || p.AltName.StartsWith(first)
+                             || p.FirstName.StartsWith(text) || p.NickName.StartsWith(text) || p.MiddleName.StartsWith(text) || p.AltName.StartsWith(text) // gets Bob St Clair
                          select p;
                     rp = (from p in qp
                           orderby p.Name2
@@ -473,15 +475,16 @@ namespace CmsWeb.Models
                           {
                               url = "/Person2/" + p.PeopleId,
                               line2 = p.PrimaryAddress ?? "",
-
                               peopleid = p.PeopleId,
                               age = p.Age,
                               name2 = p.Name2,
                               altname = p.AltName,
+                              lastname = p.LastName
                           }).Take(6);
                 }
                 else
                 {
+                    //Util.NameSplit(text, out first, out last) returns only last.
                     var qp2 = DbUtil.Db.Setting("UseAltnameContains")
                         ? from p in qp
                           where p.LastName.StartsWith(text) || p.MaidenName.StartsWith(text) || p.AltName.Contains(text)
@@ -499,11 +502,11 @@ namespace CmsWeb.Models
                                {
                                    url = "/Person2/" + p.PeopleId,
                                    line2 = p.PrimaryAddress ?? "",
-
                                    peopleid = p.PeopleId,
                                    age = p.Age,
                                    name2 = p.Name2,
-                                   altname = p.AltName
+                                   altname = p.AltName,
+                                   lastname = p.LastName
                                }).Take(6).ToList();
                     var rp1 = (from p in qp1
                                orderby p.Name2
@@ -514,7 +517,8 @@ namespace CmsWeb.Models
                                    peopleid = p.PeopleId,
                                    age = p.Age,
                                    name2 = p.Name2,
-                                   altname = p.AltName
+                                   altname = p.AltName,
+                                   lastname = p.LastName
                                }).Take(6).ToList();
                     rp = rp2.Union(rp1).Take(6);
                 }
