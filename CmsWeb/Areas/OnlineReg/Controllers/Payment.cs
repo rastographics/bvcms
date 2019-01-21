@@ -192,6 +192,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return Redirect("/Error");
             }
         }
+        [HttpGet]
         public ActionResult Confirm(int? id, string transactionId, decimal? amount)
         {
             if (!id.HasValue)
@@ -326,6 +327,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             return View("PayAmtDue/Confirm", ti);
         }
 
+        [HttpGet]
         public ActionResult ConfirmDuePaid(int? id, string transactionId, decimal amount)
         {
             Response.NoCache();
