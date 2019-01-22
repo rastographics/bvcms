@@ -329,10 +329,14 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
                 // if no preferred payment type pick credit card or ach if we have anything.
                 if (string.IsNullOrWhiteSpace(pf.Type))
+                {
                     pf.Type = !string.IsNullOrWhiteSpace(pf.CreditCard) ? PaymentType.CreditCard : null;
+                }
 
                 if (string.IsNullOrWhiteSpace(pf.Type))
+                {
                     pf.Type = !string.IsNullOrWhiteSpace(pf.Account) ? PaymentType.Ach : null;
+                }
             }
 
             ClearMaskedNumbers(pf, r.payinfo);

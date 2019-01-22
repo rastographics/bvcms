@@ -153,8 +153,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (PeopleId == null)
                 return false;
 
-            var results = from om in DbUtil.Db.OrganizationMembers
-                join org in DbUtil.Db.Organizations on om.OrganizationId equals org.OrganizationId
+            var db = DbUtil.DbReadOnly;
+
+            var results = from om in db.OrganizationMembers
+                join org in db.Organizations on om.OrganizationId equals org.OrganizationId
                 where om.PeopleId == PeopleId && om.EnrollmentDate >= enrollmentCutoff && org.OrganizationType.Code == "CG"
                 select om.PeopleId;
             
