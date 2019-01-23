@@ -199,7 +199,7 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             // Check Api Key is valid
-            if (getApiUserInfoKey.trim() == apiKey)
+            if (getApiUserInfoKey?.Trim() == apiKey)
             {
                 //Check Ip setting is valid
                 var getIpWhiteList = CurrentDatabase.Setting("ApiUserInfoIPList", "");

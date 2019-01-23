@@ -312,7 +312,7 @@ p { font-size: 11px; }
 
                         t.AddCell(cell);
 
-                        t.AddCell(ShowNotes ? new Phrase(c.Description.trim(), font) : new Phrase("", font));
+                        t.AddCell(ShowNotes ? new Phrase(c.Description?.Trim() ?? "", font) : new Phrase("", font));
 
                         total += (c.ContributionAmount ?? 0);
                     }

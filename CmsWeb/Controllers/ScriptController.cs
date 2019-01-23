@@ -286,7 +286,7 @@ namespace CmsWeb.Controllers
                 var ret = ScriptModel.Run(name, pe);
                 if (ret.StartsWith("REDIRECT="))
                 {
-                    return Redirect(ret.Substring(9).trim());
+                    return Redirect(ret.Substring(9).Trim());
                 }
 
                 return Content(ret);

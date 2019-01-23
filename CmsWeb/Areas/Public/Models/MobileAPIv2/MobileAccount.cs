@@ -55,7 +55,7 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
         {
             this.first = first;
             this.last = last;
-            this.email = email.trim();
+            this.email = email.Trim();
             this.phone = phone.GetDigits();
 
             this.device = device;
@@ -132,7 +132,7 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
             this.device = device;
             this.instance = instance;
             this.key = key;
-            this.email = email.trim();
+            this.email = email?.Trim();
         }
 
         public void sendDeepLink()

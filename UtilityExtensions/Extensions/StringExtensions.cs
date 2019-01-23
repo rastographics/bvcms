@@ -132,13 +132,6 @@ namespace UtilityExtensions
         }
 
         // ReSharper disable once InconsistentNaming
-        public static string trim(this string source)
-        {
-            source = source?.Trim();
-            return source;
-        }
-
-        // ReSharper disable once InconsistentNaming
         public static string URLCombine(string baseUrl, string relativeUrl)
         {
             if (baseUrl.Length == 0)
