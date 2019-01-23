@@ -206,6 +206,7 @@ namespace CmsWeb.Models
         }
         public IEnumerable<SelectListItem> Years()
         {
+            // todo: the "years" dropdown on contribution/index doesn't correctly show the years if coming from a giving statement of the spouse in all cases because this search is only off of the donors peopleid.
             var q = from c in DbUtil.Db.Contributions
                     where c.PeopleId == SearchInfo.PeopleId || SearchInfo.PeopleId == null
                     group c by c.ContributionDate.Value.Year
