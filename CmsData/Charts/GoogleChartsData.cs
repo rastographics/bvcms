@@ -66,11 +66,12 @@ namespace CmsData
             int year = DateTime.Now.Year;
             DateTime firstDay = new DateTime(year, 1, 1);
             DateTime lastDay = new DateTime(year, 12, 31);
+            CMSDataContext db = DbUtil.Db;
 
-                var myList = (from m in DbUtil.Db.Meetings
+                var myList = (from m in db.Meetings
                     where m.MeetingDate.Value.Year == (DateTime.Now.Year) &&
-                          (from d in DbUtil.Db.DivOrgs
-                              join pd in DbUtil.Db.ProgDivs on d.DivId equals pd.DivId
+                          (from d in db.DivOrgs
+                              join pd in db.ProgDivs on d.DivId equals pd.DivId
                               where d.OrgId == m.OrganizationId
                               select m.OrganizationId).Contains(m.OrganizationId)
                     group m by new {m.MeetingDate.Value.Month}
@@ -81,10 +82,10 @@ namespace CmsData
                         Count = Convert.ToInt32(grp.Sum(t => t.MaxCount).Value)
                     });
 
-                var myList1 = (from m in DbUtil.Db.Meetings
+                var myList1 = (from m in db.Meetings
                     where m.MeetingDate.Value.Year == (DateTime.Now.Year - 1) &&
-                          (from d in DbUtil.Db.DivOrgs
-                              join pd in DbUtil.Db.ProgDivs on d.DivId equals pd.DivId
+                          (from d in db.DivOrgs
+                              join pd in db.ProgDivs on d.DivId equals pd.DivId
                               where d.OrgId == m.OrganizationId
                               select m.OrganizationId).Contains(m.OrganizationId)
                     group m by new {m.MeetingDate.Value.Month}
@@ -99,7 +100,7 @@ namespace CmsData
             {
                 if (!(orgIds.Length == 1 && orgIds[0].Equals(0)))
                 {
-                    myList = (from m in DbUtil.Db.Meetings
+                    myList = (from m in db.Meetings
                         where m.MeetingDate.Value.Year == (DateTime.Now.Year) &&
                               orgIds.Contains(m.OrganizationId)
                         group m by new {m.MeetingDate.Value.Month}
@@ -110,7 +111,7 @@ namespace CmsData
                             Count = Convert.ToInt32(grp.Sum(t => t.MaxCount).Value)
                         });
 
-                    myList1 = (from m in DbUtil.Db.Meetings
+                    myList1 = (from m in db.Meetings
                         where m.MeetingDate.Value.Year == (DateTime.Now.Year - 1) &&
                               orgIds.Contains(m.OrganizationId)
                         group m by new {m.MeetingDate.Value.Month}
