@@ -391,7 +391,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
 
             SetHeaders(m);
-            if (Util.UserPeopleId == goerid || User.IsInRole("Admin"))
+            if (Util.UserPeopleId == goerid)
             {
                 return View("Giving/Goer", m);
             } else if (m.org.TripFundingPagesPublic)

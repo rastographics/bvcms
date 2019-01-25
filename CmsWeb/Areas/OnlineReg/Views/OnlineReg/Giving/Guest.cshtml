@@ -1,0 +1,59 @@
+@using System.Globalization
+@using UtilityExtensions
+@using CmsWeb.Models
+@using CmsWeb.Areas.Dialog.Models
+@model CmsWeb.Areas.OnlineReg.Models.OnlineRegModel
+@{
+    Layout = "~/Views/Shared/onlinereg2.cshtml";
+    ViewBag.Title = Model.Header;
+
+}
+<div class="row content">
+    <div class="col-sm-8">
+        <h2>@Model.org.OrganizationName</h2>
+        <h4>@Model.MissionTripDates</h4>
+        <p>@Model.org.Description</p>
+    </div>
+    <div class="col-sm-4">
+        <h3>Support @Model.Goer.Name's goal</h3>
+        @if (Model.MissionTripRaised < Model.MissionTripCost)
+        {
+            <h5 class="amount"><strong>@NumberFormatInfo.CurrentInfo.CurrencySymbol@Model.MissionTripRaised.ToString2("N")</strong> raised of <strong>@NumberFormatInfo.CurrentInfo.CurrencySymbol@Model.MissionTripCost.ToString2("N")</strong> goal</h5>
+            <progress value="@Model.MissionTripRaised" max="@Model.MissionTripCost" style="display: block;width:100%;"></progress>
+            <a style="display:block;width:100%;margin:12px 0;" class="btn btn-primary btn-sm" href="/OnlineReg/@Model.org.OrganizationId?goerid=@Model.GoerId">Donate</a>
+        }
+        else
+        {
+            <h4>Goal met!</h4>
+            <progress value="100" max="100"></progress>
+        }
+        @if (Model.Supporters.Any())
+        {
+            <h3>Recent Supporters</h3>
+            foreach (TransactionsModel.SupporterInfo supporter in @Model.Supporters)
+            {
+            <div class="row">
+                @if (Model.org.TripFundingPagesShowAmounts)
+                {
+                    <div class="col-xs-8">
+                        <span>@supporter.SupporterName</span>
+                    </div>
+                    <div class="col-xs-4">
+                        <span class="amount">@NumberFormatInfo.CurrentInfo.CurrencySymbol@supporter.gs.Amount.ToString2("N")</span>
+                    </div>
+                }
+                else
+                {
+                    <div class="col-xs-12">
+                        <span>@supporter.SupporterName</span>
+                    </div>
+                }
+            </div>
+            }
+        }
+        else
+        {
+            <h5>No supporters yet</h5>
+        }
+    </div>
+</div>

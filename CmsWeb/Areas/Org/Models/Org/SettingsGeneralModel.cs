@@ -170,7 +170,7 @@ Allows others to donate on behalf of a mission trip participant.
 Allows participants to view how much they still owe, a list of people who donated and their gifts on a single page.
 ";
         private const string TripFundingPagesPublicDescription = @"
-Allows others to view how much the participant still owes, and a list of people who donated on a single page.
+Used for fundraising. Each participants funding page will be public for anyone who has the link. This also changes the donation emails to include the funding page link.
 ";
         private const string TripFundingPagesShowAmountsDescription = @"
 Allows others to view how much each giver donated on the funding page for a participant.

@@ -1,4 +1,7 @@
-@using CmsData
+@using System.Globalization
+@using UtilityExtensions
+@using CmsWeb.Models
+@using CmsWeb.Areas.Dialog.Models
 @model CmsWeb.Areas.OnlineReg.Models.OnlineRegModel
 @{
     Layout = "~/Views/Shared/onlinereg2.cshtml";
@@ -7,18 +10,44 @@
 }
 <div class="row content">
     <div class="col-sm-8">
-        <h1>@Model.org.OrganizationName</h1>
-        <h2>@Model.org.Location - @Model.org.FirstMeetingDate - @Model.org.LastMeetingDate</h2>
-        <p>@Model.Goer.Name</p>
+        <h2>@Model.org.OrganizationName</h2>
+        <h4>@Model.MissionTripDates</h4>
         <p>@Model.org.Description</p>
     </div>
     <div class="col-sm-4">
-        @if(Model.Supporters.Any()) {
-        <h3>Your Supporters</h3>
-        } else {
-        <h3>No Supporters yet.</h3>
+        <h3>@Model.Goer.Name's Fundraising</h3>
+        @if (Model.MissionTripRaised < Model.MissionTripCost)
+        {
+            <h5 class="amount">@NumberFormatInfo.CurrentInfo.CurrencySymbol@Model.MissionTripRaised.ToString2("N") / @NumberFormatInfo.CurrentInfo.CurrencySymbol@Model.MissionTripCost.ToString2("N")</h5>
+            <progress value="@Model.MissionTripRaised" max="@Model.MissionTripCost" style="display: block;width:100%;"></progress>
+            <a style="display:block;width:100%;margin:12px 0;" class="btn btn-primary btn-sm" href="@OrgMemberModel.GetPayLink(Model.org.OrganizationId, Model.Goer.PeopleId)">Pay</a>
         }
-        <h4>Get more supporters! Share:</h4>
+        else
+        {
+            <h4>Goal met!</h4>
+            <progress value="100" max="100"></progress>
+        }
+        @if (Model.Supporters.Any())
+        {
+            <h3>Your Supporters</h3>
+            foreach (TransactionsModel.SupporterInfo supporter in @Model.Supporters)
+            {
+                <div class="row">
+                    <div class="col-xs-8">
+                        <span>@supporter.SupporterName</span>
+                    </div>
+                    <div class="col-xs-4">
+                        <span class="amount">@NumberFormatInfo.CurrentInfo.CurrencySymbol@supporter.gs.Amount.ToString2("N")</span>
+                    </div>
+                </div>
+            }
+            <a style="display:block;width:100%;" href="/MissionTripEmail2/@Model.org.OrganizationId/@Model.Goer.PeopleId" class="btn btn-default btn-sm"><i class="fa fa-envelope-o"></i> Email Supporters</a>
+        }
+        else
+        {
+            <h5>No supporters yet</h5>
+        }
+        <h5>Get more supporters! Share:</h5>
         <p>Or copy this link:</p>
         <input type="text" value="@Model.URL" readonly />
     </div>
