@@ -228,6 +228,7 @@
   <ItemGroup>
     <Compile Include="ConfigurationProxy.cs" />
     <Compile Include="EnDeCrypt.cs" />
+    <Compile Include="Extensions\DateTimeRangeFormatter.cs" />
     <Compile Include="Extensions\ConnectionStrings.cs" />
     <Compile Include="Extensions\Extensions.cs" />
     <Compile Include="Extensions\User.cs" />

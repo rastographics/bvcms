@@ -34,15 +34,31 @@ namespace CmsWeb.Areas.OnlineReg.Models
             // prepare supporter data
             OrganizationMember OrgMember = CurrentDatabase.OrganizationMembers.Single(mm => mm.OrganizationId == org.OrganizationId && mm.PeopleId == Goer.PeopleId);
             var transactions = new TransactionsModel(OrgMember.TranId) { GoerId = Goer.PeopleId };
+            var summaries = CurrentDatabase.ViewTransactionSummaries.SingleOrDefault(ts => ts.RegId == OrgMember.TranId && ts.PeopleId == Goer.PeopleId && ts.OrganizationId == org.OrganizationId);
             Supporters = transactions.Supporters().Where(s => s.OrgId == org.OrganizationId).ToArray();
 
+            // prepare funding data
+            decimal? AmtFee = summaries.IndPaid + summaries.IndDue;
+            //decimal? AmtDonation = summaries.IndAmt - AmtFee;
+            //decimal? AmtCoupon = summaries.TotCoupon;
+            decimal? AmtPaid = OrgMember.AmountPaidTransactions(CurrentDatabase);
+            //decimal? AmtDue = OrgMember.AmountDueTransactions(CurrentDatabase);
+            MissionTripCost = AmtFee;
+            MissionTripRaised = AmtPaid;
+
             // prepare date data
-            if (org.FirstMeetingDate.HasValue)
+            if (org.FirstMeetingDate.HasValue && org.LastMeetingDate.HasValue)
             {
+                DateTimeRangeFormatter formatter = new DateTimeRangeFormatter();
+                MissionTripDates = formatter.FormatDateRange(org.FirstMeetingDate.Value, org.LastMeetingDate.Value);
             }
-            if (org.LastMeetingDate.HasValue)
+            else if (org.FirstMeetingDate.HasValue)
             {
                 MissionTripDates = org.FirstMeetingDate.Value.ToString("MMMM d, yyyy");
+            }
+            else if (org.LastMeetingDate.HasValue)
+            {
+                MissionTripDates = org.LastMeetingDate.Value.ToString("MMMM d, yyyy");
             }
         }
 

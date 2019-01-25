@@ -379,17 +379,28 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
         [HttpGet]
         [Route("~/OnlineReg/{id:int}/Giving/{goerid:int}")]
-        public ActionResult Giving(int? id, int? goerid)
+        public ActionResult Giving(int id, int goerid)
         {
             var m = new OnlineRegModel(Request, CurrentDatabase, id, false, null, null, null);
-            if (m.org != null && m.org.IsMissionTrip == true)
+            if (m.org != null && m.org.IsMissionTrip == true && m.org.TripFundingPagesEnable == true)
             {
                 m.PrepareMissionTrip(null, goerid);
+            } else
+            {
+                return new HttpNotFoundResult();
             }
 
             SetHeaders(m);
-
-            return View("Giving/Goer", m);
+            if (Util.UserPeopleId == goerid || User.IsInRole("Admin"))
+            {
+                return View("Giving/Goer", m);
+            } else if (m.org.TripFundingPagesPublic)
+            {
+                return View("Giving/Guest", m);
+            } else
+            {
+                return new HttpNotFoundResult();
+            }
         }
     }
 }

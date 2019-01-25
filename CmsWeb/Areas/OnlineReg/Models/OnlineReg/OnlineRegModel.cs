@@ -64,6 +64,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public bool SupportMissionTrip => GoerSupporterId.HasValue || GoerId.HasValue;
         public string MissionTripDates { get; set; }
+        public decimal? MissionTripCost { get; set; }
+        public decimal? MissionTripRaised { get; set; }
 
         public TransactionsModel.SupporterInfo[] Supporters { get; set; }
 

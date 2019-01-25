@@ -110,7 +110,8 @@ namespace CmsWeb.Areas.People.Models
                         Id = m.OrganizationId,
                         Trip = m.Organization?.OrganizationName,
                         Cost = ts.TripCost ?? 0,
-                        Paid = ts.Raised ?? 0
+                        Paid = ts.Raised ?? 0,
+                        ShowFundingLink = m.Organization?.TripFundingPagesEnable ?? false
                     }).ToList();
         }
 
@@ -120,6 +121,7 @@ namespace CmsWeb.Areas.People.Models
             public string Trip { get; set; }
             public decimal Cost { get; set; }
             public decimal Paid { get; set; }
+            public bool ShowFundingLink { get; set; }
         }
     }
 }
