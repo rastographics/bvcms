@@ -256,6 +256,12 @@ namespace CmsData.Codes
         public const int GiftsInKind = 30;
         public const int Stock = 32;
     }
+    public class BundleReferenceIdTypeCode
+    {
+        public const int PushPayBatch = 1;
+        public const int PushPaySettlement = 2;
+        public const int PushPayStandaloneTransaction = 3;
+    }
     public class ContributionStatusCode
     {
         public const int Recorded = 0;

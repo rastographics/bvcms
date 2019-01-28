@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 namespace CmsData
 {
     public enum QueryType
@@ -36,6 +31,7 @@ namespace CmsData
         ContributionAmountSinceSetting,
         ContributionsStatement,
         ContributionAmount2,
+        ContributionAmount2DonorOnly,
         ContributionChange,
         CreatedBy,
         CreatedDate,
@@ -166,6 +162,7 @@ namespace CmsData
         NeedAttendance,
         NickName,
         NonTaxDedAmount,
+        NonTaxDedAmountDonorOnly,
         NumberOfMemberships,
         NumberOfFamilyMembers,
         NumberOfPrimaryAdults,

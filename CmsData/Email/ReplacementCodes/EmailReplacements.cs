@@ -124,7 +124,7 @@ namespace CmsData
                                              where ex.Field == "ContributionEmail"
                                              select ex.Data).SingleOrDefault();
                     if (contributionemail.HasValue())
-                        contributionemail = contributionemail.trim();
+                        contributionemail = contributionemail.Trim();
                     if (!Util.ValidEmail(contributionemail))
                         contributionemail = p.FromEmail;
                     aa.Clear();

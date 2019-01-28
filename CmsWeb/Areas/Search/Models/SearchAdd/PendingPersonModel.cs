@@ -36,6 +36,7 @@ namespace CmsWeb.Areas.Search.Models
 
         [DisplayName("Birthday")]
         [DateEmptyOrValid]
+        [BirthdateValid]
         public string DOB { get; set; }
 
         [StringLength(20), RemoveNA]
@@ -58,6 +59,7 @@ namespace CmsWeb.Areas.Search.Models
         public string HomePhone { get; set; }
 
         private DateTime? birthday;
+
         public DateTime? Birthday
         {
             get

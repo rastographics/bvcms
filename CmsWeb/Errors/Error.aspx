@@ -1,4 +1,5 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" %>
+﻿<% Response.StatusCode = 500; %>
+<%@ Page Language="C#" AutoEventWireup="true" %>
 <%@ Import Namespace="System.Security.Cryptography" %>
 <%@ Import Namespace="System.Threading" %>
 <script runat="server">

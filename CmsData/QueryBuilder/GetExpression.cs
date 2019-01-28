@@ -45,6 +45,7 @@ namespace CmsData
                 { QueryType.ContributionAmountSinceSetting, ContributionAmountSinceSetting },
                 { QueryType.PledgeAmountBothJointHistory, PledgeAmountBothJointHistory },
                 { QueryType.ContributionAmount2, ContributionAmount },
+                { QueryType.ContributionAmount2DonorOnly, ContributionAmountDonorOnly },
                 { QueryType.ContributionChange, ContributionChange },
                 { QueryType.CreatedBy, CreatedBy },
                 { QueryType.DaysSinceDate, DaysSinceDate },
@@ -132,6 +133,7 @@ namespace CmsData
                 { QueryType.MembOfOrgWithSched, MembOfOrgWithSched },
                 { QueryType.NeedAttendance, NeedAttendance },
                 { QueryType.NonTaxDedAmount, NonTaxDedAmount },
+                { QueryType.NonTaxDedAmountDonorOnly, NonTaxDedAmountDonorOnly },
                 { QueryType.NumberOfFamilyMembers, NumberOfFamilyMembers },
                 { QueryType.NumberOfMemberships, NumberOfMemberships },
                 { QueryType.NumberOfPrimaryAdults, NumberOfPrimaryAdults },
@@ -220,7 +222,9 @@ namespace CmsData
             db = Db;
             Func<Expression> f = null;
             if (expressionDictionary.TryGetValue(FieldInfo.QueryType, out f))
+            {
                 return f();
+            }
 
             var isMultiple = op == CompareType.OneOf || op == CompareType.NotOneOf;
             switch (FieldInfo.QueryType)

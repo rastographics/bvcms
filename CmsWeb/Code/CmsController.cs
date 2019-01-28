@@ -63,9 +63,9 @@ namespace CmsWeb
             return AuthHelper.AuthenticateDeveloper(System.Web.HttpContext.Current, log, addrole, altrole).Message;
         }
 
-        public ViewResult Message(string text)
+        public ViewResult Message(string text, string stacktrace = null)
         {
-            return View("Message", model: text);
+            return View("Message", model: new ErrorMessage { text = text, stacktrace = stacktrace ?? Environment.StackTrace });
         }
         public ViewResult PageMessage(string text, string title = "Error", string alert = "danger")
         {
@@ -177,7 +177,8 @@ namespace CmsWeb
 
         public ViewResult Message(string text)
         {
-            return View("Message", model: text);
+            string stacktrace = Environment.StackTrace;
+            return View("Message", model: new ErrorMessage { text = text, stacktrace = stacktrace });
         }
         public ViewResult PageMessage(string text, string title = "Error", string alert = "danger")
         {
@@ -252,7 +253,8 @@ namespace CmsWeb
         }
         public ViewResult Message(string text)
         {
-            return View("Message", model: text);
+            string stacktrace = Environment.StackTrace;
+            return View("Message", model: new ErrorMessage { text = text, stacktrace = stacktrace });
         }
     }
 

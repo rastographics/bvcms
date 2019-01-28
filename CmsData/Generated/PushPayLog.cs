@@ -20,17 +20,23 @@ namespace CmsData
 		
 		private long _Id;
 		
-		private int? _BatchPage;
-		
-		private DateTime? _BatchDate;
+		private DateTime? _TransactionDate;
 		
 		private string _BatchKey;
-		
-		private string _MerchantKey;
 		
 		private string _TransactionId;
 		
 		private DateTime? _ImportDate;
+		
+		private int? _BundleHeaderId;
+		
+		private int? _ContributionId;
+		
+		private string _SettlementKey;
+		
+		private string _OrganizationKey;
+		
+		private string _MerchantKey;
 		
    		
     	
@@ -44,23 +50,32 @@ namespace CmsData
 		partial void OnIdChanging(long value);
 		partial void OnIdChanged();
 		
-		partial void OnBatchPageChanging(int? value);
-		partial void OnBatchPageChanged();
-		
-		partial void OnBatchDateChanging(DateTime? value);
-		partial void OnBatchDateChanged();
+		partial void OnTransactionDateChanging(DateTime? value);
+		partial void OnTransactionDateChanged();
 		
 		partial void OnBatchKeyChanging(string value);
 		partial void OnBatchKeyChanged();
-		
-		partial void OnMerchantKeyChanging(string value);
-		partial void OnMerchantKeyChanged();
 		
 		partial void OnTransactionIdChanging(string value);
 		partial void OnTransactionIdChanged();
 		
 		partial void OnImportDateChanging(DateTime? value);
 		partial void OnImportDateChanged();
+		
+		partial void OnBundleHeaderIdChanging(int? value);
+		partial void OnBundleHeaderIdChanged();
+		
+		partial void OnContributionIdChanging(int? value);
+		partial void OnContributionIdChanged();
+		
+		partial void OnSettlementKeyChanging(string value);
+		partial void OnSettlementKeyChanged();
+		
+		partial void OnOrganizationKeyChanging(string value);
+		partial void OnOrganizationKeyChanged();
+		
+		partial void OnMerchantKeyChanging(string value);
+		partial void OnMerchantKeyChanged();
 		
     #endregion
 		public PushPayLog()
@@ -73,7 +88,7 @@ namespace CmsData
 		
     #region Columns
 		
-		[Column(Name="Id", IsPrimaryKey = true, UpdateCheck = UpdateCheck.Never, Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="bigint NOT NULL IDENTITY", IsDbGenerated=true)]
+		[Column(Name="Id", UpdateCheck=UpdateCheck.Never, Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="bigint NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
 		public long Id
 		{
 			get { return this._Id; }
@@ -95,43 +110,21 @@ namespace CmsData
 		}
 
 		
-		[Column(Name="BatchPage", UpdateCheck=UpdateCheck.Never, Storage="_BatchPage", DbType="int")]
-		public int? BatchPage
+		[Column(Name="TransactionDate", UpdateCheck=UpdateCheck.Never, Storage="_TransactionDate", DbType="datetime")]
+		public DateTime? TransactionDate
 		{
-			get { return this._BatchPage; }
+			get { return this._TransactionDate; }
 
 			set
 			{
-				if (this._BatchPage != value)
+				if (this._TransactionDate != value)
 				{
 				
-                    this.OnBatchPageChanging(value);
+                    this.OnTransactionDateChanging(value);
 					this.SendPropertyChanging();
-					this._BatchPage = value;
-					this.SendPropertyChanged("BatchPage");
-					this.OnBatchPageChanged();
-				}
-
-			}
-
-		}
-
-		
-		[Column(Name="BatchDate", UpdateCheck=UpdateCheck.Never, Storage="_BatchDate", DbType="datetime")]
-		public DateTime? BatchDate
-		{
-			get { return this._BatchDate; }
-
-			set
-			{
-				if (this._BatchDate != value)
-				{
-				
-                    this.OnBatchDateChanging(value);
-					this.SendPropertyChanging();
-					this._BatchDate = value;
-					this.SendPropertyChanged("BatchDate");
-					this.OnBatchDateChanged();
+					this._TransactionDate = value;
+					this.SendPropertyChanged("TransactionDate");
+					this.OnTransactionDateChanged();
 				}
 
 			}
@@ -154,28 +147,6 @@ namespace CmsData
 					this._BatchKey = value;
 					this.SendPropertyChanged("BatchKey");
 					this.OnBatchKeyChanged();
-				}
-
-			}
-
-		}
-
-		
-		[Column(Name="MerchantKey", UpdateCheck=UpdateCheck.Never, Storage="_MerchantKey", DbType="nvarchar(100)")]
-		public string MerchantKey
-		{
-			get { return this._MerchantKey; }
-
-			set
-			{
-				if (this._MerchantKey != value)
-				{
-				
-                    this.OnMerchantKeyChanging(value);
-					this.SendPropertyChanging();
-					this._MerchantKey = value;
-					this.SendPropertyChanged("MerchantKey");
-					this.OnMerchantKeyChanged();
 				}
 
 			}
@@ -220,6 +191,116 @@ namespace CmsData
 					this._ImportDate = value;
 					this.SendPropertyChanged("ImportDate");
 					this.OnImportDateChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="BundleHeaderId", UpdateCheck=UpdateCheck.Never, Storage="_BundleHeaderId", DbType="int")]
+		public int? BundleHeaderId
+		{
+			get { return this._BundleHeaderId; }
+
+			set
+			{
+				if (this._BundleHeaderId != value)
+				{
+				
+                    this.OnBundleHeaderIdChanging(value);
+					this.SendPropertyChanging();
+					this._BundleHeaderId = value;
+					this.SendPropertyChanged("BundleHeaderId");
+					this.OnBundleHeaderIdChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="ContributionId", UpdateCheck=UpdateCheck.Never, Storage="_ContributionId", DbType="int")]
+		public int? ContributionId
+		{
+			get { return this._ContributionId; }
+
+			set
+			{
+				if (this._ContributionId != value)
+				{
+				
+                    this.OnContributionIdChanging(value);
+					this.SendPropertyChanging();
+					this._ContributionId = value;
+					this.SendPropertyChanged("ContributionId");
+					this.OnContributionIdChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="SettlementKey", UpdateCheck=UpdateCheck.Never, Storage="_SettlementKey", DbType="nvarchar(100)")]
+		public string SettlementKey
+		{
+			get { return this._SettlementKey; }
+
+			set
+			{
+				if (this._SettlementKey != value)
+				{
+				
+                    this.OnSettlementKeyChanging(value);
+					this.SendPropertyChanging();
+					this._SettlementKey = value;
+					this.SendPropertyChanged("SettlementKey");
+					this.OnSettlementKeyChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="OrganizationKey", UpdateCheck=UpdateCheck.Never, Storage="_OrganizationKey", DbType="nvarchar(100)")]
+		public string OrganizationKey
+		{
+			get { return this._OrganizationKey; }
+
+			set
+			{
+				if (this._OrganizationKey != value)
+				{
+				
+                    this.OnOrganizationKeyChanging(value);
+					this.SendPropertyChanging();
+					this._OrganizationKey = value;
+					this.SendPropertyChanged("OrganizationKey");
+					this.OnOrganizationKeyChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="MerchantKey", UpdateCheck=UpdateCheck.Never, Storage="_MerchantKey", DbType="nvarchar(100)")]
+		public string MerchantKey
+		{
+			get { return this._MerchantKey; }
+
+			set
+			{
+				if (this._MerchantKey != value)
+				{
+				
+                    this.OnMerchantKeyChanging(value);
+					this.SendPropertyChanging();
+					this._MerchantKey = value;
+					this.SendPropertyChanged("MerchantKey");
+					this.OnMerchantKeyChanged();
 				}
 
 			}

@@ -1,0 +1,92 @@
+﻿@model ContributionsModel
+@using CmsData
+@using CmsWeb.Areas.Finance.Models.Report
+@using CmsWeb.Areas.People.Models
+@using UtilityExtensions
+@{
+    var TotalAmount = 0m;
+    var TotalCount = 0;
+    var editable = new
+    {
+        url = "/Person2/InlineEdit/" + Model.PeopleId,
+        source = "/Person2/InlineCodes/"
+    };
+    var finance = User.IsInRole("Finance") && ((string)Session["testnofinance"]) != "true";
+    string statements = null;
+    ContributionStatements.CustomStatementsList(DbUtil.Db);
+}
+<form class="ajax" method="post" data-init="Editable" data-init2="ExtraEditable">
+    <h4>Statements</h4>
+    <div class="row">
+        <div class="col-md-8">
+            <div>
+                @{
+                    var statementEntries = ContributionsModel.Statements(Model.PeopleId).ToList();
+                    foreach (var year in statementEntries.Select(s => s.StartDate.Year).Distinct())
+                    {
+                        var startDate = new DateTime(year, 1, 1);
+                        var endDate = new DateTime(year, 12, 31);
+                        var includeCustomStatementsClass = false;
+                        <h4><a href="/Person2/ContributionStatement/@Model.PeopleId/@startDate.ToSortableDate()/@endDate.ToSortableDate()" class="@(includeCustomStatementsClass ? "customstatements" : "")">@year</a></h4>
+                        int aggregateYearlyCount = 0;
+                        decimal aggregateYearlyAmount = 0.0m;
+
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <tbody>
+                                @foreach (var fund in statementEntries.Where(s => s.StartDate.Year == year).Select(s => s.FundGroupName))
+                                {
+                                    var yearlyFundEntry = statementEntries.SingleOrDefault(s => s.FundGroupName == fund && s.StartDate.Year == year);
+                                    aggregateYearlyCount += yearlyFundEntry.Count;
+                                    aggregateYearlyAmount += yearlyFundEntry.Amount;
+                                    <tr>
+                                        <td class="text-left"><a href="/Person2/ContributionStatement/@Model.PeopleId/@startDate.ToSortableDate()/@endDate.ToSortableDate()?custom=@yearlyFundEntry.FundGroupName">@yearlyFundEntry.FundGroupName</a></td>
+                                        <td class="text-right">@yearlyFundEntry.Count.ToString("N0")</td>
+                                        <td class="text-right">
+                                            @if (finance)
+                                            {
+                                                <a href="/Contributions/@Model.PeopleId?year=@year&fundSet=@yearlyFundEntry.FundGroupName">@yearlyFundEntry.Amount.ToString("c")</a>
+                                            }
+                                            else
+                                            {
+                                                @yearlyFundEntry.Amount.ToString("c")
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                                </tbody>
+                                <tfoot>
+                                <tr>
+                                    <th class="text-left">Total</th>
+                                    <td class="text-right">@aggregateYearlyCount.ToString("N0")</td>
+                                    <td class="text-right">@aggregateYearlyAmount.ToString("c")</td>
+                                </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Statement/Envelope Options
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            @Html.EditorFor(m => m.ElectronicStatement, "InlineBoolean", editable)
+                        </div>
+                        <div class="col-sm-12">
+                            @Html.EditorFor(m => m.ContributionOptions, "InlineCodeInfo", editable)
+                        </div>
+                        <div class="col-sm-12">
+                            @Html.EditorFor(m => m.EnvelopeOptions, "InlineCodeInfo", editable)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

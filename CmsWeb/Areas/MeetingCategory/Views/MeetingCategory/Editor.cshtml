@@ -1,0 +1,58 @@
+﻿@model CmsData.MeetingCategory
+@{
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "Edit Meeting Category";
+    ViewBag.PageHeader = "Edit Meeting Category";
+}
+
+@using (Html.BeginForm("Edit", "MeetingCategory", new { meetingCategoryId = Model.Id }, FormMethod.Post))
+{
+    @Html.HiddenFor(m => m.Id)
+
+    <div class="row">
+        <div class="col-md-9">
+            <div class="box box-responsive">
+                <div class="box-content">
+                    <div class="row">
+                        <div class="col-sm-9 col-lg-8">
+                            <div class="form-group">
+                                @Html.EditorFor(m => m.Description)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-9 col-lg-8">
+                            <div class="form-group">
+                                @Html.EditorFor(m => m.NotBeforeDate)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-9 col-lg-8">
+                            <div class="form-group">
+                                @Html.EditorFor(m => m.NotAfterDate)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-9 col-lg-8">
+                            <div class="form-group">
+                                @Html.EditorFor(m => m.IsExpired)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-9 col-lg-8">
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-success">Save</button>
+
+                                <a href="@Url.Action("Index", "MeetingCategory")" class="btn btn-default"><i class="fa fa-arrow-circle-left"></i> Back to list</a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+}

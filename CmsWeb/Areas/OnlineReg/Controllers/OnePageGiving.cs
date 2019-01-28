@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.OnlineReg.Models;
+using CmsWeb.Code;
 using CmsWeb.Models;
 using Elmah;
 using UtilityExtensions;
@@ -53,7 +54,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 #endif
 
                 var p = m.List[0];
-                if(pf.ShowCampusOnePageGiving)
+                if (pf.ShowCampusOnePageGiving)
                     pf.Campuses = p.Campuses().ToList();
 
                 var designatedFund = p.DesignatedDonationFund().FirstOrDefault();
@@ -99,12 +100,14 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 ModelState.AddModelError("Email", "Need a valid email address");
             if (pf.IsUs && !pf.Zip.HasValue())
                 ModelState.AddModelError("Zip", "Zip is Required for US");
-            if(pf.ShowCampusOnePageGiving)
-                if((pf.CampusId ?? 0) == 0)
+            if (pf.ShowCampusOnePageGiving)
+                if ((pf.CampusId ?? 0) == 0)
                     ModelState.AddModelError("CampusId", "Campus is Required");
 
             var m = new OnlineRegModel(Request, CurrentDatabase, pf.OrgId, pf.testing, null, null, pf.source)
-            { URL = "/OnePageGiving/" + pf.OrgId };
+            {
+                URL = $"/OnePageGiving/{pf.OrgId};
+            };
 
             var pid = Util.UserPeopleId;
             if (pid.HasValue)
@@ -114,8 +117,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             m.List[0].RetrieveEntireFundList = true;
 
             // first re-build list of fund items with only ones that contain a value (amt).
-            var fundItems = fundItem.Where(f => f.Value.GetValueOrDefault() > 0).ToDictionary(f => f.Key, f=> f.Value);
-            
+            var fundItems = fundItem.Where(f => f.Value.GetValueOrDefault() > 0).ToDictionary(f => f.Key, f => f.Value);
+
             var designatedFund = m.settings[id.Value].DonationFundId ?? 0;
             if (designatedFund != 0)
                 fundItems.Add(designatedFund, pf.AmtToPay);
@@ -126,13 +129,13 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 m.List[0].FundItem = fundItems;
                 pf.AmtToPay = m.List[0].FundItemsChosen().Sum(f => f.Amt);
             }
-            
+
             if (pf.AmtToPay.GetValueOrDefault() == 0)
                 ModelState.AddModelError("AmtToPay", "Invalid Amount");
 
             SetHeaders(m);
             SetInstructions(m);
-            
+
             var p = m.List[0];
             if (pf.ShowCampusOnePageGiving)
                 pf.Campuses = p.Campuses().ToList();
@@ -158,7 +161,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 pf.AmtToPay = amtToPay;
                 return View("OnePageGiving/Index", new OnePageGivingModel() { OnlineRegPersonModel = m.List[0], PaymentForm = pf });
             }
-                
+
             p.orgid = m.Orgid;
             p.FirstName = pf.First;
             p.LastName = pf.Last;
@@ -169,7 +172,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             p.State = pf.State;
             p.ZipCode = pf.Zip;
             p.Country = pf.Country;
-            if(pf.ShowCampusOnePageGiving)
+            if (pf.ShowCampusOnePageGiving)
                 p.Campus = pf.CampusId.ToString();
 
             p.IsNew = p.person == null;
@@ -187,7 +190,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 pf.AmtToPay = amtToPay;
                 return View("OnePageGiving/Index", new OnePageGivingModel() { OnlineRegPersonModel = m.List[0], PaymentForm = pf });
             }
-                
+
 
             if (m?.UserPeopleId != null && m.UserPeopleId > 0)
                 pf.CheckStoreInVault(ModelState, m.UserPeopleId.Value);
@@ -196,6 +199,20 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 m.List[0].FundItem = fundItem;
                 pf.AmtToPay = amtToPay;
                 return View("OnePageGiving/Index", new OnePageGivingModel() { OnlineRegPersonModel = m.List[0], PaymentForm = pf });
+            }
+            
+            if (CurrentDatabase.Setting("UseRecaptcha"))
+            {
+                if (!GoogleRecaptcha.IsValidResponse(HttpContext, CurrentDatabase))
+                {
+                    m.List[0].FundItem = fundItem;
+                    pf.AmtToPay = amtToPay;
+                    ModelState.AddModelError("TranId", "ReCaptcha validation failed.");
+                    return View("OnePageGiving/Index", new OnePageGivingModel {
+                        OnlineRegPersonModel = m.List[0],
+                        PaymentForm = pf
+                    });
+                }
             }
 
             var ti = pf.ProcessPaymentTransaction(m);
@@ -288,9 +305,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (r.Line1 == "error" || r.found == false)
             {
                 if (pf.City.HasValue()
-                        && pf.State.HasValue()
-                        && pf.Zip.HasValue()
-                        && pf.Address.HasValue())
+                    && pf.State.HasValue()
+                    && pf.Zip.HasValue()
+                    && pf.Address.HasValue())
                     return true; // not found but complete
                 pf.NeedsCityState = true;
                 return false;

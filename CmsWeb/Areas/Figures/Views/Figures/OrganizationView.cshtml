@@ -1,20 +1,9 @@
 ﻿@model CmsWeb.Areas.Figures.Models.OrgViewModel
-@{
-    Layout = null;
-}
 
-@Fingerprint.Css("/Content/touchpoint/lib/jquery-multi-select/css/multi-select.css")
+@Html.DropDownListFor(p => p.SelectedOrgId, Model.OrgIEnum, new { @id = "Organization-DropdownID", @class = "Organization-DropdownCls", @multiple = "multiple"})
 
-
-@Html.DropDownListFor(p => p.SelectedOrgId,
-    Model.OrgIEnum,
-    new { @id = "Organization-DropdownID",
-        @class = "Organization-DropdownCls",
-        @multiple = "multiple"
-    })
-
-@Fingerprint.Script("/Content/touchpoint/lib/jquery-multi-select/js/jquery.multi-select.js")
 <script type="text/javascript">
-    // run callbacks
-    $('#Organization-DropdownID').multiSelect();
+    $(function () {
+        $('#Organization-DropdownID').multiSelect();
+    });
 </script>

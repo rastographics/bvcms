@@ -50,6 +50,10 @@ namespace CmsData
 		
 		private int? _FundId;
 		
+		private string _ReferenceId;
+		
+		private int? _ReferenceIdType;
+		
    		
    		private EntitySet<BundleDetail> _BundleDetails;
 		
@@ -114,6 +118,12 @@ namespace CmsData
 		
 		partial void OnFundIdChanging(int? value);
 		partial void OnFundIdChanged();
+		
+		partial void OnReferenceIdChanging(string value);
+		partial void OnReferenceIdChanged();
+		
+		partial void OnReferenceIdTypeChanging(int? value);
+		partial void OnReferenceIdTypeChanged();
 		
     #endregion
 		public BundleHeader()
@@ -491,6 +501,50 @@ namespace CmsData
 					this._FundId = value;
 					this.SendPropertyChanged("FundId");
 					this.OnFundIdChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="ReferenceId", UpdateCheck=UpdateCheck.Never, Storage="_ReferenceId", DbType="nvarchar(100)")]
+		public string ReferenceId
+		{
+			get { return this._ReferenceId; }
+
+			set
+			{
+				if (this._ReferenceId != value)
+				{
+				
+                    this.OnReferenceIdChanging(value);
+					this.SendPropertyChanging();
+					this._ReferenceId = value;
+					this.SendPropertyChanged("ReferenceId");
+					this.OnReferenceIdChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="ReferenceIdType", UpdateCheck=UpdateCheck.Never, Storage="_ReferenceIdType", DbType="int")]
+		public int? ReferenceIdType
+		{
+			get { return this._ReferenceIdType; }
+
+			set
+			{
+				if (this._ReferenceIdType != value)
+				{
+				
+                    this.OnReferenceIdTypeChanging(value);
+					this.SendPropertyChanging();
+					this._ReferenceIdType = value;
+					this.SendPropertyChanged("ReferenceIdType");
+					this.OnReferenceIdTypeChanged();
 				}
 
 			}

@@ -1358,7 +1358,13 @@ namespace CmsData
 
 		}
 
-		public Table<MeetingExtra> MeetingExtras
+        public Table<MeetingCategory> MeetingCategories
+        {
+            get { return this.GetTable<MeetingCategory>(); }
+
+        }
+
+        public Table<MeetingExtra> MeetingExtras
 		{
 			get	{ return this.GetTable<MeetingExtra>(); }
 
@@ -3152,7 +3158,31 @@ namespace CmsData
                 );
 		}
 
-		[Function(Name="dbo.FindPerson", IsComposable = true)]
+        [Function(Name = "dbo.FindPersonByExtraValue", IsComposable = true)]
+        public IQueryable<View.FindPerson> FindPersonByExtraValue(
+            [Parameter(DbType = "nvarchar")] string key,
+            [Parameter(DbType = "nvarchar")] string value
+            )
+        {
+            return this.CreateMethodCallQuery<View.FindPerson>(this,
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                key,
+                value
+                );
+        }
+
+        [Function(Name = "dbo.FindPersonByEmail", IsComposable = true)]
+        public IQueryable<View.FindPerson> FindPersonByEmail(
+            [Parameter(DbType = "nvarchar")] string email
+            )
+        {
+            return this.CreateMethodCallQuery<View.FindPerson>(this,
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                email
+                );
+        }
+
+        [Function(Name="dbo.FindPerson", IsComposable = true)]
 		public IQueryable<View.FindPerson > FindPerson(
             [Parameter(DbType="nvarchar")] string first,
             [Parameter(DbType="nvarchar")] string last,
@@ -3170,7 +3200,7 @@ namespace CmsData
                 phone
                 );
 		}
-
+        
 		[Function(Name="dbo.FindPerson2", IsComposable = true)]
 		public IQueryable<View.FindPerson2 > FindPerson2(
             [Parameter(DbType="nvarchar")] string first,

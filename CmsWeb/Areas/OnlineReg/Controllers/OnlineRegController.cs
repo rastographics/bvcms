@@ -367,7 +367,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return;
             ErrorSignal.FromCurrentContext().Raise(filterContext.Exception);
             DbUtil.LogActivity("OnlineReg Error:" + filterContext.Exception.Message);
-            filterContext.Result = Message(filterContext.Exception.Message);
+            filterContext.Result = Message(filterContext.Exception.Message, filterContext.Exception.StackTrace);
             filterContext.ExceptionHandled = true;
         }
 

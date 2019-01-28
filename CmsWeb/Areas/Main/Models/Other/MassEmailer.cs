@@ -57,11 +57,12 @@ namespace CmsWeb.Areas.Main.Models
                         var re1 = new Regex(@"^(.*\b(?=\w))\b[A-Z0-9._%+-]+(?<=[^.])@[A-Z0-9._-]+\.[A-Z]{2,4}\b\b(?!\w)$", RegexOptions.IgnoreCase);
                         var re2 = new Regex(@"^[A-Z0-9._%+-]+(?<=[^.])@[A-Z0-9.-]+\.[A-Z]{2,4}$", RegexOptions.IgnoreCase);
 
-                        foreach (string s in CcAddressesString)
+                        foreach (string address in CcAddressesString)
                         {
+                            string s = address.Trim();
                             if (re1.IsMatch(s) || re2.IsMatch(s))
                             {
-                                CcAddresses.Add(new MailAddress(s.trim()));
+                                CcAddresses.Add(new MailAddress(s));
                             }
                         }
                     };

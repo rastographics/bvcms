@@ -18,7 +18,7 @@ namespace CmsWeb.Areas.Finance.Controllers
 
         [Route("~/Contributions/{id:int?}")]
         public ActionResult Index(int? id, int? year, int? fundId, DateTime? dt1, DateTime? dt2, int? campus, int? bundletype,
-            bool? includeunclosedbundles = true, int online = 2, string taxnontax = "TaxDed")
+            bool? includeunclosedbundles = true, int online = 2, string taxnontax = "TaxDed", string fundSet = null)
         {
             var api = new ContributionSearchInfo()
             {
@@ -33,6 +33,12 @@ namespace CmsWeb.Areas.Finance.Controllers
                 IncludeUnclosedBundles = includeunclosedbundles ?? false,
                 BundleType = bundletype
             };
+
+            // Only setting it like this for debug purpose
+            if (fundSet != null)
+            {
+                api.FundSet = fundSet;
+            }
             var m = new ContributionSearchModel(api);
             return View(m);
         }

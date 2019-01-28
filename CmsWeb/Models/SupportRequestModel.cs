@@ -114,7 +114,7 @@ $@"<b>Request ID: {id}</b><br>
                 var ccs = Cc.Split(',');
                 foreach (var addcc in ccs)
                 {
-                    var email = addcc.trim();
+                    var email = addcc.Trim();
                     if (Util.ValidEmail(email))
                     {
                         msg.CC.Add(email);
@@ -190,7 +190,7 @@ $@"<b>Request ID: {id}</b><br>
                     {
                         if (Util.ValidEmail(addcc))
                         {
-                            _ccAddrs.Add($"\"{addcc.trim()}\"");
+                            _ccAddrs.Add($"\"{addcc.Trim()}\"");
                         }
                     }
                     catch (FormatException)

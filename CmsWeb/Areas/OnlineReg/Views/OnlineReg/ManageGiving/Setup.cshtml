@@ -3,15 +3,19 @@
 @using CmsData.Finance
 @using CmsWeb
 @using UtilityExtensions
+@using System.Configuration;
 @{
     ViewBag.Title = "Online Registration";
     Layout = "~/Views/Shared/onlinereg2.cshtml";
     var funame = Html.NameFor2(m => m.FundItem);
     decimal? tot = 0;
+    var db = DbUtil.Db;
     var peopleId = Model.person.PeopleId;
     var funds = CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel.FundList();
     var specialFunds = CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel.SpecialFundList();
-    var debitcredit = DbUtil.Db.Setting("DebitCreditLabel", "Debit/Credit Card");
+    var debitcredit = db.Setting("DebitCreditLabel", "Debit/Credit Card");
+    var recaptchaSiteKey = db.Setting("googleReCaptchaSiteKey", ConfigurationManager.AppSettings["googleReCaptchaSiteKey"]);
+    var useRecaptcha = db.Setting("UseRecaptchaForManageGiving") && recaptchaSiteKey.HasValue();
 }
 @section head
 {
@@ -23,12 +27,15 @@
 {
   @Fingerprint.Script("/Content/touchpoint/js/onlinereg/bootstrap-datepicker.js")
   <script type="text/javascript">
-    $.dtoptions = { format: '@Util.jQueryDateFormat2' };
+      $.dtoptions = { format: '@Util.jQueryDateFormat2' };
+      function recaptcha_callback(token) {
+          document.getElementById("managegivingform").submit();
+      }
   </script>
-  @Fingerprint.Script("/Content")
   @Fingerprint.Script("/Content/touchpoint/js/onlinereg/OnlineReg2.js")
   @Fingerprint.Script("/Content/touchpoint/js/onlinereg/onlineregpayment2.js")
   @Fingerprint.Script("/Content/touchpoint/lib/select2/js/select2.min.js")
+  @ViewExtensions2.GoogleReCaptcha()
 }
 
 <div class="regform">
@@ -224,6 +231,14 @@
             <input type="hidden" id="hdnExpiresOnFile" data-value="@Request.RequestContext.HttpContext.Session["ExpiresOnFile"]" />
         </div>
       }
+        @if (useRecaptcha) {
+            <div class="g-recaptcha"
+                 data-sitekey="@recaptchaSiteKey"
+                 data-callback="recaptcha_callback"
+                 data-size="invisible">
+            </div>
+        }
+        <input type="hidden" id="useRecaptcha" value="@useRecaptcha" />
       @if (Model.NoEChecksAllowed == false)
       {
         <div class="Bank paymentinfo">

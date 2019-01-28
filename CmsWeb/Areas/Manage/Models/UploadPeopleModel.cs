@@ -349,14 +349,14 @@ namespace CmsWeb.Models
                 string type = null;
                 if (!Evtypes.TryGetValue(name, out type))
                 {
-                    p.AddEditExtraCode(name, Util.trim(a[name]));
+                    p.AddEditExtraCode(name, ((string)a[name])?.Trim());
                     continue;
                 }
 
                 switch (type)
                 {
                     case "fam":
-                        p.Family.AddEditExtraCode(name, Util.trim(a[name]));
+                        p.Family.AddEditExtraCode(name, ((string)a[name])?.Trim());
                         break;
                     case "txt":
                         p.AddEditExtraText(name, $"id-{a[name]}");
@@ -368,7 +368,7 @@ namespace CmsWeb.Models
                             continue;
                         }
 
-                        var d = ((string)a[name])?.Trim()?.Trim();
+                        var d = ((string)a[name])?.Trim();
                         if (!d.HasValue())
                         {
                             continue;
@@ -677,7 +677,7 @@ namespace CmsWeb.Models
 
         internal string GetStringTrimmed(object o)
         {
-            return GetString(o)?.trim();
+            return GetString(o)?.Trim();
         }
 
         internal int? GetInt(object o)
@@ -710,7 +710,7 @@ namespace CmsWeb.Models
         internal int Gender(object o)
         {
             var s = o as string;
-            s = s.trim()?.ToLower();
+            s = s?.Trim()?.ToLower();
             switch (s)
             {
                 case "male":
@@ -732,7 +732,7 @@ namespace CmsWeb.Models
         internal int getMaritalId(object o)
         {
             var s = o as string;
-            s = s.trim()?.ToLower();
+            s = s?.Trim()?.ToLower();
             int? a = (from m in JobDbContext.MaritalStatuses
                       where m.Description == s
                       select m.Id).SingleOrDefault();
@@ -742,14 +742,14 @@ namespace CmsWeb.Models
         internal string Title(object o)
         {
             var s = o as string;
-            s = s.trim()?.ToLower();
+            s = s?.Trim()?.ToLower();
             return !s.HasValue() ? s : s.Truncate(10).TrimEnd();
         }
 
         internal int Position(object o)
         {
             var s = o as string;
-            s = s.trim()?.ToLower();
+            s = s?.Trim()?.ToLower();
             switch (s)
             {
                 case "primary":
@@ -771,7 +771,7 @@ namespace CmsWeb.Models
                 return null;
             }
 
-            s = s.trim().ToLower();
+            s = s.Trim().ToLower();
             int i;
             if (!Campuses.TryGetValue(s, out i))
             {

@@ -343,12 +343,11 @@ namespace CmsData.API
                             ret.Add(i);
                 }
                 var id = matchResult.Groups["id"].Value;
-                if (id.HasValue())
+                if (id.HasValue()) {
                     ret.Add(id.ToInt());
+                }
                 matchResult = matchResult.NextMatch();
             }
-            if (ret.Count == 0)
-                return null;
             return ret;
         }
         public static List<int> GetCustomStatementsList(CMSDataContext db, string name)
@@ -376,8 +375,10 @@ namespace CmsData.API
         }
         public static List<int> GetCustomFundSetList(CMSDataContext db, string name)
         {
-            if (name == "all")
+            if (name == "all" || name == "(not specified)")
+            {
                 return null;
+            }
             var xd = XDocument.Parse(Util.PickFirst(db.ContentOfTypeText("CustomFundSets"), "<CustomFundSets/>"));
             var funds = xd.XPathSelectElement($"//FundSet[@description=\"{name}\"]/Funds")?.Value ?? "";
             if (!funds.HasValue())

@@ -18,6 +18,7 @@ namespace CmsWeb.Areas.People.Models
     {
         private bool? canViewComments;
         private string _incomplete;
+        private string _limitToRole;
 
         [NoUpdate]
         public int ContactId { get; set; }
@@ -36,7 +37,10 @@ namespace CmsWeb.Areas.People.Models
 
         [UIHint("TextArea")]
         public string Comments { get; set; }
-        public string LimitToRole { get; set; }
+        public string LimitToRole {
+            get { return _limitToRole; }            
+            set { _limitToRole = value?.Trim(); }
+        }
 
         public CodeInfo ContactType { get; set; }
         public CodeInfo ContactReason { get; set; }
@@ -48,7 +52,7 @@ namespace CmsWeb.Areas.People.Models
 
         public IEnumerable<SelectListItem> Roles()
         {
-            var roles = DbUtil.Db.Setting("LimitToRolesForContacts", "").SplitStr(",").Where(rr => rr.HasValue()).ToArray();
+            var roles = DbUtil.Db.Setting("LimitToRolesForContacts", "").Trim().SplitStr(",").Where(rr => rr.HasValue()).ToArray();
             if (roles.Length == 0)
             {
                 roles = DbUtil.Db.Roles.OrderBy(r => r.RoleName).Select(r => r.RoleName).ToArray();
@@ -56,12 +60,17 @@ namespace CmsWeb.Areas.People.Models
 
             var list = roles.Select(rolename => new SelectListItem
             {
-                Value = rolename,
-                Text = rolename,
+                Value = rolename?.Trim(),
+                Text = rolename?.Trim(),
                 Selected = !string.IsNullOrWhiteSpace(LimitToRole) && LimitToRole == rolename
             }).ToList();
 
-            list.Insert(0, new SelectListItem { Value = "0", Text = "(not specified)", Selected = true });
+            var roleSelected = false;
+            foreach (SelectListItem i in list)
+            {
+                roleSelected = i.Selected ? true : roleSelected;
+            }
+            list.Insert(0, new SelectListItem { Value = "0", Text = "(not specified)", Selected = roleSelected ? false : true });
             return list;
         }
 

@@ -42,7 +42,7 @@ namespace CmsWeb.MobileAPI
             {
                 First = first,
                 Last = last,
-                Email = email.trim(),
+                Email = email?.Trim(),
                 Phone = phone.GetDigits()
             };
             DateTime bd;
