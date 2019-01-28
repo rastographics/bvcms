@@ -392,6 +392,11 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
 
             SetHeaders(m);
+            if (m.MissionTripCost == null)
+            {
+                // goer specified isn't part of this trip
+                return new HttpNotFoundResult();
+            }
             if (Util.UserPeopleId == goerid)
             {
                 return View("Giving/Goer", m);
