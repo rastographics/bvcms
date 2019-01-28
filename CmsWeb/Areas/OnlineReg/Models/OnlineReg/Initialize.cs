@@ -32,19 +32,21 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
 
             // prepare supporter data
-            OrganizationMember OrgMember = CurrentDatabase.OrganizationMembers.Single(mm => mm.OrganizationId == org.OrganizationId && mm.PeopleId == Goer.PeopleId);
-            var transactions = new TransactionsModel(OrgMember.TranId) { GoerId = Goer.PeopleId };
-            var summaries = CurrentDatabase.ViewTransactionSummaries.SingleOrDefault(ts => ts.RegId == OrgMember.TranId && ts.PeopleId == Goer.PeopleId && ts.OrganizationId == org.OrganizationId);
-            Supporters = transactions.Supporters().Where(s => s.OrgId == org.OrganizationId).ToArray();
-
-            // prepare funding data
-            decimal? AmtFee = summaries.IndPaid + summaries.IndDue;
-            //decimal? AmtDonation = summaries.IndAmt - AmtFee;
-            //decimal? AmtCoupon = summaries.TotCoupon;
-            decimal? AmtPaid = OrgMember.AmountPaidTransactions(CurrentDatabase);
-            //decimal? AmtDue = OrgMember.AmountDueTransactions(CurrentDatabase);
-            MissionTripCost = AmtFee;
-            MissionTripRaised = AmtPaid;
+            OrganizationMember OrgMember = CurrentDatabase.OrganizationMembers.SingleOrDefault(mm => mm.OrganizationId == org.OrganizationId && mm.PeopleId == Goer.PeopleId);
+            if (OrgMember != null)
+            {
+                var transactions = new TransactionsModel(OrgMember.TranId) { GoerId = Goer.PeopleId };
+                var summaries = CurrentDatabase.ViewTransactionSummaries.SingleOrDefault(ts => ts.RegId == OrgMember.TranId && ts.PeopleId == Goer.PeopleId && ts.OrganizationId == org.OrganizationId);
+                Supporters = transactions.Supporters().Where(s => s.OrgId == org.OrganizationId).ToArray();
+                // prepare funding data
+                decimal? AmtFee = summaries.IndPaid + summaries.IndDue;
+                //decimal? AmtDonation = summaries.IndAmt - AmtFee;
+                //decimal? AmtCoupon = summaries.TotCoupon;
+                decimal? AmtPaid = OrgMember.AmountPaidTransactions(CurrentDatabase);
+                //decimal? AmtDue = OrgMember.AmountDueTransactions(CurrentDatabase);
+                MissionTripCost = AmtFee;
+                MissionTripRaised = AmtPaid;
+            }
 
             // prepare date data
             if (org.FirstMeetingDate.HasValue && org.LastMeetingDate.HasValue)

@@ -341,6 +341,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     url += "&showfamily=true";
                 }
 
+                if (linktype[0].Equal("supportlink") && q.org.TripFundingPagesEnable && q.org.TripFundingPagesPublic)
+                {
+                    url = $"/OnlineReg/{li.oid}/Giving/?gsid={gsid}";
+                }
                 return Redirect(url);
             }
             catch (Exception ex)
@@ -414,7 +418,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
                 DbUtil.LogActivity($"{sendlinkSTR}{confirmSTR}", li.oid, li.pid);
 
-                var expires = DateTime.Now.AddMinutes(DbUtil.Db.Setting("SendlinkExpireMintues", "30").ToInt());
+                var expires = DateTime.Now.AddMinutes(DbUtil.Db.Setting("SendlinkExpireMinutes", "30").ToInt());
+                string action = (linktype.Contains("supportlink") ? "support" : "register for");
+                string minutes = DbUtil.Db.Setting("SendLinkExpireMinutes", "30");
                 var c = DbUtil.Content("SendLinkMessage");
                 if (c == null)
                 {
@@ -423,9 +429,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                         Name = "SendLinkMessage",
                         Title = "Your Link for {org}",
                         Body = @"
-<p>Here is your temporary <a href='{url}'>LINK</a> to register for {org}.</p>
+<p>Here is your temporary <a href='{url}'>LINK</a> to {action} {org}.</p>
 
-<p>This link will expire at {time} (30 minutes).
+<p>This link will expire at {time} ({minutes} minutes).
 You may request another link by clicking the link in the original email you received.</p>
 
 <p>Note: If you did not request this link, please ignore this email,
@@ -441,6 +447,8 @@ or contact the church if you need help.</p>
                 var msg = c.Body.Replace("{org}", q.org.OrganizationName)
                     .Replace("{time}", expires.ToString("f"))
                     .Replace("{url}", url)
+                    .Replace("{action}", action)
+                    .Replace("{minutes}", minutes)
                     .Replace("%7Burl%7D", url);
 
                 var NotifyIds = DbUtil.Db.StaffPeopleForOrg(q.org.OrganizationId);

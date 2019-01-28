@@ -27,7 +27,7 @@
             <h4>Goal met!</h4>
             <progress value="100" max="100"></progress>
         }
-        @if (Model.Supporters.Any())
+        @if (Model.Supporters != null && Model.Supporters.Any())
         {
             <h3>Your Supporters</h3>
             foreach (TransactionsModel.SupporterInfo supporter in @Model.Supporters)
@@ -47,8 +47,24 @@
         {
             <h5>No supporters yet</h5>
         }
-        <h5>Get more supporters! Share:</h5>
-        <p>Or copy this link:</p>
-        <input type="text" value="@Model.URL" readonly />
+
+        @if (Model.org.TripFundingPagesPublic)
+        {
+            <h5>Get more supporters! Share:</h5>
+            <a href="https://www.facebook.com/share.php?u=@WebUtility.UrlEncode(Model.URL)&amp;t=@WebUtility.UrlEncode(Model.Goer.Name)'s Fundraising for @Model.org.OrganizationName" target="_blank" onclick="popup(this.href); return false;"><i class="fa fa-facebook-square fa-2x" style="color: #3B5998;"></i></a>
+            <a href="https://www.twitter.com/share?url=@WebUtility.UrlEncode(Model.URL)&amp;text=@WebUtility.UrlEncode(Model.Goer.Name)'s Fundraising for @Model.org.OrganizationName" target="_blank" onclick="popup(this.href); return false;"><i class="fa fa-twitter-square fa-2x" style="color: #00ACED;"></i></a>
+            <p>Or copy this link:</p>
+            <input type="text" value="@Model.URL" readonly />
+        }
     </div>
 </div>
+
+<script lang="text/javascript">
+var new_window;
+function popup(url) {
+	new_window=window.open(url,'Share','menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=500,width=500');
+    if (window.focus) {
+        new_window.focus();
+    }
+}
+</script>

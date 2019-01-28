@@ -27,33 +27,44 @@
             <h4>Goal met!</h4>
             <progress value="100" max="100"></progress>
         }
-        @if (Model.Supporters.Any())
+
+        <h4><strong>Share</strong></h4>
+        <a href="https://www.facebook.com/share.php?u=@WebUtility.UrlEncode(Model.URL)&amp;t=@WebUtility.UrlEncode(Model.Goer.Name)'s Fundraising for @Model.org.OrganizationName" target="_blank" onclick="popup(this.href); return false;"><i class="fa fa-facebook-square fa-2x" style="color: #3B5998;"></i></a>
+        <a href="https://www.twitter.com/share?url=@WebUtility.UrlEncode(Model.URL)&amp;text=@WebUtility.UrlEncode(Model.Goer.Name)'s Fundraising for @Model.org.OrganizationName" target="_blank" onclick="popup(this.href); return false;"><i class="fa fa-twitter-square fa-2x" style="color: #00ACED;"></i></a>
+
+        @if (Model.Supporters != null && Model.Supporters.Any())
         {
             <h3>Recent Supporters</h3>
             foreach (TransactionsModel.SupporterInfo supporter in @Model.Supporters)
             {
-            <div class="row">
-                @if (Model.org.TripFundingPagesShowAmounts)
-                {
-                    <div class="col-xs-8">
-                        <span>@supporter.SupporterName</span>
-                    </div>
-                    <div class="col-xs-4">
-                        <span class="amount">@NumberFormatInfo.CurrentInfo.CurrencySymbol@supporter.gs.Amount.ToString2("N")</span>
-                    </div>
-                }
-                else
-                {
-                    <div class="col-xs-12">
-                        <span>@supporter.SupporterName</span>
-                    </div>
-                }
-            </div>
+                <div class="row">
+                    @if (Model.org.TripFundingPagesShowAmounts)
+                    {
+                        <div class="col-xs-8">
+                            <span>@supporter.SupporterName</span>
+                        </div>
+                        <div class="col-xs-4">
+                            <span class="amount">@NumberFormatInfo.CurrentInfo.CurrencySymbol@supporter.gs.Amount.ToString2("N")</span>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-xs-12">
+                            <span>@supporter.SupporterName</span>
+                        </div>
+                    }
+                </div>
             }
-        }
-        else
-        {
-            <h5>No supporters yet</h5>
         }
     </div>
 </div>
+
+<script lang="text/javascript">
+    var new_window;
+    function popup(url) {
+        new_window = window.open(url, 'Share', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=500,width=500');
+        if (window.focus) {
+            new_window.focus();
+        }
+    }
+</script>
