@@ -39,13 +39,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 var summaries = CurrentDatabase.ViewTransactionSummaries.SingleOrDefault(ts => ts.RegId == OrgMember.TranId && ts.PeopleId == Goer.PeopleId && ts.OrganizationId == org.OrganizationId);
                 Supporters = transactions.Supporters().Where(s => s.OrgId == org.OrganizationId).ToArray();
                 // prepare funding data
-                decimal? AmtFee = summaries.IndPaid + summaries.IndDue;
-                //decimal? AmtDonation = summaries.IndAmt - AmtFee;
-                //decimal? AmtCoupon = summaries.TotCoupon;
-                decimal? AmtPaid = OrgMember.AmountPaidTransactions(CurrentDatabase);
-                //decimal? AmtDue = OrgMember.AmountDueTransactions(CurrentDatabase);
-                MissionTripCost = AmtFee;
-                MissionTripRaised = AmtPaid;
+                MissionTripCost = summaries.IndPaid + summaries.IndDue;
+                MissionTripRaised = OrgMember.AmountPaidTransactions(CurrentDatabase);
             }
 
             // prepare date data

@@ -56,21 +56,24 @@ namespace UtilityExtensions
         {
             // Ensure that start date is not after the end date
             if (endDate < startDate)
+            {
                 endDate = startDate;
+            }
 
             // Special handling for events that end at midnight
-            if (TreatMidnightAsSameDay &&
-                endDate.TimeOfDay.Ticks == 0 &&
-                startDate.Date < endDate.Date)
+            if (TreatMidnightAsSameDay && endDate.TimeOfDay.Ticks == 0 && startDate.Date < endDate.Date)
+            {
                 endDate = endDate.AddDays(-1);
+            }
 
             string result;
             if (startDate.Date == endDate.Date)
             {
-                result = FormatDateTime(startDate,
-                    DateTimeParts.Day | DateTimeParts.Month | DateTimeParts.Year);
+                result = FormatDateTime(startDate, DateTimeParts.Day | DateTimeParts.Month | DateTimeParts.Year);
                 if (ShowTime)
+                {
                     result += " {0} - {1}";
+                }
             }
             else
             {
@@ -111,20 +114,31 @@ namespace UtilityExtensions
             StringBuilder sb = new StringBuilder();
 
             if (parts.HasFlag(DateTimeParts.Day) && ShowDayOfWeek)
+            {
                 sb.Append(parts.HasFlag(DateTimeParts.Month) ? "dddd, " : "dddd ");
+            }
             if (parts.HasFlag(DateTimeParts.Day))
             {
                 if (parts.HasFlag(DateTimeParts.Month))
                 {
                     if (UseDayMonthFormat)
+                    {
                         sb.Append(UseFullMonthName ? "d MMMM" : "d MMM");
+                    }
                     else
+                    {
                         sb.Append(UseFullMonthName ? "MMMM d" : "MMM d");
+                    }
                 }
-                else sb.Append("%d");
+                else
+                {
+                    sb.Append("%d");
+                }
             }
             if (parts.HasFlag(DateTimeParts.Year))
+            {
                 sb.Append(UseDayMonthFormat ? " yyyy" : ", yyyy");
+            }
             return dt.ToString(sb.ToString());
         }
     }

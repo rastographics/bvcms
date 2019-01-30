@@ -106,7 +106,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             var m = new OnlineRegModel(Request, CurrentDatabase, pf.OrgId, pf.testing, null, null, pf.source)
             {
-                URL = $"/OnePageGiving/{pf.OrgId};
+                URL = $"/OnePageGiving/{pf.OrgId}"
             };
 
             var pid = Util.UserPeopleId;

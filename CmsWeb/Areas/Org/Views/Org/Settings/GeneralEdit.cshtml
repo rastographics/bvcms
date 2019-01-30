@@ -49,22 +49,22 @@
     <h4>Mission Trip Settings</h4>
     <div class="well">
         <div class="row">
-            <div class="col-sm-4 col-md-4">
+            <div class="col-sm-4">
                 <label class="checkbox-inline control-label">
                     @Html.CheckBoxFor(m => m.IsMissionTrip) Is mission trip
                 </label>
             </div>
-            <div class="col-sm-4 col-md-4">
+            <div class="col-sm-4">
                 <label class="checkbox-inline control-label">
                     @Html.CheckBoxFor(m => m.TripFundingPagesEnable) Enable funding page for goers
                 </label>
             </div>
-            <div class="col-sm-4 col-md-4">
+            <div class="col-sm-4">
                 <label class="checkbox-inline control-label">
                     @Html.CheckBoxFor(m => m.TripFundingPagesPublic) Make participants funding pages public for anyone who has the link
                 </label>
             </div>
-            <div class="col-sm-4 col-md-4">
+            <div class="col-sm-4">
                 <label class="checkbox-inline control-label">
                     @Html.CheckBoxFor(m => m.TripFundingPagesShowAmounts) Show amounts given on public funding pages
                 </label>
@@ -87,7 +87,7 @@
             {
                 @Html.Hidden("LimitToRole.Value", Model.LimitToRole?.Value)
             }
-            <div class="col-sm-12 col-md-12">
+            <div class="col-sm-12">
                 <label class="checkbox-inline control-label">
                     @Html.CheckBoxFor(m => m.NoCreditCards) No credit cards
                 </label>
