@@ -201,8 +201,9 @@ namespace CmsWeb.Models
             if (UseMailFlags)
             {
                 q1 = from p in q
-                         // exclude wife who has a husband who is already in the list
-                     where !(p.GenderId == 2 && p.SpouseId != null && q.Any(pp => pp.PeopleId == p.SpouseId))
+                         // exclude person who has a partner who is already in the list and with different PeopleID.
+                     where !(p.SpouseId != null && q.Any(pp => pp.PeopleId == p.SpouseId && pp.PeopleId < p.PeopleId)
+                        )
                      where (p.PrimaryBadAddrFlag ?? 0) == 0
                      where p.DoNotMailFlag == false
                      select p;
@@ -210,8 +211,8 @@ namespace CmsWeb.Models
             else
             {
                 q1 = from p in q
-                         // exclude wife who has a husband who is already in the list
-                     where !(p.GenderId == 2 && p.SpouseId != null && q.Any(pp => pp.PeopleId == p.SpouseId))
+                         // exclude person who has a partner who is already in the list and with different PeopleID.
+                     where !(p.SpouseId != null && q.Any(pp => pp.PeopleId == p.SpouseId && pp.PeopleId < p.PeopleId))
                      select p;
             }
 
