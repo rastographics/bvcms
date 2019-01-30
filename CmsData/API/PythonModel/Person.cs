@@ -369,5 +369,24 @@ namespace CmsData
                 return null;
             }
         }
+        public int? FindPersonId(dynamic fullName, dynamic dob, dynamic email, dynamic phone)
+        {
+            string digits = (string)phone;
+            string first = null, last = null;
+            Util.NameSplit(fullName, out first, out last);
+            return FindPersonId(first, last, dob, email, phone);
+        }
+        public int? FindPersonIdExtraValue(string extraKey, string extraValue)
+        {
+            var list = db.FindPersonByExtraValue((string)extraKey, (string)extraValue).ToList();
+            if (list.Count > 0)
+            {
+                return list[0].PeopleId ?? 0;
+            }
+            else
+            {
+                return null;
+            }
+        }
     }
 }

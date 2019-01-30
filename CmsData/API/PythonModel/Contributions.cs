@@ -68,7 +68,33 @@ namespace CmsData
         {
             return db.FetchOrCreateFund(description);
         }
+        public int ResolveFundId(string fundName)
+        {
+            var fund = ResolveFund(fundName);
+            return fund.IsNotNull() ? fund.FundId : FirstFundId();
+        }
+        private ContributionFund ResolveFund(string name)
+        {
+            // take a pushpay fund and find or create a touchpoint fund
+            IQueryable<ContributionFund> funds = db.ContributionFunds.AsQueryable();
 
+            var result = from f in funds
+                         where f.FundName == name
+                         where f.FundStatusId > 0
+                         orderby f.FundStatusId
+                         orderby f.FundId descending
+                         select f;
+            if (result.Any())
+            {
+                int id = result.Select(f => f.FundId).First();
+                return db.ContributionFunds.SingleOrDefault(f => f.FundId == id);
+            }
+            else
+            {
+                return null;
+                
+            }
+        }
         public void MoveFundIdToExistingFundId(int fromid, int toid, string name = null)
         {
             var oldfund = db.ContributionFunds.Single(ff => ff.FundId == fromid);
