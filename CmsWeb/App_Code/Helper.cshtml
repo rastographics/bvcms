@@ -1,8 +1,10 @@
 ﻿@using System.Web.Mvc
 @using UtilityExtensions
+@using System.Globalization
+
 @helper AnchorLink(string text, string href, string id = null, string target = null, string style = null)
 {
-  <a href="@href" @(target.HasValue() ? "target=" + target : "") @(id.HasValue() ? "id=" + id : "") @(style.HasValue() ? "class=" + style : "")>@text</a>
+    <a href="@href" @(target.HasValue() ? "target=" + target : "") @(id.HasValue() ? "id=" + id : "") @(style.HasValue() ? "class=" + style : "")>@text</a>
 }
 @helper AnchorLinkIcon(string text, string icon, string href, string id = null, string target = null, string style = null)
 {
@@ -24,114 +26,144 @@
 }
 @helper LiHeader(string text, bool display = true)
 {
-  if (display)
-  {
-    if (text.HasValue())
+    if (display)
     {
-      <li class="header">@text</li>
+        if (text.HasValue())
+        {
+            <li class="header">@text</li>
+        }
+        else
+        {
+            <li class="lispace">&nbsp;</li>
+        }
     }
-    else
-    {
-      <li class="lispace">&nbsp;</li>
-    }
-  }
 }
 @helper JQueryIdLink(string text, string id)
 {
-  <a id="@id" href="#">@text</a>
+    <a id="@id" href="#">@text</a>
 }
 @helper JQueryIdLink(string text, string id, string data)
 {
-  <a id="@id" data-item="@data">@text</a>
+    <a id="@id" data-item="@data">@text</a>
 }
 @helper LiJQueryIdLink(string text, string id, bool display = true)
 {
-  if (display)
-  {
-    <li><a id="@id" href="#">@text</a></li>
-  }
+    if (display)
+    {
+        <li><a id="@id" href="#">@text</a></li>
+    }
 }
 @helper ButtonLink(string text, string href, string target = null)
 {
-  if (target.HasValue())
-  {
-    <a href="@href" target="@target">@text</a>
-  }
-  else
-  {
-    <a href="@href">@text</a>
-  }
+    if (target.HasValue())
+    {
+        <a href="@href" target="@target">@text</a>
+    }
+    else
+    {
+        <a href="@href">@text</a>
+    }
 }
 @helper OnlineRegSubmitButtonRow(string text, bool onlyoneallowed = false, string style = "")
 {
-  <div class="form-group">
-    <div class="col-sm-12">
-      @Helper.OnlineRegSubmitButton(text, onlyoneallowed, style: "btn-primary pull-right " + style)
+    <div class="form-group">
+        <div class="col-sm-12">
+            @Helper.OnlineRegSubmitButton(text, onlyoneallowed, style: "btn-primary pull-right " + style)
+        </div>
     </div>
-  </div>
 }
 @helper OnlineRegSubmitButton(string text, bool onlyoneallowed = false, string style = "btn-primary")
 {
-  <input type="submit" id="submitit" @(onlyoneallowed ? "data-onlyoneallowed=true" : "") class="btn @style" value="@text" />
+    <input type="submit" id="submitit" @(onlyoneallowed ? "data-onlyoneallowed=true" : "") class="btn @style" value="@text" />
 }
 @helper OnlineRegSubmitLinkRow(string url, string text, string style = "btn-primary")
 {
-  <div class="form-group">
-    <div class="col-sm-offset-3 col-sm-9">
-      <a href="@url" class="btn @style submitlink">
-        @text
-      </a>
+    <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-9">
+            <a href="@url" class="btn @style submitlink">
+                @text
+            </a>
+        </div>
     </div>
-  </div>
 }
 
 @helper OnlineRegAjaxButtonRow(string url, string text, string style = "btn-primary", string id = "")
 {
-  <div class="form-group">
-    <div class="col-sm-offset-3 col-sm-9">
-      @OnlineRegAjaxButton(url, text, style, id)
+    <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-9">
+            @OnlineRegAjaxButton(url, text, style, id)
+        </div>
     </div>
-  </div>
 }
 
 @helper OnlineRegAjaxButton(string url, string text, string style = "btn-primary", string id = "")
 {
-  <a @(id.HasValue() ? "id=" + id : "") href="@url" class="btn @style submitbutton ajax">
-    @text
-  </a>
+    <a @(id.HasValue() ? "id=" + id : "") href="@url" class="btn @style submitbutton ajax">
+        @text
+    </a>
 }
 @helper OnlineRegHeaderFullRow(string text, string style = null)
 {
-  <div class="form-group">
-    <div class="col-sm-12">
-      <h4 class="form-control-static @style">@text</h4>
+    <div class="form-group">
+        <div class="col-sm-12">
+            <h4 class="form-control-static @style">@text</h4>
+        </div>
     </div>
-  </div>
 }
 @helper OnlineRegHeader(string text)
 {
-  <div class="form-group">
-    <div class="col-sm-offset-3 col-sm-9">
-      <p class="form-control-static">
-        <strong>@MvcHtmlString.Create(text)</strong>
-      </p>
+    <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-9">
+            <p class="form-control-static">
+                <strong>@MvcHtmlString.Create(text)</strong>
+            </p>
+        </div>
     </div>
-  </div>
 
 }
 @helper OnlineRegInstruction(string text)
 {
-  <div class="form-group">
-    <div class="col-sm-12">
-      <p class="bg-info pad10">
-        <strong>@MvcHtmlString.Create(text)</strong>
-      </p>
+    <div class="form-group">
+        <div class="col-sm-12">
+            <p class="bg-info pad10">
+                <strong>@MvcHtmlString.Create(text)</strong>
+            </p>
+        </div>
     </div>
-  </div>
 }
 @helper HiddenId(string name, int? id)
 {
-  <form class="ajax">
-    <input type="hidden" name="@name" value="@id" />
-  </form>
+    <form class="ajax">
+        <input type="hidden" name="@name" value="@id" />
+    </form>
 }
+
+@helper CurrencyString(decimal? amount = 0)
+{
+    @NumberFormatInfo.CurrentInfo.CurrencySymbol@amount.ToString2("N")
+}
+
+
+@helper SocialShareButtons(string url, string title)
+{
+    <a href="https://www.facebook.com/share.php?u=@WebUtility.UrlEncode(url)&amp;t=@WebUtility.UrlEncode(title)" target="_blank" onclick="popup(this.href); return false;">
+        <i class="fa fa-facebook-square fa-2x" style="color: #3B5998;"></i>
+    </a>
+    <a href="https://www.twitter.com/share?url=@WebUtility.UrlEncode(url)&amp;text=@WebUtility.UrlEncode(title)" target="_blank" onclick="popup(this.href); return false;">
+        <i class="fa fa-twitter-square fa-2x" style="color: #00ACED;"></i>
+    </a>
+}
+
+@helper SocialButtonPopupScript()
+{
+    <script lang="text/javascript">
+        var new_window;
+        function popup(url) {
+            new_window = window.open(url, 'Share', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=500,width=500');
+            if (window.focus) {
+                new_window.focus();
+            }
+        }
+    </script>
+}
+

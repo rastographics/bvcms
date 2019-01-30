@@ -1,7 +1,5 @@
-@using System.Globalization
 @using UtilityExtensions
 @using CmsWeb.Models
-@using CmsWeb.Areas.Dialog.Models
 @model CmsWeb.Areas.OnlineReg.Models.OnlineRegModel
 @{
     Layout = "~/Views/Shared/onlinereg2.cshtml";
@@ -18,7 +16,7 @@
         <h3>Support @Model.Goer.Name's goal</h3>
         @if (Model.MissionTripRaised < Model.MissionTripCost)
         {
-            <h5 class="amount"><strong>@NumberFormatInfo.CurrentInfo.CurrencySymbol@Model.MissionTripRaised.ToString2("N")</strong> raised of <strong>@NumberFormatInfo.CurrentInfo.CurrencySymbol@Model.MissionTripCost.ToString2("N")</strong> goal</h5>
+            <h5 class="amount"><strong>@Helper.CurrencyString(Model.MissionTripRaised)</strong> raised of <strong>@Helper.CurrencyString(Model.MissionTripCost)</strong> goal</h5>
             <progress value="@Model.MissionTripRaised" max="@Model.MissionTripCost" style="display: block;width:100%;"></progress>
             <a style="display:block;width:100%;margin:12px 0;" class="btn btn-primary btn-sm" href="/OnlineReg/@Model.org.OrganizationId?goerid=@Model.GoerId">Donate</a>
         }
@@ -29,8 +27,8 @@
         }
 
         <h4><strong>Share</strong></h4>
-        <a href="https://www.facebook.com/share.php?u=@WebUtility.UrlEncode(Model.URL)&amp;t=@WebUtility.UrlEncode(Model.Goer.Name)'s Fundraising for @Model.org.OrganizationName" target="_blank" onclick="popup(this.href); return false;"><i class="fa fa-facebook-square fa-2x" style="color: #3B5998;"></i></a>
-        <a href="https://www.twitter.com/share?url=@WebUtility.UrlEncode(Model.URL)&amp;text=@WebUtility.UrlEncode(Model.Goer.Name)'s Fundraising for @Model.org.OrganizationName" target="_blank" onclick="popup(this.href); return false;"><i class="fa fa-twitter-square fa-2x" style="color: #00ACED;"></i></a>
+
+        @Helper.SocialShareButtons(Model.URL, $"{Model.Goer.Name}'s Fundraising for {Model.org.OrganizationName}")
 
         @if (Model.Supporters != null && Model.Supporters.Any())
         {
@@ -44,7 +42,7 @@
                             <span>@supporter.SupporterName</span>
                         </div>
                         <div class="col-xs-4">
-                            <span class="amount">@NumberFormatInfo.CurrentInfo.CurrencySymbol@supporter.gs.Amount.ToString2("N")</span>
+                            <span class="amount">@Helper.CurrencyString(supporter.gs.Amount)</span>
                         </div>
                     }
                     else
@@ -59,12 +57,4 @@
     </div>
 </div>
 
-<script lang="text/javascript">
-    var new_window;
-    function popup(url) {
-        new_window = window.open(url, 'Share', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=500,width=500');
-        if (window.focus) {
-            new_window.focus();
-        }
-    }
-</script>
+@Helper.SocialButtonPopupScript()

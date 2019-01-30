@@ -1,4 +1,3 @@
-@using System.Globalization
 @using UtilityExtensions
 @using CmsWeb.Models
 @using CmsWeb.Areas.Dialog.Models
@@ -18,7 +17,7 @@
         <h3>@Model.Goer.Name's Fundraising</h3>
         @if (Model.MissionTripRaised < Model.MissionTripCost)
         {
-            <h5 class="amount">@NumberFormatInfo.CurrentInfo.CurrencySymbol@Model.MissionTripRaised.ToString2("N") / @NumberFormatInfo.CurrentInfo.CurrencySymbol@Model.MissionTripCost.ToString2("N")</h5>
+            <h5 class="amount"><strong>@Helper.CurrencyString(Model.MissionTripRaised)</strong> raised of <strong>@Helper.CurrencyString(Model.MissionTripCost)</strong> goal</h5>
             <progress value="@Model.MissionTripRaised" max="@Model.MissionTripCost" style="display: block;width:100%;"></progress>
             <a style="display:block;width:100%;margin:12px 0;" class="btn btn-primary btn-sm" href="@OrgMemberModel.GetPayLink(Model.org.OrganizationId, Model.Goer.PeopleId)">Pay</a>
         }
@@ -37,7 +36,7 @@
                         <span>@supporter.SupporterName</span>
                     </div>
                     <div class="col-xs-4">
-                        <span class="amount">@NumberFormatInfo.CurrentInfo.CurrencySymbol@supporter.gs.Amount.ToString2("N")</span>
+                        <span class="amount">@Helper.CurrencyString(supporter.gs.Amount)</span>
                     </div>
                 </div>
             }
@@ -51,20 +50,12 @@
         @if (Model.org.TripFundingPagesPublic)
         {
             <h5>Get more supporters! Share:</h5>
-            <a href="https://www.facebook.com/share.php?u=@WebUtility.UrlEncode(Model.URL)&amp;t=@WebUtility.UrlEncode(Model.Goer.Name)'s Fundraising for @Model.org.OrganizationName" target="_blank" onclick="popup(this.href); return false;"><i class="fa fa-facebook-square fa-2x" style="color: #3B5998;"></i></a>
-            <a href="https://www.twitter.com/share?url=@WebUtility.UrlEncode(Model.URL)&amp;text=@WebUtility.UrlEncode(Model.Goer.Name)'s Fundraising for @Model.org.OrganizationName" target="_blank" onclick="popup(this.href); return false;"><i class="fa fa-twitter-square fa-2x" style="color: #00ACED;"></i></a>
+            @Helper.SocialShareButtons(Model.URL, $"{Model.Goer.Name}'s Fundraising for {Model.org.OrganizationName}")
+
             <p>Or copy this link:</p>
             <input type="text" value="@Model.URL" readonly />
         }
     </div>
 </div>
 
-<script lang="text/javascript">
-var new_window;
-function popup(url) {
-	new_window=window.open(url,'Share','menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=500,width=500');
-    if (window.focus) {
-        new_window.focus();
-    }
-}
-</script>
+@Helper.SocialButtonPopupScript()
