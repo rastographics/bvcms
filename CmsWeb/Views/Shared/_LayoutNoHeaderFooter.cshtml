@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+<html lang="@System.Globalization.CultureInfo.CurrentUICulture.Name">
+<head>
+    <link rel="shortcut icon" href="@Url.Content("~/favicon.ico?v=2")">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="robots" content="noindex" />
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0">
+    <title>@ViewBag.Title</title>
+    @ViewExtensions2.GoogleFonts()
+    @ViewExtensions2.FontAwesome()
+    @Fingerprint.Css("/Content/touchpoint/lib/jquery-ui-custom/css/jquery-ui.min.css")
+    @Fingerprint.Css("/Content/touchpoint/css/app.css")
+    @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-multiselect/css/bootstrap-multiselect.css")
+    @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-sweetalert/css/sweetalert.css")
+    @Fingerprint.CssPrint("/Content/touchpoint/css/print.css")
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    @RenderSection("head", false)
+</head>
+<body style="margin-bottom: 0; padding-top: 0;">
+    <div class="container-fluid" id="main">
+        @RenderBody()
+    </div>
+    <div class="device-lg visible-lg-block"></div>
+    <div class="device-md visible-md-block"></div>
+    <div class="device-sm visible-sm-block"></div>
+    <div class="device-xs visible-xs-block"></div>
+    <div class="device-2xs"></div>
+    <div class="modal fade" id="empty-dialog" data-keyboard="false" data-backdrop="static"></div>
+    @ViewExtensions2.GoogleAnalytics()
+    @ViewExtensions2.jQuery()
+    @ViewExtensions2.LoDash()
+    @ViewExtensions2.Bootstrap3()
+    @Fingerprint.Script("/Content/touchpoint/lib/jquery-ui-custom/js/jquery-ui.min.js")
+    @ViewExtensions2.Velocity()
+    @ViewExtensions2.Moment()
+    @Fingerprint.Script("/Content/touchpoint/lib/jquery-globalize/js/globalize.js")
+    <script src="@Url.Content(ViewExtensions2.jqueryGlobalizeCulture)" type="text/javascript"></script>
+    @ViewExtensions2.jQueryValidation()
+    @Html.Partial("DatePickerDefaults2")
+    @Fingerprint.Script("/Content/touchpoint/js/app.min.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-multiselect/js/bootstrap-multiselect.js")
+    @RenderSection("scripts", false)
+    @Html.Partial("SearchBox")
+</body>
+</html>

@@ -8,13 +8,13 @@
     <title></title>
     @Fingerprint.Css("/Content/touchpoint/css/editor.css")
     <style>
-        #tempateBody {
+        #templateBody {
             font-family: Arial,Helvetica;
         }
     </style>
 </head>
 <body>
-    <div id="tempateBody">
+    <div id="templateBody">
         @if (Model.Body == "<div bvedit=\"\" style=\"max-width:600px;\">Click here to edit content</div>\r\n")
         {
             <font face="Arial,Helvetica">@Html.Raw(Model.Body)</font>

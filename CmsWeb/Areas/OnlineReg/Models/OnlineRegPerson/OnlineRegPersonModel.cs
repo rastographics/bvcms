@@ -234,5 +234,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             return org != null && (org.IsMissionTrip ?? false);
         }
+
+        public bool IsCommunityGroup()
+        {
+            return org != null && org.OrganizationType.Code == "CG";
+        }
     }
 }

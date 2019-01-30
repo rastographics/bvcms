@@ -23,6 +23,7 @@
 @section scripts
 {
     @Fingerprint.Script("/Content/touchpoint/js/onlinereg/bootstrap-datepicker.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-editable/js/bootstrap-editable.min.js")
     <script type="text/javascript">
         $.dtoptions = { format: '@Util.jQueryDateFormat2' };
         $("form").validate();
@@ -35,6 +36,8 @@
     @Fingerprint.Script("/Content/touchpoint/js/onlinereg/OnlineReg2.js")
     @Fingerprint.Script("/Content/touchpoint/js/onlinereg/onlineregpayment2.js")
     @Fingerprint.Script("/Content/touchpoint/lib/select2/js/select2.min.js")
+    @ViewExtensions2.Moment()
+    @ViewExtensions2.Humanize()
     @ViewExtensions2.GoogleReCaptcha()
 }
 <style>
@@ -237,8 +240,8 @@
         {
             <div class="form-group" style="text-align: center; margin-bottom: 1em;">
                 <div class="btn-group" data-toggle="buttons">
-                    @TypeRadio(PaymentType.CreditCard, debitcredit, "left")
-                    @TypeRadio(PaymentType.Ach, "Bank Account", "right")
+                    @TypeRadio(PaymentType.CreditCard, debitcredit, "left", Model.PaymentForm.Type == PaymentType.CreditCard || string.IsNullOrWhiteSpace(Model.PaymentForm.Type))
+                    @TypeRadio(PaymentType.Ach, "Bank Account", "right", Model.PaymentForm.Type == PaymentType.Ach)
                     @Html.Hidden("allowcc", "true")
                 </div>
             </div>
@@ -307,21 +310,21 @@
         @Html.Hidden("IsLoggedIn", Model.PaymentForm.IsLoggedIn)
     </form>
 </div>
-@helper TypeRadio(string type, string label, string side)
+@helper TypeRadio(string type, string label, string side, bool isSelected)
 {
     const string radius = "17px";
     if (Model.PaymentForm.Type == type)
     {
-        <label class="btn btn-primary active"
+        <label class="btn btn-primary @(isSelected ? "active" : "")"  
                style="border-top-@side-radius: @radius; border-bottom-@side-radius: @radius">
-            <input type="radio" name="Type" value="@type" checked="checked" /> @label
+            <input type="radio" name="Type" value="@type" @(isSelected ? "checked=\"checked\"" : "") /> @label
         </label>
     }
     else
     {
-        <label class="btn btn-primary"
+        <label class="btn btn-primary @(isSelected ? "active" : "")"
                style="border-top-@side-radius: @radius; border-bottom-@side-radius: @radius">
-            <input type="radio" name="Type" value="@type" /> @label
+            <input type="radio" name="Type" value="@type" @(isSelected ? "checked=\"checked\"" : "") /> @label
         </label>
     }
 }

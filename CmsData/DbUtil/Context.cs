@@ -1392,7 +1392,8 @@ This search uses multiple steps which cannot be duplicated in a single query.
         {
             var content = (from c in Contents
                            where c.Name == name
-                           where c.TypeID == ContentTypeCode.TypeSavedDraft
+                           where c.TypeID == ContentTypeCode.TypeSavedDraft || 
+                                 c.TypeID == ContentTypeCode.TypeUnlayerSavedDraft
                            select c).FirstOrDefault();
             return content;
         }

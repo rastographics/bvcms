@@ -605,6 +605,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             var person = DbUtil.Db.LoadPersonById(id);
             var p = new OnlineRegPersonModel
             {
+                Campus = person.CampusId.GetValueOrDefault().ToString(),
                 DateOfBirth = person.DOB,
                 EmailAddress = person.EmailAddress.HasValue() ? person.EmailAddress : user.EmailAddress,
                 FirstName = person.PreferredName,
