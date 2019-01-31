@@ -99,6 +99,12 @@ namespace CmsWeb
                 CompleteRequest();
                 return;
             }
+            if (Request.Url.Host.Contains("bvcms.com", true))
+            {
+                Response.RedirectPermanent(Request.Url.OriginalString.Replace("bvcms.com", "touchpointsoftware.com"));
+                CompleteRequest();
+                return;
+            }
 
             if (ShouldBypassProcessing())
             {
