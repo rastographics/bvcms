@@ -263,9 +263,9 @@ namespace CmsData
                 p.Tags.Any(t => t.Id == tag.Id);
             return Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
         }
-        private bool InAllAnyFalse => Parent.IsGroup && Parent.ComparisonType == CompareType.AllFalse;
+        private bool InAllAnyFalse => Parent.IsGroup && (Parent.ComparisonType == CompareType.AllFalse || Parent.ComparisonType == CompareType.AnyFalse);
 
-        private bool AnyFalseTrue => ComparisonType == CompareType.AnyTrue;
+        private bool AnyFalseTrue => ComparisonType == CompareType.AnyTrue || ComparisonType == CompareType.AnyFalse;
 
         private Expression ExpressionTree(ParameterExpression parm, CMSDataContext Db)
         {

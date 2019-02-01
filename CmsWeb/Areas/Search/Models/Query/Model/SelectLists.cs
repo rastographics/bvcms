@@ -162,7 +162,8 @@ namespace CmsWeb.Areas.Search.Models
                    let comp = c.CompType == CompareType.AllTrue ? "All"
                        : c.CompType == CompareType.AnyTrue ? "Any"
                            : c.CompType == CompareType.AllFalse ? "None"
-                               : "unknown"
+                               : c.CompType == CompareType.AnyFalse ? "Not All"
+                                   : "unknown"
                    select new SelectListItem
                    {
                        Text = comp,

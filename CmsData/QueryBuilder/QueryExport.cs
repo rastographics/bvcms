@@ -40,6 +40,10 @@ namespace CmsData
                     andOrNot = $"\n{Level}AND NOT ";
                     not = "NOT ";
                     break;
+                case CompareType.AnyFalse:
+                    andOrNot = $"\n{Level}OR NOT ";
+                    not = "NOT ";
+                    break;
                 default:
                     throw new ArgumentException();
             }

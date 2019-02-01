@@ -5,6 +5,7 @@
     <Comparison Type="AllTrue" />
     <Comparison Type="AnyTrue" />
     <Comparison Type="AllFalse" />
+    <Comparison Type="AnyFalse" />
   </FieldType>
   <FieldType Name="Bit">
     <Comparison Type="Equal" Display="{0} = {1}" />
