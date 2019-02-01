@@ -203,7 +203,7 @@ namespace CmsData
             }
             return ret;
         }
-
+        internal bool IsScratchPad => AllConditions.Any(vv => vv.Value.Description == Util.ScratchPad2);
         internal void SetIncludeDeceased()
         {
             var c = this;
@@ -237,6 +237,7 @@ namespace CmsData
         public bool FirstPersonSameEmail { get; set; }
         public bool PlusParentsOf { get; set; }
         public bool FromDirectory { get; set; }
+        public bool DisableOnScratchpad;
         public Expression<Func<Person, bool>> Predicate(CMSDataContext db)
         {
             db.CopySession();
@@ -288,6 +289,11 @@ namespace CmsData
                 // Check if this is a faux condition which governs the query behavior
                 if (CheckForSpecialCondition(clause))
                     continue; // not an actual expression, no need to continue
+
+                // DisableOnScratchpad allows for easily debugging Query
+                // The user can disable individual Conditions to see the effect
+                if (IsScratchPad && clause.DisableOnScratchpad)
+                    continue;
 
                 if (expr == null) // this would be the first expression in a group
                 {

@@ -219,6 +219,14 @@ namespace CmsWeb.Areas.Search.Controllers
         }
 
         [HttpPost]
+        public ActionResult ToggleConditionEnabled(QueryModel m)
+        {
+            m.ToggleConditionEnabled(CurrentDatabase);
+            m.SelectedId = null;
+            return View("Conditions", m);
+        }
+
+        [HttpPost]
         public ActionResult Conditions(QueryModel m)
         {
             return View("Conditions", m);
@@ -269,22 +277,18 @@ namespace CmsWeb.Areas.Search.Controllers
             {
                 // copying over a previous query with same name and owner
                 m.CopyPropertiesTo(previous);
-                previous.Text = query.Text;
                 if (previous.Name.Equal(Util.ScratchPad2))
                 {
+                    previous.Text = query.Text;
                     previous.Ispublic = false;
                 }
-
+                else // saved search, not a scratchpad query
+                {
+                    // remove DisableOnScratchpad attributes from saved search
+                    previous.Text = query.Text.Replace(" DisableOnScratchpad=\"True\"", "");
+                }
                 CurrentDatabase.SubmitChanges();
                 return Redirect("/Query/" + previous.QueryId);
-
-                //                m.CopyPropertiesTo(previous);
-                //                var pc = previous.ToClause();
-                //                pc.Reset(CurrentDatabase);
-                //                pc = Condition.Import(query.Text, name, newGuids: true, topguid: previous.QueryId);
-                //                previous.Text = pc.ToXml();
-                //                CurrentDatabase.SubmitChanges();
-                //                return Redirect("/Query/" + previous.QueryId);
             }
             // saving to a new query
             m.CopyPropertiesTo(query);

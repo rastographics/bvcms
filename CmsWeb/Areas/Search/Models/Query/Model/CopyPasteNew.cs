@@ -130,5 +130,11 @@ namespace CmsWeb.Areas.Search.Models
             TopClause = Selected;
             TopClause.Save(DbUtil.Db);
         }
+        public void ToggleConditionEnabled(CMSDataContext db)
+        {
+            var tc = TopClause; // forces read
+            Selected.DisableOnScratchpad = !Selected.DisableOnScratchpad;
+            tc.Save(db);
+        }
     }
 }

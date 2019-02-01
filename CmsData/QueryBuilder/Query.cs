@@ -10,7 +10,7 @@ namespace CmsData
     {
         public Condition ToClause()
         {
-            var c = Condition.Import(Text);
+            var c = Condition.Import(Text, Name);
             c.JustLoadedQuery = this;
             c.Description = Name;
             return c;
