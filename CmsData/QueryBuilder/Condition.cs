@@ -187,6 +187,9 @@ namespace CmsData
                 case CompareType.AllFalse:
                     ret = "Match NONE of the conditions below";
                     break;
+                case CompareType.AnyFalse:
+                    ret = "Match NOT ALL of the conditions below";
+                    break;
                 default:
                     if (Compare2 != null)
                         ret = Compare2.ToString(this);
