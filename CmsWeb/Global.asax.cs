@@ -99,10 +99,9 @@ namespace CmsWeb
                 CompleteRequest();
                 return;
             }
-            if (Request.Url.Host.Contains("bvcms.com", true))
+
+            if (HandleBvcmsDomain())
             {
-                Response.RedirectPermanent(Request.Url.OriginalString.Replace("bvcms.com", "touchpointsoftware.com"));
-                CompleteRequest();
                 return;
             }
 
@@ -126,7 +125,7 @@ namespace CmsWeb
                     Response.Redirect(redirect);
                     return;
                 }
-                if (r == DbUtil.CheckDatabaseResult.DatabaseDoesNotExist && HttpContext.Current.Request.Url.LocalPath.EndsWith("/"))
+                if (r == DbUtil.CheckDatabaseResult.DatabaseDoesNotExist && Request.IsLocal)
                 {
                     var ret = DbUtil.CreateDatabase();
                     if (ret.HasValue())
@@ -166,7 +165,6 @@ namespace CmsWeb
 
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
         }
-
 
         protected void Application_EndRequest(object sender, EventArgs e)
         {
@@ -322,17 +320,25 @@ namespace CmsWeb
             return false;
         }
 
-        //        private static bool IsAuthorizedToViewProfiler(HttpRequest request)
-        //        {
-        //            if (request.IsLocal)
-        //                return false;
-        //
-        //            var ctx = request.RequestContext.HttpContext;
-        //            if (ctx?.User == null)
-        //                return false;
-        //
-        //            return ctx.User.IsInRole("Developer") && DbUtil.Db.Setting("MiniProfileEnabled");
-        //        }
+        private bool HandleBvcmsDomain()
+        {
+            var bvcms = "bvcms.com";
+            if (Request.Url.Host.Contains(bvcms, true))
+            {
+                var url = Request.Url.OriginalString;
+                var dbExists = DbUtil.CheckDatabaseExists(Util.CmsHost) == DbUtil.CheckDatabaseResult.DatabaseExists;
+                var newBaseUrl = "tpsdb.com";
+                if (!dbExists)
+                {
+                    newBaseUrl = "touchpointsoftware.com";
+                    bvcms = Request.Url.Host;
+                }
+                Response.RedirectPermanent(url.Replace(bvcms, newBaseUrl));
+                CompleteRequest();
+                return true;
+            }
+            return false;
+        }
 
         private bool ShouldBypassProcessing()
         {
