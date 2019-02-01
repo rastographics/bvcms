@@ -5,6 +5,7 @@
     $('#Recipients').select2("readonly", true);
 
     var currentDiv = null;
+    var currentDesign = null;
 
     $.clearFunction = undefined;
     $.addFunction = undefined;
@@ -21,9 +22,14 @@
         }
     };
 
-    window.displayEditor = function (div) {
+    window.displayEditor = function (div, design, useUnlayer) {
         currentDiv = div;
-        $('#editor-modal').modal('show');
+        currentDesign = design;
+        if (useUnlayer) {
+            $('#unlayer-editor-modal').modal('show');
+        } else {
+            $('#editor-modal').modal('show');
+        }
     };
 
     // set these two lines to false will cause the editor to show on a mobile device. Expermental.
@@ -59,7 +65,7 @@
                 extraPlugins: 'specialLink'
             });
         }
-        var html = $(currentDiv).html();0
+        var html = $(currentDiv).html();
         if (html === "Click here to edit content") {
             if (xsDevice || smDevice)
                 $('#htmleditor').val("");
@@ -101,14 +107,48 @@
             CKEDITOR.instances["htmleditor"].setData("");
         }
         $(currentDiv).html(h);
-        var eb = $('#email-body').contents().find('#tempateBody').html();
+        var eb = $('#email-body').contents().find('#templateBody').html();
         localStorage.email = eb;
         $('#editor-modal').modal('hide');
     });
 
+
+
+    $('#unlayer-editor-modal').on('shown.bs.modal', function () {
+        var design = $(currentDesign).val();
+        
+        unlayer.init({
+            id: "unlayerEditor",
+            displayMode: "email"
+        });
+        if (design.length > 0) {
+            unlayer.loadDesign(JSON.parse(design));
+        }
+    });
+
+    $('#unlayer-editor-modal').on('click', '#unlayer-cancel-edit', function () {
+        $('#unlayerEditor').html('');
+        $('#unlayer-editor-modal').modal('hide');
+    });
+
+    $('#unlayer-editor-modal').on('click', '#unlayer-save-edit', function () {
+        unlayer.exportHtml(function(data) {
+            var design = data.design;
+            var html = data.html; // final html
+            $(currentDesign).val(JSON.stringify(design));
+            $(currentDiv).html(html);
+            var eb = $('#email-body').contents().find('#templateBody').html();
+            localStorage.email = eb;
+            $('#unlayerEditor').html('');
+            $('#unlayer-editor-modal').modal('hide');
+        });
+    });
+
+
+
     $(".Send").click(function () {
         $.block();
-        $('#body').val($('#email-body').contents().find('#tempateBody').html());
+        $('#body').val($('#email-body').contents().find('#templateBody').html());
         var q = $("#SendEmail").serialize();
 
         $.post('/Email/QueueEmails', q, function (ret) {
@@ -175,7 +215,9 @@
             $('#draft-modal').modal('show');
         } else {
             $.clearTemplateClass();
-            var h = $('#email-body').contents().find('#tempateBody').html();
+            var d = $('#email-body').contents().find('#templateDesign').val();
+            var h = $('#email-body').contents().find('#templateBody').html();
+            $("#UnlayerDesign").val(d);
             $("#body").val(h);
             $("#name").val($("#newName").val());
             $.addTemplateClass();
@@ -191,7 +233,8 @@
 
     $("#SaveDraftButton").click(function () {
         $.clearTemplateClass();
-        $("#body").val($('#email-body').contents().find('#tempateBody').html());
+        $("#UnlayerDesign").val($('#email-body').contents().find('#templateDesign').val());
+        $("#body").val($('#email-body').contents().find('#templateBody').html());
         $("#name").val($("#newName").val());
         $.addTemplateClass();
 
@@ -203,7 +246,7 @@
         $.block();
 
         $.clearTemplateClass();
-        $("#body").val($('#email-body').contents().find('#tempateBody').html());
+        $("#body").val($('#email-body').contents().find('#templateBody').html());
         $.addTemplateClass();
 
         var q = $("#SendEmail").serialize();

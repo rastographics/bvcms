@@ -16,6 +16,7 @@
 @section scripts
 {
   @Fingerprint.Script("/Content/touchpoint/js/onlinereg/bootstrap-datepicker.js")
+  @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-editable/js/bootstrap-editable.min.js")
   <script type="text/javascript">
       $.dtoptions = { format: '@Util.jQueryDateFormat2' };
       function recaptcha_callback(token) {
@@ -24,99 +25,96 @@
   </script>
   @Fingerprint.Script("/Content/touchpoint/js/onlinereg/onlineregpayment2.js")
   @ViewExtensions2.GoogleReCaptcha()
+  @ViewExtensions2.Moment()
+  @ViewExtensions2.Humanize()
 }
 <div class="regform">
-  <h2>Payment Processing</h2>
-  @if (Model.Terms.HasValue() && !Model.SupportMissionTrip)
-  {
-      <p>
-        @Html.CheckBox("IAgree")
-        I agree to the terms and conditions.
-        <small class="showform">Uncheck the agreement box to display the terms again.</small>
-      </p>
-      <div id="Terms" title="Terms of Agreement">
-        @Html.Raw(OnlineRegModel.YouMustAgreeStatement(Model.OrgId))
-        @Html.Raw(Model.Terms)
-      </div>
-  }
+    <h2>Payment Processing</h2>
+    @if (Model.Terms.HasValue() && !Model.SupportMissionTrip)
+    {
+        <p>
+            @Html.CheckBox("IAgree")
+            I agree to the terms and conditions.
+            <small class="showform">Uncheck the agreement box to display the terms again.</small>
+        </p>
+        <div id="Terms" title="Terms of Agreement">
+            @Html.Raw(OnlineRegModel.YouMustAgreeStatement(Model.OrgId))
+            @Html.Raw(Model.Terms)
+        </div>
+    }
   <form class="showform form-horizontal" id="OnlineRegProcessPayment" action="/OnlineReg/ProcessPayment" method="post">
-    @Html.ValidationSummary()
-    <div class="form-group" style="font-size: 1.5em;">
-      @Html.LabelFor(m => m.AmtToPay, new { @class = "control-label col-sm-3" })
-      <div class="col-sm-9">
-        @if (Model.PayBalance)
-        {
-            @Html.EditorFor(m => m.AmtToPay)
-        }
-        else
-        {
-            <p class="form-control-static" id="amt">@Model.AmtToPay.ToString2("C")</p>
-            @Html.HiddenFor(m => m.AmtToPay)
-        }
-      </div>
-    </div>
-    @Html.HiddenFor(m => m.DatumId)
-    @Html.HiddenFor(m => m.TranId)
-    @Html.HiddenFor(m => m.URL)
-    @Html.HiddenFor(m => m.Description)
-    @Html.HiddenFor(m => m.FormId)
-    @Html.HiddenFor(m => m.Email)
-    @Html.HiddenFor(m => m.Amtdue)
-    @Html.HiddenFor(m => m.testing)
-    @Html.HiddenFor(m => m.OrgId)
-    @Html.HiddenFor(m => m.OriginalId)
-    @Html.HiddenFor(m => m.PayBalance)
-    @Html.HiddenFor(m => m.AllowCoupon)
-    @Html.HiddenFor(m => m.IsLoggedIn)
-    @Html.HiddenFor(m => m.FinanceOnly)
-    @Html.HiddenFor(m => m.AskDonation)
-    @Html.HiddenFor(m => m.Donate)
-    @Html.HiddenFor(m => m.NoCreditCardsAllowed)
-
-    <div class="well">
-      @Html.EditorFor(m => m.First)
-      @Html.EditorFor(m => m.MiddleInitial, new { classes = "narrow" })
-      @Html.EditorFor(m => m.Last)
-      @Html.EditorFor(m => m.Suffix, new { classes = "narrow" })
-      @Html.EditorFor(m => m.Address)
-      @Html.EditorFor(m => m.Address2)
-      @Html.EditorFor(m => m.City)
-      @Html.EditorFor(m => m.State)
-      @Html.EditorFor(m => m.Country, "Dropdown", new { items = Model.Countries })
-      @Html.EditorFor(m => m.Zip)
-      @Html.EditorFor(m => m.Phone)
-      @Html.EditorFor(m => m.Email, "EmailAddress")
-    </div>
-    <div class="well">
-      @if (Model.NoCreditCardsAllowed || Model.NoEChecksAllowed)
-      {
-          @Html.Hidden("Type", Model.Type)
-      }
-      else
-      {
-          <div class="form-group">
-            @Html.Label("Payment Type", new { @class = "control-label col-sm-3 labelsize" })
+        @Html.ValidationSummary()
+        <div class="form-group" style="font-size: 1.5em;">
+            @Html.LabelFor(m => m.AmtToPay, new { @class = "control-label col-sm-3" })
             <div class="col-sm-9">
-              <label class="radio-inline">
-                <input type="radio" name="Type" value="@PaymentType.CreditCard" @(Model.Type == PaymentType.CreditCard ? "checked='checked'" : "") />@debitcredit
-              </label>
-              <label class="radio-inline">
-                <input type="radio" name="Type" value="@PaymentType.Ach" @(Model.Type == PaymentType.Ach ? "checked='checked'" : "") /> Bank Account
-              </label>
-              @Html.Hidden("allowcc", "true")
+                @if (Model.PayBalance)
+                {
+                    @Html.EditorFor(m => m.AmtToPay)
+                }
+                else
+                {
+                    <p class="form-control-static" id="amt">@Model.AmtToPay.ToString2("C")</p>
+                    @Html.HiddenFor(m => m.AmtToPay)
+                }
             </div>
-          </div>
-      }
-      @if (Model.NoCreditCardsAllowed == false)
-      {
-          <div class="Card">
-              @Html.EditorFor(m => m.CreditCard, new { autocomplete = Model.AutocompleteOnOff, Label = debitcredit })
-              @Html.EditorFor(m => m.Expires, new { classes = "narrow" })
-              @Html.EditorFor(m => m.CVV, new { classes = "narrow", autocomplete = Model.AutocompleteOnOff })
-              <input type="hidden" id="hdnCreditCardOnFile" data-value="@Model.CreditCard" />
-              <input type="hidden" id="hdnExpiresOnFile" data-value="@Model.Expires" />
-          </div>
-      }
+        </div>
+        @Html.HiddenFor(m => m.DatumId)
+        @Html.HiddenFor(m => m.TranId)
+        @Html.HiddenFor(m => m.URL)
+        @Html.HiddenFor(m => m.Description)
+        @Html.HiddenFor(m => m.FormId)
+        @Html.HiddenFor(m => m.Email)
+        @Html.HiddenFor(m => m.Amtdue)
+        @Html.HiddenFor(m => m.testing)
+        @Html.HiddenFor(m => m.OrgId)
+        @Html.HiddenFor(m => m.OriginalId)
+        @Html.HiddenFor(m => m.PayBalance)
+        @Html.HiddenFor(m => m.AllowCoupon)
+        @Html.HiddenFor(m => m.IsLoggedIn)
+        @Html.HiddenFor(m => m.FinanceOnly)
+        @Html.HiddenFor(m => m.AskDonation)
+        @Html.HiddenFor(m => m.Donate)
+        @Html.HiddenFor(m => m.NoCreditCardsAllowed)
+
+        <div class="well">
+            @Html.EditorFor(m => m.First)
+            @Html.EditorFor(m => m.MiddleInitial, new { classes = "narrow" })
+            @Html.EditorFor(m => m.Last)
+            @Html.EditorFor(m => m.Suffix, new { classes = "narrow" })
+            @Html.EditorFor(m => m.Address)
+            @Html.EditorFor(m => m.Address2)
+            @Html.EditorFor(m => m.City)
+            @Html.EditorFor(m => m.State)
+            @Html.EditorFor(m => m.Country, "Dropdown", new { items = Model.Countries })
+            @Html.EditorFor(m => m.Zip)
+            @Html.EditorFor(m => m.Phone)
+            @Html.EditorFor(m => m.Email)
+        </div>
+        <div class="well">
+            @if (Model.NoCreditCardsAllowed || Model.NoEChecksAllowed)
+            {
+                @Html.Hidden("Type", Model.Type)
+            }
+            else
+            {
+                <div class="form-group" style="text-align: center; margin-bottom: 1em;">
+                    <div class="btn-group" data-toggle="buttons">
+                        @TypeRadio(PaymentType.CreditCard, debitcredit, "left", Model.Type == PaymentType.CreditCard || string.IsNullOrWhiteSpace(Model.Type))
+                        @TypeRadio(PaymentType.Ach, "Bank Account", "right", Model.Type == PaymentType.Ach)
+                        @Html.Hidden("allowcc", "true")
+                    </div>
+                </div>
+            }
+            @if (Model.NoCreditCardsAllowed == false)
+            {
+                <div class="Card">
+                    @Html.EditorFor(m => m.CreditCard, new { autocomplete = Model.AutocompleteOnOff, Label = debitcredit })
+                    @Html.EditorFor(m => m.Expires, new { classes = "narrow" })
+                    @Html.EditorFor(m => m.CVV, new { classes = "narrow", autocomplete = Model.AutocompleteOnOff })
+                    <input type="hidden" id="hdnCreditCardOnFile" data-value="@Model.CreditCard" />
+                    <input type="hidden" id="hdnExpiresOnFile" data-value="@Model.Expires" />
+                </div>
+            }
         @if (useRecaptcha)
         {
             <div class="g-recaptcha"
@@ -126,73 +124,91 @@
             </div>
         }
         <input type="hidden" id="useRecaptcha" value="@useRecaptcha" />
-      @if (Model.NoEChecksAllowed == false)
-      {
-          <div class="Bank">
-            @Html.EditorFor(m => m.Routing)
-            @Html.EditorFor(m => m.Account, new { autocomplete = Model.AutocompleteOnOff })
-          </div>
-      }
-    </div>
-    <div class="form-group">
-      <div class="col-sm-offset-3 col-sm-9 text-right">
-        <div>
-          @if (Model.IsLoggedIn == true && !VaultDisabled)
-          {
-              <span id="savePayArea" style="margin-right: 2em;">@Html.CheckBoxFor(m => m.SavePayInfo) Save Payment Information</span>
-          }
-          @Helper.OnlineRegSubmitButton("Make Payment", onlyoneallowed: true, style: "btn-primary min-width15em")
+            @if (Model.NoEChecksAllowed == false)
+            {
+                <div class="Bank">
+                    @Html.EditorFor(m => m.Routing)
+                    @Html.EditorFor(m => m.Account, new { autocomplete = Model.AutocompleteOnOff })
+                </div>
+            }
         </div>
-        @if (Model.AllowSaveProgress == true)
+        <div class="form-group">
+            <div class="col-sm-offset-3 col-sm-9 text-right">
+                <div>
+                    @if (Model.IsLoggedIn == true && !VaultDisabled)
+                    {
+                        <span id="savePayArea" style="margin-right: 2em;">@Html.CheckBoxFor(m => m.SavePayInfo) Save Payment Information</span>
+                    }
+                    @Helper.OnlineRegSubmitButton("Make Payment", onlyoneallowed: true, style: "btn-primary min-width15em")
+                </div>
+                @if (Model.AllowSaveProgress == true)
+                {
+                    <div>
+                        @Helper.OnlineRegAjaxButton("/OnlineReg/SaveProgressPayment/" + Model.DatumId, "Save Progress, Finish Later", style: "btn-warning min-width15em")
+                    </div>
+                }
+            </div>
+        </div>
+        @if (Model.AllowCoupon)
         {
-            <div>
-              @Helper.OnlineRegAjaxButton("/OnlineReg/SaveProgressPayment/" + Model.DatumId, "Save Progress, Finish Later", style: "btn-warning min-width15em")
+            @Html.EditorFor(m => m.Coupon)
+            <div class="form-group" id="form-msg" style="display:none">
+                <div class="alert alert-info" id="coupon-msg">
+                </div>
+            </div>
+            @Helper.OnlineRegAjaxButtonRow("/OnlineReg/ApplyCoupon", "Apply Coupon", id: "ApplyCoupon", style: "btn-success")
+            <div class="form-group" id="formerror">
+                <div class="col-sm-offset-3 col-sm-9">
+                    <div class="alert alert-danger field-validation-error" id="errormessage"></div>
+                </div>
             </div>
         }
-      </div>
-    </div>
-    @if (Model.AllowCoupon)
-    {
-        @Html.EditorFor(m => m.Coupon)
-        <div class="form-group" id="form-msg" style="display:none">
-          <div class="alert alert-info" id="coupon-msg">
-          </div>
-        </div>
-        @Helper.OnlineRegAjaxButtonRow("/OnlineReg/ApplyCoupon", "Apply Coupon", id: "ApplyCoupon", style: "btn-success")
-        <div class="form-group" id="formerror">
-          <div class="col-sm-offset-3 col-sm-9">
-            <div class="alert alert-danger field-validation-error" id="errormessage"></div>
-          </div>
-        </div>
-    }
-  </form>
+    </form>
     <form id="success_form" action="" method="post" style="display:none;"></form>
 </div>
 <div id="findid" style="display:none">
-  <h2>Card Identification #</h2>
-  <table width="100%">
-    <tr>
-      <td><h3>American Express</h3></td>
-      <td><img src="/Content/images/amex.jpg" alt="amex" /></td>
-    </tr>
-    <tr>
-      <td><h3>Visa</h3></td>
-      <td><img src="/Content/images/visa.jpg" alt="visa" /></td>
-    </tr>
-    <tr>
-      <td><h3>MasterCard</h3></td>
-      <td><img src="/Content/images/mastercard.jpg" alt="mastercard" /></td>
-    </tr>
-    <tr>
-      <td><h3>Discover</h3></td>
-      <td><img src="/Content/images/discovercard.jpg" alt="discover" /></td>
-    </tr>
-  </table>
+    <h2>Card Identification #</h2>
+    <table width="100%">
+        <tr>
+            <td><h3>American Express</h3></td>
+            <td><img src="/Content/images/amex.jpg" alt="amex" /></td>
+        </tr>
+        <tr>
+            <td><h3>Visa</h3></td>
+            <td><img src="/Content/images/visa.jpg" alt="visa" /></td>
+        </tr>
+        <tr>
+            <td><h3>MasterCard</h3></td>
+            <td><img src="/Content/images/mastercard.jpg" alt="mastercard" /></td>
+        </tr>
+        <tr>
+            <td><h3>Discover</h3></td>
+            <td><img src="/Content/images/discovercard.jpg" alt="discover" /></td>
+        </tr>
+    </table>
 </div>
 <div id="findacct" style="display:none">
-  <h2>Bank Routing # / Account #</h2>
-  <p>Look at the numbers on the bottom of your check</p>
-  <div>
-    <img src="https://a1d932c175f6f84ca65d-434e90644472f15e2ba76cac2f5de424.ssl.cf2.rackcdn.com/check.png" alt="check" />
-  </div>
+    <h2>Bank Routing # / Account #</h2>
+    <p>Look at the numbers on the bottom of your check</p>
+    <div>
+        <img src="/Content/images/check.png" alt="check" />
+    </div>
 </div>
+@helper TypeRadio(string type, string label, string side, bool isSelected)
+{
+    const string radius = "17px";
+    if (Model.Type == type)
+    {
+        <label class="btn btn-primary @(isSelected ? "active" : "")"
+               style="border-top-@side-radius: @radius; border-bottom-@side-radius: @radius">
+            <input type="radio" name="Type" value="@type" @(isSelected ? "checked=\"checked\"" : "") /> @label
+        </label>
+    }
+    else
+    {
+        <label class="btn btn-primary @(isSelected ? "active" : "")"
+               style="border-top-@side-radius: @radius; border-bottom-@side-radius: @radius">
+            <input type="radio" name="Type" value="@type" @(isSelected ? "checked=\"checked\"" : "") /> @label
+        </label>
+    }
+}

@@ -8,16 +8,17 @@ namespace CmsData.Classes.HealthChecker
         public static string GetHealthLabel(int orgId)
         {
             var organization = DbUtil.Db.Organizations.SingleOrDefault(x => x.OrganizationId == orgId);
-            if (organization == null || organization.contactsHad.Count == 0) return string.Empty;
+            if (organization?.contactsHad.Count == 0) return string.Empty;
 
-            // Only want to look at the most recent Contact
-            var latestContact = organization.contactsHad
+            // only want to look at the most recent Contact for CG Health Assessment reason (Code: CG)
+            var latestContact = organization?.contactsHad
+                .Where(x => x.ContactReason != null && x.ContactReason.Code == "CG")
                 .OrderByDescending(x => x.ContactDate)
                 .ThenByDescending(x => x.CreatedDate)
-                .First();
-            if (latestContact.ContactExtras == null) return string.Empty;
+                .FirstOrDefault();
+            if (latestContact?.ContactExtras == null) return string.Empty;
 
-            // Calculate and return the lowest health grade from the contact as Org health
+            // calculate and return the lowest health grade from the contact as Org health
             var healthLabel = string.Empty;
             var healthValue = 1;
             foreach (var contactExtra in latestContact.ContactExtras)
@@ -44,7 +45,14 @@ namespace CmsData.Classes.HealthChecker
             var organization = DbUtil.Db.Organizations.SingleOrDefault(x => x.OrganizationId == orgId);
             if (organization?.contactsHad.Count == 0) return null;
 
-            return organization?.contactsHad.Max(x => x.ContactDate);
+            // only want to look at the most recent Contact for CG Health Assessment reason (Code: CG)
+            var latestContact = organization?.contactsHad
+                .Where(x => x.ContactReason != null && x.ContactReason.Code == "CG")
+                .OrderByDescending(x => x.ContactDate)
+                .ThenByDescending(x => x.CreatedDate)
+                .FirstOrDefault();
+
+            return latestContact?.ContactDate;
         }
     }
 }

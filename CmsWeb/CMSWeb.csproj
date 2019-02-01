@@ -1185,6 +1185,7 @@
     <Content Include="Content\font-awesome-4.0.3\css\font-awesome.css" />
     <Content Include="Content\font-awesome-4.0.3\css\font-awesome.min.css" />
     <Content Include="Content\font-awesome-4.0.3\fonts\fontawesome-webfont.svg" />
+    <Content Include="Content\images\check.png" />
     <Content Include="Content\touchpoint\css\account.css" />
     <Content Include="Content\touchpoint\css\app.css" />
     <Content Include="Content\touchpoint\css\editor.css" />
@@ -1799,6 +1800,8 @@
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
+    <Content Include="Content\touchpoint\src\less\modals.less" />
+    <Content Include="Areas\People\Views\Person\Resources\Index.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\staging.pubxml" />
     <None Include="Properties\PublishProfiles\TeamCity.pubxml" />
@@ -2741,6 +2744,7 @@
     <Content Include="Views\Script\RunScriptPageBreaks.cshtml" />
     <Content Include="Views\Shared\_LayoutCheckIn.cshtml" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
+    <Content Include="Views\Shared\_LayoutNoHeaderFooter.cshtml" />
     <None Include="Web.Impersonate.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

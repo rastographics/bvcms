@@ -158,6 +158,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                     errorLog.Log(new Error(ex));
                 }
             }
+
             CurrentDatabase.SubmitChanges();
 
             if (string.Compare(content.Name, "CustomReportsMenu", StringComparison.OrdinalIgnoreCase) == 0)

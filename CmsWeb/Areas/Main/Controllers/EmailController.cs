@@ -13,7 +13,9 @@ using System.Linq;
 using System.Net.Mail;
 using System.Threading;
 using System.Web.Hosting;
+using System.Web.Http.Validation;
 using System.Web.Mvc;
+using Newtonsoft.Json;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Main.Controllers
@@ -23,7 +25,9 @@ namespace CmsWeb.Areas.Main.Controllers
     {
         [ValidateInput(false)]
         [Route("~/Email/{id:guid}")]
-        public ActionResult Index(Guid id, int? templateID, bool? parents, string body, string subj, bool? ishtml, bool? ccparents, bool? nodups, int? orgid, int? personid, bool? recover, bool? onlyProspects, bool? membersAndProspects)
+        public ActionResult Index(Guid id, int? templateID, bool? parents, string body, string subj, 
+                                  bool? ishtml, bool? ccparents, bool? nodups, int? orgid, int? personid, 
+                                  bool? recover, bool? onlyProspects, bool? membersAndProspects, bool? useUnlayer)
         {
             if (Util.SessionTimedOut())
             {
@@ -50,11 +54,14 @@ namespace CmsWeb.Areas.Main.Controllers
 
                 var m = new MassEmailer(id, parents, ccparents, nodups);
 
+                if (User.IsInRole("EmailBuilder"))
+                    m.UseUnlayer = useUnlayer;
+
                 m.Host = Util.Host;
 
                 if (body.HasValue())
                 {
-                    templateID = SaveDraft(null, null, 0, null, body);
+                    templateID = SaveDraft(null, null, 0, null, body, null, null);
                 }
 
                 ViewBag.templateID = templateID;
@@ -73,6 +80,7 @@ namespace CmsWeb.Areas.Main.Controllers
             DbUtil.LogActivity("Emailing people");
 
             var me = new MassEmailer(id, parents, ccparents, nodups);
+
             me.Host = Util.Host;
             me.OnlyProspects = onlyProspects.GetValueOrDefault();
 
@@ -153,7 +161,7 @@ namespace CmsWeb.Areas.Main.Controllers
             }
         }
 
-        public ActionResult EmailBody(string id)
+        public ActionResult EmailBody(string id, bool? useUnlayer)
         {
             var i = id.ToInt();
             var c = ViewExtensions2.GetContent(i);
@@ -162,15 +170,29 @@ namespace CmsWeb.Areas.Main.Controllers
                 return new EmptyResult();
             }
 
+            var design = string.Empty;
+            var body = string.Empty;
+
+            if (c.TypeID == ContentTypeCode.TypeUnlayerSavedDraft)
+            {
+                dynamic payload = JsonConvert.DeserializeObject(c.Body);
+                design = payload.design;
+                body = payload.rawHtml;
+            }
+            else
+                body = c.Body;
+            
             var doc = new HtmlDocument();
-            doc.LoadHtml(c.Body);
+            doc.LoadHtml(body);
             var bvedits = doc.DocumentNode.SelectNodes("//div[contains(@class,'bvedit') or @bvedit]");
             if (bvedits == null || !bvedits.Any())
             {
-                c.Body = $"<div bvedit='discardthis'>{c.Body}</div>";
+                body = $"<div bvedit='discardthis'>{body}</div>";
             }
 
-            ViewBag.content = c;
+            ViewBag.body = body;
+            ViewBag.design = design;
+            ViewBag.useUnlayer = useUnlayer;
             return View();
         }
 
@@ -178,7 +200,7 @@ namespace CmsWeb.Areas.Main.Controllers
         [ValidateInput(false)]
         public ActionResult SaveDraft(MassEmailer m, int saveid, string name, int roleid)
         {
-            var id = SaveDraft(saveid, name, roleid, m.Subject, m.Body);
+            var id = SaveDraft(saveid, name, roleid, m.Subject, m.Body, m.UnlayerDesign, m.UseUnlayer);
 
             System.Diagnostics.Debug.Print("Template ID: " + id);
 
@@ -188,7 +210,8 @@ namespace CmsWeb.Areas.Main.Controllers
             return View("Compose", m);
         }
 
-        private int SaveDraft(int? draftId, string name, int roleId, string draftSubject, string draftBody)
+        private int SaveDraft(int? draftId, string name, int roleId, string draftSubject, 
+                              string draftBody, string draftDesign, bool? useUnlayer)
         {
             Content content = null;
 
@@ -215,7 +238,18 @@ namespace CmsWeb.Areas.Main.Controllers
             }
 
             content.Title = draftSubject;
-            content.Body = GetBody(draftBody);
+
+            if (useUnlayer.GetValueOrDefault())
+            {
+                var body = new { design = draftDesign, rawHtml = GetBody(draftBody) };
+                content.Body = JsonConvert.SerializeObject(body);
+                content.TypeID = ContentTypeCode.TypeUnlayerSavedDraft;
+            }
+            else
+            {
+                content.Body = GetBody(draftBody);
+            }
+            
             content.Archived = null;
             content.ArchivedFromId = null;
 
@@ -229,6 +263,30 @@ namespace CmsWeb.Areas.Main.Controllers
             CurrentDatabase.SubmitChanges();
 
             return content.Id;
+        }
+
+        [HttpPost]
+        public ActionResult CloneDraft(int id, string name, Guid queryId)
+        {
+            var content = ViewExtensions2.GetContent(id);
+            var clone = new Content
+            {
+                Name = name.HasValue()
+                    ? name
+                    : "new draft " + DateTime.Now.FormatDateTm(),
+                TypeID = content.TypeID,
+                RoleID = content.RoleID,
+                OwnerID = Util.UserId,
+                Title = content.Title,
+                Body = content.Body,
+                Archived = null,
+                ArchivedFromId = null,
+                DateCreated = DateTime.Now
+            };
+
+            CurrentDatabase.Contents.InsertOnSubmit(clone);
+            CurrentDatabase.SubmitChanges();
+            return RedirectToAction("Index", new {id = queryId});
         }
 
         private string GetBody(string body)

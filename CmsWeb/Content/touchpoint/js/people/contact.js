@@ -109,21 +109,21 @@ function AddSelected(ret) {
 }
 
 function WireUpExtraValues(cid, locations) {
+    var notSpecified = '(not specified)';
+
     if ($.isEmptyObject(locations))
         return;
 
     function sameStr(left, right) {
+        if (!left) left = notSpecified;
         return left.localeCompare(right, undefined, { sensitivity: 'base' }) === 0;
     }
 
     function valueMatches(left, right) {
         return typeof left === 'undefined' ||
+            left === null ||
             sameStr(left, right) ||
             sameStr(left, right.replace(/[^a-zA-Z0-9]/g, ''));
-    }
-
-    function isSet(val) {
-        return val !== '(not specified)';
     }
 
     $('.code-dropdown select').on('change', function () {
@@ -133,19 +133,25 @@ function WireUpExtraValues(cid, locations) {
             contactReason: $('#ContactReason_Value option:selected').text()
         };
 
-        if (isSet(data.ministry) && isSet(data.contactType) && isSet(data.contactReason)) {
-            $('#contact-extra-values').show();
-        } else {
-            $('#contact-extra-values').hide();
-        }
-
         var match = _.find(locations, function(x) {
             return (valueMatches(x.Ministry, data.ministry)) &&
                 (valueMatches(x.ContactType, data.contactType)) &&
                 (valueMatches(x.ContactReason, data.contactReason));
         });
 
-        if (typeof match === 'undefined') return;
+        if (typeof match === 'undefined') {
+            $('#contact-extra-values').hide();
+            return;
+        } else {
+            $('#contact-extra-values').show();
+        }
+
+        if (data.ministry === notSpecified)
+            data.ministry = null;
+        if (data.contactType === notSpecified)
+            data.contactType = null;
+        if (data.contactReason === notSpecified)
+            data.contactReason = null;
 
         $.ajax({
             type: 'POST',

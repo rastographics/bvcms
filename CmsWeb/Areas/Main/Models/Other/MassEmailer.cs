@@ -24,6 +24,8 @@ namespace CmsWeb.Areas.Main.Models
         public string FromName { get; set; }
         public string Subject { get; set; }
         public string Body { get; set; }
+        public string UnlayerDesign { get; set; }
+        public bool? UseUnlayer { get; set; }
         public DateTime? Schedule { get; set; }
         public bool PublicViewable { get; set; }
         public List<string> Recipients { get; set; }
