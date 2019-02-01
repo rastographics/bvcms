@@ -70,36 +70,25 @@ namespace CmsData
             q.Text = ToXml();
             Db.SubmitChanges();
         }
-
-//        public string Serialize()
-//        {
-//            return this.ToCode();
-//        }
-//        public static Condition DeSerialize(string s)
-//        {
-//            if (s.StartsWith("<?xml"))
-//                return Import(s);
-//            return Parse(s);
-//        }
-        public string ToXml(bool newGuids = false, bool noGuids = false)
+        public string ToXml(bool newGuids = false)
         {
             var settings = new XmlWriterSettings();
             settings.Indent = true;
             settings.Encoding = new UTF8Encoding(false);
             var sb = new StringBuilder();
             using (var w = XmlWriter.Create(sb, settings))
-                SendToWriter(w, newGuids, noGuids);
+                SendToWriter(w, newGuids);
             return sb.ToString();
         }
-        public void SendToWriter(XmlWriter w, bool newGuids = false, bool noGuids = false)
+        public void SendToWriter(XmlWriter w, bool newGuids = false)
         {
             w.WriteStartElement("Condition");
-            WriteAttributes(w, newGuids, noGuids);
+            WriteAttributes(w, newGuids);
             foreach (var qc in Conditions)
-                qc.SendToWriter(w, newGuids, noGuids);
+                qc.SendToWriter(w, newGuids);
             w.WriteEndElement();
         }
-        private void WriteAttributes(XmlWriter w, bool newGuids = false, bool noGuids = false)
+        private void WriteAttributes(XmlWriter w, bool newGuids = false)
         {
             w.WriteAttr("Id", newGuids 
                 ? Guid.NewGuid().ToString() : Id.ToString());
