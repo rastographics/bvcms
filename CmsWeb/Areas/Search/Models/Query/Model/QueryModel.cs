@@ -30,12 +30,17 @@ namespace CmsWeb.Areas.Search.Models
 
         public QueryModel()
         {
-            DbUtil.Db.SetUserPreference("NewCategories", "true");
             ConditionName = "Group";
         }
 
-        public QueryModel(Guid? id)
+        public QueryModel(CMSDataContext db)
             : this()
+        {
+            Db = db;
+        }
+
+        public QueryModel(Guid? id, CMSDataContext db)
+            : this(db)
         {
             QueryId = id;
             DbUtil.LogActivity($"Running Query ({id})");
@@ -150,54 +155,54 @@ namespace CmsWeb.Areas.Search.Models
         public Tag TagAllIds()
         {
             var q = DefineModelList();
-            var tag = DbUtil.Db.FetchOrCreateTag(Util.SessionId, Util.UserPeopleId, DbUtil.TagTypeId_Query);
-            DbUtil.Db.TagAll(q, tag);
+            var tag = Db.FetchOrCreateTag(Util.SessionId, Util.UserPeopleId, DbUtil.TagTypeId_Query);
+            Db.TagAll(q, tag);
             return tag;
         }
 
         public void TagAll(Tag tag = null)
         {
-            DbUtil.Db.SetNoLock();
-            var q = DbUtil.Db.People.Where(TopClause.Predicate(DbUtil.Db));
+            Db.SetNoLock();
+            var q = Db.People.Where(TopClause.Predicate(Db));
             if (TopClause.PlusParentsOf)
             {
-                q = DbUtil.Db.PersonQueryPlusParents(q);
+                q = Db.PersonQueryPlusParents(q);
             }
             else if (TopClause.ParentsOf)
             {
-                q = DbUtil.Db.PersonQueryParents(q);
+                q = Db.PersonQueryParents(q);
             }
 
             if (TopClause.FirstPersonSameEmail)
             {
-                q = DbUtil.Db.PersonQueryFirstPersonSameEmail(q);
+                q = Db.PersonQueryFirstPersonSameEmail(q);
             }
 
             if (tag != null)
             {
-                DbUtil.Db.TagAll(q, tag);
+                Db.TagAll(q, tag);
             }
             else
             {
-                DbUtil.Db.TagAll(q);
+                Db.TagAll(q);
             }
         }
 
         public void UnTagAll()
         {
-            DbUtil.Db.SetNoLock();
-            var q = DbUtil.Db.People.Where(TopClause.Predicate(DbUtil.Db));
+            Db.SetNoLock();
+            var q = Db.People.Where(TopClause.Predicate(Db));
 
             if (TopClause.PlusParentsOf)
             {
-                q = DbUtil.Db.PersonQueryPlusParents(q);
+                q = Db.PersonQueryPlusParents(q);
             }
             else if (TopClause.ParentsOf)
             {
-                q = DbUtil.Db.PersonQueryParents(q);
+                q = Db.PersonQueryParents(q);
             }
 
-            DbUtil.Db.UnTagAll(q);
+            Db.UnTagAll(q);
         }
 
         public bool Validate(ModelStateDictionary m)
@@ -234,11 +239,13 @@ namespace CmsWeb.Areas.Search.Models
         public void UpdateCondition()
         {
             this.CopyPropertiesTo(Selected);
-            TopClause.Save(DbUtil.Db, increment: true);
+            TopClause.Save(Db, increment: true);
         }
         public void EditCondition()
         {
             this.CopyPropertiesFrom(Selected);
         }
+        public bool UseEmployerNotTeacher => Db.Setting("UseEmployerNotTeacher");
+        public bool ShowAltNameOnSearchResults => Db.Setting("ShowAltNameOnSearchResults");
     }
 }

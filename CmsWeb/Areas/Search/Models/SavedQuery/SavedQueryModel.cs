@@ -11,6 +11,7 @@ namespace CmsWeb.Areas.Search.Models
 {
     public class SavedQueryModel : PagedTableModel<Query, SavedQueryInfo>
     {
+        internal CMSDataContext Db;
         public bool admin { get; set; }
         public bool OnlyMine { get; set; }
         public bool PublicOnly { get; set; }
@@ -18,14 +19,15 @@ namespace CmsWeb.Areas.Search.Models
         public bool ScratchPadsOnly { get; set; }
         public bool StatusFlagsOnly { get; set; }
 
-        public SavedQueryModel() : base("Last Run", "desc", true)
+        public SavedQueryModel(CMSDataContext db) : base("Last Run", "desc", true)
         {
+            Db = db;
             admin = Roles.IsUserInRole("Admin");
         }
 
         public override IQueryable<Query> DefineModelList()
         {
-            var q = from c in DbUtil.Db.Queries
+            var q = from c in Db.Queries
                     where !PublicOnly || c.Ispublic
                     where c.Name.Contains(SearchQuery) || c.Owner == SearchQuery || !SearchQuery.HasValue()
                     where c.Name != "OrgFilter"
@@ -50,7 +52,7 @@ namespace CmsWeb.Areas.Search.Models
                     select c;
             }
 
-            DbUtil.Db.SetUserPreference("SavedQueryOnlyMine", OnlyMine);
+            Db.SetUserPreference("SavedQueryOnlyMine", OnlyMine);
             if (OnlyMine)
             {
                 q = from c in q
@@ -120,7 +122,7 @@ namespace CmsWeb.Areas.Search.Models
         {
             var user = Util.UserName;
             return from c in q
-                   select new SavedQueryInfo
+                   select new SavedQueryInfo(Db)
                    {
                        QueryId = c.QueryId,
                        Name = c.Name,

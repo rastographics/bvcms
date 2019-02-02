@@ -1,11 +1,10 @@
 ﻿@model CmsWeb.Areas.Search.Models.QueryModel
 @using CmsData
-@using CmsWeb
 @using UtilityExtensions
 @{
-    var useemployer = DbUtil.Db.Setting("UseEmployerNotTeacher");
+    var useemployer = Model.UseEmployerNotTeacher;
     var target = Util2.TargetLinkPeople ? "target='people'" : "";
-    var showAltName = DbUtil.Db.Setting("ShowAltNameOnSearchResults");
+    var showAltName = Model.ShowAltNameOnSearchResults;
 }
 <!--@Html.Raw(ViewBag.xml)-->
 <div class="box box-responsive">

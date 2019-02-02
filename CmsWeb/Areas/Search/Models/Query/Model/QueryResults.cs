@@ -9,7 +9,7 @@ namespace CmsWeb.Areas.Search.Models
 {
     public class QueryResults : PagedTableModel<Person, PeopleInfo>
     {
-        //internal CMSDataContext Db;
+        internal CMSDataContext Db;
         public string Description { get { return topclause.Description; } }
         public string SaveToDescription { get { return topclause.PreviousName ?? topclause.Description; } }
         public Guid? QueryId { get; set; }
@@ -26,11 +26,11 @@ namespace CmsWeb.Areas.Search.Models
 
                 if (QueryId == null)
                 {
-                    topclause = DbUtil.Db.FetchLastQuery();
+                    topclause = Db.FetchLastQuery();
                 }
                 else
                 {
-                    topclause = DbUtil.Db.LoadCopyOfExistingQuery(QueryId.Value);
+                    topclause = Db.LoadCopyOfExistingQuery(QueryId.Value);
                 }
 
                 return topclause;
@@ -45,28 +45,26 @@ namespace CmsWeb.Areas.Search.Models
         public QueryResults()
             : base("na", "asc")
         {
-            //Db = Db;
         }
 
         public override IQueryable<Person> DefineModelList()
         {
-            DbUtil.Db.SetNoLock();
-            var q = DbUtil.Db.People.Where(TopClause.Predicate(DbUtil.Db));
+            Db.SetNoLock();
+            var q = Db.People.Where(TopClause.Predicate(Db));
 
             if (TopClause.PlusParentsOf)
             {
-                q = DbUtil.Db.PersonQueryPlusParents(q);
+                q = Db.PersonQueryPlusParents(q);
             }
             else if (TopClause.ParentsOf)
             {
-                q = DbUtil.Db.PersonQueryParents(q);
+                q = Db.PersonQueryParents(q);
             }
 
             if (TopClause.FirstPersonSameEmail)
             {
-                q = DbUtil.Db.PersonQueryFirstPersonSameEmail(q);
+                q = Db.PersonQueryFirstPersonSameEmail(q);
             }
-            //var t = DbUtil.Db.PopulateTemporaryTag(q.Select(pp => pp.PeopleId));
             return q;
         }
 

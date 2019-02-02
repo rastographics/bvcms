@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using System.Security.Permissions;
 using System.Web;
 using CmsData;
 
@@ -22,7 +21,7 @@ namespace CmsWeb.Areas.Search.Models
         {
             HttpContext.Current.Session["QueryClipboard"] = Selected.ToXml();
             Selected.DeleteClause();
-            TopClause.Save(DbUtil.Db, increment: true);
+            TopClause.Save(Db, increment: true);
         }
 
         public void Paste()
@@ -47,19 +46,19 @@ namespace CmsWeb.Areas.Search.Models
                 newclause.ParentId = Selected.Parent.Id;
                 Selected.Parent.ReorderClauses();
             }
-            TopClause.Save(DbUtil.Db, increment: true);
+            TopClause.Save(Db, increment: true);
         }
         public Guid AddConditionToGroup()
         {
             var nc = Selected.AddNewClause();
-            TopClause.Save(DbUtil.Db);
+            TopClause.Save(Db);
             return nc.Id;
         }
         public Guid AddGroupToGroup()
         {
             var g = Selected.AddNewGroupClause();
             var nc = g.AddNewClause();
-            TopClause.Save(DbUtil.Db);
+            TopClause.Save(Db);
             return nc.Id;
         }
         public Condition Selected
@@ -75,7 +74,7 @@ namespace CmsWeb.Areas.Search.Models
         public void DeleteCondition()
         {
             Selected.DeleteClause();
-            TopClause.Save(DbUtil.Db, increment: true);
+            TopClause.Save(Db, increment: true);
         }
         public void InsertGroupAbove()
         {
@@ -115,9 +114,9 @@ namespace CmsWeb.Areas.Search.Models
                 g.Id = tcid;
                 TopClause.ParentId = g.Id;
                 TopClause = g;
-                TopClause.Save(DbUtil.Db);
+                TopClause.Save(Db);
             }
-            TopClause.Save(DbUtil.Db, increment: true);
+            TopClause.Save(Db, increment: true);
         }
         public void MakeTopGroup()
         {
@@ -128,13 +127,13 @@ namespace CmsWeb.Areas.Search.Models
             Selected.Id = TopClause.Id;
             Selected.ParentId = null;
             TopClause = Selected;
-            TopClause.Save(DbUtil.Db);
+            TopClause.Save(Db);
         }
-        public void ToggleConditionEnabled(CMSDataContext db)
+        public void ToggleConditionEnabled()
         {
             var tc = TopClause; // forces read
             Selected.DisableOnScratchpad = !Selected.DisableOnScratchpad;
-            tc.Save(db);
+            tc.Save(Db);
         }
     }
 }
