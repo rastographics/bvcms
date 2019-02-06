@@ -266,6 +266,104 @@
     });
 
     $('#Subject').focus();
+
+    // special links window
+    var specialLinks = {
+        el: $('#special-links-modal'),
+        typeSelect: $('#special_links_type'),
+        formInput: $('#special_links_form input'),
+        orgRow: $('#org_id.row'),
+        orgInput: $('#org_id input'),
+        messageInput: $('#message input'),
+        smallGroupInput: $('#small_group input'),
+        confirmationSelect: $('#confirmation select'),
+        secondaryRows: $('#small_group.row, #message.row, #confirmation.row'),
+        resultRow: $('#result.row'),
+        resultInput: $('#result.row input'),
+
+        init: function () {
+            // toggle visibility
+            $('#create-special-link').click(function () {
+                specialLinks.el.modal('show');
+            });
+            $('.close-special-links-modal').click(function () {
+                specialLinks.el.modal('hide');
+            });
+
+
+            // select contents of result
+            specialLinks.resultInput.click(function () {
+                $(this).select();
+            });
+
+            // update result row and toggle inputs
+            specialLinks.typeSelect.change(specialLinks.refreshForm);
+            specialLinks.confirmationSelect.change(specialLinks.refreshForm);
+            specialLinks.formInput.on('input', specialLinks.refreshForm);
+
+            // init
+            specialLinks.refreshForm();
+        },
+
+        refreshForm: function () {
+            var linkType = specialLinks.typeSelect.val();
+            var linkText = 'https://' + linkType;
+            var orgId = specialLinks.orgInput.val();
+
+            switch (linkType) {
+                case 'registerlink':
+                case 'registerlink2':
+                case 'sendlink':
+                case 'sendlink2':
+                case 'supportlink':
+                    specialLinks.orgRow.show();
+                    specialLinks.secondaryRows.hide();
+                    if (orgId.length) {
+                        linkText += '?org=' + orgId;
+                    } else {
+                        linkText = '';
+                    }
+                    break;
+
+                case 'rsvplink':
+                case 'regretslink':
+                case 'votelink':
+                    specialLinks.orgRow.show();
+                    specialLinks.secondaryRows.show();
+                    var message = specialLinks.messageInput.val();
+                    var smallGroup = specialLinks.smallGroupInput.val();
+                    var confirmation = specialLinks.confirmationSelect.val();
+                    if (orgId.length) {
+                        linkText += '?org=' + orgId + '&confirm=' + confirmation;
+                        if (message.length) {
+                            linkText += '&msg=' + message;
+                        }
+                        if (smallGroup.length) {
+                            linkText += '&group=' + smallGroup;
+                        }
+                    } else {
+                        linkText = '';
+                    }
+                    break;
+
+                default:
+                    linkText = '';
+                    specialLinks.secondaryRows.hide();
+                    specialLinks.orgRow.hide();
+                    specialLinks.formInput.val('');
+                    break;
+            }
+
+            specialLinks.resultInput.val(linkText);
+            if (linkText.length) {
+                specialLinks.resultRow.show();
+            } else {
+                specialLinks.resultRow.hide();
+            }
+        }
+    };
+
+    $(document).ready(specialLinks.init);
 });
 
 

@@ -294,6 +294,7 @@
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="pull-right" style="margin-bottom: 5px;">
+                            <a id="create-special-link" class="btn btn-default btn-sm"><i class="fa fa-link"></i> Insert Special Link</a>
                             <a href="http://docs.touchpointsoftware.com/EmailTexting/EmailReplacements.html" target="_blank" class="btn btn-default btn-sm"><i class="fa fa-question-circle"></i> Email Replacement Codes</a>
                         </div>
                     </div>
@@ -307,6 +308,83 @@
             <div class="modal-footer">
                 <input type="button" value="Cancel" class="btn btn-default" id="unlayer-cancel-edit" />
                 <input type="submit" value="Save" class="btn btn-primary" id="unlayer-save-edit" />
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="special-links-modal">
+    <div class="modal-dialog" style="margin-top: 60px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Add Special Link</h4>
+            </div>
+            <div class="modal-body">
+                <form id="special_links_form">
+                    <div class="row form-group">
+                        <div class="col-sm-4">
+                            <label for="special_links_type">Type</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <select class="form-control" id="special_links_type" name="special_links_type">
+                                <option selected>&lt;not set&gt;</option>
+                                <option value="registerlink">Register Link</option>
+                                <option value="registerlink2">Register Link 2</option>
+                                <option value="regretslink">Regrets Link</option>
+                                <option value="rsvplink">RSVP Link</option>
+                                <option value="sendlink">Send Link</option>
+                                <option value="sendlink2">Send Link 2</option>
+                                <option value="supportlink">Support Link</option>
+                                <option value="votelink">Vote Link</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="org_id" class="row form-group">
+                        <div class="col-sm-4">
+                            <label for="org_id">Org ID</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <input type="number" class="form-control" name="org_id" />
+                        </div>
+                    </div>
+                    <div id="message" class="row form-group">
+                        <div class="col-sm-4">
+                            <label for="message">Message</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" name="message" />
+                        </div>
+                    </div>
+                    <div id="small_group" class="row form-group">
+                        <div class="col-sm-4">
+                            <label for="small_group">Small Group</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" name="small_group" />
+                        </div>
+                    </div>
+                    <div id="confirmation" class="row form-group">
+                        <div class="col-sm-4">
+                            <label for="confirmation">Confirmation</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <select class="form-control" name="confirmation">
+                                <option value="yes" selected>Yes, send confirmation</option>
+                                <option value="no">No, do not send confirmation</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+                <div id="result" class="row form-group">
+                    <div class="col-sm-12">
+                        <label for="tag">Copy and paste this into the email body:</label>
+                        <input type="text" class="form-control" name="tag" value="value" style="cursor:text;" readonly />
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <input type="button" value="Cancel" class="btn btn-default close-special-links-modal" />
+                <input type="submit" value="Done" class="btn btn-primary close-special-links-modal" />
             </div>
         </div>
     </div>
