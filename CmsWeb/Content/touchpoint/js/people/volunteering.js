@@ -4,7 +4,7 @@
         return $('#dialogHolder');
     };
 
-    $('.showSubmitDialog').click(function (ev) {
+    $('.showSubmitDialog').click(function (ev) {        
         ev.preventDefault();
         var id = $(this).attr('data-cid');
         var type = $(this).attr('data-ctype');
@@ -14,6 +14,16 @@
             submitDialog.modal();
         });
     });
+
+    $(document).on("click", "#submitCheck #btnFinalSubmit", function (ev) {
+        ev.preventDefault;
+        $("#btnFinalSubmit").val("Please Wait...");
+        $('#submitCheck').submit(function () {
+            $("#btnFinalSubmit").attr('disabled', true)
+        });
+    });
+
+    
 
     $('.showCreateDialog').click(function (ev) {
         ev.preventDefault();
