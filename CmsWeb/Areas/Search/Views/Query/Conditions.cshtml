@@ -4,20 +4,23 @@
 @using UtilityExtensions
 @model QueryModel
 <form id="query-form" action="/Query/" class="form" method="post">
-  @Html.Hidden("NewId")
-  @Html.Hidden("QueryId")
-  @Html.Hidden("SelectedId")
-  @Html.Hidden("PageSize")
-  @Html.Hidden("Page")
-  @Html.Hidden("Sort")
-  @Html.Hidden("Direction")
-  <input id="Results_Page" name="Results_Page" type="hidden" value="1">
-  <div id="editcondition" class="condition-modal">
-    <h3 class="condition-modal-title">Edit Condition</h3>
-    <div class="condition-modal-content">
+    @Html.Hidden("NewId")
+    @Html.Hidden("QueryId")
+    @Html.Hidden("SelectedId")
+    @Html.Hidden("PageSize")
+    @Html.Hidden("Page")
+    @Html.Hidden("Sort")
+    @Html.Hidden("Direction")
+    <input id="Results_Page" name="Results_Page" type="hidden" value="1">
+    <div id="editcondition" class="condition-modal">
+        <h3 class="condition-modal-title">Edit Condition</h3>
+        <div class="condition-modal-content">
+        </div>
     </div>
-  </div>
 </form>
+<style>
+    li.disabled span {text-decoration: line-through;}
+</style>
 @GroupItem(Model.TopClause)
 
 @helper GroupItem(Condition clause)
@@ -51,12 +54,13 @@
 {
   var cstr = clause.ToString();
   var newcondition = "";
+  var disabled = clause.DisableOnScratchpad ? "disabled" : "";
   if (cstr == "MatchAnything = 1[True]")
   {
     newcondition = "newcondition";
     cstr = "Select Condition";
   }
-  <li class="condition @newcondition" data-qid="@clause.Id">
+  <li class="condition @newcondition @disabled" data-qid="@clause.Id">
     <a href="#editcondition" class="edit edit-condition" title="@cstr">
       <span class="value">@(cstr.Length > 30 ? $"{cstr.Substring(0, 30)}..." : cstr)</span>
     </a>
@@ -77,6 +81,7 @@
       <ul class="dropdown-menu dropdown-menu-right">
         @if (!clause.IsGroup)
         {
+            <li><a href="#" class="toggleConditionEnabled"><i class="fa fa-share-alt fa-fw"></i> @(clause.DisableOnScratchpad ? "Enable" : "Disable") Condition</a></li>
             <li><a href="#editCondition" class="edit-condition"><i class="fa fa-pencil fa-fw"></i> Edit</a></li>
         }
         @if (clause.CanCut)

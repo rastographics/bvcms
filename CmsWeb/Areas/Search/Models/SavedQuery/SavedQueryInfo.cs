@@ -6,6 +6,8 @@ namespace CmsWeb.Areas.Search.Models
 {
     public class SavedQueryInfo
     {
+        internal CMSDataContext Db;
+
         [NoUpdate]
         public Guid QueryId { get; set; }
 
@@ -22,15 +24,17 @@ namespace CmsWeb.Areas.Search.Models
 
         public Query query;
 
-        public SavedQueryInfo()
+        public SavedQueryInfo(CMSDataContext db)
         {
+            Db = db;
         }
         [NoUpdate]
         public bool CanDelete { get; set; }
 
-        public SavedQueryInfo(Guid id)
+        public SavedQueryInfo(Guid id, CMSDataContext db)
         {
-            query = DbUtil.Db.LoadQueryById2(id);
+            Db = db;
+            query = Db.LoadQueryById2(id);
             this.CopyPropertiesFrom(query);
         }
 
@@ -38,11 +42,11 @@ namespace CmsWeb.Areas.Search.Models
         {
             if (query == null)
             {
-                query = DbUtil.Db.LoadQueryById2(QueryId);
+                query = Db.LoadQueryById2(QueryId);
             }
 
             this.CopyPropertiesTo(query);
-            DbUtil.Db.SubmitChanges();
+            Db.SubmitChanges();
         }
     }
 }

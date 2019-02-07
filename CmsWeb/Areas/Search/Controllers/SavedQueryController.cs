@@ -18,7 +18,7 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpGet, Route("~/SavedQueryList")]
         public ActionResult Index()
         {
-            var m = new SavedQueryModel
+            var m = new SavedQueryModel(CurrentDatabase)
             {
                 OnlyMine = CurrentDatabase.UserPreference("SavedQueryOnlyMine", "false").ToBool()
             };
@@ -27,12 +27,13 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ActionResult Results(SavedQueryModel m)
         {
+            m.Db = CurrentDatabase;
             return View(m);
         }
         [HttpPost]
         public ActionResult Edit(Guid id)
         {
-            var m = new SavedQueryInfo(id);
+            var m = new SavedQueryInfo(id, CurrentDatabase);
             if (m.Name.Equals(Util.ScratchPad2))
             {
                 m.Name = "copy of scratchpad";
@@ -43,6 +44,7 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ActionResult Update(SavedQueryInfo m)
         {
+            m.Db = CurrentDatabase;
             if (m.Name.Equal(Util.ScratchPad2))
             {
                 m.Ispublic = false;
@@ -64,6 +66,7 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ActionResult Code(SavedQueryModel m)
         {
+            m.Db = CurrentDatabase;
             var qlist = from q in m.DefineModelList()
                         select q.QueryId;
             var list = string.Join(",", qlist);
@@ -80,11 +83,12 @@ namespace CmsWeb.Areas.Search.Controllers
             }
 
             var guids = list.Split(',').ToList().ConvertAll(vv => new Guid(vv));
-            return View(new QueryCodeModel(CodeSql.Queries, guids));
+            return View(new QueryCodeModel(CurrentDatabase, CodeSql.Queries, guids));
         }
         [HttpPost]
         public ActionResult PythonCode(SavedQueryModel m)
         {
+            m.Db = CurrentDatabase;
             var qlist = from q in m.DefineModelList()
                         select q.QueryId;
             var list = string.Join(",", qlist);
@@ -102,7 +106,7 @@ namespace CmsWeb.Areas.Search.Controllers
 
             var guids = list.Split(',').ToList().ConvertAll(vv => new Guid(vv));
             Response.ContentType = "text/plain";
-            return View(new QueryCodeModel(CodeSql.Queries, guids));
+            return View(new QueryCodeModel(CurrentDatabase, CodeSql.Queries, guids));
         }
     }
 }

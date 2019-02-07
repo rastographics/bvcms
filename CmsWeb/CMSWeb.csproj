@@ -783,7 +783,6 @@
     <Compile Include="Areas\Reports\Models\Attendance\WeeklyAttendanceModel.cs" />
     <Compile Include="Areas\Search\Models\SavedQuery\CodeSql.cs" />
     <Compile Include="Areas\Search\Models\SavedQuery\QueryCodeModel.cs" />
-    <Compile Include="Areas\Search\Models\Query\Model\UpdateQueryConditions.cs" />
     <Compile Include="Areas\Search\Models\RegistrationSearch\IncompleteRegistrations.cs" />
     <Compile Include="Areas\Reports\Models\Other\WeeklyDecisionsModel.cs" />
     <Compile Include="Areas\Reports\Models\Enrollment\EnrollmentControlModel.cs" />

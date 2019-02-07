@@ -228,7 +228,7 @@ namespace CmsData
             qb.Reset();
             var nc = qb.AddNewClause();
             qb.Description = Util.ScratchPad2;
-            qb.Save(DbUtil.Db);
+            qb.Save(this);
             return qb.Id;
         }
         public Query QueryInactiveCurrentOrg()

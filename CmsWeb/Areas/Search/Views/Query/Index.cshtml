@@ -47,10 +47,10 @@
                               }
                             </label>
                           </div>
-                          <a href="/Query/Export/@ViewBag.OrigQueryId" class="exportquery">View Code</a>
+                          <a href="/Query/Export/@Model.QueryId" class="exportquery">View Code</a>
                           @if (User.IsInRole("Admin"))
                           {
-                            <a href="/Query/ExportSql/@ViewBag.OrigQueryId" class="exportquery">View Sql</a>
+                            <a href="/Query/ExportSql/@Model.QueryId" class="exportquery">View Sql</a>
                           }
                         </div>
                         <div class="pull-right">

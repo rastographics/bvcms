@@ -70,36 +70,25 @@ namespace CmsData
             q.Text = ToXml();
             Db.SubmitChanges();
         }
-
-//        public string Serialize()
-//        {
-//            return this.ToCode();
-//        }
-//        public static Condition DeSerialize(string s)
-//        {
-//            if (s.StartsWith("<?xml"))
-//                return Import(s);
-//            return Parse(s);
-//        }
-        public string ToXml(bool newGuids = false, bool noGuids = false)
+        public string ToXml(bool newGuids = false)
         {
             var settings = new XmlWriterSettings();
             settings.Indent = true;
             settings.Encoding = new UTF8Encoding(false);
             var sb = new StringBuilder();
             using (var w = XmlWriter.Create(sb, settings))
-                SendToWriter(w, newGuids, noGuids);
+                SendToWriter(w, newGuids);
             return sb.ToString();
         }
-        public void SendToWriter(XmlWriter w, bool newGuids = false, bool noGuids = false)
+        public void SendToWriter(XmlWriter w, bool newGuids = false, string name = null)
         {
             w.WriteStartElement("Condition");
-            WriteAttributes(w, newGuids, noGuids);
+            WriteAttributes(w, newGuids, name);
             foreach (var qc in Conditions)
-                qc.SendToWriter(w, newGuids, noGuids);
+                qc.SendToWriter(w, newGuids);
             w.WriteEndElement();
         }
-        private void WriteAttributes(XmlWriter w, bool newGuids = false, bool noGuids = false)
+        private void WriteAttributes(XmlWriter w, bool newGuids = false, string name = null)
         {
             w.WriteAttr("Id", newGuids 
                 ? Guid.NewGuid().ToString() : Id.ToString());
@@ -107,6 +96,10 @@ namespace CmsData
             w.WriteAttr("Order", Order.ToString());
             w.WriteAttr("Field", ConditionName);
             w.WriteAttr("Comparison", Comparison, "AllTrue");
+            if (name.HasValue())
+            {
+                Description = name;
+            }
             w.WriteAttr("Description", Description, "scratchpad");
             w.WriteAttr("PreviousName", Description, "scratchpad");
             w.WriteAttr("TextValue", TextValue);
@@ -131,6 +124,8 @@ namespace CmsData
             w.WriteAttr("OrgStatus", OrgStatus);
             w.WriteAttr("OrgType2", OrgType2);
             w.WriteAttr("OrgName", OrgName);
+            if(IsScratchPad) // disabled conditions only work on scratchpad
+                w.WriteAttr("DisableOnScratchpad", DisableOnScratchpad);
         }
         public static Condition Import(string text, string name = null, bool newGuids = false, Guid? topguid = null)
         {
@@ -138,10 +133,10 @@ namespace CmsData
                 return CreateNewGroupClause(name);
             var x = XDocument.Parse(text);
             Debug.Assert(x.Root != null, "x.Root != null");
-            var c = ImportClause(x.Root, null, newGuids, topguid);
+            var c = ImportClause(x.Root, null, newGuids, topguid, name);
             return c;
         }
-        private static Condition ImportClause(XElement r, Condition p, bool newGuids, Guid? topguid)
+        private static Condition ImportClause(XElement r, Condition p, bool newGuids, Guid? topguid = null, string name = null)
         {
             var allClauses = p == null ? new Dictionary<Guid, Condition>() : p.AllConditions;
             Guid? parentGuid = null;
@@ -178,19 +173,29 @@ namespace CmsData
                 OrgType2 = Attribute(r, "OrgType2").ToInt(),
                 AllConditions = allClauses
             };
-            if (c.ConditionName == "MatchAnything")
-                c.Comparison = "Equal";
-            if (c.ConditionName != "FamilyHasChildrenAged")
-                c.Age = null;
             if (p == null)
             {
                 c.Description = Attribute(r, "Description");
+                if (!c.Description.HasValue() && name == Util.ScratchPad2)
+                    c.Description = name;
                 c.PreviousName = Attribute(r, "PreviousName");
+            }
+            if (c.IsScratchPad)
+            {
+                c.DisableOnScratchpad = AttributeBool(r, "DisableOnScratchpad");
+            }
+            if (c.ConditionName == "MatchAnything")
+            {
+                c.Comparison = "Equal";
+            }
+            if (c.ConditionName != "FamilyHasChildrenAged")
+            {
+                c.Age = null;
             }
             c.AllConditions.Add(c.Id, c);
             if (c.ConditionName == "Group")
                 foreach (var rr in r.Elements())
-                    ImportClause(rr, c, newGuids, null);
+                    ImportClause(rr, c, newGuids);
             return c;
         }
         private static string Attribute(XElement r, string attr, string def = null)
@@ -220,7 +225,13 @@ namespace CmsData
             Guid g;
             return Guid.TryParse(a.Value, out g) ? g : Guid.NewGuid();
         }
-
+        private static bool AttributeBool(XElement r, string attr)
+        {
+            var a = r.Attributes(attr).FirstOrDefault();
+            if (a == null)
+                return false;
+            return a.ToBool();
+        }
         public static object TryParse(string s)
         {
             try
@@ -274,6 +285,12 @@ namespace CmsData
             if (!d.HasValue)
                 return;
             w.WriteAttributeString(name, d.ToString());
+        }
+        public static void WriteAttr(this XmlWriter w, string name, bool b, bool def = false)
+        {
+            if (b.Equals(def))
+                return;
+            w.WriteAttributeString(name, b.ToString());
         }
     }
 }
