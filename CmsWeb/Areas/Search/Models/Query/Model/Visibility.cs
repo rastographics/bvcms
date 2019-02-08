@@ -35,7 +35,7 @@ namespace CmsWeb.Areas.Search.Models
         public bool OrgStatusVisible => fieldMap.HasParam("OrgStatus");
         public bool OnlineRegVisible => fieldMap.HasParam("OnlineReg");
 
-        public bool AutoRun => Db.UserPreference("QueryAutoRun", "false").ToBool();
+        public bool AutoRun => (Db?.UserPreference("QueryAutoRun", "false") ?? "").ToBool();
 
         private List<FieldType> texttypes = new List<FieldType>()
         {

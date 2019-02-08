@@ -245,7 +245,7 @@ namespace CmsWeb.Areas.Search.Models
         {
             this.CopyPropertiesFrom(Selected);
         }
-        public bool UseEmployerNotTeacher => Db.Setting("UseEmployerNotTeacher");
-        public bool ShowAltNameOnSearchResults => Db.Setting("ShowAltNameOnSearchResults");
+        public bool UseEmployerNotTeacher => Db?.Setting("UseEmployerNotTeacher") ?? false;
+        public bool ShowAltNameOnSearchResults => Db?.Setting("ShowAltNameOnSearchResults") ?? false;
     }
 }
