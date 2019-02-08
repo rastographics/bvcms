@@ -1321,6 +1321,7 @@
     <Content Include="Migrations\20181115_add_recurring_amounts_disabled_column.sql" />
     <Content Include="Migrations\20181120_Update_GetContributionDetails_func.sql" />
     <Content Include="Migrations\20181206_create_RemoveFromEnrollmentHistory_proc.sql" />
+    <Content Include="Migrations\20190125_add_mission_trip_funding_page_fields.sql" />
     <Content Include="Migrations\20190106_ja-members-null-enrollmentdate-fix.sql" />
     <Content Include="Migrations\20181218_ja-members-not-included-attendance-fix.sql" />
     <Content Include="Migrations\20181211_update_inactive_recurring_amounts.sql" />

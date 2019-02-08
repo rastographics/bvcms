@@ -401,6 +401,7 @@ namespace CmsWeb.Models
                        SupporterId = sp.PeopleId,
                        GoerName = gp.Name,
                        GoerId = gp.PeopleId,
+                       OrgId = o.OrganizationId,
                        TripName = o.OrganizationName
                    };
         }
@@ -435,6 +436,7 @@ namespace CmsWeb.Models
                        SupporterId = sp.PeopleId,
                        GoerName = gp.Name,
                        GoerId = gp.PeopleId,
+                       OrgId = o.OrganizationId,
                        TripName = o.OrganizationName
                    };
         }
@@ -455,6 +457,7 @@ namespace CmsWeb.Models
                        SupporterId = sp.PeopleId,
                        GoerName = gp.Name,
                        GoerId = gp.PeopleId,
+                       OrgId = o.OrganizationId,
                        TripName = o.OrganizationName
                    };
         }
@@ -505,6 +508,7 @@ namespace CmsWeb.Models
             public string SupporterName { get; set; }
             public int? GoerId { get; set; }
             public int? SupporterId { get; set; }
+            public int? OrgId { get; set; }
             public string TripName { get; set; }
         }
         public class MissionTripBalanceInfo

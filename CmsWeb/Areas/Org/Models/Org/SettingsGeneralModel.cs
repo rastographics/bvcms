@@ -101,6 +101,15 @@ namespace CmsWeb.Areas.Org.Models
         [Display(Description = IsMissionTripDescription)]
         public bool IsMissionTrip { get; set; }
 
+        [Display(Description = TripFundingPagesEnableDescription)]
+        public bool TripFundingPagesEnable { get; set; }
+
+        [Display(Description = TripFundingPagesPublicDescription)]
+        public bool TripFundingPagesPublic { get; set; }
+
+        [Display(Description = TripFundingPagesShowAmountsDescription)]
+        public bool TripFundingPagesShowAmounts { get; set; }
+
         [Display(Description = NoCreditCardsDescription)]
         public bool NoCreditCards { get; set; }
 
@@ -156,6 +165,15 @@ This enables special handling for team handling and creation.
 ";
         private const string IsMissionTripDescription = @"
 Allows others to donate on behalf of a mission trip participant.
+";
+        private const string TripFundingPagesEnableDescription = @"
+Allows participants to view how much they still owe, a list of people who donated and their gifts on a single page.
+";
+        private const string TripFundingPagesPublicDescription = @"
+Used for fundraising. Each participants funding page will be public for anyone who has the link. This also changes the donation emails to include the funding page link.
+";
+        private const string TripFundingPagesShowAmountsDescription = @"
+Allows others to view how much each giver donated on the funding page for a participant.
 ";
         private const string NoCreditCardsDescription = @"
 Disallow Credit Cards on this org.

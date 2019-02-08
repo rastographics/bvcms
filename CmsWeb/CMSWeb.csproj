@@ -1785,6 +1785,8 @@
     <Content Include="Content\touchpoint\js\polyfills.urlSearchParams.js" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\OnePageGiving\NotActive.cshtml" />
     <Content Include="Areas\Figures\Web.config" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Giving\Goer.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Giving\Guest.cshtml" />
     <Content Include="Areas\MeetingCategory\Views\web.config" />
     <Content Include="Areas\MeetingCategory\Views\_ViewStart.cshtml" />
     <Content Include="Areas\MeetingCategory\Views\MeetingCategory\Index.cshtml" />

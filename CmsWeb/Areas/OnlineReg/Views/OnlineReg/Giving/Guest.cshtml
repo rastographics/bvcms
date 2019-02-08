@@ -1,0 +1,60 @@
+@using UtilityExtensions
+@using CmsWeb.Models
+@model CmsWeb.Areas.OnlineReg.Models.OnlineRegModel
+@{
+    Layout = "~/Views/Shared/onlinereg2.cshtml";
+    ViewBag.Title = Model.Header;
+
+}
+<div class="row content">
+    <div class="col-sm-8">
+        <h2>@Model.org.OrganizationName</h2>
+        <h4>@Model.MissionTripDates</h4>
+        <p>@Model.org.Description</p>
+    </div>
+    <div class="col-sm-4">
+        <h3>Support @Model.Goer.Name's goal</h3>
+        @if (Model.MissionTripRaised < Model.MissionTripCost)
+        {
+            <h5 class="amount"><strong>@Helper.CurrencyString(Model.MissionTripRaised)</strong> raised of <strong>@Helper.CurrencyString(Model.MissionTripCost)</strong> goal</h5>
+            <progress value="@Model.MissionTripRaised" max="@Model.MissionTripCost" style="display: block;width:100%;"></progress>
+            <a style="display:block;width:100%;margin:12px 0;" class="btn btn-primary btn-sm" href="/OnlineReg/@Model.org.OrganizationId?goerid=@Model.GoerId">Donate</a>
+        }
+        else
+        {
+            <h4>Goal met!</h4>
+            <progress value="100" max="100"></progress>
+        }
+
+        <h4><strong>Share</strong></h4>
+
+        @Helper.SocialShareButtons(Model.URL, $"{Model.Goer.Name}'s Fundraising for {Model.org.OrganizationName}")
+
+        @if (Model.Supporters != null && Model.Supporters.Any())
+        {
+            <h3>Recent Supporters</h3>
+            foreach (TransactionsModel.SupporterInfo supporter in @Model.Supporters)
+            {
+                <div class="row">
+                    @if (Model.org.TripFundingPagesShowAmounts)
+                    {
+                        <div class="col-xs-8">
+                            <span>@supporter.SupporterName</span>
+                        </div>
+                        <div class="col-xs-4">
+                            <span class="amount">@Helper.CurrencyString(supporter.gs.Amount)</span>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-xs-12">
+                            <span>@supporter.SupporterName</span>
+                        </div>
+                    }
+                </div>
+            }
+        }
+    </div>
+</div>
+
+@Helper.SocialButtonPopupScript()

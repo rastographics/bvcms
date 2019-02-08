@@ -18,6 +18,8 @@ namespace CmsWeb.Areas.Dialog.Models
         public Organization Organization;
         public List<OrgMemMemTag> OrgMemMemTags;
         public bool IsMissionTrip;
+        private bool TripFundingPagesEnable;
+        private bool TripFundingPagesPublic;
         public TransactionSummary TransactionSummary;
         public string NewGroup { get; set; }
         private int? orgId;
@@ -62,6 +64,8 @@ namespace CmsWeb.Areas.Dialog.Models
                          mm.Organization,
                          mm.OrgMemMemTags,
                          mm.Organization.IsMissionTrip,
+                         mm.Organization.TripFundingPagesEnable,
+                         mm.Organization.TripFundingPagesPublic,
                          ts = DbUtil.Db.ViewTransactionSummaries.SingleOrDefault(tt => tt.RegId == mm.TranId && tt.PeopleId == PeopleId && tt.OrganizationId == OrgId)
                      }).SingleOrDefault();
             if (i == null)
@@ -75,6 +79,8 @@ namespace CmsWeb.Areas.Dialog.Models
             Name = i.Name;
 
             IsMissionTrip = i.IsMissionTrip ?? false;
+            TripFundingPagesEnable = i.TripFundingPagesEnable;
+            TripFundingPagesPublic = i.TripFundingPagesPublic;
             AmtFee = i.ts?.IndPaid + i.ts?.IndDue;
             AmtDonation = i.ts?.IndAmt - AmtFee;
             AmtCoupon = i.ts?.TotCoupon;
@@ -323,6 +329,10 @@ namespace CmsWeb.Areas.Dialog.Models
                     OrgMember = DbUtil.Db.OrganizationMembers.Single(mm => mm.OrganizationId == OrgId && mm.PeopleId == PeopleId);
                 }
 
+                if (IsMissionTrip && TripFundingPagesEnable && TripFundingPagesPublic)
+                {
+                    return supportLink = DbUtil.Db.ServerLink($"/OnlineReg/{OrgId}/Giving/{PeopleId}");
+                }
                 if (IsMissionTrip && OrgMember.MemberTypeId == MemberTypeCode.Member)
                 {
                     return supportLink = DbUtil.Db.ServerLink($"/OnlineReg/{OrgId}?goerid={PeopleId}");

@@ -29,7 +29,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             Response.NoCache();
             try
             {
-                var m = new OnlineRegModel(Request, id, testing, email, login, source);
+                var m = new OnlineRegModel(Request, CurrentDatabase, id, testing, email, login, source);
                 if (m.org != null && m.org.IsMissionTrip == true)
                     m.PrepareMissionTrip(gsid, goerid);
 
@@ -379,6 +379,38 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             base.Initialize(requestContext);
             requestContext.HttpContext.Items["controller"] = this;
+        }
+
+        [HttpGet]
+        [Route("~/OnlineReg/{id:int}/Giving/")]
+        [Route("~/OnlineReg/{id:int}/Giving/{goerid:int}")]
+        public ActionResult Giving(int id, int? goerid, int? gsid)
+        {
+            var m = new OnlineRegModel(Request, CurrentDatabase, id, false, null, null, null);
+            if (m.org != null && m.org.IsMissionTrip == true && m.org.TripFundingPagesEnable == true)
+            {
+                m.PrepareMissionTrip(gsid, goerid);
+            } else
+            {
+                return new HttpNotFoundResult();
+            }
+
+            SetHeaders(m);
+            if (m.MissionTripCost == null)
+            {
+                // goer specified isn't part of this trip
+                return new HttpNotFoundResult();
+            }
+            if (Util.UserPeopleId == goerid)
+            {
+                return View("Giving/Goer", m);
+            } else if (m.org.TripFundingPagesPublic)
+            {
+                return View("Giving/Guest", m);
+            } else
+            {
+                return new HttpNotFoundResult();
+            }
         }
     }
 }

@@ -19,18 +19,20 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public OnlineRegModel()
         {
             HttpContext.Current.Items["OnlineRegModel"] = this;
+            CurrentDatabase = DbUtil.Db;
         }
 
-        public OnlineRegModel(HttpRequestBase req, int? id, bool? testing, string email, bool? login, string source)
+        public OnlineRegModel(HttpRequestBase req, CMSDataContext db, int? id, bool? testing, string email, bool? login, string source)
             : this()
         {
+            CurrentDatabase = db;
             Orgid = id;
             if (req?.Url != null)
             {
                 URL = req.Url.OriginalString;
             }
 
-            if (DbUtil.Db.Roles.Any(rr => rr.RoleName == "disabled"))
+            if (CurrentDatabase.Roles.Any(rr => rr.RoleName == "disabled"))
             {
                 throw new Exception("Site is disabled for maintenance, check back later");
             }
@@ -108,7 +110,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             try
             {
-                var m = new OnlineRegModel(null, id, false, null, null, null);
+                var m = new OnlineRegModel(null, DbUtil.Db, id, false, null, null, null);
                 return m.DescriptionForPayment;
             }
             catch (Exception)
