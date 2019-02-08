@@ -36,11 +36,17 @@ namespace CmsData
         {
             get
             {
-                if (Util.IsDebug())
-                    return ConfigurationManager.AppSettings["cmshost"];
+                string defaultHost = null;
+                if (Util.IsDebug()) 
+                {
+                    defaultHost = ConfigurationManager.AppSettings["cmshost"];
+                }
 
                 // choose DefaultHost setting first
-                var defaultHost = Setting("DefaultHost", "");
+                if (!defaultHost.HasValue())
+                {
+                    defaultHost = Setting("DefaultHost", "");
+                }
 
                 // if no DefaultHost setting exists, use current URL
                 if (!defaultHost.HasValue() && HttpContext.Current != null)
