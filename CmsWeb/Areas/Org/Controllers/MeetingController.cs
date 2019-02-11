@@ -2,6 +2,7 @@ using CmsData;
 using CmsData.Codes;
 using CmsWeb.Areas.Org.Models;
 using CmsWeb.Lifecycle;
+using CmsWeb.Services.MeetingCategory;
 using System;
 using System.Collections.Generic;
 using System.Data.Linq;
@@ -16,8 +17,11 @@ namespace CmsWeb.Areas.Org.Controllers
     [RouteArea("Org", AreaPrefix = "Meeting"), Route("{action}/{id?}")]
     public class MeetingController : CmsStaffController
     {
-        public MeetingController(IRequestManager requestManager) : base(requestManager)
+        private readonly IMeetingCategoryService _meetingCategoryService;
+
+        public MeetingController(IRequestManager requestManager, IMeetingCategoryService meetingCategoryService) : base(requestManager)
         {
+            _meetingCategoryService = meetingCategoryService;
         }
 
         [Route("~/Meeting/{id:int}")]
@@ -145,13 +149,11 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost]
         public JsonResult MeetingCategories()
         {
-            var q = from c in CurrentDatabase.MeetingCategories
-                    select new
-                    {
-                        Code = HttpUtility.HtmlAttributeEncode(c.Description),
-                        Value = HttpUtility.HtmlAttributeEncode(c.Description)
-                    };
-            var result = Json(q.ToDictionary(k => k.Code, v => v.Value));
+            var q = _meetingCategoryService.GetMeetingCategories(false);
+            var result = Json(q.ToDictionary(
+                c => HttpUtility.HtmlAttributeEncode(c.Description),
+                c => HttpUtility.HtmlAttributeEncode(c.Description))
+            );
             return result;
         }
 
