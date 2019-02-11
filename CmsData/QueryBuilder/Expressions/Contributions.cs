@@ -335,19 +335,7 @@ namespace CmsData
         }
         internal Expression ContributionAmountBothJointHistory()
         {
-            DateTime? enddt = null;
-            if (!EndDate.HasValue && StartDate.HasValue)
-            {
-                enddt = StartDate.Value.AddHours(24);
-            }
-
-            if (EndDate.HasValue)
-            {
-                enddt = EndDate.Value.AddHours(24);
-            }
-
-            return ContributionAmountBothJoint(StartDate, enddt);
-
+            return ContributionAmountBothJoint(StartDate, EndDate);
         }
         internal Expression ContributionAmountSinceSetting()
         {
