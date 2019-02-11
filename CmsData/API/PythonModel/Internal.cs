@@ -26,12 +26,31 @@ namespace CmsData
             Data = new DynamicData(dictionary);
             db = DbUtil.Create(dbname);
         }
-
+        
         public PythonModel(string dbname, Dictionary<string, object> dict)
         {
             dictionary = dict;
             Data = new DynamicData(dictionary);
             db = DbUtil.Create(dbname);
+        }
+
+        /// <summary>
+        /// Construct with a data context object
+        /// </summary>
+        /// <param name="dbContext"></param>
+        
+        public PythonModel(CMSDataContext dbContext)
+        {
+            db = dbContext;
+            dictionary = new Dictionary<string, object>();
+            Data = new DynamicData(dictionary);
+        }
+
+        public PythonModel(CMSDataContext dbContext, Dictionary<string, object> dict)
+        {
+            db = dbContext;
+            dictionary = dict;
+            Data = new DynamicData(dictionary);
         }
 
         /// <summary>
