@@ -25,6 +25,10 @@ namespace CmsWeb.Areas.Search.Models
             admin = Roles.IsUserInRole("Admin");
         }
 
+        public SavedQueryModel() : base()
+        {
+        }
+
         public override IQueryable<Query> DefineModelList()
         {
             var q = from c in Db.Queries

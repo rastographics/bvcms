@@ -24,6 +24,7 @@ namespace CmsWeb.Areas.Search.Models
 
         public Query query;
 
+        public SavedQueryInfo() { }
         public SavedQueryInfo(CMSDataContext db)
         {
             Db = db;
