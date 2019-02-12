@@ -11,7 +11,7 @@
     <div class="col-sm-8">
         <h2>@Model.org.OrganizationName</h2>
         <h4>@Model.MissionTripDates</h4>
-        <p>@Model.org.Description</p>
+        <p>@Html.Raw(Model.org.Description)</p>
     </div>
     <div class="col-sm-4">
         <h3>@Model.Goer.Name's Fundraising</h3>
@@ -53,7 +53,7 @@
             @Helper.SocialShareButtons(Model.URL, $"{Model.Goer.Name}'s Fundraising for {Model.org.OrganizationName}")
 
             <p>Or copy this link:</p>
-            <input type="text" value="@Model.URL" readonly />
+            <input type="text" style="width:100%;" value="@Model.URL" readonly />
         }
     </div>
 </div>

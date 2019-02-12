@@ -101,13 +101,13 @@ namespace CmsWeb.Areas.Org.Models
         [Display(Description = IsMissionTripDescription)]
         public bool IsMissionTrip { get; set; }
 
-        [Display(Description = TripFundingPagesEnableDescription)]
+        [Display(Name = "Enable Funding Pages", Description = TripFundingPagesEnableDescription)]
         public bool TripFundingPagesEnable { get; set; }
 
-        [Display(Description = TripFundingPagesPublicDescription)]
+        [Display(Name = "Enable Public Funding Pages", Description = TripFundingPagesPublicDescription)]
         public bool TripFundingPagesPublic { get; set; }
 
-        [Display(Description = TripFundingPagesShowAmountsDescription)]
+        [Display(Name = "Show Public Funding Amounts", Description = TripFundingPagesShowAmountsDescription)]
         public bool TripFundingPagesShowAmounts { get; set; }
 
         [Display(Description = NoCreditCardsDescription)]
