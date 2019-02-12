@@ -237,7 +237,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public bool IsCommunityGroup()
         {
-            return org != null && org.OrganizationType.Code == "CG";
+            return org != null && org.OrganizationType?.Code == "CG";
         }
     }
 }
