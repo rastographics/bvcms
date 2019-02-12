@@ -31,7 +31,12 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             {
                 var m = new OnlineRegModel(Request, CurrentDatabase, id, testing, email, login, source);
                 if (m.org != null && m.org.IsMissionTrip == true)
-                    m.PrepareMissionTrip(gsid, goerid);
+                {
+                    if (gsid != null || goerid != null)
+                    {
+                        m.PrepareMissionTrip(gsid, goerid);
+                    }
+                }
 
                 SetHeaders(m);
                 var pid = m.CheckRegisterLink(registertag);
