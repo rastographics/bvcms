@@ -23,16 +23,18 @@ namespace CmsWeb.Areas.Dialog.Controllers
         {
             model.UpdateLongRunningOp(CurrentDatabase, MoveOrgMembersModel.Op);
 
-            if (!model.Started.HasValue)
+            if (model.Started.HasValue)
             {
-                if (model.TargetId == 0)
-                {
-                    return Content("!Target required");
-                }
-
-                DbUtil.LogActivity("Move Org Members");
-                model.ProcessMove(CurrentDatabase);
+                return View(model);
             }
+
+            if (model.TargetId == 0)
+            {
+                return Content("!Target required");
+            }
+
+            DbUtil.LogActivity("Move Org Members");
+            model.ProcessMove(CurrentDatabase);
             return View(model);
         }
     }
