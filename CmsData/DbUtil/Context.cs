@@ -1740,16 +1740,8 @@ This search uses multiple steps which cannot be duplicated in a single query.
         }
         public DbConnection ReadonlyConnection()
         {
-            var pw = ConfigurationManager.AppSettings["readonlypassword"];
-            if (!pw.HasValue())
-                return Connection;
-            var cb = new SqlConnectionStringBuilder(ConnectionString) {IntegratedSecurity = false};
             var finance = CurrentUser?.InRole("Finance") ?? true;
-            var dbname = Util.PickFirst(cb.InitialCatalog, $"CMS_{Host}");
-            cb.UserID = (finance ? $"ro-{dbname}-finance" : $"ro-{dbname}");
-            cb.Password = pw;
-            cb.PersistSecurityInfo = true;
-            return new SqlConnection(cb.ConnectionString);
+            return new SqlConnection(finance ? Util.ConnectionStringReadOnlyFinance : Util.ConnectionStringReadOnly);
         }
         public void Log2Content(string file, string data)
         {
