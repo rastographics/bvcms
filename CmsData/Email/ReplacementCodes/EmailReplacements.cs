@@ -38,7 +38,8 @@ namespace CmsData
             + MatchMasterLinkRe + "|"
             + MatchVolReqLinkRe + "|"
             + MatchVolSubLinkRe + "|"
-            + MatchVoteLinkRe;
+            + MatchVoteLinkRe + "|"
+            + MatchUnlayerLinkRe;
 
         private const string Pattern1 = "(<style.*?</style>|" + MatchSettingUrlRe + "|" + MatchCodeRe + "|" + MatchRes + "|" + MatchDropFromOrgTagRe + ")";
         private const string Pattern2 = "(" + MatchCodeRe + "|" + MatchRes + ")";

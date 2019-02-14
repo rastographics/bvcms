@@ -281,12 +281,14 @@
         smallGroupRow: $('#small_group.row'),
         smallGroupInput: $('#small_group input'),
         secondaryRows: $('#small_group.row, #message.row, #confirmation.row'),
-        resultRow: $('#result.row'),
+        insideInput: $('#inside input'),
+        resultRow: $('#inside.row, #result.row'),
         resultInput: $('#result.row input'),
 
         init: function () {
             // toggle visibility
             $('#create-special-link').click(function () {
+                specialLinks.reset();
                 specialLinks.el.modal('show');
             });
             $('.close-special-links-modal').click(function () {
@@ -308,9 +310,15 @@
             specialLinks.refreshForm();
         },
 
+        reset: function () {
+            specialLinks.typeSelect.val('0');
+            specialLinks.refreshForm();
+        },
+
         refreshForm: function () {
             var linkType = specialLinks.typeSelect.val();
             var linkText = 'https://' + linkType;
+            var insideText = specialLinks.insideInput.val();
             var orgId = specialLinks.orgInput.val();
 
             switch (linkType) {
@@ -334,12 +342,15 @@
                     specialLinks.orgRow.hide();
                     specialLinks.meetingRow.show();
                     specialLinks.secondaryRows.show();
-                    specialLinks.smallGroupRow.hide();
                     var message = specialLinks.messageInput.val();
                     var meetingId = specialLinks.meetingInput.val();
                     var confirmation = specialLinks.confirmationSelect.val();
+                    var smallGroup = specialLinks.smallGroupInput.val();
                     if (meetingId.length) {
                         linkText += '?meeting=' + meetingId + '&confirm=' + confirmation;
+                        if (smallGroup.length) {
+                            linkText += '&group=' + smallGroup;
+                        }
                         if (message.length) {
                             linkText += '&msg=' + message;
                         }
@@ -353,7 +364,7 @@
                     specialLinks.meetingRow.hide();
                     specialLinks.secondaryRows.show();
                     message = specialLinks.messageInput.val();
-                    var smallGroup = specialLinks.smallGroupInput.val();
+                    smallGroup = specialLinks.smallGroupInput.val();
                     confirmation = specialLinks.confirmationSelect.val();
                     if (orgId.length) {
                         linkText += '?org=' + orgId + '&confirm=' + confirmation;
@@ -375,6 +386,9 @@
                     specialLinks.meetingRow.hide();
                     specialLinks.formInput.val('');
                     break;
+            }
+            if (linkText.length && insideText.length) {
+                linkText += '&text=' + insideText;
             }
 
             specialLinks.resultInput.val(linkText);
