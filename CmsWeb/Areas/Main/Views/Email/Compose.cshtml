@@ -327,7 +327,7 @@
                         </div>
                         <div class="col-sm-8">
                             <select class="form-control" id="special_links_type" name="special_links_type">
-                                <option selected>&lt;not set&gt;</option>
+                                <option value="0" selected>&lt;not set&gt;</option>
                                 <option value="registerlink">Register Link (Individual)</option>
                                 <option value="registerlink2">Register Link 2 (Family)</option>
                                 <option value="regretslink">Regrets Link</option>
@@ -377,9 +377,17 @@
                         </div>
                         <div class="col-sm-8">
                             <select class="form-control" name="confirmation">
-                                <option value="yes" selected>Yes, send confirmation</option>
-                                <option value="no">No, do not send confirmation</option>
+                                <option value="true" selected>Yes, send confirmation</option>
+                                <option value="false">No, do not send confirmation</option>
                             </select>
+                        </div>
+                    </div>
+                    <div id="inside" class="row form-group">
+                        <div class="col-sm-4">
+                            <label for="inside">Link Text</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" name="inside" />
                         </div>
                     </div>
                 </form>

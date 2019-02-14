@@ -364,6 +364,10 @@ namespace CmsData
                         return SqlLookupReplacement(code, eq);
                     }
 
+                    if (UnlayerLinkRe.IsMatch(code))
+                    {
+                        return UnlayerLinkReplacement(code, eq);
+                    }
                     break;
             }
             return code; // nothing matched
