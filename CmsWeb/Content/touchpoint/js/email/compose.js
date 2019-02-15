@@ -282,10 +282,12 @@
         smallGroupInput: $('#small_group input'),
         secondaryRows: $('#small_group.row, #message.row, #confirmation.row'),
         insideInput: $('#inside input'),
-        resultRow: $('#inside.row, #result.row'),
+        insideRow: $('#inside.row'),
         resultInput: $('#result.row input'),
 
         init: function () {
+            $('#result.row').hide();
+
             // toggle visibility
             $('#create-special-link').click(function () {
                 specialLinks.reset();
@@ -294,7 +296,15 @@
             $('.close-special-links-modal').click(function () {
                 specialLinks.el.modal('hide');
             });
-
+            $('.done-special-links-modal').click(function () {
+                var linktext = specialLinks.resultInput.val();
+                if (linktext.length) {
+                    prompt("Copy and paste this into the email body:", specialLinks.resultInput.val());
+                    specialLinks.el.modal('hide');
+                } else {
+                    alert("All fields are required");
+                }
+            });
 
             // select contents of result
             specialLinks.resultInput.click(function () {
@@ -317,7 +327,7 @@
 
         refreshForm: function () {
             var linkType = specialLinks.typeSelect.val();
-            var linkText = 'https://' + linkType;
+            var linkText = '{{https://' + linkType;
             var insideText = specialLinks.insideInput.val();
             var orgId = specialLinks.orgInput.val();
 
@@ -331,7 +341,7 @@
                     specialLinks.meetingRow.hide();
                     specialLinks.secondaryRows.hide();
                     if (orgId.length) {
-                        linkText += '?org=' + orgId;
+                        linkText += '/?org=' + orgId;
                     } else {
                         linkText = '';
                     }
@@ -347,7 +357,7 @@
                     var confirmation = specialLinks.confirmationSelect.val();
                     var smallGroup = specialLinks.smallGroupInput.val();
                     if (meetingId.length) {
-                        linkText += '?meeting=' + meetingId + '&confirm=' + confirmation;
+                        linkText += '/?meeting=' + meetingId + '&confirm=' + confirmation;
                         if (smallGroup.length) {
                             linkText += '&group=' + smallGroup;
                         }
@@ -367,7 +377,7 @@
                     smallGroup = specialLinks.smallGroupInput.val();
                     confirmation = specialLinks.confirmationSelect.val();
                     if (orgId.length) {
-                        linkText += '?org=' + orgId + '&confirm=' + confirmation;
+                        linkText += '/?org=' + orgId + '&confirm=' + confirmation;
                         if (message.length) {
                             linkText += '&msg=' + message;
                         }
@@ -387,16 +397,13 @@
                     specialLinks.formInput.val('');
                     break;
             }
-            if (linkText.length && insideText.length) {
-                linkText += '&text=' + insideText;
+            if (insideText.length) {
+                linkText += '&text=' + insideText + '}}';
+            } else {
+                linkText = '';
             }
 
             specialLinks.resultInput.val(linkText);
-            if (linkText.length) {
-                specialLinks.resultRow.show();
-            } else {
-                specialLinks.resultRow.hide();
-            }
         }
     };
 

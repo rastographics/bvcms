@@ -18,19 +18,24 @@ namespace CmsData
         {
             var list = new Dictionary<string, OneTimeLink>();
 
+            // remove the non url parts and reformat
+            code = code.Replace("{", string.Empty).Replace("}", string.Empty);
+            code = code.Replace("&amp;", "&");
+            code = HttpUtility.UrlDecode(code);
+
             // parse the special link url to get the component parts
-            Uri Uri = new Uri(code);
-            string type = Uri.Scheme;
-            string orgId = HttpUtility.ParseQueryString(Uri.Query).Get("org");
-            string meetingId = HttpUtility.ParseQueryString(Uri.Query).Get("meeting");
-            string groupId = HttpUtility.ParseQueryString(Uri.Query).Get("group");
-            string confirm = HttpUtility.ParseQueryString(Uri.Query).Get("confirm");
-            string message = HttpUtility.ParseQueryString(Uri.Query).Get("msg");
+            Uri SpecialLink = new Uri(code);
+            string type = SpecialLink.Host;
+            string orgId = HttpUtility.ParseQueryString(SpecialLink.Query).Get("org");
+            string meetingId = HttpUtility.ParseQueryString(SpecialLink.Query).Get("meeting");
+            string groupId = HttpUtility.ParseQueryString(SpecialLink.Query).Get("group");
+            string confirm = HttpUtility.ParseQueryString(SpecialLink.Query).Get("confirm");
+            string message = HttpUtility.ParseQueryString(SpecialLink.Query).Get("msg");
 
             // result variables
             string qs;      // the unique link combination for the db
             string url = "";
-            string inside = HttpUtility.ParseQueryString(Uri.Query).Get("text");  // the link text
+            string inside = HttpUtility.ParseQueryString(SpecialLink.Query).Get("text");  // the link text
 
             // set some defaults for any missing properties
             bool showfamily = false;
