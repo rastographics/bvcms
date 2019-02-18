@@ -79,11 +79,17 @@ namespace CmsWeb.Models
             if (body.Contains("@StartDt"))
             {
                 p.Add("@StartDt", new DateTime(DateTime.Now.Year, 1, 1));
+#if DEBUG
+                body = Regex.Replace(body, "^declare @StartDt", "--$&", RegexOptions.Multiline | RegexOptions.IgnoreCase);
+#endif
             }
 
             if (body.Contains("@EndDt"))
             {
                 p.Add("@EndDt", DateTime.Today);
+#if DEBUG
+                body = Regex.Replace(body, "^declare @EndDt", "--$&", RegexOptions.Multiline | RegexOptions.IgnoreCase);
+#endif
             }
 
             if (body.Contains("@userid", ignoreCase: true))
