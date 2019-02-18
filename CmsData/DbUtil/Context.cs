@@ -594,6 +594,11 @@ This search uses multiple steps which cannot be duplicated in a single query.
         }
         public Tag TagCurrent()
         {
+            if (Util2.CurrentTag.StartsWith("QueryTag:"))
+            {
+                return Tags.FirstOrDefault(t =>
+                    t.Name == Util2.CurrentTagName && t.TypeId == DbUtil.TagTypeId_QueryTags);
+            }
             return FetchOrCreateTag(Util2.CurrentTagName, Util2.CurrentTagOwnerId, DbUtil.TagTypeId_Personal);
         }
         //public string NewPeopleEmailAddressx
