@@ -266,6 +266,148 @@
     });
 
     $('#Subject').focus();
+
+    // special links window
+    var specialLinks = {
+        el: $('#special-links-modal'),
+        typeSelect: $('#special_links_type'),
+        formInput: $('#special_links_form input'),
+        orgRow: $('#org_id.row'),
+        orgInput: $('#org_id input'),
+        meetingRow: $('#meeting_id.row'),
+        meetingInput: $('#meeting_id input'),
+        messageInput: $('#message input'),
+        confirmationSelect: $('#confirmation select'),
+        smallGroupRow: $('#small_group.row'),
+        smallGroupInput: $('#small_group input'),
+        secondaryRows: $('#small_group.row, #message.row, #confirmation.row'),
+        insideInput: $('#inside input'),
+        insideRow: $('#inside.row'),
+        resultInput: $('#result.row input'),
+
+        init: function () {
+            $('#result.row').hide();
+
+            // toggle visibility
+            $('#create-special-link').click(function () {
+                specialLinks.reset();
+                specialLinks.el.modal('show');
+            });
+            $('.close-special-links-modal').click(function () {
+                specialLinks.el.modal('hide');
+            });
+            $('.done-special-links-modal').click(function () {
+                var linktext = specialLinks.resultInput.val();
+                if (linktext.length) {
+                    prompt("Copy and paste this into the email body:", specialLinks.resultInput.val());
+                    specialLinks.el.modal('hide');
+                } else {
+                    alert("All fields are required");
+                }
+            });
+
+            // select contents of result
+            specialLinks.resultInput.click(function () {
+                $(this).select();
+            });
+
+            // update result row and toggle inputs
+            specialLinks.typeSelect.change(specialLinks.refreshForm);
+            specialLinks.confirmationSelect.change(specialLinks.refreshForm);
+            specialLinks.formInput.on('input', specialLinks.refreshForm);
+
+            // init
+            specialLinks.refreshForm();
+        },
+
+        reset: function () {
+            specialLinks.typeSelect.val('0');
+            specialLinks.refreshForm();
+        },
+
+        refreshForm: function () {
+            var linkType = specialLinks.typeSelect.val();
+            var linkText = '{{https://' + linkType;
+            var insideText = specialLinks.insideInput.val();
+            var orgId = specialLinks.orgInput.val();
+
+            switch (linkType) {
+                case 'registerlink':
+                case 'registerlink2':
+                case 'sendlink':
+                case 'sendlink2':
+                case 'supportlink':
+                    specialLinks.orgRow.show();
+                    specialLinks.meetingRow.hide();
+                    specialLinks.secondaryRows.hide();
+                    if (orgId.length) {
+                        linkText += '/?org=' + orgId;
+                    } else {
+                        linkText = '';
+                    }
+                    break;
+
+                case 'rsvplink':
+                case 'regretslink':
+                    specialLinks.orgRow.hide();
+                    specialLinks.meetingRow.show();
+                    specialLinks.secondaryRows.show();
+                    var message = specialLinks.messageInput.val();
+                    var meetingId = specialLinks.meetingInput.val();
+                    var confirmation = specialLinks.confirmationSelect.val();
+                    var smallGroup = specialLinks.smallGroupInput.val();
+                    if (meetingId.length) {
+                        linkText += '/?meeting=' + meetingId + '&confirm=' + confirmation;
+                        if (smallGroup.length) {
+                            linkText += '&group=' + smallGroup;
+                        }
+                        if (message.length) {
+                            linkText += '&msg=' + message;
+                        }
+                    } else {
+                        linkText = '';
+                    }
+                    break;
+
+                case 'votelink':
+                    specialLinks.orgRow.show();
+                    specialLinks.meetingRow.hide();
+                    specialLinks.secondaryRows.show();
+                    message = specialLinks.messageInput.val();
+                    smallGroup = specialLinks.smallGroupInput.val();
+                    confirmation = specialLinks.confirmationSelect.val();
+                    if (orgId.length) {
+                        linkText += '/?org=' + orgId + '&confirm=' + confirmation;
+                        if (message.length) {
+                            linkText += '&msg=' + message;
+                        }
+                        if (smallGroup.length) {
+                            linkText += '&group=' + smallGroup;
+                        }
+                    } else {
+                        linkText = '';
+                    }
+                    break;
+
+                default:
+                    linkText = '';
+                    specialLinks.secondaryRows.hide();
+                    specialLinks.orgRow.hide();
+                    specialLinks.meetingRow.hide();
+                    specialLinks.formInput.val('');
+                    break;
+            }
+            if (insideText.length) {
+                linkText += '&text=' + insideText + '}}';
+            } else {
+                linkText = '';
+            }
+
+            specialLinks.resultInput.val(linkText);
+        }
+    };
+
+    $(document).ready(specialLinks.init);
 });
 
 
