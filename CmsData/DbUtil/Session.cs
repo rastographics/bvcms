@@ -134,6 +134,10 @@ namespace CmsData
         {
             get
             {
+                if (CurrentTag.StartsWith("QueryTag:"))
+                {
+                    return CurrentTag.GetCsvToken(2, 2, ":");
+                }
                 string tag = CurrentTag;
                 var a = tag.Split('!');
                 if(a[0].ToInt2() > 0)
