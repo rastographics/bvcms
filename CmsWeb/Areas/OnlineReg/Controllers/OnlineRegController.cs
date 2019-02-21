@@ -27,10 +27,13 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             Response.NoCache();
             try
             {
+                var m = new OnlineRegModel(Request, CurrentDatabase, id, testing, email, login, source);
+
                 Session["Campus"] = Request.QueryString["campus"];
                 Session["DefaultFunds"] = Request.QueryString["funds"];
-                
-                var m = new OnlineRegModel(Request, CurrentDatabase, id, testing, email, login, source);
+                m.Campus = Session["Campus"]?.ToString();
+                m.DefaultFunds = Session["DefaultFunds"]?.ToString();
+
                 if (m.org != null && m.org.IsMissionTrip == true)
                 {
                     if (gsid != null || goerid != null)

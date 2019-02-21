@@ -712,9 +712,17 @@ Total Fee paid for this registration session: {ts?.TotPaid:C}<br/>
                 DbUtil.Db.SubmitChanges();
             }
 
+            var parameters = new List<string>
+            {
+                $"{(!string.IsNullOrWhiteSpace(Campus) ? $"campus={Campus}" : string.Empty)}",
+                $"{(!string.IsNullOrWhiteSpace(DefaultFunds) ? $"funds={DefaultFunds}" : string.Empty)}"
+            };
+
+            var extraQueryString = string.Join("&", parameters.Where(i => !string.IsNullOrEmpty(i)));
+
             p.SendOneTimeLink(
                 DbUtil.Db.StaffPeopleForOrg(Orgid.Value).First().FromEmail,
-                DbUtil.Db.ServerLink("/OnlineReg/ManageGiving/"), c.Title, c.Body);
+                DbUtil.Db.ServerLink($"/OnlineReg/ManageGiving/"), c.Title, c.Body, extraQueryString);
             Log("SendOneTimeLinkManageGiving");
             return ConfirmEnum.ConfirmAccount;
         }
