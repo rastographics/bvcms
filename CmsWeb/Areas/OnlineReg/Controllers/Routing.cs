@@ -47,7 +47,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             link = RouteManageGivingSubscriptionsPledgeVolunteer(m);
             if(link.HasValue())
                 if (m.ManageGiving()) // use Direct ActionResult instead of redirect
-                    return ManageGiving(m.Orgid.ToString(), m.testing);
+                    return ManageGiving(m.Orgid.ToString(), m.testing, m.DefaultFundIds);
                 else if (m.RegisterLinkMaster())
                     return Redirect(link);
                 else
@@ -90,7 +90,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (m.ManagingSubscriptions())
                 return $"/OnlineReg/ManageSubscriptions/{m.masterorgid}";
             if (m.ManageGiving())
-                return $"/OnlineReg/ManageGiving/{m.Orgid}";
+                return $"/OnlineReg/ManageGiving/{m.Orgid}{(!string.IsNullOrWhiteSpace(m.DefaultFundIds) ? $"?funds={m.DefaultFundIds}" : string.Empty)}";
             if (m.OnlinePledge())
                 return $"/OnlineReg/ManagePledge/{m.Orgid}";
             if (m.ChoosingSlots())
