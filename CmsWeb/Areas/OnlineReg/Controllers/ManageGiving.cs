@@ -41,7 +41,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         }
 
         [HttpGet]
-        public ActionResult ManageGiving(string id, bool? testing)
+        public ActionResult ManageGiving(string id, bool? testing, string funds)
         {
             if (!id.HasValue())
                 return Message("bad link");
@@ -49,7 +49,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             var td = TempData["PeopleId"];
             if (td != null)
             {
-                m = new ManageGivingModel(td.ToInt(), id.ToInt());
+                m = new ManageGivingModel(td.ToInt(), id.ToInt(), funds);
                 if (m.person == null)
                     return Message("person not found");
             }
@@ -69,7 +69,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 if (ot.Expires.HasValue && ot.Expires < DateTime.Now)
                     return Content("link expired");
                 var a = ot.Querystring.Split(',');
-                m = new ManageGivingModel(a[1].ToInt(), a[0].ToInt());
+                m = new ManageGivingModel(a[1].ToInt(), a[0].ToInt(), funds);
                 if (m.person == null)
                     return Message("person not found");
                 ot.Used = true;
