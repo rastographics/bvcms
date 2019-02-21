@@ -32,11 +32,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 URL = req.Url.OriginalString;
             }
 
-            if (req?.QueryString["funds"] != null)
-            {
-                DefaultFundIds = req.QueryString["funds"];
-            }
-
             if (CurrentDatabase.Roles.Any(rr => rr.RoleName == "disabled"))
             {
                 throw new Exception("Site is disabled for maintenance, check back later");
