@@ -27,6 +27,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             Response.NoCache();
             try
             {
+                Session["Campus"] = Request.QueryString["campus"];
+                Session["DefaultFunds"] = Request.QueryString["funds"];
+                
                 var m = new OnlineRegModel(Request, CurrentDatabase, id, testing, email, login, source);
                 if (m.org != null && m.org.IsMissionTrip == true)
                 {

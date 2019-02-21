@@ -41,12 +41,14 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         }
 
         [HttpGet]
-        public ActionResult ManageGiving(string id, bool? testing, string funds)
+        public ActionResult ManageGiving(string id, bool? testing)
         {
             if (!id.HasValue())
                 return Message("bad link");
             ManageGivingModel m = null;
             var td = TempData["PeopleId"];
+
+            var funds = Session["DefaultFunds"]?.ToString();
             if (td != null)
             {
                 m = new ManageGivingModel(td.ToInt(), id.ToInt(), funds);
