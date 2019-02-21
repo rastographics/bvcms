@@ -33,9 +33,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 }
             }
         }
-
-        public string DefaultFundIds { get; set; }
-
+        
         private Organization _masterOrg;
         public Organization masterorg
         {
