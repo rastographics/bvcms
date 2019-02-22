@@ -10,12 +10,15 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 {
     public partial class OnlineRegController
     {
-        public ActionResult ManagePledge(string id)
+        public ActionResult ManagePledge(string id, string campus = "")
         {
             if (!id.HasValue())
                 return Content("bad link");
             ManagePledgesModel m = null;
             var td = TempData["PeopleId"];
+
+            SetCampus(campus);
+
             if (td != null)
                 m = new ManagePledgesModel(td.ToInt(), id.ToInt());
             else
@@ -48,15 +51,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             ManageGivingModel m = null;
             var td = TempData["PeopleId"];
 
-            if (!string.IsNullOrWhiteSpace(campus))
-            {
-                Session["Campus"] = campus;
-            }
-
-            if (!string.IsNullOrWhiteSpace(funds))
-            {
-                Session["DefaultFunds"] = funds;
-            }
+            SetCampus(campus);
+            SetDefaultFunds(funds);
 
             funds = Session["DefaultFunds"]?.ToString();
 
@@ -180,6 +176,15 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             m.Log("Remove");
             TempData["managegiving"] = m;
             return Json(new { Url = Url.Action("ConfirmRecurringGiving") });
+        }
+
+        private void SetDefaultFunds(string funds)
+        {
+            if (!string.IsNullOrWhiteSpace(funds))
+            {
+                Session["DefaultFunds"] = funds;
+            }
+
         }
     }
 }

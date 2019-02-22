@@ -128,7 +128,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
         [Route("ManageVolunteer/{id}")]
         [Route("ManageVolunteer/{id}/{pid:int}")]
-        public ActionResult ManageVolunteer(string id, int? pid)
+        public ActionResult ManageVolunteer(string id, int? pid, string campus = "")
         {
             if (!id.HasValue())
             {
@@ -138,6 +138,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             VolunteerModel m = null;
 
             var td = TempData["PeopleId"];
+
+            SetCampus(campus);
+
             if (td != null)
             {
                 m = new VolunteerModel(id.ToInt(), td.ToInt());

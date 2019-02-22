@@ -139,6 +139,12 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     DbUtil.Content("OnlineRegBottom", ""));
             }
         }
-        
+        private void SetCampus(string campus)
+        {
+            if (!string.IsNullOrWhiteSpace(campus))
+            {
+                Session["Campus"] = campus;
+            }
+        }
     }
 }
