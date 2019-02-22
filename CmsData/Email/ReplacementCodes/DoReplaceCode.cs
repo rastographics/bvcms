@@ -304,6 +304,11 @@ namespace CmsData
                         return DateFormattedReplacement(code);
                     }
 
+                    if (UnlayerLinkRe.IsMatch(code))
+                    {
+                        return UnlayerLinkReplacement(code, eq);
+                    }
+
                     if (RegisterLinkRe.IsMatch(code))
                     {
                         return RegisterLinkReplacement(code, eq);
@@ -364,10 +369,6 @@ namespace CmsData
                         return SqlLookupReplacement(code, eq);
                     }
 
-                    if (UnlayerLinkRe.IsMatch(code))
-                    {
-                        return UnlayerLinkReplacement(code, eq);
-                    }
                     break;
             }
             return code; // nothing matched
