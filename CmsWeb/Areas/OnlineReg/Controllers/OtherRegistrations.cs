@@ -268,9 +268,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
         [ValidateInput(false)]
         // ReSharper disable once FunctionComplexityOverflow
-        public ActionResult RegisterLink(string id, bool? showfamily, string source)
+        public ActionResult RegisterLink(string id, bool? showfamily, string source, string campus = "")
         {
             var li = new LinkInfo(registerlinkSTR, landingSTR, id);
+
             if (li.error.HasValue())
             {
                 return Message(li.error);
@@ -345,7 +346,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 {
                     url = $"/OnlineReg/{li.oid}/Giving/?gsid={gsid}";
                 }
-                return Redirect(url);
+
+                var campusQueryString = $"{(!string.IsNullOrWhiteSpace(campus) ? $"&campus={campus}" : string.Empty)}";
+
+                return Redirect($"{url}{campusQueryString}");
             }
             catch (Exception ex)
             {
