@@ -29,8 +29,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             {
                 var m = new OnlineRegModel(Request, CurrentDatabase, id, testing, email, login, source);
 
-                Session["Campus"] = Request.QueryString["campus"];
-                Session["DefaultFunds"] = Request.QueryString["funds"];
+                SetCampus(Request.QueryString["campus"]);
+                SetDefaultFunds(Request.QueryString["funds"]);
                 m.Campus = Session["Campus"]?.ToString();
                 m.DefaultFunds = Session["DefaultFunds"]?.ToString();
 
