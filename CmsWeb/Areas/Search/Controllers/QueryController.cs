@@ -396,7 +396,7 @@ namespace CmsWeb.Areas.Search.Controllers
                 }
 
                 m.Db = CurrentDatabase;
-                m.TagAll2(workingTag);
+                m.TagAll(workingTag);
 
                 Util2.CurrentTag = workingTag.Name;
 
@@ -411,7 +411,7 @@ namespace CmsWeb.Areas.Search.Controllers
         public ContentResult UnTagAll(QueryModel m)
         {
             m.Db = CurrentDatabase;
-            m.UntagAll2();
+            m.UntagAll();
             return Content("Add");
         }
 
