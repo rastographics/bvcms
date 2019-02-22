@@ -154,32 +154,28 @@ namespace CmsWeb.Areas.Search.Models
         [Obsolete]
         public Tag TagAllIds()
         {
-            return TagAll2();
-            var q = DefineModelList();
-            var tag = Db.FetchOrCreateTag(Util.SessionId, Util.UserPeopleId, DbUtil.TagTypeId_Query);
-            Db.TagAll(q, tag);
-            return tag;
+            return TagAll();
         }
 
         /// <summary>
         /// Add the specified tag to the result of this query
         /// </summary>
         /// <param name="tagname">The name of the tag to assign to the result of this QueryModel. Uses the user's session id as a default value if nothing is supplied.</param>
-        public Tag TagAll2(string tagname = "")
+        public Tag TagAll(string tagname = "")
         {
             if (string.IsNullOrEmpty(tagname))
             {
                 tagname = Util.SessionId; // not specifying an explicit name, so use the session id as a default
             }
             var tag = Db.FetchOrCreateTag(tagname, Util.UserPeopleId, DbUtil.TagTypeId_Personal);
-            return TagAll2(tag);
+            return TagAll(tag);
         }
 
         /// <summary>
         /// Add the specified tag to the result of this query
         /// </summary>
         /// <param name="tag">An object instance of the tag to append</param>
-        public Tag TagAll2(Tag tag)
+        public Tag TagAll(Tag tag)
         {
             if (tag == null)
             {
@@ -210,21 +206,21 @@ namespace CmsWeb.Areas.Search.Models
         /// Removes the specified tag from the results of this query
         /// </summary>
         /// <param name="tagname">The name of the tag to remove from the result of this QueryModel. Uses the user's session id as a default value if nothing is supplied</param>
-        public Tag UntagAll2(string tagname = "")
+        public Tag UntagAll(string tagname = "")
         {
             if (string.IsNullOrEmpty(tagname))
             {
                 tagname = Util.SessionId; // not specifying an explicit name, so use the session id as a default
             }
             var tag = Db.FetchOrCreateTag(tagname, Util.UserPeopleId, DbUtil.TagTypeId_Personal);
-            return UntagAll2(tag);
+            return UntagAll(tag);
         }
 
         /// <summary>
         /// Removes the specified tag from the results of this query
         /// </summary>
         /// <param name="tag">An object instance of the tag to remove</param>
-        public Tag UntagAll2(Tag tag)
+        public Tag UntagAll(Tag tag)
         {
             if (tag == null)
             {
@@ -247,20 +243,6 @@ namespace CmsWeb.Areas.Search.Models
 
             Db.SubmitChanges();
             return tag;
-        }
-
-        [Obsolete]
-        public void TagAll(Tag tag = null)
-        {
-            TagAll2(tag);
-            return;
-        }
-
-        [Obsolete]
-        public void UnTagAll()
-        {
-            UntagAll2();
-            return;
         }
 
         public bool Validate(ModelStateDictionary m)
