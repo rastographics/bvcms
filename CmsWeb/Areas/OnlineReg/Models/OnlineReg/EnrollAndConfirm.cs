@@ -582,10 +582,8 @@ Total Fee paid for this registration session: {ts?.TotPaid:C}<br/>
 
             var Staff = DbUtil.Db.StaffPeopleForOrg(Orgid.Value);
 
-            var campusQueryString = $"{(!string.IsNullOrWhiteSpace(Campus) ? $"campus={Campus}" : string.Empty)}";
-
             p.SendOneTimeLink(Staff.First().FromEmail,
-                DbUtil.Db.ServerLink("/OnlineReg/RegisterLink/"), "Manage Your Registration for " + Header, message, campusQueryString);
+                DbUtil.Db.ServerLink("/OnlineReg/RegisterLink/"), "Manage Your Registration for " + Header, message);
             Log("SendReRegisterLink");
         }
 
@@ -617,11 +615,9 @@ Total Fee paid for this registration session: {ts?.TotPaid:C}<br/>
 
             var Staff = DbUtil.Db.StaffPeopleForOrg(masterorgid.Value);
 
-            var campusQueryString = $"{(!string.IsNullOrWhiteSpace(Campus) ? $"campus={Campus}" : string.Empty)}";
-
             p.SendOneTimeLink(
                 Staff.First().FromEmail,
-                DbUtil.Db.ServerLink("/OnlineReg/ManageSubscriptions/"), c.Title, c.Body, campusQueryString);
+                DbUtil.Db.ServerLink("/OnlineReg/ManageSubscriptions/"), c.Title, c.Body);
             Log("SendOneTimeLinkManageSub");
             return ConfirmEnum.ConfirmAccount;
         }
@@ -654,11 +650,9 @@ Total Fee paid for this registration session: {ts?.TotPaid:C}<br/>
             List<Person> Staff = null;
             Staff = DbUtil.Db.StaffPeopleForOrg(Orgid.Value);
 
-            var campusQueryString = $"{(!string.IsNullOrWhiteSpace(Campus) ? $"campus={Campus}" : string.Empty)}";
-
             p.SendOneTimeLink(
                 Staff.First().FromEmail,
-                DbUtil.Db.ServerLink("/OnlineReg/ManageVolunteer/"), c.Title, c.Body, campusQueryString);
+                DbUtil.Db.ServerLink("/OnlineReg/ManageVolunteer/"), c.Title, c.Body);
             Log("SendOneTimeLinkManageVol");
             URL = null;
             return ConfirmEnum.ConfirmAccount;
@@ -689,11 +683,9 @@ Total Fee paid for this registration session: {ts?.TotPaid:C}<br/>
                 DbUtil.Db.SubmitChanges();
             }
 
-            var campusQueryString = $"{(!string.IsNullOrWhiteSpace(Campus) ? $"campus={Campus}" : string.Empty)}";
-
             p.SendOneTimeLink(
                 DbUtil.Db.StaffPeopleForOrg(Orgid.Value).First().FromEmail,
-                DbUtil.Db.ServerLink("/OnlineReg/ManagePledge/"), c.Title, c.Body, campusQueryString);
+                DbUtil.Db.ServerLink("/OnlineReg/ManagePledge/"), c.Title, c.Body);
             Log("SendOneTimeLinkManagePledge");
             return ConfirmEnum.ConfirmAccount;
         }

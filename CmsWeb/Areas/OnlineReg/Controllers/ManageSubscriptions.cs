@@ -9,15 +9,12 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 {
     public partial class OnlineRegController
     {
-        public ActionResult ManageSubscriptions(string id, string campus = "")
+        public ActionResult ManageSubscriptions(string id)
         {
             if (!id.HasValue())
                 return Content("bad link");
             ManageSubsModel m;
             var td = TempData["PeopleId"];
-
-            SetCampus(campus);
-
             if (td != null)
                 m = new ManageSubsModel(td.ToInt(), id.ToInt());
             else
