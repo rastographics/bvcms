@@ -648,7 +648,7 @@ namespace CmsWeb.Areas.Org.Controllers
             }
 
             if (Util2.OrgLeadersOnly
-                && !DbUtil.Db.OrganizationMembers.Any(om =>
+                && !CurrentDatabase.OrganizationMembers.Any(om =>
                     om.OrganizationId == m.meeting.OrganizationId
                     && om.PeopleId == Util.UserPeopleId
                     && om.MemberType.AttendanceTypeId == AttendTypeCode.Leader))
@@ -657,6 +657,9 @@ namespace CmsWeb.Areas.Org.Controllers
             }
 
             DbUtil.LogActivity($"CheckIn attendance for Meeting for {m.meeting.OrganizationId}({m.meeting.MeetingDate:d})");
+
+            var attends = m.Attends(true, "iPadAttendanceHighlight");
+
             return View(m);
         }
 
