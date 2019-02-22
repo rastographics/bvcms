@@ -254,31 +254,6 @@ namespace CmsWeb.Areas.Search.Models
         {
             TagAll2(tag);
             return;
-
-            Db.SetNoLock();
-            var q = Db.People.Where(TopClause.Predicate(Db));
-            if (TopClause.PlusParentsOf)
-            {
-                q = Db.PersonQueryPlusParents(q);
-            }
-            else if (TopClause.ParentsOf)
-            {
-                q = Db.PersonQueryParents(q);
-            }
-
-            if (TopClause.FirstPersonSameEmail)
-            {
-                q = Db.PersonQueryFirstPersonSameEmail(q);
-            }
-
-            if (tag != null)
-            {
-                Db.TagAll(q, tag);
-            }
-            else
-            {
-                Db.TagAll(q);
-            }
         }
 
         [Obsolete]
@@ -286,19 +261,6 @@ namespace CmsWeb.Areas.Search.Models
         {
             UntagAll2();
             return;
-            Db.SetNoLock();
-            var q = Db.People.Where(TopClause.Predicate(Db));
-
-            if (TopClause.PlusParentsOf)
-            {
-                q = Db.PersonQueryPlusParents(q);
-            }
-            else if (TopClause.ParentsOf)
-            {
-                q = Db.PersonQueryParents(q);
-            }
-
-            Db.UnTagAll(q);
         }
 
         public bool Validate(ModelStateDictionary m)
