@@ -841,6 +841,7 @@
     <Compile Include="Areas\Search\Models\RegistrationSearch\RegistrationSearchModel.cs" />
     <Compile Include="Areas\Search\Models\SavedQuery\SavedQueryInfo.cs" />
     <Compile Include="Areas\Search\Models\SavedQuery\SavedQueryModel.cs" />
+    <Compile Include="Areas\Setup\Controllers\GatewayController.cs" />
     <Compile Include="Code\BirthdateValidAttribute.cs" />
     <Compile Include="Code\CMSWebViewPage.cs" />
     <Compile Include="Areas\Setup\Controllers\PushpayController.cs" />
@@ -1798,6 +1799,9 @@
       <Link>bin\CmsTwilio.exe.config</Link>
     </Content>
     <Content Include="Areas\People\Views\Person\Giving\Statements.cshtml" />
+    <Content Include="Areas\Setup\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Setup\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\Setup\Views\Gateway\Index.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
