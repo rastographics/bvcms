@@ -281,13 +281,10 @@
         smallGroupRow: $('#small_group.row'),
         smallGroupInput: $('#small_group input'),
         secondaryRows: $('#small_group.row, #message.row, #confirmation.row'),
-        insideInput: $('#inside input'),
-        insideRow: $('#inside.row'),
+        resultRow: $('#result.row'),
         resultInput: $('#result.row input'),
 
         init: function () {
-            $('#result.row').hide();
-
             // toggle visibility
             $('#create-special-link').click(function () {
                 specialLinks.reset();
@@ -297,13 +294,9 @@
                 specialLinks.el.modal('hide');
             });
             $('.done-special-links-modal').click(function () {
-                var linktext = specialLinks.resultInput.val();
-                if (linktext.length) {
-                    prompt("Copy and paste this into the email body:", specialLinks.resultInput.val());
-                    specialLinks.el.modal('hide');
-                } else {
-                    alert("All fields are required");
-                }
+                specialLinks.resultInput.select();
+                document.execCommand('copy');
+                specialLinks.el.modal('hide');
             });
 
             // select contents of result
@@ -327,8 +320,7 @@
 
         refreshForm: function () {
             var linkType = specialLinks.typeSelect.val();
-            var linkText = '{{https://' + linkType;
-            var insideText = specialLinks.insideInput.val();
+            var linkText = 'https://' + linkType;
             var orgId = specialLinks.orgInput.val();
 
             switch (linkType) {
@@ -397,17 +389,16 @@
                     specialLinks.formInput.val('');
                     break;
             }
-            if (insideText.length) {
-                linkText += '&text=' + insideText + '}}';
-            } else {
-                linkText = '';
-            }
-
             specialLinks.resultInput.val(linkText);
+            if (linkText.length) {
+                specialLinks.resultRow.show();
+            } else {
+                specialLinks.resultRow.hide();
+            }
         }
     };
 
-    $(document).ready(specialLinks.init);
+    specialLinks.init();
 });
 
 
