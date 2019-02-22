@@ -1332,7 +1332,6 @@
     <Content Include="Migrations\20190107_meetingcategory.sql" />
     <Content Include="Migrations\20190118_alter_donors_function_for_spouse_legal_name.sql" />
     <Content Include="Migrations\20190117_pushpay_schema_updates.sql" />
-    <Content Include="Migrations\20190222_create_Gateway_Structure.sql" />
     <Content Include="QueryBuilder\CompareMap.xml">
       <SubType>Designer</SubType>
     </Content>
