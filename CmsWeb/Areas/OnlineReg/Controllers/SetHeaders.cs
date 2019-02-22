@@ -10,7 +10,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 {
     public partial class OnlineRegController
     {
-        private const string OnlineRegShellSettingKey = "UX-OnlineRegShell";
+        private const string MangedGivingShellSettingKey = "UX-ManagedGivingShell";
 
         private Dictionary<int, Settings> _settings;
         public Dictionary<int, Settings> settings
@@ -34,13 +34,13 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             var org = CurrentDatabase.LoadOrganizationById(id);
             var shell = string.Empty;
 
-            var onlineRegShellSettingKey = OnlineRegShellSettingKey;
+            var mangedGivingShellSettingKey = MangedGivingShellSettingKey;
             var campus = Session["Campus"]?.ToString();
             if (!string.IsNullOrWhiteSpace(campus))
             {
-                onlineRegShellSettingKey = $"{onlineRegShellSettingKey}-{campus.ToUpper()}";
+                mangedGivingShellSettingKey = $"{mangedGivingShellSettingKey}-{campus.ToUpper()}";
             }
-            var alternateShellSetting = CurrentDatabase.Settings.SingleOrDefault(x => x.Id == onlineRegShellSettingKey);
+            var alternateShellSetting = CurrentDatabase.Settings.SingleOrDefault(x => x.Id == mangedGivingShellSettingKey);
             if (alternateShellSetting != null)
             {
                 var alternateShell = CurrentDatabase.Contents.SingleOrDefault(x => x.Name == alternateShellSetting.SettingX);
@@ -89,13 +89,13 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
 
             var shell = string.Empty;
-            var onlineRegShellSettingKey = OnlineRegShellSettingKey;
+            var mangedGivingShellSettingKey = MangedGivingShellSettingKey;
             var campus = Session["Campus"]?.ToString();
             if (!string.IsNullOrWhiteSpace(campus))
             {
-                onlineRegShellSettingKey = $"{onlineRegShellSettingKey}-{campus.ToUpper()}";
+                mangedGivingShellSettingKey = $"{mangedGivingShellSettingKey}-{campus.ToUpper()}";
             }
-            var alternateShellSetting = CurrentDatabase.Settings.SingleOrDefault(x => x.Id == onlineRegShellSettingKey);
+            var alternateShellSetting = CurrentDatabase.Settings.SingleOrDefault(x => x.Id == mangedGivingShellSettingKey);
             if (alternateShellSetting != null)
             {
                 var alternateShell = CurrentDatabase.Contents.SingleOrDefault(x => x.Name == alternateShellSetting.SettingX);
@@ -137,13 +137,6 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     DbUtil.Content("OnlineRegTop", ""));
                 ViewBag.bottom = DbUtil.Content("OnlineRegBottom-" + id,
                     DbUtil.Content("OnlineRegBottom", ""));
-            }
-        }
-        private void SetCampus(string campus)
-        {
-            if (!string.IsNullOrWhiteSpace(campus))
-            {
-                Session["Campus"] = campus;
             }
         }
     }
