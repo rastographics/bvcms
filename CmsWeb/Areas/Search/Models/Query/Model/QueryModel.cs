@@ -10,14 +10,12 @@ namespace CmsWeb.Areas.Search.Models
 {
     public partial class QueryModel : QueryResults
     {
-        private static readonly List<CodeValueItem> BitCodes =
-            new List<CodeValueItem>
+        private static readonly List<CodeValueItem> BitCodes = new List<CodeValueItem>
             {
                 new CodeValueItem {Id = 1, Value = "True", Code = "T"},
                 new CodeValueItem {Id = 0, Value = "False", Code = "F"},
             };
-        private static readonly List<CodeValueItem> EqualBitCodes =
-            new List<CodeValueItem>
+        private static readonly List<CodeValueItem> EqualBitCodes = new List<CodeValueItem>
             {
                 new CodeValueItem {Id = 1, Value = "True", Code = "T"},
             };
@@ -100,6 +98,7 @@ namespace CmsWeb.Areas.Search.Models
             get { return (Tags ?? "").Split(';').ToList(); }
             set { Tags = string.Join(";", value); }
         }
+
         [SkipFieldOnCopyProperties]
         public List<string> PmmLabels
         {
@@ -152,16 +151,110 @@ namespace CmsWeb.Areas.Search.Models
             return q;
         }
 
+        [Obsolete]
         public Tag TagAllIds()
         {
+            return TagAll2();
             var q = DefineModelList();
             var tag = Db.FetchOrCreateTag(Util.SessionId, Util.UserPeopleId, DbUtil.TagTypeId_Query);
             Db.TagAll(q, tag);
             return tag;
         }
 
+        /// <summary>
+        /// Add the specified tag to the result of this query
+        /// </summary>
+        /// <param name="tagname">The name of the tag to assign to the result of this QueryModel. Uses the user's session id as a default value if nothing is supplied.</param>
+        public Tag TagAll2(string tagname = "")
+        {
+            if (string.IsNullOrEmpty(tagname))
+            {
+                tagname = Util.SessionId; // not specifying an explicit name, so use the session id as a default
+            }
+            var tag = Db.FetchOrCreateTag(tagname, Util.UserPeopleId, DbUtil.TagTypeId_Personal);
+            return TagAll2(tag);
+        }
+
+        /// <summary>
+        /// Add the specified tag to the result of this query
+        /// </summary>
+        /// <param name="tag">An object instance of the tag to append</param>
+        public Tag TagAll2(Tag tag)
+        {
+            if (tag == null)
+            {
+                throw new ArgumentNullException(nameof(tag));
+            }
+
+            Db.CurrentTagName = tag.Name;
+            Db.CurrentTagOwnerId = tag.PersonOwner.PeopleId;
+
+            var q = DefineModelList();
+            var people = q.ToList();
+
+            foreach (var person in people)
+            {
+                if(person.Tags.Any(t => t.Id == tag.Id))
+                {
+                    continue;
+                }
+
+                Db.TagPeople.InsertOnSubmit(new TagPerson { PeopleId = person.PeopleId, Id = tag.Id, DateCreated = DateTime.Now });
+            }
+
+            Db.SubmitChanges();
+            return tag;
+        }
+
+        /// <summary>
+        /// Removes the specified tag from the results of this query
+        /// </summary>
+        /// <param name="tagname">The name of the tag to remove from the result of this QueryModel. Uses the user's session id as a default value if nothing is supplied</param>
+        public Tag UntagAll2(string tagname = "")
+        {
+            if (string.IsNullOrEmpty(tagname))
+            {
+                tagname = Util.SessionId; // not specifying an explicit name, so use the session id as a default
+            }
+            var tag = Db.FetchOrCreateTag(tagname, Util.UserPeopleId, DbUtil.TagTypeId_Personal);
+            return UntagAll2(tag);
+        }
+
+        /// <summary>
+        /// Removes the specified tag from the results of this query
+        /// </summary>
+        /// <param name="tag">An object instance of the tag to remove</param>
+        public Tag UntagAll2(Tag tag)
+        {
+            if (tag == null)
+            {
+                throw new ArgumentNullException(nameof(tag));
+            }
+
+            Db.CurrentTagName = tag.Name;
+            Db.CurrentTagOwnerId = tag.PersonOwner.PeopleId;
+
+            var q = DefineModelList();
+            var people = q.ToList();
+
+            foreach (var person in people)
+            {
+                if (person.Tags.Any(t => t.Id == tag.Id))
+                {
+                    Db.TagPeople.DeleteOnSubmit(person.Tags.Single(t => t.Id == tag.Id && t.PeopleId == person.PeopleId));
+                }
+            }
+
+            Db.SubmitChanges();
+            return tag;
+        }
+
+        [Obsolete]
         public void TagAll(Tag tag = null)
         {
+            TagAll2(tag);
+            return;
+
             Db.SetNoLock();
             var q = Db.People.Where(TopClause.Predicate(Db));
             if (TopClause.PlusParentsOf)
@@ -188,8 +281,11 @@ namespace CmsWeb.Areas.Search.Models
             }
         }
 
+        [Obsolete]
         public void UnTagAll()
         {
+            UntagAll2();
+            return;
             Db.SetNoLock();
             var q = Db.People.Where(TopClause.Predicate(Db));
 
