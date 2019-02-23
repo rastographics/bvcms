@@ -204,11 +204,11 @@ namespace CmsData
                 parameters.Add("@p1", declarations ?? "");
         }
 
-        private static string RemoveDeclaration(object decl, string body)
-        {
-            return Regex.Replace(body, $"^declare @{decl}", "--$&", RegexOptions.Multiline | RegexOptions.IgnoreCase);
-        }
 #if DEBUG
+        public static string RemoveDeclaration(object decl, string body)
+        {
+            return Regex.Replace(body, $@"^declare\s+@{decl}", "--$&", RegexOptions.Multiline | RegexOptions.IgnoreCase);
+        }
         private static string RemoveDeclarations(object declarations, string body)
         {
             var pd = declarations as PythonDictionary;
