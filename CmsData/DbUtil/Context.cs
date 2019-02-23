@@ -701,23 +701,14 @@ This search uses multiple steps which cannot be duplicated in a single query.
         {
             if (Util2.CurrentTag.StartsWith("QueryTag:"))
             {
-                return Tags.FirstOrDefault(t =>
+                var tag = Tags.FirstOrDefault(t =>
                     t.Name == Util2.CurrentTagName && t.TypeId == DbUtil.TagTypeId_QueryTags);
+                if (tag != null)
+                    return tag;
+                Util2.CurrentTag = "UnNamed";
             }
             return FetchOrCreateTag(Util2.CurrentTagName, Util2.CurrentTagOwnerId, DbUtil.TagTypeId_Personal);
         }
-        //public string NewPeopleEmailAddressx
-        //{
-        //    get
-        //    {
-        //        var em = DbUtil.SystemEmailAddress;
-        //        var npm = People.SingleOrDefault(p => p.PeopleId == DbUtil.NewPeopleManagerId);
-        //        if (npm != null && npm.EmailAddress.HasValue())
-        //            em = npm.EmailAddress;
-        //        var s = Settings.Where(ss => ss.Id == "NewPeopleEmailAddress").Select(ss => ss.SettingX).SingleOrDefault();
-        //        return Util.PickFirst(s, em);
-        //    }
-        //}
         public int NewPeopleManagerId
         {
             get
