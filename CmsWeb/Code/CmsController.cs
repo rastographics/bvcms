@@ -160,6 +160,8 @@ namespace CmsWeb
 
             base.OnActionExecuting(filterContext);
             Util.Helpfile = $"_{filterContext.ActionDescriptor.ControllerDescriptor.ControllerName}_{filterContext.ActionDescriptor.ActionName}";
+            if(Util.UserId == 0 && User.Identity.IsAuthenticated)
+                AccountModel.SetUserInfo(User.Identity.Name, Session);
             CurrentDatabase.UpdateLastActivity(Util.UserId);
             HttpContext.Response.Headers.Add("X-Robots-Tag", "noindex");
             HttpContext.Response.Headers.Add("X-Robots-Tag", "unavailable after: 1 Jan 2017 01:00:00 CST");
