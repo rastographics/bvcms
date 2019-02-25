@@ -11,7 +11,7 @@ namespace CmsData
     public partial class EmailReplacements
     {
         // match all links generated in the unlayer special links prompt, and handle from there
-        private const string MatchUnlayerLinkRe = "{{https://(?:rsvplink|regretslink|registerlink|registerlink2|sendlink|sendlink2|supportlink|votelink)/.*?}}";
+        private const string MatchUnlayerLinkRe = @"""https://(?:rsvplink|regretslink|registerlink|registerlink2|sendlink|sendlink2|supportlink|votelink)/\?.*?""";
         private static readonly Regex UnlayerLinkRe = new Regex(MatchUnlayerLinkRe, RegexOptions.IgnoreCase | RegexOptions.Singleline);
 
         private string UnlayerLinkReplacement(string code, EmailQueueTo emailqueueto)
@@ -19,7 +19,7 @@ namespace CmsData
             var list = new Dictionary<string, OneTimeLink>();
 
             // remove the non url parts and reformat
-            code = code.Replace("{", string.Empty).Replace("}", string.Empty);
+            code = code.Replace("\"", string.Empty);
             code = code.Replace("&amp;", "&");
             code = HttpUtility.UrlDecode(code);
 
@@ -35,7 +35,6 @@ namespace CmsData
             // result variables
             string qs;      // the unique link combination for the db
             string url = "";
-            string inside = HttpUtility.ParseQueryString(SpecialLink.Query).Get("text");  // the link text
 
             // set some defaults for any missing properties
             bool showfamily = false;
@@ -129,7 +128,7 @@ namespace CmsData
                     url = db.ServerLink($"/OnlineReg/VoteLinkSg/{ot.Id.ToCode()}?confirm={confirm}&message={HttpUtility.UrlEncode(message)}");
                     break;
             }
-            return $@"<a href=""{url}"">{inside}</a>";
+            return url;
         }
 
     }
