@@ -575,12 +575,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 }).ToArray();
         }
 
-        public static SelectListItem[] FullFundList(IEnumerable<string> defaultFundIds)
+        public static SelectListItem[] FullFundList(IList<string> defaultFundIds)
         {
-            var list = new List<SelectListItem>();
             var fullList = FullFundList();
-
-            list.AddRange(fullList.Where(f => defaultFundIds.Contains(f.Value)));
+            var list = defaultFundIds.Select(id => fullList.SingleOrDefault(s => s.Value == id)).Where(fund => fund != null).ToList();
             list.AddRange(fullList.Where(f => !defaultFundIds.Contains(f.Value)));
             return list.ToArray();
         }
