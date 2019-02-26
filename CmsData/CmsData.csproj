@@ -774,6 +774,7 @@
     <Compile Include="Generated\Functions\UnitPledgeSummary.cs" />
     <Compile Include="Generated\Functions\VisitsAbsent.cs" />
     <Compile Include="Generated\Functions\VolunteerCalendar.cs" />
+    <Compile Include="Generated\GatewaySettings.cs" />
     <Compile Include="Generated\IpLog.cs" />
     <Compile Include="Generated\IpLog2.cs" />
     <Compile Include="Generated\IpWarmup.cs" />

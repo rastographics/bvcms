@@ -1,0 +1,18 @@
+﻿.pb2 {
+    padding-bottom: 2em;
+}
+
+.fa-frown-o {
+    font-weight: 300;
+    font-size: 100px;
+}
+
+.noprocess form textarea {
+    background: url('../../img/textarealine.png');
+    height: 145px;
+    background-attachment: local;
+    background-repeat: no-repeat;
+    padding-left: 35px;
+    padding-top: 10px;
+    border-color: #ccc;
+}
