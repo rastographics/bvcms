@@ -232,6 +232,31 @@ namespace CmsWeb {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 
+        ///with ids as (
+        ///	select * from dbo.Contributions2SearchIds(@json)
+        ///)
+        ///select 
+        ///	p.FamilyId,
+        ///	p.PeopleId,
+        ///    c.ContributionDate as [Date],
+        ///    
+        ///    case when fa.HeadOfHouseholdId = sp.PeopleId
+        ///			and isnull(sp.ContributionOptionsId, case when mssp.Married = 1 then 2 else 1 end) = 2
+        ///			and isnull(p.ContributionOptionsId, case when msp.Married = 1 then 2 else 1 end) = 2
+        ///		then sp.PeopleId 
+        ///		else c.PeopleId 
+        ///	end as CreditGiverId,
+        ///
+        ///    case when isnull(sp.ContributionOptionsId, case when mssp.Marr [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string ContributionsController_ContributionsAdvancedSearch_ {
+            get {
+                return ResourceManager.GetString("ContributionsController_ContributionsAdvancedSearch_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &lt;h1&gt;Sample Church&lt;/h1&gt;
         ///&lt;h2&gt;2000 Appling Rd. | Cordova | TN 38088-1210 | (901) 347-2000&lt;/h2&gt;.
         /// </summary>
