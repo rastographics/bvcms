@@ -845,6 +845,7 @@
     <Compile Include="Areas\Search\Models\RegistrationSearch\RegistrationSearchModel.cs" />
     <Compile Include="Areas\Search\Models\SavedQuery\SavedQueryInfo.cs" />
     <Compile Include="Areas\Search\Models\SavedQuery\SavedQueryModel.cs" />
+    <Compile Include="Areas\Setup\Controllers\GatewayController.cs" />
     <Compile Include="Code\BirthdateValidAttribute.cs" />
     <Compile Include="Code\CMSWebViewPage.cs" />
     <Compile Include="Areas\Setup\Controllers\PushpayController.cs" />
@@ -1189,10 +1190,12 @@
     <Content Include="Content\font-awesome-4.0.3\css\font-awesome.min.css" />
     <Content Include="Content\font-awesome-4.0.3\fonts\fontawesome-webfont.svg" />
     <Content Include="Content\images\check.png" />
+    <Content Include="Content\img\textarealine.png" />
     <Content Include="Content\touchpoint\css\account.css" />
     <Content Include="Content\touchpoint\css\app.css" />
     <Content Include="Content\touchpoint\css\editor.css" />
     <Content Include="Content\touchpoint\css\error.css" />
+    <Content Include="Content\touchpoint\css\gateway.css" />
     <Content Include="Content\touchpoint\css\print.css" />
     <Content Include="Content\touchpoint\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Content\touchpoint\img\female.png" />
@@ -1802,6 +1805,9 @@
       <Link>bin\CmsTwilio.exe.config</Link>
     </Content>
     <Content Include="Areas\People\Views\Person\Giving\Statements.cshtml" />
+    <Content Include="Areas\Setup\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Setup\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\Setup\Views\Gateway\Index.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
