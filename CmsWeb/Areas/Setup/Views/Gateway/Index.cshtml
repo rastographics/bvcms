@@ -1,0 +1,82 @@
+﻿@model IEnumerable<CmsData.Setting>
+@{
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "Gateway";
+    ViewBag.PageHeader = "Gateway Settings";
+}
+
+<div hidden class="noprocess container col-md-12">
+    <div class="col-md-6 col-md-offset-3 text-center">
+        <h1>You do not have any Gateway Configuration</h1>
+        <div class="pb2">
+            <i class="fa fa-frown-o"></i>
+        </div>
+        <button class="btn btn-info"><i class="fa fa-plus"></i>&nbsp;Add New</button>
+    </div>
+</div>
+
+<div hidden class="noprocess container col-md-12">
+    <div class="col-md-4 col-md-offset-4 text-center">
+        <form>
+            <div class="form-group">
+                <label for="exampleInputEmail1">Process</label>
+                <select class="form-control">
+                    <option value="">New Value</option>
+                </select>
+                <small class="form-text text-muted">We'll never share your email with anyone else.</small>
+            </div>
+            <div class="form-group">
+                <label for="exampleInputEmail1">Process</label>
+                <select class="form-control">
+                    <option value="">New Value</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="exampleInputPassword1">Configuration(JSON)</label>
+                <textarea class="form-control" id="exampleInputPassword1"></textarea>
+            </div>
+            <button class="btn btn-success"><i class="fa fa-plus"></i>&nbsp;Add</button>
+        </form>
+    </div>
+</div>
+
+<div class="noprocess row">
+    <div class="col-lg-9">
+        <div class="box box-responsive">
+            <div class="box-title-btn">
+                <div class="box-tools">
+                    <a href="#" class="btn btn-success create-new"><i class="fa fa-plus-circle"></i> Add Process</a>
+                </div>
+            </div>
+            <div class="box-content">
+                <div class="table-responsive">
+                    <table id="settings" class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th style="width: 150px;">
+                                    Process Name
+                                </th>
+                                <th style="width: 150px;">
+                                    Gateway Name
+                                </th>
+                                <th style="width: 150px;">
+                                    Action
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="width: 100px;">item.Id</td>
+                                <td style="width: 100px;">item.Setting</td>
+                                <td style="width: 50px;">
+                                    <a id="d(item.Id)" href="#" class="delete btn btn-sm btn-info"><i class="fa fa-trash"></i> Edit</a>
+                                    <a id="d(item.Id)" href="#" class="delete btn btn-sm btn-danger"><i class="fa fa-trash"></i> Delete</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
