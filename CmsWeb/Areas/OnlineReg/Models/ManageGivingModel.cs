@@ -190,11 +190,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (DefaultFundIds.Any())
             {
                 FirstDefaultFundName = OnlineRegPersonModel.GetFundName(DefaultFundIds.First().ToInt());
-                return;
             }
 
             var fundList = OnlineRegPersonModel.FundList();
-            FallbackDefaultFundIds.AddRange(fundList.Select(f => f.Value));
+            FallbackDefaultFundIds.AddRange(fundList.Where(f => !DefaultFundIds.Contains(f.Value)).Select(f => f.Value));
         }
 
         private void PopulateBillingName(PaymentInfo pi)
