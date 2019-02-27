@@ -65,7 +65,7 @@
                             {
                                 var i = funds[n];
                                 var amt = Model.FundItemValue(i.Value.ToInt());
-                                if (amt.HasValue || Model.DefaultFundIds.Contains(i.Value) || Model.FallbackDefaultFundIds.Contains(i.Value))
+                                if (amt.HasValue || Model.DefaultFundIds.Contains(i.Value))
                                 {
                                     tot = (tot ?? 0) + amt.GetValueOrDefault();
                                     <tr id="@i.Value">
