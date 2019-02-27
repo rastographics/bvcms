@@ -774,6 +774,9 @@
     <Compile Include="Generated\Functions\UnitPledgeSummary.cs" />
     <Compile Include="Generated\Functions\VisitsAbsent.cs" />
     <Compile Include="Generated\Functions\VolunteerCalendar.cs" />
+    <Compile Include="Generated\GatewayDetails.cs" />
+    <Compile Include="Generated\Gateways.cs" />
+    <Compile Include="Generated\GatewayServiceType.cs" />
     <Compile Include="Generated\GatewaySettings.cs" />
     <Compile Include="Generated\IpLog.cs" />
     <Compile Include="Generated\IpLog2.cs" />
@@ -796,6 +799,8 @@
     <Compile Include="Generated\OrgFilter.cs" />
     <Compile Include="Generated\OrgMemberExtra.cs" />
     <Compile Include="Generated\PrevOrgMemberExtra.cs" />
+    <Compile Include="Generated\Process.cs" />
+    <Compile Include="Generated\ProcessType.cs" />
     <Compile Include="Generated\PushPayLog.cs" />
     <Compile Include="Generated\QueryAnalysi.cs" />
     <Compile Include="Generated\RegistrationDatum.cs" />
@@ -811,6 +816,7 @@
     <Compile Include="Generated\Views\AppRegistration.cs" />
     <Compile Include="Generated\Views\AttendCredits2.cs" />
     <Compile Include="Generated\Views\Attribute.cs" />
+    <Compile Include="Generated\Views\AvailableGateways.cs" />
     <Compile Include="Generated\Views\ChAiGiftDatum.cs" />
     <Compile Include="Generated\Views\ChAiIndividualDatum.cs" />
     <Compile Include="Generated\Views\ContributionsBasic.cs" />
@@ -823,6 +829,7 @@
     <Compile Include="Generated\Views\FamilyFirstTime.cs" />
     <Compile Include="Generated\Views\FirstAttend.cs" />
     <Compile Include="Generated\Views\FirstPersonSameEmail.cs" />
+    <Compile Include="Generated\Views\GatewayDetailsInformation.cs" />
     <Compile Include="Generated\Views\IncompleteTask.cs" />
     <Compile Include="Generated\Views\InProgressRegistration.cs" />
     <Compile Include="Generated\Views\LastAttend.cs" />
