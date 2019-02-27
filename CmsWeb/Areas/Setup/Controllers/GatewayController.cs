@@ -18,7 +18,8 @@ namespace CmsWeb.Areas.Setup.Controllers
         [Route("~/Gateway")]
         public ActionResult Index()
         {
-            return View();
+            var m = CurrentDatabase.GatewaySettings.AsQueryable();
+            return View(m);
         }
     }
 }
