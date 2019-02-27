@@ -11,6 +11,7 @@
     decimal? tot = 0;
     var db = DbUtil.Db;
     var funds = CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel.FullFundList(Model.DefaultFundIds);
+    var otherFunds = funds.Where(f => !Model.DefaultFundIds.Contains(f.Value)).ToList();
     var useNewManageGivingBuilder = DbUtil.Db.Setting("UseNewManageGivingBuilder");
     var debitcredit = db.Setting("DebitCreditLabel", "Debit/Credit Card");
     var recaptchaSiteKey = db.Setting("googleReCaptchaSiteKey", ConfigurationManager.AppSettings["googleReCaptchaSiteKey"]);
@@ -68,7 +69,7 @@
                                 {
                                     tot = (tot ?? 0) + amt.GetValueOrDefault();
                                     <tr id="@i.Value">
-                                        <td style="border-width: 0px !important"><a href="#" tabindex="-1" class="remove-fund"><span class="fa fa-trash-o" style="line-height: 20px; padding-top: 10px;"></span></a></td>
+                                        <td style="border-width: 0px !important"></td>
                                         <td style="border-width: 0px !important" class="pull-right"><h4 class="inline-block">@i.Text</h4></td>
                                         <td style="border-width: 0px !important;">
                                             <input type="hidden" name="@(funame)[@sn].Key" value="@i.Value"/>
@@ -80,28 +81,31 @@
                             }
                             </tbody>
                             <tfoot>
-                            <tr id="addFund" hidden>
-                                <td style="border-width: 0px !important;"><a href="#" tabindex="-1" id="removeAddFund"><span class="fa fa-trash-o" style="line-height: 20px; padding-top: 10px;"></span></a></td>
-                                <td style="border-width: 0px !important; padding-top: 12px !important">
-                                    <select class="form-control" id="special-funds-list">
-                                        <option value="0">Select Fund</option>
-                                        @foreach (var fund in funds)
-                                        {
-                                            <option value="@fund.Value">@fund.Text</option>
-                                        }
-                                    </select>
-                                </td>
-                                <td style="border-width: 0px !important;">
-                                    <input type="text" name="" placeholder="$ 0.00" disabled class="form-control narrow input-lg sum pull-right"/>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="3">
-                                    <a id="myAddFundLink" href="#" tabindex="-1" class="pull-right" style="text-decoration: underline">
-                                        + Additional Fund
-                                    </a>
-                                </td>
-                            </tr>
+                            @if (otherFunds.Any())
+                            {
+                                <tr id="addFund" hidden>
+                                    <td style="border-width: 0px !important;"><a href="#" tabindex="-1" id="removeAddFund"><span class="fa fa-trash-o" style="line-height: 20px; padding-top: 10px;"></span></a></td>
+                                    <td style="border-width: 0px !important; padding-top: 12px !important">
+                                        <select class="form-control" id="special-funds-list">
+                                            <option value="0">Select Fund</option>
+                                            @foreach (var fund in otherFunds)
+                                            {
+                                                <option value="@fund.Value">@fund.Text</option>
+                                            }
+                                        </select>
+                                    </td>
+                                    <td style="border-width: 0px !important;">
+                                        <input type="text" name="" placeholder="$ 0.00" disabled class="form-control narrow input-lg sum pull-right"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3">
+                                        <a id="myAddFundLink" href="#" tabindex="-1" class="pull-right" style="text-decoration: underline">
+                                            + Additional Fund
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
                             <tr>
                                 <td style="border-width: 0px !important"></td>
                                 <td style="border-width: 0px !important" width="56%!important"><h4 class="pull-right">TOTAL:</h4></td>
