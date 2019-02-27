@@ -10,7 +10,7 @@
     var funame = Html.NameFor2(m => m.FundItem);
     decimal? tot = 0;
     var db = DbUtil.Db;
-    var funds = CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel.FullFundList(Model.DefaultFundIds);
+    var funds = CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel.FullFundList(Model.DefaultFundIds.Any() ? Model.DefaultFundIds : Model.FallbackDefaultFundIds);
     var otherFunds = funds.Where(f => !Model.DefaultFundIds.Contains(f.Value)).ToList();
     var useNewManageGivingBuilder = DbUtil.Db.Setting("UseNewManageGivingBuilder");
     var debitcredit = db.Setting("DebitCreditLabel", "Debit/Credit Card");
@@ -65,11 +65,16 @@
                             {
                                 var i = funds[n];
                                 var amt = Model.FundItemValue(i.Value.ToInt());
-                                if (amt.HasValue || Model.DefaultFundIds.Contains(i.Value))
+                                if (amt.HasValue || Model.DefaultFundIds.Contains(i.Value) || Model.FallbackDefaultFundIds.Contains(i.Value))
                                 {
                                     tot = (tot ?? 0) + amt.GetValueOrDefault();
                                     <tr id="@i.Value">
-                                        <td style="border-width: 0px !important"></td>
+                                        <td style="border-width: 0px !important">
+                                            @if (Model.FallbackDefaultFundIds.Contains(i.Value))
+                                            {
+                                                <a href="#" tabindex="-1" class="remove-fund"><span class="fa fa-trash-o" style="line-height: 20px; padding-top: 10px;"></span></a>
+                                            }
+                                        </td>
                                         <td style="border-width: 0px !important" class="pull-right"><h4 class="inline-block">@i.Text</h4></td>
                                         <td style="border-width: 0px !important;">
                                             <input type="hidden" name="@(funame)[@sn].Key" value="@i.Value"/>

@@ -26,6 +26,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public IList<string> DefaultFundIds = new List<string>();
 
+        public IList<string> FallbackDefaultFundIds = new List<string>();
+
         public string FirstDefaultFundName { get; set; }
 
         public string RepeatPattern { get; set; }
@@ -192,7 +194,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
 
             var fundList = OnlineRegPersonModel.FundList();
-            DefaultFundIds.AddRange(fundList.Select(f=> f.Value));
+            FallbackDefaultFundIds.AddRange(fundList.Select(f => f.Value));
         }
 
         private void PopulateBillingName(PaymentInfo pi)
