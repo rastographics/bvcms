@@ -31,7 +31,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
                 if (m.ManageGiving())
                 {
-                    SetCampusAndDefaultFunds(Request.QueryString["campus"], Request.QueryString["funds"]);
+                    Session["Campus"] = Request.QueryString["campus"];
+                    Session["DefaultFunds"] = Request.QueryString["funds"];
                     m.Campus = Session["Campus"]?.ToString();
                     m.DefaultFunds = Session["DefaultFunds"]?.ToString();
                 }

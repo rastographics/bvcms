@@ -176,8 +176,14 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
         private void SetCampusAndDefaultFunds(string campus, string funds)
         {
-            Session["Campus"] = campus;
-            Session["DefaultFunds"] = funds;
+            if (!string.IsNullOrWhiteSpace(campus))
+            {
+                Session["Campus"] = campus;
+            }
+            if (!string.IsNullOrWhiteSpace(funds))
+            {
+                Session["DefaultFunds"] = funds;
+            }
         }
     }
 }
