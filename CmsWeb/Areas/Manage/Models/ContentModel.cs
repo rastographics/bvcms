@@ -12,7 +12,7 @@ namespace CmsWeb.Models
     public class ContentModel
     {
         private string filter;
-        public string Filter => filter ?? (filter = HttpContext.Current.Session["ContentKeywordFilter"] as string ?? "");
+        public string Filter => filter ?? (filter = HttpContextFactory.Current.Session["ContentKeywordFilter"] as string ?? "");
         public ContentModel() { }
         public IQueryable<Content> fetchHTMLFiles()
         {
@@ -95,7 +95,7 @@ namespace CmsWeb.Models
             var list = (from kw in DbUtil.Db.ContentKeyWords
                         orderby kw.Word
                         select kw.Word).Distinct().ToList();
-            var keywordfilter = HttpContext.Current.Session["ContentKeywordFilter"] as string;
+            var keywordfilter = HttpContextFactory.Current.Session["ContentKeywordFilter"] as string;
             keywords = list.Select(vv => new SelectListItem() { Text = vv, Value = vv, Selected = vv == keywordfilter }).ToList();
             keywords.Insert(0, new SelectListItem() { Text = "(not specified)", Value = "" });
             return keywords;

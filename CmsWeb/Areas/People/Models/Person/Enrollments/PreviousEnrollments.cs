@@ -80,7 +80,7 @@ namespace CmsWeb.Areas.People.Models
 
         public IQueryable<InvolvementPreviou> DefineModelList(bool useOrgFilter)
         {
-            var limitvisibility = Util2.OrgLeadersOnly || !HttpContext.Current.User.IsInRole("Access");
+            var limitvisibility = Util2.OrgLeadersOnly || !HttpContextFactory.Current.User.IsInRole("Access");
             var roles = DbUtil.Db.CurrentRoles();
             return from etd in DbUtil.Db.InvolvementPrevious(PeopleId, Util.UserId)
                    where etd.TransactionStatus == false

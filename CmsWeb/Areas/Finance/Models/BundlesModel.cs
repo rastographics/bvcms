@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Finance.Models
 {
@@ -35,7 +36,7 @@ namespace CmsWeb.Areas.Finance.Models
                 bundles = from b in DbUtil.Db.ViewBundleLists select b;
             }
 
-            if (HttpContext.Current.User.IsInRole("FinanceDataEntry"))
+            if (HttpContextFactory.Current.User.IsInRole("FinanceDataEntry"))
             {
                 return bundles.Where(vv => vv.BundleStatusId == BundleStatusCode.OpenForDataEntry);
             }

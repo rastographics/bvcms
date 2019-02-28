@@ -132,7 +132,7 @@ namespace CmsData
 
         public void DeleteOrg(string name, string program, string division)
         {
-            if (!HttpContext.Current.User.IsInRole("developer"))
+            if (!HttpContextFactory.Current.User.IsInRole("developer"))
                 db.LogActivity($"Python DeleteOrg({name}, {division}) denied");
 
             var p = db.Programs.SingleOrDefault(pp => pp.Name == program);
@@ -149,7 +149,7 @@ namespace CmsData
                 return;
             foreach (var org in q)
                 org.PurgeOrg(db);
-            HttpContext.Current.Session.Remove("ActiveOrganization");
+            HttpContextFactory.Current.Session.Remove("ActiveOrganization");
             db.LogActivity($"Python DeleteOrg {name}, {program}, {division}");
         }
 

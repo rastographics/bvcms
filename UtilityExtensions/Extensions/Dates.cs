@@ -76,19 +76,19 @@ namespace UtilityExtensions
             get
             {
                 bool? sim = false;
-                if (HttpContext.Current != null)
+                if (HttpContextFactory.Current != null)
                 {
-                    if (HttpContext.Current != null)
-                        if (HttpContext.Current.Items[StrDateSimulation] != null)
-                            sim = (bool)HttpContext.Current.Items[StrDateSimulation];
+                    if (HttpContextFactory.Current != null)
+                        if (HttpContextFactory.Current.Items[StrDateSimulation] != null)
+                            sim = (bool)HttpContextFactory.Current.Items[StrDateSimulation];
                 }
                 return sim ?? false;
             }
             set
             {
-                if (HttpContext.Current == null)
+                if (HttpContextFactory.Current == null)
                     return;
-                HttpContext.Current.Items[StrDateSimulation] = value;
+                HttpContextFactory.Current.Items[StrDateSimulation] = value;
             }
         }
         private const string StrToday = "StrToday";
@@ -99,10 +99,10 @@ namespace UtilityExtensions
                 var now = DateTime.Now;
                 if (!DateSimulation)
                     return now;
-                if (HttpContext.Current == null)
+                if (HttpContextFactory.Current == null)
                     return now;
-                if (HttpContext.Current.Session[StrToday] != null)
-                    now = (DateTime)HttpContext.Current.Session[StrToday];
+                if (HttpContextFactory.Current.Session[StrToday] != null)
+                    now = (DateTime)HttpContextFactory.Current.Session[StrToday];
                 return now.Date.Add(DateTime.Now.TimeOfDay);
             }
         }
@@ -113,21 +113,21 @@ namespace UtilityExtensions
                 var now = DateTime.Today;
                 if (!DateSimulation)
                     return now;
-                if (HttpContext.Current == null)
+                if (HttpContextFactory.Current == null)
                     return now;
-                if (HttpContext.Current.Session[StrToday] != null)
-                    now = (DateTime)HttpContext.Current.Session[StrToday];
+                if (HttpContextFactory.Current.Session[StrToday] != null)
+                    now = (DateTime)HttpContextFactory.Current.Session[StrToday];
                 return now.Date;
             }
             set
             {
-                HttpContext.Current.Session[StrToday] = value;
+                HttpContextFactory.Current.Session[StrToday] = value;
             }
         }
 
         public static void ResetToday()
         {
-            HttpContext.Current.Session.Remove(StrToday);
+            HttpContextFactory.Current.Session.Remove(StrToday);
         }
         public static bool DateValid(string dt)
         {

@@ -18,7 +18,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
     {
         public OnlineRegModel()
         {
-            HttpContext.Current.Items["OnlineRegModel"] = this;
+            HttpContextFactory.Current.Items["OnlineRegModel"] = this;
             CurrentDatabase = DbUtil.Db;
         }
 

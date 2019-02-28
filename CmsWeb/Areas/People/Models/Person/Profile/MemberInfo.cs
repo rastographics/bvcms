@@ -8,6 +8,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Data.Linq;
 using System.Linq;
 using System.Web;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Models
 {
@@ -158,7 +159,7 @@ namespace CmsWeb.Areas.People.Models
         public List<AllStatusFlag> StatusFlags()
         {
             return (from s in DbUtil.Db.ViewAllStatusFlags.ToList()
-                    where s.Role == null || HttpContext.Current.User.IsInRole(s.Role)
+                    where s.Role == null || HttpContextFactory.Current.User.IsInRole(s.Role)
                     where s.PeopleId == PeopleId
                     orderby s.Flag
                     select s).ToList();

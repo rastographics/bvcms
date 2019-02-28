@@ -825,7 +825,7 @@ namespace CmsWeb.Code
         public IEnumerable<CodeValueItem> RegistrationTypes()
         {
             var q = RegistrationTypeCode.GetCodePairs();
-            if (!HttpContext.Current.User.IsInRole("Developer"))
+            if (!HttpContextFactory.Current.User.IsInRole("Developer"))
                 q = q.Where(pp => pp.Key != RegistrationTypeCode.RegisterLinkMaster);
             return from i in q
                    select new CodeValueItem
@@ -916,7 +916,7 @@ namespace CmsWeb.Code
         public static IEnumerable<CodeValueItem> StatusFlags()
         {
             var sf = from ms in DbUtil.Db.ViewStatusFlagLists.ToList()
-                     where (ms.RoleName == null) || HttpContext.Current.User.IsInRole(ms.RoleName)
+                     where (ms.RoleName == null) || HttpContextFactory.Current.User.IsInRole(ms.RoleName)
                      select new CodeValueItem
                      {
                          Code = ms.Flag,
@@ -954,7 +954,7 @@ namespace CmsWeb.Code
         {
             var cv = new CodeValueModel();
             var tg = ConvertToSelect(cv.UserTags(Util.UserPeopleId), "Id").ToList();
-            if (HttpContext.Current.User.IsInRole("Edit"))
+            if (HttpContextFactory.Current.User.IsInRole("Edit"))
                 tg.Insert(0, new SelectListItem { Value = "-1", Text = "(last query)" });
             tg.Insert(0, new SelectListItem { Value = "0", Text = "(not specified)" });
             return tg;

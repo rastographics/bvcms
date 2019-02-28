@@ -136,8 +136,7 @@ namespace CmsData
         }
         public string SqlContent(string name)
         {
-            var sql = db.ContentOfTypeSql(name);
-            return sql;
+            return db.ContentOfTypeSql(name);
         }
         public string TextContent(string name)
         {
@@ -386,7 +385,6 @@ namespace CmsData
 DELETE dbo.TagPerson FROM dbo.TagPerson tp JOIN dbo.Tag t ON t.Id = tp.Id WHERE t.TypeId = 101 AND t.Name LIKE @namelike
 DELETE dbo.Tag WHERE TypeId = 101 AND Name LIKE @namelike
 ", new {namelike});
-            Util2.CurrentTag = "UnNamed";
         }
 
         public void WriteContentSql(string name, string sql)
@@ -489,7 +487,7 @@ DELETE dbo.Tag WHERE TypeId = 101 AND Name LIKE @namelike
 
         public bool UserIsInRole(string role)
         {
-            return HttpContext.Current?.User.IsInRole(role) ?? false;
+            return HttpContextFactory.Current?.User.IsInRole(role) ?? false;
         }
     }
 }

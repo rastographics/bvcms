@@ -60,7 +60,7 @@ namespace CmsWeb
 
         public string AuthenticateDeveloper(bool log = false, string addrole = "", string altrole = "")
         {
-            return AuthHelper.AuthenticateDeveloper(System.Web.HttpContext.Current, log, addrole, altrole).Message;
+            return AuthHelper.AuthenticateDeveloper(HttpContextFactory.Current, log, addrole, altrole).Message;
         }
 
         public ViewResult Message(string text, string stacktrace = null)
@@ -169,7 +169,7 @@ namespace CmsWeb
 
         public static string ErrorUrl(string message)
         {
-            return $"/Home/ShowError/?error={System.Web.HttpContext.Current.Server.UrlEncode(message)}&url={System.Web.HttpContext.Current.Request.Url.OriginalString}";
+            return $"/Home/ShowError/?error={HttpContextFactory.Current.Server.UrlEncode(message)}&url={HttpContextFactory.Current.Request.Url.OriginalString}";
         }
 
         public ActionResult RedirectShowError(string message)

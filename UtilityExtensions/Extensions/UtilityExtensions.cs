@@ -39,9 +39,9 @@ namespace UtilityExtensions
         {
             get
             {
-                if (HttpContext.Current != null)
-                    if (HttpContext.Current.Session != null)
-                        return HttpContext.Current.Session.SessionID;
+                if (HttpContextFactory.Current != null)
+                    if (HttpContextFactory.Current.Session != null)
+                        return HttpContextFactory.Current.Session.SessionID;
                 var s = (string)HttpRuntime.Cache["SessionId"] ?? (SessionId = Guid.NewGuid().ToString());
                 return s;
             }
@@ -53,25 +53,25 @@ namespace UtilityExtensions
             get
             {
                 bool tf = false;
-                if (HttpContext.Current != null)
-                    if (HttpContext.Current.Session != null)
-                        if (HttpContext.Current.Session[STR_SessionStarting] != null)
-                            tf = (bool)HttpContext.Current.Session[STR_SessionStarting];
+                if (HttpContextFactory.Current != null)
+                    if (HttpContextFactory.Current.Session != null)
+                        if (HttpContextFactory.Current.Session[STR_SessionStarting] != null)
+                            tf = (bool)HttpContextFactory.Current.Session[STR_SessionStarting];
                 return tf;
             }
-            set { HttpContext.Current.Session[STR_SessionStarting] = value; }
+            set { HttpContextFactory.Current.Session[STR_SessionStarting] = value; }
         }
 
         public static bool Auditing
         {
             get
             {
-                object tf = HttpContext.Current.Items[STR_Auditing];
+                object tf = HttpContextFactory.Current.Items[STR_Auditing];
                 if (tf.IsNotNull())
                     return (bool)tf;
                 else return true;
             }
-            set { HttpContext.Current.Items[STR_Auditing] = value; }
+            set { HttpContextFactory.Current.Items[STR_Auditing] = value; }
         }
 
         public static string Helpfile
@@ -79,22 +79,22 @@ namespace UtilityExtensions
             get
             {
                 var tag = "MainPage";
-                if (HttpContext.Current.Session[STR_Helpfile] != null)
-                    tag = HttpContext.Current.Session[STR_Helpfile].ToString();
+                if (HttpContextFactory.Current.Session[STR_Helpfile] != null)
+                    tag = HttpContextFactory.Current.Session[STR_Helpfile].ToString();
                 return tag;
             }
-            set { HttpContext.Current.Session[STR_Helpfile] = value; }
+            set { HttpContextFactory.Current.Session[STR_Helpfile] = value; }
         }
 
         public static bool IsLocalNetworkRequest
         {
             get
             {
-                if (HttpContext.Current != null)
+                if (HttpContextFactory.Current != null)
                 {
-                    if (HttpContext.Current.Request.IsLocal)
+                    if (HttpContextFactory.Current.Request.IsLocal)
                         return true;
-                    string hostPrefix = HttpContext.Current.Request.UserHostAddress;
+                    string hostPrefix = HttpContextFactory.Current.Request.UserHostAddress;
                     string[] ipClass = hostPrefix.Split(new char[] { '.' });
                     int classA = Convert.ToInt16(ipClass[0]);
                     int classB = Convert.ToInt16(ipClass[1]);
@@ -126,16 +126,16 @@ namespace UtilityExtensions
             get
             {
                 var version = "?";
-                if (HttpContext.Current != null)
-                    if (HttpContext.Current.Session != null)
-                        if (HttpContext.Current.Session[STR_Version] != null)
-                            version = HttpContext.Current.Session[STR_Version].ToString();
+                if (HttpContextFactory.Current != null)
+                    if (HttpContextFactory.Current.Session != null)
+                        if (HttpContextFactory.Current.Session[STR_Version] != null)
+                            version = HttpContextFactory.Current.Session[STR_Version].ToString();
                 return version;
             }
             set
             {
-                if (HttpContext.Current != null)
-                    HttpContext.Current.Session[STR_Version] = value;
+                if (HttpContextFactory.Current != null)
+                    HttpContextFactory.Current.Session[STR_Version] = value;
             }
         }
 
@@ -156,7 +156,7 @@ namespace UtilityExtensions
                 var exists = File.Exists(path);
                 if (exists)
                     return true;
-                return File.Exists(HttpContext.Current.Server.MapPath("~/AppOffline.txt"));
+                return File.Exists(HttpContextFactory.Current.Server.MapPath("~/AppOffline.txt"));
             }
         }
 
@@ -178,7 +178,7 @@ namespace UtilityExtensions
                 var path = ConfigurationManager.AppSettings["UrgentTextFile"].Replace("%USERPROFILE%",
                     Environment.GetEnvironmentVariable("USERPROFILE"));
                 if (!path.HasValue())
-                    return HttpContext.Current.Application["UrgentMessage"] as string;
+                    return HttpContextFactory.Current.Application["UrgentMessage"] as string;
                 string fileContent = HttpRuntime.Cache["UrgentMessage"] as string;
                 if (fileContent == null && File.Exists(path))
                 {
@@ -194,9 +194,9 @@ namespace UtilityExtensions
                 if (!path.HasValue())
                 {
                     if (value.HasValue())
-                        HttpContext.Current.Application["UrgentMessage"] = value;
+                        HttpContextFactory.Current.Application["UrgentMessage"] = value;
                     else
-                        HttpContext.Current.Application.Remove("UrgentMessage");
+                        HttpContextFactory.Current.Application.Remove("UrgentMessage");
                     return;
                 }
                 File.WriteAllText(path, value);
@@ -213,7 +213,7 @@ namespace UtilityExtensions
                 var path = ConfigurationManager.AppSettings["NotamTextFile"].Replace("%USERPROFILE%",
                     Environment.GetEnvironmentVariable("USERPROFILE"));
                 if (!path.HasValue())
-                    return HttpContext.Current.Application["AdminMessage"] as string;
+                    return HttpContextFactory.Current.Application["AdminMessage"] as string;
                 string fileContent = HttpRuntime.Cache["AdminMessage"] as string;
                 if (fileContent == null && File.Exists(path))
                 {
@@ -229,9 +229,9 @@ namespace UtilityExtensions
                 if (!path.HasValue())
                 {
                     if (value.HasValue())
-                        HttpContext.Current.Application["AdminMessage"] = value;
+                        HttpContextFactory.Current.Application["AdminMessage"] = value;
                     else
-                        HttpContext.Current.Application.Remove("AdminMessage");
+                        HttpContextFactory.Current.Application.Remove("AdminMessage");
                     return;
                 }
                 File.WriteAllText(path, value);
@@ -244,11 +244,11 @@ namespace UtilityExtensions
             get
             {
                 bool? deb = false;
-                if (HttpContext.Current != null)
+                if (HttpContextFactory.Current != null)
                 {
-                    if (HttpContext.Current.Session != null)
-                        if (HttpContext.Current.Session[STR_SMTPDEBUG] != null)
-                            deb = (bool)HttpContext.Current.Session[STR_SMTPDEBUG];
+                    if (HttpContextFactory.Current.Session != null)
+                        if (HttpContextFactory.Current.Session[STR_SMTPDEBUG] != null)
+                            deb = (bool)HttpContextFactory.Current.Session[STR_SMTPDEBUG];
                 }
                 else
                 {
@@ -259,10 +259,10 @@ namespace UtilityExtensions
             }
             set
             {
-                if (HttpContext.Current != null)
+                if (HttpContextFactory.Current != null)
                 {
-                    if (HttpContext.Current.Session != null)
-                        HttpContext.Current.Session[STR_SMTPDEBUG] = value;
+                    if (HttpContextFactory.Current.Session != null)
+                        HttpContextFactory.Current.Session[STR_SMTPDEBUG] = value;
                 }
                 else
                     Thread.SetData(Thread.GetNamedDataSlot(STR_SMTPDEBUG), value);
@@ -275,11 +275,6 @@ namespace UtilityExtensions
             {
                 return Host != "trialdb" ? 0 : (ConfigurationManager.AppSettings["TrialDbOffset"] ?? "0").ToInt();
             }
-        }
-
-        public static T QueryString<T>(this System.Web.UI.Page page, string param)
-        {
-            return QueryString<T>(HttpContext.Current.Request, param);
         }
 
         public static T QueryString<T>(this System.Web.HttpRequest req, string param)
@@ -301,8 +296,8 @@ namespace UtilityExtensions
                 return;
             var c = new HttpCookie(name, value);
             c.Expires = DateTime.Now.AddDays(days);
-            HttpContext.Current.Response.Cookies.Add(c);
-            HttpContext.Current.Items["tCookie-" + name] = value;
+            HttpContextFactory.Current.Response.Cookies.Add(c);
+            HttpContextFactory.Current.Items["tCookie-" + name] = value;
         }
 
         public static string Cookie(string name)
@@ -312,10 +307,10 @@ namespace UtilityExtensions
 
         public static string Cookie(string name, string defaultValue)
         {
-            var v = (string)HttpContext.Current.Items["tCookie-" + name];
+            var v = (string)HttpContextFactory.Current.Items["tCookie-" + name];
             if (v.HasValue())
                 return v;
-            var c = HttpContext.Current.Request.Cookies[name];
+            var c = HttpContextFactory.Current.Request.Cookies[name];
             if (c != null && c.Value.HasValue())
                 return c.Value;
             return defaultValue;
@@ -358,8 +353,8 @@ namespace UtilityExtensions
 
         public static void ShowError(string message)
         {
-            HttpContext.Current.Response.Redirect(
-                $"/Home/ShowError/?error={HttpContext.Current.Server.UrlEncode(message)}&url={HttpContext.Current.Request.Url.OriginalString}");
+            HttpContextFactory.Current.Response.Redirect(
+                $"/Home/ShowError/?error={HttpContextFactory.Current.Server.UrlEncode(message)}&url={HttpContextFactory.Current.Request.Url.OriginalString}");
         }
 
         public static string ResolveUrl(string originalUrl)
@@ -418,10 +413,10 @@ namespace UtilityExtensions
 
         public static bool SessionTimedOut()
         {
-            if (HttpContext.Current.Session != null)
-                if (HttpContext.Current.Session.IsNewSession)
+            if (HttpContextFactory.Current.Session != null)
+                if (HttpContextFactory.Current.Session.IsNewSession)
                 {
-                    string sessionCookie = HttpContext.Current.Request.Headers["Cookie"];
+                    string sessionCookie = HttpContextFactory.Current.Request.Headers["Cookie"];
                     if ((sessionCookie != null) && (sessionCookie.IndexOf("ASP.NET_SessionId") >= 0))
                         return true;
                 }
@@ -430,7 +425,7 @@ namespace UtilityExtensions
 
         public static string GetIpAddress()
         {
-            var context = HttpContext.Current;
+            var context = HttpContextFactory.Current;
             if (context == null)
                 return null;
             var ipAddress = context.Request.ServerVariables["HTTP_X_FORWARDED_FOR"];

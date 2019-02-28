@@ -338,7 +338,7 @@ namespace CmsWeb.Areas.People.Models
             }
             Saved = true;
 
-            if (!HttpContext.Current.User.IsInRole("Access"))
+            if (!HttpContextFactory.Current.User.IsInRole("Access"))
                 if (psb.Count > 0 || fsb.Count > 0)
                 {
                     var sb = new StringBuilder();

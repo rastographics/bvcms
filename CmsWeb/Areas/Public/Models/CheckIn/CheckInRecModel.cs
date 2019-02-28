@@ -46,7 +46,7 @@ namespace CmsWeb.Models
             }
             else
             {
-                var guid = (Guid?)(HttpContext.Current.Session["checkinguid"]);
+                var guid = (Guid?)(HttpContextFactory.Current.Session["checkinguid"]);
                 if (!guid.HasValue)
                 {
                     //var tt = new TemporaryToken
@@ -58,7 +58,7 @@ namespace CmsWeb.Models
                     //DbUtil.Db.TemporaryTokens.InsertOnSubmit(tt);
                     //DbUtil.Db.SubmitChanges();
                     //guid = tt.Id;
-                    HttpContext.Current.Session["checkinguid"] = guid;
+                    HttpContextFactory.Current.Session["checkinguid"] = guid;
                 }
                 this.guid = guid.ToString();
             }

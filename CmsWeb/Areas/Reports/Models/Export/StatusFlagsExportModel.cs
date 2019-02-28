@@ -17,7 +17,7 @@ namespace CmsWeb.Models
         public static EpplusResult StatusFlagsList(Guid qid, string flags)
         {
             var collist = from ss in DbUtil.Db.ViewStatusFlagNamesRoles.ToList()
-                          where ss.Role == null || HttpContext.Current.User.IsInRole(ss.Role)
+                          where ss.Role == null || HttpContextFactory.Current.User.IsInRole(ss.Role)
                           select ss;
 
             string cols = null;
@@ -31,14 +31,14 @@ namespace CmsWeb.Models
             else
             {
                 cols = string.Join(",\n", from c in collist
-                                          where c.Role == null || HttpContext.Current.User.IsInRole(c.Role)
+                                          where c.Role == null || HttpContextFactory.Current.User.IsInRole(c.Role)
                                           select $"\tss.{c.Flag} as [{c.Name}]");
             }
 
             var tag = DbUtil.Db.PopulateSpecialTag(qid, DbUtil.TagTypeId_Query);
             var cn = new SqlConnection(Util.ConnectionString);
             cn.Open();
-            var noBirthYearRole = HttpContext.Current.User.IsInRole(DbUtil.Db.Setting("NoBirthYearRole", ""));
+            var noBirthYearRole = HttpContextFactory.Current.User.IsInRole(DbUtil.Db.Setting("NoBirthYearRole", ""));
             var cmd = new SqlCommand($@"
 SELECT
     md.PeopleId,

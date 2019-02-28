@@ -241,7 +241,7 @@ namespace CmsWeb.Areas.People.Models
 
             DbUtil.Db.SubmitChanges();
 
-            if (!HttpContext.Current.User.IsInRole("Access"))
+            if (!HttpContextFactory.Current.User.IsInRole("Access"))
             {
                 changes.AddRange(fsb);
                 if (changes.Count > 0)
