@@ -114,7 +114,7 @@ namespace CmsWeb.Models
             var roles = re.Match(script).Groups["roles"].Value.Split(',').Select(aa => aa.Trim()).ToArray();
             if (roles.Length > 0)
             {
-                return roles.Any(rr => HttpContext.Current.User.IsInRole(rr));
+                return roles.Any(rr => HttpContextFactory.Current.User.IsInRole(rr));
             }
 
             return true;
@@ -142,7 +142,7 @@ namespace CmsWeb.Models
 
         internal static void GetFilesContent(PythonModel pe)
         {
-            var files = HttpContext.Current.Request.Files;
+            var files = HttpContextFactory.Current.Request.Files;
             var a = files.AllKeys;
             for (var i = 0; i < a.Length; i++)
             {
@@ -183,8 +183,8 @@ namespace CmsWeb.Models
             var runfromRe = new Regex(@"#runfrom=(?<path>.*)\r");
             if (Regex.IsMatch(name, @"test\d*\.py"))
             {
-                runfromPath = HttpContext.Current.Server.MapPath($"~/{name}");
-                script = System.IO.File.ReadAllText(HttpContext.Current.Server.MapPath($"~/{name}"));
+                runfromPath = HttpContextFactory.Current.Server.MapPath($"~/{name}");
+                script = System.IO.File.ReadAllText(HttpContextFactory.Current.Server.MapPath($"~/{name}"));
                 var re1 = new Regex(@"#saveas=(?<saveas>.*)\r");
                 var saveas = re1.Match(script).Groups["saveas"]?.Value;
                 if (saveas.HasValue())

@@ -693,7 +693,7 @@ namespace CmsWeb.Areas.People.Models.Task
             }
 
             Util2.CurrentPeopleId = WhoId.Value;
-            HttpContext.Current.Session["ActivePerson"] = About;
+            HttpContextFactory.Current.Session["ActivePerson"] = About;
             var qb = _cmsDataContext.QueryIsCurrentPerson();
             return $"/Reports/Prospect/{qb.QueryId}?form=true";
         }
@@ -728,7 +728,7 @@ namespace CmsWeb.Areas.People.Models.Task
             ChangeTask(sb, task, "StatusId", TaskStatus.IntVal, _host, _cmsDataContext);
             task.ForceCompleteWContact = ForceCompleteWithContact;
 
-            if (HttpContext.Current.User.IsInRole("AdvancedTask"))
+            if (HttpContextFactory.Current.User.IsInRole("AdvancedTask"))
             {
                 ChangeTask(sb, task, "Project", Project, _host, _cmsDataContext);
             }

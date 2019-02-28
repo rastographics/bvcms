@@ -188,8 +188,8 @@ namespace CmsWeb.Areas.Search.Models
         {
             var u = db.CurrentUser;
             var roles = u.UserRoles.Select(uu => uu.Role.RoleName.ToLower()).ToArray();
-            var managePrivateContacts = HttpContext.Current.User.IsInRole("ManagePrivateContacts");
-            var manageTasks = HttpContext.Current.User.IsInRole("ManageTasks") && !opt.MyTasksOnly;
+            var managePrivateContacts = HttpContextFactory.Current.User.IsInRole("ManagePrivateContacts");
+            var manageTasks = HttpContextFactory.Current.User.IsInRole("ManageTasks") && !opt.MyTasksOnly;
             var uid = Util.UserPeopleId;
             var q = from t in db.ViewTaskSearches
                     where (t.LimitToRole ?? "") == "" || roles.Contains(t.LimitToRole) || managePrivateContacts

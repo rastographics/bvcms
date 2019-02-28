@@ -65,7 +65,7 @@ namespace CmsWeb.Areas.Search.Models
         public void Initialize()
         {
             AjaxPager = true;
-            HasAccess = HttpContext.Current.User.IsInRole("Access");
+            HasAccess = HttpContextFactory.Current.User.IsInRole("Access");
 
             if (!Selector.HasValue())
             {
@@ -105,7 +105,7 @@ namespace CmsWeb.Areas.Search.Models
             {
                 if (!CanView.HasValue)
                 {
-                    CanView = HttpContext.Current.User.IsInRole("Admin") || DbUtil.Db.PeopleQuery2($@"
+                    CanView = HttpContextFactory.Current.User.IsInRole("Admin") || DbUtil.Db.PeopleQuery2($@"
 IsMemberOfDirectory( Org={OrgId} ) = 1 
 AND PeopleId = {Util.UserPeopleId}", fromDirectory: true).Any();
                 }
@@ -122,7 +122,7 @@ AND PeopleId = {Util.UserPeopleId}", fromDirectory: true).Any();
             {
                 if (!CanView.HasValue)
                 {
-                    CanView = HttpContext.Current.User.IsInRole("Admin") || DbUtil.Db.PeopleQuery2($@"
+                    CanView = HttpContextFactory.Current.User.IsInRole("Admin") || DbUtil.Db.PeopleQuery2($@"
 IsMemberOfDirectory( Div={DivId} ) = 1 
 AND PeopleId = {Util.UserPeopleId}", fromDirectory: true).Any();
                 }
@@ -147,7 +147,7 @@ AND PeopleId = {Util.UserPeopleId}", fromDirectory: true).Any();
                                      where v.PeopleId == Util.UserPeopleId
                                      where v.StatusFlags != null
                                      select v).Any();
-                    CanView = hasstatus || HttpContext.Current.User.IsInRole("Admin");
+                    CanView = hasstatus || HttpContextFactory.Current.User.IsInRole("Admin");
                 }
                 TemplateName = DbUtil.Db.Setting(PictureDirectoryTemplateName, PictureDirectoryTemplateName);
                 SqlName = DbUtil.Db.Setting(PictureDirectorySqlName, PictureDirectorySqlName);

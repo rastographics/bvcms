@@ -40,8 +40,8 @@ namespace CmsWeb.Models
             Pager = new PagerModel2(Count);
             Pager.Sort = "Date";
             Pager.Direction = "desc";
-            finance = HttpContext.Current.User.IsInRole("Finance");
-            admin = HttpContext.Current.User.IsInRole("Admin") || HttpContext.Current.User.IsInRole("ManageTransactions");
+            finance = HttpContextFactory.Current.User.IsInRole("Finance");
+            admin = HttpContextFactory.Current.User.IsInRole("Admin") || HttpContextFactory.Current.User.IsInRole("ManageTransactions");
         }
 
         public string description { get; set; }
@@ -144,7 +144,7 @@ namespace CmsWeb.Models
                 }
             }
 
-            if (!HttpContext.Current.User.IsInRole("Finance"))
+            if (!HttpContextFactory.Current.User.IsInRole("Finance"))
             {
                 _transactions = _transactions.Where(tt => (tt.Financeonly ?? false) == false);
             }

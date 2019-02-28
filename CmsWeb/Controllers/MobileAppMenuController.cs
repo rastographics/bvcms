@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using UtilityExtensions;
 
 namespace CmsWeb.Controllers
 {
@@ -14,26 +15,26 @@ namespace CmsWeb.Controllers
         {
             get
             {
-                if (System.Web.HttpContext.Current != null && System.Web.HttpContext.Current.Session != null)
+                if (HttpContextFactory.Current != null && HttpContextFactory.Current.Session != null)
                 {
-                    if (System.Web.HttpContext.Current.Session["source"] == null ||
-                        string.IsNullOrWhiteSpace(System.Web.HttpContext.Current.Session["source"].ToString()))
+                    if (HttpContextFactory.Current.Session["source"] == null ||
+                        string.IsNullOrWhiteSpace(HttpContextFactory.Current.Session["source"].ToString()))
                     {
                         // check within querystring.
-                        if (System.Web.HttpContext.Current.Request.QueryString["source"] != null &&
-                            !string.IsNullOrWhiteSpace(System.Web.HttpContext.Current.Request.QueryString["source"]))
+                        if (HttpContextFactory.Current.Request.QueryString["source"] != null &&
+                            !string.IsNullOrWhiteSpace(HttpContextFactory.Current.Request.QueryString["source"]))
                         {
                             // set session variable
-                            System.Web.HttpContext.Current.Session["source"] = System.Web.HttpContext.Current.Request.QueryString["source"];
-                            return System.Web.HttpContext.Current.Session["source"].ToString();  
+                            HttpContextFactory.Current.Session["source"] = HttpContextFactory.Current.Request.QueryString["source"];
+                            return HttpContextFactory.Current.Session["source"].ToString();  
                         }
                     }
                     else
-                        return System.Web.HttpContext.Current.Session["source"].ToString();                    
+                        return HttpContextFactory.Current.Session["source"].ToString();                    
                 }
                 return string.Empty;
             }
-            set { System.Web.HttpContext.Current.Session["source"] = value; }
+            set { HttpContextFactory.Current.Session["source"] = value; }
         }
 
         public static bool InMobileAppMode

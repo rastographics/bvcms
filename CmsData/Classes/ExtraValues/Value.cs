@@ -32,7 +32,7 @@ namespace CmsData.ExtraValue
             if (!VisibilityRoles.HasValue())
                 return true;
             var a = VisibilityRoles.SplitStr(",");
-            var user = HttpContext.Current?.User;
+            var user = HttpContextFactory.Current?.User;
             if (user == null)
                 return true;
             return a.Any(role => user.IsInRole(role.Trim()));
@@ -42,11 +42,11 @@ namespace CmsData.ExtraValue
         {
             if (Type == "Attr")
                 return false;
-            var user = HttpContext.Current?.User;
+            var user = HttpContextFactory.Current?.User;
             if (user == null)
                 return false;
 
-            var path = HttpContext.Current?.Request.Path;
+            var path = HttpContextFactory.Current?.Request.Path;
             if (path != null && path.Contains("CommunityGroup"))
             {
                 if (user.IsInRole("Edit"))

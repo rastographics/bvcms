@@ -220,7 +220,7 @@ Sorry, I cannot sub for you.</a>";
             string host = Util.Host;
             // save these from HttpContext to set again inside thread local storage
             var useremail = Util.UserEmail;
-            var isinroleemailtest = HttpContext.Current.User.IsInRole("EmailTest");
+            var isinroleemailtest = HttpContextFactory.Current.User.IsInRole("EmailTest");
             Log("Send Emails");
 
             HostingEnvironment.QueueBackgroundWorkItem(ct =>

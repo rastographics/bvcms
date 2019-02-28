@@ -4,7 +4,7 @@
     var targetperson = Util2.TargetLinkPeople;
     var targetorg = Util2.TargetLinkOrg;
     var onlineregtypesearchadd = Util2.OnlineRegTypeSearchAdd;
-    var testnofinance = (string) HttpContext.Current.Session["testnofinance"] == "true";
+    var testnofinance = (string) HttpContextFactory.Current.Session["testnofinance"] == "true";
 }
 <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="me" title="@Util.UserName">
     @if (!string.IsNullOrEmpty(Util.UserThumbPictureUrl))

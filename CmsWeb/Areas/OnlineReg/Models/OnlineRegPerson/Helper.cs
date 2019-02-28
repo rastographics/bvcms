@@ -23,10 +23,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
             {
                 if (_settings == null)
                 {
-                    _settings = HttpContext.Current.Items["RegSettings"] as Dictionary<int, Settings>;
+                    _settings = HttpContextFactory.Current.Items["RegSettings"] as Dictionary<int, Settings>;
                     if (_settings == null)
                         Parent.ParseSettings();
-                    _settings = HttpContext.Current.Items["RegSettings"] as Dictionary<int, Settings>;
+                    _settings = HttpContextFactory.Current.Items["RegSettings"] as Dictionary<int, Settings>;
                 }
                 return _settings;
             }
@@ -617,7 +617,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         }
 
         private PythonModel pythonModel;
-        public PythonModel PythonModel => pythonModel ?? (pythonModel = HttpContext.Current.Items["PythonEvents"] as PythonModel);
+        public PythonModel PythonModel => pythonModel ?? (pythonModel = HttpContextFactory.Current.Items["PythonEvents"] as PythonModel);
 
         private readonly Dictionary<string, string> _nameLookup = new Dictionary<string, string>()
         {

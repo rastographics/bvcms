@@ -81,7 +81,7 @@ namespace CmsWeb.Areas.Finance.Controllers
                 tagid = null;
             }
 
-            var elmah = Elmah.ErrorLog.GetDefault(RequestManager.CurrentHttpContext);
+            var elmah = Elmah.ErrorLog.GetDefault(System.Web.HttpContext.Current);
             HostingEnvironment.QueueBackgroundWorkItem(ct =>
             {
                 Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);

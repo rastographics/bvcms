@@ -893,7 +893,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
                 return BaseMessage.createErrorReturn("Involvement is not available for other people");
             }
 
-            bool limitvisibility = Util2.OrgLeadersOnly || !System.Web.HttpContext.Current.User.IsInRole("Access");
+            bool limitvisibility = Util2.OrgLeadersOnly || !HttpContextFactory.Current.User.IsInRole("Access");
             int[] oids = new int[0];
 
             if (Util2.OrgLeadersOnly)
