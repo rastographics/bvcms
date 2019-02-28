@@ -70,7 +70,7 @@
                                     tot = (tot ?? 0) + amt.GetValueOrDefault();
                                     <tr id="@i.Value">
                                         <td style="border-width: 0px !important">
-                                            @if (Model.FallbackDefaultFundIds.Contains(i.Value))
+                                            @if (Model.FallbackDefaultFundIds.Contains(i.Value) || !Model.DefaultFundIds.Contains(i.Value))
                                             {
                                                 <a href="#" tabindex="-1" class="remove-fund"><span class="fa fa-trash-o" style="line-height: 20px; padding-top: 10px;"></span></a>
                                             }
