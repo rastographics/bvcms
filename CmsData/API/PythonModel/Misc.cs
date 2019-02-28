@@ -136,8 +136,7 @@ namespace CmsData
         }
         public string SqlContent(string name)
         {
-            var sql = db.ContentOfTypeSql(name);
-            return sql;
+            return db.ContentOfTypeSql(name);
         }
         public string TextContent(string name)
         {
@@ -489,7 +488,7 @@ DELETE dbo.Tag WHERE TypeId = 101 AND Name LIKE @namelike
 
         public bool UserIsInRole(string role)
         {
-            return HttpContext.Current?.User.IsInRole(role) ?? false;
+            return HttpContextFactory.Current?.User.IsInRole(role) ?? false;
         }
     }
 }

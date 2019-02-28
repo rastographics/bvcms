@@ -239,6 +239,7 @@
     <Compile Include="Extensions\TypeConversions.cs" />
     <Compile Include="Extensions\Formatting.cs" />
     <Compile Include="GenericConfigCollection.cs" />
+    <Compile Include="HttpContextFactory.cs" />
     <Compile Include="ObjectDumper.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Extensions\ObjectUtilities.cs" />

@@ -30,7 +30,7 @@ namespace CmsWeb.Areas.People.Models
 
         internal IQueryable<EmailQueue> FilterOutFinanceOnly(IQueryable<EmailQueue> q)
         {
-            var user = HttpContext.Current.User;
+            var user = HttpContextFactory.Current.User;
             if (!user.IsInRole("Finance"))
             {
                 q = from e in q
@@ -43,7 +43,7 @@ namespace CmsWeb.Areas.People.Models
         internal IQueryable<EmailQueue> FilterForUser(IQueryable<EmailQueue> q)
         {
             var roles = new[] { "Admin", "ManageEmails", "Finance" };
-            var admin = HttpContext.Current.User.IsInRole("Admin");
+            var admin = HttpContextFactory.Current.User.IsInRole("Admin");
             if (DbUtil.Db.CurrentUser.Roles.Any(uu => roles.Contains(uu)))
             {
                 return FilterOutFinanceOnly(q);

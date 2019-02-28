@@ -30,8 +30,8 @@ namespace UtilityExtensions
                 var h = ConfigurationManager.AppSettings["host"];
                 if (h.HasValue())
                     return h;
-                if (HttpContext.Current != null)
-                    return HttpContext.Current.Request.Url.Authority.SplitStr(".:")[0];
+                if (HttpContextFactory.Current != null)
+                    return HttpContextFactory.Current.Request.Url.Authority.SplitStr(".:")[0];
                 return null;
             }
 
@@ -111,10 +111,10 @@ namespace UtilityExtensions
         {
             get
             {
-                if (HttpContext.Current != null)
-                    if (HttpContext.Current.Session != null)
-                        if (HttpContext.Current.Session[STR_ConnectionString] != null)
-                            return HttpContext.Current.Session[STR_ConnectionString].ToString();
+                if (HttpContextFactory.Current != null)
+                    if (HttpContextFactory.Current.Session != null)
+                        if (HttpContextFactory.Current.Session[STR_ConnectionString] != null)
+                            return HttpContextFactory.Current.Session[STR_ConnectionString].ToString();
 
                 var cs = ConnectionStringSettings(Host);
                 var cb = new SqlConnectionStringBuilder(cs.ConnectionString);
@@ -125,8 +125,8 @@ namespace UtilityExtensions
             }
             set
             {
-                if (HttpContext.Current != null)
-                    HttpContext.Current.Session[STR_ConnectionString] = value;
+                if (HttpContextFactory.Current != null)
+                    HttpContextFactory.Current.Session[STR_ConnectionString] = value;
             }
         }
         private static string ReadOnlyConnectionString(bool finance = false)

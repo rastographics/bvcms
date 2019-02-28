@@ -15,18 +15,18 @@ namespace ImageData
         {
             get
             {
-                return (CMSImageDataContext)HttpContext.Current.Items[CMSDbKEY];
+                return (CMSImageDataContext)HttpContextFactory.Current.Items[CMSDbKEY];
             }
             set
             {
-                HttpContext.Current.Items[CMSDbKEY] = value;
+                HttpContextFactory.Current.Items[CMSDbKEY] = value;
             }
         }
         public static CMSImageDataContext Db
         {
             get
             {
-                if (HttpContext.Current == null)
+                if (HttpContextFactory.Current == null)
                     return new CMSImageDataContext(Util.ConnectionStringImage);
                 if (InternalDb == null)
                 {

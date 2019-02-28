@@ -280,7 +280,7 @@ namespace CmsWeb.Areas.Reports.Models
 
             if (simsunfont.StartsWith("~"))
             {
-                simsunfont = HttpContext.Current.Server.MapPath(Util.SimSunFont);
+                simsunfont = HttpContextFactory.Current.Server.MapPath(Util.SimSunFont);
             }
 
             if (!File.Exists(simsunfont))

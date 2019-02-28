@@ -297,7 +297,7 @@ namespace CmsWeb.Models
 
         public string CheckConversion()
         {
-            if (!HttpContext.Current.User.IsInRole("conversion"))
+            if (!HttpContextFactory.Current.User.IsInRole("conversion"))
             {
                 return null;
             }

@@ -125,7 +125,7 @@ namespace CmsData
 
         public void DeletePeople(object query)
         {
-            if (!HttpContext.Current.User.IsInRole("developer"))
+            if (!HttpContextFactory.Current.User.IsInRole("developer"))
                 db.LogActivity("Python DeletePerson {query} denied");
 
             var list = PeopleIds(query);

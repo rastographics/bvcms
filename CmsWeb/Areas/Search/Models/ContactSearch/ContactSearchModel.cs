@@ -39,7 +39,7 @@ namespace CmsWeb.Areas.Search.Models
 
             var u = DbUtil.Db.CurrentUser;
             var roles = u.UserRoles.Select(uu => uu.Role.RoleName.ToLower()).ToArray();
-            var managePrivateContacts = HttpContext.Current.User.IsInRole("ManagePrivateContacts");
+            var managePrivateContacts = HttpContextFactory.Current.User.IsInRole("ManagePrivateContacts");
             var q = from c in DbUtil.Db.Contacts
                     where (c.LimitToRole ?? "") == "" || roles.Contains(c.LimitToRole) || managePrivateContacts
                     select c;
@@ -311,7 +311,7 @@ namespace CmsWeb.Areas.Search.Models
 
         public bool CanDeleteTotal()
         {
-            return HttpContext.Current.User.IsInRole("Developer")
+            return HttpContextFactory.Current.User.IsInRole("Developer")
                 && !SearchParameters.StartDate.HasValue
                 && !SearchParameters.EndDate.HasValue
                 && SearchParameters.Ministry.Value.ToInt() == 0;
@@ -358,7 +358,7 @@ namespace CmsWeb.Areas.Search.Models
         private const string STR_ContactSearch = "ContactSearch2";
         internal void GetFromSession()
         {
-            var os = HttpContext.Current.Session[STR_ContactSearch] as ContactSearchInfo;
+            var os = HttpContextFactory.Current.Session[STR_ContactSearch] as ContactSearchInfo;
             if (os != null)
             {
                 SearchParameters.CopyPropertiesFrom(os);
@@ -368,12 +368,12 @@ namespace CmsWeb.Areas.Search.Models
         {
             var os = new ContactSearchInfo();
             SearchParameters.CopyPropertiesTo(os);
-            HttpContext.Current.Session[STR_ContactSearch] = os;
+            HttpContextFactory.Current.Session[STR_ContactSearch] = os;
         }
 
         internal void ClearSession()
         {
-            HttpContext.Current.Session.Remove(STR_ContactSearch);
+            HttpContextFactory.Current.Session.Remove(STR_ContactSearch);
         }
     }
 }

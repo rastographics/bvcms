@@ -364,7 +364,7 @@ Thank you.
         }
         public static void LogOutOfOnlineReg()
         {
-            var session = HttpContext.Current.Session;
+            var session = HttpContextFactory.Current.Session;
             if ((bool?)session["OnlineRegLogin"] == true)
             {
                 FormsAuthentication.SignOut();
