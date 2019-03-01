@@ -208,7 +208,7 @@ namespace CmsWeb.Controllers
                 });
                 return View("RunPythonScriptProgress");
             }
-            var pe = new PythonModel(Util.Host);
+            var pe = new PythonModel(CurrentDatabase); 
             if (script.Contains("@BlueToolbarTagId"))
             {
                 var id = CurrentDatabase.FetchLastQuery().Id;
