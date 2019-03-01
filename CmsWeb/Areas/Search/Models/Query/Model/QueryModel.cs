@@ -186,17 +186,10 @@ namespace CmsWeb.Areas.Search.Models
             Db.CurrentTagOwnerId = tag.PersonOwner.PeopleId;
 
             var q = DefineModelList();
-            var people = q.ToList();
 
-            foreach (var person in people)
-            {
-                if(person.Tags.Any(t => t.Id == tag.Id))
-                {
-                    continue;
-                }
-
-                Db.TagPeople.InsertOnSubmit(new TagPerson { PeopleId = person.PeopleId, Id = tag.Id, DateCreated = DateTime.Now });
-            }
+            Db.TagPeople.InsertAllOnSubmit(q.Where(p => !p.Tags.Any(t => t.Id == tag.Id))
+                .Select(p => new TagPerson { PeopleId = p.PeopleId, Id = tag.Id, DateCreated = DateTime.Now })
+                .ToList());
 
             Db.SubmitChanges();
             return tag;
@@ -231,15 +224,10 @@ namespace CmsWeb.Areas.Search.Models
             Db.CurrentTagOwnerId = tag.PersonOwner.PeopleId;
 
             var q = DefineModelList();
-            var people = q.ToList();
 
-            foreach (var person in people)
-            {
-                if (person.Tags.Any(t => t.Id == tag.Id))
-                {
-                    Db.TagPeople.DeleteOnSubmit(person.Tags.Single(t => t.Id == tag.Id && t.PeopleId == person.PeopleId));
-                }
-            }
+            Db.TagPeople.DeleteAllOnSubmit(q.Where(p => p.Tags.Any(t => t.Id == tag.Id))
+                .Select(p => new TagPerson { PeopleId = p.PeopleId, Id = tag.Id })
+                .ToList());
 
             Db.SubmitChanges();
             return tag;
