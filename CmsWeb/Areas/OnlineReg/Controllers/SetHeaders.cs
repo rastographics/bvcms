@@ -10,7 +10,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 {
     public partial class OnlineRegController
     {
-        private const string MangedGivingShellSettingKey = "UX-ManagedGivingShell";
+        private const string ManagedGivingShellSettingKey = "UX-ManagedGivingShell";
 
         private Dictionary<int, Settings> _settings;
         public Dictionary<int, Settings> settings
@@ -32,24 +32,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         private void SetHeaders2(int id)
         {
             var org = CurrentDatabase.LoadOrganizationById(id);
-            var shell = string.Empty;
-
-            var mangedGivingShellSettingKey = MangedGivingShellSettingKey;
-            var campus = Session["Campus"]?.ToString();
-            if (!string.IsNullOrWhiteSpace(campus))
-            {
-                mangedGivingShellSettingKey = $"{mangedGivingShellSettingKey}-{campus.ToUpper()}";
-            }
-            var alternateShellSetting = CurrentDatabase.Settings.SingleOrDefault(x => x.Id == mangedGivingShellSettingKey);
-            if (alternateShellSetting != null)
-            {
-                var alternateShell = CurrentDatabase.Contents.SingleOrDefault(x => x.Name == alternateShellSetting.SettingX);
-                if (alternateShell != null)
-                {
-                    shell = alternateShell.Body;
-                }
-            }
-
+            var shell = SetAlternativeManagedGivingShell();
+            
             if (!shell.HasValue() && (settings == null || !settings.ContainsKey(id)) && org != null)
             {
                 var setting = CurrentDatabase.CreateRegistrationSettings(id);
@@ -88,23 +72,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return;
             }
 
-            var shell = string.Empty;
-            var mangedGivingShellSettingKey = MangedGivingShellSettingKey;
-            var campus = Session["Campus"]?.ToString();
-            if (!string.IsNullOrWhiteSpace(campus))
-            {
-                mangedGivingShellSettingKey = $"{mangedGivingShellSettingKey}-{campus.ToUpper()}";
-            }
-            var alternateShellSetting = CurrentDatabase.Settings.SingleOrDefault(x => x.Id == mangedGivingShellSettingKey);
-            if (alternateShellSetting != null)
-            {
-                var alternateShell = CurrentDatabase.Contents.SingleOrDefault(x => x.Name == alternateShellSetting.SettingX);
-                if (alternateShell != null)
-                {
-                    shell = alternateShell.Body;
-                }
-            }
-            
+            var shell = SetAlternativeManagedGivingShell();
             if (!shell.HasValue() && (settings == null || !settings.ContainsKey(id)))
             {
                 setting = CurrentDatabase.CreateRegistrationSettings(id);
@@ -138,6 +106,28 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 ViewBag.bottom = DbUtil.Content("OnlineRegBottom-" + id,
                     DbUtil.Content("OnlineRegBottom", ""));
             }
+        }
+
+        private string SetAlternativeManagedGivingShell()
+        {
+            var shell = string.Empty;
+            var managedGivingShellSettingKey = ManagedGivingShellSettingKey;
+            var campus = Session["Campus"]?.ToString(); // campus is only set for managed giving flow.
+            if (!string.IsNullOrWhiteSpace(campus))
+            {
+                managedGivingShellSettingKey = $"{managedGivingShellSettingKey}-{campus.ToUpper()}";
+            }
+            var alternateShellSetting = CurrentDatabase.Settings.SingleOrDefault(x => x.Id == managedGivingShellSettingKey);
+            if (alternateShellSetting != null)
+            {
+                var alternateShell = CurrentDatabase.Contents.SingleOrDefault(x => x.Name == alternateShellSetting.SettingX);
+                if (alternateShell != null)
+                {
+                    shell = alternateShell.Body;
+                }
+            }
+
+            return shell;
         }
     }
 }
