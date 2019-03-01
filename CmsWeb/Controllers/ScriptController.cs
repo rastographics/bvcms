@@ -192,9 +192,10 @@ namespace CmsWeb.Controllers
                 ViewBag.LogFile = logFile;
                 var qs = Request.Url?.Query;
                 var host = Util.Host;
+                var db = CurrentDatabase.Copy();
+
                 HostingEnvironment.QueueBackgroundWorkItem(ct =>
                 {
-                    var db = CurrentDatabase.Copy();
                     var qsa = HttpUtility.ParseQueryString(qs ?? "");
                     var pm = new PythonModel(db);
                     pm.DictionaryAdd("LogFile", logFile);
