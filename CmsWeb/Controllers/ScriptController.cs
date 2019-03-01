@@ -194,8 +194,9 @@ namespace CmsWeb.Controllers
                 var host = Util.Host;
                 HostingEnvironment.QueueBackgroundWorkItem(ct =>
                 {
+                    var db = CurrentDatabase.Copy();
                     var qsa = HttpUtility.ParseQueryString(qs ?? "");
-                    var pm = new PythonModel(host);
+                    var pm = new PythonModel(db);
                     pm.DictionaryAdd("LogFile", logFile);
                     foreach (string key in qsa)
                     {
