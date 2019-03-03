@@ -45,6 +45,12 @@ namespace CmsWeb.Areas.Manage.Controllers
         }
 
         [HttpPost]
+        public ActionResult TransactionsWithExtraDonationAmount(TransactionsModel m)
+        {
+            return View(m);
+        }
+
+        [HttpPost]
         public ActionResult List(TransactionsModel m)
         {
             UpdateModel(m.Pager);
@@ -178,7 +184,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 <tr><td>Date</td><td>{t.TransactionDate.FormatDateTm()}</td></tr>
 <tr><td>TranIds</td><td>Org: {t.Id} {t.TransactionId}, Curr: {transaction.Id} {transaction.TransactionId}</td></tr>
 <tr><td>User</td><td>{Util.UserFullName}</td></tr>
-</table>", Util.EmailAddressListFromString(CurrentDatabase.StaffEmailForOrg(transaction.OrgId ?? 0)));            
+</table>", Util.EmailAddressListFromString(CurrentDatabase.StaffEmailForOrg(transaction.OrgId ?? 0)));
 
             return View("List", m);
         }

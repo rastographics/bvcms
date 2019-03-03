@@ -53,6 +53,7 @@ namespace CmsWeb.Models
         public DateTime? enddt { get; set; }
         public bool testtransactions { get; set; }
         public bool apprtransactions { get; set; }
+        public bool includesadditionaldonation { get; set; }
         public bool nocoupons { get; set; }
         public string batchref { get; set; }
         public bool usebatchdates { get; set; }
@@ -172,6 +173,11 @@ namespace CmsWeb.Models
                                 where t.TransactionDate >= startdt || startdt == null
                                 where t.TransactionDate <= edt || edt == null
                                 select t;
+            }
+
+            if (includesadditionaldonation)
+            {
+                _transactions = _transactions.Where(t => t.Donate > 0.00m);
             }
             //			var q0 = _transactions.ToList();
             //            foreach(var t in q0)
@@ -405,6 +411,7 @@ namespace CmsWeb.Models
                        TripName = o.OrganizationName
                    };
         }
+
         public List<MissionTripBalanceInfo> MissionTripBalances()
         {
             var q = from gs in DbUtil.Db.GoerSenderAmounts
@@ -511,6 +518,7 @@ namespace CmsWeb.Models
             public int? OrgId { get; set; }
             public string TripName { get; set; }
         }
+
         public class MissionTripBalanceInfo
         {
             public int GoerId { get; set; }
