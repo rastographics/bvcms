@@ -14,6 +14,8 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 {
     public class MobileAuthentication
     {
+        private readonly CMSDataContext db;
+
         private User user;
         private MobileAppDevice device;
 
@@ -24,6 +26,11 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 
         private string username = "";
         private string password = "";
+
+        public MobileAuthentication(CMSDataContext db)
+        {
+            this.db = db;
+        }
 
         public void authenticate(string instanceID, string previousID = "", bool allowQuick = false, int userID = 0)
         {
@@ -116,9 +123,9 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
             username = networkCredential.UserName;
             password = networkCredential.Password;
 
-            bool impersonating = password == DbUtil.Db.Setting("ImpersonatePassword", Guid.NewGuid().ToString());
+            bool impersonating = password == db.Setting("ImpersonatePassword", Guid.NewGuid().ToString());
 
-            IQueryable<User> userQuery = DbUtil.Db.Users.Where(uu => uu.Username == username || uu.Person.EmailAddress == username || uu.Person.EmailAddress2 == username);
+            IQueryable<User> userQuery = db.Users.Where(uu => uu.Username == username || uu.Person.EmailAddress == username || uu.Person.EmailAddress2 == username);
 
             try
             {
@@ -129,14 +136,14 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
                 return Error.DATABASE_ERROR;
             }
 
-            foreach (var foundUser in userQuery.ToList())
+            foreach (User foundUser in userQuery.ToList())
             {
                 if (!impersonating && !Membership.Provider.ValidateUser(username, password))
                 {
                     continue;
                 }
 
-                DbUtil.Db.Refresh(RefreshMode.OverwriteCurrentValues, foundUser);
+                db.Refresh(RefreshMode.OverwriteCurrentValues, foundUser);
                 user = foundUser;
 
                 // TODO: Remove the connection to Util and Util2 in the future
@@ -145,7 +152,7 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
                 if (CMSRoleProvider.provider.IsUserInRole(user.Username, "OrgLeadersOnly"))
                 {
                     Util2.OrgLeadersOnly = true;
-                    DbUtil.Db.SetOrgLeadersOnly();
+                    db.SetOrgLeadersOnly();
                 }
 
                 break;
@@ -181,7 +188,7 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 
             string hashString = createHash(instanceID, userAndPassword[0], userAndPassword[1]);
 
-            device = DbUtil.Db.MobileAppDevices.FirstOrDefault(d => d.InstanceID == instanceID && d.Authentication == hashString);
+            device = db.MobileAppDevices.FirstOrDefault(d => d.InstanceID == instanceID && d.Authentication == hashString);
 
             if (device == null)
             {
@@ -189,7 +196,7 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
                 {
                     hashString = createHash(previousID, userAndPassword[0], userAndPassword[1]);
 
-                    device = DbUtil.Db.MobileAppDevices.FirstOrDefault(d => d.InstanceID == previousID && d.Authentication == hashString);
+                    device = db.MobileAppDevices.FirstOrDefault(d => d.InstanceID == previousID && d.Authentication == hashString);
 
                     if (device == null)
                     {
@@ -199,7 +206,7 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
                     device.InstanceID = instanceID;
                     device.Authentication = createHash(instanceID, userAndPassword[0], userAndPassword[1]);
 
-                    DbUtil.Db.SubmitChanges();
+                    db.SubmitChanges();
                 }
                 else
                 {
@@ -208,7 +215,7 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
             }
 
             device.LastSeen = DateTime.Now;
-            DbUtil.Db.SubmitChanges();
+            db.SubmitChanges();
 
             user = device.User;
             instance = device.InstanceID;
@@ -219,7 +226,7 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
             if (CMSRoleProvider.provider.IsUserInRole(user.Username, "OrgLeadersOnly"))
             {
                 Util2.OrgLeadersOnly = true;
-                DbUtil.Db.SetOrgLeadersOnly();
+                db.SetOrgLeadersOnly();
             }
 
             return checkUser(true, false);
@@ -232,7 +239,7 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
                 return Error.MISSING_CREDENTIALS;
             }
 
-            device = DbUtil.Db.MobileAppDevices.FirstOrDefault(d => d.InstanceID == instanceID && d.Code == code);
+            device = db.MobileAppDevices.FirstOrDefault(d => d.InstanceID == instanceID && d.Code == code);
 
             if (device == null)
             {
@@ -240,11 +247,11 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
             }
 
             device.LastSeen = DateTime.Now;
-            DbUtil.Db.SubmitChanges();
+            db.SubmitChanges();
 
             if (userID > 0)
             {
-                user = DbUtil.Db.Users.FirstOrDefault(u => u.UserId == userID);
+                user = db.Users.FirstOrDefault(u => u.UserId == userID);
 
                 if (user == null)
                 {
@@ -266,7 +273,7 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
                 if (CMSRoleProvider.provider.IsUserInRole(user.Username, "OrgLeadersOnly"))
                 {
                     Util2.OrgLeadersOnly = true;
-                    DbUtil.Db.SetOrgLeadersOnly();
+                    db.SetOrgLeadersOnly();
                 }
             }
 
@@ -282,7 +289,7 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 
             string hashString = createHash(instanceID, username, pin);
 
-            MobileAppDevice appDevice = DbUtil.Db.MobileAppDevices.FirstOrDefault(d => d.InstanceID == instanceID);
+            MobileAppDevice appDevice = db.MobileAppDevices.FirstOrDefault(d => d.InstanceID == instanceID);
 
             if (appDevice != null)
             {
@@ -307,10 +314,10 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
                     CodeEmail = ""
                 };
 
-                DbUtil.Db.MobileAppDevices.InsertOnSubmit(appDevice);
+                db.MobileAppDevices.InsertOnSubmit(appDevice);
             }
 
-            DbUtil.Db.SubmitChanges();
+            db.SubmitChanges();
 
             return true;
         }
@@ -328,7 +335,7 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
             device.CodeExpires = new DateTime(1970, 01, 01);
             device.CodeEmail = "";
 
-            DbUtil.Db.SubmitChanges();
+            db.SubmitChanges();
         }
 
         private static string createHash(string instanceID, string username, string password)
@@ -455,8 +462,7 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
             CANNOT_USE_API_ONLY = -14
         }
 
-        private static readonly string[] ERROR_MESSAGES =
-        {
+        private static readonly string[] ERROR_MESSAGES = {
             "Authenticated", // 0
 			"Unknown Error", // -1
 			"No authentication header", // -2
