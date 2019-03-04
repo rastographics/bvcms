@@ -22,13 +22,19 @@ namespace CmsWeb.Areas.Reports.Models
 {
     public class CustomReportsModel
     {
+        private Organization _currentOrganization;
         private readonly CMSDataContext db;
         private readonly CustomColumnsModel mc;
         private readonly int? orgid;
         private readonly Guid queryid;
         public readonly string Report;
 
-        public CustomReportsModel() { }
+        [Obsolete("A constructor that passes the db context is preferred")]
+        public CustomReportsModel()
+        {
+            // didn't supply the context, so go ahead and set it here to avoid multiple calls
+            db = DbUtil.Db;
+        }
 
         public CustomReportsModel(CMSDataContext db, int? orgId = null)
         {
@@ -38,7 +44,7 @@ namespace CmsWeb.Areas.Reports.Models
         }
 
         public CustomReportsModel(CMSDataContext db, string report, Guid? id = null, int? orgId = null)
-            : this(DbUtil.Db, orgId)
+            : this(db, orgId)
         {
             Report = report;
             if (id != null)
@@ -48,7 +54,7 @@ namespace CmsWeb.Areas.Reports.Models
 
             if (orgid == null)
             {
-                orgid = DbUtil.Db.CurrentSessionOrgId;
+                orgid = db.CurrentSessionOrgId;
             }
         }
 
@@ -75,7 +81,7 @@ namespace CmsWeb.Areas.Reports.Models
             public string Display => Report.SpaceCamelCase();
         }
 
-        public Organization Org => DbUtil.Db.LoadOrganizationById(orgid);
+        public Organization Org => _currentOrganization ?? (_currentOrganization = db.LoadOrganizationById(orgid));
         public string ExcelUrl => $"/Reports/CustomExcel/{Report}/{queryid}";
         public string EditUrl => GetEditUrl(Report, queryid, orgid);
         public string NewUrl(int? oid, Guid qid) => $"/Reports/EditCustomReport/{qid}{(oid > 0 ? $"?orgid={oid}" : "")}";
@@ -112,8 +118,8 @@ namespace CmsWeb.Areas.Reports.Models
                 return list;
             }
 
-            var currentUserRoles = DbUtil.Db.CurrentUser.Roles;
-            var li = DbUtil.Db.ViewCustomScriptRoles.ToList();
+            var currentUserRoles = db.CurrentUser.Roles;
+            var li = db.ViewCustomScriptRoles.ToList();
             var q = from e in li
                     let roles = (e.Role ?? "").Split(',').ToList()
                     where e.Role == null || roles.Any(rr => currentUserRoles.Contains(rr))
@@ -133,6 +139,7 @@ namespace CmsWeb.Areas.Reports.Models
         {
             return List.Where(vv => vv.Type == "Custom").ToList();
         }
+
         public List<ReportItem> UrlList()
         {
             return List.Where(vv => vv.Type == "URL").ToList();
@@ -147,6 +154,7 @@ namespace CmsWeb.Areas.Reports.Models
         {
             return List.Where(vv => vv.Type == "SqlReport").ToList();
         }
+
         public List<ReportItem> OrgSearchSqlList()
         {
             return List.Where(vv => vv.Type == "OrgSearchSqlReport").ToList();
@@ -154,9 +162,7 @@ namespace CmsWeb.Areas.Reports.Models
 
         public string Table()
         {
-            var cs = DbUtil.Db.CurrentUser.InRole("Finance")
-                ? Util.ConnectionStringReadOnlyFinance
-                : Util.ConnectionStringReadOnly;
+            var cs = GetConnectionString();
             var cn = new SqlConnection(cs);
             var p = Parameters();
             var sql = Sql();
@@ -167,7 +173,7 @@ namespace CmsWeb.Areas.Reports.Models
 
             if (sql.Contains("pagebreak"))
             {
-                return PythonModel.PageBreakTables(DbUtil.Db, sql, p);
+                return PythonModel.PageBreakTables(db, sql, p);
             }
 
             var rd = cn.ExecuteReader(sql, p);
@@ -176,9 +182,7 @@ namespace CmsWeb.Areas.Reports.Models
 
         public EpplusResult Result()
         {
-            var cs = DbUtil.Db.CurrentUser.InRole("Finance")
-                ? Util.ConnectionStringReadOnlyFinance
-                : Util.ConnectionStringReadOnly;
+            var cs = GetConnectionString();
             var cn = new SqlConnection(cs);
             var p = Parameters();
             var sql = Sql();
@@ -194,9 +198,9 @@ namespace CmsWeb.Areas.Reports.Models
         private DynamicParameters Parameters(string query = null)
         {
             var q = query != null
-                ? DbUtil.Db.PeopleQuery2(query)
-                : DbUtil.Db.PeopleQuery(queryid);
-            var tag = DbUtil.Db.PopulateSpecialTag(q, DbUtil.TagTypeId_Query);
+                ? db.PeopleQuery2(query)
+                : db.PeopleQuery(queryid);
+            var tag = db.PopulateSpecialTag(q, DbUtil.TagTypeId_Query);
             Qtagid = tag.Id;
             var p = new DynamicParameters();
             p.Add("@qtagid", Qtagid);
@@ -205,9 +209,7 @@ namespace CmsWeb.Areas.Reports.Models
 
         public EpplusResult Result(string savedQuery)
         {
-            var cs = DbUtil.Db.CurrentUser.InRole("Finance")
-                ? Util.ConnectionStringReadOnlyFinance
-                : Util.ConnectionStringReadOnly;
+            string cs = GetConnectionString();
             var cn = new SqlConnection(cs);
             var p = Parameters(savedQuery);
             var sql = Sql();
@@ -217,6 +219,13 @@ namespace CmsWeb.Areas.Reports.Models
             }
 
             return cn.ExecuteReader(sql, p).ToExcel(Report + ".xlsx");
+        }
+
+        private string GetConnectionString()
+        {
+            return db.CurrentUser.InRole("Finance")
+                ? Util.ConnectionStringReadOnlyFinance
+                : Util.ConnectionStringReadOnly;
         }
 
         public string Sql()
@@ -268,7 +277,7 @@ namespace CmsWeb.Areas.Reports.Models
                     var cc = mc.SpecialColumns[name];
                     if (flags == null)
                     {
-                        flags = DbUtil.Db.ViewStatusFlagLists.Where(ff => ff.RoleName == null).ToDictionary(ff => ff.Flag, ff => ff);
+                        flags = db.ViewStatusFlagLists.Where(ff => ff.RoleName == null).ToDictionary(ff => ff.Flag, ff => ff);
                     }
 
                     var flag = (string)e.Attribute("flag");
@@ -379,7 +388,7 @@ namespace CmsWeb.Areas.Reports.Models
                 comma = ",";
             }
             sb.AppendLine("FROM dbo.People p");
-            var coid = DbUtil.Db.CurrentSessionOrgId;
+            var coid = db.CurrentSessionOrgId;
             foreach (var j in joins)
             {
                 var join = mc.Joins[j].Trim();
@@ -416,14 +425,14 @@ namespace CmsWeb.Areas.Reports.Models
                     w.Start("Column").Attr("name", c.Column).End();
                 }
 
-                var protectedevs = from value in Views.GetStandardExtraValues(DbUtil.Db, "People")
+                var protectedevs = from value in Views.GetStandardExtraValues(db, "People")
                                    where value.VisibilityRoles.HasValue()
                                    select value.Name;
 
-                var standards = (from value in Views.GetStandardExtraValues(DbUtil.Db, "People")
+                var standards = (from value in Views.GetStandardExtraValues(db, "People")
                                  select value.Name).ToList();
 
-                var extravalues = from ev in DbUtil.Db.PeopleExtras
+                var extravalues = from ev in db.PeopleExtras
                                   where !protectedevs.Contains(ev.Field)
                                   where (ev.UseAllValues ?? false) == false
                                   group ev by new { ev.Field, ev.Type }
@@ -447,7 +456,7 @@ namespace CmsWeb.Areas.Reports.Models
 
                     w.End();
                 }
-                var statusflags = from f in DbUtil.Db.ViewStatusFlagLists
+                var statusflags = from f in db.ViewStatusFlagLists
                                   where f.RoleName == null
                                   orderby f.Name
                                   select f;
@@ -473,7 +482,7 @@ namespace CmsWeb.Areas.Reports.Models
                          .End();
                     }
 
-                    var smallgroups = from sg in DbUtil.Db.MemberTags
+                    var smallgroups = from sg in db.MemberTags
                                       where sg.OrgId == orgid
                                       orderby sg.Name
                                       select sg;
@@ -591,7 +600,7 @@ namespace CmsWeb.Areas.Reports.Models
                 default:
                     throw new ArgumentException($"unknown typeid: {type}");
             }
-            var content = DbUtil.Db.Content(report, typeid);
+            var content = db.Content(report, typeid);
             if (lookfor.Any(vv => content.Body.Contains(vv, ignoreCase: true)))
             {
                 var xdoc = GetCustomReportXml();
@@ -605,7 +614,7 @@ namespace CmsWeb.Areas.Reports.Models
                 SetCustomReportsContent(xdoc.ToString());
                 return "BlueToolbar";
             }
-            content = DbUtil.Db.Content("CustomReportsMenu", "<ReportsMenu/>", ContentTypeCode.TypeText);
+            content = db.Content("CustomReportsMenu", "<ReportsMenu/>", ContentTypeCode.TypeText);
             var xd = XDocument.Parse(content.Body);
             var e = xd.Descendants("Report").SingleOrDefault(r => r.Attribute("link").Value == url);
             if (e != null)
@@ -622,8 +631,8 @@ namespace CmsWeb.Areas.Reports.Models
             }
             col2.Add(e);
             content.Body = xd.ToString();
-            HttpRuntime.Cache.Remove(DbUtil.Db.Host + "CustomReportsMenu");
-            DbUtil.Db.SubmitChanges();
+            HttpRuntime.Cache.Remove(db.Host + "CustomReportsMenu");
+            db.SubmitChanges();
             return "Reports Menu";
         }
         public bool Contains(string text, List<string> values)
@@ -649,12 +658,12 @@ namespace CmsWeb.Areas.Reports.Models
 
         private string GetCustomReportsContent()
         {
-            return DbUtil.Db.ContentText("CustomReports", "");
+            return db.ContentText("CustomReports", "");
         }
 
         private void SetCustomReportsContent(string customReportsXml)
         {
-            var content = DbUtil.Db.Content("CustomReports");
+            var content = db.Content("CustomReports");
             if (content == null)
             {
                 return;
@@ -662,7 +671,7 @@ namespace CmsWeb.Areas.Reports.Models
 
             content.Body = customReportsXml;
 
-            DbUtil.Db.SubmitChanges();
+            db.SubmitChanges();
         }
 
         private static IEnumerable<XAttribute> MapCustomReportToAttributes(CustomReportColumn column)
@@ -702,10 +711,11 @@ namespace CmsWeb.Areas.Reports.Models
             Success,
             ReportAlreadyExists
         }
+
         public CustomReportViewModel EditCustomReport(CustomReportViewModel originalReportViewModel, bool? alreadySaved)
         {
             var orgName = orgid.HasValue
-                ? DbUtil.Db.Organizations.SingleOrDefault(o => o.OrganizationId == orgid.Value)?.OrganizationName
+                ? db.Organizations.SingleOrDefault(o => o.OrganizationId == orgid.Value)?.OrganizationName
                 : null;
 
             if (!Report.HasValue())
@@ -741,6 +751,7 @@ namespace CmsWeb.Areas.Reports.Models
             vm.CustomReportSuccessfullySaved = alreadySaved.GetValueOrDefault();
             return vm;
         }
+
         private List<CustomReportColumn> GetAllStandardColumns()
         {
             var reportXml = StandardColumns();
@@ -762,6 +773,5 @@ namespace CmsWeb.Areas.Reports.Models
                     };
             return q.ToList();
         }
-
     }
 }
