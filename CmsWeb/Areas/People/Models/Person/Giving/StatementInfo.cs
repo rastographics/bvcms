@@ -1,5 +1,4 @@
 ﻿using CmsData;
-using MoreLinq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,10 +46,22 @@ namespace CmsWeb.Areas.People.Models
                 var funds = node.Element("Funds").Value.Replace("\n", "").Trim();
 
                 var fundsArray = funds.Split('-');
-                var fundLow = int.Parse(fundsArray[0]);
-                var fundHigh = int.Parse(fundsArray[1]);
 
-                foreach (var item in statementInfos.Where(x => x.FundId >= fundLow && x.FundId < fundHigh))
+                int fundStart = 0;
+                int fundEnd = 0;
+
+                if (fundsArray.Length > 1)
+                {
+                    fundStart = int.Parse(fundsArray[0]);
+                    fundEnd = int.Parse(fundsArray[1]);
+                }
+                else
+                {
+                    fundStart = int.Parse(fundsArray[0]);
+                    fundEnd = fundStart + 1;
+                }
+
+                foreach (var item in statementInfos.Where(x => x.FundId >= fundStart && x.FundId < fundEnd))
                 {
                     item.FundGroupName = description;
                 }
