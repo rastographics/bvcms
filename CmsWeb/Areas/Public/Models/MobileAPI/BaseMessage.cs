@@ -46,11 +46,11 @@ namespace CmsWeb.MobileAPI
 
 		public static BaseMessage createFromString( string json )
 		{
-			if( json != null && json.Length > 0 ) {
+			if( !string.IsNullOrEmpty( json ) ) {
 				return JsonConvert.DeserializeObject<BaseMessage>( json );
-			} else {
-				return new BaseMessage();
 			}
+
+			return new BaseMessage();
 		}
 
 		public BaseMessage setData( string data )

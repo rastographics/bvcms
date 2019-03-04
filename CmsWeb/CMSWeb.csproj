@@ -666,10 +666,14 @@
     <Compile Include="Areas\Public\Models\CheckScanAPI\CheckScanEntry.cs" />
     <Compile Include="Areas\Public\Models\CheckScanAPI\CheckScanMessage.cs" />
     <Compile Include="Areas\Public\Models\MobileAPIv2\MobileAccount.cs" />
+    <Compile Include="Areas\Public\Models\MobileAPIv2\MobileGivingContribution.cs" />
+    <Compile Include="Areas\Public\Models\MobileAPIv2\MobileGivingStatement.cs" />
     <Compile Include="Areas\Public\Models\MobileAPIv2\MobileMatch.cs" />
+    <Compile Include="Areas\Public\Models\MobileAPIv2\MobileMeetingCategory.cs" />
     <Compile Include="Areas\Public\Models\MobileAPIv2\MobileMessage.cs" />
     <Compile Include="Areas\Public\Models\MobileAPIv2\MobileAuthentication.cs" />
     <Compile Include="Areas\Public\Models\MobileAPIv2\MobileQuickSignInUser.cs" />
+    <Compile Include="Areas\Public\Models\MobileAPIv2\MobileUserPrivileges.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileGivingEntry.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileGivingHistory.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileInvolvement.cs" />
