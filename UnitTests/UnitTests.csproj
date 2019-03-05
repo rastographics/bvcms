@@ -84,6 +84,7 @@
     <Compile Include="Areas\People\Models\Contact\ContactExtraLocationConfigTests.cs" />
     <Compile Include="Code\QueryModelTests.cs" />
     <Compile Include="Code\CodeValueModelTests.cs" />
+    <Compile Include="DatabaseCollection.cs" />
     <Compile Include="DatabaseFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
