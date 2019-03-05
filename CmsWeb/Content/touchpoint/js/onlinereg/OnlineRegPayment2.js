@@ -171,8 +171,13 @@ $(function () {
                 $('#ApplyCoupon').hide();
             } else {
                 var form = $('#success_form');
-                form.attr("action", ret.confirm);
-                form.submit();
+                if (ret.formmethod == "GET") {
+                    window.location = ret.confirm;
+                }
+                else {
+                    form.attr("action", ret.confirm);
+                    form.submit();
+                }
             }
         });
         return false;

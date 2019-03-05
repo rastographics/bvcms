@@ -108,7 +108,9 @@ We have saved your progress. An email with a link to finish this registration wi
                 if (m.UserPeopleId == null)
                     m.UserPeopleId = Util.UserPeopleId;
                 m.UpdateDatum();
-                return Json(new { confirm = "/OnlineReg/FinishLater/" + id });
+                return Json(new { confirm = "/OnlineReg/FinishLater/" + id,
+                    formmethod = "GET"
+                });
             }
             return Json(new { confirm = "/OnlineReg/Unknown" });
         }
