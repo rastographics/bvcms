@@ -10,8 +10,8 @@ using System.ComponentModel;
 
 namespace CmsData.View
 {
-    [Table(Name = "AvailableGateways")]
-    public partial class AvailableGateways
+    [Table(Name = "AvailableProcess")]
+    public partial class AvailableProcess
     {
         private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
 
@@ -19,17 +19,17 @@ namespace CmsData.View
 
         private string _ProcessName;
 
-        public AvailableGateways()
+        public AvailableProcess()
         {
 
         }
 
-        [Column(Name = "ProcessId", Storage = "ProcessId", DbType = "int")]
+        [Column(Name = "ProcessId", Storage = "_ProcessId", DbType = "int")]
         public int ProcessId
         {
             get
             {
-                return this.ProcessId;
+                return this._ProcessId;
             }
 
             set
@@ -44,7 +44,7 @@ namespace CmsData.View
         {
             get
             {
-                return this.ProcessName;
+                return this._ProcessName;
             }
 
             set
