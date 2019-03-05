@@ -1802,8 +1802,6 @@
       <Link>bin\CmsTwilio.exe.config</Link>
     </Content>
     <Content Include="Areas\People\Views\Person\Giving\Statements.cshtml" />
-    <Content Include="Areas\Setup\Views\_ViewStart.cshtml" />
-    <Content Include="Areas\Setup\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\Setup\Views\Gateway\Index.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
