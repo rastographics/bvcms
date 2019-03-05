@@ -62,8 +62,6 @@ namespace CmsWeb.Areas.Search.Controllers
             var m = QueryModel.QueryCode(CurrentDatabase, code);
             return ViewQuery(m);
         }
-
-
         private ActionResult ViewQuery(QueryModel m)
         {
             m.Db = CurrentDatabase;
