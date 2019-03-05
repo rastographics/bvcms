@@ -685,6 +685,7 @@
     <Compile Include="Areas\Reports\Models\Directories\FamilyRow.cs" />
     <Compile Include="Areas\Reports\Models\Export\DocXReplacements.cs" />
     <Compile Include="Areas\Search\Controllers\TaskSearchController.cs" />
+    <Compile Include="Areas\Search\Models\Query\Model\QueryViewModel.cs" />
     <Compile Include="Areas\Search\Models\TaskSearch\TaskSearchInfo.cs" />
     <Compile Include="Areas\Search\Models\TaskSearch\TaskSearchModel.cs" />
     <Compile Include="Areas\Search\Models\DirectoryInfo.cs" />
