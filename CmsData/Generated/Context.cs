@@ -2076,9 +2076,9 @@ namespace CmsData
 
 	    }
 
-        public Table<View.AvailableGateways> ViewAvailableGateways
+        public Table<View.AvailableProcess> ViewAvailableProcess
         {
-            get { return this.GetTable<View.AvailableGateways>(); }
+            get { return this.GetTable<View.AvailableProcess>(); }
         }
 
         public Table<View.BundleList> ViewBundleLists
@@ -2272,7 +2272,12 @@ namespace CmsData
 
 	    }
 
-	    public Table<View.MoveSchedule> ViewMoveSchedules
+        public Table<View.MyGatewaySettings> ViewMyGatewaySettings
+        {
+            get { return this.GetTable<View.MyGatewaySettings>(); }
+        }
+
+        public Table<View.MoveSchedule> ViewMoveSchedules
 	    {
 		    get { return this.GetTable<View.MoveSchedule>(); }
 
@@ -7069,46 +7074,8 @@ namespace CmsData
                 wkn
                 ).ReturnValue));
 		}
-
-        [Function(Name = "dbo.AddGatewaySettings", IsComposable = true)]
-        [return: Parameter(DbType = "varchar")]
-        public string AddGatewaySettings(
-            [Parameter(Name = "GatewaySettingId", DbType = "int")] int? GatewaySettingId,
-            [Parameter(Name = "GatewayId", DbType = "int")] int GatewayId,
-            [Parameter(Name = "ProcessId", DbType = "int")] int ProcessId,
-            [Parameter(Name = "Operation", DbType = "int")] int Operation
-            )
-        {
-            return ((string)(this.ExecuteMethodCall(this,
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                GatewaySettingId,
-                GatewayId,
-                ProcessId,
-                Operation
-                ).ReturnValue));
-        }
-
-        [Function(Name = "dbo.AddGatewayDetail", IsComposable = true)]
-        [return: Parameter(DbType = "varchar")]
-        public string AddGatewayDetail(
-            [Parameter(Name = "GatewayDetailId", DbType = "int")] int? GatewayDetailId,
-            [Parameter(Name = "GatewayId", DbType = "int")] int GatewayId,
-            [Parameter(Name = "GatewayDetailName", DbType = "nvarchar")] string GatewayDetailName,
-            [Parameter(Name = "GatewayDetailValue", DbType = "nvarchar")] string GatewayDetailValue,
-            [Parameter(Name = "Operation", DbType = "int")] int Operation
-            )
-        {
-            return ((string)(this.ExecuteMethodCall(this,
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                GatewayDetailId,
-                GatewayId,
-                GatewayDetailName,
-                GatewayDetailValue,
-                Operation
-                ).ReturnValue));
-        }
         #endregion
-        #region Stored Procedures
+    #region Stored Procedures
 
         [Function(Name="dbo.TopPledgers")]
 		public ISingleResult<TopGiver> TopPledgers(
@@ -7149,8 +7116,43 @@ namespace CmsData
 			return ((ISingleResult<TopGiver>)(result.ReturnValue));
 		}
 
-    #endregion
-   }
+        [Function(Name = "dbo.AddGatewaySettings")]
+        public ISingleResult<Result> AddGatewaySettings(
+            [Parameter(Name = "GatewaySettingId", DbType = "int")] int? GatewaySettingId,
+            [Parameter(Name = "GatewayId", DbType = "int")] int GatewayId,
+            [Parameter(Name = "ProcessId", DbType = "int")] int ProcessId,
+            [Parameter(Name = "Operation", DbType = "int")] int Operation
+            )
+        {
+            IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                GatewaySettingId,
+                GatewayId,
+                ProcessId,
+                Operation
+            );
+            return ((ISingleResult<Result>)(result.ReturnValue));
+        }
+
+        [Function(Name = "dbo.AddGatewayDetail")]
+        public ISingleResult<Result> AddGatewayDetail(
+            [Parameter(Name = "GatewayDetailId", DbType = "int")] int? GatewayDetailId,
+            [Parameter(Name = "GatewayId", DbType = "int")] int GatewayId,
+            [Parameter(Name = "GatewayDetailName", DbType = "nvarchar")] string GatewayDetailName,
+            [Parameter(Name = "GatewayDetailValue", DbType = "nvarchar")] string GatewayDetailValue,
+            [Parameter(Name = "Operation", DbType = "int")] int Operation
+            )
+        {
+            IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                GatewayDetailId,
+                GatewayId,
+                GatewayDetailName,
+                GatewayDetailValue,
+                Operation
+            );
+            return ((ISingleResult<Result>)(result.ReturnValue));
+        }
+        #endregion
+    }
 
 }
 

@@ -829,6 +829,10 @@ This search uses multiple steps which cannot be duplicated in a single query.
             public string Name;
             public decimal Amount;
         }
+        public class Result
+        {
+            public string Status;
+        }
         public class AttendMeetingInfo1
         {
             public AttendMeetingInfo2 info;

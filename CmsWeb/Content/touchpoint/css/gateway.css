@@ -2,17 +2,31 @@
     padding-bottom: 2em;
 }
 
+.pt2 {
+    padding-top: 2em;
+}
+
 .fa-frown-o {
     font-weight: 300;
     font-size: 100px;
 }
 
-.noprocess form textarea {
-    background: url('../../img/textarealine.png');
-    height: 145px;
-    background-attachment: local;
-    background-repeat: no-repeat;
-    padding-left: 35px;
-    padding-top: 10px;
-    border-color: #ccc;
+.removefiguration, .deletefiguration {
+    border: none;
+    background: none;
+    background-color: transparent;
+}
+
+.removefiguration i, .deletefiguration i {
+    color: #ff2800;
+    font-size: 15px;
+}
+
+#gatewayValues {
+    overflow-y: auto;
+    max-height: 340px;
+}
+
+.divkeyvalue:not(:first-child) {
+    margin-top: 15px;
 }
