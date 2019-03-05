@@ -37,7 +37,7 @@ namespace CmsData.View
         {
             get
             {
-                return this.GatewayId;
+                return this._GatewayId;
             }
 
             set
@@ -52,7 +52,7 @@ namespace CmsData.View
         {
             get
             {
-                return this.GatewayName;
+                return this._GatewayName;
             }
 
             set
@@ -67,7 +67,7 @@ namespace CmsData.View
         {
             get
             {
-                return this.GatewayDetailId;
+                return this._GatewayDetailId;
             }
 
             set
@@ -82,7 +82,7 @@ namespace CmsData.View
         {
             get
             {
-                return this.GatewayDetailName;
+                return this._GatewayDetailName;
             }
 
             set
@@ -97,7 +97,7 @@ namespace CmsData.View
         {
             get
             {
-                return this.GatewayDetailValue;
+                return this._GatewayDetailValue;
             }
 
             set
@@ -112,7 +112,7 @@ namespace CmsData.View
         {
             get
             {
-                return this.IsDefault;
+                return this._IsDefault;
             }
 
             set
