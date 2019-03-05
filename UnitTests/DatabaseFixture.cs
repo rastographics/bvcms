@@ -9,7 +9,6 @@ using CmsData;
 using Dapper;
 using Moq;
 using UtilityExtensions;
-using Xunit;
 
 namespace UnitTests
 {
@@ -18,7 +17,7 @@ namespace UnitTests
         public static bool BuildDb = true;
         public static bool DropDb = false;
         public static IDictionary Items;
-        private const string Url = "http://test.tpsdb.com";
+        private const string Url = "https://test.tpsdb.com";
 
         public DatabaseFixture()
         {
@@ -85,12 +84,5 @@ namespace UnitTests
 
             return context.Object;
         }
-    }
-    [CollectionDefinition("Database collection")]
-    public class DatabaseCollection : ICollectionFixture<DatabaseFixture>
-    {
-        // This class has no code, and is never created. Its purpose is simply
-        // to be the place to apply [CollectionDefinition] and all the
-        // ICollectionFixture<> interfaces.
     }
 }

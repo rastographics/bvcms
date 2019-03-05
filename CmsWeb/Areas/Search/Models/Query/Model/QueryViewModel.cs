@@ -19,6 +19,5 @@ namespace CmsWeb.Areas.Search.Models
             var m = new QueryModel(c.Id, db);
             return m;
         }
-
     }
 }
