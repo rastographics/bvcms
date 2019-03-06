@@ -187,23 +187,28 @@ namespace CmsWeb.Areas.Search.Models
 
             var q = DefineModelList();
 
-            Db.TagPeople.InsertAllOnSubmit(q.Where(p => !p.Tags.Any(t => t.Id == tag.Id))
-                .Select(p => new TagPerson { PeopleId = p.PeopleId, Id = tag.Id, DateCreated = DateTime.Now })
-                .ToList());
+            var newTags = new List<TagPerson>();
 
+            foreach (var p in q.Where(p => !p.Tags.Any(t => t.Id == tag.Id)).ToList())
+            {
+                newTags.Add(new TagPerson { PeopleId = p.PeopleId, Id = tag.Id, DateCreated = DateTime.Now });
+            }
+
+            Db.TagPeople.InsertAllOnSubmit(newTags);
             Db.SubmitChanges();
+
             return tag;
         }
 
         /// <summary>
         /// Removes the specified tag from the results of this query
         /// </summary>
-        /// <param name="tagname">The name of the tag to remove from the result of this QueryModel. Uses the user's session id as a default value if nothing is supplied</param>
+        /// <param name="tagname">The name of the tag to remove from the result of this QueryModel. Uses the current tag name as a default value if nothing is supplied</param>
         public Tag UntagAll(string tagname = "")
         {
             if (string.IsNullOrEmpty(tagname))
             {
-                tagname = Util.SessionId; // not specifying an explicit name, so use the session id as a default
+                tagname = Util2.CurrentTag; // not specifying an explicit name, so use the current tag name as default
             }
             var tag = Db.FetchOrCreateTag(tagname, Util.UserPeopleId, DbUtil.TagTypeId_Personal);
             return UntagAll(tag);
@@ -224,12 +229,17 @@ namespace CmsWeb.Areas.Search.Models
             Db.CurrentTagOwnerId = tag.PersonOwner.PeopleId;
 
             var q = DefineModelList();
+            var removedTags = new List<TagPerson>();
 
-            Db.TagPeople.DeleteAllOnSubmit(q.Where(p => p.Tags.Any(t => t.Id == tag.Id))
-                .Select(p => new TagPerson { PeopleId = p.PeopleId, Id = tag.Id })
-                .ToList());
+            foreach (var p in q.Where(p => p.Tags.Any(t => t.Id == tag.Id)).ToList())
+            {
+                removedTags.Add(new TagPerson { PeopleId = p.PeopleId, Id = tag.Id });
+            }
 
+            Db.TagPeople.AttachAll(removedTags);
+            Db.TagPeople.DeleteAllOnSubmit(removedTags);
             Db.SubmitChanges();
+
             return tag;
         }
 
