@@ -153,7 +153,7 @@ $('#gatewaylist').change(function () {
     sessionStorage.setItem('CurrentGatewayId', this.value);
     console.log(sessionStorage.getItem('CurrentGatewayId'));
 
-    $.ajax("../Gateway/Get_Wateway_Config/" + this.value, {
+    $.ajax("../Gateway/Get_Gateway_Config/" + this.value, {
         type: "GET",
         statusCode: {
             400: function (response) {
@@ -249,7 +249,7 @@ function appendInputs(response) {
             if (response[i].IsDefault === true)
                 $('#gatewayValues').append('<div class="form-inline text-center divkeyvalue forupdate"> ' +
                     '<div style="display:none;" class="form-group">' +
-                    '<button class="removefiguration btn"><i class="fa fa-minus-circle"></i></button>' +
+                    '<a class="removefiguration btn"><i class="fa fa-minus-circle"></i></a>' +
                     '</div>' +
                     '<input hidden type="text" value="' + response[i].GatewayDetailId + '">' +
                     '<div class="form-group">' +
@@ -263,8 +263,8 @@ function appendInputs(response) {
             else
                 $('#gatewayValues').append('<div class="form-inline text-center divkeyvalue forupdate"> ' +
                     '<div class="form-group">' +
-                    '<button style="display:none;" class="removefiguration btn"><i class="fa fa-minus-circle"></i></button>' +
-                    '<button onclick="deleteDetail(' + response[i].GatewayDetailId + ')" class="deletefiguration btn"><i class="fa fa-minus-circle"></i></button>' +
+                    '<a style="display:none;" class="removefiguration btn"><i class="fa fa-minus-circle"></i></a>' +
+                    '<a onclick="deleteDetail(' + response[i].GatewayDetailId + ')" class="deletefiguration btn"><i class="fa fa-minus-circle"></i></a>' +
                     '</div>' +
                     '<input hidden type="text" value="' + response[i].GatewayDetailId + '">' +
                     '<div class="form-group">' +
@@ -280,7 +280,7 @@ function appendInputs(response) {
     else {
         $('#gatewayValues').append('<div class="form-inline text-center divkeyvalue forinsert"> ' +
             '<div class="form-group">' +
-            '<button class="removefiguration btn"><i class="fa fa-minus-circle"></i></button>' +
+            '<a class="removefiguration btn"><i class="fa fa-minus-circle"></i></a>' +
             '</div>' +
             '<div class="form-group">' +
             '<label>Key:&nbsp;</label>' +
@@ -295,7 +295,7 @@ function appendInputs(response) {
 }
 
 function GetWatewayConfig() {
-    $.ajax("../Gateway/Get_Wateway_Config/" + sessionStorage.getItem('CurrentGatewayId'), {
+    $.ajax("../Gateway/Get_Gateway_Config/" + sessionStorage.getItem('CurrentGatewayId'), {
         type: "GET",
         statusCode: {
             200: function (response) {
