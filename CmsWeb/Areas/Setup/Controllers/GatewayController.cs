@@ -38,8 +38,8 @@ namespace CmsWeb.Areas.Setup.Controllers
         }
 
         [HttpGet]
-        [Route("~/Gateway/Get_Wateway_Config/{Id:int}")]
-        public JsonResult Get_Wateway_Config(int Id)
+        [Route("~/Gateway/Get_Gateway_Config/{Id:int}")]
+        public JsonResult Get_Gateway_Config(int Id)
         {
             var Config = CurrentDatabase.GatewayDetails.Where(x => x.GatewayId == Id);
             return Json(Config, JsonRequestBehavior.AllowGet);
