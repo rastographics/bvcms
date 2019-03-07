@@ -30,3 +30,13 @@
 .divkeyvalue:not(:first-child) {
     margin-top: 15px;
 }
+
+.w100 {
+    width: 100%;
+}
+
+@media (min-width: 768px) {
+    .modal-dialog-custom {
+        width: 650px !important;
+    }
+}
