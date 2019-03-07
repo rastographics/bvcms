@@ -181,8 +181,14 @@ $('#gatewaylist').change(function () {
                     text: "It seems you need to add some configurations",
                     icon: "info"
                 });
+                document.getElementById('saveproccess').disabled = true;
+                document.getElementById('saveproccess').className = 'btn btn-default';
                 $('#gatewayModal').modal();
                 $('#gatewayValues').html('');
+            }
+            else {
+                document.getElementById('saveproccess').disabled = false;
+                document.getElementById('saveproccess').className = 'btn btn-success';
             }
         },
         error: function (err) {
@@ -197,33 +203,42 @@ $('.getconfig').click(function () {
 });
 
 function deleteDetail(id) {
-    console.log('Delete From DB...');
-    $.ajax("../Gateway/AddGatewayDetail/", {
-        type: "POST",
-        dataType: "json",
-        data: {
-            GatewayDetailId: id,
-            GatewayId: sessionStorage.getItem('CurrentGatewayId'),
-            GatewayDetailName: '',
-            GatewayDetailValue: '',
-            Operation: 2
-        },
-        statusCode: {
-            400: function (response) {
-                console.log(response);
+    if (document.getElementsByClassName('deletefiguration').length === 1) {
+        swal({
+            title: "Caution!",
+            text: "Your configuration cannot be empty",
+            icon: "warning"
+        });
+    }
+    else {
+        console.log('Delete From DB...');
+        $.ajax("../Gateway/AddGatewayDetail/", {
+            type: "POST",
+            dataType: "json",
+            data: {
+                GatewayDetailId: id,
+                GatewayId: sessionStorage.getItem('CurrentGatewayId'),
+                GatewayDetailName: '',
+                GatewayDetailValue: '',
+                Operation: 2
             },
-            404: function (response) {
+            statusCode: {
+                400: function (response) {
+                    console.log(response);
+                },
+                404: function (response) {
+                    console.log(response);
+                }
+            },
+            success: function (response) {
                 console.log(response);
+                GetWatewayConfig();
+            },
+            error: function (err) {
+                console.log(err);
             }
-        },
-        success: function (response) {
-            console.log(response);
-            GetWatewayConfig();
-        },
-        error: function (err) {
-            console.log(err);
-        }
-    });
+        });
+    }
 }
 
 function addRemoveListeners() {
@@ -251,10 +266,10 @@ function appendInputs(response) {
                     '<div style="display:none;" class="form-group">' +
                     '<a class="removefiguration btn"><i class="fa fa-minus-circle"></i></a>' +
                     '</div>' +
-                    '<input hidden type="text" value="' + response[i].GatewayDetailId + '">' +
+                    '<input readonly hidden type="text" value="' + response[i].GatewayDetailId + '">' +
                     '<div class="form-group">' +
                     '<label>Key:&nbsp;</label>' +
-                    '<input value="' + response[i].GatewayDetailName + '" required type="text" class="form-control" placeholder="Key" />' +
+                    '<input readonly value="' + response[i].GatewayDetailName + '" required type="text" class="form-control" placeholder="Key" />' +
                     '</div> <div class="form-group">' +
                     '<label>Value:&nbsp;</label>' +
                     '<input value="' + response[i].GatewayDetailValue + '" type="text" class="form-control" placeholder="Value" />' +
@@ -288,13 +303,21 @@ function appendInputs(response) {
             '</div> <div class="form-group">' +
             '<label>Value:&nbsp;</label>' +
             '<input value="" type="text" class="form-control" placeholder="Value" />' +
+            '<div class="form-group">' +
+            '<label>Is Default?<br style="line-height: 0;">' +
+            '<input value="" type="checkbox" class="form-control" />' +
+            '</label>' +
+            '</div>' +
             '</div>' +
             '</div >');
         addRemoveListeners();
     }
 }
 
-function GetWatewayConfig() {
+function GetWatewayConfig(id) {
+    if (id !== undefined)
+        sessionStorage.setItem('CurrentGatewayId', id);
+
     $.ajax("../Gateway/Get_Gateway_Config/" + sessionStorage.getItem('CurrentGatewayId'), {
         type: "GET",
         statusCode: {
@@ -319,8 +342,18 @@ function GetWatewayConfig() {
                 });
             }
         },
-        success: function () {
+        success: function (response) {
             $('#gatewayModal').modal();
+            if (response.length === 0 && document.getElementById('saveproccess') !== null) {
+                document.getElementById('saveproccess').disabled = true;
+                document.getElementById('saveproccess').className = 'btn btn-default';
+            }
+            else {
+                if (document.getElementById('saveproccess') !== null) {
+                    document.getElementById('saveproccess').disabled = false;
+                    document.getElementById('saveproccess').className = 'btn btn-success';
+                }
+            }
         },
         error: function (err) {
             console.log(err);
