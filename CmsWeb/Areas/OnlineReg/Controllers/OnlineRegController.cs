@@ -85,7 +85,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
 
             m.HistoryAdd("login");
-            if (m.org != null && m.org.IsMissionTrip == true)
+            if (m.org != null && m.org.IsMissionTrip == true && m.SupportMissionTrip)
             {
                 OnlineRegPersonModel p;
                 PrepareFirstRegistrant(ref m, m.UserPeopleId.Value, false, out p);    
