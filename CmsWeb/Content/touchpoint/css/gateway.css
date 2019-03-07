@@ -35,6 +35,15 @@
     width: 100%;
 }
 
+.checkbox-gateway {
+    display: block;
+    text-align: center;
+}
+
+.checkbox-gateway input {
+	text-align:center;
+}
+
 @media (min-width: 768px) {
     .modal-dialog-custom {
         width: 650px !important;

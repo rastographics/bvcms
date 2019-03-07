@@ -244,6 +244,7 @@ IF NOT EXISTS (
 		@GatewayId[int],
 		@GatewayDetailName[nvarchar](255),
 		@GatewayDetailValue[nvarchar](max),
+		@IsDefault[bit],
 		@Operation[int]) --0 INSERT, 1 UPDATE, 2 DELETE
 		AS
 			IF(@Operation = 0)
@@ -261,7 +262,7 @@ IF NOT EXISTS (
 							(@GatewayId
 							,@GatewayDetailName
 							,@GatewayDetailValue
-							,0);
+							,@IsDefault);
 							IF(@@ROWCOUNT) > 0
 								SELECT CONVERT([nvarchar](8), ''Success'') AS ''Status''
 							ELSE

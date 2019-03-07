@@ -80,9 +80,22 @@ else
             <div class="form-group">
                 <label for="exampleInputEmail1">Gateway</label>
                 <div class="col-md-12 form-group">
-                    <div class="col-md-10 form-group">@Html.DropDownList("GatewayId", (SelectList)ViewBag.Gateways, new { @class = "form-control", @id = "gatewaylist" })</div>
-                    <div class="col-md-2 form-group"><a class="btn btn-primary getconfig"><i class="fa fa-cogs"></i></a></div>
-                </div>
+                    <div class="col-md-10 form-group">
+                        @Html.DropDownList("GatewayId", (SelectList)ViewBag.Gateways, new { @class = "form-control", @id = "gatewaylist" })
+                    </div>
+                    <div class="col-md-2 form-group">
+                        <a class="btn btn-primary getconfig"><i class="fa fa-cogs"></i></a>
+                    </div>
+                    @if (Model.Count() == 0)
+                    {
+                        <div class="col-md-12 form-group">
+                            <label class="checkbox-gateway">
+                                Apply to all processes<br />
+                                <input class="applyall" type="checkbox" value="false" name="applyall" />
+                            </label>
+                        </div>
+                    }
+                </div>               
             </div>
             if (Model.Count() == 3)
             {
@@ -92,7 +105,7 @@ else
             {
                 <button id="saveproccess" class="btn btn-success"><i class="fa fa-save"></i>&nbsp;Save</button>
             }
-            <a href="#" class="btn btn-warning cancel"><i class="fa fa-ban"></i>&nbsp;Cancel</a>
+            <a href="#" class="btn btn-warning cancel"><i class="fa fa-ban"></i>&nbsp;Cancel</a>        
         }
     </div>
 </div>
