@@ -32,6 +32,11 @@ namespace CmsWeb.Common
             get { return GetString("PushpayClientSecret"); }
         }
 
+        public string PushpayGivingLinkBase
+        {
+            get { return GetString("PushpayGivingLinkBase"); }
+        }
+
         public string OAuth2TokenEndpoint
         {
             get { return GetString("OAuth2TokenEndpoint"); }
