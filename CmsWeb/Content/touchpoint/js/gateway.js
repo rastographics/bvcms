@@ -14,6 +14,13 @@ $('.cancel').click(function () {
     document.getElementById("AddGatewaySettings").reset();
 });
 
+$('.applyall').click(function (e) {
+    if (this.checked)
+        $(this).attr('value', 'true');
+    else
+        $(this).attr('value', 'false');
+});
+
 function editprocess(GatewaySettingId, proccessId, gatewayId) {
     document.getElementById('GatewaySettingId').value = GatewaySettingId;
     document.getElementById('secproccessId').value = proccessId;
@@ -79,6 +86,7 @@ $('.saveconfiguration').click(function () {
                     GatewayId: sessionStorage.getItem('CurrentGatewayId'),
                     GatewayDetailName: forupdate[i + 1].value,
                     GatewayDetailValue: forupdate[i + 2].value,
+                    IsDefault: false,
                     Operation: 1
                 },
                 statusCode: {
@@ -108,6 +116,7 @@ $('.saveconfiguration').click(function () {
                     GatewayId: sessionStorage.getItem('CurrentGatewayId'),
                     GatewayDetailName: forinsert[i].value,
                     GatewayDetailValue: forinsert[i + 1].value,
+                    IsDefault: forinsert[i + 2].checked,
                     Operation: 0
                 },
                 statusCode: {
@@ -125,7 +134,7 @@ $('.saveconfiguration').click(function () {
                     console.log(err);
                 }
             });
-            i = i + 1;
+            i = i + 2;
         }
 
         swal({
@@ -203,7 +212,7 @@ $('.getconfig').click(function () {
 });
 
 function deleteDetail(id) {
-    if (document.getElementsByClassName('deletefiguration').length === 1) {
+    if (document.getElementsByClassName('forupdate').length === 1) {
         swal({
             title: "Caution!",
             text: "Your configuration cannot be empty",
