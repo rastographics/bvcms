@@ -7139,6 +7139,7 @@ namespace CmsData
             [Parameter(Name = "GatewayId", DbType = "int")] int GatewayId,
             [Parameter(Name = "GatewayDetailName", DbType = "nvarchar")] string GatewayDetailName,
             [Parameter(Name = "GatewayDetailValue", DbType = "nvarchar")] string GatewayDetailValue,
+            [Parameter(Name = "IsDefault", DbType = "bit")] bool IsDefault,
             [Parameter(Name = "Operation", DbType = "int")] int Operation
             )
         {
@@ -7147,6 +7148,7 @@ namespace CmsData
                 GatewayId,
                 GatewayDetailName,
                 GatewayDetailValue,
+                IsDefault,
                 Operation
             );
             return ((ISingleResult<Result>)(result.ReturnValue));

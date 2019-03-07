@@ -31,11 +31,20 @@ namespace CmsWeb.Areas.Setup.Controllers
 
         [AcceptVerbs(HttpVerbs.Post)]
         [Route("~/Gateway/AddGatewaySettings")]
-        public ActionResult AddGatewaySettings(int? GatewaySettingId = null, int ProcessId = 0, int GatewayId = 0, int Operation = 0)
+        public ActionResult AddGatewaySettings(int? GatewaySettingId = null, int ProcessId = 0, int GatewayId = 0, int Operation = 0, bool applyall = false)
         {
-            var result = CurrentDatabase.AddGatewaySettings(GatewaySettingId, GatewayId, ProcessId, Operation);
+            System.Data.Linq.ISingleResult<CmsData.CMSDataContext.Result> result = null;
 
-            if(Operation == 2)
+            if (applyall)
+            {
+                List<int> Processes = CurrentDatabase.Process.Select(x => x.ProcessId).ToList();
+                foreach(int Process in Processes)
+                    result = CurrentDatabase.AddGatewaySettings(GatewaySettingId, GatewayId, Process, Operation);
+            }
+            else
+                result = CurrentDatabase.AddGatewaySettings(GatewaySettingId, GatewayId, ProcessId, Operation);
+
+            if (Operation == 2)
                 return Json(result, JsonRequestBehavior.AllowGet);
             else
                 return RedirectToAction("Index", "Gateway");
@@ -57,7 +66,7 @@ namespace CmsWeb.Areas.Setup.Controllers
                 return Json(null);
             else if (model.GatewayDetailValue == null)
                 model.GatewayDetailValue = String.Empty;
-            var result = CurrentDatabase.AddGatewayDetail(model.GatewayDetailId, model.GatewayId, model.GatewayDetailName, model.GatewayDetailValue, model.Operation);
+            var result = CurrentDatabase.AddGatewayDetail(model.GatewayDetailId, model.GatewayId, model.GatewayDetailName, model.GatewayDetailValue, model.IsDefault, model.Operation);
             return Json(result);
         }
     }
@@ -68,6 +77,7 @@ namespace CmsWeb.Areas.Setup.Controllers
         public int GatewayId { get; set; }
         public string GatewayDetailName { get; set; }
         public string GatewayDetailValue { get; set; }
+        public bool IsDefault { get; set; }
         public int Operation { get; set; }
     }
 }
