@@ -22,6 +22,10 @@ namespace CmsWeb.Areas.Setup.Controllers
             ViewBag.AvailableProcess = new SelectList(CurrentDatabase.ViewAvailableProcess.AsQueryable(), "ProcessId", "ProcessName");
             ViewBag.Gateways = new SelectList(CurrentDatabase.Gateways.AsQueryable(), "GatewayId", "GatewayName");
 
+            ViewBag.AvailableGateways = new SelectList(CurrentDatabase.Gateways.Where(
+                x => CurrentDatabase.GatewayDetails.Select(y => y.GatewayId)
+                .Contains(x.GatewayId)).AsQueryable(), "GatewayId", "GatewayName");
+
             return View(m);
         }
 
