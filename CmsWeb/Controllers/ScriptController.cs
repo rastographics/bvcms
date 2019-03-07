@@ -204,7 +204,10 @@ namespace CmsWeb.Controllers
                         pm.DictionaryAdd(key, qsa[key]);
                     }
                     string result = pm.RunScript(script);
-                    pm.LogToContent(logFile, result);
+                    if (result.HasValue())
+                    {
+                        pm.LogToContent(logFile, result);
+                    }
                 });
                 return View("RunPythonScriptProgress");
             }
