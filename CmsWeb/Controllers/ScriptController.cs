@@ -203,8 +203,8 @@ namespace CmsWeb.Controllers
                     {
                         pm.DictionaryAdd(key, qsa[key]);
                     }
-
-                    pm.RunScript(script);
+                    string result = pm.RunScript(script);
+                    pm.LogToContent(logFile, result);
                 });
                 return View("RunPythonScriptProgress");
             }
