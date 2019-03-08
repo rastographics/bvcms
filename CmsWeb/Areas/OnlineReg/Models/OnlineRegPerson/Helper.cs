@@ -575,6 +575,14 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 }).ToArray();
         }
 
+        public static SelectListItem[] FullFundList(IList<string> defaultFundIds)
+        {
+            var fullList = FullFundList();
+            var list = defaultFundIds.Select(id => fullList.SingleOrDefault(s => s.Value == id)).Where(fund => fund != null).ToList();
+            list.AddRange(fullList.Where(f => !defaultFundIds.Contains(f.Value)));
+            return list.ToArray();
+        }
+
         public static SelectListItem[] FullFundList()
         {
             return (from f in GetAllOnlineFunds()
@@ -606,6 +614,15 @@ namespace CmsWeb.Areas.OnlineReg.Models
                         Text = $"{f.FundName}",
                         Value = f.FundId.ToString()
                     }).ToArray();
+        }
+
+        public static string GetFundName(int fundId)
+        {
+            var fund =  (from f in GetAllOnlineFunds()
+                where f.FundId == fundId
+                select f).SingleOrDefault();
+
+            return fund?.FundName;
         }
 
         private static IQueryable<ContributionFund> GetAllOnlineFunds()

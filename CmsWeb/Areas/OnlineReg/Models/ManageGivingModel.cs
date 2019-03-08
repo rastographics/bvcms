@@ -13,6 +13,7 @@ using CmsData.Registration;
 using CmsWeb.Areas.OnlineReg.Controllers;
 using CmsWeb.Code;
 using Dapper;
+using Microsoft.Scripting.Utils;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.OnlineReg.Models
@@ -22,6 +23,12 @@ namespace CmsWeb.Areas.OnlineReg.Models
     {
         public int pid { get; set; }
         public int orgid { get; set; }
+
+        public IList<string> DefaultFundIds = new List<string>();
+
+        public IList<string> FallbackDefaultFundIds = new List<string>();
+
+        public string FirstDefaultFundName { get; set; }
 
         public string RepeatPattern { get; set; }
 
@@ -139,13 +146,17 @@ namespace CmsWeb.Areas.OnlineReg.Models
             NoEChecksAllowed = DbUtil.Db.Setting("NoEChecksAllowed", "false").ToBool();
         }
 
-        public ManageGivingModel(int pid, int orgid = 0)
+        public ManageGivingModel(int pid, int orgid = 0, string defaultFundIds = "")
             : this()
         {
             this.pid = pid;
             this.orgid = orgid;
+
             if (person == null)
                 return;
+
+            PopulateDefaultFundIds(defaultFundIds, person);
+
             var rg = person.ManagedGiving();
             if (rg != null)
                 PopulateSetup(rg);
@@ -158,6 +169,31 @@ namespace CmsWeb.Areas.OnlineReg.Models
             PopulateBillingName(pi);
             PopulateBillingAddress(pi);
 
+        }
+
+        private void PopulateDefaultFundIds(string defaultFundIds, Person person)
+        {
+            if (string.IsNullOrWhiteSpace(defaultFundIds) && person.CampusId.HasValue)
+            {
+                // look up campus default fund mapping if present.
+                var setting = $"DefaultCampusFunds-{person.CampusId}";
+                var db = DbUtil.DbReadOnly;
+                defaultFundIds = db.Setting(setting, string.Empty);
+            }
+            
+            if (!string.IsNullOrWhiteSpace(defaultFundIds))
+            {
+                var list = defaultFundIds.Split(',');
+                DefaultFundIds.AddRange(list);
+            }
+
+            if (DefaultFundIds.Any())
+            {
+                FirstDefaultFundName = OnlineRegPersonModel.GetFundName(DefaultFundIds.First().ToInt());
+            }
+
+            var fundList = OnlineRegPersonModel.FundList();
+            FallbackDefaultFundIds.AddRange(fundList.Where(f => !DefaultFundIds.Contains(f.Value)).Select(f => f.Value));
         }
 
         private void PopulateBillingName(PaymentInfo pi)

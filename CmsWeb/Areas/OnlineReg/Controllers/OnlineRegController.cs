@@ -28,6 +28,15 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             try
             {
                 var m = new OnlineRegModel(Request, CurrentDatabase, id, testing, email, login, source);
+
+                if (m.ManageGiving())
+                {
+                    Session["Campus"] = Request.QueryString["campus"];
+                    Session["DefaultFunds"] = Request.QueryString["funds"];
+                    m.Campus = Session["Campus"]?.ToString();
+                    m.DefaultFunds = Session["DefaultFunds"]?.ToString();
+                }
+                
                 if (m.org != null && m.org.IsMissionTrip == true)
                 {
                     if (gsid != null || goerid != null)
