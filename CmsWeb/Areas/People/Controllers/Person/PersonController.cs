@@ -44,6 +44,20 @@ namespace CmsWeb.Areas.People.Controllers
 
             return Redirect("/Person2/" + pid);
         }
+        [HttpGet, Route("~/Family/{id:int}")]
+        public ActionResult Family(int? id)
+        {
+            var pid = (from f in CurrentDatabase.Families
+                       where f.FamilyId == id
+                       select f.HeadOfHouseholdId).SingleOrDefault();
+
+            if (pid == 0)
+            {
+                return Content("no family");
+            }
+
+            return Redirect("/Person2/" + pid);
+        }
         [HttpGet, Route("~/Person2/{id:int}")]
         [Route("~/Person/Index/{id:int}")]
         [Route("~/Person/{id:int}")]

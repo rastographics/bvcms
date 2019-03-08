@@ -79,23 +79,23 @@ namespace CmsWeb.Models
             if (body.Contains("@StartDt"))
             {
                 p.Add("@StartDt", new DateTime(DateTime.Now.Year, 1, 1));
-#if DEBUG
-                body = Regex.Replace(body, "^declare @StartDt", "--$&", RegexOptions.Multiline | RegexOptions.IgnoreCase);
-#endif
             }
 
             if (body.Contains("@EndDt"))
             {
                 p.Add("@EndDt", DateTime.Today);
-#if DEBUG
-                body = Regex.Replace(body, "^declare @EndDt", "--$&", RegexOptions.Multiline | RegexOptions.IgnoreCase);
-#endif
             }
 
             if (body.Contains("@userid", ignoreCase: true))
             {
                 p.Add("@userid", Util.UserId);
             }
+#if DEBUG
+            foreach (var name in p.ParameterNames)
+            {
+                body = QueryFunctions.RemoveDeclaration(name, body);
+            }
+#endif
 
             body = QueryFunctions.AddP1Parameter(body, parameter, p);
 
