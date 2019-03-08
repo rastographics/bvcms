@@ -20,6 +20,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             m.HistoryAdd("continue");
             m.UpdateDatum();
             SetHeaders(m);
+            if (m.RegistrantComplete)
+            {
+                return Redirect("/OnlineReg/CompleteRegistration/"+id);                
+            }
             return View("Index", m);
         }
 
