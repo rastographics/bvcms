@@ -1110,7 +1110,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
         }
         public string UserPreference(string pref, string defaultValue)
         {
-            var d = HttpContext.Current.Session["preferences"] as Dictionary<string, string>;
+            var d = HttpContextFactory.Current.Session["preferences"] as Dictionary<string, string>;
             if (d != null && d.ContainsKey(pref))
             {
                 return d[pref] ?? defaultValue;
@@ -1119,7 +1119,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
             if (d == null)
             {
                 d = new Dictionary<string, string>();
-                HttpContext.Current.Session["preferences"] = d;
+                HttpContextFactory.Current.Session["preferences"] = d;
             }
             Preference p = null;
             if (CurrentUser != null)
@@ -1163,11 +1163,11 @@ This search uses multiple steps which cannot be duplicated in a single query.
                 p = new Preference { UserId = Util.UserId1, PreferenceX = pref, ValueX = value.ToString() };
                 Preferences.InsertOnSubmit(p);
             }
-            var d = HttpContext.Current.Session["preferences"] as Dictionary<string, string>;
+            var d = HttpContextFactory.Current.Session["preferences"] as Dictionary<string, string>;
             if (d == null)
             {
                 d = new Dictionary<string, string>();
-                HttpContext.Current.Session["preferences"] = d;
+                HttpContextFactory.Current.Session["preferences"] = d;
             }
             d[pref] = p.ValueX;
             SubmitChanges();

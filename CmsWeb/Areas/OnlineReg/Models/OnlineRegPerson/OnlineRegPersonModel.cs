@@ -151,7 +151,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             YesNoQuestion = new Dictionary<string, bool?>();
             FundItem = new Dictionary<int, decimal?>();
-            Parent = HttpContext.Current.Items["OnlineRegModel"] as OnlineRegModel;
+            Parent = HttpContextFactory.Current.Items["OnlineRegModel"] as OnlineRegModel;
         }
 
         public OnlineRegModel Parent;

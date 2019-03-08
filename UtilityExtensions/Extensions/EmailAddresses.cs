@@ -315,11 +315,11 @@ namespace UtilityExtensions
             get
             {
                 var tag = ConfigurationManager.AppSettings["senderrorsto"];
-                if (HttpContext.Current != null)
+                if (HttpContextFactory.Current != null)
                 {
-                    if ((HttpContext.Current.Items[STR_AdminMail] as string).HasValue())
+                    if ((HttpContextFactory.Current.Items[STR_AdminMail] as string).HasValue())
                     {
-                        tag = HttpContext.Current.Items[STR_AdminMail].ToString();
+                        tag = HttpContextFactory.Current.Items[STR_AdminMail].ToString();
                     }
                 }
 
@@ -327,9 +327,9 @@ namespace UtilityExtensions
             }
             set
             {
-                if (HttpContext.Current != null)
+                if (HttpContextFactory.Current != null)
                 {
-                    HttpContext.Current.Items[STR_AdminMail] = value;
+                    HttpContextFactory.Current.Items[STR_AdminMail] = value;
                 }
             }
         }
@@ -349,13 +349,13 @@ namespace UtilityExtensions
             get
             {
                 string email = null;
-                if (HttpContext.Current != null)
+                if (HttpContextFactory.Current != null)
                 {
-                    if (HttpContext.Current.Session != null)
+                    if (HttpContextFactory.Current.Session != null)
                     {
-                        if (HttpContext.Current.Session[STR_UserEmail] != null)
+                        if (HttpContextFactory.Current.Session[STR_UserEmail] != null)
                         {
-                            email = HttpContext.Current.Session[STR_UserEmail] as String;
+                            email = HttpContextFactory.Current.Session[STR_UserEmail] as String;
                         }
                     }
                 }
@@ -368,11 +368,11 @@ namespace UtilityExtensions
             }
             set
             {
-                if (HttpContext.Current != null)
+                if (HttpContextFactory.Current != null)
                 {
-                    if (HttpContext.Current.Session != null)
+                    if (HttpContextFactory.Current.Session != null)
                     {
-                        HttpContext.Current.Session[STR_UserEmail] = value;
+                        HttpContextFactory.Current.Session[STR_UserEmail] = value;
                     }
                 }
                 else
@@ -385,20 +385,20 @@ namespace UtilityExtensions
         {
             get
             {
-                if (HttpContext.Current != null)
+                if (HttpContextFactory.Current != null)
                 {
-                    return HttpContext.Current.User.IsInRole("EmailTest") || ((bool?)HttpContext.Current.Session?["IsInRoleEmailTest"] ?? false);
+                    return HttpContextFactory.Current.User.IsInRole("EmailTest") || ((bool?)HttpContextFactory.Current.Session?["IsInRoleEmailTest"] ?? false);
                 }
 
                 return (bool?)Thread.GetData(Thread.GetNamedDataSlot("IsInRoleEmailTest")) ?? false;
             }
             set
             {
-                if (HttpContext.Current != null)
+                if (HttpContextFactory.Current != null)
                 {
-                    if (HttpContext.Current.Session != null)
+                    if (HttpContextFactory.Current.Session != null)
                     {
-                        HttpContext.Current.Session["IsInRoleEmailTest"] = value;
+                        HttpContextFactory.Current.Session["IsInRoleEmailTest"] = value;
                     }
                 }
                 else

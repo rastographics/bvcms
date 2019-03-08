@@ -30,7 +30,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 list[_orgid.Value] = DbUtil.Db.CreateRegistrationSettings(_orgid.Value);
             }
 
-            HttpContext.Current.Items["RegSettings"] = list;
+            HttpContextFactory.Current.Items["RegSettings"] = list;
 
             if (org == null || !org.AddToSmallGroupScript.HasValue())
             {
@@ -47,7 +47,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             try
             {
                 var pe = new PythonModel(Util.Host, "RegisterEvent", script.Body);
-                HttpContext.Current.Items["PythonEvents"] = pe;
+                HttpContextFactory.Current.Items["PythonEvents"] = pe;
             }
             catch (Exception ex)
             {

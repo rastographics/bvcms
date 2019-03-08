@@ -45,7 +45,7 @@ namespace CmsWeb.Areas.People.Models
             var columnsToRemove = (from column in OrgTypeColumns[orgtype]
                                    where column.Roles != null
                                    from role in column.Roles
-                                   where !HttpContext.Current.User.IsInRole(role)
+                                   where !HttpContextFactory.Current.User.IsInRole(role)
                                    select column).ToList();
 
             return OrgTypeColumns[orgtype].Where(x => !columnsToRemove.Contains(x)).ToList();

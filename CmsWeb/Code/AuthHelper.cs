@@ -9,7 +9,7 @@ namespace CmsWeb.Code
 {
     internal static class AuthHelper
     {
-        public static AuthResult AuthenticateDeveloper(HttpContext context, bool shouldLog = false, string additionalRole = "", string altrole = "")
+        public static AuthResult AuthenticateDeveloper(HttpContextBase context, bool shouldLog = false, string additionalRole = "", string altrole = "")
         {
             var auth = context.Request.Headers["Authorization"];
 

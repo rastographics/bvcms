@@ -27,7 +27,7 @@ namespace CmsWeb.Areas.People.Models
                       where !(org.SecurityTypeId == 3 && Util2.OrgLeadersOnly)
                       where org.LimitToRole == null || roles.Contains(org.LimitToRole)
                       select a;
-            if (!HttpContext.Current.User.IsInRole("Admin") || HttpContext.Current.Session["showallmeetings"] == null)
+            if (!HttpContextFactory.Current.User.IsInRole("Admin") || HttpContextFactory.Current.Session["showallmeetings"] == null)
                 q = q.Where(a => a.EffAttendFlag == null || a.EffAttendFlag == true || a.Commitment != null);
             if (Future)
                 q = q.Where(aa => aa.MeetingDate >= midnight);

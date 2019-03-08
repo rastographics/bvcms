@@ -122,7 +122,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         public static bool LogRogueUser(string why, string from)
         {
             //todo: static?
-            var request = System.Web.HttpContext.Current.Request;
+            var request = HttpContextFactory.Current.Request;
             var insertRogueIp = ConfigurationManager.AppSettings["InsertRogueIp"];
             if (insertRogueIp.HasValue())
             {

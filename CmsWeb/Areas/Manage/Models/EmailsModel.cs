@@ -74,7 +74,7 @@ namespace CmsWeb.Models
 
         private IQueryable<EmailQueue> FilterOutFinanceOnly(IQueryable<EmailQueue> q)
         {
-            var user = HttpContext.Current.User;
+            var user = HttpContextFactory.Current.User;
             if (!user.IsInRole("Finance") && !user.IsInRole("FinanceAdmin"))
                 q = from e in q
                     where (e.FinanceOnly ?? false) == false

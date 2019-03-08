@@ -204,7 +204,7 @@ namespace CmsWeb.Areas.Search.Models
         //        private const string STR_RegistrationSearch = "RegistrationSearch";
         //        internal void GetFromSession()
         //        {
-        //            var os = HttpContext.Current.Session[STR_RegistrationSearch] as RegistrationSearchInfo;
+        //            var os = HttpContextFactory.Current.Session[STR_RegistrationSearch] as RegistrationSearchInfo;
         //            if (os != null)
         //                SearchParameters.CopyPropertiesFrom(os);
         //        }
@@ -212,12 +212,12 @@ namespace CmsWeb.Areas.Search.Models
         //        {
         //            var os = new RegistrationSearchInfo();
         //            SearchParameters.CopyPropertiesTo(os);
-        //            HttpContext.Current.Session[STR_RegistrationSearch] = os;
+        //            HttpContextFactory.Current.Session[STR_RegistrationSearch] = os;
         //        }
         //
         //        internal void ClearSession()
         //        {
-        //            HttpContext.Current.Session.Remove(STR_RegistrationSearch);
+        //            HttpContextFactory.Current.Session.Remove(STR_RegistrationSearch);
         //        }
     }
 }

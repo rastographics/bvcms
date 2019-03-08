@@ -59,14 +59,9 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult QueryCode(string code)
         {
             ViewBag.Title = "QueryBuilder";
-            var qb = CurrentDatabase.ScratchPadCondition();
-            qb.Reset();
-            var c = Condition.Parse(code, qb.Id);
-            c.Save(CurrentDatabase);
-            var m = new QueryModel(c.Id, CurrentDatabase);
+            var m = QueryModel.QueryCode(CurrentDatabase, code);
             return ViewQuery(m);
         }
-
         private ActionResult ViewQuery(QueryModel m)
         {
             m.Db = CurrentDatabase;

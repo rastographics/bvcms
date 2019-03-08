@@ -142,7 +142,7 @@ AND a.PeopleId = {2}
 
         public static void UpdateMeetingsToUpdate(CMSDataContext Db)
         {
-            var mids = HttpContext.Current.Items[STR_MeetingsToUpdate] as List<int>;
+            var mids = HttpContextFactory.Current.Items[STR_MeetingsToUpdate] as List<int>;
             if (mids != null)
                 foreach (var mid in mids)
                     Db.UpdateMeetingCounters(mid);
@@ -572,8 +572,8 @@ AND a.PeopleId = {2}
             var o = db.LoadOrganizationById(orgid);
             if (o == null || o.RegistrationTypeId != RegistrationTypeCode.ChooseVolunteerTimes)
                 return false;
-            if (HttpContext.Current.User.IsInRole("Admin") ||
-                HttpContext.Current.User.IsInRole("ManageVolunteers"))
+            if (HttpContextFactory.Current.User.IsInRole("Admin") ||
+                HttpContextFactory.Current.User.IsInRole("ManageVolunteers"))
                 return true;
             var leaderorgs = db.GetLeaderOrgIds(Util.UserPeopleId);
             if (leaderorgs == null)

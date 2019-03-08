@@ -21,7 +21,7 @@ namespace CmsWeb.Areas.Main.Models
         public IQueryable<Content> FetchTemplates()
         {
             var currentRoleIds = DbUtil.Db.CurrentRoleIds();
-            var isadmin = HttpContext.Current.User.IsInRole("Admin");
+            var isadmin = HttpContextFactory.Current.User.IsInRole("Admin");
 
             return from i in DbUtil.Db.Contents
                    where i.TypeID == ContentTypeCode.TypeEmailTemplate

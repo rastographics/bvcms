@@ -34,14 +34,14 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 
         public void authenticate(string instanceID, string previousID = "", bool allowQuick = false, int userID = 0)
         {
-            if (string.IsNullOrEmpty(HttpContext.Current.Request.Headers["Authorization"]))
+            if (string.IsNullOrEmpty(HttpContextFactory.Current.Request.Headers["Authorization"]))
             {
                 error = Error.NO_HEADER;
 
                 return;
             }
 
-            string authHeader = HttpContext.Current.Request.Headers["Authorization"];
+            string authHeader = HttpContextFactory.Current.Request.Headers["Authorization"];
             string[] headerParts = authHeader.SplitStr(" ");
 
             if (headerParts.Length != 2)
