@@ -1,11 +1,13 @@
 ﻿$(".addnew").click(function () {
     document.getElementsByClassName("noprocess")[0].hidden = true;
     document.getElementsByClassName("noprocess")[1].hidden = false;
+    checkGatewayAvailability(document.getElementById('gatewaylist').value);
 });
 
 $(".more-configs").click(function () {
     document.getElementsByClassName("noprocess")[0].hidden = true;
     document.getElementsByClassName("noprocess")[1].hidden = false;
+    checkGatewayAvailability(document.getElementById('gatewaylist').value);
 });
 
 $('.cancel').click(function () {
@@ -21,10 +23,11 @@ $('.applyall').click(function (e) {
         $(this).attr('value', 'false');
 });
 
-function editprocess(GatewaySettingId, proccessId, gatewayId) {
+function editprocess(GatewaySettingId, proccessId, gatewayId, processName) {
     document.getElementById('GatewaySettingId').value = GatewaySettingId;
     document.getElementById('secproccessId').value = proccessId;
     document.getElementById('secgatewaylist').value = gatewayId;
+    document.getElementById('processName').innerHTML = processName;
 
     $('#processModal').modal();
 }
@@ -160,9 +163,16 @@ $('.newconfiguration').click(function () {
 
 $('#gatewaylist').change(function () {
     sessionStorage.setItem('CurrentGatewayId', this.value);
-    console.log(sessionStorage.getItem('CurrentGatewayId'));
+    checkGatewayAvailability(this.value);
+});
 
-    $.ajax("../Gateway/Get_Gateway_Config/" + this.value, {
+$('.getconfig').click(function () {
+    sessionStorage.setItem('CurrentGatewayId', $('#gatewaylist').val());
+    GetWatewayConfig();
+});
+
+function checkGatewayAvailability(Id) {
+    $.ajax("../Gateway/Get_Gateway_Config/" + Id, {
         type: "GET",
         statusCode: {
             400: function (response) {
@@ -204,12 +214,7 @@ $('#gatewaylist').change(function () {
             console.log(err);
         }
     });
-});
-
-$('.getconfig').click(function () {
-    sessionStorage.setItem('CurrentGatewayId', $('#gatewaylist').val());
-    GetWatewayConfig();
-});
+}
 
 function deleteDetail(id) {
     if (document.getElementsByClassName('forupdate').length === 1) {
