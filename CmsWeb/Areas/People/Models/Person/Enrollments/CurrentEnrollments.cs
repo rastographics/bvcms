@@ -80,7 +80,7 @@ namespace CmsWeb.Areas.People.Models
 
         public IQueryable<InvolvementCurrent> DefineModelList(bool useOrgFilter)
         {
-            var limitvisibility = Util2.OrgLeadersOnly || !HttpContext.Current.User.IsInRole("Access");
+            var limitvisibility = Util2.OrgLeadersOnly || !HttpContextFactory.Current.User.IsInRole("Access");
             var oids = new int[0];
             if (Util2.OrgLeadersOnly)
             {

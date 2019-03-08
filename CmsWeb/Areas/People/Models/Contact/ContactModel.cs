@@ -116,7 +116,7 @@ namespace CmsWeb.Areas.People.Models
         {
             var u = DbUtil.Db.CurrentUser;
             var roles = u.UserRoles.Select(uu => uu.Role.RoleName.ToLower()).ToArray();
-            var ManagePrivateContacts = HttpContext.Current.User.IsInRole("ManagePrivateContacts");
+            var ManagePrivateContacts = HttpContextFactory.Current.User.IsInRole("ManagePrivateContacts");
             var q = from c in DbUtil.Db.Contacts
                     where (c.LimitToRole ?? "") == "" || roles.Contains(c.LimitToRole) || ManagePrivateContacts
                     where c.ContactId == id

@@ -304,6 +304,11 @@ namespace CmsData
                         return DateFormattedReplacement(code);
                     }
 
+                    if (UnlayerLinkRe.IsMatch(code))
+                    {
+                        return UnlayerLinkReplacement(code, eq);
+                    }
+
                     if (RegisterLinkRe.IsMatch(code))
                     {
                         return RegisterLinkReplacement(code, eq);

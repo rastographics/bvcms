@@ -1,16 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text.RegularExpressions;
-using System.Web.Mvc;
-using System.Web.Routing;
-using System.Web.Security;
 using CmsData;
 using CmsData.Codes;
 using CmsWeb.Areas.OnlineReg.Models;
 using CmsWeb.Models;
 using Elmah;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web.Mvc;
+using System.Web.Routing;
+using System.Web.Security;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.OnlineReg.Controllers
@@ -45,13 +43,19 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     return View("OnePageGiving/NotActive", m);
                 }
                 if (m.MissionTripSelfSupportPaylink.HasValue() && m.GoerId > 0)
+                {
                     return Redirect(m.MissionTripSelfSupportPaylink);
+                }
+
                 return RouteRegistration(m, pid, showfamily);
             }
             catch (Exception ex)
             {
                 if (ex is BadRegistrationException)
+                {
                     return Message(ex.Message);
+                }
+
                 throw;
             }
         }
@@ -76,7 +80,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             m.UserPeopleId = Util.UserPeopleId;
             var route = RouteSpecialLogin(m);
             if (route != null)
+            {
                 return route;
+            }
 
             m.HistoryAdd("login");
             return FlowList(m);
@@ -113,15 +119,14 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             // got here by clicking on a link in the Family list
             var msg = m.CheckExpiredOrCompleted();
             if (msg.HasValue())
+            {
                 return PageMessage(msg);
+            }
+
             fromMethod = "Register";
 
             m.StartRegistrationForFamilyMember(id, ModelState);
 
-            var errors = ModelState.Values.Where(v => v.Errors.Count > 0).Select(x => x.Errors.FirstOrDefault()).ToList();
-            if (errors.Any())
-                return Content(errors.FirstOrDefault()?.ErrorMessage);
-            
             // show errors or take them to the Questions page
             return FlowList(m);
         }
@@ -141,11 +146,16 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             // Anonymous person clicks submit to find their record
             var msg = m.CheckExpiredOrCompleted();
             if (msg.HasValue())
+            {
                 return PageMessage(msg);
+            }
+
             fromMethod = "FindRecord";
             m.HistoryAdd("FindRecord id=" + id);
             if (id >= m.List.Count)
+            {
                 return FlowList(m);
+            }
 
             var p = m.GetFreshFindInfo(id);
 
@@ -156,13 +166,19 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
             p.ValidateModelForFind(ModelState, id);
             if (!ModelState.IsValid)
+            {
                 return FlowList(m);
+            }
 
             if (p.AnonymousReRegistrant())
+            {
                 return View("Continue/ConfirmReregister", m); // send email with link to reg-register
+            }
 
             if (p.IsSpecialReg())
+            {
                 p.QuestionsOK = true;
+            }
             else if (p.RegistrationFull())
             {
                 m.Log("Closed");
@@ -173,7 +189,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             p.SetSpecialFee();
 
             if (!ModelState.IsValid || p.count == 1)
+            {
                 return FlowList(m);
+            }
 
             // form is ok but not found, so show AddressGenderMarital Form
             p.PrepareToAddNewPerson(ModelState, id);
@@ -188,13 +206,19 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             // Submit from AddressMaritalGenderForm
             var msg = m.CheckExpiredOrCompleted();
             if (msg.HasValue())
+            {
                 return PageMessage(msg);
+            }
+
             fromMethod = "SubmitNew";
             ModelState.Clear();
             m.HistoryAdd("SubmitNew id=" + id);
             var p = m.List[id];
-            if (p.ComputesOrganizationByAge()) 
+            if (p.ComputesOrganizationByAge())
+            {
                 p.orgid = null; // forget any previous information about selected org, may have new information like gender
+            }
+
             p.ValidateModelForNew(ModelState, id);
 
             SetHeaders(m);
@@ -208,13 +232,18 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         public ActionResult SubmitQuestions(int id, OnlineRegModel m)
         {
             var ret = m.CheckExpiredOrCompleted();
-            if(ret.HasValue())
+            if (ret.HasValue())
+            {
                 return PageMessage(ret);
+            }
 
             fromMethod = "SubmitQuestions";
             m.HistoryAdd("SubmitQuestions id=" + id);
             if (m.List.Count <= id)
+            {
                 return Content("<p style='color:red'>error: cannot find person on submit other info</p>");
+            }
+
             m.List[id].ValidateModelQuestions(ModelState, id);
             return FlowList(m);
         }
@@ -223,13 +252,19 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         public ActionResult AddAnotherPerson(OnlineRegModel m)
         {
             var ret = m.CheckExpiredOrCompleted();
-            if(ret.HasValue())
+            if (ret.HasValue())
+            {
                 return PageMessage(ret);
+            }
+
             fromMethod = "AddAnotherPerson";
             m.HistoryAdd("AddAnotherPerson");
             m.ParseSettings();
             if (!ModelState.IsValid)
+            {
                 return FlowList(m);
+            }
+
             m.List.Add(new OnlineRegPersonModel
             {
                 orgid = m.Orgid,
@@ -280,7 +315,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         public ActionResult CompleteRegistration(OnlineRegModel m)
         {
             if (m.org != null && m.org.RegistrationTypeId == RegistrationTypeCode.SpecialJavascript)
+            {
                 m.List[0].SpecialTest = SpecialRegModel.ParseResults(Request.Form);
+            }
+
             TempData["onlineregmodel"] = Util.Serialize(m);
             return Redirect("/OnlineReg/CompleteRegistration");
         }
@@ -289,7 +327,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         public ActionResult CompleteRegistration()
         {
             Response.NoCache();
-            var s = (string) TempData["onlineregmodel"];
+            var s = (string)TempData["onlineregmodel"];
             if (s == null)
             {
                 DbUtil.LogActivity("OnlineReg Error PageRefreshNotAllowed");
@@ -297,8 +335,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
             var m = Util.DeSerialize<OnlineRegModel>(s);
             var msg = m.CheckExpiredOrCompleted();
-            if(msg.HasValue())
+            if (msg.HasValue())
+            {
                 return Message(msg);
+            }
 
             var ret = m.CompleteRegistration(this);
             switch (ret.Route)
@@ -324,8 +364,11 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             var z = CurrentDatabase.ZipCodes.SingleOrDefault(zc => zc.Zip == id);
             if (z == null)
+            {
                 return Json(null);
-            return Json(new {city = z.City.Trim(), state = z.State});
+            }
+
+            return Json(new { city = z.City.Trim(), state = z.State });
         }
 
         public ActionResult Timeout(string ret)
@@ -373,7 +416,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         protected override void OnException(ExceptionContext filterContext)
         {
             if (filterContext.ExceptionHandled)
+            {
                 return;
+            }
+
             ErrorSignal.FromCurrentContext().Raise(filterContext.Exception);
             DbUtil.LogActivity("OnlineReg Error:" + filterContext.Exception.Message);
             filterContext.Result = Message(filterContext.Exception.Message, filterContext.Exception.StackTrace);
@@ -395,7 +441,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (m.org != null && m.org.IsMissionTrip == true && m.org.TripFundingPagesEnable == true)
             {
                 m.PrepareMissionTrip(gsid, goerid);
-            } else
+            }
+            else
             {
                 return new HttpNotFoundResult();
             }
@@ -409,10 +456,12 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (Util.UserPeopleId == goerid)
             {
                 return View("Giving/Goer", m);
-            } else if (m.org.TripFundingPagesPublic)
+            }
+            else if (m.org.TripFundingPagesPublic)
             {
                 return View("Giving/Guest", m);
-            } else
+            }
+            else
             {
                 return new HttpNotFoundResult();
             }

@@ -366,7 +366,7 @@ to `Add`, `Drop`, `Update` Members etc.
                 case GroupSelectCode.Guest:
                     return false;
                 case GroupSelectCode.Previous:
-                    var u = HttpContext.Current.User;
+                    var u = HttpContextFactory.Current.User;
                     return u.IsInRole("Developer") || u.IsInRole("Conversion");
                 default:
                     return true;
@@ -380,7 +380,7 @@ to `Add`, `Drop`, `Update` Members etc.
                 return false;
             }
 
-            var u = HttpContext.Current.User;
+            var u = HttpContextFactory.Current.User;
             return u.IsInRole("Edit")
                 || RoleChecker.HasSetting(SettingName.OrgMembersDropAdd, false);
         }

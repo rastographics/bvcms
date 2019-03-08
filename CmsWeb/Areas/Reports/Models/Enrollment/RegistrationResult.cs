@@ -465,7 +465,8 @@ namespace CmsWeb.Areas.Reports.Models
 
                 if (x.Organization == null || SettingVisible(setting, "AskRequest"))
                 {
-                    AddValue(table, row, ((AskRequest)setting.AskItem("AskRequest")).Label, x.OrgMembers?.Request);
+                    var label = ((AskRequest)setting?.AskItem("AskRequest"))?.Label ?? "Request";
+                    AddValue(table, row, label, x.OrgMembers?.Request);
                 }
 
                 AddValue(table, row, "Allergies", x.RecReg.MedicalDescription);

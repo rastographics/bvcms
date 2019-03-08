@@ -252,7 +252,7 @@ OFFSET (@currentPage-1)*@pageSize ROWS FETCH NEXT @pageSize ROWS ONLY
 
         public bool CanDelete()
         {
-            if (HttpContext.Current.User.IsInRole("Admin"))
+            if (HttpContextFactory.Current.User.IsInRole("Admin"))
             {
                 return true;
             }

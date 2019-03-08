@@ -42,6 +42,7 @@ namespace CmsWeb.Models
                 "Decision Type",
                 "Do Not Call",
                 "Do Not Mail",
+                "Drop Date",
                 "Drop Type",
                 "Drop All Enrollments",
                 "Electronic Statement",
@@ -78,7 +79,7 @@ namespace CmsWeb.Models
                     into g
                     select new CodeValueItem { Value = "exval: " + g.Key };
             tg.AddRange(q);
-            if (HttpContext.Current.User.IsInRole("Admin"))
+            if (HttpContextFactory.Current.User.IsInRole("Admin"))
             {
                 tg.Insert(0, new CodeValueItem { Value = "last query" });
             }
@@ -201,6 +202,9 @@ namespace CmsWeb.Models
                         break;
                     case "Drop All Enrollments":
                         p.DropMemberships(DbUtil.Db);
+                        break;
+                    case "Drop Date":
+                        p.DropDate = NewValue.ToDate();
                         break;
                     case "Drop Type":
                         p.DropCodeId = NewValue.ToInt();

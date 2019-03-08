@@ -141,7 +141,7 @@ namespace CmsData.Classes.Twilio
 
         private static void ExecuteCmsTwilio(int listID)
         {
-            string cmstwilio = System.Web.HttpContext.Current.Server.MapPath("~/bin/cmstwilio.exe");
+            string cmstwilio = HttpContextFactory.Current.Server.MapPath("~/bin/cmstwilio.exe");
             Process.Start(new ProcessStartInfo
             {
                 FileName = cmstwilio,

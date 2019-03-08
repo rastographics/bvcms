@@ -43,6 +43,7 @@ namespace CmsWeb.Areas.MeetingCategory.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin,Edit")]
         [Route("{meetingCategoryId:long}")]
         public ActionResult Edit(long meetingCategoryId, CmsData.MeetingCategory meetingCategory)
         {

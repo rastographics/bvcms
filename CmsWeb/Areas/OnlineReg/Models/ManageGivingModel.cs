@@ -478,7 +478,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 return false;
             var hash = Pbkdf2Hasher.HashString(pf.CreditCard);
             var db = DbUtil.Db;
-            db.InsertIpLog(HttpContext.Current.Request.UserHostAddress, hash);
+            db.InsertIpLog(HttpContextFactory.Current.Request.UserHostAddress, hash);
 
             if (pf.IsProblemUser())
                 return OnlineRegController.LogRogueUser("Problem User", from);
@@ -487,7 +487,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             {
                 return false;
             }
-            var result = db.Connection.ExecuteScalar<string>(iscardtester, new {ip = HttpContext.Current.Request.UserHostAddress});
+            var result = db.Connection.ExecuteScalar<string>(iscardtester, new {ip = HttpContextFactory.Current.Request.UserHostAddress});
             if(result.Equal("OK"))
                 return false;
             return OnlineRegController.LogRogueUser(result, from);

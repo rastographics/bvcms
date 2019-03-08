@@ -40,8 +40,8 @@ namespace CmsWeb.Models
             Pager = new PagerModel2(Count);
             Pager.Sort = "Date";
             Pager.Direction = "desc";
-            finance = HttpContext.Current.User.IsInRole("Finance");
-            admin = HttpContext.Current.User.IsInRole("Admin") || HttpContext.Current.User.IsInRole("ManageTransactions");
+            finance = HttpContextFactory.Current.User.IsInRole("Finance");
+            admin = HttpContextFactory.Current.User.IsInRole("Admin") || HttpContextFactory.Current.User.IsInRole("ManageTransactions");
         }
 
         public string description { get; set; }
@@ -53,6 +53,7 @@ namespace CmsWeb.Models
         public DateTime? enddt { get; set; }
         public bool testtransactions { get; set; }
         public bool apprtransactions { get; set; }
+        public bool includesadditionaldonation { get; set; }
         public bool nocoupons { get; set; }
         public string batchref { get; set; }
         public bool usebatchdates { get; set; }
@@ -144,7 +145,7 @@ namespace CmsWeb.Models
                 }
             }
 
-            if (!HttpContext.Current.User.IsInRole("Finance"))
+            if (!HttpContextFactory.Current.User.IsInRole("Finance"))
             {
                 _transactions = _transactions.Where(tt => (tt.Financeonly ?? false) == false);
             }
@@ -172,6 +173,11 @@ namespace CmsWeb.Models
                                 where t.TransactionDate >= startdt || startdt == null
                                 where t.TransactionDate <= edt || edt == null
                                 select t;
+            }
+
+            if (includesadditionaldonation)
+            {
+                _transactions = _transactions.Where(t => t.Donate > 0.00m);
             }
             //			var q0 = _transactions.ToList();
             //            foreach(var t in q0)
@@ -405,6 +411,7 @@ namespace CmsWeb.Models
                        TripName = o.OrganizationName
                    };
         }
+
         public List<MissionTripBalanceInfo> MissionTripBalances()
         {
             var q = from gs in DbUtil.Db.GoerSenderAmounts
@@ -511,6 +518,7 @@ namespace CmsWeb.Models
             public int? OrgId { get; set; }
             public string TripName { get; set; }
         }
+
         public class MissionTripBalanceInfo
         {
             public int GoerId { get; set; }

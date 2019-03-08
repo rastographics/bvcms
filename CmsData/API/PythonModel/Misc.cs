@@ -489,7 +489,7 @@ DELETE dbo.Tag WHERE TypeId = 101 AND Name LIKE @namelike
 
         public bool UserIsInRole(string role)
         {
-            return HttpContext.Current?.User.IsInRole(role) ?? false;
+            return HttpContextFactory.Current?.User.IsInRole(role) ?? false;
         }
     }
 }

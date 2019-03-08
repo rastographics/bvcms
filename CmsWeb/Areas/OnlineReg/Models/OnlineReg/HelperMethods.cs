@@ -18,11 +18,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
     {
         //        public static Organization CreateAccountOrg()
         //        {
-        //            var settings = HttpContext.Current.Items["RegSettings"] as Dictionary<int, Settings>;
+        //            var settings = HttpContextFactory.Current.Items["RegSettings"] as Dictionary<int, Settings>;
         //            if (settings == null)
         //            {
         //                settings = new Dictionary<int, Settings>();
-        //                HttpContext.Current.Items.Add("RegSettings", settings);
+        //                HttpContextFactory.Current.Items.Add("RegSettings", settings);
         //            }
         //            var o = new Organization { OrganizationId = Util.CreateAccountCode, OrganizationName = "My Data" };
         //            o.RegistrationTypeId = RegistrationTypeCode.CreateAccount;
@@ -39,13 +39,13 @@ namespace CmsWeb.Areas.OnlineReg.Models
             {
                 if (_settings == null)
                 {
-                    _settings = HttpContext.Current.Items["RegSettings"] as Dictionary<int, Settings>;
+                    _settings = HttpContextFactory.Current.Items["RegSettings"] as Dictionary<int, Settings>;
                 }
 
                 if (_settings == null)
                 {
                     ParseSettings();
-                    _settings = HttpContext.Current.Items["RegSettings"] as Dictionary<int, Settings>;
+                    _settings = HttpContextFactory.Current.Items["RegSettings"] as Dictionary<int, Settings>;
                 }
                 return _settings;
             }

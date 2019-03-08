@@ -3,6 +3,7 @@ using CmsWeb.Areas.People.Models;
 using CmsWeb.Models;
 using System.Linq;
 using System.Web;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Org.Models
 {
@@ -26,7 +27,7 @@ namespace CmsWeb.Areas.Org.Models
         {
             var u = DbUtil.Db.CurrentUser;
             var roles = u.UserRoles.Select(uu => uu.Role.RoleName.ToLower()).ToArray();
-            var ManagePrivateContacts = HttpContext.Current.User.IsInRole("ManagePrivateContacts");
+            var ManagePrivateContacts = HttpContextFactory.Current.User.IsInRole("ManagePrivateContacts");
             return from c in DbUtil.Db.Contacts
                    where (c.LimitToRole ?? "") == "" || roles.Contains(c.LimitToRole) || ManagePrivateContacts
                    select c;
