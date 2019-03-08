@@ -205,7 +205,14 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where
 		(1, 'TenantHostDev', 'localhost:44301', 1),
 		(1, 'OrgBaseDomain', 'tpsdb.com', 1),
 		(1, 'TouchpointAuthServer', 'https://123ec8c6.ngrok.io/pushpay/complete', 1),
-		(1, 'IsDeveloperMode', 'true', 1)
+		(1, 'IsDeveloperMode', 'true', 1),
+		(2, 'M_ID', '856423594649', 1),
+		(2, 'M_KEY', 'M5Q4C9P2T4N5', 1),
+		(2, 'SageOriginatorId', '', 1),
+		(2, 'GatewayTesting', 'true', 1),
+		(3, 'TNBUsername', 'faithbased', 1),
+		(3, 'TNBPassword', 'bprogram2', 1),
+		(3, 'GatewayTesting', 'true', 1)
 	END
 GO
 
