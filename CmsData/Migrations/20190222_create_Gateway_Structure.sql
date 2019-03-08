@@ -1,3 +1,99 @@
+--Droping SP--
+IF EXISTS (
+	SELECT type_desc, type
+	FROM SYS.PROCEDURES WITH(NOLOCK)
+	WHERE NAME = 'AddGatewayDetail'
+		AND type = 'P')
+	BEGIN
+		DROP PROCEDURE [dbo].[AddGatewayDetail]
+	END
+GO
+
+IF EXISTS (
+       SELECT type_desc, type
+       FROM SYS.PROCEDURES WITH(NOLOCK)
+       WHERE NAME = 'AddGatewaySettings'
+       AND type = 'P')
+	BEGIN
+		DROP PROCEDURE [dbo].[AddGatewaySettings]
+	END
+GO
+
+--Droping Views--
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.VIEWS where 
+	TABLE_NAME = 'MyGatewaySettings' AND 
+	TABLE_SCHEMA = 'dbo')
+	BEGIN
+		DROP VIEW [dbo].[MyGatewaySettings]
+	END
+GO
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.VIEWS where 
+	TABLE_NAME = 'AvailableProcess' AND 
+	TABLE_SCHEMA = 'dbo')
+	BEGIN
+		DROP VIEW [dbo].[AvailableProcess]
+	END
+GO
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.VIEWS where 
+	TABLE_NAME = 'GatewayDetailsInformation' AND 
+	TABLE_SCHEMA = 'dbo')
+	BEGIN
+		DROP VIEW [dbo].[GatewayDetailsInformation]
+	END
+GO
+
+--Droping Tables--
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where 
+	TABLE_NAME = 'GatewayDetails' AND 
+	TABLE_SCHEMA = 'dbo')
+	BEGIN
+		DROP TABLE [dbo].[GatewayDetails]
+	END
+GO
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where 
+	TABLE_NAME = 'GatewaySettings' AND 
+	TABLE_SCHEMA = 'dbo')
+	BEGIN
+		DROP TABLE [dbo].[GatewaySettings]
+	END
+GO
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where 
+	TABLE_NAME = 'Process' AND 
+	TABLE_SCHEMA = 'lookup')
+	BEGIN
+		DROP TABLE [lookup].[Process]
+	END
+GO
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where 
+	TABLE_NAME = 'Gateways' AND 
+	TABLE_SCHEMA = 'lookup')
+	BEGIN
+		DROP TABLE [lookup].[Gateways]
+	END
+GO
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where 
+	TABLE_NAME = 'ProcessType' AND 
+	TABLE_SCHEMA = 'lookup')
+	BEGIN
+		DROP TABLE [lookup].[ProcessType]
+	END
+GO
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where 
+	TABLE_NAME = 'GatewayServiceType' AND 
+	TABLE_SCHEMA = 'lookup')
+	BEGIN
+		DROP TABLE [lookup].[GatewayServiceType]
+	END
+GO
+--End Droping--
+
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where 
 	TABLE_NAME = 'GatewayServiceType' AND 
 	TABLE_SCHEMA = 'lookup')
