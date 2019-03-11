@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using CmsData;
 using CmsWeb.Models;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Models
 {
@@ -42,8 +43,8 @@ namespace CmsWeb.Areas.People.Models
 
         public override IEnumerable<FailedMailInfo> DefineViewList(IQueryable<EmailQueueToFail> q)
         {
-            var isadmin = HttpContext.Current.User.IsInRole("Admin");
-            var isdevel = HttpContext.Current.User.IsInRole("Developer");
+            var isadmin = HttpContextFactory.Current.User.IsInRole("Admin");
+            var isdevel = HttpContextFactory.Current.User.IsInRole("Developer");
             return from e in q
                    let et = DbUtil.Db.EmailQueueTos.SingleOrDefault(ef => ef.Id == e.Id && ef.PeopleId == e.PeopleId)
                    let eq = DbUtil.Db.EmailQueues.SingleOrDefault(ew => ew.Id == et.Id)

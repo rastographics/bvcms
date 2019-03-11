@@ -17,8 +17,8 @@ namespace UtilityExtensions
         {
             get
             {
-                if (HttpContext.Current != null)
-                    return GetUserName(HttpContext.Current.User.Identity.Name);
+                if (HttpContextFactory.Current != null)
+                    return GetUserName(HttpContextFactory.Current.User.Identity.Name);
                 return ConfigurationManager.AppSettings["TestName"];
             }
         }
@@ -29,19 +29,19 @@ namespace UtilityExtensions
             get
             {
                 int id = 0;
-                if (HttpContext.Current != null)
-                    if (HttpContext.Current.Session != null)
-                        if (HttpContext.Current.Session[STR_UserId] != null)
-                            id = HttpContext.Current.Session[STR_UserId].ToInt();
+                if (HttpContextFactory.Current != null)
+                    if (HttpContextFactory.Current.Session != null)
+                        if (HttpContextFactory.Current.Session[STR_UserId] != null)
+                            id = HttpContextFactory.Current.Session[STR_UserId].ToInt();
                 if (id == 0)
                     id = ConfigurationManager.AppSettings["TestId"].ToInt();
                 return id;
             }
             set
             {
-                if (HttpContext.Current != null)
-                    if (HttpContext.Current.Session != null)
-                        HttpContext.Current.Session[STR_UserId] = value;
+                if (HttpContextFactory.Current != null)
+                    if (HttpContextFactory.Current.Session != null)
+                        HttpContextFactory.Current.Session[STR_UserId] = value;
             }
         }
 
@@ -51,17 +51,17 @@ namespace UtilityExtensions
             get
             {
                 string name = null;
-                if (HttpContext.Current != null)
-                    if (HttpContext.Current.Session != null)
-                        if (HttpContext.Current.Session[STR_UserPreferredName] != null)
-                            name = HttpContext.Current.Session[STR_UserPreferredName] as String;
+                if (HttpContextFactory.Current != null)
+                    if (HttpContextFactory.Current.Session != null)
+                        if (HttpContextFactory.Current.Session[STR_UserPreferredName] != null)
+                            name = HttpContextFactory.Current.Session[STR_UserPreferredName] as String;
                 return name;
             }
             set
             {
-                if (HttpContext.Current != null)
-                    if (HttpContext.Current.Session != null)
-                        HttpContext.Current.Session[STR_UserPreferredName] = value;
+                if (HttpContextFactory.Current != null)
+                    if (HttpContextFactory.Current.Session != null)
+                        HttpContextFactory.Current.Session[STR_UserPreferredName] = value;
             }
         }
 
@@ -71,17 +71,17 @@ namespace UtilityExtensions
             get
             {
                 string name = "-";
-                if (HttpContext.Current != null)
-                    if (HttpContext.Current.Session != null)
-                        if (HttpContext.Current.Session[STR_UserFullName] != null)
-                            name = HttpContext.Current.Session[STR_UserFullName] as String;
+                if (HttpContextFactory.Current != null)
+                    if (HttpContextFactory.Current.Session != null)
+                        if (HttpContextFactory.Current.Session[STR_UserFullName] != null)
+                            name = HttpContextFactory.Current.Session[STR_UserFullName] as String;
                 return name;
             }
             set
             {
-                if (HttpContext.Current != null)
-                    if (HttpContext.Current.Session != null)
-                        HttpContext.Current.Session[STR_UserFullName] = value;
+                if (HttpContextFactory.Current != null)
+                    if (HttpContextFactory.Current.Session != null)
+                        HttpContextFactory.Current.Session[STR_UserFullName] = value;
             }
         }
 
@@ -91,17 +91,17 @@ namespace UtilityExtensions
             get
             {
                 var name = string.Empty;
-                if (HttpContext.Current != null)
-                    if (HttpContext.Current.Session != null)
-                        if (HttpContext.Current.Session[UserFirstNameSessionKey] != null)
-                            name = HttpContext.Current.Session[UserFirstNameSessionKey] as String;
+                if (HttpContextFactory.Current != null)
+                    if (HttpContextFactory.Current.Session != null)
+                        if (HttpContextFactory.Current.Session[UserFirstNameSessionKey] != null)
+                            name = HttpContextFactory.Current.Session[UserFirstNameSessionKey] as String;
                 return name;
             }
             set
             {
-                if (HttpContext.Current != null)
-                    if (HttpContext.Current.Session != null)
-                        HttpContext.Current.Session[UserFirstNameSessionKey] = value;
+                if (HttpContextFactory.Current != null)
+                    if (HttpContextFactory.Current.Session != null)
+                        HttpContextFactory.Current.Session[UserFirstNameSessionKey] = value;
             }
         }
 
@@ -113,16 +113,16 @@ namespace UtilityExtensions
             get
             {
                 int? id = null;
-                if (HttpContext.Current != null)
-                    if (HttpContext.Current.Session != null)
-                        if (HttpContext.Current.Session[STR_UserPeopleId] != null)
-                            id = HttpContext.Current.Session[STR_UserPeopleId].ToInt();
+                if (HttpContextFactory.Current != null)
+                    if (HttpContextFactory.Current.Session != null)
+                        if (HttpContextFactory.Current.Session[STR_UserPeopleId] != null)
+                            id = HttpContextFactory.Current.Session[STR_UserPeopleId].ToInt();
                 return id;
             }
             set
             {
-                if (HttpContext.Current != null)
-                    HttpContext.Current.Session[STR_UserPeopleId] = value;
+                if (HttpContextFactory.Current != null)
+                    HttpContextFactory.Current.Session[STR_UserPeopleId] = value;
             }
         }
 
@@ -131,16 +131,16 @@ namespace UtilityExtensions
         {
             get
             {
-                if (HttpContext.Current != null)
-                    if (HttpContext.Current.Session != null)
-                        if (HttpContext.Current.Session[UserThumbPictureSessionKey] != null)
-                            return (string)HttpContext.Current.Session[UserThumbPictureSessionKey];
+                if (HttpContextFactory.Current != null)
+                    if (HttpContextFactory.Current.Session != null)
+                        if (HttpContextFactory.Current.Session[UserThumbPictureSessionKey] != null)
+                            return (string)HttpContextFactory.Current.Session[UserThumbPictureSessionKey];
                 return string.Empty;
             }
             set
             {
-                if (HttpContext.Current != null)
-                    HttpContext.Current.Session[UserThumbPictureSessionKey] = value;
+                if (HttpContextFactory.Current != null)
+                    HttpContextFactory.Current.Session[UserThumbPictureSessionKey] = value;
             }
         }
 
@@ -149,16 +149,16 @@ namespace UtilityExtensions
         {
             get
             {
-                if (HttpContext.Current != null)
-                    if (HttpContext.Current.Session != null)
-                        if (HttpContext.Current.Session[UserThumbPictureBgPosSessionKey] != null)
-                            return (string)HttpContext.Current.Session[UserThumbPictureBgPosSessionKey];
+                if (HttpContextFactory.Current != null)
+                    if (HttpContextFactory.Current.Session != null)
+                        if (HttpContextFactory.Current.Session[UserThumbPictureBgPosSessionKey] != null)
+                            return (string)HttpContextFactory.Current.Session[UserThumbPictureBgPosSessionKey];
                 return string.Empty;
             }
             set
             {
-                if (HttpContext.Current != null)
-                    HttpContext.Current.Session[UserThumbPictureBgPosSessionKey] = value;
+                if (HttpContextFactory.Current != null)
+                    HttpContextFactory.Current.Session[UserThumbPictureBgPosSessionKey] = value;
             }
         }
 
@@ -175,13 +175,13 @@ namespace UtilityExtensions
         {
             get
             {
-                if (HttpContext.Current != null)
-                    return HttpContext.Current.User.IsInRole("Access") == false; 
+                if (HttpContextFactory.Current != null)
+                    return HttpContextFactory.Current.User.IsInRole("Access") == false; 
                 return (bool?) Thread.GetData(Thread.GetNamedDataSlot("IsMyDataUser")) ?? false;
             }
             set
             {
-                if (HttpContext.Current == null)
+                if (HttpContextFactory.Current == null)
                     Thread.SetData(Thread.GetNamedDataSlot("IsMyDataUser"), value);
             }
         }

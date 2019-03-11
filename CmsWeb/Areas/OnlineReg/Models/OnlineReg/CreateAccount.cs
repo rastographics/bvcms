@@ -44,7 +44,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             return null;
         }
 
-        public void SendOneTimeLink(string from, string url, string subject, string body)
+        public void SendOneTimeLink(string from, string url, string subject, string body, string appendQueryString = "")
         {
             var ot = new OneTimeLink
             {
@@ -55,8 +55,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
             DbUtil.Db.OneTimeLinks.InsertOnSubmit(ot);
             DbUtil.Db.SubmitChanges();
 
-            var message = body.Replace("{url}", url + ot.Id.ToCode(), ignoreCase: true);
-            message = message.Replace(WebUtility.UrlEncode("{url}"), url + ot.Id.ToCode(), ignoreCase: true);
+            url = $"{url}{ot.Id.ToCode()}{(!string.IsNullOrWhiteSpace(appendQueryString) ? $"?{appendQueryString}" : string.Empty)}";
+
+            var message = body.Replace("{url}", url, ignoreCase: true);
+            message = message.Replace(WebUtility.UrlEncode("{url}"), url, ignoreCase: true);
             message = message.Replace("{name}", person.Name, ignoreCase: true);
             message = message.Replace("{first}", person.PreferredName, ignoreCase: true);
 

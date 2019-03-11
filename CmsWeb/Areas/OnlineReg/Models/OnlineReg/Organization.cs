@@ -33,7 +33,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 }
             }
         }
-
+        
         private Organization _masterOrg;
         public Organization masterorg
         {

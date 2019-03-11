@@ -239,6 +239,7 @@ namespace CmsWeb.Models
         public string Online => api.Online();
         public string TaxDedNonTax => api.TaxDedNonTax();
         public decimal? Total => api.Total();
+        public int? FamilyCount=> api.FamilyCount();
         public int? Count => api.Count();
 
         public void Return(int cid)
@@ -296,7 +297,7 @@ namespace CmsWeb.Models
 
         public string CheckConversion()
         {
-            if (!HttpContext.Current.User.IsInRole("conversion"))
+            if (!HttpContextFactory.Current.User.IsInRole("conversion"))
             {
                 return null;
             }

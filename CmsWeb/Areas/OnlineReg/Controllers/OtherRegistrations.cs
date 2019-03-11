@@ -271,6 +271,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         public ActionResult RegisterLink(string id, bool? showfamily, string source)
         {
             var li = new LinkInfo(registerlinkSTR, landingSTR, id);
+
             if (li.error.HasValue())
             {
                 return Message(li.error);
@@ -345,6 +346,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 {
                     url = $"/OnlineReg/{li.oid}/Giving/?gsid={gsid}";
                 }
+
                 return Redirect(url);
             }
             catch (Exception ex)

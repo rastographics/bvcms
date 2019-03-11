@@ -192,21 +192,26 @@ namespace CmsWeb.Controllers
                 ViewBag.LogFile = logFile;
                 var qs = Request.Url?.Query;
                 var host = Util.Host;
+
                 HostingEnvironment.QueueBackgroundWorkItem(ct =>
                 {
+                    var db = CurrentDatabase.Copy();
                     var qsa = HttpUtility.ParseQueryString(qs ?? "");
-                    var pm = new PythonModel(host);
+                    var pm = new PythonModel(db);
                     pm.DictionaryAdd("LogFile", logFile);
                     foreach (string key in qsa)
                     {
                         pm.DictionaryAdd(key, qsa[key]);
                     }
-
-                    pm.RunScript(script);
+                    string result = pm.RunScript(script);
+                    if (result.HasValue())
+                    {
+                        pm.LogToContent(logFile, result);
+                    }
                 });
                 return View("RunPythonScriptProgress");
             }
-            var pe = new PythonModel(Util.Host);
+            var pe = new PythonModel(CurrentDatabase); 
             if (script.Contains("@BlueToolbarTagId"))
             {
                 var id = CurrentDatabase.FetchLastQuery().Id;

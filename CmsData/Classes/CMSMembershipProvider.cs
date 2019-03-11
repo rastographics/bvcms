@@ -365,7 +365,7 @@ namespace CmsData
                 if (userIsOnline)
                 {
                     u.LastActivityDate = Util.Now;
-                    string host = HttpContext.Current.Request.Url.Host;
+                    string host = HttpContextFactory.Current.Request.Url.Host;
                     if (host.Length > 98)
                         host = host.Substring(0, 98);
                     u.Host = host;
@@ -387,7 +387,7 @@ namespace CmsData
                 if (userIsOnline)
                 {
                     u.LastActivityDate = Util.Now;
-                    string host = HttpContext.Current.Request.Url.Host;
+                    string host = HttpContextFactory.Current.Request.Url.Host;
                     if (host.Length > 98)
                         host = host.Substring(0, 98);
                     u.Host = host;

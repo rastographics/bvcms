@@ -9,12 +9,14 @@
 @Html.HiddenFor2(mm => mm.registertag)
 @Html.HiddenFor2(mm => mm.registerLinkType)
 @Html.HiddenFor(mm => mm.DatumId)
+@Html.HiddenFor(mm => mm.Campus)
+@Html.HiddenFor(mm => mm.DefaultFunds)
 @if (Model.SupportMissionTrip)
 {
     @Html.HiddenFor2(mm => mm.GoerSupporterId)
     @Html.HiddenFor2(mm => mm.GoerId)
 }
-@for(var i = 0; i< Model.History.Count; i++)
+@for (var i = 0; i < Model.History.Count; i++)
 {
-    <input type="hidden" name="History[@i]" value="@Model.History[i]"/>
+    <input type="hidden" name="History[@i]" value="@Model.History[i]" />
 }

@@ -581,6 +581,7 @@ Total Fee paid for this registration session: {ts?.TotPaid:C}<br/>
             message = message.Replace("{orgname}", Header).Replace("{org}", Header);
 
             var Staff = DbUtil.Db.StaffPeopleForOrg(Orgid.Value);
+
             p.SendOneTimeLink(Staff.First().FromEmail,
                 DbUtil.Db.ServerLink("/OnlineReg/RegisterLink/"), "Manage Your Registration for " + Header, message);
             Log("SendReRegisterLink");
@@ -613,6 +614,7 @@ Total Fee paid for this registration session: {ts?.TotPaid:C}<br/>
             }
 
             var Staff = DbUtil.Db.StaffPeopleForOrg(masterorgid.Value);
+
             p.SendOneTimeLink(
                 Staff.First().FromEmail,
                 DbUtil.Db.ServerLink("/OnlineReg/ManageSubscriptions/"), c.Title, c.Body);
@@ -647,6 +649,7 @@ Total Fee paid for this registration session: {ts?.TotPaid:C}<br/>
 
             List<Person> Staff = null;
             Staff = DbUtil.Db.StaffPeopleForOrg(Orgid.Value);
+
             p.SendOneTimeLink(
                 Staff.First().FromEmail,
                 DbUtil.Db.ServerLink("/OnlineReg/ManageVolunteer/"), c.Title, c.Body);
@@ -712,9 +715,17 @@ Total Fee paid for this registration session: {ts?.TotPaid:C}<br/>
                 DbUtil.Db.SubmitChanges();
             }
 
+            var parameters = new List<string>
+            {
+                $"{(!string.IsNullOrWhiteSpace(Campus) ? $"campus={Campus}" : string.Empty)}",
+                $"{(!string.IsNullOrWhiteSpace(DefaultFunds) ? $"funds={DefaultFunds}" : string.Empty)}"
+            };
+
+            var appendQueryString = string.Join("&", parameters.Where(i => !string.IsNullOrEmpty(i)));
+
             p.SendOneTimeLink(
                 DbUtil.Db.StaffPeopleForOrg(Orgid.Value).First().FromEmail,
-                DbUtil.Db.ServerLink("/OnlineReg/ManageGiving/"), c.Title, c.Body);
+                DbUtil.Db.ServerLink($"/OnlineReg/ManageGiving/"), c.Title, c.Body, appendQueryString);
             Log("SendOneTimeLinkManageGiving");
             return ConfirmEnum.ConfirmAccount;
         }

@@ -743,7 +743,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     return RouteModel.ProcessPayment();
                 }
 
-                HttpContext.Current.Session["FormId"] = FormId;
+                HttpContextFactory.Current.Session["FormId"] = FormId;
                 if (m != null)
                 {
                     m.DatumId = DatumId; // todo: not sure this is necessary
