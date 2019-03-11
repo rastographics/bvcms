@@ -200,8 +200,11 @@ function checkGatewayAvailability(Id) {
                     text: "It seems you need to add some configurations",
                     icon: "info"
                 });
-                document.getElementById('saveproccess').disabled = true;
-                document.getElementById('saveproccess').className = 'btn btn-default';
+                if (document.getElementById('saveproccess') !== null) {
+                    document.getElementById('saveproccess').disabled = true;
+                    document.getElementById('saveproccess').className = 'btn btn-default';
+                }
+                
                 $('#gatewayModal').modal();
                 $('#gatewayValues').html('');
             }

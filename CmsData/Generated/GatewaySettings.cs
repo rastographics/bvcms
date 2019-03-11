@@ -22,7 +22,7 @@ namespace CmsData
         private int _ProcessId;
 
         private EntityRef<Gateways> _Gateways;
-        private EntityRef<Process> _Process;
+        private EntityRef<PaymmentProcess> _Process;
         #endregion
 
         #region Extensibility Method Definitions

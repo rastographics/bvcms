@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using CmsWeb.Lifecycle;
+using CmsWeb.Common;
 
 namespace CmsWeb.Areas.Setup.Controllers
 {
@@ -12,7 +13,49 @@ namespace CmsWeb.Areas.Setup.Controllers
     {
         public GatewayController(IRequestManager requestManager): base(requestManager)
         {
+            if(CurrentDatabase.GatewayDetails.AsQueryable().Count() == 0)
+            {
+                AddGatewayDetailModel model = new AddGatewayDetailModel();
+                foreach (KeyValuePair<string, object> obj in new Configuration().AsDictionary())
+                {
+                    model.GatewayDetailId = null;
+                    model.GatewayId = 1;
+                    model.GatewayDetailName = obj.Key;
+                    model.GatewayDetailValue = obj.Value.ToString();
+                    model.IsDefault = true;
+                    model.Operation = 0;
+                    AddGatewayDetail(model);
+                }
 
+                foreach(string key in new List<string>{
+                    "M_ID"
+                    ,"M_KEY"
+                    ,"SageOriginatorId"
+                    ,"GatewayTesting" })
+                {
+                    model.GatewayDetailId = null;
+                    model.GatewayId = 2;
+                    model.GatewayDetailName = key;
+                    model.GatewayDetailValue = CurrentDatabase.Settings.Where(x => x.SettingX.Equals(key)).Select(x => x.SettingX).FirstOrDefault();
+                    model.IsDefault = true;
+                    model.Operation = 0;
+                    AddGatewayDetail(model);
+                }
+
+                foreach (string key in new List<string>{
+                    "TNBUsername"
+                    ,"TNBPassword"
+                    ,"GatewayTesting" })
+                {
+                    model.GatewayDetailId = null;
+                    model.GatewayId = 3;
+                    model.GatewayDetailName = key;
+                    model.GatewayDetailValue = CurrentDatabase.Settings.Where(x => x.Id.Equals(key)).Select(x => x.SettingX).FirstOrDefault();
+                    model.IsDefault = true;
+                    model.Operation = 0;
+                    AddGatewayDetail(model);
+                }
+            }
         }
 
         [Route("~/Gateway")]
@@ -37,7 +80,7 @@ namespace CmsWeb.Areas.Setup.Controllers
 
             if (applyall)
             {
-                List<int> Processes = CurrentDatabase.Process.Select(x => x.ProcessId).ToList();
+                List<int> Processes = CurrentDatabase.PaymmentProcess.Select(x => x.ProcessId).ToList();
                 foreach(int Process in Processes)
                     result = CurrentDatabase.AddGatewaySettings(GatewaySettingId, GatewayId, Process, Operation);
             }
