@@ -574,9 +574,9 @@ namespace CmsData
         partial void UpdatePrintJob(PrintJob instance);
         partial void DeletePrintJob(PrintJob instance);
 
-        partial void InsertProcess(PaymmentProcess instance);
-        partial void UpdateProcess(PaymmentProcess instance);
-        partial void DeleteProcess(PaymmentProcess instance);
+        partial void InsertProcess(PaymentProcess instance);
+        partial void UpdateProcess(PaymentProcess instance);
+        partial void DeleteProcess(PaymentProcess instance);
 
         partial void InsertProcessType(ProcessType instance);
         partial void UpdateProcessType(ProcessType instance);
@@ -1749,9 +1749,9 @@ namespace CmsData
 
 		}
 
-        public Table<PaymmentProcess> PaymmentProcess
+        public Table<PaymentProcess> PaymentProcess
         {
-            get { return this.GetTable<PaymmentProcess>(); }
+            get { return this.GetTable<PaymentProcess>(); }
 
         }
 
@@ -2076,9 +2076,9 @@ namespace CmsData
 
 	    }
 
-        public Table<View.AvailableProcess> ViewAvailableProcess
+        public Table<View.AvailableProcesses> ViewAvailableProcesses
         {
-            get { return this.GetTable<View.AvailableProcess>(); }
+            get { return this.GetTable<View.AvailableProcesses>(); }
         }
 
         public Table<View.BundleList> ViewBundleLists
