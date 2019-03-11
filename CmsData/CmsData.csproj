@@ -800,7 +800,7 @@
     <Compile Include="Generated\OrgFilter.cs" />
     <Compile Include="Generated\OrgMemberExtra.cs" />
     <Compile Include="Generated\PrevOrgMemberExtra.cs" />
-    <Compile Include="Generated\Process.cs" />
+    <Compile Include="Generated\PaymmentProcess.cs" />
     <Compile Include="Generated\ProcessType.cs" />
     <Compile Include="Generated\PushPayLog.cs" />
     <Compile Include="Generated\QueryAnalysi.cs" />

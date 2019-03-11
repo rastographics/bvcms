@@ -11,8 +11,8 @@ using CmsData.Infrastructure;
 
 namespace CmsData
 {
-    [Table(Name = "lookup.Process")]
-    public partial class Process : INotifyPropertyChanging, INotifyPropertyChanged
+    [Table(Name = "lookup.PaymmentProcess")]
+    public partial class PaymmentProcess : INotifyPropertyChanging, INotifyPropertyChanged
     {
         private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
 
@@ -39,7 +39,7 @@ namespace CmsData
         partial void OnProcessTypeIdChanged();
         #endregion
 
-        public Process()
+        public PaymmentProcess()
         {
             OnCreated();
         }

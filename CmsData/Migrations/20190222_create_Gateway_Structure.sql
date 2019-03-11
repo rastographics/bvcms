@@ -62,10 +62,10 @@ IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where
 GO
 
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where 
-	TABLE_NAME = 'Process' AND 
+	TABLE_NAME = 'PaymmentProcess' AND 
 	TABLE_SCHEMA = 'lookup')
 	BEGIN
-		DROP TABLE [lookup].[Process]
+		DROP TABLE [lookup].[PaymmentProcess]
 	END
 GO
 
@@ -107,7 +107,8 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where
         VALUES
         ('Redirect Link'),
         ('SOAP'),
-        ('API')        
+        ('API'),
+		('DEFAULT')    
 	END
 GO
 
@@ -144,20 +145,21 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where
 		('Pushpay', 1),
 		('Sage', 2),
 		('Transnational', 2),
-		('Acceptival', 3)
+		('Acceptival', 3),
+		('DEFAULT', 4)
 	END
 GO
 
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where 
-	TABLE_NAME = 'Process' AND 
+	TABLE_NAME = 'PaymmentProcess' AND 
 	TABLE_SCHEMA = 'lookup')
 	BEGIN
-		CREATE TABLE [lookup].[Process](
+		CREATE TABLE [lookup].[PaymmentProcess](
 	        [ProcessId][int] IDENTITY(1,1) PRIMARY KEY NOT NULL,
 	        [ProcessName][nvarchar](30) NOT NULL,
 	        [ProcessTypeId][int] FOREIGN KEY REFERENCES [lookup].[ProcessType]([ProcessTypeId]) NOT NULL
         );
-        INSERT INTO [lookup].[Process]
+        INSERT INTO [lookup].[PaymmentProcess]
         ([ProcessName]
         ,[ProcessTypeId])
         VALUES
@@ -175,7 +177,15 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where
 		CREATE TABLE [dbo].[GatewaySettings](
 		[GatewaySettingId][int] IDENTITY(1,1) PRIMARY KEY,
 		[GatewayId][int] FOREIGN KEY REFERENCES [lookup].[Gateways]([GatewayId]) NOT NULL,
-		[ProcessId][int] UNIQUE FOREIGN KEY REFERENCES [lookup].[Process]([ProcessId]) NOT NULL);	
+		[ProcessId][int] UNIQUE FOREIGN KEY REFERENCES [lookup].[PaymmentProcess]([ProcessId]) NOT NULL);	
+	
+		INSERT INTO [dbo].[GatewaySettings]
+		([GatewayId]
+		,[ProcessId])
+		VALUES
+		(5, 1),
+		(5, 2),
+		(5, 3);
 	END
 GO
 
@@ -190,7 +200,7 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where
 			[GatewayDetailValue][nvarchar](max) NOT NULL,
 			[IsDefault][bit] NOT NULL
 		);
-		INSERT INTO [dbo].[GatewayDetails]
+		/*INSERT INTO [dbo].[GatewayDetails]
 		([GatewayId]
 		,[GatewayDetailName]
 		,[GatewayDetailValue]
@@ -212,7 +222,7 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where
 		(2, 'GatewayTesting', 'true', 1),
 		(3, 'TNBUsername', 'faithbased', 1),
 		(3, 'TNBPassword', 'bprogram2', 1),
-		(3, 'GatewayTesting', 'true', 1)
+		(3, 'GatewayTesting', 'true', 1)*/
 	END
 GO
 
@@ -243,7 +253,7 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.VIEWS where
 		EXEC dbo.sp_executesql @statement = N'
 		CREATE VIEW [dbo].[AvailableProcess] AS
 		SELECT [ProcessId], [ProcessName]
-		FROM [lookup].[Process]
+		FROM [lookup].[PaymmentProcess]
 		WHERE [ProcessId] NOT IN(SELECT [ProcessId] FROM [GatewaySettings])
 		AND [ProcessTypeId] = 1
 		'
@@ -258,13 +268,13 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.VIEWS where
 		CREATE VIEW [dbo].[MyGatewaySettings]
 		AS
 			SELECT [GatewaySettings].[GatewaySettingId], 
-				[lookup].[Process].[ProcessName],
+				[lookup].[PaymmentProcess].[ProcessName],
 				[dbo].[GatewaySettings].[ProcessId],
 				[lookup].[Gateways].[GatewayName],
 				[lookup].[Gateways].[GatewayId]
 			FROM [GatewaySettings]
-			INNER JOIN [lookup].[Process]
-			ON [GatewaySettings].[ProcessId] = [lookup].[Process].[ProcessId]
+			INNER JOIN [lookup].[PaymmentProcess]
+			ON [GatewaySettings].[ProcessId] = [lookup].[PaymmentProcess].[ProcessId]
 			INNER JOIN [lookup].[Gateways]
 			ON [GatewaySettings].[GatewayId] = [lookup].[Gateways].[GatewayId]
 		'
