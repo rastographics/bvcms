@@ -69,6 +69,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public decimal? MissionTripCost { get; set; }
         public decimal? MissionTripRaised { get; set; }
 
+        public string paymentToken { get; set; }
+
         public TransactionsModel.SupporterInfo[] Supporters { get; set; }
 
         private Transaction _transaction;

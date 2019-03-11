@@ -15,6 +15,16 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 {
     public partial class OnlineRegController
     {
+        [HttpGet]
+        [Route("~/OnlineReg/ProcessPayment2/{DatumId:int}")]
+        public ActionResult ProcessPayment2(int DatumId)
+        {
+            RegistrationDatum datum = CurrentDatabase.RegistrationDatas.SingleOrDefault(d => d.Id == DatumId);
+            OnlineRegModel m = Util.DeSerialize<OnlineRegModel>(datum.Data);
+            var pf = PaymentForm.CreatePaymentForm(m);
+            return ProcessPayment(pf);
+        }
+
         [HttpPost]
         public ActionResult ProcessPayment(PaymentForm pf)
         {
@@ -55,7 +65,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return Message("Found Card Tester");
             }
 
-            if (CurrentDatabase.Setting("UseRecaptcha"))
+            if (CurrentDatabase.Setting("UseRecaptcha") && CurrentDatabase.GetSetting("TransactionGateway", "") != "Pushpay")
             {
                 if (!GoogleRecaptcha.IsValidResponse(HttpContext, CurrentDatabase))
                 {
@@ -66,7 +76,18 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
 
             SetHeaders(pf.OrgId ?? 0);
-            var ret = pf.ProcessPayment(ModelState, m);
+            RouteModel ret;
+
+            //This will change to gatewayType in order to decide which process choose.
+            if (CurrentDatabase.GetSetting("TransactionGateway", "") == "Pushpay")
+            {
+                ret = pf.ProcessPayment(m);
+            }
+            else
+            {
+                ret = pf.ProcessPayment(ModelState, m);
+            }
+
             switch (ret.Route)
             {
                 case RouteType.ModelAction:

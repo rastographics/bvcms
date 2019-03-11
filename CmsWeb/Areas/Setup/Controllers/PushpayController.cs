@@ -189,15 +189,17 @@ namespace CmsWeb.Areas.Setup.Controllers
         [Route("~/Pushpay/Registration/{DatumId:int}")]
         public ActionResult Registration(int DatumId)
         {
-            OnlineRegModel or = new OnlineRegModel();
-            decimal Amount = 0;
+            OnlineRegModel m = new OnlineRegModel();
+            decimal? Amount = 0;
             string mobile = string.Empty;
             RegistrationDatum datum = CurrentDatabase.RegistrationDatas.SingleOrDefault(d => d.Id == DatumId);
             if (datum != null)
             {
-                or = Util.DeSerialize<OnlineRegModel>(datum.Data);
-                Amount = or.TotalAmount();
-                mobile = CurrentDatabase.People.SingleOrDefault(p => p.PeopleId == or.UserPeopleId).CellPhone;
+                m = Util.DeSerialize<OnlineRegModel>(datum.Data);
+                var pf = PaymentForm.CreatePaymentForm(m);
+                //Needs to redirect in case cupons are enable.
+                Amount = pf.AmtToPay;
+                mobile = CurrentDatabase.People.SingleOrDefault(p => p.PeopleId == m.UserPeopleId).CellPhone;
             }
             else
             {
@@ -208,7 +210,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             return Redirect($"{_givingLink}?ru={_merchantHandle}&sr=dat_{DatumId}&rcv=false&up={mobile}&a={Amount}&al=true&fndv=lock");
         }
 
-        [AllowAnonymous, Route("~/Pushpay/CompletePayment")]
+        [Route("~/Pushpay/CompletePayment")]
         public async Task<ActionResult> CompletePayment(string paymentToken, string sr)
         {
             try
@@ -290,8 +292,14 @@ namespace CmsWeb.Areas.Setup.Controllers
         private async Task<ActionResult> RegistrationProcess(string paymentToken, int datumId)
         {
             //System.Web.HttpContext.Current = CurrentHttpContext;
-            OnlineRegModel or = new OnlineRegModel();
+
+            OnlineRegModel m = new OnlineRegModel();
             RegistrationDatum datum = CurrentDatabase.RegistrationDatas.SingleOrDefault(d => d.Id == datumId);
+            m = Util.DeSerialize<OnlineRegModel>(datum.Data);
+            m.paymentToken = paymentToken;
+            m.UpdateDatum();
+
+            return Redirect($"/OnlineReg/ProcessPayment2/{datumId}");
 
             //if (payment != null && !_resolver.TransactionAlreadyImported(payment))
             //{
@@ -307,9 +315,9 @@ namespace CmsWeb.Areas.Setup.Controllers
             //}
             //else
             //{
-            ViewBag.Message = "Something went wrong";
-            CurrentDatabase.LogActivity($"No datum founded with id: {datumId}");
-            return View("~/Views/Shared/PageError.cshtml");
+            //ViewBag.Message = "Something went wrong";
+            //CurrentDatabase.LogActivity($"No datum founded with id: {datumId}");
+            //return View("~/Views/Shared/PageError.cshtml");
             //}
         }
 

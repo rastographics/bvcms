@@ -23,8 +23,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
 
             if (CurrentDatabase.GetSetting("TransactionGateway", "") == "Pushpay" && m.ManageGiving())
-            {
-                return Redirect($"/Pushpay/RecurringManagment/{pid}/{m.Orgid}");
+            {               
             }
 
             var link = RouteExistingRegistration(m, pid);
