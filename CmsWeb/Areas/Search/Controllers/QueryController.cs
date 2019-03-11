@@ -59,14 +59,9 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult QueryCode(string code)
         {
             ViewBag.Title = "QueryBuilder";
-            var qb = CurrentDatabase.ScratchPadCondition();
-            qb.Reset();
-            var c = Condition.Parse(code, qb.Id);
-            c.Save(CurrentDatabase);
-            var m = new QueryModel(c.Id, CurrentDatabase);
+            var m = QueryModel.QueryCode(CurrentDatabase, code);
             return ViewQuery(m);
         }
-
         private ActionResult ViewQuery(QueryModel m)
         {
             m.Db = CurrentDatabase;
@@ -373,34 +368,45 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ContentResult TagAll(string tagname, bool? cleartagfirst, QueryModel m)
         {
-            m.Db = CurrentDatabase;
+            // take a query, add all people from the result of that query to the tag specified
+            // empty the tag first if requested
+            string resultMessage = string.Empty;
+            bool shouldContinue = true;
+
             if (!tagname.HasValue())
             {
-                return Content("error: no tag name");
+                resultMessage = "error: no tag name";
+                shouldContinue = false;
             }
 
-            if (Util2.CurrentTagName == tagname && !(cleartagfirst ?? false))
+            if (shouldContinue)
             {
-                m.TagAll();
-                return Content("Remove");
-            }
-            var tag = CurrentDatabase.FetchOrCreateTag(tagname, Util.UserPeopleId, DbUtil.TagTypeId_Personal);
-            if (cleartagfirst ?? false)
-            {
-                CurrentDatabase.ClearTag(tag);
+                var usingActiveTag = Util2.CurrentTagName == tagname;
+                var workingTag = CurrentDatabase.FetchOrCreateTag(tagname, Util.UserPeopleId, DbUtil.TagTypeId_Personal);
+                var shouldEmptyTag = cleartagfirst ?? false;
+
+                if (shouldEmptyTag)
+                {
+                    CurrentDatabase.ClearTag(workingTag);
+                }
+
+                m.Db = CurrentDatabase;
+                m.TagAll(workingTag);
+
+                Util2.CurrentTag = workingTag.Name;
+
+                resultMessage = "Manage";
+                shouldContinue = false;
             }
 
-            m.TagAll(tag);
-            Util2.CurrentTag = tagname;
-            CurrentDatabase.TagCurrent();
-            return Content("Manage");
+            return Content(resultMessage);
         }
 
         [HttpPost]
         public ContentResult UnTagAll(QueryModel m)
         {
             m.Db = CurrentDatabase;
-            m.UnTagAll();
+            m.UntagAll();
             return Content("Add");
         }
 

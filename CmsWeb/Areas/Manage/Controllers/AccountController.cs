@@ -174,7 +174,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 
         public static bool TryImpersonate()
         {
-            if (System.Web.HttpContext.Current.User.Identity.IsAuthenticated)
+            if (HttpContextFactory.Current.User.Identity.IsAuthenticated)
             {
                 return false;
             }
@@ -196,7 +196,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                 return false;
             }
 
-            var session = System.Web.HttpContext.Current.Session;
+            var session = HttpContextFactory.Current.Session;
             AccountModel.SetUserInfo(username, session);
             if (Util.UserId == 0)
             {

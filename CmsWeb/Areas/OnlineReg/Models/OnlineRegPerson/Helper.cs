@@ -23,10 +23,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
             {
                 if (_settings == null)
                 {
-                    _settings = HttpContext.Current.Items["RegSettings"] as Dictionary<int, Settings>;
+                    _settings = HttpContextFactory.Current.Items["RegSettings"] as Dictionary<int, Settings>;
                     if (_settings == null)
                         Parent.ParseSettings();
-                    _settings = HttpContext.Current.Items["RegSettings"] as Dictionary<int, Settings>;
+                    _settings = HttpContextFactory.Current.Items["RegSettings"] as Dictionary<int, Settings>;
                 }
                 return _settings;
             }
@@ -575,6 +575,14 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 }).ToArray();
         }
 
+        public static SelectListItem[] FullFundList(IList<string> defaultFundIds)
+        {
+            var fullList = FullFundList();
+            var list = defaultFundIds.Select(id => fullList.SingleOrDefault(s => s.Value == id)).Where(fund => fund != null).ToList();
+            list.AddRange(fullList.Where(f => !defaultFundIds.Contains(f.Value)));
+            return list.ToArray();
+        }
+
         public static SelectListItem[] FullFundList()
         {
             return (from f in GetAllOnlineFunds()
@@ -608,6 +616,15 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     }).ToArray();
         }
 
+        public static string GetFundName(int fundId)
+        {
+            var fund =  (from f in GetAllOnlineFunds()
+                where f.FundId == fundId
+                select f).SingleOrDefault();
+
+            return fund?.FundName;
+        }
+
         private static IQueryable<ContributionFund> GetAllOnlineFunds()
         {
             return from f in DbUtil.Db.ContributionFunds
@@ -617,7 +634,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         }
 
         private PythonModel pythonModel;
-        public PythonModel PythonModel => pythonModel ?? (pythonModel = HttpContext.Current.Items["PythonEvents"] as PythonModel);
+        public PythonModel PythonModel => pythonModel ?? (pythonModel = HttpContextFactory.Current.Items["PythonEvents"] as PythonModel);
 
         private readonly Dictionary<string, string> _nameLookup = new Dictionary<string, string>()
         {

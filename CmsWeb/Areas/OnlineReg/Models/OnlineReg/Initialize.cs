@@ -103,7 +103,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
 
             // handle if they are already logged in
-            else if (HttpContext.Current.User.Identity.IsAuthenticated)
+            else if (HttpContextFactory.Current.User.Identity.IsAuthenticated)
             {
                 pid = Util.UserPeopleId ?? 0;
             }

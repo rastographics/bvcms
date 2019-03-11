@@ -129,7 +129,7 @@ namespace CmsData
             var json = JsonSerialize(dd);
             p.Add("@json", json);
             db.Connection.Execute("dbo.TagContributions", p, commandType: CommandType.StoredProcedure);
-            return $@"{name} = {FormatJson(dd)}";
+            return FormatJson(dd);
         }
         /// <summary>
         /// This works for the same purpose as CretaeContributionTag above

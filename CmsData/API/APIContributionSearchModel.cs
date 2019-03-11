@@ -45,6 +45,7 @@ namespace CmsData.API
         internal string FundName;
         internal decimal? Total;
         internal int? Count;
+        internal int? FamilyCount;
 
         public ContributionSearchInfo()
         {
@@ -403,9 +404,14 @@ namespace CmsData.API
                 total = q.Sum(cc => cc.ContributionAmount ?? 0);
             var fund = db.ContributionFunds.Where(ff => ff.FundId == model.FundId).Select(ff => ff.FundName).SingleOrDefault();
             var campus = db.Campus.Where(cc => cc.Id == model.CampusId).Select(cc => cc.Description).SingleOrDefault();
+            var fq = from c in q
+                     join p in db.People on c.PeopleId equals p.PeopleId
+                     select p.FamilyId;
+            var familycount = fq.Distinct().Count();
 
             model.Total = total;
             model.Count = count;
+            model.FamilyCount = familycount;
             model.FundName = fund;
             model.Campus = campus;
         }
@@ -442,6 +448,11 @@ namespace CmsData.API
         {
             PopulateTotals();
             return model.Count ?? 0;
+        }
+        public int FamilyCount()
+        {
+            PopulateTotals();
+            return model.FamilyCount ?? 0;
         }
 
         [Serializable]

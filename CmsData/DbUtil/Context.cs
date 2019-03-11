@@ -4,29 +4,27 @@
  * you may not use this code except in compliance with the License.
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
-using System;
-using System.Data.Common;
-using System.Linq;
+using CmsData.Codes;
 using CmsData.Finance;
-using UtilityExtensions;
-using System.Web;
-using System.Data.Linq.Mapping;
-using System.Data.Linq;
-using System.Reflection;
+using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Data;
+using System.Data.Common;
+using System.Data.Linq;
+using System.Data.Linq.Mapping;
 using System.Data.SqlClient;
 using System.Diagnostics;
-using System.Text;
-using CmsData.Codes;
+using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
+using System.Web;
+using UtilityExtensions;
 
 namespace CmsData
 {
     public partial class CMSDataContext
     {
-        const string STR_System = "System";
+        private const string STR_System = "System";
 
         private int nextTagId = 11;
 
@@ -74,7 +72,10 @@ namespace CmsData
             get
             {
                 if (_LogFile == null)
+                {
                     _LogFile = Setting("LinqLogFile", null);
+                }
+
                 return _LogFile;
             }
         }
@@ -93,6 +94,7 @@ namespace CmsData
                         Members = m.RowType.DataMembers.Where(dm => typesToCheck.Contains(dm.Type)).ToList()
                     }).Where(m => m.Members.Any()).ToList();
                 foreach (var ins in insertsUpdates)
+                {
                     foreach (var mm in ins.Members)
                     {
                         {
@@ -109,10 +111,14 @@ namespace CmsData
                             }
                         }
                     }
+                }
+
                 base.SubmitChanges(failureMode);
             }
             else
+            {
                 base.SubmitChanges(failureMode);
+            }
         }
         public void ClearCache2()
         {
@@ -126,11 +132,20 @@ namespace CmsData
             int maxLength = 0;
 
             if (dbType == null)
+            {
                 return maxLength;
+            }
+
             if (dbType.Contains("("))
+            {
                 dbType = dbType.Substring(dbType.IndexOf("(") + 1);
+            }
+
             if (dbType.Contains(")"))
+            {
                 dbType = dbType.Substring(0, dbType.IndexOf(")"));
+            }
+
             int.TryParse(dbType, out maxLength);
             return maxLength;
         }
@@ -138,13 +153,22 @@ namespace CmsData
         private int GetMemberValueLength(object value)
         {
             if (value == null)
+            {
                 return 0;
+            }
+
             if (value.GetType() == typeof(string))
+            {
                 return ((string)value).Length;
+            }
             else if (value.GetType() == typeof(Binary))
+            {
                 return ((Binary)value).Length;
+            }
             else
+            {
                 throw new ArgumentException("Unknown type.");
+            }
         }
         public Person LoadPersonById(int id)
         {
@@ -165,8 +189,11 @@ namespace CmsData
         public OrgFilter OrgFilter(Guid? id)
         {
             var filter = OrgFilters.SingleOrDefault(vv => vv.QueryId == id);
-            if(filter == null)
+            if (filter == null)
+            {
                 throw new Exception($"FilteredOrg is no longer available {id}");
+            }
+
             return filter;
         }
         public bool OrgIdOk(int? id)
@@ -214,19 +241,33 @@ namespace CmsData
         public IQueryable<Person> PeopleQuery(Guid id)
         {
             if (id == null)
+            {
                 return null;
+            }
+
             IQueryable<Person> q = null;
             var query = LoadQueryById2(id);
             if (query == null)
+            {
                 return null;
+            }
+
             var c = query.ToClause();
             q = People.Where(c.Predicate(this));
             if (c.PlusParentsOf)
+            {
                 q = PersonQueryPlusParents(q);
+            }
             else if (c.ParentsOf)
+            {
                 q = PersonQueryParents(q);
+            }
+
             if (c.FirstPersonSameEmail)
+            {
                 q = PersonQueryFirstPersonSameEmail(q);
+            }
+
             return q;
         }
 
@@ -242,7 +283,9 @@ namespace CmsData
         public IQueryable<Person> PeopleQuery2(string query, bool fromDirectory = false)
         {
             if (query.AllDigits())
+            {
                 query = "peopleid=" + query;
+            }
             else
             {
                 var m = Regex.Match(query, @"peopleids{0,1}\s*?=(?<pids>.*)");
@@ -258,14 +301,19 @@ namespace CmsData
                         mm = mm.NextMatch();
                     }
                     if (pp.Count > 0)
+                    {
                         query = $"PeopleIds = '{string.Join(",", pp)}'";
+                    }
                 }
             }
             var qB = Queries.FirstOrDefault(cc => cc.Name == query);
             if (qB == null)
             {
-                if(query.HasValue())
+                if (query.HasValue())
+                {
                     return PeopleQueryCode(query, fromDirectory);
+                }
+
                 qB = MatchNothing();
             }
             var c = qB.ToClause();
@@ -274,11 +322,19 @@ namespace CmsData
 #endif
             var q = People.Where(c.Predicate(this));
             if (c.PlusParentsOf)
+            {
                 q = PersonQueryPlusParents(q);
+            }
             else if (c.ParentsOf)
+            {
                 q = PersonQueryParents(q);
+            }
+
             if (c.FirstPersonSameEmail)
+            {
                 q = PersonQueryFirstPersonSameEmail(q);
+            }
+
             return q;
         }
         public IQueryable<Person> PeopleQueryCode(string code, bool fromDirectory = false)
@@ -288,25 +344,44 @@ namespace CmsData
             var sql = c.ToSql();
 #endif
             if (fromDirectory)
+            {
                 c.FromDirectory = true;
+            }
+
             var q = People.Where(c.Predicate(this));
             if (c.PlusParentsOf)
+            {
                 q = PersonQueryPlusParents(q);
+            }
             else if (c.ParentsOf)
+            {
                 q = PersonQueryParents(q);
+            }
+
             if (c.FirstPersonSameEmail)
+            {
                 q = PersonQueryFirstPersonSameEmail(q);
+            }
+
             return q;
         }
         public IQueryable<Person> PeopleQueryCondition(Condition c)
         {
             var q = People.Where(c.Predicate(this));
             if (c.PlusParentsOf)
+            {
                 q = PersonQueryPlusParents(q);
+            }
             else if (c.ParentsOf)
+            {
                 q = PersonQueryParents(q);
+            }
+
             if (c.FirstPersonSameEmail)
+            {
                 q = PersonQueryFirstPersonSameEmail(q);
+            }
+
             return q;
         }
         public IQueryable<Person> PersonQueryParents(IQueryable<Person> q)
@@ -326,7 +401,10 @@ namespace CmsData
                      select ev.IntValue;
 
             foreach (var i in q3.Distinct())
+            {
                 tag.PersonTags.Add(new TagPerson { PeopleId = i.Value });
+            }
+
             SubmitChanges();
             return tag.People(this);
         }
@@ -349,7 +427,10 @@ namespace CmsData
                      select ev.IntValue;
 
             foreach (var i in q3.Distinct())
+            {
                 tag2.PersonTags.Add(new TagPerson { PeopleId = i.Value });
+            }
+
             SubmitChanges();
             AddTag1ToTag2(tag1.Id, tag2.Id);
             return tag2.People(this);
@@ -357,9 +438,9 @@ namespace CmsData
         public IQueryable<Person> PersonQueryFirstPersonSameEmail(IQueryable<Person> q)
         {
             var qq = from p in q
-                group p by p.EmailAddress into g
-                from j in g
-                select g.Min(gg => gg.PeopleId);
+                     group p by p.EmailAddress into g
+                     from j in g
+                     select g.Min(gg => gg.PeopleId);
             var tag = PopulateTemporaryTag(qq.Distinct());
             return tag.People(this);
         }
@@ -405,7 +486,7 @@ namespace CmsData
                 s = Regex.Replace(s, $@"@p{n++}\b", $"{{{pn++}}}");
                 plist.Add(pa);
             }
-            s = Regex.Replace(s, @"^SELECT( DISTINCT| TOP \(\d+\))?", 
+            s = Regex.Replace(s, @"^SELECT( DISTINCT| TOP \(\d+\))?",
                 $"INSERT INTO TagPerson (Id, PeopleId) $0 {tag.Id},");
             var a = plist.Select(pp => pp.Value).ToArray();
             ExecuteCommand(s, a);
@@ -418,45 +499,63 @@ namespace CmsData
             foreach (DbParameter p in cmd.Parameters)
             {
                 if (p == null)
+                {
                     continue;
+                }
 
                 var pname = p.ParameterName + "\\b";
                 var typ = p.Value.GetType();
 
-                if(p.Value is DBNull)
+                if (p.Value is DBNull)
+                {
                     s = Regex.Replace(s, pname, "NULL");
+                }
                 else if (typ == typeof(DateTime) || typ == typeof(DateTime?))
+                {
                     s = Regex.Replace(s, pname, $"'{p.Value:MM/dd/yy HH:mm:ss}'");
+                }
                 else if (typ == typeof(bool) || typ == typeof(bool?))
-                    s = Regex.Replace(s, pname, p.Value.ToBool()? "1" : "0");
-                else if (typ == typeof(int) 
-                        || typ == typeof(int?) 
-                        || typ == typeof(long) 
-                        || typ == typeof(long?) 
-                        || typ == typeof(decimal) 
-                        || typ == typeof(decimal?) 
+                {
+                    s = Regex.Replace(s, pname, p.Value.ToBool() ? "1" : "0");
+                }
+                else if (typ == typeof(int)
+                        || typ == typeof(int?)
+                        || typ == typeof(long)
+                        || typ == typeof(long?)
+                        || typ == typeof(decimal)
+                        || typ == typeof(decimal?)
                         || typ == typeof(double)
                         || typ == typeof(double?)
                         || typ == typeof(float)
                         || typ == typeof(float?)
                     )
+                {
                     s = Regex.Replace(s, pname, p.Value.ToString());
+                }
                 else
+                {
                     s = Regex.Replace(s, pname, $"'{p.Value.ToString().Replace("'", "''")}'");
+                }
             }
             s = Regex.Replace(s, @"\[([^]]*)\]", "$1")
                 .Replace("t0", "p");
             if (s.Contains("TagPerson AS t"))
+            {
                 s = @"
 A WHERE clause cannot be created.
 This search uses multiple steps which cannot be duplicated in a single query.
 ";
+            }
+
             return s;
         }
         public void TagAll(IEnumerable<int> list, Tag tag)
         {
             foreach (var id in list)
+            {
                 tag.PersonTags.Add(new TagPerson { PeopleId = id });
+            }
+
             SubmitChanges();
         }
         public void UnTagAll(IQueryable<Person> list)
@@ -469,10 +568,14 @@ This search uses multiple steps which cannot be duplicated in a single query.
                     select t;
 
             foreach (var t in q)
+            {
                 TagPeople.DeleteOnSubmit(t);
+            }
+
             SubmitChanges();
         }
-        const int maxints = 1000;
+
+        private const int maxints = 1000;
         public void UnTagAll(List<int> list, Tag tag)
         {
             for (var i = 0; i < list.Count; i += maxints)
@@ -505,7 +608,9 @@ This search uses multiple steps which cannot be duplicated in a single query.
                 TagTypeId = DbUtil.TagTypeId_System;
             }
             else
+            {
                 name = Util.SessionId;
+            }
 
             var tag = FetchOrCreateTag(name, Util.UserPeopleId ?? Util.UserId1, TagTypeId);
             ExecuteCommand("delete TagPerson where Id = {0}", tag.Id);
@@ -525,7 +630,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
                 s = Regex.Replace(s, $@"@p{n++}\b", $"{{{pn++}}}");
                 plist.Add(pa);
             }
-            s = Regex.Replace(s, @"^SELECT( DISTINCT| TOP \(\d+\))?", 
+            s = Regex.Replace(s, @"^SELECT( DISTINCT| TOP \(\d+\))?",
                 $"INSERT INTO TagPerson (Id, PeopleId) $0 {tag.Id},");
             ExecuteCommand(s, plist.Select(pp => pp.Value).ToArray());
             return tag;
@@ -556,7 +661,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
                 s = Regex.Replace(s, $@"@p{n++}\b", $"{{{pn++}}}");
                 plist.Add(pa);
             }
-            s = Regex.Replace(s, @"^SELECT( DISTINCT| TOP \(\d+\))?", 
+            s = Regex.Replace(s, @"^SELECT( DISTINCT| TOP \(\d+\))?",
                 $"INSERT INTO TagPerson (Id, PeopleId) $0 {tag.Id},");
             var args = plist.Select(pp => pp.Value).ToArray();
             ExecuteCommand(s, args);
@@ -594,27 +699,26 @@ This search uses multiple steps which cannot be duplicated in a single query.
         }
         public Tag TagCurrent()
         {
+            if (Util2.CurrentTag.StartsWith("QueryTag:"))
+            {
+                var tag = Tags.FirstOrDefault(t =>
+                    t.Name == Util2.CurrentTagName && t.TypeId == DbUtil.TagTypeId_QueryTags);
+                if (tag != null)
+                    return tag;
+                Util2.CurrentTag = "UnNamed";
+            }
             return FetchOrCreateTag(Util2.CurrentTagName, Util2.CurrentTagOwnerId, DbUtil.TagTypeId_Personal);
         }
-        //public string NewPeopleEmailAddressx
-        //{
-        //    get
-        //    {
-        //        var em = DbUtil.SystemEmailAddress;
-        //        var npm = People.SingleOrDefault(p => p.PeopleId == DbUtil.NewPeopleManagerId);
-        //        if (npm != null && npm.EmailAddress.HasValue())
-        //            em = npm.EmailAddress;
-        //        var s = Settings.Where(ss => ss.Id == "NewPeopleEmailAddress").Select(ss => ss.SettingX).SingleOrDefault();
-        //        return Util.PickFirst(s, em);
-        //    }
-        //}
         public int NewPeopleManagerId
         {
             get
             {
                 var s = Setting("NewPeopleManagerIds", "1");
                 if (s.HasValue())
+                {
                     return s.SplitStr(",;")[0].ToInt();
+                }
+
                 var q = from u in Users
                         where u.UserRoles.Any(ur => ur.Role.RoleName == "Admin")
                         select u.PeopleId.Value;
@@ -641,7 +745,10 @@ This search uses multiple steps which cannot be duplicated in a single query.
             get
             {
                 if (_currentuser != null)
+                {
                     return _currentuser;
+                }
+
                 GetCurrentUser();
                 return _currentuser;
             }
@@ -662,7 +769,10 @@ This search uses multiple steps which cannot be duplicated in a single query.
                     };
             var i = q.SingleOrDefault();
             if (i == null)
+            {
                 return;
+            }
+
             _roles = i.roles;
             _roleids = i.roleids;
             _currentuser = i.u;
@@ -672,7 +782,10 @@ This search uses multiple steps which cannot be duplicated in a single query.
         public string[] CurrentRoles()
         {
             if (_roles == null)
+            {
                 GetCurrentUser();
+            }
+
             return _roles ?? new string[0];
         }
 
@@ -680,7 +793,10 @@ This search uses multiple steps which cannot be duplicated in a single query.
         public int[] CurrentRoleIds()
         {
             if (_roleids == null)
+            {
                 GetCurrentUser();
+            }
+
             return _roleids;
         }
 
@@ -703,7 +819,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
             {
                 tag = new Tag
                 {
-                    Name = tagname.Replace('!', '*'),
+                    Name = tagname?.Replace('!', '*') ?? Util.SessionId, // if by chance, you end up here and tagname is empty... use the session id... 
                     PeopleId = ownerId,
                     TypeId = tagtypeid,
                     Created = Util.Now
@@ -989,17 +1105,23 @@ This search uses multiple steps which cannot be duplicated in a single query.
         }
         public string UserPreference(string pref, string defaultValue)
         {
-            var d = HttpContext.Current.Session["preferences"] as Dictionary<string, string>;
+            var d = HttpContextFactory.Current.Session["preferences"] as Dictionary<string, string>;
             if (d != null && d.ContainsKey(pref))
+            {
                 return d[pref] ?? defaultValue;
+            }
+
             if (d == null)
             {
                 d = new Dictionary<string, string>();
-                HttpContext.Current.Session["preferences"] = d;
+                HttpContextFactory.Current.Session["preferences"] = d;
             }
             Preference p = null;
             if (CurrentUser != null)
+            {
                 p = CurrentUser.Preferences.SingleOrDefault(up => up.PreferenceX == pref);
+            }
+
             if (p != null)
             {
                 d[pref] = p.ValueX;
@@ -1017,22 +1139,30 @@ This search uses multiple steps which cannot be duplicated in a single query.
         public void SetUserPreference(string pref, object value)
         {
             if (UserPreference(pref, "") == value.ToString())
+            {
                 return;
+            }
+
             if (CurrentUser == null)
+            {
                 return;
+            }
+
             var p = CurrentUser.Preferences.SingleOrDefault(up => up.PreferenceX == pref);
             if (p != null)
+            {
                 p.ValueX = value.ToString();
+            }
             else
             {
                 p = new Preference { UserId = Util.UserId1, PreferenceX = pref, ValueX = value.ToString() };
                 Preferences.InsertOnSubmit(p);
             }
-            var d = HttpContext.Current.Session["preferences"] as Dictionary<string, string>;
+            var d = HttpContextFactory.Current.Session["preferences"] as Dictionary<string, string>;
             if (d == null)
             {
                 d = new Dictionary<string, string>();
-                HttpContext.Current.Session["preferences"] = d;
+                HttpContextFactory.Current.Session["preferences"] = d;
             }
             d[pref] = p.ValueX;
             SubmitChanges();
@@ -1044,7 +1174,10 @@ This search uses multiple steps which cannot be duplicated in a single query.
             if (p != null)
             {
                 if (p.ValueX == value.ToString())
+                {
                     return;
+                }
+
                 p.ValueX = value.ToString();
             }
             else
@@ -1326,7 +1459,9 @@ This search uses multiple steps which cannot be duplicated in a single query.
             {
                 var org = Organizations.SingleOrDefault(oo => oo.OrganizationName == OrgName);
                 if (org == null)
+                {
                     throw new Exception("Org Named '" + OrgName + "' does not exist");
+                }
             }
             return OrganizationMember.Load(this, PeopleId, OrgName);
         }
@@ -1367,7 +1502,10 @@ This search uses multiple steps which cannot be duplicated in a single query.
         {
             var content = Contents.FirstOrDefault(c => c.Name == name);
             if (content != null)
+            {
                 return content.Body;
+            }
+
             return defaultValue;
         }
         public Content ContentOfTypeHtml(string name)
@@ -1389,14 +1527,17 @@ This search uses multiple steps which cannot be duplicated in a single query.
                            where c.TypeID == ContentTypeCode.TypeSqlScript
                            select c).FirstOrDefault();
             if (content == null)
+            {
                 return "";
+            }
+
             return content.Body;
         }
         public Content ContentOfTypeSavedDraft(string name)
         {
             var content = (from c in Contents
                            where c.Name == name
-                           where c.TypeID == ContentTypeCode.TypeSavedDraft || 
+                           where c.TypeID == ContentTypeCode.TypeSavedDraft ||
                                  c.TypeID == ContentTypeCode.TypeUnlayerSavedDraft
                            select c).FirstOrDefault();
             return content;
@@ -1408,7 +1549,10 @@ This search uses multiple steps which cannot be duplicated in a single query.
                            where c.TypeID == ContentTypeCode.TypePythonScript
                            select c).FirstOrDefault();
             if (content == null)
+            {
                 return ContentOfTypeText(name);
+            }
+
             return content.Body;
         }
         public string ContentOfTypeText(string name)
@@ -1418,14 +1562,20 @@ This search uses multiple steps which cannot be duplicated in a single query.
                            where c.TypeID == ContentTypeCode.TypeText
                            select c).FirstOrDefault();
             if (content == null)
+            {
                 return "";
+            }
+
             return content.Body;
         }
         public Content Content(string name, string defaultValue, int contentTypeId)
         {
             var c = Contents.FirstOrDefault(cc => cc.Name == name);
             if (c != null)
+            {
                 return c;
+            }
+
             c = new Content()
             {
                 Name = name,
@@ -1434,7 +1584,10 @@ This search uses multiple steps which cannot be duplicated in a single query.
                 TypeID = contentTypeId
             };
             if (!defaultValue.HasValue())
+            {
                 return c;
+            }
+
             Contents.InsertOnSubmit(c);
             SubmitChanges();
             return c;
@@ -1468,13 +1621,19 @@ This search uses multiple steps which cannot be duplicated in a single query.
         public int FetchOrCreateCampusId(string name)
         {
             if (!name.HasValue())
+            {
                 return 0;
+            }
+
             var c = Campus.SingleOrDefault(pp => pp.Description == name);
             if (c == null)
             {
                 var max = 10;
                 if (Campus.Any())
+                {
                     max = Campus.Max(mm => mm.Id) + 10;
+                }
+
                 c = new Campu() { Id = max, Description = name, Code = name.Truncate(20) };
                 Campus.InsertOnSubmit(c);
                 SubmitChanges();
@@ -1484,7 +1643,10 @@ This search uses multiple steps which cannot be duplicated in a single query.
         public int FetchOrCreatePositionId(string name)
         {
             if (!name.HasValue())
+            {
                 return 0;
+            }
+
             var familyPosition = FamilyPositions.SingleOrDefault(pp => pp.Description == name);
             if (familyPosition == null)
             {
@@ -1498,7 +1660,10 @@ This search uses multiple steps which cannot be duplicated in a single query.
         public int FetchOrCreateRoleId(string name)
         {
             if (!name.HasValue())
+            {
                 return 0;
+            }
+
             var role = Roles.SingleOrDefault(pp => pp.RoleName == name);
             if (role == null)
             {
@@ -1512,7 +1677,10 @@ This search uses multiple steps which cannot be duplicated in a single query.
         public int FetchOrCreateOrgTypeId(string name)
         {
             if (!name.HasValue())
+            {
                 return 0;
+            }
+
             var orgtype = OrganizationTypes.SingleOrDefault(pp => pp.Description == name);
             if (orgtype == null)
             {
@@ -1537,7 +1705,10 @@ This search uses multiple steps which cannot be duplicated in a single query.
             {
                 var max = EntryPoints.Max(mm => mm.Id) + 10;
                 if (max < 1000)
+                {
                     max = 1010;
+                }
+
                 ep = new EntryPoint { Id = max, Description = type, Code = type.Truncate(20) };
                 EntryPoints.InsertOnSubmit(ep);
                 SubmitChanges();
@@ -1549,14 +1720,19 @@ This search uses multiple steps which cannot be duplicated in a single query.
         {
             ContributionFund fund;
             if (FundId > 0)
+            {
                 fund = ContributionFunds.SingleOrDefault(f => f.FundId == FundId);
+            }
             else
+            {
                 fund = ContributionFunds.FirstOrDefault(f => f.FundName == Description && f.FundStatusId == 1);
+            }
+
             if (fund == null)
             {
                 int nextfundid;
                 if (FundId > 0)
-                { 
+                {
                     nextfundid = FundId;
                 }
                 else
@@ -1666,7 +1842,9 @@ This search uses multiple steps which cannot be duplicated in a single query.
         {
             var type = Setting("TransactionGateway", "not specified");
             if (usegateway != null)
+            {
                 type = usegateway;
+            }
 
             switch (type.ToLower())
             {
@@ -1710,37 +1888,37 @@ This search uses multiple steps which cannot be duplicated in a single query.
         }
         [Function(Name = "dbo.TagRecentStartAttend")]
         public int TagRecentStartAttend(
-            [Parameter(DbType = "Int")] int progid, 
-            [Parameter(DbType = "Int")] int divid, 
-            [Parameter(DbType = "Int")] int org, 
-            [Parameter(DbType = "Int")] int orgtype, 
-            [Parameter(DbType = "Int")] int days0, 
-            [Parameter(DbType = "Int")] int days, 
-            [Parameter(DbType = "Int")] int tagid) 
+            [Parameter(DbType = "Int")] int progid,
+            [Parameter(DbType = "Int")] int divid,
+            [Parameter(DbType = "Int")] int org,
+            [Parameter(DbType = "Int")] int orgtype,
+            [Parameter(DbType = "Int")] int days0,
+            [Parameter(DbType = "Int")] int days,
+            [Parameter(DbType = "Int")] int tagid)
         {
-            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), 
+            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 progid, divid, org, orgtype, days0, days, tagid);
             return ((int)(result.ReturnValue));
         }
         [Function(Name = "dbo.AddExtraValueData")]
         public int AddExtraValueData(
-            [Parameter(DbType = "Int")] int? pid, 
-            [Parameter(DbType = "varchar(150)")] string field, 
-            [Parameter(DbType = "varchar(200)")] string strvalue, 
-            [Parameter(DbType = "datetime")] DateTime? datevalue, 
-            [Parameter(DbType = "varchar(max)")] string text, 
-            [Parameter(DbType = "Int")] int? intvalue, 
+            [Parameter(DbType = "Int")] int? pid,
+            [Parameter(DbType = "varchar(150)")] string field,
+            [Parameter(DbType = "varchar(200)")] string strvalue,
+            [Parameter(DbType = "datetime")] DateTime? datevalue,
+            [Parameter(DbType = "varchar(max)")] string text,
+            [Parameter(DbType = "Int")] int? intvalue,
             [Parameter(DbType = "Bit")] bool? bitvalue)
         {
-            var result = ExecuteMethodCall(this, (MethodInfo)(MethodBase.GetCurrentMethod()), 
-                pid, field, strvalue, datevalue, text, intvalue, bitvalue );
+            var result = ExecuteMethodCall(this, (MethodInfo)(MethodBase.GetCurrentMethod()),
+                pid, field, strvalue, datevalue, text, intvalue, bitvalue);
             return (int)(result?.ReturnValue ?? 0);
         }
         [Function(Name = "dbo.TryIpWarmup")]
         public int TryIpWarmup()
         {
             var result = ExecuteMethodCall(this, (MethodInfo)MethodBase.GetCurrentMethod());
-            return (int) (result?.ReturnValue ?? 0);
+            return (int)(result?.ReturnValue ?? 0);
         }
         public DbConnection ReadonlyConnection()
         {
@@ -1752,7 +1930,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
             var c = Content(file, ContentTypeCode.TypeText);
             if (c == null)
             {
-                c = new Content() {Name = file, TypeID = ContentTypeCode.TypeText, Body = ""};
+                c = new Content() { Name = file, TypeID = ContentTypeCode.TypeText, Body = "" };
                 Contents.InsertOnSubmit(c);
                 SubmitChanges();
             }
@@ -1760,7 +1938,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
             SubmitChanges();
         }
         [Function(Name = "dbo.InsertIpLog")]
-        public int? InsertIpLog([Parameter(DbType = "varchar(50)")] string ip, [Parameter(DbType = "varchar(50)")] string id  )
+        public int? InsertIpLog([Parameter(DbType = "varchar(50)")] string ip, [Parameter(DbType = "varchar(50)")] string id)
         {
             var result = ExecuteMethodCall(this, (MethodInfo)MethodBase.GetCurrentMethod(), ip, id);
             return ((int?)(result?.ReturnValue));

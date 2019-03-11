@@ -143,7 +143,12 @@ namespace CmsData
             var cn = GetReadonlyConnection();
             var parameters = new DynamicParameters();
             if (declarations != null)
+            {
                 AddParameters(declarations, parameters);
+#if DEBUG
+                sql = RemoveDeclarations(declarations, sql);
+#endif
+            }
             ApplyStandardParameters(sql, parameters);
             return cn.Query(sql, parameters, commandTimeout: 300);
         }
@@ -155,7 +160,12 @@ namespace CmsData
             if (p1 != null)
                 sql = AddP1Parameter(sql, p1, parameters);
             if (declarations != null)
+            {
                 AddParameters(declarations, parameters);
+#if DEBUG
+                sql = RemoveDeclarations(declarations, sql);
+#endif
+            }
             ApplyStandardParameters(sql, parameters);
 
             return cn.Query(sql, parameters, commandTimeout: 300);
@@ -193,6 +203,31 @@ namespace CmsData
             else
                 parameters.Add("@p1", declarations ?? "");
         }
+
+#if DEBUG
+        public static string RemoveDeclaration(object decl, string body)
+        {
+            return Regex.Replace(body, $@"^declare\s+@{decl}", "--$&", RegexOptions.Multiline | RegexOptions.IgnoreCase);
+        }
+        private static string RemoveDeclarations(object declarations, string body)
+        {
+            var pd = declarations as PythonDictionary;
+            var dd = declarations as DynamicData;
+            var ds = declarations as Dictionary<string, string>;
+            if (pd != null)
+                foreach (var kv in pd)
+                    body = RemoveDeclaration(kv.Key, body);
+            else if (dd != null)
+                foreach (var kv in dd.dict)
+                    body = RemoveDeclaration(kv.Key, body);
+            else if (ds != null)
+                foreach (var kv in ds)
+                    body = RemoveDeclaration(kv.Key, body);
+            else
+                body = RemoveDeclaration("p1", body);
+            return body;
+        }
+#endif
 
         private void ApplyStandardParameters(string sql, DynamicParameters parameters)
         {
@@ -341,7 +376,12 @@ namespace CmsData
             var cn = GetReadonlyConnection();
             var parameters = new DynamicParameters();
             if (declarations != null)
+            {
                 AddParameters(declarations, parameters);
+#if DEBUG
+                sql = RemoveDeclarations(declarations, sql);
+#endif
+            }
             var ret = new DynamicData();
             using (var rd = cn.ExecuteReader(sql, parameters))
             {
@@ -350,7 +390,20 @@ namespace CmsData
                 {
                     var dd = new DynamicData();
                     for (var i = 0; i < rd.FieldCount; i++)
-                        dd.AddValue(rd.GetName(i), rd.GetValue(i));
+                    {
+                        var t = rd.GetDataTypeName(i);
+                        switch (t)
+                        {
+                            case "datetime":
+                                var dt = rd.GetDateTime(i);
+                                var fmt = dt.TimeOfDay.Equals(TimeSpan.Zero) ? "d" : "g";
+                                dd.AddValue(rd.GetName(i), dt.ToString(fmt));
+                                break;
+                            default:
+                                dd.AddValue(rd.GetName(i), rd.GetValue(i));
+                                break;
+                        }
+                    }
                     ret.AddValue(rd.GetString(0), dd);
                     maxn--;
                     if (maxn == 0)

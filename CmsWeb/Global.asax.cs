@@ -83,7 +83,7 @@ namespace CmsWeb
                     Response.Redirect(redirect);
                     return;
                 }
-                AccountModel.SetUserInfo(Util.UserName, Session);
+                AccountModel.SetUserInfo(Util.UserName, HttpContextFactory.Current.Session);
             }
             Util.Version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
             Util.SessionStarting = true;
@@ -173,7 +173,7 @@ namespace CmsWeb
                 return;
             }
 
-            if (HttpContext.Current != null)
+            if (HttpContextFactory.Current != null)
             {
                 //DbUtil.DbDispose();
             }
@@ -204,7 +204,7 @@ namespace CmsWeb
 
         public void ErrorLog_Logged(object sender, ErrorLoggedEventArgs args)
         {
-            HttpContext.Current.Items["error"] = args.Entry.Error.Exception.Message;
+            HttpContextFactory.Current.Items["error"] = args.Entry.Error.Exception.Message;
         }
 
         public void ErrorMail_Filtering(object sender, ExceptionFilterEventArgs e)

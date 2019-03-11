@@ -1,8 +1,15 @@
 ﻿using CmsData.API;
 using CmsWeb.Lifecycle;
 using System;
+using System.Data.SqlClient;
 using System.Web.Mvc;
 using System.Web.Routing;
+using CmsData;
+using CmsWeb.Common.Extensions;
+using CmsWeb.Models;
+using Dapper;
+using MoreLinq;
+using Newtonsoft.Json;
 using UtilityExtensions;
 using ContributionSearchModel = CmsWeb.Models.ContributionSearchModel;
 
@@ -18,8 +25,11 @@ namespace CmsWeb.Areas.Finance.Controllers
 
         [Route("~/Contributions/{id:int?}")]
         public ActionResult Index(int? id, int? year, int? fundId, DateTime? dt1, DateTime? dt2, int? campus, int? bundletype,
-            bool? includeunclosedbundles = true, int online = 2, string taxnontax = "TaxDed", string fundSet = null)
+            bool? includeunclosedbundles = true, int online = 2, string taxnontax = "TaxDed", string fundSet = null, 
+			bool filterbyactivetag = false, string setQueryTag = null)
         {
+            if (setQueryTag.HasValue())
+                Util2.CurrentTag = $"QueryTag:{setQueryTag}";
             var api = new ContributionSearchInfo()
             {
                 PeopleId = id,
@@ -31,7 +41,8 @@ namespace CmsWeb.Areas.Finance.Controllers
                 Online = online,
                 TaxNonTax = taxnontax,
                 IncludeUnclosedBundles = includeunclosedbundles ?? false,
-                BundleType = bundletype
+                BundleType = bundletype,
+                FilterByActiveTag = filterbyactivetag
             };
 
             // Only setting it like this for debug purpose
@@ -41,6 +52,19 @@ namespace CmsWeb.Areas.Finance.Controllers
             }
             var m = new ContributionSearchModel(api);
             return View(m);
+        }
+        [Route("~/ContributionsJsonSearch/{file}/{name}")]
+        public ActionResult ContributionsJsonSearch(string file, string name)
+        {
+            var text = CurrentDatabase.ContentOfTypeText(file);
+            var data = JsonConvert.DeserializeObject<DynamicData>(text);
+            var dd = (DynamicData)data[name];
+            var json = dd["parms"].ToString();
+            var cmd = new SqlCommand(Resource1.ContributionsController_ContributionsAdvancedSearch_);
+            cmd.Parameters.AddWithValue("@json", json);
+            cmd.Connection = new SqlConnection(Util.ConnectionString);
+            cmd.Connection.Open();
+            return cmd.ExecuteReader().ToExcel($"Contributions-{name}.xlsx");
         }
         [Route("~/BundleTotals")]
         public ActionResult BundleTotals(int? fundId, DateTime? dt1, DateTime? dt2, int? campus, int? bundletype,

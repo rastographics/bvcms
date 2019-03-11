@@ -37,9 +37,9 @@ namespace CmsWeb.Areas.Setup.Controllers
         }
 
         [AcceptVerbs(HttpVerbs.Post)]
-        public ActionResult CreateRange(int? startwith=0, int? endwith=0, int? marginalcode=10)
+        public ActionResult CreateRange(int? startwith=0, int? endwith=0, int? residentcode=10)
         {
-            int totalZipCodesAdded = CurrentDatabase.CreateZipCodesRange(startwith.Value, endwith.Value, marginalcode.Value);
+            int totalZipCodesAdded = CurrentDatabase.CreateZipCodesRange(startwith.Value, endwith.Value, residentcode.Value);
             string firstZipCode = startwith.Value.ToString("00000");
             return Redirect($"/MetroZips/#{firstZipCode}");
         }

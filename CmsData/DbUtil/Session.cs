@@ -16,18 +16,18 @@ namespace CmsData
 
         public static object GetSessionObj(string key, object def)
         {
-            if (HttpContext.Current != null && HttpContext.Current.Session != null)
+            if (HttpContextFactory.Current != null && HttpContextFactory.Current.Session != null)
             {
-                if (HttpContext.Current.Session[key] != null)
-                    return HttpContext.Current.Session[key];
+                if (HttpContextFactory.Current.Session[key] != null)
+                    return HttpContextFactory.Current.Session[key];
                 return def;
             }
             return def;
         }
         public static void SetSessionObj(string key, object value)
         {
-            if (HttpContext.Current != null)
-                HttpContext.Current.Session[key] = value;
+            if (HttpContextFactory.Current != null)
+                HttpContextFactory.Current.Session[key] = value;
         }
 
         public static string CurrentTag
@@ -41,11 +41,11 @@ namespace CmsData
             get
             {
                 int? orgid = null;
-                if (HttpContext.Current != null)
+                if (HttpContextFactory.Current != null)
                 {
-                    if (HttpContext.Current.Session != null)
-                        if (HttpContext.Current.Session[STR_ActiveOrganizationId] != null)
-                            orgid = HttpContext.Current.Session[STR_ActiveOrganizationId] as int?;
+                    if (HttpContextFactory.Current.Session != null)
+                        if (HttpContextFactory.Current.Session[STR_ActiveOrganizationId] != null)
+                            orgid = HttpContextFactory.Current.Session[STR_ActiveOrganizationId] as int?;
                 }
                 else
                     orgid = (int?) Thread.GetData(Thread.GetNamedDataSlot(STR_ActiveOrganizationId));
@@ -53,10 +53,10 @@ namespace CmsData
             }
             set
             {
-                if (HttpContext.Current != null)
+                if (HttpContextFactory.Current != null)
                 {
-                    if (HttpContext.Current.Session != null)
-                        HttpContext.Current.Session[STR_ActiveOrganizationId] = value;
+                    if (HttpContextFactory.Current.Session != null)
+                        HttpContextFactory.Current.Session[STR_ActiveOrganizationId] = value;
                 }
                 else
                     Thread.SetData(Thread.GetNamedDataSlot(STR_ActiveOrganizationId), value);
@@ -74,8 +74,8 @@ namespace CmsData
             {
                 if (value == null)
                     value = new int[] { 0 };
-                if (HttpContext.Current != null)
-                    HttpContext.Current.Session[STR_ActiveGroupId] = value;
+                if (HttpContextFactory.Current != null)
+                    HttpContextFactory.Current.Session[STR_ActiveGroupId] = value;
             }
         }
         const string STR_ActiveGroupPrefix = "ActiveGroupPrefix";
@@ -87,8 +87,8 @@ namespace CmsData
             }
             set
             {
-                if (HttpContext.Current != null)
-                    HttpContext.Current.Session[STR_ActiveGroupPrefix] = value;
+                if (HttpContextFactory.Current != null)
+                    HttpContextFactory.Current.Session[STR_ActiveGroupPrefix] = value;
             }
         }
         const string STR_ActiveGroupMode = "ActiveGroupMode";
@@ -100,8 +100,8 @@ namespace CmsData
             }
             set
             {
-                if (HttpContext.Current != null)
-                    HttpContext.Current.Session[STR_ActiveGroupMode] = value;
+                if (HttpContextFactory.Current != null)
+                    HttpContextFactory.Current.Session[STR_ActiveGroupMode] = value;
             }
         }
 
@@ -134,6 +134,10 @@ namespace CmsData
         {
             get
             {
+                if (CurrentTag.StartsWith("QueryTag:"))
+                {
+                    return CurrentTag.GetCsvToken(2, 2, ":");
+                }
                 string tag = CurrentTag;
                 var a = tag.Split('!');
                 if(a[0].ToInt2() > 0)
@@ -177,7 +181,7 @@ namespace CmsData
                     mru = (from i in DbUtil.Db.MostRecentItems(Util.UserId)
                            where i.Type == "org"
                            select new MostRecentItem() { Id = i.Id.Value, Name = i.Name }).ToList();
-                    HttpContext.Current.Session[STR_MostRecentOrgs] = mru;
+                    HttpContextFactory.Current.Session[STR_MostRecentOrgs] = mru;
                 }
                 return mru;
             }
@@ -193,7 +197,7 @@ namespace CmsData
                     mru = (from i in DbUtil.Db.MostRecentItems(Util.UserId)
                            where i.Type == "per"
                            select new MostRecentItem() { Id = i.Id.Value, Name = i.Name }).ToList();
-                    HttpContext.Current.Session[STR_MostRecentPeople] = mru;
+                    HttpContextFactory.Current.Session[STR_MostRecentPeople] = mru;
                 }
                 return mru;
             }
@@ -210,7 +214,7 @@ namespace CmsData
         //                    mru = (from i in DbUtil.Db.MostRecentItems(Util.UserId)
         //                           where i.Type == "query"
         //                           select new MostRecentItem() { Id = i.Id.Value, Name = i.Name }).ToList();
-        //                    HttpContext.Current.Session[STR_MostRecentQueries] = mru;
+        //                    HttpContextFactory.Current.Session[STR_MostRecentQueries] = mru;
         //                }
         //                return mru;
         //            }
@@ -228,8 +232,8 @@ namespace CmsData
         //            }
         //            set
         //            {
-        //                if (HttpContext.Current != null)
-        //                    HttpContext.Current.Session[STR_ActiveOrganizationId] = value;
+        //                if (HttpContextFactory.Current != null)
+        //                    HttpContextFactory.Current.Session[STR_ActiveOrganizationId] = value;
         //            }
         //        }
         public static bool UseNewFeature
