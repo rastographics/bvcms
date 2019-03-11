@@ -341,6 +341,13 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
 
             var ret = m.CompleteRegistration(this);
+
+            if (ret.Route == RouteType.Payment && CurrentDatabase.GetSetting("TransactionGateway", "") == "Pushpay")
+            {
+                m.UpdateDatum();
+                return Redirect($"/Pushpay/Registration/{m.DatumId}");
+            }
+
             switch (ret.Route)
             {
                 case RouteType.Error:
