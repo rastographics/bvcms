@@ -329,9 +329,19 @@ function appendInputs(response) {
 }
 
 function GetWatewayConfig(id) {
-    if (id !== undefined)
-        sessionStorage.setItem('CurrentGatewayId', id);
-
+    if (id !== undefined) {
+        if (id !== 5)
+            sessionStorage.setItem('CurrentGatewayId', id);
+        else {
+            swal({
+                title: "Atention!",
+                text: "This is a default option, you cannot configure it, you must change it",
+                icon: "warning"
+            });
+            return false;
+        }
+    }
+        
     $.ajax("../Gateway/Get_Gateway_Config/" + sessionStorage.getItem('CurrentGatewayId'), {
         type: "GET",
         statusCode: {
@@ -368,9 +378,11 @@ function GetWatewayConfig(id) {
                     document.getElementById('saveproccess').className = 'btn btn-success';
                 }
             }
+            return true;
         },
         error: function (err) {
             console.log(err);
+            return false;
         }
     });
 }
