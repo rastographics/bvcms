@@ -29,10 +29,10 @@ IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.VIEWS where
 GO
 
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.VIEWS where 
-	TABLE_NAME = 'AvailableProcess' AND 
+	TABLE_NAME = 'AvailableProcesses' AND 
 	TABLE_SCHEMA = 'dbo')
 	BEGIN
-		DROP VIEW [dbo].[AvailableProcess]
+		DROP VIEW [dbo].AvailableProcesses
 	END
 GO
 
@@ -62,10 +62,10 @@ IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where
 GO
 
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where 
-	TABLE_NAME = 'PaymmentProcess' AND 
+	TABLE_NAME = 'PaymentProcess' AND 
 	TABLE_SCHEMA = 'lookup')
 	BEGIN
-		DROP TABLE [lookup].[PaymmentProcess]
+		DROP TABLE [lookup].[PaymentProcess]
 	END
 GO
 
@@ -151,15 +151,15 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where
 GO
 
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where 
-	TABLE_NAME = 'PaymmentProcess' AND 
+	TABLE_NAME = 'PaymentProcess' AND 
 	TABLE_SCHEMA = 'lookup')
 	BEGIN
-		CREATE TABLE [lookup].[PaymmentProcess](
+		CREATE TABLE [lookup].[PaymentProcess](
 	        [ProcessId][int] IDENTITY(1,1) PRIMARY KEY NOT NULL,
 	        [ProcessName][nvarchar](30) NOT NULL,
 	        [ProcessTypeId][int] FOREIGN KEY REFERENCES [lookup].[ProcessType]([ProcessTypeId]) NOT NULL
         );
-        INSERT INTO [lookup].[PaymmentProcess]
+        INSERT INTO [lookup].[PaymentProcess]
         ([ProcessName]
         ,[ProcessTypeId])
         VALUES
@@ -177,7 +177,7 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where
 		CREATE TABLE [dbo].[GatewaySettings](
 		[GatewaySettingId][int] IDENTITY(1,1) PRIMARY KEY,
 		[GatewayId][int] FOREIGN KEY REFERENCES [lookup].[Gateways]([GatewayId]) NOT NULL,
-		[ProcessId][int] UNIQUE FOREIGN KEY REFERENCES [lookup].[PaymmentProcess]([ProcessId]) NOT NULL);	
+		[ProcessId][int] UNIQUE FOREIGN KEY REFERENCES [lookup].[PaymentProcess]([ProcessId]) NOT NULL);	
 	
 		INSERT INTO [dbo].[GatewaySettings]
 		([GatewayId]
@@ -247,13 +247,13 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.VIEWS where
 GO
 
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.VIEWS where 
-	TABLE_NAME = 'AvailableProcess' AND 
+	TABLE_NAME = 'AvailableProcesses' AND 
 	TABLE_SCHEMA = 'dbo')
 	BEGIN		
 		EXEC dbo.sp_executesql @statement = N'
-		CREATE VIEW [dbo].[AvailableProcess] AS
+		CREATE VIEW [dbo].[AvailableProcesses] AS
 		SELECT [ProcessId], [ProcessName]
-		FROM [lookup].[PaymmentProcess]
+		FROM [lookup].[PaymentProcess]
 		WHERE [ProcessId] NOT IN(SELECT [ProcessId] FROM [GatewaySettings])
 		AND [ProcessTypeId] = 1
 		'
@@ -268,13 +268,13 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.VIEWS where
 		CREATE VIEW [dbo].[MyGatewaySettings]
 		AS
 			SELECT [GatewaySettings].[GatewaySettingId], 
-				[lookup].[PaymmentProcess].[ProcessName],
+				[lookup].[PaymentProcess].[ProcessName],
 				[dbo].[GatewaySettings].[ProcessId],
 				[lookup].[Gateways].[GatewayName],
 				[lookup].[Gateways].[GatewayId]
 			FROM [GatewaySettings]
-			INNER JOIN [lookup].[PaymmentProcess]
-			ON [GatewaySettings].[ProcessId] = [lookup].[PaymmentProcess].[ProcessId]
+			INNER JOIN [lookup].[PaymentProcess]
+			ON [GatewaySettings].[ProcessId] = [lookup].[PaymentProcess].[ProcessId]
 			INNER JOIN [lookup].[Gateways]
 			ON [GatewaySettings].[GatewayId] = [lookup].[Gateways].[GatewayId]
 		'

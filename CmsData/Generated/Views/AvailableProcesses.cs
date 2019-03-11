@@ -10,8 +10,8 @@ using System.ComponentModel;
 
 namespace CmsData.View
 {
-    [Table(Name = "AvailableProcess")]
-    public partial class AvailableProcess
+    [Table(Name = "AvailableProcesses")]
+    public partial class AvailableProcesses
     {
         private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
 
@@ -19,7 +19,7 @@ namespace CmsData.View
 
         private string _ProcessName;
 
-        public AvailableProcess()
+        public AvailableProcesses()
         {
 
         }

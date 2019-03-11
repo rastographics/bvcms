@@ -62,7 +62,7 @@ namespace CmsWeb.Areas.Setup.Controllers
         public ActionResult Index()
         {
             var m = CurrentDatabase.ViewMyGatewaySettings.AsQueryable();
-            ViewBag.AvailableProcess = new SelectList(CurrentDatabase.ViewAvailableProcess.AsQueryable(), "ProcessId", "ProcessName");
+            ViewBag.AvailableProcess = new SelectList(CurrentDatabase.ViewAvailableProcesses.AsQueryable(), "ProcessId", "ProcessName");
             ViewBag.Gateways = new SelectList(CurrentDatabase.Gateways.Where(x => x.GatewayId != 5 || !x.GatewayName.Equals("DEFAULT")).AsQueryable(), "GatewayId", "GatewayName");
 
             ViewBag.AvailableGateways = new SelectList(CurrentDatabase.Gateways.Where(
@@ -80,7 +80,7 @@ namespace CmsWeb.Areas.Setup.Controllers
 
             if (applyall)
             {
-                List<int> Processes = CurrentDatabase.PaymmentProcess.Select(x => x.ProcessId).ToList();
+                List<int> Processes = CurrentDatabase.PaymentProcess.Select(x => x.ProcessId).ToList();
                 foreach(int Process in Processes)
                     result = CurrentDatabase.AddGatewaySettings(GatewaySettingId, GatewayId, Process, Operation);
             }
