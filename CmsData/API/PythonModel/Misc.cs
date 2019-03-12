@@ -136,7 +136,8 @@ namespace CmsData
         }
         public string SqlContent(string name)
         {
-            return db.ContentOfTypeSql(name);
+            var sql = db.ContentOfTypeSql(name);
+            return sql;
         }
         public string TextContent(string name)
         {
