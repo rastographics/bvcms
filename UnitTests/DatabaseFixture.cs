@@ -23,7 +23,7 @@ namespace UnitTests
         {
             Items = new Dictionary<string, object>();
             var c = FakeHttpContext();
-            HttpContextFactory.SetMockCurrent(c);
+            HttpContextFactory.SetCurrentContext(c);
             if (BuildDb)
             {
                 var csMaster = Util.GetConnectionString2("master");
