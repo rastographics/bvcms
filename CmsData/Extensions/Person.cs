@@ -988,7 +988,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             else
             {
                 var np = db.GetNewPeopleManagers();
-                if (np != null)
+                if (np != null && Util.AdminMail != null)
                 {
                     db.Email(Util.AdminMail, np,
                         $"Just Added Person on {db.Host}",
@@ -2419,7 +2419,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             }
                 
      
-            var count = list.Count;
+            var count = list?.Count;
             if (count > 0)
             {
                 person = db.LoadPersonById(list[0].PeopleId ?? 0);
