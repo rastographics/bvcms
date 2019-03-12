@@ -31,8 +31,7 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 
 		public static MobileMessage createLoginErrorReturn( MobileAuthentication authentication )
 		{
-			MobileMessage br = new MobileMessage
-			{
+			MobileMessage br = new MobileMessage {
 				error = authentication.getError(),
 				data = authentication.getErrorMessage()
 			};
@@ -40,10 +39,9 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 			return br;
 		}
 
-		public static MobileMessage createErrorReturn( string sErrorMessage, int errorCode = 1 )
+		public static MobileMessage createErrorReturn( string sErrorMessage, int errorCode = -1 )
 		{
-			MobileMessage br = new MobileMessage
-			{
+			MobileMessage br = new MobileMessage {
 				data = sErrorMessage,
 				error = errorCode
 			};
@@ -53,8 +51,7 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 
 		public static MobileMessage createSuccessReturn()
 		{
-			MobileMessage br = new MobileMessage
-			{
+			MobileMessage br = new MobileMessage {
 				error = (int) Error.NONE
 			};
 
@@ -149,16 +146,19 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 		{
 			// Common Errors
 			UNKNOWN = -1,
-			
+
 			// No error
 			NONE = 0,
-			
+
 			// Invalid Errors
 			INVALID_INSTANCE_ID = 1,
 			INVALID_PIN = 2,
 			INVALID_EMAIL = 3,
 			INVALID_DEEP_LINK = 4,
-			
+
+			// Authorization Errors
+			USER_MISSING_ROLE = 5,
+
 			// Failure Errors
 			EMAIL_NOT_SENT = 21,
 			PIN_NOT_SET = 22,
@@ -171,7 +171,11 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 			PERSON_NOT_FOUND = 101,
 
 			// Tasks Errors
-			TASK_UPDATE_FAILED = 201
+			TASK_UPDATE_FAILED = 201,
+
+			// Meetings
+			MEETING_NOT_FOUND = 301,
+			MEETING_CATEGORY_NOT_FOUND = 302
 		}
 	}
 }

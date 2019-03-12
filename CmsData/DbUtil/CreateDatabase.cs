@@ -149,7 +149,7 @@ GO
         }
         public static string CreateDatabase()
         {
-            var server = HttpContext.Current.Server;
+            var server = HttpContextFactory.Current.Server;
             var path = server.MapPath("/");
             var sqlScriptsPath = path + @"..\SqlScripts\";
             var cs = Util.GetConnectionString2("master");

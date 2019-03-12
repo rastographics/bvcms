@@ -4,6 +4,7 @@ using CmsWeb.Areas.Org.Models;
 using CmsWeb.Areas.Search.Models;
 using CmsWeb.Code;
 using CmsWeb.Lifecycle;
+using CmsWeb.Services.MeetingCategory;
 using System;
 using System.Linq;
 using System.Web.Mvc;
@@ -13,8 +14,11 @@ namespace CmsWeb.Areas.Dialog.Controllers
 {
     public partial class DialogController
     {
-        public DialogController(IRequestManager requestManager) : base(requestManager)
+        private readonly IMeetingCategoryService _meetingCategoryService;
+
+        public DialogController(IRequestManager requestManager, IMeetingCategoryService meetingCategoryService) : base(requestManager)
         {
+            _meetingCategoryService = meetingCategoryService;
         }
 
         [HttpGet, Route("ForNewMeeting/{orgid:int}")]
@@ -27,17 +31,33 @@ namespace CmsWeb.Areas.Dialog.Controllers
                 defaultAttendCreditId = oi.Schedules[0].AttendCredit.Value;
             }
 
+            var useMeetingDescriptionPickList = CurrentDatabase.Setting("CheckinUseMeetingCategory");
             var m = new NewMeetingInfo
             {
                 MeetingDate = oi.PrevMeetingDate,
                 Schedule = new CodeInfo(0, oi.SchedulesPrev()),
                 AttendCredit = new CodeInfo(defaultAttendCreditId, oi.AttendCreditList()),
+                DescriptionList = useMeetingDescriptionPickList ? new CodeInfo("", MeetingCategorySelectList()) : null,
+                UseMeetingDescriptionPickList = useMeetingDescriptionPickList,
                 OrganizationId = orgid
             };
             ViewBag.Action = "/CreateNewMeeting/";
             ViewBag.Method = "POST";
             ViewBag.ForRollsheet = false;
             return View("MeetingInfo", m);
+        }
+
+        private SelectList MeetingCategorySelectList()
+        {
+            var list = (from m in _meetingCategoryService.GetMeetingCategories(false).OrderBy(c => c.Description)
+                        select new SelectListItem
+                        {
+                            Value = m.Description,
+                            Text = m.Description
+                        }).ToList();
+            list.Insert(0, new SelectListItem { Text = "(not specified)", Value = "" });
+
+            return new SelectList(list, dataValueField: "Value", dataTextField: "Text");
         }
 
         [HttpGet, Route("ForNewRollsheet/{id:guid}")]
@@ -127,6 +147,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
             {
                 CreatedDate = Util.Now,
                 CreatedBy = Util.UserId1,
+                Description = Request["DescriptionList.Value"] ?? Request["Description"],
                 OrganizationId = organization.OrganizationId,
                 GroupMeetingFlag = model.ByGroup,
                 Location = organization.Location,

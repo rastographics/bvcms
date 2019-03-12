@@ -1,6 +1,7 @@
 ﻿using CmsWeb.Lifecycle;
 using CmsWeb.Services.MeetingCategory;
 using System;
+using System.Linq;
 using System.Web.Mvc;
 
 namespace CmsWeb.Areas.MeetingCategory.Controllers
@@ -19,7 +20,7 @@ namespace CmsWeb.Areas.MeetingCategory.Controllers
         [Route("")]
         public ActionResult Index(bool includeExpired = true)
         {
-            var categories = _meetingCategoryService.GetMeetingCategories(includeExpired);
+            var categories = _meetingCategoryService.GetMeetingCategories(includeExpired).OrderBy(c => c.Description);
             return View(categories);
         }
 
@@ -42,6 +43,7 @@ namespace CmsWeb.Areas.MeetingCategory.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin,Edit")]
         [Route("{meetingCategoryId:long}")]
         public ActionResult Edit(long meetingCategoryId, CmsData.MeetingCategory meetingCategory)
         {

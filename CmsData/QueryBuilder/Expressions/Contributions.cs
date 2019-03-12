@@ -28,7 +28,7 @@ namespace CmsData
             }
 
             var now = Util.Now;
-            var dt = now.AddDays(-days);
+            var dt = now.AddDays(-days).Date;
             IQueryable<int> q = null;
             switch (op)
             {
@@ -175,7 +175,7 @@ namespace CmsData
             }
 
             var now = Util.Now;
-            var dt = now.AddDays(-days);
+            var dt = now.AddDays(-days).Date;
             IQueryable<int> q = null;
             switch (op)
             {
@@ -330,24 +330,12 @@ namespace CmsData
         internal Expression RecentContributionAmountBothJoint()
         {
             var now = Util.Now;
-            var dt = now.AddDays(-Days);
+            var dt = now.AddDays(-Days).Date;
             return ContributionAmountBothJoint(dt, now);
         }
         internal Expression ContributionAmountBothJointHistory()
         {
-            DateTime? enddt = null;
-            if (!EndDate.HasValue && StartDate.HasValue)
-            {
-                enddt = StartDate.Value.AddHours(24);
-            }
-
-            if (EndDate.HasValue)
-            {
-                enddt = EndDate.Value.AddHours(24);
-            }
-
-            return ContributionAmountBothJoint(StartDate, enddt);
-
+            return ContributionAmountBothJoint(StartDate, EndDate);
         }
         internal Expression ContributionAmountSinceSetting()
         {
@@ -430,7 +418,7 @@ namespace CmsData
         internal Expression RecentPledgeAmountBothJoint()
         {
             var now = Util.Now;
-            var dt = now.AddDays(-Days);
+            var dt = now.AddDays(-Days).Date;
             return PledgeAmountBothJoint(dt, now);
         }
         internal Expression PledgeAmountBothJointHistory()
@@ -594,7 +582,7 @@ namespace CmsData
             var fund = Quarters.AllDigits() ? Quarters.ToInt2() : db.Setting(Quarters, "").ToInt2();
             var cnt = TextValue.ToInt();
             var now = Util.Now;
-            var dt = now.AddDays(-Days);
+            var dt = now.AddDays(-Days).Date;
             IQueryable<int> q = null;
             switch (op)
             {
@@ -673,7 +661,7 @@ namespace CmsData
             var fund = Quarters.AllDigits() ? Quarters.ToInt2() : db.Setting(Quarters, "").ToInt2();
             var amt = TextValue.ToDecimal() ?? 0;
             var now = Util.Now;
-            var dt = now.AddDays(-Days);
+            var dt = now.AddDays(-Days).Date;
             IQueryable<int> q = null;
             switch (op)
             {
@@ -787,7 +775,7 @@ namespace CmsData
             }
 
             var now = Util.Now;
-            var dt = now.AddDays(-Days);
+            var dt = now.AddDays(-Days).Date;
             Expression<Func<Person, bool>> pred = p =>
                 p.Contributions.Any(cc =>
                             cc.ContributionDate > dt
@@ -838,7 +826,7 @@ namespace CmsData
             }
 
             var now = Util.Now;
-            var dt = now.AddDays(-Days);
+            var dt = now.AddDays(-Days).Date;
             Expression<Func<Person, bool>> pred = p =>
                 (from f in db.ViewFailedRecurringGivings
                  where f.Dt >= dt
@@ -862,7 +850,7 @@ namespace CmsData
             }
 
             var now = Util.Now;
-            var dt = now.AddDays(-Days);
+            var dt = now.AddDays(-Days).Date;
             Expression<Func<Person, bool>> pred = p =>
             (
                 from c in p.Contributions
@@ -917,7 +905,7 @@ namespace CmsData
             var fundid = Quarters.AllDigits() ? Quarters.ToInt2() : db.Setting(Quarters, "").ToInt2();
 
             var td = Util.Now;
-            var fd = td.AddDays(Days == 0 ? -365 : -Days);
+            var fd = td.AddDays(Days == 0 ? -365 : -Days).Date;
             Tag tag = null;
             if (op == CompareType.Equal ^ tf)
             {
@@ -938,7 +926,7 @@ namespace CmsData
             var tf = CodeIds == "1";
             var fundid = Quarters.AllDigits() ? Quarters.ToInt2() : db.Setting(Quarters, "").ToInt2();
             var td = Util.Now;
-            var fd = td.AddDays(Days == 0 ? -365 : -Days);
+            var fd = td.AddDays(Days == 0 ? -365 : -Days).Date;
             Tag tag = null;
             if (op == CompareType.Equal ^ tf)
             {

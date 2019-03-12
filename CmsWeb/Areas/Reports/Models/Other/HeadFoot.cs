@@ -75,7 +75,7 @@ namespace CmsWeb.Areas.Reports.Models
             {
                 tpl.BeginText();
                 tpl.SetFontAndSize(font, 8);
-                tpl.ShowText((writer.PageNumber - 1).ToString());
+                tpl.ShowText(writer.PageNumber.ToString());
                 tpl.EndText();
                 base.OnCloseDocument(writer, document);
             }

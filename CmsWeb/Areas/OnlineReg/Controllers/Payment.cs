@@ -122,7 +122,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         public static bool LogRogueUser(string why, string from)
         {
             //todo: static?
-            var request = System.Web.HttpContext.Current.Request;
+            var request = HttpContextFactory.Current.Request;
             var insertRogueIp = ConfigurationManager.AppSettings["InsertRogueIp"];
             if (insertRogueIp.HasValue())
             {
@@ -137,6 +137,62 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             return true;
         }
 
+        [ActionName("Confirm")]
+        [HttpPost]
+        public ActionResult Confirm_Post(int? id, string transactionId, decimal? amount)
+        {
+            if (!id.HasValue)
+            {
+                return View("Other/Unknown");
+            }
+
+            var m = OnlineRegModel.GetRegistrationFromDatum(id ?? 0);
+            if (m == null || m.Completed)
+            {
+                if (m == null)
+                {
+                    DbUtil.LogActivity("OnlineReg NoPendingConfirmation");
+                }
+                else
+                {
+                    m.Log("NoPendingConfirmation");
+                }
+
+                return Content("no pending confirmation found");
+            }
+            if (!Util.HasValue(transactionId))
+            {
+                m.Log("NoTransactionId");
+                return Content("error no transaction");
+            }
+            if (m.List.Count == 0)
+            {
+                m.Log("NoRegistrants");
+                return Content("no registrants found");
+            }
+            try
+            {
+                OnlineRegModel.LogOutOfOnlineReg();
+                var view = m.ConfirmTransaction(transactionId);
+                m.UpdateDatum(completed: true);
+                SetHeaders(m);
+                if (view == ConfirmEnum.ConfirmAccount)
+                {
+                    m.Log("ConfirmAccount");
+                    return View("Continue/ConfirmAccount", m);
+                }
+                m.Log("Confirm");
+                return View("Confirm", m);
+            }
+            catch (Exception ex)
+            {
+                m.Log("Error " + ex.Message);
+                ErrorSignal.FromCurrentContext().Raise(ex);
+                TempData["error"] = ex.Message;
+                return Redirect("/Error");
+            }
+        }
+        [HttpGet]
         public ActionResult Confirm(int? id, string transactionId, decimal? amount)
         {
             if (!id.HasValue)
@@ -240,6 +296,38 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             return View("Payment/Process", pf);
         }
 
+        [ActionName("ConfirmDuePaid")]
+        [HttpPost]
+        public ActionResult ConfirmDuePaid_Post(int? id, string transactionId, decimal amount)
+        {
+            Response.NoCache();
+            if (!id.HasValue)
+            {
+                return View("Other/Unknown");
+            }
+
+            if (!Util.HasValue(transactionId))
+            {
+                DbUtil.LogActivity("OnlineReg PayDueNoTransactionId");
+                return Message("error no transactionid");
+            }
+            var ti = CurrentDatabase.Transactions.SingleOrDefault(tt => tt.Id == id);
+            if (ti == null)
+            {
+                DbUtil.LogActivity("OnlineReg PayDueNoPendingTrans");
+                return Message("no pending transaction");
+            }
+#if DEBUG
+            ti.Testing = true;
+#endif
+            OnlineRegModel.ConfirmDuePaidTransaction(ti, transactionId, sendmail: true);
+            ViewBag.amtdue = PaymentForm.AmountDueTrans(CurrentDatabase, ti).ToString("C");
+            SetHeaders(ti.OrgId ?? 0);
+            DbUtil.LogActivity("OnlineReg PayDueConfirm", ti.OrgId, ti.LoginPeopleId ?? ti.FirstTransactionPeopleId());
+            return View("PayAmtDue/Confirm", ti);
+        }
+
+        [HttpGet]
         public ActionResult ConfirmDuePaid(int? id, string transactionId, decimal amount)
         {
             Response.NoCache();

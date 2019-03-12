@@ -25,8 +25,13 @@ namespace CmsWeb.Areas.Search.Models
             admin = Roles.IsUserInRole("Admin");
         }
 
+        public SavedQueryModel() : base()
+        {
+        }
+
         public override IQueryable<Query> DefineModelList()
         {
+            admin = Roles.IsUserInRole("Admin");
             var q = from c in Db.Queries
                     where !PublicOnly || c.Ispublic
                     where c.Name.Contains(SearchQuery) || c.Owner == SearchQuery || !SearchQuery.HasValue()
@@ -62,7 +67,7 @@ namespace CmsWeb.Areas.Search.Models
             else if (!admin)
             {
                 q = from c in q
-                    where c.Owner == Util.UserName || c.Ispublic
+                    where c.Owner.ToUpper() == Util.UserName.ToUpper() || c.Ispublic
                     select c;
             }
 

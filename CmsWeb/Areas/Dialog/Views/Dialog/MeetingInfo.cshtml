@@ -14,6 +14,14 @@
                 @Html.EditorForIf(m => m.Schedule, Model.Schedule != null && Model.Schedule.Items.Any())
                 @Html.EditorFor(m => m.MeetingDate, "DateAndTime")
                 @Html.EditorForIf(m => m.AttendCredit, Model.AttendCredit != null)
+                @if (Model.UseMeetingDescriptionPickList)
+                {
+                @Html.EditorFor(m => m.DescriptionList)
+                }
+                else
+                {
+                @Html.EditorFor(m => m.Description)
+                }
                 @Html.EditorFor(m => m.ByGroup)
                 @Html.EditorFor(m => m.GroupFilterPrefix)
                 @Html.EditorFor(m => m.HighlightGroup)

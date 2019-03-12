@@ -109,7 +109,7 @@ namespace CmsWeb.Areas.Org.Models
 
             var typeName = OrgMain.OrganizationType.ToString().Replace(" ", "");
 
-            if (HttpContext.Current.User.IsInRole("OrgLeadersOnly") &&
+            if (HttpContextFactory.Current.User.IsInRole("OrgLeadersOnly") &&
                 DbUtil.Db.Setting($"UX-HideRegistrationTabForOrgLeaders-{typeName}"))
             {
                 _showRegistrationTab = false;
@@ -153,7 +153,7 @@ namespace CmsWeb.Areas.Org.Models
             var accessTypeList = DbUtil.Db.Setting("UX-VisitedOrgTabMemberTypes", null);
             if (!string.IsNullOrEmpty(accessTypeList))
             {
-                var user = DbUtil.Db.Users.FirstOrDefault(x => x.Username == HttpContext.Current.User.Identity.Name);
+                var user = DbUtil.Db.Users.FirstOrDefault(x => x.Username == HttpContextFactory.Current.User.Identity.Name);
                 if (user?.PeopleId == null)
                 {
                     showContactsReceivedTab = false;
@@ -167,7 +167,7 @@ namespace CmsWeb.Areas.Org.Models
             // Finally check to see if user is in CG role
             if (!showContactsReceivedTab.Value)
             {
-                showContactsReceivedTab = HttpContext.Current.User.IsInRole("CG");
+                showContactsReceivedTab = HttpContextFactory.Current.User.IsInRole("CG");
             }
             return showContactsReceivedTab.Value;
         }
@@ -189,7 +189,7 @@ namespace CmsWeb.Areas.Org.Models
         {
             get
             {
-                if (!HttpContext.Current.User.IsInRole("OrgLeadersOnly"))
+                if (!HttpContextFactory.Current.User.IsInRole("OrgLeadersOnly"))
                 {
                     return true;
                 }

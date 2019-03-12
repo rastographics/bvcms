@@ -63,7 +63,7 @@ namespace CmsWeb.Code
                 }
 
                 var a = VisibilityRoles.SplitStr(",");
-                var user = HttpContext.Current.User;
+                var user = HttpContextFactory.Current.User;
                 foreach (var role in a)
                 {
                     if (user.IsInRole(role.Trim()))
@@ -76,7 +76,7 @@ namespace CmsWeb.Code
             }
             public bool UserCanEdit()
             {
-                var user = HttpContext.Current.User;
+                var user = HttpContextFactory.Current.User;
                 return user.IsInRole("Edit");
             }
             public override string ToString()

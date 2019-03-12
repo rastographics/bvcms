@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Caching;
 using System.Web.Hosting;
+using UtilityExtensions;
 
 public class Fingerprint
 {
@@ -13,7 +14,7 @@ public class Fingerprint
 #if DEBUG
         if (path.EndsWith("app.min.js"))
         {
-            var s = File.ReadAllText(HttpContext.Current.Server.MapPath("~/gulpfile.js"));
+            var s = File.ReadAllText(HttpContextFactory.Current.Server.MapPath("~/gulpfile.js"));
             var re = new Regex(@"//DebugFilesStart(.*)//DebugFilesEnd", RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
             var fs = re.Match(s).Groups[1].Value;
             var re2 = new Regex("'(.*?)'", RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
@@ -32,7 +33,7 @@ public class Fingerprint
         }
         if (path.EndsWith("onlineregister.min.js"))
         {
-            var s = File.ReadAllText(HttpContext.Current.Server.MapPath("~/gulpfile.js"));
+            var s = File.ReadAllText(HttpContextFactory.Current.Server.MapPath("~/gulpfile.js"));
             var re = new Regex(@"//DebugOnlineRegFilesStart(.*)//DebugOnlineRegFilesEnd", RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
             var fs = re.Match(s).Groups[1].Value;
             var re2 = new Regex("'(.*?)'", RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);

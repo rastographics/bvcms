@@ -810,6 +810,16 @@ namespace CmsData
 			OnCreated();
 		}
 
+        public CMSDataContext Copy()
+        {
+            return new CMSDataContext(ConnectionString)
+            {
+                CurrentUser = CurrentUser,
+                Host = Host,
+                FromBatch = FromBatch
+            };
+        }
+
     #region Tables
 		
 		public Table<ActivityLog> ActivityLogs

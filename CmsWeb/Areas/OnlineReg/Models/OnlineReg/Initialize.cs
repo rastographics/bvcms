@@ -32,7 +32,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
 
             // prepare supporter data
-            OrganizationMember OrgMember = CurrentDatabase.OrganizationMembers.SingleOrDefault(mm => mm.OrganizationId == org.OrganizationId && mm.PeopleId == Goer.PeopleId);
+            OrganizationMember OrgMember = null;
+            if (Goer != null)
+            {
+                OrgMember = CurrentDatabase.OrganizationMembers.SingleOrDefault(mm => mm.OrganizationId == org.OrganizationId && mm.PeopleId == Goer.PeopleId);
+            }
             if (OrgMember != null)
             {
                 var transactions = new TransactionsModel(OrgMember.TranId) { GoerId = Goer.PeopleId };
@@ -99,7 +103,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
 
             // handle if they are already logged in
-            else if (HttpContext.Current.User.Identity.IsAuthenticated)
+            else if (HttpContextFactory.Current.User.Identity.IsAuthenticated)
             {
                 pid = Util.UserPeopleId ?? 0;
             }

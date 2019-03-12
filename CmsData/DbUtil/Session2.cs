@@ -49,9 +49,9 @@ namespace CmsData
                 }
 
                 // if no DefaultHost setting exists, use current URL
-                if (!defaultHost.HasValue() && HttpContext.Current != null)
+                if (!defaultHost.HasValue() && HttpContextFactory.Current != null)
                 {
-                    var request = HttpContext.Current.Request;
+                    var request = HttpContextFactory.Current.Request;
                     defaultHost = Util.URLCombine(Scheme() + "://" + request.Url.Authority, "");
                 }
 
@@ -68,9 +68,9 @@ namespace CmsData
 
         private string Scheme()
         {
-            if (HttpContext.Current != null)
+            if (HttpContextFactory.Current != null)
             {
-                var Request = HttpContext.Current.Request;
+                var Request = HttpContextFactory.Current.Request;
                 var scheme = Request.Url.Scheme;
                 if (Request.Headers["X-Forwarded-Proto"] == "https")
                     scheme = "https";
@@ -85,7 +85,7 @@ namespace CmsData
 
         public void CopySession()
         {
-            if (HttpContext.Current != null && HttpContext.Current.Session != null)
+            if (HttpContextFactory.Current != null && HttpContextFactory.Current.Session != null)
             {
                 CurrentPeopleId = Util2.CurrentPeopleId;
                 CurrentTagOwnerId = Util2.CurrentTagOwnerId;

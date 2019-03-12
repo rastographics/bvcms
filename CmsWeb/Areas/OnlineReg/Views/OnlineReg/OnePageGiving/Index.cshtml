@@ -211,6 +211,16 @@
                                     <input type="text" name="" placeholder="$ 0.00" disabled class="form-control input-lg narrow sum pull-right" />
                                 </td>
                             </tr>
+                            @if (!disableAdditionalFunds)
+                            {
+                                <tr>
+                                    <td colspan="3">
+                                        <a id="myAddFundLink" href="#" tabindex="-1" class="pull-right" style="text-decoration: underline">
+                                            + Additional Fund
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
                             <tr>
                                 <td style="border-width: 0px !important"></td>
                                 <td style="border-width: 0px !important" width="56%!important"><h4 class="pull-right">TOTAL:</h4></td>
@@ -220,14 +230,6 @@
                             </tr>
                         </tfoot>
                     </table>
-                    if (!disableAdditionalFunds)
-                    {
-                        <div class="form-group text-right">
-                            <a id="myAddFundLink" href="#" tabindex="-1" class="pull-right" style="text-decoration: underline">
-                                + Additional Fund
-                            </a>
-                        </div>
-                    }
                 }
             </div>
         </div>

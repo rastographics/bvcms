@@ -14,7 +14,7 @@ namespace CmsData.Classes.RoleChecker
                 const string CustomAccessRolesKey = "CustomAccessRoles.xml";
                 try
                 {
-                    var doc = HttpContext.Current.Items[CustomAccessRolesKey] as XDocument;
+                    var doc = HttpContextFactory.Current.Items[CustomAccessRolesKey] as XDocument;
                     if (doc != null)
                     {
                         return doc;
@@ -24,13 +24,13 @@ namespace CmsData.Classes.RoleChecker
                     doc = s.HasValue()
                         ? XDocument.Load(new StringReader(DbUtil.Content(CustomAccessRolesKey, "")))
                         : new XDocument(); // avoid expensive catch when there there really is no error because document is empty
-                    HttpContext.Current.Items[CustomAccessRolesKey] = doc;
+                    HttpContextFactory.Current.Items[CustomAccessRolesKey] = doc;
                     return doc;
                 }
                 catch
                 {
                     var doc = new XDocument();
-                    HttpContext.Current.Items[CustomAccessRolesKey] = doc;
+                    HttpContextFactory.Current.Items[CustomAccessRolesKey] = doc;
                     return doc;
                 }
             }
@@ -51,7 +51,7 @@ namespace CmsData.Classes.RoleChecker
                 foreach (var r in roles.Elements("role"))
                 {
                     var roleName = r.Attribute("name");
-                    if (!HttpContext.Current.User.IsInRole(roleName?.Value))
+                    if (!HttpContextFactory.Current.User.IsInRole(roleName?.Value))
                     {
                         continue;
                     }

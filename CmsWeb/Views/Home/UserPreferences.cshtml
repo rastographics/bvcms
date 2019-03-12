@@ -7,7 +7,7 @@
     ViewBag.PageHeader = "User Preferences";
     ViewBag.PageSubHeader = $"{Model.Name} ({Model.Username})";
     Layout = ViewExtensions2.TouchPointLayout();
-    var d = HttpContext.Current.Session["preferences"] as Dictionary<string, string>;
+    var d = HttpContextFactory.Current.Session["preferences"] as Dictionary<string, string>;
 }
 
 <div class="row">
