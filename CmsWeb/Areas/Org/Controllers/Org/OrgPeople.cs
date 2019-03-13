@@ -1,6 +1,7 @@
 using CmsData;
 using CmsData.Codes;
 using CmsWeb.Areas.Org.Models;
+using CmsWeb.Lifecycle;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,11 +11,12 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.Org.Controllers
 {
-    public partial class OrgController
+    public partial class OrgController : CmsStaffController
     {
         [HttpPost]
         public ActionResult People(OrgPeopleModel m)
         {
+            SetModelDependencies(m);
             if (m.FilterIndividuals)
             {
                 if (m.NameFilter.HasValue())
@@ -30,6 +32,12 @@ namespace CmsWeb.Areas.Org.Controllers
             ViewBag.OrgMemberContext = true;
             ViewBag.orgname = Session["ActiveOrganization"];
             return PartialView(m);
+        }
+
+        private void SetModelDependencies(OrgPeopleModel m)
+        {
+            m.Db = CurrentDatabase;
+            m.User = User;
         }
 
         public ActionResult DialogAdd(int id, string type)
@@ -169,6 +177,7 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost]
         public ActionResult CheckAll(OrgPeopleModel m)
         {
+            SetModelDependencies(m);
             var list = m.CurrentNotChecked();
             CurrentDatabase.TagAll(list, m.OrgTag);
             return PartialView("People", m);
@@ -177,6 +186,7 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost]
         public ActionResult CheckNone(OrgPeopleModel m)
         {
+            SetModelDependencies(m);
             var list = m.CurrentChecked();
             CurrentDatabase.UnTagAll(list, m.OrgTag);
             return PartialView("People", m);

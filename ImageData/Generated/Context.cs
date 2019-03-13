@@ -1,4 +1,4 @@
-using System; 
+using System;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
 using System.Data;
@@ -7,6 +7,9 @@ using System.Reflection;
 using System.Linq;
 using System.Linq.Expressions;
 using System.ComponentModel;
+using System.Web;
+using System.Configuration;
+using System.Data.SqlClient;
 
 namespace ImageData
 {
@@ -76,20 +79,37 @@ namespace ImageData
 
 		}
 
-	#endregion
-	#region Views
-		
-    #endregion
-	#region Table Functions
-		
-    #endregion
-	#region Scalar Functions
-		
-    #endregion
-	#region Stored Procedures
-		
-    #endregion
-   }
+        public static CMSImageDataContext Create(HttpContextBase currentHttpContext)
+        {
+            var host = currentHttpContext.Request.Url.Authority.Split('.', ':')[0];
+            var cs = ConfigurationManager.ConnectionStrings["CMS"];
+            var cb = new SqlConnectionStringBuilder(cs.ConnectionString);
+            cb.InitialCatalog = $"CMSi_{host}";
+            cb.PersistSecurityInfo = true;
+            var connectionString = cb.ConnectionString;
+
+            return CMSImageDataContext.Create(connectionString);
+        }
+
+        private static CMSImageDataContext Create(string connectionString)
+        {
+            return new CMSImageDataContext(connectionString);
+        }
+
+        #endregion
+        #region Views
+
+        #endregion
+        #region Table Functions
+
+        #endregion
+        #region Scalar Functions
+
+        #endregion
+        #region Stored Procedures
+
+        #endregion
+    }
 
 }
 
