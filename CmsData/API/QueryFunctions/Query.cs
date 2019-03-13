@@ -355,11 +355,14 @@ namespace CmsData
         /// </summary>
         public DynamicData SqlNameValues(string sql, string NameCol, string ValueCol)
         {
-            var rd = db.Connection.ExecuteReader(sql);
-            var dd = new DynamicData();
-            while (rd.Read())
-                dd.dict.Add(rd[NameCol].ToString(), rd[ValueCol]);
-            return dd;
+            var cn = GetReadonlyConnection();
+            using (var rd = cn.ExecuteReader(sql))
+            {
+                var dd = new DynamicData();
+                while (rd.Read())
+                    dd.dict.Add(rd[NameCol].ToString(), rd[ValueCol]);
+                return dd;
+            }
         }
 
         /// <summary>

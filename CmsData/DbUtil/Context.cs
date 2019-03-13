@@ -1575,7 +1575,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
         }
         public Content Content(string name, string defaultValue, int contentTypeId)
         {
-            var c = Contents.FirstOrDefault(cc => cc.Name == name);
+            var c = Contents.FirstOrDefault(cc => cc.Name == name && cc.TypeID == contentTypeId);
             if (c != null)
             {
                 return c;
