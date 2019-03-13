@@ -43,11 +43,11 @@ namespace CmsWeb.Areas.Setup.Controllers
         [Route("~/Pushpay")]
         public ActionResult Index()
         {
-            string redirectUrl = Configuration.Current.OAuth2AuthorizeEndpoint
-                + "?client_id=" + Configuration.Current.PushpayClientID
+            string redirectUrl = new MultipleGatewayUtils(CurrentDatabase).Setting("OAuth2AuthorizeEndpoint", "", 1)
+                + "?client_id=" + new MultipleGatewayUtils(CurrentDatabase).Setting("PushpayClientID", "", 1)
                 + "&response_type=code"
-                + "&redirect_uri=" + Configuration.Current.TouchpointAuthServer
-                + "&scope=" + Configuration.Current.PushpayScope
+                + "&redirect_uri=" + new MultipleGatewayUtils(CurrentDatabase).Setting("TouchpointAuthServer", "", 1)
+                + "&scope=" + new MultipleGatewayUtils(CurrentDatabase).Setting("PushpayScope", "", 1)
                 + "&state=" + CurrentDatabase.Host; //Get  xsrf_token:tenantID
 
             return Redirect(redirectUrl);
@@ -58,13 +58,13 @@ namespace CmsWeb.Areas.Setup.Controllers
         {
             string redirectUrl;
             var tenantHost = Request["state"];
-            if (!Configuration.Current.IsDeveloperMode)
+            if (!new MultipleGatewayUtils(CurrentDatabase).Setting("IsDeveloperMode", 1))
             {
-                redirectUrl = "https://" + tenantHost + "." + Configuration.Current.OrgBaseDomain + "/Pushpay/Save";
+                redirectUrl = "https://" + tenantHost + "." + new MultipleGatewayUtils(CurrentDatabase).Setting("OrgBaseDomain", "", 1) + "/Pushpay/Save";
             }
             else
             {
-                redirectUrl = "http://" + Configuration.Current.TenantHostDev + "/Pushpay/Save";
+                redirectUrl = "http://" + new MultipleGatewayUtils(CurrentDatabase).Setting("TenantHostDev", "", 1) + "/Pushpay/Save";
             }
 
             //Received authorization code from authorization server
@@ -132,11 +132,11 @@ namespace CmsWeb.Areas.Setup.Controllers
             Dictionary<string, string> post = null;
             post = new Dictionary<string, string>
             {
-                { "client_id", Configuration.Current.PushpayClientID}
-                ,{"client_secret", Configuration.Current.PushpayClientSecret}
+                { "client_id", new MultipleGatewayUtils(CurrentDatabase).Setting("PushpayClientID", "", 1)}
+                ,{"client_secret", new MultipleGatewayUtils(CurrentDatabase).Setting("PushpayClientSecret", "", 1)}
                 ,{"grant_type", "authorization_code"}
                 ,{"code", _authCode}
-                ,{"redirect_uri", Configuration.Current.TouchpointAuthServer}
+                ,{"redirect_uri", new MultipleGatewayUtils(CurrentDatabase).Setting("TouchpointAuthServer", "", 1)}
             };
 
             var client = new HttpClient();
@@ -146,10 +146,10 @@ namespace CmsWeb.Areas.Setup.Controllers
                     "Basic",
                     Convert.ToBase64String(
                         System.Text.ASCIIEncoding.ASCII.GetBytes(
-                            string.Format("{0}:{1}", Configuration.Current.PushpayClientID, Configuration.Current.PushpayClientSecret)
+                            string.Format("{0}:{1}", new MultipleGatewayUtils(CurrentDatabase).Setting("PushpayClientID", "", 1), new MultipleGatewayUtils(CurrentDatabase).Setting("PushpayClientSecret", "", 1))
                         )));
             var postContent = new FormUrlEncodedContent(post);
-            var response = await client.PostAsync(Configuration.Current.OAuth2TokenEndpoint, postContent);
+            var response = await client.PostAsync(new MultipleGatewayUtils(CurrentDatabase).Setting("OAuth2TokenEndpoint", "", 1), postContent);
             var content = await response.Content.ReadAsStringAsync();
             var _accessToken = new AccessToken();
             // exchange code for tokens from authorization server
