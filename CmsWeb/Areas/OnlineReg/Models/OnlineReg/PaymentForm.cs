@@ -8,6 +8,8 @@ using System.Configuration;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using CmsWeb.Common;
+using TransactionGateway;
 using TransactionGateway.ApiModels;
 using UtilityExtensions;
 
@@ -687,70 +689,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public Transaction ProcessExternalPaymentTransaction(OnlineRegModel m)
         {
             //For the moment, only works for Pushpay
-            //Payment payment = await _pushpayPayment.GetPayment(paymentToken);
-            var ti = (m?.Transaction != null)
-                ? CreateTransaction(DbUtil.Db, m.Transaction, AmtToPay)
-                : CreateTransaction(DbUtil.Db);
-
-            int? pid = null;
-            if (m != null)
-            {
-                m.ParseSettings();
-
-                pid = m.UserPeopleId;
-                if (m.TranId == null)
-                {
-                    m.TranId = ti.Id;
-                }
-            }
-
-            if (!pid.HasValue)
-            {
-                var pds = DbUtil.Db.FindPerson(First, Last, null, Email, Phone);
-                if (pds.Count() == 1)
-                {
-                    pid = pds.Single().PeopleId.Value;
-                }
-            }
-
-            TransactionResponse tinfo;
-            var gw = DbUtil.Db.Gateway(testing);
-
-            if (SavePayInfo)
-            {
-                tinfo = gw.PayWithVault(pid ?? 0, AmtToPay ?? 0, Description, ti.Id, Type);
-            }
-            else
-            {
-                tinfo = Type == PaymentType.Ach
-                    ? PayWithCheck(gw, pid, ti)
-                    : PayWithCreditCard(gw, pid, ti);
-            }
-
-            ti.TransactionId = tinfo.TransactionId;
-
-            if (ti.Testing.GetValueOrDefault() && !ti.TransactionId.Contains("(testing)"))
-            {
-                ti.TransactionId += "(testing)";
-            }
-
-            ti.Approved = tinfo.Approved;
-
-            if (!ti.Approved.GetValueOrDefault())
-            {
-                ti.Amtdue += ti.Amt;
-                if (m != null && m.OnlineGiving())
-                {
-                    ti.Amtdue = 0;
-                }
-            }
-
-            ti.Message = tinfo.Message;
-            ti.AuthCode = tinfo.AuthCode;
-            ti.TransactionDate = Util.Now;
-
-            DbUtil.Db.SubmitChanges();
-            return ti;
+            //var gw = DbUtil.Db.RGateway(testing, "Pushpay");
+            var gw = new PushpayGateway(DbUtil.Db, testing);
+            return new Transaction();
         }
 
 
@@ -835,11 +776,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
         }
 
-        public RouteModel ProcessPayment(OnlineRegModel m)
+        public RouteModel ProcessExternalPayment(OnlineRegModel m)
         {
-
             //This method has to change deppending on different types of gateways 
-            var ti = ProcessPaymentTransaction(m);
+            var ti = ProcessExternalPaymentTransaction(m);
 
             if (ti.Approved == false)
             {

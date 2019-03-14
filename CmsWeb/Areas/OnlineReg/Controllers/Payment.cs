@@ -8,6 +8,7 @@ using System;
 using System.Configuration;
 using System.Linq;
 using System.Text;
+using CmsWeb.Common;
 using System.Web.Mvc;
 using UtilityExtensions;
 
@@ -79,9 +80,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             RouteModel ret;
 
             //This will change to gatewayType in order to decide which process choose.
+            //if (m.gatewayType == "Redirect")
             if (CurrentDatabase.GetSetting("TransactionGateway", "") == "Pushpay")
             {
-                ret = pf.ProcessPayment(m);
+                ret = pf.ProcessExternalPayment(m);
             }
             else
             {
