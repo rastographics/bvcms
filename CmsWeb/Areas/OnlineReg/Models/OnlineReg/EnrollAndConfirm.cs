@@ -112,7 +112,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             {
                 var messageNotice = UsedAdminsForNotify
                     ? @"<span style='color:red'>THERE ARE NO NOTIFY IDS ON THIS REGISTRATION!!</span><br/>
-<a href='http://docs.touchpointsoftware.com/OnlineRegistration/MessagesSettings.html'>see documentation</a><br/><br/>"
+<a href='https://docs.touchpointsoftware.com/OnlineRegistration/MessagesSettings.html'>see documentation</a><br/><br/>"
                     : "";
                 DbUtil.Db.Email(Util.PickFirst(p.person.FromEmail, notifyIds[0].FromEmail), notifyIds, Header,
                     $@"{messageNotice}{p.person.Name} has registered for {Header}<br/><hr>

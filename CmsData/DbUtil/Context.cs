@@ -8,6 +8,7 @@ using CmsData.Codes;
 using CmsData.Finance;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Data.Common;
 using System.Data.Linq;
@@ -120,6 +121,19 @@ namespace CmsData
                 base.SubmitChanges(failureMode);
             }
         }
+
+        public static CMSDataContext Create(HttpContextBase currentHttpContext)
+        {
+            var host = currentHttpContext.Request.Url.Authority.Split('.', ':')[0];
+            var cs = ConfigurationManager.ConnectionStrings["CMS"];
+            var cb = new SqlConnectionStringBuilder(cs.ConnectionString);
+            cb.InitialCatalog = $"CMS_{host}";
+            cb.PersistSecurityInfo = true;
+            var connectionString = cb.ConnectionString;
+
+            return CMSDataContext.Create(connectionString, host);
+        }
+
         public void ClearCache2()
         {
             const BindingFlags Flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;

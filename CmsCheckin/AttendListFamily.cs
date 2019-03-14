@@ -705,6 +705,10 @@ namespace CmsCheckin
                 PrintServerLabels(q);
                 return;
             }
+            else if (Program.settings.printMode == "Cloud Printing")
+            {
+                return;
+            }
 
             if (q.Count() > 0)
             {
