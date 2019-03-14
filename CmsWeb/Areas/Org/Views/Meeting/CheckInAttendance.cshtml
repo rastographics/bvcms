@@ -39,10 +39,20 @@
         }
         .name {
             margin-left: 32px;
+            position: relative;
+            top: -6px;
+        }
+        .role {
+            font-size: 12px;
+            margin-bottom: 0;
         }
         .checkbox {
             width: 20px;
             position: relative;
+        }
+        .tab-content {
+            padding: 0;
+            border: 0;
         }
         .checkbox label {
             width: 20px;
@@ -91,39 +101,73 @@
             <p style="color:#4a4a4a!important;">@Model.meeting.MeetingDate.Value.ToString("g") @(Model.ShowDescriptionOnCheckin ? " | " + Model.meeting.Description : "")</p>
         </div>
         <div data-role="content">
-            @{ var attends = Model.Attends(true, "iPadAttendanceHighlight");}
-            <ul class="nav nav-tabs">
-                <li role="presentation" class="active"><a href="#">Members <span class="badge badge-primary">@attends.Count</span></a></li>
-                <li role="presentation"><a href="#">Guests <span class="badge">0</span></a></li>
-            </ul>
-            @{var inAttendanceRole = User.IsInRole("Attendance");}
-            @foreach (var a in attends)
-            {
-                <div class="@(inAttendanceRole ? "ckline" : "na") @a.Name[0]">
-                    <div class="list-group-item">
-                        <div class="checkbox">
-                            <input type="checkbox" id="a.@a.PeopleId" @(a.Attended ? "checked=checked" : "") />
-                            <label for="a.@a.PeopleId"></label>
-                        </div>
-                        <span class="name">
-                            @if (a.Highlight)
-                            {
-                                <span style="color: green">@a.Name</span>
-                            }
-                            else
-                            {
-                                @a.Name
-                            }
-                        </span>
-                        <span class="role">
-                            @a.CurrMemberType
-                        </span>
-                    </div>
-                </div>
+            @{
+                var attends = Model.Attends(true, "iPadAttendanceHighlight");
+                var inAttendanceRole = User.IsInRole("Attendance");
+                string headcount = Model.meeting.HeadCount.HasValue ? Model.meeting.HeadCount.ToString() : "0";
             }
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active">
+                    <a role="tab" data-toggle="tab" aria-controls="members" href="#members">Members <span class="badge badge-primary">@attends.Count</span></a>
+                </li>
+                <li role="presentation">
+                    <a role="tab" data-toggle="tab" aria-controls="guests" href="#guests">Guests <span class="badge">0</span></a>
+                </li>
+                <li role="presentation">
+                    <a role="tab" data-toggle="tab" aria-controls="headcount" href="#headcount">Headcount <span class="badge">@headcount</span></a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane fade in active" id="members">
+                    @foreach (var a in attends)
+                    {
+                        var picdt = (a.PicDate ?? DateTime.Now);
+                        var portraitUrl = $"/Portrait/{m.PortraitId}?v={picdt.Ticks}";
+                        var portraitBgPos = m.PicXPos.HasValue || m.PicYPos.HasValue ? $"{m.PicXPos ?? 0}% {m.PicYPos ?? 0}%" : "top";
+                        <div class="@(inAttendanceRole ? "ckline" : "na") @a.Name[0]">
+                            <div class="list-group-item">
+
+                                <div class="checkbox">
+                                    <input type="checkbox" id="a.@a.PeopleId" @(a.Attended ? "checked=checked" : "") />
+                                    <label for="a.@a.PeopleId"></label>
+                                </div>
+
+                                <div class="headshot" style="background-image:url(@portraitUrl); background-position: @portraitBgPos"></div>
+                                <div class="name">
+                                    @if (a.Highlight)
+                                    {
+                                        <span style="color: green">@a.Name</span>
+                                    }
+                                    else
+                                    {
+                                        @a.Name
+                                    }
+                                    @if (Model.ShowCurrentMemberType)
+                                    {
+                                        <p class="role">
+                                            @a.CurrMemberType
+                                        </p>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="guests">
+                    Guests
+                    @if (Model.ShowAddGuest)
+                    {
+                        <span>Add Guest</span>
+                    }
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="headcount">
+                    Headcount
+                </div>
+            </div>
         </div>
     </div>
     @ViewExtensions2.jQuery()
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
     <script type="text/javascript">
         $(function () {
             $("input[type='radio']").bind("change", function (event, ui) {
