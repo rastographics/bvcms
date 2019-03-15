@@ -164,6 +164,30 @@ namespace CmsWeb
             return new HtmlString(div.ToString());
         }
 
+        public static HtmlString PersonPortrait(this HtmlHelper helper, int PeopleId, int ImgX, int ImgY, string CssClass="img-circle") {
+            Person person = DbUtil.Db.People.Single(p => p.PeopleId == PeopleId);
+            if (person.IsNull())
+            {
+                return null;
+            }
+            var div = new TagBuilder("div");
+            var gender = person.Gender.Code;
+            Picture picture = person.Picture ?? new Picture();  // if there's no picture for this person, use the default
+            var portraitUrl = gender == "M" ? picture.MediumMaleUrl : gender == "F" ? picture.MediumFemaleUrl : picture.MediumUrl;
+            var portraitBgPos = picture.X.HasValue || picture.Y.HasValue ? $"{picture.X.GetValueOrDefault()}% {picture.Y.GetValueOrDefault()}%" : "top";
+
+            div.AddCssClass(CssClass);
+            div.MergeAttribute("style", $"" +
+                $"background-image: url({portraitUrl});" +
+                $"height: {ImgY}px;" +
+                $"width: {ImgX}px;" +
+                $"display: inline-block;" +
+                $"background-repeat: no-repeat;" +
+                $"background-size: cover;" +
+                $"background-position: {portraitBgPos};");
+            return new HtmlString(div.ToString());
+        }
+
         public static MvcHtmlString PartialFor<TModel, TProperty>(this HtmlHelper<TModel> helper, Expression<Func<TModel, TProperty>> expression, string partialViewName)
         {
             var name = ExpressionHelper.GetExpressionText(expression);
