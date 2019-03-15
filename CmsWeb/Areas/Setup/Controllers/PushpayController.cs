@@ -218,7 +218,7 @@ namespace CmsWeb.Areas.Setup.Controllers
                 bool isRegistration = sr.Substring(0, 3) == "dat";
                 if (isRegistration)
                 {
-                    return await RegistrationProcess(paymentToken, Int32.Parse(sr.Substring(4)));
+                    return RegistrationProcess(paymentToken, Int32.Parse(sr.Substring(4)));
                 }
                 int orgId = Int32.Parse(sr.Substring(4));
                 SetHeaders2(orgId);
@@ -289,10 +289,8 @@ namespace CmsWeb.Areas.Setup.Controllers
             }
         }
 
-        private async Task<ActionResult> RegistrationProcess(string paymentToken, int datumId)
+        private ActionResult RegistrationProcess(string paymentToken, int datumId)
         {
-            //System.Web.HttpContext.Current = CurrentHttpContext;
-
             OnlineRegModel m = new OnlineRegModel();
             RegistrationDatum datum = CurrentDatabase.RegistrationDatas.SingleOrDefault(d => d.Id == datumId);
             m = Util.DeSerialize<OnlineRegModel>(datum.Data);
@@ -300,25 +298,6 @@ namespace CmsWeb.Areas.Setup.Controllers
             m.UpdateDatum();
 
             return Redirect($"/OnlineReg/ProcessPayment2/{datumId}");
-
-            //if (payment != null && !_resolver.TransactionAlreadyImported(payment))
-            //{
-            //}
-            //if (datum != null)
-            //{
-            //    or = Util.DeSerialize<OnlineRegModel>(datum.Data);
-            //    //Payment payment = await _pushpayPayment.GetPayment(paymentToken);
-            //    //Transaction transaction = _resolver.ResolveTransaction(payment, or.UserPeopleId.Value, or.Orgid.Value, "Registration");
-            //    //System.Web.HttpContext.Current = CurrentHttpContext;
-            //    //var r = or.FinishRegistration(transaction);
-            //    //return View(r.View, r.Model);
-            //}
-            //else
-            //{
-            //ViewBag.Message = "Something went wrong";
-            //CurrentDatabase.LogActivity($"No datum founded with id: {datumId}");
-            //return View("~/Views/Shared/PageError.cshtml");
-            //}
         }
 
         private void SetHeaders2(int id)

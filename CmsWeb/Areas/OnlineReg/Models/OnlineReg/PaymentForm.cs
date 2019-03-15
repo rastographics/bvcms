@@ -8,9 +8,7 @@ using System.Configuration;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using CmsWeb.Common;
 using TransactionGateway;
-using TransactionGateway.ApiModels;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.OnlineReg.Models
@@ -688,12 +686,23 @@ namespace CmsWeb.Areas.OnlineReg.Models
         }
         public Transaction ProcessExternalPaymentTransaction(OnlineRegModel m)
         {
-            //For the moment, only works for Pushpay
-            //var gw = DbUtil.Db.RGateway(testing, "Pushpay");
+            //For the moment, only works for Pushpay            
+            Transaction ti = CreateTransaction(DbUtil.Db);
             var gw = new PushpayGateway(DbUtil.Db, testing);
-            return new Transaction();
-        }
+            ti = gw.ConfirmTransaction(ti, paymentToken);
 
+            if (!ti.Approved.GetValueOrDefault())
+            {
+                ti.Amtdue += ti.Amt;
+                if (m != null && m.OnlineGiving())
+                {
+                    ti.Amtdue = 0;
+                }
+            }
+
+            DbUtil.Db.SubmitChanges();
+            return ti;
+        }
 
         private TransactionResponse PayWithCreditCard(IGateway gateway, int? peopleId, Transaction transaction)
         {
@@ -779,7 +788,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public RouteModel ProcessExternalPayment(OnlineRegModel m)
         {
             //This method has to change deppending on different types of gateways 
-            var ti = ProcessExternalPaymentTransaction(m);
+            Transaction ti = ProcessExternalPaymentTransaction(m);
 
             if (ti.Approved == false)
             {
