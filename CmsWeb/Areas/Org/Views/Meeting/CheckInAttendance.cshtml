@@ -121,9 +121,6 @@
                 <div role="tabpanel" class="tab-pane fade in active" id="members">
                     @foreach (var a in attends)
                     {
-                        var picdt = (a.PicDate ?? DateTime.Now);
-                        var portraitUrl = $"/Portrait/{m.PortraitId}?v={picdt.Ticks}";
-                        var portraitBgPos = m.PicXPos.HasValue || m.PicYPos.HasValue ? $"{m.PicXPos ?? 0}% {m.PicYPos ?? 0}%" : "top";
                         <div class="@(inAttendanceRole ? "ckline" : "na") @a.Name[0]">
                             <div class="list-group-item">
 
@@ -131,8 +128,7 @@
                                     <input type="checkbox" id="a.@a.PeopleId" @(a.Attended ? "checked=checked" : "") />
                                     <label for="a.@a.PeopleId"></label>
                                 </div>
-
-                                <div class="headshot" style="background-image:url(@portraitUrl); background-position: @portraitBgPos"></div>
+                                @Html.PersonPortrait(a.PeopleId, 180, 180);
                                 <div class="name">
                                     @if (a.Highlight)
                                     {
