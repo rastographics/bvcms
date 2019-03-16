@@ -1,5 +1,6 @@
 ﻿using CmsData;
 using CmsData.Codes;
+using CmsData.Finance;
 using CmsData.Registration;
 using CmsWeb.Areas.OnlineReg.Models;
 using CmsWeb.Common;
@@ -290,14 +291,85 @@ namespace CmsWeb.Areas.Setup.Controllers
         }
 
         private ActionResult RegistrationProcess(string paymentToken, int datumId)
-        {
+        {           
             OnlineRegModel m = new OnlineRegModel();
             RegistrationDatum datum = CurrentDatabase.RegistrationDatas.SingleOrDefault(d => d.Id == datumId);
-            m = Util.DeSerialize<OnlineRegModel>(datum.Data);
-            m.paymentToken = paymentToken;
-            m.UpdateDatum();
+            m = Util.DeSerialize<OnlineRegModel>(datum.Data);            
+            if (paymentToken == "111")//test Token
+            {
+                m.transactionId = CreateFakeTransaction(m);
+            }
+            else
+            {
+                //Pending...
+                m.transactionId = CreateTransaction(paymentToken, m);
+            }
 
-            return Redirect($"/OnlineReg/ProcessPayment2/{datumId}");
+            m.UpdateDatum();
+            return Redirect($"/OnlineReg/ProcessExternalPayment/{datumId}");
+        }
+
+        private int CreateTransaction(string paymentToken, OnlineRegModel m)
+        {
+            throw new NotImplementedException();
+        }
+
+        private int CreateFakeTransaction(OnlineRegModel m, decimal? amount = null)
+        {
+            PaymentForm pf = PaymentForm.CreatePaymentForm(m);
+            if (!amount.HasValue)
+            {
+                amount = pf.AmtToPay;
+            }
+
+            decimal? amtdue = null;
+            if (pf.Amtdue > 0)
+            {
+                amtdue = pf.Amtdue - (amount ?? 0);
+            }
+
+            var ti = new Transaction
+            {
+                First = "Oscar",
+                MiddleInitial = "D",
+                Last = "Baez",
+                Suffix = "db",
+                Donate = pf.Donate,
+                Regfees = pf.AmtToPay,
+                Amt = amount,
+                Amtdue = amtdue,
+                Emails = "dahnbaez@gmail.com",
+                Testing = true,
+                Description = pf.Description,
+                OrgId = pf.OrgId,
+                Url = pf.URL,
+                TransactionGateway = OnlineRegModel.GetTransactionGateway(),
+                Address = "Street1",
+                Address2 = "123",
+                City = "My City",
+                State = "My State",
+                Country = "My Country",
+                Zip = "03600",
+                DatumId = pf.DatumId,
+                Phone = "5547946830",
+                OriginalId = pf.OriginalId,
+                Financeonly = pf.FinanceOnly,
+                TransactionDate = Util.Now,
+                PaymentType = "C",
+                LastFourCC = "1234",
+                LastFourACH = "",
+                Approved = true
+            };
+
+            DbUtil.Db.Transactions.InsertOnSubmit(ti);
+            DbUtil.Db.SubmitChanges();
+            if (pf.OriginalId == null) // first transaction
+            {
+                ti.OriginalId = ti.Id;
+                ti.TransactionId = $"(fake){ti.Id}";
+            }
+
+            return ti.Id;
         }
 
         private void SetHeaders2(int id)

@@ -28,7 +28,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public string Routing { get; set; }
         public string Account { get; set; }
         public bool SupportMissionTrip { get; set; }
-        public string paymentToken { get; set; }
+        public int transactionId { get; set; }
 
         /// <summary>
         ///     "B" for e-check and "C" for credit card, see PaymentType
@@ -311,7 +311,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 Zip = r.Zip,
                 Phone = r.Phone,
                 SupportMissionTrip = m.SupportMissionTrip,
-                paymentToken = m.paymentToken,
+                transactionId = m.transactionId,
 #if DEBUG2
                  CreditCard = "4111111111111111",
                  CVV = "123",
@@ -683,26 +683,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             DbUtil.Db.SubmitChanges();
             return ti;
-        }
-        public Transaction ProcessExternalPaymentTransaction(OnlineRegModel m)
-        {
-            //For the moment, only works for Pushpay            
-            Transaction ti = CreateTransaction(DbUtil.Db);
-            var gw = new PushpayGateway(DbUtil.Db, testing);
-            ti = gw.ConfirmTransaction(ti, paymentToken);
-
-            if (!ti.Approved.GetValueOrDefault())
-            {
-                ti.Amtdue += ti.Amt;
-                if (m != null && m.OnlineGiving())
-                {
-                    ti.Amtdue = 0;
-                }
-            }
-
-            DbUtil.Db.SubmitChanges();
-            return ti;
-        }
+        }        
 
         private TransactionResponse PayWithCreditCard(IGateway gateway, int? peopleId, Transaction transaction)
         {
@@ -788,9 +769,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public RouteModel ProcessExternalPayment(OnlineRegModel m)
         {
             //This method has to change deppending on different types of gateways 
-            Transaction ti = ProcessExternalPaymentTransaction(m);
-
-            if (ti.Approved == false)
+            Transaction ti = DbUtil.Db.Transactions.Where(p => p.Id == m.transactionId).FirstOrDefault();
+            if (ti == null || ti.Approved != true)
             {
                 /*Here goes a screen error
                  */

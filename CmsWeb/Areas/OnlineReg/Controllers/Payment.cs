@@ -11,14 +11,15 @@ using System.Text;
 using CmsWeb.Common;
 using System.Web.Mvc;
 using UtilityExtensions;
+using System.Threading.Tasks;
 
 namespace CmsWeb.Areas.OnlineReg.Controllers
 {
     public partial class OnlineRegController
     {
         [HttpGet]
-        [Route("~/OnlineReg/ProcessPayment2/{DatumId:int}")]
-        public ActionResult ProcessPayment2(int DatumId)
+        [Route("~/OnlineReg/ProcessExternalPayment/{DatumId:int}")]
+        public ActionResult ProcessExternalPayment(int DatumId)
         {
             RegistrationDatum datum = CurrentDatabase.RegistrationDatas.SingleOrDefault(d => d.Id == DatumId);
             OnlineRegModel m = Util.DeSerialize<OnlineRegModel>(datum.Data);
