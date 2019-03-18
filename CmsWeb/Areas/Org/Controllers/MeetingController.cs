@@ -657,9 +657,39 @@ namespace CmsWeb.Areas.Org.Controllers
             }
 
             DbUtil.LogActivity($"CheckIn attendance for Meeting for {m.meeting.OrganizationId}({m.meeting.MeetingDate:d})");
-
+            List<Reports.Models.RollsheetModel.AttendInfo> Guests = new List<Reports.Models.RollsheetModel.AttendInfo>();
+            List<Reports.Models.RollsheetModel.AttendInfo> Members = new List<Reports.Models.RollsheetModel.AttendInfo>();
+            int MembersPresent = 0;
+            int GuestsPresent = 0;
             var attends = m.Attends(true, "iPadAttendanceHighlight");
-
+            foreach (var attend in attends)
+            {
+                if (!attend.CurrMember)
+                {
+                    attend.MemberType = "Guest";
+                    Guests.Add(attend);
+                    if (attend.Attended)
+                    {
+                        GuestsPresent++;
+                    }
+                }
+                else
+                {
+                    if (!attend.MemberType.HasValue())
+                    {
+                        attend.MemberType = "Member";
+                    }
+                    Members.Add(attend);
+                    if (attend.Attended)
+                    {
+                        MembersPresent++;
+                    }
+                }
+            }
+            ViewBag.Guests = Guests;
+            ViewBag.Members = Members;
+            ViewBag.GuestsPresent = GuestsPresent;
+            ViewBag.MembersPresent = MembersPresent;
             return View(m);
         }
 
