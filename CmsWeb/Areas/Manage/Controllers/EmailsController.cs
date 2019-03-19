@@ -154,7 +154,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             {
                 try
                 {
-                    var db = DbUtil.Create(host);
+                    var db = CMSDataContext.Create(host);
                     var cul = CurrentDatabase.Setting("Culture", "en-US");
                     Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
                     Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
@@ -169,7 +169,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                     ErrorLog errorLog = ErrorLog.GetDefault(null);
                     errorLog.Log(new Error(ex2));
 
-                    var db = DbUtil.Create(host);
+                    var db = CMSDataContext.Create(host);
                     var equeue = db.EmailQueues.Single(ee => ee.Id == id);
                     equeue.Error = ex.Message.Truncate(200);
                     db.SubmitChanges();

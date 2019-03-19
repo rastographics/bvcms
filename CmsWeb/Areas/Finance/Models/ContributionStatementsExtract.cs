@@ -37,7 +37,7 @@ namespace CmsWeb.Areas.Finance.Models.Report
         public CMSDataContext Db { get; set; }
         public void DoWork(ContributionStatements.StatementSpecification cs)
         {
-            Db = DbUtil.Create(Host);
+            Db = CMSDataContext.Create(Host);
             Db.CommandTimeout = 1200;
 
             var noaddressok = !Db.Setting("RequireAddressOnStatement", true);

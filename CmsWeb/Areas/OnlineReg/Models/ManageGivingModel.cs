@@ -167,7 +167,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             {
                 // look up campus default fund mapping if present.
                 var setting = $"DefaultCampusFunds-{person.CampusId}";
-                var db = DbUtil.Create(host, asReadOnly: true);
+                var db = CMSDataContext.Create(host, asReadOnly: true);
                 defaultFundIds = db.Setting(setting, string.Empty);
             }
             

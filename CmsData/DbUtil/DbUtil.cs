@@ -55,21 +55,10 @@ namespace CmsData
             }
         }
 
-        public static CMSDataContext Create(string host, bool asReadOnly = false)
-        {
-            var instance = CMSDataContext.Create(host);
-            return asReadOnly ? new CMSDataContext(instance.ReadonlyConnection()) : instance;
-        }
-
-        public static CMSDataContext Create(string connstr, string host)
-        {
-            return CMSDataContext.Create(connstr, host);
-        }
-
         private static void _logActivity(string host, string activity, int? orgId, int? peopleId, int? datumId, int? userId, string pageUrl = null, string clientIp = null)
         {
             var ip = HttpContextFactory.Current?.Request.UserHostAddress;
-            using (var db = Create(host))
+            using (var db = CMSDataContext.Create(host))
             {
                 if (!userId.HasValue || userId == 0)
                 {

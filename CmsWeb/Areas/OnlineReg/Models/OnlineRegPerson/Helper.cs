@@ -153,7 +153,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (PeopleId == null)
                 return false;
 
-            var db = DbUtil.Create(host, asReadOnly: true);
+            var db = CMSDataContext.Create(host, asReadOnly: true);
 
             var results = from om in db.OrganizationMembers
                 join org in db.Organizations on om.OrganizationId equals org.OrganizationId

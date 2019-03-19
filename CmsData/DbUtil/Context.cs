@@ -48,9 +48,9 @@ namespace CmsData
         }
 #endif
         internal string ConnectionString;
-        public static CMSDataContext Create(string host)
+        public static CMSDataContext Create(string host, bool asReadOnly = false)
         {
-            var connectionString = CreateConnectionString(host);
+            var connectionString = asReadOnly ? ReadonlyConnectionString(host, true) : CreateConnectionString(host);
             return Create(connectionString, host);
         }
 
@@ -1959,13 +1959,20 @@ This search uses multiple steps which cannot be duplicated in a single query.
 
         private string ReadonlyConnectionString(bool finance = false)
         {
+            return ReadonlyConnectionString(Host, finance);
+        }
+
+        private static string ReadonlyConnectionString(string host, bool finance = false)
+        {
             var pw = ConfigurationManager.AppSettings["readonlypassword"];
             if (!pw.HasValue())
-                return ConnectionString;
+            {
+                throw new ArgumentNullException("readonlypassword is not set");
+            }
 
-            var cs = CreateConnectionString(Host);
+            var cs = CreateConnectionString(host);
             var cb = new SqlConnectionStringBuilder(cs);
-            cb.InitialCatalog = $"CMS_{Host}";
+            cb.InitialCatalog = $"CMS_{host}";
             cb.IntegratedSecurity = false;
             cb.UserID = (finance ? $"ro-{cb.InitialCatalog}-finance" : $"ro-{cb.InitialCatalog}");
             cb.Password = pw;

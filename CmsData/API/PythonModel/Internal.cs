@@ -23,14 +23,14 @@ namespace CmsData
         {
             dictionary = new Dictionary<string, object>();
             Data = new DynamicData(dictionary);
-            db = DbUtil.Create(dbname);
+            db = CMSDataContext.Create(dbname);
         }
         
         public PythonModel(string dbname, Dictionary<string, object> dict)
         {
             dictionary = dict;
             Data = new DynamicData(dictionary);
-            db = DbUtil.Create(dbname);
+            db = CMSDataContext.Create(dbname);
         }
 
         /// <summary>
@@ -87,7 +87,7 @@ namespace CmsData
 
         private CMSDataContext NewDataContext()
         {
-            return DbUtil.Create(db.Host);
+            return CMSDataContext.Create(db.Host);
         }
 
         public void DebugWriteLine(object o)

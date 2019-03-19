@@ -25,7 +25,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             var pid = Util.UserPeopleId;
             HostingEnvironment.QueueBackgroundWorkItem(ct =>
             {
-                var db = DbUtil.Create(host);
+                var db = CMSDataContext.Create(host);
                 try
                 {
                     var runningtotals = new UploadPeopleRun { Started = DateTime.Now, Count = 0, Processed = 0 };
@@ -38,7 +38,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                 catch (Exception ex)
                 {
                     db.Dispose();
-                    db = DbUtil.Create(host);
+                    db = CMSDataContext.Create(host);
 
                     var q = from r in db.UploadPeopleRuns
                             where r.Id == db.UploadPeopleRuns.Max(rr => rr.Id)

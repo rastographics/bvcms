@@ -154,7 +154,7 @@ namespace CmsData.Classes.Twilio
 
         public static void ProcessQueue(int iListID, string sHost)
         {
-            var db = DbUtil.Create(sHost);
+            var db = CMSDataContext.Create(sHost);
             var sSID = GetSid(db);
             var sToken = GetToken(db);
 
