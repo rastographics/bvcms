@@ -219,9 +219,13 @@ namespace CmsWeb
     }
 
     [MyRequireHttps]
-    public class CmsStaffAsyncController : AsyncController
+    public class CmsStaffAsyncController : CMSBaseController
     {
         public bool NoCheckRole { get; set; }
+
+        public CmsStaffAsyncController(IRequestManager requestManager) : base(requestManager)
+        {
+        }
 
         protected override void HandleUnknownAction(string actionName)
         {
@@ -251,7 +255,7 @@ namespace CmsWeb
             }
             base.OnActionExecuting(filterContext);
             Util.Helpfile = $"_{filterContext.ActionDescriptor.ControllerDescriptor.ControllerName}_{filterContext.ActionDescriptor.ActionName}";
-            DbUtil.Db.UpdateLastActivity(Util.UserId);
+            CurrentDatabase.UpdateLastActivity(Util.UserId);
         }
         public ViewResult Message(string text)
         {

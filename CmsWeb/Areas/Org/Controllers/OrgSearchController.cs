@@ -460,9 +460,7 @@ namespace CmsWeb.Areas.Search.Controllers
             var orgIds = model.FetchOrgs().Select(oo => oo.OrganizationId).ToList();
             foreach (var oid in orgIds)
             {
-                var db = DbUtil.Create(Util.Host);
                 Meeting.FetchOrCreateMeeting(CurrentDatabase, oid, dt, noautoabsents);
-                CurrentDatabase.Dispose();
             }
             DbUtil.LogActivity("Creating new meetings from OrgSearch");
             return Content("done");

@@ -1,12 +1,17 @@
 ﻿using System;
 using System.Web.Mvc;
 using CmsData.Classes.Twilio;
+using CmsWeb.Lifecycle;
 
 namespace CmsWeb.Areas.Main.Controllers
 {
     [RouteArea("Main")]
-    public class SMSController : Controller
+    public class SMSController : CMSBaseController
     {
+        public SMSController(IRequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [Route("~/Sms/Options/{id:Guid}")]
         public ActionResult Options(Guid id)
         {
@@ -31,7 +36,7 @@ namespace CmsWeb.Areas.Main.Controllers
                 return RedirectToAction("Options", new {id});
             }
 
-            TwilioHelper.QueueSms(id, iSendGroup, sTitle, sMessage);
+            TwilioHelper.QueueSms(CurrentDatabase, id, iSendGroup, sTitle, sMessage);
             ViewBag.sTitle = sTitle;
             ViewBag.sMessage = sMessage;
             return View("Send", id);

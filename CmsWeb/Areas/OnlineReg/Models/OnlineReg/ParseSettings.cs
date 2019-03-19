@@ -46,7 +46,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             Log("Script:" + org.AddToSmallGroupScript);
             try
             {
-                var pe = new PythonModel(Util.Host, "RegisterEvent", script.Body);
+                var pe = new PythonModel(CurrentDatabase.Host, "RegisterEvent", script.Body);
                 HttpContextFactory.Current.Items["PythonEvents"] = pe;
             }
             catch (Exception ex)

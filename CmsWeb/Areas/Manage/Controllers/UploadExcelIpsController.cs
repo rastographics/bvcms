@@ -31,7 +31,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         [ValidateInput(false)]
         public ActionResult Index(HttpPostedFileBase file, bool noupdate, bool ignoremissinggifts)
         {
-            var host = Util.Host;
+            var host = CurrentDatabase.Host;
             var pid = Util.UserPeopleId;
 
             var package = new ExcelPackage(file.InputStream);

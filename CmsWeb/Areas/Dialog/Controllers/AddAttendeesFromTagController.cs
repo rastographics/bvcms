@@ -15,7 +15,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
         [HttpPost, Route("~/AddAttendeesFromTag/{id:int}")]
         public ActionResult Index(int id)
         {
-            var model = new AddAttendeesFromTag(id);
+            var model = new AddAttendeesFromTag(id, CurrentDatabase);
             return View(model);
         }
         [HttpPost]

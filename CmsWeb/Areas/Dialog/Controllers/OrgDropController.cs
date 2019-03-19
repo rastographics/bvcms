@@ -17,7 +17,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
         public ActionResult Index(Guid qid)
         {
             LongRunningOperation.RemoveExisting(CurrentDatabase, qid);
-            var model = new OrgDrop(qid);
+            var model = new OrgDrop(CurrentDatabase, qid);
             return View(model);
         }
 
@@ -36,7 +36,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
         [HttpPost]
         public ActionResult DropSingleMember(int orgId, int peopleId)
         {
-            var model = new OrgDrop();
+            var model = new OrgDrop(CurrentDatabase);
             model.DropSingleMember(orgId, peopleId);
             return Content("ok");
         }

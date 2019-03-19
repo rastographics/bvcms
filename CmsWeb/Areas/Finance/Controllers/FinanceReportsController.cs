@@ -356,7 +356,7 @@ namespace CmsWeb.Areas.Finance.Controllers
         [HttpGet]
         public ActionResult ManageGiving2(int id)
         {
-            var model = new ManageGivingModel(id);
+            var model = new ManageGivingModel(CurrentDatabase.Host, id);
             model.testing = true;
             var body = ViewExtensions2.RenderPartialViewToString(this, "ManageGiving2", model);
             return SimpleContent(body);

@@ -145,7 +145,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         [Authorize(Roles = "Developer")]
         public ActionResult SendNow(int id)
         {
-            string host = Util.Host;
+            string host = CurrentDatabase.Host;
             // save these from HttpContext to set again inside thread local storage
             var useremail = Util.UserEmail;
             var isinroleemailtest = User.IsInRole("EmailTest");

@@ -8,7 +8,7 @@ namespace CmsData
     {
         partial void OnCreated()
         {
-            Host = Util.Host;
+            Host = Host ?? Util.Host;
         }
 
         public void UpdateLongRunningOp(CMSDataContext db, string op)
@@ -23,7 +23,7 @@ namespace CmsData
                 lop.Host = db.Host;
             return lop;
         }
-        public string Host { get; private set; }
+        public string Host { get; set; }
 
         public bool Finished => Completed.HasValue;
 

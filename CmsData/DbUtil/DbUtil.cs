@@ -54,11 +54,11 @@ namespace CmsData
                 InternalDb = value;
             }
         }
-        public static CMSDataContext DbReadOnly => CMSDataContext.Create(Util.ConnectionStringReadOnly, Util.Host);
 
-        public static CMSDataContext Create(string host)
+        public static CMSDataContext Create(string host, bool asReadOnly = false)
         {
-            return CMSDataContext.Create(Util.GetConnectionString(host), host);
+            var instance = CMSDataContext.Create(host);
+            return asReadOnly ? new CMSDataContext(instance.ReadonlyConnection()) : instance;
         }
 
         public static CMSDataContext Create(string connstr, string host)

@@ -21,7 +21,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         [ValidateInput(false)]
         public ActionResult UploadAddresses(string text)
         {
-            string host = Util.Host;
+            string host = CurrentDatabase.Host;
             var pid = Util.UserPeopleId;
             HostingEnvironment.QueueBackgroundWorkItem(ct =>
             {

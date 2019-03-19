@@ -87,10 +87,12 @@ namespace CmsWeb.Areas.Dialog.Models
                 jobWorkerContext.RepairTransactions(oid);
                 jobWorkerContext.RepairTransactions(model.TargetId);
                 lop = FetchLongRunningOperation(jobStatusContext, Op, model.QueryId);
-                Debug.Assert(lop != null, "r != null");
-                lop.Processed++;
-                lop.CustomMessage = $"Working from {pid},{oid} to {model.TargetId}";
-                jobStatusContext.SubmitChanges();
+                if (lop != null)
+                {
+                    lop.Processed++;
+                    lop.CustomMessage = $"Working from {pid},{oid} to {model.TargetId}";
+                    jobStatusContext.SubmitChanges();
+                }
             }
             // finished
             lop = FetchLongRunningOperation(jobStatusContext, Op, model.QueryId);

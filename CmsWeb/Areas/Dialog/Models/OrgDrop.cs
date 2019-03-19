@@ -38,29 +38,30 @@ namespace CmsWeb.Areas.Dialog.Models
         public DateTime? DropDate { get; set; }
         public bool RemoveFromEnrollmentHistory { get; set; }
         public int UserId { get; set; }
+        public CMSDataContext CurrentDatabase { get; set; }
 
-
-        public OrgDrop()
+        public OrgDrop(CMSDataContext db)
         {
             UserId = Util.UserId;
+            CurrentDatabase = db;
         }
-        public OrgDrop(Guid id)
-            : this()
+        public OrgDrop(CMSDataContext db, Guid id)
+            : this(db)
         {
             QueryId = id;
         }
 
         private OrgFilter filter;
-        public OrgFilter Filter => filter ?? (filter = DbUtil.Db.OrgFilter(QueryId));
+        public OrgFilter Filter => filter ?? (filter = CurrentDatabase.OrgFilter(QueryId));
         public int OrgId => Filter.Id;
 
-        public int DisplayCount => Count ?? (Count = DbUtil.Db.OrgFilterIds(QueryId).Count()) ?? 0;
+        public int DisplayCount => Count ?? (Count = CurrentDatabase.OrgFilterIds(QueryId).Count()) ?? 0;
 
         private string orgname;
-        public string OrgName => orgname ?? (orgname = DbUtil.Db.Organizations.Where(vv => vv.OrganizationId == Filter.Id).Select(vv => vv.OrganizationName).Single());
+        public string OrgName => orgname ?? (orgname = CurrentDatabase.Organizations.Where(vv => vv.OrganizationId == Filter.Id).Select(vv => vv.OrganizationName).Single());
 
         private List<int> pids;
-        private List<int> Pids => pids ?? (pids = (from p in DbUtil.Db.OrgFilterIds(QueryId)
+        private List<int> Pids => pids ?? (pids = (from p in CurrentDatabase.OrgFilterIds(QueryId)
                                                    select p.PeopleId.Value).ToList());
 
         public void Process(CMSDataContext db)
@@ -75,15 +76,15 @@ namespace CmsWeb.Areas.Dialog.Models
                 Processed = 0,
                 Operation = Op,
             };
-            DbUtil.Db.LogActivity($"OrgDrop {lop.Count} records", Filter.Id, uid: UserId);
             db.LongRunningOperations.InsertOnSubmit(lop);
             db.SubmitChanges();
+            db.LogActivity($"OrgDrop {lop.Count} records", Filter.Id, uid: UserId);
             HostingEnvironment.QueueBackgroundWorkItem(ct => DoWork(this));
         }
 
         private static void DoWork(OrgDrop model)
         {
-            var db = DbUtil.Create(model.Host);
+            var db = CMSDataContext.Create(model.Host);
             var cul = db.Setting("Culture", "en-US");
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
@@ -91,8 +92,6 @@ namespace CmsWeb.Areas.Dialog.Models
             LongRunningOperation lop = null;
             foreach (var pid in model.Pids)
             {
-                //DbUtil.Db.Dispose();
-                //db = DbUtil.Create(model.Host);
                 var om = db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == model.filter.Id);
                 if (model.DropDate.HasValue)
                 {
@@ -123,10 +122,10 @@ namespace CmsWeb.Areas.Dialog.Models
 
         public void DropSingleMember(int orgId, int peopleId)
         {
-            var org = DbUtil.Db.LoadOrganizationById(orgId);
+            var org = CurrentDatabase.LoadOrganizationById(orgId);
             var om = org.OrganizationMembers.Single(mm => mm.PeopleId == peopleId);
-            om.Drop(DbUtil.Db);
-            DbUtil.Db.SubmitChanges();
+            om.Drop(CurrentDatabase);
+            CurrentDatabase.SubmitChanges();
         }
     }
 }

@@ -1426,7 +1426,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             if (np != null)
             {
                 db.EmailRedacted(db.Setting("AdminMail", ConfigurationManager.AppSettings["supportemail"]), np,
-                    "Picture Uploaded on " + Util.Host,
+                    "Picture Uploaded on " + db.Host,
                     $"{Util.UserName} Uploaded a picture for <a href=\"{db.ServerLink($"/Person2/{PeopleId}")}\">{Name}</a><br />\n");
             }
         }
@@ -2136,7 +2136,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             };
             TasksAboutPerson.Add(t);
 
-            var gcm = new GCMHelper(Util.Host, DbUtil.Db);
+            var gcm = new GCMHelper(db.Host, db);
             gcm.sendRefresh(assignTo, GCMHelper.ACTION_REFRESH);
 
             return t;

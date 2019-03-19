@@ -148,12 +148,12 @@ namespace CmsWeb.Areas.OnlineReg.Models
             return IsFilled;
         }
 
-        public bool CanRegisterInCommunityGroup(DateTime enrollmentCutoff)
+        public bool CanRegisterInCommunityGroup(string host, DateTime enrollmentCutoff)
         {
             if (PeopleId == null)
                 return false;
 
-            var db = DbUtil.DbReadOnly;
+            var db = DbUtil.Create(host, asReadOnly: true);
 
             var results = from om in db.OrganizationMembers
                 join org in db.Organizations on om.OrganizationId equals org.OrganizationId

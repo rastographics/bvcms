@@ -17,7 +17,7 @@ namespace CmsWeb.Areas.Manage.Controllers
     {
         private readonly IRequestManager _requestManager;
 
-        public BatchMoveAndDeleteController(IRequestManager requestManager)
+        public BatchMoveAndDeleteController(IRequestManager requestManager) : base(requestManager)
         {
             _requestManager = requestManager;
         }
@@ -33,7 +33,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         public void MoveAndDeleteAsync(string text)
         {
             AsyncManager.OutstandingOperations.Increment();
-            var host = Util.Host;
+            var host = CurrentDatabase.Host;
             ThreadPool.QueueUserWorkItem(e =>
             {
                 var sb = new StringBuilder();

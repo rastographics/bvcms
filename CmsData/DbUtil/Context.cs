@@ -48,8 +48,18 @@ namespace CmsData
         }
 #endif
         internal string ConnectionString;
+        public static CMSDataContext Create(string host)
+        {
+            var connectionString = CreateConnectionString(host);
+            return Create(connectionString, host);
+        }
+
         public static CMSDataContext Create(string connStr, string host)
         {
+            if (!host.HasValue())
+            {
+                throw new NullReferenceException("Host value is null or empty");
+            }
             return new CMSDataContext(connStr)
             {
                 ConnectionString = connStr,
@@ -124,14 +134,24 @@ namespace CmsData
 
         public static CMSDataContext Create(HttpContextBase currentHttpContext)
         {
-            var host = currentHttpContext.Request.Url.Authority.Split('.', ':')[0];
+            string host = GetHost(currentHttpContext);
+            var connectionString = CreateConnectionString(host);
+
+            return CMSDataContext.Create(connectionString, host);
+        }
+
+        public static string GetHost(HttpContextBase httpContext)
+        {
+            return httpContext.Request.Url.Authority.Split('.', ':')[0];
+        }
+
+        private static string CreateConnectionString(string host)
+        {
             var cs = ConfigurationManager.ConnectionStrings["CMS"];
             var cb = new SqlConnectionStringBuilder(cs.ConnectionString);
             cb.InitialCatalog = $"CMS_{host}";
             cb.PersistSecurityInfo = true;
-            var connectionString = cb.ConnectionString;
-
-            return CMSDataContext.Create(connectionString, host);
+            return cb.ConnectionString;
         }
 
         public void ClearCache2()

@@ -51,7 +51,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         {
             var fdt = fromDate.ToDate();
             var tdt = toDate.ToDate();
-            string host = Util.Host;
+            string host = CurrentDatabase.Host;
             var runningtotals = new DuplicatesRun
             {
                 Started = DateTime.Now,

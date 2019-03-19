@@ -35,6 +35,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public void StartRegistrationForFamilyMember(int id, ModelStateDictionary modelState)
         {
+            var db = CurrentDatabase;
             modelState.Clear(); // ensure we pull form fields from our model, not MVC's
             HistoryAdd("Register");
             int index = List.Count - 1;
@@ -69,7 +70,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             {
                 if (!SupportMissionTrip)
                 {
-                    p.IsFilled = p.org.RegLimitCount(DbUtil.Db) >= p.org.Limit;
+                    p.IsFilled = p.org.RegLimitCount(db) >= p.org.Limit;
                 }
 
                 if (p.IsFilled)
@@ -78,11 +79,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
                         "Sorry, but registration is filled.");
                 }
 
-                if (p.IsCommunityGroup() && DbUtil.Db.Setting("RestrictCGSignupsTo24Hrs"))
+                if (p.IsCommunityGroup() && db.Setting("RestrictCGSignupsTo24Hrs"))
                 {
-                    if (!p.CanRegisterInCommunityGroup(DateTime.Today.AddDays(-1)))
+                    if (!p.CanRegisterInCommunityGroup(CurrentDatabase.Host, DateTime.Today.AddDays(-1)))
                     {
-                        var message = DbUtil.Db.Setting("RestrictCGSignupsTo24HrsMessage", "Sorry, but you cannot register for multiple community groups on the same day.");
+                        var message = db.Setting("RestrictCGSignupsTo24HrsMessage", "Sorry, but you cannot register for multiple community groups on the same day.");
                         modelState.AddModelError(this.GetNameFor(mm => mm.List[List.IndexOf(p)].Found), message);
                     }
                         

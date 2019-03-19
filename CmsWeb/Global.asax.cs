@@ -69,14 +69,15 @@ namespace CmsWeb
                 return;
             }
 
-            if (Util.Host.StartsWith("direct"))
+            if (Request.Url.Authority.StartsWith("direct"))
             {
                 return;
             }
 
             if (User.Identity.IsAuthenticated)
             {
-                var r = DbUtil.CheckDatabaseExists(Util.CmsHost);
+                var host = CMSDataContext.GetHost(new HttpContextWrapper(Context));
+                var r = DbUtil.CheckDatabaseExists($"CMS_{host}");
                 var redirect = ViewExtensions2.DatabaseErrorUrl(r);
                 if (redirect != null)
                 {
@@ -116,7 +117,8 @@ namespace CmsWeb
                 return;
             }
 
-            var r = DbUtil.CheckDatabaseExists(Util.CmsHost);
+            var host = CMSDataContext.GetHost(new HttpContextWrapper(Context));
+            var r = DbUtil.CheckDatabaseExists($"CMS_{host}");
             var redirect = ViewExtensions2.DatabaseErrorUrl(r);
             if (Util.IsDebug())
             {
@@ -125,9 +127,9 @@ namespace CmsWeb
                     Response.Redirect(redirect);
                     return;
                 }
-                if (r == DbUtil.CheckDatabaseResult.DatabaseDoesNotExist && Request.IsLocal)
+                if (r == DbUtil.CheckDatabaseResult.DatabaseDoesNotExist && "localhost".Equal(Request.Url.Host))
                 {
-                    var ret = DbUtil.CreateDatabase();
+                    var ret = DbUtil.CreateDatabase(host);
                     if (ret.HasValue())
                     {
                         Response.Redirect($"/Errors/DatabaseCreationError.aspx?error={HttpUtility.UrlEncode(ret)}");
@@ -144,7 +146,7 @@ namespace CmsWeb
                 }
             }
 
-            var db = DbUtil.Db;
+            var db = CMSDataContext.Create(new HttpContextWrapper(Context));
 
             Util.AdminMail = db.Setting("AdminMail", "");
             Util.DateSimulation = db.Setting("UseDateSimulation");
@@ -321,7 +323,8 @@ namespace CmsWeb
             if (Request.Url.Host.Contains(bvcms, true))
             {
                 var url = Request.Url.OriginalString;
-                var dbExists = DbUtil.CheckDatabaseExists(Util.CmsHost) == DbUtil.CheckDatabaseResult.DatabaseExists;
+                var host = CMSDataContext.GetHost(new HttpContextWrapper(Context));
+                var dbExists = DbUtil.CheckDatabaseExists($"CMS_{host}") == DbUtil.CheckDatabaseResult.DatabaseExists;
                 var newBaseUrl = "tpsdb.com";
                 if (!dbExists)
                 {
