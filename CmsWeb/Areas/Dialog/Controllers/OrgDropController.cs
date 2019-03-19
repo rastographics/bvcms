@@ -3,6 +3,7 @@ using CmsWeb.Areas.Dialog.Models;
 using CmsWeb.Lifecycle;
 using System;
 using System.Web.Mvc;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Controllers
 {
@@ -24,6 +25,9 @@ namespace CmsWeb.Areas.Dialog.Controllers
         [HttpPost]
         public ActionResult Process(OrgDrop model)
         {
+            model.Host = CurrentDatabase.Host;
+            model.UserId = Util.UserId;
+            model.CurrentDatabase = CurrentDatabase;
             model.UpdateLongRunningOp(CurrentDatabase, OrgDrop.Op);
             if (!model.Started.HasValue)
             {

@@ -19,7 +19,7 @@ namespace CmsWeb.Areas.Dialog.Models
         {
             get
             {
-                switch (Filter.GroupSelect)
+                switch (Filter?.GroupSelect)
                 {
                     case GroupSelectCode.Member:
                         return "Members";
@@ -30,7 +30,7 @@ namespace CmsWeb.Areas.Dialog.Models
                     case GroupSelectCode.Prospect:
                         return "Prospects";
                     default:
-                        throw new Exception("Unknown group " + Filter.GroupSelect);
+                        return Filter?.GroupSelect;
                 }
             }
         }
@@ -39,6 +39,10 @@ namespace CmsWeb.Areas.Dialog.Models
         public bool RemoveFromEnrollmentHistory { get; set; }
         public int UserId { get; set; }
         public CMSDataContext CurrentDatabase { get; set; }
+
+        public OrgDrop()
+        {
+        }
 
         public OrgDrop(CMSDataContext db)
         {
@@ -53,17 +57,16 @@ namespace CmsWeb.Areas.Dialog.Models
         }
 
         private OrgFilter filter;
-        public OrgFilter Filter => filter ?? (filter = CurrentDatabase.OrgFilter(QueryId));
-        public int OrgId => Filter.Id;
+        public OrgFilter Filter => filter ?? (filter = CurrentDatabase?.OrgFilter(QueryId));
+        public int OrgId => Filter?.Id ?? 0;
 
-        public int DisplayCount => Count ?? (Count = CurrentDatabase.OrgFilterIds(QueryId).Count()) ?? 0;
+        public int DisplayCount => Count ?? (Count = CurrentDatabase?.OrgFilterIds(QueryId).Count()) ?? 0;
 
         private string orgname;
-        public string OrgName => orgname ?? (orgname = CurrentDatabase.Organizations.Where(vv => vv.OrganizationId == Filter.Id).Select(vv => vv.OrganizationName).Single());
+        public string OrgName => orgname ?? (orgname = CurrentDatabase?.Organizations.Where(vv => vv.OrganizationId == Filter.Id).Select(vv => vv.OrganizationName).Single());
 
         private List<int> pids;
-        private List<int> Pids => pids ?? (pids = (from p in CurrentDatabase.OrgFilterIds(QueryId)
-                                                   select p.PeopleId.Value).ToList());
+        private List<int> Pids => pids ?? (pids = CurrentDatabase?.OrgFilterIds(QueryId).Select(p => p.PeopleId.Value).ToList());
 
         public void Process(CMSDataContext db)
         {
