@@ -86,12 +86,6 @@ namespace CmsWeb.Controllers
             {
                 return Content("no content");
             }
-
-            var cs = User.IsInRole("Finance")
-                ? Util.ConnectionStringReadOnlyFinance
-                : Util.ConnectionStringReadOnly;
-            var cn = new SqlConnection(cs);
-            cn.Open();
             var d = Request.QueryString.AllKeys.ToDictionary(key => key, key => Request.QueryString[key]);
             var p = new DynamicParameters();
             foreach (var kv in d)
@@ -114,9 +108,14 @@ namespace CmsWeb.Controllers
                 return View("RunScriptPageBreaks");
             }
             ViewBag.Url = Request.Url?.PathAndQuery;
-            var rd = cn.ExecuteReader(script, p, commandTimeout: 1200);
-            ViewBag.ExcelUrl = Request.Url?.AbsoluteUri.Replace("RunScript/", "RunScriptExcel/");
-            return View(rd);
+
+            using (var cn = CurrentDatabase.ReadonlyConnection())
+            {
+                cn.Open();
+                var rd = cn.ExecuteReader(script, p, commandTimeout: 1200);
+                ViewBag.ExcelUrl = Request.Url?.AbsoluteUri.Replace("RunScript/", "RunScriptExcel/");
+                return View(rd);
+            }
         }
 
         [HttpGet, Route("~/RunScriptExcel/{scriptname}/{parameter?}")]
@@ -128,10 +127,6 @@ namespace CmsWeb.Controllers
                 return Message("no content");
             }
 
-            var cs = User.IsInRole("Finance")
-                ? Util.ConnectionStringReadOnlyFinance
-                : Util.ConnectionStringReadOnly;
-            var cn = new SqlConnection(cs);
             var d = Request.QueryString.AllKeys.ToDictionary(key => key, key => Request.QueryString[key]);
             var p = new DynamicParameters();
             foreach (var kv in d)
@@ -145,7 +140,11 @@ namespace CmsWeb.Controllers
                 return Message(script);
             }
 
-            return cn.ExecuteReader(script, p, commandTimeout: 1200).ToExcel("RunScript.xlsx", fromSql: true);
+            using (var cn = CurrentDatabase.ReadonlyConnection())
+            {
+                cn.Open();
+                return cn.ExecuteReader(script, p, commandTimeout: 1200).ToExcel("RunScript.xlsx", fromSql: true);
+            }
         }
 
         [HttpGet, Route("~/PyScript/{name}")]

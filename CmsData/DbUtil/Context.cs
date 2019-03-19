@@ -1954,8 +1954,24 @@ This search uses multiple steps which cannot be duplicated in a single query.
         public DbConnection ReadonlyConnection()
         {
             var finance = CurrentUser?.InRole("Finance") ?? true;
-            return new SqlConnection(finance ? Util.ConnectionStringReadOnlyFinance : Util.ConnectionStringReadOnly);
+            return new SqlConnection(ReadonlyConnectionString(finance));
         }
+
+        private string ReadonlyConnectionString(bool finance = false)
+        {
+            var pw = ConfigurationManager.AppSettings["readonlypassword"];
+            if (!pw.HasValue())
+                return ConnectionString;
+
+            var cs = CreateConnectionString(Host);
+            var cb = new SqlConnectionStringBuilder(cs);
+            cb.InitialCatalog = $"CMS_{Host}";
+            cb.IntegratedSecurity = false;
+            cb.UserID = (finance ? $"ro-{cb.InitialCatalog}-finance" : $"ro-{cb.InitialCatalog}");
+            cb.Password = pw;
+            return cb.ConnectionString;
+        }
+
         public void Log2Content(string file, string data)
         {
             var c = Content(file, ContentTypeCode.TypeText);

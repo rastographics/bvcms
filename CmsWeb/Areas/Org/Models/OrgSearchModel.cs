@@ -793,10 +793,7 @@ namespace CmsWeb.Areas.Search.Models
                 throw new Exception("missing @OrgIds");
 
             var p = GetSqlParameters(oids, meetingDate1, meetingDate2, content);
-            var cs = HttpContextFactory.Current.User.IsInRole("Finance")
-                ? Util.ConnectionStringReadOnlyFinance
-                : Util.ConnectionStringReadOnly;
-            var cn = new SqlConnection(cs);
+            var cn = DbUtil.Db.ReadonlyConnection();
             cn.Open();
             return cn.ExecuteReader(content, p, commandTimeout: 1200);
         }

@@ -162,36 +162,42 @@ namespace CmsWeb.Areas.Reports.Models
 
         public string Table()
         {
-            var cs = GetConnectionString();
-            var cn = new SqlConnection(cs);
-            var p = Parameters();
-            var sql = Sql();
-            if (sql.Contains("@userid"))
+            string result = "";
+            using (var cn = db.ReadonlyConnection())
             {
-                p.Add("@userid", Util.UserId);
-            }
+                var p = Parameters();
+                var sql = Sql();
+                if (sql.Contains("@userid"))
+                {
+                    p.Add("@userid", Util.UserId);
+                }
 
-            if (sql.Contains("pagebreak"))
-            {
-                return PythonModel.PageBreakTables(db, sql, p);
-            }
+                if (sql.Contains("pagebreak"))
+                {
+                    return PythonModel.PageBreakTables(db, sql, p);
+                }
 
-            var rd = cn.ExecuteReader(sql, p);
-            return GridResult.Table(rd, Name2, 2000);
+                var rd = cn.ExecuteReader(sql, p);
+                result = GridResult.Table(rd, Name2, 2000);
+            }
+            return result;
         }
 
         public EpplusResult Result()
         {
-            var cs = GetConnectionString();
-            var cn = new SqlConnection(cs);
-            var p = Parameters();
-            var sql = Sql();
-            if (sql.Contains("@userid"))
+            EpplusResult result;
+            using (var cn = db.ReadonlyConnection())
             {
-                p.Add("@userid", Util.UserId);
-            }
+                var p = Parameters();
+                var sql = Sql();
+                if (sql.Contains("@userid"))
+                {
+                    p.Add("@userid", Util.UserId);
+                }
 
-            return cn.ExecuteReader(sql, p).ToExcel(Report + ".xlsx");
+                result = cn.ExecuteReader(sql, p).ToExcel(Report + ".xlsx");
+            }
+            return result;
         }
 
         public int? Qtagid { get; set; }
@@ -209,23 +215,19 @@ namespace CmsWeb.Areas.Reports.Models
 
         public EpplusResult Result(string savedQuery)
         {
-            string cs = GetConnectionString();
-            var cn = new SqlConnection(cs);
-            var p = Parameters(savedQuery);
-            var sql = Sql();
-            if (sql.Contains("@userid"))
+            EpplusResult result;
+            using (var cn = db.ReadonlyConnection())
             {
-                p.Add("@userid", Util.UserId);
+                var p = Parameters(savedQuery);
+                var sql = Sql();
+                if (sql.Contains("@userid"))
+                {
+                    p.Add("@userid", Util.UserId);
+                }
+
+                result = cn.ExecuteReader(sql, p).ToExcel(Report + ".xlsx");
             }
-
-            return cn.ExecuteReader(sql, p).ToExcel(Report + ".xlsx");
-        }
-
-        private string GetConnectionString()
-        {
-            return db.CurrentUser.InRole("Finance")
-                ? Util.ConnectionStringReadOnlyFinance
-                : Util.ConnectionStringReadOnly;
+            return result;
         }
 
         public string Sql()

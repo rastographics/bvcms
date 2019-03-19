@@ -23,6 +23,7 @@ namespace CmsData
             int? tagid = null;
 
             if (sql.Contains("@BlueToolbarTagId"))
+            {
                 if (dictionary.ContainsKey("BlueToolbarGuid"))
                 {
                     var guid = (dictionary["BlueToolbarGuid"] as string).ToGuid();
@@ -33,13 +34,11 @@ namespace CmsData
                     tagid = tag.Id;
                     p.Add("@BlueToolbarTagId", tag.Id);
                 }
-            var cs = db.CurrentUser.InRole("Finance")
-                ? Util.ConnectionStringReadOnlyFinance
-                : Util.ConnectionStringReadOnly;
-            using (var cn = new SqlConnection(cs))
+            }
+            using (var cn = db.ReadonlyConnection())
             {
                 cn.Open();
-                using (var rd = db.Connection.ExecuteReader(sql, p, commandTimeout: 300))
+                using (var rd = cn.ExecuteReader(sql, p, commandTimeout: 300))
                 {
                     var table = Table(rd);
                     return $@"
@@ -59,38 +58,38 @@ namespace CmsData
 
         public static string PageBreakTables(CMSDataContext db, string sql, DynamicParameters p)
         {
-            var cs = db.CurrentUser.InRole("Finance")
-                ? Util.ConnectionStringReadOnlyFinance
-                : Util.ConnectionStringReadOnly;
-            var cn = new SqlConnection(cs);
-            cn.Open();
-            var sb = new StringBuilder();
-            int pagebreakcol = 0;
-            var pg = 1;
-            while (true)
+            using (var cn = db.ReadonlyConnection())
             {
-                var s = sql.Replace("WHERE 1=1", $"WHERE pagebreak={pg}");
-                var cmd = new SqlCommand(s, cn);
-                foreach (var parm in p.ParameterNames)
+                cn.Open();
+                var sb = new StringBuilder();
+                int pagebreakcol = 0;
+                var pg = 1;
+                while (true)
                 {
-                    var value = p.Get<dynamic>(parm);
-                    cmd.Parameters.AddWithValue(parm, value);
-                }
-                cmd.CommandTimeout = 1200;
-                using (var rd = cmd.ExecuteReader())
-                {
-                    if (!rd.HasRows)
-                        return sb.ToString();
-                    if (pg == 1)
+                    var s = sql.Replace("WHERE 1=1", $"WHERE pagebreak={pg}");
+                    var cmd = (SqlCommand)cn.CreateCommand();
+                    cmd.CommandText = s;
+                    foreach (var parm in p.ParameterNames)
                     {
-                        var colnames = Enumerable.Range(0, rd.FieldCount).Select(rd.GetName).ToList();
-                        pagebreakcol = colnames.FindIndex(vv => vv == "pagebreak");
+                        var value = p.Get<dynamic>(parm);
+                        cmd.Parameters.AddWithValue(parm, value);
                     }
-                    var t = HtmlTable(rd, $"pagebreak={pagebreakcol}");
-                    t.RenderControl(new HtmlTextWriter(new StringWriter(sb)));
-                    sb.AppendLine("<div class='page-break'></div>");
+                    cmd.CommandTimeout = 1200;
+                    using (var rd = cmd.ExecuteReader())
+                    {
+                        if (!rd.HasRows)
+                            return sb.ToString();
+                        if (pg == 1)
+                        {
+                            var colnames = Enumerable.Range(0, rd.FieldCount).Select(rd.GetName).ToList();
+                            pagebreakcol = colnames.FindIndex(vv => vv == "pagebreak");
+                        }
+                        var t = HtmlTable(rd, $"pagebreak={pagebreakcol}");
+                        t.RenderControl(new HtmlTextWriter(new StringWriter(sb)));
+                        sb.AppendLine("<div class='page-break'></div>");
+                    }
+                    pg++;
                 }
-                pg++;
             }
         }
 

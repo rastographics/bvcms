@@ -233,13 +233,15 @@ namespace CmsWeb.Areas.Finance.Controllers
             var linkUrl = CurrentDatabase.ServerLink($"/TotalsByFundCustomExport/{id}");
             var linkHtml = $"<a href='{linkUrl}' class='CustomExport btn btn-default' target='_blank'><i class='fa fa-file-excel-o'></i> Download as Excel</a>";
 
-            var connection = new SqlConnection(Util.ConnectionStringReadOnlyFinance);
-            connection.Open();
+            using (var connection = CurrentDatabase.ReadonlyConnection())
+            {
+                connection.Open();
 
-            var reader = connection.ExecuteReader(content, p, commandTimeout: 1200);
-            var contentTable = GridResult.Table(reader, id.SpaceCamelCase(), excellink: linkHtml);
+                var reader = connection.ExecuteReader(content, p, commandTimeout: 1200);
+                var contentTable = GridResult.Table(reader, id.SpaceCamelCase(), excellink: linkHtml);
 
-            return SimpleContent(contentTable);
+                return SimpleContent(contentTable);
+            }
         }
 
         [HttpPost, Route("~/TotalsByFundCustomExport/{id}")]
@@ -251,7 +253,7 @@ namespace CmsWeb.Areas.Finance.Controllers
                 return SimpleContent("no content");
             }
 
-            var connection = new SqlConnection(Util.ConnectionStringReadOnlyFinance);
+            var connection = CurrentDatabase.ReadonlyConnection();
             connection.Open();
             var queryParameters = model.GetDynamicParameters();
 
