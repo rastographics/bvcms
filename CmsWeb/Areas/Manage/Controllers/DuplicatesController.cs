@@ -50,7 +50,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         public ActionResult Find(string fromDate, string toDate)
         {
             var fdt = fromDate.ToDate();
-            var tdt = toDate.ToDate();
+            DateTime tdt = toDate.ToDate() ?? DateTime.Now;
             string host = CurrentDatabase.Host;
             var runningtotals = new DuplicatesRun
             {
@@ -64,12 +64,12 @@ namespace CmsWeb.Areas.Manage.Controllers
 
             HostingEnvironment.QueueBackgroundWorkItem(ct =>
             {
-                var db = DbUtil.Create(host);
+                var db = CMSDataContext.Create(host);
                 var rt = db.DuplicatesRuns.OrderByDescending(mm => mm.Id).First();
                 db.ExecuteCommand("delete duplicate");
                 var q = from p in db.People
                         where p.CreatedDate > fdt
-                        where p.CreatedDate < tdt.Value.AddDays(1)
+                        where p.CreatedDate < tdt.AddDays(1)
                         select p.PeopleId;
                 rt.Count = q.Count();
                 db.SubmitChanges();
