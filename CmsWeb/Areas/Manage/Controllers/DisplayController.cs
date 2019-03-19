@@ -95,7 +95,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                 throw new HttpException(404, "No ID found.");
             }
 
-            var content = DbUtil.ContentFromID(id.Value);
+            var content = DbUtil.ContentFromID(CurrentDatabase, id.Value);
             if (content == null)
             {
                 throw new HttpException(404, "No ID found.");
@@ -130,7 +130,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         [HttpPost]
         public ActionResult ContentUpdate(int id, string name, string title, string body, bool? snippet, int? roleid, string contentKeyWords, string stayaftersave = null)
         {
-            var content = DbUtil.ContentFromID(id);
+            var content = DbUtil.ContentFromID(CurrentDatabase, id);
             content.Name = name;
             content.Title = string.IsNullOrWhiteSpace(title) ? name : title;
             content.Body = body;
@@ -215,7 +215,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 
         public ActionResult ContentDelete(int id)
         {
-            var content = DbUtil.ContentFromID(id);
+            var content = DbUtil.ContentFromID(CurrentDatabase, id);
             CurrentDatabase.ExecuteCommand("DELETE FROM dbo.ContentKeywords WHERE Id = {0}", id);
             CurrentDatabase.ExecuteCommand("DELETE FROM dbo.Content WHERE Id = {0}", id);
             var url = GetIndexTabUrl(content);
@@ -261,7 +261,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 
         public ActionResult EmailBody(int id)
         {
-            var content = DbUtil.ContentFromID(id);
+            var content = DbUtil.ContentFromID(CurrentDatabase, id);
             content.RemoveGrammarly();
             return View(content);
         }
