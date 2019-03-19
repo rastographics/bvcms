@@ -28,6 +28,7 @@ namespace CmsWeb.Areas.Dialog.Models
         public AddAttendeesFromTag() { }
         public AddAttendeesFromTag(int id, CMSDataContext db)
         {
+            Host = db.Host;
             QueryId = Guid.NewGuid();
             MeetingId = id;
             UserId = Util.UserId;
@@ -43,7 +44,6 @@ namespace CmsWeb.Areas.Dialog.Models
             OrgId = i.OrganizationId;
             JoinDate = i.MeetingDate.Value.Date;
             Tag = new CodeInfo("0", "Tag");
-            Host = db.Host;
         }
         [DisplayName("Choose A Tag")]
         public CodeInfo Tag { get; set; }

@@ -18,6 +18,7 @@ namespace CmsWeb.Areas.Dialog.Models
         public DeleteMeeting() { }
         public DeleteMeeting(int id, CMSDataContext db)
         {
+            Host = db.Host;
             QueryId = Guid.NewGuid();
             MeetingId = id;
             var mm = db.Meetings.Single(m => m.MeetingId == id);

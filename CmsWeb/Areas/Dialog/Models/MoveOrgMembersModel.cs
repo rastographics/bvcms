@@ -58,8 +58,8 @@ namespace CmsWeb.Areas.Dialog.Models
         }
         public static void DoMoveWork(MoveOrgMembersModel model)
         {
-            var jobStatusContext = DbUtil.Create(model.Host);
-            var jobWorkerContext = DbUtil.Create(model.Host);
+            var jobStatusContext = CMSDataContext.Create(model.Host);
+            var jobWorkerContext = CMSDataContext.Create(model.Host);
             jobWorkerContext.CommandTimeout = 2200;
             var cul = jobWorkerContext.Setting("Culture", "en-US");
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);

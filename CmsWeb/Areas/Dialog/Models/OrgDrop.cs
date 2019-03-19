@@ -42,6 +42,7 @@ namespace CmsWeb.Areas.Dialog.Models
 
         public OrgDrop(CMSDataContext db)
         {
+            Host = db.Host;
             UserId = Util.UserId;
             CurrentDatabase = db;
         }

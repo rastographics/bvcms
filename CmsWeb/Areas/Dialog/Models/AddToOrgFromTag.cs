@@ -28,6 +28,7 @@ namespace CmsWeb.Areas.Dialog.Models
         public int OrgId => Filter.Id;
         public AddToOrgFromTag(Guid id, CMSDataContext db)
         {
+            Host = db.Host;
             CurrentDatabase = db;
             QueryId = id;
             UserId = Util.UserId;

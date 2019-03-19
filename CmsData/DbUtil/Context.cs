@@ -147,6 +147,7 @@ namespace CmsData
 
         private static string CreateConnectionString(string host)
         {
+            host = ConfigurationManager.AppSettings["host"] ?? host;
             var cs = ConfigurationManager.ConnectionStrings["CMS"];
             var cb = new SqlConnectionStringBuilder(cs.ConnectionString);
             cb.InitialCatalog = $"CMS_{host}";
