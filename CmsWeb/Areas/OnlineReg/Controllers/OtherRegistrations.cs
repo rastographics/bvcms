@@ -423,7 +423,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 var expires = DateTime.Now.AddMinutes(CurrentDatabase.Setting("SendlinkExpireMinutes", "30").ToInt());
                 string action = (linktype.Contains("supportlink") ? "support" : "register for");
                 string minutes = CurrentDatabase.Setting("SendLinkExpireMinutes", "30");
-                var c = DbUtil.Content("SendLinkMessage");
+                var c = DbUtil.Content(CurrentDatabase, "SendLinkMessage");
                 if (c == null)
                 {
                     c = new Content

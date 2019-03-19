@@ -169,7 +169,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             var settings = DbUtil.Db.CreateRegistrationSettings(org.OrganizationId);
 
-            var body = DbUtil.Content(settings.SpecialScript, "Shell not found.");
+            var body = DbUtil.Content(DbUtil.Db, settings.SpecialScript, "Shell not found.");
             body = body.Replace("[action]", "/OnlineReg/SpecialRegistrationResults/" + org.OrganizationId, true);
 
             return body;
