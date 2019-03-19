@@ -124,7 +124,8 @@ namespace CmsData
 
         public static CMSDataContext Create(HttpContextBase currentHttpContext)
         {
-            var host = currentHttpContext.Request.Url.Authority.Split('.', ':')[0];
+            //var host = currentHttpContext.Request.Url.Authority.Split('.', ':')[0];
+            var host = "bellevue";
             var cs = ConfigurationManager.ConnectionStrings["CMS"];
             var cb = new SqlConnectionStringBuilder(cs.ConnectionString);
             cb.InitialCatalog = $"CMS_{host}";

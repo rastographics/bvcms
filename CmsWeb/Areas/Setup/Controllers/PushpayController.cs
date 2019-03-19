@@ -219,7 +219,7 @@ namespace CmsWeb.Areas.Setup.Controllers
                 bool isRegistration = sr.Substring(0, 3) == "dat";
                 if (isRegistration)
                 {
-                    return RegistrationProcess(paymentToken, Int32.Parse(sr.Substring(4)));
+                    return await RegistrationProcess(paymentToken, Int32.Parse(sr.Substring(4)));
                 }
                 int orgId = Int32.Parse(sr.Substring(4));
                 SetHeaders2(orgId);
@@ -290,11 +290,11 @@ namespace CmsWeb.Areas.Setup.Controllers
             }
         }
 
-        private ActionResult RegistrationProcess(string paymentToken, int datumId)
-        {           
+        private async Task<ActionResult> RegistrationProcess(string paymentToken, int datumId)
+        {
             OnlineRegModel m = new OnlineRegModel();
             RegistrationDatum datum = CurrentDatabase.RegistrationDatas.SingleOrDefault(d => d.Id == datumId);
-            m = Util.DeSerialize<OnlineRegModel>(datum.Data);            
+            m = Util.DeSerialize<OnlineRegModel>(datum.Data);
             if (paymentToken == "111")//test Token
             {
                 m.transactionId = CreateFakeTransaction(m);
@@ -302,16 +302,67 @@ namespace CmsWeb.Areas.Setup.Controllers
             else
             {
                 //Pending...
-                m.transactionId = CreateTransaction(paymentToken, m);
+                m.transactionId = await CreateTransaction(paymentToken, m);
             }
 
             m.UpdateDatum();
             return Redirect($"/OnlineReg/ProcessExternalPayment/{datumId}");
         }
 
-        private int CreateTransaction(string paymentToken, OnlineRegModel m)
+        private async Task<int> CreateTransaction(string paymentToken, OnlineRegModel m)
         {
-            throw new NotImplementedException();
+            PaymentForm pf = PaymentForm.CreatePaymentForm(m);
+            Payment payment = await _pushpayPayment.GetPayment(paymentToken);
+            int? PersonId = _resolver.ResolvePersonId(payment.Payer);
+            Person person = CurrentDatabase.LoadPersonById(PersonId.Value);
+            decimal amount = payment.Amount.Amount;
+
+            decimal? amtdue = null;
+            if (pf.Amtdue > 0)
+            {
+                amtdue = pf.Amtdue - amount;
+            }
+
+            var ti = new Transaction();
+
+            ti.TransactionId = payment.TransactionId;
+            ti.Name = person.Name;
+            ti.First = person.FirstName;
+            ti.MiddleInitial = person.MiddleName[0].ToString();
+            ti.Last = person.LastName;
+            ti.Suffix = person.SuffixCode;
+            ti.Donate = pf.Donate;
+            ti.Amtdue = pf.AmtToPay;
+            ti.Amt = amount;
+            ti.Emails = person.EmailAddress;
+            ti.Testing = false;
+            ti.Description = pf.Description;
+            ti.OrgId = pf.OrgId;
+            ti.Url = pf.URL;
+            ti.Address = person.AddressLineOne;
+            ti.TransactionGateway = "Pushpay";
+            ti.City = person.CityName;
+            ti.State = person.StateCode;
+            ti.Zip = person.ZipCode;
+            ti.DatumId = pf.DatumId;
+            ti.Phone = person.HomePhone;
+            ti.OriginalId = pf.OriginalId;
+            ti.Financeonly = pf.FinanceOnly;
+            ti.TransactionDate = Util.Now;
+            ti.PaymentType = payment.PaymentMethodType == "CreditCard" ? PaymentType.CreditCard : PaymentType.Ach;
+            ti.LastFourCC =
+                payment.PaymentMethodType == "CreditCard" ? payment.Card.Reference.Substring(payment.Card.Reference.Length - 4) : null;
+            ti.LastFourACH = null;
+            ti.Approved = true;
+
+            CurrentDatabase.Transactions.InsertOnSubmit(ti);
+            CurrentDatabase.SubmitChanges();
+            if (pf.OriginalId == null) // first transaction
+            {
+                ti.OriginalId = ti.Id;
+            }
+
+            return ti.Id;
         }
 
         private int CreateFakeTransaction(OnlineRegModel m, decimal? amount = null)
@@ -361,13 +412,16 @@ namespace CmsWeb.Areas.Setup.Controllers
                 Approved = true
             };
 
-            DbUtil.Db.Transactions.InsertOnSubmit(ti);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.Transactions.InsertOnSubmit(ti);
+            CurrentDatabase.SubmitChanges();
+
             if (pf.OriginalId == null) // first transaction
             {
                 ti.OriginalId = ti.Id;
-                ti.TransactionId = $"(fake){ti.Id}";
             }
+            ti.TransactionId = $"(fakePushpay){ti.Id}";
+
+            CurrentDatabase.SubmitChanges();
 
             return ti.Id;
         }
