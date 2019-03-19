@@ -1,4 +1,4 @@
-﻿@using UtilityExtensions
+﻿
 @{
     ViewBag.Title = "Finish";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -10,7 +10,7 @@
 }
 else
 {
-    <h1 class="form-header">@ViewExtensions2.DbSetting("NameOfChurch", "Pushpay authorized for : " + Util.Host)</h1>
+    <h1 class="form-header">@ViewExtensions2.DbSetting("NameOfChurch", "Pushpay authorized for : " + ViewBag.Host)</h1>
 }
 <div class="row">
     <div class="col-lg-9">

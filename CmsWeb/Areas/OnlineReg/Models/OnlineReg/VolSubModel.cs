@@ -31,9 +31,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private void FetchEntities(int aid, int? pid)
         {
-            var q = from attend in DbUtil.Db.Attends
+            var q = from attend in CurrentDatabase.Attends
                     where attend.AttendId == aid
-                    let p = DbUtil.Db.People.SingleOrDefault(pp => pp.PeopleId == pid)
+                    let p = CurrentDatabase.People.SingleOrDefault(pp => pp.PeopleId == pid)
                     select new
                     {
                         attend,
@@ -46,22 +46,22 @@ namespace CmsWeb.Areas.OnlineReg.Models
             person = i.person;
         }
 
-        public VolSubModel()
+        public VolSubModel(CMSDataContext db)
         {
-            //Db = Db;
+            CurrentDatabase = db;
         }
-        public VolSubModel(int aid, int pid, long ticks)
-            : this(aid, pid)
+        public VolSubModel(CMSDataContext db, int aid, int pid, long ticks)
+            : this(db, aid, pid)
         {
             this.ticks = ticks;
         }
-        public VolSubModel(int aid, int pid)
-            : this()
+        public VolSubModel(CMSDataContext db, int aid, int pid)
+            : this(db)
         {
             FetchEntities(aid, pid);
         }
-        public VolSubModel(string guid)
-            : this()
+        public VolSubModel(CMSDataContext db, string guid)
+            : this(db)
         {
             var error = "";
             if (!guid.HasValue())
@@ -75,7 +75,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 error = "invalid link";
             }
 
-            var ot = DbUtil.Db.OneTimeLinks.SingleOrDefault(oo => oo.Id == g.Value);
+            var ot = CurrentDatabase.OneTimeLinks.SingleOrDefault(oo => oo.Id == g.Value);
             if (ot == null)
             {
                 error = "invalid link";
@@ -92,7 +92,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
 
             ot.Used = true;
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
             var a = ot.Querystring.Split(',');
             FetchEntities(a[0].ToInt(), a[1].ToInt());
             ticks = a[2].ToLong();
@@ -109,7 +109,7 @@ Yes, I can sub for you.</a>";
 Sorry, I cannot sub for you.</a>";
 
             subject = $"Volunteer substitute request for {org.OrganizationName}";
-            message = DbUtil.Db.ContentHtml("VolunteerSubRequest", Resource1.VolSubModel_ComposeMessage_Body);
+            message = CurrentDatabase.ContentHtml("VolunteerSubRequest", Resource1.VolSubModel_ComposeMessage_Body);
             message = message.Replace("{org}", org.OrganizationName)
                 .Replace("{meetingdate}", attend.MeetingDate.ToString("dddd, MMM d"))
                 .Replace("{meetingtime}", attend.MeetingDate.ToString("h:mm tt"))
@@ -132,7 +132,7 @@ Sorry, I cannot sub for you.</a>";
         private List<PotentialSubstitute> PotentialSubs()
         {
             return potentialSubs ??
-                   (potentialSubs = (from ps in DbUtil.Db.PotentialSubstitutes(org.OrganizationId, attend.MeetingId)
+                   (potentialSubs = (from ps in CurrentDatabase.PotentialSubstitutes(org.OrganizationId, attend.MeetingId)
                                      select ps).ToList());
         }
 
@@ -162,7 +162,7 @@ Sorry, I cannot sub for you.</a>";
 
         public IEnumerable<SelectListItem> SmallGroups()
         {
-            var list = (from t in DbUtil.Db.MemberTags
+            var list = (from t in CurrentDatabase.MemberTags
                         where t.OrgId == org.OrganizationId
                         where t.Name.StartsWith("SG:")
                         orderby t.Name
@@ -172,9 +172,9 @@ Sorry, I cannot sub for you.</a>";
         }
         public void SendEmails()
         {
-            var tag = DbUtil.Db.FetchOrCreateTag(Util.SessionId, Util.UserPeopleId, DbUtil.Db.NextTagId);
-            DbUtil.Db.ExecuteCommand("delete TagPerson where Id = {0}", tag.Id);
-            DbUtil.Db.TagAll(pids, tag);
+            var tag = CurrentDatabase.FetchOrCreateTag(Util.SessionId, Util.UserPeopleId, CurrentDatabase.NextTagId);
+            CurrentDatabase.ExecuteCommand("delete TagPerson where Id = {0}", tag.Id);
+            CurrentDatabase.TagAll(pids, tag);
             var dt = new DateTime(ticks);
 
             foreach (var id in pids)
@@ -188,19 +188,19 @@ Sorry, I cannot sub for you.</a>";
                 };
                 attend.SubRequests.Add(vr);
             }
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
 
-            var qb = DbUtil.Db.ScratchPadCondition();
+            var qb = CurrentDatabase.ScratchPadCondition();
             qb.Reset();
             qb.AddNewClause(QueryType.HasMyTag, CompareType.Equal, $"{tag.Id},temp");
             attend.Commitment = CmsData.Codes.AttendCommitmentCode.FindSub;
-            qb.Save(DbUtil.Db);
+            qb.Save(CurrentDatabase);
 
-            var rurl = DbUtil.Db.ServerLink($"/OnlineReg/VolSubReport/{attend.AttendId}/{person.PeopleId}/{dt.Ticks}");
+            var rurl = CurrentDatabase.ServerLink($"/OnlineReg/VolSubReport/{attend.AttendId}/{person.PeopleId}/{dt.Ticks}");
             var reportlink = $@"<a href=""{rurl}"">Substitute Status Report</a>";
-            var list = DbUtil.Db.PeopleFromPidString(org.NotifyIds).ToList();
+            var list = CurrentDatabase.PeopleFromPidString(org.NotifyIds).ToList();
             //list.Insert(0, person);
-            DbUtil.Db.Email(person.FromEmail, list,
+            CurrentDatabase.Email(person.FromEmail, list,
                 "Volunteer Substitute Commitment for " + org.OrganizationName,
                 $@"
 <p>{person.Name} has requested a substitute on {attend.MeetingDate:MMM d} at {attend.MeetingDate:h:mm tt}.</p>
@@ -217,7 +217,7 @@ Sorry, I cannot sub for you.</a>";
             m.FromAddress = person.FromEmail;
 
             var eqid = m.CreateQueue(transactional: true).Id;
-            string host = Util.Host;
+            string host = CurrentDatabase.Host;
             // save these from HttpContext to set again inside thread local storage
             var useremail = Util.UserEmail;
             var isinroleemailtest = HttpContextFactory.Current.User.IsInRole("EmailTest");
@@ -272,7 +272,7 @@ Sorry, I cannot sub for you.</a>";
                 error = "invalid link";
             }
 
-            var ot = DbUtil.Db.OneTimeLinks.SingleOrDefault(oo => oo.Id == g.Value);
+            var ot = CurrentDatabase.OneTimeLinks.SingleOrDefault(oo => oo.Id == g.Value);
             if (ot == null)
             {
                 error = "invalid link";
@@ -293,7 +293,7 @@ Sorry, I cannot sub for you.</a>";
             ticks = a[2].ToLong();
             sid = a[3].ToInt();
             var dt = new DateTime(ticks);
-            var i = (from rr in DbUtil.Db.SubRequests
+            var i = (from rr in CurrentDatabase.SubRequests
                      where rr.AttendId == attend.AttendId
                      where rr.RequestorId == person.PeopleId
                      where rr.Requested == dt
@@ -304,7 +304,7 @@ Sorry, I cannot sub for you.</a>";
         public void ProcessReply(string ans)
         {
             var dt = new DateTime(ticks);
-            var i = (from rr in DbUtil.Db.SubRequests
+            var i = (from rr in CurrentDatabase.SubRequests
                      where rr.AttendId == attend.AttendId
                      where rr.RequestorId == person.PeopleId
                      where rr.Requested == dt
@@ -323,16 +323,16 @@ Sorry, I cannot sub for you.</a>";
                 DisplayMessage = "Thank you for responding";
                 i.CanSub = false;
                 Log("Regrets", i.Requested, i.SubstituteId);
-                DbUtil.Db.SubmitChanges();
+                CurrentDatabase.SubmitChanges();
                 return;
             }
             i.CanSub = true;
-            Attend.MarkRegistered(DbUtil.Db, i.Substitute.PeopleId, attend.MeetingId, AttendCommitmentCode.Substitute);
+            Attend.MarkRegistered(CurrentDatabase, i.Substitute.PeopleId, attend.MeetingId, AttendCommitmentCode.Substitute);
             attend.Commitment = AttendCommitmentCode.SubFound;
             Log("Claimed", i.Requested, i.SubstituteId);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
 
-            message = DbUtil.Db.ContentHtml("VolunteerSubConfirm", Resource1.VolSubModel_VolunteerSubConfirm);
+            message = CurrentDatabase.ContentHtml("VolunteerSubConfirm", Resource1.VolSubModel_VolunteerSubConfirm);
 
             var body = message
                 .Replace("{substitute}", i.Substitute.Name)
@@ -345,13 +345,13 @@ Sorry, I cannot sub for you.</a>";
             DisplayMessage = $"<p>You have been sent the following email at {Util.ObscureEmail(i.Substitute.EmailAddress)}.</p>\n" + body;
 
             // email confirmation
-            DbUtil.Db.Email(i.Requestor.FromEmail, i.Substitute,
+            CurrentDatabase.Email(i.Requestor.FromEmail, i.Substitute,
                 "Volunteer Substitute Commitment for " + org.OrganizationName, body);
 
             // notify requestor and org notifyids
-            var list = DbUtil.Db.PeopleFromPidString(org.NotifyIds).ToList();
+            var list = CurrentDatabase.PeopleFromPidString(org.NotifyIds).ToList();
             list.Insert(0, i.Requestor);
-            DbUtil.Db.Email(i.Substitute.FromEmail, list,
+            CurrentDatabase.Email(i.Substitute.FromEmail, list,
                 "Volunteer Substitute Commitment for " + org.OrganizationName,
                 $@"
 <p>The following email was sent to {i.Substitute.Name}.</p>
@@ -392,7 +392,7 @@ Sorry, I cannot sub for you.</a>";
         public IEnumerable<SubStatusInfo> SubRequests()
         {
             var dt = new DateTime(ticks);
-            var q = from r in DbUtil.Db.SubRequests
+            var q = from r in CurrentDatabase.SubRequests
                     where r.AttendId == attend.AttendId
                     where r.RequestorId == person.PeopleId
                     where r.Requested == dt
@@ -407,6 +407,8 @@ Sorry, I cannot sub for you.</a>";
             return q;
         }
         private Settings setting;
-        public Settings Setting => setting ?? (setting = DbUtil.Db.CreateRegistrationSettings(org.OrganizationId));
+        public Settings Setting => setting ?? (setting = CurrentDatabase.CreateRegistrationSettings(org.OrganizationId));
+
+        public CMSDataContext CurrentDatabase { get; set; }
     }
 }

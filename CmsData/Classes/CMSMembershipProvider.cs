@@ -34,7 +34,7 @@ namespace CmsData
         CMSDataContext Db => _db ?? (_db = GetDb());
         CMSDataContext GetDb()
         {
-            return CMSDataContext.Create(Util.Host);
+            return CMSDataContext.Create(Util.Host); //TODO: Don't fallback to Util.Host
         }
 
         public override void Initialize(string name, NameValueCollection config)

@@ -39,7 +39,7 @@ namespace CmsWeb.Areas.People.Controllers
                 return View("Personal/Edit", m);
             }
 
-            m.UpdatePerson();
+            m.UpdatePerson(CurrentDatabase);
             DbUtil.LogPersonActivity($"Update Basic Info for: {m.person.Name}", m.Id, m.person.Name);
             InitExportToolbar(id);
             return View("Personal/Display", m);

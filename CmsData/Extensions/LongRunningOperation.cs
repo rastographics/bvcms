@@ -8,7 +8,7 @@ namespace CmsData
     {
         partial void OnCreated()
         {
-            Host = Host ?? Util.Host;
+            Host = Host ?? Util.Host; //TODO: Don't fallback to Util.Host
         }
 
         public void UpdateLongRunningOp(CMSDataContext db, string op)

@@ -116,7 +116,7 @@ GO
             var sqlScriptsPath = path + @"..\SqlScripts\";
             var cs = Util.GetConnectionString2("master");
 
-            var retVal = CreateDatabase(Util.Host, sqlScriptsPath, cs, Util.ConnectionStringImage,
+            var retVal = CreateDatabase(host, sqlScriptsPath, cs, Util.ConnectionStringImage,
                 Util.GetConnectionString2("Elmah"), Util.ConnectionString);
 
             HttpRuntime.Cache.Remove(host + "-DatabaseExists");

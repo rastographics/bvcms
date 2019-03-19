@@ -15,6 +15,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public CMSDataContext db
         {
             get => _db ?? (_db = DbUtil.Db);
+            set => _db = value;
         }
 
         public OrganizationMember Enroll(Transaction transaction, string payLink)
@@ -52,7 +53,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 return;
             }
 
-            var pe = new PythonModel(Util.Host);
+            var pe = new PythonModel(db.Host);
             BuildDynamicData(pe, om);
 #if DEBUG
             if (setting.OnEnrollScript == "debug")

@@ -46,7 +46,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         {
             try
             {
-                var m = new SpecialReportViewModel(report, id);
+                var m = new SpecialReportViewModel(CurrentDatabase, report, id);
                 return m.RunSqlExcel();
             }
             catch (Exception ex)
@@ -60,7 +60,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         {
             try
             {
-                var m = new SpecialReportViewModel(report, id);
+                var m = new SpecialReportViewModel(CurrentDatabase, report, id);
                 m.RunSqlReport();
                 return View(m);
             }
@@ -76,7 +76,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         {
             try
             {
-                var m = new SpecialReportViewModel(report, id);
+                var m = new SpecialReportViewModel(CurrentDatabase, report, id);
                 m.RunPyScript();
                 return View(m);
             }

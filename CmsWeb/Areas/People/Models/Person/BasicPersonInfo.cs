@@ -213,9 +213,9 @@ namespace CmsWeb.Areas.People.Models
             person.SendEmailAddress1 = person.SendEmailAddress1 ?? true; // set sendemailaddress1 to either true or false, null is not allowed, default is true
             this.CopyPropertiesFrom(person);
         }
-        public void UpdatePerson()
+        public void UpdatePerson(CMSDataContext db)
         {
-            var p = DbUtil.Db.LoadPersonById(PeopleId);
+            var p = db.LoadPersonById(PeopleId);
 
             if (Grade == null && p.Grade == 0) // special case to fix bug
             {
@@ -223,15 +223,15 @@ namespace CmsWeb.Areas.People.Models
             }
 
             var changes = this.CopyPropertiesTo(p);
-            p.LogChanges(DbUtil.Db, changes);
+            p.LogChanges(db, changes);
 
             var fsb = new List<ChangeDetail>();
             p.Family.UpdateValue(fsb, "HomePhone", HomePhone.GetDigits());
-            p.Family.LogChanges(DbUtil.Db, fsb, p.PeopleId, Util.UserPeopleId ?? 0);
+            p.Family.LogChanges(db, fsb, p.PeopleId, Util.UserPeopleId ?? 0);
 
             if (p.DeceasedDateChanged)
             {
-                var ret = p.MemberProfileAutomation(DbUtil.Db);
+                var ret = p.MemberProfileAutomation(db);
                 if (ret != "ok")
                 {
                     Elmah.ErrorSignal.FromCurrentContext().Raise(
@@ -239,19 +239,19 @@ namespace CmsWeb.Areas.People.Models
                 }
             }
 
-            DbUtil.Db.SubmitChanges();
+            db.SubmitChanges();
 
             if (!HttpContextFactory.Current.User.IsInRole("Access"))
             {
                 changes.AddRange(fsb);
                 if (changes.Count > 0)
                 {
-                    var np = DbUtil.Db.GetNewPeopleManagers();
+                    var np = db.GetNewPeopleManagers();
                     if (np != null)
                     {
-                        DbUtil.Db.EmailRedacted(p.FromEmail, np,
-                            "Basic Person Info Changed on " + Util.Host,
-                            $"{Util.UserName} changed the following information for <a href='{DbUtil.Db.ServerLink($"/Person2/{PeopleId}")}'>{FirstName} {LastName}</a> ({PeopleId}):<br />\n"
+                        db.EmailRedacted(p.FromEmail, np,
+                            "Basic Person Info Changed on " + db.Host,
+                            $"{Util.UserName} changed the following information for <a href='{db.ServerLink($"/Person2/{PeopleId}")}'>{FirstName} {LastName}</a> ({PeopleId}):<br />\n"
                             + ChangeTable(changes));
                     }
                 }

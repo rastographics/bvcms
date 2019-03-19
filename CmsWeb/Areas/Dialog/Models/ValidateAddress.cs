@@ -32,6 +32,7 @@ namespace CmsWeb.Areas.Dialog.Models
 
             var lop = new LongRunningOperation
             {
+                Host = db.Host,
                 Started = DateTime.Now,
                 Count = pids.Count,
                 Processed = 0,
@@ -53,7 +54,7 @@ namespace CmsWeb.Areas.Dialog.Models
 
         public static void DoWork(ValidateAddress model)
         {
-            var db = DbUtil.Create(model.Host);
+            var db = CMSDataContext.Create(model.Host);
             var cul = db.Setting("Culture", "en-US");
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
@@ -61,9 +62,7 @@ namespace CmsWeb.Areas.Dialog.Models
             LongRunningOperation lop = null;
             foreach (var pid in model.pids)
             {
-                //DbUtil.Db.Dispose();
                 var fsb = new List<ChangeDetail>();
-                //db = DbUtil.Create(model.Host);
                 var f = db.LoadFamilyByPersonId(pid);
                 var ret = AddressVerify.LookupAddress(f.AddressLineOne, f.AddressLineTwo, f.CityName, f.StateCode, f.ZipCode);
                 if (ret.found != false && !ret.error.HasValue() && ret.Line1 != "error")
