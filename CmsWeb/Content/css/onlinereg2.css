@@ -94,3 +94,7 @@ div.signin-with .header {
 div.signin-with .header a {
     text-decoration: underline;
 }
+
+.managed-giving-options a {
+    text-decoration: underline dashed;
+}
