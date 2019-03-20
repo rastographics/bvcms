@@ -1,0 +1,82 @@
+﻿@model CmsWeb.Areas.OnlineReg.Models.ManageGivingModel
+@using CmsData
+@using CmsData.Finance
+@using CmsWeb
+@using UtilityExtensions
+@using System.Configuration;
+@{
+    var funame = Html.NameFor2(m => m.FundItem);
+    var peopleId = Model.person.PeopleId;
+    decimal? tot = 0;
+    var funds = CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel.FullFundList(Model.DefaultFundIds.Any() ? Model.DefaultFundIds : Model.FallbackDefaultFundIds);
+    var otherFunds = funds.Where(f => !Model.DefaultFundIds.Contains(f.Value)).ToList();
+}
+<div class="col-sm-12">
+    @if (funds.Any())
+    {
+        <table class="table" style="margin-bottom: 0px !important" id="special-funds">
+            <tbody>
+                @{
+                    var sn = 0;
+                }
+                @for (var n = 0; n < funds.Length; n++)
+                {
+                    var i = funds[n];
+                    var amt = Model.FundItemValue(i.Value.ToInt());
+                    if (amt.HasValue || Model.DefaultFundIds.Contains(i.Value))
+                    {
+                        tot = (tot ?? 0) + amt.GetValueOrDefault();
+                        <tr id="@i.Value">
+                            <td style="border-width: 0px !important">
+                                @if (Model.FallbackDefaultFundIds.Contains(i.Value) || !Model.DefaultFundIds.Contains(i.Value))
+                                {
+                                    <a href="#" tabindex="-1" class="remove-fund"><span class="fa fa-trash-o" style="line-height: 20px; padding-top: 10px;"></span></a>
+                                }
+                            </td>
+                            <td style="border-width: 0px !important" class="pull-right"><h4 class="inline-block">@i.Text</h4></td>
+                            <td style="border-width: 0px !important;">
+                                <input type="hidden" name="@(funame)[@sn].Key" value="@i.Value" />
+                                <input type="text" name="@(funame)[@sn].Value" value="@amt.ToString2("f2")" placeholder="$ 0.00" class="form-control narrow input-lg sum pull-right" />
+                            </td>
+                        </tr>
+                        sn++;
+                    }
+                }
+            </tbody>
+            <tfoot>
+                @if (otherFunds.Any())
+                {
+                    <tr id="addFund" hidden>
+                        <td style="border-width: 0px !important;"><a href="#" tabindex="-1" id="removeAddFund"><span class="fa fa-trash-o" style="line-height: 20px; padding-top: 10px;"></span></a></td>
+                        <td style="border-width: 0px !important; padding-top: 12px !important">
+                            <select class="form-control" id="special-funds-list">
+                                <option value="0">Select Fund</option>
+                                @foreach (var fund in otherFunds)
+                                {
+                                    <option value="@fund.Value">@fund.Text</option>
+                                }
+                            </select>
+                        </td>
+                        <td style="border-width: 0px !important;">
+                            <input type="text" name="" placeholder="$ 0.00" disabled class="form-control narrow input-lg sum pull-right" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">
+                            <a id="myAddFundLink" href="#" tabindex="-1" class="btn btn-link pull-right">
+                                <i class="fa fa-plus"></i> Additional Fund
+                            </a>
+                        </td>
+                    </tr>
+                }
+                <tr>
+                    <td style="border-width: 0px !important"></td>
+                    <td style="border-width: 0px !important" width="56%!important"><h4 class="pull-right">TOTAL:</h4></td>
+                    <td style="border-width: 0px !important;" width="30%!important">
+                        <h2 class="pull-right" style="margin: 0">$<span id="total">@tot.ToString2("N2")</span></h2>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    }
+</div>
