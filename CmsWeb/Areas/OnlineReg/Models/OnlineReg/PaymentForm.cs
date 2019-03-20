@@ -350,7 +350,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 #if DEBUG
                 pf.NoCreditCardsAllowed = false;
 #else
-                pf.NoCreditCardsAllowed = CurrentDatabase.Setting("NoCreditCardGiving", "false").ToBool();
+                pf.NoCreditCardsAllowed = DbUtil.Db.Setting("NoCreditCardGiving", "false").ToBool();
 #endif
                 pf.IsGiving = true;
                 pf.FinanceOnly = true;
