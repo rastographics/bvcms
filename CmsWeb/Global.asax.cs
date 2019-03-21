@@ -35,9 +35,6 @@ namespace CmsWeb
 
             DependencyConfig.RegisterSimpleInjector(container);
 
-            container.RegisterWebApiControllers(GlobalConfiguration.Configuration);
-            container.RegisterMvcControllers(Assembly.GetExecutingAssembly());
-
             //container.Verify();
 
             GlobalConfiguration.Configuration.DependencyResolver = new SimpleInjectorWebApiDependencyResolver(container);

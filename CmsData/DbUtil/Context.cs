@@ -142,12 +142,12 @@ namespace CmsData
 
         public static string GetHost(HttpContextBase httpContext)
         {
-            return httpContext.Request.Url.Authority.Split('.', ':')[0];
+            var host = httpContext.Request.Url.Authority.Split('.', ':')[0];
+            return Util.PickFirst(ConfigurationManager.AppSettings["host"], host);
         }
 
         private static string CreateConnectionString(string host)
         {
-            host = ConfigurationManager.AppSettings["host"] ?? host;
             var cs = ConfigurationManager.ConnectionStrings["CMS"];
             var cb = new SqlConnectionStringBuilder(cs.ConnectionString);
             cb.InitialCatalog = $"CMS_{host}";

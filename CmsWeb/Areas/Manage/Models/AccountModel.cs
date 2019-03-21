@@ -293,8 +293,9 @@ namespace CmsWeb.Models
             {
                 userExists = userQuery.Any();
             }
-            catch
+            catch(Exception ex)
             {
+                Elmah.ErrorLog.Default.Log(new Elmah.Error(ex));
                 return UserValidationResult.Invalid(UserValidationStatus.BadDatabase, "bad database");
             }
 
