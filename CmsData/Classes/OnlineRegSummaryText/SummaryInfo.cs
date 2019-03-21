@@ -80,7 +80,6 @@ namespace CmsData.OnlineRegSummaryText
             catch (Exception ex)
             {
                 throw new Exception($@"
-disposed: {db.IsDisposed}
 message: {ex.Message}
 host: {host}
 oid: {oid}

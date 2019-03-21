@@ -19,7 +19,7 @@ namespace CmsWeb.Membership
 		public override string ApplicationName { get { return "cms"; } set { } }
 
         public IRequestManager RequestManager { get; set; }
-        public CMSDataContext CurrentDatabase => RequestManager.CurrentDatabase;
+        public CMSDataContext CurrentDatabase => RequestManager?.CurrentDatabase ?? DbUtil.Db; //TODO: Don't fallback to DbUtil if possible
 
 		public override void Initialize(string name, NameValueCollection config)
 		{

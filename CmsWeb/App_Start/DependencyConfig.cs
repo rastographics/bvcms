@@ -19,6 +19,7 @@ namespace CmsWeb
             container.Register<IMeetingCategoryService, MeetingCategoryService>(Lifestyle.Scoped);
             container.Register(() => new Lazy<IPrincipal>(() => HttpContext.Current.User));
             container.Register(() => new Lazy<MembershipProvider>(() => CMSMembershipProvider.provider));
+            container.Register(() => new Lazy<RoleProvider>(() => CMSRoleProvider.provider));
             container.RegisterWebApiControllers(GlobalConfiguration.Configuration);
             container.RegisterMvcControllers(Assembly.GetExecutingAssembly());
             container.RegisterInitializer<IRequestManager>(instance => {

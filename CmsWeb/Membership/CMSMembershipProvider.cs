@@ -47,7 +47,7 @@ namespace CmsWeb.Membership
 
         private MachineKeySection machineKey;
 
-        CMSDataContext CurrentDatabase => RequestManager.CurrentDatabase;
+        CMSDataContext CurrentDatabase => RequestManager?.CurrentDatabase ?? DbUtil.Db; //TODO: Don't fallback to DbUtil if possible
 
         public override void Initialize(string name, NameValueCollection config)
         {
