@@ -1,6 +1,7 @@
 using CmsData;
 using CmsData.Codes;
 using CmsWeb.Lifecycle;
+using CmsWeb.Membership;
 using CmsWeb.Models;
 using CmsWeb.Models.iPhone;
 using System;

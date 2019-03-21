@@ -891,6 +891,10 @@
     <Compile Include="Controllers\MobileAppMenuController.cs" />
     <Compile Include="Controllers\WebHookController.cs" />
     <Compile Include="Lifecycle\RequestManager.cs" />
+    <Compile Include="Membership\CMSMembershipProvider.cs" />
+    <Compile Include="Membership\CMSRoleProvider.cs" />
+    <Compile Include="Membership\Extensions\MembershipExtensions.cs" />
+    <Compile Include="Membership\MembershipService.cs" />
     <Compile Include="Models\Api\ApiChAiGift.cs" />
     <Compile Include="Models\Api\ApiOrganization.cs" />
     <Compile Include="Models\Api\ApiLookup.cs" />

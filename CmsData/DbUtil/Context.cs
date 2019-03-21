@@ -1997,5 +1997,18 @@ This search uses multiple steps which cannot be duplicated in a single query.
             var result = ExecuteMethodCall(this, (MethodInfo)MethodBase.GetCurrentMethod(), ip, id);
             return ((int?)(result?.ReturnValue));
         }
+
+        public IEnumerable<User> GetRoleUsers(string rolename)
+        {
+            var q = from u in Users
+                    where u.UserRoles.Any(ur => ur.Role.RoleName == rolename)
+                    select u;
+            return q;
+        }
+
+        public IEnumerable<Person> GetAdmins()
+        {
+            return GetRoleUsers("Admin").Select(u => u.Person).Distinct();
+        }
     }
 }

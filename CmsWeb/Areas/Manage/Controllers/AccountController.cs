@@ -1,5 +1,6 @@
 using CmsData;
 using CmsWeb.Lifecycle;
+using CmsWeb.Membership;
 using CmsWeb.Models;
 using net.openstack.Core.Domain;
 using net.openstack.Providers.Rackspace;
@@ -211,7 +212,6 @@ namespace CmsWeb.Areas.Manage.Controllers
         [HttpPost, MyRequireHttps]
         public ActionResult LogOn(AccountInfo m)
         {
-            var db = CurrentDatabase;
             Session.Remove("IsNonFinanceImpersonator");
             TryLoadAlternateShell();
             if (m.ReturnUrl.HasValue())
@@ -228,7 +228,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                 return View(m);
             }
 
-            var ret = AccountModel.AuthenticateLogon(m.UsernameOrEmail, m.Password, Session, Request);
+            var ret = AccountModel.AuthenticateLogon(m.UsernameOrEmail, m.Password, Session, Request, CurrentDatabase);
             if (ret is string)
             {
                 ViewBag.error = ret.ToString();
@@ -241,7 +241,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                 return Redirect("/Account/ChangePassword");
             }
 
-            var access = CurrentDatabase.Setting("LimitAccess", "");
+            var access = base.CurrentDatabase.Setting("LimitAccess", "");
             if (access.HasValue())
             {
                 if (!user.InRole("Developer"))
@@ -250,23 +250,23 @@ namespace CmsWeb.Areas.Manage.Controllers
                 }
             }
 
-            var newleadertag = CurrentDatabase.FetchTag("NewOrgLeadersOnly", user.PeopleId, DbUtil.TagTypeId_System);
+            var newleadertag = base.CurrentDatabase.FetchTag("NewOrgLeadersOnly", user.PeopleId, DbUtil.TagTypeId_System);
             if (newleadertag != null)
             {
                 if (!user.InRole("Access")) // if they already have Access role, then don't limit them with OrgLeadersOnly
                 {
-                    user.AddRoles(CurrentDatabase, "Access,OrgLeadersOnly".Split(','));
+                    user.AddRoles(base.CurrentDatabase, "Access,OrgLeadersOnly".Split(','));
                 }
 
-                CurrentDatabase.Tags.DeleteOnSubmit(newleadertag);
-                CurrentDatabase.SubmitChanges();
+                base.CurrentDatabase.Tags.DeleteOnSubmit(newleadertag);
+                base.CurrentDatabase.SubmitChanges();
             }
 
             if (!m.ReturnUrl.HasValue())
             {
-                if (!CMSRoleProvider.provider.IsUserInRole(user.Username, "Access", db))
+                if (!CMSRoleProvider.provider.IsUserInRole(user.Username, "Access", CurrentDatabase))
                 {
-                    return Redirect("/Person2/" + Util.UserPeopleId);
+                    return base.Redirect("/Person2/" + Util.UserPeopleId);
                 }
             }
 

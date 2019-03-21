@@ -8,11 +8,10 @@
     ViewBag.Title = "Online Registration";
     Layout = "~/Views/Shared/onlinereg2.cshtml";
     var funame = Html.NameFor2(m => m.FundItem);
-    decimal? tot = 0;
     var db = DbUtil.Db;
     var funds = CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel.FullFundList(Model.DefaultFundIds.Any() ? Model.DefaultFundIds : Model.FallbackDefaultFundIds);
     var otherFunds = funds.Where(f => !Model.DefaultFundIds.Contains(f.Value)).ToList();
-    var useNewManageGivingBuilder = DbUtil.Db.Setting("UseNewManageGivingBuilder");
+    var useNewManageGivingBuilder = db.Setting("UseNewManageGivingBuilder");
     var debitcredit = db.Setting("DebitCreditLabel", "Debit/Credit Card");
     var recaptchaSiteKey = db.Setting("googleReCaptchaSiteKey", ConfigurationManager.AppSettings["googleReCaptchaSiteKey"]);
     var useRecaptcha = db.Setting("UseRecaptchaForManageGiving") && recaptchaSiteKey.HasValue();

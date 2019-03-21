@@ -1,20 +1,12 @@
-/* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church 
- * Licensed under the GNU General Public License (GPL v2)
- * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
- */
 using System;
 using System.Web.Security;
 using System.Collections.Specialized;
 
-using UtilityExtensions;
 using System.Linq;
-using System.Web;
-using System.Web.Caching;
 using System.Collections.Generic;
+using CmsData;
 
-namespace CmsData
+namespace CmsWeb.Membership
 {
 	public class CMSRoleProvider : RoleProvider
 	{
@@ -69,8 +61,8 @@ namespace CmsData
 
 		public override string[] GetRolesForUser(string username)
 		{
-			username = Util.GetUserName(username);
-			var q = from r in DbUtil.Db.UserRoles
+			username = username?.Split('\\').LastOrDefault();
+            var q = from r in DbUtil.Db.UserRoles
 					where r.User.Username == username
 					select r.Role.RoleName;
 			return q.ToArray();
@@ -86,14 +78,11 @@ namespace CmsData
 
 		public IEnumerable<User> GetRoleUsers(string rolename)
 		{
-			var q = from u in DbUtil.Db.Users
-					where u.UserRoles.Any(ur => ur.Role.RoleName == rolename)
-					select u;
-			return q;
+            return DbUtil.Db.GetRoleUsers(rolename);
 		}
 		public IEnumerable<Person> GetAdmins()
 		{
-			return GetRoleUsers("Admin").Select(u => u.Person).Distinct();
+            return DbUtil.Db.GetAdmins();
 		}
 		public IEnumerable<Person> GetFinance()
 		{
@@ -106,7 +95,7 @@ namespace CmsData
 
         public bool IsUserInRole(string username, string rolename, CMSDataContext db)
         {
-			username = Util.GetUserName(username);
+            username = username?.Split('\\').LastOrDefault();
 			var q = from ur in db.UserRoles
 					where rolename == ur.Role.RoleName
 					where username == ur.User.Username

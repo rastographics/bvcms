@@ -2,6 +2,7 @@ using CmsData;
 using CmsData.API;
 using CmsWeb.Areas.People.Models;
 using CmsWeb.Lifecycle;
+using CmsWeb.Membership;
 using CmsWeb.Models;
 using System;
 using System.IO;
@@ -27,7 +28,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 return Content($"<Login error=\"{ret.Substring(1)}\" />");
             }
 
-            var validationStatus = AccountModel.AuthenticateLogon(user, password, Request.Url.OriginalString);
+            var validationStatus = AccountModel.AuthenticateLogon(user, password, Request.Url.OriginalString, CurrentDatabase);
             if (!validationStatus.IsValid)
             {
                 return Content($"<Login error=\"{user ?? "(null)"} not valid\">{validationStatus.ErrorMessage}</Login>");
