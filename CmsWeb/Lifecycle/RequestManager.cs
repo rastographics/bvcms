@@ -101,7 +101,9 @@ namespace CmsWeb.Lifecycle
             CurrentHttpContext = HttpContextFactory.Current;
             RequestId = Guid.NewGuid();
             CurrentUser = CurrentHttpContext.User;
+            CmsData.DbUtil.Db =
             CurrentDatabase = CMSDataContext.Create(CurrentHttpContext);
+            ImageData.DbUtil.Db =
             CurrentImageDatabase = CMSImageDataContext.Create(CurrentHttpContext);
         }
 
