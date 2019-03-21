@@ -27,6 +27,14 @@ namespace CmsWeb.Areas.Org.Models
             }
         }
 
+        public List<OrgPickInfo> OrganizationsFromIdString
+        {
+            get
+            {
+                return organizationsFromIdString(Org, Db);
+            }
+        }           
+
         public SettingsRegistrationModel()
         {
         }
@@ -66,12 +74,8 @@ namespace CmsWeb.Areas.Org.Models
             public string OrganizationName { get; set; }
         }
 
-        public List<OrgPickInfo> OrganizationsFromIdString()
-        {
-            return OrganizationsFromIdString(Org);
-        }
-        public static List<OrgPickInfo> OrganizationsFromIdString(Organization Org)
-        {
+        private static List<OrgPickInfo> organizationsFromIdString(Organization Org, CMSDataContext Db)
+        {            
             var a = Org.OrgPickList.SplitStr(",").Select(ss => ss.ToInt()).ToArray();
             var n = 0;
             var d = a.ToDictionary(i => n++);
