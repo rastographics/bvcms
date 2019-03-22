@@ -630,7 +630,7 @@ namespace CmsWeb.Areas.Org.Controllers
             return Redirect($"/Meeting/{id}");
         }
 
-        public ActionResult CheckInAttendance(int? id, bool? currentMembers)
+        public ActionResult Attendance(int? id, bool? currentMembers)
         {
             if (!id.HasValue)
             {
@@ -656,7 +656,7 @@ namespace CmsWeb.Areas.Org.Controllers
                 return RedirectShowError("You must be a leader of this organization to have access to this page");
             }
 
-            DbUtil.LogActivity($"CheckIn attendance for Meeting for {m.meeting.OrganizationId}({m.meeting.MeetingDate:d})");
+            DbUtil.LogActivity($"Attendance for Meeting for {m.meeting.OrganizationId}({m.meeting.MeetingDate:d})");
             List<Reports.Models.RollsheetModel.AttendInfo> Guests = new List<Reports.Models.RollsheetModel.AttendInfo>();
             List<Reports.Models.RollsheetModel.AttendInfo> Members = new List<Reports.Models.RollsheetModel.AttendInfo>();
             int MembersPresent = 0;
