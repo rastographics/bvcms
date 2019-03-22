@@ -29,7 +29,7 @@ namespace CmsWeb.Areas.Setup.Controllers
         {
             if (!id.HasValue())
             {
-                ViewData["MeetingCategories"] = CurrentDatabase.Setting("CheckinUseMeetingCategory", false);
+                ViewData["MeetingCategories"] = CurrentDatabase.Setting("AttendanceUseMeetingCategory", false);
                 return View("list");
             }
 
