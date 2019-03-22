@@ -630,7 +630,7 @@ namespace CmsWeb.Areas.Org.Controllers
             return Redirect($"/Meeting/{id}");
         }
 
-        public ActionResult CheckInAttendance(int? id, bool? currentMembers)
+        public ActionResult Attendance(int? id, bool? currentMembers)
         {
             if (!id.HasValue)
             {
