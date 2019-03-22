@@ -247,7 +247,7 @@ Sorry, I cannot be there.</a>";
             var host = Util.Host;
             // save these from HttpContext to set again inside thread local storage
             var useremail = Util.UserEmail;
-            var isinroleemailtest = HttpContext.Current.User.IsInRole("EmailTest");
+            var isinroleemailtest = HttpContextFactory.Current.User.IsInRole("EmailTest");
 
             HostingEnvironment.QueueBackgroundWorkItem(ct =>
             {

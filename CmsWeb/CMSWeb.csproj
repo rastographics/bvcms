@@ -666,10 +666,14 @@
     <Compile Include="Areas\Public\Models\CheckScanAPI\CheckScanEntry.cs" />
     <Compile Include="Areas\Public\Models\CheckScanAPI\CheckScanMessage.cs" />
     <Compile Include="Areas\Public\Models\MobileAPIv2\MobileAccount.cs" />
+    <Compile Include="Areas\Public\Models\MobileAPIv2\MobileGivingContribution.cs" />
+    <Compile Include="Areas\Public\Models\MobileAPIv2\MobileGivingStatement.cs" />
     <Compile Include="Areas\Public\Models\MobileAPIv2\MobileMatch.cs" />
+    <Compile Include="Areas\Public\Models\MobileAPIv2\MobileMeetingCategory.cs" />
     <Compile Include="Areas\Public\Models\MobileAPIv2\MobileMessage.cs" />
     <Compile Include="Areas\Public\Models\MobileAPIv2\MobileAuthentication.cs" />
     <Compile Include="Areas\Public\Models\MobileAPIv2\MobileQuickSignInUser.cs" />
+    <Compile Include="Areas\Public\Models\MobileAPIv2\MobileUserPrivileges.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileGivingEntry.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileGivingHistory.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileInvolvement.cs" />
@@ -685,6 +689,7 @@
     <Compile Include="Areas\Reports\Models\Directories\FamilyRow.cs" />
     <Compile Include="Areas\Reports\Models\Export\DocXReplacements.cs" />
     <Compile Include="Areas\Search\Controllers\TaskSearchController.cs" />
+    <Compile Include="Areas\Search\Models\Query\Model\QueryViewModel.cs" />
     <Compile Include="Areas\Search\Models\TaskSearch\TaskSearchInfo.cs" />
     <Compile Include="Areas\Search\Models\TaskSearch\TaskSearchModel.cs" />
     <Compile Include="Areas\Search\Models\DirectoryInfo.cs" />
@@ -1766,7 +1771,7 @@
     <Content Include="Areas\Dialog\Views\MoveOrgMembers\Process.cshtml" />
     <Content Include="Areas\Coordinator\Views\web.config" />
     <Content Include="Areas\Coordinator\Views\CheckinCoordinator\MoveSubgroupView.cshtml" />
-    <Content Include="Areas\Org\Views\Meeting\CheckInAttendance.cshtml" />
+    <Content Include="Areas\Org\Views\Meeting\Attendance.cshtml" />
     <Content Include="Areas\Finance\Views\FinanceReports\ChaiDonorsReport.cshtml" />
     <Content Include="Areas\Coordinator\Views\CheckinCoordinator\Dashboard.cshtml" />
     <Content Include="Areas\Coordinator\Views\CheckinCoordinator\TimeslotSelector.cshtml" />

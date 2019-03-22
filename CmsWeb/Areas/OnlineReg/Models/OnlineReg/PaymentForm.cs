@@ -160,7 +160,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 Donate = Donate,
                 Regfees = AmtToPay,
                 Amt = amount,
-                Amtdue = amtdue,
+                Amtdue = Math.Max(amtdue.Value, 0),
                 Emails = Email,
                 Testing = testing,
                 Description = Description,
@@ -743,7 +743,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     return RouteModel.ProcessPayment();
                 }
 
-                HttpContext.Current.Session["FormId"] = FormId;
+                HttpContextFactory.Current.Session["FormId"] = FormId;
                 if (m != null)
                 {
                     m.DatumId = DatumId; // todo: not sure this is necessary

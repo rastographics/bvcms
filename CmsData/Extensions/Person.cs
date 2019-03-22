@@ -235,7 +235,7 @@ namespace CmsData
         {
             get
             {
-                if (Util.Host == null || HttpContext.Current == null)
+                if (Util.Host == null || HttpContextFactory.Current == null)
                 {
                     return BirthYear;
                 }
@@ -255,12 +255,12 @@ namespace CmsData
                     return BirthYear;
                 }
 
-                if (HttpContext.Current == null)
+                if (HttpContextFactory.Current == null)
                 {
                     return BirthYear;
                 }
 
-                if (HttpContext.Current.User.IsInRole(DbUtil.Db.Setting("NoBirthYearRole", "")))
+                if (HttpContextFactory.Current.User.IsInRole(DbUtil.Db.Setting("NoBirthYearRole", "")))
                 {
                     return null;
                 }
@@ -271,7 +271,7 @@ namespace CmsData
 
         public static int? AgeDisplay(int? age, int? peopleid)
         {
-            if (Util.Host == null || HttpContext.Current == null)
+            if (Util.Host == null || HttpContextFactory.Current == null)
             {
                 return age;
             }
@@ -291,7 +291,7 @@ namespace CmsData
                 return age;
             }
 
-            if (HttpContext.Current.User.IsInRole(DbUtil.Db.Setting("NoBirthYearRole", "")))
+            if (HttpContextFactory.Current.User.IsInRole(DbUtil.Db.Setting("NoBirthYearRole", "")))
             {
                 return null;
             }
@@ -301,7 +301,7 @@ namespace CmsData
 
         public static string AgeDisplay(string age, int? peopleid)
         {
-            if (Util.Host == null || HttpContext.Current == null)
+            if (Util.Host == null || HttpContextFactory.Current == null)
             {
                 return age;
             }
@@ -321,7 +321,7 @@ namespace CmsData
                 return age;
             }
 
-            if (HttpContext.Current.User.IsInRole(DbUtil.Db.Setting("NoBirthYearRole", "")))
+            if (HttpContextFactory.Current.User.IsInRole(DbUtil.Db.Setting("NoBirthYearRole", "")))
             {
                 return null;
             }
@@ -331,7 +331,7 @@ namespace CmsData
 
         private static int? Birthyear(int? y, int? age, int? peopleid)
         {
-            if (Util.Host == null || HttpContext.Current == null)
+            if (Util.Host == null || HttpContextFactory.Current == null)
             {
                 return y;
             }
@@ -351,7 +351,7 @@ namespace CmsData
                 return y;
             }
 
-            if (HttpContext.Current.User.IsInRole(DbUtil.Db.Setting("NoBirthYearRole", "")))
+            if (HttpContextFactory.Current.User.IsInRole(DbUtil.Db.Setting("NoBirthYearRole", "")))
             {
                 return null;
             }
@@ -979,16 +979,16 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
 
             if (Util.UserPeopleId.HasValue
                 && Util.UserPeopleId.Value != db.NewPeopleManagerId
-                && HttpContext.Current.User.IsInRole("Access")
-                && !HttpContext.Current.User.IsInRole("OrgMembersOnly")
-                && !HttpContext.Current.User.IsInRole("OrgLeadersOnly"))
+                && HttpContextFactory.Current.User.IsInRole("Access")
+                && !HttpContextFactory.Current.User.IsInRole("OrgMembersOnly")
+                && !HttpContextFactory.Current.User.IsInRole("OrgLeadersOnly"))
             {
                 Task.AddNewPerson(db, p.PeopleId);
             }
             else
             {
                 var np = db.GetNewPeopleManagers();
-                if (np != null)
+                if (np != null && Util.AdminMail != null)
                 {
                     db.Email(Util.AdminMail, np,
                         $"Just Added Person on {db.Host}",
@@ -1138,7 +1138,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             {
                 if (!canUserEditAll.HasValue)
                 {
-                    canUserEditAll = HttpContext.Current.User.IsInRole("Edit");
+                    canUserEditAll = HttpContextFactory.Current.User.IsInRole("Edit");
                 }
 
                 return canUserEditAll.Value;
@@ -1172,7 +1172,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 {
                     if (DbUtil.Db.Setting("EnforceEditCampusRole", "false").ToBool())
                     {
-                        return ((HttpContext.Current.User.IsInRole("EditCampus")) ||
+                        return ((HttpContextFactory.Current.User.IsInRole("EditCampus")) ||
                                 Util.UserPeopleId == Family.HeadOfHouseholdId
                                 || Util.UserPeopleId == Family.HeadOfHouseholdSpouseId);
                     }
@@ -1190,7 +1190,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
 
                 if (DbUtil.Db.Setting("EnforceEditCampusRole", "false").ToBool())
                 {
-                    canUserEditCampus = (canUserEditCampus.Value) || (HttpContext.Current.User.IsInRole("EditCampus"));
+                    canUserEditCampus = (canUserEditCampus.Value) || (HttpContextFactory.Current.User.IsInRole("EditCampus"));
                 }
 
                 return canUserEditCampus.Value;
@@ -1238,8 +1238,8 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 if (!canUserSeeGiving.HasValue)
                 {
                     var sameperson = Util.UserPeopleId == PeopleId;
-                    var infinance = (HttpContext.Current.User.IsInRole("Finance") && !HttpContext.Current.User.IsInRole("FundManager"))
-                                    && ((string)HttpContext.Current.Session["testnofinance"]) != "true";
+                    var infinance = (HttpContextFactory.Current.User.IsInRole("Finance") && !HttpContextFactory.Current.User.IsInRole("FundManager"))
+                                    && ((string)HttpContextFactory.Current.Session["testnofinance"]) != "true";
                     var ishead = (new int?[]
                         {
                             Family.HeadOfHouseholdId,
@@ -1267,7 +1267,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                             Family.HeadOfHouseholdSpouseId
                         })
                         .Contains(Util.UserPeopleId);
-                    canUserSeeEmails = sameperson || ishead || HttpContext.Current.User.IsInRole("Access");
+                    canUserSeeEmails = sameperson || ishead || HttpContextFactory.Current.User.IsInRole("Access");
                 }
                 return canUserSeeEmails.Value;
             }
@@ -2309,7 +2309,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
         public bool CanViewStatementFor(CMSDataContext db, int id)
         {
             // todo: improve performance
-            bool canview = Util.UserPeopleId == id || (HttpContext.Current.User.IsInRole("Finance") && !HttpContext.Current.User.IsInRole("FundManager"));
+            bool canview = Util.UserPeopleId == id || (HttpContextFactory.Current.User.IsInRole("Finance") && !HttpContextFactory.Current.User.IsInRole("FundManager"));
 
             if (!canview)
             {
@@ -2419,7 +2419,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             }
                 
      
-            var count = list.Count;
+            var count = list?.Count;
             if (count > 0)
             {
                 person = db.LoadPersonById(list[0].PeopleId ?? 0);
@@ -2468,7 +2468,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
         {
             get
             {
-                var fam = HttpContext.Current?.Items["FamilyFromMyDataPage"] as Family;
+                var fam = HttpContextFactory.Current?.Items["FamilyFromMyDataPage"] as Family;
                 return fam?.IsHeadOfHouseold(Util.UserPeopleId) == true;
             }
         }

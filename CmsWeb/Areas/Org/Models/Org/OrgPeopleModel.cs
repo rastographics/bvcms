@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
 using System.Linq;
+using System.Security.Principal;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
@@ -17,6 +18,10 @@ namespace CmsWeb.Areas.Org.Models
 {
     public class OrgPeopleModel : PagedTableModel<OrgFilterPerson, OrgFilterPerson>
     {
+        public CMSDataContext Db { get; set; }
+        public Guid QueryId { get; set; }
+        public IPrincipal User { get; set; }
+
         public OrgPeopleModel()
             : base("Name", "asc", true)
         {
@@ -31,10 +36,10 @@ namespace CmsWeb.Areas.Org.Models
                 {
                     if (Id == null)
                     {
-                        Id = DbUtil.Db.CurrentSessionOrgId;
+                        Id = Db.CurrentSessionOrgId;
                     }
 
-                    org = DbUtil.Db.LoadOrganizationById(Id);
+                    org = Db.LoadOrganizationById(Id);
                     CheckNameLinks();
                 }
                 return org;
@@ -43,19 +48,19 @@ namespace CmsWeb.Areas.Org.Models
 
         public override IQueryable<OrgFilterPerson> DefineModelList()
         {
-            var filter = DbUtil.Db.OrgFilter(QueryId);
+            var filter = Db.OrgFilter(QueryId);
             filter.CopyPropertiesFrom(this);
-            filter.TagId = (int?)DbUtil.Db.TagCurrent().Id;
+            filter.TagId = (int?)Db.TagCurrent().Id;
             filter.LastUpdated = DateTime.Now;
-            DbUtil.Db.SubmitChanges();
-            var q = from p in DbUtil.Db.OrgFilterPeople(QueryId, ShowMinistryInfo)
+            Db.SubmitChanges();
+            var q = from p in Db.OrgFilterPeople(QueryId, ShowMinistryInfo)
                     select p;
             return q;
         }
 
         private Tag orgTag;
         public Tag OrgTag => orgTag ??
-                             (orgTag = DbUtil.Db.FetchOrCreateTag(QueryId.ToString(), Util.UserPeopleId, DbUtil.TagTypeId_OrgMembers));
+                             (orgTag = Db.FetchOrCreateTag(QueryId.ToString(), Util.UserPeopleId, DbUtil.TagTypeId_OrgMembers));
 
         private List<int> currentList;
 
@@ -75,7 +80,7 @@ namespace CmsWeb.Areas.Org.Models
 
         public List<int> AllChecked()
         {
-            return OrgTag.People(DbUtil.Db).Select(pp => pp.PeopleId).ToList();
+            return OrgTag.People(Db).Select(pp => pp.PeopleId).ToList();
         }
         public List<int> CurrentChecked()
         {
@@ -90,7 +95,7 @@ namespace CmsWeb.Areas.Org.Models
                 return;
             }
 
-            var ev = org.GetExtra(DbUtil.Db, "ShowNameLinks");
+            var ev = org.GetExtra(Db, "ShowNameLinks");
             if (ev.HasValue())
             {
                 var namelinks = Regex.Replace(ev,
@@ -242,7 +247,7 @@ namespace CmsWeb.Areas.Org.Models
 
         public IEnumerable<SelectListItem> SmallGroups()
         {
-            return from mt in DbUtil.Db.MemberTags
+            return from mt in Db.MemberTags
                    where mt.OrgId == Id
                    orderby mt.Name
                    select new SelectListItem
@@ -366,8 +371,7 @@ to `Add`, `Drop`, `Update` Members etc.
                 case GroupSelectCode.Guest:
                     return false;
                 case GroupSelectCode.Previous:
-                    var u = HttpContext.Current.User;
-                    return u.IsInRole("Developer") || u.IsInRole("Conversion");
+                    return User.IsInRole("Developer") || User.IsInRole("Conversion");
                 default:
                     return true;
             }
@@ -380,11 +384,9 @@ to `Add`, `Drop`, `Update` Members etc.
                 return false;
             }
 
-            var u = HttpContext.Current.User;
+            var u = HttpContextFactory.Current.User;
             return u.IsInRole("Edit")
                 || RoleChecker.HasSetting(SettingName.OrgMembersDropAdd, false);
         }
-
-        public Guid QueryId { get; set; }
     }
 }

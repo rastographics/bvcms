@@ -793,7 +793,7 @@ namespace CmsWeb.Areas.Search.Models
                 throw new Exception("missing @OrgIds");
 
             var p = GetSqlParameters(oids, meetingDate1, meetingDate2, content);
-            var cs = HttpContext.Current.User.IsInRole("Finance")
+            var cs = HttpContextFactory.Current.User.IsInRole("Finance")
                 ? Util.ConnectionStringReadOnlyFinance
                 : Util.ConnectionStringReadOnly;
             var cn = new SqlConnection(cs);
@@ -975,7 +975,7 @@ Divisions: {Divisions}";
 <li><code>master:<em>orgid</em></code> is in the picklist of the master <em>orgid</em></li>
 <li><code>regsetting:<em>comma,separated,keywords</em></code> searches regsetting usage</li>
 </ul>
-<p>For more see <em><strong><a href='http://docs.touchpointsoftware.com/Organizations/OrgSearchNameAdvanced.html' target='_blank'>the documentation</a></p>
+<p>For more see <em><strong><a href='https://docs.touchpointsoftware.com/Organizations/OrgSearchNameAdvanced.html' target='_blank'>the documentation</a></p>
 ");
     }
 }

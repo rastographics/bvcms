@@ -1184,12 +1184,12 @@ namespace CmsWeb
 
         private static string GetCollectionItemIndex(string collectionIndexFieldName)
         {
-            var previousIndices = (Queue<string>)HttpContext.Current.Items[collectionIndexFieldName];
+            var previousIndices = (Queue<string>)HttpContextFactory.Current.Items[collectionIndexFieldName];
             if (previousIndices == null)
             {
-                HttpContext.Current.Items[collectionIndexFieldName] = previousIndices = new Queue<string>();
+                HttpContextFactory.Current.Items[collectionIndexFieldName] = previousIndices = new Queue<string>();
 
-                var previousIndicesValues = HttpContext.Current.Request[collectionIndexFieldName];
+                var previousIndicesValues = HttpContextFactory.Current.Request[collectionIndexFieldName];
                 if (!string.IsNullOrWhiteSpace(previousIndicesValues))
                 {
                     foreach (var index in previousIndicesValues.Split(','))

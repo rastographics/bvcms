@@ -127,8 +127,19 @@ namespace CmsWeb.Areas.People.Controllers
         }
 
         [HttpGet]
-        public ActionResult OneTimeGift()
+        public ActionResult OneTimeGift(int? id)
         {
+            // check for one time gift campus route mapping.
+            if (id.HasValue)
+            {
+                var setting = $"OneTimeGiftCampusRoute-{id}";
+                var route = CurrentDatabase.GetSetting(setting, string.Empty);
+                if (!string.IsNullOrWhiteSpace(route))
+                {
+                    return Redirect($"/{route}");
+                }
+            }
+            
             var oid = CmsData.API.APIContribution.OneTimeGiftOrgId(CurrentDatabase);
             if (oid > 0)
             {

@@ -38,8 +38,8 @@ namespace CmsWeb.Areas.Org.Models
         public bool ShowCurrentMemberType => RoleChecker.HasSetting(SettingName.Meeting_ShowCurrentMemberType, true);
 
         // Added to support a pick list of meeting descriptions
-        public bool UseMeetingDescriptionPickList => DbUtil.Db.Setting("CheckinUseMeetingCategory", false);
-        public bool ShowDescriptionOnCheckin => DbUtil.Db.Setting("CheckinShowDescription", false);
+        public bool UseMeetingDescriptionPickList => DbUtil.Db.Setting("AttendanceUseMeetingCategory", false);
+        public bool ShowDescriptionOnCheckin => DbUtil.Db.Setting("AttendanceShowDescription", false);
 
         public string DisplayText()
         {

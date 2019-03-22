@@ -44,7 +44,7 @@
         <span class="hr"></span>
         <br>
         SOMETHING IS NOT QUITE RIGHT<br/>
-        <%=HttpContext.Current.Items["error"] %>
+        <%=HttpContextFactory.Current.Items["error"] %>
         <br>
         <span class="solve">It seems you stumbled on something that doesn't work very well. If this problem persists, please kindly let us know.
             Thanks!</span>

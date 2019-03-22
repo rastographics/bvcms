@@ -14,7 +14,7 @@ namespace CmsWeb.MobileAPI
 		public static bool Authenticate()
 		{
 			string username = "", password = "";
-			var auth = HttpContext.Current.Request.Headers["Authorization"];
+			var auth = HttpContextFactory.Current.Request.Headers["Authorization"];
 
 			if (auth.HasValue())
 			{
@@ -30,8 +30,8 @@ namespace CmsWeb.MobileAPI
 			}
 			else
 			{
-				username = HttpContext.Current.Request.Headers["username"];
-				password = HttpContext.Current.Request.Headers["password"];
+				username = HttpContextFactory.Current.Request.Headers["username"];
+				password = HttpContextFactory.Current.Request.Headers["password"];
 			}
 
 			return Membership.Provider.ValidateUser(username, password); ;

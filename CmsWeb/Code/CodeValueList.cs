@@ -278,7 +278,7 @@ namespace CmsWeb.Code
         public SelectList TagList()
         {
             var tg = UserTags(Util.UserPeopleId).ToList();
-            if (HttpContext.Current.User.IsInRole("Edit"))
+            if (HttpContextFactory.Current.User.IsInRole("Edit"))
             {
                 tg.Insert(0, new CodeValueItem { Id = -1, Value = "(last query)" });
             }

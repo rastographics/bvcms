@@ -86,8 +86,8 @@ namespace CmsWeb.Models
 
         public static string UserName2
         {
-            get { return HttpContext.Current.Items[STR_UserName2] as string; }
-            set { HttpContext.Current.Items[STR_UserName2] = value; }
+            get { return HttpContextFactory.Current.Items[STR_UserName2] as string; }
+            set { HttpContextFactory.Current.Items[STR_UserName2] = value; }
         }
 
         public static UserValidationResult AuthenticateMobile(string requiredRole = null, bool checkOrgLeadersOnly = false, bool requirePin = false)
@@ -123,7 +123,7 @@ namespace CmsWeb.Models
             }
 
             UserName2 = user.Username;
-            SetUserInfo(user.Username, HttpContext.Current.Session, deleteSpecialTags: false);
+            SetUserInfo(user.Username, HttpContextFactory.Current.Session, deleteSpecialTags: false);
             //DbUtil.LogActivity("iphone auth " + user.Username);
 
             if (checkOrgLeadersOnly && !Util2.OrgLeadersOnlyChecked)
@@ -139,7 +139,7 @@ namespace CmsWeb.Models
                 Util2.OrgLeadersOnlyChecked = true;
             }
 
-            ApiSessionModel.SaveApiSession(userStatus.User, requirePin, HttpContext.Current.Request.Headers["PIN"].ToInt2());
+            ApiSessionModel.SaveApiSession(userStatus.User, requirePin, HttpContextFactory.Current.Request.Headers["PIN"].ToInt2());
 
             return userStatus;
         }
@@ -165,7 +165,7 @@ namespace CmsWeb.Models
             var roleProvider = CMSRoleProvider.provider;
 
             UserName2 = user.Username;
-            SetUserInfo(user.Username, HttpContext.Current.Session, deleteSpecialTags: false);
+            SetUserInfo(user.Username, HttpContextFactory.Current.Session, deleteSpecialTags: false);
 
             if (checkOrgLeadersOnly && !Util2.OrgLeadersOnlyChecked)
             {
@@ -181,7 +181,7 @@ namespace CmsWeb.Models
             }
 
             FormsAuthentication.SetAuthCookie(user.Username, false);
-            ApiSessionModel.SaveApiSession(userStatus.User, requirePin, HttpContext.Current.Request.Headers["PIN"].ToInt2());
+            ApiSessionModel.SaveApiSession(userStatus.User, requirePin, HttpContextFactory.Current.Request.Headers["PIN"].ToInt2());
 
             return userStatus;
         }
@@ -200,7 +200,7 @@ namespace CmsWeb.Models
                 || userStatus.Status == UserValidationStatus.PinExpired
                 || userStatus.Status == UserValidationStatus.SessionTokenExpired)
             {
-                var result = ApiSessionModel.ResetSessionExpiration(userStatus.User, HttpContext.Current.Request.Headers["PIN"].ToInt2());
+                var result = ApiSessionModel.ResetSessionExpiration(userStatus.User, HttpContextFactory.Current.Request.Headers["PIN"].ToInt2());
                 if (!result)
                 {
                     return UserValidationResult.Invalid(UserValidationStatus.PinInvalid);
@@ -219,14 +219,14 @@ namespace CmsWeb.Models
 
         private static UserValidationResult GetUserViaSessionToken(bool requirePin)
         {
-            var sessionToken = HttpContext.Current.Request.Headers["SessionToken"];
+            var sessionToken = HttpContextFactory.Current.Request.Headers["SessionToken"];
             if (string.IsNullOrEmpty(sessionToken))
             {
                 //DbUtil.LogActivity("GetUserViaSession==null");
                 return null;
             }
 
-            var result = ApiSessionModel.DetermineApiSessionStatus(Guid.Parse(sessionToken), requirePin, HttpContext.Current.Request.Headers["PIN"].ToInt2());
+            var result = ApiSessionModel.DetermineApiSessionStatus(Guid.Parse(sessionToken), requirePin, HttpContextFactory.Current.Request.Headers["PIN"].ToInt2());
 
             //DbUtil.LogActivity("GetUserViaSession==" + result.Status.ToString());
 
@@ -242,7 +242,7 @@ namespace CmsWeb.Models
                     return UserValidationResult.Invalid(UserValidationStatus.PinInvalid);
             }
 
-            return ValidateUserBeforeLogin(result.User.Username, HttpContext.Current.Request.Url.OriginalString, result.User, userExists: true);
+            return ValidateUserBeforeLogin(result.User.Username, HttpContextFactory.Current.Request.Url.OriginalString, result.User, userExists: true);
         }
 
         private static UserValidationResult GetUserViaCredentials()
@@ -250,7 +250,7 @@ namespace CmsWeb.Models
             string username;
             string password;
 
-            var auth = HttpContext.Current.Request.Headers["Authorization"];
+            var auth = HttpContextFactory.Current.Request.Headers["Authorization"];
             if (auth.HasValue())
             {
                 var cred = Encoding.ASCII.GetString(
@@ -261,8 +261,8 @@ namespace CmsWeb.Models
             else
             {
                 // NOTE: this is necessary only for the old iOS application
-                username = HttpContext.Current.Request.Headers["username"];
-                password = HttpContext.Current.Request.Headers["password"];
+                username = HttpContextFactory.Current.Request.Headers["username"];
+                password = HttpContextFactory.Current.Request.Headers["password"];
             }
 
             if (!string.IsNullOrEmpty(username) || !string.IsNullOrEmpty(password))
@@ -270,7 +270,7 @@ namespace CmsWeb.Models
                 var creds = new NetworkCredential(username, password);
                 UserName2 = creds.UserName;
                 //DbUtil.LogActivity("GetUserViaCreds");
-                return AuthenticateLogon(creds.UserName, creds.Password, HttpContext.Current.Request.Url.OriginalString);
+                return AuthenticateLogon(creds.UserName, creds.Password, HttpContextFactory.Current.Request.Url.OriginalString);
             }
 
             //DbUtil.LogActivity("GetUserViaCreds==null");
@@ -328,7 +328,7 @@ namespace CmsWeb.Models
                 {
                     user = u;
                     impersonating = true;
-                    HttpContext.Current.Session["IsNonFinanceImpersonator"] = "true";
+                    HttpContextFactory.Current.Session["IsNonFinanceImpersonator"] = "true";
                     break;
                 }
 
@@ -444,7 +444,7 @@ namespace CmsWeb.Models
             DbUtil.Db.EmailRedacted(DbUtil.AdminMail, notify, subject, message);
         }
 
-        public static void SetUserInfo(string username, HttpSessionState Session, bool deleteSpecialTags = true)
+        public static void SetUserInfo(string username, HttpSessionStateBase Session, bool deleteSpecialTags = true)
         {
             var u = SetUserInfo(username);
             if (u == null)

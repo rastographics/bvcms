@@ -21,23 +21,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (link.HasValue())
                 return Redirect(link);
 
-            OnlineRegPersonModel p = null;
-            if (showfamily != true)
-            {
-                // No need to pick family, so prepare first registrant ready to answer questions
-                p = m.LoadExistingPerson(pid, 0);
-                if (p == null)
-                    throw new Exception($"No person found with PeopleId = {pid}");
+            OnlineRegPersonModel p;
+            PrepareFirstRegistrant(ref m, pid, showfamily, out p);        
 
-                p.ValidateModelForFind(ModelState, 0);
-                if (m.masterorg == null)
-                {
-                    if (m.List.Count == 0)
-                        m.List.Add(p);
-                    else
-                        m.List[0] = p;
-                }
-            }
             if (!ModelState.IsValid)
             {
                 m.Log("CannotProceed");
