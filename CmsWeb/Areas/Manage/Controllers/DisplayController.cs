@@ -129,7 +129,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         [HttpPost]
         public ActionResult ContentUpdate(int id, string name, string title, string body, bool? snippet, int? roleid, string contentKeyWords, string stayaftersave = null)
         {
-            var content = DbUtil.ContentFromID(id);
+            var content = CurrentDatabase.Contents.SingleOrDefault(c => c.Id == id);
             content.Name = name;
             content.Title = string.IsNullOrWhiteSpace(title) ? name : title;
             content.Body = body;
