@@ -45,6 +45,7 @@
         }
         .name {
             margin-left: 32px;
+            height: 36px;
             position: relative;
             top: -5px;
         }
@@ -101,6 +102,12 @@
         .nav-tabs li.active .badge {
             background-color:#003f72!important;
         }
+        .ckline:first-of-type .list-group-item {
+            border-top: 0;
+        }
+        .section {
+            padding: 10px 15px;
+        }
     </style>
 </head>
 <body style="padding-top:0;margin-bottom:0;">
@@ -109,7 +116,7 @@
         <div class="box-title" style="background:#fff!important;border: 1px solid #003f72 !important;border-width: 4px 0 0 0!important;">
             <div class="logo-md"></div>
             <h4 class="title" style="display:inline-block;color:#333!important;margin:0;">@Model.org.OrganizationName</h4>
-            <p style="color:#4a4a4a!important;">@Model.meeting.MeetingDate.Value.ToString("g") @(Model.ShowDescriptionOnCheckin ? " | " + Model.meeting.Description : "")</p>
+            <p style="color:#4a4a4a!important;">@Model.meeting.MeetingDate.Value.ToString("g") @(Model.ShowDescriptionOnCheckin && !Model.meeting.Description.IsEmpty() ? " | " + Model.meeting.Description : "")</p>
         </div>
         <div data-role="content">
             @{
@@ -118,13 +125,13 @@
             }
             <ul class="nav nav-tabs" role="tablist">
                 <li role="presentation" class="active">
-                    <a role="tab" data-toggle="tab" aria-controls="members" href="#members">Members <span class="badge">@ViewBag.MembersPresent</span></a>
+                    <a role="tab" data-toggle="tab" aria-controls="members" href="#members">Members <span class="members badge">@ViewBag.MembersPresent</span></a>
                 </li>
                 <li role="presentation">
-                    <a role="tab" data-toggle="tab" aria-controls="guests" href="#guests">Guests <span class="badge">@ViewBag.GuestsPresent</span></a>
+                    <a role="tab" data-toggle="tab" aria-controls="guests" href="#guests">Guests <span class="guests badge">@ViewBag.GuestsPresent</span></a>
                 </li>
                 <li role="presentation">
-                    <a role="tab" data-toggle="tab" aria-controls="headcount" href="#headcount">Headcount <span class="badge">@headcount</span></a>
+                    <a role="tab" data-toggle="tab" aria-controls="headcount" href="#headcount">Headcount <span class="headcount badge">@headcount</span></a>
                 </li>
             </ul>
             <div class="tab-content">
@@ -139,7 +146,7 @@
                                     <label for="a.@a.PeopleId"></label>
                                 </div>
                                 <div class="headshot">
-                                    @Html.PersonPortrait((int) a.PeopleId, 40, 40)
+                                    @Html.PersonPortrait((int)a.PeopleId, 40, 40)
                                 </div>
                                 <div class="name">
                                     @if (a.Highlight)
@@ -153,7 +160,7 @@
                                     @if (Model.ShowCurrentMemberType)
                                     {
                                         <p class="role">
-                                            @a.CurrMemberType
+                                            @a.MemberType
                                         </p>
                                     }
                                 </div>
@@ -162,6 +169,16 @@
                     }
                 </div>
                 <div role="tabpanel" class="tab-pane fade" id="guests">
+                    @if (Model.ShowAddGuest)
+                    {
+                        <div class="ckline">
+                            <div class="list-group-item">
+                                <a href="/SearchAdd2/Dialog/visitor/@Model.meeting.MeetingId" class="btn btn-success searchadd">
+                                    <i class="fa fa-plus-circle"></i> Add Guest
+                                </a>
+                            </div>
+                        </div>
+                    }
                     @foreach (var a in ViewBag.Guests)
                     {
                         <div class="@(inAttendanceRole ? "ckline" : "na") @a.Name[0]">
@@ -186,28 +203,42 @@
                                     @if (Model.ShowCurrentMemberType)
                                     {
                                         <p class="role">
-                                            @a.CurrMemberType
+                                            @a.MemberType
                                         </p>
                                     }
                                 </div>
                             </div>
                         </div>
                     }
-                    @if (Model.ShowAddGuest)
-                    {
-                        <span>Add Guest</span>
-                    }
                 </div>
                 <div role="tabpanel" class="tab-pane fade" id="headcount">
-                    Headcount
-
-                    <input type="number" class="form-control" value="@Model.meeting.HeadCount"/><button>Save</button>
+                    <div class="section">
+                        <label for="headcount">Headcount</label>
+                        <form class="form-inline" id="headcount_form">
+                            <input type="number" id="in_headcount" name="headcount" class="form-control" value="@Model.meeting.HeadCount" />
+                            <button type="submit" class="btn btn-default">Save</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+    <div class="device-lg visible-lg-block"></div>
+    <div class="device-md visible-md-block"></div>
+    <div class="device-sm visible-sm-block"></div>
+    <div class="device-xs visible-xs-block"></div>
+    <div class="device-2xs"></div>
+    <div class="modal fade" id="empty-dialog" data-keyboard="false" data-backdrop="static"></div>
+    @ViewExtensions2.GoogleAnalytics()
     @ViewExtensions2.jQuery()
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    @ViewExtensions2.LoDash()
+    @ViewExtensions2.Bootstrap3()
+    @Fingerprint.Script("/Content/touchpoint/lib/jquery-ui-custom/js/jquery-ui.min.js")
+    @ViewExtensions2.Moment()
+    @Fingerprint.Script("/Content/touchpoint/lib/jquery-globalize/js/globalize.js")
+    <script src="@Url.Content(ViewExtensions2.jqueryGlobalizeCulture)" type="text/javascript"></script>
+    @ViewExtensions2.jQueryValidation()
+    @Fingerprint.Script("/Content/touchpoint/js/app.min.js")
     <script type="text/javascript">
         $(function () {
             $("input[type='radio']").bind("change", function (event, ui) {
@@ -237,11 +268,41 @@
                     if (ret.error) {
                         ck.attr("checked", !ck.is(':checked'));
                         alert(ret.error);
+                    } else {
+                        $(".members.badge").text(ret.NumMembers);
+                        $(".guests.badge").text(ret.NumPresent - ret.NumMembers);
                     }
                 });
             });
+            $("#headcount_form").submit(function (ev) {
+                ev.preventDefault();
+                $.post("/Meeting/Edit/", {
+                    id: "h:" + $("#meetingid").val(),
+                    value: $("#in_headcount").val()
+                }, function (ret) {
+                    if (ret.error) {
+                        alert(ret.error);
+                    } else {
+                        $(".headcount.badge").text(ret);
+                        $("in_headcount").val(ret);
+                    }
+                });
+            });
+            // handle tabs
+            var hash = document.location.hash;
+            if (hash) {
+                $('.nav-tabs a[href="' + hash + '"]').tab('show');
+            }
+            
+            $('.nav-tabs a').on('shown', function (e) {
+                window.location.hash = e.target.hash;
+            });
+            
         });
 
+        function AddSelected(ret) {
+            window.location.reload(true);
+        }
     </script>
 </body>
 </html>
