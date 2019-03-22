@@ -656,7 +656,7 @@ namespace CmsWeb.Areas.Org.Controllers
                 return RedirectShowError("You must be a leader of this organization to have access to this page");
             }
 
-            DbUtil.LogActivity($"CheckIn attendance for Meeting for {m.meeting.OrganizationId}({m.meeting.MeetingDate:d})");
+            DbUtil.LogActivity($"Attendance for Meeting for {m.meeting.OrganizationId}({m.meeting.MeetingDate:d})");
             return View(m);
         }
 
