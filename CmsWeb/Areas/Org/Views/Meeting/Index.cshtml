@@ -70,7 +70,14 @@
                                     {
                                         if (Model.AllowEditDescription)
                                         {
-                                            <a id="d-@Model.meeting.MeetingId" class="clickEdit" data-pk="d-@Model.meeting.MeetingId" data-title="Description" style="cursor: pointer">@Model.meeting.Description</a>
+                                            if (Model.UseMeetingDescriptionPickList)
+                                            {
+                                                <a id="d-@Model.meeting.MeetingId" class="clickSelectD" data-value="@Model.meeting.Description" data-pk="d-@Model.meeting.MeetingId" style="cursor: pointer" data-title="Meeting Description">@Model.meeting.Description</a>
+                                            }
+                                            else
+                                            {
+                                                <a id="d-@Model.meeting.MeetingId" class="clickEdit" data-pk="d-@Model.meeting.MeetingId" data-title="Description" style="cursor: pointer">@Model.meeting.Description</a>
+                                            }
                                         }
                                         else
                                         {

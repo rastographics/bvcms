@@ -4,6 +4,7 @@
 @{
     var giving = Util.UserPeopleId == Util2.CurrentPeopleId && ViewExtensions2.DbSetting("TransactionGateway", "").HasValue() && DbUtil.Db.Setting("OnlineGiving", true);
     var vaultDisabled = DbUtil.Db.Setting("VaultDisabled");
+    var campusId = Model.Person.CampusId;
     var checkImageUserView = true;
     if (DbUtil.Db.Setting("CheckImagesDisabledForUser"))
     {
@@ -11,8 +12,8 @@
     }
 }
 <form class="non-modal ajax">
-    @FormAction(giving, vaultDisabled)
-    @FormAction(giving, vaultDisabled, true)
+    @FormAction(giving, campusId, vaultDisabled)
+    @FormAction(giving, campusId, vaultDisabled, true)
     <div class="row">
         <div class="col-sm-12">
             @Html.Partial("PagerTop", Model)
@@ -62,7 +63,7 @@
         </div>
     </div>
 </form>
-@helper FormAction(bool giving, bool vaultDisabled, bool sm = false)
+@helper FormAction(bool giving, int? campusId, bool vaultDisabled, bool sm = false)
 {
     if (giving)
     {
@@ -73,7 +74,7 @@
                 {
                     <a href="/Person2/ManageGiving" target="_blank" class="btn btn-default btn-block"><i class="fa fa-clock-o"></i> Manage Your Recurring Giving</a>
                 }
-                <a href="/Person2/OneTimeGift" target="_blank" class="btn btn-default btn-block">Make a One Time Gift</a>
+                <a href="/Person2/OneTimeGift/@campusId" target="_blank" class="btn btn-default btn-block">Make a One Time Gift</a>
             </div>
         }
         else
@@ -85,7 +86,7 @@
                         {
                             <a href="/Person2/ManageGiving" target="_blank" class="btn btn-default"><i class="fa fa-clock-o"></i> Manage Your Recurring Giving</a>
                         }
-                        <a href="/Person2/OneTimeGift" target="_blank" class="btn btn-default">Make a One Time Gift</a>
+                        <a href="/Person2/OneTimeGift/@campusId" target="_blank" class="btn btn-default">Make a One Time Gift</a>
                     </div>
                 </div>
             </div>

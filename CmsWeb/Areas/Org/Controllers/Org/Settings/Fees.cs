@@ -19,7 +19,7 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost]
         public ActionResult FeesHelpToggle(int id)
         {
-            DbUtil.Db.ToggleUserPreference("ShowFeesHelp");
+            CurrentDatabase.ToggleUserPreference("ShowFeesHelp");
             var m = new SettingsFeesModel(id);
             return PartialView("Registration/Fees", m);
         }

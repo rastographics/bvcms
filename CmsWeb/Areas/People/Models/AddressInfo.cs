@@ -210,6 +210,7 @@ namespace CmsWeb.Areas.People.Models
                     a.PeopleId = p.PeopleId;
                     a.AddressLineOne = p.Family.AddressLineOne;
                     a.AddressLineTwo = p.Family.AddressLineTwo;
+                    a.FromDt = p.Family.AddressFromDate;
                     a.ToDt = p.Family.AddressToDate;
                     a.BadAddress = p.Family.BadAddressFlag ?? false;
                     a.CityName = p.Family.CityName;
@@ -224,6 +225,7 @@ namespace CmsWeb.Areas.People.Models
                     a.PeopleId = p.PeopleId;
                     a.AddressLineOne = p.AddressLineOne;
                     a.AddressLineTwo = p.AddressLineTwo;
+                    a.FromDt = p.AddressFromDate;
                     a.ToDt = p.AddressToDate;
                     a.BadAddress = p.BadAddressFlag ?? false;
                     a.CityName = p.CityName;
@@ -273,6 +275,7 @@ namespace CmsWeb.Areas.People.Models
                 case "FamilyAddr":
                     UpdateValue(f, "AddressLineOne", AddressLineOne);
                     UpdateValue(f, "AddressLineTwo", AddressLineTwo);
+                    UpdateValue(f, "AddressFromDate", FromDt);
                     UpdateValue(f, "AddressToDate", ToDt);
                     UpdateValue(f, "CityName", CityName);
                     UpdateValue(f, "StateCode", StateCode.Value);
@@ -286,6 +289,7 @@ namespace CmsWeb.Areas.People.Models
                 case "PersonalAddr":
                     UpdateValue(p, "AddressLineOne", AddressLineOne);
                     UpdateValue(p, "AddressLineTwo", AddressLineTwo);
+                    UpdateValue(f, "AddressFromDate", FromDt);
                     UpdateValue(p, "AddressToDate", ToDt);
                     UpdateValue(p, "CityName", CityName);
                     UpdateValue(p, "StateCode", StateCode.Value);
@@ -334,7 +338,7 @@ namespace CmsWeb.Areas.People.Models
             }
             Saved = true;
 
-            if (!HttpContext.Current.User.IsInRole("Access"))
+            if (!HttpContextFactory.Current.User.IsInRole("Access"))
                 if (psb.Count > 0 || fsb.Count > 0)
                 {
                     var sb = new StringBuilder();

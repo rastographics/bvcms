@@ -14,6 +14,7 @@ namespace CmsWeb.Areas.Reports.Models
         public DateTime Sunday { get; set; }
         public int? Campus { get; set; }
 
+        public WeeklyDecisionsModel() { }
         public WeeklyDecisionsModel(DateTime? dt)
         {
             Sunday = dt ?? MostRecentAttendedSunday();

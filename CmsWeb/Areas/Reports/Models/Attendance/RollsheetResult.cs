@@ -5,6 +5,12 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
 
+using CmsData;
+using CmsData.Codes;
+using CmsWeb.Areas.Dialog.Models;
+using CmsWeb.Areas.Search.Models;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,12 +18,6 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using CmsData;
-using CmsData.Codes;
-using CmsWeb.Areas.Dialog.Models;
-using CmsWeb.Areas.Search.Models;
-using iTextSharp.text;
-using iTextSharp.text.pdf;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Reports.Models
@@ -95,9 +95,14 @@ namespace CmsWeb.Areas.Reports.Models
                                 at.Person.DOB
                             };
                     if (q.Any())
+                    {
                         StartPageSet(o);
+                    }
+
                     foreach (var a in q)
+                    {
                         table.AddCell(AddRow(a.Code, a.Name2, a.PeopleId, a.DOB, "", font));
+                    }
                 }
                 else if (OrgSearchModel != null)
                 {
@@ -124,9 +129,14 @@ namespace CmsWeb.Areas.Reports.Models
                                         : ""
                             };
                     if (q.Any())
+                    {
                         StartPageSet(o);
+                    }
+
                     foreach (var m in q)
+                    {
                         table.AddCell(AddRow(m.MemberTypeCode, m.Name2, m.PeopleId, m.BirthDate, m.highlight, m.ch ? china ?? font : font));
+                    }
                 }
                 else if (Filter?.GroupSelect == GroupSelectCode.Member)
                 {
@@ -156,9 +166,14 @@ namespace CmsWeb.Areas.Reports.Models
                                         : ""
                             };
                     if (q.Any())
+                    {
                         StartPageSet(o);
+                    }
+
                     foreach (var m in q)
+                    {
                         table.AddCell(AddRow(m.MemberTypeCode, m.Name2, m.PeopleId, m.BirthDate, m.highlight, m.ch ? china ?? font : font));
+                    }
                 }
                 else
                 {
@@ -181,9 +196,14 @@ namespace CmsWeb.Areas.Reports.Models
                                 highlight = om.OrgMemMemTags.Any(mm => mm.MemberTag.Name == NewMeetingInfo.HighlightGroup) ? NewMeetingInfo.HighlightGroup : ""
                             };
                     if (q.Any())
+                    {
                         StartPageSet(o);
+                    }
+
                     foreach (var m in q)
+                    {
                         table.AddCell(AddRow(m.MemberTypeCode, m.Name2, m.PeopleId, m.BirthDate, m.highlight, m.ch ? china ?? font : font));
+                    }
                 }
                 if ((OrgSearchModel != null && NewMeetingInfo.ByGroup == false)
                     || (Filter != null
@@ -198,12 +218,17 @@ namespace CmsWeb.Areas.Reports.Models
                     foreach (var m in RollsheetModel.FetchVisitors(o.OrgId, NewMeetingInfo.MeetingDate, true, NewMeetingInfo.UseAltNames))
                     {
                         if (table.Rows.Count == 0)
+                        {
                             StartPageSet(o);
+                        }
+
                         table.AddCell(AddRow(m.VisitorType, m.Name2, m.PeopleId, m.BirthDate, "", boldfont));
                     }
                 }
                 if (!pageSetStarted)
+                {
                     continue;
+                }
 
                 var col = 0;
                 var gutter = 20f;
@@ -216,9 +241,14 @@ namespace CmsWeb.Areas.Reports.Models
                 while (ColumnText.HasMoreText(status))
                 {
                     if (col == 0)
+                    {
                         ct.SetSimpleColumn(doc.Left, doc.Bottom, doc.Left + colwidth, doc.Top);
+                    }
                     else
+                    {
                         ct.SetSimpleColumn(doc.Right - colwidth, doc.Bottom, doc.Right, doc.Top);
+                    }
+
                     status = ct.Go();
                     ++col;
                     if (col > 1)
@@ -231,7 +261,10 @@ namespace CmsWeb.Areas.Reports.Models
             if (!hasRows)
             {
                 if (!pageSetStarted)
+                {
                     StartPageSet(lasto);
+                }
+
                 doc.Add(new Paragraph("no members as of this meeting date and time to show on rollsheet"));
             }
             doc.Close();
@@ -241,11 +274,20 @@ namespace CmsWeb.Areas.Reports.Models
         {
             var simsunfont = Util.SimSunFont;
             if (simsunfont == null)
+            {
                 return null;
+            }
+
             if (simsunfont.StartsWith("~"))
-                simsunfont = HttpContext.Current.Server.MapPath(Util.SimSunFont);
+            {
+                simsunfont = HttpContextFactory.Current.Server.MapPath(Util.SimSunFont);
+            }
+
             if (!File.Exists(simsunfont))
+            {
                 return null;
+            }
+
             var baseFont = BaseFont.CreateFont(
                 simsunfont,
                 BaseFont.IDENTITY_H,
@@ -258,7 +300,10 @@ namespace CmsWeb.Areas.Reports.Models
             doc.NewPage();
             pageSetStarted = true;
             if (NewMeetingInfo.UseAltNames)
+            {
                 china = CreateChineseFont();
+            }
+
             pageEvents.StartPageSet(
                 $"{o.Division}: {o.Name}, {o.Location} ({o.Teacher})",
                 $"{NewMeetingInfo.MeetingDate:f} ({o.OrgId})",
@@ -295,7 +340,10 @@ namespace CmsWeb.Areas.Reports.Models
             p.Add(new Chunk(" ", medfont));
             p.Add(new Chunk($"({Code}) {bd:MMM d}", smallfont));
             if (highlight.HasValue())
+            {
                 p.Add("\n" + highlight);
+            }
+
             t.AddCell(p);
             hasRows = true;
             return t;
@@ -410,7 +458,10 @@ namespace CmsWeb.Areas.Reports.Models
             public void EndPageSet()
             {
                 if (npages == null)
+                {
                     return;
+                }
+
                 npages.template.BeginText();
                 npages.template.SetFontAndSize(font, 8);
                 npages.template.ShowText(npages.n.ToString());
@@ -431,7 +482,9 @@ namespace CmsWeb.Areas.Reports.Models
             {
                 base.OnEndPage(writer, document);
                 if (npages.juststartednewset)
+                {
                     EndPageSet();
+                }
 
                 string text;
                 float len;

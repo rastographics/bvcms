@@ -10,6 +10,7 @@ namespace CmsWeb.Areas.Dialog.Models
         public int ImageId { get; set; }
 
         public byte[] checkImageBytes { get; set; }
+        public CheckImageModel() { }
     }
 
 

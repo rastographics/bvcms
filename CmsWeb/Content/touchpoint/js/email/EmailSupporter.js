@@ -178,7 +178,7 @@
     });
 
     $(".send").click(function () {
-        $('#Body').val($('#email-body').contents().find('#tempateBody').html());
+        $('#Body').val($('#email-body').contents().find('#templateBody').html());
         var q = $("#SendEmail").serialize();
 
         $.post('/MissionTripEmail2/Send', q, function (ret) {
@@ -191,7 +191,7 @@
 
     $(".testsend").click(function () {
         $.clearTemplateClass();
-        $("#Body").val($('#email-body').contents().find('#tempateBody').html());
+        $("#Body").val($('#email-body').contents().find('#templateBody').html());
         $.addTemplateClass();
         var q = $("#SendEmail").serialize();
         $.post('/MissionTripEmail2/TestSend', q, function (ret) {

@@ -168,7 +168,7 @@ namespace CmsData
 
         public static string[] BasicLevel1 =
         {
-            "Access", "Attendance", "Edit", "ManageGroups"
+            "Access", "Attendance", "Edit", "ManageGroups", "ViewVolunteerApplication"
         };
 
         public static string[] BasicLevel2 =
@@ -188,7 +188,8 @@ namespace CmsData
             "Membership",
             "MemberDocs",
             "MissionGiving",
-            "OrgLeadersOnly"
+            "OrgLeadersOnly",
+            "CheckinCoordinator"
         };
 
         public static string[] Financial =

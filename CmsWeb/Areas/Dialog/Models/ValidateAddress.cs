@@ -1,4 +1,6 @@
-﻿using System;
+﻿using CmsData;
+using CmsWeb.Code;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -7,8 +9,6 @@ using System.Linq;
 using System.Threading;
 using System.Web.Hosting;
 using System.Web.Mvc;
-using CmsData;
-using CmsWeb.Code;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Models
@@ -61,10 +61,10 @@ namespace CmsWeb.Areas.Dialog.Models
             LongRunningOperation lop = null;
             foreach (var pid in model.pids)
             {
-                db.Dispose();
+                //DbUtil.Db.Dispose();
                 var fsb = new List<ChangeDetail>();
-                db = DbUtil.Create(model.Host);
-                var f = db.LoadFamilyByPersonId(pid); 
+                //db = DbUtil.Create(model.Host);
+                var f = db.LoadFamilyByPersonId(pid);
                 var ret = AddressVerify.LookupAddress(f.AddressLineOne, f.AddressLineTwo, f.CityName, f.StateCode, f.ZipCode);
                 if (ret.found != false && !ret.error.HasValue() && ret.Line1 != "error")
                 {
@@ -107,7 +107,9 @@ namespace CmsWeb.Areas.Dialog.Models
         public void Validate(ModelStateDictionary modelState)
         {
             if (Tag != null && Tag.Value == "0") // They did not choose a tag
+            {
                 modelState.AddModelError("Tag", "Must choose a tag");
+            }
         }
 
         public bool ShowCount(CMSDataContext db)

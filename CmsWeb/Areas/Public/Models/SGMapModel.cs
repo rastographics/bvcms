@@ -16,6 +16,8 @@ namespace CmsWeb.Models
     {
         public StringBuilder sb = new StringBuilder();
 
+        public SGMapModel() { }
+
         public SGMapModel(int? id)
         {
             divid = id;

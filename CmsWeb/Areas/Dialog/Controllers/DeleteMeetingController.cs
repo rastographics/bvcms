@@ -1,13 +1,18 @@
-﻿using System.Web.Mvc;
+﻿using CmsData;
 using CmsWeb.Areas.Dialog.Models;
-using CmsData;
+using CmsWeb.Lifecycle;
+using System.Web.Mvc;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Controllers
 {
-    [RouteArea("Dialog", AreaPrefix="DeleteMeeting"), Route("{action}/{id?}")]
+    [RouteArea("Dialog", AreaPrefix = "DeleteMeeting"), Route("{action}/{id?}")]
     public class DeleteMeetingController : CmsStaffController
     {
+        public DeleteMeetingController(IRequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [HttpPost, Route("~/DeleteMeeting/{id:int}")]
         public ActionResult Index(int id)
         {
@@ -18,11 +23,11 @@ namespace CmsWeb.Areas.Dialog.Controllers
         [HttpPost]
         public ActionResult Process(DeleteMeeting model)
         {
-            model.UpdateLongRunningOp(DbUtil.Db, DeleteMeeting.Op);
+            model.UpdateLongRunningOp(CurrentDatabase, DeleteMeeting.Op);
             if (!model.Started.HasValue)
             {
                 DbUtil.LogActivity($"Delete Meeting {model.MeetingId}", orgid: model.OrgId, userId: Util.UserPeopleId);
-                model.Process(DbUtil.Db);
+                model.Process(CurrentDatabase);
             }
             return View(model);
         }

@@ -1,8 +1,9 @@
+using CmsData;
+using CmsData.Codes;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using CmsData;
-using CmsData.Codes;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Org.Models
 {
@@ -13,7 +14,7 @@ namespace CmsWeb.Areas.Org.Models
         public Organization org { get; set; }
         public Organization parentorg { get; set; }
 
-        public bool canedit => HttpContext.Current.User.IsInRole("Edit");
+        public bool canedit => HttpContextFactory.Current.User.IsInRole("Edit");
 
         public IList<int> List { get; set; } = new List<int>();
 
@@ -27,6 +28,7 @@ namespace CmsWeb.Areas.Org.Models
             }
         }
 
+        public OrgChildrenModel() { }
         public IEnumerable<OrgInfo> FetchOrgList()
         {
             var showAllChildOrgs = DbUtil.Db.Setting("UX-ManageShowAllChildOrgs", true);

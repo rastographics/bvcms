@@ -439,12 +439,12 @@ Global
 		{ADCF6AAD-A8DE-4304-ABCC-B9FB3908A71F}.staging|Any CPU.Build.0 = Release|Any CPU
 		{ADCF6AAD-A8DE-4304-ABCC-B9FB3908A71F}.staging|Itanium.ActiveCfg = Release|Any CPU
 		{ADCF6AAD-A8DE-4304-ABCC-B9FB3908A71F}.staging|Itanium.Build.0 = Release|Any CPU
-		{ADCF6AAD-A8DE-4304-ABCC-B9FB3908A71F}.staging|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{ADCF6AAD-A8DE-4304-ABCC-B9FB3908A71F}.staging|Mixed Platforms.Build.0 = Release|Any CPU
+		{ADCF6AAD-A8DE-4304-ABCC-B9FB3908A71F}.staging|Mixed Platforms.ActiveCfg = staging|Any CPU
+		{ADCF6AAD-A8DE-4304-ABCC-B9FB3908A71F}.staging|Mixed Platforms.Build.0 = staging|Any CPU
 		{ADCF6AAD-A8DE-4304-ABCC-B9FB3908A71F}.staging|x86.ActiveCfg = Release|Any CPU
 		{ADCF6AAD-A8DE-4304-ABCC-B9FB3908A71F}.staging|x86.Build.0 = Release|Any CPU
-		{ADCF6AAD-A8DE-4304-ABCC-B9FB3908A71F}.test|Any CPU.ActiveCfg = Release|Any CPU
-		{ADCF6AAD-A8DE-4304-ABCC-B9FB3908A71F}.test|Any CPU.Build.0 = Release|Any CPU
+		{ADCF6AAD-A8DE-4304-ABCC-B9FB3908A71F}.test|Any CPU.ActiveCfg = test|Any CPU
+		{ADCF6AAD-A8DE-4304-ABCC-B9FB3908A71F}.test|Any CPU.Build.0 = test|Any CPU
 		{ADCF6AAD-A8DE-4304-ABCC-B9FB3908A71F}.test|Itanium.ActiveCfg = Release|Any CPU
 		{ADCF6AAD-A8DE-4304-ABCC-B9FB3908A71F}.test|Itanium.Build.0 = Release|Any CPU
 		{ADCF6AAD-A8DE-4304-ABCC-B9FB3908A71F}.test|Mixed Platforms.ActiveCfg = Release|Any CPU

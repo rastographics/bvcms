@@ -25,11 +25,11 @@ namespace CmsData
 		private string _Name;
 		
    		
-   		private EntitySet< Task> _CoTasks;
+   		private EntitySet<Task> _CoTasks;
 		
-   		private EntitySet< TaskListOwner> _TaskListOwners;
+   		private EntitySet<TaskListOwner> _TaskListOwners;
 		
-   		private EntitySet< Task> _Tasks;
+   		private EntitySet<Task> _Tasks;
 		
     	
 	#endregion
@@ -52,11 +52,11 @@ namespace CmsData
 		public TaskList()
 		{
 			
-			this._CoTasks = new EntitySet< Task>(new Action< Task>(this.attach_CoTasks), new Action< Task>(this.detach_CoTasks)); 
+			this._CoTasks = new EntitySet<Task>(new Action< Task>(this.attach_CoTasks), new Action< Task>(this.detach_CoTasks)); 
 			
-			this._TaskListOwners = new EntitySet< TaskListOwner>(new Action< TaskListOwner>(this.attach_TaskListOwners), new Action< TaskListOwner>(this.detach_TaskListOwners)); 
+			this._TaskListOwners = new EntitySet<TaskListOwner>(new Action< TaskListOwner>(this.attach_TaskListOwners), new Action< TaskListOwner>(this.detach_TaskListOwners)); 
 			
-			this._Tasks = new EntitySet< Task>(new Action< Task>(this.attach_Tasks), new Action< Task>(this.detach_Tasks)); 
+			this._Tasks = new EntitySet<Task>(new Action< Task>(this.attach_Tasks), new Action< Task>(this.detach_Tasks)); 
 			
 			
 			OnCreated();
@@ -136,7 +136,7 @@ namespace CmsData
     #region Foreign Key Tables
    		
    		[Association(Name="CoTasks__CoTaskList", Storage="_CoTasks", OtherKey="CoListId")]
-   		public EntitySet< Task> CoTasks
+   		public EntitySet<Task> CoTasks
    		{
    		    get { return this._CoTasks; }
 
@@ -146,7 +146,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_TaskListOwners_TaskList", Storage="_TaskListOwners", OtherKey="TaskListId")]
-   		public EntitySet< TaskListOwner> TaskListOwners
+   		public EntitySet<TaskListOwner> TaskListOwners
    		{
    		    get { return this._TaskListOwners; }
 
@@ -156,7 +156,7 @@ namespace CmsData
 
 		
    		[Association(Name="Tasks__TaskList", Storage="_Tasks", OtherKey="ListId")]
-   		public EntitySet< Task> Tasks
+   		public EntitySet<Task> Tasks
    		{
    		    get { return this._Tasks; }
 

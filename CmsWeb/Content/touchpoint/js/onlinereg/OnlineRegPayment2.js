@@ -6,7 +6,139 @@ $(function () {
         orientation: "auto",
         forceParse: false,
         format: $.dtoptions.format
+    }).on('changeDate', function() {
+        $("#StartWhenIsNew").val('True');
     });
+
+    $("body").on("change", 'select[name=newRepeatPattern]', function () {
+        var v = $("select[name=newRepeatPattern]").val();
+        if (v === 'M') { // monthly
+            $('#weeklyText').hide();
+            $('#twoWeeksText').hide();
+            $('#twiceAMonthText').hide();
+            $('#monthlyText').show();
+
+            $('#RepeatPattern').val('M');
+            $('#EveryN').val('1');
+            $('#Day1').val('');
+            $('#Day2').val('');
+            $('#SemiEvery').val('E');
+            $('#Period').val('M');
+        }
+        else if (v === 'S') { // twice a month
+            $('#weeklyText').hide();
+            $('#twoWeeksText').hide();
+            $('#monthlyText').hide();
+            $('#twiceAMonthText').show();
+
+            $('#RepeatPattern').val('S');
+            $('#EveryN').val('1');
+            $('#Day1').val('1');
+            $('#twiceAMonthDay1').editable('setValue', $('#Day1').val());
+            $('#Day2').val('15');
+            $('#twiceAMonthDay2').editable('setValue', $('#Day2').val());
+            $('#SemiEvery').val('S');
+            $('#Period').val('M');
+        }
+        else if (v === 'W') { // weekly
+            $('#twoWeeksText').hide();
+            $('#twiceAMonthText').hide();
+            $('#monthlyText').hide();
+            $('#weeklyText').show();
+
+            $('#RepeatPattern').val('W');
+            $('#EveryN').val('1');
+            $('#Day1').val('');
+            $('#Day2').val('');
+            $('#SemiEvery').val('E');
+            $('#Period').val('W');
+        }
+        else if (v == '2W') { // every 2 weeks
+            $('#weeklyText').hide();
+            $('#twiceAMonthText').hide();
+            $('#monthlyText').hide();
+            $('#twoWeeksText').show();
+
+            $('#RepeatPattern').val('W');
+            $('#EveryN').val('2');
+            $('#Day1').val('');
+            $('#Day2').val('');
+            $('#SemiEvery').val('E');
+            $('#Period').val('W');
+        }
+    });
+
+    var daysOfMonth = [];
+    var i;
+    for (i = 1; i <= 31; i++) {
+        daysOfMonth.push({ value: i, text: Humanize.ordinal(i) });
+    }
+    
+    $(".clickSelect").editable({
+        mode: 'popup',
+        type: 'select',
+        showbuttons: false,
+        send: 'never',
+        source: daysOfMonth,
+        placement: 'bottom'
+    });
+
+    if ($('#Day1').length && $('#Day1').val().length > 0) {
+        $('#twiceAMonthDay1').editable('setValue', $('#Day1').val());
+    }
+
+    if ($('#Day2').length && $('#Day2').val().length > 0) {
+        $('#twiceAMonthDay2').editable('setValue', $('#Day2').val());
+    }
+   
+    $('#twiceAMonthDay1').on('save', function (e, params) {
+        $('#Day1').val(params.newValue);
+    });
+
+    $('#twiceAMonthDay2').on('save', function (e, params) {
+        $('#Day2').val(params.newValue);
+    });
+
+    $('#startWhenDate').click(function(e) {
+        e.preventDefault();
+    });
+
+    var curDate = new Date();
+    $('#startWhenDate').datepicker({
+        autoclose: true,
+        orientation: "auto",
+        forceParse: false,
+        format: $.dtoptions.format,
+        toggleActive: false,
+    }).on('changeDate', dateChanged);
+
+    function dateChanged(e) {
+        if (e.format().length > 0) {
+            $("#StartWhen").val(e.format());
+            $("#StartWhenIsNew").val('True');
+            $("#startWhenDate").text(e.format());
+            calculateDayOfMonthText(e.format());
+            curDate = e.date;
+        }
+    }
+
+    function calculateDayOfMonthText(date) {
+        var dt = moment(date);
+        var dayText = dt.format('dddd');
+        var dayNum = dt.format('D');
+
+        var result = _.find(daysOfMonth, function (d) { return d.value == dayNum; });
+
+        $('#weeklyTextDay').text(dayText);
+        $('#twoWeeksTextDay').text(dayText);
+        $('#monthlyTextDay').text(result.text);
+    }
+
+    calculateDayOfMonthText($("#StartWhen").val());
+
+    $("#calIcon").datepicker("setDate", new Date());
+
+
     $("#applydonation").click(function (ev) {
         ev.preventDefault();
         return false;
@@ -39,8 +171,13 @@ $(function () {
                 $('#ApplyCoupon').hide();
             } else {
                 var form = $('#success_form');
-                form.attr("action", ret.confirm);
-                form.submit();
+                if (ret.formmethod == "GET") {
+                    window.location = ret.confirm;
+                }
+                else {
+                    form.attr("action", ret.confirm);
+                    form.submit();
+                }
             }
         });
         return false;
@@ -76,16 +213,23 @@ $(function () {
         return false;
     });
     var agreeterms = true;
-    $("form").submit(function () {
+    $("form").submit(function() {
         if (!agreeterms) {
             alert("must agree to terms");
             return false;
         }
         if (!$("#submitit").val())
             return false;
-        if ($("form").valid()) {
+
+        var isFormValid = $("form").valid();
+        if (isFormValid) {
             $("#submitit").attr("disabled", "disabled");
-            return true;
+            var usecaptcha = $("#useRecaptcha").val();
+            if (usecaptcha) {
+                grecaptcha.execute();
+            } else {
+                return true;
+            }
         }
         return false;
     });
@@ -309,6 +453,10 @@ $(function () {
         $.ShowPaymentInfo2($("input[name=Type]:checked").val());
     }
     var repeatPattern = $("select[name=RepeatPattern]").val();
+    if (!repeatPattern) {
+        repeatPattern = $("input[name=RepeatPattern]").val();
+    }
+
     $.SetSemiEvery(repeatPattern);
     $.ShowPeriodInfo(repeatPattern);
     $.SetSummaryText();
@@ -341,4 +489,3 @@ $(function () {
     });
 
 });
-

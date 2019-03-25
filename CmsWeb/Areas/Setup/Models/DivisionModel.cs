@@ -5,10 +5,10 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
 
+using CmsData;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
-using CmsData;
 using UtilityExtensions;
 
 namespace CmsWeb.Models
@@ -17,7 +17,7 @@ namespace CmsWeb.Models
     {
         public int ProgramId { get; set; }
         public int? TagProgramId { get; set; }
-
+        public DivisionModel() { }
         public IEnumerable<DivisionInfo> DivisionList()
         {
             var q = from d in DbUtil.Db.Divisions
@@ -96,7 +96,10 @@ namespace CmsWeb.Models
             get
             {
                 if (Programs == null)
+                {
                     return "";
+                }
+
                 return $"{Name}|Orgs:{OrgCount}|DivOrgs:{DivOrgsCount}|Meetings:{MeetingCount}|Programs:|{string.Join("|", Programs)}";
             }
         }
@@ -104,7 +107,10 @@ namespace CmsWeb.Models
         public string NoZero(int? arg)
         {
             if (arg == 0)
+            {
                 return "";
+            }
+
             return arg.ToString2("n0");
         }
     }

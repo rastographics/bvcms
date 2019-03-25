@@ -24,9 +24,10 @@ namespace CmsData
         DoesNotEndWith,
         OneOf,
         NotOneOf,
-        AllTrue,
-        AnyTrue,
-        AllFalse,
+        AllTrue,// (expr1 AND expr2)
+        AnyTrue,// (expr1 OR expr2)
+        AllFalse,// NOT (expr1 OR expr2) == (NOT expr1 AND NOT expr2)
+        AnyFalse,// NOT (expr1 AND expr2) == (NOT expr1 OR NOT expr2)
         After,
         Before,
         BeforeOrSame,

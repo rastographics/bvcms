@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using CmsData;
+﻿using CmsData;
 using CmsData.ExtraValue;
 using CmsWeb.Code;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
 using UtilityExtensions;
 
 namespace CmsWeb.Models.ExtraValues
@@ -92,7 +92,10 @@ namespace CmsWeb.Models.ExtraValues
         {
             var ev = DbUtil.Db.OrganizationExtras.FirstOrDefault(ee => ee.Field == field);
             if (ev == null)
+            {
                 return "error: no field";
+            }
+
             switch (type.ToLower())
             {
                 case "code":

@@ -1,4 +1,7 @@
-﻿using System;
+﻿using CmsData;
+using CmsWeb.Areas.Search.Models;
+using MoreLinq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -6,9 +9,6 @@ using System.Web.Caching;
 using System.Web.Mvc;
 using System.Xml.Linq;
 using System.Xml.XPath;
-using CmsData;
-using CmsWeb.Areas.Search.Models;
-using MoreLinq;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Org.Models.Org
@@ -29,7 +29,11 @@ namespace CmsWeb.Areas.Org.Models.Org
         {
             get
             {
-                if (string.IsNullOrEmpty(OrgType)) return "";
+                if (string.IsNullOrEmpty(OrgType))
+                {
+                    return "";
+                }
+
                 return $"{OrgType.ToLower().Replace(" ", "")}-cell ev-orgtype-cell";
             }
         }
@@ -59,6 +63,7 @@ namespace CmsWeb.Areas.Org.Models.Org
 
     public class OrgSearchFieldsModel
     {
+        public OrgSearchFieldsModel() { }
         private static readonly List<string> standardFields = new List<string>()
         {
             "Name",
@@ -85,18 +90,20 @@ namespace CmsWeb.Areas.Org.Models.Org
         public static List<OrgSearchField> GetFields(OrgSearchModel osm)
         {
             string customTextName = "OrgSearchFields";
-            var db = DbUtil.Db;
+            //var db = Db;
             var list = new List<OrgSearchField>();
 
             var s = HttpRuntime.Cache[DbUtil.Db.Host + customTextName] as string;
             if (s == null)
             {
-                s = db.ContentText(customTextName, Resource1.OrgSearchFields);
-                HttpRuntime.Cache.Insert(db.Host + customTextName, s, null,
+                s = DbUtil.Db.ContentText(customTextName, Resource1.OrgSearchFields);
+                HttpRuntime.Cache.Insert(DbUtil.Db.Host + customTextName, s, null,
                     DateTime.Now.AddMinutes(Util.IsDebug() ? 0 : 1), Cache.NoSlidingExpiration);
             }
             if (!s.HasValue())
+            {
                 return list;
+            }
 
             XDocument xdoc;
 
@@ -110,7 +117,9 @@ namespace CmsWeb.Areas.Org.Models.Org
             }
 
             if (xdoc?.Root == null)
+            {
                 return list;
+            }
 
             string selectedOrgType = null;
 
@@ -125,9 +134,13 @@ namespace CmsWeb.Areas.Org.Models.Org
                     field.Display = string.IsNullOrEmpty(field.OrgType);
 
                     if (field.Field == "Campus")
+                    {
                         field.Label = Util2.CampusLabel;
+                    }
                     else
+                    {
                         field.Label = e.Attribute("label")?.Value ?? field.Field;
+                    }
 
                     bool dropdown;
                     bool.TryParse(e.Attribute("dropdown")?.Value ?? "false", out dropdown);
@@ -143,7 +156,7 @@ namespace CmsWeb.Areas.Org.Models.Org
                     {
                         IEnumerable<string> values;
 
-                        if(field.Weekdays)
+                        if (field.Weekdays)
                         {
                             values = weekdayList;
                         }
@@ -152,7 +165,7 @@ namespace CmsWeb.Areas.Org.Models.Org
                             values = DbUtil.Db.OrganizationExtras.Where(x => x.Field == field.Field)
                                 .Select(x => x.Data ?? x.StrValue).Distinct().OrderBy(x => x).ToList()
                                 .Where(x => !string.IsNullOrEmpty(x));
-                                // IsNullOrEmpty() doesn't work in LINQ-to-SQL, so this comes after materializing query
+                            // IsNullOrEmpty() doesn't work in LINQ-to-SQL, so this comes after materializing query
                         }
 
                         var items = new List<SelectListItem>();

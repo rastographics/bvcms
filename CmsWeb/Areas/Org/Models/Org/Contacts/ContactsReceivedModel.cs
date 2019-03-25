@@ -11,7 +11,7 @@ namespace CmsWeb.Areas.Org.Models
     {
         public override string AddContact { get { return "/Org/AddContactReceived/" + OrganizationId; } }
         public override string AddContactButton { get { return "Add Contact Received By This Organization"; } }
-
+        public ContactsReceivedModel() { }
         override public IQueryable<Contact> DefineModelList()
         {
             return from c in FilteredModelList()

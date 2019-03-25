@@ -1,15 +1,16 @@
+using CmsData;
+using CmsWeb.Areas.Dialog.Models;
+using CmsWeb.Areas.Manage.Models;
+using CmsWeb.Lifecycle;
+using CmsWeb.Models;
+using net.openstack.Core.Domain;
+using net.openstack.Providers.Rackspace;
 using System;
 using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using CmsData;
-using CmsWeb.Areas.Dialog.Models;
-using CmsWeb.Areas.Manage.Models;
-using CmsWeb.Models;
-using net.openstack.Core.Domain;
-using net.openstack.Providers.Rackspace;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Manage.Controllers
@@ -19,11 +20,15 @@ namespace CmsWeb.Areas.Manage.Controllers
     [Authorize(Roles = "ManageResources")]
     public class ResourceController : CmsStaffController
     {
+        public ResourceController(IRequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [HttpGet]
         [Route("~/Resources")]
         public ActionResult Index()
         {
-            var resourceTypes = DbUtil.Db.ResourceTypes.OrderBy(x => x.DisplayOrder).Select(x => new ResourceTypeModel(x)).ToList();
+            var resourceTypes = CurrentDatabase.ResourceTypes.OrderBy(x => x.DisplayOrder).Select(x => new ResourceTypeModel(x)).ToList();
 
             return View(resourceTypes);
         }
@@ -32,7 +37,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         [Route("~/Resources/{id}")]
         public ActionResult Display(int id)
         {
-            var resource = new ResourceModel(DbUtil.Db.Resources.FirstOrDefault(x => x.ResourceId == id));
+            var resource = new ResourceModel(CurrentDatabase.Resources.FirstOrDefault(x => x.ResourceId == id));
 
             return View(resource);
         }
@@ -40,7 +45,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         [Route("~/Resources/Edit/{id}")]
         public ActionResult Edit(int id)
         {
-            var resource = new EditResourceModel(DbUtil.Db.Resources.FirstOrDefault(x => x.ResourceId == id));
+            var resource = new EditResourceModel(CurrentDatabase.Resources.FirstOrDefault(x => x.ResourceId == id));
 
             return View(resource);
         }
@@ -49,12 +54,17 @@ namespace CmsWeb.Areas.Manage.Controllers
         [Route("~/Resources/Save/{id}"), ValidateInput(false)]
         public ActionResult Save(int id, EditResourceModel model)
         {
-            var resource = DbUtil.Db.Resources.FirstOrDefault(x => x.ResourceId == id);
+            var resource = CurrentDatabase.Resources.FirstOrDefault(x => x.ResourceId == id);
 
             if (model.DivisionId.HasValue && model.DivisionId < 1)
+            {
                 model.DivisionId = null;
+            }
+
             if (model.CampusId.HasValue && model.CampusId < 1)
+            {
                 model.CampusId = null;
+            }
 
             resource.Name = model.Name;
             resource.DisplayOrder = model.DisplayOrder;
@@ -66,8 +76,8 @@ namespace CmsWeb.Areas.Manage.Controllers
             resource.ResourceTypeId = model.ResourceTypeId;
             resource.ResourceCategoryId = model.ResourceCategoryId;
 
-            DbUtil.Db.ResourceOrganizations.DeleteAllOnSubmit(
-                DbUtil.Db.ResourceOrganizations.Where(ro => ro.ResourceId == resource.ResourceId)
+            CurrentDatabase.ResourceOrganizations.DeleteAllOnSubmit(
+                CurrentDatabase.ResourceOrganizations.Where(ro => ro.ResourceId == resource.ResourceId)
                 );
             foreach (var orgId in model.OrganizationIds)
             {
@@ -78,8 +88,8 @@ namespace CmsWeb.Areas.Manage.Controllers
                 });
             }
 
-            DbUtil.Db.ResourceOrganizationTypes.DeleteAllOnSubmit(
-                DbUtil.Db.ResourceOrganizationTypes.Where(ro => ro.ResourceId == resource.ResourceId)
+            CurrentDatabase.ResourceOrganizationTypes.DeleteAllOnSubmit(
+                CurrentDatabase.ResourceOrganizationTypes.Where(ro => ro.ResourceId == resource.ResourceId)
                 );
             foreach (var orgTypeId in model.OrganizationTypeIds)
             {
@@ -90,7 +100,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                 });
             }
 
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
 
             return Redirect("/Resources/" + resource.ResourceId + "/");
         }
@@ -98,7 +108,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         [Route("~/Resources/Attachments/Edit/{id}")]
         public ActionResult EditAttachment(int id)
         {
-            var attachment = DbUtil.Db.ResourceAttachments.FirstOrDefault(x => x.ResourceAttachmentId == id);
+            var attachment = CurrentDatabase.ResourceAttachments.FirstOrDefault(x => x.ResourceAttachmentId == id);
 
             return View(attachment);
         }
@@ -106,12 +116,12 @@ namespace CmsWeb.Areas.Manage.Controllers
         [Route("~/Resources/Attachments/Save/{id}")]
         public ActionResult SaveAttachment(int id, ResourceAttachment ra)
         {
-            var attachment = DbUtil.Db.ResourceAttachments.FirstOrDefault(x => x.ResourceAttachmentId == id);
+            var attachment = CurrentDatabase.ResourceAttachments.FirstOrDefault(x => x.ResourceAttachmentId == id);
 
             attachment.Name = ra.Name;
             attachment.DisplayOrder = ra.DisplayOrder;
 
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
 
             return Redirect("/Resources/" + attachment.ResourceId);
         }
@@ -134,8 +144,8 @@ namespace CmsWeb.Areas.Manage.Controllers
             attachment.UpdateDate = Util.Now;
             attachment.FilePath = UploadAttachment(file);
 
-            DbUtil.Db.ResourceAttachments.InsertOnSubmit(attachment);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.ResourceAttachments.InsertOnSubmit(attachment);
+            CurrentDatabase.SubmitChanges();
 
             return Redirect("/Resources/" + attachment.ResourceId);
         }
@@ -144,15 +154,15 @@ namespace CmsWeb.Areas.Manage.Controllers
         [HttpPost]
         public ActionResult Delete(int id)
         {
-            var resource = DbUtil.Db.Resources.FirstOrDefault(x => x.ResourceId == id);
+            var resource = CurrentDatabase.Resources.FirstOrDefault(x => x.ResourceId == id);
 
             if (resource != null)
             {
-                DbUtil.Db.ResourceAttachments.DeleteAllOnSubmit(resource.ResourceAttachments);
-                DbUtil.Db.ResourceOrganizationTypes.DeleteAllOnSubmit(resource.ResourceOrganizationTypes);
-                DbUtil.Db.ResourceOrganizations.DeleteAllOnSubmit(resource.ResourceOrganizations);
-                DbUtil.Db.Resources.DeleteOnSubmit(resource);
-                DbUtil.Db.SubmitChanges();
+                CurrentDatabase.ResourceAttachments.DeleteAllOnSubmit(resource.ResourceAttachments);
+                CurrentDatabase.ResourceOrganizationTypes.DeleteAllOnSubmit(resource.ResourceOrganizationTypes);
+                CurrentDatabase.ResourceOrganizations.DeleteAllOnSubmit(resource.ResourceOrganizations);
+                CurrentDatabase.Resources.DeleteOnSubmit(resource);
+                CurrentDatabase.SubmitChanges();
             }
 
             return Content("/Resources/");
@@ -162,13 +172,13 @@ namespace CmsWeb.Areas.Manage.Controllers
         [HttpPost]
         public ActionResult DeleteAttachment(int id)
         {
-            var attachment = DbUtil.Db.ResourceAttachments.FirstOrDefault(x => x.ResourceAttachmentId == id);
+            var attachment = CurrentDatabase.ResourceAttachments.FirstOrDefault(x => x.ResourceAttachmentId == id);
             var resourceId = attachment.ResourceId;
 
             if (attachment != null)
             {
-                DbUtil.Db.ResourceAttachments.DeleteOnSubmit(attachment);
-                DbUtil.Db.SubmitChanges();
+                CurrentDatabase.ResourceAttachments.DeleteOnSubmit(attachment);
+                CurrentDatabase.SubmitChanges();
             }
 
             return Content("/Resources/" + resourceId);
@@ -179,10 +189,10 @@ namespace CmsWeb.Areas.Manage.Controllers
             var m = new AccountModel();
             string baseurl = null;
 
-            var fn = $"{DbUtil.Db.Host}.{DateTime.Now:yyMMddHHmm}.{m.CleanFileName(Path.GetFileName(file.FileName))}";
+            var fn = $"{CurrentDatabase.Host}.{DateTime.Now:yyMMddHHmm}.{m.CleanFileName(Path.GetFileName(file.FileName))}";
             var error = string.Empty;
 
-            var rackspacecdn = DbUtil.Db.Setting("RackspaceUrlCDN", null);
+            var rackspacecdn = CurrentDatabase.Setting("RackspaceUrlCDN", null);
             string username;
             string key;
             if (string.IsNullOrEmpty(rackspacecdn))
@@ -193,8 +203,8 @@ namespace CmsWeb.Areas.Manage.Controllers
             }
             else
             {
-                username = DbUtil.Db.Setting("RackspaceUser", null);
-                key = DbUtil.Db.Setting("RackspaceKey", null);
+                username = CurrentDatabase.Setting("RackspaceUser", null);
+                key = CurrentDatabase.Setting("RackspaceKey", null);
             }
 
             if (rackspacecdn.HasValue())

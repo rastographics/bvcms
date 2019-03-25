@@ -1,0 +1,21 @@
+﻿@using System.Web.Mvc.Html
+@model CmsWeb.Areas.Figures.Models.FundViewModel
+@{
+    Layout = null;
+}
+@Fingerprint.Css("/Content/touchpoint/lib/jquery-multi-select/css/multi-select.css")
+
+@Html.DropDownListFor(p => p.SelectedFundId,
+    Model.FundIEnum,
+    new
+    {
+        @id = "Fund-DropdownID",
+        @class = "Fund-DropdownCls",
+        @multiple = "multiple"
+    })
+
+@Fingerprint.Script("/Content/touchpoint/lib/jquery-multi-select/js/jquery.multi-select.js")
+<script type="text/javascript">
+    // run callbacks
+    $('#Fund-DropdownID').multiSelect();
+</script>

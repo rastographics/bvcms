@@ -5,11 +5,11 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
 
+using CmsData;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using CmsData;
 using UtilityExtensions;
 
 namespace CmsWeb.Code
@@ -207,7 +207,7 @@ namespace CmsWeb.Code
 
         public IEnumerable<CodeValueItem> LeaderMemberTypeList()
         {
-            return MemberTypeCodes0().Select(c => new CodeValueItem {Code = c.Code, Id = c.Id, Value = c.Value});
+            return MemberTypeCodes0().Select(c => new CodeValueItem { Code = c.Code, Id = c.Id, Value = c.Value });
         }
 
         public IEnumerable<CodeValueItem> AttendCreditList()
@@ -278,9 +278,12 @@ namespace CmsWeb.Code
         public SelectList TagList()
         {
             var tg = UserTags(Util.UserPeopleId).ToList();
-            if (HttpContext.Current.User.IsInRole("Edit"))
-                tg.Insert(0, new CodeValueItem {Id = -1, Value = "(last query)"});
-            tg.Insert(0, new CodeValueItem {Id = 0, Value = "(not specified)"});
+            if (HttpContextFactory.Current.User.IsInRole("Edit"))
+            {
+                tg.Insert(0, new CodeValueItem { Id = -1, Value = "(last query)" });
+            }
+
+            tg.Insert(0, new CodeValueItem { Id = 0, Value = "(not specified)" });
             return tg.ToSelect();
         }
 
@@ -296,14 +299,14 @@ namespace CmsWeb.Code
         public SelectList TaskSearchStatusList()
         {
             var list = (from vc in DbUtil.Db.TaskStatuses
-                orderby vc.Description
-                select new CodeValueItem
-                {
-                    Id = vc.Id,
-                    Code = vc.Code,
-                    Value = vc.Description
-                }).ToList();
-            list.Insert(0, new CodeValueItem {Id = 99, Value = "Active + Pending"});
+                        orderby vc.Description
+                        select new CodeValueItem
+                        {
+                            Id = vc.Id,
+                            Code = vc.Code,
+                            Value = vc.Description
+                        }).ToList();
+            list.Insert(0, new CodeValueItem { Id = 99, Value = "Active + Pending" });
             return list.AddNotSpecified().ToSelect();
         }
         public static SelectList TaskStatusList()
@@ -313,20 +316,23 @@ namespace CmsWeb.Code
         }
         public SelectList TaskLimitToRoleList()
         {
-            var roles = DbUtil.Db.Setting("LimitToRolesForTasks", 
+            var roles = DbUtil.Db.Setting("LimitToRolesForTasks",
                     DbUtil.Db.Setting("LimitToRolesForContacts", ""))
                 .SplitStr(",").Where(rr => rr.HasValue()).ToArray();
-            
+
             if (roles.Length == 0)
+            {
                 roles = DbUtil.Db.Roles.OrderBy(r => r.RoleName).Select(r => r.RoleName).ToArray();
-            var list = roles.Select(rolename => new 
+            }
+
+            var list = roles.Select(rolename => new
             {
                 Value = rolename,
                 Text = rolename,
                 //Selected = !string.IsNullOrWhiteSpace(TaskLimitToRole.Value) && TaskLimitToRole.Value == rolename
             }).ToList();
 
-            list.Insert(0, new { Value = "0", Text = @"(not specified)"});
+            list.Insert(0, new { Value = "0", Text = @"(not specified)" });
             return new SelectList(list, "Value", "Text");
         }
     }

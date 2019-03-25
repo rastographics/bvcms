@@ -38,7 +38,8 @@ namespace CmsData
             + MatchMasterLinkRe + "|"
             + MatchVolReqLinkRe + "|"
             + MatchVolSubLinkRe + "|"
-            + MatchVoteLinkRe;
+            + MatchVoteLinkRe + "|"
+            + MatchUnlayerLinkRe;
 
         private const string Pattern1 = "(<style.*?</style>|" + MatchSettingUrlRe + "|" + MatchCodeRe + "|" + MatchRes + "|" + MatchDropFromOrgTagRe + ")";
         private const string Pattern2 = "(" + MatchCodeRe + "|" + MatchRes + ")";
@@ -124,7 +125,7 @@ namespace CmsData
                                              where ex.Field == "ContributionEmail"
                                              select ex.Data).SingleOrDefault();
                     if (contributionemail.HasValue())
-                        contributionemail = contributionemail.trim();
+                        contributionemail = contributionemail.Trim();
                     if (!Util.ValidEmail(contributionemail))
                         contributionemail = p.FromEmail;
                     aa.Clear();

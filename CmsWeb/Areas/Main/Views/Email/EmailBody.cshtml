@@ -1,6 +1,7 @@
 ﻿@using CmsData
 @{
-  var c = ViewBag.content as Content;
+   var design = ViewBag.design;
+   var body = ViewBag.body;
 }
 <!DOCTYPE html>
 <html>
@@ -11,18 +12,19 @@
   <title></title>
   @Fingerprint.Css("/Content/touchpoint/css/editor.css")
   <style>
-    #tempateBody { font-family: Arial, Helvetica; }
+    #templateBody { font-family: Arial, Helvetica; }
   </style>
 </head>
 <body>
-<div id="tempateBody">
-  @if (c.Body == "<div bvedit=\"\" style=\"max-width:600px;\">Click here to edit content</div>\r\n")
+<input type="hidden" id="templateDesign" value="@design"/>
+<div id="templateBody">
+  @if (body == "<div bvedit=\"\" style=\"max-width:600px;\">Click here to edit content</div>\r\n")
   {
-    <font face="Arial,Helvetica">@Html.Raw(c.Body)</font>
+    <font face="Arial,Helvetica">@Html.Raw(body)</font>
   }
   else
   {
-    @Html.Raw(c.Body)
+    @Html.Raw(body)
   }
 </div>
 @ViewExtensions2.jQuery()
@@ -30,7 +32,7 @@
   $(function() {
     $.hClick = function(e) {
       $.removeButtons();
-      window.parent.displayEditor(this);
+      window.parent.displayEditor(this, $("#templateDesign"), @ViewBag.useUnlayer.ToString().ToLower());
     };
 
     $("a")
@@ -107,8 +109,8 @@
     window.parent.$.clearFunction = $.clearTemplateClass;
     window.parent.$.addFunction = $.addTemplateClass;
     if ($('#recover', window.parent.document).val()) {
-      var eb = localStorage.email;
-      $('#tempateBody').html(eb).ready(function() {
+        var eb = localStorage.email;
+        $('#templateBody').html(eb).ready(function() {
         $('div[bvedit], div.bvedit').bind('click', $.hClick).addClass("ti");
       });
     }

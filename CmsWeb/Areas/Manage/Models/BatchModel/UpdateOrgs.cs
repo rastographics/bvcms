@@ -1,16 +1,17 @@
-﻿using System.IO;
-using System.Linq;
-using CmsData;
+﻿using CmsData;
 using CsvHelper;
+using System.IO;
+using System.Linq;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Manage.Models.BatchModel
 {
     public partial class BatchModel
     {
+        public BatchModel() { }
         public static void UpdateOrgs(string text)
         {
-            text = text.trim();
+            text = text.Trim();
             var csv = new CsvReader(new StringReader(text));
             csv.Configuration.Delimiter = "\t";
 
@@ -31,7 +32,9 @@ namespace CmsWeb.Areas.Manage.Models.BatchModel
                             {
                                 o.CampusId = val.ToInt();
                                 if (o.CampusId == 0)
+                                {
                                     o.CampusId = null;
+                                }
                             }
                             break;
                         case "CanSelfCheckin":
@@ -54,10 +57,15 @@ namespace CmsWeb.Areas.Manage.Models.BatchModel
                                     sc.SchedTime = scin.SchedTime;
                                 }
                                 else
+                                {
                                     o.OrgSchedules.Add(scin);
+                                }
                             }
                             if (val.Equal("None"))
+                            {
                                 DbUtil.Db.OrgSchedules.DeleteAllOnSubmit(o.OrgSchedules);
+                            }
+
                             break;
                         case "BirthDayStart":
                             o.BirthDayStart = val.ToDate();
@@ -70,7 +78,9 @@ namespace CmsWeb.Areas.Manage.Models.BatchModel
                             {
                                 var id = val.ToInt();
                                 if (id > 0)
+                                {
                                     o.EntryPointId = id;
+                                }
                             }
                             break;
                         case "LeaderType":
@@ -78,14 +88,16 @@ namespace CmsWeb.Areas.Manage.Models.BatchModel
                             {
                                 var id = val.ToInt();
                                 if (id > 0)
+                                {
                                     o.LeaderMemberTypeId = id;
+                                }
                             }
                             break;
                         case "FirstMeeting":
                             o.FirstMeetingDate = val.ToDate();
                             break;
                         case "Gender":
-                            o.GenderId = val.Equal("Male") ? 1 : val.Equal("Female") ? (int?) 2 : null;
+                            o.GenderId = val.Equal("Male") ? 1 : val.Equal("Female") ? (int?)2 : null;
                             break;
                         case "Grade":
                             o.GradeAgeStart = val.ToInt2();
@@ -104,9 +116,14 @@ namespace CmsWeb.Areas.Manage.Models.BatchModel
                             break;
                         case "LimitToRole":
                             if (val.Equal("none"))
+                            {
                                 o.LimitToRole = null;
-                            else if(o.LimitToRole.HasValue())
+                            }
+                            else if (o.LimitToRole.HasValue())
+                            {
                                 o.LimitToRole = val;
+                            }
+
                             break;
                         case "Location":
                             o.Location = val;
@@ -148,20 +165,30 @@ namespace CmsWeb.Areas.Manage.Models.BatchModel
                             o.RollSheetVisitorWks = val == "0" ? null : val.ToInt2();
                             break;
                         case "SubGroups":
-                            if(val == "(clear)")
+                            if (val == "(clear)")
+                            {
                                 DbUtil.Db.MemberTags.DeleteAllOnSubmit(o.MemberTags);
+                            }
                             else
+                            {
                                 foreach (var sg in val.Split(','))
+                                {
                                     o.AddMemberTag(sg);
+                                }
+                            }
+
                             break;
 
                         default:
                             if (name.EndsWith(".ev"))
+                            {
                                 if (val.HasValue())
                                 {
                                     var a = name.Substring(0, name.Length - 3);
                                     o.AddEditExtraText(a, val);
                                 }
+                            }
+
                             break;
                     }
                     DbUtil.Db.SubmitChanges();

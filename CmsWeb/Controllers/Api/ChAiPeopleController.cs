@@ -1,23 +1,26 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using CmsWeb.Lifecycle;
+using CmsWeb.Models.Api;
 using System.Web.Http;
 using System.Web.OData;
-using AutoMapper;
-using AutoMapper.QueryableExtensions;
-using CmsData;
-using CmsWeb.Models.Api;
 
 namespace CmsWeb.Controllers.Api
 {
-    public class ChAiPeopleController : ODataController
+    public class ChAiPeopleController : CMSBaseODataController
     {
+        public ChAiPeopleController(IRequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [EnableQuery(PageSize = ApiOptions.DefaultPageSize)]
         public IHttpActionResult Get()
         {
-            var config = new MapperConfiguration(cfg => {
+            var config = new MapperConfiguration(cfg =>
+            {
                 cfg.CreateMap<CmsData.View.ChAiIndividualDatum, ApiChAiPerson>();
             });
-            return Ok(DbUtil.Db.ViewChAiIndividualDatas.ProjectTo<ApiChAiPerson>(config));
+            return Ok(CurrentDatabase.ViewChAiIndividualDatas.ProjectTo<ApiChAiPerson>(config));
         }
     }
 }

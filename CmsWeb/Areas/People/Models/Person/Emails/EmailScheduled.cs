@@ -7,6 +7,8 @@ namespace CmsWeb.Areas.People.Models
 {
     public class EmailScheduledModel : EmailModel
     {
+        public EmailScheduledModel() { }
+        
         override public IQueryable<EmailQueue> DefineModelList()
         {
             var q = from e in DbUtil.Db.EmailQueues

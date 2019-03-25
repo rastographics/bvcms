@@ -414,7 +414,11 @@
 
     $('#rollsheet1').click(function (ev) {
         ev.preventDefault();
-        $.post('/OrgSearch/DefaultMeetingDate/' + $('#ScheduleId').val(), null, function (ret) {
+        var scheduleId = 0;
+        if ($('#ScheduleId').length) {
+            scheduleId = $('#ScheduleId').val();
+        }
+        $.post('/OrgSearch/DefaultMeetingDate/' + scheduleId, null, function (ret) {
             $('#MeetingDate').val(ret.date);
             $('#MeetingTime').val(ret.time);
             $("#rollsheet2").attr("href", "/Reports/Rollsheet");

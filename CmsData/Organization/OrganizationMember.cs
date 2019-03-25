@@ -142,7 +142,7 @@ AND a.PeopleId = {2}
 
         public static void UpdateMeetingsToUpdate(CMSDataContext Db)
         {
-            var mids = HttpContext.Current.Items[STR_MeetingsToUpdate] as List<int>;
+            var mids = HttpContextFactory.Current.Items[STR_MeetingsToUpdate] as List<int>;
             if (mids != null)
                 foreach (var mid in mids)
                     Db.UpdateMeetingCounters(mid);
@@ -223,11 +223,13 @@ AND a.PeopleId = {2}
             }
         }
 
+        [Obsolete]
         public void AddToGroup(CMSDataContext Db, string name)
         {
             int? n = null;
             AddToGroup(Db, name, n);
         }
+
         public int AddToGroup(CMSDataContext Db, int n)
         {
             var omt = Db.OrgMemMemTags.SingleOrDefault(t =>
@@ -248,6 +250,7 @@ AND a.PeopleId = {2}
             return 0;
         }
 
+        [Obsolete]
         public void AddToGroup(CMSDataContext Db, string name, int? n)
         {
             if (!name.HasValue())
@@ -316,7 +319,7 @@ AND a.PeopleId = {2}
                     if (m != null)
                     {
                         m.Pending = pending;
-                        if (m.MemberTypeId == MemberTypeCode.Member || m.MemberTypeId == 0)
+                        if (m.MemberTypeId == MemberTypeCode.Member || m.MemberTypeId == 0 || m.MemberTypeId == MemberTypeCode.Prospect)
                         {
                             m.MemberTypeId = memberTypeId;
                         }
@@ -569,8 +572,8 @@ AND a.PeopleId = {2}
             var o = db.LoadOrganizationById(orgid);
             if (o == null || o.RegistrationTypeId != RegistrationTypeCode.ChooseVolunteerTimes)
                 return false;
-            if (HttpContext.Current.User.IsInRole("Admin") ||
-                HttpContext.Current.User.IsInRole("ManageVolunteers"))
+            if (HttpContextFactory.Current.User.IsInRole("Admin") ||
+                HttpContextFactory.Current.User.IsInRole("ManageVolunteers"))
                 return true;
             var leaderorgs = db.GetLeaderOrgIds(Util.UserPeopleId);
             if (leaderorgs == null)
@@ -783,7 +786,7 @@ AND a.PeopleId = {2}
 
             if (om.OrganizationId != tom.OrganizationId)
                 tom.Moved = true;
-            om.Drop(db, skipTriggerProcessing: true);
+            om.Drop(db, skipTriggerProcessing: true);            
             db.SubmitChanges();
         }
     }

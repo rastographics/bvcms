@@ -1,10 +1,10 @@
-﻿using System;
+﻿using CmsData;
+using CmsData.Codes;
+using CmsWeb.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using CmsData;
-using CmsData.Codes;
-using CmsWeb.Models;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Main.Models
@@ -17,10 +17,11 @@ namespace CmsWeb.Areas.Main.Models
         public Guid QueryId { get; set; }
         public int? OrgId { get; set; }
 
+        public EmailTemplatesModel() { }
         public IQueryable<Content> FetchTemplates()
         {
             var currentRoleIds = DbUtil.Db.CurrentRoleIds();
-            var isadmin = HttpContext.Current.User.IsInRole("Admin");
+            var isadmin = HttpContextFactory.Current.User.IsInRole("Admin");
 
             return from i in DbUtil.Db.Contents
                    where i.TypeID == ContentTypeCode.TypeEmailTemplate
@@ -43,12 +44,12 @@ namespace CmsWeb.Areas.Main.Models
             var currentRoleIds = DbUtil.Db.CurrentRoleIds();
             return drafts ?? (drafts =
                    (from c in DbUtil.Db.Contents
-                    where c.TypeID == ContentTypeCode.TypeSavedDraft
+                    where c.TypeID == ContentTypeCode.TypeSavedDraft || c.TypeID == ContentTypeCode.TypeUnlayerSavedDraft
                     let u = DbUtil.Db.Users.First(vv => vv.UserId == c.OwnerID)
                     let r = DbUtil.Db.Roles.FirstOrDefault(vv => vv.RoleId == c.RoleID)
                     let isshared = (from tt in DbUtil.Db.Tags
-                    				where tt.Name == "SharedDrafts"
-                    				where tt.PersonOwner.Users.Any(uu => uu.UserId == c.OwnerID)
+                                    where tt.Name == "SharedDrafts"
+                                    where tt.PersonOwner.Users.Any(uu => uu.UserId == c.OwnerID)
                                     where tt.PersonTags.Any(vv => vv.PeopleId == Util.UserPeopleId)
                                     select tt.Id).Any()
                     where c.RoleID == 0 || c.OwnerID == Util.UserId || currentRoleIds.Contains(c.RoleID)
@@ -62,7 +63,8 @@ namespace CmsWeb.Areas.Main.Models
                         owner = u.Person.Name,
                         ownerID = c.OwnerID,
                         role = r.RoleName,
-                        roleID = c.RoleID
+                        roleID = c.RoleID,
+                        isUnlayer = c.TypeID == ContentTypeCode.TypeUnlayerSavedDraft
                     }).ToList());
         }
     }

@@ -4,15 +4,13 @@
  * you may not use this code except in compliance with the License.
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
+using CmsData;
+using CmsData.View;
+using CmsWeb.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using CmsData.View;
-using CmsWeb.Code;
-using CmsWeb.Models;
 using UtilityExtensions;
-using CmsData;
 
 namespace CmsWeb.Areas.Search.Models
 {
@@ -28,9 +26,9 @@ namespace CmsWeb.Areas.Search.Models
 
         public override IQueryable<RegistrationList> DefineModelList()
         {
-            var db = DbUtil.Db;
+            //var db = Db;
 
-            var q = from r in db.ViewRegistrationLists
+            var q = from r in DbUtil.Db.ViewRegistrationLists
                     where r.Cnt > 0
                     where r.First.Length > 0 && r.Last.Length > 0
                     select r;
@@ -47,29 +45,43 @@ namespace CmsWeb.Areas.Search.Models
 
             if (SearchParameters.Organization.HasValue())
             {
-                if(SearchParameters.Organization.AllDigits())
+                if (SearchParameters.Organization.AllDigits())
+                {
                     q = from c in q
                         where c.OrganizationId == SearchParameters.Organization.ToInt()
                         select c;
+                }
                 else
+                {
                     q = from c in q
                         where c.OrganizationName.Contains(SearchParameters.Organization)
                         select c;
+                }
             }
 
             if (SearchParameters.Count.HasValue())
             {
                 var cnt = SearchParameters.Count.GetDigits().ToInt();
                 if (SearchParameters.Count.AllDigits())
+                {
                     q = q.Where(cc => cc.Cnt == cnt);
+                }
                 else if (SearchParameters.Count.StartsWith(">="))
+                {
                     q = q.Where(cc => cc.Cnt >= cnt);
+                }
                 else if (SearchParameters.Count.StartsWith(">"))
+                {
                     q = q.Where(cc => cc.Cnt > cnt);
+                }
                 else if (SearchParameters.Count.StartsWith("<="))
+                {
                     q = q.Where(cc => cc.Cnt <= cnt);
+                }
                 else if (SearchParameters.Count.StartsWith("<"))
+                {
                     q = q.Where(cc => cc.Cnt < cnt);
+                }
             }
 
             switch (SearchParameters.Complete.Value)
@@ -93,7 +105,7 @@ namespace CmsWeb.Areas.Search.Models
                         select r;
                     break;
             }
-            switch(SearchParameters.Active.Value)
+            switch (SearchParameters.Active.Value)
             {
                 case "All":
                     break;
@@ -134,10 +146,13 @@ namespace CmsWeb.Areas.Search.Models
             {
                 startDateRange = SearchParameters.StartDate.Value;
                 if (SearchParameters.EndDate.HasValue)
+                {
                     endDateRange = SearchParameters.EndDate.Value.AddHours(+24);
+                }
                 else
+                {
                     endDateRange = DateTime.Today.AddHours(24);
-
+                }
             }
             else if (SearchParameters.EndDate.HasValue)
             {
@@ -163,20 +178,20 @@ namespace CmsWeb.Areas.Search.Models
             {
                 case "Date":
                     return from r in q
-                        orderby r.Stamp
-                        select r;
+                           orderby r.Stamp
+                           select r;
                 case "Organization":
                     return from r in q
-                        orderby r.OrganizationName
-                        select r;
+                           orderby r.OrganizationName
+                           select r;
                 case "Date desc":
                     return from r in q
-                        orderby r.Stamp descending   
-                        select r;
+                           orderby r.Stamp descending
+                           select r;
                 case "Organization desc":
                     return from r in q
-                        orderby r.OrganizationName descending 
-                        select r;
+                           orderby r.OrganizationName descending
+                           select r;
             }
             return q.OrderByDescending(r => r.Id);
         }
@@ -186,23 +201,23 @@ namespace CmsWeb.Areas.Search.Models
             return q;
         }
 
-//        private const string STR_RegistrationSearch = "RegistrationSearch";
-//        internal void GetFromSession()
-//        {
-//            var os = HttpContext.Current.Session[STR_RegistrationSearch] as RegistrationSearchInfo;
-//            if (os != null)
-//                SearchParameters.CopyPropertiesFrom(os);
-//        }
-//        internal void SaveToSession()
-//        {
-//            var os = new RegistrationSearchInfo();
-//            SearchParameters.CopyPropertiesTo(os);
-//            HttpContext.Current.Session[STR_RegistrationSearch] = os;
-//        }
-//
-//        internal void ClearSession()
-//        {
-//            HttpContext.Current.Session.Remove(STR_RegistrationSearch);
-//        }
+        //        private const string STR_RegistrationSearch = "RegistrationSearch";
+        //        internal void GetFromSession()
+        //        {
+        //            var os = HttpContextFactory.Current.Session[STR_RegistrationSearch] as RegistrationSearchInfo;
+        //            if (os != null)
+        //                SearchParameters.CopyPropertiesFrom(os);
+        //        }
+        //        internal void SaveToSession()
+        //        {
+        //            var os = new RegistrationSearchInfo();
+        //            SearchParameters.CopyPropertiesTo(os);
+        //            HttpContextFactory.Current.Session[STR_RegistrationSearch] = os;
+        //        }
+        //
+        //        internal void ClearSession()
+        //        {
+        //            HttpContextFactory.Current.Session.Remove(STR_RegistrationSearch);
+        //        }
     }
 }

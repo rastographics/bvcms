@@ -1,30 +1,39 @@
+using CmsData;
+using CmsData.API;
+using CmsWeb.Areas.People.Models;
+using CmsWeb.Lifecycle;
+using CmsWeb.Models;
 using System;
 using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using CmsData;
-using CmsData.API;
-using CmsWeb.Areas.People.Models;
-using CmsWeb.Models;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Public.Controllers
 {
     public class APIPersonController : CmsController
     {
+        public APIPersonController(IRequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [HttpPost]
         public ActionResult Login(string user, string password)
         {
             var ret = AuthenticateDeveloper();
             if (ret.StartsWith("!"))
+            {
                 return Content($"<Login error=\"{ret.Substring(1)}\" />");
+            }
 
             var validationStatus = AccountModel.AuthenticateLogon(user, password, Request.Url.OriginalString);
             if (!validationStatus.IsValid)
+            {
                 return Content($"<Login error=\"{user ?? "(null)"} not valid\">{validationStatus.ErrorMessage}</Login>");
+            }
 
-            var api = new APIFunctions(DbUtil.Db);
+            var api = new APIFunctions(CurrentDatabase);
             return Content(api.Login(validationStatus.User.Person), "text/xml");
         }
 
@@ -33,11 +42,17 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             var ret = AuthenticateDeveloper();
             if (ret.StartsWith("!"))
+            {
                 return Content($"<LoginInfo error=\"{ret.Substring(1)}\" />");
+            }
+
             if (!id.HasValue)
+            {
                 return Content("<LoginInfo error=\"Missing id\" />");
-            var p = DbUtil.Db.People.Single(pp => pp.PeopleId == id);
-            var api = new APIFunctions(DbUtil.Db);
+            }
+
+            var p = CurrentDatabase.People.Single(pp => pp.PeopleId == id);
+            var api = new APIFunctions(CurrentDatabase);
             return Content(api.Login(p), "text/xml");
         }
 
@@ -46,13 +61,17 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             var ret = AuthenticateDeveloper();
             if (ret.StartsWith("!"))
+            {
                 return Content(url);
+            }
+
             DbUtil.LogActivity($"APIPerson GetOneTimeLoginLink {url}, {user}");
             return Content(GetOTLoginLink(url, user));
         }
 
         public static string GetOTLoginLink(string url, string user)
         {
+            //todo: static?
             var ot = new OneTimeLink
             {
                 Id = Guid.NewGuid(),
@@ -63,8 +82,10 @@ namespace CmsWeb.Areas.Public.Controllers
             DbUtil.Db.SubmitChanges();
 
             var b = DbUtil.Db.ServerLink();
-            if(url.StartsWith(b))
-            	url = url.Substring(b.Length - (b.EndsWith("/") ? 1 : 0));
+            if (url.StartsWith(b))
+            {
+                url = url.Substring(b.Length - (b.EndsWith("/") ? 1 : 0));
+            }
 
             return $"{Util.CmsHost2}Logon?ReturnUrl={HttpUtility.UrlEncode(url)}&otltoken={ot.Id.ToCode()}";
         }
@@ -74,15 +95,18 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             var ret = AuthenticateDeveloper();
             if (ret.StartsWith("!"))
+            {
                 return Content("/");
+            }
+
             var ot = new OneTimeLink
             {
                 Id = Guid.NewGuid(),
                 Querystring = $"{OrgId},{PeopleId},0",
                 Expires = DateTime.Now.AddMinutes(10)
             };
-            DbUtil.Db.OneTimeLinks.InsertOnSubmit(ot);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.OneTimeLinks.InsertOnSubmit(ot);
+            CurrentDatabase.SubmitChanges();
             DbUtil.LogActivity($"APIPerson GetOneTimeRegisterLink {OrgId}, {PeopleId}");
             return Content(Util.CmsHost2 + "OnlineReg/RegisterLink/" + ot.Id.ToCode());
         }
@@ -92,12 +116,17 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             var ret = AuthenticateDeveloper(altrole: "Checkin");
             if (ret.StartsWith("!"))
+            {
                 return Content($"<ExtraValues error=\"{ret.Substring(1)}\" />");
+            }
+
             if (!id.HasValue)
+            {
                 return Content("<ExtraValues error=\"Missing id\" />");
+            }
 
             DbUtil.LogActivity($"APIPerson ExtraValues {id}, {fields}");
-            return Content(new APIFunctions(DbUtil.Db).ExtraValues(id.Value, fields), "text/xml");
+            return Content(new APIFunctions(CurrentDatabase).ExtraValues(id.Value, fields), "text/xml");
         }
 
         [HttpPost]
@@ -105,9 +134,12 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             var ret = AuthenticateDeveloper(altrole: "Checkin");
             if (ret.StartsWith("!"))
+            {
                 return Content(ret.Substring(1));
+            }
+
             DbUtil.LogActivity($"APIPerson AddExtraValue {peopleid}, {field}");
-            return Content(new APIFunctions(DbUtil.Db).AddEditExtraValue(peopleid, field, value, type));
+            return Content(new APIFunctions(CurrentDatabase).AddEditExtraValue(peopleid, field, value, type));
         }
 
         [HttpPost]
@@ -115,9 +147,12 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             var ret = AuthenticateDeveloper();
             if (ret.StartsWith("!"))
+            {
                 return Content(ret.Substring(1));
+            }
+
             DbUtil.LogActivity($"APIPerson DeleteExtraValue {peopleid}, {field}");
-            new APIFunctions(DbUtil.Db).DeleteExtraValue(peopleid, field);
+            new APIFunctions(CurrentDatabase).DeleteExtraValue(peopleid, field);
             return Content("ok");
         }
 
@@ -126,13 +161,19 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             var ret = AuthenticateDeveloper();
             if (ret.StartsWith("!"))
+            {
                 return Content(ret.Substring(1));
+            }
+
             DbUtil.LogActivity("APIPerson ChangePassword " + username);
             try
             {
                 var ok = MembershipService.ChangePassword(username, current, password);
                 if (ok)
+                {
                     return Content("ok");
+                }
+
                 return Content("<ChangePassword error=\"invalid password\" />");
             }
             catch (Exception ex)
@@ -146,14 +187,20 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             var ret = AuthenticateDeveloper();
             if (ret.StartsWith("!"))
+            {
                 return Content(ret.Substring(1));
+            }
+
             var mu = CMSMembershipProvider.provider.GetUser(username, false);
             mu.UnlockUser();
             DbUtil.LogActivity("APIPerson SetPassword " + username);
             try
             {
                 if (mu.ChangePassword(mu.ResetPassword(), password))
+                {
                     return Content("ok");
+                }
+
                 return Content("<ChangePassword error=\"invalid password\" />");
             }
             catch (Exception ex)
@@ -167,11 +214,17 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             var ret = AuthenticateDeveloper();
             if (ret.StartsWith("!"))
+            {
                 return Content($"<FamilyMembers error=\"{ret.Substring(1)}\" />");
+            }
+
             if (!id.HasValue)
+            {
                 return Content("<FamilyMembers error=\"Missing id\" />");
+            }
+
             DbUtil.LogActivity("APIPerson FamilyMembers " + id);
-            return Content(new APIFunctions(DbUtil.Db).FamilyMembers(id.Value), "text/xml");
+            return Content(new APIFunctions(CurrentDatabase).FamilyMembers(id.Value), "text/xml");
         }
 
         [HttpGet]
@@ -179,9 +232,12 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             var ret = AuthenticateDeveloper();
             if (ret.StartsWith("!"))
+            {
                 return Content($"<AccessUsers error=\"{ret.Substring(1)}\" />");
+            }
+
             DbUtil.LogActivity("APIPerson AccessUsers");
-            return Content(new APIFunctions(DbUtil.Db).AccessUsersXml(), "text/xml");
+            return Content(new APIFunctions(CurrentDatabase).AccessUsersXml(), "text/xml");
         }
 
         [HttpGet]
@@ -189,9 +245,12 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             var ret = AuthenticateDeveloper();
             if (ret.StartsWith("!"))
+            {
                 return Content($"<AccessUsers error=\"{ret.Substring(1)}\" />");
+            }
+
             DbUtil.LogActivity("APIPerson AccessUsers");
-            return Content(new APIFunctions(DbUtil.Db).AccessUsersXml(true), "text/xml");
+            return Content(new APIFunctions(CurrentDatabase).AccessUsersXml(true), "text/xml");
         }
 
         [HttpGet]
@@ -199,9 +258,12 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             var ret = AuthenticateDeveloper();
             if (ret.StartsWith("!"))
+            {
                 return Content($"<Person error=\"{ret.Substring(1)}\" />");
+            }
+
             DbUtil.LogActivity("APIPerson GetPeople");
-            return Content(new APIPerson(DbUtil.Db).GetPeopleXml(peopleid, famid, first, last), "text/xml");
+            return Content(new APIPerson(CurrentDatabase).GetPeopleXml(peopleid, famid, first, last), "text/xml");
         }
 
         [HttpGet]
@@ -209,11 +271,17 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             var ret = AuthenticateDeveloper();
             if (ret.StartsWith("!"))
+            {
                 return Content($"<Person error=\"{ret.Substring(1)}\" />");
+            }
+
             if (!id.HasValue)
+            {
                 return Content("<Person error=\"Missing id\" />");
+            }
+
             DbUtil.LogActivity("APIPerson GetPerson " + id);
-            return Content(new APIPerson(DbUtil.Db).GetPersonXml(id.Value), "text/xml");
+            return Content(new APIPerson(CurrentDatabase).GetPersonXml(id.Value), "text/xml");
         }
 
         [HttpPost]
@@ -223,9 +291,12 @@ namespace CmsWeb.Areas.Public.Controllers
             var xml = reader.ReadToEnd();
             var ret = AuthenticateDeveloper();
             if (ret.StartsWith("!"))
+            {
                 return Content($"<Person error=\"{ret.Substring(1)}\" />");
+            }
+
             DbUtil.LogActivity("APIPerson Update");
-            return Content(new APIPerson(DbUtil.Db).UpdatePersonXml(xml), "text/xml");
+            return Content(new APIPerson(CurrentDatabase).UpdatePersonXml(xml), "text/xml");
         }
 
         [HttpGet, Route("Portrait/{id:int?}/{w:int?}/{h:int?}")]

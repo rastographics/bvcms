@@ -1,0 +1,40 @@
+﻿@using CmsData
+@using CmsWeb.Areas.People.Models
+@model PersonModel
+@{
+    Layout = ViewExtensions2.TouchPointLayoutWithoutHeaderFooter();
+    ViewBag.Title = "Resources";
+
+    var showResourcesTab = false;
+    var resourcesEnabled = DbUtil.Db.Setting("Resources-Enabled");
+}
+@section head
+{
+    @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
+    @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-tabdrop/css/tabdrop.css")
+    @Fingerprint.Css("/Content/touchpoint/lib/jcrop/css/jcrop.min.css")
+    @Fingerprint.Css("/Content/touchpoint/lib/select2/css/select2.css")
+    @Fingerprint.Css("/Content/touchpoint/lib/select2/css/select2-bootstrap.css")
+}
+<br/>
+<div class="row">
+    <div class="col-sm-12">
+        @if (resourcesEnabled)
+        {
+            @Html.Partial("Resources/Tab", Model)
+        }
+    </div>
+</div>
+@Html.Hidden("PeopleId", Model.PeopleId)
+@section scripts
+{
+    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-editable/js/bootstrap-editable.min.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/jquery-cookie/js/jquery.cookie.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/bootstrap-tabdrop.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/extensions_bootstrap-tabdrop.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-typeahead/js/bootstrap3-typeahead.min.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/jcrop/js/jcrop.min.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/select2/js/select2.min.js")
+    @Fingerprint.Script("/Content/touchpoint/js/org/org-member-dialog.js")
+    @Fingerprint.Script("/Content/touchpoint/js/people/person.js")
+}

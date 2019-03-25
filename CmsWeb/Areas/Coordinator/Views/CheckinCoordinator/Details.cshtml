@@ -1,0 +1,232 @@
+﻿@model CmsWeb.Areas.Coordinator.Models.CheckinScheduleDto
+
+<div class="form-group">
+    <div id="SubgroupDataContainer">
+        <div class="box box-primary">
+            <div class="box-title" style="padding: 0; height: auto;">
+                <div class="col-xs-9">
+                    <h3 class="title">@Model.OrganizationName - @Model.NextMeetingDate.Value.ToString("g") - @Model.SubgroupName</h3>
+                </div>
+                <div class="col-xs-3" style="display: flex;align-items: center;justify-content: flex-end;height: 56px;">
+
+                    @if (@Model.CheckInOpen)
+                    {
+                    <div class="metric-value">
+                        <span class="h4" style="margin-right: 14px;font-weight:600;">Open</span>
+                        <i class="fa fa-toggle-on fa-2x active" id="on"></i>
+                        <i class="fa fa-toggle-on fa-2x fa-rotate-180 inactive" id="off" style="display: none;"></i>
+                    </div>
+                    }
+                    else
+                    {
+                        <div class="metric-value">
+                            <span class="h4" style="margin-right: 14px;font-weight:600;">Closed</span>
+                            <i class="fa fa-toggle-on fa-2x active" id="on" style="display: none;"></i>
+                            <i class="fa fa-toggle-on fa-2x fa-rotate-180 inactive" id="off"></i>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="box-content">
+                @Html.HiddenFor(m => m.SubgroupId)
+                @Html.HiddenFor(m => m.OrganizationId)
+                @Html.HiddenFor(m => m.SubgroupName)
+                @Html.HiddenFor(m => m.NextMeetingDate)
+                @Html.HiddenFor(m => m.CheckInCapacityDefault)
+                @Html.HiddenFor(m => m.CheckInOpenDefault)
+
+                <div style="display: grid; justify-items: center; align-items: center; grid-template-columns: 25% 25% 25% 25%;">
+                    <div class="metric">
+                        <div class="metric-value circle">@Model.AttendeeMemberCount</div>
+                        <h4 class="metric-title">Participants</h4>
+                    </div>
+                    <div class="metric">
+                        <div style="display: grid; justify-items: center; align-items: center; grid-template-columns: 25% 50% 25%;">
+                            <a id="remove" class="btn" href="#"><i class="fa fa-minus-circle fa-2x"></i></a>
+                            <div class="metric-value">
+                                <div class="circle">@Model.CheckInCapacity</div>
+                            </div>
+                            <a id="add" class="btn" href="#"><i class="fa fa-plus-circle fa-2x"></i></a>
+                        </div>
+                        <h4 class="metric-title">Capacity</h4>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value circle">@Model.AttendeeWorkerCount</div>
+                        <h4 class="metric-title">Volunteers</h4>
+                    </div>
+                    <div class="metric" style="width: 100%; display: flex; align-items: flex-start; justify-content: flex-end;">
+                        <a href="#" id="setdefaults" class="btn btn-default btn-sm">Set Defaults</a><br />
+                        <a href="#" id="refresh" class="btn btn-default btn-sm" style="margin-left: 10px;">Refresh</a><br />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="table-responsive">
+                            <table id="members" class="table">
+                                <thead>
+                                    <tr style="background: gainsboro;">
+                                        <th style="text-align: center">Participants</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var attendee in Model.Attendees.Where(a => !a.IsWorker))
+                                    {
+                                        <tr>
+                                            <td style="padding: 0 !important;border: 0 !important;">
+                                                <label class="labelnothighlighted"><input style="width: 20px; height: 15px" class="checkSingle" type="checkbox" value="@attendee.PeopleId">@attendee.Name</label>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="table-responsive">
+                            <table id="volunteers" class="table">
+                                <thead>
+                                    <tr style="background: gainsboro;">
+                                        <th style="text-align: center">Volunteers</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var attendee in Model.Attendees.Where(a => a.IsWorker))
+                                    {
+                                        <tr>
+                                            <td style="padding: 0 !important;border: 0 !important;">
+                                                <label class="labelnothighlighted"><input style="width: 20px; height: 15px" class="checkSingle" type="checkbox" value="@attendee.PeopleId">@attendee.Name</label>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input style="width: 100%; height: 50px; background: #003f72; color: white; font-weight: bolder; text-align: center; line-height: 3" type="button" id="movebtn" class="btn btn-primary" value="MOVE">
+                </div>
+                <input type="hidden" id="hiddenlist" />
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    function apiExecuteAction(params) {
+        $.ajax({
+            url: '@Url.Action("ExecuteAction")',
+            data: JSON.stringify(params),
+            success: function (ret) {
+                $('#SubgroupDataContainer').html(ret);
+                refreshOrgList();
+            },
+            error: function (ret) {
+                swal('Error!', ret, 'error');
+            },
+            type: 'POST',
+            contentType: 'application/json, charset=utf-8',
+            dataType: 'html'
+        });
+    }
+
+    function buildParameters(item, action) {
+        return {
+            organizationId: $("#OrganizationId").val(),
+            subgroupId: $("#SubgroupId").val(),
+            subgroupName: $("#SubgroupName").val(),
+            selectedTimeslot: $("#NextMeetingDate").val(),
+            service: action
+        };
+    }
+
+    $('.middle').click(function() {
+        $('.inactive, .active').toggle();
+    });
+
+    $('#on').on('click',
+        function(e) {
+            e.preventDefault();
+
+            var params = buildParameters($(this), "ToggleCheckinOpen");
+            apiExecuteAction(params);
+        });
+
+    $('#off').on('click',
+        function(e) {
+            e.preventDefault();
+
+            var params = buildParameters($(this), "ToggleCheckinOpen");
+            apiExecuteAction(params);
+        });
+
+    $('.checkSingle').on('click', function () {
+        if ($(this).is(':checked')) {
+            $(this).parent().removeClass('labelnothighlighted');
+            $(this).parent().addClass('labelhighlighted');
+        } else {
+            $(this).parent().removeClass('labelhighlighted');
+            $(this).parent().addClass('labelnothighlighted');
+        }
+    });
+
+    $('#setdefaults').on('click',
+        function (e) {
+            e.preventDefault();
+
+            var params = buildParameters($(this), "SetDefaults");
+            apiExecuteAction(params);
+        });
+
+    $('#add').on('click',
+        function (e) {
+            e.preventDefault();
+
+            var params = buildParameters($(this), "IncrementCapacity");
+            apiExecuteAction(params);
+        });
+
+    $('#remove').on('click',
+        function (e) {
+            e.preventDefault();
+
+            var params = buildParameters($(this), "DecrementCapacity");
+            apiExecuteAction(params);
+        });
+
+    $('#movebtn').on('click',
+        function () {
+            var list = [];
+            $('input:checked').each(function () {
+                if (typeof $(this).val() != 'undefined') {
+                    list.push($(this).val());
+                }
+            });
+            if (list.length === 0)
+                return;
+            
+            var query = '?' + $.param({
+                id: $('#OrganizationId').val(),
+                grpid: $('#SubgroupId').val(),
+                selectedTimeslot: $("#NextMeetingDate").val(),
+                list: list.toString()
+            });
+            $("#DetailsContainer").load('@Url.Action("MoveSubgroupView")' + query);
+        });
+
+    $('#refresh').on('click',
+        function (e) {
+            e.preventDefault();
+            
+            var query = '?' + $.param({
+                organizationId: $("#OrganizationId").val(),
+                subgroupId: $("#SubgroupId").val(),
+                subgroupName: $("#SubgroupName").val(),
+                selectedTimeslot: $("#NextMeetingDate").val()
+            });
+            $("#DetailsContainer").load('@Url.Action("Details")' + query);
+            refreshOrgList();
+        });
+</script>
+

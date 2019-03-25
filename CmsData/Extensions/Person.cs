@@ -235,7 +235,7 @@ namespace CmsData
         {
             get
             {
-                if (Util.Host == null || HttpContext.Current == null)
+                if (Util.Host == null || HttpContextFactory.Current == null)
                 {
                     return BirthYear;
                 }
@@ -255,12 +255,12 @@ namespace CmsData
                     return BirthYear;
                 }
 
-                if (HttpContext.Current == null)
+                if (HttpContextFactory.Current == null)
                 {
                     return BirthYear;
                 }
 
-                if (HttpContext.Current.User.IsInRole(DbUtil.Db.Setting("NoBirthYearRole", "")))
+                if (HttpContextFactory.Current.User.IsInRole(DbUtil.Db.Setting("NoBirthYearRole", "")))
                 {
                     return null;
                 }
@@ -271,7 +271,7 @@ namespace CmsData
 
         public static int? AgeDisplay(int? age, int? peopleid)
         {
-            if (Util.Host == null || HttpContext.Current == null)
+            if (Util.Host == null || HttpContextFactory.Current == null)
             {
                 return age;
             }
@@ -291,7 +291,7 @@ namespace CmsData
                 return age;
             }
 
-            if (HttpContext.Current.User.IsInRole(DbUtil.Db.Setting("NoBirthYearRole", "")))
+            if (HttpContextFactory.Current.User.IsInRole(DbUtil.Db.Setting("NoBirthYearRole", "")))
             {
                 return null;
             }
@@ -301,7 +301,7 @@ namespace CmsData
 
         public static string AgeDisplay(string age, int? peopleid)
         {
-            if (Util.Host == null || HttpContext.Current == null)
+            if (Util.Host == null || HttpContextFactory.Current == null)
             {
                 return age;
             }
@@ -321,7 +321,7 @@ namespace CmsData
                 return age;
             }
 
-            if (HttpContext.Current.User.IsInRole(DbUtil.Db.Setting("NoBirthYearRole", "")))
+            if (HttpContextFactory.Current.User.IsInRole(DbUtil.Db.Setting("NoBirthYearRole", "")))
             {
                 return null;
             }
@@ -331,7 +331,7 @@ namespace CmsData
 
         private static int? Birthyear(int? y, int? age, int? peopleid)
         {
-            if (Util.Host == null || HttpContext.Current == null)
+            if (Util.Host == null || HttpContextFactory.Current == null)
             {
                 return y;
             }
@@ -351,7 +351,7 @@ namespace CmsData
                 return y;
             }
 
-            if (HttpContext.Current.User.IsInRole(DbUtil.Db.Setting("NoBirthYearRole", "")))
+            if (HttpContextFactory.Current.User.IsInRole(DbUtil.Db.Setting("NoBirthYearRole", "")))
             {
                 return null;
             }
@@ -865,8 +865,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
         }
 
         // Used for Conversions
-        public static Person Add(CMSDataContext db, Family fam, string firstname, string nickname, string lastname,
-                                 DateTime? dob)
+        public static Person Add(CMSDataContext db, Family fam, string firstname, string nickname, string lastname, DateTime? dob)
         {
             return Add(db, false, fam, 20, null, firstname, nickname, lastname, dob.ToString2("M/d/yyyy"), 0, 0, 0, 0);
         }
@@ -875,35 +874,19 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                                  string firstname, string nickname, string lastname, string dob, int marriedCode,
                                  int gender, int originId, int? entryPointId, bool testing = false)
         {
-            var p = new Person();
-            p.CreatedDate = Util.Now;
-            p.CreatedBy = Util.UserId;
+            var p = new Person { CreatedDate = Util.Now, CreatedBy = Util.UserId };
             db.People.InsertOnSubmit(p);
             p.PositionInFamilyId = position;
             p.AddressTypeId = 10;
 
-            if (firstname.HasValue())
-            {
-                p.FirstName = firstname.Trim().ToProper().Truncate(25);
-            }
-            else
-            {
-                p.FirstName = "";
-            }
+            p.FirstName = firstname.HasValue() ? firstname.Trim().ToProper().Truncate(25) : "";
 
             if (nickname.HasValue())
             {
                 p.NickName = nickname.Trim().ToProper().Truncate(15);
             }
 
-            if (lastname.HasValue())
-            {
-                p.LastName = lastname.Trim().ToProper().Truncate(100);
-            }
-            else
-            {
-                p.LastName = "?";
-            }
+            p.LastName = lastname.HasValue() ? lastname.Trim().ToProper().Truncate(100) : "?";
 
             p.GenderId = gender;
             if (p.GenderId == 99)
@@ -913,8 +896,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
 
             p.MaritalStatusId = marriedCode;
 
-            DateTime dt;
-            if (Util.BirthDateValid(dob, out dt))
+            if (Util.BirthDateValid(dob, out var dt))
             {
                 if (dt.Year == Util.SignalNoYear)
                 {
@@ -975,10 +957,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 fam.People.Add(p);
             }
 
-            if (tag != null)
-            {
-                tag.PersonTags.Add(new TagPerson { Person = p });
-            }
+            tag?.PersonTags.Add(new TagPerson { Person = p });
 
             p.OriginId = originId;
             p.EntryPointId = entryPointId;
@@ -993,27 +972,29 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 db.SubmitChanges();
             }
 
-            if (sendNotices)
+            if (!sendNotices)
             {
-                if (Util.UserPeopleId.HasValue
-                    && Util.UserPeopleId.Value != db.NewPeopleManagerId
-                    && HttpContext.Current.User.IsInRole("Access")
-                    && !HttpContext.Current.User.IsInRole("OrgMembersOnly")
-                    && !HttpContext.Current.User.IsInRole("OrgLeadersOnly"))
-                {
-                    Task.AddNewPerson(db, p.PeopleId);
-                }
-                else
-                {
-                    var np = db.GetNewPeopleManagers();
-                    if (np != null)
-                    {
-                        db.Email(Util.AdminMail, np,
-                            $"Just Added Person on {db.Host}",
-                            $"<a href='{db.ServerLink("/Person2/" + p.PeopleId)}'>{p.Name}</a>");
-                    }
-                }
+                return p;
             }
+
+            if (Util.UserPeopleId.HasValue
+                && Util.UserPeopleId.Value != db.NewPeopleManagerId
+                && HttpContextFactory.Current.User.IsInRole("Access")
+                && !HttpContextFactory.Current.User.IsInRole("OrgMembersOnly")
+                && !HttpContextFactory.Current.User.IsInRole("OrgLeadersOnly"))
+            {
+                Task.AddNewPerson(db, p.PeopleId);
+            }
+            else
+            {
+                var np = db.GetNewPeopleManagers();
+                if (np != null && Util.AdminMail != null)
+                {
+                    db.Email(Util.AdminMail, np,
+                        $"Just Added Person on {db.Host}",
+                        $"<a href='{db.ServerLink("/Person2/" + p.PeopleId)}'>{p.Name}</a>");
+                }
+            }            
             return p;
         }
 
@@ -1157,7 +1138,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             {
                 if (!canUserEditAll.HasValue)
                 {
-                    canUserEditAll = HttpContext.Current.User.IsInRole("Edit");
+                    canUserEditAll = HttpContextFactory.Current.User.IsInRole("Edit");
                 }
 
                 return canUserEditAll.Value;
@@ -1191,7 +1172,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 {
                     if (DbUtil.Db.Setting("EnforceEditCampusRole", "false").ToBool())
                     {
-                        return ((HttpContext.Current.User.IsInRole("EditCampus")) ||
+                        return ((HttpContextFactory.Current.User.IsInRole("EditCampus")) ||
                                 Util.UserPeopleId == Family.HeadOfHouseholdId
                                 || Util.UserPeopleId == Family.HeadOfHouseholdSpouseId);
                     }
@@ -1209,7 +1190,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
 
                 if (DbUtil.Db.Setting("EnforceEditCampusRole", "false").ToBool())
                 {
-                    canUserEditCampus = (canUserEditCampus.Value) || (HttpContext.Current.User.IsInRole("EditCampus"));
+                    canUserEditCampus = (canUserEditCampus.Value) || (HttpContextFactory.Current.User.IsInRole("EditCampus"));
                 }
 
                 return canUserEditCampus.Value;
@@ -1257,8 +1238,8 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 if (!canUserSeeGiving.HasValue)
                 {
                     var sameperson = Util.UserPeopleId == PeopleId;
-                    var infinance = (HttpContext.Current.User.IsInRole("Finance") && !HttpContext.Current.User.IsInRole("FundManager"))
-                                    && ((string)HttpContext.Current.Session["testnofinance"]) != "true";
+                    var infinance = (HttpContextFactory.Current.User.IsInRole("Finance") && !HttpContextFactory.Current.User.IsInRole("FundManager"))
+                                    && ((string)HttpContextFactory.Current.Session["testnofinance"]) != "true";
                     var ishead = (new int?[]
                         {
                             Family.HeadOfHouseholdId,
@@ -1286,7 +1267,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                             Family.HeadOfHouseholdSpouseId
                         })
                         .Contains(Util.UserPeopleId);
-                    canUserSeeEmails = sameperson || ishead || HttpContext.Current.User.IsInRole("Access");
+                    canUserSeeEmails = sameperson || ishead || HttpContextFactory.Current.User.IsInRole("Access");
                 }
                 return canUserSeeEmails.Value;
             }
@@ -1507,7 +1488,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             field = field.Trim();
 
             var ev = PeopleExtras.AsEnumerable().FirstOrDefault(ee => ee.Field == field);
-            
+
             if (ev == null)
             {
                 ev = new PeopleExtra
@@ -2155,7 +2136,8 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             };
             TasksAboutPerson.Add(t);
 
-            GCMHelper.sendRefresh(assignTo, GCMHelper.ACTION_REFRESH);
+            var gcm = new GCMHelper(Util.Host, DbUtil.Db);
+            gcm.sendRefresh(assignTo, GCMHelper.ACTION_REFRESH);
 
             return t;
         }
@@ -2327,7 +2309,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
         public bool CanViewStatementFor(CMSDataContext db, int id)
         {
             // todo: improve performance
-            bool canview = Util.UserPeopleId == id || (HttpContext.Current.User.IsInRole("Finance") && !HttpContext.Current.User.IsInRole("FundManager"));
+            bool canview = Util.UserPeopleId == id || (HttpContextFactory.Current.User.IsInRole("Finance") && !HttpContextFactory.Current.User.IsInRole("FundManager"));
 
             if (!canview)
             {
@@ -2414,11 +2396,30 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
         }
 
         public static Person FindAddPerson(CMSDataContext db, string context, string first, string last, string dob,
-                                           string email, string phone, string streetaddress = null, string zip = null)
+                                           string email, string phone, string streetaddress = null, string zip = null,
+                                           string extraValue = null, string extraValueField = null)
         {
             Person person = null;
-            var list = db.FindPerson(first, last, null, email, phone.GetDigits()).ToList();
-            var count = list.Count;
+            List<View.FindPerson> list = null;
+
+            if (!String.IsNullOrEmpty(extraValue))
+            {
+                // 1.Do we have a pushpay key that matches a peopleextra
+                list = db.FindPersonByExtraValue(extraValueField, extraValue).ToList();
+            }
+            else if (!String.IsNullOrEmpty(email))
+            {
+                // 2.Do we have an email address that matches one person
+                list = db.FindPersonByEmail(email).ToList();
+            }
+            else if (!String.IsNullOrEmpty(first) && !String.IsNullOrEmpty(last))
+            {
+                //3.Do we have a person with the first / last name specified
+                list = db.FindPerson(first, last, null, null, null).ToList();
+            }
+                
+     
+            var count = list?.Count;
             if (count > 0)
             {
                 person = db.LoadPersonById(list[0].PeopleId ?? 0);
@@ -2444,11 +2445,16 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             };
             db.SubmitChanges();
 
+            //4.Create a new person record            
             var position = 10;
             person = Add(db, true, f, position, null, first.Trim(), null, last.Trim(), "", 0, 0,
                 OriginCode.Contribution, null);
             person.EmailAddress = email?.Trim();
             person.SendEmailAddress1 = true;
+
+            //5.Associate the pushpay key to the person's record (if it's not already there)
+            if (!String.IsNullOrEmpty(extraValue))
+                db.AddExtraValueData(person.PeopleId, extraValueField, extraValue, null, null, null, null);
 
             if (count == 0)
             {
@@ -2462,7 +2468,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
         {
             get
             {
-                var fam = HttpContext.Current?.Items["FamilyFromMyDataPage"] as Family;
+                var fam = HttpContextFactory.Current?.Items["FamilyFromMyDataPage"] as Family;
                 return fam?.IsHeadOfHouseold(Util.UserPeopleId) == true;
             }
         }

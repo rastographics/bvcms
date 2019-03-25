@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using CmsData;
+using System;
 using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using CmsData;
 using UtilityExtensions;
 
 namespace CmsWeb.Models
@@ -11,7 +8,8 @@ namespace CmsWeb.Models
     public class SMSModel
     {
         public PagerModel2 Pager { get; set; }
-        int? _count;
+
+        private int? _count;
 
         public DateTime? start { get; set; }
         public DateTime? end { get; set; }
@@ -20,10 +18,14 @@ namespace CmsWeb.Models
         {
             Pager = new PagerModel2(Count);
         }
-        
+
         public int Count()
         {
-            if (!_count.HasValue) _count = GetList().Count();
+            if (!_count.HasValue)
+            {
+                _count = GetList().Count();
+            }
+
             return _count.Value;
         }
 
@@ -33,10 +35,14 @@ namespace CmsWeb.Models
                     select e;
 
             if (start != null)
+            {
                 l = l.Where(e => e.SendAt >= start);
+            }
 
             if (end != null)
+            {
                 l = l.Where(e => e.SendAt < end.Value.AddHours(24));
+            }
 
             l = ApplySort(l);
 

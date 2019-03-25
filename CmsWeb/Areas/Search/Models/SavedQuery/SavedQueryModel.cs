@@ -1,10 +1,9 @@
+using CmsData;
+using CmsWeb.Models;
 using System.Collections.Generic;
 using System.Data.Linq.SqlClient;
 using System.Linq;
-using System.Web;
 using System.Web.Security;
-using CmsData;
-using CmsWeb.Models;
 using UtilityExtensions;
 using Query = CmsData.Query;
 
@@ -12,6 +11,7 @@ namespace CmsWeb.Areas.Search.Models
 {
     public class SavedQueryModel : PagedTableModel<Query, SavedQueryInfo>
     {
+        internal CMSDataContext Db;
         public bool admin { get; set; }
         public bool OnlyMine { get; set; }
         public bool PublicOnly { get; set; }
@@ -19,39 +19,58 @@ namespace CmsWeb.Areas.Search.Models
         public bool ScratchPadsOnly { get; set; }
         public bool StatusFlagsOnly { get; set; }
 
-        public SavedQueryModel() : base("Last Run", "desc", true)
+        public SavedQueryModel(CMSDataContext db) : base("Last Run", "desc", true)
         {
+            Db = db;
             admin = Roles.IsUserInRole("Admin");
+        }
+
+        public SavedQueryModel() : base()
+        {
         }
 
         public override IQueryable<Query> DefineModelList()
         {
-            var q = from c in DbUtil.Db.Queries
+            admin = Roles.IsUserInRole("Admin");
+            var q = from c in Db.Queries
                     where !PublicOnly || c.Ispublic
                     where c.Name.Contains(SearchQuery) || c.Owner == SearchQuery || !SearchQuery.HasValue()
                     where c.Name != "OrgFilter"
                     select c;
             if (ScratchPadsOnly)
+            {
                 q = from c in q
                     where c.Name == Util.ScratchPad2
                     select c;
+            }
             else
+            {
                 q = from c in q
                     where c.Name != Util.ScratchPad2
                     select c;
+            }
+
             if (StatusFlagsOnly)
+            {
                 q = from c in q
                     where StatusFlagsOnly == false || SqlMethods.Like(c.Name, "F[0-9][0-9]%")
                     select c;
-            DbUtil.Db.SetUserPreference("SavedQueryOnlyMine", OnlyMine);
+            }
+
+            Db.SetUserPreference("SavedQueryOnlyMine", OnlyMine);
             if (OnlyMine)
+            {
                 q = from c in q
                     where c.Owner == Util.UserName
                     select c;
+            }
             else if (!admin)
+            {
                 q = from c in q
-                    where c.Owner == Util.UserName || c.Ispublic
+                    where c.Owner.ToUpper() == Util.UserName.ToUpper() || c.Ispublic
                     select c;
+            }
+
             return q;
         }
 
@@ -108,7 +127,7 @@ namespace CmsWeb.Areas.Search.Models
         {
             var user = Util.UserName;
             return from c in q
-                   select new SavedQueryInfo
+                   select new SavedQueryInfo(Db)
                    {
                        QueryId = c.QueryId,
                        Name = c.Name,

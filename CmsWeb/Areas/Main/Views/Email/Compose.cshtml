@@ -62,178 +62,181 @@
     }
     <div class="box box-responsive">
       <div class="box-content">
-        <form class="form-horizontal" id="SendEmail" method="post">
-          @if (Model.recovery == true)
-          {
-            @Html.Hidden("recover", true)
-          }
-          @Html.Hidden("id", Model.guid)
-          @Html.Hidden("TemplateID")
-          @Html.Hidden("TagId")
-          @Html.Hidden("Host")
-          @Html.Hidden("CmsHost")
-          @Html.Hidden("Count", Model.Count)
-          @Html.Hidden("wantParents", Model.wantParents)
-          @Html.Hidden("ccparents", Model.CcParents)
-          @Html.Hidden("roleid", c.RoleID)
-          @Html.Hidden("orgid", Model.OrgId)
-          @Html.Hidden("noDuplicates", Model.noDuplicates)
-          <input type="hidden" name="saveid" value="@(c.TypeID == ContentTypeCode.TypeEmailTemplate ? 0 : c.Id)"/>
-          <input type="hidden" id="body" name="body"/>
-          <input type="hidden" id="name" name="name" value="@c.Name"/>
-          <div class="form-group">
-            <label for="FromAddress" class="col-sm-2 control-label">From:</label>
-            <div class="col-sm-10">
-              @Html.DropDownList("FromAddress", Model.EmailFroms(), new {@class = "form-control"})
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="inputEmail3" class="col-sm-2 control-label">To:</label>
-            <div class="col-sm-10">
-              @if (Model.OrgId.HasValue)
+          <form class="form-horizontal" id="SendEmail" method="post">
+              @if (Model.recovery == true)
               {
-                var org = DbUtil.Db.LoadOrganizationById(Model.OrgId);
-
-                <div class="row">
-                  <div class="col-sm-10">
-                    <p class="alert alert-warning">
-                      This email will be sent to all current members of <strong>@org.OrganizationName</strong>.
-                      The recipient list will be finalized when the email is actually sent.
-                      Currently, this organization has <strong>@org.MemberCount members</strong>.
-                    </p>
-                  </div>
-                  <div class="col-sm-2">
-                    <div class="vertical-center">
-                      <a class="searchadd btn btn-default btn-block" href="/SearchAdd2/Dialog/addtoemail/"><i class="fa fa-plus-circle"></i></a>
-                    </div>
-                  </div>
-                </div>
-
+                  @Html.Hidden("recover", true)
               }
-              else if (!User.IsInRole("Access"))
-              {
-                foreach (var recipient in Model.AdditionalRecipients)
-                {
-                  <span>@ViewBag.ToName</span>
-                  <input type="hidden" name="AdditionalRecipients" value="@recipient">
-                }
-              }
-              else
-              {
-                <div class="input-group">
-                  <select multiple="multiple" id="Recipients" name="Recipients" class="form-control">
-                    @if (Model.Count > 500)
-                    {
-                      <option value="" selected="selected">
-                        @Model.Count people@(Model.wantParents ? " including parents." : ".")
-                      </option>
-                    }
-                    else
-                    {
-                      foreach (var recipient in Model.Recipients)
-                      {
-                        <option value="@recipient" selected="selected">@recipient</option>
-                      }
-                    }
-                  </select>
-                  <span class="input-group-addon"><a href="/SearchAdd2/Dialog/addtoemail/" class="searchadd"><i class="fa fa-plus-circle"></i></a></span>
-                </div>
-                if (Model.Count <= 500)
-                {
-                  <p class="help-block" id="person-count">
-                    @Model.Count
-                    @(Model.Count != 1 ? "people" : "person")
-                    @(Model.wantParents ? " including parents." : ".")
-                  </p>
-                }
-              }
-              <div class="row">
-                <div class="col-sm-12 alert alert-danger" id="additional-recipients-alerts" style="display: none;"></div>
-                <div class="col-sm-9"><ul id="additional-recipients"></ul></div>
-              </div>
-            </div>
-          </div>
-
-          <div id="ccdiv" style="display: none">
-            <div class="form-group">
-              <label for="inputEmail3" class="col-sm-2 control-label">Cc/Reply-To:</label>
-              <div class="col-sm-10">
-                <input type="text" id="Cc" name="Cc" class="form-control">
-                <p class="help-block"><i><small>Use commas to separate addresses. Each address receives a copy of the email and each is added to the Reply-To field.</small></i>
-                </p>
-              </div>
-            </div>
-          </div>
-            <div class="form-group">
-            <label for="Subject" class="col-sm-2 control-label">Subject:</label>
-            <div class="col-sm-10">
-              <input name="Subject" id="Subject" size="75" value="@(c.TypeID == ContentTypeCode.TypeEmailTemplate ? "" : c.Title)" class="form-control"/>
-
-            </div>
-          </div>
-          @if ((User.IsInRole("ScheduleEmails") || User.IsInRole("Edit")) && ConfigurationManager.AppSettings["UseEmailScheduler"] == "true")
-          {
-            <div id="scheddiv" style="display: none">
+              @Html.Hidden("id", Model.guid)
+              @Html.Hidden("TemplateID")
+              @Html.Hidden("TagId")
+              @Html.Hidden("Host")
+              @Html.Hidden("CmsHost")
+              @Html.Hidden("Count", Model.Count)
+              @Html.Hidden("wantParents", Model.wantParents)
+              @Html.Hidden("ccparents", Model.CcParents)
+              @Html.Hidden("roleid", c.RoleID)
+              @Html.Hidden("orgid", Model.OrgId)
+              @Html.Hidden("noDuplicates", Model.noDuplicates)
+              @Html.Hidden("UseUnlayer", Model.UseUnlayer)
+              <input type="hidden" name="saveid" value="@(c.TypeID == ContentTypeCode.TypeEmailTemplate ? 0 : c.Id)" />
+              <input type="hidden" id="body" name="body" />
+              <input type="hidden" id="UnlayerDesign" name="UnlayerDesign" />
+              <input type="hidden" id="name" name="name" value="@c.Name" />
               <div class="form-group">
-                <label for="Schedule" class="col-sm-2 control-label">Schedule:</label>
-                <div class="col-sm-10">
-                  <div class="input-group scheduleDateTime">
-                    @Html.TextBox("Schedule", Model.Schedule, new {@class = "form-control", placeholder = "Immediately"})<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
-                    @Html.Hidden("ScheduleIso", Model.Schedule, new {disabled = "disabled", placeholder = "Immediately"})
+                  <label for="FromAddress" class="col-sm-2 control-label">From:</label>
+                  <div class="col-sm-10">
+                      @Html.DropDownList("FromAddress", Model.EmailFroms(), new { @class = "form-control" })
                   </div>
-                  <p class="help-block">Note: Time is Central Time (CST)</p>
-                </div>
               </div>
-            </div>
-          }
-          <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-10">
-                @if (showAdvanced)
-                {
-                    <label class="checkbox-inline">
-                        @Html.CheckBox("PublicViewable") Publicly viewable?
-                    </label>
-                }
-              <label class="checkbox-inline">
-                @Html.CheckBox("AddCC") Add Cc/Reply-To?
-              </label>
+              <div class="form-group">
+                  <label for="inputEmail3" class="col-sm-2 control-label">To:</label>
+                  <div class="col-sm-10">
+                      @if (Model.OrgId.HasValue)
+                      {
+                          var org = DbUtil.Db.LoadOrganizationById(Model.OrgId);
+
+                          <div class="row">
+                              <div class="col-sm-10">
+                                  <p class="alert alert-warning">
+                                      This email will be sent to all current members of <strong>@org.OrganizationName</strong>.
+                                      The recipient list will be finalized when the email is actually sent.
+                                      Currently, this organization has <strong>@org.MemberCount members</strong>.
+                                  </p>
+                              </div>
+                              <div class="col-sm-2">
+                                  <div class="vertical-center">
+                                      <a class="searchadd btn btn-default btn-block" href="/SearchAdd2/Dialog/addtoemail/"><i class="fa fa-plus-circle"></i></a>
+                                  </div>
+                              </div>
+                          </div>
+
+                      }
+                      else if (!User.IsInRole("Access"))
+                      {
+                          foreach (var recipient in Model.AdditionalRecipients)
+                          {
+                              <span>@ViewBag.ToName</span>
+                              <input type="hidden" name="AdditionalRecipients" value="@recipient">
+                          }
+                      }
+                      else
+                      {
+                          <div class="input-group">
+                              <select multiple="multiple" id="Recipients" name="Recipients" class="form-control">
+                                  @if (Model.Count > 500)
+                                  {
+                                      <option value="" selected="selected">
+                                          @Model.Count people@(Model.wantParents ? " including parents." : ".")
+                                      </option>
+                                  }
+                                  else
+                                  {
+                                      foreach (var recipient in Model.Recipients)
+                                      {
+                                          <option value="@recipient" selected="selected">@recipient</option>
+                                      }
+                                  }
+                              </select>
+                              <span class="input-group-addon"><a href="/SearchAdd2/Dialog/addtoemail/" class="searchadd"><i class="fa fa-plus-circle"></i></a></span>
+                          </div>
+                          if (Model.Count <= 500)
+                          {
+                              <p class="help-block" id="person-count">
+                                  @Model.Count
+                                  @(Model.Count != 1 ? "people" : "person")
+                                  @(Model.wantParents ? " including parents." : ".")
+                              </p>
+                          }
+                      }
+                      <div class="row">
+                          <div class="col-sm-12 alert alert-danger" id="additional-recipients-alerts" style="display: none;"></div>
+                          <div class="col-sm-9"><ul id="additional-recipients"></ul></div>
+                      </div>
+                  </div>
+              </div>
+
+              <div id="ccdiv" style="display: none">
+                  <div class="form-group">
+                      <label for="inputEmail3" class="col-sm-2 control-label">Cc/Reply-To:</label>
+                      <div class="col-sm-10">
+                          <input type="text" id="Cc" name="Cc" class="form-control">
+                          <p class="help-block">
+                              <i><small>Use commas to separate addresses. Each address receives a copy of the email and each is added to the Reply-To field.</small></i>
+                          </p>
+                      </div>
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label for="Subject" class="col-sm-2 control-label">Subject:</label>
+                  <div class="col-sm-10">
+                      <input name="Subject" id="Subject" size="75" value="@(c.TypeID == ContentTypeCode.TypeEmailTemplate ? "" : c.Title)" class="form-control" />
+
+                  </div>
+              </div>
               @if ((User.IsInRole("ScheduleEmails") || User.IsInRole("Edit")) && ConfigurationManager.AppSettings["UseEmailScheduler"] == "true")
               {
-                <label class="checkbox-inline">
-                  @Html.CheckBox("ChangeSched") Schedule Email?
-                </label>
+                  <div id="scheddiv" style="display: none">
+                      <div class="form-group">
+                          <label for="Schedule" class="col-sm-2 control-label">Schedule:</label>
+                          <div class="col-sm-10">
+                              <div class="input-group scheduleDateTime">
+                                  @Html.TextBox("Schedule", Model.Schedule, new { @class = "form-control", placeholder = "Immediately" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                                  @Html.Hidden("ScheduleIso", Model.Schedule, new { disabled = "disabled", placeholder = "Immediately" })
+                              </div>
+                              <p class="help-block">Note: Time is Central Time (CST)</p>
+                          </div>
+                      </div>
+                  </div>
               }
-            </div>
-          </div>
-          <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-10">
-              <iframe src="/Email/EmailBody/@tid" height="600" frameborder="0" style="width: 100%; height: 600px;" id="email-body" name="email-body"></iframe>
-            </div>
-          </div>
-            @if (Util.IsInRoleEmailTest)
-            {
-                <div class="alert alert-danger">
-                    You are in EmailTesting mode. You will receive all recipient's emails at your address.
-                </div>
-            }
-          <div class="form-group hidden-xs">
-            <div class="col-sm-offset-2 col-sm-10">
-              <div class="pull-right">
-            <a id="Recover" href="#" class="btn btn-mini btn-default" data-confirm="This will overwrite your content with the most recent from your browser's local storage. Continue?'">Recover</a>
-                <input type="button" class="btn btn-default SaveDraft" savetype="@(c.TypeID == ContentTypeCode.TypeEmailTemplate ? 0 : 1)" value="@(c.TypeID == ContentTypeCode.TypeEmailTemplate ? "Save As Draft" : "Save Current Draft")"/>
-                <a href="#" class="btn btn-default TestSend">Send Test Email (To Me)</a>
-                <button type="button" class="btn btn-primary Send"><i class="fa fa-paper-plane"></i> Send</button>
+              <div class="form-group">
+                  <div class="col-sm-offset-2 col-sm-10">
+                      @if (showAdvanced)
+                      {
+                          <label class="checkbox-inline">
+                              @Html.CheckBox("PublicViewable") Publicly viewable?
+                          </label>
+                      }
+                      <label class="checkbox-inline">
+                          @Html.CheckBox("AddCC") Add Cc/Reply-To?
+                      </label>
+                      @if ((User.IsInRole("ScheduleEmails") || User.IsInRole("Edit")) && ConfigurationManager.AppSettings["UseEmailScheduler"] == "true")
+                      {
+                          <label class="checkbox-inline">
+                              @Html.CheckBox("ChangeSched") Schedule Email?
+                          </label>
+                      }
+                  </div>
               </div>
-            </div>
-          </div>
-          <div class="visible-xs-block">
-            <button type="button" class="btn btn-primary btn-block Send"><i class="fa fa-paper-plane"></i> Send</button>
-            <a href="#" class="btn btn-default btn-block TestSend">Send Test Email (To Me)</a>
-            <input type="button" class="btn btn-default btn-block SaveDraft" savetype="@(c.TypeID == ContentTypeCode.TypeEmailTemplate ? 0 : 1)" value="@(c.TypeID == ContentTypeCode.TypeEmailTemplate ? "Save As Draft" : "Save Current Draft")"/>
-            <a id="Recover" href="#" class="btn btn-mini btn-default" data-confirm="This will overwrite your content with the most recent from your browser's local storage. Continue?'">Recover</a>
-          </div>
-          <br/>
-        </form>
+              <div class="form-group">
+                  <div class="col-sm-offset-2 col-sm-10">
+                      <iframe src="/Email/EmailBody/@tid?useUnlayer=@Model.UseUnlayer.GetValueOrDefault().ToString().ToLower()" height="600" frameborder="0" style="width: 100%; height: 600px;" id="email-body" name="email-body"></iframe>
+                  </div>
+              </div>
+              @if (Util.IsInRoleEmailTest)
+              {
+                  <div class="alert alert-danger">
+                      You are in EmailTesting mode. You will receive all recipient's emails at your address.
+                  </div>
+              }
+              <div class="form-group hidden-xs">
+                  <div class="col-sm-offset-2 col-sm-10">
+                      <div class="pull-right">
+                          <a id="Recover" href="#" class="btn btn-mini btn-default" data-confirm="This will overwrite your content with the most recent from your browser's local storage. Continue?'">Recover</a>
+                          <input type="button" class="btn btn-default SaveDraft" savetype="@(c.TypeID == ContentTypeCode.TypeEmailTemplate ? 0 : 1)" value="@(c.TypeID == ContentTypeCode.TypeEmailTemplate ? "Save As Draft" : "Save Current Draft")" />
+                          <a href="#" class="btn btn-default TestSend">Send Test Email (To Me)</a>
+                          <button type="button" class="btn btn-primary Send"><i class="fa fa-paper-plane"></i> Send</button>
+                      </div>
+                  </div>
+              </div>
+              <div class="visible-xs-block">
+                  <button type="button" class="btn btn-primary btn-block Send"><i class="fa fa-paper-plane"></i> Send</button>
+                  <a href="#" class="btn btn-default btn-block TestSend">Send Test Email (To Me)</a>
+                  <input type="button" class="btn btn-default btn-block SaveDraft" savetype="@(c.TypeID == ContentTypeCode.TypeEmailTemplate ? 0 : 1)" value="@(c.TypeID == ContentTypeCode.TypeEmailTemplate ? "Save As Draft" : "Save Current Draft")" />
+                  <a id="Recover" href="#" class="btn btn-mini btn-default" data-confirm="This will overwrite your content with the most recent from your browser's local storage. Continue?'">Recover</a>
+              </div>
+              <br />
+          </form>
       </div>
     </div>
   </div>
@@ -253,41 +256,156 @@
       </div>
       <div class="modal-footer">
         <input type="button" value="Cancel" class="btn btn-default" data-dismiss="modal" />
-        <input id="SaveDraftButton" type="submit" value="Submit" class="btn btn-primary" />
+        <input id="SaveDraftButton" type="button" value="Submit" class="btn btn-primary" />
       </div>
     </div>
   </div>
 </div>
 <div class="modal fade" id="editor-modal" style="overflow-y: hidden !important;" data-backdrop="static" data-keyboard="false">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-body">
-        <div class="row">
-          <div class="col-sm-12">
-            <div class="pull-right" style="margin-bottom: 5px;">
-              <a href="http://docs.touchpointsoftware.com/EmailTexting/EmailReplacements.html" target="_blank" class="btn btn-default btn-sm"><i class="fa fa-question-circle"></i> Email Replacement Codes</a>
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="pull-right" style="margin-bottom: 5px;">
+                            <a href="http://docs.touchpointsoftware.com/EmailTexting/EmailReplacements.html" target="_blank" class="btn btn-default btn-sm"><i class="fa fa-question-circle"></i> Email Replacement Codes</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <form>
+                            <textarea id="htmleditor" name="htmleditor" class="form-control" rows="15"></textarea>
+                        </form>
+                    </div>
+                </div>
             </div>
-          </div>
+            <div class="modal-footer">
+                <input type="button" value="Cancel" class="btn btn-default" id="cancel-edit" />
+                <input type="submit" value="Save" class="btn btn-primary" id="save-edit" />
+            </div>
         </div>
-        <div class="row">
-          <div class="col-sm-12">
-            <form>
-              <textarea id="htmleditor" name="htmleditor" class="form-control" rows="15"></textarea>
-            </form>
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <input type="button" value="Cancel" class="btn btn-default" id="cancel-edit" />
-        <input type="submit" value="Save" class="btn btn-primary" id="save-edit" />
-      </div>
     </div>
-  </div>
+</div>
+<div class="modal fade" id="unlayer-editor-modal" style="overflow-y: hidden !important;" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="pull-right" style="margin-bottom: 5px;">
+                            <a id="create-special-link" class="btn btn-default btn-sm"><i class="fa fa-link"></i> Insert Special Link</a>
+                            <a href="http://docs.touchpointsoftware.com/EmailTexting/EmailReplacements.html" target="_blank" class="btn btn-default btn-sm"><i class="fa fa-question-circle"></i> Email Replacement Codes</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div id="unlayerEditor" style="height: 500px;"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <input type="button" value="Cancel" class="btn btn-default" id="unlayer-cancel-edit" />
+                <input type="submit" value="Save" class="btn btn-primary" id="unlayer-save-edit" />
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="special-links-modal">
+    <div class="modal-dialog" style="margin-top: 60px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Add Special Link</h4>
+            </div>
+            <div class="modal-body">
+                <form id="special_links_form">
+                    <div class="row form-group">
+                        <div class="col-sm-4">
+                            <label for="special_links_type">Type</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <select class="form-control" id="special_links_type" name="special_links_type">
+                                <option value="0" selected>&lt;not set&gt;</option>
+                                <option value="registerlink">Register Link (Individual)</option>
+                                <option value="registerlink2">Register Link 2 (Family)</option>
+                                <option value="regretslink">Regrets Link</option>
+                                <option value="rsvplink">RSVP Link</option>
+                                <option value="sendlink">Send Link (Individual)</option>
+                                <option value="sendlink2">Send Link 2 (Family)</option>
+                                <option value="supportlink">Support Link</option>
+                                <option value="votelink">Vote Link</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="org_id" class="row form-group">
+                        <div class="col-sm-4">
+                            <label for="org_id">Org ID</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <input type="number" class="form-control" name="org_id" />
+                        </div>
+                    </div>
+                    <div id="meeting_id" class="row form-group">
+                        <div class="col-sm-4">
+                            <label for="meeting_id">Meeting ID</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <input type="number" class="form-control" name="meeting_id" />
+                        </div>
+                    </div>
+                    <div id="message" class="row form-group">
+                        <div class="col-sm-4">
+                            <label for="message">Message</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" name="message" />
+                        </div>
+                    </div>
+                    <div id="small_group" class="row form-group">
+                        <div class="col-sm-4">
+                            <label for="small_group">Small Group</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" name="small_group" />
+                        </div>
+                    </div>
+                    <div id="confirmation" class="row form-group">
+                        <div class="col-sm-4">
+                            <label for="confirmation">Confirmation</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <select class="form-control" name="confirmation">
+                                <option value="true" selected>Yes, send confirmation</option>
+                                <option value="false">No, do not send confirmation</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+                <div id="result" class="row form-group">
+                    <div class="col-sm-12">
+                        <label for="tag">Copy and paste this into the link URL field:</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="tag" style="cursor:text;" readonly />
+                            <span class="input-group-btn">
+                                <button class="btn btn-primary done-special-links-modal" type="button">Copy and Close</button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="button" value="Cancel" class="btn btn-default close-special-links-modal" />
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 @section scripts
 {
   @Fingerprint.Script("/Content/touchpoint/lib/select2/js/select2.min.js")
   @ViewExtensions2.CkEditor()
+  @ViewExtensions2.UnlayerEditor()
   @Fingerprint.Script("/Content/touchpoint/js/email/compose.js")
   <script type="text/javascript">
     $(function() {

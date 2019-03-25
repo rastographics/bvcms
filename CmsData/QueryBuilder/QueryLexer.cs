@@ -13,6 +13,7 @@ namespace CmsData.QueryBuilder
         And,
         Or,
         AndNot,
+        OrNot,
         Op,
         Func,
         Name,

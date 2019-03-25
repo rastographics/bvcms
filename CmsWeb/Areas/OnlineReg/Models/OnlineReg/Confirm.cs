@@ -1,16 +1,15 @@
+using CmsData;
+using CmsData.API;
+using CmsData.Codes;
+using CmsData.Finance;
 using System;
 using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Mail;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Security;
-using CmsData;
-using CmsData.API;
-using CmsData.Codes;
-using CmsData.Finance;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.OnlineReg.Models
@@ -31,7 +30,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public string CheckDuplicateGift(decimal? amt)
         {
             if (!OnlineGiving() || !amt.HasValue)
+            {
                 return null;
+            }
 
             var previousTransaction =
                 (from t in DbUtil.Db.Transactions
@@ -42,7 +43,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
                  select t).FirstOrDefault();
 
             if (previousTransaction == null)
+            {
                 return null;
+            }
 
             return @"
 Thank you for your gift! Our records indicate that you recently submitted a gift in this amount a short while ago.
@@ -90,28 +93,42 @@ Thank you.
         {
             ParseSettings();
             if (List.Count == 0)
+            {
                 throw new Exception(" unexpected, no registrants found in confirmation");
+            }
 
             CreateTransactionIfNeeded();
             SetConfirmationEmailAddress();
 
             if (CreatingAccount())
+            {
                 return CreateAccount();
+            }
 
             if (OnlineGiving())
+            {
                 return DoOnlineGiving(TransactionReturn);
+            }
 
             if (ManagingSubscriptions())
+            {
                 return ConfirmManageSubscriptions();
+            }
 
             if (ChoosingSlots())
+            {
                 return ConfirmPickSlots();
+            }
 
             if (OnlinePledge())
+            {
                 return SendLinkForPledge();
+            }
 
             if (ManageGiving())
+            {
                 return SendLinkToManageGiving();
+            }
 
             SetTransactionReturn(TransactionReturn);
             EnrollAndConfirm();
@@ -154,7 +171,9 @@ Thank you.
         {
             var p = List[0];
             if (p.IsNew)
+            {
                 p.AddPerson(null, p.org.EntryPointId ?? 0);
+            }
 
             var desc = $"{p.person.Name}; {p.person.PrimaryAddress}; {p.person.PrimaryZip}";
             var staff = DbUtil.Db.StaffPeopleForOrg(org.OrganizationId)[0];
@@ -165,18 +184,26 @@ Thank you.
             {
                 Transaction.TransactionId = transactionReturn;
                 if (testing == true && !Transaction.TransactionId.Contains("(testing)"))
+                {
                     Transaction.TransactionId += "(testing)";
+                }
             }
             var contributionemail = (from ex in p.person.PeopleExtras
                                      where ex.Field == "ContributionEmail"
                                      select ex.Data).SingleOrDefault();
             if (contributionemail.HasValue())
+            {
                 contributionemail = (contributionemail ?? "").Trim();
+            }
 
             if (Util.ValidEmail(contributionemail))
+            {
                 Log("UsingSpecialEmail");
+            }
             else
+            {
                 contributionemail = p.person.FromEmail;
+            }
 
             MailAddress from = null;
             if (!Util.TryGetMailAddress(DbUtil.Db.StaffEmailForOrg(p.org.OrganizationId), out from))
@@ -192,7 +219,10 @@ Thank you.
                 "online giving contribution received",
                 $"see contribution records for {p.person.Name} ({p.PeopleId}) {Util.Host}");
             if (p.CreatingAccount)
+            {
                 p.CreateAccount();
+            }
+
             return ConfirmEnum.Confirm;
         }
 
@@ -204,7 +234,10 @@ Thank you.
         private void CreateTransactionIfNeeded()
         {
             if (Transaction != null || ManagingSubscriptions() || ChoosingSlots())
+            {
                 return;
+            }
+
             HistoryAdd("ConfirmTransaction");
             UpdateDatum(completed: true);
             var pf = PaymentForm.CreatePaymentForm(this);
@@ -215,25 +248,30 @@ Thank you.
         public static void ConfirmDuePaidTransaction(Transaction ti, string transactionId, bool sendmail)
         {
             var db = DbUtil.Db;
-            var org = db.LoadOrganizationById(ti.OrgId);
+            var org = DbUtil.Db.LoadOrganizationById(ti.OrgId);
             ti.TransactionId = transactionId;
             if (ti.Testing == true && !ti.TransactionId.Contains("(testing)"))
+            {
                 ti.TransactionId += "(testing)";
+            }
 
             var amt = ti.Amt;
-            var due = PaymentForm.AmountDueTrans(db, ti);
+            var due = PaymentForm.AmountDueTrans(DbUtil.Db, ti);
             foreach (var pi in ti.OriginalTrans.TransactionPeople)
             {
-                var p = db.LoadPersonById(pi.PeopleId);
+                var p = DbUtil.Db.LoadPersonById(pi.PeopleId);
                 if (p != null)
                 {
-                    var om = db.OrganizationMembers.SingleOrDefault(m => m.OrganizationId == ti.OrgId && m.PeopleId == pi.PeopleId);
+                    var om = DbUtil.Db.OrganizationMembers.SingleOrDefault(m => m.OrganizationId == ti.OrgId && m.PeopleId == pi.PeopleId);
                     if (om == null)
+                    {
                         continue;
-                    db.SubmitChanges();
+                    }
+
+                    DbUtil.Db.SubmitChanges();
                     if (org.IsMissionTrip == true)
                     {
-                        db.GoerSenderAmounts.InsertOnSubmit(
+                        DbUtil.Db.GoerSenderAmounts.InsertOnSubmit(
                             new GoerSenderAmount
                             {
                                 Amount = ti.Amt,
@@ -242,14 +280,16 @@ Thank you.
                                 OrgId = org.OrganizationId,
                                 SupporterId = pi.PeopleId,
                             });
-                        var setting = db.CreateRegistrationSettings(org.OrganizationId);
+                        var setting = DbUtil.Db.CreateRegistrationSettings(org.OrganizationId);
                         var fund = setting.DonationFundId;
-                        p.PostUnattendedContribution(db, ti.Amt ?? 0, fund,
+                        p.PostUnattendedContribution(DbUtil.Db, ti.Amt ?? 0, fund,
                             $"SupportMissionTrip: org={org.OrganizationId}; goer={pi.PeopleId}", typecode: BundleTypeCode.Online);
                     }
                     var pay = amt;
                     if (org.IsMissionTrip == true)
+                    {
                         ti.Amtdue = due;
+                    }
 
                     var sb = new StringBuilder();
                     sb.AppendFormat("{0:g} ----------\n", Util.Now);
@@ -265,18 +305,20 @@ Thank you.
                     amt -= pay;
                 }
                 else
-                    db.Email(db.StaffEmailForOrg(org.OrganizationId),
-                        db.PeopleFromPidString(org.NotifyIds),
+                {
+                    DbUtil.Db.Email(DbUtil.Db.StaffEmailForOrg(org.OrganizationId),
+                        DbUtil.Db.PeopleFromPidString(org.NotifyIds),
                         "missing person on payment due",
                         $"Cannot find {pi.Person.Name} ({pi.PeopleId}), payment due completed of {pi.Amt:c} but no record");
+                }
             }
-            db.SubmitChanges();
+            DbUtil.Db.SubmitChanges();
 
             dynamic d = new DynamicData();
             d.Name = Transaction.FullName(ti);
             d.Amt = ti.Amt;
             d.Description = ti.Description;
-            d.Amtdue = PaymentForm.AmountDueTrans(db, ti);
+            d.Amtdue = PaymentForm.AmountDueTrans(DbUtil.Db, ti);
             d.names = string.Join(", ", ti.OriginalTrans.TransactionPeople.Select(i => i.Person.Name));
 
             var msg = DbUtil.Db.RenderTemplate(@"
@@ -297,30 +339,32 @@ Thank you.
 </p>", d);
 
             var pid = ti.FirstTransactionPeopleId();
-            var p0 = db.LoadPersonById(pid);
+            var p0 = DbUtil.Db.LoadPersonById(pid);
             // question: should we be sending to all TransactionPeople?
             if (sendmail)
             {
                 MailAddress staffEmail;
-                if (!Util.TryGetMailAddress(db.StaffEmailForOrg(org.OrganizationId), out staffEmail))
+                if (!Util.TryGetMailAddress(DbUtil.Db.StaffEmailForOrg(org.OrganizationId), out staffEmail))
                 {
                     staffEmail = GetAdminMailAddress();
                 }
                 if (p0 == null)
-                    db.SendEmail(staffEmail,
+                {
+                    DbUtil.Db.SendEmail(staffEmail,
                         "Payment confirmation", msg, Util.ToMailAddressList(Util.FirstAddress(ti.Emails)), pid: pid).Wait();
+                }
                 else
                 {
-                    db.Email(staffEmail, p0, Util.ToMailAddressList(ti.Emails),
+                    DbUtil.Db.Email(staffEmail, p0, Util.ToMailAddressList(ti.Emails),
                         "Payment confirmation", msg, false);
-                    db.Email(p0.FromEmail, db.PeopleFromPidString(org.NotifyIds),
+                    DbUtil.Db.Email(p0.FromEmail, DbUtil.Db.PeopleFromPidString(org.NotifyIds),
                         "payment received for " + ti.Description, msgstaff);
                 }
             }
         }
         public static void LogOutOfOnlineReg()
         {
-            var session = HttpContext.Current.Session;
+            var session = HttpContextFactory.Current.Session;
             if ((bool?)session["OnlineRegLogin"] == true)
             {
                 FormsAuthentication.SignOut();

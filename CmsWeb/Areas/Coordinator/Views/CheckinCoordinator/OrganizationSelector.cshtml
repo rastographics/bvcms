@@ -1,0 +1,87 @@
+﻿@model IEnumerable<CmsWeb.Areas.Coordinator.Models.CheckinScheduleDto>
+
+<div class="list-group">
+    @{
+        var printedHeaders = new List<DateTime>();
+
+        foreach (var item in Model.OrderBy(s => s.NextMeetingDate).ThenBy(s => s.OrganizationName).ThenBy(s => s.SubgroupName))
+        {
+            if (!printedHeaders.Contains(item.NextMeetingDate.Value))
+            {
+                <div class="list-group-item-heading">
+                    <p><i class="fa fa-calendar"></i> @item.NextMeetingDate.Value.ToString("g")</p>
+                </div>
+
+                printedHeaders.Add(item.NextMeetingDate.Value);
+            }
+
+            <div class="list-group-item @(ViewBag.HighlightedOrg == item.SubgroupId ? "highlighted":"")">
+                <div class="row navbar-link" organizationId="@item.OrganizationId" subgroupId="@item.SubgroupId" subgroupName="@item.SubgroupName" selectedTimeslot="@item.NextMeetingDate.Value.ToString("s")">
+                    <div class="col-sm-7 centered-item">
+                        <a>
+                            <strong style="font-weight: 600;">@item.OrganizationName</strong> - @item.SubgroupName
+                        </a>
+                    </div>
+                    <div class="col-sm-5 centered-item text-right">
+                        @{
+                            if (!item.CheckInOpen)
+                            {
+                                <div class="circle-sm circle-closed">@item.AttendeeMemberCount</div>
+                            }
+                            else if (item.AttendeeMemberCount >= item.CheckInCapacity)
+                            {
+                                <div class="circle-sm circle-full">@item.AttendeeMemberCount</div>
+                            }
+                            else
+                            {
+                                <div class="circle-sm circle-open">@item.AttendeeMemberCount</div>
+                            }
+                        }
+                        <div class="circle-sm">@item.CheckInCapacity</div>
+                        <div class="circle-sm">@item.AttendeeWorkerCount</div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+</div>
+
+<script type="text/javascript">
+        $('.navbar-link').on('click', function (e) {
+            e.preventDefault();
+            $("#OrganizationContainer .list-group-item").removeClass("highlighted");
+            $(this).parent().addClass("highlighted");
+
+            var selectedTimeslot = $('#checkin-timeslot option:selected').val();
+            var selectedProgram = $('#checkin-program option:selected').val();
+            var selectedDivision = $('#checkin-division option:selected').val();
+            var selectedOrganization = $(this).attr('organizationId');
+            var selectedSubgroupId = $(this).attr('subgroupId');
+            var selectedSubgroupName = $(this).attr('subgroupName');
+            selectedTimeslot = $(this).attr('selectedTimeslot') || selectedTimeslot;
+
+            var query = '?' + $.param({
+                organizationId: selectedOrganization,
+                subgroupId: selectedSubgroupId,
+                subgroupName: selectedSubgroupName,
+                selectedTimeslot: selectedTimeslot
+            });
+            $("#DetailsContainer").load('@Url.Action("Details")' + query);
+        });
+
+        function setDisplay($this, show) {
+            $this && $this.css({ display: show ? 'block' : 'none' });
+        }
+
+        var findgroupTimeout;
+        var $find_group = $('#find_group').keyup(function () {
+            clearTimeout(findgroupTimeout);
+            findgroupTimeout = setTimeout(function () {
+                refreshOrgList();
+            }, 333);
+        });
+        $('#find_group_clear').click(function (event) {
+            event.preventDefault();
+            $find_group.val('').trigger('keyup').focus();
+        });
+</script>

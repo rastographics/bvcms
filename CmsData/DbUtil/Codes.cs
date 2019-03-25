@@ -38,6 +38,7 @@ namespace CmsData.Codes
         public const int TypeSavedDraft = 3;
         public const int TypeSqlScript = 4;
         public const int TypePythonScript = 5;
+        public const int TypeUnlayerSavedDraft = 6;
     }
     public static class MemberStatusCode
     {
@@ -255,6 +256,12 @@ namespace CmsData.Codes
         public const int MissionTrip = 20;
         public const int GiftsInKind = 30;
         public const int Stock = 32;
+    }
+    public class BundleReferenceIdTypeCode
+    {
+        public const int PushPayBatch = 1;
+        public const int PushPaySettlement = 2;
+        public const int PushPayStandaloneTransaction = 3;
     }
     public class ContributionStatusCode
     {

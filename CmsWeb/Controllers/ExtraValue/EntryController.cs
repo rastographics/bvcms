@@ -1,12 +1,17 @@
-using System.Web.Mvc;
 using CmsData;
+using CmsWeb.Lifecycle;
 using CmsWeb.Models.ExtraValues;
+using System.Web.Mvc;
 using UtilityExtensions;
 
 namespace CmsWeb.Controllers
 {
     public partial class ExtraValueController : CmsStaffController
     {
+        public ExtraValueController(IRequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [HttpPost, Route("ExtraValue/EditEntry")]
         public ActionResult EditEntry(string pk, string name, string value)
         {
@@ -29,5 +34,5 @@ namespace CmsWeb.Controllers
         {
             return Content(EntryModel.InterestPointList());
         }
-   }
+    }
 }

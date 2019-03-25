@@ -1,16 +1,20 @@
+using CmsData;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Xml.Serialization;
-using CmsData;
 using UtilityExtensions;
+using CmsWeb.Models;
 
 namespace CmsWeb.Areas.OnlineReg.Models
 {
     [Serializable]
     public partial class OnlineRegModel : IXmlSerializable
     {
+        CMSDataContext CurrentDatabase { get; set; }
+        public string Campus { get; set; }
+        public string DefaultFunds { get; set; }
         public bool? testing { get; set; }
         public string FromMobile { get; set; }
         public string URL { get; set; }
@@ -57,13 +61,15 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public int? GoerSupporterId { get; set; }
         public int? GoerId { get; set; }
+
+        public Person Goer { get; set; }
+
         public bool SupportMissionTrip => GoerSupporterId.HasValue || GoerId.HasValue;
+        public string MissionTripDates { get; set; }
+        public decimal? MissionTripCost { get; set; }
+        public decimal? MissionTripRaised { get; set; }
 
-        public Person GetGoer()
-        {
-            return DbUtil.Db.LoadPersonById(GoerId ?? 0);
-        }
-
+        public TransactionsModel.SupporterInfo[] Supporters { get; set; }
 
         private Transaction _transaction;
         public Transaction Transaction
@@ -71,7 +77,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
             get
             {
                 if (_transaction == null && TranId.HasValue)
-                    _transaction = DbUtil.Db.Transactions.SingleOrDefault(tt => tt.Id == TranId);
+                {
+                    _transaction = CurrentDatabase.Transactions.SingleOrDefault(tt => tt.Id == TranId);
+                }
+
                 return _transaction;
             }
         }
@@ -82,7 +91,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
             get
             {
                 if (_user == null && UserPeopleId.HasValue)
-                    _user = DbUtil.Db.LoadPersonById(UserPeopleId.Value);
+                {
+                    _user = CurrentDatabase.LoadPersonById(UserPeopleId.Value);
+                }
+
                 return _user;
             }
         }
@@ -92,7 +104,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             if (_meeting == null)
             {
-                var q = from m in DbUtil.Db.Meetings
+                var q = from m in CurrentDatabase.Meetings
                         where m.Organization.OrganizationId == Orgid
                         where m.MeetingDate > Util.Now.AddHours(-12)
                         orderby m.MeetingDate

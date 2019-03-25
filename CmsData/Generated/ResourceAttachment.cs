@@ -36,7 +36,7 @@ namespace CmsData
 		
    		
     	
-		private EntityRef< Resource> _Resource;
+		private EntityRef<Resource> _Resource;
 		
 	#endregion
 	
@@ -74,7 +74,7 @@ namespace CmsData
 		{
 			
 			
-			this._Resource = default(EntityRef< Resource>); 
+			this._Resource = default(EntityRef<Resource>); 
 			
 			OnCreated();
 		}

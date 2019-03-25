@@ -1,0 +1,14 @@
+﻿@model CmsWeb.Areas.Figures.Models.DivViewModel
+
+@Html.DropDownListFor(p => p.SelectedDivId, Model.DivIEnum, "Select a Division", new { @id="Division-DropDownID", @class="Division-DropDownCls"})
+
+<script type="text/javascript">
+    $(function () {
+        $('#Division-DropDownID').change(function () {
+            var selectedProgramId = $('#Program-DropdownID option:selected').val();
+            var selectedDivisionId = this.value;
+
+            $('#OrganizationContainer').load('@Url.Action("OrganizationView")?progId=' + selectedProgramId + '&divId=' + selectedDivisionId); 
+        });
+    });
+</script>

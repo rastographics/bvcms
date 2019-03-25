@@ -1,0 +1,15 @@
+﻿@model CmsWeb.Areas.Figures.Models.ProgViewModel
+
+@Html.DropDownListFor(p => p.SelectedProgId, Model.ProgIEnum, "Select a Program", new { @id="Program-DropdownID",  @class="Program-DropdownCls"})
+
+<script type="text/javascript">
+    $(function () {
+        // Populate Divisions draw chart
+        $('#Program-DropdownID').change(function () {
+            var selectedProgramId = this.value;
+            $('#DivisionContainer').load('@Url.Action("DivisionView")?progId=' + selectedProgramId);
+            $('#OrganizationContainer').load('@Url.Action("OrganizationView")'); // clear up the Organization drop down list as no division is selected
+        });
+    });
+</script>
+

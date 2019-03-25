@@ -58,9 +58,9 @@ namespace CmsData
 		
    		
     	
-		private EntityRef< EmailQueue> _EmailQueue;
+		private EntityRef<EmailQueue> _EmailQueue;
 		
-		private EntityRef< Person> _Person;
+		private EntityRef<Person> _Person;
 		
 	#endregion
 	
@@ -131,9 +131,9 @@ namespace CmsData
 		{
 			
 			
-			this._EmailQueue = default(EntityRef< EmailQueue>); 
+			this._EmailQueue = default(EntityRef<EmailQueue>); 
 			
-			this._Person = default(EntityRef< Person>); 
+			this._Person = default(EntityRef<Person>); 
 			
 			OnCreated();
 		}

@@ -38,11 +38,11 @@ namespace CmsData
 		
    		
     	
-		private EntityRef< Person> _Person;
+		private EntityRef<Person> _Person;
 		
-		private EntityRef< Volunteer> _Volunteer;
+		private EntityRef<Volunteer> _Volunteer;
 		
-		private EntityRef< User> _Uploader;
+		private EntityRef<User> _Uploader;
 		
 	#endregion
 	
@@ -83,11 +83,11 @@ namespace CmsData
 		{
 			
 			
-			this._Person = default(EntityRef< Person>); 
+			this._Person = default(EntityRef<Person>); 
 			
-			this._Volunteer = default(EntityRef< Volunteer>); 
+			this._Volunteer = default(EntityRef<Volunteer>); 
 			
-			this._Uploader = default(EntityRef< User>); 
+			this._Uploader = default(EntityRef<User>); 
 			
 			OnCreated();
 		}

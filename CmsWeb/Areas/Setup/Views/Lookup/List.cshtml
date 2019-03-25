@@ -51,6 +51,9 @@ else
                         <li><a href="/Lookup/AttendType">Attend Type</a></li>
                         <li><a href="/Lookup/Campus">@Util2.CampusLabel</a></li>
                         <li><a href="/Lookup/EntryPoint">Entry Point</a></li>
+                        @if ((bool)ViewData["MeetingCategories"]) {
+                        <li><a href="/MeetingCategory">Meeting Categories</a></li>
+                        }
                         <li><a href="/MemberType">Member Types</a></li>
                         <li><a href="/Lookup/OrganizationStatus">Organization Status</a></li>
                         <li><a href="/Lookup/OrganizationType">Organization Type</a></li>

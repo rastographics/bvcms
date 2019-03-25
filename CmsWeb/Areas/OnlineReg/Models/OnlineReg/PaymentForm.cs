@@ -1,13 +1,13 @@
+using CmsData;
+using CmsData.Finance;
+using CmsWeb.Code;
+using Elmah;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using CmsData;
-using CmsData.Finance;
-using CmsWeb.Code;
-using Elmah;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.OnlineReg.Models
@@ -33,8 +33,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
         /// </summary>
         public string Type { get; set; }
 
-        public string Checked(string type) => $"value={type} {(Type==type ? "checked=checked" : "")}";
-        public string Active(string type) => Type==type ? "active" : "";
+        public string Checked(string type) => $"value={type} {(Type == type ? "checked=checked" : "")}";
+        public string Active(string type) => Type == type ? "active" : "";
 
         public bool AskDonation { get; set; }
         public bool AllowCoupon { get; set; }
@@ -48,7 +48,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
             get
             {
                 if (!timeOut.HasValue)
+                {
                     timeOut = Util.IsDebug() ? 16000000 : DbUtil.Db.Setting("RegTimeout", "180000").ToInt();
+                }
+
                 return timeOut.Value;
             }
         }
@@ -78,7 +81,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
             get
             {
                 if (!_noEChecksAllowed.HasValue)
+                {
                     _noEChecksAllowed = DbUtil.Db.Setting("NoEChecksAllowed");
+                }
+
                 return _noEChecksAllowed.Value;
             }
         }
@@ -97,7 +103,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             get
             {
                 var list = CodeValueModel.ConvertToSelect(CodeValueModel.GetCountryList().Where(c => c.Code != "NA"), null);
-                list.Insert(0, new SelectListItem {Text = "(not specified)", Value = ""});
+                list.Insert(0, new SelectListItem { Text = "(not specified)", Value = "" });
                 return list;
             }
         }
@@ -125,17 +131,26 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 ? $"{First} {MiddleInitial} {Last}"
                 : $"{First} {Last}";
             if (Suffix.HasValue())
+            {
                 n = n + " " + Suffix;
+            }
+
             return n;
         }
 
         public Transaction CreateTransaction(CMSDataContext Db, decimal? amount = null, OnlineRegModel m = null)
         {
             if (!amount.HasValue)
+            {
                 amount = AmtToPay;
+            }
+
             decimal? amtdue = null;
             if (Amtdue > 0)
+            {
                 amtdue = Amtdue - (amount ?? 0);
+            }
+
             var ti = new Transaction
             {
                 First = First,
@@ -168,23 +183,32 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 LastFourACH = Type == PaymentType.Ach ? Account.Last(4) : null
             };
 
-            Db.Transactions.InsertOnSubmit(ti);
-            Db.SubmitChanges();
+            DbUtil.Db.Transactions.InsertOnSubmit(ti);
+            DbUtil.Db.SubmitChanges();
             if (OriginalId == null) // first transaction
+            {
                 ti.OriginalId = ti.Id;
+            }
+
             return ti;
         }
 
         public static decimal AmountDueTrans(CMSDataContext db, Transaction ti)
         {
-            var org = db.LoadOrganizationById(ti.OrgId);
-            var tt = (from t in db.ViewTransactionSummaries
+            var org = DbUtil.Db.LoadOrganizationById(ti.OrgId);
+            var tt = (from t in DbUtil.Db.ViewTransactionSummaries
                       where t.RegId == ti.OriginalId
                       select t).FirstOrDefault();
             if (tt == null)
+            {
                 return 0;
+            }
+
             if (org.IsMissionTrip ?? false)
-                return (tt.IndAmt ?? 0) - (db.TotalPaid(tt.OrganizationId, tt.PeopleId) ?? 0);
+            {
+                return (tt.IndAmt ?? 0) - (DbUtil.Db.TotalPaid(tt.OrganizationId, tt.PeopleId) ?? 0);
+            }
+
             return tt.TotDue ?? 0;
         }
 
@@ -192,9 +216,14 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             PaymentInfo pi = null;
             if (ti.Person != null)
+            {
                 pi = ti.Person.PaymentInfos.FirstOrDefault();
+            }
+
             if (pi == null)
+            {
                 pi = new PaymentInfo();
+            }
 
             var pf = new PaymentForm
             {
@@ -247,7 +276,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             var r = m.GetTransactionInfo();
             if (r == null)
+            {
                 return null;
+            }
 
             var pf = new PaymentForm
             {
@@ -295,6 +326,17 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     (r.payinfo.MaskedAccount != null && r.payinfo.MaskedAccount.StartsWith("X"))
                     || (r.payinfo.MaskedCard != null && r.payinfo.MaskedCard.StartsWith("X"));
                 pf.Type = r.payinfo.PreferredPaymentType;
+
+                // if no preferred payment type pick credit card or ach if we have anything.
+                if (string.IsNullOrWhiteSpace(pf.Type))
+                {
+                    pf.Type = !string.IsNullOrWhiteSpace(pf.CreditCard) ? PaymentType.CreditCard : null;
+                }
+
+                if (string.IsNullOrWhiteSpace(pf.Type))
+                {
+                    pf.Type = !string.IsNullOrWhiteSpace(pf.Account) ? PaymentType.Ach : null;
+                }
             }
 
             ClearMaskedNumbers(pf, r.payinfo);
@@ -317,9 +359,14 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 pf.FinanceOnly = true;
             }
             if (pf.NoCreditCardsAllowed)
+            {
                 pf.Type = PaymentType.Ach; // bank account only
+            }
             else if (pf.NoEChecksAllowed)
+            {
                 pf.Type = PaymentType.CreditCard; // credit card only
+            }
+
             pf.Type = pf.NoEChecksAllowed ? PaymentType.CreditCard : pf.Type;
             pf.DatumId = m.DatumId ?? 0;
             return pf;
@@ -394,19 +441,22 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 LastFourCC = t.LastFourCC,
                 LastFourACH = t.LastFourACH
             };
-            Db.Transactions.InsertOnSubmit(ti);
-            Db.SubmitChanges();
+            DbUtil.Db.Transactions.InsertOnSubmit(ti);
+            DbUtil.Db.SubmitChanges();
             return ti;
         }
 
         public object Autocomplete(bool small = false)
         {
             if (small)
+            {
                 return new
                 {
                     AUTOCOMPLETE = AutocompleteOnOff,
                     @class = "short"
                 };
+            }
+
             return new
             {
                 AUTOCOMPLETE = AutocompleteOnOff
@@ -416,16 +466,25 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public void PreventNegatives()
         {
             if (AmtToPay < 0)
+            {
                 AmtToPay = 0;
+            }
+
             if (Donate < 0)
+            {
                 Donate = 0;
+            }
+
             AllowCoupon = false;
         }
 
         public void PreventZero(ModelStateDictionary modelState)
         {
             if ((AmtToPay ?? 0) > 0 || (Donate ?? 0) > 0)
+            {
                 return;
+            }
+
             DbUtil.Db.SubmitChanges();
             modelState.AddModelError("form", "amount zero");
         }
@@ -444,38 +503,56 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     modelState.AddModelError("Type", "Please select Bank Account or Credit Card.");
                     break;
             }
-            if(shouldValidateBilling)
+            if (shouldValidateBilling)
+            {
                 ValidateBillingDetails(modelState);
+            }
         }
 
         public void ValidateBillingDetails(ModelStateDictionary modelState)
         {
             if (!First.HasValue())
+            {
                 modelState.AddModelError("First", "First name is required.");
+            }
 
             if (!Last.HasValue())
+            {
                 modelState.AddModelError("Last", "Last name is required");
+            }
 
             if (!Address.HasValue())
+            {
                 modelState.AddModelError("Address", "Address is required.");
+            }
 
             if (!City.HasValue())
+            {
                 modelState.AddModelError("City", "City is required");
+            }
 
             if (!State.HasValue())
+            {
                 modelState.AddModelError("State", "State is required.");
+            }
 
             if (!Country.HasValue())
+            {
                 modelState.AddModelError("Country", "Country is required.");
+            }
 
             if (!Zip.HasValue())
+            {
                 modelState.AddModelError("Zip", "Zipcode is required.");
+            }
         }
 
         public void CheckStoreInVault(ModelStateDictionary modelState, int peopleid)
         {
             if (!IsLoggedIn.GetValueOrDefault() || !SavePayInfo)
+            {
                 return;
+            }
 
             var gateway = DbUtil.Db.Gateway(testing);
 
@@ -483,7 +560,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
             // otherwise we skip doing an auth just call store in vault just like normal.
             VerifyCardWithAuth(modelState, gateway, peopleid);
             if (!modelState.IsValid)
+            {
                 return;
+            }
 
             InitializePaymentInfo(peopleid);
 
@@ -497,20 +576,26 @@ namespace CmsWeb.Areas.OnlineReg.Models
         private void VerifyCardWithAuth(ModelStateDictionary modelState, IGateway gateway, int peopleId)
         {
             if (Type != PaymentType.CreditCard)
+            {
                 return;
+            }
 
             if (CreditCard.StartsWith("X"))
+            {
                 return;
+            }
 
             var random = new Random();
-            var dollarAmt = (decimal) random.Next(100, 199)/100;
+            var dollarAmt = (decimal)random.Next(100, 199) / 100;
 
             var transactionResponse = gateway.AuthCreditCard(peopleId, dollarAmt, CreditCard,
                 DbUtil.NormalizeExpires(Expires).ToString2("MMyy"), "One Time Auth", 0, CVV, string.Empty,
                 First, Last, Address, Address2, City, State, Country, Zip, Phone);
 
             if (!transactionResponse.Approved)
+            {
                 modelState.AddModelError("form", transactionResponse.Message);
+            }
 
             // if we got this far that means the auth worked so now let's do a void for that auth.
             var voidResponse = gateway.VoidCreditCardTransaction(transactionResponse.TransactionId);
@@ -542,21 +627,27 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
                 pid = m.UserPeopleId;
                 if (m.TranId == null)
+                {
                     m.TranId = ti.Id;
+                }
             }
 
             if (!pid.HasValue)
             {
                 var pds = DbUtil.Db.FindPerson(First, Last, null, Email, Phone);
                 if (pds.Count() == 1)
+                {
                     pid = pds.Single().PeopleId.Value;
+                }
             }
 
             TransactionResponse tinfo;
             var gw = DbUtil.Db.Gateway(testing);
 
             if (SavePayInfo)
+            {
                 tinfo = gw.PayWithVault(pid ?? 0, AmtToPay ?? 0, Description, ti.Id, Type);
+            }
             else
             {
                 tinfo = Type == PaymentType.Ach
@@ -567,7 +658,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
             ti.TransactionId = tinfo.TransactionId;
 
             if (ti.Testing.GetValueOrDefault() && !ti.TransactionId.Contains("(testing)"))
+            {
                 ti.TransactionId += "(testing)";
+            }
 
             ti.Approved = tinfo.Approved;
 
@@ -575,7 +668,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
             {
                 ti.Amtdue += ti.Amt;
                 if (m != null && m.OnlineGiving())
+                {
                     ti.Amtdue = 0;
+                }
             }
 
             ti.Message = tinfo.Message;
@@ -611,23 +706,34 @@ namespace CmsWeb.Areas.OnlineReg.Models
             PreventNegatives();
             PreventZero(modelState);
             if (!modelState.IsValid)
+            {
                 return RouteModel.ProcessPayment();
+            }
 
             try
             {
                 PreventNegatives();
                 PreventZero(modelState);
                 if (!modelState.IsValid)
+                {
                     return RouteModel.ProcessPayment();
+                }
 
                 ValidatePaymentForm(modelState);
                 if (!modelState.IsValid)
+                {
                     return RouteModel.ProcessPayment();
+                }
 
                 if (m?.UserPeopleId != null && m.UserPeopleId > 0)
+                {
                     CheckStoreInVault(modelState, m.UserPeopleId.Value);
+                }
+
                 if (!modelState.IsValid)
+                {
                     return RouteModel.ProcessPayment();
+                }
 
                 var ti = ProcessPaymentTransaction(m);
 
@@ -637,7 +743,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     return RouteModel.ProcessPayment();
                 }
 
-                HttpContext.Current.Session["FormId"] = FormId;
+                HttpContextFactory.Current.Session["FormId"] = FormId;
                 if (m != null)
                 {
                     m.DatumId = DatumId; // todo: not sure this is necessary
@@ -661,14 +767,17 @@ namespace CmsWeb.Areas.OnlineReg.Models
             // randomixe payment for testing only
             // prevents testing gateway from giving a duplicate tran error
             var random = new Random();
-            AmtToPay += (decimal) random.Next(100, 199)/100;
+            AmtToPay += (decimal)random.Next(100, 199) / 100;
         }
 
         public bool IsProblemUser()
         {
             var a = ConfigurationManager.AppSettings["problemUser"]?.Split(',');
             if (a == null || a.Length != 3)
+            {
                 return false;
+            }
+
             return Util.Host == a[0] && First.Equal(a[1]) && Last.Equal(a[2]);
         }
     }

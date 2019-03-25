@@ -35,12 +35,12 @@ namespace CmsData
 		private DateTime? _Created;
 		
    		
-   		private EntitySet< TagShare> _TagShares;
+   		private EntitySet<TagShare> _TagShares;
 		
-   		private EntitySet< TagPerson> _PersonTags;
+   		private EntitySet<TagPerson> _PersonTags;
 		
     	
-		private EntityRef< Person> _PersonOwner;
+		private EntityRef<Person> _PersonOwner;
 		
 	#endregion
 	
@@ -77,12 +77,12 @@ namespace CmsData
 		public Tag()
 		{
 			
-			this._TagShares = new EntitySet< TagShare>(new Action< TagShare>(this.attach_TagShares), new Action< TagShare>(this.detach_TagShares)); 
+			this._TagShares = new EntitySet<TagShare>(new Action< TagShare>(this.attach_TagShares), new Action< TagShare>(this.detach_TagShares)); 
 			
-			this._PersonTags = new EntitySet< TagPerson>(new Action< TagPerson>(this.attach_PersonTags), new Action< TagPerson>(this.detach_PersonTags)); 
+			this._PersonTags = new EntitySet<TagPerson>(new Action< TagPerson>(this.attach_PersonTags), new Action< TagPerson>(this.detach_PersonTags)); 
 			
 			
-			this._PersonOwner = default(EntityRef< Person>); 
+			this._PersonOwner = default(EntityRef<Person>); 
 			
 			OnCreated();
 		}
@@ -275,7 +275,7 @@ namespace CmsData
     #region Foreign Key Tables
    		
    		[Association(Name="FK_TagShare_Tag", Storage="_TagShares", OtherKey="TagId")]
-   		public EntitySet< TagShare> TagShares
+   		public EntitySet<TagShare> TagShares
    		{
    		    get { return this._TagShares; }
 
@@ -285,7 +285,7 @@ namespace CmsData
 
 		
    		[Association(Name="PersonTags__Tag", Storage="_PersonTags", OtherKey="Id")]
-   		public EntitySet< TagPerson> PersonTags
+   		public EntitySet<TagPerson> PersonTags
    		{
    		    get { return this._PersonTags; }
 

@@ -1,6 +1,7 @@
 using CmsData;
 using CmsData.Codes;
 using CmsWeb.Areas.Finance.Models.BatchImport;
+using CmsWeb.Lifecycle;
 using CmsWeb.Models;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
@@ -17,6 +18,10 @@ namespace CmsWeb.Areas.Finance.Controllers
     [RouteArea("Finance", AreaPrefix = "PostBundle"), Route("{action}/{id?}")]
     public class PostBundleController : CmsStaffController
     {
+        public PostBundleController(IRequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [Route("~/PostBundle/{id:int}")]
         public ActionResult Index(int id)
         {
@@ -68,7 +73,7 @@ namespace CmsWeb.Areas.Finance.Controllers
         [HttpPost]
         public ActionResult Move(int id, int? moveto)
         {
-            var b = (from h in DbUtil.Db.BundleHeaders
+            var b = (from h in CurrentDatabase.BundleHeaders
                      where h.BundleStatusId == BundleStatusCode.Open
                      where h.BundleHeaderId == moveto
                      select h).SingleOrDefault();
@@ -77,11 +82,11 @@ namespace CmsWeb.Areas.Finance.Controllers
                 return Content("cannot find bundle, or not open");
             }
 
-            var bd = DbUtil.Db.BundleDetails.Single(dd => dd.ContributionId == id);
+            var bd = CurrentDatabase.BundleDetails.Single(dd => dd.ContributionId == id);
             var pbid = bd.BundleHeaderId;
             bd.BundleHeaderId = b.BundleHeaderId;
-            DbUtil.Db.SubmitChanges();
-            var q = (from d in DbUtil.Db.BundleDetails
+            CurrentDatabase.SubmitChanges();
+            var q = (from d in CurrentDatabase.BundleDetails
                      where d.BundleHeaderId == pbid
                      group d by d.BundleHeaderId into g
                      select new
@@ -90,7 +95,7 @@ namespace CmsWeb.Areas.Finance.Controllers
                          itemcount = g.Count(),
                      }).Single();
 
-            var sh = (from h in DbUtil.Db.BundleHeaders
+            var sh = (from h in CurrentDatabase.BundleHeaders
                       where h.BundleHeaderId == pbid
                       select h).Single();
 
@@ -180,9 +185,9 @@ namespace CmsWeb.Areas.Finance.Controllers
 
         public JsonResult Funds()
         {
-            var fundSortSetting = DbUtil.Db.Setting("SortContributionFundsByFieldName", "FundId");
+            var fundSortSetting = CurrentDatabase.Setting("SortContributionFundsByFieldName", "FundId");
 
-            var query = DbUtil.Db.ContributionFunds.Where(cf => cf.FundStatusId == 1);
+            var query = CurrentDatabase.ContributionFunds.Where(cf => cf.FundStatusId == 1);
 
             if (fundSortSetting == "FundName")
             {
@@ -208,7 +213,7 @@ namespace CmsWeb.Areas.Finance.Controllers
         public ActionResult Edit(string id, string value)
         {
             var iid = id.Substring(1).ToInt();
-            var c = DbUtil.Db.Contributions.SingleOrDefault(co => co.ContributionId == iid);
+            var c = CurrentDatabase.Contributions.SingleOrDefault(co => co.ContributionId == iid);
             if (c != null)
             {
                 var m = new PostBundleModel();
@@ -216,15 +221,15 @@ namespace CmsWeb.Areas.Finance.Controllers
                 {
                     case "a":
                         c.ContributionAmount = value.ToDecimal();
-                        DbUtil.Db.SubmitChanges();
+                        CurrentDatabase.SubmitChanges();
                         return Json(m.ContributionRowData(this, iid));
                     case "f":
                         c.FundId = value.ToInt();
-                        DbUtil.Db.SubmitChanges();
+                        CurrentDatabase.SubmitChanges();
                         return Content($"{c.ContributionFund.FundId} - {c.ContributionFund.FundName}");
                     case "k":
                         c.CheckNo = value;
-                        DbUtil.Db.SubmitChanges();
+                        CurrentDatabase.SubmitChanges();
                         return Json(m.ContributionRowData(this, iid));
                 }
             }
@@ -233,7 +238,7 @@ namespace CmsWeb.Areas.Finance.Controllers
 
         public ActionResult BankAccountAssociations()
         {
-            var q = from c in DbUtil.Db.CardIdentifiers
+            var q = from c in CurrentDatabase.CardIdentifiers
                     orderby c.Person.Name2
                     select new
                     {

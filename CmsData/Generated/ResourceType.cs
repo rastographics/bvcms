@@ -25,9 +25,9 @@ namespace CmsData
 		private int _DisplayOrder;
 		
    		
-   		private EntitySet< Resource> _Resources;
+   		private EntitySet<Resource> _Resources;
 		
-   		private EntitySet< ResourceCategory> _ResourceCategories;
+   		private EntitySet<ResourceCategory> _ResourceCategories;
 		
     	
 	#endregion
@@ -50,9 +50,9 @@ namespace CmsData
 		public ResourceType()
 		{
 			
-			this._Resources = new EntitySet< Resource>(new Action< Resource>(this.attach_Resources), new Action< Resource>(this.detach_Resources)); 
+			this._Resources = new EntitySet<Resource>(new Action< Resource>(this.attach_Resources), new Action< Resource>(this.detach_Resources)); 
 			
-			this._ResourceCategories = new EntitySet< ResourceCategory>(new Action< ResourceCategory>(this.attach_ResourceCategories), new Action< ResourceCategory>(this.detach_ResourceCategories)); 
+			this._ResourceCategories = new EntitySet<ResourceCategory>(new Action< ResourceCategory>(this.attach_ResourceCategories), new Action< ResourceCategory>(this.detach_ResourceCategories)); 
 			
 			
 			OnCreated();
@@ -132,7 +132,7 @@ namespace CmsData
     #region Foreign Key Tables
    		
    		[Association(Name="FK_Resource_ResourceType", Storage="_Resources", OtherKey="ResourceTypeId")]
-   		public EntitySet< Resource> Resources
+   		public EntitySet<Resource> Resources
    		{
    		    get { return this._Resources; }
 
@@ -142,7 +142,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_ResourceCategory_ResourceType", Storage="_ResourceCategories", OtherKey="ResourceTypeId")]
-   		public EntitySet< ResourceCategory> ResourceCategories
+   		public EntitySet<ResourceCategory> ResourceCategories
    		{
    		    get { return this._ResourceCategories; }
 

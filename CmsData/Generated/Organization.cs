@@ -180,6 +180,12 @@ namespace CmsData
 		
 		private bool _SendAttendanceLink;
 		
+		private bool _TripFundingPagesEnable;
+		
+		private bool _TripFundingPagesPublic;
+		
+		private bool _TripFundingPagesShowAmounts;
+		
    		
    		private EntitySet<Person> _BFMembers;
 		
@@ -479,6 +485,15 @@ namespace CmsData
 		
 		partial void OnSendAttendanceLinkChanging(bool value);
 		partial void OnSendAttendanceLinkChanged();
+		
+		partial void OnTripFundingPagesEnableChanging(bool value);
+		partial void OnTripFundingPagesEnableChanged();
+		
+		partial void OnTripFundingPagesPublicChanging(bool value);
+		partial void OnTripFundingPagesPublicChanged();
+		
+		partial void OnTripFundingPagesShowAmountsChanging(bool value);
+		partial void OnTripFundingPagesShowAmountsChanged();
 		
     #endregion
 		public Organization()
@@ -2342,6 +2357,72 @@ namespace CmsData
 					this._SendAttendanceLink = value;
 					this.SendPropertyChanged("SendAttendanceLink");
 					this.OnSendAttendanceLinkChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="TripFundingPagesEnable", UpdateCheck=UpdateCheck.Never, Storage="_TripFundingPagesEnable", DbType="bit NOT NULL")]
+		public bool TripFundingPagesEnable
+		{
+			get { return this._TripFundingPagesEnable; }
+
+			set
+			{
+				if (this._TripFundingPagesEnable != value)
+				{
+				
+                    this.OnTripFundingPagesEnableChanging(value);
+					this.SendPropertyChanging();
+					this._TripFundingPagesEnable = value;
+					this.SendPropertyChanged("TripFundingPagesEnable");
+					this.OnTripFundingPagesEnableChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="TripFundingPagesPublic", UpdateCheck=UpdateCheck.Never, Storage="_TripFundingPagesPublic", DbType="bit NOT NULL")]
+		public bool TripFundingPagesPublic
+		{
+			get { return this._TripFundingPagesPublic; }
+
+			set
+			{
+				if (this._TripFundingPagesPublic != value)
+				{
+				
+                    this.OnTripFundingPagesPublicChanging(value);
+					this.SendPropertyChanging();
+					this._TripFundingPagesPublic = value;
+					this.SendPropertyChanged("TripFundingPagesPublic");
+					this.OnTripFundingPagesPublicChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="TripFundingPagesShowAmounts", UpdateCheck=UpdateCheck.Never, Storage="_TripFundingPagesShowAmounts", DbType="bit NOT NULL")]
+		public bool TripFundingPagesShowAmounts
+		{
+			get { return this._TripFundingPagesShowAmounts; }
+
+			set
+			{
+				if (this._TripFundingPagesShowAmounts != value)
+				{
+				
+                    this.OnTripFundingPagesShowAmountsChanging(value);
+					this.SendPropertyChanging();
+					this._TripFundingPagesShowAmounts = value;
+					this.SendPropertyChanged("TripFundingPagesShowAmounts");
+					this.OnTripFundingPagesShowAmountsChanged();
 				}
 
 			}

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
@@ -67,7 +68,33 @@ namespace CmsData
         {
             return db.FetchOrCreateFund(description);
         }
+        public int ResolveFundId(string fundName)
+        {
+            var fund = ResolveFund(fundName);
+            return fund.IsNotNull() ? fund.FundId : FirstFundId();
+        }
+        private ContributionFund ResolveFund(string name)
+        {
+            // take a pushpay fund and find or create a touchpoint fund
+            IQueryable<ContributionFund> funds = db.ContributionFunds.AsQueryable();
 
+            var result = from f in funds
+                         where f.FundName == name
+                         where f.FundStatusId > 0
+                         orderby f.FundStatusId
+                         orderby f.FundId descending
+                         select f;
+            if (result.Any())
+            {
+                int id = result.Select(f => f.FundId).First();
+                return db.ContributionFunds.SingleOrDefault(f => f.FundId == id);
+            }
+            else
+            {
+                return null;
+                
+            }
+        }
         public void MoveFundIdToExistingFundId(int fromid, int toid, string name = null)
         {
             var oldfund = db.ContributionFunds.Single(ff => ff.FundId == fromid);
@@ -102,6 +129,29 @@ namespace CmsData
             var json = JsonSerialize(dd);
             p.Add("@json", json);
             db.Connection.Execute("dbo.TagContributions", p, commandType: CommandType.StoredProcedure);
+            return FormatJson(dd);
+        }
+        /// <summary>
+        /// This works for the same purpose as CretaeContributionTag above
+        /// but uses SQL to generate a list of ids instead of Contributions2SearchIds.
+        /// They both use the json derived from DynamicData dd
+        /// 
+        /// This way a contributor developer can modify the search algorithm 
+        /// without needing to modify the Contribution2SearchIds function 
+        /// not having direct write access to the database.
+        /// </summary>
+        public string CreateContributionTagFromSql(string name, DynamicData dd, string sql)
+        {
+            var args = new DynamicParameters();
+            var json = JsonSerialize(dd);
+            args.Add("@json", json);
+
+            var list = QueryContributionIds(sql, args);
+            var csv = string.Join(",", list);
+            args.Add("@ids", csv);
+            args.Add("@tagname", name);
+
+            db.Connection.Execute("dbo.TagContributionsFromIds", args, commandType: CommandType.StoredProcedure);
             return $@"{name} = {FormatJson(dd)}";
         }
         /// <summary>
@@ -112,5 +162,14 @@ namespace CmsData
         {
             db.Connection.Execute("DELETE dbo.ContributionTag WHERE TagName LIKE @namelike", new {namelike});
         }
+        public IEnumerable<int> QueryContributionIds(string sql, object declarations)
+        {
+            var cn = db.ReadonlyConnection();
+            var parameters = new DynamicParameters();
+            if (declarations != null)
+                parameters.AddDynamicParams(declarations);
+            return cn.Query<int>(sql, parameters, commandTimeout: 600);
+        }
+
     }
 }

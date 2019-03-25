@@ -187,6 +187,9 @@ namespace CmsData
                 case CompareType.AllFalse:
                     ret = "Match NONE of the conditions below";
                     break;
+                case CompareType.AnyFalse:
+                    ret = "Match NOT ALL of the conditions below";
+                    break;
                 default:
                     if (Compare2 != null)
                         ret = Compare2.ToString(this);
@@ -200,7 +203,7 @@ namespace CmsData
             }
             return ret;
         }
-
+        internal bool IsScratchPad => AllConditions.Any(vv => vv.Value.Description == Util.ScratchPad2);
         internal void SetIncludeDeceased()
         {
             var c = this;
@@ -234,6 +237,7 @@ namespace CmsData
         public bool FirstPersonSameEmail { get; set; }
         public bool PlusParentsOf { get; set; }
         public bool FromDirectory { get; set; }
+        public bool DisableOnScratchpad;
         public Expression<Func<Person, bool>> Predicate(CMSDataContext db)
         {
             db.CopySession();
@@ -263,60 +267,106 @@ namespace CmsData
                 p.Tags.Any(t => t.Id == tag.Id);
             return Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
         }
-        private bool InAllAnyFalse => Parent.IsGroup && Parent.ComparisonType == CompareType.AllFalse;
-
-        private bool AnyFalseTrue => ComparisonType == CompareType.AnyTrue;
-
         private Expression ExpressionTree(ParameterExpression parm, CMSDataContext Db)
         {
-            Expression expr = null;
             if (IsGroup)
             {
-                foreach (var clause in Conditions)
+                return ProcessGroupExpressionTree(parm, Db);
+            }
+            if (Compare2 == null) // this should never be true
+            {
+                // but if it is, prevent the query from blowing up
+                return AlwaysFalse(parm);
+            }
+            return GetExpression(parm, Db);
+        }
+
+        private Expression ProcessGroupExpressionTree(ParameterExpression parm, CMSDataContext Db)
+        {
+            Expression expr = null;
+            foreach (var clause in Conditions)
+            {
+                // Check if this is a faux condition which governs the query behavior
+                if (CheckForSpecialCondition(clause))
+                    continue; // not an actual expression, no need to continue
+
+                // DisableOnScratchpad allows for easily debugging Query
+                // The user can disable individual Conditions to see the effect
+                if (IsScratchPad && clause.DisableOnScratchpad)
+                    continue;
+
+                if (expr == null) // this would be the first expression in a group
                 {
-                    if (clause.FieldInfo == null)
+                    expr = clause.ExpressionTree(parm, Db);
+                }
+                else
+                {
+                    var rightside = clause.ExpressionTree(parm, Db); // Recursion here
+                    if (rightside == null)
                         continue;
-                    if (clause.FieldInfo.QueryType == QueryType.IncludeDeceased)
+
+                    switch (ComparisonType)
                     {
-                        SetIncludeDeceased();
-                        continue;
-                    }
-                    if (clause.FieldInfo.QueryType == QueryType.ParentsOf)
-                    {
-                        SetParentsOf(clause.ComparisonType, clause.CodeIds == "1");
-                        continue;
-                    }
-                    if (clause.FieldInfo.QueryType == QueryType.FirstPersonSameEmail)
-                    {
-                        SetFirstPersonSameEmail(clause.ComparisonType, true);
-                        continue;
-                    }
-                    if (clause.FieldInfo.QueryType == QueryType.PlusParentsOf)
-                    {
-                        SetPlusParentsOf(clause.ComparisonType, clause.CodeIds == "1");
-                        continue;
-                    }
-                    if (clause.FieldInfo.QueryType == QueryType.DeceasedDate)
-                        SetIncludeDeceased();
-                    if (expr == null)
-                        expr = clause.ExpressionTree(parm, Db);
-                    else
-                    {
-                        var right = clause.ExpressionTree(parm, Db);
-                        if (right != null)
-                            expr = AnyFalseTrue
-                                ? Expression.Or(expr, right)
-                                : Expression.And(expr, right);
+                        case CompareType.AnyTrue:
+                            expr = Expression.Or(expr, rightside);
+                            break;
+                        case CompareType.AllTrue:
+                            expr = Expression.And(expr, rightside);
+                            break;
+                        case CompareType.AnyFalse:
+                            // the entire group will be negated at the end of the for loop
+                            expr = Expression.And(expr, rightside);
+                            break;
+                        case CompareType.AllFalse:
+                            // the entire group will be negated at the end of the for loop
+                            expr = Expression.Or(expr, rightside);
+                            break;
                     }
                 }
-                return expr;
             }
-            expr = Compare2 == null
-                ? AlwaysFalse(parm)
-                : GetExpression(parm, Db);
-            if (InAllAnyFalse)
-                expr = Expression.Not(expr);
+            switch (ComparisonType)
+            {
+                case CompareType.AnyFalse: // !(e1 && e2 && e3) is the same as (!e1 || !e2 || !e3)
+                case CompareType.AllFalse: // !(e1 || e2 || e3) is the same as (!e1 && !e2 && !e3)
+                    if (expr != null)
+                        expr = Expression.Not(expr);
+                    break;
+            }
             return expr;
+        }
+
+        private bool CheckForSpecialCondition(Condition clause)
+        {
+            if (clause.FieldInfo == null) // not sure how this could happen
+                return true;
+
+            switch (clause.FieldInfo.QueryType)
+            {
+                case QueryType.IncludeDeceased:
+                    SetIncludeDeceased(); // override the default exclude deceased behavior
+                    break;
+                case QueryType.DeceasedDate:
+                    SetIncludeDeceased(); // override the default exclude deceased behavior
+                    return false; // this is a real condition that needs to be evaluated
+
+                case QueryType.ParentsOf:
+                    // allows you to search for children then return their parents
+                    SetParentsOf(clause.ComparisonType, clause.CodeIds == "1");
+                    break;
+                case QueryType.PlusParentsOf:
+                    // allows you to search for children then include the parents too
+                    SetPlusParentsOf(clause.ComparisonType, clause.CodeIds == "1");
+                    break;
+
+                case QueryType.FirstPersonSameEmail:
+                    // allows you to only email the first person with a particular email address,
+                    // and eliminate others with the same email
+                    SetFirstPersonSameEmail(clause.ComparisonType, true);
+                    break;
+                default:
+                    return false;
+            }
+            return true; // this special condition does not need to be evaluated
         }
 
         public bool HasMultipleCodes

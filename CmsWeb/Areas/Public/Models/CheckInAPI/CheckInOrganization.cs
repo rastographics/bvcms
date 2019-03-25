@@ -1,5 +1,5 @@
-﻿using System;
-using CmsData;
+﻿using CmsData;
+using System;
 using System.Linq;
 using UtilityExtensions;
 
@@ -60,9 +60,13 @@ namespace CmsWeb.CheckInAPI
                     int dayDiff = day - DateTime.Now.DayOfWeek.ToInt();
 
                     if (dayDiff < 0)
+                    {
                         theirTime = theirTime.AddDays(7 + dayDiff);
+                    }
                     else
+                    {
                         theirTime = theirTime.AddDays(dayDiff);
+                    }
                 }
 
                 leadTime = (int)familyMember.Hour.Value.Subtract(theirTime).TotalMinutes;
@@ -80,9 +84,13 @@ namespace CmsWeb.CheckInAPI
                     int dayDiff = day - DateTime.Now.DayOfWeek.ToInt();
 
                     if (dayDiff < 0)
+                    {
                         theirTime = theirTime.AddDays(7 + dayDiff);
+                    }
                     else
+                    {
                         theirTime = theirTime.AddDays(dayDiff);
+                    }
                 }
 
                 leadTime = (int)hour.Value.Subtract(theirTime).TotalMinutes;

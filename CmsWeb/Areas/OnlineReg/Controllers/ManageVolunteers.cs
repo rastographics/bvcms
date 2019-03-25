@@ -1,16 +1,21 @@
+using CmsData;
+using CmsWeb.Areas.OnlineReg.Models;
+using CmsWeb.Lifecycle;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
-using CmsData;
-using CmsWeb.Areas.OnlineReg.Models;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.OnlineReg.Controllers
 {
     public partial class OnlineRegController
     {
-        const string Fromcalendar = "fromcalendar";
+        private const string Fromcalendar = "fromcalendar";
+
+        public OnlineRegController(IRequestManager requestManager) : base(requestManager)
+        {
+        }
 
         [HttpGet]
         [Route("VolRequestReport/{mid:int}/{pid:int}/{ticks:long}")]
@@ -71,7 +76,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             m.subject = subject;
             m.message = message;
             if (pids == null)
+            {
                 return Content("no emails sent (no recipients were selected)");
+            }
+
             m.pids = pids;
             m.SendEmails();
             return Content("Emails are being sent, thank you.");
@@ -123,7 +131,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         public ActionResult ManageVolunteer(string id, int? pid)
         {
             if (!id.HasValue())
+            {
                 return Content("bad link");
+            }
+
             VolunteerModel m = null;
 
             var td = TempData["PeopleId"];
@@ -133,30 +144,42 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
             else if (pid.HasValue)
             {
-                var leader = OrganizationMember.VolunteerLeaderInOrg(DbUtil.Db, id.ToInt2());
+                var leader = OrganizationMember.VolunteerLeaderInOrg(CurrentDatabase, id.ToInt2());
                 if (leader)
+                {
                     m = new VolunteerModel(id.ToInt(), pid.Value, true);
+                }
             }
             if (m == null)
             {
                 var guid = id.ToGuid();
                 if (guid == null)
+                {
                     return Content("invalid link");
-                var ot = DbUtil.Db.OneTimeLinks.SingleOrDefault(oo => oo.Id == guid.Value);
+                }
+
+                var ot = CurrentDatabase.OneTimeLinks.SingleOrDefault(oo => oo.Id == guid.Value);
                 if (ot == null)
+                {
                     return Content("invalid link");
+                }
 #if DEBUG2
 #else
                 if (ot.Used)
+                {
                     return Content("link used");
+                }
 #endif
                 if (ot.Expires.HasValue && ot.Expires < DateTime.Now)
+                {
                     return Content("link expired");
+                }
+
                 var a = ot.Querystring.Split(',');
                 m = new VolunteerModel(a[0].ToInt(), a[1].ToInt());
                 id = a[0];
                 ot.Used = true;
-                DbUtil.Db.SubmitChanges();
+                CurrentDatabase.SubmitChanges();
             }
 
             SetHeaders(id.ToInt());
@@ -172,12 +195,12 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (m.SendEmail || !m.IsLeader)
             {
                 List<Person> Staff = null;
-                Staff = DbUtil.Db.StaffPeopleForOrg(m.OrgId);
+                Staff = CurrentDatabase.StaffPeopleForOrg(m.OrgId);
                 var staff = Staff[0];
 
                 var summary = m.Summary(this);
                 var text = Util.PickFirst(m.Setting.Body, "confirmation email body not found");
-                text = text.Replace("{church}", DbUtil.Db.Setting("NameOfChurch", "church"), true);
+                text = text.Replace("{church}", CurrentDatabase.Setting("NameOfChurch", "church"), true);
                 text = text.Replace("{name}", m.Person.Name, true);
                 text = text.Replace("{date}", DateTime.Now.ToString("d"), true);
                 text = text.Replace("{email}", m.Person.EmailAddress, true);
@@ -186,9 +209,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 text = text.Replace("{contactemail}", staff.EmailAddress, true);
                 text = text.Replace("{contactphone}", m.Org.PhoneNumber.FmtFone(), true);
                 text = text.Replace("{details}", summary, true);
-                DbUtil.Db.Email(staff.FromEmail, m.Person, m.Setting.Subject, text);
+                CurrentDatabase.Email(staff.FromEmail, m.Person, m.Setting.Subject, text);
 
-                DbUtil.Db.Email(m.Person.FromEmail, Staff, "Volunteer Commitments managed", $@"{m.Person.Name} managed volunteer commitments to {m.Org.OrganizationName}<br/>
+                CurrentDatabase.Email(m.Person.FromEmail, Staff, "Volunteer Commitments managed", $@"{m.Person.Name} managed volunteer commitments to {m.Org.OrganizationName}<br/>
 The following Commitments:<br/>
 {summary}");
             }

@@ -1,0 +1,234 @@
+﻿@using CmsWeb.Code
+@{
+    Layout = "~/Views/Shared/_LayoutCheckIn.cshtml";
+    ViewBag.Title = @ViewExtensions2.DbSetting("nameofchurch", "TouchPoint") + " Check In";
+    ViewBag.PageHeader = "Check In";
+    var customSmallHeaderImage = CustomHeader.SmallHeaderImage("~/Content/touchpoint/img/logo_sm.png");
+}
+
+@ViewExtensions2.jQuery()
+
+<style>
+    .logo-md {
+        width: 70px;
+        height: 50px;
+        background-size: auto @customSmallHeaderImage.Height;
+        background-repeat: no-repeat;
+        background-position: left;
+        background-image: url(@Url.Content(customSmallHeaderImage.Url));
+        display: inline-block;
+    }
+    .block {
+        border: 1px solid lightskyblue;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .smcircle {
+        background: lightskyblue;
+        border-radius: 20px;
+        color: white;
+        height: 20px;
+        font-weight: bold;
+        width: 20px;
+        display: table;
+        margin: 0px 0px;
+    }
+
+    .circle {
+        height: 100px;
+        width: 100px;
+        border-radius: 100px;
+        background: #003f72;
+        color: white;
+        font-size: 40px;
+        text-align: center;
+        display: table-cell;
+        overflow: hidden;
+        vertical-align: middle !important;
+    }
+
+        .circle p {
+            vertical-align: middle;
+            display: table-cell;
+        }
+    .circle-sm {
+        background-color: #003f72;
+        border-radius: 25px;
+        color: white;
+        width: 26px;
+        height: 26px;
+        text-align: center;
+        display: inline-block;
+        overflow: hidden;
+        margin-right: 14px;
+        font-weight: 600;
+        padding-top: 3px;
+    }
+    .circle-closed {
+        background-color: darkgray;
+    }
+    .circle-full {
+        background-color: darkred;
+    }
+    .circle-open {
+        background-color: green;
+    }
+    .highlighted {
+        background: rgba(0,25,150,0.1);
+    }
+
+    .middle {
+        text-align: center;
+        margin: 0 auto;
+        padding: 0;
+    }
+
+    .labelhighlighted {
+        min-height: 20px;
+        min-width: 100%;
+        background: lightsteelblue;
+        border-style: outset;
+        border: 2px;
+        vertical-align: middle;
+        line-height: 3;
+        padding: 0;
+        margin: 0;
+    }
+
+    .labelnothighlighted {
+        min-height: 20px;
+        min-width: 100%;
+        background: none;
+        border-style: outset;
+        border: 2px;
+        vertical-align: middle;
+        line-height: 3;
+        padding: 0;
+        margin: 0;
+    }
+
+    .centered-header {
+        height: 50px;
+        display: flex;
+        align-items: center;
+    }
+    .centered-header.text-right {
+        justify-content: flex-end;
+    }
+    .centered-item {
+        height: 30px;
+        display: flex;
+        align-items: center;
+    }
+
+    .centered-item.text-right {
+        justify-content: flex-end;
+    }
+    .centered-header .form-group {
+        margin: 0;
+    }
+
+    .active {
+        color: green;
+    }
+
+    .inactive {
+        color: darkred;
+    }
+
+    .metric {
+        text-align: center;
+        height: 185px;
+    }
+
+    .metric-title {
+        margin-bottom: 14px;
+    }
+
+    .list-group-item-heading {
+        font-size: 1.2em;
+        line-height: 1.8em;
+        padding-left: 10px;
+    }
+
+    .list-group-item {
+        border: 0;
+        margin: 0;
+        border-bottom: 1px solid #ddd;
+    }
+
+        .list-group-item:hover {
+            cursor: pointer;
+        }
+
+
+    @@media (min-width: 1432px) {
+        #main.container {
+            width: 1400px !important;
+        }
+    }
+</style>
+<script type="text/javascript">
+    function refreshOrgList() {
+        var selectedTimeslot = $('#checkin-timeslot option:selected').val();
+        var selectedProgram = $('#checkin-program option:selected').val();
+        var highlighted = $('#SubgroupId').val();
+        var search = $('#find_group').val().trim();
+        $('#OrganizationContainer').load('@Url.Action("OrganizationSelector")?selectedTimeslot=' + selectedTimeslot + '&programId=' + selectedProgram + '&highlightedOrg=' + highlighted + '&searchQuery=' + search);
+    }
+</script>
+<div class="row">
+    <div class="col-lg-4">
+        <div class="box box-responsive">
+            <div class="box-title">
+                <p style="margin-bottom: 0;line-height: 23px;">
+                    Matching Schedules
+                    <span class="form-group inline pull-right" style="margin: 0;position: relative;top: -4px;">
+                        <input id="find_group" placeholder="Find" class="form-control-static" style="padding: 0 5px;line-height: 20px;">
+                        <a id="find_group_clear" href="#" class="form-add-on form-control-feedback" style="height: 23px;width: 23px;line-height: 23px;color: #999;pointer-events: all;"><i class="fa fa-lg fa-times-circle"></i></a>
+                    </span>
+                </p>
+            </div>
+            <div class="box-content" style="padding-left: 0; padding-right: 0;">
+                <div id="OrganizationContainer">
+                    @Html.Action("OrganizationSelector")
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-8" style="position: sticky;position: -webkit-sticky;top: 15px;">
+        <div id="DetailsContainer">
+
+        </div>
+    </div>
+</div>
+@section scripts
+{
+    <script>
+    $('#setalldefaults').on('click', function (e) {
+        e.preventDefault();
+        bootbox.confirm('Are you sure you want to reset all defaults?', function (result) {
+            result && $.ajax({
+                url: '@Url.Action("ExecuteAction")',
+                data: JSON.stringify({ service: 'SetAllDefaults' }),
+                success: function (ret) {
+                    $('#setdefaults').click();
+                    refreshOrgList();
+                },
+                error: function (ret) {
+                    swal('Error!', ret, 'error');
+                },
+                type: 'POST',
+                contentType: 'application/json, charset=utf-8',
+                dataType: 'html'
+            });
+        });
+    });
+
+    var orgRefresh = setTimeout(function () {
+        // keep org list up to date
+        refreshOrgList();
+    }, 3000);
+    </script>
+}

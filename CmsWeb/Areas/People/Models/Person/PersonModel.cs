@@ -18,7 +18,7 @@ namespace CmsWeb.Areas.People.Models
         private Picture picture;
         private AddressInfo primaryAddr;
         private IEnumerable<User> users;
-
+        public PersonModel() { }
         public PersonModel(int id)
         {
             var flags = DbUtil.Db.Setting("StatusFlags", "F04,F01,F02,F03");
@@ -44,7 +44,7 @@ namespace CmsWeb.Areas.People.Models
             if (isvalid)
             {
                 statusflags = string.Join(",", from s in DbUtil.Db.StatusFlagsPerson(id).ToList()
-                                               where s.RoleName == null || HttpContext.Current.User.IsInRole(s.RoleName)
+                                               where s.RoleName == null || HttpContextFactory.Current.User.IsInRole(s.RoleName)
                                                orderby s.TokenID
                                                select s.Name);
             }
@@ -56,7 +56,7 @@ namespace CmsWeb.Areas.People.Models
             Person = i.pp;
             var p = Person;
             var fam = i.f;
-            HttpContext.Current.Items["FamilyFromMyDataPage"] = fam; // for when Family is needed deep down in the call stack from this page
+            HttpContextFactory.Current.Items["FamilyFromMyDataPage"] = fam; // for when Family is needed deep down in the call stack from this page
 
             MemberStatus = i.memberStatus;
             PeopleId = p.PeopleId;
@@ -220,7 +220,7 @@ namespace CmsWeb.Areas.People.Models
                 return "person not found";
             }
 
-            if (!HttpContext.Current.User.IsInRole("Access"))
+            if (!HttpContextFactory.Current.User.IsInRole("Access"))
             {
                 if (Person == null || !Person.CanUserSee)
                 {

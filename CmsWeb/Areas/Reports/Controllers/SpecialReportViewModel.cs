@@ -20,7 +20,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         public int? Qtagid { get; set; }
         public string Results { get; set; }
         public string ExcelUrl => $"/Reports/SqlReportExcel/{Report}/{Id}";
-
+        public SpecialReportViewModel() { }
         public SpecialReportViewModel(string report, Guid id)
         {
             Report = report;
@@ -33,7 +33,7 @@ namespace CmsWeb.Areas.Reports.Controllers
             DynamicParameters p;
             var content = GetParameters(out p);
 
-            var cs = HttpContext.Current.User.IsInRole("Finance")
+            var cs = HttpContextFactory.Current.User.IsInRole("Finance")
                 ? Util.ConnectionStringReadOnlyFinance
                 : Util.ConnectionStringReadOnly;
             using (var cn = new SqlConnection(cs))
@@ -47,7 +47,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         {
             DynamicParameters p;
             var content = GetParameters(out p);
-            var cs = HttpContext.Current.User.IsInRole("Finance")
+            var cs = HttpContextFactory.Current.User.IsInRole("Finance")
                 ? Util.ConnectionStringReadOnlyFinance
                 : Util.ConnectionStringReadOnly;
             using (var cn = new SqlConnection(cs))
@@ -112,8 +112,8 @@ namespace CmsWeb.Areas.Reports.Controllers
             var pe = new PythonModel(Util.Host);
 
             pe.DictionaryAdd("BlueToolbarGuid", Id.ToCode());
-            foreach (var key in HttpContext.Current.Request.QueryString.AllKeys)
-                pe.DictionaryAdd(key, HttpContext.Current.Request.QueryString[key]);
+            foreach (var key in HttpContextFactory.Current.Request.QueryString.AllKeys)
+                pe.DictionaryAdd(key, HttpContextFactory.Current.Request.QueryString[key]);
 
             pe.RunScript(content);
             Results = pe.Output;
@@ -126,7 +126,7 @@ namespace CmsWeb.Areas.Reports.Controllers
             var re = new Regex("(--|#)Roles=(?<roles>.*)", RegexOptions.IgnoreCase);
             var roles = re.Match(script).Groups["roles"].Value.Split(',').Select(aa => aa.Trim()).ToArray();
             if (roles.Length > 0)
-                return roles.Any(rr => HttpContext.Current.User.IsInRole(rr));
+                return roles.Any(rr => HttpContextFactory.Current.User.IsInRole(rr));
             return true;
         }
     }

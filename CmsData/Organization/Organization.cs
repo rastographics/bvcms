@@ -636,7 +636,7 @@ namespace CmsData
 
         public void AddMemberTag(string sg)
         {
-            sg = sg.trim();
+            sg = sg.Trim();
             if (MemberTags.Any(vv => vv.Name == sg))
                 return;
             MemberTags.Add(new MemberTag() { Name = sg });

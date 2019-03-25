@@ -190,7 +190,7 @@ namespace CmsData
                 {
                     if (!g.Comparison.HasValue())
                         g.SetComparisonType(CompareType.AllTrue);
-                    NextToken(TokenType.And, TokenType.Or, TokenType.RParen, TokenType.AndNot);
+                    NextToken(TokenType.And, TokenType.Or, TokenType.RParen, TokenType.OrNot, TokenType.AndNot);
                     return g;
                 }
                 SetComparisionType(g);
@@ -214,6 +214,9 @@ namespace CmsData
                     case TokenType.AndNot:
                         g.SetComparisonType(CompareType.AllFalse);
                         break;
+                    case TokenType.OrNot:
+                        g.SetComparisonType(CompareType.AnyFalse);
+                        break;
                 }
         }
 
@@ -223,6 +226,8 @@ namespace CmsData
                 return;
             if (g.ComparisonType == CompareType.AllFalse && Token.Type != TokenType.AndNot)
                 throw new QueryParserException("Expected AND NOT in AllFalse group");
+            if (g.ComparisonType == CompareType.AnyFalse && Token.Type != TokenType.OrNot)
+                throw new QueryParserException("Expected OR NOT in AnyFalse group");
             if (g.ComparisonType == CompareType.AllTrue && Token.Type != TokenType.And)
                 throw new QueryParserException("Expected AND in AllTrue group");
             if (g.ComparisonType == CompareType.AnyTrue && Token.Type != TokenType.Or)

@@ -24,7 +24,7 @@ namespace CmsData
 		
    		
     	
-		private EntityRef< CheckInTime> _CheckInTime;
+		private EntityRef<CheckInTime> _CheckInTime;
 		
 	#endregion
 	
@@ -44,7 +44,7 @@ namespace CmsData
 		{
 			
 			
-			this._CheckInTime = default(EntityRef< CheckInTime>); 
+			this._CheckInTime = default(EntityRef<CheckInTime>); 
 			
 			OnCreated();
 		}

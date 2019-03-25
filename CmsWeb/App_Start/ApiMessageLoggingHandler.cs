@@ -1,3 +1,4 @@
+using CmsData;
 using System;
 using System.Linq;
 using System.Net.Http;
@@ -6,7 +7,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
-using CmsData;
 
 namespace CmsWeb
 {
@@ -59,7 +59,10 @@ namespace CmsWeb
         {
             var auth = request.Headers.Authorization?.Parameter;
 
-            if (string.IsNullOrWhiteSpace(auth)) return null;
+            if (string.IsNullOrWhiteSpace(auth))
+            {
+                return null;
+            }
 
             var authHeader = Encoding.ASCII.GetString(Convert.FromBase64String(auth));
             var tokens = authHeader.Split(':');

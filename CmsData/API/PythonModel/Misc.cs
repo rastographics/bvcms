@@ -36,7 +36,7 @@ namespace CmsData
         public string CallScript(string scriptname)
         {
             var script = db.ContentOfTypePythonScript(scriptname);
-            var model = new PythonModel(db.Host, dictionary);
+            var model = new PythonModel(db, dictionary);
             model.FromMorningBatch = FromMorningBatch;
             return ExecutePython(script, model);
         }
@@ -47,8 +47,36 @@ namespace CmsData
 #if DEBUG
             if (c == null)
             {
-                var s = System.IO.File.ReadAllText(name);
-                return s;
+                var txt = File.ReadAllText(name);
+                if (!txt.HasValue())
+                    return txt;
+                var nam = Path.GetFileNameWithoutExtension(name);
+                var ext = Path.GetExtension(name);
+                int typ = ContentTypeCode.TypeText;
+                switch (ext)
+                {
+                    case ".sql":
+                        typ = ContentTypeCode.TypeSqlScript;
+                        break;
+                    case ".text":
+                        typ = ContentTypeCode.TypeText;
+                        break;
+                    case ".html":
+                        typ = ContentTypeCode.TypeHtml;
+                        break;
+                }
+                c = db.Content(nam, typ);
+                if (c == null)
+                {
+                    c = new Content
+                    {
+                        Name = nam,
+                        TypeID = typ
+                    };
+                    db.Contents.InsertOnSubmit(c);
+                }
+                c.Body = txt;
+                db.SubmitChanges();
             }
 #endif
             return c.Body;
@@ -108,7 +136,8 @@ namespace CmsData
         }
         public string SqlContent(string name)
         {
-            return db.ContentOfTypeSql(name);
+            var sql = db.ContentOfTypeSql(name);
+            return sql;
         }
         public string TextContent(string name)
         {
@@ -357,6 +386,7 @@ namespace CmsData
 DELETE dbo.TagPerson FROM dbo.TagPerson tp JOIN dbo.Tag t ON t.Id = tp.Id WHERE t.TypeId = 101 AND t.Name LIKE @namelike
 DELETE dbo.Tag WHERE TypeId = 101 AND Name LIKE @namelike
 ", new {namelike});
+            Util2.CurrentTag = "UnNamed";
         }
 
         public void WriteContentSql(string name, string sql)
@@ -427,12 +457,17 @@ DELETE dbo.Tag WHERE TypeId = 101 AND Name LIKE @namelike
                 return s1;
             return s2;
         }
+        [Obsolete]
         public DynamicData FromJson(string json)
         {
             var dd =  JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
             return new DynamicData(dd);
         }
 
+        public DynamicData DynamicDataFromJson(string json)
+        {
+            return JsonConvert.DeserializeObject<DynamicData>(json);
+        }
         /// <summary>
         /// This returns a csv string of the fundids when a church is using Custom Statements and FundSets for different statements
         /// The csv string can be used in SQL using dbo.SplitInts in a query to match a set of fundids.
@@ -442,5 +477,19 @@ DELETE dbo.Tag WHERE TypeId = 101 AND Name LIKE @namelike
             return string.Join(",", APIContributionSearchModel.GetCustomStatementsList(db, name));
         }
         
+        public string SpaceCamelCase(string s)
+        {
+            return s.SpaceCamelCase();
+        }
+
+        public string Trim(string s)
+        {
+            return s.Trim();
+        }
+
+        public bool UserIsInRole(string role)
+        {
+            return HttpContextFactory.Current?.User.IsInRole(role) ?? false;
+        }
     }
 }

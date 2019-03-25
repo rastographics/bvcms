@@ -9,6 +9,7 @@ namespace CmsWeb
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
             routes.IgnoreRoute("healthcheck.txt");
+            routes.IgnoreRoute("analytics.txt");
             routes.IgnoreRoute("Demo/{*pathInfo}");
             routes.IgnoreRoute("index.html");
             routes.IgnoreRoute("{myWebForms}.aspx/{*pathInfo}");

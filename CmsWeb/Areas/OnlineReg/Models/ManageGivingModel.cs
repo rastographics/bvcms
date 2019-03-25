@@ -13,6 +13,7 @@ using CmsData.Registration;
 using CmsWeb.Areas.OnlineReg.Controllers;
 using CmsWeb.Code;
 using Dapper;
+using Microsoft.Scripting.Utils;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.OnlineReg.Models
@@ -22,10 +23,19 @@ namespace CmsWeb.Areas.OnlineReg.Models
     {
         public int pid { get; set; }
         public int orgid { get; set; }
+
+        public IList<string> DefaultFundIds = new List<string>();
+
+        public IList<string> FallbackDefaultFundIds = new List<string>();
+
+        public string FirstDefaultFundName { get; set; }
+
         public string RepeatPattern { get; set; }
 
         [DisplayName("Start On or After")]
         public DateTime? StartWhen { get; set; }
+
+        public bool StartWhenIsNew { get; set; } = true;
 
         public DateTime? StopWhen { get; set; }
         public string SemiEvery { get; set; }
@@ -136,23 +146,54 @@ namespace CmsWeb.Areas.OnlineReg.Models
             NoEChecksAllowed = DbUtil.Db.Setting("NoEChecksAllowed", "false").ToBool();
         }
 
-        public ManageGivingModel(int pid, int orgid = 0)
+        public ManageGivingModel(int pid, int orgid = 0, string defaultFundIds = "")
             : this()
         {
             this.pid = pid;
             this.orgid = orgid;
+
             if (person == null)
                 return;
+
+            PopulateDefaultFundIds(defaultFundIds, person);
+
             var rg = person.ManagedGiving();
             if (rg != null)
                 PopulateSetup(rg);
             else if (Util.HasValue(Setting.ExtraValueFeeName))
+                PopulateExtraValueDefaults();
+            else
                 PopulateReasonableDefaults();
-
+            
             var pi = PopulatePaymentInfo();
             PopulateBillingName(pi);
             PopulateBillingAddress(pi);
 
+        }
+
+        private void PopulateDefaultFundIds(string defaultFundIds, Person person)
+        {
+            if (string.IsNullOrWhiteSpace(defaultFundIds) && person.CampusId.HasValue)
+            {
+                // look up campus default fund mapping if present.
+                var setting = $"DefaultCampusFunds-{person.CampusId}";
+                var db = DbUtil.DbReadOnly;
+                defaultFundIds = db.Setting(setting, string.Empty);
+            }
+            
+            if (!string.IsNullOrWhiteSpace(defaultFundIds))
+            {
+                var list = defaultFundIds.Split(',');
+                DefaultFundIds.AddRange(list);
+            }
+
+            if (DefaultFundIds.Any())
+            {
+                FirstDefaultFundName = OnlineRegPersonModel.GetFundName(DefaultFundIds.First().ToInt());
+            }
+
+            var fundList = OnlineRegPersonModel.FundList();
+            FallbackDefaultFundIds.AddRange(fundList.Where(f => !DefaultFundIds.Contains(f.Value)).Select(f => f.Value));
         }
 
         private void PopulateBillingName(PaymentInfo pi)
@@ -197,17 +238,24 @@ namespace CmsWeb.Areas.OnlineReg.Models
             return pi;
         }
 
-        private void PopulateReasonableDefaults()
+        private void PopulateExtraValueDefaults()
         {
             var f = OnlineRegPersonModel.FullFundList().SingleOrDefault(ff => ff.Text == Setting.ExtraValueFeeName);
+            PopulateReasonableDefaults();
+
+            var evamt = person.GetExtra(Setting.ExtraValueFeeName).ToDecimal();
+            if (f != null && evamt > 0)
+                FundItem.Add(f.Value.ToInt(), evamt);
+        }
+
+        private void PopulateReasonableDefaults()
+        {
             // reasonable defaults
             RepeatPattern = "M";
             Period = "M";
             SemiEvery = "E";
             EveryN = 1;
-            var evamt = person.GetExtra(Setting.ExtraValueFeeName).ToDecimal();
-            if (f != null && evamt > 0)
-                FundItem.Add(f.Value.ToInt(), evamt);
+            StartWhen = DateTime.Today.AddDays(1);
         }
 
         private void PopulateSetup(ManagedGiving rg)
@@ -215,6 +263,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             RepeatPattern = rg.SemiEvery != "S" ? rg.Period : rg.SemiEvery;
             SemiEvery = rg.SemiEvery;
             StartWhen = rg.StartWhen;
+            StartWhenIsNew = false;
             StopWhen = null; //rg.StopWhen;
             Day1 = rg.Day1;
             Day2 = rg.Day2;
@@ -351,10 +400,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             if (!StartWhen.HasValue)
                 modelState.AddModelError("StartWhen", "StartDate must have a value");
-            else if (StartWhen <= DateTime.Today)
+            else if (StartWhenIsNew && StartWhen <= DateTime.Today)
                 modelState.AddModelError("StartWhen", "StartDate must occur after today");
-            //            else if (StopWhen.HasValue && StopWhen <= StartWhen)
-            //                modelState.AddModelError("StopWhen", "StopDate must occur after StartDate");
 
             if (!Util.HasValue(FirstName))
                 modelState.AddModelError("FirstName", "Needs first name");
@@ -376,6 +423,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public void Update()
         {
+            var db = DbUtil.Db;
             // first check for total amount greater than zero.
             // if so we skip everything except updating the amounts.
             var chosenFunds = FundItemsChosen().ToList();
@@ -392,7 +440,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 // first need to do a $1 auth if it's a credit card and throw any errors we get back
                 // from the gateway.
                 var vaultSaved = false;
-                var gateway = DbUtil.Db.Gateway(testing);
+                var gateway = db.Gateway(testing);
                 if (Type == PaymentType.CreditCard)
                 {
                     // perform $1 auth.
@@ -453,11 +501,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 mg.NextDate = mg.FindNextDate(DateTime.Today);
             }
 
-            DbUtil.Db.RecurringAmounts.DeleteAllOnSubmit(person.RecurringAmounts);
-            DbUtil.Db.SubmitChanges();
+            db.RecurringAmounts.DeleteAllOnSubmit(person.RecurringAmounts);
+            db.SubmitChanges();
 
             person.RecurringAmounts.AddRange(chosenFunds.Select(c => new RecurringAmount { FundId = c.fundid, Amt = c.amt }));
-            DbUtil.Db.SubmitChanges();
+            db.SubmitChanges();
         }
 
         private bool IsCardTester(PaymentForm pf, string from)
@@ -465,12 +513,17 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (!Util.IsHosted || !pf.CreditCard.HasValue())
                 return false;
             var hash = Pbkdf2Hasher.HashString(pf.CreditCard);
-            DbUtil.Db.InsertIpLog(HttpContext.Current.Request.UserHostAddress, hash);
+            var db = DbUtil.Db;
+            db.InsertIpLog(HttpContextFactory.Current.Request.UserHostAddress, hash);
 
             if (pf.IsProblemUser())
                 return OnlineRegController.LogRogueUser("Problem User", from);
             var iscardtester = ConfigurationManager.AppSettings["IsCardTester"];
-            var result = DbUtil.Db.Connection.ExecuteScalar<string>(iscardtester, new {ip = HttpContext.Current.Request.UserHostAddress});
+            if (!iscardtester.HasValue())
+            {
+                return false;
+            }
+            var result = db.Connection.ExecuteScalar<string>(iscardtester, new {ip = HttpContextFactory.Current.Request.UserHostAddress});
             if(result.Equal("OK"))
                 return false;
             return OnlineRegController.LogRogueUser(result, from);
@@ -599,14 +652,15 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public void CancelManagedGiving(int peopleId)
         {
-            var p = DbUtil.Db.LoadPersonById(peopleId);
-            DbUtil.Db.RecurringAmounts.DeleteAllOnSubmit(p.RecurringAmounts);
+            var db = DbUtil.Db;
+            var p = db.LoadPersonById(peopleId);
+            db.RecurringAmounts.DeleteAllOnSubmit(p.RecurringAmounts);
 
             var mg = p.ManagedGiving();
             if (mg != null)
-                DbUtil.Db.ManagedGivings.DeleteOnSubmit(mg);
+                db.ManagedGivings.DeleteOnSubmit(mg);
 
-            DbUtil.Db.SubmitChanges();
+            db.SubmitChanges();
 
             ManagedGivingStopped = true;
         }

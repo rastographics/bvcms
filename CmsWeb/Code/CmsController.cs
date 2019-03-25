@@ -1,17 +1,17 @@
-using System;
-using System.Configuration;
-using System.IO;
-using System.Text;
-using System.Web;
-using System.Web.Mvc;
-using System.Linq;
-using System.Net;
 using CmsData;
 using CmsData.Classes.RoleChecker;
 using CmsWeb.Areas.Manage.Controllers;
 using CmsWeb.Code;
+using CmsWeb.Lifecycle;
 using CmsWeb.Models;
 using OfficeOpenXml;
+using System;
+using System.Configuration;
+using System.IO;
+using System.Net;
+using System.Text;
+using System.Web;
+using System.Web.Mvc;
 using UtilityExtensions;
 
 namespace CmsWeb
@@ -19,10 +19,18 @@ namespace CmsWeb
     [MyRequireHttps]
     public class CmsController : CmsControllerNoHttps
     {
+        public CmsController(IRequestManager requestManager) : base(requestManager)
+        {
+        }
     }
 
-    public class CmsControllerNoHttps : Controller
+    public class CmsControllerNoHttps : CMSBaseController
     {
+        public CmsControllerNoHttps(IRequestManager requestManager) : base(requestManager)
+        {
+
+        }
+
         protected override void HandleUnknownAction(string actionName)
         {
             //base.HandleUnknownAction(actionName);
@@ -33,14 +41,18 @@ namespace CmsWeb
         {
             base.OnActionExecuting(filterContext);
             Util.Helpfile = $"_{filterContext.ActionDescriptor.ControllerDescriptor.ControllerName}_{filterContext.ActionDescriptor.ActionName}";
-            DbUtil.Db.UpdateLastActivity(Util.UserId);
+            CurrentDatabase.UpdateLastActivity(Util.UserId);
             if (AccountController.TryImpersonate())
             {
                 var returnUrl = Request.QueryString["returnUrl"];
                 if (returnUrl.HasValue() && Url.IsLocalUrl(returnUrl))
+                {
                     filterContext.Result = Redirect(returnUrl);
+                }
                 else
+                {
                     filterContext.Result = Redirect(Request.RawUrl);
+                }
             }
             HttpContext.Response.Headers.Add("X-Robots-Tag", "noindex");
             HttpContext.Response.Headers.Add("X-Robots-Tag", "unavailable after: 1 Jan 2017 01:00:00 CST");
@@ -48,12 +60,12 @@ namespace CmsWeb
 
         public string AuthenticateDeveloper(bool log = false, string addrole = "", string altrole = "")
         {
-            return AuthHelper.AuthenticateDeveloper(System.Web.HttpContext.Current, log, addrole, altrole).Message;
+            return AuthHelper.AuthenticateDeveloper(HttpContextFactory.Current, log, addrole, altrole).Message;
         }
 
-        public ViewResult Message(string text)
+        public ViewResult Message(string text, string stacktrace = null)
         {
-            return View("Message", model: text);
+            return View("Message", model: new ErrorMessage { text = text, stacktrace = stacktrace ?? Environment.StackTrace });
         }
         public ViewResult PageMessage(string text, string title = "Error", string alert = "danger")
         {
@@ -83,8 +95,12 @@ namespace CmsWeb
     }
 
     [MyRequireHttps]
-    public class CmsStaffController : Controller
+    public class CmsStaffController : CMSBaseController
     {
+        public CmsStaffController(IRequestManager requestManager) : base(requestManager)
+        {
+        }
+
         public bool NoCheckRole { get; set; }
 
         protected override void HandleUnknownAction(string actionName)
@@ -96,27 +112,35 @@ namespace CmsWeb
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
         {
             NoCheckRole = NoCheckRole ||
-                          (filterContext.RouteData.Values["Controller"].ToString() == "Email" && DbUtil.Db.Setting("UX-AllowMyDataUserEmails")) ||
+                          (filterContext.RouteData.Values["Controller"].ToString() == "Email" && CurrentDatabase.Setting("UX-AllowMyDataUserEmails")) ||
                           (filterContext.RouteData.Values["Controller"].ToString() == "OrgMemberDialog" && filterContext.RouteData.Values["Action"].ToString() == "Drop"
-                            && DbUtil.Db.Setting("UX-AllowMyDataUserLeaveOrg") && Util.UserPeopleId.ToString() == filterContext.RequestContext?.HttpContext?.Request?.Params["PeopleId"]);
+                            && CurrentDatabase.Setting("UX-AllowMyDataUserLeaveOrg") && Util.UserPeopleId.ToString() == filterContext.RequestContext?.HttpContext?.Request?.Params["PeopleId"]);
 
             if (!User.Identity.IsAuthenticated)
             {
                 var s = "/Logon?ReturnUrl=" + HttpUtility.UrlEncode(Request.RawUrl);
                 if (Request.QueryString.Count > 0)
+                {
                     s += "&" + Request.QueryString.ToString();
+                }
+
                 filterContext.Result = Redirect(s);
             }
             else if (!NoCheckRole)
             {
                 var r = AccountModel.CheckAccessRole(Util.UserName);
                 if (r.HasValue())
+                {
                     filterContext.Result = Redirect(r);
+                }
             }
 
-            var disableHomePageForOrgLeaders = DbUtil.Db.Setting("UX-DisableHomePageForOrgLeaders");
+            var disableHomePageForOrgLeaders = CurrentDatabase.Setting("UX-DisableHomePageForOrgLeaders");
             if (!disableHomePageForOrgLeaders)
+            {
                 disableHomePageForOrgLeaders = RoleChecker.HasSetting(SettingName.DisableHomePage, false);
+            }
+
             var contr = filterContext.RouteData.Values["Controller"].ToString();
             var act = filterContext.RouteData.Values["Action"].ToString();
             var orgleaderonly = User.IsInRole("OrgLeadersOnly");
@@ -124,26 +148,28 @@ namespace CmsWeb
                 disableHomePageForOrgLeaders && orgleaderonly)
             {
                 Util2.OrgLeadersOnly = true;
-                DbUtil.Db.SetOrgLeadersOnly();
+                CurrentDatabase.SetOrgLeadersOnly();
 
                 filterContext.Result = Redirect($"/Person2/{Util.UserPeopleId}");
             }
             else if (orgleaderonly && Util2.OrgLeadersOnly == false)
             {
                 Util2.OrgLeadersOnly = true;
-                DbUtil.Db.SetOrgLeadersOnly();
+                CurrentDatabase.SetOrgLeadersOnly();
             }
 
             base.OnActionExecuting(filterContext);
             Util.Helpfile = $"_{filterContext.ActionDescriptor.ControllerDescriptor.ControllerName}_{filterContext.ActionDescriptor.ActionName}";
-            DbUtil.Db.UpdateLastActivity(Util.UserId);
+            if(Util.UserId == 0 && User.Identity.IsAuthenticated)
+                AccountModel.SetUserInfo(User.Identity.Name, Session);
+            CurrentDatabase.UpdateLastActivity(Util.UserId);
             HttpContext.Response.Headers.Add("X-Robots-Tag", "noindex");
             HttpContext.Response.Headers.Add("X-Robots-Tag", "unavailable after: 1 Jan 2017 01:00:00 CST");
         }
 
         public static string ErrorUrl(string message)
         {
-            return $"/Home/ShowError/?error={System.Web.HttpContext.Current.Server.UrlEncode(message)}&url={System.Web.HttpContext.Current.Request.Url.OriginalString}";
+            return $"/Home/ShowError/?error={HttpContextFactory.Current.Server.UrlEncode(message)}&url={HttpContextFactory.Current.Request.Url.OriginalString}";
         }
 
         public ActionResult RedirectShowError(string message)
@@ -153,7 +179,8 @@ namespace CmsWeb
 
         public ViewResult Message(string text)
         {
-            return View("Message", model: text);
+            string stacktrace = Environment.StackTrace;
+            return View("Message", model: new ErrorMessage { text = text, stacktrace = stacktrace });
         }
         public ViewResult PageMessage(string text, string title = "Error", string alert = "danger")
         {
@@ -182,7 +209,10 @@ namespace CmsWeb
         {
             var userinput = ex as UserInputException;
             if (userinput == null)
+            {
                 Elmah.ErrorSignal.FromCurrentContext().Raise(ex);
+            }
+
             Response.StatusCode = (int)HttpStatusCode.InternalServerError;
             return Content($"<strong>Failed!</strong> {ex.Message}");
         }
@@ -205,14 +235,19 @@ namespace CmsWeb
             {
                 var s = "/Logon?ReturnUrl=" + HttpUtility.UrlEncode(Request.RawUrl);
                 if (Request.QueryString.Count > 0)
+                {
                     s += "&" + Request.QueryString.ToString();
+                }
+
                 filterContext.Result = Redirect(s);
             }
             else if (!NoCheckRole)
             {
                 var r = AccountModel.CheckAccessRole(Util.UserName);
                 if (r.HasValue())
+                {
                     filterContext.Result = Redirect(r);
+                }
             }
             base.OnActionExecuting(filterContext);
             Util.Helpfile = $"_{filterContext.ActionDescriptor.ControllerDescriptor.ControllerName}_{filterContext.ActionDescriptor.ActionName}";
@@ -220,7 +255,8 @@ namespace CmsWeb
         }
         public ViewResult Message(string text)
         {
-            return View("Message", model: text);
+            string stacktrace = Environment.StackTrace;
+            return View("Message", model: new ErrorMessage { text = text, stacktrace = stacktrace });
         }
     }
 
@@ -261,7 +297,7 @@ namespace CmsWeb
     public class EpplusResult : ActionResult
     {
         private ExcelPackage pkg;
-        private string fn;
+        private readonly string fn;
 
         public EpplusResult(ExcelPackage pkg, string fn)
         {
@@ -297,7 +333,10 @@ namespace CmsWeb
             if (filterContext.HttpContext != null)
             {
                 if (filterContext.HttpContext.Request.IsLocal)
+                {
                     return;
+                }
+
                 if (ConfigurationManager.AppSettings["INSERT_X-FORWARDED-PROTO"] == "true")
                 {
                     if (filterContext.HttpContext.Request.Headers["X-Forwarded-Proto"] == "http")
@@ -308,7 +347,9 @@ namespace CmsWeb
                     return;
                 }
                 else if (!ConfigurationManager.AppSettings["cmshost"].StartsWith("https:"))
+                {
                     return;
+                }
             }
             base.OnAuthorization(filterContext);
         }
@@ -316,7 +357,10 @@ namespace CmsWeb
         public static bool NeedRedirect(HttpRequestBase Request)
         {
             if (ConfigurationManager.AppSettings["INSERT_X-FORWARDED-PROTO"] == "true")
+            {
                 return Request.Headers["X-Forwarded-Proto"] == "http";
+            }
+
             return ConfigurationManager.AppSettings["cmshost"].StartsWith("https:");
         }
     }

@@ -28,7 +28,6 @@ namespace CmsData
 		
 		private bool _IsDeleted;
 		
-   		
    		private EntitySet<SMSGroupMember> _SMSGroupMembers;
 		
    		private EntitySet<SMSList> _SMSLists;
@@ -135,7 +134,6 @@ namespace CmsData
 			}
 
 		}
-
 		
 		[Column(Name="SystemFlag", UpdateCheck=UpdateCheck.Never, Storage="_SystemFlag", DbType="bit NOT NULL")]
 		public bool SystemFlag

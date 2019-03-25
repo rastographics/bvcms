@@ -37,16 +37,16 @@ namespace CmsData
 		private DateTime? _MVRProcessedDate;
 		
    		
-   		private EntitySet< VolunteerForm> _VolunteerForms;
+   		private EntitySet<VolunteerForm> _VolunteerForms;
 		
-   		private EntitySet< VoluteerApprovalId> _VoluteerApprovalIds;
+   		private EntitySet<VoluteerApprovalId> _VoluteerApprovalIds;
 		
     	
-		private EntityRef< Person> _Person;
+		private EntityRef<Person> _Person;
 		
-		private EntityRef< VolApplicationStatus> _VolApplicationStatus;
+		private EntityRef<VolApplicationStatus> _VolApplicationStatus;
 		
-		private EntityRef< VolApplicationStatus> _StatusMvr;
+		private EntityRef<VolApplicationStatus> _StatusMvr;
 		
 	#endregion
 	
@@ -86,16 +86,16 @@ namespace CmsData
 		public Volunteer()
 		{
 			
-			this._VolunteerForms = new EntitySet< VolunteerForm>(new Action< VolunteerForm>(this.attach_VolunteerForms), new Action< VolunteerForm>(this.detach_VolunteerForms)); 
+			this._VolunteerForms = new EntitySet<VolunteerForm>(new Action< VolunteerForm>(this.attach_VolunteerForms), new Action< VolunteerForm>(this.detach_VolunteerForms)); 
 			
-			this._VoluteerApprovalIds = new EntitySet< VoluteerApprovalId>(new Action< VoluteerApprovalId>(this.attach_VoluteerApprovalIds), new Action< VoluteerApprovalId>(this.detach_VoluteerApprovalIds)); 
+			this._VoluteerApprovalIds = new EntitySet<VoluteerApprovalId>(new Action< VoluteerApprovalId>(this.attach_VoluteerApprovalIds), new Action< VoluteerApprovalId>(this.detach_VoluteerApprovalIds)); 
 			
 			
-			this._Person = default(EntityRef< Person>); 
+			this._Person = default(EntityRef<Person>); 
 			
-			this._VolApplicationStatus = default(EntityRef< VolApplicationStatus>); 
+			this._VolApplicationStatus = default(EntityRef<VolApplicationStatus>); 
 			
-			this._StatusMvr = default(EntityRef< VolApplicationStatus>); 
+			this._StatusMvr = default(EntityRef<VolApplicationStatus>); 
 			
 			OnCreated();
 		}
@@ -318,7 +318,7 @@ namespace CmsData
     #region Foreign Key Tables
    		
    		[Association(Name="FK_VolunteerForm_Volunteer1", Storage="_VolunteerForms", OtherKey="PeopleId")]
-   		public EntitySet< VolunteerForm> VolunteerForms
+   		public EntitySet<VolunteerForm> VolunteerForms
    		{
    		    get { return this._VolunteerForms; }
 
@@ -328,7 +328,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_VoluteerApprovalIds_Volunteer", Storage="_VoluteerApprovalIds", OtherKey="PeopleId")]
-   		public EntitySet< VoluteerApprovalId> VoluteerApprovalIds
+   		public EntitySet<VoluteerApprovalId> VoluteerApprovalIds
    		{
    		    get { return this._VoluteerApprovalIds; }
 

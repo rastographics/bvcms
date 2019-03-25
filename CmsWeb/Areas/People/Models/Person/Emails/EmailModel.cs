@@ -1,9 +1,8 @@
-﻿using System;
+﻿using CmsData;
+using CmsWeb.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using CmsData;
-using CmsWeb.Models;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Models
@@ -16,7 +15,10 @@ namespace CmsWeb.Areas.People.Models
             get
             {
                 if (_person == null && PeopleId.HasValue)
+                {
                     _person = DbUtil.Db.LoadPersonById(PeopleId.Value);
+                }
+
                 return _person;
             }
         }
@@ -24,23 +26,28 @@ namespace CmsWeb.Areas.People.Models
 
         protected EmailModel()
             : base("Sent", "desc", true)
-        {}
+        { }
 
         internal IQueryable<EmailQueue> FilterOutFinanceOnly(IQueryable<EmailQueue> q)
         {
-            var user = HttpContext.Current.User;
+            var user = HttpContextFactory.Current.User;
             if (!user.IsInRole("Finance"))
+            {
                 q = from e in q
                     where (e.FinanceOnly ?? false) == false
                     select e;
+            }
+
             return q;
         }
         internal IQueryable<EmailQueue> FilterForUser(IQueryable<EmailQueue> q)
         {
-            var roles = new [] { "Admin", "ManageEmails", "Finance" };
-            var admin = HttpContext.Current.User.IsInRole("Admin");
+            var roles = new[] { "Admin", "ManageEmails", "Finance" };
+            var admin = HttpContextFactory.Current.User.IsInRole("Admin");
             if (DbUtil.Db.CurrentUser.Roles.Any(uu => roles.Contains(uu)))
+            {
                 return FilterOutFinanceOnly(q);
+            }
 
             q = from e in q
                 let p = DbUtil.Db.People.Single(pp => pp.PeopleId == Util.UserPeopleId)
@@ -52,7 +59,9 @@ namespace CmsWeb.Areas.People.Models
                 select e;
 
             if (admin)
+            {
                 return q;
+            }
 
             q = from e in q
                 where (e.Testing ?? false) == false
@@ -101,7 +110,7 @@ namespace CmsWeb.Areas.People.Models
                            select e;
                 case "From desc":
                     return from e in q
-                           orderby e.FromName descending 
+                           orderby e.FromName descending
                            select e;
                 case "Count":
                     return from e in q

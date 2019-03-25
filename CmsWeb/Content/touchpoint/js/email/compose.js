@@ -5,6 +5,7 @@
     $('#Recipients').select2("readonly", true);
 
     var currentDiv = null;
+    var currentDesign = null;
 
     $.clearFunction = undefined;
     $.addFunction = undefined;
@@ -21,9 +22,14 @@
         }
     };
 
-    window.displayEditor = function (div) {
+    window.displayEditor = function (div, design, useUnlayer) {
         currentDiv = div;
-        $('#editor-modal').modal('show');
+        currentDesign = design;
+        if (useUnlayer) {
+            $('#unlayer-editor-modal').modal('show');
+        } else {
+            $('#editor-modal').modal('show');
+        }
     };
 
     // set these two lines to false will cause the editor to show on a mobile device. Expermental.
@@ -59,7 +65,7 @@
                 extraPlugins: 'specialLink'
             });
         }
-        var html = $(currentDiv).html();0
+        var html = $(currentDiv).html();
         if (html === "Click here to edit content") {
             if (xsDevice || smDevice)
                 $('#htmleditor').val("");
@@ -101,14 +107,48 @@
             CKEDITOR.instances["htmleditor"].setData("");
         }
         $(currentDiv).html(h);
-        var eb = $('#email-body').contents().find('#tempateBody').html();
+        var eb = $('#email-body').contents().find('#templateBody').html();
         localStorage.email = eb;
         $('#editor-modal').modal('hide');
     });
 
+
+
+    $('#unlayer-editor-modal').on('shown.bs.modal', function () {
+        var design = $(currentDesign).val();
+        
+        unlayer.init({
+            id: "unlayerEditor",
+            displayMode: "email"
+        });
+        if (design.length > 0) {
+            unlayer.loadDesign(JSON.parse(design));
+        }
+    });
+
+    $('#unlayer-editor-modal').on('click', '#unlayer-cancel-edit', function () {
+        $('#unlayerEditor').html('');
+        $('#unlayer-editor-modal').modal('hide');
+    });
+
+    $('#unlayer-editor-modal').on('click', '#unlayer-save-edit', function () {
+        unlayer.exportHtml(function(data) {
+            var design = data.design;
+            var html = data.html; // final html
+            $(currentDesign).val(JSON.stringify(design));
+            $(currentDiv).html(html);
+            var eb = $('#email-body').contents().find('#templateBody').html();
+            localStorage.email = eb;
+            $('#unlayerEditor').html('');
+            $('#unlayer-editor-modal').modal('hide');
+        });
+    });
+
+
+
     $(".Send").click(function () {
         $.block();
-        $('#body').val($('#email-body').contents().find('#tempateBody').html());
+        $('#body').val($('#email-body').contents().find('#templateBody').html());
         var q = $("#SendEmail").serialize();
 
         $.post('/Email/QueueEmails', q, function (ret) {
@@ -175,7 +215,9 @@
             $('#draft-modal').modal('show');
         } else {
             $.clearTemplateClass();
-            var h = $('#email-body').contents().find('#tempateBody').html();
+            var d = $('#email-body').contents().find('#templateDesign').val();
+            var h = $('#email-body').contents().find('#templateBody').html();
+            $("#UnlayerDesign").val(d);
             $("#body").val(h);
             $("#name").val($("#newName").val());
             $.addTemplateClass();
@@ -191,7 +233,8 @@
 
     $("#SaveDraftButton").click(function () {
         $.clearTemplateClass();
-        $("#body").val($('#email-body').contents().find('#tempateBody').html());
+        $("#UnlayerDesign").val($('#email-body').contents().find('#templateDesign').val());
+        $("#body").val($('#email-body').contents().find('#templateBody').html());
         $("#name").val($("#newName").val());
         $.addTemplateClass();
 
@@ -203,7 +246,7 @@
         $.block();
 
         $.clearTemplateClass();
-        $("#body").val($('#email-body').contents().find('#tempateBody').html());
+        $("#body").val($('#email-body').contents().find('#templateBody').html());
         $.addTemplateClass();
 
         var q = $("#SendEmail").serialize();
@@ -223,6 +266,139 @@
     });
 
     $('#Subject').focus();
+
+    // special links window
+    var specialLinks = {
+        el: $('#special-links-modal'),
+        typeSelect: $('#special_links_type'),
+        formInput: $('#special_links_form input'),
+        orgRow: $('#org_id.row'),
+        orgInput: $('#org_id input'),
+        meetingRow: $('#meeting_id.row'),
+        meetingInput: $('#meeting_id input'),
+        messageInput: $('#message input'),
+        confirmationSelect: $('#confirmation select'),
+        smallGroupRow: $('#small_group.row'),
+        smallGroupInput: $('#small_group input'),
+        secondaryRows: $('#small_group.row, #message.row, #confirmation.row'),
+        resultRow: $('#result.row'),
+        resultInput: $('#result.row input'),
+
+        init: function () {
+            // toggle visibility
+            $('#create-special-link').click(function () {
+                specialLinks.reset();
+                specialLinks.el.modal('show');
+            });
+            $('.close-special-links-modal').click(function () {
+                specialLinks.el.modal('hide');
+            });
+            $('.done-special-links-modal').click(function () {
+                specialLinks.resultInput.select();
+                document.execCommand('copy');
+                specialLinks.el.modal('hide');
+            });
+
+            // select contents of result
+            specialLinks.resultInput.click(function () {
+                $(this).select();
+            });
+
+            // update result row and toggle inputs
+            specialLinks.typeSelect.change(specialLinks.refreshForm);
+            specialLinks.confirmationSelect.change(specialLinks.refreshForm);
+            specialLinks.formInput.on('input', specialLinks.refreshForm);
+
+            // init
+            specialLinks.refreshForm();
+        },
+
+        reset: function () {
+            specialLinks.typeSelect.val('0');
+            specialLinks.refreshForm();
+        },
+
+        refreshForm: function () {
+            var linkType = specialLinks.typeSelect.val();
+            var linkText = 'https://' + linkType;
+            var orgId = specialLinks.orgInput.val();
+
+            switch (linkType) {
+                case 'registerlink':
+                case 'registerlink2':
+                case 'sendlink':
+                case 'sendlink2':
+                case 'supportlink':
+                    specialLinks.orgRow.show();
+                    specialLinks.meetingRow.hide();
+                    specialLinks.secondaryRows.hide();
+                    if (orgId.length) {
+                        linkText += '/?org=' + orgId;
+                    } else {
+                        linkText = '';
+                    }
+                    break;
+
+                case 'rsvplink':
+                case 'regretslink':
+                    specialLinks.orgRow.hide();
+                    specialLinks.meetingRow.show();
+                    specialLinks.secondaryRows.show();
+                    var message = specialLinks.messageInput.val();
+                    var meetingId = specialLinks.meetingInput.val();
+                    var confirmation = specialLinks.confirmationSelect.val();
+                    var smallGroup = specialLinks.smallGroupInput.val();
+                    if (meetingId.length) {
+                        linkText += '/?meeting=' + meetingId + '&confirm=' + confirmation;
+                        if (smallGroup.length) {
+                            linkText += '&group=' + smallGroup;
+                        }
+                        if (message.length) {
+                            linkText += '&msg=' + message;
+                        }
+                    } else {
+                        linkText = '';
+                    }
+                    break;
+
+                case 'votelink':
+                    specialLinks.orgRow.show();
+                    specialLinks.meetingRow.hide();
+                    specialLinks.secondaryRows.show();
+                    message = specialLinks.messageInput.val();
+                    smallGroup = specialLinks.smallGroupInput.val();
+                    confirmation = specialLinks.confirmationSelect.val();
+                    if (orgId.length) {
+                        linkText += '/?org=' + orgId + '&confirm=' + confirmation;
+                        if (message.length) {
+                            linkText += '&msg=' + message;
+                        }
+                        if (smallGroup.length) {
+                            linkText += '&group=' + smallGroup;
+                        }
+                    } else {
+                        linkText = '';
+                    }
+                    break;
+
+                default:
+                    linkText = '';
+                    specialLinks.secondaryRows.hide();
+                    specialLinks.orgRow.hide();
+                    specialLinks.meetingRow.hide();
+                    specialLinks.formInput.val('');
+                    break;
+            }
+            specialLinks.resultInput.val(linkText);
+            if (linkText.length) {
+                specialLinks.resultRow.show();
+            } else {
+                specialLinks.resultRow.hide();
+            }
+        }
+    };
+
+    specialLinks.init();
 });
 
 

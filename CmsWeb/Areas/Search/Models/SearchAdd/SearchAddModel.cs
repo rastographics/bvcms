@@ -5,24 +5,23 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
 
+using CmsData;
+using CmsData.Classes.RoleChecker;
+using CmsData.Codes;
+using CmsWeb.Code;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Web;
-using System.Web.Mvc;
-using CmsData;
-using CmsData.Codes;
-using CmsWeb.Code;
 using UtilityExtensions;
-using CmsData.Classes.RoleChecker;
 
 namespace CmsWeb.Areas.Search.Models
 {
     public class SearchAddModel : SearchResultsModel
     {
-        private readonly string[] noaddtypes = {"relatedfamily", "mergeto", "contactor", "taskdelegate", "taskowner", "taskdelegate2", "addtoemail" };
-        private readonly string[] onlyonetypes = {"taskdelegate", "taskowner", "taskdelegate2", "mergeto", "relatedfamily"};
+        private readonly string[] noaddtypes = { "relatedfamily", "mergeto", "contactor", "taskdelegate", "taskowner", "taskdelegate2", "addtoemail" };
+        private readonly string[] onlyonetypes = { "taskdelegate", "taskowner", "taskdelegate2", "mergeto", "relatedfamily" };
         private Organization org;
 
         public SearchAddModel()
@@ -112,7 +111,10 @@ namespace CmsWeb.Areas.Search.Models
                         return "Add as Pending Member of Organization";
                     case "inactive":
                         if (org == null)
+                        {
                             org = DbUtil.Db.LoadOrganizationById(PrimaryKeyForContextType.ToInt());
+                        }
+
                         return $"Add as {(org.IsMissionTrip == true ? "Sender of Mission Trip" : "Inactive Member of Organization")}";
                     case "visitor":
                         return "Add as Visitor to Meeting";
@@ -239,23 +241,38 @@ namespace CmsWeb.Areas.Search.Models
                         return AddContributor(iid, OriginCode.Contribution);
                     case "taskdelegate":
                         if (PendingList.Count > 0)
-                            return new ReturnResult {close = true, how = "addselected", url = "/Task/Delegate/", pid = PendingList[0].PeopleId, from = AddContext};
+                        {
+                            return new ReturnResult { close = true, how = "addselected", url = "/Task/Delegate/", pid = PendingList[0].PeopleId, from = AddContext };
+                        }
+
                         break;
                     case "taskdelegate2":
                         if (PendingList.Count > 0)
-                            return new ReturnResult {close = true, how = "addselected2", url = "/Task/Action/1", pid = PendingList[0].PeopleId, from = AddContext};
+                        {
+                            return new ReturnResult { close = true, how = "addselected2", url = "/Task/Action/1", pid = PendingList[0].PeopleId, from = AddContext };
+                        }
+
                         break;
                     case "taskabout":
                         if (PendingList.Count > 0)
-                            return new ReturnResult {close = true, how = "addselected", url = "/Task/ChangeAbout/", pid = PendingList[0].PeopleId, from = AddContext};
+                        {
+                            return new ReturnResult { close = true, how = "addselected", url = "/Task/ChangeAbout/", pid = PendingList[0].PeopleId, from = AddContext };
+                        }
+
                         break;
                     case "taskowner":
                         if (PendingList.Count > 0)
-                            return new ReturnResult {close = true, how = "addselected", url = "/Task/ChangeOwner/", pid = PendingList[0].PeopleId, from = AddContext};
+                        {
+                            return new ReturnResult { close = true, how = "addselected", url = "/Task/ChangeOwner/", pid = PendingList[0].PeopleId, from = AddContext };
+                        }
+
                         break;
                     case "mergeto":
                         if (PendingList.Count > 0)
-                            return new ReturnResult {close = true, how = "addselected", pid = PrimaryKeyForContextType.ToInt(), pid2 = PendingList[0].PeopleId, from = AddContext};
+                        {
+                            return new ReturnResult { close = true, how = "addselected", pid = PrimaryKeyForContextType.ToInt(), pid2 = PendingList[0].PeopleId, from = AddContext };
+                        }
+
                         break;
                     case "addtoemail":
                         if (PendingList.Count > 0)
@@ -265,10 +282,16 @@ namespace CmsWeb.Areas.Search.Models
                             {
                                 string email = null;
                                 if (!string.IsNullOrEmpty(p.Person.EmailAddress) && (p.Person.SendEmailAddress1 ?? true))
+                                {
                                     email = p.Person.EmailAddress;
+                                }
+
                                 if (email == null && !string.IsNullOrEmpty(p.Person.EmailAddress2) && (p.Person.SendEmailAddress2 ?? false))
+                                {
                                     email = p.Person.EmailAddress2;
-                                people.Add(new ReturnResult {close = true, how = "addselected", pid = p.PeopleId, from = AddContext, name = p.Person.Name, email = email});
+                                }
+
+                                people.Add(new ReturnResult { close = true, how = "addselected", pid = p.PeopleId, from = AddContext, name = p.Person.Name, email = email });
                             }
                             return people;
                         }
@@ -277,9 +300,9 @@ namespace CmsWeb.Areas.Search.Models
             }
             catch (Exception ex)
             {
-                return new ReturnResult {close = true, how = "addselected", error = ex.Message, from = AddContext};
+                return new ReturnResult { close = true, how = "addselected", error = ex.Message, from = AddContext };
             }
-            return new ReturnResult {close = true, from = AddContext};
+            return new ReturnResult { close = true, from = AddContext };
         }
 
         private ReturnResult AddContactees(int id, int origin)
@@ -305,14 +328,16 @@ namespace CmsWeb.Areas.Search.Models
                 }
                 DbUtil.Db.SubmitChanges();
             }
-            return new ReturnResult {close = true, from = AddContext, cid = id};
+            return new ReturnResult { close = true, from = AddContext, cid = id };
         }
 
         private ReturnResult AddContactors(int id, int origin)
         {
             var c = DbUtil.Db.Contacts.SingleOrDefault(ct => ct.ContactId == id);
             if (c == null)
-                return new ReturnResult {close = true, how = "CloseAddDialog", from = AddContext};
+            {
+                return new ReturnResult { close = true, how = "CloseAddDialog", from = AddContext };
+            }
 
             foreach (var p in PendingList)
             {
@@ -331,7 +356,7 @@ namespace CmsWeb.Areas.Search.Models
                 }
             }
             DbUtil.Db.SubmitChanges();
-            return new ReturnResult {close = true, cid = id, from = AddContext};
+            return new ReturnResult { close = true, cid = id, from = AddContext };
         }
 
         private ReturnResult AddFamilyMembers(int id, int origin)
@@ -348,22 +373,31 @@ namespace CmsWeb.Areas.Search.Models
                     {
                         var fm = p.Family.People.SingleOrDefault(fa => fa.PeopleId == i.Person.PeopleId);
                         if (fm != null)
+                        {
                             continue; // already a member of this family
+                        }
 
                         if (i.Person.Age < 18)
+                        {
                             i.Person.PositionInFamilyId = PositionInFamily.Child;
+                        }
                         else if (p.Family.People.Count(per =>
                             per.PositionInFamilyId == PositionInFamily.PrimaryAdult) < 2)
+                        {
                             i.Person.PositionInFamilyId = PositionInFamily.PrimaryAdult;
+                        }
                         else
+                        {
                             i.Person.PositionInFamilyId = PositionInFamily.SecondaryAdult;
+                        }
+
                         p.Family.People.Add(i.Person);
                     }
                     DbUtil.LogActivity("AddFamilyMembers " + p.FamilyId, i.PeopleId);
                 }
                 DbUtil.Db.SubmitChanges();
             }
-            return new ReturnResult {pid = id, from = AddContext};
+            return new ReturnResult { pid = id, from = AddContext };
         }
 
         private ReturnResult AddRelatedFamilys(int id, int origin)
@@ -380,15 +414,18 @@ namespace CmsWeb.Areas.Search.Models
             {
                 throw;
             }
-            return new ReturnResult {from = AddContext, pid = id, key = key};
+            return new ReturnResult { from = AddContext, pid = id, key = key };
         }
 
         private ReturnResult AddPeople(int origin)
         {
             foreach (var p in PendingList)
+            {
                 AddPerson(p, PendingList, origin, EntryPointId);
+            }
+
             DbUtil.Db.SubmitChanges();
-            return new ReturnResult {pid = PendingList[0].PeopleId, from = AddContext};
+            return new ReturnResult { pid = PendingList[0].PeopleId, from = AddContext };
         }
 
         private ReturnResult AddOrgMembers(int id, int origin, int membertypeid = MemberTypeCode.Member, bool pending = false)
@@ -423,7 +460,7 @@ You can do one of these things:
   title=""Already a Member"" target=""_blank"">this help article</a>
 ").ToString();
                         message = $@"<div style=""text-align: left"">{message}</div>";
-                        return new ReturnResult {close = true, how = "CloseAddDialog", error = message, from = AddContext};
+                        return new ReturnResult { close = true, how = "CloseAddDialog", error = message, from = AddContext };
                     }
                 }
                 foreach (var p in PendingList)
@@ -432,8 +469,12 @@ You can do one of these things:
                     var om = OrganizationMember.InsertOrgMembers(DbUtil.Db,
                         id, p.PeopleId.Value, membertypeid, Util.Now, null, pending);
                     if (membertypeid == MemberTypeCode.InActive && org.IsMissionTrip == true)
+                    {
                         om.AddToGroup(DbUtil.Db, "Sender");
+                    }
+
                     if (om.CreatedDate.HasValue)
+                    {
                         if ((DateTime.Now - om.CreatedDate.Value).TotalSeconds < 5)
                         {
                             var type = pending
@@ -445,11 +486,12 @@ You can do one of these things:
                                         : "Member";
                             DbUtil.LogActivity($"Org{type} Add", om.OrganizationId, om.PeopleId);
                         }
+                    }
                 }
                 DbUtil.Db.SubmitChanges();
                 DbUtil.Db.UpdateMainFellowship(id);
             }
-            return new ReturnResult {close = true, how = "rebindgrids", error = message, from = AddContext};
+            return new ReturnResult { close = true, how = "rebindgrids", error = message, from = AddContext };
         }
 
         private ReturnResult AddContributor(int id, int origin)
@@ -477,9 +519,9 @@ You can do one of these things:
                 }
                 DbUtil.Db.SubmitChanges();
                 DbUtil.LogActivity("AddContributor " + c.ContributionId, peopleid: p.PeopleId);
-                return new ReturnResult {close = true, how = "addselected", cid = id, pid = p.PeopleId, name = p.Person.Name2, from = AddContext};
+                return new ReturnResult { close = true, how = "addselected", cid = id, pid = p.PeopleId, name = p.Person.Name2, from = AddContext };
             }
-            return new ReturnResult {close = true, how = "addselected", from = AddContext};
+            return new ReturnResult { close = true, how = "addselected", from = AddContext };
         }
 
         private ReturnResult AddPeopleToTag(string id, int origin)
@@ -494,7 +536,7 @@ You can do one of these things:
                 DbUtil.Db.SubmitChanges();
                 DbUtil.LogActivity("AddPeopleToTag");
             }
-            return new ReturnResult {close = true, how = "addselected", from = AddContext};
+            return new ReturnResult { close = true, how = "addselected", from = AddContext };
         }
 
         private ReturnResult AddVisitors(int id, int origin)
@@ -508,18 +550,26 @@ You can do one of these things:
                     var isnew = p.IsNew;
                     AddPerson(p, PendingList, origin, EntryPointId);
                     if (isnew)
+                    {
                         p.Person.UpdateValue("CampusId", meeting.Organization.CampusId);
+                    }
+
                     if (!p.PeopleId.HasValue)
+                    {
                         continue;
+                    }
+
                     var err = Attend.RecordAttendance(p.PeopleId.Value, id, true);
                     DbUtil.LogActivity("AddVisitor", meeting.OrganizationId, p.PeopleId);
                     if (err != "ok")
+                    {
                         sb.AppendLine(err);
+                    }
                 }
                 DbUtil.Db.SubmitChanges();
                 DbUtil.Db.UpdateMeetingCounters(meeting.MeetingId);
             }
-            return new ReturnResult {close = true, how = "addselected", error = sb.ToString(), from = AddContext};
+            return new ReturnResult { close = true, how = "addselected", error = sb.ToString(), from = AddContext };
         }
 
         private ReturnResult AddRegistered(int id, int origin)
@@ -532,30 +582,44 @@ You can do one of these things:
                     var isnew = p.IsNew;
                     AddPerson(p, PendingList, origin, EntryPointId);
                     if (isnew)
+                    {
                         p.Person.CampusId = meeting.Organization.CampusId;
+                    }
+
                     if (!p.PeopleId.HasValue)
+                    {
                         continue;
+                    }
+
                     Attend.MarkRegistered(DbUtil.Db, p.PeopleId.Value, id, 1);
                     DbUtil.LogActivity("AddRegistered " + meeting.MeetingDate.FormatDateTm(), meeting.OrganizationId, p.PeopleId);
                 }
                 DbUtil.Db.SubmitChanges();
                 DbUtil.Db.UpdateMeetingCounters(meeting.MeetingId);
             }
-            return new ReturnResult {close = true, how = "addselected", from = AddContext};
+            return new ReturnResult { close = true, how = "addselected", from = AddContext };
         }
 
         private void AddPerson(PendingPersonModel p, List<PendingPersonModel> list, int originid, int? entrypointid)
         {
             if (p.IsNew)
+            {
                 p.AddPerson(originid, p.EntryPoint.Value.ToInt(), p.Campus.Value.ToInt());
+            }
             else
             {
                 if (entrypointid != 0 &&
                     (!p.Person.EntryPointId.HasValue || p.Person.EntryPointId == 0))
+                {
                     p.Person.EntryPointId = entrypointid;
+                }
+
                 if (originid != 0 &&
                     (!p.Person.OriginId.HasValue || p.Person.OriginId == 0))
+                {
                     p.Person.OriginId = originid;
+                }
+
                 DbUtil.Db.SubmitChanges();
             }
             if (p.FamilyId < 0) // fix up new family pointers
@@ -565,10 +629,12 @@ You can do one of these things:
                         select m;
                 var list2 = q.ToList();
                 foreach (var m in list2)
+                {
                     m.FamilyId = p.Person.FamilyId;
+                }
             }
             Util2.CurrentPeopleId = p.Person.PeopleId;
-            HttpContext.Current.Session["ActivePerson"] = p.Person.Name;
+            HttpContextFactory.Current.Session["ActivePerson"] = p.Person.Name;
         }
 
         public class ReturnResult

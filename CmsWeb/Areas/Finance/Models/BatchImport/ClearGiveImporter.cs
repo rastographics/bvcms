@@ -1,10 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using CmsData;
-using UtilityExtensions;
 using CsvHelper;
+using System;
+using System.IO;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Finance.Models.BatchImport
 {
@@ -13,7 +11,9 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
         public int? RunImport(string text, DateTime date, int? fundid, bool fromFile)
         {
             using (var csv = new CsvReader(new StringReader(text)))
+            {
                 return Import(csv, date, fundid);
+            }
         }
 
         private static int? Import(CsvReader csv, DateTime date, int? fundid)
@@ -34,12 +34,17 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                 var transType = csv["transType"];
 
                 if (bundleHeader == null)
+                {
                     bundleHeader = Contribution.GetBundleHeader(DbUtil.Db, date, DateTime.Now);
+                }
 
                 var bd = Contribution.AddContributionDetail(DbUtil.Db, transDate ?? settleDate, fid, amountpaid, paymentType, null, userId);
                 bd.Contribution.ContributionDesc = nameonCard;
                 if (transType != "SALE")
+                {
                     bd.Contribution.ContributionDesc += $" ({transType})";
+                }
+
                 bundleHeader.BundleDetails.Add(bd);
             }
 

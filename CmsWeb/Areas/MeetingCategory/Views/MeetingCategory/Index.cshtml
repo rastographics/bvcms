@@ -1,0 +1,43 @@
+﻿@model IEnumerable<CmsData.MeetingCategory>
+@{
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "Meeting Categories";
+    ViewBag.PageHeader = "Meeting Categories";
+}
+
+<div class="row">
+    <div class="col-md-9">
+        <div class="box box-responsive">
+            <div class="box-title-btn">
+                <div class="box-tools">
+                    <a href="@Url.Action("Create", "MeetingCategory")" class="btn btn-success"><i class="fa fa-plus-circle"></i>Add Meeting Category</a>
+                </div>
+            </div>
+            <div class="box-content">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <tr>
+                            <th>Description</th>
+                            <th>Start</th>
+                            <th>End</th>
+                            <th>Expired</th>
+                        </tr>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td style="width: 600px;"><a href="@Url.Action("Edit", "MeetingCategory", new {meetingCategoryId = item.Id})">@item.Description</a></td>
+                                <td style="width: 300px;">@item.NotBeforeDate</td>
+                                <td style="width: 300px;">@item.NotAfterDate</td>
+                                <td style="width: 150px;">@item.IsExpired</td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+                <div class="visible-xs-block">
+                    <a href="@Url.Action("Create", "MeetingCategory")" class="btn btn-success"><i class="fa fa-plus-circle"></i> Add Meeting Category</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

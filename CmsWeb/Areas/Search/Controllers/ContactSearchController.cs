@@ -1,5 +1,6 @@
-using System.Web.Mvc;
 using CmsWeb.Areas.Search.Models;
+using CmsWeb.Lifecycle;
+using System.Web.Mvc;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Search.Controllers
@@ -7,6 +8,10 @@ namespace CmsWeb.Areas.Search.Controllers
     [RouteArea("Search", AreaPrefix = "ContactSearch2"), Route("{action}/{id?}")]
     public class ContactSearchController : CmsStaffController
     {
+        public ContactSearchController(IRequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [HttpGet, Route("~/ContactSearch2")]
         public ActionResult Index()
         {

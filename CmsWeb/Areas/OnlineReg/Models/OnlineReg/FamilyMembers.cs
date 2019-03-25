@@ -1,9 +1,8 @@
 using System;
+using CmsData;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using CmsData;
 
 namespace CmsWeb.Areas.OnlineReg.Models
 {
@@ -18,8 +17,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public IEnumerable<FamilyMember> FamilyMembers()
         {
             var family = (from p in user.Family.People
-                         where p.DeceasedDate == null
-                         select new { p.PeopleId, p.Name2, p.Age, p.Name }).ToList();
+                          where p.DeceasedDate == null
+                          select new { p.PeopleId, p.Name2, p.Age, p.Name }).ToList();
             var q = from m in family
                     where _list.All(vv => vv.PeopleId != m.PeopleId)
                     orderby m.PeopleId == user.Family.HeadOfHouseholdId ? 1 :
@@ -47,7 +46,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
             if (p.ComputesOrganizationByAge())
             {
-                if(p.org == null)
+                if (p.org == null)
                 {
                     modelState.AddModelError("fammember-" + p.PeopleId, "No Appropriate Org");
                     return;
@@ -57,24 +56,49 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             p.ValidateModelForFind(modelState, id, selectFromFamily: true);
             if (!modelState.IsValid)
+            {
                 return;
+            }
 
             if (p.ManageSubscriptions() && p.Found == true)
+            {
                 return;
+            }
 
             if (p.org != null && p.Found == true)
             {
                 if (!SupportMissionTrip)
+                {
                     p.IsFilled = p.org.RegLimitCount(DbUtil.Db) >= p.org.Limit;
+                }
+
                 if (p.IsFilled)
-                    modelState.AddModelError(this.GetNameFor(mm => mm.List[List.IndexOf(p)].Found), 
+                {
+                    modelState.AddModelError(this.GetNameFor(mm => mm.List[List.IndexOf(p)].Found),
                         "Sorry, but registration is filled.");
+                }
+
+                if (p.IsCommunityGroup() && DbUtil.Db.Setting("RestrictCGSignupsTo24Hrs"))
+                {
+                    if (!p.CanRegisterInCommunityGroup(DateTime.Today.AddDays(-1)))
+                    {
+                        var message = DbUtil.Db.Setting("RestrictCGSignupsTo24HrsMessage", "Sorry, but you cannot register for multiple community groups on the same day.");
+                        modelState.AddModelError(this.GetNameFor(mm => mm.List[List.IndexOf(p)].Found), message);
+                    }
+                        
+                }
+
                 if (p.Found == true)
+                {
                     p.FillPriorInfo();
+                }
+
                 return;
             }
             if (p.org == null && p.ComputesOrganizationByAge())
+            {
                 modelState.AddModelError(this.GetNameFor(mm => mm.List[id].Found), p.NoAppropriateOrgError);
+            }
         }
     }
 }

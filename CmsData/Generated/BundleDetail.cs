@@ -36,9 +36,9 @@ namespace CmsData
 		
    		
     	
-		private EntityRef< BundleHeader> _BundleHeader;
+		private EntityRef<BundleHeader> _BundleHeader;
 		
-		private EntityRef< Contribution> _Contribution;
+		private EntityRef<Contribution> _Contribution;
 		
 	#endregion
 	
@@ -76,9 +76,9 @@ namespace CmsData
 		{
 			
 			
-			this._BundleHeader = default(EntityRef< BundleHeader>); 
+			this._BundleHeader = default(EntityRef<BundleHeader>); 
 			
-			this._Contribution = default(EntityRef< Contribution>); 
+			this._Contribution = default(EntityRef<Contribution>); 
 			
 			OnCreated();
 		}

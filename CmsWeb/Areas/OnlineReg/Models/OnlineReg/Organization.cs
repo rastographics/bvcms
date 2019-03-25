@@ -1,6 +1,5 @@
 using CmsData;
 using CmsData.Codes;
-using UtilityExtensions;
 
 namespace CmsWeb.Areas.OnlineReg.Models
 {
@@ -14,7 +13,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
             {
                 _masterorgid = value;
                 if (value > 0)
+                {
                     ParseSettings();
+                }
             }
         }
 
@@ -32,16 +33,22 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 }
             }
         }
-
+        
         private Organization _masterOrg;
         public Organization masterorg
         {
             get
             {
                 if (_masterOrg != null)
+                {
                     return _masterOrg;
+                }
+
                 if (masterorgid.HasValue)
+                {
                     _masterOrg = DbUtil.Db.LoadOrganizationById(masterorgid.Value);
+                }
+
                 return _masterOrg;
             }
         }
@@ -67,9 +74,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
             {
                 if (_org == null && Orgid.HasValue)
                 {
-//                    _org = Orgid == Util.CreateAccountCode
-//                        ? CreateAccountOrg()
-//                        : DbUtil.Db.LoadOrganizationById(Orgid.Value);
+                    //                    _org = Orgid == Util.CreateAccountCode
+                    //                        ? CreateAccountOrg()
+                    //                        : DbUtil.Db.LoadOrganizationById(Orgid.Value);
                     _org = DbUtil.Db.LoadOrganizationById(Orgid.Value);
                 }
                 return _org;

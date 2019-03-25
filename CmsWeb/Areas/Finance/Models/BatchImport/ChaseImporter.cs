@@ -5,12 +5,12 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
 
-using System;
-using System.IO;
-using System.Linq;
 using CmsData;
 using CmsData.Codes;
 using LumenWorks.Framework.IO.Csv;
+using System;
+using System.IO;
+using System.Linq;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Finance.Models.BatchImport
@@ -20,7 +20,9 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
         public int? RunImport(string text, DateTime date, int? fundid, bool fromFile)
         {
             using (var csv = new CsvReader(new StringReader(text), true))
+            {
                 return RunImport(csv, date, fundid);
+            }
         }
 
         public static int? RunImport(CsvReader csv, DateTime date, int? fundid)
@@ -62,8 +64,11 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                             curbundle = csv[c].ToInt();
                             if (curbundle != prevbundle)
                             {
-                                if(bh != null)
+                                if (bh != null)
+                                {
                                     BatchImportContributions.FinishBundle(bh);
+                                }
+
                                 bh = BatchImportContributions.GetBundleHeader(date, DateTime.Now);
                                 prevbundle = curbundle;
                             }
@@ -98,7 +103,10 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                         select kc.PeopleId;
                 var pid = q.SingleOrDefault();
                 if (pid != null)
+                {
                     bd.Contribution.PeopleId = pid;
+                }
+
                 bd.Contribution.BankAccount = eac;
                 bd.Contribution.CheckNo = ck;
                 bh.BundleDetails.Add(bd);

@@ -4,11 +4,11 @@
  * you may not use this code except in compliance with the License.
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
+using CmsData;
+using CmsWeb.Areas.Search.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using CmsData;
-using CmsWeb.Areas.Search.Models;
 
 namespace CmsWeb.Areas.Reports.Models
 {
@@ -26,6 +26,7 @@ namespace CmsWeb.Areas.Reports.Models
             public DateTime MeetingTime { get; set; }
             public string AttendType { get; set; }
         }
+        public CheckinControlModel() { }
         public IEnumerable<AttendInfo> list()
         {
             var orgs = FetchOrgs();

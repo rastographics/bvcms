@@ -1,10 +1,10 @@
 ﻿$(function () {
 
-    var getSubmitDialog = function() {
+    var getSubmitDialog = function () {
         return $('#dialogHolder');
     };
 
-    $('.showSubmitDialog').click(function (ev) {
+    $('.showSubmitDialog').click(function (ev) {        
         ev.preventDefault();
         var id = $(this).attr('data-cid');
         var type = $(this).attr('data-ctype');
@@ -14,6 +14,16 @@
             submitDialog.modal();
         });
     });
+
+    $(document).on("click", "#submitCheck #btnFinalSubmit", function (ev) {
+        ev.preventDefault;
+        $("#btnFinalSubmit").val("Please Wait...");
+        $('#submitCheck').submit(function () {
+            $("#btnFinalSubmit").attr('disabled', true)
+        });
+    });
+
+    
 
     $('.showCreateDialog').click(function (ev) {
         ev.preventDefault();
@@ -50,21 +60,38 @@
             confirmButtonText: 'Yes, delete it!',
             closeOnConfirm: false
         },
-        function() {
-            $.post('/Volunteering/DeleteCheck/' + id, null, function(ret) {
-                if (ret && ret.error)
-                    swal('Error!', ret.error, 'error');
-                else {
-                    swal({
-                        title: 'Deleted!',
-                        type: 'success'
-                    },
-                    function () {
-                        document.location.reload();
-                    });
-                }
+            function () {
+                $.post('/Volunteering/DeleteCheck/' + id, null, function (ret) {
+                    if (ret && ret.error)
+                        swal('Error!', ret.error, 'error');
+                    else {
+                        swal({
+                            title: 'Deleted!',
+                            type: 'success'
+                        },
+                            function () {
+                                document.location.reload();
+                            });
+                    }
+                });
             });
-        });
+    });
+
+    $('.deleteVolDocument').click(function (e) {
+        e.preventDefault();        
+        var form = $(this).parents('form');        
+        swal({
+            title: 'Are you sure?',
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonClass: 'btn-danger',
+            confirmButtonText: 'Yes, delete it!',
+            closeOnConfirm: false
+        },
+            function () {                
+                form.submit();
+            }
+        );        
     });
 
     $('#documents a.editable').editable({
@@ -80,3 +107,8 @@
     $.InitFunctions.Editable();
     $.InitFunctions.ExtraEditable();
 });
+
+function confirmDelete(ev) {
+    ev.preventDefault();
+    
+}

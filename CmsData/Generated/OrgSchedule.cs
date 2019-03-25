@@ -32,9 +32,11 @@ namespace CmsData
 		
 		private int? _AttendCreditId;
 		
+		private DateTime? _NextMeetingDate;
+		
    		
     	
-		private EntityRef< Organization> _Organization;
+		private EntityRef<Organization> _Organization;
 		
 	#endregion
 	
@@ -64,12 +66,15 @@ namespace CmsData
 		partial void OnAttendCreditIdChanging(int? value);
 		partial void OnAttendCreditIdChanged();
 		
+		partial void OnNextMeetingDateChanging(DateTime? value);
+		partial void OnNextMeetingDateChanged();
+		
     #endregion
 		public OrgSchedule()
 		{
 			
 			
-			this._Organization = default(EntityRef< Organization>); 
+			this._Organization = default(EntityRef<Organization>); 
 			
 			OnCreated();
 		}
@@ -228,6 +233,28 @@ namespace CmsData
 					this._AttendCreditId = value;
 					this.SendPropertyChanged("AttendCreditId");
 					this.OnAttendCreditIdChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="NextMeetingDate", UpdateCheck=UpdateCheck.Never, Storage="_NextMeetingDate", DbType="datetime", IsDbGenerated=true)]
+		public DateTime? NextMeetingDate
+		{
+			get { return this._NextMeetingDate; }
+
+			set
+			{
+				if (this._NextMeetingDate != value)
+				{
+				
+                    this.OnNextMeetingDateChanging(value);
+					this.SendPropertyChanging();
+					this._NextMeetingDate = value;
+					this.SendPropertyChanged("NextMeetingDate");
+					this.OnNextMeetingDateChanged();
 				}
 
 			}

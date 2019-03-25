@@ -1,10 +1,9 @@
-using System;
+using CmsData;
+using CmsData.Codes;
+using CmsWeb.Models;
 using System.Collections.Generic;
 using System.Linq;
-using CmsData;
-using CmsWeb.Models;
 using UtilityExtensions;
-using CmsData.Codes;
 
 namespace CmsWeb.Areas.Dialog.Models
 {
@@ -17,11 +16,11 @@ namespace CmsWeb.Areas.Dialog.Models
             var i = (from mm in DbUtil.Db.OrganizationMembers
                      where mm.OrganizationId == OrgId && mm.PeopleId == PeopleId
                      select new
-                         {
-                             mm,
-                             mm.Person.Name,
-                             mm.Organization.OrganizationName,
-                         }).Single();
+                     {
+                         mm,
+                         mm.Person.Name,
+                         mm.Organization.OrganizationName,
+                     }).Single();
             Name = i.Name;
             OrgName = i.OrganizationName;
         }
@@ -45,7 +44,9 @@ namespace CmsWeb.Areas.Dialog.Models
             {
                 orgId = value;
                 if (peopleId.HasValue)
+                {
                     Populate();
+                }
             }
         }
         public int? PeopleId
@@ -55,7 +56,9 @@ namespace CmsWeb.Areas.Dialog.Models
             {
                 peopleId = value;
                 if (orgId.HasValue)
+                {
                     Populate();
+                }
             }
         }
         public string Name { get; set; }
@@ -95,8 +98,14 @@ namespace CmsWeb.Areas.Dialog.Models
         public string Move(int toid)
         {
             if (!PeopleId.HasValue || !OrgId.HasValue)
+            {
                 return "not moved";
+            }
+
             OrganizationMember.MoveToOrg(DbUtil.Db, PeopleId.Value, OrgId.Value, toid, MoveRegistrationData);
+            //Once member has been inserted into the new Organization then update member in Organizations as enrolled / not enrolled accordingly
+            DbUtil.Db.RepairTransactions(OrgId.Value);
+            DbUtil.Db.RepairTransactions(toid);
             DbUtil.LogActivity("OrgMem Move to " + toid, OrgId, PeopleId);
             return "moved";
         }

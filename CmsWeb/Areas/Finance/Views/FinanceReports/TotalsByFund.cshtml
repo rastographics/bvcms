@@ -6,7 +6,7 @@
     Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Totals By Fund";
     ViewBag.ReportPageHeader = "Totals By Fund";
-    var customFundsList = ContributionStatements.CustomFundSetSelectList();
+    var customFundsList = ContributionStatements.CustomFundSetSelectList(DbUtil.Db);
 }
 @*
     @section head

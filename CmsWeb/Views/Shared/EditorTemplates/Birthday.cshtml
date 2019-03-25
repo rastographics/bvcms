@@ -1,10 +1,12 @@
 ﻿@model string
 @{
+    /**/
+    
     var help = ViewData["help"] as string;
     if (help.HasValue())
     {
         help = $"<span class='help-block'>{help}</span>";
-    }
+    }   
 }
 <div class="form-group">
     @Html.LabelFor(m => m, new { @class = "control-label" })

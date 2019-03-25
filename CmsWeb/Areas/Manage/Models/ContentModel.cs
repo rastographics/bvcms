@@ -1,10 +1,10 @@
-﻿using System;
+﻿using CmsData;
+using CmsData.Codes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using CmsData;
-using CmsData.Codes;
 using UtilityExtensions;
 
 namespace CmsWeb.Models
@@ -12,8 +12,8 @@ namespace CmsWeb.Models
     public class ContentModel
     {
         private string filter;
-        public string Filter => filter ?? (filter = HttpContext.Current.Session["ContentKeywordFilter"] as string ?? "");
-
+        public string Filter => filter ?? (filter = HttpContextFactory.Current.Session["ContentKeywordFilter"] as string ?? "");
+        public ContentModel() { }
         public IQueryable<Content> fetchHTMLFiles()
         {
             return from c in DbUtil.Db.Contents
@@ -88,11 +88,14 @@ namespace CmsWeb.Models
         public List<SelectListItem> KeywordFilters()
         {
             if (keywords != null)
+            {
                 return keywords;
+            }
+
             var list = (from kw in DbUtil.Db.ContentKeyWords
                         orderby kw.Word
                         select kw.Word).Distinct().ToList();
-            var keywordfilter = HttpContext.Current.Session["ContentKeywordFilter"] as string;
+            var keywordfilter = HttpContextFactory.Current.Session["ContentKeywordFilter"] as string;
             keywords = list.Select(vv => new SelectListItem() { Text = vv, Value = vv, Selected = vv == keywordfilter }).ToList();
             keywords.Insert(0, new SelectListItem() { Text = "(not specified)", Value = "" });
             return keywords;
@@ -109,6 +112,7 @@ namespace CmsWeb.Models
             public int roleID { get; set; }
             public DateTime? created { get; set; }
             public bool shared { get; set; }
+            public bool isUnlayer { get; set; }
 
             public bool Owner => ownerID == Util.UserId;
             public bool Shared => !Owner && shared;

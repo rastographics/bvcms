@@ -1,13 +1,13 @@
-﻿using System.Linq;
-using CmsData;
-using CmsWeb.Models;
+﻿using CmsData;
+using System.Linq;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Models
 {
     public class EmailSentModel : EmailModel
     {
-        override public IQueryable<EmailQueue> DefineModelList()
+        public EmailSentModel() { }
+        public override IQueryable<EmailQueue> DefineModelList()
         {
             var q = from e in DbUtil.Db.EmailQueues
                     where !(e.Transactional ?? false)

@@ -68,21 +68,21 @@ namespace CmsData
 		
    		
     	
-		private EntityRef< TaskList> _CoTaskList;
+		private EntityRef<TaskList> _CoTaskList;
 		
-		private EntityRef< TaskStatus> _TaskStatus;
+		private EntityRef<TaskStatus> _TaskStatus;
 		
-		private EntityRef< Person> _Owner;
+		private EntityRef<Person> _Owner;
 		
-		private EntityRef< TaskList> _TaskList;
+		private EntityRef<TaskList> _TaskList;
 		
-		private EntityRef< Person> _AboutWho;
+		private EntityRef<Person> _AboutWho;
 		
-		private EntityRef< Contact> _SourceContact;
+		private EntityRef<Contact> _SourceContact;
 		
-		private EntityRef< Contact> _CompletedContact;
+		private EntityRef<Contact> _CompletedContact;
 		
-		private EntityRef< Person> _CoOwner;
+		private EntityRef<Person> _CoOwner;
 		
 	#endregion
 	
@@ -168,21 +168,21 @@ namespace CmsData
 		{
 			
 			
-			this._CoTaskList = default(EntityRef< TaskList>); 
+			this._CoTaskList = default(EntityRef<TaskList>); 
 			
-			this._TaskStatus = default(EntityRef< TaskStatus>); 
+			this._TaskStatus = default(EntityRef<TaskStatus>); 
 			
-			this._Owner = default(EntityRef< Person>); 
+			this._Owner = default(EntityRef<Person>); 
 			
-			this._TaskList = default(EntityRef< TaskList>); 
+			this._TaskList = default(EntityRef<TaskList>); 
 			
-			this._AboutWho = default(EntityRef< Person>); 
+			this._AboutWho = default(EntityRef<Person>); 
 			
-			this._SourceContact = default(EntityRef< Contact>); 
+			this._SourceContact = default(EntityRef<Contact>); 
 			
-			this._CompletedContact = default(EntityRef< Contact>); 
+			this._CompletedContact = default(EntityRef<Contact>); 
 			
-			this._CoOwner = default(EntityRef< Person>); 
+			this._CoOwner = default(EntityRef<Person>); 
 			
 			OnCreated();
 		}

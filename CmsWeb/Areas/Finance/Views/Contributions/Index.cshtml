@@ -6,7 +6,7 @@
     ViewBag.Title = "Contributions";
     ViewBag.PageHeader = "Contributions";
     Layout = ViewExtensions2.TouchPointLayout();
-    var customFundsList = ContributionStatements.CustomFundSetSelectList();
+    var customFundsList = ContributionStatements.CustomFundSetSelectList(DbUtil.Db); //hack: using static method to get db for now
 }
 <div class="box box-responsive">
     <div class="box-content">
@@ -145,6 +145,11 @@
                             <div class="checkbox">
                                 <label class="control-label">
                                     @Html.CheckBoxFor(vv => vv.SearchInfo.Mobile) From mobile application?
+                                </label>
+                            </div>
+                            <div class="checkbox">
+                                <label class="control-label">
+                                    @Html.CheckBoxFor(vv => vv.SearchInfo.FilterByActiveTag) Filter by Active Tag?
                                 </label>
                             </div>
                         </div>

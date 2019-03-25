@@ -19,24 +19,29 @@ namespace CmsData
     public static partial class DbUtil
     {
         private const string CMSDbKEY = "CMSDbKey";
+
         private static CMSDataContext InternalDb
         {
             get
             {
-                return (CMSDataContext)HttpContext.Current.Items[CMSDbKEY];
+                return (CMSDataContext)HttpContextFactory.Current.Items[CMSDbKEY];
             }
             set
             {
-                HttpContext.Current.Items[CMSDbKEY] = value;
+                HttpContextFactory.Current.Items[CMSDbKEY] = value;
             }
         }
 
+        [Obsolete("Avoid using DbUtil.Db if at all possible")]
         public static CMSDataContext Db
         {
             get
             {
-                if (HttpContext.Current == null)
+                if (HttpContextFactory.Current == null)
+                {
                     return CMSDataContext.Create(Util.ConnectionString, Util.Host);
+                }
+
                 if (InternalDb == null)
                 {
                     InternalDb = CMSDataContext.Create(Util.ConnectionString, Util.Host);
@@ -63,17 +68,28 @@ namespace CmsData
 
         private static void _logActivity(string host, string activity, int? orgId, int? peopleId, int? datumId, int? userId, string pageUrl = null, string clientIp = null)
         {
-            var ip = HttpContext.Current?.Request.UserHostAddress;
+            var ip = HttpContextFactory.Current?.Request.UserHostAddress;
             using (var db = Create(host))
             {
                 if (!userId.HasValue || userId == 0)
+                {
                     userId = Util.UserId;
+                }
+
                 if (userId == 0)
+                {
                     userId = null;
+                }
+
                 if (orgId.HasValue && !db.PeopleIdOk(peopleId))
+                {
                     peopleId = null;
+                }
+
                 if (peopleId.HasValue && !db.OrgIdOk(orgId))
+                {
                     orgId = null;
+                }
 
                 var a = new ActivityLog
                 {
@@ -109,29 +125,45 @@ namespace CmsData
             var mru = Util2.MostRecentOrgs;
             var i = mru.SingleOrDefault(vv => vv.Id == orgid);
             if (i != null)
+            {
                 mru.Remove(i);
+            }
+
             mru.Insert(0, new Util2.MostRecentItem { Id = orgid, Name = name });
             if (mru.Count > 5)
+            {
                 mru.RemoveAt(mru.Count - 1);
+            }
         }
 
         public static void LogPersonActivity(string activity, int pid, string name)
         {
             _logActivity(Util.Host, activity, null, pid, null, null);
             if (pid == Util.UserPeopleId)
+            {
                 return;
+            }
+
             var mru = Util2.MostRecentPeople;
             var i = mru.SingleOrDefault(vv => vv.Id == pid);
             if (i != null)
+            {
                 mru.Remove(i);
+            }
+
             mru.Insert(0, new Util2.MostRecentItem { Id = pid, Name = name });
             if (mru.Count > 5)
+            {
                 mru.RemoveAt(mru.Count - 1);
+            }
         }
 
         public static void DbDispose()
         {
-            if (InternalDb == null) return;
+            if (InternalDb == null)
+            {
+                return;
+            }
 
             InternalDb.Dispose();
             InternalDb = null;
@@ -157,10 +189,16 @@ namespace CmsData
         public static string StandardExtraValues2(CMSDataContext db, bool forceread = false)
         {
             if (forceread)
+            {
                 return db.ContentText("StandardExtraValues2", "<Views />");
+            }
+
             var s = HttpRuntime.Cache[db.Host + "StandardExtraValues2"] as string;
             if (s != null)
+            {
                 return s;
+            }
+
             s = db.ContentText("StandardExtraValues2", "<Views />");
             HttpRuntime.Cache.Insert(db.Host + "StandardExtraValues2", s, null,
                 DateTime.Now.AddSeconds(Util.IsDebug() ? 0 : 10), Cache.NoSlidingExpiration);
@@ -199,9 +237,14 @@ namespace CmsData
             {
                 var h = Content("LoginNotice");
                 if (h != null)
+                {
                     hc = h.Body;
+                }
                 else
+                {
                     hc = string.Empty;
+                }
+
                 HttpRuntime.Cache.Insert(Db.Host + "loginnotice", hc, null,
                      DateTime.Now.AddMinutes(1), Cache.NoSlidingExpiration);
             }
@@ -239,9 +282,14 @@ namespace CmsData
             {
                 var h = Content("HeaderImg");
                 if (h != null)
+                {
                     hc = h.Body;
+                }
                 else
+                {
                     hc = def;
+                }
+
                 HttpRuntime.Cache.Insert(Db.Host + "headerimg", hc, null,
                      DateTime.Now.AddMinutes(3), Cache.NoSlidingExpiration);
             }
@@ -255,8 +303,11 @@ namespace CmsData
             {
                 var h = Content("Header");
                 if (h != null)
+                {
                     hc = h.Body;
+                }
                 else
+                {
                     hc = @"
 <div id='CommonHeaderImage'>
     <a href='/'><img src='/images/headerimage.jpg' /></a>
@@ -266,6 +317,8 @@ namespace CmsData
     <h2 id='CommonHeaderSubTitle'>Feed My Sheep</h2>
 </div>
 ";
+                }
+
                 HttpRuntime.Cache.Insert(Db.Host + "header", hc, null,
                      DateTime.Now.AddMinutes(3), Cache.NoSlidingExpiration);
             }
@@ -284,7 +337,10 @@ namespace CmsData
 
         public static void ContentDeleteFromID(int id)
         {
-            if (id == 0) return;
+            if (id == 0)
+            {
+                return;
+            }
 
             var cDelete = ContentFromID(id);
             Db.Contents.DeleteOnSubmit(cDelete);
@@ -295,7 +351,10 @@ namespace CmsData
         {
             var content = Db.Contents.SingleOrDefault(c => c.Name == name);
             if (content != null)
+            {
                 return content.Body;
+            }
+
             return def;
         }
 
@@ -322,52 +381,93 @@ namespace CmsData
         public static void UpdateValue(this object obj, List<ChangeDetail> psb, string field, object value)
         {
             if (value is string)
+            {
                 value = ((string)value).TrimEnd();
+            }
+
             var o = Util.GetProperty(obj, field);
             if (o is string)
+            {
                 o = ((string)o).TrimEnd();
+            }
+
             if (o == null && value == null)
+            {
                 return;
+            }
+
             if (o != null && o.Equals(value))
+            {
                 return;
+            }
+
             if (o == null && value is string && !((string)value).HasValue())
+            {
                 return;
+            }
+
             if (value == null && o is string && !((string)o).HasValue())
+            {
                 return;
+            }
+
             if (o is int && value.ToInt().Equals(o))
+            {
                 return;
+            }
+
             if (o is DateTime)
             {
                 if (o.Equals(value.ToDate()))
+                {
                     return;
+                }
+
                 if (!o.SameMinute(value.ToDate()))
+                {
                     psb.Add(new ChangeDetail(field, o, value));
+                }
             }
             else
+            {
                 psb.Add(new ChangeDetail(field, o, value));
+            }
 
             var s = value as string;
             if (s != null)
+            {
                 Util.SetPropertyFromText(obj, field, s);
+            }
             else
+            {
                 Util.SetProperty(obj, field, value);
+            }
         }
 
         public static DateTime? NormalizeExpires(string expires)
         {
             if (expires == null)
+            {
                 return null;
+            }
+
             expires = expires.Trim();
             var re = new Regex(@"\A(?<mm>\d\d)(/|-| )?(20)?(?<yy>\d\d)\Z");
             var m = re.Match(expires);
             if (!m.Success)
+            {
                 return null;
+            }
+
             DateTime dt;
             var mm = m.Groups["mm"].Value;
             var yy = m.Groups["yy"].Value;
             var s = $"{mm}/15/{yy}";
             if (!DateTime.TryParse(s, out dt))
+            {
                 return null;
+            }
+
             return dt;
         }
 

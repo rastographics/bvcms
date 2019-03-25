@@ -295,28 +295,22 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AngleSharp, Version=0.9.9.0, Culture=neutral, PublicKeyToken=e83494dcdc6d31ea, processorArchitecture=MSIL">
-      <HintPath>..\packages\AngleSharp.0.9.9.1\lib\net45\AngleSharp.dll</HintPath>
+      <HintPath>..\packages\AngleSharp.0.9.9.2\lib\net45\AngleSharp.dll</HintPath>
     </Reference>
     <Reference Include="AuthorizeNet, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\AuthorizeNet.1.9.4\lib\AuthorizeNet.dll</HintPath>
     </Reference>
-    <Reference Include="Dapper, Version=1.50.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Dapper.1.50.4\lib\net451\Dapper.dll</HintPath>
+    <Reference Include="CsvHelper, Version=12.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
+      <HintPath>..\packages\CsvHelper.12.1.0\lib\net45\CsvHelper.dll</HintPath>
     </Reference>
-    <Reference Include="DDay.iCal, Version=1.0.2.575, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\DDay.iCal.1.0.2.575\lib\DDay.iCal.dll</HintPath>
-    </Reference>
-    <Reference Include="CsvHelper, Version=7.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
-      <HintPath>..\packages\CsvHelper.7.0.1\lib\net45\CsvHelper.dll</HintPath>
+    <Reference Include="Dapper, Version=1.50.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dapper.1.50.5\lib\net451\Dapper.dll</HintPath>
     </Reference>
     <Reference Include="Elmah, Version=1.2.14706.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\elmah.corelibrary.1.2.2\lib\Elmah.dll</HintPath>
-      <Private>True</Private>
     </Reference>
-    <Reference Include="EPPlus, Version=4.1.1.0, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
-      <HintPath>..\packages\EPPlus.4.1.1\lib\net40\EPPlus.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="EPPlus, Version=4.5.2.1, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
+      <HintPath>..\packages\EPPlus.4.5.2.1\lib\net40\EPPlus.dll</HintPath>
     </Reference>
     <Reference Include="Handlebars, Version=1.8.1.0, Culture=neutral, PublicKeyToken=22225d0bf33cd661, processorArchitecture=MSIL">
       <HintPath>..\packages\Handlebars.Net.1.9.0\lib\net40\Handlebars.dll</HintPath>
@@ -324,24 +318,23 @@
     <Reference Include="HtmlAgilityPack, Version=1.7.0.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <HintPath>..\packages\HtmlAgilityPack.1.7.0\lib\Net45\HtmlAgilityPack.dll</HintPath>
     </Reference>
-    <Reference Include="Ical.Net, Version=4.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Ical.Net.4.0.6\lib\netstandard1.3\Ical.Net.dll</HintPath>
+    <Reference Include="Ical.Net, Version=4.1.8.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ical.Net.4.1.8\lib\net46\Ical.Net.dll</HintPath>
     </Reference>
     <Reference Include="IronPython, Version=2.7.8.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
-      <HintPath>..\packages\IronPython.2.7.8\lib\net45\IronPython.dll</HintPath>
+      <HintPath>..\packages\IronPython.2.7.8.1\lib\net45\IronPython.dll</HintPath>
     </Reference>
     <Reference Include="IronPython.Modules, Version=2.7.8.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
-      <HintPath>..\packages\IronPython.2.7.8\lib\net45\IronPython.Modules.dll</HintPath>
+      <HintPath>..\packages\IronPython.2.7.8.1\lib\net45\IronPython.Modules.dll</HintPath>
     </Reference>
     <Reference Include="IronPython.SQLite, Version=2.7.8.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
-      <HintPath>..\packages\IronPython.2.7.8\lib\net45\IronPython.SQLite.dll</HintPath>
+      <HintPath>..\packages\IronPython.2.7.8.1\lib\net45\IronPython.SQLite.dll</HintPath>
     </Reference>
     <Reference Include="IronPython.Wpf, Version=2.7.8.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
-      <HintPath>..\packages\IronPython.2.7.8\lib\net45\IronPython.Wpf.dll</HintPath>
+      <HintPath>..\packages\IronPython.2.7.8.1\lib\net45\IronPython.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="MarkdownDeep, Version=1.5.4615.26275, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MarkdownDeep.NET.1.5\lib\.NetFramework 3.5\MarkdownDeep.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.AspNetCore.Cryptography.Internal, Version=2.0.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNetCore.Cryptography.Internal.2.0.1\lib\netstandard2.0\Microsoft.AspNetCore.Cryptography.Internal.dll</HintPath>
@@ -368,12 +361,14 @@
     <Reference Include="Microsoft.VisualStudio.CodeCoverage.Shim, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\DynamicLanguageRuntime.1.2.1\lib\net45\Microsoft.VisualStudio.CodeCoverage.Shim.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
     <Reference Include="MoreLinq, Version=2.10.21623.0, Culture=neutral, PublicKeyToken=384d532d7e88985d, processorArchitecture=MSIL">
       <HintPath>..\packages\morelinq.2.10.0\lib\net40\MoreLinq.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NodaTime, Version=2.2.4.0, Culture=neutral, PublicKeyToken=4226afe0d9b296d1, processorArchitecture=MSIL">
       <HintPath>..\packages\NodaTime.2.2.4\lib\net45\NodaTime.dll</HintPath>
@@ -414,33 +409,45 @@
     <Reference Include="System.Net.Http, Version=4.1.1.2, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Net.Http.4.3.3\lib\net46\System.Net.Http.dll</HintPath>
       <Private>True</Private>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="System.Net.Http.Formatting, Version=5.2.4.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.4\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.6.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.6\lib\net45\System.Net.Http.Formatting.dll</HintPath>
     </Reference>
     <Reference Include="System.Reflection.TypeExtensions, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Reflection.TypeExtensions.4.4.0\lib\net461\System.Reflection.TypeExtensions.dll</HintPath>
     </Reference>
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Runtime.Serialization.Primitives, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.Serialization.Primitives.4.3.0\lib\net46\System.Runtime.Serialization.Primitives.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security" />
     <Reference Include="System.Security.Cryptography.Algorithms, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Security.Cryptography.Algorithms.4.3.1\lib\net461\System.Security.Cryptography.Algorithms.dll</HintPath>
+      <Private>True</Private>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Security.Cryptography.Encoding, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Security.Cryptography.Encoding.4.3.0\lib\net46\System.Security.Cryptography.Encoding.dll</HintPath>
       <Private>True</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System.Security.Cryptography.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Security.Cryptography.Primitives.4.3.0\lib\net46\System.Security.Cryptography.Primitives.dll</HintPath>
+      <Private>True</Private>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Security.Cryptography.X509Certificates, Version=4.1.1.2, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Security.Cryptography.X509Certificates.4.3.2\lib\net461\System.Security.Cryptography.X509Certificates.dll</HintPath>
       <Private>True</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System.Transactions" />
     <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.4.0\lib\net461\System.ValueTuple.dll</HintPath>
+      <Private>True</Private>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Web" />
@@ -489,6 +496,7 @@
     <Compile Include="API\PythonModel\ExtraValuesOrg.cs" />
     <Compile Include="API\PythonModel\Forms.cs" />
     <Compile Include="API\PythonModel\JsonSerializer.cs" />
+    <Compile Include="API\PythonModel\ManagedGiving.cs" />
     <Compile Include="API\PythonModel\Sms.cs" />
     <Compile Include="API\PythonModel\SqlGrid.cs" />
     <Compile Include="API\PythonModel\Upload.cs" />
@@ -503,6 +511,8 @@
     <Compile Include="API\QueryFunctions\Attendance.cs" />
     <Compile Include="API\QueryFunctions\Contributions.cs" />
     <Compile Include="API\QueryFunctions\Query.cs" />
+    <Compile Include="Classes\DataMapper\DataMapper.cs" />
+    <Compile Include="Charts\GoogleChartsData.cs" />
     <Compile Include="Classes\ExtraValues\Code.cs" />
     <Compile Include="Classes\ExtraValues\NewStandard.cs" />
     <Compile Include="Classes\GoogleCloudMessaging\GCMData.cs" />
@@ -519,6 +529,7 @@
     <Compile Include="Classes\style.cs" />
     <Compile Include="DbUtil\CurrentOrg.cs" />
     <Compile Include="DbUtil\ModelViewModel.cs" />
+    <Compile Include="Email\ReplacementCodes\Links\UnlayerLink.cs" />
     <Compile Include="Email\ReplacementCodes\Links\DropFromOrgTag.cs" />
     <Compile Include="Email\ReplacementCodes\Replacements\Debug.cs" />
     <Compile Include="Email\ReplacementCodes\Links\CreateUserLink.cs" />
@@ -656,6 +667,10 @@
     <Compile Include="Finance\TransNational\Vault\VaultResponse.cs" />
     <Compile Include="Generated\ApiSession.cs" />
     <Compile Include="Generated\ApiUserInfo.cs" />
+    <Compile Include="Generated\CheckInLabel.cs" />
+    <Compile Include="Generated\CheckInLabelEntry.cs" />
+    <Compile Include="Generated\CheckInLabelEntryAlignment.cs" />
+    <Compile Include="Generated\CheckInLabelType.cs" />
     <Compile Include="Generated\CheckInSetting.cs" />
     <Compile Include="Generated\ContactExtra.cs" />
     <Compile Include="Generated\CustomColumn.cs" />
@@ -765,6 +780,7 @@
     <Compile Include="Generated\IpWarmup.cs" />
     <Compile Include="Generated\LongRunningOp.cs" />
     <Compile Include="Generated\LongRunningOperation.cs" />
+    <Compile Include="Generated\MeetingCategory.cs" />
     <Compile Include="Generated\MergeHistory.cs" />
     <Compile Include="Generated\MobileAppAction.cs" />
     <Compile Include="Generated\MobileAppActionType.cs" />
@@ -911,9 +927,11 @@
     <Compile Include="Generated\Views\TransactionList.cs" />
     <Compile Include="Generated\Views\TransactionSummary.cs" />
     <Compile Include="DbUtil\ITableWithExtraValues.cs" />
+    <Content Include="App_Readme\Elmah.txt" />
     <Content Include="Migrations\20181022-3_create_Contributions2SearchIds.sql" />
     <Compile Include="Organization\OrgFilter.cs" />
     <Compile Include="Organization\OrgPerson.cs" />
+    <Compile Include="Organization\OrgSchedule.cs" />
     <Compile Include="QueryBuilder\QueryParser.cs" />
     <Compile Include="QueryBuilder\Query.cs" />
     <Compile Include="QueryBuilder\CategoryClass.cs" />
@@ -1273,16 +1291,17 @@
     <Resource Include="Classes\OnlineRegSummaryText\Details2.xml">
       <SubType>Designer</SubType>
     </Resource>
-    <Content Include="App_Readme\Elmah.txt" />
     <Content Include="Migrations\20180924_Remove_Custom_Task_Role.sql" />
     <Content Include="Migrations\20180719_send-attendance-link.sql" />
+    <Content Include="Migrations\20180801_CheckInUpdates.sql" />
     <Content Include="Migrations\20180720_StoredProcedure_CHAIDonationsReport2.sql" />
     <Content Include="Migrations\20180720_StoredProcedure_GetDepositDateTotalsUsingAuthorizedFunds.sql" />
     <Content Include="Migrations\20180720_Table_ContributionFunds.sql" />
-    <Content Include="Migrations\20180727_attendance-enhancements-to-lookups.sql" />
     <Content Include="Migrations\20180806_update_purge_person_sproc.sql" />
     <Content Include="Migrations\20180817_update_enrollment_history_func.sql" />
     <Content Include="Migrations\20180827_sms-number-group-system-flag.sql" />
+    <Content Include="Migrations\20181111_alter_Contributions2SearchIds_func.sql" />
+    <Content Include="Migrations\20181111_create_TagContributionsFromIds_proc.sql" />
     <Content Include="Migrations\20181022-4_create_TagContributions_func.sql" />
     <Content Include="Migrations\20181022-2_create_ContributionsTag_table.sql" />
     <Content Include="Migrations\20181011_add_contribution_origin_column.sql" />
@@ -1290,11 +1309,30 @@
     <Content Include="Migrations\20180919_add-sms-groups-deleted-flag.sql" />
     <Content Include="Migrations\20180831_add_fundmanager_role.sql" />
     <Content Include="Migrations\20180831_add-description-to-contribution-functions.sql" />
-    <Content Include="Migrations\20181105_fix_contributions2_func_for_individuals.sql" />
+    <Content Include="Migrations\20181022-1_fix_contributions2_func_for_individuals.sql" />
     <Content Include="Migrations\20181031_split_first_lastname_add_Email_GetTotalContributionsDonor.sql" />
     <Content Include="Migrations\20181019_add_pushpay_pk.sql" />
     <Content Include="Migrations\20181015_add_pushpay_schema.sql" />
+    <Content Include="Migrations\20180919_add-performance-indexes.sql" />
+    <Content Include="Migrations\20180919_fix-duplicates-in-org-filter-current.sql" />
     <Content Include="Migrations\20181011_update_spouseId_function.sql" />
+    <Content Include="Migrations\20181128_upd_enrolled_before_the_meetingdate.sql" />
+    <Content Include="Migrations\20181106_alter_SMSList_Message_column.sql" />
+    <Content Include="Migrations\20181031_add_viewvolunteerapplication_role.sql" />
+    <Content Include="Migrations\20181115_add_recurring_amounts_disabled_column.sql" />
+    <Content Include="Migrations\20181120_Update_GetContributionDetails_func.sql" />
+    <Content Include="Migrations\20181206_create_RemoveFromEnrollmentHistory_proc.sql" />
+    <Content Include="Migrations\20190125_add_mission_trip_funding_page_fields.sql" />
+    <Content Include="Migrations\20190106_ja-members-null-enrollmentdate-fix.sql" />
+    <Content Include="Migrations\20181218_ja-members-not-included-attendance-fix.sql" />
+    <Content Include="Migrations\20181211_update_inactive_recurring_amounts.sql" />
+    <Content Include="Migrations\20181205_create_CreateZipCodesRange_proc.sql" />
+    <Content Include="Migrations\20181220_create_CompleteZip_func.sql" />
+    <Content Include="Migrations\20181220_create_DeleteZipCodesRange_proc.sql" />
+    <Content Include="Migrations\20190114_ja_create_fnc_FindPersonByPayerKey.sql" />
+    <Content Include="Migrations\20190107_meetingcategory.sql" />
+    <Content Include="Migrations\20190118_alter_donors_function_for_spouse_legal_name.sql" />
+    <Content Include="Migrations\20190117_pushpay_schema_updates.sql" />
     <Content Include="QueryBuilder\CompareMap.xml">
       <SubType>Designer</SubType>
     </Content>

@@ -1,18 +1,18 @@
+using CmsData;
+using CmsData.Codes;
+using CmsWeb.Code;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using CmsData;
-using CmsWeb.Code;
-using UtilityExtensions;
 using System.Data.Linq.SqlClient;
 using System.Diagnostics.CodeAnalysis;
-using System.Net;
 using System.IO;
+using System.Linq;
+using System.Net;
 using System.ServiceModel.Syndication;
-using System.Xml;
-using CmsData.Codes;
+using System.Web;
 using System.Web.Caching;
+using System.Xml;
+using UtilityExtensions;
 
 namespace CmsWeb.Models
 {
@@ -28,17 +28,24 @@ namespace CmsWeb.Models
             public string Url => "/Person2/" + PeopleId;
         }
 
+        public HomeModel() { }
+
         public IEnumerable<BirthdayInfo> Birthdays()
         {
             if (Util.UserPeopleId == null)
+            {
                 return new List<BirthdayInfo>();
+            }
 
             var qB = DbUtil.Db.Queries.FirstOrDefault(cc => cc.Name == "TrackBirthdays" && cc.Owner == Util.UserName);
             var tagq = DbUtil.Db.FetchTag("FromTrackBirthdaysQuery", Util.UserPeopleId, DbUtil.TagTypeId_System);
             if (qB != null)
             {
                 if (tagq?.Created == null || tagq.Created < DateTime.Today)
+                {
                     DbUtil.Db.PopulateSpecialTag(DbUtil.Db.PeopleQuery(qB.QueryId), "FromTrackBirthdaysQuery", DbUtil.TagTypeId_System);
+                }
+
                 tagq = DbUtil.Db.FetchTag("FromTrackBirthdaysQuery", Util.UserPeopleId, DbUtil.TagTypeId_System);
                 if (tagq != null)
                 {
@@ -67,10 +74,12 @@ namespace CmsWeb.Models
 
 
             if (!q.Any())
+            {
                 q = from p in DbUtil.Db.People
                     let up = DbUtil.Db.People.Single(pp => pp.PeopleId == Util.UserPeopleId)
                     where p.OrganizationMembers.Any(om => om.OrganizationId == up.BibleFellowshipClassId)
                     select p;
+            }
 
             var q2 = from p in q
                      let bd = p.BirthDay
@@ -101,14 +110,18 @@ namespace CmsWeb.Models
         {
             var u = DbUtil.Db.CurrentUser;
             if (u == null)
+            {
                 return new List<MyInvolvementInfo>();
+            }
 
             var pid = u.PeopleId;
 
             var limitvisibility = Util2.OrgLeadersOnly;
             var oids = new int[0];
             if (Util2.OrgLeadersOnly)
+            {
                 oids = DbUtil.Db.GetLeaderOrgIds(pid);
+            }
 
             var roles = DbUtil.Db.CurrentUser.UserRoles.Select(uu => uu.Role.RoleName).ToArray();
             var orgmembers = from om in DbUtil.Db.OrganizationMembers
@@ -155,7 +168,9 @@ namespace CmsWeb.Models
         public IEnumerable<MySavedQueryInfo> MyQueries()
         {
             if (Util.UserPeopleId == null)
+            {
                 return new List<MySavedQueryInfo>();
+            }
 
             return from c in DbUtil.Db.Queries
                    where c.Owner == Util.UserName
@@ -178,7 +193,10 @@ namespace CmsWeb.Models
         public IEnumerable<TaskInfo> Tasks()
         {
             if (Util.UserPeopleId == null)
+            {
                 return new List<TaskInfo>();
+            }
+
             var completedcode = TaskStatusCode.Complete;
             var pid = DbUtil.Db.CurrentUser.PeopleId;
             var q = from t in DbUtil.Db.Tasks
@@ -199,7 +217,10 @@ namespace CmsWeb.Models
         public IEnumerable<CodeValueItem> Tags()
         {
             if (Util.UserPeopleId == null)
+            {
                 return new List<CodeValueItem>();
+            }
+
             var ctl = new CodeValueModel();
             var list = ctl.UserTags(Util.UserPeopleId);
             return list;
@@ -219,7 +240,9 @@ namespace CmsWeb.Models
                      where o.OrganizationStatusId == CmsData.Codes.OrgStatusCode.Active
                      select o;
             if (Util2.OrgLeadersOnly)
+            {
                 qp = DbUtil.Db.OrgLeadersOnlyTag2().People(DbUtil.Db);
+            }
 
             qp = from p in qp
                  where p.DeceasedDate == null
@@ -232,7 +255,10 @@ namespace CmsWeb.Models
             {
                 string phone = null;
                 if (text.HasValue() && text.AllDigits() && text.Length == 7)
+                {
                     phone = text;
+                }
+
                 if (phone.HasValue())
                 {
                     var id = Last.ToInt();
@@ -299,11 +325,17 @@ namespace CmsWeb.Models
             var list = new List<SearchInfo>();
             list.AddRange(rp.Take(6));
             if (list.Count > 0)
+            {
                 list.Add(new SearchInfo() { id = 0 });
+            }
+
             var roTake = ro.Take(4).ToList();
             list.AddRange(roTake);
             if (roTake.Count > 0)
+            {
                 list.Add(new SearchInfo() { id = 0 });
+            }
+
             list.AddRange(new List<SearchInfo>()
             {
                 new SearchInfo() { id = -1, line1 = "People Search"  },
@@ -317,7 +349,7 @@ namespace CmsWeb.Models
         {
             public SearchInfo22()
             {
-              showaltname = DbUtil.Db.Setting("ShowAltNameOnSearchResults");
+                showaltname = DbUtil.Db.Setting("ShowAltNameOnSearchResults");
             }
 
             public string line1 => nonPersonName.HasValue()
@@ -331,8 +363,9 @@ namespace CmsWeb.Models
             internal int peopleid;
             internal int? age;
 
-            internal string displayname => (showaltname ? $"{name2} {altname}" : name2);
+            internal string displayname => (showaltname ? $"{(name2.HasValue()? name2:lastname)} {altname}" : name2.HasValue()?name2:lastname);
             internal string name2;
+            internal string lastname;
             internal string nonPersonName;
             internal string altname;
             internal bool showaltname;
@@ -368,7 +401,9 @@ namespace CmsWeb.Models
                      where o.OrganizationStatusId == CmsData.Codes.OrgStatusCode.Active
                      select o;
             if (Util2.OrgLeadersOnly)
+            {
                 qp = DbUtil.Db.OrgLeadersOnlyTag2().People(DbUtil.Db);
+            }
 
             qp = from p in qp
                  where p.DeceasedDate == null
@@ -381,7 +416,10 @@ namespace CmsWeb.Models
             {
                 string phone = null;
                 if (text.HasValue() && text.AllDigits() && text.Length == 7)
+                {
                     phone = text;
+                }
+
                 if (phone.HasValue())
                 {
                     var id = last.ToInt();
@@ -412,23 +450,24 @@ namespace CmsWeb.Models
                       {
                           url = "/Person2/" + p.PeopleId,
                           line2 = p.PrimaryAddress ?? "",
-
                           peopleid = p.PeopleId,
                           age = p.Age,
                           name2 = p.Name2,
-                          altname = p.AltName
+                          altname = p.AltName,
+                          lastname = p.LastName
                       }).Take(6);
             }
             else
             {
                 if (first.HasValue())
                 {
+                    //Util.NameSplit(text, out first, out last) returns both first and last.
                     qp = from p in qp
                          where p.LastName.StartsWith(last) || p.MaidenName.StartsWith(last)
                              || p.LastName.StartsWith(text) || p.MaidenName.StartsWith(text) // gets Bob St Clair
                          where
-                             p.FirstName.StartsWith(first) || p.NickName.StartsWith(first) || p.MiddleName.StartsWith(first)
-                             || p.LastName.StartsWith(text) || p.MaidenName.StartsWith(text) // gets Bob St Clair
+                             p.FirstName.StartsWith(first) || p.NickName.StartsWith(first) || p.MiddleName.StartsWith(first) || p.AltName.StartsWith(first)
+                             || p.FirstName.StartsWith(text) || p.NickName.StartsWith(text) || p.MiddleName.StartsWith(text) || p.AltName.StartsWith(text) // gets Bob St Clair
                          select p;
                     rp = (from p in qp
                           orderby p.Name2
@@ -436,15 +475,16 @@ namespace CmsWeb.Models
                           {
                               url = "/Person2/" + p.PeopleId,
                               line2 = p.PrimaryAddress ?? "",
-
                               peopleid = p.PeopleId,
                               age = p.Age,
                               name2 = p.Name2,
                               altname = p.AltName,
+                              lastname = p.LastName
                           }).Take(6);
                 }
                 else
                 {
+                    //Util.NameSplit(text, out first, out last) returns only last.
                     var qp2 = DbUtil.Db.Setting("UseAltnameContains")
                         ? from p in qp
                           where p.LastName.StartsWith(text) || p.MaidenName.StartsWith(text) || p.AltName.Contains(text)
@@ -462,11 +502,11 @@ namespace CmsWeb.Models
                                {
                                    url = "/Person2/" + p.PeopleId,
                                    line2 = p.PrimaryAddress ?? "",
-
                                    peopleid = p.PeopleId,
                                    age = p.Age,
                                    name2 = p.Name2,
-                                   altname = p.AltName
+                                   altname = p.AltName,
+                                   lastname = p.LastName
                                }).Take(6).ToList();
                     var rp1 = (from p in qp1
                                orderby p.Name2
@@ -477,7 +517,8 @@ namespace CmsWeb.Models
                                    peopleid = p.PeopleId,
                                    age = p.Age,
                                    name2 = p.Name2,
-                                   altname = p.AltName
+                                   altname = p.AltName,
+                                   lastname = p.LastName
                                }).Take(6).ToList();
                     rp = rp2.Union(rp1).Take(6);
                 }
@@ -499,11 +540,17 @@ namespace CmsWeb.Models
             var list = new List<SearchInfo22>();
             list.AddRange(rp);
             if (list.Count > 0)
+            {
                 list[list.Count - 1].addmargin = true;
+            }
+
             var roTake = ro.Take(4).ToList();
             list.AddRange(roTake);
             if (roTake.Count > 0)
+            {
                 list[list.Count - 1].addmargin = true;
+            }
+
             list.AddRange(new List<SearchInfo22>()
             {
                 new SearchInfo22() { url = "/PeopleSearch", nonPersonName = "Find Person"  },
@@ -523,13 +570,17 @@ namespace CmsWeb.Models
         {
             var feed = DbUtil.Db.RssFeeds.FirstOrDefault(r => r.Url == feedurl);
             if (!feedurl.HasValue())
+            {
                 return new List<NewsInfo>();
+            }
 
             var req = WebRequest.Create(feedurl) as HttpWebRequest;
             if (feed != null && req != null)
             {
                 if (feed.LastModified.HasValue)
+                {
                     req.IfModifiedSince = feed.LastModified.Value;
+                }
             }
             else
             {
@@ -539,19 +590,27 @@ namespace CmsWeb.Models
             }
 
             if (req == null)
+            {
                 return new List<NewsInfo>();
+            }
 
             try
             {
                 var resp = req.GetHttpResponse();
                 if (resp == null)
+                {
                     return new List<NewsInfo>();
+                }
+
                 if (resp.StatusCode != HttpStatusCode.NotModified)
                 {
                     feed.LastModified = resp.LastModified;
                     var rs = resp.GetResponseStream();
                     if (rs == null)
+                    {
                         return new List<NewsInfo>();
+                    }
+
                     var sr = new StreamReader(rs);
                     feed.Data = sr.ReadToEnd();
                     sr.Close();
@@ -563,14 +622,18 @@ namespace CmsWeb.Models
                 return new List<NewsInfo>();
             }
             if (feed.Data == null)
+            {
                 return new List<NewsInfo>();
+            }
 
             try
             {
                 var reader = XmlReader.Create(new StringReader(feed.Data));
                 var f = SyndicationFeed.Load(reader);
                 if (f == null)
+                {
                     return new List<NewsInfo>();
+                }
 
                 var posts = from item in f.Items
                             select new NewsInfo
@@ -590,7 +653,9 @@ namespace CmsWeb.Models
         {
             var list = HttpRuntime.Cache[bvcmsnews] as List<NewsInfo>;
             if (list != null)
+            {
                 return list;
+            }
 
             list = GetNewsInfo(feedurl).ToList();
             HttpRuntime.Cache.Insert(bvcmsnews, list, null,

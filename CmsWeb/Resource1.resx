@@ -412,4 +412,82 @@ so that your data will not stay duplicated.&lt;/p&gt;
   <data name="CompanyName" xml:space="preserve">
     <value>TouchPoint Software, Inc.</value>
   </data>
+  <data name="ContributionsController_ContributionsAdvancedSearch_" xml:space="preserve">
+    <value>
+with ids as (
+	select * from dbo.Contributions2SearchIds(@json)
+)
+select 
+	p.FamilyId,
+	p.PeopleId,
+    c.ContributionDate as [Date],
+    
+    case when fa.HeadOfHouseholdId = sp.PeopleId
+			and isnull(sp.ContributionOptionsId, case when mssp.Married = 1 then 2 else 1 end) = 2
+			and isnull(p.ContributionOptionsId, case when msp.Married = 1 then 2 else 1 end) = 2
+		then sp.PeopleId 
+		else c.PeopleId 
+	end as CreditGiverId,
+
+    case when isnull(sp.ContributionOptionsId, case when mssp.Married = 1 then 2 else 1 end) = 1
+			or isnull(p.ContributionOptionsId, case when msp.Married = 1 then 2 else 1 end) = 1
+		then null
+		when fa.HeadOfHouseholdId = sp.PeopleId
+		then c.PeopleId
+		else sp.PeopleId
+	end as CreditGiverId2,
+
+    case when fa.HeadOfHouseholdId = sp.PeopleId
+		then p.PeopleId 
+		else sp.PeopleId 
+	end as SpouseId,
+	
+    case when fa.HeadOfHouseholdId = sp.PeopleId
+		then sp.Name2 
+		else p.Name2 
+	end as HeadName,
+	
+    case when fa.HeadOfHouseholdId = sp.PeopleId
+		then p.Name2 
+		else sp.Name2 
+	end as SpouseName,
+	
+	case when c.ContributionTypeId != 8
+		then c.ContributionAmount
+		else 0
+	end as Amount,
+	
+	case when c.ContributionTypeId = 8
+		then c.ContributionAmount
+		else 0
+	end as PledgeAmount,
+	
+    h.BundleHeaderId,
+	c.ContributionDesc,
+	c.CheckNo,
+    c.FundId,
+    f.FundName,
+    bht.[Description] as BundleType,
+	c.ContributionId,
+	c.[Source],
+	c.MetaInfo,
+	t.[Description] TransactionDesc,
+	c.ContributionTypeId,
+	ca.[Description] Campus
+from dbo.Contribution c
+	join ids on ids.ContributionId = c.ContributionId
+	join dbo.ContributionFund f on c.FundId = f.FundId
+	join dbo.BundleDetail d on c.ContributionId = d.ContributionId
+	join dbo.BundleHeader h on d.BundleHeaderId = h.BundleHeaderId
+	join lookup.BundleHeaderTypes bht on h.BundleHeaderTypeId = bht.Id
+	join lookup.BundleStatusTypes bst on h.BundleStatusId = bst.Id
+	join dbo.People p on c.PeopleId = p.PeopleId
+	join dbo.Families fa on p.FamilyId = fa.FamilyId
+	left join dbo.People sp on sp.PeopleId = p.SpouseId
+	left join lookup.MaritalStatus mssp on mssp.Id = sp.MaritalStatusId
+	left join lookup.MaritalStatus msp on msp.Id = p.MaritalStatusId
+	left outer join dbo.[Transaction] t on t.Id = c.TranId
+	left outer join lookup.Campus ca on ca.Id = c.CampusId
+</value>
+  </data>
 </root>

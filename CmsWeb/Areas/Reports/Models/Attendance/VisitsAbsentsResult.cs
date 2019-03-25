@@ -5,14 +5,14 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Models;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web.Mvc;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Reports.Models
@@ -26,7 +26,7 @@ namespace CmsWeb.Areas.Reports.Models
         private Document doc;
         private DateTime dt;
         private int? mtgid;
-        private Font smallfont = FontFactory.GetFont(FontFactory.HELVETICA, 8, new GrayColor(50));
+        private readonly Font smallfont = FontFactory.GetFont(FontFactory.HELVETICA, 8, new GrayColor(50));
 
         public VisitsAbsentsResult(int? meetingid)
         {
@@ -63,14 +63,16 @@ namespace CmsWeb.Areas.Reports.Models
             var q = VisitsAbsents(mtgid.Value);
 
             if (!mtgid.HasValue || i == null || !q.Any())
+            {
                 doc.Add(new Paragraph("no data"));
+            }
             else
             {
                 var mt = new PdfPTable(1);
                 mt.SetNoPadding();
                 mt.HeaderRows = 1;
 
-                float[] widths = {4f, 6f, 7f, 2.6f, 2f, 3f};
+                float[] widths = { 4f, 6f, 7f, 2.6f, 2f, 3f };
                 var t = new PdfPTable(widths);
                 t.DefaultCell.Border = Rectangle.NO_BORDER;
                 t.DefaultCell.VerticalAlignment = Element.ALIGN_TOP;
@@ -90,9 +92,13 @@ namespace CmsWeb.Areas.Reports.Models
                 foreach (var p in q)
                 {
                     if (color == BaseColor.WHITE)
+                    {
                         color = new GrayColor(240);
+                    }
                     else
+                    {
                         color = BaseColor.WHITE;
+                    }
 
                     t = new PdfPTable(widths);
                     t.SetNoBorder();
@@ -100,7 +106,10 @@ namespace CmsWeb.Areas.Reports.Models
                     t.DefaultCell.BackgroundColor = color;
 
                     if (v != p.visitor)
+                    {
                         t.Add($"             ------ {(p.visitor ? "Guests" : "Absentees")} ------", 6, bigboldfont);
+                    }
+
                     v = p.visitor;
 
                     t.Add(p.Name, font);

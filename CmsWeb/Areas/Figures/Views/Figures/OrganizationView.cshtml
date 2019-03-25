@@ -1,0 +1,9 @@
+﻿@model CmsWeb.Areas.Figures.Models.OrgViewModel
+
+@Html.DropDownListFor(p => p.SelectedOrgId, Model.OrgIEnum, new { @id = "Organization-DropdownID", @class = "Organization-DropdownCls", @multiple = "multiple"})
+
+<script type="text/javascript">
+    $(function () {
+        $('#Organization-DropdownID').multiSelect();
+    });
+</script>

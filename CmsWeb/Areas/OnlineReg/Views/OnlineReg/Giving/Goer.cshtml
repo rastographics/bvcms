@@ -1,0 +1,61 @@
+@using UtilityExtensions
+@using CmsWeb.Models
+@using CmsWeb.Areas.Dialog.Models
+@model CmsWeb.Areas.OnlineReg.Models.OnlineRegModel
+@{
+    Layout = "~/Views/Shared/onlinereg2.cshtml";
+    ViewBag.Title = Model.Header;
+
+}
+<div class="row content">
+    <div class="col-sm-8">
+        <h2>@Model.org.OrganizationName</h2>
+        <h4>@Model.MissionTripDates</h4>
+        <p>@Html.Raw(Model.org.Description)</p>
+    </div>
+    <div class="col-sm-4">
+        <h3>@Model.Goer.Name's Fundraising</h3>
+        @if (Model.MissionTripRaised < Model.MissionTripCost)
+        {
+            <h5 class="amount"><strong>@Helper.CurrencyString(Model.MissionTripRaised)</strong> raised of <strong>@Helper.CurrencyString(Model.MissionTripCost)</strong> goal</h5>
+            <progress value="@Model.MissionTripRaised" max="@Model.MissionTripCost" style="display: block;width:100%;"></progress>
+            <a style="display:block;width:100%;margin:12px 0;" class="btn btn-primary btn-sm" href="@OrgMemberModel.GetPayLink(Model.org.OrganizationId, Model.Goer.PeopleId)">Pay</a>
+        }
+        else
+        {
+            <h4>Goal met!</h4>
+            <progress value="100" max="100"></progress>
+        }
+        @if (Model.Supporters != null && Model.Supporters.Any())
+        {
+            <h3>Your Supporters</h3>
+            foreach (TransactionsModel.SupporterInfo supporter in @Model.Supporters)
+            {
+                <div class="row">
+                    <div class="col-xs-8">
+                        <span>@supporter.SupporterName</span>
+                    </div>
+                    <div class="col-xs-4">
+                        <span class="amount">@Helper.CurrencyString(supporter.gs.Amount)</span>
+                    </div>
+                </div>
+            }
+            <a style="display:block;width:100%;" href="/MissionTripEmail2/@Model.org.OrganizationId/@Model.Goer.PeopleId" class="btn btn-default btn-sm"><i class="fa fa-envelope-o"></i> Email Supporters</a>
+        }
+        else
+        {
+            <h5>No supporters yet</h5>
+        }
+
+        @if (Model.org.TripFundingPagesPublic)
+        {
+            <h5>Get more supporters! Share:</h5>
+            @Helper.SocialShareButtons(Model.URL, $"{Model.Goer.Name}'s Fundraising for {Model.org.OrganizationName}")
+
+            <p>Or copy this link:</p>
+            <input type="text" style="width:100%;" value="@Model.URL" readonly />
+        }
+    </div>
+</div>
+
+@Helper.SocialButtonPopupScript()

@@ -1,8 +1,9 @@
+using CmsData;
+using CmsWeb.Lifecycle;
+using CmsWeb.Models;
 using System;
 using System.Linq;
 using System.Web.Mvc;
-using CmsData;
-using CmsWeb.Models;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Main.Controllers
@@ -10,12 +11,19 @@ namespace CmsWeb.Areas.Main.Controllers
     [RouteArea("Main", AreaPrefix = "Tags"), Route("{action}/{id?}")]
     public class TagsController : CmsStaffController
     {
+        public TagsController(IRequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [Route("~/Tags")]
         public ActionResult Index(string tag)
         {
             var m = new TagsModel();
             if (tag.HasValue())
+            {
                 m.tag = tag;
+            }
+
             m.SetCurrentTag();
             InitExportToolbar();
             return View(m);
@@ -39,12 +47,14 @@ namespace CmsWeb.Areas.Main.Controllers
         [HttpPost]
         public ActionResult Delete()
         {
-            var t = DbUtil.Db.TagCurrent();
+            var t = CurrentDatabase.TagCurrent();
             if (t.TagShares.Count() > 0 || t.PeopleId != Util.UserPeopleId)
+            {
                 return Content("error");
+            }
 
-            t.DeleteTag(DbUtil.Db);
-            DbUtil.Db.SubmitChanges();
+            t.DeleteTag(CurrentDatabase);
+            CurrentDatabase.SubmitChanges();
             Util2.CurrentTag = "UnNamed";
             var m = new TagsModel();
             return View("Tags", m);
@@ -54,11 +64,14 @@ namespace CmsWeb.Areas.Main.Controllers
         public ActionResult RenameTag(TagsModel m, string renamedTag = null)
         {
             if (renamedTag == null || !renamedTag.HasValue())
+            {
                 return View("Tags", m);
+            }
+
             m.tagname = renamedTag.Replace("!", "_");
-            var t = DbUtil.Db.TagCurrent();
+            var t = CurrentDatabase.TagCurrent();
             t.Name = m.tagname;
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
             Util2.CurrentTag = m.tagname;
             return View("Tags", m);
         }
@@ -67,13 +80,13 @@ namespace CmsWeb.Areas.Main.Controllers
         public ActionResult NewTag(TagsModel m)
         {
             Util2.CurrentTag = m.tagname.Replace("!", "_");
-            DbUtil.Db.TagCurrent();
+            CurrentDatabase.TagCurrent();
             return View("Tags", m);
         }
 
         private void InitExportToolbar()
         {
-            var qid = DbUtil.Db.QueryHasCurrentTag().QueryId;
+            var qid = CurrentDatabase.QueryHasCurrentTag().QueryId;
             ViewBag.queryid = qid;
             ViewBag.TagAction = $"/Tags/TagAll/{qid}";
             ViewBag.UnTagAction = $"/Tags/UnTagAll/{qid}";
@@ -85,7 +98,7 @@ namespace CmsWeb.Areas.Main.Controllers
         public ActionResult ToggleTag(int id)
         {
             var t = Person.ToggleTag(id, Util2.CurrentTagName, Util2.CurrentTagOwnerId, DbUtil.TagTypeId_Personal);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
             return Content(t ? "Remove" : "Add");
         }
 
@@ -93,36 +106,42 @@ namespace CmsWeb.Areas.Main.Controllers
         public ContentResult TagAll(Guid id, string tagname, bool? cleartagfirst)
         {
             if (!tagname.HasValue())
+            {
                 return Content("error: no tag name");
-            DbUtil.Db.SetNoLock();
-            var q = DbUtil.Db.PeopleQuery(id);
+            }
+
+            CurrentDatabase.SetNoLock();
+            var q = CurrentDatabase.PeopleQuery(id);
             if (Util2.CurrentTagName == tagname && !(cleartagfirst ?? false))
             {
-                DbUtil.Db.TagAll(q);
+                CurrentDatabase.TagAll(q);
                 return Content("Remove");
             }
-            var tag = DbUtil.Db.FetchOrCreateTag(tagname, Util.UserPeopleId, DbUtil.TagTypeId_Personal);
+            var tag = CurrentDatabase.FetchOrCreateTag(tagname, Util.UserPeopleId, DbUtil.TagTypeId_Personal);
             if (cleartagfirst ?? false)
-                DbUtil.Db.ClearTag(tag);
-            DbUtil.Db.TagAll(q, tag);
+            {
+                CurrentDatabase.ClearTag(tag);
+            }
+
+            CurrentDatabase.TagAll(q, tag);
             Util2.CurrentTag = tagname;
-            DbUtil.Db.TagCurrent();
+            CurrentDatabase.TagCurrent();
             return Content("Manage");
         }
 
         [HttpPost]
         public ContentResult UnTagAll(Guid id)
         {
-            var q = DbUtil.Db.PeopleQuery(id);
-            DbUtil.Db.UnTagAll(q);
+            var q = CurrentDatabase.PeopleQuery(id);
+            CurrentDatabase.UnTagAll(q);
             return Content("Add");
         }
 
         [HttpPost]
         public ContentResult ClearTag()
         {
-            var tag = DbUtil.Db.TagCurrent();
-            DbUtil.Db.ExecuteCommand("delete dbo.TagPerson where Id = {0}", tag.Id);
+            var tag = CurrentDatabase.TagCurrent();
+            CurrentDatabase.ExecuteCommand("delete dbo.TagPerson where Id = {0}", tag.Id);
             return Content("ok");
         }
 
@@ -136,31 +155,34 @@ namespace CmsWeb.Areas.Main.Controllers
         [HttpPost]
         public ActionResult AddTasks(Guid id)
         {
-            return Content(Task.AddTasks(DbUtil.Db, id).ToString());
+            return Content(Task.AddTasks(CurrentDatabase, id).ToString());
         }
 
         public ActionResult SharedTags()
         {
-            var t = DbUtil.Db.FetchOrCreateTag(Util.SessionId, Util.UserPeopleId, DbUtil.TagTypeId_AddSelected);
-            DbUtil.Db.TagPeople.DeleteAllOnSubmit(t.PersonTags);
-            DbUtil.Db.SubmitChanges();
-            var tag = DbUtil.Db.TagCurrent();
+            var t = CurrentDatabase.FetchOrCreateTag(Util.SessionId, Util.UserPeopleId, DbUtil.TagTypeId_AddSelected);
+            CurrentDatabase.TagPeople.DeleteAllOnSubmit(t.PersonTags);
+            CurrentDatabase.SubmitChanges();
+            var tag = CurrentDatabase.TagCurrent();
             foreach (var ts in tag.TagShares)
-                t.PersonTags.Add(new TagPerson {PeopleId = ts.PeopleId});
-            DbUtil.Db.SubmitChanges();
+            {
+                t.PersonTags.Add(new TagPerson { PeopleId = ts.PeopleId });
+            }
+
+            CurrentDatabase.SubmitChanges();
             return Redirect("/SearchUsers");
         }
 
         [HttpPost]
         public ActionResult UpdateShared()
         {
-            var t = DbUtil.Db.FetchOrCreateTag(Util.SessionId, Util.UserPeopleId, DbUtil.TagTypeId_AddSelected);
-            var tag = DbUtil.Db.TagCurrent();
-            var selected_pids = (from p in t.People(DbUtil.Db)
+            var t = CurrentDatabase.FetchOrCreateTag(Util.SessionId, Util.UserPeopleId, DbUtil.TagTypeId_AddSelected);
+            var tag = CurrentDatabase.TagCurrent();
+            var selected_pids = (from p in t.People(CurrentDatabase)
                                  where p.PeopleId != Util.UserPeopleId
                                  select p.PeopleId).ToArray();
             var userDeletes = tag.TagShares.Where(ts => !selected_pids.Contains(ts.PeopleId));
-            DbUtil.Db.TagShares.DeleteAllOnSubmit(userDeletes);
+            CurrentDatabase.TagShares.DeleteAllOnSubmit(userDeletes);
             var tag_pids = tag.TagShares.Select(ts => ts.PeopleId).ToArray();
             var userAdds = from pid in selected_pids
                            join tpid in tag_pids on pid equals tpid into j
@@ -168,11 +190,14 @@ namespace CmsWeb.Areas.Main.Controllers
                            where p == -1
                            select pid;
             foreach (var pid in userAdds)
-                tag.TagShares.Add(new TagShare {PeopleId = pid});
-            DbUtil.Db.TagPeople.DeleteAllOnSubmit(t.PersonTags);
-            DbUtil.Db.Tags.DeleteOnSubmit(t);
-            DbUtil.Db.SubmitChanges();
-            return Content(DbUtil.Db.TagShares.Count(tt => tt.TagId == tag.Id).ToString());
+            {
+                tag.TagShares.Add(new TagShare { PeopleId = pid });
+            }
+
+            CurrentDatabase.TagPeople.DeleteAllOnSubmit(t.PersonTags);
+            CurrentDatabase.Tags.DeleteOnSubmit(t);
+            CurrentDatabase.SubmitChanges();
+            return Content(CurrentDatabase.TagShares.Count(tt => tt.TagId == tag.Id).ToString());
         }
 
         [Authorize(Roles = "Admin")]
@@ -180,15 +205,18 @@ namespace CmsWeb.Areas.Main.Controllers
         {
             if (Request.HttpMethod.ToUpper() == "GET")
             {
-                var success = (string) TempData["success"];
+                var success = (string)TempData["success"];
                 if (success.HasValue())
+                {
                     ViewData["success"] = success;
+                }
+
                 ViewData["tag"] = tag;
                 ViewData["field"] = tag;
                 ViewData["value"] = "true";
                 return View();
             }
-            var t = DbUtil.Db.Tags.FirstOrDefault(tt =>
+            var t = CurrentDatabase.Tags.FirstOrDefault(tt =>
                 tt.Name == tag && tt.PeopleId == Util.UserPeopleId && tt.TypeId == DbUtil.TagTypeId_Personal);
             if (t == null)
             {
@@ -196,11 +224,11 @@ namespace CmsWeb.Areas.Main.Controllers
                 return Redirect("/Tags/ConvertTagToExtraValue");
             }
 
-            var q = t.People(DbUtil.Db);
+            var q = t.People(CurrentDatabase);
             foreach (var p in q)
             {
                 p.AddEditExtraCode(field, value);
-                DbUtil.Db.SubmitChanges();
+                CurrentDatabase.SubmitChanges();
             }
             TempData["message"] = "success";
             return Redirect("/Tags/ConvertTagToExtraValue");

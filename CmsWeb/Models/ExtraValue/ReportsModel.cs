@@ -1,14 +1,15 @@
-﻿using System;
+﻿using CmsData;
+using CmsData.ExtraValue;
+using System;
 using System.Data.SqlClient;
 using System.Linq;
-using CmsData;
-using CmsData.ExtraValue;
 using UtilityExtensions;
 
 namespace CmsWeb.Models.ExtraValues
 {
     public class ReportsModel
     {
+        public ReportsModel() { }
         public static Condition QueryCodesCondition(string field, string value)
         {
             var c = DbUtil.Db.ScratchPadCondition();

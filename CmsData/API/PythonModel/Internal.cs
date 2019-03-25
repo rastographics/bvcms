@@ -11,8 +11,7 @@ using Microsoft.Scripting.Hosting;
 using Microsoft.Scripting.Hosting.Providers;
 
 namespace CmsData
-{
-    public partial class PythonModel
+{public partial class PythonModel
     {
         // ReSharper disable InconsistentNaming
         private readonly CMSDataContext db;
@@ -26,12 +25,31 @@ namespace CmsData
             Data = new DynamicData(dictionary);
             db = DbUtil.Create(dbname);
         }
-
+        
         public PythonModel(string dbname, Dictionary<string, object> dict)
         {
             dictionary = dict;
             Data = new DynamicData(dictionary);
             db = DbUtil.Create(dbname);
+        }
+
+        /// <summary>
+        /// Construct with a data context object
+        /// </summary>
+        /// <param name="dbContext"></param>
+        
+        public PythonModel(CMSDataContext dbContext)
+        {
+            db = dbContext.Copy();
+            dictionary = new Dictionary<string, object>();
+            Data = new DynamicData(dictionary);
+        }
+
+        public PythonModel(CMSDataContext dbContext, Dictionary<string, object> dict)
+        {
+            db = dbContext.Copy();
+            dictionary = dict;
+            Data = new DynamicData(dictionary);
         }
 
         /// <summary>

@@ -29,9 +29,9 @@ namespace CmsData
 		private decimal? _EndHoursOffset;
 		
    		
-   		private EntitySet< Division> _Divisions;
+   		private EntitySet<Division> _Divisions;
 		
-   		private EntitySet< ProgDiv> _ProgDivs;
+   		private EntitySet<ProgDiv> _ProgDivs;
 		
     	
 	#endregion
@@ -60,9 +60,9 @@ namespace CmsData
 		public Program()
 		{
 			
-			this._Divisions = new EntitySet< Division>(new Action< Division>(this.attach_Divisions), new Action< Division>(this.detach_Divisions)); 
+			this._Divisions = new EntitySet<Division>(new Action< Division>(this.attach_Divisions), new Action< Division>(this.detach_Divisions)); 
 			
-			this._ProgDivs = new EntitySet< ProgDiv>(new Action< ProgDiv>(this.attach_ProgDivs), new Action< ProgDiv>(this.detach_ProgDivs)); 
+			this._ProgDivs = new EntitySet<ProgDiv>(new Action< ProgDiv>(this.attach_ProgDivs), new Action< ProgDiv>(this.detach_ProgDivs)); 
 			
 			
 			OnCreated();
@@ -186,7 +186,7 @@ namespace CmsData
     #region Foreign Key Tables
    		
    		[Association(Name="FK_Division_Program", Storage="_Divisions", OtherKey="ProgId")]
-   		public EntitySet< Division> Divisions
+   		public EntitySet<Division> Divisions
    		{
    		    get { return this._Divisions; }
 
@@ -196,7 +196,7 @@ namespace CmsData
 
 		
    		[Association(Name="FK_ProgDiv_Program", Storage="_ProgDivs", OtherKey="ProgId")]
-   		public EntitySet< ProgDiv> ProgDivs
+   		public EntitySet<ProgDiv> ProgDivs
    		{
    		    get { return this._ProgDivs; }
 
@@ -255,4 +255,3 @@ namespace CmsData
 	}
 
 }
-

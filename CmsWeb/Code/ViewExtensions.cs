@@ -5,6 +5,12 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
 
+using CmsData;
+using CmsWeb.Areas.OnlineReg.Models;
+using CmsWeb.Code;
+using Elmah;
+using OfficeOpenXml;
+using OfficeOpenXml.Style;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -22,15 +28,8 @@ using System.Web.Mvc;
 using System.Web.Mvc.Html;
 using System.Web.Routing;
 using System.Web.Script.Serialization;
-using CmsData;
-using CmsWeb.Areas.OnlineReg.Models;
-using CmsWeb.Code;
-using Elmah;
-using MarkdownDeep;
-using OfficeOpenXml;
-using OfficeOpenXml.Style;
 using UtilityExtensions;
-using System.ComponentModel;
+using static CmsData.DbUtil;
 
 namespace CmsWeb
 {
@@ -62,9 +61,13 @@ namespace CmsWeb
 
                 //Try to pick a more appropriate regionalisation
                 if (File.Exists(HostingEnvironment.MapPath(string.Format(filePattern, currentCulture.Name)))) //First try for a globalize.culture.en-GB.js style file
+                {
                     regionalisedFileToUse = string.Format(filePattern, currentCulture.Name);
+                }
                 else if (File.Exists(HostingEnvironment.MapPath(string.Format(filePattern, currentCulture.TwoLetterISOLanguageName)))) //That failed; now try for a globalize.culture.en.js style file
+                {
                     regionalisedFileToUse = string.Format(filePattern, currentCulture.TwoLetterISOLanguageName);
+                }
 
                 return regionalisedFileToUse;
             }
@@ -80,12 +83,21 @@ namespace CmsWeb
             {
                 var msg = helper.ValidationMessageFor(expression);
                 if (msg == null)
+                {
                     return null;
+                }
+
                 var s = msg.ToString();
                 if (s.HasValue() && s.Contains("field-validation-valid"))
+                {
                     return null;
+                }
+
                 if (!s.HasValue())
+                {
                     return null;
+                }
+
                 var div = new TagBuilder("div");
                 div.AddCssClass("alert alert-danger");
                 div.InnerHtml = s;
@@ -105,16 +117,28 @@ namespace CmsWeb
             {
                 var msg = helper.ValidationMessage(field);
                 if (msg == null)
+                {
                     return null;
+                }
+
                 var s = msg.ToString();
                 if (s.HasValue() && s.Contains("field-validation-valid"))
+                {
                     return null;
+                }
+
                 if (!s.HasValue())
+                {
                     return null;
+                }
+
                 var div = new TagBuilder("div");
                 div.AddCssClass("alert alert-danger");
                 if (@class.HasValue())
+                {
                     div.AddCssClass(@class);
+                }
+
                 div.InnerHtml = s;
                 return new MvcHtmlString(div.ToString());
             }
@@ -129,7 +153,10 @@ namespace CmsWeb
         public static HtmlString DivAlertBox(this HtmlHelper helper, string msg, string alerttype = "alert-danger")
         {
             if (!msg.HasValue())
+            {
                 return null;
+            }
+
             var div = new TagBuilder("div");
             div.AddCssClass("alert");
             div.AddCssClass(alerttype);
@@ -141,7 +168,7 @@ namespace CmsWeb
         {
             var name = ExpressionHelper.GetExpressionText(expression);
             var model = ModelMetadata.FromLambdaExpression(expression, helper.ViewData).Model;
-            var viewData = new ViewDataDictionary(helper.ViewData) {TemplateInfo = new TemplateInfo {HtmlFieldPrefix = name}};
+            var viewData = new ViewDataDictionary(helper.ViewData) { TemplateInfo = new TemplateInfo { HtmlFieldPrefix = name } };
             return helper.Partial(partialViewName, model, viewData);
         }
 
@@ -182,7 +209,10 @@ namespace CmsWeb
         {
             var sb = new StringBuilder();
             foreach (var item in list)
+            {
                 sb.AppendFormat(format, item);
+            }
+
             return sb.ToString();
         }
 
@@ -190,19 +220,29 @@ namespace CmsWeb
         {
             var Port = pg.ViewContext.HttpContext.Request.ServerVariables["SERVER_PORT"];
             if (Port == null || Port == "80" || Port == "443")
+            {
                 Port = "";
+            }
             else
+            {
                 Port = ":" + Port;
+            }
 
             var Protocol = pg.ViewContext.HttpContext.Request.ServerVariables["SERVER_PORT_SECURE"];
             if (Protocol == null || Protocol == "0")
+            {
                 Protocol = "http://";
+            }
             else
+            {
                 Protocol = "http://";
+            }
 
             var appPath = pg.ViewContext.HttpContext.Request.ApplicationPath;
             if (appPath == "/")
+            {
                 appPath = "";
+            }
 
             var sOut = Protocol + pg.ViewContext.HttpContext.Request.ServerVariables["SERVER_NAME"] + Port + appPath;
             return sOut;
@@ -213,14 +253,20 @@ namespace CmsWeb
             var tb = new TagBuilder("select");
             tb.MergeAttribute("id", id);
             if (onchange.HasValue())
+            {
                 tb.MergeAttribute("onchange", onchange);
+            }
+
             var sb = new StringBuilder();
             foreach (var o in PageSizes(null))
             {
                 var ot = new TagBuilder("option");
                 ot.MergeAttribute("value", o.Value);
                 if (o.Selected)
+                {
                     ot.MergeAttribute("selected", "selected");
+                }
+
                 ot.SetInnerText(o.Text);
                 sb.Append(ot);
             }
@@ -230,17 +276,23 @@ namespace CmsWeb
 
         public static IEnumerable<SelectListItem> PageSizes(this HtmlHelper helper)
         {
-            var sizes = new[] {10, 25, 50, 75, 100, 200};
+            var sizes = new[] { 10, 25, 50, 75, 100, 200 };
             var list = new List<SelectListItem>();
             foreach (var size in sizes)
-                list.Add(new SelectListItem {Text = size.ToString()});
+            {
+                list.Add(new SelectListItem { Text = size.ToString() });
+            }
+
             return list;
         }
 
         public static HtmlString SpanIf(this HtmlHelper helper, bool condition, string text, object htmlAttributes)
         {
             if (!condition)
+            {
                 return null;
+            }
+
             var tb = new TagBuilder("span");
             var attr = new RouteValueDictionary(htmlAttributes);
             tb.InnerHtml = text;
@@ -263,7 +315,10 @@ namespace CmsWeb
             helper.ViewData.ModelState.TryGetValue(name, out val);
             string s = null;
             if (val != null)
+            {
                 s = val.Value.AttemptedValue;
+            }
+
             return s;
         }
 
@@ -273,7 +328,10 @@ namespace CmsWeb
             tb.MergeAttribute("id", name);
             tb.MergeAttribute("name", name);
             if (!visible)
+            {
                 tb.MergeAttribute("style", "display: none");
+            }
+
             var s = helper.TryGetModel(name);
             var sb = new StringBuilder();
             foreach (var o in list)
@@ -282,11 +340,19 @@ namespace CmsWeb
                 ot.MergeAttribute("value", o.Value);
                 var selected = false;
                 if (s.HasValue())
+                {
                     selected = s == o.Value;
+                }
                 else if (o.Selected)
+                {
                     selected = true;
+                }
+
                 if (selected)
+                {
                     ot.MergeAttribute("selected", "selected");
+                }
+
                 ot.SetInnerText(o.Text);
                 sb.Append(ot);
             }
@@ -298,7 +364,10 @@ namespace CmsWeb
         {
             var tb = new TagBuilder("select");
             if (id.HasValue())
+            {
                 tb.MergeAttribute("id", id);
+            }
+
             tb.MergeAttribute("name", name);
             var sb = new StringBuilder();
             foreach (var o in list)
@@ -306,7 +375,10 @@ namespace CmsWeb
                 var ot = new TagBuilder("option");
                 ot.MergeAttribute("value", o.Value);
                 if (value == o.Value)
+                {
                     ot.MergeAttribute("selected", "selected");
+                }
+
                 ot.SetInnerText(o.Text);
                 sb.Append(ot);
             }
@@ -318,17 +390,26 @@ namespace CmsWeb
         {
             var tb = new TagBuilder("select");
             if (id.HasValue())
+            {
                 tb.MergeAttribute("id", id);
+            }
+
             tb.MergeAttribute("name", name);
             if (cssClass.HasValue())
+            {
                 tb.MergeAttribute("class", cssClass);
+            }
+
             var sb = new StringBuilder();
             foreach (var o in list)
             {
                 var ot = new TagBuilder("option");
                 ot.MergeAttribute("value", o.Value);
                 if (value == o.Value)
+                {
                     ot.MergeAttribute("selected", "selected");
+                }
+
                 ot.SetInnerText(o.Text);
                 sb.Append(ot);
             }
@@ -340,17 +421,25 @@ namespace CmsWeb
         {
             var tb = new TagBuilder("select");
             if (id.HasValue())
+            {
                 tb.MergeAttribute("id", id);
+            }
+
             tb.MergeAttribute("name", name);
             if (cssClass.HasValue())
+            {
                 tb.MergeAttribute("class", cssClass);
+            }
+
             var sb = new StringBuilder();
             foreach (var o in list)
             {
                 var ot = new TagBuilder("option");
                 ot.MergeAttribute("value", o.Value);
                 if (value == o.Value)
+                {
                     ot.MergeAttribute("selected", "selected");
+                }
                 //				if (o.Filled)
                 //					ot.MergeAttribute("disabled", "disabled");
                 ot.SetInnerText(o.Text);
@@ -367,7 +456,10 @@ namespace CmsWeb
             tb.MergeAttribute("id", name);
             tb.MergeAttribute("name", name);
             if (!visible)
+            {
                 tb.MergeAttribute("style", "display: none");
+            }
+
             var s = helper.TryGetModel(name);
             var viewDataValue = Convert.ToString(helper.ViewData.Eval(name));
             tb.MergeAttribute("value", s ?? viewDataValue);
@@ -395,7 +487,10 @@ namespace CmsWeb
             tb.MergeAttributes(attr);
             ModelState state;
             if (helper.ViewData.ModelState.TryGetValue(name, out state) && (state.Errors.Count > 0))
+            {
                 tb.AddCssClass(HtmlHelper.ValidationInputCssClassName);
+            }
+
             return new HtmlString(tb.ToString());
         }
 
@@ -420,12 +515,20 @@ namespace CmsWeb
             var v = htmlHelper.ViewData.Eval(name);
             var prefix = htmlHelper.ViewData.TemplateInfo.HtmlFieldPrefix;
             if (prefix.HasValue())
+            {
                 name = prefix + "." + name;
+            }
+
             tb.MergeAttribute("name", name);
             if (v != null)
+            {
                 tb.MergeAttribute("value", v.ToString());
+            }
             else
+            {
                 tb.MergeAttribute("value", "");
+            }
+
             return new HtmlString(tb.ToString());
         }
 
@@ -437,12 +540,20 @@ namespace CmsWeb
             var v = htmlHelper.ViewData.Eval(name);
             var prefix = htmlHelper.ViewData.TemplateInfo.HtmlFieldPrefix;
             if (prefix.HasValue())
+            {
                 name = prefix + "." + name;
+            }
+
             tb.MergeAttribute("name", name);
             if (v != null)
+            {
                 tb.MergeAttribute("value", v.ToString());
+            }
             else
+            {
                 tb.MergeAttribute("value", "");
+            }
+
             return new HtmlString(tb.ToString());
         }
 
@@ -454,7 +565,7 @@ namespace CmsWeb
             tb.MergeAttribute("name", name);
             tb.MergeAttribute("class", "datepicker");
             var s = helper.TryGetModel(name);
-            var viewDataValue = (DateTime?) helper.ViewData.Eval(name);
+            var viewDataValue = (DateTime?)helper.ViewData.Eval(name);
             tb.MergeAttribute("value", viewDataValue.FormatDate());
             return new HtmlString(tb.ToString());
         }
@@ -465,7 +576,10 @@ namespace CmsWeb
             tb.MergeAttribute("type", "checkbox");
             tb.MergeAttribute("disabled", "disabled");
             if (ck == true)
+            {
                 tb.MergeAttribute("checked", "checked");
+            }
+
             return new HtmlString(tb.ToString());
         }
 
@@ -473,13 +587,18 @@ namespace CmsWeb
         {
             var tb = new TagBuilder("span");
             var viewDataValue = helper.ViewData.Eval(name);
-            var i = (int?) viewDataValue ?? 0;
+            var i = (int?)viewDataValue ?? 0;
 
             var si = list.SingleOrDefault(v => v.Value == i.ToString());
             if (si != null)
+            {
                 tb.InnerHtml = si.Text;
+            }
             else
+            {
                 tb.InnerHtml = "?";
+            }
+
             return new HtmlString(tb.ToString());
         }
 
@@ -487,7 +606,10 @@ namespace CmsWeb
         {
             var tb = new TagBuilder("input");
             if (id.HasValue())
+            {
                 tb.MergeAttribute("id", id);
+            }
+
             tb.MergeAttribute("type", "hidden");
             tb.MergeAttribute("name", name);
             tb.MergeAttribute("value", value != null ? value.ToString() : "");
@@ -566,7 +688,10 @@ namespace CmsWeb
         {
             var m = helper.ViewData.ModelState[name];
             if (m == null || m.Errors.Count == 0)
+            {
                 return new HtmlString("");
+            }
+
             var e = m.Errors[0].ErrorMessage;
             var b = new TagBuilder("span");
             b.AddCssClass(HtmlHelper.ValidationMessageCssClassName);
@@ -613,7 +738,10 @@ namespace CmsWeb
             {
                 var newValidator = Regex.Replace(normal.ToHtmlString(), @"<span([^>]*)>([^<]*)</span>", $"<label for=\"{elementId}\" $1>$2</label>", RegexOptions.IgnoreCase);
                 if (!string.IsNullOrWhiteSpace(errorClass))
+                {
                     newValidator = newValidator.Replace("field-validation-error", errorClass);
+                }
+
                 return MvcHtmlString.Create(newValidator);
             }
             return null;
@@ -652,13 +780,18 @@ namespace CmsWeb
         {
             // Return to native if true not passed
             if (!useNativeUnobtrusiveAttributes)
+            {
                 return htmlHelper.TextBoxFor(expression, format, htmlAttributes);
+            }
 
             var metadata = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData);
             var attributes = Mapper.GetUnobtrusiveValidationAttributes(htmlHelper, expression, htmlAttributes, metadata);
 
             if (attributes.ContainsKey("data-rule-date") && attributes.ContainsKey("data-rule-dateandtimevalid"))
+            {
                 attributes.Remove("data-rule-date");
+            }
+
             var textBox = Mapper.GenerateHtmlWithoutMvcUnobtrusiveAttributes(() =>
                 htmlHelper.TextBoxFor(expression, format, attributes));
 
@@ -672,11 +805,13 @@ namespace CmsWeb
         {
             // Return to native if true not passed
             if (!useNativeUnobtrusiveAttributes)
+            {
                 return htmlHelper.CheckBoxFor(expression, htmlAttributes);
+            }
 
             var metadata = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData);
             var attributes = Mapper.GetUnobtrusiveValidationAttributes(htmlHelper, expression, htmlAttributes, metadata);
-            var value = (bool) ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData).Model;
+            var value = (bool)ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData).Model;
 
             var checkBox = Mapper.GenerateHtmlWithoutMvcUnobtrusiveAttributes(() =>
                 htmlHelper.CheckBoxFor(expression, value, attributes));
@@ -692,7 +827,9 @@ namespace CmsWeb
         {
             // Return to native if true not passed
             if (!useNativeUnobtrusiveAttributes)
+            {
                 return htmlHelper.RadioButtonFor(expression, value, htmlAttributes);
+            }
 
             var metadata = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData);
             var attributes = Mapper.GetUnobtrusiveValidationAttributes(htmlHelper, expression, htmlAttributes, metadata);
@@ -712,7 +849,9 @@ namespace CmsWeb
         {
             // Return to native if true not passed
             if (!useNativeUnobtrusiveAttributes)
+            {
                 return htmlHelper.DropDownListFor(expression, selectList, optionLabel, htmlAttributes);
+            }
 
             var metadata = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData);
             var attributes = Mapper.GetUnobtrusiveValidationAttributes(htmlHelper, expression, htmlAttributes, metadata);
@@ -731,7 +870,9 @@ namespace CmsWeb
             object htmlAttributes = null)
         {
             if (!useNativeUnobtrusiveAttributes)
+            {
                 return htmlHelper.DropDownListFor(m => m.Value, selectList, optionLabel, htmlAttributes);
+            }
 
             var metadata = ModelMetadata.FromLambdaExpression(m => m, htmlHelper.ViewData);
             var attributes = Mapper.GetUnobtrusiveValidationAttributes(htmlHelper, m => m, htmlAttributes, metadata);
@@ -747,9 +888,15 @@ namespace CmsWeb
             bool show, string templateName, object viewdata = null, object htmlAttributes = null)
         {
             if (!show)
+            {
                 return null;
+            }
+
             if (templateName == null)
+            {
                 return htmlHelper.DisplayFor(expression, viewdata);
+            }
+
             return htmlHelper.DisplayFor(expression, templateName, viewdata);
         }
 
@@ -765,9 +912,15 @@ namespace CmsWeb
             bool show, string templateName, object viewdata = null, object htmlAttributes = null)
         {
             if (!show)
+            {
                 return null;
+            }
+
             if (templateName == null)
+            {
                 return htmlHelper.EditorFor(expression, viewdata);
+            }
+
             return htmlHelper.EditorFor(expression, templateName, viewdata);
         }
 
@@ -804,9 +957,17 @@ namespace CmsWeb
         public static HtmlString GoogleAnalytics()
         {
             var s = ConfigurationManager.AppSettings["GoogleAnalytics"];
-            if(s.HasValue())
+            if (s.HasValue())
+            {
                 return new HtmlString($"<script>{s}</script>");
+            }
+
             return null;
+        }
+
+        public static HtmlString GoogleReCaptcha()
+        {
+            return new HtmlString("<script src=\"https://www.google.com/recaptcha/api.js\"></script>");
         }
 
         public static HtmlString OldStyles()
@@ -826,7 +987,7 @@ namespace CmsWeb
 
         public static string Bootstrap3Css()
         {
-//<link rel=""stylesheet"" href=""//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"" integrity=""sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"" crossorigin=""anonymous"">
+            //<link rel=""stylesheet"" href=""//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"" integrity=""sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"" crossorigin=""anonymous"">
             return @"
 <link rel=""stylesheet"" href=""//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"">
 <link rel=""stylesheet"" href=""/Content/css/OnlineReg2.css?v=2"">
@@ -842,13 +1003,18 @@ namespace CmsWeb
 
         public static HtmlString FontAwesome()
         {
-            return new HtmlString("<link href=\"//netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.css\" rel=\"stylesheet\">\n");
+            return new HtmlString("<link href=\"//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css\" rel=\"stylesheet\">\n");
         }
 
         public static HtmlString CkEditor()
         {
-//            return new HtmlString("<script src=\"//cdnjs.cloudflare.com/ajax/libs/ckeditor/4.5.11/ckeditor.js\" type=\"text/javascript\"></script>\n");
+            //            return new HtmlString("<script src=\"//cdnjs.cloudflare.com/ajax/libs/ckeditor/4.5.11/ckeditor.js\" type=\"text/javascript\"></script>\n");
             return new HtmlString("<script src=\"//cdn.ckeditor.com/4.5.11/full/ckeditor.js\" type=\"text/javascript\"></script>\n");
+        }
+
+        public static HtmlString UnlayerEditor()
+        {
+            return new HtmlString("<script src=\"//editor.unlayer.com/embed.js\"></script>");
         }
 
         public static HtmlString jQueryMobile()
@@ -887,6 +1053,11 @@ namespace CmsWeb
             return new HtmlString("<script src=\"//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js\" type=\"text/javascript\"></script>\n");
         }
 
+        public static HtmlString Humanize()
+        {
+            return new HtmlString("<script src=\"//cdnjs.cloudflare.com/ajax/libs/humanize-plus/1.8.2/humanize.min.js\" type=\"text/javascript\"></script>\n");
+        }
+
         public static HtmlString Velocity()
         {
             return new HtmlString("<script src=\"//cdnjs.cloudflare.com/ajax/libs/velocity/1.2.3/velocity.min.js\" type=\"text/javascript\"></script>\n");
@@ -916,6 +1087,11 @@ namespace CmsWeb
         public static string TouchPointLayout()
         {
             return "~/Views/Shared/_Layout.cshtml";
+        }
+
+        public static string TouchPointLayoutWithoutHeaderFooter()
+        {
+            return "~/Views/Shared/_LayoutNoHeaderFooter.cshtml";
         }
 
         public static string DbSetting(string name, string def)
@@ -948,7 +1124,7 @@ namespace CmsWeb
             return c;
         }
 
-        public static string DatabaseErrorUrl(DbUtil.CheckDatabaseResult ret)
+        public static string DatabaseErrorUrl(CheckDatabaseResult ret)
         {
             switch (ret)
             {
@@ -984,16 +1160,18 @@ namespace CmsWeb
 
         private static string GetCollectionItemIndex(string collectionIndexFieldName)
         {
-            var previousIndices = (Queue<string>) HttpContext.Current.Items[collectionIndexFieldName];
+            var previousIndices = (Queue<string>)HttpContextFactory.Current.Items[collectionIndexFieldName];
             if (previousIndices == null)
             {
-                HttpContext.Current.Items[collectionIndexFieldName] = previousIndices = new Queue<string>();
+                HttpContextFactory.Current.Items[collectionIndexFieldName] = previousIndices = new Queue<string>();
 
-                var previousIndicesValues = HttpContext.Current.Request[collectionIndexFieldName];
+                var previousIndicesValues = HttpContextFactory.Current.Request[collectionIndexFieldName];
                 if (!string.IsNullOrWhiteSpace(previousIndicesValues))
                 {
                     foreach (var index in previousIndicesValues.Split(','))
+                    {
                         previousIndices.Enqueue(index);
+                    }
                 }
             }
 

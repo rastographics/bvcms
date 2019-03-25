@@ -1,15 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using CmsData;
-using CmsData.Classes.RoleChecker;
 using CmsData.Codes;
 using CmsData.OnlineRegSummaryText;
 using CmsData.Registration;
 using CmsData.View;
 using CmsWeb.Code;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Models
@@ -19,6 +18,8 @@ namespace CmsWeb.Areas.Dialog.Models
         public Organization Organization;
         public List<OrgMemMemTag> OrgMemMemTags;
         public bool IsMissionTrip;
+        private bool TripFundingPagesEnable;
+        private bool TripFundingPagesPublic;
         public TransactionSummary TransactionSummary;
         public string NewGroup { get; set; }
         private int? orgId;
@@ -49,7 +50,9 @@ namespace CmsWeb.Areas.Dialog.Models
             {
                 dopopulate = false;
                 if (!OrgId.HasValue || !PeopleId.HasValue)
+                {
                     return;
+                }
             }
             var i = (from mm in DbUtil.Db.OrganizationMembers
                      where mm.OrganizationId == OrgId && mm.PeopleId == PeopleId
@@ -61,16 +64,23 @@ namespace CmsWeb.Areas.Dialog.Models
                          mm.Organization,
                          mm.OrgMemMemTags,
                          mm.Organization.IsMissionTrip,
+                         mm.Organization.TripFundingPagesEnable,
+                         mm.Organization.TripFundingPagesPublic,
                          ts = DbUtil.Db.ViewTransactionSummaries.SingleOrDefault(tt => tt.RegId == mm.TranId && tt.PeopleId == PeopleId && tt.OrganizationId == OrgId)
                      }).SingleOrDefault();
             if (i == null)
+            {
                 throw new Exception($"missing OrgMember at oid={OrgId}, pid={PeopleId}");
+            }
+
             OrgMember = i.mm;
             TransactionSummary = i.ts;
             this.CopyPropertiesFrom(OrgMember);
             Name = i.Name;
 
             IsMissionTrip = i.IsMissionTrip ?? false;
+            TripFundingPagesEnable = i.TripFundingPagesEnable;
+            TripFundingPagesPublic = i.TripFundingPagesPublic;
             AmtFee = i.ts?.IndPaid + i.ts?.IndDue;
             AmtDonation = i.ts?.IndAmt - AmtFee;
             AmtCoupon = i.ts?.TotCoupon;
@@ -113,7 +123,10 @@ namespace CmsWeb.Areas.Dialog.Models
             set
             {
                 if (orgId != value)
+                {
                     dopopulate = true;
+                }
+
                 orgId = value;
                 Populate();
             }
@@ -126,7 +139,10 @@ namespace CmsWeb.Areas.Dialog.Models
             set
             {
                 if (peopleId != value)
+                {
                     dopopulate = true;
+                }
+
                 peopleId = value;
                 Populate();
             }
@@ -179,8 +195,8 @@ namespace CmsWeb.Areas.Dialog.Models
         public DateTime? DropDate { get; set; }
 
 
-//        [DisplayName("Total Amount")]
-//        public decimal? Amount { get; set; }
+        //        [DisplayName("Total Amount")]
+        //        public decimal? Amount { get; set; }
 
         [DisplayName("Fee")]
         public decimal? AmtFee { get; set; }
@@ -203,23 +219,35 @@ namespace CmsWeb.Areas.Dialog.Models
             get
             {
                 if (transactionsLink.HasValue())
+                {
                     return transactionsLink;
+                }
 
                 if (OrgMember == null)
+                {
                     OrgMember = DbUtil.Db.OrganizationMembers.Single(mm => mm.OrganizationId == OrgId && mm.PeopleId == PeopleId);
+                }
 
                 if (!IsMissionTrip)
+                {
                     return transactionsLink = OrgMember.TranId.HasValue ? $"/Transactions/{OrgMember.TranId}" : null;
+                }
 
                 if (OrgMember.IsInGroup("Goer") && OrgMember.IsInGroup("Sender"))
+                {
                     return transactionsLink = OrgMember.TranId.HasValue ? $"/Transactions/{OrgMember.TranId}?goerid={OrgMember.PeopleId}&senderid={OrgMember.PeopleId}" : null;
+                }
 
                 if (OrgMember.IsInGroup("Goer"))
+                {
                     return transactionsLink = OrgMember.TranId.HasValue ? $"/Transactions/{OrgMember.TranId}?goerid={OrgMember.PeopleId}"
                         : null;
+                }
 
                 if (OrgMember.IsInGroup("Sender"))
+                {
                     return transactionsLink = $"/Transactions/{0}?senderid={OrgMember.PeopleId}";
+                }
 
                 return transactionsLink = OrgMember.TranId.HasValue ? $"/Transactions/{OrgMember.TranId}" : null;
             }
@@ -228,7 +256,9 @@ namespace CmsWeb.Areas.Dialog.Models
         public void UpdateModel()
         {
             if (OrgMember == null)
+            {
                 OrgMember = DbUtil.Db.OrganizationMembers.Single(mm => mm.OrganizationId == OrgId && mm.PeopleId == PeopleId);
+            }
 
             CheckForAutoDemotion();
             CheckForAutoPromotion();
@@ -238,7 +268,10 @@ namespace CmsWeb.Areas.Dialog.Models
 
             DbUtil.Db.SubmitChanges();
             foreach (var g in changes)
+            {
                 DbUtil.LogActivity($"OrgMem {GroupName} change {g.Field}", OrgId, PeopleId);
+            }
+
             Populate();
         }
 
@@ -264,14 +297,20 @@ namespace CmsWeb.Areas.Dialog.Models
             get
             {
                 if (payLink.HasValue())
+                {
                     return payLink;
+                }
+
                 return payLink = GetPayLink(OrgId, PeopleId);
             }
         }
         public static string GetPayLink(int? oid, int? pid)
         {
             if (!pid.HasValue)
+            {
                 return null;
+            }
+
             var om = DbUtil.Db.OrganizationMembers.SingleOrDefault(mm => mm.OrganizationId == oid && mm.PeopleId == pid);
             return om?.PayLink2(DbUtil.Db);
         }
@@ -281,11 +320,24 @@ namespace CmsWeb.Areas.Dialog.Models
             get
             {
                 if (supportLink.HasValue())
+                {
                     return supportLink;
+                }
+
                 if (OrgMember == null)
+                {
                     OrgMember = DbUtil.Db.OrganizationMembers.Single(mm => mm.OrganizationId == OrgId && mm.PeopleId == PeopleId);
+                }
+
+                if (IsMissionTrip && TripFundingPagesEnable && TripFundingPagesPublic)
+                {
+                    return supportLink = DbUtil.Db.ServerLink($"/OnlineReg/{OrgId}/Giving/{PeopleId}");
+                }
                 if (IsMissionTrip && OrgMember.MemberTypeId == MemberTypeCode.Member)
+                {
                     return supportLink = DbUtil.Db.ServerLink($"/OnlineReg/{OrgId}?goerid={PeopleId}");
+                }
+
                 return null;
             }
         }
@@ -298,19 +350,26 @@ Checking the Remove From Enrollment History box will erase all enrollment histor
         public void Drop()
         {
             if (OrgMember == null)
+            {
                 OrgMember = DbUtil.Db.OrganizationMembers.Single(mm => mm.OrganizationId == OrgId && mm.PeopleId == PeopleId);
+            }
+
             if (DropDate.HasValue)
+            {
                 OrgMember.Drop(DbUtil.Db, DropDate.Value);
+            }
             else
+            {
                 OrgMember.Drop(DbUtil.Db);
+            }
+
             DbUtil.Db.SubmitChanges();
             DbUtil.LogActivity("OrgMem Drop", OrgId, PeopleId);
             if (RemoveFromEnrollmentHistory)
             {
-                DbUtil.DbDispose();
-                DbUtil.Db = DbUtil.Create(Util.Host);
-                var q = DbUtil.Db.EnrollmentTransactions.Where(tt => tt.OrganizationId == OrgId && tt.PeopleId == PeopleId);
-                DbUtil.Db.EnrollmentTransactions.DeleteAllOnSubmit(q);
+                //DbDispose();
+                //Db = DbUtil.Create(Util.Host);
+                DbUtil.Db.RemoveFromEnrollmentHistory(OrgId.Value, PeopleId.Value);
                 DbUtil.Db.SubmitChanges();
                 DbUtil.LogActivity("OrgMem RemoveEnrollmentHistory", OrgId, PeopleId);
             }
@@ -318,10 +377,15 @@ Checking the Remove From Enrollment History box will erase all enrollment histor
         public string SmallGroupChanged(int sgtagid, bool ck)
         {
             if (OrgMember == null)
+            {
                 OrgMember = DbUtil.Db.OrganizationMembers.Single(mm => mm.OrganizationId == OrgId && mm.PeopleId == PeopleId);
+            }
 
             if (OrgMember == null)
+            {
                 return "error";
+            }
+
             if (ck)
             {
                 var name = (from mt in DbUtil.Db.MemberTags
@@ -341,7 +405,10 @@ Checking the Remove From Enrollment History box will erase all enrollment histor
                              name = mt.MemberTag.Name
                          }).SingleOrDefault();
                 if (i == null)
+                {
                     return "not found";
+                }
+
                 DbUtil.Db.OrgMemMemTags.DeleteOnSubmit(i.mt);
                 DbUtil.LogActivity("OrgMem RemoveSubGroup " + i.name, OrgId, PeopleId);
             }
@@ -358,7 +425,10 @@ Checking the Remove From Enrollment History box will erase all enrollment histor
         public void AddQuestions()
         {
             if (OrgId == null)
+            {
                 return;
+            }
+
             var r = OnlineRegPersonModel0.CreateFromSettings(DbUtil.Db, OrgId.Value);
             OrgMember.OnlineRegData = r.WriteXml();
             DbUtil.Db.SubmitChanges();
@@ -369,7 +439,9 @@ Checking the Remove From Enrollment History box will erase all enrollment histor
             var q = DbUtil.Db.OrgMemberQuestions(OrgId, PeopleId).ToList();
             var rq = q.SingleOrDefault(vv => vv.Row == n);
             if (rq == null)
+            {
                 throw new Exception("question not found");
+            }
 
             var question = rq.Question;
 
@@ -391,7 +463,9 @@ Checking the Remove From Enrollment History box will erase all enrollment histor
             var q = DbUtil.Db.OrgMemberQuestions(OrgId, PeopleId).ToList();
             var rq = q.SingleOrDefault(vv => vv.Row == n);
             if (rq == null)
+            {
                 throw new Exception("question not found");
+            }
 
             var question = rq.Question;
 
@@ -412,7 +486,10 @@ Checking the Remove From Enrollment History box will erase all enrollment histor
         private void CheckForAutoPromotion()
         {
             var autoLeaderOrgPromotionSetting = DbUtil.Db.Setting(AutoOrgLeaderPromotion);
-            if (!autoLeaderOrgPromotionSetting) return;
+            if (!autoLeaderOrgPromotionSetting)
+            {
+                return;
+            }
 
             var isPromotingToLeader = !LeaderTypeIds.Contains(OrgMember.MemberTypeId.ToString()) &&
                                       LeaderTypeIds.Contains(MemberType.Value);
@@ -424,7 +501,10 @@ Checking the Remove From Enrollment History box will erase all enrollment histor
             }
 
             var users = DbUtil.Db.Users.Where(us => us.PeopleId == PeopleId);
-            if (!users.Any()) return;
+            if (!users.Any())
+            {
+                return;
+            }
 
             foreach (var user in users)
             {
@@ -432,8 +512,8 @@ Checking the Remove From Enrollment History box will erase all enrollment histor
                 {
                     user.AddRoles(DbUtil.Db,
                         !user.InRole(AccessRole)
-                            ? new[] {AccessRole, OrgLeadersOnlyRole}
-                            : new[] {OrgLeadersOnlyRole});
+                            ? new[] { AccessRole, OrgLeadersOnlyRole }
+                            : new[] { OrgLeadersOnlyRole });
                 }
                 if (autoPromoteCustom != null)
                 {
@@ -445,7 +525,10 @@ Checking the Remove From Enrollment History box will erase all enrollment histor
         private void CheckForAutoDemotion()
         {
             var autoLeaderOrgPromotionSetting = DbUtil.Db.Setting(AutoOrgLeaderPromotion);
-            if (!autoLeaderOrgPromotionSetting) return;
+            if (!autoLeaderOrgPromotionSetting)
+            {
+                return;
+            }
 
             var autoPromoteCustom = GetAutoPromoteCustomSetting();
 
@@ -453,7 +536,10 @@ Checking the Remove From Enrollment History box will erase all enrollment histor
                                         !LeaderTypeIds.Contains(MemberType.Value);
 
             var users = DbUtil.Db.Users.Where(us => us.PeopleId == PeopleId);
-            if (!users.Any()) return;
+            if (!users.Any())
+            {
+                return;
+            }
 
             foreach (var user in users)
             {
@@ -478,7 +564,7 @@ Checking the Remove From Enrollment History box will erase all enrollment histor
                                 && x.PeopleId == PeopleId && x.OrganizationId != Organization.OrganizationId))
                     {
                         // Resets their roles back to a "MyData" user
-                        user.SetRoles(DbUtil.Db, new string[] {});
+                        user.SetRoles(DbUtil.Db, new string[] { });
                     }
                 }
             }
@@ -497,10 +583,16 @@ Checking the Remove From Enrollment History box will erase all enrollment histor
         private AutoPromoteCustomSettings GetAutoPromoteCustomSetting()
         {
             var settingContent = DbUtil.Db.Setting(AutoOrgLeaderPromoteCustom, "");
-            if (string.IsNullOrWhiteSpace(settingContent)) return null;
+            if (string.IsNullOrWhiteSpace(settingContent))
+            {
+                return null;
+            }
 
-            var values = settingContent.Split(new [] {"__"}, StringSplitOptions.RemoveEmptyEntries);
-            if (values.Length != 2) return null;
+            var values = settingContent.Split(new[] { "__" }, StringSplitOptions.RemoveEmptyEntries);
+            if (values.Length != 2)
+            {
+                return null;
+            }
 
             return new AutoPromoteCustomSettings
             {

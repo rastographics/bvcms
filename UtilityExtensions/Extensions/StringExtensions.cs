@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -127,13 +128,6 @@ namespace UtilityExtensions
         {
             if (source.HasValue() && source.Length > length)
                 source = source.Substring(0, length).Trim();
-            return source;
-        }
-
-        // ReSharper disable once InconsistentNaming
-        public static string trim(this string source)
-        {
-            source = source?.Trim();
             return source;
         }
 
@@ -354,6 +348,15 @@ namespace UtilityExtensions
         public static string HtmlEncode(this string s)
         {
             return HttpUtility.HtmlEncode(s);
+        }
+
+        public static Dictionary<string, object> ToDictionary(this string value)
+        {
+            if (value == null)
+            {
+                return new Dictionary<string, object>();
+            }
+            return JsonConvert.DeserializeObject<Dictionary<string, object>>(value);
         }
     }
 }

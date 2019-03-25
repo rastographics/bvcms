@@ -292,6 +292,19 @@
         return false;
     });
 
+    $('body').on('click', '#conditions a.toggleConditionEnabled', function () {
+        liedit = $(this).closest("li.condition");
+        var qid = liedit.data("qid");
+        $.postQuery('ToggleConditionEnabled', qid, function (ret) {
+            $("#conditions").html(ret);
+            if ($("#AutoRun").prop("checked"))
+                RefreshList();
+            else
+                FadeList();
+        });
+        return false;
+    });
+
     $('body').on('change', '#Comparison', function (ev) {
         var sel = "#CodeValues";
         if ($(sel).length > 0) {

@@ -105,10 +105,17 @@
   <p class="record_added muted">
     <small>
       Record added @Model.CreatedDate.FormatDateTm()
-      @if (User.IsInRole("Edit") || User.IsInRole("Admin"))
-            {
-          @:(<a href="/Person2/User/@Model.person.CreatedBy">@Model.person.CreatedBy</a>)
-            }
+      @if (((User.IsInRole("Edit") || User.IsInRole("Admin"))))
+      {
+          if(Model.person.CreatedBy == 0)
+          {
+              @:(0)
+          }
+          else
+          {
+            @:(<a href="/Person2/User/@Model.person.CreatedBy">@Model.person.CreatedBy</a>)
+          }
+      }
     </small>
   </p>
   @FormAction(true)

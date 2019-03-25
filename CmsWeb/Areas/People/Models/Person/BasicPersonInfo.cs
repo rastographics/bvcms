@@ -1,21 +1,21 @@
+using CmsData;
+using CmsWeb.Code;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
-using System.Reflection;
-using System.Web;
 using System.Linq;
-using CmsData;
-using CmsWeb.Code;
-using UtilityExtensions;
+using System.Reflection;
 using System.Text;
+using System.Web;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Models
 {
     public class EmailInfo : IModelViewModelObject
     {
-        [StringLength(20)]
+        [StringLength(150)]
         public string Address { get; set; }
         public bool Send { get; set; }
 
@@ -94,7 +94,10 @@ namespace CmsWeb.Areas.People.Models
             {
                 _id = value;
                 if (_id == 0)
+                {
                     return;
+                }
+
                 person = DbUtil.Db.LoadPersonById(value);
             }
         }
@@ -134,6 +137,8 @@ namespace CmsWeb.Areas.People.Models
         public CodeInfo Campus { get; set; }
 
         [DisplayName("Birthday")]
+        [DateEmptyOrValid]
+        [BirthdateValid]
         public string DOB { get; set; }
 
         public CodeInfo MaritalStatus { get; set; }
@@ -201,7 +206,10 @@ namespace CmsWeb.Areas.People.Models
         {
             Id = id;
             if (person == null)
+            {
                 return;
+            }
+
             person.SendEmailAddress1 = person.SendEmailAddress1 ?? true; // set sendemailaddress1 to either true or false, null is not allowed, default is true
             this.CopyPropertiesFrom(person);
         }
@@ -210,7 +218,9 @@ namespace CmsWeb.Areas.People.Models
             var p = DbUtil.Db.LoadPersonById(PeopleId);
 
             if (Grade == null && p.Grade == 0) // special case to fix bug
+            {
                 p.Grade = null;
+            }
 
             var changes = this.CopyPropertiesTo(p);
             p.LogChanges(DbUtil.Db, changes);
@@ -223,23 +233,27 @@ namespace CmsWeb.Areas.People.Models
             {
                 var ret = p.MemberProfileAutomation(DbUtil.Db);
                 if (ret != "ok")
+                {
                     Elmah.ErrorSignal.FromCurrentContext().Raise(
                         new Exception(ret + " for PeopleId:" + p.PeopleId));
+                }
             }
 
             DbUtil.Db.SubmitChanges();
 
-            if (!HttpContext.Current.User.IsInRole("Access"))
+            if (!HttpContextFactory.Current.User.IsInRole("Access"))
             {
                 changes.AddRange(fsb);
                 if (changes.Count > 0)
                 {
                     var np = DbUtil.Db.GetNewPeopleManagers();
-                    if(np != null)
+                    if (np != null)
+                    {
                         DbUtil.Db.EmailRedacted(p.FromEmail, np,
                             "Basic Person Info Changed on " + Util.Host,
                             $"{Util.UserName} changed the following information for <a href='{DbUtil.Db.ServerLink($"/Person2/{PeopleId}")}'>{FirstName} {LastName}</a> ({PeopleId}):<br />\n"
                             + ChangeTable(changes));
+                    }
                 }
             }
         }

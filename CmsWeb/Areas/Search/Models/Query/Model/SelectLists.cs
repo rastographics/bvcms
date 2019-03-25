@@ -34,11 +34,11 @@ namespace CmsWeb.Areas.Search.Models
                     switch (fieldMap.DataSource)
                     {
                         case "ExtraValues":
-                            return SelectedList(ExtraValueCodes());
+                            return SelectedList(ExtraValueCodes(Db));
                         case "FamilyExtraValues":
-                            return SelectedList(FamilyExtraValueCodes());
+                            return SelectedList(FamilyExtraValueCodes(Db));
                         case "Attributes":
-                            return SelectedList(ExtraValueAttributes());
+                            return SelectedList(ExtraValueAttributes(Db));
                         default:
                             return ConvertToSelect(Util.CallMethod(cvctl, fieldMap.DataSource), fieldMap.DataValueField);
                     }
@@ -47,19 +47,19 @@ namespace CmsWeb.Areas.Search.Models
             }
             return null;
         }
-        public static List<SelectListItem> ExtraValueCodes()
+        public static List<SelectListItem> ExtraValueCodes(CMSDataContext db)
         {
-            var q = from e in DbUtil.Db.PeopleExtras
+            var q = from e in db.PeopleExtras
                     where e.StrValue != null || e.BitValue != null
                     group e by new { e.Field, val = e.StrValue ?? (e.BitValue == true ? "1" : "0") }
                         into g
                         select g.Key;
             var list = q.ToList();
 
-            var ev = CmsData.ExtraValue.Views.GetStandardExtraValues(DbUtil.Db, "People");
+            var ev = CmsData.ExtraValue.Views.GetStandardExtraValues(db, "People");
             var q2 = from e in list
                      let f = ev.SingleOrDefault(ff => ff.Name == e.Field)
-                     where f == null || f.UserCanView(DbUtil.Db)
+                     where f == null || f.UserCanView(db)
                      orderby e.Field, e.val
                      select new SelectListItem()
                             {
@@ -68,19 +68,19 @@ namespace CmsWeb.Areas.Search.Models
                             };
             return q2.ToList();
         }
-        public static List<SelectListItem> FamilyExtraValueCodes()
+        public static List<SelectListItem> FamilyExtraValueCodes(CMSDataContext db)
         {
-            var q = from e in DbUtil.Db.FamilyExtras
+            var q = from e in db.FamilyExtras
                     where e.StrValue != null || e.BitValue != null
                     group e by new { e.Field, val = e.StrValue ?? (e.BitValue == true ? "1" : "0") }
                         into g
                         select g.Key;
             var list = q.ToList();
 
-            var ev = CmsData.ExtraValue.Views.GetStandardExtraValues(DbUtil.Db, "Family");
+            var ev = CmsData.ExtraValue.Views.GetStandardExtraValues(db, "Family");
             var q2 = from e in list
                      let f = ev.SingleOrDefault(ff => ff.Name == e.Field)
-                     where f == null || f.UserCanView(DbUtil.Db)
+                     where f == null || f.UserCanView(db)
                      orderby e.Field, e.val
                      select new SelectListItem()
                             {
@@ -89,9 +89,9 @@ namespace CmsWeb.Areas.Search.Models
                             };
             return q2.ToList();
         }
-        public static List<SelectListItem> ExtraValueAttributes()
+        public static List<SelectListItem> ExtraValueAttributes(CMSDataContext db)
         {
-            var q = from e in DbUtil.Db.ViewAttributes
+            var q = from e in db.ViewAttributes
                     group e by new { e.Field, e.Name, e.ValueX } 
                         into g
                         select g.Key;
@@ -162,7 +162,8 @@ namespace CmsWeb.Areas.Search.Models
                    let comp = c.CompType == CompareType.AllTrue ? "All"
                        : c.CompType == CompareType.AnyTrue ? "Any"
                            : c.CompType == CompareType.AllFalse ? "None"
-                               : "unknown"
+                               : c.CompType == CompareType.AnyFalse ? "Not All"
+                                   : "unknown"
                    select new SelectListItem
                    {
                        Text = comp,
@@ -260,7 +261,7 @@ namespace CmsWeb.Areas.Search.Models
         public IEnumerable<SelectListItem> Divisions(string id)
         {
             var progid = id.GetCsvToken().ToInt();
-            var q = from div in DbUtil.Db.Divisions
+            var q = from div in Db.Divisions
                     where div.ProgDivs.Any(d => d.ProgId == progid)
                     orderby div.Name
                     select new SelectListItem
@@ -276,8 +277,8 @@ namespace CmsWeb.Areas.Search.Models
         public IEnumerable<SelectListItem> Organizations(string id)
         {
             var divid = id.GetCsvToken().ToInt();
-            var roles = DbUtil.Db.CurrentRoles();
-            var q = from ot in DbUtil.Db.DivOrgs
+            var roles = Db.CurrentRoles();
+            var q = from ot in Db.DivOrgs
                     where ot.Organization.LimitToRole == null || roles.Contains(ot.Organization.LimitToRole)
                     let name = ot.Organization.OrganizationName
                     where ot.DivId == divid

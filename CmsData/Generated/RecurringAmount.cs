@@ -23,12 +23,10 @@ namespace CmsData
 		private int _FundId;
 		
 		private decimal? _Amt;
-		
-   		
     	
-		private EntityRef< ContributionFund> _ContributionFund;
+		private EntityRef<ContributionFund> _ContributionFund;
 		
-		private EntityRef< Person> _Person;
+		private EntityRef<Person> _Person;
 		
 	#endregion
 	
@@ -45,15 +43,15 @@ namespace CmsData
 		
 		partial void OnAmtChanging(decimal? value);
 		partial void OnAmtChanged();
-		
-    #endregion
-		public RecurringAmount()
+
+        #endregion
+        public RecurringAmount()
 		{
 			
 			
-			this._ContributionFund = default(EntityRef< ContributionFund>); 
+			this._ContributionFund = default(EntityRef<ContributionFund>); 
 			
-			this._Person = default(EntityRef< Person>); 
+			this._Person = default(EntityRef<Person>); 
 			
 			OnCreated();
 		}
@@ -134,16 +132,15 @@ namespace CmsData
 
 		}
 
-		
-    #endregion
-        
-    #region Foreign Key Tables
-   		
-	#endregion
-	
-	#region Foreign Keys
-    	
-		[Association(Name="FK_RecurringAmounts_ContributionFund", Storage="_ContributionFund", ThisKey="FundId", IsForeignKey=true)]
+        #endregion
+
+        #region Foreign Key Tables
+
+        #endregion
+
+        #region Foreign Keys
+
+        [Association(Name="FK_RecurringAmounts_ContributionFund", Storage="_ContributionFund", ThisKey="FundId", IsForeignKey=true)]
 		public ContributionFund ContributionFund
 		{
 			get { return this._ContributionFund.Entity; }

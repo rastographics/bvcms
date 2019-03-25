@@ -8,5 +8,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public PaymentForm PaymentForm { get; set; }
 
+        public OnePageGivingModel() { }
+
     }
 }

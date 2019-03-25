@@ -1,24 +1,21 @@
+using CmsData;
+using CmsWeb.Code;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
-using CmsData;
-using CmsWeb.Areas.Public.Controllers;
-using CmsWeb.Code;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Search.Models
 {
     public partial class QueryModel : QueryResults
     {
-        private static readonly List<CodeValueItem> BitCodes =
-            new List<CodeValueItem>
+        private static readonly List<CodeValueItem> BitCodes = new List<CodeValueItem>
             {
                 new CodeValueItem {Id = 1, Value = "True", Code = "T"},
                 new CodeValueItem {Id = 0, Value = "False", Code = "F"},
             };
-        private static readonly List<CodeValueItem> EqualBitCodes =
-            new List<CodeValueItem>
+        private static readonly List<CodeValueItem> EqualBitCodes = new List<CodeValueItem>
             {
                 new CodeValueItem {Id = 1, Value = "True", Code = "T"},
             };
@@ -31,12 +28,17 @@ namespace CmsWeb.Areas.Search.Models
 
         public QueryModel()
         {
-            Db.SetUserPreference("NewCategories", "true");
             ConditionName = "Group";
         }
 
-        public QueryModel(Guid? id)
+        public QueryModel(CMSDataContext db)
             : this()
+        {
+            Db = db;
+        }
+
+        public QueryModel(Guid? id, CMSDataContext db)
+            : this(db)
         {
             QueryId = id;
             DbUtil.LogActivity($"Running Query ({id})");
@@ -56,7 +58,7 @@ namespace CmsWeb.Areas.Search.Models
 
         public string Campus { get; set; }
         private int CampusInt => Campus.GetCsvToken().ToInt();
-        
+
         public string OrgType { get; set; }
         private int OrgTypeInt => OrgType.GetCsvToken().ToInt();
 
@@ -96,6 +98,7 @@ namespace CmsWeb.Areas.Search.Models
             get { return (Tags ?? "").Split(';').ToList(); }
             set { Tags = string.Join(";", value); }
         }
+
         [SkipFieldOnCopyProperties]
         public List<string> PmmLabels
         {
@@ -148,41 +151,96 @@ namespace CmsWeb.Areas.Search.Models
             return q;
         }
 
+        [Obsolete]
         public Tag TagAllIds()
         {
+            return TagAll();
+        }
+
+        /// <summary>
+        /// Add the specified tag to the result of this query
+        /// </summary>
+        /// <param name="tagname">The name of the tag to assign to the result of this QueryModel. Uses the user's session id as a default value if nothing is supplied.</param>
+        public Tag TagAll(string tagname = "")
+        {
+            if (string.IsNullOrEmpty(tagname))
+            {
+                tagname = Util.SessionId; // not specifying an explicit name, so use the session id as a default
+            }
+            var tag = Db.FetchOrCreateTag(tagname, Util.UserPeopleId, DbUtil.TagTypeId_Personal);
+            return TagAll(tag);
+        }
+
+        /// <summary>
+        /// Add the specified tag to the result of this query
+        /// </summary>
+        /// <param name="tag">An object instance of the tag to append</param>
+        public Tag TagAll(Tag tag)
+        {
+            if (tag == null)
+            {
+                throw new ArgumentNullException(nameof(tag));
+            }
+
+            Db.CurrentTagName = tag.Name;
+            Db.CurrentTagOwnerId = tag.PersonOwner.PeopleId;
+
             var q = DefineModelList();
-            var tag = Db.FetchOrCreateTag(Util.SessionId, Util.UserPeopleId, DbUtil.TagTypeId_Query);
-            Db.TagAll(q, tag);
+
+            var newTags = new List<TagPerson>();
+
+            foreach (var p in q.Where(p => !p.Tags.Any(t => t.Id == tag.Id)).ToList())
+            {
+                newTags.Add(new TagPerson { PeopleId = p.PeopleId, Id = tag.Id, DateCreated = DateTime.Now });
+            }
+
+            Db.TagPeople.InsertAllOnSubmit(newTags);
+            Db.SubmitChanges();
+
             return tag;
         }
 
-        public void TagAll(Tag tag = null)
+        /// <summary>
+        /// Removes the specified tag from the results of this query
+        /// </summary>
+        /// <param name="tagname">The name of the tag to remove from the result of this QueryModel. Uses the current tag name as a default value if nothing is supplied</param>
+        public Tag UntagAll(string tagname = "")
         {
-            Db.SetNoLock();
-            var q = Db.People.Where(TopClause.Predicate(Db));
-            if (TopClause.PlusParentsOf)
-                q = Db.PersonQueryPlusParents(q);
-            else if (TopClause.ParentsOf)
-                q = Db.PersonQueryParents(q);
-            if(TopClause.FirstPersonSameEmail)
-                q = Db.PersonQueryFirstPersonSameEmail(q);
-            if (tag != null)
-                Db.TagAll(q, tag);
-            else
-                Db.TagAll(q);
+            if (string.IsNullOrEmpty(tagname))
+            {
+                tagname = Util2.CurrentTag; // not specifying an explicit name, so use the current tag name as default
+            }
+            var tag = Db.FetchOrCreateTag(tagname, Util.UserPeopleId, DbUtil.TagTypeId_Personal);
+            return UntagAll(tag);
         }
 
-        public void UnTagAll()
+        /// <summary>
+        /// Removes the specified tag from the results of this query
+        /// </summary>
+        /// <param name="tag">An object instance of the tag to remove</param>
+        public Tag UntagAll(Tag tag)
         {
-            Db.SetNoLock();
-            var q = Db.People.Where(TopClause.Predicate(Db));
+            if (tag == null)
+            {
+                throw new ArgumentNullException(nameof(tag));
+            }
 
-            if (TopClause.PlusParentsOf)
-                q = Db.PersonQueryPlusParents(q);
-            else if (TopClause.ParentsOf)
-                q = Db.PersonQueryParents(q);
+            Db.CurrentTagName = tag.Name;
+            Db.CurrentTagOwnerId = tag.PersonOwner.PeopleId;
 
-            Db.UnTagAll(q);
+            var q = DefineModelList();
+            var removedTags = new List<TagPerson>();
+
+            foreach (var p in q.Where(p => p.Tags.Any(t => t.Id == tag.Id)).ToList())
+            {
+                removedTags.Add(new TagPerson { PeopleId = p.PeopleId, Id = tag.Id });
+            }
+
+            Db.TagPeople.AttachAll(removedTags);
+            Db.TagPeople.DeleteAllOnSubmit(removedTags);
+            Db.SubmitChanges();
+
+            return tag;
         }
 
         public bool Validate(ModelStateDictionary m)
@@ -191,16 +249,29 @@ namespace CmsWeb.Areas.Search.Models
             int i = 0;
             if (DaysVisible && !int.TryParse(Days, out i))
             {
-                if(new [] { "IsFamilyGiver", "IsFamilyPledger" }.Contains(ConditionName) == false)
+                if (new[] { "IsFamilyGiver", "IsFamilyPledger" }.Contains(ConditionName) == false)
+                {
                     m.AddModelError("Days", "must be integer");
+                }
             }
             if (i > 10000)
+            {
                 m.AddModelError("Days", "days > 10000");
+            }
+
             if (TagsVisible && string.Join(",", Tags).Length > 500)
+            {
                 m.AddModelError("tagvalues", "too many tags selected");
+            }
+
             if (Comparison == "Contains")
+            {
                 if (!TextValue.HasValue())
+                {
                     m.AddModelError("TextValue", "cannot be empty");
+                }
+            }
+
             return m.IsValid;
         }
         public void UpdateCondition()
@@ -212,5 +283,7 @@ namespace CmsWeb.Areas.Search.Models
         {
             this.CopyPropertiesFrom(Selected);
         }
+        public bool UseEmployerNotTeacher => Db?.Setting("UseEmployerNotTeacher") ?? false;
+        public bool ShowAltNameOnSearchResults => Db?.Setting("ShowAltNameOnSearchResults") ?? false;
     }
 }

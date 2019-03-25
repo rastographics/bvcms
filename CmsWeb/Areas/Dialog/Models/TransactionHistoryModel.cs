@@ -1,8 +1,7 @@
+using CmsData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using CmsData;
 
 namespace CmsWeb.Areas.Dialog.Models
 {
@@ -12,6 +11,8 @@ namespace CmsWeb.Areas.Dialog.Models
         public int oid { get; set; }
         public string Name { get; set; }
         public string Org { get; set; }
+
+        public TransactionHistoryModel() { }
 
         public TransactionHistoryModel(int id, int oid)
         {
@@ -42,22 +43,22 @@ namespace CmsWeb.Areas.Dialog.Models
         }
         public IEnumerable<AttendInfo> FetchAttends()
         {
-			var mt = from mm in DbUtil.Db.Meetings
-					 where mm.OrganizationId == oid 
-					 where mm.MeetingDate < DateTime.Now
-					 orderby mm.MeetingDate descending
-					 select mm.MeetingDate;
-			var dt = mt.FirstOrDefault();
-			var dtyrago = (dt ?? DateTime.Now).AddYears(-1);
+            var mt = from mm in DbUtil.Db.Meetings
+                     where mm.OrganizationId == oid
+                     where mm.MeetingDate < DateTime.Now
+                     orderby mm.MeetingDate descending
+                     select mm.MeetingDate;
+            var dt = mt.FirstOrDefault();
+            var dtyrago = (dt ?? DateTime.Now).AddYears(-1);
             var q = from a in DbUtil.Db.Attends
                     where a.PeopleId == id && a.OrganizationId == oid
-					where a.MeetingDate >= dtyrago
+                    where a.MeetingDate >= dtyrago
                     orderby a.MeetingDate descending
                     select new AttendInfo
                     {
                         Indicator = Indicator(a.AttendanceTypeId, a.EffAttendFlag),
                         AttendanceFlag = a.EffAttendFlag.HasValue ? (a.EffAttendFlag.Value ? "1" : "0") : "_",
-						ScheduleType = a.Meeting.AttendCreditId,
+                        ScheduleType = a.Meeting.AttendCreditId,
                         MeetingDate = a.MeetingDate,
                         MeetingId = a.MeetingId,
                         AttendType = a.AttendType.Description,
@@ -87,7 +88,7 @@ namespace CmsWeb.Areas.Dialog.Models
             var q2 = from et in DbUtil.Db.EnrollmentHistory(id, oid)
                      where et.PeopleId == id && et.OrganizationId == oid
                      where et.TransactionStatus == false
-                     orderby et.TransactionDate descending, et.TransactionTypeId descending 
+                     orderby et.TransactionDate descending, et.TransactionTypeId descending
                      select new TransactionInfo
                      {
                          TransactionId = et.TransactionId,
@@ -106,6 +107,7 @@ namespace CmsWeb.Areas.Dialog.Models
         private string Indicator(int? type, bool? flag)
         {
             if (flag == null) // attended elsewhere or Group
+            {
                 switch (type)
                 {
                     case 20: return "V";
@@ -115,10 +117,15 @@ namespace CmsWeb.Areas.Dialog.Models
                     case 110: return "*";
                     default: return "*";
                 }
+            }
             else if (flag.Value) // attended here
+            {
                 return "P";
+            }
             else // absent
+            {
                 return ".";
+            }
         }
 
     }

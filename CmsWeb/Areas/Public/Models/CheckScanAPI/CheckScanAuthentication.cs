@@ -1,191 +1,212 @@
-﻿using System;
+﻿using CmsData;
+using System;
 using System.Data.Linq;
 using System.Linq;
 using System.Net;
 using System.Text;
 using System.Web;
 using System.Web.Security;
-using CmsData;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Public.Models.CheckScanAPI
 {
-	public class CheckScanAuthentication
-	{
-		private User user;
-		private Error error;
-		
-		private string username;
-		private string password;
+    public class CheckScanAuthentication
+    {
+        private User user;
+        private Error error;
 
-		public void authenticate()
-		{
-			if( string.IsNullOrEmpty( HttpContext.Current.Request.Headers["Authorization"] ) ) {
-				error = Error.NO_HEADER;
+        private string username;
+        private string password;
 
-				return;
-			}
+        public void authenticate()
+        {
+            if (string.IsNullOrEmpty(HttpContextFactory.Current.Request.Headers["Authorization"]))
+            {
+                error = Error.NO_HEADER;
 
-			string authHeader = HttpContext.Current.Request.Headers["Authorization"];
-			string[] headerParts = authHeader.SplitStr( " " );
+                return;
+            }
 
-			if( headerParts.Length != 2 ) {
-				error = Error.INVALID_HEADER;
+            string authHeader = HttpContextFactory.Current.Request.Headers["Authorization"];
+            string[] headerParts = authHeader.SplitStr(" ");
 
-				return;
-			}
+            if (headerParts.Length != 2)
+            {
+                error = Error.INVALID_HEADER;
 
-			switch( headerParts[0].ToLower() ) {
-				case "basic": {
-					error = validateBasic( headerParts[1] );
+                return;
+            }
 
-					break;
-				}
+            switch (headerParts[0].ToLower())
+            {
+                case "basic":
+                    {
+                        error = validateBasic(headerParts[1]);
 
-				default: {
-					error = Error.INVALID_HEADER_TYPE;
+                        break;
+                    }
 
-					break;
-				}
-			}
-		}
+                default:
+                    {
+                        error = Error.INVALID_HEADER_TYPE;
 
-		private Error validateBasic( string value )
-		{
-			string credentials;
-			bool userFound;
+                        break;
+                    }
+            }
+        }
 
-			try {
-				credentials = Encoding.ASCII.GetString( Convert.FromBase64String( value ) );
-			} catch( Exception ) {
-				return Error.MALFORMED_BASE64;
-			}
+        private Error validateBasic(string value)
+        {
+            string credentials;
+            bool userFound;
 
-			string[] userAndPassword = credentials.SplitStr( ":" );
+            try
+            {
+                credentials = Encoding.ASCII.GetString(Convert.FromBase64String(value));
+            }
+            catch (Exception)
+            {
+                return Error.MALFORMED_BASE64;
+            }
 
-			if( userAndPassword.Length != 2 ) {
-				return Error.INVALID_HEADER;
-			}
+            string[] userAndPassword = credentials.SplitStr(":");
 
-			if( string.IsNullOrEmpty( userAndPassword[0] ) || string.IsNullOrEmpty( userAndPassword[1] ) ) {
-				return Error.MISSING_CREDENTIALS;
-			}
+            if (userAndPassword.Length != 2)
+            {
+                return Error.INVALID_HEADER;
+            }
 
-			NetworkCredential networkCredential = new NetworkCredential( userAndPassword[0], userAndPassword[1] );
-			username = networkCredential.UserName;
-			password = networkCredential.Password;
+            if (string.IsNullOrEmpty(userAndPassword[0]) || string.IsNullOrEmpty(userAndPassword[1]))
+            {
+                return Error.MISSING_CREDENTIALS;
+            }
 
-			bool impersonating = password == DbUtil.Db.Setting( "ImpersonatePassword", Guid.NewGuid().ToString() );
+            NetworkCredential networkCredential = new NetworkCredential(userAndPassword[0], userAndPassword[1]);
+            username = networkCredential.UserName;
+            password = networkCredential.Password;
 
-			IQueryable<User> userQuery = DbUtil.Db.Users.Where( uu => uu.Username == username || uu.Person.EmailAddress == username || uu.Person.EmailAddress2 == username );
+            bool impersonating = password == DbUtil.Db.Setting("ImpersonatePassword", Guid.NewGuid().ToString());
 
-			try {
-				userFound = userQuery.Any();
+            IQueryable<User> userQuery = DbUtil.Db.Users.Where(uu => uu.Username == username || uu.Person.EmailAddress == username || uu.Person.EmailAddress2 == username);
+
+            try
+            {
+                userFound = userQuery.Any();
 #pragma warning disable CS0168 // Variable is declared but never used
             }
-            catch ( Exception ex )
+            catch (Exception ex)
             {
 #pragma warning restore CS0168 // Variable is declared but never used
                 return Error.DATABASE_ERROR;
-			}
+            }
 
-			foreach( var foundUser in userQuery.ToList() ) {
-				if( !Membership.Provider.ValidateUser( username, password ) ) continue;
+            foreach (var foundUser in userQuery.ToList())
+            {
+                if (!Membership.Provider.ValidateUser(username, password))
+                {
+                    continue;
+                }
 
-				DbUtil.Db.Refresh( RefreshMode.OverwriteCurrentValues, foundUser );
-				user = foundUser;
+                DbUtil.Db.Refresh(RefreshMode.OverwriteCurrentValues, foundUser);
+                user = foundUser;
 
-				break;
-			}
+                break;
+            }
 
-			return checkUser( userFound, impersonating );
-		}
+            return checkUser(userFound, impersonating);
+        }
 
-		private Error checkUser( bool userFound, bool impersonating )
-		{
-			if( user == null && userFound ) {
-				DbUtil.LogActivity( $"Mobile: Failed password by {username}" );
+        private Error checkUser(bool userFound, bool impersonating)
+        {
+            if (user == null && userFound)
+            {
+                DbUtil.LogActivity($"Mobile: Failed password by {username}");
 
-				return Error.INVALID_PASSWORD;
-			}
+                return Error.INVALID_PASSWORD;
+            }
 
-			if( user == null ) {
-				DbUtil.LogActivity( $"Mobile: Attempt to login by unknown user {username}" );
+            if (user == null)
+            {
+                DbUtil.LogActivity($"Mobile: Attempt to login by unknown user {username}");
 
-				return Error.USER_NOT_FOUND;
-			}
+                return Error.USER_NOT_FOUND;
+            }
 
-			if( user.IsLockedOut ) {
-				DbUtil.LogActivity( $"Mobile: Attempt to login by locked out user {username}" );
+            if (user.IsLockedOut)
+            {
+                DbUtil.LogActivity($"Mobile: Attempt to login by locked out user {username}");
 
-				return Error.USER_LOCKED_OUT;
-			}
+                return Error.USER_LOCKED_OUT;
+            }
 
-			if( !user.IsApproved ) {
-				DbUtil.LogActivity( $"Mobile: Attempt to login by unapproved user {username}" );
+            if (!user.IsApproved)
+            {
+                DbUtil.LogActivity($"Mobile: Attempt to login by unapproved user {username}");
 
-				return Error.USER_NOT_APPROVED;
-			}
+                return Error.USER_NOT_APPROVED;
+            }
 
-			if( impersonating && user.Roles.Contains( "Finance" ) ) {
-				DbUtil.LogActivity( $"Mobile: Attempt to impersonate finance by {username}" );
+            if (impersonating && user.Roles.Contains("Finance"))
+            {
+                DbUtil.LogActivity($"Mobile: Attempt to impersonate finance by {username}");
 
-				return Error.CANNOT_IMPERSONATE_FINANCE;
-			}
+                return Error.CANNOT_IMPERSONATE_FINANCE;
+            }
 
-			if( user.Roles.Contains( "APIOnly" ) ) {
-				return Error.CANNOT_USE_API_ONLY;
-			}
+            if (user.Roles.Contains("APIOnly"))
+            {
+                return Error.CANNOT_USE_API_ONLY;
+            }
 
-			return Error.AUTHENTICATED;
-		}
+            return Error.AUTHENTICATED;
+        }
 
-		public bool hasError()
-		{
-			return error != Error.AUTHENTICATED;
-		}
+        public bool hasError()
+        {
+            return error != Error.AUTHENTICATED;
+        }
 
-		public int getError()
-		{
-			return (int) error;
-		}
+        public int getError()
+        {
+            return (int)error;
+        }
 
-		public string getErrorMessage()
-		{
-			return ERROR_MESSAGES[Math.Abs( (int) error )];
-		}
+        public string getErrorMessage()
+        {
+            return ERROR_MESSAGES[Math.Abs((int)error)];
+        }
 
-		public User getUser()
-		{
-			return user;
-		}
+        public User getUser()
+        {
+            return user;
+        }
 
-		public string getUsername()
-		{
-			return username;
-		}
+        public string getUsername()
+        {
+            return username;
+        }
 
-		public enum Error : int
-		{
-			AUTHENTICATED = 0,
-			UNKNOWN = -1,
-			NO_HEADER = -2,
-			INVALID_HEADER = -3,
-			INVALID_HEADER_TYPE = -4,
-			MALFORMED_BASE64 = -5,
-			MISSING_CREDENTIALS = -6,
-			DATABASE_ERROR = -7,
-			USER_NOT_FOUND = -8,
-			USER_LOCKED_OUT = -9,
-			USER_NOT_APPROVED = -10,
-			INVALID_PASSWORD = -11,
-			CANNOT_IMPERSONATE_FINANCE = -12,
-			CANNOT_USE_API_ONLY = -13
-		};
+        public enum Error : int
+        {
+            AUTHENTICATED = 0,
+            UNKNOWN = -1,
+            NO_HEADER = -2,
+            INVALID_HEADER = -3,
+            INVALID_HEADER_TYPE = -4,
+            MALFORMED_BASE64 = -5,
+            MISSING_CREDENTIALS = -6,
+            DATABASE_ERROR = -7,
+            USER_NOT_FOUND = -8,
+            USER_LOCKED_OUT = -9,
+            USER_NOT_APPROVED = -10,
+            INVALID_PASSWORD = -11,
+            CANNOT_IMPERSONATE_FINANCE = -12,
+            CANNOT_USE_API_ONLY = -13
+        };
 
-		private static readonly string[] ERROR_MESSAGES =
-		{
-			"Authenticated", // 0
+        private static readonly string[] ERROR_MESSAGES =
+        {
+            "Authenticated", // 0
 			"Unknown Error", // -1
 			"No authentication header", // -2
 			"Invalid authentication header", // -3
@@ -200,5 +221,5 @@ namespace CmsWeb.Areas.Public.Models.CheckScanAPI
 			"Cannot impersonate finance user", // -12
 			"Cannot access with API only user" // -13
 		};
-	}
+    }
 }

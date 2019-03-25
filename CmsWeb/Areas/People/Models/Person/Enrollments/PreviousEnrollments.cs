@@ -1,10 +1,10 @@
+using CmsData;
+using CmsData.View;
+using CmsWeb.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.WebPages;
-using CmsData;
-using CmsData.View;
-using CmsWeb.Models;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Models
@@ -17,7 +17,10 @@ namespace CmsWeb.Areas.People.Models
             get
             {
                 if (_person == null && PeopleId.HasValue)
+                {
                     _person = DbUtil.Db.LoadPersonById(PeopleId.Value);
+                }
+
                 return _person;
             }
         }
@@ -34,9 +37,13 @@ namespace CmsWeb.Areas.People.Models
                     string defaultFilter = null;
 
                     if (isInAccess && !isInOrgLeadersOnly)
+                    {
                         defaultFilter = DbUtil.Db.Setting("UX-DefaultAccessInvolvementOrgTypeFilter", "");
+                    }
                     else
+                    {
                         defaultFilter = DbUtil.Db.Setting("UX-DefaultInvolvementOrgTypeFilter", "");
+                    }
 
                     _orgTypesFilter = string.IsNullOrEmpty(defaultFilter) ?
                         new List<string>() : defaultFilter.Split(',').Select(x => x.Trim()).ToList();
@@ -46,9 +53,13 @@ namespace CmsWeb.Areas.People.Models
             set
             {
                 if (value.Any() && !string.IsNullOrWhiteSpace(value[0]))
+                {
                     _orgTypesFilter = value[0].Split(',').Select(x => x.Trim()).ToList();
+                }
                 else
+                {
                     _orgTypesFilter = new List<string>();
+                }
             }
         }
         private List<string> _orgTypesFilter;
@@ -57,19 +68,19 @@ namespace CmsWeb.Areas.People.Models
         {
             get
             {
-               var excludedTypes =
-                    DbUtil.Db.Setting("UX-ExcludeFromInvolvementOrgTypeFilter", "").Split(',').Select(x => x.Trim());
+                var excludedTypes =
+                     DbUtil.Db.Setting("UX-ExcludeFromInvolvementOrgTypeFilter", "").Split(',').Select(x => x.Trim());
                 return DefineModelList(false).Select(x => x.OrgType).Distinct().Where(x => !excludedTypes.Contains(x));
             }
         }
 
         public PreviousEnrollments()
             : base("default", "asc", true)
-        {}
+        { }
 
         public IQueryable<InvolvementPreviou> DefineModelList(bool useOrgFilter)
         {
-            var limitvisibility = Util2.OrgLeadersOnly || !HttpContext.Current.User.IsInRole("Access");
+            var limitvisibility = Util2.OrgLeadersOnly || !HttpContextFactory.Current.User.IsInRole("Access");
             var roles = DbUtil.Db.CurrentRoles();
             return from etd in DbUtil.Db.InvolvementPrevious(PeopleId, Util.UserId)
                    where etd.TransactionStatus == false
@@ -81,7 +92,7 @@ namespace CmsWeb.Areas.People.Models
                    select etd;
         }
 
-        override public IQueryable<InvolvementPreviou> DefineModelList()
+        public override IQueryable<InvolvementPreviou> DefineModelList()
         {
             return DefineModelList(true);
         }
@@ -104,7 +115,7 @@ namespace CmsWeb.Areas.People.Models
                      };
             return q2;
         }
-        override public IQueryable<InvolvementPreviou> DefineModelSort(IQueryable<InvolvementPreviou> q)
+        public override IQueryable<InvolvementPreviou> DefineModelSort(IQueryable<InvolvementPreviou> q)
         {
             switch (SortExpression)
             {
@@ -135,12 +146,12 @@ namespace CmsWeb.Areas.People.Models
 
                 case "default desc":
                     return from om in q
-                        orderby om.OrgCode ?? "z" descending, om.Name descending
-                        select om;
+                           orderby om.OrgCode ?? "z" descending, om.Name descending
+                           select om;
                 default:
                     return from om in q
-                        orderby om.OrgTypeSort, om.OrgCode ?? "z", om.Name
-                        select om;
+                           orderby om.OrgTypeSort, om.OrgCode ?? "z", om.Name
+                           select om;
             }
         }
     }

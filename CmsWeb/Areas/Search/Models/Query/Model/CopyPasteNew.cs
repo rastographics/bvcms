@@ -1,8 +1,8 @@
 using System;
 using System.Linq;
-using System.Security.Permissions;
 using System.Web;
 using CmsData;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Search.Models
 {
@@ -10,24 +10,24 @@ namespace CmsWeb.Areas.Search.Models
     {
         public static bool ClipboardHasCondition()
         {
-            var clip = HttpContext.Current.Session["QueryClipboard"] as string;
+            var clip = HttpContextFactory.Current.Session["QueryClipboard"] as string;
             return clip != null;
         }
 
         public void Copy()
         {
-            HttpContext.Current.Session["QueryClipboard"] = Selected.ToXml(newGuids: true);
+            HttpContextFactory.Current.Session["QueryClipboard"] = Selected.ToXml(newGuids: true);
         }
         public void Cut()
         {
-            HttpContext.Current.Session["QueryClipboard"] = Selected.ToXml();
+            HttpContextFactory.Current.Session["QueryClipboard"] = Selected.ToXml();
             Selected.DeleteClause();
             TopClause.Save(Db, increment: true);
         }
 
         public void Paste()
         {
-            var clip = HttpContext.Current.Session["QueryClipboard"] as string;
+            var clip = HttpContextFactory.Current.Session["QueryClipboard"] as string;
             if (clip == null)
                 return;
             var newclause = Condition.Import(clip);
@@ -129,6 +129,12 @@ namespace CmsWeb.Areas.Search.Models
             Selected.ParentId = null;
             TopClause = Selected;
             TopClause.Save(Db);
+        }
+        public void ToggleConditionEnabled()
+        {
+            var tc = TopClause; // forces read
+            Selected.DisableOnScratchpad = !Selected.DisableOnScratchpad;
+            tc.Save(Db);
         }
     }
 }

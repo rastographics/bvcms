@@ -24,9 +24,9 @@ namespace CmsData
 		
    		
     	
-		private EntityRef< Division> _Division;
+		private EntityRef<Division> _Division;
 		
-		private EntityRef< Program> _Program;
+		private EntityRef<Program> _Program;
 		
 	#endregion
 	
@@ -46,9 +46,9 @@ namespace CmsData
 		{
 			
 			
-			this._Division = default(EntityRef< Division>); 
+			this._Division = default(EntityRef<Division>); 
 			
-			this._Program = default(EntityRef< Program>); 
+			this._Program = default(EntityRef<Program>); 
 			
 			OnCreated();
 		}

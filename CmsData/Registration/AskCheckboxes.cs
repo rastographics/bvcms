@@ -148,7 +148,7 @@ For each checkbox, you can specify the following:
                     .Attr("Limit", Limit)
                     .Attr("Time", MeetingTime.ToString2("s"))
                     .Add("Description", Description)
-                    .Add("SmallGroup", SmallGroup.trim())
+                    .Add("SmallGroup", SmallGroup?.Trim())
                     .End();
             }
             public void AddToSmallGroup(CMSDataContext Db, OrganizationMember om, PythonModel pe)
@@ -157,21 +157,21 @@ For each checkbox, you can specify the following:
                     return;
                 if (pe != null)
                 {
-                    pe.instance.AddToSmallGroup(SmallGroup.trim(), om);
+                    pe.instance.AddToSmallGroup(SmallGroup?.Trim(), om);
                     om.Person.LogChanges(Db, om.PeopleId);
                 }
-                om.AddToGroup(Db, SmallGroup.trim());
+                om.AddToGroup(Db, SmallGroup?.Trim());
                 if (MeetingTime.HasValue)
                     Attend.MarkRegistered(Db, om.OrganizationId, om.PeopleId, MeetingTime.Value, 1);
             }
             public void RemoveFromSmallGroup(CMSDataContext Db, OrganizationMember om)
             {
-                om.RemoveFromGroup(Db, SmallGroup.trim());
+                om.RemoveFromGroup(Db, SmallGroup?.Trim());
             }
             public bool IsSmallGroupFilled(IEnumerable<string> smallgroups)
             {
                 if (!(Limit > 0)) return false;
-                var cnt = smallgroups.Count(mm => mm.trim().Equal(SmallGroup.trim()));
+                var cnt = smallgroups.Count(mm => mm.HasValue() && mm.Trim().Equal(SmallGroup?.Trim()));
                 return cnt >= Limit;
             }
         }

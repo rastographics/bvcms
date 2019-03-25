@@ -5,17 +5,17 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
 
+using CmsData;
+using CmsData.Codes;
+using CmsWeb.Areas.Search.Controllers;
+using CmsWeb.Models;
+using HandlebarsDotNet;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
-using CmsData;
-using CmsData.Codes;
-using CmsWeb.Areas.Search.Controllers;
-using CmsWeb.Models;
-using HandlebarsDotNet;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Search.Models
@@ -48,22 +48,34 @@ namespace CmsWeb.Areas.Search.Models
         {
             Url = $"/PictureDirectory/{id}";
             if (id.HasValue())
+            {
                 if (Regex.IsMatch(id, @"\Ad\d+\z", RegexOptions.IgnoreCase))
+                {
                     DivId = id.Substring(1).ToInt();
+                }
                 else if (id.GetDigits() == id)
+                {
                     OrgId = id.ToInt();
+                }
+            }
+
             Initialize();
         }
 
         public void Initialize()
         {
             AjaxPager = true;
-            HasAccess = HttpContext.Current.User.IsInRole("Access");
+            HasAccess = HttpContextFactory.Current.User.IsInRole("Access");
 
             if (!Selector.HasValue())
+            {
                 GetConfiguration();
+            }
+
             if (ErrorMessage.HasValue())
+            {
                 return;
+            }
 
             template = GetModifiedOrLatestText(TemplateName);
             sql = GetModifiedOrLatestSql(SqlName);
@@ -73,20 +85,30 @@ namespace CmsWeb.Areas.Search.Models
         {
             Selector = DbUtil.Db.Setting("PictureDirectorySelector", "");
             if (OrgId.HasValue)
+            {
                 Selector = "FromUrl";
+            }
             else if (DivId.HasValue)
+            {
                 Selector = "FromUrl";
+            }
             else if (Regex.IsMatch(Selector, @"\AF\d\d\z"))
+            {
                 StatusFlag = Selector;
+            }
             else if (Regex.IsMatch(Selector, @"\A\d+\z"))
+            {
                 OrgId = Selector.ToInt();
+            }
 
             if (OrgId.HasValue)
             {
                 if (!CanView.HasValue)
-                    CanView = HttpContext.Current.User.IsInRole("Admin") || DbUtil.Db.PeopleQuery2($@"
+                {
+                    CanView = HttpContextFactory.Current.User.IsInRole("Admin") || DbUtil.Db.PeopleQuery2($@"
 IsMemberOfDirectory( Org={OrgId} ) = 1 
 AND PeopleId = {Util.UserPeopleId}", fromDirectory: true).Any();
+                }
                 //HasDirectory = (om.Organization.PublishDirectory ?? 0) > 0,
 
                 TemplateName = Util.PickFirst(
@@ -99,17 +121,23 @@ AND PeopleId = {Util.UserPeopleId}", fromDirectory: true).Any();
             else if (DivId.HasValue)
             {
                 if (!CanView.HasValue)
-                    CanView = HttpContext.Current.User.IsInRole("Admin") || DbUtil.Db.PeopleQuery2($@"
+                {
+                    CanView = HttpContextFactory.Current.User.IsInRole("Admin") || DbUtil.Db.PeopleQuery2($@"
 IsMemberOfDirectory( Div={DivId} ) = 1 
 AND PeopleId = {Util.UserPeopleId}", fromDirectory: true).Any();
+                }
 
                 TemplateName = PictureDirectoryTemplateName + "-" + Selector;
                 if (!DbUtil.Db.Contents.Any(vv => vv.Name == TemplateName && vv.TypeID == ContentTypeCode.TypeText))
+                {
                     TemplateName = PictureDirectoryTemplateName;
+                }
 
                 SqlName = PictureDirectorySqlName + "-" + Selector;
                 if (!DbUtil.Db.Contents.Any(vv => vv.Name == TemplateName && vv.TypeID == ContentTypeCode.TypeSqlScript))
+                {
                     TemplateName = PictureDirectoryTemplateName;
+                }
             }
             else if (StatusFlag.HasValue())
             {
@@ -119,15 +147,20 @@ AND PeopleId = {Util.UserPeopleId}", fromDirectory: true).Any();
                                      where v.PeopleId == Util.UserPeopleId
                                      where v.StatusFlags != null
                                      select v).Any();
-                    CanView = hasstatus || HttpContext.Current.User.IsInRole("Admin");
+                    CanView = hasstatus || HttpContextFactory.Current.User.IsInRole("Admin");
                 }
                 TemplateName = DbUtil.Db.Setting(PictureDirectoryTemplateName, PictureDirectoryTemplateName);
                 SqlName = DbUtil.Db.Setting(PictureDirectorySqlName, PictureDirectorySqlName);
             }
             else
+            {
                 ErrorMessage = "NotConfigured";
-            if(!ErrorMessage.HasValue() && CanView == false)
+            }
+
+            if (!ErrorMessage.HasValue() && CanView == false)
+            {
                 ErrorMessage = "NotAuthorized";
+            }
         }
 
         public static string GetModifiedOrLatestText(string name)
@@ -138,7 +171,10 @@ AND PeopleId = {Util.UserPeopleId}", fromDirectory: true).Any();
             var ver = m.Groups["ver"].Value.ToInt();
             var currver = re.Match(Resource1.PictureDirectoryTemplate).Groups["ver"].Value.ToInt();
             if (!s.HasValue() || (m.Success && currver > ver))
+            {
                 s = DbUtil.Db.ContentText(name, Resource1.PictureDirectoryTemplate);
+            }
+
             return s;
         }
 
@@ -150,7 +186,10 @@ AND PeopleId = {Util.UserPeopleId}", fromDirectory: true).Any();
             var ver = m.Groups["ver"].Value.ToInt();
             var currver = re.Match(Resource1.PictureDirectorySql).Groups["ver"].Value.ToInt();
             if (!s.HasValue() || (m.Success && currver > ver))
+            {
                 s = DbUtil.Db.ContentSql(name, Resource1.PictureDirectorySql);
+            }
+
             return s;
         }
 
@@ -170,24 +209,36 @@ AND PeopleId = {Util.UserPeopleId}", fromDirectory: true).Any();
                 qmembers = DbUtil.Db.PeopleQuery2("PeopleId = 0");
             }
             else if (StatusFlag.HasValue())
+            {
                 qmembers = DbUtil.Db.PeopleQuery2($"StatusFlag = '{StatusFlag}'", fromDirectory: true);
+            }
             else if (OrgId.HasValue)
+            {
                 qmembers = DbUtil.Db.PeopleQuery2($"IsMemberOfDirectory( Org={OrgId} ) = 1 ", fromDirectory: true);
+            }
             else if (DivId.HasValue)
+            {
                 qmembers = DbUtil.Db.PeopleQuery2($"IsMemberOfDirectory( Div={DivId} ) = 1", fromDirectory: true);
+            }
             else
+            {
                 qmembers = DbUtil.Db.PeopleQuery2("PeopleId = 0");
+            }
 
             if (Name.HasValue())
+            {
                 qmembers = from p in qmembers
                            where p.Family.HeadOfHousehold.LastName.Contains(Name) || p.Name.Contains(Name)
                            select p;
+            }
+
             return qmembers;
         }
 
         public override IQueryable<Person> DefineModelSort(IQueryable<Person> q)
         {
             if (Direction == "asc")
+            {
                 switch (Sort)
                 {
                     case "Name":
@@ -207,6 +258,7 @@ AND PeopleId = {Util.UserPeopleId}", fromDirectory: true).Any();
                         orderBy = "ORDER BY dbo.NextBirthday(p.PeopleId)";
                         break;
                 }
+            }
             else
             {
                 switch (Sort)
@@ -272,9 +324,13 @@ AND PeopleId = {Util.UserPeopleId}", fromDirectory: true).Any();
             Handlebars.RegisterHelper("IfAccess", (w, opt, ctx, args) =>
             {
                 if (HasAccess)
-                    opt.Template(w, (object) ctx);
+                {
+                    opt.Template(w, (object)ctx);
+                }
                 else
-                    opt.Inverse(w, (object) ctx);
+                {
+                    opt.Inverse(w, (object)ctx);
+                }
             });
             Handlebars.RegisterHelper("PagerTop", (w, ctx, args) => { w.Write(ViewExtensions2.RenderPartialViewToString(ctl, "PagerTop", this)); });
             Handlebars.RegisterHelper("PagerBottom", (w, ctx, args) => { w.Write(ViewExtensions2.RenderPartialViewToString(ctl, "PagerBottom", this)); });
@@ -284,7 +340,7 @@ AND PeopleId = {Util.UserPeopleId}", fromDirectory: true).Any();
             Handlebars.RegisterHelper("CityStateZip", (w, ctx, args) => { w.Write(Util.FormatCSZ4(ctx.City, ctx.St, ctx.Zip)); });
             Handlebars.RegisterHelper("BirthDay", (w, ctx, args) =>
             {
-                var dob = (string) ctx.DOB;
+                var dob = (string)ctx.DOB;
                 w.Write(dob.ToDate().ToString2("m"));
             });
         }

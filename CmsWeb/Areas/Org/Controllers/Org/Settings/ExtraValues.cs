@@ -1,8 +1,7 @@
+using CmsWeb.Areas.Org.Models;
 using System;
 using System.Linq;
 using System.Web.Mvc;
-using CmsData;
-using CmsWeb.Areas.Org.Models;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Org.Controllers
@@ -17,8 +16,8 @@ namespace CmsWeb.Areas.Org.Controllers
             var m = new OrganizationModel();
             try
             {
-                m.Org.AddEditExtra(DbUtil.Db, field, value, multiline);
-                DbUtil.Db.SubmitChanges();
+                m.Org.AddEditExtra(CurrentDatabase, field, value, multiline);
+                CurrentDatabase.SubmitChanges();
             }
             catch (Exception ex)
             {
@@ -30,9 +29,9 @@ namespace CmsWeb.Areas.Org.Controllers
         [Authorize(Roles = "Edit")]
         public ActionResult DeleteExtra(int id, string field)
         {
-            var e = DbUtil.Db.OrganizationExtras.Single(ee => ee.OrganizationId == id && ee.Field == field);
-            DbUtil.Db.OrganizationExtras.DeleteOnSubmit(e);
-            DbUtil.Db.SubmitChanges();
+            var e = CurrentDatabase.OrganizationExtras.Single(ee => ee.OrganizationId == id && ee.Field == field);
+            CurrentDatabase.OrganizationExtras.DeleteOnSubmit(e);
+            CurrentDatabase.SubmitChanges();
             var m = new OrganizationModel();
             return PartialView("Settings/ExtrasGrid", m.Org);
         }
@@ -42,9 +41,9 @@ namespace CmsWeb.Areas.Org.Controllers
         {
             var a = id.SplitStr("-", 2);
             var b = a[1].SplitStr(".", 2);
-            var e = DbUtil.Db.OrganizationExtras.Single(ee => ee.OrganizationId == b[1].ToInt() && ee.Field == b[0]);
+            var e = CurrentDatabase.OrganizationExtras.Single(ee => ee.OrganizationId == b[1].ToInt() && ee.Field == b[0]);
             e.Data = value;
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
             return Content(value);
         }
     }

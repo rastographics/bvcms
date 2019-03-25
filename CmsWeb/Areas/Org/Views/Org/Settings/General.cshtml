@@ -8,66 +8,80 @@
     var gradehelp = showhelp || mforg || Model.GradeAgeStart == null ? null : new { help = "See Show Help for how the Grade works only on Main Fellowship orgs" };
 }
 <form class="ajax">
-  <div class="row">
-    <div class="col-sm-6">
-      <h4>Basic Setup</h4>
-    </div>
-    <div class="col-sm-6">
-      @FormAction()
-    </div>
-  </div>
-  <div class="well">
     <div class="row">
-      <div class="col-sm-4 col-md-4">
-        @Html.DisplayFor(m => m.Location)
-      </div>
-      <div class="col-sm-4 col-md-4">
-        @Html.DisplayFor(m => m.PendingLoc)
-      </div>
-      <div class="col-sm-4 col-md-4">
-        @Html.DisplayFor(m => m.EntryPoint)
-      </div>
-      <div class="col-sm-4 col-md-4">
-        @Html.DisplayFor(m => m.GradeAgeStart, gradehelp)
-      </div>
-      <div class="col-sm-4 col-md-4">
-        @Html.DisplayFor(m => m.Gender)
-      </div>
-      <div class="col-sm-4 col-md-4">
-        @Html.DisplayFor(m => m.PhoneNumber)
-      </div>
-      <div class="col-sm-12 col-md-12">
-        @Html.DisplayFor(m => m.Description, "Html")
-      </div>
+        <div class="col-sm-6">
+            <h4>Basic Setup</h4>
+        </div>
+        <div class="col-sm-6">
+            @FormAction()
+        </div>
     </div>
-  </div>
-  <h4>Advanced Setup</h4>
-  <div class="well">
-    <div class="row">
-      <div class="col-sm-7 col-md-5 col-lg-3">
-        @Html.DisplayFor(m => m.PublishDirectory)
-      </div>
-      @if (User.IsInRole("Admin"))
+    <div class="well">
+        <div class="row">
+            <div class="col-sm-4">
+                @Html.DisplayFor(m => m.Location)
+            </div>
+            <div class="col-sm-4">
+                @Html.DisplayFor(m => m.PendingLoc)
+            </div>
+            <div class="col-sm-4">
+                @Html.DisplayFor(m => m.EntryPoint)
+            </div>
+            <div class="col-sm-4">
+                @Html.DisplayFor(m => m.GradeAgeStart, gradehelp)
+            </div>
+            <div class="col-sm-4">
+                @Html.DisplayFor(m => m.Gender)
+            </div>
+            <div class="col-sm-4">
+                @Html.DisplayFor(m => m.PhoneNumber)
+            </div>
+            <div class="col-sm-12">
+                @Html.DisplayFor(m => m.Description, "Html")
+            </div>
+        </div>
+    </div>
+    <h4>Mission Trip Settings</h4>
+    <div class="well">
+        <div class="row">
+            <div class="col-sm-3">
+                @Html.DisplayFor(m => m.IsMissionTrip)
+            </div>
+            <div class="col-sm-3">
+                @Html.DisplayFor(m => m.TripFundingPagesEnable)
+            </div>
+            <div class="col-sm-3">
+                @Html.DisplayFor(m => m.TripFundingPagesPublic)
+            </div>
+            <div class="col-sm-3">
+                @Html.DisplayFor(m => m.TripFundingPagesShowAmounts)
+            </div>
+        </div>
+    </div>
+    <h4>Advanced Setup</h4>
+    <div class="well">
+        <div class="row">
+            <div class="col-sm-7 col-md-5 col-lg-3">
+                @Html.DisplayFor(m => m.PublishDirectory)
+            </div>
+            @if (User.IsInRole("Admin"))
             {
-          <div class="col-sm-5 col-md-4 col-lg-3">
-            @Html.DisplayFor(m => m.LimitToRole)
-          </div>
-      }
-      <div class="col-sm-3 col-md-3">
-        @Html.DisplayFor(m => m.IsMissionTrip, new { FalseValue = "n/a" })
-      </div>
-      <div class="col-sm-3 col-md-3">
-        @Html.DisplayFor(m => m.NoCreditCards, new { FalseValue = "n/a" })
-      </div>
-      <div class="col-sm-4 col-md-3">
-        @Html.DisplayFor(m => m.IsRecreationTeam, new { FalseValue = "n/a" })
-      </div>
+                <div class="col-sm-5 col-md-4 col-lg-3">
+                    @Html.DisplayFor(m => m.LimitToRole)
+                </div>
+            }
+            <div class="col-sm-3">
+                @Html.DisplayFor(m => m.NoCreditCards, new { FalseValue = "n/a" })
+            </div>
+            <div class="col-sm-4 col-md-3">
+                @Html.DisplayFor(m => m.IsRecreationTeam, new { FalseValue = "n/a" })
+            </div>
+        </div>
     </div>
-  </div>
-  @Html.Hidden("Id", Model.Id)
-  @FormAction()
-  @FormAction(true)
-  <br /><br />
+    @Html.Hidden("Id", Model.Id)
+    @FormAction()
+    @FormAction(true)
+    <br /><br />
 </form>
 @helper FormAction(bool xs = false)
 {

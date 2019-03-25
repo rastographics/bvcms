@@ -28,7 +28,7 @@ namespace CmsData
 		
    		
     	
-		private EntityRef< Audit> _Audit;
+		private EntityRef<Audit> _Audit;
 		
 	#endregion
 	
@@ -54,7 +54,7 @@ namespace CmsData
 		{
 			
 			
-			this._Audit = default(EntityRef< Audit>); 
+			this._Audit = default(EntityRef<Audit>); 
 			
 			OnCreated();
 		}

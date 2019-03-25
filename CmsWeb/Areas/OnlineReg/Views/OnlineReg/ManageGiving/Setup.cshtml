@@ -3,266 +3,299 @@
 @using CmsData.Finance
 @using CmsWeb
 @using UtilityExtensions
+@using System.Configuration;
 @{
-  ViewBag.Title = "Online Registration";
-  Layout = "~/Views/Shared/onlinereg2.cshtml";
-  var funame = Html.NameFor2(m => m.FundItem);
-  decimal? tot = 0;
-  var funds = CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel.FundList();
-  var specialFunds = CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel.SpecialFundList();
-  var debitcredit = DbUtil.Db.Setting("DebitCreditLabel", "Debit/Credit Card");
+    ViewBag.Title = "Online Registration";
+    Layout = "~/Views/Shared/onlinereg2.cshtml";
+    var funame = Html.NameFor2(m => m.FundItem);
+    decimal? tot = 0;
+    var db = DbUtil.Db;
+    var funds = CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel.FullFundList(Model.DefaultFundIds.Any() ? Model.DefaultFundIds : Model.FallbackDefaultFundIds);
+    var otherFunds = funds.Where(f => !Model.DefaultFundIds.Contains(f.Value)).ToList();
+    var useNewManageGivingBuilder = DbUtil.Db.Setting("UseNewManageGivingBuilder");
+    var debitcredit = db.Setting("DebitCreditLabel", "Debit/Credit Card");
+    var recaptchaSiteKey = db.Setting("googleReCaptchaSiteKey", ConfigurationManager.AppSettings["googleReCaptchaSiteKey"]);
+    var useRecaptcha = db.Setting("UseRecaptchaForManageGiving") && recaptchaSiteKey.HasValue();
 }
 @section head
 {
-  @Fingerprint.Css("/Content/css/datepicker3.css")
+    @Fingerprint.Css("/Content/css/datepicker3.css")
     @Fingerprint.Css("/Content/touchpoint/lib/select2/css/select2.css")
     @Fingerprint.Css("/Content/touchpoint/lib/select2/css/select2-bootstrap.css")
 }
 @section scripts
 {
   @Fingerprint.Script("/Content/touchpoint/js/onlinereg/bootstrap-datepicker.js")
+  @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-editable/js/bootstrap-editable.min.js")
   <script type="text/javascript">
-    $.dtoptions = { format: '@Util.jQueryDateFormat2' };
+      $.dtoptions = { format: '@Util.jQueryDateFormat2' };
+      function recaptcha_callback(token) {
+          document.getElementById("managegivingform").submit();
+      }
   </script>
-  @Fingerprint.Script("/Content")
   @Fingerprint.Script("/Content/touchpoint/js/onlinereg/OnlineReg2.js")
   @Fingerprint.Script("/Content/touchpoint/js/onlinereg/onlineregpayment2.js")
   @Fingerprint.Script("/Content/touchpoint/lib/select2/js/select2.min.js")
+  @ViewExtensions2.Moment()
+  @ViewExtensions2.Humanize()
+  @ViewExtensions2.GoogleReCaptcha()
 }
 
 <div class="regform">
-  <h2>@Model.Organization.OrganizationName</h2>
-  <div>@Html.Raw(Model.Instructions)</div>
-  <h4>for @(Model.person?.Name) &lt;@(Model.person?.EmailAddress)&gt;</h4>
-  @Html.ValidationSummary()
-  <form id="managegivingform" method="post" class="form-horizontal" action="/OnlineReg/ManageGiving">
-    @Html.Hidden("specialedit", 0)
-    @Html.Hidden("pid", Model.pid)
-    @Html.Hidden("orgid", Model.orgid)
+    <h2>@Model.Organization.OrganizationName @Model.FirstDefaultFundName</h2>
+    <div>@Html.Raw(Model.Instructions)</div>
+    <h4>for @(Model.person?.Name) &lt;@(Model.person?.EmailAddress)&gt;</h4>
+    @Html.ValidationSummary()
+    <form id="managegivingform" method="post" class="form-horizontal" action="/OnlineReg/ManageGiving">
+        @Html.Hidden("specialedit", 0)
+        @Html.Hidden("pid", Model.pid)
+        @Html.Hidden("orgid", Model.orgid)
 
-    <div class="well">
-      <div class="form-group">
-        <label class="col-sm-3 control-label">Enter amounts for every fund you wish to give to</label>
-        <div class="col-sm-9">
-          <table class="table" id="funds">
-            <thead>
-              <tr>
-                <th>Funds</th>
-                <th style="width:100px;">
-                  <div class="pull-right">
-                    Amounts
-                  </div>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              @{
-                int n;
-              }
-              @for (n = 0; n < funds.Length; n++)
-              {
-                var i = funds[n];
-                var amt = Model.FundItemValue(i.Value.ToInt());
-                if (amt.HasValue)
-                {
-                  tot = (tot ?? 0) + amt;
-                }
-                <tr>
-                  <td>@i.Text</td>
-                  <td style="width:100px;">
-                    <div class="pull-right">
-                      <input type="hidden" name="@(funame)[@n].Key" value="@i.Value" />
-                      <input type="text" name="@(funame)[@n].Value" value="@amt.ToString2("f2")" class="form-control narrow sum money" />
-                    </div>
-                  </td>
-                </tr>
-              }
-            </tbody>
-            @if (!specialFunds.Any())
-            {
-              if (funds.Length == 1)
-              {
-                @Html.Hidden("total", tot)
-              }
-              else
-              {
-                <tfoot>
-                  <tr>
-                    <td><h4 class="pull-right">TOTAL:</h4></td>
-                    <td style="width:100px;"><h2 class="pull-right" style="margin: 0;">$<span id="total">@tot.ToString2("N2")</span></h2></td>
-                  </tr>
-                </tfoot>
-              }
-            }
-          </table>
-          @if (specialFunds.Any())
-          {
-            <table class="table" id="special-funds">
-              <thead>
-                <tr>
-                  <th colspan="3">@Model.SpecialGivingFundsHeader</th>
-                </tr>
-              </thead>
-              <tbody>
-                @{
-                  var sn = n; 
-                  var index = 0;
-                }
-                @for (n = 0; n < specialFunds.Length; n++)
-                {
-                  var i = specialFunds[n];
-                  var amt = Model.FundItemValue(i.Value.ToInt());
-                  if (amt.HasValue)
-                  {
-                    sn = sn + index;
-                    index++;
-                    tot = (tot ?? 0) + amt;
-                    <tr id="@i.Value">
-                      <td style="width: 10px;"><a href="#" tabindex="-1" class="remove-fund"><span class="fa fa-trash-o"></span></a></td>
-                      <td>@i.Text</td>
-                      <td style="width:100px;">
-                        <div class="pull-right">
-                          <input type="hidden" name="@(funame)[@sn].Key" value="@i.Value" />
-                          <input type="text" name="@(funame)[@sn].Value" value="@amt.ToString2("f2")" class="form-control narrow sum money" />
-                        </div>
-                      </td>
-                    </tr>
-                  }
-                }
-              </tbody>
-              <tfoot>
-                <tr>
-                  <td colspan="3">
-                    <select class="form-control" id="special-funds-list">
-                      <option></option>
-                      @foreach (var fund in specialFunds)
-                      {
-                        <option value="@fund.Value">@fund.Text</option>
-                      }
-                    </select>
-                  </td>
-                </tr>
-                @if (funds.Length == 0 && specialFunds.Length == 1)
-                {
-                  @Html.Hidden("total", tot)
-                }
-                else
-                {
-                  <tr>
-                    <td colspan="2"><h4 class="pull-right">TOTAL:</h4></td>
-                    <td style="width:100px;"><h2 class="pull-right" style="margin: 0;">$<span id="total">@tot.ToString2("N2")</span></h2></td>
-                  </tr>
-                }
-              </tfoot>
-            </table>
-          }
-        </div>
-      </div>
-    </div>
-    <div class="well">
-      <div class="form-group">
-        <label class="control-label col-sm-3">Repeats</label>
-        <div class="col-sm-9">
-          @Html.DropDownListFor(m => m.RepeatPattern, Model.RepeatPatternOptions(), new { @class = "form-control" })
-          @Html.HiddenFor(m => m.SemiEvery)
-          <div>@Html.ValidationMessageFor(m => m.SemiEvery)</div>
-        </div>
-      </div>
-      <div class="twiceMonthly">
-        @Html.EditorFor(m => m.Day1, new { @class = "narrow" })
-        @Html.EditorFor(m => m.Day2, new { @class = "narrow" })
-      </div>
-      <div class="everyPeriod">
-        <div class="form-group">
-          @Html.LabelFor(m => m.EveryN, new { @class = "control-label col-sm-3 labelsize" })
-          <div class="col-sm-9">
-            @Html.DropDownListFor(m => m.EveryN, Model.EveryNOptions(), new { @class = "form-control narrow", style = "display: inline;" })<span id="RepeatPatternText"> month(s)</span>
-          </div>
-        </div>
-        @Html.HiddenFor(m => m.Period)
-      </div>
-      @Html.EditorFor(m => m.StartWhen, new { placeholder = "MM/DD/YYYY" })
-      <div class="form-group">
-        <div class="col-sm-9 col-sm-offset-3">
-          <span id="SummaryText"></span>
-        </div>
-      </div>
-    </div>
-
-    <div class="well">
-      @if (!Model.NoCreditCardsAllowed && !Model.NoEChecksAllowed)
-      {
-        <div class="form-group">
-          @Html.Label("Payment Information", new { @class = "control-label col-sm-3" })
-          <div class="col-sm-9">
-            <label class="radio-inline">
-              <input type="radio" name="Type" value="@PaymentType.CreditCard" @(Model.Type == PaymentType.CreditCard ? "checked='checked'" : "") />@debitcredit
-            </label>
-            <label class="radio-inline">
-              <input type="radio" name="Type" value="@PaymentType.Ach" @(Model.Type == PaymentType.Ach ? "checked='checked'" : "") /> Bank Account
-            </label>
-            @Html.Hidden("allowcc", "true")
-          </div>
-        </div>
-      }
-      else if (Model.NoCreditCardsAllowed)
-      {
-        @Html.Hidden("Type", PaymentType.Ach);
-      }
-      else
-      {
-        @Html.Hidden("Type", PaymentType.CreditCard);
-      }
-      @if (Model.NoCreditCardsAllowed == false)
-      {
-        <div class="Card paymentinfo">
-          @Html.EditorFor(m => m.CreditCard, new { autocomplete = Model.AutocompleteOnOff, Label = debitcredit })
-          @Html.EditorFor(m => m.Expires, new { classes = "narrow" })
-          @Html.EditorFor(m => m.CVV, new { classes = "narrow", autocomplete = Model.AutocompleteOnOff })
-            <input type="hidden" id="hdnCreditCardOnFile" data-value="@Request.RequestContext.HttpContext.Session["CreditCardOnFile"]" />
-            <input type="hidden" id="hdnExpiresOnFile" data-value="@Request.RequestContext.HttpContext.Session["ExpiresOnFile"]" />
-        </div>
-      }
-      @if (Model.NoEChecksAllowed == false)
-      {
-        <div class="Bank paymentinfo">
-          @Html.EditorFor(m => m.Routing)
-          @Html.EditorFor(m => m.Account, new { autocomplete = Model.AutocompleteOnOff })
-          @Html.Partial("Flow2/EmptyRow")
-        </div>
-      }
-        <div class="form-group">
-            <div class="col-sm-9 col-sm-offset-3">
-                <a id="CancelUpdateText">cancel</a>
-                    
+        <div class="well">
+            <div class="form-group">
+                <div class="col-sm-12">
+                    @if (funds.Any())
+                    {
+                        <table class="table" style="margin-bottom: 0px !important" id="special-funds">
+                            <tbody>
+                            @{
+                                var sn = 0;
+                            }
+                            @for (var n = 0; n < funds.Length; n++)
+                            {
+                                var i = funds[n];
+                                var amt = Model.FundItemValue(i.Value.ToInt());
+                                if (amt.HasValue || Model.DefaultFundIds.Contains(i.Value))
+                                {
+                                    tot = (tot ?? 0) + amt.GetValueOrDefault();
+                                    <tr id="@i.Value">
+                                        <td style="border-width: 0px !important">
+                                            @if (Model.FallbackDefaultFundIds.Contains(i.Value) || !Model.DefaultFundIds.Contains(i.Value))
+                                            {
+                                                <a href="#" tabindex="-1" class="remove-fund"><span class="fa fa-trash-o" style="line-height: 20px; padding-top: 10px;"></span></a>
+                                            }
+                                        </td>
+                                        <td style="border-width: 0px !important" class="pull-right"><h4 class="inline-block">@i.Text</h4></td>
+                                        <td style="border-width: 0px !important;">
+                                            <input type="hidden" name="@(funame)[@sn].Key" value="@i.Value"/>
+                                            <input type="text" name="@(funame)[@sn].Value" value="@amt.ToString2("f2")" placeholder="$ 0.00" class="form-control narrow input-lg sum pull-right"/>
+                                        </td>
+                                    </tr>
+                                    sn++;
+                                }
+                            }
+                            </tbody>
+                            <tfoot>
+                            @if (otherFunds.Any())
+                            {
+                                <tr id="addFund" hidden>
+                                    <td style="border-width: 0px !important;"><a href="#" tabindex="-1" id="removeAddFund"><span class="fa fa-trash-o" style="line-height: 20px; padding-top: 10px;"></span></a></td>
+                                    <td style="border-width: 0px !important; padding-top: 12px !important">
+                                        <select class="form-control" id="special-funds-list">
+                                            <option value="0">Select Fund</option>
+                                            @foreach (var fund in otherFunds)
+                                            {
+                                                <option value="@fund.Value">@fund.Text</option>
+                                            }
+                                        </select>
+                                    </td>
+                                    <td style="border-width: 0px !important;">
+                                        <input type="text" name="" placeholder="$ 0.00" disabled class="form-control narrow input-lg sum pull-right"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3">
+                                        <a id="myAddFundLink" href="#" tabindex="-1" class="pull-right" style="text-decoration: underline">
+                                            + Additional Fund
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                            <tr>
+                                <td style="border-width: 0px !important"></td>
+                                <td style="border-width: 0px !important" width="56%!important"><h4 class="pull-right">TOTAL:</h4></td>
+                                <td style="border-width: 0px !important;" width="30%!important">
+                                    <h2 class="pull-right" style="margin: 0">$<span id="total">@tot.ToString2("N2")</span></h2>
+                                </td>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    }
+                </div>
             </div>
         </div>
-    </div>
-
-    <div class="well">
-      @Html.EditorFor(m => m.FirstName)
-      @Html.EditorFor(m => m.Middle, new { classes = "narrow" })
-      @Html.EditorFor(m => m.LastName)
-      @Html.EditorFor(m => m.Suffix, new { classes = "narrow" })
-      @Html.EditorFor(m => m.Address)
-      @Html.EditorFor(m => m.Address2)
-      @Html.EditorFor(m => m.City)
-      @Html.EditorFor(m => m.State)
-      @Html.EditorFor(m => m.Country, "Dropdown", new { items = Model.Countries })
-      @Html.EditorFor(m => m.Zip)
-      @Html.EditorFor(m => m.Phone)
-    </div>
-    <div class="form-group">
-      <div class="col-sm-12">
-        <div class="pull-right">
-          @if (Model.HasManagedGiving)
-          {
-            <button id="stop-manage-giving" class="btn btn-danger">Stop Recurring Giving</button>
-          }
-          <input type="submit" id="submitit" class="btn btn-primary" value="Submit">
+        <div class="well">
+            @Html.HiddenFor(m => m.StartWhenIsNew)
+            @if (useNewManageGivingBuilder)
+            {
+                var pattern = Model.RepeatPattern;
+                if (pattern == "W" && Model.EveryN.HasValue && Model.EveryN == 2)
+                {
+                    pattern = "2W";
+                }
+                <div class="form-group">
+                    <label class="control-label col-sm-3">Repeats</label>
+                    <div class="col-sm-9">
+                        <select id="newRepeatPattern" name="newRepeatPattern" class="form-control">
+                            <option value="M" @(pattern == "M" ? "selected" : "")>Monthly</option>
+                            <option value="S" @(pattern == "S" ? "selected" : "")>Twice a Month</option>
+                            <option value="W" @(pattern == "W" ? "selected" : "")>Weekly</option>
+                            <option value="2W" @(pattern == "2W" ? "selected" : "")>Every 2 Weeks</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-9">
+                        <div id="weeklyText" style="@(pattern != "W" ? "display:none;" : "")">
+                            Every <span id="weeklyTextDay">Sunday</span>
+                        </div>
+                        <div id="twoWeeksText" style="@(pattern != "2W" ? "display:none;" : "")">
+                            On <span id="twoWeeksTextDay">Sunday</span>
+                        </div>
+                        <div id="twiceAMonthText" style="@(pattern != "S" ? "display:none;" : "")">
+                            On the <a id="twiceAMonthDay1" class="clickSelect" style="cursor: pointer;" data-value=""></a> and <a id="twiceAMonthDay2" class="clickSelect" style="cursor: pointer;" data-value=""></a> of the month
+                        </div>
+                        <div id="monthlyText" style="@(pattern != "M" ? "display:none;" : "")">
+                            Every <span id="monthlyTextDay">15th</span> of the month
+                        </div>
+                        starting on <a href="#" id="startWhenDate">@Model.StartWhen.GetValueOrDefault().ToShortDateString()</a>
+                    </div>
+                </div>
+                @Html.HiddenFor(m => m.RepeatPattern)
+                @Html.HiddenFor(m => m.EveryN)
+                @Html.HiddenFor(m => m.Day1)
+                @Html.HiddenFor(m => m.Day2)
+                @Html.HiddenFor(m => m.SemiEvery)
+                @Html.HiddenFor(m => m.Period)
+                @Html.HiddenFor(m => m.StartWhen)
+            }
+            else
+            {
+                <div class="form-group">
+                    <label class="control-label col-sm-3">Repeats</label>
+                    <div class="col-sm-9">
+                        @Html.DropDownListFor(m => m.RepeatPattern, Model.RepeatPatternOptions(), new { @class = "form-control" })
+                        @Html.HiddenFor(m => m.SemiEvery)
+                        <div>@Html.ValidationMessageFor(m => m.SemiEvery)</div>
+                    </div>
+                </div>
+                <div class="twiceMonthly">
+                    @Html.EditorFor(m => m.Day1, new { @class = "narrow" })
+                    @Html.EditorFor(m => m.Day2, new { @class = "narrow" })
+                </div>
+                <div class="everyPeriod">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.EveryN, new { @class = "control-label col-sm-3 labelsize" })
+                        <div class="col-sm-9">
+                            @Html.DropDownListFor(m => m.EveryN, Model.EveryNOptions(), new { @class = "form-control narrow", style = "display: inline;" })<span id="RepeatPatternText"> month(s)</span>
+                        </div>
+                    </div>
+                    @Html.HiddenFor(m => m.Period)
+                </div>
+                @Html.EditorFor(m => m.StartWhen, new { placeholder = "MM/DD/YYYY" })
+                <div class="form-group">
+                    <div class="col-sm-9 col-sm-offset-3">
+                        <span id="SummaryText"></span>
+                    </div>
+                </div>
+            }
         </div>
-      </div>
-    </div>
-    @Html.DivValidationMessage("form")
-  </form>
+        <div class="well">
+            @if (!Model.NoCreditCardsAllowed && !Model.NoEChecksAllowed)
+            {
+                <div class="form-group" style="text-align: center; margin-bottom: 1em;">
+                    <div class="btn-group" data-toggle="buttons">
+                        @TypeRadio(PaymentType.CreditCard, debitcredit, "left", Model.Type == PaymentType.CreditCard || string.IsNullOrWhiteSpace(Model.Type))
+                        @TypeRadio(PaymentType.Ach, "Bank Account", "right", Model.Type == PaymentType.Ach)
+                        @Html.Hidden("allowcc", "true")
+                    </div>
+                </div>
+            }
+            else if (Model.NoCreditCardsAllowed)
+            {
+                @Html.Hidden("Type", PaymentType.Ach);
+            }
+            else
+            {
+                @Html.Hidden("Type", PaymentType.CreditCard);
+            }
+            @if (Model.NoCreditCardsAllowed == false)
+            {
+                <div class="Card paymentinfo">
+                    @Html.EditorFor(m => m.CreditCard, new { autocomplete = Model.AutocompleteOnOff, Label = debitcredit })
+                    @Html.EditorFor(m => m.Expires, new { classes = "narrow" })
+                    @Html.EditorFor(m => m.CVV, new { classes = "narrow", autocomplete = Model.AutocompleteOnOff })
+                    <input type="hidden" id="hdnCreditCardOnFile" data-value="@Request.RequestContext.HttpContext.Session["CreditCardOnFile"]" />
+                    <input type="hidden" id="hdnExpiresOnFile" data-value="@Request.RequestContext.HttpContext.Session["ExpiresOnFile"]" />
+                </div>
+            }
+        @if (useRecaptcha) {
+            <div class="g-recaptcha"
+                 data-sitekey="@recaptchaSiteKey"
+                 data-callback="recaptcha_callback"
+                 data-size="invisible">
+            </div>
+        }
+        <input type="hidden" id="useRecaptcha" value="@useRecaptcha" />
+            @if (Model.NoEChecksAllowed == false)
+            {
+                <div class="Bank paymentinfo">
+                    @Html.EditorFor(m => m.Routing)
+                    @Html.EditorFor(m => m.Account, new { autocomplete = Model.AutocompleteOnOff })
+                    @Html.Partial("Flow2/EmptyRow")
+                </div>
+            }
+            <div class="form-group">
+                <div class="col-sm-9 col-sm-offset-3">
+                    <a id="CancelUpdateText">cancel</a>
+
+                </div>
+            </div>
+        </div>
+        <h4>Billing Address</h4>
+        <div class="well">
+            @Html.EditorFor(m => m.FirstName)
+            @Html.EditorFor(m => m.Middle, new { classes = "narrow" })
+            @Html.EditorFor(m => m.LastName)
+            @Html.EditorFor(m => m.Suffix, new { classes = "narrow" })
+            @Html.EditorFor(m => m.Address)
+            @Html.EditorFor(m => m.Address2)
+            @Html.EditorFor(m => m.City)
+            @Html.EditorFor(m => m.State)
+            @Html.EditorFor(m => m.Country, "Dropdown", new { items = Model.Countries })
+            @Html.EditorFor(m => m.Zip)
+            @Html.EditorFor(m => m.Phone)
+        </div>
+        <div class="form-group">
+            <div class="col-sm-12">
+                <div class="pull-right">
+                    @if (Model.HasManagedGiving)
+                    {
+                        <button id="stop-manage-giving" class="btn btn-danger">Stop Recurring Giving</button>
+                    }
+                    <input type="submit" id="submitit" class="btn btn-primary" value="Submit">
+                </div>
+            </div>
+        </div>
+        @Html.DivValidationMessage("form")
+    </form>
 </div>
+@helper TypeRadio(string type, string label, string side, bool isSelected)
+{
+    const string radius = "17px";
+    if (Model.Type == type)
+    {
+        <label class="btn btn-primary @(isSelected ? "active" : "")"
+               style="border-top-@side-radius: @radius; border-bottom-@side-radius: @radius">
+            <input type="radio" name="Type" value="@type" @(isSelected ? "checked=\"checked\"" : "") /> @label
+        </label>
+    }
+    else
+    {
+        <label class="btn btn-primary @(isSelected ? "active" : "")"
+               style="border-top-@side-radius: @radius; border-bottom-@side-radius: @radius">
+            <input type="radio" name="Type" value="@type" @(isSelected ? "checked=\"checked\"" : "") /> @label
+        </label>
+    }
+}

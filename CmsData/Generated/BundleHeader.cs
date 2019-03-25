@@ -50,15 +50,19 @@ namespace CmsData
 		
 		private int? _FundId;
 		
+		private string _ReferenceId;
+		
+		private int? _ReferenceIdType;
+		
    		
-   		private EntitySet< BundleDetail> _BundleDetails;
+   		private EntitySet<BundleDetail> _BundleDetails;
 		
     	
-		private EntityRef< ContributionFund> _Fund;
+		private EntityRef<ContributionFund> _Fund;
 		
-		private EntityRef< BundleHeaderType> _BundleHeaderType;
+		private EntityRef<BundleHeaderType> _BundleHeaderType;
 		
-		private EntityRef< BundleStatusType> _BundleStatusType;
+		private EntityRef<BundleStatusType> _BundleStatusType;
 		
 	#endregion
 	
@@ -115,18 +119,24 @@ namespace CmsData
 		partial void OnFundIdChanging(int? value);
 		partial void OnFundIdChanged();
 		
+		partial void OnReferenceIdChanging(string value);
+		partial void OnReferenceIdChanged();
+		
+		partial void OnReferenceIdTypeChanging(int? value);
+		partial void OnReferenceIdTypeChanged();
+		
     #endregion
 		public BundleHeader()
 		{
 			
-			this._BundleDetails = new EntitySet< BundleDetail>(new Action< BundleDetail>(this.attach_BundleDetails), new Action< BundleDetail>(this.detach_BundleDetails)); 
+			this._BundleDetails = new EntitySet<BundleDetail>(new Action< BundleDetail>(this.attach_BundleDetails), new Action< BundleDetail>(this.detach_BundleDetails)); 
 			
 			
-			this._Fund = default(EntityRef< ContributionFund>); 
+			this._Fund = default(EntityRef<ContributionFund>); 
 			
-			this._BundleHeaderType = default(EntityRef< BundleHeaderType>); 
+			this._BundleHeaderType = default(EntityRef<BundleHeaderType>); 
 			
-			this._BundleStatusType = default(EntityRef< BundleStatusType>); 
+			this._BundleStatusType = default(EntityRef<BundleStatusType>); 
 			
 			OnCreated();
 		}
@@ -498,12 +508,56 @@ namespace CmsData
 		}
 
 		
+		[Column(Name="ReferenceId", UpdateCheck=UpdateCheck.Never, Storage="_ReferenceId", DbType="nvarchar(100)")]
+		public string ReferenceId
+		{
+			get { return this._ReferenceId; }
+
+			set
+			{
+				if (this._ReferenceId != value)
+				{
+				
+                    this.OnReferenceIdChanging(value);
+					this.SendPropertyChanging();
+					this._ReferenceId = value;
+					this.SendPropertyChanged("ReferenceId");
+					this.OnReferenceIdChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="ReferenceIdType", UpdateCheck=UpdateCheck.Never, Storage="_ReferenceIdType", DbType="int")]
+		public int? ReferenceIdType
+		{
+			get { return this._ReferenceIdType; }
+
+			set
+			{
+				if (this._ReferenceIdType != value)
+				{
+				
+                    this.OnReferenceIdTypeChanging(value);
+					this.SendPropertyChanging();
+					this._ReferenceIdType = value;
+					this.SendPropertyChanged("ReferenceIdType");
+					this.OnReferenceIdTypeChanged();
+				}
+
+			}
+
+		}
+
+		
     #endregion
         
     #region Foreign Key Tables
    		
    		[Association(Name="BUNDLE_DETAIL_BUNDLE_FK", Storage="_BundleDetails", OtherKey="BundleHeaderId")]
-   		public EntitySet< BundleDetail> BundleDetails
+   		public EntitySet<BundleDetail> BundleDetails
    		{
    		    get { return this._BundleDetails; }
 
