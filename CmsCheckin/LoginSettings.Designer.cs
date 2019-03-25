@@ -129,6 +129,8 @@
             "Print To Printer",
             "Print To Server",
             "Print From Server",
+            //TODO: enable this option for future printing method
+            //"Cloud Printing",
             "No Printer"});
             this.PrintMode.Location = new System.Drawing.Point(14, 43);
             this.PrintMode.Name = "PrintMode";

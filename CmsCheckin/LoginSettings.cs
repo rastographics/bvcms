@@ -312,7 +312,8 @@ namespace CmsCheckin
 
         private void onPrintModeChanged(object sender, EventArgs e)
         {
-            if (PrintMode.SelectedIndex == 2)
+            var selectedPrintMode = PrintMode.SelectedValue as string;
+            if (selectedPrintMode == "Print From Server")
             {
                 PrintKiosks.Enabled = true;
                 KiosksToPrintForLabel.Enabled = true;
@@ -320,7 +321,7 @@ namespace CmsCheckin
                 advancedPrinterOptionsGroup.Enabled = true;
                 Printer.Enabled = true;
                 PrinterLabel.Enabled = true;
-                KioskName.Enabled = true;
+                KioskName.Enabled =
                 KioskNameLabel.Enabled = true;
                 labelOptionsGroup.Enabled = true;
 
@@ -330,14 +331,31 @@ namespace CmsCheckin
                 otherOptionsGroup.Enabled = false;
                 adminOptionsGroup.Enabled = false;
             }
-            else if (PrintMode.SelectedIndex == 3)
+            else if (selectedPrintMode == "Cloud Printing")
             {
                 advancedPrinterOptionsGroup.Enabled = false;
                 PrintKiosks.Enabled = false;
                 KiosksToPrintForLabel.Enabled = false;
                 Printer.Enabled = false;
                 PrinterLabel.Enabled = false;
-                KioskName.Enabled = false;
+                KioskName.Enabled = 
+                KioskNameLabel.Enabled = true;
+                labelOptionsGroup.Enabled = false;
+
+                mainOptionsGroup.Enabled = true;
+                buildingOptionsGroup.Enabled = true;
+                askForOptioonsGroup.Enabled = true;
+                otherOptionsGroup.Enabled = true;
+                adminOptionsGroup.Enabled = true;
+            }
+            else if (selectedPrintMode == "No Printer")
+            {
+                advancedPrinterOptionsGroup.Enabled = false;
+                PrintKiosks.Enabled = false;
+                KiosksToPrintForLabel.Enabled = false;
+                Printer.Enabled = false;
+                PrinterLabel.Enabled = false;
+                KioskName.Enabled = 
                 KioskNameLabel.Enabled = false;
                 labelOptionsGroup.Enabled = false;
 
