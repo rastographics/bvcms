@@ -93,7 +93,8 @@ namespace CmsWeb.Areas.People.Models
             if (ExcludeComments)
             {
                 this.CopyPropertiesTo(rr, null, "", "Comments");
-            } else
+            }
+            else
             {
                 this.CopyPropertiesTo(rr);
             }
