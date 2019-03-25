@@ -26,19 +26,9 @@ namespace CmsWeb
 {
     public class MvcApplication : HttpApplication
     {
-
         protected void Application_Start()
         {
-            // added bootstrapping for simpleinjector, register in DependencyConfig
-            var container = new Container();
-            container.Options.DefaultScopedLifestyle = new WebRequestLifestyle();
-
-            DependencyConfig.RegisterSimpleInjector(container);
-
-            //container.Verify();
-
-            GlobalConfiguration.Configuration.DependencyResolver = new SimpleInjectorWebApiDependencyResolver(container);
-            DependencyResolver.SetResolver(new SimpleInjectorDependencyResolver(container));
+            DependencyConfig.RegisterSimpleInjector();
 
             MvcHandler.DisableMvcResponseHeader = true;
             ModelBinders.Binders.DefaultBinder = new SmartBinder();
@@ -177,24 +167,12 @@ namespace CmsWeb
                     Response.Redirect(r);
                 }
             }
-
-            //            MiniProfiler.Stop();
-        }
-
-        protected void Application_PostAuthorizeRequest()
-        {
-            if (ShouldBypassProcessing())
-            {
-                return;
-            }
-
-            //            if (!IsAuthorizedToViewProfiler(Request))
-            //                MiniProfiler.Stop(discardResults: true);
         }
 
         public void ErrorLog_Logged(object sender, ErrorLoggedEventArgs args)
         {
-            Context.Items["error"] = args.Entry.Error.Exception.Message;
+            // This is the text shown in Error.aspx
+            Context.Items["error"] = args?.Entry?.Error?.Exception?.Message ?? "Error Unknown";
         }
 
         public void ErrorMail_Filtering(object sender, ExceptionFilterEventArgs e)
@@ -288,13 +266,10 @@ namespace CmsWeb
         private void Application_Error(object sender, EventArgs e)
         {
             var ex = Server.GetLastError();
-            if (!IsEmailBodyError(ex))
+            if (IsEmailBodyError(ex))
             {
-                return;
+                Context.ClearError();
             }
-
-            var httpContext = ((MvcApplication)sender).Context;
-            httpContext.ClearError();
         }
 
         private bool IsEmailBodyError(Exception ex)

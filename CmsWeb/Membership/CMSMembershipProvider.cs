@@ -138,9 +138,9 @@ namespace CmsWeb.Membership
         public override int PasswordAttemptWindow => pPasswordAttemptWindow;
         private MembershipPasswordFormat pPasswordFormat;
         public override MembershipPasswordFormat PasswordFormat => pPasswordFormat;
-        private int pMinRequiredNonAlphanumericCharacters;
+        private int pMinRequiredNonAlphanumericCharacters = 1;
         public override int MinRequiredNonAlphanumericCharacters => pMinRequiredNonAlphanumericCharacters;
-        private int pMinRequiredPasswordLength;
+        private int pMinRequiredPasswordLength = 7;
         public override int MinRequiredPasswordLength => pMinRequiredPasswordLength;
         private string pPasswordStrengthRegularExpression;
         public override string PasswordStrengthRegularExpression => pPasswordStrengthRegularExpression;

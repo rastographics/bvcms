@@ -128,7 +128,7 @@ namespace CmsWeb
             }
             else if (!NoCheckRole)
             {
-                var r = AccountModel.CheckAccessRole(Util.UserName);
+                var r = AccountModel.CheckAccessRole(User.Identity.Name);
                 if (r.HasValue())
                 {
                     filterContext.Result = Redirect(r);
@@ -247,7 +247,7 @@ namespace CmsWeb
             }
             else if (!NoCheckRole)
             {
-                var r = AccountModel.CheckAccessRole(Util.UserName);
+                var r = AccountModel.CheckAccessRole(User.Identity.Name);
                 if (r.HasValue())
                 {
                     filterContext.Result = Redirect(r);
