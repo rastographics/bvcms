@@ -87,10 +87,16 @@ namespace CmsWeb.Areas.People.Models
         [DisplayName("Coaching Interest")]
         public bool Coaching { get; set; }
 
-        public void UpdateModel()
+        public void UpdateModel(bool ExcludeComments)
         {
             var rr = Person.SetRecReg();
-            this.CopyPropertiesTo(rr);
+            if (ExcludeComments)
+            {
+                this.CopyPropertiesTo(rr, null, "", "Comments");
+            } else
+            {
+                this.CopyPropertiesTo(rr);
+            }
             Person.CustodyIssue = CustodyIssue;
             Person.OkTransport = OkTransport;
 
