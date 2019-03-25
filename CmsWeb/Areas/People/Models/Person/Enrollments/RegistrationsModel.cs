@@ -67,6 +67,7 @@ namespace CmsWeb.Areas.People.Models
 
         [UIHint("Textarea"), DisplayName("Registration Log")]
         public string Comments { get; set; }
+        public bool ShowComments { get; set; }
 
         public bool Tylenol { get; set; }
         public bool Advil { get; set; }
