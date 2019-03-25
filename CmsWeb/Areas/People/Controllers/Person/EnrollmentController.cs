@@ -57,7 +57,7 @@ namespace CmsWeb.Areas.People.Controllers
         {
             var m = new RegistrationsModel(PeopleId);
             DbUtil.LogPersonActivity($"Viewing Registrations for: {m.Person.Name}", m.Person.PeopleId, m.Person.Name);
-            ViewBag.ShowComments = ShowComments();
+            m.ShowComments = ShowComments();
             return View("Enrollment/Registrations", m);
         }
 
@@ -65,7 +65,7 @@ namespace CmsWeb.Areas.People.Controllers
         public ActionResult RegistrationsEdit(int PeopleId)
         {
             var m = new RegistrationsModel(PeopleId);
-            ViewBag.ShowComments = ShowComments();
+            m.ShowComments = ShowComments();
             return View("Enrollment/RegistrationsEdit", m);
         }
 
@@ -75,7 +75,7 @@ namespace CmsWeb.Areas.People.Controllers
             bool ExcludeComments = !ShowComments();
             m.UpdateModel(ExcludeComments);
             DbUtil.LogPersonActivity($"Updating Registrations for: {m.Person.Name}", m.Person.PeopleId, m.Person.Name);
-            ViewBag.ShowComments = ShowComments();
+            m.ShowComments = ShowComments();
             return View("Enrollment/Registrations", m);
         }
 
