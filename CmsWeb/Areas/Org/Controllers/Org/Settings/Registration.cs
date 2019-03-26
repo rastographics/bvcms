@@ -13,7 +13,7 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost]
         public ActionResult Registration(int id)
         {
-            var m = new SettingsRegistrationModel(id);
+            var m = new SettingsRegistrationModel(id, CurrentDatabase);
             return PartialView("Registration/Registration", m);
         }
 
@@ -21,7 +21,7 @@ namespace CmsWeb.Areas.Org.Controllers
         public ActionResult RegistrationHelpToggle(int id)
         {
             CurrentDatabase.ToggleUserPreference("ShowRegistrationHelp");
-            var m = new SettingsRegistrationModel(id);
+            var m = new SettingsRegistrationModel(id, CurrentDatabase);
             return PartialView("Registration/Registration", m);
         }
 
@@ -29,7 +29,7 @@ namespace CmsWeb.Areas.Org.Controllers
         [Authorize(Roles = "Edit")]
         public ActionResult RegistrationEdit(int id)
         {
-            var m = new SettingsRegistrationModel(id);
+            var m = new SettingsRegistrationModel(id, CurrentDatabase);
             return PartialView("Registration/RegistrationEdit", m);
         }
 
@@ -72,7 +72,7 @@ namespace CmsWeb.Areas.Org.Controllers
         public ActionResult UpdateOrgIds(int id, string list)
         {
             CurrentDatabase.SetCurrentOrgId(id);
-            var m = new SettingsRegistrationModel(id);
+            var m = new SettingsRegistrationModel(id, CurrentDatabase);
             m.Org.OrgPickList = list;
             CurrentDatabase.SubmitChanges();
             return PartialView("DisplayTemplates/OrgPickList", m);
