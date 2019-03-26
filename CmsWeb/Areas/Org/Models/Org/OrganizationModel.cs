@@ -50,7 +50,7 @@ namespace CmsWeb.Areas.Org.Models
             {
                 if (settingsRegistrationModel == null && Id.HasValue)
                 {
-                    settingsRegistrationModel = new SettingsRegistrationModel(Id.Value, Db);
+                    settingsRegistrationModel = new SettingsRegistrationModel(Id.Value, DbUtil.Db);
                 }
 
                 return settingsRegistrationModel;
