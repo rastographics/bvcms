@@ -44,6 +44,14 @@ IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.VIEWS where
 	END
 GO
 
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.VIEWS where 
+	TABLE_NAME = 'PaymentProcessDetails' AND 
+	TABLE_SCHEMA = 'dbo')
+	BEGIN
+		DROP VIEW [dbo].[PaymentProcessDetails]
+	END
+GO
+
 --Droping Tables--
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where 
 	TABLE_NAME = 'GatewayDetails' AND 
@@ -63,17 +71,25 @@ GO
 
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where 
 	TABLE_NAME = 'PaymentProcess' AND 
-	TABLE_SCHEMA = 'lookup')
+	TABLE_SCHEMA = 'dbo')
 	BEGIN
-		DROP TABLE [lookup].[PaymentProcess]
+		DROP TABLE [dbo].[PaymentProcess]
 	END
 GO
 
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where 
-	TABLE_NAME = 'Gateways' AND 
+	TABLE_NAME = 'GatewayAccount' AND 
+	TABLE_SCHEMA = 'dbo')
+	BEGIN
+		DROP TABLE [dbo].[GatewayAccount]
+	END
+GO
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where 
+	TABLE_NAME = 'GatewayConfigurationTemplate' AND 
 	TABLE_SCHEMA = 'lookup')
 	BEGIN
-		DROP TABLE [lookup].[Gateways]
+		DROP TABLE [lookup].[GatewayConfigurationTemplate]
 	END
 GO
 
@@ -82,6 +98,15 @@ IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where
 	TABLE_SCHEMA = 'lookup')
 	BEGIN
 		DROP TABLE [lookup].[ProcessType]
+	END
+GO
+
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where 
+	TABLE_NAME = 'Gateways' AND 
+	TABLE_SCHEMA = 'lookup')
+	BEGIN
+		DROP TABLE [lookup].[Gateways]
 	END
 GO
 
@@ -107,25 +132,7 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where
         VALUES
         ('Redirect Link'),
         ('SOAP'),
-        ('API'),
-		('DEFAULT')    
-	END
-GO
-
-IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where 
-	TABLE_NAME = 'ProcessType' AND 
-	TABLE_SCHEMA = 'lookup')
-	BEGIN		
-		CREATE TABLE [lookup].[ProcessType](
-	        [ProcessTypeId][int] IDENTITY(1,1) PRIMARY KEY,
-	        [ProcessTypeName][nvarchar](75) NOT NULL
-        );
-        INSERT INTO [lookup].[ProcessType]
-        ([ProcessTypeName])
-        VALUES
-        ('Payment'),
-        ('No Payment Required')
-    
+        ('API')
 	END
 GO
 
@@ -145,47 +152,57 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where
 		('Pushpay', 1),
 		('Sage', 2),
 		('Transnational', 2),
-		('Acceptival', 3),
-		('DEFAULT', 4)
+		('Acceptiva', 3)
 	END
 GO
 
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where 
-	TABLE_NAME = 'PaymentProcess' AND 
+	TABLE_NAME = 'GatewayConfigurationTemplate' AND 
 	TABLE_SCHEMA = 'lookup')
-	BEGIN
-		CREATE TABLE [lookup].[PaymentProcess](
-	        [ProcessId][int] IDENTITY(1,1) PRIMARY KEY NOT NULL,
-	        [ProcessName][nvarchar](30) NOT NULL,
-	        [ProcessTypeId][int] FOREIGN KEY REFERENCES [lookup].[ProcessType]([ProcessTypeId]) NOT NULL
-        );
-        INSERT INTO [lookup].[PaymentProcess]
-        ([ProcessName]
-        ,[ProcessTypeId])
-        VALUES
-        ('One-Time Giving', 1),
-        ('Recurring Giving', 1),
-        ('Online Registration', 1)
-        
+	BEGIN		
+		CREATE TABLE [lookup].[GatewayConfigurationTemplate](
+			[GatewayDetailId][int] IDENTITY(1,1) PRIMARY KEY,
+			[GatewayId][int] FOREIGN KEY REFERENCES [lookup].[Gateways]([GatewayId]),
+			[GatewayDetailName][nvarchar](125) NOT NULL,
+			[GatewayDetailValue][nvarchar](max) NOT NULL,
+			[IsBoolean][bit] NOT NULL
+		);
+		INSERT INTO [lookup].[GatewayConfigurationTemplate]
+		([GatewayId]
+		,[GatewayDetailName]
+		,[GatewayDetailValue]
+		,[IsBoolean])
+		VALUES
+		(1, 'IsDeveloperMode', 'true', 1),
+		(1, 'merchant_id', '', 0),
+		(2, 'M_ID', '', 0),
+		(2, 'M_KEY', '', 0),
+		(2, 'SageOriginatorId', '', 0),
+		(2, 'GatewayTesting', 'true', 1),
+		(3, 'TNBUsername', '', 0),
+		(3, 'TNBPassword', '', 0),
+		(3, 'GatewayTesting', 'true', 1);
 	END
 GO
 
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where 
-	TABLE_NAME = 'GatewaySettings' AND 
+	TABLE_NAME = 'GatewayAccount' AND 
 	TABLE_SCHEMA = 'dbo')
-	BEGIN		
-		CREATE TABLE [dbo].[GatewaySettings](
-		[GatewaySettingId][int] IDENTITY(1,1) PRIMARY KEY,
-		[GatewayId][int] FOREIGN KEY REFERENCES [lookup].[Gateways]([GatewayId]) NOT NULL,
-		[ProcessId][int] UNIQUE FOREIGN KEY REFERENCES [lookup].[PaymentProcess]([ProcessId]) NOT NULL);	
-	
-		INSERT INTO [dbo].[GatewaySettings]
-		([GatewayId]
-		,[ProcessId])
+	BEGIN				
+		CREATE TABLE [dbo].[GatewayAccount](
+			[GatewayAccountId][int] IDENTITY(1,1) PRIMARY KEY,
+			[GatewayAccountName][nvarchar](30) NOT NULL,
+			[GatewayId][int] FOREIGN KEY REFERENCES [lookup].[Gateways]([GatewayId]) NOT NULL
+		);
+
+		INSERT INTO [dbo].[GatewayAccount]
+		([GatewayAccountName]
+		,[GatewayId])
 		VALUES
-		(5, 1),
-		(5, 2),
-		(5, 3);
+		('PushpayAcc', 1),
+		('SageAcc', 2),
+		('TransnationalAcc', 3),
+		('AcceptivaAcc', 4)	
 	END
 GO
 
@@ -195,92 +212,80 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where
 	BEGIN		
 		CREATE TABLE [dbo].[GatewayDetails](
 			[GatewayDetailId][int] IDENTITY(1,1) PRIMARY KEY,
-			[GatewayId][int] FOREIGN KEY REFERENCES [lookup].[Gateways]([GatewayId]),
+			[GatewayAccountId][int] FOREIGN KEY REFERENCES [dbo].[GatewayAccount]([GatewayAccountId]),
 			[GatewayDetailName][nvarchar](125) NOT NULL,
 			[GatewayDetailValue][nvarchar](max) NOT NULL,
+			[IsBoolean][bit] NOT NULL,
 			[IsDefault][bit] NOT NULL
 		);
-		/*INSERT INTO [dbo].[GatewayDetails]
-		([GatewayId]
+
+		INSERT INTO [dbo].[GatewayDetails]
+		([GatewayAccountId]
 		,[GatewayDetailName]
 		,[GatewayDetailValue]
+		,[IsBoolean]
 		,[IsDefault])
-		VALUES
-		(1, 'PushpayAPIBaseUrl', 'https://sandbox-api.pushpay.io/v1/', 1),
-		(1, 'PushpayClientID', 'pursuant-touchpoint-dev', 1),
-		(1, 'PushpayClientSecret', '', 1),
-		(1, 'OAuth2AuthorizeEndpoint', 'https://auth.pushpay.com/pushpay-sandbox/oauth/authorize', 1),
-		(1, 'OAuth2TokenEndpoint', 'https://auth.pushpay.com/pushpay-sandbox/oauth/token', 1),
-		(1, 'PushpayScope', 'list_my_merchants merchant:manage_community_members merchant:manage_webhooks merchant:view_community_members merchant:view_payments merchant:view_recurring_payments read', 1),
-		(1, 'TenantHostDev', 'localhost:44301', 1),
-		(1, 'OrgBaseDomain', 'tpsdb.com', 1),
-		(1, 'TouchpointAuthServer', 'https://123ec8c6.ngrok.io/pushpay/complete', 1),
-		(1, 'IsDeveloperMode', 'true', 1),
-		(2, 'M_ID', '856423594649', 1),
-		(2, 'M_KEY', 'M5Q4C9P2T4N5', 1),
-		(2, 'SageOriginatorId', '', 1),
-		(2, 'GatewayTesting', 'true', 1),
-		(3, 'TNBUsername', 'faithbased', 1),
-		(3, 'TNBPassword', 'bprogram2', 1),
-		(3, 'GatewayTesting', 'true', 1)*/
+		SELECT [dbo].[GatewayAccount].[GatewayAccountId]
+		,[lookup].[GatewayConfigurationTemplate].[GatewayDetailName]
+		,[lookup].[GatewayConfigurationTemplate].[GatewayDetailValue]
+		,[lookup].[GatewayConfigurationTemplate].[IsBoolean]
+		,1
+		FROM [dbo].[GatewayAccount]
+		INNER JOIN [lookup].[Gateways]
+		ON [dbo].[GatewayAccount].[GatewayId] = [lookup].[Gateways].[GatewayId]
+		INNER JOIN [lookup].[GatewayConfigurationTemplate]
+		ON [lookup].[Gateways].[GatewayId] = [lookup].[GatewayConfigurationTemplate].[GatewayId]
+	END
+GO
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where 
+	TABLE_NAME = 'PaymentProcess' AND 
+	TABLE_SCHEMA = 'dbo')
+	BEGIN
+		CREATE TABLE [dbo].[PaymentProcess](
+	        [ProcessId][int] IDENTITY(1,1) PRIMARY KEY NOT NULL,
+	        [ProcessName][nvarchar](30) NOT NULL,
+			[GatewayAccountId][int] FOREIGN KEY REFERENCES [dbo].[GatewayAccount]([GatewayAccountId]) NULL,
+        );
+        INSERT INTO [dbo].[PaymentProcess]
+        ([ProcessName])
+        VALUES
+        ('One-Time Giving'),
+        ('Recurring Giving'),
+        ('Online Registration');
+
+		UPDATE [dbo].[PaymentProcess]
+		SET [GatewayAccountId] = 1
+		WHERE [ProcessId] = 1
 	END
 GO
 
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.VIEWS where 
-	TABLE_NAME = 'GatewayDetailsInformation' AND 
+	TABLE_NAME = 'PaymentProcessDetails' AND 
 	TABLE_SCHEMA = 'dbo')
 	BEGIN		
 		EXEC dbo.sp_executesql @statement = N'
-		CREATE VIEW [dbo].[GatewayDetailsInformation] AS
-		SELECT [GtS].[GatewayId]
-			,[Gt].[GatewayName]
-			,[GtD].[GatewayDetailId]
-			,[GtD].[GatewayDetailName]
-			,[GtD].[GatewayDetailValue]
-			,[GtD].[IsDefault]
-		FROM [dbo].[GatewaySettings] [GtS]
-		INNER JOIN [lookup].[Gateways] [Gt]
-		ON [GtS].[GatewayId] = [Gt].[GatewayId]
-		LEFT JOIN [dbo].[GatewayDetails] [GtD]
-		ON [GtD].[GatewayId] = [Gt].[GatewayId]'
-	END	
-GO
-
-IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.VIEWS where 
-	TABLE_NAME = 'AvailableProcesses' AND 
-	TABLE_SCHEMA = 'dbo')
-	BEGIN		
-		EXEC dbo.sp_executesql @statement = N'
-		CREATE VIEW [dbo].[AvailableProcesses] AS
-		SELECT [ProcessId], [ProcessName]
-		FROM [lookup].[PaymentProcess]
-		WHERE [ProcessId] NOT IN(SELECT [ProcessId] FROM [GatewaySettings])
-		AND [ProcessTypeId] = 1
-		'
-	END	
-GO
-
-IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.VIEWS where 
-	TABLE_NAME = 'MyGatewaySettings' AND 
-	TABLE_SCHEMA = 'dbo')
-	BEGIN		
-		EXEC dbo.sp_executesql @statement = N'
-		CREATE VIEW [dbo].[MyGatewaySettings]
+		CREATE VIEW [dbo].[PaymentProcessDetails]
 		AS
-			SELECT [GatewaySettings].[GatewaySettingId], 
-				[lookup].[PaymentProcess].[ProcessName],
-				[dbo].[GatewaySettings].[ProcessId],
-				[lookup].[Gateways].[GatewayName],
-				[lookup].[Gateways].[GatewayId]
-			FROM [GatewaySettings]
-			INNER JOIN [lookup].[PaymentProcess]
-			ON [GatewaySettings].[ProcessId] = [lookup].[PaymentProcess].[ProcessId]
-			INNER JOIN [lookup].[Gateways]
-			ON [GatewaySettings].[GatewayId] = [lookup].[Gateways].[GatewayId]
+		SELECT [dbo].[PaymentProcess].[ProcessId]
+			,[dbo].[PaymentProcess].[ProcessName]
+			,[dbo].[GatewayAccount].[GatewayAccountId]
+			,[dbo].[GatewayAccount].[GatewayAccountName]
+			,[dbo].[GatewayAccount].[GatewayId]
+			,[dbo].[GatewayDetails].[GatewayDetailName]
+			,[dbo].[GatewayDetails].[GatewayDetailValue]
+			,[dbo].[GatewayDetails].[IsDefault]
+			,[dbo].[GatewayDetails].[IsBoolean]
+		FROM [dbo].[PaymentProcess]
+		LEFT JOIN [dbo].[GatewayAccount]
+		ON [dbo].[PaymentProcess].[GatewayAccountId] = [dbo].[GatewayAccount].[GatewayAccountId]
+		LEFT JOIN [dbo].[GatewayDetails]
+		ON [dbo].[GatewayAccount].[GatewayAccountId] = [dbo].[GatewayDetails].[GatewayAccountId]
 		'
 	END	
 GO
 
+/*
 IF NOT EXISTS (
        SELECT type_desc, type
        FROM SYS.PROCEDURES WITH(NOLOCK)
@@ -414,3 +419,4 @@ IF NOT EXISTS (
 				END'
 	END
 GO
+*/

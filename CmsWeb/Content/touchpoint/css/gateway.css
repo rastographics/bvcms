@@ -1,51 +1,28 @@
-﻿.pb2 {
-    padding-bottom: 2em;
+﻿.multiplegateway-form label {
+    text-align: right;
+    display: inherit;
 }
 
-.pt2 {
-    padding-top: 2em;
-}
-
-.fa-frown-o {
-    font-weight: 300;
-    font-size: 100px;
-}
-
-.removefiguration, .deletefiguration {
-    border: none;
-    background: none;
-    background-color: transparent;
-}
-
-.removefiguration i, .deletefiguration i {
-    color: #ff2800;
-    font-size: 15px;
-}
-
-#gatewayValues {
-    overflow-y: auto;
-    max-height: 340px;
-}
-
-.divkeyvalue:not(:first-child) {
+.label-gateway {
     margin-top: 15px;
+    display: inline-flex;
+    font-weight: 300;
+    text-align: left !important;
 }
 
-.w100 {
-    width: 100%;
+.blue-avaiable {
+    color: #003f72;
+    border-bottom: dashed 1px #0088cc;
+    text-decoration: none !important;
 }
 
-.checkbox-gateway {
-    display: block;
-    text-align: center;
+.red-empty {
+    border-bottom: dashed 1px #0088cc;
+    color: #DD1144;
+    text-decoration: none !important;
 }
 
-.checkbox-gateway input {
-	text-align:center;
-}
-
-@media (min-width: 768px) {
-    .modal-dialog-custom {
-        width: 650px !important;
-    }
+.red-empty:hover {
+    border-bottom: dashed 1px #0088cc;
+    color: #DD1144;
 }

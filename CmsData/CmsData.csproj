@@ -776,10 +776,11 @@
     <Compile Include="Generated\Functions\UnitPledgeSummary.cs" />
     <Compile Include="Generated\Functions\VisitsAbsent.cs" />
     <Compile Include="Generated\Functions\VolunteerCalendar.cs" />
+    <Compile Include="Generated\GatewayAccount.cs" />
+    <Compile Include="Generated\GatewayConfigurationTemplate.cs" />
     <Compile Include="Generated\GatewayDetails.cs" />
     <Compile Include="Generated\Gateways.cs" />
     <Compile Include="Generated\GatewayServiceType.cs" />
-    <Compile Include="Generated\GatewaySettings.cs" />
     <Compile Include="Generated\IpLog.cs" />
     <Compile Include="Generated\IpLog2.cs" />
     <Compile Include="Generated\IpWarmup.cs" />
@@ -818,7 +819,6 @@
     <Compile Include="Generated\Views\AppRegistration.cs" />
     <Compile Include="Generated\Views\AttendCredits2.cs" />
     <Compile Include="Generated\Views\Attribute.cs" />
-    <Compile Include="Generated\Views\AvailableProcesses.cs" />
     <Compile Include="Generated\Views\ChAiGiftDatum.cs" />
     <Compile Include="Generated\Views\ChAiIndividualDatum.cs" />
     <Compile Include="Generated\Views\ContributionsBasic.cs" />
@@ -831,7 +831,6 @@
     <Compile Include="Generated\Views\FamilyFirstTime.cs" />
     <Compile Include="Generated\Views\FirstAttend.cs" />
     <Compile Include="Generated\Views\FirstPersonSameEmail.cs" />
-    <Compile Include="Generated\Views\GatewayDetailsInformation.cs" />
     <Compile Include="Generated\Views\IncompleteTask.cs" />
     <Compile Include="Generated\Views\InProgressRegistration.cs" />
     <Compile Include="Generated\Views\LastAttend.cs" />
@@ -839,11 +838,11 @@
     <Compile Include="Generated\Views\MeetingConflict.cs" />
     <Compile Include="Generated\Views\MinistryInfo.cs" />
     <Compile Include="Generated\Views\MoveSchedule.cs" />
-    <Compile Include="Generated\Views\MyGatewaySettings.cs" />
     <Compile Include="Generated\Views\OnlineRegQA.cs" />
     <Compile Include="Generated\Views\OrgSchedules2.cs" />
     <Compile Include="Generated\Views\OrgsWithFee.cs" />
     <Compile Include="Generated\Views\OrgsWithoutFee.cs" />
+    <Compile Include="Generated\Views\PaymentProcessDetails.cs" />
     <Compile Include="Generated\Views\PeopleBasicModifed.cs" />
     <Compile Include="Generated\Views\PrevAddress.cs" />
     <Compile Include="Generated\Views\ProspectCount.cs" />

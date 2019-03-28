@@ -11,20 +11,19 @@ using CmsData.Infrastructure;
 
 namespace CmsData
 {
-    [Table(Name = "dbo.GatewayDetails")]
-    public partial class GatewayDetails
+    [Table(Name = "lookup.GatewayConfigurationTemplate")]
+    public partial class GatewayConfigurationTemplate
     {
         private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
 
         #region Private Fields
         private int _GatewayDetailId;
-        private int _GatewayAccountId;
+        private int _GatewayId;
         private string _GatewayDetailName;
         private string _GatewayDetailValue;
-        private bool _IsDefault;
         private bool _IsBoolean;
 
-        private EntityRef<GatewayAccount> _GatewayAccount;
+        private EntityRef<Gateways> _Gateways;
         #endregion
 
         #region Extensibility Method Definitions
@@ -35,8 +34,8 @@ namespace CmsData
         partial void OnGatewayDetailIdChanging(int value);
         partial void OnGatewayDetailIdChanged();
 
-        partial void OnGatewayAccountIdChanging(int value);
-        partial void OnGatewayAccountIdChanged();
+        partial void OnGatewayIdChanging(int value);
+        partial void OnGatewayIdChanged();
 
         partial void OnGatewayDetailNameChanging(string value);
         partial void OnGatewayDetailNameChanged();
@@ -44,14 +43,11 @@ namespace CmsData
         partial void OnGatewayDetailValueChanging(string value);
         partial void OnGatewayDetailValueChanged();
 
-        partial void OnIsDefaultChanging(bool value);
-        partial void OnIsDefaultChanged();
-
         partial void OnIsBooleanChanging(bool value);
         partial void OnIsBooleanChanged();
         #endregion
 
-        public GatewayDetails()
+        public GatewayConfigurationTemplate()
         {
             OnCreated();
         }
@@ -75,24 +71,24 @@ namespace CmsData
             }
         }
 
-        [Column(Name = "GatewayAccountId", UpdateCheck = UpdateCheck.Never, Storage = "_GatewayAccountId", DbType = "int NOT NULL", IsPrimaryKey = true)]
+        [Column(Name = "GatewayId", UpdateCheck = UpdateCheck.Never, Storage = "_GatewayId", DbType = "int NOT NULL", IsPrimaryKey = true)]
         [IsForeignKey]
-        public int GatewayAccountId
+        public int GatewayId
         {
-            get { return this._GatewayAccountId; }
+            get { return this._GatewayId; }
 
             set
             {
-                if (this._GatewayAccountId != value)
+                if (this._GatewayId != value)
                 {
-                    if (this._GatewayAccount.HasLoadedOrAssignedValue)
+                    if (this._Gateways.HasLoadedOrAssignedValue)
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
 
-                    this.OnGatewayAccountIdChanging(value);
+                    this.OnGatewayIdChanging(value);
                     this.SendPropertyChanging();
-                    this._GatewayAccountId = value;
-                    this.SendPropertyChanged("GatewayAccountId");
-                    this.OnGatewayAccountIdChanged();
+                    this._GatewayId = value;
+                    this.SendPropertyChanged("GatewayId");
+                    this.OnGatewayIdChanged();
                 }
             }
         }
@@ -133,25 +129,7 @@ namespace CmsData
             }
         }
 
-        [Column(Name = "IsDefault", UpdateCheck = UpdateCheck.Never, Storage = "_IsDefault", DbType = "bit NOT NULL", IsPrimaryKey = true)]
-        public bool IsDefault
-        {
-            get { return this._IsDefault; }
-
-            set
-            {
-                if (this._IsDefault != value)
-                {
-                    this.OnIsDefaultChanging(value);
-                    this.SendPropertyChanging();
-                    this._IsDefault = value;
-                    this.SendPropertyChanged("IsDefault");
-                    this.OnIsDefaultChanged();
-                }
-            }
-        }
-
-        [Column(Name = "IsBoolean", UpdateCheck = UpdateCheck.Never, Storage = "_IsBoolean", DbType = "bit NOT NULL", IsPrimaryKey = true)]
+        [Column(Name = "IsBoolean", UpdateCheck = UpdateCheck.Never, Storage = "_IsBoolean", DbType = "bit NOT NULL")]
         public bool IsBoolean
         {
             get { return this._IsBoolean; }

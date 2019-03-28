@@ -40,8 +40,9 @@ namespace CmsWeb.Areas.Setup.Controllers
         ///     Entry point / home page into the application
         /// </summary>
         /// <returns></returns>
-        [Route("~/Pushpay")]
-        public ActionResult Index()
+        [Route("~/Pushpay/{APITest}")]
+        [HttpGet]
+        public JsonResult Index(bool APITest)
         {
             string redirectUrl = new MultipleGatewayUtils(CurrentDatabase).Setting("OAuth2AuthorizeEndpoint", "", 1)
                 + "?client_id=" + new MultipleGatewayUtils(CurrentDatabase).Setting("PushpayClientID", "", 1)
@@ -50,7 +51,7 @@ namespace CmsWeb.Areas.Setup.Controllers
                 + "&scope=" + new MultipleGatewayUtils(CurrentDatabase).Setting("PushpayScope", "", 1)
                 + "&state=" + CurrentDatabase.Host; //Get  xsrf_token:tenantID
 
-            return Redirect(redirectUrl);
+            return Json(redirectUrl, JsonRequestBehavior.AllowGet);
         }
 
         [AllowAnonymous, Route("~/Pushpay/Complete")]

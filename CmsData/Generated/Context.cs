@@ -330,6 +330,14 @@ namespace CmsData
         partial void UpdateGateways(Gateways instance);
         partial void DeleteGateways(Gateways instance);
 
+        partial void InsertGatewayAccount(GatewayAccount instance);
+        partial void UpdateGatewayAccount(GatewayAccount instance);
+        partial void DeleteGatewayAccount(GatewayAccount instance);
+
+        partial void InsertGatewayConfigurationTemplate(GatewayConfigurationTemplate instance);
+        partial void UpdateGatewayConfigurationTemplate(GatewayConfigurationTemplate instance);
+        partial void DeleteGatewayConfigurationTemplate(GatewayConfigurationTemplate instance);
+
         partial void InsertGatewayDetails(GatewayDetails instance);
         partial void UpdateGatewayDetails(GatewayDetails instance);
         partial void DeleteGatewayDetails(GatewayDetails instance);
@@ -337,10 +345,6 @@ namespace CmsData
         partial void InsertGatewayServiceType(GatewayServiceType instance);
         partial void UpdateGatewayServiceType(GatewayServiceType instance);
         partial void DeleteGatewayServiceType(GatewayServiceType instance);
-
-        partial void InsertGatewaySettings(GatewaySettings instance);
-        partial void UpdateGatewaySettings(GatewaySettings instance);
-        partial void DeleteGatewaySettings(GatewaySettings instance);
 
         partial void InsertGender(Gender instance);
         partial void UpdateGender(Gender instance);
@@ -1313,6 +1317,16 @@ namespace CmsData
             get { return this.GetTable<Gateways>(); }
         }
 
+        public Table<GatewayAccount> GatewayAccount
+        {
+            get { return this.GetTable<GatewayAccount>(); }
+        }
+
+        public Table<GatewayConfigurationTemplate> GatewayConfigurationTemplate
+        {
+            get { return this.GetTable<GatewayConfigurationTemplate>(); }
+        }
+
         public Table<GatewayDetails> GatewayDetails
         {
             get { return this.GetTable<GatewayDetails>(); }
@@ -1321,12 +1335,6 @@ namespace CmsData
         public Table<GatewayServiceType> GatewayServiceType
         {
             get { return this.GetTable<GatewayServiceType>(); }
-        }
-
-        public Table<GatewaySettings> GatewaySettings
-        {
-            get { return this.GetTable<GatewaySettings>(); }
-
         }
 
         public Table<Gender> Genders
@@ -2076,11 +2084,6 @@ namespace CmsData
 
 	    }
 
-        public Table<View.AvailableProcesses> ViewAvailableProcesses
-        {
-            get { return this.GetTable<View.AvailableProcesses>(); }
-        }
-
         public Table<View.BundleList> ViewBundleLists
 	    {
 		    get { return this.GetTable<View.BundleList>(); }
@@ -2201,11 +2204,6 @@ namespace CmsData
 
 	    }
 
-        public Table<View.GatewayDetailsInformation> ViewGatewayDetailsInformation
-        {
-            get { return this.GetTable<View.GatewayDetailsInformation>(); }
-        }
-
         public Table<View.HeadOrSpouseWithEmail> ViewHeadOrSpouseWithEmails
 	    {
 		    get { return this.GetTable<View.HeadOrSpouseWithEmail>(); }
@@ -2272,11 +2270,6 @@ namespace CmsData
 
 	    }
 
-        public Table<View.MyGatewaySettings> ViewMyGatewaySettings
-        {
-            get { return this.GetTable<View.MyGatewaySettings>(); }
-        }
-
         public Table<View.MoveSchedule> ViewMoveSchedules
 	    {
 		    get { return this.GetTable<View.MoveSchedule>(); }
@@ -2325,7 +2318,13 @@ namespace CmsData
 
 	    }
 
-	    public Table<View.PeopleBasicModifed> ViewPeopleBasicModifeds
+        public Table<View.PaymentProcessDetails> ViewPaymentProcessDetails
+        {
+            get { return this.GetTable<View.PaymentProcessDetails>(); }
+
+        }
+
+        public Table<View.PeopleBasicModifed> ViewPeopleBasicModifeds
 	    {
 		    get { return this.GetTable<View.PeopleBasicModifed>(); }
 
@@ -7115,44 +7114,6 @@ namespace CmsData
 			);
 			return ((ISingleResult<TopGiver>)(result.ReturnValue));
 		}
-
-        [Function(Name = "dbo.AddGatewaySettings")]
-        public ISingleResult<Result> AddGatewaySettings(
-            [Parameter(Name = "GatewaySettingId", DbType = "int")] int? GatewaySettingId,
-            [Parameter(Name = "GatewayId", DbType = "int")] int GatewayId,
-            [Parameter(Name = "ProcessId", DbType = "int")] int ProcessId,
-            [Parameter(Name = "Operation", DbType = "int")] int Operation
-            )
-        {
-            IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                GatewaySettingId,
-                GatewayId,
-                ProcessId,
-                Operation
-            );
-            return ((ISingleResult<Result>)(result.ReturnValue));
-        }
-
-        [Function(Name = "dbo.AddGatewayDetail")]
-        public ISingleResult<Result> AddGatewayDetail(
-            [Parameter(Name = "GatewayDetailId", DbType = "int")] int? GatewayDetailId,
-            [Parameter(Name = "GatewayId", DbType = "int")] int GatewayId,
-            [Parameter(Name = "GatewayDetailName", DbType = "nvarchar")] string GatewayDetailName,
-            [Parameter(Name = "GatewayDetailValue", DbType = "nvarchar")] string GatewayDetailValue,
-            [Parameter(Name = "IsDefault", DbType = "bit")] bool IsDefault,
-            [Parameter(Name = "Operation", DbType = "int")] int Operation
-            )
-        {
-            IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                GatewayDetailId,
-                GatewayId,
-                GatewayDetailName,
-                GatewayDetailValue,
-                IsDefault,
-                Operation
-            );
-            return ((ISingleResult<Result>)(result.ReturnValue));
-        }
         #endregion
     }
 

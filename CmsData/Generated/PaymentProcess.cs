@@ -11,7 +11,7 @@ using CmsData.Infrastructure;
 
 namespace CmsData
 {
-    [Table(Name = "lookup.PaymentProcess")]
+    [Table(Name = "dbo.PaymentProcess")]
     public partial class PaymentProcess : INotifyPropertyChanging, INotifyPropertyChanged
     {
         private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
@@ -19,9 +19,9 @@ namespace CmsData
         #region Private Fields
         private int _ProcessId;
         private string _ProcessName;
-        private int _ProcessTypeId;
+        private int? _GatewayAccountId;
 
-        private EntityRef<ProcessType> _ProcessType;
+        private EntityRef<GatewayAccount> _GatewayAccount;
         #endregion
 
         #region Extensibility Method Definitions
@@ -35,8 +35,8 @@ namespace CmsData
         partial void OnProcessNameChanging(string value);
         partial void OnProcessNameChanged();
 
-        partial void OnProcessTypeIdChanging(int value);
-        partial void OnProcessTypeIdChanged();
+        partial void OnGatewayAccountIdChanging(int? value);
+        partial void OnGatewayAccountIdChanged();
         #endregion
 
         public PaymentProcess()
@@ -81,24 +81,24 @@ namespace CmsData
             }
         }
 
-        [Column(Name = "ProcessTypeId", UpdateCheck = UpdateCheck.Never, Storage = "_ProcessTypeId", DbType = "int NOT NULL", IsPrimaryKey = true)]
+        [Column(Name = "GatewayAccountId", UpdateCheck = UpdateCheck.Never, Storage = "_GatewayAccountId", DbType = "int NOT NULL", IsPrimaryKey = true)]
         [IsForeignKey]
-        public int ProcessTypeId
+        public int? GatewayAccountId
         {
-            get { return this._ProcessTypeId; }
+            get { return this._GatewayAccountId; }
 
             set
             {
-                if (this._ProcessTypeId != value)
+                if (this._GatewayAccountId != value)
                 {
-                    if (this._ProcessType.HasLoadedOrAssignedValue)
+                    if (this._GatewayAccount.HasLoadedOrAssignedValue)
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
 
-                    this.OnProcessTypeIdChanging(value);
+                    this.OnGatewayAccountIdChanging(value);
                     this.SendPropertyChanging();
-                    this._ProcessTypeId = value;
-                    this.SendPropertyChanged("ProcessTypeId");
-                    this.OnProcessTypeIdChanged();
+                    this._GatewayAccountId = value;
+                    this.SendPropertyChanged("GatewayAccountId");
+                    this.OnGatewayAccountIdChanged();
                 }
             }
         }

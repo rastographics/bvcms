@@ -1,177 +1,126 @@
-﻿@model IEnumerable<CmsData.View.MyGatewaySettings>
-@{
+﻿@{
     Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Gateway";
     ViewBag.PageHeader = "Gateway Settings";
 }
 
-@if (Model.Count() > 0)
-{
-    <div class="noprocess row">
-        <div class="col-lg-9">
-            <div class="box box-responsive">
-                <div class="box-title-btn">
-                    <div class="box-tools">
-                        <a href="#" class="btn btn-success create-new more-configs"><i class="fa fa-plus-circle"></i> Process-Gateway Configuration</a>
-                    </div>
-                </div>
-                <div class="box-content">
-                    <div class="table-responsive">
-                        <table id="settings" class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th style="width: 150px;">
-                                        Process Name
-                                    </th>
-                                    <th style="width: 150px;">
-                                        Gateway Name
-                                    </th>
-                                    <th style="width: 150px;">
-                                        Action
-                                    </th>
+<div id="multipleGateway">
+    <div class="col-lg-9">
+        <div class="box box-responsive">
+            <div class="box-content">
+                <div class="table-responsive">
+                    <table id="settings" class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th style="width: 150px;">
+                                    Process Name
+                                </th>
+                                <th style="width: 150px;">
+                                    Gateway Name
+                                </th>
+                                <th style="width: 150px;">
+
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template v-for="process in Processes">
+                                <tr v-if="process.GatewayAccountName !== null">
+                                    <td>
+                                        {{process.ProcessName}}
+                                    </td>
+                                    <td>
+                                        <a v-on:click="modalInfo(process.ProcessId, process.GatewayAccountId)" class="blue-avaiable" href="#">
+                                            {{process.GatewayAccountName}}
+                                        </a>
+                                    </td>
+                                    <td style="width: 50px;">
+                                        <a href="#" class="btn btn-sm btn-danger deleteprocess">
+                                            <i class="fa fa-trash"></i>&nbsp;Delete
+                                        </a>
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var item in Model)
-                                {
-                                    <tr>
-                                        <td style="width: 100px;">@item.ProcessName</td>
-                                        <td style="width: 100px;">@item.GatewayName</td>
-                                        <td style="width: 50px;">
-                                            <a href="#" onclick="editprocess(@item.GatewaySettingId, @item.ProcessId, @item.GatewayId, '@item.ProcessName')" class="btn btn-sm btn-info"><i class="fa fa-pencil"></i>&nbsp;Change Gateway</a>
-                                            <a href="#" onclick="GetWatewayConfig(@item.GatewayId)" class="btn btn-sm btn-primary"><i class="fa fa-gear"></i>&nbsp;Gateway</a>
-                                            <a href="#" onclick="deleteprocess(@item.GatewaySettingId)" class="btn btn-sm btn-danger deleteprocess"><i class="fa fa-trash"></i>&nbsp;Delete</a>
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
+                                <tr v-else>
+                                    <td>
+                                        {{process.ProcessName}}
+                                    </td>
+                                    <td>
+                                        <a v-on:click="modalInfo(process.ProcessId, process.GatewayAccountId)" class="red-empty" href="#">
+                                            Empty
+                                        </a>
+                                    </td>
+                                    <td style="width: 50px;"></td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
-}
 
-else
-{
-    <div class="noprocess container col-md-12">
-        <div class="col-md-6 col-md-offset-3 text-center">
-            <h1>You do not have any Process Configuration</h1>
-            <div class="pb2">
-                <i class="fa fa-frown-o"></i>
-            </div>
-            <button class="btn btn-info addnew"><i class="fa fa-plus"></i>&nbsp;Add New</button>
-        </div>
-    </div>
-}
-
-<div hidden class="noprocess container col-md-12">
-    <div class="col-md-4 col-md-offset-4 text-center">
-        @using (Html.BeginForm("AddGatewaySettings", "Gateway", FormMethod.Post, new { @id = "AddGatewaySettings" }))
-        {
-            <div class="form-group">
-                <label for="exampleInputEmail1">Process</label>
-                <div class="col-md-12 form-group">
-                    <div class="col-md-12 form-group">@Html.DropDownList("ProcessId", (SelectList)ViewBag.AvailableProcess, new { @class = "form-control" })</div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="exampleInputEmail1">Gateway</label>
-                <div class="col-md-12 form-group">
-                    <div class="col-md-10 form-group">
-                        @Html.DropDownList("GatewayId", (SelectList)ViewBag.Gateways, new { @class = "form-control", @id = "gatewaylist" })
+    <div class="modal fade" tabindex="-1" role="dialog" id="config-modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form class="multiplegateway-form" v-on:submit.prevent="processForm">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                        <h4 class="modal-title">{{ProcessName}}</h4>
                     </div>
-                    <div class="col-md-2 form-group">
-                        <a class="btn btn-primary getconfig"><i class="fa fa-cogs"></i></a>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label>Account Name</label>
+                            </div>
+                            <div class="col-md-6">
+                                <input v-on:change="checkAccount" v-model="AccountName" type="text" class="form-control" list="gtAccounts" />
+                                <datalist id="gtAccounts">
+                                    <template v-for="account in GatewayAccounts">
+                                        <option v-bind:value="account.GatewayAccountName">
+                                    </template>
+                                </datalist>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label>Gateway Type</label>
+                            </div>
+                            <div class="col-md-6">
+                                <select class="form-control" v-model="GatewayId" v-on:change="OnChangeGateway" v-bind:disabled="IsGatewayReadOnly">
+                                    <template v-for="gateway in Gateways">
+                                        <option v-bind:value="gateway.GatewayId">{{gateway.GatewayName}}</option>
+                                    </template>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 col-md-offset-3">
+                                <label class="label-gateway">
+                                    <input class="" type="checkbox" />
+                                    &nbsp;Use for all payment processes
+                                </label>
+                            </div>
+                        </div>
+                        <hr />
+                        <template v-for="(input, index) in Inputs">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label>{{input.GatewayDetailName}}</label>
+                                </div>
+                                <div class="col-md-6">
+                                    <input v-if="input.IsBoolean" type="checkbox" v-model="DetailValue[index]" />
+                                    <input v-else class="form-control" v-model="DetailValue[index]" />
+                                </div>
+                            </div>
+                            <br />
+                        </template>
                     </div>
-                    @if (Model.Count() == 0)
-                    {
-                        <div class="col-md-12 form-group">
-                            <label class="checkbox-gateway">
-                                Apply to all processes<br />
-                                <input class="applyall" type="checkbox" value="false" name="applyall" />
-                            </label>
-                        </div>
-                    }
-                </div>               
-            </div>
-            if (Model.Count() == 3)
-            {
-                <button disabled class="btn btn-default"><i class="fa fa-save"></i>&nbsp;Save</button>
-            }
-            else
-            {
-                <button id="saveproccess" class="btn btn-success"><i class="fa fa-save"></i>&nbsp;Save</button>
-            }
-            <a href="#" class="btn btn-warning cancel"><i class="fa fa-ban"></i>&nbsp;Cancel</a>        
-        }
-    </div>
-</div>
-
-<div id="gatewayModal" class="modal fade" role="dialog">
-    <div class="modal-dialog modal-dialog-custom">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Gateway Configuration</h4>
-            </div>
-            <div class="modal-body">
-                <form name="myform" role="form" novalidate>
-
-                    <div id="gatewayValues">
-                    </div>
-
-                    <div class="form-inline text-center pt2">
-                        <div class="form-group">
-                            <a class="btn btn-success newconfiguration"><i class="fa fa-plus"></i>&nbsp;Add Configuration</a>
-                        </div>
-
-                        <div class="form-group">
-                            <a class="btn btn-info saveconfiguration"><i class="fa fa-save"></i>&nbsp;Save</a>
-                        </div>
+                    <div class="modal-footer">
+                        <input type="submit" value="Save" class="btn btn-primary">
+                        <input type="button" value="Cancel" class="btn btn-default" data-dismiss="modal">
                     </div>
                 </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div id="processModal" class="modal fade" role="dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Process Configuration</h4>
-            </div>
-            <div class="modal-body">
-                @using (Html.BeginForm("AddGatewaySettings", "Gateway", FormMethod.Post, new { @id = "AddGatewaySettings" }))
-                {
-                    <div class="text-center">
-                        <div class="col-md-12 text-center">
-                            <h4 id="processName">Process</h4>
-                            <hr />
-                            <input hidden name="GatewaySettingId" id="GatewaySettingId" value="" type="number" />
-                            <input hidden name="ProcessId" id="secproccessId" value="" type="number" />
-                            <input hidden name="Operation" value="1" type="number"/>
-                        </div>
-                        <div class="col-md-12 pb2">
-                            <label class="w100">
-                                Select a Gateway
-                                @Html.DropDownList("GatewayId", (SelectList)ViewBag.AvailableGateways, new { @class = "form-control", @id = "secgatewaylist" })
-                            </label>
-                        </div>
-                        <div class="text-center">
-                            <button class="btn btn-info"><i class="fa fa-save"></i>&nbsp;Save</button>
-                        </div>
-                    </div>
-                }
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>

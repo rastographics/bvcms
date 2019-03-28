@@ -17,7 +17,7 @@ namespace CmsData
         {
             if (name == null)
                 return defaultvalue;
-            var list = db.GatewayDetails.Where(x => x.GatewayId == GatewayId).Select(x => new { x.GatewayDetailName, x.GatewayDetailValue }) as Dictionary<string, string>;
+            var list = db.GatewayDetails.Where(x => x.GatewayAccountId == GatewayId).Select(x => new { x.GatewayDetailName, x.GatewayDetailValue }) as Dictionary<string, string>;
             if (list == null)
             {
                 try
