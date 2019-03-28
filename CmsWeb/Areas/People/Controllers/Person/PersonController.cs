@@ -44,6 +44,7 @@ namespace CmsWeb.Areas.People.Controllers
 
             return Redirect("/Person2/" + pid);
         }
+
         [HttpGet, Route("~/Family/{id:int}")]
         public ActionResult Family(int? id)
         {
@@ -58,6 +59,7 @@ namespace CmsWeb.Areas.People.Controllers
 
             return Redirect("/Person2/" + pid);
         }
+
         [HttpGet, Route("~/Person2/{id:int}")]
         [Route("~/Person/Index/{id:int}")]
         [Route("~/Person/{id:int}")]
@@ -140,18 +142,20 @@ namespace CmsWeb.Areas.People.Controllers
                 CurrentDatabase.SubmitChanges();
                 return Content("OK");
             }
+
             var tag = CurrentDatabase.FetchOrCreateTag(tagname, Util.UserPeopleId, DbUtil.TagTypeId_Personal);
             if (cleartagfirst ?? false)
             {
                 CurrentDatabase.ClearTag(tag);
             }
 
-            Person.Tag(CurrentDatabase, id, Util2.CurrentTagName, Util2.CurrentTagOwnerId, DbUtil.TagTypeId_Personal);
+            Person.Tag(CurrentDatabase, id, tag.Name, tag.PersonOwner.PeopleId, DbUtil.TagTypeId_Personal);
             CurrentDatabase.SubmitChanges();
-            Util2.CurrentTag = tagname;
+            Util2.CurrentTag = tag.Name;
             CurrentDatabase.TagCurrent();
             return Content("OK");
         }
+
         [HttpPost]
         public ActionResult UnTag(int id)
         {
