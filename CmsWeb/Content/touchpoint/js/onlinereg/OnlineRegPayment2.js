@@ -154,7 +154,11 @@ $(function () {
         var f = $(this).closest('form');
         var href = this.href;
         var q = f.serialize();
+        var $useRecaptcha = $("#useRecaptcha", f);
         $.blockUI();
+        if (this.className.includes('coupon-submit')) {
+            $useRecaptcha.val('');
+        }
         $.post(href, q, function (ret) {
             $.unblockUI();
             if (ret.error) {
@@ -179,6 +183,7 @@ $(function () {
                     form.submit();
                 }
             }
+            $useRecaptcha.val('value');
         });
         return false;
     });
@@ -213,18 +218,20 @@ $(function () {
         return false;
     });
     var agreeterms = true;
-    $("form").submit(function() {
+    $("form.recaptcha").submit(function() {
         if (!agreeterms) {
             alert("must agree to terms");
             return false;
         }
-        if (!$("#submitit").val())
+        var submitit = $("#submitit", this); 
+        if (!submitit.val()) {
             return false;
+        }
 
-        var isFormValid = $("form").valid();
+        var isFormValid = $(this).valid();
         if (isFormValid) {
-            $("#submitit").attr("disabled", "disabled");
-            var usecaptcha = $("#useRecaptcha").val();
+            submitit.attr("disabled", "disabled");
+            var usecaptcha = $("#useRecaptcha", this).val();
             if (usecaptcha) {
                 grecaptcha.execute();
             } else {
