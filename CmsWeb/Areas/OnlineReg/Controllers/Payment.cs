@@ -170,7 +170,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return View("Other/Unknown");
             }
 
-            var m = OnlineRegModel.GetRegistrationFromDatum(id ?? 0);
+            var m = OnlineRegModel.GetRegistrationFromDatum(id ?? 0, CurrentDatabase);
             if (m == null || m.Completed)
             {
                 if (m == null)
@@ -224,7 +224,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return View("Other/Unknown");
             }
 
-            var m = OnlineRegModel.GetRegistrationFromDatum(id ?? 0);
+            var m = OnlineRegModel.GetRegistrationFromDatum(id ?? 0, CurrentDatabase);
             if (m == null || m.Completed)
             {
                 if (m == null)
@@ -295,13 +295,17 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
 
             var ti = i.t;
-            var email = i.email;
+                var email = i.email;
             var amtdue = PaymentForm.AmountDueTrans(CurrentDatabase, ti);
             if (amtdue == 0)
             {
                 return Message("no outstanding transaction");
             }
 
+            if (CurrentDatabase.GetSetting("TransactionGateway", "") == "Pushpay")
+            {
+                return Redirect($"/Pushpay/PayAmtDue/{ti.Id}/{amtdue}");
+            }
 #if DEBUG
             ti.Testing = true;
             if (!Util.HasValue(ti.Address))

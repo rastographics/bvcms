@@ -13,7 +13,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [HttpGet]
         public ActionResult Continue(int id)
         {
-            var m = OnlineRegModel.GetRegistrationFromDatum(id);
+            var m = OnlineRegModel.GetRegistrationFromDatum(id, CurrentDatabase);
             if (m == null)
                 return Message("no Existing registration available");
             var n = m.List.Count - 1;
@@ -22,7 +22,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             SetHeaders(m);
             if (m.RegistrantComplete)
             {
-                return Redirect("/OnlineReg/CompleteRegistration/"+id);                
+                return Redirect("/OnlineReg/CompleteRegistration/" + id);
             }
             return View("Index", m);
         }
@@ -33,7 +33,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             var pid = (int?)TempData["PeopleId"];
             if (!pid.HasValue || pid == 0)
                 return Message("not logged in");
-            var m = OnlineRegModel.GetRegistrationFromDatum(id);
+            var m = OnlineRegModel.GetRegistrationFromDatum(id, CurrentDatabase);
             if (m == null)
                 return Message("no Existing registration available");
             m.StartOver();
@@ -87,12 +87,12 @@ We have saved your progress. An email with a link to finish this registration wi
         [HttpGet]
         public ActionResult Existing(int id)
         {
-            if(!TempData.ContainsKey("PeopleId"))
+            if (!TempData.ContainsKey("PeopleId"))
                 return Message("not logged in");
             var pid = (int?)TempData["PeopleId"];
             if (!pid.HasValue || pid == 0)
                 return Message("not logged in");
-            var m = OnlineRegModel.GetRegistrationFromDatum(id);
+            var m = OnlineRegModel.GetRegistrationFromDatum(id, CurrentDatabase);
             if (m == null)
                 return Message("no Existing registration available");
             if (m.UserPeopleId != m.Datum.UserPeopleId)
@@ -112,7 +112,9 @@ We have saved your progress. An email with a link to finish this registration wi
                 if (m.UserPeopleId == null)
                     m.UserPeopleId = Util.UserPeopleId;
                 m.UpdateDatum();
-                return Json(new { confirm = "/OnlineReg/FinishLater/" + id,
+                return Json(new
+                {
+                    confirm = "/OnlineReg/FinishLater/" + id,
                     formmethod = "GET"
                 });
             }

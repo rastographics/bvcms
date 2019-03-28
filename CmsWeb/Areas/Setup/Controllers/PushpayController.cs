@@ -211,31 +211,47 @@ namespace CmsWeb.Areas.Setup.Controllers
             return Redirect($"{_givingLink}?ru={_merchantHandle}&sr=dat_{DatumId}&rcv=false&up={mobile}&a={Amount}&al=true&fndv=lock");
         }
 
+        [Route("~/Pushpay/PayAmtDue/{transactionId:int}/{amtdue:decimal}")]
+        public ActionResult PayAmtDue(int transactionId, decimal amtdue)
+        {
+            var ti = CurrentDatabase.Transactions.Where(p => p.Id == transactionId).FirstOrDefault();
+            //var pf = PaymentForm.CreatePaymentFormForBalanceDue(ti, amtdue, email);
+            return Redirect($"{_givingLink}?ru={_merchantHandle}&sr=payamtdue_{transactionId}&rcv=false&a={amtdue}&fndv=lock");
+        }
+
         [Route("~/Pushpay/CompletePayment")]
         public async Task<ActionResult> CompletePayment(string paymentToken, string sr)
         {
             try
             {
-                bool isRegistration = sr.Substring(0, 3) == "dat";
-                if (isRegistration)
+                if (sr.Substring(0, 3) == "Org")
+                {
+                    int orgId = Int32.Parse(sr.Substring(4));
+                    SetHeaders2(orgId);
+                    ViewBag.OrgId = orgId;
+
+                    CmsData.Organization org = CurrentDatabase.Organizations.SingleOrDefault(o => o.OrganizationId == orgId);
+
+                    if (org.RegistrationTypeId == RegistrationTypeCode.ManageGiving)
+                    {
+                        return await RecurringProcess(paymentToken);
+                    }
+
+                    if (org.RegistrationTypeId == RegistrationTypeCode.OnlineGiving)
+                    {
+                        return await OneTimeProcess(paymentToken, orgId);
+                    }
+                }
+
+                if (sr.Substring(0, 3) == "dat")
                 {
                     return await RegistrationProcess(paymentToken, Int32.Parse(sr.Substring(4)));
                 }
-                int orgId = Int32.Parse(sr.Substring(4));
-                SetHeaders2(orgId);
-                ViewBag.OrgId = orgId;
 
-                CmsData.Organization org = CurrentDatabase.Organizations.SingleOrDefault(o => o.OrganizationId == orgId);
-
-                if (org.RegistrationTypeId == RegistrationTypeCode.ManageGiving)
+                if (sr.Substring(0, 9) == "payamtdue")
                 {
-                    return await RecurringProcess(paymentToken);
-                }
-
-                if (org.RegistrationTypeId == RegistrationTypeCode.OnlineGiving)
-                {
-                    return await OneTimeProcess(paymentToken, orgId);
-                }
+                    return await PayAmtDueProcess(paymentToken, Int32.Parse(sr.Substring(10)));
+                }               
 
                 throw new Exception("Registration Type is not supported for Pushpay");
             }
@@ -245,6 +261,11 @@ namespace CmsWeb.Areas.Setup.Controllers
                 CurrentDatabase.LogActivity($"Error in pushpay payment process: {ex.Message}");
                 return View("~/Views/Shared/PageError.cshtml");
             }
+        }
+
+        private Task<ActionResult> PayAmtDueProcess(string paymentToken, int v)
+        {
+            throw new NotImplementedException();
         }
 
         private async Task<ActionResult> OneTimeProcess(string paymentToken, int orgId)
