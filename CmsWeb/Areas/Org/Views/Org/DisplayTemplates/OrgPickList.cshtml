@@ -4,7 +4,7 @@
   @Html.Label("Organization Pick List", new { @class = "control-label" })
   <div class="controls">
     <b><a id="orgpicklist" href="/Org/OrgPickList/@Model.Id">Choose Organizations</a></b>
-    @foreach (var o in Model.OrganizationsFromIdString())
+    @foreach (var o in Model.OrganizationsFromIdString)
     {
       <div><a href="/Org/@o.OrganizationId" target="otherorg">@o.OrganizationName</a></div>
     }
