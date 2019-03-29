@@ -39,8 +39,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
             if (OrgMember != null)
             {
-                var supporters = from g in CurrentDatabase.GoerSupporters
+                var supporters = from g in CurrentDatabase.GoerSenderAmounts
                            where g.GoerId == Goer.PeopleId
+                           where g.OrgId == org.OrganizationId
                            let amount = (from s in CurrentDatabase.GoerSenderAmounts
                                          where s.GoerId == Goer.PeopleId
                                          where s.OrgId == org.OrganizationId
@@ -49,18 +50,18 @@ namespace CmsWeb.Areas.OnlineReg.Models
                            let anonymous = (from s in CurrentDatabase.GoerSenderAmounts
                                             where s.GoerId == Goer.PeopleId
                                             where s.OrgId == org.OrganizationId
+                                            where s.SupporterId == g.SupporterId
                                             where s.NoNoticeToGoer != null
                                             select s.NoNoticeToGoer).Count() >= 1
                            select new Supporter
                            {
                                Id = g.SupporterId,
-                               Name = (anonymous ? "Anonymous" : g.Supporter.Name),
-                               Active = g.Active ?? false,
+                               Name = (anonymous ? "Anonymous" : g.Sender.Name),
                                TotalAmt = amount ?? 0
                            };
                 var transactions = new TransactionsModel(OrgMember.TranId) { GoerId = Goer.PeopleId };
                 var summaries = CurrentDatabase.ViewTransactionSummaries.SingleOrDefault(ts => ts.RegId == OrgMember.TranId && ts.PeopleId == Goer.PeopleId && ts.OrganizationId == org.OrganizationId);
-                Supporters = supporters.ToList();
+                Supporters = supporters.GroupBy(s => s.Id).Select(s => s.First()).ToList();
                 // prepare funding data
                 MissionTripCost = summaries.IndPaid + summaries.IndDue;
                 MissionTripRaised = OrgMember.AmountPaidTransactions(CurrentDatabase);
@@ -139,7 +140,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             public int? Id { get; set; }
             public string Name { get; set; }
-            public bool Active { get; set; }
             public decimal TotalAmt { get; set; }
         }
     }
