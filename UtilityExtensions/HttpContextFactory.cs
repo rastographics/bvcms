@@ -20,11 +20,7 @@ namespace UtilityExtensions
                 }
                 if(HttpContext.Current == null)
                 {
-#if DEBUG
-                    throw new InvalidOperationException("HttpContext is not available");
-#else
                     return null;
-#endif
                 }
                 return new HttpContextWrapper(HttpContext.Current);
             }

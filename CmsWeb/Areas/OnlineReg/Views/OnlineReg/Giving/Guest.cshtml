@@ -23,12 +23,15 @@
         else
         {
             <h4>Goal met!</h4>
-            <progress value="100" max="100"></progress>
+            <progress style="display: block;width:100%;" value="100" max="100"></progress>
         }
 
         <h4><strong>Share</strong></h4>
 
         @Helper.SocialShareButtons(Model.URL, $"{Model.Goer.Name}'s Fundraising for {Model.org.OrganizationName}")
+
+        <p>Or copy this link:</p>
+        <input type="text" style="width:100%;" value="@Model.URL" readonly />
 
         @if (Model.Supporters != null && Model.Supporters.Any())
         {
