@@ -770,11 +770,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             //This method has to change deppending on different types of gateways 
             Transaction ti = DbUtil.Db.Transactions.Where(p => p.Id == m.transactionId).FirstOrDefault();
-            if (ti == null || ti.Approved != true)
-            {
-                /*Here goes a screen error
-                 */
-            }
 
             HttpContext.Current.Session["FormId"] = FormId;
             if (m != null)
