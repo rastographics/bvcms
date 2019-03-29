@@ -39,9 +39,28 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
             if (OrgMember != null)
             {
+                var supporters = from g in CurrentDatabase.GoerSupporters
+                           where g.GoerId == Goer.PeopleId
+                           let amount = (from s in CurrentDatabase.GoerSenderAmounts
+                                         where s.GoerId == Goer.PeopleId
+                                         where s.OrgId == org.OrganizationId
+                                         where s.SupporterId == g.SupporterId
+                                         select s.Amount).Sum()
+                           let anonymous = (from s in CurrentDatabase.GoerSenderAmounts
+                                            where s.GoerId == Goer.PeopleId
+                                            where s.OrgId == org.OrganizationId
+                                            where s.NoNoticeToGoer != null
+                                            select s.NoNoticeToGoer).Count() >= 1
+                           select new Supporter
+                           {
+                               Id = g.SupporterId,
+                               Name = (anonymous ? "Anonymous" : g.Supporter.Name),
+                               Active = g.Active ?? false,
+                               TotalAmt = amount ?? 0
+                           };
                 var transactions = new TransactionsModel(OrgMember.TranId) { GoerId = Goer.PeopleId };
                 var summaries = CurrentDatabase.ViewTransactionSummaries.SingleOrDefault(ts => ts.RegId == OrgMember.TranId && ts.PeopleId == Goer.PeopleId && ts.OrganizationId == org.OrganizationId);
-                Supporters = transactions.Supporters().Where(s => s.OrgId == org.OrganizationId).ToArray();
+                Supporters = supporters.ToList();
                 // prepare funding data
                 MissionTripCost = summaries.IndPaid + summaries.IndDue;
                 MissionTripRaised = OrgMember.AmountPaidTransactions(CurrentDatabase);
@@ -116,5 +135,12 @@ namespace CmsWeb.Areas.OnlineReg.Models
             return pid;
         }
 
+        public class Supporter
+        {
+            public int? Id { get; set; }
+            public string Name { get; set; }
+            public bool Active { get; set; }
+            public decimal TotalAmt { get; set; }
+        }
     }
 }

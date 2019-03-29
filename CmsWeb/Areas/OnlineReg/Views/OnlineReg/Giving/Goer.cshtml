@@ -29,14 +29,14 @@
         @if (Model.Supporters != null && Model.Supporters.Any())
         {
             <h3>Your Supporters</h3>
-            foreach (TransactionsModel.SupporterInfo supporter in @Model.Supporters)
+            foreach (var supporter in @Model.Supporters)
             {
                 <div class="row">
                     <div class="col-xs-8">
-                        <span>@supporter.SupporterName</span>
+                        <span>@supporter.Name</span>
                     </div>
                     <div class="col-xs-4">
-                        <span class="amount">@Helper.CurrencyString(supporter.gs.Amount)</span>
+                        <span class="amount">@Helper.CurrencyString(supporter.TotalAmt)</span>
                     </div>
                 </div>
             }
