@@ -226,7 +226,7 @@
         @Helper.LiAnchorLink("Checkin Labels", "/CheckinLabels", admin)
         @Helper.LiAnchorLink("Users", "/Users/", admin)
 
-        if (DbUtil.Db.Setting("CheckinUseMeetingCategory"))
+        if (DbUtil.Db.Setting("AttendanceUseMeetingCategory"))
         {
             @Helper.LiAnchorLink("Meeting Category", "/MeetingCategory/", admin)
         }

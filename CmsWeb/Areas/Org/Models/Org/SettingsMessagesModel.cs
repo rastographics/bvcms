@@ -180,7 +180,7 @@ This message appears on the registration page whenever someone cannot register:
 * When it is checked as Filled 
 * It is prior to the Registration Start Date.
 
-see [this help article](http://docs.touchpointsoftware.com/OnlineRegistration/MessagesSettings.html)
+see [this help article](https://docs.touchpointsoftware.com/OnlineRegistration/MessagesSettings.html)
 ";
         private const string TermsDescription = @"
 Some registrations like a camp, or sports team, or a trip require you to agree to terms (indemnification).

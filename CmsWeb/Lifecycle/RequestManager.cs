@@ -1,6 +1,7 @@
 ﻿using CmsData;
 using ImageData;
 using System;
+using System.Security.Principal;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.OData;
@@ -40,6 +41,7 @@ namespace CmsWeb.Lifecycle
         protected HttpContextBase CurrentHttpContext => RequestManager.CurrentHttpContext;
         protected CMSDataContext CurrentDatabase => RequestManager.CurrentDatabase;
         protected CMSImageDataContext CurrentImageDatabase => RequestManager.CurrentImageDatabase;
+        protected IPrincipal CurrentUser => RequestManager.CurrentUser;
 
         public CMSBaseController(IRequestManager requestManager)
         {
@@ -80,6 +82,7 @@ namespace CmsWeb.Lifecycle
     {
         Guid RequestId { get; }
         HttpContextBase CurrentHttpContext { get; }
+        IPrincipal CurrentUser { get; }
         CMSDataContext CurrentDatabase { get; }
         CMSImageDataContext CurrentImageDatabase { get; }
     }
@@ -87,6 +90,7 @@ namespace CmsWeb.Lifecycle
     public class RequestManager : IRequestManager, IDisposable
     {
         public Guid RequestId { get; }
+        public IPrincipal CurrentUser { get; }
         public HttpContextBase CurrentHttpContext { get; }
         public CMSDataContext CurrentDatabase { get; private set; }
         public CMSImageDataContext CurrentImageDatabase { get; private set; }
@@ -95,9 +99,9 @@ namespace CmsWeb.Lifecycle
         {
             CurrentHttpContext = HttpContextFactory.Current;
             RequestId = Guid.NewGuid();
-
-            CurrentDatabase = CmsData.DbUtil.Db;
-            CurrentImageDatabase = ImageData.DbUtil.Db;
+            CurrentUser = CurrentHttpContext.User;
+            CurrentDatabase = CMSDataContext.Create(CurrentHttpContext);
+            CurrentImageDatabase = CMSImageDataContext.Create(CurrentHttpContext);
         }
 
         #region IDisposable Support

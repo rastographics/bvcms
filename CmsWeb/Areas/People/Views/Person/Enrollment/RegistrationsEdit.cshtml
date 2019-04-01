@@ -86,9 +86,11 @@
             </div>
         </div>
     </div>
-    <h4>Registration Log</h4>
-    @Html.TextAreaFor(m => m.Comments, new { @class = "form-control", rows = 10 })
-    <br />
+    @if (Model.ShowComments) {
+        <h4>Registration Log</h4>
+        @Html.TextAreaFor(m => m.Comments, new { @class = "form-control", rows = 10 })
+        <br />
+    }
     @FormActions()
     @FormActions(true)
     <br/><br/>

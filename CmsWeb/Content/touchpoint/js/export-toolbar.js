@@ -15,7 +15,7 @@
 
         swal({
             title: "Are you sure?",
-            text: "Warning, email replacement codes and <span> <br> special links will not work. <small><i><a href='http://docs.touchpointsoftware.com/BlueToolbar/toolbar.html#email-and-texting-envelope-icon'  target='blank'>Read more..</a></i></small></span>",
+            text: "Warning, email replacement codes and <span> <br> special links will not work. <small><i><a href='https://docs.touchpointsoftware.com/BlueToolbar/toolbar.html#email-and-texting-envelope-icon'  target='blank'>Read more..</a></i></small></span>",
             type: "warning",
             showCancelButton: true,
             confirmButtonClass: "btn-success",

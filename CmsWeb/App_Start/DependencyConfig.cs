@@ -1,6 +1,9 @@
 ﻿using CmsWeb.Lifecycle;
 using CmsWeb.Services.MeetingCategory;
 using SimpleInjector;
+using System;
+using System.Security.Principal;
+using System.Web;
 
 namespace CmsWeb
 {
@@ -10,6 +13,7 @@ namespace CmsWeb
         {
             container.Register<IRequestManager, RequestManager>(Lifestyle.Scoped);
             container.Register<IMeetingCategoryService, MeetingCategoryService>(Lifestyle.Scoped);
+            container.Register(() => new Lazy<IPrincipal>(() => HttpContext.Current.User));
         }
     }
 }

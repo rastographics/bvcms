@@ -13,5 +13,10 @@ namespace CmsWeb.Code
         {
             return DbUtil.Db.Setting(name, defaultValue);
         }
+
+        public bool Setting(string name, bool defaultValue)
+        {
+            return DbUtil.Db.Setting(name, defaultValue);
+        }
     }
 }
