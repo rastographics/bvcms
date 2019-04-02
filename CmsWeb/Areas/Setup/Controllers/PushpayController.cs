@@ -305,15 +305,15 @@ namespace CmsWeb.Areas.Setup.Controllers
             m.transactionId = CreateTransaction(payment, pf);
 
             m.UpdateDatum();
-            return Redirect($"/OnlineReg/ProcessExternalPayment/{datumId}");
+            return Redirect($"/OnlineReg/ProcessExternalPayment/da_{datumId}");
         }
 
         private ActionResult PayAmtDueProcess(Payment payment, int transactionId)
         {
-            var ti = CurrentDatabase.Transactions.Where(p => p.Id == transactionId).FirstOrDefault();
-            var pf = PaymentForm.CreatePaymentFormForBalanceDue(ti, payment.Amount.Amount, payment.Payer.emailAddress);
-            var id = CreateTransaction(payment, pf);
-            return Redirect($"/OnlineReg/ProcessExternalPayment/{id}");
+            Transaction ti = CurrentDatabase.Transactions.Where(p => p.Id == transactionId).FirstOrDefault();
+            PaymentForm pf = PaymentForm.CreatePaymentFormForBalanceDue(ti, payment.Amount.Amount, payment.Payer.emailAddress);
+            int tranId = CreateTransaction(payment, pf);
+            return Redirect($"/OnlineReg/ProcessExternalPayment/tra_{tranId}");
         }
 
         private int CreateTransaction(Payment payment, PaymentForm pf)

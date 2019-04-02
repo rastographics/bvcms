@@ -18,12 +18,22 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
     public partial class OnlineRegController
     {
         [HttpGet]
-        [Route("~/OnlineReg/ProcessExternalPayment/{DatumId:int}")]
-        public ActionResult ProcessExternalPayment(int DatumId)
+        [Route("~/OnlineReg/ProcessExternalPayment/{reference}")]
+        public ActionResult ProcessExternalPayment(string reference)
         {
-            RegistrationDatum datum = CurrentDatabase.RegistrationDatas.SingleOrDefault(d => d.Id == DatumId);
-            OnlineRegModel m = Util.DeSerialize<OnlineRegModel>(datum.Data);
-            var pf = PaymentForm.CreatePaymentForm(m);
+            PaymentForm pf = new PaymentForm()
+            {
+                extTransactionId = 0
+            };
+            if (reference.Substring(0, 3) == "dat")
+            {
+                RegistrationDatum datum = CurrentDatabase.RegistrationDatas.SingleOrDefault(d => d.Id == Int32.Parse(reference.Substring(4)));
+                OnlineRegModel m = Util.DeSerialize<OnlineRegModel>(datum.Data);
+                pf = PaymentForm.CreatePaymentForm(m);
+            }
+            if (reference.Substring(0, 3) == "tra")
+                pf.extTransactionId = Int32.Parse(reference.Substring(4));
+
             return ProcessPayment(pf);
         }
 
@@ -77,19 +87,21 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 }
             }
 
-            SetHeaders(pf.OrgId ?? 0);
             RouteModel ret;
 
             //This will change to gatewayType in order to decide which process choose.
             //if (m.gatewayType == "Redirect")
             if (CurrentDatabase.GetSetting("TransactionGateway", "") == "Pushpay")
             {
-                ret = pf.ProcessExternalPayment(m);
+                int orgId;
+                ret = pf.ProcessExternalPayment(m, out orgId);
+                pf.OrgId = orgId;
             }
             else
             {
                 ret = pf.ProcessPayment(ModelState, m);
             }
+            SetHeaders(pf.OrgId ?? 0);
 
             switch (ret.Route)
             {
@@ -295,7 +307,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
 
             var ti = i.t;
-                var email = i.email;
+            var email = i.email;
             var amtdue = PaymentForm.AmountDueTrans(CurrentDatabase, ti);
             if (amtdue == 0)
             {

@@ -8,7 +8,6 @@ using System.Configuration;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using TransactionGateway;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.OnlineReg.Models
@@ -28,7 +27,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public string Routing { get; set; }
         public string Account { get; set; }
         public bool SupportMissionTrip { get; set; }
-        public int transactionId { get; set; }
+        public int extTransactionId { get; set; }
 
         /// <summary>
         ///     "B" for e-check and "C" for credit card, see PaymentType
@@ -163,7 +162,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 Donate = Donate,
                 Regfees = AmtToPay,
                 Amt = amount,
-                Amtdue = Math.Max(amtdue.Value, 0),
+                Amtdue = Math.Max((amtdue ?? 0), 0),
                 Emails = Email,
                 Testing = testing,
                 Description = Description,
@@ -311,7 +310,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 Zip = r.Zip,
                 Phone = r.Phone,
                 SupportMissionTrip = m.SupportMissionTrip,
-                transactionId = m.transactionId,
+                extTransactionId = m.transactionId,
 #if DEBUG2
                  CreditCard = "4111111111111111",
                  CVV = "123",
@@ -766,10 +765,20 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
         }
 
-        public RouteModel ProcessExternalPayment(OnlineRegModel m)
+        public RouteModel ProcessExternalPayment(OnlineRegModel m, out int orgId)
         {
-            //This method has to change deppending on different types of gateways 
-            Transaction ti = DbUtil.Db.Transactions.Where(p => p.Id == m.transactionId).FirstOrDefault();
+            //This method has to change deppending on different types of gateways
+            orgId = 0;
+            if (extTransactionId == 0)
+            {
+                return new RouteModel()
+                {
+                    Route = RouteType.Error,
+                    Message = "External Payment error",
+                };
+            }
+            Transaction ti = DbUtil.Db.Transactions.Where(p => p.Id == extTransactionId).FirstOrDefault();
+            orgId = ti.OrgId.Value;
 
             HttpContext.Current.Session["FormId"] = FormId;
             if (m != null)
