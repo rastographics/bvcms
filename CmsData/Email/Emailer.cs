@@ -198,10 +198,15 @@ namespace CmsData
             if (notifyids.HasValue())
             {
                 var ppl = PeopleFromPidString(notifyids).ToList();
-                if (Setting("SendRecurringGiftFailureNoticesToFinanceUsers", "false") == "false")
-                    return ppl;
-                toppid = ppl[0].PeopleId;
-                people.Add(ppl[0]);
+                if (ppl.Any())
+                {
+                    if (!Setting("SendRecurringGiftFailureNoticesToFinanceUsers"))
+                    {
+                        return ppl;
+                    }
+                    toppid = ppl[0].PeopleId;
+                    people.Add(ppl[0]);
+                }
             }
             people.AddRange(from u in Users
                             where u.UserRoles.Any(ur => ur.Role.RoleName == "Finance")
