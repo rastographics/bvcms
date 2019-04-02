@@ -1,4 +1,5 @@
 using System.Web.Mvc;
+using System.Linq;
 using CmsData;
 using CmsWeb.Areas.People.Models;
 using UtilityExtensions;
@@ -56,6 +57,7 @@ namespace CmsWeb.Areas.People.Controllers
         {
             var m = new RegistrationsModel(PeopleId);
             DbUtil.LogPersonActivity($"Viewing Registrations for: {m.Person.Name}", m.Person.PeopleId, m.Person.Name);
+            m.ShowComments = ShowComments();
             return View("Enrollment/Registrations", m);
         }
 
@@ -63,15 +65,31 @@ namespace CmsWeb.Areas.People.Controllers
         public ActionResult RegistrationsEdit(int PeopleId)
         {
             var m = new RegistrationsModel(PeopleId);
+            m.ShowComments = ShowComments();
             return View("Enrollment/RegistrationsEdit", m);
         }
 
         [HttpPost]
         public ActionResult RegistrationsUpdate(RegistrationsModel m)
         {
-            m.UpdateModel();
+            bool ExcludeComments = !ShowComments();
+            m.UpdateModel(ExcludeComments);
             DbUtil.LogPersonActivity($"Updating Registrations for: {m.Person.Name}", m.Person.PeopleId, m.Person.Name);
+            m.ShowComments = ShowComments();
             return View("Enrollment/Registrations", m);
+        }
+
+        private bool ShowComments()
+        {
+            string limitToRole = CurrentDatabase.Setting("LimitRegistrationHistoryToRole", "false");
+            if (limitToRole == "false")
+            {
+                return true;
+            }
+            else
+            {
+                return CurrentDatabase.CurrentRoles().Contains(limitToRole);
+            }
         }
     }
 }

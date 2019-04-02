@@ -359,7 +359,7 @@ namespace CmsWeb.Models
                         p.Family.AddEditExtraCode(name, ((string)a[name])?.Trim());
                         break;
                     case "txt":
-                        p.AddEditExtraText(name, $"id-{a[name]}");
+                        p.AddEditExtraText(name, $"{a[name]}".Trim());
                         break;
                     case "org":
 

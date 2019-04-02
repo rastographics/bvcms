@@ -1,0 +1,308 @@
+﻿@using CmsWeb.Code
+@model CmsWeb.Areas.Org.Models.MeetingModel
+@{
+    var customSmallHeaderImage = CustomHeader.SmallHeaderImage("~/Content/touchpoint/img/logo_sm.png");
+}
+
+<!DOCTYPE html>
+<html lang="@System.Globalization.CultureInfo.CurrentUICulture.Name">
+<head>
+    <link rel="shortcut icon" href="@Url.Content("~/favicon.ico?v=2")">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="robots" content="noindex" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@Model.org.OrganizationName</title>
+    @ViewExtensions2.GoogleFonts()
+    @ViewExtensions2.FontAwesome()
+    @Fingerprint.Css("/Content/touchpoint/css/app.css")
+
+    <style>
+        .box-title {
+            padding-left: 10px;
+            padding-right: 10px;
+            height: auto!important;
+        }
+        .box-primary {
+            border: 0;
+            border-top: 1px solid #003f72;
+        }
+        .logo-md {
+            width: 60px;
+            height: 50px;
+            background-size: auto @customSmallHeaderImage.Height;
+            background-repeat: no-repeat;
+            background-position: left;
+            background-image: url(@Url.Content(customSmallHeaderImage.Url));
+            display: inline-block;
+            float:left;
+        }
+        .headshot {
+            float:left;
+            margin-left:28px;
+            margin-top:-9px;
+            margin-right:4px;
+        }
+        .name {
+            margin-left: 32px;
+            height: 36px;
+            position: relative;
+            top: -5px;
+        }
+        .role {
+            font-size: 12px;
+            margin-bottom: 0;
+            color: #888;
+        }
+        .checkbox {
+            width: 20px;
+            top: 3px;
+            position: relative;
+        }
+        .tab-content {
+            padding: 0;
+            border: 0;
+        }
+        .checkbox label {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: #fcfff4;
+            background: linear-gradient(top, #fcfff4 0%, #dfe5d7 40%, #b3bead 100%);
+            border-radius: 4px;
+            box-shadow: inset 0px 1px 1px white, 0px 1px 3px rgba(0,0,0,0.5);
+        }
+        .checkbox label:after {
+            content: '';
+            width: 9px;
+            height: 5px;
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            border: 3px solid #333;
+            border-top: none;
+            border-right: none;
+            background: transparent;
+            opacity: 0;
+            transform: rotate(-45deg);
+            box-sizing: content-box;
+         }
+        .checkbox label:hover::after {
+            opacity: 0.35
+        }
+        .checkbox input[type=checkbox] {
+            visibility: hidden;
+        }
+        .checkbox input[type=checkbox]:checked + label:after {
+            opacity: 1;
+        }
+        .nav-tabs li.active .badge {
+            background-color:#003f72!important;
+        }
+        .ckline:first-of-type .list-group-item {
+            border-top: 0;
+        }
+        .section {
+            padding: 10px 15px;
+        }
+    </style>
+</head>
+<body style="padding-top:0;margin-bottom:0;">
+    @Html.Hidden("meetingid", Model.meeting.MeetingId)
+    <div id="head" class="box box-primary">
+        <div class="box-title" style="background:#fff!important;border: 1px solid #003f72 !important;border-width: 4px 0 0 0!important;">
+            <div class="logo-md"></div>
+            <h4 class="title" style="display:inline-block;color:#333!important;margin:0;">@Model.org.OrganizationName</h4>
+            <p style="color:#4a4a4a!important;">@Model.meeting.MeetingDate.Value.ToString("g") @(Model.ShowDescriptionOnCheckin && !Model.meeting.Description.IsEmpty() ? " | " + Model.meeting.Description : "")</p>
+        </div>
+        <div data-role="content">
+            @{
+                var inAttendanceRole = User.IsInRole("Attendance");
+                string headcount = Model.meeting.HeadCount.HasValue ? Model.meeting.HeadCount.ToString() : "0";
+            }
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active">
+                    <a role="tab" data-toggle="tab" aria-controls="members" href="#members">Members <span class="members badge">@ViewBag.MembersPresent</span></a>
+                </li>
+                <li role="presentation">
+                    <a role="tab" data-toggle="tab" aria-controls="guests" href="#guests">Guests <span class="guests badge">@ViewBag.GuestsPresent</span></a>
+                </li>
+                <li role="presentation">
+                    <a role="tab" data-toggle="tab" aria-controls="headcount" href="#headcount">Headcount <span class="headcount badge">@headcount</span></a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane fade in active" id="members">
+                    @foreach (var a in ViewBag.Members)
+                    {
+                        <div class="@(inAttendanceRole ? "ckline" : "na") @a.Name[0]">
+                            <div class="list-group-item">
+
+                                <div class="checkbox">
+                                    <input type="checkbox" id="a.@a.PeopleId" @(a.Attended ? "checked=checked" : "") />
+                                    <label for="a.@a.PeopleId"></label>
+                                </div>
+                                <div class="headshot">
+                                    @Html.PersonPortrait((int)a.PeopleId, 40, 40)
+                                </div>
+                                <div class="name">
+                                    @if (a.Highlight)
+                                    {
+                                        <span style="color: green">@a.Name</span>
+                                    }
+                                    else
+                                    {
+                                        @a.Name
+                                    }
+                                    @if (Model.ShowCurrentMemberType)
+                                    {
+                                        <p class="role">
+                                            @a.MemberType
+                                        </p>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="guests">
+                    @if (Model.ShowAddGuest)
+                    {
+                        <div class="ckline">
+                            <div class="list-group-item">
+                                <a href="/SearchAdd2/Dialog/visitor/@Model.meeting.MeetingId" class="btn btn-success searchadd">
+                                    <i class="fa fa-plus-circle"></i> Add Guest
+                                </a>
+                            </div>
+                        </div>
+                    }
+                    @foreach (var a in ViewBag.Guests)
+                    {
+                        <div class="@(inAttendanceRole ? "ckline" : "na") @a.Name[0]">
+                            <div class="list-group-item">
+
+                                <div class="checkbox">
+                                    <input type="checkbox" id="a.@a.PeopleId" @(a.Attended ? "checked=checked" : "") />
+                                    <label for="a.@a.PeopleId"></label>
+                                </div>
+                                <div class="headshot">
+                                    @Html.PersonPortrait((int)a.PeopleId, 40, 40)
+                                </div>
+                                <div class="name">
+                                    @if (a.Highlight)
+                                    {
+                                        <span style="color: green">@a.Name</span>
+                                    }
+                                    else
+                                    {
+                                        @a.Name
+                                    }
+                                    @if (Model.ShowCurrentMemberType)
+                                    {
+                                        <p class="role">
+                                            @a.MemberType
+                                        </p>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="headcount">
+                    <div class="section">
+                        <label for="headcount">Headcount</label>
+                        <form class="form-inline" id="headcount_form">
+                            <input type="number" id="in_headcount" name="headcount" class="form-control" value="@Model.meeting.HeadCount" />
+                            <button type="submit" class="btn btn-default">Save</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="device-lg visible-lg-block"></div>
+    <div class="device-md visible-md-block"></div>
+    <div class="device-sm visible-sm-block"></div>
+    <div class="device-xs visible-xs-block"></div>
+    <div class="device-2xs"></div>
+    <div class="modal fade" id="empty-dialog" data-keyboard="false" data-backdrop="static"></div>
+    @ViewExtensions2.GoogleAnalytics()
+    @ViewExtensions2.jQuery()
+    @ViewExtensions2.LoDash()
+    @ViewExtensions2.Bootstrap3()
+    @Fingerprint.Script("/Content/touchpoint/lib/jquery-ui-custom/js/jquery-ui.min.js")
+    @ViewExtensions2.Moment()
+    @Fingerprint.Script("/Content/touchpoint/lib/jquery-globalize/js/globalize.js")
+    <script src="@Url.Content(ViewExtensions2.jqueryGlobalizeCulture)" type="text/javascript"></script>
+    @ViewExtensions2.jQueryValidation()
+    @Fingerprint.Script("/Content/touchpoint/js/app.min.js")
+    <script type="text/javascript">
+        $(function () {
+            $("input[type='radio']").bind("change", function (event, ui) {
+                var v = $(this).val();
+                $("div.ckline").hide();
+                if (v === "back")
+                    location = "/Meeting/" + $("#meetingid").val();
+                else if (v === "refresh")
+                    location.reload();
+                else if (v === "all")
+                    $("div.ckline").show();
+                else
+                    $("." + v).show();
+                $('html, body').animate({ scrollTop: 0 }, 'fast');
+            });
+            $("div.na").bind("click", function (ev) {
+                ev.preventDefault();
+                return false;
+            });
+            $("div.ckline input:checkbox").change(function (ev) {
+                var ck = $(this);
+                $.post("/Meeting/MarkAttendance/", {
+                    MeetingId: $("#meetingid").val(),
+                    PeopleId: ck.attr("id").substr(2),
+                    Present: ck.is(':checked')
+                }, function (ret) {
+                    if (ret.error) {
+                        ck.attr("checked", !ck.is(':checked'));
+                        alert(ret.error);
+                    } else {
+                        $(".members.badge").text(ret.NumMembers);
+                        $(".guests.badge").text(ret.NumPresent - ret.NumMembers);
+                    }
+                });
+            });
+            $("#headcount_form").submit(function (ev) {
+                ev.preventDefault();
+                $.post("/Meeting/Edit/", {
+                    id: "h:" + $("#meetingid").val(),
+                    value: $("#in_headcount").val()
+                }, function (ret) {
+                    if (ret.error) {
+                        alert(ret.error);
+                    } else {
+                        $(".headcount.badge").text(ret);
+                        $("in_headcount").val(ret);
+                    }
+                });
+            });
+            // handle tabs
+            var hash = document.location.hash;
+            if (hash) {
+                $('.nav-tabs a[href="' + hash + '"]').tab('show');
+            }
+            
+            $('.nav-tabs a').on('shown', function (e) {
+                window.location.hash = e.target.hash;
+            });
+            
+        });
+
+        function AddSelected(ret) {
+            window.location.reload(true);
+        }
+    </script>
+</body>
+</html>
