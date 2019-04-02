@@ -145,9 +145,11 @@
       </div>
     </div>
   </div>
-  <h4>Registration Log</h4>
-  @Html.TextAreaFor(m => m.Comments, new { @class = "form-control", disabled = "disabled", style = "cursor: text;", rows = 10 })
-  <br />
+  @if(Model.ShowComments) {
+      <h4>Registration Log</h4>
+      @Html.TextAreaFor(m => m.Comments, new { @class = "form-control", disabled = true, style = "cursor: text;", rows = 10 })
+      <br />
+  }
   @FormActions()
   @FormActions(true)
   @Html.HiddenFor2(m => m.PeopleId)
