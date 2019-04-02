@@ -16,6 +16,8 @@ namespace CmsWeb.Areas.Search.Models
 {
     public class RegistrationSearchModel : PagedTableModel<RegistrationList, RegistrationList>
     {
+        public CMSDataContext CurrentDatabase { get; set; }
+
         public RegistrationSearchInfo SearchParameters { get; set; }
 
         public RegistrationSearchModel()
@@ -26,9 +28,11 @@ namespace CmsWeb.Areas.Search.Models
 
         public override IQueryable<RegistrationList> DefineModelList()
         {
-            //var db = Db;
+            var roles = CurrentDatabase.CurrentRoles();
 
-            var q = from r in DbUtil.Db.ViewRegistrationLists
+            var q = from r in CurrentDatabase.ViewRegistrationLists
+                    join org in CurrentDatabase.Organizations on r.OrganizationId equals org.OrganizationId
+                    where org.LimitToRole == null || roles.Contains(org.LimitToRole)
                     where r.Cnt > 0
                     where r.First.Length > 0 && r.Last.Length > 0
                     select r;
@@ -100,7 +104,7 @@ namespace CmsWeb.Areas.Search.Models
                     break;
                 case "InProgress":
                     q = from r in q
-                        let o = DbUtil.Db.Organizations.Single(oo => oo.OrganizationId == r.OrganizationId)
+                        let o = CurrentDatabase.Organizations.Single(oo => oo.OrganizationId == r.OrganizationId)
                         where (r.Completed ?? false)
                         select r;
                     break;
