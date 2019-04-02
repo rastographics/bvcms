@@ -758,6 +758,8 @@ This search uses multiple steps which cannot be duplicated in a single query.
             }
             return null;
         }
+
+        private bool _isFinanceUser = false;
         private User _currentuser;
         public User CurrentUser
         {
@@ -771,11 +773,14 @@ This search uses multiple steps which cannot be duplicated in a single query.
                 GetCurrentUser();
                 return _currentuser;
             }
+
             set
             {
                 _currentuser = value;
+                _isFinanceUser = _roles?.Contains("Finance") ?? _currentuser?.InRole("Finance") ?? false;
             }
         }
+
         private void GetCurrentUser()
         {
             var q = from u in Users
@@ -794,7 +799,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
 
             _roles = i.roles;
             _roleids = i.roleids;
-            _currentuser = i.u;
+            CurrentUser = i.u;
         }
 
         private string[] _roles;
@@ -1935,11 +1940,12 @@ This search uses multiple steps which cannot be duplicated in a single query.
             var result = ExecuteMethodCall(this, (MethodInfo)MethodBase.GetCurrentMethod());
             return (int)(result?.ReturnValue ?? 0);
         }
+
         public DbConnection ReadonlyConnection()
         {
-            var finance = CurrentUser?.InRole("Finance") ?? true;
-            return new SqlConnection(finance ? Util.ConnectionStringReadOnlyFinance : Util.ConnectionStringReadOnly);
+            return new SqlConnection(_isFinanceUser ? Util.ConnectionStringReadOnlyFinance : Util.ConnectionStringReadOnly);
         }
+
         public void Log2Content(string file, string data)
         {
             var c = Content(file, ContentTypeCode.TypeText);

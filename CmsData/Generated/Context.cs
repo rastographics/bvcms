@@ -814,9 +814,11 @@ namespace CmsData
         {
             return new CMSDataContext(ConnectionString)
             {
+                _roles = _roles,
+                _roleids = _roleids,
                 CurrentUser = CurrentUser,
                 Host = Host,
-                FromBatch = FromBatch
+                FromBatch = FromBatch,
             };
         }
 
