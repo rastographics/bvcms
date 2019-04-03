@@ -812,7 +812,7 @@ namespace CmsData
 
         public CMSDataContext Copy()
         {
-            return new CMSDataContext(ConnectionString ?? Connection.ConnectionString)
+            return new CMSDataContext(ConnectionString)
             {
                 ConnectionString = ConnectionString,
                 CurrentUser = CurrentUser,
