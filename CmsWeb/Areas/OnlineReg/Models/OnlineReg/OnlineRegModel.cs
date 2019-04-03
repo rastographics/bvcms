@@ -5,7 +5,6 @@ using System.ComponentModel;
 using System.Linq;
 using System.Xml.Serialization;
 using UtilityExtensions;
-using CmsWeb.Models;
 
 namespace CmsWeb.Areas.OnlineReg.Models
 {
@@ -69,7 +68,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public decimal? MissionTripCost { get; set; }
         public decimal? MissionTripRaised { get; set; }
 
-        public TransactionsModel.SupporterInfo[] Supporters { get; set; }
+        public List<Supporter> Supporters { get; set; }
 
         private Transaction _transaction;
         public Transaction Transaction

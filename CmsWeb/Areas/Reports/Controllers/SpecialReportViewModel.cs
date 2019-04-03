@@ -28,29 +28,26 @@ namespace CmsWeb.Areas.Reports.Controllers
             Id = id;
         }
 
-        public void RunSqlReport()
+        public void RunSqlReport(CMSDataContext db)
         {
             DynamicParameters p;
             var content = GetParameters(out p);
 
-            var cs = HttpContextFactory.Current.User.IsInRole("Finance")
-                ? Util.ConnectionStringReadOnlyFinance
-                : Util.ConnectionStringReadOnly;
-            using (var cn = new SqlConnection(cs))
+            using (var cn = db.ReadonlyConnection())
             {
                 cn.Open();
                 using (var rd = cn.ExecuteReader(content, p))
+                {
                     Results = GridResult.Table(rd, Name2);
+                }
             }
         }
-        public EpplusResult RunSqlExcel()
+        public EpplusResult RunSqlExcel(CMSDataContext db)
         {
             DynamicParameters p;
             var content = GetParameters(out p);
-            var cs = HttpContextFactory.Current.User.IsInRole("Finance")
-                ? Util.ConnectionStringReadOnlyFinance
-                : Util.ConnectionStringReadOnly;
-            using (var cn = new SqlConnection(cs))
+            
+            using (var cn = db.ReadonlyConnection())
             {
                 cn.Open();
                 return cn.ExecuteReader(content, p).ToExcel($"{Report.Replace(" ", "")}.xlsx", fromSql: true);

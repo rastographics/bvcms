@@ -33,9 +33,7 @@ namespace CmsData
                     tagid = tag.Id;
                     p.Add("@BlueToolbarTagId", tag.Id);
                 }
-            var cs = db.CurrentUser.InRole("Finance")
-                ? Util.ConnectionStringReadOnlyFinance
-                : Util.ConnectionStringReadOnly;
+            var cs = Util.ReadOnlyConnectionString(db.Host, db.CurrentRoles().Contains("Finance"));
             using (var cn = new SqlConnection(cs))
             {
                 cn.Open();
@@ -59,9 +57,7 @@ namespace CmsData
 
         public static string PageBreakTables(CMSDataContext db, string sql, DynamicParameters p)
         {
-            var cs = db.CurrentUser.InRole("Finance")
-                ? Util.ConnectionStringReadOnlyFinance
-                : Util.ConnectionStringReadOnly;
+            var cs = Util.ReadOnlyConnectionString(db.Host, db.CurrentRoles().Contains("Finance"));
             var cn = new SqlConnection(cs);
             cn.Open();
             var sb = new StringBuilder();
