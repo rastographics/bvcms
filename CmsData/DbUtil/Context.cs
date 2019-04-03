@@ -1943,7 +1943,8 @@ This search uses multiple steps which cannot be duplicated in a single query.
 
         public DbConnection ReadonlyConnection()
         {
-            return new SqlConnection(_isFinanceUser ? Util.ConnectionStringReadOnlyFinance : Util.ConnectionStringReadOnly);
+            var finance = CurrentRoles().Contains("Finance");
+            return new SqlConnection(Util.ReadOnlyConnectionString(Host, finance));
         }
 
         public void Log2Content(string file, string data)

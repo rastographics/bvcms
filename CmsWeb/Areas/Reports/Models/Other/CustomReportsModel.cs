@@ -162,8 +162,7 @@ namespace CmsWeb.Areas.Reports.Models
 
         public string Table()
         {
-            var cs = GetConnectionString();
-            var cn = new SqlConnection(cs);
+            var cn = db.ReadonlyConnection();
             var p = Parameters();
             var sql = Sql();
             if (sql.Contains("@userid"))
@@ -182,8 +181,7 @@ namespace CmsWeb.Areas.Reports.Models
 
         public EpplusResult Result()
         {
-            var cs = GetConnectionString();
-            var cn = new SqlConnection(cs);
+            var cn = db.ReadonlyConnection();
             var p = Parameters();
             var sql = Sql();
             if (sql.Contains("@userid"))
@@ -209,8 +207,7 @@ namespace CmsWeb.Areas.Reports.Models
 
         public EpplusResult Result(string savedQuery)
         {
-            string cs = GetConnectionString();
-            var cn = new SqlConnection(cs);
+            var cn = db.ReadonlyConnection();
             var p = Parameters(savedQuery);
             var sql = Sql();
             if (sql.Contains("@userid"))
@@ -219,13 +216,6 @@ namespace CmsWeb.Areas.Reports.Models
             }
 
             return cn.ExecuteReader(sql, p).ToExcel(Report + ".xlsx");
-        }
-
-        private string GetConnectionString()
-        {
-            return db.CurrentUser.InRole("Finance")
-                ? Util.ConnectionStringReadOnlyFinance
-                : Util.ConnectionStringReadOnly;
         }
 
         public string Sql()
