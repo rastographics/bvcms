@@ -27,7 +27,7 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult Index(int? div, int? progid, int? onlinereg, string name)
         {
             Response.NoCache();
-            var m = new OrgSearchModel();
+            var m = new OrgSearchModel(CurrentDatabase);
             m.StatusId = OrgStatusCode.Active;
 
             if (name.HasValue())
@@ -78,7 +78,7 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ActionResult DivisionIds(int id)
         {
-            var m = new OrgSearchModel { ProgramId = id };
+            var m = new OrgSearchModel(CurrentDatabase) { ProgramId = id };
             return View(m);
             //return Json(OrgSearchModel.DivisionIds(id));
         }
@@ -86,7 +86,7 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ActionResult TagDivIds(int id)
         {
-            var m = new OrgSearchModel { ProgramId = id };
+            var m = new OrgSearchModel(CurrentDatabase) { ProgramId = id };
             return View("DivisionIds", m);
         }
 
@@ -155,7 +155,7 @@ namespace CmsWeb.Areas.Search.Controllers
             var d = CurrentDatabase.Divisions.Single(dd => dd.Id == divid);
             d.Name = name;
             CurrentDatabase.SubmitChanges();
-            var m = new OrgSearchModel { ProgramId = id };
+            var m = new OrgSearchModel(CurrentDatabase) { ProgramId = id };
             return View("DivisionIds", m);
         }
 
@@ -166,7 +166,7 @@ namespace CmsWeb.Areas.Search.Controllers
             d.ProgDivs.Add(new ProgDiv { ProgId = id });
             CurrentDatabase.Divisions.InsertOnSubmit(d);
             CurrentDatabase.SubmitChanges();
-            var m = new OrgSearchModel { ProgramId = id, TagDiv = d.Id };
+            var m = new OrgSearchModel(CurrentDatabase) { ProgramId = id, TagDiv = d.Id };
             return View("DivisionIds", m);
         }
 
@@ -309,7 +309,7 @@ namespace CmsWeb.Areas.Search.Controllers
         {
             try
             {
-                var m = new OrgSearchModel();
+                var m = new OrgSearchModel(CurrentDatabase);
                 return m.SqlTableExcel(report, orgIds, dt1, dt2);
             }
             catch (Exception ex)
@@ -329,7 +329,7 @@ namespace CmsWeb.Areas.Search.Controllers
 
             var t = organization.ToggleTag(CurrentDatabase, tagdiv);
             CurrentDatabase.SubmitChanges();
-            var m = new OrgSearchModel { StatusId = 0, TagDiv = tagdiv, Name = id.ToString() };
+            var m = new OrgSearchModel(CurrentDatabase) { StatusId = 0, TagDiv = tagdiv, Name = id.ToString() };
             var o = m.OrganizationList().SingleOrDefault();
             if (o == null)
             {
@@ -344,7 +344,7 @@ namespace CmsWeb.Areas.Search.Controllers
         {
             //var Db = Db;
             CurrentDatabase.SetMainDivision(id, tagdiv);
-            var m = new OrgSearchModel { TagDiv = tagdiv, Name = id.ToString() };
+            var m = new OrgSearchModel(CurrentDatabase) { TagDiv = tagdiv, Name = id.ToString() };
             var o = m.OrganizationList().SingleOrDefault();
             if (o == null)
             {

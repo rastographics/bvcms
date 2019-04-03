@@ -70,7 +70,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                 db.ExecuteCommand("delete duplicate");
                 var q = from p in db.People
                         where p.CreatedDate > fdt
-                        where p.CreatedDate < tdt.Value.AddDays(1)
+                        where p.CreatedDate < tdt.AddDays(1)
                         select p.PeopleId;
                 rt.Count = q.Count();
                 db.SubmitChanges();
