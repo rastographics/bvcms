@@ -16,7 +16,7 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult Index()
         {
             Response.NoCache();
-            var m = new RegistrationSearchModel();
+            var m = new RegistrationSearchModel() { CurrentDatabase = CurrentDatabase};
 
             //m.GetFromSession();
             return View(m);
@@ -25,6 +25,7 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult Results(RegistrationSearchModel m)
         {
             //m.SaveToSession();
+            m.CurrentDatabase = CurrentDatabase;
             return View(m);
         }
         [HttpPost]
