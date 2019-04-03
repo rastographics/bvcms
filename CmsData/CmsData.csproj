@@ -580,6 +580,7 @@
     <Compile Include="Extensions\OrgPerson.cs" />
     <Compile Include="Extensions\PaymentInfo.cs" />
     <Compile Include="Extensions\RepairTransactionRun.cs" />
+    <Compile Include="Finance\AcceptivaGateway.cs" />
     <Compile Include="Finance\BluePayGateway.cs" />
     <Compile Include="Finance\BluePay\BluePayPayment.cs" />
     <Compile Include="Finance\CheckBatchSettlements.cs" />
@@ -1378,6 +1379,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Finance\Acceptiva\" />
     <Folder Include="Resources\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
