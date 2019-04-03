@@ -812,8 +812,9 @@ namespace CmsData
 
         public CMSDataContext Copy()
         {
-            return new CMSDataContext(ConnectionString)
+            return new CMSDataContext(ConnectionString ?? Connection.ConnectionString)
             {
+                ConnectionString = ConnectionString,
                 CurrentUser = CurrentUser,
                 Host = Host,
                 FromBatch = FromBatch
