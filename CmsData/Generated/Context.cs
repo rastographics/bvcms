@@ -816,6 +816,7 @@ namespace CmsData
             {
                 _roles = _roles,
                 _roleids = _roleids,
+                ConnectionString = ConnectionString,
                 CurrentUser = CurrentUser,
                 Host = Host,
                 FromBatch = FromBatch,

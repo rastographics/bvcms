@@ -47,7 +47,13 @@ namespace CmsData
            public override Encoding Encoding => Encoding.Default;
         }
 #endif
-        internal string ConnectionString;
+        private string _connectionString;
+        internal string ConnectionString
+        {
+            get { return _connectionString ?? Connection.ConnectionString; }
+            set { _connectionString = value; }
+        }
+
         public static CMSDataContext Create(string connStr, string host)
         {
             return new CMSDataContext(connStr)
