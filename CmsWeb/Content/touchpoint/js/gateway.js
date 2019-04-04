@@ -6,11 +6,15 @@
         Gateways: [{}],
         GatewayAccounts: [{}],
         ProcessName: '',
+        GatewayAccountId: null,
+        ProcessId: null,
         AccountName: '',
         GatewayId: null,
         Inputs: [{}],
         DetailValue: [],
-        IsGatewayReadOnly: false
+        IsGatewayReadOnly: false,
+        UseForAll: false,
+        UseForAllShow: true
     },
     methods: {
         myFunctionOnLoad: function () {
@@ -38,6 +42,13 @@
                     if (response.status === 200) {
                         console.log(response.body);
                         this.Processes = response.body;
+
+                        var nullProcesses = this.Processes.filter(function (item) {
+                            return item.GatewayAccountId === null;
+                        }).length;
+
+                        this.UseForAllShow = nullProcesses >= 2 ? true : false;
+
                         this.GetGateways();
                     }
                     else {
@@ -91,8 +102,11 @@
         modalInfo: function (ProcessId, GatewayAccountId) {
             this.IsGatewayReadOnly = true;
             this.DetailValue = [];
+            this.GatewayAccountId = GatewayAccountId;
 
             if (ProcessId !== null) {
+                this.ProcessId = ProcessId;
+                console.log(this.ProcessId);
                 var res = this.Processes.filter(function (item) {
                     return item.ProcessId === ProcessId;
                 })[0];
@@ -156,15 +170,82 @@
                 this.OnChangeGateway();
         },
         processForm: function () {
-            var Action = this.IsGatewayReadOnly ? 'For Update' : 'For Insert';
+            var IsInsert = this.IsGatewayReadOnly ? false : true;
+            var GatewayAccountInputs = this.Inputs.map(function (item) {
+                return item.GatewayDetailName;
+            });
 
-            console.log(Action);
-            for (let i = 0; i < this.Inputs.length; i++) {
-                if (this.DetailValue[i].length === 0)
-                    console.log(this.Inputs[i].GatewayDetailName + ': ""');
-                else
-                    console.log(this.Inputs[i].GatewayDetailName + ': ' + this.DetailValue[i]);
+            if (IsInsert) {
+                this.$http.post('../Gateway/InsertAccount/' + IsInsert, {
+                    ProcessId: this.ProcessId,
+                    GatewayAccountName: this.AccountName,
+                    GatewayId: this.GatewayId,
+                    GatewayAccountInputs: GatewayAccountInputs,
+                    GatewayAccountValues: this.DetailValue,
+                    UseForAll: this.UseForAll
+                }).then(
+                    response => {
+                        if (response.status === 200) {
+                            this.myFunctionOnLoad();
+                            success_swal('Success', 'Configuration Saved');
+                            $('#config-modal').modal('hide');
+                        }
+                        else {
+                            console.log(response);
+                            warning_swal('Ups!', 'Something went wrong, try again later');
+                        }
+                    },
+                    err => {
+                        console.log(err);
+                        error_swal('Fatal Error!', 'We are working to fix it');
+                    }
+                );
             }
+            else {
+                this.$http.post('../Gateway/InsertAccount/' + IsInsert, {
+                    ProcessId: this.ProcessId,
+                    GatewayAccountId: this.GatewayAccountId,
+                    GatewayAccountInputs: GatewayAccountInputs,
+                    GatewayAccountValues: this.DetailValue,
+                    UseForAll: this.UseForAll
+                }).then(
+                    response => {
+                        if (response.status === 200) {
+                            this.myFunctionOnLoad();
+                            success_swal('Success', 'Configuration Saved');
+                            $('#config-modal').modal('hide');
+                        }
+                        else {
+                            console.log(response);
+                            warning_swal('Ups!', 'Something went wrong, try again later');
+                        }
+                    },
+                    err => {
+                        console.log(err);
+                        error_swal('Fatal Error!', 'We are working to fix it');
+                    }
+                );
+            }
+        },
+        deleteProcess: function (ProcessId) {
+            this.$http.post('../Gateway/DeleteProcessAccount', {
+                ProcessId: ProcessId
+            }).then(
+                response => {
+                    if (response.status === 200) {
+                        this.myFunctionOnLoad();
+                        success_swal('Success', 'Configuration Saved');
+                    }
+                    else {
+                        console.log(response);
+                        warning_swal('Ups!', 'Something went wrong, try again later');
+                    }
+                },
+                err => {
+                    console.log(err);
+                    error_swal('Fatal Error!', 'We are working to fix it');
+                }
+            );
         }
     },
     created: function () {

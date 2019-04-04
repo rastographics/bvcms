@@ -81,7 +81,7 @@ namespace CmsData
             }
         }
 
-        [Column(Name = "GatewayAccountId", UpdateCheck = UpdateCheck.Never, Storage = "_GatewayAccountId", DbType = "int NOT NULL", IsPrimaryKey = true)]
+        [Column(Name = "GatewayAccountId", UpdateCheck = UpdateCheck.Never, Storage = "_GatewayAccountId", DbType = "int NOT NULL")]
         [IsForeignKey]
         public int? GatewayAccountId
         {

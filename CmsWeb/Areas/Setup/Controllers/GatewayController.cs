@@ -8,6 +8,8 @@ using CmsWeb.Common;
 
 namespace CmsWeb.Areas.Setup.Controllers
 {
+    [Authorize(Roles = "Admin")]
+    [ValidateInput(false)]
     [RouteArea("Setup", AreaPrefix = "Gateway"), Route("{action}")]
     public class GatewayController : CmsStaffController
     {
@@ -27,16 +29,16 @@ namespace CmsWeb.Areas.Setup.Controllers
         public JsonResult GetProcesses()
         {
             var Processes = (from e in CurrentDatabase.PaymentProcess
-                            join d in CurrentDatabase.GatewayAccount on e.GatewayAccountId equals d.GatewayAccountId into gj
-                            from sub in gj.DefaultIfEmpty()
-                            select new
-                            {
-                                e.ProcessId,
-                                e.ProcessName,
-                                sub.GatewayId,
-                                GatewayAccountId = e.GatewayAccountId ?? null,
-                                GatewayAccountName = sub.GatewayAccountName ?? null
-                            }).ToList();
+                             join d in CurrentDatabase.GatewayAccount on e.GatewayAccountId equals d.GatewayAccountId into gj
+                             from sub in gj.DefaultIfEmpty()
+                             select new
+                             {
+                                 e.ProcessId,
+                                 e.ProcessName,
+                                 sub.GatewayId,
+                                 GatewayAccountId = e.GatewayAccountId ?? null,
+                                 GatewayAccountName = sub.GatewayAccountName ?? null
+                             }).ToList();
 
             return Json(Processes, JsonRequestBehavior.AllowGet);
         }
@@ -73,16 +75,88 @@ namespace CmsWeb.Areas.Setup.Controllers
             return Json(GatewayAccount, JsonRequestBehavior.AllowGet);
         }
 
-        /*[HttpPost]
-        [Route("~/Gateway/GetGatewayAccounts")]
-        public JsonResult InsertAccount(CmsData.GatewayAccount json)
+        [HttpPost]
+        [Route("~/Gateway/InsertAccount/{IsInsert}")]
+        public JsonResult InsertAccount([System.Web.Http.FromBody]Models.GatewayAccountJsonModel json, bool IsInsert)
         {
-            var gtAccount = new CmsData.GatewayAccount();
-            gtAccount.GatewayAccountName = json.GatewayAccountName;
-            gtAccount.GatewayId = json.GatewayId;
-            CurrentDatabase.GatewayAccount.Select(x => x.)
+            var paymentProcess = CurrentDatabase.PaymentProcess.SingleOrDefault(x => x.ProcessId == json.ProcessId);
+
+            if (IsInsert)
+            {
+                var gtAccount = new CmsData.GatewayAccount();
+                var gtDetailAccount = new CmsData.GatewayDetails();
+
+                gtAccount.GatewayAccountName = json.GatewayAccountName;
+                gtAccount.GatewayId = json.GatewayId;
+                CurrentDatabase.GatewayAccount.InsertOnSubmit(gtAccount);
+                CurrentDatabase.SubmitChanges();
+
+                for (int i = 0; i < json.GatewayAccountInputs.Count(); i++)
+                {
+                    gtDetailAccount.GatewayAccountId = gtAccount.GatewayAccountId;
+                    gtDetailAccount.GatewayDetailName = json.GatewayAccountInputs[i];
+                    gtDetailAccount.GatewayDetailValue = json.GatewayAccountValues[i];
+                    CurrentDatabase.GatewayDetails.InsertOnSubmit(gtDetailAccount);
+                    CurrentDatabase.SubmitChanges();
+                    gtDetailAccount = new CmsData.GatewayDetails();
+                }
+
+                if (json.UseForAll)
+                {
+                    for (int i = 0; i < CurrentDatabase.PaymentProcess.Select(x => x.ProcessId).Count(); i++)
+                    {
+                        paymentProcess = CurrentDatabase.PaymentProcess.SingleOrDefault(x => x.ProcessId == i+1);
+                        paymentProcess.GatewayAccountId = gtAccount.GatewayAccountId;
+                        CurrentDatabase.SubmitChanges();
+                    }
+                }
+                else
+                {
+                    paymentProcess.GatewayAccountId = gtAccount.GatewayAccountId;
+                    CurrentDatabase.SubmitChanges();
+                }
+            }
+            else
+            {
+                for (int i = 0; i < json.GatewayAccountInputs.Count(); i++)
+                {
+                    var gtDetailAccount = CurrentDatabase.GatewayDetails.SingleOrDefault(
+                        x => x.GatewayDetailName == json.GatewayAccountInputs[i]
+                        && x.GatewayAccountId == json.GatewayAccountId);
+
+                    gtDetailAccount.GatewayDetailValue = json.GatewayAccountValues[i];
+                    CurrentDatabase.SubmitChanges();
+                }
+
+                if (json.UseForAll)
+                {
+                    for (int i = 0; i < CurrentDatabase.PaymentProcess.Select(x => x.ProcessId).Count(); i++)
+                    {
+                        paymentProcess = CurrentDatabase.PaymentProcess.SingleOrDefault(x => x.ProcessId == i + 1);
+                        paymentProcess.GatewayAccountId = json.GatewayAccountId;
+                        CurrentDatabase.SubmitChanges();
+                    }
+                }
+                else
+                {
+                    paymentProcess.GatewayAccountId = json.GatewayAccountId;
+                    CurrentDatabase.SubmitChanges();
+                }
+            }
 
             return GetGatewayAccounts();
-        }*/
+        }
+
+        [HttpPost]
+        [Route("~/Gateway/DeleteProcessAccount")]
+        public JsonResult DeleteProcessAccount([System.Web.Http.FromBody]int ProcessId)
+        {
+            var paymentProcess = CurrentDatabase.PaymentProcess.SingleOrDefault(x => x.ProcessId == ProcessId);
+
+            paymentProcess.GatewayAccountId = null;
+            CurrentDatabase.SubmitChanges();
+
+            return GetGatewayAccounts();
+        }
     }
 }

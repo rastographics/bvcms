@@ -13,11 +13,12 @@ namespace CmsData
             this.db = db;
         }
 
-        public string Setting(string name, string defaultvalue, int GatewayId)
+        public string Setting(string name, string defaultvalue, int ProcessId)
         {
+            int? GatewayAccountId = db.PaymentProcess.Where(x => x.ProcessId == ProcessId).Select(x => x.GatewayAccountId).FirstOrDefault();
             if (name == null)
                 return defaultvalue;
-            var list = db.GatewayDetails.Where(x => x.GatewayAccountId == GatewayId).Select(x => new { x.GatewayDetailName, x.GatewayDetailValue }) as Dictionary<string, string>;
+            var list = db.GatewayDetails.Where(x => x.GatewayAccountId == GatewayAccountId).Select(x => new { x.GatewayDetailName, x.GatewayDetailValue }) as Dictionary<string, string>;
             if (list == null)
             {
                 try
@@ -37,9 +38,9 @@ namespace CmsData
             return string.Empty;
         }
 
-        public bool Setting(string name, int GatewayId, bool defaultValue = false)
+        public bool Setting(string name, int ProcessId, bool defaultValue = false)
         {
-            var setting = Setting(name, null, GatewayId);
+            var setting = Setting(name, null, ProcessId);
             if (!setting.HasValue())
                 return defaultValue;
 

@@ -35,7 +35,7 @@
                                         </a>
                                     </td>
                                     <td style="width: 50px;">
-                                        <a href="#" class="btn btn-sm btn-danger deleteprocess">
+                                        <a v-on:click="deleteProcess(process.ProcessId)" href="#" class="btn btn-sm btn-danger deleteprocess">
                                             <i class="fa fa-trash"></i>&nbsp;Delete
                                         </a>
                                     </td>
@@ -79,6 +79,7 @@
                                         <option v-bind:value="account.GatewayAccountName">
                                     </template>
                                 </datalist>
+                                <small v-show="!IsGatewayReadOnly">*This Configuration will be save as a new account</small>
                             </div>
                         </div>
                         <br />
@@ -96,8 +97,8 @@
                         </div>
                         <div class="row">
                             <div class="col-md-6 col-md-offset-3">
-                                <label class="label-gateway">
-                                    <input class="" type="checkbox" />
+                                <label v-show="UseForAllShow" class="label-gateway">
+                                    <input v-model="UseForAll" class="" type="checkbox" />
                                     &nbsp;Use for all payment processes
                                 </label>
                             </div>
