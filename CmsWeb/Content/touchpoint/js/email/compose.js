@@ -11,13 +11,13 @@
     $.addFunction = undefined;
 
     $.clearTemplateClass = function () {
-        if (typeof $.clearFunction != 'undefined') {
+        if (typeof $.clearFunction !== 'undefined') {
             $.clearFunction();
         }
     };
 
     $.addTemplateClass = function () {
-        if (typeof $.addFunction != 'undefined') {
+        if (typeof $.addFunction !== 'undefined') {
             $.addFunction();
         }
     };
@@ -185,7 +185,7 @@
                                 swal("Error!", ret.error, "error");
                                 window.clearInterval(intervalid);
                             } else {
-                                if (ret.title == 'Email has completed.') {
+                                if (ret.title === 'Email has completed.') {
                                     swal({
                                         title: ret.title,
                                         text: ret.message,
@@ -211,7 +211,7 @@
     });
 
     $(".SaveDraft").click(function () {
-        if ($(this).attr("saveType") == "0") {
+        if ($(this).attr("saveType") === "0") {
             $('#draft-modal').modal('show');
         } else {
             $.clearTemplateClass();
@@ -256,7 +256,7 @@
             if (ret && ret.error) {
                 swal("Error!", ret.error, "error");
             } else {
-                if (ret == "timeout") {
+                if (ret === "timeout") {
                     swal("Session Timeout!", 'Your session timed out. Please copy your email content and start over.', "error");
                     return;
                 }

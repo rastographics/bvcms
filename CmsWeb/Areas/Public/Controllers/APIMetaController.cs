@@ -141,10 +141,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             try
             {
-                var cs = User.IsInRole("Finance")
-                    ? Util.ConnectionStringReadOnlyFinance
-                    : Util.ConnectionStringReadOnly;
-                var cn = new SqlConnection(cs);
+                var cn = CurrentDatabase.ReadonlyConnection();
                 cn.Open();
                 var d = Request.QueryString.AllKeys.ToDictionary(key => key, key => Request.QueryString[key]);
                 return sqlscript(id, p1, d);

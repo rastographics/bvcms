@@ -88,10 +88,7 @@ namespace CmsWeb.Controllers
                 return Content("no content");
             }
 
-            var cs = User.IsInRole("Finance")
-                ? Util.ConnectionStringReadOnlyFinance
-                : Util.ConnectionStringReadOnly;
-            var cn = new SqlConnection(cs);
+            var cn = CurrentDatabase.ReadonlyConnection();
             cn.Open();
             var d = Request.QueryString.AllKeys.ToDictionary(key => key, key => Request.QueryString[key]);
             var p = new DynamicParameters();
@@ -129,10 +126,7 @@ namespace CmsWeb.Controllers
                 return Message("no content");
             }
 
-            var cs = User.IsInRole("Finance")
-                ? Util.ConnectionStringReadOnlyFinance
-                : Util.ConnectionStringReadOnly;
-            var cn = new SqlConnection(cs);
+            var cn = CurrentDatabase.ReadonlyConnection();
             var d = Request.QueryString.AllKeys.ToDictionary(key => key, key => Request.QueryString[key]);
             var p = new DynamicParameters();
             foreach (var kv in d)

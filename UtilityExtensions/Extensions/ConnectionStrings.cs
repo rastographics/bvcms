@@ -129,22 +129,24 @@ namespace UtilityExtensions
                     HttpContextFactory.Current.Session[STR_ConnectionString] = value;
             }
         }
-        private static string ReadOnlyConnectionString(bool finance = false)
+
+        public static string ReadOnlyConnectionString(string host = null, bool finance = false)
         {
             var pw = ConfigurationManager.AppSettings["readonlypassword"];
             if (!pw.HasValue())
                 return ConnectionString;
 
-            var cs = ConnectionStringSettings(Host);
+            var cs = ConnectionStringSettings(host ?? Host);
             var cb = new SqlConnectionStringBuilder(cs.ConnectionString);
             if (string.IsNullOrEmpty(cb.DataSource))
                 cb.DataSource = DbServer;
-            cb.InitialCatalog = $"CMS_{Host}";
+            cb.InitialCatalog = $"CMS_{host ?? Host}";
             cb.IntegratedSecurity = false;
             cb.UserID = (finance ? $"ro-{cb.InitialCatalog}-finance" : $"ro-{cb.InitialCatalog}");
             cb.Password = pw;
             return cb.ConnectionString;
         }
+
         public static string ConnectionStringReadOnly => ReadOnlyConnectionString();
 
         public static string ConnectionStringReadOnlyFinance => ReadOnlyConnectionString(finance: true);

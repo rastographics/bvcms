@@ -125,6 +125,11 @@ namespace CmsData
         public static CMSDataContext Create(HttpContextBase currentHttpContext)
         {
             var host = currentHttpContext.Request.Url.Authority.Split('.', ':')[0];
+            var hostOverride = ConfigurationManager.AppSettings["host"];
+            if (!string.IsNullOrEmpty(hostOverride)) // default to the host from url, however, override it via web.config for debugging against live data
+            {
+                host = hostOverride;
+            }
             var cs = ConfigurationManager.ConnectionStrings["CMS"];
             var cb = new SqlConnectionStringBuilder(cs.ConnectionString);
             cb.InitialCatalog = $"CMS_{host}";
@@ -1932,8 +1937,8 @@ This search uses multiple steps which cannot be duplicated in a single query.
         }
         public DbConnection ReadonlyConnection()
         {
-            var finance = CurrentUser?.InRole("Finance") ?? true;
-            return new SqlConnection(finance ? Util.ConnectionStringReadOnlyFinance : Util.ConnectionStringReadOnly);
+            var finance = CurrentRoles().Contains("Finance");
+            return new SqlConnection(Util.ReadOnlyConnectionString(Host, finance));
         }
         public void Log2Content(string file, string data)
         {
