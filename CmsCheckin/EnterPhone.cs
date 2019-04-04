@@ -95,8 +95,10 @@ namespace CmsCheckin
         {
             Program.TimerStop();
             var d = textBox1.Text.GetDigits().Length;
-            if (d == 10 || d == 0)
+            if (d == 10)
                 GoNext(sender, e);
+            else if (d == 0)
+                MessageBox.Show("Enter your phone number");
             else
                 MessageBox.Show("please enter area code too");
         }
@@ -122,7 +124,7 @@ namespace CmsCheckin
             else if (e.KeyChar == '\r')
             {
                 var d = textBox1.Text.GetDigits().Length;
-                if (d == 0 || d == 10 || d == 7)
+                if (d == 10 || d == 7)
                 {
                     Program.TimerStop();
                     GoNext(sender, e);
