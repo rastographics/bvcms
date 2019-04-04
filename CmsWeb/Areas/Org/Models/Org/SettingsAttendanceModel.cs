@@ -14,22 +14,27 @@ namespace CmsWeb.Areas.Org.Models
         public CMSDataContext CurrentDatabase
         {
             get => _currentDatabase;
-            set { _currentDatabase = value; Org = null; }
-        }
-
-        public Organization Org;
-
-        public int Id
-        {
-            get { return Org != null ? Org.OrganizationId : 0; }
             set
             {
-                if (Org == null && _currentDatabase != null)
-                {
-                    Org = CurrentDatabase.LoadOrganizationById(value);
-                }
+                _currentDatabase = value;
+                _org = null;
             }
         }
+
+        private Organization _org;
+        public Organization Org
+        {
+            get
+            {
+                if (_org == null && Id > 0 && CurrentDatabase != null)
+                {
+                    _org = CurrentDatabase.LoadOrganizationById(Id);
+                }
+                return _org;
+            }
+        }
+
+        public int Id { get; set; }
 
         public SettingsAttendanceModel()
         {
@@ -73,7 +78,7 @@ namespace CmsWeb.Areas.Org.Models
         {
             get
             {
-                var sc = Org.OrgSchedules.FirstOrDefault(); // SCHED
+                var sc = Org?.OrgSchedules.FirstOrDefault(); // SCHED
                 if (sc != null && sc.SchedTime != null && sc.SchedDay < 9)
                 {
                     var dt = Util.Now.Date.Sunday().AddDays(sc.SchedDay ?? 0);
@@ -127,7 +132,7 @@ namespace CmsWeb.Areas.Org.Models
                         SchedTime = s.Time.ToDate(),
                         AttendCreditId = s.AttendCredit.Value.ToInt()
                     };
-                    Org.OrgSchedules.Add(schedule);
+                    db.OrgSchedules.InsertOnSubmit(schedule);
                     orgSchedules.Add(schedule);
                 }
                 else
@@ -157,7 +162,7 @@ Schedules can be 'Every Meeting' for 100% credit or they can be 'One a Week' for
         {
             get
             {
-                if (schedules == null && Id != 0)
+                if (schedules == null && Id != 0 && CurrentDatabase != null)
                 {
                     var q = from sc in CurrentDatabase.OrgSchedules
                             where sc.OrganizationId == Id
@@ -169,7 +174,7 @@ Schedules can be 'Every Meeting' for 100% credit or they can be 'One a Week' for
                 }
                 if (schedules == null)
                 {
-                    throw new Exception("missing schedules");
+                    schedules = new List<ScheduleInfo>();
                 }
 
                 return schedules;
