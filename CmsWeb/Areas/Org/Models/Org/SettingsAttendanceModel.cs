@@ -11,15 +11,22 @@ namespace CmsWeb.Areas.Org.Models
 {
     public class SettingsAttendanceModel
     {
+        public CMSDataContext CurrentDatabase
+        {
+            get => _currentDatabase;
+            set { _currentDatabase = value; Org = null; }
+        }
+
         public Organization Org;
+
         public int Id
         {
             get { return Org != null ? Org.OrganizationId : 0; }
             set
             {
-                if (Org == null)
+                if (Org == null && _currentDatabase != null)
                 {
-                    Org = DbUtil.Db.LoadOrganizationById(value);
+                    Org = CurrentDatabase.LoadOrganizationById(value);
                 }
             }
         }
@@ -28,11 +35,13 @@ namespace CmsWeb.Areas.Org.Models
         {
         }
 
-        public SettingsAttendanceModel(int id)
+        public SettingsAttendanceModel(int id, CMSDataContext dataContext)
         {
+            _currentDatabase = dataContext;
             Id = id;
             this.CopyPropertiesFrom(Org);
         }
+
         public void Update()
         {
             if (!HasSchedules())
@@ -40,7 +49,7 @@ namespace CmsWeb.Areas.Org.Models
                 schedules = new List<ScheduleInfo>();
             }
             this.CopyPropertiesTo(Org);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
         }
 
         public SelectList AttendCreditList()
@@ -84,9 +93,9 @@ namespace CmsWeb.Areas.Org.Models
         }
         public void UpdateSchedules()
         {
-            var db = DbUtil.Db;
+            var db = CurrentDatabase;
             var orgSchedules = Org.OrgSchedules.ToList();
-            for(int i = orgSchedules.Count - 1; i>=0; i--)
+            for (int i = orgSchedules.Count - 1; i >= 0; i--)
             {
                 var s = orgSchedules[i];
                 if (!schedules.Any(ss => ss.Id == s.Id))
@@ -150,7 +159,7 @@ Schedules can be 'Every Meeting' for 100% credit or they can be 'One a Week' for
             {
                 if (schedules == null && Id != 0)
                 {
-                    var q = from sc in DbUtil.Db.OrgSchedules
+                    var q = from sc in CurrentDatabase.OrgSchedules
                             where sc.OrganizationId == Id
                             select sc;
                     var u = from s in q
@@ -171,6 +180,7 @@ Schedules can be 'Every Meeting' for 100% credit or they can be 'One a Week' for
             }
         }
         private List<ScheduleInfo> schedules;
+        private CMSDataContext _currentDatabase;
 
         public bool HasSchedules()
         {
