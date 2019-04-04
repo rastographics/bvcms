@@ -847,6 +847,7 @@
     <Compile Include="Areas\Search\Models\SavedQuery\SavedQueryInfo.cs" />
     <Compile Include="Areas\Search\Models\SavedQuery\SavedQueryModel.cs" />
     <Compile Include="Areas\Setup\Controllers\GatewayController.cs" />
+    <Compile Include="Areas\Setup\Models\GatewayAccountJsonModel.cs" />
     <Compile Include="Code\BirthdateValidAttribute.cs" />
     <Compile Include="Code\CMSWebViewPage.cs" />
     <Compile Include="Areas\Setup\Controllers\PushpayController.cs" />
