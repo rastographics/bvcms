@@ -11,7 +11,7 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost]
         public ActionResult Attendance(int id)
         {
-            var m = new SettingsAttendanceModel(id);
+            var m = new SettingsAttendanceModel(id, CurrentDatabase);
             return PartialView("Settings/Attendance", m);
         }
 
@@ -19,20 +19,21 @@ namespace CmsWeb.Areas.Org.Controllers
         public ActionResult AttendanceHelpToggle(int id)
         {
             CurrentDatabase.ToggleUserPreference("ShowAttendanceHelp");
-            var m = new SettingsAttendanceModel(id);
+            var m = new SettingsAttendanceModel(id, CurrentDatabase);
             return PartialView("Settings/Attendance", m);
         }
 
         [HttpPost]
         public ActionResult AttendanceEdit(int id)
         {
-            var m = new SettingsAttendanceModel(id);
+            var m = new SettingsAttendanceModel(id, CurrentDatabase);
             return PartialView("Settings/AttendanceEdit", m);
         }
 
         [HttpPost]
         public ActionResult AttendanceUpdate(SettingsAttendanceModel m)
         {
+            m.CurrentDatabase = CurrentDatabase;
             m.Update();
             m.UpdateSchedules();
             CurrentDatabase.Refresh(RefreshMode.OverwriteCurrentValues, m.Org.OrgSchedules);
