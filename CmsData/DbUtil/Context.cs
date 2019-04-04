@@ -47,7 +47,13 @@ namespace CmsData
            public override Encoding Encoding => Encoding.Default;
         }
 #endif
-        internal string ConnectionString;
+        private string _connectionString;
+        internal string ConnectionString
+        {
+            get { return _connectionString ?? Connection.ConnectionString; }
+            set { _connectionString = value; }
+        }
+
         public static CMSDataContext Create(string connStr, string host)
         {
             return new CMSDataContext(connStr)
@@ -1937,8 +1943,8 @@ This search uses multiple steps which cannot be duplicated in a single query.
         }
         public DbConnection ReadonlyConnection()
         {
-            var finance = CurrentUser?.InRole("Finance") ?? true;
-            return new SqlConnection(finance ? Util.ConnectionStringReadOnlyFinance : Util.ConnectionStringReadOnly);
+            var finance = CurrentRoles().Contains("Finance");
+            return new SqlConnection(Util.ReadOnlyConnectionString(Host, finance));
         }
         public void Log2Content(string file, string data)
         {

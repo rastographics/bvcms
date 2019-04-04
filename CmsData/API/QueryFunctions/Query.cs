@@ -356,7 +356,7 @@ namespace CmsData
         public DynamicData SqlNameValues(string sql, string NameCol, string ValueCol)
         {
             var cn = GetReadonlyConnection();
-            using (var rd = cn.ExecuteReader(sql))
+            using (var rd = cn.ExecuteReader(sql, null, commandTimeout: 600))
             {
                 var dd = new DynamicData();
                 while (rd.Read())
@@ -386,7 +386,7 @@ namespace CmsData
 #endif
             }
             var ret = new DynamicData();
-            using (var rd = cn.ExecuteReader(sql, parameters))
+            using (var rd = cn.ExecuteReader(sql, parameters, commandTimeout: 600))
             {
                 var maxn = 100;
                 while (rd.Read())

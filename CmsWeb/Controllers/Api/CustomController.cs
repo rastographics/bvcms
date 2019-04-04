@@ -35,10 +35,7 @@ namespace CmsWeb.Controllers.Api
                 throw new Exception("Not Authorized to run this script");
             }
 
-            var cs = User.IsInRole("Finance")
-                ? Util.ConnectionStringReadOnlyFinance
-                : Util.ConnectionStringReadOnly;
-            var cn = new SqlConnection(cs);
+            var cn = CurrentDatabase.ReadonlyConnection();
             cn.Open();
             var d = Request.GetQueryNameValuePairs();
             var p = new DynamicParameters();
