@@ -57,13 +57,13 @@ namespace CmsData
 
                 case "registerlink":
                 case "registerlink2":
-                    showfamily = (code == "registerlink2");
+                    showfamily = (type == "registerlink2");
                     qs = $"{orgId},{emailqueueto.PeopleId},{emailqueueto.Id}";
                     break;
 
                 case "sendlink":
                 case "sendlink2":
-                    showfamily = (code == "sendlink2");
+                    showfamily = (type == "sendlink2");
                     qs = $"{orgId},{emailqueueto.PeopleId},{emailqueueto.Id},{(showfamily ? "registerlink2" : "registerlink")}";
                     break;
                 case "supportlink":
