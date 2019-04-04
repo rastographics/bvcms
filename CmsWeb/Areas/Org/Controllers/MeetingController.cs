@@ -675,9 +675,9 @@ namespace CmsWeb.Areas.Org.Controllers
                 }
                 else
                 {
-                    if (!attend.MemberType.HasValue())
+                    if (!attend.CurrMemberType.HasValue())
                     {
-                        attend.MemberType = "Member";
+                        attend.CurrMemberType = "Member";
                     }
                     Members.Add(attend);
                     if (attend.Attended)
