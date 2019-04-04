@@ -26,7 +26,7 @@ namespace CmsData.Finance
         public SageGateway(CMSDataContext db, bool testing)
         {
             this.db = db;
-            var gatewayTesting = new MultipleGatewayUtils(db).Setting("GatewayTesting", 2);
+            var gatewayTesting = db.Setting("GatewayTesting");
             if (testing || gatewayTesting)
             {
                 _id = "856423594649";
@@ -35,15 +35,15 @@ namespace CmsData.Finance
             }
             else
             {
-                _id = new MultipleGatewayUtils(db).Setting("M_ID", "", 2);
-                _key = new MultipleGatewayUtils(db).Setting("M_KEY", "", 2);
+                _id = db.GetSetting("M_ID", "");
+                _key = db.GetSetting("M_KEY", "");
 
                 if (string.IsNullOrWhiteSpace(_id))
                     throw new Exception("M_ID setting not found, which is required for Sage.");
                 if (string.IsNullOrWhiteSpace(_key))
                     throw new Exception("M_KEY setting not found, which is required for Sage.");
 
-                _originatorId = new MultipleGatewayUtils(db).Setting("SageOriginatorId", "", 2);
+                _originatorId = db.Setting("SageOriginatorId", "");
             }
         }
 
@@ -597,7 +597,7 @@ namespace CmsData.Finance
                 default:
                     return (paymentInfo.SageCardGuid ?? paymentInfo.SageBankGuid).ToString();
             }
-                
+
         }
     }
 }
