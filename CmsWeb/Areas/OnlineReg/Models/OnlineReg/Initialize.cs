@@ -41,6 +41,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             {
                 var supporters = from g in CurrentDatabase.GoerSenderAmounts
                            where g.GoerId == Goer.PeopleId
+                           where g.SupporterId != Goer.PeopleId
                            where g.OrgId == org.OrganizationId
                            let amount = (from s in CurrentDatabase.GoerSenderAmounts
                                          where s.GoerId == Goer.PeopleId
@@ -51,17 +52,17 @@ namespace CmsWeb.Areas.OnlineReg.Models
                                             where s.GoerId == Goer.PeopleId
                                             where s.OrgId == org.OrganizationId
                                             where s.SupporterId == g.SupporterId
-                                            where s.NoNoticeToGoer != null
+                                            where s.NoNoticeToGoer == true
                                             select s.NoNoticeToGoer).Count() >= 1
                            select new Supporter
                            {
-                               Id = g.SupporterId,
+                               Id = (anonymous ? 0 : g.SupporterId),    // group all anonymous transactions together even if they're different supporters
                                Name = (anonymous ? "Anonymous" : g.Sender.Name),
                                TotalAmt = amount ?? 0
                            };
                 var transactions = new TransactionsModel(OrgMember.TranId) { GoerId = Goer.PeopleId };
                 var summaries = CurrentDatabase.ViewTransactionSummaries.SingleOrDefault(ts => ts.RegId == OrgMember.TranId && ts.PeopleId == Goer.PeopleId && ts.OrganizationId == org.OrganizationId);
-                Supporters = supporters.GroupBy(s => s.Id).Select(s => s.First()).ToList();
+                Supporters = supporters.GroupBy(s => s.Id).Select(s => s.First()).ToList();      // combine multiple gifts from the same supporter id
                 // prepare funding data
                 MissionTripCost = summaries.IndPaid + summaries.IndDue;
                 MissionTripRaised = OrgMember.AmountPaidTransactions(CurrentDatabase);
