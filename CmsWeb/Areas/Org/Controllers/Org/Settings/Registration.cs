@@ -36,7 +36,7 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost]
         public ActionResult RegistrationUpdate(SettingsRegistrationModel m)
         {
-            DbUtil.LogActivity($"Update Registration {m.Org.OrganizationName}");
+            DbUtil.LogActivity($"Update Registration {m.Org?.OrganizationName}");
             try
             {
                 m.Update();
