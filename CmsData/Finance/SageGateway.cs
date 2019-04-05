@@ -517,7 +517,6 @@ namespace CmsData.Finance
                     });
                 }
             }
-
             return new BatchResponse(batchTransactions);
         }
 
@@ -565,7 +564,6 @@ namespace CmsData.Finance
                     RejectDate = returnedCheck.RejectDate
                 });
             }
-
             return new ReturnedChecksResponse(returnedChecks);
         }
 
@@ -597,7 +595,6 @@ namespace CmsData.Finance
                 default:
                     return (paymentInfo.SageCardGuid ?? paymentInfo.SageBankGuid).ToString();
             }
-
         }
     }
 }

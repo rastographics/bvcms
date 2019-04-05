@@ -28,6 +28,7 @@ namespace CmsData
                 }
                 catch (Exception ex)
                 {
+                    DbUtil.LogActivity($"Gateway: Could not get gateway-{ProcessId} details\nErr:\n{ex.Message}");
                     return string.Empty;
                 }
             }
