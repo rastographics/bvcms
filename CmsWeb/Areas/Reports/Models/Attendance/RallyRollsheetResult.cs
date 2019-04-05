@@ -20,7 +20,12 @@ namespace CmsWeb.Areas.Reports.Models
 {
     public class RallyRollsheetResult : ActionResult
     {
-        public RallyRollsheetResult() { }
+        public CMSDataContext CurrentDatabase { get; set; }
+
+        public RallyRollsheetResult(CMSDataContext db) {
+            CurrentDatabase = db;
+        }
+
         public class PersonVisitorInfo
         {
             public int PeopleId { get; set; }
@@ -46,7 +51,7 @@ namespace CmsWeb.Areas.Reports.Models
             CmsData.Meeting meeting = null;
             if (meetingid.HasValue)
             {
-                meeting = DbUtil.Db.Meetings.Single(mt => mt.MeetingId == meetingid);
+                meeting = CurrentDatabase.Meetings.Single(mt => mt.MeetingId == meetingid);
                 if (meeting != null && meeting.MeetingDate.HasValue)
                 {
                     NewMeetingInfo.MeetingDate = meeting.MeetingDate.Value;
@@ -61,7 +66,7 @@ namespace CmsWeb.Areas.Reports.Models
 
             if (OrgSearchModel == null)
             {
-                OrgSearchModel = new OrgSearchModel();
+                OrgSearchModel = new OrgSearchModel(CurrentDatabase);
             }
 
             var list1 = NewMeetingInfo.ByGroup == true ? ReportList2() : ReportList();
@@ -94,7 +99,7 @@ namespace CmsWeb.Areas.Reports.Models
                             where at.AttendanceFlag == true || AttendCommitmentCode.committed.Contains(at.Commitment ?? 0)
                             select at.Person;
                     q = from p in q
-                        from fm in DbUtil.Db.People.Where(ff => ff.FamilyId == p.FamilyId)
+                        from fm in CurrentDatabase.People.Where(ff => ff.FamilyId == p.FamilyId)
                         where (fm.PositionInFamilyId == 10 && p.PositionInFamilyId != 10)
                         || (fm.PeopleId == p.PeopleId && p.PositionInFamilyId == 10)
                         select fm;
@@ -116,9 +121,9 @@ namespace CmsWeb.Areas.Reports.Models
                 else
                 {
                     var Groups = NewMeetingInfo.ByGroup == true ? o.Groups : "";
-                    var q = from om in DbUtil.Db.OrganizationMembers
+                    var q = from om in CurrentDatabase.OrganizationMembers
                             where om.OrganizationId == o.OrgId
-                            join m in DbUtil.Db.OrgPeople(o.OrgId, Groups) on om.PeopleId equals m.PeopleId
+                            join m in CurrentDatabase.OrgPeople(o.OrgId, Groups) on om.PeopleId equals m.PeopleId
                             where om.EnrollmentDate <= Util.Now
                             orderby om.Person.LastName, om.Person.FamilyId, om.Person.Name2
                             let p = om.Person
@@ -126,7 +131,7 @@ namespace CmsWeb.Areas.Reports.Models
                             select om.Person;
 
                     q = from p in q
-                        from fm in DbUtil.Db.People.Where(ff => ff.FamilyId == p.FamilyId)
+                        from fm in CurrentDatabase.People.Where(ff => ff.FamilyId == p.FamilyId)
                         where (fm.PositionInFamilyId == 10 && p.PositionInFamilyId != 10)
                         || (fm.PeopleId == p.PeopleId && p.PositionInFamilyId == 10)
                         select fm;
@@ -265,7 +270,7 @@ namespace CmsWeb.Areas.Reports.Models
                 ? OrgSearchModel.FetchOrgs(orgid.Value)
                 : OrgSearchModel.FetchOrgs();
             var q = from o in orgs
-                    from sg in DbUtil.Db.MemberTags
+                    from sg in CurrentDatabase.MemberTags
                     where sg.OrgId == o.OrganizationId
                     where (NewMeetingInfo.GroupFilterPrefix ?? "") == "" || sg.Name.StartsWith(NewMeetingInfo.GroupFilterPrefix)
                     select new OrgInfo

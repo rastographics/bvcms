@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.IO;
-using System.Web.Hosting;
 using CmsData.API;
 using IronPython.Hosting;
 using IronPython.Runtime;
@@ -11,7 +10,8 @@ using Microsoft.Scripting.Hosting;
 using Microsoft.Scripting.Hosting.Providers;
 
 namespace CmsData
-{public partial class PythonModel
+{
+    public partial class PythonModel
     {
         // ReSharper disable InconsistentNaming
         private readonly CMSDataContext db;

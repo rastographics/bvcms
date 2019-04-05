@@ -1775,7 +1775,7 @@
     <Content Include="Areas\Dialog\Views\MoveOrgMembers\Process.cshtml" />
     <Content Include="Areas\Coordinator\Views\web.config" />
     <Content Include="Areas\Coordinator\Views\CheckinCoordinator\MoveSubgroupView.cshtml" />
-    <Content Include="Areas\Org\Views\Meeting\CheckInAttendance.cshtml" />
+    <Content Include="Areas\Org\Views\Meeting\Attendance.cshtml" />
     <Content Include="Areas\Finance\Views\FinanceReports\ChaiDonorsReport.cshtml" />
     <Content Include="Areas\Coordinator\Views\CheckinCoordinator\Dashboard.cshtml" />
     <Content Include="Areas\Coordinator\Views\CheckinCoordinator\TimeslotSelector.cshtml" />

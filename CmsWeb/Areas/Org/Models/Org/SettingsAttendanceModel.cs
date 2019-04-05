@@ -11,28 +11,42 @@ namespace CmsWeb.Areas.Org.Models
 {
     public class SettingsAttendanceModel
     {
-        public Organization Org;
-        public int Id
+        public CMSDataContext CurrentDatabase
         {
-            get { return Org != null ? Org.OrganizationId : 0; }
+            get => _currentDatabase;
             set
             {
-                if (Org == null)
-                {
-                    Org = DbUtil.Db.LoadOrganizationById(value);
-                }
+                _currentDatabase = value;
+                _org = null;
             }
         }
+
+        private Organization _org;
+        public Organization Org
+        {
+            get
+            {
+                if (_org == null && Id > 0 && CurrentDatabase != null)
+                {
+                    _org = CurrentDatabase.LoadOrganizationById(Id);
+                }
+                return _org;
+            }
+        }
+
+        public int Id { get; set; }
 
         public SettingsAttendanceModel()
         {
         }
 
-        public SettingsAttendanceModel(int id)
+        public SettingsAttendanceModel(int id, CMSDataContext dataContext)
         {
+            _currentDatabase = dataContext;
             Id = id;
             this.CopyPropertiesFrom(Org);
         }
+
         public void Update()
         {
             if (!HasSchedules())
@@ -40,7 +54,7 @@ namespace CmsWeb.Areas.Org.Models
                 schedules = new List<ScheduleInfo>();
             }
             this.CopyPropertiesTo(Org);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
         }
 
         public SelectList AttendCreditList()
@@ -64,7 +78,7 @@ namespace CmsWeb.Areas.Org.Models
         {
             get
             {
-                var sc = Org.OrgSchedules.FirstOrDefault(); // SCHED
+                var sc = Org?.OrgSchedules.FirstOrDefault(); // SCHED
                 if (sc != null && sc.SchedTime != null && sc.SchedDay < 9)
                 {
                     var dt = Util.Now.Date.Sunday().AddDays(sc.SchedDay ?? 0);
@@ -84,9 +98,9 @@ namespace CmsWeb.Areas.Org.Models
         }
         public void UpdateSchedules()
         {
-            var db = DbUtil.Db;
+            var db = CurrentDatabase;
             var orgSchedules = Org.OrgSchedules.ToList();
-            for(int i = orgSchedules.Count - 1; i>=0; i--)
+            for (int i = orgSchedules.Count - 1; i >= 0; i--)
             {
                 var s = orgSchedules[i];
                 if (!schedules.Any(ss => ss.Id == s.Id))
@@ -118,7 +132,7 @@ namespace CmsWeb.Areas.Org.Models
                         SchedTime = s.Time.ToDate(),
                         AttendCreditId = s.AttendCredit.Value.ToInt()
                     };
-                    Org.OrgSchedules.Add(schedule);
+                    db.OrgSchedules.InsertOnSubmit(schedule);
                     orgSchedules.Add(schedule);
                 }
                 else
@@ -148,9 +162,9 @@ Schedules can be 'Every Meeting' for 100% credit or they can be 'One a Week' for
         {
             get
             {
-                if (schedules == null && Id != 0)
+                if (schedules == null && Id != 0 && CurrentDatabase != null)
                 {
-                    var q = from sc in DbUtil.Db.OrgSchedules
+                    var q = from sc in CurrentDatabase.OrgSchedules
                             where sc.OrganizationId == Id
                             select sc;
                     var u = from s in q
@@ -160,7 +174,7 @@ Schedules can be 'Every Meeting' for 100% credit or they can be 'One a Week' for
                 }
                 if (schedules == null)
                 {
-                    throw new Exception("missing schedules");
+                    schedules = new List<ScheduleInfo>();
                 }
 
                 return schedules;
@@ -171,6 +185,7 @@ Schedules can be 'Every Meeting' for 100% credit or they can be 'One a Week' for
             }
         }
         private List<ScheduleInfo> schedules;
+        private CMSDataContext _currentDatabase;
 
         public bool HasSchedules()
         {

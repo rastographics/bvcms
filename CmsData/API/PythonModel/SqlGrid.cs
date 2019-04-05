@@ -58,6 +58,9 @@ namespace CmsData
 
         public static string PageBreakTables(CMSDataContext db, string sql, DynamicParameters p)
         {
+            var sb = new StringBuilder();
+            int pagebreakcol = 0;
+            var pg = 1;
             using (var cn = db.ReadonlyConnection())
             {
                 cn.Open();
