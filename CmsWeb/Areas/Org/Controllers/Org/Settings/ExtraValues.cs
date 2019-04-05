@@ -1,4 +1,5 @@
 using CmsWeb.Areas.Org.Models;
+using CmsWeb.Lifecycle;
 using System;
 using System.Linq;
 using System.Web.Mvc;
@@ -6,14 +7,14 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.Org.Controllers
 {
-    public partial class OrgController
+    public partial class OrgController : CmsStaffController
     {
         [HttpPost]
         [Authorize(Roles = "Edit")]
         [ValidateInput(false)]
         public ActionResult NewExtraValue(int id, string field, string value, bool multiline)
         {
-            var m = new OrganizationModel();
+            var m = OrganizationModel.Create(CurrentDatabase, CurrentUser);
             try
             {
                 m.Org.AddEditExtra(CurrentDatabase, field, value, multiline);
@@ -32,7 +33,7 @@ namespace CmsWeb.Areas.Org.Controllers
             var e = CurrentDatabase.OrganizationExtras.Single(ee => ee.OrganizationId == id && ee.Field == field);
             CurrentDatabase.OrganizationExtras.DeleteOnSubmit(e);
             CurrentDatabase.SubmitChanges();
-            var m = new OrganizationModel();
+            var m = OrganizationModel.Create(CurrentDatabase, CurrentUser);
             return PartialView("Settings/ExtrasGrid", m.Org);
         }
         [HttpPost]

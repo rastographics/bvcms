@@ -8,6 +8,7 @@ using CmsData.Codes;
 using CmsData.Finance;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Data.Common;
 using System.Data.Linq;
@@ -46,7 +47,13 @@ namespace CmsData
            public override Encoding Encoding => Encoding.Default;
         }
 #endif
-        internal string ConnectionString;
+        private string _connectionString;
+        internal string ConnectionString
+        {
+            get { return _connectionString ?? Connection.ConnectionString; }
+            set { _connectionString = value; }
+        }
+
         public static CMSDataContext Create(string connStr, string host)
         {
             return new CMSDataContext(connStr)
@@ -120,6 +127,24 @@ namespace CmsData
                 base.SubmitChanges(failureMode);
             }
         }
+
+        public static CMSDataContext Create(HttpContextBase currentHttpContext)
+        {
+            var host = currentHttpContext.Request.Url.Authority.Split('.', ':')[0];
+            var hostOverride = ConfigurationManager.AppSettings["host"];
+            if (!string.IsNullOrEmpty(hostOverride)) // default to the host from url, however, override it via web.config for debugging against live data
+            {
+                host = hostOverride;
+            }
+            var cs = ConfigurationManager.ConnectionStrings["CMS"];
+            var cb = new SqlConnectionStringBuilder(cs.ConnectionString);
+            cb.InitialCatalog = $"CMS_{host}";
+            cb.PersistSecurityInfo = true;
+            var connectionString = cb.ConnectionString;
+
+            return CMSDataContext.Create(connectionString, host);
+        }
+
         public void ClearCache2()
         {
             const BindingFlags Flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
@@ -739,6 +764,8 @@ This search uses multiple steps which cannot be duplicated in a single query.
             }
             return null;
         }
+
+        private bool _isFinanceUser = false;
         private User _currentuser;
         public User CurrentUser
         {
@@ -752,11 +779,14 @@ This search uses multiple steps which cannot be duplicated in a single query.
                 GetCurrentUser();
                 return _currentuser;
             }
+
             set
             {
                 _currentuser = value;
+                _isFinanceUser = _roles?.Contains("Finance") ?? _currentuser?.InRole("Finance") ?? false;
             }
         }
+
         private void GetCurrentUser()
         {
             var q = from u in Users
@@ -775,7 +805,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
 
             _roles = i.roles;
             _roleids = i.roleids;
-            _currentuser = i.u;
+            CurrentUser = i.u;
         }
 
         private string[] _roles;
@@ -1916,11 +1946,13 @@ This search uses multiple steps which cannot be duplicated in a single query.
             var result = ExecuteMethodCall(this, (MethodInfo)MethodBase.GetCurrentMethod());
             return (int)(result?.ReturnValue ?? 0);
         }
+
         public DbConnection ReadonlyConnection()
         {
-            var finance = CurrentUser?.InRole("Finance") ?? true;
-            return new SqlConnection(finance ? Util.ConnectionStringReadOnlyFinance : Util.ConnectionStringReadOnly);
+            var finance = CurrentRoles().Contains("Finance");
+            return new SqlConnection(Util.ReadOnlyConnectionString(Host, finance));
         }
+
         public void Log2Content(string file, string data)
         {
             var c = Content(file, ContentTypeCode.TypeText);

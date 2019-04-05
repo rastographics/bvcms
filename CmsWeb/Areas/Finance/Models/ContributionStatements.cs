@@ -568,7 +568,7 @@ p { font-size: 11px; }
                 doc.NewPage();
                 doc.Add(new Paragraph("no data"));
                 var a = new Anchor("see this help document docs.touchpointsoftware.com/Finance/ContributionStatements.html")
-                { Reference = "http://docs.touchpointsoftware.com/Finance/ContributionStatements.html#troubleshooting" };
+                { Reference = "https://docs.touchpointsoftware.com/Finance/ContributionStatements.html#troubleshooting" };
                 doc.Add(a);
             }
             doc.Close();

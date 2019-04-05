@@ -138,7 +138,7 @@ Used during promotion to assign a grade to a student who joins this class.
 Keeps you from having to maintain grades once a year.
 
 **This field only works when the Org is a Main Fellowship type of organization.**
-See *<a href=""http://docs.touchpointsoftware.com/Organizations/GeneralSettings.html"" target=""_blank"">this help article</a>*.
+See *<a href=""https://docs.touchpointsoftware.com/Organizations/GeneralSettings.html"" target=""_blank"">this help article</a>*.
 
 Must be an integer number, not a range,
 **Do Not Use** something like 7-10.

@@ -3,6 +3,7 @@
     Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Duplicates Finder";
     ViewBag.ReportPageHeader = "Duplicates Finder";
+    var error = Model.Error ?? "";
 }
 <div class="report box box-responsive">
     <div class="box-content">
@@ -30,7 +31,7 @@
                 </tr>
                 <tr>
                     <td>Error</td>
-                    <td><span id="error">@Model.Error</span></td>
+                    <td><span id="error">@error</span></td>
                 </tr>
             </table>
         </div>

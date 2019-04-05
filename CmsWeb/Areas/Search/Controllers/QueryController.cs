@@ -339,7 +339,7 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult Help(string name)
         {
             var wc = new WebClient();
-            var s = wc.DownloadString("http://docs.touchpointsoftware.com/SearchBuilder/" + name + ".html");
+            var s = wc.DownloadString("https://docs.touchpointsoftware.com/SearchBuilder/" + name + ".html");
             return Content(s);
         }
 

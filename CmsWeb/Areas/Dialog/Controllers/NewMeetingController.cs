@@ -31,7 +31,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
                 defaultAttendCreditId = oi.Schedules[0].AttendCredit.Value;
             }
 
-            var useMeetingDescriptionPickList = CurrentDatabase.Setting("CheckinUseMeetingCategory");
+            var useMeetingDescriptionPickList = CurrentDatabase.Setting("AttendanceUseMeetingCategory");
             var m = new NewMeetingInfo
             {
                 MeetingDate = oi.PrevMeetingDate,

@@ -67,6 +67,7 @@ namespace CmsWeb.Areas.People.Models
 
         [UIHint("Textarea"), DisplayName("Registration Log")]
         public string Comments { get; set; }
+        public bool ShowComments { get; set; }
 
         public bool Tylenol { get; set; }
         public bool Advil { get; set; }
@@ -87,10 +88,17 @@ namespace CmsWeb.Areas.People.Models
         [DisplayName("Coaching Interest")]
         public bool Coaching { get; set; }
 
-        public void UpdateModel()
+        public void UpdateModel(bool ExcludeComments)
         {
             var rr = Person.SetRecReg();
-            this.CopyPropertiesTo(rr);
+            if (ExcludeComments)
+            {
+                this.CopyPropertiesTo(rr, null, "", "Comments");
+            }
+            else
+            {
+                this.CopyPropertiesTo(rr);
+            }
             Person.CustodyIssue = CustodyIssue;
             Person.OkTransport = OkTransport;
 

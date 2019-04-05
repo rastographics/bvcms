@@ -625,7 +625,7 @@ p { font-size: 11px; }
                         "see this help document docs.touchpointsoftware.com/Finance/ContributionStatements.html")
                     {
                         Reference =
-                            "http://docs.touchpointsoftware.com/Finance/ContributionStatements.html#troubleshooting"
+                            "https://docs.touchpointsoftware.com/Finance/ContributionStatements.html#troubleshooting"
                     };
                     doc.Add(a);
                 }

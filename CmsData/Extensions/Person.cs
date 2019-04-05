@@ -704,13 +704,28 @@ namespace CmsData
                              select ra;
                     foreach (var ra in qq)
                     {
-                        db.RecurringAmounts.InsertOnSubmit(
-                            new RecurringAmount()
+                        var existing = from amounts in db.RecurringAmounts
+                                       where amounts.PeopleId == targetid
+                                       where amounts.FundId == ra.FundId
+                                       select amounts;
+                        if (existing.Any())
+                        {
+                            foreach(RecurringAmount amount in existing)
                             {
-                                PeopleId = targetid,
-                                Amt = ra.Amt,
-                                FundId = ra.FundId,
-                            });
+                                amount.Amt = ra.Amt;
+                            }
+                        }
+                        else
+                        {
+                            db.RecurringAmounts.InsertOnSubmit(
+                                new RecurringAmount()
+                                {
+                                    PeopleId = targetid,
+                                    Amt = ra.Amt,
+                                    FundId = ra.FundId,
+                                }
+                            );
+                        }
                     }
                 }
                 TrySubmit(db, "ManagedGivings");

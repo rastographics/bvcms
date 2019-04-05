@@ -17,22 +17,33 @@ namespace CmsWeb.Areas.Org.Models
     public class SettingsRegistrationModel
     {
         public Organization Org;
+        private CMSDataContext Db;
         public int Id
         {
             get { return Org != null ? Org.OrganizationId : 0; }
             set
             {
                 if (Org == null)
-                    Org = DbUtil.Db.LoadOrganizationById(value);
+                    Org = Db.LoadOrganizationById(value);
             }
         }
 
+        public List<OrgPickInfo> OrganizationsFromIdString
+        {
+            get
+            {
+                return organizationsFromIdString(Org, Db);
+            }
+        }           
+
         public SettingsRegistrationModel()
         {
+            Db = DbUtil.Db;
         }
 
-        public SettingsRegistrationModel(int id)
+        public SettingsRegistrationModel(int id, CMSDataContext db)
         {
+            Db = db;
             Id = id;
             this.CopyPropertiesFrom(Org, typeof(OrgAttribute));
             this.CopyPropertiesFrom(RegSettings, typeof(RegAttribute));
@@ -44,15 +55,15 @@ namespace CmsWeb.Areas.Org.Models
             if (Org.OrgPickList.HasValue() && Org.RegistrationTypeId == RegistrationTypeCode.JoinOrganization)
                 Org.OrgPickList = null;
             this.CopyPropertiesTo(RegSettings, typeof(RegAttribute));
-            var os = DbUtil.Db.CreateRegistrationSettings(RegSettings.ToString(), Id);
+            var os = Db.CreateRegistrationSettings(RegSettings.ToString(), Id);
             if (Org.RegistrationTypeId > 0)
                 if (!Org.NotifyIds.HasValue())
                     Org.NotifyIds = Util.UserPeopleId.ToString();
             Org.UpdateRegSetting(os);
-            DbUtil.Db.SubmitChanges();
+            Db.SubmitChanges();
         }
 
-        private Settings RegSettings => _regsettings ?? (_regsettings = DbUtil.Db.CreateRegistrationSettings(Id));
+        private Settings RegSettings => _regsettings ?? (_regsettings = Db.CreateRegistrationSettings(Id));
         private Settings _regsettings;
 
         public class MasterOrgInfo
@@ -66,16 +77,12 @@ namespace CmsWeb.Areas.Org.Models
             public string OrganizationName { get; set; }
         }
 
-        public List<OrgPickInfo> OrganizationsFromIdString()
-        {
-            return OrganizationsFromIdString(Org);
-        }
-        public static List<OrgPickInfo> OrganizationsFromIdString(Organization Org)
-        {
+        private static List<OrgPickInfo> organizationsFromIdString(Organization Org, CMSDataContext Db)
+        {            
             var a = Org.OrgPickList.SplitStr(",").Select(ss => ss.ToInt()).ToArray();
             var n = 0;
             var d = a.ToDictionary(i => n++);
-            var q = (from o in DbUtil.Db.Organizations
+            var q = (from o in Db.Organizations
                      where a.Contains(o.OrganizationId)
                      select new OrgPickInfo
                      {
@@ -117,7 +124,7 @@ namespace CmsWeb.Areas.Org.Models
                 if (masterOrg != null)
                     return masterOrg;
 
-                var q = from o in DbUtil.Db.ViewMasterOrgs
+                var q = from o in Db.ViewMasterOrgs
                         where o.PickListOrgId == Id
                         select new MasterOrgInfo
                         {

@@ -630,7 +630,7 @@ namespace CmsWeb.Areas.Org.Controllers
             return Redirect($"/Meeting/{id}");
         }
 
-        public ActionResult CheckInAttendance(int? id, bool? currentMembers)
+        public ActionResult Attendance(int? id, bool? currentMembers)
         {
             if (!id.HasValue)
             {
@@ -648,7 +648,7 @@ namespace CmsWeb.Areas.Org.Controllers
             }
 
             if (Util2.OrgLeadersOnly
-                && !DbUtil.Db.OrganizationMembers.Any(om =>
+                && !CurrentDatabase.OrganizationMembers.Any(om =>
                     om.OrganizationId == m.meeting.OrganizationId
                     && om.PeopleId == Util.UserPeopleId
                     && om.MemberType.AttendanceTypeId == AttendTypeCode.Leader))
@@ -656,7 +656,40 @@ namespace CmsWeb.Areas.Org.Controllers
                 return RedirectShowError("You must be a leader of this organization to have access to this page");
             }
 
-            DbUtil.LogActivity($"CheckIn attendance for Meeting for {m.meeting.OrganizationId}({m.meeting.MeetingDate:d})");
+            DbUtil.LogActivity($"Attendance for Meeting for {m.meeting.OrganizationId}({m.meeting.MeetingDate:d})");
+            List<Reports.Models.RollsheetModel.AttendInfo> Guests = new List<Reports.Models.RollsheetModel.AttendInfo>();
+            List<Reports.Models.RollsheetModel.AttendInfo> Members = new List<Reports.Models.RollsheetModel.AttendInfo>();
+            int MembersPresent = 0;
+            int GuestsPresent = 0;
+            var attends = m.Attends(true, "iPadAttendanceHighlight");
+            foreach (var attend in attends)
+            {
+                if (!attend.CurrMember)
+                {
+                    attend.MemberType = "Guest";
+                    Guests.Add(attend);
+                    if (attend.Attended)
+                    {
+                        GuestsPresent++;
+                    }
+                }
+                else
+                {
+                    if (!attend.CurrMemberType.HasValue())
+                    {
+                        attend.CurrMemberType = "Member";
+                    }
+                    Members.Add(attend);
+                    if (attend.Attended)
+                    {
+                        MembersPresent++;
+                    }
+                }
+            }
+            ViewBag.Guests = Guests;
+            ViewBag.Members = Members;
+            ViewBag.GuestsPresent = GuestsPresent;
+            ViewBag.MembersPresent = MembersPresent;
             return View(m);
         }
 
