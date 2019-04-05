@@ -25,23 +25,36 @@ namespace UtilityExtensions
         private const string STR_UserId = "UserId";
         public static int UserId
         {
-            get
+            get => GetFromSession(STR_UserId).ToInt();
+
+            set => SetValueInSession(STR_UserId, value);
+        }
+
+        private static void SetValueInSession(string name, object value)
+        {
+            if (HttpContextFactory.Current != null)
             {
-                int id = 0;
-                if (HttpContextFactory.Current != null)
-                    if (HttpContextFactory.Current.Session != null)
-                        if (HttpContextFactory.Current.Session[STR_UserId] != null)
-                            id = HttpContextFactory.Current.Session[STR_UserId].ToInt();
-                if (id == 0)
-                    id = ConfigurationManager.AppSettings["TestId"].ToInt();
-                return id;
+                if (HttpContextFactory.Current.Session != null)
+                {
+                    HttpContextFactory.Current.Session[name] = value;
+                }
             }
-            set
+        }
+
+        private static object GetFromSession(string name, object defaultValue = null)
+        {
+            object value = defaultValue;
+            if (HttpContextFactory.Current != null)
             {
-                if (HttpContextFactory.Current != null)
-                    if (HttpContextFactory.Current.Session != null)
-                        HttpContextFactory.Current.Session[STR_UserId] = value;
+                if (HttpContextFactory.Current.Session != null)
+                {
+                    if (HttpContextFactory.Current.Session[name] != null)
+                    {
+                        value = HttpContextFactory.Current.Session[name];
+                    }
+                }
             }
+            return value;
         }
 
         private const string STR_UserPreferredName = "UserPreferredName";
