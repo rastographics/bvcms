@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Diagnostics;
-using System.Dynamic;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -10,15 +8,11 @@ using MarkdownDeep;
 using RestSharp;
 using UtilityExtensions;
 using System.Linq;
-using System.Net.Mime;
-using System.Web.Helpers;
-using System.Web.Script.Serialization;
 using CmsData.API;
 using CmsData.Codes;
 using Dapper;
 using IronPython.Runtime;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 using RestSharp.Authenticators;
 using Method = RestSharp.Method;
@@ -36,7 +30,7 @@ namespace CmsData
         public string CallScript(string scriptname)
         {
             var script = db.ContentOfTypePythonScript(scriptname);
-            var model = new PythonModel(db.Copy(), dictionary);
+            var model = new PythonModel(db, dictionary);
             model.FromMorningBatch = FromMorningBatch;
             return ExecutePython(script, model);
         }

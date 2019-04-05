@@ -173,11 +173,6 @@ namespace CmsWeb
                 return;
             }
 
-            if (HttpContextFactory.Current != null)
-            {
-                //DbUtil.DbDispose();
-            }
-
             if (Response.Status.StartsWith("401")
                     && Request.Url.AbsolutePath.EndsWith(".aspx"))
             {
@@ -204,7 +199,7 @@ namespace CmsWeb
 
         public void ErrorLog_Logged(object sender, ErrorLoggedEventArgs args)
         {
-            HttpContextFactory.Current.Items["error"] = args.Entry.Error.Exception.Message;
+            Context.Items["error"] = args.Entry.Error.Exception.Message;
         }
 
         public void ErrorMail_Filtering(object sender, ExceptionFilterEventArgs e)

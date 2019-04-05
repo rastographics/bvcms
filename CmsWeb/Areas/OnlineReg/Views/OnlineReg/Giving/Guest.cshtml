@@ -23,32 +23,35 @@
         else
         {
             <h4>Goal met!</h4>
-            <progress value="100" max="100"></progress>
+            <progress style="display: block;width:100%;" value="100" max="100"></progress>
         }
 
         <h4><strong>Share</strong></h4>
 
         @Helper.SocialShareButtons(Model.URL, $"{Model.Goer.Name}'s Fundraising for {Model.org.OrganizationName}")
 
+        <p>Or copy this link:</p>
+        <input type="text" style="width:100%;" value="@Model.URL" readonly />
+
         @if (Model.Supporters != null && Model.Supporters.Any())
         {
             <h3>Recent Supporters</h3>
-            foreach (TransactionsModel.SupporterInfo supporter in @Model.Supporters)
+            foreach (var supporter in @Model.Supporters)
             {
                 <div class="row">
                     @if (Model.org.TripFundingPagesShowAmounts)
                     {
                         <div class="col-xs-8">
-                            <span>@supporter.SupporterName</span>
+                            <span>@supporter.Name</span>
                         </div>
                         <div class="col-xs-4">
-                            <span class="amount">@Helper.CurrencyString(supporter.gs.Amount)</span>
+                            <span class="amount">@Helper.CurrencyString(supporter.TotalAmt)</span>
                         </div>
                     }
                     else
                     {
                         <div class="col-xs-12">
-                            <span>@supporter.SupporterName</span>
+                            <span>@supporter.Name</span>
                         </div>
                     }
                 </div>

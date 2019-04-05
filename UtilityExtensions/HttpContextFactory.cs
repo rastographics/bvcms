@@ -9,21 +9,26 @@ namespace UtilityExtensions
 {
     public class HttpContextFactory
     {
-        private static HttpContextBase _mockCurrent;
+        private static HttpContextBase _currentContext;
         public static HttpContextBase Current
         {
             get
             {
-                if(_mockCurrent != null)
-                    return _mockCurrent;
+                if (_currentContext != null)
+                {
+                    return _currentContext;
+                }
                 if(HttpContext.Current == null)
-                    throw new InvalidOperationException("HttpContext is not available");
+                {
+                    return null;
+                }
                 return new HttpContextWrapper(HttpContext.Current);
             }
         }
-        public static void SetMockCurrent(HttpContextBase context)
+
+        public static void SetCurrentContext(HttpContextBase context)
         {
-            _mockCurrent = context;
+            _currentContext = context;
         }
     }
 }

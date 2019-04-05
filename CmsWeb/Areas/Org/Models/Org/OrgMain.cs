@@ -1,6 +1,8 @@
 using CmsData;
 using CmsData.Classes.RoleChecker;
+using CmsData.View;
 using CmsWeb.Code;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using UtilityExtensions;
@@ -78,5 +80,7 @@ namespace CmsWeb.Areas.Org.Models
             this.CopyPropertiesTo(Org);
             DbUtil.Db.SubmitChanges();
         }
+
+        public IEnumerable<SearchDivision> Divisions { get; set; }
     }
 }

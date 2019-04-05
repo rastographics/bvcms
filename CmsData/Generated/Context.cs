@@ -842,6 +842,7 @@ namespace CmsData
         {
             return new CMSDataContext(ConnectionString)
             {
+                ConnectionString = ConnectionString,
                 CurrentUser = CurrentUser,
                 Host = Host,
                 FromBatch = FromBatch

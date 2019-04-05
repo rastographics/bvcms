@@ -704,13 +704,28 @@ namespace CmsData
                              select ra;
                     foreach (var ra in qq)
                     {
-                        db.RecurringAmounts.InsertOnSubmit(
-                            new RecurringAmount()
+                        var existing = from amounts in db.RecurringAmounts
+                                       where amounts.PeopleId == targetid
+                                       where amounts.FundId == ra.FundId
+                                       select amounts;
+                        if (existing.Any())
+                        {
+                            foreach(RecurringAmount amount in existing)
                             {
-                                PeopleId = targetid,
-                                Amt = ra.Amt,
-                                FundId = ra.FundId,
-                            });
+                                amount.Amt = ra.Amt;
+                            }
+                        }
+                        else
+                        {
+                            db.RecurringAmounts.InsertOnSubmit(
+                                new RecurringAmount()
+                                {
+                                    PeopleId = targetid,
+                                    Amt = ra.Amt,
+                                    FundId = ra.FundId,
+                                }
+                            );
+                        }
                     }
                 }
                 TrySubmit(db, "ManagedGivings");
@@ -988,7 +1003,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             else
             {
                 var np = db.GetNewPeopleManagers();
-                if (np != null)
+                if (np != null && Util.AdminMail != null)
                 {
                     db.Email(Util.AdminMail, np,
                         $"Just Added Person on {db.Host}",
@@ -2419,7 +2434,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             }
                 
      
-            var count = list.Count;
+            var count = list?.Count;
             if (count > 0)
             {
                 person = db.LoadPersonById(list[0].PeopleId ?? 0);

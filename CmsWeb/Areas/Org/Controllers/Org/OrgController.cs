@@ -22,7 +22,8 @@ namespace CmsWeb.Areas.Org.Controllers
                 id = recent.Any() ? recent[0].Id : 1;
                 return Redirect($"/Org/{id}");
             }
-            var m = new OrganizationModel(id);
+            var m = OrganizationModel.Create(CurrentDatabase, CurrentUser);
+            m.OrgId = id;
             if (peopleid.HasValue)
                 m.NameFilter = peopleid.ToString();
 
@@ -43,6 +44,8 @@ namespace CmsWeb.Areas.Org.Controllers
                     return NotAllowed("no privilege to view ", m.Org.OrganizationName);
 
             DbUtil.LogOrgActivity($"Viewing Org({m.Org.OrganizationName})", id, m.Org.OrganizationName);
+
+            m.OrgMain.Divisions = GetOrgDivisions(id);
 
             ViewBag.OrganizationContext = true;
             ViewBag.orgname = m.Org.FullName;
@@ -96,14 +99,16 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost]
         public ActionResult Settings(int id)
         {
-            var m = new OrganizationModel(id);
+            var m = OrganizationModel.Create(CurrentDatabase, CurrentUser);
+            m.OrgId = id;
             return PartialView(m);
         }
 
         [HttpPost]
         public ActionResult Registrations(int id)
         {
-            var m = new OrganizationModel(id);
+            var m = OrganizationModel.Create(CurrentDatabase, CurrentUser);
+            m.OrgId = id;
             return PartialView(m);
         }
 
@@ -139,7 +144,8 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost]
         public ActionResult CommunityGroup(int id)
         {
-            var m = new OrganizationModel(id);
+            var m = OrganizationModel.Create(CurrentDatabase, CurrentUser);
+            m.OrgId = id;
             return PartialView(m);
         }
 

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.IO;
-using System.Web.Hosting;
 using CmsData.API;
 using IronPython.Hosting;
 using IronPython.Runtime;
@@ -41,14 +40,14 @@ namespace CmsData
         
         public PythonModel(CMSDataContext dbContext)
         {
-            db = dbContext;
+            db = dbContext.Copy();
             dictionary = new Dictionary<string, object>();
             Data = new DynamicData(dictionary);
         }
 
         public PythonModel(CMSDataContext dbContext, Dictionary<string, object> dict)
         {
-            db = dbContext;
+            db = dbContext.Copy();
             dictionary = dict;
             Data = new DynamicData(dictionary);
         }

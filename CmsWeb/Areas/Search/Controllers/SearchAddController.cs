@@ -208,7 +208,7 @@ namespace CmsWeb.Areas.Search.Controllers
         {
             ViewBag.ContactId = id;
 
-            var m = new OrgSearchModel();
+            var m = new OrgSearchModel(CurrentDatabase);
             return View("SearchOrganization", m);
         }
 

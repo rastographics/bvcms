@@ -1776,7 +1776,7 @@
     <Content Include="Areas\Dialog\Views\MoveOrgMembers\Process.cshtml" />
     <Content Include="Areas\Coordinator\Views\web.config" />
     <Content Include="Areas\Coordinator\Views\CheckinCoordinator\MoveSubgroupView.cshtml" />
-    <Content Include="Areas\Org\Views\Meeting\CheckInAttendance.cshtml" />
+    <Content Include="Areas\Org\Views\Meeting\Attendance.cshtml" />
     <Content Include="Areas\Finance\Views\FinanceReports\ChaiDonorsReport.cshtml" />
     <Content Include="Areas\Coordinator\Views\CheckinCoordinator\Dashboard.cshtml" />
     <Content Include="Areas\Coordinator\Views\CheckinCoordinator\TimeslotSelector.cshtml" />
@@ -1809,6 +1809,8 @@
     </Content>
     <Content Include="Areas\People\Views\Person\Giving\Statements.cshtml" />
     <Content Include="Areas\Setup\Views\Gateway\Index.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageGiving\_ManagedGivingFunds.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageGiving\_ManagedGivingFundsNew.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
@@ -2222,7 +2224,6 @@
     <Content Include="Areas\Dialog\Views\SearchOrgs\Results.cshtml" />
     <Content Include="Areas\Dialog\Views\TransactionHistory\History.cshtml" />
     <Content Include="Areas\Dialog\Views\TransactionHistory\Index.cshtml" />
-    <Content Include="Areas\Org\Views\Org\Other\OrgPickList2.cshtml" />
     <Content Include="Areas\Dialog\Views\AddToOrgFromTag\Process.cshtml" />
     <Content Include="Areas\Dialog\Views\DeleteMeeting\Index.cshtml" />
     <Content Include="Areas\Dialog\Views\DeleteMeeting\Process.cshtml" />
