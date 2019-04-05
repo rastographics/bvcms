@@ -43,26 +43,22 @@ namespace CmsWeb.Areas.OnlineReg.Models
                            where g.GoerId == Goer.PeopleId
                            where g.SupporterId != Goer.PeopleId
                            where g.OrgId == org.OrganizationId
-                           let amount = (from s in CurrentDatabase.GoerSenderAmounts
-                                         where s.GoerId == Goer.PeopleId
-                                         where s.OrgId == org.OrganizationId
-                                         where s.SupporterId == g.SupporterId
-                                         select s.Amount).Sum()
                            let anonymous = (from s in CurrentDatabase.GoerSenderAmounts
-                                            where s.GoerId == Goer.PeopleId
-                                            where s.OrgId == org.OrganizationId
-                                            where s.SupporterId == g.SupporterId
+                                            where s.Id == g.Id
                                             where s.NoNoticeToGoer == true
-                                            select s.NoNoticeToGoer).Count() >= 1
+                                            select s.NoNoticeToGoer).Any()
                            select new Supporter
                            {
                                Id = (anonymous ? 0 : g.SupporterId),    // group all anonymous transactions together even if they're different supporters
                                Name = (anonymous ? "Anonymous" : g.Sender.Name),
-                               TotalAmt = amount ?? 0
+                               Amt = (g.Amount ?? 0)
                            };
                 var transactions = new TransactionsModel(OrgMember.TranId) { GoerId = Goer.PeopleId };
                 var summaries = CurrentDatabase.ViewTransactionSummaries.SingleOrDefault(ts => ts.RegId == OrgMember.TranId && ts.PeopleId == Goer.PeopleId && ts.OrganizationId == org.OrganizationId);
-                Supporters = supporters.GroupBy(s => s.Id).Select(s => s.First()).ToList();      // combine multiple gifts from the same supporter id
+                Supporters = supporters      // combine and total multiple gifts from the same supporter id
+                    .GroupBy(s => s.Id)
+                    .Select(s => new Supporter { Id = s.First().Id, Name = s.First().Name, TotalAmt = s.Sum(x => x.Amt) })
+                    .ToList();
                 // prepare funding data
                 MissionTripCost = summaries.IndPaid + summaries.IndDue;
                 MissionTripRaised = OrgMember.AmountPaidTransactions(CurrentDatabase);
@@ -141,6 +137,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             public int? Id { get; set; }
             public string Name { get; set; }
+            public decimal Amt { get; set; }
             public decimal TotalAmt { get; set; }
         }
     }
