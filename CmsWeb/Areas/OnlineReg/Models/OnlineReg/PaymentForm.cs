@@ -160,7 +160,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 Donate = Donate,
                 Regfees = AmtToPay,
                 Amt = amount,
-                Amtdue = Math.Max(amtdue.Value, 0),
+                Amtdue = Math.Max((amtdue ?? 0), 0),
                 Emails = Email,
                 Testing = testing,
                 Description = Description,

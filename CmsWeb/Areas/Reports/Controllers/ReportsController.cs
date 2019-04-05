@@ -477,19 +477,26 @@ namespace CmsWeb.Areas.Reports.Controllers
         [HttpPost, Route("RallyRollsheetForOrg/{orgid:int}")]
         public ActionResult RallyRollsheetForOrg(int orgid, NewMeetingInfo mi)
         {
-            return new RallyRollsheetResult { orgid = orgid, NewMeetingInfo = mi };
+            return new RallyRollsheetResult(CurrentDatabase)
+            {
+                orgid = orgid,
+                NewMeetingInfo = mi
+            };
         }
 
         [HttpGet, Route("RallyRollsheetForMeeting/{meetingid:int}")]
         public ActionResult RallyRollsheetForMeeting(int meetingid)
         {
-            return new RallyRollsheetResult { meetingid = meetingid };
+            return new RallyRollsheetResult(CurrentDatabase)
+            {
+                meetingid = meetingid
+            };
         }
 
         [HttpPost]
         public ActionResult RallyRollsheets(NewMeetingInfo mi, OrgSearchModel m)
         {
-            return new RallyRollsheetResult
+            return new RallyRollsheetResult(CurrentDatabase)
             {
                 OrgSearchModel = m,
                 NewMeetingInfo = mi

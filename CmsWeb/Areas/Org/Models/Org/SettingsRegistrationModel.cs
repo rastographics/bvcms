@@ -38,6 +38,7 @@ namespace CmsWeb.Areas.Org.Models
 
         public SettingsRegistrationModel()
         {
+            Db = DbUtil.Db;
         }
 
         public SettingsRegistrationModel(int id, CMSDataContext db)

@@ -34,8 +34,18 @@ namespace CmsWeb.Areas.Search.Models
         internal string noticelist;
         private List<OrgSearch> _organizations;
 
+        public CMSDataContext CurrentDatabase { get; set; }
+
+        public OrgSearchModel(CMSDataContext db)
+        {
+            CurrentDatabase = db;
+            Pager = new PagerModel2();
+            Pager.GetCount = Count;
+        }
+
         public OrgSearchModel()
         {
+            CurrentDatabase = CurrentDatabase ?? DbUtil.Db;
             Pager = new PagerModel2();
             Pager.GetCount = Count;
         }
@@ -78,7 +88,7 @@ namespace CmsWeb.Areas.Search.Models
 
         public Division Division()
         {
-            var d = DbUtil.Db.Divisions.SingleOrDefault(dd => dd.Id == DivisionId);
+            var d = CurrentDatabase.Divisions.SingleOrDefault(dd => dd.Id == DivisionId);
             return d;
         }
 
@@ -136,7 +146,7 @@ namespace CmsWeb.Areas.Search.Models
         {
             var q = FetchOrgs();
             var q2 = from os in q
-                     join o in DbUtil.Db.Organizations on os.OrganizationId equals o.OrganizationId
+                     join o in CurrentDatabase.Organizations on os.OrganizationId equals o.OrganizationId
                      select new
                      {
                          OrgId = os.OrganizationId,
@@ -182,10 +192,10 @@ namespace CmsWeb.Areas.Search.Models
             var q = FetchOrgs();
             if (Util2.OrgLeadersOnly)
             {
-                var oids = DbUtil.Db.GetLeaderOrgIds(Util.UserPeopleId);
+                var oids = CurrentDatabase.GetLeaderOrgIds(Util.UserPeopleId);
                 q = q.Where(oo => oids.Contains(oo.OrganizationId));
             }
-            return DbUtil.Db.CurrOrgMembers(string.Join(",", q.OrderBy(mm => mm.OrganizationName).Select(mm => mm.OrganizationId)))
+            return CurrentDatabase.CurrOrgMembers(string.Join(",", q.OrderBy(mm => mm.OrganizationName).Select(mm => mm.OrganizationId)))
                          .ToDataTable().ToExcel("OrgsMembers.xlsx");
         }
 
@@ -193,7 +203,7 @@ namespace CmsWeb.Areas.Search.Models
         {
             var q = FetchOrgs();
             var q2 = from os in q
-                     join op in DbUtil.Db.ViewRegsettingOptions on os.OrganizationId equals op.OrganizationId
+                     join op in CurrentDatabase.ViewRegsettingOptions on os.OrganizationId equals op.OrganizationId
                      select op;
             return q2.ToDataTable().ToExcel("RegOptions.xlsx");
         }
@@ -202,7 +212,7 @@ namespace CmsWeb.Areas.Search.Models
         {
             var q = FetchOrgs();
             var q2 = from os in q
-                     join op in DbUtil.Db.ViewRegsettingCounts on os.OrganizationId equals op.OrganizationId
+                     join op in CurrentDatabase.ViewRegsettingCounts on os.OrganizationId equals op.OrganizationId
                      select op;
             return q2.ToDataTable().ToExcel("RegQuestionsUsage.xlsx");
         }
@@ -211,7 +221,7 @@ namespace CmsWeb.Areas.Search.Models
         {
             var q = FetchOrgs();
             var q2 = from os in q
-                     join op in DbUtil.Db.ViewRegsettingUsages on os.OrganizationId equals op.OrganizationId
+                     join op in CurrentDatabase.ViewRegsettingUsages on os.OrganizationId equals op.OrganizationId
                      select op;
             return q2.ToDataTable().ToExcel("RegQuestionsUsage.xlsx");
         }
@@ -223,7 +233,7 @@ namespace CmsWeb.Areas.Search.Models
             w.Start("OrgSearch");
             foreach (var o in q)
             {
-                var os = DbUtil.Db.CreateRegistrationSettings(o.OrganizationId);
+                var os = CurrentDatabase.CreateRegistrationSettings(o.OrganizationId);
                 Util.Serialize(os, w.writer);
             }
             w.End();
@@ -237,7 +247,7 @@ namespace CmsWeb.Areas.Search.Models
             w.Start("OrgSearch");
             foreach (var o in q)
             {
-                var os = DbUtil.Db.CreateRegistrationSettings(o.OrganizationId);
+                var os = CurrentDatabase.CreateRegistrationSettings(o.OrganizationId);
                 os.WriteXmlMessages(w.writer, messages);
             }
             w.End();
@@ -279,8 +289,8 @@ namespace CmsWeb.Areas.Search.Models
 
         public IQueryable<OrgSearch> FetchOrgs()
         {
-            var queryable = DbUtil.Db.OrgSearch(Name, ProgramId, DivisionId, TypeId, CampusId, ScheduleId, StatusId, OnlineReg,
-                 DbUtil.Db.CurrentUser.UserId, TagDiv);
+            var queryable = CurrentDatabase.OrgSearch(Name, ProgramId, DivisionId, TypeId, CampusId, ScheduleId, StatusId, OnlineReg,
+                 CurrentDatabase.CurrentUser.UserId, TagDiv);
 
             if (ExtraValuesDict != null && ExtraValuesDict.Any())
             {
@@ -288,7 +298,7 @@ namespace CmsWeb.Areas.Search.Models
 
                 foreach (var ev in ExtraValuesDict)
                 {
-                    orgIds = DbUtil.Db.OrganizationExtras
+                    orgIds = CurrentDatabase.OrganizationExtras
                         .Where(x => orgIds.Contains(x.OrganizationId) && x.Field == ev.Key &&
                             (
                              x.Type.Equals("Code") ? x.StrValue.ToLower().Equals(ev.Value) : x.StrValue.ToLower().Contains(ev.Value) ||
@@ -515,8 +525,8 @@ namespace CmsWeb.Areas.Search.Models
 
         public IEnumerable<SelectListItem> CampusIds()
         {
-            var qc = DbUtil.Db.Campus.AsQueryable();
-            qc = DbUtil.Db.Setting("SortCampusByCode")
+            var qc = CurrentDatabase.Campus.AsQueryable();
+            qc = CurrentDatabase.Setting("SortCampusByCode")
                 ? qc.OrderBy(cc => cc.Code)
                 : qc.OrderBy(cc => cc.Description);
             var list = (from c in qc
@@ -540,7 +550,7 @@ namespace CmsWeb.Areas.Search.Models
 
         public IEnumerable<SelectListItem> ProgramIds()
         {
-            var q = from c in DbUtil.Db.Programs
+            var q = from c in CurrentDatabase.Programs
                     orderby c.Name
                     select new SelectListItem
                     {
@@ -582,7 +592,7 @@ namespace CmsWeb.Areas.Search.Models
 
         public IEnumerable<SelectListItem> ScheduleIds()
         {
-            var q = from sc in DbUtil.Db.OrgSchedules
+            var q = from sc in CurrentDatabase.OrgSchedules
                     group sc by new {sc.ScheduleId, sc.MeetingTime}
                     into g
                     orderby g.Key.ScheduleId
@@ -590,7 +600,7 @@ namespace CmsWeb.Areas.Search.Models
                     select new SelectListItem
                     {
                         Value = g.Key.ScheduleId.Value.ToString(),
-                        Text = DbUtil.Db.GetScheduleDesc(g.Key.MeetingTime)
+                        Text = CurrentDatabase.GetScheduleDesc(g.Key.MeetingTime)
                     };
             var list = q.ToList();
             list.Insert(0, new SelectListItem
@@ -682,29 +692,29 @@ namespace CmsWeb.Areas.Search.Models
             var alist = cn.Query<RecentAbsentsInfo>("RecentAbsentsSP2", new {orgs},
                 commandType: CommandType.StoredProcedure, commandTimeout: 600).ToList();
 
-            var mlist = (from r in DbUtil.Db.LastMeetings(orgs)
+            var mlist = (from r in CurrentDatabase.LastMeetings(orgs)
                          where olist.Contains(r.OrganizationId)
                          select r).ToList();
 
-            var plist = (from om in DbUtil.Db.ViewOrganizationLeaders
+            var plist = (from om in CurrentDatabase.ViewOrganizationLeaders
                          where olist.Contains(om.OrganizationId)
                          group om.OrganizationId by om.PeopleId
                          into leaderlist
                          select leaderlist).ToList();
 
-            PythonModel.RegisterHelpers(DbUtil.Db);
+            PythonModel.RegisterHelpers(CurrentDatabase);
             var template = HandlebarsDotNet.Handlebars.Compile(Resource1.RecentVisitsAbsents);
             var sb = new StringBuilder("Notices sent to:</br>\n<table>\n");
             foreach (var p in plist)
             {
-                var leader = DbUtil.Db.LoadPersonById(p.Key);
+                var leader = CurrentDatabase.LoadPersonById(p.Key);
                 var orgids = p.ToList();
                 var meetings =
                     (from m in mlist
                      where orgids.Contains(m.OrganizationId)
-                     let visitors = DbUtil.Db.OrgVisitorsAsOfDate(m.OrganizationId, m.Lastmeeting, true).ToList()
+                     let visitors = CurrentDatabase.OrgVisitorsAsOfDate(m.OrganizationId, m.Lastmeeting, true).ToList()
                      let absents = (from a in alist where a.OrganizationId == m.OrganizationId select a).ToList()
-                     let org = DbUtil.Db.LoadOrganizationById(m.OrganizationId)
+                     let org = CurrentDatabase.LoadOrganizationById(m.OrganizationId)
                      select new
                      {
                          m.MeetingId,
@@ -757,10 +767,10 @@ namespace CmsWeb.Areas.Search.Models
             var leaders = NoticesToSend();
             foreach (var leader in leaders)
             {
-                DbUtil.Db.Email(DbUtil.Db.CurrentUser.Person.FromEmail, leader.Key, null,
-                    DbUtil.Db.Setting("SubjectAttendanceNotices", "Attendance reports are ready for viewing"), leader.Value, false);
+                CurrentDatabase.Email(CurrentDatabase.CurrentUser.Person.FromEmail, leader.Key, null,
+                    CurrentDatabase.Setting("SubjectAttendanceNotices", "Attendance reports are ready for viewing"), leader.Value, false);
             }
-            DbUtil.Db.Email(DbUtil.Db.CurrentUser.Person.FromEmail, DbUtil.Db.CurrentUser.Person, null,
+            CurrentDatabase.Email(CurrentDatabase.CurrentUser.Person.FromEmail, CurrentDatabase.CurrentUser.Person, null,
                 "Attendance emails sent", noticelist, false);
         }
 
@@ -783,7 +793,7 @@ namespace CmsWeb.Areas.Search.Models
 
         private IDataReader ExecuteReader(string report, string oids, DateTime? meetingDate1, DateTime? meetingDate2)
         {
-            var content = DbUtil.Db.ContentOfTypeSql(report);
+            var content = CurrentDatabase.ContentOfTypeSql(report);
             if (!content.HasValue())
                 throw new Exception("no content");
             if (!SpecialReportViewModel.CanRunScript(content))
@@ -793,10 +803,7 @@ namespace CmsWeb.Areas.Search.Models
                 throw new Exception("missing @OrgIds");
 
             var p = GetSqlParameters(oids, meetingDate1, meetingDate2, content);
-            var cs = HttpContextFactory.Current.User.IsInRole("Finance")
-                ? Util.ConnectionStringReadOnlyFinance
-                : Util.ConnectionStringReadOnly;
-            var cn = new SqlConnection(cs);
+            var cn = CurrentDatabase.ReadonlyConnection();
             cn.Open();
             return cn.ExecuteReader(content, p, commandTimeout: 1200);
         }
@@ -824,7 +831,7 @@ namespace CmsWeb.Areas.Search.Models
 
         public string ConvertToSearch()
         {
-            var cc = DbUtil.Db.ScratchPadCondition();
+            var cc = CurrentDatabase.ScratchPadCondition();
             cc.Reset();
             var c = cc.AddNewClause(QueryType.OrgSearchMember, CompareType.Equal, "1,True");
             if (Name.HasValue())
@@ -844,7 +851,7 @@ namespace CmsWeb.Areas.Search.Models
             if (OnlineReg != 0)
                 c.OnlineReg = OnlineReg.ToString();
 
-            cc.Save(DbUtil.Db);
+            cc.Save(CurrentDatabase);
             return "/Query/" + cc.Id;
         }
 
