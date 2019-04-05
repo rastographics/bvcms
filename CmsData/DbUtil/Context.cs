@@ -47,13 +47,13 @@ namespace CmsData
            public override Encoding Encoding => Encoding.Default;
         }
 #endif
-        internal string ConnectionString;
+
         public static CMSDataContext Create(string host, bool asReadOnly = false)
         {
-            var connectionString = asReadOnly ? ReadonlyConnectionString(host, true) : CreateConnectionString(host);
+            var connectionString = asReadOnly ? Util.ReadOnlyConnectionString(host, true) : CreateConnectionString(host);
             return Create(connectionString, host);
         }
-        
+
         private string _connectionString;
         internal string ConnectionString
         {
@@ -63,10 +63,6 @@ namespace CmsData
 
         public static CMSDataContext Create(string connStr, string host)
         {
-            if (!host.HasValue())
-            {
-                throw new NullReferenceException("Host value is null or empty");
-            }
             return new CMSDataContext(connStr)
             {
                 ConnectionString = connStr,
@@ -155,7 +151,6 @@ namespace CmsData
 
         private static string CreateConnectionString(string host)
         {
-            var host = currentHttpContext.Request.Url.Authority.Split('.', ':')[0];
             var hostOverride = ConfigurationManager.AppSettings["host"];
             if (!string.IsNullOrEmpty(hostOverride)) // default to the host from url, however, override it via web.config for debugging against live data
             {
@@ -828,7 +823,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
 
             _roles = i.roles;
             _roleids = i.roleids;
-            CurrentUser = i.u;
+            _currentuser = i.u;
         }
 
         private string[] _roles;

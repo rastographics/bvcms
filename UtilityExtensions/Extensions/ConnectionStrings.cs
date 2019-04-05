@@ -67,7 +67,7 @@ namespace UtilityExtensions
             var cb = new SqlConnectionStringBuilder(cs?.ConnectionString ?? "Data Source=(local);Integrated Security=True");
             if (string.IsNullOrEmpty(cb.DataSource))
                 cb.DataSource = DbServer;
-            var a = host.SplitStr(".:");
+            var a = host.Split('.', ':');
             cb.InitialCatalog = $"CMS_{a[0]}";
             return cb.ConnectionString;
         }
@@ -120,13 +120,34 @@ namespace UtilityExtensions
             }
         }
 
+        public static string ReadOnlyConnectionString(string host = null, bool finance = false)
+        {
+            var pw = ConfigurationManager.AppSettings["readonlypassword"];
+            if (!pw.HasValue())
+                return ConnectionString;
+
+            var cs = ConnectionStringSettings(host ?? Host);
+            var cb = new SqlConnectionStringBuilder(cs.ConnectionString);
+            if (string.IsNullOrEmpty(cb.DataSource))
+                cb.DataSource = DbServer;
+            cb.InitialCatalog = $"CMS_{host ?? Host}";
+            cb.IntegratedSecurity = false;
+            cb.UserID = (finance ? $"ro-{cb.InitialCatalog}-finance" : $"ro-{cb.InitialCatalog}");
+            cb.Password = pw;
+            return cb.ConnectionString;
+        }
+
+        public static string ConnectionStringReadOnly => ReadOnlyConnectionString();
+
+        public static string ConnectionStringReadOnlyFinance => ReadOnlyConnectionString(finance: true);
+
         public static string ConnectionStringImage
         {
             get
             {
                 var cs = ConnectionStringSettings(Host);
                 var cb = new SqlConnectionStringBuilder(cs.ConnectionString);
-                var a = Host.SplitStr(".:");
+                var a = Host.Split('.', ':');
                 if (string.IsNullOrEmpty(cb.DataSource))
                     cb.DataSource = DbServer;
                 cb.InitialCatalog = $"CMSi_{a[0]}";
