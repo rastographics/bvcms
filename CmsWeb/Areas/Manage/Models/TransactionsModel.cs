@@ -111,10 +111,13 @@ namespace CmsWeb.Models
             string first, last;
             Util.NameSplit(name, out first, out last);
             var hasfirst = first.HasValue();
+            var roles = DbUtil.Db.CurrentRoles();
             nameid = name.ToInt();
             _transactions
                 = from t in DbUtil.Db.ViewTransactionLists
+                  join org in DbUtil.Db.Organizations on t.OrgId equals org.OrganizationId
                   let donate = t.Donate ?? 0
+                  where org.LimitToRole == null || roles.Contains(org.LimitToRole)
                   where t.Amt >= gtamount || gtamount == null
                   where t.Amt <= ltamount || ltamount == null
                   where description == null || t.Description.Contains(description)

@@ -1,5 +1,5 @@
 <!--- HTML Links --->
-[DOC]: http://docs.touchpointsoftware.com "TouchPointSoftware User Documentation"
+[DOC]: https://docs.touchpointsoftware.com "TouchPointSoftware User Documentation"
 [IDE]: https://www.visualstudio.com/downloads/
 [SQL]: https://www.microsoft.com/en-us/download/details.aspx?id=54284
 [WEB]: http://visualstudiogallery.msdn.microsoft.com/56633663-6799-41d7-9df7-0f2a504ca361
