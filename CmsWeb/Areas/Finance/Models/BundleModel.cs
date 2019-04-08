@@ -3,7 +3,6 @@ using CmsData.Codes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using UtilityExtensions;
 
@@ -11,6 +10,19 @@ namespace CmsWeb.Areas.Finance.Models
 {
     public class BundleModel
     {
+        public CMSDataContext CurrentDatabase
+        {
+            get => _currentDatabase;
+            set
+            {
+                _currentDatabase = value;
+                if (bundleId > 0 && Bundle == null)
+                {
+                    BundleId = bundleId;
+                }
+            }
+        }
+
         private int? _count;
         public int Count()
         {
@@ -23,8 +35,8 @@ namespace CmsWeb.Areas.Finance.Models
         }
 
         public int BundleStatusId { get; set; }
-        public bool IsAdmin => HttpContextFactory.Current.User.IsInRole("Admin") || HttpContextFactory.Current.User.IsInRole("FinanceAdmin");
-        public bool IsDataEntry => HttpContextFactory.Current.User.IsInRole("FinanceDataEntry");
+        public bool IsAdmin => CurrentDatabase.CurrentUser.InRole("Admin") || CurrentDatabase.CurrentUser.InRole("FinanceAdmin");
+        public bool IsDataEntry => CurrentDatabase.CurrentUser.InRole("FinanceDataEntry");
         public bool CanEdit => BundleStatusId == BundleStatusCode.Open || BundleStatusId == BundleStatusCode.OpenForDataEntry || IsAdmin;
 
         public bool CanChangeStatus
@@ -47,26 +59,29 @@ namespace CmsWeb.Areas.Finance.Models
             set
             {
                 bundleId = value;
-                var q = (from bb in DbUtil.Db.BundleHeaders
-                         where bb.BundleHeaderId == BundleId
-                         select new
-                         {
-                             StatusId = bb.BundleStatusId,
-                             Status = bb.BundleStatusType.Description,
-                             Type = bb.BundleHeaderType.Description,
-                             DefaultFund = bb.Fund.FundName,
-                             bundle = bb
-                         }).SingleOrDefault();
-                if (q == null)
+                if (CurrentDatabase != null)
                 {
-                    return;
-                }
+                    var q = (from bb in CurrentDatabase.BundleHeaders
+                             where bb.BundleHeaderId == BundleId
+                             select new
+                             {
+                                 StatusId = bb.BundleStatusId,
+                                 Status = bb.BundleStatusType.Description,
+                                 Type = bb.BundleHeaderType.Description,
+                                 DefaultFund = bb.Fund.FundName,
+                                 bundle = bb
+                             }).SingleOrDefault();
+                    if (q == null)
+                    {
+                        return;
+                    }
 
-                Status = q.Status;
-                BundleStatusId = q.StatusId;
-                Type = q.Type;
-                DefaultFund = q.DefaultFund;
-                Bundle = q.bundle;
+                    Status = q.Status;
+                    BundleStatusId = q.StatusId;
+                    Type = q.Type;
+                    DefaultFund = q.DefaultFund;
+                    Bundle = q.bundle;
+                }
             }
         }
 
@@ -79,14 +94,16 @@ namespace CmsWeb.Areas.Finance.Models
         public BundleModel()
         {
         }
-        public BundleModel(int id)
-        {
-            BundleId = id;
 
+        public BundleModel(int id, CMSDataContext db)
+        {
+            CurrentDatabase = db;
+            BundleId = id;
         }
 
         private IQueryable<Contribution> bundleItems;
         private int bundleId;
+        private CMSDataContext _currentDatabase;
 
         public decimal TotalHeader()
         {
@@ -96,7 +113,7 @@ namespace CmsWeb.Areas.Finance.Models
         }
         public decimal TotalItems()
         {
-            var q = from d in DbUtil.Db.BundleDetails
+            var q = from d in CurrentDatabase.BundleDetails
                     where d.BundleHeaderId == BundleId
                     where d.Contribution.ContributionStatusId == ContributionStatusCode.Recorded
                     where !ContributionTypeCode.ReturnedReversedTypes.Contains(d.Contribution.ContributionTypeId)
@@ -108,7 +125,7 @@ namespace CmsWeb.Areas.Finance.Models
         {
             if (bundleItems == null)
             {
-                bundleItems = from d in DbUtil.Db.BundleDetails
+                bundleItems = from d in CurrentDatabase.BundleDetails
                               where d.BundleHeaderId == BundleId
                               let sort = d.BundleSort1 > 0 ? d.BundleSort1 : d.BundleDetailId
                               orderby sort, d.ContributionId
@@ -144,13 +161,13 @@ namespace CmsWeb.Areas.Finance.Models
 
         public IEnumerable<SelectListItem> BundleHeaderList()
         {
-            return new SelectList(DbUtil.Db.BundleHeaderTypes, "Id", "Description", Bundle.BundleHeaderTypeId);
+            return new SelectList(CurrentDatabase.BundleHeaderTypes, "Id", "Description", Bundle.BundleHeaderTypeId);
         }
         public IEnumerable<SelectListItem> ContributionFundList(bool sortByName = true)
         {
-            var fundSortSetting = DbUtil.Db.Setting("SortContributionFundsByFieldName", "FundId");
+            var fundSortSetting = CurrentDatabase.Setting("SortContributionFundsByFieldName", "FundId");
 
-            var query = DbUtil.Db.ContributionFunds.Where(cf => cf.FundStatusId == 1);
+            var query = CurrentDatabase.ContributionFunds.Where(cf => cf.FundStatusId == 1);
 
             if (fundSortSetting == "FundName")
             {
@@ -176,8 +193,8 @@ namespace CmsWeb.Areas.Finance.Models
 
         public IEnumerable<SelectListItem> BundleStatusList()
         {
-            var q = from bs in DbUtil.Db.BundleStatusTypes
-                    let hasDataEntryRole = DbUtil.Db.Roles.Any(rr => rr.RoleName == "FinanceDataEntry")
+            var q = from bs in CurrentDatabase.BundleStatusTypes
+                    let hasDataEntryRole = CurrentDatabase.Roles.Any(rr => rr.RoleName == "FinanceDataEntry")
                     where bs.Id < 2 || hasDataEntryRole
                     select bs;
             return new SelectList(q, "Id", "Description", Bundle.BundleStatusId);
