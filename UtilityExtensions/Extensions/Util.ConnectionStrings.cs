@@ -78,7 +78,7 @@ namespace UtilityExtensions
             var cb = new SqlConnectionStringBuilder(cs?.ConnectionString ?? "Data Source=(local);Integrated Security=True");
             if (string.IsNullOrEmpty(cb.DataSource))
                 cb.DataSource = DbServer;
-            var a = host.SplitStr(".:");
+            var a = host.Split('.', ':');
             cb.InitialCatalog = $"CMS_{a[0]}";
             return cb.ConnectionString;
         }

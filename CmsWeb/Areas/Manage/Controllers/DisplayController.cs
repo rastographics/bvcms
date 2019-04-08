@@ -28,7 +28,6 @@ using System.Windows.Forms;
 using UtilityExtensions;
 using Content = CmsData.Content;
 using Encoder = System.Drawing.Imaging.Encoder;
-using Image = System.Drawing.Image;
 
 namespace CmsWeb.Areas.Manage.Controllers
 {
@@ -95,7 +94,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                 throw new HttpException(404, "No ID found.");
             }
 
-            var content = DbUtil.ContentFromID(id.Value);
+            var content = CurrentDatabase.ContentFromID(id.Value);
             if (content == null)
             {
                 throw new HttpException(404, "No ID found.");
@@ -130,7 +129,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         [HttpPost]
         public ActionResult ContentUpdate(int id, string name, string title, string body, bool? snippet, int? roleid, string contentKeyWords, string stayaftersave = null)
         {
-            var content = DbUtil.ContentFromID(id);
+            var content = CurrentDatabase.Contents.SingleOrDefault(c => c.Id == id);
             content.Name = name;
             content.Title = string.IsNullOrWhiteSpace(title) ? name : title;
             content.Body = body;
@@ -215,7 +214,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 
         public ActionResult ContentDelete(int id)
         {
-            var content = DbUtil.ContentFromID(id);
+            var content = CurrentDatabase.ContentFromID(id);
             CurrentDatabase.ExecuteCommand("DELETE FROM dbo.ContentKeywords WHERE Id = {0}", id);
             CurrentDatabase.ExecuteCommand("DELETE FROM dbo.Content WHERE Id = {0}", id);
             var url = GetIndexTabUrl(content);
@@ -261,7 +260,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 
         public ActionResult EmailBody(int id)
         {
-            var content = DbUtil.ContentFromID(id);
+            var content = CurrentDatabase.ContentFromID(id);
             content.RemoveGrammarly();
             return View(content);
         }
@@ -336,7 +335,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                 web.Height = web.Document.Body.ScrollRectangle.Height;
 
                 // a bitmap that we will draw to
-                using (System.Drawing.Bitmap bmp = new System.Drawing.Bitmap(web.Width, web.Height))
+                using (Bitmap bmp = new Bitmap(web.Width, web.Height))
                 {
                     // draw the web browser to the bitmap
                     web.DrawToBitmap(bmp, new Rectangle(web.Location.X, web.Location.Y, web.Width, web.Height));
@@ -347,45 +346,27 @@ namespace CmsWeb.Areas.Manage.Controllers
                     RectangleF srcRect = new RectangleF(0, 0, web.Width, web.Width * 1.5F);
 
                     Bitmap b = new Bitmap(width, height);
-                    Graphics g = Graphics.FromImage((Image)b);
-                    g.Clear(Color.White);
-                    g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                    using (Graphics g = Graphics.FromImage(b))
+                    {
+                        g.Clear(Color.White);
+                        g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                        g.DrawImage(bmp, destRect, srcRect, units);
+                    }
 
-                    g.DrawImage(bmp, destRect, srcRect, units);
-                    g.Dispose();
-
-                    using (System.IO.MemoryStream stream = new System.IO.MemoryStream())
+                    using (MemoryStream stream = new MemoryStream())
                     {
                         EncoderParameter qualityParam = null;
                         EncoderParameters encoderParams = null;
-                        try
-                        {
-                            ImageCodecInfo imageCodec = null;
-                            imageCodec = GetEncoderInfo("image/jpeg");
+                        ImageCodecInfo imageCodec = null;
+                        imageCodec = GetEncoderInfo("image/jpeg");
 
-                            qualityParam = new EncoderParameter(Encoder.Quality, 100L);
+                        qualityParam = new EncoderParameter(Encoder.Quality, 100L);
 
-                            encoderParams = new EncoderParameters(1);
-                            encoderParams.Param[0] = qualityParam;
-                            b.Save(stream, imageCodec, encoderParams);
-                        }
-                        catch (Exception)
-                        {
-                            throw new Exception();
-                        }
-                        finally
-                        {
-                            if (encoderParams != null)
-                            {
-                                encoderParams.Dispose();
-                            }
-
-                            if (qualityParam != null)
-                            {
-                                qualityParam.Dispose();
-                            }
-                        }
-                        b.Save(stream, System.Drawing.Imaging.ImageFormat.Jpeg);
+                        encoderParams = new EncoderParameters(1);
+                        encoderParams.Param[0] = qualityParam;
+                        b.Save(stream, imageCodec, encoderParams);
+                        
+                        b.Save(stream, ImageFormat.Jpeg);
                         stream.Position = 0;
                         data = new byte[stream.Length];
                         stream.Read(data, 0, (int)stream.Length);
