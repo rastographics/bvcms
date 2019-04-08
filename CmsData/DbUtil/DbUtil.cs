@@ -330,23 +330,6 @@ namespace CmsData
             return Db.Contents.SingleOrDefault(c => c.Name == name);
         }
 
-        public static Content ContentFromID(int id)
-        {
-            return Db.Contents.SingleOrDefault(c => c.Id == id);
-        }
-
-        public static void ContentDeleteFromID(int id)
-        {
-            if (id == 0)
-            {
-                return;
-            }
-
-            var cDelete = ContentFromID(id);
-            Db.Contents.DeleteOnSubmit(cDelete);
-            Db.SubmitChanges();
-        }
-
         public static string Content(string name, string def)
         {
             var content = Db.Contents.SingleOrDefault(c => c.Name == name);

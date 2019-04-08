@@ -1520,6 +1520,10 @@ This search uses multiple steps which cannot be duplicated in a single query.
                      select new[] { a[0], a[1] };
             return q2;
         }
+        public Content ContentFromID(int id)
+        {
+            return Contents.SingleOrDefault(c => c.Id == id);
+        }
         public Content Content(string name)
         {
             return Contents.FirstOrDefault(c => c.Name == name);
