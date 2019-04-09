@@ -181,7 +181,10 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where
 		(2, 'GatewayTesting', 'true', 1),
 		(3, 'TNBUsername', '', 0),
 		(3, 'TNBPassword', '', 0),
-		(3, 'GatewayTesting', 'true', 1);
+		(3, 'GatewayTesting', 'true', 1),
+		(4, 'AcceptivaApiKey', '', 0),
+		(4, 'AcceptivaAchId', '', 0),
+		(4, 'AcceptivaCCId', '', 0);
 	END
 GO
 

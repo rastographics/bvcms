@@ -1863,31 +1863,66 @@ This search uses multiple steps which cannot be duplicated in a single query.
         internal bool FromActiveRecords { get; set; }
         public bool FromBatch { get; set; }
 
-        public IGateway Gateway(bool testing = false, string usegateway = null)
+        public IGateway Gateway(bool testing = false, string usegateway = null, int ? ProcessId = null)
         {
-            var type = Setting("TransactionGateway", "not specified");
+            int? GatewayId = (from e in PaymentProcess
+                                 join d in GatewayAccount on e.GatewayAccountId equals d.GatewayAccountId into gj
+                                 from sub in gj.DefaultIfEmpty()
+                                 where e.ProcessId == ProcessId
+                                 select new
+                                 {
+                                     sub.GatewayId
+                                 }).ToList()[0].GatewayId;
+
             if (usegateway != null)
             {
-                type = usegateway;
+                GatewayId = 2;
             }
 
-            switch (type.ToLower())
+            switch (GatewayId)
             {
-                case "sage":
-                    return new SageGateway(this, testing);
-
-                case "authorizenet":
-                    return new AuthorizeNetGateway(this, testing);
-
-                case "transnational":
-                    return new TransNationalGateway(this, testing);
-                //IS THIS the only place that the new paymentGateway needs to be hooked up?
-                case "bluepay":
-                    return new BluePayGateway(this, testing);
+                // case (int)GatewayTypes.Pushpay:
+                // break;
+                case null:
+                case (int)GatewayTypes.Sage:
+                    return new SageGateway(this, testing, ProcessId ?? default(int));
+                case (int)GatewayTypes.Transnational:
+                    return new TransNationalGateway(this, testing, ProcessId ?? default(int));
+                // case (int)GatewayTypes.Acceptiva:
+                // break;
+                default:
+                    break;
             }
 
-            throw new Exception($"Gateway ({type}) is not supported.");
+            string type = Gateways.Where(x => x.GatewayId == GatewayId).Select(x => x.GatewayName).FirstOrDefault();
+            throw new Exception($"GatewayId ({GatewayId}) is not supported.");
         }
+
+        //public IGateway Gateway(bool testing = false, string usegateway = null, int? ProcessId = null)
+        //{
+        //    var type = Setting("TransactionGateway", "not specified");
+        //    if (usegateway != null)
+        //    {
+        //        type = usegateway;
+        //    }
+
+        //    switch (type.ToLower())
+        //    {
+        //        case "sage":
+        //            return new SageGateway(this, testing, ProcessId);
+
+        //        case "authorizenet":
+        //            return new AuthorizeNetGateway(this, testing);
+
+        //        case "transnational":
+        //            return new TransNationalGateway(this, testing);
+        //        //IS THIS the only place that the new paymentGateway needs to be hooked up?
+        //        case "bluepay":
+        //            return new BluePayGateway(this, testing);
+        //    }
+
+        //    throw new Exception($"GatewayId ({type}) is not supported.");
+        //}
         public Registration.Settings CreateRegistrationSettings(int orgId)
         {
             var o = LoadOrganizationById(orgId);

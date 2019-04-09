@@ -583,6 +583,7 @@
     <Compile Include="Finance\BluePayGateway.cs" />
     <Compile Include="Finance\BluePay\BluePayPayment.cs" />
     <Compile Include="Finance\CheckBatchSettlements.cs" />
+    <Compile Include="Finance\GatewaysEnum.cs" />
     <Compile Include="Finance\GivingConfirmationBuilder.cs" />
     <Compile Include="Finance\MultipleGatewayUtils.cs" />
     <Compile Include="Finance\ReturnedCheck.cs" />

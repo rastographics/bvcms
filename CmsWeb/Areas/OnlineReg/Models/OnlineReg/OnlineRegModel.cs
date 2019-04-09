@@ -17,6 +17,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public bool? testing { get; set; }
         public string FromMobile { get; set; }
         public string URL { get; set; }
+        public int ProcessId { get; set; }
 
         public bool DisplaySpecialFunds => OnlineGiving() || ManageGiving();
 

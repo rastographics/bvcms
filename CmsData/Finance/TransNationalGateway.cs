@@ -27,19 +27,19 @@ namespace CmsData.Finance
 
         public string GatewayType => "TransNational";
 
-        public TransNationalGateway(CMSDataContext db, bool testing)
+        public TransNationalGateway(CMSDataContext db, bool testing, int ProcessId)
         {
             this.db = db;
 
-            if(testing || db.Setting("GatewayTesting"))
+            if(testing || new MultipleGatewayUtils(db).Setting("GatewayTesting", ProcessId))
             {
                 _userName = "faithbased";
                 _password = "bprogram2";
             }
             else
             {
-                _userName = db.GetSetting("TNBUsername", "");
-                _password = db.GetSetting("TNBPassword", "");
+                _userName = new MultipleGatewayUtils(db).Setting("TNBUsername", "", ProcessId);
+                _password = new MultipleGatewayUtils(db).Setting("TNBPassword", "", ProcessId);
 
                 if (string.IsNullOrWhiteSpace(_userName))
                     throw new Exception("TNBUsername setting not found, which is required for TransNational.");

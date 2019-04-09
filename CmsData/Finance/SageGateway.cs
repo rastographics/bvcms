@@ -23,10 +23,10 @@ namespace CmsData.Finance
 
         public string GatewayType => "Sage";
 
-        public SageGateway(CMSDataContext db, bool testing)
+        public SageGateway(CMSDataContext db, bool testing, int ProcessId)
         {
             this.db = db;
-            var gatewayTesting = db.Setting("GatewayTesting");
+            var gatewayTesting = new MultipleGatewayUtils(db).Setting("GatewayTesting", ProcessId);
             if (testing || gatewayTesting)
             {
                 _id = "856423594649";
@@ -35,8 +35,8 @@ namespace CmsData.Finance
             }
             else
             {
-                _id = db.GetSetting("M_ID", "");
-                _key = db.GetSetting("M_KEY", "");
+                _id = new MultipleGatewayUtils(db).Setting("M_ID", "", ProcessId);
+                _key = new MultipleGatewayUtils(db).Setting("M_KEY", "", ProcessId);
 
                 if (string.IsNullOrWhiteSpace(_id))
                     throw new Exception("M_ID setting not found, which is required for Sage.");

@@ -18,6 +18,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [HttpPost]
         public ActionResult ProcessPayment(PaymentForm pf)
         {
+            // One time or Reg...
             Response.NoCache();
 
 #if DEBUG
