@@ -13,8 +13,8 @@ namespace CmsData.Finance
     public class AcceptivaGateway : IGateway
     {
         private readonly string _apiKey;
-        private readonly string _ach_id;
-        private readonly string _cc_id;
+        private readonly string _merch_ach_id;
+        private readonly string _merch_cc_id;
         private readonly CMSDataContext db;
 
         public string GatewayType => "Acceptiva";
@@ -26,20 +26,20 @@ namespace CmsData.Finance
             if (testing || db.Setting("GatewayTesting"))
             {
                 _apiKey = "CZDWp7dXCo4W3xTA7LtWAijidvPdj2wa";
-                _ach_id = "dKdDFtqC";
-                _cc_id = "R6MLUevR";
+                _merch_ach_id = "dKdDFtqC";
+                _merch_cc_id = "R6MLUevR";
             }
             else
             {
                 _apiKey = db.GetSetting("AcceptivaApiKey", "");
-                _ach_id = db.GetSetting("AcceptivaAchId", "");
-                _cc_id = db.GetSetting("AcceptivaCCId", "");
+                _merch_ach_id = db.GetSetting("AcceptivaAchId", "");
+                _merch_cc_id = db.GetSetting("AcceptivaCCId", "");
 
                 if (string.IsNullOrWhiteSpace(_apiKey))
                     throw new Exception("AcceptivaApiKey setting not found, which is required for TransNational.");
-                if (string.IsNullOrWhiteSpace(_ach_id))
+                if (string.IsNullOrWhiteSpace(_merch_ach_id))
                     throw new Exception("AcceptivaAcctId setting not found, which is required for TransNational.");
-                if (string.IsNullOrWhiteSpace(_cc_id))
+                if (string.IsNullOrWhiteSpace(_merch_cc_id))
                     throw new Exception("AcceptivaCCId setting not found, which is required for TransNational.");
             }
         }
@@ -84,19 +84,76 @@ namespace CmsData.Finance
 
         public TransactionResponse PayWithCheck(int peopleId, decimal amt, string routing, string acct, string description, int tranid, string email, string first, string middle, string last, string suffix, string addr, string addr2, string city, string state, string country, string zip, string phone)
         {
-            throw new NotImplementedException();
+            //TODO Review this part...
+            //var type = AchType(peopleId);            
+            var achCharge = new AchCharge(
+                _apiKey,
+                _merch_ach_id,
+                new Ach
+                {
+                    AchAccNum = acct,
+                    AchRoutingNum = routing
+                },                
+                new Payer
+                {
+                    LastName = last,
+                    FirstName = first,
+                    Address = addr,
+                    Address2 = addr2,
+                    City = city,
+                    State = state,
+                    Country = country,
+                    Zip = zip,
+                    Email = email,
+                    Phone = phone
+                },
+                amt,
+                tranid.ToString(CultureInfo.InvariantCulture),
+                description,
+                peopleId.ToString(CultureInfo.InvariantCulture));
+
+            var response = achCharge.Execute();
+
+            //if (type == "savings")
+            //{
+            //    var s = JsonConvert.SerializeObject(ach, Formatting.Indented).Replace("\r\n", "\n");
+            //    var c = db.Content("AchSavingsLog", "-", ContentTypeCode.TypeText);
+            //    c.Body = $"--------------------------\n{DateTime.Now:g}\ntranid={response.TransactionId}\n\n{s}\n{c.Body}";
+            //    db.SubmitChanges();
+            //}
+
+            return new TransactionResponse
+            {
+                Approved = response.Response.Status == "success" ? true : false,
+                AuthCode = response.Response.TransStatus,
+                Message = response.Response.TransStatusMsg,
+                TransactionId = response.Response.TransIdStr
+            };
         }
 
         public TransactionResponse PayWithCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description, int tranid, string cardcode, string email, string first, string last, string addr, string addr2, string city, string state, string country, string zip, string phone)
         {            
             var cardCharge = new CreditCardCharge(
                 _apiKey,
-                _cc_id,         
+                _merch_cc_id,         
                 new CreditCard
                 {
                     CardNum = cardnumber,
                     CardExpiration = expires,
                     CardCvv = cardcode
+                },
+                new Payer
+                {
+                    LastName = last,
+                    FirstName = first,
+                    Address = addr,
+                    Address2 = addr2,
+                    City = city,
+                    State = state,
+                    Country = country,
+                    Zip = zip,
+                    Email = email,
+                    Phone = phone
                 },
                 amt,
                 tranid.ToString(CultureInfo.InvariantCulture),
@@ -152,6 +209,21 @@ namespace CmsData.Finance
         public TransactionResponse VoidCreditCardTransaction(string reference)
         {
             throw new NotImplementedException();
+        }
+
+        private string AchType(int? pid)
+        {
+            var type = "checking";
+            if (pid.HasValue)
+            {
+                var usesaving = db.Setting("UseSavingAccounts");
+                if (usesaving)
+                {
+                    if (Person.GetExtraValue(db, pid.Value, "AchSaving")?.BitValue == true)
+                        type = "savings";
+                }
+            }
+            return type;
         }
     }
 }
