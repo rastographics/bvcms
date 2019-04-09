@@ -581,9 +581,11 @@
     <Compile Include="Extensions\PaymentInfo.cs" />
     <Compile Include="Extensions\RepairTransactionRun.cs" />
     <Compile Include="Finance\AcceptivaGateway.cs" />
+    <Compile Include="Finance\Acceptiva\Charge\AchCharge.cs" />
     <Compile Include="Finance\Acceptiva\Core\Ach.cs" />
     <Compile Include="Finance\Acceptiva\Core\Charge\ChargeResponse.cs" />
     <Compile Include="Finance\Acceptiva\Core\CreditCard.cs" />
+    <Compile Include="Finance\Acceptiva\Core\Payer.cs" />
     <Compile Include="Finance\Acceptiva\Core\ResponseStatus.cs" />
     <Compile Include="Finance\Acceptiva\Core\AcceptivaRequest.cs" />
     <Compile Include="Finance\Acceptiva\Core\Charge\ChargeRequest.cs" />
