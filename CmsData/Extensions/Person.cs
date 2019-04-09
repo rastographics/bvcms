@@ -835,7 +835,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             }
         }
 
-        public static Person Add(Family fam, int position, Tag tag, string name, string dob, bool married, int gender,
+        public static Person Add(CMSDataContext db, Family fam, int position, Tag tag, string name, string dob, bool married, int gender,
                                  int originId, int? entryPointId)
         {
             string first, last;
@@ -860,10 +860,10 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 }
             }
 
-            return Add(fam, position, tag, first, null, last, dob, married, gender, originId, entryPointId);
+            return Add(db, fam, position, tag, first, null, last, dob, married, gender, originId, entryPointId);
         }
 
-        public static Person Add(Family fam,
+        public static Person Add(CMSDataContext db, Family fam,
                                  int position,
                                  Tag tag,
                                  string firstname,
@@ -875,7 +875,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                                  int originId,
                                  int? entryPointId)
         {
-            return Add(DbUtil.Db, true, fam, position, tag, firstname, nickname, lastname, dob, marriedCode, gender,
+            return Add(db, true, fam, position, tag, firstname, nickname, lastname, dob, marriedCode, gender,
                 originId, entryPointId);
         }
 
@@ -1013,10 +1013,10 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             return p;
         }
 
-        public static Person Add(Family fam, int position, Tag tag, string firstname, string nickname, string lastname,
+        public static Person Add(CMSDataContext db, Family fam, int position, Tag tag, string firstname, string nickname, string lastname,
                                  string dob, bool married, int gender, int originId, int? entryPointId)
         {
-            return Add(fam, position, tag, firstname, nickname, lastname, dob, married ? 20 : 10, gender, originId,
+            return Add(db, fam, position, tag, firstname, nickname, lastname, dob, married ? 20 : 10, gender, originId,
                 entryPointId);
         }
 
