@@ -1,25 +1,22 @@
-﻿using System;
-using System.Collections.Specialized;
-using System.Diagnostics;
-using System.Linq;
+﻿using System.Collections.Specialized;
 using System.Net;
 using System.Text;
 
 namespace CmsData.Finance.Acceptiva.Core
 {
-    internal abstract class Request
+    internal class AcceptivaRequest
     {
         public string Url { get; private set; }
 
         public NameValueCollection Data { get; protected set; }
 
-        protected Request(string url, string userName, string password)
+        protected AcceptivaRequest(string url, string apiKey, string action)
         {
             Url = url;
             Data = new NameValueCollection
             {
-                {"username", userName},
-                {"password", password}
+                {"api_key", apiKey},
+                {"action", action}
             };
         }
 
@@ -27,11 +24,6 @@ namespace CmsData.Finance.Acceptiva.Core
         {
             using (var client = new WebClient())
             {
-                //#if DEBUG
-                //                var values = Data.Cast<string>().Select(e => $"{e}: {Data[e]}"); 
-                //                var str = string.Join("\n", values); 
-                //                Debug.WriteLine(str);
-                //#endif
                 var result = client.UploadValues(Url, Data);
                 return Encoding.ASCII.GetString(result);
             }
