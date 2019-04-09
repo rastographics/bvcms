@@ -144,7 +144,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             DbUtil.Db.SubmitChanges();
 
             var position = DbUtil.Db.ComputePositionInFamily(age, married == 20 , f.FamilyId) ?? 10;
-            _person = Person.Add(f, position,
+            _person = Person.Add(DbUtil.Db, f, position,
                 null, FirstName.Trim(), null, LastName.Trim(), DateOfBirth, married == 20, gender ?? 0,
                     OriginCode.Enrollment, entrypoint);
             person.EmailAddress = EmailAddress.Trim();
