@@ -11,6 +11,7 @@ namespace CmsWeb.Areas.Org.Models
 {
     public class MeetingModel
     {
+        public CMSDataContext CurrentDatabase { get; set; }
         public Meeting meeting;
         public Organization org;
 
@@ -38,8 +39,8 @@ namespace CmsWeb.Areas.Org.Models
         public bool ShowCurrentMemberType => RoleChecker.HasSetting(SettingName.Meeting_ShowCurrentMemberType, true);
 
         // Added to support a pick list of meeting descriptions
-        public bool UseMeetingDescriptionPickList => DbUtil.Db.Setting("AttendanceUseMeetingCategory", false);
-        public bool ShowDescriptionOnCheckin => DbUtil.Db.Setting("AttendanceShowDescription", false);
+        public bool UseMeetingDescriptionPickList => CurrentDatabase.Setting("AttendanceUseMeetingCategory", false);
+        public bool ShowDescriptionOnCheckin => CurrentDatabase.Setting("AttendanceShowDescription", false);
 
         public string DisplayText()
         {
@@ -48,14 +49,15 @@ namespace CmsWeb.Areas.Org.Models
                 return meeting.Description;
             }
 
-            var category = DbUtil.Db.MeetingCategories.FirstOrDefault(x => x.Description == meeting.Description);
+            var category = CurrentDatabase.MeetingCategories.FirstOrDefault(x => x.Description == meeting.Description);
             return category?.Description ?? meeting.Description;
         }
 
         public MeetingModel() { }
-        public MeetingModel(int id)
+        public MeetingModel(int id, CMSDataContext db)
         {
-            var i = (from m in DbUtil.Db.Meetings
+            CurrentDatabase = db;
+            var i = (from m in CurrentDatabase.Meetings
                      where m.MeetingId == id
                      select new
                      {
@@ -73,7 +75,7 @@ namespace CmsWeb.Areas.Org.Models
 
         public string RegularMeetingHeadCountSetting()
         {
-            return DbUtil.Db.Setting("RegularMeetingHeadCount", "enable");
+            return CurrentDatabase.Setting("RegularMeetingHeadCount", "enable");
         }
 
         public List<RollsheetModel.AttendInfo> Attends(bool sorted = false, string highlight = null)
