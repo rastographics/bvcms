@@ -97,7 +97,7 @@ namespace CmsWeb.Areas.Main.Controllers
         [HttpPost]
         public ActionResult ToggleTag(int id)
         {
-            var t = Person.ToggleTag(id, Util2.CurrentTagName, Util2.CurrentTagOwnerId, DbUtil.TagTypeId_Personal);
+            var t = Person.ToggleTag(id, Util2.CurrentTagName, Util2.CurrentTagOwnerId, DbUtil.TagTypeId_Personal, CurrentDatabase);
             CurrentDatabase.SubmitChanges();
             return Content(t ? "Remove" : "Add");
         }

@@ -348,7 +348,7 @@ namespace CmsWeb.Areas.Search.Controllers
         {
             try
             {
-                var r = Person.ToggleTag(id, Util2.CurrentTagName, Util2.CurrentTagOwnerId, DbUtil.TagTypeId_Personal);
+                var r = Person.ToggleTag(id, Util2.CurrentTagName, Util2.CurrentTagOwnerId, DbUtil.TagTypeId_Personal, CurrentDatabase);
                 CurrentDatabase.SubmitChanges();
                 return Json(new { HasTag = r });
             }
