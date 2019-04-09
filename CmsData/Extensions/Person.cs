@@ -1057,9 +1057,9 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             return Util.EncryptForUrl($"{PeopleId}|{fromEmail}");
         }
 
-        public static bool ToggleTag(int peopleId, string tagName, int? ownerId, int tagTypeId)
+        public static bool ToggleTag(int peopleId, string tagName, int? ownerId, int tagTypeId, CMSDataContext db)
         {
-            var db = DbUtil.Db;
+            
             var tag = db.FetchOrCreateTag(tagName, ownerId, tagTypeId);
             if (tag == null)
             {
