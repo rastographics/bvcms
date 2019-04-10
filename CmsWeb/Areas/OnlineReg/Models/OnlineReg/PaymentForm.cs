@@ -644,7 +644,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
 
             TransactionResponse tinfo;
-            var gw = DbUtil.Db.Gateway(testing, null, m.ProcessId);
+            var gw = DbUtil.Db.Gateway(testing, m.ProcessId);
 
             if (SavePayInfo)
             {

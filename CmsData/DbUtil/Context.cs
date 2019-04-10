@@ -1863,7 +1863,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
         internal bool FromActiveRecords { get; set; }
         public bool FromBatch { get; set; }
 
-        public IGateway Gateway(bool testing = false, string usegateway = null, int ? ProcessId = null)
+        public IGateway Gateway(bool testing = false, int? ProcessId = null)
         {
             int? GatewayId = (from e in PaymentProcess
                                  join d in GatewayAccount on e.GatewayAccountId equals d.GatewayAccountId into gj
@@ -1874,16 +1874,13 @@ This search uses multiple steps which cannot be duplicated in a single query.
                                      sub.GatewayId
                                  }).ToList()[0].GatewayId;
 
-            if (usegateway != null)
-            {
-                GatewayId = 2;
-            }
+            if(GatewayId.IsNull())
+                throw new Exception("This process dosn't has a Gateway configured");
 
             switch (GatewayId)
             {
                 // case (int)GatewayTypes.Pushpay:
                 // break;
-                case null:
                 case (int)GatewayTypes.Sage:
                     return new SageGateway(this, testing, ProcessId ?? default(int));
                 case (int)GatewayTypes.Transnational:
