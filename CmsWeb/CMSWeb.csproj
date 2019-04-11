@@ -680,6 +680,7 @@
     <Compile Include="Areas\Public\Models\MobileAPI\MobilePersonExtended.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\PostObjects\MobilePostEditField.cs" />
     <Compile Include="Areas\Reports\Controllers\DirectoryController.cs" />
+    <Compile Include="Areas\Reports\Models\Attendance\MeetingAttendanceModel.cs" />
     <Compile Include="Areas\Reports\Models\Attendance\DocXRollsheetResult.cs" />
     <Compile Include="Areas\Reports\Models\Avery\DocXAveryLabels.cs" />
     <Compile Include="Areas\Reports\Models\Directories\CompactDir.cs" />
@@ -1805,6 +1806,7 @@
     <Content Include="Areas\People\Views\Person\Giving\Statements.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageGiving\_ManagedGivingFunds.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageGiving\_ManagedGivingFundsNew.cshtml" />
+    <Content Include="Areas\Reports\Views\Reports\MeetingAttendance.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
