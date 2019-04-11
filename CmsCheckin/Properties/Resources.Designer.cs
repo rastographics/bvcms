@@ -93,6 +93,26 @@ namespace CmsCheckin.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap logo_light {
+            get {
+                object obj = ResourceManager.GetObject("logo_light", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon touchpoint {
+            get {
+                object obj = ResourceManager.GetObject("touchpoint", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap ZoomIn16 {
             get {
                 object obj = ResourceManager.GetObject("ZoomIn16", resourceCulture);

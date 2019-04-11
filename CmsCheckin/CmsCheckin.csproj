@@ -36,17 +36,17 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>true</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>https://www.touchpointsoftware.com/checkin1.1/</InstallUrl>
+    <InstallUrl>https://www.touchpointsoftware.com/checkinclient/</InstallUrl>
     <SupportUrl>http://docs.touchpointsoftware.com/Checkin</SupportUrl>
     <ErrorReportUrl>http://docs.touchpointsoftware.com/Checkin</ErrorReportUrl>
     <TargetCulture>en</TargetCulture>
     <ProductName>TouchPoint Check-In</ProductName>
     <PublisherName>TouchPoint Software</PublisherName>
-    <MinimumRequiredVersion>1.1.0.39</MinimumRequiredVersion>
+    <MinimumRequiredVersion>1.1.0.43</MinimumRequiredVersion>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>index.html</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>41</ApplicationRevision>
+    <ApplicationRevision>45</ApplicationRevision>
     <ApplicationVersion>1.1.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
