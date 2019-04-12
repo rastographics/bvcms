@@ -14,6 +14,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             public string Name { get; set; }
             public int? Age { get; set; }
         }
+
         public IEnumerable<FamilyMember> FamilyMembers()
         {
             var family = (from p in user.Family.People
@@ -52,6 +53,18 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     return;
                 }
             }
+
+            if (p.org != null && p.Found == true &&
+                p.IsCommunityGroup() && DbUtil.Db.Setting("RestrictCGSignupsTo24Hrs"))
+            {
+                if (!p.CanRegisterInCommunityGroup(DateTime.Now.AddDays(-1)))
+                {
+                    var message = DbUtil.Db.Setting("RestrictCGSignupsTo24HrsMessage", "Cannot register for multiple community groups on the same day.");
+                    modelState.AddModelError("fammember-" + p.PeopleId, message);
+                    return;
+                }
+            }
+            
             List[index] = p;
 
             p.ValidateModelForFind(modelState, id, selectFromFamily: true);
@@ -76,16 +89,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 {
                     modelState.AddModelError(this.GetNameFor(mm => mm.List[List.IndexOf(p)].Found),
                         "Sorry, but registration is filled.");
-                }
-
-                if (p.IsCommunityGroup() && DbUtil.Db.Setting("RestrictCGSignupsTo24Hrs"))
-                {
-                    if (!p.CanRegisterInCommunityGroup(DateTime.Today.AddDays(-1)))
-                    {
-                        var message = DbUtil.Db.Setting("RestrictCGSignupsTo24HrsMessage", "Sorry, but you cannot register for multiple community groups on the same day.");
-                        modelState.AddModelError(this.GetNameFor(mm => mm.List[List.IndexOf(p)].Found), message);
-                    }
-                        
                 }
 
                 if (p.Found == true)
