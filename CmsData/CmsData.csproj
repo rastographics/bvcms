@@ -586,6 +586,7 @@
     <Compile Include="Finance\GatewaysEnum.cs" />
     <Compile Include="Finance\GivingConfirmationBuilder.cs" />
     <Compile Include="Finance\MultipleGatewayUtils.cs" />
+    <Compile Include="Finance\ProcessesEnum.cs" />
     <Compile Include="Finance\ReturnedCheck.cs" />
     <Compile Include="Finance\ReturnedChecksResponse.cs" />
     <Compile Include="Finance\BatchResponse.cs" />

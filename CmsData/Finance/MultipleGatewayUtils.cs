@@ -18,7 +18,16 @@ namespace CmsData
             int? GatewayAccountId = db.PaymentProcess.Where(x => x.ProcessId == ProcessId).Select(x => x.GatewayAccountId).FirstOrDefault();
             if (name == null)
                 return defaultvalue;
-            var list = db.GatewayDetails.Where(x => x.GatewayAccountId == GatewayAccountId).Select(x => new { x.GatewayDetailName, x.GatewayDetailValue }) as Dictionary<string, string>;
+            var list = db.GatewayDetails.Where(x => x.GatewayAccountId == GatewayAccountId).ToDictionary(x => x.GatewayDetailName.Trim(), x => x.GatewayDetailValue);
+            // var listD = db.GatewayDetails.Where(x => x.GatewayAccountId == GatewayAccountId).Select(x => new { x.GatewayDetailName, x.GatewayDetailValue });
+
+            /*var list = (from e in db.GatewayDetails
+                         select new
+                         {
+                             e.GatewayDetailName,
+                             e.GatewayDetailValue
+                         }).ToList().ToDictionary(x => x.GatewayDetailName.Trim(), x => x.GatewayDetailValue);*/
+
             if (list == null)
             {
                 try

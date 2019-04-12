@@ -23,11 +23,11 @@ namespace CmsData.Finance
 
         public string GatewayType => "Sage";
 
-        public SageGateway(CMSDataContext db, bool testing, int ProcessId)
+        public SageGateway(CMSDataContext db, bool testing, PaymentProcessTypes? ProcessType)
         {
             this.db = db;
-            var gatewayTesting = new MultipleGatewayUtils(db).Setting("GatewayTesting", ProcessId);
-            if (testing || gatewayTesting)
+            var gatewayTesting = new MultipleGatewayUtils(db).Setting("GatewayTesting", (int)ProcessType);
+            if (/*testing ||*/ gatewayTesting)
             {
                 _id = "856423594649";
                 _key = "M5Q4C9P2T4N5";
@@ -35,15 +35,15 @@ namespace CmsData.Finance
             }
             else
             {
-                _id = new MultipleGatewayUtils(db).Setting("M_ID", "", ProcessId);
-                _key = new MultipleGatewayUtils(db).Setting("M_KEY", "", ProcessId);
+                _id = new MultipleGatewayUtils(db).Setting("M_ID", "", (int)ProcessType);
+                _key = new MultipleGatewayUtils(db).Setting("M_KEY", "", (int)ProcessType);
 
                 if (string.IsNullOrWhiteSpace(_id))
                     throw new Exception("M_ID setting not found, which is required for Sage.");
                 if (string.IsNullOrWhiteSpace(_key))
                     throw new Exception("M_KEY setting not found, which is required for Sage.");
 
-                _originatorId = db.Setting("SageOriginatorId", "");
+                _originatorId = new MultipleGatewayUtils(db).Setting("SageOriginatorId", "", (int)ProcessType);
             }
         }
 

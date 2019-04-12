@@ -96,6 +96,7 @@ namespace CmsWeb.Areas.Setup.Controllers
                     gtDetailAccount.GatewayAccountId = gtAccount.GatewayAccountId;
                     gtDetailAccount.GatewayDetailName = json.GatewayAccountInputs[i];
                     gtDetailAccount.GatewayDetailValue = json.GatewayAccountValues[i];
+                    gtDetailAccount.IsBoolean = json.GatewayAccountValues[i] == "true" || json.GatewayAccountValues[i] == "false" ? true : false;
                     CurrentDatabase.GatewayDetails.InsertOnSubmit(gtDetailAccount);
                     CurrentDatabase.SubmitChanges();
                     gtDetailAccount = new CmsData.GatewayDetails();

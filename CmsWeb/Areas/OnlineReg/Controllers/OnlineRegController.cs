@@ -29,7 +29,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             {
                 var m = new OnlineRegModel(Request, CurrentDatabase, id, testing, email, login, source);
 
-                m.ProcessId = m.org.RegistrationTypeId.IsNull() || m.org.RegistrationTypeId == 8 ? 1 : 3;
+                m.ProcessType = m.org.RegistrationTypeId.IsNull() || m.org.RegistrationTypeId == 8 ? PaymentProcessTypes.OneTimeGiving : PaymentProcessTypes.OnlineRegistration;
 
                 if (m.ManageGiving())
                 {
@@ -113,7 +113,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 p = m.LoadExistingPerson(pid, 0);
                 if (p == null)
                     throw new Exception($"No person found with PeopleId = {pid}");
-                p.ProcessId = m.ProcessId;
+                p.ProcessType = m.ProcessType;
                 p.ValidateModelForFind(ModelState, 0);
                 if (m.masterorg == null)
                 {

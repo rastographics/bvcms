@@ -257,9 +257,9 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where
         ('Recurring Giving'),
         ('Online Registration');
 
-		UPDATE [dbo].[PaymentProcess]
+		/*UPDATE [dbo].[PaymentProcess]
 		SET [GatewayAccountId] = 1
-		WHERE [ProcessId] = 1
+		WHERE [ProcessId] = 1*/
 	END
 GO
 
