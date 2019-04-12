@@ -27,7 +27,7 @@ namespace CmsData.Finance
             {
                 _apiKey = "CZDWp7dXCo4W3xTA7LtWAijidvPdj2wa";
                 _merch_ach_id = "dKdDFtqC";
-                _merch_cc_id = "R6MLUevR";
+                _merch_cc_id = "154";
             }
             else
             {
@@ -83,9 +83,7 @@ namespace CmsData.Finance
         }
 
         public TransactionResponse PayWithCheck(int peopleId, decimal amt, string routing, string acct, string description, int tranid, string email, string first, string middle, string last, string suffix, string addr, string addr2, string city, string state, string country, string zip, string phone)
-        {
-            //TODO Review this part...
-            //var type = AchType(peopleId);            
+        {      
             var achCharge = new AchCharge(
                 _apiKey,
                 _merch_ach_id,
@@ -113,14 +111,6 @@ namespace CmsData.Finance
                 peopleId.ToString(CultureInfo.InvariantCulture));
 
             var response = achCharge.Execute();
-
-            //if (type == "savings")
-            //{
-            //    var s = JsonConvert.SerializeObject(ach, Formatting.Indented).Replace("\r\n", "\n");
-            //    var c = db.Content("AchSavingsLog", "-", ContentTypeCode.TypeText);
-            //    c.Body = $"--------------------------\n{DateTime.Now:g}\ntranid={response.TransactionId}\n\n{s}\n{c.Body}";
-            //    db.SubmitChanges();
-            //}
 
             return new TransactionResponse
             {
@@ -150,12 +140,12 @@ namespace CmsData.Finance
                     Address2 = addr2,
                     City = city,
                     State = state,
-                    Country = country,
+                    Country = ISO3166.FromName(country).Alpha3,
                     Zip = zip,
                     Email = email,
                     Phone = phone
                 },
-                amt,
+                0,
                 tranid.ToString(CultureInfo.InvariantCulture),
                 description,
                 peopleId.ToString(CultureInfo.InvariantCulture));

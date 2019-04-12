@@ -1884,6 +1884,8 @@ This search uses multiple steps which cannot be duplicated in a single query.
                 //IS THIS the only place that the new paymentGateway needs to be hooked up?
                 case "bluepay":
                     return new BluePayGateway(this, testing);
+                case "acceptiva":
+                    return new AcceptivaGateway(this, testing);
             }
 
             throw new Exception($"Gateway ({type}) is not supported.");

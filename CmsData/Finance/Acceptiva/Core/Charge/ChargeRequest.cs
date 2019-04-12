@@ -15,6 +15,7 @@ namespace CmsData.Finance.Acceptiva.Core
             Data["params[0][items][0][id]"] = orderId.ToString();
             Data["params[0][items][0][desc]"] = orderDescription.ToString();
             Data["params[0][items][0][amt]"] = amount.ToString();
+            Data["params[0][payment_type]"] = paymentType.ToString();
             Data["params[0][merch_acct_id_str]"] = merchAcctId;
             Data["params[0][client_payer_id]"] = peopleId;
             Data["params[0][client_trans_id]"] = orderId.ToString();

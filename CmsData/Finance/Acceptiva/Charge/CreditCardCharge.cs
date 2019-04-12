@@ -15,7 +15,7 @@ namespace CmsData.Finance.Acceptiva.Charge
             Data["params[0][cc_num]"] = creditCard.CardNum;
             Data["params[0][cc_exp_mo]"] = expirateMonth;
             Data["params[0][cc_exp_yr]"] = expirateYear;
-            Data["params[0][cc_cvv]"] = creditCard.CardNum;
+            Data["params[0][cc_cvv]"] = creditCard.CardCvv;
         }
     }
 }
