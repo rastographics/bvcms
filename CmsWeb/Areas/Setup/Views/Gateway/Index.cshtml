@@ -1,0 +1,128 @@
+﻿@{
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "Gateway";
+    ViewBag.PageHeader = "Gateway Settings";
+}
+
+<div id="multipleGateway">
+    <div class="col-lg-9">
+        <div class="box box-responsive">
+            <div class="box-content">
+                <div class="table-responsive">
+                    <table id="settings" class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th style="width: 150px;">
+                                    Process Name
+                                </th>
+                                <th style="width: 150px;">
+                                    Gateway Name
+                                </th>
+                                <th style="width: 150px;">
+
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template v-for="process in Processes">
+                                <tr v-if="process.GatewayAccountName !== null">
+                                    <td>
+                                        {{process.ProcessName}}
+                                    </td>
+                                    <td>
+                                        <a v-on:click="modalInfo(process.ProcessId, process.GatewayAccountId)" class="blue-avaiable" href="#">
+                                            {{process.GatewayAccountName}}
+                                        </a>
+                                    </td>
+                                    <td style="width: 50px;">
+                                        <a v-on:click="deleteProcess(process.ProcessId)" href="#" class="btn btn-sm btn-danger deleteprocess">
+                                            <i class="fa fa-trash"></i>&nbsp;Delete
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr v-else>
+                                    <td>
+                                        {{process.ProcessName}}
+                                    </td>
+                                    <td>
+                                        <a v-on:click="modalInfo(process.ProcessId, process.GatewayAccountId)" class="red-empty" href="#">
+                                            Empty
+                                        </a>
+                                    </td>
+                                    <td style="width: 50px;"></td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" tabindex="-1" role="dialog" id="config-modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form class="multiplegateway-form" v-on:submit.prevent="processForm">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                        <h4 class="modal-title">{{ProcessName}}</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label>Account Name</label>
+                            </div>
+                            <div class="col-md-6">
+                                <input v-on:change="checkAccount" v-model="AccountName" type="text" class="form-control" list="gtAccounts" />
+                                <datalist id="gtAccounts">
+                                    <template v-for="account in GatewayAccounts">
+                                        <option v-bind:value="account.GatewayAccountName">
+                                    </template>
+                                </datalist>
+                                <small v-show="!IsGatewayReadOnly">*This Configuration will be save as a new account</small>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label>Gateway Type</label>
+                            </div>
+                            <div class="col-md-6">
+                                <select class="form-control" v-model="GatewayId" v-on:change="OnChangeGateway" v-bind:disabled="IsGatewayReadOnly">
+                                    <template v-for="gateway in Gateways">
+                                        <option v-bind:value="gateway.GatewayId">{{gateway.GatewayName}}</option>
+                                    </template>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 col-md-offset-3">
+                                <label v-show="UseForAllShow" class="label-gateway">
+                                    <input v-model="UseForAll" class="" type="checkbox" />
+                                    &nbsp;Use for all payment processes
+                                </label>
+                            </div>
+                        </div>
+                        <hr />
+                        <template v-for="(input, index) in Inputs">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label>{{input.GatewayDetailName}}</label>
+                                </div>
+                                <div class="col-md-6">
+                                    <input v-if="input.IsBoolean" type="checkbox" v-model="DetailValue[index]" />
+                                    <input v-else class="form-control" v-model="DetailValue[index]" />
+                                </div>
+                            </div>
+                            <br />
+                        </template>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="submit" value="Save" class="btn btn-primary">
+                        <input type="button" value="Cancel" class="btn btn-default" data-dismiss="modal">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

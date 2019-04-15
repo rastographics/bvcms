@@ -29,6 +29,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             {
                 var m = new OnlineRegModel(Request, CurrentDatabase, id, testing, email, login, source);
 
+                m.ProcessType = m.org.RegistrationTypeId.IsNull() || m.org.RegistrationTypeId == 8 ? PaymentProcessTypes.OneTimeGiving : PaymentProcessTypes.OnlineRegistration;
+
                 if (m.ManageGiving())
                 {
                     Session["Campus"] = Request.QueryString["campus"];
@@ -111,7 +113,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 p = m.LoadExistingPerson(pid, 0);
                 if (p == null)
                     throw new Exception($"No person found with PeopleId = {pid}");
-
+                p.ProcessType = m.ProcessType;
                 p.ValidateModelForFind(ModelState, 0);
                 if (m.masterorg == null)
                 {
@@ -361,6 +363,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [HttpGet]
         public ActionResult CompleteRegistration()
         {
+            // Start Registration
             Response.NoCache();
             var s = (string)TempData["onlineregmodel"];
             if (s == null)

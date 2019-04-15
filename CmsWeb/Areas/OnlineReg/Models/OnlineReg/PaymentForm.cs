@@ -28,6 +28,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public string Account { get; set; }
         public bool SupportMissionTrip { get; set; }
         public int extTransactionId { get; set; }
+        public PaymentProcessTypes ProcessType { get; set; }
 
         /// <summary>
         ///     "B" for e-check and "C" for credit card, see PaymentType
@@ -311,6 +312,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 Phone = r.Phone,
                 SupportMissionTrip = m.SupportMissionTrip,
                 extTransactionId = m.transactionId,
+                ProcessType = m.ProcessType,
 #if DEBUG2
                  CreditCard = "4111111111111111",
                  CVV = "123",
@@ -645,7 +647,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
 
             TransactionResponse tinfo;
-            var gw = DbUtil.Db.Gateway(testing);
+            var gw = DbUtil.Db.Gateway(testing, m.ProcessType);
 
             if (SavePayInfo)
             {
