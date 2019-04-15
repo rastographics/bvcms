@@ -229,7 +229,6 @@ namespace CmsWeb.Areas.Reports.Controllers
             DateTime d1 = startdt.ToDate() ?? new DateTime(d2.Year, d2.Month, 1);
 
             var m = new MeetingAttendanceModel(CurrentDatabase, d1, d2, division);
-            var p = m.FetchInfo(); // debug
             return View(m);
         }
 
