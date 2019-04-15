@@ -27,7 +27,7 @@ namespace CmsData.Finance
             {
                 _apiKey = "CZDWp7dXCo4W3xTA7LtWAijidvPdj2wa";
                 _merch_ach_id = "dKdDFtqC";
-                _merch_cc_id = "154";
+                _merch_cc_id = "R6MLUevR";
             }
             else
             {
@@ -83,7 +83,7 @@ namespace CmsData.Finance
         }
 
         public TransactionResponse PayWithCheck(int peopleId, decimal amt, string routing, string acct, string description, int tranid, string email, string first, string middle, string last, string suffix, string addr, string addr2, string city, string state, string country, string zip, string phone)
-        {      
+        {
             var achCharge = new AchCharge(
                 _apiKey,
                 _merch_ach_id,
@@ -91,7 +91,7 @@ namespace CmsData.Finance
                 {
                     AchAccNum = acct,
                     AchRoutingNum = routing
-                },                
+                },
                 new Payer
                 {
                     LastName = last,
@@ -122,10 +122,10 @@ namespace CmsData.Finance
         }
 
         public TransactionResponse PayWithCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description, int tranid, string cardcode, string email, string first, string last, string addr, string addr2, string city, string state, string country, string zip, string phone)
-        {            
+        {
             var cardCharge = new CreditCardCharge(
                 _apiKey,
-                _merch_cc_id,         
+                _merch_cc_id,
                 new CreditCard
                 {
                     CardNum = cardnumber,
@@ -139,8 +139,8 @@ namespace CmsData.Finance
                     Address = addr,
                     Address2 = addr2,
                     City = city,
-                    State = state,
-                    Country = ISO3166.FromName(country).Alpha3,
+                    State = UPSStateCodes.FromStateCountry(state, country, db) ?? state,
+                    Country = ISO3166.Alpha3FromName(country) ?? country,
                     Zip = zip,
                     Email = email,
                     Phone = phone
@@ -156,7 +156,7 @@ namespace CmsData.Finance
             {
                 Approved = response.Response.Status == "success" ? true : false,
                 AuthCode = response.Response.TransStatus,
-                Message = response.Response.TransStatusMsg,
+                Message = response.Response.Errors.FirstOrDefault()?.ErrorMsg,
                 TransactionId = response.Response.TransIdStr
             };
         }

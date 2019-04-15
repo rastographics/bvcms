@@ -25,7 +25,7 @@ namespace AcceptivaGatewayTests
             string addr2 = "addr2";
             string city = "mycity";
             string state = "mystate";
-            string country = "mycity";
+            string country = "United States";
             string zip = "03510";
             string phone = "5547946830";
 
