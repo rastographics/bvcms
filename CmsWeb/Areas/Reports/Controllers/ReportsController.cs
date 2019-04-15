@@ -223,12 +223,13 @@ namespace CmsWeb.Areas.Reports.Controllers
         }
 
         [HttpGet]
-        public ActionResult MeetingAttendance(string dt1, string dt2, string division)
+        public ActionResult MeetingAttendance(string startdt, string enddt, string division)
         {
-            DateTime d2 = dt2.ToDate() ?? DateTime.Today;
-            DateTime d1 = dt1.ToDate() ?? new DateTime(d2.Year, d2.Month, 1);
+            DateTime d2 = enddt.ToDate() ?? DateTime.Today;
+            DateTime d1 = startdt.ToDate() ?? new DateTime(d2.Year, d2.Month, 1);
 
             var m = new MeetingAttendanceModel(CurrentDatabase, d1, d2, division);
+            var p = m.FetchInfo(); // debug
             return View(m);
         }
 

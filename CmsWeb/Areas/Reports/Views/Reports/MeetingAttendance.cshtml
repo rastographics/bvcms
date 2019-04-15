@@ -1,14 +1,14 @@
 ﻿@model CmsWeb.Areas.Reports.Models.Attendance.MeetingAttendanceModel
 @{
     Layout = ViewExtensions2.TouchPointLayout();
-    ViewBag.Title = "Average Church Attendance Report";
-    ViewBag.ReportPageHeader = "Church Attendance";
+    ViewBag.Title = "Meetings Attendance Report";
+    ViewBag.ReportPageHeader = "Meeting Attendance";
 }
 <div class="report box box-responsive">
     <div class="box-content">
         <div class="well hidden-print" style="max-width: 770px; margin: auto;">
             <div class="row">
-                @using (Html.BeginForm("ChurchAttendance2", "Reports", FormMethod.Get))
+                @using (Html.BeginForm("MeetingAttendance", "Reports", FormMethod.Get))
                 {
                     <div class="col-sm-3">
                         <label for="StartDt" class="control-label">Start Date</label>
@@ -25,10 +25,10 @@
                         </div>
                     </div>
                     <div class="col-sm-6">
-                        <label for="skipweeks" class="control-label">Skip Dates (optional)</label>
+                        <label for="Division" class="control-label">Division</label>
                         <div class="form-inline">
                             <div class="input-group col-sm-6">
-                                @Html.TextBox("skipweeks", "", new { @class = "form-control", placeholder = "mm/dd/yy, mm/dd/yy..." })
+                                @Html.DropDownListFor(vm => vm.Division, Model.Divisions(), new { @class = "form-control" })
                             </div>
                             <div class="input-group">
                                 <button type="submit" class="btn btn-primary">Run</button>
@@ -55,37 +55,29 @@
                                 {
                                     <th class="text-right">@c.Heading</th>
                                 }
-                                <th class="text-right">Average</th>
-                                <th class="text-right">Count</th>
-                                <th class="text-right">Weeks</th>
                             </tr>
                         </thead>
-                        @foreach (var d in p.Divs)
+                        @foreach (var d in p.Orgs)
                         {
                             <tr>
                                 <td class="text-left">@d.Name</td>
                                 @foreach (var c in p.Cols)
                                 {
                                     var a = d.Column(c);
-                                    <td class="text-right" title='@a.TotalPeople / @a.TotalMeetings'>@a.Avg.ToString("n0")</td>
+                                    <td class="text-right">@a.TotalPeople.ToString("n0")</td>
                                 }
-                                @{var ta = d.Total();}
-                                <td class="text-right" title='@ta.TotalPeople / @ta.TotalMeetings'>@ta.Avg.ToString("n0")</td>
-                                <td class="text-right">@ta.TotalPeople.ToString("n0")</td>
-                                <td class="text-right">@ta.TotalMeetings.ToString("n0")</td>
                             </tr>
                         }
+                        @{ var tta = p.Total(); var blankcols = (p.Cols.Count - 1).ToString();}
                         <tr class="totals-row">
-                            <td class="text-left">Total</td>
-                            @foreach (var c in p.Cols)
-                            {
-                                var a = p.Column(c);
-                                <td class="text-right" title='@a.TotalPeople / @a.TotalMeetings'>@a.Avg.ToString("n0")</td>
-                            }
-                            @{ var tta = p.Total(); }
-                            <td class="text-right" title='@tta.TotalPeople / @tta.TotalMeetings'>@tta.Avg.ToString("n0")</td>
-                            <td class="text-right">@tta.TotalPeople.ToString("n0")</td>
+                            <td class="text-left">Total Meetings</td>
                             <td class="text-right">@tta.TotalMeetings.ToString("n0")</td>
+                            <td colspan="@blankcols"></td>
+                        </tr>
+                        <tr class="totals-row">
+                            <td class="text-left">Total Attendance</td>
+                            <td class="text-right">@tta.TotalPeople.ToString("n0")</td>
+                            <td colspan="@blankcols"></td>
                         </tr>
                     </table>
                 </div>
