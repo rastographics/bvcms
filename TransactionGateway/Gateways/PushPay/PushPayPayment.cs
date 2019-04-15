@@ -11,13 +11,13 @@ namespace TransactionGateway
     {
         private PushpayConnection _pushpay;
         private CMSDataContext _db;
-        private string _merchantHandle;
+        public string _merchantHandle;
 
-        public PushpayPayment(PushpayConnection Pushpay, CMSDataContext db)
+        public PushpayPayment(PushpayConnection Pushpay, CMSDataContext db, PaymentProcessTypes processType)
         {
             _pushpay = Pushpay;
             _db = db;
-            _merchantHandle = db.GetSetting("PushpayMerchant", null);
+            _merchantHandle = new MultipleGatewayUtils(db).Setting("PushpayMerchant", "", (int)processType);
             if (_merchantHandle == null)
             {
                 throw new Exception("PushpayMerchant Not Found");

@@ -17,13 +17,24 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             m.DebugCleanUp();
 #endif
 
-            if (CurrentDatabase.GetSetting("TransactionGateway", "") == "Pushpay" && m.OnlineGiving())
+            int? GatewayId = (from e in CurrentDatabase.PaymentProcess
+                              join d in CurrentDatabase.GatewayAccount on e.GatewayAccountId equals d.GatewayAccountId into gj
+                              from sub in gj.DefaultIfEmpty()
+                              where e.ProcessId == (int)m.ProcessType
+                              select new
+                              {
+                                  sub.GatewayId
+                              }).ToList()[0].GatewayId;
+
+            if ((int)GatewayTypes.Pushpay == GatewayId && m.ProcessType == PaymentProcessTypes.OneTimeGiving)
             {
+                Session["PaymentProcessType"] = PaymentProcessTypes.OneTimeGiving;
                 return Redirect($"/Pushpay/OneTime/{pid}/{m.Orgid}");
             }
 
-            if (CurrentDatabase.GetSetting("TransactionGateway", "") == "Pushpay" && m.ManageGiving())
+            if ((int)GatewayTypes.Pushpay == GatewayId && m.ProcessType == PaymentProcessTypes.RecurringGiving)
             {
+                Session["PaymentProcessType"] = PaymentProcessTypes.RecurringGiving;
                 return Redirect($"/Pushpay/RecurringManagment/{pid}/{m.Orgid}");
             }
 

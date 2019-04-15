@@ -29,6 +29,8 @@ namespace CmsWeb.Areas.Setup.Controllers
 
         public PushpayController(RequestManager requestManager) : base(requestManager)
         {
+            PaymentProcessTypes processType = (PaymentProcessTypes)requestManager.CurrentHttpContext.Session["PaymentProcessType"];
+
             _pushpay = new PushpayConnection(
                 CurrentDatabase.GetSetting("PushPayAccessToken", ""),
                 CurrentDatabase.GetSetting("PushPayRefreshToken", ""),
@@ -39,10 +41,10 @@ namespace CmsWeb.Areas.Setup.Controllers
                 Configuration.Current.OAuth2TokenEndpoint,
                 Configuration.Current.TouchpointAuthServer,
                 Configuration.Current.OAuth2AuthorizeEndpoint);
-            _pushpayPayment = new PushpayPayment(_pushpay, CurrentDatabase);
+            _pushpayPayment = new PushpayPayment(_pushpay, CurrentDatabase, processType);
             _resolver = new PushpayResolver(_pushpay, CurrentDatabase);
 
-            _merchantHandle = CurrentDatabase.Setting("PushpayMerchant", null);
+            _merchantHandle = _pushpayPayment._merchantHandle;
             _givingLink = $"{Configuration.Current.PushpayGivingLinkBase}/{_merchantHandle}";
         }
 

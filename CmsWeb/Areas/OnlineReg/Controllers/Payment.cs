@@ -315,8 +315,18 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return Message("no outstanding transaction");
             }
 
-            if (CurrentDatabase.GetSetting("TransactionGateway", "") == "Pushpay")
+            int? GatewayId = (from e in CurrentDatabase.PaymentProcess
+                              join d in CurrentDatabase.GatewayAccount on e.GatewayAccountId equals d.GatewayAccountId into gj
+                              from sub in gj.DefaultIfEmpty()
+                              where e.ProcessId == (int)PaymentProcessTypes.OnlineRegistration
+                              select new
+                              {
+                                  sub.GatewayId
+                              }).ToList()[0].GatewayId;
+
+            if ((int)GatewayTypes.Pushpay == GatewayId)
             {
+                Session["PaymentProcessType"] = PaymentProcessTypes.OnlineRegistration;
                 return Redirect($"/Pushpay/PayAmtDue/{ti.Id}/{amtdue}");
             }
 #if DEBUG
@@ -330,6 +340,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
 #endif
             var pf = PaymentForm.CreatePaymentFormForBalanceDue(ti, amtdue, email);
+            pf.ProcessType = PaymentProcessTypes.OnlineRegistration;
 
             SetHeaders(pf.OrgId ?? 0);
 
