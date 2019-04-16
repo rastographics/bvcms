@@ -24,7 +24,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
         [HttpGet, Route("ForNewMeeting/{orgid:int}")]
         public ActionResult ForNewMeeting(int orgid)
         {
-            var oi = new SettingsAttendanceModel() { Id = orgid };
+            var oi = new SettingsAttendanceModel(orgid, CurrentDatabase);
             var defaultAttendCreditId = "0";
             if (oi.Schedules.Count > 0)
             {
@@ -64,7 +64,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
         public ActionResult ForNewRollsheet(Guid id)
         {
             var filter = CurrentDatabase.OrgFilter(id);
-            var oi = new SettingsAttendanceModel() { Id = filter.Id };
+            var oi = new SettingsAttendanceModel(filter.Id, CurrentDatabase);
             var m = new NewMeetingInfo()
             {
                 MeetingDate = oi.NextMeetingDate,
@@ -81,7 +81,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
         public ActionResult ForNewRallyRollsheet(Guid id)
         {
             var filter = CurrentDatabase.OrgFilter(id);
-            var oi = new SettingsAttendanceModel { Id = filter.Id };
+            var oi = new SettingsAttendanceModel(filter.Id, CurrentDatabase);
             var m = new NewMeetingInfo()
             {
                 MeetingDate = oi.NextMeetingDate,
