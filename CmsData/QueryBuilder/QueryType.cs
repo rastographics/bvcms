@@ -121,6 +121,7 @@ namespace CmsData
         IsCurrentPerson,
         IsCurrentUser,
         IsFamilyGiver,
+        IsFamilyGiverFunds,
         IsFamilyPledger,
         IsHeadOfHousehold,
         IsInactiveMemberOf,
