@@ -929,7 +929,6 @@
     <Compile Include="DbUtil\ITableWithExtraValues.cs" />
     <Content Include="App_Readme\Elmah.txt" />
     <Content Include="Migrations\20181022-3_create_Contributions2SearchIds.sql" />
-    <Content Include="Migrations\20190326_fix_mission_trip_supports.sql" />
     <Compile Include="Organization\OrgFilter.cs" />
     <Compile Include="Organization\OrgPerson.cs" />
     <Compile Include="Organization\OrgSchedule.cs" />
