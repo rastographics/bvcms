@@ -764,8 +764,6 @@ This search uses multiple steps which cannot be duplicated in a single query.
             }
             return null;
         }
-
-        private bool _isFinanceUser = false;
         private User _currentuser;
         public User CurrentUser
         {
@@ -779,14 +777,11 @@ This search uses multiple steps which cannot be duplicated in a single query.
                 GetCurrentUser();
                 return _currentuser;
             }
-
             set
             {
                 _currentuser = value;
-                _isFinanceUser = _roles?.Contains("Finance") ?? _currentuser?.InRole("Finance") ?? false;
             }
         }
-
         private void GetCurrentUser()
         {
             var q = from u in Users
@@ -805,7 +800,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
 
             _roles = i.roles;
             _roleids = i.roleids;
-            CurrentUser = i.u;
+            _currentuser = i.u;
         }
 
         private string[] _roles;
@@ -978,10 +973,6 @@ This search uses multiple steps which cannot be duplicated in a single query.
             public int PeopleId;
             public string Name;
             public decimal Amount;
-        }
-        public class Result
-        {
-            public string Status;
         }
         public class AttendMeetingInfo1
         {
@@ -1875,15 +1866,15 @@ This search uses multiple steps which cannot be duplicated in a single query.
         public IGateway Gateway(bool testing = false, PaymentProcessTypes? ProcessType = null)
         {
             int? GatewayId = (from e in PaymentProcess
-                                 join d in GatewayAccount on e.GatewayAccountId equals d.GatewayAccountId into gj
-                                 from sub in gj.DefaultIfEmpty()
-                                 where e.ProcessId == (int)ProcessType
+                              join d in GatewayAccount on e.GatewayAccountId equals d.GatewayAccountId into gj
+                              from sub in gj.DefaultIfEmpty()
+                              where e.ProcessId == (int)ProcessType
                               select new
-                                 {
-                                     sub.GatewayId
-                                 }).ToList()[0].GatewayId;
+                              {
+                                  sub.GatewayId
+                              }).ToList()[0].GatewayId;
 
-            if(GatewayId.IsNull())
+            if (GatewayId.IsNull())
                 throw new Exception("This process doesn't has a Gateway configured");
 
             switch (GatewayId)
@@ -1894,8 +1885,8 @@ This search uses multiple steps which cannot be duplicated in a single query.
                     return new SageGateway(this, testing, ProcessType);
                 case (int)GatewayTypes.Transnational:
                     return new TransNationalGateway(this, testing, ProcessType);
-                // case (int)GatewayTypes.Acceptiva:
-                // break;
+                case (int)GatewayTypes.Acceptiva:
+                    return new AcceptivaGateway(this, testing, ProcessType);
                 default:
                     break;
             }
@@ -1960,13 +1951,11 @@ This search uses multiple steps which cannot be duplicated in a single query.
             var result = ExecuteMethodCall(this, (MethodInfo)MethodBase.GetCurrentMethod());
             return (int)(result?.ReturnValue ?? 0);
         }
-
         public DbConnection ReadonlyConnection()
         {
             var finance = CurrentRoles().Contains("Finance");
             return new SqlConnection(Util.ReadOnlyConnectionString(Host, finance));
         }
-
         public void Log2Content(string file, string data)
         {
             var c = Content(file, ContentTypeCode.TypeText);

@@ -92,7 +92,16 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             //This will change to gatewayType in order to decide which process choose.
             //if (m.gatewayType == "Redirect")
-            if (CurrentDatabase.GetSetting("TransactionGateway", "") == "Pushpay")
+            int? GatewayId = (from e in CurrentDatabase.PaymentProcess
+                              join d in CurrentDatabase.GatewayAccount on e.GatewayAccountId equals d.GatewayAccountId into gj
+                              from sub in gj.DefaultIfEmpty()
+                              where e.ProcessId == (int)m.ProcessType
+                              select new
+                              {
+                                  sub.GatewayId
+                              }).ToList()[0].GatewayId;
+
+            if ((int)GatewayTypes.Pushpay == GatewayId)
             {
                 int orgId;
                 ret = pf.ProcessExternalPayment(m, out orgId);

@@ -16,14 +16,16 @@ namespace CmsData.Finance
         private readonly string _merch_ach_id;
         private readonly string _merch_cc_id;
         private readonly CMSDataContext db;
+        private readonly PaymentProcessTypes? ProcessType;
 
         public string GatewayType => "Acceptiva";
 
-        public AcceptivaGateway(CMSDataContext db, bool testing)
+        public AcceptivaGateway(CMSDataContext db, bool testing, PaymentProcessTypes? ProcessType)
         {
             this.db = db;
+            this.ProcessType = ProcessType;
 
-            if (testing || db.Setting("GatewayTesting"))
+            if (testing || new MultipleGatewayUtils(db).Setting("GatewayTesting", (int)ProcessType))
             {
                 _apiKey = "CZDWp7dXCo4W3xTA7LtWAijidvPdj2wa";
                 _merch_ach_id = "dKdDFtqC";
@@ -31,9 +33,9 @@ namespace CmsData.Finance
             }
             else
             {
-                _apiKey = db.GetSetting("AcceptivaApiKey", "");
-                _merch_ach_id = db.GetSetting("AcceptivaAchId", "");
-                _merch_cc_id = db.GetSetting("AcceptivaCCId", "");
+                _apiKey = new MultipleGatewayUtils(db).Setting("AcceptivaApiKey", "", (int)ProcessType);
+                _merch_ach_id = new MultipleGatewayUtils(db).Setting("AcceptivaAchId", "", (int)ProcessType);
+                _merch_cc_id = new MultipleGatewayUtils(db).Setting("AcceptivaCCId", "", (int)ProcessType);
 
                 if (string.IsNullOrWhiteSpace(_apiKey))
                     throw new Exception("AcceptivaApiKey setting not found, which is required for TransNational.");
@@ -206,7 +208,7 @@ namespace CmsData.Finance
             var type = "checking";
             if (pid.HasValue)
             {
-                var usesaving = db.Setting("UseSavingAccounts");
+                var usesaving = new MultipleGatewayUtils(db).Setting("UseSavingAccounts", (int)ProcessType);
                 if (usesaving)
                 {
                     if (Person.GetExtraValue(db, pid.Value, "AchSaving")?.BitValue == true)
