@@ -25,10 +25,10 @@
                         </div>
                     </div>
                     <div class="col-sm-6">
-                        <label for="Division" class="control-label">Division</label>
+                        <label for="Type" class="control-label">Type</label>
                         <div class="form-inline">
                             <div class="input-group col-sm-6">
-                                @Html.DropDownListFor(vm => vm.Division, Model.Divisions(), new { @class = "form-control" })
+                                @Html.DropDownListFor(vm => vm.Type, Model.Types(), new { @class = "form-control" })
                             </div>
                             <div class="input-group">
                                 <button type="submit" class="btn btn-primary">Run</button>
