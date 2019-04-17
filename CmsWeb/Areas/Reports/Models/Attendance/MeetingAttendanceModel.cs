@@ -16,24 +16,24 @@ namespace CmsWeb.Areas.Reports.Models.Attendance
     {
         public DateTime StartDt { get; set; }
         public DateTime EndDt { get; set; }
-        public int Division { get; set; }
+        public int Type { get; set; }
         private readonly List<DateTime> weeks;
 
         private CMSDataContext CurrentDatabase { get; set; }
 
-        public MeetingAttendanceModel(CMSDataContext db, DateTime dt1, DateTime dt2, string division)
+        public MeetingAttendanceModel(CMSDataContext db, DateTime dt1, DateTime dt2, string type)
         {
             CurrentDatabase = db;
             StartDt = dt1;
             EndDt = dt2;
-            Division = division.ToInt();
+            Type = type.ToInt();
             weeks = CurrentDatabase.SundayDates(StartDt, EndDt).Select(w => w.Dt.Value).ToList();
         }
 
-        public SelectList Divisions()
+        public SelectList Types()
         {
-            return new SelectList(new CodeValueModel().AllOrgDivTags(),
-                "Id", "Value", Division);
+            return new SelectList(new CodeValueModel().MeetingCategories(),
+                "Id", "Value", Type);
         }
 
         public class ColInfo
@@ -43,8 +43,9 @@ namespace CmsWeb.Areas.Reports.Models.Attendance
             public DateTime EndDt { get; set; }
         }
 
-        public class DivInfo
+        public class TypeInfo
         {
+            public int Id { get; set; }
             public string Name { get; set; }
             private List<ColInfo> cols;
 
@@ -104,7 +105,6 @@ namespace CmsWeb.Areas.Reports.Models.Attendance
                 a.TotalPeople = meetings.Sum(mm => mm.Present);
                 return a;
             }
-
         }
 
         public class WeekInfo
@@ -115,6 +115,7 @@ namespace CmsWeb.Areas.Reports.Models.Attendance
 
         public class OrgInfo
         {
+            public int Id { get; set; }
             public string Name { get; set; }
             public List<MeetInfo> Meetings;
             public List<DateTime> WeekDates { get; set; }
@@ -135,8 +136,7 @@ namespace CmsWeb.Areas.Reports.Models.Attendance
                     return q.Where(w => w.Meetings.Sum(m => m.Present) > 0).ToList();
                 }
             }
-
-
+            
             public Cell Column(ColInfo c)
             {
                 var a = new Cell();
@@ -172,19 +172,21 @@ namespace CmsWeb.Areas.Reports.Models.Attendance
             public int Present { get; set; }
         }
 
-        public List<DivInfo> FetchInfo()
+        public List<TypeInfo> FetchInfo()
         {
-            var q = from div in CurrentDatabase.Divisions
-                            where div.Id == Division
-                            select new DivInfo
+            var q = from cat in CurrentDatabase.MeetingCategories
+                            select new TypeInfo
                             {
-                                Name = div.Name,
+                                Id = (int) cat.Id,
+                                Name = cat.Description,
                                 WeekDates = weeks,
                                 Orgs = (from org in CurrentDatabase.Organizations
-                                        where org.DivisionId == div.Id
+                                        join meet in CurrentDatabase.Meetings on org.OrganizationId equals meet.OrganizationId
                                         where org.OrganizationStatusId == OrgStatusCode.Active
+                                        where meet.Description == cat.Description
                                         select new OrgInfo
                                         {
+                                            Id = org.OrganizationId,
                                             Name = org.OrganizationName,
                                             Meetings = (from m in CurrentDatabase.Meetings
                                                         where org.OrganizationId == m.OrganizationId
@@ -197,12 +199,18 @@ namespace CmsWeb.Areas.Reports.Models.Attendance
                                                             OrgName = org.OrganizationName,
                                                             Present = m.MaxCount ?? 0
                                                         }).ToList()
-                                        }).ToList()
-
+                                        })
+                                        .Where(org => org.Meetings.Count > 0)
+                                        .OrderBy(org => org.Name)
+                                        .GroupBy(org => org.Id)
+                                        .Select(org => org.FirstOrDefault()).ToList()
                             };
+            if (Type != 0)
+            {
+                q = q.Where(cat => cat.Id == Type);
+            }
             var list = q.ToList();
             return list;
         }
-        
     }
 }
