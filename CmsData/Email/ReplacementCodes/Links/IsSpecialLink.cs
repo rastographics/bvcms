@@ -9,7 +9,8 @@ namespace CmsData
     {
         public static bool IsSpecialLink(string link)
         {
-            return new List<string>()
+            link = link.ToLower();
+            var SpecialLinks = new List<string>()
             {
                 "http://votelink",
                 "https://votelink",
@@ -34,7 +35,15 @@ namespace CmsData
                 "http://sendlink2",
                 "https://sendlink2",
                 "{emailhref}",
-            }.Contains(link.ToLower());
+            };
+            foreach (string item in SpecialLinks)
+            {
+                if (link.Contains(item))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
     }
