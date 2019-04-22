@@ -16,7 +16,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
         [HttpPost, Route("~/OrgSearchDrop")]
         public ActionResult Index(OrgSearchModel m)
         {
-            var model = new OrgSearchDrop(m);
+            var model = new OrgSearchDrop(m, CurrentDatabase.Host);
             return View(model);
         }
         [HttpPost]

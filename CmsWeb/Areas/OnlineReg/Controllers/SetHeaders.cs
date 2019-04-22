@@ -76,14 +76,14 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (!shell.HasValue() && (settings == null || !settings.ContainsKey(id)))
             {
                 setting = CurrentDatabase.CreateRegistrationSettings(id);
-                shell = DbUtil.Content(setting.Shell, null);
+                shell = DbUtil.Content(CurrentDatabase, setting.Shell, null);
             }
             if (!shell.HasValue() && settings != null && settings.ContainsKey(id))
             {
-                shell = DbUtil.Content(settings[id].Shell, null);
+                shell = DbUtil.Content(CurrentDatabase, settings[id].Shell, null);
             }
             if (!shell.HasValue())
-                shell = DbUtil.Content("ShellDiv-" + id, DbUtil.Content("ShellDefault", ""));
+                shell = DbUtil.Content(CurrentDatabase, "ShellDiv-" + id, DbUtil.Content(CurrentDatabase, "ShellDefault", ""));
 
             var s = shell;
             if (s.HasValue())
@@ -99,12 +99,12 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             else
             {
                 ViewBag.hasshell = false;
-                ViewBag.header = DbUtil.Content("OnlineRegHeader-" + id,
-                    DbUtil.Content("OnlineRegHeader", ""));
-                ViewBag.top = DbUtil.Content("OnlineRegTop-" + id,
-                    DbUtil.Content("OnlineRegTop", ""));
-                ViewBag.bottom = DbUtil.Content("OnlineRegBottom-" + id,
-                    DbUtil.Content("OnlineRegBottom", ""));
+                ViewBag.header = DbUtil.Content(CurrentDatabase, "OnlineRegHeader-" + id,
+                    DbUtil.Content(CurrentDatabase, "OnlineRegHeader", ""));
+                ViewBag.top = DbUtil.Content(CurrentDatabase, "OnlineRegTop-" + id,
+                    DbUtil.Content(CurrentDatabase, "OnlineRegTop", ""));
+                ViewBag.bottom = DbUtil.Content(CurrentDatabase, "OnlineRegBottom-" + id,
+                    DbUtil.Content(CurrentDatabase, "OnlineRegBottom", ""));
             }
         }
 

@@ -77,23 +77,23 @@ namespace ImageData
 		{
 			get	{ return this.GetTable< Other>(); }
 
-		}
+        }
 
-        public static CMSImageDataContext Create(HttpContextBase currentHttpContext)
+        public static CMSImageDataContext Create(string host)
         {
-            var host = currentHttpContext.Request.Url.Authority.Split('.', ':')[0];
             var cs = ConfigurationManager.ConnectionStrings["CMS"];
             var cb = new SqlConnectionStringBuilder(cs.ConnectionString);
             cb.InitialCatalog = $"CMSi_{host}";
             cb.PersistSecurityInfo = true;
             var connectionString = cb.ConnectionString;
 
-            return CMSImageDataContext.Create(connectionString);
+            return new CMSImageDataContext(connectionString);
         }
 
-        private static CMSImageDataContext Create(string connectionString)
+        public static CMSImageDataContext Create(HttpContextBase currentHttpContext)
         {
-            return new CMSImageDataContext(connectionString);
+            var host = currentHttpContext.Request.Url.Authority.Split('.', ':')[0];
+            return CMSImageDataContext.Create(host);
         }
 
         #endregion

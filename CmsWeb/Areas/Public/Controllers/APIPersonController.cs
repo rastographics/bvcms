@@ -2,6 +2,7 @@ using CmsData;
 using CmsData.API;
 using CmsWeb.Areas.People.Models;
 using CmsWeb.Lifecycle;
+using CmsWeb.Membership;
 using CmsWeb.Models;
 using System;
 using System.IO;
@@ -27,7 +28,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 return Content($"<Login error=\"{ret.Substring(1)}\" />");
             }
 
-            var validationStatus = AccountModel.AuthenticateLogon(user, password, Request.Url.OriginalString);
+            var validationStatus = AccountModel.AuthenticateLogon(user, password, Request.Url.OriginalString, CurrentDatabase);
             if (!validationStatus.IsValid)
             {
                 return Content($"<Login error=\"{user ?? "(null)"} not valid\">{validationStatus.ErrorMessage}</Login>");
@@ -69,7 +70,7 @@ namespace CmsWeb.Areas.Public.Controllers
             return Content(GetOTLoginLink(url, user));
         }
 
-        public static string GetOTLoginLink(string url, string user)
+        public string GetOTLoginLink(string url, string user)
         {
             //todo: static?
             var ot = new OneTimeLink
@@ -78,16 +79,16 @@ namespace CmsWeb.Areas.Public.Controllers
                 Querystring = user,
                 Expires = DateTime.Now.AddHours(24)
             };
-            DbUtil.Db.OneTimeLinks.InsertOnSubmit(ot);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.OneTimeLinks.InsertOnSubmit(ot);
+            CurrentDatabase.SubmitChanges();
 
-            var b = DbUtil.Db.ServerLink();
-            if (url.StartsWith(b))
+            var rootUrl = CurrentDatabase.ServerLink();
+            if (url.StartsWith(rootUrl))
             {
-                url = url.Substring(b.Length - (b.EndsWith("/") ? 1 : 0));
+                url = url.Substring(rootUrl.Length - (rootUrl.EndsWith("/") ? 1 : 0));
             }
 
-            return $"{Util.CmsHost2}Logon?ReturnUrl={HttpUtility.UrlEncode(url)}&otltoken={ot.Id.ToCode()}";
+            return $"{rootUrl}Logon?ReturnUrl={HttpUtility.UrlEncode(url)}&otltoken={ot.Id.ToCode()}";
         }
 
         [HttpPost]
@@ -108,7 +109,7 @@ namespace CmsWeb.Areas.Public.Controllers
             CurrentDatabase.OneTimeLinks.InsertOnSubmit(ot);
             CurrentDatabase.SubmitChanges();
             DbUtil.LogActivity($"APIPerson GetOneTimeRegisterLink {OrgId}, {PeopleId}");
-            return Content(Util.CmsHost2 + "OnlineReg/RegisterLink/" + ot.Id.ToCode());
+            return Content(CurrentDatabase.ServerLink() + "OnlineReg/RegisterLink/" + ot.Id.ToCode());
         }
 
         [HttpGet]

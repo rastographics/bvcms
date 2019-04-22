@@ -57,7 +57,7 @@ namespace CmsWeb.Areas.Main.Controllers
                 if (User.IsInRole("EmailBuilder"))
                     m.UseUnlayer = useUnlayer;
 
-                m.Host = Util.Host;
+                m.Host = CurrentDatabase.Host;
 
                 if (body.HasValue())
                 {
@@ -81,7 +81,7 @@ namespace CmsWeb.Areas.Main.Controllers
 
             var me = new MassEmailer(id, parents, ccparents, nodups);
 
-            me.Host = Util.Host;
+            me.Host = CurrentDatabase.Host;
             me.OnlyProspects = onlyProspects.GetValueOrDefault();
 
             // Unless UX-AllowMyDataUserEmails is true, CmsController.OnActionExecuting() will filter them
@@ -428,7 +428,7 @@ namespace CmsWeb.Areas.Main.Controllers
                 return Json(new { id = 0, error = ex.Message });
             }
 
-            var host = Util.Host;
+            var host = CurrentDatabase.Host;
             var currorgid = CurrentDatabase.CurrentSessionOrgId;
             // save these from HttpContext to set again inside thread local storage
             var userEmail = Util.UserEmail;
@@ -450,7 +450,7 @@ namespace CmsWeb.Areas.Main.Controllers
             {
                 try
                 {
-                    var db = DbUtil.Create(host);
+                    var db = CMSDataContext.Create(host);
                     var cul = CurrentDatabase.Setting("Culture", "en-US");
                     Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
                     Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
@@ -468,7 +468,7 @@ namespace CmsWeb.Areas.Main.Controllers
                     var errorLog = new SqlErrorLog(cb.ConnectionString) { ApplicationName = "BVCMS" };
                     errorLog.Log(new Error(ex2));
 
-                    var db = DbUtil.Create(host);
+                    var db = CMSDataContext.Create(host);
                     var equeue = db.EmailQueues.Single(ee => ee.Id == id);
                     equeue.Error = ex.Message.Truncate(200);
                     db.SubmitChanges();

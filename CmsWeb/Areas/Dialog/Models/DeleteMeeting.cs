@@ -16,11 +16,12 @@ namespace CmsWeb.Areas.Dialog.Models
         public int MeetingId { get; set; }
         public int OrgId { get; set; }
         public DeleteMeeting() { }
-        public DeleteMeeting(int id)
+        public DeleteMeeting(int id, CMSDataContext db)
         {
+            Host = db.Host;
             QueryId = Guid.NewGuid();
             MeetingId = id;
-            var mm = DbUtil.Db.Meetings.Single(m => m.MeetingId == id);
+            var mm = db.Meetings.Single(m => m.MeetingId == id);
             OrgId = mm.OrganizationId;
             Count = mm.Attends.Count(a => a.AttendanceFlag || a.EffAttendFlag == true);
         }
@@ -49,7 +50,7 @@ namespace CmsWeb.Areas.Dialog.Models
 
         private static void DoWork(DeleteMeeting model)
         {
-            var db = DbUtil.Create(model.Host);
+            var db = CMSDataContext.Create(model.Host);
             var cul = db.Setting("Culture", "en-US");
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
@@ -57,8 +58,6 @@ namespace CmsWeb.Areas.Dialog.Models
             LongRunningOperation lop = null;
             foreach (var pid in model.pids)
             {
-                //db.Dispose();
-                //db = DbUtil.Create(model.Host);
                 Attend.RecordAttendance(db, pid, model.MeetingId, false);
                 lop = FetchLongRunningOperation(db, Op, model.QueryId);
                 Debug.Assert(lop != null, "r != null");

@@ -19,7 +19,7 @@ namespace CmsWeb.Areas.People.Models.Task
         public TaskModel()
         {
             _host = Util.Host;
-            _cmsDataContext = DbUtil.Create(_host);
+            _cmsDataContext = CMSDataContext.Create(_host);
 
         }
         public TaskModel(string host, CMSDataContext db)

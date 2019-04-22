@@ -129,21 +129,6 @@ namespace CmsData
             Db.SubmitChanges();
         }
 
-        public void ChangePassword(string newpassword)
-        {
-            CMSMembershipProvider.provider.AdminOverride = true;
-            var mu = CMSMembershipProvider.provider.GetUser(Username, false);
-            if (mu == null)
-            {
-                return;
-            }
-
-            mu.UnlockUser();
-            mu.ChangePassword(mu.ResetPassword(), newpassword);
-            TempPassword = newpassword;
-            CMSMembershipProvider.provider.AdminOverride = false;
-        }
-
         public string PasswordSetOnly { get; set; }
 
         public bool CanAssign(CMSDataContext db, string role)

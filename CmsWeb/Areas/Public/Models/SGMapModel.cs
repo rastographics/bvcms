@@ -143,7 +143,7 @@ namespace CmsWeb.Models
                 DbUtil.Db.GeoCodes.InsertAllOnSubmit(addlist);
             DbUtil.Db.SubmitChanges();
 
-            var template = DbUtil.Content("SGF-MapTooltip", "");
+            var template = DbUtil.Content(DbUtil.Db, "SGF-MapTooltip", "");
             if (string.IsNullOrEmpty(template))
             {
                 template = @"

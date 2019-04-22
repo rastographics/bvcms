@@ -4,6 +4,7 @@ using CmsWeb.Areas.Manage.Models;
 using CmsWeb.Areas.People.Models.Task;
 using CmsWeb.Areas.Reports.Models;
 using CmsWeb.Lifecycle;
+using CmsWeb.Membership;
 using CmsWeb.MobileAPI;
 using CmsWeb.Models;
 using Dapper;

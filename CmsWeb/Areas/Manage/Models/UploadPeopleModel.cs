@@ -49,8 +49,8 @@ namespace CmsWeb.Models
 
         public UploadPeopleModel(string host, int peopleId, bool noupdate, bool testing = false)
         {
-            JobDbContext = DbUtil.Create(host);
-            ProgressDbContext = DbUtil.Create(host);
+            JobDbContext = CMSDataContext.Create(host);
+            ProgressDbContext = CMSDataContext.Create(host);
             PeopleId = peopleId;
             Noupdate = noupdate;
             Testing = testing;
@@ -60,7 +60,7 @@ namespace CmsWeb.Models
 
         public UploadPeopleModel(CMSDataContext existingProgressDbContext, string host, int peopleId, bool noupdate, bool testing = false)
         {
-            JobDbContext = DbUtil.Create(host);
+            JobDbContext = CMSDataContext.Create(host);
             ProgressDbContext = existingProgressDbContext;
             PeopleId = peopleId;
             Noupdate = noupdate;
