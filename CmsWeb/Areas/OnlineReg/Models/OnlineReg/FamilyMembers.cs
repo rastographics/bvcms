@@ -14,6 +14,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             public string Name { get; set; }
             public int? Age { get; set; }
         }
+
         public IEnumerable<FamilyMember> FamilyMembers()
         {
             var family = (from p in user.Family.People
