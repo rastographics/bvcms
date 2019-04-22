@@ -27,7 +27,7 @@ namespace CmsWeb.Areas.Org.Controllers
         [Route("~/Meeting/{id:int}")]
         public ActionResult Index(int id, bool? showall, bool? sortbyname, bool? CurrentMembers, bool? showlarge)
         {
-            var m = new MeetingModel(id)
+            var m = new MeetingModel(id, CurrentDatabase)
             {
                 currmembers = CurrentMembers ?? false,
                 showall = showall == true,
@@ -78,7 +78,7 @@ namespace CmsWeb.Areas.Org.Controllers
                 return RedirectShowError("no id");
             }
 
-            var m = new MeetingModel(id.Value);
+            var m = new MeetingModel(id.Value, CurrentDatabase);
             m.showall = true;
             m.CommitsOnly = commitsOnly == true;
             if (m.meeting == null)
@@ -103,7 +103,7 @@ namespace CmsWeb.Areas.Org.Controllers
         public ContentResult EditGroup(string id, string value)
         {
             var i = id.Substring(2).ToInt();
-            var m = new MeetingModel(i);
+            var m = new MeetingModel(i, CurrentDatabase);
             m.meeting.GroupMeetingFlag = value == "True";
             CurrentDatabase.SubmitChanges();
             if (m.meeting.GroupMeetingFlag)
@@ -118,7 +118,7 @@ namespace CmsWeb.Areas.Org.Controllers
         public ContentResult EditAttendCredit(string id, string value)
         {
             var i = id.Substring(2).ToInt();
-            var m = new MeetingModel(i);
+            var m = new MeetingModel(i, CurrentDatabase);
             m.meeting.AttendCreditId = value.ToInt();
             CurrentDatabase.SubmitChanges();
             return Content(m.AttendCreditType());
@@ -140,7 +140,7 @@ namespace CmsWeb.Areas.Org.Controllers
         public ContentResult EditMeetingCategory(string id, string value)
         {
             var i = id.Substring(2).ToInt();
-            var m = new MeetingModel(i);
+            var m = new MeetingModel(i, CurrentDatabase);
             m.meeting.Description = HttpUtility.HtmlDecode(value);
             CurrentDatabase.SubmitChanges();
             return Content(HttpUtility.HtmlAttributeEncode(m.meeting.Description ?? string.Empty));
@@ -171,7 +171,7 @@ namespace CmsWeb.Areas.Org.Controllers
             try
             {
                 var i = id.Substring(2).ToInt();
-                var m = new MeetingModel(i);
+                var m = new MeetingModel(i, CurrentDatabase);
                 switch (id[0])
                 {
                     case 'd':
@@ -215,7 +215,7 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost]
         public ContentResult JoinAllVisitors(int id)
         {
-            var m = new MeetingModel(id);
+            var m = new MeetingModel(id, CurrentDatabase);
             var n = 0;
             foreach (var a in m.VisitAttends())
             {
@@ -239,7 +239,7 @@ namespace CmsWeb.Areas.Org.Controllers
                 return RedirectShowError("no id");
             }
 
-            var m = new MeetingModel(id.Value);
+            var m = new MeetingModel(id.Value, CurrentDatabase);
             m.showall = true;
             if (m.meeting == null)
             {
@@ -262,7 +262,7 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost]
         public ActionResult TicketMeeting(int id)
         {
-            var m = new MeetingModel(id);
+            var m = new MeetingModel(id, CurrentDatabase);
             return View(m);
         }
 
@@ -270,7 +270,11 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost]
         public ActionResult ScanTicket(string wandtarget, int MeetingId, bool? requireMember, bool? requireRegistered)
         {
-            var d = new ScanTicketInfo { person = new Person() };
+            var d = new ScanTicketInfo
+            {
+                person = new Person(),
+                model = new MeetingModel(MeetingId, CurrentDatabase)
+            };
             var pid = 0;
 
             if (wandtarget.StartsWith("M."))
@@ -581,7 +585,7 @@ namespace CmsWeb.Areas.Org.Controllers
 
         public ActionResult NewExtraValue(int id, string field, string value, bool multiline)
         {
-            var m = new MeetingModel(id);
+            var m = new MeetingModel(id, CurrentDatabase);
             try
             {
                 var mev = new MeetingExtra { MeetingId = id, Field = field, Data = value, DataType = multiline ? "text" : null };
@@ -601,7 +605,7 @@ namespace CmsWeb.Areas.Org.Controllers
             var e = CurrentDatabase.MeetingExtras.Single(ee => ee.MeetingId == id && ee.Field == field);
             CurrentDatabase.MeetingExtras.DeleteOnSubmit(e);
             CurrentDatabase.SubmitChanges();
-            var m = new MeetingModel(id);
+            var m = new MeetingModel(id, CurrentDatabase);
             return View("ExtrasGrid", m.meeting);
         }
 
@@ -637,7 +641,7 @@ namespace CmsWeb.Areas.Org.Controllers
                 return RedirectShowError("no id");
             }
 
-            var m = new MeetingModel(id.Value)
+            var m = new MeetingModel(id.Value, CurrentDatabase)
             {
                 currmembers = currentMembers ?? false
             };
@@ -714,7 +718,7 @@ namespace CmsWeb.Areas.Org.Controllers
             public string message { get; set; }
             public bool SwitchOrg { get; set; }
 
-            public MeetingModel model => new MeetingModel(meeting.MeetingId);
+            public MeetingModel model { get; set; }
 
             public Attend attended { get; set; }
             public OrganizationMember orgmember { get; set; }

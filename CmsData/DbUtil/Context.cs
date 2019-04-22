@@ -823,7 +823,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
 
             _roles = i.roles;
             _roleids = i.roleids;
-            _currentuser = i.u;
+            CurrentUser = i.u;
         }
 
         private string[] _roles;
@@ -1537,6 +1537,10 @@ This search uses multiple steps which cannot be duplicated in a single query.
                      let a = s.SplitStr(":", 2)
                      select new[] { a[0], a[1] };
             return q2;
+        }
+        public Content ContentFromID(int id)
+        {
+            return Contents.SingleOrDefault(c => c.Id == id);
         }
         public Content Content(string name)
         {

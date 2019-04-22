@@ -53,6 +53,18 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     return;
                 }
             }
+
+            if (p.org != null && p.Found == true &&
+                p.IsCommunityGroup() && DbUtil.Db.Setting("RestrictCGSignupsTo24Hrs"))
+            {
+                if (!p.CanRegisterInCommunityGroup(DateTime.Now.AddDays(-1)))
+                {
+                    var message = DbUtil.Db.Setting("RestrictCGSignupsTo24HrsMessage", "Cannot register for multiple community groups on the same day.");
+                    modelState.AddModelError("fammember-" + p.PeopleId, message);
+                    return;
+                }
+            }
+            
             List[index] = p;
 
             p.ValidateModelForFind(modelState, id, selectFromFamily: true);

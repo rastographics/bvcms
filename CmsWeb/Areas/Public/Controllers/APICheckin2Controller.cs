@@ -163,7 +163,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 : new Family();
 
             var position = CurrentDatabase.ComputePositionInFamily(m.Birthdate.Age0(), m.marital == 20, id) ?? 10;
-            var p = Person.Add(f, position,
+            var p = Person.Add(CurrentDatabase, f, position,
                 null, m.first, m.goesby, m.last, m.Birthdate.ToString2("d"), false, m.gender,
                 OriginCode.Visit, null);
 

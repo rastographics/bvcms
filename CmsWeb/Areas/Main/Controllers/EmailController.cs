@@ -217,7 +217,7 @@ namespace CmsWeb.Areas.Main.Controllers
 
             if (draftId.HasValue && draftId > 0)
             {
-                content = DbUtil.ContentFromID(CurrentDatabase, draftId.Value);
+                content = CurrentDatabase.ContentFromID(draftId.Value);
             }
 
             if (content != null)
