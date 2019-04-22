@@ -133,6 +133,25 @@ namespace CmsWeb.Code
             }.Union(q);
         }
 
+        public IEnumerable<CodeValueItem> MeetingCategories()
+        {
+            var q = from cat in Db.MeetingCategories
+                    orderby cat.Description
+                    select new CodeValueItem
+                    {
+                        Id = (int) cat.Id,
+                        Value = $"{cat.Description}"
+                    };
+            return new[]
+            {
+                new CodeValueItem
+                {
+                    Value = "(not specified)",
+                    Id = 0
+                }
+            }.Union(q);
+        }
+
         public IEnumerable<CodeValueItem> AttendanceTypeCodes()
         {
             return from c in Db.AttendTypes
