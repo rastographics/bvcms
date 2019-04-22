@@ -38,6 +38,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
 
                 var fund = csv["fund"];
                 var ffid = DbUtil.Db.ContributionFunds.FirstOrDefault(f => f.FundName == fund && f.FundStatusId == 1)?.FundId ?? fid;
+                var pid = GetPersonByEmail(csv["email"]);
                 var desc = $"{csv["first_name"]} {csv["last_name"]};{csv["email"]}";
 
                 if (bundleHeader == null)
@@ -47,6 +48,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
 
                 var bd = BatchImportContributions.AddContributionDetail(dt ?? date, ffid, amount, null, "", desc);
                 details.Add(bd);
+                bd.Contribution.PeopleId = pid;
                 bd.Contribution.ContributionDesc = desc;
             }
 
@@ -62,6 +64,17 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                 return bundleHeader.BundleHeaderId;
             }
             return null;
+        }
+
+        private static int? GetPersonByEmail(string emailAddress)
+        {
+            if (string.IsNullOrEmpty(emailAddress?.Trim()))
+            {
+                return null;
+            }
+
+            var person = DbUtil.Db.People.FirstOrDefault(p => p.EmailAddress == emailAddress || p.EmailAddress2 == emailAddress);
+            return person?.PeopleId;
         }
     }
 }
