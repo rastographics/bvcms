@@ -6,7 +6,7 @@
   <Header>Attendance Summary</Header>
   <Report link="/Reports/ChurchAttendance" target="_blank">Week at a Glance</Report>
   <Report link="/Reports/ChurchAttendance2" target="_blank">Average Week at a Glance</Report>
-  <Report link ="/Reports/MeetingAttendance" target="_blank">Attendance by Meeting Type</Report>
+  <Report requiredSetting="UseMeetingDescriptionPickList" link ="/Reports/MeetingAttendance" target="_blank">Attendance by Meeting Type</Report>
   <Header excludedRoles="OrgLeadersOnly">Decisions</Header>
   <Report excludedRoles="OrgLeadersOnly" link="/Reports/WeeklyDecisions" target="_blank">Weekly Decisions</Report>
   <Report excludedRoles="OrgLeadersOnly" link="/Reports/Decisions" target="_blank">Decision Summary</Report>
