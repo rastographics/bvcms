@@ -48,11 +48,11 @@ namespace CmsData.Finance
 
         public bool CanVoidRefund => true;
 
-        public bool CanGetSettlementDates => throw new NotImplementedException();
+        public bool CanGetSettlementDates => false;
 
-        public bool UseIdsForSettlementDates => throw new NotImplementedException();
+        public bool UseIdsForSettlementDates => false;
 
-        public bool CanGetBounces => throw new NotImplementedException();
+        public bool CanGetBounces => false;
 
         public TransactionResponse AuthCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description, int tranid, string cardcode, string email, string first, string last, string addr, string addr2, string city, string state, string country, string zip, string phone)
         {
