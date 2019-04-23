@@ -175,16 +175,17 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where
 		VALUES
 		(1, 'IsDeveloperMode', 'true', 1),
 		(1, 'PushpayMerchant', '', 0),
-		(2, 'M_ID', '', 0),
-		(2, 'M_KEY', '', 0),
-		(2, 'SageOriginatorId', '', 0),
+		(2, 'M_ID', '856423594649', 0),
+		(2, 'M_KEY', 'M5Q4C9P2T4N5', 0),
+		(2, 'SageOriginatorId', '1111111111', 0),
 		(2, 'GatewayTesting', 'true', 1),
-		(3, 'TNBUsername', '', 0),
-		(3, 'TNBPassword', '', 0),
+		(3, 'TNBUsername', 'faithbased', 0),
+		(3, 'TNBPassword', 'bprogram2', 0),
 		(3, 'GatewayTesting', 'true', 1),
 		(4, 'AcceptivaApiKey', '', 0),
 		(4, 'AcceptivaAchId', '', 0),
-		(4, 'AcceptivaCCId', '', 0);
+		(4, 'AcceptivaCCId', '', 0),
+		(4, 'UseSavingAccounts', 'true', 1);
 	END
 GO
 

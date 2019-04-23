@@ -29,7 +29,16 @@ namespace CmsWeb.Areas.Setup.Controllers
 
         public PushpayController(RequestManager requestManager) : base(requestManager)
         {
-            PaymentProcessTypes processType = (PaymentProcessTypes)requestManager.CurrentHttpContext.Session["PaymentProcessType"];
+            PaymentProcessTypes processType = PaymentProcessTypes.OneTimeGiving;
+            try
+            {
+                processType = (PaymentProcessTypes)requestManager.CurrentHttpContext.Session["PaymentProcessType"];
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            
 
             _pushpay = new PushpayConnection(
                 CurrentDatabase.GetSetting("PushPayAccessToken", ""),
