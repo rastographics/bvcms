@@ -56,11 +56,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
 
             if (p.org != null && p.Found == true &&
-                p.IsCommunityGroup() && DbUtil.Db.Setting("RestrictCGSignupsTo24Hrs"))
+                p.IsCommunityGroup() && db.Setting("RestrictCGSignupsTo24Hrs"))
             {
-                if (!p.CanRegisterInCommunityGroup(DateTime.Now.AddDays(-1)))
+                if (!p.CanRegisterInCommunityGroup(db.Host, DateTime.Now.AddDays(-1)))
                 {
-                    var message = DbUtil.Db.Setting("RestrictCGSignupsTo24HrsMessage", "Cannot register for multiple community groups on the same day.");
+                    var message = db.Setting("RestrictCGSignupsTo24HrsMessage", "Cannot register for multiple community groups on the same day.");
                     modelState.AddModelError("fammember-" + p.PeopleId, message);
                     return;
                 }

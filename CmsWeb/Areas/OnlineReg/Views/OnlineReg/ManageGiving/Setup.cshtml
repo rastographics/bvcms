@@ -9,7 +9,7 @@
     Layout = "~/Views/Shared/onlinereg2.cshtml";
     var funame = Html.NameFor2(m => m.FundItem);
     var db = DbUtil.Db;
-    var funds = CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel.FullFundList(Model.DefaultFundIds.Any() ? Model.DefaultFundIds : Model.FallbackDefaultFundIds);
+    var funds = CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel.FullFundList(db, Model.DefaultFundIds.Any() ? Model.DefaultFundIds : Model.FallbackDefaultFundIds);
     var otherFunds = funds.Where(f => !Model.DefaultFundIds.Contains(f.Value)).ToList();
     var useNewManageGivingBuilder = db.Setting("UseNewManageGivingBuilder");
     var debitcredit = db.Setting("DebitCreditLabel", "Debit/Credit Card");
