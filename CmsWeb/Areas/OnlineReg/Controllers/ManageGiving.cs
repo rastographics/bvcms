@@ -92,6 +92,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [HttpPost]
         public ActionResult ManageGiving(ManageGivingModel m)
         {
+            m.CurrentDatabase = CurrentDatabase;
             SetHeaders(m.orgid);
 
             // only validate if the amounts are greater than zero.

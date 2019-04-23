@@ -1093,6 +1093,7 @@
     <Compile Include="Code\PaymentValidator.cs" />
     <Compile Include="Code\SmartBinder.cs" />
     <Compile Include="Code\Image.cs" />
+    <Compile Include="Models\HtmlHolder.cs" />
     <Compile Include="Services\MeetingCategory\MeetingCategoryService.cs" />
     <Compile Include="Services\MeetingCategory\IMeetingCategoryService.cs" />
     <Compile Include="Services\CommunicationService.cs" />

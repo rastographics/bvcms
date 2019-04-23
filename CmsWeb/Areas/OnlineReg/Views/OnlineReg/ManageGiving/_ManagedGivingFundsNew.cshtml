@@ -8,7 +8,7 @@
     var funame = Html.NameFor2(m => m.FundItem);
     var peopleId = Model.person.PeopleId;
     decimal? tot = 0;
-    var funds = CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel.FullFundList(Model.DefaultFundIds.Any() ? Model.DefaultFundIds : Model.FallbackDefaultFundIds);
+    var funds = CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel.FullFundList(DbUtil.Db, Model.DefaultFundIds.Any() ? Model.DefaultFundIds : Model.FallbackDefaultFundIds);
     var otherFunds = funds.Where(f => !Model.DefaultFundIds.Contains(f.Value)).ToList();
 }
 <div class="col-sm-12">

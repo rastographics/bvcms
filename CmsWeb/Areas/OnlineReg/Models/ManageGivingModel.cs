@@ -23,6 +23,22 @@ namespace CmsWeb.Areas.OnlineReg.Models
     {
         public int pid { get; set; }
         public int orgid { get; set; }
+        private CMSDataContext _currentDatabase;
+        public CMSDataContext CurrentDatabase
+        {
+            get => _currentDatabase ?? (_currentDatabase = DbUtil.Db);
+            set
+            {
+                _currentDatabase = value;
+
+                HeadingLabel = CurrentDatabase.Setting("ManageGivingHeaderLabel", "Giving Opportunities");
+#if DEBUG2
+            testing = true;
+#endif
+                NoCreditCardsAllowed = CurrentDatabase.Setting("NoCreditCardGiving", "false").ToBool();
+                NoEChecksAllowed = CurrentDatabase.Setting("NoEChecksAllowed", "false").ToBool();
+            }
+        }
 
         public IList<string> DefaultFundIds = new List<string>();
 
@@ -135,15 +151,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public bool HasManagedGiving => person?.ManagedGiving() != null;
 
-        public ManageGivingModel()
+        public ManageGivingModel() { }
+        public ManageGivingModel(CMSDataContext db)
         {
-            HeadingLabel = DbUtil.Db.Setting("ManageGivingHeaderLabel", "Giving Opportunities");
-            //testing = ConfigurationManager.AppSettings["testing"].ToBool();
-#if DEBUG2
-            testing = true;
-#endif
-            NoCreditCardsAllowed = DbUtil.Db.Setting("NoCreditCardGiving", "false").ToBool();
-            NoEChecksAllowed = DbUtil.Db.Setting("NoEChecksAllowed", "false").ToBool();
+            CurrentDatabase = db;
         }
 
         public ManageGivingModel(int pid, int orgid = 0, string defaultFundIds = "")
@@ -173,11 +184,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private void PopulateDefaultFundIds(string defaultFundIds, Person person)
         {
+            var db = CMSDataContext.Create(host, asReadOnly: true);
             if (string.IsNullOrWhiteSpace(defaultFundIds) && person.CampusId.HasValue)
             {
                 // look up campus default fund mapping if present.
                 var setting = $"DefaultCampusFunds-{person.CampusId}";
-                var db = DbUtil.DbReadOnly;
                 defaultFundIds = db.Setting(setting, string.Empty);
             }
             
@@ -189,10 +200,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             if (DefaultFundIds.Any())
             {
-                FirstDefaultFundName = OnlineRegPersonModel.GetFundName(DefaultFundIds.First().ToInt());
+                FirstDefaultFundName = OnlineRegPersonModel.GetFundName(db, DefaultFundIds.First().ToInt());
             }
 
-            var fundList = OnlineRegPersonModel.FundList();
+            var fundList = OnlineRegPersonModel.FundList(db);
             FallbackDefaultFundIds.AddRange(fundList.Where(f => !DefaultFundIds.Contains(f.Value)).Select(f => f.Value));
         }
 
@@ -240,7 +251,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private void PopulateExtraValueDefaults()
         {
-            var f = OnlineRegPersonModel.FullFundList().SingleOrDefault(ff => ff.Text == Setting.ExtraValueFeeName);
+            var f = OnlineRegPersonModel.FullFundList(CurrentDatabase).SingleOrDefault(ff => ff.Text == Setting.ExtraValueFeeName);
             PopulateReasonableDefaults();
 
             var evamt = person.GetExtra(Setting.ExtraValueFeeName).ToDecimal();
@@ -540,7 +551,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             if (FundItem == null)
                 return new List<FundItemChosen>();
-            var items = OnlineRegPersonModel.FullFundList();
+            var items = OnlineRegPersonModel.FullFundList(CurrentDatabase);
             var q = from i in FundItem
                     join m in items on i.Key equals m.Value.ToInt()
                     where i.Value.HasValue

@@ -47,7 +47,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     if (settings == null)
                         throw new Exception("settings are null");
                     if (!settings.ContainsKey(org.OrganizationId))
-                        settings[org.OrganizationId] = DbUtil.Db.CreateRegistrationSettings(org.OrganizationId);
+                        settings[org.OrganizationId] = db.CreateRegistrationSettings(org.OrganizationId);
                     _setting = settings[org.OrganizationId];
                     AfterSettingConstructor();
                 }
@@ -75,7 +75,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         [DisplayName("Marital")]
         public string MarriedDisplay => married == 10 ? "Single" : married == 20 ? "Married" : "not specified";
 
-        public string SpecialGivingFundsHeader => DbUtil.Db.Setting("SpecialGivingFundsHeader", "Special Giving Funds");
+        public string SpecialGivingFundsHeader => db.Setting("SpecialGivingFundsHeader", "Special Giving Funds");
 
         public bool UserSelectsOrganization()
         {
@@ -144,7 +144,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (org == null)
                 return false;
             if (!Parent.SupportMissionTrip)
-                IsFilled = org.RegLimitCount(DbUtil.Db) >= org.Limit;
+                IsFilled = org.RegLimitCount(db) >= org.Limit;
             return IsFilled;
         }
 
@@ -167,9 +167,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             if (org == null) return "Organization not found.";
 
-            var settings = DbUtil.Db.CreateRegistrationSettings(org.OrganizationId);
+            var settings = db.CreateRegistrationSettings(org.OrganizationId);
 
-            var body = DbUtil.Content(settings.SpecialScript, "Shell not found.");
+            var body = DbUtil.Content(db, settings.SpecialScript, "Shell not found.");
             body = body.Replace("[action]", "/OnlineReg/SpecialRegistrationResults/" + org.OrganizationId, true);
 
             return body;
@@ -203,7 +203,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     _setting = null;
                 }
                 if (_org == null && orgid.HasValue)
-                    _org = DbUtil.Db.LoadOrganizationById(orgid.Value);
+                    _org = db.LoadOrganizationById(orgid.Value);
                 if (_org == null && (divid.HasValue || masterorgid.HasValue))
                 {
                     if (ComputesOrganizationByAge())
@@ -226,7 +226,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     return _masterorg;
 
                 if (masterorgid.HasValue)
-                    _masterorg = DbUtil.Db.LoadOrganizationById(masterorgid.Value);
+                    _masterorg = db.LoadOrganizationById(masterorgid.Value);
                 else
                 {
                     if (org.RegistrationTypeId == RegistrationTypeCode.UserSelects
@@ -256,7 +256,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             var cklist = masterorg.OrgPickList.Split(',').Select(o => o.ToInt()).ToList();
             var bestgender = gender ?? person?.GenderId;
-            var q = from o in DbUtil.Db.Organizations
+            var q = from o in db.Organizations
                     where cklist.Contains(o.OrganizationId)
                     where bestgender == null || o.GenderId == bestgender || (o.GenderId ?? 0) == 0
                     select o;
@@ -386,30 +386,30 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     return;
             }
             if (!phone.HasValue())
-                phone = DbUtil.Db.Setting("ChurchPhone", "(sorry, no phone # in settings)");
+                phone = db.Setting("ChurchPhone", "(sorry, no phone # in settings)");
 
             /* so now we have a different email address than the one on record
              * we need to notify them */
             if (person.EmailAddress.HasValue() || person.EmailAddress2.HasValue())
             {
-                var msg = DbUtil.Db.ContentHtml("DiffEmailMessage", Resource1.DiffEmailMessage);
+                var msg = db.ContentHtml("DiffEmailMessage", Resource1.DiffEmailMessage);
                 msg = msg.Replace("{name}", person.Name, ignoreCase: true)
                     .Replace("{first}", person.PreferredName, ignoreCase: true)
                     .Replace("{org}", orgname, ignoreCase: true)
-                    .Replace("{phone}", DbUtil.Db.Setting("ChurchPhone", "ChurchPhone"));
+                    .Replace("{phone}", db.Setting("ChurchPhone", "ChurchPhone"));
                 var subj = $"{orgname}, different email address than one on record";
-                DbUtil.Db.Email(fromemail, person, Util.ToMailAddressList(EmailAddress), subj, msg, false);
+                db.Email(fromemail, person, Util.ToMailAddressList(EmailAddress), subj, msg, false);
                 Log("DiffEmailFromRecord");
             }
             else
             {
-                var msg = DbUtil.Db.ContentHtml("NoEmailMessage", Resource1.NoEmailMessage);
+                var msg = db.ContentHtml("NoEmailMessage", Resource1.NoEmailMessage);
                 msg = msg.Replace("{name}", person.Name)
                     .Replace("{first}", person.PreferredName, ignoreCase: true)
                     .Replace("{org}", orgname, ignoreCase: true)
-                    .Replace("{phone}", DbUtil.Db.Setting("ChurchPhone", "ChurchPhone"));
+                    .Replace("{phone}", db.Setting("ChurchPhone", "ChurchPhone"));
                 var subj = $"{orgname}, no email on your record";
-                DbUtil.Db.Email(fromemail, person, Util.ToMailAddressList(EmailAddress), subj, msg, false);
+                db.Email(fromemail, person, Util.ToMailAddressList(EmailAddress), subj, msg, false);
                 Log("NoEmailOnRecord");
             }
         }
@@ -417,7 +417,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public OrganizationMember GetOrgMember()
         {
             if (org != null)
-                return DbUtil.Db.OrganizationMembers.SingleOrDefault(m2 =>
+                return db.OrganizationMembers.SingleOrDefault(m2 =>
                     m2.PeopleId == PeopleId && m2.OrganizationId == org.OrganizationId);
             return null;
         }
@@ -466,13 +466,13 @@ namespace CmsWeb.Areas.OnlineReg.Models
         }
         public IEnumerable<SelectListItem> Campuses()
         {
-            var campusids = (from cid in DbUtil.Db.Setting("CampusIds", "").Split(',')
+            var campusids = (from cid in db.Setting("CampusIds", "").Split(',')
                              where cid.HasValue()
                              select cid.ToInt()).ToArray();
-            var qc = from c in DbUtil.Db.Campus
+            var qc = from c in db.Campus
                 where campusids.Length == 0 || campusids.Contains(c.Id)
                 select c;
-            qc = DbUtil.Db.Setting("SortCampusByCode") 
+            qc = db.Setting("SortCampusByCode") 
                 ? qc.OrderBy(cc => cc.Code) 
                 : qc.OrderBy(cc => cc.Description);
             var q = from c in qc
@@ -516,7 +516,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (ShouldPullSpecificFund())
                 return ReturnContributionForSetting();
 
-            return FundList();
+            return FundList(db);
         }
 
         public SelectListItem[] AllFunds()
@@ -524,7 +524,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (ShouldPullSpecificFund())
                 return ReturnContributionForSetting();
 
-            return FullFundList();
+            return FullFundList(db);
         }
 
         public SelectListItem[] SpecialFunds()
@@ -532,7 +532,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (ShouldPullSpecificFund())
                 return ReturnContributionForSetting();
 
-            return SpecialFundList();
+            return SpecialFundList(db);
         }
 
         public SelectListItem[] DesignatedDonationFund()
@@ -545,7 +545,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private SelectListItem[] ReturnContributionForSetting()
         {
-            var fund = DbUtil.Db.ContributionFunds.SingleOrDefault(f => f.FundId == setting.DonationFundId);
+            var fund = db.ContributionFunds.SingleOrDefault(f => f.FundId == setting.DonationFundId);
             if (fund == null)
                 throw new Exception($"DonationFundId {setting.DonationFundId} does not point to a fund");
             return new[]
@@ -565,9 +565,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
                    && setting.DonationFundId.HasValue;
         }
 
-        public static SelectListItem[] EntireFundList()
+        public static SelectListItem[] EntireFundList(CMSDataContext db)
         {
-            return (from f in GetAllOnlineFunds()
+            return (from f in GetAllOnlineFunds(db)
                 select new SelectListItem
                 {
                     Text = $"{f.FundName}",
@@ -575,17 +575,17 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 }).ToArray();
         }
 
-        public static SelectListItem[] FullFundList(IList<string> defaultFundIds)
+        public static SelectListItem[] FullFundList(CMSDataContext db, IList<string> defaultFundIds)
         {
-            var fullList = FullFundList();
+            var fullList = FullFundList(db);
             var list = defaultFundIds.Select(id => fullList.SingleOrDefault(s => s.Value == id)).Where(fund => fund != null).ToList();
             list.AddRange(fullList.Where(f => !defaultFundIds.Contains(f.Value)));
             return list.ToArray();
         }
 
-        public static SelectListItem[] FullFundList()
+        public static SelectListItem[] FullFundList(CMSDataContext db)
         {
-            return (from f in GetAllOnlineFunds()
+            return (from f in GetAllOnlineFunds(db)
                     where (f.OnlineSort > 0)
                     select new SelectListItem
                     {
@@ -594,9 +594,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     }).ToArray();
         }
 
-        public static SelectListItem[] FundList()
+        public static SelectListItem[] FundList(CMSDataContext db)
         {
-            return (from f in GetAllOnlineFunds()
+            return (from f in GetAllOnlineFunds(db)
                     where (f.OnlineSort > 0 && f.OnlineSort <= 99)
                     select new SelectListItem
                     {
@@ -605,9 +605,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     }).ToArray();
         }
 
-        public static SelectListItem[] SpecialFundList()
+        public static SelectListItem[] SpecialFundList(CMSDataContext db)
         {
-            return (from f in GetAllOnlineFunds()
+            return (from f in GetAllOnlineFunds(db)
                     where f.OnlineSort > 99
                     select new SelectListItem
                     {
@@ -616,18 +616,18 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     }).ToArray();
         }
 
-        public static string GetFundName(int fundId)
+        public static string GetFundName(CMSDataContext db, int fundId)
         {
-            var fund =  (from f in GetAllOnlineFunds()
+            var fund =  (from f in GetAllOnlineFunds(db)
                 where f.FundId == fundId
                 select f).SingleOrDefault();
 
             return fund?.FundName;
         }
 
-        private static IQueryable<ContributionFund> GetAllOnlineFunds()
+        private static IQueryable<ContributionFund> GetAllOnlineFunds(CMSDataContext db)
         {
-            return from f in DbUtil.Db.ContributionFunds
+            return from f in db.ContributionFunds
                    where f.FundStatusId == 1
                    orderby f.OnlineSort
                    select f;
@@ -681,9 +681,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 throw new Exception("PeopleId has no value in DoGroupToJoin");
             if (grouptojoin > 0)
             {
-                OrganizationMember.InsertOrgMembers(DbUtil.Db, grouptojoin, PeopleId.Value, MemberTypeCode.Member,
+                OrganizationMember.InsertOrgMembers(db, grouptojoin, PeopleId.Value, MemberTypeCode.Member,
                     Util.Now, null, false);
-                DbUtil.Db.UpdateMainFellowship(grouptojoin);
+                db.UpdateMainFellowship(grouptojoin);
                 Log("AddedToOrg");
             }
         }
@@ -750,9 +750,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public bool NoPhoneEmailOnFind()
         {
             var o = masterorg ?? org;
-            return o != null && o.GetExtra(DbUtil.Db, "NoPhoneEmailOnFind") == "true";
+            return o != null && o.GetExtra(db, "NoPhoneEmailOnFind") == "true";
         }
-        public int MinimumUserAge => DbUtil.Db.Setting("MinimumUserAge", "16").ToInt();
+        public int MinimumUserAge => db.Setting("MinimumUserAge", "16").ToInt();
 
     }
 

@@ -19,7 +19,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             {
                 if (groupTags == null)
                 {
-                    groupTags = (from mt in DbUtil.Db.OrgMemMemTags
+                    groupTags = (from mt in db.OrgMemMemTags
                                  where mt.OrgId == org.OrganizationId
                                  select mt.MemberTag.Name).ToList();
                 }
@@ -137,7 +137,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 return new List<GivingConfirmation.FundItem>();
             }
 
-            var items = RetrieveEntireFundList ? EntireFundList() : AllFunds();
+            var items = RetrieveEntireFundList ? EntireFundList(db) : AllFunds();
             var q = from i in FundItem
                     join m in items on i.Key equals m.Value.ToInt()
                     where i.Value.HasValue
@@ -156,7 +156,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public static IEnumerable<SelectListItem> ShirtSizes(CMSDataContext Db, Organization org)
         {
-            var setting = DbUtil.Db.CreateRegistrationSettings(org.OrganizationId);
+            var setting = Db.CreateRegistrationSettings(org.OrganizationId);
             return ShirtSizes(setting);
         }
 
@@ -192,7 +192,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public List<SelectListItem> MissionTripGoers()
         {
             var pid = person?.PeopleId;
-            var q = from g in DbUtil.Db.OrganizationMembers
+            var q = from g in db.OrganizationMembers
                     where g.OrganizationId == orgid
                     where g.OrgMemMemTags.Any(mm => mm.MemberTag.Name == "Goer")
                     where g.PeopleId != (Parent.UserPeopleId ?? pid ?? 0)
@@ -209,7 +209,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public bool IsGoer()
         {
             var pid = person?.PeopleId ?? 0;
-            return DbUtil.Db.OrganizationMembers.Any(mm => mm.OrganizationId == orgid && mm.PeopleId == pid);
+            return db.OrganizationMembers.Any(mm => mm.OrganizationId == orgid && mm.PeopleId == pid);
         }
 
         public void FillPriorInfo()
@@ -224,7 +224,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 return;
             }
 
-            var rr = DbUtil.Db.RecRegs.SingleOrDefault(r => r.PeopleId == PeopleId);
+            var rr = db.RecRegs.SingleOrDefault(r => r.PeopleId == PeopleId);
             if (rr != null)
             {
                 if (setting.AskVisible("AskRequest"))

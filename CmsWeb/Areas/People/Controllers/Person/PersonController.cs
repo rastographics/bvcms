@@ -75,7 +75,7 @@ namespace CmsWeb.Areas.People.Controllers
                 id = Util.UserPeopleId;
             }
 
-            var m = new PersonModel(id.Value);
+            var m = new PersonModel(id.Value, CurrentDatabase);
             var noview = m.CheckView();
             if (noview.HasValue())
             {
@@ -106,7 +106,7 @@ namespace CmsWeb.Areas.People.Controllers
                 id = Util.UserPeopleId;
             }
 
-            var m = new PersonModel(id.Value);
+            var m = new PersonModel(id.Value, CurrentDatabase);
             var noview = m.CheckView();
             if (noview.HasValue())
             {
@@ -167,7 +167,7 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpPost]
         public ActionResult InlineEdit(int id, int pk, string name, string value)
         {
-            var m = new PersonModel(id);
+            var m = new PersonModel(id, CurrentDatabase);
             switch (name)
             {
                 case "ContributionOptions":
