@@ -144,81 +144,84 @@
         });
     });
 
-
-
-    $(".Send").click(function () {
-        var count = $("#Count").val();
-        swal({
-            title: "Are you sure?",
-            text: "You're about to send an email to " + count + " people.",
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonClass: "btn-confirm",
-            confirmButtonText: "Yes, send it!",
-            closeOnConfirm: false
-        },
-        function () {
-            $.block();
-            $('#body').val($('#email-body').contents().find('#templateBody').html());
-            var q = $("#SendEmail").serialize();
-            $.post('/Email/QueueEmails', q, function (ret) {
-                if (ret && ret.error) {
+    function sendEmail() {
+        $.block();
+        $('#body').val($('#email-body').contents().find('#templateBody').html());
+        var q = $("#SendEmail").serialize();
+        $.post('/Email/QueueEmails', q, function (ret) {
+            if (ret && ret.error) {
+                $.unblock();
+                swal({
+                    title: "Error!",
+                    text: ret.error,
+                    html: true,
+                    type: "error"
+                });
+            } else {
+                if (ret === "timeout") {
+                    swal("Session Timeout!", 'Your session timed out. Please copy your email content and start over.', "error");
+                    return;
+                }
+                var taskid = ret.id;
+                if (taskid === 0) {
                     $.unblock();
                     swal({
-                        title: "Error!",
-                        text: ret.error,
-                        html: true,
-                        type: "error"
+                        title: 'Success!',
+                        text: ret.content,
+                        type: "success",
+                        showCancelButton: false,
+                    }, function () {
+                        $('button.Send').prop('disabled', true);
                     });
                 } else {
-                    if (ret === "timeout") {
-                        swal("Session Timeout!", 'Your session timed out. Please copy your email content and start over.', "error");
-                        return;
-                    }
-                    var taskid = ret.id;
-                    if (taskid === 0) {
-                        $.unblock();
-                        swal({
-                            title: 'Success!',
-                            text: ret.content,
-                            type: "success",
-                            showCancelButton: false,
-                        }, function () {
-                            $('button.Send').prop('disabled', true);
-                        });
-                    } else {
-                        $("#send-actions").remove();
-                        var intervalid = window.setInterval(function () {
-                            $.post('/Email/TaskProgress/' + taskid, null, function (ret) {
-                                $.unblock();
-                                if (ret && ret.error) {
-                                    swal("Error!", ret.error, "error");
+                    $("#send-actions").remove();
+                    var intervalid = window.setInterval(function () {
+                        $.post('/Email/TaskProgress/' + taskid, null, function (ret) {
+                            $.unblock();
+                            if (ret && ret.error) {
+                                swal("Error!", ret.error, "error");
+                                window.clearInterval(intervalid);
+                            } else {
+                                if (ret.title === 'Email has completed.') {
+                                    swal({
+                                        title: ret.title,
+                                        text: ret.message,
+                                        type: "success",
+                                        showCancelButton: false,
+                                    }, function () {
+                                        $('button.Send').prop('disabled', true);
+                                    });
                                     window.clearInterval(intervalid);
                                 } else {
-                                    if (ret.title === 'Email has completed.') {
-                                        swal({
-                                            title: ret.title,
-                                            text: ret.message,
-                                            type: "success",
-                                            showCancelButton: false,
-                                        }, function () {
-                                            $('button.Send').prop('disabled', true);
-                                        });
-                                        window.clearInterval(intervalid);
-                                    } else {
-                                        swal({
-                                            title: ret.title,
-                                            text: ret.message,
-                                            imageUrl: '/Content/touchpoint/img/spinner.gif'
-                                        });
-                                    }
+                                    swal({
+                                        title: ret.title,
+                                        text: ret.message,
+                                        imageUrl: '/Content/touchpoint/img/spinner.gif'
+                                    });
                                 }
-                            });
-                        }, 3000);
-                    }
+                            }
+                        });
+                    }, 3000);
                 }
-            });
+            }
         });
+    }
+
+    $(".Send").click(function () {
+        if ($(this).attr('data-prompt') === 'True') {
+            var count = $("#Count").val();
+            swal({
+                title: "Are you sure?",
+                text: "You're about to send an email to " + count + " people.",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "btn-confirm",
+                confirmButtonText: "Yes, send it!",
+                closeOnConfirm: false
+            }, sendEmail);
+        } else {
+            sendEmail();
+        }
     });
 
     $(".SaveDraft").click(function () {
