@@ -6,7 +6,7 @@ namespace CmsData.Finance.Acceptiva.Core
     internal class UPSStateCodes
     {
         /// <summary>
-        /// Obtain UPS State Codes based on its name adn country.
+        /// Obtain UPS State Codes based on its name and country.
         /// </summary>
         /// <param name="state"></param>
         /// <param name="country"></param>
