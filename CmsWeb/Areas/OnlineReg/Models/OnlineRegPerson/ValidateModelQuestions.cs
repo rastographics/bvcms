@@ -13,10 +13,16 @@ namespace CmsWeb.Areas.OnlineReg.Models
             Index = i;
             if (Parent.SupportMissionTrip)
             {
-                if(MissionTripGoerId == 0)
-                    modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].MissionTripGoerId), "Please select a participant");
-                if ((MissionTripSupportGoer ?? 0) == 0)
+                if (MissionTripGoerId == 0 && ((MissionTripSupportGeneral ?? 0) == 0))
+                {
+                    modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].MissionTripGoerId), "Please select a participant");                    
+                }
+                if ((MissionTripSupportGoer ?? 0) == 0 && ((MissionTripSupportGeneral ?? 0) == 0))
                     modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].MissionTripSupportGoer), "Please enter your gift amount");
+                if ((MissionTripSupportGoer ?? 0) != 0 && MissionTripGoerId == 0)
+                {
+                    modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].MissionTripGoerId), "Please select a participant");
+                }
                 QuestionsOK = modelState.IsValid;
                 return;
             }
@@ -89,7 +95,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         private void ValidateAskCheckboxes(Ask ask)
         {
             var namecb = Parent.GetNameFor(mm => mm.List[Index].Checkbox[ask.UniqueId]);
-            var cb = ((AskCheckboxes) ask);
+            var cb = ((AskCheckboxes)ask);
             var cbcount = cb.CheckboxItemsChosen(Checkbox).Count();
             if (cb.Maximum > 0 && cbcount > cb.Maximum)
                 modelState.AddModelError(namecb, $"Max of {cb.Maximum} exceeded");
@@ -109,10 +115,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             string desc;
             var namedd = Parent.GetNameFor(mm => mm.List[Index].option[ask.UniqueId]);
-            var sgi = ((AskDropdown) ask).SmallGroupChoice(option);
+            var sgi = ((AskDropdown)ask).SmallGroupChoice(option);
             if (sgi == null || !sgi.SmallGroup.HasValue())
                 modelState.AddModelError(namedd, "please select an option");
-            else if (((AskDropdown) ask).IsSmallGroupFilled(GroupTags, option, out desc))
+            else if (((AskDropdown)ask).IsSmallGroupFilled(GroupTags, option, out desc))
                 modelState.AddModelError(namedd, "limit reached for " + desc);
         }
 
@@ -126,7 +132,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private void ValidateAskExtraQuestions(Ask ask)
         {
-            var eq = (AskExtraQuestions) ask;
+            var eq = (AskExtraQuestions)ask;
             if (setting.AskVisible("AnswersNotRequired") == false)
                 for (var n = 0; n < eq.list.Count; n++)
                 {
@@ -184,7 +190,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private void ValidateAskText(Ask ask)
         {
-            var tx = (AskText) ask;
+            var tx = (AskText)ask;
             if (setting.AskVisible("AnswersNotRequired") == false)
                 for (var n = 0; n < tx.list.Count; n++)
                 {
@@ -216,9 +222,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private void ValidateAskYesNoQuestions(Ask ask)
         {
-            for (var n = 0; n < ((AskYesNoQuestions) ask).list.Count; n++)
+            for (var n = 0; n < ((AskYesNoQuestions)ask).list.Count; n++)
             {
-                var a = ((AskYesNoQuestions) ask).list[n];
+                var a = ((AskYesNoQuestions)ask).list[n];
                 if (YesNoQuestion == null || !YesNoQuestion.ContainsKey(a.SmallGroup))
                     modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].YesNoQuestion[a.SmallGroup]),
                         "please select yes or no");
