@@ -90,8 +90,6 @@ namespace CmsWeb.Controllers
                 return Content("no content");
             }
 
-            var cn = CurrentDatabase.ReadonlyConnection();
-            cn.Open();
             var d = Request.QueryString.AllKeys.ToDictionary(key => key, key => Request.QueryString[key]);
             var p = new DynamicParameters();
             foreach (var kv in d)

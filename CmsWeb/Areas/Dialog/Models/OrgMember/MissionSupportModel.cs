@@ -31,8 +31,6 @@ namespace CmsWeb.Areas.Dialog.Models
             }
         }
 
-        //public OrgMemberModel OrgMemberModel { get { return new OrgMemberModel() { PeopleId = PeopleId, OrgId = OrgId };} }
-
         public CodeInfo Goer { get; set; }
 
         public string Group { get; set; }

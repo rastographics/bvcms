@@ -270,17 +270,16 @@ namespace CmsWeb.Models
                 var creds = new NetworkCredential(username, password);
                 UserName2 = creds.UserName;
                 //DbUtil.LogActivity("GetUserViaCreds");
-                return AuthenticateLogon(creds.UserName, creds.Password, HttpContextFactory.Current.Request.Url.OriginalString);
+                return AuthenticateLogon(creds.UserName, creds.Password, HttpContextFactory.Current.Request.Url.OriginalString, DbUtil.Db);
             }
 
             //DbUtil.LogActivity("GetUserViaCreds==null");
             return null;
         }
 
-        public static UserValidationResult AuthenticateLogon(string userName, string password, string url)
+        public static UserValidationResult AuthenticateLogon(string userName, string password, string url, CMSDataContext db)
         {
-            var db = DbUtil.Db;
-            var userQuery = DbUtil.Db.Users.Where(uu =>
+            var userQuery = db.Users.Where(uu =>
                 uu.Username == userName ||
                 uu.Person.EmailAddress == userName ||
                 uu.Person.EmailAddress2 == userName
@@ -293,8 +292,9 @@ namespace CmsWeb.Models
             {
                 userExists = userQuery.Any();
             }
-            catch
+            catch(Exception ex)
             {
+                Elmah.ErrorLog.Default.Log(new Elmah.Error(ex));
                 return UserValidationResult.Invalid(UserValidationStatus.BadDatabase, "bad database");
             }
 
@@ -319,12 +319,12 @@ namespace CmsWeb.Models
                         u.MustChangePassword = true;
                     }
                     u.IsLockedOut = false;
-                    DbUtil.Db.SubmitChanges();
+                    db.SubmitChanges();
                     user = u;
                     break;
                 }
 
-                if (password == DbUtil.Db.Setting("ImpersonatePassword", Guid.NewGuid().ToString()))
+                if (password == db.Setting("ImpersonatePassword", Guid.NewGuid().ToString()))
                 {
                     user = u;
                     impersonating = true;
@@ -334,7 +334,7 @@ namespace CmsWeb.Models
 
                 if (Membership.Provider.ValidateUser(u.Username, password))
                 {
-                    DbUtil.Db.Refresh(RefreshMode.OverwriteCurrentValues, u);
+                    db.Refresh(RefreshMode.OverwriteCurrentValues, u);
                     user = u;
                     break;
                 }
@@ -406,9 +406,9 @@ namespace CmsWeb.Models
             return UserValidationResult.Valid(user);
         }
 
-        public static object AuthenticateLogon(string userName, string password, HttpSessionStateBase Session, HttpRequestBase Request)
+        public static object AuthenticateLogon(string userName, string password, HttpSessionStateBase Session, HttpRequestBase Request, CMSDataContext db)
         {
-            var status = AuthenticateLogon(userName, password, Request.Url.OriginalString);
+            var status = AuthenticateLogon(userName, password, Request.Url.OriginalString, db);
             if (status.IsValid)
             {
                 SetUserInfo(status.User.Username, Session);
@@ -418,7 +418,6 @@ namespace CmsWeb.Models
             }
             return status.ErrorMessage;
         }
-
 
         public static object AutoLogin(string userName, HttpSessionStateBase Session, HttpRequestBase Request)
         {

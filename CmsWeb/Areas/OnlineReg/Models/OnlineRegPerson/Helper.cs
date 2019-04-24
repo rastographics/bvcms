@@ -148,12 +148,12 @@ namespace CmsWeb.Areas.OnlineReg.Models
             return IsFilled;
         }
 
-        public bool CanRegisterInCommunityGroup(DateTime enrollmentCutoff)
+        public bool CanRegisterInCommunityGroup(string host, DateTime enrollmentCutoff)
         {
             if (PeopleId == null)
                 return false;
 
-            var db = DbUtil.DbReadOnly;
+            var db = CMSDataContext.Create(host, asReadOnly: true);
 
             var results = from om in db.OrganizationMembers
                 join org in db.Organizations on om.OrganizationId equals org.OrganizationId
@@ -169,7 +169,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             var settings = db.CreateRegistrationSettings(org.OrganizationId);
 
-            var body = DbUtil.Content(db, settings.SpecialScript, "Shell not found.");
+            var body = db.Content(settings.SpecialScript, "Shell not found.");
             body = body.Replace("[action]", "/OnlineReg/SpecialRegistrationResults/" + org.OrganizationId, true);
 
             return body;

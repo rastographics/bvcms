@@ -16,8 +16,14 @@ namespace CmsWeb.Models
     {
         private IQueryable<OrganizationMember> members;
 
+        public CMSDataContext CurrentDatabase { get; set; }
+
         public OrgMembersModel()
+        { }
+
+        public OrgMembersModel(CMSDataContext db)
         {
+            CurrentDatabase = db;
             MembersOnly = true;
             MoveRegistrationData = true;
         }
@@ -63,31 +69,31 @@ namespace CmsWeb.Models
 
         public void FetchSavedIds()
         {
-            var pref = DbUtil.Db.UserPreference("OrgMembersModelIds", "0.0.0");
+            var pref = CurrentDatabase.UserPreference("OrgMembersModelIds", "0.0.0");
             var a = pref.Split('.').Select(s => s.ToInt()).ToArray();
-            var prog = DbUtil.Db.Programs.SingleOrDefault(p => p.Id == a[0]);
+            var prog = CurrentDatabase.Programs.SingleOrDefault(p => p.Id == a[0]);
             if (prog != null)
             {
                 ProgId = a[0];
             }
 
-            var div = DbUtil.Db.Divisions.SingleOrDefault(d => d.Id == a[1] && d.ProgId == ProgId);
+            var div = CurrentDatabase.Divisions.SingleOrDefault(d => d.Id == a[1] && d.ProgId == ProgId);
             if (div != null)
             {
                 SourceDivId = a[1];
             }
 
-            var source = DbUtil.Db.Organizations.Where(o => o.OrganizationId == a[2]).Select(o => o.OrganizationId).SingleOrDefault();
+            var source = CurrentDatabase.Organizations.Where(o => o.OrganizationId == a[2]).Select(o => o.OrganizationId).SingleOrDefault();
             SourceId = a[2];
         }
 
         public void ValidateIds()
         {
-            var q = from prog in DbUtil.Db.Programs
+            var q = from prog in CurrentDatabase.Programs
                     where prog.Id == ProgId
-                    let div = DbUtil.Db.Divisions.SingleOrDefault(d => d.Id == SourceDivId && d.ProgId == ProgId)
-                    let org = DbUtil.Db.Organizations.SingleOrDefault(o => o.OrganizationId == SourceId && o.DivOrgs.Any(d => d.DivId == SourceDivId))
-                    let org2 = DbUtil.Db.Organizations.SingleOrDefault(o => o.OrganizationId == SourceId && o.DivOrgs.Any(d => d.DivId == SourceDivId))
+                    let div = CurrentDatabase.Divisions.SingleOrDefault(d => d.Id == SourceDivId && d.ProgId == ProgId)
+                    let org = CurrentDatabase.Organizations.SingleOrDefault(o => o.OrganizationId == SourceId && o.DivOrgs.Any(d => d.DivId == SourceDivId))
+                    let org2 = CurrentDatabase.Organizations.SingleOrDefault(o => o.OrganizationId == SourceId && o.DivOrgs.Any(d => d.DivId == SourceDivId))
                     select new { div, noorg = org == null, noorg2 = org2 == null };
             var i = q.SingleOrDefault();
             if (i == null)
@@ -117,7 +123,7 @@ namespace CmsWeb.Models
 
         public IEnumerable<SelectListItem> Programs()
         {
-            var q = from c in DbUtil.Db.Programs
+            var q = from c in CurrentDatabase.Programs
                     orderby c.Name
                     select new SelectListItem
                     {
@@ -135,7 +141,7 @@ namespace CmsWeb.Models
 
         public IEnumerable<SelectListItem> Divisions()
         {
-            var q = from d in DbUtil.Db.Divisions
+            var q = from d in CurrentDatabase.Divisions
                     where d.ProgId == ProgId
                     orderby d.Name
                     select new SelectListItem
@@ -154,13 +160,13 @@ namespace CmsWeb.Models
 
         public IEnumerable<SelectListItem> Organizations()
         {
-            var roles = DbUtil.Db.CurrentRoles();
-            var q = from o in DbUtil.Db.Organizations
+            var roles = CurrentDatabase.CurrentRoles();
+            var q = from o in CurrentDatabase.Organizations
                     where o.LimitToRole == null || roles.Contains(o.LimitToRole)
                     where o.DivOrgs.Any(di => di.DivId == SourceDivId)
                     where o.OrganizationStatusId == OrgStatusCode.Active
                     orderby o.OrganizationName
-                    let sctime = o.OrgSchedules.Count() == 1 ? " " + DbUtil.Db.GetScheduleDesc(o.OrgSchedules.First().MeetingTime) : ""
+                    let sctime = o.OrgSchedules.Count() == 1 ? " " + CurrentDatabase.GetScheduleDesc(o.OrgSchedules.First().MeetingTime) : ""
                     select new SelectListItem
                     {
                         Value = o.OrganizationId.ToString(),
@@ -175,13 +181,13 @@ namespace CmsWeb.Models
         {
             int divId = (TargetDivId == 0) ? SourceDivId : TargetDivId;
             var member = MemberTypeCode.Member;
-            var roles = DbUtil.Db.CurrentRoles();
-            var q = from o in DbUtil.Db.Organizations
+            var roles = CurrentDatabase.CurrentRoles();
+            var q = from o in CurrentDatabase.Organizations
                     where o.LimitToRole == null || roles.Contains(o.LimitToRole)
                     where o.DivOrgs.Any(di => di.DivId == divId)
                     where o.OrganizationStatusId == OrgStatusCode.Active
                     orderby o.OrganizationName
-                    let sctime = o.OrgSchedules.Count() == 1 ? " " + DbUtil.Db.GetScheduleDesc(o.OrgSchedules.First().MeetingTime) : ""
+                    let sctime = o.OrgSchedules.Count() == 1 ? " " + CurrentDatabase.GetScheduleDesc(o.OrgSchedules.First().MeetingTime) : ""
                     let cmales = o.OrganizationMembers.Count(m => m.Person.GenderId == 1 && m.MemberTypeId == member)
                     let cfemales = o.OrganizationMembers.Count(m => m.Person.GenderId == 2 && m.MemberTypeId == member)
                     select new SelectListItem
@@ -229,7 +235,7 @@ namespace CmsWeb.Models
                 }
 
                 var typesToShowForMembersOnly = new[] { MemberTypeCode.Member, MemberTypeCode.Prospect, MemberTypeCode.InActive };
-                var q = from om in DbUtil.Db.OrganizationMembers
+                var q = from om in CurrentDatabase.OrganizationMembers
                         where om.Organization.DivOrgs.Any(di => di.DivId == SourceDivId)
                         where SourceId == 0 || om.OrganizationId == SourceId
                         where glist.Length == 0 || glist.Contains(om.Person.Grade.Value)
@@ -356,10 +362,10 @@ namespace CmsWeb.Models
 
         public IEnumerable<string> GetOrganizationSmallGroups()
         {
-            var q = from om in DbUtil.Db.OrganizationMembers
-                    join org in DbUtil.Db.Organizations on om.OrganizationId equals org.OrganizationId
-                    join omt in DbUtil.Db.OrgMemMemTags on om.OrganizationId equals omt.OrgId
-                    join mt in DbUtil.Db.MemberTags on omt.MemberTagId equals mt.Id
+            var q = from om in CurrentDatabase.OrganizationMembers
+                    join org in CurrentDatabase.Organizations on om.OrganizationId equals org.OrganizationId
+                    join omt in CurrentDatabase.OrgMemMemTags on om.OrganizationId equals omt.OrgId
+                    join mt in CurrentDatabase.MemberTags on omt.MemberTagId equals mt.Id
                     where org.DivisionId == SourceDivId
                     where SourceId == 0 || om.OrganizationId == SourceId
                     select mt.Name;
@@ -369,8 +375,8 @@ namespace CmsWeb.Models
 
         public IEnumerable<int?> GetOrganizationGrades()
         {
-            var q = from om in DbUtil.Db.OrganizationMembers
-                    join org in DbUtil.Db.Organizations on om.OrganizationId equals org.OrganizationId
+            var q = from om in CurrentDatabase.OrganizationMembers
+                    join org in CurrentDatabase.Organizations on om.OrganizationId equals org.OrganizationId
                     where org.DivOrgs.Any(di => di.DivId == SourceDivId)
                     where SourceId == 0 || om.OrganizationId == SourceId
                     where om.Person.Grade != null
@@ -381,7 +387,7 @@ namespace CmsWeb.Models
 
         public IEnumerable<SelectListItem> GetMemberTypes()
         {
-            var q = from mt in DbUtil.Db.MemberTypes
+            var q = from mt in CurrentDatabase.MemberTypes
                     orderby mt.Description
                     select new SelectListItem
                     {
@@ -475,7 +481,7 @@ namespace CmsWeb.Models
 
         public int MovedCount()
         {
-            var q = from om in DbUtil.Db.OrganizationMembers
+            var q = from om in CurrentDatabase.OrganizationMembers
                     where om.Organization.DivOrgs.Any(di => di.DivId == SourceDivId)
                     where om.Moved == true
                     select om;
@@ -484,11 +490,11 @@ namespace CmsWeb.Models
 
         public void ResetMoved()
         {
-            var q = from om in DbUtil.Db.OrganizationMembers
+            var q = from om in CurrentDatabase.OrganizationMembers
                     where om.Organization.DivOrgs.Any(di => di.DivId == SourceDivId)
                     where om.Moved == true
                     select om;
-            DbUtil.Db.ExecuteCommand(@"
+            CurrentDatabase.ExecuteCommand(@"
 UPDATE dbo.OrganizationMembers
 SET Moved = NULL
 WHERE EXISTS(SELECT NULL FROM dbo.DivOrg WHERE OrgId = OrganizationId AND DivId = {0})", SourceDivId);
@@ -496,7 +502,7 @@ WHERE EXISTS(SELECT NULL FROM dbo.DivOrg WHERE OrgId = OrganizationId AND DivId 
 
         public int AllCount()
         {
-            var q = from om in DbUtil.Db.OrganizationMembers
+            var q = from om in CurrentDatabase.OrganizationMembers
                     where om.Organization.DivOrgs.Any(di => di.DivId == SourceDivId)
                     where om.Moved == true || EmailAllNotices
                     select om;
@@ -505,9 +511,9 @@ WHERE EXISTS(SELECT NULL FROM dbo.DivOrg WHERE OrgId = OrganizationId AND DivId 
 
         public void SendMovedNotices()
         {
-            var Db = DbUtil.Db;
+            var Db = CurrentDatabase;
 
-            var q = from om in DbUtil.Db.OrganizationMembers
+            var q = from om in CurrentDatabase.OrganizationMembers
                     where om.Organization.DivOrgs.Any(di => di.DivId == SourceDivId)
                     where om.Moved == true || EmailAllNotices
                     select new
@@ -524,7 +530,7 @@ WHERE EXISTS(SELECT NULL FROM dbo.DivOrg WHERE OrgId = OrganizationId AND DivId 
                         om.Organization.LeaderName,
                         om.Organization.PhoneNumber
                     };
-            var content = DbUtil.Db.ContentOfTypeHtml("OrgMembersModel_SendMovedNotices");
+            var content = CurrentDatabase.ContentOfTypeHtml("OrgMembersModel_SendMovedNotices");
             if (content == null)
             {
                 content = new Content()
@@ -533,8 +539,8 @@ WHERE EXISTS(SELECT NULL FROM dbo.DivOrg WHERE OrgId = OrganizationId AND DivId 
                     Body = Resource1.OrgMembersModel_SendMovedNotices,
                     Title = "Room Assignment for {name} in {org}"
                 };
-                DbUtil.Db.Contents.InsertOnSubmit(content);
-                DbUtil.Db.SubmitChanges();
+                CurrentDatabase.Contents.InsertOnSubmit(content);
+                CurrentDatabase.SubmitChanges();
             }
             if (content.Title == "SendMovedNotices") // replace old Title with new, improved version
             {
@@ -548,8 +554,8 @@ WHERE EXISTS(SELECT NULL FROM dbo.DivOrg WHERE OrgId = OrganizationId AND DivId 
                                  .Replace("{org}", i.OrganizationName)
                                  .Replace("{room}", i.Location)
                                  .Replace("{leader}", i.LeaderName)
-                                 .Replace("{phone}", DbUtil.Db.Setting("ChurchPhone", "ChurchPhone"))
-                                 .Replace("{church}", DbUtil.Db.Setting("NameOfChurch", "NameOfChurch"));
+                                 .Replace("{phone}", CurrentDatabase.Setting("ChurchPhone", "ChurchPhone"))
+                                 .Replace("{church}", CurrentDatabase.Setting("NameOfChurch", "NameOfChurch"));
 
                 var subj = content.Title // the title of the content is the subject
                                   .Replace("{name}", i.Name)
@@ -560,7 +566,7 @@ WHERE EXISTS(SELECT NULL FROM dbo.DivOrg WHERE OrgId = OrganizationId AND DivId 
                 {
                     if (i.RegisterEmail.HasValue())
                     {
-                        DbUtil.Db.Email(DbUtil.Db.CurrentUser.Person.FromEmail,
+                        CurrentDatabase.Email(CurrentDatabase.CurrentUser.Person.FromEmail,
                             i.om.Person, Util.ToMailAddressList(i.RegisterEmail),
                             subj, msg, false);
                         sb.Append($"\"{i.Name}\" [{i.FromEmail}]R ({i.PeopleId}): {i.Location}\r\n");
@@ -572,7 +578,7 @@ WHERE EXISTS(SELECT NULL FROM dbo.DivOrg WHERE OrgId = OrganizationId AND DivId 
                                  where fm.EmailAddress != i.RegisterEmail
                                  where fm.PositionInFamilyId == PositionInFamily.PrimaryAdult
                                  select fm).ToList();
-                    DbUtil.Db.Email(DbUtil.Db.CurrentUser.Person.FromEmail, flist, subj, msg);
+                    CurrentDatabase.Email(CurrentDatabase.CurrentUser.Person.FromEmail, flist, subj, msg);
                     foreach (var m in flist)
                     {
                         sb.Append($"{m}P ({i.PeopleId}): {i.Location}\r\n");
@@ -582,7 +588,7 @@ WHERE EXISTS(SELECT NULL FROM dbo.DivOrg WHERE OrgId = OrganizationId AND DivId 
             }
             sb.Append("</pre>\n");
 
-            var q0 = from o in DbUtil.Db.Organizations
+            var q0 = from o in CurrentDatabase.Organizations
                      where o.DivOrgs.Any(di => di.DivId == SourceDivId)
                      where o.NotifyIds.Length > 0
                      where o.RegistrationTypeId > 0
@@ -591,23 +597,23 @@ WHERE EXISTS(SELECT NULL FROM dbo.DivOrg WHERE OrgId = OrganizationId AND DivId 
 
             if (onlineorg == null)
             {
-                DbUtil.Db.Email(DbUtil.Db.CurrentUser.Person.FromEmail,
-                    DbUtil.Db.CurrentUserPerson,
+                CurrentDatabase.Email(CurrentDatabase.CurrentUser.Person.FromEmail,
+                    CurrentDatabase.CurrentUserPerson,
                     "Org Assignment notices sent to:", sb.ToString());
             }
             else
             {
-                DbUtil.Db.Email(DbUtil.Db.CurrentUser.Person.FromEmail,
-                    DbUtil.Db.PeopleFromPidString(onlineorg.NotifyIds),
+                CurrentDatabase.Email(CurrentDatabase.CurrentUser.Person.FromEmail,
+                    CurrentDatabase.PeopleFromPidString(onlineorg.NotifyIds),
                     "Org Assignment notices sent to:", sb.ToString());
             }
 
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
         }
 
         public EpplusResult ToExcel(int oid)
         {
-            var d = from om in DbUtil.Db.OrganizationMembers
+            var d = from om in CurrentDatabase.OrganizationMembers
                     where om.OrganizationId == oid
                     select new
                     {

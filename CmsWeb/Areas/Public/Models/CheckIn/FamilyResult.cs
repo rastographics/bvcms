@@ -15,7 +15,7 @@ namespace CmsWeb.Models
         private readonly int fid, campus, thisday, page;
         private readonly bool waslocked;
 
-        public FamilyResult(int fid, int campus, int thisday, int page, bool waslocked)
+        public FamilyResult(CMSDataContext db, int fid, int campus, int thisday, int page, bool waslocked)
         {
             this.fid = fid;
             this.campus = campus;
@@ -24,12 +24,11 @@ namespace CmsWeb.Models
             this.waslocked = waslocked;
             if (fid > 0)
             {
-                var db = DbUtil.Create(Util.Host);
-                var lockf = DbUtil.Db.FamilyCheckinLocks.SingleOrDefault(f => f.FamilyId == fid);
+                var lockf = db.FamilyCheckinLocks.SingleOrDefault(f => f.FamilyId == fid);
                 if (lockf == null)
                 {
                     lockf = new FamilyCheckinLock { FamilyId = fid, Created = DateTime.Now };
-                    DbUtil.Db.FamilyCheckinLocks.InsertOnSubmit(lockf);
+                    db.FamilyCheckinLocks.InsertOnSubmit(lockf);
                 }
                 lockf.Locked = true;
                 if (!waslocked)
@@ -37,7 +36,7 @@ namespace CmsWeb.Models
                     lockf.Created = DateTime.Now;
                 }
 
-                DbUtil.Db.SubmitChanges();
+                db.SubmitChanges();
             }
         }
 
