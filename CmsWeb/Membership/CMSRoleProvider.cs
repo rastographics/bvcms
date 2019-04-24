@@ -6,6 +6,7 @@ using System.Linq;
 using System.Collections.Generic;
 using CmsData;
 using CmsWeb.Lifecycle;
+using UtilityExtensions;
 
 namespace CmsWeb.Membership
 {
@@ -19,9 +20,9 @@ namespace CmsWeb.Membership
 		public override string ApplicationName { get { return "cms"; } set { } }
 
         public IRequestManager RequestManager { get; set; }
-        public CMSDataContext CurrentDatabase => RequestManager?.CurrentDatabase ?? DbUtil.Db; //TODO: Don't fallback to DbUtil if possible
+        CMSDataContext CurrentDatabase = CMSDataContext.Create(HttpContextFactory.Current);
 
-		public override void Initialize(string name, NameValueCollection config)
+        public override void Initialize(string name, NameValueCollection config)
 		{
 			if (config == null)
 				throw new ArgumentNullException("config");

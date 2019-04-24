@@ -47,7 +47,7 @@ namespace CmsWeb.Membership
 
         private MachineKeySection machineKey;
 
-        CMSDataContext CurrentDatabase => RequestManager?.CurrentDatabase ?? DbUtil.Db; //TODO: Don't fallback to DbUtil if possible
+        CMSDataContext CurrentDatabase = CMSDataContext.Create(HttpContextFactory.Current);
 
         public override void Initialize(string name, NameValueCollection config)
         {
@@ -619,7 +619,12 @@ namespace CmsWeb.Membership
             }
             catch (Exception ex)
             {
-                RequestManager.GetErrorLog().Log(new Elmah.Error(ex));
+                var errorlog = RequestManager.GetErrorLog();
+                if (errorlog == null)
+                {
+                    throw;
+                }
+                errorlog.Log(new Elmah.Error(ex));
                 return false;
             }
         }

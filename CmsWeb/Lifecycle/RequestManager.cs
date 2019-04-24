@@ -109,7 +109,7 @@ namespace CmsWeb.Lifecycle
 
         public Elmah.ErrorLog GetErrorLog()
         {
-            return Elmah.ErrorLog.GetDefault(CurrentHttpContext.ApplicationInstance.Context);
+            return Elmah.ErrorLog.GetDefault(CurrentHttpContext?.ApplicationInstance?.Context ?? HttpContext.Current);
         }
 
         #region IDisposable Support

@@ -493,19 +493,26 @@ namespace CmsWeb.Areas.Manage.Controllers
             }
 
             var mu = CMSMembershipProvider.provider.GetUser(User.Identity.Name, false);
-            mu.UnlockUser();
-            try
+            if (mu == null)
             {
-                if (mu.ChangePassword(mu.ResetPassword(), newPassword))
-                {
-                    return RedirectToAction("ChangePasswordSuccess");
-                }
-
-                ModelState.AddModelError("form", "The current password is incorrect or the new password is invalid.");
+                ModelState.AddModelError("form", $"User '{User.Identity.Name}' not found");
             }
-            catch (Exception ex)
+            else
             {
-                ModelState.AddModelError("form", ex.Message);
+                mu.UnlockUser();
+                try
+                {
+                    if (mu.ChangePassword(mu.ResetPassword(), newPassword))
+                    {
+                        return RedirectToAction("ChangePasswordSuccess");
+                    }
+
+                    ModelState.AddModelError("form", "The current password is incorrect or the new password is invalid.");
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("form", ex.Message);
+                }
             }
             return View();
         }
