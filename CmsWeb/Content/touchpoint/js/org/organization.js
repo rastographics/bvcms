@@ -1031,3 +1031,50 @@ function AddSelected() {
 function CloseAddDialog(from) {
     $("#memberDialog").dialog("close");
 }
+
+function SaveFee() {
+    var RegistrationType = parseInt($("input[name=RegistrationType_Value]").val());
+    var Process;
+
+    $.ajax('../Gateway/GetProcesses', {
+        type: 'GET',
+        success: function (response) {
+            console.log(response);
+            switch (RegistrationType) {
+                case 8:
+                    Process = response.filter(function (item) {
+                        return item.ProcessId === 1;
+                    })[0];
+                    break;
+                case 14:
+                    Process = response.filter(function (item) {
+                        return item.ProcessId === 2;
+                    })[0];
+                    break;
+                default:
+                    Process = response.filter(function (item) {
+                        return item.ProcessId === 3;
+                    })[0];
+                    break;
+            }
+
+            if (Process.GatewayAccountId === null) {
+                swal({
+                    title: "Atention",
+                    text: "This Proccess does not have a Gateway Account configured yet, would you like to configure it now",
+                    type: "warning",
+                    showCancelButton: true,
+                    cancelButtonText: 'No, configure it later',
+                    confirmButtonClass: "btn-warning",
+                    confirmButtonText: "Yes, configure it now",
+                    closeOnConfirm: true
+                }, function () {
+                    location.replace('../Gateway');
+                });
+            }  
+        },
+        error: function (err) {
+            console.log(err);
+        }
+    });
+}

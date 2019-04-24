@@ -31,6 +31,20 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
                 m.ProcessType = m.org.RegistrationTypeId.IsNull() || m.org.RegistrationTypeId == 8 ? PaymentProcessTypes.OneTimeGiving : PaymentProcessTypes.OnlineRegistration;
 
+                int? GatewayId = (from e in CurrentDatabase.PaymentProcess
+                                  join d in CurrentDatabase.GatewayAccount on e.GatewayAccountId equals d.GatewayAccountId into gj
+                                  from sub in gj.DefaultIfEmpty()
+                                  where e.ProcessId == (int)m.ProcessType
+                                  select new
+                                  {
+                                      sub.GatewayId
+                                  }).ToList()[0].GatewayId;
+
+                if (GatewayId.IsNull())
+                {
+                    return View("OnePageGiving/NotConfigured", m);
+                }
+
                 if (m.ManageGiving())
                 {
                     Session["Campus"] = Request.QueryString["campus"];

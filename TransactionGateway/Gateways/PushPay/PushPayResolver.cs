@@ -207,7 +207,7 @@ namespace TransactionGateway
                 TransactionId = payment.TransactionId,
                 Name = person.Name,
                 First = person.FirstName,
-                MiddleInitial = person.MiddleName[0].ToString(),
+                MiddleInitial = person.MiddleName.IsNotNull() ? person.MiddleName[0].ToString() : String.Empty,
                 Last = person.LastName,
                 Suffix = person.SuffixCode,
                 Donate = null,

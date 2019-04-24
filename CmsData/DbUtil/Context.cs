@@ -1875,7 +1875,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
                               }).ToList()[0].GatewayId;
 
             if (GatewayId.IsNull())
-                throw new Exception("This process doesn't has a Gateway configured");
+                throw new Exception("This process is not configured yet, please contact support");
 
             switch (GatewayId)
             {

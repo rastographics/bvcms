@@ -174,7 +174,7 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where
 		,[IsBoolean])
 		VALUES
 		(1, 'IsDeveloperMode', 'true', 1),
-		(1, 'PushpayMerchant', '', 0),
+		(1, 'PushpayMerchant', 'parkside', 0),
 		(2, 'M_ID', '856423594649', 0),
 		(2, 'M_KEY', 'M5Q4C9P2T4N5', 0),
 		(2, 'SageOriginatorId', '1111111111', 0),
