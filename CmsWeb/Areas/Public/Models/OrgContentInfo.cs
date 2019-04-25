@@ -61,11 +61,13 @@ namespace CmsWeb.Models
                     oc.ImageId = ImageData.Image.NewTextFromString(value).Id;
                 }
 
+                imageDb.SubmitChanges();
+
                 CurrentDatabase.SubmitChanges();
             }
         }
 
-        public bool HideBanner => Html?.Contains("<span class=\"hide-banner\"/>") ?? false;
+        public bool HideBanner => Html?.Contains("<span class=\"hide-banner\"") ?? false;
 
         public ImageData.Image image
         {

@@ -202,8 +202,6 @@ namespace CmsWeb.Areas.Main.Controllers
         {
             var id = SaveDraft(saveid, name, roleid, m.Subject, m.Body, m.UnlayerDesign, m.UseUnlayer);
 
-            System.Diagnostics.Debug.Print("Template ID: " + id);
-
             ViewBag.parents = m.wantParents;
             ViewBag.templateID = id;
 
