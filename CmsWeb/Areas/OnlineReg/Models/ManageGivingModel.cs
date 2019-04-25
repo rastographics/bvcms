@@ -25,6 +25,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
     {
         public int pid { get; set; }
         public int orgid { get; set; }
+
+        [NonSerialized]
         private CMSDataContext _currentDatabase;
         private CMSDataContext CurrentDatabase
         {
