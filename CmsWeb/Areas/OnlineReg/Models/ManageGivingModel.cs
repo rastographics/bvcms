@@ -30,17 +30,20 @@ namespace CmsWeb.Areas.OnlineReg.Models
         private CMSDataContext _currentDatabase;
         private CMSDataContext CurrentDatabase
         {
-            get => _currentDatabase ?? (_currentDatabase = DbUtil.Db);
+            get => _currentDatabase ?? (CurrentDatabase = DbUtil.Db);
             set
             {
-                _currentDatabase = value;
+                if (_currentDatabase == null)
+                {
+                    _currentDatabase = value;
 
-                HeadingLabel = CurrentDatabase.Setting("ManageGivingHeaderLabel", "Giving Opportunities");
+                    HeadingLabel = CurrentDatabase.Setting("ManageGivingHeaderLabel", "Giving Opportunities");
 #if DEBUG2
             testing = true;
 #endif
-                NoCreditCardsAllowed = CurrentDatabase.Setting("NoCreditCardGiving", "false").ToBool();
-                NoEChecksAllowed = CurrentDatabase.Setting("NoEChecksAllowed", "false").ToBool();
+                    NoCreditCardsAllowed = CurrentDatabase.Setting("NoCreditCardGiving", "false").ToBool();
+                    NoEChecksAllowed = CurrentDatabase.Setting("NoEChecksAllowed", "false").ToBool();
+                }
             }
         }
 
