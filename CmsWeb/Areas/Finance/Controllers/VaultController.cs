@@ -15,7 +15,7 @@ namespace CmsWeb.Areas.Finance.Controllers
         [HttpPost]
         public ActionResult DeleteVaultData(int id)
         {
-            var manageGiving = new ManageGivingModel();
+            var manageGiving = new ManageGivingModel(CurrentDatabase);
             manageGiving.CancelManagedGiving(id);
 
             return Content("ok");

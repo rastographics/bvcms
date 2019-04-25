@@ -347,7 +347,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             try
             {
                 var script = CurrentDatabase.Content(id);
-                PythonModel.RunScript(Util.Host, script.Body);
+                PythonModel.RunScript(CurrentDatabase.Host, script.Body);
             }
             catch (Exception e)
             {

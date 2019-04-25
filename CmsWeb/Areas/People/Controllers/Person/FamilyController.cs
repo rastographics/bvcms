@@ -74,7 +74,7 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpPost]
         public ActionResult FamilyPictureDialog(int id)
         {
-            var currentPerson = new PersonModel(id);
+            var currentPerson = new PersonModel(id, CurrentDatabase);
             return View("Family/PictureDialog", currentPerson);
         }
 

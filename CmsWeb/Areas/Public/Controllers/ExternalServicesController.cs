@@ -224,7 +224,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 }
 
                 //Authenticate user
-                var retUser = AccountModel.AuthenticateLogon(userName, password, "");
+                var retUser = AccountModel.AuthenticateLogon(userName, password, "", CurrentDatabase);
                 if (retUser.IsValid)
                 {
                     return Json(new

@@ -32,7 +32,7 @@ namespace CmsData
 
         CMSDataContext GetDb()
         {
-            return DbUtil.Create(Util.Host);
+            return CMSDataContext.Create(Util.Host);
         }
         public override void Initialize(string name, NameValueCollection config)
         {

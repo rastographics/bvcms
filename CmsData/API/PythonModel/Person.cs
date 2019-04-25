@@ -61,7 +61,7 @@ namespace CmsData
                     }
                     else
                     {
-                        var uname = MembershipService.FetchUsername(db2, p.PreferredName, p.LastName);
+                        var uname = CmsData.Util2.FetchUsername(db2, p.PreferredName, p.LastName);
                         var pword = Guid.NewGuid().ToString();
                         user = new User() {PeopleId = p.PeopleId, Password = pword, Username = uname, MustChangePassword = false, IsApproved = true, Name = p.Name};
                         db2.SubmitChanges();
@@ -72,6 +72,7 @@ namespace CmsData
                 }
             }
         }
+
         public void AddTag(object query, string tagName, int ownerId)
         {
             using (var db2 = NewDataContext())

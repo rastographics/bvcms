@@ -85,6 +85,7 @@ namespace CmsWeb.Lifecycle
         IPrincipal CurrentUser { get; }
         CMSDataContext CurrentDatabase { get; }
         CMSImageDataContext CurrentImageDatabase { get; }
+        Elmah.ErrorLog GetErrorLog();
     }
 
     public class RequestManager : IRequestManager, IDisposable
@@ -104,6 +105,11 @@ namespace CmsWeb.Lifecycle
             CurrentImageDatabase = CMSImageDataContext.Create(CurrentHttpContext);
         }
 
+        public Elmah.ErrorLog GetErrorLog()
+        {
+            return Elmah.ErrorLog.GetDefault(CurrentHttpContext?.ApplicationInstance?.Context ?? HttpContext.Current);
+        }
+
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
 
@@ -113,12 +119,9 @@ namespace CmsWeb.Lifecycle
             {
                 if (disposing)
                 {
-                    CurrentDatabase.Dispose();
-                    CurrentImageDatabase.Dispose();
+                    // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
+                    // TODO: set large fields to null.
                 }
-
-                // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
-                // TODO: set large fields to null.
 
                 disposedValue = true;
             }

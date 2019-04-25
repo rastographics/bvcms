@@ -18,7 +18,7 @@ namespace CmsWeb.Areas.Public
         [Route("~/OrgContent/{id:int}/{pid:int?}")]
         public ActionResult Index(int id, int? pid)
         {
-            var o = OrgContentInfo.Get(id);
+            var o = OrgContentInfo.Get(CurrentDatabase, id);
             if (o == null)
             {
                 return Content("<h2>Not an Organization</h2>");
@@ -29,7 +29,7 @@ namespace CmsWeb.Areas.Public
                 return Redirect("/OrgContent/Login/" + id);
             }
 
-            if (o.TryRunPython(pid ?? Util.UserPeopleId.Value))
+            if (o.TryRunPython(CurrentDatabase, pid ?? Util.UserPeopleId.Value))
             {
                 return View("ScriptResults", o);
             }
@@ -76,7 +76,7 @@ namespace CmsWeb.Areas.Public
 
         public ActionResult Edit(int id)
         {
-            var o = OrgContentInfo.Get(id);
+            var o = OrgContentInfo.Get(CurrentDatabase, id);
             if (o == null || o.Inactive || !Util.UserPeopleId.HasValue || !o.CanEdit)
             {
                 return Redirect("/OrgContent/" + id);
@@ -126,7 +126,7 @@ namespace CmsWeb.Areas.Public
 
         public FileResult Display(int id)
         {
-            var o = OrgContentInfo.GetOc(id);
+            var o = OrgContentInfo.GetOc(CurrentDatabase, id);
             var image = o.image;
             return File(image.Bits, image.Mimetype);
         }
@@ -135,9 +135,8 @@ namespace CmsWeb.Areas.Public
         [ValidateInput(false)]
         public ActionResult Update(int id, string Html)
         {
-            var o = OrgContentInfo.Get(id);
+            var o = OrgContentInfo.Get(CurrentDatabase, id);
             o.Html = Html;
-            ImageData.DbUtil.Db.SubmitChanges();
             return Redirect("/OrgContent/" + id);
         }
     }

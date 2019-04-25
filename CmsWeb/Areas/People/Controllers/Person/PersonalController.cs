@@ -12,7 +12,7 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpPost]
         public ActionResult ProfileHeader(int id)
         {
-            var m = new PersonModel(id);
+            var m = new PersonModel(id, CurrentDatabase);
             return View("Personal/Header", m);
         }
 
@@ -48,7 +48,7 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpPost]
         public ActionResult PictureDialog(int id)
         {
-            var m = new PersonModel(id);
+            var m = new PersonModel(id, CurrentDatabase);
             return View("Personal/PictureDialog", m);
         }
 

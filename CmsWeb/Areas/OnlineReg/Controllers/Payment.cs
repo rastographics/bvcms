@@ -146,7 +146,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return View("Other/Unknown");
             }
 
-            var m = OnlineRegModel.GetRegistrationFromDatum(id ?? 0);
+            var m = OnlineRegModel.GetRegistrationFromDatum(id ?? 0, CurrentDatabase);
             if (m == null || m.Completed)
             {
                 if (m == null)
@@ -200,7 +200,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return View("Other/Unknown");
             }
 
-            var m = OnlineRegModel.GetRegistrationFromDatum(id ?? 0);
+            var m = OnlineRegModel.GetRegistrationFromDatum(id ?? 0, CurrentDatabase);
             if (m == null || m.Completed)
             {
                 if (m == null)
@@ -288,7 +288,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 ti.State = "TN";
             }
 #endif
-            var pf = PaymentForm.CreatePaymentFormForBalanceDue(ti, amtdue, email);
+            var pf = PaymentForm.CreatePaymentFormForBalanceDue(CurrentDatabase, ti, amtdue, email);
 
             SetHeaders(pf.OrgId ?? 0);
 

@@ -53,6 +53,9 @@ else {
 @section scripts
 {
     <script type="text/javascript">
+        if (document.querySelector('body > div.blockUI.blockMsg.blockPage')) {
+            location.reload(true);
+        }
         $(function () {
             $('input:text').first().focus();
             var $redirect = $('input[name="ReturnUrl"]');

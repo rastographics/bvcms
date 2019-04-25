@@ -350,7 +350,7 @@ namespace CmsWeb.Models
                 return;
             }
 
-            //var db = DbUtil.Create(Host);
+            //var db = CMSDataContext.Create(Host);
             if (!JobDbContext.Setting("UploadExcelIpsDeleteGifts"))
             {
                 return;
