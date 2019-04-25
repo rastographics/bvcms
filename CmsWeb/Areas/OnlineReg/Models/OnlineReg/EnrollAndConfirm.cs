@@ -600,7 +600,7 @@ Total Fee paid for this registration session: {ts?.TotPaid:C}<br/>
                 p.CreateAccount();
             }
 
-            var c = DbUtil.Content(CurrentDatabase, "OneTimeConfirmation");
+            var c = CurrentDatabase.Content("OneTimeConfirmation");
             if (c == null)
             {
                 c = new Content();

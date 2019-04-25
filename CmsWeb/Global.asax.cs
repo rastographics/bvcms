@@ -9,7 +9,6 @@ using SimpleInjector.Integration.Web.Mvc;
 using SimpleInjector.Integration.WebApi;
 using System;
 using System.Configuration;
-using System.Data.SqlClient;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -166,6 +165,14 @@ namespace CmsWeb
                 {
                     Response.Redirect(r);
                 }
+            }
+        }
+
+        protected void Application_PostAuthorizeRequest()
+        {
+            if (ShouldBypassProcessing())
+            {
+                return;
             }
         }
 
