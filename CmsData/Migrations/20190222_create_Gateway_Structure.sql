@@ -1,3 +1,14 @@
+--Droping Function--
+IF EXISTS (
+	SELECT type_desc, type
+	FROM SYS.OBJECTS WITH(NOLOCK)
+	WHERE object_id = OBJECT_ID(N'[dbo].[ImportGatewatSettings]')
+		AND type IN ( N'FN', N'IF', N'TF', N'FS', N'FT' ))
+	BEGIN
+		DROP FUNCTION [dbo].[ImportGatewatSettings]
+	END
+GO
+
 --Droping SP--
 IF EXISTS (
 	SELECT type_desc, type
@@ -152,7 +163,27 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where
 		('Pushpay', 1),
 		('Sage', 2),
 		('Transnational', 2),
-		('Acceptiva', 3)
+		('Acceptiva', 3),
+		('AuthorizeNet', 2)
+	END
+GO
+
+CREATE FUNCTION [ImportGatewatSettings]
+(
+@Key[nvarchar](125)
+)
+RETURNS [nvarchar](125)
+AS
+	BEGIN
+		DECLARE @Value[nvarchar](125);
+		SELECT @Value = (SELECT TOP 1 [Setting] FROM [Setting]
+						WHERE [Id] LIKE @Key);
+		IF @Value IS NULL
+		BEGIN
+			SELECT @Value = '';
+		END
+
+		RETURN @Value;
 	END
 GO
 
@@ -174,18 +205,20 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where
 		,[IsBoolean])
 		VALUES
 		(1, 'IsDeveloperMode', 'true', 1),
-		(1, 'PushpayMerchant', 'parkside', 0),
-		(2, 'M_ID', '856423594649', 0),
-		(2, 'M_KEY', 'M5Q4C9P2T4N5', 0),
-		(2, 'SageOriginatorId', '1111111111', 0),
+		(1, 'PushpayMerchant', (SELECT [dbo].[ImportGatewatSettings]('PushpayMerchant')), 0),
+		(2, 'M_ID', (SELECT [dbo].[ImportGatewatSettings]('M_ID')), 0),
+		(2, 'M_KEY', (SELECT [dbo].[ImportGatewatSettings]('M_KEY')), 0),
 		(2, 'GatewayTesting', 'true', 1),
-		(3, 'TNBUsername', 'faithbased', 0),
-		(3, 'TNBPassword', 'bprogram2', 0),
+		(3, 'TNBUsername', (SELECT [dbo].[ImportGatewatSettings]('TNBUsername')), 0),
+		(3, 'TNBPassword', (SELECT [dbo].[ImportGatewatSettings]('TNBPassword')), 0),
 		(3, 'GatewayTesting', 'true', 1),
-		(4, 'AcceptivaApiKey', '', 0),
-		(4, 'AcceptivaAchId', '', 0),
-		(4, 'AcceptivaCCId', '', 0),
-		(4, 'UseSavingAccounts', 'true', 1);
+		(4, 'AcceptivaApiKey', (SELECT [dbo].[ImportGatewatSettings]('AcceptivaApiKey')), 0),
+		(4, 'AcceptivaAchId', (SELECT [dbo].[ImportGatewatSettings]('AcceptivaAchId')), 0),
+		(4, 'AcceptivaCCId', (SELECT [dbo].[ImportGatewatSettings]('AcceptivaCCId')), 0),
+		(4, 'UseSavingAccounts', 'true', 1),
+		(5, 'x_login', (SELECT [dbo].[ImportGatewatSettings]('x_login')),0),
+		(5, 'x_tran_key', (SELECT [dbo].[ImportGatewatSettings]('x_tran_key')),0);
+	DROP FUNCTION [ImportGatewatSettings]
 	END
 GO
 
@@ -206,7 +239,8 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where
 		('PushpayAcc', 1),
 		('SageAcc', 2),
 		('TransnationalAcc', 3),
-		('AcceptivaAcc', 4)	
+		('AcceptivaAcc', 4),
+		('AuthorizeNetAcc', 5)
 	END
 GO
 
@@ -257,10 +291,6 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where
         ('One-Time Giving'),
         ('Recurring Giving'),
         ('Online Registration');
-
-		/*UPDATE [dbo].[PaymentProcess]
-		SET [GatewayAccountId] = 1
-		WHERE [ProcessId] = 1*/
 	END
 GO
 

@@ -21,7 +21,7 @@ namespace CmsData.Finance
 
         public string GatewayType => "AuthorizeNet";
 
-        public AuthorizeNetGateway(CMSDataContext db, bool testing)
+        public AuthorizeNetGateway(CMSDataContext db, bool testing, PaymentProcessTypes? ProcessType)
         {
             this.db = db;
             IsLive = !(testing || db.Setting("GatewayTesting"));
@@ -32,8 +32,8 @@ namespace CmsData.Finance
             }
             else
             {
-                _login = db.GetSetting("x_login", "");
-                _key = db.GetSetting("x_tran_key", "");
+                _login = new MultipleGatewayUtils(db).Setting("x_login", "", (int)ProcessType);
+                _key = new MultipleGatewayUtils(db).Setting("x_tran_key", "", (int)ProcessType);
 
                 if (string.IsNullOrWhiteSpace(_login))
                     throw new Exception("x_login setting not found, which is required for Authorize.net.");

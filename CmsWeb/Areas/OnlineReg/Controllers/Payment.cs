@@ -90,16 +90,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             RouteModel ret;
 
-            //This will change to gatewayType in order to decide which process choose.
-            //if (m.gatewayType == "Redirect")
-            int? GatewayId = (from e in CurrentDatabase.PaymentProcess
-                              join d in CurrentDatabase.GatewayAccount on e.GatewayAccountId equals d.GatewayAccountId into gj
-                              from sub in gj.DefaultIfEmpty()
-                              where e.ProcessId == (int)m.ProcessType
-                              select new
-                              {
-                                  sub.GatewayId
-                              }).ToList()[0].GatewayId;
+            int? GatewayId = new MultipleGatewayUtils(CurrentDatabase).GatewayId(m.ProcessType);
 
             if ((int)GatewayTypes.Pushpay == GatewayId)
             {
@@ -324,14 +315,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return Message("no outstanding transaction");
             }
 
-            int? GatewayId = (from e in CurrentDatabase.PaymentProcess
-                              join d in CurrentDatabase.GatewayAccount on e.GatewayAccountId equals d.GatewayAccountId into gj
-                              from sub in gj.DefaultIfEmpty()
-                              where e.ProcessId == (int)PaymentProcessTypes.OnlineRegistration
-                              select new
-                              {
-                                  sub.GatewayId
-                              }).ToList()[0].GatewayId;
+            int? GatewayId = new MultipleGatewayUtils(CurrentDatabase).GatewayId(PaymentProcessTypes.OnlineRegistration);
 
             if ((int)GatewayTypes.Pushpay == GatewayId)
             {

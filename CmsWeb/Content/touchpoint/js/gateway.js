@@ -166,8 +166,12 @@
                 this.GatewayId = res[0].GatewayId;
                 this.modalInfo(null, res[0].GatewayAccountId);
             }
-            else
+            else {
+                if (this.GatewayId === null)
+                    this.GatewayId = 1;
                 this.OnChangeGateway();
+            }
+                
         },
         processForm: function () {
             var IsInsert = this.IsGatewayReadOnly ? false : true;

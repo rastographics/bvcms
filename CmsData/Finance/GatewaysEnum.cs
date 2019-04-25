@@ -5,6 +5,7 @@
         Pushpay = 1,
         Sage = 2,
         Transnational = 3,
-        Acceptiva = 4
+        Acceptiva = 4,
+        AuthorizeNet = 5
     }
 }

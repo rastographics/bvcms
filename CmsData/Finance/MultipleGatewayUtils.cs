@@ -19,14 +19,6 @@ namespace CmsData
             if (name == null)
                 return defaultvalue;
             var list = db.GatewayDetails.Where(x => x.GatewayAccountId == GatewayAccountId).ToDictionary(x => x.GatewayDetailName.Trim(), x => x.GatewayDetailValue);
-            // var listD = db.GatewayDetails.Where(x => x.GatewayAccountId == GatewayAccountId).Select(x => new { x.GatewayDetailName, x.GatewayDetailValue });
-
-            /*var list = (from e in db.GatewayDetails
-                         select new
-                         {
-                             e.GatewayDetailName,
-                             e.GatewayDetailValue
-                         }).ToList().ToDictionary(x => x.GatewayDetailName.Trim(), x => x.GatewayDetailValue);*/
 
             if (list == null)
             {
@@ -55,6 +47,18 @@ namespace CmsData
                 return defaultValue;
 
             return setting.ToLower() == "true";
+        }
+
+        public int? GatewayId (PaymentProcessTypes? processType)
+        {
+            return (from e in db.PaymentProcess
+                    join d in db.GatewayAccount on e.GatewayAccountId equals d.GatewayAccountId into gj
+                    from sub in gj.DefaultIfEmpty()
+                    where e.ProcessId == (int)processType
+                    select new
+                    {
+                        sub.GatewayId
+                    }).FirstOrDefault().GatewayId;
         }
     }
 }

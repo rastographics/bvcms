@@ -27,7 +27,7 @@ namespace CmsData.Finance
         {
             this.db = db;
             var gatewayTesting = new MultipleGatewayUtils(db).Setting("GatewayTesting", (int)ProcessType);
-            if (/*testing ||*/ gatewayTesting)
+            if (testing || gatewayTesting)
             {
                 _id = "856423594649";
                 _key = "M5Q4C9P2T4N5";

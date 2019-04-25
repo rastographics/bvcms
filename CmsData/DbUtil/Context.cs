@@ -1865,14 +1865,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
 
         public IGateway Gateway(bool testing = false, PaymentProcessTypes? ProcessType = null)
         {
-            int? GatewayId = (from e in PaymentProcess
-                              join d in GatewayAccount on e.GatewayAccountId equals d.GatewayAccountId into gj
-                              from sub in gj.DefaultIfEmpty()
-                              where e.ProcessId == (int)ProcessType
-                              select new
-                              {
-                                  sub.GatewayId
-                              }).ToList()[0].GatewayId;
+            int? GatewayId = new MultipleGatewayUtils(this).GatewayId(ProcessType);
 
             if (GatewayId.IsNull())
                 throw new Exception("This process is not configured yet, please contact support");
@@ -1887,6 +1880,8 @@ This search uses multiple steps which cannot be duplicated in a single query.
                     return new TransNationalGateway(this, testing, ProcessType);
                 case (int)GatewayTypes.Acceptiva:
                     return new AcceptivaGateway(this, testing, ProcessType);
+                case (int)GatewayTypes.AuthorizeNet:
+                    return new AuthorizeNetGateway(this, testing, ProcessType);
                 default:
                     break;
             }

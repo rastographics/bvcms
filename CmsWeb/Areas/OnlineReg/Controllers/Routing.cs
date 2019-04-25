@@ -16,15 +16,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 #if DEBUG
             m.DebugCleanUp();
 #endif
-
-            int? GatewayId = (from e in CurrentDatabase.PaymentProcess
-                              join d in CurrentDatabase.GatewayAccount on e.GatewayAccountId equals d.GatewayAccountId into gj
-                              from sub in gj.DefaultIfEmpty()
-                              where e.ProcessId == (int)m.ProcessType
-                              select new
-                              {
-                                  sub.GatewayId
-                              }).ToList()[0].GatewayId;
+            int? GatewayId = new MultipleGatewayUtils(CurrentDatabase).GatewayId(m.ProcessType);
 
             if ((int)GatewayTypes.Pushpay == GatewayId && m.ProcessType == PaymentProcessTypes.OneTimeGiving)
             {

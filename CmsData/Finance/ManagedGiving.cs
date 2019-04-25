@@ -160,14 +160,7 @@ Please contact the Finance office at the church."
         }
         private IGateway GetGateway(CMSDataContext db, PaymentInfo pi)
         {
-            int? GatewayId = (from e in db.PaymentProcess
-                              join d in db.GatewayAccount on e.GatewayAccountId equals d.GatewayAccountId into gj
-                              from sub in gj.DefaultIfEmpty()
-                              where e.ProcessId == (int)PaymentProcessTypes.RecurringGiving
-                              select new
-                              {
-                                  sub.GatewayId
-                              }).ToList()[0].GatewayId;
+            int? GatewayId = new MultipleGatewayUtils(db).GatewayId(PaymentProcessTypes.RecurringGiving);
 
             if (GatewayId.IsNull())
                 throw new Exception("This process dosn't has a Gateway configured");
