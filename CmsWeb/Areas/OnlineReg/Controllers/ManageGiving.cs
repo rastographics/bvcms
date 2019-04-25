@@ -137,13 +137,21 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             var m = TempData["managegiving"] as ManageGivingModel;
             if (m == null)
+            {
                 return Content("No active registration");
+            }
+
+            m.CurrentDatabase = CurrentDatabase;
 
             if (Util.IsDebug())
+            {
                 m.testing = true;
+            }
 
             if (!m.ManagedGivingStopped)
+            {
                 m.Confirm(this);
+            }
 
             SetHeaders(m.orgid);
             OnlineRegModel.LogOutOfOnlineReg();

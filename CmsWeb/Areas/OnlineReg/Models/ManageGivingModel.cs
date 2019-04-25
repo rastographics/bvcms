@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
+using System.Xml.Serialization;
 using CmsData;
 using CmsData.Classes;
 using CmsData.Finance;
@@ -14,6 +15,7 @@ using CmsWeb.Areas.OnlineReg.Controllers;
 using CmsWeb.Code;
 using Dapper;
 using Microsoft.Scripting.Utils;
+using Newtonsoft.Json;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.OnlineReg.Models
@@ -24,6 +26,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public int pid { get; set; }
         public int orgid { get; set; }
         private CMSDataContext _currentDatabase;
+        [XmlIgnore, JsonIgnore]
         public CMSDataContext CurrentDatabase
         {
             get => _currentDatabase ?? (_currentDatabase = DbUtil.Db);
