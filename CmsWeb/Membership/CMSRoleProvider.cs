@@ -20,7 +20,7 @@ namespace CmsWeb.Membership
 		public override string ApplicationName { get { return "cms"; } set { } }
 
         public IRequestManager RequestManager { get; set; }
-        CMSDataContext CurrentDatabase = CMSDataContext.Create(HttpContextFactory.Current);
+        public CMSDataContext CurrentDatabase = CMSDataContext.Create(HttpContextFactory.Current);
 
         public override void Initialize(string name, NameValueCollection config)
 		{
