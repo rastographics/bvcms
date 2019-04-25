@@ -1,10 +1,7 @@
 <!--- HTML Links --->
 [DOC]: https://docs.touchpointsoftware.com "TouchPointSoftware User Documentation"
 [IDE]: https://www.visualstudio.com/downloads/
-[SQL]: https://www.microsoft.com/en-us/download/details.aspx?id=54284
-[WEB]: http://visualstudiogallery.msdn.microsoft.com/56633663-6799-41d7-9df7-0f2a504ca361
-[RWM]: http://www.microsoft.com/en-us/download/details.aspx?id=7435
-[GIT]: https://github.com/bvcms/bvcms.git
+[SQL]: https://www.microsoft.com/en-us/sql-server/sql-server-editions-express
 [PR]: PullRequestGuidelines.md
 
 BVCMS Developer Quick Start Guide
@@ -23,7 +20,7 @@ BVCMS is maintained by TouchPoint Software, Inc.
     - Be sure to install the ASP.NET and web development Workload option.
     - Install the Python development option if you want to debug Python scripts.
     
-1. **[SQL Server Express 2016][SQL]**
+1. **[SQL Server Express 2017][SQL]**
 
 ### Get the cloning URL for the GitHub BVCMS Source Code Repository
 
