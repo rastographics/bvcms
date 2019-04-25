@@ -26,8 +26,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public int pid { get; set; }
         public int orgid { get; set; }
         private CMSDataContext _currentDatabase;
-        [XmlIgnore, JsonIgnore]
-        public CMSDataContext CurrentDatabase
+        private CMSDataContext CurrentDatabase
         {
             get => _currentDatabase ?? (_currentDatabase = DbUtil.Db);
             set
@@ -41,6 +40,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 NoCreditCardsAllowed = CurrentDatabase.Setting("NoCreditCardGiving", "false").ToBool();
                 NoEChecksAllowed = CurrentDatabase.Setting("NoEChecksAllowed", "false").ToBool();
             }
+        }
+
+        public void SetCurrentDatabase(CMSDataContext db)
+        {
+            CurrentDatabase = db;
         }
 
         public IList<string> DefaultFundIds = new List<string>();

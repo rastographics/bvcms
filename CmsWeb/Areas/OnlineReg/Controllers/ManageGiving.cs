@@ -92,7 +92,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [HttpPost]
         public ActionResult ManageGiving(ManageGivingModel m)
         {
-            m.CurrentDatabase = CurrentDatabase;
+            m.SetCurrentDatabase(CurrentDatabase);
             SetHeaders(m.orgid);
 
             // only validate if the amounts are greater than zero.
@@ -141,7 +141,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return Content("No active registration");
             }
 
-            m.CurrentDatabase = CurrentDatabase;
+            m.SetCurrentDatabase(CurrentDatabase);
 
             if (Util.IsDebug())
             {
