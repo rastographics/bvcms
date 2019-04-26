@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace CmsData.Finance.Acceptiva.Core
 {
-    internal class StorePayerResponse
+    internal  class Response
     {
         [JsonProperty(PropertyName = "status")]
         public string Status { get; set; }
@@ -11,7 +11,5 @@ namespace CmsData.Finance.Acceptiva.Core
         public List<Error> Errors { get; set; }
         [JsonProperty(PropertyName = "request_id_str")]
         public string RequestIdStr { get; set; }
-        [JsonProperty(PropertyName = "payer_id_str")]
-        public string PayerIdStr { get; set; }
     }
 }

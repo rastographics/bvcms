@@ -5,11 +5,10 @@ namespace CmsData.Finance.Acceptiva.Core
 {
     internal class StorePayerRequest : AcceptivaRequest
     {
-        private const string URL = "https://sandbox.acceptivapro.com/api/api_request.php";
         private const string action = "store_payer_data";
 
-        protected StorePayerRequest(string apiKey, Payer payer, CreditCard creditCard, Ach ach)
-            : base(URL, apiKey, action)
+        public StorePayerRequest(string apiKey, Payer payer, CreditCard creditCard, Ach ach)
+            : base(apiKey, action)
         {
             Data["params[0][payer_email]"] = payer.Email;
             Data["params[0][payer_fname]"] = payer.FirstName;
@@ -28,10 +27,10 @@ namespace CmsData.Finance.Acceptiva.Core
             Data["params[0][ach_routing_num]"] = ach.AchRoutingNum;
         }
 
-        public new AcceptivaResponse<StorePayerResponse> Execute()
+        public new AcceptivaResponse<PayerDataResponse> Execute()
         {
             var response = base.Execute();
-            var storePayerResponse = JsonConvert.DeserializeObject<List<AcceptivaResponse<StorePayerResponse>>>(response);
+            var storePayerResponse = JsonConvert.DeserializeObject<List<AcceptivaResponse<PayerDataResponse>>>(response);
             return storePayerResponse[0];
         }
     }

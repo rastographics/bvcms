@@ -1,6 +1,7 @@
 ﻿using CmsData.Finance.Acceptiva;
 using CmsData.Finance.Acceptiva.Charge;
 using CmsData.Finance.Acceptiva.Core;
+using CmsData.Finance.Acceptiva.Get;
 using CmsData.Finance.Acceptiva.Store;
 using System;
 using System.Collections.Generic;
@@ -192,33 +193,54 @@ namespace CmsData.Finance
                 paymentInfo = new PaymentInfo();
                 person.PaymentInfos.Add(paymentInfo);
             }
-
+            //Set values to be ignored in API
             if (cardNumber.StartsWith("X"))
+            {
                 cardNumber = string.Empty;
-
+                expires = string.Empty;
+            }
+            else
+            {
+                paymentInfo.MaskedCard = Util.MaskCC(cardNumber);
+                paymentInfo.Expires = expires;
+            }
             if (account.StartsWith("X"))
+            {
                 account = string.Empty;
-
-            if (paymentInfo.AcceptivaPayerId == null)
+                routing = string.Empty;
+            }
+            else
+            {
+                paymentInfo.MaskedAccount = Util.MaskAccount(account);
+                paymentInfo.Routing = Util.Mask(new StringBuilder(routing), 2);
+            }
+            //Check if Accpetiva has this payer data
+            string acceptivaPayerid = GetAcceptivaPayerId(peopleId);
+            if (string.IsNullOrEmpty(acceptivaPayerid))
             {
                 paymentInfo.AcceptivaPayerId = StoreNewPayerData(person, paymentInfo, cardNumber, expires, routing, account);
             }
             else
             {
+                paymentInfo.AcceptivaPayerId = acceptivaPayerid;
                 StorePayerData(person, paymentInfo, cardNumber, expires, account, routing);
-            }
-
-            paymentInfo.MaskedCard = Util.MaskCC(cardNumber);
-            paymentInfo.Expires = expires;
-
-            paymentInfo.MaskedAccount = Util.MaskAccount(account);
-            paymentInfo.Routing = Util.Mask(new StringBuilder(routing), 2);
-
+            }            
             if (giving)
                 paymentInfo.PreferredGivingType = type;
             else
                 paymentInfo.PreferredPaymentType = type;
             db.SubmitChanges();
+        }
+
+        private string GetAcceptivaPayerId(int peopleId)
+        {
+            var getPayerData = new GetPayerData(_apiKey, peopleId);
+            var response = getPayerData.Execute();
+            if (response.Response.Status != "success")
+            {
+                return null;
+            }
+            return response.Response.PayerIdStr;
         }
 
         private void StorePayerData(Person person, PaymentInfo paymentInfo, string cardNumber, string expires, string account, string routing)

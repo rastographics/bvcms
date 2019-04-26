@@ -5,12 +5,11 @@ namespace CmsData.Finance.Acceptiva.Core
 {
     internal class ChargeRequest : AcceptivaRequest
     {
-        private const string URL = "https://sandbox.acceptivapro.com/api/api_request.php";
         private const string action = "charge";
 
         protected ChargeRequest(string apiKey, string merchAcctId, int paymentType, decimal amount, string orderId,
             string orderDescription, string peopleId, Payer payer)
-            : base(URL, apiKey, action)
+            : base(apiKey, action)
         {
             Data["params[0][items][0][id]"] = orderId.ToString();
             Data["params[0][items][0][desc]"] = orderDescription.ToString();
