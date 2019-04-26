@@ -20,6 +20,5 @@ namespace CmsData.Finance.Acceptiva.Get
             var chargeResponse = JsonConvert.DeserializeObject<List<AcceptivaResponse<PayerDataResponse>>>(response);
             return chargeResponse[0];
         }
-
     }
 }

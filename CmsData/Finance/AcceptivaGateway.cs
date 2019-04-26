@@ -3,6 +3,7 @@ using CmsData.Finance.Acceptiva.Charge;
 using CmsData.Finance.Acceptiva.Core;
 using CmsData.Finance.Acceptiva.Get;
 using CmsData.Finance.Acceptiva.Store;
+using CmsData.Finance.Acceptiva.Void;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -48,12 +49,87 @@ namespace CmsData.Finance
         }
 
         public bool CanVoidRefund => true;
-
         public bool CanGetSettlementDates => false;
-
         public bool UseIdsForSettlementDates => false;
-
         public bool CanGetBounces => false;
+
+        public void StoreInVault(int peopleId, string type, string cardNumber, string expires, string cardCode, string routing, string account, bool giving)
+        {
+            var person = db.LoadPersonById(peopleId);
+            var paymentInfo = person.PaymentInfo();
+            if (paymentInfo == null)
+            {
+                paymentInfo = new PaymentInfo();
+                person.PaymentInfos.Add(paymentInfo);
+            }
+            //Set values to be ignored in API
+            if (cardNumber.StartsWith("X"))
+            {
+                cardNumber = string.Empty;
+                expires = string.Empty;
+            }
+            else
+            {
+                paymentInfo.MaskedCard = Util.MaskCC(cardNumber);
+                paymentInfo.Expires = expires;
+            }
+            if (account.StartsWith("X"))
+            {
+                account = string.Empty;
+                routing = string.Empty;
+            }
+            else
+            {
+                paymentInfo.MaskedAccount = Util.MaskAccount(account);
+                paymentInfo.Routing = Util.Mask(new StringBuilder(routing), 2);
+            }
+            //Check if Accpetiva has this payer data
+            string acceptivaPayerid = GetAcceptivaPayerId(peopleId);
+            if (string.IsNullOrEmpty(acceptivaPayerid))
+            {
+                paymentInfo.AcceptivaPayerId = StoreNewPayerData(person, paymentInfo, cardNumber, expires, routing, account);
+            }
+            else
+            {
+                paymentInfo.AcceptivaPayerId = acceptivaPayerid;
+                StorePayerData(person, paymentInfo, cardNumber, expires, account, routing);
+            }            
+            if (giving)
+                paymentInfo.PreferredGivingType = type;
+            else
+                paymentInfo.PreferredPaymentType = type;
+            db.SubmitChanges();
+        }
+
+        public void RemoveFromVault(int peopleId)
+        {
+            var person = db.LoadPersonById(peopleId);
+            var paymentInfo = person.PaymentInfo();
+            if (paymentInfo == null)
+                return;
+
+            // clear out local record and save changes.
+            paymentInfo.AcceptivaPayerId = null;
+            paymentInfo.MaskedCard = null;
+            paymentInfo.MaskedAccount = null;
+            paymentInfo.Expires = null;
+            db.SubmitChanges();
+        }
+
+        public TransactionResponse VoidCreditCardTransaction(string reference)
+        {
+            return VoidTransaction(reference);            
+        }
+
+        public TransactionResponse VoidCheckTransaction(string reference)
+        {
+            return VoidTransaction(reference);
+        }
+
+        public TransactionResponse RefundCreditCard(string reference, decimal amt, string lastDigits = "")
+        {
+            throw new NotImplementedException();
+        }
 
         public TransactionResponse AuthCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description, int tranid, string cardcode, string email, string first, string last, string addr, string addr2, string city, string state, string country, string zip, string phone)
         {
@@ -148,7 +224,7 @@ namespace CmsData.Finance
                     Email = email,
                     Phone = phone
                 },
-                0,
+                amt,
                 tranid.ToString(CultureInfo.InvariantCulture),
                 description,
                 peopleId.ToString(CultureInfo.InvariantCulture));
@@ -158,7 +234,7 @@ namespace CmsData.Finance
             return new TransactionResponse
             {
                 Approved = response.Response.Status == "success" ? true : false,
-                AuthCode = response.Response.TransStatus,
+                AuthCode = response.Response.ProcessorResponseCode,
                 Message = response.Response.Errors.FirstOrDefault()?.ErrorMsg,
                 TransactionId = response.Response.TransIdStr
             };
@@ -174,62 +250,19 @@ namespace CmsData.Finance
             throw new NotImplementedException();
         }
 
-        public TransactionResponse RefundCreditCard(string reference, decimal amt, string lastDigits = "")
+        //private methods
+        private TransactionResponse VoidTransaction(string reference)
         {
-            throw new NotImplementedException();
-        }
+            var voidTrans = new VoidTrans(_apiKey, reference);
+            var response = voidTrans.Execute();
 
-        public void RemoveFromVault(int peopleId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void StoreInVault(int peopleId, string type, string cardNumber, string expires, string cardCode, string routing, string account, bool giving)
-        {
-            var person = db.LoadPersonById(peopleId);
-            var paymentInfo = person.PaymentInfo();
-            if (paymentInfo == null)
+            return new TransactionResponse
             {
-                paymentInfo = new PaymentInfo();
-                person.PaymentInfos.Add(paymentInfo);
-            }
-            //Set values to be ignored in API
-            if (cardNumber.StartsWith("X"))
-            {
-                cardNumber = string.Empty;
-                expires = string.Empty;
-            }
-            else
-            {
-                paymentInfo.MaskedCard = Util.MaskCC(cardNumber);
-                paymentInfo.Expires = expires;
-            }
-            if (account.StartsWith("X"))
-            {
-                account = string.Empty;
-                routing = string.Empty;
-            }
-            else
-            {
-                paymentInfo.MaskedAccount = Util.MaskAccount(account);
-                paymentInfo.Routing = Util.Mask(new StringBuilder(routing), 2);
-            }
-            //Check if Accpetiva has this payer data
-            string acceptivaPayerid = GetAcceptivaPayerId(peopleId);
-            if (string.IsNullOrEmpty(acceptivaPayerid))
-            {
-                paymentInfo.AcceptivaPayerId = StoreNewPayerData(person, paymentInfo, cardNumber, expires, routing, account);
-            }
-            else
-            {
-                paymentInfo.AcceptivaPayerId = acceptivaPayerid;
-                StorePayerData(person, paymentInfo, cardNumber, expires, account, routing);
-            }            
-            if (giving)
-                paymentInfo.PreferredGivingType = type;
-            else
-                paymentInfo.PreferredPaymentType = type;
-            db.SubmitChanges();
+                Approved = response.Response.Status == "success" ? true : false,
+                AuthCode = response.Response.ProcessorResponseCode,
+                Message = response.Response.Errors.FirstOrDefault()?.ErrorMsg,
+                TransactionId = response.Response.TransIdStr
+            };
         }
 
         private string GetAcceptivaPayerId(int peopleId)
@@ -316,16 +349,6 @@ namespace CmsData.Finance
         }
 
         public string VaultId(int peopleId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public TransactionResponse VoidCheckTransaction(string reference)
-        {
-            throw new NotImplementedException();
-        }
-
-        public TransactionResponse VoidCreditCardTransaction(string reference)
         {
             throw new NotImplementedException();
         }
