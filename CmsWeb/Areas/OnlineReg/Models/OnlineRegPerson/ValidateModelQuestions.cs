@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Web.Mvc;
 using CmsData.Registration;
 using UtilityExtensions;
@@ -7,22 +8,13 @@ namespace CmsWeb.Areas.OnlineReg.Models
 {
     public partial class OnlineRegPersonModel
     {
-        public void ValidateModelQuestions(ModelStateDictionary modelstate, int i)
+        public void ValidateModelQuestions(ModelStateDictionary modelstate, int i, bool supportGoerRequired)
         {
             modelState = modelstate;
             Index = i;
             if (Parent.SupportMissionTrip)
             {
-                if (MissionTripGoerId == 0 && ((MissionTripSupportGeneral ?? 0) == 0))
-                {
-                    modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].MissionTripGoerId), "Please select a participant");                    
-                }
-                if ((MissionTripSupportGoer ?? 0) == 0 && ((MissionTripSupportGeneral ?? 0) == 0))
-                    modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].MissionTripSupportGoer), "Please enter your gift amount");
-                if ((MissionTripSupportGoer ?? 0) != 0 && MissionTripGoerId == 0)
-                {
-                    modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].MissionTripGoerId), "Please select a participant");
-                }
+                ValidateSupportGoerRequired(supportGoerRequired);                
                 QuestionsOK = modelState.IsValid;
                 return;
             }
@@ -84,6 +76,30 @@ namespace CmsWeb.Areas.OnlineReg.Models
             QuestionsOK = modelState.IsValid;
             if (!QuestionsOK)
                 Log("QuestionsRetry");
+        }
+
+        private void ValidateSupportGoerRequired(bool supportGoerRequired)
+        {
+            if (supportGoerRequired)
+            {
+                if (MissionTripGoerId == 0)
+                    modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].MissionTripGoerId), "Please select a participant");
+                if ((MissionTripSupportGoer ?? 0) == 0)
+                    modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].MissionTripSupportGoer), "Please enter your gift amount");
+            }
+            else
+            {
+                if (MissionTripGoerId == 0 && ((MissionTripSupportGeneral ?? 0) == 0))
+                {
+                    modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].MissionTripGoerId), "Please select a participant");
+                }
+                if ((MissionTripSupportGoer ?? 0) == 0 && ((MissionTripSupportGeneral ?? 0) == 0))
+                    modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].MissionTripSupportGoer), "Please enter your gift amount");
+                if ((MissionTripSupportGoer ?? 0) != 0 && MissionTripGoerId == 0)
+                {
+                    modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].MissionTripGoerId), "Please select a participant");
+                }
+            }
         }
 
         private void ValidateAskCoaching()
