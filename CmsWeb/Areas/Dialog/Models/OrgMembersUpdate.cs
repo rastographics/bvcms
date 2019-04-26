@@ -91,7 +91,7 @@ namespace CmsWeb.Areas.Dialog.Models
             foreach (var pid in Pids)
             {
                 //DbDispose();
-                //var Db = DbUtil.Create(Util.Host);
+                //var Db = CMSDataContext.Create(Util.Host);
                 var om = DbUtil.Db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == OrgId);
 
                 var changes = new List<ChangeDetail>();
@@ -141,7 +141,7 @@ namespace CmsWeb.Areas.Dialog.Models
             foreach (var pid in Pids)
             {
                 //DbDispose();
-                //var Db = DbUtil.Create(Util.Host);
+                //var Db = CMSDataContext.Create(Util.Host);
                 var om = DbUtil.Db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == OrgId);
                 var nn = om.AddToGroup(DbUtil.Db, sgtagid);
                 if (nn == 1)
@@ -158,7 +158,7 @@ namespace CmsWeb.Areas.Dialog.Models
             foreach (var pid in Pids)
             {
                 //DbDispose();
-                //var Db = DbUtil.Create(Util.Host);
+                //var Db = CMSDataContext.Create(Util.Host);
                 var om = DbUtil.Db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == OrgId);
                 var mt = om.OrgMemMemTags.SingleOrDefault(t => t.MemberTagId == sgtagid);
                 if (mt != null)
@@ -172,7 +172,7 @@ namespace CmsWeb.Areas.Dialog.Models
                     DbUtil.LogActivity("OrgMem RemoveSubGroup " + name, om.OrganizationId, om.PeopleId);
                 }
             }
-            var Db = DbUtil.Create(Util.Host);
+            var Db = CMSDataContext.Create(Util.Host);
             DbUtil.Db.ExecuteCommand(@"
 DELETE dbo.MemberTags
 WHERE Id = {1} AND OrgId = {0}
@@ -187,7 +187,7 @@ AND NOT EXISTS(SELECT NULL FROM dbo.OrgMemMemTags WHERE OrgId = {0} AND MemberTa
         {
             foreach (var pid in Pids)
             {
-                var db = DbUtil.Create(Util.Host);
+                var db = CMSDataContext.Create(Util.Host);
                 var om = DbUtil.Db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == OrgId);
                 var ts = DbUtil.Db.ViewTransactionSummaries.SingleOrDefault(
                         tt => tt.RegId == om.TranId && tt.PeopleId == om.PeopleId);

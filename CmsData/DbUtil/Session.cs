@@ -259,5 +259,26 @@ namespace CmsData
             fn = Util.URLCombine(fn, file);
             System.IO.File.AppendAllText(fn, data);
         }
+
+        public static string FetchUsername(CMSDataContext db, string first, string last)
+        {
+            var firstinitial = first?.Trim();
+            if (firstinitial.HasValue())
+            {
+                firstinitial = firstinitial.ToLower();
+                if (firstinitial.Length > 1)
+                {
+                    firstinitial = firstinitial[0].ToString();
+                }
+            }
+            var username = firstinitial + last.Trim().ToLower().Replace(",", "").Replace(" ", "").Truncate(20);
+            var uname = username;
+            var i = 1;
+            while (db.Users.SingleOrDefault(u => u.Username == uname) != null)
+            {
+                uname = username + i++;
+            }
+            return uname;
+        }
     }
 }

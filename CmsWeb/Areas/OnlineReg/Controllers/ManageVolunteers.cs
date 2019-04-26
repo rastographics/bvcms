@@ -60,7 +60,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             var token = TempData[Fromcalendar] as bool?;
             if (token == true)
             {
-                var vs = new VolSubModel(aid, pid);
+                var vs = new VolSubModel(CurrentDatabase, aid, pid);
                 SetHeaders(vs.org.OrganizationId);
                 vs.ComposeMessage();
                 return View("ManageVolunteer/GetVolSub", vs);
@@ -72,7 +72,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [ValidateInput(false)]
         public ActionResult GetVolSub(int aid, int pid, long ticks, int[] pids, string subject, string message)
         {
-            var m = new VolSubModel(aid, pid, ticks);
+            var m = new VolSubModel(CurrentDatabase, aid, pid, ticks);
             m.subject = subject;
             m.message = message;
             if (pids == null)
@@ -88,7 +88,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [Route("VolSubReport/{aid:int}/{pid:int}/{ticks:long}")]
         public ActionResult VolSubReport(int aid, int pid, long ticks)
         {
-            var vs = new VolSubModel(aid, pid, ticks);
+            var vs = new VolSubModel(CurrentDatabase, aid, pid, ticks);
             SetHeaders(vs.org.OrganizationId);
             return View("ManageVolunteer/VolSubReport", vs);
         }
@@ -98,7 +98,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             try
             {
-                var vs = new VolSubModel();
+                var vs = new VolSubModel(CurrentDatabase);
                 vs.PrepareToClaim(ans, guid);
                 ViewBag.Answer = ans;
                 ViewBag.Guid = guid;
@@ -116,7 +116,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             try
             {
-                var vs = new VolSubModel(guid);
+                var vs = new VolSubModel(CurrentDatabase, guid);
                 vs.ProcessReply(ans);
                 return Content(vs.DisplayMessage);
             }

@@ -32,7 +32,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         [ValidateInput(false)]
         public ActionResult Index(HttpPostedFileBase file, bool noupdate)
         {
-            var host = Util.Host;
+            var host = CurrentDatabase.Host;
             var pid = Util.UserPeopleId;
 
             var package = new ExcelPackage(file.InputStream);
@@ -41,19 +41,19 @@ namespace CmsWeb.Areas.Manage.Controllers
             {
                 try
                 {
-                    using (var testdb = DbUtil.Create(host))
+                    using (var testdb = CMSDataContext.Create(host))
                     {
                         var testrun = ProcessImport(testdb, noupdate, host, pid, package, true);
                     }
 
-                    using (var realdb = DbUtil.Create(host))
+                    using (var realdb = CMSDataContext.Create(host))
                     {
                         var realrun = ProcessImport(realdb, noupdate, host, pid, package, false);
                     }
                 }
                 catch (Exception ex)
                 {
-                    var db = DbUtil.Create(host);
+                    var db = CMSDataContext.Create(host);
 
                     var q = from r in db.UploadPeopleRuns
                             where r.Id == db.UploadPeopleRuns.Max(rr => rr.Id)

@@ -81,7 +81,7 @@ namespace CmsWeb.Areas.Dialog.Models
 
         private static void DoWork(AddToOrgFromTag model)
         {
-            var db = DbUtil.Create(model.Host);
+            var db = CMSDataContext.Create(model.Host);
             var cul = db.Setting("Culture", "en-US");
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
@@ -90,7 +90,7 @@ namespace CmsWeb.Areas.Dialog.Models
             foreach (var pid in model.pids)
             {
                 //DbUtil.Db.Dispose();
-                //db = DbUtil.Create(model.Host);
+                //db = CMSDataContext.Create(model.Host);
                 switch (model.filter.GroupSelect)
                 {
                     case GroupSelectCode.Member:

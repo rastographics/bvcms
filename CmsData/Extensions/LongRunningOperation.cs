@@ -8,7 +8,11 @@ namespace CmsData
     {
         partial void OnCreated()
         {
-            Host = Util.Host;
+            try
+            {
+                Host = Host ?? Util.Host; //TODO: Don't fallback to Util.Host
+            }
+            catch { }
         }
 
         public void UpdateLongRunningOp(CMSDataContext db, string op)
@@ -19,11 +23,13 @@ namespace CmsData
         public static LongRunningOperation FetchLongRunningOperation(CMSDataContext db, string op, Guid queryid)
         {
             var lop = db.LongRunningOperations.SingleOrDefault(m => m.Operation == op && m.QueryId == queryid);
-            if(lop != null)
+            if (lop != null)
+            {
                 lop.Host = db.Host;
+            }
             return lop;
         }
-        public string Host { get; private set; }
+        public string Host { get; set; }
 
         public bool Finished => Completed.HasValue;
 

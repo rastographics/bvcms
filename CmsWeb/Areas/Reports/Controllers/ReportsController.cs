@@ -2,6 +2,7 @@ using CmsData;
 using CmsWeb.Areas.Dialog.Models;
 using CmsWeb.Areas.Main.Models.Avery;
 using CmsWeb.Areas.Reports.Models;
+using CmsWeb.Areas.Reports.Models.Attendance;
 using CmsWeb.Areas.Search.Models;
 using CmsWeb.Lifecycle;
 using CmsWeb.Models;
@@ -218,6 +219,16 @@ namespace CmsWeb.Areas.Reports.Controllers
             }
 
             var m = new ChurchAttendance2Model(d1, d2, skipweeks);
+            return View(m);
+        }
+
+        [HttpGet]
+        public ActionResult MeetingAttendance(string startdt, string enddt, string type)
+        {
+            DateTime d2 = enddt.ToDate() ?? DateTime.Today;
+            DateTime d1 = startdt.ToDate() ?? new DateTime(d2.Year, d2.Month, 1);
+
+            var m = new MeetingAttendanceModel(CurrentDatabase, d1, d2, type);
             return View(m);
         }
 

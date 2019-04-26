@@ -73,9 +73,9 @@ namespace CmsWeb.Areas.Finance.Controllers
             CurrentDatabase.ContributionsRuns.InsertOnSubmit(runningtotals);
             CurrentDatabase.SubmitChanges();
             var cul = CurrentDatabase.Setting("Culture", "en-US");
-            var host = Util.Host;
+            var host = CurrentDatabase.Host;
 
-            var output = Output();
+            var output = Output(host);
             if (tagid == 0)
             {
                 tagid = null;
@@ -104,10 +104,10 @@ namespace CmsWeb.Areas.Finance.Controllers
             return Content(result);
         }
 
-        private static string Output()
+        private static string Output(string host)
         {
-            var output = ConfigurationManager.AppSettings["SharedFolder"].Replace("%USERPROFILE%", Environment.GetEnvironmentVariable("USERPROFILE"));
-            output = output + $"/Statements/contributions_{Util.Host}.pdf";
+            var output = Environment.ExpandEnvironmentVariables(ConfigurationManager.AppSettings["SharedFolder"]);
+            output = output + $"/Statements/contributions_{host}.pdf";
             return output;
         }
 
@@ -137,7 +137,7 @@ namespace CmsWeb.Areas.Finance.Controllers
         [HttpGet, Route("~/Statements/Download/{id:int?}")]
         public ActionResult Download(int? id)
         {
-            var output = Output();
+            var output = Output(CurrentDatabase.Host);
             var fn = output;
             if (id.HasValue)
             {

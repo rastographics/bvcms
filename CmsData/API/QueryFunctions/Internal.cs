@@ -23,7 +23,7 @@ namespace CmsData
 
         public QueryFunctions(string dbname)
         {
-            db = DbUtil.Create(dbname);
+            db = CMSDataContext.Create(dbname);
         }
 
         public QueryFunctions(CMSDataContext db, Dictionary<string, object> dictionary) : this(db)

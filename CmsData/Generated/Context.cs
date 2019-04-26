@@ -814,10 +814,12 @@ namespace CmsData
         {
             return new CMSDataContext(ConnectionString)
             {
+                _roles = _roles,
+                _roleids = _roleids,
                 ConnectionString = ConnectionString,
                 CurrentUser = CurrentUser,
                 Host = Host,
-                FromBatch = FromBatch
+                FromBatch = FromBatch,
             };
         }
 
@@ -3133,6 +3135,21 @@ namespace CmsData
                 fd,
                 td,
                 fundid
+                );
+		}
+
+		[Function(Name="dbo.FamilyGiverFunds", IsComposable = true)]
+		public IQueryable<View.FamilyGiver > FamilyGiverFunds(
+            [Parameter(DbType="datetime")] DateTime? fd,
+            [Parameter(DbType="datetime")] DateTime? td,
+            [Parameter(DbType="varchar")] string funds
+            )
+		{
+			return this.CreateMethodCallQuery<View.FamilyGiver>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                fd,
+                td,
+                funds
                 );
 		}
 
