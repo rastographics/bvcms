@@ -3,6 +3,7 @@ using CmsData.Finance.Acceptiva.Charge;
 using CmsData.Finance.Acceptiva.Core;
 using CmsData.Finance.Acceptiva.Get;
 using CmsData.Finance.Acceptiva.Store;
+using CmsData.Finance.Acceptiva.Transaction.Refund;
 using CmsData.Finance.Acceptiva.Void;
 using System;
 using System.Collections.Generic;
@@ -128,7 +129,12 @@ namespace CmsData.Finance
 
         public TransactionResponse RefundCreditCard(string reference, decimal amt, string lastDigits = "")
         {
-            throw new NotImplementedException();
+            return RefundTransaction(reference, amt);
+        }        
+
+        public TransactionResponse RefundCheck(string reference, decimal amt, string lastDigits = "")
+        {
+            return RefundTransaction(reference, amt);
         }
 
         public TransactionResponse AuthCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description, int tranid, string cardcode, string email, string first, string last, string addr, string addr2, string city, string state, string country, string zip, string phone)
@@ -245,15 +251,25 @@ namespace CmsData.Finance
             throw new NotImplementedException();
         }
 
-        public TransactionResponse RefundCheck(string reference, decimal amt, string lastDigits = "")
-        {
-            throw new NotImplementedException();
-        }
-
         //private methods
         private TransactionResponse VoidTransaction(string reference)
-        {
+        {           
             var voidTrans = new VoidTrans(_apiKey, reference);
+            var response = voidTrans.Execute();
+
+            return new TransactionResponse
+            {
+                Approved = response.Response.Status == "success" ? true : false,
+                AuthCode = response.Response.ProcessorResponseCode,
+                Message = response.Response.Errors.FirstOrDefault()?.ErrorMsg,
+                TransactionId = response.Response.TransIdStr
+            };
+        }
+
+        private TransactionResponse RefundTransaction(string reference, decimal amt)
+        {
+            int tranId = db.Transactions.SingleOrDefault(p => p.TransactionId == reference).Id;
+            var voidTrans = new RefundTransPartial(_apiKey, reference,tranId, amt);
             var response = voidTrans.Execute();
 
             return new TransactionResponse

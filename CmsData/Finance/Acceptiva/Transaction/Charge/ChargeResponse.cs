@@ -1,6 +1,7 @@
-﻿using Newtonsoft.Json;
+﻿using CmsData.Finance.Acceptiva.Core;
+using Newtonsoft.Json;
 
-namespace CmsData.Finance.Acceptiva.Core
+namespace CmsData.Finance.Acceptiva.Charge
 {
     internal class ChargeResponse : Response
     {

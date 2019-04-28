@@ -1,7 +1,8 @@
-﻿using Newtonsoft.Json;
+﻿using CmsData.Finance.Acceptiva.Core;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace CmsData.Finance.Acceptiva.Core
+namespace CmsData.Finance.Acceptiva.Store
 {
     internal class PayerDataResponse : Response
     {
@@ -35,6 +36,5 @@ namespace CmsData.Finance.Acceptiva.Core
         public string PayerEmail { get; set; }
         [JsonProperty(PropertyName = "accts")]
         public List<Account> Accts { get; set; }
-
     }
 }
