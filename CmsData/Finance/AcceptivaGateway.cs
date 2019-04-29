@@ -1,16 +1,14 @@
-﻿using CmsData.Finance.Acceptiva;
-using CmsData.Finance.Acceptiva.Charge;
-using CmsData.Finance.Acceptiva.Core;
+﻿using CmsData.Finance.Acceptiva.Core;
 using CmsData.Finance.Acceptiva.Get;
 using CmsData.Finance.Acceptiva.Store;
+using CmsData.Finance.Acceptiva.Transaction.Charge;
 using CmsData.Finance.Acceptiva.Transaction.Refund;
-using CmsData.Finance.Acceptiva.Void;
+using CmsData.Finance.Acceptiva.Transaction.Void;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using UtilityExtensions;
 
 namespace CmsData.Finance
@@ -139,33 +137,13 @@ namespace CmsData.Finance
 
         public TransactionResponse AuthCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description, int tranid, string cardcode, string email, string first, string last, string addr, string addr2, string city, string state, string country, string zip, string phone)
         {
-            throw new NotImplementedException();
+            return CreditCardCharge(peopleId, amt, cardnumber, expires, description, tranid, cardcode, email, first, last, addr, addr2, city, state, country, zip, phone);
         }
 
-        public TransactionResponse AuthCreditCardVault(int peopleId, decimal amt, string description, int tranid)
+        public TransactionResponse PayWithCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description, int tranid, string cardcode, string email, string first, string last, string addr, string addr2, string city, string state, string country, string zip, string phone)
         {
-            throw new NotImplementedException();
-        }
-
-        public void CheckBatchSettlements(DateTime start, DateTime end)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void CheckBatchSettlements(List<string> transactionids)
-        {
-            throw new NotImplementedException();
-        }
-
-        public BatchResponse GetBatchDetails(DateTime start, DateTime end)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ReturnedChecksResponse GetReturnedChecks(DateTime start, DateTime end)
-        {
-            throw new NotImplementedException();
-        }
+            return CreditCardCharge(peopleId, amt, cardnumber, expires, description, tranid, cardcode, email, first, last, addr, addr2, city, state, country, zip, phone);     
+        }    
 
         public TransactionResponse PayWithCheck(int peopleId, decimal amt, string routing, string acct, string description, int tranid, string email, string first, string middle, string last, string suffix, string addr, string addr2, string city, string state, string country, string zip, string phone)
         {
@@ -206,7 +184,64 @@ namespace CmsData.Finance
             };
         }
 
-        public TransactionResponse PayWithCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description, int tranid, string cardcode, string email, string first, string last, string addr, string addr2, string city, string state, string country, string zip, string phone)
+        public TransactionResponse AuthCreditCardVault(int peopleId, decimal amt, string description, int tranid)
+        {
+            var person = db.LoadPersonById(peopleId);
+            var paymentInfo = person.PaymentInfo();
+            if (paymentInfo?.AcceptivaPayerId == null)
+                return new TransactionResponse
+                {
+                    Approved = false,
+                    Message = "missing payment info",
+                };
+
+            return StoredPayerCharge(_merch_cc_id, paymentInfo.AcceptivaPayerId, amt, tranid.ToString(), description, 1);
+        }        
+
+        public TransactionResponse PayWithVault(int peopleId, decimal amt, string description, int tranid, string type)
+        {
+            var person = db.LoadPersonById(peopleId);
+            var paymentInfo = person.PaymentInfo();
+            if (paymentInfo == null)
+                return new TransactionResponse
+                {
+                    Approved = false,
+                    Message = "missing payment info",
+                };
+
+            if (type == PaymentType.CreditCard) // credit card
+                return StoredPayerCharge(_merch_cc_id, paymentInfo.AcceptivaPayerId, amt, tranid.ToString(), description, 1);
+            else // bank account
+                return StoredPayerCharge(_merch_ach_id, paymentInfo.AcceptivaPayerId, amt, tranid.ToString(), description, 2);
+        }
+
+        public BatchResponse GetBatchDetails(DateTime start, DateTime end)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ReturnedChecksResponse GetReturnedChecks(DateTime start, DateTime end)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CheckBatchSettlements(List<string> transactionids)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CheckBatchSettlements(DateTime start, DateTime end)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string VaultId(int peopleId)
+        {
+            throw new NotImplementedException();
+        }
+
+        //private methods
+        private TransactionResponse CreditCardCharge(int peopleId, decimal amt, string cardnumber, string expires, string description, int tranid, string cardcode, string email, string first, string last, string addr, string addr2, string city, string state, string country, string zip, string phone)
         {
             var cardCharge = new CreditCardCharge(
                 _apiKey,
@@ -232,8 +267,7 @@ namespace CmsData.Finance
                 },
                 amt,
                 tranid.ToString(CultureInfo.InvariantCulture),
-                description,
-                peopleId.ToString(CultureInfo.InvariantCulture));
+                description);
 
             var response = cardCharge.Execute();
 
@@ -246,12 +280,20 @@ namespace CmsData.Finance
             };
         }
 
-        public TransactionResponse PayWithVault(int peopleId, decimal amt, string description, int tranid, string type)
+        private TransactionResponse StoredPayerCharge(string merchId, string acceptivaPayerId, decimal amt, string tranId, string description, int paymentType)
         {
-            throw new NotImplementedException();
+            var storedPayerCharge = new StoredPayerCharge(_apiKey, merchId, acceptivaPayerId, amt, tranId, description, 1);
+            var response = storedPayerCharge.Execute();
+
+            return new TransactionResponse
+            {
+                Approved = response.Response.Status == "success" ? true : false,
+                AuthCode = response.Response.TransStatus,
+                Message = response.Response.TransStatusMsg,
+                TransactionId = response.Response.TransIdStr
+            };
         }
 
-        //private methods
         private TransactionResponse VoidTransaction(string reference)
         {           
             var voidTrans = new VoidTrans(_apiKey, reference);
@@ -362,11 +404,6 @@ namespace CmsData.Finance
                     $"Acceptiva failed to update the credit card for people id: {person.PeopleId}, responseCode: {response.Response.Errors.FirstOrDefault()?.ErrorNo}, responseText: {response.Response.Errors.FirstOrDefault()?.ErrorMsg}");
 
             return response.Response.PayerIdStr;
-        }
-
-        public string VaultId(int peopleId)
-        {
-            throw new NotImplementedException();
         }
 
         private string AchType(int? pid)

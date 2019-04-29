@@ -2,14 +2,14 @@
 using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace CmsData.Finance.Acceptiva.Charge
+namespace CmsData.Finance.Acceptiva.Transaction.Charge
 {
     internal class ChargeRequest : AcceptivaRequest
     {
         private const string action = "charge";
 
         protected ChargeRequest(string apiKey, string merchAcctId, int paymentType, decimal amount, string orderId,
-            string orderDescription, string peopleId, Payer payer)
+            string orderDescription, Payer payer)
             : base(apiKey, action)
         {
             Data["params[0][items][0][id]"] = orderId.ToString();

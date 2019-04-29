@@ -1,7 +1,8 @@
-﻿using Newtonsoft.Json;
+﻿using CmsData.Finance.Acceptiva.Core;
+using Newtonsoft.Json;
 using System;
 
-namespace CmsData.Finance.Acceptiva.Core.Void
+namespace CmsData.Finance.Acceptiva.Transaction.Void
 {
     internal class VoidResponse : Response
     {

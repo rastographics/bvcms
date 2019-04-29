@@ -1,5 +1,5 @@
 ﻿using CmsData.Finance.Acceptiva.Core;
-using CmsData.Finance.Acceptiva.Core.Void;
+using CmsData.Finance.Acceptiva.Transaction.Void;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 

@@ -1,9 +1,8 @@
 ﻿using CmsData.Finance.Acceptiva.Core;
-using CmsData.Finance.Acceptiva.Core.Void;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace CmsData.Finance.Acceptiva.Void
+namespace CmsData.Finance.Acceptiva.Transaction.Void
 {
     internal class VoidTrans: AcceptivaRequest
     {

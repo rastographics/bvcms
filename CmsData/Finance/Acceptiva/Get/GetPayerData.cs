@@ -1,4 +1,5 @@
 ﻿using CmsData.Finance.Acceptiva.Core;
+using CmsData.Finance.Acceptiva.Store;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 
