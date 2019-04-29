@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using CmsWeb.Lifecycle;
 using CmsWeb.Common;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Setup.Controllers
 {
@@ -22,6 +23,14 @@ namespace CmsWeb.Areas.Setup.Controllers
         public ActionResult Index()
         {
             return View();
+        }
+
+        [HttpGet]
+        [Route("~/Gateway/IsDeveloper")]
+        public bool IsDeveloper()
+        {
+            var User = CurrentDatabase.Users.SingleOrDefault(us => us.UserId == Util.UserId);
+            return User.Roles.Contains("Developer") ? true : false;
         }
 
         [HttpGet]

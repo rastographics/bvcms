@@ -24,7 +24,7 @@ namespace CmsData.Finance
         public AuthorizeNetGateway(CMSDataContext db, bool testing, PaymentProcessTypes? ProcessType)
         {
             this.db = db;
-            IsLive = !(testing || db.Setting("GatewayTesting"));
+            IsLive = !(testing || new MultipleGatewayUtils(db).GatewayTesting(ProcessType));
             if (!IsLive)
             {
                 _login = "4q2w5BD5";

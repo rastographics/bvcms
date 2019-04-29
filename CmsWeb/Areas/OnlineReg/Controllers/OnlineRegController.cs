@@ -30,6 +30,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 var m = new OnlineRegModel(Request, CurrentDatabase, id, testing, email, login, source);
 
                 m.ProcessType = m.org.RegistrationTypeId.IsNull() || m.org.RegistrationTypeId == 8 ? PaymentProcessTypes.OneTimeGiving : PaymentProcessTypes.OnlineRegistration;
+                OnlineRegModel.TransactionProcessType = m.ProcessType;
 
                 int? GatewayId = new MultipleGatewayUtils(CurrentDatabase).GatewayId(m.ProcessType);
 

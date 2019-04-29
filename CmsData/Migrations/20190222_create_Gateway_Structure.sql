@@ -190,7 +190,7 @@ GO
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where 
 	TABLE_NAME = 'GatewayConfigurationTemplate' AND 
 	TABLE_SCHEMA = 'lookup')
-	BEGIN		
+	BEGIN
 		CREATE TABLE [lookup].[GatewayConfigurationTemplate](
 			[GatewayDetailId][int] IDENTITY(1,1) PRIMARY KEY,
 			[GatewayId][int] FOREIGN KEY REFERENCES [lookup].[Gateways]([GatewayId]),
@@ -204,18 +204,20 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where
 		,[GatewayDetailValue]
 		,[IsBoolean])
 		VALUES
-		(1, 'IsDeveloperMode', 'true', 1),
+		(1, 'GatewayTesting', 'true', 1),
 		(1, 'PushpayMerchant', (SELECT [dbo].[ImportGatewatSettings]('PushpayMerchant')), 0),
+		(2, 'GatewayTesting', 'true', 1),
 		(2, 'M_ID', (SELECT [dbo].[ImportGatewatSettings]('M_ID')), 0),
 		(2, 'M_KEY', (SELECT [dbo].[ImportGatewatSettings]('M_KEY')), 0),
-		(2, 'GatewayTesting', 'true', 1),
+		(3, 'GatewayTesting', 'true', 1),
 		(3, 'TNBUsername', (SELECT [dbo].[ImportGatewatSettings]('TNBUsername')), 0),
 		(3, 'TNBPassword', (SELECT [dbo].[ImportGatewatSettings]('TNBPassword')), 0),
-		(3, 'GatewayTesting', 'true', 1),
+		(4, 'GatewayTesting', 'true', 1),
 		(4, 'AcceptivaApiKey', (SELECT [dbo].[ImportGatewatSettings]('AcceptivaApiKey')), 0),
 		(4, 'AcceptivaAchId', (SELECT [dbo].[ImportGatewatSettings]('AcceptivaAchId')), 0),
 		(4, 'AcceptivaCCId', (SELECT [dbo].[ImportGatewatSettings]('AcceptivaCCId')), 0),
 		(4, 'UseSavingAccounts', 'true', 1),
+		(5, 'GatewayTesting', 'true', 1),
 		(5, 'x_login', (SELECT [dbo].[ImportGatewatSettings]('x_login')),0),
 		(5, 'x_tran_key', (SELECT [dbo].[ImportGatewatSettings]('x_tran_key')),0);
 	DROP FUNCTION [ImportGatewatSettings]

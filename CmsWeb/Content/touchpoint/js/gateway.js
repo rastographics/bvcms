@@ -14,14 +14,32 @@
         DetailValue: [],
         IsGatewayReadOnly: false,
         UseForAll: false,
-        UseForAllShow: true
+        UseForAllShow: true,
+        IsDeveloper: false
     },
     methods: {
         myFunctionOnLoad: function () {
+            this.$http.get('../Gateway/IsDeveloper').then(
+                response => {
+                    if (response.status === 200) {
+                        this.IsDeveloper = response.body === 'True' ? true: false;
+                        this.GetGatewayDetails();
+                    }
+                    else {
+                        console.log(response);
+                        warning_swal('Ups!', 'Something went wrong, try again later');
+                    }
+                },
+                err => {
+                    console.log(err);
+                    error_swal('Fatal Error!', 'We are working to fix it');
+                }
+            );
+        },
+        GetGatewayDetails: function () {
             this.$http.get('../Gateway/GetGatewayDetails').then(
                 response => {
                     if (response.status === 200) {
-                        console.log(response.body);
                         this.GatewayDetails = response.body;
                         this.GetProcesses();
                     }
@@ -40,7 +58,6 @@
             this.$http.get('../Gateway/GetProcesses').then(
                 response => {
                     if (response.status === 200) {
-                        console.log(response.body);
                         this.Processes = response.body;
 
                         var nullProcesses = this.Processes.filter(function (item) {
@@ -66,7 +83,6 @@
             this.$http.get('../Gateway/GetGateways').then(
                 response => {
                     if (response.status === 200) {
-                        console.log(response.body);
                         this.Gateways = response.body;
                         this.GetGatewayAccounts();
                     }
@@ -85,7 +101,6 @@
             this.$http.get('../Gateway/GetGatewayAccounts').then(
                 response => {
                     if (response.status === 200) {
-                        console.log(response.body);
                         this.GatewayAccounts = response.body;
                     }
                     else {
@@ -106,7 +121,6 @@
 
             if (ProcessId !== null) {
                 this.ProcessId = ProcessId;
-                console.log(this.ProcessId);
                 var res = this.Processes.filter(function (item) {
                     return item.ProcessId === ProcessId;
                 })[0];

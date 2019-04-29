@@ -60,5 +60,11 @@ namespace CmsData
                         sub.GatewayId
                     }).FirstOrDefault().GatewayId;
         }
+
+        public bool GatewayTesting(PaymentProcessTypes? processType)
+        {
+            var User = db.Users.SingleOrDefault(us => us.UserId == Util.UserId);
+            return User.Roles.Contains("Developer") ? Setting("GatewayTesting", (int)processType) : false;
+        }
     }
 }

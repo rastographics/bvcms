@@ -219,7 +219,7 @@ namespace TransactionGateway
                 OrgId = orgId,
                 Url = null,
                 Address = person.AddressLineOne,
-                TransactionGateway = "Pushpay",
+                TransactionGateway = "pushpay",
                 City = person.CityName,
                 State = person.StateCode,
                 Zip = person.ZipCode,

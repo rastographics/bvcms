@@ -66,6 +66,13 @@
           </div>
           <div class="col-lg-3 col-md-3 col-sm-6">
             <div class="form-group">
+              <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Gateway" data-content="This is the name of the Gateway for which the transaction was made."><i class="fa fa-info-circle"></i></a>&nbsp;
+              <label for="gateway" class="control-label">Gateway</label>
+              @Html.DropDownList("gateway", new SelectList(new List<String>() { "", "Pushpay", "Sage", "Transnational", "AuthtorizeNet", "Acceptiva" }), Model.gateway, new { @class = "form-control" })
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-3 col-sm-6 col-md-offset-6">
+            <div class="form-group">
               <div class="checkbox">
                 <label class="control-label">
                   @Html.CheckBox("usebatchdates") Use batch dates?

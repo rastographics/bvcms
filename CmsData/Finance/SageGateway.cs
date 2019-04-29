@@ -26,7 +26,7 @@ namespace CmsData.Finance
         public SageGateway(CMSDataContext db, bool testing, PaymentProcessTypes? ProcessType)
         {
             this.db = db;
-            var gatewayTesting = new MultipleGatewayUtils(db).Setting("GatewayTesting", (int)ProcessType);
+            var gatewayTesting = new MultipleGatewayUtils(db).GatewayTesting(ProcessType);
             if (testing || gatewayTesting)
             {
                 _id = "856423594649";

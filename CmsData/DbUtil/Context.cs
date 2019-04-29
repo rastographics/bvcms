@@ -1872,14 +1872,12 @@ This search uses multiple steps which cannot be duplicated in a single query.
 
             switch (GatewayId)
             {
-                // case (int)GatewayTypes.Pushpay:
-                // break;
                 case (int)GatewayTypes.Sage:
                     return new SageGateway(this, testing, ProcessType);
                 case (int)GatewayTypes.Transnational:
                     return new TransNationalGateway(this, testing, ProcessType);
-                case (int)GatewayTypes.Acceptiva:
-                    return new AcceptivaGateway(this, testing, ProcessType);
+                // case (int)GatewayTypes.Acceptiva:
+                    // return new AcceptivaGateway(this, testing, ProcessType);
                 case (int)GatewayTypes.AuthorizeNet:
                     return new AuthorizeNetGateway(this, testing, ProcessType);
                 default:
@@ -1887,7 +1885,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
             }
 
             string type = Gateways.Where(x => x.GatewayId == GatewayId).Select(x => x.GatewayName).FirstOrDefault();
-            throw new Exception($"GatewayId ({GatewayId}) is not supported.");
+            throw new Exception($"Gateway ({type}) is not supported.");
         }
         public Registration.Settings CreateRegistrationSettings(int orgId)
         {

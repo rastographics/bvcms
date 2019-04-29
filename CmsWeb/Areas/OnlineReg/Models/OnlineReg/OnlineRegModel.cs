@@ -18,6 +18,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public string FromMobile { get; set; }
         public string URL { get; set; }
         public PaymentProcessTypes ProcessType { get; set; }
+        public static PaymentProcessTypes TransactionProcessType { get; set; }
 
         public bool DisplaySpecialFunds => OnlineGiving() || ManageGiving();
 

@@ -154,6 +154,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 amtdue = Amtdue - (amount ?? 0);
             }
 
+            // var ss = m.ProcessType;
+
             var ti = new Transaction
             {
                 First = First,

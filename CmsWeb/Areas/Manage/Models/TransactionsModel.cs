@@ -51,6 +51,7 @@ namespace CmsWeb.Models
         public decimal? ltamount { get; set; }
         public DateTime? startdt { get; set; }
         public DateTime? enddt { get; set; }
+        public string gateway { get; set; }
         public bool testtransactions { get; set; }
         public bool apprtransactions { get; set; }
         public bool includesadditionaldonation { get; set; }
@@ -181,6 +182,11 @@ namespace CmsWeb.Models
             if (includesadditionaldonation)
             {
                 _transactions = _transactions.Where(t => t.Donate > 0.00m);
+            }
+
+            if (gateway.HasValue())
+            {
+                _transactions = _transactions.Where(t => t.TransactionGateway == gateway);
             }
             //			var q0 = _transactions.ToList();
             //            foreach(var t in q0)

@@ -172,16 +172,16 @@ Please contact the Finance office at the church."
                 // case (int)GatewayTypes.Pushpay:
                 // break;
                 case (int)GatewayTypes.Sage:
-                    IsTesting = new MultipleGatewayUtils(db).Setting("GatewayTesting", (int)PaymentProcessTypes.RecurringGiving);
+                    IsTesting = new MultipleGatewayUtils(db).GatewayTesting(PaymentProcessTypes.RecurringGiving);
                     if ((pi.PreferredGivingType == "B" && pi.SageBankGuid.HasValue) ||
                         (pi.PreferredGivingType == "C" && pi.SageCardGuid.HasValue))
-                        return db.Gateway();
+                        return db.Gateway(IsTesting, PaymentProcessTypes.RecurringGiving);
                     break;
                 case (int)GatewayTypes.Transnational:
-                    IsTesting = new MultipleGatewayUtils(db).Setting("GatewayTesting", (int)PaymentProcessTypes.RecurringGiving);
+                    IsTesting = new MultipleGatewayUtils(db).GatewayTesting(PaymentProcessTypes.RecurringGiving);
                     if ((pi.PreferredGivingType == "B" && pi.TbnBankVaultId.HasValue) ||
                         (pi.PreferredGivingType == "C" && pi.TbnCardVaultId.HasValue))
-                        return db.Gateway();
+                        return db.Gateway(IsTesting, PaymentProcessTypes.RecurringGiving);
                     break;
                 // case (int)GatewayTypes.Acceptiva:
                 // break;

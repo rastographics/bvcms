@@ -25,7 +25,7 @@ namespace CmsData.Finance
             this.db = db;
             this.ProcessType = ProcessType;
 
-            if (testing || new MultipleGatewayUtils(db).Setting("GatewayTesting", (int)ProcessType))
+            if (testing || new MultipleGatewayUtils(db).GatewayTesting(ProcessType))
             {
                 _apiKey = "CZDWp7dXCo4W3xTA7LtWAijidvPdj2wa";
                 _merch_ach_id = "dKdDFtqC";

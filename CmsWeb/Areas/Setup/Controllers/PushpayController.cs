@@ -356,7 +356,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             ti.OrgId = pf.OrgId;
             ti.Url = pf.URL;
             ti.Address = person.AddressLineOne;
-            ti.TransactionGateway = "Pushpay";
+            ti.TransactionGateway = "pushpay";
             ti.City = person.CityName;
             ti.State = person.StateCode;
             ti.Zip = person.ZipCode;

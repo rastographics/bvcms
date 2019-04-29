@@ -31,7 +31,7 @@ namespace CmsData.Finance
         {
             this.db = db;
 
-            if(testing || new MultipleGatewayUtils(db).Setting("GatewayTesting", (int)ProcessType))
+            if(testing || new MultipleGatewayUtils(db).GatewayTesting(ProcessType))
             {
                 _userName = "faithbased";
                 _password = "bprogram2";
