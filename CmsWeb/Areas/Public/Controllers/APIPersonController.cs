@@ -84,10 +84,10 @@ namespace CmsWeb.Areas.Public.Controllers
             var rootUrl = CurrentDatabase.ServerLink();
             if (url.StartsWith(rootUrl))
             {
-                url = url.Substring(rootUrl.Length - (rootUrl.EndsWith("/") ? 1 : 0));
+                url = url.Substring(rootUrl.Length);
             }
 
-            return $"{rootUrl}Logon?ReturnUrl={HttpUtility.UrlEncode(url)}&otltoken={ot.Id.ToCode()}";
+            return $"{rootUrl}/Logon?ReturnUrl={HttpUtility.UrlEncode(url)}&otltoken={ot.Id.ToCode()}";
         }
 
         [HttpPost]
