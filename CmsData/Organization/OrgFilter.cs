@@ -12,21 +12,8 @@ namespace CmsData
         public string NameFilter
         {
             get
-            {
-                string filter = "";
-                if (FirstName.HasValue())
-                {
-                    filter += $"{FirstName}";
-                }
-                if (FirstName.HasValue() && LastName.HasValue())
-                {
-                    filter += " ";
-                }
-                if (LastName.HasValue())
-                {
-                    filter += $"{LastName}";
-                }
-                return filter;
+            { 
+                return $"{FirstName} {LastName}".Trim();
             }
             set
             {
