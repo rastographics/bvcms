@@ -14,7 +14,14 @@ namespace CmsWeb.Areas.OnlineReg.Models
             Index = i;
             if (Parent.SupportMissionTrip)
             {
-                ValidateSupportGoerRequired(supportGoerRequired);                
+                if (supportGoerRequired)
+                {
+                    ValidateSupportGoerRequired();
+                }
+                else
+                {
+                    ValidateSupportGoerNotRequired();
+                }
                 QuestionsOK = modelState.IsValid;
                 return;
             }
@@ -78,28 +85,26 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 Log("QuestionsRetry");
         }
 
-        private void ValidateSupportGoerRequired(bool supportGoerRequired)
+        private void ValidateSupportGoerNotRequired()
         {
-            if (supportGoerRequired)
+            if (MissionTripGoerId == 0 && ((MissionTripSupportGeneral ?? 0) == 0))
             {
-                if (MissionTripGoerId == 0)
-                    modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].MissionTripGoerId), "Please select a participant");
-                if ((MissionTripSupportGoer ?? 0) == 0)
-                    modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].MissionTripSupportGoer), "Please enter your gift amount");
+                modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].MissionTripGoerId), "Please select a participant");
             }
-            else
+            if ((MissionTripSupportGoer ?? 0) == 0 && ((MissionTripSupportGeneral ?? 0) == 0))
+                modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].MissionTripSupportGoer), "Please enter your gift amount");
+            if ((MissionTripSupportGoer ?? 0) != 0 && MissionTripGoerId == 0)
             {
-                if (MissionTripGoerId == 0 && ((MissionTripSupportGeneral ?? 0) == 0))
-                {
-                    modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].MissionTripGoerId), "Please select a participant");
-                }
-                if ((MissionTripSupportGoer ?? 0) == 0 && ((MissionTripSupportGeneral ?? 0) == 0))
-                    modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].MissionTripSupportGoer), "Please enter your gift amount");
-                if ((MissionTripSupportGoer ?? 0) != 0 && MissionTripGoerId == 0)
-                {
-                    modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].MissionTripGoerId), "Please select a participant");
-                }
-            }
+                modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].MissionTripGoerId), "Please select a participant");
+            }            
+        }
+
+        private void ValidateSupportGoerRequired()
+        {
+            if (MissionTripGoerId == 0)
+                modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].MissionTripGoerId), "Please select a participant");
+            if ((MissionTripSupportGoer ?? 0) == 0)
+                modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].MissionTripSupportGoer), "Please enter your gift amount");
         }
 
         private void ValidateAskCoaching()
