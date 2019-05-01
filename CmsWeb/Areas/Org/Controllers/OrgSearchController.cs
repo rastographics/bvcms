@@ -93,6 +93,7 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ActionResult ApplyType(int id, OrgSearchModel m)
         {
+            m.CurrentDatabase = CurrentDatabase;
             var t = (id == -1 ? (int?)null : id);
             if (t == 0)
             {
@@ -128,6 +129,7 @@ namespace CmsWeb.Areas.Search.Controllers
                 return Content("");
             }
 
+            m.CurrentDatabase = CurrentDatabase;
             var org = CurrentDatabase.LoadOrganizationById(id);
             if (t.HasValue || org != null)
             {
@@ -469,6 +471,7 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ActionResult CreateMeetings(DateTime dt, bool noautoabsents, OrgSearchModel model)
         {
+            model.CurrentDatabase = CurrentDatabase;
             var orgIds = model.FetchOrgs().Select(oo => oo.OrganizationId).ToList();
             foreach (var oid in orgIds)
             {
@@ -514,6 +517,7 @@ namespace CmsWeb.Areas.Search.Controllers
 
         public ActionResult OrganizationStructure(bool? active, OrgSearchModel m)
         {
+            m.CurrentDatabase = CurrentDatabase;
             var orgs = m.FetchOrgs();
             var q = from os in CurrentDatabase.ViewOrganizationStructures
                     join o in orgs on os.OrgId equals o.OrganizationId
