@@ -13,11 +13,26 @@ namespace CmsWeb.Areas.Setup.Controllers
         public RolesController(IRequestManager requestManager) : base(requestManager)
         {
         }
-
+    
         public ActionResult Index()
         {
             var r = CmsData.User.AllRoles(CurrentDatabase);
             return View(r);
+        }
+
+        [Route("~/Roles/{id}")]
+        public ActionResult Manage(string id)
+        {
+            var role = CurrentDatabase.Roles.SingleOrDefault(m => m.RoleId == id.ToInt());
+            if (role == null)
+            {
+                TempData["error"] = "Invalid role";
+                return Content("/Error/");
+            }
+            else
+            {
+                return View(role);
+            }
         }
 
         [AcceptVerbs(HttpVerbs.Post)]

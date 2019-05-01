@@ -1,0 +1,16 @@
+﻿@model CmsData.Role
+@{
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "Role Manager";
+    ViewBag.PageHeader = "Role Manager";
+}
+@section head{
+    @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
+}
+<div class="row">
+    <div class="col-lg-7">
+        <div class="box box-responsive">
+            {{@Model.RoleName}}
+        </div>
+    </div>
+</div>

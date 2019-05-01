@@ -1812,6 +1812,7 @@
     <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageGiving\_ManagedGivingFunds.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageGiving\_ManagedGivingFundsNew.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\MeetingAttendance.cshtml" />
+    <Content Include="Areas\Setup\Views\Roles\Manage.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
