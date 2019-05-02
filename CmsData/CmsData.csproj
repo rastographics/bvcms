@@ -598,7 +598,9 @@
     <Compile Include="Finance\Acceptiva\Store\StorePayerRequest.cs" />
     <Compile Include="Finance\Acceptiva\Core\Helpers\UPSStateCodes.cs" />
     <Compile Include="Finance\Acceptiva\Transaction\Charge\StoredPayerCharge.cs" />
+    <Compile Include="Finance\Acceptiva\Transaction\Get\GetTransDetailsDates.cs" />
     <Compile Include="Finance\Acceptiva\Transaction\Refund\RefundTransPartial.cs" />
+    <Compile Include="Finance\Acceptiva\Transaction\TransItem.cs" />
     <Compile Include="Finance\Acceptiva\Transaction\Void\VoidResponse.cs" />
     <Compile Include="Finance\Acceptiva\Get\GetPayerData.cs" />
     <Compile Include="Finance\Acceptiva\Store\StoreNewPayer.cs" />

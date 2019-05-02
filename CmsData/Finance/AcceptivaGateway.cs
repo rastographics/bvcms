@@ -2,6 +2,7 @@
 using CmsData.Finance.Acceptiva.Get;
 using CmsData.Finance.Acceptiva.Store;
 using CmsData.Finance.Acceptiva.Transaction.Charge;
+using CmsData.Finance.Acceptiva.Transaction.Get;
 using CmsData.Finance.Acceptiva.Transaction.Refund;
 using CmsData.Finance.Acceptiva.Transaction.Void;
 using System;
@@ -217,7 +218,22 @@ namespace CmsData.Finance
 
         public BatchResponse GetBatchDetails(DateTime start, DateTime end)
         {
-            throw new NotImplementedException();
+            var GetTransDetails = new GetTransDetailsDates(_apiKey, start, end);
+            var transactionsList = GetTransDetails.Execute();
+
+            var batchTransactions = new List<BatchTransaction>(); 
+
+            foreach (var item in transactionsList)
+            {
+                batchTransactions.Add(new BatchTransaction
+                {
+                    TransactionId = int.Parse(item.Response.Items[0].Id),
+                    Reference = item.Response.TransIdStr,
+                    
+                });                
+            }
+
+            return new BatchResponse(batchTransactions);
         }
 
         public ReturnedChecksResponse GetReturnedChecks(DateTime start, DateTime end)
