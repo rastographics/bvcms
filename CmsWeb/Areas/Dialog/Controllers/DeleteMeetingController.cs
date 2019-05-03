@@ -16,7 +16,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
         [HttpPost, Route("~/DeleteMeeting/{id:int}")]
         public ActionResult Index(int id)
         {
-            var model = new DeleteMeeting(id);
+            var model = new DeleteMeeting(id, CurrentDatabase);
             return View(model);
         }
 

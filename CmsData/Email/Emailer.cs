@@ -158,23 +158,23 @@ namespace CmsData
 
         public List<Person> AdminPeople()
         {
-            var list = (from p in CMSRoleProvider.provider.GetAdmins()
+            var list = (from p in GetAdmins()
                         where p.EmailAddress.HasValue()
                               && !p.EmailAddress.Contains("touchpointsoftware.com")
                         select p).ToList();
             if (list.Count == 0)
-                list = (from p in CMSRoleProvider.provider.GetAdmins()
+                list = (from p in GetAdmins()
                         where p.EmailAddress.HasValue()
                         select p).ToList();
             return list;
         }
         public List<Person> AdminPeople2()
         {
-            var list = (from p in CMSRoleProvider.provider.GetAdmins()
+            var list = (from p in GetAdmins()
                         where p.EmailAddress.HasValue()
                         select p).ToList();
             if (list.Count == 0)
-                list = (from p in CMSRoleProvider.provider.GetAdmins()
+                list = (from p in GetAdmins()
                         where p.EmailAddress.HasValue()
                         select p).ToList();
             return list;
@@ -297,7 +297,7 @@ namespace CmsData
             var q = from u in Users
                     where u.Person.EmailAddress == email || u.Person.EmailAddress2 == email
                     select u.Person;
-            var p = q.FirstOrDefault() ?? CMSRoleProvider.provider.GetAdmins().First();
+            var p = q.FirstOrDefault() ?? GetAdmins().First();
             return p;
         }
 

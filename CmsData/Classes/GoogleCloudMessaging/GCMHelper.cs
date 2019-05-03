@@ -47,7 +47,7 @@ namespace CmsData.Classes.GoogleCloudMessaging
 
             HostingEnvironment.QueueBackgroundWorkItem(ct =>
             {
-                var threadDb = DbUtil.Create(_host);
+                var threadDb = CMSDataContext.Create(_host);
 
                 string json = JsonConvert.SerializeObject(message);
 

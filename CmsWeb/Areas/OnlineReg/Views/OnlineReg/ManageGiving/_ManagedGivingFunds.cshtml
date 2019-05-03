@@ -8,8 +8,8 @@
     var funame = Html.NameFor2(m => m.FundItem);
     var peopleId = Model.person.PeopleId;
     decimal? tot = 0;
-    var funds = CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel.FundList();
-    var specialFunds = CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel.SpecialFundList();
+    var funds = CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel.FundList(DbUtil.Db);
+    var specialFunds = CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel.SpecialFundList(DbUtil.Db);
 }
 <label class="col-sm-3 control-label">Enter amounts for every fund you wish to give to</label>
 <div class="col-sm-9">

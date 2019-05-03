@@ -104,6 +104,7 @@ namespace CmsData
                 { QueryType.IsCurrentPerson, IsCurrentPerson },
                 { QueryType.IsCurrentUser, IsCurrentUser },
                 { QueryType.IsFamilyGiver, IsFamilyGiver },
+                { QueryType.IsFamilyGiverFunds, IsFamilyGiverFunds},
                 { QueryType.IsFamilyPledger, IsFamilyPledger },
                 { QueryType.IsHeadOfHousehold, IsHeadOfHousehold },
                 { QueryType.IsInactiveMemberOf, IsInactiveMemberOf },

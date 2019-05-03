@@ -1,5 +1,5 @@
 ﻿@using CmsWeb.Areas.Manage.Controllers
-@model System.Data.IDataReader
+@model CmsWeb.Models.HtmlHolder
 @{
     ViewBag.Title = "SQL Report";
     ViewBag.ReportPageHeader = ViewBag.Name;
@@ -11,7 +11,7 @@
       <a href="@ViewBag.ExcelUrl" target="_blank" class="btn btn-default"><i class="fa fa-file-excel-o"></i> Download as Excel</a>
     </div>
     <div class="table-responsive">
-      @Html.Raw(GridResult.Table(Model, ViewBag.Name2))
+      @Html.Raw(Model.html)
       <strong>Total Count</strong> <span class="badge"></span>
       @if (User.IsInRole("Admin") && ViewBag.Type != "TotalsByFundSqlReport")
       {

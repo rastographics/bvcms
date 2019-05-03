@@ -253,7 +253,7 @@ Sorry, I cannot be there.</a>";
             {
                 try
                 {
-                    var db = DbUtil.Create(host);
+                    var db = CMSDataContext.Create(host);
                     // set these again inside thread local storage
                     Util.UserEmail = useremail;
                     Util.IsInRoleEmailTest = isinroleemailtest;
@@ -265,7 +265,7 @@ Sorry, I cannot be there.</a>";
                     var errorLog = ErrorLog.GetDefault(null);
                     errorLog.Log(new Error(ex2));
 
-                    var db = DbUtil.Create(host);
+                    var db = CMSDataContext.Create(host);
                     // set these again inside thread local storage
                     Util.UserEmail = useremail;
                     Util.IsInRoleEmailTest = isinroleemailtest;

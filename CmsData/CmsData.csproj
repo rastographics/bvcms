@@ -901,8 +901,6 @@
     <Compile Include="Classes\ExtraValues\View.cs" />
     <Compile Include="Classes\ExtraValues\Views.cs" />
     <Compile Include="Classes\SmallGroupFinder\SmallGroupFinder.cs" />
-    <Compile Include="Classes\CMSMembershipProvider.cs" />
-    <Compile Include="Classes\CMSRoleProvider.cs" />
     <Compile Include="DbUtil\Codes.cs" />
     <Compile Include="Extensions\Contact.cs" />
     <Compile Include="Extensions\ActivityLog.cs" />
@@ -952,7 +950,6 @@
     <Compile Include="DbUtil\ITableWithExtraValues.cs" />
     <Content Include="App_Readme\Elmah.txt" />
     <Content Include="Migrations\20181022-3_create_Contributions2SearchIds.sql" />
-    <Content Include="Migrations\20190326_fix_mission_trip_supports.sql" />
     <Compile Include="Organization\OrgFilter.cs" />
     <Compile Include="Organization\OrgPerson.cs" />
     <Compile Include="Organization\OrgSchedule.cs" />
@@ -1158,7 +1155,6 @@
     <Compile Include="Generated\Views\PodcastSummary.cs" />
     <Compile Include="Generated\Views\UserList.cs" />
     <Compile Include="Generated\Word.cs" />
-    <Compile Include="DbUtil\MembershipService.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -1358,6 +1354,7 @@
     <Content Include="Migrations\20190118_alter_donors_function_for_spouse_legal_name.sql" />
     <Content Include="Migrations\20190117_pushpay_schema_updates.sql" />
     <Content Include="Migrations\20190222_create_Gateway_Structure.sql" />
+    <Content Include="Migrations\20190415_create_FamilyGiverFunds_func.sql" />
     <Content Include="QueryBuilder\CompareMap.xml">
       <SubType>Designer</SubType>
     </Content>

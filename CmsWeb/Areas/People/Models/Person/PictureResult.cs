@@ -76,19 +76,12 @@ namespace CmsWeb.Areas.People.Models
             else
             {
                 ImageData.Image i = null;
-
-                var idb = DbUtil.CheckImageDatabaseExists(Util.CmsHost.Replace("CMS_", "CMSi_"));
-                if (idb == DbUtil.CheckDatabaseResult.DatabaseExists)
+                try
                 {
-                    try
-                    {
-                        i = ImageData.DbUtil.Db.Images.SingleOrDefault(ii => ii.Id == id);
-                    }
-                    // ReSharper disable once EmptyGeneralCatchClause
-                    catch (Exception)
-                    {
-                    }
+                    var db = ImageData.CMSImageDataContext.Create(context.HttpContext);
+                    i = ImageData.DbUtil.Db.Images.SingleOrDefault(ii => ii.Id == id);
                 }
+                catch { }
 
                 if (i == null || i.Secure == true)
                 {

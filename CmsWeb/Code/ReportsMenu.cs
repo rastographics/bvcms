@@ -113,6 +113,15 @@ namespace CmsWeb.Code
                 var roles = new List<string>();
                 var excludedRoles = new List<string>();
 
+                var requiredSetting = e.Attribute("requiredSetting")?.Value;
+                if (requiredSetting != null && requiredSetting.HasValue())
+                {
+                    if (DbUtil.Db.Setting(requiredSetting) == false)
+                    {
+                        continue;
+                    }
+                }
+
                 var aroles = e.Attribute("roles")?.Value;
                 if (aroles != null && aroles.HasValue())
                 {

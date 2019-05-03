@@ -1,13 +1,10 @@
-﻿using System;
+﻿using CmsData;
+using CmsData.Codes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using CmsData;
-using CmsData.Codes;
-using CmsData.Registration;
-using CmsData.View;
-using DocumentFormat.OpenXml.Spreadsheet;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Coordinator.Models
@@ -16,7 +13,6 @@ namespace CmsWeb.Areas.Coordinator.Models
     {
         public int guestcount;
         public int workercount;
-        private List<SelectListItem> mtypes;
 
         public SubgroupModel()
         {
@@ -44,21 +40,21 @@ namespace CmsWeb.Areas.Coordinator.Models
         public string sort { get; set; }
         public int tagfilter { get; set; }
         public bool isRecreationTeam { get; set; }
-     //   public bool isAttendanceBySubgroups => DbUtil.Db.LoadOrganizationById(orgid).AttendanceBySubGroups.GetValueOrDefault();
+        //   public bool isAttendanceBySubgroups => DbUtil.Db.LoadOrganizationById(orgid).AttendanceBySubGroups.GetValueOrDefault();
         public int memtype { get; set; }
         public IList<int> List { get; set; } = new List<int>();
 
         public GroupDetails GetGroupDetails(int id)
         {
             var d = from e in DbUtil.Db.MemberTags
-                where e.Id == id
-                select new GroupDetails
-                {
-                    GroupId = e.Id,
-                    Name = e.Name,
-                    Capacity = e.CheckInCapacity,
-                    CheckInOpen = e.CheckInOpen
-                };
+                    where e.Id == id
+                    select new GroupDetails
+                    {
+                        GroupId = e.Id,
+                        Name = e.Name,
+                        Capacity = e.CheckInCapacity,
+                        CheckInOpen = e.CheckInOpen
+                    };
 
             return d.SingleOrDefault();
         }
@@ -66,14 +62,14 @@ namespace CmsWeb.Areas.Coordinator.Models
         public List<GroupDetails> GetAllGroupDetails()
         {
             var d = (from e in DbUtil.Db.MemberTags
-                where e.OrgId == orgid && e.CheckIn
-                select new GroupDetails
-                {
-                    GroupId = e.Id,
-                    Name = e.Name,
-                    Capacity = e.CheckInCapacity,
-                    CheckInOpen = e.CheckInOpen
-                }).ToList();
+                     where e.OrgId == orgid && e.CheckIn
+                     select new GroupDetails
+                     {
+                         GroupId = e.Id,
+                         Name = e.Name,
+                         Capacity = e.CheckInCapacity,
+                         CheckInOpen = e.CheckInOpen
+                     }).ToList();
 
             return d;
         }
@@ -111,12 +107,12 @@ namespace CmsWeb.Areas.Coordinator.Models
         public IEnumerable<PersonInfo> SelectedOrgMembers(int[] peopleIds)
         {
             var q = from om in DbUtil.Db.People
-                where peopleIds.Contains(om.PeopleId)
-                select new PersonInfo
-                {
-                    PeopleId = om.PeopleId,
-                    Name = om.Name
-                };
+                    where peopleIds.Contains(om.PeopleId)
+                    select new PersonInfo
+                    {
+                        PeopleId = om.PeopleId,
+                        Name = om.Name
+                    };
 
             return q;
         }
@@ -124,13 +120,13 @@ namespace CmsWeb.Areas.Coordinator.Models
         public SelectList CheckInGroups()
         {
             var q = from g in DbUtil.Db.MemberTags
-                where g.OrgId == orgid && g.CheckIn
-                orderby g.Name
-                select new
-                {
-                    value = g.Id,
-                    text = g.Name
-                };
+                    where g.OrgId == orgid && g.CheckIn
+                    orderby g.Name
+                    select new
+                    {
+                        value = g.Id,
+                        text = g.Name
+                    };
             var list = q.ToList();
             list.Insert(0, new { value = 0, text = "(not specified)" });
             return new SelectList(list, "value", "text", groupid.ToString());
@@ -139,10 +135,10 @@ namespace CmsWeb.Areas.Coordinator.Models
         public SelectList SmallGroups()
         {
             var q = from m in DbUtil.Db.MemberTags
-                where m.OrgId == orgid && m.CheckIn
-                where m.OrgMemMemTags.Any()
-                orderby m.Name
-                select m.Name;
+                    where m.OrgId == orgid && m.CheckIn
+                    where m.OrgMemMemTags.Any()
+                    orderby m.Name
+                    select m.Name;
             var list = q.ToList();
             list.Insert(0, "Select Subgroup");
             return new SelectList(list);
@@ -151,9 +147,15 @@ namespace CmsWeb.Areas.Coordinator.Models
         public IEnumerable<PersonInfo> FetchOrgMemberList(IQueryable<OrganizationMember> q)
         {
             if (ingroup == null)
+            {
                 ingroup = string.Empty;
+            }
+
             if (memtype != 0)
+            {
                 q = q.Where(om => om.MemberTypeId == memtype);
+            }
+
             if (ingroup.HasValue())
             {
                 var groups = ingroup.Split(',');
@@ -164,15 +166,24 @@ namespace CmsWeb.Areas.Coordinator.Models
                 }
             }
             if (notgroupactive)
+            {
                 if (notgroup.HasValue())
+                {
                     q = q.Where(om => !om.OrgMemMemTags.Any(omt => omt.MemberTag.Name.StartsWith(notgroup)));
+                }
                 else
+                {
                     q = q.Where(om => !om.OrgMemMemTags.Any());
+                }
+            }
 
             guestcount = q.Count();
 
             if (!sort.HasValue())
+            {
                 sort = "Name";
+            }
+
             switch (sort)
             {
                 case "Request":
@@ -250,13 +261,13 @@ namespace CmsWeb.Areas.Coordinator.Models
         public IQueryable<OrganizationMember> OrgMembers()
         {
             var q = from om in DbUtil.Db.OrganizationMembers
-                where om.OrganizationId == orgid
-                where om.MemberTypeId != MemberTypeCode.Prospect
-                where om.MemberTypeId != MemberTypeCode.InActive
-                where (om.Pending ?? false) == false
-                where tagfilter == 0 || DbUtil.Db.TagPeople.Any(tt => tt.PeopleId == om.PeopleId && tt.Id == tagfilter)
-                //where om.OrgMemMemTags.Any(g => g.MemberTagId == sg) || (sg ?? 0) == 0
-                select om;
+                    where om.OrganizationId == orgid
+                    where om.MemberTypeId != MemberTypeCode.Prospect
+                    where om.MemberTypeId != MemberTypeCode.InActive
+                    where (om.Pending ?? false) == false
+                    where tagfilter == 0 || DbUtil.Db.TagPeople.Any(tt => tt.PeopleId == om.PeopleId && tt.Id == tagfilter)
+                    //where om.OrgMemMemTags.Any(g => g.MemberTagId == sg) || (sg ?? 0) == 0
+                    select om;
             return q;
         }
 

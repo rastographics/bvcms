@@ -148,7 +148,10 @@ namespace CmsWeb.Areas.Setup.Controllers
 
         [Route("~/Pushpay/Finish")]
         public ActionResult Finish()
-        { return View(); }
+        {
+            ViewBag.Host = CurrentDatabase.Host;
+            return View();
+        }
 
         [Route("~/Pushpay/OneTime/{PeopleId:int}/{OrgId:int}")]
         public ActionResult OneTime(int PeopleId, int OrgId)

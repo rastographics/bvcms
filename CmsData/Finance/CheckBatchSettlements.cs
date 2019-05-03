@@ -52,7 +52,7 @@ namespace CmsData.Finance
                                            where !distinctTransactionIds.Contains(transaction.Key)
                                            select transaction.Value;
 
-                var notbefore = DateTime.Parse("6/1/12"); // the date when Sage payments began in BVCMS (?)
+                var notbefore = new DateTime(2012, 6, 1); // the date when Sage payments began in BVCMS (?)
 
                 // spin through each transaction and insert them to the transaction table.
                 foreach (var transactionToInsert in transactionsToInsert)

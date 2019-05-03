@@ -256,11 +256,5 @@ namespace CmsData
             var result = template(data);
             return result;
         }
-
-        public bool IsDisposed { get; private set; }
-        protected override void Dispose(bool disposing)
-        {
-            IsDisposed = true;
-        }
     }
 }

@@ -5,6 +5,7 @@ using System.Web;
 using System.Text;
 using System.Web.Security;
 using UtilityExtensions;
+using CmsWeb.Membership;
 
 namespace CmsWeb.MobileAPI
 {
@@ -34,7 +35,7 @@ namespace CmsWeb.MobileAPI
 				password = HttpContextFactory.Current.Request.Headers["password"];
 			}
 
-			return Membership.Provider.ValidateUser(username, password); ;
+			return CMSMembershipProvider.provider.ValidateUser(username, password); ;
 		}
 	}
 }

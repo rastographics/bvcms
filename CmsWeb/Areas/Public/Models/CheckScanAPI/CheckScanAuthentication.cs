@@ -1,4 +1,5 @@
 ﻿using CmsData;
+using CmsWeb.Membership;
 using System;
 using System.Data.Linq;
 using System.Linq;
@@ -102,7 +103,7 @@ namespace CmsWeb.Areas.Public.Models.CheckScanAPI
 
             foreach (var foundUser in userQuery.ToList())
             {
-                if (!Membership.Provider.ValidateUser(username, password))
+                if (!CMSMembershipProvider.provider.ValidateUser(username, password))
                 {
                     continue;
                 }

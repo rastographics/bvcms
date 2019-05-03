@@ -1,5 +1,6 @@
 using CmsData;
 using CmsWeb.Areas.People.Models;
+using CmsWeb.Membership.Extensions;
 using CmsWeb.Models;
 using System;
 using System.Linq;
