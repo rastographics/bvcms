@@ -381,24 +381,28 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private static void ClearMaskedNumbers(PaymentForm pf, PaymentInfo pi)
         {
-            var gateway = DbUtil.Db.Setting("TransactionGateway", "");
+            int? GatewayId = new MultipleGatewayUtils(DbUtil.Db).GatewayId(pf.ProcessType);
 
             var clearBankDetails = false;
             var clearCreditCardDetails = false;
 
-            switch (gateway.ToLower())
+            switch (GatewayId)
             {
-                case "sage":
+                case (int)GatewayTypes.Sage:
                     clearBankDetails = !pi.SageBankGuid.HasValue;
                     clearCreditCardDetails = !pi.SageCardGuid.HasValue;
                     break;
-                case "transnational":
+                case (int)GatewayTypes.Transnational:
                     clearBankDetails = !pi.TbnBankVaultId.HasValue;
                     clearCreditCardDetails = !pi.TbnCardVaultId.HasValue;
                     break;
-                case "authorizenet":
+                // case (int)GatewayTypes.Acceptiva:
+                // return new AcceptivaGateway(this, testing, ProcessType);
+                case (int)GatewayTypes.AuthorizeNet:
                     clearBankDetails = !pi.AuNetCustPayBankId.HasValue;
                     clearCreditCardDetails = !pi.AuNetCustPayId.HasValue;
+                    break;
+                default:
                     break;
             }
 

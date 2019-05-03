@@ -34,7 +34,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     return View("OnePageGiving/NotActive", m);
                 }
 
-                if (CurrentDatabase.GetSetting("TransactionGateway", "") == "Pushpay" && m.OnlineGiving())
+                int? GatewayId = new MultipleGatewayUtils(CurrentDatabase).GatewayId(m.ProcessType);
+                if (GatewayId == (int)GatewayTypes.Pushpay && m.OnlineGiving())
                 {
                     return Redirect($"/Pushpay/OnePage/{m.Orgid}");
                 }

@@ -78,7 +78,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return Message("Found Card Tester");
             }
 
-            if (CurrentDatabase.Setting("UseRecaptcha") && CurrentDatabase.GetSetting("TransactionGateway", "") != "Pushpay")
+            int? GatewayId = new MultipleGatewayUtils(CurrentDatabase).GatewayId(m.ProcessType);
+
+            if (CurrentDatabase.Setting("UseRecaptcha") && GatewayId != (int)GatewayTypes.Pushpay)
             {
                 if (!GoogleRecaptcha.IsValidResponse(HttpContext, CurrentDatabase))
                 {
@@ -89,8 +91,6 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
 
             RouteModel ret;
-
-            int? GatewayId = new MultipleGatewayUtils(CurrentDatabase).GatewayId(m.ProcessType);
 
             if ((int)GatewayTypes.Pushpay == GatewayId)
             {

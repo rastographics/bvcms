@@ -194,9 +194,10 @@ Please contact the Finance office at the church."
         }
         public static int DoAllGiving(CMSDataContext Db)
         {
-            var gateway = Db.Setting("TransactionGateway", "");
+            int? GatewayId = new MultipleGatewayUtils(Db).GatewayId(PaymentProcessTypes.RecurringGiving);
+
             int count = 0;
-            if (gateway.HasValue())
+            if (GatewayId != null)
             {
                 var q = from rg in Db.ManagedGivings
                         where rg.NextDate < Util.Now.Date

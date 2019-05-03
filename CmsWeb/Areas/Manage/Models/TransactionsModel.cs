@@ -206,6 +206,7 @@ namespace CmsWeb.Models
                         batchdate = g.Max(gg => gg.Batch),
                         BatchRef = g.Key,
                         BatchType = g.First().Batchtyp,
+                        TransactionGateway = g.First().TransactionGateway,
                         Total = g.Sum(gg => gg.Amt ?? 0)
                     };
             return q;
@@ -241,32 +242,46 @@ namespace CmsWeb.Models
                         BatchRef = f.Batchref,
                         BatchType = f.Batchtyp,
                         Description = f.Description,
+                        TransactionGateway = f.TransactionGateway,
                         Total = g.Sum(gg => (gg.Amt ?? 0) - (gg.Donate ?? 0))
                     };
             return q;
         }
 
-        private void CheckBatchDates(DateTime start, DateTime end)
+        public void GetUseIdsForSettlementDates(IGateway gateway, DateTime start, DateTime end)
         {
-            var gateway = DbUtil.Db.Gateway();
-            if (!gateway.CanGetSettlementDates)
+            List<string> tranids = new List<string>();
+
+            if (gateway.IsNull() || !gateway.CanGetSettlementDates)
             {
                 return;
             }
 
             if (gateway.UseIdsForSettlementDates)
             {
-                var tranids = (from t in _transactions
-                               where t.TransactionDate >= start
-                               where t.TransactionDate <= end
-                               where t.Settled == null
-                               where t.Moneytran == true
-                               select t.TransactionId).ToList();
+                tranids = (from t in _transactions
+                                  where t.TransactionDate >= start
+                                  where t.TransactionDate <= end
+                                  where t.Settled == null
+                                  where t.Moneytran == true
+                                  select t.TransactionId).ToList();
                 gateway.CheckBatchSettlements(tranids);
             }
             else
             {
                 gateway.CheckBatchSettlements(start, end);
+            }
+        }
+
+        private void CheckBatchDates(DateTime start, DateTime end)
+        {
+            IGateway[] Gateways = new IGateway[3];
+
+            for (int i = 0; i < 3; i++)
+            {
+                try { Gateways[i] = DbUtil.Db.Gateway(false, (PaymentProcessTypes)i + 1); }
+                catch { Gateways[i] = null; }
+                GetUseIdsForSettlementDates(Gateways[i], start, end);
             }
         }
 
@@ -497,6 +512,7 @@ namespace CmsWeb.Models
             public DateTime? batchdate { get; set; }
             public string BatchRef { get; set; }
             public string BatchType { get; set; }
+            public string TransactionGateway { get; set; }
             public decimal Total { get; set; }
         }
 
@@ -514,6 +530,7 @@ namespace CmsWeb.Models
             public string BatchRef { get; set; }
             public string BatchType { get; set; }
             public string Description { get; set; }
+            public string TransactionGateway { get; set; }
             public decimal Total { get; set; }
         }
 

@@ -277,28 +277,27 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private void ClearMaskedNumbers(PaymentInfo pi)
         {
-            var gateway = DbUtil.Db.Setting("TransactionGateway", "");
-
             var clearBankDetails = false;
             var clearCreditCardDetails = false;
 
-            switch (gateway.ToLower())
+            int? GatewayId = new MultipleGatewayUtils(db: DbUtil.Db).GatewayId(PaymentProcessTypes.RecurringGiving);
+            switch (GatewayId)
             {
-                case "sage":
+                case (int)GatewayTypes.Sage:
                     clearBankDetails = !pi.SageBankGuid.HasValue;
                     clearCreditCardDetails = !pi.SageCardGuid.HasValue;
                     break;
-                case "transnational":
+                case (int)GatewayTypes.Transnational:
                     clearBankDetails = !pi.TbnBankVaultId.HasValue;
                     clearCreditCardDetails = !pi.TbnCardVaultId.HasValue;
                     break;
-                case "authorizenet":
+                // case (int)GatewayTypes.Acceptiva:
+                // return new AcceptivaGateway(this, testing, ProcessType);
+                case (int)GatewayTypes.AuthorizeNet:
                     clearBankDetails = !pi.AuNetCustPayBankId.HasValue;
                     clearCreditCardDetails = !pi.AuNetCustPayId.HasValue;
                     break;
-                case "bluepay":
-                    clearCreditCardDetails = !String.IsNullOrEmpty(pi.BluePayCardVaultId);
-                    //TODO: Handle bank account too.
+                default:
                     break;
             }
 
@@ -440,7 +439,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 // first need to do a $1 auth if it's a credit card and throw any errors we get back
                 // from the gateway.
                 var vaultSaved = false;
-                var gateway = db.Gateway(testing);
+                var gateway = db.Gateway(testing, PaymentProcessTypes.RecurringGiving);
                 if (Type == PaymentType.CreditCard)
                 {
                     // perform $1 auth.

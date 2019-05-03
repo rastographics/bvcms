@@ -2,7 +2,7 @@
 @using CmsData
 @using UtilityExtensions
 @{
-    var giving = Util.UserPeopleId == Util2.CurrentPeopleId && ViewExtensions2.DbSetting("TransactionGateway", "").HasValue() && DbUtil.Db.Setting("OnlineGiving", true);
+    var giving = Util.UserPeopleId == Util2.CurrentPeopleId && (new MultipleGatewayUtils(DbUtil.Db).GatewayId(PaymentProcessTypes.RecurringGiving) != null) && DbUtil.Db.Setting("OnlineGiving", true);
     var vaultDisabled = DbUtil.Db.Setting("VaultDisabled");
     var campusId = Model.Person.CampusId;
     var checkImageUserView = true;
