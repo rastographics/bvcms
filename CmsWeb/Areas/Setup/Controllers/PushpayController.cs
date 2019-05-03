@@ -325,7 +325,7 @@ namespace CmsWeb.Areas.Setup.Controllers
         private ActionResult PayAmtDueProcess(Payment payment, int transactionId)
         {
             Transaction ti = CurrentDatabase.Transactions.Where(p => p.Id == transactionId).FirstOrDefault();
-            PaymentForm pf = PaymentForm.CreatePaymentFormForBalanceDue(ti, payment.Amount.Amount, payment.Payer.emailAddress);
+            PaymentForm pf = PaymentForm.CreatePaymentFormForBalanceDue(CurrentDatabase, ti, payment.Amount.Amount, payment.Payer.emailAddress);
             int tranId = CreateTransaction(payment, pf);
             return Redirect($"/OnlineReg/ProcessExternalPayment/tra_{tranId}");
         }
