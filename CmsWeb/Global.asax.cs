@@ -9,7 +9,6 @@ using SimpleInjector.Integration.Web.Mvc;
 using SimpleInjector.Integration.WebApi;
 using System;
 using System.Configuration;
-using System.Data.SqlClient;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -26,22 +25,9 @@ namespace CmsWeb
 {
     public class MvcApplication : HttpApplication
     {
-
         protected void Application_Start()
         {
-            // added bootstrapping for simpleinjector, register in DependencyConfig
-            var container = new Container();
-            container.Options.DefaultScopedLifestyle = new WebRequestLifestyle();
-
-            DependencyConfig.RegisterSimpleInjector(container);
-
-            container.RegisterWebApiControllers(GlobalConfiguration.Configuration);
-            container.RegisterMvcControllers(Assembly.GetExecutingAssembly());
-
-            //container.Verify();
-
-            GlobalConfiguration.Configuration.DependencyResolver = new SimpleInjectorWebApiDependencyResolver(container);
-            DependencyResolver.SetResolver(new SimpleInjectorDependencyResolver(container));
+            DependencyConfig.RegisterSimpleInjector();
 
             MvcHandler.DisableMvcResponseHeader = true;
             ModelBinders.Binders.DefaultBinder = new SmartBinder();
@@ -54,12 +40,8 @@ namespace CmsWeb
             RouteTable.Routes.RouteExistingFiles = true;
             HttpRuntime.Cache.Remove("BuildDate");
 
-            //Remove and JsonValueProviderFactory and add JsonNetValueProviderFactory
             ValueProviderFactories.Factories.Remove(ValueProviderFactories.Factories.OfType<JsonValueProviderFactory>().FirstOrDefault());
             ValueProviderFactories.Factories.Add(new JsonNetValueProviderFactory());
-
-            //            MiniProfiler.Settings.Results_List_Authorize = IsAuthorizedToViewProfiler;
-            //            MiniProfiler.Settings.Results_Authorize = IsAuthorizedToViewProfiler;
         }
 
         protected void Session_Start(object sender, EventArgs e)
@@ -69,14 +51,15 @@ namespace CmsWeb
                 return;
             }
 
-            if (Util.Host.StartsWith("direct"))
+            if (Request.Url.Authority.StartsWith("direct"))
             {
                 return;
             }
 
             if (User.Identity.IsAuthenticated)
             {
-                var r = DbUtil.CheckDatabaseExists(Util.CmsHost);
+                var host = CMSDataContext.GetHost(new HttpContextWrapper(Context));
+                var r = DbUtil.CheckDatabaseExists($"CMS_{host}");
                 var redirect = ViewExtensions2.DatabaseErrorUrl(r);
                 if (redirect != null)
                 {
@@ -110,13 +93,16 @@ namespace CmsWeb
                 return;
             }
 
+            Response.Headers?.Remove("Server");
+
             if (Util.AppOffline)
             {
                 Response.Redirect("/Errors/AppOffline.htm");
                 return;
             }
 
-            var r = DbUtil.CheckDatabaseExists(Util.CmsHost);
+            var host = CMSDataContext.GetHost(new HttpContextWrapper(Context));
+            var r = DbUtil.CheckDatabaseExists($"CMS_{host}");
             var redirect = ViewExtensions2.DatabaseErrorUrl(r);
             if (Util.IsDebug())
             {
@@ -125,9 +111,9 @@ namespace CmsWeb
                     Response.Redirect(redirect);
                     return;
                 }
-                if (r == DbUtil.CheckDatabaseResult.DatabaseDoesNotExist && Request.IsLocal)
+                if (r == DbUtil.CheckDatabaseResult.DatabaseDoesNotExist && "localhost".Equal(Request.Url.Host))
                 {
-                    var ret = DbUtil.CreateDatabase();
+                    var ret = DbUtil.CreateDatabase(host);
                     if (ret.HasValue())
                     {
                         Response.Redirect($"/Errors/DatabaseCreationError.aspx?error={HttpUtility.UrlEncode(ret)}");
@@ -144,7 +130,7 @@ namespace CmsWeb
                 }
             }
 
-            var db = DbUtil.Db;
+            var db = CMSDataContext.Create(new HttpContextWrapper(Context));
 
             Util.AdminMail = db.Setting("AdminMail", "");
             Util.DateSimulation = db.Setting("UseDateSimulation");
@@ -182,8 +168,6 @@ namespace CmsWeb
                     Response.Redirect(r);
                 }
             }
-
-            //            MiniProfiler.Stop();
         }
 
         protected void Application_PostAuthorizeRequest()
@@ -192,14 +176,12 @@ namespace CmsWeb
             {
                 return;
             }
-
-            //            if (!IsAuthorizedToViewProfiler(Request))
-            //                MiniProfiler.Stop(discardResults: true);
         }
 
         public void ErrorLog_Logged(object sender, ErrorLoggedEventArgs args)
         {
-            Context.Items["error"] = args.Entry.Error.Exception.Message;
+            // This is the text shown in Error.aspx
+            Context.Items["error"] = args?.Entry?.Error?.Exception?.Message ?? "Error Unknown";
         }
 
         public void ErrorMail_Filtering(object sender, ExceptionFilterEventArgs e)
@@ -293,13 +275,10 @@ namespace CmsWeb
         private void Application_Error(object sender, EventArgs e)
         {
             var ex = Server.GetLastError();
-            if (!IsEmailBodyError(ex))
+            if (IsEmailBodyError(ex))
             {
-                return;
+                Context.ClearError();
             }
-
-            var httpContext = ((MvcApplication)sender).Context;
-            httpContext.ClearError();
         }
 
         private bool IsEmailBodyError(Exception ex)
@@ -321,7 +300,8 @@ namespace CmsWeb
             if (Request.Url.Host.Contains(bvcms, true))
             {
                 var url = Request.Url.OriginalString;
-                var dbExists = DbUtil.CheckDatabaseExists(Util.CmsHost) == DbUtil.CheckDatabaseResult.DatabaseExists;
+                var host = CMSDataContext.GetHost(new HttpContextWrapper(Context));
+                var dbExists = DbUtil.CheckDatabaseExists($"CMS_{host}") == DbUtil.CheckDatabaseResult.DatabaseExists;
                 var newBaseUrl = "tpsdb.com";
                 if (!dbExists)
                 {

@@ -54,7 +54,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     m.Campus = Session["Campus"]?.ToString();
                     m.DefaultFunds = Session["DefaultFunds"]?.ToString();
                 }
-                
+
                 if (m.org != null && m.org.IsMissionTrip == true)
                 {
                     if (gsid != null || goerid != null)
@@ -90,7 +90,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         public ActionResult Login(OnlineRegModel m)
         {
             fromMethod = "Login";
-            var ret = AccountModel.AuthenticateLogon(m.username, m.password, Session, Request);
+            var ret = AccountModel.AuthenticateLogon(m.username, m.password, Session, Request, CurrentDatabase);
 
             if (ret is string)
             {
@@ -115,7 +115,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (m.org != null && m.org.IsMissionTrip == true && m.SupportMissionTrip)
             {
                 OnlineRegPersonModel p;
-                PrepareFirstRegistrant(ref m, m.UserPeopleId.Value, false, out p);    
+                PrepareFirstRegistrant(ref m, m.UserPeopleId.Value, false, out p);
             }
             return FlowList(m);
         }
@@ -297,7 +297,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return Content("<p style='color:red'>error: cannot find person on submit other info</p>");
             }
 
-            m.List[id].ValidateModelQuestions(ModelState, id);
+            bool supportGoerRequired = CurrentDatabase.Setting("MissionSupportRequiredGoer", "false").ToBool();
+            m.List[id].ValidateModelQuestions(ModelState, id, supportGoerRequired);
             return FlowList(m);
         }
 

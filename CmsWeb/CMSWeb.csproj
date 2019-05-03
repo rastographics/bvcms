@@ -680,6 +680,7 @@
     <Compile Include="Areas\Public\Models\MobileAPI\MobilePersonExtended.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\PostObjects\MobilePostEditField.cs" />
     <Compile Include="Areas\Reports\Controllers\DirectoryController.cs" />
+    <Compile Include="Areas\Reports\Models\Attendance\MeetingAttendanceModel.cs" />
     <Compile Include="Areas\Reports\Models\Attendance\DocXRollsheetResult.cs" />
     <Compile Include="Areas\Reports\Models\Avery\DocXAveryLabels.cs" />
     <Compile Include="Areas\Reports\Models\Directories\CompactDir.cs" />
@@ -894,6 +895,10 @@
     <Compile Include="Controllers\MobileAppMenuController.cs" />
     <Compile Include="Controllers\WebHookController.cs" />
     <Compile Include="Lifecycle\RequestManager.cs" />
+    <Compile Include="Membership\CMSMembershipProvider.cs" />
+    <Compile Include="Membership\CMSRoleProvider.cs" />
+    <Compile Include="Membership\Extensions\MembershipExtensions.cs" />
+    <Compile Include="Membership\MembershipService.cs" />
     <Compile Include="Models\Api\ApiChAiGift.cs" />
     <Compile Include="Models\Api\ApiOrganization.cs" />
     <Compile Include="Models\Api\ApiLookup.cs" />
@@ -1095,6 +1100,7 @@
     <Compile Include="Code\PaymentValidator.cs" />
     <Compile Include="Code\SmartBinder.cs" />
     <Compile Include="Code\Image.cs" />
+    <Compile Include="Models\HtmlHolder.cs" />
     <Compile Include="Services\MeetingCategory\MeetingCategoryService.cs" />
     <Compile Include="Services\MeetingCategory\IMeetingCategoryService.cs" />
     <Compile Include="Services\CommunicationService.cs" />
@@ -1815,6 +1821,7 @@
     <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageGiving\_ManagedGivingFunds.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageGiving\_ManagedGivingFundsNew.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\OnePageGiving\NotConfigured.cshtml" />
+    <Content Include="Areas\Reports\Views\Reports\MeetingAttendance.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

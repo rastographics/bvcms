@@ -45,6 +45,7 @@ namespace CmsWeb.Areas.Dialog.Models
             orginfos = JsonConvert.DeserializeObject<List<OrgInfo>>(Orgs);
             var lop = new LongRunningOperation()
             {
+                Host = db.Host,
                 Started = DateTime.Now,
                 Count = orginfos.Count,
                 Processed = 0,
@@ -57,7 +58,7 @@ namespace CmsWeb.Areas.Dialog.Models
         }
         public static void DoWork(RepairTransactionsOrgs model)
         {
-            var db = DbUtil.Create(model.Host);
+            var db = CMSDataContext.Create(model.Host);
             db.CommandTimeout = 2200;
             var cul = db.Setting("Culture", "en-US");
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);

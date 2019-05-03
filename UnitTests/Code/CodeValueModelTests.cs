@@ -24,7 +24,7 @@ namespace UnitTests
         [Fact]
         public void Should_be_able_to_get_ContactReasonCodes()
         {
-            var db = DbUtil.Create(Util.Host);
+            var db = CMSDataContext.Create(Util.Host);
             var cv = new CodeValueModel(db);
             var b = cv.ContactReasonCodes();
             b.Count().ShouldBe(8);

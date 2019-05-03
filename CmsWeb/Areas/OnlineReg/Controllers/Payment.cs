@@ -332,7 +332,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 ti.State = "TN";
             }
 #endif
-            var pf = PaymentForm.CreatePaymentFormForBalanceDue(ti, amtdue, email);
+            var pf = PaymentForm.CreatePaymentFormForBalanceDue(CurrentDatabase, ti, amtdue, email);
             pf.ProcessType = PaymentProcessTypes.OnlineRegistration;
 
             SetHeaders(pf.OrgId ?? 0);

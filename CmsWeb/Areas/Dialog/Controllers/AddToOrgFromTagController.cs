@@ -17,7 +17,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
         public ActionResult Index(Guid qid)
         {
             LongRunningOperation.RemoveExisting(CurrentDatabase, qid);
-            var model = new AddToOrgFromTag(qid);
+            var model = new AddToOrgFromTag(qid, CurrentDatabase);
             return View(model);
         }
 

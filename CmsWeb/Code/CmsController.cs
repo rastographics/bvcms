@@ -128,7 +128,7 @@ namespace CmsWeb
             }
             else if (!NoCheckRole)
             {
-                var r = AccountModel.CheckAccessRole(Util.UserName);
+                var r = AccountModel.CheckAccessRole(User.Identity.Name);
                 if (r.HasValue())
                 {
                     filterContext.Result = Redirect(r);
@@ -219,9 +219,13 @@ namespace CmsWeb
     }
 
     [MyRequireHttps]
-    public class CmsStaffAsyncController : AsyncController
+    public class CmsStaffAsyncController : CMSBaseController
     {
         public bool NoCheckRole { get; set; }
+
+        public CmsStaffAsyncController(IRequestManager requestManager) : base(requestManager)
+        {
+        }
 
         protected override void HandleUnknownAction(string actionName)
         {
@@ -243,7 +247,7 @@ namespace CmsWeb
             }
             else if (!NoCheckRole)
             {
-                var r = AccountModel.CheckAccessRole(Util.UserName);
+                var r = AccountModel.CheckAccessRole(User.Identity.Name);
                 if (r.HasValue())
                 {
                     filterContext.Result = Redirect(r);
@@ -251,7 +255,7 @@ namespace CmsWeb
             }
             base.OnActionExecuting(filterContext);
             Util.Helpfile = $"_{filterContext.ActionDescriptor.ControllerDescriptor.ControllerName}_{filterContext.ActionDescriptor.ActionName}";
-            DbUtil.Db.UpdateLastActivity(Util.UserId);
+            CurrentDatabase.UpdateLastActivity(Util.UserId);
         }
         public ViewResult Message(string text)
         {

@@ -3209,6 +3209,21 @@ namespace CmsData
                 );
 		}
 
+		[Function(Name="dbo.FamilyGiverFunds", IsComposable = true)]
+		public IQueryable<View.FamilyGiver > FamilyGiverFunds(
+            [Parameter(DbType="datetime")] DateTime? fd,
+            [Parameter(DbType="datetime")] DateTime? td,
+            [Parameter(DbType="varchar")] string funds
+            )
+		{
+			return this.CreateMethodCallQuery<View.FamilyGiver>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                fd,
+                td,
+                funds
+                );
+		}
+
 		[Function(Name="dbo.FamilyMembers", IsComposable = true)]
 		public IQueryable<View.FamilyMember > FamilyMembers(
             [Parameter(DbType="int")] int? pid

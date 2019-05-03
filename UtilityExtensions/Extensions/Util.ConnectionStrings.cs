@@ -51,18 +51,6 @@ namespace UtilityExtensions
             }
         }
 
-        public static string CmsHost2
-        {
-            get
-            {
-                var h = ConfigurationManager.AppSettings["cmshost"];
-                return h.Replace("{church}", Host, ignoreCase: true);
-            }
-        }
-        public static string CmsHost
-        {
-            get { return "CMS_" + Host; }
-        }
         public static bool IsHosted
         {
             get
@@ -72,6 +60,7 @@ namespace UtilityExtensions
                 return ConfigurationManager.AppSettings["INSERT_X-FORWARDED-PROTO"] == "true";
             }
         }
+
         public static string GetConnectionString(string host)
         {
             var cs = ConnectionStringSettings(host) ?? ConfigurationManager.ConnectionStrings["CMS"];
@@ -82,6 +71,7 @@ namespace UtilityExtensions
             cb.InitialCatalog = $"CMS_{a[0]}";
             return cb.ConnectionString;
         }
+
         public static string GetConnectionString2(string db, int? timeout = null)
         {
             var cs = ConnectionStringSettings(db) ?? ConfigurationManager.ConnectionStrings["CMS"];
@@ -157,7 +147,7 @@ namespace UtilityExtensions
             {
                 var cs = ConnectionStringSettings(Host);
                 var cb = new SqlConnectionStringBuilder(cs.ConnectionString);
-                var a = Host.SplitStr(".:");
+                var a = Host.Split('.', ':');
                 if (string.IsNullOrEmpty(cb.DataSource))
                     cb.DataSource = DbServer;
                 cb.InitialCatalog = $"CMSi_{a[0]}";

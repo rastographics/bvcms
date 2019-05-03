@@ -2,6 +2,7 @@ using System;
 using System.Text;
 using System.Web;
 using CmsData;
+using CmsWeb.Membership;
 using CmsWeb.Models;
 using UtilityExtensions;
 

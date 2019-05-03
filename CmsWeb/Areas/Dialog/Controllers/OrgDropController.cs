@@ -3,6 +3,7 @@ using CmsWeb.Areas.Dialog.Models;
 using CmsWeb.Lifecycle;
 using System;
 using System.Web.Mvc;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Controllers
 {
@@ -17,13 +18,16 @@ namespace CmsWeb.Areas.Dialog.Controllers
         public ActionResult Index(Guid qid)
         {
             LongRunningOperation.RemoveExisting(CurrentDatabase, qid);
-            var model = new OrgDrop(qid);
+            var model = new OrgDrop(CurrentDatabase, qid);
             return View(model);
         }
 
         [HttpPost]
         public ActionResult Process(OrgDrop model)
         {
+            model.Host = CurrentDatabase.Host;
+            model.UserId = Util.UserId;
+            model.CurrentDatabase = CurrentDatabase;
             model.UpdateLongRunningOp(CurrentDatabase, OrgDrop.Op);
             if (!model.Started.HasValue)
             {
@@ -36,7 +40,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
         [HttpPost]
         public ActionResult DropSingleMember(int orgId, int peopleId)
         {
-            var model = new OrgDrop();
+            var model = new OrgDrop(CurrentDatabase);
             model.DropSingleMember(orgId, peopleId);
             return Content("ok");
         }

@@ -77,10 +77,11 @@ namespace CmsWeb.Areas.Org.Models
 
         public List<RecipientItem> GetRecipients()
         {
-            var q = from g in DbUtil.Db.GoerSupporters
+            var db = DbUtil.Db;
+            var q = from g in db.GoerSupporters
                     where g.GoerId == PeopleId
                     where (g.Unsubscribe ?? false) == false
-                    let sender = (from s in DbUtil.Db.GoerSenderAmounts
+                    let sender = (from s in db.GoerSenderAmounts
                                   where s.GoerId == g.GoerId
                                   where s.OrgId == OrgId
                                   where (s.InActive ?? false) == false
@@ -108,7 +109,8 @@ namespace CmsWeb.Areas.Org.Models
 
         public void UpdateRecipients()
         {
-            var q = (from g in DbUtil.Db.GoerSupporters
+            var db = DbUtil.Db;
+            var q = (from g in db.GoerSupporters
                      where g.GoerId == PeopleId
                      where (g.Unsubscribe ?? false) == false
                      select new {g, goer = g.Goer, supporter = g.Supporter}).ToList();
@@ -131,24 +133,26 @@ namespace CmsWeb.Areas.Org.Models
                         ? "Dear " + supporter.TitleCode + " " + supporter.LastName
                         : "Hi " + supporter.PreferredName;
             }
-            DbUtil.Db.SubmitChanges();
+            db.SubmitChanges();
             Recipients = GetRecipients();
         }
 
         public void RemoveSupporter(int id)
         {
-            var q = from e in DbUtil.Db.GoerSupporters
+            var db = DbUtil.Db;
+            var q = from e in db.GoerSupporters
                     where e.Id == id
                     select e;
             var r = q.Single();
-            DbUtil.Db.GoerSupporters.DeleteOnSubmit(r);
-            DbUtil.Db.SubmitChanges();
+            db.GoerSupporters.DeleteOnSubmit(r);
+            db.SubmitChanges();
             Recipients = GetRecipients();
         }
 
         public int AddRecipient(int? supporterid, string email)
         {
-            var q = from e in DbUtil.Db.GoerSupporters
+            var db = DbUtil.Db;
+            var q = from e in db.GoerSupporters
                     where e.GoerId == PeopleId
                     where e.SupporterId == supporterid || e.NoDbEmail == email
                     select e;
@@ -163,8 +167,8 @@ namespace CmsWeb.Areas.Org.Models
                     Active = true,
                     Created = DateTime.Now
                 };
-                var supporter = DbUtil.Db.People.SingleOrDefault(pp => pp.PeopleId == supporterid);
-                var goer = DbUtil.Db.People.SingleOrDefault(pp => pp.PeopleId == PeopleId);
+                var supporter = db.People.SingleOrDefault(pp => pp.PeopleId == supporterid);
+                var goer = db.People.SingleOrDefault(pp => pp.PeopleId == PeopleId);
                 if (supporter == null)
                     r.Salutation = "Dear Friend";
                 else if (goer != null && goer.Age < 30 && (supporter.Age - goer.Age) > 10)
@@ -172,23 +176,24 @@ namespace CmsWeb.Areas.Org.Models
                 else
                     r.Salutation = "Hi " + supporter.PreferredName;
 
-                DbUtil.Db.GoerSupporters.InsertOnSubmit(r);
+                db.GoerSupporters.InsertOnSubmit(r);
             }
             else
                 r.Active = true;
-            DbUtil.Db.SubmitChanges();
+            db.SubmitChanges();
             Recipients = GetRecipients();
             return r.Id;
         }
 
         public string TestSend()
         {
-            var p = DbUtil.Db.LoadPersonById(Util.UserPeopleId.Value);
+            var db = DbUtil.Db;
+            var p = db.LoadPersonById(Util.UserPeopleId.Value);
             try
             {
-                DbUtil.Db.CopySession();
+                db.CopySession();
                 var from = new MailAddress(p.EmailAddress ?? p.EmailAddress2, p.Name);
-                DbUtil.Db.SetCurrentOrgId(OrgId);
+                db.SetCurrentOrgId(OrgId);
                 var gs = new GoerSupporter
                 {
                     Created = DateTime.Now,
@@ -198,9 +203,9 @@ namespace CmsWeb.Areas.Org.Models
                     GoerId = p.PeopleId
                 };
                 var plist = new List<GoerSupporter> {gs};
-                DbUtil.Db.SubmitChanges();
-                var emailQueue = DbUtil.Db.CreateQueueForSupporters(p.PeopleId, from, Subject, Body, null, plist, false);
-                DbUtil.Db.SendPeopleEmail(emailQueue.Id);
+                db.SubmitChanges();
+                var emailQueue = db.CreateQueueForSupporters(p.PeopleId, from, Subject, Body, null, plist, false);
+                db.SendPeopleEmail(emailQueue.Id);
             }
             catch (Exception ex)
             {
@@ -211,13 +216,14 @@ namespace CmsWeb.Areas.Org.Models
 
         public string Send()
         {
-            var p = DbUtil.Db.LoadPersonById(PeopleId);
+            var db = DbUtil.Db;
+            var p = db.LoadPersonById(PeopleId);
             if (!Subject.HasValue() || !Body.HasValue())
                 return "Subject needs some text";
 
             DbUtil.LogActivity($"MissionTripEmail Send {PeopleId}");
 
-            var glist = from g in DbUtil.Db.GoerSupporters
+            var glist = from g in db.GoerSupporters
                         where (g.Unsubscribe ?? false) == false
                         where (g.Active == true)
                         where g.GoerId == PeopleId
@@ -231,11 +237,11 @@ namespace CmsWeb.Areas.Org.Models
 
             if (plist.Any())
             {
-                DbUtil.Db.CopySession();
+                db.CopySession();
                 var from = new MailAddress(p.EmailAddress ?? p.EmailAddress2, p.Name);
-                DbUtil.Db.SetCurrentOrgId(OrgId);
-                var emailQueue = DbUtil.Db.CreateQueueForSupporters(p.PeopleId, from, Subject, Body, null, plist, false);
-                DbUtil.Db.SendPeopleEmail(emailQueue.Id);
+                db.SetCurrentOrgId(OrgId);
+                var emailQueue = db.CreateQueueForSupporters(p.PeopleId, from, Subject, Body, null, plist, false);
+                db.SendPeopleEmail(emailQueue.Id);
             }
             foreach (var e in elist)
             {
@@ -247,27 +253,26 @@ namespace CmsWeb.Areas.Org.Models
         private void SendNoDbEmail(Person goer, GoerSupporter gs)
         {
             var from = new MailAddress(goer.EmailAddress ?? goer.EmailAddress2, goer.Name);
-
+            var db = DbUtil.Db;
             try
             {
                 var text = Body;
-                //var aa = DbUtil.Db.DoReplacements(ref text, goer, null);
 
                 text = text.Replace("{salutation}", gs.Salutation, true);
                 text = text.Replace("{track}", "", true);
                 var qs = "OptOut/UnSubscribe/?gid=" + Util.EncryptForUrl($"{gs.Id}");
-                var url = DbUtil.Db.ServerLink(qs);
+                var url = db.ServerLink(qs);
                 var link = $@"<a href=""{url}"">Unsubscribe</a>";
                 text = text.Replace("{unsubscribe}", link, true);
                 text = text.Replace("%7Bfromemail%7D", from.Address, true);
-                var supportlink = DbUtil.Db.ServerLink($"/OnlineReg/{OrgId}?gsid={gs.Id}");
+                var supportlink = db.ServerLink($"/OnlineReg/{OrgId}?gsid={gs.Id}");
                 text = text.Replace("http://supportlink", supportlink, true);
                 text = text.Replace("https://supportlink", supportlink, true);
-                DbUtil.Db.SendEmail(from, Subject, text, Util.ToMailAddressList(gs.NoDbEmail), gs.Id);
+                db.SendEmail(from, Subject, text, Util.ToMailAddressList(gs.NoDbEmail), gs.Id);
             }
             catch (Exception ex)
             {
-                DbUtil.Db.SendEmail(from, "sent emails - error", ex.ToString(),
+                db.SendEmail(from, "sent emails - error", ex.ToString(),
                     Util.ToMailAddressList(from), gs.Id);
                 throw;
             }

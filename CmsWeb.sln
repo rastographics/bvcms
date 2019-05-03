@@ -36,6 +36,7 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UtilityExtensionsTests", "UnitTests\UtilityExtensionsTests\UtilityExtensionsTests.csproj", "{A9419D48-27BF-4DA4-B6BD-350FC8E887F4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransactionGateway", "TransactionGateway\TransactionGateway.csproj", "{BC0C6E33-DFEF-4C4E-9E96-997AF3D78BCF}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CmsDataTests", "CmsDataTests\CmsDataTests.csproj", "{9F19265D-148A-4C08-877D-1F686A802BE3}"
 EndProject
 Global

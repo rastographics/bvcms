@@ -148,7 +148,10 @@ namespace CmsWeb.Areas.Setup.Controllers
 
         [Route("~/Pushpay/Finish")]
         public ActionResult Finish()
-        { return View(); }
+        {
+            ViewBag.Host = CurrentDatabase.Host;
+            return View();
+        }
 
         [Route("~/Pushpay/OneTime/{PeopleId:int}/{OrgId:int}")]
         public ActionResult OneTime(int PeopleId, int OrgId)
@@ -322,7 +325,7 @@ namespace CmsWeb.Areas.Setup.Controllers
         private ActionResult PayAmtDueProcess(Payment payment, int transactionId)
         {
             Transaction ti = CurrentDatabase.Transactions.Where(p => p.Id == transactionId).FirstOrDefault();
-            PaymentForm pf = PaymentForm.CreatePaymentFormForBalanceDue(ti, payment.Amount.Amount, payment.Payer.emailAddress);
+            PaymentForm pf = PaymentForm.CreatePaymentFormForBalanceDue(CurrentDatabase, ti, payment.Amount.Amount, payment.Payer.emailAddress);
             int tranId = CreateTransaction(payment, pf);
             return Redirect($"/OnlineReg/ProcessExternalPayment/tra_{tranId}");
         }
