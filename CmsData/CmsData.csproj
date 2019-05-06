@@ -581,6 +581,7 @@
     <Compile Include="Extensions\PaymentInfo.cs" />
     <Compile Include="Extensions\RepairTransactionRun.cs" />
     <Compile Include="Finance\AcceptivaGateway.cs" />
+    <Compile Include="Finance\Acceptiva\Core\Helpers\TransactionStatus.cs" />
     <Compile Include="Finance\Acceptiva\Transaction\Charge\AchCharge.cs" />
     <Compile Include="Finance\Acceptiva\Core\Account.cs" />
     <Compile Include="Finance\Acceptiva\Core\Helpers\Ach.cs" />
@@ -598,7 +599,8 @@
     <Compile Include="Finance\Acceptiva\Store\StorePayerRequest.cs" />
     <Compile Include="Finance\Acceptiva\Core\Helpers\UPSStateCodes.cs" />
     <Compile Include="Finance\Acceptiva\Transaction\Charge\StoredPayerCharge.cs" />
-    <Compile Include="Finance\Acceptiva\Transaction\Get\GetTransDetailsDates.cs" />
+    <Compile Include="Finance\Acceptiva\Transaction\Get\GetReturnedEChecks.cs" />
+    <Compile Include="Finance\Acceptiva\Transaction\Get\GetSettledTransDetails.cs" />
     <Compile Include="Finance\Acceptiva\Transaction\Refund\RefundTransPartial.cs" />
     <Compile Include="Finance\Acceptiva\Transaction\TransItem.cs" />
     <Compile Include="Finance\Acceptiva\Transaction\Void\VoidResponse.cs" />

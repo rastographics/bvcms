@@ -26,7 +26,7 @@ namespace CmsData.Finance.Acceptiva.Transaction.Void
         [JsonProperty(PropertyName = "processor_response_msg_public")]
         public string ProcessorResponseMsgPublic { get; set; }
         [JsonProperty(PropertyName = "amt_processed")]
-        public double AmtProcessed { get; set; }
+        public decimal AmtProcessed { get; set; }
         [JsonProperty(PropertyName = "payer_fname")]
         public string PayerFname { get; set; }
         [JsonProperty(PropertyName = "payer_lname")]
@@ -48,7 +48,7 @@ namespace CmsData.Finance.Acceptiva.Transaction.Void
         [JsonProperty(PropertyName = "payer_email")]
         public string PayerEmail { get; set; }
         [JsonProperty(PropertyName = "payment_type")]
-        public string PaymentType { get; set; }
+        public int PaymentType { get; set; }
         [JsonProperty(PropertyName = "payer_id_str")]
         public string PayerIdStr { get; set; }
         [JsonProperty(PropertyName = "merch_acct_id_str")]

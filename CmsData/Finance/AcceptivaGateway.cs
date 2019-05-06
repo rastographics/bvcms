@@ -1,4 +1,5 @@
 ﻿using CmsData.Finance.Acceptiva.Core;
+using CmsData.Finance.Acceptiva.Core.Helpers;
 using CmsData.Finance.Acceptiva.Get;
 using CmsData.Finance.Acceptiva.Store;
 using CmsData.Finance.Acceptiva.Transaction.Charge;
@@ -218,7 +219,7 @@ namespace CmsData.Finance
 
         public BatchResponse GetBatchDetails(DateTime start, DateTime end)
         {
-            var GetTransDetails = new GetTransDetailsDates(_apiKey, start, end);
+            var GetTransDetails = new GetSettledTransDetails(_apiKey, start, end);
             var transactionsList = GetTransDetails.Execute();
 
             var batchTransactions = new List<BatchTransaction>(); 
@@ -229,7 +230,14 @@ namespace CmsData.Finance
                 {
                     TransactionId = int.Parse(item.Response.Items[0].Id),
                     Reference = item.Response.TransIdStr,
-                    
+                    BatchReference = item.Response.RequestIdStr,
+                    TransactionType = GetTransactionType(item.Response.AmtProcessed),
+                    BatchType = GetBatchType(item.Response.PaymentType),
+                    Name = $"{item.Response.PayerFname} {item.Response.PayerLname}",
+                    Amount = item.Response.AmtProcessed,
+                    Message = item.Response.TransStatusMsg,
+                    SettledDate = item.Response.TransDatetime.AddDays(1),
+                    LastDigits = item.Response.AcctLastFour
                 });                
             }
 
@@ -238,7 +246,23 @@ namespace CmsData.Finance
 
         public ReturnedChecksResponse GetReturnedChecks(DateTime start, DateTime end)
         {
-            throw new NotImplementedException();
+            var returnedChecks = new List<ReturnedCheck>();
+            var getECheckReturned = new GetReturnedEChecks(_apiKey, start, end);
+            var response = getECheckReturned.Execute();
+
+            foreach (var returnedCheck in response)
+            {
+                returnedChecks.Add(new ReturnedCheck
+                {
+                    TransactionId = returnedCheck.Response.AcctName.ToInt(),
+                    Name = returnedCheck.Response.AcctName,
+                    RejectCode = returnedCheck.Response.TransStatus.ToString(),
+                    RejectAmount = returnedCheck.Response.AmtProcessed,
+                    RejectDate = returnedCheck.Response.TransDatetime.AddDays(1)
+                });
+            }
+
+            return new ReturnedChecksResponse(returnedChecks);
         }
 
         public void CheckBatchSettlements(List<string> transactionids)
@@ -248,12 +272,12 @@ namespace CmsData.Finance
 
         public void CheckBatchSettlements(DateTime start, DateTime end)
         {
-            throw new NotImplementedException();
+            CheckBatchedTransactions.CheckBatchSettlements(db, this, start, end);
         }
 
         public string VaultId(int peopleId)
         {
-            throw new NotImplementedException();
+            return db.PaymentInfos.Single(pp => pp.PeopleId == peopleId).AcceptivaPayerId;
         }
 
         //private methods
@@ -337,6 +361,31 @@ namespace CmsData.Finance
                 Message = response.Response.Errors.FirstOrDefault()?.ErrorMsg,
                 TransactionId = response.Response.TransIdStr
             };
+        }
+
+        private BatchType GetBatchType(int paymentType)
+        {
+            switch (paymentType)
+            {
+                case 1:
+                    return BatchType.CreditCard;
+                case 2:
+                    return BatchType.Ach;
+                default:
+                    return BatchType.Unknown;
+            }
+        }
+
+        private TransactionType GetTransactionType(decimal amtProcessed)
+        {
+            if (amtProcessed>0)
+            {
+                return TransactionType.Charge;
+            }
+            else
+            {
+                return TransactionType.Refund;
+            }
         }
 
         private string GetAcceptivaPayerId(int peopleId)
