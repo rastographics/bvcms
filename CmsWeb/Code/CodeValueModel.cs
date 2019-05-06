@@ -702,15 +702,23 @@ namespace CmsWeb.Code
             return OrganizationTypes().AddNotSpecified();
         }
 
-        public IEnumerable<CodeValueItem> OrgDivTags()
+        public IEnumerable<CodeValueItem> OrgDivTags(bool WithBlank = false)
         {
-            return from t in Db.Programs
+            var q = from t in Db.Programs
                    orderby t.Name
                    select new CodeValueItem
                    {
                        Id = t.Id,
                        Value = t.Name
                    };
+            if (WithBlank)
+            {
+                return top.Union(q);
+            }
+            else
+            {
+                return q;
+            }
         }
 
         public IEnumerable<CodeValueItem> OrgSubDivTags(int ProgId)

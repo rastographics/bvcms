@@ -10,6 +10,7 @@ using System.Web;
 using CmsWeb.Areas.Reports.Models;
 using System.Web.Mvc;
 using UtilityExtensions;
+using CmsWeb.Areas.Search.Models;
 
 namespace CmsWeb.Areas.Reports.Models.Attendance
 {
@@ -18,29 +19,48 @@ namespace CmsWeb.Areas.Reports.Models.Attendance
         public DateTime StartDt { get; set; }
         public DateTime EndDt { get; set; }
         public int Type { get; set; }
+        public int Program { get; set; }
         public int Division { get; set; }
+        public string Heading { get; set; }
 
         private readonly List<int> DivisionIds;
         private readonly List<DateTime> weeks;
 
         private CMSDataContext CurrentDatabase { get; set; }
 
-        public MeetingAttendanceModel(CMSDataContext db, DateTime dt1, DateTime dt2, string type, string div)
+        public MeetingAttendanceModel(CMSDataContext db, DateTime dt1, DateTime dt2, string type, string program, string div)
         {
             CurrentDatabase = db;
             StartDt = dt1;
             EndDt = dt2;
             Type = type.ToInt();
+            Program = program.ToInt();
             Division = div.ToInt();
+
             if (Division == 0)
             {
-                var divs = new CodeValueModel().Divisions();
-                DivisionIds = divs.Select(d => d.Id).ToList();
-                DivisionIds.Add(0);
+                if (Program != 0)
+                {
+                    DivisionIds = (from d in CurrentDatabase.Divisions
+                                   where d.ProgId == Program
+                                   select d.Id).ToList();
+                    Heading = (from p in CurrentDatabase.Programs
+                               where p.Id == Program
+                               select p.Name).FirstOrDefault();
+                }
+                else
+                {
+                    DivisionIds = (from d in CurrentDatabase.Divisions
+                                   select d.Id).ToList();
+                    DivisionIds.Add(0);
+                }
             }
             else
             {
                 DivisionIds = new List<int>() { Division };
+                Heading = (from d in CurrentDatabase.Divisions
+                           where d.Id == Division
+                           select d.Name).FirstOrDefault();
             }
             weeks = CurrentDatabase.SundayDates(StartDt, EndDt).Select(w => w.Dt.Value).ToList();
             if (weeks.Count > 0 && weeks[0] >= StartDt) {
@@ -58,10 +78,16 @@ namespace CmsWeb.Areas.Reports.Models.Attendance
                 "Id", "Value", Type);
         }
 
+        public SelectList Programs()
+        {
+            return new SelectList(new CodeValueModel().OrgDivTags(true),
+                "Id", "Value", Program);
+        }
+
         public SelectList Divisions()
         {
-            return new SelectList(new CodeValueModel().Divisions(),
-                "Id", "Value", Division);
+            return new SelectList(OrgSearchModel.DivisionIds(Program),
+                "Value", "Text", Division);
         }
 
         public class ColInfo
