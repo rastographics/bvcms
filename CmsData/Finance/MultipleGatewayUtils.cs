@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using UtilityExtensions;
 
 namespace CmsData
@@ -65,6 +66,27 @@ namespace CmsData
         {
             var User = db.Users.SingleOrDefault(us => us.UserId == Util.UserId);
             return User.Roles.Contains("Developer") ? Setting("GatewayTesting", (int)processType) : false;
+        }
+
+        public PaymentProcessTypes? ProcessByTransactionDescription(string Description)
+        {
+            Regex _rx = new Regex("\\s+[(][0-9]+[)]");
+            Match _mt = _rx.Match(Description);
+            if (_mt.Success)
+            {
+                Description = Description.Replace(_mt.Value, "");
+            }
+
+            int? RegistrationTypeId = db.Organizations.Where(x => x.OrganizationName == Description).Select(x => x.RegistrationTypeId).FirstOrDefault();
+
+            switch (RegistrationTypeId)
+            {
+                case null:
+                case 8:
+                    return PaymentProcessTypes.OneTimeGiving;
+                default:
+                    return PaymentProcessTypes.OnlineRegistration;
+            }
         }
     }
 }

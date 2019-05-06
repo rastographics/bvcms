@@ -383,24 +383,28 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private static void ClearMaskedNumbers(PaymentForm pf, PaymentInfo pi)
         {
-            var gateway = pf.CurrentDatabase.Setting("TransactionGateway", "");
+            int? GatewayId = new MultipleGatewayUtils(DbUtil.Db).GatewayId(pf.ProcessType);
 
             var clearBankDetails = false;
             var clearCreditCardDetails = false;
 
-            switch (gateway.ToLower())
+            switch (GatewayId)
             {
-                case "sage":
+                case (int)GatewayTypes.Sage:
                     clearBankDetails = !pi.SageBankGuid.HasValue;
                     clearCreditCardDetails = !pi.SageCardGuid.HasValue;
                     break;
-                case "transnational":
+                case (int)GatewayTypes.Transnational:
                     clearBankDetails = !pi.TbnBankVaultId.HasValue;
                     clearCreditCardDetails = !pi.TbnCardVaultId.HasValue;
                     break;
-                case "authorizenet":
+                // case (int)GatewayTypes.Acceptiva:
+                // return new AcceptivaGateway(this, testing, ProcessType);
+                case (int)GatewayTypes.AuthorizeNet:
                     clearBankDetails = !pi.AuNetCustPayBankId.HasValue;
                     clearCreditCardDetails = !pi.AuNetCustPayId.HasValue;
+                    break;
+                default:
                     break;
             }
 
@@ -563,7 +567,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 return;
             }
 
-            var gateway = CurrentDatabase.Gateway(testing);
+            var gateway = CurrentDatabase.Gateway(testing, ProcessType);
 
             // we need to perform a $1 auth if this is a brand new credit card that we are going to store it in the vault.
             // otherwise we skip doing an auth just call store in vault just like normal.
