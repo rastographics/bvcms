@@ -6,7 +6,7 @@
 }
 <div class="report box box-responsive">
     <div class="box-content">
-        <div class="well hidden-print" style="max-width: 770px; margin: auto;">
+        <div class="well hidden-print" style="max-width: 980px; margin: auto;">
             <div class="row">
                 @using (Html.BeginForm("MeetingAttendance", "Reports", FormMethod.Get))
                 {
@@ -24,11 +24,15 @@
                             @Html.Hidden("EndDtIso", Model.EndDt.ToString("yyyy-MM-dd"), new { disabled = "disabled" })
                         </div>
                     </div>
-                    <div class="col-sm-6">
+                    <div class="col-sm-3">
                         <label for="Type" class="control-label">Type</label>
+                        @Html.DropDownListFor(vm => vm.Type, Model.Types(), new { @class = "form-control" })
+                    </div>
+                    <div class="col-sm-3">
+                        <label for="Division" class="control-label">Division</label>
                         <div class="form-inline">
-                            <div class="input-group col-sm-6">
-                                @Html.DropDownListFor(vm => vm.Type, Model.Types(), new { @class = "form-control" })
+                            <div class="input-group col-sm-8">
+                                @Html.DropDownListFor(vm => vm.Division, Model.Divisions(), new { @class = "form-control" })
                             </div>
                             <div class="input-group">
                                 <button type="submit" class="btn btn-primary">Run</button>
@@ -42,8 +46,10 @@
             <strong>Start Date:</strong> @Model.StartDt.ToShortDateString()<br />
             <strong>End Date:</strong> @Model.EndDt.ToShortDateString()
         </div>
-        @foreach (var p in Model.FetchInfo())
+        @if (Model.Type != 0)
         {
+            foreach (var p in Model.FetchInfo())
+            {
             <div>
                 <h3>@p.Name</h3>
                 <div class="table-responsive">
@@ -75,6 +81,11 @@
                             <td colspan="@blankcols"></td>
                         </tr>
                         <tr class="totals-row">
+                            <td class="text-left">Total Individuals</td>
+                            <td class="text-right">@tta.UniquePeople.ToString("n0")</td>
+                            <td colspan="@blankcols"></td>
+                        </tr>
+                        <tr class="totals-row">
                             <td class="text-left">Total Attendance</td>
                             <td class="text-right">@tta.TotalPeople.ToString("n0")</td>
                             <td colspan="@blankcols"></td>
@@ -82,8 +93,47 @@
                     </table>
                 </div>
             </div>
-            <br />
-            <br />
+            }
+        }
+        else
+        {
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Meetings</th>
+                        <th>Individuals</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ int totalmeetings = 0; int totalpeople = 0;}
+                    @foreach (var p in Model.FetchInfo())
+                    {
+                        var tta = p.Total();
+                        totalmeetings += tta.TotalMeetings;
+                        totalpeople += tta.UniquePeople;
+                        <tr>
+                            <td>
+                                @p.Name
+                            </td>
+                            <td class="text-right">
+                                <a href="?StartDt=@WebUtility.UrlEncode(Model.StartDt.ToShortDateString())&EndDt=@WebUtility.UrlEncode(Model.EndDt.ToShortDateString())&Type=@p.Id&Division=@Model.Division.ToString()">
+                                    @tta.TotalMeetings.ToString("n0")
+                                </a>
+                            </td>
+                            <td class="text-right">
+                                @tta.UniquePeople.ToString("n0")
+                            </td>
+                        </tr>
+                    }
+                    <tr class="totals-row">
+                        <td class="text-left">Total</td>
+                        <td class="text-right">@totalmeetings.ToString("n0")</td>
+                        <td class="text-right">@totalpeople.ToString("n0")</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
         }
     </div>
-</div>

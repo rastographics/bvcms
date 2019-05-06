@@ -152,6 +152,25 @@ namespace CmsWeb.Code
             }.Union(q);
         }
 
+        public IEnumerable<CodeValueItem> Divisions()
+        {
+            var q = from div in Db.Divisions
+                    orderby div.Name
+                    select new CodeValueItem
+                    {
+                        Id = div.Id,
+                        Value = $"{div.Name}"
+                    };
+            return new[]
+            {
+                new CodeValueItem
+                {
+                    Value = "(not specified)",
+                    Id = 0
+                }
+            }.Union(q);
+        }
+
         public IEnumerable<CodeValueItem> AttendanceTypeCodes()
         {
             return from c in Db.AttendTypes
