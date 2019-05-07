@@ -17,7 +17,6 @@ namespace CmsData.Finance.Acceptiva.Transaction.Charge
             Data["params[0][items][0][amt]"] = amount.ToString();
             Data["params[0][payment_type]"] = paymentType.ToString();
             Data["params[0][merch_acct_id_str]"] = merchAcctId;
-            Data["params[0][client_trans_id]"] = orderId.ToString();
             Data["params[0][payer_email]"] = payer.Email;
             Data["params[0][payer_fname]"] = payer.FirstName;
             Data["params[0][payer_lname]"] = payer.LastName;
