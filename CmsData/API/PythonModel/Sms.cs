@@ -22,7 +22,7 @@ namespace CmsData
             {
                 throw new Exception($"The message length was {sMessage.Length} but cannot be over 1600.");
             }
-            TwilioHelper.QueueSms(query, iSendGroup, sTitle, sMessage);
+            TwilioHelper.QueueSms(db, query, iSendGroup, sTitle, sMessage);
         }
     }
 }

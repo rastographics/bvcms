@@ -533,9 +533,9 @@ namespace CmsData
                 StatusId = TaskStatusCode.Active,
             };
             hh.TasksAboutPerson.Add(t);
-            if (Util.Host.HasValue())
+            if (db.Host.HasValue())
             {
-                var gcm = new GCMHelper(Util.Host, DbUtil.Db);
+                var gcm = new GCMHelper(db.Host, db);
                 gcm.sendRefresh(assignTo, GCMHelper.ACTION_REFRESH);
             }
             return t;

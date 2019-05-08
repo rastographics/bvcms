@@ -155,7 +155,9 @@ namespace CmsWeb.Models
                             ContributionStatusId = 0,
                             ContributionTypeId = ContributionTypeCode.Pledge,
                             ContributionAmount = pledge.Amount,
-                            PeopleId = pid
+                            PeopleId = pid,
+                            CheckNo = pledge.CheckNo,
+                            ContributionDesc = pledge.GiftDescription
                         }
                     };
                     bh.BundleDetails.Add(bd);
@@ -243,7 +245,8 @@ namespace CmsWeb.Models
                             ContributionTypeId = ContributionTypeCode.CheckCash,
                             ContributionAmount = gift.Amount,
                             CheckNo = gift.CheckNo,
-                            PeopleId = pid
+                            PeopleId = pid,
+                            ContributionDesc = gift.GiftDescription
                         }
                     };
                     bh.BundleDetails.Add(bd);
@@ -303,11 +306,15 @@ namespace CmsWeb.Models
                     Date = GetDate(ws.Cells[r, Names["Date"]].Value) ?? DateTime.MinValue,
                     FundId = GetInt(ws.Cells[r, Names["FundId"]].Value) ?? 0,
                     FundDescription = GetString(ws.Cells[r, Names["FundDescription"]].Value),
-                    FundName = GetString(ws.Cells[r, Names["FundName"]].Value)
+                    FundName = GetString(ws.Cells[r, Names["FundName"]].Value),                    
                 };
                 if (Names.ContainsKey("CheckNo"))
                 {
                     row.CheckNo = GetString(ws.Cells[r, Names["CheckNo"]].Value);
+                }
+                if (Names.ContainsKey("Description"))
+                {
+                    row.GiftDescription = GetString(ws.Cells[r, Names["Description"]].Value);
                 }
 
                 r++;
@@ -350,7 +357,7 @@ namespace CmsWeb.Models
                 return;
             }
 
-            //var db = DbUtil.Create(Host);
+            //var db = CMSDataContext.Create(Host);
             if (!JobDbContext.Setting("UploadExcelIpsDeleteGifts"))
             {
                 return;
@@ -406,5 +413,6 @@ DBCC CHECKIDENT ('[BundleDetail]', RESEED, 0)
         public int FundId { get; set; }
         public string FundDescription { get; set; }
         public string CheckNo { get; set; }
+        public string GiftDescription { get; set; }
     }
 }

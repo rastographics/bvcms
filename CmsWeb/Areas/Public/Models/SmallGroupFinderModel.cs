@@ -71,7 +71,7 @@ namespace CmsWeb.Areas.Public.Models
 
         public void load(string sName)
         {
-            var xml = DbUtil.Content("SGF-" + sName + ".xml", "");
+            var xml = DbUtil.Content(DbUtil.Db, "SGF-" + sName + ".xml", "");
 
             var xs = new XmlSerializer(typeof(SmallGroupFinder), new XmlRootAttribute("SGF"));
             var sr = new StringReader(xml);
@@ -83,9 +83,9 @@ namespace CmsWeb.Areas.Public.Models
                 _divList.Add(Convert.ToInt32(div));
             }
 
-            _shell = DbUtil.Content(_sgf.shell, "");
-            _template = DbUtil.Content(_sgf.layout, "");
-            _gutter = DbUtil.Content(_sgf.gutter, "");
+            _shell = DbUtil.Content(DbUtil.Db, _sgf.shell, "");
+            _template = DbUtil.Content(DbUtil.Db, _sgf.layout, "");
+            _gutter = DbUtil.Content(DbUtil.Db, _sgf.gutter, "");
         }
 
         public bool hasShell()

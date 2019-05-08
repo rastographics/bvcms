@@ -73,6 +73,13 @@ namespace CmsWeb.Areas.Main.Models
             }
         }
 
+        public bool PromptBeforeSend
+        {
+            get
+            {
+                return DbUtil.Db.Setting("EmailPromptBeforeSend");
+            }
+        }
 
         public string Host { get; set; }
 

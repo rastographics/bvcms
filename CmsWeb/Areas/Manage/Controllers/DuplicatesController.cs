@@ -51,8 +51,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         {
             var fdt = fromDate.ToDate();
             DateTime tdt = toDate.ToDate() ?? DateTime.Now;
-            string connStr = Util.ConnectionString;
-            string host = Util.Host;
+            string host = CurrentDatabase.Host;
             var runningtotals = new DuplicatesRun
             {
                 Started = DateTime.Now,
@@ -65,7 +64,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 
             HostingEnvironment.QueueBackgroundWorkItem(ct =>
             {
-                var db = CMSDataContext.Create(connStr, host);
+                var db = CMSDataContext.Create(host);
                 var rt = db.DuplicatesRuns.OrderByDescending(mm => mm.Id).First();
                 db.ExecuteCommand("delete duplicate");
                 var q = from p in db.People

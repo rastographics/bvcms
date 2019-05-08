@@ -7,13 +7,13 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using UtilityExtensions;
-using DbUtil = CmsData.DbUtil;
-using Image = ImageData.Image;
+using ImageData;
 
 namespace CmsWeb.Models
 {
     public class OrgContentInfo
     {
+        public CMSDataContext CurrentDatabase { get; set; }
         public int OrgId { get; set; }
         public string error { get; set; }
         public string OrgName { get; set; }
@@ -40,7 +40,7 @@ namespace CmsWeb.Models
                     return "<h2>" + OrgName + "</h2>";
                 }
 
-                var s = Image.Content(oc.ImageId ?? 0);
+                var s = ImageData.Image.Content(oc.ImageId ?? 0);
                 return html = s;
             }
             set
@@ -48,31 +48,34 @@ namespace CmsWeb.Models
                 if (oc == null)
                 {
                     oc = new OrgContent { OrgId = OrgId, Landing = true };
-                    DbUtil.Db.OrgContents.InsertOnSubmit(oc);
+                    CurrentDatabase.OrgContents.InsertOnSubmit(oc);
                 }
-                var i = ImageData.DbUtil.Db.Images.SingleOrDefault(ii => ii.Id == oc.ImageId);
+                var imageDb = CMSImageDataContext.Create(CurrentDatabase.Host);
+                var i = imageDb.Images.SingleOrDefault(ii => ii.Id == oc.ImageId);
                 if (i != null)
                 {
                     i.SetText(value);
                 }
                 else
                 {
-                    oc.ImageId = Image.NewTextFromString(value).Id;
+                    oc.ImageId = ImageData.Image.NewTextFromString(value).Id;
                 }
 
-                DbUtil.Db.SubmitChanges();
+                imageDb.SubmitChanges();
+
+                CurrentDatabase.SubmitChanges();
             }
         }
 
-        public bool HideBanner => Html?.Contains("<span class=\"hide-banner\"/>") ?? false;
+        public bool HideBanner => Html?.Contains("<span class=\"hide-banner\"") ?? false;
 
-        public Image image
+        public ImageData.Image image
         {
             get
             {
                 if (oc == null || !IsMember)
                 {
-                    var i = new Image();
+                    var i = new ImageData.Image();
                     var bmp = new Bitmap(200, 200, PixelFormat.Format24bppRgb);
                     var g = Graphics.FromImage(bmp);
                     g.Clear(Color.Bisque);
@@ -83,18 +86,19 @@ namespace CmsWeb.Models
                     i.Bits = ms.ToArray();
                     return i;
                 }
-                return ImageData.DbUtil.Db.Images.SingleOrDefault(ii => ii.Id == oc.ImageId);
+                var imageDb = CMSImageDataContext.Create(CurrentDatabase.Host);
+                return imageDb.Images.SingleOrDefault(ii => ii.Id == oc.ImageId);
             }
         }
 
         public string Results { get; set; }
 
-        public static OrgContentInfo Get(int id)
+        public static OrgContentInfo Get(CMSDataContext db, int id)
         {
-            var q = from oo in DbUtil.Db.Organizations
+            var q = from oo in db.Organizations
                     where oo.OrganizationId == id
                     let om = oo.OrganizationMembers.SingleOrDefault(mm => mm.PeopleId == Util.UserPeopleId)
-                    let oc = DbUtil.Db.OrgContents.SingleOrDefault(cc => cc.OrgId == id && cc.Landing == true)
+                    let oc = db.OrgContents.SingleOrDefault(cc => cc.OrgId == id && cc.Landing == true)
                     let memberLeaderType = om.MemberType.AttendanceTypeId
                     select new OrgContentInfo
                     {
@@ -107,9 +111,13 @@ namespace CmsWeb.Models
                         NotAuthenticated = !Util.UserPeopleId.HasValue
                     };
             var o = q.SingleOrDefault();
+            if (o != null)
+            {
+                o.CurrentDatabase = db;
+            }
             if (o != null && !o.IsMember)
             {
-                var oids = DbUtil.Db.GetLeaderOrgIds(Util.UserPeopleId);
+                var oids = db.GetLeaderOrgIds(Util.UserPeopleId);
                 if (!oids.Contains(o.OrgId))
                 {
                     return o;
@@ -122,10 +130,10 @@ namespace CmsWeb.Models
             return o;
         }
 
-        public static OrgContentInfo GetOc(int id)
+        public static OrgContentInfo GetOc(CMSDataContext db, int id)
         {
-            var q = from oo in DbUtil.Db.Organizations
-                    let oc = DbUtil.Db.OrgContents.SingleOrDefault(cc => cc.Id == id)
+            var q = from oo in db.Organizations
+                    let oc = db.OrgContents.SingleOrDefault(cc => cc.Id == id)
                     where oo.OrganizationId == oc.OrgId
                     let om = oo.OrganizationMembers.SingleOrDefault(mm => mm.PeopleId == Util.UserPeopleId)
                     let memberLeaderType = om.MemberType.AttendanceTypeId
@@ -140,9 +148,13 @@ namespace CmsWeb.Models
                         NotAuthenticated = !Util.UserPeopleId.HasValue
                     };
             var o = q.SingleOrDefault();
+            if (o != null)
+            {
+                o.CurrentDatabase = db;
+            }
             if (o != null && !o.IsMember)
             {
-                var oids = DbUtil.Db.GetLeaderOrgIds(Util.UserPeopleId);
+                var oids = db.GetLeaderOrgIds(Util.UserPeopleId);
                 if (!oids.Contains(o.OrgId))
                 {
                     return o;
@@ -157,7 +169,7 @@ namespace CmsWeb.Models
 
         public IEnumerable<MemberInfo> GetMemberList()
         {
-            return (from om in DbUtil.Db.OrganizationMembers
+            return (from om in CurrentDatabase.OrganizationMembers
                     where om.OrganizationId == OrgId
                     where
                         om.MemberTypeId != MemberTypeCode.Prospect &&
@@ -179,21 +191,21 @@ namespace CmsWeb.Models
             public int PeopleId { get; set; }
         }
 
-        public bool TryRunPython(int pid)
+        public bool TryRunPython(CMSDataContext db, int pid)
         {
-            var ev = Organization.GetExtra(DbUtil.Db, OrgId, "OrgMembersPageScript");
+            var ev = Organization.GetExtra(db, OrgId, "OrgMembersPageScript");
             if (!ev.HasValue())
             {
                 return false;
             }
 
-            var script = DbUtil.Db.ContentOfTypePythonScript(ev);
+            var script = db.ContentOfTypePythonScript(ev);
             if (!script.HasValue())
             {
                 return false;
             }
 
-            var pe = new PythonModel(Util.Host);
+            var pe = new PythonModel(db.Host);
             pe.Data.OrgId = OrgId;
             pe.Data.PeopleId = pid;
             Results = pe.RunScript(script);

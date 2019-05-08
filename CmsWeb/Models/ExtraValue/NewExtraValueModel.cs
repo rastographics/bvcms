@@ -455,7 +455,7 @@ Option 2
             var list = DbUtil.Db.PeopleQuery(QueryId).Select(pp => pp.PeopleId).ToList();
             if (ClearOldValuesFirst)
             {
-                using (var db = DbUtil.Create(DbUtil.Db.Host))
+                using (var db = CMSDataContext.Create(DbUtil.Db.Host))
                 {
                     var q = DbUtil.Db.PeopleQuery(QueryId).Select(pp => pp.PeopleId);
                     var tag = DbUtil.Db.PopulateTemporaryTag(q);

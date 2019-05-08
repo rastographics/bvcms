@@ -1,9 +1,11 @@
 using CmsData;
+using CmsWeb.Areas.Manage.Controllers;
 using CmsWeb.Lifecycle;
 using CmsWeb.Models;
 using Dapper;
 using System;
 using System.Data.SqlClient;
+using System.Dynamic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -88,8 +90,6 @@ namespace CmsWeb.Controllers
                 return Content("no content");
             }
 
-            var cn = CurrentDatabase.ReadonlyConnection();
-            cn.Open();
             var d = Request.QueryString.AllKeys.ToDictionary(key => key, key => Request.QueryString[key]);
             var p = new DynamicParameters();
             foreach (var kv in d)
@@ -112,9 +112,17 @@ namespace CmsWeb.Controllers
                 return View("RunScriptPageBreaks");
             }
             ViewBag.Url = Request.Url?.PathAndQuery;
-            var rd = cn.ExecuteReader(script, p, commandTimeout: 1200);
-            ViewBag.ExcelUrl = Request.Url?.AbsoluteUri.Replace("RunScript/", "RunScriptExcel/");
-            return View(rd);
+
+            string html;
+
+            using (var cn = CurrentDatabase.ReadonlyConnection())
+            {
+                cn.Open();
+                var rd = cn.ExecuteReader(script, p, commandTimeout: 1200);
+                ViewBag.ExcelUrl = Request.Url?.AbsoluteUri.Replace("RunScript/", "RunScriptExcel/");
+                html = GridResult.Table(rd, ViewBag.Name2);
+            }
+            return View(new HtmlHolder { html = html });
         }
 
         [HttpGet, Route("~/RunScriptExcel/{scriptname}/{parameter?}")]

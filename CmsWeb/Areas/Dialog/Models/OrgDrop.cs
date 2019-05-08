@@ -83,7 +83,7 @@ namespace CmsWeb.Areas.Dialog.Models
 
         private static void DoWork(OrgDrop model)
         {
-            var db = DbUtil.Create(model.Host);
+            var db = CMSDataContext.Create(model.Host);
             var cul = db.Setting("Culture", "en-US");
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
@@ -92,7 +92,7 @@ namespace CmsWeb.Areas.Dialog.Models
             foreach (var pid in model.Pids)
             {
                 //DbUtil.Db.Dispose();
-                //db = DbUtil.Create(model.Host);
+                //db = CMSDataContext.Create(model.Host);
                 var om = db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == model.filter.Id);
                 if (model.DropDate.HasValue)
                 {

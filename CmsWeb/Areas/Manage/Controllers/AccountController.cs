@@ -211,7 +211,6 @@ namespace CmsWeb.Areas.Manage.Controllers
         [HttpPost, MyRequireHttps]
         public ActionResult LogOn(AccountInfo m)
         {
-            var db = CurrentDatabase;
             Session.Remove("IsNonFinanceImpersonator");
             TryLoadAlternateShell();
             if (m.ReturnUrl.HasValue())
@@ -228,7 +227,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                 return View(m);
             }
 
-            var ret = AccountModel.AuthenticateLogon(m.UsernameOrEmail, m.Password, Session, Request);
+            var ret = AccountModel.AuthenticateLogon(m.UsernameOrEmail, m.Password, Session, Request, CurrentDatabase);
             if (ret is string)
             {
                 ViewBag.error = ret.ToString();
@@ -264,7 +263,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 
             if (!m.ReturnUrl.HasValue())
             {
-                if (!CMSRoleProvider.provider.IsUserInRole(user.Username, "Access", db))
+                if (!CMSRoleProvider.provider.IsUserInRole(user.Username, "Access", CurrentDatabase))
                 {
                     return Redirect("/Person2/" + Util.UserPeopleId);
                 }
@@ -493,19 +492,26 @@ namespace CmsWeb.Areas.Manage.Controllers
             }
 
             var mu = CMSMembershipProvider.provider.GetUser(User.Identity.Name, false);
-            mu.UnlockUser();
-            try
+            if (mu == null)
             {
-                if (mu.ChangePassword(mu.ResetPassword(), newPassword))
-                {
-                    return RedirectToAction("ChangePasswordSuccess");
-                }
-
-                ModelState.AddModelError("form", "The current password is incorrect or the new password is invalid.");
+                ModelState.AddModelError("form", $"User '{User.Identity.Name}' not found");
             }
-            catch (Exception ex)
+            else
             {
-                ModelState.AddModelError("form", ex.Message);
+                mu.UnlockUser();
+                try
+                {
+                    if (mu.ChangePassword(mu.ResetPassword(), newPassword))
+                    {
+                        return RedirectToAction("ChangePasswordSuccess");
+                    }
+
+                    ModelState.AddModelError("form", "The current password is incorrect or the new password is invalid.");
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("form", ex.Message);
+                }
             }
             return View();
         }

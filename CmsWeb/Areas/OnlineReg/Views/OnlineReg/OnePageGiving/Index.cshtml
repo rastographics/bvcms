@@ -16,6 +16,7 @@
     var useRecaptcha = db.Setting("UseRecaptcha");
     var useRecaptchaClass = useRecaptcha ? "recaptcha" : null;
     var disableAdditionalFunds = Model.OnlineRegPersonModel.org.GetExtra(db, "DisableFundsDropdown") == "true";
+    var funds = OnlineRegPersonModel.FullFundList(db);
 }
 @section head{
     @Fingerprint.Css("/Content/touchpoint/lib/select2/css/select2.css")
@@ -144,7 +145,6 @@
         </div>
         @{
             var amtError = Html.ErrorMessage("AmtToPay");
-            var funds = OnlineRegPersonModel.FullFundList();
             var funame = "FundItem";
             decimal? tot = 0;
         }

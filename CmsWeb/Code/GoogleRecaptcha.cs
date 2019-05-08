@@ -14,7 +14,6 @@ namespace CmsWeb.Code
     {
         public static bool IsValidResponse(HttpContextBase httpContext, CMSDataContext db)
         {
-            //var db = DbUtil.Create(httpContext.Request.Url.Authority.SplitStr(".:")[0]);
             var secret = db.Setting("GoogleReCaptchaSecretKey", ConfigurationManager.AppSettings["GoogleReCaptchaSecretKey"]);
             var siteVerifyUrl = "https://www.google.com/recaptcha/api/siteverify";
             var remoteIpAddress = httpContext.Request.UserHostAddress;

@@ -958,7 +958,6 @@
     <Compile Include="DbUtil\ITableWithExtraValues.cs" />
     <Content Include="App_Readme\Elmah.txt" />
     <Content Include="Migrations\20181022-3_create_Contributions2SearchIds.sql" />
-    <Content Include="Migrations\20190326_fix_mission_trip_supports.sql" />
     <Content Include="Migrations\20190508_Add_PaymentInfo_AcceptivaPayerId_Column.sql" />
     <Compile Include="Organization\OrgFilter.cs" />
     <Compile Include="Organization\OrgPerson.cs" />
@@ -1364,6 +1363,7 @@
     <Content Include="Migrations\20190107_meetingcategory.sql" />
     <Content Include="Migrations\20190118_alter_donors_function_for_spouse_legal_name.sql" />
     <Content Include="Migrations\20190117_pushpay_schema_updates.sql" />
+    <Content Include="Migrations\20190415_create_FamilyGiverFunds_func.sql" />
     <Content Include="QueryBuilder\CompareMap.xml">
       <SubType>Designer</SubType>
     </Content>

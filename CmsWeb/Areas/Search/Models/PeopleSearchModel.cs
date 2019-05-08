@@ -596,7 +596,7 @@ or just Last or *First*`space` for first name match only.
             first = first.Trim();
             last = last.Trim();
             var fone = Util.GetDigits(phone);
-            var ctx = DbUtil.Create(Util.Host);
+            var ctx = CMSDataContext.Create(Util.Host);
             ctx.SetNoLock();
             var q = from p in ctx.People
                     where (p.FirstName == first || p.NickName == first || p.MiddleName == first)

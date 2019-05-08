@@ -11,7 +11,10 @@ namespace CmsData
     {
         public string NameFilter
         {
-            get { return $"{FirstName} {LastName}"; }
+            get
+            { 
+                return $"{FirstName} {LastName}".Trim();
+            }
             set
             {
                 string first, last;

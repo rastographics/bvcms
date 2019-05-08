@@ -20,19 +20,19 @@ namespace CmsData.Classes.Twilio
 {
     public class TwilioHelper
     {
-        public static void QueueSms(object query, int iSendGroupID, string sTitle, string sMessage)
+        public static void QueueSms(CMSDataContext db, object query, int iSendGroupID, string sTitle, string sMessage)
         {
-            var q = DbUtil.Db.PeopleQuery2(query);
-            QueueSms(q, iSendGroupID, sTitle, sMessage);
+            var q = db.PeopleQuery2(query);
+            QueueSms(db, q, iSendGroupID, sTitle, sMessage);
         }
 
-        public static void QueueSms(Guid iQBID, int iSendGroupID, string sTitle, string sMessage)
+        public static void QueueSms(CMSDataContext db, Guid iQBID, int iSendGroupID, string sTitle, string sMessage)
         {
-            var q = DbUtil.Db.PeopleQuery(iQBID);
-            QueueSms(q, iSendGroupID, sTitle, sMessage);
+            var q = db.PeopleQuery(iQBID);
+            QueueSms(db, q, iSendGroupID, sTitle, sMessage);
         }
 
-        public static void QueueSms(IQueryable<Person> q, int iSendGroupID, string sTitle, string sMessage)
+        public static void QueueSms(CMSDataContext db, IQueryable<Person> q, int iSendGroupID, string sTitle, string sMessage)
         {
             // Create new SMS send list
             var list = new SMSList();
@@ -44,8 +44,8 @@ namespace CmsData.Classes.Twilio
             list.Title = sTitle;
             list.Message = sMessage;
 
-            DbUtil.Db.SMSLists.InsertOnSubmit(list);
-            DbUtil.Db.SubmitChanges();
+            db.SMSLists.InsertOnSubmit(list);
+            db.SubmitChanges();
 
             // Load all people but tell why they can or can't be sent to
 
@@ -71,10 +71,10 @@ namespace CmsData.Classes.Twilio
                     item.NoOptIn = true;
                 }
 
-                DbUtil.Db.SMSItems.InsertOnSubmit(item);
+                db.SMSItems.InsertOnSubmit(item);
             }
 
-            DbUtil.Db.SubmitChanges();
+            db.SubmitChanges();
 
             // Check for how many people have cell numbers and want to receive texts
             var qSMS = from p in q
@@ -88,9 +88,9 @@ namespace CmsData.Classes.Twilio
             list.SentSMS = countSMS;
             list.SentNone = q.Count() - countSMS;
 
-            DbUtil.Db.SubmitChanges();
+            db.SubmitChanges();
 
-            ExecuteCmsTwilio(list.Id);
+            ExecuteCmsTwilio(list.Id, db.Host);
         }
 
         public static bool IsConfigured(CMSDataContext db)
@@ -139,13 +139,13 @@ namespace CmsData.Classes.Twilio
             return success;
         }
 
-        private static void ExecuteCmsTwilio(int listID)
+        private static void ExecuteCmsTwilio(int listID, string host)
         {
             string cmstwilio = HttpContextFactory.Current.Server.MapPath("~/bin/cmstwilio.exe");
             Process.Start(new ProcessStartInfo
             {
                 FileName = cmstwilio,
-                Arguments = $"{listID} --host {Util.Host}",
+                Arguments = $"{listID} --host {host}",
                 CreateNoWindow = true,
                 UseShellExecute = false,
                 WorkingDirectory = Path.GetDirectoryName(cmstwilio)
@@ -154,7 +154,7 @@ namespace CmsData.Classes.Twilio
 
         public static void ProcessQueue(int iListID, string sHost)
         {
-            var db = DbUtil.Create(sHost);
+            var db = CMSDataContext.Create(sHost);
             var sSID = GetSid(db);
             var sToken = GetToken(db);
 

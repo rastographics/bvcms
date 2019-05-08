@@ -20,10 +20,10 @@ namespace CmsData.Classes.RoleChecker
                         return doc;
                     }
 
-                    var s = DbUtil.Content(CustomAccessRolesKey, "");
+                    var s = DbUtil.Content(DbUtil.Db, CustomAccessRolesKey, "");
                     doc = s.HasValue()
-                        ? XDocument.Load(new StringReader(DbUtil.Content(CustomAccessRolesKey, "")))
-                        : new XDocument(); // avoid expensive catch when there there really is no error because document is empty
+                        ? XDocument.Load(new StringReader(s))
+                        : new XDocument(); //TODO: try to remove catch when there really is no error because document is empty
                     HttpContextFactory.Current.Items[CustomAccessRolesKey] = doc;
                     return doc;
                 }
