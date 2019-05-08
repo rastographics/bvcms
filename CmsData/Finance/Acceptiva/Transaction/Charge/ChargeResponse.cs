@@ -1,16 +1,10 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
+﻿using CmsData.Finance.Acceptiva.Core;
+using Newtonsoft.Json;
 
-namespace CmsData.Finance.Acceptiva.Core
+namespace CmsData.Finance.Acceptiva.Transaction.Charge
 {
-    internal class ChargeResponse
+    internal class ChargeResponse : Response
     {
-        [JsonProperty(PropertyName = "status")]
-        public string Status { get; set; }
-        [JsonProperty(PropertyName = "errors")]
-        public List<object> Errors { get; set; }
-        [JsonProperty(PropertyName = "request_id_str")]
-        public string RequestIdStr { get; set; }
         [JsonProperty(PropertyName = "trans_id_str")]
         public string TransIdStr { get; set; }
         [JsonProperty(PropertyName = "trans_recur_id_str")]

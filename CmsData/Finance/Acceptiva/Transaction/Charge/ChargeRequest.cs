@@ -1,23 +1,22 @@
-﻿using Newtonsoft.Json;
+﻿using CmsData.Finance.Acceptiva.Core;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace CmsData.Finance.Acceptiva.Core
+namespace CmsData.Finance.Acceptiva.Transaction.Charge
 {
     internal class ChargeRequest : AcceptivaRequest
     {
-        private const string URL = "https://sandbox.acceptivapro.com/api/api_request.php";
         private const string action = "charge";
 
         protected ChargeRequest(string apiKey, string merchAcctId, int paymentType, decimal amount, string orderId,
-            string orderDescription, string peopleId, Payer payer)
-            : base(URL, apiKey, action)
+            string orderDescription, Payer payer)
+            : base(apiKey, action)
         {
             Data["params[0][items][0][id]"] = orderId.ToString();
             Data["params[0][items][0][desc]"] = orderDescription.ToString();
             Data["params[0][items][0][amt]"] = amount.ToString();
             Data["params[0][payment_type]"] = paymentType.ToString();
             Data["params[0][merch_acct_id_str]"] = merchAcctId;
-            Data["params[0][client_payer_id]"] = peopleId;
             Data["params[0][client_trans_id]"] = orderId.ToString();
             Data["params[0][payer_email]"] = payer.Email;
             Data["params[0][payer_fname]"] = payer.FirstName;

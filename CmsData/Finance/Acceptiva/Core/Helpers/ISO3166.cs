@@ -6,20 +6,19 @@ namespace CmsData.Finance.Acceptiva.Core
     public static class ISO3166
     {
         /// <summary>
-        /// Obtain ISO3166-1 Country based on its alpha3 code.
+        /// Obtain ISO3166-1 Alpha3 Code based on its country name.
         /// </summary>
-        /// <param name="alpha3"></param>
+        /// <param name="countryName"></param>
         /// <returns></returns>
-        public static ISO3166Country FromName(string countryName)
+        public static string Alpha3FromName(string countryName)
         {
             Collection<ISO3166Country> collection = BuildCollection();
-            return collection.FirstOrDefault(p => p.Name == countryName);
+            return collection.FirstOrDefault(p => p.Name == countryName)?.Alpha3;
         }
 
         #region Build Collection
         private static Collection<ISO3166Country> BuildCollection()
-        {
-            // This collection built from Wikipedia entry on ISO3166-1 on 9th Feb 2016
+        {            
             Collection<ISO3166Country> collection = new Collection<ISO3166Country>(){
             new ISO3166Country("Afghanistan", "AF", "AFG", 4),
             new ISO3166Country("Åland Islands", "AX", "ALA", 248),
@@ -47,7 +46,7 @@ namespace CmsData.Finance.Acceptiva.Core
             new ISO3166Country("Benin", "BJ", "BEN", 204),
             new ISO3166Country("Bermuda", "BM", "BMU", 60),
             new ISO3166Country("Bhutan", "BT", "BTN", 64),
-            new ISO3166Country("Bolivia (Plurinational State of)", "BO", "BOL", 68),
+            new ISO3166Country("Bolivia", "BO", "BOL", 68),
             new ISO3166Country("Bonaire, Sint Eustatius and Saba", "BQ", "BES", 535),
             new ISO3166Country("Bosnia and Herzegovina", "BA", "BIH", 70),
             new ISO3166Country("Botswana", "BW", "BWA", 72),
@@ -255,16 +254,16 @@ namespace CmsData.Finance.Acceptiva.Core
             new ISO3166Country("Uganda", "UG", "UGA", 800),
             new ISO3166Country("Ukraine", "UA", "UKR", 804),
             new ISO3166Country("United Arab Emirates", "AE", "ARE", 784),
-            new ISO3166Country("United Kingdom of Great Britain and Northern Ireland", "GB", "GBR", 826),
-            new ISO3166Country("United States of America", "US", "USA", 840),
+            new ISO3166Country("United Kingdom", "GB", "GBR", 826),
+            new ISO3166Country("United States", "US", "USA", 840),
             new ISO3166Country("United States Minor Outlying Islands", "UM", "UMI", 581),
             new ISO3166Country("Uruguay", "UY", "URY", 858),
             new ISO3166Country("Uzbekistan", "UZ", "UZB", 860),
             new ISO3166Country("Vanuatu", "VU", "VUT", 548),
-            new ISO3166Country("Venezuela (Bolivarian Republic of)", "VE", "VEN", 862),
+            new ISO3166Country("Venezuela", "VE", "VEN", 862),
             new ISO3166Country("Viet Nam", "VN", "VNM", 704),
-            new ISO3166Country("Virgin Islands (British)", "VG", "VGB", 92),
-            new ISO3166Country("Virgin Islands (U.S.)", "VI", "VIR", 850),
+            new ISO3166Country("Virgin Islands, British", "VG", "VGB", 92),
+            new ISO3166Country("Virgin Islands, U.S.", "VI", "VIR", 850),
             new ISO3166Country("Wallis and Futuna", "WF", "WLF", 876),
             new ISO3166Country("Western Sahara", "EH", "ESH", 732),
             new ISO3166Country("Yemen", "YE", "YEM", 887),
