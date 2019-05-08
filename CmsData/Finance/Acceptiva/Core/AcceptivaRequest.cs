@@ -6,13 +6,12 @@ namespace CmsData.Finance.Acceptiva.Core
 {
     internal class AcceptivaRequest
     {
-        public string Url { get; private set; }
+        private const string URL = "https://sandbox.acceptivapro.com/api/api_request.php";
 
         public NameValueCollection Data { get; protected set; }
 
-        protected AcceptivaRequest(string url, string apiKey, string action)
+        protected AcceptivaRequest(string apiKey, string action)
         {
-            Url = url;
             Data = new NameValueCollection
             {
                 {"api_key", apiKey},
@@ -24,7 +23,7 @@ namespace CmsData.Finance.Acceptiva.Core
         {
             using (var client = new WebClient())
             {
-                var result = client.UploadValues(Url, Data);
+                var result = client.UploadValues(URL, Data);
                 return Encoding.ASCII.GetString(result);
             }
         }

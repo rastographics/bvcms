@@ -1894,8 +1894,8 @@ This search uses multiple steps which cannot be duplicated in a single query.
                     return new SageGateway(this, testing, ProcessType);
                 case (int)GatewayTypes.Transnational:
                     return new TransNationalGateway(this, testing, ProcessType);
-                // case (int)GatewayTypes.Acceptiva:
-                    // return new AcceptivaGateway(this, testing, ProcessType);
+                case (int)GatewayTypes.Acceptiva:
+                    return new AcceptivaGateway(this, testing, ProcessType);
                 case (int)GatewayTypes.AuthorizeNet:
                     return new AuthorizeNetGateway(this, testing, ProcessType);
                 default:
