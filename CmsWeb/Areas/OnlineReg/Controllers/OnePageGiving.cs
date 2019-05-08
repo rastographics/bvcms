@@ -44,10 +44,15 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 }
 
                 int? GatewayId = new MultipleGatewayUtils(CurrentDatabase).GatewayId(m.ProcessType);
+
                 if (GatewayId == (int)GatewayTypes.Pushpay && m.OnlineGiving())
                 {
-                    return Redirect($"/Pushpay/OnePage/{m.Orgid}");
-                }
+                    ViewBag.Header = "One Page Giving";                    
+                    if (string.IsNullOrEmpty(new MultipleGatewayUtils(CurrentDatabase).Setting("PushpayMerchant", "", (int)m.ProcessType)))
+                        return View("OnePageGiving/NotConfigured");
+
+                    return Redirect($"/Pushpay/OnePage");
+                }                
 
                 var pf = PaymentForm.CreatePaymentForm(m);
                 pf.AmtToPay = null;

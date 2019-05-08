@@ -1,8 +1,7 @@
 ﻿@using UtilityExtensions
-@model CmsWeb.Areas.OnlineReg.Models.OnlineRegModel
 @{
     Layout = "~/Views/Shared/onlinereg2.cshtml";
-    ViewBag.Title = Model.Header;
+    ViewBag.Title = ViewBag.Header;
 }
 <noscript>
     <style type="text/css">
@@ -74,9 +73,9 @@
 </style>
 
 <div class="regform">
-    <h3>@Model.Header</h3>
+    <h3>@ViewBag.Header</h3>
     <h4 id="sorry">This process is not configured yet, please contact support.</h4>
-    @Html.Raw(Util.PickFirst(Model.Instructions, ""))
+    @Html.Raw(Util.PickFirst(ViewBag.Instructions, ""))
 </div>
 
 <!--This tag fixes the styles-->

@@ -319,6 +319,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             if ((int)GatewayTypes.Pushpay == GatewayId)
             {
+                ViewBag.Header = "Payment Process";                
+                if (string.IsNullOrEmpty(new MultipleGatewayUtils(CurrentDatabase).Setting("PushpayMerchant", "", (int)PaymentProcessTypes.OnlineRegistration)))
+                    return View("OnePageGiving/NotConfigured");
+
                 Session["PaymentProcessType"] = PaymentProcessTypes.OnlineRegistration;
                 return Redirect($"/Pushpay/PayAmtDue/{ti.Id}/{amtdue}");
             }

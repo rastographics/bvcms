@@ -18,10 +18,6 @@ namespace TransactionGateway
             _pushpay = Pushpay;
             _db = db;
             _merchantHandle = new MultipleGatewayUtils(db).Setting("PushpayMerchant", "", (int)processType);
-            if (_merchantHandle == null)
-            {
-                throw new Exception("PushpayMerchant Not Found");
-            }
         }
 
         public async Task<Payment> GetPayment(string paymentToken)

@@ -40,11 +40,21 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
                 OnlineRegModel.TransactionProcessType = m.ProcessType;
 
+                SetHeaders(m);
+
                 int? GatewayId = new MultipleGatewayUtils(CurrentDatabase).GatewayId(m.ProcessType);
+
+                ViewBag.Header = m.Header;
+                ViewBag.Instructions = m.Instructions;
 
                 if (GatewayId.IsNull())
                 {
-                    return View("OnePageGiving/NotConfigured", m);
+                    return View("OnePageGiving/NotConfigured");
+                }
+
+                if ((int)GatewayTypes.Pushpay == GatewayId && string.IsNullOrEmpty(new MultipleGatewayUtils(CurrentDatabase).Setting("PushpayMerchant", "", (int)m.ProcessType)))
+                {
+                    return View("OnePageGiving/NotConfigured");
                 }
 
                 if (m.ManageGiving())
@@ -63,7 +73,6 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     }
                 }
 
-                SetHeaders(m);
                 var pid = m.CheckRegisterLink(registertag);
                 if (m.NotActive())
                 {
