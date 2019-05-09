@@ -1883,6 +1883,9 @@ This search uses multiple steps which cannot be duplicated in a single query.
 
         public IGateway Gateway(bool testing = false, PaymentProcessTypes? ProcessType = null)
         {
+            if (ProcessType.IsNull())
+                ProcessType = PaymentProcessTypes.RecurringGiving;
+
             int? GatewayId = new MultipleGatewayUtils(this).GatewayId(ProcessType);
 
             if (GatewayId.IsNull())
