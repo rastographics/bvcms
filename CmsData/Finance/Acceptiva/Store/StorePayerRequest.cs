@@ -11,6 +11,9 @@ namespace CmsData.Finance.Acceptiva.Store
         public StorePayerRequest(string apiKey, Payer payer, CreditCard creditCard, Ach ach)
             : base(apiKey, action)
         {
+            string expMonth = string.IsNullOrEmpty(creditCard.CardExpiration) ? string.Empty : creditCard.CardExpiration.Substring(0, 2);
+            string expYear = string.IsNullOrEmpty(creditCard.CardExpiration) ? string.Empty : creditCard.CardExpiration.Substring(2, 2);
+
             Data["params[0][payer_email]"] = payer.Email;
             Data["params[0][payer_fname]"] = payer.FirstName;
             Data["params[0][payer_lname]"] = payer.LastName;
@@ -22,8 +25,8 @@ namespace CmsData.Finance.Acceptiva.Store
             Data["params[0][payer_zip]"] = payer.Zip;
             Data["params[0][payer_phone]"] = payer.Phone;
             Data["params[0][cc_num]"] = creditCard.CardNum;
-            Data["params[0][cc_exp_mo]"] = creditCard.CardExpiration.Substring(0, 2);
-            Data["params[0][cc_exp_yr]"] = creditCard.CardExpiration.Substring(2, 2);
+            Data["params[0][cc_exp_mo]"] = expMonth;
+            Data["params[0][cc_exp_yr]"] = expYear;
             Data["params[0][ach_acct_num]"] = ach.AchAccNum;
             Data["params[0][ach_routing_num]"] = ach.AchRoutingNum;
         }
