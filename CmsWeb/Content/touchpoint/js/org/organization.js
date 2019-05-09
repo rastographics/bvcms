@@ -1104,6 +1104,30 @@ function SaveFee() {
                     location.replace('../Gateway');
                 });
             }
+            else if (Process.GatewayId === 1) {
+                $.ajax('../Gateway/GetGatewayConfig/' + Process.ProcessId + '/PushpayMerchant', {
+                    type: 'GET',
+                    success: function (response) {
+                        if (response.length === 0) {
+                            swal({
+                                title: "Atention",
+                                text: "PushpayMerchant not found, would you like to configure it now",
+                                type: "warning",
+                                showCancelButton: true,
+                                cancelButtonText: 'No, configure it later',
+                                confirmButtonClass: "btn-warning",
+                                confirmButtonText: "Yes, configure it now",
+                                closeOnConfirm: true
+                            }, function () {
+                                location.replace('../Gateway');
+                            });
+                        }
+                    },
+                    error: function (err) {
+                        console.log(err);
+                    }
+                });
+            }
         },
         error: function (err) {
             console.log(err);

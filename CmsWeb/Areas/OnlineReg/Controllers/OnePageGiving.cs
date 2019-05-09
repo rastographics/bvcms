@@ -52,7 +52,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                         return View("OnePageGiving/NotConfigured");
 
                     return Redirect($"/Pushpay/OnePage");
-                }                
+                }
 
                 var pf = PaymentForm.CreatePaymentForm(m);
                 pf.AmtToPay = null;
