@@ -216,6 +216,22 @@ namespace CmsData
             var response = client.Execute(request);
             return response.Content;
         }
+        public string RestPostXml(string url, PythonDictionary headers, string body, string user = null, string password = null)
+        {
+            var client = new RestClient(url);
+            if (user?.Length > 0 && password?.Length > 0)
+                client.Authenticator = new HttpBasicAuthenticator(user, password);
+
+            var request = new RestRequest(Method.POST);
+            foreach (var kv in headers)
+                request.AddHeader((string)kv.Key, (string)kv.Value);
+
+            request.RequestFormat = DataFormat.Xml;
+            request.AddParameter("text/xml", body, ParameterType.RequestBody);
+            var response = client.Execute(request);
+
+            return response.Content;
+        }
         public string RestDelete(string url, PythonDictionary headers, string user = null, string password = null)
         {
             var client = new RestClient(url);
