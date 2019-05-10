@@ -1881,29 +1881,31 @@ This search uses multiple steps which cannot be duplicated in a single query.
         internal bool FromActiveRecords { get; set; }
         public bool FromBatch { get; set; }
 
-        public IGateway Gateway(bool testing = false, string usegateway = null)
+        public IGateway Gateway(bool testing = false, PaymentProcessTypes? ProcessType = null)
         {
-            var type = Setting("TransactionGateway", "not specified");
-            if (usegateway != null)
+            if (ProcessType.IsNull())
+                ProcessType = PaymentProcessTypes.RecurringGiving;
+
+            int? GatewayId = new MultipleGatewayUtils(this).GatewayId(ProcessType);
+
+            if (GatewayId.IsNull())
+                throw new Exception("This process is not configured yet, please contact support");
+
+            switch (GatewayId)
             {
-                type = usegateway;
+                case (int)GatewayTypes.Sage:
+                    return new SageGateway(this, testing, ProcessType);
+                case (int)GatewayTypes.Transnational:
+                    return new TransNationalGateway(this, testing, ProcessType);
+                case (int)GatewayTypes.Acceptiva:
+                    return new AcceptivaGateway(this, testing, ProcessType);
+                case (int)GatewayTypes.AuthorizeNet:
+                    return new AuthorizeNetGateway(this, testing, ProcessType);
+                default:
+                    break;
             }
 
-            switch (type.ToLower())
-            {
-                case "sage":
-                    return new SageGateway(this, testing);
-
-                case "authorizenet":
-                    return new AuthorizeNetGateway(this, testing);
-
-                case "transnational":
-                    return new TransNationalGateway(this, testing);
-                //IS THIS the only place that the new paymentGateway needs to be hooked up?
-                case "bluepay":
-                    return new BluePayGateway(this, testing);
-            }
-
+            string type = Gateways.Where(x => x.GatewayId == GatewayId).Select(x => x.GatewayName).FirstOrDefault();
             throw new Exception($"Gateway ({type}) is not supported.");
         }
         public Registration.Settings CreateRegistrationSettings(int orgId)

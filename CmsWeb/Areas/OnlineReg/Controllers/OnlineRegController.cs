@@ -29,6 +29,34 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             {
                 var m = new OnlineRegModel(Request, CurrentDatabase, id, testing, email, login, source);
 
+                if (m.org.IsMissionTrip.IsNotNull() ? true : false)
+                {
+                    m.ProcessType = PaymentProcessTypes.OneTimeGiving;
+                }   
+                else
+                {
+                    m.ProcessType = m.org.RegistrationTypeId.IsNull() || m.org.RegistrationTypeId == 8 ? PaymentProcessTypes.OneTimeGiving : PaymentProcessTypes.OnlineRegistration;
+                }
+
+                OnlineRegModel.TransactionProcessType = m.ProcessType;
+
+                SetHeaders(m);
+
+                int? GatewayId = new MultipleGatewayUtils(CurrentDatabase).GatewayId(m.ProcessType);
+
+                ViewBag.Header = m.Header;
+                ViewBag.Instructions = m.Instructions;
+
+                if (GatewayId.IsNull())
+                {
+                    return View("OnePageGiving/NotConfigured");
+                }
+
+                if ((int)GatewayTypes.Pushpay == GatewayId && string.IsNullOrEmpty(new MultipleGatewayUtils(CurrentDatabase).Setting("PushpayMerchant", "", (int)m.ProcessType)))
+                {
+                    return View("OnePageGiving/NotConfigured");
+                }
+
                 if (m.ManageGiving())
                 {
                     Session["Campus"] = Request.QueryString["campus"];
@@ -45,7 +73,6 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     }
                 }
 
-                SetHeaders(m);
                 var pid = m.CheckRegisterLink(registertag);
                 if (m.NotActive())
                 {
@@ -111,7 +138,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 p = m.LoadExistingPerson(pid, 0);
                 if (p == null)
                     throw new Exception($"No person found with PeopleId = {pid}");
-
+                p.ProcessType = m.ProcessType;
                 p.ValidateModelForFind(ModelState, 0);
                 if (m.masterorg == null)
                 {
@@ -362,6 +389,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [HttpGet]
         public ActionResult CompleteRegistration()
         {
+            // Start Registration
             Response.NoCache();
             var s = (string)TempData["onlineregmodel"];
             if (s == null)
@@ -377,6 +405,16 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
 
             var ret = m.CompleteRegistration(this);
+
+            int? GatewayId = new MultipleGatewayUtils(CurrentDatabase).GatewayId(m.ProcessType);
+
+            if (ret.Route == RouteType.Payment && (int)GatewayTypes.Pushpay == GatewayId)
+            {
+                m.UpdateDatum();
+                Session["PaymentProcessType"] = PaymentProcessTypes.OnlineRegistration;
+                return Redirect($"/Pushpay/Registration/{m.DatumId}");
+            }
+
             switch (ret.Route)
             {
                 case RouteType.Error:

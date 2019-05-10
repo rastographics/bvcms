@@ -1,0 +1,106 @@
+﻿@using UtilityExtensions
+@{
+    Layout = "~/Views/Shared/onlinereg2.cshtml";
+    ViewBag.Title = ViewBag.Header;
+}
+<noscript>
+    <style type="text/css">
+        .pagecontainer {
+            display: none;
+        }
+    </style>
+    <div class="noscriptmsg">
+        This registration site requires javascript to be enabled on your browser.
+    </div>
+</noscript>
+
+<style type="text/css">
+    #contact-footer {
+        position: absolute;
+        bottom: 60px;
+        width: 100%;
+        text-align: center;
+        font-size: .9em;
+        color: #fff;
+        background-color: #548cc5;
+        border-top: 1px solid #3f72b3;
+    }
+
+    #contact-footer div.texture {
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        pointer-events: none;
+        background: url(/Content/touchpoint/img/hexagon.png);
+    }
+
+    #contact-footer ul {
+        padding-top: 10px;
+    }
+
+    #contact-footer ul li:first-child {
+        font-weight: 600;
+    }
+
+    #contact-footer ul li a {
+        color: #fff;
+    }
+
+    a {
+        text-decoration: none;
+    }
+
+    #footer {
+        text-align: left;
+        background-color: #46494d;
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        height: 60px;
+        color: #fff;
+        font-size: 11px;
+        border-top: 1px solid #2e343a;
+        padding-top: 23px;
+        padding-left: 15px;
+    }
+
+    #powered-by {
+        height: 30px;
+        margin-top: -8px;
+    }
+</style>
+
+<div class="regform">
+    <h3>@ViewBag.Header</h3>
+    <h4 id="sorry">This process is not configured yet, please contact support.</h4>
+    @Html.Raw(Util.PickFirst(ViewBag.Instructions, ""))
+</div>
+
+<!--This tags fixes the styles-->
+</div></div>
+
+<div id="contact-footer" class="hidden-print navbar-fixed-bottom">
+    <div class="texture"></div>
+    <ul class="list-inline">
+        <li>@ViewExtensions2.DbSetting("nameofchurch", "Name of Church")</li>
+        @if (!string.IsNullOrWhiteSpace(ViewExtensions2.DbSetting("ChurchPhone", "phone").FmtFone()))
+        {
+            <li><i class="fa fa-phone"></i>&nbsp;&nbsp;<a href="tel:+@ViewExtensions2.DbSetting("ChurchPhone", "phone").FmtFone()">@ViewExtensions2.DbSetting("ChurchPhone", "phone").FmtFone()</a></li>
+        }
+        <li><i class="fa fa-envelope"></i>&nbsp;&nbsp;<a href="mailto:@CmsData.DbUtil.AdminMail">@CmsData.DbUtil.AdminMail</a></li>
+    </ul>
+</div>
+<div id="footer" class="hidden-print">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-6">
+                <img id="powered-by" src="@Url.Content("~/Content/touchpoint/img/powered-by.png")" />
+            </div>
+            <div class="col-xs-6 text-right">
+                &copy; @DateTime.Today.Year @(Resource1.CompanyName)
+            </div>
+        </div>
+    </div>
+</div>

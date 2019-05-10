@@ -158,37 +158,46 @@ Please contact the Finance office at the church."
             }
             return 1;
         }
-
         private IGateway GetGateway(CMSDataContext db, PaymentInfo pi)
         {
-            var tempgateway = db.Setting("TemporaryGateway", "");
+            int? GatewayId = new MultipleGatewayUtils(db).GatewayId(PaymentProcessTypes.RecurringGiving);
 
-            if (!tempgateway.HasValue())
-                return db.Gateway();
+            if (GatewayId.IsNull())
+                throw new Exception("This process dosn't has a Gateway configured");
 
-            var gateway = db.Setting("TransactionGateway", "");
-            switch (gateway.ToLower()) // Check to see if standard gateway is set up
+            bool IsTesting = false;
+
+            switch (GatewayId)
             {
-                case "sage":
+                // case (int)GatewayTypes.Pushpay:
+                // break;
+                case (int)GatewayTypes.Sage:
+                    IsTesting = new MultipleGatewayUtils(db).GatewayTesting(PaymentProcessTypes.RecurringGiving);
                     if ((pi.PreferredGivingType == "B" && pi.SageBankGuid.HasValue) ||
                         (pi.PreferredGivingType == "C" && pi.SageCardGuid.HasValue))
-                        return db.Gateway();
+                        return db.Gateway(IsTesting, PaymentProcessTypes.RecurringGiving);
                     break;
-                case "transnational":
+                case (int)GatewayTypes.Transnational:
+                    IsTesting = new MultipleGatewayUtils(db).GatewayTesting(PaymentProcessTypes.RecurringGiving);
                     if ((pi.PreferredGivingType == "B" && pi.TbnBankVaultId.HasValue) ||
                         (pi.PreferredGivingType == "C" && pi.TbnCardVaultId.HasValue))
-                        return db.Gateway();
+                        return db.Gateway(IsTesting, PaymentProcessTypes.RecurringGiving);
+                    break;
+                // case (int)GatewayTypes.Acceptiva:
+                // break;
+                default:
                     break;
             }
 
             // fall back to temporary gateway because the user hasn't migrated their payments off of the temporary gateway yet
-            return db.Gateway(usegateway: tempgateway);
+            return db.Gateway(IsTesting, PaymentProcessTypes.RecurringGiving);
         }
         public static int DoAllGiving(CMSDataContext Db)
         {
-            var gateway = Db.Setting("TransactionGateway", "");
+            int? GatewayId = new MultipleGatewayUtils(Db).GatewayId(PaymentProcessTypes.RecurringGiving);
+
             int count = 0;
-            if (gateway.HasValue())
+            if (GatewayId != null)
             {
                 var q = from rg in Db.ManagedGivings
                         where rg.NextDate < Util.Now.Date

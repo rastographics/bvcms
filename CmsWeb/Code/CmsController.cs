@@ -42,7 +42,7 @@ namespace CmsWeb
             base.OnActionExecuting(filterContext);
             Util.Helpfile = $"_{filterContext.ActionDescriptor.ControllerDescriptor.ControllerName}_{filterContext.ActionDescriptor.ActionName}";
             CurrentDatabase.UpdateLastActivity(Util.UserId);
-            if (AccountController.TryImpersonate())
+            if (AccountController.TryImpersonate() || filterContext.ActionParameters.Values.Equals("/Pushpay/true"))
             {
                 var returnUrl = Request.QueryString["returnUrl"];
                 if (returnUrl.HasValue() && Url.IsLocalUrl(returnUrl))

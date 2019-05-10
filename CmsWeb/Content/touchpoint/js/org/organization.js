@@ -1,4 +1,6 @@
-﻿$(function () {
+﻿var areFees = [];
+
+$(function () {
     $('#organization-tabs').tabdrop();
 
     $('#org-main-section').on('show.bs.collapse', function () {
@@ -25,11 +27,11 @@
     }
 
     $.fn.editableform.buttons = '<button type="submit" class="btn btn-primary btn-sm editable-submit">' +
-                                    '<i class="fa fa-fw fa-check"></i>' +
-                                '</button>' +
-                                '<button type="button" class="btn btn-default btn-sm editable-cancel">' +
-                                    '<i class="fa fa-fw fa-times"></i>' +
-                                '</button>';
+        '<i class="fa fa-fw fa-check"></i>' +
+        '</button>' +
+        '<button type="button" class="btn btn-default btn-sm editable-cancel">' +
+        '<i class="fa fa-fw fa-times"></i>' +
+        '</button>';
 
     $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
         e.preventDefault();
@@ -261,29 +263,29 @@
             confirmButtonText: "Yes, delete organization!",
             closeOnConfirm: true
         },
-        function () {
-            $.block();
-            $.post(href, null, function (ret) {
-                if (ret.startsWith("error")) {
-                    $.unblock();
-                    swal("Error!", ret, "error");
-                }
-                else if (ret !== "ok") {
-                    $.unblock();
-                    window.location = ret;
-                }
-                else {
-                    $.unblock();
-                    swal({
-                        title: "Organization Deleted!",
-                        type: "success"
-                    },
-                    function () {
-                        window.location = "/";
-                    });
-                }
+            function () {
+                $.block();
+                $.post(href, null, function (ret) {
+                    if (ret.startsWith("error")) {
+                        $.unblock();
+                        swal("Error!", ret, "error");
+                    }
+                    else if (ret !== "ok") {
+                        $.unblock();
+                        window.location = ret;
+                    }
+                    else {
+                        $.unblock();
+                        swal({
+                            title: "Organization Deleted!",
+                            type: "success"
+                        },
+                            function () {
+                                window.location = "/";
+                            });
+                    }
+                });
             });
-        });
         return false;
     });
 
@@ -299,22 +301,22 @@
             confirmButtonText: "Yes, send reminders!",
             closeOnConfirm: true
         },
-        function () {
-            $.block();
-            $.post(href, null, function (ret) {
-                if (ret != "ok") {
-                    $.unblock();
-                    swal("Error!", ret, "error");
-                }
-                else {
-                    $.unblock();
-                    swal({
-                        title: "Reminders Sent!",
-                        type: "success"
-                    });
-                }
+            function () {
+                $.block();
+                $.post(href, null, function (ret) {
+                    if (ret != "ok") {
+                        $.unblock();
+                        swal("Error!", ret, "error");
+                    }
+                    else {
+                        $.unblock();
+                        swal({
+                            title: "Reminders Sent!",
+                            type: "success"
+                        });
+                    }
+                });
             });
-        });
 
     });
 
@@ -356,7 +358,7 @@
                 ev.preventDefault();
                 var dd = $(this).parent();
                 var dt = dd.prev();
-                $.post("/OrgMemberDialog/DeleteQuestion/" + this.id, function() {
+                $.post("/OrgMemberDialog/DeleteQuestion/" + this.id, function () {
                     dd.remove();
                     dt.remove();
                 });
@@ -525,6 +527,18 @@
             $.InitFunctions.movequestions();
             $('#QuestionList').children().last().effect("highlight", { color: '#eaab00' }, 2000);
         });
+
+        switch ($(this).attr("type").toString()) {
+            case 'AskCheckboxes':
+            case 'AskDropdown':
+            case 'AskMenu':
+            case 'AskSuggestedFee':
+            case 'AskTickets':
+            case 'AskSize':
+                areFees.push(true);
+                break;
+        }
+
         return false;
     });
 
@@ -736,14 +750,14 @@
             confirmButtonText: "Yes, continue!",
             closeOnConfirm: true
         },
-        function () {
-            $.post(a[0].href, function (ret) {
-                if (ret === "ok")
-                    $.RebindMemberGrids();
-                else
-                    swal("Error!", ret, "error");
+            function () {
+                $.post(a[0].href, function (ret) {
+                    if (ret === "ok")
+                        $.RebindMemberGrids();
+                    else
+                        swal("Error!", ret, "error");
+                });
             });
-        });
 
         return false;
     });
@@ -780,16 +794,16 @@
             confirmButtonText: "Yes, delete it!",
             closeOnConfirm: false
         },
-        function () {
-            $.post("/Organization/DeleteExtra/" + $("#OrganizationId").val(), { field: $(a).attr("field") }, function (ret) {
-                if (ret.startsWith("error"))
-                    swal("Error!", ret, "error");
-                else {
-                    $("#extras > tbody").html(ret);
-                    $.extraEditable();
-                }
+            function () {
+                $.post("/Organization/DeleteExtra/" + $("#OrganizationId").val(), { field: $(a).attr("field") }, function (ret) {
+                    if (ret.startsWith("error"))
+                        swal("Error!", ret, "error");
+                    else {
+                        $("#extras > tbody").html(ret);
+                        $.extraEditable();
+                    }
+                });
             });
-        });
         return false;
     });
 
@@ -838,7 +852,7 @@
         });
     });
 
-    $('body').on('click', '.dropMember', function(ev) {
+    $('body').on('click', '.dropMember', function (ev) {
         ev.preventDefault();
 
         var orgId = $('#Id').val();
@@ -852,11 +866,11 @@
             confirmButtonText: "Yes, Drop Member",
             closeOnConfirm: true
         },
-        function() {
-            $.post('/OrgDrop/DropSingleMember', { orgId: orgId, peopleId: peopleId }, function(ret) {
-                window.location.reload(true);
+            function () {
+                $.post('/OrgDrop/DropSingleMember', { orgId: orgId, peopleId: peopleId }, function (ret) {
+                    window.location.reload(true);
+                });
             });
-        });
 
         return false;
     });
@@ -926,7 +940,6 @@
                 $(liToMove).addClass('cutting');
                 enablePaste(ul);
                 return false;
-                break;
             case 'paste':
                 var li = $(a).closest('div.movable');
                 liToMove = $(ul).children('div.cutting').first();
@@ -952,17 +965,16 @@
                     confirmButtonText: "Yes, delete it!",
                     closeOnConfirm: true
                 },
-                function (isConfirm) {
-                    if (isConfirm) {
-                        $(liToMove).remove();
-                        $.InitFunctions.updateQuestionList();
-                        $.InitFunctions.movequestions();
-                    } else {
-                        return false;
-                    }
-                });
+                    function (isConfirm) {
+                        if (isConfirm) {
+                            $(liToMove).remove();
+                            $.InitFunctions.updateQuestionList();
+                            $.InitFunctions.movequestions();
+                        } else {
+                            return false;
+                        }
+                    });
                 return false;
-                break;
             case 'delete':
                 if (!$(a).attr("href"))
                     return false;
@@ -972,6 +984,21 @@
         $(liToMove).remove();
         $.InitFunctions.updateQuestionList();
         $.InitFunctions.movequestions();
+
+        var str = liToMove[0].outerHTML;
+        var result = str.match(/type-Ask\w+/gm);
+        var QuestionType = result.toString().replace('type-', '');
+
+        switch (QuestionType) {
+            case 'AskCheckboxes':
+            case 'AskDropdown':
+            case 'AskMenu':
+            case 'AskSuggestedFee':
+            case 'AskTickets':
+            case 'AskSize':
+                areFees.length = areFees.length - 1;
+                break;
+        }
     }
 
     $.InitFunctions.movequestions = function () {
@@ -1030,4 +1057,80 @@ function AddSelected() {
 
 function CloseAddDialog(from) {
     $("#memberDialog").dialog("close");
+}
+
+function saveQuestion() {
+    if (areFees.length > 0) {
+        SaveFee();
+    }
+}
+
+function SaveFee() {
+    var RegistrationType = parseInt($("input[name=RegistrationType_Value]").val());
+    var Process;
+
+    $.ajax('../Gateway/GetProcesses', {
+        type: 'GET',
+        success: function (response) {
+            switch (RegistrationType) {
+                case 8:
+                    Process = response.filter(function (item) {
+                        return item.ProcessId === 1;
+                    })[0];
+                    break;
+                case 14:
+                    Process = response.filter(function (item) {
+                        return item.ProcessId === 2;
+                    })[0];
+                    break;
+                default:
+                    Process = response.filter(function (item) {
+                        return item.ProcessId === 3;
+                    })[0];
+                    break;
+            }
+
+            if (Process.GatewayAccountId === null) {
+                swal({
+                    title: "Atention",
+                    text: "This Proccess does not have a Gateway Account configured yet, would you like to configure it now",
+                    type: "warning",
+                    showCancelButton: true,
+                    cancelButtonText: 'No, configure it later',
+                    confirmButtonClass: "btn-warning",
+                    confirmButtonText: "Yes, configure it now",
+                    closeOnConfirm: true
+                }, function () {
+                    location.replace('../Gateway');
+                });
+            }
+            else if (Process.GatewayId === 1) {
+                $.ajax('../Gateway/GetGatewayConfig/' + Process.ProcessId + '/PushpayMerchant', {
+                    type: 'GET',
+                    success: function (response) {
+                        if (response.length === 0) {
+                            swal({
+                                title: "Atention",
+                                text: "PushpayMerchant not found, would you like to configure it now",
+                                type: "warning",
+                                showCancelButton: true,
+                                cancelButtonText: 'No, configure it later',
+                                confirmButtonClass: "btn-warning",
+                                confirmButtonText: "Yes, configure it now",
+                                closeOnConfirm: true
+                            }, function () {
+                                location.replace('../Gateway');
+                            });
+                        }
+                    },
+                    error: function (err) {
+                        console.log(err);
+                    }
+                });
+            }
+        },
+        error: function (err) {
+            console.log(err);
+        }
+    });   
 }

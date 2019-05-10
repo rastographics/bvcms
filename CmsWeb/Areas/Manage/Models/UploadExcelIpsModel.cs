@@ -306,7 +306,7 @@ namespace CmsWeb.Models
                     Date = GetDate(ws.Cells[r, Names["Date"]].Value) ?? DateTime.MinValue,
                     FundId = GetInt(ws.Cells[r, Names["FundId"]].Value) ?? 0,
                     FundDescription = GetString(ws.Cells[r, Names["FundDescription"]].Value),
-                    FundName = GetString(ws.Cells[r, Names["FundName"]].Value)
+                    FundName = GetString(ws.Cells[r, Names["FundName"]].Value),                    
                 };
                 if (Names.ContainsKey("CheckNo"))
                 {
