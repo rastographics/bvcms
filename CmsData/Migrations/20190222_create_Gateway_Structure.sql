@@ -163,8 +163,8 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where
 		('Pushpay', 1),
 		('Sage', 2),
 		('Transnational', 2),
-		('Acceptiva', 3),
 		('AuthorizeNet', 2)
+		--('Acceptiva', 3)--
 	END
 GO
 
@@ -213,13 +213,13 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where
 		(3, 'TNBUsername', (SELECT [dbo].[ImportGatewatSettings]('TNBUsername')), 0),
 		(3, 'TNBPassword', (SELECT [dbo].[ImportGatewatSettings]('TNBPassword')), 0),
 		(4, 'GatewayTesting', 'true', 1),
-		(4, 'AcceptivaApiKey', (SELECT [dbo].[ImportGatewatSettings]('AcceptivaApiKey')), 0),
-		(4, 'AcceptivaAchId', (SELECT [dbo].[ImportGatewatSettings]('AcceptivaAchId')), 0),
-		(4, 'AcceptivaCCId', (SELECT [dbo].[ImportGatewatSettings]('AcceptivaCCId')), 0),
-		(4, 'UseSavingAccounts', 'true', 1),
-		(5, 'GatewayTesting', 'true', 1),
-		(5, 'x_login', (SELECT [dbo].[ImportGatewatSettings]('x_login')),0),
-		(5, 'x_tran_key', (SELECT [dbo].[ImportGatewatSettings]('x_tran_key')),0);
+		(4, 'x_login', (SELECT [dbo].[ImportGatewatSettings]('x_login')),0),
+		(4, 'x_tran_key', (SELECT [dbo].[ImportGatewatSettings]('x_tran_key')),0);
+		--(5, 'GatewayTesting', 'true', 1),--
+		--(5, 'AcceptivaApiKey', (SELECT [dbo].[ImportGatewatSettings]('AcceptivaApiKey')), 0),--
+		--(5, 'AcceptivaAchId', (SELECT [dbo].[ImportGatewatSettings]('AcceptivaAchId')), 0),--
+		--(5, 'AcceptivaCCId', (SELECT [dbo].[ImportGatewatSettings]('AcceptivaCCId')), 0),--
+		--(5, 'UseSavingAccounts', 'true', 1);--
 	DROP FUNCTION [ImportGatewatSettings]
 	END
 GO
@@ -238,11 +238,11 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where
 		([GatewayAccountName]
 		,[GatewayId])
 		VALUES
-		('PushpayAcc', 1),
-		('SageAcc', 2),
-		('TransnationalAcc', 3),
-		('AcceptivaAcc', 4),
-		('AuthorizeNetAcc', 5)
+		('Pushpay', 1),
+		('Sage', 2),
+		('Transnational', 3),
+		('AuthorizeNet', 4)
+		--('Acceptiva', 5)--
 	END
 GO
 

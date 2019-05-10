@@ -186,7 +186,7 @@ namespace CmsWeb.Models
 
             if (gateway.HasValue())
             {
-                _transactions = _transactions.Where(t => t.TransactionGateway == gateway);
+                _transactions = _transactions.Where(t => t.TransactionGateway.ToLower() == gateway.ToLower());
             }
             //			var q0 = _transactions.ToList();
             //            foreach(var t in q0)

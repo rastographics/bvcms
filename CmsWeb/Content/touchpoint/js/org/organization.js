@@ -1093,7 +1093,7 @@ function SaveFee() {
             if (Process.GatewayAccountId === null) {
                 swal({
                     title: "Atention",
-                    text: "This Proccess does not have a Gateway Account configured yet, would you like to configure it now",
+                    text: "This Proccess does not have a Gateway Account configured yet, would you like to configure it now?",
                     type: "warning",
                     showCancelButton: true,
                     cancelButtonText: 'No, configure it later',
@@ -1110,8 +1110,8 @@ function SaveFee() {
                     success: function (response) {
                         if (response.length === 0) {
                             swal({
-                                title: "Atention",
-                                text: "PushpayMerchant not found, would you like to configure it now",
+                                title: "Attention",
+                                text: "Pushpay Merchant not found, would you like to configure it now?",
                                 type: "warning",
                                 showCancelButton: true,
                                 cancelButtonText: 'No, configure it later',
