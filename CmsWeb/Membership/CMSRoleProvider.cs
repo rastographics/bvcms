@@ -100,19 +100,14 @@ namespace CmsWeb.Membership
 			return GetRoleUsers("Developer").Select(u => u.Person);
         }
 
-        public bool IsUserInRole(string username, string rolename, CMSDataContext db)
-        {
-            username = username?.Split('\\').LastOrDefault();
-			var q = from ur in db.UserRoles
-					where rolename == ur.Role.RoleName
-					where username == ur.User.Username
-					select ur;
-			return q.Count() > 0;
-        }
-
         public override bool IsUserInRole(string username, string rolename)
         {
-            return IsUserInRole(username, rolename, CurrentDatabase);
+            username = username?.Split('\\').LastOrDefault();
+            var q = from ur in CurrentDatabase.UserRoles
+                    where rolename == ur.Role.RoleName
+                    where username == ur.User.Username
+                    select ur;
+            return q.Count() > 0;
         }
 
 		public override void RemoveUsersFromRoles(string[] usernames, string[] rolenames)
