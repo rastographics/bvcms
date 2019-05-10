@@ -18,7 +18,7 @@ namespace CmsWeb.Areas.Reports.Models.Attendance
     {
         public DateTime StartDt { get; set; }
         public DateTime EndDt { get; set; }
-        public int Type { get; set; }
+        public int? Type { get; set; }
         public int Program { get; set; }
         public int Division { get; set; }
         public string Heading { get; set; }
@@ -33,7 +33,10 @@ namespace CmsWeb.Areas.Reports.Models.Attendance
             CurrentDatabase = db;
             StartDt = dt1;
             EndDt = dt2;
-            Type = type.ToInt();
+            if (type.HasValue())
+            {
+                Type = type.ToInt();
+            }
             Program = program.ToInt();
             Division = div.ToInt();
 
@@ -74,8 +77,12 @@ namespace CmsWeb.Areas.Reports.Models.Attendance
 
         public SelectList Types()
         {
-            return new SelectList(new CodeValueModel().MeetingCategories(),
-                "Id", "Value", Type);
+            var types = new CodeValueModel().MeetingCategories();
+            if (CurrentDatabase.Setting("MeetingTypesReportIncludeEmpty"))
+            {
+                types = types.AddNotSpecified("(Empty Type)");
+            }
+            return new SelectList(types, "Id", "Value", Type);
         }
 
         public SelectList Programs()
@@ -238,16 +245,29 @@ namespace CmsWeb.Areas.Reports.Models.Attendance
 
         public List<TypeInfo> FetchInfo()
         {
-            var q = from cat in CurrentDatabase.MeetingCategories
+            var categories = CurrentDatabase.MeetingCategories.AsEnumerable();
+            CmsData.MeetingCategory[] EmptyCategory =
+            {
+                new CmsData.MeetingCategory
+                {
+                    Id = 0,
+                    Description = null
+                }
+            };
+            if (CurrentDatabase.Setting("MeetingTypesReportIncludeEmpty"))
+            {
+                categories = EmptyCategory.Union(categories);
+            }
+            var q = from cat in categories
                             select new TypeInfo
                             {
                                 Id = (int) cat.Id,
-                                Name = cat.Description,
+                                Name = cat.Description ?? "(Empty Type)",
                                 WeekDates = weeks,
                                 Orgs = (from org in CurrentDatabase.Organizations
                                         join meet in CurrentDatabase.Meetings on org.OrganizationId equals meet.OrganizationId
                                         where org.OrganizationStatusId == OrgStatusCode.Active
-                                        where meet.Description == cat.Description
+                                        where meet.Description == (cat.Description ?? null)
                                         where DivisionIds.Contains(org.DivisionId ?? 0)
                                         select new OrgInfo
                                         {
@@ -255,7 +275,7 @@ namespace CmsWeb.Areas.Reports.Models.Attendance
                                             Name = org.OrganizationName,
                                             Meetings = (from m in CurrentDatabase.Meetings
                                                         where org.OrganizationId == m.OrganizationId
-                                                        where m.Description == cat.Description
+                                                        where m.Description == (cat.Description ?? null)
                                                         where m.MeetingDate >= StartDt
                                                         where m.MeetingDate < EndDt
                                                         select new MeetInfo
@@ -265,7 +285,8 @@ namespace CmsWeb.Areas.Reports.Models.Attendance
                                                             OrgId = org.OrganizationId,
                                                             OrgName = org.OrganizationName,
                                                             Present = m.NumPresent
-                                                        }).ToList()
+                                                        })
+                                                        .ToList()
                                         })
                                         .Where(org => org.Meetings.Count > 0)
                                         .OrderBy(org => org.Name)
@@ -273,7 +294,7 @@ namespace CmsWeb.Areas.Reports.Models.Attendance
                                         .Select(org => org.FirstOrDefault())
                                         .ToList()
                             };
-            if (Type != 0)
+            if (Type.HasValue)
             {
                 q = q.Where(cat => cat.Id == Type);
             }
