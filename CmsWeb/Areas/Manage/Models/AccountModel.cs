@@ -1,7 +1,6 @@
 using CmsData;
 using CmsData.API;
 using CmsWeb.Areas.Manage.Models;
-using CmsWeb.Membership;
 using System;
 using System.Collections.Generic;
 using System.Data.Linq;
@@ -333,7 +332,7 @@ namespace CmsWeb.Models
                     break;
                 }
 
-                if (CMSMembershipProvider.provider.ValidateUser(u.Username, password))
+                if (Membership.Provider.ValidateUser(u.Username, password))
                 {
                     db.Refresh(RefreshMode.OverwriteCurrentValues, u);
                     user = u;
