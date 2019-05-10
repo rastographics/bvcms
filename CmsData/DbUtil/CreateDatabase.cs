@@ -141,7 +141,7 @@ GO
                         RunScripts(masterConnectionString, "create database CMSi_" + hostName);
                         currentFile = "BuildImageDatabase.sql";
                         RunScripts(imageConnectionString,
-                            File.ReadAllText(sqlScriptsPath + currentFile));
+                            File.ReadAllText(Path.Combine(sqlScriptsPath, currentFile)));
                     }
 
                     if (!DatabaseExists(cn, "Elmah"))
@@ -149,30 +149,30 @@ GO
                         RunScripts(masterConnectionString, "create database Elmah");
                         currentFile = "BuildElmahDb.sql";
                         RunScripts(elmahConnectionString,
-                            File.ReadAllText(sqlScriptsPath + currentFile));
+                            File.ReadAllText(Path.Combine(sqlScriptsPath, currentFile)));
                     }
                 }
 
                 using (var cn = new SqlConnection(standardConnectionString))
                 {
                     cn.Open();
-                    var list = File.ReadAllLines(sqlScriptsPath + "allscripts.txt");
+                    var list = File.ReadAllLines(Path.Combine(sqlScriptsPath, "allscripts.txt"));
                     foreach (var f in list)
                     {
                         currentFile = f;
-                        var script = File.ReadAllText(sqlScriptsPath + @"BuildDb\" + currentFile);
+                        var script = File.ReadAllText(Path.Combine(sqlScriptsPath, "BuildDb", currentFile));
                         RunScripts(cn, script);
                     }
                     currentFile = hostName == "testdb"
                         ? "datascriptTest.sql"
                         : "datascriptStarter.sql";
-                    var datascript = File.ReadAllText(sqlScriptsPath + currentFile);
+                    var datascript = File.ReadAllText(Path.Combine(sqlScriptsPath, currentFile));
                     RunScripts(cn, datascript);
 
-                    var datawords = File.ReadAllText(sqlScriptsPath + "datawords.sql");
+                    var datawords = File.ReadAllText(Path.Combine(sqlScriptsPath, "datawords.sql"));
                     RunScripts(cn, datawords);
 
-                    var datazips = File.ReadAllText(sqlScriptsPath + "datazips.sql");
+                    var datazips = File.ReadAllText(Path.Combine(sqlScriptsPath, "datazips.sql"));
                     RunScripts(cn, datazips);
 
                     var migrationsFolder = Path.GetFullPath(Path.Combine(sqlScriptsPath, @"..\CmsData\Migrations"));
