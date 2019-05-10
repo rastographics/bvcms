@@ -122,7 +122,10 @@ namespace CmsWeb.Areas.Setup.Controllers
 
         [Route("~/Pushpay/Finish")]
         public ActionResult Finish()
-        { return View(); }
+        {
+            ViewBag.Host = CurrentDatabase.Host;
+            return View();
+        }
 
         public async Task<AccessToken> AuthorizationCodeCallback(string _authCode)
         {

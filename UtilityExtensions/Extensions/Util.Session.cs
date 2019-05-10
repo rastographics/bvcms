@@ -5,7 +5,6 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
 using System;
-using System.Web;
 using System.Configuration;
 using System.Threading;
 

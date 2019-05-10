@@ -1,5 +1,6 @@
 ﻿using CmsData;
 using CmsData.ExtraValue;
+using CmsWeb.Membership;
 using System;
 using System.Data.SqlClient;
 using System.Linq;

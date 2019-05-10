@@ -93,6 +93,8 @@ namespace CmsWeb
                 return;
             }
 
+            Response.Headers?.Remove("Server");
+
             if (Util.AppOffline)
             {
                 Response.Redirect("/Errors/AppOffline.htm");
