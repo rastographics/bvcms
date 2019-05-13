@@ -19,7 +19,7 @@ using UtilityExtensions;
 namespace CmsWeb.Areas.Setup.Controllers
 {
     [RouteArea("Setup", AreaPrefix = "Pushpay")]
-    public class PushpayController : CMSBaseController
+    public class PushpayController : CmsController
     {
         private PushpayConnection _pushpay;
         private PushpayPayment _pushpayPayment;
@@ -27,12 +27,12 @@ namespace CmsWeb.Areas.Setup.Controllers
         private string _givingLink;
         private string _merchantHandle;
 
-        public PushpayController(RequestManager requestManager) : base(requestManager)
+        public PushpayController(IRequestManager requestManager) : base(requestManager)
         {
             PaymentProcessTypes processType = PaymentProcessTypes.OneTimeGiving;
             try
             {
-                processType = (PaymentProcessTypes)requestManager.CurrentHttpContext.Session["PaymentProcessType"];
+                processType = (PaymentProcessTypes)CurrentHttpContext.Session["PaymentProcessType"];
             }
             catch (Exception e)
             {
@@ -214,7 +214,7 @@ namespace CmsWeb.Areas.Setup.Controllers
                 var pf = PaymentForm.CreatePaymentForm(m);
                 //Needs to redirect in case cupons are enable.
                 Amount = pf.AmtToPay;
-                mobile = CurrentDatabase.People.SingleOrDefault(p => p.PeopleId == m.UserPeopleId).CellPhone;
+                mobile = CurrentDatabase.People.SingleOrDefault(p => p.PeopleId == m.UserPeopleId)?.CellPhone;
             }
             else
             {
@@ -233,13 +233,12 @@ namespace CmsWeb.Areas.Setup.Controllers
 
         [Route("~/Pushpay/CompletePayment")]
         public async Task<ActionResult> CompletePayment(string paymentToken, string sr)
-        {
+        {           
             try
             {
-                Payment payment = await _pushpayPayment.GetPayment(paymentToken);
-
                 if (sr.Substring(0, 3) == "Org")
-                {                                                       
+                {
+                    Payment payment = await _pushpayPayment.GetPayment(paymentToken);
                     if (payment == null)
                     {
                         RecurringPayment recurringPayment = await _pushpayPayment.GetRecurringPayment(paymentToken);                   
@@ -251,11 +250,12 @@ namespace CmsWeb.Areas.Setup.Controllers
 
                 if (sr.Substring(0, 3) == "dat")
                 {
-                    return RegistrationProcess(payment, Int32.Parse(sr.Substring(4)));
+                    return await RegistrationProcess(paymentToken, Int32.Parse(sr.Substring(4)));
                 }
 
                 if (sr.Substring(0, 9) == "payamtdue")
                 {
+                    Payment payment = await _pushpayPayment.GetPayment(paymentToken);
                     return PayAmtDueProcess(payment, Int32.Parse(sr.Substring(10)));
                 }
 
@@ -309,17 +309,18 @@ namespace CmsWeb.Areas.Setup.Controllers
             }
         }
 
-        private ActionResult RegistrationProcess(Payment payment, int datumId)
+        private async Task<ActionResult> RegistrationProcess(string paymentToken, int datumId)
         {
             OnlineRegModel m = new OnlineRegModel();
             RegistrationDatum datum = CurrentDatabase.RegistrationDatas.SingleOrDefault(d => d.Id == datumId);
             m = Util.DeSerialize<OnlineRegModel>(datum.Data);
             PaymentForm pf = PaymentForm.CreatePaymentForm(m);
 
+            Payment payment = await _pushpayPayment.GetPayment(paymentToken);
             m.transactionId = CreateTransaction(payment, pf);
 
             m.UpdateDatum();
-            return Redirect($"/OnlineReg/ProcessExternalPayment/da_{datumId}");
+            return Redirect($"/OnlineReg/ProcessExternalPayment/dat_{datumId}");
         }
 
         private ActionResult PayAmtDueProcess(Payment payment, int transactionId)
