@@ -6,12 +6,18 @@ namespace CmsData.Finance.Acceptiva.Core
 {
     internal class AcceptivaRequest
     {
-        private const string URL = "https://sandbox.acceptivapro.com/api/api_request.php";
+        private const string SanboxURL = "https://sandbox.acceptivapro.com/api/api_request.php";
+        private const string URL = "https://api.acceptiva.com/api_request.php";
+
+        public string url = URL;
 
         public NameValueCollection Data { get; protected set; }
 
-        protected AcceptivaRequest(string apiKey, string action)
+        protected AcceptivaRequest(bool isSanbox, string apiKey, string action)
         {
+            if (isSanbox)
+                url = SanboxURL;              
+            
             Data = new NameValueCollection
             {
                 {"api_key", apiKey},
@@ -23,7 +29,7 @@ namespace CmsData.Finance.Acceptiva.Core
         {
             using (var client = new WebClient())
             {
-                var result = client.UploadValues(URL, Data);
+                var result = client.UploadValues(url, Data);
                 return Encoding.ASCII.GetString(result);
             }
         }

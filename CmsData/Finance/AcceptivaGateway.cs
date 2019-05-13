@@ -20,6 +20,7 @@ namespace CmsData.Finance
         private readonly string _apiKey;
         private readonly string _merch_ach_id;
         private readonly string _merch_cc_id;
+        private readonly bool _isTesting = false;
         private readonly CMSDataContext db;
         private readonly PaymentProcessTypes ProcessType;
 
@@ -35,6 +36,7 @@ namespace CmsData.Finance
                 _apiKey = "CZDWp7dXCo4W3xTA7LtWAijidvPdj2wa";
                 _merch_ach_id = "dKdDFtqC";
                 _merch_cc_id = "R6MLUevR";
+                _isTesting = true;
             }
             else
             {
@@ -152,6 +154,7 @@ namespace CmsData.Finance
         public TransactionResponse PayWithCheck(int peopleId, decimal amt, string routing, string acct, string description, int tranid, string email, string first, string middle, string last, string suffix, string addr, string addr2, string city, string state, string country, string zip, string phone)
         {
             var achCharge = new AchCharge(
+                _isTesting,
                 _apiKey,
                 _merch_ach_id,
                 new Ach
