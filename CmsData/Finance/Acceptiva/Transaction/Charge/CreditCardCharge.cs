@@ -8,7 +8,7 @@ namespace CmsData.Finance.Acceptiva.Transaction.Charge
 
         public CreditCardCharge(string apiKey, string cc_id, CreditCard creditCard,
             Payer payer, decimal amt, string tranId, string tranDesc)
-            :base(apiKey, cc_id, paymentTypeCC, amt, tranId, tranId, payer)
+            :base(apiKey, cc_id, paymentTypeCC, amt, tranId, tranDesc, payer)
         {
             Data["params[0][cc_num]"] = creditCard.CardNum;
             Data["params[0][cc_exp_mo]"] = creditCard.CardExpiration.Substring(0, 2);

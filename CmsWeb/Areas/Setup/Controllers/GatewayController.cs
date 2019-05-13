@@ -168,5 +168,13 @@ namespace CmsWeb.Areas.Setup.Controllers
 
             return GetGatewayAccounts();
         }
+
+        [HttpGet]
+        [Route("~/Gateway/GetGatewayConfig/{ProcessType}/{Key}")]
+        public JsonResult GetGatewayConfig(int ProcessType, string Key)
+        {
+            string PushpayMerchant = new CmsData.MultipleGatewayUtils(CurrentDatabase).Setting(Key, "", ProcessType);
+            return Json(PushpayMerchant, JsonRequestBehavior.AllowGet);
+        }
     }
 }

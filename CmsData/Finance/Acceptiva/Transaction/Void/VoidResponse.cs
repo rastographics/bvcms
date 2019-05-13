@@ -12,7 +12,7 @@ namespace CmsData.Finance.Acceptiva.Transaction.Void
         [JsonProperty(PropertyName = "orig_trans_id_str")]
         public string OrigTransIdStr { get; set; }
         [JsonProperty(PropertyName = "refund_trans_id_strs")]
-        public string RefundTransIdStrs { get; set; }
+        public string[] RefundTransIdStrs { get; set; }
         [JsonProperty(PropertyName = "trans_datetime")]
         public DateTime TransDatetime { get; set; }
         [JsonProperty(PropertyName = "trans_status")]
