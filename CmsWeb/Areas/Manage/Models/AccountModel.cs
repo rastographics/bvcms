@@ -131,7 +131,7 @@ namespace CmsWeb.Models
             {
                 var db = DbUtil.Db;
                 DbUtil.LogActivity("iphone leadersonly check " + user.Username);
-                if (!Util2.OrgLeadersOnly && roleProvider.IsUserInRole(user.Username, "OrgLeadersOnly", db))
+                if (!Util2.OrgLeadersOnly && roleProvider.IsUserInRole(user.Username, "OrgLeadersOnly"))
                 {
                     Util2.OrgLeadersOnly = true;
                     DbUtil.Db.SetOrgLeadersOnly();
@@ -172,10 +172,10 @@ namespace CmsWeb.Models
             {
                 var db = DbUtil.Db;
                 DbUtil.LogActivity("iphone leadersonly check " + user.Username);
-                if (!Util2.OrgLeadersOnly && roleProvider.IsUserInRole(user.Username, "OrgLeadersOnly", db))
+                if (!Util2.OrgLeadersOnly && roleProvider.IsUserInRole(user.Username, "OrgLeadersOnly"))
                 {
                     Util2.OrgLeadersOnly = true;
-                    DbUtil.Db.SetOrgLeadersOnly();
+                    db.SetOrgLeadersOnly();
                     DbUtil.LogActivity("SetOrgLeadersOnly");
                 }
                 Util2.OrgLeadersOnlyChecked = true;
@@ -333,7 +333,7 @@ namespace CmsWeb.Models
                     break;
                 }
 
-                if (CMSMembershipProvider.provider.ValidateUser(u.Username, password))
+                if (System.Web.Security.Membership.Provider.ValidateUser(u.Username, password))
                 {
                     db.Refresh(RefreshMode.OverwriteCurrentValues, u);
                     user = u;
