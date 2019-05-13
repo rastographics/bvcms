@@ -19,7 +19,7 @@ using UtilityExtensions;
 namespace CmsWeb.Areas.Setup.Controllers
 {
     [RouteArea("Setup", AreaPrefix = "Pushpay")]
-    public class PushpayController : CmsController
+    public class PushpayController : CMSBaseController
     {
         private PushpayConnection _pushpay;
         private PushpayPayment _pushpayPayment;
@@ -32,7 +32,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             PaymentProcessTypes processType = PaymentProcessTypes.OneTimeGiving;
             try
             {
-                processType = (PaymentProcessTypes)CurrentHttpContext.Session["PaymentProcessType"];
+                processType = (PaymentProcessTypes)requestManager.CurrentHttpContext.Session["PaymentProcessType"];
             }
             catch (Exception e)
             {
