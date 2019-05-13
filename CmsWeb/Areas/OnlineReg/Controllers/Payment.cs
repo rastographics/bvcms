@@ -40,6 +40,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [HttpPost]
         public ActionResult ProcessPayment(PaymentForm pf)
         {
+            if (pf.ProcessType == PaymentProcessTypes.EmpytProcess)
+            {
+                pf.ProcessType = PaymentProcessTypes.OnlineRegistration;
+            }
             // One time or Reg...
             Response.NoCache();
 
