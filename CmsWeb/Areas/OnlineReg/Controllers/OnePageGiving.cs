@@ -34,7 +34,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     return View("OnePageGiving/NotActive", m);
                 }
 
-                if (m.org.IsMissionTrip.IsNotNull() ? true : false)
+                if ((m.org.IsMissionTrip.IsNotNull() && m.org.IsMissionTrip == true) ? true : false)
                 {
                     m.ProcessType = PaymentProcessTypes.OneTimeGiving;
                 }

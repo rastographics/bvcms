@@ -29,7 +29,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             {
                 var m = new OnlineRegModel(Request, CurrentDatabase, id, testing, email, login, source);
 
-                if (m.org.IsMissionTrip.IsNotNull() ? true : false)
+                if ((m.org.IsMissionTrip.IsNotNull() && m.org.IsMissionTrip == true) ? true : false)
                 {
                     m.ProcessType = PaymentProcessTypes.OneTimeGiving;
                 }   
@@ -44,16 +44,16 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
                 int? GatewayId = new MultipleGatewayUtils(CurrentDatabase).GatewayId(m.ProcessType);
 
-                ViewBag.Header = m.Header;
-                ViewBag.Instructions = m.Instructions;
-
                 if (GatewayId.IsNull())
                 {
                     return View("OnePageGiving/NotConfigured");
                 }
 
+
                 if ((int)GatewayTypes.Pushpay == GatewayId && string.IsNullOrEmpty(new MultipleGatewayUtils(CurrentDatabase).Setting("PushpayMerchant", "", (int)m.ProcessType)))
                 {
+                    ViewBag.Header = m.Header;
+                    ViewBag.Instructions = m.Instructions;
                     return View("OnePageGiving/NotConfigured");
                 }
 
