@@ -27,7 +27,7 @@
                     }
                     else {
                         console.log(response);
-                        warning_swal('Ups!', 'Something went wrong, try again later');
+                        warning_swal('Warning!', 'Something went wrong, try again later');
                     }
                 },
                 err => {
@@ -45,7 +45,7 @@
                     }
                     else {
                         console.log(response);
-                        warning_swal('Ups!', 'Something went wrong, try again later');
+                        warning_swal('Warning!', 'Something went wrong, try again later');
                     }
                 },
                 err => {
@@ -70,7 +70,7 @@
                     }
                     else {
                         console.log(response);
-                        warning_swal('Ups!', 'Something went wrong, try again later');
+                        warning_swal('Warning!', 'Something went wrong, try again later');
                     }
                 },
                 err => {
@@ -88,7 +88,7 @@
                     }
                     else {
                         console.log(response);
-                        warning_swal('Ups!', 'Something went wrong, try again later');
+                        warning_swal('Warning!', 'Something went wrong, try again later');
                     }
                 },
                 err => {
@@ -105,7 +105,7 @@
                     }
                     else {
                         console.log(response);
-                        warning_swal('Ups!', 'Something went wrong, try again later');
+                        warning_swal('Warning!', 'Something went wrong, try again later');
                     }
                 },
                 err => {
@@ -163,7 +163,7 @@
                     }
                     else {
                         console.log(response);
-                        warning_swal('Ups!', 'Something went wrong, try again later');
+                        warning_swal('Warning!', 'Something went wrong, try again later');
                     }
                 },
                 err => {
@@ -210,7 +210,7 @@
                         }
                         else {
                             console.log(response);
-                            warning_swal('Ups!', 'Something went wrong, try again later');
+                            warning_swal('Warning!', 'Something went wrong, try again later');
                         }
                     },
                     err => {
@@ -235,7 +235,7 @@
                         }
                         else {
                             console.log(response);
-                            warning_swal('Ups!', 'Something went wrong, try again later');
+                            warning_swal('Warning!', 'Something went wrong, try again later');
                         }
                     },
                     err => {
@@ -256,7 +256,7 @@
                     }
                     else {
                         console.log(response);
-                        warning_swal('Ups!', 'Something went wrong, try again later');
+                        warning_swal('Warning!', 'Something went wrong, try again later');
                     }
                 },
                 err => {

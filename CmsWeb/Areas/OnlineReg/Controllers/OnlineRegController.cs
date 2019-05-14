@@ -389,7 +389,6 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [HttpGet]
         public ActionResult CompleteRegistration()
         {
-            // Start Registration
             Response.NoCache();
             var s = (string)TempData["onlineregmodel"];
             if (s == null)

@@ -163,7 +163,7 @@ Please contact the Finance office at the church."
             int? GatewayId = new MultipleGatewayUtils(db).GatewayId(PaymentProcessTypes.RecurringGiving);
 
             if (GatewayId.IsNull())
-                throw new Exception("This process dosn't has a Gateway configured");
+                throw new Exception("This process does not have a gateway configured");
 
             bool IsTesting = false;
 

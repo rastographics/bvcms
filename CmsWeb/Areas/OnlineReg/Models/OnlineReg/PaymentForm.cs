@@ -790,7 +790,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             Transaction ti = DbUtil.Db.Transactions.Where(p => p.Id == extTransactionId).FirstOrDefault();
             orgId = ti.OrgId.Value;
 
-            HttpContext.Current.Session["FormId"] = FormId;
+            HttpContextFactory.Current.Session["FormId"] = FormId;
             if (m != null)
             {
                 m.DatumId = DatumId; // todo: not sure this is necessary

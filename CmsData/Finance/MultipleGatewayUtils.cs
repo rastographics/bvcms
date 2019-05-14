@@ -18,7 +18,10 @@ namespace CmsData
         {
             int? GatewayAccountId = db.PaymentProcess.Where(x => x.ProcessId == ProcessId).Select(x => x.GatewayAccountId).FirstOrDefault();
             if (name == null)
+            {
                 return defaultvalue;
+            }
+
             var list = db.GatewayDetails.Where(x => x.GatewayAccountId == GatewayAccountId).ToDictionary(x => x.GatewayDetailName.Trim(), x => x.GatewayDetailValue);
 
             if (list == null)
@@ -45,7 +48,9 @@ namespace CmsData
         {
             var setting = Setting(name, null, ProcessId);
             if (!setting.HasValue())
+            {
                 return defaultValue;
+            }
 
             return setting.ToLower() == "true";
         }
@@ -65,7 +70,7 @@ namespace CmsData
         public bool GatewayTesting(PaymentProcessTypes? processType)
         {
             var User = db.Users.SingleOrDefault(us => us.UserId == Util.UserId);
-            return User.Roles.Contains("Developer") ? Setting("GatewayTesting", (int)processType) : false;
+            return User.InRole("Developer") ? Setting("GatewayTesting", (int)processType) : false;
         }
 
         public PaymentProcessTypes? ProcessByTransactionDescription(string Description)

@@ -2,10 +2,10 @@
 IF EXISTS (
 	SELECT type_desc, type
 	FROM SYS.OBJECTS WITH(NOLOCK)
-	WHERE object_id = OBJECT_ID(N'[dbo].[ImportGatewatSettings]')
+	WHERE object_id = OBJECT_ID(N'[dbo].[ImportGatewaySettings]')
 		AND type IN ( N'FN', N'IF', N'TF', N'FS', N'FT' ))
 	BEGIN
-		DROP FUNCTION [dbo].[ImportGatewatSettings]
+		DROP FUNCTION [dbo].[ImportGatewaySettings]
 	END
 GO
 
@@ -168,7 +168,7 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where
 	END
 GO
 
-CREATE FUNCTION [ImportGatewatSettings]
+CREATE FUNCTION [ImportGatewaySettings]
 (
 @Key[nvarchar](125)
 )
@@ -177,7 +177,7 @@ AS
 	BEGIN
 		DECLARE @Value[nvarchar](125);
 		SELECT @Value = (SELECT TOP 1 [Setting] FROM [Setting]
-						WHERE [Id] LIKE @Key);
+						WHERE [Id] = @Key);
 		IF @Value IS NULL
 		BEGIN
 			SELECT @Value = '';
@@ -204,23 +204,23 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where
 		,[GatewayDetailValue]
 		,[IsBoolean])
 		VALUES
-		(1, 'GatewayTesting', 'true', 1),
-		(1, 'PushpayMerchant', (SELECT [dbo].[ImportGatewatSettings]('PushpayMerchant')), 0),
-		(2, 'GatewayTesting', 'true', 1),
-		(2, 'M_ID', (SELECT [dbo].[ImportGatewatSettings]('M_ID')), 0),
-		(2, 'M_KEY', (SELECT [dbo].[ImportGatewatSettings]('M_KEY')), 0),
-		(3, 'GatewayTesting', 'true', 1),
-		(3, 'TNBUsername', (SELECT [dbo].[ImportGatewatSettings]('TNBUsername')), 0),
-		(3, 'TNBPassword', (SELECT [dbo].[ImportGatewatSettings]('TNBPassword')), 0),
-		(4, 'GatewayTesting', 'true', 1),
-		(4, 'x_login', (SELECT [dbo].[ImportGatewatSettings]('x_login')),0),
-		(4, 'x_tran_key', (SELECT [dbo].[ImportGatewatSettings]('x_tran_key')),0);
-		--(5, 'GatewayTesting', 'true', 1),--
-		--(5, 'AcceptivaApiKey', (SELECT [dbo].[ImportGatewatSettings]('AcceptivaApiKey')), 0),--
-		--(5, 'AcceptivaAchId', (SELECT [dbo].[ImportGatewatSettings]('AcceptivaAchId')), 0),--
-		--(5, 'AcceptivaCCId', (SELECT [dbo].[ImportGatewatSettings]('AcceptivaCCId')), 0),--
+		(1, 'GatewayTesting', 'false', 1),
+		(1, 'PushpayMerchant', (SELECT [dbo].[ImportGatewaySettings]('PushpayMerchant')), 0),
+		(2, 'GatewayTesting', 'false', 1),
+		(2, 'M_ID', (SELECT [dbo].[ImportGatewaySettings]('M_ID')), 0),
+		(2, 'M_KEY', (SELECT [dbo].[ImportGatewaySettings]('M_KEY')), 0),
+		(3, 'GatewayTesting', 'false', 1),
+		(3, 'TNBUsername', (SELECT [dbo].[ImportGatewaySettings]('TNBUsername')), 0),
+		(3, 'TNBPassword', (SELECT [dbo].[ImportGatewaySettings]('TNBPassword')), 0),
+		(4, 'GatewayTesting', 'false', 1),
+		(4, 'x_login', (SELECT [dbo].[ImportGatewaySettings]('x_login')),0),
+		(4, 'x_tran_key', (SELECT [dbo].[ImportGatewaySettings]('x_tran_key')),0);
+		--(5, 'GatewayTesting', 'false', 1),--
+		--(5, 'AcceptivaApiKey', (SELECT [dbo].[ImportGatewaySettings]('AcceptivaApiKey')), 0),--
+		--(5, 'AcceptivaAchId', (SELECT [dbo].[ImportGatewaySettings]('AcceptivaAchId')), 0),--
+		--(5, 'AcceptivaCCId', (SELECT [dbo].[ImportGatewaySettings]('AcceptivaCCId')), 0),--
 		--(5, 'UseSavingAccounts', 'true', 1);--
-	DROP FUNCTION [ImportGatewatSettings]
+	DROP FUNCTION [ImportGatewaySettings]
 	END
 GO
 

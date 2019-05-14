@@ -72,7 +72,7 @@ SELECT BalancesId
 		,People
 		,CanVoid
 		,CONVERT(BIT, 
-			CASE WHEN CanVoid = 1 AND (Batchtyp = 'eft' OR Batchtyp = 'bankcard')
+			CASE WHEN CanVoid = 1 AND Batchtyp IN ('eft', 'bankcard')
 			THEN 1 ELSE 0 END) CanCredit
 		,IsAdjustment
 FROM trans
