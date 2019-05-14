@@ -1,10 +1,10 @@
 ﻿using CmsData.Finance.Acceptiva.Core;
-using CmsData.Finance.Acceptiva.Core.Helpers;
 using CmsData.Finance.Acceptiva.Get;
 using CmsData.Finance.Acceptiva.Store;
 using CmsData.Finance.Acceptiva.Transaction.Charge;
 using CmsData.Finance.Acceptiva.Transaction.Get;
 using CmsData.Finance.Acceptiva.Transaction.Refund;
+using CmsData.Finance.Acceptiva.Transaction.Settlement;
 using CmsData.Finance.Acceptiva.Transaction.Void;
 using System;
 using System.Collections.Generic;
@@ -21,6 +21,7 @@ namespace CmsData.Finance
         private readonly string _merch_ach_id;
         private readonly string _merch_cc_id;
         private readonly bool _isTesting = false;
+        private readonly bool _automaticSettle = false;
         private readonly CMSDataContext db;
         private readonly PaymentProcessTypes ProcessType;
 
@@ -37,6 +38,9 @@ namespace CmsData.Finance
                 _merch_ach_id = "dKdDFtqC";
                 _merch_cc_id = "R6MLUevR";
                 _isTesting = true;
+                //If this setting exists we settle transactions manually, so we can refund.
+                //For live environment settlements are automatic 1 day later
+                _automaticSettle = db.Setting("AutomaticSettle");
             }
             else
             {
@@ -148,7 +152,12 @@ namespace CmsData.Finance
 
         public TransactionResponse PayWithCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description, int tranid, string cardcode, string email, string first, string last, string addr, string addr2, string city, string state, string country, string zip, string phone)
         {
-            return CreditCardCharge(peopleId, amt, cardnumber, expires, description, tranid, cardcode, email, first, last, addr, addr2, city, state, country, zip, phone);
+            var response = CreditCardCharge(peopleId, amt, cardnumber, expires, description, tranid, cardcode, email, first, last, addr, addr2, city, state, country, zip, phone);
+
+            if (_automaticSettle && response.Approved)
+                SettleTransaction(response.TransactionId);
+
+            return response;
         }
 
         public TransactionResponse PayWithCheck(int peopleId, decimal amt, string routing, string acct, string description, int tranid, string email, string first, string middle, string last, string suffix, string addr, string addr2, string city, string state, string country, string zip, string phone)
@@ -182,13 +191,18 @@ namespace CmsData.Finance
 
             var response = achCharge.Execute();
 
-            return new TransactionResponse
+            var transactionResponse = new TransactionResponse
             {
                 Approved = response.Response.Status == "success" ? true : false,
                 AuthCode = response.Response.TransStatus,
                 Message = response.Response.TransStatusMsg,
                 TransactionId = response.Response.TransIdStr
             };
+
+            if (_automaticSettle && transactionResponse.Approved)
+                SettleTransaction(response.Response.TransIdStr);
+
+            return transactionResponse;
         }
 
         public TransactionResponse AuthCreditCardVault(int peopleId, decimal amt, string description, int tranid)
@@ -207,6 +221,7 @@ namespace CmsData.Finance
 
         public TransactionResponse PayWithVault(int peopleId, decimal amt, string description, int tranid, string type)
         {
+            TransactionResponse transactionResponse;
             var person = db.LoadPersonById(peopleId);
             var paymentInfo = person.PaymentInfo();
             if (paymentInfo == null)
@@ -217,14 +232,19 @@ namespace CmsData.Finance
                 };
 
             if (type == PaymentType.CreditCard) // credit card
-                return StoredPayerCharge(_merch_cc_id, paymentInfo.AcceptivaPayerId, amt, tranid.ToString(), description, 1, person.LastName, person.FirstName);
+                transactionResponse = StoredPayerCharge(_merch_cc_id, paymentInfo.AcceptivaPayerId, amt, tranid.ToString(), description, 1, person.LastName, person.FirstName);
             else // bank account
-                return StoredPayerCharge(_merch_ach_id, paymentInfo.AcceptivaPayerId, amt, tranid.ToString(), description, 2, person.LastName, person.FirstName);
+                transactionResponse = StoredPayerCharge(_merch_ach_id, paymentInfo.AcceptivaPayerId, amt, tranid.ToString(), description, 2, person.LastName, person.FirstName);
+
+            if (_automaticSettle && transactionResponse.Approved)
+                SettleTransaction(transactionResponse.TransactionId);
+
+            return transactionResponse;
         }
 
         public BatchResponse GetBatchDetails(DateTime start, DateTime end)
         {
-            var GetTransDetails = new GetSettledTransDetails(_apiKey, start, end);
+            var GetTransDetails = new GetSettledTransDetails(_isTesting, _apiKey, start, end);
             var transactionsList = GetTransDetails.Execute();
 
             var batchTransactions = new List<BatchTransaction>();
@@ -249,12 +269,12 @@ namespace CmsData.Finance
             }
 
             return new BatchResponse(batchTransactions);
-        }        
+        }
 
         public ReturnedChecksResponse GetReturnedChecks(DateTime start, DateTime end)
         {
             var returnedChecks = new List<ReturnedCheck>();
-            var getECheckReturned = new GetReturnedEChecks(_apiKey, start, end);
+            var getECheckReturned = new GetReturnedEChecks(_isTesting, _apiKey, start, end);
             var response = getECheckReturned.Execute();
 
             foreach (var returnedCheck in response)
@@ -291,6 +311,7 @@ namespace CmsData.Finance
         private TransactionResponse CreditCardCharge(int peopleId, decimal amt, string cardnumber, string expires, string description, int tranid, string cardcode, string email, string first, string last, string addr, string addr2, string city, string state, string country, string zip, string phone)
         {
             var cardCharge = new CreditCardCharge(
+                _isTesting,
                 _apiKey,
                 _merch_cc_id,
                 new CreditCard
@@ -329,7 +350,7 @@ namespace CmsData.Finance
 
         private TransactionResponse StoredPayerCharge(string merchId, string acceptivaPayerId, decimal amt, string tranId, string description, int paymentType, string lname, string fname)
         {
-            var storedPayerCharge = new StoredPayerCharge(_apiKey, merchId, acceptivaPayerId, amt, tranId, description, paymentType, lname, fname);
+            var storedPayerCharge = new StoredPayerCharge(_isTesting, _apiKey, merchId, acceptivaPayerId, amt, tranId, description, paymentType, lname, fname);
             var response = storedPayerCharge.Execute();
 
             return new TransactionResponse
@@ -341,9 +362,15 @@ namespace CmsData.Finance
             };
         }
 
+        private void SettleTransaction(string transactionId)
+        {
+            var settleTransaction = new SettleTransaction(_isTesting, _apiKey, transactionId);
+            settleTransaction.Execute();
+        }
+
         private TransactionResponse VoidTransaction(string reference)
         {
-            var voidTrans = new VoidTrans(_apiKey, reference);
+            var voidTrans = new VoidTrans(_isTesting, _apiKey, reference);
             var response = voidTrans.Execute();
 
             return new TransactionResponse
@@ -358,7 +385,7 @@ namespace CmsData.Finance
         private TransactionResponse RefundTransaction(string reference, decimal amt)
         {
             int tranId = db.Transactions.SingleOrDefault(p => p.TransactionId == reference).Id;
-            var voidTrans = new RefundTransPartial(_apiKey, reference, tranId, amt);
+            var voidTrans = new RefundTransPartial(_isTesting, _apiKey, reference, tranId, amt);
             var response = voidTrans.Execute();
 
             return new TransactionResponse
@@ -402,7 +429,7 @@ namespace CmsData.Finance
 
         private string GetAcceptivaPayerId(int peopleId)
         {
-            var getPayerData = new GetPayerData(_apiKey, peopleId);
+            var getPayerData = new GetPayerData(_isTesting, _apiKey, peopleId);
             var response = getPayerData.Execute();
             if (response.Response.Status != "success")
             {
@@ -419,6 +446,7 @@ namespace CmsData.Finance
             //var storePayer = new StorePayer();
 
             var storePayer = new StorePayer(
+                _isTesting,
                 _apiKey,
                 new Payer
                 {
@@ -454,6 +482,7 @@ namespace CmsData.Finance
         private string StoreNewPayerData(Person person, PaymentInfo paymentInfo, string cardNumber, string expires, string account, string routing)
         {
             var storePayer = new StoreNewPayer(
+                _isTesting,
                 _apiKey,
                 new Payer
                 {
