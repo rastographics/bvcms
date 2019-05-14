@@ -163,7 +163,8 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where
 		('Pushpay', 1),
 		('Sage', 2),
 		('Transnational', 2),
-		('AuthorizeNet', 2)
+		('AuthorizeNet', 2),
+		('BluePay', 2)
 		--('Acceptiva', 3)--
 	END
 GO
@@ -176,7 +177,7 @@ RETURNS [nvarchar](125)
 AS
 	BEGIN
 		DECLARE @Value[nvarchar](125);
-		SELECT @Value = (SELECT TOP 1 [Setting] FROM [Setting]
+		SELECT @Value = (SELECT TOP 1 [Setting] FROM [dbo].[Setting]
 						WHERE [Id] = @Key);
 		IF @Value IS NULL
 		BEGIN
@@ -214,13 +215,24 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where
 		(3, 'TNBPassword', (SELECT [dbo].[ImportGatewaySettings]('TNBPassword')), 0),
 		(4, 'GatewayTesting', 'false', 1),
 		(4, 'x_login', (SELECT [dbo].[ImportGatewaySettings]('x_login')),0),
-		(4, 'x_tran_key', (SELECT [dbo].[ImportGatewaySettings]('x_tran_key')),0);
+		(4, 'x_tran_key', (SELECT [dbo].[ImportGatewaySettings]('x_tran_key')),0),
+		(5, 'GatewayTesting', 'false', 1),
+		(5, 'bluepay_accountId', (SELECT [dbo].[ImportGatewaySettings]('bluepay_accountId')),0),
+		(5, 'bluepay_secretKey', (SELECT [dbo].[ImportGatewaySettings]('bluepay_secretKey')),0);
 		--(5, 'GatewayTesting', 'false', 1),--
 		--(5, 'AcceptivaApiKey', (SELECT [dbo].[ImportGatewaySettings]('AcceptivaApiKey')), 0),--
 		--(5, 'AcceptivaAchId', (SELECT [dbo].[ImportGatewaySettings]('AcceptivaAchId')), 0),--
 		--(5, 'AcceptivaCCId', (SELECT [dbo].[ImportGatewaySettings]('AcceptivaCCId')), 0),--
 		--(5, 'UseSavingAccounts', 'true', 1);--
-	DROP FUNCTION [ImportGatewaySettings]
+	
+		IF EXISTS (
+			SELECT type_desc, type
+			FROM SYS.OBJECTS WITH(NOLOCK)
+			WHERE object_id = OBJECT_ID(N'[dbo].[ImportGatewaySettings]')
+				AND type IN ( N'FN', N'IF', N'TF', N'FS', N'FT' ))
+			BEGIN
+				DROP FUNCTION [dbo].[ImportGatewaySettings]
+			END
 	END
 GO
 
@@ -241,8 +253,9 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where
 		('Pushpay', 1),
 		('Sage', 2),
 		('Transnational', 3),
-		('AuthorizeNet', 4)
-		--('Acceptiva', 5)--
+		('AuthorizeNet', 4),
+		('BluePay', 5)
+		--('Acceptiva', 6)--
 	END
 GO
 
@@ -319,4 +332,10 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.VIEWS where
 		ON [dbo].[GatewayAccount].[GatewayAccountId] = [dbo].[GatewayDetails].[GatewayAccountId]
 		'
 	END	
+GO
+
+UPDATE [dbo].[PaymentProcess]
+SET [GatewayAccountId] = (SELECT a.GatewayAccountId 
+						  FROM [dbo].[GatewayAccount] a JOIN 
+						  [dbo].[Setting] s on s.Setting = a.GatewayAccountName)
 GO

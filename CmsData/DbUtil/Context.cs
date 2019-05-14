@@ -1901,6 +1901,8 @@ This search uses multiple steps which cannot be duplicated in a single query.
                     return new AcceptivaGateway(this, testing, ProcessType);
                 case (int)GatewayTypes.AuthorizeNet:
                     return new AuthorizeNetGateway(this, testing, ProcessType);
+                case (int)GatewayTypes.BluePay:
+                    return new BluePayGateway(this, testing, ProcessType);
                 default:
                     break;
             }

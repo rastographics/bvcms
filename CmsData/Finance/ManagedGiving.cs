@@ -185,6 +185,12 @@ Please contact the Finance office at the church."
                     break;
                 // case (int)GatewayTypes.Acceptiva:
                 // break;
+                case (int)GatewayTypes.BluePay:
+                    IsTesting = new MultipleGatewayUtils(db).GatewayTesting(PaymentProcessTypes.RecurringGiving);
+                    if ((pi.PreferredGivingType == "B") ||
+                        (pi.PreferredGivingType == "C" && string.IsNullOrEmpty(pi.BluePayCardVaultId)))
+                        return db.Gateway(IsTesting, PaymentProcessTypes.RecurringGiving);
+                    break;
                 default:
                     break;
             }
