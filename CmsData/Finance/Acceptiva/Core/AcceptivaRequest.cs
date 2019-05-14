@@ -13,9 +13,9 @@ namespace CmsData.Finance.Acceptiva.Core
 
         public NameValueCollection Data { get; protected set; }
 
-        protected AcceptivaRequest(bool isSanbox, string apiKey, string action)
+        protected AcceptivaRequest(bool isTesting, string apiKey, string action)
         {
-            if (isSanbox)
+            if (isTesting)
                 url = SanboxURL;              
             
             Data = new NameValueCollection

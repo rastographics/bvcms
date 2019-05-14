@@ -602,8 +602,9 @@
     <Compile Include="Finance\Acceptiva\Transaction\Get\GetReturnedEChecks.cs" />
     <Compile Include="Finance\Acceptiva\Transaction\Get\GetSettledTransDetails.cs" />
     <Compile Include="Finance\Acceptiva\Transaction\Refund\RefundTransPartial.cs" />
+    <Compile Include="Finance\Acceptiva\Transaction\Settlement\SettleTransaction.cs" />
     <Compile Include="Finance\Acceptiva\Transaction\TransItem.cs" />
-    <Compile Include="Finance\Acceptiva\Transaction\Void\VoidResponse.cs" />
+    <Compile Include="Finance\Acceptiva\Transaction\TransactionResponse.cs" />
     <Compile Include="Finance\Acceptiva\Get\GetPayerData.cs" />
     <Compile Include="Finance\Acceptiva\Store\StoreNewPayer.cs" />
     <Compile Include="Finance\Acceptiva\Store\StorePayer.cs" />

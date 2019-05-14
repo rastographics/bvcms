@@ -2,16 +2,16 @@
 using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace CmsData.Finance.Acceptiva.Transaction.Void
+namespace CmsData.Finance.Acceptiva.Transaction.Settlement
 {
-    internal class VoidTrans: AcceptivaRequest
+    internal class SettleTransaction : AcceptivaRequest
     {
-        private const string action = "void_trans";
+        private const string action = "settle_trans";
 
-        public VoidTrans(bool isTesting, string apiKey, string reference)
+        public SettleTransaction(bool isTesting, string apiKey, string transId)
             : base(isTesting, apiKey, action)
         {
-            Data["params[0][trans_id_str]"] = reference;
+            Data["params[0][trans_id_str]"] = transId;
         }
 
         public new AcceptivaResponse<TransactionResponse> Execute()
