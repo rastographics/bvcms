@@ -145,7 +145,7 @@ namespace CmsData
 
         public static string GetHost(HttpContextBase httpContext)
         {
-            var host = (httpContext.Request.Headers["host"] ?? httpContext.Request.Url.Authority).Split('.', ':').First();
+            var host = (httpContext.Request.Url.Authority).Split('.', ':').First();
             return Util.PickFirst(ConfigurationManager.AppSettings["host"], host);
         }
 
