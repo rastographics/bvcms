@@ -1883,7 +1883,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
 
         public IGateway Gateway(bool testing = false, PaymentProcessTypes ProcessType = PaymentProcessTypes.RecurringGiving)
         {
-            int? GatewayId = new MultipleGatewayUtils(this).GatewayId(ProcessType);
+            int? GatewayId = MultipleGatewayUtils.GatewayId(ProcessType);
 
             if (GatewayId.IsNull())
                 throw new Exception("This process is not configured yet, please contact support");

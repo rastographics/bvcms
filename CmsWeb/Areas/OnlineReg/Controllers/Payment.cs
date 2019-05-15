@@ -82,7 +82,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return Message("Found Card Tester");
             }
 
-            int? GatewayId = new MultipleGatewayUtils(CurrentDatabase).GatewayId(m?.ProcessType ?? pf.ProcessType);
+            int? GatewayId = MultipleGatewayUtils.GatewayId(m?.ProcessType ?? pf.ProcessType);
 
             if (CurrentDatabase.Setting("UseRecaptcha") && GatewayId != (int)GatewayTypes.Pushpay)
             {
@@ -319,12 +319,12 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return Message("no outstanding transaction");
             }
 
-            int? GatewayId = new MultipleGatewayUtils(CurrentDatabase).GatewayId(PaymentProcessTypes.OnlineRegistration);
+            int? GatewayId = MultipleGatewayUtils.GatewayId(PaymentProcessTypes.OnlineRegistration);
 
             if ((int)GatewayTypes.Pushpay == GatewayId)
             {
                 ViewBag.Header = "Payment Process";                
-                if (string.IsNullOrEmpty(new MultipleGatewayUtils(CurrentDatabase).Setting("PushpayMerchant", "", (int)PaymentProcessTypes.OnlineRegistration)))
+                if (string.IsNullOrEmpty(MultipleGatewayUtils.Setting("PushpayMerchant", "", (int)PaymentProcessTypes.OnlineRegistration)))
                     return View("OnePageGiving/NotConfigured");
 
                 Session["PaymentProcessType"] = PaymentProcessTypes.OnlineRegistration;

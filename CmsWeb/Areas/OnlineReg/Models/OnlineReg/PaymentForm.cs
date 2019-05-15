@@ -384,7 +384,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private static void ClearMaskedNumbers(PaymentForm pf, PaymentInfo pi)
         {
-            int? GatewayId = new MultipleGatewayUtils(DbUtil.Db).GatewayId(pf.ProcessType);
+            int? GatewayId = MultipleGatewayUtils.GatewayId(pf.ProcessType);
 
             var clearBankDetails = false;
             var clearCreditCardDetails = false;

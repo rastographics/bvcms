@@ -103,7 +103,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                      select tt;
             var t0 = qq.First();
 
-            var gw = CurrentDatabase.Gateway(t.Testing ?? false, new MultipleGatewayUtils(CurrentDatabase).ProcessByTransactionDescription(t0.Description));
+            var gw = CurrentDatabase.Gateway(t.Testing ?? false, MultipleGatewayUtils.ProcessByTransactionDescription(t0.Description));
             TransactionResponse resp = null;
             var re = t.TransactionId;
             if (re.Contains("(testing"))
