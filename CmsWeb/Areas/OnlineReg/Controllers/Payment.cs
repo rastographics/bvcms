@@ -82,7 +82,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return Message("Found Card Tester");
             }
 
-            int? GatewayId = new MultipleGatewayUtils(CurrentDatabase).GatewayId(m.ProcessType);
+            int? GatewayId = new MultipleGatewayUtils(CurrentDatabase).GatewayId(m?.ProcessType ?? pf.ProcessType);
 
             if (CurrentDatabase.Setting("UseRecaptcha") && GatewayId != (int)GatewayTypes.Pushpay)
             {

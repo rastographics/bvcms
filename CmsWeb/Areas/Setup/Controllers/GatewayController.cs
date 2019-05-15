@@ -26,13 +26,6 @@ namespace CmsWeb.Areas.Setup.Controllers
         }
 
         [HttpGet]
-        [Route("~/Gateway/IsDeveloper")]
-        public bool IsDeveloper()
-        {
-            return CurrentUser.IsInRole("Developer");
-        }
-
-        [HttpGet]
         [Route("~/Gateway/GetProcesses")]
         public JsonResult GetProcesses()
         {
@@ -64,6 +57,10 @@ namespace CmsWeb.Areas.Setup.Controllers
         public JsonResult GetGatewayDetails()
         {
             var GatewayDetails = CurrentDatabase.GatewayDetails.ToList();
+            if (CurrentUser.IsInRole("Developer"))
+            {
+                GatewayDetails.RemoveAll(d => d.GatewayDetailName == "GatewayTesting");
+            }
             return Json(GatewayDetails, JsonRequestBehavior.AllowGet);
         }
 
@@ -72,6 +69,10 @@ namespace CmsWeb.Areas.Setup.Controllers
         public JsonResult GetGatewayTemplate(int GatewayId)
         {
             var GatewayConfigurationTemplate = CurrentDatabase.GatewayConfigurationTemplate.Where(x => x.GatewayId == GatewayId).ToList();
+            if (CurrentUser.IsInRole("Developer"))
+            {
+                GatewayConfigurationTemplate.RemoveAll(d => d.GatewayDetailName == "GatewayTesting");
+            }
             return Json(GatewayConfigurationTemplate, JsonRequestBehavior.AllowGet);
         }
 

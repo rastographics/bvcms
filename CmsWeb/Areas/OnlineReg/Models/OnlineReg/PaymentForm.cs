@@ -173,7 +173,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 Description = Description,
                 OrgId = OrgId,
                 Url = URL,
-                TransactionGateway = OnlineRegModel.GetTransactionGateway(),
+                TransactionGateway = OnlineRegModel.GetTransactionGateway(PaymentProcessTypes.OnlineRegistration),
                 Address = Address.Truncate(50),
                 Address2 = Address2.Truncate(50),
                 City = City,
@@ -656,7 +656,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
 
             TransactionResponse tinfo;
-            var gw = CurrentDatabase.Gateway(testing, m.ProcessType);
+            var gw = CurrentDatabase.Gateway(testing, m?.ProcessType ?? PaymentProcessTypes.OnlineRegistration);
 
             if (SavePayInfo)
             {
@@ -726,8 +726,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             try
             {
-                PreventNegatives();
-                PreventZero(modelState);
                 if (!modelState.IsValid)
                 {
                     return RouteModel.ProcessPayment();

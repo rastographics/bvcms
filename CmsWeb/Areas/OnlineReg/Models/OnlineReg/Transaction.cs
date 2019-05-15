@@ -6,12 +6,12 @@ namespace CmsWeb.Areas.OnlineReg.Models
 {
     public partial class OnlineRegModel
     {
-        public static string GetTransactionGateway()
+        public static string GetTransactionGateway(PaymentProcessTypes processType = PaymentProcessTypes.OnlineRegistration)
         {
             return (from e in DbUtil.Db.PaymentProcess
                     join d in DbUtil.Db.GatewayAccount on e.GatewayAccountId equals d.GatewayAccountId
                     join f in DbUtil.Db.Gateways on d.GatewayId equals f.GatewayId
-                    where e.ProcessId == (int)TransactionProcessType
+                    where e.ProcessId == (int)processType
                     select new
                     {
                         f.GatewayName
