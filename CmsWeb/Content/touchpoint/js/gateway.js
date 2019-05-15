@@ -14,27 +14,11 @@
         DetailValue: [],
         IsGatewayReadOnly: false,
         UseForAll: false,
-        UseForAllShow: true,
-        IsDeveloper: false
+        UseForAllShow: true
     },
     methods: {
         myFunctionOnLoad: function () {
-            this.$http.get('/Gateway/IsDeveloper').then(
-                response => {
-                    if (response.status === 200) {
-                        this.IsDeveloper = response.body === 'True' ? true: false;
-                        this.GetGatewayDetails();
-                    }
-                    else {
-                        console.log(response);
-                        warning_swal('Warning!', 'Something went wrong, try again later');
-                    }
-                },
-                err => {
-                    console.log(err);
-                    error_swal('Fatal Error!', 'We are working to fix it');
-                }
-            );
+            this.GetGatewayDetails();
         },
         GetGatewayDetails: function () {
             this.$http.get('/Gateway/GetGatewayDetails').then(
