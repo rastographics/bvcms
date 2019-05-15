@@ -1,5 +1,6 @@
 ﻿using CmsData.Finance.Acceptiva.Core;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace CmsData.Finance.Acceptiva.Transaction.Charge
 {
@@ -25,5 +26,7 @@ namespace CmsData.Finance.Acceptiva.Transaction.Charge
         public double AmtProcessed { get; set; }
         [JsonProperty(PropertyName = "payer_id_str")]
         public string PayerIdStr { get; set; }
+        [JsonProperty(PropertyName = "items")]
+        public List<TransItem> Items { get; set; }
     }
 }

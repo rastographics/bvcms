@@ -8,12 +8,12 @@ namespace CmsData.Finance.Acceptiva.Transaction.Refund
     {
         private const string action = "refund_trans_partial";
 
-        public RefundTransPartial(bool isTesting, string apiKey, string reference, int tranId, decimal amount)
+        public RefundTransPartial(bool isTesting, string apiKey, string reference, string idString, decimal amount)
             : base(isTesting, apiKey, action)
         {
             Data["params[0][trans_id_str]"] = reference;
-            Data["params[0][params[0][items][0][id_str]]"] = tranId.ToString();
-            Data["params[0][params[0][items][0][amt]]"] = amount.ToString();
+            Data["params[0][items][0][id_str]"] = idString;
+            Data["params[0][items][0][amt]"] = amount.ToString();
         }
 
         public new AcceptivaResponse<TransactionResponse> Execute()
