@@ -32,17 +32,18 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 if ((m.org.IsMissionTrip.IsNotNull() && m.org.IsMissionTrip == true) ? true : false)
                 {
                     m.ProcessType = PaymentProcessTypes.OneTimeGiving;
-                }   
+                }
                 else
                 {
                     m.ProcessType = m.org.RegistrationTypeId.IsNull() || m.org.RegistrationTypeId == 8 ? PaymentProcessTypes.OneTimeGiving : PaymentProcessTypes.OnlineRegistration;
                 }
-                
+
                 SetHeaders(m);
 
                 int? GatewayId = new MultipleGatewayUtils(CurrentDatabase).GatewayId(m.ProcessType);
+                var gatewayRequired = (m.PayAmount() > 0 || m.ProcessType == PaymentProcessTypes.OneTimeGiving || m.ProcessType == PaymentProcessTypes.RecurringGiving);
 
-                if (GatewayId.IsNull())
+                if (GatewayId.IsNull() && gatewayRequired)
                 {
                     return View("OnePageGiving/NotConfigured");
                 }
