@@ -406,7 +406,7 @@ namespace CmsWeb.Areas.Main.Controllers
                         {
                             continue;
                         }
-                        eq.EmailQueueTos.Add(new EmailQueueTo
+                        CurrentDatabase.EmailQueueTos.InsertOnSubmit(new EmailQueueTo
                         {
                             Id = eq.Id,
                             PeopleId = pid,
