@@ -19,7 +19,7 @@
     },
     methods: {
         myFunctionOnLoad: function () {
-            this.$http.get('../Gateway/IsDeveloper').then(
+            this.$http.get('/Gateway/IsDeveloper').then(
                 response => {
                     if (response.status === 200) {
                         this.IsDeveloper = response.body === 'True' ? true: false;
@@ -37,7 +37,7 @@
             );
         },
         GetGatewayDetails: function () {
-            this.$http.get('../Gateway/GetGatewayDetails').then(
+            this.$http.get('/Gateway/GetGatewayDetails').then(
                 response => {
                     if (response.status === 200) {
                         this.GatewayDetails = response.body;
@@ -55,7 +55,7 @@
             );
         },
         GetProcesses: function () {
-            this.$http.get('../Gateway/GetProcesses').then(
+            this.$http.get('/Gateway/GetProcesses').then(
                 response => {
                     if (response.status === 200) {
                         this.Processes = response.body;
@@ -80,7 +80,7 @@
             );
         },
         GetGateways: function () {
-            this.$http.get('../Gateway/GetGateways').then(
+            this.$http.get('/Gateway/GetGateways').then(
                 response => {
                     if (response.status === 200) {
                         this.Gateways = response.body;
@@ -98,7 +98,7 @@
             );
         },
         GetGatewayAccounts: function () {
-            this.$http.get('../Gateway/GetGatewayAccounts').then(
+            this.$http.get('/Gateway/GetGatewayAccounts').then(
                 response => {
                     if (response.status === 200) {
                         this.GatewayAccounts = response.body;
@@ -153,7 +153,7 @@
         },
         OnChangeGateway: function () {
             this.DetailValue = [];
-            this.$http.get('../Gateway/GetGatewayTemplate/' + this.GatewayId).then(
+            this.$http.get('/Gateway/GetGatewayTemplate/' + this.GatewayId).then(
                 response => {
                     if (response.status === 200) {
                         this.Inputs = response.body;
@@ -194,7 +194,7 @@
             });
 
             if (IsInsert) {
-                this.$http.post('../Gateway/InsertAccount/' + IsInsert, {
+                this.$http.post('/Gateway/InsertAccount/' + IsInsert, {
                     ProcessId: this.ProcessId,
                     GatewayAccountName: this.AccountName,
                     GatewayId: this.GatewayId,
@@ -220,7 +220,7 @@
                 );
             }
             else {
-                this.$http.post('../Gateway/InsertAccount/' + IsInsert, {
+                this.$http.post('/Gateway/InsertAccount/' + IsInsert, {
                     ProcessId: this.ProcessId,
                     GatewayAccountId: this.GatewayAccountId,
                     GatewayAccountInputs: GatewayAccountInputs,
@@ -246,7 +246,7 @@
             }
         },
         deleteProcess: function (ProcessId) {
-            this.$http.post('../Gateway/DeleteProcessAccount', {
+            this.$http.post('/Gateway/DeleteProcessAccount', {
                 ProcessId: ProcessId
             }).then(
                 response => {

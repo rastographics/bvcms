@@ -29,8 +29,7 @@ namespace CmsWeb.Areas.Setup.Controllers
         [Route("~/Gateway/IsDeveloper")]
         public bool IsDeveloper()
         {
-            var User = CurrentDatabase.Users.SingleOrDefault(us => us.UserId == Util.UserId);
-            return User.Roles.Contains("Developer") ? true : false;
+            return CurrentUser.IsInRole("Developer");
         }
 
         [HttpGet]
