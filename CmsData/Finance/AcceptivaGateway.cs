@@ -6,6 +6,7 @@ using CmsData.Finance.Acceptiva.Transaction.Get;
 using CmsData.Finance.Acceptiva.Transaction.Refund;
 using CmsData.Finance.Acceptiva.Transaction.Settlement;
 using CmsData.Finance.Acceptiva.Transaction.Void;
+using MoreLinq;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -193,7 +194,7 @@ namespace CmsData.Finance
             {
                 Approved = response.Response.Status == "success" ? true : false,
                 AuthCode = response.Response.TransStatus,
-                Message = response.Response.TransStatusMsg,
+                Message = $"{response.Response.TransStatusMsg}#{response.Response.Items.First().IdString}",
                 TransactionId = response.Response.TransIdStr
             };
 
@@ -297,7 +298,115 @@ namespace CmsData.Finance
 
         public void CheckBatchSettlements(DateTime start, DateTime end)
         {
-            CheckBatchedTransactions.CheckBatchSettlements(db, this, start, end);
+            string testString = string.Empty;
+            if (_isTesting)
+                testString = "(testing)";
+
+            var response = GetBatchDetails(start, end);
+
+            var batchTransactions = response.BatchTransactions.ToList();
+            var batchTypes = batchTransactions.Select(x => x.BatchType).Distinct();
+
+            foreach (var batchType in batchTypes)
+            {
+                // key it by transaction reference and payment type.
+                var unMatchedKeyedByReference = batchTransactions.Where(x => x.BatchType == batchType).ToDictionary(x => x.Reference + testString, x => x);
+
+                // next let's get all the approved matching transactions from our transaction table by transaction id (reference).
+                var approvedMatchingTransactions = from transaction in db.Transactions
+                                                   where unMatchedKeyedByReference.Keys.Contains(transaction.TransactionId)
+                                                   where transaction.Approved == true
+                                                   select transaction;
+
+                // next key the matching approved transactions that came from our transaction table by the transaction id (reference).
+                var distinctTransactionIds = approvedMatchingTransactions.Select(x => x.TransactionId).Distinct();
+
+                // finally let's get a list of all transactions that need to be inserted, which we don't already have.
+                var transactionsToInsert = from transaction in unMatchedKeyedByReference
+                                           where !distinctTransactionIds.Contains(transaction.Key)
+                                           select transaction.Value;
+
+                var notbefore = DateTime.Parse("6/1/12"); // the date when Sage payments began in BVCMS (?)
+
+                // spin through each transaction and insert them to the transaction table.
+                foreach (var transactionToInsert in transactionsToInsert)
+                {
+                    // get the original transaction.
+                    var originalTransaction = db.Transactions.SingleOrDefault(t => t.TransactionId == transactionToInsert.Reference && transactionToInsert.TransactionDate >= notbefore && t.PaymentType == (batchType == BatchType.Ach ? PaymentType.Ach : PaymentType.CreditCard));
+
+                    // get the first and last name.
+                    string first, last;
+                    Util.NameSplit(transactionToInsert.Name, out first, out last);
+
+                    // get the settlement date, however we are not exactly sure why we add four hours to the settlement date.
+                    // we think it is to handle all timezones and push to the next day??
+                    var settlementDate = transactionToInsert.SettledDate.AddHours(4);
+
+                    // insert the transaction record.
+                    db.Transactions.InsertOnSubmit(new Transaction
+                    {
+                        Name = transactionToInsert.Name,
+                        First = first,
+                        Last = last,
+                        TransactionId = transactionToInsert.Reference + testString,
+                        Amt = transactionToInsert.Amount,
+                        Approved = transactionToInsert.Approved,
+                        Message = transactionToInsert.Message,
+                        TransactionDate = transactionToInsert.TransactionDate,
+                        TransactionGateway = GatewayType.ToLower(),
+                        Settled = settlementDate,
+                        Batch = settlementDate, // this date now will be the same as the settlement date.
+                        Batchref = transactionToInsert.BatchReference,
+                        Batchtyp = transactionToInsert.BatchType == BatchType.Ach ? "eft" : "bankcard",
+                        OriginalId = originalTransaction != null ? (originalTransaction.OriginalId ?? originalTransaction.Id) : (int?)null,
+                        Fromsage = true,
+                        Description = originalTransaction != null ? originalTransaction.Description : $"no description from {GatewayType}, id={transactionToInsert.TransactionId}",
+                        PaymentType = transactionToInsert.BatchType == BatchType.Ach ? PaymentType.Ach : PaymentType.CreditCard,
+                        LastFourCC = transactionToInsert.BatchType == BatchType.CreditCard ? transactionToInsert.LastDigits : null,
+                        LastFourACH = transactionToInsert.BatchType == BatchType.Ach ? transactionToInsert.LastDigits : null
+                    });
+                }
+
+                // next update Existing transactions with new batch data if there are any.
+                foreach (var existingTransaction in approvedMatchingTransactions)
+                {
+                    if (!unMatchedKeyedByReference.ContainsKey(existingTransaction.TransactionId))
+                        continue;
+
+                    // first get the matching batch transaction.
+                    var batchTransaction = unMatchedKeyedByReference[existingTransaction.TransactionId];
+
+                    // get the adjusted settlement date
+                    var settlementDate = batchTransaction.SettledDate.AddHours(4);
+
+                    existingTransaction.Batch = settlementDate; // this date now will be the same as the settlement date.
+                    existingTransaction.Batchref = batchTransaction.BatchReference;
+                    existingTransaction.Batchtyp = batchTransaction.BatchType == BatchType.Ach ? "eft" : "bankcard";
+                    existingTransaction.Settled = settlementDate;
+                    existingTransaction.PaymentType = batchTransaction.BatchType == BatchType.Ach ? PaymentType.Ach : PaymentType.CreditCard;
+                    existingTransaction.LastFourCC = batchTransaction.BatchType == BatchType.CreditCard ? batchTransaction.LastDigits : null;
+                    existingTransaction.LastFourACH = batchTransaction.BatchType == BatchType.Ach ? batchTransaction.LastDigits : null;
+                }
+            }
+
+            // finally we need to mark these batches as completed if there are any.
+            foreach (var batch in batchTransactions.DistinctBy(x => x.BatchReference))
+            {
+                var checkedBatch = db.CheckedBatches.SingleOrDefault(bb => bb.BatchRef == batch.BatchReference);
+                if (checkedBatch == null)
+                {
+                    db.CheckedBatches.InsertOnSubmit(
+                        new CheckedBatch
+                        {
+                            BatchRef = batch.BatchReference,
+                            CheckedX = DateTime.Now
+                        });
+                }
+                else
+                    checkedBatch.CheckedX = DateTime.Now;
+            }
+
+            db.SubmitChanges();
         }
 
         public string VaultId(int peopleId)
@@ -341,7 +450,7 @@ namespace CmsData.Finance
             {
                 Approved = response.Response.Status == "success" ? true : false,
                 AuthCode = response.Response.ProcessorResponseCode,
-                Message = response.Response.Errors.FirstOrDefault()?.ErrorMsg,
+                Message = $"{response.Response.TransStatusMsg}#{response.Response.Items.First().IdString}",
                 TransactionId = response.Response.TransIdStr
             };
         }
@@ -355,7 +464,7 @@ namespace CmsData.Finance
             {
                 Approved = response.Response.Status == "success" ? true : false,
                 AuthCode = response.Response.TransStatus,
-                Message = response.Response.TransStatusMsg,
+                Message = $"{response.Response.TransStatusMsg}#{response.Response.Items.First().IdString}",
                 TransactionId = response.Response.TransIdStr
             };
         }
@@ -382,15 +491,20 @@ namespace CmsData.Finance
 
         private TransactionResponse RefundTransaction(string reference, decimal amt)
         {
-            int tranId = db.Transactions.SingleOrDefault(p => p.TransactionId == reference).Id;
-            var voidTrans = new RefundTransPartial(_isTesting, _apiKey, reference, tranId, amt);
-            var response = voidTrans.Execute();
+            string testString = string.Empty;
+            if (_isTesting)
+                testString = "(testing)";
+
+            string[] message = db.Transactions.SingleOrDefault(p => p.TransactionId == reference + testString).Message.Split('#');
+            string idString = message[1];
+            var refundTrans = new RefundTransPartial(_isTesting, _apiKey, reference, idString, amt);
+            var response = refundTrans.Execute();
 
             return new TransactionResponse
             {
                 Approved = response.Response.Status == "success" ? true : false,
                 AuthCode = response.Response.ProcessorResponseCode,
-                Message = response.Response.Errors.FirstOrDefault()?.ErrorMsg,
+                Message = $"{response.Response.TransStatusMsg}#{response.Response.Items.First().IdString}",
                 TransactionId = response.Response.TransIdStr
             };
         }
