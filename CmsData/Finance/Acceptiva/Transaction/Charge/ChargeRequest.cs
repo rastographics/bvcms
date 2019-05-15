@@ -12,7 +12,7 @@ namespace CmsData.Finance.Acceptiva.Transaction.Charge
             string orderDescription, Payer payer)
             : base(isTesting, apiKey, action)
         {
-            Data["params[0][items][0][id]"] = orderId.ToString();
+            Data["params[0][items][0][id]"] = $"Touchpoint#{orderId.ToString()}";
             Data["params[0][items][0][desc]"] = orderDescription.ToString();
             Data["params[0][items][0][amt]"] = amount.ToString();
             Data["params[0][payment_type]"] = paymentType.ToString();
