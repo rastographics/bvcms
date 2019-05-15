@@ -21,11 +21,11 @@ namespace CmsData.Finance
         private readonly string _merch_ach_id;
         private readonly string _merch_cc_id;
         private readonly CMSDataContext db;
-        private readonly PaymentProcessTypes? ProcessType;
+        private readonly PaymentProcessTypes ProcessType;
 
         public string GatewayType => "Acceptiva";
 
-        public AcceptivaGateway(CMSDataContext db, bool testing, PaymentProcessTypes? ProcessType)
+        public AcceptivaGateway(CMSDataContext db, bool testing, PaymentProcessTypes ProcessType)
         {
             this.db = db;
             this.ProcessType = ProcessType;

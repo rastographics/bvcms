@@ -2,16 +2,25 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Web.Mvc;
 using UtilityExtensions;
 
 namespace CmsData
 {
     public class MultipleGatewayUtils
     {
-        CMSDataContext db = new CMSDataContext();
+        CMSDataContext db { get; set; }
         public MultipleGatewayUtils(CMSDataContext db)
         {
             this.db = db;
+        }
+
+        public static SelectList GatewayTypesList()
+        {
+            List<string> list = CMSDataContext.Create(HttpContextFactory.Current).Gateways
+                .Select(g => g.GatewayName).ToList();
+            list.Insert(0, "");
+            return new SelectList(list);
         }
 
         public string Setting(string name, string defaultvalue, int ProcessId)
@@ -55,7 +64,7 @@ namespace CmsData
             return setting.ToLower() == "true";
         }
 
-        public int? GatewayId (PaymentProcessTypes? processType)
+        public int? GatewayId (PaymentProcessTypes processType)
         {
             return (from e in db.PaymentProcess
                     join d in db.GatewayAccount on e.GatewayAccountId equals d.GatewayAccountId into gj
@@ -67,13 +76,13 @@ namespace CmsData
                     }).FirstOrDefault().GatewayId;
         }
 
-        public bool GatewayTesting(PaymentProcessTypes? processType)
+        public bool GatewayTesting(PaymentProcessTypes processType)
         {
             var User = db.Users.SingleOrDefault(us => us.UserId == Util.UserId);
             return User.InRole("Developer") ? Setting("GatewayTesting", (int)processType) : false;
         }
 
-        public PaymentProcessTypes? ProcessByTransactionDescription(string Description)
+        public PaymentProcessTypes ProcessByTransactionDescription(string Description)
         {
             Regex _rx = new Regex("\\s+[(][0-9]+[)]");
             Match _mt = _rx.Match(Description);

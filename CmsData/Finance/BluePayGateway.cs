@@ -17,7 +17,7 @@ namespace CmsData.Finance
 
         public string GatewayType => "BluePay";
 
-        public BluePayGateway(CMSDataContext db, bool testing, PaymentProcessTypes? ProcessType)
+        public BluePayGateway(CMSDataContext db, bool testing, PaymentProcessTypes ProcessType)
         {
             this.db = db;
             IsLive = !(testing || new MultipleGatewayUtils(db).GatewayTesting(ProcessType));

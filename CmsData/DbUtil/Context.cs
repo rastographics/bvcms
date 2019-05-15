@@ -1881,11 +1881,8 @@ This search uses multiple steps which cannot be duplicated in a single query.
         internal bool FromActiveRecords { get; set; }
         public bool FromBatch { get; set; }
 
-        public IGateway Gateway(bool testing = false, PaymentProcessTypes? ProcessType = null)
+        public IGateway Gateway(bool testing = false, PaymentProcessTypes ProcessType = PaymentProcessTypes.RecurringGiving)
         {
-            if (ProcessType.IsNull())
-                ProcessType = PaymentProcessTypes.RecurringGiving;
-
             int? GatewayId = new MultipleGatewayUtils(this).GatewayId(ProcessType);
 
             if (GatewayId.IsNull())

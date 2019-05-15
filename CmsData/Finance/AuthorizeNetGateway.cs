@@ -21,7 +21,7 @@ namespace CmsData.Finance
 
         public string GatewayType => "AuthorizeNet";
 
-        public AuthorizeNetGateway(CMSDataContext db, bool testing, PaymentProcessTypes? ProcessType)
+        public AuthorizeNetGateway(CMSDataContext db, bool testing, PaymentProcessTypes ProcessType)
         {
             this.db = db;
             IsLive = !(testing || new MultipleGatewayUtils(db).GatewayTesting(ProcessType));
