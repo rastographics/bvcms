@@ -257,7 +257,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 Country = ti.Country,
                 Zip = ti.Zip,
                 testing = ti.Testing ?? false,
-                TranId = ti.Id
+                TranId = ti.Id,
+                ProcessType = PaymentProcessTypes.OnlineRegistration
             };
 
             if (pi.PeopleId == Util.UserPeopleId) // Is this the logged in user?
