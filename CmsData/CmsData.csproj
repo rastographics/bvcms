@@ -581,6 +581,8 @@
     <Compile Include="Extensions\PaymentInfo.cs" />
     <Compile Include="Extensions\RepairTransactionRun.cs" />
     <Compile Include="Finance\AcceptivaGateway.cs" />
+    <Compile Include="Finance\Acceptiva\Core\Helpers\CanadaState.cs" />
+    <Compile Include="Finance\Acceptiva\Core\Helpers\ISO3166Country.cs" />
     <Compile Include="Finance\Acceptiva\Core\Helpers\TransactionStatus.cs" />
     <Compile Include="Finance\Acceptiva\Transaction\Charge\AchCharge.cs" />
     <Compile Include="Finance\Acceptiva\Core\Account.cs" />

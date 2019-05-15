@@ -745,18 +745,14 @@ namespace CmsData
             {
                 if (this._AcceptivaPayerId != value)
                 {
-
                     this.OnAcceptivaPayerIdChanging(value);
                     this.SendPropertyChanging();
                     this._AcceptivaPayerId = value;
                     this.SendPropertyChanged("AcceptivaPayerId");
                     this.OnAcceptivaPayerIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name="Address2", UpdateCheck=UpdateCheck.Never, Storage="_Address2", DbType="nvarchar(50)")]
 		public string Address2
@@ -866,10 +862,7 @@ namespace CmsData
 		{
 			if ((this.PropertyChanged != null))
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-		}
-
-   		
+		}   		
 	}
-
 }
 
