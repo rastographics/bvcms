@@ -3,6 +3,7 @@ using CmsWeb.Lifecycle;
 using System.Linq;
 using System.Web.Mvc;
 using UtilityExtensions;
+using CmsWeb.Areas.Setup.Models;
 
 namespace CmsWeb.Areas.Setup.Controllers
 {
@@ -10,10 +11,8 @@ namespace CmsWeb.Areas.Setup.Controllers
     [RouteArea("Setup", AreaPrefix = "Roles"), Route("{action=index}/{id?}")]
     public class RolesController : CmsStaffController
     {
-        public RolesController(IRequestManager requestManager) : base(requestManager)
-        {
-        }
-    
+        public RolesController(IRequestManager requestManager) : base(requestManager) { }
+        
         public ActionResult Index()
         {
             var r = CmsData.User.AllRoles(CurrentDatabase);
@@ -23,6 +22,8 @@ namespace CmsWeb.Areas.Setup.Controllers
         [Route("~/Roles/{id}")]
         public ActionResult Manage(string id)
         {
+            var model = new RoleModel();
+
             var role = CurrentDatabase.Roles.SingleOrDefault(m => m.RoleId == id.ToInt());
             if (role == null)
             {

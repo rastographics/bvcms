@@ -847,6 +847,7 @@
     <Compile Include="Areas\Search\Models\RegistrationSearch\RegistrationSearchModel.cs" />
     <Compile Include="Areas\Search\Models\SavedQuery\SavedQueryInfo.cs" />
     <Compile Include="Areas\Search\Models\SavedQuery\SavedQueryModel.cs" />
+    <Compile Include="Areas\Setup\Models\RoleModel.cs" />
     <Compile Include="Code\BirthdateValidAttribute.cs" />
     <Compile Include="Code\CMSWebViewPage.cs" />
     <Compile Include="Areas\Setup\Controllers\PushpayController.cs" />
@@ -2610,6 +2611,7 @@
     <Content Include="Views\Shared\Menu\Reports.cshtml" />
     <Content Include="Views\Shared\Menu\Admin.cshtml" />
     <Content Include="Views\Shared\Menu\Help.cshtml" />
+    <Content Include="Views\Shared\RoleSettingDefaults.xml" />
     <Content Include="Views\Shared\Toolbar\Toolbar.cshtml" />
     <Content Include="Views\Shared\Toolbar\Email.cshtml" />
     <Content Include="Views\Shared\Toolbar\Gear.cshtml" />

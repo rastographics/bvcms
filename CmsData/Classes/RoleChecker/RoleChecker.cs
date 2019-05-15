@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using System.Web;
 using System.Xml.Linq;
 using UtilityExtensions;
 
@@ -35,6 +34,7 @@ namespace CmsData.Classes.RoleChecker
                 }
             }
         }
+
         private static XElement Roles => Xdoc.Element("roles");
 
         private static XElement Settings(XElement role)
@@ -81,6 +81,7 @@ namespace CmsData.Classes.RoleChecker
                     .ToString()
                     .Replace('_', '-');
         }
+        
     }
 
     public enum SettingName

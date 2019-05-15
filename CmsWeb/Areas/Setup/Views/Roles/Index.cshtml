@@ -25,7 +25,7 @@
                             <tr>
                                 <th style="width: 100px;">Role Id</th>
                                 <th style="width: 500px;">Role Name</th>
-                                <th style="width: 50px;">Action</th>
+                                <th style="width: 50px;text-align:center;">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -35,15 +35,15 @@
                                     <td style="width: 100px;">@item.RoleId<a href="#" id="@item.RoleId"></a></td>
                                     @if (item.Hardwired == true)
                                     {
-                                        <td style="width: 500px;">@item.RoleName</td>
-                                        <td style="width: 50px;"><a href="/Roles/@item.RoleId" class="btn btn-default btn-sm">Manage</a></td>
+                                        <td style="width: 370px;">@item.RoleName</td>
+                                        <td style="width: 180px;"><a href="/Roles/@item.RoleId" class="btn btn-default btn-sm">Settings</a></td>
                                     }
                                     else
                                     {
-                                        <td style="width: 500px;"><a id="RoleName.@item.RoleName" data-pk="RoleName.@item.RoleName" class="clickEdit">@item.RoleName</a></td>
-                                        <td style="width: 50px;">
-                                            <a href="/Roles/@item.RoleId" class="btn btn-default btn-sm">Manage</a>
-                                            <a id="d@(item.RoleId)" href="#" class="delete btn btn-danger btn-sm"><i class="fa fa-trash"></i> Delete</a>
+                                        <td style="width: 370px;"><a id="RoleName.@item.RoleName" data-pk="RoleName.@item.RoleName" class="clickEdit">@item.RoleName</a></td>
+                                        <td style="width: 180px;">
+                                            <a href="/Roles/@item.RoleId" class="btn btn-default btn-sm">Settings</a>
+                                            <a id="@(item.RoleId)" href="#" class="delete btn btn-danger btn-sm"><i class="fa fa-trash"></i> Delete</a>
                                         </td>
                                     }
                                 </tr>
