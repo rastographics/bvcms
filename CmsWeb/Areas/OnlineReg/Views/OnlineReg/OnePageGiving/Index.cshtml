@@ -311,6 +311,7 @@
         @Html.Hidden("Description", Model.PaymentForm.Description)
         @Html.Hidden("NoCreditCardsAllowed", Model.PaymentForm.NoCreditCardsAllowed)
         @Html.Hidden("IsLoggedIn", Model.PaymentForm.IsLoggedIn)
+        @Html.Hidden("ProcessType", Model.PaymentForm.ProcessType)
     </form>
 </div>
 @helper TypeRadio(string type, string label, string side, bool isSelected)

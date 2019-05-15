@@ -264,7 +264,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 
             if (!m.ReturnUrl.HasValue())
             {
-                if (!CMSRoleProvider.provider.IsUserInRole(user.Username, "Access", CurrentDatabase))
+                if (!CMSRoleProvider.provider.IsUserInRole(user.Username, "Access"))
                 {
                     return Redirect("/Person2/" + Util.UserPeopleId);
                 }

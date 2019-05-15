@@ -1,0 +1,28 @@
+﻿.multiplegateway-form label {
+    text-align: right;
+    display: inherit;
+}
+
+.label-gateway {
+    margin-top: 15px;
+    display: inline-flex;
+    font-weight: 300;
+    text-align: left !important;
+}
+
+.blue-avaiable {
+    color: #003f72;
+    border-bottom: dashed 1px #0088cc;
+    text-decoration: none !important;
+}
+
+.red-empty {
+    border-bottom: dashed 1px #0088cc;
+    color: #DD1144;
+    text-decoration: none !important;
+}
+
+.red-empty:hover {
+    border-bottom: dashed 1px #0088cc;
+    color: #DD1144;
+}

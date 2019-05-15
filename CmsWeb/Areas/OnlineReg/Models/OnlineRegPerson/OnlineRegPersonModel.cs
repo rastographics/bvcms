@@ -25,6 +25,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public bool? Found { get; set; }
         public bool IsNew { get; set; }
         public bool QuestionsOK { get; set; }
+        public CmsData.PaymentProcessTypes ProcessType { get; set; }
 
         private bool? loggedin;
         public bool LoggedIn
