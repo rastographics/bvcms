@@ -7,14 +7,8 @@ using UtilityExtensions;
 
 namespace CmsData
 {
-    public class MultipleGatewayUtils
+    public static class MultipleGatewayUtils
     {
-        CMSDataContext db { get; set; }
-        public MultipleGatewayUtils(CMSDataContext db)
-        {
-            this.db = db;
-        }
-
         public static SelectList GatewayTypesList()
         {
             List<string> list = CMSDataContext.Create(HttpContextFactory.Current).Gateways
@@ -23,7 +17,7 @@ namespace CmsData
             return new SelectList(list);
         }
 
-        public string Setting(string name, string defaultvalue, int ProcessId)
+        public static string Setting(CMSDataContext db, string name, string defaultvalue, int ProcessId)
         {
             int? GatewayAccountId = db.PaymentProcess.Where(x => x.ProcessId == ProcessId).Select(x => x.GatewayAccountId).FirstOrDefault();
             if (name == null)
@@ -53,9 +47,9 @@ namespace CmsData
             return string.Empty;
         }
 
-        public bool Setting(string name, int ProcessId, bool defaultValue = false)
+        public static bool Setting(CMSDataContext db, string name, int ProcessId, bool defaultValue = false)
         {
-            var setting = Setting(name, null, ProcessId);
+            var setting = Setting(db, name, null, ProcessId);
             if (!setting.HasValue())
             {
                 return defaultValue;
@@ -64,7 +58,7 @@ namespace CmsData
             return setting.ToLower() == "true";
         }
 
-        public int? GatewayId (PaymentProcessTypes processType)
+        public static int? GatewayId (CMSDataContext db, PaymentProcessTypes processType)
         {
             return (from e in db.PaymentProcess
                     join d in db.GatewayAccount on e.GatewayAccountId equals d.GatewayAccountId into gj
@@ -76,13 +70,13 @@ namespace CmsData
                     }).FirstOrDefault().GatewayId;
         }
 
-        public bool GatewayTesting(PaymentProcessTypes processType)
+        public static bool GatewayTesting(CMSDataContext db, PaymentProcessTypes processType)
         {
             var User = db.Users.SingleOrDefault(us => us.UserId == Util.UserId);
-            return (User != null && User.InRole("Developer")) ? Setting("GatewayTesting", (int)processType) : false;
+            return (User != null && User.InRole("Developer")) ? Setting(db, "GatewayTesting", (int)processType) : false;
         }
 
-        public PaymentProcessTypes ProcessByTransactionDescription(string Description)
+        public static PaymentProcessTypes ProcessByTransactionDescription(CMSDataContext db, string Description)
         {
             Regex _rx = new Regex("\\s+[(][0-9]+[)]");
             Match _mt = _rx.Match(Description);

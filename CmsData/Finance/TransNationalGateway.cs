@@ -31,15 +31,15 @@ namespace CmsData.Finance
         {
             this.db = db;
 
-            if(testing || new MultipleGatewayUtils(db).GatewayTesting(ProcessType))
+            if(testing || MultipleGatewayUtils.GatewayTesting(db, ProcessType))
             {
                 _userName = "faithbased";
                 _password = "bprogram2";
             }
             else
             {
-                _userName = new MultipleGatewayUtils(db).Setting("TNBUsername", "", (int)ProcessType);
-                _password = new MultipleGatewayUtils(db).Setting("TNBPassword", "", (int)ProcessType);
+                _userName = MultipleGatewayUtils.Setting(db, "TNBUsername", "", (int)ProcessType);
+                _password = MultipleGatewayUtils.Setting(db, "TNBPassword", "", (int)ProcessType);
 
                 if (string.IsNullOrWhiteSpace(_userName))
                     throw new Exception("TNBUsername setting not found, which is required for TransNational.");

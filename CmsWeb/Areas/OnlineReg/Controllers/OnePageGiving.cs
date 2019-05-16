@@ -43,12 +43,12 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     m.ProcessType = m.org.RegistrationTypeId.IsNull() || m.org.RegistrationTypeId == 8 ? PaymentProcessTypes.OneTimeGiving : PaymentProcessTypes.OnlineRegistration;
                 }
 
-                int? GatewayId = new MultipleGatewayUtils(CurrentDatabase).GatewayId(m.ProcessType);
+                int? GatewayId = MultipleGatewayUtils.GatewayId(CurrentDatabase, m.ProcessType);
 
                 if (GatewayId == (int)GatewayTypes.Pushpay && m.OnlineGiving())
                 {
                     ViewBag.Header = "One Page Giving";                    
-                    if (string.IsNullOrEmpty(new MultipleGatewayUtils(CurrentDatabase).Setting("PushpayMerchant", "", (int)m.ProcessType)))
+                    if (string.IsNullOrEmpty(MultipleGatewayUtils.Setting(CurrentDatabase, "PushpayMerchant", "", (int)m.ProcessType)))
                         return View("OnePageGiving/NotConfigured");
 
                     return Redirect($"/Pushpay/OnePage");
