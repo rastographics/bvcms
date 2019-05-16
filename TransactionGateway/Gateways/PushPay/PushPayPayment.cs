@@ -17,7 +17,7 @@ namespace TransactionGateway
         {
             _pushpay = Pushpay;
             _db = db;
-            _merchantHandle = MultipleGatewayUtils.Setting("PushpayMerchant", "", (int)processType);
+            _merchantHandle = MultipleGatewayUtils.Setting(db, "PushpayMerchant", "", (int)processType);
         }
 
         public async Task<Payment> GetPayment(string paymentToken)

@@ -287,7 +287,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             var clearBankDetails = false;
             var clearCreditCardDetails = false;
 
-            int? GatewayId = MultipleGatewayUtils.GatewayId(PaymentProcessTypes.RecurringGiving);
+            int? GatewayId = MultipleGatewayUtils.GatewayId(CurrentDatabase, PaymentProcessTypes.RecurringGiving);
             switch (GatewayId)
             {
                 case (int)GatewayTypes.Sage:

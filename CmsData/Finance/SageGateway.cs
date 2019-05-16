@@ -26,7 +26,7 @@ namespace CmsData.Finance
         public SageGateway(CMSDataContext db, bool testing, PaymentProcessTypes ProcessType)
         {
             this.db = db;
-            var gatewayTesting = MultipleGatewayUtils.GatewayTesting(ProcessType);
+            var gatewayTesting = MultipleGatewayUtils.GatewayTesting(db, ProcessType);
             if (testing || gatewayTesting)
             {
                 _id = "856423594649";
@@ -35,15 +35,15 @@ namespace CmsData.Finance
             }
             else
             {
-                _id = MultipleGatewayUtils.Setting("M_ID", "", (int)ProcessType);
-                _key = MultipleGatewayUtils.Setting("M_KEY", "", (int)ProcessType);
+                _id = MultipleGatewayUtils.Setting(db, "M_ID", "", (int)ProcessType);
+                _key = MultipleGatewayUtils.Setting(db, "M_KEY", "", (int)ProcessType);
 
                 if (string.IsNullOrWhiteSpace(_id))
                     throw new Exception("M_ID setting not found, which is required for Sage.");
                 if (string.IsNullOrWhiteSpace(_key))
                     throw new Exception("M_KEY setting not found, which is required for Sage.");
 
-                _originatorId = MultipleGatewayUtils.Setting("SageOriginatorId", "", (int)ProcessType);
+                _originatorId = MultipleGatewayUtils.Setting(db, "SageOriginatorId", "", (int)ProcessType);
             }
         }
 

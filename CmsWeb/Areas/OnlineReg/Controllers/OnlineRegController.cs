@@ -40,7 +40,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
                 SetHeaders(m);
 
-                int? GatewayId = MultipleGatewayUtils.GatewayId(m.ProcessType);
+                int? GatewayId = MultipleGatewayUtils.GatewayId(CurrentDatabase, m.ProcessType);
                 var gatewayRequired = (m.PayAmount() > 0 || m.ProcessType == PaymentProcessTypes.OneTimeGiving || m.ProcessType == PaymentProcessTypes.RecurringGiving);
 
                 if (GatewayId.IsNull() && gatewayRequired)
@@ -49,7 +49,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 }
 
 
-                if ((int)GatewayTypes.Pushpay == GatewayId && string.IsNullOrEmpty(MultipleGatewayUtils.Setting("PushpayMerchant", "", (int)m.ProcessType)))
+                if ((int)GatewayTypes.Pushpay == GatewayId && string.IsNullOrEmpty(MultipleGatewayUtils.Setting(CurrentDatabase, "PushpayMerchant", "", (int)m.ProcessType)))
                 {
                     ViewBag.Header = m.Header;
                     ViewBag.Instructions = m.Instructions;
@@ -404,7 +404,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             var ret = m.CompleteRegistration(this);
 
-            int? GatewayId = MultipleGatewayUtils.GatewayId(m.ProcessType);
+            int? GatewayId = MultipleGatewayUtils.GatewayId(CurrentDatabase, m.ProcessType);
 
             if (ret.Route == RouteType.Payment && (int)GatewayTypes.Pushpay == GatewayId)
             {

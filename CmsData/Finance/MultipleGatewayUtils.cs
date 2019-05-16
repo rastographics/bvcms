@@ -17,21 +17,21 @@ namespace CmsData
             return new SelectList(list);
         }
 
-        public static string Setting(string name, string defaultvalue, int ProcessId)
+        public static string Setting(CMSDataContext db, string name, string defaultvalue, int ProcessId)
         {
-            int? GatewayAccountId = DbUtil.Db.PaymentProcess.Where(x => x.ProcessId == ProcessId).Select(x => x.GatewayAccountId).FirstOrDefault();
+            int? GatewayAccountId = db.PaymentProcess.Where(x => x.ProcessId == ProcessId).Select(x => x.GatewayAccountId).FirstOrDefault();
             if (name == null)
             {
                 return defaultvalue;
             }
 
-            var list = DbUtil.Db.GatewayDetails.Where(x => x.GatewayAccountId == GatewayAccountId).ToDictionary(x => x.GatewayDetailName.Trim(), x => x.GatewayDetailValue);
+            var list = db.GatewayDetails.Where(x => x.GatewayAccountId == GatewayAccountId).ToDictionary(x => x.GatewayDetailName.Trim(), x => x.GatewayDetailValue);
 
             if (list == null)
             {
                 try
                 {
-                    list = DbUtil.Db.GatewayDetails.ToList().ToDictionary(x => x.GatewayDetailName.Trim(), x => x.GatewayDetailValue,
+                    list = db.GatewayDetails.ToList().ToDictionary(x => x.GatewayDetailName.Trim(), x => x.GatewayDetailValue,
                         StringComparer.OrdinalIgnoreCase);
                 }
                 catch (Exception ex)
@@ -47,9 +47,9 @@ namespace CmsData
             return string.Empty;
         }
 
-        public static bool Setting(string name, int ProcessId, bool defaultValue = false)
+        public static bool Setting(CMSDataContext db, string name, int ProcessId, bool defaultValue = false)
         {
-            var setting = Setting(name, null, ProcessId);
+            var setting = Setting(db, name, null, ProcessId);
             if (!setting.HasValue())
             {
                 return defaultValue;
@@ -58,10 +58,10 @@ namespace CmsData
             return setting.ToLower() == "true";
         }
 
-        public static int? GatewayId (PaymentProcessTypes processType)
+        public static int? GatewayId (CMSDataContext db, PaymentProcessTypes processType)
         {
-            return (from e in DbUtil.Db.PaymentProcess
-                    join d in DbUtil.Db.GatewayAccount on e.GatewayAccountId equals d.GatewayAccountId into gj
+            return (from e in db.PaymentProcess
+                    join d in db.GatewayAccount on e.GatewayAccountId equals d.GatewayAccountId into gj
                     from sub in gj.DefaultIfEmpty()
                     where e.ProcessId == (int)processType
                     select new
@@ -70,13 +70,13 @@ namespace CmsData
                     }).FirstOrDefault().GatewayId;
         }
 
-        public static bool GatewayTesting(PaymentProcessTypes processType)
+        public static bool GatewayTesting(CMSDataContext db, PaymentProcessTypes processType)
         {
-            var User = DbUtil.Db.Users.SingleOrDefault(us => us.UserId == Util.UserId);
-            return (User != null && User.InRole("Developer")) ? Setting("GatewayTesting", (int)processType) : false;
+            var User = db.Users.SingleOrDefault(us => us.UserId == Util.UserId);
+            return (User != null && User.InRole("Developer")) ? Setting(db, "GatewayTesting", (int)processType) : false;
         }
 
-        public static PaymentProcessTypes ProcessByTransactionDescription(string Description)
+        public static PaymentProcessTypes ProcessByTransactionDescription(CMSDataContext db, string Description)
         {
             Regex _rx = new Regex("\\s+[(][0-9]+[)]");
             Match _mt = _rx.Match(Description);
@@ -85,7 +85,7 @@ namespace CmsData
                 Description = Description.Replace(_mt.Value, "");
             }
 
-            int? RegistrationTypeId = DbUtil.Db.Organizations.Where(x => x.OrganizationName == Description).Select(x => x.RegistrationTypeId).FirstOrDefault();
+            int? RegistrationTypeId = db.Organizations.Where(x => x.OrganizationName == Description).Select(x => x.RegistrationTypeId).FirstOrDefault();
 
             switch (RegistrationTypeId)
             {

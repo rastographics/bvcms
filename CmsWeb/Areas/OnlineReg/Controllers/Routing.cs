@@ -16,7 +16,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 #if DEBUG
             m.DebugCleanUp();
 #endif
-            int? GatewayId = MultipleGatewayUtils.GatewayId(m.ProcessType);
+            int? GatewayId = MultipleGatewayUtils.GatewayId(CurrentDatabase, m.ProcessType);
 
             if ((int)GatewayTypes.Pushpay == GatewayId && m.ProcessType == PaymentProcessTypes.OneTimeGiving)
             {

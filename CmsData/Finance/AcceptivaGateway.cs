@@ -30,7 +30,7 @@ namespace CmsData.Finance
             this.db = db;
             this.ProcessType = ProcessType;
 
-            if (testing || MultipleGatewayUtils.GatewayTesting(ProcessType))
+            if (testing || MultipleGatewayUtils.GatewayTesting(db, ProcessType))
             {
                 _apiKey = "CZDWp7dXCo4W3xTA7LtWAijidvPdj2wa";
                 _merch_ach_id = "dKdDFtqC";
@@ -38,9 +38,9 @@ namespace CmsData.Finance
             }
             else
             {
-                _apiKey = MultipleGatewayUtils.Setting("AcceptivaApiKey", "", (int)ProcessType);
-                _merch_ach_id = MultipleGatewayUtils.Setting("AcceptivaAchId", "", (int)ProcessType);
-                _merch_cc_id = MultipleGatewayUtils.Setting("AcceptivaCCId", "", (int)ProcessType);
+                _apiKey = MultipleGatewayUtils.Setting(db, "AcceptivaApiKey", "", (int)ProcessType);
+                _merch_ach_id = MultipleGatewayUtils.Setting(db, "AcceptivaAchId", "", (int)ProcessType);
+                _merch_cc_id = MultipleGatewayUtils.Setting(db, "AcceptivaCCId", "", (int)ProcessType);
 
                 if (string.IsNullOrWhiteSpace(_apiKey))
                     throw new Exception("AcceptivaApiKey setting not found, which is required for Acceptiva.");
@@ -490,7 +490,7 @@ namespace CmsData.Finance
             var type = "checking";
             if (pid.HasValue)
             {
-                var usesaving = MultipleGatewayUtils.Setting("UseSavingAccounts", (int)ProcessType);
+                var usesaving = MultipleGatewayUtils.Setting(db, "UseSavingAccounts", (int)ProcessType);
                 if (usesaving)
                 {
                     if (Person.GetExtraValue(db, pid.Value, "AchSaving")?.BitValue == true)
