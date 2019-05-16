@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Web;
 using System.Web.Mvc;
 using UtilityExtensions;
 
@@ -28,6 +29,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public string Routing { get; set; }
         public string Account { get; set; }
         public bool SupportMissionTrip { get; set; }
+        public int extTransactionId { get; set; }
+        public PaymentProcessTypes ProcessType { get; set; }
 
         /// <summary>
         ///     "B" for e-check and "C" for credit card, see PaymentType
@@ -153,6 +156,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 amtdue = Amtdue - (amount ?? 0);
             }
 
+            // var ss = m.ProcessType;
+
             var ti = new Transaction
             {
                 First = First,
@@ -168,7 +173,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 Description = Description,
                 OrgId = OrgId,
                 Url = URL,
-                TransactionGateway = OnlineRegModel.GetTransactionGateway(),
+                TransactionGateway = OnlineRegModel.GetTransactionGateway(PaymentProcessTypes.OnlineRegistration),
                 Address = Address.Truncate(50),
                 Address2 = Address2.Truncate(50),
                 City = City,
@@ -252,7 +257,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 Country = ti.Country,
                 Zip = ti.Zip,
                 testing = ti.Testing ?? false,
-                TranId = ti.Id
+                TranId = ti.Id,
+                ProcessType = PaymentProcessTypes.OnlineRegistration
             };
 
             if (pi.PeopleId == Util.UserPeopleId) // Is this the logged in user?
@@ -310,6 +316,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 Zip = r.Zip,
                 Phone = r.Phone,
                 SupportMissionTrip = m.SupportMissionTrip,
+                extTransactionId = m.transactionId,
+                ProcessType = m.ProcessType,
 #if DEBUG2
                  CreditCard = "4111111111111111",
                  CVV = "123",
@@ -376,24 +384,28 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private static void ClearMaskedNumbers(PaymentForm pf, PaymentInfo pi)
         {
-            var gateway = pf.CurrentDatabase.Setting("TransactionGateway", "");
+            int? GatewayId = MultipleGatewayUtils.GatewayId(DbUtil.Db, pf.ProcessType);
 
             var clearBankDetails = false;
             var clearCreditCardDetails = false;
 
-            switch (gateway.ToLower())
+            switch (GatewayId)
             {
-                case "sage":
+                case (int)GatewayTypes.Sage:
                     clearBankDetails = !pi.SageBankGuid.HasValue;
                     clearCreditCardDetails = !pi.SageCardGuid.HasValue;
                     break;
-                case "transnational":
+                case (int)GatewayTypes.Transnational:
                     clearBankDetails = !pi.TbnBankVaultId.HasValue;
                     clearCreditCardDetails = !pi.TbnCardVaultId.HasValue;
                     break;
-                case "authorizenet":
+                // case (int)GatewayTypes.Acceptiva:
+                // return new AcceptivaGateway(this, testing, ProcessType);
+                case (int)GatewayTypes.AuthorizeNet:
                     clearBankDetails = !pi.AuNetCustPayBankId.HasValue;
                     clearCreditCardDetails = !pi.AuNetCustPayId.HasValue;
+                    break;
+                default:
                     break;
             }
 
@@ -556,7 +568,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 return;
             }
 
-            var gateway = CurrentDatabase.Gateway(testing);
+            var gateway = CurrentDatabase.Gateway(testing, ProcessType);
 
             // we need to perform a $1 auth if this is a brand new credit card that we are going to store it in the vault.
             // otherwise we skip doing an auth just call store in vault just like normal.
@@ -644,7 +656,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
 
             TransactionResponse tinfo;
-            var gw = CurrentDatabase.Gateway(testing);
+            var gw = CurrentDatabase.Gateway(testing, m?.ProcessType ?? PaymentProcessTypes.OnlineRegistration);
 
             if (SavePayInfo)
             {
@@ -681,7 +693,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             CurrentDatabase.SubmitChanges();
             return ti;
-        }
+        }        
 
         private TransactionResponse PayWithCreditCard(IGateway gateway, int? peopleId, Transaction transaction)
         {
@@ -714,8 +726,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             try
             {
-                PreventNegatives();
-                PreventZero(modelState);
                 if (!modelState.IsValid)
                 {
                     return RouteModel.ProcessPayment();
@@ -762,6 +772,32 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 modelState.AddModelError("form", ex.Message);
                 return RouteModel.ProcessPayment();
             }
+        }
+
+        public RouteModel ProcessExternalPayment(OnlineRegModel m, out int orgId)
+        {
+            //This method has to change deppending on different types of gateways
+            orgId = 0;
+            if (extTransactionId == 0)
+            {
+                return new RouteModel()
+                {
+                    Route = RouteType.Error,
+                    Message = "External Payment error",
+                };
+            }
+            Transaction ti = DbUtil.Db.Transactions.Where(p => p.Id == extTransactionId).FirstOrDefault();
+            orgId = ti.OrgId.Value;
+
+            HttpContextFactory.Current.Session["FormId"] = FormId;
+            if (m != null)
+            {
+                m.DatumId = DatumId; // todo: not sure this is necessary
+                return m.FinishRegistration(ti);
+            }
+            OnlineRegModel.ConfirmDuePaidTransaction(ti, ti.TransactionId, true);
+
+            return RouteModel.AmountDue(AmountDueTrans(DbUtil.Db, ti), ti);
         }
 
         public void CheckTesting()

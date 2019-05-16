@@ -145,7 +145,7 @@ namespace CmsData
 
         public static string GetHost(HttpContextBase httpContext)
         {
-            var host = (httpContext.Request.Headers["host"] ?? httpContext.Request.Url.Authority).Split('.', ':').First();
+            var host = (httpContext.Request.Url.Authority).Split('.', ':').First();
             return Util.PickFirst(ConfigurationManager.AppSettings["host"], host);
         }
 
@@ -1881,29 +1881,36 @@ This search uses multiple steps which cannot be duplicated in a single query.
         internal bool FromActiveRecords { get; set; }
         public bool FromBatch { get; set; }
 
-        public IGateway Gateway(bool testing = false, string usegateway = null)
+        public IGateway Gateway(bool testing = false, PaymentProcessTypes processType = PaymentProcessTypes.RecurringGiving, bool exceptionIfMissing = true)
         {
-            var type = Setting("TransactionGateway", "not specified");
-            if (usegateway != null)
+            int? GatewayId = MultipleGatewayUtils.GatewayId(this, processType);
+
+            if (GatewayId.IsNull())
             {
-                type = usegateway;
+                if (exceptionIfMissing)
+                {
+                    throw new Exception("This process is not configured yet, please contact support");
+                }
+                return null;
             }
 
-            switch (type.ToLower())
+            switch (GatewayId)
             {
-                case "sage":
-                    return new SageGateway(this, testing);
-
-                case "authorizenet":
-                    return new AuthorizeNetGateway(this, testing);
-
-                case "transnational":
-                    return new TransNationalGateway(this, testing);
-                //IS THIS the only place that the new paymentGateway needs to be hooked up?
-                case "bluepay":
-                    return new BluePayGateway(this, testing);
+                case (int)GatewayTypes.Sage:
+                    return new SageGateway(this, testing, processType);
+                case (int)GatewayTypes.Transnational:
+                    return new TransNationalGateway(this, testing, processType);
+                case (int)GatewayTypes.Acceptiva:
+                    return new AcceptivaGateway(this, testing, processType);
+                case (int)GatewayTypes.AuthorizeNet:
+                    return new AuthorizeNetGateway(this, testing, processType);
+                case (int)GatewayTypes.BluePay:
+                    return new BluePayGateway(this, testing, processType);
+                default:
+                    break;
             }
 
+            string type = Gateways.Where(x => x.GatewayId == GatewayId).Select(x => x.GatewayName).FirstOrDefault();
             throw new Exception($"Gateway ({type}) is not supported.");
         }
         public Registration.Settings CreateRegistrationSettings(int orgId)

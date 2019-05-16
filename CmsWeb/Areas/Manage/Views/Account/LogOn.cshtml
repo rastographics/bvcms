@@ -3,6 +3,7 @@
 @model CmsWeb.Areas.Manage.Controllers.AccountController.AccountInfo
 @{
     ViewBag.Title = "Logon to TouchPoint";
+    ViewBag.BodyStyle = "display:none";
 
     if ((bool?)ViewData["hasshell"] == true)
     {
@@ -13,11 +14,12 @@
         Layout = "_Layout.cshtml";
     }
 }
-@if ((bool?) ViewBag.hasshell == true)
+@if ((bool?)ViewBag.hasshell == true)
 {
     <div class="no-header"></div>
 }
-else {
+else
+{
     <h1 class="form-header">@ViewExtensions2.DbSetting("NameOfChurch", "Name Of Church: " + Util.Host)</h1>
 }
 @if (DbUtil.LoginNotice().HasValue())
@@ -55,6 +57,8 @@ else {
     <script type="text/javascript">
         if (document.querySelector('body > div.blockUI.blockMsg.blockPage')) {
             location.reload(true);
+        } else {
+            document.body.style.display = '';
         }
         $(function () {
             $('input:text').first().focus();

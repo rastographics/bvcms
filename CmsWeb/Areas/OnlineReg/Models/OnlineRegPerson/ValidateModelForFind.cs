@@ -132,6 +132,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 return;
             }
 
+            if (AlreadyRegisteredWithOtherCommunityGroup(foundname))
+            {
+                return;
+            }
+
             if (MustBeMemberOfAnotherOrgToRegister(foundname))
             {
                 return;
@@ -491,6 +496,23 @@ Please call the church to resolve this before we can complete your account.
             IsValidForContinue = false;
             IsValidForExisting = false;
             return true;
+        }
+
+        private bool AlreadyRegisteredWithOtherCommunityGroup(string foundname)
+        {
+            if (IsCommunityGroup() && db.Setting("RestrictCGSignupsTo24Hrs"))
+            {
+                if (!CanRegisterInCommunityGroup(db.Host, DateTime.Now.AddDays(-1)))
+                {
+                    var message = db.Setting("RestrictCGSignupsTo24HrsMessage", "Cannot register for multiple community groups on the same day.");
+                    modelState.AddModelError(foundname, message);
+                    RegistrantProblem = message;
+                    IsValidForContinue = false;
+                    IsValidForExisting = false;
+                    return true;
+                }
+            }
+            return false;
         }
 
         private bool MustNotBeMemberOfAnotherOrg(string foundname)

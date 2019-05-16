@@ -45,6 +45,7 @@ namespace CmsWeb.Areas.Dialog.Models
             orginfos = JsonConvert.DeserializeObject<List<OrgInfo>>(Orgs);
             var lop = new LongRunningOperation()
             {
+                Host = db.Host,
                 Started = DateTime.Now,
                 Count = orginfos.Count,
                 Processed = 0,

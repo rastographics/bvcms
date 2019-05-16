@@ -25,7 +25,7 @@ namespace CmsWeb.Areas.Search.Models
             var all = Db.Connection.Query(queries).ToList();
             List = guids == null ? all : all.Where(vv => guids.Contains((Guid)vv.QueryId)).ToList();
             Count = List.Count;
-            Debug.WriteLine($"{Util.Host} Count: {Count}");
+            Debug.WriteLine($"{db.Host} Count: {Count}");
         }
 
         public Guid? Existing;

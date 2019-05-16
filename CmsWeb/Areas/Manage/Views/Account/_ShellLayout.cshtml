@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, maximum-scale=1.0">
     <title>@ViewBag.Title</title>
 </head>
-<body>
+<body style="@ViewBag.BodyStyle">
     @Html.Action("Index", "MobileAppMenu", new { area = "" })
     @Html.Raw((string)ViewBag.top)
     <style>

@@ -17,13 +17,15 @@ namespace CmsData.Finance
 
         public string GatewayType => "BluePay";
 
-        public BluePayGateway(CMSDataContext db, bool testing)
+        public string Identifier => $"{GatewayType}-{_login}-{_key}";
+
+        public BluePayGateway(CMSDataContext db, bool testing, PaymentProcessTypes ProcessType)
         {
             this.db = db;
-            IsLive = !(testing || db.Setting("GatewayTesting"));
+            IsLive = !(testing || MultipleGatewayUtils.GatewayTesting(db, ProcessType));
 
-            _login = db.Setting("bluepay_accountId", "");
-            _key = db.Setting("bluepay_secretKey", "");
+            _login = MultipleGatewayUtils.Setting(db, "bluepay_accountId", "", (int)ProcessType);
+            _key = MultipleGatewayUtils.Setting(db, "bluepay_secretKey", "", (int)ProcessType);
 
             if (string.IsNullOrWhiteSpace(_login))
                 throw new Exception("bluepay_accountId setting not found, which is required for BluePay.");

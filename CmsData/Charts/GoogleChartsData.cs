@@ -61,8 +61,6 @@ namespace CmsData
             var api = new CmsData.API.APIContributionSearchModel(DbUtil.Db);
 
             List<LineChartDTO> myFinalList = new List<LineChartDTO>();
-            int progid;
-            int divid;
             int year = DateTime.Now.Year;
             DateTime firstDay = new DateTime(year, 1, 1);
             DateTime lastDay = new DateTime(year, 12, 31);

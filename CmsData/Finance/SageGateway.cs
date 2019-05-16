@@ -23,10 +23,12 @@ namespace CmsData.Finance
 
         public string GatewayType => "Sage";
 
-        public SageGateway(CMSDataContext db, bool testing)
+        public string Identifier => $"{GatewayType}-{_id}-{_key}-{_originatorId}";
+
+        public SageGateway(CMSDataContext db, bool testing, PaymentProcessTypes ProcessType)
         {
             this.db = db;
-            var gatewayTesting = db.Setting("GatewayTesting");
+            var gatewayTesting = MultipleGatewayUtils.GatewayTesting(db, ProcessType);
             if (testing || gatewayTesting)
             {
                 _id = "856423594649";
@@ -35,15 +37,15 @@ namespace CmsData.Finance
             }
             else
             {
-                _id = db.GetSetting("M_ID", "");
-                _key = db.GetSetting("M_KEY", "");
+                _id = MultipleGatewayUtils.Setting(db, "M_ID", "", (int)ProcessType);
+                _key = MultipleGatewayUtils.Setting(db, "M_KEY", "", (int)ProcessType);
 
                 if (string.IsNullOrWhiteSpace(_id))
                     throw new Exception("M_ID setting not found, which is required for Sage.");
                 if (string.IsNullOrWhiteSpace(_key))
                     throw new Exception("M_KEY setting not found, which is required for Sage.");
 
-                _originatorId = db.Setting("SageOriginatorId", "");
+                _originatorId = MultipleGatewayUtils.Setting(db, "SageOriginatorId", "", (int)ProcessType);
             }
         }
 
@@ -517,7 +519,6 @@ namespace CmsData.Finance
                     });
                 }
             }
-
             return new BatchResponse(batchTransactions);
         }
 
@@ -565,7 +566,6 @@ namespace CmsData.Finance
                     RejectDate = returnedCheck.RejectDate
                 });
             }
-
             return new ReturnedChecksResponse(returnedChecks);
         }
 
@@ -597,7 +597,6 @@ namespace CmsData.Finance
                 default:
                     return (paymentInfo.SageCardGuid ?? paymentInfo.SageBankGuid).ToString();
             }
-                
         }
     }
 }

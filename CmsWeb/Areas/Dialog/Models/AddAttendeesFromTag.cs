@@ -26,12 +26,13 @@ namespace CmsWeb.Areas.Dialog.Models
         public DateTime JoinDate { get; set; }
 
         public AddAttendeesFromTag() { }
-        public AddAttendeesFromTag(int id)
+        public AddAttendeesFromTag(int id, CMSDataContext db)
         {
+            Host = db.Host;
             QueryId = Guid.NewGuid();
             MeetingId = id;
             UserId = Util.UserId;
-            var i = (from m in DbUtil.Db.Meetings
+            var i = (from m in db.Meetings
                      where m.MeetingId == id
                      select new
                      {
@@ -65,6 +66,7 @@ namespace CmsWeb.Areas.Dialog.Models
             };
             db.LongRunningOperations.InsertOnSubmit(lop);
             db.SubmitChanges();
+            this.Host = db.Host;
             HostingEnvironment.QueueBackgroundWorkItem(ct => DoWork(this));
         }
 
@@ -78,8 +80,6 @@ namespace CmsWeb.Areas.Dialog.Models
             LongRunningOperation lop = null;
             foreach (var pid in model.pids)
             {
-                //db.Dispose();
-                //db = db.Create(model.Host);
                 if (model.AddAsMembers)
                 {
                     OrganizationMember.InsertOrgMembers(db, model.OrgId, pid,

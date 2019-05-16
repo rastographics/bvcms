@@ -10,6 +10,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
     {
         public RouteModel CompleteRegistration(OnlineRegController ctl)
         {
+            // Online Registration...
             HistoryAdd("CompleteRegistration");
 
             var ret = CheckSpecialJavascript();

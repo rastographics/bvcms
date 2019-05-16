@@ -23,9 +23,10 @@ namespace CmsWeb.Areas.Dialog.Models
             set
             {
                 // this one does not use LongRunningOp, but it probably should
+                var db = CMSDataContext.Create(Host);
                 queryId = value;
-                var filter = DbUtil.Db.OrgFilter(queryId);
-                OrgName = DbUtil.Db.Organizations.Where(vv => vv.OrganizationId == filter.Id).Select(vv => vv.OrganizationName).Single();
+                var filter = db.OrgFilter(queryId);
+                OrgName = db.Organizations.Where(vv => vv.OrganizationId == filter.Id).Select(vv => vv.OrganizationName).Single();
                 if (filter.GroupSelect == GroupSelectCode.Pending)
                 {
                     Pending = true;
@@ -33,14 +34,15 @@ namespace CmsWeb.Areas.Dialog.Models
 
                 showHidden = filter.ShowHidden;
                 OrgId = filter.Id;
-                Count = DbUtil.Db.OrgFilterIds(queryId).Count();
+                Count = db.OrgFilterIds(queryId).Count();
                 GroupSelect = filter.GroupSelect;
             }
         }
 
-        public OrgMembersUpdate(Guid id)
+        public OrgMembersUpdate(Guid id, string host)
             : this()
         {
+            Host = host;
             QueryId = id;
         }
 
@@ -83,16 +85,17 @@ namespace CmsWeb.Areas.Dialog.Models
         public string NewGroup { get; set; }
 
         private List<int> pids;
-        private List<int> Pids => pids ?? (pids = (from p in DbUtil.Db.OrgFilterIds(QueryId)
+        private List<int> Pids(CMSDataContext db) => pids ?? (pids = (from p in db.OrgFilterIds(QueryId)
                                                    select p.PeopleId.Value).ToList());
+
+        public string Host { get; set; }
 
         public void Update()
         {
-            foreach (var pid in Pids)
+            var db = CMSDataContext.Create(Host);
+            foreach (var pid in Pids(db))
             {
-                //DbDispose();
-                //var Db = CMSDataContext.Create(Util.Host);
-                var om = DbUtil.Db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == OrgId);
+                var om = db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == OrgId);
 
                 var changes = new List<ChangeDetail>();
                 if (InactiveDate.HasValue)
@@ -119,7 +122,7 @@ namespace CmsWeb.Areas.Dialog.Models
 
                 if (MakeMemberTypeOriginal)
                 {
-                    var et = (from e in DbUtil.Db.EnrollmentTransactions
+                    var et = (from e in db.EnrollmentTransactions
                               where e.PeopleId == om.PeopleId
                               where e.OrganizationId == OrgId
                               orderby e.TransactionDate
@@ -127,7 +130,7 @@ namespace CmsWeb.Areas.Dialog.Models
                     et.MemberTypeId = om.MemberTypeId;
                 }
 
-                DbUtil.Db.SubmitChanges();
+                db.SubmitChanges();
                 foreach (var g in changes)
                 {
                     DbUtil.LogActivity("OrgMem change " + g.Field, om.OrganizationId, om.PeopleId);
@@ -137,43 +140,42 @@ namespace CmsWeb.Areas.Dialog.Models
 
         public string AddSmallGroup(int sgtagid)
         {
-            var name = DbUtil.Db.MemberTags.Single(mm => mm.Id == sgtagid && mm.OrgId == OrgId).Name;
-            foreach (var pid in Pids)
+            var db = CMSDataContext.Create(Host);
+            var name = db.MemberTags.Single(mm => mm.Id == sgtagid && mm.OrgId == OrgId).Name;
+            var peopleIds = Pids(db);
+            foreach (var pid in peopleIds)
             {
-                //DbDispose();
-                //var Db = CMSDataContext.Create(Util.Host);
-                var om = DbUtil.Db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == OrgId);
-                var nn = om.AddToGroup(DbUtil.Db, sgtagid);
+                var om = db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == OrgId);
+                var nn = om.AddToGroup(db, sgtagid);
                 if (nn == 1)
                 {
                     DbUtil.LogActivity("OrgMem AddSubGroup " + name, om.OrganizationId, om.PeopleId);
                 }
             }
-            return $"{Pids.Count} added to sub-group {name}";
+            return $"{peopleIds.Count} added to sub-group {name}";
         }
 
         public void RemoveSmallGroup(int sgtagid)
         {
-            var name = DbUtil.Db.MemberTags.Single(mm => mm.Id == sgtagid && mm.OrgId == OrgId).Name;
-            foreach (var pid in Pids)
+            var db = CMSDataContext.Create(Host);
+            var name = db.MemberTags.Single(mm => mm.Id == sgtagid && mm.OrgId == OrgId).Name;
+            var peopleIds = Pids(db);
+            foreach (var pid in peopleIds)
             {
-                //DbDispose();
-                //var Db = CMSDataContext.Create(Util.Host);
-                var om = DbUtil.Db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == OrgId);
+                var om = db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == OrgId);
                 var mt = om.OrgMemMemTags.SingleOrDefault(t => t.MemberTagId == sgtagid);
                 if (mt != null)
                 {
-                    DbUtil.Db.OrgMemMemTags.DeleteOnSubmit(mt);
+                    db.OrgMemMemTags.DeleteOnSubmit(mt);
                 }
 
-                DbUtil.Db.SubmitChanges();
+                db.SubmitChanges();
                 if (mt != null)
                 {
                     DbUtil.LogActivity("OrgMem RemoveSubGroup " + name, om.OrganizationId, om.PeopleId);
                 }
             }
-            var Db = CMSDataContext.Create(Util.Host);
-            DbUtil.Db.ExecuteCommand(@"
+            db.ExecuteCommand(@"
 DELETE dbo.MemberTags
 WHERE Id = {1} AND OrgId = {0}
 AND NOT EXISTS(SELECT NULL FROM dbo.OrgMemMemTags WHERE OrgId = {0} AND MemberTagId = {1})
@@ -185,29 +187,37 @@ AND NOT EXISTS(SELECT NULL FROM dbo.OrgMemMemTags WHERE OrgId = {0} AND MemberTa
 
         internal void PostTransactions()
         {
-            foreach (var pid in Pids)
+            var db = CMSDataContext.Create(Host);
+            foreach (var pid in Pids(db))
             {
-                var db = CMSDataContext.Create(Util.Host);
-                var om = DbUtil.Db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == OrgId);
-                var ts = DbUtil.Db.ViewTransactionSummaries.SingleOrDefault(
+                var om = db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == OrgId);
+                var ts = db.ViewTransactionSummaries.SingleOrDefault(
                         tt => tt.RegId == om.TranId && tt.PeopleId == om.PeopleId);
                 var reason = ts == null ? "Initial Tran" : "Adjustment";
                 var descriptionForPayment = OnlineRegModel.GetDescriptionForPayment(OrgId);
-                om.AddTransaction(DbUtil.Db, reason, Payment ?? 0, Description, Amount, AdjustFee, descriptionForPayment);
-                DbUtil.Db.SubmitChanges();
+                om.AddTransaction(db, reason, Payment ?? 0, Description, Amount, AdjustFee, descriptionForPayment);
+                db.SubmitChanges();
                 DbUtil.LogActivity("OrgMem " + reason, OrgId, pid);
             }
         }
 
         public void AddNewSmallGroup()
         {
-            var o = DbUtil.Db.LoadOrganizationById(OrgId);
-            var mt = new MemberTag { Name = NewGroup };
-            o.MemberTags.Add(mt);
-            DbUtil.Db.SubmitChanges();
-            DbUtil.LogActivity("OrgMem AddNewSubGroup " + NewGroup, OrgId);
-            AddSmallGroup(mt.Id);
-            NewGroup = null;
+            var db = CMSDataContext.Create(Host);
+            var o = db.LoadOrganizationById(OrgId);
+            if (o != null)
+            {
+                var mt = new MemberTag { Name = NewGroup };
+                o.MemberTags.Add(mt);
+                db.SubmitChanges();
+                DbUtil.LogActivity("OrgMem AddNewSubGroup " + NewGroup, OrgId);
+                AddSmallGroup(mt.Id);
+                NewGroup = null;
+            }
+            else
+            {
+                throw new Exception($"Org not found: {OrgId}");
+            }
         }
     }
 }

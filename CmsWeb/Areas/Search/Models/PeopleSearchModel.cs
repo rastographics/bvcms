@@ -585,7 +585,7 @@ or just Last or *First*`space` for first name match only.
             return "/Query/" + cc.Id;
         }
 
-        public static Person FindPerson(string first, string last, DateTime? DOB, string email, string phone, out int count)
+        public static Person FindPerson(CMSDataContext db, string first, string last, DateTime? DOB, string email, string phone, out int count)
         {
             count = 0;
             if (!first.HasValue() || !last.HasValue())
@@ -596,7 +596,7 @@ or just Last or *First*`space` for first name match only.
             first = first.Trim();
             last = last.Trim();
             var fone = Util.GetDigits(phone);
-            var ctx = CMSDataContext.Create(Util.Host);
+            var ctx = db.Copy();
             ctx.SetNoLock();
             var q = from p in ctx.People
                     where (p.FirstName == first || p.NickName == first || p.MiddleName == first)
@@ -655,8 +655,7 @@ or just Last or *First*`space` for first name match only.
         private static Person PersonFound(CMSDataContext ctx, IQueryable<Person> q)
         {
             var pid = q.Select(p => p.PeopleId).SingleOrDefault();
-            ctx.Dispose();
-            return DbUtil.Db.LoadPersonById(pid);
+            return ctx.LoadPersonById(pid);
         }
     }
 }

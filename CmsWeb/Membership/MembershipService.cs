@@ -1,19 +1,20 @@
+using CmsData;
 using System;
 using System.Linq;
 using System.Web.Security;
 using UtilityExtensions;
 
-namespace CmsData
+namespace CmsWeb.Membership
 {
     public static class MembershipService
     {
-        public static int MinPasswordLength => DbUtil.Db.Setting("PasswordMinLength", "7").ToInt();
+        public static int MinPasswordLength (CMSDataContext db) => db.Setting("PasswordMinLength", "7").ToInt();
 
-        public static bool RequireSpecialCharacter => DbUtil.Db.Setting("PasswordRequireSpecialCharacter", "true").ToBool();
+        public static bool RequireSpecialCharacter (CMSDataContext db) => db.Setting("PasswordRequireSpecialCharacter", "true").ToBool();
 
-        public static bool RequireOneNumber => DbUtil.Db.Setting("PasswordRequireOneNumber", "false").ToBool();
+        public static bool RequireOneNumber (CMSDataContext db) => db.Setting("PasswordRequireOneNumber", "false").ToBool();
 
-        public static bool RequireOneUpper => DbUtil.Db.Setting("PasswordRequireOneUpper", "false").ToBool();
+        public static bool RequireOneUpper (CMSDataContext db) => db.Setting("PasswordRequireOneUpper", "false").ToBool();
 
         public static bool ValidateUser(string userName, string password)
         {
@@ -41,7 +42,7 @@ namespace CmsData
         public static User CreateUser(CMSDataContext db, int peopleId)
         {
             var p = db.LoadPersonById(peopleId);
-            var uname = FetchUsername(db, p.PreferredName, p.LastName);
+            var uname = Util2.FetchUsername(db, p.PreferredName, p.LastName);
             var pword = Guid.NewGuid().ToString();
             CMSMembershipProvider.provider.AdminOverride = true;
             var user = CMSMembershipProvider.provider.NewUser(
@@ -70,26 +71,7 @@ namespace CmsData
             CMSMembershipProvider.provider.AdminOverride = false;
             return ret;
         }
-        public static string FetchUsername(CMSDataContext db, string first, string last)
-        {
-            var firstinitial = first?.Trim();
-            if (firstinitial.HasValue())
-            {
-                firstinitial = firstinitial.ToLower();
-                if (firstinitial.Length > 1)
-                    firstinitial = firstinitial[0].ToString();
-            }
-            var username = firstinitial + last.Trim().ToLower().Replace(",", "").Replace(" ", "").Truncate(20);
-            var uname = username;
-            var i = 1;
-            while (db.Users.SingleOrDefault(u => u.Username == uname) != null)
-                uname = username + i++;
-            return uname;
-        }
-        public static string FetchUsernameNoCheck(string first, string last)
-        {
-            return first.ToLower()[0] + last.ToLower();
-        }
+
         public static string FetchPassword(CMSDataContext db)
         {
             var rnd = new Random();

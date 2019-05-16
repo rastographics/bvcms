@@ -1,4 +1,5 @@
 ﻿using CmsData;
+using CmsWeb.Membership;
 using System;
 using System.Data.Linq;
 using System.Data.SqlTypes;
@@ -138,7 +139,7 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 
             foreach (User foundUser in userQuery.ToList())
             {
-                if (!impersonating && !Membership.Provider.ValidateUser(username, password))
+                if (!impersonating && !CMSMembershipProvider.provider.ValidateUser(username, password))
                 {
                     continue;
                 }

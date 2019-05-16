@@ -17,6 +17,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public bool? testing { get; set; }
         public string FromMobile { get; set; }
         public string URL { get; set; }
+        public PaymentProcessTypes ProcessType { get; set; }
 
         public bool DisplaySpecialFunds => OnlineGiving() || ManageGiving();
 
@@ -67,8 +68,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public string MissionTripDates { get; set; }
         public decimal? MissionTripCost { get; set; }
         public decimal? MissionTripRaised { get; set; }
-
+        public string gatewayType { get; set; }
+        public int transactionId { get; set; }
         public List<Supporter> Supporters { get; set; }
+
 
         private Transaction _transaction;
         public Transaction Transaction
