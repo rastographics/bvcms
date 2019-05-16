@@ -48,7 +48,7 @@
             <strong>Start Date:</strong> @Model.StartDt.ToShortDateString()<br />
             <strong>End Date:</strong> @Model.EndDt.ToShortDateString()
         </div>
-        @if (Model.Type.HasValue)
+        @if (Model.Type != 0)
         {
             foreach (var p in Model.FetchInfo())
             {
