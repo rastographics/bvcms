@@ -57,7 +57,7 @@ namespace CmsWeb.Areas.Setup.Controllers
         public JsonResult GetGatewayDetails()
         {
             var GatewayDetails = CurrentDatabase.GatewayDetails.ToList();
-            if (CurrentUser.IsInRole("Developer"))
+            if (!CurrentUser.IsInRole("Developer"))
             {
                 GatewayDetails.RemoveAll(d => d.GatewayDetailName == "GatewayTesting");
             }
@@ -69,7 +69,7 @@ namespace CmsWeb.Areas.Setup.Controllers
         public JsonResult GetGatewayTemplate(int GatewayId)
         {
             var GatewayConfigurationTemplate = CurrentDatabase.GatewayConfigurationTemplate.Where(x => x.GatewayId == GatewayId).ToList();
-            if (CurrentUser.IsInRole("Developer"))
+            if (!CurrentUser.IsInRole("Developer"))
             {
                 GatewayConfigurationTemplate.RemoveAll(d => d.GatewayDetailName == "GatewayTesting");
             }
