@@ -22,7 +22,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         private int? _orgid;
         public int? Orgid
         {
-            get { return _orgid ?? _masterorgid; }
+            get { return _orgid; }
             set
             {
                 _orgid = value;

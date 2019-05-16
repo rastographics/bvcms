@@ -25,74 +25,63 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         public ActionResult Index(int? id, bool? testing, string email, bool? login, string registertag, bool? showfamily, int? goerid, int? gsid, string source)
         {
             Response.NoCache();
-            try
+
+            var m = new OnlineRegModel(Request, CurrentDatabase, id, testing, email, login, source);
+            var isMissionTrip = (m.org?.IsMissionTrip).GetValueOrDefault();
+
+            if (isMissionTrip)
             {
-                var m = new OnlineRegModel(Request, CurrentDatabase, id, testing, email, login, source);
-
-                if ((m.org.IsMissionTrip.IsNotNull() && m.org.IsMissionTrip == true) ? true : false)
-                {
-                    m.ProcessType = PaymentProcessTypes.OneTimeGiving;
-                }
-                else
-                {
-                    m.ProcessType = m.org.RegistrationTypeId.IsNull() || m.org.RegistrationTypeId == 8 ? PaymentProcessTypes.OneTimeGiving : PaymentProcessTypes.OnlineRegistration;
-                }
-
-                SetHeaders(m);
-
-                int? GatewayId = MultipleGatewayUtils.GatewayId(CurrentDatabase, m.ProcessType);
-                var gatewayRequired = (m.PayAmount() > 0 || m.ProcessType == PaymentProcessTypes.OneTimeGiving || m.ProcessType == PaymentProcessTypes.RecurringGiving);
-
-                if (GatewayId.IsNull() && gatewayRequired)
-                {
-                    return View("OnePageGiving/NotConfigured");
-                }
-
-
-                if ((int)GatewayTypes.Pushpay == GatewayId && string.IsNullOrEmpty(MultipleGatewayUtils.Setting(CurrentDatabase, "PushpayMerchant", "", (int)m.ProcessType)))
-                {
-                    ViewBag.Header = m.Header;
-                    ViewBag.Instructions = m.Instructions;
-                    return View("OnePageGiving/NotConfigured");
-                }
-
-                if (m.ManageGiving())
-                {
-                    Session["Campus"] = Request.QueryString["campus"];
-                    Session["DefaultFunds"] = Request.QueryString["funds"];
-                    m.Campus = Session["Campus"]?.ToString();
-                    m.DefaultFunds = Session["DefaultFunds"]?.ToString();
-                }
-
-                if (m.org != null && m.org.IsMissionTrip == true)
-                {
-                    if (gsid != null || goerid != null)
-                    {
-                        m.PrepareMissionTrip(gsid, goerid);
-                    }
-                }
-
-                var pid = m.CheckRegisterLink(registertag);
-                if (m.NotActive())
-                {
-                    return View("OnePageGiving/NotActive", m);
-                }
-                if (m.MissionTripSelfSupportPaylink.HasValue() && m.GoerId > 0)
-                {
-                    return Redirect(m.MissionTripSelfSupportPaylink);
-                }
-
-                return RouteRegistration(m, pid, showfamily);
+                m.ProcessType = PaymentProcessTypes.OneTimeGiving;
             }
-            catch (Exception ex)
+            else
             {
-                if (ex is BadRegistrationException)
-                {
-                    return Message(ex.Message);
-                }
-
-                throw;
+                m.ProcessType = (m.org?.RegistrationTypeId).GetValueOrDefault() == RegistrationTypeCode.OnlineGiving ? PaymentProcessTypes.OneTimeGiving : PaymentProcessTypes.OnlineRegistration;
             }
+
+            SetHeaders(m);
+
+            int? GatewayId = MultipleGatewayUtils.GatewayId(CurrentDatabase, m.ProcessType);
+            var gatewayRequired = (m.PayAmount() > 0 || m.ProcessType == PaymentProcessTypes.OneTimeGiving || m.ProcessType == PaymentProcessTypes.RecurringGiving);
+
+            if (GatewayId.IsNull() && gatewayRequired)
+            {
+                return View("OnePageGiving/NotConfigured");
+            }
+
+            if ((int)GatewayTypes.Pushpay == GatewayId && string.IsNullOrEmpty(MultipleGatewayUtils.Setting(CurrentDatabase, "PushpayMerchant", "", (int)m.ProcessType)))
+            {
+                ViewBag.Header = m.Header;
+                ViewBag.Instructions = m.Instructions;
+                return View("OnePageGiving/NotConfigured");
+            }
+
+            if (m.ManageGiving())
+            {
+                Session["Campus"] = Request.QueryString["campus"];
+                Session["DefaultFunds"] = Request.QueryString["funds"];
+                m.Campus = Session["Campus"]?.ToString();
+                m.DefaultFunds = Session["DefaultFunds"]?.ToString();
+            }
+
+            if (isMissionTrip)
+            {
+                if (gsid != null || goerid != null)
+                {
+                    m.PrepareMissionTrip(gsid, goerid);
+                }
+            }
+
+            var pid = m.CheckRegisterLink(registertag);
+            if (m.NotActive())
+            {
+                return View("OnePageGiving/NotActive", m);
+            }
+            if (m.MissionTripSelfSupportPaylink.HasValue() && m.GoerId > 0)
+            {
+                return Redirect(m.MissionTripSelfSupportPaylink);
+            }
+
+            return RouteRegistration(m, pid, showfamily);
         }
         [HttpPost]
         public ActionResult Login(OnlineRegModel m)

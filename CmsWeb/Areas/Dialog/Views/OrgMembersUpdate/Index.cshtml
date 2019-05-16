@@ -16,6 +16,7 @@
             <div class="alert alert-warning">
                 This will update information on @Model.Count @Model.DisplayGroup
             </div>
+            @Html.HiddenFor(m => m.OrgId)
             @Html.HiddenFor(m => m.QueryId)
             @Html.EditorFor(m => m.MemberType)
             @Html.EditorFor(m => m.MakeMemberTypeOriginal)

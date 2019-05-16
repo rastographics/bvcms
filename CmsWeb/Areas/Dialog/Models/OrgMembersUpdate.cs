@@ -205,12 +205,19 @@ AND NOT EXISTS(SELECT NULL FROM dbo.OrgMemMemTags WHERE OrgId = {0} AND MemberTa
         {
             var db = CMSDataContext.Create(Host);
             var o = db.LoadOrganizationById(OrgId);
-            var mt = new MemberTag { Name = NewGroup };
-            o.MemberTags.Add(mt);
-            db.SubmitChanges();
-            DbUtil.LogActivity("OrgMem AddNewSubGroup " + NewGroup, OrgId);
-            AddSmallGroup(mt.Id);
-            NewGroup = null;
+            if (o != null)
+            {
+                var mt = new MemberTag { Name = NewGroup };
+                o.MemberTags.Add(mt);
+                db.SubmitChanges();
+                DbUtil.LogActivity("OrgMem AddNewSubGroup " + NewGroup, OrgId);
+                AddSmallGroup(mt.Id);
+                NewGroup = null;
+            }
+            else
+            {
+                throw new Exception($"Org not found: {OrgId}");
+            }
         }
     }
 }
