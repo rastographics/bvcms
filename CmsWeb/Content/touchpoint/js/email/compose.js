@@ -217,6 +217,7 @@
                 showCancelButton: true,
                 confirmButtonClass: "btn-confirm",
                 confirmButtonText: "Yes, send it!",
+                showLoaderOnConfirm: true,
                 closeOnConfirm: false
             }, sendEmail);
         } else {
