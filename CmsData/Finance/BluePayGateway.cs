@@ -17,6 +17,8 @@ namespace CmsData.Finance
 
         public string GatewayType => "BluePay";
 
+        public string Identifier => $"{GatewayType}-{_login}-{_key}";
+
         public BluePayGateway(CMSDataContext db, bool testing, PaymentProcessTypes ProcessType)
         {
             this.db = db;

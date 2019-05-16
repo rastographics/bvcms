@@ -27,6 +27,8 @@ namespace CmsData.Finance
 
         public string GatewayType => "TransNational";
 
+        public string Identifier => $"{GatewayType}-{_userName}-{_password}";
+
         public TransNationalGateway(CMSDataContext db, bool testing, PaymentProcessTypes ProcessType)
         {
             this.db = db;

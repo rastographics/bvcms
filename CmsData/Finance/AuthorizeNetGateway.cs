@@ -21,6 +21,8 @@ namespace CmsData.Finance
 
         public string GatewayType => "AuthorizeNet";
 
+        public string Identifier => $"{GatewayType}-{_login}-{_key}";
+
         public AuthorizeNetGateway(CMSDataContext db, bool testing, PaymentProcessTypes ProcessType)
         {
             this.db = db;

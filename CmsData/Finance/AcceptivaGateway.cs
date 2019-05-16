@@ -25,6 +25,8 @@ namespace CmsData.Finance
 
         public string GatewayType => "Acceptiva";
 
+        public string Identifier => $"{GatewayType}-{_apiKey}-{_merch_ach_id}-{_merch_cc_id}";
+
         public AcceptivaGateway(CMSDataContext db, bool testing, PaymentProcessTypes ProcessType)
         {
             this.db = db;

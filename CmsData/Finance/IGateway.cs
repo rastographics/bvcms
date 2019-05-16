@@ -7,6 +7,7 @@ namespace CmsData
     public interface IGateway
     {
         string GatewayType { get; }
+        string Identifier { get; }
 
         bool CanVoidRefund { get;}
         bool CanGetSettlementDates { get;}

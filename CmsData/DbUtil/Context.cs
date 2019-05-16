@@ -1881,25 +1881,31 @@ This search uses multiple steps which cannot be duplicated in a single query.
         internal bool FromActiveRecords { get; set; }
         public bool FromBatch { get; set; }
 
-        public IGateway Gateway(bool testing = false, PaymentProcessTypes ProcessType = PaymentProcessTypes.RecurringGiving)
+        public IGateway Gateway(bool testing = false, PaymentProcessTypes processType = PaymentProcessTypes.RecurringGiving, bool exceptionIfMissing = true)
         {
-            int? GatewayId = MultipleGatewayUtils.GatewayId(this, ProcessType);
+            int? GatewayId = MultipleGatewayUtils.GatewayId(this, processType);
 
             if (GatewayId.IsNull())
-                throw new Exception("This process is not configured yet, please contact support");
+            {
+                if (exceptionIfMissing)
+                {
+                    throw new Exception("This process is not configured yet, please contact support");
+                }
+                return null;
+            }
 
             switch (GatewayId)
             {
                 case (int)GatewayTypes.Sage:
-                    return new SageGateway(this, testing, ProcessType);
+                    return new SageGateway(this, testing, processType);
                 case (int)GatewayTypes.Transnational:
-                    return new TransNationalGateway(this, testing, ProcessType);
+                    return new TransNationalGateway(this, testing, processType);
                 case (int)GatewayTypes.Acceptiva:
-                    return new AcceptivaGateway(this, testing, ProcessType);
+                    return new AcceptivaGateway(this, testing, processType);
                 case (int)GatewayTypes.AuthorizeNet:
-                    return new AuthorizeNetGateway(this, testing, ProcessType);
+                    return new AuthorizeNetGateway(this, testing, processType);
                 case (int)GatewayTypes.BluePay:
-                    return new BluePayGateway(this, testing, ProcessType);
+                    return new BluePayGateway(this, testing, processType);
                 default:
                     break;
             }

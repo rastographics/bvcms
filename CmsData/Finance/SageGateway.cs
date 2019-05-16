@@ -23,6 +23,8 @@ namespace CmsData.Finance
 
         public string GatewayType => "Sage";
 
+        public string Identifier => $"{GatewayType}-{_id}-{_key}-{_originatorId}";
+
         public SageGateway(CMSDataContext db, bool testing, PaymentProcessTypes ProcessType)
         {
             this.db = db;
