@@ -5,7 +5,7 @@
     $(".Send").click(function () {
         $.block();
         $('#Body').text(CKEDITOR.instances["Body"].getData());
-        var q = $(this).closest('form').serialize();
+        var q = $(this).closest('form');
         if ($(this).attr('data-prompt') === 'True') {
             var count = $("#Count").val();
             swal({
@@ -17,14 +17,14 @@
                 confirmButtonText: "Yes, send it!",
                 showLoaderOnConfirm: true,
                 closeOnConfirm: false
-            }, sendEmail(q));
+            }, function () { sendEmail(q); });
         } else {
             sendEmail(q);
         }        
     });
 
     function sendEmail(q) {
-        $.post('/Email/QueueEmails', q, function (ret) {
+        $.post('/Email/QueueEmails', q.serialize(), function (ret) {
             if (ret && ret.error) {
                 $.unblock();
                 swal("Error!", ret.error, "error");
@@ -37,7 +37,7 @@
                 if (taskid === 0) {
                     $.unblock();
                     swal("Success!", ret.content, "success");
-                    $('button.Send').prop('disabled', true);
+                    $('button.Send', q).prop('disabled', true);
                 } else {
                     $("#send-actions").remove();
                     var intervalid = window.setInterval(function () {
@@ -49,7 +49,7 @@
                                 if (ret.title == 'Email has completed.') {
                                     swal(ret.title, ret.message, "success");
                                     window.clearInterval(intervalid);
-                                    $('button.Send').prop('disabled', true);
+                                    $('button.Send', q).prop('disabled', true);
                                 } else {
                                     swal({
                                         title: ret.title,
