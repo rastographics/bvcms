@@ -9,8 +9,8 @@ namespace CmsData.Finance.Acceptiva.Get
     {
         private const string action = "get_payer_data";
 
-        public GetPayerData(string apiKey, int peopleId)
-            : base(apiKey, action)
+        public GetPayerData(bool isTesting, string apiKey, int peopleId)
+            : base(isTesting, apiKey, action)
         {
             Data["params[0][client_payer_id]"] = peopleId.ToString();
         }

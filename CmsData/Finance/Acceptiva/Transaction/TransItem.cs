@@ -10,5 +10,7 @@ namespace CmsData.Finance.Acceptiva.Transaction
         public string  Desc{ get; set; }
         [JsonProperty(PropertyName = "amt")]
         public double Amt { get; set; }
+        [JsonProperty(PropertyName = "id_str")]
+        public string IdString { get; set; }
     }
 }

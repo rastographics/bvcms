@@ -8,8 +8,8 @@ namespace CmsData.Finance.Acceptiva.Store
     {
         private const string action = "store_payer_data";
 
-        public StorePayerRequest(string apiKey, Payer payer, CreditCard creditCard, Ach ach)
-            : base(apiKey, action)
+        public StorePayerRequest(bool isTesting, string apiKey, Payer payer, CreditCard creditCard, Ach ach)
+            : base(isTesting, apiKey, action)
         {
             string expMonth = string.IsNullOrEmpty(creditCard.CardExpiration) ? string.Empty : creditCard.CardExpiration.Substring(0, 2);
             string expYear = string.IsNullOrEmpty(creditCard.CardExpiration) ? string.Empty : creditCard.CardExpiration.Substring(2, 2);

@@ -8,10 +8,10 @@ namespace CmsData.Finance.Acceptiva.Transaction.Charge
     {
         private const string action = "charge";
 
-        public StoredPayerCharge(string apiKey, string merch_acct_id, string acceptivaPayerId, decimal amt, string tranId, string tranDesc, int paymentType, string lname, string fname)
-            :base(apiKey, action)
+        public StoredPayerCharge(bool isTesting, string apiKey, string merch_acct_id, string acceptivaPayerId, decimal amt, string tranId, string tranDesc, int paymentType, string lname, string fname)
+            :base(isTesting, apiKey, action)
         {
-            Data["params[0][items][0][id]"] = tranId.ToString();
+            Data["params[0][items][0][id]"] = $"Touchpoint#{tranId.ToString()}";
             Data["params[0][items][0][desc]"] = tranDesc.ToString();
             Data["params[0][items][0][amt]"] = amt.ToString();
             Data["params[0][payment_type]"] = paymentType.ToString();
