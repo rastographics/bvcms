@@ -3,11 +3,11 @@
 @using CmsData.Finance
 @using Dapper
 @{
-  ViewBag.Title = "Managed Giving";
-  ViewBag.PageHeader = "Managed Giving";
-  Layout = ViewExtensions2.TouchPointLayout();
-  var debitcredit = DbUtil.Db.Setting("DebitCreditLabel-Registrations", "Debit/Credit Card");
-  var recurringAmounts = Model.RecurringAmounts();
+    ViewBag.Title = "Managed Giving";
+    ViewBag.PageHeader = "Managed Giving";
+    Layout = ViewExtensions2.TouchPointLayout();
+    var debitcredit = CMSDataContext.getDebitCreditLabel(PaymentProcessTypes.OnlineRegistration);
+    var recurringAmounts = Model.RecurringAmounts();
 }
 <div class="row">
   <div class="col-sm-9">
