@@ -164,8 +164,8 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where
 		('Sage', 2),
 		('Transnational', 2),
 		('AuthorizeNet', 2),
-		('BluePay', 2),
-		('Acceptiva', 3)
+		('BluePay', 2)
+		--('Acceptiva', 3)--
 	END
 GO
 
@@ -218,11 +218,12 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where
 		(4, 'x_tran_key', (SELECT [dbo].[ImportGatewaySettings]('x_tran_key')),0),
 		(5, 'GatewayTesting', 'false', 1),
 		(5, 'bluepay_accountId', (SELECT [dbo].[ImportGatewaySettings]('bluepay_accountId')),0),
-		(5, 'bluepay_secretKey', (SELECT [dbo].[ImportGatewaySettings]('bluepay_secretKey')),0),
-		(6, 'GatewayTesting', 'false', 1),
-		(6, 'AcceptivaApiKey', (SELECT [dbo].[ImportGatewaySettings]('AcceptivaApiKey')), 0),
-		(6, 'AcceptivaAchId', (SELECT [dbo].[ImportGatewaySettings]('AcceptivaAchId')), 0),
-		(6, 'AcceptivaCCId', (SELECT [dbo].[ImportGatewaySettings]('AcceptivaCCId')), 0);
+		(5, 'bluepay_secretKey', (SELECT [dbo].[ImportGatewaySettings]('bluepay_secretKey')),0);
+		--(5, 'GatewayTesting', 'false', 1),--
+		--(5, 'AcceptivaApiKey', (SELECT [dbo].[ImportGatewaySettings]('AcceptivaApiKey')), 0),--
+		--(5, 'AcceptivaAchId', (SELECT [dbo].[ImportGatewaySettings]('AcceptivaAchId')), 0),--
+		--(5, 'AcceptivaCCId', (SELECT [dbo].[ImportGatewaySettings]('AcceptivaCCId')), 0),--
+		--(5, 'UseSavingAccounts', 'true', 1);--
 	
 		IF EXISTS (
 			SELECT type_desc, type
@@ -253,8 +254,8 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where
 		('Sage', 2),
 		('Transnational', 3),
 		('AuthorizeNet', 4),
-		('BluePay', 5),
-		('Acceptiva', 6)
+		('BluePay', 5)
+		--('Acceptiva', 6)--
 	END
 GO
 
