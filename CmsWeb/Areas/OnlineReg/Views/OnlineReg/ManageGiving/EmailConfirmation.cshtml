@@ -9,7 +9,7 @@
 @{
   var funds = CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel.FullFundList(DbUtil.Db);
   var total = 0M;
-  var debitcredit = DbUtil.Db.Setting("DebitCreditLabel", "Debit/Credit Card");
+  var debitcredit = DbUtil.Db.Setting("DebitCreditLabel-Registrations", "Debit/Credit Card");
 }
 @for (var n = 0; n < funds.Length; n++)
 {
