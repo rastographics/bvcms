@@ -83,7 +83,14 @@ namespace CmsWeb.Areas.OnlineReg.Models
             // prepopulate their email address they passed in
             if (Util.ValidEmail(email))
             {
-                List[0].EmailAddress = email;
+                var person =
+                    new OnlineRegPersonModel
+                    {
+                        orgid = Orgid,
+                        masterorgid = masterorgid,
+                        EmailAddress = email
+                    };
+                List.Add(person);
             }
 
             HistoryAdd("index");
