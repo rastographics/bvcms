@@ -135,12 +135,12 @@
                         <div class="col-sm-offset-2 col-sm-10">
                             <div class="pull-right">
                                 <a href="#" class="btn btn-default TestSend">Send Test Email (To Me)</a>
-                                <button type="button" class="btn btn-primary Send"><i class="fa fa-paper-plane"></i> Send</button>
+                                <button type="button" class="btn btn-primary Send" data-prompt="@Model.PromptBeforeSend.ToString()"><i class="fa fa-paper-plane"></i> Send</button>
                             </div>
                         </div>
                     </div>
                     <div class="visible-xs-block">
-                        <button type="button" class="btn btn-primary btn-block Send"><i class="fa fa-paper-plane"></i> Send</button>
+                        <button type="button" class="btn btn-primary btn-block Send" data-prompt="@Model.PromptBeforeSend.ToString()"><i class="fa fa-paper-plane"></i> Send</button>
                         <a href="#" class="btn btn-default btn-block TestSend">Send Test Email (To Me)</a>
                     </div>
                     <br/>
