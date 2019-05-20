@@ -9,9 +9,7 @@
     Layout = "~/Views/Shared/onlinereg2.cshtml";
     var db = DbUtil.Db;
     var VaultDisabled = db.Setting("VaultDisabled");
-    var debitcredit = Model.ProcessType == PaymentProcessTypes.OneTimeGiving ?
-        CMSDataContext.getDebitCreditLabel(PaymentProcessTypes.OneTimeGiving) :
-        CMSDataContext.getDebitCreditLabel(PaymentProcessTypes.OnlineRegistration);
+    var debitcredit = db.GetDebitCreditLabel(Model.ProcessType);
 
     var recaptchaSiteKey = db.Setting("googleReCaptchaSiteKey", ConfigurationManager.AppSettings["googleReCaptchaSiteKey"]);
     var useRecaptcha = db.Setting("UseRecaptcha") && recaptchaSiteKey.HasValue();

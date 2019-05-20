@@ -8,7 +8,7 @@
     Layout = "~/Views/Shared/onlinereg2.cshtml";
     ViewBag.Title = "OnePageGiving";
     var db = DbUtil.Db;
-    var debitcredit = CMSDataContext.getDebitCreditLabel(PaymentProcessTypes.OneTimeGiving);
+    var debitcredit = db.GetDebitCreditLabel(PaymentProcessTypes.OneTimeGiving);
     var vaultDisabled = db.Setting("VaultDisabled");
     var processorerror = Html.ErrorMessage("TranId");
     var designatedFund = Model.OnlineRegPersonModel.DesignatedDonationFund().FirstOrDefault();
