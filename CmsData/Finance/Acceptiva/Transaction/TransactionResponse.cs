@@ -3,9 +3,9 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
-namespace CmsData.Finance.Acceptiva.Transaction.Void
+namespace CmsData.Finance.Acceptiva.Transaction
 {
-    internal class VoidResponse : Response
+    internal class TransactionResponse : Response
     {
         [JsonProperty(PropertyName = "trans_id_str")]
         public string TransIdStr { get; set; }

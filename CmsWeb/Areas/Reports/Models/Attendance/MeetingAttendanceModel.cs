@@ -270,9 +270,10 @@ namespace CmsWeb.Areas.Reports.Models.Attendance
                                 WeekDates = weeks,
                                 Orgs = (from org in CurrentDatabase.Organizations
                                         join meet in CurrentDatabase.Meetings on org.OrganizationId equals meet.OrganizationId
+                                        join div in CurrentDatabase.DivOrgs on org.OrganizationId equals div.OrgId
                                         where org.OrganizationStatusId == OrgStatusCode.Active
                                         where ((meet.Description == null && cat.Description == null) || (meet.Description == cat.Description))
-                                        where DivisionIds.Contains(org.DivisionId ?? 0)
+                                        where DivisionIds.Contains(div.DivId)
                                         select new OrgInfo
                                         {
                                             Id = org.OrganizationId,

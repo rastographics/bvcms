@@ -1,13 +1,12 @@
 ﻿@model CmsWeb.Areas.OnlineReg.Models.ManageGivingModel
 @using CmsData
 @using CmsData.Finance
-@using Dapper
 @{
-  ViewBag.Title = "Managed Giving";
-  ViewBag.PageHeader = "Managed Giving";
-  Layout = ViewExtensions2.TouchPointLayout();
-  var debitcredit = DbUtil.Db.Setting("DebitCreditLabel", "Debit/Credit Card");
-  var recurringAmounts = Model.RecurringAmounts();
+    ViewBag.Title = "Managed Giving";
+    ViewBag.PageHeader = "Managed Giving";
+    Layout = ViewExtensions2.TouchPointLayout();
+    var debitcredit = DbUtil.Db.GetDebitCreditLabel(PaymentProcessTypes.OnlineRegistration);
+    var recurringAmounts = Model.RecurringAmounts();
 }
 <div class="row">
   <div class="col-sm-9">

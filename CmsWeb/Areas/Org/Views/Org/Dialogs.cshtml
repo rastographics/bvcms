@@ -1,4 +1,5 @@
 ﻿@using CmsData
+@using UtilityExtensions
 @model CmsWeb.Areas.Org.Models.OrganizationModel
 @{
     var o = Model.Org;
@@ -14,13 +15,20 @@
         <div>
           <div>
           Copy the following URL for the public registration link.
-            <blockquote>
-              <a href="/OnlineReg/@o.OrganizationId" target="blank">@DbUtil.Db.ServerLink("/OnlineReg/" + o.OrganizationId)</a>
-              @if (Model.Org.IsOnePageOnlineGiving(DbUtil.Db))
-              {
-              <br/><a href="/OnePageGiving/@o.OrganizationId" target="blank">@DbUtil.Db.ServerLink("/OnePageGiving/" + o.OrganizationId)</a>
-              }
-            </blockquote>
+              <blockquote>
+                  @if (Model.SettingsRegistrationModel.DisallowAnonymous)
+                  {
+                      <a href="/OnlineReg/@o.OrganizationId?email=@Util.UserEmail" target="blank">@DbUtil.Db.ServerLink("/OnlineReg/" + o.OrganizationId + "?email=" + Util.UserEmail)</a>
+                  }
+                  else
+                  {
+                      <a href="/OnlineReg/@o.OrganizationId" target="blank">@DbUtil.Db.ServerLink("/OnlineReg/" + o.OrganizationId)</a>
+                  }
+                  @if (Model.Org.IsOnePageOnlineGiving(DbUtil.Db))
+                  {
+                      <br /><a href="/OnePageGiving/@o.OrganizationId" target="blank">@DbUtil.Db.ServerLink("/OnePageGiving/" + o.OrganizationId)</a>
+                  }
+              </blockquote>
           </div>
           <div class="alert alert-danger">
             <p>

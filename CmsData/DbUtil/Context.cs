@@ -2008,5 +2008,12 @@ This search uses multiple steps which cannot be duplicated in a single query.
         {
             return GetRoleUsers("Admin").Select(u => u.Person).Distinct();
         }
+
+        public string GetDebitCreditLabel(PaymentProcessTypes paymentProcess)
+        {
+            return paymentProcess == PaymentProcessTypes.OneTimeGiving ?
+                Setting("DebitCreditLabel-Giving", Setting("DebitCreditLabel", "Debit/Credit Card")) :
+                Setting("DebitCreditLabel-Registrations", Setting("DebitCreditLabel", "Debit/Credit Card"));
+        }
     }
 }

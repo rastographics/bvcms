@@ -1,5 +1,4 @@
 ﻿using CmsData.Finance.Acceptiva.Core;
-using CmsData.Finance.Acceptiva.Transaction.Void;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 
@@ -9,18 +8,18 @@ namespace CmsData.Finance.Acceptiva.Transaction.Refund
     {
         private const string action = "refund_trans_partial";
 
-        public RefundTransPartial(string apiKey, string reference, int tranId, decimal amount)
-            : base(apiKey, action)
+        public RefundTransPartial(bool isTesting, string apiKey, string reference, string idString, decimal amount)
+            : base(isTesting, apiKey, action)
         {
             Data["params[0][trans_id_str]"] = reference;
-            Data["params[0][params[0][items][0][id_str]]"] = tranId.ToString();
-            Data["params[0][params[0][items][0][amt]]"] = amount.ToString();
+            Data["params[0][items][0][id_str]"] = idString;
+            Data["params[0][items][0][amt]"] = amount.ToString();
         }
 
-        public new AcceptivaResponse<VoidResponse> Execute()
+        public new AcceptivaResponse<TransactionResponse> Execute()
         {
             var response = base.Execute();
-            var chargeResponse = JsonConvert.DeserializeObject<List<AcceptivaResponse<VoidResponse>>>(response);
+            var chargeResponse = JsonConvert.DeserializeObject<List<AcceptivaResponse<TransactionResponse>>>(response);
             return chargeResponse[0];
         }
     }
