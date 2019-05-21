@@ -143,7 +143,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             return n;
         }
 
-        public Transaction CreateTransaction(CMSDataContext Db, decimal? amount = null, OnlineRegModel m = null)
+        public Transaction CreateTransaction(CMSDataContext Db, decimal? amount = null)
         {
             if (!amount.HasValue)
             {
@@ -173,7 +173,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 Description = Description,
                 OrgId = OrgId,
                 Url = URL,
-                TransactionGateway = OnlineRegModel.GetTransactionGateway()?.GatewayAccountName,
+                TransactionGateway = OnlineRegModel.GetTransactionGateway(ProcessType)?.GatewayAccountName,
                 Address = Address.Truncate(50),
                 Address2 = Address2.Truncate(50),
                 City = City,
