@@ -81,7 +81,7 @@ namespace CmsData
                 Amt = total,
                 Description = "Recurring Giving",
                 Testing = false,
-                TransactionGateway = gw.GatewayType,
+                TransactionGateway = gw.GatewayName,
                 Financeonly = true,
                 PaymentType = preferredType,
                 LastFourCC = preferredType == PaymentType.CreditCard ? paymentInfo.MaskedCard.Last(4) : null,

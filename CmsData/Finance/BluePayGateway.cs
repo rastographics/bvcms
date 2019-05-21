@@ -16,6 +16,7 @@ namespace CmsData.Finance
         private string ServiceMode => IsLive ? "LIVE" : "TEST";
 
         public string GatewayType => "BluePay";
+        public string GatewayName { get; set; }
 
         public string Identifier => $"{GatewayType}-{_login}-{_key}";
 

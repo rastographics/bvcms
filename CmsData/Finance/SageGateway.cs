@@ -22,6 +22,7 @@ namespace CmsData.Finance
         private readonly CMSDataContext db;
 
         public string GatewayType => "Sage";
+        public string GatewayName { get; set; }
 
         public string Identifier => $"{GatewayType}-{_id}-{_key}-{_originatorId}";
 
@@ -575,6 +576,7 @@ namespace CmsData.Finance
 
         public bool CanGetBounces => true;
         public bool UseIdsForSettlementDates => false;
+        
         public void CheckBatchSettlements(DateTime start, DateTime end)
         {
             CheckBatchedTransactions.CheckBatchSettlements(db, this, start, end);

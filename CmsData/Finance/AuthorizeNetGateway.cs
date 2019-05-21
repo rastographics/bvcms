@@ -20,6 +20,7 @@ namespace CmsData.Finance
         private ServiceMode ServiceMode => IsLive ? ServiceMode.Live : ServiceMode.Test;
 
         public string GatewayType => "AuthorizeNet";
+        public string GatewayName { get; set; }
 
         public string Identifier => $"{GatewayType}-{_login}-{_key}";
 
