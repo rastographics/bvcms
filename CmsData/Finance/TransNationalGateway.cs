@@ -26,6 +26,7 @@ namespace CmsData.Finance
         private readonly CMSDataContext db;
 
         public string GatewayType => "TransNational";
+        public string GatewayName { get; set; }
 
         public string Identifier => $"{GatewayType}-{_userName}-{_password}";
 
@@ -813,7 +814,7 @@ namespace CmsData.Finance
                         Approved = transactionToInsert.Approved,
                         Message = transactionToInsert.Message,
                         TransactionDate = transactionToInsert.TransactionDate,
-                        TransactionGateway = GatewayType,
+                        TransactionGateway = GatewayName,
                         Settled = settlementDate,
                         Batch = settlementDate, // this date now will be the same as the settlement date.
                         Batchref = transactionToInsert.BatchReference,

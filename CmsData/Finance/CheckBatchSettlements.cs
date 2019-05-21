@@ -89,7 +89,7 @@ namespace CmsData.Finance
                         Approved = transactionToInsert.Approved,
                         Message = transactionToInsert.Message,
                         TransactionDate = transactionToInsert.TransactionDate,
-                        TransactionGateway = gateway.GatewayType,
+                        TransactionGateway = gateway.GatewayName,
                         Settled = settlementDate,
                         Batch = settlementDate, // this date now will be the same as the settlement date.
                         Batchref = transactionToInsert.BatchReference,

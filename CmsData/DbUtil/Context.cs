@@ -1883,9 +1883,9 @@ This search uses multiple steps which cannot be duplicated in a single query.
 
         public IGateway Gateway(bool testing = false, PaymentProcessTypes processType = PaymentProcessTypes.RecurringGiving, bool exceptionIfMissing = true)
         {
-            int? GatewayId = MultipleGatewayUtils.GatewayId(this, processType);
+            var account = MultipleGatewayUtils.GetAccount(this, processType);
 
-            if (GatewayId.IsNull())
+            if (!(account?.GatewayId).HasValue)
             {
                 if (exceptionIfMissing)
                 {
@@ -1894,24 +1894,23 @@ This search uses multiple steps which cannot be duplicated in a single query.
                 return null;
             }
 
-            switch (GatewayId)
+            switch (account?.GatewayId)
             {
                 case (int)GatewayTypes.Sage:
-                    return new SageGateway(this, testing, processType);
+                    return new SageGateway(this, testing, processType) { GatewayName = account.GatewayAccountName };
                 case (int)GatewayTypes.Transnational:
-                    return new TransNationalGateway(this, testing, processType);
+                    return new TransNationalGateway(this, testing, processType) { GatewayName = account.GatewayAccountName };
                 case (int)GatewayTypes.Acceptiva:
-                    return new AcceptivaGateway(this, testing, processType);
+                    return new AcceptivaGateway(this, testing, processType) { GatewayName = account.GatewayAccountName };
                 case (int)GatewayTypes.AuthorizeNet:
-                    return new AuthorizeNetGateway(this, testing, processType);
+                    return new AuthorizeNetGateway(this, testing, processType) { GatewayName = account.GatewayAccountName };
                 case (int)GatewayTypes.BluePay:
-                    return new BluePayGateway(this, testing, processType);
+                    return new BluePayGateway(this, testing, processType) { GatewayName = account.GatewayAccountName };
                 default:
                     break;
             }
 
-            string type = Gateways.Where(x => x.GatewayId == GatewayId).Select(x => x.GatewayName).FirstOrDefault();
-            throw new Exception($"Gateway ({type}) is not supported.");
+            return null;
         }
         public Registration.Settings CreateRegistrationSettings(int orgId)
         {

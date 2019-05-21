@@ -17,6 +17,15 @@ namespace CmsData
             return new SelectList(list);
         }
 
+        public static GatewayAccount GetAccount(CMSDataContext db, PaymentProcessTypes processType)
+        {
+            return (from e in db.PaymentProcess
+                    join d in db.GatewayAccount on e.GatewayAccountId equals d.GatewayAccountId into gj
+                    from sub in gj.DefaultIfEmpty()
+                    where e.ProcessId == (int)processType
+                    select sub).FirstOrDefault();
+        }
+
         public static string Setting(CMSDataContext db, string name, string defaultvalue, int ProcessId)
         {
             int? GatewayAccountId = db.PaymentProcess.Where(x => x.ProcessId == ProcessId).Select(x => x.GatewayAccountId).FirstOrDefault();
