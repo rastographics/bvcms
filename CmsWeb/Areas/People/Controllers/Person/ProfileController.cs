@@ -37,6 +37,18 @@ namespace CmsWeb.Areas.People.Controllers
             p.MemberStatusId = MemberStatusCode.NotMember;
             CurrentDatabase.SubmitChanges();
             var m = new MemberInfo(id);
+
+            var ret = m.UpdateMember();
+            if (ret != "ok")
+            {
+                m.AutomationError = ret;
+            }
+
+            if (!ModelState.IsValid || ret != "ok")
+            {
+                return View("Profile/Membership/Edit", m);
+            }
+
             return View("Profile/Membership/Display", m);
         }
 
