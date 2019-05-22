@@ -22,16 +22,15 @@ namespace UtilityExtensions
                 {
                     return _host;
                 }
-#if DEBUG
-                var testhost = HttpRuntime.Cache["testhost"] as string;
-                if (testhost.HasValue())
-                    return testhost;
-#endif
                 var h = ConfigurationManager.AppSettings["host"];
                 if (h.HasValue())
+                {
                     return h;
-                if (HttpContextFactory.Current != null)
+                }
+                if (HttpContextFactory.Current?.Request != null)
+                {
                     return HttpContextFactory.Current.Request.Url.Authority.SplitStr(".:")[0];
+                }
                 return null;
             }
 
@@ -44,9 +43,11 @@ namespace UtilityExtensions
         {
             get
             {
-                var s = ConfigurationManager.AppSettings["dbserver"];
-                if (s.HasValue())
-                    return s;
+                var settings = ConfigurationManager.ConnectionStrings["CMS"];
+                if (settings != null)
+                {
+                    return new SqlConnectionStringBuilder(settings.ConnectionString).DataSource;
+                }
                 return null;
             }
         }
@@ -65,8 +66,6 @@ namespace UtilityExtensions
         {
             var cs = ConnectionStringSettings(host) ?? ConfigurationManager.ConnectionStrings["CMS"];
             var cb = new SqlConnectionStringBuilder(cs?.ConnectionString ?? "Data Source=(local);Integrated Security=True");
-            if (string.IsNullOrEmpty(cb.DataSource))
-                cb.DataSource = DbServer;
             var a = host.Split('.', ':');
             cb.InitialCatalog = $"CMS_{a[0]}";
             return cb.ConnectionString;
@@ -77,9 +76,9 @@ namespace UtilityExtensions
             var cs = ConnectionStringSettings(db) ?? ConfigurationManager.ConnectionStrings["CMS"];
             var cb = new SqlConnectionStringBuilder(cs.ConnectionString);
             if (timeout.HasValue)
+            {
                 cb.ConnectTimeout = timeout.Value;
-            if (string.IsNullOrEmpty(cb.DataSource))
-                cb.DataSource = DbServer;
+            }
             cb.InitialCatalog = db;
             return cb.ConnectionString;
         }
@@ -108,8 +107,6 @@ namespace UtilityExtensions
 
                 var cs = ConnectionStringSettings(Host);
                 var cb = new SqlConnectionStringBuilder(cs.ConnectionString);
-                if (string.IsNullOrEmpty(cb.DataSource))
-                    cb.DataSource = DbServer;
                 cb.InitialCatalog = $"CMS_{Host}";
                 return cb.ConnectionString;
             }
@@ -128,8 +125,6 @@ namespace UtilityExtensions
 
             var cs = ConnectionStringSettings(host ?? Host);
             var cb = new SqlConnectionStringBuilder(cs.ConnectionString);
-            if (string.IsNullOrEmpty(cb.DataSource))
-                cb.DataSource = DbServer;
             cb.InitialCatalog = $"CMS_{host ?? Host}";
             cb.IntegratedSecurity = false;
             cb.UserID = (finance ? $"ro-{cb.InitialCatalog}-finance" : $"ro-{cb.InitialCatalog}");
@@ -148,8 +143,6 @@ namespace UtilityExtensions
                 var cs = ConnectionStringSettings(Host);
                 var cb = new SqlConnectionStringBuilder(cs.ConnectionString);
                 var a = Host.Split('.', ':');
-                if (string.IsNullOrEmpty(cb.DataSource))
-                    cb.DataSource = DbServer;
                 cb.InitialCatalog = $"CMSi_{a[0]}";
                 return cb.ConnectionString;
             }
