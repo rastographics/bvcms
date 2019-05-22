@@ -42,6 +42,10 @@ namespace CmsWeb
 
             ValueProviderFactories.Factories.Remove(ValueProviderFactories.Factories.OfType<JsonValueProviderFactory>().FirstOrDefault());
             ValueProviderFactories.Factories.Add(new JsonNetValueProviderFactory());
+            if (Util.IsDebug())
+            {
+                DbUtil.Migrate();
+            }
         }
 
         protected void Session_Start(object sender, EventArgs e)
