@@ -632,8 +632,6 @@
     <Compile Include="Areas\People\Models\Contact\ContactExtraLocationConfig.cs" />
     <Compile Include="Areas\People\Models\Downline\DownlineLevelsModel.cs" />
     <Compile Include="Areas\People\Models\Downline\DownlineSummaryModel.cs" />
-    <Compile Include="Areas\People\Models\Person\Giving\ContributionsModel.cs" />
-    <Compile Include="Areas\People\Models\Person\Giving\PledgesModel.cs" />
     <Compile Include="Areas\People\Models\Task\TaskModel.cs" />
     <Compile Include="Areas\Public\Controllers\CheckInAPIv2Controller.cs" />
     <Compile Include="Areas\Public\Controllers\CheckScanAPIController.cs" />
@@ -963,7 +961,7 @@
     <Compile Include="Areas\People\Models\Person\Emails\FailedMailModel.cs" />
     <Compile Include="Areas\People\Models\Person\Emails\FailedMailInfo.cs" />
     <Compile Include="Areas\People\Models\Person\Giving\ContributionInfo.cs" />
-    <Compile Include="Areas\People\Models\Person\Giving\AllModel.cs" />
+    <Compile Include="Areas\People\Models\Person\Giving\ContributionsModel.cs" />
     <Compile Include="Areas\Search\Models\ContactSearch\ContactSummaryInfo.cs" />
     <Compile Include="Areas\Search\Models\Query\Model\CopyPasteNew.cs" />
     <Compile Include="Areas\Search\Models\Query\Model\SelectLists.cs" />
@@ -2072,7 +2070,7 @@
     <Content Include="Areas\People\Views\Person\Emails\Optouts.cshtml" />
     <Content Include="Areas\People\Views\Person\Emails\Failed.cshtml" />
     <Content Include="Areas\People\Views\Person\Giving\Tab.cshtml" />
-    <Content Include="Areas\People\Views\Person\Giving\All.cshtml" />
+    <Content Include="Areas\People\Views\Person\Giving\Contributions.cshtml" />
     <Content Include="Areas\People\Views\Person\Ministry\Volunteer.cshtml" />
     <Content Include="Areas\People\Views\Person\Emails\Tab.cshtml" />
     <Content Include="Areas\People\Views\Person\Emails\Emails.cshtml" />
