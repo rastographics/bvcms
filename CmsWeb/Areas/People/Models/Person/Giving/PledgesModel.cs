@@ -11,7 +11,7 @@ using System.Xml.Linq;
 
 namespace CmsWeb.Areas.People.Models
 {
-    public class ContributionsModel : PagedTableModel<Contribution, ContributionInfo>
+    public class PledgesModel : PagedTableModel<Contribution, ContributionInfo>
     {
         public int PeopleId
         {
@@ -35,7 +35,7 @@ namespace CmsWeb.Areas.People.Models
         public CodeInfo ContributionOptions { get; set; }
         [DisplayName("Envelope Option")]
         public CodeInfo EnvelopeOptions { get; set; }
-        public ContributionsModel()
+        public PledgesModel()
             : base("Date", "desc", true)
         { }
         public override IQueryable<Contribution> DefineModelList()
