@@ -1897,15 +1897,15 @@ This search uses multiple steps which cannot be duplicated in a single query.
             switch (account?.GatewayId)
             {
                 case (int)GatewayTypes.Sage:
-                    return new SageGateway(this, testing, processType) { GatewayName = account.GatewayAccountName };
+                    return new SageGateway(this, testing, processType) { GatewayName = account.GatewayAccountName, GatewayAccountId = account.GatewayAccountId };
                 case (int)GatewayTypes.Transnational:
-                    return new TransNationalGateway(this, testing, processType) { GatewayName = account.GatewayAccountName };
+                    return new TransNationalGateway(this, testing, processType) { GatewayName = account.GatewayAccountName, GatewayAccountId = account.GatewayAccountId };
                 case (int)GatewayTypes.Acceptiva:
-                    return new AcceptivaGateway(this, testing, processType) { GatewayName = account.GatewayAccountName };
+                    return new AcceptivaGateway(this, testing, processType) { GatewayName = account.GatewayAccountName, GatewayAccountId = account.GatewayAccountId };
                 case (int)GatewayTypes.AuthorizeNet:
-                    return new AuthorizeNetGateway(this, testing, processType) { GatewayName = account.GatewayAccountName };
+                    return new AuthorizeNetGateway(this, testing, processType) { GatewayName = account.GatewayAccountName, GatewayAccountId = account.GatewayAccountId };
                 case (int)GatewayTypes.BluePay:
-                    return new BluePayGateway(this, testing, processType) { GatewayName = account.GatewayAccountName };
+                    return new BluePayGateway(this, testing, processType) { GatewayName = account.GatewayAccountName, GatewayAccountId = account.GatewayAccountId };
                 default:
                     break;
             }

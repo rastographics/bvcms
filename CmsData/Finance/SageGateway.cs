@@ -23,6 +23,7 @@ namespace CmsData.Finance
 
         public string GatewayType => "Sage";
         public string GatewayName { get; set; }
+        public int GatewayAccountId { get; set; }
 
         public string Identifier => $"{GatewayType}-{_id}-{_key}-{_originatorId}";
 
@@ -53,10 +54,10 @@ namespace CmsData.Finance
         public void StoreInVault(int peopleId, string type, string cardNumber, string expires, string cardCode, string routing, string account, bool giving)
         {
             var person = db.LoadPersonById(peopleId);
-            var paymentInfo = person.PaymentInfo();
+            var paymentInfo = person.PaymentInfo(GatewayAccountId);
             if (paymentInfo == null)
             {
-                paymentInfo = new PaymentInfo();
+                paymentInfo = new PaymentInfo() { GatewayAccountId = GatewayAccountId };
                 person.PaymentInfos.Add(paymentInfo);
             }
 
@@ -162,7 +163,7 @@ namespace CmsData.Finance
         public void RemoveFromVault(int peopleId)
         {
             var person = db.LoadPersonById(peopleId);
-            var paymentInfo = person.PaymentInfo();
+            var paymentInfo = person.PaymentInfo(GatewayAccountId);
             if (paymentInfo == null)
                 return;
 
@@ -364,7 +365,7 @@ namespace CmsData.Finance
         public TransactionResponse AuthCreditCardVault(int peopleId, decimal amt, string description, int tranid)
         {
             var person = db.LoadPersonById(peopleId);
-            var paymentInfo = person.PaymentInfo();
+            var paymentInfo = person.PaymentInfo(GatewayAccountId);
             if (paymentInfo == null || !paymentInfo.SageCardGuid.HasValue)
                 return new TransactionResponse
                 {
@@ -403,7 +404,7 @@ namespace CmsData.Finance
         public TransactionResponse PayWithVault(int peopleId, decimal amt, string description, int tranid, string type)
         {
             var person = db.LoadPersonById(peopleId);
-            var paymentInfo = person.PaymentInfo();
+            var paymentInfo = person.PaymentInfo(GatewayAccountId);
             if (paymentInfo == null)
                 return new TransactionResponse
                 {
@@ -589,7 +590,7 @@ namespace CmsData.Finance
 
         public string VaultId(int peopleId)
         {
-            var paymentInfo = db.PaymentInfos.Single(pp => pp.PeopleId == peopleId);
+            var paymentInfo = db.PaymentInfos.Single(pp => pp.PeopleId == peopleId && pp.GatewayAccountId == GatewayAccountId);
             switch (Util.PickFirst(paymentInfo.PreferredGivingType, "").ToLower())
             {
                 case "c":

@@ -1080,7 +1080,8 @@ namespace CmsData
 
             var tf = CodeIds == "1";
             Expression<Func<Person, bool>> pred = p => (from e in p.RecurringAmounts
-                                                        let pi = p.PaymentInfos.SingleOrDefault()
+                                                        let pp = db.PaymentProcess.SingleOrDefault(a => a.ProcessId == (int)PaymentProcessTypes.RecurringGiving)
+                                                        let pi = p.PaymentInfos.SingleOrDefault(info => info.GatewayAccountId == pp.GatewayAccountId)
                                                         where e.Amt > 0
                                                         where pi.PreferredGivingType == "C"
                                                         select e).Any();
