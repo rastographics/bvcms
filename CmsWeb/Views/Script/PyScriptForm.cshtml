@@ -1,6 +1,7 @@
 ﻿@model PythonModel
 @{
-    ViewBag.Title = Model.Header;
+    ViewBag.Title = Model.Title ?? Model.Header;
+    ViewBag.PageHeader = Model.Header;
     Layout = ViewExtensions2.TouchPointLayout();
 }
 <div class="box box-responsive">
