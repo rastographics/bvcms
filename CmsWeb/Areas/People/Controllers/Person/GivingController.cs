@@ -12,7 +12,7 @@ namespace CmsWeb.Areas.People.Controllers
     public partial class PersonController
     {
         [HttpPost]
-        public ActionResult All(ContributionsModel m)
+        public ActionResult Contributions(ContributionsModel m)
         {
             return View("Giving/Contributions", m);
         }

@@ -17,15 +17,15 @@
     </optgroup>
 </select> 
 <div class="tab-content" style="border: none;">
-    <div class="tab-pane" id="all" data-link="/Person2/All">
+    <div class="tab-pane" id="all" data-link="/Person2/Contributions">
         @Helper.HiddenId("PeopleId", Util2.CurrentPeopleId)
         @Helper.HiddenParameter("Filter", "")
     </div>
-    <div class="tab-pane" id="contributions" data-link="/Person2/All">
+    <div class="tab-pane" id="contributions" data-link="/Person2/Contributions">
         @Helper.HiddenId("PeopleId", Util2.CurrentPeopleId)
         @Helper.HiddenParameter("Filter", "Contributions")
     </div>
-    <div class="tab-pane" id="pledges" data-link="/Person2/All">
+    <div class="tab-pane" id="pledges" data-link="/Person2/Contributions">
         @Helper.HiddenId("PeopleId", Util2.CurrentPeopleId)
         @Helper.HiddenParameter("Filter", "Pledges")
     </div>
