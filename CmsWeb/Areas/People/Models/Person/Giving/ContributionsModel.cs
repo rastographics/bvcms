@@ -85,7 +85,6 @@ namespace CmsWeb.Areas.People.Models
                            select c;
                 default:
                     return contributionRecords;
-
             }
         }
 
