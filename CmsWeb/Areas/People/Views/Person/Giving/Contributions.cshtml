@@ -1,4 +1,4 @@
-﻿@model CmsWeb.Areas.People.Models.AllModel
+﻿@model CmsWeb.Areas.People.Models.ContributionsModel
 @using CmsData
 @using UtilityExtensions
 @{
@@ -6,6 +6,7 @@
     var vaultDisabled = DbUtil.Db.Setting("VaultDisabled");
     var campusId = Model.Person.CampusId;
     var checkImageUserView = true;
+    var filter = Model.Filter;
     if (DbUtil.Db.Setting("CheckImagesDisabledForUser"))
     {
         checkImageUserView = User.IsInRole("Finance");
@@ -21,11 +22,11 @@
                 <table id="results" class="table table-striped">
                     <thead>
                         <tr>
-                            <th>@Model.SortLink("Date")</th>
-                            <th class="text-right">@Model.SortLink("Amount")</th>
-                            <th><span class="pad-left">@Model.SortLink("Fund")</span></th>
-                            <th>@Model.SortLink("Type")</th>
-                            <th>@Model.SortLink("CheckNo")</th>
+                            <th>@Model.SortLinkWFilter("Date", filter)</th>
+                            <th class="text-right">@Model.SortLinkWFilter("Amount", filter)</th>
+                            <th><span class="pad-left">@Model.SortLinkWFilter("Fund", filter)</span></th>
+                            <th>@Model.SortLinkWFilter("Type", filter)</th>
+                            <th>@Model.SortLinkWFilter("CheckNo", filter)</th>
                             @if (Model.ShowNames)
                             {
                                 <th>@Model.SortLink("Name")</th>

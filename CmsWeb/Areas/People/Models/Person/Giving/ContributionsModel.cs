@@ -25,6 +25,7 @@ namespace CmsWeb.Areas.People.Models
                 ElectronicStatement = Person.ElectronicStatement ?? false;
             }
         }
+        //public string Filter { get; set; }
         private int peopleid;
         public Person Person;
         public bool ShowNames;
@@ -63,11 +64,31 @@ namespace CmsWeb.Areas.People.Models
                                       && !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
                                       select c;
             }
-            var items = contributionRecords.ToList();
-            ShowNames = items.Any(c => c.PeopleId != Person.PeopleId);
-            ShowTypes = items.Any(c => ContributionTypeCode.SpecialTypes.Contains(c.ContributionTypeId));
-            return contributionRecords;
+            IQueryable<Contribution> filteredRecords = ApplyFilter(contributionRecords);
+            var items = filteredRecords.ToList();
+            ShowNames = filteredRecords.Any(c => c.PeopleId != Person.PeopleId);
+            ShowTypes = filteredRecords.Any(c => ContributionTypeCode.SpecialTypes.Contains(c.ContributionTypeId));
+            return filteredRecords;
         }
+
+        private IQueryable<Contribution> ApplyFilter(IQueryable<Contribution> contributionRecords)
+        {
+            switch (Filter)
+            {
+                case "Contributions":
+                    return from c in contributionRecords
+                           where ContributionTypeCode.Pledge != c.ContributionTypeId
+                           select c;
+                case "Pledges":
+                    return from c in contributionRecords
+                           where ContributionTypeCode.Pledge == c.ContributionTypeId
+                           select c;
+                default:
+                    return contributionRecords;
+
+            }
+        }
+
         public override IQueryable<Contribution> DefineModelSort(IQueryable<Contribution> q)
         {
             switch (SortExpression)
@@ -181,18 +202,18 @@ namespace CmsWeb.Areas.People.Models
             if (shouldGroupByFunds)
             {
                 result = (from c in contributions
-                          group c by new { c.DateX.Value.Year, c.FundName, c.FundId } into g
-                          orderby g.Key.Year descending, g.Key.FundName ascending
-                          select new StatementInfoWithFund()
-                          {
-                              Count = g.Count(),
-                              Amount = g.Sum(cc => cc.Amount ?? 0),
-                              StartDate = new DateTime(g.Key.Year, 1, 1),
-                              EndDate = new DateTime(g.Key.Year, 12, 31),
-                              FundName = g.Key.FundName,
-                              FundId = g.Key.FundId,
-                              FundGroupName = string.Empty
-                          }).ToList();
+                              group c by new { c.DateX.Value.Year, c.FundName, c.FundId } into g
+                              orderby g.Key.Year descending, g.Key.FundName ascending
+                              select new StatementInfoWithFund()
+                              {
+                                  Count = g.Count(),
+                                  Amount = g.Sum(cc => cc.Amount ?? 0),
+                                  StartDate = new DateTime(g.Key.Year, 1, 1),
+                                  EndDate = new DateTime(g.Key.Year, 12, 31),
+                                  FundName = g.Key.FundName,
+                                  FundId = g.Key.FundId,
+                                  FundGroupName = string.Empty
+                              }).ToList();
 
                 var displayNameHelper = new CustomFundSetDisplayHelper(dbContext);
                 displayNameHelper.ProcessList(result);
@@ -200,18 +221,18 @@ namespace CmsWeb.Areas.People.Models
                 // hack: grouping done in memory since these fundids are stored as XML and not easily accessed in SQL
                 // task: FundGrouping table to avoid using XML for this data in the future with UI to make management easier?
                 result = (from c in result
-                          group c by new { c.StartDate.Year, c.FundGroupName } into g
-                          orderby g.Key.Year descending, g.Key.FundGroupName ascending
-                          select new StatementInfoWithFund()
-                          {
-                              Count = g.Sum(cc => cc.Count),
-                              Amount = g.Sum(cc => cc.Amount),
-                              StartDate = new DateTime(g.Key.Year, 1, 1),
-                              EndDate = new DateTime(g.Key.Year, 12, 31),
-                              FundName = "",
-                              FundId = 0,
-                              FundGroupName = g.Key.FundGroupName
-                          }).ToList();
+                         group c by new { c.StartDate.Year, c.FundGroupName } into g
+                         orderby g.Key.Year descending, g.Key.FundGroupName ascending
+                         select new StatementInfoWithFund()
+                         {
+                             Count = g.Sum(cc => cc.Count),
+                             Amount = g.Sum(cc => cc.Amount),
+                             StartDate = new DateTime(g.Key.Year, 1, 1),
+                             EndDate = new DateTime(g.Key.Year, 12, 31),
+                             FundName = "",
+                             FundId = 0,
+                             FundGroupName = g.Key.FundGroupName
+                         }).ToList();
             }
             else
             {
