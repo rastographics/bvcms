@@ -1884,7 +1884,11 @@ This search uses multiple steps which cannot be duplicated in a single query.
         public IGateway Gateway(bool testing = false, PaymentProcessTypes processType = PaymentProcessTypes.RecurringGiving, bool exceptionIfMissing = true)
         {
             var account = MultipleGatewayUtils.GetAccount(this, processType);
+            return Gateway(testing, account, exceptionIfMissing);
+        }
 
+        public IGateway Gateway(bool testing = false, GatewayAccount account = null, bool exceptionIfMissing = true)
+        {
             if (!(account?.GatewayId).HasValue)
             {
                 if (exceptionIfMissing)
