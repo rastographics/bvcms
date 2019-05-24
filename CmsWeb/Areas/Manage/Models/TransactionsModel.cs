@@ -276,9 +276,9 @@ namespace CmsWeb.Models
         private void CheckBatchDates(DateTime start, DateTime end)
         {
             IGateway[] gateways = new[] {
-                DbUtil.Db.Gateway(false, PaymentProcessTypes.OneTimeGiving, false),
-                DbUtil.Db.Gateway(false, PaymentProcessTypes.OnlineRegistration, false),
-                DbUtil.Db.Gateway(false, PaymentProcessTypes.RecurringGiving, false)
+                DbUtil.Db.Gateway(false, null, PaymentProcessTypes.OneTimeGiving, false),
+                DbUtil.Db.Gateway(false, null, PaymentProcessTypes.OnlineRegistration, false),
+                DbUtil.Db.Gateway(false, null, PaymentProcessTypes.RecurringGiving, false)
             };
             foreach (var gateway in gateways.Where(g => g.IsNotNull()).DistinctBy(g => g.Identifier))
             {

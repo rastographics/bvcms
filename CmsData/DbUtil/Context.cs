@@ -1881,14 +1881,15 @@ This search uses multiple steps which cannot be duplicated in a single query.
         internal bool FromActiveRecords { get; set; }
         public bool FromBatch { get; set; }
 
-        public IGateway Gateway(bool testing = false, PaymentProcessTypes processType = PaymentProcessTypes.RecurringGiving, bool exceptionIfMissing = true)
+        public IGateway Gateway(string name, bool exceptionIfMissing = true)
         {
-            var account = MultipleGatewayUtils.GetAccount(this, processType);
-            return Gateway(testing, account, exceptionIfMissing);
+            var account = GatewayAccount.FirstOrDefault(a => a.GatewayAccountName == name);
+            return Gateway(false, account);
         }
 
-        public IGateway Gateway(bool testing = false, GatewayAccount account = null, bool exceptionIfMissing = true)
+        public IGateway Gateway(bool testing, GatewayAccount account, PaymentProcessTypes processType = PaymentProcessTypes.RecurringGiving, bool exceptionIfMissing = true)
         {
+            account = account ?? MultipleGatewayUtils.GetAccount(this, processType);
             if (!(account?.GatewayId).HasValue)
             {
                 if (exceptionIfMissing)

@@ -569,7 +569,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 return;
             }
 
-            var gateway = CurrentDatabase.Gateway(testing, ProcessType);
+            var gateway = CurrentDatabase.Gateway(testing, null, ProcessType);
 
             // we need to perform a $1 auth if this is a brand new credit card that we are going to store it in the vault.
             // otherwise we skip doing an auth just call store in vault just like normal.
@@ -658,7 +658,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
 
             TransactionResponse tinfo;
-            var gw = CurrentDatabase.Gateway(testing, m?.ProcessType ?? PaymentProcessTypes.OnlineRegistration);
+            var gw = CurrentDatabase.Gateway(testing, null, m?.ProcessType ?? PaymentProcessTypes.OnlineRegistration);
 
             if (SavePayInfo)
             {

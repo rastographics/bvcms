@@ -207,8 +207,9 @@ Please contact the Finance office at the church."
             }
 
             // fall back to default gateway
-            return db.Gateway(IsTesting, PaymentProcessTypes.RecurringGiving);
+            return db.Gateway(IsTesting, null, processType: PaymentProcessTypes.RecurringGiving);
         }
+
         public static int DoAllGiving(CMSDataContext Db)
         {
             int? GatewayId = MultipleGatewayUtils.GatewayId(Db, PaymentProcessTypes.RecurringGiving);
