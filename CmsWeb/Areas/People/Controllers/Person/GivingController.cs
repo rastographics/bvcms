@@ -12,25 +12,13 @@ namespace CmsWeb.Areas.People.Controllers
     public partial class PersonController
     {
         [HttpPost]
-        public ActionResult All(AllModel m)
-        {
-            return View("Giving/All", m);
-        }
-
-        [HttpPost]
-        public ActionResult Contributions(ContributionsModel m)
+        public ActionResult All(ContributionsModel m)
         {
             return View("Giving/Contributions", m);
         }
 
         [HttpPost]
-        public ActionResult Pledges(PledgesModel m)
-        {
-            return View("Giving/Pledges", m);
-        }
-
-        [HttpPost]
-        public ActionResult Statements(AllModel m)
+        public ActionResult Statements(ContributionsModel m)
         {
             if (!CurrentDatabase.CurrentUserPerson.CanViewStatementFor(CurrentDatabase, m.PeopleId))
             {

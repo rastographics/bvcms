@@ -137,6 +137,12 @@
         <input type="hidden" name="@name" value="@id" />
     </form>
 }
+@helper HiddenParameter(string name, string value)
+{
+    <form class="ajax">
+        <input type="hidden" name="@name" value="@value" />
+    </form>
+}
 
 @helper CurrencyString(decimal? amount = 0)
 {
