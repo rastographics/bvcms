@@ -81,7 +81,39 @@ namespace CmsData.Classes.RoleChecker
                     .ToString()
                     .Replace('_', '-');
         }
-        
+
+        public static bool RoleHasSetting(string setting, string roleName, bool defaultValue)
+        {
+            var roles = Roles;
+
+            if (roles != null)
+            {
+                foreach (var r in roles.Elements("role"))
+                {
+                    var role = r.Attribute("name");
+                    if (role?.Value != roleName)
+                    {
+                        continue;
+                    }
+
+                    foreach (var s in Settings(r).Elements())
+                    {
+                        var nameAttribute = s.Attribute("name");
+                        var valueAttribute = s.Attribute("value");
+                        if (nameAttribute?.Value == setting)
+                        {
+                            bool value;
+                            if (bool.TryParse(valueAttribute?.Value, out value))
+                            {
+                                return value;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return defaultValue;
+        }
     }
 
     public enum SettingName

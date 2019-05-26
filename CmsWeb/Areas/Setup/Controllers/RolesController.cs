@@ -32,6 +32,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             }
             else
             {
+                ViewBag.Settings = model.SettingsForRole(role);
                 return View(role);
             }
         }
