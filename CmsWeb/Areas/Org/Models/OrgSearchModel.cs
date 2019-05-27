@@ -289,8 +289,18 @@ namespace CmsWeb.Areas.Search.Models
 
         public IQueryable<OrgSearch> FetchOrgs()
         {
-            var queryable = CurrentDatabase.OrgSearch(Name, ProgramId, DivisionId, TypeId, CampusId, ScheduleId, StatusId, OnlineReg,
+            IQueryable<OrgSearch> queryable = null;
+
+            if(CampusId == -1)
+            {
+                queryable = CurrentDatabase.OrgSearch(Name, ProgramId, DivisionId, TypeId, 0, ScheduleId, StatusId, OnlineReg,
+                 CurrentDatabase.CurrentUser.UserId, TagDiv).Where(x => x.Campus == null);
+            }
+            else
+            {
+                queryable = CurrentDatabase.OrgSearch(Name, ProgramId, DivisionId, TypeId, CampusId, ScheduleId, StatusId, OnlineReg,
                  CurrentDatabase.CurrentUser.UserId, TagDiv);
+            }
 
             if (ExtraValuesDict != null && ExtraValuesDict.Any())
             {

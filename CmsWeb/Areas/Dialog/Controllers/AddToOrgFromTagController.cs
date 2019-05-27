@@ -17,33 +17,39 @@ namespace CmsWeb.Areas.Dialog.Controllers
         public ActionResult Index(Guid qid)
         {
             LongRunningOperation.RemoveExisting(CurrentDatabase, qid);
-            var model = new AddToOrgFromTag(qid);
+            var model = new AddToOrgFromTag(qid, CurrentDatabase);
             return View(model);
         }
 
         [HttpPost]
         public ActionResult Process(AddToOrgFromTag model)
         {
-            model.Validate(ModelState);
+            var op = new AddToOrgFromTag(model.QueryId, CurrentDatabase);
+            op.Tag = model.Tag;
+            op.Count = model.Count;
+            op.Started = model.Started;
+            op.Completed = model.Completed;
+
+            op.Validate(ModelState);
 
             if (!ModelState.IsValid) // show validation errors
             {
-                return View("Index", model);
+                return View("Index", op);
             }
 
-            model.UpdateLongRunningOp(CurrentDatabase, AddToOrgFromTag.Op);
-            if (model.ShowCount(CurrentDatabase))
+            op.UpdateLongRunningOp(CurrentDatabase, AddToOrgFromTag.Op);
+            if (op.ShowCount(CurrentDatabase))
             {
-                return View("Index", model); // let them confirm by seeing the count and the tagname
+                return View("Index", op); // let them confirm by seeing the count and the tagname
             }
 
-            if (!model.Started.HasValue)
+            if (!op.Started.HasValue)
             {
                 DbUtil.LogActivity($"Add to org from tag for {Session["ActiveOrganization"]}");
-                model.Process(CurrentDatabase);
+                op.Process(CurrentDatabase);
             }
 
-            return View(model);
+            return View(op);
         }
     }
 }

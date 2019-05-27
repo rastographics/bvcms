@@ -34,6 +34,26 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     return View("OnePageGiving/NotActive", m);
                 }
 
+                if ((m.org.IsMissionTrip.IsNotNull() && m.org.IsMissionTrip == true) ? true : false)
+                {
+                    m.ProcessType = PaymentProcessTypes.OneTimeGiving;
+                }
+                else
+                {
+                    m.ProcessType = m.org.RegistrationTypeId.IsNull() || m.org.RegistrationTypeId == 8 ? PaymentProcessTypes.OneTimeGiving : PaymentProcessTypes.OnlineRegistration;
+                }
+
+                int? GatewayId = MultipleGatewayUtils.GatewayId(CurrentDatabase, m.ProcessType);
+
+                if (GatewayId == (int)GatewayTypes.Pushpay && m.OnlineGiving())
+                {
+                    ViewBag.Header = "One Page Giving";                    
+                    if (string.IsNullOrEmpty(MultipleGatewayUtils.Setting(CurrentDatabase, "PushpayMerchant", "", (int)m.ProcessType)))
+                        return View("OnePageGiving/NotConfigured");
+
+                    return Redirect($"/Pushpay/OnePage");
+                }
+
                 var pf = PaymentForm.CreatePaymentForm(m);
                 pf.AmtToPay = null;
 
@@ -111,6 +131,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 URL = $"/OnePageGiving/{pf.OrgId}"
             };
 
+            m.ProcessType = pf.ProcessType;
+
             var pid = Util.UserPeopleId;
             if (pid.HasValue)
                 PrePopulate(m, pid.Value);
@@ -174,6 +196,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             p.State = pf.State;
             p.ZipCode = pf.Zip;
             p.Country = pf.Country;
+            p.ProcessType = pf.ProcessType;
             if (pf.ShowCampusOnePageGiving)
                 p.Campus = pf.CampusId.ToString();
 

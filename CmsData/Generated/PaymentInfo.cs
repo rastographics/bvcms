@@ -71,10 +71,13 @@ namespace CmsData
 		private string _Address2;
 		
 		private string _Country;
-		
-   		
-    	
-		private EntityRef<Person> _Person;
+
+        private string _AcceptivaPayerId;
+
+
+
+
+        private EntityRef<Person> _Person;
 		
 	#endregion
 	
@@ -163,9 +166,12 @@ namespace CmsData
 		
 		partial void OnCountryChanging(string value);
 		partial void OnCountryChanged();
-		
-    #endregion
-		public PaymentInfo()
+
+        partial void OnAcceptivaPayerIdChanging(string value);
+        partial void OnAcceptivaPayerIdChanged();
+
+        #endregion
+        public PaymentInfo()
 		{
 			
 			
@@ -730,8 +736,25 @@ namespace CmsData
 
 		}
 
-		
-		[Column(Name="Address2", UpdateCheck=UpdateCheck.Never, Storage="_Address2", DbType="nvarchar(50)")]
+        [Column(Name = "AcceptivaPayerId", UpdateCheck = UpdateCheck.Never, Storage = "_AcceptivaPayerId", DbType = "nvarchar(50)")]
+        public string AcceptivaPayerId
+        {
+            get { return this._AcceptivaPayerId; }
+
+            set
+            {
+                if (this._AcceptivaPayerId != value)
+                {
+                    this.OnAcceptivaPayerIdChanging(value);
+                    this.SendPropertyChanging();
+                    this._AcceptivaPayerId = value;
+                    this.SendPropertyChanged("AcceptivaPayerId");
+                    this.OnAcceptivaPayerIdChanged();
+                }
+            }
+        }
+
+        [Column(Name="Address2", UpdateCheck=UpdateCheck.Never, Storage="_Address2", DbType="nvarchar(50)")]
 		public string Address2
 		{
 			get { return this._Address2; }
@@ -839,10 +862,7 @@ namespace CmsData
 		{
 			if ((this.PropertyChanged != null))
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-		}
-
-   		
+		}   		
 	}
-
 }
 

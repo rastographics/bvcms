@@ -11,17 +11,19 @@ namespace CmsWeb.Areas.Dialog.Models
 
         public int OrgId { get; set; }
         public RepairTransactions() { }
-        public RepairTransactions(int id)
+        public RepairTransactions(int id, CMSDataContext db)
         {
+            Host = db.Host;
             QueryId = Guid.NewGuid();
             OrgId = id;
-            Count = DbUtil.Db.OrganizationMembers.Count(m => m.OrganizationId == id);
+            Count = db.OrganizationMembers.Count(m => m.OrganizationId == id);
         }
 
         public void Process(CMSDataContext db)
         {
             var lop = new LongRunningOperation
             {
+                Host = db.Host,
                 Started = DateTime.Now,
                 Count = db.OrganizationMembers.Count(m => m.OrganizationId == OrgId),
                 Processed = 0,

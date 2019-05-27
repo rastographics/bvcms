@@ -145,7 +145,7 @@ namespace CmsData
 
         public static string GetHost(HttpContextBase httpContext)
         {
-            var host = (httpContext.Request.Headers["host"] ?? httpContext.Request.Url.Authority).Split('.', ':').First();
+            var host = (httpContext.Request.Url.Authority).Split('.', ':').First();
             return Util.PickFirst(ConfigurationManager.AppSettings["host"], host);
         }
 
@@ -1881,30 +1881,36 @@ This search uses multiple steps which cannot be duplicated in a single query.
         internal bool FromActiveRecords { get; set; }
         public bool FromBatch { get; set; }
 
-        public IGateway Gateway(bool testing = false, string usegateway = null)
+        public IGateway Gateway(bool testing = false, PaymentProcessTypes processType = PaymentProcessTypes.RecurringGiving, bool exceptionIfMissing = true)
         {
-            var type = Setting("TransactionGateway", "not specified");
-            if (usegateway != null)
+            var account = MultipleGatewayUtils.GetAccount(this, processType);
+
+            if (!(account?.GatewayId).HasValue)
             {
-                type = usegateway;
+                if (exceptionIfMissing)
+                {
+                    throw new Exception("This process is not configured yet, please contact support");
+                }
+                return null;
             }
 
-            switch (type.ToLower())
+            switch (account?.GatewayId)
             {
-                case "sage":
-                    return new SageGateway(this, testing);
-
-                case "authorizenet":
-                    return new AuthorizeNetGateway(this, testing);
-
-                case "transnational":
-                    return new TransNationalGateway(this, testing);
-                //IS THIS the only place that the new paymentGateway needs to be hooked up?
-                case "bluepay":
-                    return new BluePayGateway(this, testing);
+                case (int)GatewayTypes.Sage:
+                    return new SageGateway(this, testing, processType) { GatewayName = account.GatewayAccountName };
+                case (int)GatewayTypes.Transnational:
+                    return new TransNationalGateway(this, testing, processType) { GatewayName = account.GatewayAccountName };
+                case (int)GatewayTypes.Acceptiva:
+                    return new AcceptivaGateway(this, testing, processType) { GatewayName = account.GatewayAccountName };
+                case (int)GatewayTypes.AuthorizeNet:
+                    return new AuthorizeNetGateway(this, testing, processType) { GatewayName = account.GatewayAccountName };
+                case (int)GatewayTypes.BluePay:
+                    return new BluePayGateway(this, testing, processType) { GatewayName = account.GatewayAccountName };
+                default:
+                    break;
             }
 
-            throw new Exception($"Gateway ({type}) is not supported.");
+            return null;
         }
         public Registration.Settings CreateRegistrationSettings(int orgId)
         {
@@ -2000,6 +2006,13 @@ This search uses multiple steps which cannot be duplicated in a single query.
         public IEnumerable<Person> GetAdmins()
         {
             return GetRoleUsers("Admin").Select(u => u.Person).Distinct();
+        }
+
+        public string GetDebitCreditLabel(PaymentProcessTypes paymentProcess)
+        {
+            return paymentProcess == PaymentProcessTypes.OneTimeGiving ?
+                Setting("DebitCreditLabel-Giving", Setting("DebitCreditLabel", "Debit/Credit Card")) :
+                Setting("DebitCreditLabel-Registrations", Setting("DebitCreditLabel", "Debit/Credit Card"));
         }
     }
 }

@@ -325,7 +325,27 @@ namespace CmsData
         partial void InsertFamilyRelationship(FamilyRelationship instance);
         partial void UpdateFamilyRelationship(FamilyRelationship instance);
         partial void DeleteFamilyRelationship(FamilyRelationship instance);
-        
+
+        partial void InsertGateways(Gateways instance);
+        partial void UpdateGateways(Gateways instance);
+        partial void DeleteGateways(Gateways instance);
+
+        partial void InsertGatewayAccount(GatewayAccount instance);
+        partial void UpdateGatewayAccount(GatewayAccount instance);
+        partial void DeleteGatewayAccount(GatewayAccount instance);
+
+        partial void InsertGatewayConfigurationTemplate(GatewayConfigurationTemplate instance);
+        partial void UpdateGatewayConfigurationTemplate(GatewayConfigurationTemplate instance);
+        partial void DeleteGatewayConfigurationTemplate(GatewayConfigurationTemplate instance);
+
+        partial void InsertGatewayDetails(GatewayDetails instance);
+        partial void UpdateGatewayDetails(GatewayDetails instance);
+        partial void DeleteGatewayDetails(GatewayDetails instance);
+
+        partial void InsertGatewayServiceType(GatewayServiceType instance);
+        partial void UpdateGatewayServiceType(GatewayServiceType instance);
+        partial void DeleteGatewayServiceType(GatewayServiceType instance);
+
         partial void InsertGender(Gender instance);
         partial void UpdateGender(Gender instance);
         partial void DeleteGender(Gender instance);
@@ -557,7 +577,15 @@ namespace CmsData
         partial void InsertPrintJob(PrintJob instance);
         partial void UpdatePrintJob(PrintJob instance);
         partial void DeletePrintJob(PrintJob instance);
-        
+
+        partial void InsertProcess(PaymentProcess instance);
+        partial void UpdateProcess(PaymentProcess instance);
+        partial void DeleteProcess(PaymentProcess instance);
+
+        partial void InsertProcessType(ProcessType instance);
+        partial void UpdateProcessType(ProcessType instance);
+        partial void DeleteProcessType(ProcessType instance);
+
         partial void InsertProgDiv(ProgDiv instance);
         partial void UpdateProgDiv(ProgDiv instance);
         partial void DeleteProgDiv(ProgDiv instance);
@@ -1287,13 +1315,38 @@ namespace CmsData
 
 		}
 
-		public Table<Gender> Genders
-		{
-			get	{ return this.GetTable<Gender>(); }
+        public Table<Gateways> Gateways
+        {
+            get { return this.GetTable<Gateways>(); }
+        }
 
-		}
+        public Table<GatewayAccount> GatewayAccount
+        {
+            get { return this.GetTable<GatewayAccount>(); }
+        }
 
-		public Table<GeoCode> GeoCodes
+        public Table<GatewayConfigurationTemplate> GatewayConfigurationTemplate
+        {
+            get { return this.GetTable<GatewayConfigurationTemplate>(); }
+        }
+
+        public Table<GatewayDetails> GatewayDetails
+        {
+            get { return this.GetTable<GatewayDetails>(); }
+        }
+
+        public Table<GatewayServiceType> GatewayServiceType
+        {
+            get { return this.GetTable<GatewayServiceType>(); }
+        }
+
+        public Table<Gender> Genders
+        {
+            get { return this.GetTable<Gender>(); }
+
+        }
+
+        public Table<GeoCode> GeoCodes
 		{
 			get	{ return this.GetTable<GeoCode>(); }
 
@@ -1707,7 +1760,19 @@ namespace CmsData
 
 		}
 
-		public Table<ResidentCode> ResidentCodes
+        public Table<PaymentProcess> PaymentProcess
+        {
+            get { return this.GetTable<PaymentProcess>(); }
+
+        }
+
+        public Table<ProcessType> ProcessType
+        {
+            get { return this.GetTable<ProcessType>(); }
+
+        }
+
+        public Table<ResidentCode> ResidentCodes
 		{
 			get	{ return this.GetTable<ResidentCode>(); }
 
@@ -2022,7 +2087,7 @@ namespace CmsData
 
 	    }
 
-	    public Table<View.BundleList> ViewBundleLists
+        public Table<View.BundleList> ViewBundleLists
 	    {
 		    get { return this.GetTable<View.BundleList>(); }
 
@@ -2142,7 +2207,7 @@ namespace CmsData
 
 	    }
 
-	    public Table<View.HeadOrSpouseWithEmail> ViewHeadOrSpouseWithEmails
+        public Table<View.HeadOrSpouseWithEmail> ViewHeadOrSpouseWithEmails
 	    {
 		    get { return this.GetTable<View.HeadOrSpouseWithEmail>(); }
 
@@ -2208,7 +2273,7 @@ namespace CmsData
 
 	    }
 
-	    public Table<View.MoveSchedule> ViewMoveSchedules
+        public Table<View.MoveSchedule> ViewMoveSchedules
 	    {
 		    get { return this.GetTable<View.MoveSchedule>(); }
 
@@ -2256,7 +2321,13 @@ namespace CmsData
 
 	    }
 
-	    public Table<View.PeopleBasicModifed> ViewPeopleBasicModifeds
+        public Table<View.PaymentProcessDetails> ViewPaymentProcessDetails
+        {
+            get { return this.GetTable<View.PaymentProcessDetails>(); }
+
+        }
+
+        public Table<View.PeopleBasicModifed> ViewPeopleBasicModifeds
 	    {
 		    get { return this.GetTable<View.PeopleBasicModifed>(); }
 
@@ -7020,11 +7091,10 @@ namespace CmsData
                 wkn
                 ).ReturnValue));
 		}
+        #endregion
+    #region Stored Procedures
 
-    #endregion
-	#region Stored Procedures
-		
-		[Function(Name="dbo.TopPledgers")]
+        [Function(Name="dbo.TopPledgers")]
 		public ISingleResult<TopGiver> TopPledgers(
             [Parameter(Name = "top", DbType="int")] int? top,
             [Parameter(Name = "sdate", DbType="datetime")] DateTime? sdate,
@@ -7062,9 +7132,8 @@ namespace CmsData
 			);
 			return ((ISingleResult<TopGiver>)(result.ReturnValue));
 		}
-
-    #endregion
-   }
+        #endregion
+    }
 
 }
 

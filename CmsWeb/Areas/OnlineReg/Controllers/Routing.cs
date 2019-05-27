@@ -16,6 +16,19 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 #if DEBUG
             m.DebugCleanUp();
 #endif
+            int? GatewayId = MultipleGatewayUtils.GatewayId(CurrentDatabase, m.ProcessType);
+
+            if ((int)GatewayTypes.Pushpay == GatewayId && m.ProcessType == PaymentProcessTypes.OneTimeGiving)
+            {
+                Session["PaymentProcessType"] = PaymentProcessTypes.OneTimeGiving;
+                return Redirect($"/Pushpay/OneTime/{pid}/{m.Orgid}");
+            }
+
+            if ((int)GatewayTypes.Pushpay == GatewayId && m.ProcessType == PaymentProcessTypes.RecurringGiving)
+            {
+                Session["PaymentProcessType"] = PaymentProcessTypes.RecurringGiving;
+                return Redirect($"/Pushpay/RecurringManagment/{pid}/{m.Orgid}");
+            }
 
             var link = RouteExistingRegistration(m, pid);
             if (link.HasValue())

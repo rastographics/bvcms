@@ -24,6 +24,7 @@
                 <th>Settled</th>
                 <th>Type</th>
                 <th>Description</th>
+                <th>Gateway</th>
                 <th class="text-right">Count</th>
                 <th class="text-right">Total</th>
             </tr>
@@ -42,6 +43,7 @@
                         <td>@r.batchdate.FormatDate()</td>
                         <td>@r.BatchType</td>
                         <td>@r.Description</td>
+                        <td>@r.TransactionGateway</td>
                         <td class="text-right">@r.count</td>
                         <td class="text-right">@r.Total.ToString("N2")</td>
                     </tr>

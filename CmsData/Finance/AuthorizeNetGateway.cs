@@ -20,11 +20,14 @@ namespace CmsData.Finance
         private ServiceMode ServiceMode => IsLive ? ServiceMode.Live : ServiceMode.Test;
 
         public string GatewayType => "AuthorizeNet";
+        public string GatewayName { get; set; }
 
-        public AuthorizeNetGateway(CMSDataContext db, bool testing)
+        public string Identifier => $"{GatewayType}-{_login}-{_key}";
+
+        public AuthorizeNetGateway(CMSDataContext db, bool testing, PaymentProcessTypes ProcessType)
         {
             this.db = db;
-            IsLive = !(testing || db.Setting("GatewayTesting"));
+            IsLive = !(testing || MultipleGatewayUtils.GatewayTesting(db, ProcessType));
             if (!IsLive)
             {
                 _login = "4q2w5BD5";
@@ -32,8 +35,8 @@ namespace CmsData.Finance
             }
             else
             {
-                _login = db.GetSetting("x_login", "");
-                _key = db.GetSetting("x_tran_key", "");
+                _login = MultipleGatewayUtils.Setting(db, "x_login", "", (int)ProcessType);
+                _key = MultipleGatewayUtils.Setting(db, "x_tran_key", "", (int)ProcessType);
 
                 if (string.IsNullOrWhiteSpace(_login))
                     throw new Exception("x_login setting not found, which is required for Authorize.net.");

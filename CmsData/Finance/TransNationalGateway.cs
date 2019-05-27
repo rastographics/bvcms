@@ -26,20 +26,23 @@ namespace CmsData.Finance
         private readonly CMSDataContext db;
 
         public string GatewayType => "TransNational";
+        public string GatewayName { get; set; }
 
-        public TransNationalGateway(CMSDataContext db, bool testing)
+        public string Identifier => $"{GatewayType}-{_userName}-{_password}";
+
+        public TransNationalGateway(CMSDataContext db, bool testing, PaymentProcessTypes ProcessType)
         {
             this.db = db;
 
-            if(testing || db.Setting("GatewayTesting"))
+            if(testing || MultipleGatewayUtils.GatewayTesting(db, ProcessType))
             {
                 _userName = "faithbased";
                 _password = "bprogram2";
             }
             else
             {
-                _userName = db.GetSetting("TNBUsername", "");
-                _password = db.GetSetting("TNBPassword", "");
+                _userName = MultipleGatewayUtils.Setting(db, "TNBUsername", "", (int)ProcessType);
+                _password = MultipleGatewayUtils.Setting(db, "TNBPassword", "", (int)ProcessType);
 
                 if (string.IsNullOrWhiteSpace(_userName))
                     throw new Exception("TNBUsername setting not found, which is required for TransNational.");
@@ -811,7 +814,7 @@ namespace CmsData.Finance
                         Approved = transactionToInsert.Approved,
                         Message = transactionToInsert.Message,
                         TransactionDate = transactionToInsert.TransactionDate,
-                        TransactionGateway = GatewayType,
+                        TransactionGateway = GatewayName,
                         Settled = settlementDate,
                         Batch = settlementDate, // this date now will be the same as the settlement date.
                         Batchref = transactionToInsert.BatchReference,

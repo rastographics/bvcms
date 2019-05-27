@@ -6,9 +6,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
 {
     public partial class OnlineRegModel
     {
-        public static string GetTransactionGateway()
+        public static GatewayAccount GetTransactionGateway(PaymentProcessTypes processType = PaymentProcessTypes.OnlineRegistration)
         {
-            return DbUtil.Db.Setting("TransactionGateway", "notSupported").ToLower();
+            return MultipleGatewayUtils.GetAccount(DbUtil.Db, processType);
         }
 
         private decimal? payAmt;

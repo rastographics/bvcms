@@ -195,9 +195,23 @@ GO
             return null;
         }
 
+        public static void Migrate(string host = null)
+        {
+            host = host ?? Util.Host ?? "localhost";
+            if (DatabaseExists($"CMS_{host}"))
+            {
+                using (var connection = new SqlConnection(Util.GetConnectionString(host)))
+                {
+                    connection.Open();
+                    string path = Path.GetFullPath(Path.Combine(HttpContextFactory.Current.Server.MapPath(@"/"), @"..\CmsData\Migrations"));
+                    RunMigrations(connection, path);
+                }
+            }
+        }
+
         public static void RunMigrations(SqlConnection connection, string migrationsFolder)
         {
-            var files = new DirectoryInfo(migrationsFolder).EnumerateFiles();
+            var files = new DirectoryInfo(migrationsFolder).EnumerateFiles("*.sql");
             var applied = connection.Query<string>(
                 "IF EXISTS (SELECT 1 FROM sys.tables WHERE name = '__SqlMigrations') SELECT Id FROM dbo.__SqlMigrations"
                 ).ToList();
@@ -227,7 +241,7 @@ GO
         {
             using (var cmd = new SqlCommand { Connection = cn, CommandTimeout = 0 })
             {
-                var scripts = Regex.Split(script, "^GO.*$", RegexOptions.Multiline | RegexOptions.IgnoreCase);
+                var scripts = Regex.Split(script, "^GO\\s*$", RegexOptions.Multiline | RegexOptions.IgnoreCase);
                 foreach (var s in scripts)
                 {
                     if (s.Trim().HasValue())

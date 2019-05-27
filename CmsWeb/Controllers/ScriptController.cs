@@ -53,7 +53,6 @@ namespace CmsWeb.Controllers
 
             var file = Server.MapPath("~/test.py");
             var logFile = $"RunPythonScriptInBackground.{DateTime.Now:yyyyMMddHHmmss}";
-            string host = Util.Host;
 
 #if false
             HostingEnvironment.QueueBackgroundWorkItem(ct =>
@@ -65,7 +64,7 @@ namespace CmsWeb.Controllers
             });
             return View("RunPythonScriptProgress");
 #else
-            var pe = new PythonModel(host);
+            var pe = new PythonModel(CurrentDatabase);
             pe.DictionaryAdd("LogFile", logFile);
             ViewBag.Text = PythonModel.ExecutePython(file, pe, fromFile: true);
             return View("Test");
@@ -76,7 +75,7 @@ namespace CmsWeb.Controllers
         [Authorize(Roles = "Developer")]
         public ActionResult TestScript(string script)
         {
-            return Content(PythonModel.RunScript(Util.Host, script));
+            return Content(PythonModel.RunScript(CurrentDatabase.Host, script));
         }
 #endif
 
@@ -89,7 +88,6 @@ namespace CmsWeb.Controllers
             {
                 return Content("no content");
             }
-
             var d = Request.QueryString.AllKeys.ToDictionary(key => key, key => Request.QueryString[key]);
             var p = new DynamicParameters();
             foreach (var kv in d)
@@ -134,7 +132,6 @@ namespace CmsWeb.Controllers
                 return Message("no content");
             }
 
-            var cn = CurrentDatabase.ReadonlyConnection();
             var d = Request.QueryString.AllKeys.ToDictionary(key => key, key => Request.QueryString[key]);
             var p = new DynamicParameters();
             foreach (var kv in d)
@@ -148,7 +145,11 @@ namespace CmsWeb.Controllers
                 return Message(script);
             }
 
-            return cn.ExecuteReader(script, p, commandTimeout: 1200).ToExcel("RunScript.xlsx", fromSql: true);
+            using (var cn = CurrentDatabase.ReadonlyConnection())
+            {
+                cn.Open();
+                return cn.ExecuteReader(script, p, commandTimeout: 1200).ToExcel("RunScript.xlsx", fromSql: true);
+            }
         }
 
         [HttpGet, Route("~/PyScript/{name}")]
@@ -193,7 +194,6 @@ namespace CmsWeb.Controllers
                 var logFile = $"RunPythonScriptInBackground.{DateTime.Now:yyyyMMddHHmmss}";
                 ViewBag.LogFile = logFile;
                 var qs = Request.Url?.Query;
-                var host = Util.Host;
 
                 HostingEnvironment.QueueBackgroundWorkItem(ct =>
                 {
@@ -259,7 +259,7 @@ namespace CmsWeb.Controllers
         {
             try
             {
-                var pe = new PythonModel(Util.Host);
+                var pe = new PythonModel(CurrentDatabase);
                 foreach (var key in Request.QueryString.AllKeys)
                 {
                     pe.DictionaryAdd(key, Request.QueryString[key]);
@@ -280,7 +280,7 @@ namespace CmsWeb.Controllers
         {
             try
             {
-                var pe = new PythonModel(Util.Host);
+                var pe = new PythonModel(CurrentDatabase);
                 ScriptModel.GetFilesContent(pe);
                 foreach (var key in Request.Form.AllKeys)
                 {
@@ -308,7 +308,7 @@ namespace CmsWeb.Controllers
         {
             try
             {
-                var pe = new PythonModel(Util.Host);
+                var pe = new PythonModel(CurrentDatabase);
                 foreach (var key in Request.Form.AllKeys)
                 {
                     pe.DictionaryAdd(key, Request.Form[key]);
