@@ -1378,6 +1378,7 @@
     <Content Include="Migrations\20190222_create_Gateway_Structure.sql" />
     <Content Include="Migrations\20190415_create_FamilyGiverFunds_func.sql" />
     <Content Include="Migrations\20190507_alter_view_TransactionBalances.sql" />
+    <Content Include="Migrations\20190520_Fix_People_Extra_Constaint.sql" />
     <Content Include="QueryBuilder\CompareMap.xml">
       <SubType>Designer</SubType>
     </Content>
