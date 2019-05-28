@@ -1502,7 +1502,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
 
             field = field.Trim();
 
-            var ev = PeopleExtras.AsEnumerable().FirstOrDefault(ee => ee.Field == field);
+            var ev = PeopleExtras.AsEnumerable().FirstOrDefault(ee => ee.Field.ToLower() == field.ToLower());
 
             if (ev == null)
             {
