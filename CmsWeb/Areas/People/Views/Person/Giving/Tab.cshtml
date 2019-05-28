@@ -13,9 +13,9 @@
         <option value="#pledges">Pledges</option>
     </optgroup>
     <optgroup label="_________________________">
-        <option value="#statements">Statements</option>        
+        <option value="#statements">Statements</option>
     </optgroup>
-</select> 
+</select>
 <div class="tab-content" style="border: none;">
     <div class="tab-pane" id="all" data-link="/Person2/Contributions">
         @Helper.HiddenId("PeopleId", Util2.CurrentPeopleId)
@@ -33,3 +33,29 @@
         @Helper.HiddenId("PeopleId", Util2.CurrentPeopleId)
     </div>
 </div>
+<div class="modal fade" id="editPledge-modal">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Edit Pledge</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="currentpledge" class="control-label">Pledge</label>
+                            <input id="currentpledge" type="text" class="form-control numeric"/>
+                        </div>
+                    </div>
+                </div>
+                <input type="hidden" id="editpledgeurl" />
+            </div>
+            <div class="modal-footer">
+                <input type="button" id="cancel" value="Cancel" class="btn btn-default" data-dismiss="modal" />
+                <input type="button" id="posteditpledge" value="Edit Pledge" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+</div>
+
