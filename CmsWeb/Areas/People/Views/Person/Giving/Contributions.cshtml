@@ -34,55 +34,68 @@
                             }
                             @if (isFinanceRole)
                             {
-                                <th>Actions</th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
                             }
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var c in Model.ViewList())
                         {
-                        <tr>
-                            <td>@c.Date.ToShortDateString()</td>
-                            <td class="text-right">@c.Amount.ToString("N2")</td>
-                            <td><span class="pad-left">@c.Fund</span></td>
-                            <td>@c.Type</td>
-                            <td>
-                                @c.CheckNo
-                            @if (c.ImageId != 0 && checkImageUserView)
-                            {
-                                <a href="@Url.Action("GetCheckImage", "GetCheckImage", new {Area = "Dialog", id = c.ContributionId})" class="searchadd pid">
-                                    <i class="fa fa-info-circle"></i>
-                                </a>
-                            }
-                        </td>
-                        @if (Model.ShowNames)
-                        {
-                            <td>@c.Name</td>
-                        }
-                        @if (isFinanceRole && c.Type == "Pledge")
-                        {
-                            <td class="action">
-                                <div class="btn-group">
-                                    <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                        <i class="fa fa-pencil"></i> Edit <span class="caret"></span>
-                                    </button>
-                                    <ul class="dropdown-menu dropdown-menu-right" role="menu">
-                                        <li><a class="adjust" href='#'><i class="fa fa-pencil-square-o"></i>&nbsp;&nbsp;Edit</a></li>                                        
-                                            <li class="divider"></li>
-                                            @if (true)
-                                            {
-                                                <li><a class="void" href='#'><i class="fa fa-times-circle"></i>&nbsp;&nbsp;Merge Pledge</a></li>
-                                            }
-                                    </ul>
-                                </div>
-                            </td>
-                        }
-                        </tr>
+                            <tr>
+                                <td>@c.Date.ToShortDateString()</td>
+                                <td class="text-right amount">@c.Amount.ToString("N2")</td>
+                                <td><span class="pad-left">@c.Fund</span></td>
+                                <td>@c.Type</td>
+                                <td>
+                                    @c.CheckNo
+                                    @if (c.ImageId != 0 && checkImageUserView)
+                                    {
+                                        <a href="@Url.Action("GetCheckImage", "GetCheckImage", new {Area = "Dialog", id = c.ContributionId})" class="searchadd pid">
+                                            <i class="fa fa-info-circle"></i>
+                                        </a>
+                                    }
+                                </td>
+                                @if (Model.ShowNames)
+                                {
+                                    <td>@c.Name</td>
+                                }
+                                @if (isFinanceRole && c.Type == "Pledge")
+                                {
+                                    <td class="action">
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-default btn-sm dropdown-toggle">
+                                                <i class="fa fa-code-fork"></i> Merge
+                                            </button>
+                                        </div>
+                                    </td>
+                                    <td class="action">
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-default btn-sm dropdown-toggle editpledge" href='/Person2/EditPledge/@c.ContributionId' amount="@c.Amount.ToString("N2")">
+                                                <i class="fa fa-pencil-square-o"></i> Edit
+                                            </button>
+                                        </div>
+                                    </td>
+                                    <td class="action">
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-danger btn-sm dropdown-toggle">
+                                                <i class="fa fa-times-circle"></i> Delete
+                                            </button>
+                                        </div>
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                }
+                            </tr>
                         }
                     </tbody>
                 </table>
-            </div>
-            @Html.Partial("PagerBottom", Model)
+            </div>@Html.Partial("PagerBottom", Model)
             @Html.Partial("PagerHidden", Model)
             @Html.HiddenFor2(m => m.PeopleId)
         </div>
@@ -116,6 +129,6 @@
                 </div>
             </div>
         }
-        <br/>
+        <br />
     }
 }
