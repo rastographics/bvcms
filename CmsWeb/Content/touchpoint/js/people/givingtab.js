@@ -46,7 +46,28 @@
         return false;
     });
 
-    $("#puteditpledge").click(function (ev) {        
+    $("body").on("click", 'button.mergepledge', function (ev) {
+        ev.preventDefault();
+        var id = $(this).attr("pledgeid");
+        if ($("#idtomerge").val() == '') {
+            $("#idtomerge").val(id);
+            blockPledges();
+            swal("Merge Pledge", "Please select the pledge you want to merge into", "info");
+        } else {
+            var idToMerge = $("#idtomerge").val();
+            askMergePledges(idToMerge, id);
+        }
+        return false;
+    });
+
+    $("body").on("click", 'button#cancelmergepledge', function (ev) {
+        ev.preventDefault();
+        $("#idtomerge").val('');
+        unblockPledges();
+        return false;
+    });
+
+    $("#puteditpledge").click(function (ev) {
         ev.preventDefault();
         $('#adjust-modal').modal('hide');
         $.block();
@@ -118,4 +139,89 @@ function deletePledge(id) {
     return false;
 }
 
+function blockPledges() {
+    var idToMerge = $("#idtomerge").val();
+    if (idToMerge != '') {
+        debugger;
+        $('button.editpledge').attr('disabled', 'disabled');
+        $('button.deletepledge').attr('disabled', 'disabled');
+        $('button.mergepledge[pledgeid=' + idToMerge + ']').attr('disabled', 'disabled');
+
+        var cancelbutton = $('button.deletepledge[pledgeid=' + idToMerge + ']');
+        if (cancelbutton.length) {
+            cancelbutton.removeClass('deletepledge');
+            cancelbutton.attr('id', 'cancelmergepledge');
+            cancelbutton.prop('disabled', false);
+            cancelbutton.empty();
+            cancelbutton.append('<i class=' +'"fa fa-times-circle"'+'></i> Cancel');
+        }
+    }
+    return false;
+}
+
+function unblockPledges() {
+    var idToMerge = $("#idtomerge").val();
+    if (idToMerge == '') {
+        debugger;
+        var cancelbutton = $('button#cancelmergepledge');
+        if (cancelbutton.length) {
+            cancelbutton.removeAttr('id');
+            cancelbutton.addClass('deletepledge');
+            cancelbutton.prop('disabled', false);
+            cancelbutton.empty();
+            cancelbutton.append('<i class=' + '"fa fa-times-circle"' + '></i> Delete');
+        }
+        $('button.editpledge').prop('disabled', false);
+        $('button.deletepledge').prop('disabled', false);
+        $('button.mergepledge').prop('disabled', false);
+    }
+    return false;
+}
+
+function askMergePledges(idToMerge, id) {
+    swal({
+        title: "Are you sure?",
+        text: "Do you want to merge these pledges?",
+        type: "info",
+        showCancelButton: true,
+        confirmButtonClass: "btn-danger",
+        confirmButtonText: "Yes, merge it!",
+        closeOnConfirm: false
+    },
+        function () {
+            mergePledges(idToMerge, id);
+        }
+    );
+}
+
+function mergePledges(idToMerge, id) {
+    $.ajax({
+        url: 'MergePledge',
+        dataType: "json",
+        type: "POST",
+        contentType: 'application/json; charset=utf-8',
+        data: JSON.stringify({ toMerge: idToMerge, id:id}),
+        async: true,
+        processData: false,
+        cache: false,
+        success: function (data) {
+            if (data == 'OK') {
+                swal({
+                    title: "Pledges Merged!",
+                    type: "success"
+                },
+                    function () {
+                        location.reload();
+                    });
+            } else {
+                $.unblock();
+                swal("Error", data, "error");
+            }
+        },
+        error: function (xhr) {
+            $.unblock();
+            swal("Error", "", "error");
+        }
+    });
+}
 

@@ -65,14 +65,14 @@
                                 {
                                     <td class="action">
                                         <div class="btn-group">
-                                            <button type="button" class="btn btn-default btn-sm dropdown-toggle">
+                                            <button type="button" class="btn btn-default btn-sm dropdown-toggle mergepledge" pledgeid="@c.ContributionId">
                                                 <i class="fa fa-code-fork"></i> Merge
                                             </button>
                                         </div>
                                     </td>
                                     <td class="action">
                                         <div class="btn-group">
-                                            <button type="button" class="btn btn-default btn-sm dropdown-toggle editpledge" href='/Person2/EditPledge' pledgeid="@c.ContributionId" amount="@c.Amount.ToString("N2")">
+                                            <button type="button" class="btn btn-default btn-sm dropdown-toggle editpledge" pledgeid="@c.ContributionId" amount="@c.Amount.ToString("N2")">
                                                 <i class="fa fa-pencil-square-o"></i> Edit
                                             </button>
                                         </div>
@@ -132,3 +132,7 @@
         <br />
     }
 }
+<script>
+    unblockPledges();
+    blockPledges();
+</script>
