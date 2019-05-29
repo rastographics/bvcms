@@ -18,13 +18,104 @@
             event.preventDefault();
         }
     });
+
+    $("body").on("click", 'button.editpledge', function (ev) {
+        ev.preventDefault();
+        var a = $(this);
+        $("#editpledgeid").val(a.attr("pledgeid"));
+        $("#currentpledge").val(a.attr("amount"));
+        $('#editPledge-modal').modal();
+        return false;
+    });
+
+    $("body").on("click", 'button.deletepledge', function (ev) {
+        ev.preventDefault();
+        var id = $(this).attr("pledgeid");
+        swal({
+            title: "Are you sure?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            confirmButtonText: "Yes, delete this pledge!",
+            closeOnConfirm: false
+        },
+            function () {
+                deletePledge(id);
+            }
+        );
+        return false;
+    });
+
+    $("#puteditpledge").click(function (ev) {        
+        ev.preventDefault();
+        $('#adjust-modal').modal('hide');
+        $.block();
+        var id = $('#editpledgeid').val();
+        var amt = parseFloat($("#currentpledge").val());
+        if (isNaN(amt)) {
+            $.unblock();
+            return false;
+        }
+        editPledge(id, amt);
+    });
 });
 
-$("body").on("click", 'button.editpledge', function (ev) {
-    ev.preventDefault();
-    var a = $(this);
-    $("#editpledgeurl").val(a.attr("href"));
-    $("#currentpledge").val(a.attr("amount"));
-    $('#editPledge-modal').modal();
+function editPledge(id, amt) {
+    $.ajax({
+        url: 'EditPledge',
+        dataType: "json",
+        type: "PUT",
+        contentType: 'application/json; charset=utf-8',
+        data: JSON.stringify({ contributionId: id, amt: amt }),
+        async: true,
+        processData: false,
+        cache: false,
+        success: function (data) {
+            if (data == 'OK') {
+                location.reload();
+            } else {
+                $.unblock();
+                swal("Error", data, "error");
+            }
+        },
+        error: function (xhr) {
+            $.unblock();
+            swal("Error", "", "error");
+        }
+    });
     return false;
-});
+}
+
+function deletePledge(id) {
+    $.ajax({
+        url: 'DeletePledge',
+        dataType: "json",
+        type: "DELETE",
+        contentType: 'application/json; charset=utf-8',
+        data: JSON.stringify({ contributionId: id }),
+        async: true,
+        processData: false,
+        cache: false,
+        success: function (data) {
+            if (data == 'OK') {
+                swal({
+                    title: "Pledge Deleted!",
+                    type: "success"
+                },
+                    function () {
+                        location.reload();
+                    });
+            } else {
+                $.unblock();
+                swal("Error", data, "error");
+            }
+        },
+        error: function (xhr) {
+            $.unblock();
+            swal("Error", "", "error");
+        }
+    });
+    return false;
+}
+
+
