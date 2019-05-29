@@ -182,7 +182,7 @@ namespace CmsWeb.Models
 
             var list = qq.OrderBy(n => n.Text).ToList();
 
-            list.Insert(0, new SelectListItem { Text = "(not specified)", Value = "0" });
+            list.Insert(0, new SelectListItem { Text = "(not specified)", Value = "" });
             return list;
         }
 
