@@ -158,6 +158,10 @@ namespace CmsWeb.Areas.People.Controllers
             {
                 return Json("Contribution Not found");
             }
+            if (!contribution.ContributionFund.FundPledgeFlag)
+            {
+                return Json("Contribution Fund is not a pledge fund");
+            }
             contribution.ContributionAmount = amt;
             CurrentDatabase.SubmitChanges();
             return Json("OK");
@@ -175,6 +179,28 @@ namespace CmsWeb.Areas.People.Controllers
             var bundleDetail = CurrentDatabase.BundleDetails.FirstOrDefault(c => c.ContributionId == contributionId);
             CurrentDatabase.BundleDetails.DeleteOnSubmit(bundleDetail);
             CurrentDatabase.Contributions.DeleteOnSubmit(contribution);
+            CurrentDatabase.SubmitChanges();
+            return Json("OK");
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Finance")]
+        public JsonResult MergePledge(int toMerge, int id)
+        {
+            var contributionToMerge = CurrentDatabase.Contributions.FirstOrDefault(c => c.ContributionId == toMerge);
+            var contribution = CurrentDatabase.Contributions.FirstOrDefault(c => c.ContributionId == id);
+            if (contribution == null || contributionToMerge == null)
+            {
+                return Json("Contribution Not found");
+            }
+            if (!contributionToMerge.ContributionFund.FundPledgeFlag || !contribution.ContributionFund.FundPledgeFlag)
+            {
+                return Json("Contribution Fund is not a pledge fund");
+            }
+            contribution.ContributionAmount += contributionToMerge.ContributionAmount;
+            var bundleDetail = CurrentDatabase.BundleDetails.FirstOrDefault(c => c.ContributionId == toMerge);
+            CurrentDatabase.BundleDetails.DeleteOnSubmit(bundleDetail);
+            CurrentDatabase.Contributions.DeleteOnSubmit(contributionToMerge);
             CurrentDatabase.SubmitChanges();
             return Json("OK");
         }
