@@ -99,7 +99,7 @@ function editPledge(id, amt) {
                 swal("Error", data, "error");
             }
         },
-        error: function (xhr) {
+        error: function () {
             $.unblock();
             swal("Error", "", "error");
         }
@@ -131,7 +131,7 @@ function deletePledge(id) {
                 swal("Error", data, "error");
             }
         },
-        error: function (xhr) {
+        error: function () {
             $.unblock();
             swal("Error", "", "error");
         }
@@ -142,7 +142,6 @@ function deletePledge(id) {
 function blockPledges() {
     var idToMerge = $("#idtomerge").val();
     if (idToMerge != '') {
-        debugger;
         $('button.editpledge').attr('disabled', 'disabled');
         $('button.deletepledge').attr('disabled', 'disabled');
         $('button.mergepledge[pledgeid=' + idToMerge + ']').attr('disabled', 'disabled');
@@ -162,7 +161,6 @@ function blockPledges() {
 function unblockPledges() {
     var idToMerge = $("#idtomerge").val();
     if (idToMerge == '') {
-        debugger;
         var cancelbutton = $('button#cancelmergepledge');
         if (cancelbutton.length) {
             cancelbutton.removeAttr('id');
@@ -218,10 +216,9 @@ function mergePledges(idToMerge, id) {
                 swal("Error", data, "error");
             }
         },
-        error: function (xhr) {
+        error: function () {
             $.unblock();
             swal("Error", "", "error");
         }
     });
 }
-
