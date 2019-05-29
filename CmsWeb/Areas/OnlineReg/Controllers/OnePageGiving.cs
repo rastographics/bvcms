@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using CmsData;
+using CmsData.Codes;
 using CmsWeb.Areas.OnlineReg.Models;
 using CmsWeb.Code;
 using CmsWeb.Models;
@@ -40,7 +41,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 }
                 else
                 {
-                    m.ProcessType = m.org.RegistrationTypeId.IsNull() || m.org.RegistrationTypeId == 8 ? PaymentProcessTypes.OneTimeGiving : PaymentProcessTypes.OnlineRegistration;
+                    m.ProcessType = (m.org.RegistrationTypeId.IsNull() || m.org.RegistrationTypeId == RegistrationTypeCode.OnlineGiving)
+                        ? PaymentProcessTypes.OneTimeGiving
+                        : PaymentProcessTypes.OnlineRegistration;
                 }
 
                 int? GatewayId = MultipleGatewayUtils.GatewayId(CurrentDatabase, m.ProcessType);

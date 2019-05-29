@@ -87,7 +87,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
 
             // prepopulate their email address they passed in
-            if (Util.ValidEmail(email))
+            if (Util.ValidEmail(email) && ProcessType == PaymentProcessTypes.OnlineRegistration)
             {
                 var person =
                     new OnlineRegPersonModel
