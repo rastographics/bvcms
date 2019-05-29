@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Threading;
 using System.Web.Hosting;
 using UtilityExtensions;
@@ -102,9 +103,9 @@ namespace CmsWeb.Areas.Dialog.Models
                         statusContext.SubmitChanges();
                     }
                 }
-                workerContext.RepairTransactions(oid);
+                BackgroundRepairTransactions(oid, workerContext);
             }
-            workerContext.RepairTransactions(model.TargetId);
+            BackgroundRepairTransactions(model.TargetId, workerContext);
             // finished
             if (lop != null)
             {
@@ -112,6 +113,21 @@ namespace CmsWeb.Areas.Dialog.Models
                 statusContext.SubmitChanges();
             }
             workerContext.UpdateMainFellowship(model.TargetId);
+        }
+
+        private static void BackgroundRepairTransactions(int orgId, CMSDataContext context)
+        {
+            var repair = HttpContextFactory.Current.Server.MapPath("~/bin/repair.exe");
+            var connectionString = context.Connection.ConnectionString;
+            var host = context.Host;
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = repair,
+                Arguments = $"{orgId} --connection {connectionString} --host {host}",
+                CreateNoWindow = true,
+                UseShellExecute = false,
+                WorkingDirectory = Path.GetDirectoryName(repair)
+            });
         }
     }
 }
