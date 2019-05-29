@@ -139,7 +139,7 @@ namespace CmsWeb.Areas.People.Controllers
                     return Redirect($"/{route}");
                 }
             }
-            
+
             var oid = CmsData.API.APIContribution.OneTimeGiftOrgId(CurrentDatabase);
             if (oid > 0)
             {
@@ -149,5 +149,34 @@ namespace CmsWeb.Areas.People.Controllers
             return new EmptyResult();
         }
 
+        [HttpPut]
+        [Authorize(Roles = "Finance")]
+        public JsonResult EditPledge(int contributionId, decimal? amt)
+        {
+            var contribution = CurrentDatabase.Contributions.FirstOrDefault(c => c.ContributionId == contributionId);
+            if (contribution == null)
+            {
+                return Json("Contribution Not found");
+            }
+            contribution.ContributionAmount = amt;
+            CurrentDatabase.SubmitChanges();
+            return Json("OK");
+        }
+
+        [HttpDelete]
+        [Authorize(Roles = "Finance")]
+        public JsonResult DeletePledge(int contributionId)
+        {
+            var contribution = CurrentDatabase.Contributions.FirstOrDefault(c => c.ContributionId == contributionId);
+            if (contribution == null)
+            {
+                return Json("Contribution Not found");
+            }
+            var bundleDetail = CurrentDatabase.BundleDetails.FirstOrDefault(c => c.ContributionId == contributionId);
+            CurrentDatabase.BundleDetails.DeleteOnSubmit(bundleDetail);
+            CurrentDatabase.Contributions.DeleteOnSubmit(contribution);
+            CurrentDatabase.SubmitChanges();
+            return Json("OK");
+        }
     }
 }
