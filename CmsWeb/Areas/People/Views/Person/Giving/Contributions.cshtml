@@ -72,14 +72,14 @@
                                     </td>
                                     <td class="action">
                                         <div class="btn-group">
-                                            <button type="button" class="btn btn-default btn-sm dropdown-toggle editpledge" href='/Person2/EditPledge/@c.ContributionId' amount="@c.Amount.ToString("N2")">
+                                            <button type="button" class="btn btn-default btn-sm dropdown-toggle editpledge" href='/Person2/EditPledge' pledgeid="@c.ContributionId" amount="@c.Amount.ToString("N2")">
                                                 <i class="fa fa-pencil-square-o"></i> Edit
                                             </button>
                                         </div>
                                     </td>
                                     <td class="action">
                                         <div class="btn-group">
-                                            <button type="button" class="btn btn-danger btn-sm dropdown-toggle">
+                                            <button type="button" class="btn btn-danger btn-sm dropdown-toggle deletepledge" pledgeid="@c.ContributionId">
                                                 <i class="fa fa-times-circle"></i> Delete
                                             </button>
                                         </div>
