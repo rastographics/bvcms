@@ -731,8 +731,7 @@ namespace CmsData
                 TrySubmit(db, "ManagedGivings");
             }
 
-            var pi = db.PaymentInfos.FirstOrDefault(mm => mm.PeopleId == targetid);
-            if (pi == null) // the target has none
+            if (!db.PaymentInfos.Any(mm => mm.PeopleId == targetid)) // the target has none
             {
                 foreach (var i in PaymentInfos)
                 {
@@ -749,6 +748,7 @@ namespace CmsData
                             Country = i.Country,
                             Expires = i.Expires,
                             FirstName = i.FirstName,
+                            GatewayAccountId = i.GatewayAccountId,
                             LastName = i.LastName,
                             MaskedAccount = i.MaskedAccount,
                             MaskedCard = i.MaskedCard,
@@ -765,7 +765,7 @@ namespace CmsData
                             Testing = i.Testing,
                             Zip = i.Zip,
                             TbnBankVaultId = i.TbnBankVaultId,
-                            TbnCardVaultId = i.TbnCardVaultId
+                            TbnCardVaultId = i.TbnCardVaultId,
                         });
                 }
             }
@@ -1830,10 +1830,9 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             return mg;
         }
 
-        public PaymentInfo PaymentInfo()
+        public PaymentInfo PaymentInfo(int GatewayAccountId)
         {
-            var pi = PaymentInfos.SingleOrDefault();
-            return pi;
+            return PaymentInfos.Where(p => p.GatewayAccountId == GatewayAccountId).SingleOrDefault();
         }
 
         public Contribution PostUnattendedContribution(CMSDataContext db, decimal amt, int? fund, string description,

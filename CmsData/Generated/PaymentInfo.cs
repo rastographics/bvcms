@@ -74,8 +74,7 @@ namespace CmsData
 
         private string _AcceptivaPayerId;
 
-
-
+        private int _GatewayAccountId;
 
         private EntityRef<Person> _Person;
 		
@@ -169,6 +168,9 @@ namespace CmsData
 
         partial void OnAcceptivaPayerIdChanging(string value);
         partial void OnAcceptivaPayerIdChanged();
+
+        partial void OnGatewayAccountIdChanging(int value);
+        partial void OnGatewayAccountIdChanged();
 
         #endregion
         public PaymentInfo()
@@ -797,16 +799,40 @@ namespace CmsData
 
 		}
 
-		
-    #endregion
-        
-    #region Foreign Key Tables
-   		
-	#endregion
-	
-	#region Foreign Keys
-    	
-		[Association(Name="FK_PaymentInfo_People", Storage="_Person", ThisKey="PeopleId", IsForeignKey=true)]
+        [Column(Name = "GatewayAccountId", UpdateCheck = UpdateCheck.Never, Storage = "_GatewayAccountId", DbType = "int NOT NULL", IsPrimaryKey = true)]
+        [IsForeignKey]
+        public int GatewayAccountId
+        {
+            get { return this._GatewayAccountId; }
+
+            set
+            {
+                if (this._GatewayAccountId != value)
+                {
+
+                    if (this._Person.HasLoadedOrAssignedValue)
+                        throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+
+                    this.OnGatewayAccountIdChanging(value);
+                    this.SendPropertyChanging();
+                    this._GatewayAccountId = value;
+                    this.SendPropertyChanged("GatewayAccountId");
+                    this.OnGatewayAccountIdChanged();
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region Foreign Key Tables
+
+        #endregion
+
+        #region Foreign Keys
+
+        [Association(Name="FK_PaymentInfo_People", Storage="_Person", ThisKey="PeopleId", IsForeignKey=true)]
 		public Person Person
 		{
 			get { return this._Person.Entity; }

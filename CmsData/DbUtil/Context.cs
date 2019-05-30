@@ -1881,10 +1881,15 @@ This search uses multiple steps which cannot be duplicated in a single query.
         internal bool FromActiveRecords { get; set; }
         public bool FromBatch { get; set; }
 
-        public IGateway Gateway(bool testing = false, PaymentProcessTypes processType = PaymentProcessTypes.RecurringGiving, bool exceptionIfMissing = true)
+        public IGateway Gateway(string name, bool exceptionIfMissing = true)
         {
-            var account = MultipleGatewayUtils.GetAccount(this, processType);
+            var account = GatewayAccount.FirstOrDefault(a => a.GatewayAccountName == name);
+            return Gateway(false, account);
+        }
 
+        public IGateway Gateway(bool testing, GatewayAccount account, PaymentProcessTypes processType = PaymentProcessTypes.RecurringGiving, bool exceptionIfMissing = true)
+        {
+            account = account ?? MultipleGatewayUtils.GetAccount(this, processType);
             if (!(account?.GatewayId).HasValue)
             {
                 if (exceptionIfMissing)
@@ -1897,15 +1902,15 @@ This search uses multiple steps which cannot be duplicated in a single query.
             switch (account?.GatewayId)
             {
                 case (int)GatewayTypes.Sage:
-                    return new SageGateway(this, testing, processType) { GatewayName = account.GatewayAccountName };
+                    return new SageGateway(this, testing, processType) { GatewayName = account.GatewayAccountName, GatewayAccountId = account.GatewayAccountId };
                 case (int)GatewayTypes.Transnational:
-                    return new TransNationalGateway(this, testing, processType) { GatewayName = account.GatewayAccountName };
+                    return new TransNationalGateway(this, testing, processType) { GatewayName = account.GatewayAccountName, GatewayAccountId = account.GatewayAccountId };
                 case (int)GatewayTypes.Acceptiva:
-                    return new AcceptivaGateway(this, testing, processType) { GatewayName = account.GatewayAccountName };
+                    return new AcceptivaGateway(this, testing, processType) { GatewayName = account.GatewayAccountName, GatewayAccountId = account.GatewayAccountId };
                 case (int)GatewayTypes.AuthorizeNet:
-                    return new AuthorizeNetGateway(this, testing, processType) { GatewayName = account.GatewayAccountName };
+                    return new AuthorizeNetGateway(this, testing, processType) { GatewayName = account.GatewayAccountName, GatewayAccountId = account.GatewayAccountId };
                 case (int)GatewayTypes.BluePay:
-                    return new BluePayGateway(this, testing, processType) { GatewayName = account.GatewayAccountName };
+                    return new BluePayGateway(this, testing, processType) { GatewayName = account.GatewayAccountName, GatewayAccountId = account.GatewayAccountId };
                 default:
                     break;
             }

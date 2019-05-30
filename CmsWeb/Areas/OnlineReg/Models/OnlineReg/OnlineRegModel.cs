@@ -68,7 +68,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public string MissionTripDates { get; set; }
         public decimal? MissionTripCost { get; set; }
         public decimal? MissionTripRaised { get; set; }
-        public string gatewayType { get; set; }
         public int transactionId { get; set; }
         public List<Supporter> Supporters { get; set; }
 
