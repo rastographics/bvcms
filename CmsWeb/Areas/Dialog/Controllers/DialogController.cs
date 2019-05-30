@@ -1,6 +1,7 @@
 ﻿using CmsWeb.Lifecycle;
 using System.Web.Mvc;
 using CmsWeb.Areas.Search.Models;
+using System;
 
 namespace CmsWeb.Areas.Dialog.Controllers
 {
@@ -17,10 +18,12 @@ namespace CmsWeb.Areas.Dialog.Controllers
             var m = new Options() { useMailFlags = id == "useMailFlags" };
             return View(m);
         }
-        public ActionResult TagAll()
-        {
-            var m = new QueryModel();
-            m.Db = CurrentDatabase;            
+        public ActionResult TagAll(Guid? id)
+        {           
+            ViewBag.Title = "QueryBuilder";
+            ViewBag.OrigQueryId = id;
+            var m = new QueryModel(id, CurrentDatabase);
+            ViewBag.ForceAutoRun = TempData["autorun"];
             return View(m);
         }
 

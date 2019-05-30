@@ -87,7 +87,8 @@ namespace CmsWeb.Areas.Search.Controllers
         {
             m.Db = CurrentDatabase;
             ViewBag.OnQueryBuilder = "true";
-            ViewBag.TagAction = "/Query/TagAll/";
+            ViewBag.TagAction = $"/Query/TagAll/";
+            ViewBag.DialogAction = $"/Dialog/TagAll/{m.QueryId}";
             ViewBag.UnTagAction = "/Query/UnTagAll/";
             ViewBag.AddContact = "/Query/AddContact/";
             ViewBag.AddTasks = "/Query/AddTasks/";
