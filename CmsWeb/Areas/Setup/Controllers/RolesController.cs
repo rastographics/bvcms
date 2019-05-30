@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web.Mvc;
 using UtilityExtensions;
 using CmsWeb.Areas.Setup.Models;
+using System.Collections.Generic;
 
 namespace CmsWeb.Areas.Setup.Controllers
 {
@@ -22,7 +23,7 @@ namespace CmsWeb.Areas.Setup.Controllers
         [Route("~/Roles/{id}")]
         public ActionResult Manage(string id)
         {
-            var model = new RoleModel();
+            var model = new RoleModel(CurrentDatabase);
 
             var role = CurrentDatabase.Roles.SingleOrDefault(m => m.RoleId == id.ToInt());
             if (role == null)
@@ -97,6 +98,16 @@ namespace CmsWeb.Areas.Setup.Controllers
             CurrentDatabase.Roles.DeleteOnSubmit(role);
             CurrentDatabase.SubmitChanges();
             return new EmptyResult();
+        }
+
+        [Route("~/Roles/SaveSettings")]
+        [HttpPost]
+        public ActionResult SaveSettings(string name, List<RoleModel.Setting> settings)
+        {
+            var model = new RoleModel(CurrentDatabase);
+            model.SaveSettingsForRole(name, settings);
+            // todo: return success/ fail
+            return Content("test");
         }
     }
 }

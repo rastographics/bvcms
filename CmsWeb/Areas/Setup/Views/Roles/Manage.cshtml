@@ -1,4 +1,5 @@
-﻿@model CmsData.Role
+﻿@using UtilityExtensions
+@model CmsData.Role
 @{
     Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Role Manager";
@@ -13,31 +14,59 @@
             transform: rotate(90deg);
             margin-right: 10px;
         }
+
         .btn-link.collapsed i {
-            transform:rotate(0deg);
+            transform: rotate(0deg);
         }
+
         .btn-link:focus, .btn-link:active {
-            outline:0!important;
-            border:0!important;
+            outline: 0 !important;
+            border: 0 !important;
         }
+
         .btn-link:hover {
-            text-decoration:none;
+            text-decoration: none;
         }
+
         label {
             font-weight: normal;
             margin-bottom: 0;
         }
+
         .panel-body {
-            padding:0!important;
+            padding: 0 !important;
         }
     </style>
 }
 @section scripts{
     <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
     <script>
-        $('[data-toggle="popover"]').popover({ html: true });
-        $('[data-toggle="popover"]').click(function (ev) {
-            ev.preventDefault();
+        $(function () {
+            $('[data-toggle="popover"]').popover({ html: true });
+            $('[data-toggle="popover"]').click(function (ev) {
+                ev.preventDefault();
+            });
+            $("#roleSettings input").change(function (e) {
+                var data = [];
+                $('#roleSettings input').map(function () {
+                    data.push({
+                        XMLName: this.name,
+                        Active: this.checked
+                    });
+                });
+
+                $.post("/Roles/SaveSettings/", {
+                        name: '@Model.RoleName',
+                        settings: data
+                    }, function (ret) {
+                        if (ret)
+                            swal("Success!", ret, "success");
+                        else {
+                            swal("Error!", ret, "error");
+                        }
+                });
+                
+            });
         });
     </script>
 }
@@ -52,44 +81,46 @@
             </div>
             <div class="box-content">
                 <div class="accordion" id="accordion">
-                    @foreach (var location in ViewBag.Settings)
-                    {
-                        <div class="panel panel-default">
-                            <div class="panel-heading" id="headingTwo">
-                                <h4 style="margin:0;">
-                                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#@location.Name" aria-expanded="true" aria-controls="@location.Name">
-                                        <i class="fa fa-chevron-right"></i> @location.Name
-                                    </button>
-                                </h4>
-                            </div>
-                            <div id="@location.Name" class="collapse" data-parent="#accordion">
-                                <div class="panel-body">
-                                    <div class="table-responsive">
-                                        <table class="table">
-                                            <tbody>
-                                                @foreach (var setting in location.Settings)
-                                                {
-                                                    <tr>
-                                                        <td style="width:120px;text-align:right;">
-                                                            <input type="checkbox" id="@setting.XMLName" data-toggle="toggle" data-on="@setting.TrueLabel" data-off="@setting.FalseLabel" data-width="90" checked="@setting.Active">
-                                                        </td>
-                                                        <td style="vertical-align:middle;">
-                                                            <label class="form-check-label" for="@setting.XMLName">
-                                                                @setting.Name <a class="visible-sm-inline visible-xs-inline" href="#" data-toggle="popover" data-placement="right" data-trigger="focus" data-title="@setting.Name" data-content="@setting.ToolTip"><i class="fa fa-info-circle"></i></a>
-                                                            </label>
-                                                        </td>
-                                                        <td class="hidden-xs hidden-sm" style="vertical-align:middle;">
-                                                            @setting.ToolTip
-                                                        </td>
-                                                    </tr>
-                                                }
-                                            </tbody>
-                                        </table>
+                    <form id="roleSettings">
+                        @foreach (var location in ViewBag.Settings)
+                        {
+                            <div class="panel panel-default">
+                                <div class="panel-heading" id="headingTwo">
+                                    <h4 style="margin:0;">
+                                        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#@location.Name" aria-expanded="true" aria-controls="@location.Name">
+                                            <i class="fa fa-chevron-right"></i> @location.Name
+                                        </button>
+                                    </h4>
+                                </div>
+                                <div id="@location.Name" class="collapse" data-parent="#accordion">
+                                    <div class="panel-body">
+                                        <div class="table-responsive">
+                                            <table class="table">
+                                                <tbody>
+                                                    @foreach (var setting in location.Settings)
+                                                    {
+                                                        <tr>
+                                                            <td style="width:120px;text-align:right;">
+                                                                <input type="checkbox" id="@setting.XMLName" name="@setting.XMLName" data-toggle="toggle" data-on="@setting.TrueLabel" data-off="@setting.FalseLabel" data-width="100" checked="@setting.Active">
+                                                            </td>
+                                                            <td style="vertical-align:middle;">
+                                                                <label class="form-check-label" for="@setting.XMLName">
+                                                                    @setting.Name <a class="visible-sm-inline visible-xs-inline" href="#" data-toggle="popover" data-placement="right" data-trigger="focus" data-title="@setting.Name" data-content="@setting.ToolTip"><i class="fa fa-info-circle"></i></a>
+                                                                </label>
+                                                            </td>
+                                                            <td class="hidden-xs hidden-sm" style="vertical-align:middle;">
+                                                                @setting.ToolTip
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    }
+                        }
+                    </form>
                 </div>
             </div>
         </div>

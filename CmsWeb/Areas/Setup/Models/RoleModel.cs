@@ -6,14 +6,31 @@ using System.Web;
 using CmsData.Classes.RoleChecker;
 using System.Xml.Linq;
 using System.Xml.XPath;
+using System.IO;
 
 namespace CmsWeb.Areas.Setup.Models
 {
     public class RoleModel
     {
+        private CMSDataContext CurrentDatabase;
+
+        public RoleModel(CMSDataContext db)
+        {
+            CurrentDatabase = db;
+        }
+
         private static XDocument RoleSettingDefaults
         {
             get { return XDocument.Parse(Resource1.RoleSettingDefaults); }
+        }
+
+        private XDocument DBRoleSettings
+        {
+            get
+            {
+                var content = DbUtil.Content(CurrentDatabase, "CustomAccessRoles.xml", "<?xml version='1.0' encoding='utf - 8'?><roles></roles>");
+                return XDocument.Load(new StringReader(content));
+            }
         }
 
         public List<Location> SettingsForRole(Role r)
@@ -51,6 +68,26 @@ namespace CmsWeb.Areas.Setup.Models
             return locations;
         }
 
+        public void SaveSettingsForRole(string roleName, List<Setting> settings)
+        {
+            var xdoc = DBRoleSettings;
+
+            // find existing role element(s) and remove
+            var existing = xdoc.Descendants("role").SingleOrDefault(r => r.Attribute("name").Value == roleName);
+            existing.Remove();
+
+            // create new role element
+            var elSettings = new XElement("settings");
+            foreach(Setting setting in settings)
+            {
+                var elSetting = new XElement("setting", new XAttribute("name", setting.XMLName), new XAttribute("value", setting.Active.ToString()));
+                elSettings.Add(elSetting);
+            }
+            var element = new XElement("role", new XAttribute("name", roleName), elSettings);
+            xdoc.Descendants("roles").First().Add(element);
+            UpdateDBRoleSettings(xdoc.ToString());
+        }
+
         public Setting Default(string name)
         {
             var xdoc = RoleSettingDefaults;
@@ -77,6 +114,19 @@ namespace CmsWeb.Areas.Setup.Models
                 }
             }
             return null;
+        }
+
+        private void UpdateDBRoleSettings(string settingsXML)
+        {
+            var content = CurrentDatabase.Content("CustomAccessRoles.xml");
+            if (content == null)
+            {
+                // todo: create db content
+                return;
+            }
+
+            content.Body = settingsXML;
+            CurrentDatabase.SubmitChanges();
         }
 
         public class Location
