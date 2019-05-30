@@ -1,5 +1,6 @@
 ﻿using CmsWeb.Lifecycle;
 using System.Web.Mvc;
+using CmsWeb.Areas.Search.Models;
 
 namespace CmsWeb.Areas.Dialog.Controllers
 {
@@ -18,6 +19,9 @@ namespace CmsWeb.Areas.Dialog.Controllers
         }
         public ActionResult TagAll()
         {
+            var m = new QueryModel();
+            m.Db = CurrentDatabase;
+            ViewBag.TagActionCount = m.Count();
             return View();
         }
 
