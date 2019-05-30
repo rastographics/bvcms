@@ -223,7 +223,6 @@ namespace CmsWeb.Areas.Org.Models
 
         private const string RegistrationTypeDescription = @"
 * JoinOrganization: for a single organization registration
-* AttendMeeting: NOT WORKING YET
 * UserSelectsOrganization: good for a single registration for multiple orgs (classes)
 * ComputeOrganizationByAge: good for recreation leagues. Uses Birthday and Gender
 * ManageSubscriptions: allows to select multiple organizations

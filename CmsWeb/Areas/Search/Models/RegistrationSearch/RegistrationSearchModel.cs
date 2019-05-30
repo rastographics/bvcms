@@ -184,6 +184,10 @@ namespace CmsWeb.Areas.Search.Models
                     return from r in q
                            orderby r.Stamp
                            select r;
+                case "Registrant":
+                    return from r in q
+                           orderby r.First
+                           select r;
                 case "Organization":
                     return from r in q
                            orderby r.OrganizationName

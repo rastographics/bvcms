@@ -134,7 +134,14 @@
 		var f = $(this).closest('form');
 		f.attr("action", "/Export2/Contributions/donortotals");
 	    f.submit();
-	});
+    });
+
+    $("#greatplains").click(function (ev) {
+        ev.preventDefault();
+        var f = $(this).closest('form');
+        f.attr("action", "/Export2/Contributions/greatplains");
+        f.submit();
+    });
 
 	$("#glextract").click(function (ev) {
 		ev.preventDefault();

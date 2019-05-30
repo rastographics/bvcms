@@ -969,9 +969,14 @@
     <Compile Include="Generated\Views\TransactionSummary.cs" />
     <Compile Include="DbUtil\ITableWithExtraValues.cs" />
     <Content Include="App_Readme\Elmah.txt" />
+    <Content Include="Migrations\00000000_sql_migrations_table.sql" />
     <Content Include="Migrations\20181022-3_create_Contributions2SearchIds.sql" />
+    <Content Include="Migrations\20181023_emailqueue-perf-index-updates.sql" />
+    <Content Include="Migrations\20181029_userstable-perf-index-updates.sql" />
+    <Content Include="Migrations\20181205_nullable-columns-in-Attend-table.sql" />
     <Content Include="Migrations\20190508_Add_PaymentInfo_AcceptivaPayerId_Column.sql" />
     <Content Include="Migrations\20190520_add_acceptiva_to_gateway_tables.sql" />
+    <Content Include="Migrations\20190527_add_preconfigured_acceptiva_details.sql" />
     <Compile Include="Organization\OrgFilter.cs" />
     <Compile Include="Organization\OrgPerson.cs" />
     <Compile Include="Organization\OrgSchedule.cs" />
@@ -1378,6 +1383,8 @@
     <Content Include="Migrations\20190222_create_Gateway_Structure.sql" />
     <Content Include="Migrations\20190415_create_FamilyGiverFunds_func.sql" />
     <Content Include="Migrations\20190507_alter_view_TransactionBalances.sql" />
+    <Content Include="Migrations\20190523_add_paymentinfo_gatewayaccountid.sql" />
+    <Content Include="Migrations\20190523_Insert_Temporary_Recurring_Giving.sql" />
     <Content Include="QueryBuilder\CompareMap.xml">
       <SubType>Designer</SubType>
     </Content>

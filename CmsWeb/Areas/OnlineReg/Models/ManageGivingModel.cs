@@ -224,10 +224,12 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private PaymentInfo PopulatePaymentInfo()
         {
-            var pi = person.PaymentInfo();
+            var accountId = MultipleGatewayUtils.GetAccount(CurrentDatabase, PaymentProcessTypes.RecurringGiving)?.GatewayAccountId;
+            var pi = person.PaymentInfo(accountId ?? 0);
             if (pi == null)
-                return new PaymentInfo();
-
+            {
+                return new PaymentInfo() { GatewayAccountId = accountId ?? 0 };
+            }
             CreditCard = pi.MaskedCard;
             Account = pi.MaskedAccount;
             Expires = pi.Expires;
@@ -235,9 +237,13 @@ namespace CmsWeb.Areas.OnlineReg.Models
             NoCreditCardsAllowed = CurrentDatabase.Setting("NoCreditCardGiving", "false").ToBool();
             Type = pi.PreferredGivingType;
             if (NoCreditCardsAllowed)
+            {
                 Type = PaymentType.Ach; // bank account only
+            }
             else if (NoEChecksAllowed)
+            {
                 Type = PaymentType.CreditCard; // credit card only
+            }
             Type = NoEChecksAllowed ? PaymentType.CreditCard : Type;
             ClearMaskedNumbers(pi);
             total = FundItem.Sum(ff => ff.Value) ?? 0;
@@ -436,10 +442,12 @@ namespace CmsWeb.Areas.OnlineReg.Models
             var chosenFunds = FundItemsChosen().ToList();
             if (chosenFunds.Sum(f => f.amt) > 0)
             {
-                var pi = person.PaymentInfo();
+                var account = MultipleGatewayUtils.GetAccount(db, PaymentProcessTypes.RecurringGiving);
+                var accountId = account?.GatewayAccountId ?? 0;
+                var pi = person.PaymentInfo(accountId);
                 if (pi == null)
                 {
-                    pi = new PaymentInfo();
+                    pi = new PaymentInfo() { GatewayAccountId = accountId };
                     person.PaymentInfos.Add(pi);
                 }
                 pi.SetBillingAddress(FirstName, Middle, LastName, Suffix, Address, Address2, City, State, Country, Zip, Phone);
@@ -447,7 +455,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 // first need to do a $1 auth if it's a credit card and throw any errors we get back
                 // from the gateway.
                 var vaultSaved = false;
-                var gateway = db.Gateway(testing, PaymentProcessTypes.RecurringGiving);
+                var gateway = db.Gateway(testing, account, PaymentProcessTypes.RecurringGiving);
                 if (Type == PaymentType.CreditCard)
                 {
                     // perform $1 auth.

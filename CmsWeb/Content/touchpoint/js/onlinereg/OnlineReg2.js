@@ -223,10 +223,8 @@
 
     function showAddfund() {
         var x = document.getElementById("addFund");
-        if (x.hidden === true) {
-            x.hidden = false;
-        } else {
-            x.hidden = true;
+        if (x) {
+            x.hidden = !x.hidden;
         }
     }
 

@@ -222,14 +222,15 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public static PaymentForm CreatePaymentFormForBalanceDue(CMSDataContext db, Transaction ti, decimal amtdue, string email)
         {
             PaymentInfo pi = null;
+            var accountId = MultipleGatewayUtils.GetAccount(db, PaymentProcessTypes.OnlineRegistration)?.GatewayAccountId;
             if (ti.Person != null)
             {
-                pi = ti.Person.PaymentInfos.FirstOrDefault();
+                pi = ti.Person.PaymentInfo(accountId ?? 0);
             }
 
             if (pi == null)
             {
-                pi = new PaymentInfo();
+                pi = new PaymentInfo() { GatewayAccountId = accountId ?? 0 };
             }
 
             var pf = new PaymentForm
@@ -568,7 +569,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 return;
             }
 
-            var gateway = CurrentDatabase.Gateway(testing, ProcessType);
+            var gateway = CurrentDatabase.Gateway(testing, null, ProcessType);
 
             // we need to perform a $1 auth if this is a brand new credit card that we are going to store it in the vault.
             // otherwise we skip doing an auth just call store in vault just like normal.
@@ -618,10 +619,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
         private void InitializePaymentInfo(int peopleId)
         {
             var person = CurrentDatabase.LoadPersonById(peopleId);
-            var pi = person.PaymentInfo();
+            var accountId = MultipleGatewayUtils.GetAccount(CurrentDatabase, ProcessType)?.GatewayAccountId;
+            var pi = person.PaymentInfo(accountId ?? 0);
             if (pi == null)
             {
-                pi = new PaymentInfo();
+                pi = new PaymentInfo() { GatewayAccountId = accountId ?? 0 };
                 person.PaymentInfos.Add(pi);
             }
             pi.SetBillingAddress(First, MiddleInitial, Last, Suffix, Address, Address2, City,
@@ -656,7 +658,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
 
             TransactionResponse tinfo;
-            var gw = CurrentDatabase.Gateway(testing, m?.ProcessType ?? PaymentProcessTypes.OnlineRegistration);
+            var gw = CurrentDatabase.Gateway(testing, null, m?.ProcessType ?? PaymentProcessTypes.OnlineRegistration);
 
             if (SavePayInfo)
             {

@@ -26,6 +26,11 @@ namespace CmsData
                     select sub).FirstOrDefault();
         }
 
+        public static GatewayAccount GetAccount(CMSDataContext db, int GatewayAccountId)
+        {
+            return db.GatewayAccount.FirstOrDefault(a => a.GatewayAccountId == GatewayAccountId);
+        }
+
         public static string Setting(CMSDataContext db, string name, string defaultvalue, int ProcessId)
         {
             int? GatewayAccountId = db.PaymentProcess.Where(x => x.ProcessId == ProcessId).Select(x => x.GatewayAccountId).FirstOrDefault();

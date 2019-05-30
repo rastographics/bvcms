@@ -79,5 +79,20 @@
         $(function () {
             $("select").select2();
         });
+
+        $('form').submit(function () {
+            var RegistrationType = document.getElementById('regid').value;
+            if (RegistrationType.length === 0) {
+                swal({
+                    type: 'info',
+                    title: 'Warning',
+                    text: 'Please select a Registration Type'
+                });
+                return false;
+            }
+            else {
+                return true;
+            }
+        });
     </script>
 }
