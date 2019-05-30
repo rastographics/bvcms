@@ -32,6 +32,7 @@
                             {
                                 <th>@Model.SortLinkWFilter("Name", filter)</th>
                             }
+                            <th></th>
                             @if (isFinanceRole)
                             {
                                 <th></th>
@@ -61,6 +62,20 @@
                                 {
                                     <td>@c.Name</td>
                                 }
+                                @if (c.Type == "Pledge")
+                                {
+                                    <td class="action">
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-default btn-sm dropdown-toggle fulfillpledge" pledgeid="@c.ContributionId">
+                                                <i class="fa fa-check-circle-o"></i> Fulfill pledge
+                                            </button>
+                                        </div>
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td></td>
+                                }
                                 @if (isFinanceRole && c.Type == "Pledge")
                                 {
                                     <td class="action">
@@ -85,7 +100,7 @@
                                         </div>
                                     </td>
                                 }
-                                else
+                                else if(isFinanceRole)
                                 {
                                     <td></td>
                                     <td></td>
