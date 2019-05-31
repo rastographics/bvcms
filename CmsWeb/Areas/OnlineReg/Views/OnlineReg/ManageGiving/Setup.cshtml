@@ -12,7 +12,7 @@
     var funds = CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel.FullFundList(db, Model.DefaultFundIds.Any() ? Model.DefaultFundIds : Model.FallbackDefaultFundIds);
     var otherFunds = funds.Where(f => !Model.DefaultFundIds.Contains(f.Value)).ToList();
     var useNewManageGivingBuilder = db.Setting("UseNewManageGivingBuilder");
-    var debitcredit = db.GetDebitCreditLabel(PaymentProcessTypes.OnlineRegistration);
+    var debitcredit = db.GetDebitCreditLabel(PaymentProcessTypes.RecurringGiving);
     var recaptchaSiteKey = db.Setting("googleReCaptchaSiteKey", ConfigurationManager.AppSettings["googleReCaptchaSiteKey"]);
     var useRecaptcha = db.Setting("UseRecaptchaForManageGiving") && recaptchaSiteKey.HasValue();
 }
