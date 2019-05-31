@@ -72,16 +72,6 @@ namespace CmsWeb.Models
                 case "donordetails":
                     return ExportPeople.DonorDetails(Dt1, Dt2, fundid, campusid, false, nontaxdeductible, IncUnclosedBundles, tagid, fundIds)
                         .ToExcel("DonorDetails.xlsx");
-                case "greatplains":
-                    var cmd = new CommandDefinition("dbo.GreatPlainsIncomeExport", new
-                    {
-                        fd = Dt1,
-                        td = Dt2,
-                        campusid,
-                        nontaxded = nontaxdeductible,
-                        includeunclosed = IncUnclosedBundles
-                    }, commandType: CommandType.StoredProcedure);
-                    return DbUtil.Db.Connection.ExecuteReader(cmd).ToExcel("GreatPlains.xlsx");
             }
             return null;
         }
