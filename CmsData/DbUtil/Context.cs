@@ -2015,9 +2015,10 @@ This search uses multiple steps which cannot be duplicated in a single query.
 
         public string GetDebitCreditLabel(PaymentProcessTypes paymentProcess)
         {
-            return paymentProcess == PaymentProcessTypes.OneTimeGiving ?
-                Setting("DebitCreditLabel-Giving", Setting("DebitCreditLabel", "Debit/Credit Card")) :
-                Setting("DebitCreditLabel-Registrations", Setting("DebitCreditLabel", "Debit/Credit Card"));
+            var defaultLabel = Setting("DebitCreditLabel", "Debit/Credit Card");
+            return paymentProcess == PaymentProcessTypes.OneTimeGiving || paymentProcess == PaymentProcessTypes.RecurringGiving ?
+                Setting("DebitCreditLabel-Giving", defaultLabel) :
+                Setting("DebitCreditLabel-Registrations", defaultLabel);
         }
     }
 }
