@@ -11,7 +11,7 @@
                 <div class="alert alert-info">
                     You are about to tag
                     @Model.Count() 
-                    @((Model.Count() > 1) ? "people" : "person")
+                    @((Model.Count() != 1) ? "people" : "person")
                     
                 </div>
                 <div class="row">
