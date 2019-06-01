@@ -36,6 +36,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             OnlineRegPersonModel p;
             PrepareFirstRegistrant(ref m, pid, showfamily, out p);        
+            p.pledgeFundId = m.pledgeFundId;
 
             if (!ModelState.IsValid)
             {

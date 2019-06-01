@@ -62,13 +62,13 @@
                                 {
                                     <td>@c.Name</td>
                                 }
-                                @if (c.Type == "Pledge")
+                                @if (c.Type == "Pledge" && c.PledgeFund)
                                 {
                                     <td class="action">
                                         <div class="btn-group">
-                                            <button type="button" class="btn btn-default btn-sm dropdown-toggle fulfillpledge" pledgeid="@c.ContributionId">
+                                            <a href="/Person2/OneTimeGift/@(campusId??0)?contributionId=@c.ContributionId" target="_blank" class="btn btn-default btn-sm fulfillpledge">
                                                 <i class="fa fa-check-circle-o"></i> Fulfill pledge
-                                            </button>
+                                            </a>
                                         </div>
                                     </td>
                                 }
@@ -100,7 +100,7 @@
                                         </div>
                                     </td>
                                 }
-                                else if(isFinanceRole)
+                                else if (isFinanceRole)
                                 {
                                     <td></td>
                                     <td></td>
