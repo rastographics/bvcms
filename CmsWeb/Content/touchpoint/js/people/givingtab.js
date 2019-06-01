@@ -144,7 +144,7 @@ function blockPledges() {
     if (idToMerge != '') {
         $('button.editpledge').attr('disabled', 'disabled');
         $('button.deletepledge').attr('disabled', 'disabled');
-        $('button.fulfillpledge').attr('disabled', 'disabled');
+        $('a.fulfillpledge').attr('disabled', 'disabled');
         $('button.mergepledge[pledgeid=' + idToMerge + ']').attr('disabled', 'disabled');
 
         var cancelbutton = $('button.deletepledge[pledgeid=' + idToMerge + ']');
@@ -173,7 +173,7 @@ function unblockPledges() {
         $('button.editpledge').prop('disabled', false);
         $('button.deletepledge').prop('disabled', false);
         $('button.mergepledge').prop('disabled', false);
-        $('button.fulfillpledge').prop('disabled', false);
+        $('a.fulfillpledge').removeAttr('disabled');
     }
     return false;
 }

@@ -72,6 +72,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public int transactionId { get; set; }
         public List<Supporter> Supporters { get; set; }
 
+        public int pledgeFundId { get; set; }
 
         private Transaction _transaction;
         public Transaction Transaction
