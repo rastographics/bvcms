@@ -37,6 +37,62 @@ namespace CmsWeb.Models
             return OnlineRegs().Single(r => r.Value == regid).Text;
         }
 
+        public IEnumerable<CouponInfo> GetCoupons(CouponModel model = null)
+        {
+            var roles = DbUtil.Db.CurrentUser.UserRoles.Select(uu => uu.Role.RoleName).ToArray();
+            var q = from c in DbUtil.Db.Coupons
+                    let o = c.Organization
+                    where o.LimitToRole == null || roles.Contains(o.LimitToRole)
+                    where c.DivOrg == model.regidfilter || model.regidfilter == "0" || model.regidfilter == null
+                    where c.UserId == model.useridfilter || model.useridfilter == 0
+                    select c;
+            switch (usedfilter)
+            {
+                case "Used":
+                    q = q.Where(c => c.Used != null && c.Canceled == null);
+                    break;
+                case "UnUsed":
+                    q = q.Where(c => c.Used == null && c.Canceled == null);
+                    break;
+                case "Canceled":
+                    q = q.Where(c => c.Canceled != null);
+                    break;
+            }
+            if (model.name.HasValue())
+            {
+                q = q.Where(c => c.Name.Contains(model.name) || c.Person.Name.Contains(model.name));
+            }
+
+            if (model.startdate.HasValue() && model.enddate.HasValue())
+            {
+                DateTime bd;
+                DateTime ed;
+                if (DateTime.TryParse(model.startdate, out bd) && DateTime.TryParse(model.enddate, out ed))
+                {
+                    q = q.Where(c => c.Created.Date >= bd && c.Created.Date <= ed);
+                }
+            }
+
+            var q2 = from c in q
+                     orderby c.Created descending
+                     select new CouponInfo
+                     {
+                         Amount = c.Amount,
+                         Canceled = c.Canceled,
+                         Code = c.Id,
+                         Created = c.Created,
+                         OrgDivName = c.OrgId != null ? c.Organization.OrganizationName : c.Division.Name,
+                         Used = c.Used,
+                         PeopleId = c.PeopleId,
+                         Name = c.Name,
+                         Person = c.Person.Name,
+                         UserId = c.UserId,
+                         UserName = c.User.Name,
+                         RegAmt = c.RegAmount
+                     };
+            return q2.Take(200);
+        }
+
         public IEnumerable<CouponInfo> Coupons()
         {
             var roles = DbUtil.Db.CurrentUser.UserRoles.Select(uu => uu.Role.RoleName).ToArray();
