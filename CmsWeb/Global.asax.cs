@@ -9,7 +9,6 @@ using SimpleInjector.Integration.Web.Mvc;
 using SimpleInjector.Integration.WebApi;
 using System;
 using System.Configuration;
-using System.Data.SqlClient;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -43,6 +42,10 @@ namespace CmsWeb
 
             ValueProviderFactories.Factories.Remove(ValueProviderFactories.Factories.OfType<JsonValueProviderFactory>().FirstOrDefault());
             ValueProviderFactories.Factories.Add(new JsonNetValueProviderFactory());
+            if (Util.IsDebug())
+            {
+                DbUtil.Migrate();
+            }
         }
 
         protected void Session_Start(object sender, EventArgs e)
@@ -93,6 +96,8 @@ namespace CmsWeb
             {
                 return;
             }
+
+            Response.Headers?.Remove("Server");
 
             if (Util.AppOffline)
             {
@@ -166,6 +171,14 @@ namespace CmsWeb
                 {
                     Response.Redirect(r);
                 }
+            }
+        }
+
+        protected void Application_PostAuthorizeRequest()
+        {
+            if (ShouldBypassProcessing())
+            {
+                return;
             }
         }
 

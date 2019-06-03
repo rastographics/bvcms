@@ -56,16 +56,17 @@ namespace CmsWeb.Areas.Dialog.Models
             db.SubmitChanges();
             HostingEnvironment.QueueBackgroundWorkItem(ct => DoMoveWork(this));
         }
+
         public static void DoMoveWork(MoveOrgMembersModel model)
         {
-            var jobStatusContext = CMSDataContext.Create(model.Host);
-            var jobWorkerContext = CMSDataContext.Create(model.Host);
-            jobWorkerContext.CommandTimeout = 2200;
-            var cul = jobWorkerContext.Setting("Culture", "en-US");
+            var statusContext = CMSDataContext.Create(model.Host);
+            var workerContext = CMSDataContext.Create(model.Host);
+            workerContext.CommandTimeout = 2200;
+            var cul = workerContext.Setting("Culture", "en-US");
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
-            LongRunningOperation lop = null;
-
+            LongRunningOperation lop = FetchLongRunningOperation(statusContext, Op, model.QueryId);
+            var orgsPeople = new Dictionary<int, List<int>>();
             foreach (var i in model.List) // {personId}.{organizationId}
             {
                 var a = i.Split('.');
@@ -74,31 +75,43 @@ namespace CmsWeb.Areas.Dialog.Models
                     continue;
                 }
 
-                var pid = a[0].ToInt();
-                var oid = a[1].ToInt();
+                var orgId = a[1].ToInt();
 
-                if (oid == model.TargetId)
+                if (orgId == model.TargetId)
                 {
                     continue;
                 }
 
-                OrganizationMember.MoveToOrg(jobWorkerContext, pid, oid, model.TargetId, model.MoveRegistrationData, model.ChangeMemberType == true ? model.MoveToMemberTypeId : -1);
-                //Once member has been inserted into the new Organization then update member in Organizations as enrolled / not enrolled accordingly
-                jobWorkerContext.RepairTransactions(oid);
-                jobWorkerContext.RepairTransactions(model.TargetId);
-                lop = FetchLongRunningOperation(jobStatusContext, Op, model.QueryId);
-                if (lop != null)
+                if (!orgsPeople.ContainsKey(orgId))
                 {
-                    lop.Processed++;
-                    lop.CustomMessage = $"Working from {pid},{oid} to {model.TargetId}";
-                    jobStatusContext.SubmitChanges();
+                    orgsPeople[orgId] = new List<int>();
                 }
+                orgsPeople[orgId].Add(a[0].ToInt());
             }
+
+            foreach (var oid in orgsPeople.Keys) 
+            {
+                var peopleIds = orgsPeople[oid];
+                foreach (var pid in peopleIds)
+                {
+                    OrganizationMember.MoveToOrg(workerContext, pid, oid, model.TargetId, model.MoveRegistrationData, model.ChangeMemberType == true ? model.MoveToMemberTypeId : -1);
+                    if (lop != null)
+                    {
+                        lop.Processed++;
+                        lop.CustomMessage = $"Working from {pid},{oid} to {model.TargetId}";
+                        statusContext.SubmitChanges();
+                    }
+                }
+                workerContext.RepairTransactions(oid);
+            }
+            workerContext.RepairTransactions(model.TargetId);
             // finished
-            lop = FetchLongRunningOperation(jobStatusContext, Op, model.QueryId);
-            lop.Completed = DateTime.Now;
-            jobStatusContext.SubmitChanges();
-            jobWorkerContext.UpdateMainFellowship(model.TargetId);
+            if (lop != null)
+            {
+                lop.Completed = DateTime.Now;
+                statusContext.SubmitChanges();
+            }
+            workerContext.UpdateMainFellowship(model.TargetId);
         }
     }
 }

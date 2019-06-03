@@ -141,7 +141,7 @@ GO
                         RunScripts(masterConnectionString, "create database CMSi_" + hostName);
                         currentFile = "BuildImageDatabase.sql";
                         RunScripts(imageConnectionString,
-                            File.ReadAllText(sqlScriptsPath + currentFile));
+                            File.ReadAllText(Path.Combine(sqlScriptsPath, currentFile)));
                     }
 
                     if (!DatabaseExists(cn, "Elmah"))
@@ -149,30 +149,30 @@ GO
                         RunScripts(masterConnectionString, "create database Elmah");
                         currentFile = "BuildElmahDb.sql";
                         RunScripts(elmahConnectionString,
-                            File.ReadAllText(sqlScriptsPath + currentFile));
+                            File.ReadAllText(Path.Combine(sqlScriptsPath, currentFile)));
                     }
                 }
 
                 using (var cn = new SqlConnection(standardConnectionString))
                 {
                     cn.Open();
-                    var list = File.ReadAllLines(sqlScriptsPath + "allscripts.txt");
+                    var list = File.ReadAllLines(Path.Combine(sqlScriptsPath, "allscripts.txt"));
                     foreach (var f in list)
                     {
                         currentFile = f;
-                        var script = File.ReadAllText(sqlScriptsPath + @"BuildDb\" + currentFile);
+                        var script = File.ReadAllText(Path.Combine(sqlScriptsPath, "BuildDb", currentFile));
                         RunScripts(cn, script);
                     }
                     currentFile = hostName == "testdb"
                         ? "datascriptTest.sql"
                         : "datascriptStarter.sql";
-                    var datascript = File.ReadAllText(sqlScriptsPath + currentFile);
+                    var datascript = File.ReadAllText(Path.Combine(sqlScriptsPath, currentFile));
                     RunScripts(cn, datascript);
 
-                    var datawords = File.ReadAllText(sqlScriptsPath + "datawords.sql");
+                    var datawords = File.ReadAllText(Path.Combine(sqlScriptsPath, "datawords.sql"));
                     RunScripts(cn, datawords);
 
-                    var datazips = File.ReadAllText(sqlScriptsPath + "datazips.sql");
+                    var datazips = File.ReadAllText(Path.Combine(sqlScriptsPath, "datazips.sql"));
                     RunScripts(cn, datazips);
 
                     var migrationsFolder = Path.GetFullPath(Path.Combine(sqlScriptsPath, @"..\CmsData\Migrations"));
@@ -195,9 +195,23 @@ GO
             return null;
         }
 
+        public static void Migrate(string host = null)
+        {
+            host = host ?? Util.Host ?? "localhost";
+            if (DatabaseExists($"CMS_{host}"))
+            {
+                using (var connection = new SqlConnection(Util.GetConnectionString(host)))
+                {
+                    connection.Open();
+                    string path = Path.GetFullPath(Path.Combine(HttpContextFactory.Current.Server.MapPath(@"/"), @"..\CmsData\Migrations"));
+                    RunMigrations(connection, path);
+                }
+            }
+        }
+
         public static void RunMigrations(SqlConnection connection, string migrationsFolder)
         {
-            var files = new DirectoryInfo(migrationsFolder).EnumerateFiles();
+            var files = new DirectoryInfo(migrationsFolder).EnumerateFiles("*.sql");
             var applied = connection.Query<string>(
                 "IF EXISTS (SELECT 1 FROM sys.tables WHERE name = '__SqlMigrations') SELECT Id FROM dbo.__SqlMigrations"
                 ).ToList();
@@ -227,7 +241,7 @@ GO
         {
             using (var cmd = new SqlCommand { Connection = cn, CommandTimeout = 0 })
             {
-                var scripts = Regex.Split(script, "^GO.*$", RegexOptions.Multiline | RegexOptions.IgnoreCase);
+                var scripts = Regex.Split(script, "^GO\\s*$", RegexOptions.Multiline | RegexOptions.IgnoreCase);
                 foreach (var s in scripts)
                 {
                     if (s.Trim().HasValue())

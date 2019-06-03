@@ -202,8 +202,6 @@ namespace CmsWeb.Areas.Main.Controllers
         {
             var id = SaveDraft(saveid, name, roleid, m.Subject, m.Body, m.UnlayerDesign, m.UseUnlayer);
 
-            System.Diagnostics.Debug.Print("Template ID: " + id);
-
             ViewBag.parents = m.wantParents;
             ViewBag.templateID = id;
 
@@ -384,8 +382,9 @@ namespace CmsWeb.Areas.Main.Controllers
                         {
                             continue;
                         }
-                        eq.EmailQueueTos.Add(new EmailQueueTo
+                        CurrentDatabase.EmailQueueTos.InsertOnSubmit(new EmailQueueTo
                         {
+                            Id = eq.Id,
                             PeopleId = pid,
                             OrgId = eq.SendFromOrgId,
                             Guid = Guid.NewGuid(),
@@ -407,8 +406,9 @@ namespace CmsWeb.Areas.Main.Controllers
                         {
                             continue;
                         }
-                        eq.EmailQueueTos.Add(new EmailQueueTo
+                        CurrentDatabase.EmailQueueTos.InsertOnSubmit(new EmailQueueTo
                         {
+                            Id = eq.Id,
                             PeopleId = pid,
                             OrgId = eq.SendFromOrgId,
                             Guid = Guid.NewGuid(),
@@ -450,7 +450,7 @@ namespace CmsWeb.Areas.Main.Controllers
             {
                 try
                 {
-                    var db = CMSDataContext.Create(host);
+                    var db = CurrentDatabase.Copy();
                     var cul = CurrentDatabase.Setting("Culture", "en-US");
                     Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
                     Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);

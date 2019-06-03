@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
+using System.Xml.Serialization;
 using CmsData;
 using CmsData.Classes;
 using CmsData.Finance;
@@ -14,6 +15,7 @@ using CmsWeb.Areas.OnlineReg.Controllers;
 using CmsWeb.Code;
 using Dapper;
 using Microsoft.Scripting.Utils;
+using Newtonsoft.Json;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.OnlineReg.Models
@@ -23,21 +25,31 @@ namespace CmsWeb.Areas.OnlineReg.Models
     {
         public int pid { get; set; }
         public int orgid { get; set; }
+
+        [NonSerialized]
         private CMSDataContext _currentDatabase;
-        public CMSDataContext CurrentDatabase
+        private CMSDataContext CurrentDatabase
         {
-            get => _currentDatabase ?? (_currentDatabase = DbUtil.Db);
+            get => _currentDatabase ?? (CurrentDatabase = DbUtil.Db);
             set
             {
-                _currentDatabase = value;
+                if (_currentDatabase == null)
+                {
+                    _currentDatabase = value;
 
-                HeadingLabel = CurrentDatabase.Setting("ManageGivingHeaderLabel", "Giving Opportunities");
+                    HeadingLabel = CurrentDatabase.Setting("ManageGivingHeaderLabel", "Giving Opportunities");
 #if DEBUG2
             testing = true;
 #endif
-                NoCreditCardsAllowed = CurrentDatabase.Setting("NoCreditCardGiving", "false").ToBool();
-                NoEChecksAllowed = CurrentDatabase.Setting("NoEChecksAllowed", "false").ToBool();
+                    NoCreditCardsAllowed = CurrentDatabase.Setting("NoCreditCardGiving", "false").ToBool();
+                    NoEChecksAllowed = CurrentDatabase.Setting("NoEChecksAllowed", "false").ToBool();
+                }
             }
+        }
+
+        public void SetCurrentDatabase(CMSDataContext db)
+        {
+            CurrentDatabase = db;
         }
 
         public IList<string> DefaultFundIds = new List<string>();
@@ -212,10 +224,12 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private PaymentInfo PopulatePaymentInfo()
         {
-            var pi = person.PaymentInfo();
+            var accountId = MultipleGatewayUtils.GetAccount(CurrentDatabase, PaymentProcessTypes.RecurringGiving)?.GatewayAccountId;
+            var pi = person.PaymentInfo(accountId ?? 0);
             if (pi == null)
-                return new PaymentInfo();
-
+            {
+                return new PaymentInfo() { GatewayAccountId = accountId ?? 0 };
+            }
             CreditCard = pi.MaskedCard;
             Account = pi.MaskedAccount;
             Expires = pi.Expires;
@@ -223,9 +237,13 @@ namespace CmsWeb.Areas.OnlineReg.Models
             NoCreditCardsAllowed = CurrentDatabase.Setting("NoCreditCardGiving", "false").ToBool();
             Type = pi.PreferredGivingType;
             if (NoCreditCardsAllowed)
+            {
                 Type = PaymentType.Ach; // bank account only
+            }
             else if (NoEChecksAllowed)
+            {
                 Type = PaymentType.CreditCard; // credit card only
+            }
             Type = NoEChecksAllowed ? PaymentType.CreditCard : Type;
             ClearMaskedNumbers(pi);
             total = FundItem.Sum(ff => ff.Value) ?? 0;
@@ -272,28 +290,27 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private void ClearMaskedNumbers(PaymentInfo pi)
         {
-            var gateway = CurrentDatabase.Setting("TransactionGateway", "");
-
             var clearBankDetails = false;
             var clearCreditCardDetails = false;
 
-            switch (gateway.ToLower())
+            int? GatewayId = MultipleGatewayUtils.GatewayId(CurrentDatabase, PaymentProcessTypes.RecurringGiving);
+            switch (GatewayId)
             {
-                case "sage":
+                case (int)GatewayTypes.Sage:
                     clearBankDetails = !pi.SageBankGuid.HasValue;
                     clearCreditCardDetails = !pi.SageCardGuid.HasValue;
                     break;
-                case "transnational":
+                case (int)GatewayTypes.Transnational:
                     clearBankDetails = !pi.TbnBankVaultId.HasValue;
                     clearCreditCardDetails = !pi.TbnCardVaultId.HasValue;
                     break;
-                case "authorizenet":
+                // case (int)GatewayTypes.Acceptiva:
+                // return new AcceptivaGateway(this, testing, ProcessType);
+                case (int)GatewayTypes.AuthorizeNet:
                     clearBankDetails = !pi.AuNetCustPayBankId.HasValue;
                     clearCreditCardDetails = !pi.AuNetCustPayId.HasValue;
                     break;
-                case "bluepay":
-                    clearCreditCardDetails = !String.IsNullOrEmpty(pi.BluePayCardVaultId);
-                    //TODO: Handle bank account too.
+                default:
                     break;
             }
 
@@ -425,10 +442,12 @@ namespace CmsWeb.Areas.OnlineReg.Models
             var chosenFunds = FundItemsChosen().ToList();
             if (chosenFunds.Sum(f => f.amt) > 0)
             {
-                var pi = person.PaymentInfo();
+                var account = MultipleGatewayUtils.GetAccount(db, PaymentProcessTypes.RecurringGiving);
+                var accountId = account?.GatewayAccountId ?? 0;
+                var pi = person.PaymentInfo(accountId);
                 if (pi == null)
                 {
-                    pi = new PaymentInfo();
+                    pi = new PaymentInfo() { GatewayAccountId = accountId };
                     person.PaymentInfos.Add(pi);
                 }
                 pi.SetBillingAddress(FirstName, Middle, LastName, Suffix, Address, Address2, City, State, Country, Zip, Phone);
@@ -436,7 +455,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 // first need to do a $1 auth if it's a credit card and throw any errors we get back
                 // from the gateway.
                 var vaultSaved = false;
-                var gateway = db.Gateway(testing);
+                var gateway = db.Gateway(testing, account, PaymentProcessTypes.RecurringGiving);
                 if (Type == PaymentType.CreditCard)
                 {
                     // perform $1 auth.

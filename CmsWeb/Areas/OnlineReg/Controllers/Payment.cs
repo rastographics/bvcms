@@ -8,16 +8,43 @@ using System;
 using System.Configuration;
 using System.Linq;
 using System.Text;
+using CmsWeb.Common;
 using System.Web.Mvc;
 using UtilityExtensions;
+using System.Threading.Tasks;
 
 namespace CmsWeb.Areas.OnlineReg.Controllers
 {
     public partial class OnlineRegController
     {
+        [HttpGet]
+        [Route("~/OnlineReg/ProcessExternalPayment/{reference}")]
+        public ActionResult ProcessExternalPayment(string reference)
+        {
+            PaymentForm pf = new PaymentForm()
+            {
+                extTransactionId = 0
+            };
+            if (reference.Substring(0, 3) == "dat")
+            {
+                RegistrationDatum datum = CurrentDatabase.RegistrationDatas.SingleOrDefault(d => d.Id == Int32.Parse(reference.Substring(4)));
+                OnlineRegModel m = Util.DeSerialize<OnlineRegModel>(datum.Data);
+                pf = PaymentForm.CreatePaymentForm(m);
+            }
+            if (reference.Substring(0, 3) == "tra")
+                pf.extTransactionId = Int32.Parse(reference.Substring(4));
+
+            return ProcessPayment(pf);
+        }
+
         [HttpPost]
         public ActionResult ProcessPayment(PaymentForm pf)
         {
+            if (pf.ProcessType == PaymentProcessTypes.EmpytProcess)
+            {
+                pf.ProcessType = PaymentProcessTypes.OnlineRegistration;
+            }
+            // One time or Reg...
             Response.NoCache();
 
 #if DEBUG
@@ -55,7 +82,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return Message("Found Card Tester");
             }
 
-            if (CurrentDatabase.Setting("UseRecaptcha"))
+            int? GatewayId = MultipleGatewayUtils.GatewayId(CurrentDatabase, m?.ProcessType ?? pf.ProcessType);
+
+            if (CurrentDatabase.Setting("UseRecaptcha") && GatewayId != (int)GatewayTypes.Pushpay)
             {
                 if (!GoogleRecaptcha.IsValidResponse(HttpContext, CurrentDatabase))
                 {
@@ -65,8 +94,20 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 }
             }
 
+            RouteModel ret;
+
+            if ((int)GatewayTypes.Pushpay == GatewayId)
+            {
+                int orgId;
+                ret = pf.ProcessExternalPayment(m, out orgId);
+                pf.OrgId = orgId;
+            }
+            else
+            {
+                ret = pf.ProcessPayment(ModelState, m);
+            }
             SetHeaders(pf.OrgId ?? 0);
-            var ret = pf.ProcessPayment(ModelState, m);
+
             switch (ret.Route)
             {
                 case RouteType.ModelAction:
@@ -278,6 +319,17 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return Message("no outstanding transaction");
             }
 
+            int? GatewayId = MultipleGatewayUtils.GatewayId(CurrentDatabase, PaymentProcessTypes.OnlineRegistration);
+
+            if ((int)GatewayTypes.Pushpay == GatewayId)
+            {
+                ViewBag.Header = "Payment Process";                
+                if (string.IsNullOrEmpty(MultipleGatewayUtils.Setting(CurrentDatabase, "PushpayMerchant", "", (int)PaymentProcessTypes.OnlineRegistration)))
+                    return View("OnePageGiving/NotConfigured");
+
+                Session["PaymentProcessType"] = PaymentProcessTypes.OnlineRegistration;
+                return Redirect($"/Pushpay/PayAmtDue/{ti.Id}/{amtdue}");
+            }
 #if DEBUG
             ti.Testing = true;
             if (!Util.HasValue(ti.Address))
@@ -289,6 +341,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
 #endif
             var pf = PaymentForm.CreatePaymentFormForBalanceDue(CurrentDatabase, ti, amtdue, email);
+            pf.ProcessType = PaymentProcessTypes.OnlineRegistration;
 
             SetHeaders(pf.OrgId ?? 0);
 

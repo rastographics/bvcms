@@ -59,9 +59,12 @@ namespace CmsData
             var total = q.Sum(vv => vv.Amt);
 
             if (total == 0)
+            {
                 return 0;
+            }
 
-            var paymentInfo = db.PaymentInfos.Single(x => x.PeopleId == PeopleId);
+            var accountId = MultipleGatewayUtils.GetAccount(db, PaymentProcessTypes.RecurringGiving)?.GatewayAccountId ?? 0;
+            var paymentInfo = db.PaymentInfos.Single(x => x.PeopleId == PeopleId && x.GatewayAccountId == accountId);
             var preferredType = paymentInfo.PreferredGivingType ?? paymentInfo.PreferredPaymentType;
 
             var gw = GetGateway(db, paymentInfo);
@@ -81,7 +84,7 @@ namespace CmsData
                 Amt = total,
                 Description = "Recurring Giving",
                 Testing = false,
-                TransactionGateway = gw.GatewayType,
+                TransactionGateway = gw.GatewayName,
                 Financeonly = true,
                 PaymentType = preferredType,
                 LastFourCC = preferredType == PaymentType.CreditCard ? paymentInfo.MaskedCard.Last(4) : null,
@@ -158,37 +161,61 @@ Please contact the Finance office at the church."
             }
             return 1;
         }
-
         private IGateway GetGateway(CMSDataContext db, PaymentInfo pi)
         {
-            var tempgateway = db.Setting("TemporaryGateway", "");
+            var account = MultipleGatewayUtils.GetAccount(db, pi.GatewayAccountId);
 
-            if (!tempgateway.HasValue())
-                return db.Gateway();
+            if (account.IsNull())
+                throw new Exception("This process does not have a gateway configured");
 
-            var gateway = db.Setting("TransactionGateway", "");
-            switch (gateway.ToLower()) // Check to see if standard gateway is set up
+            bool IsTesting = MultipleGatewayUtils.GatewayTesting(db, PaymentProcessTypes.RecurringGiving);
+
+            switch (account.GatewayId)
             {
-                case "sage":
+                // case (int)GatewayTypes.Pushpay:
+                // break;
+                case (int)GatewayTypes.Sage:
                     if ((pi.PreferredGivingType == "B" && pi.SageBankGuid.HasValue) ||
                         (pi.PreferredGivingType == "C" && pi.SageCardGuid.HasValue))
-                        return db.Gateway();
+                    {
+                        return db.Gateway(IsTesting, account);
+                    }
                     break;
-                case "transnational":
+                case (int)GatewayTypes.Transnational:
                     if ((pi.PreferredGivingType == "B" && pi.TbnBankVaultId.HasValue) ||
                         (pi.PreferredGivingType == "C" && pi.TbnCardVaultId.HasValue))
-                        return db.Gateway();
+                    {
+                        return db.Gateway(IsTesting, account);
+                    }
+                    break;
+                case (int)GatewayTypes.Acceptiva:
+                    if (pi.AcceptivaPayerId.HasValue() &&
+                        (pi.PreferredGivingType == "B" || pi.PreferredGivingType == "C"))
+                    {
+                        return db.Gateway(IsTesting, account);
+                    }
+                    break;
+                case (int)GatewayTypes.BluePay:
+                    if ((pi.PreferredGivingType == "B") ||
+                        (pi.PreferredGivingType == "C" && string.IsNullOrEmpty(pi.BluePayCardVaultId)))
+                    {
+                        return db.Gateway(IsTesting, account);
+                    }
+                    break;
+                default:
                     break;
             }
 
-            // fall back to temporary gateway because the user hasn't migrated their payments off of the temporary gateway yet
-            return db.Gateway(usegateway: tempgateway);
+            // fall back to default gateway
+            return db.Gateway(IsTesting, null, processType: PaymentProcessTypes.RecurringGiving);
         }
+
         public static int DoAllGiving(CMSDataContext Db)
         {
-            var gateway = Db.Setting("TransactionGateway", "");
+            int? GatewayId = MultipleGatewayUtils.GatewayId(Db, PaymentProcessTypes.RecurringGiving);
+
             int count = 0;
-            if (gateway.HasValue())
+            if (GatewayId != null)
             {
                 var q = from rg in Db.ManagedGivings
                         where rg.NextDate < Util.Now.Date

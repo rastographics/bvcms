@@ -20,11 +20,15 @@ namespace CmsData.Finance
         private ServiceMode ServiceMode => IsLive ? ServiceMode.Live : ServiceMode.Test;
 
         public string GatewayType => "AuthorizeNet";
+        public string GatewayName { get; set; }
+        public int GatewayAccountId { get; set; }
 
-        public AuthorizeNetGateway(CMSDataContext db, bool testing)
+        public string Identifier => $"{GatewayType}-{_login}-{_key}";
+
+        public AuthorizeNetGateway(CMSDataContext db, bool testing, PaymentProcessTypes ProcessType)
         {
             this.db = db;
-            IsLive = !(testing || db.Setting("GatewayTesting"));
+            IsLive = !(testing || MultipleGatewayUtils.GatewayTesting(db, ProcessType));
             if (!IsLive)
             {
                 _login = "4q2w5BD5";
@@ -32,8 +36,8 @@ namespace CmsData.Finance
             }
             else
             {
-                _login = db.GetSetting("x_login", "");
-                _key = db.GetSetting("x_tran_key", "");
+                _login = MultipleGatewayUtils.Setting(db, "x_login", "", (int)ProcessType);
+                _key = MultipleGatewayUtils.Setting(db, "x_tran_key", "", (int)ProcessType);
 
                 if (string.IsNullOrWhiteSpace(_login))
                     throw new Exception("x_login setting not found, which is required for Authorize.net.");
@@ -47,10 +51,10 @@ namespace CmsData.Finance
             string routing, string account, bool giving)
         {
             var person = db.LoadPersonById(peopleId);
-            var paymentInfo = person.PaymentInfo();
+            var paymentInfo = person.PaymentInfo(GatewayAccountId);
             if (paymentInfo == null)
             {
-                paymentInfo = new PaymentInfo();
+                paymentInfo = new PaymentInfo() { GatewayAccountId = GatewayAccountId };
                 person.PaymentInfos.Add(paymentInfo);
             }
 
@@ -179,7 +183,7 @@ namespace CmsData.Finance
         public void RemoveFromVault(int peopleId)
         {
             var person = db.LoadPersonById(peopleId);
-            var paymentInfo = person.PaymentInfo();
+            var paymentInfo = person.PaymentInfo(GatewayAccountId);
             if (paymentInfo == null)
                 return;
 
@@ -323,7 +327,7 @@ namespace CmsData.Finance
 
         public TransactionResponse AuthCreditCardVault(int peopleId, decimal amt, string description, int tranid)
         {
-            var paymentInfo = db.PaymentInfos.Single(pp => pp.PeopleId == peopleId);
+            var paymentInfo = db.PaymentInfos.Single(pp => pp.PeopleId == peopleId && pp.GatewayAccountId == GatewayAccountId);
             if (paymentInfo?.AuNetCustPayId == null)
                 return new TransactionResponse
                 {
@@ -352,7 +356,7 @@ namespace CmsData.Finance
 
         public TransactionResponse PayWithVault(int peopleId, decimal amt, string description, int tranid, string type)
         {
-            var paymentInfo = db.PaymentInfos.Single(pp => pp.PeopleId == peopleId);
+            var paymentInfo = db.PaymentInfos.Single(pp => pp.PeopleId == peopleId && pp.GatewayAccountId == GatewayAccountId);
             if (paymentInfo == null)
                 return new TransactionResponse
                 {
@@ -535,7 +539,7 @@ namespace CmsData.Finance
 
         public string VaultId(int peopleId)
         {
-            var paymentInfo = db.PaymentInfos.Single(pp => pp.PeopleId == peopleId);
+            var paymentInfo = db.PaymentInfos.Single(pp => pp.PeopleId == peopleId && pp.GatewayAccountId == GatewayAccountId);
             return paymentInfo?.AuNetCustId.ToString();
         }
     }

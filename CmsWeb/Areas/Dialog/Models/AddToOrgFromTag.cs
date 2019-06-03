@@ -24,23 +24,31 @@ namespace CmsWeb.Areas.Dialog.Models
         public AddToOrgFromTag() { }
 
         private OrgFilter filter;
-        public OrgFilter Filter => filter ?? (filter = CurrentDatabase.OrgFilter(QueryId));
-        public int OrgId => Filter.Id;
+        public OrgFilter Filter { get; }
+        public int OrgId { get; }
+
         public AddToOrgFromTag(Guid id, CMSDataContext db)
         {
             Host = db.Host;
             CurrentDatabase = db;
             QueryId = id;
             UserId = Util.UserId;
+            Tag = new CodeInfo("0", "Tag");
+
+            Filter = filter ?? (filter = db.OrgFilter(id));
+
             if (Filter.GroupSelect == GroupSelectCode.Previous)
             {
                 var org = db.LoadOrganizationById(OrgId);
                 OrgName = org.OrganizationName;
             }
-            Tag = new CodeInfo("0", "Tag");
+
+            OrgId = Filter.Id;
         }
+
         [DisplayName("Choose A Tag")]
         public CodeInfo Tag { get; set; }
+
         public string DisplayGroup
         {
             get

@@ -16,14 +16,18 @@ namespace CmsData.Finance
         private string ServiceMode => IsLive ? "LIVE" : "TEST";
 
         public string GatewayType => "BluePay";
+        public string GatewayName { get; set; }
+        public int GatewayAccountId { get; set; }
 
-        public BluePayGateway(CMSDataContext db, bool testing)
+        public string Identifier => $"{GatewayType}-{_login}-{_key}";
+
+        public BluePayGateway(CMSDataContext db, bool testing, PaymentProcessTypes ProcessType)
         {
             this.db = db;
-            IsLive = !(testing || db.Setting("GatewayTesting"));
+            IsLive = !(testing || MultipleGatewayUtils.GatewayTesting(db, ProcessType));
 
-            _login = db.Setting("bluepay_accountId", "");
-            _key = db.Setting("bluepay_secretKey", "");
+            _login = MultipleGatewayUtils.Setting(db, "bluepay_accountId", "", (int)ProcessType);
+            _key = MultipleGatewayUtils.Setting(db, "bluepay_secretKey", "", (int)ProcessType);
 
             if (string.IsNullOrWhiteSpace(_login))
                 throw new Exception("bluepay_accountId setting not found, which is required for BluePay.");
@@ -38,10 +42,10 @@ namespace CmsData.Finance
             string routing, string account, bool giving)
         {
             var person = db.LoadPersonById(peopleId);
-            var paymentInfo = person.PaymentInfo();
+            var paymentInfo = person.PaymentInfo(GatewayAccountId);
             if (paymentInfo == null)
             {
-                paymentInfo = new PaymentInfo();
+                paymentInfo = new PaymentInfo() { GatewayAccountId = GatewayAccountId };
                 person.PaymentInfos.Add(paymentInfo);
             }
 
@@ -95,7 +99,7 @@ namespace CmsData.Finance
         public void RemoveFromVault(int peopleId)
         {
             var person = db.LoadPersonById(peopleId);
-            var paymentInfo = person.PaymentInfo();
+            var paymentInfo = person.PaymentInfo(GatewayAccountId);
 
             if (!string.IsNullOrEmpty(paymentInfo?.BluePayCardVaultId))
             {
@@ -184,7 +188,7 @@ namespace CmsData.Finance
 
         public TransactionResponse AuthCreditCardVault(int peopleId, decimal amt, string description, int tranid)
         {
-            var paymentInfo = db.PaymentInfos.Single(pp => pp.PeopleId == peopleId);
+            var paymentInfo = db.PaymentInfos.Single(pp => pp.PeopleId == peopleId && pp.GatewayAccountId == GatewayAccountId);
             if (paymentInfo == null || !string.IsNullOrEmpty(paymentInfo.BluePayCardVaultId))
                 return new TransactionResponse
                 {
@@ -209,7 +213,7 @@ namespace CmsData.Finance
         //Any info that needs to be overrided (invoiceID, amount, description, etc.) can be done by simply including it with the TransactionID
         public TransactionResponse PayWithVault(int peopleId, decimal amt, string description, int tranid, string type)
         {
-            var paymentInfo = db.PaymentInfos.Single(pp => pp.PeopleId == peopleId);
+            var paymentInfo = db.PaymentInfos.Single(pp => pp.PeopleId == peopleId && pp.GatewayAccountId == GatewayAccountId);
             if (paymentInfo == null)
                 return new TransactionResponse
                 {
@@ -336,6 +340,7 @@ namespace CmsData.Finance
         }
 
         public bool UseIdsForSettlementDates => false;
+
         public void CheckBatchSettlements(DateTime start, DateTime end)
         {
             CheckBatchedTransactions.CheckBatchSettlements(db, this, start, end);
@@ -348,7 +353,7 @@ namespace CmsData.Finance
 
         public string VaultId(int peopleId)
         {
-            var paymentInfo = db.PaymentInfos.Single(pp => pp.PeopleId == peopleId);
+            var paymentInfo = db.PaymentInfos.Single(pp => pp.PeopleId == peopleId && pp.GatewayAccountId == GatewayAccountId);
             return paymentInfo?.BluePayCardVaultId;
         }
     }

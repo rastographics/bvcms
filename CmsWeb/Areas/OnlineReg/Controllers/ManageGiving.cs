@@ -92,7 +92,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [HttpPost]
         public ActionResult ManageGiving(ManageGivingModel m)
         {
-            m.CurrentDatabase = CurrentDatabase;
+            m.SetCurrentDatabase(CurrentDatabase);
             SetHeaders(m.orgid);
 
             // only validate if the amounts are greater than zero.
@@ -137,13 +137,21 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             var m = TempData["managegiving"] as ManageGivingModel;
             if (m == null)
+            {
                 return Content("No active registration");
+            }
+
+            m.SetCurrentDatabase(CurrentDatabase);
 
             if (Util.IsDebug())
+            {
                 m.testing = true;
+            }
 
             if (!m.ManagedGivingStopped)
+            {
                 m.Confirm(this);
+            }
 
             SetHeaders(m.orgid);
             OnlineRegModel.LogOutOfOnlineReg();

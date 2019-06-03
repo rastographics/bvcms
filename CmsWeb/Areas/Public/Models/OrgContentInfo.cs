@@ -61,11 +61,13 @@ namespace CmsWeb.Models
                     oc.ImageId = ImageData.Image.NewTextFromString(value).Id;
                 }
 
+                imageDb.SubmitChanges();
+
                 CurrentDatabase.SubmitChanges();
             }
         }
 
-        public bool HideBanner => Html?.Contains("<span class=\"hide-banner\"/>") ?? false;
+        public bool HideBanner => Html?.Contains("<span class=\"hide-banner\"") ?? false;
 
         public ImageData.Image image
         {
@@ -109,9 +111,12 @@ namespace CmsWeb.Models
                         NotAuthenticated = !Util.UserPeopleId.HasValue
                     };
             var o = q.SingleOrDefault();
-            if (o != null && !o.IsMember)
+            if (o != null)
             {
                 o.CurrentDatabase = db;
+            }
+            if (o != null && !o.IsMember)
+            {
                 var oids = db.GetLeaderOrgIds(Util.UserPeopleId);
                 if (!oids.Contains(o.OrgId))
                 {
@@ -143,9 +148,12 @@ namespace CmsWeb.Models
                         NotAuthenticated = !Util.UserPeopleId.HasValue
                     };
             var o = q.SingleOrDefault();
-            if (o != null && !o.IsMember)
+            if (o != null)
             {
                 o.CurrentDatabase = db;
+            }
+            if (o != null && !o.IsMember)
+            {
                 var oids = db.GetLeaderOrgIds(Util.UserPeopleId);
                 if (!oids.Contains(o.OrgId))
                 {

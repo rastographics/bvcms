@@ -68,7 +68,7 @@ or just Last or *First*`space` for first name match only.
         public PeopleSearchModel(bool fromAddGuest = false)
             : this()
         {
-            MobileAddGuest = fromAddGuest;
+            MobileAddGuest = DbUtil.Db.Setting("RelaxAppAddGuest", "false").ToBool() && fromAddGuest;
         }
 
         public bool usersonly { get; set; }

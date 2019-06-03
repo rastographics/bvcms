@@ -848,6 +848,9 @@
     <Compile Include="Areas\Search\Models\SavedQuery\SavedQueryInfo.cs" />
     <Compile Include="Areas\Search\Models\SavedQuery\SavedQueryModel.cs" />
     <Compile Include="Areas\Setup\Models\RoleModel.cs" />
+    <Compile Include="Areas\Setup\Models\Pushpay\RecurringManagment.cs" />
+    <Compile Include="Areas\Setup\Controllers\GatewayController.cs" />
+    <Compile Include="Areas\Setup\Models\GatewayAccountJsonModel.cs" />
     <Compile Include="Code\BirthdateValidAttribute.cs" />
     <Compile Include="Code\CMSWebViewPage.cs" />
     <Compile Include="Areas\Setup\Controllers\PushpayController.cs" />
@@ -1197,10 +1200,12 @@
     <Content Include="Content\font-awesome-4.0.3\css\font-awesome.min.css" />
     <Content Include="Content\font-awesome-4.0.3\fonts\fontawesome-webfont.svg" />
     <Content Include="Content\images\check.png" />
+    <Content Include="Content\img\textarealine.png" />
     <Content Include="Content\touchpoint\css\account.css" />
     <Content Include="Content\touchpoint\css\app.css" />
     <Content Include="Content\touchpoint\css\editor.css" />
     <Content Include="Content\touchpoint\css\error.css" />
+    <Content Include="Content\touchpoint\css\gateway.css" />
     <Content Include="Content\touchpoint\css\print.css" />
     <Content Include="Content\touchpoint\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Content\touchpoint\img\female.png" />
@@ -1237,6 +1242,7 @@
     <Content Include="Content\touchpoint\js\finance\totals-by-fund.js" />
     <Content Include="Content\touchpoint\js\finance\transactions.js" />
     <Content Include="Content\touchpoint\js\form-ajax.js" />
+    <Content Include="Content\touchpoint\js\gateway.js" />
     <Content Include="Content\touchpoint\js\main.js" />
     <Content Include="Content\touchpoint\js\metrozip\metro-zip.js" />
     <Content Include="Content\touchpoint\js\onlineregister.min.js" />
@@ -1810,8 +1816,12 @@
       <Link>bin\CmsTwilio.exe.config</Link>
     </Content>
     <Content Include="Areas\People\Views\Person\Giving\Statements.cshtml" />
+    <Content Include="Areas\Setup\Views\Pushpay\CompletePayment.cshtml" />
+    <Content Include="Areas\Setup\Views\Pushpay\RecurringManagment.cshtml" />
+    <Content Include="Areas\Setup\Views\Gateway\Index.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageGiving\_ManagedGivingFunds.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageGiving\_ManagedGivingFundsNew.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\OnePageGiving\NotConfigured.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\MeetingAttendance.cshtml" />
     <Content Include="Areas\Setup\Views\Roles\Manage.cshtml" />
     <None Include="packages.config">
@@ -3318,6 +3328,10 @@
     <ProjectReference Include="..\ImageData\ImageData.csproj">
       <Project>{512DA381-E81B-4121-B978-FC850EC88353}</Project>
       <Name>ImageData</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TransactionGateway\TransactionGateway.csproj">
+      <Project>{bc0c6e33-dfef-4c4e-9e96-997af3d78bcf}</Project>
+      <Name>TransactionGateway</Name>
     </ProjectReference>
     <ProjectReference Include="..\UtilityExtensions\UtilityExtensions.csproj">
       <Project>{C504E3D2-5498-451B-BF82-309623706F11}</Project>

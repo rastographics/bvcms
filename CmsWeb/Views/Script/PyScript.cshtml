@@ -1,6 +1,6 @@
 ﻿@model PythonModel
 @{
-  ViewBag.Title = "Test Script";
+  ViewBag.Title = Model.Title ?? Model.Header ?? "Test Script";
   ViewBag.PageHeader = Model.Header;
   Layout = ViewExtensions2.TouchPointLayout();
 }

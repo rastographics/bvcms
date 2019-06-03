@@ -33,10 +33,22 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpPost]
         public ActionResult JustAddedNotMember(int id)
         {
-            var p = CurrentDatabase.LoadPersonById(id);
-            p.MemberStatusId = MemberStatusCode.NotMember;
-            CurrentDatabase.SubmitChanges();
             var m = new MemberInfo(id);
+            var newMemeberStatus = new Code.CodeInfo();
+            newMemeberStatus.Value = MemberStatusCode.NotMember.ToString();
+
+            m.MemberStatus = newMemeberStatus;
+            var ret = m.UpdateMember();
+
+            if (ret != "ok")
+            {
+                m.AutomationError = ret;
+            }
+
+            if (!ModelState.IsValid || ret != "ok")
+            {
+                return View("Profile/Membership/Edit", m);
+            }
             return View("Profile/Membership/Display", m);
         }
 
