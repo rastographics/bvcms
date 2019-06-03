@@ -9,7 +9,7 @@
     @if (showAdvanced)
     {
         <li class="dropdown-header">Tags</li>
-        <li><a href='@ViewBag.TagAction' class="dialog-options qid" data-target="/Dialog/TagAll" data-callback="TagAllCallBack">Add All</a></li>
+        <li><a href='@ViewBag.TagAction' class="dialog-options qid" data-target='@ViewBag.DialogAction'  data-callback="TagAllCallBack">Add All</a></li>
         <li><a id="UnTagAll" href='@ViewBag.UnTagAction' class="qid">Remove All</a></li>
         <li class="divider"></li>
         <li class="dropdown-header">Contacts / Tasks</li>
