@@ -1243,6 +1243,7 @@
     <Content Include="Content\touchpoint\js\finance\transactions.js" />
     <Content Include="Content\touchpoint\js\form-ajax.js" />
     <Content Include="Content\touchpoint\js\gateway.js" />
+    <Content Include="Content\touchpoint\js\snackbar.js" />
     <Content Include="Content\touchpoint\js\main.js" />
     <Content Include="Content\touchpoint\js\metrozip\metro-zip.js" />
     <Content Include="Content\touchpoint\js\onlineregister.min.js" />
@@ -1824,6 +1825,8 @@
     <Content Include="Areas\OnlineReg\Views\OnlineReg\OnePageGiving\NotConfigured.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\MeetingAttendance.cshtml" />
     <Content Include="Areas\Setup\Views\Roles\Manage.cshtml" />
+    <Content Include="Areas\Setup\Views\Roles\Priorities.cshtml" />
+    <Content Include="Content\touchpoint\src\less\snackbar.less" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

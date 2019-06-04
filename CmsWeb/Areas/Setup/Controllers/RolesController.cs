@@ -20,6 +20,12 @@ namespace CmsWeb.Areas.Setup.Controllers
             return View(r);
         }
 
+        public ActionResult Priorities()
+        {
+            var r = CmsData.User.AllRoles(CurrentDatabase);
+            return View(r);
+        }
+
         [Route("~/Roles/{id}")]
         public ActionResult Manage(string id)
         {

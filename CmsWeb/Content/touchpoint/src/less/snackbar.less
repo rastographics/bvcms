@@ -1,0 +1,82 @@
+﻿.snackbar {
+    visibility: hidden;
+    width: 100%;
+    background-color: @gray;
+    color: #fff;
+    text-align: center;
+    padding: 16px;
+    position: fixed;
+    z-index: 999;
+    bottom: 30px;
+}
+
+.snackbar.warning {
+    background-color: @global-brand-warning
+}
+
+.snackbar.error,
+.snackbar.danger {
+    background-color: @global-brand-danger
+}
+
+.snackbar.success {
+    background-color: @global-brand-success
+}
+
+.snackbar.info {
+    background-color: @global-brand-info;
+}
+
+.snackbar.visible {
+    visibility: visible;
+    -webkit-animation: sbfadein 0.5s, sbfadeout 0.5s 2.5s;
+    animation: sbfadein 0.5s, sbfadeout 0.5s 2.5s;
+}
+
+@-webkit-keyframes sbfadein {
+    from {
+        bottom: 0;
+        opacity: 0;
+    }
+
+    to {
+        bottom: 30px;
+        opacity: 1;
+    }
+}
+
+@keyframes sbfadein {
+    from {
+        bottom: 0;
+        opacity: 0;
+    }
+
+    to {
+        bottom: 30px;
+        opacity: 1;
+    }
+}
+
+@-webkit-keyframes sbfadeout {
+    from {
+        bottom: 30px;
+        opacity: 1;
+    }
+
+    to {
+        bottom: 0;
+        opacity: 0;
+    }
+}
+
+@keyframes sbfadeout {
+    from {
+        bottom: 30px;
+        opacity: 1;
+    }
+
+    to {
+        bottom: 0;
+        opacity: 0;
+    }
+}
