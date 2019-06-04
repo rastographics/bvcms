@@ -1,5 +1,6 @@
 ﻿using System;
 using CmsData;
+using CmsData.Codes;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -14,12 +15,14 @@ namespace CmsWeb.Areas.Setup.Models
     {
         private CMSDataContext CurrentDatabase;
 
+        const string CustomAccessRolesKey = "CustomAccessRoles.xml";
+
         public RoleModel(CMSDataContext db)
         {
             CurrentDatabase = db;
         }
 
-        private static XDocument RoleSettingDefaults
+        private XDocument RoleSettingDefaults
         {
             get { return XDocument.Parse(Resource1.RoleSettingDefaults); }
         }
@@ -28,7 +31,7 @@ namespace CmsWeb.Areas.Setup.Models
         {
             get
             {
-                var content = DbUtil.Content(CurrentDatabase, "CustomAccessRoles.xml", "<?xml version='1.0' encoding='utf - 8'?><roles></roles>");
+                var content = DbUtil.Content(CurrentDatabase, CustomAccessRolesKey, "<?xml version='1.0' encoding='utf-8'?><roles></roles>");
                 return XDocument.Load(new StringReader(content));
             }
         }
@@ -68,64 +71,74 @@ namespace CmsWeb.Areas.Setup.Models
             return locations;
         }
 
-        public void SaveSettingsForRole(string roleName, List<Setting> settings)
+        public bool SaveSettingsForRole(string roleName, List<Setting> settings)
         {
             var xdoc = DBRoleSettings;
 
-            // find existing role element(s) and remove
-            var existing = xdoc.Descendants("role").SingleOrDefault(r => r.Attribute("name").Value == roleName);
-            existing.Remove();
+            // find existing role element
+            var existing = xdoc.Descendants("role")?.Where(r => r.Attribute("name").Value == roleName)?.FirstOrDefault();
 
-            // create new role element
+            // create new settings element
             var elSettings = new XElement("settings");
             foreach(Setting setting in settings)
             {
                 var elSetting = new XElement("setting", new XAttribute("name", setting.XMLName), new XAttribute("value", setting.Active.ToString()));
                 elSettings.Add(elSetting);
             }
-            var element = new XElement("role", new XAttribute("name", roleName), elSettings);
-            xdoc.Descendants("roles").First().Add(element);
-            UpdateDBRoleSettings(xdoc.ToString());
+
+            // edit in place or create a new node
+            if (existing != null)
+            {
+                existing.Descendants("settings").Remove();
+                existing.Add(elSettings);
+                SaveDBRoleSettings(xdoc.ToString());
+            } else
+            {
+                var element = new XElement("role", new XAttribute("name", roleName), elSettings);
+                xdoc.Descendants("roles").First().Add(element);
+                SaveDBRoleSettings(xdoc.ToString());
+                ReOrderRoleSettings();
+            }
+            return true;
         }
 
-        public Setting Default(string name)
+        private void ReOrderRoleSettings()
         {
-            var xdoc = RoleSettingDefaults;
-            foreach(var e in xdoc.XPathSelectElements("/DefaultSettings").Elements())
+            var xdoc = DBRoleSettings;
+            var roles = CurrentDatabase.Roles.OrderBy(r => r.Priority);
+            var result = new XElement("roles");
+            
+            foreach (var role in roles)
             {
-                var location = e.Attribute("name")?.Value;
-                foreach(var s in e.Elements())
+                // find settings for existing
+                var existing = xdoc.Descendants("role").FirstOrDefault(r => r.Attribute("name").Value == role.RoleName);
+                if (existing != null)
                 {
-                    var setting = s.Attribute("name");
-                    if (setting?.Value == name)
-                    {
-                        return new Setting()
-                        {
-                            Name = s.Attribute("friendly")?.Value,
-                            XMLName = s.Attribute("name")?.Value,
-                            Location = location,
-                            FalseLabel = s.Attribute("false")?.Value,
-                            TrueLabel = s.Attribute("true")?.Value,
-                            Default = s.Attribute("value")?.Value == "true",
-                            Active = s.Attribute("value")?.Value == "true",
-                            ToolTip = s.Attribute("tooltip")?.Value
-                        };
-                    }
+                    result.Add(existing);
                 }
             }
-            return null;
+            xdoc.Descendants("roles").Remove();
+            xdoc.Add(result);
+            SaveDBRoleSettings(xdoc.ToString());
         }
 
-        private void UpdateDBRoleSettings(string settingsXML)
+        private void SaveDBRoleSettings(string settingsXML)
         {
-            var content = CurrentDatabase.Content("CustomAccessRoles.xml");
+            var content = CurrentDatabase.Content(CustomAccessRolesKey);
             if (content == null)
             {
-                // todo: create db content
-                return;
+                content = new Content()
+                {
+                    Name = CustomAccessRolesKey,
+                    Title = CustomAccessRolesKey,
+                    Body = settingsXML,
+                    TypeID = ContentTypeCode.TypeText
+                };
+                CurrentDatabase.Contents.InsertOnSubmit(content);
+            } else
+            {
+                content.Body = settingsXML;
             }
-
-            content.Body = settingsXML;
             CurrentDatabase.SubmitChanges();
         }
 

@@ -105,9 +105,9 @@ namespace CmsWeb.Areas.Setup.Controllers
         public ActionResult SaveSettings(string name, List<RoleModel.Setting> settings)
         {
             var model = new RoleModel(CurrentDatabase);
-            model.SaveSettingsForRole(name, settings);
+            var result = model.SaveSettingsForRole(name, settings);
             // todo: return success/ fail
-            return Content("test");
+            return Content(result.ToString());
         }
     }
 }
