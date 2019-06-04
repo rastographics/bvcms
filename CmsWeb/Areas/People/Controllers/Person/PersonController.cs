@@ -128,6 +128,7 @@ namespace CmsWeb.Areas.People.Controllers
             ViewBag.queryid = qb.QueryId;
             ViewBag.PeopleId = Util2.CurrentPeopleId;
             ViewBag.TagAction = "/Person2/Tag/" + id;
+            ViewBag.DialogAction = $"/Dialog/TagAll/{qb.QueryId}";
             ViewBag.UnTagAction = "/Person2/UnTag/" + id;
             ViewBag.AddContact = "/Person2/AddContactReceived/" + id;
             ViewBag.AddTasks = "/Person2/AddTaskAbout/" + id;

@@ -85,10 +85,11 @@ namespace CmsWeb.Areas.Main.Controllers
         }
 
         private void InitExportToolbar()
-        {
-            var qid = CurrentDatabase.QueryHasCurrentTag().QueryId;
+        {            
+            var qid = CurrentDatabase.QueryHasCurrentTag().QueryId;            
             ViewBag.queryid = qid;
             ViewBag.TagAction = $"/Tags/TagAll/{qid}";
+            ViewBag.DialogAction = $"/Dialog/TagAll/{qid}";
             ViewBag.UnTagAction = $"/Tags/UnTagAll/{qid}";
             ViewBag.AddContact = "/Tags/AddContact/" + qid;
             ViewBag.AddTasks = "/Tags/AddTasks/" + qid;
