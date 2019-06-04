@@ -110,7 +110,7 @@
                                     <label>{{input.GatewayDetailName}}</label>
                                 </div>
                                 <div class="col-md-6">
-                                    <input v-if="input.IsBoolean" type="checkbox" v-model="DetailValue[index]" true-value="'true'" false-value="'false'" />
+                                    <input v-if="input.IsBoolean" type="checkbox" v-model="DetailValue[index]" true-value="true" false-value="false" />
                                     <input required v-else class="form-control" v-model="DetailValue[index]" />
                                 </div>
                             </div>

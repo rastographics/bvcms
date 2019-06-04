@@ -2,6 +2,7 @@
 using System.Web.Mvc;
 using CmsWeb.Areas.Search.Models;
 using System;
+using System.Linq;
 
 namespace CmsWeb.Areas.Dialog.Controllers
 {
@@ -22,7 +23,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
         {           
             ViewBag.Title = "QueryBuilder";
             ViewBag.OrigQueryId = id;
-            var m = new QueryModel(id, CurrentDatabase);
+            var m = CurrentDatabase.PeopleQuery(id.Value);            
             ViewBag.ForceAutoRun = TempData["autorun"];
             return View(m);
         }
