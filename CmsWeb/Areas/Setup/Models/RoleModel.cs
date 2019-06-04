@@ -73,23 +73,32 @@ namespace CmsWeb.Areas.Setup.Models
 
         public bool SaveSettingsForRole(string roleName, List<Setting> settings)
         {
-            // to do: edit in place, so we don't require a reorder
             var xdoc = DBRoleSettings;
 
-            // find existing role element(s) and remove
-            var existing = xdoc.Descendants("role").Where(r => r.Attribute("name").Value == roleName);
-            existing?.Remove();
+            // find existing role element
+            var existing = xdoc.Descendants("role")?.Where(r => r.Attribute("name").Value == roleName)?.FirstOrDefault();
 
-            // create new role element
+            // create new settings element
             var elSettings = new XElement("settings");
             foreach(Setting setting in settings)
             {
                 var elSetting = new XElement("setting", new XAttribute("name", setting.XMLName), new XAttribute("value", setting.Active.ToString()));
                 elSettings.Add(elSetting);
             }
-            var element = new XElement("role", new XAttribute("name", roleName), elSettings);
-            xdoc.Descendants("roles").First().Add(element);
-            SaveDBRoleSettings(xdoc.ToString());
+
+            // edit in place or create a new node
+            if (existing != null)
+            {
+                existing.Descendants("settings").Remove();
+                existing.Add(elSettings);
+                SaveDBRoleSettings(xdoc.ToString());
+            } else
+            {
+                var element = new XElement("role", new XAttribute("name", roleName), elSettings);
+                xdoc.Descendants("roles").First().Add(element);
+                SaveDBRoleSettings(xdoc.ToString());
+                ReOrderRoleSettings();
+            }
             return true;
         }
 
@@ -103,10 +112,13 @@ namespace CmsWeb.Areas.Setup.Models
             {
                 // find settings for existing
                 var existing = xdoc.Descendants("role").FirstOrDefault(r => r.Attribute("name").Value == role.RoleName);
-                result.Add(existing);
+                if (existing != null)
+                {
+                    result.Add(existing);
+                }
             }
             xdoc.Descendants("roles").Remove();
-            xdoc.Root?.Add(result);
+            xdoc.Add(result);
             SaveDBRoleSettings(xdoc.ToString());
         }
 
