@@ -90,10 +90,10 @@ namespace CmsWeb.Areas.Manage.Controllers
                         if (pid.PeopleId != null)
                         {
                             var dupe = pid.PeopleId.Value;
-                            db.InsertDuplicate(p, dupe);
                             var key = $"{Math.Min(p, dupe)},{Math.Max(p, dupe)}";
                             if (!list.Contains(key))
                             {
+                                db.InsertDuplicate(p, dupe);
                                 list.Add(key);
                             }
                             rt.Found = list.Count;
