@@ -1814,6 +1814,12 @@
     <Content Include="..\CmsTwilio\bin\$(Configuration)\CmsTwilio.exe.config">
       <Link>bin\CmsTwilio.exe.config</Link>
     </Content>
+    <Content Include="..\RepairOrg\bin\$(Configuration)\RepairOrg.exe">
+      <Link>bin\RepairOrg.exe</Link>
+    </Content>
+    <Content Include="..\RepairOrg\bin\$(Configuration)\RepairOrg.exe.config">
+      <Link>bin\RepairOrg.exe.config</Link>
+    </Content>
     <Content Include="Areas\People\Views\Person\Giving\Statements.cshtml" />
     <Content Include="Areas\Setup\Views\Pushpay\CompletePayment.cshtml" />
     <Content Include="Areas\Setup\Views\Pushpay\RecurringManagment.cshtml" />

@@ -14,6 +14,7 @@ namespace CmsWeb.Areas.Dialog.Models
     public class MoveOrgMembersModel : LongRunningOperation
     {
         private IList<string> list = new List<string>();
+        private string repairExe;
         public const string Op = "Move Members To Org";
 
         public MoveOrgMembersModel()
@@ -55,6 +56,8 @@ namespace CmsWeb.Areas.Dialog.Models
             };
             db.LongRunningOperations.InsertOnSubmit(lop);
             db.SubmitChanges();
+
+            repairExe = HttpContextFactory.Current.Server.MapPath("~/bin/RepairOrg.exe");
             HostingEnvironment.QueueBackgroundWorkItem(ct => DoMoveWork(this));
         }
 
@@ -103,9 +106,9 @@ namespace CmsWeb.Areas.Dialog.Models
                         statusContext.SubmitChanges();
                     }
                 }
-                BackgroundRepairTransactions(oid, workerContext);
+                model.BackgroundRepairTransactions(oid, workerContext);
             }
-            BackgroundRepairTransactions(model.TargetId, workerContext);
+            model.BackgroundRepairTransactions(model.TargetId, workerContext);
             // finished
             if (lop != null)
             {
@@ -115,18 +118,17 @@ namespace CmsWeb.Areas.Dialog.Models
             workerContext.UpdateMainFellowship(model.TargetId);
         }
 
-        private static void BackgroundRepairTransactions(int orgId, CMSDataContext context)
+        private void BackgroundRepairTransactions(int orgId, CMSDataContext context)
         {
-            var repair = HttpContextFactory.Current.Server.MapPath("~/bin/repair.exe");
             var connectionString = context.Connection.ConnectionString;
             var host = context.Host;
             Process.Start(new ProcessStartInfo
             {
-                FileName = repair,
+                FileName = repairExe,
                 Arguments = $"{orgId} --connection {connectionString} --host {host}",
                 CreateNoWindow = true,
                 UseShellExecute = false,
-                WorkingDirectory = Path.GetDirectoryName(repair)
+                WorkingDirectory = Path.GetDirectoryName(repairExe)
             });
         }
     }
