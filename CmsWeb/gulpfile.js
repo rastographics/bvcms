@@ -41,7 +41,8 @@ var jsFiles = [
             'Content/touchpoint/js/export-toolbar.js',
             'Content/touchpoint/js/extra-value.js',
             'Content/touchpoint/js/form-ajax.js',
-            'Content/touchpoint/js/search/search-add.js'
+            'Content/touchpoint/js/search/search-add.js',
+            'Content/touchpoint/js/snackbar.js'
             //DebugFilesEnd
         ],
         outputName: 'app.min.js',

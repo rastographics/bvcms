@@ -56,16 +56,17 @@
                 });
 
                 $.post("/Roles/SaveSettings/", {
-                        name: '@Model.RoleName',
-                        settings: data
-                    }, function (ret) {
-                        if (ret)
-                            swal("Success!", ret, "success");
-                        else {
-                            swal("Error!", ret, "error");
-                        }
+                    name: '@Model.RoleName',
+                    settings: data
+                }, function (ret) {
+                    if (ret && ret == 'success') {
+                        snackbar('Settings saved', 'success');
+                    } else {
+                        snackbar('Error saving settings', 'error');
+                    }
+                }).fail(function () {
+                    snackbar('Error saving settings', 'error');
                 });
-                
             });
         });
     </script>
@@ -125,4 +126,7 @@
             </div>
         </div>
     </div>
+</div>
+<div id="feedbackMsg" class="snackbar">
+
 </div>

@@ -14,7 +14,7 @@
                 <div class="box-tools">
                     @using (Html.BeginForm("Create", "Roles"))
                     {
-                        <a href="/Lookups" class="btn btn-default"><i class="fa fa-arrow-circle-left"></i> Back to List</a> <button type="submit" class="btn btn-success"><i class="fa fa-plus-circle"></i> Add Role</button>
+                        <a href="/Lookups" class="btn btn-default"><i class="fa fa-arrow-circle-left"></i> Back to List</a> <a href="/Roles/Priorities" class="btn btn-default">Change Priorities</a> <button type="submit" class="btn btn-success"><i class="fa fa-plus-circle"></i> Add Role</button>
                     }
                 </div>
             </div>
@@ -25,7 +25,7 @@
                             <tr>
                                 <th style="width: 100px;">Role Id</th>
                                 <th style="width: 500px;">Role Name</th>
-                                <th style="width: 50px;text-align:center;">Action</th>
+                                <th style="width: 50px;">Action</th>
                             </tr>
                         </thead>
                         <tbody>
