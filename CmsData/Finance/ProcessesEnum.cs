@@ -11,6 +11,7 @@ namespace CmsData
         EmpytProcess = 0,
         OneTimeGiving = 1,
         RecurringGiving = 2,
-        OnlineRegistration = 3
+        OnlineRegistration = 3,
+        TemporaryRecurringGiving = 4
     }
 }

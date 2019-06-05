@@ -28,11 +28,16 @@ namespace CmsWeb.Areas.OnlineReg.Models
         private TransactionInfo InitializeTransactionInfo()
         {
             var r = new TransactionInfo();
+            var accountId = MultipleGatewayUtils.GetAccount(CurrentDatabase, ProcessType)?.GatewayAccountId ?? 0;
 
-			if (user != null && FirstPerson != null)
-				r.payinfo = FirstPerson.PaymentInfos.FirstOrDefault();
-			if (r.payinfo == null)
-				r.payinfo = new PaymentInfo { MaskedAccount = "", MaskedCard = "" };
+            if (user != null && FirstPerson != null)
+            {
+                r.payinfo = FirstPerson.PaymentInfo(accountId);
+            }
+            if (r.payinfo == null)
+            {
+                r.payinfo = new PaymentInfo { MaskedAccount = "", MaskedCard = "", GatewayAccountId = accountId };
+            }
             return r;
         }
         public TransactionInfo GetTransactionInfo()
