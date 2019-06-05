@@ -6,7 +6,7 @@
         Sage = 2,
         Transnational = 3,
         AuthorizeNet = 4,
-        BluePay = 5,
-        Acceptiva = 6,
+        Acceptiva = 5,
+        BluePay = 6,
     }
 }
