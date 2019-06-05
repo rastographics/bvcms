@@ -1,6 +1,7 @@
 using CmsData;
 using CmsWeb.Lifecycle;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Web.Hosting;
@@ -66,6 +67,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             {
                 var db = CMSDataContext.Create(host);
                 var rt = db.DuplicatesRuns.OrderByDescending(mm => mm.Id).First();
+                var list = new List<string>();
                 db.ExecuteCommand("delete duplicate");
                 var q = from p in db.People
                         where p.CreatedDate > fdt
@@ -87,11 +89,16 @@ namespace CmsWeb.Areas.Manage.Controllers
                     {
                         if (pid.PeopleId != null)
                         {
-                            db.InsertDuplicate(p, pid.PeopleId.Value);
+                            var dupe = pid.PeopleId.Value;
+                            db.InsertDuplicate(p, dupe);
+                            var key = $"{Math.Min(p, dupe)},{Math.Max(p, dupe)}";
+                            if (!list.Contains(key))
+                            {
+                                list.Add(key);
+                            }
+                            rt.Found = list.Count;
                         }
                     }
-
-                    rt.Found++;
                 }
                 rt.Completed = DateTime.Now;
                 db.SubmitChanges();
