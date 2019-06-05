@@ -71,7 +71,23 @@ namespace CmsWeb.Areas.Setup.Models
             return locations;
         }
 
-        public bool SaveSettingsForRole(string roleName, List<Setting> settings)
+        public void UpdatePriorities(List<int> roleIds)
+        {
+            int on = 1;
+            foreach (int roleId in roleIds)
+            {
+                var role = CurrentDatabase.Roles.SingleOrDefault(m => m.RoleId == roleId);
+                if (role != null)
+                {
+                    role.Priority = on;
+                }
+                on++;
+            }
+            CurrentDatabase.SubmitChanges();
+            ReOrderRoleSettings();
+        }
+
+        public void SaveSettingsForRole(string roleName, List<Setting> settings)
         {
             var xdoc = DBRoleSettings;
 
@@ -99,7 +115,6 @@ namespace CmsWeb.Areas.Setup.Models
                 SaveDBRoleSettings(xdoc.ToString());
                 ReOrderRoleSettings();
             }
-            return true;
         }
 
         private void ReOrderRoleSettings()

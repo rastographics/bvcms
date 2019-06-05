@@ -5,6 +5,7 @@ using System.Web.Mvc;
 using UtilityExtensions;
 using CmsWeb.Areas.Setup.Models;
 using System.Collections.Generic;
+using System;
 
 namespace CmsWeb.Areas.Setup.Controllers
 {
@@ -20,6 +21,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             return View(r);
         }
 
+        [Route("~/Roles/Priorities")]
         public ActionResult Priorities()
         {
             var r = CmsData.User.AllRoles(CurrentDatabase);
@@ -111,9 +113,31 @@ namespace CmsWeb.Areas.Setup.Controllers
         public ActionResult SaveSettings(string name, List<RoleModel.Setting> settings)
         {
             var model = new RoleModel(CurrentDatabase);
-            var result = model.SaveSettingsForRole(name, settings);
-            // todo: return success/ fail
-            return Content(result.ToString());
+            try
+            {
+                model.SaveSettingsForRole(name, settings);
+                return Content("success");
+            }
+            catch (Exception ex)
+            {
+                return Content("error: " + ex.ToString());
+            }
+        }
+
+        [Route("~/Roles/SavePriorities")]
+        [HttpPost]
+        public ActionResult SavePriorities(List<int> roles)
+        {
+            var model = new RoleModel(CurrentDatabase);
+            try
+            {
+                model.UpdatePriorities(roles);
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                return Content("error: " + ex.ToString());
+            }
         }
     }
 }
