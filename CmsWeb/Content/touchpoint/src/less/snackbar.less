@@ -1,13 +1,14 @@
 ﻿.snackbar {
     visibility: hidden;
-    width: 100%;
+    width: 100vw;
     background-color: @gray;
     color: #fff;
     text-align: center;
     padding: 16px;
     position: fixed;
     z-index: 999;
-    bottom: 30px;
+    left: 0;
+    bottom: 0;
 }
 
 .snackbar.warning {
@@ -29,54 +30,54 @@
 
 .snackbar.visible {
     visibility: visible;
-    -webkit-animation: sbfadein 0.5s, sbfadeout 0.5s 2.5s;
-    animation: sbfadein 0.5s, sbfadeout 0.5s 2.5s;
+    -webkit-animation: sbfadein 0.5s, sbfadeout 0.5s 1.5s;
+    animation: sbfadein 0.5s, sbfadeout 0.5s 1.5s;
 }
 
 @-webkit-keyframes sbfadein {
     from {
-        bottom: 0;
+        bottom: -30px;
         opacity: 0;
     }
 
     to {
-        bottom: 30px;
+        bottom: 0px;
         opacity: 1;
     }
 }
 
 @keyframes sbfadein {
     from {
-        bottom: 0;
+        bottom: -30px;
         opacity: 0;
     }
 
     to {
-        bottom: 30px;
+        bottom: 0px;
         opacity: 1;
     }
 }
 
 @-webkit-keyframes sbfadeout {
     from {
-        bottom: 30px;
+        bottom: 0px;
         opacity: 1;
     }
 
     to {
-        bottom: 0;
+        bottom: -30px;
         opacity: 0;
     }
 }
 
 @keyframes sbfadeout {
     from {
-        bottom: 30px;
+        bottom: 0px;
         opacity: 1;
     }
 
     to {
-        bottom: 0;
+        bottom: -30px;
         opacity: 0;
     }
 }
