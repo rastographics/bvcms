@@ -98,8 +98,12 @@ namespace CmsCheckin
 		}
 		private PleaseWait PleaseWaitForm;
 		private void Go()
-		{
-			if (textBox1.Text == "010") {
+        {
+            if (!textBox1.Text.HasValue())
+            {
+                return;
+            }
+            if (textBox1.Text == "010") {
 				Application.Exit();
 				return;
 			}
@@ -138,7 +142,7 @@ namespace CmsCheckin
 			} else {
 				var locked = bool.Parse(x.Document.Root.Attribute("waslocked").Value);
 				if (locked)
-					MessageBox.Show("Family is already being viewed");
+					MessageBox.Show("Family is already being viewed", "Try again", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 				else {
 					this.Swap(family);
 					family.ShowFamily(x);

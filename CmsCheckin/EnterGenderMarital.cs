@@ -206,7 +206,7 @@ namespace CmsCheckin
 				sb.AppendLine("Active Other Church needed");
 			if (sb.Length > 0)
 			{
-				MessageBox.Show(sb.ToString());
+				MessageBox.Show(sb.ToString(), "Try again", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 				return false;
 			}
 			return true;
