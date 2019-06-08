@@ -70,7 +70,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 }
             }
             decimal? orgfee = null;
-            if (setting.OrgFees != null)
+            if (setting.OrgFees != null && !isMissionTripSupporter)
             // fee based on being in an organization
             {
                 var q = (from o in setting.OrgFees
