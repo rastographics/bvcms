@@ -380,7 +380,6 @@ AND a.PeopleId = {2}
         }
         public static bool MemberExists(CMSDataContext db, int organizationId, int peopleId)
         {
-            var org = db.LoadOrganizationById(organizationId);
             return db.OrganizationMembers.Any(m2 => m2.PeopleId == peopleId && m2.OrganizationId == organizationId);
         }
         public static OrganizationMember AddOrgMember(CMSDataContext db, int organizationId, int peopleId, int memberTypeId, DateTime enrollmentDate, string name)

@@ -483,10 +483,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
         private OrganizationMember GetOrganizationMember(Transaction transaction)
         {
             var membertype = setting.AddAsProspect ? MemberTypeCode.Prospect : MemberTypeCode.Member;
-            if (!OrganizationMember.MemberExists(db, org.OrganizationId, person.PeopleId))
-            {
-                isNewMember = true;
-            }
+
+            isNewMember = !OrganizationMember.MemberExists(db, org.OrganizationId, person.PeopleId);
+
             var om = OrganizationMember.InsertOrgMembers(db, org.OrganizationId, person.PeopleId,
                 membertype, Util.Now, null, false);
             if (om.TranId == null)
