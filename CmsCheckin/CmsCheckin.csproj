@@ -42,7 +42,7 @@
     <TargetCulture>en</TargetCulture>
     <ProductName>TouchPoint Check-In</ProductName>
     <PublisherName>TouchPoint Software</PublisherName>
-    <MinimumRequiredVersion>1.1.0.43</MinimumRequiredVersion>
+    <MinimumRequiredVersion>1.1.0.45</MinimumRequiredVersion>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>index.html</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
