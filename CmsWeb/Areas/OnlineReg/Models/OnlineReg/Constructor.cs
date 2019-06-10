@@ -65,12 +65,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
             this.testing = testing == true || DbUtil.Db.Setting("OnlineRegTesting", Util.IsDebug() ? "true" : "false").ToBool();
 
-            // if logged in, use email for logged in user
-            if (AllowAnonymous && !email.HasValue() && Util.UserEmail.HasValue())
-            {
-                email = Util.UserEmail;
-            }
-
             // the email passed in is valid or they did not specify login
             if (AllowAnonymous && (Util.ValidEmail(email) || login != true))
             {
@@ -84,6 +78,13 @@ namespace CmsWeb.Areas.OnlineReg.Models
             else
             {
                 List = new List<OnlineRegPersonModel>();
+            }
+
+            // if logged in and trying a non anonymous online reg, use email for logged in user
+            if (!AllowAnonymous && !email.HasValue() && Util.UserEmail.HasValue())
+            {
+                email = Util.UserEmail;
+                ProcessType = PaymentProcessTypes.OnlineRegistration;
             }
 
             // prepopulate their email address they passed in
