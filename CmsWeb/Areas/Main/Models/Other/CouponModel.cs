@@ -46,7 +46,7 @@ namespace CmsWeb.Models
                     where c.DivOrg == model.regidfilter || model.regidfilter == "0" || model.regidfilter == null
                     where c.UserId == model.useridfilter || model.useridfilter == 0
                     select c;
-            switch (usedfilter)
+            switch (model.usedfilter)
             {
                 case "Used":
                     q = q.Where(c => c.Used != null && c.Canceled == null);
@@ -80,9 +80,9 @@ namespace CmsWeb.Models
                          Amount = c.Amount,
                          Canceled = c.Canceled,
                          Code = c.Id,
-                         Created = c.Created,
+                         Created = c.Created.FormatDateTm(),
                          OrgDivName = c.OrgId != null ? c.Organization.OrganizationName : c.Division.Name,
-                         Used = c.Used,
+                         Used = c.Used.FormatDateTm(),
                          PeopleId = c.PeopleId,
                          Name = c.Name,
                          Person = c.Person.Name,
@@ -136,9 +136,9 @@ namespace CmsWeb.Models
                          Amount = c.Amount,
                          Canceled = c.Canceled,
                          Code = c.Id,
-                         Created = c.Created,
+                         Created = c.Created.FormatDateTm(),
                          OrgDivName = c.OrgId != null ? c.Organization.OrganizationName : c.Division.Name,
-                         Used = c.Used,
+                         Used = c.Used.FormatDateTm(),
                          PeopleId = c.PeopleId,
                          Name = c.Name,
                          Person = c.Person.Name,
@@ -192,9 +192,9 @@ namespace CmsWeb.Models
                          Amount = c.Amount ?? 0,
                          Canceled = c.Canceled ?? DateTime.Parse("1/1/80"),
                          Code = c.Id,
-                         Created = c.Created,
+                         Created = c.Created.ToString(),
                          OrgDivName = c.OrgId != null ? c.Organization.OrganizationName : c.Division.Name,
-                         Used = c.Used ?? DateTime.Parse("1/1/80"),
+                         Used = c.Used.ToString() ?? DateTime.Parse("1/1/80").ToString(),
                          PeopleId = c.PeopleId ?? 0,
                          Name = c.Name,
                          Person = c.Person.Name,
@@ -324,8 +324,8 @@ namespace CmsWeb.Models
             public string Code { get; set; }
             public string Coupon => Util.fmtcoupon(Code);
             public string OrgDivName { get; set; }
-            public DateTime Created { get; set; }
-            public DateTime? Used { get; set; }
+            public string Created { get; set; }
+            public string Used { get; set; }
             public DateTime? Canceled { get; set; }
             public decimal? Amount { get; set; }
             public decimal? RegAmt { get; set; }
