@@ -125,7 +125,7 @@ namespace CmsWeb.Areas.Dialog.Models
             Process.Start(new ProcessStartInfo
             {
                 FileName = repairExe,
-                Arguments = $"{orgId} --connection {connectionString} --host {host}",
+                Arguments = $"{orgId} --connection \"{connectionString}\" --host {host}",
                 CreateNoWindow = true,
                 UseShellExecute = false,
                 WorkingDirectory = Path.GetDirectoryName(repairExe)
