@@ -139,6 +139,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         }
 
         private string cachedPayLink;
+        private bool isNewMember = false;
 
         public string GetPayLink()
         {
@@ -482,6 +483,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
         private OrganizationMember GetOrganizationMember(Transaction transaction)
         {
             var membertype = setting.AddAsProspect ? MemberTypeCode.Prospect : MemberTypeCode.Member;
+            if (!OrganizationMember.MemberExists(db, org.OrganizationId, person.PeopleId))
+            {
+                isNewMember = true;
+            }
             var om = OrganizationMember.InsertOrgMembers(db, org.OrganizationId, person.PeopleId,
                 membertype, Util.Now, null, false);
             if (om.TranId == null)
@@ -497,7 +502,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private OrganizationMember AddSender(OrganizationMember om)
         {
-            if (!om.IsInGroup("Goer"))
+            if (!om.IsInGroup("Goer") && isNewMember)
             {
                 om.MemberTypeId = MemberTypeCode.InActive;
             }
