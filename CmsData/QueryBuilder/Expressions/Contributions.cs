@@ -921,6 +921,33 @@ namespace CmsData
             Expression expr = Expression.Invoke(pred, parm);
             return expr;
         }
+        public Expression IsFamilyGiverFunds()
+        {
+            var tf = CodeIds == "1";
+            var fundcsv = APIContributionSearchModel.GetCustomFundSetList(db, Quarters);
+            if (fundcsv == null)
+            {
+                return AlwaysFalse();
+            }
+            var fundlist = string.Join(",", fundcsv);
+
+            var td = Util.Now;
+            var fd = td.AddDays(Days == 0 ? -365 : -Days).Date;
+            Tag tag = null;
+            if (op == CompareType.Equal ^ tf)
+            {
+                var q = db.FamilyGiverFunds(fd, td, fundlist).Where(vv => vv.FamGive == false);
+                tag = db.PopulateTemporaryTag(q.Select(pp => pp.PeopleId));
+            }
+            else
+            {
+                var q = db.FamilyGiverFunds(fd, td, fundlist).Where(vv => vv.FamGive == true);
+                tag = db.PopulateTemporaryTag(q.Select(pp => pp.PeopleId));
+            }
+            Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
+            Expression expr = Expression.Invoke(pred, parm);
+            return expr;
+        }
         internal Expression IsFamilyPledger()
         {
             var tf = CodeIds == "1";
@@ -1053,7 +1080,8 @@ namespace CmsData
 
             var tf = CodeIds == "1";
             Expression<Func<Person, bool>> pred = p => (from e in p.RecurringAmounts
-                                                        let pi = p.PaymentInfos.SingleOrDefault()
+                                                        let pp = db.PaymentProcess.SingleOrDefault(a => a.ProcessId == (int)PaymentProcessTypes.RecurringGiving)
+                                                        let pi = p.PaymentInfos.SingleOrDefault(info => info.GatewayAccountId == pp.GatewayAccountId)
                                                         where e.Amt > 0
                                                         where pi.PreferredGivingType == "C"
                                                         select e).Any();

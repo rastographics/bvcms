@@ -15,7 +15,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
         [HttpPost, Route("~/RepairTransactions/{id:int}")]
         public ActionResult Index(int id)
         {
-            var model = new RepairTransactions(id);
+            var model = new RepairTransactions(id, CurrentDatabase);
             return View(model);
         }
 

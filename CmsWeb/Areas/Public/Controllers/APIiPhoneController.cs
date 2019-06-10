@@ -1,6 +1,7 @@
 using CmsData;
 using CmsData.Codes;
 using CmsWeb.Lifecycle;
+using CmsWeb.Membership;
 using CmsWeb.Models;
 using CmsWeb.Models.iPhone;
 using System;
@@ -167,7 +168,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             var position = CurrentDatabase.ComputePositionInFamily(m.dob.Age0(), m.marital == 20, f.FamilyId) ?? 10;
 
-            var p = Person.Add(f, position,
+            var p = Person.Add(CurrentDatabase, f, position,
                 null, Trim(m.first), Trim(m.goesby), Trim(m.last), m.dob, false, m.gender,
                 OriginCode.Visit, null);
 

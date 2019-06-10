@@ -24,6 +24,7 @@ using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 using CsQuery.ExtensionMethods.Internal;
+using System.Data.SqlTypes;
 
 namespace UtilityExtensions
 {
@@ -43,6 +44,43 @@ namespace UtilityExtensions
             return value == null
                 ? null
                 : Convert.ChangeType(value, type);
+        }
+        public static object ChangeTypeSql(this object value, Type type)
+        {
+            if (type == null)
+                throw new ArgumentNullException("type");
+            if (type.IsGenericType && type.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
+            {
+                if (value == null)
+                    return null;
+                var conv = new NullableConverter(type);
+                type = conv.UnderlyingType;
+            }
+            if (value.IsNull())
+            {
+                return DBNull.Value;                
+            }
+            if (value.ToString().IsNullOrEmpty())
+            {
+                return DBNull.Value;
+            }
+            else
+            {
+                if (type.FullName == "System.DateTime")
+                {
+                    return Convert.ChangeType(EnsureSQLSafe(value.ToDate()).Value, type);
+                }
+            }            
+            return value == null
+            ? null
+            : Convert.ChangeType(value, type);
+        }
+        private static DateTime? EnsureSQLSafe(this DateTime? datetime)
+        {
+            if (datetime.HasValue && (datetime.Value < (DateTime)SqlDateTime.MinValue || datetime.Value > (DateTime)SqlDateTime.MaxValue))
+                return null;
+
+            return datetime;
         }
         public static int ToInt(this string s)
         {

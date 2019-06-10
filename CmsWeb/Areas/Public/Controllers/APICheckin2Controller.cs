@@ -45,12 +45,12 @@ namespace CmsWeb.Areas.Public.Controllers
 
             if (!matches.Any())
             {
-                return new FamilyResult(0, campus, thisday, 0, false); // not found
+                return new FamilyResult(CurrentDatabase, 0, campus, thisday, 0, false); // not found
             }
 
             if (matches.Count() == 1)
             {
-                return new FamilyResult(matches.Single().Familyid.Value, campus, thisday, 0, matches[0].Locked ?? false);
+                return new FamilyResult(CurrentDatabase, matches.Single().Familyid.Value, campus, thisday, 0, matches[0].Locked ?? false);
             }
 
             return new MultipleResult(matches, page);
@@ -93,7 +93,7 @@ namespace CmsWeb.Areas.Public.Controllers
             Response.NoCache();
             CurrentDatabase.SetNoLock();
             DbUtil.LogActivity("checkin fam " + id);
-            return new FamilyResult(id, campus, thisday, 0, false);
+            return new FamilyResult(CurrentDatabase, id, campus, thisday, 0, false);
         }
 
         public ActionResult SingleFamily(int id, string building, string querybit)
@@ -163,7 +163,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 : new Family();
 
             var position = CurrentDatabase.ComputePositionInFamily(m.Birthdate.Age0(), m.marital == 20, id) ?? 10;
-            var p = Person.Add(f, position,
+            var p = Person.Add(CurrentDatabase, f, position,
                 null, m.first, m.goesby, m.last, m.Birthdate.ToString2("d"), false, m.gender,
                 OriginCode.Visit, null);
 
@@ -374,7 +374,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 if (np != null)
                 {
                     CurrentDatabase.EmailRedacted(p.FromEmail, np,
-                        "Basic Person Info Changed during checkin on " + Util.Host, $@"
+                        "Basic Person Info Changed during checkin on " + CurrentDatabase.Host, $@"
 <p><a href=""{CurrentDatabase.ServerLink("/Person2/" + p.PeopleId)}"">{Util.UserName} ({p.PeopleId})</a> changed the following information for {p.PreferredName} ({p.LastName}):</p>
 <table>{sb}</table>");
                 }

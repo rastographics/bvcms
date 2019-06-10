@@ -133,6 +133,44 @@ namespace CmsWeb.Code
             }.Union(q);
         }
 
+        public IEnumerable<CodeValueItem> MeetingCategories()
+        {
+            var q = from cat in Db.MeetingCategories
+                    orderby cat.Description
+                    select new CodeValueItem
+                    {
+                        Id = (int) cat.Id,
+                        Value = $"{cat.Description}"
+                    };
+            return new[]
+            {
+                new CodeValueItem
+                {
+                    Value = "(not specified)",
+                    Id = 0
+                }
+            }.Union(q);
+        }
+
+        public IEnumerable<CodeValueItem> Divisions()
+        {
+            var q = from div in Db.Divisions
+                    orderby div.Name
+                    select new CodeValueItem
+                    {
+                        Id = div.Id,
+                        Value = $"{div.Name}"
+                    };
+            return new[]
+            {
+                new CodeValueItem
+                {
+                    Value = "(not specified)",
+                    Id = 0
+                }
+            }.Union(q);
+        }
+
         public IEnumerable<CodeValueItem> AttendanceTypeCodes()
         {
             return from c in Db.AttendTypes
@@ -664,15 +702,23 @@ namespace CmsWeb.Code
             return OrganizationTypes().AddNotSpecified();
         }
 
-        public IEnumerable<CodeValueItem> OrgDivTags()
+        public IEnumerable<CodeValueItem> OrgDivTags(bool WithBlank = false)
         {
-            return from t in Db.Programs
+            var q = from t in Db.Programs
                    orderby t.Name
                    select new CodeValueItem
                    {
                        Id = t.Id,
                        Value = t.Name
                    };
+            if (WithBlank)
+            {
+                return top.Union(q);
+            }
+            else
+            {
+                return q;
+            }
         }
 
         public IEnumerable<CodeValueItem> OrgSubDivTags(int ProgId)

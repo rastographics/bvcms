@@ -87,7 +87,8 @@ namespace CmsWeb.Areas.Search.Controllers
         {
             m.Db = CurrentDatabase;
             ViewBag.OnQueryBuilder = "true";
-            ViewBag.TagAction = "/Query/TagAll/";
+            ViewBag.TagAction = $"/Query/TagAll/";
+            ViewBag.DialogAction = $"/Dialog/TagAll/{m.QueryId}";
             ViewBag.UnTagAction = "/Query/UnTagAll/";
             ViewBag.AddContact = "/Query/AddContact/";
             ViewBag.AddTasks = "/Query/AddTasks/";
@@ -348,7 +349,7 @@ namespace CmsWeb.Areas.Search.Controllers
         {
             try
             {
-                var r = Person.ToggleTag(id, Util2.CurrentTagName, Util2.CurrentTagOwnerId, DbUtil.TagTypeId_Personal);
+                var r = Person.ToggleTag(id, Util2.CurrentTagName, Util2.CurrentTagOwnerId, DbUtil.TagTypeId_Personal, CurrentDatabase);
                 CurrentDatabase.SubmitChanges();
                 return Json(new { HasTag = r });
             }

@@ -20,7 +20,7 @@ namespace CmsWeb.Areas.Finance.Controllers
         [Route("~/Bundle/{id:int}")]
         public ActionResult Index(int id, bool? create)
         {
-            var m = new BundleModel(id);
+            var m = new BundleModel(id, CurrentDatabase);
             if (User.IsInRole("FinanceDataEntry") && m.BundleStatusId != BundleStatusCode.OpenForDataEntry)
             {
                 return Redirect("/Bundles");
@@ -49,14 +49,14 @@ namespace CmsWeb.Areas.Finance.Controllers
         [HttpPost]
         public ActionResult Edit(int id, FormCollection formCollection)
         {
-            var m = new BundleModel(id);
+            var m = new BundleModel(id, CurrentDatabase);
             return View(m);
         }
 
         [HttpPost]
         public ActionResult Update(int id)
         {
-            var m = new BundleModel(id);
+            var m = new BundleModel(id, CurrentDatabase);
             UpdateModel<BundleModel>(m);
             UpdateModel<BundleHeader>(m.Bundle, "Bundle");
             var q = from d in CurrentDatabase.BundleDetails
@@ -99,14 +99,14 @@ namespace CmsWeb.Areas.Finance.Controllers
         [HttpPost]
         public ActionResult Cancel(int id)
         {
-            var m = new BundleModel(id);
+            var m = new BundleModel(id, CurrentDatabase);
             return View("Display", m);
         }
 
         [HttpPost]
         public ActionResult Delete(int id)
         {
-            var m = new BundleModel(id);
+            var m = new BundleModel(id, CurrentDatabase);
             var q = from d in m.Bundle.BundleDetails
                     select d.Contribution;
             CurrentDatabase.Contributions.DeleteAllOnSubmit(q);

@@ -54,22 +54,11 @@ namespace CmsData
                 InternalDb = value;
             }
         }
-        public static CMSDataContext DbReadOnly => CMSDataContext.Create(Util.ConnectionStringReadOnly, Util.Host);
-
-        public static CMSDataContext Create(string host)
-        {
-            return CMSDataContext.Create(Util.GetConnectionString(host), host);
-        }
-
-        public static CMSDataContext Create(string connstr, string host)
-        {
-            return CMSDataContext.Create(connstr, host);
-        }
 
         private static void _logActivity(string host, string activity, int? orgId, int? peopleId, int? datumId, int? userId, string pageUrl = null, string clientIp = null)
         {
             var ip = HttpContextFactory.Current?.Request.UserHostAddress;
-            using (var db = Create(host))
+            using (var db = CMSDataContext.Create(host))
             {
                 if (!userId.HasValue || userId == 0)
                 {
@@ -169,13 +158,13 @@ namespace CmsData
             InternalDb = null;
         }
 
-        public static string StandardExtraValues()
+        public static string StandardExtraValues(CMSDataContext context)
         {
-            var s = HttpRuntime.Cache[Db.Host + "StandardExtraValues"] as string;
+            var s = HttpRuntime.Cache[context.Host + "StandardExtraValues"] as string;
             if (s == null)
             {
-                s = Content("StandardExtraValues.xml", "<Fields />");
-                HttpRuntime.Cache.Insert(Db.Host + "StandardExtraValues", s, null,
+                s = Content(context, "StandardExtraValues.xml", "<Fields />");
+                HttpRuntime.Cache.Insert(context.Host + "StandardExtraValues", s, null,
                      DateTime.Now.AddMinutes(Util.IsDebug() ? 0 : 1), Cache.NoSlidingExpiration);
             }
             return s;
@@ -186,21 +175,21 @@ namespace CmsData
             return StandardExtraValues2(Db, forceread: forceread);
         }
 
-        public static string StandardExtraValues2(CMSDataContext db, bool forceread = false)
+        public static string StandardExtraValues2(CMSDataContext context, bool forceread = false)
         {
             if (forceread)
             {
-                return db.ContentText("StandardExtraValues2", "<Views />");
+                return context.ContentText("StandardExtraValues2", "<Views />");
             }
 
-            var s = HttpRuntime.Cache[db.Host + "StandardExtraValues2"] as string;
+            var s = HttpRuntime.Cache[context.Host + "StandardExtraValues2"] as string;
             if (s != null)
             {
                 return s;
             }
 
-            s = db.ContentText("StandardExtraValues2", "<Views />");
-            HttpRuntime.Cache.Insert(db.Host + "StandardExtraValues2", s, null,
+            s = context.ContentText("StandardExtraValues2", "<Views />");
+            HttpRuntime.Cache.Insert(context.Host + "StandardExtraValues2", s, null,
                 DateTime.Now.AddSeconds(Util.IsDebug() ? 0 : 10), Cache.NoSlidingExpiration);
             return s;
         }
@@ -210,21 +199,21 @@ namespace CmsData
             SetStandardExtraValues2(Db, xml);
         }
 
-        public static void SetStandardExtraValues2(CMSDataContext db, string xml)
+        public static void SetStandardExtraValues2(CMSDataContext context, string xml)
         {
-            var c = db.Content("StandardExtraValues2");
+            var c = context.Content("StandardExtraValues2");
             c.Body = xml;
-            HttpRuntime.Cache.Insert(db.Host + "StandardExtraValues2", xml, null,
+            HttpRuntime.Cache.Insert(context.Host + "StandardExtraValues2", xml, null,
                  DateTime.Now.AddSeconds(Util.IsDebug() ? 0 : 15), Cache.NoSlidingExpiration);
         }
 
-        public static string FamilyExtraValues()
+        public static string FamilyExtraValues(CMSDataContext context)
         {
-            var s = HttpRuntime.Cache[Db.Host + "FamilyExtraValues"] as string;
+            var s = HttpRuntime.Cache[context.Host + "FamilyExtraValues"] as string;
             if (s == null)
             {
-                s = Content("FamilyExtraValues.xml", "<Fields />");
-                HttpRuntime.Cache.Insert(Db.Host + "FamilyExtraValues", s, null,
+                s = Content(context, "FamilyExtraValues.xml", "<Fields />");
+                HttpRuntime.Cache.Insert(context.Host + "FamilyExtraValues", s, null,
                      DateTime.Now.AddSeconds(Util.IsDebug() ? 0 : 15), Cache.NoSlidingExpiration);
             }
             return s;
@@ -235,7 +224,7 @@ namespace CmsData
             var hc = HttpRuntime.Cache[Db.Host + "loginnotice"] as string;
             if (hc == null)
             {
-                var h = Content("LoginNotice");
+                var h = Content(Db, "LoginNotice");
                 if (h != null)
                 {
                     hc = h.Body;
@@ -280,7 +269,7 @@ namespace CmsData
             var hc = HttpRuntime.Cache[Db.Host + "headerimg"] as string;
             if (hc == null)
             {
-                var h = Content("HeaderImg");
+                var h = Content(Db, "HeaderImg");
                 if (h != null)
                 {
                     hc = h.Body;
@@ -301,7 +290,7 @@ namespace CmsData
             var hc = HttpRuntime.Cache[Db.Host + "header"] as string;
             if (hc == null)
             {
-                var h = Content("Header");
+                var h = Content(Db, "Header");
                 if (h != null)
                 {
                     hc = h.Body;
@@ -325,31 +314,34 @@ namespace CmsData
             return hc;
         }
 
-        public static Content Content(string name)
+        public static Content Content(CMSDataContext context, string name)
         {
-            return Db.Contents.SingleOrDefault(c => c.Name == name);
+            return context.Contents.SingleOrDefault(c => c.Name == name);
         }
 
-        public static Content ContentFromID(int id)
+        public static Content ContentFromID(CMSDataContext context, int id)
         {
-            return Db.Contents.SingleOrDefault(c => c.Id == id);
+            return context.Contents.SingleOrDefault(c => c.Id == id);
         }
 
-        public static void ContentDeleteFromID(int id)
+        public static void ContentDeleteFromID(CMSDataContext context, int id)
         {
             if (id == 0)
             {
                 return;
             }
 
-            var cDelete = ContentFromID(id);
-            Db.Contents.DeleteOnSubmit(cDelete);
-            Db.SubmitChanges();
+            var cDelete = ContentFromID(context, id);
+            if (cDelete != null)
+            {
+                context.Contents.DeleteOnSubmit(cDelete);
+                context.SubmitChanges();
+            }
         }
 
-        public static string Content(string name, string def)
+        public static string Content(CMSDataContext context, string name, string def)
         {
-            var content = Db.Contents.SingleOrDefault(c => c.Name == name);
+            var content = context.Contents.SingleOrDefault(c => c.Name == name);
             if (content != null)
             {
                 return content.Body;

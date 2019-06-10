@@ -16,7 +16,7 @@
     <![endif]-->
     @RenderSection("head", false)
 </head>
-    <body>
+    <body style="@ViewBag.BodyStyle">
         @Html.Action("Index", "MobileAppMenu", new { area = "" })
         <div class="account">
             <div class="account-header">

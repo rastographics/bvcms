@@ -176,7 +176,7 @@ namespace CmsWeb.Areas.Search.Models
                 FirstName = "";
             }
 
-            person = Person.Add(f, position,
+            person = Person.Add(DbUtil.Db, f, position,
                                  null, FirstName.Trim(), NickName, LastName.Trim(), DOB, false, Gender.Value.ToInt(),
                                  originid, entrypointid);
 

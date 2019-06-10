@@ -80,10 +80,24 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 List = new List<OnlineRegPersonModel>();
             }
 
-            // prepopulate their email address they passed in
-            if (Util.ValidEmail(email))
+            // if logged in and trying a non anonymous online reg, use email for logged in user
+            if (!AllowAnonymous && !email.HasValue() && Util.UserEmail.HasValue())
             {
-                List[0].EmailAddress = email;
+                email = Util.UserEmail;
+                ProcessType = PaymentProcessTypes.OnlineRegistration;
+            }
+
+            // prepopulate their email address they passed in
+            if (Util.ValidEmail(email) && ProcessType == PaymentProcessTypes.OnlineRegistration)
+            {
+                var person =
+                    new OnlineRegPersonModel
+                    {
+                        orgid = Orgid,
+                        masterorgid = masterorgid,
+                        EmailAddress = email
+                    };
+                List.Add(person);
             }
 
             HistoryAdd("index");

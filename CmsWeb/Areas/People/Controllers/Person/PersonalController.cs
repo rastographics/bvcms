@@ -12,7 +12,7 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpPost]
         public ActionResult ProfileHeader(int id)
         {
-            var m = new PersonModel(id);
+            var m = new PersonModel(id, CurrentDatabase);
             return View("Personal/Header", m);
         }
 
@@ -39,7 +39,7 @@ namespace CmsWeb.Areas.People.Controllers
                 return View("Personal/Edit", m);
             }
 
-            m.UpdatePerson();
+            m.UpdatePerson(CurrentDatabase);
             DbUtil.LogPersonActivity($"Update Basic Info for: {m.person.Name}", m.Id, m.person.Name);
             InitExportToolbar(id);
             return View("Personal/Display", m);
@@ -48,7 +48,7 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpPost]
         public ActionResult PictureDialog(int id)
         {
-            var m = new PersonModel(id);
+            var m = new PersonModel(id, CurrentDatabase);
             return View("Personal/PictureDialog", m);
         }
 

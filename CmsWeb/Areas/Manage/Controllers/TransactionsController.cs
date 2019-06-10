@@ -4,6 +4,7 @@ using CmsWeb.Lifecycle;
 using CmsWeb.Models;
 using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web.Mvc;
 using UtilityExtensions;
 
@@ -101,7 +102,9 @@ namespace CmsWeb.Areas.Manage.Controllers
                      orderby tt.Id descending
                      select tt;
             var t0 = qq.First();
-            var gw = CurrentDatabase.Gateway(t.Testing ?? false);
+
+            var processType = MultipleGatewayUtils.ProcessByTransactionDescription(CurrentDatabase, t0.Description);
+            var gw = CurrentDatabase.Gateway(t.Testing.GetValueOrDefault(false), null, processType: processType);
             TransactionResponse resp = null;
             var re = t.TransactionId;
             if (re.Contains("(testing"))

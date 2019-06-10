@@ -225,12 +225,12 @@
                                 <a id="Recover" href="#" class="btn btn-mini btn-default" data-confirm="This will overwrite your content with the most recent from your browser's local storage. Continue?'">Recover</a>
                                 <input type="button" class="btn btn-default SaveDraft" savetype="@(c.TypeID == ContentTypeCode.TypeEmailTemplate ? 0 : 1)" value="@(c.TypeID == ContentTypeCode.TypeEmailTemplate ? "Save As Draft" : "Save Current Draft")" />
                                 <a href="#" class="btn btn-default TestSend">Send Test Email (To Me)</a>
-                                <button type="button" class="btn btn-primary Send"><i class="fa fa-paper-plane"></i> Send</button>
+                                <button type="button" class="btn btn-primary Send" data-prompt="@Model.PromptBeforeSend.ToString()"><i class="fa fa-paper-plane"></i> Send</button>
                             </div>
                         </div>
                     </div>
                     <div class="visible-xs-block">
-                        <button type="button" class="btn btn-primary btn-block Send"><i class="fa fa-paper-plane"></i> Send</button>
+                        <button type="button" class="btn btn-primary btn-block Send" data-prompt="@Model.PromptBeforeSend.ToString()"><i class="fa fa-paper-plane"></i> Send</button>
                         <a href="#" class="btn btn-default btn-block TestSend">Send Test Email (To Me)</a>
                         <input type="button" class="btn btn-default btn-block SaveDraft" savetype="@(c.TypeID == ContentTypeCode.TypeEmailTemplate ? 0 : 1)" value="@(c.TypeID == ContentTypeCode.TypeEmailTemplate ? "Save As Draft" : "Save Current Draft")" />
                         <a id="Recover" href="#" class="btn btn-mini btn-default" data-confirm="This will overwrite your content with the most recent from your browser's local storage. Continue?'">Recover</a>
@@ -262,34 +262,33 @@
     </div>
 </div>
 <div class="modal fade" id="editor-modal" style="overflow-y: hidden !important;" data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="pull-right" style="margin-bottom: 5px;">
-                            <a href="https://docs.touchpointsoftware.com/EmailTexting/EmailReplacements.html" target="_blank" class="btn btn-default btn-sm"><i class="fa fa-question-circle"></i> Email Replacement Codes</a>
+    <div class="scrolleditor">
+        <div class="modal-dialog modal-lg" style="height: 100vh; overflow-y: auto;">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="pull-right" style="margin-bottom: 5px;">
+                                <a href="https://docs.touchpointsoftware.com/EmailTexting/EmailReplacements.html" target="_blank" class="btn btn-default btn-sm"><i class="fa fa-question-circle"></i> Email Replacement Codes</a>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <input type="button" value="Cancel" class="btn btn-default" id="cancel-edit" />
-                    <input type="submit" value="Save" class="btn btn-primary" id="save-edit" />
-                </div>
-                <div class="row">
-                    <div class="scrolleditor">
+                    <div class="row">
                         <div class="col-sm-12">
                             <form>
                                 <textarea id="htmleditor" name="htmleditor" class="form-control" rows="15"></textarea>
                             </form>
                         </div>
                     </div>
+                    <div class="modal-footer">
+                        <input type="button" value="Cancel" class="btn btn-default" id="cancel-edit" />
+                        <input type="submit" value="Save" class="btn btn-primary" id="save-edit" />
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
 <div class="modal fade" id="unlayer-editor-modal" style="overflow-y: hidden !important;" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">

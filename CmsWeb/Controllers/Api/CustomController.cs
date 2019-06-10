@@ -35,16 +35,18 @@ namespace CmsWeb.Controllers.Api
                 throw new Exception("Not Authorized to run this script");
             }
 
-            var cn = CurrentDatabase.ReadonlyConnection();
-            cn.Open();
-            var d = Request.GetQueryNameValuePairs();
-            var p = new DynamicParameters();
-            foreach (var kv in d)
+            using (var cn = CurrentDatabase.ReadonlyConnection())
             {
-                p.Add("@" + kv.Key, kv.Value);
+                cn.Open();
+                var d = Request.GetQueryNameValuePairs();
+                var p = new DynamicParameters();
+                foreach (var kv in d)
+                {
+                    p.Add("@" + kv.Key, kv.Value);
+                }
+                return cn.Query(content, p);
             }
 
-            return cn.Query(content, p);
         }
         private bool CanRunScript(string script)
         {

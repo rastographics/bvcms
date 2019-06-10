@@ -16,6 +16,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
     {
         private bool? _noEChecksAllowed;
         private int? timeOut;
+        private CMSDataContext _currentDatabase;
+
         public string source { get; set; }
         public decimal? AmtToPay { get; set; }
         public decimal? Donate { get; set; }
@@ -27,6 +29,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public string Routing { get; set; }
         public string Account { get; set; }
         public bool SupportMissionTrip { get; set; }
+        public int extTransactionId { get; set; }
+        public PaymentProcessTypes ProcessType { get; set; }
 
         /// <summary>
         ///     "B" for e-check and "C" for credit card, see PaymentType
@@ -42,6 +46,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public int DatumId { get; set; }
         public Guid FormId { get; set; }
         public string URL { get; set; }
+        public CMSDataContext CurrentDatabase => _currentDatabase ?? (_currentDatabase = DbUtil.Db);
 
         public int TimeOut
         {
@@ -49,7 +54,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             {
                 if (!timeOut.HasValue)
                 {
-                    timeOut = Util.IsDebug() ? 16000000 : DbUtil.Db.Setting("RegTimeout", "180000").ToInt();
+                    timeOut = Util.IsDebug() ? 16000000 : CurrentDatabase.Setting("RegTimeout", "180000").ToInt();
                 }
 
                 return timeOut.Value;
@@ -74,7 +79,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public bool NoCreditCardsAllowed { get; set; }
         public bool NeedsCityState { get; set; }
         public int? CampusId { get; set; }
-        public bool ShowCampusOnePageGiving => DbUtil.Db.Setting("ShowCampusOnRegistration", "false").ToBool();
+        public bool ShowCampusOnePageGiving => CurrentDatabase.Setting("ShowCampusOnRegistration", "false").ToBool();
 
         public bool NoEChecksAllowed
         {
@@ -82,7 +87,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             {
                 if (!_noEChecksAllowed.HasValue)
                 {
-                    _noEChecksAllowed = DbUtil.Db.Setting("NoEChecksAllowed");
+                    _noEChecksAllowed = CurrentDatabase.Setting("NoEChecksAllowed");
                 }
 
                 return _noEChecksAllowed.Value;
@@ -138,7 +143,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             return n;
         }
 
-        public Transaction CreateTransaction(CMSDataContext Db, decimal? amount = null, OnlineRegModel m = null)
+        public Transaction CreateTransaction(CMSDataContext Db, decimal? amount = null)
         {
             if (!amount.HasValue)
             {
@@ -150,6 +155,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
             {
                 amtdue = Amtdue - (amount ?? 0);
             }
+
+            // var ss = m.ProcessType;
 
             var ti = new Transaction
             {
@@ -166,7 +173,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 Description = Description,
                 OrgId = OrgId,
                 Url = URL,
-                TransactionGateway = OnlineRegModel.GetTransactionGateway(),
+                TransactionGateway = OnlineRegModel.GetTransactionGateway(ProcessType)?.GatewayAccountName,
                 Address = Address.Truncate(50),
                 Address2 = Address2.Truncate(50),
                 City = City,
@@ -183,8 +190,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 LastFourACH = Type == PaymentType.Ach ? Account.Last(4) : null
             };
 
-            DbUtil.Db.Transactions.InsertOnSubmit(ti);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.Transactions.InsertOnSubmit(ti);
+            CurrentDatabase.SubmitChanges();
             if (OriginalId == null) // first transaction
             {
                 ti.OriginalId = ti.Id;
@@ -195,8 +202,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public static decimal AmountDueTrans(CMSDataContext db, Transaction ti)
         {
-            var org = DbUtil.Db.LoadOrganizationById(ti.OrgId);
-            var tt = (from t in DbUtil.Db.ViewTransactionSummaries
+            var org = db.LoadOrganizationById(ti.OrgId);
+            var tt = (from t in db.ViewTransactionSummaries
                       where t.RegId == ti.OriginalId
                       select t).FirstOrDefault();
             if (tt == null)
@@ -206,23 +213,24 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             if (org.IsMissionTrip ?? false)
             {
-                return (tt.IndAmt ?? 0) - (DbUtil.Db.TotalPaid(tt.OrganizationId, tt.PeopleId) ?? 0);
+                return (tt.IndAmt ?? 0) - (db.TotalPaid(tt.OrganizationId, tt.PeopleId) ?? 0);
             }
 
             return tt.TotDue ?? 0;
         }
 
-        public static PaymentForm CreatePaymentFormForBalanceDue(Transaction ti, decimal amtdue, string email)
+        public static PaymentForm CreatePaymentFormForBalanceDue(CMSDataContext db, Transaction ti, decimal amtdue, string email)
         {
             PaymentInfo pi = null;
+            var accountId = MultipleGatewayUtils.GetAccount(db, PaymentProcessTypes.OnlineRegistration)?.GatewayAccountId;
             if (ti.Person != null)
             {
-                pi = ti.Person.PaymentInfos.FirstOrDefault();
+                pi = ti.Person.PaymentInfo(accountId ?? 0);
             }
 
             if (pi == null)
             {
-                pi = new PaymentInfo();
+                pi = new PaymentInfo() { GatewayAccountId = accountId ?? 0 };
             }
 
             var pf = new PaymentForm
@@ -250,7 +258,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 Country = ti.Country,
                 Zip = ti.Zip,
                 testing = ti.Testing ?? false,
-                TranId = ti.Id
+                TranId = ti.Id,
+                ProcessType = PaymentProcessTypes.OnlineRegistration
             };
 
             if (pi.PeopleId == Util.UserPeopleId) // Is this the logged in user?
@@ -266,7 +275,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             ClearMaskedNumbers(pf, pi);
 
-            var org = DbUtil.Db.LoadOrganizationById(ti.OrgId);
+            var org = db.LoadOrganizationById(ti.OrgId);
             pf.NoCreditCardsAllowed = org?.NoCreditCards == true;
             pf.Type = pf.NoEChecksAllowed ? PaymentType.CreditCard : pf.NoCreditCardsAllowed ? PaymentType.Ach : "";
             return pf;
@@ -308,6 +317,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 Zip = r.Zip,
                 Phone = r.Phone,
                 SupportMissionTrip = m.SupportMissionTrip,
+                extTransactionId = m.transactionId,
+                ProcessType = m.ProcessType,
 #if DEBUG2
                  CreditCard = "4111111111111111",
                  CVV = "123",
@@ -374,24 +385,28 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private static void ClearMaskedNumbers(PaymentForm pf, PaymentInfo pi)
         {
-            var gateway = DbUtil.Db.Setting("TransactionGateway", "");
+            int? GatewayId = MultipleGatewayUtils.GatewayId(DbUtil.Db, pf.ProcessType);
 
             var clearBankDetails = false;
             var clearCreditCardDetails = false;
 
-            switch (gateway.ToLower())
+            switch (GatewayId)
             {
-                case "sage":
+                case (int)GatewayTypes.Sage:
                     clearBankDetails = !pi.SageBankGuid.HasValue;
                     clearCreditCardDetails = !pi.SageCardGuid.HasValue;
                     break;
-                case "transnational":
+                case (int)GatewayTypes.Transnational:
                     clearBankDetails = !pi.TbnBankVaultId.HasValue;
                     clearCreditCardDetails = !pi.TbnCardVaultId.HasValue;
                     break;
-                case "authorizenet":
+                // case (int)GatewayTypes.Acceptiva:
+                // return new AcceptivaGateway(this, testing, ProcessType);
+                case (int)GatewayTypes.AuthorizeNet:
                     clearBankDetails = !pi.AuNetCustPayBankId.HasValue;
                     clearCreditCardDetails = !pi.AuNetCustPayId.HasValue;
+                    break;
+                default:
                     break;
             }
 
@@ -409,7 +424,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
         }
 
-        public static Transaction CreateTransaction(CMSDataContext Db, Transaction t, decimal? amount)
+        public static Transaction CreateTransaction(CMSDataContext db, Transaction t, decimal? amount)
         {
             var amtdue = t.Amtdue - (amount ?? 0);
             var ti = new Transaction
@@ -428,7 +443,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 OrgId = t.OrgId,
                 Url = t.Url,
                 Address = t.Address,
-                TransactionGateway = OnlineRegModel.GetTransactionGateway(),
+                TransactionGateway = OnlineRegModel.GetTransactionGateway()?.GatewayAccountName,
                 City = t.City,
                 State = t.State,
                 Zip = t.Zip,
@@ -441,8 +456,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 LastFourCC = t.LastFourCC,
                 LastFourACH = t.LastFourACH
             };
-            DbUtil.Db.Transactions.InsertOnSubmit(ti);
-            DbUtil.Db.SubmitChanges();
+            db.Transactions.InsertOnSubmit(ti);
+            db.SubmitChanges();
             return ti;
         }
 
@@ -485,7 +500,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 return;
             }
 
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
             modelState.AddModelError("form", "amount zero");
         }
 
@@ -554,7 +569,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 return;
             }
 
-            var gateway = DbUtil.Db.Gateway(testing);
+            var gateway = CurrentDatabase.Gateway(testing, null, ProcessType);
 
             // we need to perform a $1 auth if this is a brand new credit card that we are going to store it in the vault.
             // otherwise we skip doing an auth just call store in vault just like normal.
@@ -603,11 +618,12 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private void InitializePaymentInfo(int peopleId)
         {
-            var person = DbUtil.Db.LoadPersonById(peopleId);
-            var pi = person.PaymentInfo();
+            var person = CurrentDatabase.LoadPersonById(peopleId);
+            var accountId = MultipleGatewayUtils.GetAccount(CurrentDatabase, ProcessType)?.GatewayAccountId;
+            var pi = person.PaymentInfo(accountId ?? 0);
             if (pi == null)
             {
-                pi = new PaymentInfo();
+                pi = new PaymentInfo() { GatewayAccountId = accountId ?? 0 };
                 person.PaymentInfos.Add(pi);
             }
             pi.SetBillingAddress(First, MiddleInitial, Last, Suffix, Address, Address2, City,
@@ -617,8 +633,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public Transaction ProcessPaymentTransaction(OnlineRegModel m)
         {
             var ti = (m?.Transaction != null)
-                ? CreateTransaction(DbUtil.Db, m.Transaction, AmtToPay)
-                : CreateTransaction(DbUtil.Db);
+                ? CreateTransaction(CurrentDatabase, m.Transaction, AmtToPay)
+                : CreateTransaction(CurrentDatabase);
 
             int? pid = null;
             if (m != null)
@@ -634,7 +650,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             if (!pid.HasValue)
             {
-                var pds = DbUtil.Db.FindPerson(First, Last, null, Email, Phone);
+                var pds = CurrentDatabase.FindPerson(First, Last, null, Email, Phone);
                 if (pds.Count() == 1)
                 {
                     pid = pds.Single().PeopleId.Value;
@@ -642,7 +658,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
 
             TransactionResponse tinfo;
-            var gw = DbUtil.Db.Gateway(testing);
+            var gw = CurrentDatabase.Gateway(testing, null, m?.ProcessType ?? PaymentProcessTypes.OnlineRegistration);
 
             if (SavePayInfo)
             {
@@ -677,9 +693,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
             ti.AuthCode = tinfo.AuthCode;
             ti.TransactionDate = Util.Now;
 
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
             return ti;
-        }
+        }        
 
         private TransactionResponse PayWithCreditCard(IGateway gateway, int? peopleId, Transaction transaction)
         {
@@ -712,8 +728,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             try
             {
-                PreventNegatives();
-                PreventZero(modelState);
                 if (!modelState.IsValid)
                 {
                     return RouteModel.ProcessPayment();
@@ -752,7 +766,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
                 OnlineRegModel.ConfirmDuePaidTransaction(ti, ti.TransactionId, true);
 
-                return RouteModel.AmountDue(AmountDueTrans(DbUtil.Db, ti), ti);
+                return RouteModel.AmountDue(AmountDueTrans(CurrentDatabase, ti), ti);
             }
             catch (Exception ex)
             {
@@ -760,6 +774,32 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 modelState.AddModelError("form", ex.Message);
                 return RouteModel.ProcessPayment();
             }
+        }
+
+        public RouteModel ProcessExternalPayment(OnlineRegModel m, out int orgId)
+        {
+            //This method has to change deppending on different types of gateways
+            orgId = 0;
+            if (extTransactionId == 0)
+            {
+                return new RouteModel()
+                {
+                    Route = RouteType.Error,
+                    Message = "External Payment error",
+                };
+            }
+            Transaction ti = DbUtil.Db.Transactions.Where(p => p.Id == extTransactionId).FirstOrDefault();
+            orgId = ti.OrgId.Value;
+
+            HttpContextFactory.Current.Session["FormId"] = FormId;
+            if (m != null)
+            {
+                m.DatumId = DatumId; // todo: not sure this is necessary
+                return m.FinishRegistration(ti);
+            }
+            OnlineRegModel.ConfirmDuePaidTransaction(ti, ti.TransactionId, true);
+
+            return RouteModel.AmountDue(AmountDueTrans(DbUtil.Db, ti), ti);
         }
 
         public void CheckTesting()

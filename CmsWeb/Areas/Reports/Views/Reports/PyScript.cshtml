@@ -1,6 +1,6 @@
 ﻿@model CmsWeb.Areas.Reports.Controllers.SpecialReportViewModel
 @{
-    ViewBag.Title = "Python Script";
+    ViewBag.Title = Model.Name ?? "Python Script";
     ViewBag.PageHeader = Model.Name;
     Layout = ViewExtensions2.TouchPointLayout();
 }

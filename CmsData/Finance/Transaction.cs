@@ -7,9 +7,15 @@ namespace CmsData
 {
     public partial class Transaction
     {
+        private IGateway gateway;
+        private IGateway GetGateway(CMSDataContext db)
+        {
+            return gateway ?? (gateway = db.Gateway(name: TransactionGateway));
+        }
+
         public bool CanCredit(CMSDataContext db)
         {
-            return db.Gateway().CanVoidRefund
+            return GetGateway(db).CanVoidRefund
                 && Approved == true
                 && Voided != true
                 && Credited != true
@@ -18,9 +24,10 @@ namespace CmsData
                 && Batchtyp == "eft" || Batchtyp == "bankcard"
                 && Amt > 0;
         }
+
         public bool CanVoid(CMSDataContext db)
         {
-            return db.Gateway().CanVoidRefund
+            return GetGateway(db).CanVoidRefund
                 && Approved == true
                 && !CanCredit(db)
                 && Voided != true
@@ -66,33 +73,6 @@ namespace CmsData
                     timeOut = Util.IsDebug() ? 16000000 : 180000;
                 return timeOut.Value;
             }
-        }
-        public static void ResolvePrevDaysVirtualCheckRejects(CMSDataContext db, DateTime start, DateTime end)
-        {
-            var gateway = db.Gateway();
-            var response = gateway.GetReturnedChecks(start, end);
-
-
-            //var ds = gw.VirtualCheckRejects(dt);
-            //var items = from r in ds.Tables[0].AsEnumerable()
-            //            let rejectdt = r["reject_date"].ToDate() ?? DateTime.MinValue
-            //            where rejectdt > DateTime.MinValue
-            //            select new
-            //            {
-            //                rejectdt,
-            //                trantype = r["trantype"],
-            //                amt = r["rejedt_amount"].ToString().ToDecimal(),
-            //                tranid = r["customer_number"].ToInt(),
-            //                rejectcode = r["reject_code"].ToString(),
-            //                message = r["correction_info"].ToString(),
-            //            };
-            /*
-             * Create a new transaction to reverse the original
-             * If the transaction was for online giving or recurring giving, then reverse the contribution.
-             * If the transaction contained an extra donation, then reverse that contribution.
-             * Send an email to the payor.
-             * Send an email notification to the online notify list for the associated organization
-             */
         }
     }
 }

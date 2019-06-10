@@ -134,7 +134,7 @@
 		var f = $(this).closest('form');
 		f.attr("action", "/Export2/Contributions/donortotals");
 	    f.submit();
-	});
+    });
 
 	$("#glextract").click(function (ev) {
 		ev.preventDefault();

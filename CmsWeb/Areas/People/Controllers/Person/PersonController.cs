@@ -75,7 +75,7 @@ namespace CmsWeb.Areas.People.Controllers
                 id = Util.UserPeopleId;
             }
 
-            var m = new PersonModel(id.Value);
+            var m = new PersonModel(id.Value, CurrentDatabase);
             var noview = m.CheckView();
             if (noview.HasValue())
             {
@@ -106,7 +106,7 @@ namespace CmsWeb.Areas.People.Controllers
                 id = Util.UserPeopleId;
             }
 
-            var m = new PersonModel(id.Value);
+            var m = new PersonModel(id.Value, CurrentDatabase);
             var noview = m.CheckView();
             if (noview.HasValue())
             {
@@ -128,6 +128,7 @@ namespace CmsWeb.Areas.People.Controllers
             ViewBag.queryid = qb.QueryId;
             ViewBag.PeopleId = Util2.CurrentPeopleId;
             ViewBag.TagAction = "/Person2/Tag/" + id;
+            ViewBag.DialogAction = $"/Dialog/TagAll/{qb.QueryId}";
             ViewBag.UnTagAction = "/Person2/UnTag/" + id;
             ViewBag.AddContact = "/Person2/AddContactReceived/" + id;
             ViewBag.AddTasks = "/Person2/AddTaskAbout/" + id;
@@ -167,7 +168,7 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpPost]
         public ActionResult InlineEdit(int id, int pk, string name, string value)
         {
-            var m = new PersonModel(id);
+            var m = new PersonModel(id, CurrentDatabase);
             switch (name)
             {
                 case "ContributionOptions":

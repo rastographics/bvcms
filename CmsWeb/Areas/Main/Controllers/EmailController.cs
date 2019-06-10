@@ -57,7 +57,7 @@ namespace CmsWeb.Areas.Main.Controllers
                 if (User.IsInRole("EmailBuilder"))
                     m.UseUnlayer = useUnlayer;
 
-                m.Host = Util.Host;
+                m.Host = CurrentDatabase.Host;
 
                 if (body.HasValue())
                 {
@@ -81,7 +81,7 @@ namespace CmsWeb.Areas.Main.Controllers
 
             var me = new MassEmailer(id, parents, ccparents, nodups);
 
-            me.Host = Util.Host;
+            me.Host = CurrentDatabase.Host;
             me.OnlyProspects = onlyProspects.GetValueOrDefault();
 
             // Unless UX-AllowMyDataUserEmails is true, CmsController.OnActionExecuting() will filter them
@@ -202,8 +202,6 @@ namespace CmsWeb.Areas.Main.Controllers
         {
             var id = SaveDraft(saveid, name, roleid, m.Subject, m.Body, m.UnlayerDesign, m.UseUnlayer);
 
-            System.Diagnostics.Debug.Print("Template ID: " + id);
-
             ViewBag.parents = m.wantParents;
             ViewBag.templateID = id;
 
@@ -217,7 +215,7 @@ namespace CmsWeb.Areas.Main.Controllers
 
             if (draftId.HasValue && draftId > 0)
             {
-                content = DbUtil.ContentFromID(draftId.Value);
+                content = CurrentDatabase.ContentFromID(draftId.Value);
             }
 
             if (content != null)
@@ -384,8 +382,9 @@ namespace CmsWeb.Areas.Main.Controllers
                         {
                             continue;
                         }
-                        eq.EmailQueueTos.Add(new EmailQueueTo
+                        CurrentDatabase.EmailQueueTos.InsertOnSubmit(new EmailQueueTo
                         {
+                            Id = eq.Id,
                             PeopleId = pid,
                             OrgId = eq.SendFromOrgId,
                             Guid = Guid.NewGuid(),
@@ -407,8 +406,9 @@ namespace CmsWeb.Areas.Main.Controllers
                         {
                             continue;
                         }
-                        eq.EmailQueueTos.Add(new EmailQueueTo
+                        CurrentDatabase.EmailQueueTos.InsertOnSubmit(new EmailQueueTo
                         {
+                            Id = eq.Id,
                             PeopleId = pid,
                             OrgId = eq.SendFromOrgId,
                             Guid = Guid.NewGuid(),
@@ -428,7 +428,7 @@ namespace CmsWeb.Areas.Main.Controllers
                 return Json(new { id = 0, error = ex.Message });
             }
 
-            var host = Util.Host;
+            var host = CurrentDatabase.Host;
             var currorgid = CurrentDatabase.CurrentSessionOrgId;
             // save these from HttpContext to set again inside thread local storage
             var userEmail = Util.UserEmail;
@@ -450,7 +450,7 @@ namespace CmsWeb.Areas.Main.Controllers
             {
                 try
                 {
-                    var db = DbUtil.Create(host);
+                    var db = CurrentDatabase.Copy();
                     var cul = CurrentDatabase.Setting("Culture", "en-US");
                     Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
                     Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
@@ -468,7 +468,7 @@ namespace CmsWeb.Areas.Main.Controllers
                     var errorLog = new SqlErrorLog(cb.ConnectionString) { ApplicationName = "BVCMS" };
                     errorLog.Log(new Error(ex2));
 
-                    var db = DbUtil.Create(host);
+                    var db = CMSDataContext.Create(host);
                     var equeue = db.EmailQueues.Single(ee => ee.Id == id);
                     equeue.Error = ex.Message.Truncate(200);
                     db.SubmitChanges();

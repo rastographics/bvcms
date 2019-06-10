@@ -80,10 +80,11 @@ namespace CmsWeb.Areas.Org.Controllers
         }
 
         private void InitExportToolbar(OrganizationModel m)
-        {
+        {            
             ViewBag.oid = m.Id;
             ViewBag.queryid = m.QueryId;
             ViewBag.TagAction = "/Org/TagAll/" + m.QueryId;
+            ViewBag.DialogAction = $"/Dialog/TagAll/{m.QueryId}";
             ViewBag.UnTagAction = "/Org/UnTagAll/" + m.QueryId;
             ViewBag.AddContact = "/Org/AddContact/" + m.QueryId;
             ViewBag.AddTasks = "/Org/AddTasks/" + m.QueryId;

@@ -8,7 +8,7 @@
     Layout = "~/Views/Shared/onlinereg2.cshtml";
     ViewBag.Title = "OnePageGiving";
     var db = DbUtil.Db;
-    var debitcredit = db.Setting("DebitCreditLabel", "Debit/Credit Card");
+    var debitcredit = db.GetDebitCreditLabel(PaymentProcessTypes.OneTimeGiving);
     var vaultDisabled = db.Setting("VaultDisabled");
     var processorerror = Html.ErrorMessage("TranId");
     var designatedFund = Model.OnlineRegPersonModel.DesignatedDonationFund().FirstOrDefault();
@@ -16,6 +16,7 @@
     var useRecaptcha = db.Setting("UseRecaptcha");
     var useRecaptchaClass = useRecaptcha ? "recaptcha" : null;
     var disableAdditionalFunds = Model.OnlineRegPersonModel.org.GetExtra(db, "DisableFundsDropdown") == "true";
+    var funds = OnlineRegPersonModel.FullFundList(db);
 }
 @section head{
     @Fingerprint.Css("/Content/touchpoint/lib/select2/css/select2.css")
@@ -144,7 +145,6 @@
         </div>
         @{
             var amtError = Html.ErrorMessage("AmtToPay");
-            var funds = OnlineRegPersonModel.FullFundList();
             var funame = "FundItem";
             decimal? tot = 0;
         }
@@ -311,6 +311,7 @@
         @Html.Hidden("Description", Model.PaymentForm.Description)
         @Html.Hidden("NoCreditCardsAllowed", Model.PaymentForm.NoCreditCardsAllowed)
         @Html.Hidden("IsLoggedIn", Model.PaymentForm.IsLoggedIn)
+        @Html.Hidden("ProcessType", Model.PaymentForm.ProcessType)
     </form>
 </div>
 @helper TypeRadio(string type, string label, string side, bool isSelected)

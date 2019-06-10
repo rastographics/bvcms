@@ -144,13 +144,10 @@
         });
     });
 
-
-
-    $(".Send").click(function () {
+    function sendEmail() {
         $.block();
         $('#body').val($('#email-body').contents().find('#templateBody').html());
         var q = $("#SendEmail").serialize();
-
         $.post('/Email/QueueEmails', q, function (ret) {
             if (ret && ret.error) {
                 $.unblock();
@@ -208,6 +205,24 @@
                 }
             }
         });
+    }
+
+    $(".Send").click(function () {
+        if ($(this).attr('data-prompt') === 'True') {
+            var count = $("#Count").val();
+            swal({
+                title: "Are you sure?",
+                text: "You're about to send an email to " + count + " people.",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "btn-confirm",
+                confirmButtonText: "Yes, send it!",
+                showLoaderOnConfirm: true,
+                closeOnConfirm: false
+            }, sendEmail);
+        } else {
+            sendEmail();
+        }
     });
 
     $(".SaveDraft").click(function () {

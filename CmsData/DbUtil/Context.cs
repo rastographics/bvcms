@@ -47,6 +47,13 @@ namespace CmsData
            public override Encoding Encoding => Encoding.Default;
         }
 #endif
+
+        public static CMSDataContext Create(string host, bool asReadOnly = false)
+        {
+            var connectionString = asReadOnly ? Util.ReadOnlyConnectionString(host, true) : CreateConnectionString(host);
+            return Create(connectionString, host);
+        }
+
         private string _connectionString;
         internal string ConnectionString
         {
@@ -130,19 +137,25 @@ namespace CmsData
 
         public static CMSDataContext Create(HttpContextBase currentHttpContext)
         {
-            var host = currentHttpContext.Request.Url.Authority.Split('.', ':')[0];
-            var hostOverride = ConfigurationManager.AppSettings["host"];
-            if (!string.IsNullOrEmpty(hostOverride)) // default to the host from url, however, override it via web.config for debugging against live data
-            {
-                host = hostOverride;
-            }
+            string host = GetHost(currentHttpContext);
+            var connectionString = CreateConnectionString(host);
+
+            return CMSDataContext.Create(connectionString, host);
+        }
+
+        public static string GetHost(HttpContextBase httpContext)
+        {
+            var host = (httpContext.Request.Url.Authority).Split('.', ':').First();
+            return Util.PickFirst(ConfigurationManager.AppSettings["host"], host);
+        }
+
+        private static string CreateConnectionString(string host)
+        {
             var cs = ConfigurationManager.ConnectionStrings["CMS"];
             var cb = new SqlConnectionStringBuilder(cs.ConnectionString);
             cb.InitialCatalog = $"CMS_{host}";
             cb.PersistSecurityInfo = true;
-            var connectionString = cb.ConnectionString;
-
-            return CMSDataContext.Create(connectionString, host);
+            return cb.ConnectionString;
         }
 
         public void ClearCache2()
@@ -1520,6 +1533,10 @@ This search uses multiple steps which cannot be duplicated in a single query.
                      select new[] { a[0], a[1] };
             return q2;
         }
+        public Content ContentFromID(int id)
+        {
+            return Contents.SingleOrDefault(c => c.Id == id);
+        }
         public Content Content(string name)
         {
             return Contents.FirstOrDefault(c => c.Name == name);
@@ -1864,30 +1881,41 @@ This search uses multiple steps which cannot be duplicated in a single query.
         internal bool FromActiveRecords { get; set; }
         public bool FromBatch { get; set; }
 
-        public IGateway Gateway(bool testing = false, string usegateway = null)
+        public IGateway Gateway(string name, bool exceptionIfMissing = true)
         {
-            var type = Setting("TransactionGateway", "not specified");
-            if (usegateway != null)
+            var account = GatewayAccount.FirstOrDefault(a => a.GatewayAccountName == name);
+            return Gateway(false, account);
+        }
+
+        public IGateway Gateway(bool testing, GatewayAccount account, PaymentProcessTypes processType = PaymentProcessTypes.RecurringGiving, bool exceptionIfMissing = true)
+        {
+            account = account ?? MultipleGatewayUtils.GetAccount(this, processType);
+            if (!(account?.GatewayId).HasValue)
             {
-                type = usegateway;
+                if (exceptionIfMissing)
+                {
+                    throw new Exception("This process is not configured yet, please contact support");
+                }
+                return null;
             }
 
-            switch (type.ToLower())
+            switch (account?.GatewayId)
             {
-                case "sage":
-                    return new SageGateway(this, testing);
-
-                case "authorizenet":
-                    return new AuthorizeNetGateway(this, testing);
-
-                case "transnational":
-                    return new TransNationalGateway(this, testing);
-                //IS THIS the only place that the new paymentGateway needs to be hooked up?
-                case "bluepay":
-                    return new BluePayGateway(this, testing);
+                case (int)GatewayTypes.Sage:
+                    return new SageGateway(this, testing, processType) { GatewayName = account.GatewayAccountName, GatewayAccountId = account.GatewayAccountId };
+                case (int)GatewayTypes.Transnational:
+                    return new TransNationalGateway(this, testing, processType) { GatewayName = account.GatewayAccountName, GatewayAccountId = account.GatewayAccountId };
+                case (int)GatewayTypes.Acceptiva:
+                    return new AcceptivaGateway(this, testing, processType) { GatewayName = account.GatewayAccountName, GatewayAccountId = account.GatewayAccountId };
+                case (int)GatewayTypes.AuthorizeNet:
+                    return new AuthorizeNetGateway(this, testing, processType) { GatewayName = account.GatewayAccountName, GatewayAccountId = account.GatewayAccountId };
+                case (int)GatewayTypes.BluePay:
+                    return new BluePayGateway(this, testing, processType) { GatewayName = account.GatewayAccountName, GatewayAccountId = account.GatewayAccountId };
+                default:
+                    break;
             }
 
-            throw new Exception($"Gateway ({type}) is not supported.");
+            return null;
         }
         public Registration.Settings CreateRegistrationSettings(int orgId)
         {
@@ -1970,6 +1998,27 @@ This search uses multiple steps which cannot be duplicated in a single query.
         {
             var result = ExecuteMethodCall(this, (MethodInfo)MethodBase.GetCurrentMethod(), ip, id);
             return ((int?)(result?.ReturnValue));
+        }
+
+        public IEnumerable<User> GetRoleUsers(string rolename)
+        {
+            var q = from u in Users
+                    where u.UserRoles.Any(ur => ur.Role.RoleName == rolename)
+                    select u;
+            return q;
+        }
+
+        public IEnumerable<Person> GetAdmins()
+        {
+            return GetRoleUsers("Admin").Select(u => u.Person).Distinct();
+        }
+
+        public string GetDebitCreditLabel(PaymentProcessTypes paymentProcess)
+        {
+            var defaultLabel = Setting("DebitCreditLabel", "Debit/Credit Card");
+            return paymentProcess == PaymentProcessTypes.OneTimeGiving || paymentProcess == PaymentProcessTypes.RecurringGiving ?
+                Setting("DebitCreditLabel-Giving", defaultLabel) :
+                Setting("DebitCreditLabel-Registrations", defaultLabel);
         }
     }
 }

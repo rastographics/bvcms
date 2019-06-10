@@ -46,13 +46,9 @@ namespace UnitTests
 
         private static string ScriptsDirectory()
         {
-            var cb = System.Reflection.Assembly.GetExecutingAssembly().GetName().CodeBase;
+            var cb = System.Reflection.Assembly.GetExecutingAssembly().Location;
             var dir = Path.GetDirectoryName(cb);
-            dir = new Uri(dir ?? "").LocalPath;
-            dir = Path.GetDirectoryName(dir);
-            dir = Path.GetDirectoryName(dir);
-            dir = Path.GetDirectoryName(dir) + "\\SqlScripts\\";
-            return dir;
+            return Path.GetFullPath(Path.Combine(dir, @"..\..\..\SqlScripts\"));
         }
 
         public void Dispose()

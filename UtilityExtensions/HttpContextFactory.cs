@@ -18,7 +18,7 @@ namespace UtilityExtensions
                 {
                     return _currentContext;
                 }
-                if(HttpContext.Current == null)
+                if (HttpContext.Current == null)
                 {
                     return null;
                 }

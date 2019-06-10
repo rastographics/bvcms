@@ -4,15 +4,15 @@
  * you may not use this code except in compliance with the License.
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
+using Dapper;
 using System;
+using System.Data.SqlClient;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
-using UtilityExtensions;
 using System.Web.Caching;
-using System.Data.SqlClient;
-using Dapper;
-using System.Linq;
+using UtilityExtensions;
 
 namespace CmsData
 {
@@ -45,25 +45,15 @@ namespace CmsData
             DatabaseDoesNotExist,
             ServerNotFound
         }
-        public static bool CmsDatabaseExists()
-        {
-            var exists = (bool?)HttpRuntime.Cache[Util.Host + "-DatabaseExists"];
-            if (exists.HasValue)
-                return exists.Value;
-
-            var r = CheckDatabaseExists(Util.CmsHost);
-            var b = CheckDatabaseResult.DatabaseExists == r;
-            HttpRuntime.Cache.Insert(Util.Host + "-DatabaseExists", b, null,
-                DateTime.Now.AddSeconds(60), Cache.NoSlidingExpiration);
-            return b;
-        }
 
         public static void EnableClr(SqlConnection cn)
         {
             var s = @"SELECT value FROM sys.configurations WHERE name = 'clr enabled'";
             var cmd = new SqlCommand(s, cn);
             if (cmd.ExecuteScalar().ToBool())
+            {
                 return;
+            }
 
             RunScripts(cn, @"
 sp_configure 'show advanced options', 1;
@@ -77,48 +67,15 @@ GO
 ");
         }
 
-        public static CheckDatabaseResult CheckImageDatabaseExists(string name, bool nocache = false)
-        {
-            if (nocache == false)
-            {
-                var r1 = HttpRuntime.Cache[Util.Host + "-CheckImageDatabaseResult"];
-                if (r1 != null)
-                    return (CheckDatabaseResult)r1;
-            }
-
-            using (var cn = new SqlConnection(Util.GetConnectionString2("master", 3)))
-            {
-                CheckDatabaseResult ret;
-                try
-                {
-                    cn.Open();
-                    var b = DatabaseExists(cn, name);
-                    ret = b ? CheckDatabaseResult.DatabaseExists : CheckDatabaseResult.DatabaseDoesNotExist;
-                }
-                catch (Exception ex)
-                {
-                    if (ex.Message.StartsWith("A network-related"))
-                        ret = CheckDatabaseResult.ServerNotFound;
-                    else
-                        throw;
-                }
-                if (nocache == false)
-                {
-                    HttpRuntime.Cache.Insert(Util.Host + "-ImageCheckDatabaseResult", ret, null,
-                        ret == CheckDatabaseResult.DatabaseExists
-                            ? DateTime.Now.AddSeconds(60)
-                            : DateTime.Now.AddSeconds(5), Cache.NoSlidingExpiration);
-                }
-                return ret;
-            }
-        }
         public static CheckDatabaseResult CheckDatabaseExists(string name, bool nocache = false)
         {
             if (nocache == false)
             {
                 var r1 = HttpRuntime.Cache[Util.Host + "-CheckDatabaseResult"];
                 if (r1 != null)
+                {
                     return (CheckDatabaseResult)r1;
+                }
             }
 
             using (var cn = new SqlConnection(Util.GetConnectionString2("master", 3)))
@@ -133,9 +90,13 @@ GO
                 catch (Exception ex)
                 {
                     if (ex.Message.StartsWith("A network-related"))
+                    {
                         ret = CheckDatabaseResult.ServerNotFound;
+                    }
                     else
+                    {
                         throw;
+                    }
                 }
                 if (nocache == false)
                 {
@@ -147,18 +108,19 @@ GO
                 return ret;
             }
         }
-        public static string CreateDatabase()
+
+        public static string CreateDatabase(string host)
         {
             var server = HttpContextFactory.Current.Server;
             var path = server.MapPath("/");
             var sqlScriptsPath = path + @"..\SqlScripts\";
             var cs = Util.GetConnectionString2("master");
 
-            var retVal = CreateDatabase(Util.Host, sqlScriptsPath, cs, Util.ConnectionStringImage,
+            var retVal = CreateDatabase(host, sqlScriptsPath, cs, Util.ConnectionStringImage,
                 Util.GetConnectionString2("Elmah"), Util.ConnectionString);
 
-            HttpRuntime.Cache.Remove(Util.Host + "-DatabaseExists");
-            HttpRuntime.Cache.Remove(Util.Host + "-CheckDatabaseResult");
+            HttpRuntime.Cache.Remove(host + "-DatabaseExists");
+            HttpRuntime.Cache.Remove(host + "-CheckDatabaseResult");
 
             return retVal;
         }
@@ -179,7 +141,7 @@ GO
                         RunScripts(masterConnectionString, "create database CMSi_" + hostName);
                         currentFile = "BuildImageDatabase.sql";
                         RunScripts(imageConnectionString,
-                            File.ReadAllText(sqlScriptsPath + currentFile));
+                            File.ReadAllText(Path.Combine(sqlScriptsPath, currentFile)));
                     }
 
                     if (!DatabaseExists(cn, "Elmah"))
@@ -187,30 +149,30 @@ GO
                         RunScripts(masterConnectionString, "create database Elmah");
                         currentFile = "BuildElmahDb.sql";
                         RunScripts(elmahConnectionString,
-                            File.ReadAllText(sqlScriptsPath + currentFile));
+                            File.ReadAllText(Path.Combine(sqlScriptsPath, currentFile)));
                     }
                 }
 
                 using (var cn = new SqlConnection(standardConnectionString))
                 {
                     cn.Open();
-                    var list = File.ReadAllLines(sqlScriptsPath + "allscripts.txt");
+                    var list = File.ReadAllLines(Path.Combine(sqlScriptsPath, "allscripts.txt"));
                     foreach (var f in list)
                     {
                         currentFile = f;
-                        var script = File.ReadAllText(sqlScriptsPath + @"BuildDb\" + currentFile);
+                        var script = File.ReadAllText(Path.Combine(sqlScriptsPath, "BuildDb", currentFile));
                         RunScripts(cn, script);
                     }
                     currentFile = hostName == "testdb"
                         ? "datascriptTest.sql"
                         : "datascriptStarter.sql";
-                    var datascript = File.ReadAllText(sqlScriptsPath + currentFile);
+                    var datascript = File.ReadAllText(Path.Combine(sqlScriptsPath, currentFile));
                     RunScripts(cn, datascript);
 
-                    var datawords = File.ReadAllText(sqlScriptsPath + "datawords.sql");
+                    var datawords = File.ReadAllText(Path.Combine(sqlScriptsPath, "datawords.sql"));
                     RunScripts(cn, datawords);
 
-                    var datazips = File.ReadAllText(sqlScriptsPath + "datazips.sql");
+                    var datazips = File.ReadAllText(Path.Combine(sqlScriptsPath, "datazips.sql"));
                     RunScripts(cn, datazips);
 
                     var migrationsFolder = Path.GetFullPath(Path.Combine(sqlScriptsPath, @"..\CmsData\Migrations"));
@@ -233,9 +195,23 @@ GO
             return null;
         }
 
+        public static void Migrate(string host = null)
+        {
+            host = host ?? Util.Host ?? "localhost";
+            if (DatabaseExists($"CMS_{host}"))
+            {
+                using (var connection = new SqlConnection(Util.GetConnectionString(host)))
+                {
+                    connection.Open();
+                    string path = Path.GetFullPath(Path.Combine(HttpContextFactory.Current.Server.MapPath(@"/"), @"..\CmsData\Migrations"));
+                    RunMigrations(connection, path);
+                }
+            }
+        }
+
         public static void RunMigrations(SqlConnection connection, string migrationsFolder)
         {
-            var files = new DirectoryInfo(migrationsFolder).EnumerateFiles();
+            var files = new DirectoryInfo(migrationsFolder).EnumerateFiles("*.sql");
             var applied = connection.Query<string>(
                 "IF EXISTS (SELECT 1 FROM sys.tables WHERE name = '__SqlMigrations') SELECT Id FROM dbo.__SqlMigrations"
                 ).ToList();
@@ -265,7 +241,7 @@ GO
         {
             using (var cmd = new SqlCommand { Connection = cn, CommandTimeout = 0 })
             {
-                var scripts = Regex.Split(script, "^GO.*$", RegexOptions.Multiline | RegexOptions.IgnoreCase);
+                var scripts = Regex.Split(script, "^GO\\s*$", RegexOptions.Multiline | RegexOptions.IgnoreCase);
                 foreach (var s in scripts)
                 {
                     if (s.Trim().HasValue())

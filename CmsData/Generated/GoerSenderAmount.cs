@@ -328,7 +328,7 @@ namespace CmsData
 		}
 
 		
-		[Association(Name="GoerAmounts__Goer", Storage="_Goer", ThisKey="SupporterId", IsForeignKey=true)]
+		[Association(Name="GoerAmounts__Goer", Storage="_Goer", ThisKey="GoerId", IsForeignKey=true)]
 		public Person Goer
 		{
 			get { return this._Goer.Entity; }
@@ -351,14 +351,14 @@ namespace CmsData
 					{
 						value.GoerAmounts.Add(this);
 						
-						this._SupporterId = value.PeopleId;
+						this._GoerId = value.PeopleId;
 						
 					}
 
 					else
 					{
 						
-						this._SupporterId = default(int);
+						this._GoerId = default(int);
 						
 					}
 
@@ -370,7 +370,7 @@ namespace CmsData
 		}
 
 		
-		[Association(Name="SenderAmounts__Sender", Storage="_Sender", ThisKey="GoerId", IsForeignKey=true)]
+		[Association(Name="SenderAmounts__Sender", Storage="_Sender", ThisKey="SupporterId", IsForeignKey=true)]
 		public Person Sender
 		{
 			get { return this._Sender.Entity; }
@@ -393,14 +393,14 @@ namespace CmsData
 					{
 						value.SenderAmounts.Add(this);
 						
-						this._GoerId = value.PeopleId;
+						this._SupporterId = value.PeopleId;
 						
 					}
 
 					else
 					{
 						
-						this._GoerId = default(int?);
+						this._SupporterId = default(int);
 						
 					}
 

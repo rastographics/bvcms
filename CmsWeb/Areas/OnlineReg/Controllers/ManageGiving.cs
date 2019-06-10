@@ -54,7 +54,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             if (td != null)
             {
-                m = new ManageGivingModel(td.ToInt(), id.ToInt(), funds);
+                m = new ManageGivingModel(CurrentDatabase.Host, td.ToInt(), id.ToInt(), funds);
                 if (m.person == null)
                     return Message("person not found");
             }
@@ -74,7 +74,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 if (ot.Expires.HasValue && ot.Expires < DateTime.Now)
                     return Content("link expired");
                 var a = ot.Querystring.Split(',');
-                m = new ManageGivingModel(a[1].ToInt(), a[0].ToInt(), funds);
+                m = new ManageGivingModel(CurrentDatabase.Host, a[1].ToInt(), a[0].ToInt(), funds);
                 if (m.person == null)
                     return Message("person not found");
                 ot.Used = true;
@@ -92,6 +92,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [HttpPost]
         public ActionResult ManageGiving(ManageGivingModel m)
         {
+            m.SetCurrentDatabase(CurrentDatabase);
             SetHeaders(m.orgid);
 
             // only validate if the amounts are greater than zero.
@@ -136,13 +137,21 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             var m = TempData["managegiving"] as ManageGivingModel;
             if (m == null)
+            {
                 return Content("No active registration");
+            }
+
+            m.SetCurrentDatabase(CurrentDatabase);
 
             if (Util.IsDebug())
+            {
                 m.testing = true;
+            }
 
             if (!m.ManagedGivingStopped)
+            {
                 m.Confirm(this);
+            }
 
             SetHeaders(m.orgid);
             OnlineRegModel.LogOutOfOnlineReg();
@@ -165,7 +174,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [HttpPost]
         public ActionResult RemoveManagedGiving(int peopleId, int orgId)
         {
-            var m = new ManageGivingModel(peopleId, orgId);
+            var m = new ManageGivingModel(CurrentDatabase.Host, peopleId, orgId);
             m.CancelManagedGiving(peopleId);
             m.ThankYouMessage = "Your recurring giving has been stopped.";
 

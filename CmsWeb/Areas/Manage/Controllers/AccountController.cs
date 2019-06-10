@@ -1,5 +1,6 @@
 using CmsData;
 using CmsWeb.Lifecycle;
+using CmsWeb.Membership;
 using CmsWeb.Models;
 using net.openstack.Core.Domain;
 using net.openstack.Providers.Rackspace;
@@ -211,7 +212,6 @@ namespace CmsWeb.Areas.Manage.Controllers
         [HttpPost, MyRequireHttps]
         public ActionResult LogOn(AccountInfo m)
         {
-            var db = CurrentDatabase;
             Session.Remove("IsNonFinanceImpersonator");
             TryLoadAlternateShell();
             if (m.ReturnUrl.HasValue())
@@ -228,7 +228,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                 return View(m);
             }
 
-            var ret = AccountModel.AuthenticateLogon(m.UsernameOrEmail, m.Password, Session, Request);
+            var ret = AccountModel.AuthenticateLogon(m.UsernameOrEmail, m.Password, Session, Request, CurrentDatabase);
             if (ret is string)
             {
                 ViewBag.error = ret.ToString();
@@ -264,7 +264,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 
             if (!m.ReturnUrl.HasValue())
             {
-                if (!CMSRoleProvider.provider.IsUserInRole(user.Username, "Access", db))
+                if (!CMSRoleProvider.provider.IsUserInRole(user.Username, "Access"))
                 {
                     return Redirect("/Person2/" + Util.UserPeopleId);
                 }
@@ -402,10 +402,10 @@ namespace CmsWeb.Areas.Manage.Controllers
             AccountModel.SetUserInfo(user.Username, Session);
 
             ViewBag.user = user.Username;
-            ViewBag.MinPasswordLength = MembershipService.MinPasswordLength;
-            ViewBag.RequireSpecialCharacter = MembershipService.RequireSpecialCharacter;
-            ViewBag.RequireOneNumber = MembershipService.RequireOneNumber;
-            ViewBag.RequireOneUpper = MembershipService.RequireOneUpper;
+            ViewBag.MinPasswordLength = MembershipService.MinPasswordLength(CurrentDatabase);
+            ViewBag.RequireSpecialCharacter = MembershipService.RequireSpecialCharacter(CurrentDatabase);
+            ViewBag.RequireOneNumber = MembershipService.RequireOneNumber(CurrentDatabase);
+            ViewBag.RequireOneUpper = MembershipService.RequireOneUpper(CurrentDatabase);
 
             return View("SetPassword");
         }
@@ -429,10 +429,10 @@ namespace CmsWeb.Areas.Manage.Controllers
         public ActionResult ChangePassword()
         {
             TryLoadAlternateShell();
-            ViewBag.MinPasswordLength = MembershipService.MinPasswordLength;
-            ViewBag.RequireSpecialCharacter = MembershipService.RequireSpecialCharacter;
-            ViewBag.RequireOneNumber = MembershipService.RequireOneNumber;
-            ViewBag.RequireOneUpper = MembershipService.RequireOneUpper;
+            ViewBag.MinPasswordLength = MembershipService.MinPasswordLength(CurrentDatabase);
+            ViewBag.RequireSpecialCharacter = MembershipService.RequireSpecialCharacter(CurrentDatabase);
+            ViewBag.RequireOneNumber = MembershipService.RequireOneNumber(CurrentDatabase);
+            ViewBag.RequireOneUpper = MembershipService.RequireOneUpper(CurrentDatabase);
             return View();
         }
 
@@ -468,10 +468,10 @@ namespace CmsWeb.Areas.Manage.Controllers
             FormsAuthentication.SetAuthCookie(user.Username, false);
             AccountModel.SetUserInfo(user.Username, Session);
             ViewBag.user = user.Username;
-            ViewBag.MinPasswordLength = MembershipService.MinPasswordLength;
-            ViewBag.RequireSpecialCharacter = MembershipService.RequireSpecialCharacter;
-            ViewBag.RequireOneNumber = MembershipService.RequireOneNumber;
-            ViewBag.RequireOneUpper = MembershipService.RequireOneUpper;
+            ViewBag.MinPasswordLength = MembershipService.MinPasswordLength(CurrentDatabase);
+            ViewBag.RequireSpecialCharacter = MembershipService.RequireSpecialCharacter(CurrentDatabase);
+            ViewBag.RequireOneNumber = MembershipService.RequireOneNumber(CurrentDatabase);
+            ViewBag.RequireOneUpper = MembershipService.RequireOneUpper(CurrentDatabase);
             return View("SetPassword");
         }
 
@@ -482,10 +482,10 @@ namespace CmsWeb.Areas.Manage.Controllers
         {
             TryLoadAlternateShell();
             ViewBag.user = User.Identity.Name;
-            ViewBag.MinPasswordLength = MembershipService.MinPasswordLength;
-            ViewBag.RequireSpecialCharacter = MembershipService.RequireSpecialCharacter;
-            ViewBag.RequireOneNumber = MembershipService.RequireOneNumber;
-            ViewBag.RequireOneUpper = MembershipService.RequireOneUpper;
+            ViewBag.MinPasswordLength = MembershipService.MinPasswordLength(CurrentDatabase);
+            ViewBag.RequireSpecialCharacter = MembershipService.RequireSpecialCharacter(CurrentDatabase);
+            ViewBag.RequireOneNumber = MembershipService.RequireOneNumber(CurrentDatabase);
+            ViewBag.RequireOneUpper = MembershipService.RequireOneUpper(CurrentDatabase);
 
             if (!ValidateChangePassword("na", newPassword, confirmPassword))
             {
@@ -493,19 +493,26 @@ namespace CmsWeb.Areas.Manage.Controllers
             }
 
             var mu = CMSMembershipProvider.provider.GetUser(User.Identity.Name, false);
-            mu.UnlockUser();
-            try
+            if (mu == null)
             {
-                if (mu.ChangePassword(mu.ResetPassword(), newPassword))
-                {
-                    return RedirectToAction("ChangePasswordSuccess");
-                }
-
-                ModelState.AddModelError("form", "The current password is incorrect or the new password is invalid.");
+                ModelState.AddModelError("form", $"User '{User.Identity.Name}' not found");
             }
-            catch (Exception ex)
+            else
             {
-                ModelState.AddModelError("form", ex.Message);
+                mu.UnlockUser();
+                try
+                {
+                    if (mu.ChangePassword(mu.ResetPassword(), newPassword))
+                    {
+                        return RedirectToAction("ChangePasswordSuccess");
+                    }
+
+                    ModelState.AddModelError("form", "The current password is incorrect or the new password is invalid.");
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("form", ex.Message);
+                }
             }
             return View();
         }
@@ -517,10 +524,10 @@ namespace CmsWeb.Areas.Manage.Controllers
         {
             TryLoadAlternateShell();
             ViewBag.user = User.Identity.Name;
-            ViewBag.MinPasswordLength = MembershipService.MinPasswordLength;
-            ViewBag.RequireSpecialCharacter = MembershipService.RequireSpecialCharacter;
-            ViewBag.RequireOneNumber = MembershipService.RequireOneNumber;
-            ViewBag.RequireOneUpper = MembershipService.RequireOneUpper;
+            ViewBag.MinPasswordLength = MembershipService.MinPasswordLength(CurrentDatabase);
+            ViewBag.RequireSpecialCharacter = MembershipService.RequireSpecialCharacter(CurrentDatabase);
+            ViewBag.RequireOneNumber = MembershipService.RequireOneNumber(CurrentDatabase);
+            ViewBag.RequireOneUpper = MembershipService.RequireOneUpper(CurrentDatabase);
 
             if (!ValidateChangePassword(currentPassword, newPassword, confirmPassword))
             {
@@ -602,12 +609,13 @@ namespace CmsWeb.Areas.Manage.Controllers
                 ModelState.AddModelError("currentPassword", "You must specify a current password.");
             }
 
-            if (newPassword == null || newPassword.Length < MembershipService.MinPasswordLength)
+            var minPasswordLength = MembershipService.MinPasswordLength(CurrentDatabase);
+            if (newPassword == null || newPassword.Length < minPasswordLength)
             {
                 ModelState.AddModelError("newPassword",
                     string.Format(CultureInfo.CurrentCulture,
                         "You must specify a new password of {0} or more characters.",
-                        MembershipService.MinPasswordLength));
+                        minPasswordLength));
             }
 
             if (!string.Equals(newPassword, confirmPassword, StringComparison.Ordinal))

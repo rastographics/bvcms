@@ -52,7 +52,7 @@ namespace CmsData.Finance
                                            where !distinctTransactionIds.Contains(transaction.Key)
                                            select transaction.Value;
 
-                var notbefore = DateTime.Parse("6/1/12"); // the date when Sage payments began in BVCMS (?)
+                var notbefore = new DateTime(2012, 6, 1); // the date when Sage payments began in BVCMS (?)
 
                 // spin through each transaction and insert them to the transaction table.
                 foreach (var transactionToInsert in transactionsToInsert)
@@ -89,7 +89,7 @@ namespace CmsData.Finance
                         Approved = transactionToInsert.Approved,
                         Message = transactionToInsert.Message,
                         TransactionDate = transactionToInsert.TransactionDate,
-                        TransactionGateway = gateway.GatewayType,
+                        TransactionGateway = gateway.GatewayName,
                         Settled = settlementDate,
                         Batch = settlementDate, // this date now will be the same as the settlement date.
                         Batchref = transactionToInsert.BatchReference,

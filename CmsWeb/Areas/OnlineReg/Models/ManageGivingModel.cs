@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
+using System.Xml.Serialization;
 using CmsData;
 using CmsData.Classes;
 using CmsData.Finance;
@@ -14,6 +15,7 @@ using CmsWeb.Areas.OnlineReg.Controllers;
 using CmsWeb.Code;
 using Dapper;
 using Microsoft.Scripting.Utils;
+using Newtonsoft.Json;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.OnlineReg.Models
@@ -23,6 +25,32 @@ namespace CmsWeb.Areas.OnlineReg.Models
     {
         public int pid { get; set; }
         public int orgid { get; set; }
+
+        [NonSerialized]
+        private CMSDataContext _currentDatabase;
+        private CMSDataContext CurrentDatabase
+        {
+            get => _currentDatabase ?? (CurrentDatabase = DbUtil.Db);
+            set
+            {
+                if (_currentDatabase == null)
+                {
+                    _currentDatabase = value;
+
+                    HeadingLabel = CurrentDatabase.Setting("ManageGivingHeaderLabel", "Giving Opportunities");
+#if DEBUG2
+            testing = true;
+#endif
+                    NoCreditCardsAllowed = CurrentDatabase.Setting("NoCreditCardGiving", "false").ToBool();
+                    NoEChecksAllowed = CurrentDatabase.Setting("NoEChecksAllowed", "false").ToBool();
+                }
+            }
+        }
+
+        public void SetCurrentDatabase(CMSDataContext db)
+        {
+            CurrentDatabase = db;
+        }
 
         public IList<string> DefaultFundIds = new List<string>();
 
@@ -102,52 +130,31 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         [NonSerialized]
         private Person _person;
-        public Person person
-        {
-            get
-            {
-                if (_person == null)
-                    _person = DbUtil.Db.LoadPersonById(pid);
-                return _person;
-            }
-        }
+        public Person person => _person ?? (_person = CurrentDatabase.LoadPersonById(pid));
 
         [NonSerialized]
         private Organization _organization;
-        public Organization Organization
-        {
-            get
-            {
-                if (_organization == null)
-                    _organization = DbUtil.Db.Organizations.Single(d => d.OrganizationId == orgid);
-                return _organization;
-            }
-        }
+        public Organization Organization => _organization ?? (_organization = CurrentDatabase.Organizations.Single(d => d.OrganizationId == orgid));
 
         [NonSerialized]
         private Settings _setting;
-        public Settings Setting => _setting ?? (_setting = DbUtil.Db.CreateRegistrationSettings(orgid));
+        public Settings Setting => _setting ?? (_setting = CurrentDatabase.CreateRegistrationSettings(orgid));
 
         public bool NoCreditCardsAllowed { get; set; }
         public bool NoEChecksAllowed { get; set; }
 
-        public string SpecialGivingFundsHeader => DbUtil.Db.Setting("SpecialGivingFundsHeader", "Special Giving Funds");
+        public string SpecialGivingFundsHeader => CurrentDatabase.Setting("SpecialGivingFundsHeader", "Special Giving Funds");
 
         public bool HasManagedGiving => person?.ManagedGiving() != null;
 
-        public ManageGivingModel()
+        public ManageGivingModel() { }
+        public ManageGivingModel(CMSDataContext db)
         {
-            HeadingLabel = DbUtil.Db.Setting("ManageGivingHeaderLabel", "Giving Opportunities");
-            //testing = ConfigurationManager.AppSettings["testing"].ToBool();
-#if DEBUG2
-            testing = true;
-#endif
-            NoCreditCardsAllowed = DbUtil.Db.Setting("NoCreditCardGiving", "false").ToBool();
-            NoEChecksAllowed = DbUtil.Db.Setting("NoEChecksAllowed", "false").ToBool();
+            CurrentDatabase = db;
         }
 
-        public ManageGivingModel(int pid, int orgid = 0, string defaultFundIds = "")
-            : this()
+        public ManageGivingModel(string host, int pid, int orgid = 0, string defaultFundIds = "")
+            : this(CMSDataContext.Create(host))
         {
             this.pid = pid;
             this.orgid = orgid;
@@ -155,7 +162,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (person == null)
                 return;
 
-            PopulateDefaultFundIds(defaultFundIds, person);
+            PopulateDefaultFundIds(host, defaultFundIds, person);
 
             var rg = person.ManagedGiving();
             if (rg != null)
@@ -171,13 +178,13 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         }
 
-        private void PopulateDefaultFundIds(string defaultFundIds, Person person)
+        private void PopulateDefaultFundIds(string host, string defaultFundIds, Person person)
         {
+            var db = CMSDataContext.Create(host, asReadOnly: true);
             if (string.IsNullOrWhiteSpace(defaultFundIds) && person.CampusId.HasValue)
             {
                 // look up campus default fund mapping if present.
                 var setting = $"DefaultCampusFunds-{person.CampusId}";
-                var db = DbUtil.DbReadOnly;
                 defaultFundIds = db.Setting(setting, string.Empty);
             }
             
@@ -189,10 +196,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             if (DefaultFundIds.Any())
             {
-                FirstDefaultFundName = OnlineRegPersonModel.GetFundName(DefaultFundIds.First().ToInt());
+                FirstDefaultFundName = OnlineRegPersonModel.GetFundName(db, DefaultFundIds.First().ToInt());
             }
 
-            var fundList = OnlineRegPersonModel.FundList();
+            var fundList = OnlineRegPersonModel.FundList(db);
             FallbackDefaultFundIds.AddRange(fundList.Where(f => !DefaultFundIds.Contains(f.Value)).Select(f => f.Value));
         }
 
@@ -217,20 +224,26 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private PaymentInfo PopulatePaymentInfo()
         {
-            var pi = person.PaymentInfo();
+            var accountId = MultipleGatewayUtils.GetAccount(CurrentDatabase, PaymentProcessTypes.RecurringGiving)?.GatewayAccountId;
+            var pi = person.PaymentInfo(accountId ?? 0);
             if (pi == null)
-                return new PaymentInfo();
-
+            {
+                return new PaymentInfo() { GatewayAccountId = accountId ?? 0 };
+            }
             CreditCard = pi.MaskedCard;
             Account = pi.MaskedAccount;
             Expires = pi.Expires;
             Routing = Util.Mask(new StringBuilder(pi.Routing), 2);
-            NoCreditCardsAllowed = DbUtil.Db.Setting("NoCreditCardGiving", "false").ToBool();
+            NoCreditCardsAllowed = CurrentDatabase.Setting("NoCreditCardGiving", "false").ToBool();
             Type = pi.PreferredGivingType;
             if (NoCreditCardsAllowed)
+            {
                 Type = PaymentType.Ach; // bank account only
+            }
             else if (NoEChecksAllowed)
+            {
                 Type = PaymentType.CreditCard; // credit card only
+            }
             Type = NoEChecksAllowed ? PaymentType.CreditCard : Type;
             ClearMaskedNumbers(pi);
             total = FundItem.Sum(ff => ff.Value) ?? 0;
@@ -240,7 +253,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private void PopulateExtraValueDefaults()
         {
-            var f = OnlineRegPersonModel.FullFundList().SingleOrDefault(ff => ff.Text == Setting.ExtraValueFeeName);
+            var f = OnlineRegPersonModel.FullFundList(CurrentDatabase).SingleOrDefault(ff => ff.Text == Setting.ExtraValueFeeName);
             PopulateReasonableDefaults();
 
             var evamt = person.GetExtra(Setting.ExtraValueFeeName).ToDecimal();
@@ -277,28 +290,27 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private void ClearMaskedNumbers(PaymentInfo pi)
         {
-            var gateway = DbUtil.Db.Setting("TransactionGateway", "");
-
             var clearBankDetails = false;
             var clearCreditCardDetails = false;
 
-            switch (gateway.ToLower())
+            int? GatewayId = MultipleGatewayUtils.GatewayId(CurrentDatabase, PaymentProcessTypes.RecurringGiving);
+            switch (GatewayId)
             {
-                case "sage":
+                case (int)GatewayTypes.Sage:
                     clearBankDetails = !pi.SageBankGuid.HasValue;
                     clearCreditCardDetails = !pi.SageCardGuid.HasValue;
                     break;
-                case "transnational":
+                case (int)GatewayTypes.Transnational:
                     clearBankDetails = !pi.TbnBankVaultId.HasValue;
                     clearCreditCardDetails = !pi.TbnCardVaultId.HasValue;
                     break;
-                case "authorizenet":
+                // case (int)GatewayTypes.Acceptiva:
+                // return new AcceptivaGateway(this, testing, ProcessType);
+                case (int)GatewayTypes.AuthorizeNet:
                     clearBankDetails = !pi.AuNetCustPayBankId.HasValue;
                     clearCreditCardDetails = !pi.AuNetCustPayId.HasValue;
                     break;
-                case "bluepay":
-                    clearCreditCardDetails = !String.IsNullOrEmpty(pi.BluePayCardVaultId);
-                    //TODO: Handle bank account too.
+                default:
                     break;
             }
 
@@ -318,14 +330,15 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public void Confirm(Controller controller)
         {
+            var db = CMSDataContext.Create(controller.HttpContext);
             var details = ViewExtensions2.RenderPartialViewToString(controller, "ManageGiving/EmailConfirmation", this);
 
-            var staff = DbUtil.Db.StaffPeopleForOrg(orgid);
+            var staff = db.StaffPeopleForOrg(orgid);
             var from = staff[0];
 
             if (!string.IsNullOrEmpty(Setting.Body))
             {
-                var text = Setting.Body.Replace("{church}", DbUtil.Db.Setting("NameOfChurch", "church"),
+                var text = Setting.Body.Replace("{church}", db.Setting("NameOfChurch", "church"),
                     ignoreCase: true);
                 //            text = text.Replace("{name}", person.Name, ignoreCase: true);
                 text = text.Replace("{date}", DateTime.Now.ToString("d"), ignoreCase: true);
@@ -336,10 +349,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 text = text.Replace("{contactphone}", Organization.PhoneNumber.FmtFone(), ignoreCase: true);
                 text = text.Replace("{details}", details, ignoreCase: true);
 
-                DbUtil.Db.EmailFinanceInformation(from.FromEmail, person, Setting.Subject, text);
+                db.EmailFinanceInformation(from.FromEmail, person, Setting.Subject, text);
             }
 
-            DbUtil.Db.EmailFinanceInformation(from.FromEmail, staff, "Managed giving", $"Managed giving for {person.Name} ({pid}) {Util.Host}");
+            db.EmailFinanceInformation(from.FromEmail, staff, "Managed giving", $"Managed giving for {person.Name} ({pid}) {db.Host}");
 
             var msg = GetThankYouMessage(@"<p>Thank you {first}, for managing your recurring giving</p>
 <p>You should receive a confirmation email shortly.</p>");
@@ -423,16 +436,18 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public void Update()
         {
-            var db = DbUtil.Db;
+            var db = CurrentDatabase;
             // first check for total amount greater than zero.
             // if so we skip everything except updating the amounts.
             var chosenFunds = FundItemsChosen().ToList();
             if (chosenFunds.Sum(f => f.amt) > 0)
             {
-                var pi = person.PaymentInfo();
+                var account = MultipleGatewayUtils.GetAccount(db, PaymentProcessTypes.RecurringGiving);
+                var accountId = account?.GatewayAccountId ?? 0;
+                var pi = person.PaymentInfo(accountId);
                 if (pi == null)
                 {
-                    pi = new PaymentInfo();
+                    pi = new PaymentInfo() { GatewayAccountId = accountId };
                     person.PaymentInfos.Add(pi);
                 }
                 pi.SetBillingAddress(FirstName, Middle, LastName, Suffix, Address, Address2, City, State, Country, Zip, Phone);
@@ -440,7 +455,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 // first need to do a $1 auth if it's a credit card and throw any errors we get back
                 // from the gateway.
                 var vaultSaved = false;
-                var gateway = db.Gateway(testing);
+                var gateway = db.Gateway(testing, account, PaymentProcessTypes.RecurringGiving);
                 if (Type == PaymentType.CreditCard)
                 {
                     // perform $1 auth.
@@ -513,7 +528,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (!Util.IsHosted || !pf.CreditCard.HasValue())
                 return false;
             var hash = Pbkdf2Hasher.HashString(pf.CreditCard);
-            var db = DbUtil.Db;
+            var db = CurrentDatabase;
             db.InsertIpLog(HttpContextFactory.Current.Request.UserHostAddress, hash);
 
             if (pf.IsProblemUser())
@@ -540,7 +555,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             if (FundItem == null)
                 return new List<FundItemChosen>();
-            var items = OnlineRegPersonModel.FullFundList();
+            var items = OnlineRegPersonModel.FullFundList(CurrentDatabase);
             var q = from i in FundItem
                     join m in items on i.Key equals m.Value.ToInt()
                     where i.Value.HasValue
@@ -652,7 +667,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public void CancelManagedGiving(int peopleId)
         {
-            var db = DbUtil.Db;
+            var db = CurrentDatabase;
             var p = db.LoadPersonById(peopleId);
             db.RecurringAmounts.DeleteAllOnSubmit(p.RecurringAmounts);
 
@@ -686,7 +701,7 @@ FROM dbo.RecurringAmounts ra
 JOIN dbo.ContributionFund f ON f.FundId = ra.FundId
 WHERE ra.PeopleId = @pid
         ";
-            return DbUtil.Db.Connection.Query<RecurringForPerson>(sql, new { pid});
+            return CurrentDatabase.Connection.Query<RecurringForPerson>(sql, new { pid});
         }
     }
 }

@@ -731,8 +731,7 @@ namespace CmsData
                 TrySubmit(db, "ManagedGivings");
             }
 
-            var pi = db.PaymentInfos.FirstOrDefault(mm => mm.PeopleId == targetid);
-            if (pi == null) // the target has none
+            if (!db.PaymentInfos.Any(mm => mm.PeopleId == targetid)) // the target has none
             {
                 foreach (var i in PaymentInfos)
                 {
@@ -749,6 +748,7 @@ namespace CmsData
                             Country = i.Country,
                             Expires = i.Expires,
                             FirstName = i.FirstName,
+                            GatewayAccountId = i.GatewayAccountId,
                             LastName = i.LastName,
                             MaskedAccount = i.MaskedAccount,
                             MaskedCard = i.MaskedCard,
@@ -765,7 +765,7 @@ namespace CmsData
                             Testing = i.Testing,
                             Zip = i.Zip,
                             TbnBankVaultId = i.TbnBankVaultId,
-                            TbnCardVaultId = i.TbnCardVaultId
+                            TbnCardVaultId = i.TbnCardVaultId,
                         });
                 }
             }
@@ -835,7 +835,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             }
         }
 
-        public static Person Add(Family fam, int position, Tag tag, string name, string dob, bool married, int gender,
+        public static Person Add(CMSDataContext db, Family fam, int position, Tag tag, string name, string dob, bool married, int gender,
                                  int originId, int? entryPointId)
         {
             string first, last;
@@ -860,10 +860,10 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 }
             }
 
-            return Add(fam, position, tag, first, null, last, dob, married, gender, originId, entryPointId);
+            return Add(db, fam, position, tag, first, null, last, dob, married, gender, originId, entryPointId);
         }
 
-        public static Person Add(Family fam,
+        public static Person Add(CMSDataContext db, Family fam,
                                  int position,
                                  Tag tag,
                                  string firstname,
@@ -875,7 +875,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                                  int originId,
                                  int? entryPointId)
         {
-            return Add(DbUtil.Db, true, fam, position, tag, firstname, nickname, lastname, dob, marriedCode, gender,
+            return Add(db, true, fam, position, tag, firstname, nickname, lastname, dob, marriedCode, gender,
                 originId, entryPointId);
         }
 
@@ -1013,10 +1013,10 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             return p;
         }
 
-        public static Person Add(Family fam, int position, Tag tag, string firstname, string nickname, string lastname,
+        public static Person Add(CMSDataContext db, Family fam, int position, Tag tag, string firstname, string nickname, string lastname,
                                  string dob, bool married, int gender, int originId, int? entryPointId)
         {
-            return Add(fam, position, tag, firstname, nickname, lastname, dob, married ? 20 : 10, gender, originId,
+            return Add(db, fam, position, tag, firstname, nickname, lastname, dob, married ? 20 : 10, gender, originId,
                 entryPointId);
         }
 
@@ -1057,9 +1057,9 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             return Util.EncryptForUrl($"{PeopleId}|{fromEmail}");
         }
 
-        public static bool ToggleTag(int peopleId, string tagName, int? ownerId, int tagTypeId)
+        public static bool ToggleTag(int peopleId, string tagName, int? ownerId, int tagTypeId, CMSDataContext db)
         {
-            var db = DbUtil.Db;
+            
             var tag = db.FetchOrCreateTag(tagName, ownerId, tagTypeId);
             if (tag == null)
             {
@@ -1441,7 +1441,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             if (np != null)
             {
                 db.EmailRedacted(db.Setting("AdminMail", ConfigurationManager.AppSettings["supportemail"]), np,
-                    "Picture Uploaded on " + Util.Host,
+                    "Picture Uploaded on " + db.Host,
                     $"{Util.UserName} Uploaded a picture for <a href=\"{db.ServerLink($"/Person2/{PeopleId}")}\">{Name}</a><br />\n");
             }
         }
@@ -1502,7 +1502,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
 
             field = field.Trim();
 
-            var ev = PeopleExtras.AsEnumerable().FirstOrDefault(ee => ee.Field == field);
+            var ev = PeopleExtras.AsEnumerable().FirstOrDefault(ee => ee.Field.ToLower() == field.ToLower());
 
             if (ev == null)
             {
@@ -1830,10 +1830,9 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             return mg;
         }
 
-        public PaymentInfo PaymentInfo()
+        public PaymentInfo PaymentInfo(int GatewayAccountId)
         {
-            var pi = PaymentInfos.SingleOrDefault();
-            return pi;
+            return PaymentInfos.Where(p => p.GatewayAccountId == GatewayAccountId).SingleOrDefault();
         }
 
         public Contribution PostUnattendedContribution(CMSDataContext db, decimal amt, int? fund, string description,
@@ -2151,7 +2150,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             };
             TasksAboutPerson.Add(t);
 
-            var gcm = new GCMHelper(Util.Host, DbUtil.Db);
+            var gcm = new GCMHelper(db.Host, db);
             gcm.sendRefresh(assignTo, GCMHelper.ACTION_REFRESH);
 
             return t;
