@@ -95,12 +95,14 @@ namespace CmsCheckin
         {
             Program.TimerStop();
             var d = textBox1.Text.GetDigits().Length;
-            if (d == 10)
+            if (d == 10 || d == 0)
+            {
                 GoNext(sender, e);
-            else if (d == 0)
-                MessageBox.Show("Enter your phone number");
+            }
             else
-                MessageBox.Show("please enter area code too");
+            {
+                MessageBox.Show("Please enter the area code too", "Try again", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
 
         private void buttonbs_Click(object sender, EventArgs e)

@@ -700,6 +700,12 @@ namespace CmsCheckin
 
             Util.UnLockFamily();
 
+            if (Program.settings.printMode == "Cloud Printing")
+            {
+                //TODO: print using cloud printing method
+                return;
+            }
+
             if (Program.settings.printMode == "Print To Server")
             {
                 PrintServerLabels(q);
