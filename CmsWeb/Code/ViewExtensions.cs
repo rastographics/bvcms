@@ -1050,7 +1050,7 @@ namespace CmsWeb
 
         public static HtmlString jQuery()
         {
-            return new HtmlString("<script src='//ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js'></script>\n");
+            return new HtmlString("<script src='//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js'></script>\n");
         }
 
         public static HtmlString jQueryUICss()
