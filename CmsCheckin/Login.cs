@@ -117,7 +117,7 @@ namespace CmsCheckin
 
                 if (existsResults != "1")
                 {
-                    MessageBox.Show("The server you enter is not valid, please try again.\n\n" + Program.settings.createURL(), "Connection Error");
+                    MessageBox.Show("The server name you entered is not valid, please try again.\n\n" + Program.settings.createURL(), "Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
                 else
                 {
@@ -146,18 +146,18 @@ namespace CmsCheckin
                     {
                         if (bm.error == -6)
                         {
-                            MessageBox.Show("Your username or password was incorrect, please try again.", "Server Error");
+                            MessageBox.Show("Your username or password was incorrect, please try again.", "Server Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         }
                         else
                         {
-                            MessageBox.Show("Error: " + bm.error, "Server Error");
+                            MessageBox.Show("Error: " + bm.error, "Server Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         }
                     }
                 }
             }
             catch (WebException)
             {
-                MessageBox.Show("Could not connect to: " + Program.settings.createURL(), "Connection Error");
+                MessageBox.Show("Could not connect to: " + Program.settings.createURL(), "Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 

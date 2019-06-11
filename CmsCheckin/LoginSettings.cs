@@ -162,7 +162,7 @@ namespace CmsCheckin
                 }
                 catch (Exception)
                 {
-                    MessageBox.Show("Cannot find " + Program.settings.createURL());
+                    MessageBox.Show("Cannot find " + Program.settings.createURL(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     CancelClose = true;
                 }
             }
@@ -215,7 +215,7 @@ namespace CmsCheckin
 
             if (labelList == null)
             {
-                MessageBox.Show("Could fetch label formats.", "Label List Error");
+                MessageBox.Show("Could fetch label formats.", "Label List Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -228,15 +228,17 @@ namespace CmsCheckin
                 LabelList.Items.Add(label);
             }
 
-            MessageBox.Show("Label list load complete!", "Label List");
+            MessageBox.Show("Label list load complete!", "Label List", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
 
         private void onSaveLabelClick(object sender, EventArgs e)
         {
             string[] sLabelPieces = LabelList.Text.Split(new char[] { '~' });
-            PrinterHelper.saveLabelFormat(sLabelPieces[0], sLabelPieces[1], LabelFormat.Text.Replace("\r\n", ""));
-
-            LoadLabelList.PerformClick();
+            if (sLabelPieces.Length > 1)
+            {
+                PrinterHelper.saveLabelFormat(sLabelPieces[0], sLabelPieces[1], LabelFormat.Text.Replace("\r\n", ""));
+                LoadLabelList.PerformClick();
+            }
         }
 
         private void onFromPrinterClick(object sender, EventArgs e)
@@ -312,7 +314,8 @@ namespace CmsCheckin
 
         private void onPrintModeChanged(object sender, EventArgs e)
         {
-            if (PrintMode.SelectedIndex == 2)
+            var selectedPrintMode = PrintMode.SelectedValue as string;
+            if (selectedPrintMode == "Print From Server")
             {
                 PrintKiosks.Enabled = true;
                 KiosksToPrintForLabel.Enabled = true;
@@ -320,7 +323,7 @@ namespace CmsCheckin
                 advancedPrinterOptionsGroup.Enabled = true;
                 Printer.Enabled = true;
                 PrinterLabel.Enabled = true;
-                KioskName.Enabled = true;
+                KioskName.Enabled =
                 KioskNameLabel.Enabled = true;
                 labelOptionsGroup.Enabled = true;
 
@@ -330,14 +333,31 @@ namespace CmsCheckin
                 otherOptionsGroup.Enabled = false;
                 adminOptionsGroup.Enabled = false;
             }
-            else if (PrintMode.SelectedIndex == 3)
+            else if (selectedPrintMode == "Cloud Printing")
             {
                 advancedPrinterOptionsGroup.Enabled = false;
                 PrintKiosks.Enabled = false;
                 KiosksToPrintForLabel.Enabled = false;
                 Printer.Enabled = false;
                 PrinterLabel.Enabled = false;
-                KioskName.Enabled = false;
+                KioskName.Enabled = 
+                KioskNameLabel.Enabled = true;
+                labelOptionsGroup.Enabled = false;
+
+                mainOptionsGroup.Enabled = true;
+                buildingOptionsGroup.Enabled = true;
+                askForOptioonsGroup.Enabled = true;
+                otherOptionsGroup.Enabled = true;
+                adminOptionsGroup.Enabled = true;
+            }
+            else if (selectedPrintMode == "No Printer")
+            {
+                advancedPrinterOptionsGroup.Enabled = false;
+                PrintKiosks.Enabled = false;
+                KiosksToPrintForLabel.Enabled = false;
+                Printer.Enabled = false;
+                PrinterLabel.Enabled = false;
+                KioskName.Enabled = 
                 KioskNameLabel.Enabled = false;
                 labelOptionsGroup.Enabled = false;
 
@@ -567,29 +587,29 @@ namespace CmsCheckin
 
                     if (bm.error == 0)
                     {
-                        MessageBox.Show("Your settings have been saved!", "Save Complete");
+                        MessageBox.Show("Your settings have been saved!", "Save Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         Program.updateSettingsList(settings.name, settings.settings);
                         rebindSettingsList();
                     }
                     else
                     {
-                        MessageBox.Show("The server you enter is not valid, please try again.\n\n" + Program.settings.createURL(), "Communication Error");
+                        MessageBox.Show("The server you enter is not valid, please try again.\n\n" + Program.settings.createURL(), "Communication Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
                 }
                 catch (WebException)
                 {
-                    MessageBox.Show("Could not connect to: " + Program.settings.createURL(), "Communication Error");
+                    MessageBox.Show("Could not connect to: " + Program.settings.createURL(), "Communication Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
             else
             {
                 if (SettingsCombo.Text.Length == 0)
                 {
-                    MessageBox.Show("The settings name cannot be blank, please save as a different name.", "Invalid Settings Name");
+                    MessageBox.Show("The settings name cannot be blank, please save as a different name.", "Invalid Settings Name", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
                 else
                 {
-                    MessageBox.Show("The settings name cannot be \"<Current>\", please save as a different name.", "Invalid Settings Name");
+                    MessageBox.Show("The settings name cannot be \"<Current>\", please save as a different name.", "Invalid Settings Name", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
         }
