@@ -81,7 +81,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
             var tid = $"Coupon({Util.fmtcoupon(coupon)})";
 
-            if (c.Amount > pf.AmtToPay || !pf.PayBalance)
+            if (c.Amount >= pf.AmtToPay || !pf.PayBalance)
             {
                 OnlineRegModel.ConfirmDuePaidTransaction(ti, tid, false);
             }
