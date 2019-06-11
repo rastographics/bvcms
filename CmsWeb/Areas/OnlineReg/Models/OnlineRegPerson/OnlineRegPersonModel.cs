@@ -135,6 +135,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public decimal? MissionTripSupportGoer { get; set; }
         public decimal? MissionTripSupportGeneral { get; set; }
 
+        public bool isMissionTripSupporter { get; set; }
+
         [DisplayFormat(DataFormatString = "{0:N2}", ApplyFormatInEditMode = true)]
         public decimal? Suggestedfee { get; set; }
          

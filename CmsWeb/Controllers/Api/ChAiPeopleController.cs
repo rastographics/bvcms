@@ -3,7 +3,7 @@ using AutoMapper.QueryableExtensions;
 using CmsWeb.Lifecycle;
 using CmsWeb.Models.Api;
 using System.Web.Http;
-using System.Web.OData;
+using Microsoft.AspNet.OData;
 
 namespace CmsWeb.Controllers.Api
 {

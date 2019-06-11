@@ -45,11 +45,15 @@
             // 
             // Logo
             // 
-            this.Logo.Image = ((System.Drawing.Image)(resources.GetObject("Logo.Image")));
-            this.Logo.Location = new System.Drawing.Point(39, 12);
+            this.Logo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.Logo.Image = global::CmsCheckin.Properties.Resources.logo_light;
+            this.Logo.Location = new System.Drawing.Point(40, 20);
+            this.Logo.MaximumSize = new System.Drawing.Size(340, 100);
+            this.Logo.MinimumSize = new System.Drawing.Size(340, 90);
             this.Logo.Name = "Logo";
-            this.Logo.Size = new System.Drawing.Size(349, 108);
-            this.Logo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.Logo.Size = new System.Drawing.Size(340, 90);
+            this.Logo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.Logo.TabIndex = 0;
             this.Logo.TabStop = false;
             // 
@@ -69,7 +73,7 @@
             this.URL.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.URL.Location = new System.Drawing.Point(69, 163);
             this.URL.Name = "URL";
-            this.URL.Size = new System.Drawing.Size(260, 26);
+            this.URL.Size = new System.Drawing.Size(253, 26);
             this.URL.TabIndex = 6;
             // 
             // password
@@ -77,7 +81,7 @@
             this.password.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.password.Location = new System.Drawing.Point(148, 277);
             this.password.Name = "password";
-            this.password.PasswordChar = '*';
+            this.password.PasswordChar = '•';
             this.password.Size = new System.Drawing.Size(224, 26);
             this.password.TabIndex = 9;
             this.password.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.onPasswordKeyPress);
@@ -116,7 +120,7 @@
             // 
             this.domainLabel.AutoSize = true;
             this.domainLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.domainLabel.Location = new System.Drawing.Point(328, 166);
+            this.domainLabel.Location = new System.Drawing.Point(326, 166);
             this.domainLabel.Name = "domainLabel";
             this.domainLabel.Size = new System.Drawing.Size(87, 20);
             this.domainLabel.TabIndex = 5;
@@ -174,6 +178,7 @@
             this.Controls.Add(this.label6);
             this.Controls.Add(this.Logo);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Login";
             this.Text = "Login";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.onLoginClosing);

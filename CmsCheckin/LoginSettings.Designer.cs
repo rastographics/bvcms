@@ -27,6 +27,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LoginSettings));
             this.PrintKiosks = new System.Windows.Forms.TextBox();
             this.KiosksToPrintForLabel = new System.Windows.Forms.Label();
             this.PrintMode = new System.Windows.Forms.ComboBox();
@@ -129,7 +130,6 @@
             "Print To Printer",
             "Print To Server",
             "Print From Server",
-            "Cloud Printing",
             "No Printer"});
             this.PrintMode.Location = new System.Drawing.Point(14, 43);
             this.PrintMode.Name = "PrintMode";
@@ -854,6 +854,7 @@
             this.Controls.Add(this.PrintTest);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "LoginSettings";

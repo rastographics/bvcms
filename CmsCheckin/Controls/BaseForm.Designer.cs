@@ -28,22 +28,24 @@
         /// </summary>
         private void InitializeComponent()
         {
-			this.components = new System.ComponentModel.Container();
-			this.timer1 = new System.Windows.Forms.Timer(this.components);
-			this.SuspendLayout();
-			// 
-			// BaseForm
-			// 
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-			this.ClientSize = new System.Drawing.Size(1024, 768);
-			this.Margin = new System.Windows.Forms.Padding(4);
-			this.Name = "BaseForm";
-			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-			this.Text = "Form1";
-			this.Load += new System.EventHandler(this.BaseForm_Load);
-			this.LocationChanged += new System.EventHandler(this.BaseForm_LocationChanged);
-			this.Resize += new System.EventHandler(this.BaseForm_Resize);
-			this.ResumeLayout(false);
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BaseForm));
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.SuspendLayout();
+            // 
+            // BaseForm
+            // 
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            this.ClientSize = new System.Drawing.Size(1024, 768);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(4);
+            this.Name = "BaseForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "TouchPoint Check-in";
+            this.Load += new System.EventHandler(this.BaseForm_Load);
+            this.LocationChanged += new System.EventHandler(this.BaseForm_LocationChanged);
+            this.Resize += new System.EventHandler(this.BaseForm_Resize);
+            this.ResumeLayout(false);
 
         }
 
