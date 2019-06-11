@@ -22,17 +22,23 @@ namespace CmsWeb.Areas.Reports.Models.Attendance
         public int Program { get; set; }
         public int Division { get; set; }
         public string Heading { get; set; }
+        public bool EmptyRun { get; set; }
 
         private readonly List<int> DivisionIds;
         private readonly List<DateTime> weeks;
 
         private CMSDataContext CurrentDatabase { get; set; }
 
-        public MeetingAttendanceModel(CMSDataContext db, DateTime dt1, DateTime dt2, string type, string program, string div)
+        public MeetingAttendanceModel(CMSDataContext db, string dt1, string dt2, string type, string program, string div)
         {
             CurrentDatabase = db;
-            StartDt = dt1;
-            EndDt = dt2;
+
+            // dont run the report without parameters
+            EmptyRun = !dt1.HasValue() || !dt2.HasValue();
+
+            EndDt = dt2.ToDate() ?? DateTime.Today;
+            StartDt = dt1.ToDate() ?? new DateTime(EndDt.Year, EndDt.Month, 1);
+            
             if (type.HasValue())
             {
                 Type = type.ToInt();
