@@ -4,7 +4,7 @@ using System;
 using System.Security.Principal;
 using System.Web;
 using System.Web.Mvc;
-using System.Web.OData;
+using Microsoft.AspNet.OData;
 using UtilityExtensions;
 
 namespace CmsWeb.Lifecycle

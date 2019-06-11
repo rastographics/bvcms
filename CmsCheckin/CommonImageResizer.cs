@@ -286,7 +286,7 @@ namespace CmsCheckin
             }
             catch (Exception ex)
             {
-                MessageBox.Show("An error occurred while saving: " + ex.Message, "Error", MessageBoxButtons.OK);
+                MessageBox.Show("An error occurred while saving: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             return null;
         }

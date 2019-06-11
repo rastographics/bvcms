@@ -28,6 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BuildingAttendant));
             this.ShowCheckin = new System.Windows.Forms.Button();
             this.NameDisplay = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
@@ -132,6 +133,7 @@
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.NameDisplay);
             this.Controls.Add(this.ShowCheckin);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "BuildingAttendant";
             this.Text = "Attendant";
             this.LocationChanged += new System.EventHandler(this.Attendant_LocationChanged);
