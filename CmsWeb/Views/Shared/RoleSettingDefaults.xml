@@ -44,7 +44,7 @@
         <setting name="Meeting-ShowExtraValuesBox" value="false" friendly="Extra Value Box" true="Show" false="Hide" tooltip="" />
         <setting name="Meeting-ShowOtherAttend" value="false" friendly="Other Attend" true="Show" false="Hide" tooltip="" />
         <setting name="Meeting-ShowShowBox" value="true" friendly="Show Box" true="Show" false="Hide" tooltip="" />
-        <setting name="Meeting-ShowWandTargetBox" value="true" friendly="Wand Target Box" true="Show" false="Hide" tooltip="Show/Hide Want Target (something used primarily by staff)" />
+        <setting name="Meeting-ShowWandTargetBox" value="true" friendly="Wand Target Box" true="Show" false="Hide" tooltip="Show/Hide Wand Target (used primarily by staff)" />
         <setting name="Organization-ShowCreateNewMeeting" value="true" friendly="Create New Meeting Button" true="Show" false="Hide" tooltip="Create New Meeting button" />
         <setting name="Organization-ShowDeleteMeeting" value="true" friendly="Delete Meeting Button" true="Show" false="Hide" tooltip="Delete button" />
     </Location>
