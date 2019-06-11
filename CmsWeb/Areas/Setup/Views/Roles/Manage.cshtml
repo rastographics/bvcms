@@ -32,7 +32,6 @@
             font-weight: normal;
             margin-bottom: 0;
         }
-
         .panel-body {
             padding: 0 !important;
         }
@@ -55,6 +54,8 @@
                         Active: this.checked
                     });
                 });
+
+                $(this).parents("tr").toggleClass('bg-warning');
 
                 $.post("/Roles/SaveSettings/", {
                     name: '@Model.RoleName',
@@ -82,6 +83,7 @@
                 </div>
             </div>
             <div class="box-content">
+                <p>Highlighted rows have been changed from the default setting.</p>
                 <div class="accordion" id="accordion">
                     <form id="roleSettings">
                         @foreach (var location in ViewBag.Settings)
@@ -101,7 +103,7 @@
                                                 <tbody>
                                                     @foreach (var setting in location.Settings)
                                                     {
-                                                        <tr>
+                                                        <tr class="@(setting.Active != setting.Default ? "bg-warning" : "")">
                                                             <td style="width:120px;text-align:right;">
                                                                 <input type="checkbox" id="@setting.XMLName" name="@setting.XMLName" data-toggle="toggle" data-on="@setting.TrueLabel" data-off="@setting.FalseLabel" data-width="100" checked="@setting.Active">
                                                             </td>
