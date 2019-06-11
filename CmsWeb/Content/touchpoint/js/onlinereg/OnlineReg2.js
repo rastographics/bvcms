@@ -244,8 +244,10 @@
             $('#special-funds-list').on('change', function () {
                 var selectedText = $('#special-funds-list option:selected').text();
                 var selectedVal = $('#special-funds-list option:selected').val();
-                addFundRow(selectedVal, selectedText);
-                $('#special-funds-list').val('0');
+                if (selectedVal) {
+                    addFundRow(selectedVal, selectedText);
+                    $('#special-funds-list').val('0');
+                }
             });
 
             $(document).on("click", "a.remove-fund", function (e) {
