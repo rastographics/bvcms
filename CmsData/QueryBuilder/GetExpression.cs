@@ -217,7 +217,8 @@ namespace CmsData
                 { QueryType.WasMemberAsOf, WasMemberAsOf },
                 { QueryType.WasRecentMemberOf, WasRecentMemberOf },
                 { QueryType.WeddingDate, WeddingDate },
-                { QueryType.WidowedDate, WidowedDate }
+                { QueryType.WidowedDate, WidowedDate },
+                { QueryType.GetEldestFamilyMember, GetEldestFamilyMember }
             };
             this.parm = parm;
             db = Db;
