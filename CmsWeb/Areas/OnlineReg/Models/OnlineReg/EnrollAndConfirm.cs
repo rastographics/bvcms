@@ -128,7 +128,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 }
                 else
                 {
-                    CurrentDatabase.LogActivity($"Person ({p.person.Name}) is different from the registrant in the email body." +
+                    CurrentDatabase.LogActivity($"Person ({p.person.Name}) is different from the registrant in the email body. " +
                         $"The email was not sent.");
                 }
             }
