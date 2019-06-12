@@ -10,7 +10,14 @@ namespace CmsWeb.Models.ExtraValues
 {
     public class ExtraInfoOrganization : ExtraInfo
     {
-        public override string QueryUrl => $"/OrgSearch/?name=ev:{HttpUtility.UrlEncode(Field)}";
+        public override string QueryUrl
+        {
+            get
+            {
+                Type = Type.Length == 0 ? "none" : Type;
+                return $"/ExtraValue/FamilyQueryData?field={HttpUtility.UrlEncode(Field)}&type={Type}";
+            }
+        }
 
         public override string DeleteAllUrl => $"/ExtraValue/DeleteAll/Organization/{Type}?field={HttpUtility.UrlEncode(Field)}&value={HttpUtility.UrlEncode(Value)}";
 
@@ -114,6 +121,7 @@ namespace CmsWeb.Models.ExtraValues
                     DbUtil.Db.ExecuteCommand("delete OrganizationExtra where field = {0} and Data is not null", field);
                     break;
                 case "?":
+                case "none":
                     DbUtil.Db.ExecuteCommand(
                         "delete OrganizationExtra where field = {0} and data is null and datevalue is null and intvalue is null",
                         field);

@@ -123,7 +123,7 @@ namespace CmsWeb.Models.ExtraValues
                 case "?":
                 case "none":
                     DbUtil.Db.ExecuteCommand(
-                        "delete PeopleExtra where field = {0} and DateValue is null and Data is null and IntValue is null and BitValue is null",
+                        "delete PeopleExtra where field = {0} and data is null and datevalue is null and intvalue is null",
                         field);
                     break;
             }
