@@ -184,7 +184,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (string.IsNullOrWhiteSpace(defaultFundIds) && person.CampusId.HasValue)
             {
                 // look up campus default fund mapping if present.
-                var setting = $"DefaultCampusFunds-{person.CampusId}";
+                var setting = $"DefaultCampusFunds-{person.CampusId.GetValueOrDefault(0)}";
                 defaultFundIds = db.Setting(setting, string.Empty);
             }
             
