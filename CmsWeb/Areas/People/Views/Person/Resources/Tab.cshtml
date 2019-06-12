@@ -1,11 +1,12 @@
 ﻿@using CmsWeb.Areas.Manage.Models
+@using UtilityExtensions
 @model CmsWeb.Areas.People.Models.PersonModel
 
 <ul class="nav nav-pills subnav hidden-sm hidden-xs" data-tabparent="resources">
     @for (var i = 0; i < Model.ResourceTypes.Count; i++)
        {
         <li class="resource-type-tab @(i == 0 ? "active" : null)" data-id="@Model.ResourceTypes[i].ResourceType.ResourceTypeId">
-            <a href = "#@(Model.ResourceTypes[i].ResourceType.Name.ToLower().Replace(" ", ""))" data-toggle="tab">
+            <a href = "#@Model.ResourceTypes[i].ResourceType.Name.SlugifyString()" data-toggle="tab">
                 <span>@Model.ResourceTypes[i].ResourceType.Name</span>
             </a>
         </li>
@@ -15,7 +16,7 @@
     <select class="form-control visible-sm-block visible-xs-block nav-select-pills">
     @for (var i = 0; i<Model.ResourceTypes.Count; i++)
     {
-        <option value = "#@(Model.ResourceTypes[i].ResourceType.Name.ToLower().Replace(" ", ""))" > @Model.ResourceTypes[i].ResourceType.Name </option>
+        <option value = "#@Model.ResourceTypes[i].ResourceType.Name.SlugifyString()" > @Model.ResourceTypes[i].ResourceType.Name </option>
     }
 
     </select>
@@ -57,7 +58,7 @@
 
 
         <div class="tab-pane @(i == 0 ? "active" : null)"
-             id="@(resourceTypeGroup.ResourceType.Name.ToLower().Replace(" ", ""))">
+             id="@resourceTypeGroup.ResourceType.Name.SlugifyString()">
             <div class="panel-group" id="accordion@(i)" role="tablist">
                 @foreach (var category in resourceTypeGroup.Resources.GroupBy(x => x.ResourceCategory).OrderBy(x => x.Key.DisplayOrder))
                 {
@@ -127,8 +128,8 @@
         @foreach (ResourceTypeModel resourceModel in Model.ResourceTypes)
         {
             <text>
-                if (tab === '#tab-@resourceModel.ResourceType.Name.ToLower().Replace(" ", "")') {
-                    var id = "#@resourceModel.ResourceType.Name.ToLower().Replace(" ", "")";
+                if (tab === '#tab-@resourceModel.ResourceType.Name.SlugifyString()') {
+                    var id = "#@resourceModel.ResourceType.Name.SlugifyString()";
                     $("a[href='" + id + "']").click().tab("show");
                     $("option[value='" + id + "']").prop('selected', true);
                 }
