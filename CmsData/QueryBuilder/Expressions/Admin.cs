@@ -214,7 +214,7 @@ namespace CmsData
                 (from p2 in p.Family.People
                  where (op == CompareType.Equal || op == CompareType.OneOf) ? CodeIntIds.Contains(p2.PositionInFamilyId) : !CodeIntIds.Contains(p2.PositionInFamilyId)
                  where q.Select(c => c.PeopleId).Contains(p2.PeopleId)
-                 orderby (p2.BirthYear ?? 9999) * 10000 + (p2.BirthMonth ?? 99) * 100 + (p2.BirthDay ?? 99),
+                 orderby (p2.BirthYear ?? 9999), (p2.BirthMonth ?? 99), (p2.BirthDay ?? 99),
                     db.SpaceToNull(p2.LastName) ?? "zzz",
                     db.SpaceToNull(p2.NickName) ?? db.SpaceToNull(p2.FirstName) ?? "zzz",
                     p2.MiddleName + p2.SuffixCode, p2.PeopleId > 0 ? p2.PeopleId : 99999999

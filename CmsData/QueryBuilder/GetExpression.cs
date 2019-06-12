@@ -68,6 +68,7 @@ namespace CmsData
                 { QueryType.FamilyHasContacts, FamilyHasContacts },
                 { QueryType.FirstFamilyVisitAsOf, FirstFamilyVisitAsOf },
                 { QueryType.FirstOrgJoinDate, FirstOrgJoinDate },
+                { QueryType.GetEldestFamilyMember, GetEldestFamilyMember },
                 { QueryType.GivingChange, GivingChange },
                 { QueryType.GuestAsOf, GuestAttendedAsOf },
                 { QueryType.HadIndContributions, HadIndContributions },
@@ -217,8 +218,7 @@ namespace CmsData
                 { QueryType.WasMemberAsOf, WasMemberAsOf },
                 { QueryType.WasRecentMemberOf, WasRecentMemberOf },
                 { QueryType.WeddingDate, WeddingDate },
-                { QueryType.WidowedDate, WidowedDate },
-                { QueryType.GetEldestFamilyMember, GetEldestFamilyMember }
+                { QueryType.WidowedDate, WidowedDate }
             };
             this.parm = parm;
             db = Db;
