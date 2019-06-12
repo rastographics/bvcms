@@ -33,4 +33,11 @@
         }
         lastChecked = this;
     });
+    // handle get vol sub links - post to url to prevent sharing of links
+    $(".getsub").click(function (e) {
+        e.preventDefault();
+        var form = $('#getvolsub');
+        form.attr('action', this.href);
+        form.submit();
+    });
 });
