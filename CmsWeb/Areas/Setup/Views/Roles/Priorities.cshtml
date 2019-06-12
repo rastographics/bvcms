@@ -5,7 +5,22 @@
     ViewBag.PageHeader = "Roles";
 }
 @section head{
-    <script src="https://cdn.jsdelivr.net/npm/@("@")shopify/draggable@1.0.0-beta.8/lib/sortable.js"></script>
+    @ViewExtensions2.Sortable();
+    <style type="text/css">
+        .draggable-mirror {
+            background: rgba(255,255,255,0.5);
+            width: 95%;
+            outline: -webkit-focus-ring-color auto 1px;
+            cursor: move;
+            cursor: -webkit-grabbing;
+        }
+        .draggable-mirror td:last-child {
+            visibility: hidden;
+        }
+        .handle {
+            cursor: move;
+        }
+    </style>
 }
 @using (Html.BeginForm("SavePriorities", "Roles"))
 {
@@ -18,13 +33,13 @@
                     </div>
                 </div>
                 <div class="box-content">
-                    <p>Drag and drop to re order role priorities.</p>
+                    <p>Drag and drop to reorder role priorities.</p>
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
                                 <tr>
-                                    <th style="width: 100px;">Role Id</th>
-                                    <th style="width: 500px;">Role Name</th>
+                                    <th style="width: 150px;">Role Id</th>
+                                    <th>Role Name</th>
                                     <th style="width: 50px;text-align:center;">Action</th>
                                 </tr>
                             </thead>
@@ -32,8 +47,8 @@
                                 @foreach (var item in Model)
                                 {
                                     <tr class="role dropzone">
-                                        <td style="width: 100px;">@item.RoleId<a href="#" id="@item.RoleId"></a></td>
-                                        <td style="width: 370px;">@item.RoleName</td>
+                                        <td style="width: 150px;">@item.RoleId<a href="#" id="@item.RoleId"></a></td>
+                                        <td>@item.RoleName</td>
                                         <td style="width: 180px;text-align:center;">
                                             <i class="handle fa fa-bars"></i>
                                             <input type="hidden" name="roles[]" value="@item.RoleId" />
@@ -54,9 +69,9 @@
 }
 @section scripts
 {
-        <script type="text/javascript">
-            var sortable = new Sortable.default(document.querySelectorAll('.sortable'), {
-                draggable: '.role',
-            });
-        </script>
-    }
+    <script type="text/javascript">
+        var sortable = new Sortable.default(document.querySelectorAll('.sortable'), {
+            draggable: '.role',
+        });
+    </script>
+}

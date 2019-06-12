@@ -74,9 +74,10 @@ namespace CmsWeb.Areas.Setup.Models
         public void UpdatePriorities(List<int> roleIds)
         {
             int on = 1;
+            var roles = CurrentDatabase.Roles.Where(r => roleIds.Contains(r.RoleId)).AsQueryable();
             foreach (int roleId in roleIds)
             {
-                var role = CurrentDatabase.Roles.SingleOrDefault(m => m.RoleId == roleId);
+                var role = roles.SingleOrDefault(m => m.RoleId == roleId);
                 if (role != null)
                 {
                     role.Priority = on;

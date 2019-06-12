@@ -1024,6 +1024,14 @@ namespace CmsWeb
             //return new HtmlString(@"<script src=""//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"" integrity=""sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"" crossorigin=""anonymous""></script>");
         }
 
+        public static HtmlString BootstrapToggleCss()
+        {
+            return new HtmlString(@"<link rel=""stylesheet"" href=""//gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css"">");
+        }
+        public static HtmlString BootstrapToggle()
+        {
+            return new HtmlString(@"<script src=""//gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js""></script>");
+        }
 
         public static HtmlString FontAwesome()
         {
@@ -1090,6 +1098,11 @@ namespace CmsWeb
         public static HtmlString LoDash()
         {
             return new HtmlString(@"<script src=""//cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.min.js""></script>");
+        }
+
+        public static HtmlString Sortable()
+        {
+            return new HtmlString(@"<script src=""//cdn.jsdelivr.net/npm/\@shopify/draggable@1.0.0-beta.8/lib/sortable.js""></script>");
         }
 
         public static HtmlString Markdown(this HtmlHelper helper, string text)
