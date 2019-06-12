@@ -66,10 +66,11 @@ namespace CmsWeb.Areas.Search.Models
         {
             get
             {
-                var gid = SelectedId ?? Guid.Empty;
-                if (!TopClause.AllConditions.ContainsKey(gid))
-                    throw (new Exception("selected gid: " + gid.ToString() + " Not found"));
-                return TopClause.AllConditions[gid];
+                if (!SelectedId.HasValue || !TopClause.AllConditions.ContainsKey(gid))
+                {
+                    throw (new Exception($"selected gid: {SelectedId} not found"));
+                }
+                return TopClause.AllConditions[SelectedId.Value];
             }
         }
         public void DeleteCondition()
