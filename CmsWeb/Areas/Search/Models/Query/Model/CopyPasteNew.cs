@@ -66,7 +66,7 @@ namespace CmsWeb.Areas.Search.Models
         {
             get
             {
-                if (!SelectedId.HasValue || !TopClause.AllConditions.ContainsKey(gid))
+                if (!SelectedId.HasValue || !TopClause.AllConditions.ContainsKey(SelectedId.Value))
                 {
                     throw (new Exception($"selected gid: {SelectedId} not found"));
                 }
