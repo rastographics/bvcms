@@ -1,0 +1,57 @@
+INSERT INTO [dbo].[OrganizationExtra]
+           ([OrganizationId]
+           ,[Field]
+           ,[Data]
+           ,[DataType]
+           ,[StrValue]
+           ,[DateValue]
+           ,[IntValue]
+           ,[BitValue]
+           ,[TransactionTime]
+           ,[UseAllValues]
+           ,[Metadata])
+           SELECT [OrganizationId]
+					,'ShowDOBOnFind' AS [Field]
+					,[Data]
+					,[DataType]
+					,[StrValue]
+					,[DateValue]
+					,[IntValue]
+					,[BitValue]
+					,[TransactionTime]
+					,[UseAllValues]
+					,[Metadata] 
+			FROM [OrganizationExtra]
+			WHERE [Field] = 'NoPhoneEmailOnFind'
+GO
+
+INSERT INTO [dbo].[OrganizationExtra]
+           ([OrganizationId]
+           ,[Field]
+           ,[Data]
+           ,[DataType]
+           ,[StrValue]
+           ,[DateValue]
+           ,[IntValue]
+           ,[BitValue]
+           ,[TransactionTime]
+           ,[UseAllValues]
+           ,[Metadata])
+           SELECT [OrganizationId]
+					,'ShowPhoneOnFind' AS [Field]
+					,[Data]
+					,[DataType]
+					,[StrValue]
+					,[DateValue]
+					,[IntValue]
+					,1 AS [BitValue]
+					,[TransactionTime]
+					,[UseAllValues]
+					,[Metadata] 
+			FROM [OrganizationExtra]
+			WHERE [Field] = 'NoPhoneEmailOnFind'
+GO
+
+DELETE FROM [dbo].[OrganizationExtra]
+WHERE [Field] = 'NoPhoneEmailOnFind'
+GO

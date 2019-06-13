@@ -746,11 +746,16 @@ namespace CmsWeb.Areas.OnlineReg.Models
             sb.AppendNewLine(csz);
             return sb.ToString();
         }
-
-        public bool NoPhoneEmailOnFind()
+        public bool ShowDOBOnFind()
         {
             var o = masterorg ?? org;
-            return o != null && o.GetExtra(db, "NoPhoneEmailOnFind") == "true";
+            return o != null && o.GetExtra(db, "ShowDOBOnFind") == "true";
+        }
+
+        public bool ShowPhoneOnFind()
+        {
+            var o = masterorg ?? org;
+            return o != null && o.GetExtra(db, "ShowPhoneOnFind") == "true";
         }
         public int MinimumUserAge => db.Setting("MinimumUserAge", "16").ToInt();
 
