@@ -103,6 +103,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public string Country { get; set; }
         public bool IsUs => Country == "United States" || !Country.HasValue();
 
+        public bool transactionApproved = false;
+
         public IEnumerable<SelectListItem> Countries
         {
             get
@@ -679,6 +681,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
 
             ti.Approved = tinfo.Approved;
+            transactionApproved = tinfo.Approved;
 
             if (!ti.Approved.GetValueOrDefault())
             {
@@ -770,8 +773,14 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
             catch (Exception ex)
             {
+                string errorMessage = ex.Message;
+                if (transactionApproved)
+                {
+                    errorMessage = $"Bank transaction was approved but registration failed. Please don't submit the payment again and contact the system administrator.";
+                    CurrentDatabase.LogActivity($"Payment approved but registration failed: {ex.Message}");
+                }
                 ErrorSignal.FromCurrentContext().Raise(ex);
-                modelState.AddModelError("form", ex.Message);
+                modelState.AddModelError("form", errorMessage);
                 return RouteModel.ProcessPayment();
             }
         }
