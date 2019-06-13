@@ -776,8 +776,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 string errorMessage = ex.Message;
                 if (transactionApproved)
                 {
-                    errorMessage = $"Bank transaction was approved but registration failed. Please don't submit the payment again and contact system admin.";
-                    CurrentDatabase.LogActivity($"Payment approved but registration falied: {ex.Message}");
+                    errorMessage = $"Bank transaction was approved but registration failed. Please don't submit the payment again and contact the system administrator.";
+                    CurrentDatabase.LogActivity($"Payment approved but registration failed: {ex.Message}");
                 }
                 ErrorSignal.FromCurrentContext().Raise(ex);
                 modelState.AddModelError("form", errorMessage);
