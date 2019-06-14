@@ -1,4 +1,3 @@
-/// <binding Clean='default' />
 var gulp = require('gulp'),
     less = require('gulp-less'),
     minify = require('gulp-minify-css'),
