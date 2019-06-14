@@ -13,10 +13,10 @@
 <table class="table table-striped">
     <tr>
         <th>Fund</th>
-        <th class="text-right">Amount Pledged</th>
-        <th class="text-right">Amount Contributed</th>
+        <th class="text-right">Pledged</th>
+        <th class="text-right">Contributed</th>
         <th class="text-right">Balance</th>
-        <th style="width: 50px;">Action</th>
+        <th style="width: 50px;"></th>
     </tr>
     @if (PledgesSummary != null)
     {
@@ -29,21 +29,10 @@
                 <td class="text-right">@p.AmountPledged.ToString("C")</td>
                 <td class="text-right">@p.AmountContributed.ToString("C")</td>
                 <td class="text-right">
-                    @if (p.Balance > 0)
-                    {
-                        <a href="#" target="_blank">add to pledge</a>
-                    }
                     @p.Balance.ToString("C")
                 </td>
                 <td style="width: 50px;">
-                    @*@if (g.ShowFundingLink)
-                        {
-                            <a href="/OnlineReg/@g.Id/Giving/@Model.PeopleId" class="btn btn-default btn-sm">Funding Page</a>
-                        }
-                        @if (Util.UserPeopleId == Model.PeopleId || User.IsInRole("Admin"))
-                        {*@
-                            <a href="#" class="btn btn-default btn-sm"><i class="fa fa-check-circle-o"></i> Fullfil Pledge</a>
-                        @*}*@
+                    <a href="#" class="btn btn-default btn-sm"><i class="fa fa-check-circle-o"></i> Fulfill Pledge</a>
                 </td>
             </tr>
         }

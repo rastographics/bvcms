@@ -19,11 +19,11 @@
         }
     });
 
-    $("body").on("click", 'button.editpledge', function (ev) {
+    $("body").on("click", 'a.editpledge', function (ev) {
         ev.preventDefault();
         var a = $(this);
         $("#editpledgeid").val(a.attr("pledgeid"));
-        $("#currentpledge").val(a.attr("amount"));
+        $("#currentpledge").val(a.text());
         $('#editPledge-modal').modal();
         return false;
     });
@@ -142,7 +142,7 @@ function deletePledge(id) {
 function blockPledges() {
     var idToMerge = $("#idtomerge").val();
     if (idToMerge != '') {
-        $('button.editpledge').attr('disabled', 'disabled');
+        //$('button.editpledge').attr('disabled', 'disabled');
         $('button.deletepledge').attr('disabled', 'disabled');
         $('a.fulfillpledge').attr('disabled', 'disabled');
         $('button.mergepledge[pledgeid=' + idToMerge + ']').attr('disabled', 'disabled');
@@ -170,7 +170,7 @@ function unblockPledges() {
             cancelbutton.empty();
             cancelbutton.append('<i class=' + '"fa fa-times-circle"' + '></i> Delete');
         }
-        $('button.editpledge').prop('disabled', false);
+        //$('button.editpledge').prop('disabled', false);
         $('button.deletepledge').prop('disabled', false);
         $('button.mergepledge').prop('disabled', false);
         $('a.fulfillpledge').removeAttr('disabled');

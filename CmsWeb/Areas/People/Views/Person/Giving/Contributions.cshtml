@@ -47,7 +47,6 @@
                             }
                             @if (isFinanceRole && Model.isPledges)
                             {
-                                <th>Actions</th>
                                 <th></th>
                                 <th></th>
                             }
@@ -58,7 +57,17 @@
                         {
                             <tr>
                                 <td>@c.Date.ToShortDateString()</td>
-                                <td class="text-right amount">@c.Amount.ToString("N2")</td>
+                                <td class="text-right amount">
+                                    @if (isFinanceRole && c.Type == "Pledge")
+                                    {
+                                        <a class="editpledge" pledgeid="@c.ContributionId" href="">@c.Amount.ToString("N2")</a>
+                                    }
+                                    else
+                                    {
+                                        @c.Amount.ToString("N2")
+                                    }
+
+                                </td>
                                 <td><span class="pad-left">@c.Fund</span></td>
                                 @if (!Model.isPledges)
                                 {
@@ -96,13 +105,13 @@
                                             </button>
                                         </div>
                                     </td>
-                                    <td class="action">
+                                    @*<td class="action">
                                         <div class="btn-group">
                                             <button type="button" class="btn btn-default btn-sm dropdown-toggle editpledge" pledgeid="@c.ContributionId" amount="@c.Amount.ToString("N2")">
                                                 <i class="fa fa-pencil-square-o"></i> Edit
                                             </button>
                                         </div>
-                                    </td>
+                                    </td>*@
                                     <td class="action">
                                         <div class="btn-group">
                                             <button type="button" class="btn btn-danger btn-sm dropdown-toggle deletepledge" pledgeid="@c.ContributionId">
