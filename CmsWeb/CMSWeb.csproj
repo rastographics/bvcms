@@ -3407,7 +3407,7 @@
     </VisualStudio>
   </ProjectExtensions>
   <PropertyGroup>
-    <PreBuildEvent>gulp --no-color</PreBuildEvent>
+    <PreBuildEvent>npm install &amp;&amp; gulp --no-color</PreBuildEvent>
   </PropertyGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
