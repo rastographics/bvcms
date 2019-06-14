@@ -4,13 +4,13 @@
         <setting name="CanEditCGInfoEVs" value="false" friendly="Org Extra Values" true="Allow" false="Disallow" tooltip="Allows user to edit existing extra values on an extra value tab" />
         <setting name="DisablePersonLinks" value="true" friendly="Person Links" true="Enable" false="Disable" tooltip="Enable/Disable hyperlinking to a person's profile (in orgs)" />
         <setting name="EditMemberData" value="true" friendly="Edit Member Data" true="Yes" false="No" tooltip="User can edit another user's Org Member Data or not" />
-        <setting name="HideExtraValueEdit" value="true" friendly="Org Extra Value Edit Button" true="Show" false="Hide" tooltip="Show/Hide the org extra value edit button which allows new EVs to be added" />
+        <setting name="HideExtraValueEdit" value="true" friendly="Org Extra Value Edit Button" true="Show" false="Hide" tooltip="Show/Hide the org extra value edit button which allows new extra values to be added" />
         <setting name="HideGuestsOrgMembers" value="true" friendly="Guest Org Members" true="Show" false="Hide" tooltip="Show/Hide Guest Org Member Tab" />
         <setting name="HideInactiveOrgMembers" value="true" friendly="Inactive Org Members" true="Show" false="Hide" tooltip="Show/Hide Inactive Org Member Tab" />
         <setting name="HidePendingOrgMembers" value="true" friendly="Pending Org Members" true="Show" false="Hide" tooltip="Show/Hide Pending Org Member Tab" />
         <setting name="LeadersCanAlwaysEditOrgContent" value="false" friendly="Edit Org Content" true="Allow" false="Disallow" tooltip="Instead of relying on the EditContent role, Org Leaders can always edit org content" />
         <setting name="LimitedSearchPerson" value="false" friendly="Add New Person Search" true="Limit" false="Full Access" tooltip="Limits search for a name to “Add Member” so we don’t reveal private info" />
-        <setting name="LimitToolbar" value="false" friendly="Blue Toolbar" true="Limit" false="Full Access" tooltip="Custom blue toolbar (need to likely breakout)" />
+        <setting name="LimitToolbar" value="false" friendly="Blue Toolbar" true="Limit" false="Full Access" tooltip="Custom blue toolbar" />
         <setting name="Organization-CollapseOrgDetails" value="true" friendly="Org Details Box" true="Show" false="Hide" tooltip="" />
         <setting name="Organization-ShowAddress" value="true" friendly="Org Show Address" true="Show" false="Hide" tooltip="Show member address" />
         <setting name="Organization-ShowBirthday" value="true" friendly="Org Show Birthdays" true="Show" false="Hide" tooltip="Show member birthday" />

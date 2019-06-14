@@ -5,7 +5,7 @@
     ViewBag.PageHeader = "Roles";
 }
 @section head{
-    @ViewExtensions2.Sortable();
+    @ViewExtensions2.Sortable()
     <style type="text/css">
         .draggable-mirror {
             background: rgba(255,255,255,0.5);
@@ -51,7 +51,10 @@
                                         <td style="width: 150px;">@item.RoleId<a href="#" id="@item.RoleId"></a></td>
                                         <td>@item.RoleName</td>
                                         <td style="width: 180px;text-align:center;">
-                                            <i class="handle fa fa-bars"></i>
+                                            @if (item.RoleName != "Admin")
+                                            {
+                                                <i class="handle fa fa-bars"></i>
+                                            }
                                             <input type="hidden" name="roles[]" value="@item.RoleId" />
                                         </td>
                                     </tr>
@@ -60,8 +63,8 @@
                         </table>
                     </div>
                     <div class="visible-xs-block">
-                            <a href="/Roles" class="btn btn-default"><i class="fa fa-arrow-circle-left"></i> Cancel</a>
-                            <button type="submit" class="btn btn-success">Save</button>
+                        <a href="/Roles" class="btn btn-default btn-block"><i class="fa fa-arrow-circle-left"></i> Cancel</a>
+                        <button type="submit" class="btn btn-success btn-block">Save</button>
                     </div>
                 </div>
             </div>
@@ -73,6 +76,7 @@
     <script type="text/javascript">
         var sortable = new Sortable.default(document.querySelectorAll('.sortable'), {
             draggable: '.role',
+            handle: '.handle'
         });
     </script>
 }

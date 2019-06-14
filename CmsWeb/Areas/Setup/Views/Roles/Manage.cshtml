@@ -7,7 +7,7 @@
 }
 @section head{
     @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
-    @ViewExtensions2.BootstrapToggleCss();
+    @ViewExtensions2.BootstrapToggleCss()
 
     <style type="text/css">
         .btn-link i {
@@ -39,8 +39,8 @@
     </style>
 }
 @section scripts{
-    @ViewExtensions2.BootstrapToggle();
-    @Fingerprint.Script("/Content/touchpoint/js/snackbar.js");
+    @ViewExtensions2.BootstrapToggle()
+    @Fingerprint.Script("/Content/touchpoint/js/snackbar.js")
     <script>
         $(function () {
             $('[data-toggle="popover"]').popover({ html: true });
@@ -126,6 +126,9 @@
                             </div>
                         }
                     </form>
+                </div>
+                <div class="visible-xs-block">
+                    <a href="/Roles" class="btn btn-default btn-block"><i class="fa fa-arrow-circle-left"></i> Back to List</a>
                 </div>
             </div>
         </div>
