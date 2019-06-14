@@ -47,7 +47,7 @@
                             <tbody class="sortable">
                                 @foreach (var item in Model)
                                 {
-                                    <tr class="role dropzone">
+                                    <tr class="@(item.RoleName != "Admin" ? "role dropzone" : "")">
                                         <td style="width: 150px;">@item.RoleId<a href="#" id="@item.RoleId"></a></td>
                                         <td>@item.RoleName</td>
                                         <td style="width: 180px;text-align:center;">
