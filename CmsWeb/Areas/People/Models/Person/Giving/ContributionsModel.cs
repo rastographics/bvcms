@@ -30,6 +30,8 @@ namespace CmsWeb.Areas.People.Models
         public Person Person;
         public bool ShowNames;
         public bool ShowTypes;
+        public bool isPledges = false;
+        public List<PledgesSummary> PledgesSummary { get; set; }
         [DisplayName("Electronic Only"), TrackChanges]
         public bool ElectronicStatement { get; set; }
         [DisplayName("Statement Option")]
@@ -76,15 +78,68 @@ namespace CmsWeb.Areas.People.Models
             switch (Filter)
             {
                 case "Contributions":
-                    return from c in contributionRecords
-                           where ContributionTypeCode.Pledge != c.ContributionTypeId
-                           select c;
+                    return contributionRecords.Where(p => p.ContributionTypeId != ContributionTypeCode.Pledge);
                 case "Pledges":
-                    return from c in contributionRecords
-                           where ContributionTypeCode.Pledge == c.ContributionTypeId
-                           select c;
+                    isPledges = true;
+                    return contributionRecords.Where(p => p.ContributionTypeId == ContributionTypeCode.Pledge);
                 default:
                     return contributionRecords;
+            }
+        }
+
+        private IQueryable<Contribution> GetContributionRecords()
+        {
+            var currentUser = DbUtil.Db.CurrentUserPerson;
+            var isFinanceUser = Roles.GetRolesForUser().Contains("Finance");
+            var isCurrentUser = currentUser.PeopleId == Person.PeopleId;
+            var isSpouse = currentUser.PeopleId == Person.SpouseId;
+            var isFamilyMember = currentUser.FamilyId == Person.FamilyId;
+            if (isCurrentUser || (isSpouse && (Person.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint) || isFamilyMember || isFinanceUser)
+            {
+                return from c in DbUtil.Db.Contributions
+                                      where (c.PeopleId == Person.PeopleId || (c.PeopleId == Person.SpouseId && (Person.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint))
+                                      && c.ContributionStatusId == ContributionStatusCode.Recorded
+                                      && !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
+                                      select c;
+            }
+            else
+            {
+                return from c in DbUtil.Db.Contributions
+                                      join f in DbUtil.Db.ContributionFunds.ScopedByRoleMembership() on c.FundId equals f.FundId
+                                      where c.PeopleId == Person.PeopleId
+                                      && c.ContributionStatusId == ContributionStatusCode.Recorded
+                                      && !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
+                                      select c;
+            }
+        }
+
+        public List<PledgesSummary> GetPledgesSummary()
+        {
+            IQueryable<Contribution> contributionRecords = GetContributionRecords();
+            PledgesSummary = new List<PledgesSummary>();
+            foreach (Contribution contribution in contributionRecords.Where(p => p.ContributionTypeId == ContributionTypeCode.Pledge))
+            {
+                AddSummaryPledge(contribution, contributionRecords);
+            }
+            return PledgesSummary;
+        }
+
+        private void AddSummaryPledge(Contribution contribution, IQueryable<Contribution> contributionRecords)
+        {
+            var fundName = contribution.ContributionFund.FundName;
+            if (!PledgesSummary.Any(p => p.Fund == fundName))
+            {
+                decimal amountPledged = contributionRecords.Where(c => c.ContributionTypeId == ContributionTypeCode.Pledge && c.ContributionFund.FundName == fundName)
+                                                    .Sum(c => c.ContributionAmount ?? 0);
+                decimal amountContributed = contributionRecords.Where(c => c.ContributionTypeId != ContributionTypeCode.Pledge && c.ContributionFund.FundName == fundName)
+                                                    .Sum(c => c.ContributionAmount ?? 0);
+                PledgesSummary.Add(new PledgesSummary()
+                {
+                    Fund = fundName,
+                    AmountPledged = amountPledged,
+                    AmountContributed = amountContributed,
+                    Balance = amountPledged - amountContributed < 0 ? 0 : amountPledged - amountContributed
+                });
             }
         }
 
@@ -202,18 +257,18 @@ namespace CmsWeb.Areas.People.Models
             if (shouldGroupByFunds)
             {
                 result = (from c in contributions
-                              group c by new { c.DateX.Value.Year, c.FundName, c.FundId } into g
-                              orderby g.Key.Year descending, g.Key.FundName ascending
-                              select new StatementInfoWithFund()
-                              {
-                                  Count = g.Count(),
-                                  Amount = g.Sum(cc => cc.Amount ?? 0),
-                                  StartDate = new DateTime(g.Key.Year, 1, 1),
-                                  EndDate = new DateTime(g.Key.Year, 12, 31),
-                                  FundName = g.Key.FundName,
-                                  FundId = g.Key.FundId,
-                                  FundGroupName = string.Empty
-                              }).ToList();
+                          group c by new { c.DateX.Value.Year, c.FundName, c.FundId } into g
+                          orderby g.Key.Year descending, g.Key.FundName ascending
+                          select new StatementInfoWithFund()
+                          {
+                              Count = g.Count(),
+                              Amount = g.Sum(cc => cc.Amount ?? 0),
+                              StartDate = new DateTime(g.Key.Year, 1, 1),
+                              EndDate = new DateTime(g.Key.Year, 12, 31),
+                              FundName = g.Key.FundName,
+                              FundId = g.Key.FundId,
+                              FundGroupName = string.Empty
+                          }).ToList();
 
                 var displayNameHelper = new CustomFundSetDisplayHelper(dbContext);
                 displayNameHelper.ProcessList(result);
@@ -221,18 +276,18 @@ namespace CmsWeb.Areas.People.Models
                 // hack: grouping done in memory since these fundids are stored as XML and not easily accessed in SQL
                 // task: FundGrouping table to avoid using XML for this data in the future with UI to make management easier?
                 result = (from c in result
-                         group c by new { c.StartDate.Year, c.FundGroupName } into g
-                         orderby g.Key.Year descending, g.Key.FundGroupName ascending
-                         select new StatementInfoWithFund()
-                         {
-                             Count = g.Sum(cc => cc.Count),
-                             Amount = g.Sum(cc => cc.Amount),
-                             StartDate = new DateTime(g.Key.Year, 1, 1),
-                             EndDate = new DateTime(g.Key.Year, 12, 31),
-                             FundName = "",
-                             FundId = 0,
-                             FundGroupName = g.Key.FundGroupName
-                         }).ToList();
+                          group c by new { c.StartDate.Year, c.FundGroupName } into g
+                          orderby g.Key.Year descending, g.Key.FundGroupName ascending
+                          select new StatementInfoWithFund()
+                          {
+                              Count = g.Sum(cc => cc.Count),
+                              Amount = g.Sum(cc => cc.Amount),
+                              StartDate = new DateTime(g.Key.Year, 1, 1),
+                              EndDate = new DateTime(g.Key.Year, 12, 31),
+                              FundName = "",
+                              FundId = 0,
+                              FundGroupName = g.Key.FundGroupName
+                          }).ToList();
             }
             else
             {

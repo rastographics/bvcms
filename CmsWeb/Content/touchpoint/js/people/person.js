@@ -422,7 +422,7 @@
                         subLink = null;
                     }
                 } else {
-                    var id = "#all";
+                    var id = "#contributions";
                     if ($(id).length < 2) {
                         $("a[href='" + id + "']").click().tab("show");
                         $.cookie('lasttab', id);

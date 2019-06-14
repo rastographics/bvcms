@@ -632,6 +632,7 @@
     <Compile Include="Areas\People\Models\Contact\ContactExtraLocationConfig.cs" />
     <Compile Include="Areas\People\Models\Downline\DownlineLevelsModel.cs" />
     <Compile Include="Areas\People\Models\Downline\DownlineSummaryModel.cs" />
+    <Compile Include="Areas\People\Models\Person\Giving\PledgesSummary.cs" />
     <Compile Include="Areas\People\Models\Task\TaskModel.cs" />
     <Compile Include="Areas\Public\Controllers\CheckInAPIv2Controller.cs" />
     <Compile Include="Areas\Public\Controllers\CheckScanAPIController.cs" />
@@ -1823,6 +1824,7 @@
     <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageGiving\_ManagedGivingFundsNew.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\OnePageGiving\NotConfigured.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\MeetingAttendance.cshtml" />
+    <Content Include="Areas\People\Views\Shared\PledgesSummary.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

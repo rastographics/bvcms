@@ -1,14 +1,12 @@
 ﻿@model CmsWeb.Areas.People.Models.PersonModel
 @using CmsData
 <ul class="nav nav-pills subnav hidden-sm hidden-xs" data-tabparent="giving">
-    <li><a href="#all" data-toggle="tab" class="ajax">All</a></li>
     <li><a href="#contributions" data-toggle="tab" class="ajax">Contributions</a></li>
     <li><a href="#pledges" data-toggle="tab" class="ajax">Pledges</a></li>
-    <li style="float:right"><a href="#statements" data-toggle="tab" class="ajax">Statements</a></li>
+    <li><a href="#statements" data-toggle="tab" class="ajax">Statements</a></li>
 </ul>
 <select class="form-control visible-sm-block visible-xs-block nav-select-pills">
     <optgroup>
-        <option value="#all">All</option>
         <option value="#contributions">Contributions</option>
         <option value="#pledges">Pledges</option>
     </optgroup>
@@ -17,10 +15,6 @@
     </optgroup>
 </select>
 <div class="tab-content" style="border: none;">
-    <div class="tab-pane" id="all" data-link="/Person2/Contributions">
-        @Helper.HiddenId("PeopleId", Util2.CurrentPeopleId)
-        @Helper.HiddenParameter("Filter", "")
-    </div>
     <div class="tab-pane" id="contributions" data-link="/Person2/Contributions">
         @Helper.HiddenId("PeopleId", Util2.CurrentPeopleId)
         @Helper.HiddenParameter("Filter", "Contributions")

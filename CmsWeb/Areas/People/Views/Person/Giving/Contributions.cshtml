@@ -8,14 +8,24 @@
     var checkImageUserView = true;
     var filter = Model.Filter;
     var isFinanceRole = User.IsInRole("Finance");
+    var isPledges = Model.isPledges;
     if (DbUtil.Db.Setting("CheckImagesDisabledForUser"))
     {
         checkImageUserView = isFinanceRole;
     }
 }
 <form class="non-modal ajax">
-    @FormAction(giving, campusId, vaultDisabled)
-    @FormAction(giving, campusId, vaultDisabled, true)
+    @if (filter == "Pledges")
+    {
+        <div class="row">
+            @Html.Partial("PledgesSummary", Model)
+        </div>
+    }
+    else
+    {
+        @FormAction(giving, campusId, vaultDisabled)
+        @FormAction(giving, campusId, vaultDisabled, true)
+    }
     <div class="row">
         <div class="col-sm-12">
             @Html.Partial("PagerTop", Model)
@@ -26,16 +36,18 @@
                             <th>@Model.SortLinkWFilter("Date", filter)</th>
                             <th class="text-right">@Model.SortLinkWFilter("Amount", filter)</th>
                             <th><span class="pad-left">@Model.SortLinkWFilter("Fund", filter)</span></th>
-                            <th>@Model.SortLinkWFilter("Type", filter)</th>
-                            <th>@Model.SortLinkWFilter("CheckNo", filter)</th>
+                            @if (!Model.isPledges)
+                            {
+                                <th>@Model.SortLinkWFilter("Type", filter)</th>
+                                <th>@Model.SortLinkWFilter("CheckNo", filter)</th>
+                            }
                             @if (Model.ShowNames)
                             {
                                 <th>@Model.SortLinkWFilter("Name", filter)</th>
                             }
-                            <th></th>
-                            @if (isFinanceRole)
+                            @if (isFinanceRole && Model.isPledges)
                             {
-                                <th></th>
+                                <th>Actions</th>
                                 <th></th>
                                 <th></th>
                             }
@@ -48,34 +60,33 @@
                                 <td>@c.Date.ToShortDateString()</td>
                                 <td class="text-right amount">@c.Amount.ToString("N2")</td>
                                 <td><span class="pad-left">@c.Fund</span></td>
-                                <td>@c.Type</td>
-                                <td>
-                                    @c.CheckNo
-                                    @if (c.ImageId != 0 && checkImageUserView)
-                                    {
-                                        <a href="@Url.Action("GetCheckImage", "GetCheckImage", new {Area = "Dialog", id = c.ContributionId})" class="searchadd pid">
-                                            <i class="fa fa-info-circle"></i>
-                                        </a>
-                                    }
-                                </td>
+                                @if (!Model.isPledges)
+                                {
+                                    <td>@c.Type</td>
+                                    <td>
+                                        @c.CheckNo
+                                        @if (c.ImageId != 0 && checkImageUserView)
+                                        {
+                                            <a href="@Url.Action("GetCheckImage", "GetCheckImage", new {Area = "Dialog", id = c.ContributionId})" class="searchadd pid">
+                                                <i class="fa fa-info-circle"></i>
+                                            </a>
+                                        }
+                                    </td>
+                                }
                                 @if (Model.ShowNames)
                                 {
                                     <td>@c.Name</td>
                                 }
-                                @if (c.Type == "Pledge" && c.PledgeFund)
-                                {
-                                    <td class="action">
-                                        <div class="btn-group">
-                                            <a href="/Person2/OneTimeGift/@(campusId??0)?contributionId=@c.ContributionId" target="_blank" class="btn btn-default btn-sm fulfillpledge">
-                                                <i class="fa fa-check-circle-o"></i> Fulfill pledge
-                                            </a>
-                                        </div>
-                                    </td>
-                                }
-                                else
-                                {
-                                    <td></td>
-                                }
+                                @*@if (c.Type == "Pledge" && c.PledgeFund)
+                                    {
+                                        <td class="action">
+                                            <div class="btn-group">
+                                                <a href="/Person2/OneTimeGift/@(campusId??0)?contributionId=@c.ContributionId" target="_blank" class="btn btn-default btn-sm fulfillpledge">
+                                                    <i class="fa fa-check-circle-o"></i> Fulfill pledge
+                                                </a>
+                                            </div>
+                                        </td>
+                                    }*@
                                 @if (isFinanceRole && c.Type == "Pledge")
                                 {
                                     <td class="action">
@@ -99,12 +110,6 @@
                                             </button>
                                         </div>
                                     </td>
-                                }
-                                else if (isFinanceRole)
-                                {
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
                                 }
                             </tr>
                         }
