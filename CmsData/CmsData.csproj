@@ -1394,7 +1394,6 @@
     <Content Include="Migrations\20190523_add_paymentinfo_gatewayaccountid.sql" />
     <Content Include="Migrations\20190523_Insert_Temporary_Recurring_Giving.sql" />
     <Content Include="Migrations\20190530_Update_PaymentInfo_PK.sql" />
-    <Content Include="Migrations\20190531_drop_SP_GreatPlainsIncomeExport.sql" />
     <Content Include="QueryBuilder\CompareMap.xml">
       <SubType>Designer</SubType>
     </Content>
