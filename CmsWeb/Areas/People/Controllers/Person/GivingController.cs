@@ -127,7 +127,7 @@ namespace CmsWeb.Areas.People.Controllers
         }
 
         [HttpGet]
-        public ActionResult OneTimeGift(int? id, int? contributionId)
+        public ActionResult OneTimeGift(int? id, int? fundId)
         {
             // check for one time gift campus route mapping.
             if (id.HasValue && id != 0)
@@ -142,8 +142,8 @@ namespace CmsWeb.Areas.People.Controllers
 
             var oid = CmsData.API.APIContribution.OneTimeGiftOrgId(CurrentDatabase);
 
-            if (contributionId != null)
-                return Redirect("/OnlineReg/" + oid + "?pledgeFund=" + getFundId(contributionId.Value));
+            if (fundId != null)
+                return Redirect("/OnlineReg/" + oid + "?pledgeFund=" + fundId);
             if (oid > 0)
                 return Redirect("/OnlineReg/" + oid);
 

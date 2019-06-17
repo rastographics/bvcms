@@ -114,6 +114,7 @@ namespace CmsWeb.Areas.People.Models
                                                     .Sum(c => c.ContributionAmount ?? 0);
                 PledgesSummary.Add(new PledgesSummary()
                 {
+                    FundId = contribution.ContributionFund.FundId,
                     Fund = fundName,
                     AmountPledged = amountPledged,
                     AmountContributed = amountContributed,

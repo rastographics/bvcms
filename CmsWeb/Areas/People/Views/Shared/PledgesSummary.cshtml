@@ -1,5 +1,6 @@
 ﻿@model CmsWeb.Areas.People.Models.ContributionsModel
 @{
+    var campusId = Model.Person.CampusId;
     var PledgesSummary = Model.GetPledgesSummary();
 }
 <div class="row">
@@ -32,7 +33,7 @@
                     @p.Balance.ToString("C")
                 </td>
                 <td style="width: 50px;">
-                    <a href="#" class="btn btn-default btn-sm"><i class="fa fa-check-circle-o"></i> Fulfill Pledge</a>
+                    <a href="/Person2/OneTimeGift/@(campusId??0)?fundId=@p.FundId" target="_blank" class="btn btn-default btn-sm fulfillpledge"><i class="fa fa-check-circle-o"></i> Fulfill Pledge</a>
                 </td>
             </tr>
         }

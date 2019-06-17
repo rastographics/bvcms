@@ -15,16 +15,13 @@
     }
 }
 <form class="non-modal ajax">
+    @FormAction(giving, campusId, vaultDisabled)
+    @FormAction(giving, campusId, vaultDisabled, true)
     @if (filter == "Pledges")
     {
         <div class="row">
             @Html.Partial("PledgesSummary", Model)
         </div>
-    }
-    else
-    {
-        @FormAction(giving, campusId, vaultDisabled)
-        @FormAction(giving, campusId, vaultDisabled, true)
     }
     <div class="row">
         <div class="col-sm-12">
@@ -106,12 +103,12 @@
                                         </div>
                                     </td>
                                     @*<td class="action">
-                                        <div class="btn-group">
-                                            <button type="button" class="btn btn-default btn-sm dropdown-toggle editpledge" pledgeid="@c.ContributionId" amount="@c.Amount.ToString("N2")">
-                                                <i class="fa fa-pencil-square-o"></i> Edit
-                                            </button>
-                                        </div>
-                                    </td>*@
+                                            <div class="btn-group">
+                                                <button type="button" class="btn btn-default btn-sm dropdown-toggle editpledge" pledgeid="@c.ContributionId" amount="@c.Amount.ToString("N2")">
+                                                    <i class="fa fa-pencil-square-o"></i> Edit
+                                                </button>
+                                            </div>
+                                        </td>*@
                                     <td class="action">
                                         <div class="btn-group">
                                             <button type="button" class="btn btn-danger btn-sm dropdown-toggle deletepledge" pledgeid="@c.ContributionId">
