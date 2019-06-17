@@ -36,7 +36,7 @@
             type: "warning",
             showCancelButton: true,
             confirmButtonClass: "btn-danger",
-            confirmButtonText: "Yes, delete this pledge!",
+            confirmButtonText: "Yes, delete this pledge.",
             closeOnConfirm: false
         },
             function () {
@@ -120,7 +120,7 @@ function deletePledge(id) {
         success: function (data) {
             if (data == 'OK') {
                 swal({
-                    title: "Pledge Deleted!",
+                    title: "Pledge deleted.",
                     type: "success"
                 },
                     function () {
@@ -185,7 +185,7 @@ function askMergePledges(idToMerge, id) {
         type: "info",
         showCancelButton: true,
         confirmButtonClass: "btn-danger",
-        confirmButtonText: "Yes, merge it!",
+        confirmButtonText: "Yes, merge it.",
         closeOnConfirm: false
     },
         function () {
@@ -207,7 +207,7 @@ function mergePledges(idToMerge, id) {
         success: function (data) {
             if (data == 'OK') {
                 swal({
-                    title: "Pledges Merged!",
+                    title: "Pledges merged.",
                     type: "success"
                 },
                     function () {
