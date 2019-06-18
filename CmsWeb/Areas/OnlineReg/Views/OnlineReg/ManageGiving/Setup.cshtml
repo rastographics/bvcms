@@ -41,7 +41,7 @@
 }
 
 <div class="regform">
-    <h2>@Model.Organization.OrganizationName @Model.FirstDefaultFundName</h2>
+    <h2>@Model.Organization.OrganizationName</h2>
     <div>@Html.Raw(Model.Instructions)</div>
     <h4>for @(Model.person?.Name) &lt;@(Model.person?.EmailAddress)&gt;</h4>
     @Html.ValidationSummary()
