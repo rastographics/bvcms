@@ -509,7 +509,6 @@ namespace CmsData.View
                 if (this._ShowDOBOnFind != value)
                     this._ShowDOBOnFind = value;
             }
-
         }
 
         [Column(Name = "ShowPhoneOnFind", Storage = "_ShowPhoneOnFind", DbType = "bit")]
@@ -525,7 +524,6 @@ namespace CmsData.View
                 if (this._ShowPhoneOnFind != value)
                     this._ShowPhoneOnFind = value;
             }
-
         }
 
 
