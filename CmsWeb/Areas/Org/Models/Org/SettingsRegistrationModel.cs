@@ -47,6 +47,15 @@ namespace CmsWeb.Areas.Org.Models
             Id = id;
             this.CopyPropertiesFrom(Org, typeof(OrgAttribute));
             this.CopyPropertiesFrom(RegSettings, typeof(RegAttribute));
+
+            if (!db.Organizations.Where(x => x.OrganizationId == id).Select(y => y.RegSettingXml).ToString().Contains("ShowPhoneOnFind"))
+            {
+                ShowPhoneOnFind = true;
+            }
+            if (!db.Organizations.Where(x => x.OrganizationId == id).Select(y => y.RegSettingXml).ToString().Contains("ShowDOBOnFind"))
+            {
+                ShowDOBOnFind = true;
+            }
         }
         public void Update()
         {
@@ -201,6 +210,12 @@ namespace CmsWeb.Areas.Org.Models
         [Reg, Display(Description = NotReqCampusDescription)]
         public bool NotReqCampus { get; set; }
 
+        [Reg, Display(Description = ShowDOBOnFindDescription)]
+        public bool ShowDOBOnFind { get; set; }
+
+        [Reg, Display(Description = ShowPhoneOnFindDescription)]
+        public bool ShowPhoneOnFind { get; set; }
+
         [Reg, Display(Description = MemberOnlyDescription)]
         public bool MemberOnly { get; set; }
 
@@ -291,6 +306,8 @@ Registration does not require Campus
 
 For this to work, your database must have the setting ShowCampusOnRegistration=true
 ";
+        private const string ShowDOBOnFindDescription = "Find does not show Day of Birthday";
+        private const string ShowPhoneOnFindDescription = @"Find does not show Phone";
         private const string MemberOnlyDescription = @"You must be a member of the church to register ";
 
         private const string ShellBsDescription =

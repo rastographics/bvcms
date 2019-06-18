@@ -59,6 +59,10 @@ namespace CmsData.View
 		private bool? _NotReqGender;
 		
 		private bool? _NotReqMarital;
+
+		private bool? _ShowDOBOnFind;
+
+		private bool? _ShowPhoneOnFind;
 		
 		private string _ConfirmationTrackingCode;
 		
@@ -492,8 +496,40 @@ namespace CmsData.View
 
 		}
 
-		
-		[Column(Name="ConfirmationTrackingCode", Storage="_ConfirmationTrackingCode", DbType="varchar")]
+        [Column(Name = "ShowDOBOnFind", Storage = "_ShowDOBOnFind", DbType = "bit")]
+        public bool? ShowDOBOnFind
+        {
+            get
+            {
+                return this._ShowDOBOnFind;
+            }
+
+            set
+            {
+                if (this._ShowDOBOnFind != value)
+                    this._ShowDOBOnFind = value;
+            }
+
+        }
+
+        [Column(Name = "ShowPhoneOnFind", Storage = "_ShowPhoneOnFind", DbType = "bit")]
+        public bool? ShowPhoneOnFind
+        {
+            get
+            {
+                return this._ShowPhoneOnFind;
+            }
+
+            set
+            {
+                if (this._ShowPhoneOnFind != value)
+                    this._ShowPhoneOnFind = value;
+            }
+
+        }
+
+
+        [Column(Name="ConfirmationTrackingCode", Storage="_ConfirmationTrackingCode", DbType="varchar")]
 		public string ConfirmationTrackingCode
 		{
 			get
