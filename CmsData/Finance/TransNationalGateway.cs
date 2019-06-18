@@ -65,7 +65,7 @@ namespace CmsData.Finance
 
             if (type == PaymentType.CreditCard)
             {
-                if (paymentInfo.TbnCardVaultId == null) // create new vault.
+                if (paymentInfo.TbnCardVaultId == null || paymentInfo.TbnCardVaultId == 0) // create new vault.
                     paymentInfo.TbnCardVaultId = CreateCreditCardVault(person, paymentInfo, cardNumber, expires);
                 else
                 {
@@ -82,7 +82,7 @@ namespace CmsData.Finance
             }
             else if (type == PaymentType.Ach)
             {
-                if (paymentInfo.TbnBankVaultId == null) // create new vault
+                if (paymentInfo.TbnBankVaultId == null || paymentInfo.TbnBankVaultId == 0) // create new vault
                     paymentInfo.TbnBankVaultId = CreateAchVault(person, paymentInfo, account, routing);
                 else
                 {
@@ -129,6 +129,11 @@ namespace CmsData.Finance
                 });
 
             var response = createCreditCardVaultRequest.Execute();
+            if (string.IsNullOrEmpty(response.VaultId))
+            {
+                throw new Exception(
+                    $"TransNational is not returning VaultId. Please contact the system administrator to activate this feature.");
+            }
             if (response.ResponseStatus != ResponseStatus.Approved)
                 throw new Exception(
                     $"TransNational failed to create the credit card for people id: {person.PeopleId}, responseCode: {response.ResponseCode}, responseText: {response.ResponseText}");
@@ -220,6 +225,11 @@ namespace CmsData.Finance
                 });
 
             var response = createAchVaultRequest.Execute();
+            if (string.IsNullOrEmpty(response.VaultId))
+            {
+                throw new Exception(
+                    $"TransNational is not returning VaultId. Please contact the system administrator to activate this feature.");
+            }
             if (response.ResponseStatus != ResponseStatus.Approved)
                 throw new Exception(
                     $"TransNational failed to create the ach account for people id: {person.PeopleId}, responseCode: {response.ResponseCode}, responseText: {response.ResponseText}");
