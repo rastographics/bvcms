@@ -11,7 +11,7 @@ using Shouldly;
 using UtilityExtensions;
 using Xunit;
 
-namespace UnitTests
+namespace CMSWebTests
 {
     [Collection("Database collection")]
     public class QueryModelTests

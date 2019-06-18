@@ -10,7 +10,7 @@ using Dapper;
 using Moq;
 using UtilityExtensions;
 
-namespace UnitTests
+namespace CMSWebTests
 {
     public class DatabaseFixture : IDisposable
     {
@@ -24,7 +24,8 @@ namespace UnitTests
             Items = new Dictionary<string, object>();
             var c = FakeHttpContext();
             HttpContextFactory.SetCurrentContext(c);
-            if (BuildDb)
+            var dbExists = DbUtil.CheckDatabaseExists("CMS_test").Equals(DbUtil.CheckDatabaseResult.DatabaseExists);
+            if (!dbExists && BuildDb)
             {
                 var csMaster = Util.GetConnectionString2("master");
                 var csElmah = Util.GetConnectionString2("elmah");
@@ -46,9 +47,8 @@ namespace UnitTests
 
         private static string ScriptsDirectory()
         {
-            var cb = System.Reflection.Assembly.GetExecutingAssembly().Location;
-            var dir = Path.GetDirectoryName(cb);
-            return Path.GetFullPath(Path.Combine(dir, @"..\..\..\SqlScripts\"));
+            var dir = Environment.CurrentDirectory;
+            return Path.GetFullPath(Path.Combine(dir, @"..\..\..\..\SqlScripts\"));
         }
 
         public void Dispose()
