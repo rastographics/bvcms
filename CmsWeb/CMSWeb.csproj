@@ -872,6 +872,7 @@
     <Compile Include="Common\Extensions\ObjectExtensions.cs" />
     <Compile Include="Code\ViewUtilities.cs" />
     <Compile Include="Controllers\Api\ApiOptions.cs" />
+    <Compile Include="Controllers\Api\AuthenticateController.cs" />
     <Compile Include="Controllers\Api\ChAiPeopleController.cs" />
     <Compile Include="Controllers\Api\ChAiGiftsController.cs" />
     <Compile Include="Controllers\Api\PostController.cs" />
