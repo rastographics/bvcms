@@ -1,7 +1,7 @@
-﻿using CmsData;
-using CmsData.Codes;
-using CmsWeb.Areas.Finance.Models;
+﻿using CmsData.Codes;
 using CmsWeb.Lifecycle;
+using CmsWeb.Models;
+using Dapper;
 using System.Linq;
 using System.Web.Mvc;
 using UtilityExtensions;
@@ -20,7 +20,7 @@ namespace CmsWeb.Areas.Finance.Controllers
         [Route("~/Bundle/{id:int}")]
         public ActionResult Index(int id, bool? create)
         {
-            var m = new BundleModel(id, CurrentDatabase);
+            var m = new Models.BundleModel(id, CurrentDatabase);
             if (User.IsInRole("FinanceDataEntry") && m.BundleStatusId != BundleStatusCode.OpenForDataEntry)
             {
                 return Redirect("/Bundles");
@@ -35,7 +35,7 @@ namespace CmsWeb.Areas.Finance.Controllers
         }
 
         [HttpPost]
-        public ActionResult Results(BundleModel m)
+        public ActionResult Results(Models.BundleModel m)
         {
             return View(m);
         }
@@ -49,16 +49,16 @@ namespace CmsWeb.Areas.Finance.Controllers
         [HttpPost]
         public ActionResult Edit(int id, FormCollection formCollection)
         {
-            var m = new BundleModel(id, CurrentDatabase);
+            var m = new Models.BundleModel(id, CurrentDatabase);
             return View(m);
         }
 
         [HttpPost]
         public ActionResult Update(int id)
         {
-            var m = new BundleModel(id, CurrentDatabase);
-            UpdateModel<BundleModel>(m);
-            UpdateModel<BundleHeader>(m.Bundle, "Bundle");
+            var m = new Models.BundleModel(id, CurrentDatabase);
+            UpdateModel(m);
+            UpdateModel(m.Bundle, "Bundle");
             var q = from d in CurrentDatabase.BundleDetails
                     where d.BundleHeaderId == m.Bundle.BundleHeaderId
                     select d.Contribution;
@@ -99,14 +99,14 @@ namespace CmsWeb.Areas.Finance.Controllers
         [HttpPost]
         public ActionResult Cancel(int id)
         {
-            var m = new BundleModel(id, CurrentDatabase);
+            var m = new Models.BundleModel(id, CurrentDatabase);
             return View("Display", m);
         }
 
         [HttpPost]
         public ActionResult Delete(int id)
         {
-            var m = new BundleModel(id, CurrentDatabase);
+            var m = new Models.BundleModel(id, CurrentDatabase);
             var q = from d in m.Bundle.BundleDetails
                     select d.Contribution;
             CurrentDatabase.Contributions.DeleteAllOnSubmit(q);
@@ -114,6 +114,35 @@ namespace CmsWeb.Areas.Finance.Controllers
             CurrentDatabase.BundleHeaders.DeleteOnSubmit(m.Bundle);
             CurrentDatabase.SubmitChanges();
             return Content("/Bundles");
+        }
+
+        [HttpGet]
+        public ActionResult Export(int id)
+        {
+            var query = CurrentDatabase.ContentOfTypeSql("BundleExportSql").DefaultTo(@"
+            SELECT header.BundleHeaderId [Bundle ID]
+	            ,header.DepositDate [Deposit Date]
+	            ,contrib.ContributionDate [Contribution Date]
+	            ,people.Name [Name]
+	            ,contrib.ContributionAmount [Amount]
+	            ,fund.FundIncomeAccount [Income Account]
+	            ,fund.FundId [Fund ID]
+            FROM dbo.BundleHeader header
+            JOIN dbo.BundleDetail detail ON detail.BundleHeaderId = header.BundleHeaderId
+            JOIN dbo.Contribution contrib ON contrib.ContributionId = detail.ContributionId
+            JOIN dbo.ContributionFund fund ON fund.FundId = contrib.FundId
+            JOIN dbo.People people ON people.PeopleId = contrib.PeopleId
+            WHERE contrib.PledgeFlag = 0 AND header.BundleHeaderId = @BundleId
+            ORDER BY contrib.ContributionDate
+            ");
+
+            var connection = CurrentDatabase.ReadonlyConnection();
+            connection.Open();
+            var queryParameters = new DynamicParameters();
+            queryParameters.Add("@BundleId", id);
+            var filename = $"Bundle-Export-{id}.xlsx";
+
+            return connection.ExecuteReader(query, queryParameters, commandTimeout: 1200).ToExcel(filename, fromSql: true);
         }
     }
 }
