@@ -121,7 +121,8 @@ namespace CmsWeb.Areas.Finance.Controllers
         {
             var query = CurrentDatabase.ContentOfTypeSql("BundleExportSql").DefaultTo(@"
             SELECT header.BundleHeaderId [Bundle ID]
-	            ,contrib.ContributionDate [Date]
+	            ,header.DepositDate [Deposit Date]
+	            ,contrib.ContributionDate [Contribution Date]
 	            ,people.Name [Name]
 	            ,contrib.ContributionAmount [Amount]
 	            ,fund.FundIncomeAccount [Income Account]
