@@ -65,36 +65,11 @@ namespace CmsData.Finance
 
             if (type == PaymentType.CreditCard)
             {
-                if (paymentInfo.TbnCardVaultId == null) // create new vault.
-                    paymentInfo.TbnCardVaultId = CreateCreditCardVault(person, paymentInfo, cardNumber, expires);
-                else
-                {
-                    // update existing vault.
-                    // check for updating the entire card or only expiration.
-                    if (!cardNumber.StartsWith("X"))
-                        UpdateCreditCardVault(person, paymentInfo, cardNumber, expires);
-                    else
-                        UpdateCreditCardVault(person, paymentInfo, expires);
-                }
-
-                paymentInfo.MaskedCard = Util.MaskCC(cardNumber);
-                paymentInfo.Expires = expires;
+                StoreCreditCardVault(paymentInfo, person, paymentInfo, cardNumber, expires);
             }
             else if (type == PaymentType.Ach)
             {
-                if (paymentInfo.TbnBankVaultId == null) // create new vault
-                    paymentInfo.TbnBankVaultId = CreateAchVault(person, paymentInfo, account, routing);
-                else
-                {
-                    // we can only update the ach account if there is a full account number.
-                    if (!account.StartsWith("X"))
-                        UpdateAchVault(person, paymentInfo, account, routing);
-                    else
-                        UpdateAchVault(person, paymentInfo);
-                }
-
-                paymentInfo.MaskedAccount = Util.MaskAccount(account);
-                paymentInfo.Routing = Util.Mask(new StringBuilder(routing), 2);
+                StoreAchVault(paymentInfo, person, account, routing);
             }
             else
                 throw new ArgumentException($"Type {type} not supported", nameof(type));
@@ -104,6 +79,40 @@ namespace CmsData.Finance
             else
                 paymentInfo.PreferredPaymentType = type;
             db.SubmitChanges();
+        }
+
+        private void StoreAchVault(PaymentInfo paymentInfo, Person person, string account, string routing)
+        {
+            if (paymentInfo.TbnBankVaultId == null) // create new vault
+                paymentInfo.TbnBankVaultId = CreateAchVault(person, paymentInfo, account, routing);
+            else
+            {
+                // we can only update the ach account if there is a full account number.
+                if (!account.StartsWith("X"))
+                    UpdateAchVault(person, paymentInfo, account, routing);
+                else
+                    UpdateAchVault(person, paymentInfo);
+            }
+            paymentInfo.MaskedAccount = Util.MaskAccount(account);
+            paymentInfo.Routing = Util.Mask(new StringBuilder(routing), 2);
+        }
+
+        private void StoreCreditCardVault(PaymentInfo paymentInfo, Person person, PaymentInfo paymentInfo2, string cardNumber, string expires)
+        {            
+            if (paymentInfo.TbnCardVaultId == null) // create new vault.
+                paymentInfo.TbnCardVaultId = CreateCreditCardVault(person, paymentInfo, cardNumber, expires);
+            else
+            {
+                // update existing vault.
+                // check for updating the entire card or only expiration.
+                if (!cardNumber.StartsWith("X"))
+                    UpdateCreditCardVault(person, paymentInfo, cardNumber, expires);
+                else
+                    UpdateCreditCardVault(person, paymentInfo, expires);
+            }
+
+            paymentInfo.MaskedCard = Util.MaskCC(cardNumber);
+            paymentInfo.Expires = expires;
         }
 
         private int CreateCreditCardVault(Person person, PaymentInfo paymentInfo, string cardNumber, string expiration)
@@ -132,6 +141,9 @@ namespace CmsData.Finance
             if (response.ResponseStatus != ResponseStatus.Approved)
                 throw new Exception(
                     $"TransNational failed to create the credit card for people id: {person.PeopleId}, responseCode: {response.ResponseCode}, responseText: {response.ResponseText}");
+            if (string.IsNullOrEmpty(response.VaultId))
+                throw new Exception(
+                    $"TransNational is not returning VaultId. Please contact the system administrator to activate this feature.");
 
             return response.VaultId.ToInt();
         }
@@ -223,6 +235,9 @@ namespace CmsData.Finance
             if (response.ResponseStatus != ResponseStatus.Approved)
                 throw new Exception(
                     $"TransNational failed to create the ach account for people id: {person.PeopleId}, responseCode: {response.ResponseCode}, responseText: {response.ResponseText}");
+            if (string.IsNullOrEmpty(response.VaultId))
+                throw new Exception(
+                    $"TransNational is not returning VaultId. Please contact the system administrator to activate this feature.");
 
             return response.VaultId.ToInt();
         }
