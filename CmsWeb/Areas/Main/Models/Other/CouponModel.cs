@@ -37,6 +37,62 @@ namespace CmsWeb.Models
             return OnlineRegs().Single(r => r.Value == regid).Text;
         }
 
+        public IEnumerable<CouponInfo> GetCoupons(CouponModel model = null)
+        {
+            var roles = DbUtil.Db.CurrentUser.UserRoles.Select(uu => uu.Role.RoleName).ToArray();
+            var q = from c in DbUtil.Db.Coupons
+                    let o = c.Organization
+                    where o.LimitToRole == null || roles.Contains(o.LimitToRole)
+                    where c.DivOrg == model.regidfilter || model.regidfilter == "0" || model.regidfilter == null
+                    where c.UserId == model.useridfilter || model.useridfilter == 0
+                    select c;
+            switch (model.usedfilter)
+            {
+                case "Used":
+                    q = q.Where(c => c.Used != null && c.Canceled == null);
+                    break;
+                case "UnUsed":
+                    q = q.Where(c => c.Used == null && c.Canceled == null);
+                    break;
+                case "Canceled":
+                    q = q.Where(c => c.Canceled != null);
+                    break;
+            }
+            if (model.name.HasValue())
+            {
+                q = q.Where(c => c.Name.Contains(model.name) || c.Person.Name.Contains(model.name));
+            }
+
+            if (model.startdate.HasValue() && model.enddate.HasValue())
+            {
+                DateTime bd;
+                DateTime ed;
+                if (DateTime.TryParse(model.startdate, out bd) && DateTime.TryParse(model.enddate, out ed))
+                {
+                    q = q.Where(c => c.Created.Date >= bd && c.Created.Date <= ed);
+                }
+            }
+
+            var q2 = from c in q
+                     orderby c.Created descending
+                     select new CouponInfo
+                     {
+                         Amount = c.Amount,
+                         Canceled = c.Canceled,
+                         Code = c.Id,
+                         Created = c.Created.FormatDateTm(),
+                         OrgDivName = c.OrgId != null ? c.Organization.OrganizationName : c.Division.Name,
+                         Used = c.Used.FormatDateTm(),
+                         PeopleId = c.PeopleId,
+                         Name = c.Name,
+                         Person = c.Person.Name,
+                         UserId = c.UserId,
+                         UserName = c.User.Name,
+                         RegAmt = c.RegAmount
+                     };
+            return q2.Take(200);
+        }
+
         public IEnumerable<CouponInfo> Coupons()
         {
             var roles = DbUtil.Db.CurrentUser.UserRoles.Select(uu => uu.Role.RoleName).ToArray();
@@ -80,9 +136,9 @@ namespace CmsWeb.Models
                          Amount = c.Amount,
                          Canceled = c.Canceled,
                          Code = c.Id,
-                         Created = c.Created,
+                         Created = c.Created.FormatDateTm(),
                          OrgDivName = c.OrgId != null ? c.Organization.OrganizationName : c.Division.Name,
-                         Used = c.Used,
+                         Used = c.Used.FormatDateTm(),
                          PeopleId = c.PeopleId,
                          Name = c.Name,
                          Person = c.Person.Name,
@@ -136,9 +192,9 @@ namespace CmsWeb.Models
                          Amount = c.Amount ?? 0,
                          Canceled = c.Canceled ?? DateTime.Parse("1/1/80"),
                          Code = c.Id,
-                         Created = c.Created,
+                         Created = c.Created.ToString(),
                          OrgDivName = c.OrgId != null ? c.Organization.OrganizationName : c.Division.Name,
-                         Used = c.Used ?? DateTime.Parse("1/1/80"),
+                         Used = c.Used.ToString() ?? DateTime.Parse("1/1/80").ToString(),
                          PeopleId = c.PeopleId ?? 0,
                          Name = c.Name,
                          Person = c.Person.Name,
@@ -268,8 +324,8 @@ namespace CmsWeb.Models
             public string Code { get; set; }
             public string Coupon => Util.fmtcoupon(Code);
             public string OrgDivName { get; set; }
-            public DateTime Created { get; set; }
-            public DateTime? Used { get; set; }
+            public string Created { get; set; }
+            public string Used { get; set; }
             public DateTime? Canceled { get; set; }
             public decimal? Amount { get; set; }
             public decimal? RegAmt { get; set; }
