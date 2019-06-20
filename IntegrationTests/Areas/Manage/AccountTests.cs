@@ -1,12 +1,11 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 
 namespace IntegrationTests.Areas.Manage
 {
-    [TestClass]
     public class AccountTests
     {
-        [TestMethod]
+        [Fact]
         public void Logon_Success_Test()
         {
 
