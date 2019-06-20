@@ -57,6 +57,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
                         insurance = reg.Insurance;
                         policy = reg.Policy;
                         break;
+                    case "AskPassport":
+                        passportNumber = reg.PassportNumber;
+                        passportExpires = reg.PassportExpires;
+                        break;
                     case "AskTickets":
                         ntickets = om.Tickets;
                         break;

@@ -250,6 +250,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     insurance = rr.Insurance;
                     policy = rr.Policy;
                 }
+                if (setting.AskVisible("AskPassport"))
+                {
+                    passportNumber = rr.PassportNumber;
+                    passportExpires = rr.PassportExpires;
+                }
                 if (setting.AskVisible("AskDoctor"))
                 {
                     docphone = rr.Docphone;
@@ -321,6 +326,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             {
                 return (setting.AskVisible("AskEmContact")
                         || setting.AskVisible("AskInsurance")
+                        || setting.AskVisible("AskPassport")
                         || setting.AskVisible("AskDoctor")
                         || setting.AskVisible("AskParents"));
             }

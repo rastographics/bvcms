@@ -47,6 +47,7 @@ namespace CmsData.OnlineRegSummaryText
             Handlebars.RegisterHelper("IfAskHeader", IfAskHeader);
             Handlebars.RegisterHelper("IfAskInstruction", IfAskInstruction);
             Handlebars.RegisterHelper("IfAskInsurance", IfAskInsurance);
+            Handlebars.RegisterHelper("IfAskPassport", IfAskPassport);
             Handlebars.RegisterHelper("IfAskMenu", IfAskMenu);
             Handlebars.RegisterHelper("IfAskParents", IfAskParents);
             Handlebars.RegisterHelper("IfAskRequest", IfAskRequest);
@@ -233,6 +234,11 @@ pid: {pid}
         private void IfAskInsurance(TextWriter writer, HelperOptions options, dynamic context, params object[] args)
         {
             if (currentAsk.IsAskInsurance)
+                options.Template(writer, OrgMember.Person.GetRecReg());
+        }
+        private void IfAskPassport(TextWriter writer, HelperOptions options, dynamic context, params object[] args)
+        {
+            if (currentAsk.IsAskPassport)
                 options.Template(writer, OrgMember.Person.GetRecReg());
         }
         private void IfAskMenu(TextWriter writer, HelperOptions options, dynamic context, params object[] args)

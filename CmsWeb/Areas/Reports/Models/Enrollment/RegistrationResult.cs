@@ -213,6 +213,13 @@ namespace CmsWeb.Areas.Reports.Models
                             t5.AddCell("Policy #:");
                             t5.AddCell(rr.Policy);
                         }
+                        if (i.o == null || SettingVisible(setting, "AskPassport"))
+                        {
+                            t5.AddCell("Passport Number:");
+                            t5.AddCell(rr.PassportNumber);
+                            t5.AddCell("Passport Expires Date:");
+                            t5.AddCell(rr.PassportExpires);
+                        }
                         if (i.o == null || SettingVisible(setting, "AskDoctor"))
                         {
                             t5.AddCell("Family Physician Name:");
@@ -489,6 +496,12 @@ namespace CmsWeb.Areas.Reports.Models
                 {
                     AddValue(table, row, "Insurance", x.RecReg.Insurance);
                     AddValue(table, row, "Policy", x.RecReg.Policy);
+                }
+
+                if (x.Organization == null || SettingVisible(setting, "AskPassport"))
+                {
+                    AddValue(table, row, "PassportNumber", x.RecReg.PassportNumber);
+                    AddValue(table, row, "PassportExpires", x.RecReg.PassportExpires);
                 }
 
                 if (x.Organization == null || SettingVisible(setting, "AskDoctor"))

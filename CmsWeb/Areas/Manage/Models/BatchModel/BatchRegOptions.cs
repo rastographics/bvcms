@@ -51,6 +51,7 @@ namespace CmsWeb.Areas.Manage.Models.BatchModel
                 UpdateAsk("AskDoctor");
                 UpdateAsk("AskEmContact");
                 UpdateAsk("AskInsurance");
+                UpdateAsk("AskPassport");
                 UpdateAsk("AskParents");
                 UpdateAsk("AskSMS");
                 UpdateAsk("AskTylenolEtc");

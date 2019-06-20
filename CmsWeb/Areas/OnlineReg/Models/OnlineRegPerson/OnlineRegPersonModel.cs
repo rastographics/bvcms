@@ -84,6 +84,12 @@ namespace CmsWeb.Areas.OnlineReg.Models
         [DisplayName("Policy / Group #"), StringLength(100)]
         public string policy { get; set; }
 
+        [DisplayName("Passport Number"), StringLength(100)]
+        public string passportNumber { get; set; }
+
+        [DisplayName("Passport Expires Date"), StringLength(100)]
+        public string passportExpires { get; set; }
+
         [DisplayName("Family Physician"), StringLength(100)]
         public string doctor { get; set; }
         [DisplayName("Physician Phone"), StringLength(15)]

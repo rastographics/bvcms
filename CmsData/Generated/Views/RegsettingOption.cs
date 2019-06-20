@@ -33,8 +33,10 @@ namespace CmsData.View
 		private bool? _AskEmContact;
 		
 		private bool? _AskInsurance;
-		
-		private bool? _AskParents;
+
+        private bool? _AskPassport;
+
+        private bool? _AskParents;
 		
 		private bool? _AskSMS;
 		
@@ -271,8 +273,24 @@ namespace CmsData.View
 
 		}
 
-		
-		[Column(Name="AskParents", Storage="_AskParents", DbType="bit")]
+        [Column(Name = "AskPassport", Storage = "_AskPassport", DbType = "bit")]
+        public bool? AskPassport
+        {
+            get
+            {
+                return this._AskPassport;
+            }
+
+            set
+            {
+                if (this._AskPassport != value)
+                    this._AskPassport = value;
+            }
+
+        }
+
+
+        [Column(Name="AskParents", Storage="_AskParents", DbType="bit")]
 		public bool? AskParents
 		{
 			get
