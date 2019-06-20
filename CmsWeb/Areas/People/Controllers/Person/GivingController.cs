@@ -144,7 +144,7 @@ namespace CmsWeb.Areas.People.Controllers
             if (id.HasValue)
             {
                 var route = CurrentDatabase.Setting($"OneTimeGiftCampusRoute-{id}", "");
-                if (!route.HasValue())
+                if (route.HasValue())
                 {
                     return Redirect($"/{route}");
                 }

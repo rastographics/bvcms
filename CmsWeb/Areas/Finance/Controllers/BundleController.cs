@@ -132,7 +132,7 @@ namespace CmsWeb.Areas.Finance.Controllers
             JOIN dbo.Contribution contrib ON contrib.ContributionId = detail.ContributionId
             JOIN dbo.ContributionFund fund ON fund.FundId = contrib.FundId
             JOIN dbo.People people ON people.PeopleId = contrib.PeopleId
-            WHERE contrib.PledgeFlag = 0 AND header.BundleHeaderId = @BundleId
+            WHERE contrib.ContributionTypeId <> 8 AND header.BundleHeaderId = @BundleId
             ORDER BY contrib.ContributionDate
             ");
 
