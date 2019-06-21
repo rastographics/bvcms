@@ -286,9 +286,7 @@ namespace CmsData.View
                 if (this._AskPassport != value)
                     this._AskPassport = value;
             }
-
         }
-
 
         [Column(Name="AskParents", Storage="_AskParents", DbType="bit")]
 		public bool? AskParents

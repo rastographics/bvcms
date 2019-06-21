@@ -602,18 +602,14 @@ namespace CmsData
             {
                 if (this._PassportNumber != value)
                 {
-
                     this.OnPassportNumberChanging(value);
                     this.SendPropertyChanging();
                     this._PassportNumber = value;
                     this.SendPropertyChanged("PassportNumber");
                     this.OnPassportNumberChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "passportexpires", UpdateCheck = UpdateCheck.Never, Storage = "_PassportExpires", DbType = "nvarchar(100)")]
         public string PassportExpires
@@ -624,18 +620,14 @@ namespace CmsData
             {
                 if (this._PassportExpires != value)
                 {
-
                     this.OnPassportExpiresChanging(value);
                     this.SendPropertyChanging();
                     this._PassportExpires = value;
                     this.SendPropertyChanged("PassportExpires");
                     this.OnPassportExpiresChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name="Comments", UpdateCheck=UpdateCheck.Never, Storage="_Comments", DbType="nvarchar")]
 		public string Comments
@@ -653,11 +645,8 @@ namespace CmsData
 					this.SendPropertyChanged("Comments");
 					this.OnCommentsChanged();
 				}
-
 			}
-
 		}
-
 		
 		[Column(Name="Tylenol", UpdateCheck=UpdateCheck.Never, Storage="_Tylenol", DbType="bit")]
 		public bool? Tylenol
@@ -811,10 +800,6 @@ namespace CmsData
 		{
 			if ((this.PropertyChanged != null))
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-		}
-
-   		
+		}	
 	}
-
 }
-
