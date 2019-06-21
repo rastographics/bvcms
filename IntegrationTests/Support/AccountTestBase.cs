@@ -1,8 +1,6 @@
 ﻿using CmsWeb.Membership;
 using System;
-using System.IO;
 using System.Linq;
-using System.Xml;
 using Xunit;
 
 namespace IntegrationTests.Support
@@ -22,7 +20,8 @@ namespace IntegrationTests.Support
 
         protected CmsData.User CreateUser(CmsData.Family family = null, params string[] roles)
         {
-            if (family == null) {
+            if (family == null)
+            {
                 family = new CmsData.Family();
                 db.Families.InsertOnSubmit(family);
                 db.SubmitChanges();

@@ -1,6 +1,8 @@
 ﻿using CmsData;
 using CmsWeb.Lifecycle;
 using System;
+using System.Configuration;
+using System.Data.SqlClient;
 using System.IO;
 using System.Xml;
 
@@ -8,7 +10,10 @@ namespace IntegrationTests.Support
 {
     public class TestBase : IDisposable
     {
-        public TestBase() { }
+        public TestBase()
+        {
+            EnsureDatabaseExists();
+        }
 
         private CMSDataContext _db;
         public CMSDataContext db
@@ -25,6 +30,25 @@ namespace IntegrationTests.Support
             var config = LoadWebConfig();
             var hostKey = config.SelectSingleNode("configuration/appSettings/add[@key='host']");
             return PickFirst(hostKey?.Attributes["value"].Value, "localhost");
+        }
+
+        private void EnsureDatabaseExists()
+        {
+            var builder = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["CMS"].ConnectionString);
+            var sqlScriptsPath = Path.GetFullPath(@"..\..\..\SqlScripts");
+            builder.InitialCatalog = "master";
+            var masterConnectionString = builder.ConnectionString;
+            builder.InitialCatalog = $"CMSi_{Host}";
+            var imageConnectionString = builder.ConnectionString;
+            builder.InitialCatalog = "ELMAH";
+            var elmahConnectionString = builder.ConnectionString;
+            builder.InitialCatalog = $"CMS_{Host}";
+            var standardConnectionString = builder.ConnectionString;
+
+            if (!DbUtil.DatabaseExists(masterConnectionString, $"CMS_{Host}"))
+            {
+                DbUtil.CreateDatabase(Host, sqlScriptsPath, masterConnectionString, imageConnectionString, elmahConnectionString, standardConnectionString);
+            }
         }
 
         protected string PickFirst(params string[] values)
