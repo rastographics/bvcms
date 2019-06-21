@@ -17,14 +17,15 @@ namespace CMSWebTests
         public static bool BuildDb = true;
         public static bool DropDb = false;
         public static IDictionary Items;
-        private const string Url = "https://test.tpsdb.com";
+        private const string Url = "https://localhost.tpsdb.com";
 
         public DatabaseFixture()
         {
             Items = new Dictionary<string, object>();
             var c = FakeHttpContext();
             HttpContextFactory.SetCurrentContext(c);
-            var dbExists = DbUtil.CheckDatabaseExists("CMS_test").Equals(DbUtil.CheckDatabaseResult.DatabaseExists);
+            var dbname = $"CMS_" + Util.Host;
+            var dbExists = DbUtil.CheckDatabaseExists(dbname).Equals(DbUtil.CheckDatabaseResult.DatabaseExists);
             if (!dbExists && BuildDb)
             {
                 var csMaster = Util.GetConnectionString2("master");
@@ -33,7 +34,7 @@ namespace CMSWebTests
                 if (DropDb)
                 {
                     var cn = new SqlConnection(csMaster);
-                    cn.Execute(@"drop database if exists CMS_test");
+                    cn.Execute($"DROP DATABASE IF EXISTS {dbname}");
                 }
                 DbUtil.CreateDatabase(
                     Util.Host,
@@ -48,7 +49,7 @@ namespace CMSWebTests
         private static string ScriptsDirectory()
         {
             var dir = Environment.CurrentDirectory;
-            return Path.GetFullPath(Path.Combine(dir, @"..\..\..\..\SqlScripts\"));
+            return Path.GetFullPath(Path.Combine(dir, @"..\..\..\..\SqlScripts"));
         }
 
         public void Dispose()
