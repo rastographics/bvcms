@@ -49,6 +49,11 @@ namespace CmsWeb.Areas.Setup.Controllers
         [AcceptVerbs(HttpVerbs.Post)]
         public ActionResult Create()
         {
+            var existingrole = CurrentDatabase.Roles.SingleOrDefault(m => m.RoleName == "NEW");
+            if (existingrole != null)
+            {
+                return Redirect($"/Roles/#{existingrole.RoleId}");
+            }
             var r = new Role { RoleName = "NEW" };
             CurrentDatabase.Roles.InsertOnSubmit(r);
             CurrentDatabase.SubmitChanges();
@@ -56,36 +61,45 @@ namespace CmsWeb.Areas.Setup.Controllers
         }
 
         [AcceptVerbs(HttpVerbs.Post)]
-        public ContentResult Edit(string id, string value)
+        public JsonResult Edit(string id, string value)
         {
             var a = id.Split('.');
-            var c = new ContentResult();
-            c.Content = value;
             if (a[1] == value)
             {
-                return c;
+                // no change
+                return Json(new
+                {
+                    Status = "success"
+                });
             }
 
             var existingrole = CurrentDatabase.Roles.SingleOrDefault(m => m.RoleName == value);
             var role = CurrentDatabase.Roles.SingleOrDefault(m => m.RoleName == a[1]);
             if (role == null)
             {
-                TempData["error"] = "no role";
-                return Content("/Error/");
+                return Json(new
+                {
+                    Status = "error",
+                    Message = "Invalid role, try refreshing the page"
+                });
             }
-            if (existingrole != null && existingrole.RoleName != role.RoleName)
+            if (existingrole != null)
             {
-                TempData["error"] = "duplicate role";
-                return Content("/Error/");
+                return Json(new
+                {
+                    Status = "error",
+                    Message = "Existing role with that name, try again"
+                });
             }
-            switch (a[0])
+            if (a[0] == "RoleName")
             {
-                case "RoleName":
-                    role.RoleName = value;
-                    break;
+                role.RoleName = value;
             }
             CurrentDatabase.SubmitChanges();
-            return c;
+            return Json(new
+            {
+                Status = "success"
+            });
         }
 
         [AcceptVerbs(HttpVerbs.Post)]

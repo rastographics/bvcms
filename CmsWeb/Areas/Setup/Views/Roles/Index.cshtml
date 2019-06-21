@@ -79,6 +79,10 @@
                 mode: 'inline',
                 type: 'text',
                 url: "/Roles/Edit/",
+                success: function (response, newValue) {
+                    console.log(newValue);
+                    if (response.Status == 'error') return response.Message; //will be shown in editable form
+                },
                 params: function (params) {
                     var data = {};
                     data['id'] = params.pk;
