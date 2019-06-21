@@ -47,7 +47,11 @@ namespace IntegrationTests.Support
 
             if (!DbUtil.DatabaseExists(masterConnectionString, $"CMS_{Host}"))
             {
-                DbUtil.CreateDatabase(Host, sqlScriptsPath, masterConnectionString, imageConnectionString, elmahConnectionString, standardConnectionString);
+                var result = DbUtil.CreateDatabase(Host, sqlScriptsPath, masterConnectionString, imageConnectionString, elmahConnectionString, standardConnectionString);
+                if (!string.IsNullOrEmpty(result))
+                {
+                    throw new Exception(result);
+                }
             }
         }
 

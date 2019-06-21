@@ -36,13 +36,17 @@ namespace CMSWebTests
                     var cn = new SqlConnection(csMaster);
                     cn.Execute($"DROP DATABASE IF EXISTS {dbname}");
                 }
-                DbUtil.CreateDatabase(
+                var result = DbUtil.CreateDatabase(
                     Util.Host,
                     scriptsDir,
                     csMaster,
                     Util.ConnectionStringImage,
                     csElmah,
                     Util.ConnectionString);
+                if (result.HasValue())
+                {
+                    throw new Exception(result);
+                }
             }
         }
 
