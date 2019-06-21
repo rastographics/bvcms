@@ -20,12 +20,16 @@ namespace IntegrationTests.Support
 
         public string loginUrl => rootUrl + "Logon?ReturnUrl=%2f";
 
-        protected CmsData.User CreateUser(params string[] roles)
+        protected CmsData.User CreateUser(CmsData.Family family = null, params string[] roles)
         {
-            var familyId = db.Families.Select(f => f.FamilyId).First();
+            if (family == null) {
+                family = new CmsData.Family();
+                db.Families.InsertOnSubmit(family);
+                db.SubmitChanges();
+            }
             var person = new CmsData.Person
             {
-                FamilyId = familyId,
+                Family = family,
                 FirstName = RandomString(),
                 LastName = RandomString(),
                 EmailAddress = RandomString() + "@example.com",

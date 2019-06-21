@@ -83,15 +83,7 @@ namespace IntegrationTests.Support
                     // Ignore errors if unable to close the browser
                 }
 
-                try
-                {
-                    cmswebInstance?.Stop();
-                    cmswebInstance = null;
-                }
-                catch
-                {
-                    // Ignore errors stopping IIS Express
-                }
+                cmswebInstance = null;
 
                 base.Dispose();
 
