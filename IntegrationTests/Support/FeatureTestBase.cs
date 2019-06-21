@@ -375,7 +375,6 @@ namespace IntegrationTests.Support
                     }
                     //In IE7 there are chances we may get state as loaded instead of complete
                     return (element != null);
-
                 });
             }
             catch (TimeoutException)
@@ -436,7 +435,6 @@ namespace IntegrationTests.Support
                     }
                     //In IE7 there are chances we may get state as loaded instead of complete
                     return (state.Equals("complete", StringComparison.InvariantCultureIgnoreCase) || state.Equals("loaded", StringComparison.InvariantCultureIgnoreCase));
-
                 });
             }
             catch (TimeoutException)

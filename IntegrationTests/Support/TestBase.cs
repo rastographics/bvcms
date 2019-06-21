@@ -8,10 +8,7 @@ namespace IntegrationTests.Support
 {
     public class TestBase : IDisposable
     {
-        public TestBase()
-        {
-
-        }
+        public TestBase() { }
 
         private CMSDataContext _db;
         public CMSDataContext db
