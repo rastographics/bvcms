@@ -197,7 +197,7 @@ namespace CmsWeb.Membership
                 }
 
                 var user = db.Users.Single(u => u.Username == username);
-                user.Password = EncodePassword(newPwd);
+                user.Password = EncodePassword(newPwd, PasswordFormat, machineKey.ValidationKey);
                 user.MustChangePassword = false;
                 user.LastPasswordChangedDate = Util.Now;
                 ApiSessionModel.DeleteSession(db, user);
@@ -276,9 +276,9 @@ namespace CmsWeb.Membership
                         PeopleId = pid,
                         Username = username,
                         //EmailAddress = email,
-                        Password = EncodePassword(password),
+                        Password = EncodePassword(password, PasswordFormat, machineKey.ValidationKey),
                         PasswordQuestion = passwordQuestion,
-                        PasswordAnswer = EncodePassword(passwordAnswer),
+                        PasswordAnswer = EncodePassword(passwordAnswer, PasswordFormat, machineKey.ValidationKey),
                         IsApproved = isApproved,
                         Comment = "",
                         CreationDate = createDate,
@@ -323,7 +323,7 @@ namespace CmsWeb.Membership
             var u = GetUser(username, false);
             if (u == null)
             {
-                return MakeNewUser(username, EncodePassword(password), email, isApproved, PeopleId);
+                return MakeNewUser(username, EncodePassword(password, PasswordFormat, machineKey.ValidationKey), email, isApproved, PeopleId);
             }
 
             return null;
@@ -590,7 +590,7 @@ namespace CmsWeb.Membership
                     throw new MembershipPasswordException("Incorrect password answer.");
                 }
 
-                user.Password = EncodePassword(newPassword);
+                user.Password = EncodePassword(newPassword, PasswordFormat, machineKey.ValidationKey);
                 user.LastPasswordChangedDate = Util.Now;
                 ApiSessionModel.DeleteSession(db, user);
                 db.SubmitChanges();
@@ -722,7 +722,7 @@ namespace CmsWeb.Membership
                     pass2 = UnEncodePassword(dbpassword);
                     break;
                 case MembershipPasswordFormat.Hashed:
-                    pass1 = EncodePassword(password);
+                    pass1 = EncodePassword(password, PasswordFormat, machineKey.ValidationKey);
                     break;
                 default:
                     break;
@@ -730,7 +730,7 @@ namespace CmsWeb.Membership
             return pass1 == pass2;
         }
 
-        private string EncodePassword(string password)
+        public static string EncodePassword(string password, MembershipPasswordFormat passwordFormat, string validationKey)
         {
             if (!password.HasValue())
             {
@@ -738,17 +738,17 @@ namespace CmsWeb.Membership
             }
 
             string encodedPassword = password;
-            switch (PasswordFormat)
+            switch (passwordFormat)
             {
                 case MembershipPasswordFormat.Clear:
                     break;
                 case MembershipPasswordFormat.Encrypted:
                     encodedPassword =
-                      Convert.ToBase64String(EncryptPassword(Encoding.Unicode.GetBytes(password)));
+                      Convert.ToBase64String(provider.EncryptPassword(Encoding.Unicode.GetBytes(password)));
                     break;
                 case MembershipPasswordFormat.Hashed:
                     var hash = new HMACSHA1();
-                    hash.Key = HexToByte(machineKey.ValidationKey);
+                    hash.Key = HexToByte(validationKey);
                     encodedPassword =
                       Convert.ToBase64String(hash.ComputeHash(Encoding.Unicode.GetBytes(password)));
                     break;
@@ -777,7 +777,7 @@ namespace CmsWeb.Membership
             return password;
         }
 
-        private byte[] HexToByte(string hexString)
+        private static byte[] HexToByte(string hexString)
         {
             byte[] returnBytes = new byte[hexString.Length / 2];
             for (int i = 0; i < returnBytes.Length; i++)
