@@ -19,11 +19,12 @@ namespace CMSWebTests
         [Fact]
         public void Should_be_able_to_get_ContactReasonCodes()
         {
-            var db = CMSDataContext.Create(Util.Host);
-            var cv = new CodeValueModel(db);
-            var b = cv.ContactReasonCodes();
-            b.Count().ShouldBe(8);
-            db.Dispose();
+            using (var db = CMSDataContext.Create(Util.Host))
+            {
+                var cv = new CodeValueModel(db);
+                var b = cv.ContactReasonCodes();
+                b.Count().ShouldBe(8);
+            }
         }
         [Fact]
         public void Should_be_able_to_get_MemberTypeCodes()

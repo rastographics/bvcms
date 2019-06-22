@@ -1,9 +1,10 @@
 ﻿using IntegrationTests.Support;
-using OpenQA.Selenium;
+using Shouldly;
 using Xunit;
 
 namespace IntegrationTests.Areas.Manage
 {
+    [Collection("WebApp Collection")]
     public class AccountTests : AccountTestBase
     {
         [Fact]
@@ -15,7 +16,7 @@ namespace IntegrationTests.Areas.Manage
 
             Login(withPassword: "bad password");
 
-            Assert.Contains("Logon Error!", PageSource);
+            PageSource.ShouldContain("Logon Error!");
         }
 
         [Fact]
@@ -27,8 +28,8 @@ namespace IntegrationTests.Areas.Manage
 
             Login();
 
-            Assert.Contains(user.Person.Name, PageSource);
-            Assert.Contains(user.Person.EmailAddress, PageSource);
+            PageSource.ShouldContain(user.Person.Name);
+            PageSource.ShouldContain(user.Person.EmailAddress);
         }
 
         [Fact]
@@ -55,22 +56,22 @@ namespace IntegrationTests.Areas.Manage
             Find(css: profileMenu).Click();
             Find(text: "Change Password").Click();
 
-            Assert.Equal($"{rootUrl}Account/ChangePassword/", CurrentUrl);
+            CurrentUrl.ShouldBe($"{rootUrl}Account/ChangePassword/");
 
             Find(id: "currentPassword").SendKeys(password);
             Find(id: "newPassword").SendKeys(newPassword);
             Find(id: "confirmPassword").SendKeys(newPassword);
             Find(css: "input[type=submit]").Click();
 
-            Assert.Contains("Password Changed", PageSource);
+            PageSource.ShouldContain("Password Changed");
 
             Find(text: "Return to Home").Click();
 
             Logout();
             Login(withPassword: newPassword);
 
-            Assert.Contains(user.Person.Name, PageSource);
-            Assert.Contains(user.Person.EmailAddress, PageSource);
+            PageSource.ShouldContain(user.Person.Name);
+            PageSource.ShouldContain(user.Person.EmailAddress);
         }
     }
 }

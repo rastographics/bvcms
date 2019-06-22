@@ -20,7 +20,6 @@ namespace IntegrationTests.Support
         protected EventFiringWebDriver eventDriver;
 
         protected StringBuilder verificationErrors;
-        IISExpress cmswebInstance;
 
         protected IJavaScriptExecutor script
         {
@@ -37,8 +36,6 @@ namespace IntegrationTests.Support
         public FeatureTestBase() : base()
         {
             verificationErrors = new StringBuilder();
-            var config = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, @"..\..\..\.vs\config\applicationhost.config"));
-            cmswebInstance = IISExpress.Start(config, "CMSWeb");
             StartBrowser();
         }
 
@@ -82,8 +79,6 @@ namespace IntegrationTests.Support
                 {
                     // Ignore errors if unable to close the browser
                 }
-
-                cmswebInstance = null;
 
                 base.Dispose();
 
