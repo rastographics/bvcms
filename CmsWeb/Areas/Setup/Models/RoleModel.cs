@@ -1,9 +1,7 @@
-﻿using System;
-using CmsData;
+﻿using CmsData;
 using CmsData.Codes;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using CmsData.Classes.RoleChecker;
 using System.Xml.Linq;
 using System.Xml.XPath;
@@ -61,7 +59,8 @@ namespace CmsWeb.Areas.Setup.Models
                         TrueLabel = s.Attribute("true")?.Value,
                         Default = defValue,
                         Active = RoleChecker.RoleHasSetting(settingName, r.RoleName, defValue),
-                        ToolTip = s.Attribute("tooltip")?.Value
+                        ToolTip = s.Attribute("tooltip")?.Value,
+                        Reverse = s.Attribute("reverse")?.Value == "true"
                     };
                     settings.Add(setting);
                 }
@@ -174,6 +173,7 @@ namespace CmsWeb.Areas.Setup.Models
             public bool Default { get; set; }
             public bool Active { get; set; }
             public string ToolTip { get; set; }
+            public bool Reverse { get; set; } // reverses true/false in the UI so that disable = true and enable = true settings can be shown uniformally without changing setting logic
         }
     }
 }

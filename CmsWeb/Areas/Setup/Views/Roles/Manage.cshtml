@@ -52,7 +52,7 @@
                 $('#roleSettings input').map(function () {
                     data.push({
                         XMLName: this.name,
-                        Active: this.checked
+                        Active: ($(this).data('reverse') == 'True' ? !this.checked : this.checked)
                     });
                 });
 
@@ -104,9 +104,9 @@
                                                 <tbody>
                                                     @foreach (var setting in location.Settings)
                                                     {
-                                                        <tr class="@(setting.Active != setting.Default ? "bg-warning" : "")">
+                                                        <tr class="@(setting.Active != (setting.Reverse ? !setting.Default : setting.Default) ? "bg-warning" : "")">
                                                             <td style="width:120px;text-align:right;">
-                                                                <input type="checkbox" id="@setting.XMLName" name="@setting.XMLName" data-toggle="toggle" data-on="@setting.TrueLabel" data-off="@setting.FalseLabel" data-width="100" checked="@setting.Active">
+                                                                <input type="checkbox" id="@setting.XMLName" name="@setting.XMLName" data-toggle="toggle" data-on="@setting.TrueLabel" data-off="@setting.FalseLabel" data-width="100" checked="@(setting.Reverse ? !setting.Active : setting.Active)" data-reverse="@setting.Reverse">
                                                             </td>
                                                             <td style="vertical-align:middle;">
                                                                 <label class="form-check-label" for="@setting.XMLName">
