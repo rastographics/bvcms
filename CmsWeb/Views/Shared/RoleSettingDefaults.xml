@@ -17,7 +17,6 @@
         <setting name="Organization-ShowFiltersBar" value="true" friendly="Filters Bar" true="Show" false="Hide" tooltip="Show entire sub-group filters bar" />
         <setting name="Organization-ShowOptionsMenu" value="true" friendly="Options Menu" true="Show" false="Hide" tooltip="Show Options button and dropdown" />
         <setting name="Organization-ShowSettingsTab" value="true" friendly="Settings Tab" true="Show" false="Hide" tooltip="Show Settings tab" />
-        <setting name="Organization-ShowTagButtons" value="true" friendly="Org Member Row: Tag Button" true="Show" false="Hide" tooltip="Org member row view: Show the Tag button" />
         <setting name="OrgMembersDropAdd" value="true" friendly="Org Member Row: Drop / Add Buttons" true="Enable" false="Disable" tooltip="Org member row view: Show a Drop / Add button" />
         <setting name="Organization-ShowBlueToolbar" value="true" friendly="Show Blue Toolbar" true="Show" false="Hide" tooltip="Show blue toolbar" />
         <setting name="Organization-ShowBlueToolbarAdminGearMenu" value="true" friendly="Blue Toolbar: Gear Menu" true="Show" false="Hide" tooltip="Show blue toolbar: gear menu" />
