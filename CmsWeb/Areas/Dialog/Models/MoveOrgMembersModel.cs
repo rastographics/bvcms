@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Threading;
 using System.Web.Hosting;
 using UtilityExtensions;
@@ -13,6 +14,7 @@ namespace CmsWeb.Areas.Dialog.Models
     public class MoveOrgMembersModel : LongRunningOperation
     {
         private IList<string> list = new List<string>();
+        private string repairExe;
         public const string Op = "Move Members To Org";
 
         public MoveOrgMembersModel()
@@ -54,6 +56,8 @@ namespace CmsWeb.Areas.Dialog.Models
             };
             db.LongRunningOperations.InsertOnSubmit(lop);
             db.SubmitChanges();
+
+            repairExe = HttpContextFactory.Current.Server.MapPath("~/bin/RepairOrg.exe");
             HostingEnvironment.QueueBackgroundWorkItem(ct => DoMoveWork(this));
         }
 
@@ -102,9 +106,9 @@ namespace CmsWeb.Areas.Dialog.Models
                         statusContext.SubmitChanges();
                     }
                 }
-                workerContext.RepairTransactions(oid);
+                BackgroundRepairTransactions(model.repairExe, oid, workerContext);
             }
-            workerContext.RepairTransactions(model.TargetId);
+            BackgroundRepairTransactions(model.repairExe, model.TargetId, workerContext);
             // finished
             if (lop != null)
             {
@@ -112,6 +116,20 @@ namespace CmsWeb.Areas.Dialog.Models
                 statusContext.SubmitChanges();
             }
             workerContext.UpdateMainFellowship(model.TargetId);
+        }
+
+        public static void BackgroundRepairTransactions(string repairExe, int orgId, CMSDataContext context)
+        {
+            var connectionString = context.Connection.ConnectionString;
+            var host = context.Host;
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = repairExe,
+                Arguments = $"{orgId} --connection \"{connectionString}\" --host {host}",
+                CreateNoWindow = true,
+                UseShellExecute = false,
+                WorkingDirectory = Path.GetDirectoryName(repairExe)
+            });
         }
     }
 }

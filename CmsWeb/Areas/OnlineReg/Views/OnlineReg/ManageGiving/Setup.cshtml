@@ -11,7 +11,7 @@
     var db = DbUtil.Db;
     var funds = CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel.FullFundList(db, Model.DefaultFundIds.Any() ? Model.DefaultFundIds : Model.FallbackDefaultFundIds);
     var otherFunds = funds.Where(f => !Model.DefaultFundIds.Contains(f.Value)).ToList();
-    var useNewManageGivingBuilder = db.Setting("UseNewManageGivingBuilder");
+    var useNewManageGivingBuilder = db.Setting("UseNewManageGivingBuilder", true);
     var debitcredit = db.GetDebitCreditLabel(PaymentProcessTypes.RecurringGiving);
     var recaptchaSiteKey = db.Setting("googleReCaptchaSiteKey", ConfigurationManager.AppSettings["googleReCaptchaSiteKey"]);
     var useRecaptcha = db.Setting("UseRecaptchaForManageGiving") && recaptchaSiteKey.HasValue();
@@ -41,7 +41,7 @@
 }
 
 <div class="regform">
-    <h2>@Model.Organization.OrganizationName @Model.FirstDefaultFundName</h2>
+    <h2>@Model.Organization.OrganizationName</h2>
     <div>@Html.Raw(Model.Instructions)</div>
     <h4>for @(Model.person?.Name) &lt;@(Model.person?.EmailAddress)&gt;</h4>
     @Html.ValidationSummary()

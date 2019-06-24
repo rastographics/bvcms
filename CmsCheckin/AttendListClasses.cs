@@ -116,6 +116,7 @@ namespace CmsCheckin
         }
         public void ShowPage(int page)
         {
+            if (list == null) { return; }
             ClearControls();
             this.page = page;
             var g = this.CreateGraphics();

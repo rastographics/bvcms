@@ -1,4 +1,3 @@
-/// <binding Clean='default' />
 var gulp = require('gulp'),
     less = require('gulp-less'),
     minify = require('gulp-minify-css'),
@@ -77,11 +76,7 @@ var lessFiles = [
     }
 ];
 
-gulp.task('default', ['less', 'compress-js'], function() {
-    // place code here
-});
-
-gulp.task('less', function() {
+gulp.task('less', function(complete) {
     var handleLess = function (lessFile, output) {
         gulp.src(lessFile)
             .pipe(less())
@@ -92,13 +87,15 @@ gulp.task('less', function() {
     lessFiles.map(function(file) {
         handleLess(file.lessFile, file.output);
     });
+    complete();
 });
 
-gulp.task('compress-js', function() {
+gulp.task('compress-js', function(complete) {
     var handleJs = function(files, outputName, destinationFolder) {
         gulp.src(files)
             .pipe(concat(outputName))
-            .pipe(uglify({preserveComments: 'some'}))
+            .pipe(uglify())
+            .on('error', function (err) { gutil.log(gutil.colors.red('[Error]'), err.toString()); })
             .pipe(gulp.dest(destinationFolder));
     };
 
@@ -109,9 +106,10 @@ gulp.task('compress-js', function() {
     jsFiles.map(function(legacyJs) {
         handleJs(legacyJs.files, legacyJs.outputName, legacyJs.outputDir);
     });
+    complete();
 });
 
-gulp.task('less-sourcemaps', function() {
+gulp.task('less-sourcemaps', function(complete) {
     var handleLess = function (lessFile, output) {
         gulp.src(lessFile)
             .pipe(sourcemaps.init())
@@ -124,14 +122,15 @@ gulp.task('less-sourcemaps', function() {
     lessFiles.map(function(file) {
         handleLess(file.lessFile, file.output);
     });
+    complete();
 });
 
-gulp.task('js-sourcemaps', function() {
+gulp.task('js-sourcemaps', function(complete) {
     var handleJs = function(files, outputName, destinationFolder) {
         gulp.src(files)
             .pipe(sourcemaps.init())
             .pipe(concat(outputName))
-            .pipe(uglify({ preserveComments: 'some' }))
+            .pipe(uglify())
             .pipe(sourcemaps.write())
             .pipe(gulp.dest(destinationFolder));
     };
@@ -143,4 +142,9 @@ gulp.task('js-sourcemaps', function() {
     jsFiles.map(function(legacyJs) {
         handleJs(legacyJs.files, legacyJs.outputName, legacyJs.outputDir);
     });
+    complete();
 });
+
+gulp.task('default', gulp.series(['less', 'compress-js'], function(complete) {
+    complete();
+}));

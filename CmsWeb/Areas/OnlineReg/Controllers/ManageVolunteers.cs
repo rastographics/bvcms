@@ -52,13 +52,11 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return Content(ex.Message);
             }
         }
-
-        [HttpGet]
+        
         [Route("GetVolSub/{aid:int}/{pid:int}")]
-        public ActionResult GetVolSub(int aid, int pid)
+        public ActionResult GetVolSub(int aid, int pid, string token)
         {
-            var token = TempData[Fromcalendar] as bool?;
-            if (token == true)
+            if (token.HasValue() && token == Fromcalendar)
             {
                 var vs = new VolSubModel(CurrentDatabase, aid, pid);
                 SetHeaders(vs.org.OrganizationId);
@@ -184,7 +182,6 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             SetHeaders(id.ToInt());
             DbUtil.LogActivity($"Pick Slots: {m.Org.OrganizationName} ({m.Person.Name})");
-            TempData[Fromcalendar] = true;
             return View("ManageVolunteer/PickSlots", m);
         }
 

@@ -4,7 +4,7 @@
 @model CmsWeb.Areas.Finance.Models.BundleModel
 @{
     var difference = Model.TotalHeader() - Model.TotalItems();
-  var customreport = DbUtil.Db.Setting("CustomBundleReport", "");
+    var customreport = DbUtil.Db.Setting("CustomBundleReport", "");
 }
 <div class="row">
     <div class="col-sm-12 col-md-12 col-lg-12">
@@ -12,30 +12,7 @@
             <div class="box-title-btn">
                 <div class="box-tools">
                     <a class="btn btn-default" href="/Bundles"><i class="fa fa-arrow-circle-left"></i> Back to List</a>
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                            Actions <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-right">
-                            @if (Model.IsAdmin || Model.BundleStatusId != BundleStatusCode.Closed)
-                            {
-                                if (!User.IsInRole("FinanceDataEntry"))
-                                {
-                                <li><a id="delete" href="/Bundle/Delete/@Model.BundleId"><i class="fa fa-trash"></i>&nbsp;&nbsp;Delete</a></li>
-                                }
-                            }
-                            @if (Model.CanEdit)
-                            {
-                                <li><a id="editbundle" href="/Bundle/Edit/@Model.BundleId"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Edit Bundle Header</a></li>
-                            }
-                            @if (Model.BundleStatusId != BundleStatusCode.Closed)
-                            {
-                                <li><a href="/PostBundle/@Model.BundleId"><i class="fa fa-pencil-square-o"></i>&nbsp;&nbsp;Post Bundle / Edit</a></li>
-                            }
-                            <li class="divider"></li>
-                            <li><a href="/Bundles/NewBundle/"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Create New Bundle</a></li>
-                        </ul>
-                    </div>
+                    @RenderToolBar(xs: false)
                 </div>
             </div>
             <div class="box-content">
@@ -81,13 +58,13 @@
                             <span class="stat-title">ITEM COUNT</span>
                             <span class="stat-figure">@Model.Count().ToString("N0")</span>
                         </div>
-			@if (customreport.HasValue())
-                  	{
-                  	<div class="stat-panel">
-                    	    <span class="stat-title">&nbsp;</span>
-                    	    <span class="stat-figure"><a href="@customreport.Replace("{bundleid}", Model.BundleId.ToString())" target="bundlerpt" style="color:white">Bundle Report</a></span>
-                  	</div>
-                  	}
+                        @if (customreport.HasValue())
+                        {
+                            <div class="stat-panel">
+                                <span class="stat-title">&nbsp;</span>
+                                <span class="stat-figure"><a href="@customreport.Replace("{bundleid}", Model.BundleId.ToString())" target="bundlerpt" style="color:white">Bundle Report</a></span>
+                            </div>
+                        }
                         <div style="clear: both;"></div>
                     </div>
                 </div>
@@ -95,31 +72,43 @@
                     @Html.Partial("Results", Model)
                 </form>
                 <div class="visible-xs-block">
-                    <div class="btn-group btn-block">
-                        <button type="button" class="btn btn-primary btn-block dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                            Actions <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-right btn-block">
-                            @if (Model.IsAdmin || Model.BundleStatusId != BundleStatusCode.Closed)
-                            {
-                                <li><a id="delete" href="/Bundle/Delete/@Model.BundleId"><i class="fa fa-trash"></i>&nbsp;&nbsp;Delete</a></li>
-                            }
-                            @if (Model.CanEdit)
-                            {
-                                <li><a id="editbundle" href="/Bundle/Edit/@Model.BundleId"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Edit Bundle Header</a></li>
-                            }
-                            @if (Model.BundleStatusId != BundleStatusCode.Closed)
-                            {
-                                <li><a href="/PostBundle/@Model.BundleId"><i class="fa fa-pencil-square-o"></i>&nbsp;&nbsp;Post Bundle / Edit</a></li>
-                            }
-                            <li class="divider"></li>
-                            <li><a href="/Bundles/NewBundle/"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Create New Bundle</a></li>
-                        </ul>
-                    </div>
-                    <hr/>
+                    @RenderToolBar(xs: true)
+                    <hr />
                     <a class="btn btn-default btn-block" href="/Bundles"><i class="fa fa-arrow-circle-left"></i> Back to List</a>
                 </div>
             </div>
         </div>
     </div>
 </div>
+@helper RenderToolBar(bool xs)
+{
+    var css = xs ? "btn-block" : "";
+    <div class="btn-group @css">
+        <button type="button" class="btn btn-primary @css dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+            Actions <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-right @css">
+            @if (Model.IsAdmin || Model.BundleStatusId != BundleStatusCode.Closed)
+            {
+                if (!User.IsInRole("FinanceDataEntry"))
+                {
+                    <li><a id="delete" href="/Bundle/Delete/@Model.BundleId"><i class="fa fa-trash"></i>&nbsp;&nbsp;Delete</a></li>
+                }
+            }
+            @if (Model.CanEdit)
+            {
+                <li><a id="editbundle" href="/Bundle/Edit/@Model.BundleId"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Edit Bundle Header</a></li>
+            }
+            @if (Model.BundleStatusId != BundleStatusCode.Closed)
+            {
+                <li><a href="/PostBundle/@Model.BundleId"><i class="fa fa-pencil-square-o"></i>&nbsp;&nbsp;Post Bundle / Edit</a></li>
+            }
+            else
+            {
+                <li><a href="/Bundle/Export/@Model.BundleId"><i class="fa fa-file-excel-o"></i>&nbsp;&nbsp;Export to Excel</a></li>
+            }
+            <li class="divider"></li>
+            <li><a href="/Bundles/NewBundle/"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Create New Bundle</a></li>
+        </ul>
+    </div>
+}
