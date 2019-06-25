@@ -53,7 +53,17 @@ namespace IntegrationTests.Support
             {
                 Directory.CreateDirectory(Path.GetDirectoryName(ApplicationHostConfig));
                 File.WriteAllText(ApplicationHostConfig, R.applicationhostconfig);
+                SetCmsWebDirectory();
             }
+        }
+
+        private static void SetCmsWebDirectory()
+        {
+            var config = new XmlDocument();
+            config.Load(ApplicationHostConfig);
+            var virtualDirectory = config.SelectSingleNode(@"/configuration/system.applicationHost/sites/site[@name='CMSWeb']/application/virtualDirectory");
+            virtualDirectory.Attributes["physicalPath"].Value = Path.GetFullPath(@"..\..\..\CmsWeb");
+            config.Save(ApplicationHostConfig);
         }
 
         public static void Initialize(TestContext context)
