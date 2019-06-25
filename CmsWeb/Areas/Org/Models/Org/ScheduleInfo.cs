@@ -94,7 +94,9 @@ namespace CmsWeb.Areas.Org.Models
                 Id = Id,
                 AttendCreditId = AttendCredit.Value.ToInt(),
                 SchedDay = SchedDay.Value.ToInt(),
-                SchedTime = Time.ToDate()
+                SchedTime = Time.ToDate(),
+                MeetingTime = Time.ToDate(),
+                NextMeetingDate = DateTime.Parse(NextMeetingTime.ToString()).AddDays(-1)
             };
         }
     }
