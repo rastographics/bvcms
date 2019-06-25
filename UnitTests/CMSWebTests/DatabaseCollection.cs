@@ -1,6 +1,6 @@
 ﻿using Xunit;
 
-namespace UnitTests
+namespace CMSWebTests
 {
     [CollectionDefinition("Database collection")]
     public class DatabaseCollection : ICollectionFixture<DatabaseFixture>

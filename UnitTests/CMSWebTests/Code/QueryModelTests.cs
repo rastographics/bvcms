@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Routing;
-using CmsData;
+﻿using CmsData;
 using CmsWeb.Areas.Search.Models;
-using CmsWeb.Code;
-using Moq;
 using Shouldly;
 using UtilityExtensions;
 using Xunit;
 
-namespace UnitTests
+namespace CMSWebTests
 {
     [Collection("Database collection")]
     public class QueryModelTests

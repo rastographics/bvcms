@@ -2,7 +2,7 @@
 using Shouldly;
 using Xunit;
 
-namespace UnitTests.Areas.People.Models.Contact
+namespace CMSWebTests.Areas.People.Models.Contact
 {
     public class ContactExtraLocationConfigTests
     {
