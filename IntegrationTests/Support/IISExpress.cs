@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -72,7 +73,8 @@ namespace IntegrationTests.Support
                     FileName = IIS_EXPRESS,
                     Arguments = arguments.ToString(),
                     UseShellExecute = true,
-                    WindowStyle = ProcessWindowStyle.Minimized
+                    WindowStyle = ProcessWindowStyle.Minimized,
+                    WorkingDirectory = Path.GetDirectoryName(IIS_EXPRESS)
                 });
             }
         }
