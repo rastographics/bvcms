@@ -103,6 +103,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public bool memberus { get; set; }
         public bool otherchurch { get; set; }
+        public bool nochurch { get; set; }
 
         [DisplayName("Interested in Coaching")]
         public bool? coaching { get; set; }

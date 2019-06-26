@@ -12,6 +12,11 @@
                 @Html.CheckBoxFor(m => m.otherchurch) Active in another local church
             </label>
         </div>
+        <div class="checkbox">
+            <label>
+                @Html.CheckBoxFor(m => m.nochurch) Currently Not Attending a Church
+            </label>
+        </div>
         @Html.ValidationMessageFor(m => m.otherchurch)
     </div>
 </div>

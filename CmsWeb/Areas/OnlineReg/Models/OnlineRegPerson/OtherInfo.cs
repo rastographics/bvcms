@@ -274,6 +274,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 {
                     otherchurch = rr.ActiveInAnotherChurch ?? false;
                     memberus = rr.Member ?? false;
+                    nochurch = rr.NoMember ?? false;
                 }
                 if (setting.AskVisible("AskTylenolEtc"))
                 {

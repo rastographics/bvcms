@@ -43,6 +43,8 @@ namespace CmsData
 		private bool? _Coaching;
 		
 		private bool? _Member;
+
+		private bool? _NoMember;
 		
 		private string _Emcontact;
 		
@@ -115,8 +117,11 @@ namespace CmsData
 		
 		partial void OnMemberChanging(bool? value);
 		partial void OnMemberChanged();
-		
-		partial void OnEmcontactChanging(string value);
+
+        partial void OnNoMemberChanging(bool? value);
+        partial void OnNoMemberChanged();
+
+        partial void OnEmcontactChanging(string value);
 		partial void OnEmcontactChanged();
 		
 		partial void OnEmphoneChanging(string value);
@@ -451,8 +456,29 @@ namespace CmsData
 
 		}
 
-		
-		[Column(Name="emcontact", UpdateCheck=UpdateCheck.Never, Storage="_Emcontact", DbType="nvarchar(100)")]
+        [Column(Name = "nomember", UpdateCheck = UpdateCheck.Never, Storage = "_NoMember", DbType = "bit")]
+        public bool? NoMember
+        {
+            get { return this._NoMember; }
+
+            set
+            {
+                if (this._NoMember != value)
+                {
+
+                    this.OnNoMemberChanging(value);
+                    this.SendPropertyChanging();
+                    this._NoMember = value;
+                    this.SendPropertyChanged("NoMember");
+                    this.OnNoMemberChanged();
+                }
+
+            }
+
+        }
+
+
+        [Column(Name="emcontact", UpdateCheck=UpdateCheck.Never, Storage="_Emcontact", DbType="nvarchar(100)")]
 		public string Emcontact
 		{
 			get { return this._Emcontact; }
