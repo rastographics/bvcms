@@ -35,18 +35,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
             else
             {
-                switch (m.org?.RegistrationTypeId.GetValueOrDefault())
-                {
-                    case RegistrationTypeCode.OnlineGiving:
-                        m.ProcessType = PaymentProcessTypes.OneTimeGiving;
-                        break;
-                    case RegistrationTypeCode.ManageGiving:
-                        m.ProcessType = PaymentProcessTypes.RecurringGiving;
-                        break;
-                    default:
-                        m.ProcessType = PaymentProcessTypes.OnlineRegistration;
-                        break;
-                }
+                AssignPaymentProcessType(ref m);
             }
 
             SetHeaders(m);
@@ -94,6 +83,23 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             return RouteRegistration(m, pid, showfamily);
         }
+
+        private void AssignPaymentProcessType(ref OnlineRegModel m)
+        {
+            switch (m.org?.RegistrationTypeId.GetValueOrDefault())
+            {
+                case RegistrationTypeCode.OnlineGiving:
+                    m.ProcessType = PaymentProcessTypes.OneTimeGiving;
+                    break;
+                case RegistrationTypeCode.ManageGiving:
+                    m.ProcessType = PaymentProcessTypes.RecurringGiving;
+                    break;
+                default:
+                    m.ProcessType = PaymentProcessTypes.OnlineRegistration;
+                    break;
+            }
+        }
+
         [HttpPost]
         public ActionResult Login(OnlineRegModel m)
         {
