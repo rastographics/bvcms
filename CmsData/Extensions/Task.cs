@@ -57,7 +57,7 @@ namespace CmsData
                 StatusId = TaskStatusCode.Active,
             };
             p.TasksAboutPerson.Add(t);
-            DbUtil.Db.SubmitChanges();
+            Db.SubmitChanges();
             return t.Id;
         }
         public static int AddTasks(CMSDataContext Db, Guid qid)
@@ -78,7 +78,7 @@ namespace CmsData
                 };
                 p.TasksAboutPerson.Add(t);
             }
-            DbUtil.Db.SubmitChanges();
+            Db.SubmitChanges();
             return qCount;
         }
         private static string TaskLink0(int id)
