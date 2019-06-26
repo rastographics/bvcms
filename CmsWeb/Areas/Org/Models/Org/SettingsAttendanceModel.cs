@@ -131,7 +131,7 @@ namespace CmsWeb.Areas.Org.Models
                         SchedDay = s.SchedDay.Value.ToInt(),
                         SchedTime = s.Time.ToDate(),
                         MeetingTime = s.Time.ToDate(),
-                        NextMeetingDate = DateTime.Parse(s.NextMeetingTime.ToString()).AddDays(-1),
+                        NextMeetingDate = s.NextMeetingTime.AddDays(-1),
                         AttendCreditId = s.AttendCredit.Value.ToInt()
                     };
                     db.OrgSchedules.InsertOnSubmit(schedule);

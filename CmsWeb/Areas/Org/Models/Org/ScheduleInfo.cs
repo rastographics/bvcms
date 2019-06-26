@@ -96,7 +96,7 @@ namespace CmsWeb.Areas.Org.Models
                 SchedDay = SchedDay.Value.ToInt(),
                 SchedTime = Time.ToDate(),
                 MeetingTime = Time.ToDate(),
-                NextMeetingDate = DateTime.Parse(NextMeetingTime.ToString()).AddDays(-1)
+                NextMeetingDate = NextMeetingTime.AddDays(-1)
             };
         }
     }
