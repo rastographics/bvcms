@@ -95,7 +95,7 @@ namespace CmsWeb.Areas.Dialog.Models
                    };
         }
 
-        public string Move(int toid)
+        public string Move(int toid, CMSDataContext db)
         {
             if (!PeopleId.HasValue || !OrgId.HasValue)
             {
@@ -103,10 +103,11 @@ namespace CmsWeb.Areas.Dialog.Models
             }
 
             OrganizationMember.MoveToOrg(DbUtil.Db, PeopleId.Value, OrgId.Value, toid, MoveRegistrationData);
-            //Once member has been inserted into the new Organization then update member in Organizations as enrolled / not enrolled accordingly
-            DbUtil.Db.RepairTransactions(OrgId.Value);
-            DbUtil.Db.RepairTransactions(toid);
             DbUtil.LogActivity("OrgMem Move to " + toid, OrgId, PeopleId);
+
+            var repairExe = HttpContextFactory.Current.Server.MapPath("~/bin/RepairOrg.exe");
+            MoveOrgMembersModel.BackgroundRepairTransactions(repairExe, toid, db);
+            MoveOrgMembersModel.BackgroundRepairTransactions(repairExe, OrgId.Value, db);
             return "moved";
         }
     }

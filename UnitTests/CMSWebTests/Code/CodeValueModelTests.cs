@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Routing;
+﻿using System.Linq;
 using CmsData;
 using CmsWeb.Code;
-using Moq;
 using Shouldly;
 using UtilityExtensions;
 using Xunit;
 
-namespace UnitTests
+namespace CMSWebTests
 {
     [Collection("Database collection")]
     public class CodeValueModelTests 
@@ -24,11 +19,12 @@ namespace UnitTests
         [Fact]
         public void Should_be_able_to_get_ContactReasonCodes()
         {
-            var db = CMSDataContext.Create(Util.Host);
-            var cv = new CodeValueModel(db);
-            var b = cv.ContactReasonCodes();
-            b.Count().ShouldBe(8);
-            db.Dispose();
+            using (var db = CMSDataContext.Create(Util.Host))
+            {
+                var cv = new CodeValueModel(db);
+                var b = cv.ContactReasonCodes();
+                b.Count().ShouldBe(8);
+            }
         }
         [Fact]
         public void Should_be_able_to_get_MemberTypeCodes()

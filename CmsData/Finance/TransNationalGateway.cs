@@ -35,7 +35,7 @@ namespace CmsData.Finance
         {
             this.db = db;
 
-            if(testing || MultipleGatewayUtils.GatewayTesting(db, ProcessType))
+            if (testing || MultipleGatewayUtils.GatewayTesting(db, ProcessType))
             {
                 _userName = "faithbased";
                 _password = "bprogram2";
@@ -65,36 +65,11 @@ namespace CmsData.Finance
 
             if (type == PaymentType.CreditCard)
             {
-                if (paymentInfo.TbnCardVaultId == null) // create new vault.
-                    paymentInfo.TbnCardVaultId = CreateCreditCardVault(person, paymentInfo, cardNumber, expires);
-                else
-                {
-                    // update existing vault.
-                    // check for updating the entire card or only expiration.
-                    if (!cardNumber.StartsWith("X"))
-                        UpdateCreditCardVault(person, paymentInfo, cardNumber, expires);
-                    else
-                        UpdateCreditCardVault(person, paymentInfo, expires);
-                }
-
-                paymentInfo.MaskedCard = Util.MaskCC(cardNumber);
-                paymentInfo.Expires = expires;
+                StoreCreditCardVault(paymentInfo, person, paymentInfo, cardNumber, expires);
             }
             else if (type == PaymentType.Ach)
             {
-                if (paymentInfo.TbnBankVaultId == null) // create new vault
-                    paymentInfo.TbnBankVaultId = CreateAchVault(person, paymentInfo, account, routing);
-                else
-                {
-                    // we can only update the ach account if there is a full account number.
-                    if (!account.StartsWith("X"))
-                        UpdateAchVault(person, paymentInfo, account, routing);
-                    else
-                        UpdateAchVault(person, paymentInfo);
-                }
-
-                paymentInfo.MaskedAccount = Util.MaskAccount(account);
-                paymentInfo.Routing = Util.Mask(new StringBuilder(routing), 2);
+                StoreAchVault(paymentInfo, person, account, routing);
             }
             else
                 throw new ArgumentException($"Type {type} not supported", nameof(type));
@@ -104,6 +79,40 @@ namespace CmsData.Finance
             else
                 paymentInfo.PreferredPaymentType = type;
             db.SubmitChanges();
+        }
+
+        private void StoreAchVault(PaymentInfo paymentInfo, Person person, string account, string routing)
+        {
+            if (paymentInfo.TbnBankVaultId == null) // create new vault
+                paymentInfo.TbnBankVaultId = CreateAchVault(person, paymentInfo, account, routing);
+            else
+            {
+                // we can only update the ach account if there is a full account number.
+                if (!account.StartsWith("X"))
+                    UpdateAchVault(person, paymentInfo, account, routing);
+                else
+                    UpdateAchVault(person, paymentInfo);
+            }
+            paymentInfo.MaskedAccount = Util.MaskAccount(account);
+            paymentInfo.Routing = Util.Mask(new StringBuilder(routing), 2);
+        }
+
+        private void StoreCreditCardVault(PaymentInfo paymentInfo, Person person, PaymentInfo paymentInfo2, string cardNumber, string expires)
+        {            
+            if (paymentInfo.TbnCardVaultId == null) // create new vault.
+                paymentInfo.TbnCardVaultId = CreateCreditCardVault(person, paymentInfo, cardNumber, expires);
+            else
+            {
+                // update existing vault.
+                // check for updating the entire card or only expiration.
+                if (!cardNumber.StartsWith("X"))
+                    UpdateCreditCardVault(person, paymentInfo, cardNumber, expires);
+                else
+                    UpdateCreditCardVault(person, paymentInfo, expires);
+            }
+
+            paymentInfo.MaskedCard = Util.MaskCC(cardNumber);
+            paymentInfo.Expires = expires;
         }
 
         private int CreateCreditCardVault(Person person, PaymentInfo paymentInfo, string cardNumber, string expiration)
@@ -132,6 +141,9 @@ namespace CmsData.Finance
             if (response.ResponseStatus != ResponseStatus.Approved)
                 throw new Exception(
                     $"TransNational failed to create the credit card for people id: {person.PeopleId}, responseCode: {response.ResponseCode}, responseText: {response.ResponseText}");
+            if (string.IsNullOrEmpty(response.VaultId))
+                throw new Exception(
+                    $"TransNational is not returning VaultId. Please contact the system administrator to activate this feature.");
 
             return response.VaultId.ToInt();
         }
@@ -223,6 +235,9 @@ namespace CmsData.Finance
             if (response.ResponseStatus != ResponseStatus.Approved)
                 throw new Exception(
                     $"TransNational failed to create the ach account for people id: {person.PeopleId}, responseCode: {response.ResponseCode}, responseText: {response.ResponseText}");
+            if (string.IsNullOrEmpty(response.VaultId))
+                throw new Exception(
+                    $"TransNational is not returning VaultId. Please contact the system administrator to activate this feature.");
 
             return response.VaultId.ToInt();
         }
@@ -468,25 +483,26 @@ namespace CmsData.Finance
             string addr, string addr2, string city, string state, string country, string zip, string phone)
         {
             var type = AchType(peopleId);
-            var ach = new Ach {
-                    NameOnAccount = $"{first} {last}",
-                    AccountNumber = acct,
-                    RoutingNumber = routing,
-                    Type = type,
-                    BillingAddress = new BillingAddress
-                    {
-                        FirstName = first,
-                        LastName = last,
-                        Address1 = addr,
-                        Address2 = addr2,
-                        City = city,
-                        State = state,
-                        Country = country,
-                        Zip = zip,
-                        Email = email,
-                        Phone = phone
-                    }
-                };
+            var ach = new Ach
+            {
+                NameOnAccount = $"{first} {last}",
+                AccountNumber = acct,
+                RoutingNumber = routing,
+                Type = type,
+                BillingAddress = new BillingAddress
+                {
+                    FirstName = first,
+                    LastName = last,
+                    Address1 = addr,
+                    Address2 = addr2,
+                    City = city,
+                    State = state,
+                    Country = country,
+                    Zip = zip,
+                    Email = email,
+                    Phone = phone
+                }
+            };
             var achSaleRequest = new AchSaleRequest(
                 _userName,
                 _password,
@@ -501,7 +517,7 @@ namespace CmsData.Finance
             if (type == "savings")
             {
                 var s = JsonConvert.SerializeObject(ach, Formatting.Indented).Replace("\r\n", "\n");
-                var c = db.Content("AchSavingsLog","-", ContentTypeCode.TypeText);
+                var c = db.Content("AchSavingsLog", "-", ContentTypeCode.TypeText);
                 c.Body = $"--------------------------\n{DateTime.Now:g}\ntranid={response.TransactionId}\n\n{s}\n{c.Body}";
                 db.SubmitChanges();
             }
@@ -620,7 +636,7 @@ namespace CmsData.Finance
         {
             var batchTransactions = new List<BatchTransaction>();
 
-            var queryRequest = new QueryRequest(_userName, _password, TransactionIds );
+            var queryRequest = new QueryRequest(_userName, _password, TransactionIds);
 
             var response = queryRequest.Execute();
 
@@ -706,9 +722,9 @@ namespace CmsData.Finance
                 _password,
                 DateTime.Now.AddDays(-30),
                 DateTime.Now,
-                new List<TransNational.Query.Condition> {TransNational.Query.Condition.Failed},
+                new List<TransNational.Query.Condition> { TransNational.Query.Condition.Failed },
                 new List<TransNational.Query.TransactionType> { TransNational.Query.TransactionType.Ach },
-                new List<ActionType> {ActionType.CheckReturn, ActionType.CheckLateReturn});
+                new List<ActionType> { ActionType.CheckReturn, ActionType.CheckLateReturn });
 
             var response = queryRequest.Execute();
 
@@ -740,7 +756,7 @@ namespace CmsData.Finance
         private string AchType(int? pid)
         {
             var type = "checking";
-            if (pid.HasValue)
+            if (pid.HasValue && pid > 0)
             {
                 var usesaving = db.Setting("UseSavingAccounts");
                 if (usesaving)
@@ -820,7 +836,7 @@ namespace CmsData.Finance
                         Batch = settlementDate, // this date now will be the same as the settlement date.
                         Batchref = transactionToInsert.BatchReference,
                         Batchtyp = transactionToInsert.BatchType == BatchType.Ach ? "eft" : "bankcard",
-                        OriginalId = originalTransaction != null ? (originalTransaction.OriginalId ?? originalTransaction.Id) : (int?) null,
+                        OriginalId = originalTransaction != null ? (originalTransaction.OriginalId ?? originalTransaction.Id) : (int?)null,
                         Fromsage = true,
                         Description = originalTransaction != null ? originalTransaction.Description : $"no description from {GatewayType}, id={transactionToInsert.TransactionId}",
                         PaymentType = transactionToInsert.BatchType == BatchType.Ach ? PaymentType.Ach : PaymentType.CreditCard,
@@ -883,7 +899,7 @@ namespace CmsData.Finance
                 default:
                     return (paymentInfo.TbnCardVaultId ?? paymentInfo.TbnBankVaultId).ToString();
             }
-                
+
         }
     }
 }

@@ -106,9 +106,9 @@ namespace CmsWeb.Areas.Dialog.Models
                         statusContext.SubmitChanges();
                     }
                 }
-                model.BackgroundRepairTransactions(oid, workerContext);
+                BackgroundRepairTransactions(model.repairExe, oid, workerContext);
             }
-            model.BackgroundRepairTransactions(model.TargetId, workerContext);
+            BackgroundRepairTransactions(model.repairExe, model.TargetId, workerContext);
             // finished
             if (lop != null)
             {
@@ -118,7 +118,7 @@ namespace CmsWeb.Areas.Dialog.Models
             workerContext.UpdateMainFellowship(model.TargetId);
         }
 
-        private void BackgroundRepairTransactions(int orgId, CMSDataContext context)
+        public static void BackgroundRepairTransactions(string repairExe, int orgId, CMSDataContext context)
         {
             var connectionString = context.Connection.ConnectionString;
             var host = context.Host;

@@ -4,7 +4,7 @@
     <td colspan='2' style='{{DataStyle}}{{BottomBorder}}'>
       <p>
         <hr/>
-        Registrant: {{Name}}<br/>
+        Registrant: <registrant>{{Name}}</registrant><br/>
         for {{OrganizationName}}
       </p>
     </td>
