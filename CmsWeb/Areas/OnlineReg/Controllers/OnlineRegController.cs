@@ -35,7 +35,18 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
             else
             {
-                m.ProcessType = (m.org?.RegistrationTypeId).GetValueOrDefault() == RegistrationTypeCode.OnlineGiving ? PaymentProcessTypes.OneTimeGiving : PaymentProcessTypes.OnlineRegistration;
+                switch (m.org?.RegistrationTypeId.GetValueOrDefault())
+                {
+                    case RegistrationTypeCode.OnlineGiving:
+                        m.ProcessType = PaymentProcessTypes.OneTimeGiving;
+                        break;
+                    case RegistrationTypeCode.ManageGiving:
+                        m.ProcessType = PaymentProcessTypes.RecurringGiving;
+                        break;
+                    default:
+                        m.ProcessType = PaymentProcessTypes.OnlineRegistration;
+                        break;
+                }
             }
 
             SetHeaders(m);
