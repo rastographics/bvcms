@@ -164,6 +164,7 @@ AttendedAsOf,Bit,,,,AttendanceDates,Attended As Of,"StartDate,EndDate,Program,Di
 FirstFamilyVisitAsOf,Bit,,,,AttendanceDates,First Family Visit,"StartDate,EndDate",Enter Starting Date and optional ending date to find family members where the first by any family member was since then
 CheckInByDate,Integer,,,,AttendanceDates,Building Check-In Count History,"StartDate,EndDate","Searches by Date Range, can do # times visited greater than, less than, etc."
 CheckInByActivity,CodeStr,,Activities,,AttendanceDates,Building Check-In By Activity,,Searches by Building Activity
+GetEldestFamilyMember,Code,,FamilyPositionCodes,,AttendanceDates,Eldest Family Member That Attended,"Program,Division,Organization,StartDate,EndDate","Select positions in family, attendance: starting date and ending date, program, division, and organization."
 MeetingId,Integer,,,,AttendanceDates,,,"For internal use, but you can enter a Meeting ID number for those who attended."
 RegisteredForMeetingId,Integer,,,,AttendanceDates,,,"For internal use, but you can enter a Meeting ID number for those who are registered to attend."
 CommitmentForMeetingId,Code,,AttendCommitmentCodes,MeetingId,AttendanceDates,,Quarters,"For internal use, shows those for the specified commitment type for the specified meeting (attending, regrets, etc.)"
@@ -261,4 +262,3 @@ HasOptoutsForEmail,StringEqual,,,,Admin,Has Email Optouts for address,EndDate,En
 HasOpenedEmail,IntegerEqual,,,,Admin,Opened Email,,Enter Email ID number.
 HasSpamBlock,Bit,,,,Admin,Has Spam Block,,Has Reported as Spam
 PeopleId,Integer,,,,Admin,,,"For internal use, but you can enter a People ID number."
-GetEldestFamilyMember,Code,,FamilyPositionCodes,,Admin,Eldest Family Member That Attended,"Program,Division,Organization,StartDate,EndDate","Select positions in family, attendance: starting date and ending date, program, division, and organization."
