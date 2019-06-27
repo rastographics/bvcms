@@ -10,6 +10,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using UtilityExtensions;
+using CmsWeb.Code;
 
 namespace CmsWeb.Areas.OnlineReg.Models
 {
@@ -136,6 +137,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private bool ValidateEmailRecipientRegistrant(string name, string detailSection)
         {
+            detailSection = XmlHelper.RemoveTags(detailSection, "<br>");
             detailSection = $"<root>{detailSection}</root>";
             XDocument doc = XDocument.Parse(detailSection);
             IEnumerable<string> childList = from el in doc.Descendants("registrant")
