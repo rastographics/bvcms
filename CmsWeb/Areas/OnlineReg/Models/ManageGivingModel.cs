@@ -181,11 +181,12 @@ namespace CmsWeb.Areas.OnlineReg.Models
         private void PopulateDefaultFundIds(string host, string defaultFundIds, Person person)
         {
             var db = CMSDataContext.Create(host, asReadOnly: true);
-            if (string.IsNullOrWhiteSpace(defaultFundIds) && person.CampusId.HasValue)
+            var setting = $"DefaultCampusFunds-{person.CampusId.GetValueOrDefault(0)}";
+            var fundIdsForCampus = db.Setting(setting, string.Empty);
+            if (string.IsNullOrWhiteSpace(defaultFundIds) && fundIdsForCampus.HasValue())
             {
-                // look up campus default fund mapping if present.
-                var setting = $"DefaultCampusFunds-{person.CampusId}";
-                defaultFundIds = db.Setting(setting, string.Empty);
+                // use campus default fund mapping if present.
+                defaultFundIds = fundIdsForCampus;
             }
             
             if (!string.IsNullOrWhiteSpace(defaultFundIds))

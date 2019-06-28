@@ -72,7 +72,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
         [HttpPost, Route("MoveSelect/{toid:int}")]
         public ActionResult MoveSelect(int toid, OrgMemberMoveModel m)
         {
-            var ret = m.Move(toid);
+            var ret = m.Move(toid, CurrentDatabase);
             return Content(ret);
         }
 

@@ -1,98 +1,219 @@
 ﻿@using System.Globalization
 @using CmsWeb
-@model CmsWeb.Models.CouponModel
 @{
     Layout = ViewExtensions2.TouchPointLayout();
-    ViewBag.Title = "Create Coupon";
-    ViewBag.PageHeader = "Create Coupon";
+    ViewBag.Title = "Coupons";
+    ViewBag.PageHeader = "Coupons";
 }
 @section head
 {
     @Fingerprint.Css("/Content/touchpoint/lib/select2/css/select2.css")
     @Fingerprint.Css("/Content/touchpoint/lib/select2/css/select2-bootstrap.css")
 }
-<div class="row">
-    <div class="col-md-8">
-        <div class="box box-responsive">
-            <div class="box-title-btn">
-                <div class="box-tools">
-                    <a href="/Coupon/List" class="btn btn-default"><i class="fa fa-arrow-circle-left"></i> Back to List</a>
+
+<template id="ListApp">
+    <div class="row" id="ListContent">
+        <div class="col-lg-9">
+            <div class="box box-responsive">
+                <div class="box-title-btn">
+                    <div class="box-tools">
+                        <a href="#" v-on:click="ShowCreate" class="btn btn-success"><i class="fa fa-plus-circle"></i> Create Coupon</a>
+                    </div>
                 </div>
-            </div>
-            <div class="box-content">
-                <form action="/Coupon/Create" method="post">
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label for="regid" class="control-label">Registration Type</label>
-                                <select name="regid" id="regid" class="form-control">
-                                    @foreach (var i in Model.OnlineRegs())
-                                    {
-                                        <option value="@i.Value">@i.Text</option>
-                                    }
-                                </select>
+                <div class="box-content">
+                    <form v-on:submit.prevent="FilterCoupon" method="post">
+                        <div class="well">
+                            <div class="row">
+                                <div class="col-lg-3 col-md-3 col-sm-6">
+                                    <div class="form-group">
+                                        <label for="name" class="control-label">Name</label>
+                                        <input id="name" class="form-control" type="text" v-model="name" />
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-sm-6">
+                                    <div class="form-group">
+                                        <label for="useridfilter" class="control-label">User</label>
+                                        <select id="useridfilter" v-model="useridfilter" class="form-control">
+                                            <option v-for="User in Users" v-bind:selected="User.Selected" v-bind:value="User.Value">{{ User.Text }}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-md-6 col-sm-6">
+                                    <div class="form-group">
+                                        <label for="regidfilter" class="control-label">Registration Type</label>
+                                        <select id="regidfilter" onchange="SetSearchOrgId(this)" class="form-control">
+                                            <option on v-for="OnlineReg in OnlineRegs" v-bind:selected="OnlineReg.Selected" v-bind:value="OnlineReg.Value">{{ OnlineReg.Text }}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-sm-6">
+                                    <div class="form-group">
+                                        <label for="startdate" class="control-label">From Date</label>
+                                        <div class="input-group date">
+                                            <input class="form-control" id="startdate" type="text" /><span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                                            <input disabled="disabled" id="startdateIso" type="hidden" v-model="startdateIso" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-sm-6">
+                                    <div class="form-group">
+                                        <label for="enddate" class="control-label">To Date</label>
+                                        <div class="input-group date">
+                                            <input class="form-control" id="enddate" type="text" /><span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                                            <input disabled="disabled" id="enddateIso" type="hidden" v-model="enddateIso" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-md-6 col-sm-6">
+                                    <div class="form-group">
+                                        <label for="usedfilter" class="control-label">Status</label>
+                                        <select id="usedfilter" onchange="SetUsedfilter(this)" class="form-control">
+                                            <option v-for="CouponStat in CouponStatus" v-bind:selected="CouponStat.Selected" v-bind:value="CouponStat.Text">{{ CouponStat.Text }}</option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label for="name" class="control-label">Name</label>
-                                @Html.TextBox("name", Model.name, new { @class = "form-control" })
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label for="amount" class="control-label">Amount</label>
-                                <div class="input-group">
-                                    <span class="input-group-addon currency">@NumberFormatInfo.CurrentInfo.CurrencySymbol</span>@Html.TextBox("amount", Model.amount, new { @class = "form-control" })
+                            <div class="row">
+                                <div class="col-lg-5 col-lg-offset-7 col-md-5 col-md-offset-7 col-sm-6 col-sm-offset-6">
+                                    <div class="pull-right">
+                                        <a v-on:click="ResetFilter" href="#" class="btn btn-default">Reset</a>
+                                        <a name="submit" v-on:click="DownloadExcel" class="btn btn-default"><i class="fa fa-cloud-download"></i> Download to Excel</a>
+                                        <input name="submit" type="submit" class="btn btn-primary" value="Search" />
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        @if (User.IsInRole("Admin") || User.IsInRole("Coupon2"))
-                        {
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label for="couponcode" class="control-label">Coupon Code <small>(only for non-expiring coupons)</small></label>
-                                    @Html.TextBox("couponcode", Model.couponcode, new { @class = "form-control", maxlength = "11" })
-                                </div>
-                            </div>
-                        }
+                    </form>
+                    <div class="table-responsive">
+                        <table id="list" class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Coupon
+                                    </th>
+                                    <th>
+                                        User<br />
+                                        Purchaser<br />
+                                        Person
+                                    </th>
+                                    <th class="text-right">
+                                        <br />
+                                        Coupon Amt<br />
+                                        Trans. Amt
+                                    </th>
+                                    <th>
+                                        <br />
+                                        <br />
+                                        Registration
+                                    </th>
+                                    <th>
+                                        Created<br />
+                                        Used<br />
+                                    </th>
+                                    <th style="width: 50px;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template v-for="Coupon in Coupons">
+                                    <tr>
+                                        <td>
+                                            {{Coupon.Coupon}}
+                                        </td>
+                                        <td>
+                                            {{Coupon.UserName}}<br />
+                                            {{Coupon.Name}}<br />
+                                            {{Coupon.Person !== null ? Coupon.Person : 'na'}}
+                                        </td>
+                                        <td class="text-right">
+                                            {{formatMoney(Coupon.Amount)}}<br>
+                                            {{formatMoney(Coupon.RegAmt)}}
+                                        </td>
+                                        <td>
+                                            {{Coupon.OrgDivName}}
+                                        </td>
+                                        <td>
+                                            {{Coupon.Created}}<br />
+                                            {{IsCanceledOrUsed(Coupon.Used, Coupon.Canceled)}}<br />
+                                        </td>
+                                        <td style="width: 50px;">
+                                            <template v-if="IsCanceled(Coupon.Used, Coupon.Code, Coupon.Canceled)">
+                                                <a v-on:click="CancelCoupon(Coupon.Code)" class="confirm btn btn-warning btn-sm"><i class="fa fa-times-circle"></i>&nbsp;Cancel</a>
+                                            </template>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
                     </div>
-                    <div class="row hidden-xs">
-                        <div class="col-sm-12">
-                            <input type="submit" class="btn btn-primary" value="Create Coupon" />
-                        </div>
-                    </div>
-                    <div class="visible-xs-block">
-                        <input type="submit" class="btn btn-primary btn-block" value="Create Coupon" />
-                        <hr/>
-                        <a href="/Coupon/List" class="btn btn-default btn-block"><i class="fa fa-arrow-circle-left"></i> Back to List</a>
-                    </div>
-                </form>
+                    <a href="/Coupons" class="btn btn-success visible-xs-block btn-block"><i class="fa fa-plus-circle"></i> Create Coupon</a>
+                </div>
             </div>
         </div>
     </div>
-</div>
+</template>
+
+<template id="CreateApp">
+    <div class="row" id="CreateContent" hidden>
+        <div class="col-md-8">
+            <div class="box box-responsive">
+                <div class="box-title-btn">
+                    <div class="box-tools">
+                        <a href="#" v-on:click="ShowList" class="btn btn-default"><i class="fa fa-arrow-circle-left"></i> Go to List</a>
+                    </div>
+                </div>
+                <div class="box-content">
+                    <form v-on:submit.prevent="CreateCoupon" method="post">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="regidSearch" class="control-label">Registration Type</label>
+                                    <select id="regidSearch" onchange="SetCreateOrgId(this)" class="form-control">
+                                        <option v-for="OnlineReg in OnlineRegs" v-bind:value="OnlineReg.Value">{{ OnlineReg.Text }}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="name" class="control-label">Name</label>
+                                    <input id="name" v-model="name" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="amount" class="control-label">Amount</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon currency">@NumberFormatInfo.CurrentInfo.CurrencySymbol</span><input v-model="amount" class="form-control" required />
+                                    </div>
+                                </div>
+                            </div>
+                            @if (User.IsInRole("Admin") || User.IsInRole("Coupon2"))
+                            {
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="couponcode" class="control-label">Coupon Code <small>(only for non-expiring coupons)</small></label>
+                                        <input v-model="couponcode" class="form-control" maxlength="11" />
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                        <div class="row hidden-xs">
+                            <div class="col-sm-12">
+                                <input type="submit" class="btn btn-primary" value="Create Coupon" />
+                            </div>
+                        </div>
+                        <div class="visible-xs-block">
+                            <input type="submit" class="btn btn-primary btn-block" value="Create Coupon" />
+                            <hr />
+                            <a href="/Coupon/List" class="btn btn-default btn-block"><i class="fa fa-arrow-circle-left"></i> Back to List</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
 @section scripts
 {
+    @Fingerprint.Script("/Content/touchpoint/js/Coupons.js")
     @Fingerprint.Script("/Content/touchpoint/lib/select2/js/select2.min.js")
-    <script>
-        $(function () {
-            $("select").select2();
-        });
-
-        $('form').submit(function () {
-            var RegistrationType = document.getElementById('regid').value;
-            if (RegistrationType.length === 0) {
-                swal({
-                    type: 'info',
-                    title: 'Warning',
-                    text: 'Please select a Registration Type'
-                });
-                return false;
-            }
-            else {
-                return true;
-            }
-        });
-    </script>
 }

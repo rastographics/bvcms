@@ -15,7 +15,7 @@
         <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
 </head>
-<body class="page-info">
+<body class="page-info" style="display:none">
     <div class="header">
         <a href="/">
             <div><img class="logo" src="/Content/touchpoint/img/logo_sm.png" alt="" style="margin-top: -4px;"></div>&nbsp;
@@ -36,6 +36,13 @@
             &copy; 2018 TouchPoint Software, Inc.
         </div>
     </div>
+    <script type="text/javascript">
+        if (document.querySelector('body > div.blockUI.blockMsg.blockPage')) {
+            location.reload(true);
+        } else {
+            document.body.style.display = '';
+        }
+    </script>
     <script src='//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js'></script>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 </body>

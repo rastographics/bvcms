@@ -115,6 +115,12 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpGet]
         public ActionResult ManageGiving()
         {
+            var setting = CurrentDatabase.Setting("ExternalManageGivingUrl", "");
+            if (setting.HasValue())
+            {
+                return Redirect(ExternalLink(setting));
+            }
+
             var org = (from o in CurrentDatabase.Organizations
                        where o.RegistrationTypeId == RegistrationTypeCode.ManageGiving
                        select o.OrganizationId).FirstOrDefault();
@@ -129,17 +135,21 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpGet]
         public ActionResult OneTimeGift(int? id)
         {
+            var setting = CurrentDatabase.Setting("ExternalOneTimeGiftUrl", "");
+            if (setting.HasValue())
+            {
+                return Redirect(ExternalLink(setting));
+            }
             // check for one time gift campus route mapping.
             if (id.HasValue)
             {
-                var setting = $"OneTimeGiftCampusRoute-{id}";
-                var route = CurrentDatabase.GetSetting(setting, string.Empty);
-                if (!string.IsNullOrWhiteSpace(route))
+                var route = CurrentDatabase.Setting($"OneTimeGiftCampusRoute-{id}", "");
+                if (route.HasValue())
                 {
                     return Redirect($"/{route}");
                 }
             }
-            
+
             var oid = CmsData.API.APIContribution.OneTimeGiftOrgId(CurrentDatabase);
             if (oid > 0)
             {
@@ -149,5 +159,23 @@ namespace CmsWeb.Areas.People.Controllers
             return new EmptyResult();
         }
 
+        private string ExternalLink(string setting)
+        {
+            var url = setting;
+            if (setting.Contains("{token}"))
+            {
+                var expirationWindow = CurrentDatabase.Setting("OTLTokenExpirationMinutes", "5").ToInt();
+                var otl = new OneTimeLink
+                {
+                    Id = Guid.NewGuid(),
+                    Querystring = Util.UserPeopleId.ToString(),
+                    Expires = DateTime.Now.AddMinutes(expirationWindow)
+                };
+                CurrentDatabase.OneTimeLinks.InsertOnSubmit(otl);
+                CurrentDatabase.SubmitChanges();
+                url = url.Replace("{token}", otl.Id.ToCode());
+            }
+            return url;
+        }
     }
 }

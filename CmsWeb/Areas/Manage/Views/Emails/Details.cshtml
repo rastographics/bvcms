@@ -265,19 +265,19 @@
   {
     <ul class="nav nav-tabs" id="recipient-tabs">
       <li class="active">
-        <a href="#" data-filter="All">All&nbsp;&nbsp;<span class="badge">@all</span></a>
+        <a href="#tab_all" data-filter="All">All&nbsp;&nbsp;<span class="badge">@all</span></a>
       </li>
       @if (Model.HasTracking)
       {
         <li>
-          <a href="#" data-filter="Opened">Opened&nbsp;&nbsp;<span class="badge">@uniqueOpens</span></a>
+          <a href="#tab_opened" data-filter="Opened">Opened&nbsp;&nbsp;<span class="badge">@uniqueOpens</span></a>
         </li>
         <li>
-          <a href="#" data-filter="NotOpened">Not Opened&nbsp;&nbsp;<span class="badge">@notOpened</span></a>
+          <a href="#tab_notopened" data-filter="NotOpened">Not Opened&nbsp;&nbsp;<span class="badge">@notOpened</span></a>
         </li>
       }
       <li>
-        <a href="#" data-filter="Failed">Failed&nbsp;&nbsp;<span class="badge">@failed</span></a>
+        <a href="#tab_failed" data-filter="Failed">Failed&nbsp;&nbsp;<span class="badge">@failed</span></a>
       </li>
     </ul>
     <div class="tab-content">
