@@ -601,6 +601,7 @@
     <Compile Include="Areas\Org\Controllers\Org\Settings\General.cs" />
     <Compile Include="Areas\Org\Controllers\Org\Settings\Main.cs" />
     <Compile Include="Areas\Org\Controllers\Org\Settings\Messages.cs" />
+    <Compile Include="Areas\Org\Controllers\Org\Settings\CheckIn.cs" />
     <Compile Include="Areas\Org\Controllers\Org\Settings\Questions.cs" />
     <Compile Include="Areas\Org\Controllers\Org\Settings\Registration.cs" />
     <Compile Include="Areas\Org\Controllers\Org\Toolbar.cs" />
@@ -615,6 +616,7 @@
     <Compile Include="Areas\Org\Models\Org\Contacts\ContactsReceivedModel.cs" />
     <Compile Include="Areas\Org\Models\Org\OrgSearchFieldsModel.cs" />
     <Compile Include="Areas\Org\Models\Org\ScheduleInfo.cs" />
+    <Compile Include="Areas\Org\Models\Org\SettingsCheckInModel.cs" />
     <Compile Include="Areas\Org\Models\Org\SettingsMessagesModel.cs" />
     <Compile Include="Areas\Org\Models\Org\SettingsGeneralModel.cs" />
     <Compile Include="Areas\Org\Models\Org\SettingsAttendanceModel.cs" />
@@ -1830,6 +1832,7 @@
     <Content Include="Areas\OnlineReg\Views\OnlineReg\OnePageGiving\NotConfigured.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\MeetingAttendance.cshtml" />
     <Content Include="libman.json" />
+    <Content Include="Areas\Org\Views\Org\Settings\CheckIn.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
