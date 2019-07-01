@@ -164,6 +164,7 @@ namespace CmsData
                 { QueryType.PmmBackgroundCheckStatus, BackgroundCheckStatus },
                 { QueryType.QueryTag, QueryTag },
                 { QueryType.RecActiveOtherChurch, RecActiveOtherChurch },
+                { QueryType.NotChurchMember, nomember },
                 { QueryType.RecentAttendCount, RecentAttendCount },
                 { QueryType.RecentAttendCountAttCred, RecentAttendCountAttCred },
                 { QueryType.RecentAttendMemberType, RecentAttendMemberType },
