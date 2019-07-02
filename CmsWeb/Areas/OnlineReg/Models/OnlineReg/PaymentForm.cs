@@ -780,22 +780,23 @@ namespace CmsWeb.Areas.OnlineReg.Models
             {
                 string errorMessage = ValidateTransactionApproved(transactionApproved, ex.Message);
 
-                ValidateVaultId(ex, modelState);
+                errorMessage = ValidateVaultId(ex, modelState);
                 
                 modelState.AddModelError("form", errorMessage);
                 return RouteModel.ProcessPayment();
             }
         }
 
-        private void ValidateVaultId(Exception ex, ModelStateDictionary modelState)
+        private string ValidateVaultId(Exception ex, ModelStateDictionary modelState)
         {
             if (ex.Message == "InvalidVaultId")
             {
-                ClearPaymentInfo(modelState);
+                return ClearPaymentInfo(modelState);
             }
             else
             {
                 ErrorSignal.FromCurrentContext().Raise(ex);
+                return ex.Message;
             }
         }
 
@@ -809,7 +810,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             return exMessage;
         }
 
-        private void ClearPaymentInfo(ModelStateDictionary modelState)
+        private string ClearPaymentInfo(ModelStateDictionary modelState)
         {
             CreditCard = string.Empty;
             Expires = string.Empty;
@@ -817,7 +818,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             Account = string.Empty;
             CVV = string.Empty;
             modelState.Clear();
-            modelState.AddModelError("form", "Please insert your payment information.");
+            return "Please insert your payment information.";
         }
 
         public RouteModel ProcessExternalPayment(OnlineRegModel m, out int orgId)
