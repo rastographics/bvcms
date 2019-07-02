@@ -748,7 +748,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 }
 
                 if (m?.UserPeopleId != null && m.UserPeopleId > 0)
-                {                    
+                {
                     CheckStoreInVault(modelState, m.UserPeopleId.Value);
                 }
 
@@ -778,23 +778,35 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
             catch (Exception ex)
             {
-                string errorMessage = ex.Message;
-                if (transactionApproved)
-                {
-                    errorMessage = $"Bank transaction was approved but registration failed. Please don't submit the payment again and contact the system administrator.";
-                    CurrentDatabase.LogActivity($"Payment approved but registration failed: {ex.Message}");
-                }
-                if (ex.Message == "InvalidVaultId")
-                {
-                    ClearPaymentInfo(modelState);
-                }
-                else
-                {
-                    ErrorSignal.FromCurrentContext().Raise(ex);
-                    modelState.AddModelError("form", errorMessage);
-                }
+                string errorMessage = ValidateTransactionApproved(transactionApproved, ex.Message);
+
+                ValidateVaultId(ex, modelState);
+                
+                modelState.AddModelError("form", errorMessage);
                 return RouteModel.ProcessPayment();
             }
+        }
+
+        private void ValidateVaultId(Exception ex, ModelStateDictionary modelState)
+        {
+            if (ex.Message == "InvalidVaultId")
+            {
+                ClearPaymentInfo(modelState);
+            }
+            else
+            {
+                ErrorSignal.FromCurrentContext().Raise(ex);
+            }
+        }
+
+        private string ValidateTransactionApproved(bool transactionApproved, string exMessage)
+        {
+            if (transactionApproved)
+            {
+                CurrentDatabase.LogActivity($"Payment approved but registration failed: {exMessage}");
+                return $"Bank transaction was approved but registration failed. Please don't submit the payment again and contact the system administrator.";
+            }
+            return exMessage;
         }
 
         private void ClearPaymentInfo(ModelStateDictionary modelState)
