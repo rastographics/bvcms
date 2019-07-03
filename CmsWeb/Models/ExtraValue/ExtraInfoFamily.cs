@@ -18,6 +18,7 @@ namespace CmsWeb.Models.ExtraValues
                 {
                     return $"/ExtraValue/FamilyQueryCodes?field={HttpUtility.UrlEncode(Field)}&value={HttpUtility.UrlEncode(Value)}";
                 }
+                Type = Type.Length == 0 ? "none" : Type;
 
                 return $"/ExtraValue/FamilyQueryData?field={HttpUtility.UrlEncode(Field)}&type={Type}";
             }
@@ -120,6 +121,7 @@ namespace CmsWeb.Models.ExtraValues
                     DbUtil.Db.ExecuteCommand("delete FamilyExtra where field = {0} and Data is not null", field);
                     break;
                 case "?":
+                case "none":
                     DbUtil.Db.ExecuteCommand(
                         "delete FamilyExtra where field = {0} and data is null and datevalue is null and intvalue is null",
                         field);

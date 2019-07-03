@@ -1,9 +1,9 @@
 ﻿using System.Linq;
 using System.Net.Http.Formatting;
 using System.Web.Http;
-using System.Web.OData.Builder;
-using System.Web.OData.Extensions;
-using System.Web.OData.Formatter;
+using Microsoft.AspNet.OData.Builder;
+using Microsoft.AspNet.OData.Extensions;
+using Microsoft.AspNet.OData.Formatter;
 using CmsWeb.Models.Api;
 using CmsWeb.Models.Api.Lookup;
 using Newtonsoft.Json.Serialization;

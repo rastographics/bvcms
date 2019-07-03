@@ -302,5 +302,28 @@ namespace CmsData
                 expr = Expression.Not(expr);
             return expr;
         }
+        internal Expression GetEldestFamilyMember()
+        {
+            DateTime? enddt = null;
+            if (!EndDate.HasValue && StartDate.HasValue)
+                enddt = StartDate.Value.AddHours(24);
+            if (EndDate.HasValue)
+                enddt = EndDate.Value.AddHours(24);
+
+            var q = db.AttendedAsOf(ProgramInt, DivisionInt, OrganizationInt, StartDate, enddt, false);
+
+            Expression<Func<Person, bool>> pred = p =>
+                (from p2 in p.Family.People
+                 where (op == CompareType.Equal || op == CompareType.OneOf) ? CodeIntIds.Contains(p2.PositionInFamilyId) : !CodeIntIds.Contains(p2.PositionInFamilyId)
+                 where q.Select(c => c.PeopleId).Contains(p2.PeopleId)
+                 orderby (p2.BirthYear ?? 9999), (p2.BirthMonth ?? 99), (p2.BirthDay ?? 99),
+                    db.SpaceToNull(p2.LastName) ?? "zzz",
+                    db.SpaceToNull(p2.NickName) ?? db.SpaceToNull(p2.FirstName) ?? "zzz",
+                    p2.MiddleName + p2.SuffixCode, p2.PeopleId > 0 ? p2.PeopleId : 99999999
+                 select p2).First().PeopleId == p.PeopleId;
+
+            Expression expr = Expression.Invoke(pred, parm);
+            return expr;
+        }
     }
 }

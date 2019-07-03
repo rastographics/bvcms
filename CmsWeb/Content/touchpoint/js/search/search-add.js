@@ -40,6 +40,12 @@ $(function () {
                  $('#empty-dialog').html(form);
                  $('#empty-dialog').modal("show");
 
+                 // hide modal on escape key press
+                 Mousetrap.bind('esc', function () {
+                     $('#empty-dialog').modal('hide');
+                     return false;
+                 });
+
                  $.AttachFormElements();
                  $(form).validate({
                      highlight: function (element) {
@@ -49,8 +55,10 @@ $(function () {
                          $(element).closest(".control-group").removeClass("error");
                      }
                  });
+
                  $('#empty-dialog').on('hidden', function () {
                      $('#empty-dialog').remove();
+                     Mousetrap.unbind('esc');
                  });
              });
     });

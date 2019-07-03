@@ -1,7 +1,4 @@
-﻿@using CmsWeb
-@using UtilityExtensions
-@model CmsWeb.Models.CouponModel
-@{
+﻿@{
     Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Coupons";
     ViewBag.PageHeader = "Coupons";
@@ -10,7 +7,7 @@
     @Fingerprint.Css("/Content/touchpoint/lib/select2/css/select2.css")
     @Fingerprint.Css("/Content/touchpoint/lib/select2/css/select2-bootstrap.css")
 }
-<div class="row">
+<div class="row" id="ListApp">
     <div class="col-lg-9">
         <div class="box box-responsive">
             <div class="box-title-btn">
@@ -19,33 +16,37 @@
                 </div>
             </div>
             <div class="box-content">
-                <form action="/Coupon/List" method="post">
+                <form v-on:submit.prevent="FilterCoupon" method="post">
                     <div class="well">
                         <div class="row">
                             <div class="col-lg-3 col-md-3 col-sm-6">
                                 <div class="form-group">
                                     <label for="name" class="control-label">Name</label>
-                                    @Html.TextBox("name", Model.name, new { @class = "form-control" })
+                                    <input id="name" class="form-control" type="text" v-model="name" />
                                 </div>
                             </div>
                             <div class="col-lg-3 col-md-3 col-sm-6">
                                 <div class="form-group">
                                     <label for="useridfilter" class="control-label">User</label>
-                                    @Html.DropDownList("useridfilter", Model.Users(), new { @class = "form-control" })
+                                    <select id="useridfilter" v-model="useridfilter" class="form-control">
+                                        <option v-for="User in Users" v-bind:selected="User.Selected" v-bind:value="User.Value">{{ User.Text }}</option>
+                                    </select>
                                 </div>
                             </div>
                             <div class="col-lg-6 col-md-6 col-sm-6">
                                 <div class="form-group">
                                     <label for="regidfilter" class="control-label">Registration Type</label>
-                                    @Html.DropDownList("regidfilter", Model.OnlineRegs(), new { @class = "form-control" })
+                                    <select id="regidfilter" onchange="SetOrgId(this)" class="form-control">
+                                        <option on v-for="OnlineReg in OnlineRegs" v-bind:selected="OnlineReg.Selected" v-bind:value="OnlineReg.Value">{{ OnlineReg.Text }}</option>
+                                    </select>
                                 </div>
                             </div>
                             <div class="col-lg-3 col-md-3 col-sm-6">
                                 <div class="form-group">
                                     <label for="startdate" class="control-label">From Date</label>
                                     <div class="input-group date">
-                                        @Html.TextBox("startdate", Model.startdate, new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
-                                        @Html.Hidden("startdateIso", Model.startdate, new { disabled = "disabled" })
+                                        <input class="form-control" id="startdate" type="text" /><span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                                        <input disabled="disabled" id="startdateIso" type="hidden" v-model="startdateIso" />
                                     </div>
                                 </div>
                             </div>
@@ -53,22 +54,26 @@
                                 <div class="form-group">
                                     <label for="enddate" class="control-label">To Date</label>
                                     <div class="input-group date">
-                                        @Html.TextBox("enddate", Model.enddate, new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
-                                        @Html.Hidden("enddateIso", Model.enddate, new { disabled = "disabled" })
+                                        <input class="form-control" id="enddate" type="text" /><span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                                        <input disabled="disabled" id="enddateIso" type="hidden" v-model="enddateIso" />
                                     </div>
                                 </div>
                             </div>
                             <div class="col-lg-6 col-md-6 col-sm-6">
                                 <div class="form-group">
                                     <label for="usedfilter" class="control-label">Status</label>
-                                    @Html.DropDownList("usedfilter", Model.CouponStatus(), new { @class = "form-control" })
+                                    <select id="usedfilter" onchange="SetUsedfilter(this)" class="form-control">
+                                        <option v-for="CouponStat in CouponStatus" v-bind:selected="CouponStat.Selected" v-bind:value="CouponStat.Text">{{ CouponStat.Text }}</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-lg-5 col-lg-offset-7 col-md-5 col-md-offset-7 col-sm-6 col-sm-offset-6">
                                 <div class="pull-right">
-                                    <a id="reset" href="#" class="btn btn-default">Reset</a> <button name="submit" type="submit" class="btn btn-default" value="Excel"><i class="fa fa-cloud-download"></i> Download to Excel</button> <input name="submit" type="submit" class="btn btn-primary" value="Search" />
+                                    <a v-on:click="ResetFilter" href="#" class="btn btn-default">Reset</a>
+                                    <a name="submit" v-on:click="DownloadExcel" class="btn btn-default"><i class="fa fa-cloud-download"></i> Download to Excel</a>
+                                    <input name="submit" type="submit" class="btn btn-primary" value="Search" />
                                 </div>
                             </div>
                         </div>
@@ -104,37 +109,34 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var item in Model.Coupons())
-                            {
+                            <template v-for="Coupon in Coupons">
                                 <tr>
                                     <td>
-                                        @item.Coupon
+                                        {{Coupon.Coupon}}
                                     </td>
                                     <td>
-                                        @item.UserName<br />
-                                        @item.Name<br />
-                                        @(item.Person ?? "na")
+                                        {{Coupon.UserName}}<br />
+                                        {{Coupon.Name}}<br />
+                                        {{Coupon.Person !== null ? Coupon.Person : 'na'}}
                                     </td>
                                     <td class="text-right">
-                                        @item.Amount.ToString2("C")<br />
-                                        @item.RegAmt.ToString2("C")
+                                        {{formatMoney(Coupon.Amount)}}<br>
+                                        {{formatMoney(Coupon.RegAmt)}}
                                     </td>
                                     <td>
-                                        @item.OrgDivName
+                                        {{Coupon.OrgDivName}}
                                     </td>
                                     <td>
-                                        @item.Created.FormatDateTm()<br />
-                                        @item.Used.FormatDateTm(item.Canceled.HasValue ? "canceled" : "not used")<br />
-                                    </td>
+                                        {{Coupon.Created}}<br />
+                                        {{IsCanceledOrUsed(Coupon.Used, Coupon.Canceled)}}<br />
+                                    </td>   
                                     <td style="width: 50px;">
-                                        @if ((!item.Used.HasValue || item.Code.Length != 12) && !item.Canceled.HasValue)
-                                        {
-                                            <a href="@Url.Action("Cancel", "Coupon", new { id = item.Code })" class="confirm btn btn-warning btn-sm"><i class="fa fa-times-circle"></i> Cancel</a>
-                                        }
+                                        <template v-if="IsCanceled(Coupon.Used, Coupon.Code, Coupon.Canceled)">
+                                            <a v-on:click="CancelCoupon(Coupon.Code)" class="confirm btn btn-warning btn-sm"><i class="fa fa-times-circle"></i>&nbsp;Cancel</a>
+                                        </template>
                                     </td>
                                 </tr>
-
-                            }
+                            </template>
                         </tbody>
                     </table>
                 </div>
@@ -145,37 +147,6 @@
 </div>
 @section scripts
 {
+    @Fingerprint.Script("/Content/touchpoint/js/Coupons.js")
     @Fingerprint.Script("/Content/touchpoint/lib/select2/js/select2.min.js")
-    <script type="text/javascript">
-        $(function () {
-            $("#regidfilter").select2();
-
-            $("a.confirm").click(function (e) {
-                e.preventDefault();
-                var url = $(this).attr("href");
-                swal({
-                    title: "Are you sure?",
-                    type: "warning",
-                    showCancelButton: true,
-                    confirmButtonClass: "btn-warning",
-                    confirmButtonText: "Yes, cancel it!",
-                    closeOnConfirm: true
-                },
-                function () {
-                    document.location.href = url;
-                });
-            });
-
-            $('#reset').click(function (e) {
-                $('#name').val('');
-                $('#useridfilter').val(0);
-                $('#regidfilter').select2('val', 0);
-                $('#startdate').val('');
-                $('#startdateIso').val('');
-                $('#enddate').val('');
-                $('#enddateIso').val('');
-                $('#usedfilter').val('(not specified)');
-            });
-        });
-    </script>
 }

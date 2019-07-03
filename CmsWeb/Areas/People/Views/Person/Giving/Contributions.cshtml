@@ -3,7 +3,7 @@
 @using UtilityExtensions
 @{
     var giving = Util.UserPeopleId == Util2.CurrentPeopleId && (MultipleGatewayUtils.GatewayId(DbUtil.Db, PaymentProcessTypes.RecurringGiving) != null) && DbUtil.Db.Setting("OnlineGiving", true);
-    var vaultDisabled = DbUtil.Db.Setting("VaultDisabled");
+    var vaultDisabled = DbUtil.Db.Setting("VaultDisabled") && DbUtil.Db.Setting("ExternalManageGivingUrl", "").IsEmpty();
     var campusId = Model.Person.CampusId;
     var checkImageUserView = true;
     var filter = Model.Filter;

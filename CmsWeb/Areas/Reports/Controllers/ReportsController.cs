@@ -225,10 +225,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         [HttpGet]
         public ActionResult MeetingAttendance(string startdt, string enddt, string type, string program, string division)
         {
-            DateTime d2 = enddt.ToDate() ?? DateTime.Today;
-            DateTime d1 = startdt.ToDate() ?? new DateTime(d2.Year, d2.Month, 1);
-
-            var m = new MeetingAttendanceModel(CurrentDatabase, d1, d2, type, program, division);
+            var m = new MeetingAttendanceModel(CurrentDatabase, startdt, enddt, type, program, division);
             return View(m);
         }
 
@@ -700,6 +697,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         [HttpPost]
         public ActionResult ShirtSizes(OrgSearchModel m)
         {
+            m.CurrentDatabase = CurrentDatabase;
             var orgs = m.FetchOrgs();
             var q = from om in CurrentDatabase.OrganizationMembers
                     join o in orgs on om.OrganizationId equals o.OrganizationId

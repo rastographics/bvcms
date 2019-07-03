@@ -147,6 +147,7 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ActionResult CodeSelect(QueryModel m)
         {
+            m.Db = CurrentDatabase;
             return View("EditorTemplates/CodeSelect", m);
         }
 

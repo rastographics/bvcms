@@ -1011,17 +1011,15 @@ namespace CmsWeb
 
         public static string Bootstrap3Css()
         {
-            //<link rel=""stylesheet"" href=""//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"" integrity=""sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"" crossorigin=""anonymous"">
             return @"
-<link rel=""stylesheet"" href=""//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"">
+<link rel=""stylesheet"" href=""//maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"">
 <link rel=""stylesheet"" href=""/Content/css/OnlineReg2.css?v=2"">
 <link rel=""stylesheet"" href=""/Content/css/fixups3.css"">
 ";
         }
         public static HtmlString Bootstrap3()
         {
-            return new HtmlString(@"<script src=""//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js""></script>");
-            //return new HtmlString(@"<script src=""//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"" integrity=""sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"" crossorigin=""anonymous""></script>");
+            return new HtmlString(@"<script src=""//maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js""></script>");
         }
 
 
@@ -1032,7 +1030,6 @@ namespace CmsWeb
 
         public static HtmlString CkEditor()
         {
-            //            return new HtmlString("<script src=\"//cdnjs.cloudflare.com/ajax/libs/ckeditor/4.5.11/ckeditor.js\" type=\"text/javascript\"></script>\n");
             return new HtmlString("<script src=\"//cdn.ckeditor.com/4.5.11/full/ckeditor.js\" type=\"text/javascript\"></script>\n");
         }
 
@@ -1068,8 +1065,8 @@ namespace CmsWeb
 
         public static HtmlString jQueryValidation()
         {
-            return new HtmlString(@"<script src=""//cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.13.1/jquery.validate.min.js""></script>
-    <script src=""//cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.13.1/additional-methods.min.js""></script>");
+            return new HtmlString(@"<script src=""//cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.min.js""></script>
+    <script src=""//cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/additional-methods.min.js""></script>");
         }
 
         public static HtmlString Moment()

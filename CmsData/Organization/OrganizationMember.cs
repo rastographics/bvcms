@@ -378,6 +378,10 @@ AND a.PeopleId = {2}
             var org = db.LoadOrganizationById(organizationId);
             return InsertOrgMembers(db, organizationId, peopleId, memberTypeId, enrollmentDate, inactiveDate, pending, org.OrganizationName, skipTriggerProcessing);
         }
+        public static bool MemberExists(CMSDataContext db, int organizationId, int peopleId)
+        {
+            return db.OrganizationMembers.Any(m2 => m2.PeopleId == peopleId && m2.OrganizationId == organizationId);
+        }
         public static OrganizationMember AddOrgMember(CMSDataContext db, int organizationId, int peopleId, int memberTypeId, DateTime enrollmentDate, string name)
         {
             var om = new OrganizationMember

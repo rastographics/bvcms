@@ -66,11 +66,9 @@ namespace CmsWeb.Areas.Public.Controllers
 
             if (hasInvalidAuthHeaders && hasInvalidSessionTokenHeader)
             {
-                //DbUtil.LogActivity("authentication headers bad");
                 return UserValidationResult.Invalid(UserValidationStatus.ImproperHeaderStructure, "Either the Authorization or SessionToken headers are required.", null);
             }
 
-            //DbUtil.LogActivity("calling authenticatemobile2");
             return AccountModel.AuthenticateMobile2(requirePin: requirePin, checkOrgLeadersOnly: true);
         }
 
@@ -248,7 +246,6 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
             CurrentDatabase.OneTimeLinks.InsertOnSubmit(ot);
             CurrentDatabase.SubmitChanges();
-            //          DbUtil.LogActivity($"APIPerson GetOneTimeRegisterLink {OrgId}, {PeopleId}");
 
             var br = new BaseMessage
             {
@@ -278,7 +275,6 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
             CurrentDatabase.OneTimeLinks.InsertOnSubmit(ot);
             CurrentDatabase.SubmitChanges();
-            //			DbUtil.LogActivity($"APIPerson GetOneTimeRegisterLink {OrgId}, {PeopleId}");
 
             var br = new BaseMessage();
 
@@ -311,7 +307,6 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
             CurrentDatabase.OneTimeLinks.InsertOnSubmit(ot);
             CurrentDatabase.SubmitChanges();
-            //			DbUtil.LogActivity($"APIPerson GetOneTimeRegisterLink {OrgId}, {PeopleId}");
 
             var br = new BaseMessage();
 
@@ -337,7 +332,6 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
             CurrentDatabase.OneTimeLinks.InsertOnSubmit(ot);
             CurrentDatabase.SubmitChanges();
-            //			DbUtil.LogActivity($"APIPerson GetOneTimeRegisterLink2 {OrgId}, {PeopleId}");
 
             var br = new BaseMessage();
 

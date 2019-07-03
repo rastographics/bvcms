@@ -27,9 +27,16 @@ namespace UtilityExtensions
                 {
                     return h;
                 }
-                if (HttpContextFactory.Current?.Request != null)
+
+                try
                 {
-                    return HttpContextFactory.Current.Request.Url.Authority.SplitStr(".:")[0];
+                    if (HttpContextFactory.Current?.Request != null)
+                    {
+                        return HttpContextFactory.Current.Request.Url.Authority.SplitStr(".:")[0];
+                    }
+                }
+                catch
+                {
                 }
                 return null;
             }

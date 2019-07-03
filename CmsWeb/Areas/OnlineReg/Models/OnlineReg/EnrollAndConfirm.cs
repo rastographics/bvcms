@@ -8,7 +8,9 @@ using System.Linq;
 using System.Net.Mail;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Xml.Linq;
 using UtilityExtensions;
+using CmsWeb.Code;
 
 namespace CmsWeb.Areas.OnlineReg.Models
 {
@@ -30,6 +32,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
             {
                 return EnrollAndConfirmMultipleOrgs();
             }
+
+            if (SupportMissionTrip)
+                List[0].isMissionTripSupporter = true;
 
             if (SupportMissionTrip && TotalAmount() > 0)
             {
@@ -114,10 +119,32 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     ? @"<span style='color:red'>THERE ARE NO NOTIFY IDS ON THIS REGISTRATION!!</span><br/>
 <a href='https://docs.touchpointsoftware.com/OnlineRegistration/MessagesSettings.html'>see documentation</a><br/><br/>"
                     : "";
-                CurrentDatabase.Email(Util.PickFirst(p.person.FromEmail, notifyIds[0].FromEmail), notifyIds, Header,
-                    $@"{messageNotice}{p.person.Name} has registered for {Header}<br/><hr>
-{GetDetailsSection()}");
+
+                var detailSection = GetDetailsSection();
+
+                if(ValidateEmailRecipientRegistrant(p.person.Name, detailSection))
+                {
+                    CurrentDatabase.Email(Util.PickFirst(p.person.FromEmail, notifyIds[0].FromEmail), notifyIds, Header,
+                        $@"{messageNotice}{p.person.Name} has registered for {Header}<br/><hr>{detailSection}");
+                }
+                else
+                {
+                    CurrentDatabase.LogActivity($"Person ({p.person.Name}) is different from the registrant in the email body. " +
+                        $"The email was not sent.");
+                }
             }
+        }
+
+        private bool ValidateEmailRecipientRegistrant(string name, string detailSection)
+        {
+            //some users use to include <br> tags in his emails but this tag is not recognized by xdocument.
+            detailSection = detailSection.Replace("<br>", "");
+            detailSection = $"<root>{detailSection}</root>";
+            XDocument doc = XDocument.Parse(detailSection);
+            IEnumerable<string> childList = from el in doc.Descendants("registrant")
+                                            select el.Value;
+
+            return childList.Any(p => p == name);
         }
 
         private TransactionSummary transactionSummary;
