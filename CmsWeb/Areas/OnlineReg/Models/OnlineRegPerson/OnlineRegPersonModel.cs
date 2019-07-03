@@ -35,7 +35,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             set { loggedin = value; }
             get
             {
-                if(!loggedin.HasValue)
+                if (!loggedin.HasValue)
                     loggedin = Parent.UserPeopleId > 0;
                 return loggedin ?? false;
             }
@@ -203,13 +203,13 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public string ExtraQuestionAnswer(int id, string question)
         {
-            if(ExtraQuestion[id].ContainsKey(question))
+            if (ExtraQuestion[id].ContainsKey(question))
                 return ExtraQuestion[id][question];
             return "n/a";
         }
         public string TextAnswer(int id, string question)
         {
-            if(Text[id].ContainsKey(question))
+            if (Text[id].ContainsKey(question))
                 return Text[id][question];
             return "n/a";
         }
@@ -258,13 +258,13 @@ namespace CmsWeb.Areas.OnlineReg.Models
                          where c.PeopleId == PeopleId
                          where c.FundId == fundId
                          where c.ContributionTypeId != ContributionTypeCode.Pledge
-                         select c.ContributionAmount).Sum();
+                         select c.ContributionAmount).Sum() ?? 0;
 
             var pledge = (from c in db.Contributions
                           where c.PeopleId == PeopleId
                           where c.FundId == fundId
                           where c.ContributionTypeId == ContributionTypeCode.Pledge
-                          select c.ContributionAmount).Sum();
+                          select c.ContributionAmount).Sum() ?? 0;
 
             var OutstandingPledge = pledge - given;
 

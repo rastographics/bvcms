@@ -76,19 +76,19 @@ namespace CmsWeb.Areas.People.Models
             if (isCurrentUser || (isSpouse && (Person.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint) || isFamilyMember || isFinanceUser)
             {
                 return from c in DbUtil.Db.Contributions
-                                      where (c.PeopleId == Person.PeopleId || (c.PeopleId == Person.SpouseId && (Person.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint))
-                                      && c.ContributionStatusId == ContributionStatusCode.Recorded
-                                      && !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
-                                      select c;
+                       where (c.PeopleId == Person.PeopleId || (c.PeopleId == Person.SpouseId && (Person.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint))
+                       && c.ContributionStatusId == ContributionStatusCode.Recorded
+                       && !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
+                       select c;
             }
             else
             {
                 return from c in DbUtil.Db.Contributions
-                                      join f in DbUtil.Db.ContributionFunds.ScopedByRoleMembership() on c.FundId equals f.FundId
-                                      where c.PeopleId == Person.PeopleId
-                                      && c.ContributionStatusId == ContributionStatusCode.Recorded
-                                      && !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
-                                      select c;
+                       join f in DbUtil.Db.ContributionFunds.ScopedByRoleMembership() on c.FundId equals f.FundId
+                       where c.PeopleId == Person.PeopleId
+                       && c.ContributionStatusId == ContributionStatusCode.Recorded
+                       && !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
+                       select c;
             }
         }
 
@@ -110,8 +110,13 @@ namespace CmsWeb.Areas.People.Models
             {
                 decimal amountPledged = contributionRecords.Where(c => c.ContributionTypeId == ContributionTypeCode.Pledge && c.ContributionFund.FundName == fundName)
                                                     .Sum(c => c.ContributionAmount ?? 0);
-                decimal amountContributed = contributionRecords.Where(c => c.ContributionTypeId != ContributionTypeCode.Pledge && c.ContributionFund.FundName == fundName)
-                                                    .Sum(c => c.ContributionAmount ?? 0);
+                List<Contribution> contributionsThisFund = contributionRecords
+                    .Where(c => c.ContributionTypeId != ContributionTypeCode.Pledge && c.ContributionFund.FundName == fundName).ToList();
+                decimal amountContributed = 0;
+                if (contributionsThisFund.Count != 0)
+                {
+                    amountContributed = contributionsThisFund.Sum(c => c.ContributionAmount ?? 0);
+                }
                 PledgesSummary.Add(new PledgesSummary()
                 {
                     FundId = contribution.ContributionFund.FundId,

@@ -1,14 +1,16 @@
-﻿@model CmsWeb.Areas.People.Models.ContributionsModel
+﻿@using UtilityExtensions
+@using CmsData
+@model CmsWeb.Areas.People.Models.ContributionsModel
 @{
     var campusId = Model.Person.CampusId;
     var PledgesSummary = Model.GetPledgesSummary();
+    var giving = Util.UserPeopleId == Util2.CurrentPeopleId && (MultipleGatewayUtils.GatewayId(DbUtil.Db, PaymentProcessTypes.RecurringGiving) != null) && DbUtil.Db.Setting("OnlineGiving", true);
 }
 <div class="row">
     <div class="col-sm-6">
         <h4>Pledges Summary</h4>
     </div>
     <div class="col-sm-6">
-        @*@FormActions()*@
     </div>
 </div>
 <table class="table table-striped">
@@ -17,7 +19,10 @@
         <th class="text-right">Pledged</th>
         <th class="text-right">Contributed</th>
         <th class="text-right">Balance</th>
-        <th style="width: 50px;"></th>
+        @if (giving)
+        {
+            <th style="width: 50px;"></th>
+        }
     </tr>
     @if (PledgesSummary != null)
     {
@@ -32,9 +37,15 @@
                 <td class="text-right">
                     @p.Balance.ToString("C")
                 </td>
-                <td style="width: 50px;">
-                    <a href="/Person2/OneTimeGift/@(campusId??0)?fundId=@p.FundId" target="_blank" class="btn btn-default btn-sm fulfillpledge"><i class="fa fa-check-circle-o"></i> Fulfill Pledge</a>
-                </td>
+                @if (giving)
+                {
+                    <td style="width: 50px;">
+                        @if (p.Balance > 0)
+                        {
+                            <a href="/Person2/OneTimeGift/@(campusId??0)?fundId=@p.FundId" target="_blank" class="btn btn-default btn-sm fulfillpledge"><i class="fa fa-check-circle-o"></i> Fulfill Pledge</a>
+                        }
+                    </td>
+                }
             </tr>
         }
     }
