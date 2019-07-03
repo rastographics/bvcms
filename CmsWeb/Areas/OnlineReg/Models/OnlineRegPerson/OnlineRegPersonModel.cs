@@ -268,7 +268,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             var OutstandingPledge = pledge - given;
 
-            return OutstandingPledge < 0 ? 0 : OutstandingPledge;
+            return Math.Max(0, OutstandingPledge);
         }
     }
 }
