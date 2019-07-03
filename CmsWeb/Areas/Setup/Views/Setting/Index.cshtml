@@ -17,36 +17,77 @@
                 </div>
             </div>
             <div class="box-content">
-                <div class="table-responsive">
-                    <table id="settings" class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th style="width: 100px;">
-                                    <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Setting Code" data-content="Please enter exactly as in the help article, using no spaces. Also, they are case-sensitive."><i class="fa fa-info-circle"></i></a>&nbsp;
-                                    Setting Code
-                                </th>
-                                <th style="width: 500px;">
-                                    <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Setting Value" data-content="Click value to edit."><i class="fa fa-info-circle"></i></a>&nbsp;
-                                    Setting Value
-                                </th>
-                                <th style="width: 50px;">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in Model)
-                            {
-                                <tr>
-                                    <td style="width: 100px;">@item.Id</td>
-                                    <td style="width: 500px;">
-                                        <a id="@item.Id" class="clickEdit" data-pk="@(item.Id)">@item.SettingX</a>
-                                    </td>
-                                    <td style="width: 50px;">
-                                        <a id="d@(item.Id)" href="#" class="delete btn btn-sm btn-danger"><i class="fa fa-trash"></i> Delete</a>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
+                <ul class="nav nav-pills subnav hidden-sm hidden-xs">
+                    <li class="resource-type-tab active" data-id="1">
+                        <a href="#other-settings" data-toggle="tab">
+                            <span>Other Settings</span>
+                        </a>
+                    </li>
+                    <li class="resource-type-tab" data-id="1">
+                        <a href="#system-church-settings" data-toggle="tab">
+                            <span>System: Church Settings</span>
+                        </a>
+                    </li>
+                    <li class="resource-type-tab" data-id="1">
+                        <a href="#special-features-small-group-finder" data-toggle="tab">
+                            <span>Special Features: Small Group Finder</span>
+                        </a>
+                    </li>
+                    <li class="resource-type-tab" data-id="1">
+                        <a href="#giving" data-toggle="tab">
+                            <span>Giving</span>
+                        </a>
+                    </li>
+                </ul>
+                <select class="form-control visible-sm-block visible-xs-block nav-select-pills">
+                    <option value="#other-settings">Other Settings</option>
+                    <option value="#system-church-settings">System: Church Settings</option>
+                    <option value="#special-features-small-group-finder">Special Features: Small Group Finder</option>
+                    <option value="#giving">Giving</option>
+                </select>
+                <div class="tab-content" style="border: none">
+                    <div class="tab-pane active" id="other-settings">
+                        <div class="table-responsive">
+                            <table id="settings" class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 100px;">
+                                            <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Setting Code" data-content="Please enter exactly as in the help article, using no spaces. Also, they are case-sensitive."><i class="fa fa-info-circle"></i></a>&nbsp;
+                                            Setting Code
+                                        </th>
+                                        <th style="width: 500px;">
+                                            <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Setting Value" data-content="Click value to edit."><i class="fa fa-info-circle"></i></a>&nbsp;
+                                            Setting Value
+                                        </th>
+                                        <th style="width: 50px;">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td style="width: 100px;">@item.Id</td>
+                                            <td style="width: 500px;">
+                                                <a id="@item.Id" class="clickEdit" data-pk="@(item.Id)">@item.SettingX</a>
+                                            </td>
+                                            <td style="width: 50px;">
+                                                <a id="d@(item.Id)" href="#" class="delete btn btn-sm btn-danger"><i class="fa fa-trash"></i> Delete</a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="system-church-settings">
+                        System: Church Settings
+                    </div>
+                    <div class="tab-pane" id="special-features-small-group-finder">
+                        Special Features: Small Group Finder
+                    </div>
+                    <div class="tab-pane" id="giving">
+                        Giving
+                    </div>
                 </div>
                 <a href="#" class="btn btn-success btn-block visible-xs-block create-new"><i class="fa fa-plus-circle"></i> Add Setting</a>
             </div>
@@ -79,9 +120,10 @@
 </div>
 @section scripts
 {
+    @Fingerprint.Script("/Content/touchpoint/lib/jquery-cookie/js/jquery.cookie.js")
     @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-editable/js/bootstrap-editable.min.js")
     <script type="text/javascript">
-        $(function() {
+        $(function () {
             $.fn.editableform.buttons = '<button type="submit" class="btn btn-primary btn-sm editable-submit">' +
                 '<i class="fa fa-fw fa-check"></i>' +
                 '</button>' +
@@ -95,27 +137,27 @@
                 url: "/Setting/Edit/"
             });
 
-            $("a.delete").click(function(e) {
+            $("a.delete").click(function (e) {
                 e.preventDefault();
                 var id = $(this).attr("id");
                 swal({
-                        title: "Are you sure?",
-                        type: "warning",
-                        showCancelButton: true,
-                        confirmButtonClass: "btn-danger",
-                        confirmButtonText: "Yes, delete it!",
-                        closeOnConfirm: false
-                    },
-                    function() {
-                        $.post("/Setting/Delete/" + id, null, function(ret) {
+                    title: "Are you sure?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-danger",
+                    confirmButtonText: "Yes, delete it!",
+                    closeOnConfirm: false
+                },
+                    function () {
+                        $.post("/Setting/Delete/" + id, null, function (ret) {
                             if (ret && ret.error)
                                 swal("Error!", ret.error, "error");
                             else {
                                 swal({
-                                        title: "Deleted!",
-                                        type: "success"
-                                    },
-                                    function() {
+                                    title: "Deleted!",
+                                    type: "success"
+                                },
+                                    function () {
                                         window.location = "/Settings/";
                                     });
                             }
@@ -123,24 +165,24 @@
                     });
             });
 
-            $("a.create-new").click(function(ev) {
+            $("a.create-new").click(function (ev) {
                 ev.preventDefault();
                 $('#new-modal').modal();
                 return false;
             });
 
-            $('#new-modal').on('shown.bs.modal', function() {
+            $('#new-modal').on('shown.bs.modal', function () {
                 $("#Id").val('').focus();
             });
 
             $('[data-toggle="popover"]').popover({ html: true });
-            $('[data-toggle="popover"]').click(function(ev) {
+            $('[data-toggle="popover"]').click(function (ev) {
                 ev.preventDefault();
             });
 
             // positions scrollbar and highlights new setting.
             var hash = document.location.hash;
-            if (hash) {
+            if (hash && hash.search('#tab') != 0) {
                 var offset = $(hash).offset();
                 offset.top -= 80;
                 $('body').animate({ scrollTop: offset.top }, 500);
@@ -150,6 +192,46 @@
                 $(row).animate({ backgroundColor: '#eaab00' }, 1000, function () {
                     $(row).animate({ backgroundColor: bgColor }, 1000);
                 });
+            }
+        });
+
+        $(function () {
+            var tab = window.location.hash;
+            if (tab === '#tab-system-church-settings') {
+                var id = "#system-church-settings";
+                $("a[href='" + id + "']").click().tab("show");
+                $("option[value='" + id + "']").prop('selected', true);
+            }
+            if (tab === '#tab-special-features-small-group-finder') {
+                var id = "#special-features-small-group-finder";
+                $("a[href='" + id + "']").click().tab("show");
+                $("option[value='" + id + "']").prop('selected', true);
+            }
+            if (tab === '#tab-giving') {
+                var id = "#system-church-settings";
+                $("a[href='" + id + "']").click().tab("show");
+                $("option[value='" + id + "']").prop('selected', true);
+            }
+        });
+
+        $(function () {
+            $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+                e.preventDefault();
+                var tab = $(e.target).attr('href').replace("#", "#tab-");
+                window.location.hash = tab;
+                $.cookie('last-settings-tab', tab);
+            });
+
+            var lastTab = $.cookie('last-settings-tab');
+            if (window.location.hash) {
+                lastTab = window.location.hash;
+            }
+            if (lastTab) {
+                var tlink = $("a[href='" + lastTab.replace("tab-", "") + "']");
+                if (tlink.attr("href") !== '#') {
+                    $.cookie('last-settings-tab', tlink.attr("href"));
+                    tlink.click().tab("show");
+                }
             }
         });
     </script>
