@@ -868,7 +868,6 @@
     <Compile Include="Code\JsonNetValueProviderFactory.cs" />
     <Compile Include="Code\ReportsMenu.cs" />
     <Compile Include="Code\UserInputException.cs" />
-    <Compile Include="Code\XmlHelper.cs" />
     <Compile Include="Common\Configuration.cs" />
     <Compile Include="Common\Extensions\ObjectExtensions.cs" />
     <Compile Include="Code\ViewUtilities.cs" />
