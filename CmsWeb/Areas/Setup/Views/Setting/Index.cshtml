@@ -7,6 +7,19 @@
 @section head{
     <meta name="format-detection" content="telephone=no" />
     @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
+    <style>
+        .panel-heading [data-toggle="collapse"]:hover,
+        .panel-heading [data-toggle="collapse"]:active {
+            text-decoration: none;
+        }
+        .panel-heading [data-toggle="collapse"]:before {
+            font-family: 'Glyphicons Halflings';
+            content: "\e252";
+        }
+        .panel-heading [data-toggle="collapse"].collapsed:before {
+            content: "\e250";
+        }
+    </style>
 }
 <div class="row">
     <div class="col-lg-9">
@@ -47,46 +60,106 @@
                 </select>
                 <div class="tab-content" style="border: none">
                     <div class="tab-pane active" id="other-settings">
-                        <div class="table-responsive">
-                            <table id="settings" class="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th style="width: 100px;">
-                                            <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Setting Code" data-content="Please enter exactly as in the help article, using no spaces. Also, they are case-sensitive."><i class="fa fa-info-circle"></i></a>&nbsp;
-                                            Setting Code
-                                        </th>
-                                        <th style="width: 500px;">
-                                            <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Setting Value" data-content="Click value to edit."><i class="fa fa-info-circle"></i></a>&nbsp;
-                                            Setting Value
-                                        </th>
-                                        <th style="width: 50px;">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var item in Model)
-                                    {
-                                        <tr>
-                                            <td style="width: 100px;">@item.Id</td>
-                                            <td style="width: 500px;">
-                                                <a id="@item.Id" class="clickEdit" data-pk="@(item.Id)">@item.SettingX</a>
-                                            </td>
-                                            <td style="width: 50px;">
-                                                <a id="d@(item.Id)" href="#" class="delete btn btn-sm btn-danger"><i class="fa fa-trash"></i> Delete</a>
-                                            </td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
+                        <div class="panel-group" id="accordion-1" role="tablist">
+                            <div class="panel panel-default">
+                                <div class="panel-heading" role="tab" id="1-1">
+                                    <h4 class="panel-title">
+                                        <a role="button" data-toggle="collapse" data-parent="#accordion-1" href="#collapse-1-1" aria-controls="collapse-0-50" class="collapsed" aria-expanded="false">
+                                            Settings
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapse-1-1" class="panel-collapse collapse" role="tabpanel" aria-expanded="false" style="height: 0px;">
+                                    <div class="panel-body">
+                                        <div class="table-responsive">
+                                            <table id="settings" class="table table-striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="width: 100px;">
+                                                            <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Setting Code" data-content="Please enter exactly as in the help article, using no spaces. Also, they are case-sensitive."><i class="fa fa-info-circle"></i></a>&nbsp;
+                                                            Setting Code
+                                                        </th>
+                                                        <th style="width: 500px;">
+                                                            <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Setting Value" data-content="Click value to edit."><i class="fa fa-info-circle"></i></a>&nbsp;
+                                                            Setting Value
+                                                        </th>
+                                                        <th style="width: 50px;">Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var item in Model)
+                                                    {
+                                                        <tr>
+                                                            <td style="width: 100px;">@item.Id</td>
+                                                            <td style="width: 500px;">
+                                                                <a id="@item.Id" class="clickEdit" data-pk="@(item.Id)">@item.SettingX</a>
+                                                            </td>
+                                                            <td style="width: 50px;">
+                                                                <a id="d@(item.Id)" href="#" class="delete btn btn-sm btn-danger"><i class="fa fa-trash"></i> Delete</a>
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="tab-pane" id="system-church-settings">
-                        System: Church Settings
+                        <div class="panel-group" id="accordion-2" role="tablist">
+                            <div class="panel panel-default">
+                                <div class="panel-heading" role="tab" id="2-2">
+                                    <h4 class="panel-title">
+                                        <a role="button" data-toggle="collapse" data-parent="#accordion-2" href="#collapse-2-2" aria-controls="collapse-2-2" class="collapsed" aria-expanded="false">
+                                            Settings
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapse-2-2" class="panel-collapse collapse" role="tabpanel" aria-expanded="false" style="height: 0px;">
+                                    <div class="panel-body">
+                                        <p>System: Church Settings</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="tab-pane" id="special-features-small-group-finder">
-                        Special Features: Small Group Finder
+                        <div class="panel-group" id="accordion-3" role="tablist">
+                            <div class="panel panel-default">
+                                <div class="panel-heading" role="tab" id="3-3">
+                                    <h4 class="panel-title">
+                                        <a role="button" data-toggle="collapse" data-parent="#accordion-3" href="#collapse-3-3" aria-controls="collapse-0-50" class="collapsed" aria-expanded="false">
+                                            Settings
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapse-3-3" class="panel-collapse collapse" role="tabpanel" aria-expanded="false" style="height: 0px;">
+                                    <div class="panel-body">
+                                        <p>Special Features: Small Group Finder</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="tab-pane" id="giving">
-                        Giving
+                        <div class="panel-group" id="accordion-4" role="tablist">
+                            <div class="panel panel-default">
+                                <div class="panel-heading" role="tab" id="4-4">
+                                    <h4 class="panel-title">
+                                        <a role="button" data-toggle="collapse" data-parent="#accordion-4" href="#collapse-4-4" aria-controls="collapse-0-50" class="collapsed" aria-expanded="false">
+                                            Settings
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapse-4-4" class="panel-collapse collapse" role="tabpanel" aria-expanded="false" style="height: 0px;">
+                                    <div class="panel-body">
+                                        <p>Giving</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <a href="#" class="btn btn-success btn-block visible-xs-block create-new"><i class="fa fa-plus-circle"></i> Add Setting</a>
