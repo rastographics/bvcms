@@ -73,5 +73,47 @@ namespace IntegrationTests.Areas.Manage
             PageSource.ShouldContain(user.Person.Name);
             PageSource.ShouldContain(user.Person.EmailAddress);
         }
+
+        [Fact]
+        public void MyData_User_ForgotPassword_Test()
+        {
+            username = RandomString();
+            password = RandomString();
+
+            var newPassword = RandomString() + "1!";
+            var user = CreateUser();
+
+            Open(rootUrl);
+            WaitForElement("#inputEmail", 30);
+
+            Find(text: "Forgot?").Click();
+            CurrentUrl.ShouldBe($"{rootUrl}Account/ForgotPassword");
+
+            Find(name: "UsernameOrEmail").SendKeys(username);
+            Find(css: "input[type=submit]").Click();
+
+            PageSource.ShouldContain("Password Sent");
+
+            db.Refresh(System.Data.Linq.RefreshMode.OverwriteCurrentValues, user);
+            user.ResetPasswordCode.ShouldNotBeNull();
+
+            Open($"{rootUrl}Account/SetPassword/{user.ResetPasswordCode}");
+            PageSource.ShouldContain("Confirm Password Reset");
+            Find(css: "button[type=submit]").Click();
+            CurrentUrl.ShouldBe($"{rootUrl}Account/SetPasswordConfirm");
+
+            Find(id: "newPassword").SendKeys(newPassword);
+            Find(id: "confirmPassword").SendKeys(newPassword);
+            Find(css: "input[type=submit]").Click();
+            PageSource.ShouldContain("Password Changed");
+
+            Find(text: "Return to Home").Click();
+
+            Logout();
+            Login(withPassword: newPassword);
+
+            PageSource.ShouldContain(user.Person.Name);
+            PageSource.ShouldContain(user.Person.EmailAddress);
+        }
     }
 }
