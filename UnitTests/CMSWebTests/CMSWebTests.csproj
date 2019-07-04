@@ -102,7 +102,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Areas\OnlineReg\Models\FakeRequestManager.cs" />
+    <Compile Include="TestUtils\FakeRequestManager.cs" />
     <Compile Include="Areas\OnlineReg\Models\NewAskChurchQuestionTest.cs" />
     <Compile Include="Areas\People\Models\Contact\ContactExtraLocationConfigTests.cs" />
     <Compile Include="Code\QueryModelTests.cs" />
