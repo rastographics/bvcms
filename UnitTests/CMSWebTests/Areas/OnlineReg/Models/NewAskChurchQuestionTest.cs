@@ -40,7 +40,8 @@ namespace CMSWebTests.Areas.OnlineReg.Models.AskChurch
             var resultCompleteRegistration = controller.CompleteRegistration(model);
 
             Assert.NotNull(resultSubmitQuestions);
-            Assert.NotNull(resultCompleteRegistration);        }
+            Assert.NotNull(resultCompleteRegistration);
+        }
 
         private static OnlineRegModel GetFakeOnlineRegModel()
         {
