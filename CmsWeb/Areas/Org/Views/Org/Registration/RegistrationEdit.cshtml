@@ -148,10 +148,10 @@
             @Html.CheckBoxFor(m => m.NotReqMarital) Marital status not required
           </label>
             <label class="checkbox-inline control-label">
-            @Html.CheckBoxFor(m => m.ShowDOBOnFind) Find does not show Day of Birthday
+            @Html.CheckBoxFor(m => m.ShowDOBOnFind) Find shows Day of Birth
           </label>
           <label class="checkbox-inline control-label">
-              @Html.CheckBoxFor(m => m.ShowPhoneOnFind) Find does not show Phone
+              @Html.CheckBoxFor(m => m.ShowPhoneOnFind) Find shows Phone Number
           </label>
           @if (DbUtil.Db.Setting("ShowCampusOnRegistration", "false").Equal("true"))
           {
