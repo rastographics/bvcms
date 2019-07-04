@@ -465,18 +465,14 @@ namespace CmsData
             {
                 if (this._NoMember != value)
                 {
-
                     this.OnNoMemberChanging(value);
                     this.SendPropertyChanging();
                     this._NoMember = value;
                     this.SendPropertyChanged("NoMember");
                     this.OnNoMemberChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name="emcontact", UpdateCheck=UpdateCheck.Never, Storage="_Emcontact", DbType="nvarchar(100)")]
 		public string Emcontact
@@ -487,16 +483,13 @@ namespace CmsData
 			{
 				if (this._Emcontact != value)
 				{
-				
                     this.OnEmcontactChanging(value);
 					this.SendPropertyChanging();
 					this._Emcontact = value;
 					this.SendPropertyChanged("Emcontact");
 					this.OnEmcontactChanged();
 				}
-
 			}
-
 		}
 
 		

@@ -7,7 +7,6 @@ using CmsWeb.Lifecycle;
 
 namespace CMSWebTests
 {
-
     public class FakeRequestManager : IRequestManager, IDisposable
     {
         public Guid RequestId { get; }
