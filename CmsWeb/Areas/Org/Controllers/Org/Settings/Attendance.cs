@@ -34,11 +34,22 @@ namespace CmsWeb.Areas.Org.Controllers
         public ActionResult AttendanceUpdate(SettingsAttendanceModel m)
         {
             m.CurrentDatabase = CurrentDatabase;
+            FixScheduleIds(ref m);
             m.Update();
             m.UpdateSchedules();
             CurrentDatabase.Refresh(RefreshMode.OverwriteCurrentValues, m.Org.OrgSchedules);
             DbUtil.LogActivity($"Update SettingsAttendance {m.Org.OrganizationName}");
             return PartialView("Settings/Attendance", m);
+        }
+
+        private void FixScheduleIds(ref SettingsAttendanceModel m)
+        {
+            int Id = 1;
+            foreach (var schedule in m.Schedules)
+            {
+                schedule.Id = Id;
+                Id++;
+            }
         }
 
         [HttpPost]
