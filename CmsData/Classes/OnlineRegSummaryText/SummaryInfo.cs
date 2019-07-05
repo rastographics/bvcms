@@ -244,7 +244,7 @@ pid: {pid}
                 options.Template(writer, new
                 {
                     PassportNumber = Util.Decrypt(rr.PassportNumber),
-                    PassportExpires = Util.Decrypt(rr.PassportNumber)
+                    PassportExpires = Util.Decrypt(rr.PassportExpires)
                 });
             }                
         }

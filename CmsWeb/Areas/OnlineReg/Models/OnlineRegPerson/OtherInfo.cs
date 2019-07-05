@@ -1,8 +1,10 @@
 using CmsData;
 using CmsData.Finance;
 using CmsData.Registration;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Linq;
 using System.Web.Mvc;
 using UtilityExtensions;
@@ -253,7 +255,15 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 if (setting.AskVisible("AskPassport"))
                 {
                     passportNumber = Util.Decrypt(rr.PassportNumber);
-                    passportExpires = Util.Decrypt(rr.PassportExpires);
+                    string pe = Util.Decrypt(rr.PassportExpires);
+                    if (string.IsNullOrEmpty(pe))
+                    {
+                        passportExpires = null;
+                    }
+                    else
+                    {
+                        passportExpires = DateTime.ParseExact(pe, "MM/dd/yyyy", CultureInfo.InvariantCulture);
+                    }
                 }
                 if (setting.AskVisible("AskDoctor"))
                 {

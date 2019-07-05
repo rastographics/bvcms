@@ -1,7 +1,9 @@
 ﻿using CmsData;
 using CmsData.Registration;
 using CmsData.View;
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using UtilityExtensions;
 
@@ -59,7 +61,15 @@ namespace CmsWeb.Areas.OnlineReg.Models
                         break;
                     case "AskPassport":
                         passportNumber = Util.Decrypt(reg.PassportNumber);
-                        passportExpires = Util.Decrypt(reg.PassportExpires);
+                        string pe = Util.Decrypt(reg.PassportExpires);
+                        if (string.IsNullOrEmpty(pe))
+                        {
+                            passportExpires = null;
+                        }
+                        else
+                        {
+                            passportExpires = DateTime.ParseExact(pe, "MM/dd/yyyy", CultureInfo.InvariantCulture);
+                        }
                         break;
                     case "AskTickets":
                         ntickets = om.Tickets;

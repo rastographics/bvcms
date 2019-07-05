@@ -87,8 +87,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
         [DisplayName("Passport Number"), StringLength(100)]
         public string passportNumber { get; set; }
 
-        [DisplayName("Passport Expires Date"), StringLength(100)]
-        public string passportExpires { get; set; }
+        [DisplayName("Passport Expires Date")]
+        public DateTime? passportExpires { get; set; }
 
         [DisplayName("Family Physician"), StringLength(100)]
         public string doctor { get; set; }

@@ -99,7 +99,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if ((MissionTripSupportGoer ?? 0) != 0 && MissionTripGoerId == 0)
             {
                 modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].MissionTripGoerId), "Please select a participant");
-            }            
+            }
         }
 
         private void ValidateSupportGoerRequired()
@@ -186,7 +186,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             if (!passportNumber.HasValue())
                 modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].passportNumber), "passport number required");
-            if (!passportExpires.HasValue())
+            if (passportExpires == null)
                 modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].passportExpires), "passport expires date required");
         }
 

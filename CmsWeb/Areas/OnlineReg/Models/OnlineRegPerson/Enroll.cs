@@ -293,7 +293,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                         break;
                     case "AskPassport":
                         reg.PassportNumber = Util.Encrypt(passportNumber);
-                        reg.PassportExpires = Util.Encrypt(passportExpires);
+                        reg.PassportExpires = Util.Encrypt(passportExpires.ToString2("MM/dd/yyyy"));
                         break;
                     case "AskTickets":
                         om.Tickets = ntickets;
