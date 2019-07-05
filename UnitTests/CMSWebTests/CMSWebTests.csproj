@@ -103,6 +103,7 @@
     <Compile Include="..\SharedTestFixtures\DatabaseCollection.cs">
       <Link>DatabaseCollection.cs</Link>
     </Compile>
+    <Compile Include="Areas\OnlineReg\Models\OnlineReg\OnlineRegModelTests.cs" />
     <Compile Include="Areas\People\Models\Contact\ContactExtraLocationConfigTests.cs" />
     <Compile Include="Code\QueryModelTests.cs" />
     <Compile Include="Code\CodeValueModelTests.cs" />
