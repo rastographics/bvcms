@@ -224,12 +224,12 @@
                         <tr>
                             <td></td>
                             <td>Passport Number</td>
-                            <td>@rr.PassportNumber</td>
+                            <td>@Util.Decrypt(rr.PassportNumber)</td>
                         </tr>
                         <tr>
                             <td></td>
                             <td>Passport Expires Date</td>
-                            <td>@rr.PassportExpires</td>
+                            <td>@Util.Decrypt(rr.PassportExpires)</td>
                         </tr>
                         break;
                     case "AskRequest":

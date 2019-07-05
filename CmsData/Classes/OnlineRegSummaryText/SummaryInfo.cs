@@ -239,7 +239,14 @@ pid: {pid}
         private void IfAskPassport(TextWriter writer, HelperOptions options, dynamic context, params object[] args)
         {
             if (currentAsk.IsAskPassport)
-                options.Template(writer, OrgMember.Person.GetRecReg());
+            {
+                RecReg rr = OrgMember.Person.GetRecReg();
+                options.Template(writer, new
+                {
+                    PassportNumber = Util.Decrypt(rr.PassportNumber),
+                    PassportExpires = Util.Decrypt(rr.PassportNumber)
+                });
+            }                
         }
         private void IfAskMenu(TextWriter writer, HelperOptions options, dynamic context, params object[] args)
         {

@@ -58,8 +58,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
                         policy = reg.Policy;
                         break;
                     case "AskPassport":
-                        passportNumber = reg.PassportNumber;
-                        passportExpires = reg.PassportExpires;
+                        passportNumber = Util.Decrypt(reg.PassportNumber);
+                        passportExpires = Util.Decrypt(reg.PassportExpires);
                         break;
                     case "AskTickets":
                         ntickets = om.Tickets;

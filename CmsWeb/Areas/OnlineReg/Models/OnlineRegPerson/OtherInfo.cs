@@ -252,8 +252,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 }
                 if (setting.AskVisible("AskPassport"))
                 {
-                    passportNumber = rr.PassportNumber;
-                    passportExpires = rr.PassportExpires;
+                    passportNumber = Util.Decrypt(rr.PassportNumber);
+                    passportExpires = Util.Decrypt(rr.PassportExpires);
                 }
                 if (setting.AskVisible("AskDoctor"))
                 {

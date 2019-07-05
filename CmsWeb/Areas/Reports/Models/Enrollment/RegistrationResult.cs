@@ -216,9 +216,9 @@ namespace CmsWeb.Areas.Reports.Models
                         if (i.o == null || SettingVisible(setting, "AskPassport"))
                         {
                             t5.AddCell("Passport Number:");
-                            t5.AddCell(rr.PassportNumber);
+                            t5.AddCell(Util.Decrypt(rr.PassportNumber));
                             t5.AddCell("Passport Expires Date:");
-                            t5.AddCell(rr.PassportExpires);
+                            t5.AddCell(Util.Decrypt(rr.PassportExpires));
                         }
                         if (i.o == null || SettingVisible(setting, "AskDoctor"))
                         {
@@ -500,8 +500,8 @@ namespace CmsWeb.Areas.Reports.Models
 
                 if (x.Organization == null || SettingVisible(setting, "AskPassport"))
                 {
-                    AddValue(table, row, "PassportNumber", x.RecReg.PassportNumber);
-                    AddValue(table, row, "PassportExpires", x.RecReg.PassportExpires);
+                    AddValue(table, row, "PassportNumber", Util.Decrypt(x.RecReg.PassportNumber));
+                    AddValue(table, row, "PassportExpires", Util.Decrypt(x.RecReg.PassportExpires));
                 }
 
                 if (x.Organization == null || SettingVisible(setting, "AskDoctor"))
