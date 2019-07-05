@@ -3,7 +3,7 @@ using CmsData;
 using CmsData.Finance;
 using Xunit;
 
-namespace AcceptivaGatewayTests
+namespace CmsData.Finance.Tests
 {
     [Collection("AcceptivaGateway Tests")]
     public class AcceptivaGatewayTests

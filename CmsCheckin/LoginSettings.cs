@@ -52,6 +52,13 @@ namespace CmsCheckin
             SettingsCombo.DisplayMember = "Name";
             SettingsCombo.Enter += onComboBoxEnter;
 
+            PrintMode.DataSource = new BindingSource(new List<string>(new string[] {
+                "Print To Printer",
+                "Print To Server",
+                "Print From Server",
+                "No Printer"
+            }), null);
+
             Building.Enter += onTextboxEnter;
 
             PrintKiosks.Enter += onTextboxEnter;
@@ -67,7 +74,7 @@ namespace CmsCheckin
 
             updateDisplay();
         }
-
+        
         private void onLoginSettingsLoad(object sender, EventArgs e)
         {
             this.CenterToScreen();
