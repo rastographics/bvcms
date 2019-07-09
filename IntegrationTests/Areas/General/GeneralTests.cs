@@ -36,6 +36,5 @@ namespace IntegrationTests.Areas.Manage
 
             PageSource.ShouldContain("Sign In");
         }
-        
     }
 }
