@@ -30,6 +30,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public string Account { get; set; }
         public bool SupportMissionTrip { get; set; }
         public int extTransactionId { get; set; }
+        public string TermsSignature { get; set; }
         public PaymentProcessTypes ProcessType { get; set; }
 
         /// <summary>

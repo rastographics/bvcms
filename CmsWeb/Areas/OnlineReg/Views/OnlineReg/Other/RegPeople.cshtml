@@ -50,6 +50,13 @@
         <td>User</td>
         <td>@Model.LoginName</td>
     </tr>
+    @if (!string.IsNullOrEmpty(Model.TermsSignature))
+    {
+        <tr>
+            <td>Terms Signature</td>
+            <td>@Model.TermsSignature</td>
+        </tr>
+    }
     @if (Model.FromMobile.HasValue())
     {
         <tr>
