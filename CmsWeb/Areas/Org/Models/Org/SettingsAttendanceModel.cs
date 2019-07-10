@@ -100,7 +100,6 @@ namespace CmsWeb.Areas.Org.Models
         {
             var db = CurrentDatabase;
             var orgSchedules = Org.OrgSchedules.ToList();
-
             for (int i = orgSchedules.Count - 1; i >= 0; i--)
             {
                 var s = orgSchedules[i];
@@ -115,12 +114,14 @@ namespace CmsWeb.Areas.Org.Models
                     orgSchedules.Remove(s);
                 }
             }
-
-            FixScheduleIds(ref schedules);
             db.SubmitChanges();
             foreach (var s in schedules.OrderBy(ss => ss.Id))
             {
                 bool IsNew = true;
+                if (s.Id == 0)
+                {
+                    s.Id = (orgSchedules.Count > 0) ? orgSchedules.Max(ss => ss.Id) + 1 : 1;
+                }
                 var schedule = orgSchedules.FirstOrDefault(ss => ss.Id == s.Id);
                 if (schedule != null)
                 {
@@ -151,15 +152,6 @@ namespace CmsWeb.Areas.Org.Models
 
             CurrentDatabase.OrgSchedules.InsertOnSubmit(schedule);
             orgSchedules.Add(schedule);
-        }
-        private void FixScheduleIds(ref List<ScheduleInfo> schedules)
-        {
-            int Id = 1;
-            foreach (var schedule in schedules)
-            {
-                schedule.Id = Id;
-                Id++;
-            }
         }
         public SelectList SchedulesPrev()
         {
