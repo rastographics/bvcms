@@ -84,6 +84,7 @@ namespace CmsWeb.Areas.People.Models
         public bool Member { get; set; }
 
         public bool ActiveInAnotherChurch { get; set; }
+        public bool NoMember { get; set; }
 
         [DisplayName("Coaching Interest")]
         public bool Coaching { get; set; }
