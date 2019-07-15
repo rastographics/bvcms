@@ -171,7 +171,7 @@ namespace ImageData
             DbUtil.Db.SubmitChanges();
             return image;
         }
-        private static Image CreateImageFromType(byte[] bits, string type)
+        public static Image CreateImageFromType(byte[] bits, string type)
         {
             var i = new Image();
             i.LoadFromBits(bits, type);
