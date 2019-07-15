@@ -355,38 +355,39 @@ namespace CmsData
         {
             switch (name)
             {
-                case "Prog":
-                    name = "Program";
-                    break;
                 case "Div":
                     name = "Division";
                     break;
                 case "Org":
                     name = "Organization";
                     break;
-                case "Sched":
-                    name = "Schedule";
+                case "Prog":
+                    name = "Program";
                     break;
                 case "SavedQuery":
                     name = "SavedQueryIdDesc";
                     break;
-                case "VisitNumber":
-                case "Field":
-                case "Name":
-                case "FundIdOrBlank":
-                case "FundIdOrNullForAll":
-                case "FundIdOrBlankForAll":
+                case "Sched":
+                    name = "Schedule";
+                    break;
                 case "AgeRange":
-                case "NthVisitNumber":
-                case "TopNumber":
-                case "UsernameOrPeopleId":
-                case "MeetingId":
-                case "NumberOfDaysForNoAttendance":
                 case "AttendCreditId":
                 case "DaysInPeriod":
+                case "Field":
+                case "FundId":
+                case "FundIdOrBlank":
+                case "FundIdOrBlankForAll":
+                case "FundIdOrNullForAll":
+                case "MeetingId":
                 case "MeetsOnDay0Sun":
-                case "SqlScript":
+                case "Name":
+                case "NthVisitNumber":
+                case "NumberOfDaysForNoAttendance":
                 case "SettingNameWithStartDate":
+                case "SqlScript":
+                case "TopNumber":
+                case "UsernameOrPeopleId":
+                case "VisitNumber":
                     name = "Quarters";
                     break;
             }
