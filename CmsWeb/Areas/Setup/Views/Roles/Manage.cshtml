@@ -109,7 +109,7 @@
                                                                 <input type="checkbox" id="@setting.XMLName" name="@setting.XMLName" data-toggle="toggle" data-on="@setting.TrueLabel" data-off="@setting.FalseLabel" data-width="100" checked="@(setting.Reverse ? !setting.Active : setting.Active)" data-reverse="@setting.Reverse">
                                                             </td>
                                                             <td style="vertical-align:middle;">
-                                                                <label class="form-check-label" for="@setting.XMLName">
+                                                                <label class="form-check-label" for="@setting.XMLName" onclick="event.preventDefault(); $('#@setting.XMLName').bootstrapToggle('toggle');">
                                                                     @setting.Name <a class="visible-sm-inline visible-xs-inline" href="#" data-toggle="popover" data-placement="right" data-trigger="focus" data-title="@setting.Name" data-content="@setting.ToolTip"><i class="fa fa-info-circle"></i></a>
                                                                 </label>
                                                             </td>
