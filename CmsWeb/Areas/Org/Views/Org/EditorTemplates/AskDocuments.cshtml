@@ -1,0 +1,21 @@
+﻿@model CmsData.Registration.AskYesNoQuestions.YesNoQuestion
+@using CmsWeb
+@using (var ci = Html.BeginCollectionItem(Model.Name))
+{
+    <div class="well movable">
+        @Html.Raw(ci.hiddenindex)
+        <div class="row">
+            <div class="col-sm-12">
+                @Html.Partial("EditorTemplates/QuestionsMenu", new ViewDataDictionary { { "ConfirmDelete", false } })
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                @Html.EditorFor(m => m.Question)
+            </div>
+            <div class="col-sm-6">
+                @Html.EditorFor(m => m.SmallGroup)
+            </div>
+        </div>
+    </div>
+}

@@ -1830,6 +1830,7 @@
     <Content Include="Areas\OnlineReg\Views\OnlineReg\OnePageGiving\NotConfigured.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\MeetingAttendance.cshtml" />
     <Content Include="libman.json" />
+    <Content Include="Areas\Org\Views\Org\EditorTemplates\AskDocuments.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

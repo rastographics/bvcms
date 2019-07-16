@@ -842,6 +842,7 @@
     <Compile Include="Generated\MobileAppRoom.cs" />
     <Compile Include="Generated\MobileAppVideoType.cs" />
     <Compile Include="Generated\OrgFilter.cs" />
+    <Compile Include="Generated\OrgMemberDocuments.cs" />
     <Compile Include="Generated\OrgMemberExtra.cs" />
     <Compile Include="Generated\PrevOrgMemberExtra.cs" />
     <Compile Include="Generated\PaymentProcess.cs" />
@@ -1095,6 +1096,7 @@
     <Compile Include="Finance\ManagedGiving.cs" />
     <Compile Include="DbUtil\Dynamic.cs" />
     <Compile Include="Registration\Ask.cs" />
+    <Compile Include="Registration\AskDocuments.cs" />
     <Compile Include="Registration\AskText.cs" />
     <Compile Include="Registration\AskRequest.cs" />
     <Compile Include="Registration\AskSize.cs">

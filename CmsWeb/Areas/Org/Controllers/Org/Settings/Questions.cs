@@ -188,6 +188,8 @@ This will prevent your registration from working properly.
                     return PartialView(template, new AskText {Name = id});
                 case "AskGradeOptions":
                     return PartialView(template, new AskGradeOptions {Name = id});
+                case "AskDocuments":
+                    return PartialView(template, new AskDocuments { Name = id });
             }
             return Content("unexpected type " + type);
         }

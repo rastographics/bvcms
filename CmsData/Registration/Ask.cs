@@ -50,6 +50,8 @@ namespace CmsData.Registration
                     return AskTickets.ReadXml(ele);
                 case "AskYesNoQuestions":
                     return AskYesNoQuestions.ReadXml(ele);
+                case "AskDocuments":
+                    return AskDocuments.ReadXml(ele);
                 default:
                     return new Ask(ask);
             }
@@ -77,6 +79,7 @@ namespace CmsData.Registration
         public bool IsAskTickets => Type == "AskTickets";
         public bool IsAskTylenolEtc => Type == "AskTylenolEtc";
         public bool IsAskYesNoQuestions => Type == "AskYesNoQuestions";
+        public bool IsAskDocuments => Type == "AskDocuments";
 
         public virtual List<string> SmallGroups()
         {
