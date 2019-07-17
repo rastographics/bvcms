@@ -319,7 +319,6 @@ namespace CmsWeb.Models
                     return;
                 }
 
-
                 if (psb.Count > 0)
                 {
                     var c = new ChangeLog
