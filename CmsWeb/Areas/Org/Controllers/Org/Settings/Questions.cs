@@ -145,6 +145,12 @@ This will prevent your registration from working properly.
         }
 
         [HttpPost]
+        public ActionResult NewOrganizationDocument(string id)
+        {
+            return PartialView("EditorTemplates/OrganizationDocument", new AskDocuments.OrganizationDocument { Name = id });
+        }
+
+        [HttpPost]
         public ActionResult NewAsk(string id, string type)
         {
             ViewBag.ShowHelp = CurrentDatabase.UserPreference("ShowQuestionsHelp");

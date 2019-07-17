@@ -29,7 +29,7 @@ You need to indicate how much documents the registrant needs to upload, the docu
             w.Start(Type)
                 .AttrIfTrue("TargetExtraValue", TargetExtraValue);
             foreach (var q in list)
-                w.Add("Name", q.Name);
+                w.Add("DocumentName", q.DocumentName);
             w.End();
         }
         public new static AskDocuments ReadXml(XElement e)
@@ -38,19 +38,20 @@ You need to indicate how much documents the registrant needs to upload, the docu
             {
                 TargetExtraValue = e.Attribute("TargetExtraValue").ToBool(),
             };
-            foreach (var ee in e.Elements("Name"))
+            foreach (var ee in e.Elements("DocumentName"))
                 eq.list.Add(OrganizationDocument.ReadXml(ee));
             return eq;
         }
         public partial class OrganizationDocument
         {
             public string Name { get; set; }
+            public string DocumentName { get; set; }
             public bool Required { get; set; }
 
             // ReSharper disable once MemberHidesStaticFromOuterClass
             public static OrganizationDocument ReadXml(XElement e)
             {
-                return new OrganizationDocument() { Name = e.Value };
+                return new OrganizationDocument() { DocumentName = e.Value };
             }
         }
     }
