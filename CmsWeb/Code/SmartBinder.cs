@@ -61,6 +61,8 @@ namespace CmsWeb
                         return new AskText();
                     case "AskGradeOptions":
                         return new AskGradeOptions();
+                    case "AskDocuments":
+                        return new AskDocuments();
                     default:
                         return base.CreateModel(controllerContext, bindingContext, modelType);
                 }
