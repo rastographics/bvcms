@@ -32,16 +32,7 @@
             }
           </td>
           <td><a href="/LastActivity?orgid=@a.OrgId">@a.OrgName</a></td>
-            <td>
-                @if (a.UserId.IsNull() && a.Activity.Contains("Script"))
-                {
-                    <span>Admin Script</span>
-                }
-                else
-                {
-                    <a href="/LastActivity?peopleid=@a.PeopleId">@a.PersonName</a>
-                }
-            </td>
+          <td><a href="/LastActivity?peopleid=@a.PeopleId">@a.PersonName</a></td>
         </tr>
       }
     </tbody>
