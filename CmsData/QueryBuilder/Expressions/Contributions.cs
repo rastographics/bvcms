@@ -141,14 +141,7 @@ namespace CmsData
             }
 
             var tf = CodeIds == "1";
-            var fundcsv = APIContributionSearchModel.GetCustomFundSetList(db, Quarters);
-            if (fundcsv == null)
-            {
-                return AlwaysFalse();
-            }
-            //throw new Exception($"fundset '{Quarters}' was not found");
-            var fundlist = string.Join(",", fundcsv);
-            var q = db.RecentGiverFunds(Days, fundlist).Select(v => v.PeopleId.Value);
+            var q = db.RecentGiverFunds(Days, Quarters).Select(v => v.PeopleId.Value);
             var tag = db.PopulateTemporaryTag(q);
             Expression<Func<Person, bool>> pred = null;
 
