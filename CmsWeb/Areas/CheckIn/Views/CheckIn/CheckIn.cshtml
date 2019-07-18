@@ -1,0 +1,40 @@
+﻿@using CmsWeb
+@{
+    Layout = ViewExtensions2.TouchPointLayoutWithoutHeaderFooter();
+}
+<body>
+    <noscript>You've reached the TouchPoint check in portal. JavaScript is required, please enable JavaScript on your browser.</noscript>
+    <template id="CheckInApp">
+        <div v-if="view == 'login'">
+            <h2>Login to Check In</h2>
+            <form v-on:submit.prevent="auth">
+                <input type="text" name="username" v-model="user.name" />
+                <input type="password" name="password" v-model="user.password" />
+                <input type="submit" />
+            </form>
+        </div>
+        <div v-else-if="view == 'landing'">
+            <h2>Enter a phone number</h2>
+            <form v-on:submit.prevent="find">
+                <input type="tel" name="phone" v-model="search.phone" />
+                <input type="submit" value="Search" />
+            </form>
+            <a v-on:click="logout">logout</a>
+        </div>
+        <div v-else-if="view == 'families'">
+            <h2>Family Picker</h2>
+            <a v-on:click="view = 'landing'">back</a>
+        </div>
+        <div v-else-if="view == 'checkin'">
+            <h2>Check In</h2>
+            <a v-on:click="view = 'landing'">back</a>
+        </div>
+        <div v-else>
+            Loading, please wait...
+        </div>
+    </template>
+</body>
+
+@section scripts {
+    @Fingerprint.Script("/Content/touchpoint/js/checkin.js")
+}
