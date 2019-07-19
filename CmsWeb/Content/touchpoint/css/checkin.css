@@ -1,0 +1,15 @@
+﻿.checkin {
+    background-color: #f5f5f5!important;
+}
+
+.checkin .login .form-header {
+    font-size: 25px;
+    font-weight: 300;
+    margin: 40px 0;
+}
+
+.checkin .panel {
+    max-width: 360px;
+    margin: 0 auto;
+    padding: 27px;
+}
