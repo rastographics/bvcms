@@ -1247,6 +1247,7 @@
     <Content Include="Content\touchpoint\js\main.js" />
     <Content Include="Content\touchpoint\js\metrozip\metro-zip.js" />
     <Content Include="Content\touchpoint\js\onlineregister.min.js" />
+    <Content Include="Content\touchpoint\js\onlinereg\uploadoc.js" />
     <Content Include="Content\touchpoint\js\people\merge.js" />
     <Content Include="Content\touchpoint\js\search\export-query.js" />
     <Content Include="Content\touchpoint\js\search\TaskSearch.js" />
@@ -1833,6 +1834,7 @@
     <Content Include="Areas\Org\Views\Org\EditorTemplates\AskDocuments.cshtml" />
     <Content Include="Areas\Org\Views\Org\EditorTemplates\OrganizationDocument.cshtml" />
     <Content Include="Areas\Org\Views\Org\DisplayTemplates\AskDocuments.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskDocuments.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

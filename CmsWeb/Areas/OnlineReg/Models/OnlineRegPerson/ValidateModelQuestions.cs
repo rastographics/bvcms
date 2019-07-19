@@ -78,6 +78,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     case "AskYesNoQuestions":
                         ValidateAskYesNoQuestions(ask);
                         break;
+                    case "AskDocuments":
+                        ValidateOrganizationDocuments(ask);
+                        break;
                 }
             ValidatePaymentOption();
             QuestionsOK = modelState.IsValid;
@@ -249,6 +252,17 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 if (YesNoQuestion == null || !YesNoQuestion.ContainsKey(a.SmallGroup))
                     modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].YesNoQuestion[a.SmallGroup]),
                         "please select yes or no");
+            }
+        }
+
+        private void ValidateOrganizationDocuments(Ask ask)
+        {
+            for (var n = 0; n < ((AskDocuments)ask).list.Count; n++)
+            {
+                var a = ((AskDocuments)ask).list[n];
+                if (OrganizationDocument == null || !OrganizationDocument.ContainsKey(a.DocumentName))
+                    modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].OrganizationDocument[a.DocumentName]),
+                        "please upload the required documents");
             }
         }
 

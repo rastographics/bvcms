@@ -6,6 +6,7 @@ using Elmah;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 using System.Web.Security;
@@ -313,6 +314,15 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             bool supportGoerRequired = CurrentDatabase.Setting("MissionSupportRequiredGoer", "false").ToBool();
             m.List[id].ValidateModelQuestions(ModelState, id, supportGoerRequired);
             return FlowList(m);
+        }
+
+        [HttpPost]
+        public JsonResult UploadDocument()
+        {
+            var docname = Request["docname"];
+            var file = Request.Files[0];
+                // save file as required here...            
+            return Json(new { UploadedFileCount = Request.Files.Count });
         }
 
         [HttpPost]

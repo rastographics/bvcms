@@ -122,14 +122,17 @@
             case "AskYesNoQuestions":
                 @Html.EditorFor(m => m, "AskYesNoQuestions", new { ask })
                 break;
+            case "AskDocuments":
+                @Html.EditorFor(m => m, "AskDocuments", new { ask })
+                break;
             case "AskDropdown":
                 @Html.EditorFor(m => m.option[ask.UniqueId], "AskDropdown",
                         new { items = Model.DropdownList(ask), label = ((AskDropdown)ask).Label })
                 break;
             case "AskCheckboxes":
                 @(((AskCheckboxes)ask).Columns > 1
-                          ? Html.EditorFor(m => m, "AskCheckboxesMatrix", new { ask })
-                          : Html.EditorFor(m => m, "AskCheckboxes", new { ask }))
+                                                  ? Html.EditorFor(m => m, "AskCheckboxesMatrix", new { ask })
+                                                  : Html.EditorFor(m => m, "AskCheckboxes", new { ask }))
                 break;
             case "AskMenu":
                 @Html.EditorFor(m => m, "AskMenu", new { ask })
@@ -159,26 +162,28 @@
 
             @if ((Model.age >= Model.MinimumUserAge || !Model.BestBirthday.HasValue) && !Model.IsCreateAccount())
             {
-              if (Model.InMobileAppMode && !Util.UserPeopleId.HasValue && !Model.LoggedIn)
-              {
-                @Html.Hidden("CreatingAccount", true)
-              }
-              else
-              {
-                <div class="checkbox-inline">
-                  <label>
-                    @Html.CheckBoxFor(m => m.CreatingAccount) Create Account (optional)
-                  </label>
-                </div>
-              }
+                if (Model.InMobileAppMode && !Util.UserPeopleId.HasValue && !Model.LoggedIn)
+                {
+                    @Html.Hidden("CreatingAccount", true)
+                }
+                else
+                {
+                    <div class="checkbox-inline">
+                        <label>
+                            @Html.CheckBoxFor(m => m.CreatingAccount) Create Account (optional)
+                        </label>
+                    </div>
+                }
             }
             <div>
-            @Helper.OnlineRegAjaxButton("/OnlineReg/SubmitQuestions/" + @Model.Index, "Submit",
-                id: "otheredit", style: "btn-primary min-width15em")</div>
+                @Helper.OnlineRegAjaxButton("/OnlineReg/SubmitQuestions/" + @Model.Index, "Submit",
+                    id: "otheredit", style: "btn-primary min-width15em")
+            </div>
             @if (Model.Parent.AllowSaveProgress())
             {
-              <div>
-              @Helper.OnlineRegAjaxButton("/OnlineReg/SaveProgress", "Save Progress, Finish Later", style: "btn-warning min-width15em")</div>
+                <div>
+                    @Helper.OnlineRegAjaxButton("/OnlineReg/SaveProgress", "Save Progress, Finish Later", style: "btn-warning min-width15em")
+                </div>
             }
             @Html.DivValidationMessage("Form")
         </div>
