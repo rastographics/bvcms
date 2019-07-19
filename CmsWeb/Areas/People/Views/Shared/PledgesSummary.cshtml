@@ -1,0 +1,52 @@
+﻿@using UtilityExtensions
+@using CmsData
+@model CmsWeb.Areas.People.Models.ContributionsModel
+@{
+    var campusId = Model.Person.CampusId;
+    var PledgesSummary = Model.GetPledgesSummary();
+    var giving = Util.UserPeopleId == Util2.CurrentPeopleId && (MultipleGatewayUtils.GatewayId(DbUtil.Db, PaymentProcessTypes.RecurringGiving) != null) && DbUtil.Db.Setting("OnlineGiving", true);
+}
+<div class="row">
+    <div class="col-sm-6">
+        <h4>Pledges Summary</h4>
+    </div>
+    <div class="col-sm-6">
+    </div>
+</div>
+<table class="table table-striped">
+    <tr>
+        <th>Fund</th>
+        <th class="text-right">Pledged</th>
+        <th class="text-right">Contributed</th>
+        <th class="text-right">Balance</th>
+        @if (giving)
+        {
+            <th style="width: 50px;"></th>
+        }
+    </tr>
+    @if (PledgesSummary != null)
+    {
+        foreach (var p in PledgesSummary)
+        {
+            <tr>
+                <td>
+                    @p.Fund
+                </td>
+                <td class="text-right">@p.AmountPledged.ToString("C")</td>
+                <td class="text-right">@p.AmountContributed.ToString("C")</td>
+                <td class="text-right">
+                    @p.Balance.ToString("C")
+                </td>
+                @if (giving)
+                {
+                    <td style="width: 50px;">
+                        @if (p.Balance > 0)
+                        {
+                            <a href="/Person2/OneTimeGift/@(campusId??0)?fundId=@p.FundId" target="_blank" class="btn btn-default btn-sm fulfillpledge"><i class="fa fa-check-circle-o"></i> Fulfill Pledge</a>
+                        }
+                    </td>
+                }
+            </tr>
+        }
+    }
+</table>

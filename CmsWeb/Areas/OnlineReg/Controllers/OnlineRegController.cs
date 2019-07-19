@@ -22,7 +22,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [HttpGet]
         [Route("~/OnlineReg/Index/{id:int}")]
         [Route("~/OnlineReg/{id:int}")]
-        public ActionResult Index(int? id, bool? testing, string email, bool? login, string registertag, bool? showfamily, int? goerid, int? gsid, string source)
+        public ActionResult Index(int? id, bool? testing, string email, bool? login, string registertag, bool? showfamily, int? goerid, int? gsid, string source, int? pledgeFund)
         {
             Response.NoCache();
 
@@ -37,6 +37,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             {
                 AssignPaymentProcessType(ref m);
             }
+
+            if (pledgeFund != null)            
+                m.pledgeFundId = pledgeFund.Value;            
 
             SetHeaders(m);
 
