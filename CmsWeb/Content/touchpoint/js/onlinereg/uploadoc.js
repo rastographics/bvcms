@@ -1,9 +1,9 @@
 ﻿$(function () {
-    $('.checkmark').hide();
     $(document).on("click", ".btnUploadDoc", function (e) {
         e.preventDefault();
         var submitBtn = $(this);
         var fileInputBtn = submitBtn.parent().parent().find('input.docInput');
+        var isUploaded = submitBtn.parent().parent().find('input.hdnIsUploaded');
         var deleteBtn = submitBtn.parent().parent().find('input.btnDeleteDoc');
         var checkMark = submitBtn.parent().parent().parent().find('span.checkmark');
         var docName = fileInputBtn.attr('name');
@@ -24,6 +24,7 @@
                 deleteBtn.removeAttr("disabled");
                 submitBtn.attr('disabled', true);
                 fileInputBtn.attr('disabled', true);
+                isUploaded.val('true');
             })
             .fail(function () {
                 alert("fail");

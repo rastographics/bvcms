@@ -37,6 +37,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     case "YesNoQuestion":
                         WriteYesNoChoices(w);
                         break;
+                    case "OrganizationDocument":
+                        WriteDocumentsUpload(w);
+                        break;
                     case "option":
                         optionsAdded = WriteDropdownOptions(optionsAdded, w);
                         break;
@@ -117,6 +120,18 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 {
                     w.Start("YesNoQuestion");
                     w.Attr("question", q.Key);
+                    w.AddText(q.Value.ToString());
+                    w.End();
+                }
+        }
+
+        private void WriteDocumentsUpload(APIWriter w)
+        {
+            if (OrganizationDocument != null && OrganizationDocument.Count > 0)
+                foreach (var q in OrganizationDocument)
+                {
+                    w.Start("Documents");
+                    w.Attr("documentName", q.Key);
                     w.AddText(q.Value.ToString());
                     w.End();
                 }

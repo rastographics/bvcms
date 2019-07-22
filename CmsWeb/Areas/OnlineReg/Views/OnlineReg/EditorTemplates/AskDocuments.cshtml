@@ -14,14 +14,13 @@
         <div class="col-sm-12">
             <div class="well">
                 <label for="doc" class="control-label">
-                    @a.DocumentName&nbsp;@req&nbsp;&nbsp;<span class="glyphicon glyphicon-check checkmark" style="color:green"></span>
+                    @a.DocumentName&nbsp;@req&nbsp;&nbsp;<span class="glyphicon glyphicon-check checkmark" style="color:green;display:none"></span>
                 </label>
                 <div class="form-inline docBlock">
                     <div class="input-group">
-                        <input type="hidden" name="@(name)[@i].Key" value="@a.DocumentName" />
-                        <input type="hidden" name="@(name)[@i].Value" value="false" />
+                        <input class="hdnDocNAme" type="hidden" name="@(name)[@i].Key" value="@a.DocumentName" />
+                        <input class="hdnIsUploaded" type="hidden" name="@(name)[@i].Value" value="false" />
                         <input class="docInput" type="file" />
-                        @Html.ValidationMessage("doc")
                     </div>
                     <div class="input-group">
                         <input type="button" name="Upload" value="Submit Document" class="btn btn-primary btnUploadDoc" />                        

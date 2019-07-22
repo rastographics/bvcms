@@ -319,10 +319,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [HttpPost]
         public JsonResult UploadDocument()
         {
-            var docname = Request["docname"];
             var file = Request.Files[0];
-                // save file as required here...            
-            return Json(new { UploadedFileCount = Request.Files.Count });
+            string tmpFileName = TmpFiles.CreateTmpFile(file);
+            return Json(new { FileName = tmpFileName });
         }
 
         [HttpPost]
