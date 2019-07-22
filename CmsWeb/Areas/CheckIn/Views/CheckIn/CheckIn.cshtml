@@ -15,10 +15,17 @@
             <h2 class="form-header text-center">@ViewExtensions2.DbSetting("NameOfChurch", Util.Host) Check In</h2>
             <form v-on:submit.prevent="auth" class="panel panel-default">
                 <div class="form-group">
+                    <label for="username">Sign In As</label>
                     <input type="text" name="username" class="form-control input-lg" placeholder="username or email" required="required" autocomplete="off" autocapitalize="off" autocorrect="off" v-model="user.name" />
                 </div>
                 <div class="form-group">
                     <input type="password" name="password" class="form-control input-lg" placeholder="password" required="required" v-model="user.password" />
+                </div>
+                <div class="form-group">
+                    <label for="profile">Use Kiosk Profile</label>
+                    <select class="form-control" name="profile" id="profile" v-model="user.profile">
+                        <option value="default">Default</option>
+                    </select>
                 </div>
                 <div class="form-actions">
                     <input type="submit" value="Sign In" class="btn btn-primary btn-block btn-lg">
@@ -31,14 +38,14 @@
                 <input type="tel" name="phone" v-mask="'(###) ###-####'" v-model="search.phone" class="keyboard-input"/>
                 <div class="simple-keyboard"></div>
             </form>
-            <a v-on:click="logout">logout</a>
+            <a href="#" style="position:absolute; left:15px; bottom: 5px;" v-on:click="logout">logout</a>
         </div>
         <div v-else-if="view == 'families'" class="families">
             <h2>Family Picker</h2>
             <div v-for="family in families">
                 <a v-on:click="selectFamily(family)">{{ family.name }} Family</a>
             </div>
-            <a v-on:click="view = 'landing'">return</a>
+            <a v-on:click="loadView('landing')">return</a>
         </div>
         <div v-else-if="view == 'checkin'" class="results">
             <h2>Check In</h2>
@@ -54,11 +61,11 @@
                 </div>
             </div>
             <div v-if="families.length">
-                <a v-on:click="view = 'families'">back</a>
-                <a v-on:click="view = 'landing'">return</a>
+                <a v-on:click="loadView('families')">back</a>
+                <a v-on:click="loadView('landing')">return</a>
             </div>
             <div v-else>
-                <a v-on:click="view = 'landing'">return</a>
+                <a v-on:click="loadView('landing')">return</a>
             </div>
         </div>
         <div v-else class="loading">

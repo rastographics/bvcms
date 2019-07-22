@@ -9,12 +9,14 @@ var CheckInApp = new Vue({
         identity: false,
         profile: false,
         loading: false,
+        keyboard: false,
         families: [],
         members: [],
         attendance: [],
         user: {
             name: '',
-            password: ''
+            password: '',
+            profile: 'default'
         },
         search: {
             phone: ''
@@ -26,11 +28,6 @@ var CheckInApp = new Vue({
                 $.block();
             } else {
                 $.unblockUI();
-            }
-        },
-        view: function (view) {
-            if (view === 'landing') {
-                this.initKeyboard();
             }
         }
     },
@@ -70,7 +67,7 @@ var CheckInApp = new Vue({
         initKeyboard() {
             let vm = this;
             setTimeout(function () {
-                var keyboard = new Keyboard({
+                vm.keyboard = new Keyboard({
                     onChange: function (input) {
                         vm.search.phone = input;
                     },
@@ -89,9 +86,19 @@ var CheckInApp = new Vue({
                     theme: "hg-theme-default hg-layout-numeric numeric-theme"
                 });
                 $(".keyboard-input").on("input", function(e) {
-                    keyboard.setInput(e.target.value);
+                    vm.keyboard.setInput(e.target.value);
                 });
             }, 100);
+        },
+        loadView(newView) {
+            // cleanup and prep for view swap
+            if (this.view === 'landing') {
+                this.keyboard.destroy();
+            }
+            this.view = newView;
+            if (newView === 'landing') {
+                this.initKeyboard();
+            }
         },
         auth() {
             let vm = this;
@@ -107,6 +114,7 @@ var CheckInApp = new Vue({
                         vm.loading = false;
                         if (response.status === 200) {
                             if (response.data.error === 0) {
+                                // todo: load profile based on login dropdown selection (vm.user.profile)
                                 var profile = JSON.parse(response.data.data);
                                 profile = {
                                     userName: profile.userName,
@@ -116,10 +124,10 @@ var CheckInApp = new Vue({
                                 localStorage.setItem('profile', JSON.stringify(profile));
                                 vm.identity = token;
                                 vm.profile = profile;
-                                vm.view = 'landing';
+                                vm.loadView('landing');
                             } else {
                                 // invalid creds
-                                vm.view = 'login';
+                                vm.loadView('login');
                                 warning_swal('Login Failed', response.data.data);
                             }
                         }
@@ -141,13 +149,22 @@ var CheckInApp = new Vue({
             localStorage.removeItem('profile');
             this.identity = false;
             this.profile = false;
-            this.view = 'login';
+            this.loadView('login');
+        },
+        reset() {
+            // used only on session timeout if kiosk has been idle too long
+            this.families = [];
+            this.members = [];
+            this.attendance = [];
+            this.search.phone = '';
+            this.loadView('landing');
         },
         find() {
             let vm = this;
             // todo: set campus and date from profile
+            var phone = vm.search.phone.replace(/\D/g, '');
             var payload = vm.generatePayload({
-                search: vm.search.phone,
+                search: phone,
                 campus: 0,
                 date: '2019-07-21 08:00:00' // todo: remove, debug only
             });
@@ -162,36 +179,36 @@ var CheckInApp = new Vue({
                             vm.search.phone = '';
                             if (results.length > 1) {
                                 vm.families = results;
-                                vm.view = 'families';
+                                vm.loadView('families');
                             } else if (results.length === 1) {
                                 vm.families = [];
                                 vm.members = results[0].members;
-                                vm.view = 'checkin';
+                                vm.loadView('checkin');
                             } else {
-                                vm.view = 'landing';
+                                vm.loadView('landing');
                                 warning_swal('No results', 'No families found with that number, please try again.');
                             }
                         } else {
                             vm.search.phone = '';
-                            vm.view = 'landing';
+                            vm.loadView('landing');
                             warning_swal('Search Failed', response.data.data);
                         }
                     } else {
                         vm.search.phone = '';
-                        vm.view = 'landing';
+                        vm.loadView('landing');
                         warning_swal('Warning!', 'Something went wrong, try again later');
                     }
                 },
                 err => {
                     vm.loading = false;
-                    vm.view = 'landing';
+                    vm.loadView('landing');
                     error_swal('Error', 'Something went wrong');
                 }
             );
         },
         selectFamily(family) {
             this.members = family.members;
-            this.view = 'checkin';
+            this.loadView('checkin');
         },
         updateAttendance() {
             // todo: post attendance bundle to /UpdateAttend
@@ -202,9 +219,9 @@ var CheckInApp = new Vue({
         var identity = localStorage.getItem('identity');
         if (identity && identity.length) {
             this.identity = identity;
-            this.view = 'landing';
+            this.loadView('landing');
         } else {
-            this.view = 'login';
+            this.loadView('login');
         }
         var profile = localStorage.getItem('profile');
         if (profile && profile.length) {
