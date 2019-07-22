@@ -1,4 +1,10 @@
-﻿CREATE TABLE [dbo].[SettingType](
+﻿ALTER TABLE [dbo].[Setting]
+ADD [DisplayName] varchar(MAX) NULL,
+    [Description] varchar(MAX) NULL,
+    [DataType] int NULL
+GO
+
+CREATE TABLE [dbo].[SettingType](
 	[SettingTypeId] [int] IDENTITY(1,1) NOT NULL,
 	[Name] [varchar](50) NOT NULL,
 	[DisplayOrder] [int] NOT NULL,
