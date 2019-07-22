@@ -3,6 +3,7 @@ using CmsWeb.Lifecycle;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web.Mvc;
+using CmsWeb.Areas.Setup.Models;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Setup.Controllers
@@ -25,7 +26,13 @@ namespace CmsWeb.Areas.Setup.Controllers
                 m = m.Where(vv => (vv.System ?? false) == false);
             }
 
-            return View(m);
+            return View(new SettingModel {
+                Settings = m,
+                SettingTypes = m
+                    .GroupBy(x => x.SettingTypeId)
+                    .Select(x => x.First().SettingType)
+                    .OrderBy(y => y.DisplayOrder).ToList()
+            });
         }
 
         [HttpPost]

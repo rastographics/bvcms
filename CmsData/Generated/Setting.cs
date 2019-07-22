@@ -24,8 +24,16 @@ namespace CmsData
 		
 		private bool? _System;
 		
+		private int? _SettingTypeId;
+		
+		private int? _SettingCategoryId;
+		
    		
     	
+		private EntityRef<SettingCategory> _SettingCategory;
+		
+		private EntityRef<SettingType> _SettingType;
+		
 	#endregion
 	
     #region Extensibility Method Definitions
@@ -42,10 +50,20 @@ namespace CmsData
 		partial void OnSystemChanging(bool? value);
 		partial void OnSystemChanged();
 		
+		partial void OnSettingTypeIdChanging(int? value);
+		partial void OnSettingTypeIdChanged();
+		
+		partial void OnSettingCategoryIdChanging(int? value);
+		partial void OnSettingCategoryIdChanged();
+		
     #endregion
 		public Setting()
 		{
 			
+			
+			this._SettingCategory = default(EntityRef<SettingCategory>); 
+			
+			this._SettingType = default(EntityRef<SettingType>); 
 			
 			OnCreated();
 		}
@@ -119,6 +137,58 @@ namespace CmsData
 		}
 
 		
+		[Column(Name="SettingTypeId", UpdateCheck=UpdateCheck.Never, Storage="_SettingTypeId", DbType="int")]
+		[IsForeignKey]
+		public int? SettingTypeId
+		{
+			get { return this._SettingTypeId; }
+
+			set
+			{
+				if (this._SettingTypeId != value)
+				{
+				
+					if (this._SettingType.HasLoadedOrAssignedValue)
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+				
+                    this.OnSettingTypeIdChanging(value);
+					this.SendPropertyChanging();
+					this._SettingTypeId = value;
+					this.SendPropertyChanged("SettingTypeId");
+					this.OnSettingTypeIdChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="SettingCategoryId", UpdateCheck=UpdateCheck.Never, Storage="_SettingCategoryId", DbType="int")]
+		[IsForeignKey]
+		public int? SettingCategoryId
+		{
+			get { return this._SettingCategoryId; }
+
+			set
+			{
+				if (this._SettingCategoryId != value)
+				{
+				
+					if (this._SettingCategory.HasLoadedOrAssignedValue)
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+				
+                    this.OnSettingCategoryIdChanging(value);
+					this.SendPropertyChanging();
+					this._SettingCategoryId = value;
+					this.SendPropertyChanged("SettingCategoryId");
+					this.OnSettingCategoryIdChanged();
+				}
+
+			}
+
+		}
+
+		
     #endregion
         
     #region Foreign Key Tables
@@ -127,6 +197,90 @@ namespace CmsData
 	
 	#region Foreign Keys
     	
+		[Association(Name="FK_Setting_SettingCategory", Storage="_SettingCategory", ThisKey="SettingCategoryId", IsForeignKey=true)]
+		public SettingCategory SettingCategory
+		{
+			get { return this._SettingCategory.Entity; }
+
+			set
+			{
+				SettingCategory previousValue = this._SettingCategory.Entity;
+				if (((previousValue != value) 
+							|| (this._SettingCategory.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if (previousValue != null)
+					{
+						this._SettingCategory.Entity = null;
+						previousValue.Settings.Remove(this);
+					}
+
+					this._SettingCategory.Entity = value;
+					if (value != null)
+					{
+						value.Settings.Add(this);
+						
+						this._SettingCategoryId = value.SettingCategoryId;
+						
+					}
+
+					else
+					{
+						
+						this._SettingCategoryId = default(int?);
+						
+					}
+
+					this.SendPropertyChanged("SettingCategory");
+				}
+
+			}
+
+		}
+
+		
+		[Association(Name="FK_Setting_SettingType", Storage="_SettingType", ThisKey="SettingTypeId", IsForeignKey=true)]
+		public SettingType SettingType
+		{
+			get { return this._SettingType.Entity; }
+
+			set
+			{
+				SettingType previousValue = this._SettingType.Entity;
+				if (((previousValue != value) 
+							|| (this._SettingType.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if (previousValue != null)
+					{
+						this._SettingType.Entity = null;
+						previousValue.Settings.Remove(this);
+					}
+
+					this._SettingType.Entity = value;
+					if (value != null)
+					{
+						value.Settings.Add(this);
+						
+						this._SettingTypeId = value.SettingTypeId;
+						
+					}
+
+					else
+					{
+						
+						this._SettingTypeId = default(int?);
+						
+					}
+
+					this.SendPropertyChanged("SettingType");
+				}
+
+			}
+
+		}
+
+		
 	#endregion
 	
 		public event PropertyChangingEventHandler PropertyChanging;

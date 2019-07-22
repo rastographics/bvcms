@@ -673,7 +673,15 @@ namespace CmsData
         partial void InsertSetting(Setting instance);
         partial void UpdateSetting(Setting instance);
         partial void DeleteSetting(Setting instance);
-        
+
+        partial void InsertSettingType(SettingType instance);
+        partial void UpdateSettingType(SettingType instance);
+        partial void DeleteSettingType(SettingType instance);
+
+        partial void InsertSettingCategory(SettingCategory instance);
+        partial void UpdateSettingCategory(SettingCategory instance);
+        partial void DeleteSettingCategory(SettingCategory instance);
+
         partial void InsertSMSGroupMember(SMSGroupMember instance);
         partial void UpdateSMSGroupMember(SMSGroupMember instance);
         partial void DeleteSMSGroupMember(SMSGroupMember instance);
@@ -1836,9 +1844,21 @@ namespace CmsData
 		{
 			get	{ return this.GetTable<Setting>(); }
 
-		}
+        }
 
-		public Table<SMSGroupMember> SMSGroupMembers
+        public Table<SettingType> SettingTypes
+        {
+            get { return this.GetTable<SettingType>(); }
+
+        }
+
+        public Table<SettingCategory> SettingCategories
+        {
+            get { return this.GetTable<SettingCategory>(); }
+
+        }
+
+        public Table<SMSGroupMember> SMSGroupMembers
 		{
 			get	{ return this.GetTable<SMSGroupMember>(); }
 
