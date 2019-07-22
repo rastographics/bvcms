@@ -14,6 +14,5 @@ namespace CmsWeb.Areas.Setup.Models
         public IEnumerable<Setting> Settings { get; set; }
 
         public List<SettingTypeModel> SettingTypes { get; set; }
-
     }
 }
