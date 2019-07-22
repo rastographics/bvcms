@@ -132,6 +132,8 @@ namespace CmsData
         }
         public Expression IsRecentGiverFunds()
         {
+            Console.WriteLine("Push Test");
+
             if (!db.FromBatch)
             {
                 if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
@@ -141,7 +143,14 @@ namespace CmsData
             }
 
             var tf = CodeIds == "1";
-            var q = db.RecentGiverFunds(Days, Quarters).Select(v => v.PeopleId.Value);
+            var fundcsv = APIContributionSearchModel.GetCustomFundSetList(db, Quarters);
+            if (fundcsv == null)
+            {
+                return AlwaysFalse();
+            }
+            //throw new Exception($"fundset '{Quarters}' was not found");
+            var fundlist = string.Join(",", fundcsv);
+            var q = db.RecentGiverFunds(Days, fundlist).Select(v => v.PeopleId.Value);
             var tag = db.PopulateTemporaryTag(q);
             Expression<Func<Person, bool>> pred = null;
 
