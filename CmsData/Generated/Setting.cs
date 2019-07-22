@@ -28,6 +28,12 @@ namespace CmsData
 		
 		private int? _SettingCategoryId;
 		
+		private string _DisplayName;
+		
+		private string _Description;
+		
+		private int? _DataType;
+		
    		
     	
 		private EntityRef<SettingCategory> _SettingCategory;
@@ -55,6 +61,15 @@ namespace CmsData
 		
 		partial void OnSettingCategoryIdChanging(int? value);
 		partial void OnSettingCategoryIdChanged();
+		
+		partial void OnDisplayNameChanging(string value);
+		partial void OnDisplayNameChanged();
+		
+		partial void OnDescriptionChanging(string value);
+		partial void OnDescriptionChanged();
+		
+		partial void OnDataTypeChanging(int? value);
+		partial void OnDataTypeChanged();
 		
     #endregion
 		public Setting()
@@ -182,6 +197,72 @@ namespace CmsData
 					this._SettingCategoryId = value;
 					this.SendPropertyChanged("SettingCategoryId");
 					this.OnSettingCategoryIdChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="DisplayName", UpdateCheck=UpdateCheck.Never, Storage="_DisplayName", DbType="varchar")]
+		public string DisplayName
+		{
+			get { return this._DisplayName; }
+
+			set
+			{
+				if (this._DisplayName != value)
+				{
+				
+                    this.OnDisplayNameChanging(value);
+					this.SendPropertyChanging();
+					this._DisplayName = value;
+					this.SendPropertyChanged("DisplayName");
+					this.OnDisplayNameChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="Description", UpdateCheck=UpdateCheck.Never, Storage="_Description", DbType="varchar")]
+		public string Description
+		{
+			get { return this._Description; }
+
+			set
+			{
+				if (this._Description != value)
+				{
+				
+                    this.OnDescriptionChanging(value);
+					this.SendPropertyChanging();
+					this._Description = value;
+					this.SendPropertyChanged("Description");
+					this.OnDescriptionChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="DataType", UpdateCheck=UpdateCheck.Never, Storage="_DataType", DbType="int")]
+		public int? DataType
+		{
+			get { return this._DataType; }
+
+			set
+			{
+				if (this._DataType != value)
+				{
+				
+                    this.OnDataTypeChanging(value);
+					this.SendPropertyChanging();
+					this._DataType = value;
+					this.SendPropertyChanged("DataType");
+					this.OnDataTypeChanged();
 				}
 
 			}
