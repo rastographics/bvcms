@@ -78,7 +78,7 @@
                                     <div class="pull-right">
                                         <a v-on:click="ResetFilter" href="#" class="btn btn-default">Reset</a>
                                         <a name="submit" v-on:click="DownloadExcel" class="btn btn-default"><i class="fa fa-cloud-download"></i> Download to Excel</a>
-                                        <input name="submit" type="submit" class="btn btn-primary" value="Search" />
+                                        <input name="submit" type="submit" class="btn btn-primary" v-bind:disabled="loading" value="Search" />
                                     </div>
                                 </div>
                             </div>
@@ -153,7 +153,7 @@
 </template>
 
 <template id="CreateApp">
-    <div class="row" id="CreateContent" hidden>
+    <div class="row" id="CreateContent" v-bind:class="{ loading: loading }" hidden>
         <div class="col-md-8">
             <div class="box box-responsive">
                 <div class="box-title-btn">
