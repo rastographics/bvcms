@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web.Mvc;
 using CmsWeb.Areas.Setup.Models;
+using Flurl.Util;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Setup.Controllers
@@ -26,12 +27,14 @@ namespace CmsWeb.Areas.Setup.Controllers
                 m = m.Where(vv => (vv.System ?? false) == false);
             }
 
+            var settingTypes = m
+                .GroupBy(x => x.SettingTypeId)
+                .Select(x => new SettingTypeModel(x.First().SettingType, x))
+                .ToList();
+
             return View(new SettingModel {
                 Settings = m,
-                SettingTypes = m
-                    .GroupBy(x => x.SettingTypeId)
-                    .Select(x => x.First().SettingType)
-                    .OrderBy(y => y.DisplayOrder).ToList()
+                SettingTypes = settingTypes.Where(x => x.SettingType != null).ToList()
             });
         }
 

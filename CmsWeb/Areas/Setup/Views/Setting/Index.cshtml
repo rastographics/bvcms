@@ -1,4 +1,5 @@
-﻿@using UtilityExtensions
+﻿@using CmsWeb.Areas.Setup.Models
+@using UtilityExtensions
 @model CmsWeb.Areas.Setup.Models.SettingModel
 @{
     Layout = ViewExtensions2.TouchPointLayout();
@@ -33,104 +34,74 @@
             <div class="box-content">
                 <ul class="nav nav-pills subnav hidden-sm hidden-xs">
                     <li class="settings-type-tab active" data-id="1">
-                        <a href="#other" data-toggle="tab">
-                            <span>Other</span>
+                        <a href="#all" data-toggle="tab">
+                            <span>All</span>
                         </a>
                     </li>
-                    @{
-                        var i = 0;
-                    }
-                    @foreach (var settingType in Model.SettingTypes)
+                    @for (var i = 0; i < Model.SettingTypes.Count; i++)
                     {
-                        if (settingType == null)
-                        {
-                            continue;
-                        }
-                        <li class="settings-type-tab @(i == 0 ? "active" : null)" data-id="@settingType.SettingTypeId">
-                            <a href="#@settingType.Name.SlugifyString()" data-toggle="tab">
-                                <span>@settingType.Name</span>
+                        <li class="resource-type-tab" data-id="@Model.SettingTypes[i].SettingType.SettingTypeId">
+                            <a href = "#@Model.SettingTypes[i].SettingType.Name.SlugifyString()" data-toggle="tab">
+                                <span>@Model.SettingTypes[i].SettingType.Name</span>
                             </a>
                         </li>
-                        i++;
                     }
-                    <li class="settings-type-tab" data-id="2">
-                        <a href="#special-features" data-toggle="tab">
-                            <span>Special Features</span>
-                        </a>
-                    </li>
                 </ul>
                 <select class="form-control visible-sm-block visible-xs-block nav-select-pills">
-                    <option value="#other">Other Settings</option>
-                    @{
-                        var j = 0;
-                    }
-                    @foreach (var settingType in Model.SettingTypes)
+                    <option value="#all">All</option>
+                    @for (var i = 0; i<Model.SettingTypes.Count; i++)
                     {
-                        if (settingType == null)
-                        {
-                            continue;
-                        }
-                        <option value="#@settingType.Name.SlugifyString()">
-                            @settingType.Name
+                        <option value="#@Model.SettingTypes[i].SettingType.Name.SlugifyString()">
+                             @Model.SettingTypes[i].SettingType.Name
                         </option>
-                        j++;
                     }
-                    <option value="#special-features">Special Features</option>
                 </select>
                 <div class="tab-content" style="border: none">
-                    <div class="tab-pane active" id="other">
-                        <div class="box-content">
-                            <div class="table-responsive">
-                            <table id="settings" class="table table-striped">
-                                <thead>
-                                <tr>
-                                    <th style="width: 100px;">
-                                        <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Setting Code" data-content="Please enter exactly as in the help article, using no spaces. Also, they are case-sensitive."><i class="fa fa-info-circle"></i></a>&nbsp;
-                                        Setting Code
-                                    </th>
-                                    <th style="width: 500px;">
-                                        <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Setting Value" data-content="Click value to edit."><i class="fa fa-info-circle"></i></a>&nbsp;
-                                        Setting Value
-                                    </th>
-                                    <th style="width: 50px;">Action</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                @foreach (var item in Model.Settings)
-                                {
-                                    <tr>
-                                        <td style="width: 100px;">@item.Id</td>
-                                        <td style="width: 500px;">
-                                            <a id="@item.Id" class="clickEdit" data-pk="@(item.Id)">@item.SettingX</a>
-                                        </td>
-                                        <td style="width: 50px;">
-                                            <a id="d@(item.Id)" href="#" class="delete btn btn-sm btn-danger"><i class="fa fa-trash"></i> Delete</a>
-                                        </td>
-                                    </tr>
-                                }
-                                </tbody>
-                            </table>
-                        </div>
-                        </div>
-                    </div>
-                    <div class="tab-pane" id="special-features">
-                        <div class="accordion-panel panel-group" id="accordion-3" role="tablist">
+                    <div class="tab-pane active" id="all">
+                        <div class="panel-group" id="accordion-all-settings" role="tablist">
                             <div class="panel panel-default">
-                                <div class="panel-heading" role="tab" id="3-3">
+                                <div class="panel-heading" role="tab" id="all-settings">
                                     <h4 class="panel-title">
-                                        <a role="button" data-toggle="collapse" data-parent="#accordion-3" href="#collapse-3-3" aria-controls="collapse-0-50" class="collapsed" aria-expanded="false">
-                                            Small Group Finder
+                                        <a role="button" data-toggle="collapse" data-parent="#accordion-all-settings" href="#collapse-all-settings" aria-controls="collapse-all-settings" class="notcollapsed">
+                                            All
                                         </a>
                                     </h4>
                                 </div>
-                                <div id="collapse-3-3" class="panel-collapse collapse" role="tabpanel" aria-expanded="false" style="height: 0px;">
+                                <div id="collapse-all-settings" class="panel-collapse collapse in" role="tabpanel" aria-expanded="true">
                                     <div class="panel-body">
-                                        <p>settings go here</p>
+                                        @Html.Partial("_Settings", Model.Settings)
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    @for (int i = 0; i < Model.SettingTypes.Count; i++)
+                    {
+                        var settingTypeGroup = Model.SettingTypes[i];
+
+                        <div class="tab-pane"
+                             id="@settingTypeGroup.SettingType.Name.SlugifyString()">
+                            <div class="panel-group" id="accordion@(i)" role="tablist">
+                                @foreach (var category in settingTypeGroup.Settings.GroupBy(x => x.SettingCategory).OrderBy(x => x.Key.DisplayOrder))
+                                {
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading" role="tab" id="@i-@category.Key.SettingCategoryId">
+                                            <h4 class="panel-title">
+                                                <a role="button" data-toggle="collapse" data-parent="#accordion@(i)" href="#collapse-@i-@category.Key.SettingCategoryId" aria-controls="collapse-@i-@category.Key.SettingCategoryId" class="notco">
+                                                    @category.Key.Name
+                                                </a>
+                                            </h4>
+                                        </div>
+                                        <div id="collapse-@i-@category.Key.SettingCategoryId" class="panel-collapse collapse in" role="tabpanel" aria-expanded="true">
+                                            <div class="panel-body">
+                                                @Html.Partial("_Settings", settingTypeGroup.Settings)
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
                 </div>
                 <a href="#" class="btn btn-success btn-block visible-xs-block create-new"><i class="fa fa-plus-circle"></i> Add Setting</a>
             </div>
@@ -243,22 +214,18 @@
             }
         });
 
-        $(function() {
+        $(function () {
             var tab = window.location.hash;
-            if (tab === '#tab-system') {
-                var id = "#system";
-                $("a[href='" + id + "']").click().tab("show");
-                $("option[value='" + id + "']").prop('selected', true);
-            }
-            if (tab === '#tab-special-features') {
-                var id = "#special-features";
-                $("a[href='" + id + "']").click().tab("show");
-                $("option[value='" + id + "']").prop('selected', true);
-            }
-            if (tab === '#tab-giving') {
-                var id = "#giving";
-                $("a[href='" + id + "']").click().tab("show");
-                $("option[value='" + id + "']").prop('selected', true);
+
+            @foreach (SettingTypeModel settingTypeModel in Model.SettingTypes)
+            {
+                <text>
+                    if (tab === '#tab-@settingTypeModel.SettingType.Name.SlugifyString()') {
+                        var id = "#@settingTypeModel.SettingType.Name.SlugifyString()";
+                        $("a[href='" + id + "']").click().tab("show");
+                        $("option[value='" + id + "']").prop('selected', true);
+                    }
+                </text>
             }
         });
 
@@ -282,15 +249,6 @@
                     tlink.click().tab("show");
                 }
             }
-        });
-
-        $(function() {
-            $('.accordion-panel').on('show.bs.collapse', function() {
-                console.log('yooo');
-            });
-            $('.accordion-panel').on('hide.bs.collapse', function() {
-                console.log('aiee');
-            });
         });
     </script>
 }

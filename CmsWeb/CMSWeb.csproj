@@ -851,6 +851,7 @@
     <Compile Include="Areas\Setup\Controllers\GatewayController.cs" />
     <Compile Include="Areas\Setup\Models\GatewayAccountJsonModel.cs" />
     <Compile Include="Areas\Setup\Models\SettingModel.cs" />
+    <Compile Include="Areas\Setup\Models\SettingTypeModel.cs" />
     <Compile Include="Code\BirthdateValidAttribute.cs" />
     <Compile Include="Code\CMSWebViewPage.cs" />
     <Compile Include="Areas\Setup\Controllers\PushpayController.cs" />
@@ -1831,6 +1832,7 @@
     <Content Include="Areas\OnlineReg\Views\OnlineReg\OnePageGiving\NotConfigured.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\MeetingAttendance.cshtml" />
     <Content Include="libman.json" />
+    <Content Include="Areas\Setup\Views\Setting\_Settings.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

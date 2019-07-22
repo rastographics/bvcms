@@ -8,12 +8,12 @@ namespace CmsWeb.Areas.Setup.Models
         public SettingModel()
         {
             Settings = new List<Setting>();
-            SettingTypes = new List<SettingType>();
+            SettingTypes = new List<SettingTypeModel>();
         }
 
         public IEnumerable<Setting> Settings { get; set; }
 
-        public List<SettingType> SettingTypes { get; set; }
+        public List<SettingTypeModel> SettingTypes { get; set; }
 
     }
 }
