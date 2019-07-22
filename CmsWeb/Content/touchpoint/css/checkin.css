@@ -1,15 +1,35 @@
 ﻿.checkin {
     background-color: #f5f5f5!important;
 }
-
+.simple-keyboard.hg-theme-default {
+    background-color: transparent;
+}
 .checkin .login .form-header {
     font-size: 25px;
     font-weight: 300;
     margin: 40px 0;
 }
-
+.checkin .landing {
+    max-width: 420px;
+    margin: 20px auto 0;
+}
+.checkin .landing input {
+    border: 0;
+    background: transparent;
+    font-size: 24px;
+    font-weight: 300;
+    width: 100%;
+    max-width: 390px;
+    margin: 20px 5px;
+    padding: 5px;
+    border-bottom: 1px solid #333;
+    outline: 0;
+}
 .checkin .panel {
     max-width: 360px;
     margin: 0 auto;
     padding: 27px;
+}
+.simple-keyboard {
+    max-width: 400px;
 }

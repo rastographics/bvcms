@@ -5,6 +5,7 @@
 }
 @section head
 {
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-keyboard@latest/build/css/index.css">
     @Fingerprint.Css("/Content/touchpoint/css/checkin.css")
 }
 <body class="checkin">
@@ -25,10 +26,10 @@
             </form>
         </div>
         <div v-else-if="view == 'landing'" class="landing">
-            <h2>Enter a phone number</h2>
+            <h2>Enter your phone number</h2>
             <form v-on:submit.prevent="find">
-                <input type="tel" name="phone" v-model="search.phone" />
-                <input type="submit" value="Search" />
+                <input type="tel" name="phone" v-mask="'(###) ###-####'" v-model="search.phone" class="keyboard-input"/>
+                <div class="simple-keyboard"></div>
             </form>
             <a v-on:click="logout">logout</a>
         </div>
@@ -69,5 +70,7 @@
 </body>
 
 @section scripts {
+    <script src="https://cdn.jsdelivr.net/npm/v-mask/dist/v-mask.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/simple-keyboard@latest/build/index.min.js"></script>
     @Fingerprint.Script("/Content/touchpoint/js/checkin.js")
 }

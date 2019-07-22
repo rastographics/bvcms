@@ -1,4 +1,8 @@
-﻿var CheckInApp = new Vue({
+﻿Vue.use(VueMask.VueMaskPlugin);
+
+var Keyboard = window.SimpleKeyboard.default;
+
+var CheckInApp = new Vue({
     el: '#CheckInApp',
     data: {
         view: false,
@@ -22,6 +26,11 @@
                 $.block();
             } else {
                 $.unblockUI();
+            }
+        },
+        view: function (view) {
+            if (view === 'landing') {
+                this.initKeyboard();
             }
         }
     },
@@ -57,6 +66,32 @@
                 data: outer
             };
             return Object.keys(body).map(key => key + '=' + body[key]).join('&');
+        },
+        initKeyboard() {
+            let vm = this;
+            setTimeout(function () {
+                var keyboard = new Keyboard({
+                    onChange: function (input) {
+                        vm.search.phone = input;
+                    },
+                    onKeyPress: function (button) {
+                        if (button === '{enter}') {
+                            vm.find();
+                        }
+                    },
+                    layout: {
+                        default: ["1 2 3", "4 5 6", "7 8 9", "{bksp} 0 {enter}"]
+                    },
+                    display: {
+                        '{bksp}': 'delete',
+                        '{enter}': 'go'
+                    },
+                    theme: "hg-theme-default hg-layout-numeric numeric-theme"
+                });
+                $(".keyboard-input").on("input", function(e) {
+                    keyboard.setInput(e.target.value);
+                });
+            }, 100);
         },
         auth() {
             let vm = this;
