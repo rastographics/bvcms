@@ -166,7 +166,7 @@ namespace ImageData
         }
         public static Image NewImageFromBits(byte[] bits, string type)
         {
-            var image = CreateImageFromType(bits, type);            
+            var image = CreateImageFromType(bits, type);
             DbUtil.Db.Images.InsertOnSubmit(image);
             DbUtil.Db.SubmitChanges();
             return image;

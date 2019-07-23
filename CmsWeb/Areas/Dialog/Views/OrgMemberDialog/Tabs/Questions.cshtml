@@ -1,35 +1,53 @@
 ﻿@model CmsWeb.Areas.Dialog.Models.OrgMemberModel
 @{
-  var hadQuestions = false;
-  var admin = User.IsInRole("Admin");
-  var manager = User.IsInRole("ManageGroups");
-  var edit = User.IsInRole("Edit");
+    var hadQuestions = false;
+    var admin = User.IsInRole("Admin");
+    var manager = User.IsInRole("ManageGroups");
+    var edit = User.IsInRole("Edit");
 }
 <div id="regquestions" class="tab-pane">
-  <dl>
-    @if (User.IsInRole("Edit"))
+    <dl>
+        @if (User.IsInRole("Edit"))
+        {
+            foreach (var q in Model.RegQuestions())
+            {
+                hadQuestions = true;
+                var pk = $"{Model.OrgId},{Model.PeopleId},{q.Row},{q.Type}";
+                <dt>@q.Question</dt>
+                <dd class="pre-wrap">
+                    <a id="@pk" data-pk="@pk" href="#" data-title="Answer" class="clickEdit editable editable-click">@q.Answer</a> @if (User.IsInRole("Developer"))
+                    {<a id="@pk" href="#" class="delete">X</a>}
+                </dd>
+            }
+        }
+        else
+        {
+            foreach (var q in Model.RegQuestions())
+            {
+                <dt>@q.Question</dt>
+                <dd class="pre-wrap">@q.Answer</dd>
+            }
+        }
+    </dl>
+    @if (hadQuestions == false && admin || edit || manager)
     {
-      foreach (var q in Model.RegQuestions())
-      {
-        hadQuestions = true;
-        var pk = $"{Model.OrgId},{Model.PeopleId},{q.Row},{q.Type}";
-        <dt>@q.Question</dt>
-        <dd class="pre-wrap">
-          <a id="@pk" data-pk="@pk" href="#" data-title="Answer" class="clickEdit editable editable-click">@q.Answer</a> @if (User.IsInRole("Developer")) { <a id="@pk" href="#" class="delete">X</a> }
-        </dd>
-      }
+        <a id="addQuestions" class="btn btn-success">Add Missing Questions</a>
     }
-    else
-    {
-      foreach (var q in Model.RegQuestions())
-      {
-        <dt>@q.Question</dt>
-        <dd class="pre-wrap">@q.Answer</dd>
-      }
-    }
-  </dl>
-  @if (hadQuestions == false && admin || edit || manager)
-  {
-    <a id="addQuestions" class="btn btn-success">Add Missing Questions</a>
-  }
+    <br />
+    <div class="well document-dialog">
+        <h4>Documents</h4>
+        @foreach (var d in Model.MemberDocuments())
+        {
+            <div class="row">
+                <div class="col-sm-12 form-inline">
+                    <div class="input-group col-xs-12 col-sm-9">
+                        Birth Act
+                    </div>
+                    <div class="input-group">
+                        <a href="/OrgMemberDialog/DocumentDownload/@d.DocumentId" class="btn btn-success"><i class="fa fa-download"></i> Download</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
 </div>

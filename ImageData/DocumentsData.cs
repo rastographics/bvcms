@@ -9,7 +9,6 @@ namespace CMSImage
         public static int StoreImageFromDocument(HttpPostedFileBase file)
         {
             Image i = GetImageFromFile(file);
-            i.Mimetype = "typeTest";
             DbUtil.Db.Images.InsertOnSubmit(i);
             DbUtil.Db.SubmitChanges();
             return i.Id;

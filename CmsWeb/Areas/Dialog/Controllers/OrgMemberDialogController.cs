@@ -4,6 +4,7 @@ using CmsWeb.Code;
 using CmsWeb.Lifecycle;
 using CmsWeb.Models.ExtraValues;
 using System;
+using System.Linq;
 using System.Web.Mvc;
 using UtilityExtensions;
 
@@ -209,6 +210,15 @@ namespace CmsWeb.Areas.Dialog.Controllers
             var m = new ExtraValueModel(oid, pid, "OrgMember", "Adhoc");
             m.Delete(name);
             return Content("deleted");
+        }
+
+        [HttpGet, Route("DocumentDownload/{documentId}")]
+        public FileResult DocumentDownload(int documentId)
+        {
+            var document = CurrentDatabase.OrgMemberDocuments.SingleOrDefault(o => o.DocumentId == documentId);
+            ImageData.Image i = ImageData.DbUtil.Db.Images.SingleOrDefault(im => im.Id == document.ImageId);
+
+            return File(i.Bits, i.Mimetype, document.DocumentName);
         }
     }
 }
