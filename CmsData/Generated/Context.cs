@@ -1849,13 +1849,11 @@ namespace CmsData
         public Table<SettingType> SettingTypes
         {
             get { return this.GetTable<SettingType>(); }
-
         }
 
         public Table<SettingCategory> SettingCategories
         {
             get { return this.GetTable<SettingCategory>(); }
-
         }
 
         public Table<SMSGroupMember> SMSGroupMembers
