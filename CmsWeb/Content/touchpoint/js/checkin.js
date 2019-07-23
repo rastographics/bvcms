@@ -16,10 +16,13 @@ var CheckInApp = new Vue({
         families: [],
         members: [],
         attendance: [],
+        kiosk: {
+            name: '',
+            profile: 'default'
+        },
         user: {
             name: '',
-            password: '',
-            profile: 'default'
+            password: ''
         },
         search: {
             phone: ''
@@ -32,6 +35,14 @@ var CheckInApp = new Vue({
             } else {
                 $.unblockUI();
             }
+        }
+    },
+    filters: {
+        formatDate: function (dt) {
+            if (!dt) return '';
+            var date = new Date(dt);
+            var time = date.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+            return time + ' - ' + $.datepicker.formatDate("m/d/y", date);
         }
     },
     computed: {
@@ -148,7 +159,7 @@ var CheckInApp = new Vue({
                         vm.loading = false;
                         if (response.status === 200) {
                             if (response.data.error === 0) {
-                                // todo: load profile based on login dropdown selection (vm.user.profile)
+                                // todo: load profile based on login dropdown selection (vm.kiosk.profile)
                                 var profile = JSON.parse(response.data.data);
                                 profile = {
                                     userName: profile.userName,
@@ -202,7 +213,7 @@ var CheckInApp = new Vue({
             var payload = vm.generatePayload({
                 search: phone,
                 campus: 0,
-                date: '2019-07-21 08:00:00' // todo: remove, debug only
+                date: '2019-07-28 08:00:00' // todo: remove, debug only
             });
             vm.loading = true;
             vm.$http.post('/CheckInApiV2/Search', payload, vm.apiHeaders).then(
@@ -248,6 +259,16 @@ var CheckInApp = new Vue({
         },
         updateAttendance() {
             // todo: post attendance bundle to /UpdateAttend
+            let vm = this;
+            if (vm.attendance.length) {
+                alert(vm.attendance);
+                console.log(vm.attendance);
+            } else {
+                this.loadView('landing');
+            }
+        },
+        postBarcode() {
+            // todo: post barcode id to self check in endpoint
         }
     },
     mounted() {

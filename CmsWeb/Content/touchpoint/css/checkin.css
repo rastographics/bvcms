@@ -25,6 +25,21 @@
     border-bottom: 1px solid #333;
     outline: 0;
 }
+.checkin .results .member-portrait {
+    display: block;
+    width: 100px;
+    height: 100px;
+}
+.checkin .results .member.row {
+    margin-top: 20px;
+    border-bottom: 1px solid #333;
+}
+.checkin .results .member.row:last-of-type {
+    border-bottom: 0;
+}
+.checkin .results .member .name {
+    margin-top: 0px;
+}
 .checkin .panel {
     max-width: 360px;
     margin: 0 auto;
