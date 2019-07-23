@@ -115,7 +115,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
             else
             {
-                ModelState.AddModelError("funds", "You must chose at least one fund to give to.");
+                ModelState.AddModelError("funds", "You must choose at least one fund to give to.");
                 return View("ManageGiving/Setup", m);
             }
             if (CurrentDatabase.Setting("UseRecaptchaForManageGiving"))
