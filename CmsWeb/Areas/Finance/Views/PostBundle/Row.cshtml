@@ -32,6 +32,10 @@
     </td>
     <td class="notes">
         <span>@Model.Notes</span>
+        @if (ViewData["showCheckImages"].ToBool() && Model.ImageId != 0)
+        {
+            <img src="@Url.Action("RawCheckImage", "GetCheckImage", new {Area = "Dialog", id = Model.ContributionId})" alt="Check image" class="img-responsive" style="max-width:360px" />
+        }
     </td>
     <td colspan="2">
         <div class="btn-group">
@@ -46,3 +50,4 @@
         </div>
     </td>
 </tr>
+
