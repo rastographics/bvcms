@@ -16,5 +16,14 @@ namespace UtilityExtensions
             file.SaveAs(fileName);
             return fileName;
         }
+        public static byte[] BytesFromTmpFile(string tmpFile)
+        {
+            return File.ReadAllBytes(tmpFile);
+        }
+        public static void DeleteTmpFile(string tmpFile)
+        {
+            if (File.Exists(tmpFile))
+                File.Delete(tmpFile);
+        }
     }
 }

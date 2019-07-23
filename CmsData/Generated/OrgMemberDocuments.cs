@@ -13,11 +13,12 @@ namespace CmsData
 
         #region Private Fields
         private int _DocumentId;
+        private string _DocumentName;
         private int _ImageId;
         private int _PeopleId;
         private int _OrganizationId;
 
-        private EntityRef<Person> _People;
+        private EntityRef<Person> _Person;
         private EntityRef<Organization> _Organization;
         #endregion
 
@@ -28,6 +29,9 @@ namespace CmsData
 
         partial void OnDocumentIdChanging(int value);
         partial void OnDocumentIdChanged();
+
+        partial void OnDocumentNameChanging(string value);
+        partial void OnDocumentNameChanged();
 
         partial void OnImageIdChanging(int value);
         partial void OnImageIdChanged();
@@ -41,6 +45,10 @@ namespace CmsData
 
         public OrgMemberDocuments()
         {
+            this._Person = default(EntityRef<Person>);
+
+            this._Organization = default(EntityRef<Organization>);
+
             OnCreated();
         }
 
@@ -63,7 +71,27 @@ namespace CmsData
             }
         }
 
-        [Column(Name = "ImageId", UpdateCheck = UpdateCheck.Never, Storage = "_ImageId", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL UNIQUE", IsPrimaryKey = true, IsDbGenerated = true)]
+        [Column(Name = "DocumentName", UpdateCheck = UpdateCheck.Never, Storage = "_DocumentName", DbType = "nvarchar(100)")]
+        public string DocumentName
+        {
+            get { return this._DocumentName; }
+
+            set
+            {
+                if (this._DocumentName != value)
+                {
+
+                    this.OnDocumentNameChanging(value);
+                    this.SendPropertyChanging();
+                    this._DocumentName = value;
+                    this.SendPropertyChanged("DocumentName");
+                    this.OnDocumentNameChanged();
+                }
+            }
+
+        }
+
+        [Column(Name = "ImageId", UpdateCheck = UpdateCheck.Never, Storage = "_ImageId", DbType = "int NOT NULL UNIQUE")]
         public int ImageId
         {
             get { return this._ImageId; }
@@ -91,7 +119,7 @@ namespace CmsData
             {
                 if (this._PeopleId != value)
                 {
-                    if (this._People.HasLoadedOrAssignedValue)
+                    if (this._Person.HasLoadedOrAssignedValue)
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
 
                     this.OnPeopleIdChanging(value);
@@ -127,6 +155,87 @@ namespace CmsData
         #endregion
 
         #region Foreign Keys
+        [Association(Name = "Org_Member_Documents_PPL_FK", Storage = "_Person", ThisKey = "PeopleId", IsForeignKey = true)]
+        public Person Person
+        {
+            get { return this._Person.Entity; }
+
+            set
+            {
+                Person previousValue = this._Person.Entity;
+                if (((previousValue != value)
+                            || (this._Person.HasLoadedOrAssignedValue == false)))
+                {
+                    this.SendPropertyChanging();
+                    if (previousValue != null)
+                    {
+                        this._Person.Entity = null;
+                        previousValue.OrgMemberDocuments.Remove(this);
+                    }
+
+                    this._Person.Entity = value;
+                    if (value != null)
+                    {
+                        value.OrgMemberDocuments.Add(this);
+
+                        this._PeopleId = value.PeopleId;
+
+                    }
+
+                    else
+                    {
+
+                        this._PeopleId = default(int);
+
+                    }
+
+                    this.SendPropertyChanged("Person");
+                }
+
+            }
+
+        }
+
+        [Association(Name = "Org_Member_Documents_ORG_FK", Storage = "_Organization", ThisKey = "OrganizationId", IsForeignKey = true)]
+        public Organization Organization
+        {
+            get { return this._Organization.Entity; }
+
+            set
+            {
+                Organization previousValue = this._Organization.Entity;
+                if (((previousValue != value)
+                            || (this._Organization.HasLoadedOrAssignedValue == false)))
+                {
+                    this.SendPropertyChanging();
+                    if (previousValue != null)
+                    {
+                        this._Organization.Entity = null;
+                        previousValue.OrgMemberDocuments.Remove(this);
+                    }
+
+                    this._Organization.Entity = value;
+                    if (value != null)
+                    {
+                        value.OrgMemberDocuments.Add(this);
+
+                        this._OrganizationId = value.OrganizationId;
+
+                    }
+
+                    else
+                    {
+
+                        this._OrganizationId = default(int);
+
+                    }
+
+                    this.SendPropertyChanged("Organization");
+                }
+
+            }
+
+        }
         #endregion
 
         public event PropertyChangingEventHandler PropertyChanging;

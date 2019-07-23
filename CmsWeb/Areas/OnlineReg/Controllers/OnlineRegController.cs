@@ -320,8 +320,31 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         public JsonResult UploadDocument()
         {
             var file = Request.Files[0];
-            string tmpFileName = TmpFiles.CreateTmpFile(file);
-            return Json(new { FileName = tmpFileName });
+            Int32.TryParse(Request["registrantId"], out int registrantId);
+            Int32.TryParse(Request["orgId"], out int orgId);
+            var docname = Request["docname"];
+            StoreDocument(file, docname, registrantId, orgId);
+            //string tmpFileName = TmpFiles.CreateTmpFile(file);
+            return Json(new { file.FileName });
+        }
+
+        private void StoreDocument(HttpPostedFileBase file, string docname, int registrantId, int orgId)
+        {
+            var document = CurrentDatabase.OrgMemberDocuments.SingleOrDefault(o => o.DocumentName == docname & o.PeopleId == registrantId & o.OrganizationId == orgId);
+            if (document != null)
+            {
+                CurrentDatabase.OrgMemberDocuments.DeleteOnSubmit(document);
+                CurrentDatabase.SubmitChanges();
+            }
+            int imageId = CMSImage.DocumentsData.StoreImageFromDocument(file);
+            CurrentDatabase.OrgMemberDocuments.InsertOnSubmit(new OrgMemberDocuments()
+            {
+                DocumentName = docname,
+                ImageId = imageId,
+                PeopleId = registrantId,
+                OrganizationId = orgId
+            });
+            CurrentDatabase.SubmitChanges();
         }
 
         [HttpPost]

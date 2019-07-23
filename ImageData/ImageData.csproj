@@ -131,6 +131,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DbUtil.cs" />
+    <Compile Include="DocumentsData.cs" />
     <Compile Include="Generated\Context.cs" />
     <Compile Include="Generated\Image.cs" />
     <Compile Include="Generated\Other.cs" />

@@ -505,7 +505,11 @@ namespace CmsData
         partial void InsertOrganizationMember(OrganizationMember instance);
         partial void UpdateOrganizationMember(OrganizationMember instance);
         partial void DeleteOrganizationMember(OrganizationMember instance);
-        
+
+        partial void InsertOrgMemberDocuments(OrgMemberDocuments instance);
+        partial void UpdateOrgMemberDocuments(OrgMemberDocuments instance);
+        partial void DeleteOrgMemberDocuments(OrgMemberDocuments instance);
+
         partial void InsertOrganization(Organization instance);
         partial void UpdateOrganization(Organization instance);
         partial void DeleteOrganization(Organization instance);
@@ -1586,7 +1590,13 @@ namespace CmsData
 
 		}
 
-		public Table<Organization> Organizations
+        public Table<OrgMemberDocuments> OrgMemberDocuments
+        {
+            get { return this.GetTable<OrgMemberDocuments>(); }
+
+        }
+
+        public Table<Organization> Organizations
 		{
 			get	{ return this.GetTable<Organization>(); }
 

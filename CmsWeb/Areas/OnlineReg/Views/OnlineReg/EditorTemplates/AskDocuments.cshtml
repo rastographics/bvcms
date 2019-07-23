@@ -20,7 +20,7 @@
                     <div class="input-group">
                         <input class="hdnDocNAme" type="hidden" name="@(name)[@i].Key" value="@a.DocumentName" />
                         <input class="hdnIsUploaded" type="hidden" name="@(name)[@i].Value" value="false" />
-                        <input class="docInput" type="file" />
+                        <input class="docInput" type="file" docname="@a.DocumentName" />
                     </div>
                     <div class="input-group">
                         <input type="button" name="Upload" value="Submit Document" class="btn btn-primary btnUploadDoc" />                        
@@ -33,3 +33,5 @@
         </div>
     </div>
 }
+<input id="registrantId" type="hidden" value="@Model.PeopleId" />
+<input id="orgId" type="hidden" value="@Model.orgid" />

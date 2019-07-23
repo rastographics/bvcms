@@ -220,6 +220,8 @@ namespace CmsData
    		private EntitySet<ResourceOrganization> _ResourceOrganizations;
 		
    		private EntitySet<OrganizationMember> _OrganizationMembers;
+
+   		private EntitySet<OrgMemberDocuments> _OrgMemberDocuments;
 		
     	
 		private EntityRef<Organization> _ParentOrg;
@@ -531,7 +533,9 @@ namespace CmsData
 			
 			this._ResourceOrganizations = new EntitySet<ResourceOrganization>(new Action< ResourceOrganization>(this.attach_ResourceOrganizations), new Action< ResourceOrganization>(this.detach_ResourceOrganizations)); 
 			
-			this._OrganizationMembers = new EntitySet<OrganizationMember>(new Action< OrganizationMember>(this.attach_OrganizationMembers), new Action< OrganizationMember>(this.detach_OrganizationMembers)); 
+			this._OrganizationMembers = new EntitySet<OrganizationMember>(new Action< OrganizationMember>(this.attach_OrganizationMembers), new Action< OrganizationMember>(this.detach_OrganizationMembers));
+
+			this._OrgMemberDocuments = new EntitySet<OrgMemberDocuments>(new Action< OrgMemberDocuments>(this.attach_OrgMemberDocuments), new Action< OrgMemberDocuments>(this.detach_OrgMemberDocuments)); 
 			
 			
 			this._ParentOrg = default(EntityRef<Organization>); 
@@ -2603,6 +2607,16 @@ namespace CmsData
 
    		}
 
+
+        [Association(Name= "Org_Member_Documents_ORG_FK", Storage= "_OrgMemberDocuments", OtherKey="OrganizationId")]
+   		public EntitySet<OrgMemberDocuments> OrgMemberDocuments
+        {
+   		    get { return this._OrgMemberDocuments; }
+
+			set	{ this._OrgMemberDocuments.Assign(value); }
+
+   		}
+
 		
 	#endregion
 	
@@ -3139,8 +3153,21 @@ namespace CmsData
 			entity.Organization = null;
 		}
 
-		
-	}
+
+        private void attach_OrgMemberDocuments(OrgMemberDocuments entity)
+        {
+            this.SendPropertyChanging();
+            entity.Organization = this;
+        }
+
+        private void detach_OrgMemberDocuments(OrgMemberDocuments entity)
+        {
+            this.SendPropertyChanging();
+            entity.Organization = null;
+        }
+
+
+    }
 
 }
 
