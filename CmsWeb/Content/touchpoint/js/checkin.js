@@ -10,6 +10,9 @@ var CheckInApp = new Vue({
         profile: false,
         loading: false,
         keyboard: false,
+        idleTimer: false,
+        idleStage: 0,
+        idleTimeout: 60000,
         families: [],
         members: [],
         attendance: [],
@@ -90,6 +93,37 @@ var CheckInApp = new Vue({
                 });
             }, 100);
         },
+        resetIdleTimer() {
+            let vm = this;
+            clearTimeout(vm.idleTimer);
+            vm.idleTimer = setTimeout(vm.handleIdle, vm.idleTimeout);
+        },
+        handleIdle() {
+            let vm = this;
+            if (vm.view !== 'landing' || vm.search.phone.length) {
+                vm.idleStage++;
+                vm.resetIdleTimer();
+                if (vm.idleStage === 1) {
+                    vm.showIdleAlert();
+                } else if (vm.idleStage === 2) {
+                    vm.reset();
+                }
+            }
+        },
+        showIdleAlert() {
+            let vm = this;
+            swal({
+                title: "Are you still there?",
+                text: "If you need more time, please press 'Yes' so that your progress isn't lost.",
+                type: "warning",
+                showCancelButton: false,
+                confirmButtonClass: "btn-success",
+                confirmButtonText: "Yes",
+                cancelButtonText: "No"
+            }, function () {
+                vm.idleStage = 0;
+            });
+        },
         loadView(newView) {
             // cleanup and prep for view swap
             if (this.view === 'landing') {
@@ -152,12 +186,14 @@ var CheckInApp = new Vue({
             this.loadView('login');
         },
         reset() {
-            // used only on session timeout if kiosk has been idle too long
+            // called on session timeout if kiosk has been idle too long
+            this.idleStage = 0;
             this.families = [];
             this.members = [];
             this.attendance = [];
             this.search.phone = '';
             this.loadView('landing');
+            swal.close();
         },
         find() {
             let vm = this;
@@ -215,18 +251,27 @@ var CheckInApp = new Vue({
         }
     },
     mounted() {
+        let vm = this;
+
         // init, fetch identity, profile, and show login or landing
         var identity = localStorage.getItem('identity');
         if (identity && identity.length) {
-            this.identity = identity;
-            this.loadView('landing');
+            vm.identity = identity;
+            vm.loadView('landing');
         } else {
-            this.loadView('login');
+            vm.loadView('login');
         }
         var profile = localStorage.getItem('profile');
         if (profile && profile.length) {
-            this.profile = JSON.parse(profile);
+            vm.profile = JSON.parse(profile);
         }
+
+        // event handlers to support idle behavior
+        window.addEventListener('load', vm.resetIdleTimer, true);
+        var events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'];
+        events.forEach(function (name) {
+            document.addEventListener(name, vm.resetIdleTimer, true);
+        });
     }
 });
 
