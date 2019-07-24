@@ -977,6 +977,7 @@
     <Compile Include="Generated\Views\TransactionSummary.cs" />
     <Compile Include="DbUtil\ITableWithExtraValues.cs" />
     <Content Include="App_Readme\Elmah.txt" />
+    <Content Include="Migrations\20190709_update_archive_content_sp.sql" />
     <Content Include="Migrations\00000000_sql_migrations_table.sql" />
     <Content Include="Migrations\20181022-3_create_Contributions2SearchIds.sql" />
     <Content Include="Migrations\20181023_emailqueue-perf-index-updates.sql" />
@@ -1395,6 +1396,8 @@
     <Content Include="Migrations\20190523_Insert_Temporary_Recurring_Giving.sql" />
     <Content Include="Migrations\20190530_Update_PaymentInfo_PK.sql" />
     <Content Include="Migrations\20190710_Update_MeetingTime_When_Is_Null.sql" />
+    <Content Include="Migrations\20190531_drop_SP_GreatPlainsIncomeExport.sql" />
+    <Content Include="Migrations\20190613_Transform_NoPhoneEmailOnFind_To_New_EVs.sql" />
     <Content Include="QueryBuilder\CompareMap.xml">
       <SubType>Designer</SubType>
     </Content>

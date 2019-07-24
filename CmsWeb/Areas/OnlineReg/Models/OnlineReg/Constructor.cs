@@ -29,7 +29,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             Orgid = id;
             if (req?.Url != null)
             {
-                URL = req.Url.OriginalString;
+                URL = db.Setting("DefaultHost") + req.Url.PathAndQuery;
             }
 
             if (CurrentDatabase.Roles.Any(rr => rr.RoleName == "disabled"))

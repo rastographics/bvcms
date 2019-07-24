@@ -10,7 +10,7 @@ using Dapper;
 using Moq;
 using UtilityExtensions;
 
-namespace CMSWebTests
+namespace SharedTestFixtures
 {
     public class DatabaseFixture : IDisposable
     {
@@ -58,8 +58,7 @@ namespace CMSWebTests
 
         public void Dispose()
         {
-            DbUtil.Db.Connection.Close();
-            DbUtil.DbDispose();
+            DbUtil.Db = null;
             Items = null;
         }
         internal static HttpContextBase FakeHttpContext()
