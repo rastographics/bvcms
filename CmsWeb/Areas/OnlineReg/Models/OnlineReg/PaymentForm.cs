@@ -573,9 +573,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             var gateway = CurrentDatabase.Gateway(testing, null, ProcessType);
 
-            //Validates if stored payment info is correct
-            ValidatesPaymentInfo(modelState, peopleid, Type, gateway);
-
             if (!modelState.IsValid)
             {
                 return;
@@ -594,47 +591,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
             gateway.StoreInVault(peopleid, Type, CreditCard,
                 DbUtil.NormalizeExpires(Expires).ToString2("MMyy"), CVV, Routing, Account,
                 IsGiving.GetValueOrDefault());
-        }
-
-        private void ValidatesPaymentInfo(ModelStateDictionary modelState, int peopleid, string type, IGateway gateway)
-        {
-            Person person = CurrentDatabase.LoadPersonById(peopleid);
-            PaymentInfo paymentInfo = person.PaymentInfo(gateway.GatewayAccountId);
-            if (paymentInfo != null)
-            {
-                switch (gateway.GatewayType)
-                {
-                    case "TransNational":
-                        ValidatesTransNationalInfo(modelState, paymentInfo);
-                    break;
-                }
-            }
-        }
-
-        private void ValidatesTransNationalInfo(ModelStateDictionary modelState, PaymentInfo paymentInfo)
-        {
-            if (Type == PaymentType.CreditCard && paymentInfo.TbnCardVaultId == 0)
-            {
-                paymentInfo.MaskedCard = null;
-                paymentInfo.Expires = null;
-                paymentInfo.TbnCardVaultId = null;
-                CurrentDatabase.SubmitChanges();
-                modelState.Clear();
-                CreditCard = string.Empty;
-                Expires = string.Empty;
-                modelState.AddModelError("CreditCard", "Please insert card number.");
-            }
-            else if (Type == PaymentType.Ach && paymentInfo.TbnBankVaultId == 0)
-            {
-                paymentInfo.MaskedAccount = null;
-                paymentInfo.Routing = null;
-                paymentInfo.TbnBankVaultId = null;
-                CurrentDatabase.SubmitChanges();
-                modelState.Clear();
-                Routing = string.Empty;
-                Account = string.Empty;
-                modelState.AddModelError("Routing", "Please insert routing.");
-            }
         }
 
         /// Perform a $1 authorization... the amount is randomized because some gateways will reject identical, subsequent amounts
@@ -822,16 +778,47 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
             catch (Exception ex)
             {
-                string errorMessage = ex.Message;
-                if (transactionApproved)
-                {
-                    errorMessage = $"Bank transaction was approved but registration failed. Please don't submit the payment again and contact the system administrator.";
-                    CurrentDatabase.LogActivity($"Payment approved but registration failed: {ex.Message}");
-                }
-                ErrorSignal.FromCurrentContext().Raise(ex);
+                string errorMessage = ValidateTransactionApproved(transactionApproved, ex.Message);
+
+                errorMessage = ValidateVaultId(ex, modelState);
+                
                 modelState.AddModelError("form", errorMessage);
                 return RouteModel.ProcessPayment();
             }
+        }
+
+        private string ValidateVaultId(Exception ex, ModelStateDictionary modelState)
+        {
+            if (ex.Message == "InvalidVaultId")
+            {
+                return ClearPaymentInfo(modelState);
+            }
+            else
+            {
+                ErrorSignal.FromCurrentContext().Raise(ex);
+                return ex.Message;
+            }
+        }
+
+        private string ValidateTransactionApproved(bool transactionApproved, string exMessage)
+        {
+            if (transactionApproved)
+            {
+                CurrentDatabase.LogActivity($"Payment approved but registration failed: {exMessage}");
+                return $"Bank transaction was approved but registration failed. Please don't submit the payment again and contact the system administrator.";
+            }
+            return exMessage;
+        }
+
+        private string ClearPaymentInfo(ModelStateDictionary modelState)
+        {
+            CreditCard = string.Empty;
+            Expires = string.Empty;
+            Routing = string.Empty;
+            Account = string.Empty;
+            CVV = string.Empty;
+            modelState.Clear();
+            return "Please insert your payment information.";
         }
 
         public RouteModel ProcessExternalPayment(OnlineRegModel m, out int orgId)

@@ -68,6 +68,7 @@ namespace CmsData
                 { QueryType.FamilyHasContacts, FamilyHasContacts },
                 { QueryType.FirstFamilyVisitAsOf, FirstFamilyVisitAsOf },
                 { QueryType.FirstOrgJoinDate, FirstOrgJoinDate },
+                { QueryType.GetEldestFamilyMember, GetEldestFamilyMember },
                 { QueryType.GivingChange, GivingChange },
                 { QueryType.GuestAsOf, GuestAttendedAsOf },
                 { QueryType.HadIndContributions, HadIndContributions },

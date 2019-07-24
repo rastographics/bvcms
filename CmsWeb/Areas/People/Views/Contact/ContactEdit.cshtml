@@ -22,7 +22,10 @@
         <div class="box-content">
             <div class="row">
                 <div class="col-sm-6">
-                    @Html.EditorFor(m => m.ContactDate)
+                    <div class="input-group date">
+                        @Html.TextBox("ContactDate", Model.ContactDate.ToShortDateString(), new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                        @Html.Hidden("ContactDateIso", Model.ContactDate.ToString("yyyy-MM-dd"), new { disabled = "disabled" })
+                    </div>
                     @Html.EditorFor(m => m.Ministry)
                     @Html.EditorFor(m => m.ContactType)
                     @Html.EditorFor(m => m.ContactReason)
@@ -76,7 +79,7 @@
             </div>
             <br />
             <a id="cancel" class="btn btn-default ajax" href="/Contact2/ContactDisplay/@Model.ContactId">Cancel</a>
-            <a id="update" class="btn btn-primary ajax validate" href="/Contact2/ContactUpdate/@Model.ContactId">Update</a>
+            <a id="update" class="btn btn-primary ajax" href="/Contact2/ContactUpdate/@Model.ContactId">Update</a>
             @Html.ValidationMessage("contactors")
             @Html.ValidationMessage("contactees")
             <br /><br />

@@ -98,7 +98,7 @@ namespace CmsData.Finance
         }
 
         private void StoreCreditCardVault(PaymentInfo paymentInfo, Person person, PaymentInfo paymentInfo2, string cardNumber, string expires)
-        {            
+        {
             if (paymentInfo.TbnCardVaultId == null) // create new vault.
                 paymentInfo.TbnCardVaultId = CreateCreditCardVault(person, paymentInfo, cardNumber, expires);
             else
@@ -175,8 +175,23 @@ namespace CmsData.Finance
 
             var response = updateCreditCardVaultRequest.Execute();
             if (response.ResponseStatus != ResponseStatus.Approved)
+            {
+                ResetVault(response.ResponseText, person.PeopleId, paymentInfo);
                 throw new Exception(
                     $"TransNational failed to update the credit card for people id: {person.PeopleId}, responseCode: {response.ResponseCode}, responseText: {response.ResponseText}");
+            }
+        }
+
+        private void ResetVault(string responseText, int pid, PaymentInfo paymentInfo)
+        {
+            if (responseText.ToLower().Contains("invalid customer vault id"))
+            {
+                paymentInfo.TbnBankVaultId = null;
+                paymentInfo.TbnCardVaultId = null;
+                db.SubmitChanges();
+                RemoveFromVault(pid);
+                throw new Exception("InvalidVaultId");
+            }
         }
 
         private void UpdateCreditCardVault(Person person, PaymentInfo paymentInfo, string expiration)
@@ -202,8 +217,11 @@ namespace CmsData.Finance
 
             var response = updateCreditCardVaultRequest.Execute();
             if (response.ResponseStatus != ResponseStatus.Approved)
+            {
+                ResetVault(response.ResponseText, person.PeopleId, paymentInfo);
                 throw new Exception(
-                    $"TransNational failed to update the credit card expiration date for people id: {person.PeopleId}, responseCode: {response.ResponseCode}, responseText: {response.ResponseText}");
+                        $"TransNational failed to update the credit card expiration date for people id: {person.PeopleId}, responseCode: {response.ResponseCode}, responseText: {response.ResponseText}");
+            }
         }
 
         private int CreateAchVault(Person person, PaymentInfo paymentInfo, string accountNumber, string routingNumber)
@@ -265,8 +283,11 @@ namespace CmsData.Finance
 
             var response = updateAchVaultRequest.Execute();
             if (response.ResponseStatus != ResponseStatus.Approved)
+            {
+                ResetVault(response.ResponseText, person.PeopleId, paymentInfo);
                 throw new Exception(
-                    $"TransNational failed to update the ach account for people id: {person.PeopleId}, responseCode: {response.ResponseCode}, responseText: {response.ResponseText}");
+                        $"TransNational failed to update the ach account for people id: {person.PeopleId}, responseCode: {response.ResponseCode}, responseText: {response.ResponseText}");
+            }
         }
 
         private void UpdateAchVault(Person person, PaymentInfo paymentInfo, string accountNumber, string routingNumber)
@@ -299,8 +320,11 @@ namespace CmsData.Finance
 
             var response = updateAchVaultRequest.Execute();
             if (response.ResponseStatus != ResponseStatus.Approved)
+            {
+                ResetVault(response.ResponseText, person.PeopleId, paymentInfo);
                 throw new Exception(
-                    $"TransNational failed to update the ach account for people id: {person.PeopleId}, responseCode: {response.ResponseCode}, responseText: {response.ResponseText}");
+                        $"TransNational failed to update the ach account for people id: {person.PeopleId}, responseCode: {response.ResponseCode}, responseText: {response.ResponseText}");
+            }
         }
 
         public void RemoveFromVault(int peopleId)
@@ -321,6 +345,7 @@ namespace CmsData.Finance
             paymentInfo.TbnBankVaultId = null;
             paymentInfo.MaskedCard = null;
             paymentInfo.MaskedAccount = null;
+            paymentInfo.Routing = null;
             paymentInfo.Expires = null;
             db.SubmitChanges();
         }
@@ -536,11 +561,7 @@ namespace CmsData.Finance
             var person = db.LoadPersonById(peopleId);
             var paymentInfo = person.PaymentInfo(GatewayAccountId);
             if (paymentInfo?.TbnCardVaultId == null)
-                return new TransactionResponse
-                {
-                    Approved = false,
-                    Message = "missing payment info",
-                };
+                throw new Exception("InvalidVaultId");
 
             var creditCardVaultAuthRequest = new CreditCardVaultAuthRequest(
                 _userName,
@@ -552,6 +573,7 @@ namespace CmsData.Finance
                 peopleId.ToString(CultureInfo.InvariantCulture));
 
             var response = creditCardVaultAuthRequest.Execute();
+            ResetVault(response.ResponseText, person.PeopleId, paymentInfo);
 
             return new TransactionResponse
             {
@@ -567,11 +589,7 @@ namespace CmsData.Finance
             var person = db.LoadPersonById(peopleId);
             var paymentInfo = person.PaymentInfo(GatewayAccountId);
             if (paymentInfo == null)
-                return new TransactionResponse
-                {
-                    Approved = false,
-                    Message = "missing payment info",
-                };
+                throw new Exception("InvalidVaultId");
 
             if (type == PaymentType.CreditCard) // credit card
                 return ChargeCreditCardVault(paymentInfo.TbnCardVaultId.GetValueOrDefault(), peopleId, amt, tranid,

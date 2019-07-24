@@ -103,9 +103,13 @@ namespace CmsWeb.Areas.Finance.Models
                             select b;
                         break;
                     case "Id":
+                        q = from b in q
+                            orderby b.BundleHeaderId
+                            select b;
+                        break;
                     case "Status":
                         q = from b in q
-                            orderby b.Status descending, b.BundleHeaderId descending
+                            orderby b.Status, b.BundleHeaderId descending
                             select b;
                         break;
                 }
@@ -145,6 +149,10 @@ namespace CmsWeb.Areas.Finance.Models
                             select b;
                         break;
                     case "Id":
+                        q = from b in q
+                            orderby b.BundleHeaderId descending
+                            select b;
+                        break;
                     case "Status":
                         q = from b in q
                             orderby b.Status descending, b.BundleHeaderId descending
