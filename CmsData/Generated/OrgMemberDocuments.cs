@@ -175,7 +175,6 @@ namespace CmsData
                     if (value != null)
                     {
                         value.OrgMemberDocuments.Add(this);
-
                         this._PeopleId = value.PeopleId;
                     }
                     else
@@ -210,14 +209,10 @@ namespace CmsData
                     if (value != null)
                     {
                         value.OrgMemberDocuments.Add(this);
-
                         this._OrganizationId = value.OrganizationId;
-
                     }
-
                     else
                     {
-
                         this._OrganizationId = default(int);
                     }
                     this.SendPropertyChanged("Organization");
@@ -225,7 +220,6 @@ namespace CmsData
             }
         }
         #endregion
-
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
