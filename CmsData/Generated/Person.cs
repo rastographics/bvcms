@@ -4027,7 +4027,6 @@ namespace CmsData
             get { return this._OrgMemberDocuments; }
 
             set { this._OrgMemberDocuments.Assign(value); }
-
         }
 
 

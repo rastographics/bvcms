@@ -80,7 +80,6 @@ namespace CmsData
             {
                 if (this._DocumentName != value)
                 {
-
                     this.OnDocumentNameChanging(value);
                     this.SendPropertyChanging();
                     this._DocumentName = value;
@@ -88,7 +87,6 @@ namespace CmsData
                     this.OnDocumentNameChanged();
                 }
             }
-
         }
 
         [Column(Name = "ImageId", UpdateCheck = UpdateCheck.Never, Storage = "_ImageId", DbType = "int NOT NULL UNIQUE")]
@@ -179,21 +177,15 @@ namespace CmsData
                         value.OrgMemberDocuments.Add(this);
 
                         this._PeopleId = value.PeopleId;
-
                     }
-
                     else
                     {
-
                         this._PeopleId = default(int);
-
                     }
 
                     this.SendPropertyChanged("Person");
                 }
-
             }
-
         }
 
         [Association(Name = "Org_Member_Documents_ORG_FK", Storage = "_Organization", ThisKey = "OrganizationId", IsForeignKey = true)]
@@ -227,14 +219,10 @@ namespace CmsData
                     {
 
                         this._OrganizationId = default(int);
-
                     }
-
                     this.SendPropertyChanged("Organization");
                 }
-
             }
-
         }
         #endregion
 

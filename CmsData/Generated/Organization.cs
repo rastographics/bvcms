@@ -2614,7 +2614,6 @@ namespace CmsData
    		    get { return this._OrgMemberDocuments; }
 
 			set	{ this._OrgMemberDocuments.Assign(value); }
-
    		}
 
 		
@@ -3153,7 +3152,6 @@ namespace CmsData
 			entity.Organization = null;
 		}
 
-
         private void attach_OrgMemberDocuments(OrgMemberDocuments entity)
         {
             this.SendPropertyChanging();
@@ -3165,9 +3163,6 @@ namespace CmsData
             this.SendPropertyChanging();
             entity.Organization = null;
         }
-
-
     }
-
 }
 

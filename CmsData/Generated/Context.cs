@@ -1593,7 +1593,6 @@ namespace CmsData
         public Table<OrgMemberDocuments> OrgMemberDocuments
         {
             get { return this.GetTable<OrgMemberDocuments>(); }
-
         }
 
         public Table<Organization> Organizations

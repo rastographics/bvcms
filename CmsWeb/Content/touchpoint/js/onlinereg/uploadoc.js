@@ -2,7 +2,6 @@
     $(document).on("click", ".btnUploadDoc", function (e) {
         e.preventDefault();
         var submitBtn = $(this);
-        debugger;
         var registrantId = $(document).find('#registrantId').val();
         var orgId = $(document).find('#orgId').val();
         var fileInputBtn = submitBtn.parent().parent().find('input.docInput');
@@ -24,7 +23,7 @@
             dataType: 'json',
             data: formdata
         })
-            .done(function (data) {
+            .done(function () {
                 checkMark.show();
                 deleteBtn.removeAttr("disabled");
                 submitBtn.attr('disabled', true);
