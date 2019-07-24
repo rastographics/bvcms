@@ -4,6 +4,7 @@ using CmsWeb.Code;
 using Elmah;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Configuration;
 using System.Linq;
 using System.Web;
@@ -200,6 +201,35 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
 
             return ti;
+        }
+
+        public static NameValueCollection RemoveSensitiveInformation(NameValueCollection form)
+        {
+            var collection = new NameValueCollection(form.Count);
+            int length = 0;
+            const char maskChar = '•';
+            foreach (var key in form.AllKeys)
+            {
+                var value = form[key];
+                switch (key.ToLower())
+                {
+                    case "account":
+                    case "creditcard":
+                        length = Math.Max(0, value.Length - 4);
+                        value = "".PadRight(length, maskChar) + value.Substring(length);
+                        break;
+                    case "cvv":
+                        value = "".PadRight(value.Length, maskChar);
+                        break;
+                    case "confirmpassword":
+                    case "password":
+                    case "routing":
+                        value = "".PadRight(10, maskChar);
+                        break;
+                }
+                collection.Add(key, value);
+            }
+            return collection;
         }
 
         public static decimal AmountDueTrans(CMSDataContext db, Transaction ti)

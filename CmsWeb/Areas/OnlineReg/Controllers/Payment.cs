@@ -12,6 +12,7 @@ using CmsWeb.Common;
 using System.Web.Mvc;
 using UtilityExtensions;
 using System.Threading.Tasks;
+using System.Collections.Specialized;
 
 namespace CmsWeb.Areas.OnlineReg.Controllers
 {
@@ -170,10 +171,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 DbUtil.Db.Connection.Execute(insertRogueIp, new { ip = request.UserHostAddress, db = Util.Host });
             }
 
-            var form = Encoding.Default.GetString(request.BinaryRead(request.TotalBytes));
+            var form = PaymentForm.RemoveSensitiveInformation(request.Form);
             var sendto = Util.PickFirst(ConfigurationManager.AppSettings["CardTesterEmail"], Util.AdminMail);
             DbUtil.Db.SendEmail(Util.FirstAddress(sendto),
-                $"CardTester on {Util.Host}", $"why={why} from={from} ip={request.UserHostAddress}<br>{form.HtmlEncode()}",
+                $"CardTester on {Util.Host}", $"why={why} from={from} ip={request.UserHostAddress}<br>{form.ToQueryString()}",
                 Util.EmailAddressListFromString(sendto));
             return true;
         }
