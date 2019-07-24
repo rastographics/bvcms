@@ -102,12 +102,21 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 if (!ModelState.IsValid)
                 {
                     if (m.person == null)
+                    {
                         return Message("person not found");
+                    }
                     m.total = 0;
                     foreach (var ff in m.FundItemsChosen())
+                    {
                         m.total += ff.amt;
+                    }
                     return View("ManageGiving/Setup", m);
                 }
+            }
+            else
+            {
+                ModelState.AddModelError("funds", "You must choose at least one fund to give to.");
+                return View("ManageGiving/Setup", m);
             }
             if (CurrentDatabase.Setting("UseRecaptchaForManageGiving"))
             {
@@ -134,7 +143,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 }
             }
             if (!ModelState.IsValid)
+            {
                 return View("ManageGiving/Setup", m);
+            }
 
             TempData["managegiving"] = m;
             return Redirect("/OnlineReg/ConfirmRecurringGiving");

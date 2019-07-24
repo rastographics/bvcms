@@ -181,7 +181,7 @@
 }
     </style>
 }
-<br/>
+<br />
 <div class="row">
     <div class="col-sm-4 col-md-3 col-lg-2 hidden-print">
         <div class="profile-block">
@@ -217,7 +217,7 @@
             @(User.IsInRole("Access") ? Html.Partial("Toolbar/Toolbar", Model.Users) : Html.Partial("Toolbar/ToolbarMyData", Model.Users))
         </div>
         <div id="profile-header">@Html.Partial("Personal/Header", Model)</div>
-        <br/>
+        <br />
         <ul class="nav nav-tabs" id="person-tabs">
             <li class="active">
                 <a href="#personal" aria-controls="personal" data-toggle="tab">Personal</a>
@@ -326,4 +326,5 @@
     @Fingerprint.Script("/Content/touchpoint/lib/select2/js/select2.min.js")
     @Fingerprint.Script("/Content/touchpoint/js/org/org-member-dialog.js")
     @Fingerprint.Script("/Content/touchpoint/js/people/person.js")
+    @Fingerprint.Script("/Content/touchpoint/js/people/givingtab.js")
 }

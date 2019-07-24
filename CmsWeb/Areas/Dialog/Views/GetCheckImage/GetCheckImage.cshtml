@@ -9,14 +9,14 @@
 {
     var base64 = Convert.ToBase64String(Model.checkImageBytes);
     imgSrc = String.Format("data:image/png;base64,{0}", base64);
-<div class="modal-dialog" style="width: 630px !important;">
+<div class="modal-dialog modal-xl">
     <div class="modal-content">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             <h4 class="modal-title">Check Image</h4>
         </div>
-        <div class="modal-body">
-            <img width="600" id='@Model.ImageId' src='@imgSrc' />
+        <div class="modal-body text-center">
+            <img class="img-responsive" id='@Model.ImageId' src='@imgSrc' />
         </div>
         <div class="modal-footer">
             <div class="pull-right">

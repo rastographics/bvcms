@@ -107,6 +107,7 @@
     <Compile Include="Areas\People\Models\Contact\ContactExtraLocationConfigTests.cs" />
     <Compile Include="Code\QueryModelTests.cs" />
     <Compile Include="Code\CodeValueModelTests.cs" />
+    <Compile Include="Code\ViewExtensions2Tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestUtils\ContexTestUtils.cs" />
     <Compile Include="TestUtils\ControllerTestUtils.cs" />
