@@ -1,54 +1,33 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Shouldly;
 using UtilityExtensions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Shouldly;
 using Xunit;
 
-namespace UtilityExtensions.Tests
+namespace UtilityExtensionsTests
 {
     public class UtilTests
     {
-        [Fact]
-        public void ToBoolTest()
+        [Theory]
+        [InlineData("", false)]
+        [InlineData(false, false)]
+        [InlineData("false", false)]
+        [InlineData("False", false)]
+        [InlineData("FALSE", false)]
+        [InlineData("1", false)]
+        [InlineData(null, false)]
+        [InlineData(true, true)]
+        [InlineData("true", true)]
+        [InlineData("True", true)]
+        [InlineData("TRUE", true)]
+        public void ToBoolTest(object val, bool result)
         {
-            object val = "";
+            val.ToBool().ShouldBe(result);
+        }
+
+        [Fact]
+        public void ObjectToBoolTest()
+        {
+            object val = new { value = true };
             val.ToBool().ShouldBeFalse();
-
-            val = false;
-            val.ToBool().ShouldBeFalse();
-
-            val = "false";
-            val.ToBool().ShouldBeFalse();
-
-            val = "False";
-            val.ToBool().ShouldBeFalse();
-
-            val = "FALSE";
-            val.ToBool().ShouldBeFalse();
-
-            val = "1";
-            val.ToBool().ShouldBeFalse();
-
-            val = null;
-            val.ToBool().ShouldBeFalse();
-
-            val = new { test = true };
-            val.ToBool().ShouldBeFalse();
-
-            val = true;
-            val.ToBool().ShouldBeTrue();
-
-            val = "true";
-            val.ToBool().ShouldBeTrue();
-
-            val = "True";
-            val.ToBool().ShouldBeTrue();
-
-            val = "TRUE";
-            val.ToBool().ShouldBeTrue();
 
             val = new ToStringTrue();
             val.ToBool().ShouldBeTrue();
@@ -56,7 +35,10 @@ namespace UtilityExtensions.Tests
 
         class ToStringTrue
         {
-            public override string ToString() => "True";
+            public override string ToString()
+            {
+                return "True";
+            }
         }
     }
 }
