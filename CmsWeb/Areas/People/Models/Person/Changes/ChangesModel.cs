@@ -65,7 +65,7 @@ namespace CmsWeb.Areas.People.Models
                       let userp = DbUtil.Db.People.SingleOrDefault(u => u.PeopleId == c.UserPeopleId)
                       select new ChangeLogInfo()
                       {
-                          User = userp.Name,
+                          User = c.UserPeopleId == 0 ? "Admin Script" : userp.Name,
                           FieldSet = c.Section,
                           Time = c.Created,
                           Field = c.Field,
