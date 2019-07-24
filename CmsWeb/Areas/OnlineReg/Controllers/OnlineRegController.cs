@@ -334,9 +334,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (document != null)
             {
                 CurrentDatabase.OrgMemberDocuments.DeleteOnSubmit(document);
+                ImageData.Image.DeleteOnSubmit(document.ImageId);
                 CurrentDatabase.SubmitChanges();
             }
-            int imageId = CMSImage.DocumentsData.StoreImageFromDocument(file);
+            int imageId = ImageData.DocumentsData.StoreImageFromDocument(file);
             CurrentDatabase.OrgMemberDocuments.InsertOnSubmit(new OrgMemberDocuments()
             {
                 DocumentName = docname,

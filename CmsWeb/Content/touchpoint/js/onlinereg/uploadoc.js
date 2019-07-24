@@ -33,6 +33,26 @@
             })
             .fail(function () {
                 swal("Server Error", "Something went wrong", "error");
+                fileInputBtn.val('');
             });
     });
+
+    $(document).on("click", ".btnDeleteDoc", function (e) {
+        e.preventDefault();
+        var deleteBtn = $(this);
+        var fileInputBtn = deleteBtn.parent().parent().find('input.docInput');
+        var isUploaded = deleteBtn.parent().parent().find('input.hdnIsUploaded');
+        var checkMark = deleteBtn.parent().parent().parent().find('span.checkmark');
+        var submitBtn = deleteBtn.parent().parent().find('input.btnUploadDoc');
+        var fileInput = fileInputBtn[0];
+        checkMark.hide();
+        deleteBtn.attr("disabled", true);
+        submitBtn.removeAttr('disabled');
+        fileInputBtn.removeAttr('disabled');
+        isUploaded.val('false');
+        fileInputBtn.val('');
+        var clone = fileInput.cloneNode(true);
+        fileInput.parentNode.replaceChild(clone, fileInput);
+    });    
+
 });

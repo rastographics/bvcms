@@ -2,13 +2,14 @@
 using System.IO;
 using System.Web;
 
-namespace CMSImage
+namespace ImageData
 {
     public class DocumentsData
     {
         public static int StoreImageFromDocument(HttpPostedFileBase file)
         {
             Image i = GetImageFromFile(file);
+            i.Mimetype = UtilityExtensions.MimeTypes.ShortTypeFromMimeType(i.Mimetype);
             DbUtil.Db.Images.InsertOnSubmit(i);
             DbUtil.Db.SubmitChanges();
             return i.Id;

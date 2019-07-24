@@ -14,21 +14,23 @@
         @Fingerprint.Css("/Content/touchpoint/lib/select2/css/select2.css")
         @Fingerprint.Css("/Content/touchpoint/lib/select2/css/select2-bootstrap.css")
     }
+    @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-sweetalert/css/sweetalert.css")
 }
 @section scripts
 {
     <script type="text/javascript">
         $.dateFormat = '@Util.jQueryDateFormat';
         var specialGivingFundsPrefix = "List[0]";
-        $(function () {            
+        $(function () {
             $(document).idleTimer(@Model.TimeOut);
             $(document).on("idle.idleTimer", function (event, elem, obj) {
                 window.location.href = '/OnlineReg/Timeout?ret=' + encodeURI('@Model.URL');
-            });            
-        });
+            });
+    });
     </script>
     @Fingerprint.Script("/Content/touchpoint/js/onlinereg/uploadoc.js")
     @Fingerprint.Script("/Content/touchpoint/js/onlinereg/OnlineReg2.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-sweetalert/js/sweetalert.min.js")
     @if (Model.DisplaySpecialFunds)
     {
         @Fingerprint.Script("/Content/touchpoint/lib/select2/js/select2.min.js")

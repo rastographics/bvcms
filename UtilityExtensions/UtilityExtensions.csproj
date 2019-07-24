@@ -236,6 +236,7 @@
     <Compile Include="Config\AppConfig.cs" />
     <Compile Include="EnDeCrypt.cs" />
     <Compile Include="Extensions\DateTimeRangeFormatter.cs" />
+    <Compile Include="Extensions\MimeTypes.cs" />
     <Compile Include="Extensions\Util.ConnectionStrings.cs" />
     <Compile Include="Extensions\Extensions.cs" />
     <Compile Include="Extensions\Util.Session.cs" />

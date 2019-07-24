@@ -217,8 +217,17 @@ namespace CmsWeb.Areas.Dialog.Controllers
         {
             var document = CurrentDatabase.OrgMemberDocuments.SingleOrDefault(o => o.DocumentId == documentId);
             ImageData.Image i = ImageData.DbUtil.Db.Images.SingleOrDefault(im => im.Id == document.ImageId);
+            var shortType = i.Mimetype;
+            i.Mimetype = MimeTypes.MimeTypeFromShortType(shortType);
 
-            return File(i.Bits, i.Mimetype, document.DocumentName);
+            var cd = new System.Net.Mime.ContentDisposition
+            {
+                FileName = $"{document.DocumentName}{shortType}",
+                Inline = false,
+            };
+            Response.AppendHeader("Content-Disposition", cd.ToString());
+
+            return File(i.Bits, i.Mimetype);
         }
     }
 }
