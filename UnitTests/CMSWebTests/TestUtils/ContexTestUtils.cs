@@ -11,9 +11,11 @@ using System.Security.Principal;
 using System.IO;
 using System.Web.Routing;
 using System.Text;
+using Xunit;
 
 namespace CMSWebTests
 {
+    [Collection("Database collection")]
     public static class ContexTestUtils
     {
         public static Mock<HttpContextBase> HttpContext { get; set; }

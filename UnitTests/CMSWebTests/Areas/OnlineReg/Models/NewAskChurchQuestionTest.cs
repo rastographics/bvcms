@@ -8,12 +8,6 @@ namespace CMSWebTests.Areas.OnlineReg.Models.AskChurch
 {
     public class NewAskChurchQuestionTest
     {
-        public static bool BuildDb = true;
-        public static bool DropDb = false;
-        public static IDictionary Items;
-        private const string Url = "https://localhost.tpsdb.com";
-        private static readonly HttpClient client = new HttpClient();
-
         [Theory]
         [InlineData(true, true, true)]
         [InlineData(false, false, false)]
