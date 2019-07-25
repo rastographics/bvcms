@@ -28,7 +28,7 @@ namespace CmsWeb.Common.Status
                         {
                             status = new AppStatus { title = "System status", message = announcement };
                         }
-                        context.Cache.Add("AdminAlerts", status, null, DateTime.Now.AddMinutes(1), Cache.NoSlidingExpiration, CacheItemPriority.Normal, null);
+                        context.Cache.Add("AdminAlerts", status ?? new AppStatus(), null, DateTime.Now.AddMinutes(1), Cache.NoSlidingExpiration, CacheItemPriority.Normal, null);
                     }
                 }
             }
