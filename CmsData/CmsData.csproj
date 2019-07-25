@@ -714,6 +714,8 @@
     <Compile Include="Generated\CheckInLabelEntry.cs" />
     <Compile Include="Generated\CheckInLabelEntryAlignment.cs" />
     <Compile Include="Generated\CheckInLabelType.cs" />
+    <Compile Include="Generated\CheckinProfiles.cs" />
+    <Compile Include="Generated\CheckinProfileSettings.cs" />
     <Compile Include="Generated\CheckInSetting.cs" />
     <Compile Include="Generated\ContactExtra.cs" />
     <Compile Include="Generated\CustomColumn.cs" />
@@ -1397,6 +1399,7 @@
     <Content Include="Migrations\20190530_Update_PaymentInfo_PK.sql" />
     <Content Include="Migrations\20190531_drop_SP_GreatPlainsIncomeExport.sql" />
     <Content Include="Migrations\20190613_Transform_NoPhoneEmailOnFind_To_New_EVs.sql" />
+    <Content Include="Migrations\20190724_add_checkinprofiles_settings_tables.sql" />
     <Content Include="QueryBuilder\CompareMap.xml">
       <SubType>Designer</SubType>
     </Content>
