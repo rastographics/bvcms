@@ -1,0 +1,17 @@
+﻿@using CmsWeb.Common
+@if (User.IsInRole("Access") && Configuration.Current.StatusCheckUrl.HasValue())
+{
+<script>
+    $(function () {
+        $.get('/Home/Status', function (result) {
+            result.message &&
+                $('<li><a href="#" class="alert-danger" title="Alerts"><i class="fa fa-bell fa-lg text-danger"></a></li>')
+                    .insertBefore(document.querySelector('#tagstop > li:last-child'))
+                    .click(function (e) {
+                        e.preventDefault();
+                        bootbox.alert(result);
+                    });
+        });
+    });
+</script>
+}

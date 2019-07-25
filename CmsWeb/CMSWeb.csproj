@@ -872,6 +872,8 @@
     <Compile Include="Common\Configuration.cs" />
     <Compile Include="Common\Extensions\ObjectExtensions.cs" />
     <Compile Include="Code\ViewUtilities.cs" />
+    <Compile Include="Common\Status\AppStatus.cs" />
+    <Compile Include="Common\Status\StatusHelper.cs" />
     <Compile Include="Controllers\Api\ApiOptions.cs" />
     <Compile Include="Controllers\Api\AuthenticateController.cs" />
     <Compile Include="Controllers\Api\ChAiPeopleController.cs" />
@@ -2776,6 +2778,7 @@
     <Content Include="Views\Script\RunScriptPageBreaks.cshtml" />
     <Content Include="Views\Shared\_LayoutCheckIn.cshtml" />
     <Content Include="Views\Shared\_LayoutNoHeaderFooter.cshtml" />
+    <Content Include="Views\Shared\AdminAlerts.cshtml" />
     <None Include="Web.Impersonate.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -3363,7 +3366,6 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Content\touchpoint\js\onlinereg\OnlineReg.js" />
-    <Content Include="Views\Shared\bvorg.Master" />
     <Content Include="Views\Shared\Site3b.Master" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
