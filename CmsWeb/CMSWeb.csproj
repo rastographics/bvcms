@@ -2760,19 +2760,7 @@
     <Content Include="Views\Shared\_LayoutCheckIn.cshtml" />
     <Content Include="Views\Shared\_LayoutNoHeaderFooter.cshtml" />
     <Content Include="Views\Shared\AdminAlerts.cshtml" />
-    <None Include="Web.Impersonate.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </None>
     <None Include="Web.staging.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </None>
-    <None Include="Web.test2.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </None>
-    <None Include="Web.test3.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </None>
-    <None Include="Web.work.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
@@ -2783,7 +2771,6 @@
     <Content Include="Content\Tutorials\_Home_Index.cshtml" />
     <Content Include="Errors\SiteDisabled.htm" />
     <Content Include="Content\images\arrowdnup.png" />
-    <Content Include="Content\images\deliveredbybvcms.gif" />
     <Content Include="Content\images\draggable-icon.png" />
     <Content Include="Content\images\dropdown.gif" />
     <Content Include="Content\images\linkselect_bkgrd.png" />
