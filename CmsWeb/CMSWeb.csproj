@@ -397,6 +397,9 @@
     <Compile Include="App_Start\DependencyConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Areas\CheckIn\Controllers\CheckinSetupController.cs" />
+    <Compile Include="Areas\CheckIn\Models\CheckinSetup\CheckinProfiles.cs" />
+    <Compile Include="Areas\CheckIn\Models\CheckinSetup\CheckinProfileSettingsModel.cs" />
     <Compile Include="Areas\Coordinator\Models\CheckinActionDto.cs" />
     <Compile Include="Areas\Coordinator\Models\CheckinAttendeeDto.cs" />
     <Compile Include="Areas\Coordinator\Models\CheckinScheduleDto.cs" />
@@ -793,7 +796,7 @@
     <Compile Include="Areas\Search\Models\RegistrationSearch\IncompleteRegistrations.cs" />
     <Compile Include="Areas\Reports\Models\Other\WeeklyDecisionsModel.cs" />
     <Compile Include="Areas\Reports\Models\Enrollment\EnrollmentControlModel.cs" />
-    <Compile Include="Areas\Manage\Controllers\CheckinLabelsController.cs" />
+    <Compile Include="Areas\CheckIn\Controllers\CheckinLabelsController.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\OtherRegistrations.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\ManageGiving.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\ManageSubscriptions.cs" />
@@ -816,14 +819,14 @@
     <Compile Include="Areas\Reports\Models\Other\MailingController.cs" />
     <Compile Include="Areas\Reports\Models\Attendance\VisitsAbsentsResult2.cs" />
     <Compile Include="Areas\Reports\Models\Attendance\RallyRollsheetResult.cs" />
-    <Compile Include="Areas\Manage\Controllers\CheckinTimeController.cs" />
+    <Compile Include="Areas\CheckIn\Controllers\CheckinTimeController.cs" />
     <Compile Include="Areas\Manage\Controllers\SMSController.cs" />
     <Compile Include="Areas\Manage\Controllers\UploadPeopleController.cs" />
     <Compile Include="Areas\Finance\Controllers\StatementsController.cs" />
     <Compile Include="Areas\Reports\Models\Export\ExtraExcelResult.cs" />
     <Compile Include="Areas\Org\Models\OrgChildrenModel.cs" />
     <Compile Include="Areas\Manage\Controllers\UsersController.cs" />
-    <Compile Include="Areas\Manage\Models\CheckinTimeModel.cs" />
+    <Compile Include="Areas\CheckIn\Models\CheckinTimeModel.cs" />
     <Compile Include="Areas\Manage\Models\ContentModel.cs" />
     <Compile Include="Areas\Manage\Models\SMSModel.cs" />
     <Compile Include="Areas\Manage\Models\UsersModel.cs" />
@@ -1833,6 +1836,8 @@
     <Content Include="Areas\Reports\Views\Reports\MeetingAttendance.cshtml" />
     <Content Include="Areas\People\Views\Shared\PledgesSummary.cshtml" />
     <Content Include="libman.json" />
+    <Content Include="Areas\CheckIn\Views\Web.config" />
+    <Content Include="Areas\CheckIn\Views\CheckinSetup\Index.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
@@ -2047,7 +2052,7 @@
     <Content Include="Areas\Reports\Views\Reports\WeeklyDecisions.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\Decisions.cshtml" />
     <Content Include="Areas\People\Views\Person\Enrollment\Pending.cshtml" />
-    <Content Include="Areas\Manage\Views\CheckinLabels\Index.cshtml" />
+    <Content Include="Areas\CheckIn\Views\CheckinLabels\Index.cshtml" />
     <Content Include="Areas\People\Views\Person\Enrollment\Attendance.cshtml" />
     <Content Include="Areas\Public\Views\ExternalServices\BVCMSSupportLink.cshtml" />
     <Content Include="Areas\Manage\Views\Emails\Tracking.cshtml" />
@@ -2865,7 +2870,7 @@
     <Content Include="ConnectionStrings.config">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="Areas\Manage\Views\CheckinTime\Index.cshtml" />
+    <Content Include="Areas\CheckIn\Views\CheckinTime\Index.cshtml" />
     <Content Include="Areas\Org\Views\Meeting\tickets.cshtml" />
     <Content Include="Areas\Org\Views\Meeting\ScanTicket.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Other\Timeout.cshtml" />
@@ -3375,6 +3380,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Areas\CheckIn\Views\Shared\" />
     <Folder Include="Areas\Dialog\Views\Shared\" />
     <Folder Include="Areas\Figures\Views\Shared\" />
     <Folder Include="Areas\Finance\Views\Shared\" />
