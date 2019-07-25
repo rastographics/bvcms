@@ -56,15 +56,16 @@ function initializeLoading() {
 }
 
 function animateColors() {
-    $("#loading .top").velocity({ fill: "#1f3869" }, 250, function () {
-        $("#loading .right").velocity({ fill: "#1f3869" }, 250, function () {
-            $("#loading .bottom").velocity({ fill: "#1f3869" }, 250, function () {
-                $("#loading .left").velocity({ fill: "#1f3869" }, 250, function () {
+    var darkColor = '#1f3869', lightColor = '#b8bff8';
+    $("#loading .top").velocity({ fill: darkColor }, 250, function () {
+        $("#loading .right").velocity({ fill: darkColor }, 250, function () {
+            $("#loading .bottom").velocity({ fill: darkColor }, 250, function () {
+                $("#loading .left").velocity({ fill: darkColor }, 250, function () {
                     animateColors();
-                }).velocity({ fill: "#b8bff8" }, 350);
-            }).velocity({ fill: "#b8bff8" }, 350);
-        }).velocity({ fill: "#b8bff8" }, 350);
-    }).velocity({ fill: "#b8bff8" }, 350);
+                }).velocity({ fill: lightColor }, 350);
+            }).velocity({ fill: lightColor }, 350);
+        }).velocity({ fill: lightColor }, 350);
+    }).velocity({ fill: lightColor }, 350);
 }
 
 $.growl = function (title, text, type) {
