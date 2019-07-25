@@ -56,7 +56,7 @@ function initializeLoading() {
 }
 
 function animateColors() {
-    var darkColor = '#1f3869', lightColor = '#b8bff8';
+    var darkColor = '#1f3869', lightColor = '#a1c1ff';
     $("#loading .top").velocity({ fill: darkColor }, 250, function () {
         $("#loading .right").velocity({ fill: darkColor }, 250, function () {
             $("#loading .bottom").velocity({ fill: darkColor }, 250, function () {
