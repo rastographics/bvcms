@@ -24,7 +24,8 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 		public string argString = "";
 		public bool argBool = false;
 
-		public string data = "";
+        public string kiosk = "";
+        public string data = "";
 		public string token = "";
 		public string key = "";
 

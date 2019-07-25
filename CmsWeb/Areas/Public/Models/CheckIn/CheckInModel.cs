@@ -32,14 +32,14 @@ namespace CmsWeb.Models
             return x.ToString();
         }
 
-        public void SavePrintJob(string kiosk, string xml)
+        public void SavePrintJob(string kiosk, string xml, string json = null)
         {
             if (!kiosk.HasValue())
             {
                 return;
             }
 
-            var d = new PrintJob { Id = kiosk.Replace(" ", ""), Data = xml, Stamp = DateTime.Now };
+            var d = new PrintJob { Id = kiosk.Replace(" ", ""), Data = xml, JsonData = json, Stamp = DateTime.Now };
             DbUtil.Db.PrintJobs.InsertOnSubmit(d);
             DbUtil.Db.SubmitChanges();
         }

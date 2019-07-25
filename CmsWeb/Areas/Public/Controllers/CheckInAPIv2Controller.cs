@@ -389,10 +389,18 @@ namespace CmsWeb.Areas.Public.Controllers
 				}
 			}
 
+            string labelData = SerializeJSON(labels);
+
+            if (message.device == Message.API_DEVICE_WEB)
+            {
+                var m = new CheckInModel();
+                m.SavePrintJob(message.kiosk, null, labelData);
+            }
+
 			Message response = new Message();
 			response.setNoError();
 			response.count = 1;
-			response.data = SerializeJSON( labels );
+			response.data = labelData;
 
 			return response;
 		}

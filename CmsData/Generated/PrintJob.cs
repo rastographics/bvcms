@@ -24,6 +24,8 @@ namespace CmsData
 		
 		private string _Data;
 		
+		private string _JsonData;
+		
    		
     	
 	#endregion
@@ -41,6 +43,9 @@ namespace CmsData
 		
 		partial void OnDataChanging(string value);
 		partial void OnDataChanged();
+		
+		partial void OnJsonDataChanging(string value);
+		partial void OnJsonDataChanged();
 		
     #endregion
 		public PrintJob()
@@ -112,6 +117,28 @@ namespace CmsData
 					this._Data = value;
 					this.SendPropertyChanged("Data");
 					this.OnDataChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="JsonData", UpdateCheck=UpdateCheck.Never, Storage="_JsonData", DbType="nvarchar")]
+		public string JsonData
+		{
+			get { return this._JsonData; }
+
+			set
+			{
+				if (this._JsonData != value)
+				{
+				
+                    this.OnJsonDataChanging(value);
+					this.SendPropertyChanging();
+					this._JsonData = value;
+					this.SendPropertyChanged("JsonData");
+					this.OnJsonDataChanged();
 				}
 
 			}

@@ -53,6 +53,14 @@ var CheckInApp = new Vue({
                     'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
                 }
             };
+        },
+        phoneMask: function () {
+            var len = this.search.phone.replace(/\D/g, '').length;
+            if (len > 4 && len < 11) {
+                return '(###) ###-####?#?#?#?#?#';
+            } else {
+                return '##########?#?#?#?#?#';
+            }
         }
     },
     methods: {
@@ -71,6 +79,7 @@ var CheckInApp = new Vue({
             var outer = JSON.stringify({
                 version: 3,
                 device: 3,
+                kiosk: this.kiosk.name,
                 data: inner
             });
             var body = {
@@ -210,6 +219,19 @@ var CheckInApp = new Vue({
             let vm = this;
             // todo: set campus and date from profile
             var phone = vm.search.phone.replace(/\D/g, '');
+            // todo: remove, debug only
+            vm.profile.logoutKey = '12345';
+            // handle special entry
+            if (phone === vm.profile.logoutKey) {
+                vm.logout();
+                return;
+            }
+            if (phone.length < 4 || phone.length > 15) {
+                vm.search.phone = '';
+                vm.loadView('landing');
+                warning_swal('No results', 'No families found with that number, please try again.');
+                return;
+            }
             var payload = vm.generatePayload({
                 search: phone,
                 campus: 0,

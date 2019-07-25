@@ -39,10 +39,9 @@
         <div v-else-if="view == 'landing'" class="landing">
             <h2>Enter your phone number</h2>
             <form v-on:submit.prevent="find">
-                <input type="tel" name="phone" v-mask="'(###) ###-####'" v-model="search.phone" class="keyboard-input"/>
+                <input type="tel" name="phone" v-mask="phoneMask" v-model="search.phone" class="keyboard-input"/>
                 <div class="simple-keyboard"></div>
             </form>
-            <a href="#" style="position:absolute; left:15px; bottom: 5px;" v-on:click="logout">logout</a>
         </div>
         <div v-else-if="view == 'families'" class="families">
             <h2>Family Picker</h2>
