@@ -185,7 +185,7 @@ see [this help article](https://docs.touchpointsoftware.com/OnlineRegistration/M
         private const string TermsDescription = @"
 Some registrations like a camp, or sports team, or a trip require you to agree to terms (indemnification).
 
-They would have to click an 'Agree to terms' checkbox to complete the registration.
+They would have to type their full name in 'Agree to terms' to complete the registration.
 
 You could also include a link to a PDF file in the Confirmation email.
 ";

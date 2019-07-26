@@ -291,6 +291,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
                         reg.Insurance = insurance;
                         reg.Policy = policy;
                         break;
+                    case "AskPassport":
+                        reg.PassportNumber = Util.Encrypt(passportNumber);
+                        reg.PassportExpires = Util.Encrypt(passportExpires.ToString2("MM/dd/yyyy"));
+                        break;
                     case "AskTickets":
                         om.Tickets = ntickets;
                         break;
