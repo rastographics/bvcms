@@ -61,6 +61,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             {
                 m = Util.DeSerialize<OnlineRegModel>(ed.Data);
             }
+            m.TermsSignature = pf.TermsSignature;
 
 #if DEBUG
 #else
@@ -81,7 +82,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (IsCardTester(pf, "Payment Page"))
             {
                 return Message("Found Card Tester");
-            }
+            }            
 
             int? GatewayId = MultipleGatewayUtils.GatewayId(CurrentDatabase, m?.ProcessType ?? pf.ProcessType);
 

@@ -57,8 +57,12 @@ namespace CmsData
 		private string _Insurance;
 		
 		private string _Policy;
-		
-		private string _Comments;
+
+        private string _PassportNumber;
+
+        private string _PassportExpires;
+
+        private string _Comments;
 		
 		private bool? _Tylenol;
 		
@@ -138,8 +142,14 @@ namespace CmsData
 		
 		partial void OnPolicyChanging(string value);
 		partial void OnPolicyChanged();
-		
-		partial void OnCommentsChanging(string value);
+
+        partial void OnPassportNumberChanging(string value);
+        partial void OnPassportNumberChanged();
+
+        partial void OnPassportExpiresChanging(string value);
+        partial void OnPassportExpiresChanged();
+
+        partial void OnCommentsChanging(string value);
 		partial void OnCommentsChanged();
 		
 		partial void OnTylenolChanging(bool? value);
@@ -602,8 +612,43 @@ namespace CmsData
 
 		}
 
-		
-		[Column(Name="Comments", UpdateCheck=UpdateCheck.Never, Storage="_Comments", DbType="nvarchar")]
+        [Column(Name = "passportnumber", UpdateCheck = UpdateCheck.Never, Storage = "_PassportNumber", DbType = "nvarchar(100)")]
+        public string PassportNumber
+        {
+            get { return this._PassportNumber; }
+
+            set
+            {
+                if (this._PassportNumber != value)
+                {
+                    this.OnPassportNumberChanging(value);
+                    this.SendPropertyChanging();
+                    this._PassportNumber = value;
+                    this.SendPropertyChanged("PassportNumber");
+                    this.OnPassportNumberChanged();
+                }
+            }
+        }
+
+        [Column(Name = "passportexpires", UpdateCheck = UpdateCheck.Never, Storage = "_PassportExpires", DbType = "nvarchar(100)")]
+        public string PassportExpires
+        {
+            get { return this._PassportExpires; }
+
+            set
+            {
+                if (this._PassportExpires != value)
+                {
+                    this.OnPassportExpiresChanging(value);
+                    this.SendPropertyChanging();
+                    this._PassportExpires = value;
+                    this.SendPropertyChanged("PassportExpires");
+                    this.OnPassportExpiresChanged();
+                }
+            }
+        }
+
+        [Column(Name="Comments", UpdateCheck=UpdateCheck.Never, Storage="_Comments", DbType="nvarchar")]
 		public string Comments
 		{
 			get { return this._Comments; }
@@ -619,11 +664,8 @@ namespace CmsData
 					this.SendPropertyChanged("Comments");
 					this.OnCommentsChanged();
 				}
-
 			}
-
 		}
-
 		
 		[Column(Name="Tylenol", UpdateCheck=UpdateCheck.Never, Storage="_Tylenol", DbType="bit")]
 		public bool? Tylenol
@@ -777,10 +819,6 @@ namespace CmsData
 		{
 			if ((this.PropertyChanged != null))
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-		}
-
-   		
+		}	
 	}
-
 }
-
