@@ -11,11 +11,10 @@ using UtilityExtensions;
 namespace CmsWeb.Areas.CheckIn.Controllers
 {
     [Authorize(Roles = "Checkin")]
-    [ValidateInput(false)]
-    [RouteArea("Checkin", AreaPrefix = "CheckinSetup"), Route("{action}")]
-    public class CheckinSetup : CmsStaffController
+    [RouteArea("CheckIn", AreaPrefix = "CheckinSetup"), Route("{action}")]
+    public class CheckinSetupController : CmsStaffController
     {
-        public CheckinSetup(IRequestManager requestManager) : base(requestManager)
+        public CheckinSetupController(IRequestManager requestManager) : base(requestManager)
         {
 
         }
@@ -27,10 +26,10 @@ namespace CmsWeb.Areas.CheckIn.Controllers
         }
 
         [HttpGet]
-        [Route("~/CheckinSetup/GetProfiles")]
+        [Route("~/CheckinSetup/GetCheckinProfiles")]
         public JsonResult GetProfiles()
         {
-
+            var CheckinProfiles = CurrentDatabase.CheckinProfiles.Where(c => c.CheckinProfileId > 0);
             //var Processes = (from e in CurrentDatabase.PaymentProcess
             //                 join d in CurrentDatabase.GatewayAccount on e.GatewayAccountId equals d.GatewayAccountId into gj
             //                 from sub in gj.DefaultIfEmpty()
@@ -45,7 +44,7 @@ namespace CmsWeb.Areas.CheckIn.Controllers
 
             //return Json(Processes, JsonRequestBehavior.AllowGet);
 
-            return Json("Ok");
+            return Json(CheckinProfiles, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]

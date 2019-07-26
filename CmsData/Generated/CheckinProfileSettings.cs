@@ -90,7 +90,7 @@ namespace CmsData
         }
 
         #region Columns
-        [Column(Name = "CheckinProfileId", UpdateCheck = UpdateCheck.Never, Storage = "_CheckinProfileId", DbType = "int NOT NULL UNIQUE")]
+        [Column(Name = "CheckinProfileId", UpdateCheck = UpdateCheck.Never, Storage = "_CheckinProfileId", DbType = "int NOT NULL UNIQUE", IsPrimaryKey = true)]
         [IsForeignKey]
         public int CheckinProfileId
         {
