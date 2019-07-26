@@ -133,6 +133,8 @@ namespace CmsData.Registration
                         NotReqGender = e.Element("NotReqGender").ToBool();
                         NotReqMarital = e.Element("NotReqMarital").ToBool();
                         NotReqCampus = e.Element("NotReqCampus").ToBool();
+                        ShowDOBOnFind = e.Element("ShowDOBOnFind").ToBool();
+                        ShowPhoneOnFind = e.Element("ShowPhoneOnFind").ToBool();
                         break;
                     case "TimeSlots":
                         TimeSlots = TimeSlots.ReadXml(e);
@@ -254,6 +256,8 @@ namespace CmsData.Registration
                 .AddIfTrue("NotReqGender", NotReqGender)
                 .AddIfTrue("NotReqMarital", NotReqMarital)
                 .AddIfTrue("NotReqCampus", NotReqCampus)
+                .AddIfTrue("ShowDOBOnFind", ShowDOBOnFind)
+                .AddIfTrue("ShowPhoneOnFind", ShowPhoneOnFind)
                 .EndPending();
 
             TimeSlots?.WriteXml(w);

@@ -6,7 +6,7 @@ $(function () {
         orientation: "auto",
         forceParse: false,
         format: $.dtoptions.format
-    }).on('changeDate', function() {
+    }).on('changeDate', function () {
         $("#StartWhenIsNew").val('True');
     });
 
@@ -73,7 +73,7 @@ $(function () {
     for (i = 1; i <= 31; i++) {
         daysOfMonth.push({ value: i, text: Humanize.ordinal(i) });
     }
-    
+
     $(".clickSelect").editable({
         mode: 'popup',
         type: 'select',
@@ -90,7 +90,7 @@ $(function () {
     if ($('#Day2').length && $('#Day2').val().length > 0) {
         $('#twiceAMonthDay2').editable('setValue', $('#Day2').val());
     }
-   
+
     $('#twiceAMonthDay1').on('save', function (e, params) {
         $('#Day1').val(params.newValue);
     });
@@ -99,7 +99,7 @@ $(function () {
         $('#Day2').val(params.newValue);
     });
 
-    $('#startWhenDate').click(function(e) {
+    $('#startWhenDate').click(function (e) {
         e.preventDefault();
     });
 
@@ -187,24 +187,24 @@ $(function () {
         });
         return false;
     });
-	$('.clearField').each(function () {
+    $('.clearField').each(function () {
         if ($(this).val() == '') {
             $(this).val($(this).attr('default'));
             $(this).addClass('text-label');
         }
-	    $(this).focus(function () {
-	        if (this.value == $(this).attr('default')) {
-	            this.value = '';
-	            $(this).removeClass('text-label');
-	        }
-	    });
-	    $(this).blur(function () {
-	        if (this.value == '') {
-	            this.value = $(this).attr('default');
-	            $(this).addClass('text-label');
-	        }
-	    });
-	});
+        $(this).focus(function () {
+            if (this.value == $(this).attr('default')) {
+                this.value = '';
+                $(this).removeClass('text-label');
+            }
+        });
+        $(this).blur(function () {
+            if (this.value == '') {
+                this.value = $(this).attr('default');
+                $(this).addClass('text-label');
+            }
+        });
+    });
     $('#Coupon').showPassword();
 
     $('#findidclick').click(function (ev) {
@@ -218,12 +218,12 @@ $(function () {
         return false;
     });
     var agreeterms = true;
-    $("form.recaptcha").submit(function() {
+    $("form.recaptcha").submit(function () {
         if (!agreeterms) {
             alert("must agree to terms");
             return false;
         }
-        var submitit = $("#submitit", this); 
+        var submitit = $("#submitit", this);
         if (!submitit.val()) {
             return false;
         }
@@ -241,22 +241,47 @@ $(function () {
         return false;
     });
 
-    if ($('#IAgree').attr("id")) {
+    var IAgreeButton = $('#IAgreeButton');
+    var IAgreeInput = $('#IAgreeInput');
+    var signature = $('#TermsSignature');
+
+    if (IAgreeButton.attr('agreed') == 'false') {
         $(".showform").hide();
         agreeterms = false;
     }
-    $("#IAgree").click(function () {
-        var checked_status = this.checked;
-        if (checked_status == true) {
+
+    if (IAgreeInput.val() == '') {
+        document.getElementById("IAgreeButton").disabled = true;
+    }
+
+    IAgreeInput.on("input", function () {
+        var inputVal = this.value;
+        if (inputVal != '') {
+            document.getElementById("IAgreeButton").disabled = false;
+        } else {
+            document.getElementById("IAgreeButton").disabled = true;
+        }
+    });
+
+    IAgreeButton.click(function () {
+        if (agreeterms == false && IAgreeInput.val() != '') {
             $(".showform").show();
             $("#Terms").hide();
             agreeterms = true;
+            document.getElementById("IAgreeInput").disabled = true;
+            IAgreeButton.val('Display terms and conditions');
+            IAgreeButton.attr('agreed', 'true');
+            signature.val(IAgreeInput.val());
         } else {
             $(".showform").hide();
             $("#Terms").show();
             agreeterms = false;
+            document.getElementById("IAgreeInput").disabled = false;
+            IAgreeButton.val('I agree to the terms and conditions');
+            IAgreeButton.attr('agreed', 'false');
         }
     });
+
     $.SetSummaryText = function () {
         var pattern = $("#RepeatPattern").val();
         var everyN = $("#EveryN").val();
@@ -285,7 +310,7 @@ $(function () {
             summary += " starting on or after " + startOn;
         $("#SummaryText").text(summary);
     };
-   
+
     $.ShowPaymentInfo = function (v) {
         $(".Card").hide();
         $(".Bank").hide();
@@ -339,7 +364,7 @@ $(function () {
             }
         }
     };
-    $.SetRepeatPatternText = function(v) {
+    $.SetRepeatPatternText = function (v) {
         if (v === 'M') {
             $("#RepeatPatternText").text(" month(s)");
         }
@@ -357,7 +382,7 @@ $(function () {
             $("#Period").val(v);
         }
     };
-    $.SetSemiEvery = function(v) {
+    $.SetSemiEvery = function (v) {
         if (v != 'S') {
             $("#SemiEvery").val('E');
         } else {
@@ -395,13 +420,13 @@ $(function () {
         $('#CreditCard').change(function () {
             $('#CVV').parents('.form-group').show();
             if ($('#CreditCard').val().startsWith('X')) {
-                $('#CreditCard').val($('#CreditCard').val().replace('X', 'Y'));                
+                $('#CreditCard').val($('#CreditCard').val().replace('X', 'Y'));
             }
             showSavePayUncheckedBox();
         });
         $('#Expires').change(function () {
             if ($('#CreditCard').val().startsWith('X')) {
-                $('#CreditCard').val($('#CreditCard').val().replace('X', 'Y'));                              
+                $('#CreditCard').val($('#CreditCard').val().replace('X', 'Y'));
             }
             $('#CVV').parents('.form-group').show();
             showSavePayUncheckedBox();
@@ -455,7 +480,7 @@ $(function () {
         $(".state-success").removeClass("state-success");
         $(this).trigger('reset.unobtrusiveValidation');
     }
-    
+
     if ($("#allowcc").val()) {
         $.ShowPaymentInfo2($("input[name=Type]:checked").val());
     }
@@ -479,12 +504,12 @@ $(function () {
     $("form").validate({
         rules: {
             "First": { required: true, maxlength: 50 },
-            "MiddleInitial": { maxlength: 1},
+            "MiddleInitial": { maxlength: 1 },
             "Last": { required: true, maxlength: 50 },
             "Suffix": { maxlength: 10 },
             "Phone": { maxlength: 50 }
         },
-        errorPlacement: function(error, element) {
+        errorPlacement: function (error, element) {
             if (element.hasClass("clearField")) {
                 $("#errorName").append(error);
             }

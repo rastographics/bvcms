@@ -1,4 +1,5 @@
 ﻿using System;
+using UtilityExtensions;
 
 namespace CmsData
 {
@@ -15,15 +16,6 @@ namespace CmsData
         public string ToString(string format)
         {
             return string.Format(format, this.ToString());
-        }
-
-        public void Update(OrgSchedule schedule)
-        {
-            AttendCreditId = schedule.AttendCreditId;
-            Id = schedule.Id;
-            MeetingTime = schedule.MeetingTime;
-            SchedDay = schedule.SchedDay;
-            SchedTime = schedule.SchedTime;
         }
     }
 }

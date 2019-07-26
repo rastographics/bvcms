@@ -986,6 +986,7 @@
     <Content Include="Migrations\20190508_Add_PaymentInfo_AcceptivaPayerId_Column.sql" />
     <Content Include="Migrations\20190520_add_acceptiva_to_gateway_tables.sql" />
     <Content Include="Migrations\20190527_add_preconfigured_acceptiva_details.sql" />
+    <Content Include="Migrations\20190620_add_passport_reg_setting.sql" />
     <Compile Include="Organization\OrgFilter.cs" />
     <Compile Include="Organization\OrgPerson.cs" />
     <Compile Include="Organization\OrgSchedule.cs" />
@@ -1395,6 +1396,9 @@
     <Content Include="Migrations\20190523_add_paymentinfo_gatewayaccountid.sql" />
     <Content Include="Migrations\20190523_Insert_Temporary_Recurring_Giving.sql" />
     <Content Include="Migrations\20190530_Update_PaymentInfo_PK.sql" />
+    <Content Include="Migrations\20190710_Update_MeetingTime_When_Is_Null.sql" />
+    <Content Include="Migrations\20190531_drop_SP_GreatPlainsIncomeExport.sql" />
+    <Content Include="Migrations\20190613_Transform_NoPhoneEmailOnFind_To_New_EVs.sql" />
     <Content Include="QueryBuilder\CompareMap.xml">
       <SubType>Designer</SubType>
     </Content>
