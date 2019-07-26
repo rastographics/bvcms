@@ -220,6 +220,18 @@
                             <td>@rr.Policy</td>
                         </tr>
                         break;
+                    case "AskPassport":
+                        <tr>
+                            <td></td>
+                            <td>Passport Number</td>
+                            <td>@Util.Decrypt(rr.PassportNumber)</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Passport Expires Date</td>
+                            <td>@Util.Decrypt(rr.PassportExpires)</td>
+                        </tr>
+                        break;
                     case "AskRequest":
                         <tr>
                             <td></td>
