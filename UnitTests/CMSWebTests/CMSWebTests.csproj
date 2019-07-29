@@ -105,9 +105,11 @@
     </Compile>
     <Compile Include="Areas\OnlineReg\Models\OnlineReg\OnlineRegModelTests.cs" />
     <Compile Include="Areas\People\Models\Contact\ContactExtraLocationConfigTests.cs" />
+    <Compile Include="QueryBuilder\QueryBuilderTest.cs" />
     <Compile Include="Code\QueryModelTests.cs" />
     <Compile Include="Code\CodeValueModelTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestUtils\ContexTestUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config">
