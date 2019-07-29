@@ -62,6 +62,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Web" />
     <Reference Include="xunit.abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
       <HintPath>..\..\packages\xunit.abstractions.2.0.3\lib\net35\xunit.abstractions.dll</HintPath>
       <Private>True</Private>
@@ -80,6 +81,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\SharedTestFixtures\DatabaseCollection.cs">
+      <Link>DatabaseCollection.cs</Link>
+    </Compile>
+    <Compile Include="API\PythonModel\PythonModelTests.cs" />
     <Compile Include="DbUtil\CMSDataContextTests.cs" />
     <Compile Include="Finance\AcceptivaGatewayTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -96,6 +101,14 @@
     <ProjectReference Include="..\..\CmsData\CmsData.csproj">
       <Project>{98aee43c-4226-49e7-bd46-c1a85467eced}</Project>
       <Name>CmsData</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\UtilityExtensions\UtilityExtensions.csproj">
+      <Project>{C504E3D2-5498-451B-BF82-309623706F11}</Project>
+      <Name>UtilityExtensions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharedTestFixtures\SharedTestFixtures.csproj">
+      <Project>{37b7dd60-a2ce-4e69-8cc5-4370b95ad908}</Project>
+      <Name>SharedTestFixtures</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />

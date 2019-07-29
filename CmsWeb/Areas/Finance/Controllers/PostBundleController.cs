@@ -18,6 +18,8 @@ namespace CmsWeb.Areas.Finance.Controllers
     [RouteArea("Finance", AreaPrefix = "PostBundle"), Route("{action}/{id?}")]
     public class PostBundleController : CmsStaffController
     {
+        const string SHOW_CHECK_IMAGES = "showCheckImages";
+
         public PostBundleController(IRequestManager requestManager) : base(requestManager)
         {
         }
@@ -42,6 +44,15 @@ namespace CmsWeb.Areas.Finance.Controllers
             }
 
             m.fund = m.Bundle.FundId ?? 1;
+            if (Request["images"] != null)
+            {
+                ViewData[SHOW_CHECK_IMAGES] = Request["images"] == "1";
+            }
+            else
+            {
+                ViewData[SHOW_CHECK_IMAGES] = Session[SHOW_CHECK_IMAGES];
+            }
+            Session[SHOW_CHECK_IMAGES] = ViewData[SHOW_CHECK_IMAGES];
             return View(m);
         }
 

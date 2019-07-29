@@ -632,6 +632,7 @@
     <Compile Include="Areas\People\Models\Contact\ContactExtraLocationConfig.cs" />
     <Compile Include="Areas\People\Models\Downline\DownlineLevelsModel.cs" />
     <Compile Include="Areas\People\Models\Downline\DownlineSummaryModel.cs" />
+    <Compile Include="Areas\People\Models\Person\Giving\PledgesSummary.cs" />
     <Compile Include="Areas\People\Models\Task\TaskModel.cs" />
     <Compile Include="Areas\Public\Controllers\CheckInAPIv2Controller.cs" />
     <Compile Include="Areas\Public\Controllers\CheckScanAPIController.cs" />
@@ -871,6 +872,8 @@
     <Compile Include="Common\Configuration.cs" />
     <Compile Include="Common\Extensions\ObjectExtensions.cs" />
     <Compile Include="Code\ViewUtilities.cs" />
+    <Compile Include="Common\Status\AppStatus.cs" />
+    <Compile Include="Common\Status\StatusHelper.cs" />
     <Compile Include="Controllers\Api\ApiOptions.cs" />
     <Compile Include="Controllers\Api\AuthenticateController.cs" />
     <Compile Include="Controllers\Api\ChAiPeopleController.cs" />
@@ -1247,6 +1250,7 @@
     <Content Include="Content\touchpoint\js\main.js" />
     <Content Include="Content\touchpoint\js\metrozip\metro-zip.js" />
     <Content Include="Content\touchpoint\js\onlineregister.min.js" />
+    <Content Include="Content\touchpoint\js\people\givingtab.js" />
     <Content Include="Content\touchpoint\js\people\merge.js" />
     <Content Include="Content\touchpoint\js\search\export-query.js" />
     <Content Include="Content\touchpoint\js\search\TaskSearch.js" />
@@ -1829,6 +1833,7 @@
     <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageGiving\_ManagedGivingFundsNew.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\OnePageGiving\NotConfigured.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\MeetingAttendance.cshtml" />
+    <Content Include="Areas\People\Views\Shared\PledgesSummary.cshtml" />
     <Content Include="libman.json" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
@@ -2773,6 +2778,7 @@
     <Content Include="Views\Script\RunScriptPageBreaks.cshtml" />
     <Content Include="Views\Shared\_LayoutCheckIn.cshtml" />
     <Content Include="Views\Shared\_LayoutNoHeaderFooter.cshtml" />
+    <Content Include="Views\Shared\AdminAlerts.cshtml" />
     <None Include="Web.Impersonate.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -3360,7 +3366,6 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Content\touchpoint\js\onlinereg\OnlineReg.js" />
-    <Content Include="Views\Shared\bvorg.Master" />
     <Content Include="Views\Shared\Site3b.Master" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

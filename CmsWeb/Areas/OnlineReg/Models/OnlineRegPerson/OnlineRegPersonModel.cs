@@ -7,6 +7,7 @@ using System.Xml.Serialization;
 using CmsWeb.Controllers;
 using UtilityExtensions;
 using CmsData.Codes;
+using System.Linq;
 
 namespace CmsWeb.Areas.OnlineReg.Models
 {
@@ -26,6 +27,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public bool IsNew { get; set; }
         public bool QuestionsOK { get; set; }
         public CmsData.PaymentProcessTypes ProcessType { get; set; }
+        public int? pledgeFundId { get; set; }
 
         private bool? loggedin;
         public bool LoggedIn
@@ -33,7 +35,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             set { loggedin = value; }
             get
             {
-                if(!loggedin.HasValue)
+                if (!loggedin.HasValue)
                     loggedin = Parent.UserPeopleId > 0;
                 return loggedin ?? false;
             }
@@ -83,6 +85,12 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         [DisplayName("Policy / Group #"), StringLength(100)]
         public string policy { get; set; }
+
+        [DisplayName("Passport Number"), StringLength(100)]
+        public string passportNumber { get; set; }
+
+        [DisplayName("Passport Expires Date")]
+        public DateTime? passportExpires { get; set; }
 
         [DisplayName("Family Physician"), StringLength(100)]
         public string doctor { get; set; }
@@ -140,7 +148,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         [DisplayFormat(DataFormatString = "{0:N2}", ApplyFormatInEditMode = true)]
         public decimal? Suggestedfee { get; set; }
-         
+
         public List<FamilyAttendInfo> FamilyAttend { get; set; }
         public Dictionary<int, decimal?> FundItem { get; set; }
         public Dictionary<string, string> SpecialTest { get; set; }
@@ -204,13 +212,13 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public string ExtraQuestionAnswer(int id, string question)
         {
-            if(ExtraQuestion[id].ContainsKey(question))
+            if (ExtraQuestion[id].ContainsKey(question))
                 return ExtraQuestion[id][question];
             return "n/a";
         }
         public string TextAnswer(int id, string question)
         {
-            if(Text[id].ContainsKey(question))
+            if (Text[id].ContainsKey(question))
                 return Text[id][question];
             return "n/a";
         }
@@ -242,6 +250,34 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public bool IsCommunityGroup()
         {
             return org != null && org.OrganizationType?.Code == "CG";
+        }
+
+        public decimal? PledgeFundAmount(int fundId)
+        {
+            if (pledgeFundId == fundId)
+            {
+                return OutstandingPledgeAmount(fundId);
+            }
+            return null;
+        }
+
+        private decimal? OutstandingPledgeAmount(int fundId)
+        {
+            var given = (from c in db.Contributions
+                         where c.PeopleId == PeopleId
+                         where c.FundId == fundId
+                         where c.ContributionTypeId != ContributionTypeCode.Pledge
+                         select c.ContributionAmount).Sum() ?? 0;
+
+            var pledge = (from c in db.Contributions
+                          where c.PeopleId == PeopleId
+                          where c.FundId == fundId
+                          where c.ContributionTypeId == ContributionTypeCode.Pledge
+                          select c.ContributionAmount).Sum() ?? 0;
+
+            var OutstandingPledge = pledge - given;
+
+            return Math.Max(0, OutstandingPledge);
         }
     }
 }

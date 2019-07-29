@@ -1,77 +1,127 @@
 ﻿@using CmsWeb.Areas.OnlineReg.Models
 @model CmsWeb.Areas.OnlineReg.Models.OnlineRegModel
 @{
-  Layout = "~/Views/Shared/onlinereg2.cshtml";
-  ViewBag.Title = "Online Registration";
+    Layout = "~/Views/Shared/onlinereg2.cshtml";
+    ViewBag.Title = "Online Registration";
 }
 @section scripts
 {
-  <script type="text/javascript">
+    <script type="text/javascript">
     $(function () {
-      $(document).idleTimer(@Model.TimeOut);
-      $(document).on("idle.idleTimer", function (event, elem, obj) {
-        window.location.href = '@Model.URL';
-      });
+        $(document).idleTimer(@Model.TimeOut);
+        $(document).on("idle.idleTimer", function (event, elem, obj) {
+            window.location.href = '@Model.URL';
+        });
 
-      if ($('#IAgree').attr("id")) {
-        $("#Submit").attr("disabled", "disabled");
-      }
-      $("#IAgree").click(function () {
-        var checked_status = this.checked;
-        if (checked_status === true) {
-          $("#Submit").removeAttr("disabled");
-        } else {
-          $("#Submit").attr("disabled", "disabled");
+        var IAgreeButton = $('#IAgreeButton');
+        var IAgreeInput = $('#IAgreeInput');
+        var agreeterms;
+        var signature = $('#TermsSignature');
+
+        if (IAgreeButton.attr('agreed') == 'false') {
+            $(".showform").hide();
+            $("#Submit").attr("disabled", "disabled");
+            agreeterms = false;
         }
-      });
+
+        if (IAgreeInput.val() == '') {
+            document.getElementById("IAgreeButton").disabled = true;
+        }
+
+        IAgreeInput.on("input", function () {
+            var inputVal = this.value;
+            if (inputVal != '') {
+                document.getElementById("IAgreeButton").disabled = false;
+            } else {
+                document.getElementById("IAgreeButton").disabled = true;
+            }
+        });
+
+        IAgreeButton.click(function () {
+            if (agreeterms == false && IAgreeInput.val() != '') {
+                $("#Submit").removeAttr("disabled");
+                $(".showform").show();
+                agreeterms = true;
+                document.getElementById("IAgreeInput").disabled = true;
+                IAgreeButton.hide();
+                IAgreeButton.attr('agreed', 'true');
+                signature.val(IAgreeInput.val());
+            } else {
+                $("#Submit").attr("disabled", "disabled");
+                $(".showform").hide();
+                agreeterms = false;
+                document.getElementById("IAgreeInput").disabled = false;
+                IAgreeButton.val('I agree to the terms and conditions');
+                IAgreeButton.attr('agreed', 'false');
+            }
+        });
+
+        //if ($('#IAgree').attr("id")) {
+        //    $("#Submit").attr("disabled", "disabled");
+        //}
+
+        //$("#IAgree").click(function () {
+        //    var checked_status = this.checked;
+        //    if (checked_status === true) {
+        //        $("#Submit").removeAttr("disabled");
+        //    } else {
+        //        $("#Submit").attr("disabled", "disabled");
+        //    }
+        //});
     });
-  </script>
+    </script>
 }
 <style type="text/css">
-  div.terms {
-    width: 600px;
-    height: 200px;
-    border: 1px solid #ccc;
-    background: #f2f2f2;
-    padding: 6px;
-    overflow: auto;
-  }
-
-    div.terms p,
-    div.terms li {
-      font: normal 11px/15px arial;
-      color: #333;
+    div.terms {
+        width: 600px;
+        height: 200px;
+        border: 1px solid #ccc;
+        background: #f2f2f2;
+        padding: 6px;
+        overflow: auto;
     }
 
-    div.terms h3 {
-      font: bold 14px/19px arial;
-      color: #000;
-    }
+        div.terms p,
+        div.terms li {
+            font: normal 11px/15px arial;
+            color: #333;
+        }
 
-    div.terms h4 {
-      font: bold 12px/17px arial;
-      color: #000;
-    }
+        div.terms h3 {
+            font: bold 14px/19px arial;
+            color: #000;
+        }
 
-    div.terms strong {
-      color: #000;
-    }
+        div.terms h4 {
+            font: bold 12px/17px arial;
+            color: #000;
+        }
 
-  a.submitbutton, a.button {
-    padding: 5px;
-    border-color: #D9DFEA #0E1F5B #0E1F5B #D9DFEA;
-    background-color: #3B5998;
-    border: 1px solid;
-    color: #FFFFFF;
-    text-decoration: none;
-  }
+        div.terms strong {
+            color: #000;
+        }
+
+    a.submitbutton, a.button {
+        padding: 5px;
+        border-color: #D9DFEA #0E1F5B #0E1F5B #D9DFEA;
+        background-color: #3B5998;
+        border: 1px solid;
+        color: #FFFFFF;
+        text-decoration: none;
+    }
 </style>
 <h2>Terms of Agreement</h2>
 @Html.Raw(Model.Terms)
 <form action="/OnlineReg/Confirm/@Model.DatumId" method="post">
-  @Html.Hidden("TransactionID", "zero due")
-    <p>@Html.CheckBox("IAgree") I agree to the above terms and conditions.</p>
-    @Html.Raw(OnlineRegModel.YouMustAgreeStatement(Model.Orgid)) 
-  <p></p>
-  <p><input type="submit" id="Submit" value="@Model.GetFinishRegistrationButton()" /></p>
+    @Html.Hidden("TransactionID", "zero due")
+    <p>
+        Full Name:&nbsp;@Html.TextBox("IAgreeInput")&nbsp;&nbsp;<small class="showform">I agree to the terms and conditions</small>
+    </p>
+    <p>
+        <input type="button" class="btn" id="IAgreeButton" agreed="false" value="I agree to the terms and conditions">
+    </p>
+    @Html.Raw(OnlineRegModel.YouMustAgreeStatement(Model.Orgid))
+    <p></p>
+    <p><input type="submit" id="Submit" value="@Model.GetFinishRegistrationButton()" /></p>
+    @Html.HiddenFor(m => m.TermsSignature)
 </form>

@@ -12,5 +12,6 @@ namespace CmsWeb.Areas.People.Models
         public string Fund { get; set; }
         public string Type { get; set; }
         public string Name { get; set; }
+        public bool PledgeFund { get; set; }
     }
 }

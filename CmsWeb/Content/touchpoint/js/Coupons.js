@@ -12,7 +12,8 @@
         regidfilter: null,
         startdateIso: null,
         enddateIso: null,
-        usedfilter: null
+        usedfilter: null,
+        loading: true
     },
     methods: {
         myFunctionOnLoad: function () {
@@ -74,6 +75,7 @@
                 response => {
                     if (response.status === 200) {
                         this.CouponStatus = response.body;
+                        this.loading = false;
                         $("#regidfilter").select2();
                     }
                     else {
@@ -213,6 +215,9 @@
         ShowCreate: function () {
             document.getElementById('ListContent').hidden = true;
             document.getElementById('CreateContent').hidden = false;
+            if ($('#CreateContent').hasClass('loading')) {
+                $.block();
+            }
         }
     },
     created: function () {
@@ -234,7 +239,8 @@ var CreateApp = new Vue({
         regidfilter: null,
         startdateIso: null,
         enddateIso: null,
-        usedfilter: null
+        usedfilter: null,
+        loading: true
     },
     methods: {
         myFunctionOnLoad: function () {
@@ -296,6 +302,8 @@ var CreateApp = new Vue({
                 response => {
                     if (response.status === 200) {
                         this.CouponStatus = response.body;
+                        this.loading = false;
+                        $.unblock();
                         $("#regidSearch").select2();
                     }
                     else {

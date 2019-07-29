@@ -7,76 +7,38 @@ namespace CmsWeb.Common
     /// </summary>
     public class Configuration
     {
-        public static Configuration Current
-        {
-            get { return new Configuration(); }
-        }
+        public static Configuration Current => new Configuration();
 
-        public bool IsDeveloperMode
-        {
-            get { return GetBool("IsDeveloperMode"); }
-        }
+        public bool IsDeveloperMode => GetBool("IsDeveloperMode");
 
-        public string PushpayAPIBaseUrl
-        {
-            get { return GetString("PushpayAPIBaseUrl"); }
-        }
+        public string OAuth2TokenEndpoint => GetString("OAuth2TokenEndpoint");
 
-        public string PushpayClientID
-        {
-            get { return GetString("PushpayClientID"); }
-        }
+        public string OAuth2AuthorizeEndpoint => GetString("OAuth2AuthorizeEndpoint");
 
-        public string PushpayClientSecret
-        {
-            get { return GetString("PushpayClientSecret"); }
-        }
+        public string OrgBaseDomain => GetString("OrgBaseDomain");
 
-        public string PushpayGivingLinkBase
-        {
-            get { return GetString("PushpayGivingLinkBase"); }
-        }
+        public string PushpayAPIBaseUrl => GetString("PushpayAPIBaseUrl");
 
-        public string OAuth2TokenEndpoint
-        {
-            get { return GetString("OAuth2TokenEndpoint"); }
-        }
+        public string PushpayClientID => GetString("PushpayClientID");
 
-        public string OAuth2AuthorizeEndpoint
-        {
-            get { return GetString("OAuth2AuthorizeEndpoint"); }
-        }
+        public string PushpayClientSecret => GetString("PushpayClientSecret");
 
-        public string TouchpointAuthServer
-        {
-            get { return GetString("TouchpointAuthServer"); }
-        }
+        public string PushpayGivingLinkBase => GetString("PushpayGivingLinkBase");
 
-        public string OrgBaseDomain
-        {
-            get { return GetString("OrgBaseDomain"); }
-        }
+        public string PushpayScope => GetString("PushpayScope");
 
-        public string TenantHostDev
-        {
-            get { return GetString("TenantHostDev"); }
-        }
+        public string StatusCheckUrl => GetString("StatusCheckUrl");
 
-        public string PushpayScope
-        {
-            get { return GetString("PushpayScope"); }
-        }
+        public string TenantHostDev => GetString("TenantHostDev");
+
+        public string TouchpointAuthServer => GetString("TouchpointAuthServer");
 
         /// <summary>
         ///     Returns a string representation of this application setting
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        private string GetString(string key)
-        {
-            string result = ConfigurationManager.AppSettings[key] ?? "";
-            return result;
-        }
+        private string GetString(string key) => ConfigurationManager.AppSettings[key] ?? "";
 
         /// <summary>
         ///     Returns a boolean representation of this application setting

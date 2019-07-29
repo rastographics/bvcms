@@ -40,6 +40,7 @@ namespace CmsWeb.Models
         public string Sort { get; set; }
         public string Direction { get; set; }
         public bool AjaxPager { get; set; }
+        public string Filter { get; set; }
 
         public string SortExpression
         {
@@ -176,6 +177,26 @@ namespace CmsWeb.Models
                 dir = Direction == "asc" ? "desc" : "asc";
             }
             return new HtmlString($"<a href='#' data-sortby='{label}' data-dir='{dir}' class='ajax{active}{asc}'>{html}</a>");
+        }
+
+        public HtmlString SortLinkWFilter(string sortLabel, string filterValue, string fieldName = null)
+        {
+            fieldName = fieldName ?? sortLabel;
+
+            var active = "";
+            var asc = " asc";
+            var dir = "asc";
+            if (sortLabel == Sort)
+            {
+                active = " active";
+                if (Direction == "asc")
+                {
+                    asc = "";
+                }
+
+                dir = Direction == "asc" ? "desc" : "asc";
+            }
+            return new HtmlString($"<a href='#' data-sortby='{fieldName}' data-dir='{dir}' data-filter='{filterValue}' class='ajax{active}{asc}'>{sortLabel}</a>");
         }
 
         public HtmlString PageLink(string label, int? page)

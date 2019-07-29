@@ -62,6 +62,7 @@ namespace IntegrationTests.Support
             if (roles.Any())
             {
                 user.AddRoles(db, roles);
+                db.SubmitChanges();
             }
             return user;
         }
