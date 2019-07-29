@@ -13,13 +13,13 @@ BEGIN
 			[COUNT] int,
 			Amount numeric,
 			FundId int,
-			FundName nvarchar,
+			FundName nvarchar(512),
 			[ONLINE] BIT,
-			BundleType int,
+			BundleType nvarchar(512),
 			FundAccountCode int,
-			FundIncomeDept nvarchar,
-			FundIncomeAccount nvarchar,
-			FundCashAccount nvarchar);
+			FundIncomeDept nvarchar(512),
+			FundIncomeAccount nvarchar(512),
+			FundCashAccount nvarchar(512));
 
 
 	WITH totals AS (
@@ -66,6 +66,6 @@ BEGIN
 	IF @includeBundleType = 1
 		SELECT * FROM @T
 	ELSE
-		SELECT [COUNT], Amount, FundId, FundName, [ONLINE], BundleType, FundAccountCode, FundIncomeDept, FundIncomeAccount, FundCashAccount FROM @T
+		SELECT [COUNT], Amount, FundId, FundName, [ONLINE], FundAccountCode, FundIncomeDept, FundIncomeAccount, FundCashAccount FROM @T
 	END
 GO
