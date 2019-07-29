@@ -1399,6 +1399,7 @@
     <Content Include="Migrations\20190710_Update_MeetingTime_When_Is_Null.sql" />
     <Content Include="Migrations\20190531_drop_SP_GreatPlainsIncomeExport.sql" />
     <Content Include="Migrations\20190613_Transform_NoPhoneEmailOnFind_To_New_EVs.sql" />
+    <Content Include="Migrations\20190725_Update_proc_LedgerIncomeExport.sql" />
     <Content Include="QueryBuilder\CompareMap.xml">
       <SubType>Designer</SubType>
     </Content>
