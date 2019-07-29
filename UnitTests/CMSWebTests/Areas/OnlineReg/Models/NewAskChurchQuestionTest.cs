@@ -3,11 +3,14 @@ using System.Collections;
 using System.Net.Http;
 using CmsWeb.Areas.OnlineReg.Models;
 using System.Collections.Generic;
+using Shouldly;
 
 namespace CMSWebTests.Areas.OnlineReg.Models.AskChurch
 {
     public class NewAskChurchQuestionTest
     {
+        private int OrgId { get; set; }
+
         [Theory]
         [InlineData(true, true, true)]
         [InlineData(false, false, false)]
@@ -23,7 +26,10 @@ namespace CMSWebTests.Areas.OnlineReg.Models.AskChurch
             var routeDataValues = new Dictionary<string, string> { { "controller", "OnlineReg" } };
             controller.ControllerContext = ControllerTestUtils.FakeContextController(controller, routeDataValues);
 
-            var model = GetFakeOnlineRegModel();
+            var FakeOrg = FakeOrganizationUtils.MakeFakeOrganization();
+            OrgId = FakeOrg.org.OrganizationId;
+
+            var model = FakeOrganizationUtils.GetFakeOnlineRegModel(OrgId);
 
             model.List[0].memberus = memberus;
             model.List[0].otherchurch = otherchurch;
@@ -37,11 +43,12 @@ namespace CMSWebTests.Areas.OnlineReg.Models.AskChurch
             Assert.NotNull(resultCompleteRegistration);
         }
 
-        private static OnlineRegModel GetFakeOnlineRegModel()
+        [Fact]
+        public void ShouldDeleteReg()
         {
-            var m = new OnlineRegModel(ContexTestUtils.FakeHttpContext().Request, ContexTestUtils.CurrentDatabase(), 106, null, null, null, null);
-            m.UserPeopleId = 2;
-            return m;
+            FakeOrganizationUtils.DeleteOrg(OrgId);
+            var CurrentOrg = ContexTestUtils.CurrentDatabase().LoadOrganizationById(OrgId);
+            CurrentOrg.ShouldBe(null);
         }
     }
 }
