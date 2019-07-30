@@ -1,5 +1,7 @@
 ﻿using Moq;
+using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Web.Mvc;
 using System.Web.Routing;
 
@@ -18,6 +20,7 @@ namespace CMSWebTests
             }
 
             mock.SetupGet(p => p.HttpContext.Request.IsAuthenticated).Returns(true);
+            mock.SetupGet(p => p.HttpContext.Request.ServerVariables).Returns(MockServerVariables());
             mock.SetupGet(p => p.HttpContext.User.Identity.IsAuthenticated).Returns(true);
             mock.SetupGet(m => m.RouteData).Returns(routeData);
 
@@ -31,6 +34,13 @@ namespace CMSWebTests
             controller.ControllerContext = mock.Object;
 
             return controller.ControllerContext;
+        }
+
+        private static NameValueCollection MockServerVariables()
+        {
+            return new NameValueCollection {
+                { "HTTP_X_FORWARDED_FOR", "127.0.0.1" }
+            };
         }
     }
 }

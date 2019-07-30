@@ -1,15 +1,8 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using CmsData;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Shouldly;
-using Xunit;
+﻿using Xunit;
 
 namespace CmsData.Tests
 {
+    [Collection("Database collection")]
     public class CMSDataContextTests
     {
         [Fact]

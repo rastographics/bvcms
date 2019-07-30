@@ -7,6 +7,7 @@ using CmsWeb.Lifecycle;
 using CmsWeb.Areas.Dialog.Models;
 using System.Collections.Generic;
 using CmsWeb.Areas.OnlineReg.Models;
+using UtilityExtensions;
 
 namespace CMSWebTests
 {
@@ -38,7 +39,7 @@ namespace CMSWebTests
 
         public static OnlineRegModel GetFakeOnlineRegModel(int OrgId)
         {
-            var m = new OnlineRegModel(ContexTestUtils.FakeHttpContext().Request, ContexTestUtils.CurrentDatabase(), OrgId, null, null, null, null);
+            var m = new OnlineRegModel(ContextTestUtils.FakeHttpContext().Request, CMSDataContext.Create(Util.Host), OrgId, null, null, null, null);
             m.UserPeopleId = 1;
             return m;
         }

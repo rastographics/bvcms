@@ -4,6 +4,7 @@ using System;
 using System.Security.Principal;
 using System.Web;
 using CmsWeb.Lifecycle;
+using UtilityExtensions;
 
 namespace CMSWebTests
 {
@@ -17,11 +18,11 @@ namespace CMSWebTests
 
         public FakeRequestManager()
         {
-            CurrentHttpContext = ContexTestUtils.FakeHttpContext();
+            CurrentHttpContext = ContextTestUtils.FakeHttpContext();
             RequestId = Guid.NewGuid();
-            CurrentUser = ContexTestUtils.FakeHttpContext().User;
-            CurrentDatabase = ContexTestUtils.CurrentDatabase();
-            CurrentImageDatabase = CMSImageDataContext.Create(ContexTestUtils.FakeHttpContext());
+            CurrentUser = ContextTestUtils.FakeHttpContext().User;
+            CurrentDatabase = CMSDataContext.Create(Util.Host);
+            CurrentImageDatabase = CMSImageDataContext.Create(ContextTestUtils.FakeHttpContext());
         }
 
         public Elmah.ErrorLog GetErrorLog()

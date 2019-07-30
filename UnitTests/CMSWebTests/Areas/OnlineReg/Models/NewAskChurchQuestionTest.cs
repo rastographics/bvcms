@@ -1,12 +1,15 @@
 ﻿using Xunit;
 using System.Collections;
 using System.Net.Http;
+using CmsData;
 using CmsWeb.Areas.OnlineReg.Models;
 using System.Collections.Generic;
 using Shouldly;
+using UtilityExtensions;
 
 namespace CMSWebTests.Areas.OnlineReg.Models.AskChurch
 {
+    [Collection("Database collection")]
     public class NewAskChurchQuestionTest
     {
         private int OrgId { get; set; }
@@ -47,7 +50,8 @@ namespace CMSWebTests.Areas.OnlineReg.Models.AskChurch
         public void ShouldDeleteReg()
         {
             FakeOrganizationUtils.DeleteOrg(OrgId);
-            var CurrentOrg = ContexTestUtils.CurrentDatabase().LoadOrganizationById(OrgId);
+            var db = CMSDataContext.Create(Util.Host);
+            var CurrentOrg = db.LoadOrganizationById(OrgId);
             CurrentOrg.ShouldBe(null);
         }
     }

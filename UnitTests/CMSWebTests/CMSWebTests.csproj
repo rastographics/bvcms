@@ -102,6 +102,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\SharedTestFixtures\DatabaseCollection.cs">
+      <Link>DatabaseCollection.cs</Link>
+    </Compile>
     <Compile Include="TestUtils\FakeOrganizationUtils.cs" />
     <Compile Include="TestUtils\FakeRequestManager.cs" />
     <Compile Include="Areas\OnlineReg\Models\NewAskChurchQuestionTest.cs" />
@@ -110,7 +113,7 @@
     <Compile Include="Code\CodeValueModelTests.cs" />
     <Compile Include="Code\ViewExtensions2Tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestUtils\ContexTestUtils.cs" />
+    <Compile Include="TestUtils\ContextTestUtils.cs" />
     <Compile Include="TestUtils\ControllerTestUtils.cs" />
   </ItemGroup>
   <ItemGroup>
