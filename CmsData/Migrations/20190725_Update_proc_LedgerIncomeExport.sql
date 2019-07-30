@@ -3,7 +3,7 @@ ALTER PROC [dbo].[LedgerIncomeExport]
 	@fd DATETIME, 
 	@td DATETIME,
 	@campusid INT,
-	@nontaxded BIT,
+	@nontaxded INT,
 	@includeUnclosed BIT,
 	@includeBundleType BIT
 )

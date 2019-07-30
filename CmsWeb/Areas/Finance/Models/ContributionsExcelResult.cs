@@ -60,7 +60,7 @@ namespace CmsWeb.Models
                         fd = Dt1,
                         td = Dt2,
                         campusid,
-                        nontaxded = nontaxdeductible,
+                        nontaxded = nontaxdeductible.HasValue ? nontaxdeductible.ToInt() : (int?)null,
                         includeunclosed = IncUnclosedBundles,
                         includeBundleType = IncludeBundleType,
                     }, commandType: CommandType.StoredProcedure);
