@@ -31,7 +31,7 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 
 		public List<Group> groups = new List<Group>();
 
-		public static List<FamilyMember> forFamilyID( SqlConnection db, int familyID, int campus, DateTime date )
+		public static List<FamilyMember> forFamilyID( SqlConnection db, int familyID, int campus, DateTime date, bool returnPictureUrls )
 		{
 			List<FamilyMember> members = new List<FamilyMember>();
 			DataTable table = new DataTable();
@@ -79,7 +79,7 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 			foreach( DataRow row in table.Rows ) {
 				FamilyMember member = new FamilyMember();
 				member.populate( row );
-				member.loadPicture();
+				member.loadPicture(returnPictureUrls);
 				member.loadGroups( db, campus, date );
 
 				members.Add( member );
@@ -93,13 +93,32 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 			groups.AddRange( Group.forPersonID( db, id, campus, date ) );
 		}
 
-		private void loadPicture()
+		private void loadPicture(bool returnUrl)
 		{
 			CmsData.Person person = CmsData.DbUtil.Db.People.SingleOrDefault( p => p.PeopleId == id );
+            int? ImageId;
 
-			if( person == null || person.Picture == null ) return;
+            if (person == null || person.Picture == null)
+            {
+                switch (person?.Gender?.Code)
+                {
+                    case "M":
+                        ImageId = CmsData.Picture.SmallMissingMaleId;
+                        break;
+                    case "F":
+                        ImageId = CmsData.Picture.SmallMissingFemaleId;
+                        break;
+                    default:
+                        ImageId = CmsData.Picture.SmallMissingGenericId;
+                        break;
+                }
+            }
+            else
+            {
+                ImageId = person.Picture.SmallId;
+            }
 
-			ImageData.Image image = ImageData.DbUtil.Db.Images.SingleOrDefault( i => i.Id == person.Picture.SmallId );
+			ImageData.Image image = ImageData.DbUtil.Db.Images.SingleOrDefault( i => i.Id == ImageId );
 
 			if( image != null ) {
 				picture = Convert.ToBase64String( image.Bits );

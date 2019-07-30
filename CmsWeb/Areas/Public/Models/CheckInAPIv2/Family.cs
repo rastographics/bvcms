@@ -25,7 +25,7 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 
 		public readonly List<FamilyMember> members = new List<FamilyMember>();
 
-		public static List<Family> forSearch( SqlConnection db, string search, int campus, DateTime date )
+		public static List<Family> forSearch( SqlConnection db, string search, int campus, DateTime date, bool returnPictureUrls = false )
 		{
 			List<Family> families = new List<Family>();
 			DataTable table = new DataTable();
@@ -112,8 +112,8 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 			foreach( DataRow row in table.Rows ) {
 				Family family = new Family();
 				family.populate( row );
-				family.loadPicture();
-				family.loadMembers( db, campus, date );
+				family.loadPicture(returnPictureUrls);
+				family.loadMembers( db, campus, date, returnPictureUrls );
 
 				families.Add( family );
 			}
@@ -121,18 +121,26 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 			return families;
 		}
 
-		private void loadMembers( SqlConnection db, int campus, DateTime date )
+		private void loadMembers( SqlConnection db, int campus, DateTime date, bool returnPictureUrls )
 		{
-			members.AddRange( FamilyMember.forFamilyID( db, id, campus, date ) );
+			members.AddRange( FamilyMember.forFamilyID( db, id, campus, date, returnPictureUrls ) );
 		}
 
-		private void loadPicture()
+		private void loadPicture(bool returnUrl)
 		{
 			CmsData.Family family = CmsData.DbUtil.Db.Families.SingleOrDefault( f => f.FamilyId == id );
+            int? ImageId;
 
-			if( family == null || family.Picture == null ) return;
+            if (family == null || family.Picture == null)
+            {
+                ImageId = CmsData.Picture.SmallMissingGenericId;
+            }
+            else
+            {
+                ImageId = family.Picture.SmallId;
+            }
 
-			ImageData.Image image = ImageData.DbUtil.Db.Images.SingleOrDefault( i => i.Id == family.Picture.SmallId );
+			ImageData.Image image = ImageData.DbUtil.Db.Images.SingleOrDefault( i => i.Id == ImageId );
 
 			if( image != null ) {
 				picture = Convert.ToBase64String( image.Bits );

@@ -25,14 +25,24 @@
     border-bottom: 1px solid #333;
     outline: 0;
 }
-.checkin .results .member-portrait {
-    display: block;
-    width: 100px;
-    height: 100px;
+.checkin .member-portrait {
+    height: 140px;
+    width: 140px;
+    display: inline;
+    background-repeat: no-repeat;
+    background-size: cover;
+    float: left;
+    margin-right: 15px;
+    margin-left: 15px;
+    margin-bottom: 15px;
+}
+.checkin .results {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 27px;
 }
 .checkin .results .member.row {
     margin-top: 20px;
-    border-bottom: 1px solid #333;
 }
 .checkin .results .member.row:last-of-type {
     border-bottom: 0;
@@ -47,4 +57,11 @@
 }
 .simple-keyboard {
     max-width: 400px;
+}
+hr {
+    margin-top: 0;
+    margin-bottom: 15px;
+    border: 0;
+    border-bottom: 1px solid #333;
+    height: 1px;
 }

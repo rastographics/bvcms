@@ -134,7 +134,8 @@ namespace CmsWeb.Areas.Public.Controllers
 			response.setNoError();
 
 			using( var db = new SqlConnection( Util.ConnectionString ) ) {
-				List<Family> families = Family.forSearch( db, cns.search, cns.campus, cns.date );
+                bool returnPictureUrls = message.device == Message.API_DEVICE_WEB;
+				List<Family> families = Family.forSearch( db, cns.search, cns.campus, cns.date, returnPictureUrls );
 
 				response.data = SerializeJSON( families, message.version );
 			}

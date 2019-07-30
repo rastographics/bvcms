@@ -151,6 +151,7 @@ var CheckInApp = new Vue({
             }
             this.view = newView;
             if (newView === 'landing') {
+                this.search.phone = '';
                 this.initKeyboard();
             }
         },
@@ -279,12 +280,30 @@ var CheckInApp = new Vue({
             this.members = family.members;
             this.loadView('checkin');
         },
+        toggleAttendance(memberId, groupId) {
+            var attend = memberId + '.' + groupId;
+            var index = this.attendance.indexOf(attend);
+            if (index > -1) {
+                this.attendance.splice(index, 1);
+            } else {
+                this.attendance.push(attend);
+            }
+        },
         updateAttendance() {
             // todo: post attendance bundle to /UpdateAttend
             let vm = this;
             if (vm.attendance.length) {
-                alert(vm.attendance);
                 console.log(vm.attendance);
+                swal({
+                    title: "You're all checked in",
+                    text: "Don't forget your name tags",
+                    type: "success",
+                    showCancelButton: false,
+                    confirmButtonClass: "btn-success",
+                    confirmButtonText: "OK"
+                }, function () {
+                    vm.loadView('landing');
+                });
             } else {
                 this.loadView('landing');
             }
