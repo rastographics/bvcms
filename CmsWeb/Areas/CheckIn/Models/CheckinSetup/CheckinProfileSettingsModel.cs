@@ -6,6 +6,7 @@ namespace CmsWeb.Models
     public class CheckinProfileSettingsModel
     {
         public int CheckinProfileId { get; set; }
+        public int? CampusId { get; set; }
         public int? EarlyCheckin { get; set; }
         public int? LateCheckin { get; set; }
         public bool Testing { get; set; }
@@ -19,6 +20,6 @@ namespace CmsWeb.Models
         public string Logout { get; set; }
         public bool Guest { get; set; }
         public bool Location { get; set; }
-        public int? SecurityType { get; set; }
+        public int SecurityType { get; set; }
     }
 }

@@ -398,7 +398,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Areas\CheckIn\Controllers\CheckinSetupController.cs" />
-    <Compile Include="Areas\CheckIn\Models\CheckinSetup\CheckinProfiles.cs" />
+    <Compile Include="Areas\CheckIn\Models\CheckinSetup\CheckinProfileModel.cs" />
     <Compile Include="Areas\CheckIn\Models\CheckinSetup\CheckinProfileSettingsModel.cs" />
     <Compile Include="Areas\Coordinator\Models\CheckinActionDto.cs" />
     <Compile Include="Areas\Coordinator\Models\CheckinAttendeeDto.cs" />

@@ -13,40 +13,28 @@
                         <thead>
                             <tr>
                                 <th style="width: 150px;">
-                                    Profile Setup Name
+                                    Check In Profiles
                                 </th>
                                 <th style="width: 150px;">
-                                    <a class="btn btn-success" v-on:click="vueTest()" href="#">Click me</a>
+                                    <a class="btn btn-success" v-on:click="CreateCheckinProfile()" href="#">
+                                        <span class="glyphicon glyphicon-plus"></span>&nbsp;Add
+                                    </a>
                                 </th>
                             </tr>
                         </thead>
                         <tbody>
-                            <template v-for="profiles in CheckinProfiles">
-                                <tr v-if="profiles.Name !== null">
+                            <template v-for="profile in CheckinProfiles">
+                                <tr v-if="profile.Name !== null">
                                     <td>
-                                        {{profiles.Name}}
-                                    </td>
-                                    @*<td>
-                                        <a v-on:click="modalInfo(process.ProcessId, process.GatewayAccountId)" class="blue-avaiable" href="#">
-                                            {{process.GatewayAccountName}}
+                                        <a v-on:click="modalInfo(profile.CheckinProfileId)" class="blue-avaiable" href="#">
+                                            {{profile.Name}}
                                         </a>
-                                    </td>*@
+                                    </td>
                                     <td style="width: 50px;">
                                         <a v-on:click="" href="#" class="btn btn-sm btn-danger deleteprocess">
                                             <i class="fa fa-trash"></i>&nbsp;Delete
                                         </a>
                                     </td>
-                                </tr>
-                                <tr v-else>
-                                    <td>
-                                        {{process.ProcessName}}
-                                    </td>
-                                    <td>
-                                        <a v-on:click="modalInfo(process.ProcessId, process.GatewayAccountId)" class="red-empty" href="#">
-                                            Empty
-                                        </a>
-                                    </td>
-                                    <td style="width: 50px;"></td>
                                 </tr>
                             </template>
                         </tbody>
@@ -56,63 +44,198 @@
         </div>
     </div>
 
-    @*<div class="modal fade" tabindex="-1" role="dialog" id="config-modal">
+    <div class="modal fade" tabindex="-1" role="dialog" id="config-modal">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form class="multiplegateway-form" v-on:submit.prevent="processForm">
+                <form class="profilesettings-form" v-on:submit.prevent="settingsForm">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                        <h4 class="modal-title">{{ProcessName}}</h4>
+                        <h4 v-if="CheckinProfile.Name === null" class="modal-title">New Check-In Profile</h4>
+                        <h4 v-else class="modal-title">{{CheckinProfile.Name}}</h4>
                     </div>
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-md-3">
-                                <label>Account Name</label>
+                                <label>Profile Name</label>
                             </div>
                             <div class="col-md-6">
-                                <input v-on:change="checkAccount" v-model="AccountName" type="text" class="form-control" list="gtAccounts" />
-                                <datalist id="gtAccounts">
-                                    <template v-for="account in GatewayAccounts">
-                                        <option v-bind:value="account.GatewayAccountName">
-                                    </template>
-                                </datalist>
-                                <small v-show="!IsGatewayReadOnly">*This Configuration will be save as a new account</small>
+                                <input v-model="CheckinProfile.Name" type="text" class="form-control"/>
                             </div>
                         </div>
                         <br />
-                        <div class="row">
-                            <div class="col-md-3">
-                                <label>Gateway Type</label>
+                        <ul class="nav nav-tabs">
+                            <li class="active">
+                                <a href="#general" data-toggle="tab">General</a>
+                            </li>
+                            <li>
+                                <a href="#testing" data-toggle="tab">Testing</a>
+                            </li>
+                            <li>
+                                <a href="#security" data-toggle="tab">Security</a>
+                            </li>
+                            <li>
+                                <a href="#otheroptions" data-toggle="tab">Other Options</a>
+                            </li>
+                            <li>
+                                <a href="#design" data-toggle="tab">Design</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <!---------------General Tab---------------------->
+                            <div class="tab-pane active" id="general">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label>Campus</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <select class="form-control" v-model="CampusId">
+                                            <option value="-1">All Campuses</option>
+                                            <option v-for="campus in Campuses" v-bind:value="campus.Id">{{campus.Description}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label>Early Check-In</label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>Late Check-In</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <select class="form-control" v-model="EarlyCheck">
+                                            <option value="-1">All Day</option>
+                                            <option v-for="time in TimeLapseList" v-bind:value="time.id">{{time.text}}</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <select class="form-control" v-model="LateCheck">
+                                            <option value="-1">All Day</option>
+                                            <option v-for="time in TimeLapseList" v-bind:value="time.id">{{time.text}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <br />
                             </div>
-                            <div class="col-md-6">
-                                <select class="form-control" v-model="GatewayId" v-on:change="OnChangeGateway" v-bind:disabled="IsGatewayReadOnly">
-                                    <template v-for="gateway in Gateways">
-                                        <option v-bind:value="gateway.GatewayId">{{gateway.GatewayName}}</option>
-                                    </template>
-                                </select>
+                            <!--------------------------Testing Tab--------------------------------->
+                            <div class="tab-pane" id="testing">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <input v-model="CheckinProfileSettings.Testing" type="checkbox" />
+                                        &nbsp;Enable Testing
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label v-if="CheckinProfileSettings.Testing === true">Test a specific day</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <select v-if="CheckinProfileSettings.Testing === true" v-model="CheckinProfileSettings.TestDay" class="form-control">
+                                            <option v-for="day in DaysOfTheWeek" v-bind:value="day.id">{{day.text}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <br />
+                            </div>
+                            <!---------------------Security---------------------------------------------->
+                            <div class="tab-pane" id="security">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label>Admin PIN</label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>Pin Timout (in seconds)</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <input v-model="CheckinProfileSettings.AdminPIN" class="form-control" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input v-model="CheckinProfileSettings.PINTimeout" class="form-control" />
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label>Logout Code</label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>Security Type</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <input v-model="CheckinProfileSettings.Logout" class="form-control" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <select v-model="CheckinProfileSettings.SecurityType" class="form-control">
+                                            <option v-for="type in SecurityTypes" v-bind:value="type.id">{{type.text}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <br />
+                            </div>
+                            <!-----------------------------------OtherOptions----------------------------------------->
+                            <div class="tab-pane" id="otheroptions">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <input v-model="CheckinProfileSettings.DisableJoin" type="checkbox" />
+                                        &nbsp;Disable Join
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input v-model="CheckinProfileSettings.DisableTimer" type="checkbox" />
+                                        &nbsp;Disable Timer
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <input v-model="CheckinProfileSettings.Guest" type="checkbox" />
+                                        &nbsp;Guest
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input v-model="CheckinProfileSettings.Location" type="checkbox" />
+                                        &nbsp;Location
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label>Cutoff Age</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <input v-model="CheckinProfileSettings.CutoffAge" class="form-control" />
+                                    </div>
+                                </div>
+                                <br />
+                            </div>
+                            <!-------------------------------------Desing---------------------------------->
+                            <div class="tab-pane" id="design">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label>Background Image</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <input id="backgroundImage "type="file" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="button" name="Upload" value="Upload" class="btn btn-primary" id="uploadbgimage"/>
+                                    </div>
+                                </div>
+                                <br />
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-6 col-md-offset-3">
-                                <label v-show="UseForAllShow" class="label-gateway">
-                                    <input v-model="UseForAll" class="" type="checkbox" />
-                                    &nbsp;Use for all payment processes
-                                </label>
-                            </div>
-                        </div>
-                        <hr />
-                        <template v-for="(input, index) in Inputs">
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <label>{{input.GatewayDetailName}}</label>
-                                </div>
-                                <div class="col-md-6">
-                                    <input v-if="input.IsBoolean" type="checkbox" v-model="DetailValue[index]" true-value="true" false-value="false" />
-                                    <input required v-else class="form-control" v-model="DetailValue[index]" />
-                                </div>
-                            </div>
-                            <br />
-                        </template>
                     </div>
                     <div class="modal-footer">
                         <input type="submit" value="Save" class="btn btn-primary">
@@ -121,7 +244,7 @@
                 </form>
             </div>
         </div>
-    </div>*@
+    </div>
 </div>
 @section scripts
 {

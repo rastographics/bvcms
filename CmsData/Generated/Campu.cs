@@ -32,7 +32,8 @@ namespace CmsData
    		private EntitySet<Person> _People;
 		
    		private EntitySet<Resource> _Resources;
-		
+
+        private EntitySet<CheckinProfileSettings> _CheckinProfileSettings;		
     	
 	#endregion
 	
@@ -61,10 +62,12 @@ namespace CmsData
 			
 			this._People = new EntitySet<Person>(new Action< Person>(this.attach_People), new Action< Person>(this.detach_People)); 
 			
-			this._Resources = new EntitySet<Resource>(new Action< Resource>(this.attach_Resources), new Action< Resource>(this.detach_Resources)); 
-			
-			
-			OnCreated();
+			this._Resources = new EntitySet<Resource>(new Action< Resource>(this.attach_Resources), new Action< Resource>(this.detach_Resources));
+
+            this._CheckinProfileSettings = new EntitySet<CheckinProfileSettings>(new Action<CheckinProfileSettings>(this.attach_CheckinProfileSettings), new Action<CheckinProfileSettings>(this.detach_CheckinProfileSettings));
+
+
+            OnCreated();
 		}
 
 		
@@ -191,14 +194,22 @@ namespace CmsData
 
    		}
 
-		
-	#endregion
-	
-	#region Foreign Keys
-    	
-	#endregion
-	
-		public event PropertyChangingEventHandler PropertyChanging;
+        [Association(Name = "Checking_Profile_Settings_CAMPUS_FK", Storage = "_CheckinProfileSettings", OtherKey = "CampusId")]
+        public EntitySet<CheckinProfileSettings> CheckinProfileSettings
+        {
+            get { return this._CheckinProfileSettings; }
+
+            set { this._CheckinProfileSettings.Assign(value); }
+        }
+
+
+        #endregion
+
+        #region Foreign Keys
+
+        #endregion
+
+        public event PropertyChangingEventHandler PropertyChanging;
 		protected virtual void SendPropertyChanging()
 		{
 			if ((this.PropertyChanging != null))
@@ -251,8 +262,17 @@ namespace CmsData
 			entity.Campu = null;
 		}
 
-		
-	}
+        private void attach_CheckinProfileSettings(CheckinProfileSettings entity)
+        {
+            this.SendPropertyChanging();
+            entity.Campu = this;
+        }
 
+        private void detach_CheckinProfileSettings(CheckinProfileSettings entity)
+        {
+            this.SendPropertyChanging();
+            entity.Campu = null;
+        }
+    }
 }
 

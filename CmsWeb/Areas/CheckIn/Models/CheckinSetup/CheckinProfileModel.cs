@@ -3,10 +3,10 @@
 namespace CmsWeb.Models
 {
     [JsonObject]
-    public class CheckinProfiles
+    public class CheckinProfileModel
     {
         public int CheckinProfileId { get; set; }
         public string Name { get; set; }
-        public CheckinProfileSettingsModel Settings { get; set; }
+        public CheckinProfileSettingsModel CheckinProfileSettings { get; set; }
     }
 }

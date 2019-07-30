@@ -7,6 +7,7 @@ using CmsWeb.Lifecycle;
 using CmsWeb.Models;
 using CmsWeb.Common;
 using UtilityExtensions;
+using CmsWeb.Code;
 
 namespace CmsWeb.Areas.CheckIn.Controllers
 {
@@ -27,39 +28,45 @@ namespace CmsWeb.Areas.CheckIn.Controllers
 
         [HttpGet]
         [Route("~/CheckinSetup/GetCheckinProfiles")]
-        public JsonResult GetProfiles()
+        public JsonResult GetCheckinProfiles()
         {
-            var CheckinProfiles = CurrentDatabase.CheckinProfiles.Where(c => c.CheckinProfileId > 0);
-            //var Processes = (from e in CurrentDatabase.PaymentProcess
-            //                 join d in CurrentDatabase.GatewayAccount on e.GatewayAccountId equals d.GatewayAccountId into gj
-            //                 from sub in gj.DefaultIfEmpty()
-            //                 select new
-            //                 {
-            //                     e.ProcessId,
-            //                     e.ProcessName,
-            //                     sub.GatewayId,
-            //                     GatewayAccountId = e.GatewayAccountId ?? null,
-            //                     GatewayAccountName = sub.GatewayAccountName ?? null
-            //                 }).ToList();
-
-            //return Json(Processes, JsonRequestBehavior.AllowGet);
+            var CheckinProfiles = CurrentDatabase.CheckinProfiles.ToList();
 
             return Json(CheckinProfiles, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
-        [Route("~/CheckinSetup/GetProfileSettings")]
-        public JsonResult GetProfileSettings()
+        [Route("~/CheckinSetup/CreateCheckinSettings")]
+        public JsonResult CreateCheckinSettings()
         {
-            //var Gateways = CurrentDatabase.Gateways.ToList();
-            //return Json(Gateways, JsonRequestBehavior.AllowGet);
+            var CheckinProfileSettings = new CheckinProfileSettingsModel();
 
-            return Json("Ok");
+            return Json(CheckinProfileSettings, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        [Route("~/CheckinSetup/CreateCheckinProfile")]
+        public JsonResult CreateCheckinProfile()
+        {
+            var CheckinProfile = new CheckinProfileModel(){
+                CheckinProfileSettings = new CheckinProfileSettingsModel()
+            };
+
+            return Json(CheckinProfile, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        [Route("~/CheckinSetup/GetCampuses")]
+        public JsonResult GetCampuses()
+        {
+            var Campuses = CurrentDatabase.Campus.ToList();
+
+            return Json(Campuses, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
-        [Route("~/CheckinSetup/InsertProfile/{IsInsert}")]
-        public JsonResult InsertProfile([System.Web.Http.FromBody]CheckinProfiles json, bool IsInsert)
+        [Route("~/CheckinSetup/InsertCheckinProfile")]
+        public JsonResult InsertCheckinProfile([System.Web.Http.FromBody]CheckinProfileModel json)
         {
             //var paymentProcess = CurrentDatabase.PaymentProcess.SingleOrDefault(x => x.ProcessId == json.ProcessId);
 
@@ -127,7 +134,7 @@ namespace CmsWeb.Areas.CheckIn.Controllers
             //    }
             //}
 
-            return GetProfiles();
+            return GetCheckinProfiles();
         }
 
         [HttpDelete]
@@ -139,7 +146,7 @@ namespace CmsWeb.Areas.CheckIn.Controllers
             //paymentProcess.GatewayAccountId = null;
             //CurrentDatabase.SubmitChanges();
 
-            return GetProfiles();
+            return GetCheckinProfiles();
         }
     }
 }

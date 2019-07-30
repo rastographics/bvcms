@@ -1,34 +1,36 @@
-﻿alert('here');
-var multipleGateway = new Vue({
+﻿var multipleGateway = new Vue({
     el: '#checkinSetup',
     data: {
         CheckinProfiles: [{}],
-        //Processes: [{}],
-        //Gateways: [{}],
-        //GatewayAccounts: [{}],
-        //ProcessName: '',
-        //GatewayAccountId: null,
-        //ProcessId: null,
-        //AccountName: '',
-        //GatewayId: null,
-        //Inputs: [{}],
-        //DetailValue: [],
-        //IsGatewayReadOnly: false,
-        //UseForAll: false,
-        //UseForAllShow: true
+        CheckinProfileId: null,
+        CheckinProfileSettings: [{}],
+        ProfileName: null,
+        CheckinProfile: [{}],
+        CampusId: null,
+        Campuses: [{}],
+        TimeLapseList: [{}],
+        DaysOfTheWeek: [{}],
+        SecurityTypes: [{}],
+        EarlyCheck: null,
+        LateCheck: null,
+        isNew: false
     },
     methods: {
         myFunctionOnLoad: function () {
-            console.log('myFunctionOnLoad');
             this.GetCheckinProfiles();
+            this.GetCampuses();
+            this.SetTimeLapseList();
+            this.SetDaysOfTheWeek();
+            this.SetSecurityTypes();
         },
-        GetCheckinProfiles: function () {
-            console.log('checkingProfileMethod');
-            this.$http.get('/CheckinSetup/GetCheckinProfiles').then(
+        CreateCheckinProfile: function () {
+            this.$http.get('/CheckinSetup/CreateCheckinProfile').then(
                 response => {
                     if (response.status === 200) {
-                        this.CheckinProfiles = response.body;
-                        //this.GetProcesses();
+                        this.CheckinProfile = response.body;
+                        this.CheckinProfileSettings = this.CheckinProfile.CheckinProfileSettings;
+                        this.isNew = true;
+                        this.modalInfo(0);
                     }
                     else {
                         console.log(response);
@@ -41,200 +43,155 @@ var multipleGateway = new Vue({
                 }
             );
         },
-        vueTest: function () {
-            console.log('vueTest');
+        GetCheckinProfiles: function () {
+            this.$http.get('/CheckinSetup/GetCheckinProfiles').then(
+                response => {
+                    if (response.status === 200) {
+                        this.CheckinProfiles = response.body;
+                        console.log(this.CheckinProfiles);
+                    }
+                    else {
+                        console.log(response);
+                        warning_swal('Warning!', 'Something went wrong, try again later');
+                    }
+                },
+                err => {
+                    console.log(err);
+                    error_swal('Fatal Error!', 'We are working to fix it');
+                }
+            );
         },
-        //GetProcesses: function () {
-        //    this.$http.get('/Gateway/GetProcesses').then(
-        //        response => {
-        //            if (response.status === 200) {
-        //                this.Processes = response.body;
-
-        //                var nullProcesses = this.Processes.filter(function (item) {
-        //                    return item.GatewayAccountId === null;
-        //                }).length;
-
-        //                this.UseForAllShow = nullProcesses >= 2 ? true : false;
-
-        //                this.GetGateways();
-        //            }
-        //            else {
-        //                console.log(response);
-        //                warning_swal('Warning!', 'Something went wrong, try again later');
-        //            }
-        //        },
-        //        err => {
-        //            console.log(err);
-        //            error_swal('Fatal Error!', 'We are working to fix it');
-        //        }
-        //    );
-        //},
-        //GetGateways: function () {
-        //    this.$http.get('/Gateway/GetGateways').then(
-        //        response => {
-        //            if (response.status === 200) {
-        //                this.Gateways = response.body;
-        //                this.GetGatewayAccounts();
-        //            }
-        //            else {
-        //                console.log(response);
-        //                warning_swal('Warning!', 'Something went wrong, try again later');
-        //            }
-        //        },
-        //        err => {
-        //            console.log(err);
-        //            error_swal('Fatal Error!', 'We are working to fix it');
-        //        }
-        //    );
-        //},
-        //GetGatewayAccounts: function () {
-        //    this.$http.get('/Gateway/GetGatewayAccounts').then(
-        //        response => {
-        //            if (response.status === 200) {
-        //                this.GatewayAccounts = response.body;
-        //            }
-        //            else {
-        //                console.log(response);
-        //                warning_swal('Warning!', 'Something went wrong, try again later');
-        //            }
-        //        },
-        //        err => {
-        //            console.log(err);
-        //            error_swal('Fatal Error!', 'We are working to fix it');
-        //        }
-        //    );
-        //},
-        //modalInfo: function (ProcessId, GatewayAccountId) {
-        //    this.IsGatewayReadOnly = true;
-        //    this.DetailValue = [];
-        //    this.GatewayAccountId = GatewayAccountId;
-
-        //    if (ProcessId !== null) {
-        //        this.ProcessId = ProcessId;
-        //        var res = this.Processes.filter(function (item) {
-        //            return item.ProcessId === ProcessId;
-        //        })[0];
-
-        //        this.ProcessName = res.ProcessName;
-        //        this.GatewayId = res.GatewayId;
-        //        this.AccountName = res.GatewayAccountName;
-
-        //        if (GatewayAccountId !== null) {
-        //            this.Inputs = this.GatewayDetails.filter(function (item) {
-        //                return item.GatewayAccountId === GatewayAccountId;
-        //            });
-
-        //            for (let i = 0; i < this.Inputs.length; i++)
-        //                this.DetailValue.push(this.Inputs[i].GatewayDetailValue);
-        //        }
-        //        else
-        //            this.Inputs = [{}];
-
-        //        $('#config-modal').modal();
-        //    }
-        //    else {
-        //        this.Inputs = this.GatewayDetails.filter(function (item) {
-        //            return item.GatewayAccountId === GatewayAccountId;
-        //        });
-
-        //        for (let i = 0; i < this.Inputs.length; i++)
-        //            this.DetailValue.push(this.Inputs[i].GatewayDetailValue);
-        //    }
-        //},
-        //OnChangeGateway: function () {
-        //    this.DetailValue = [];
-        //    this.$http.get('/Gateway/GetGatewayTemplate/' + this.GatewayId).then(
-        //        response => {
-        //            if (response.status === 200) {
-        //                this.Inputs = response.body;
-        //                this.IsGatewayReadOnly = false;
-        //                for (let i = 0; i < this.Inputs.length; i++)
-        //                    this.DetailValue.push(this.Inputs[i].GatewayDetailValue);
-        //            }
-        //            else {
-        //                console.log(response);
-        //                warning_swal('Warning!', 'Something went wrong, try again later');
-        //            }
-        //        },
-        //        err => {
-        //            console.log(err);
-        //            error_swal('Fatal Error!', 'We are working to fix it');
-        //        }
-        //    );
-        //},
-        //checkAccount: function () {
-        //    var res = this.GatewayAccounts.filter(function (item) {
-        //        return item.GatewayAccountName === event.target.value;
-        //    });
-        //    if (res.length > 0) {
-        //        this.GatewayId = res[0].GatewayId;
-        //        this.modalInfo(null, res[0].GatewayAccountId);
-        //    }
-        //    else {
-        //        if (this.GatewayId === null)
-        //            this.GatewayId = 1;
-        //        this.OnChangeGateway();
-        //    }
-
-        //},
-        //processForm: function () {
-        //    var IsInsert = this.IsGatewayReadOnly ? false : true;
-        //    var GatewayAccountInputs = this.Inputs.map(function (item) {
-        //        return item.GatewayDetailName;
-        //    });
-
-        //    if (IsInsert) {
-        //        this.$http.post('/Gateway/InsertAccount/' + IsInsert, {
-        //            ProcessId: this.ProcessId,
-        //            GatewayAccountName: this.AccountName,
-        //            GatewayId: this.GatewayId,
-        //            GatewayAccountInputs: GatewayAccountInputs,
-        //            GatewayAccountValues: this.DetailValue,
-        //            UseForAll: this.UseForAll
-        //        }).then(
-        //            response => {
-        //                if (response.status === 200) {
-        //                    this.myFunctionOnLoad();
-        //                    success_swal('Success', 'Configuration Saved');
-        //                    $('#config-modal').modal('hide');
-        //                }
-        //                else {
-        //                    console.log(response);
-        //                    warning_swal('Warning!', 'Something went wrong, try again later');
-        //                }
-        //            },
-        //            err => {
-        //                console.log(err);
-        //                error_swal('Fatal Error!', 'We are working to fix it');
-        //            }
-        //        );
-        //    }
-        //    else {
-        //        this.$http.post('/Gateway/InsertAccount/' + IsInsert, {
-        //            ProcessId: this.ProcessId,
-        //            GatewayAccountId: this.GatewayAccountId,
-        //            GatewayAccountInputs: GatewayAccountInputs,
-        //            GatewayAccountValues: this.DetailValue,
-        //            UseForAll: this.UseForAll
-        //        }).then(
-        //            response => {
-        //                if (response.status === 200) {
-        //                    this.myFunctionOnLoad();
-        //                    success_swal('Success', 'Configuration Saved');
-        //                    $('#config-modal').modal('hide');
-        //                }
-        //                else {
-        //                    console.log(response);
-        //                    warning_swal('Warning!', 'Something went wrong, try again later');
-        //                }
-        //            },
-        //            err => {
-        //                console.log(err);
-        //                error_swal('Fatal Error!', 'We are working to fix it');
-        //            }
-        //        );
-        //    }
-        //},
+        GetCheckinProfilesSettings: function () {
+            this.$http.get('/CheckinSetup/GetCheckinProfileSettings/' + this.CheckinProfileId).then(
+                response => {
+                    if (response.status === 200) {
+                        this.CheckingProfileSettings = response.body;
+                        this.ProfileName = this.CheckinProfiles.filter(function (item) {
+                            return item.CheckingProfileId === this.CheckinProfileId;
+                        })[0].Name;
+                    }
+                    else {
+                        console.log(response);
+                        warning_swal('Warning!', 'Something went wrong, try again later');
+                        this.GetCheckinProfilesSettings = [{}];
+                    }
+                },
+                err => {
+                    console.log(err);
+                    error_swal('Fatal Error!', 'We are working to fix it');
+                    this.GetCheckinProfilesSettings = [{}];
+                }
+            );
+        },
+        GetCampuses: function () {
+            this.$http.get('/CheckinSetup/GetCampuses').then(
+                response => {
+                    if (response.status === 200) {
+                        this.Campuses = response.body;
+                        console.log(this.Campuses);
+                    }
+                    else {
+                        console.log(response);
+                        warning_swal('Warning!', 'Something went wrong, try again later');
+                    }
+                },
+                err => {
+                    console.log(err);
+                    error_swal('Fatal Error!', 'We are working to fix it');
+                }
+            );
+        },
+        SetTimeLapseList: function () {
+            this.TimeLapseList = [
+                { text: '30 minutes', id: 30 },
+                { text: '45 minutes', id: 45 },
+                { text: '1 hour', id: 60 },
+                { text: '1 1/2 hours', id: 90 },
+                { text: '2 hours', id: 120 },
+                { text: '3 hours', id: 180 },
+                { text: '4 hours', id: 240 },
+                { text: '8 hours', id: 480 },
+                { text: '12 hours', id: 720 }
+            ]
+        },
+        SetDaysOfTheWeek: function () {
+            this.DaysOfTheWeek = [
+                { text: 'Sunday', id: 0 },
+                { text: 'Monday', id: 1 },
+                { text: 'Tuesday', id: 2 },
+                { text: 'Wednesday', id: 3 },
+                { text: 'Thursday', id: 4 },
+                { text: 'Friday', id: 5 },
+                { text: 'Saturday', id: 6 }
+            ]
+        },
+        SetSecurityTypes: function () {
+            this.SecurityTypes = [
+                { text: 'None', id: 0 },
+                { text: 'Per Meeting', id: 1 },
+                { text: 'Per Child', id: 2 },
+                { text: 'Per Family', id: 3 }
+            ]
+        },
+        modalInfo: function (CheckinProfileId) {
+            this.DetailValue = [];
+            console.log(CheckinProfileId);
+            this.CheckinProfileId = CheckinProfileId;
+            console.log(this.CheckinProfileId);
+            if (this.CheckinProfileId !== 0) {
+                this.CheckinProfile = this.CheckinProfiles.filter(function (item) {
+                    return item.CheckingProfileId === this.CheckinProfileId;
+                })[0];
+                this.isNew = false;
+            }
+            console.log(this.CheckinProfile);
+            this.ValidateCheckBoxes();
+            $('#config-modal').modal();
+        },
+        ValidateCheckBoxes: function () {
+            console.log(this.CheckinProfileSettings);
+            if (this.CheckinProfileSettings.CampusId === null) {
+                this.CampusId = -1;
+            } else {
+                this.CampusId = this.CheckinProfileSettings.CampusId;
+            }
+            if (this.CheckinProfileSettings.EarlyCheckin === null) {
+                this.EarlyCheck = -1;
+            } else {
+                this.EarlyCheck = this.CheckinProfileSettings.EarlyCheckin;
+            }
+            if (this.CheckinProfileSettings.LateCheckin === null) {
+                this.LateCheck = -1;
+            } else {
+                this.LateCheck = this.CheckinProfileSettings.LateCheckin;
+            }
+        },
+        settingsForm: function () {
+            this.CheckinProfileSettings.CampusId = this.CampusId;
+            this.CheckinProfileSettings.EarlyCheckin = this.EarlyCheck;
+            this.CheckinProfileSettings.LateCheckin = this.LateCheck;
+            this.$http.post('/CheckinSetup/InsertCheckinProfile', {
+                CheckinProfileId: this.CheckinProfileId,
+                Name: this.CheckinProfile.Name,
+                CheckinProfileSettings: this.CheckinProfileSettings
+            }).then(
+                response => {
+                    if (response.status === 200) {
+                        this.myFunctionOnLoad();
+                        success_swal('Success', 'Profile Saved');
+                        $('#config-modal').modal('hide');
+                    }
+                    else {
+                        console.log(response);
+                        warning_swal('Warning!', 'Something went wrong, try again later');
+                    }
+                },
+                err => {
+                    console.log(err);
+                    error_swal('Fatal Error!', 'We are working to fix it');
+                }
+            );
+        }
         //    deleteProcess: function (ProcessId) {
         //        this.$http.post('/Gateway/DeleteProcessAccount', {
         //            ProcessId: ProcessId
@@ -258,7 +215,6 @@ var multipleGateway = new Vue({
         //},
     },
     created: function () {
-        console.log('Created');
         this.myFunctionOnLoad();
     }
 });

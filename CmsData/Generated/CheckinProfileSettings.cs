@@ -13,6 +13,7 @@ namespace CmsData
 
         #region Private Fields
         private int _CheckinProfileId;
+        private int? _CampusId;
         private int? _EarlyCheckin;
         private int? _LateCheckin;
         private bool _Testing;
@@ -29,6 +30,7 @@ namespace CmsData
         private int? _SecurityType;
 
         private EntityRef<CheckinProfiles> _CheckinProfiles;
+        private EntityRef<Campu> _Campu;
         #endregion
 
         #region Extensibility Method Definitions
@@ -38,6 +40,9 @@ namespace CmsData
 
         partial void OnCheckinProfileIdChanging(int value);
         partial void OnCheckinProfileIdChanged();
+
+        partial void OnCampusIdChanging(int? value);
+        partial void OnCampusIdChanged();
 
         partial void OnEarlyCheckinChanging(int? value);
         partial void OnEarlyCheckinChanged();
@@ -85,6 +90,7 @@ namespace CmsData
         public CheckinProfileSettings()
         {
             this._CheckinProfiles = default(EntityRef<CheckinProfiles>);
+            this._Campu = default(EntityRef<Campu>);
 
             OnCreated();
         }
@@ -110,6 +116,29 @@ namespace CmsData
                     this.SendPropertyChanged("CheckinProfileId");
                     this.OnCheckinProfileIdChanged();
                 }            
+            }
+        }
+
+        [Column(Name = "CampusId", UpdateCheck = UpdateCheck.Never, Storage = "_CampusId", DbType = "int NULL", IsPrimaryKey = true)]
+        [IsForeignKey]
+        public int? CampusId
+        {
+            get { return this._CampusId; }
+
+            set
+            {
+                if (this._CampusId != value)
+                {
+
+                    if (this._Campu.HasLoadedOrAssignedValue)
+                        throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+
+                    this.OnCampusIdChanging(value);
+                    this.SendPropertyChanging();
+                    this._CampusId = value;
+                    this.SendPropertyChanged("CampusId");
+                    this.OnCampusIdChanged();
+                }
             }
         }
 
@@ -398,6 +427,41 @@ namespace CmsData
                     }
 
                     this.SendPropertyChanged("CheckinProfiles");
+                }
+            }
+        }
+
+        [Association(Name = "Checking_Profile_Settings_CAMPUS_FK", Storage = "_Campu", ThisKey = "CampusId", IsForeignKey = true)]
+        public Campu Campu
+        {
+            get { return this._Campu.Entity; }
+
+            set
+            {
+                Campu previousValue = this._Campu.Entity;
+                if (((previousValue != value)
+                            || (this._Campu.HasLoadedOrAssignedValue == false)))
+                {
+                    this.SendPropertyChanging();
+                    if (previousValue != null)
+                    {
+                        this._Campu.Entity = null;
+                        previousValue.CheckinProfileSettings.Remove(this);
+                    }
+
+                    this._Campu.Entity = value;
+                    if (value != null)
+                    {
+                        value.CheckinProfileSettings.Add(this);
+
+                        this._CampusId = value.Id;
+                    }
+                    else
+                    {
+                        this._CampusId = default(int);
+                    }
+
+                    this.SendPropertyChanged("Campu");
                 }
             }
         }

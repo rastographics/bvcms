@@ -20,7 +20,7 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where
 	BEGIN				
 		CREATE TABLE [dbo].[CheckinProfiles](
 			[CheckinProfileId][int] IDENTITY(1,1) PRIMARY KEY,
-			[Name] NVARCHAR(100) NOT NULL
+			[Name] NVARCHAR(100) NOT NULL UNIQUE
 		);
 	END
 GO
@@ -31,6 +31,7 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where
 	BEGIN				
 		CREATE TABLE [dbo].CheckinProfileSettings(
 			[CheckinProfileId][int] FOREIGN KEY REFERENCES [dbo].[CheckinProfiles](CheckinProfileId) NOT NULL UNIQUE,
+			[CampusId][INT] FOREIGN KEY REFERENCES [lookup].[Campus](Id) NULL,
 			[EarlyCheckin][int] NULL,
 			[LateCheckin][int] NULL,
 			[Testing] BIT NOT NULL,
