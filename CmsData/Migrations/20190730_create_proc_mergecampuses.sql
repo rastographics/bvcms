@@ -1,7 +1,6 @@
-﻿
-IF OBJECT_ID('dbo.MergeCampuses') IS NULL
-exec sp_execute '
-CREATE PROC dbo.MergeCampuses(
+﻿DROP PROCEDURE IF EXISTS [dbo].[MergeCampuses]
+GO
+CREATE PROC [dbo].[MergeCampuses] (
 	@destCampus int,
 	@oldCampus int
 ) AS
@@ -25,4 +24,4 @@ BEGIN
 	delete lookup.Campus
 	WHERE Id = @oldCampus
 	RETURN
-END'
+END
