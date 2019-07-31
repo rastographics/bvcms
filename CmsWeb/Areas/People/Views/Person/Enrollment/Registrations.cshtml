@@ -31,18 +31,18 @@
       </tr>
       @foreach (var f in fulfillmenlist)
       {
-        var balance = f.Cost - f.Paid;
+        var balance = f.AmtFee - f.AmtPaid;
         <tr>
           <td>
-              <span>@f.Trip</span>
+              <span>@f.OrgName</span>
           </td>
-          <td class="text-right">@f.Cost.ToString("C")</td>
-          <td class="text-right">@f.Paid.ToString("C")</td>
+          <td class="text-right">@f.AmtFee.ToString2("C")</td>
+          <td class="text-right">@f.AmtPaid.ToString2("C")</td>
           <td class="text-right">
-            @balance.ToString("C")
+            @balance.ToString2("C")
           </td>
           <td style="width: 50px;">
-              <a href="@OrgMemberModel.GetPayLink(f.Id, Model.PeopleId)" class="btn btn-default btn-sm">Make Payment</a>
+              <a href="@OrgMemberModel.GetPayLink(f.Organization.OrganizationId, Model.PeopleId)" class="btn btn-default btn-sm">Make Payment</a>
           </td>
         </tr>
       }
