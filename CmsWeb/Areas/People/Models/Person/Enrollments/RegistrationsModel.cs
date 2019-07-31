@@ -126,7 +126,6 @@ namespace CmsWeb.Areas.People.Models
 
         public List<OrgMemberModel> FulfillmentList()
         {
-
             var OrgMembers = (from mm in DbUtil.Db.OrganizationMembers
                      where mm.PeopleId == PeopleId
                      select new
