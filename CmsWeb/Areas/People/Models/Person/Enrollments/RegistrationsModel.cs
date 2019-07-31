@@ -1,5 +1,6 @@
 ﻿using CmsData;
 using CmsData.Codes;
+using CmsWeb.Areas.Dialog.Models;
 using CmsWeb.Code;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -112,6 +113,24 @@ namespace CmsWeb.Areas.People.Models
                     where m.Organization.IsMissionTrip == true
                     where m.Organization.OrganizationStatusId == OrgStatusCode.Active
                     where m.OrgMemMemTags.Any(mm => mm.MemberTag.Name == "Goer")
+                    let ts = DbUtil.Db.ViewMissionTripTotals.SingleOrDefault(tt => tt.OrganizationId == m.OrganizationId && tt.PeopleId == m.PeopleId)
+                    select new GoerItem
+                    {
+                        Id = m.OrganizationId,
+                        Trip = m.Organization?.OrganizationName,
+                        Cost = ts.TripCost ?? 0,
+                        Paid = ts.Raised ?? 0,
+                        ShowFundingLink = m.Organization?.TripFundingPagesEnable ?? false
+                    }).ToList();
+        }
+
+        public List<GoerItem> FulfillmentList()
+        {
+            var q = new OrgMemberModel(282, 2);
+
+            return (from m in Person.OrganizationMembers
+                    where m.Organization.OrganizationStatusId == OrgStatusCode.Active
+                    where m.OrgMemMemTags.Any()
                     let ts = DbUtil.Db.ViewMissionTripTotals.SingleOrDefault(tt => tt.OrganizationId == m.OrganizationId && tt.PeopleId == m.PeopleId)
                     select new GoerItem
                     {

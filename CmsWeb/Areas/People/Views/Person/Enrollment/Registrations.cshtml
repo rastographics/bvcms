@@ -3,10 +3,53 @@
 @using UtilityExtensions
 @model CmsWeb.Areas.People.Models.RegistrationsModel
 @{
-  var goerlist = Model.GoerList();
+    var goerlist = Model.GoerList();
+    var fulfillmenlist = Model.FulfillmentList();
 }
 <form class="ajax" method="post">
   <h3>Registration History</h3>
+
+  @if(Util.IsMyDataUser)
+  {
+    if (fulfillmenlist.Count > 0)
+    {
+    <div class="row">
+      <div class="col-sm-6">
+          <h4>Event Registration Fulfillment</h4>
+      </div>
+      <div class="col-sm-6">
+        @FormActions()
+      </div>
+    </div>
+    <table class="table table-striped">
+      <tr>
+        <th>Trip</th>
+        <th class="text-right">Cost</th>
+        <th class="text-right">Paid</th>
+        <th class="text-right">Balance</th>
+        <th style="width: 50px;">Actions</th>
+      </tr>
+      @foreach (var f in fulfillmenlist)
+      {
+        var balance = f.Cost - f.Paid;
+        <tr>
+          <td>
+              <span>@f.Trip</span>
+          </td>
+          <td class="text-right">@f.Cost.ToString("C")</td>
+          <td class="text-right">@f.Paid.ToString("C")</td>
+          <td class="text-right">
+            @balance.ToString("C")
+          </td>
+          <td style="width: 50px;">
+              <a href="@OrgMemberModel.GetPayLink(f.Id, Model.PeopleId)" class="btn btn-default btn-sm">Make Payment</a>
+          </td>
+        </tr>
+      }
+    </table>
+    }
+  }
+
   @if (goerlist.Count > 0)
   {
     <div class="row">
@@ -74,6 +117,7 @@
       </div>
     </div>
   }
+
   <div class="well">
     <div class="row">
       <div class="col-md-5 col-lg-5">
