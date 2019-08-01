@@ -79,6 +79,7 @@ namespace CmsData
         FirstName,
         FirstPersonSameEmail,
         GenderId,
+        GetEldestFamilyMember,
         GivingChange,
         Grade,
         Group,

@@ -37,211 +37,221 @@
 {
   return;
 }
-<table class="table table-condensed">
-    @foreach (var ask in Model.setting.AskItems)
-    {
-        switch (ask.Type)
+    <table class="table table-condensed">
+        @foreach (var ask in Model.setting.AskItems)
         {
-            case "AskSize":
-                <tr>
-                    <td>@(((AskSize)ask).Label)</td>
-                    <td>@Model.shirtsize</td>
-                </tr>
-                break;
-            case "AskRequest":
-            <tr>
-                <td>@Util.PickFirst(((AskRequest)ask).Label, "Request")</td>
-                <td>@Model.request</td>
-            </tr>
-                break;
-            case "AskHeader":
-            <tr>
-                <td></td>
-                <td><strong>@Html.Raw(((AskHeader)ask).Label)</strong></td>
-            </tr>
-                break;
-            case "AskInstruction":
-                break;
-            case "AskEmContact":
-            <tr>
-                <td>Emergency Contact</td>
-                <td>@Model.emcontact</td>
-            </tr>
-            <tr>
-                <td>EmergencyPhone</td>
-                <td>@Model.emphone</td>
-            </tr>
-                break;
-            case "AskInsurance":
-            <tr>
-                <td>Insurance Carrier</td>
-                <td>@Model.insurance</td>
-            </tr>
-            <tr>
-                <td>Policy #</td>
-                <td>@Model.policy </td>
-            </tr>
-                break;
-            case "AskDoctor":
-            <tr>
-                <td>Family Physician Name</td>
-                <td>@Model.doctor </td>
-            </tr>
-            <tr>
-                <td>Family Physician Phone</td>
-                <td>@Model.docphone </td>
-            </tr>
-                break;
-            case "AskAllergies":
-            <tr>
-                <td>
-                    Allergies or<br />
-                    Medical Problems
-                </td>
-                <td>@Model.medical </td>
-            </tr>
-                break;
-            case "AskTylenolEtc":
-            <tr>
-                <td>May we give your child</td>
-                <td>
-                    Tylenol?: @(Model.tylenol == true ? "Yes" : Model.tylenol == false ? "No" : "")<br />
-                    Advil?: @(Model.advil == true ? "Yes" : Model.advil == true ? "No" : "")<br />
-                    Robitussin?: @(Model.robitussin == true ? "Yes" : Model.robitussin == false ? "No" : "")<br />
-                    Maalox?: @(Model.maalox == true ? "Yes" : Model.maalox == false ? "No" : "")
-                </td>
-            </tr>
-                break;
-            case "AskParents":
-            <tr>
-                <td>Mother's Name (first last)</td>
-                <td>@Model.mname </td>
-            </tr>
-            <tr>
-                <td>Father's Name (first last)</td>
-                <td>@Model.fname </td>
-            </tr>
-                break;
-            case "AskCoaching":
-            <tr>
-                <td>Interested in Coaching?</td>
-                <td>@(Model.coaching == true ? "Yes" : "No") </td>
-            </tr>
-                break;
-            case "AskSMS":
-            <tr>
-                <td>Recive Text Messages?</td>
-                <td>@(Model.sms == true ? "Yes" : "No") </td>
-            </tr>
-                break;
-            case "AskChurch":
-            <tr>
-                <td>@(Model.setting.AskVisible("AskParents") ? "Parent's Church" : "Church")</td>
-                <td>
-                    @(Model.memberus ? "Member of our church" : "not member of our church") <br />
-                    @(Model.otherchurch ? "Active in another Local Church" : "not active in another church")
-                </td>
-            </tr>
-                break;
-            case "AskTickets":
-            <tr>
-                <td>No. of Items</td>
-                <td>@Model.ntickets </td>
-            </tr>
-                break;
-            case "AskSuggestedFee":
-            <tr>
-                <td>@Util.PickFirst(((AskSuggestedFee)ask).Label, "Suggested Fee")</td>
-                <td>@Model.Suggestedfee.ToString2("f2") </td>
-            </tr>
-                break;
-            case "AskDropdown":
-            <tr>
-                <td><div class="wraparound">@Util.PickFirst(((AskDropdown)ask).Label, "Options")</div></td>
-                <td>@(((AskDropdown)ask).SmallGroupChoice(Model.option).Description)</td>
-            </tr>
-                break;
-            case "AskExtraQuestions":
-                var eq = (AskExtraQuestions)ask;
-                foreach (var a in eq.list)
-                {
+            switch (ask.Type)
+            {
+                case "AskSize":
                     <tr>
-                        <td><div class="wraparound">@a.Question</div></td>
-                        <td> @Model.ExtraQuestionAnswer(eq.UniqueId, a.Question)</td>
+                        <td>@(((AskSize)ask).Label)</td>
+                        <td>@Model.shirtsize</td>
                     </tr>
-                }
-                break;
-            case "AskText":
-                var tx = (AskText)ask;
-                foreach (var a in tx.list)
-                {
+                    break;
+                case "AskRequest":
                     <tr>
-                        <td><div class="wraparound">@a.Question</div></td>
-                        <td> @Model.TextAnswer(tx.UniqueId,a.Question)</td>
+                        <td>@Util.PickFirst(((AskRequest)ask).Label, "Request")</td>
+                        <td>@Model.request</td>
                     </tr>
-                }
-                break;
-            case "AskYesNoQuestions":
-                foreach (var a in ((AskYesNoQuestions)ask).list)
-                {
+                    break;
+                case "AskHeader":
                     <tr>
-                        <td><div class="wraparound">@a.Question</div></td>
-                        <td> @(Model.YesNoChecked(a.SmallGroup, true) ? "Yes" : "No") </td>
+                        <td></td>
+                        <td><strong>@Html.Raw(((AskHeader)ask).Label)</strong></td>
                     </tr>
-                }
-                break;
-            case "AskCheckboxes":
-                var cb = (AskCheckboxes)ask;
-                foreach (var a in cb.list)
-                {
-                    if (a.SmallGroup == "comment")
+                    break;
+                case "AskInstruction":
+                    break;
+                case "AskEmContact":
+                    <tr>
+                        <td>Emergency Contact</td>
+                        <td>@Model.emcontact</td>
+                    </tr>
+                    <tr>
+                        <td>EmergencyPhone</td>
+                        <td>@Model.emphone</td>
+                    </tr>
+                    break;
+                case "AskInsurance":
+                    <tr>
+                        <td>Insurance Carrier</td>
+                        <td>@Model.insurance</td>
+                    </tr>
+                    <tr>
+                        <td>Policy #</td>
+                        <td>@Model.policy </td>
+                    </tr>
+                    break;
+                case "AskPassport":
+                    <tr>
+                        <td>Passport Number</td>
+                        <td>@Model.passportNumber</td>
+                    </tr>
+                    <tr>
+                        <td>Passport Expires Date</td>
+                        <td>@Model.passportNumber </td>
+                    </tr>
+                    break;
+                case "AskDoctor":
+                    <tr>
+                        <td>Family Physician Name</td>
+                        <td>@Model.doctor </td>
+                    </tr>
+                    <tr>
+                        <td>Family Physician Phone</td>
+                        <td>@Model.docphone </td>
+                    </tr>
+                    break;
+                case "AskAllergies":
+                    <tr>
+                        <td>
+                            Allergies or<br />
+                            Medical Problems
+                        </td>
+                        <td>@Model.medical </td>
+                    </tr>
+                    break;
+                case "AskTylenolEtc":
+                    <tr>
+                        <td>May we give your child</td>
+                        <td>
+                            Tylenol?: @(Model.tylenol == true ? "Yes" : Model.tylenol == false ? "No" : "")<br />
+                            Advil?: @(Model.advil == true ? "Yes" : Model.advil == true ? "No" : "")<br />
+                            Robitussin?: @(Model.robitussin == true ? "Yes" : Model.robitussin == false ? "No" : "")<br />
+                            Maalox?: @(Model.maalox == true ? "Yes" : Model.maalox == false ? "No" : "")
+                        </td>
+                    </tr>
+                    break;
+                case "AskParents":
+                    <tr>
+                        <td>Mother's Name (first last)</td>
+                        <td>@Model.mname </td>
+                    </tr>
+                    <tr>
+                        <td>Father's Name (first last)</td>
+                        <td>@Model.fname </td>
+                    </tr>
+                    break;
+                case "AskCoaching":
+                    <tr>
+                        <td>Interested in Coaching?</td>
+                        <td>@(Model.coaching == true ? "Yes" : "No") </td>
+                    </tr>
+                    break;
+                case "AskSMS":
+                    <tr>
+                        <td>Recive Text Messages?</td>
+                        <td>@(Model.sms == true ? "Yes" : "No") </td>
+                    </tr>
+                    break;
+                case "AskChurch":
+                    <tr>
+                        <td>@(Model.setting.AskVisible("AskParents") ? "Parent's Church" : "Church")</td>
+                        <td>
+                            @(Model.memberus ? "Member of our church" : "not member of our church") <br />
+                            @(Model.otherchurch ? "Active in another Local Church" : "not active in another church")
+                        </td>
+                    </tr>
+                    break;
+                case "AskTickets":
+                    <tr>
+                        <td>No. of Items</td>
+                        <td>@Model.ntickets </td>
+                    </tr>
+                    break;
+                case "AskSuggestedFee":
+                    <tr>
+                        <td>@Util.PickFirst(((AskSuggestedFee)ask).Label, "Suggested Fee")</td>
+                        <td>@Model.Suggestedfee.ToString2("f2") </td>
+                    </tr>
+                    break;
+                case "AskDropdown":
+                    <tr>
+                        <td><div class="wraparound">@Util.PickFirst(((AskDropdown)ask).Label, "Options")</div></td>
+                        <td>@(((AskDropdown)ask).SmallGroupChoice(Model.option).Description)</td>
+                    </tr>
+                    break;
+                case "AskExtraQuestions":
+                    var eq = (AskExtraQuestions)ask;
+                    foreach (var a in eq.list)
                     {
+                        <tr>
+                            <td><div class="wraparound">@a.Question</div></td>
+                            <td> @Model.ExtraQuestionAnswer(eq.UniqueId, a.Question)</td>
+                        </tr>
                     }
-                    else
+                    break;
+                case "AskText":
+                    var tx = (AskText)ask;
+                    foreach (var a in tx.list)
                     {
-                        if (a.SmallGroup == "nocheckbox" && cb.Columns == 1)
+                        <tr>
+                            <td><div class="wraparound">@a.Question</div></td>
+                            <td> @Model.TextAnswer(tx.UniqueId, a.Question)</td>
+                        </tr>
+                    }
+                    break;
+                case "AskYesNoQuestions":
+                    foreach (var a in ((AskYesNoQuestions)ask).list)
+                    {
+                        <tr>
+                            <td><div class="wraparound">@a.Question</div></td>
+                            <td> @(Model.YesNoChecked(a.SmallGroup, true) ? "Yes" : "No") </td>
+                        </tr>
+                    }
+                    break;
+                case "AskCheckboxes":
+                    var cb = (AskCheckboxes)ask;
+                    foreach (var a in cb.list)
+                    {
+                        if (a.SmallGroup == "comment")
                         {
-                            <tr><td colspan="2"><b>@Html.Raw(a.Description)</b></td></tr>
                         }
-                        else if (Model.CheckboxChecked(a.SmallGroup))
+                        else
                         {
-                            <tr>
-                                <td><div class="wraparound">@a.Description</div></td>
-                                <td>Checked</td>
-                            </tr>
+                            if (a.SmallGroup == "nocheckbox" && cb.Columns == 1)
+                            {
+                                <tr><td colspan="2"><b>@Html.Raw(a.Description)</b></td></tr>
+                            }
+                            else if (Model.CheckboxChecked(a.SmallGroup))
+                            {
+                                <tr>
+                                    <td><div class="wraparound">@a.Description</div></td>
+                                    <td>Checked</td>
+                                </tr>
+                            }
                         }
                     }
-                }
-                break;
-            case "AskMenu":
-                foreach (var i in ((AskMenu)ask).MenuItemsChosen(Model.MenuItem[ask.UniqueId]))
-                {
+                    break;
+                case "AskMenu":
+                    foreach (var i in ((AskMenu)ask).MenuItemsChosen(Model.MenuItem[ask.UniqueId]))
+                    {
+                        <tr>
+                            <td>@i.desc</td>
+                            <td> @i.number </td>
+                        </tr>
+                    }
+                    break;
+                case "AskGradeOptions":
                     <tr>
-                        <td>@i.desc</td>
-                        <td> @i.number </td>
+                        <td>Grade Option</td>
+                        <td>@Model.GradeOptions(ask).SingleOrDefault(s => s.Value == (Model.gradeoption ?? "00")).Text </td>
                     </tr>
-                }
-                break;
-            case "AskGradeOptions":
-            <tr>
-                <td>Grade Option</td>
-                <td>@Model.GradeOptions(ask).SingleOrDefault(s => s.Value == (Model.gradeoption ?? "00")).Text </td>
-            </tr>
-                break;
+                    break;
+            }
         }
-    }
-    @foreach (var i in Model.FundItemsChosen())
-    {
-        <tr>
-            <td>@i.Desc</td>
-            <td> @i.Amt.ToString("N2")</td>
-        </tr>
-    }
-    @if (Model.setting.Deposit > 0)
-    {
-        <tr>
-            <td>Payment</td>
-            <td>@(Model.paydeposit == true ? "Pay Deposit Only" : "Pay Full Amount")</td>
-        </tr>
-    }
-</table>
+        @foreach (var i in Model.FundItemsChosen())
+        {
+            <tr>
+                <td>@i.Desc</td>
+                <td> @i.Amt.ToString("N2")</td>
+            </tr>
+        }
+        @if (Model.setting.Deposit > 0)
+        {
+            <tr>
+                <td>Payment</td>
+                <td>@(Model.paydeposit == true ? "Pay Deposit Only" : "Pay Full Amount")</td>
+            </tr>
+        }
+    </table>

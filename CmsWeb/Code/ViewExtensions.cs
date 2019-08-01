@@ -14,6 +14,7 @@ using OfficeOpenXml.Style;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Configuration;
 using System.Drawing;
 using System.Globalization;
@@ -238,6 +239,11 @@ namespace CmsWeb
             }
 
             return sb.ToString();
+        }
+
+        public static string ToQueryString(this NameValueCollection form)
+        {
+            return string.Join("&", form.AllKeys.Select(a => HttpUtility.UrlEncode(a) + "=" + HttpUtility.UrlEncode(form[a])));
         }
 
         public static string GetSiteUrl(this ViewPage pg)

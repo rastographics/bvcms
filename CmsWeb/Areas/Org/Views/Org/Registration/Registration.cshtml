@@ -135,6 +135,12 @@
       <div class="col-sm-3 col-md-3">
         @Html.DisplayFor(m => m.NotReqMarital, new {FalseValue = "n/a"})
       </div>
+      <div class="col-sm-3 col-md-3">
+        @Html.DisplayFor(m => m.ShowDOBOnFind, new {FalseValue = "n/a"})
+      </div>
+      <div class="col-sm-3 col-md-3">
+        @Html.DisplayFor(m => m.ShowPhoneOnFind, new {FalseValue = "n/a"})
+      </div>
       @if (DbUtil.Db.Setting("ShowCampusOnRegistration", "false").Equal("true"))
       {
         <div class="col-sm-3 col-md-3">

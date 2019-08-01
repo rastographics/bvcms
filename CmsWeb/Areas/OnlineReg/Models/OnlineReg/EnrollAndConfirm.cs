@@ -10,6 +10,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using UtilityExtensions;
+using CmsWeb.Code;
+using HtmlAgilityPack;
 
 namespace CmsWeb.Areas.OnlineReg.Models
 {
@@ -134,13 +136,13 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
         }
 
-        private bool ValidateEmailRecipientRegistrant(string name, string detailSection)
+        public static bool ValidateEmailRecipientRegistrant(string name, string detailSection)
         {
-            return true;
-            detailSection = $"<root>{detailSection}</root>";
-            XDocument doc = XDocument.Parse(detailSection);
-            IEnumerable<string> childList = from el in doc.Descendants("registrant")
-                                            select el.Value;
+            //some users use to include <br> tags in his emails but this tag is not recognized by xdocument.
+            var htmlDoc = new HtmlDocument();
+            htmlDoc.LoadHtml(detailSection);
+            IEnumerable<string> childList = from el in htmlDoc.DocumentNode.Descendants("registrant")
+                                            select el.InnerText;
 
             return childList.Any(p => p == name);
         }
