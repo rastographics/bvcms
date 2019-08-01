@@ -34,7 +34,6 @@
                         this.CheckinProfile = response.body;
                         this.CheckinProfileId = this.CheckinProfile.CheckinProfileId;
                         this.CheckinProfileSettings = this.CheckinProfile.CheckinProfileSettings;
-                        this.isNew = true;
                         this.modalInfo(0);
                     }
                     else {
@@ -53,7 +52,6 @@
                 response => {
                     if (response.status === 200) {
                         this.CheckinProfiles = response.body;
-                        console.log(this.CheckinProfiles);
                     }
                     else {
                         console.log(response);
@@ -84,7 +82,6 @@
             );
         },
         deleteProfile: function (CheckinProfileId) {
-            console.log(CheckinProfileId);
             this.$http.delete('/CheckinSetup/DeleteProfile/' + CheckinProfileId).then(
                 response => {
                     if (response.status === 200) {
@@ -105,25 +102,19 @@
         modalInfo: function (CheckinProfileId) {
             if (CheckinProfileId !== 0) {
                 this.CheckinProfileId = CheckinProfileId;
-                console.log(this.CheckinProfileId);
                 this.CheckinProfile = this.CheckinProfiles.filter(function (item) {
                     return item.CheckinProfileId === CheckinProfileId;
                 })[0];
                 this.CheckinProfileSettings = this.CheckinProfile.CheckinProfileSettings;
-                this.isNew = false;
             }
             this.BGImageURL = this.CheckinProfileSettings.BackgroundImageURL;
             this.BGImageName = this.CheckinProfileSettings.BackgroundImageName;
-            console.log("image: " + this.BGImageURL);
-            console.log(this.CheckinProfile);
-            console.log(this.CheckinProfileSettings);
             this.ValidateCheckBoxes();
             this.clearBGInput();
             $('#config-modal').modal();
         },
         onFileSelected: function (event) {
             this.SelectedBGImage = event.target.files[0];
-            console.log(this.SelectedBGImage);
             this.BGImageName = this.SelectedBGImage.name;
             this.BGImageURL = URL.createObjectURL(this.SelectedBGImage);
         },
@@ -131,14 +122,12 @@
             this.CheckinProfileSettings.CampusId = this.CampusId;
             this.CheckinProfileSettings.EarlyCheckin = this.EarlyCheck;
             this.CheckinProfileSettings.LateCheckin = this.LateCheck;
-            console.log(this.CheckinProfileId);
             const jsonD = {
                 CheckinProfileId: this.CheckinProfileId,
                 Name: this.CheckinProfile.Name,
                 CheckinProfileSettings: this.CheckinProfileSettings
             };
             const formData = new FormData();
-            console.log("selectedBG: " + this.SelectedBGImage);
             if (this.SelectedBGImage !== null) {
                 formData.append('bgImage', this.SelectedBGImage);
             }
