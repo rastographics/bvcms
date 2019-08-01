@@ -134,7 +134,6 @@
 </div>
 @section scripts
 {
-    @Fingerprint.Script("/Content/touchpoint/lib/jquery-cookie/js/jquery.cookie.js")
     @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-editable/js/bootstrap-editable.min.js")
     <script type="text/javascript">
         $(function() {
@@ -235,17 +234,17 @@
                     e.preventDefault();
                     var tab = $(e.target).attr('href').replace("#", "#tab-");
                     window.location.hash = tab;
-                    $.cookie('last-settings-tab', tab);
+                    localStorage.setItem('last-settings-tab', tab);
                 });
 
-            var lastTab = $.cookie('last-settings-tab');
+            var lastTab = localStorage.getItem('last-settings-tab');
             if (window.location.hash) {
                 lastTab = window.location.hash;
             }
             if (lastTab) {
                 var tlink = $("a[href='" + lastTab.replace("tab-", "") + "']");
                 if (tlink.attr("href") !== '#') {
-                    $.cookie('last-settings-tab', tlink.attr("href"));
+                    localStorage.setItem('last-settings-tab', tlink.attr("href").replace('#', '#tab-'));
                     tlink.click().tab("show");
                 }
             }
