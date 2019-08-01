@@ -31,7 +31,7 @@
                                         </a>
                                     </td>
                                     <td style="width: 50px;">
-                                        <a v-on:click="" href="#" class="btn btn-sm btn-danger deleteprocess">
+                                        <a v-on:click="deleteProfile(profile.CheckinProfileId)" href="#" class="btn btn-sm btn-danger deleteprofile">
                                             <i class="fa fa-trash"></i>&nbsp;Delete
                                         </a>
                                     </td>
@@ -59,7 +59,7 @@
                                 <label>Profile Name</label>
                             </div>
                             <div class="col-md-6">
-                                <input v-model="CheckinProfile.Name" type="text" class="form-control"/>
+                                <input required v-model="CheckinProfile.Name" type="text" class="form-control" />
                             </div>
                         </div>
                         <br />
@@ -74,6 +74,9 @@
                                 <a href="#security" data-toggle="tab">Security</a>
                             </li>
                             <li>
+                                <a href="#printing" data-toggle="tab">Printing</a>
+                            </li>
+                            <li>
                                 <a href="#otheroptions" data-toggle="tab">Other Options</a>
                             </li>
                             <li>
@@ -86,10 +89,6 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <label>Campus</label>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
                                         <select class="form-control" v-model="CampusId">
                                             <option value="-1">All Campuses</option>
                                             <option v-for="campus in Campuses" v-bind:value="campus.Id">{{campus.Description}}</option>
@@ -100,19 +99,13 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <label>Early Check-In</label>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label>Late Check-In</label>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
                                         <select class="form-control" v-model="EarlyCheck">
                                             <option value="-1">All Day</option>
                                             <option v-for="time in TimeLapseList" v-bind:value="time.id">{{time.text}}</option>
                                         </select>
                                     </div>
                                     <div class="col-md-6">
+                                        <label>Late Check-In</label>
                                         <select class="form-control" v-model="LateCheck">
                                             <option value="-1">All Day</option>
                                             <option v-for="time in TimeLapseList" v-bind:value="time.id">{{time.text}}</option>
@@ -128,14 +121,11 @@
                                         <input v-model="CheckinProfileSettings.Testing" type="checkbox" />
                                         &nbsp;Enable Testing
                                     </div>
-                                    <div class="col-md-6">
-                                        <label v-if="CheckinProfileSettings.Testing === true">Test a specific day</label>
-                                    </div>
                                 </div>
+                                <br />
                                 <div class="row">
                                     <div class="col-md-6">
-                                    </div>
-                                    <div class="col-md-6">
+                                        <label v-if="CheckinProfileSettings.Testing === true">Test a specific day</label>
                                         <select v-if="CheckinProfileSettings.Testing === true" v-model="CheckinProfileSettings.TestDay" class="form-control">
                                             <option v-for="day in DaysOfTheWeek" v-bind:value="day.id">{{day.text}}</option>
                                         </select>
@@ -145,39 +135,47 @@
                             </div>
                             <!---------------------Security---------------------------------------------->
                             <div class="tab-pane" id="security">
+                                @*<div class="row">
+                                        <div class="col-md-6">
+                                                <label>Admin PIN</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label>Pin Timout (in seconds)</label>
+                                            </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <input v-model="CheckinProfileSettings.AdminPIN" class="form-control" type="hidden" />
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input v-model="CheckinProfileSettings.PINTimeout" class="form-control" type="hidden" />
+                                        </div>
+                                    </div>*@
+                                @*<br />*@
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <label>Admin PIN</label>
+                                        <label>Logout Code (5 digits)</label>
+                                        <input v-model="CheckinProfileSettings.Logout" class="form-control logoutCode" />
                                     </div>
                                     <div class="col-md-6">
-                                        <label>Pin Timout (in seconds)</label>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <input v-model="CheckinProfileSettings.AdminPIN" class="form-control" />
-                                    </div>
-                                    <div class="col-md-6">
-                                        <input v-model="CheckinProfileSettings.PINTimeout" class="form-control" />
+                                        <label>Show Checkin Confirmation</label>
+                                        <select v-model="CheckinProfileSettings.ShowCheckinConfirmation" class="form-control">
+                                            <option v-for="time in ShowCheckConfTimes" v-bind:value="time.id">{{time.text}}</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <br />
+                            </div>
+                            <!---------------------Printing---------------------------------------------->
+                            <div class="tab-pane" id="printing">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <label>Logout Code</label>
+                                        <input v-model="CheckinProfileSettings.Guest" type="checkbox" />
+                                        &nbsp;Show Guest Label
                                     </div>
                                     <div class="col-md-6">
-                                        <label>Security Type</label>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <input v-model="CheckinProfileSettings.Logout" class="form-control" />
-                                    </div>
-                                    <div class="col-md-6">
-                                        <select v-model="CheckinProfileSettings.SecurityType" class="form-control">
-                                            <option v-for="type in SecurityTypes" v-bind:value="type.id">{{type.text}}</option>
-                                        </select>
+                                        <input v-model="CheckinProfileSettings.Location" type="checkbox" />
+                                        &nbsp;Show Location Label
                                     </div>
                                 </div>
                                 <br />
@@ -185,10 +183,10 @@
                             <!-----------------------------------OtherOptions----------------------------------------->
                             <div class="tab-pane" id="otheroptions">
                                 <div class="row">
-                                    <div class="col-md-6">
-                                        <input v-model="CheckinProfileSettings.DisableJoin" type="checkbox" />
-                                        &nbsp;Disable Join
-                                    </div>
+                                    @*<div class="col-md-6">
+                                            <input v-model="CheckinProfileSettings.DisableJoin" type="checkbox" />
+                                            &nbsp;Disable Join
+                                        </div>*@
                                     <div class="col-md-6">
                                         <input v-model="CheckinProfileSettings.DisableTimer" type="checkbox" />
                                         &nbsp;Disable Timer
@@ -197,23 +195,12 @@
                                 <br />
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <input v-model="CheckinProfileSettings.Guest" type="checkbox" />
-                                        &nbsp;Guest
-                                    </div>
-                                    <div class="col-md-6">
-                                        <input v-model="CheckinProfileSettings.Location" type="checkbox" />
-                                        &nbsp;Location
-                                    </div>
-                                </div>
-                                <br />
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <label>Cutoff Age</label>
+                                        <label>Child Cutoff Age</label>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <input v-model="CheckinProfileSettings.CutoffAge" class="form-control" />
+                                        <number-input v-model="CheckinProfileSettings.CutoffAge" :min="18" :max="99" inline controls></number-input>
                                     </div>
                                 </div>
                                 <br />
@@ -223,14 +210,21 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <label>Background Image</label>
+                                        <input id="backgroundImage " type="file" ref="BGupload" v-on:change="onFileSelected" accept=".jpg,.jpeg,.png,image/jpeg,image/png" />
                                     </div>
                                 </div>
+                                <br />
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <input id="backgroundImage "type="file" />
+                                        <div id="previewImage">
+                                            <img v-if="BGImageURL" style="max-width: 30%;max-height: 30%;" :src="BGImageURL" />
+                                        </div>
                                     </div>
+                                </div>
+                                <br />
+                                <div class="row">
                                     <div class="col-md-6">
-                                        <input type="button" name="Upload" value="Upload" class="btn btn-primary" id="uploadbgimage"/>
+                                        <p v-if="BGImageName">{{BGImageName}}</p>
                                     </div>
                                 </div>
                                 <br />
@@ -249,4 +243,6 @@
 @section scripts
 {
     @Fingerprint.Script("/Content/touchpoint/js/checkin/checkinsetup.js")
+    @Fingerprint.Script("/Content/touchpoint/js/vue-number-input.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/jquery-mask/js/jquery-mask.min.js")
 }

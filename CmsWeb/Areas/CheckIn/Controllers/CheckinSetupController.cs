@@ -1,13 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using CmsData;
 using CmsWeb.Lifecycle;
 using CmsWeb.Models;
+using System.Linq;
+using System.Net;
+using System.Web.Mvc;
+using ImageData;
+using System;
+using System.Web;
+using Newtonsoft.Json;
 using CmsWeb.Common;
-using UtilityExtensions;
-using CmsWeb.Code;
 
 namespace CmsWeb.Areas.CheckIn.Controllers
 {
@@ -15,9 +18,16 @@ namespace CmsWeb.Areas.CheckIn.Controllers
     [RouteArea("CheckIn", AreaPrefix = "CheckinSetup"), Route("{action}")]
     public class CheckinSetupController : CmsStaffController
     {
+        private MapperConfiguration _config;
+
         public CheckinSetupController(IRequestManager requestManager) : base(requestManager)
         {
-
+            _config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<Campu, CampusModel>();
+                cfg.CreateMap<CheckinProfiles, CheckinProfilesModel>();
+                cfg.CreateMap<CheckinProfileSettings, CheckinProfileSettingsModel>();
+            });
         }
 
         [Route("~/CheckinSetup")]
@@ -30,7 +40,13 @@ namespace CmsWeb.Areas.CheckIn.Controllers
         [Route("~/CheckinSetup/GetCheckinProfiles")]
         public JsonResult GetCheckinProfiles()
         {
-            var CheckinProfiles = CurrentDatabase.CheckinProfiles.ToList();
+            var CheckinProfiles = CurrentDatabase.CheckinProfiles.ProjectTo<CheckinProfilesModel>(_config).ToList();
+            foreach (var item in CheckinProfiles)
+            {
+                item.CheckinProfileSettings = CurrentDatabase.CheckinProfileSettings
+                    .ProjectTo<CheckinProfileSettingsModel>(_config)
+                    .FirstOrDefault(c => c.CheckinProfileId == item.CheckinProfileId);
+            }
 
             return Json(CheckinProfiles, JsonRequestBehavior.AllowGet);
         }
@@ -48,7 +64,8 @@ namespace CmsWeb.Areas.CheckIn.Controllers
         [Route("~/CheckinSetup/CreateCheckinProfile")]
         public JsonResult CreateCheckinProfile()
         {
-            var CheckinProfile = new CheckinProfileModel(){
+            var CheckinProfile = new CheckinProfilesModel()
+            {
                 CheckinProfileSettings = new CheckinProfileSettingsModel()
             };
 
@@ -59,94 +76,116 @@ namespace CmsWeb.Areas.CheckIn.Controllers
         [Route("~/CheckinSetup/GetCampuses")]
         public JsonResult GetCampuses()
         {
-            var Campuses = CurrentDatabase.Campus.ToList();
+
+            var Campuses = CurrentDatabase.Campus.ProjectTo<CampusModel>(_config);
 
             return Json(Campuses, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
         [Route("~/CheckinSetup/InsertCheckinProfile")]
-        public JsonResult InsertCheckinProfile([System.Web.Http.FromBody]CheckinProfileModel json)
+        public HttpStatusCodeResult InsertCheckinProfile()
         {
-            //var paymentProcess = CurrentDatabase.PaymentProcess.SingleOrDefault(x => x.ProcessId == json.ProcessId);
+            var file = Request.Files.Count == 0 ? null : Request.Files[0];
+            var json = JsonConvert.DeserializeObject<CheckinProfilesModel>(Request["jsonD"]);
+            CheckinProfiles checkinProfile = MapCheckinProfile(json);
+            CheckinProfileSettings checkinProfileSettings = MapCheckinProfileSettings(json.CheckinProfileId, json.CheckinProfileSettings, file);
 
-            //if (IsInsert)
-            //{
-            //    var gtAccount = new CmsData.GatewayAccount();
-            //    var gtDetailAccount = new CmsData.GatewayDetails();
+            if (json.CheckinProfileId == 0)
+            {
+                CurrentDatabase.CheckinProfiles.InsertOnSubmit(checkinProfile);
+                CurrentDatabase.SubmitChanges();
+                checkinProfileSettings.CheckinProfileId = checkinProfile.CheckinProfileId;
+                CurrentDatabase.CheckinProfileSettings.InsertOnSubmit(checkinProfileSettings);
+            }
 
-            //    gtAccount.GatewayAccountName = json.GatewayAccountName;
-            //    gtAccount.GatewayId = json.GatewayId;
-            //    CurrentDatabase.GatewayAccount.InsertOnSubmit(gtAccount);
-            //    CurrentDatabase.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
 
-            //    for (int i = 0; i < json.GatewayAccountInputs.Count(); i++)
-            //    {
-            //        gtDetailAccount.GatewayAccountId = gtAccount.GatewayAccountId;
-            //        gtDetailAccount.GatewayDetailName = json.GatewayAccountInputs[i];
-            //        gtDetailAccount.GatewayDetailValue = json.GatewayAccountValues[i];
-            //        gtDetailAccount.IsBoolean = json.GatewayAccountValues[i] == "true" || json.GatewayAccountValues[i] == "false" ? true : false;
-            //        CurrentDatabase.GatewayDetails.InsertOnSubmit(gtDetailAccount);
-            //        CurrentDatabase.SubmitChanges();
-            //        gtDetailAccount = new CmsData.GatewayDetails();
-            //    }
-
-            //    if (json.UseForAll)
-            //    {
-            //        for (int i = 0; i < CurrentDatabase.PaymentProcess.Select(x => x.ProcessId).Count(); i++)
-            //        {
-            //            paymentProcess = CurrentDatabase.PaymentProcess.SingleOrDefault(x => x.ProcessId == i + 1);
-            //            paymentProcess.GatewayAccountId = gtAccount.GatewayAccountId;
-            //            CurrentDatabase.SubmitChanges();
-            //        }
-            //    }
-            //    else
-            //    {
-            //        paymentProcess.GatewayAccountId = gtAccount.GatewayAccountId;
-            //        CurrentDatabase.SubmitChanges();
-            //    }
-            //}
-            //else
-            //{
-            //    for (int i = 0; i < json.GatewayAccountInputs.Count(); i++)
-            //    {
-            //        var gtDetailAccount = CurrentDatabase.GatewayDetails.SingleOrDefault(
-            //            x => x.GatewayDetailName == json.GatewayAccountInputs[i]
-            //            && x.GatewayAccountId == json.GatewayAccountId);
-
-            //        gtDetailAccount.GatewayDetailValue = json.GatewayAccountValues[i];
-            //        CurrentDatabase.SubmitChanges();
-            //    }
-
-            //    if (json.UseForAll)
-            //    {
-            //        for (int i = 0; i < CurrentDatabase.PaymentProcess.Select(x => x.ProcessId).Count(); i++)
-            //        {
-            //            paymentProcess = CurrentDatabase.PaymentProcess.SingleOrDefault(x => x.ProcessId == i + 1);
-            //            paymentProcess.GatewayAccountId = json.GatewayAccountId;
-            //            CurrentDatabase.SubmitChanges();
-            //        }
-            //    }
-            //    else
-            //    {
-            //        paymentProcess.GatewayAccountId = json.GatewayAccountId;
-            //        CurrentDatabase.SubmitChanges();
-            //    }
-            //}
-
-            return GetCheckinProfiles();
+            return new HttpStatusCodeResult(HttpStatusCode.Created);
         }
 
         [HttpDelete]
-        [Route("~/CheckinSetup/DeleteProfile")]
-        public JsonResult DeleteProfile([System.Web.Http.FromBody]int ProfileId)
+        [Route("~/CheckinSetup/DeleteProfile/{ProfileId}")]
+        public HttpStatusCodeResult DeleteProfile(int ProfileId)
         {
-            //var paymentProcess = CurrentDatabase.PaymentProcess.SingleOrDefault(x => x.ProcessId == ProcessId);
+            var checkinProfile = CurrentDatabase.CheckinProfiles.FirstOrDefault(c => c.CheckinProfileId == ProfileId);
+            if (checkinProfile != null)
+            {
+                var checkinProfileSettings = CurrentDatabase.CheckinProfileSettings.FirstOrDefault(c => c.CheckinProfileId == ProfileId);
+                Image.DeleteOnSubmit(checkinProfileSettings.BackgroundImage);
+                CurrentDatabase.CheckinProfileSettings.DeleteOnSubmit(checkinProfileSettings);
+                CurrentDatabase.CheckinProfiles.DeleteOnSubmit(checkinProfile);
+                CurrentDatabase.SubmitChanges();
+                ImageData.DbUtil.Db.SubmitChanges();
+            }
 
-            //paymentProcess.GatewayAccountId = null;
-            //CurrentDatabase.SubmitChanges();
+            return new HttpStatusCodeResult(HttpStatusCode.OK);
+        }
 
-            return GetCheckinProfiles();
+        private CheckinProfiles MapCheckinProfile(CheckinProfilesModel json)
+        {
+            CheckinProfiles checkinProfile;
+            if (json.CheckinProfileId == 0)
+            {
+                checkinProfile = new CheckinProfiles();
+            }
+            else
+            {
+                checkinProfile = CurrentDatabase.CheckinProfiles.FirstOrDefault(c => c.CheckinProfileId == json.CheckinProfileId);
+            }
+
+            checkinProfile.Name = json.Name;
+            return checkinProfile;
+        }
+
+        private CheckinProfileSettings MapCheckinProfileSettings(int checkinProfileId, CheckinProfileSettingsModel jsonSettings, HttpPostedFileBase file)
+        {
+            CheckinProfileSettings checkinProfileSettings;
+            if (checkinProfileId == 0)
+            {
+                checkinProfileSettings = new CheckinProfileSettings();
+            }
+            else
+            {
+                checkinProfileSettings = CurrentDatabase.CheckinProfileSettings.FirstOrDefault(c => c.CheckinProfileId == checkinProfileId);
+            }
+
+            checkinProfileSettings.CampusId = jsonSettings.CampusId == -1 ? null : jsonSettings.CampusId;
+            checkinProfileSettings.EarlyCheckin = jsonSettings.EarlyCheckin;
+            checkinProfileSettings.LateCheckin = jsonSettings.LateCheckin;
+            checkinProfileSettings.Testing = jsonSettings.Testing;
+            checkinProfileSettings.TestDay = jsonSettings.TestDay;
+            checkinProfileSettings.AdminPIN = jsonSettings.AdminPIN;
+            checkinProfileSettings.PINTimeout = jsonSettings.PINTimeout;
+            checkinProfileSettings.DisableJoin = jsonSettings.DisableJoin;
+            checkinProfileSettings.DisableTimer = jsonSettings.DisableTimer;
+            checkinProfileSettings.CutoffAge = jsonSettings.CutoffAge;
+            checkinProfileSettings.Logout = jsonSettings.Logout;
+            checkinProfileSettings.Guest = jsonSettings.Guest;
+            checkinProfileSettings.Location = jsonSettings.Location;
+            checkinProfileSettings.SecurityType = jsonSettings.SecurityType;
+            checkinProfileSettings.ShowCheckinConfirmation = jsonSettings.ShowCheckinConfirmation;
+
+            if (file != null)
+            {
+                checkinProfileSettings.BackgroundImage = StoreBGImage(file, checkinProfileSettings.BackgroundImage);
+                checkinProfileSettings.BackgroundImageName = file.FileName;
+                checkinProfileSettings.BackgroundImageURL = $"{Configuration.Current.CmsHost}Image/{checkinProfileSettings.BackgroundImage}?{DateTime.Now.ToString("yyMMddhhmmss")}";
+            }
+
+            return checkinProfileSettings;
+        }
+
+        private int StoreBGImage(HttpPostedFileBase file, int? imageId)
+        {
+            var stream = file.InputStream;
+            var bits = new byte[stream.Length];
+            stream.Read(bits, 0, bits.Length);
+            if (imageId == null)
+            {
+                return Image.NewImageFromBits(bits).Id;
+            }
+            return Image.UpdateImageFromBits(imageId.Value, bits).Id;
         }
     }
 }

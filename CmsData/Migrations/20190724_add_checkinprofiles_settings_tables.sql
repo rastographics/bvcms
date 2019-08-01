@@ -31,21 +31,24 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where
 	BEGIN				
 		CREATE TABLE [dbo].CheckinProfileSettings(
 			[CheckinProfileId][int] FOREIGN KEY REFERENCES [dbo].[CheckinProfiles](CheckinProfileId) NOT NULL UNIQUE,
-			[CampusId][INT] FOREIGN KEY REFERENCES [lookup].[Campus](Id) NULL,
+			[CampusId][int] NULL,
 			[EarlyCheckin][int] NULL,
 			[LateCheckin][int] NULL,
 			[Testing] BIT NOT NULL,
 			[TestDay][int] NULL,
-			[AdminPIN] NVARCHAR(MAX) NOT NULL,
-			[PINTimeout][int] NOT NULL,
+			[AdminPIN] NVARCHAR(MAX) NULL,
+			[PINTimeout][int] NULL,
 			[DisableJoin] BIT NOT NULL,
 			[DisableTimer] BIT NOT NULL,
 			[BackgroundImage][int] NULL,
+			[BackgroundImageName] NVARCHAR(MAX) NULL, 
+			[BackgroundImageURL] NVARCHAR(MAX) NULL, 
 			[CutoffAge][int] NOT NULL,
-			[Logout] NVARCHAR(MAX) NOT NULL,
+			[Logout] NVARCHAR(MAX) NULL,
 			[Guest] BIT NOT NULL,
 			[Location] BIT NOT NULL,
-			[SecurityType][INT] NULL
+			[SecurityType][int] NOT NULL,
+			[ShowCheckinConfirmation][int] NOT NULL
 		);
 	END
 GO

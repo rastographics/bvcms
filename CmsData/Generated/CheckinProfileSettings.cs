@@ -19,18 +19,20 @@ namespace CmsData
         private bool _Testing;
         private int? _TestDay;
         private string _AdminPIN;
-        private int _PINTimeout;
+        private int? _PINTimeout;
         private bool _DisableJoin;
         private bool _DisableTimer;
         private int? _BackgroundImage;
+        private string _BackgroundImageName;
+        private string _BackgroundImageURL;
         private int _CutoffAge;
         private string _Logout;
         private bool _Guest;
         private bool _Location;
-        private int? _SecurityType;
+        private int _SecurityType;
+        private int _ShowCheckinConfirmation;
 
         private EntityRef<CheckinProfiles> _CheckinProfiles;
-        private EntityRef<Campu> _Campu;
         #endregion
 
         #region Extensibility Method Definitions
@@ -59,7 +61,7 @@ namespace CmsData
         partial void OnAdminPINChanging(string value);
         partial void OnAdminPINChanged();
 
-        partial void OnPINTimeoutChanging(int value);
+        partial void OnPINTimeoutChanging(int? value);
         partial void OnPINTimeoutChanged();
 
         partial void OnDisableJoinChanging(bool value);
@@ -70,6 +72,12 @@ namespace CmsData
 
         partial void OnBackgroundImageChanging(int? value);
         partial void OnBackgroundImageChanged();
+
+        partial void OnBackgroundImageNameChanging(string value);
+        partial void OnBackgroundImageNameChanged();
+
+        partial void OnBackgroundImageURLChanging(string value);
+        partial void OnBackgroundImageURLChanged();
 
         partial void OnCutoffAgeChanging(int value);
         partial void OnCutoffAgeChanged();
@@ -83,14 +91,16 @@ namespace CmsData
         partial void OnLocationChanging(bool value);
         partial void OnLocationChanged();
 
-        partial void OnSecurityTypeChanging(int? value);
+        partial void OnSecurityTypeChanging(int value);
         partial void OnSecurityTypeChanged();
+
+        partial void OnShowCheckinConfirmationChanging(int value);
+        partial void OnShowCheckinConfirmationChanged();
         #endregion
 
         public CheckinProfileSettings()
         {
             this._CheckinProfiles = default(EntityRef<CheckinProfiles>);
-            this._Campu = default(EntityRef<Campu>);
 
             OnCreated();
         }
@@ -119,8 +129,7 @@ namespace CmsData
             }
         }
 
-        [Column(Name = "CampusId", UpdateCheck = UpdateCheck.Never, Storage = "_CampusId", DbType = "int NULL", IsPrimaryKey = true)]
-        [IsForeignKey]
+        [Column(Name = "CampusId", UpdateCheck = UpdateCheck.Never, Storage = "_CampusId", DbType = "int NULL")]
         public int? CampusId
         {
             get { return this._CampusId; }
@@ -129,10 +138,6 @@ namespace CmsData
             {
                 if (this._CampusId != value)
                 {
-
-                    if (this._Campu.HasLoadedOrAssignedValue)
-                        throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-
                     this.OnCampusIdChanging(value);
                     this.SendPropertyChanging();
                     this._CampusId = value;
@@ -214,7 +219,7 @@ namespace CmsData
             }
         }
 
-        [Column(Name = "AdminPIN", UpdateCheck = UpdateCheck.Never, Storage = "_AdminPIN", DbType = "nvarchar(max) NOT NULL")]
+        [Column(Name = "AdminPIN", UpdateCheck = UpdateCheck.Never, Storage = "_AdminPIN", DbType = "nvarchar(max) NULL")]
         public string AdminPIN
         {
             get { return this._AdminPIN; }
@@ -232,8 +237,8 @@ namespace CmsData
             }
         }
 
-        [Column(Name = "PINTimeout", UpdateCheck = UpdateCheck.Never, Storage = "_PINTimeout", DbType = "int NOT NULL")]
-        public int PINTimeout
+        [Column(Name = "PINTimeout", UpdateCheck = UpdateCheck.Never, Storage = "_PINTimeout", DbType = "int NULL")]
+        public int? PINTimeout
         {
             get { return this._PINTimeout; }
 
@@ -304,6 +309,42 @@ namespace CmsData
             }
         }
 
+        [Column(Name = "BackgroundImageName", UpdateCheck = UpdateCheck.Never, Storage = "_BackgroundImageName", DbType = "nvarchar(max) NULL")]
+        public string BackgroundImageName
+        {
+            get { return this._BackgroundImageName; }
+
+            set
+            {
+                if (this._BackgroundImageName != value)
+                {
+                    this.OnBackgroundImageNameChanging(value);
+                    this.SendPropertyChanging();
+                    this._BackgroundImageName = value;
+                    this.SendPropertyChanged("BackgroundImageName");
+                    this.OnBackgroundImageNameChanged();
+                }
+            }
+        }
+
+        [Column(Name = "BackgroundImageURL", UpdateCheck = UpdateCheck.Never, Storage = "_BackgroundImageURL", DbType = "nvarchar(max) NULL")]
+        public string BackgroundImageURL
+        {
+            get { return this._BackgroundImageURL; }
+
+            set
+            {
+                if (this._BackgroundImageURL != value)
+                {
+                    this.OnBackgroundImageURLChanging(value);
+                    this.SendPropertyChanging();
+                    this._BackgroundImageURL = value;
+                    this.SendPropertyChanged("BackgroundImageURL");
+                    this.OnBackgroundImageURLChanged();
+                }
+            }
+        }
+
         [Column(Name = "CutoffAge", UpdateCheck = UpdateCheck.Never, Storage = "_CutoffAge", DbType = "int NOT NULL")]
         public int CutoffAge
         {
@@ -322,7 +363,7 @@ namespace CmsData
             }
         }
 
-        [Column(Name = "Logout", UpdateCheck = UpdateCheck.Never, Storage = "_Logout", DbType = "nvarchar(max) NOT NULL")]
+        [Column(Name = "Logout", UpdateCheck = UpdateCheck.Never, Storage = "_Logout", DbType = "nvarchar(max) NULL")]
         public string Logout
         {
             get { return this._Logout; }
@@ -376,8 +417,8 @@ namespace CmsData
             }
         }
 
-        [Column(Name = "SecurityType", UpdateCheck = UpdateCheck.Never, Storage = "_SecurityType", DbType = "int NULL")]
-        public int? SecurityType
+        [Column(Name = "SecurityType", UpdateCheck = UpdateCheck.Never, Storage = "_SecurityType", DbType = "int NOT NULL")]
+        public int SecurityType
         {
             get { return this._SecurityType; }
 
@@ -390,6 +431,24 @@ namespace CmsData
                     this._SecurityType = value;
                     this.SendPropertyChanged("SecurityType");
                     this.OnSecurityTypeChanged();
+                }
+            }
+        }
+
+        [Column(Name = "ShowCheckinConfirmation", UpdateCheck = UpdateCheck.Never, Storage = "_ShowCheckinConfirmation", DbType = "int NOT NULL")]
+        public int ShowCheckinConfirmation
+        {
+            get { return this._ShowCheckinConfirmation; }
+
+            set
+            {
+                if (this._ShowCheckinConfirmation != value)
+                {
+                    this.OnShowCheckinConfirmationChanging(value);
+                    this.SendPropertyChanging();
+                    this._ShowCheckinConfirmation = value;
+                    this.SendPropertyChanged("ShowCheckinConfirmation");
+                    this.OnShowCheckinConfirmationChanged();
                 }
             }
         }
@@ -427,41 +486,6 @@ namespace CmsData
                     }
 
                     this.SendPropertyChanged("CheckinProfiles");
-                }
-            }
-        }
-
-        [Association(Name = "Checking_Profile_Settings_CAMPUS_FK", Storage = "_Campu", ThisKey = "CampusId", IsForeignKey = true)]
-        public Campu Campu
-        {
-            get { return this._Campu.Entity; }
-
-            set
-            {
-                Campu previousValue = this._Campu.Entity;
-                if (((previousValue != value)
-                            || (this._Campu.HasLoadedOrAssignedValue == false)))
-                {
-                    this.SendPropertyChanging();
-                    if (previousValue != null)
-                    {
-                        this._Campu.Entity = null;
-                        previousValue.CheckinProfileSettings.Remove(this);
-                    }
-
-                    this._Campu.Entity = value;
-                    if (value != null)
-                    {
-                        value.CheckinProfileSettings.Add(this);
-
-                        this._CampusId = value.Id;
-                    }
-                    else
-                    {
-                        this._CampusId = default(int);
-                    }
-
-                    this.SendPropertyChanged("Campu");
                 }
             }
         }

@@ -3,17 +3,20 @@
     data: {
         CheckinProfiles: [{}],
         CheckinProfileId: null,
-        CheckinProfileSettings: [{}],
+        CheckinProfileSettings: {},
         ProfileName: null,
-        CheckinProfile: [{}],
+        CheckinProfile: {},
         CampusId: null,
         Campuses: [{}],
         TimeLapseList: [{}],
         DaysOfTheWeek: [{}],
         SecurityTypes: [{}],
+        ShowCheckConfTimes: [{}],
         EarlyCheck: null,
         LateCheck: null,
-        isNew: false
+        SelectedBGImage: null,
+        BGImageName: null,
+        BGImageURL: null
     },
     methods: {
         myFunctionOnLoad: function () {
@@ -22,12 +25,14 @@
             this.SetTimeLapseList();
             this.SetDaysOfTheWeek();
             this.SetSecurityTypes();
+            this.SetShowCheckConfTimes();
         },
         CreateCheckinProfile: function () {
             this.$http.get('/CheckinSetup/CreateCheckinProfile').then(
                 response => {
                     if (response.status === 200) {
                         this.CheckinProfile = response.body;
+                        this.CheckinProfileId = this.CheckinProfile.CheckinProfileId;
                         this.CheckinProfileSettings = this.CheckinProfile.CheckinProfileSettings;
                         this.isNew = true;
                         this.modalInfo(0);
@@ -61,34 +66,11 @@
                 }
             );
         },
-        GetCheckinProfilesSettings: function () {
-            this.$http.get('/CheckinSetup/GetCheckinProfileSettings/' + this.CheckinProfileId).then(
-                response => {
-                    if (response.status === 200) {
-                        this.CheckingProfileSettings = response.body;
-                        this.ProfileName = this.CheckinProfiles.filter(function (item) {
-                            return item.CheckingProfileId === this.CheckinProfileId;
-                        })[0].Name;
-                    }
-                    else {
-                        console.log(response);
-                        warning_swal('Warning!', 'Something went wrong, try again later');
-                        this.GetCheckinProfilesSettings = [{}];
-                    }
-                },
-                err => {
-                    console.log(err);
-                    error_swal('Fatal Error!', 'We are working to fix it');
-                    this.GetCheckinProfilesSettings = [{}];
-                }
-            );
-        },
         GetCampuses: function () {
             this.$http.get('/CheckinSetup/GetCampuses').then(
                 response => {
                     if (response.status === 200) {
                         this.Campuses = response.body;
-                        console.log(this.Campuses);
                     }
                     else {
                         console.log(response);
@@ -100,6 +82,105 @@
                     error_swal('Fatal Error!', 'We are working to fix it');
                 }
             );
+        },
+        deleteProfile: function (CheckinProfileId) {
+            console.log(CheckinProfileId);
+            this.$http.delete('/CheckinSetup/DeleteProfile/' + CheckinProfileId).then(
+                response => {
+                    if (response.status === 200) {
+                        this.myFunctionOnLoad();
+                        success_swal('Success', 'Profile Deleted');
+                    }
+                    else {
+                        console.log(response);
+                        warning_swal('Warning!', 'Something went wrong, try again later');
+                    }
+                },
+                err => {
+                    console.log(err);
+                    error_swal('Fatal Error!', 'We are working to fix it');
+                }
+            );
+        },
+        modalInfo: function (CheckinProfileId) {
+            if (CheckinProfileId !== 0) {
+                this.CheckinProfileId = CheckinProfileId;
+                console.log(this.CheckinProfileId);
+                this.CheckinProfile = this.CheckinProfiles.filter(function (item) {
+                    return item.CheckinProfileId === CheckinProfileId;
+                })[0];
+                this.CheckinProfileSettings = this.CheckinProfile.CheckinProfileSettings;
+                this.isNew = false;
+            }
+            this.BGImageURL = this.CheckinProfileSettings.BackgroundImageURL;
+            this.BGImageName = this.CheckinProfileSettings.BackgroundImageName;
+            console.log("image: " + this.BGImageURL);
+            console.log(this.CheckinProfile);
+            console.log(this.CheckinProfileSettings);
+            this.ValidateCheckBoxes();
+            this.clearBGInput();
+            $('#config-modal').modal();
+        },
+        onFileSelected: function (event) {
+            this.SelectedBGImage = event.target.files[0];
+            console.log(this.SelectedBGImage);
+            this.BGImageName = this.SelectedBGImage.name;
+            this.BGImageURL = URL.createObjectURL(this.SelectedBGImage);
+        },
+        settingsForm: function () {
+            this.CheckinProfileSettings.CampusId = this.CampusId;
+            this.CheckinProfileSettings.EarlyCheckin = this.EarlyCheck;
+            this.CheckinProfileSettings.LateCheckin = this.LateCheck;
+            console.log(this.CheckinProfileId);
+            const jsonD = {
+                CheckinProfileId: this.CheckinProfileId,
+                Name: this.CheckinProfile.Name,
+                CheckinProfileSettings: this.CheckinProfileSettings
+            };
+            const formData = new FormData();
+            console.log("selectedBG: " + this.SelectedBGImage);
+            if (this.SelectedBGImage !== null) {
+                formData.append('bgImage', this.SelectedBGImage);
+            }
+            formData.append('jsonD', JSON.stringify(jsonD));
+            this.$http.post('/CheckinSetup/InsertCheckinProfile', formData, {
+                CheckinProfileId: this.CheckinProfileId,
+                Name: this.CheckinProfile.Name,
+                CheckinProfileSettings: this.CheckinProfileSettings
+            }).then(
+                response => {
+                    if (response.status === 201) {
+                        this.myFunctionOnLoad();
+                        success_swal('Success', 'Profile Saved');
+                        $('#config-modal').modal('hide');
+                    }
+                    else {
+                        console.log(response);
+                        warning_swal('Warning!', 'Something went wrong, try again later');
+                    }
+                },
+                err => {
+                    console.log(err);
+                    error_swal('Fatal Error!', 'We are working to fix it');
+                }
+            );
+        },
+        ValidateCheckBoxes: function () {
+            if (this.CheckinProfileSettings.CampusId === null) {
+                this.CampusId = -1;
+            } else {
+                this.CampusId = this.CheckinProfileSettings.CampusId;
+            }
+            if (this.CheckinProfileSettings.EarlyCheckin === null) {
+                this.EarlyCheck = -1;
+            } else {
+                this.EarlyCheck = this.CheckinProfileSettings.EarlyCheckin;
+            }
+            if (this.CheckinProfileSettings.LateCheckin === null) {
+                this.LateCheck = -1;
+            } else {
+                this.LateCheck = this.CheckinProfileSettings.LateCheckin;
+            }
         },
         SetTimeLapseList: function () {
             this.TimeLapseList = [
@@ -133,86 +214,19 @@
                 { text: 'Per Family', id: 3 }
             ]
         },
-        modalInfo: function (CheckinProfileId) {
-            this.DetailValue = [];
-            console.log(CheckinProfileId);
-            this.CheckinProfileId = CheckinProfileId;
-            console.log(this.CheckinProfileId);
-            if (this.CheckinProfileId !== 0) {
-                this.CheckinProfile = this.CheckinProfiles.filter(function (item) {
-                    return item.CheckingProfileId === this.CheckinProfileId;
-                })[0];
-                this.isNew = false;
-            }
-            console.log(this.CheckinProfile);
-            this.ValidateCheckBoxes();
-            $('#config-modal').modal();
+        SetShowCheckConfTimes: function () {
+            this.ShowCheckConfTimes = [
+                { text: 'No', id: 0 },
+                { text: '2 seconds', id: 2 },
+                { text: '3 seconds', id: 3 },
+                { text: '5 seconds', id: 5 }
+            ]
         },
-        ValidateCheckBoxes: function () {
-            console.log(this.CheckinProfileSettings);
-            if (this.CheckinProfileSettings.CampusId === null) {
-                this.CampusId = -1;
-            } else {
-                this.CampusId = this.CheckinProfileSettings.CampusId;
-            }
-            if (this.CheckinProfileSettings.EarlyCheckin === null) {
-                this.EarlyCheck = -1;
-            } else {
-                this.EarlyCheck = this.CheckinProfileSettings.EarlyCheckin;
-            }
-            if (this.CheckinProfileSettings.LateCheckin === null) {
-                this.LateCheck = -1;
-            } else {
-                this.LateCheck = this.CheckinProfileSettings.LateCheckin;
-            }
-        },
-        settingsForm: function () {
-            this.CheckinProfileSettings.CampusId = this.CampusId;
-            this.CheckinProfileSettings.EarlyCheckin = this.EarlyCheck;
-            this.CheckinProfileSettings.LateCheckin = this.LateCheck;
-            this.$http.post('/CheckinSetup/InsertCheckinProfile', {
-                CheckinProfileId: this.CheckinProfileId,
-                Name: this.CheckinProfile.Name,
-                CheckinProfileSettings: this.CheckinProfileSettings
-            }).then(
-                response => {
-                    if (response.status === 200) {
-                        this.myFunctionOnLoad();
-                        success_swal('Success', 'Profile Saved');
-                        $('#config-modal').modal('hide');
-                    }
-                    else {
-                        console.log(response);
-                        warning_swal('Warning!', 'Something went wrong, try again later');
-                    }
-                },
-                err => {
-                    console.log(err);
-                    error_swal('Fatal Error!', 'We are working to fix it');
-                }
-            );
+        clearBGInput: function () {
+            const input = this.$refs.BGupload;
+            input.type = 'text';
+            input.type = 'file';
         }
-        //    deleteProcess: function (ProcessId) {
-        //        this.$http.post('/Gateway/DeleteProcessAccount', {
-        //            ProcessId: ProcessId
-        //        }).then(
-        //            response => {
-        //                if (response.status === 200) {
-        //                    this.myFunctionOnLoad();
-        //                    success_swal('Success', 'Configuration Saved');
-        //                }
-        //                else {
-        //                    console.log(response);
-        //                    warning_swal('Warning!', 'Something went wrong, try again later');
-        //                }
-        //            },
-        //            err => {
-        //                console.log(err);
-        //                error_swal('Fatal Error!', 'We are working to fix it');
-        //            }
-        //        );
-        //    }
-        //},
     },
     created: function () {
         this.myFunctionOnLoad();
@@ -242,3 +256,7 @@ function success_swal(title, message) {
         text: message
     });
 }
+
+$(function () {
+    $('.logoutCode').mask("00000", { placeholder: "00000", clearIfNotMatch: true });
+});

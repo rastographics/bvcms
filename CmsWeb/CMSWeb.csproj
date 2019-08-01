@@ -398,6 +398,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Areas\CheckIn\Controllers\CheckinSetupController.cs" />
+    <Compile Include="Areas\CheckIn\Models\CheckinSetup\CampusModel.cs" />
     <Compile Include="Areas\CheckIn\Models\CheckinSetup\CheckinProfileModel.cs" />
     <Compile Include="Areas\CheckIn\Models\CheckinSetup\CheckinProfileSettingsModel.cs" />
     <Compile Include="Areas\Coordinator\Models\CheckinActionDto.cs" />
@@ -1259,6 +1260,7 @@
     <Content Include="Content\touchpoint\js\tranhistory.js" />
     <Content Include="Content\touchpoint\js\volunteer\AltCalendar.js" />
     <Content Include="Content\touchpoint\js\volunteer\calendar.js" />
+    <Content Include="Content\touchpoint\js\vue-number-input.js" />
     <Content Include="Content\touchpoint\lib\bootstrap-sweetalert\js\sweetalert.min.js" />
     <Content Include="Content\touchpoint\lib\bootstrap-sweetalert\css\sweetalert.css" />
     <Content Include="Content\touchpoint\lib\ckeditor\plugins\specialLink\dialogs\specialLink.js" />
