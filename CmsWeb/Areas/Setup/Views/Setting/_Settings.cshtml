@@ -1,4 +1,5 @@
-﻿@model IEnumerable<CmsData.Setting>
+﻿@using CmsWeb.Areas.Setup.Models
+@model IEnumerable<CmsData.Setting>
 @{
     // TODO: Utilize new DataType column on Setting table for validation
 }
@@ -6,46 +7,59 @@
 <div class="table-responsive">
     <table id="settings" class="table table-striped">
         <thead>
-        <tr>
-            <th>
-                <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Setting Code" data-content="Please enter exactly as in the help article, using no spaces. Also, they are case-sensitive."><i class="fa fa-info-circle"></i></a>&nbsp;
-                Setting
-            </th>
-            <th>
-                <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Setting Value" data-content="Click value to edit."><i class="fa fa-info-circle"></i></a>&nbsp;
-                Value
-            </th>
-            <th>Action</th>
-        </tr>
+            <tr>
+                <th>
+                    <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Setting Code" data-content="Please enter exactly as in the help article, using no spaces. Also, they are case-sensitive."><i class="fa fa-info-circle"></i></a>&nbsp;
+                    Setting
+                </th>
+                <th>
+                    <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Setting Value" data-content="Click value to edit."><i class="fa fa-info-circle"></i></a>&nbsp;
+                    Value
+                </th>
+                <th>Action</th>
+            </tr>
         </thead>
         <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @if (!string.IsNullOrEmpty(item.DisplayName))
-                    {
-                        @item.DisplayName
-                    }
-                    else
-                    {
-                        @item.Id
-                    }
-                    @if (!string.IsNullOrEmpty(item.Description))
-                    {
-                        <a href="#" data-toggle="popover" data-placement="right" data-trigger="focus" data-title="Description" data-content="@(item.Description)"><i class="fa fa-info-circle"></i></a>
-                    }
-                </td>
-                <td style="word-break: break-all;">
-                    <a id="@item.Id" class="clickEdit" data-pk="@(item.Id)">
-                        @item.SettingX
-                    </a>
-                </td>
-                <td>
-                    <a id="d@(item.Id)" href="#" class="delete btn btn-sm btn-danger"><i class="fa fa-trash"></i> Delete</a>
-                </td>
-            </tr>
-        }
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @if (!string.IsNullOrEmpty(item.DisplayName))
+                        {
+                            @item.DisplayName
+                        }
+                        else
+                        {
+                            @item.Id
+                        }
+                        @if (!string.IsNullOrEmpty(item.Description))
+                        {
+                            <a href="#" data-toggle="popover" data-placement="right" data-trigger="focus" data-title="Description" data-content="@(item.Description)"><i class="fa fa-info-circle"></i></a>
+                        }
+                    </td>
+                    <td style="word-break: break-all;">
+                        @switch (item.DataType)
+                        {
+                            case (int)SettingDataType.Boolean:
+                                <input class="boolean-toggle" type="checkbox" id="@item.Id" name="@item.Id" data-toggle="toggle" data-on="True" data-off="False" data-width="100" checked="@(item.SettingX.ToLower() == "true")")>
+                                break;
+                            case (int)SettingDataType.Date:
+                                <a class="edit-datetime" id="@item.Id" data-pk="@(item.Id)" data-type="date" data-url="/Setting/Edit">
+                                    @(item.SettingX ?? "Empty")
+                                </a>
+                                break;
+                            default:
+                                <a id="@item.Id" class="clickEdit" data-pk="@(item.Id)">
+                                    @item.SettingX
+                                </a>
+                                break;
+                        }
+                    </td>
+                    <td>
+                        <a id="d@(item.Id)" href="#" class="delete btn btn-sm btn-danger"><i class="fa fa-trash"></i> Delete</a>
+                    </td>
+                </tr>
+            }
         </tbody>
     </table>
 </div>

@@ -15,4 +15,10 @@ namespace CmsWeb.Areas.Setup.Models
 
         public List<SettingTypeModel> SettingTypes { get; set; }
     }
+
+    public enum SettingDataType
+    {
+        Boolean = 1,
+        Date = 2,
+    }
 }

@@ -9,28 +9,50 @@
 @section head{
     <meta name="format-detection" content="telephone=no" />
     @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
     <style>
         .btn-link i {
             transition: transform ease 0.3s;
             transform: rotate(90deg);
             margin-right: 10px;
         }
+
         .btn-link.collapsed i {
             transform: rotate(0deg);
         }
+
         .btn-link:focus, .btn-link:active {
             outline: 0 !important;
             border: 0 !important;
         }
+
         .btn-link {
             text-decoration: none !important;
         }
+
         label {
             font-weight: normal;
             margin-bottom: 0;
         }
+
         .panel-body {
             padding: 0 !important;
+        }
+
+        .dow {
+            display: none;
+        }
+
+        .day {
+            width: 25px !important;
+        }
+
+        .prev:after {
+            content: "\02C2"
+        }
+
+        .next:after {
+            content: "\02C3"
         }
     </style>
 }
@@ -52,7 +74,7 @@
                     @for (var i = 0; i < Model.SettingTypes.Count; i++)
                     {
                         <li class="resource-type-tab" data-id="@Model.SettingTypes[i].SettingType.SettingTypeId">
-                            <a href = "#@Model.SettingTypes[i].SettingType.Name.SlugifyString()" data-toggle="tab">
+                            <a href="#@Model.SettingTypes[i].SettingType.Name.SlugifyString()" data-toggle="tab">
                                 <span>@Model.SettingTypes[i].SettingType.Name</span>
                             </a>
                         </li>
@@ -60,10 +82,10 @@
                 </ul>
                 <select class="form-control visible-sm-block visible-xs-block nav-select-pills">
                     <option value="#all">All</option>
-                    @for (var i = 0; i<Model.SettingTypes.Count; i++)
+                    @for (var i = 0; i < Model.SettingTypes.Count; i++)
                     {
                         <option value="#@Model.SettingTypes[i].SettingType.Name.SlugifyString()">
-                             @Model.SettingTypes[i].SettingType.Name
+                            @Model.SettingTypes[i].SettingType.Name
                         </option>
                     }
                 </select>
@@ -142,6 +164,7 @@
 @section scripts
 {
     @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-editable/js/bootstrap-editable.min.js")
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
     <script type="text/javascript">
         $(function() {
             $.fn.editableform.buttons = '<button type="submit" class="btn btn-primary btn-sm editable-submit">' +
@@ -155,6 +178,21 @@
                 mode: 'inline',
                 type: 'text',
                 url: "/Setting/Edit/"
+            });
+
+            $(".edit-datetime").editable({
+                datepicker: {
+                    todayBtn: true
+                },
+                clear: false
+            });
+
+            $('.boolean-toggle').on('change', function () {
+                $.ajax({
+                    type: 'POST',
+                    url: '/Setting/Edit',
+                    data: { pk: $(this).attr('name'), value: $(this).prop('checked') }
+                });
             });
 
             $("a.delete").click(function(e) {
