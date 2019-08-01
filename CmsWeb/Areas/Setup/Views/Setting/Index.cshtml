@@ -10,16 +10,27 @@
     <meta name="format-detection" content="telephone=no" />
     @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
     <style>
-        .panel-heading [data-toggle="collapse"]:hover,
-        .panel-heading [data-toggle="collapse"]:active {
-            text-decoration: none;
+        .btn-link i {
+            transition: transform ease 0.3s;
+            transform: rotate(90deg);
+            margin-right: 10px;
         }
-        .panel-heading [data-toggle="collapse"]:before {
-            font-family: 'Glyphicons Halflings';
-            content: "\e252";
+        .btn-link.collapsed i {
+            transform: rotate(0deg);
         }
-        .panel-heading [data-toggle="collapse"].collapsed:before {
-            content: "\e250";
+        .btn-link:focus, .btn-link:active {
+            outline: 0 !important;
+            border: 0 !important;
+        }
+        .btn-link {
+            text-decoration: none !important;
+        }
+        label {
+            font-weight: normal;
+            margin-bottom: 0;
+        }
+        .panel-body {
+            padding: 0 !important;
         }
     </style>
 }
@@ -58,19 +69,17 @@
                 </select>
                 <div class="tab-content" style="border: none">
                     <div class="tab-pane active" id="all">
-                        <div class="panel-group" id="accordion-all-settings" role="tablist">
+                        <div class="accordion" id="accordion-all-settings">
                             <div class="panel panel-default">
-                                <div class="panel-heading" role="tab" id="all-settings">
-                                    <h4 class="panel-title">
-                                        <a role="button" data-toggle="collapse" data-parent="#accordion-all-settings" href="#collapse-all-settings" aria-controls="collapse-all-settings" class="notcollapsed">
-                                            All
-                                        </a>
+                                <div class="panel-heading" id="all-settings">
+                                    <h4 style="margin:0;">
+                                        <button class="btn btn-link notcollapsed" type="button" data-toggle="collapse" data-target="#test" aria-expanded="true" aria-controls="test">
+                                            <i class="fa fa-chevron-right"></i> All
+                                        </button>
                                     </h4>
                                 </div>
-                                <div id="collapse-all-settings" class="panel-collapse collapse in" role="tabpanel" aria-expanded="true">
-                                    <div class="panel-body">
-                                        @Html.Partial("_Settings", Model.Settings)
-                                    </div>
+                                <div id="test" class="collapse in" data-parent="#accordion-all-settings">
+                                    @Html.Partial("_Settings", Model.Settings)
                                 </div>
                             </div>
                         </div>
@@ -81,21 +90,19 @@
 
                         <div class="tab-pane"
                              id="@settingTypeGroup.SettingType.Name.SlugifyString()">
-                            <div class="panel-group" id="accordion@(i)" role="tablist">
+                            <div class="accordion" id="accordion-@(i)" role="tablist">
                                 @foreach (var category in settingTypeGroup.Settings.GroupBy(x => x.SettingCategory).OrderBy(x => x.Key.DisplayOrder))
                                 {
                                     <div class="panel panel-default">
-                                        <div class="panel-heading" role="tab" id="@i-@category.Key.SettingCategoryId">
-                                            <h4 class="panel-title">
-                                                <a role="button" data-toggle="collapse" data-parent="#accordion@(i)" href="#collapse-@i-@category.Key.SettingCategoryId" aria-controls="collapse-@i-@category.Key.SettingCategoryId" class="notco">
-                                                    @category.Key.Name
-                                                </a>
+                                        <div class="panel-heading" id="@i-@category.Key.SettingCategoryId">
+                                            <h4 style="margin: 0;">
+                                                <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapse-@i-@category.Key.SettingCategoryId" aria-expanded="true" aria-controls="test">
+                                                    <i class="fa fa-chevron-right"></i> @category.Key.Name
+                                                </button>
                                             </h4>
                                         </div>
-                                        <div id="collapse-@i-@category.Key.SettingCategoryId" class="panel-collapse collapse in" role="tabpanel" aria-expanded="true">
-                                            <div class="panel-body">
-                                                @Html.Partial("_Settings", settingTypeGroup.Settings)
-                                            </div>
+                                        <div id="collapse-@i-@category.Key.SettingCategoryId" class="collapse" data-parent="#accordion-@(i)">
+                                            @Html.Partial("_Settings", settingTypeGroup.Settings)
                                         </div>
                                     </div>
                                 }
