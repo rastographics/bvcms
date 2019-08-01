@@ -533,6 +533,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 // goer specified isn't part of this trip
                 return new HttpNotFoundResult();
             }
+            if (!m.URL.HasValue() || m.URL.Contains("False"))
+            {
+                m.URL = CurrentDatabase.ServerLink($"/OnlineReg/{id}/Giving/{goerid}");
+            }
             if (Util.UserPeopleId == goerid)
             {
                 return View("Giving/Goer", m);
