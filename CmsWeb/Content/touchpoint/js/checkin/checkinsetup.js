@@ -1,4 +1,4 @@
-﻿var multipleGateway = new Vue({
+﻿var checkinSetup = new Vue({
     el: '#checkinSetup',
     data: {
         CheckinProfiles: [{}],
