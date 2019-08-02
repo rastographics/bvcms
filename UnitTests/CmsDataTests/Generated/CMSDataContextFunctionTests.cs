@@ -23,10 +23,12 @@ namespace CmsDataTests
                 var bundleHeader = CreateBundle(db);
                 CreateContribution(db, bundleHeader, fromDate, 120, peopleId: 1);
                 CreateContribution(db, bundleHeader, fromDate, 500, peopleId: 1, contributionType: ContributionTypeCode.Pledge);
-                var results = db.GetTotalContributionsDonor(fromDate, toDate, null, null, true, null, null).ToList();
 
+                var results = db.GetTotalContributionsDonor(fromDate, toDate, null, null, true, null, null).ToList();
+                var TotalAmmountContributions = db.Contributions.Where(x => x.ContributionTypeId == 1).Sum(x => x.ContributionAmount);
                 var actual = results.First();
-                actual.Amount.ShouldBe(120);
+
+                actual.Amount.ShouldBe(TotalAmmountContributions);
                 //This fails => actual.PledgeAmount.ShouldBe(500);
             }
         }
