@@ -9,10 +9,8 @@
 <form class="ajax" method="post">
   <h3>Registration History</h3>
 
-  @if(Util.IsMyDataUser)
+  @if (fulfillmenlist.Count > 0)
   {
-    if (fulfillmenlist.Count > 0)
-    {
     <div class="row">
       <div class="col-sm-6">
           <h4>Event Registration Fulfillment</h4>
@@ -47,7 +45,6 @@
         </tr>
       }
     </table>
-    }
   }
 
   @if (goerlist.Count > 0)
