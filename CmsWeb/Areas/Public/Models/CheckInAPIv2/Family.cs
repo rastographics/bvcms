@@ -112,7 +112,10 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 			foreach( DataRow row in table.Rows ) {
 				Family family = new Family();
 				family.populate( row );
-				family.loadPicture(returnPictureUrls);
+                if (!returnPictureUrls)
+                {
+                    family.loadPicture();
+                }
 				family.loadMembers( db, campus, date, returnPictureUrls );
 
 				families.Add( family );
@@ -126,11 +129,10 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 			members.AddRange( FamilyMember.forFamilyID( db, id, campus, date, returnPictureUrls ) );
 		}
 
-		private void loadPicture(bool returnUrl)
+		private void loadPicture()
 		{
 			CmsData.Family family = CmsData.DbUtil.Db.Families.SingleOrDefault( f => f.FamilyId == id );
             int? ImageId;
-
             if (family == null || family.Picture == null)
             {
                 ImageId = CmsData.Picture.SmallMissingGenericId;
@@ -139,8 +141,8 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
             {
                 ImageId = family.Picture.SmallId;
             }
-
-			ImageData.Image image = ImageData.DbUtil.Db.Images.SingleOrDefault( i => i.Id == ImageId );
+            
+            ImageData.Image image = ImageData.DbUtil.Db.Images.SingleOrDefault( i => i.Id == ImageId );
 
 			if( image != null ) {
 				picture = Convert.ToBase64String( image.Bits );

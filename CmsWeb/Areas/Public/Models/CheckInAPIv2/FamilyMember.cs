@@ -100,21 +100,35 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 
             if (person == null || person.Picture == null)
             {
-                switch (person?.Gender?.Code)
+                if (returnUrl)
                 {
-                    case "M":
-                        ImageId = CmsData.Picture.SmallMissingMaleId;
-                        break;
-                    case "F":
-                        ImageId = CmsData.Picture.SmallMissingFemaleId;
-                        break;
-                    default:
-                        ImageId = CmsData.Picture.SmallMissingGenericId;
-                        break;
+                    var pic = new CmsData.Picture();
+                    picture = pic.MediumUrl;
+                    return;
                 }
+                ImageId = CmsData.Picture.SmallMissingGenericId;
             }
             else
             {
+                pictureX = person.Picture.X.GetValueOrDefault();
+                pictureY = person.Picture.Y.GetValueOrDefault();
+
+                if (returnUrl)
+                {
+                    switch (person?.Gender?.Code)
+                    {
+                        case "M":
+                            picture = person.Picture.MediumMaleUrl;
+                            break;
+                        case "F":
+                            picture = person.Picture.MediumFemaleUrl;
+                            break;
+                        default:
+                            picture = person.Picture.MediumUrl;
+                            break;
+                    }
+                    return;
+                }
                 ImageId = person.Picture.SmallId;
             }
 

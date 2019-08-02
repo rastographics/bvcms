@@ -43,45 +43,77 @@
                 <div class="simple-keyboard"></div>
             </form>
         </div>
-        <div v-else-if="view == 'families'" class="families">
-            <h2>Family Picker</h2>
-            <div v-for="family in families" class="row">
-                <div class="col-xs-2">
-                    <img v-if="family.picture" class="member-portrait" v-bind:src="'data:image/jpeg;base64, ' + family.picture" />
-                    <br />
+        <div v-else-if="view == 'families'" class="families results">
+            <div class="row header-bar">
+                <div class="col-xs-12 col-md-10">
+                    <h2 style="font-weight:300;">Choose the family you belong to</h2>
                 </div>
-                <div class="col-xs-10">
-                    <a v-on:click="selectFamily(family)">{{ family.name }} Family</a>
+                <div class="col-xs-12 col-md-2 text-right">
+                    <a class="btn btn-primary" v-on:click="loadView('landing')" style="margin-top: 22px;">Return</a>
                 </div>
             </div>
-            <a class="btn btn-primary" v-on:click="loadView('landing')">return</a>
+            <div class="row">
+                <template v-for="family in families">
+                    <div class="col-xs-12 col-md-6 family">
+                        <h4 v-on:click="selectFamily(family)">
+                            <a>{{ family.name }} Family</a>
+                        </h4>
+                    </div>
+                </template>
+            </div>
+            <div class="action-bar">
+                <div class="content">
+                    <a class="btn btn-primary pull-right" v-on:click="loadView('landing')">Return</a>
+                </div>
+            </div>
         </div>
         <div v-else-if="view == 'checkin'" class="results">
-            <h2 class="pull-left">Choose the classes you are checking in to</h2>
-            <button v-on:click="updateAttendance" class="btn btn-primary pull-right" style="margin-top: 22px;"><span v-if="attendance.length">Print and Return</span><span v-else>Return</span></button>
-            <span class="clearfix"></span>
+            <div class="row header-bar">
+                <div class="col-xs-12 col-md-10">
+                    <h2 style="font-weight:300;">Choose the classes you are checking in to</h2>
+                </div>
+                <div class="col-xs-12 col-md-2 text-right">
+                    <button v-if="attendance.length" v-on:click="updateAttendance" class="btn btn-success" style="margin-top: 22px;">Check In</button>
+                    <button v-else type="submit" v-on:click="updateAttendance" class="btn btn-primary" style="margin-top: 22px;">Return</button>
+                </div>
+            </div>
             <form v-on:submit.prevent="updateAttendance">
-                <div v-for="member in members" class="member row">
-                    <img v-if="member.picture" class="member-portrait" v-bind:src="'data:image/jpeg;base64, ' + member.picture" />
-                    <div class="member-details">
-                        <h4 class="name">{{ member.name }} <span class="badge badge-info" v-if="member.age < 18">{{ member.age }}</span></h4>
-                        <hr />
-                        <div v-for="group in member.groups">
-                            <a v-on:click="toggleAttendance(member.id, group.id)" style="float:left; margin-right: 12px;">
-                                <i v-if="attendance.includes(member.id + '.' + group.id)" class="fa fa-2x fa-check-square-o text-primary"></i>
-                                <i v-else class="fa fa-2x fa-square-o"></i>
-                            </a>
-                            <p style="font-size: 12px; margin-bottom: 5px;">{{ group.date | formatDate }}</p>
-                            <p>{{ group.name }}<span v-if="group.leaderName.length">, {{ group.leaderName }}</span></p>
+                <div class="row">
+                    <div v-for="member in members" class="member col-xs-12 col-md-6">
+                        <div class="portrait-container">
+                            <div class="member-portrait" v-bind:style="portraitStyles(member)"></div>
                         </div>
-                        <div v-if="member.groups.length == 0">
-                            <p style="font-size: 12px; margin-bottom: 5px;">No meeting time.</p>
-                            <p>No self check-in meetings available.</p>
+                        <div class="member-details">
+                            <h4 class="name">{{ member.name }} <span class="badge badge-info" v-if="member.age < 18">{{ member.age }}</span></h4>
+                            <div v-for="group in member.groups">
+                                <div v-on:click="toggleAttendance(member.id, group.id)" class="check-container" v-bind:class="[attendance.includes(member.id + '.' + group.id) ? 'active' : '', group.checkedIn ? 'primary' : '', 'check-container']">
+                                    <div>
+                                        <span class="check-label">
+                                            <i class="fa fa-check icon"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="member-info">
+                                    <p style="font-size: 12px; margin-bottom: 5px;">{{ group.date | formatDate }}</p>
+                                    <p>{{ group.name }}<span v-if="group.leaderName.length">, {{ group.leaderName }}</span></p>
+                                </div>
+                            </div>
+                            <div v-if="member.groups.length == 0">
+                                <p style="font-size: 12px; margin-bottom: 5px;">No meeting time.</p>
+                                <p>No self check-in meetings available.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <button type="submit" class="btn btn-primary pull-right"><span v-if="attendance.length">Print and Return</span><span v-else>Return</span></button>
             </form>
+            <div class="action-bar">
+                <div class="content">
+                    <a v-on:click="checkAll" class="pull-left">Check All</a>
+                    <i class="fa fa-2x fa-square-o"></i> Reprint all labels
+                    <button v-if="attendance.length" v-on:click="updateAttendance" class="btn btn-success pull-right">Check In</button>
+                    <button v-else type="submit" v-on:click="updateAttendance" class="btn btn-primary pull-right">Return</button>
+                </div>
+            </div>
         </div>
         <div v-else class="loading">
             <div class="panel panel-default">

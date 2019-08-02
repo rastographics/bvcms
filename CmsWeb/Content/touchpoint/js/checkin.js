@@ -144,6 +144,12 @@ var CheckInApp = new Vue({
                 vm.idleStage = 0;
             });
         },
+        portraitStyles(member) {
+            return {
+                'background-image': 'url(' + member.picture + ')',
+                'background-position': member.pictureX + '% ' + member.pictureY + '%'
+            };
+        },
         loadView(newView) {
             // cleanup and prep for view swap
             if (this.view === 'landing') {
@@ -236,7 +242,7 @@ var CheckInApp = new Vue({
             var payload = vm.generatePayload({
                 search: phone,
                 campus: 0,
-                date: '2019-07-28 08:00:00' // todo: remove, debug only
+                date: '2019-08-04 08:00:00' // todo: remove, debug only
             });
             vm.loading = true;
             vm.$http.post('/CheckInApiV2/Search', payload, vm.apiHeaders).then(
@@ -292,6 +298,7 @@ var CheckInApp = new Vue({
         updateAttendance() {
             // todo: post attendance bundle to /UpdateAttend
             let vm = this;
+            vm.loadView('landing');
             if (vm.attendance.length) {
                 console.log(vm.attendance);
                 swal({
@@ -304,9 +311,10 @@ var CheckInApp = new Vue({
                 }, function () {
                     vm.loadView('landing');
                 });
-            } else {
-                this.loadView('landing');
             }
+        },
+        checkAll() {
+            console.log('check all');
         },
         postBarcode() {
             // todo: post barcode id to self check in endpoint
