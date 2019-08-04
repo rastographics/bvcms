@@ -1656,6 +1656,51 @@ This search uses multiple steps which cannot be duplicated in a single query.
         {
             return Content2(name, defaultValue, ContentTypeCode.TypeSqlScript);
         }
+        public void WriteContentSql(string name, string sql)
+        {
+            var c = Content(name, ContentTypeCode.TypeSqlScript);
+            if (c == null)
+            {
+                c = new Content()
+                {
+                    Name = name,
+                    TypeID = ContentTypeCode.TypeSqlScript
+                };
+                Contents.InsertOnSubmit(c);
+            }
+            c.Body = sql;
+            SubmitChanges();
+        }
+        public void WriteContentPython(string name, string script)
+        {
+            var c = Content(name, ContentTypeCode.TypePythonScript);
+            if (c == null)
+            {
+                c = new Content()
+                {
+                    Name = name,
+                    TypeID = ContentTypeCode.TypePythonScript
+                };
+                Contents.InsertOnSubmit(c);
+            }
+            c.Body = script;
+            SubmitChanges();
+        }
+        public void WriteContentText(string name, string text)
+        {
+            var c = Content(name, ContentTypeCode.TypeText);
+            if (c == null)
+            {
+                c = new Content()
+                {
+                    Name = name,
+                    TypeID = ContentTypeCode.TypeText
+                };
+                Contents.InsertOnSubmit(c);
+            }
+            c.Body = text;
+            SubmitChanges();
+        }
         public void SetNoLock()
         {
             //ExecuteCommand("SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED");

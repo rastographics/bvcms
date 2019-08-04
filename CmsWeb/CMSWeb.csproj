@@ -1106,6 +1106,8 @@
     <Compile Include="Code\SmartBinder.cs" />
     <Compile Include="Code\Image.cs" />
     <Compile Include="Models\HtmlHolder.cs" />
+    <Compile Include="Models\PythonScriptModel.cs" />
+    <Compile Include="Models\SqlScriptModel.cs" />
     <Compile Include="Services\MeetingCategory\MeetingCategoryService.cs" />
     <Compile Include="Services\MeetingCategory\IMeetingCategoryService.cs" />
     <Compile Include="Services\CommunicationService.cs" />
@@ -2479,7 +2481,6 @@
     <Content Include="Areas\Manage\Views\Transactions\ReportByBatchDescription.cshtml" />
     <Compile Include="Code\UnallowedCodeAttribute.cs" />
     <Compile Include="Controllers\SupportController.cs" />
-    <Compile Include="Models\ScriptModel.cs" />
     <Compile Include="Models\SupportRequestModel.cs" />
     <Compile Include="Models\HomeModel.cs" />
     <Compile Include="Areas\Manage\Models\EmailModel.cs" />

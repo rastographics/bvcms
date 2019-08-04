@@ -1,6 +1,7 @@
 ﻿@using CmsWeb.Controllers
 @using CmsWeb.Models
 @{
+    CMSDataContext Db = ViewBag.CurrentDatabase;
     var admin = User.IsInRole("Admin");
     var developer = User.IsInRole("Developer");
     var manageemails = User.IsInRole("ManageEmails");
@@ -14,7 +15,7 @@
     var financeviewonly = User.IsInRole("FinanceViewOnly");
     const bool financetrue = true;
     const bool financefalse = false;
-    var deposititems = ScriptModel.CustomDepositImportMenuItems();
+    var deposititems = PythonScriptModel.CustomDepositImportMenuItems(Db);
 }
 @if (admin || manageemails || managetrans || edit || design || finance || manageResources || financedataentry || financeviewonly)
 {
@@ -197,6 +198,7 @@
 
 @helper AdminList2(bool admin, bool design, bool managetrans, bool edit, bool manageemails, bool finance, bool developer, bool manageResources, bool sendsms, bool financedataentry)
 {
+    CMSDataContext Db = ViewBag.CurrentDatabase;
     if (admin)
     {
         <li class="dropdown-header dropdown-sub-header">Organizations</li>
@@ -212,7 +214,7 @@
         @Helper.LiAnchorLink("Transactions", "/Transactions/", admin || managetrans || finance)
         @Helper.LiAnchorLink("User Email Delegation", "/UsersCanEmailFor/", admin || manageemails)
     }
-    if (manageResources && DbUtil.Db.Setting("Resources-Enabled"))
+    if (manageResources && Db.Setting("Resources-Enabled"))
     {
         <li class="dropdown-header dropdown-sub-header">Resources</li>
         @Helper.LiAnchorLink("Resource Types", "/ResourceTypes/")
@@ -227,7 +229,7 @@
         @Helper.LiAnchorLink("Checkin Labels", "/CheckinLabels", admin)
         @Helper.LiAnchorLink("Users", "/Users/", admin)
 
-        if (DbUtil.Db.Setting("AttendanceUseMeetingCategory"))
+        if (Db.Setting("AttendanceUseMeetingCategory"))
         {
             @Helper.LiAnchorLink("Meeting Category", "/MeetingCategory/", admin)
         }

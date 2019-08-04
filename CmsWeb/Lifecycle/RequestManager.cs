@@ -46,6 +46,7 @@ namespace CmsWeb.Lifecycle
         public CMSBaseController(IRequestManager requestManager)
         {
             RequestManager = requestManager;
+            ViewBag.CurrentDatabase = requestManager.CurrentDatabase;
         }
     }
 
