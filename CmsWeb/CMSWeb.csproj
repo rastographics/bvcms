@@ -629,6 +629,7 @@
     <Compile Include="Areas\People\Controllers\DownlineLevelsController.cs" />
     <Compile Include="Areas\People\Controllers\DownlineSummaryController.cs" />
     <Compile Include="Areas\People\Controllers\DownlineDetailController.cs" />
+    <Compile Include="Areas\People\Models\AttributesModel.cs" />
     <Compile Include="Areas\People\Models\Contact\ContactExtraLocationConfig.cs" />
     <Compile Include="Areas\People\Models\Downline\DownlineLevelsModel.cs" />
     <Compile Include="Areas\People\Models\Downline\DownlineSummaryModel.cs" />
