@@ -202,13 +202,13 @@ var CheckInApp = new Vue({
                                     userId: profile.userID
                                 };
                                 localStorage.setItem('identity', token);
+                                localStorage.setItem('kiosk', vm.kiosk.name);
                                 localStorage.setItem('profile', JSON.stringify(profile));
                                 vm.identity = token;
                                 vm.profile = profile;
                                 vm.loadView('landing');
                             } else {
                                 // invalid creds
-                                vm.loadView('login');
                                 warning_swal('Login Failed', response.data.data);
                             }
                         }
@@ -228,10 +228,8 @@ var CheckInApp = new Vue({
         logout() {
             localStorage.removeItem('identity');
             localStorage.removeItem('profile');
-            localStorage.removeItem('kiosk');
             this.identity = false;
             this.profile = false;
-            this.kiosk.name = '';
             this.loadView('login');
         },
         reset() {
