@@ -384,6 +384,10 @@ var CheckInApp = new Vue({
                     if (response.status === 200) {
                         if (response.data.error === 0) {
                             var results = JSON.parse(response.data.data);
+                            // todo: use profile settings for confirmation dialog
+                            var timeout = setTimeout(function () {
+                                swal.close();
+                            }, 3000);
                             console.log(results);
                             vm.loadView('landing');
                             swal({
@@ -394,9 +398,9 @@ var CheckInApp = new Vue({
                                 confirmButtonClass: "btn-success",
                                 confirmButtonText: "OK"
                             }, function () {
+                                clearTimeout(timeout);
                                 vm.loadView('landing');
                             });
-                            
                         } else {
                             if (response.data.error === -6) {
                                 vm.logout();
