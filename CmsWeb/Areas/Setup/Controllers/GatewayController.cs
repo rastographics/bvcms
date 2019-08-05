@@ -140,9 +140,9 @@ namespace CmsWeb.Areas.Setup.Controllers
 
                 if (json.UseForAll)
                 {
-                    for (int i = 0; i < CurrentDatabase.PaymentProcess.Select(x => x.ProcessId).Count(); i++)
+                    for (int i = 1; i < CurrentDatabase.PaymentProcess.Select(x => x.ProcessId).Count(); i++)
                     {
-                        paymentProcess = CurrentDatabase.PaymentProcess.SingleOrDefault(x => x.ProcessId == i + 1);
+                        paymentProcess = CurrentDatabase.PaymentProcess.SingleOrDefault(x => x.ProcessId == i);
                         paymentProcess.GatewayAccountId = json.GatewayAccountId;
                         CurrentDatabase.SubmitChanges();
                     }
