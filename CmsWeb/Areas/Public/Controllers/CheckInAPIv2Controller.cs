@@ -345,7 +345,8 @@ namespace CmsWeb.Areas.Public.Controllers
 			if( !Auth() )
 				return Message.createErrorReturn( "Authentication failed, please try again", Message.API_ERROR_INVALID_CREDENTIALS );
 
-			Message message = Message.createFromString( data );
+            Message response = new Message();
+            Message message = Message.createFromString( data );
             AttendanceBundle bundle = JsonConvert.DeserializeObject<AttendanceBundle>( message.data );
 
 			foreach( Attendance attendance in bundle.attendances ) {
@@ -372,7 +373,18 @@ namespace CmsWeb.Areas.Public.Controllers
 				CmsData.DbUtil.Db.SubmitChanges();
 			}
 
-			List<Label> labels = new List<Label>();
+            if (message.device == Message.API_DEVICE_WEB)
+            {
+                string bundleData = SerializeJSON(bundle);
+                var m = new CheckInModel();
+                m.SavePrintJob(message.kiosk, null, bundleData);
+                response.setNoError();
+                response.count = 1;
+                response.data = bundleData;
+                return response;
+            }
+
+            List<Label> labels = new List<Label>();
 			string securityCode = CmsData.DbUtil.Db.NextSecurityCode().Select( c => c.Code ).Single().Trim();
 
 			using( var db = new SqlConnection( Util.ConnectionString ) ) {
@@ -389,19 +401,10 @@ namespace CmsWeb.Areas.Public.Controllers
 					labels.AddRange( bundle.attendances[0].getSecurityLabel( formats ) );
 				}
 			}
-
-            string labelData = SerializeJSON(labels);
-
-            if (message.device == Message.API_DEVICE_WEB)
-            {
-                var m = new CheckInModel();
-                m.SavePrintJob(message.kiosk, null, labelData);
-            }
-
-			Message response = new Message();
+            
 			response.setNoError();
 			response.count = 1;
-			response.data = labelData;
+			response.data = SerializeJSON(labels);
 
 			return response;
 		}

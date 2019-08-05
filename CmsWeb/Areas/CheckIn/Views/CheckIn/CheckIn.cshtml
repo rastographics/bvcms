@@ -73,7 +73,7 @@
                     <h2 style="font-weight:300;">Choose the classes you are checking in to</h2>
                 </div>
                 <div class="col-xs-12 col-md-2 text-right">
-                    <button v-if="attendance.length" v-on:click="updateAttendance" class="btn btn-success" style="margin-top: 22px;">Check In</button>
+                    <button v-if="attendanceUpdated" v-on:click="updateAttendance" class="btn btn-success" style="margin-top: 22px;">Check In</button>
                     <button v-else type="submit" v-on:click="updateAttendance" class="btn btn-primary" style="margin-top: 22px;">Return</button>
                 </div>
             </div>
@@ -86,7 +86,7 @@
                         <div class="member-details">
                             <h4 class="name">{{ member.name }} <span class="badge badge-info" v-if="member.age < 18">{{ member.age }}</span></h4>
                             <div v-for="group in member.groups">
-                                <div v-on:click="toggleAttendance(member.id, group.id)" class="check-container" v-bind:class="[attendance.includes(member.id + '.' + group.id) ? 'active' : '', group.checkedIn ? 'primary' : '', 'check-container']">
+                                <div v-on:click="toggleAttendance(member.id, group.id)" v-bind:class="{ 'primary': attendance[member.id + '.' + group.id].status == 2, 'active': attendance[member.id + '.' + group.id].status == 1, 'check-container': true }">
                                     <div>
                                         <span class="check-label">
                                             <i class="fa fa-check icon"></i>
@@ -108,9 +108,11 @@
             </form>
             <div class="action-bar">
                 <div class="content">
-                    <a v-on:click="checkAll" class="pull-left">Check All</a>
-                    <i class="fa fa-2x fa-square-o"></i> Reprint all labels
-                    <button v-if="attendance.length" v-on:click="updateAttendance" class="btn btn-success pull-right">Check In</button>
+                    <button v-on:click="checkAllAttendance" class="btn btn-info pull-left">Check All</button>
+                    <div style="display:inline-block;position:relative;left: 20px;">
+                        <i v-on:click="reprintLabels = !reprintLabels" v-bind:class="[reprintLabels ? 'fa-check-square-o' : 'fa-square-o', 'fa', 'fa-2x']" style="margin-top:3px;width:30px;"></i><span style="position:relative;top:-5px;">Reprint all labels</span>
+                    </div>
+                    <button v-if="attendanceUpdated" v-on:click="updateAttendance" class="btn btn-success pull-right">Check In</button>
                     <button v-else type="submit" v-on:click="updateAttendance" class="btn btn-primary pull-right">Return</button>
                 </div>
             </div>

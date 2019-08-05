@@ -10,6 +10,7 @@ var CheckInApp = new Vue({
         profile: false,
         loading: false,
         keyboard: false,
+        reprintLabels: false,
         idleTimer: false,
         idleStage: 0,
         idleTimeout: 60000,
@@ -26,7 +27,10 @@ var CheckInApp = new Vue({
         },
         search: {
             phone: ''
-        }
+        },
+        ABSENT: 0,
+        PRESENT: 1,
+        CHECKEDIN: 2
     },
     watch: {
         loading: function (loading) {
@@ -61,6 +65,15 @@ var CheckInApp = new Vue({
             } else {
                 return '##########?#?#?#?#?#';
             }
+        },
+        attendanceUpdated: function () {
+            var keys = Object.keys(this.attendance);
+            for (var i = 0; i < keys.length; i++) {
+                if (this.attendance[keys[i]].changed === true) {
+                    return true;
+                }
+            }
+            return false;
         }
     },
     methods: {
@@ -120,7 +133,7 @@ var CheckInApp = new Vue({
         },
         handleIdle() {
             let vm = this;
-            if (vm.view !== 'landing' || vm.search.phone.length) {
+            if (!['landing','login'].includes(vm.view) || vm.search.phone.length) {
                 vm.idleStage++;
                 vm.resetIdleTimer();
                 if (vm.idleStage === 1) {
@@ -158,7 +171,14 @@ var CheckInApp = new Vue({
             this.view = newView;
             if (newView === 'landing') {
                 this.search.phone = '';
+                this.members = [];
+                this.attendance = [];
+                this.reprintLabels = false;
                 this.initKeyboard();
+                if (!this.profile || !this.kiosk.name.length) {
+                    this.logout();
+                    error_swal("Error", "Couldn't retrieve saved profile data. Please try logging in again.");
+                }
             }
         },
         auth() {
@@ -208,8 +228,10 @@ var CheckInApp = new Vue({
         logout() {
             localStorage.removeItem('identity');
             localStorage.removeItem('profile');
+            localStorage.removeItem('kiosk');
             this.identity = false;
             this.profile = false;
+            this.kiosk.name = '';
             this.loadView('login');
         },
         reset() {
@@ -218,6 +240,7 @@ var CheckInApp = new Vue({
             this.families = [];
             this.members = [];
             this.attendance = [];
+            this.reprintLabels = false;
             this.search.phone = '';
             this.loadView('landing');
             swal.close();
@@ -242,7 +265,7 @@ var CheckInApp = new Vue({
             var payload = vm.generatePayload({
                 search: phone,
                 campus: 0,
-                date: '2019-08-04 08:00:00' // todo: remove, debug only
+                date: '2019-08-11 08:00:00' // todo: remove, debug only
             });
             vm.loading = true;
             vm.$http.post('/CheckInApiV2/Search', payload, vm.apiHeaders).then(
@@ -258,7 +281,7 @@ var CheckInApp = new Vue({
                                 vm.loadView('families');
                             } else if (results.length === 1) {
                                 vm.families = [];
-                                vm.members = results[0].members;
+                                vm.loadAttendance(results[0].members);
                                 vm.loadView('checkin');
                             } else {
                                 vm.loadView('landing');
@@ -283,38 +306,118 @@ var CheckInApp = new Vue({
             );
         },
         selectFamily(family) {
-            this.members = family.members;
+            this.loadAttendance(family.members);
             this.loadView('checkin');
         },
-        toggleAttendance(memberId, groupId) {
-            var attend = memberId + '.' + groupId;
-            var index = this.attendance.indexOf(attend);
-            if (index > -1) {
-                this.attendance.splice(index, 1);
-            } else {
-                this.attendance.push(attend);
-            }
-        },
-        updateAttendance() {
-            // todo: post attendance bundle to /UpdateAttend
+        loadAttendance(members) {
             let vm = this;
-            vm.loadView('landing');
-            if (vm.attendance.length) {
-                console.log(vm.attendance);
-                swal({
-                    title: "You're all checked in",
-                    text: "Don't forget your name tags",
-                    type: "success",
-                    showCancelButton: false,
-                    confirmButtonClass: "btn-success",
-                    confirmButtonText: "OK"
-                }, function () {
-                    vm.loadView('landing');
+            vm.attendance = [];
+            vm.members = members;
+            members.forEach(function (member) {
+                member.groups.forEach(function (group) {
+                    var attend = member.id + '.' + group.id;
+                    vm.$set(vm.attendance, attend, {
+                        initial: group.checkedIn ? vm.CHECKEDIN : vm.ABSENT,
+                        status: group.checkedIn ? vm.CHECKEDIN : vm.ABSENT,
+                        changed: false
+                    });
+                });
+            });
+        },
+        toggleAttendance(memberId, groupId) {
+            let vm = this;
+            var attend = memberId + '.' + groupId;
+            var old = vm.attendance[attend];
+            if (old !== undefined) {
+                var status = old.status === vm.ABSENT ? vm.PRESENT : vm.ABSENT;
+                vm.$set(vm.attendance, attend, {
+                    initial: old.initial,
+                    status: status,
+                    changed: status !== old.initial
+                });
+            } else {
+                // guest
+                vm.$set(vm.attendance, attend, {
+                    initial: vm.ABSENT,
+                    status: vm.PRESENT,
+                    changed: true
                 });
             }
         },
-        checkAll() {
-            console.log('check all');
+        checkAllAttendance() {
+            let vm = this;
+            var keys = Object.keys(vm.attendance);
+            for (var i = 0; i < keys.length; i++) {
+                if (vm.attendance[keys[i]].status === vm.ABSENT) {
+                    var attend = keys[i].split('.');
+                    vm.toggleAttendance(attend[0], attend[1]);
+                }
+            }
+            return false;
+        },
+        updateAttendance() {
+            let vm = this;
+            if (!vm.attendanceUpdated) {
+                vm.loadView('landing');
+                return;
+            }
+            vm.loading = true;
+            var attendances = [];
+            var keys = Object.keys(vm.attendance);
+            for (var i = 0; i < keys.length; i++) {
+                if (vm.attendance[keys[i]].changed) {
+                    var attend = keys[i].split('.');
+                    var bundle = {
+                        peopleID: attend[0],
+                        groups: [{
+                            groupId: attend[1],
+                            present: vm.attendance[keys[i]].status === vm.PRESENT
+                        }]
+                    };
+                    attendances.push(bundle);
+                }
+            }
+            var payload = vm.generatePayload({
+                securityLabels: 0,
+                guestLabels: true,
+                locationLabels: true,
+                nameTagAge: 18,
+                attendances: attendances
+            });
+            vm.$http.post('/CheckInApiV2/UpdateAttend', payload, vm.apiHeaders).then(
+                response => {
+                    vm.loading = false;
+                    if (response.status === 200) {
+                        if (response.data.error === 0) {
+                            var results = JSON.parse(response.data.data);
+                            console.log(results);
+                            vm.loadView('landing');
+                            swal({
+                                title: "You're all checked in",
+                                text: "Don't forget your name tags",
+                                type: "success",
+                                showCancelButton: false,
+                                confirmButtonClass: "btn-success",
+                                confirmButtonText: "OK"
+                            }, function () {
+                                vm.loadView('landing');
+                            });
+                            
+                        } else {
+                            vm.loadView('landing');
+                            warning_swal('Checkin Failed', response.data.data);
+                        }
+                    } else {
+                        vm.loadView('landing');
+                        warning_swal('Warning!', 'Something went wrong, try again later');
+                    }
+                },
+                err => {
+                    vm.loading = false;
+                    vm.loadView('landing');
+                    error_swal('Error', 'Something went wrong');
+                }
+            );
         },
         postBarcode() {
             // todo: post barcode id to self check in endpoint
@@ -322,18 +425,21 @@ var CheckInApp = new Vue({
     },
     mounted() {
         let vm = this;
-
         // init, fetch identity, profile, and show login or landing
+        var profile = localStorage.getItem('profile');
+        if (profile && profile.length) {
+            vm.profile = JSON.parse(profile);
+        }
+        var kiosk = localStorage.getItem('kiosk');
+        if (kiosk && kiosk.length) {
+            vm.kiosk.name = kiosk;
+        }
         var identity = localStorage.getItem('identity');
         if (identity && identity.length) {
             vm.identity = identity;
             vm.loadView('landing');
         } else {
             vm.loadView('login');
-        }
-        var profile = localStorage.getItem('profile');
-        if (profile && profile.length) {
-            vm.profile = JSON.parse(profile);
         }
 
         // event handlers to support idle behavior
