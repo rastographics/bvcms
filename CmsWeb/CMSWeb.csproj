@@ -3379,8 +3379,10 @@
     </VisualStudio>
   </ProjectExtensions>
   <PropertyGroup>
-    <PreBuildEvent>call npm install
-call gulp --no-color</PreBuildEvent>
+    <PreBuildEvent>pushd $(ProjectDir)
+npm install
+gulp --no-color
+popd</PreBuildEvent>
   </PropertyGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
