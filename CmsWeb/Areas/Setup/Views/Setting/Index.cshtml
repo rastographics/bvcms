@@ -67,8 +67,8 @@
             <div class="box-content">
                 <ul class="nav nav-pills subnav hidden-sm hidden-xs">
                     <li class="settings-type-tab active" data-id="1">
-                        <a href="#all" data-toggle="tab">
-                            <span>All</span>
+                        <a href="#general" data-toggle="tab">
+                            <span>General</span>
                         </a>
                     </li>
                     @for (var i = 0; i < Model.SettingTypes.Count; i++)
@@ -81,7 +81,7 @@
                     }
                 </ul>
                 <select class="form-control visible-sm-block visible-xs-block nav-select-pills">
-                    <option value="#all">All</option>
+                    <option value="#general">General</option>
                     @for (var i = 0; i < Model.SettingTypes.Count; i++)
                     {
                         <option value="#@Model.SettingTypes[i].SettingType.Name.SlugifyString()">
@@ -90,17 +90,17 @@
                     }
                 </select>
                 <div class="tab-content" style="border: none">
-                    <div class="tab-pane active" id="all">
-                        <div class="accordion" id="accordion-all-settings">
+                    <div class="tab-pane active" id="general">
+                        <div class="accordion" id="accordion-general-settings">
                             <div class="panel panel-default">
-                                <div class="panel-heading" id="all-settings">
+                                <div class="panel-heading" id="general-settings">
                                     <h4 style="margin:0;">
-                                        <button class="btn btn-link notcollapsed" type="button" data-toggle="collapse" data-target="#test" aria-expanded="true" aria-controls="test">
+                                        <button class="btn btn-link notcollapsed" type="button" data-toggle="collapse" data-target="#general-accordion" aria-expanded="true" aria-controls="general-accordion">
                                             <i class="fa fa-chevron-right"></i> All
                                         </button>
                                     </h4>
                                 </div>
-                                <div id="test" class="collapse in" data-parent="#accordion-all-settings">
+                                <div id="general-accordion" class="collapse in" data-parent="#accordion-general-settings">
                                     @Html.Partial("_Settings", Model.Settings)
                                 </div>
                             </div>
