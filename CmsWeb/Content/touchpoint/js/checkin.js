@@ -172,6 +172,7 @@ var CheckInApp = new Vue({
             if (newView === 'landing') {
                 this.search.phone = '';
                 this.members = [];
+                this.families = [];
                 this.attendance = [];
                 this.reprintLabels = false;
                 this.initKeyboard();
@@ -235,11 +236,6 @@ var CheckInApp = new Vue({
         reset() {
             // called on session timeout if kiosk has been idle too long
             this.idleStage = 0;
-            this.families = [];
-            this.members = [];
-            this.attendance = [];
-            this.reprintLabels = false;
-            this.search.phone = '';
             this.loadView('landing');
             swal.close();
         },
@@ -255,7 +251,6 @@ var CheckInApp = new Vue({
                 return;
             }
             if (phone.length < 4 || phone.length > 15) {
-                vm.search.phone = '';
                 vm.loadView('landing');
                 warning_swal('No results', 'No families found with that number, please try again.');
                 return;
@@ -273,7 +268,6 @@ var CheckInApp = new Vue({
                         if (response.data.error === 0) {
                             var results = JSON.parse(response.data.data);
                             console.log(results);
-                            vm.search.phone = '';
                             if (results.length > 1) {
                                 vm.families = results;
                                 vm.loadView('families');
@@ -286,12 +280,14 @@ var CheckInApp = new Vue({
                                 warning_swal('No results', 'No families found with that number, please try again.');
                             }
                         } else {
-                            vm.search.phone = '';
-                            vm.loadView('landing');
+                            if (response.data.error === -6) {
+                                vm.logout();
+                            } else {
+                                vm.loadView('landing');
+                            }
                             warning_swal('Search Failed', response.data.data);
                         }
                     } else {
-                        vm.search.phone = '';
                         vm.loadView('landing');
                         warning_swal('Warning!', 'Something went wrong, try again later');
                     }
@@ -402,7 +398,11 @@ var CheckInApp = new Vue({
                             });
                             
                         } else {
-                            vm.loadView('landing');
+                            if (response.data.error === -6) {
+                                vm.logout();
+                            } else {
+                                vm.loadView('landing');
+                            }
                             warning_swal('Checkin Failed', response.data.data);
                         }
                     } else {
