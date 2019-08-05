@@ -2640,7 +2640,6 @@
     <Content Include="Views\Home\UserPreferences.cshtml" />
     <Content Include="Views\ExtraValue\EditStandard.cshtml" />
     <Content Include="Views\Home\MyDataSupport.cshtml" />
-    <Content Include="Views\Script\TestScript.cshtml" />
     <Content Include="Views\Shared\OnlineReg2.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\Hyperlink.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\InlineBoolean.cshtml" />
@@ -2751,13 +2750,10 @@
     <Content Include="Views\Script\PyScriptForm.cshtml" />
     <Content Include="Views\Shared\Menu\User.cshtml" />
     <Content Include="Views\Shared\PageError.cshtml" />
-    <Content Include="Views\Script\Test.cshtml" />
     <Content Include="Views\Shared\Toolbar\Custom.cshtml" />
     <Content Include="Views\Shared\PageMessage.cshtml" />
     <Content Include="Areas\Manage\Views\Account\_ShellLayout.cshtml" />
     <Content Include="Views\ExtraValue\Location.cshtml" />
-    <Content Include="Views\Script\Warmup.cshtml" />
-    <Content Include="Views\Script\TestBackground.cshtml" />
     <Content Include="Views\Script\RunScriptPageBreaks.cshtml" />
     <Content Include="Views\Shared\_LayoutCheckIn.cshtml" />
     <Content Include="Views\Shared\_LayoutNoHeaderFooter.cshtml" />

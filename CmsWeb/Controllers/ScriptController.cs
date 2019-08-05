@@ -21,64 +21,6 @@ namespace CmsWeb.Controllers
         {
         }
 
-#if DEBUG
-        [HttpGet, Route("~/Test/{id?}")]
-        public ActionResult Test(int? id)
-        {
-            EmailReplacements.ReCodes();
-            return Content("no test");
-        }
-        [HttpGet, Route("~/Warmup")]
-        public ActionResult Warmup()
-        {
-            return View();
-        }
-#endif
-
-        public ActionResult RecordTest(int id, string v)
-        {
-            var o = CurrentDatabase.LoadOrganizationById(id);
-            o.AddEditExtra(CurrentDatabase, "tested", v);
-            CurrentDatabase.SubmitChanges();
-            return Content(v);
-        }
-
-        //todo: use injection
-#if DEBUG
-        [HttpGet, Route("~/TestScript")]
-        [Authorize(Roles = "Developer")]
-        public ActionResult TestScript()
-        {
-            //var id = CurrentDatabase.ScratchPadQuery(@"MemberStatusId = 10[Member] AND LastName = 'C*'");
-
-            var file = Server.MapPath("~/test.py");
-            var logFile = $"RunPythonScriptInBackground.{DateTime.Now:yyyyMMddHHmmss}";
-
-#if false
-            HostingEnvironment.QueueBackgroundWorkItem(ct =>
-            {
-                var pe = new PythonModel(host);
-                //pe.DictionaryAdd("OrgId", "89658");
-                pe.DictionaryAdd("LogFile", logFile);
-                PythonModel.ExecutePythonFile(file, pe);
-            });
-            return View("RunPythonScriptProgress");
-#else
-            var pe = new PythonModel(CurrentDatabase);
-            pe.DictionaryAdd("LogFile", logFile);
-            ViewBag.Text = PythonModel.ExecutePython(file, pe, fromFile: true);
-            return View("Test");
-#endif
-        }
-        [HttpPost, Route("~/TestScript")]
-        [ValidateInput(false)]
-        [Authorize(Roles = "Developer")]
-        public ActionResult TestScript(string script)
-        {
-            return Content(PythonModel.RunScript(CurrentDatabase.Host, script));
-        }
-#endif
-
         [Route("~/PythonSearch/Names")]
         public ActionResult PythonSearchNames(string term)
         {
