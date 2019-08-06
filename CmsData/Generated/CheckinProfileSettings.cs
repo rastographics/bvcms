@@ -116,7 +116,6 @@ namespace CmsData
             {
                 if (this._CheckinProfileId != value)
                 {
-
                     if (this._CheckinProfiles.HasLoadedOrAssignedValue)
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
 
