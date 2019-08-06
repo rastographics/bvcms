@@ -1,11 +1,7 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using CmsWeb.Areas.OnlineReg.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Xunit;
+﻿using Xunit;
 using CmsWeb.Areas.People.Models;
 using CmsData;
+using Shouldly;
 
 namespace CMSWebTests.Areas.People.Models.Person.Enrollments
 {
@@ -19,7 +15,7 @@ namespace CMSWebTests.Areas.People.Models.Person.Enrollments
             var m = new RegistrationsModel();
             var fulfillmentlist = m.FulfillmentList();
 
-            Microsoft.VisualStudio.TestTools.UnitTesting.Assert.IsNotNull(fulfillmentlist);
+            fulfillmentlist.ShouldNotBeNull();
         }
     }
 }
