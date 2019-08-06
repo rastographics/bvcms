@@ -96,7 +96,6 @@ gulp.task('compress-js', function(complete) {
         gulp.src(files)
             .pipe(concat(outputName))
             .pipe(uglify())
-            .on('error', function (err) { gutil.log(gutil.colors.red('[Error]'), err.toString()); })
             .pipe(gulp.dest(destinationFolder));
     };
 
