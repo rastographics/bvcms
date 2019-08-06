@@ -186,7 +186,6 @@ namespace CmsWeb.Controllers
 #endif
                 var m = new PythonScriptModel(CurrentDatabase);
                 var script = m.FetchScript(name);
-                m.pythonModel.Data.pyscript = m.debuggingName ?? name;
                 m.pythonModel.HttpMethod = "get";
                 m.RunPythonScript(script, p1, p2);
                 return View(m.pythonModel);

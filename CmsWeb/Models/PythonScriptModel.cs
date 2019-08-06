@@ -100,6 +100,7 @@ namespace CmsWeb.Models
 
         public string FetchScript(string name)
         {
+            pythonModel.Data.pyscript = name;
 #if DEBUG
             name = ParseDebuggingName(name);
 #endif
@@ -126,14 +127,13 @@ namespace CmsWeb.Models
         }
 #if DEBUG
         private string runFromPath;
-        internal string debuggingName;
         public string ParseDebuggingName(string name)
         {
             var runfromUrlRe = new Regex(@"([c-e]![\w-]*-)(\w*)\.py");
             if (runfromUrlRe.IsMatch(name))
             {
                 var match = runfromUrlRe.Match(name);
-                debuggingName = match.Groups[0].Value;
+                pythonModel.Data.pyscript = match.Groups[0].Value;
                 var contentName = match.Groups[2].Value;
                 runFromPath = match.Groups[1].Value
                                       .Replace("!", ":\\")
