@@ -121,17 +121,17 @@
         @if (Model.PaymentForm.NeedsCityState)
         {
             <div>
-                <b style="color: #943a38">Need a city and state too for this address</b>
-            </div>
-            <div class="row">
-                <div class="form-group col-lg-6">
-                    <input type="text" id="City" name="City" class="form-control" placeholder="City" required="required" value="@Model.PaymentForm.City">
-                </div>
-                <div class="form-group col-lg-6">
-                    <input type="text" id="State" name="State" class="form-control" placeholder="State/Province/Region" required="required" value="@Model.PaymentForm.State">
-                </div>
+                <b style="color: #943a38">Need a city and state for this address</b>
             </div>
         }
+        <div class="row">
+            <div class="form-group col-lg-6">
+                <input type="text" id="City" name="City" class="form-control" placeholder="City" required="required" value="@Model.PaymentForm.City">
+            </div>
+            <div class="form-group col-lg-6">
+                <input type="text" id="State" name="State" class="form-control" placeholder="State/Province/Region" required="required" value="@Model.PaymentForm.State">
+            </div>
+        </div>
         <div class="row">
             <div class="form-group col-lg-6">
                 <input type="text" id="Zip" name="Zip" class="form-control @Html.ErrorClass("Zip")" placeholder="Zip" value="@Model.PaymentForm.Zip">

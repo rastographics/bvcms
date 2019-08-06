@@ -172,9 +172,11 @@ namespace CmsWeb.Models
                         DoBackgroundChecks(p);
                         break;
                     case "Baptism Status":
+                        TrackChange(Field, p.BaptismStatusId, NewValue);
                         p.BaptismStatusId = NewValue.ToInt2();
                         break;
                     case "Baptism Type":
+                        TrackChange(Field, p.BaptismTypeId, NewValue);
                         p.BaptismTypeId = NewValue.ToInt2();
                         break;
                     case "Baptism Date":
@@ -182,67 +184,85 @@ namespace CmsWeb.Models
                         p.LogChanges(DbUtil.Db, Util.UserPeopleId ?? 1);
                         break;
                     case "Campus":
+                        TrackChange(Field, p.CampusId, NewValue);
                         p.CampusId = NewValue.ToInt2();
                         break;
                     case "Deceased Date":
                         if (DateValid())
                         {
+                            TrackChange(Field, p.DeceasedDate, NewValue);
                             p.DeceasedDate = NewValue.ToDate();
                         }
 
                         break;
                     case "Decision Type":
+                        TrackChange(Field, p.DecisionTypeId, NewValue);
                         p.DecisionTypeId = NewValue.ToInt2();
                         break;
                     case "Do Not Call":
+                        TrackChange(Field, p.DoNotCallFlag, NewValue);
                         p.DoNotCallFlag = NewValue.ToBool();
                         break;
                     case "Do Not Mail":
+                        TrackChange(Field, p.DoNotMailFlag, NewValue);
                         p.DoNotMailFlag = NewValue.ToBool();
                         break;
                     case "Drop All Enrollments":
                         p.DropMemberships(DbUtil.Db);
                         break;
                     case "Drop Date":
+                        TrackChange(Field, p.DropDate, NewValue);
                         p.DropDate = NewValue.ToDate();
                         break;
                     case "Drop Type":
+                        TrackChange(Field, p.DropCodeId, NewValue);
                         p.DropCodeId = NewValue.ToInt();
                         break;
                     case "Entry Point":
+                        TrackChange(Field, p.EntryPointId, NewValue);
                         p.EntryPointId = NewValue.ToInt2();
                         break;
                     case "Employer":
+                        TrackChange(Field, p.EmployerOther, NewValue);
                         p.EmployerOther = NewValue;
                         break;
                     case "Envelope Options":
+                        TrackChange(Field, p.EnvelopeOptionsId, NewValue);
                         p.EnvelopeOptionsId = NewValue.ToInt2();
                         break;
                     case "Family Position":
+                        TrackChange(Field, p.PositionInFamilyId, NewValue);
                         p.PositionInFamilyId = NewValue.ToInt();
                         break;
                     case "Gender":
+                        TrackChange(Field, p.GenderId, NewValue);
                         p.GenderId = NewValue.ToInt();
                         break;
                     case "Grade":
                         DoGrade(p);
                         break;
                     case "Join Type":
+                        TrackChange(Field, p.JoinCodeId, NewValue);
                         p.JoinCodeId = NewValue.ToInt();
                         break;
                     case "Marital Status":
+                        TrackChange(Field, p.MaritalStatusId, NewValue);
                         p.MaritalStatusId = NewValue.ToInt();
                         break;
                     case "Member Status":
+                        TrackChange(Field, p.MemberStatusId, NewValue);
                         p.MemberStatusId = NewValue.ToInt();
                         break;
                     case "Occupation":
+                        TrackChange(Field, p.OccupationOther, NewValue);
                         p.OccupationOther = NewValue;
                         break;
                     case "New Member Class":
+                        TrackChange(Field, p.NewMemberClassStatusId, NewValue);
                         p.NewMemberClassStatusId = NewValue.ToInt2();
                         break;
                     case "ReceiveSMS":
+                        TrackChange(Field, p.ReceiveSMS, NewValue);
                         p.ReceiveSMS = NewValue.ToBool();
                         break;
                     case "Remove Address":
@@ -271,18 +291,23 @@ namespace CmsWeb.Models
                         }
                         break;
                     case "School":
+                        TrackChange(Field, p.SchoolOther, NewValue);
                         p.SchoolOther = NewValue;
                         break;
                     case "Statement Options":
+                        TrackChange(Field, p.ContributionOptionsId, NewValue);
                         p.ContributionOptionsId = NewValue.ToInt2();
                         break;
                     case "Electronic Statement":
+                        TrackChange(Field, p.ElectronicStatement, NewValue);
                         p.ElectronicStatement = NewValue.ToBool2();
                         break;
                     case "Title":
+                        TrackChange(Field, p.TitleCode, NewValue);
                         p.TitleCode = NewValue;
                         break;
                     case "New Member Class Date":
+                        TrackChange(Field, p.NewMemberClassDate, NewValue);
                         p.NewMemberClassDate = NewValue.ToDate();
                         break;
                     case "New OrgLeadersOnly":
@@ -294,8 +319,29 @@ namespace CmsWeb.Models
                     return;
                 }
 
+                if (psb.Count > 0)
+                {
+                    var c = new ChangeLog
+                    {
+                        UserPeopleId = Util.UserPeopleId.GetValueOrDefault(),
+                        PeopleId = p.PeopleId,
+                        Field = Field,
+                        Created = Util.Now
+                    };
+                    DbUtil.Db.ChangeLogs.InsertOnSubmit(c);
+                    c.ChangeDetails.AddRange(psb);
+                }
+
                 DbUtil.Db.SubmitChanges();
+                psb = new List<ChangeDetail>();
             }
+        }
+
+        private List<ChangeDetail> psb = new List<ChangeDetail>();
+
+        private void TrackChange(string field, object oldValue, object newValue)
+        {
+            psb.Add(new ChangeDetail(field, oldValue, newValue));
         }
 
         private void DoGrade(Person p)

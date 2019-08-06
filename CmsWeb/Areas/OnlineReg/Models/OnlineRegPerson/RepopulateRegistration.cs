@@ -1,7 +1,9 @@
 ﻿using CmsData;
 using CmsData.Registration;
 using CmsData.View;
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using UtilityExtensions;
 
@@ -28,6 +30,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     case "AskChurch":
                         otherchurch = reg.ActiveInAnotherChurch ?? false;
                         memberus = reg.Member ?? false;
+                        nochurch = reg.NoMember ?? false;
                         break;
                     case "AskAllergies":
                         medical = reg.MedicalDescription;
@@ -56,6 +59,18 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     case "AskInsurance":
                         insurance = reg.Insurance;
                         policy = reg.Policy;
+                        break;
+                    case "AskPassport":
+                        passportNumber = Util.Decrypt(reg.PassportNumber);
+                        string pe = Util.Decrypt(reg.PassportExpires);
+                        if (string.IsNullOrEmpty(pe))
+                        {
+                            passportExpires = null;
+                        }
+                        else
+                        {
+                            passportExpires = DateTime.ParseExact(pe, "MM/dd/yyyy", CultureInfo.InvariantCulture);
+                        }
                         break;
                     case "AskTickets":
                         ntickets = om.Tickets;

@@ -977,6 +977,7 @@
     <Compile Include="Generated\Views\TransactionSummary.cs" />
     <Compile Include="DbUtil\ITableWithExtraValues.cs" />
     <Content Include="App_Readme\Elmah.txt" />
+    <Content Include="Migrations\20190709_update_archive_content_sp.sql" />
     <Content Include="Migrations\00000000_sql_migrations_table.sql" />
     <Content Include="Migrations\20181022-3_create_Contributions2SearchIds.sql" />
     <Content Include="Migrations\20181023_emailqueue-perf-index-updates.sql" />
@@ -985,6 +986,7 @@
     <Content Include="Migrations\20190508_Add_PaymentInfo_AcceptivaPayerId_Column.sql" />
     <Content Include="Migrations\20190520_add_acceptiva_to_gateway_tables.sql" />
     <Content Include="Migrations\20190527_add_preconfigured_acceptiva_details.sql" />
+    <Content Include="Migrations\20190620_add_passport_reg_setting.sql" />
     <Compile Include="Organization\OrgFilter.cs" />
     <Compile Include="Organization\OrgPerson.cs" />
     <Compile Include="Organization\OrgSchedule.cs" />
@@ -1396,6 +1398,7 @@
     <Content Include="Migrations\20190529_create_SP_GreatPlainsIncomeExport.sql" />
     <Content Include="Migrations\20190603_add_role_priority.sql" />
     <Content Include="Migrations\20190530_Update_PaymentInfo_PK.sql" />
+    <Content Include="Migrations\20190626_Add_RecReg_nomember_Column.sql" />
     <Content Include="QueryBuilder\CompareMap.xml">
       <SubType>Designer</SubType>
     </Content>

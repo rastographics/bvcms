@@ -86,3 +86,8 @@ ttt.json
 /IronPythonApplication1/test.py
 HTMLPage1.html
 /CmsWeb/package-lock.json
+test_coverage.xml
+
+#gulp output
+CmsWeb/Content/touchpoint/css/app.css
+CmsWeb/Content/touchpoint/js/app.min.js

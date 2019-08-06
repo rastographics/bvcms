@@ -16,7 +16,7 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpGet, Route("~/Contact2/{cid}")]
         public ActionResult Index(int cid, bool edit = false)
         {
-            var m = new ContactModel(cid);
+            var m = new ContactModel(CurrentDatabase, cid);
             if (m.contact == null)
             {
                 return Content("contact is private or does not exist");
@@ -64,19 +64,19 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpPost]
         public ActionResult Contactees(int cid)
         {
-            var m = new ContactModel(cid);
+            var m = new ContactModel(CurrentDatabase, cid);
             return View(m.MinisteredTo);
         }
         [HttpPost]
         public ActionResult Contactors(int cid)
         {
-            var m = new ContactModel(cid);
+            var m = new ContactModel(CurrentDatabase, cid);
             return View(m.Ministers);
         }
         [HttpPost]
         public ActionResult ContactEdit(int cid)
         {
-            var m = new ContactModel(cid);
+            var m = new ContactModel(CurrentDatabase, cid);
             if (!m.CanViewComments)
             {
                 return View("ContactDisplay", m);
@@ -87,7 +87,7 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpPost]
         public ActionResult ContactDisplay(int cid)
         {
-            var m = new ContactModel(cid);
+            var m = new ContactModel(CurrentDatabase, cid);
             return View(m);
         }
         [HttpGet]
@@ -127,7 +127,7 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpPost]
         public ActionResult NewTeamContact(int cid)
         {
-            var m = new ContactModel(cid);
+            var m = new ContactModel(CurrentDatabase, cid);
             var nid = m.AddNewTeamContact();
             return Redirect("/Contact2/" + nid);
         }
@@ -141,7 +141,7 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpPost]
         public ActionResult ExtraValues(int cid, string ministry, string contactType, string contactReason)
         {
-            var m = new ContactModel(cid);
+            var m = new ContactModel(CurrentDatabase, cid);
             m.SetLocationOnContact(ministry, contactType, contactReason);
             var evmodel = new ExtraValueModel(cid, "Contact", m.Location);
             return View("/Views/ExtraValue/Location.cshtml", evmodel);

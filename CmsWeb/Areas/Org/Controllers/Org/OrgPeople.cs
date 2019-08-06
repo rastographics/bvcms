@@ -158,19 +158,22 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost, Route("ToggleCheckboxes/{qid}")]
         public ActionResult ToggleCheckboxes(Guid qid, IList<int> pids, bool chkd)
         {
-            foreach (var pid in pids)
+            if (pids?.Count > 0)
             {
-                if (chkd)
+                foreach (var pid in pids)
                 {
-                    Person.Tag(CurrentDatabase, pid, qid.ToString(), Util.UserPeopleId, DbUtil.TagTypeId_OrgMembers);
+                    if (chkd)
+                    {
+                        Person.Tag(CurrentDatabase, pid, qid.ToString(), Util.UserPeopleId, DbUtil.TagTypeId_OrgMembers);
+                    }
+                    else
+                    {
+                        Person.UnTag(CurrentDatabase, pid, qid.ToString(), Util.UserPeopleId, DbUtil.TagTypeId_OrgMembers);
+                    }
                 }
-                else
-                {
-                    Person.UnTag(CurrentDatabase, pid, qid.ToString(), Util.UserPeopleId, DbUtil.TagTypeId_OrgMembers);
-                }
-            }
 
-            CurrentDatabase.SubmitChanges();
+                CurrentDatabase.SubmitChanges();
+            }
             return new EmptyResult();
         }
 

@@ -164,6 +164,7 @@ AttendedAsOf,Bit,,,,AttendanceDates,Attended As Of,"StartDate,EndDate,Program,Di
 FirstFamilyVisitAsOf,Bit,,,,AttendanceDates,First Family Visit,"StartDate,EndDate",Enter Starting Date and optional ending date to find family members where the first by any family member was since then
 CheckInByDate,Integer,,,,AttendanceDates,Building Check-In Count History,"StartDate,EndDate","Searches by Date Range, can do # times visited greater than, less than, etc."
 CheckInByActivity,CodeStr,,Activities,,AttendanceDates,Building Check-In By Activity,,Searches by Building Activity
+GetEldestFamilyMember,Code,,FamilyPositionCodes,,AttendanceDates,Eldest Family Member That Attended,"Program,Division,Organization,StartDate,EndDate","Select positions in family, attendance: starting date and ending date, program, division, and organization."
 MeetingId,Integer,,,,AttendanceDates,,,"For internal use, but you can enter a Meeting ID number for those who attended."
 RegisteredForMeetingId,Integer,,,,AttendanceDates,,,"For internal use, but you can enter a Meeting ID number for those who are registered to attend."
 CommitmentForMeetingId,Code,,AttendCommitmentCodes,MeetingId,AttendanceDates,,Quarters,"For internal use, shows those for the specified commitment type for the specified meeting (attending, regrets, etc.)"
@@ -231,6 +232,7 @@ EntryPointId,NullCode,,EntryPoints,,Miscellaneous,Entry Point,,Select Entry Poin
 OriginId,NullCode,,Origins,,Miscellaneous,Record Origin,,Select Record Origin from the list.
 InterestPointId,NullCode,,InterestPoints,,Miscellaneous,Interest Point,,Select Interest Point from the list.
 MemberAnyChurch,NullBit,,,,Miscellaneous,Member of Any Church,,Specify True or False for those with this box checked on their Growth tab.
+NotChurchMember,NullBit,,,,Miscellaneous,Not a Church Member,,Specify True or False for those with this box checked on their Growth tab.
 SavedQuery,Bit,,,,Miscellaneous,Saved Searches,SavedQueryIdDesc,Select a Saved Search from the list and specify True or False.
 InSqlList,Bit,,,Sql Script,Miscellaneous,In Sql List,Quarters,Specify the name of a Sql script file to get PeopleIds from
 RecActiveOtherChurch,Bit,,,,Miscellaneous,Reg Other Church,,Specify True or False for those who indicated during an online registration that they attend another church.

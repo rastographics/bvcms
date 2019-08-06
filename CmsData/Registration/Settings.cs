@@ -87,6 +87,8 @@ namespace CmsData.Registration
         public bool NotReqMarital { get; set; }
         public bool NotReqZip { get; set; }
         public bool NotReqCampus { get; set; }
+        public bool ShowDOBOnFind { get; set; }
+        public bool ShowPhoneOnFind { get; set; }
         public int? DonationFundId { get; set; }
         public string AccountingCode { get; set; }
         public int? TimeSlotLockDays { get; set; }

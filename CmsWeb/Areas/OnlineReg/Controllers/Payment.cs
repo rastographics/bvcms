@@ -12,6 +12,7 @@ using CmsWeb.Common;
 using System.Web.Mvc;
 using UtilityExtensions;
 using System.Threading.Tasks;
+using System.Collections.Specialized;
 
 namespace CmsWeb.Areas.OnlineReg.Controllers
 {
@@ -70,6 +71,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             int? datumid = null;
             if (m != null)
             {
+                m.TermsSignature = pf.TermsSignature;
                 datumid = m.DatumId;
                 var msg = m.CheckDuplicateGift(pf.AmtToPay);
                 if (Util.HasValue(msg))
@@ -80,7 +82,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (IsCardTester(pf, "Payment Page"))
             {
                 return Message("Found Card Tester");
-            }
+            }            
 
             int? GatewayId = MultipleGatewayUtils.GatewayId(CurrentDatabase, m?.ProcessType ?? pf.ProcessType);
 
@@ -170,10 +172,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 DbUtil.Db.Connection.Execute(insertRogueIp, new { ip = request.UserHostAddress, db = Util.Host });
             }
 
-            var form = Encoding.Default.GetString(request.BinaryRead(request.TotalBytes));
+            var form = PaymentForm.RemoveSensitiveInformation(request.Form);
             var sendto = Util.PickFirst(ConfigurationManager.AppSettings["CardTesterEmail"], Util.AdminMail);
             DbUtil.Db.SendEmail(Util.FirstAddress(sendto),
-                $"CardTester on {Util.Host}", $"why={why} from={from} ip={request.UserHostAddress}<br>{form.HtmlEncode()}",
+                $"CardTester on {Util.Host}", $"why={why} from={from} ip={request.UserHostAddress}<br>{form.ToQueryString()}",
                 Util.EmailAddressListFromString(sendto));
             return true;
         }
@@ -351,7 +353,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
         [ActionName("ConfirmDuePaid")]
         [HttpPost]
-        public ActionResult ConfirmDuePaid_Post(int? id, string transactionId, decimal amount)
+        public ActionResult ConfirmDuePaid_Post(int? id, string transactionId, decimal? amount)
         {
             Response.NoCache();
             if (!id.HasValue)
@@ -381,7 +383,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         }
 
         [HttpGet]
-        public ActionResult ConfirmDuePaid(int? id, string transactionId, decimal amount)
+        public ActionResult ConfirmDuePaid(int? id, string transactionId, decimal? amount)
         {
             Response.NoCache();
             if (!id.HasValue)

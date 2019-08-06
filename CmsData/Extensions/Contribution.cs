@@ -32,6 +32,19 @@ namespace CmsData
             bh.TotalEnvelopes = 0;
             db.SubmitChanges();
         }
+
+        public static BundleDetail AddContribution(CMSDataContext db, DateTime date, int fundid, string amount, string checkno, string description, int peopleid)
+        {
+            var bd = NewBundleDetail(db, date, fundid, amount);
+            bd.Contribution.CheckNo = checkno;
+            bd.Contribution.ContributionDesc = description;
+            if (peopleid > 0)
+            {
+                bd.Contribution.PeopleId = peopleid;
+            }
+            return bd;
+        }
+
         public static BundleDetail AddContributionDetail(CMSDataContext db, DateTime date, int fundid,
             string amount, string checkno, string routing, string account)
         {
@@ -51,6 +64,7 @@ namespace CmsData
                 bd.Contribution.PeopleId = pid;
             return bd;
         }
+
         public static BundleDetail NewBundleDetail(CMSDataContext db, DateTime date, int fundid, string amount)
         {
             var bd = new BundleDetail

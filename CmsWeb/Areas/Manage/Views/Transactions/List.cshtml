@@ -67,12 +67,12 @@
                                <label>Approval Code:</label> @(t.ApprovalCode ?? "na")<br />
                                <label>Auth Code:</label> @(t.AuthCode ?? "na")<br/>
                                <label>Message:</label> @(t.Message ?? "na")<br/>
-                               <label>Emails:</label>@t.Emails
+                               <label>Emails:</label>@(string.IsNullOrEmpty(t.Emails) ? "na" : t.Emails.Contains("<") ? t.Emails.Split('<', '>').Where((item, index) => index % 2 != 0).ToList()[0] : t.Emails)
                                @if (t.OriginalId.HasValue)
                                {
                                    <br />
                                    <label>Original Id:</label> <a href='#' class='filtertransaction' originalid='@t.OriginalId'>@t.OriginalId</a>
-                               }   
+                               }
                                @if (t.Batch != null)
                                {
                                    <hr/>
@@ -153,7 +153,8 @@
                         }
                         <td class="action">
                             <div class="btn-group">
-                                <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-pencil"></i> Edit <span class="caret"></span>
+                                <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                    <i class="fa fa-pencil"></i> Edit <span class="caret"></span>
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-right" role="menu">
                                     <li><a class="adjust @noadmin" href='/Transactions/Adjust/@t.Id'><i class="fa fa-pencil-square-o"></i>&nbsp;&nbsp;Adjust Transaction</a></li>
@@ -170,9 +171,9 @@
                                         }
                                         if (t.IsAdjustment ?? true)
                                         {
-                                          var word = t.TransactionId.StartsWith("Initial Tran") ? "Transaction" 
-                                                  :  t.TransactionId.StartsWith("Payment") ? "Payment" 
-                                                  :  "Adjustment";
+                                            var word = t.TransactionId.StartsWith("Initial Tran") ? "Transaction"
+                                                    : t.TransactionId.StartsWith("Payment") ? "Payment"
+                                                    : "Adjustment";
                                             <li><a class="deleteadj @noadmin" href='/Transactions/DeleteManual/@t.Id'><i class="fa fa-undo"></i>&nbsp;&nbsp;Delete @word</a></li>
                                         }
                                         if (User.IsInRole("Developer"))
@@ -187,7 +188,7 @@
                 }
             </tbody>
         </table>
-        <br/><br/><br/><br/><br/><br/>
+        <br /><br /><br /><br /><br /><br />
     </div>
     <div style="margin-top: -120px;">
         @Html.Partial("PagerBottom", Model.Pager)
@@ -196,5 +197,5 @@
         @Html.Hidden("Sort", Model.Pager.Sort)
         @Html.Hidden("Direction", Model.Pager.Direction)
     </div>
-    <br/>
+    <br />
 </div>

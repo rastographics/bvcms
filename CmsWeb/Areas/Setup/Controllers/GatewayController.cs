@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+﻿using CmsData;
 using CmsWeb.Lifecycle;
-using CmsWeb.Common;
-using UtilityExtensions;
+using System.Linq;
+using System.Web.Mvc;
 
 namespace CmsWeb.Areas.Setup.Controllers
 {
@@ -88,12 +84,13 @@ namespace CmsWeb.Areas.Setup.Controllers
         [Route("~/Gateway/InsertAccount/{IsInsert}")]
         public JsonResult InsertAccount([System.Web.Http.FromBody]Models.GatewayAccountJsonModel json, bool IsInsert)
         {
-            var paymentProcess = CurrentDatabase.PaymentProcess.SingleOrDefault(x => x.ProcessId == json.ProcessId);
+            var paymentProcesses = CurrentDatabase.PaymentProcess.ToList();
+            var paymentProcess = paymentProcesses.Single(x => x.ProcessId == json.ProcessId);
 
             if (IsInsert)
             {
-                var gtAccount = new CmsData.GatewayAccount();
-                var gtDetailAccount = new CmsData.GatewayDetails();
+                var gtAccount = new GatewayAccount();
+                var gtDetailAccount = new GatewayDetails();
 
                 gtAccount.GatewayAccountName = json.GatewayAccountName;
                 gtAccount.GatewayId = json.GatewayId;
@@ -107,52 +104,45 @@ namespace CmsWeb.Areas.Setup.Controllers
                     gtDetailAccount.GatewayDetailValue = json.GatewayAccountValues[i];
                     gtDetailAccount.IsBoolean = json.GatewayAccountValues[i] == "true" || json.GatewayAccountValues[i] == "false" ? true : false;
                     CurrentDatabase.GatewayDetails.InsertOnSubmit(gtDetailAccount);
-                    CurrentDatabase.SubmitChanges();
-                    gtDetailAccount = new CmsData.GatewayDetails();
+                    gtDetailAccount = new GatewayDetails();
                 }
 
                 if (json.UseForAll)
                 {
-                    for (int i = 0; i < CurrentDatabase.PaymentProcess.Select(x => x.ProcessId).Count(); i++)
+                    foreach (var process in paymentProcesses.Where(p => p.ProcessId != (int)PaymentProcessTypes.TemporaryRecurringGiving))
                     {
-                        paymentProcess = CurrentDatabase.PaymentProcess.SingleOrDefault(x => x.ProcessId == i+1);
-                        paymentProcess.GatewayAccountId = gtAccount.GatewayAccountId;
-                        CurrentDatabase.SubmitChanges();
+                        process.GatewayAccountId = gtAccount.GatewayAccountId;
                     }
                 }
                 else
                 {
                     paymentProcess.GatewayAccountId = gtAccount.GatewayAccountId;
-                    CurrentDatabase.SubmitChanges();
                 }
             }
             else
             {
                 for (int i = 0; i < json.GatewayAccountInputs.Count(); i++)
                 {
-                    var gtDetailAccount = CurrentDatabase.GatewayDetails.SingleOrDefault(
+                    var gtDetailAccount = CurrentDatabase.GatewayDetails.Single(
                         x => x.GatewayDetailName == json.GatewayAccountInputs[i]
                         && x.GatewayAccountId == json.GatewayAccountId);
 
                     gtDetailAccount.GatewayDetailValue = json.GatewayAccountValues[i];
-                    CurrentDatabase.SubmitChanges();
                 }
 
                 if (json.UseForAll)
                 {
-                    for (int i = 0; i < CurrentDatabase.PaymentProcess.Select(x => x.ProcessId).Count(); i++)
+                    foreach (var process in paymentProcesses.Where(p => p.ProcessId != (int)PaymentProcessTypes.TemporaryRecurringGiving))
                     {
-                        paymentProcess = CurrentDatabase.PaymentProcess.SingleOrDefault(x => x.ProcessId == i + 1);
-                        paymentProcess.GatewayAccountId = json.GatewayAccountId;
-                        CurrentDatabase.SubmitChanges();
+                        process.GatewayAccountId = json.GatewayAccountId;
                     }
                 }
                 else
                 {
                     paymentProcess.GatewayAccountId = json.GatewayAccountId;
-                    CurrentDatabase.SubmitChanges();
                 }
             }
+            CurrentDatabase.SubmitChanges();
 
             return GetGatewayAccounts();
         }
@@ -173,7 +163,7 @@ namespace CmsWeb.Areas.Setup.Controllers
         [Route("~/Gateway/GetGatewayConfig/{ProcessType}/{Key}")]
         public JsonResult GetGatewayConfig(int ProcessType, string Key)
         {
-            string PushpayMerchant = CmsData.MultipleGatewayUtils.Setting(CurrentDatabase, Key, "", ProcessType);
+            string PushpayMerchant = MultipleGatewayUtils.Setting(CurrentDatabase, Key, "", ProcessType);
             return Json(PushpayMerchant, JsonRequestBehavior.AllowGet);
         }
     }
