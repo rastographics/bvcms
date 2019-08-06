@@ -351,7 +351,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
         [ActionName("ConfirmDuePaid")]
         [HttpPost]
-        public ActionResult ConfirmDuePaid_Post(int? id, string transactionId, decimal amount)
+        public ActionResult ConfirmDuePaid_Post(int? id, string transactionId, decimal? amount)
         {
             Response.NoCache();
             if (!id.HasValue)
@@ -381,7 +381,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         }
 
         [HttpGet]
-        public ActionResult ConfirmDuePaid(int? id, string transactionId, decimal amount)
+        public ActionResult ConfirmDuePaid(int? id, string transactionId, decimal? amount)
         {
             Response.NoCache();
             if (!id.HasValue)

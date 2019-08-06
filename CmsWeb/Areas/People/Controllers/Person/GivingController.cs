@@ -133,7 +133,7 @@ namespace CmsWeb.Areas.People.Controllers
         }
 
         [HttpGet]
-        public ActionResult OneTimeGift(int? id)
+        public ActionResult OneTimeGift(int? id, int? fundId)
         {
             var setting = CurrentDatabase.Setting("ExternalOneTimeGiftUrl", "");
             if (setting.HasValue())
@@ -141,7 +141,7 @@ namespace CmsWeb.Areas.People.Controllers
                 return Redirect(ExternalLink(setting));
             }
             // check for one time gift campus route mapping.
-            if (id.HasValue)
+            if (id.HasValue && id != 0)
             {
                 var route = CurrentDatabase.Setting($"OneTimeGiftCampusRoute-{id}", "");
                 if (route.HasValue())
@@ -151,12 +151,74 @@ namespace CmsWeb.Areas.People.Controllers
             }
 
             var oid = CmsData.API.APIContribution.OneTimeGiftOrgId(CurrentDatabase);
+
+            if (fundId != null)
+                return Redirect("/OnlineReg/" + oid + "?pledgeFund=" + fundId);
             if (oid > 0)
-            {
                 return Redirect("/OnlineReg/" + oid);
-            }
 
             return new EmptyResult();
+        }
+
+        private int getFundId(int contributionId)
+        {
+            return CurrentDatabase.Contributions.FirstOrDefault(c => c.ContributionId == contributionId).FundId;
+        }
+
+        [HttpPut]
+        [Authorize(Roles = "Finance")]
+        public JsonResult EditPledge(int contributionId, decimal? amt)
+        {
+            var contribution = CurrentDatabase.Contributions.FirstOrDefault(c => c.ContributionId == contributionId);
+            if (contribution == null)
+            {
+                return Json("Contribution Not found");
+            }
+            if (!contribution.ContributionFund.FundPledgeFlag)
+            {
+                return Json("Contribution Fund is not a pledge fund");
+            }
+            contribution.ContributionAmount = amt;
+            CurrentDatabase.SubmitChanges();
+            return Json("OK");
+        }
+
+        [HttpDelete]
+        [Authorize(Roles = "Finance")]
+        public JsonResult DeletePledge(int contributionId)
+        {
+            var contribution = CurrentDatabase.Contributions.FirstOrDefault(c => c.ContributionId == contributionId);
+            if (contribution == null)
+            {
+                return Json("Contribution Not found");
+            }
+            var bundleDetail = CurrentDatabase.BundleDetails.FirstOrDefault(c => c.ContributionId == contributionId);
+            CurrentDatabase.BundleDetails.DeleteOnSubmit(bundleDetail);
+            CurrentDatabase.Contributions.DeleteOnSubmit(contribution);
+            CurrentDatabase.SubmitChanges();
+            return Json("OK");
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Finance")]
+        public JsonResult MergePledge(int toMerge, int id)
+        {
+            var contributionToMerge = CurrentDatabase.Contributions.FirstOrDefault(c => c.ContributionId == toMerge);
+            var contribution = CurrentDatabase.Contributions.FirstOrDefault(c => c.ContributionId == id);
+            if (contribution == null || contributionToMerge == null)
+            {
+                return Json("Contribution Not found");
+            }
+            if (!contributionToMerge.ContributionFund.FundPledgeFlag || !contribution.ContributionFund.FundPledgeFlag)
+            {
+                return Json("Contribution Fund is not a pledge fund");
+            }
+            contribution.ContributionAmount += contributionToMerge.ContributionAmount;
+            var bundleDetail = CurrentDatabase.BundleDetails.FirstOrDefault(c => c.ContributionId == toMerge);
+            CurrentDatabase.BundleDetails.DeleteOnSubmit(bundleDetail);
+            CurrentDatabase.Contributions.DeleteOnSubmit(contributionToMerge);
+            CurrentDatabase.SubmitChanges();
+            return Json("OK");
         }
 
         private string ExternalLink(string setting)

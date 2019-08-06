@@ -221,7 +221,17 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
 
             if (m?.UserPeopleId != null && m.UserPeopleId > 0)
-                pf.CheckStoreInVault(ModelState, m.UserPeopleId.Value);
+                try
+                {
+                    pf.CheckStoreInVault(ModelState, m.UserPeopleId.Value);
+                }
+                catch(Exception ex)
+                {
+                    if (ex.Message == "InvalidVaultId")
+                    {
+                        ClearPaymentInfo(ModelState, pf);
+                    }
+                }
             if (!ModelState.IsValid)
             {
                 m.List[0].FundItem = fundItem;
@@ -282,6 +292,17 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     pf.AmtToPay = amtToPay;
                     return View(ret.View ?? "OnePageGiving/Index", new OnePageGivingModel() { OnlineRegPersonModel = m.List[0], PaymentForm = pf });
             }
+        }
+
+        private void ClearPaymentInfo(ModelStateDictionary modelState, PaymentForm pf)
+        {
+            pf.CreditCard = string.Empty;
+            pf.Expires = string.Empty;
+            pf.Routing = string.Empty;
+            pf.Account = string.Empty;
+            pf.CVV = string.Empty;
+            modelState.Clear();
+            modelState.AddModelError("TranId", "Please insert your payment information.");
         }
 
         [HttpGet, Route("~/OnePageGiving/ThankYou/{id:int}")]

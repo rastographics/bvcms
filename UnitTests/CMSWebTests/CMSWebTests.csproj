@@ -57,8 +57,8 @@
       <HintPath>..\..\packages\MSTest.TestFramework.1.4.0\lib\net45\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Moq, Version=4.11.0.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Moq.4.11.0\lib\net45\Moq.dll</HintPath>
+    <Reference Include="Moq, Version=4.12.0.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Moq.4.12.0\lib\net45\Moq.dll</HintPath>
     </Reference>
     <Reference Include="NSubstitute, Version=4.2.0.0, Culture=neutral, PublicKeyToken=92dd2e9066daa5ca, processorArchitecture=MSIL">
       <HintPath>..\..\packages\NSubstitute.4.2.0\lib\net46\NSubstitute.dll</HintPath>
@@ -100,11 +100,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\SharedTestFixtures\DatabaseCollection.cs">
+      <Link>DatabaseCollection.cs</Link>
+    </Compile>
+    <Compile Include="Areas\OnlineReg\Models\OnlineReg\OnlineRegModelTests.cs" />
     <Compile Include="Areas\People\Models\Contact\ContactExtraLocationConfigTests.cs" />
     <Compile Include="Code\QueryModelTests.cs" />
     <Compile Include="Code\CodeValueModelTests.cs" />
-    <Compile Include="DatabaseCollection.cs" />
-    <Compile Include="DatabaseFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -125,6 +127,10 @@
     <ProjectReference Include="..\..\UtilityExtensions\UtilityExtensions.csproj">
       <Project>{C504E3D2-5498-451B-BF82-309623706F11}</Project>
       <Name>UtilityExtensions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharedTestFixtures\SharedTestFixtures.csproj">
+      <Project>{37b7dd60-a2ce-4e69-8cc5-4370b95ad908}</Project>
+      <Name>SharedTestFixtures</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
