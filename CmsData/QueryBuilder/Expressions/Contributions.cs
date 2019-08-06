@@ -132,8 +132,6 @@ namespace CmsData
         }
         public Expression IsRecentGiverFunds()
         {
-            Console.WriteLine("Push Test");
-
             if (!db.FromBatch)
             {
                 if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
