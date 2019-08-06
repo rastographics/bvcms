@@ -258,6 +258,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     case "AskChurch":
                         reg.ActiveInAnotherChurch = otherchurch;
                         reg.Member = memberus;
+                        reg.NoMember = nochurch;
                         break;
                     case "AskAllergies":
                         reg.MedAllergy = medical.HasValue();

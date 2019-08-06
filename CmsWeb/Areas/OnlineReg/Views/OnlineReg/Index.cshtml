@@ -25,6 +25,10 @@
             $(document).on("idle.idleTimer", function (event, elem, obj) {
                 window.location.href = '/OnlineReg/Timeout?ret=' + encodeURI('@Model.URL');
             });
+
+            $('.checkAskChurch').click(function () {
+                $('.checkAskChurch').not(this).prop('checked', false);
+            });
         });
     </script>
     @Fingerprint.Script("/Content/touchpoint/js/onlinereg/OnlineReg2.js")
