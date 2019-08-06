@@ -1,19 +1,3 @@
-IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where 
-	TABLE_NAME = 'CheckinProfileSettings' AND 
-	TABLE_SCHEMA = 'dbo')
-	BEGIN
-		DROP TABLE [dbo].[CheckinProfileSettings]
-	END
-GO
-
-IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where 
-	TABLE_NAME = 'CheckinProfiles' AND 
-	TABLE_SCHEMA = 'dbo')
-	BEGIN
-		DROP TABLE [dbo].[CheckinProfiles]
-	END
-GO
-
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where 
 	TABLE_NAME = 'CheckinProfiles' AND 
 	TABLE_SCHEMA = 'dbo')

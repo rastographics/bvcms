@@ -1257,6 +1257,7 @@
     <Content Include="Content\touchpoint\js\people\merge.js" />
     <Content Include="Content\touchpoint\js\search\export-query.js" />
     <Content Include="Content\touchpoint\js\search\TaskSearch.js" />
+    <Content Include="Content\touchpoint\js\swal_messages.js" />
     <Content Include="Content\touchpoint\js\tranhistory.js" />
     <Content Include="Content\touchpoint\js\volunteer\AltCalendar.js" />
     <Content Include="Content\touchpoint\js\volunteer\calendar.js" />

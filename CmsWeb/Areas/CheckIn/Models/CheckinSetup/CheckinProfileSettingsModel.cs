@@ -24,5 +24,10 @@ namespace CmsWeb.Models
         public bool Location { get; set; }
         public int SecurityType { get; set; }
         public int ShowCheckinConfirmation { get; set; }
+
+        public CheckinProfileSettingsModel()
+        {
+            CutoffAge = 18;
+        }
     }
 }
