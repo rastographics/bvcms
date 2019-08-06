@@ -105,6 +105,7 @@
     </Compile>
     <Compile Include="Areas\OnlineReg\Models\OnlineReg\OnlineRegModelTests.cs" />
     <Compile Include="Areas\People\Models\Contact\ContactExtraLocationConfigTests.cs" />
+    <Compile Include="QueryBuilder\PythonScriptsTest.cs" />
     <Compile Include="QueryBuilder\QueryBuilderTest.cs" />
     <Compile Include="Code\QueryModelTests.cs" />
     <Compile Include="Code\CodeValueModelTests.cs" />
