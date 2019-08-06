@@ -1656,7 +1656,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
         {
             return Content2(name, defaultValue, ContentTypeCode.TypeSqlScript);
         }
-        public void WriteContentSql(string name, string sql)
+        public void WriteContentSql(string name, string sql, string keyword = null)
         {
             var c = Content(name, ContentTypeCode.TypeSqlScript);
             if (c == null)
@@ -1669,9 +1669,11 @@ This search uses multiple steps which cannot be duplicated in a single query.
                 Contents.InsertOnSubmit(c);
             }
             c.Body = sql;
+            if(keyword.HasValue())
+                c.SetKeyWords(this, new [] {keyword});
             SubmitChanges();
         }
-        public void WriteContentPython(string name, string script)
+        public void WriteContentPython(string name, string script, string keyword = null)
         {
             var c = Content(name, ContentTypeCode.TypePythonScript);
             if (c == null)
@@ -1684,6 +1686,8 @@ This search uses multiple steps which cannot be duplicated in a single query.
                 Contents.InsertOnSubmit(c);
             }
             c.Body = script;
+            if(keyword.HasValue())
+                c.SetKeyWords(this, new [] {keyword});
             SubmitChanges();
         }
         public void WriteContentText(string name, string text)

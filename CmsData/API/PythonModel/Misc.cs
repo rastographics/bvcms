@@ -36,7 +36,7 @@ namespace CmsData
             return ExecutePython(script, model);
         }
 
-        public string Content(string name)
+        public string Content(string name, string keyword = null)
         {
             var c = db.Content(name);
 #if DEBUG
@@ -48,6 +48,11 @@ namespace CmsData
                 var nam = Path.GetFileNameWithoutExtension(name);
                 var ext = Path.GetExtension(name);
                 int typ = ContentTypeCode.TypeText;
+                if (name.EndsWith(".text.html"))
+                {
+                    ext = Path.GetExtension(nam);
+                    nam = Path.GetFileNameWithoutExtension(nam);
+                }
                 switch (ext)
                 {
                     case ".sql":
@@ -71,12 +76,14 @@ namespace CmsData
                     db.Contents.InsertOnSubmit(c);
                 }
                 c.Body = txt;
+                if(keyword.HasValue())
+                    c.SetKeyWords(db, new [] {keyword});
                 db.SubmitChanges();
             }
 #endif
             return c.Body;
         }
-        public void WriteContent(string name, string text)
+        public void WriteContent(string name, string text, string keyword = null)
         {
             int typ = ContentTypeCode.TypeText;
             var c = db.Content(name);
@@ -84,8 +91,14 @@ namespace CmsData
             {
 #if DEBUG
                 File.WriteAllText(name, text);
-                name = Path.GetFileNameWithoutExtension(name);
+                var nam = Path.GetFileNameWithoutExtension(name);
                 var ext = Path.GetExtension(name);
+                if (name.EndsWith(".text.html"))
+                {
+                    ext = Path.GetExtension(nam);
+                    nam = Path.GetFileNameWithoutExtension(nam);
+                }
+                name = nam;
                 switch (ext)
                 {
                     case ".sql":
@@ -112,6 +125,8 @@ namespace CmsData
                 }
             }
             c.Body = text;
+            if(keyword.HasValue())
+                c.SetKeyWords(db, new [] {keyword});
             db.SubmitChanges();
         }
 
@@ -570,9 +585,6 @@ DELETE dbo.Tag WHERE TypeId = 101 AND Name LIKE @namelike
                 DateTime.Now.AddMinutes(1), Cache.NoSlidingExpiration);
         }
 
-        public bool IsDebug()
-        {
-            return Util.IsDebug();
-        }
+        public bool IsDebug => Util.IsDebug();
     }
 }

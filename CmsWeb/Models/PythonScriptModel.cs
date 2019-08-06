@@ -129,7 +129,7 @@ namespace CmsWeb.Models
         private string runFromPath;
         public string ParseDebuggingName(string name)
         {
-            var runfromUrlRe = new Regex(@"([c-e]![\w-]*-)(\w*)\.py");
+            var runfromUrlRe = new Regex(@"([c-e]![\w-]*-)(\w*)\.py(-kw-([^/]*)){0,1}");
             if (runfromUrlRe.IsMatch(name))
             {
                 var match = runfromUrlRe.Match(name);
@@ -139,8 +139,9 @@ namespace CmsWeb.Models
                                       .Replace("!", ":\\")
                                       .Replace("-", "\\")
                                   + contentName + ".py";
+                var keyword = match.Groups[4].Value;
                 var script = System.IO.File.ReadAllText(runFromPath);
-                Db.WriteContentPython(contentName, script);
+                Db.WriteContentPython(contentName, script, keyword);
                 return contentName;
             }
             return name;

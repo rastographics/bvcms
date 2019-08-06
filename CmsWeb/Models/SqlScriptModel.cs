@@ -149,7 +149,7 @@ namespace CmsWeb.Models
 #if DEBUG
         public string ParseDebuggingName(string name)
         {
-            var runfromUrlRe = new Regex(@"([c-e]![\w-]*-)(\w*)\.sql");
+            var runfromUrlRe = new Regex(@"([c-e]![\w-]*-)(\w*)\.sql(-kw-([^/]*)){0,1}");
             if (runfromUrlRe.IsMatch(name))
             {
                 var match = runfromUrlRe.Match(name);
@@ -159,8 +159,10 @@ namespace CmsWeb.Models
                                   .Replace("!", ":\\")
                                   .Replace("-", "\\")
                               + contentName + ".sql";
+                var keyword = match.Groups[4].Value;
                 var script = System.IO.File.ReadAllText(runFromPath);
-                Db.WriteContentSql(contentName, script);
+
+                Db.WriteContentSql(contentName, script, keyword);
                 return contentName;
             }
 
