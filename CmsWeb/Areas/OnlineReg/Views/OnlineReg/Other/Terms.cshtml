@@ -15,6 +15,7 @@
 
         var IAgreeButton = $('#IAgreeButton');
         var IAgreeInput = $('#IAgreeInput');
+        var IAgreeCancel = $('#IAgreeCancel');
         var agreeterms;
         var signature = $('#TermsSignature');
 
@@ -46,6 +47,7 @@
                 IAgreeButton.hide();
                 IAgreeButton.attr('agreed', 'true');
                 signature.val(IAgreeInput.val());
+                console.log(signature);
             } else {
                 $("#Submit").attr("disabled", "disabled");
                 $(".showform").hide();
@@ -55,6 +57,16 @@
                 IAgreeButton.attr('agreed', 'false');
             }
         });
+
+        IAgreeCancel.click(function () {
+            $("#Submit").attr("disabled", "disabled");
+            $(".showform").hide();
+            agreeterms = false;
+            document.getElementById("IAgreeInput").disabled = false;
+            IAgreeButton.show();
+            IAgreeButton.attr('agreed', 'false');
+            signature.val('');
+        })
 
         //if ($('#IAgree').attr("id")) {
         //    $("#Submit").attr("disabled", "disabled");
@@ -114,8 +126,9 @@
 @Html.Raw(Model.Terms)
 <form action="/OnlineReg/Confirm/@Model.DatumId" method="post">
     @Html.Hidden("TransactionID", "zero due")
+    @Html.HiddenFor(m => m.TermsSignature)
     <p>
-        Full Name:&nbsp;@Html.TextBox("IAgreeInput")&nbsp;&nbsp;<small class="showform">I agree to the terms and conditions</small>
+        Full Name:&nbsp;@Html.TextBox("IAgreeInput")&nbsp;&nbsp;<small class="showform">I agree to the terms and conditions&nbsp;<a href="#" id="IAgreeCancel" style="color:red">(Cancel)</a></small>
     </p>
     <p>
         <input type="button" class="btn" id="IAgreeButton" agreed="false" value="I agree to the terms and conditions">
@@ -123,5 +136,4 @@
     @Html.Raw(OnlineRegModel.YouMustAgreeStatement(Model.Orgid))
     <p></p>
     <p><input type="submit" id="Submit" value="@Model.GetFinishRegistrationButton()" /></p>
-    @Html.HiddenFor(m => m.TermsSignature)
 </form>
