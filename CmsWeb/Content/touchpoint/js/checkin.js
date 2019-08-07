@@ -14,6 +14,7 @@ var CheckInApp = new Vue({
         idleTimer: false,
         idleStage: 0,
         idleTimeout: 60000,
+        profiles: [],
         families: [],
         members: [],
         attendance: [],
@@ -27,6 +28,19 @@ var CheckInApp = new Vue({
         },
         search: {
             phone: ''
+        },
+        defaultProfile: {
+            'BackgroundImageURL': null,
+            'CampusId': 0,
+            'CutoffAge': 18,
+            'DisableTimer': false,
+            'EarlyCheckin': -1,
+            'Guest': false,
+            'LateCheckin': -1,
+            'Location': false,
+            'Logout': '12345',
+            'SecurityType': 0,
+            'ShowCheckinConfirmation': 3
         },
         ABSENT: 0,
         PRESENT: 1,
@@ -182,6 +196,27 @@ var CheckInApp = new Vue({
                 }
             }
         },
+        getProfiles() {
+            let vm = this;
+            vm.loading = true;
+            vm.$http.get('/CheckinSetup/GetCheckinProfiles')
+            .then(
+                response => {
+                    vm.loading = false;
+                    if (response.status === 200) {
+                        vm.profiles = response.data;
+                        console.log(vm.profiles);
+                    }
+                    else {
+                        warning_swal('Couldn\'t load profiles', 'Something went wrong, try again later');
+                    }
+                },
+                err => {
+                    vm.loading = false;
+                    error_swal('Error', 'Unable to load profiles.');
+                }
+            );
+        },
         auth() {
             let vm = this;
             var token = vm.generateToken();
@@ -196,12 +231,22 @@ var CheckInApp = new Vue({
                         vm.loading = false;
                         if (response.status === 200) {
                             if (response.data.error === 0) {
-                                // todo: load profile based on login dropdown selection (vm.kiosk.profile)
                                 var profile = JSON.parse(response.data.data);
                                 profile = {
                                     userName: profile.userName,
                                     userId: profile.userID
                                 };
+                                // load profile settings based on dropdown selection, or use the defaults
+                                profiles.forEach((p) => {
+                                    if (vm.kiosk.profile === p.CheckinProfileId) {
+                                        settings = p.CheckinProfileSettings;
+                                    }
+                                });
+                                if (!settings.length) {
+                                    settings = vm.defaultProfile;
+                                }
+                                // apply settings to the profile
+                                Object.assign(profile, settings);
                                 localStorage.setItem('identity', token);
                                 localStorage.setItem('kiosk', vm.kiosk.name);
                                 localStorage.setItem('profile', JSON.stringify(profile));
@@ -241,12 +286,10 @@ var CheckInApp = new Vue({
         },
         find() {
             let vm = this;
-            // todo: set campus and date from profile
+            // todo: set date from profile
             var phone = vm.search.phone.replace(/\D/g, '');
-            // todo: remove, debug only
-            vm.profile.logoutKey = '12345';
             // handle special entry
-            if (phone === vm.profile.logoutKey) {
+            if (phone == vm.profile.Logout) {
                 vm.logout();
                 return;
             }
@@ -257,8 +300,8 @@ var CheckInApp = new Vue({
             }
             var payload = vm.generatePayload({
                 search: phone,
-                campus: 0,
-                date: '2019-08-11 08:00:00' // todo: remove, debug only
+                campus: vm.profile.CampusId,
+                date: '2019-08-07' // todo: remove, debug only
             });
             vm.loading = true;
             vm.$http.post('/CheckInApiV2/Search', payload, vm.apiHeaders).then(
@@ -309,10 +352,13 @@ var CheckInApp = new Vue({
             vm.members = members;
             members.forEach(function (member) {
                 member.groups.forEach(function (group) {
+                    // todo: add bool for able to be checked in based on the returned date, local datetime +/- vm.profile.EarlyCheckin vm.profile.LateCheckin
+
                     var attend = member.id + '.' + group.id;
                     vm.$set(vm.attendance, attend, {
                         initial: group.checkedIn ? vm.CHECKEDIN : vm.ABSENT,
                         status: group.checkedIn ? vm.CHECKEDIN : vm.ABSENT,
+                        disabled: 'todo',
                         changed: false
                     });
                 });
@@ -372,10 +418,10 @@ var CheckInApp = new Vue({
                 }
             }
             var payload = vm.generatePayload({
-                securityLabels: 0,
-                guestLabels: true,
-                locationLabels: true,
-                nameTagAge: 18,
+                securityLabels: vm.profile.SecurityType,
+                guestLabels: vm.profile.Guest,
+                locationLabels: vm.profile.Location,
+                nameTagAge: vm.profile.CutoffAge,
                 attendances: attendances
             });
             vm.$http.post('/CheckInApiV2/UpdateAttend', payload, vm.apiHeaders).then(
@@ -384,23 +430,26 @@ var CheckInApp = new Vue({
                     if (response.status === 200) {
                         if (response.data.error === 0) {
                             var results = JSON.parse(response.data.data);
-                            // todo: use profile settings for confirmation dialog
-                            var timeout = setTimeout(function () {
-                                swal.close();
-                            }, 3000);
-                            console.log(results);
-                            vm.loadView('landing');
-                            swal({
-                                title: "You're all checked in",
-                                text: "Don't forget your name tags",
-                                type: "success",
-                                showCancelButton: false,
-                                confirmButtonClass: "btn-success",
-                                confirmButtonText: "OK"
-                            }, function () {
-                                clearTimeout(timeout);
+                            if (vm.profile.ShowCheckinConfirmation) {
+                                var timeout = setTimeout(function () {
+                                    swal.close();
+                                }, vm.profile.ShowCheckinConfirmation * 1000);
                                 vm.loadView('landing');
-                            });
+                                swal({
+                                    title: "You're all checked in",
+                                    text: "Don't forget your name tags",
+                                    type: "success",
+                                    showCancelButton: false,
+                                    confirmButtonClass: "btn-success",
+                                    confirmButtonText: "OK"
+                                }, function () {
+                                    clearTimeout(timeout);
+                                    vm.loadView('landing');
+                                });
+                            } else {
+                                vm.loadView('landing');
+                            }
+                            
                         } else {
                             if (response.data.error === -6) {
                                 vm.logout();
@@ -427,6 +476,8 @@ var CheckInApp = new Vue({
     },
     mounted() {
         let vm = this;
+        vm.getProfiles();
+
         // init, fetch identity, profile, and show login or landing
         var profile = localStorage.getItem('profile');
         if (profile && profile.length) {
@@ -446,7 +497,7 @@ var CheckInApp = new Vue({
 
         // event handlers to support idle behavior
         window.addEventListener('load', vm.resetIdleTimer, true);
-        var events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'];
+        var events = ['mousedown', 'scroll', 'touchstart'];
         events.forEach(function (name) {
             document.addEventListener(name, vm.resetIdleTimer, true);
         });
