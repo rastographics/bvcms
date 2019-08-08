@@ -37,6 +37,10 @@ namespace CmsData
         {
             var bd = NewBundleDetail(db, date, fundid, amount);
             bd.Contribution.CheckNo = checkno;
+            if (checkno.HasValue() && bd.Contribution.ContributionTypeId == ContributionTypeCode.Reversed)
+            {
+                bd.Contribution.ContributionTypeId = ContributionTypeCode.ReturnedCheck;
+            }
             bd.Contribution.ContributionDesc = description;
             if (peopleid > 0)
             {
@@ -72,6 +76,7 @@ namespace CmsData
                 CreatedBy = Util.UserId,
                 CreatedDate = DateTime.Now
             };
+            var value = amount.GetAmount();
             bd.Contribution = new Contribution
             {
                 CreatedBy = Util.UserId,
@@ -79,8 +84,8 @@ namespace CmsData
                 ContributionDate = date,
                 FundId = fundid,
                 ContributionStatusId = 0,
-                ContributionTypeId = ContributionTypeCode.CheckCash,
-                ContributionAmount = amount.GetAmount()
+                ContributionTypeId = value > 0 ? ContributionTypeCode.CheckCash : ContributionTypeCode.Reversed,
+                ContributionAmount = value
             };
             return bd;
         }
