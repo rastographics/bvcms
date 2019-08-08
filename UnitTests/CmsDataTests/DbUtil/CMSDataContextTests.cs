@@ -1,4 +1,5 @@
-﻿using Xunit;
+﻿using CmsData;
+using Xunit;
 
 namespace CmsDataTests
 {
