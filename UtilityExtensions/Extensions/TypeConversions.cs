@@ -258,8 +258,12 @@ namespace UtilityExtensions
                 return null;
             var digits = new StringBuilder();
             foreach (var c in s.ToCharArray())
-                if (char.IsDigit(c) || c == '.')
+            {
+                if (char.IsDigit(c) || c == '.' || c == '-')
+                {
                     digits.Append(c);
+                }
+            }
             var a = digits.ToString().ToDecimal();
             return a;
         }
