@@ -4,12 +4,12 @@
 @model CmsWeb.Areas.People.Models.RegistrationsModel
 @{
     var goerlist = Model.GoerList();
-    var fulfillmenlist = Model.FulfillmentList();
+    var fulfillmentlist = Model.FulfillmentList();
 }
 <form class="ajax" method="post">
   <h3>Registration History</h3>
 
-  @if (fulfillmenlist.Count > 0)
+  @if (fulfillmentlist.Count > 0)
   {
     <div class="row">
       <div class="col-sm-6">
@@ -24,7 +24,7 @@
         <th class="text-right">Balance</th>
         <th style="width: 50px;">Actions</th>
       </tr>
-      @foreach (var f in fulfillmenlist)
+      @foreach (var f in fulfillmentlist)
       {
         var balance = f.AmtFee - f.AmtPaid;
         <tr>
@@ -100,7 +100,7 @@
     </table>
     <h4>General</h4>
   }
-  else
+  @if(fulfillmentlist.Count > 0 && goerlist.Count < 0)
   {
     <div class="row">
       <div class="col-sm-6">
