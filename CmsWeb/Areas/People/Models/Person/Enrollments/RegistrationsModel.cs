@@ -85,6 +85,8 @@ namespace CmsWeb.Areas.People.Models
         public bool Member { get; set; }
 
         public bool ActiveInAnotherChurch { get; set; }
+        [DisplayName("Not Member")]
+        public bool NoMember { get; set; }
 
         [DisplayName("Coaching Interest")]
         public bool Coaching { get; set; }
@@ -128,6 +130,7 @@ namespace CmsWeb.Areas.People.Models
         {
             var OrgMembers = (from mm in DbUtil.Db.OrganizationMembers
                      where mm.PeopleId == PeopleId
+                     where mm.Organization.IsMissionTrip == false
                      select new
                      {
                          mm,

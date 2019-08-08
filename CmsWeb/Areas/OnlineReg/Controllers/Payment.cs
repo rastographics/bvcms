@@ -61,7 +61,6 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             {
                 m = Util.DeSerialize<OnlineRegModel>(ed.Data);
             }
-            m.TermsSignature = pf.TermsSignature;
 
 #if DEBUG
 #else
@@ -72,6 +71,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             int? datumid = null;
             if (m != null)
             {
+                m.TermsSignature = pf.TermsSignature;
                 datumid = m.DatumId;
                 var msg = m.CheckDuplicateGift(pf.AmtToPay);
                 if (Util.HasValue(msg))

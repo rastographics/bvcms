@@ -37,7 +37,7 @@
             @balance.ToString2("C")
           </td>
           <td style="width: 50px;">
-              <a href="@OrgMemberModel.GetPayLink(f.Organization.OrganizationId, Model.PeopleId)" class="btn btn-default btn-sm">Make Payment</a>
+              <a href="@OrgMemberModel.GetPayLink(f.Organization.OrganizationId, Model.PeopleId)" target="_blank" class="btn btn-default btn-sm">Make Payment</a>
           </td>
         </tr>
       }
@@ -137,6 +137,9 @@
       </div>
       <div class="col-md-8 col-lg-4">
         @Html.DisplayFor(m => m.ActiveInAnotherChurch)
+      </div>
+      <div class="col-md-8 col-lg-4">
+        @Html.DisplayFor(m => m.NoMember)
       </div>
     </div>
   </div>
