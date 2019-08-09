@@ -4,12 +4,17 @@
     <div class="col-sm-9">
         <div class="checkbox">
             <label>
-                @Html.CheckBoxFor(m => m.memberus) Member of this Church
+                @Html.CheckBoxFor(m => m.memberus, new { @class = "checkAskChurch" }) Member of this Church
             </label>
         </div>
         <div class="checkbox">
             <label>
-                @Html.CheckBoxFor(m => m.otherchurch) Active in another local church
+                @Html.CheckBoxFor(m => m.otherchurch, new { @class = "checkAskChurch" }) Active in another local church
+            </label>
+        </div>
+        <div class="checkbox">
+            <label>
+                @Html.CheckBoxFor(m => m.nochurch, new { @class = "checkAskChurch" }) Currently Not Attending a Church
             </label>
         </div>
         @Html.ValidationMessageFor(m => m.otherchurch)

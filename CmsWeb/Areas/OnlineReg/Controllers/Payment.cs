@@ -71,6 +71,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             int? datumid = null;
             if (m != null)
             {
+                m.TermsSignature = pf.TermsSignature;
                 datumid = m.DatumId;
                 var msg = m.CheckDuplicateGift(pf.AmtToPay);
                 if (Util.HasValue(msg))
@@ -81,7 +82,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (IsCardTester(pf, "Payment Page"))
             {
                 return Message("Found Card Tester");
-            }
+            }            
 
             int? GatewayId = MultipleGatewayUtils.GatewayId(CurrentDatabase, m?.ProcessType ?? pf.ProcessType);
 

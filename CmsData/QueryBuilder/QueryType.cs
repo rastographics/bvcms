@@ -242,6 +242,7 @@ namespace CmsData
         RecentVisitNumber,
         RecInterestedCoaching,
         RecActiveOtherChurch,
+        NotChurchMember,
         RegisteredForMeetingId,
         RelatedFamilyMembers,
         SavedQuery,

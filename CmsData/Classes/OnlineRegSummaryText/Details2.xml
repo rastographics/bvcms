@@ -170,8 +170,18 @@
       <td style='{{LabelStyle}}{{BottomBorder}}'>Insurance Policy</td>
       <td style='{{DataStyle}}{{BottomBorder}}'>{{Policy}}</td>
     </tr>
-	{{/IfAskInsurance}}
-	{{#IfAskRequest}}
+    {{/IfAskInsurance}}
+    {{#IfAskPassport}}
+    <tr>
+        <td style='{{LabelStyle}}'>Passport Number</td>
+        <td style='{{DataStyle}}'>{{PassportNumber}}</td>
+    </tr>
+    <tr>
+        <td style='{{LabelStyle}}{{BottomBorder}}'>Expires Date</td>
+        <td style='{{DataStyle}}{{BottomBorder}}'>{{PassportExpires}}</td>
+    </tr>
+    {{/IfAskPassport}}
+    {{#IfAskRequest}}
     <tr>
       <td style='{{LabelStyle}}'>Request</td>
       <td style='{{DataLabelStyle}}'>{{{Label}}}</td>
