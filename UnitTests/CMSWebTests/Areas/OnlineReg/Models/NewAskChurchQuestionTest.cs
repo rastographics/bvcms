@@ -1,8 +1,11 @@
 ﻿using Xunit;
+using System.Collections;
+using System.Net.Http;
 using CmsData;
+using CmsWeb.Areas.OnlineReg.Models;
 using System.Collections.Generic;
+using Shouldly;
 using UtilityExtensions;
-using System.Linq;
 
 namespace CMSWebTests.Areas.OnlineReg.Models.AskChurch
 {
@@ -29,15 +32,6 @@ namespace CMSWebTests.Areas.OnlineReg.Models.AskChurch
             var FakeOrg = FakeOrganizationUtils.MakeFakeOrganization();
             OrgId = FakeOrg.org.OrganizationId;
 
-            DbUtil.CreateDatabase(Util.Host);
-            var IsOrgNull = DbUtil.Db.Organizations.Where(x=> x.OrganizationId == OrgId);
-            if (DbUtil.Db.Organizations.Where(x => x.OrganizationId == OrgId).IsNull())
-            {
-                FakeOrganizationUtils.FakeNewOrganizationModel = null;
-                FakeOrg = FakeOrganizationUtils.MakeFakeOrganization();
-                OrgId = FakeOrg.org.OrganizationId;
-            }
-
             var model = FakeOrganizationUtils.GetFakeOnlineRegModel(OrgId);
 
             model.List[0].memberus = memberus;
@@ -52,15 +46,13 @@ namespace CMSWebTests.Areas.OnlineReg.Models.AskChurch
             Assert.NotNull(resultCompleteRegistration);
         }
 
-        ~NewAskChurchQuestionTest()
-        {
-            Dispose();
-        }
-
         [Fact]
-        public void Dispose()
+        public void ShouldDeleteReg()
         {
             FakeOrganizationUtils.DeleteOrg(OrgId);
+            var db = CMSDataContext.Create(Util.Host);
+            var CurrentOrg = db.LoadOrganizationById(OrgId);
+            CurrentOrg.ShouldBe(null);
         }
     }
 }

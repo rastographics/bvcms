@@ -4,9 +4,11 @@ using System.Collections.Generic;
 using CmsWeb.Areas.OnlineReg.Models;
 using UtilityExtensions;
 using System.Linq;
+using Xunit;
 
 namespace CMSWebTests
 {
+    [Collection("Database collection")]
     public class FakeOrganizationUtils
     {
         public static NewOrganizationModel FakeNewOrganizationModel { get; set; }
@@ -31,7 +33,7 @@ namespace CMSWebTests
 
                 controller.Submit((int)OrgId, FakeNewOrganizationModel);
             }
-            else if (DbUtil.Db.Organizations.Where(x => x.OrganizationId == OrgId).IsNull())
+            else if (!OrgExists(OrgId))
             {
                 FakeNewOrganizationModel = null;
                 MakeFakeOrganization();
@@ -48,11 +50,16 @@ namespace CMSWebTests
 
         public static void DeleteOrg(int OrgId)
         {
-            var controller = new CmsWeb.Areas.Org.Controllers.OrgController(FakeRequestManager.FakeRequest());
-            var routeDataValues = new Dictionary<string, string> { { "controller", "Org" } };
-            controller.ControllerContext = ControllerTestUtils.FakeContextController(controller, routeDataValues);
+            if (OrgExists(OrgId))
+            {
+                FakeOrganization.PurgeOrg(DbUtil.Db);
+            }
+        }
 
-            controller.Delete(OrgId);
+        private static bool OrgExists(int? OrgId)
+        {
+            DbUtil.Db = CMSDataContext.Create(Util.Host);
+            return DbUtil.Db.Organizations.Where(x => x.OrganizationId == OrgId).IsNotNull() ? true : false;
         }
     }
 }
