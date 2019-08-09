@@ -31,8 +31,7 @@ namespace CMSWebTests.Areas.Reports.Models.Reports.Export
             var FakeOrg = FakeOrganizationUtils.MakeFakeOrganization();
             var model = FakeOrganizationUtils.GetFakeOnlineRegModel(FakeOrg.org.OrganizationId);
 
-            m.OrgId = FakeOrg.org.OrganizationId;
-            
+            m.OrgId = FakeOrg.org.OrganizationId;          
 
             var resultSubmitQuestions = controller.SubmitQuestions(0, model);
             var resultCompleteRegistration = controller.CompleteRegistration(model);
