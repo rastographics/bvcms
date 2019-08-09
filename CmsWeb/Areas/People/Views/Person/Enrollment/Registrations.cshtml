@@ -29,7 +29,14 @@
         var balance = f.AmtFee - f.AmtPaid;
         <tr>
           <td>
-              <span>@f.OrgName</span>
+            @if (User.IsInRole("Access"))
+            {
+                <a href="/Org/@f.OrgId">@f.OrgName</a>
+            }
+            else
+            {
+                <span>@f.OrgName</span>
+            }
           </td>
           <td class="text-right">@f.AmtFee.ToString2("C")</td>
           <td class="text-right">@f.AmtPaid.ToString2("C")</td>
