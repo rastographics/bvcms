@@ -11,29 +11,39 @@ namespace ImageData
     public static class DbUtil
     {
         private const string CMSDbKEY = "CMSImageDbKey";
+        private static CMSImageDataContext _InternalDb;
         private static CMSImageDataContext InternalDb
         {
             get
             {
-                return (CMSImageDataContext)HttpContextFactory.Current.Items[CMSDbKEY];
+                return _InternalDb ?? (CMSImageDataContext)HttpContextFactory.Current.Items[CMSDbKEY];
             }
             set
             {
-                HttpContextFactory.Current.Items[CMSDbKEY] = value;
+                if (HttpContextFactory.Current != null)
+                {
+                    HttpContextFactory.Current.Items[CMSDbKEY] = value;
+                }
+                else
+                {
+                    _InternalDb = value;
+                }
             }
         }
         public static CMSImageDataContext Db
         {
             get
             {
-                if (HttpContextFactory.Current == null)
-                    return new CMSImageDataContext(Util.ConnectionStringImage);
-                if (InternalDb == null)
+                if (InternalDb != null)
                 {
-                    InternalDb = new CMSImageDataContext(Util.ConnectionStringImage);
-                    //InternalDb.CommandTimeout = 1200;
+                    return InternalDb;
                 }
-                return InternalDb;
+                else if (HttpContextFactory.Current == null)
+                {
+                    return new CMSImageDataContext(Util.ConnectionStringImage);
+                }
+
+                return new CMSImageDataContext(Util.ConnectionStringImage);
             }
             set
             {
