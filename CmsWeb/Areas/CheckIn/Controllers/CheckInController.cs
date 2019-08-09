@@ -16,7 +16,6 @@ namespace CmsWeb.Areas.CheckIn.Controllers
         [HttpGet, Route("~/CheckIn")]
         public ActionResult CheckIn()
         {
-            // todo: pass list of profiles to the view and use it to populate sign in dropdown
             return View("~/Areas/CheckIn/Views/CheckIn/CheckIn.cshtml");
         }
     }

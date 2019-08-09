@@ -38,7 +38,7 @@
             </form>
         </div>
         <div v-else-if="view == 'landing'" class="landing">
-            <h2>Enter your phone number</h2>
+            <h2 class="text-center">Enter your phone number</h2>
             <form v-on:submit.prevent="find">
                 <input type="tel" name="phone" v-mask="phoneMask" v-model="search.phone" class="keyboard-input"/>
                 <div class="simple-keyboard"></div>
@@ -46,11 +46,8 @@
         </div>
         <div v-else-if="view == 'families'" class="families results">
             <div class="row header-bar">
-                <div class="col-xs-12 col-md-10">
+                <div class="col-xs-12 text-center">
                     <h2 style="font-weight:300;">Choose the family you belong to</h2>
-                </div>
-                <div class="col-xs-12 col-md-2 text-right">
-                    <a class="btn btn-primary" v-on:click="loadView('landing')" style="margin-top: 22px;">Return</a>
                 </div>
             </div>
             <div class="row">
@@ -65,17 +62,14 @@
             <div class="action-bar">
                 <div class="content">
                     <a class="btn btn-primary pull-right" v-on:click="loadView('landing')">Return</a>
+                    <span class="clearfix"></span>
                 </div>
             </div>
         </div>
         <div v-else-if="view == 'checkin'" class="results">
             <div class="row header-bar">
-                <div class="col-xs-12 col-md-10">
+                <div class="col-xs-12 text-center">
                     <h2 style="font-weight:300;">Choose the classes you are checking in to</h2>
-                </div>
-                <div class="col-xs-12 col-md-2 text-right">
-                    <button v-if="attendanceUpdated" v-on:click="updateAttendance" class="btn btn-success" style="margin-top: 22px;">Check In</button>
-                    <button v-else type="submit" v-on:click="updateAttendance" class="btn btn-primary" style="margin-top: 22px;">Return</button>
                 </div>
             </div>
             <form v-on:submit.prevent="updateAttendance">
@@ -85,7 +79,7 @@
                             <div class="member-portrait" :style="portraitStyles(member)"></div>
                         </div>
                         <div class="member-details">
-                            <h4 class="name">{{ member.name }} <span v-if="member.altName.length">({{ member.altName }})</span><span class="badge badge-info" v-if="member.age <= profile.CutoffAge">{{ member.age }}</span></h4>
+                            <h4 class="name">{{ member.name }} <span v-if="member.altName.length">({{ member.altName }})</span><span class="badge badge-info" v-if="member.age < profile.CutoffAge">{{ member.age }}</span></h4>
                             <div v-for="group in member.groups">
                                 <div v-on:click="toggleAttendance(member.id, group.id)" :class="{ 'primary': attendance[member.id + '.' + group.id].status == 2, 'active': attendance[member.id + '.' + group.id].status == 1, 'check-container': true }">
                                     <div>

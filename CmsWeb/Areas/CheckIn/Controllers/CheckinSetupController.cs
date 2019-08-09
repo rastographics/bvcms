@@ -150,9 +150,9 @@ namespace CmsWeb.Areas.CheckIn.Controllers
                 checkinProfileSettings = CurrentDatabase.CheckinProfileSettings.FirstOrDefault(c => c.CheckinProfileId == checkinProfileId);
             }
 
-            checkinProfileSettings.CampusId = jsonSettings.CampusId == -1 ? 0 : jsonSettings.CampusId;
-            checkinProfileSettings.EarlyCheckin = jsonSettings.EarlyCheckin == -1 ? 0 : jsonSettings.EarlyCheckin;
-            checkinProfileSettings.LateCheckin = jsonSettings.LateCheckin == -1 ? 0 : jsonSettings.LateCheckin;
+            checkinProfileSettings.CampusId = jsonSettings.CampusId == -1 ? null : jsonSettings.CampusId;
+            checkinProfileSettings.EarlyCheckin = jsonSettings.EarlyCheckin;
+            checkinProfileSettings.LateCheckin = jsonSettings.LateCheckin;
             checkinProfileSettings.Testing = jsonSettings.Testing;
             checkinProfileSettings.TestDay = jsonSettings.TestDay;
             checkinProfileSettings.AdminPIN = jsonSettings.AdminPIN;

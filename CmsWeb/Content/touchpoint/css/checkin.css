@@ -1,8 +1,21 @@
 ﻿.checkin {
     background-color: #f5f5f5!important;
 }
+.simple-keyboard {
+    max-width: 400px;
+}
 .simple-keyboard.hg-theme-default {
     background-color: transparent;
+    font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+.simple-keyboard.hg-theme-default.hg-layout-numeric .hg-button {
+    height: 75px;
+    font-size: 20px;
+}
+.keyboard-input {
+    text-align: center;
+    border-bottom: 0!important;
+    font-size: 26px !important;
 }
 .checkin .login .form-header {
     font-size: 25px;
@@ -47,15 +60,19 @@
     background-size: cover;
     border-radius: 100%;
 }
+.checkin .member-details,
+.checkin .member-info {
+    float: left;
+}
 .checkin .results {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0px 27px 27px;
 }
-.checkin .results .member.row {
+.checkin .results .member {
     margin-top: 20px;
 }
-.checkin .results .member.row:last-of-type,
+.checkin .results .member:last-of-type,
 .checkin .results .family:last-child {
     margin-bottom: 80px;
 }
@@ -75,7 +92,6 @@
 .checkin .action-bar {
     position: fixed;
     bottom: 0;
-    height: 80px;
     width: 100%;
     left: 0;
     background-color: #f5f5f5;
@@ -84,10 +100,7 @@
 .checkin .action-bar .content {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 27px;
-}
-.simple-keyboard {
-    max-width: 400px;
+    padding: 20px 45px;
 }
 hr {
     margin-top: 0;

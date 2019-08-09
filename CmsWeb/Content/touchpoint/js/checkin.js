@@ -205,7 +205,6 @@ var CheckInApp = new Vue({
                     vm.loading = false;
                     if (response.status === 200) {
                         vm.profiles = response.data;
-                        console.log(vm.profiles);
                     }
                     else {
                         warning_swal('Couldn\'t load profiles', 'Something went wrong, try again later');
@@ -237,12 +236,12 @@ var CheckInApp = new Vue({
                                     userId: profile.userID
                                 };
                                 // load profile settings based on dropdown selection, or use the defaults
-                                profiles.forEach((p) => {
+                                vm.profiles.forEach((p) => {
                                     if (vm.kiosk.profile === p.CheckinProfileId) {
                                         settings = p.CheckinProfileSettings;
                                     }
                                 });
-                                if (!settings.length) {
+                                if (typeof (settings) === 'undefined') {
                                     settings = vm.defaultProfile;
                                 }
                                 // apply settings to the profile
@@ -253,6 +252,8 @@ var CheckInApp = new Vue({
                                 vm.identity = token;
                                 vm.profile = profile;
                                 vm.loadView('landing');
+                                console.log('Profile loaded');
+                                console.log(vm.profile);
                             } else {
                                 // invalid creds
                                 warning_swal('Login Failed', response.data.data);
@@ -274,6 +275,7 @@ var CheckInApp = new Vue({
         logout() {
             localStorage.removeItem('identity');
             localStorage.removeItem('profile');
+            this.search.phone = '';
             this.identity = false;
             this.profile = false;
             this.loadView('login');
@@ -289,7 +291,7 @@ var CheckInApp = new Vue({
             // todo: set date from profile
             var phone = vm.search.phone.replace(/\D/g, '');
             // handle special entry
-            if (phone == vm.profile.Logout) {
+            if (phone === vm.profile.Logout) {
                 vm.logout();
                 return;
             }
@@ -301,7 +303,7 @@ var CheckInApp = new Vue({
             var payload = vm.generatePayload({
                 search: phone,
                 campus: vm.profile.CampusId,
-                date: '2019-08-07' // todo: remove, debug only
+                date: '2019-08-11' // todo: remove, debug only
             });
             vm.loading = true;
             vm.$http.post('/CheckInApiV2/Search', payload, vm.apiHeaders).then(
@@ -482,10 +484,13 @@ var CheckInApp = new Vue({
         var profile = localStorage.getItem('profile');
         if (profile && profile.length) {
             vm.profile = JSON.parse(profile);
+            console.log('Profile loaded');
+            console.log(vm.profile);
         }
         var kiosk = localStorage.getItem('kiosk');
         if (kiosk && kiosk.length) {
             vm.kiosk.name = kiosk;
+            console.log('Kiosk: ' + vm.kiosk.name);
         }
         var identity = localStorage.getItem('identity');
         if (identity && identity.length) {
