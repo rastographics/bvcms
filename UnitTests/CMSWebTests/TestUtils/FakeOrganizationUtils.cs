@@ -1,13 +1,9 @@
 ﻿using CmsData;
-using ImageData;
-using System;
-using System.Security.Principal;
-using System.Web;
-using CmsWeb.Lifecycle;
 using CmsWeb.Areas.Dialog.Models;
 using System.Collections.Generic;
 using CmsWeb.Areas.OnlineReg.Models;
 using UtilityExtensions;
+using System.Linq;
 
 namespace CMSWebTests
 {
@@ -15,17 +11,18 @@ namespace CMSWebTests
     {
         public static NewOrganizationModel FakeNewOrganizationModel { get; set; }
         public static Organization FakeOrganization { get; set; }
+        public static int? OrgId { get; set; }
 
         public static NewOrganizationModel MakeFakeOrganization()
         {
-            if(FakeNewOrganizationModel == null)
+            if (FakeNewOrganizationModel == null)
             {
                 var controller = new CmsWeb.Areas.Dialog.Controllers.AddOrganizationController(FakeRequestManager.FakeRequest());
                 var routeDataValues = new Dictionary<string, string> { { "controller", "AddOrganization" } };
                 controller.ControllerContext = ControllerTestUtils.FakeContextController(controller, routeDataValues);
 
                 var NewOrganizationIndex = controller.Index();
-                var OrgId = ((CmsWeb.Areas.Dialog.Models.NewOrganizationModel)((System.Web.Mvc.ViewResultBase)NewOrganizationIndex).Model).OrganizationId;
+                OrgId = ((NewOrganizationModel)((System.Web.Mvc.ViewResultBase)NewOrganizationIndex).Model).OrganizationId;
 
                 FakeNewOrganizationModel = new NewOrganizationModel();
                 FakeOrganization = new Organization() { OrganizationName = "MockName", RegistrationTitle = "MockTitle", Location = "MockLocation", RegistrationTypeId = 8 };
@@ -33,6 +30,11 @@ namespace CMSWebTests
                 FakeNewOrganizationModel.org = FakeOrganization;
 
                 controller.Submit((int)OrgId, FakeNewOrganizationModel);
+            }
+            else if (DbUtil.Db.Organizations.Where(x => x.OrganizationId == OrgId).IsNull())
+            {
+                FakeNewOrganizationModel = null;
+                MakeFakeOrganization();
             }
             return FakeNewOrganizationModel;
         }
