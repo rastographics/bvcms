@@ -53,6 +53,7 @@ namespace CMSWebTests
             if (OrgExists(OrgId))
             {
                 FakeOrganization.PurgeOrg(DbUtil.Db);
+                FakeNewOrganizationModel = null;
             }
         }
 
