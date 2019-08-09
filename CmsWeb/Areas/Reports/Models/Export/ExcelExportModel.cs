@@ -22,10 +22,23 @@ namespace CmsWeb.Models
         }
         public static EpplusResult ToExcel(this DataTable dt, string filename = "People.xlsx", bool useTable = false)
         {
+            dt = DecryptPassportData(dt);
             var ep = new ExcelPackage();
             ep.AddSheet(dt, filename, useTable);
             return new EpplusResult(ep, filename);
         }
+
+        private static DataTable DecryptPassportData(DataTable dt)
+        {
+            foreach (DataRow row in dt.Rows)
+            {
+                row[row.Table.Columns["PassportNumber"].Ordinal] = Util.Decrypt(row[row.Table.Columns["PassportNumber"].Ordinal].ToString());
+                row[row.Table.Columns["PassportExpires"].Ordinal] = Util.Decrypt(row[row.Table.Columns["PassportExpires"].Ordinal].ToString());
+            }
+
+            return dt;
+        }
+
         public static EpplusResult ToExcel(this IDataReader rd, string filename = null, bool useTable = false, bool fromSql = false)
         {
             DataTable dt;
