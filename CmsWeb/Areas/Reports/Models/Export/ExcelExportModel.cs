@@ -28,12 +28,22 @@ namespace CmsWeb.Models
             return new EpplusResult(ep, filename);
         }
 
+        private const string PassportNumber = "PassportNumber";
+        private const string PassportExpires = "PassportExpires";
         private static DataTable DecryptPassportData(DataTable dt)
         {
             foreach (DataRow row in dt.Rows)
             {
-                row[row.Table.Columns["PassportNumber"].Ordinal] = Util.Decrypt(row[row.Table.Columns["PassportNumber"].Ordinal].ToString());
-                row[row.Table.Columns["PassportExpires"].Ordinal] = Util.Decrypt(row[row.Table.Columns["PassportExpires"].Ordinal].ToString());
+                if (row.Table.Columns.Contains(PassportNumber))
+                { 
+                    var passNumber = row.Table.Columns[PassportNumber].ToString();
+                    row[row.Table.Columns[PassportNumber].Ordinal] = Util.Decrypt(passNumber);
+                }
+                if (row.Table.Columns.Contains(PassportExpires))
+                {
+                    var passExpires = row.Table.Columns[PassportExpires].ToString();
+                    row[row.Table.Columns[PassportExpires].Ordinal] = Util.Decrypt(passExpires);
+                }
             }
 
             return dt;
