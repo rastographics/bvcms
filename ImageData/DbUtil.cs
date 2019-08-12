@@ -16,7 +16,7 @@ namespace ImageData
         {
             get
             {
-                return _InternalDb ?? (CMSImageDataContext)HttpContextFactory.Current.Items[CMSDbKEY];
+                return _InternalDb ?? (CMSImageDataContext)HttpContextFactory.Current?.Items[CMSDbKEY];
             }
             set
             {
