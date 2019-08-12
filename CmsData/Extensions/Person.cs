@@ -2251,7 +2251,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 case "text/plain":
                 case "application/pdf":
                 case "application/msword":
-                case "application/vnd.ms-excel":
+                case "application/msexcel":
                     mdf.MediumId = Image.NewImageFromBits(bits, mimetype).Id;
                     mdf.SmallId = mdf.MediumId;
                     mdf.LargeId = mdf.MediumId;
