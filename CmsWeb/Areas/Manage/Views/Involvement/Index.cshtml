@@ -1,0 +1,72 @@
+﻿@using CmsWeb.Areas.Manage.Models
+@using CmsWeb.Areas.Manage.Models.Involvement
+@model CustomizeInvolvementModel
+@{
+    ViewBag.Title = "Customize Involvement Tab";
+    ViewBag.PageHeader = "Customize Involvement Tab";
+    Layout = ViewExtensions2.TouchPointLayout();
+}
+
+@section head{
+    <style>
+        .nav {
+            display: -ms-flexbox;
+            display: flex;
+            -ms-flex-wrap: wrap;
+            flex-wrap: wrap;
+        }
+
+        .justify-content-center {
+            justify-content: center !important;
+        }
+    </style>
+}
+
+<div class="row">
+    <div class="col-md-9">
+        <div class="box box-responsive">
+            <div class="box-content">
+                <ul class="nav nav-pills subnav hidden-sm hidden-xs justify-content-center">
+                    <li class="involvement-tab active" data-id="1">
+                        <a href="#current" data-toggle="tab">
+                            <span>Current</span>
+                        </a>
+                    </li>
+                    <li class="involvement-tab" data-id="2">
+                        <a href="#pending" data-toggle="tab">
+                            <span>Pending</span>
+                        </a>
+                    </li>
+                    <li class="involvement-tab" data-id="3">
+                        <a href="#previous" data-toggle="tab">
+                            <span>Previous</span>
+                        </a>
+                    </li>
+                </ul>
+                <select class="form-control visible-sm-block visible-xs-block nav-select-pills">
+                    <option value="#current">Current</option>
+                    <option value="#pending">Pending</option>
+                    <option value="#previous">Previous</option>
+                </select>
+                <div class="tab-content" style="border: none">
+                    <div class="tab-pane active" id="current">
+                        <div class="panel panel-default">
+                            @Html.Partial("_EditTab", Model.Current)
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="pending">
+                        <div class="panel panel-default">
+                            @Html.Partial("_EditTab", Model.Pending)
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="previous">
+                        <div class="panel panel-default">
+                            @Html.Partial("_EditTab", Model.Previous)
+                        </div>
+                    </div>
+                </div>
+                <a href="#" class="btn btn-primary save">Save Content</a>
+            </div>
+        </div>
+    </div>
+</div>

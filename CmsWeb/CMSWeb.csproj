@@ -552,6 +552,7 @@
     <Compile Include="Areas\Main\Models\Other\CouponResponseModel.cs" />
     <Compile Include="Areas\Manage\Controllers\ActivityController.cs" />
     <Compile Include="Areas\Manage\Controllers\BatchMoveAndDelete.cs" />
+    <Compile Include="Areas\Manage\Controllers\InvolvementController.cs" />
     <Compile Include="Areas\Manage\Controllers\UploadAddressesController.cs" />
     <Compile Include="Areas\Manage\Controllers\ResourceController.cs" />
     <Compile Include="Areas\Manage\Controllers\UploadExcelIpsController.cs" />
@@ -561,6 +562,10 @@
     <Compile Include="Areas\Manage\Models\BatchModel\BatchRegSettings.cs" />
     <Compile Include="Areas\Manage\Models\BatchModel\FindTagPeople.cs" />
     <Compile Include="Areas\Manage\Models\BatchModel\UpdateOrgs.cs" />
+    <Compile Include="Areas\Manage\Models\Involvement\CustomizeInvolvementModel.cs" />
+    <Compile Include="Areas\Manage\Models\Involvement\InvolvementColumn.cs" />
+    <Compile Include="Areas\Manage\Models\Involvement\InvolvementTabModel.cs" />
+    <Compile Include="Areas\Manage\Models\Involvement\InvolvementType.cs" />
     <Compile Include="Areas\Manage\Models\ResourceModel.cs" />
     <Compile Include="Areas\Manage\Models\ResourceTypeModel.cs" />
     <Compile Include="Areas\Manage\Models\UpdateFieldsLookups.cs" />
@@ -1828,6 +1833,8 @@
     <Content Include="Areas\Reports\Views\Reports\MeetingAttendance.cshtml" />
     <Content Include="Areas\People\Views\Shared\PledgesSummary.cshtml" />
     <Content Include="libman.json" />
+    <Content Include="Areas\Manage\Views\Involvement\Index.cshtml" />
+    <Content Include="Areas\Manage\Views\Involvement\_EditTab.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

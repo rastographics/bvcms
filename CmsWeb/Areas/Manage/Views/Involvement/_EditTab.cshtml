@@ -1,0 +1,34 @@
+﻿@model CmsWeb.Areas.Manage.Models.Involvement.InvolvementTabModel
+
+<div class="panel-heading">
+    <h4 style="margin: 0;">
+        @Model.Name
+    </h4>
+</div>
+<div class="panel-body table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>INVOLVEMENT TYPE:</th>
+                <th>Column A</th>
+                <th>Column B</th>
+                <th>Column C</th>
+                <th>Column D</th>
+                <th>Column E</th>
+                <th>Column F</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model.Types)
+        {
+            <tr>
+                <td>@item.Name</td>
+                @foreach (var column in item.Columns)
+                {
+                    <td>@column.Field</td>
+                }
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
