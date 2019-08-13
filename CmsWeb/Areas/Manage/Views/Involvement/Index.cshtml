@@ -23,7 +23,7 @@
 }
 
 <div class="row">
-    <div class="col-md-9">
+    <div class="col-md-12">
         <div class="box box-responsive">
             <div class="box-content">
                 <ul class="nav nav-pills subnav hidden-sm hidden-xs justify-content-center">
@@ -50,23 +50,66 @@
                 </select>
                 <div class="tab-content" style="border: none">
                     <div class="tab-pane active" id="current">
-                        <div class="panel panel-default">
-                            @Html.Partial("_EditTab", Model.Current)
-                        </div>
+                        @Html.Partial("_EditTab", Model.Current)
                     </div>
                     <div class="tab-pane" id="pending">
-                        <div class="panel panel-default">
-                            @Html.Partial("_EditTab", Model.Pending)
-                        </div>
+                        @Html.Partial("_EditTab", Model.Pending)
                     </div>
                     <div class="tab-pane" id="previous">
-                        <div class="panel panel-default">
-                            @Html.Partial("_EditTab", Model.Previous)
-                        </div>
+                        @Html.Partial("_EditTab", Model.Previous)
                     </div>
                 </div>
-                <a href="#" class="btn btn-primary save">Save Content</a>
             </div>
         </div>
     </div>
 </div>
+
+@section scripts
+{
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('[data-save]').on('click',
+                function() {
+                    var $this = $(this);
+                    var tableName = $this.data('table-name');
+
+                    // collect types
+                    var types = [];
+                    var table = $('[data-table="' + tableName + '"');
+                    var rows = table.find('[data-row]');
+                    rows.each(function() {
+                        var $row = $(this);
+                        var columns = [];
+                        $row.find('[data-column]').each(function () {
+                            var $this = $(this);
+                            columns.push({
+                                field: $this.find('[data-field]').val(),
+                                label: $this.find('[data-label]').val(),
+                                role: $this.find('[data-role]').val(),
+                                sortable: $this.find('[data-sortable]').val()
+                            });
+                        });
+
+                        types.push({
+                            name: $row.find('[data-involvement-type]').val(),
+                            columns: columns
+                        });
+                    });
+
+                    $.ajax({
+                        url: '@Url.Action("Update", "Involvement")',
+                        type: 'POST',
+                        data: {
+                            name: tableName,
+                            types: types
+                        },
+                        success: function(data) {
+                            if (data.success) {
+                                location.reload();
+                            }
+                        }
+                    });
+                });
+        });
+    </script>
+}
