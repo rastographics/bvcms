@@ -67,7 +67,16 @@
 @section scripts
 {
     <script type="text/javascript">
-        $(document).ready(function() {
+        function wireUpRemoveRow() {
+            $('[data-remove-row]').on('click',
+                function() {
+                    $(this).closest('tr').remove();
+                });
+        }
+
+        $(document).ready(function () {
+            wireUpRemoveRow();
+
             $('[data-add-row]').on('click',
                 function() {
                     $('tbody').append('<tr data-row>' +

@@ -12,6 +12,7 @@
                     <th>Column D</th>
                     <th>Column E</th>
                     <th>Column F</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -30,6 +31,9 @@
                                 @Html.Hidden("Sortable", column.Sortable.ToString(), new { data_sortable = string.Empty })
                             </td>
                         }
+                        <td>
+                            <a href="#" class="btn btn-danger" data-remove-row>-</a>
+                        </td>
                     </tr>
                 }
             </tbody>
