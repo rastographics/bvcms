@@ -43,7 +43,7 @@ namespace ImageData
                     return new CMSImageDataContext(Util.ConnectionStringImage);
                 }
 
-                return new CMSImageDataContext(Util.ConnectionStringImage);
+                return InternalDb = new CMSImageDataContext(Util.ConnectionStringImage);
             }
             set
             {
