@@ -2188,10 +2188,13 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             var p = Picture;
             p.CreatedDate = Util.Now;
             p.CreatedBy = Util.UserName;
-            p.ThumbId = Image.NewImageFromBits(bits, 50, 50).Id;
-            p.SmallId = Image.NewImageFromBits(bits, 120, 120).Id;
-            p.MediumId = Image.NewImageFromBits(bits, 320, 400).Id;
-            p.LargeId = Image.NewImageFromBits(bits).Id;
+            using (var idb = ImageData.DbUtil.Db)
+            {
+                p.ThumbId = Image.NewImageFromBits(bits, 50, 50, idb).Id;
+                p.SmallId = Image.NewImageFromBits(bits, 120, 120, idb).Id;
+                p.MediumId = Image.NewImageFromBits(bits, 320, 400, idb).Id;
+                p.LargeId = Image.NewImageFromBits(bits, idb).Id;
+            }
             LogPictureUpload(db, Util.UserPeopleId ?? 1);
             db.SubmitChanges();
         }
@@ -2244,15 +2247,21 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 case "image/gif":
                 case "image/png":
                     mdf.IsDocument = false;
-                    mdf.SmallId = Image.NewImageFromBits(bits, 165, 220).Id;
-                    mdf.MediumId = Image.NewImageFromBits(bits, 675, 900).Id;
-                    mdf.LargeId = Image.NewImageFromBits(bits).Id;
+                    using (var idb = ImageData.DbUtil.Db)
+                    {
+                        mdf.SmallId = Image.NewImageFromBits(bits, 165, 220, idb).Id;
+                        mdf.MediumId = Image.NewImageFromBits(bits, 675, 900, idb).Id;
+                        mdf.LargeId = Image.NewImageFromBits(bits, idb).Id;
+                    }
                     break;
                 case "text/plain":
                 case "application/pdf":
                 case "application/msword":
                 case "application/msexcel":
-                    mdf.MediumId = Image.NewImageFromBits(bits, mimetype).Id;
+                    using (var idb = ImageData.DbUtil.Db)
+                    {
+                        mdf.MediumId = Image.NewImageFromBits(bits, mimetype, idb).Id;
+                    }
                     mdf.SmallId = mdf.MediumId;
                     mdf.LargeId = mdf.MediumId;
                     mdf.IsDocument = true;
