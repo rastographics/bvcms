@@ -1,8 +1,9 @@
-﻿using Xunit;
+﻿using SharedTestFixtures;
+using Xunit;
 
 namespace CmsData.Tests
 {
-    [Collection("Database collection")]
+    [Collection(Collections.Database)]
     public class CMSDataContextTests
     {
         [Fact]

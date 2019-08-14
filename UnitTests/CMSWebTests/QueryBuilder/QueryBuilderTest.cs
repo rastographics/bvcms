@@ -2,10 +2,11 @@
 using Shouldly;
 using UtilityExtensions;
 using CMSWebTests.SpecialContent;
+using SharedTestFixtures;
 
 namespace CmsData.QueryBuilder
 {
-    [Collection("Database collection")]
+    [Collection(Collections.Database)]
     public class QueryBuilderTest
     {
         [Theory]

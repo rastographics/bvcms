@@ -95,14 +95,14 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpPost]
         public ActionResult MemberDocumentUpdateName(int pk, string name, string value)
         {
-            MemberDocModel.UpdateName(pk, value);
+            MemberDocModel.UpdateName(CurrentDatabase, pk, value);
             return new EmptyResult();
         }
 
         [HttpPost, Route("DeleteDocument/{id:int}/{docid:int}")]
         public ActionResult DeleteDocument(int id, int docid)
         {
-            MemberDocModel.DeleteDocument(id, docid);
+            MemberDocModel.DeleteDocument(CurrentDatabase, CurrentImageDatabase, id, docid);
             return View("Profile/Membership/Documents", id);
         }
 

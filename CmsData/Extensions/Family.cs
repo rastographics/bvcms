@@ -173,17 +173,17 @@ namespace CmsData
             db.SubmitChanges();
         }
 
-        public void DeletePicture(CMSDataContext db)
+        public void DeletePicture(CMSDataContext db, CMSImageDataContext idb)
         {
             if (Picture == null)
             {
                 return;
             }
 
-            Image.Delete(Picture.ThumbId);
-            Image.Delete(Picture.SmallId);
-            Image.Delete(Picture.MediumId);
-            Image.Delete(Picture.LargeId);
+            Image.Delete(idb, Picture.ThumbId);
+            Image.Delete(idb, Picture.SmallId);
+            Image.Delete(idb, Picture.MediumId);
+            Image.Delete(idb, Picture.LargeId);
             var pid = PictureId;
             Picture = null;
             db.SubmitChanges();
