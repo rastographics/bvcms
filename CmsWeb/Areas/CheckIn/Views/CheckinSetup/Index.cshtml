@@ -77,9 +77,6 @@
                                 <a href="#printing" data-toggle="tab">Printing</a>
                             </li>
                             <li>
-                                <a href="#otheroptions" data-toggle="tab">Other Options</a>
-                            </li>
-                            <li>
                                 <a href="#design" data-toggle="tab">Design</a>
                             </li>
                         </ul>
@@ -93,6 +90,10 @@
                                             <option value="-1">All Campuses</option>
                                             <option v-for="campus in Campuses" v-bind:value="campus.Id">{{campus.Description}}</option>
                                         </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>Logout Code (5 digits)</label>
+                                        <input v-model="CheckinProfileSettings.Logout" class="form-control logoutCode" />
                                     </div>
                                 </div>
                                 <br />
@@ -132,31 +133,17 @@
                                     </div>
                                 </div>
                                 <br />
+                                <div class="row">
+                                    <div class="col-md-10">
+                                        <input v-model="CheckinProfileSettings.DisableTimer" type="checkbox" />
+                                        &nbsp;Disable <i>'Are you still there'</i> prompt
+                                    </div>
+                                </div>
+                                <br />
                             </div>
                             <!---------------------Security---------------------------------------------->
                             <div class="tab-pane" id="security">
-                                @*<div class="row">
-                                        <div class="col-md-6">
-                                                <label>Admin PIN</label>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label>Pin Timout (in seconds)</label>
-                                            </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <input v-model="CheckinProfileSettings.AdminPIN" class="form-control" type="hidden" />
-                                        </div>
-                                        <div class="col-md-6">
-                                            <input v-model="CheckinProfileSettings.PINTimeout" class="form-control" type="hidden" />
-                                        </div>
-                                    </div>*@
-                                @*<br />*@
                                 <div class="row">
-                                    <div class="col-md-6">
-                                        <label>Logout Code (5 digits)</label>
-                                        <input v-model="CheckinProfileSettings.Logout" class="form-control logoutCode" />
-                                    </div>
                                     <div class="col-md-6">
                                         <label>Show Checkin Confirmation</label>
                                         <select v-model="CheckinProfileSettings.ShowCheckinConfirmation" class="form-control">
@@ -179,28 +166,10 @@
                                     </div>
                                 </div>
                                 <br />
-                            </div>
-                            <!-----------------------------------OtherOptions----------------------------------------->
-                            <div class="tab-pane" id="otheroptions">
-                                <div class="row">
-                                    @*<div class="col-md-6">
-                                            <input v-model="CheckinProfileSettings.DisableJoin" type="checkbox" />
-                                            &nbsp;Disable Join
-                                        </div>*@
-                                    <div class="col-md-6">
-                                        <input v-model="CheckinProfileSettings.DisableTimer" type="checkbox" />
-                                        &nbsp;Disable Timer
-                                    </div>
-                                </div>
-                                <br />
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <label>Child Cutoff Age</label>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <number-input v-model="CheckinProfileSettings.CutoffAge" :min="1" :max="99" inline controls></number-input>
+                                        <label>Child Label Cutoff Age</label>
+                                        <number-input v-model="CheckinProfileSettings.CutoffAge" :min="1" :max="99" inline controls class="form-control"></number-input>
                                     </div>
                                 </div>
                                 <br />
@@ -246,3 +215,15 @@
     @Fingerprint.Script("/Content/touchpoint/js/vue-number-input.js")
     @Fingerprint.Script("/Content/touchpoint/lib/jquery-mask/js/jquery-mask.min.js")
 }
+<style>
+    .number-input--inline > input[data-v-016ae424] {
+        display: inline-block;
+        width: inherit;
+    }
+    .number-input__input[data-v-016ae424] {
+        font-size: 1.3rem;
+        border: 1px solid #ddd0;
+        padding: unset;
+        text-align: center;
+    }
+</style>
