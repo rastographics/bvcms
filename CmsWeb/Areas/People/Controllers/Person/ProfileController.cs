@@ -88,7 +88,7 @@ namespace CmsWeb.Areas.People.Controllers
 
             var person = CurrentDatabase.People.Single(pp => pp.PeopleId == id);
             DbUtil.LogPersonActivity($"Uploading Document for {person.Name}", id, person.Name);
-            person.UploadDocument(CurrentDatabase, doc.InputStream, doc.FileName, doc.ContentType);
+            person.UploadDocument(CurrentDatabase, CurrentImageDatabase, doc.InputStream, doc.FileName, doc.ContentType);
             return Redirect("/Person2/" + id);
         }
 

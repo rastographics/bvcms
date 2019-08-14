@@ -16,13 +16,13 @@ namespace ImageData
         {
             if (id.HasValue)
             {
-                DbUtil.Db.ExecuteCommand("DELETE dbo.Image WHERE Id = {0}", id);
+                CMSImageDataContext.Create(HttpContextFactory.Current).ExecuteCommand("DELETE dbo.Image WHERE Id = {0}", id);
             }
         }
 
         public static Image ImageFromId(int? id)
         {
-            return DbUtil.Db.Images.SingleOrDefault(ii => ii.Id == id);
+            return CMSImageDataContext.Create(HttpContextFactory.Current).Images.SingleOrDefault(ii => ii.Id == id);
         }
 
         public static Image NewImageFromBits(byte[] bits, int w, int h, CMSImageDataContext db)
@@ -135,26 +135,7 @@ namespace ImageData
             InsertImage(db, i);
             return i;
         }
-
-        public static Image UpdateImageFromBits(int imageID, byte[] bits)
-        {
-            Image image;
-            using (var db = DbUtil.Db)
-            {
-                var images = from t in DbUtil.Db.Images
-                             where t.Id == imageID
-                             select t;
-
-                image = images.FirstOrDefault();
-                if (image != null)
-                {
-                    image.LoadImageFromBits(bits);
-                    db.SubmitChanges();
-                }
-            }
-            return image;
-        }
-
+        
         public double Ratio()
         {
             var istream = new MemoryStream(Bits);
@@ -162,20 +143,24 @@ namespace ImageData
             return Convert.ToDouble(img1.Width) / img1.Height;
         }
 
-        private void LoadImageFromBits(byte[] bits)
+        internal void LoadImageFromBits(byte[] bits)
         {
-            var istream = new MemoryStream(bits);
-            var img1 = Drawing.Image.FromStream(istream);
-            var img2 = new Drawing.Bitmap(img1, img1.Width, img1.Height);
-            var ostream = new MemoryStream();
-            img2.Save(ostream, ImageFormat.Jpeg);
-            Mimetype = "image/jpeg";
-            Bits = ostream.GetBuffer();
-            Length = Bits.Length;
-            img1.Dispose();
-            img2.Dispose();
-            istream.Close();
-            ostream.Close();
+            using (var istream = new MemoryStream(bits))
+            {
+                using (var img1 = Drawing.Image.FromStream(istream))
+                {
+                    using (var img2 = new Drawing.Bitmap(img1, img1.Width, img1.Height))
+                    {
+                        using (var ostream = new MemoryStream())
+                        {
+                            img2.Save(ostream, ImageFormat.Jpeg);
+                            Mimetype = "image/jpeg";
+                            Bits = ostream.GetBuffer();
+                            Length = Bits.Length;
+                        }
+                    }
+                }
+            }
         }
 
         public static Image NewImageFromBits(byte[] bits, string type, CMSImageDataContext db)
@@ -205,20 +190,6 @@ namespace ImageData
             Bits = bits;
             Length = Bits.Length;
             Mimetype = type;
-        }
-
-        public static void DeleteOnSubmit(int? imageid)
-        {
-            using (var db = DbUtil.Db)
-            {
-                var i = db.Images.SingleOrDefault(img => img.Id == imageid);
-                if (i == null)
-                {
-                    return;
-                }
-
-                db.Images.DeleteOnSubmit(i);
-            }
         }
 
         public bool HasMedical() // special function
@@ -285,17 +256,6 @@ namespace ImageData
 
             var s = q.First();
             return Regex.IsMatch(s, @"\A(?:<tr><td>.*</td><td>(1|true)</td></tr>)\Z", RegexOptions.IgnoreCase);
-        }
-
-        public static string Content(int id)
-        {
-            var img = DbUtil.Db.Images.SingleOrDefault(i => i.Id == id);
-            if (img == null || img.Mimetype != "text/plain")
-            {
-                return null;
-            }
-
-            return Encoding.ASCII.GetString(img.Bits);
         }
 
         public override string ToString()

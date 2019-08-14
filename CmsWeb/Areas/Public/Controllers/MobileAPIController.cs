@@ -69,7 +69,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 return UserValidationResult.Invalid(UserValidationStatus.ImproperHeaderStructure, "Either the Authorization or SessionToken headers are required.", null);
             }
 
-            return AccountModel.AuthenticateMobile2(requirePin: requirePin, checkOrgLeadersOnly: true);
+            return AccountModel.AuthenticateMobile2(CurrentDatabase, CurrentImageDatabase, requirePin: requirePin, checkOrgLeadersOnly: true);
         }
 
         [HttpPost]
@@ -183,7 +183,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 }
             }
 
-            var result = AccountModel.ResetSessionExpiration(sessionToken);
+            var result = AccountModel.ResetSessionExpiration(CurrentDatabase, CurrentImageDatabase, sessionToken);
 
             if (!result.IsValid)
             {
@@ -497,7 +497,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
                         foreach (var item in m.FetchPeople().OrderBy(p => p.Name2).Take(100))
                         {
-                            mp = new MobilePerson().populate(item);
+                            mp = new MobilePerson().populate(item, CurrentDatabase, CurrentImageDatabase);
                             mpl.Add(mp.id, mp);
                         }
 
@@ -511,7 +511,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
                         foreach (var item in m.FetchPeople().OrderBy(p => p.Name2).Take(100))
                         {
-                            mp.Add(new MobilePerson().populate(item));
+                            mp.Add(new MobilePerson().populate(item, CurrentDatabase, CurrentImageDatabase));
                         }
 
                         br.data = SerializeJSON(mp, dataIn.version);
@@ -672,11 +672,11 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
             if (dataIn.device == BaseMessage.API_DEVICE_ANDROID)
             {
-                br.data = SerializeJSON(new MobilePerson().populate(person), dataIn.version);
+                br.data = SerializeJSON(new MobilePerson().populate(person, CurrentDatabase, CurrentImageDatabase), dataIn.version);
             }
             else
             {
-                List<MobilePerson> mp = new List<MobilePerson> { new MobilePerson().populate(person) };
+                List<MobilePerson> mp = new List<MobilePerson> { new MobilePerson().populate(person, CurrentDatabase, CurrentImageDatabase) };
                 br.data = SerializeJSON(mp, dataIn.version);
             }
 
@@ -710,11 +710,11 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
             if (dataIn.device == BaseMessage.API_DEVICE_ANDROID)
             {
-                br.data = SerializeJSON(new MobilePersonExtended().populate(person, dataIn.argBool), dataIn.version);
+                br.data = SerializeJSON(new MobilePersonExtended().populate(person, dataIn.argBool, CurrentImageDatabase), dataIn.version);
             }
             else
             {
-                List<MobilePersonExtended> mp = new List<MobilePersonExtended> { new MobilePersonExtended().populate(person, dataIn.argBool) };
+                List<MobilePersonExtended> mp = new List<MobilePersonExtended> { new MobilePersonExtended().populate(person, dataIn.argBool, CurrentImageDatabase) };
                 br.data = SerializeJSON(mp, dataIn.version);
             }
 
@@ -1186,13 +1186,13 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
                         foreach (var item in tasks)
                         {
-                            MobileTask task = new MobileTask().populate(item, Util.UserPeopleId ?? 0);
+                            MobileTask task = new MobileTask().populate(item, Util.UserPeopleId ?? 0, CurrentImageDatabase);
                             taskList.Add(task.id, task);
                         }
 
                         foreach (var item in complete)
                         {
-                            MobileTask task = new MobileTask().populate(item, Util.UserPeopleId ?? 0);
+                            MobileTask task = new MobileTask().populate(item, Util.UserPeopleId ?? 0, CurrentImageDatabase);
                             taskList.Add(task.id, task);
                         }
 
@@ -1206,13 +1206,13 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
                         foreach (var item in tasks)
                         {
-                            MobileTask task = new MobileTask().populate(item, Util.UserPeopleId ?? 0);
+                            MobileTask task = new MobileTask().populate(item, Util.UserPeopleId ?? 0, CurrentImageDatabase);
                             taskList.Add(task);
                         }
 
                         foreach (var item in complete)
                         {
-                            MobileTask task = new MobileTask().populate(item, Util.UserPeopleId ?? 0);
+                            MobileTask task = new MobileTask().populate(item, Util.UserPeopleId ?? 0, CurrentImageDatabase);
                             taskList.Add(task);
                         }
 
@@ -1497,7 +1497,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
             foreach (var person in people)
             {
-                mrl.attendees.Add(new MobileAttendee().populate(person));
+                mrl.attendees.Add(new MobileAttendee().populate(CurrentDatabase, CurrentImageDatabase, person));
             }
 
             br.data = SerializeJSON(mrl, dataIn.version);

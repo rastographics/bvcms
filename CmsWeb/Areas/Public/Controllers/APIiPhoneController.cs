@@ -4,6 +4,7 @@ using CmsWeb.Lifecycle;
 using CmsWeb.Membership;
 using CmsWeb.Models;
 using CmsWeb.Models.iPhone;
+using CMSImageDataContext = ImageData.CMSImageDataContext;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -32,10 +33,10 @@ namespace CmsWeb.Areas.Public.Controllers
             var person = CurrentDatabase.People.Single(pp => pp.PeopleId == id);
             if (person.PictureId != null)
             {
-                return new ImageResult(person.Picture.MediumId ?? 0);
+                return new ImageResult(CurrentImageDatabase, person.Picture.MediumId ?? 0);
             }
 
-            return new ImageResult(0);
+            return new ImageResult(CurrentImageDatabase, 0);
         }
 
         public ActionResult Search(string name, string comm, string addr)
@@ -333,7 +334,9 @@ namespace CmsWeb.Areas.Public.Controllers
 
         private static bool Authenticate(string role = null, bool checkOrgLeadersOnly = false)
         {
-            return AccountModel.AuthenticateMobile(role, checkOrgLeadersOnly).IsValid;
+            var db = CMSDataContext.Create(HttpContextFactory.Current);
+            var idb = CMSImageDataContext.Create(HttpContextFactory.Current);
+            return AccountModel.AuthenticateMobile(db, idb, role, checkOrgLeadersOnly).IsValid;
         }
 
         [SuppressMessage("ReSharper", "InconsistentNaming")]

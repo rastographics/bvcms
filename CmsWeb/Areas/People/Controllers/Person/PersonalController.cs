@@ -62,7 +62,7 @@ namespace CmsWeb.Areas.People.Controllers
 
             var person = CurrentDatabase.LoadPersonById(id);
             DbUtil.LogPersonActivity($"Uploading Picture for {person.Name}", id, person.Name);
-            person.UploadPicture(CurrentDatabase, picture.InputStream);
+            person.UploadPicture(CurrentDatabase, CurrentImageDatabase, picture.InputStream);
             return Redirect("/Person2/" + id);
         }
 
