@@ -74,12 +74,34 @@
                 });
         }
 
+        function buildDataColumnCell() {
+            return '<td data-column>' +
+                '<select class="form-control" data-field>' +
+                '<option value="">--</option>' +
+                '<option value="Organization">Organization</option>' +
+                '<option value="Leader">Leader</option>' +
+                '<option value="Enroll Date">Enroll Date</option>' +
+                '<option value="MemberType">MemberType</option>' +
+                '<option value="Leave">Unsubscribe</option>' +
+                '<option value="ViewCalendar">View Calendar</option>' +
+                '<option value="Location">Location</option>' +
+                '<option value="Schedule">Schedule</option>' +
+                '<option value="Drop Date">Drop Date</option>' +
+                '<option value="Last Visit">Last Visit</option>' +
+                '<option value="Health">Health</option>' +
+                '<option value="AttendPct">AttendPct</option>' +
+                '</select>' +
+                '</td>';
+        }
+
         $(document).ready(function () {
             wireUpRemoveRow();
 
             $('[data-add-row]').on('click',
-                function() {
-                    $('tbody').append('<tr data-row>' +
+                function () {
+                    var $this = $(this);
+                    var tableName = $this.data('table-name');
+                    $('tbody[data-table="' + tableName + '"]').append('<tr data-row>' +
                         '<td>' +
                             '<select class="form-control" data-involvement-type>' +
                                 '<option value="">-- Default --</option>' +
@@ -91,108 +113,12 @@
                                 '<option value="Children and Youth Group">Children and Youth Group</option>' +
                             '</select>' +
                         '</td>' +
-                        '<td data-column>' +
-                            '<select class="form-control" data-field>' +
-                                '<option value="">--</option>' +
-                                '<option value="Organization">Organization</option>' +
-                                '<option value="Leader">Leader</option>' +
-                                '<option value="Enroll Date">Enroll Date</option>' +
-                                '<option value="MemberType">MemberType</option>' +
-                                '<option value="Leave">Unsubscribe</option>' +
-                                '<option value="ViewCalendar">View Calendar</option>' +
-                                '<option value="Location">Location</option>' +
-                                '<option value="Schedule">Schedule</option>' +
-                                '<option value="Drop Date">Drop Date</option>' +
-                                '<option value="Last Visit">Last Visit</option>' +
-                                '<option value="Health">Health</option>' +
-                                '<option value="AttendPct">AttendPct</option>' +
-                            '</select>' +
-                        '</td>' +
-                        '<td data-column>' +
-                            '<select class="form-control" data-field>' +
-                                '<option value="">--</option>' +
-                                '<option value="Organization">Organization</option>' +
-                                '<option value="Leader">Leader</option>' +
-                                '<option value="Enroll Date">Enroll Date</option>' +
-                                '<option value="MemberType">MemberType</option>' +
-                                '<option value="Leave">Unsubscribe</option>' +
-                                '<option value="ViewCalendar">View Calendar</option>' +
-                                '<option value="Location">Location</option>' +
-                                '<option value="Schedule">Schedule</option>' +
-                                '<option value="Drop Date">Drop Date</option>' +
-                                '<option value="Last Visit">Last Visit</option>' +
-                                '<option value="Health">Health</option>' +
-                                '<option value="AttendPct">AttendPct</option>' +
-                            '</select>' +
-                        '</td>' +
-                        '<td data-column>' +
-                            '<select class="form-control" data-field>' +
-                                '<option value="">--</option>' +
-                                '<option value="Organization">Organization</option>' +
-                                '<option value="Leader">Leader</option>' +
-                                '<option value="Enroll Date">Enroll Date</option>' +
-                                '<option value="MemberType">MemberType</option>' +
-                                '<option value="Leave">Unsubscribe</option>' +
-                                '<option value="ViewCalendar">View Calendar</option>' +
-                                '<option value="Location">Location</option>' +
-                                '<option value="Schedule">Schedule</option>' +
-                                '<option value="Drop Date">Drop Date</option>' +
-                                '<option value="Last Visit">Last Visit</option>' +
-                                '<option value="Health">Health</option>' +
-                                '<option value="AttendPct">AttendPct</option>' +
-                            '</select>' +
-                        '</td>' +
-                        '<td data-column>' +
-                            '<select class="form-control" data-field>' +
-                                '<option value="">--</option>' +
-                                '<option value="Organization">Organization</option>' +
-                                '<option value="Leader">Leader</option>' +
-                                '<option value="Enroll Date">Enroll Date</option>' +
-                                '<option value="MemberType">MemberType</option>' +
-                                '<option value="Leave">Unsubscribe</option>' +
-                                '<option value="ViewCalendar">View Calendar</option>' +
-                                '<option value="Location">Location</option>' +
-                                '<option value="Schedule">Schedule</option>' +
-                                '<option value="Drop Date">Drop Date</option>' +
-                                '<option value="Last Visit">Last Visit</option>' +
-                                '<option value="Health">Health</option>' +
-                                '<option value="AttendPct">AttendPct</option>' +
-                            '</select>' +
-                        '</td>' +
-                        '<td data-column>' +
-                            '<select class="form-control" data-field>' +
-                                '<option value="">--</option>' +
-                                '<option value="Organization">Organization</option>' +
-                                '<option value="Leader">Leader</option>' +
-                                '<option value="Enroll Date">Enroll Date</option>' +
-                                '<option value="MemberType">MemberType</option>' +
-                                '<option value="Leave">Unsubscribe</option>' +
-                                '<option value="ViewCalendar">View Calendar</option>' +
-                                '<option value="Location">Location</option>' +
-                                '<option value="Schedule">Schedule</option>' +
-                                '<option value="Drop Date">Drop Date</option>' +
-                                '<option value="Last Visit">Last Visit</option>' +
-                                '<option value="Health">Health</option>' +
-                                '<option value="AttendPct">AttendPct</option>' +
-                            '</select>' +
-                        '</td>' +
-                        '<td data-column>' +
-                            '<select class="form-control" data-field>' +
-                                '<option value="">--</option>' +
-                                '<option value="Organization">Organization</option>' +
-                                '<option value="Leader">Leader</option>' +
-                                '<option value="Enroll Date">Enroll Date</option>' +
-                                '<option value="MemberType">MemberType</option>' +
-                                '<option value="Leave">Unsubscribe</option>' +
-                                '<option value="ViewCalendar">View Calendar</option>' +
-                                '<option value="Location">Location</option>' +
-                                '<option value="Schedule">Schedule</option>' +
-                                '<option value="Drop Date">Drop Date</option>' +
-                                '<option value="Last Visit">Last Visit</option>' +
-                                '<option value="Health">Health</option>' +
-                                '<option value="AttendPct">AttendPct</option>' +
-                            '</select>' +
-                        '</td>' +
+                        buildDataColumnCell() +
+                        buildDataColumnCell() +
+                        buildDataColumnCell() +
+                        buildDataColumnCell() +
+                        buildDataColumnCell() +
+                        buildDataColumnCell() +
                         '<td>' +
                             '<a href="#" class="btn btn-danger" data-remove-row="">-</a>' +
                         '</td>' +
