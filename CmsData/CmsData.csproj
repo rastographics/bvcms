@@ -714,6 +714,8 @@
     <Compile Include="Generated\CheckInLabelEntry.cs" />
     <Compile Include="Generated\CheckInLabelEntryAlignment.cs" />
     <Compile Include="Generated\CheckInLabelType.cs" />
+    <Compile Include="Generated\CheckinProfiles.cs" />
+    <Compile Include="Generated\CheckinProfileSettings.cs" />
     <Compile Include="Generated\CheckInSetting.cs" />
     <Compile Include="Generated\ContactExtra.cs" />
     <Compile Include="Generated\CustomColumn.cs" />
@@ -1399,6 +1401,9 @@
     <Content Include="Migrations\20190626_Add_RecReg_nomember_Column.sql" />
     <Content Include="Migrations\20190809_alter_function_CurrOrgMembers2_to_add_passport_data.sql" />
     <Content Include="Migrations\20190809_alter_sp_OrgMembers_to_include_passport_data.sql" />
+    <Content Include="Migrations\20190531_drop_SP_GreatPlainsIncomeExport.sql" />
+    <Content Include="Migrations\20190613_Transform_NoPhoneEmailOnFind_To_New_EVs.sql" />
+    <Content Include="Migrations\20190724_add_checkinprofiles_settings_tables.sql" />
     <Content Include="QueryBuilder\CompareMap.xml">
       <SubType>Designer</SubType>
     </Content>
