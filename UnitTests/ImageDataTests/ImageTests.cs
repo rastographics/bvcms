@@ -1,5 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Xunit;
+﻿using Xunit;
 using SharedTestFixtures;
 using ImageData;
 using UtilityExtensions;
@@ -11,7 +10,6 @@ using System.Text;
 
 namespace ImageDataTests
 {
-    [TestClass()]
     [Collection(Collections.Database)]
     public class ImageTests : ImageDataTestBase
     {

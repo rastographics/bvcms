@@ -56,6 +56,7 @@
     </Compile>
     <Compile Include="CMSImageDataContextTests.cs" />
     <Compile Include="ImageTests.cs" />
+    <Compile Include="OtherTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\ImageDataTestsResources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -145,6 +146,8 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\Images\Check1.jpg" />
+    <Content Include="Resources\Images\Check2.jpg" />
     <Content Include="Resources\Images\CreateNewTinyImageTest.jpg" />
     <Content Include="Resources\Images\RatioTest.jpg" />
     <Content Include="Resources\Images\Untitled.jpg" />
