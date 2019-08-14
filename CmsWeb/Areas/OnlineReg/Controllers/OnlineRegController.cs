@@ -333,7 +333,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
         private void StoreDocument(HttpPostedFileBase file, string docname, int registrantId, int orgId)
         {
-            var document = CurrentDatabase.OrgMemberDocuments.SingleOrDefault(o => o.DocumentName == docname & o.PeopleId == registrantId & o.OrganizationId == orgId);
+            var person = CurrentDatabase.People.SingleOrDefault(p => p.PeopleId == registrantId);
+            var docName = $"{docname}_{person.LastName}_{person.FirstName}_{registrantId}";
+            var document = CurrentDatabase.OrgMemberDocuments.SingleOrDefault(o => o.DocumentName == docName & o.PeopleId == registrantId & o.OrganizationId == orgId);
             if (document != null)
             {
                 CurrentDatabase.OrgMemberDocuments.DeleteOnSubmit(document);
@@ -343,7 +345,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             int imageId = ImageData.DocumentsData.StoreImageFromDocument(file);
             CurrentDatabase.OrgMemberDocuments.InsertOnSubmit(new OrgMemberDocuments()
             {
-                DocumentName = docname,
+                DocumentName = docName,
                 ImageId = imageId,
                 PeopleId = registrantId,
                 OrganizationId = orgId

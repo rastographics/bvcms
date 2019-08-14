@@ -40,6 +40,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     case "ExtraQuestion":
                         ReadExtraQuestion(e);
                         break;
+                    case "Documents":
+                        ReadDocuments(e);
+                        break;
                     case "Text":
                         ReadText(e);
                         break;
@@ -163,6 +166,15 @@ namespace CmsWeb.Areas.OnlineReg.Models
             var eq = e.Attribute("question");
             if (eq != null)
                 ExtraQuestion[eqset].Add(eq.Value, e.Value);
+        }
+
+        private void ReadDocuments(XElement e)
+        {
+            if (OrganizationDocument == null)
+                OrganizationDocument = new Dictionary<string, bool?>();
+            var doc = e.Attribute("documentName");
+            if (doc != null)
+                OrganizationDocument.Add(doc.Value, e.Value.ToBool());
         }
 
         private void ReadSpecialTest(XElement e)

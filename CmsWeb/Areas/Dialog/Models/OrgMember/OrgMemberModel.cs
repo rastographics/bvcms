@@ -431,8 +431,7 @@ Checking the Remove From Enrollment History box will erase all enrollment histor
 
         public IEnumerable<OrgMemberDocuments> MemberDocuments()
         {
-            var d = CurrentDatabase.OrgMemberDocuments.Where(o => o.PeopleId == PeopleId && o.OrganizationId == OrgId);
-            return d;
+            return CurrentDatabase.OrgMemberDocuments.Where(o => o.PeopleId == PeopleId && o.OrganizationId == OrgId);
         }
 
         public void AddQuestions()

@@ -86,6 +86,7 @@ namespace CmsData
                     db.PrevOrgMemberExtras.InsertOnSubmit(ev2);
                     db.SubmitChanges();
                 }
+                DeleteDocuments(db);
                 db.OrgMemberExtras.DeleteAllOnSubmit(this.OrgMemberExtras);
                 db.OrganizationMembers.DeleteOnSubmit(this);
                 db.ExecuteCommand(@"
@@ -102,6 +103,18 @@ AND a.PeopleId = {2}
                 return droptrans;
             }
         }
+
+        private void DeleteDocuments(CMSDataContext db)
+        {
+            var docs = db.OrgMemberDocuments.Where(p => p.PeopleId == this.PeopleId & p.OrganizationId == this.OrganizationId);
+            foreach (var item in docs)
+            {
+                ImageData.Image.DeleteOnSubmit(item.ImageId);
+            }
+            db.OrgMemberDocuments.DeleteAllOnSubmit(docs);
+            db.SubmitChanges();
+        }
+
         public void FastDrop(CMSDataContext db, DateTime dropdate, string orgname)
         {
             if (!EnrollmentDate.HasValue)
@@ -518,7 +531,7 @@ AND a.PeopleId = {2}
             var ts = TransactionSummary(db);
             if (ts == null)
                 return null;
-            return Organization.IsMissionTrip == true 
+            return Organization.IsMissionTrip == true
                 ? AmountDue(db)
                 : ts.IndDue;
         }
@@ -557,10 +570,10 @@ AND a.PeopleId = {2}
             return OrgMemMemTags.Any(omt => omt.MemberTagId == id);
         }
 
-//        public Settings RegSetting()
-//        {
-//            return DbUtil.Db.CreateRegistrationSettings(OrganizationId);
-//        }
+        //        public Settings RegSetting()
+        //        {
+        //            return DbUtil.Db.CreateRegistrationSettings(OrganizationId);
+        //        }
 
         public string PayLink2(CMSDataContext db)
         {
@@ -620,7 +633,7 @@ AND a.PeopleId = {2}
                 {
                     OrganizationId = oid,
                     PeopleId = pid,
-                    Field =  field,
+                    Field = field,
                     TransactionTime = DateTime.Now
                 };
                 db.OrgMemberExtras.InsertOnSubmit(ev);
@@ -752,22 +765,22 @@ AND a.PeopleId = {2}
             if (tom == null)
             {
                 tom = InsertOrgMembers(db,
-                    toOrg, pid, MemberTypeCode.Member, DateTime.Now, null, om.Pending ?? false, skipTriggerProcessing:true);
+                    toOrg, pid, MemberTypeCode.Member, DateTime.Now, null, om.Pending ?? false, skipTriggerProcessing: true);
                 if (tom == null)
                     return;
             }
-            tom.MemberTypeId = toMemberTypeId != -1 
-                ? toMemberTypeId 
+            tom.MemberTypeId = toMemberTypeId != -1
+                ? toMemberTypeId
                 : om.MemberTypeId;
             tom.UserData = om.UserData;
 
             if (om.Pending == true) // search for PromotingTo Extra Value to update
             {
                 var fromev = (from vv in db.OrgMemberExtras
-                             where vv.PeopleId == om.PeopleId
-                             where vv.IntValue == om.OrganizationId
-                             where vv.Field == "PromotingTo"
-                             select vv).SingleOrDefault();
+                              where vv.PeopleId == om.PeopleId
+                              where vv.IntValue == om.OrganizationId
+                              where vv.Field == "PromotingTo"
+                              select vv).SingleOrDefault();
                 if (fromev != null)
                     fromev.IntValue = tom.OrganizationId;
             }
@@ -790,7 +803,7 @@ AND a.PeopleId = {2}
 
             if (om.OrganizationId != tom.OrganizationId)
                 tom.Moved = true;
-            om.Drop(db, skipTriggerProcessing: true);            
+            om.Drop(db, skipTriggerProcessing: true);
             db.SubmitChanges();
         }
     }
