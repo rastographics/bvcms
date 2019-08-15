@@ -1294,6 +1294,20 @@ namespace CmsWeb
             return ValidationSummaryBootstrap(helper, true);
         }
 
+        public static string HttpsUrl(this HtmlHelper helper, string url)
+        {
+            var uri = new Uri(url);
+            if (uri.Scheme.Equal("http"))
+            {
+                return "https" + url.Substring(4);
+            }
+            else if (!uri.Scheme.HasValue())
+            {
+                return "https://" + url;
+            }
+            return url;
+        }
+
         public class HelpMessage
         {
             public string errorClass;

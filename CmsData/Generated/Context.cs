@@ -1484,7 +1484,13 @@ namespace CmsData
 
 		}
 
-		public Table<Ministry> Ministries
+        public Table<MFAToken> MFATokens
+        {
+            get { return this.GetTable<MFAToken>(); }
+        }
+
+
+        public Table<Ministry> Ministries
 		{
 			get	{ return this.GetTable<Ministry>(); }
 

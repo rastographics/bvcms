@@ -60,9 +60,11 @@ namespace CmsData
 		
 		private string _CurrentCart;
 		
-		private bool _MustChangePassword;
-		
-		private string _Host;
+		private bool _MFAEnabled;
+
+        private bool _MustChangePassword;
+
+        private string _Host;
 		
 		private string _TempPassword;
 		
@@ -164,10 +166,13 @@ namespace CmsData
 		partial void OnCurrentCartChanging(string value);
 		partial void OnCurrentCartChanged();
 		
-		partial void OnMustChangePasswordChanging(bool value);
-		partial void OnMustChangePasswordChanged();
-		
-		partial void OnHostChanging(string value);
+		partial void OnMFAEnabledChanging(bool value);
+		partial void OnMFAEnabledChanged();
+
+        partial void OnMustChangePasswordChanging(bool value);
+        partial void OnMustChangePasswordChanged();
+
+        partial void OnHostChanging(string value);
 		partial void OnHostChanged();
 		
 		partial void OnTempPasswordChanging(string value);
@@ -696,6 +701,28 @@ namespace CmsData
 					this._MustChangePassword = value;
 					this.SendPropertyChanged("MustChangePassword");
 					this.OnMustChangePasswordChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="MFAEnabled", UpdateCheck=UpdateCheck.Never, Storage="_MFAEnabled", DbType="bit NOT NULL")]
+		public bool MFAEnabled
+		{
+			get { return this._MFAEnabled; }
+
+			set
+			{
+				if (this._MFAEnabled != value)
+				{
+				
+                    this.OnMFAEnabledChanging(value);
+					this.SendPropertyChanging();
+					this._MFAEnabled = value;
+					this.SendPropertyChanged("MFAEnabled");
+					this.OnMFAEnabledChanged();
 				}
 
 			}

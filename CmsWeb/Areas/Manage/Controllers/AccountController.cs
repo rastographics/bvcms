@@ -2,6 +2,7 @@ using CmsData;
 using CmsWeb.Lifecycle;
 using CmsWeb.Membership;
 using CmsWeb.Models;
+using Google.Authenticator;
 using net.openstack.Core.Domain;
 using net.openstack.Providers.Rackspace;
 using System;
@@ -210,7 +211,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 
         [Route("~/Logon")]
         [HttpPost, MyRequireHttps]
-        public ActionResult LogOn(AccountInfo m)
+        public ActionResult Logon(AccountInfo m)
         {
             Session.Remove("IsNonFinanceImpersonator");
             TryLoadAlternateShell();
@@ -234,7 +235,67 @@ namespace CmsWeb.Areas.Manage.Controllers
                 ViewBag.error = ret.ToString();
                 return View(m);
             }
-            var user = ret as User;
+
+            return Redirect("/Auth" + m.ReturnUrlQueryString);
+        }
+
+        [MyRequireHttps]
+        [HttpGet, Route("~/AuthSetup")]
+        public ActionResult AuthSetup()
+        {
+            var user = CurrentDatabase.CurrentUser;
+            if (user == null)
+            {
+                return Redirect("/");
+            }
+
+            TwoFactorAuthenticator tfa = new TwoFactorAuthenticator();
+            var secretKey = Util.PickFirst(Common.Configuration.Current.GoogleAuthenticatorSecretKey, "5af432s567e1rk8mm87rtlw398ty9ytkrj7rndhsd68sbv5gmqc76zwyultrfhjd");
+            var churchName = CurrentDatabase.GetSetting("NameOfChurch", "Touchpoint");
+            var setupInfo = tfa.GenerateSetupCode(churchName, user.Username, $"{Util.Host}.{user.UserId}.{secretKey}", 300, 300, true);
+
+            return View(setupInfo);
+        }
+
+        [MyRequireHttps]
+        [HttpPost, Route("~/AuthSetup")]
+        public ActionResult AuthSetup(FormCollection form)
+        {
+            var passcode = form["passcode"]?.Replace(",", "");
+            var user = CurrentDatabase.CurrentUser;
+            if (user == null)
+            {
+                return Redirect("/");
+            }
+            TwoFactorAuthenticator tfa = new TwoFactorAuthenticator();
+            var secretKey = Util.PickFirst(Common.Configuration.Current.GoogleAuthenticatorSecretKey, "5af432s567e1rk8mm87rtlw398ty9ytkrj7rndhsd68sbv5gmqc76zwyultrfhjd");
+
+            if (passcode?.Length == 6 && tfa.ValidateTwoFactorPIN($"{Util.Host}.{user.UserId}.{secretKey}", passcode))
+            {
+                return View("AuthSetupComplete");
+            }
+
+            ViewBag.Message = "Invalid passcode";
+            var churchName = CurrentDatabase.GetSetting("NameOfChurch", "Touchpoint");
+            var setupInfo = tfa.GenerateSetupCode(churchName, user.Username, $"{Util.Host}.{user.UserId}.{secretKey}", 300, 300, true);
+
+            return View(setupInfo);
+        }
+
+        [MyRequireHttps]
+        [Route("~/Auth")]
+        public ActionResult Auth(AccountInfo m)
+        {
+            var user = CurrentDatabase.CurrentUser;
+            if (user == null)
+            {
+                return Redirect("/");
+            }
+
+            if (user.MFAEnabled && !CurrentDatabase.MFATokens.Any(t => t.UserId == user.UserId && t.Key == Session["MFAToken"].ToString()))
+            {
+                return View();
+            }
 
             if (user.MustChangePassword)
             {
@@ -632,6 +693,8 @@ namespace CmsWeb.Areas.Manage.Controllers
             public string UsernameOrEmail { get; set; }
             public string Password { get; set; }
             public string ReturnUrl { get; set; }
+            public string ReturnUrlQueryString => ReturnUrl.HasValue() ? $"?returnUrl={ReturnUrl}" : "";
+            public bool Use2FA { get; set; }
         }
     }
 }

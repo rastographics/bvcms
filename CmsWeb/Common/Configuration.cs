@@ -9,6 +9,8 @@ namespace CmsWeb.Common
     {
         public static Configuration Current => new Configuration();
 
+        public string GoogleAuthenticatorSecretKey => GetString("GoogleAuthenticatorSecretKey");
+
         public bool IsDeveloperMode => GetBool("IsDeveloperMode");
 
         public string OAuth2TokenEndpoint => GetString("OAuth2TokenEndpoint");
