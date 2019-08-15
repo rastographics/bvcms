@@ -151,15 +151,15 @@ namespace CmsWeb.Areas.Public.Controllers
         [HttpGet]
         public ActionResult GetProfiles()
         {
-            if (!Auth())
+            var CheckinProfiles = CurrentDatabase.CheckinProfileSettings.ToList();
+            foreach (var profile in CheckinProfiles)
             {
-                return Message.createErrorReturn("Authentication failed, please try again", Message.API_ERROR_INVALID_CREDENTIALS);
-            }
-            var CheckinProfiles = CurrentDatabase.CheckinProfiles.ToList();
-            foreach (var item in CheckinProfiles)
-            {
-                var settings = CurrentDatabase.CheckinProfileSettings
-                    .Where(c => c.CheckinProfileId == item.CheckinProfileId);
+                var id = profile.CheckinProfiles.CheckinProfileId;
+                var name = profile.CheckinProfiles.Name;
+                profile.CheckinProfiles.CheckinProfileSettings = null;
+                profile.CheckinProfileId = id;
+                if (profile.EarlyCheckin == -1) profile.EarlyCheckin = 0;
+                if (profile.LateCheckin == -1) profile.LateCheckin = 0;
             }
 
             return Json(CheckinProfiles, JsonRequestBehavior.AllowGet);

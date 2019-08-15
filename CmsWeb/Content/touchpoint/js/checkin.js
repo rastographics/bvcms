@@ -130,12 +130,12 @@ var CheckInApp = new Vue({
                         default: ["1 2 3", "4 5 6", "7 8 9", "{bksp} 0 {enter}"]
                     },
                     display: {
-                        '{bksp}': 'delete',
-                        '{enter}': 'go'
+                        '{bksp}': '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" width="38px" viewBox="0 0 512 640" enable-background="new 0 0 512 512" style="margin-top:15px;fill:white;" xml:space="preserve"><path d="M436,136H184.3c-5.3,0-10.4,2.1-14.1,5.9l-108.3,100c-7.8,7.8-7.8,20.5,0,28.3l108.3,100c3.8,3.8,8.8,5.9,14.1,5.9H436  c11,0,20-9,20-20V156C456,145,447,136,436,136z M370.1,301.9c7.8,7.8,5.3,22.9,0,28.3c-3.9,3.9-18.6,9.7-28.3,0L296,284.3  l-45.9,45.9c-9.2,9.2-21.9,6.4-28.3,0c-7.8-7.8-7.8-20.5,0-28.3l45.9-45.9l-45.9-45.9c-7.8-7.8-7.8-20.5,0-28.3s20.5-7.8,28.3,0  l45.9,45.9l45.9-45.9c7.8-7.8,20.5-7.8,28.3,0c7.8,7.8,7.8,20.5,0,28.3L324.3,256L370.1,301.9z"/></svg>',
+                        '{enter}': '<i class="fa fa-search"></i>'
                     },
                     theme: "hg-theme-default hg-layout-numeric numeric-theme"
                 });
-                $(".keyboard-input").on("input", function(e) {
+                $(".keyboard-input").on("input", function (e) {
                     vm.keyboard.setInput(e.target.value);
                 });
             }, 100);
@@ -143,7 +143,9 @@ var CheckInApp = new Vue({
         resetIdleTimer() {
             let vm = this;
             clearTimeout(vm.idleTimer);
-            vm.idleTimer = setTimeout(vm.handleIdle, vm.idleTimeout);
+            if (!vm.profile.DisableTimer) {
+                vm.idleTimer = setTimeout(vm.handleIdle, vm.idleTimeout);
+            }
         },
         handleIdle() {
             let vm = this;
@@ -199,7 +201,7 @@ var CheckInApp = new Vue({
         getProfiles() {
             let vm = this;
             vm.loading = true;
-            vm.$http.get('/CheckinSetup/GetCheckinProfiles')
+            vm.$http.get('/CheckInApiV2/GetProfiles')
             .then(
                 response => {
                     vm.loading = false;
@@ -238,11 +240,14 @@ var CheckInApp = new Vue({
                                 // load profile settings based on dropdown selection, or use the defaults
                                 vm.profiles.forEach((p) => {
                                     if (vm.kiosk.profile === p.CheckinProfileId) {
-                                        settings = p.CheckinProfileSettings;
+                                        settings = p;
                                     }
                                 });
                                 if (typeof (settings) === 'undefined') {
                                     settings = vm.defaultProfile;
+                                    if (vm.kiosk.profile !== 'default') {
+                                        warning_swal('Couldn\'t load the chosen profile.', 'Using default settings instead. To try again, type 12345 in the phone entry to logout.');
+                                    }
                                 }
                                 // apply settings to the profile
                                 Object.assign(profile, settings);

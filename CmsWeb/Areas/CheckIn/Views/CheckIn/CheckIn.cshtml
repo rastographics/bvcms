@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-keyboard@latest/build/css/index.css">
     @Fingerprint.Css("/Content/touchpoint/css/checkin.css")
 }
-<body class="checkin">
+<body class="checkin" oncontextmenu="return false">
     <noscript>You've reached the @ViewExtensions2.DbSetting("NameOfChurch", Util.Host) check in portal. JavaScript is required, please enable JavaScript in your browser settings.</noscript>
     <template id="CheckInApp">
         <div v-if="view == 'login'" class="login">
@@ -40,7 +40,7 @@
         <div v-else-if="view == 'landing'" class="landing">
             <h2 class="text-center">Enter your phone number</h2>
             <form v-on:submit.prevent="find">
-                <input type="tel" name="phone" v-mask="phoneMask" v-model="search.phone" class="keyboard-input"/>
+                <input type="tel" name="phone" v-mask="phoneMask" v-model="search.phone" autocomplete="off" class="keyboard-input"/>
                 <div class="simple-keyboard"></div>
             </form>
         </div>

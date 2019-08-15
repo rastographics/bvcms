@@ -1,5 +1,6 @@
 ﻿.checkin {
     background-color: #f5f5f5!important;
+    user-select: none;
 }
 .simple-keyboard {
     max-width: 400px;
@@ -10,11 +11,24 @@
 }
 .simple-keyboard.hg-theme-default.hg-layout-numeric .hg-button {
     height: 75px;
-    font-size: 20px;
+    font-size: 26px;
+    background-color: white;
+    color: #333;
+}
+.simple-keyboard.hg-theme-default .hg-button.hg-button-bksp {
+    background-color:#a94442; 
+}
+    .simple-keyboard.hg-theme-default .hg-button.hg-button-enter {
+        background-color: #3c763d;
+        color: white !important;
+        font-size: 20px;
+    }
+.simple-keyboard.hg-theme-default .hg-button:active {
+    box-shadow: inset 0px 0px 4px rgba(0,0,0,.6);
 }
 .keyboard-input {
     text-align: center;
-    border-bottom: 0!important;
+    border-bottom: 0 !important;
     font-size: 26px !important;
 }
 .checkin .login .form-header {
