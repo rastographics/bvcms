@@ -221,3 +221,7 @@
         this.myFunctionOnLoad();
     }
 });
+
+$(function () {
+    $('.logoutCode').mask("00000", { placeholder: "00000", clearIfNotMatch: true });
+});

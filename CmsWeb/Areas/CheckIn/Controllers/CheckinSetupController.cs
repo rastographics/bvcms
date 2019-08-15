@@ -11,6 +11,7 @@ using System;
 using System.Web;
 using Newtonsoft.Json;
 using CmsWeb.Common;
+using System.Text.RegularExpressions;
 
 namespace CmsWeb.Areas.CheckIn.Controllers
 {
@@ -76,7 +77,6 @@ namespace CmsWeb.Areas.CheckIn.Controllers
         [Route("~/CheckinSetup/GetCampuses")]
         public JsonResult GetCampuses()
         {
-
             var Campuses = CurrentDatabase.Campus.ProjectTo<CampusModel>(_config);
 
             return Json(Campuses, JsonRequestBehavior.AllowGet);
@@ -160,7 +160,7 @@ namespace CmsWeb.Areas.CheckIn.Controllers
             checkinProfileSettings.DisableJoin = jsonSettings.DisableJoin;
             checkinProfileSettings.DisableTimer = jsonSettings.DisableTimer;
             checkinProfileSettings.CutoffAge = jsonSettings.CutoffAge;
-            checkinProfileSettings.Logout = jsonSettings.Logout;
+            checkinProfileSettings.Logout = LogoutIsValid(jsonSettings.Logout) ? jsonSettings.Logout : "00000";
             checkinProfileSettings.Guest = jsonSettings.Guest;
             checkinProfileSettings.Location = jsonSettings.Location;
             checkinProfileSettings.SecurityType = jsonSettings.SecurityType;
@@ -174,6 +174,11 @@ namespace CmsWeb.Areas.CheckIn.Controllers
             }
 
             return checkinProfileSettings;
+        }
+
+        private bool LogoutIsValid(string logout)
+        {
+            return Regex.Match(logout, @"\d{4}").Success;            
         }
 
         private int StoreBGImage(HttpPostedFileBase file, int? imageId)
