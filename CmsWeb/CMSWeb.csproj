@@ -649,6 +649,7 @@
     <Compile Include="Areas\Public\Models\CheckInAPIv2\AttendanceBundle.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPIv2\AttendanceGroup.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPIv2\Campus.cs" />
+    <Compile Include="Areas\Public\Models\CheckInAPIv2\Profile.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPIv2\Country.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPIv2\Gender.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPIv2\Group.cs" />

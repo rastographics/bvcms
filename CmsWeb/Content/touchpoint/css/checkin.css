@@ -1,6 +1,10 @@
 ﻿.checkin {
-    background-color: #f5f5f5!important;
+    background-color: #f5f5f5 !important;
     user-select: none;
+}
+#main {
+    padding: 0!important;
+    margin: 0!important;
 }
 .simple-keyboard {
     max-width: 400px;
@@ -18,13 +22,16 @@
 .simple-keyboard.hg-theme-default .hg-button.hg-button-bksp {
     background-color:#a94442; 
 }
-    .simple-keyboard.hg-theme-default .hg-button.hg-button-enter {
-        background-color: #3c763d;
-        color: white !important;
-        font-size: 20px;
-    }
+.simple-keyboard.hg-theme-default .hg-button.hg-button-enter {
+    background-color: #3c763d;
+    color: white !important;
+    font-size: 20px;
+}
 .simple-keyboard.hg-theme-default .hg-button:active {
     box-shadow: inset 0px 0px 4px rgba(0,0,0,.6);
+    position: relative;
+    top: 1px;
+    left: 1px;
 }
 .keyboard-input {
     text-align: center;
@@ -40,18 +47,20 @@
     max-width: 420px;
     margin: 20px auto 0;
 }
-.checkin .landing input {
-    border: 0;
-    background: transparent;
-    font-size: 24px;
-    font-weight: 300;
-    width: 100%;
-    max-width: 390px;
-    margin: 20px 5px;
-    padding: 5px;
-    border-bottom: 1px solid #333;
-    outline: 0;
-}
+    .checkin .landing input {
+        border: 0;
+        border-radius: 5px;
+        background: rgba(255,255,255,0.5);
+        box-shadow: 0 0 3px -1px rgba(0,0,0,.3);
+        border-bottom: 1px solid #b5b5b5;
+        font-size: 24px;
+        font-weight: 300;
+        width: 100%;
+        max-width: 390px;
+        margin: 20px 5px;
+        padding: 5px;
+        outline: 0;
+    }
 .checkin .families .family h4 {
     border: 1px solid #e6e6e6;
     background-color: #fff;
@@ -74,9 +83,13 @@
     background-size: cover;
     border-radius: 100%;
 }
-.checkin .member-details,
 .checkin .member-info {
     float: left;
+    width: calc(100% - 60px);
+}
+.checkin .member-details {
+    float: left;
+    width: calc(100% - 175px);
 }
 .checkin .results {
     max-width: 1200px;
@@ -85,6 +98,7 @@
 }
 .checkin .results .member {
     margin-top: 20px;
+    margin-bottom: 15px;
 }
 .checkin .results .member:last-of-type,
 .checkin .results .family:last-child {

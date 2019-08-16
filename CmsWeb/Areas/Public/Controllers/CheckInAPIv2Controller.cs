@@ -151,18 +151,16 @@ namespace CmsWeb.Areas.Public.Controllers
         [HttpGet]
         public ActionResult GetProfiles()
         {
-            var CheckinProfiles = CurrentDatabase.CheckinProfileSettings.ToList();
-            foreach (var profile in CheckinProfiles)
+            var Profiles = new List<Profile>();
+            var ProfileSettings = CurrentDatabase.CheckinProfileSettings.ToList();
+            foreach (var settings in ProfileSettings)
             {
-                var id = profile.CheckinProfiles.CheckinProfileId;
-                var name = profile.CheckinProfiles.Name;
-                profile.CheckinProfiles.CheckinProfileSettings = null;
-                profile.CheckinProfileId = id;
-                if (profile.EarlyCheckin == -1) profile.EarlyCheckin = 0;
-                if (profile.LateCheckin == -1) profile.LateCheckin = 0;
+                var Profile = new Profile();
+                Profile.populate(settings);
+                Profiles.Add(Profile);
             }
 
-            return Json(CheckinProfiles, JsonRequestBehavior.AllowGet);
+            return Json(Profiles, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
