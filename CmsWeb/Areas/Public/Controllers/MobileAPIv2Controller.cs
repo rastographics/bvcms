@@ -947,22 +947,29 @@ namespace CmsWeb.Areas.Public.Controllers
 				if( imageDataLarge != null ) {
 					CurrentImageDatabase.Images.DeleteOnSubmit( imageDataLarge );
 				}
-
-				person.Picture.ThumbId = Image.NewImageFromBits( imageBytes, 50, 50 ).Id;
-				person.Picture.SmallId = Image.NewImageFromBits( imageBytes, 120, 120 ).Id;
-				person.Picture.MediumId = Image.NewImageFromBits( imageBytes, 320, 400 ).Id;
-				person.Picture.LargeId = Image.NewImageFromBits( imageBytes ).Id;
+                using (var idb = ImageData.DbUtil.Db)
+                {
+                    person.Picture.ThumbId = Image.NewImageFromBits(imageBytes, 50, 50, idb).Id;
+                    person.Picture.SmallId = Image.NewImageFromBits(imageBytes, 120, 120, idb).Id;
+                    person.Picture.MediumId = Image.NewImageFromBits(imageBytes, 320, 400, idb).Id;
+                    person.Picture.LargeId = Image.NewImageFromBits(imageBytes, idb).Id;
+                }
 			} else {
-				Picture newPicture = new Picture {
-					ThumbId = Image.NewImageFromBits( imageBytes, 50, 50 ).Id,
-					SmallId = Image.NewImageFromBits( imageBytes, 120, 120 ).Id,
-					MediumId = Image.NewImageFromBits( imageBytes, 320, 400 ).Id,
-					LargeId = Image.NewImageFromBits( imageBytes ).Id
-				};
+                using (var idb = ImageData.DbUtil.Db)
+                {
+                    Picture newPicture = new Picture
+                    {
+                        ThumbId = Image.NewImageFromBits(imageBytes, 50, 50, idb).Id,
+                        SmallId = Image.NewImageFromBits(imageBytes, 120, 120, idb).Id,
+                        MediumId = Image.NewImageFromBits(imageBytes, 320, 400, idb).Id,
+                        LargeId = Image.NewImageFromBits(imageBytes, idb).Id
+                    };
 
-				if( person != null ) {
-					person.Picture = newPicture;
-				}
+                    if (person != null)
+                    {
+                        person.Picture = newPicture;
+                    }
+                }
 			}
 
 			CurrentDatabase.SubmitChanges();
@@ -1021,22 +1028,29 @@ namespace CmsWeb.Areas.Public.Controllers
 				if( imageDataLarge != null ) {
 					CurrentImageDatabase.Images.DeleteOnSubmit( imageDataLarge );
 				}
-
-				family.Picture.ThumbId = Image.NewImageFromBits( imageBytes, 50, 50 ).Id;
-				family.Picture.SmallId = Image.NewImageFromBits( imageBytes, 120, 120 ).Id;
-				family.Picture.MediumId = Image.NewImageFromBits( imageBytes, 320, 400 ).Id;
-				family.Picture.LargeId = Image.NewImageFromBits( imageBytes ).Id;
+                using (var idb = ImageData.DbUtil.Db)
+                {
+                    family.Picture.ThumbId = Image.NewImageFromBits(imageBytes, 50, 50, idb).Id;
+                    family.Picture.SmallId = Image.NewImageFromBits(imageBytes, 120, 120, idb).Id;
+                    family.Picture.MediumId = Image.NewImageFromBits(imageBytes, 320, 400, idb).Id;
+                    family.Picture.LargeId = Image.NewImageFromBits(imageBytes, idb).Id;
+                }
 			} else {
-				Picture newPicture = new Picture {
-					ThumbId = Image.NewImageFromBits( imageBytes, 50, 50 ).Id,
-					SmallId = Image.NewImageFromBits( imageBytes, 120, 120 ).Id,
-					MediumId = Image.NewImageFromBits( imageBytes, 320, 400 ).Id,
-					LargeId = Image.NewImageFromBits( imageBytes ).Id
-				};
+                using (var idb = ImageData.DbUtil.Db)
+                {
+                    Picture newPicture = new Picture
+                    {
+                        ThumbId = Image.NewImageFromBits(imageBytes, 50, 50, idb).Id,
+                        SmallId = Image.NewImageFromBits(imageBytes, 120, 120, idb).Id,
+                        MediumId = Image.NewImageFromBits(imageBytes, 320, 400, idb).Id,
+                        LargeId = Image.NewImageFromBits(imageBytes, idb).Id
+                    };
 
-				if( family != null ) {
-					family.Picture = newPicture;
-				}
+                    if (family != null)
+                    {
+                        family.Picture = newPicture;
+                    }
+                }
 			}
 
 			CurrentDatabase.SubmitChanges();

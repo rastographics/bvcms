@@ -44,15 +44,7 @@ namespace CMSWebTests.Areas.OnlineReg.Models.AskChurch
 
             Assert.NotNull(resultSubmitQuestions);
             Assert.NotNull(resultCompleteRegistration);
-        }
-
-        [Fact]
-        public void ShouldDeleteReg()
-        {
             FakeOrganizationUtils.DeleteOrg(OrgId);
-            var db = CMSDataContext.Create(Util.Host);
-            var CurrentOrg = db.LoadOrganizationById(OrgId);
-            CurrentOrg.ShouldBe(null);
         }
     }
 }
