@@ -1,5 +1,6 @@
 ﻿using CmsData;
 using CmsData.Codes;
+using CmsWeb.Areas.Dialog.Models;
 using CmsWeb.Code;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -123,6 +124,43 @@ namespace CmsWeb.Areas.People.Models
                         Paid = ts.Raised ?? 0,
                         ShowFundingLink = m.Organization?.TripFundingPagesEnable ?? false
                     }).ToList();
+        }
+
+        public List<OrgMemberModel> FulfillmentList()
+        {
+            var OrgMembers = (from mm in DbUtil.Db.OrganizationMembers
+                     where mm.PeopleId == PeopleId
+                     select new
+                     {
+                         mm,
+                         mm.Person.Name,
+                         mm.Organization.OrganizationName,
+                         mm.Organization,
+                         mm.OrgMemMemTags,
+                         mm.Organization.IsMissionTrip,
+                         mm.Organization.TripFundingPagesEnable,
+                         mm.Organization.TripFundingPagesPublic,
+                         ts = DbUtil.Db.ViewTransactionSummaries.SingleOrDefault(tt => tt.RegId == mm.TranId && tt.PeopleId == PeopleId)
+                     }).ToList();
+
+            List<OrgMemberModel> ss = OrgMembers.Select(i => new OrgMemberModel
+            {
+                OrgMember = i.mm,
+                TransactionSummary = i.ts,
+                Name = i.Name,
+                IsMissionTrip = i.IsMissionTrip ?? false,
+                AmtFee = i.ts?.IndPaid + i.ts?.IndDue,
+                AmtDonation = i.ts?.IndAmt - (i.ts?.IndPaid + i.ts?.IndDue),
+                AmtCoupon = i.ts?.TotCoupon,
+                AmtPaid = i.mm.AmountPaidTransactions(DbUtil.Db),
+                AmtDue = i.mm.AmountDueTransactions(DbUtil.Db),
+                OrgName = i.OrganizationName,
+                Organization = i.Organization,
+                OrgMemMemTags = i.OrgMemMemTags.ToList(),
+                Setting = DbUtil.Db.CreateRegistrationSettings(i.Organization.OrganizationId)
+            }).Where(x => x.AmtPaid < x.AmtFee).ToList();
+
+            return ss;
         }
 
         public class GoerItem

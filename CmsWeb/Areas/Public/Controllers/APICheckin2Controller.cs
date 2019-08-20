@@ -603,10 +603,10 @@ namespace CmsWeb.Areas.Public.Controllers
             var p = person.Picture;
             p.CreatedDate = Util.Now;
             p.CreatedBy = Util.UserName;
-            p.ThumbId = Image.NewImageFromBits(bits, 50, 50).Id;
-            p.SmallId = Image.NewImageFromBits(bits, 120, 120).Id;
-            p.MediumId = Image.NewImageFromBits(bits, 320, 400).Id;
-            p.LargeId = Image.NewImageFromBits(bits).Id;
+            p.ThumbId = Image.NewImageFromBits(bits, 50, 50, CurrentImageDatabase).Id;
+            p.SmallId = Image.NewImageFromBits(bits, 120, 120, CurrentImageDatabase).Id;
+            p.MediumId = Image.NewImageFromBits(bits, 320, 400, CurrentImageDatabase).Id;
+            p.LargeId = Image.NewImageFromBits(bits, CurrentImageDatabase).Id;
             person.LogPictureUpload(CurrentDatabase, Util.UserPeopleId ?? 1);
             CurrentDatabase.SubmitChanges();
             return Content("done");

@@ -31,7 +31,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             if (isMissionTrip)
             {
-                m.ProcessType = PaymentProcessTypes.OneTimeGiving;
+                m.ProcessType = PaymentProcessTypes.OnlineRegistration;
             }
             else
             {
