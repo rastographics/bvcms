@@ -111,6 +111,7 @@
     </Compile>
     <Compile Include="Areas\Reports\Models\Reports\Export\ExportInvolvementsTests.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineRegPerson\HelperTests.cs" />
+    <Compile Include="Areas\Setup\Controllers\DivisionControllerTests.cs" />
     <Compile Include="TestUtils\FakeOrganizationUtils.cs" />
     <Compile Include="TestUtils\FakeRequestManager.cs" />
     <Compile Include="Areas\OnlineReg\Models\NewAskChurchQuestionTest.cs" />
