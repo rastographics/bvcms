@@ -146,7 +146,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                     var ii = ImageData.Image.UpdateImageFromBits(content.ThumbID, captureWebPageBytes);
                     if (ii == null)
                     {
-                        content.ThumbID = ImageData.Image.NewImageFromBits(captureWebPageBytes).Id;
+                        content.ThumbID = ImageData.Image.NewImageFromBits(captureWebPageBytes, ImageData.DbUtil.Db).Id;
                     }
 
                     content.DateCreated = DateTime.Now;

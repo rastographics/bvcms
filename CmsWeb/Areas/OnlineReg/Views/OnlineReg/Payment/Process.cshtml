@@ -17,34 +17,35 @@
 }
 @section scripts
 {
-  @Fingerprint.Script("/Content/touchpoint/js/onlinereg/bootstrap-datepicker.js")
-  @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-editable/js/bootstrap-editable.min.js")
-  <script type="text/javascript">
+    @Fingerprint.Script("/Content/touchpoint/js/onlinereg/bootstrap-datepicker.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-editable/js/bootstrap-editable.min.js")
+    <script type="text/javascript">
       $.dtoptions = { format: '@Util.jQueryDateFormat2' };
       function recaptcha_callback(token) {
           document.getElementById('OnlineRegProcessPayment').submit();
       }
-  </script>
-  @Fingerprint.Script("/Content/touchpoint/js/onlinereg/onlineregpayment2.js")
-  @ViewExtensions2.GoogleReCaptcha()
-  @ViewExtensions2.Moment()
-  @ViewExtensions2.Humanize()
+    </script>
+    @Fingerprint.Script("/Content/touchpoint/js/onlinereg/onlineregpayment2.js")
+    @ViewExtensions2.GoogleReCaptcha()
+    @ViewExtensions2.Moment()
+    @ViewExtensions2.Humanize()
 }
 <div class="regform">
     <h2>Payment Processing</h2>
     @if (Model.Terms.HasValue() && !Model.SupportMissionTrip)
     {
         <p>
-            @Html.CheckBox("IAgree")
-            I agree to the terms and conditions.
-            <small class="showform">Uncheck the agreement box to display the terms again.</small>
+            Full Name:&nbsp;@Html.TextBox("IAgreeInput")&nbsp;&nbsp;<small class="showform">I agree to the terms and conditions</small>
+        </p>
+        <p>
+            <input type="button" class="btn" id="IAgreeButton" agreed="false" value="I agree to the terms and conditions">
         </p>
         <div id="Terms" title="Terms of Agreement">
             @Html.Raw(OnlineRegModel.YouMustAgreeStatement(Model.OrgId))
             @Html.Raw(Model.Terms)
         </div>
     }
-  <form class="showform form-horizontal @useRecaptchaClass" id="OnlineRegProcessPayment" action="/OnlineReg/ProcessPayment" method="post">
+    <form class="showform form-horizontal @useRecaptchaClass" id="OnlineRegProcessPayment" action="/OnlineReg/ProcessPayment" method="post">
         @Html.ValidationSummary()
         <div class="form-group" style="font-size: 1.5em;">
             @Html.LabelFor(m => m.AmtToPay, new { @class = "control-label col-sm-3" })
@@ -78,6 +79,7 @@
         @Html.HiddenFor(m => m.Donate)
         @Html.HiddenFor(m => m.NoCreditCardsAllowed)
         @Html.HiddenFor(m => m.ProcessType)
+        @Html.HiddenFor(m => m.TermsSignature)
 
         <div class="well">
             @Html.EditorFor(m => m.First)
@@ -118,15 +120,15 @@
                     <input type="hidden" id="hdnExpiresOnFile" data-value="@Model.Expires" />
                 </div>
             }
-        @if (useRecaptcha)
-        {
-            <div class="g-recaptcha"
-                 data-sitekey="@recaptchaSiteKey"
-                 data-callback="recaptcha_callback"
-                 data-size="invisible">
-            </div>
-        }
-        <input type="hidden" id="useRecaptcha" value="@useRecaptcha" />
+            @if (useRecaptcha)
+            {
+                <div class="g-recaptcha"
+                     data-sitekey="@recaptchaSiteKey"
+                     data-callback="recaptcha_callback"
+                     data-size="invisible">
+                </div>
+            }
+            <input type="hidden" id="useRecaptcha" value="@useRecaptcha" />
             @if (Model.NoEChecksAllowed == false)
             {
                 <div class="Bank">

@@ -51,14 +51,18 @@ namespace CmsWeb.Areas.OnlineReg.Models
                         {
                             pe.DictionaryAdd("MemberUs", memberus);
                         }
-
                         break;
                     case "otherchurch":
                         if (otherchurch)
                         {
                             pe.DictionaryAdd("OtherChurch", otherchurch);
                         }
-
+                        break;
+                    case "nochurch":
+                        if (nochurch)
+                        {
+                            pe.DictionaryAdd("NoChurch", nochurch);
+                        }
                         break;
                     case "LoggedIn":
                         pe.DictionaryAdd(pi.Name, LoggedIn);

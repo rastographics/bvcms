@@ -96,10 +96,12 @@ namespace CmsWeb.Areas.Org.Models
         {
             get { return PrevMeetingDate.AddDays(7); }
         }
-        public void UpdateSchedules()
+        public void UpdateSchedules(List<OrgSchedule> SchedulesToFix = null)
         {
+            int IdCount = 1;
             var db = CurrentDatabase;
-            var orgSchedules = Org.OrgSchedules.ToList();
+            var orgSchedules = SchedulesToFix ?? Org.OrgSchedules.ToList();
+
             for (int i = orgSchedules.Count - 1; i >= 0; i--)
             {
                 var s = orgSchedules[i];
@@ -117,32 +119,57 @@ namespace CmsWeb.Areas.Org.Models
             db.SubmitChanges();
             foreach (var s in schedules.OrderBy(ss => ss.Id))
             {
+                bool IsNew = true;
                 if (s.Id == 0)
                 {
                     s.Id = (orgSchedules.Count > 0) ? orgSchedules.Max(ss => ss.Id) + 1 : 1;
                 }
+
                 var schedule = orgSchedules.FirstOrDefault(ss => ss.Id == s.Id);
-                if (schedule == null)
+                if (schedule != null)
                 {
-                    schedule = new OrgSchedule
-                    {
-                        OrganizationId = Id,
-                        Id = s.Id,
-                        SchedDay = s.SchedDay.Value.ToInt(),
-                        SchedTime = s.Time.ToDate(),
-                        MeetingTime = s.Time.ToDate(),
-                        NextMeetingDate = s.NextMeetingTime.AddDays(-1),
-                        AttendCreditId = s.AttendCredit.Value.ToInt()
-                    };
-                    db.OrgSchedules.InsertOnSubmit(schedule);
-                    orgSchedules.Add(schedule);
+                    IsNew = false;
+                    db.OrgSchedules.DeleteOnSubmit(schedule);
+                    orgSchedules.Remove(schedule);
+                    db.SubmitChanges();
                 }
-                else
+
+                if (SchedulesToFix.IsNotNull())
                 {
-                    schedule.Update(s.ToOrgSchedule());
+                    s.Id = IdCount;
+                    IdCount++;
                 }
+                CreateScheduleObj(IsNew, s, ref orgSchedules);
             }
             db.SubmitChanges();
+            if (SchedulesToFix.IsNull())
+            {
+                FixgSchedulesIds();
+            }
+        }
+        private void CreateScheduleObj(bool IsNew, ScheduleInfo s, ref List<OrgSchedule> orgSchedules)
+        {
+            var schedule = new OrgSchedule
+            {
+                OrganizationId = Id,
+                Id = s.Id,
+                SchedDay = s.SchedDay.Value.ToInt(),
+                SchedTime = s.Time.ToDate(),
+                MeetingTime = s.SchedDay.ToDate(),
+                AttendCreditId = s.AttendCredit.Value.ToInt()
+            };
+            if (IsNew)
+            {
+                schedule.NextMeetingDate = s.NextMeetingTime;
+            }
+
+            CurrentDatabase.OrgSchedules.InsertOnSubmit(schedule);
+            orgSchedules.Add(schedule);
+        }
+        private void FixgSchedulesIds()
+        {
+            var Schedules = CurrentDatabase.OrgSchedules.Where(x => x.OrganizationId == Org.OrganizationId).ToList();
+            UpdateSchedules(Schedules);
         }
         public SelectList SchedulesPrev()
         {

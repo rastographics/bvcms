@@ -61,23 +61,7 @@ namespace CmsWeb.Lifecycle
             RequestManager = requestManager;
         }
     }
-
-
-    public class CMSConfigurationManager
-    {
-        public const string HostSetting = "Host";
-
-        public bool HasConfiguredValue(string key)
-        {
-            return false;
-        }
-
-        public string GetConfiguredValue(string key)
-        {
-            return string.Empty;
-        }
-    }
-
+    
     public interface IRequestManager
     {
         Guid RequestId { get; }

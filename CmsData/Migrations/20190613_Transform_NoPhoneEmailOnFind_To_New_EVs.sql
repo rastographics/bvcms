@@ -61,21 +61,21 @@ FROM dbo.Organizations WHERE RegSettingXml IS NOT NULL
 GO
 
 UPDATE [Organizations]
-SET [RegSettingXml].modify('insert <ShowDOBOnFind>False</ShowDOBOnFind> into (/Settings/NotRequired)[1]')
+SET [RegSettingXml].modify('insert <ShowDOBOnFind>True</ShowDOBOnFind> into (/Settings/NotRequired)[1]')
 FROM [dbo].[Organizations] AS [a]
 INNER JOIN [OrganizationExtra] AS [b]
-ON [a].[OrganizationId] = [b].[OrganizationId]
+ON [a].[OrganizationId] = [b].[OrganizationId] AND [b].[Field] = 'NoPhoneEmailOnFind'
 WHERE [a].[RegSettingXml] IS NOT NULL
-AND [b].[Field] = 'NoPhoneEmailOnFind'
+AND [b].[Field] IS NULL
 GO
 
 UPDATE [Organizations]
-SET [RegSettingXml].modify('insert <ShowPhoneOnFind>False</ShowPhoneOnFind> into (/Settings/NotRequired)[1]')
+SET [RegSettingXml].modify('insert <ShowPhoneOnFind>True</ShowPhoneOnFind> into (/Settings/NotRequired)[1]')
 FROM [dbo].[Organizations] AS [a]
 INNER JOIN [OrganizationExtra] AS [b]
-ON [a].[OrganizationId] = [b].[OrganizationId]
+ON [a].[OrganizationId] = [b].[OrganizationId] AND [b].[Field] = 'NoPhoneEmailOnFind'
 WHERE [a].[RegSettingXml] IS NOT NULL
-AND [b].[Field] = 'NoPhoneEmailOnFind'
+AND [b].[Field] IS NULL
 GO
 
 DELETE [OrganizationExtra]
