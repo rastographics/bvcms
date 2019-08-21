@@ -20,8 +20,8 @@ namespace CmsDataTests
             var toDate = new DateTime(2019, 7, 31);
             using (var db = CMSDataContext.Create(Util.Host))
             {
-                var TotalAmmountContributions = db.Contributions.Where(x => x.ContributionTypeId == 1).Sum(x => x.ContributionAmount);
-                var TotalPledgeAmountContributions = db.Contributions.Where(x => x.ContributionTypeId == 8).Sum(x => x.ContributionAmount);
+                var TotalAmmountContributions = db.Contributions.Where(x => x.ContributionTypeId == 1).Sum(x => x.ContributionAmount) ?? 0;
+                var TotalPledgeAmountContributions = db.Contributions.Where(x => x.ContributionTypeId == 8).Sum(x => x.ContributionAmount) ?? 0;
 
                 var bundleHeader = CreateBundle(db);
                 var FirstContribution = CreateContribution(db, bundleHeader, fromDate, 120, peopleId: 1);
@@ -33,14 +33,11 @@ namespace CmsDataTests
                 actual.Amount.ShouldBe(TotalAmmountContributions + 120);
                 actual.PledgeAmount.ShouldBe(TotalPledgeAmountContributions + 500);
 
-                var FirstbundleDetail = db.BundleDetails.Where(x => x.ContributionId == FirstContribution.ContributionId).FirstOrDefault();
-                var SecondbundleDetail = db.BundleDetails.Where(x => x.ContributionId == SecondContribution.ContributionId).FirstOrDefault();
+                db.ExecuteCommand("DELETE FROM [BundleDetail] WHERE [BundleHeaderId] = {0} AND [ContributionId] = {1}", bundleHeader.BundleHeaderId, FirstContribution.ContributionId);
+                db.ExecuteCommand("DELETE FROM [BundleDetail] WHERE [BundleHeaderId] = {0} AND [ContributionId] = {1}", bundleHeader.BundleHeaderId, SecondContribution.ContributionId);
 
-                db.BundleDetails.DeleteOnSubmit(FirstbundleDetail);
-                db.BundleDetails.DeleteOnSubmit(SecondbundleDetail);
-
-                db.Contributions.DeleteOnSubmit(FirstContribution);
-                db.Contributions.DeleteOnSubmit(SecondContribution);
+                db.ExecuteCommand("DELETE FROM [Contribution] WHERE [ContributionId] = {0}", FirstContribution.ContributionId);
+                db.ExecuteCommand("DELETE FROM [Contribution] WHERE [ContributionId] = {0}", SecondContribution.ContributionId);
             }
         }
     }
