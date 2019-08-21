@@ -35,9 +35,9 @@ var CheckInApp = new Vue({
             'CampusId': 0,
             'CutoffAge': 18,
             'DisableTimer': false,
-            'EarlyCheckin': 60,
+            'EarlyCheckIn': 60,
             'GuestLabels': false,
-            'LateCheckin': 60,
+            'LateCheckIn': 60,
             'Testing': false,
             'LocationLabels': false,
             'Logout': '12345',
@@ -93,10 +93,8 @@ var CheckInApp = new Vue({
         },
         customStyles: function () {
             if (this.view !== 'landing' || !this.profile.BackgroundImageURL) return {};
-            // todo: remove, testing only
-            var url = this.profile.BackgroundImageURL.replace('http://localhost:8888/', '');
             return {
-                'background': 'url(' + url + ') no-repeat center center fixed',
+                'background': 'url(' + this.profile.BackgroundImageURL + ') no-repeat center center fixed',
                 'background-size': 'cover',
                 'position': 'absolute',
                 'top': '0',
@@ -139,6 +137,17 @@ var CheckInApp = new Vue({
                 data: outer
             };
             return Object.keys(body).map(key => key + '=' + body[key]).join('&');
+        },
+        timestamp(dt) {
+            var d = new Date(dt);
+            if (isNaN(d.getTime())) {
+                d = new Date();
+            }
+            if (this.profile.Testing) {
+                return d.getHours() * 60 + d.getMinutes();
+            } else {
+                return d.getTime() / 1000 / 60;
+            }
         },
         initKeyboard() {
             let vm = this;
@@ -345,7 +354,6 @@ var CheckInApp = new Vue({
                     if (response.status === 200) {
                         if (response.data.error === 0) {
                             var results = JSON.parse(response.data.data);
-                            console.log(results);
                             if (results.length > 1) {
                                 vm.families = results;
                                 vm.loadView('families');
@@ -387,34 +395,50 @@ var CheckInApp = new Vue({
             vm.members = members;
             members.forEach(function (member) {
                 member.groups.forEach(function (group) {
-                    // todo: add bool for able to be checked in based on the returned date, local datetime +/- vm.profile.EarlyCheckin vm.profile.LateCheckin
-
-                    var attend = member.id + '.' + group.id;
+                    var disabled = false;
+                    var now = vm.timestamp();
+                    var start = vm.timestamp(group.date);
+                    console.log(start);
+                    console.log(now);
+                    if (vm.profile.EarlyCheckIn && (start - vm.profile.EarlyCheckIn > now) && start > now) {
+                        disabled = true;
+                    }
+                    if (vm.profile.LateCheckIn && (start + vm.profile.LateCheckIn < now) && start < now) {
+                        disabled = true;
+                    }
+                    console.log(disabled);
+                    var attend = member.id + '.' + group.id + '.' + group.date;
                     vm.$set(vm.attendance, attend, {
                         initial: group.checkedIn ? vm.CHECKEDIN : vm.ABSENT,
                         status: group.checkedIn ? vm.CHECKEDIN : vm.ABSENT,
-                        disabled: 'todo',
+                        disabled: disabled,
                         changed: false
                     });
                 });
             });
         },
-        toggleAttendance(memberId, groupId) {
+        toggleAttendance(memberId, groupId, date) {
             let vm = this;
-            var attend = memberId + '.' + groupId;
+            var attend = memberId + '.' + groupId + '.' + date;
             var old = vm.attendance[attend];
             if (old !== undefined) {
-                var status = old.status === vm.ABSENT ? vm.PRESENT : vm.ABSENT;
-                vm.$set(vm.attendance, attend, {
-                    initial: old.initial,
-                    status: status,
-                    changed: status !== old.initial
-                });
+                if (!old.disabled) {
+                    var status = old.status === vm.ABSENT ? vm.PRESENT : vm.ABSENT;
+                    vm.$set(vm.attendance, attend, {
+                        initial: old.initial,
+                        status: status,
+                        disabled: false,
+                        changed: status !== old.initial
+                    });
+                } else {
+                    warning_swal('Can\'t check in', 'This group isn\'t available for check in right now. Please check in with a staff member.');
+                }
             } else {
                 // guest
                 vm.$set(vm.attendance, attend, {
                     initial: vm.ABSENT,
                     status: vm.PRESENT,
+                    disabled: false,
                     changed: true
                 });
             }
@@ -425,10 +449,45 @@ var CheckInApp = new Vue({
             for (var i = 0; i < keys.length; i++) {
                 if (vm.attendance[keys[i]].status === vm.ABSENT) {
                     var attend = keys[i].split('.');
-                    vm.toggleAttendance(attend[0], attend[1]);
+                    vm.toggleAttendance(attend[0], attend[1], attend[2]);
                 }
             }
             return false;
+        },
+        toggleReprintAll() {
+            let vm = this;
+            vm.reprintLabels = !vm.reprintLabels;
+            var keys = Object.keys(vm.attendance);
+            if (vm.reprintLabels) {
+                var reprint = false;
+                for (var i = 0; i < keys.length; i++) {
+                    var attend = vm.attendance[keys[i]];
+                    if (attend.status === vm.CHECKEDIN || attend.initial === vm.CHECKEDIN) {
+                        reprint = true;
+                        vm.$set(vm.attendance, keys[i], {
+                            initial: vm.CHECKEDIN,
+                            status: vm.PRESENT,
+                            disabled: attend.disabled,
+                            changed: true
+                        });
+                    }
+                }
+                if (!reprint) {
+                    vm.reprintLabels = false;
+                    warning_swal('Nothing to reprint', 'No labels have been printed yet.');
+                }
+            } else {
+                for (i = 0; i < keys.length; i++) {
+                    if (vm.attendance[keys[i]].initial === vm.CHECKEDIN) {
+                        vm.$set(vm.attendance, keys[i], {
+                            initial: vm.CHECKEDIN,
+                            status: vm.CHECKEDIN,
+                            disabled: vm.attendance[keys[i]].disabled,
+                            changed: false
+                        });
+                    }
+                }
+            }
         },
         updateAttendance() {
             let vm = this;
@@ -445,8 +504,9 @@ var CheckInApp = new Vue({
                     var bundle = {
                         peopleID: attend[0],
                         groups: [{
-                            groupId: attend[1],
-                            present: vm.attendance[keys[i]].status === vm.PRESENT
+                            groupID: attend[1],
+                            present: vm.attendance[keys[i]].status === vm.PRESENT,
+                            datetime: attend[2]
                         }]
                     };
                     attendances.push(bundle);

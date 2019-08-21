@@ -140,7 +140,7 @@
                 response => {
                     if (response.status === 201) {
                         this.myFunctionOnLoad();
-                        success_swal('Success', 'Profile Saved');
+                        success_swal('Success', 'Profile Saved. If kiosks are active, log out and log in again on each kiosk for changes to take effect.');
                         $('#config-modal').modal('hide');
                     }
                     else {

@@ -47,20 +47,20 @@
     max-width: 420px;
     margin: 20px auto 0;
 }
-    .checkin .landing input {
-        border: 0;
-        border-radius: 5px;
-        background: rgba(255,255,255,0.5);
-        box-shadow: 0 0 3px -1px rgba(0,0,0,.3);
-        border-bottom: 1px solid #b5b5b5;
-        font-size: 24px;
-        font-weight: 300;
-        width: 100%;
-        max-width: 390px;
-        margin: 20px 5px;
-        padding: 5px;
-        outline: 0;
-    }
+.checkin .landing input {
+    border: 0;
+    border-radius: 5px;
+    background: rgba(255,255,255,0.5);
+    box-shadow: 0 0 3px -1px rgba(0,0,0,.3);
+    border-bottom: 1px solid #b5b5b5;
+    font-size: 24px;
+    font-weight: 300;
+    width: 100%;
+    max-width: 390px;
+    margin: 20px 5px;
+    padding: 5px;
+    outline: 0;
+}
 .checkin .families .family h4 {
     border: 1px solid #e6e6e6;
     background-color: #fff;
@@ -90,6 +90,12 @@
 .checkin .member-details {
     float: left;
     width: calc(100% - 175px);
+}
+.checkin .member-details .disabled{
+    color: #aaa!important;
+}
+.checkin .member-details .disabled .check-container.primary .check-label {
+    background: #aaa!important;
 }
 .checkin .results {
     max-width: 1200px;
