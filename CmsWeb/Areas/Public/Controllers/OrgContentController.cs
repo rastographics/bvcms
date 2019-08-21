@@ -106,7 +106,10 @@ namespace CmsWeb.Areas.Public
                 case "application/vnd.ms-excel":
                     try
                     {
-                        oc.ImageId = ImageData.Image.NewImageFromBits(bits, mimetype).Id;
+                        using (var idb = ImageData.DbUtil.Db)
+                        {
+                            oc.ImageId = ImageData.Image.NewImageFromBits(bits, mimetype, idb).Id;
+                        }
                         CurrentDatabase.OrgContents.InsertOnSubmit(oc);
                         CurrentDatabase.SubmitChanges();
                     }

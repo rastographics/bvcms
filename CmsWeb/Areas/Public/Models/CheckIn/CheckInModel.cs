@@ -337,8 +337,7 @@ namespace CmsWeb.Models
             var q = from i in ImageData.DbUtil.Db.Images
                     where i.Id == imageid
                     select i.Length;
-            var len = q.SingleOrDefault();
-            return len > 0;
+            return q.Any();
         }
 
         public void RecordAttend(int PeopleId, int OrgId, bool Present, int thisday)
