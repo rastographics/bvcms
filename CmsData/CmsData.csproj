@@ -1401,6 +1401,9 @@
     <Content Include="Migrations\20190725_Update_proc_LedgerIncomeExport.sql" />
     <Content Include="Migrations\20190729_update_func_GetContributionsDetails.sql" />
     <Content Include="Migrations\20190730_create_proc_mergecampuses.sql" />
+    <Content Include="Migrations\20190821_Create_Function_SplitFundIds.sql" />
+    <Content Include="Migrations\20190821_Update_Function_ContributionSearch.sql" />
+    <Content Include="Migrations\20190821_Update_Function_GetTotalContributionsDonor.sql" />
     <Content Include="QueryBuilder\CompareMap.xml">
       <SubType>Designer</SubType>
     </Content>

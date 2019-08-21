@@ -3612,7 +3612,8 @@ namespace CmsData
             [Parameter(DbType="int")] int? nontaxded,
             [Parameter(DbType="bit")] bool? includeUnclosed,
             [Parameter(DbType="int")] int? tagid,
-            [Parameter(DbType="varchar")] string fundids
+            [Parameter(DbType="varchar")] string fundids,
+            [Parameter(DbType = "bit")] bool? pledges
             )
 		{
 			return this.CreateMethodCallQuery<View.GetTotalContributionsDonor>(this, 
@@ -3623,7 +3624,8 @@ namespace CmsData
                 nontaxded,
                 includeUnclosed,
                 tagid,
-                fundids
+                fundids,
+                pledges
                 );
 		}
 
