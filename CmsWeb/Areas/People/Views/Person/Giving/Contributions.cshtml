@@ -2,21 +2,26 @@
 @using CmsData
 @using UtilityExtensions
 @{
-    var giving = Util.UserPeopleId == Util2.CurrentPeopleId && (MultipleGatewayUtils.GatewayId(DbUtil.Db, PaymentProcessTypes.RecurringGiving) != null) && DbUtil.Db.Setting("OnlineGiving", true);
-    var vaultDisabled = DbUtil.Db.Setting("VaultDisabled") && DbUtil.Db.Setting("ExternalManageGivingUrl", "").IsEmpty();
+    var DB = DbUtil.Db;
+    var hasOnlineGiving = Util.UserPeopleId == Util2.CurrentPeopleId && DB.Setting("OnlineGiving", true);
+    var vaultDisabled = DB.Setting("VaultDisabled");
+    var hasRecurringGiving = hasOnlineGiving && MultipleGatewayUtils.GatewayId(DB, PaymentProcessTypes.RecurringGiving).HasValue;
+    var hasOneTimeGiving = hasOnlineGiving && MultipleGatewayUtils.GatewayId(DB, PaymentProcessTypes.OneTimeGiving).HasValue;
+    var hasManageGivingSetup = hasOnlineGiving && (DB.Setting("ExternalManageGivingUrl", "").HasValue() || (hasRecurringGiving && !vaultDisabled));
+    var hasOneTimeGiftSetup = hasOnlineGiving && (DB.Setting("ExternalOneTimeGiftUrl", "").HasValue() || hasOneTimeGiving);
     var campusId = Model.Person.CampusId;
     var checkImageUserView = true;
     var filter = Model.Filter;
     var isFinanceRole = User.IsInRole("Finance");
     var isPledges = Model.isPledges;
-    if (DbUtil.Db.Setting("CheckImagesDisabledForUser"))
+    if (DB.Setting("CheckImagesDisabledForUser"))
     {
         checkImageUserView = isFinanceRole;
     }
 }
 <form class="non-modal ajax">
-    @FormAction(giving, campusId, vaultDisabled)
-    @FormAction(giving, campusId, vaultDisabled, true)
+    @FormAction(hasOneTimeGiftSetup, hasManageGivingSetup, campusId)
+    @FormAction(hasOneTimeGiftSetup, hasManageGivingSetup, campusId, true)
     @if (filter == "Pledges")
     {
         <div class="row">
@@ -128,18 +133,21 @@
         </div>
     </div>
 </form>
-@helper FormAction(bool giving, int? campusId, bool vaultDisabled, bool sm = false)
+@helper FormAction(bool hasOneTimeGiftSetup, bool hasManageGivingSetup, int? campusId, bool sm = false)
 {
-    if (giving)
+    if (hasOneTimeGiftSetup || hasManageGivingSetup)
     {
         if (sm)
         {
             <div class="visible-xs-block visible-sm-block">
-                @if (!vaultDisabled)
+                @if (hasManageGivingSetup)
                 {
-                    <a href="/Person2/ManageGiving" target="_blank" class="btn btn-default btn-block"><i class="fa fa-clock-o"></i> Manage Your Recurring Giving</a>
+                <a href="/Person2/ManageGiving" target="_blank" class="btn btn-default btn-block"><i class="fa fa-clock-o"></i> Manage Your Recurring Giving</a>
                 }
+                @if (hasOneTimeGiftSetup)
+                {
                 <a href="/Person2/OneTimeGift/@campusId" target="_blank" class="btn btn-default btn-block">Make a One Time Gift</a>
+                }
             </div>
         }
         else
@@ -147,11 +155,14 @@
             <div class="row hidden-xs hidden-sm">
                 <div class="col-sm-12">
                     <div class="pull-right">
-                        @if (!vaultDisabled)
+                        @if (hasManageGivingSetup)
                         {
-                            <a href="/Person2/ManageGiving" target="_blank" class="btn btn-default"><i class="fa fa-clock-o"></i> Manage Your Recurring Giving</a>
+                        <a href="/Person2/ManageGiving" target="_blank" class="btn btn-default"><i class="fa fa-clock-o"></i> Manage Your Recurring Giving</a>
                         }
+                        @if (hasOneTimeGiftSetup)
+                        {
                         <a href="/Person2/OneTimeGift/@campusId" target="_blank" class="btn btn-default">Make a One Time Gift</a>
+                        }
                     </div>
                 </div>
             </div>

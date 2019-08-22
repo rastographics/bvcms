@@ -43,7 +43,7 @@ namespace UtilityExtensions
             }
             return value == null
                 ? null
-                : Convert.ChangeType(value, type);
+                : !Convert.IsDBNull(value) ? Convert.ChangeType(value, type) : null;
         }
         public static object ChangeTypeSql(this object value, Type type)
         {
@@ -195,7 +195,7 @@ namespace UtilityExtensions
         {
             if (o is bool)
                 return (bool)o;
-            return o.ToString().ToBool();
+            return $"{o}".ToBool();
         }
         public static int ToInt(this double d)
         {
@@ -258,8 +258,12 @@ namespace UtilityExtensions
                 return null;
             var digits = new StringBuilder();
             foreach (var c in s.ToCharArray())
-                if (char.IsDigit(c) || c == '.')
+            {
+                if (char.IsDigit(c) || c == '.' || c == '-')
+                {
                     digits.Append(c);
+                }
+            }
             var a = digits.ToString().ToDecimal();
             return a;
         }

@@ -403,19 +403,19 @@ namespace CmsWeb.Areas.Public.Controllers
                     CurrentImageDatabase.Images.DeleteOnSubmit(imageDataLarge);
                 }
 
-                person.Picture.ThumbId = Image.NewImageFromBits(imageBytes, 50, 50).Id;
-                person.Picture.SmallId = Image.NewImageFromBits(imageBytes, 120, 120).Id;
-                person.Picture.MediumId = Image.NewImageFromBits(imageBytes, 320, 400).Id;
-                person.Picture.LargeId = Image.NewImageFromBits(imageBytes).Id;
+                person.Picture.ThumbId = Image.NewImageFromBits(imageBytes, 50, 50, CurrentImageDatabase).Id;
+                person.Picture.SmallId = Image.NewImageFromBits(imageBytes, 120, 120, CurrentImageDatabase).Id;
+                person.Picture.MediumId = Image.NewImageFromBits(imageBytes, 320, 400, CurrentImageDatabase).Id;
+                person.Picture.LargeId = Image.NewImageFromBits(imageBytes, CurrentImageDatabase).Id;
             }
             else
             {
                 Picture newPicture = new Picture
                 {
-                    ThumbId = Image.NewImageFromBits(imageBytes, 50, 50).Id,
-                    SmallId = Image.NewImageFromBits(imageBytes, 120, 120).Id,
-                    MediumId = Image.NewImageFromBits(imageBytes, 320, 400).Id,
-                    LargeId = Image.NewImageFromBits(imageBytes).Id
+                    ThumbId = Image.NewImageFromBits(imageBytes, 50, 50, CurrentImageDatabase).Id,
+                    SmallId = Image.NewImageFromBits(imageBytes, 120, 120, CurrentImageDatabase).Id,
+                    MediumId = Image.NewImageFromBits(imageBytes, 320, 400, CurrentImageDatabase).Id,
+                    LargeId = Image.NewImageFromBits(imageBytes, CurrentImageDatabase).Id
                 };
 
                 if (person != null)
@@ -488,19 +488,19 @@ namespace CmsWeb.Areas.Public.Controllers
                     CurrentImageDatabase.Images.DeleteOnSubmit(imageDataLarge);
                 }
 
-                family.Picture.ThumbId = Image.NewImageFromBits(imageBytes, 50, 50).Id;
-                family.Picture.SmallId = Image.NewImageFromBits(imageBytes, 120, 120).Id;
-                family.Picture.MediumId = Image.NewImageFromBits(imageBytes, 320, 400).Id;
-                family.Picture.LargeId = Image.NewImageFromBits(imageBytes).Id;
+                family.Picture.ThumbId = Image.NewImageFromBits(imageBytes, 50, 50, CurrentImageDatabase).Id;
+                family.Picture.SmallId = Image.NewImageFromBits(imageBytes, 120, 120, CurrentImageDatabase).Id;
+                family.Picture.MediumId = Image.NewImageFromBits(imageBytes, 320, 400, CurrentImageDatabase).Id;
+                family.Picture.LargeId = Image.NewImageFromBits(imageBytes, CurrentImageDatabase).Id;
             }
             else
             {
                 Picture newPicture = new Picture
                 {
-                    ThumbId = Image.NewImageFromBits(imageBytes, 50, 50).Id,
-                    SmallId = Image.NewImageFromBits(imageBytes, 120, 120).Id,
-                    MediumId = Image.NewImageFromBits(imageBytes, 320, 400).Id,
-                    LargeId = Image.NewImageFromBits(imageBytes).Id
+                    ThumbId = Image.NewImageFromBits(imageBytes, 50, 50, CurrentImageDatabase).Id,
+                    SmallId = Image.NewImageFromBits(imageBytes, 120, 120, CurrentImageDatabase).Id,
+                    MediumId = Image.NewImageFromBits(imageBytes, 320, 400, CurrentImageDatabase).Id,
+                    LargeId = Image.NewImageFromBits(imageBytes, CurrentImageDatabase).Id
                 };
 
                 if (family != null)

@@ -1,5 +1,6 @@
 using CmsData;
 using CmsWeb.Areas.People.Models;
+using CmsWeb.Common.Status;
 using CmsWeb.Lifecycle;
 using CmsWeb.Models;
 using Newtonsoft.Json;
@@ -7,8 +8,11 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
+using System.Web.Caching;
 using System.Web.Mvc;
+using System.Web.UI;
 using UtilityExtensions;
 
 namespace CmsWeb.Controllers
@@ -28,6 +32,14 @@ namespace CmsWeb.Controllers
             }
             var m = new HomeModel();
             return View(m);
+        }
+
+        [OutputCache(Duration = 60, Location = OutputCacheLocation.Any)]
+        public async Task<ActionResult> Status()
+        {
+            var status = await StatusHelper.GetStatusAsync(HttpContext);
+
+            return Json(status, JsonRequestBehavior.AllowGet);
         }
 
         [ValidateInput(false)]

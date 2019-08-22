@@ -81,9 +81,12 @@ namespace CmsWeb.Areas.People.Controllers
 
                         try
                         {
-                            f.SmallId = ImageData.Image.NewImageFromBits(bits, 165, 220).Id;
-                            f.MediumId = ImageData.Image.NewImageFromBits(bits, 675, 900).Id;
-                            f.LargeId = ImageData.Image.NewImageFromBits(bits).Id;
+                            using (var idb = ImageData.DbUtil.Db)
+                            {
+                                f.SmallId = ImageData.Image.NewImageFromBits(bits, 165, 220, idb).Id;
+                                f.MediumId = ImageData.Image.NewImageFromBits(bits, 675, 900, idb).Id;
+                                f.LargeId = ImageData.Image.NewImageFromBits(bits, idb).Id;
+                            }
                         }
                         catch
                         {
@@ -98,7 +101,10 @@ namespace CmsWeb.Areas.People.Controllers
                 case "application/msword":
                 case "application/vnd.ms-excel":
                     {
-                        f.MediumId = ImageData.Image.NewImageFromBits(bits, mimetype).Id;
+                        using (var idb = ImageData.DbUtil.Db)
+                        {
+                            f.MediumId = ImageData.Image.NewImageFromBits(bits, mimetype, idb).Id;
+                        }
                         f.SmallId = f.MediumId;
                         f.LargeId = f.MediumId;
                         f.IsDocument = true;

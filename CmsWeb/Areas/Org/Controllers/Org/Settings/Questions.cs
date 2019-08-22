@@ -155,6 +155,7 @@ This will prevent your registration from working properly.
                 case "AskSMS":
                 case "AskEmContact":
                 case "AskInsurance":
+                case "AskPassport":
                 case "AskDoctor":
                 case "AskAllergies":
                 case "AskTylenolEtc":
