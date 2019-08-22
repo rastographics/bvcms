@@ -10,9 +10,12 @@ namespace CmsData
             {
                 if (!ThumbId.HasValue && LargeId.HasValue)
                 {
-                    var large = ImageData.DbUtil.Db.Images.SingleOrDefault(ii => ii.Id == LargeId);
-                    if(large != null)
-                        ThumbId = large.CreateNewTinyImage().Id;
+                    using (var db = ImageData.DbUtil.Db)
+                    {
+                        var large = db.Images.SingleOrDefault(ii => ii.Id == LargeId);
+                        if (large != null)
+                            ThumbId = large.CreateNewTinyImage(db).Id;
+                    }
                 }
                 return $"/TinyImage/{ThumbId ?? -1}?v={CreatedDate?.Ticks ?? 0}";
             }

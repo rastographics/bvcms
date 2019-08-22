@@ -182,9 +182,11 @@ namespace CmsWeb.Areas.Public.Controllers
                     {
                         other.Second = Convert.FromBase64String(entry.back);
                     }
-
-                    ImageData.DbUtil.Db.Others.InsertOnSubmit(other);
-                    ImageData.DbUtil.Db.SubmitChanges();
+                    using (var db = ImageData.DbUtil.Db)
+                    {
+                        db.Others.InsertOnSubmit(other);
+                        db.SubmitChanges();
+                    }
 
                     var detail = new BundleDetail
                     {

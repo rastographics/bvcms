@@ -25,11 +25,11 @@ namespace ImageData
             return DbUtil.Db.Images.SingleOrDefault(ii => ii.Id == id);
         }
 
-        public static Image NewImageFromBits(byte[] bits, int w, int h)
+        public static Image NewImageFromBits(byte[] bits, int w, int h, CMSImageDataContext db)
         {
             var i = new Image();
             i.LoadResizeFromBits(bits, w, h);
-            InsertImage(i);
+            InsertImage(db, i);
             return i;
         }
 
@@ -101,13 +101,13 @@ namespace ImageData
             return resizeCropSettings;
         }
 
-        public static Image NewTextFromString(string s)
+        public static Image NewTextFromString(string s, CMSImageDataContext db)
         {
             var i = new Image();
             i.Mimetype = "text/plain";
             i.Bits = Encoding.ASCII.GetBytes(s);
             i.Length = i.Bits.Length;
-            InsertImage(i);
+            InsertImage(db, i);
             return i;
         }
 
@@ -118,21 +118,21 @@ namespace ImageData
             Length = Bits.Length;
         }
 
-        public static Image NewTextFromBits(byte[] bits)
+        public static Image NewTextFromBits(byte[] bits, CMSImageDataContext db)
         {
             var i = new Image();
             i.Mimetype = "text/plain";
             i.Bits = bits;
             i.Length = i.Bits.Length;
-            InsertImage(i);
+            InsertImage(db, i);
             return i;
         }
 
-        public static Image NewImageFromBits(byte[] bits)
+        public static Image NewImageFromBits(byte[] bits, CMSImageDataContext db)
         {
             var i = new Image();
             i.LoadImageFromBits(bits);
-            InsertImage(i);
+            InsertImage(db, i);
             return i;
         }
 
@@ -178,28 +178,25 @@ namespace ImageData
             ostream.Close();
         }
 
-        public static Image NewImageFromBits(byte[] bits, string type)
+        public static Image NewImageFromBits(byte[] bits, string type, CMSImageDataContext db)
         {
             var i = new Image();
             i.LoadFromBits(bits, type);
-            InsertImage(i);
+            InsertImage(db, i);
             return i;
         }
 
-        private static void InsertImage(Image i)
+        private static void InsertImage(CMSImageDataContext db, Image i)
         {
-            using (var db = DbUtil.Db)
-            {
-                db.Images.InsertOnSubmit(i);
-                db.SubmitChanges();
-            }
+            db.Images.InsertOnSubmit(i);
+            db.SubmitChanges();
         }
 
-        public Image CreateNewTinyImage()
+        public Image CreateNewTinyImage(CMSImageDataContext db)
         {
             var i = new Image();
             i.LoadResizeFromBits(Bits, 50, 50);
-            InsertImage(i);
+            InsertImage(db, i);
             return i;
         }
 
