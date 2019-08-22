@@ -109,13 +109,13 @@
     <Compile Include="..\SharedTestFixtures\DatabaseCollection.cs">
       <Link>DatabaseCollection.cs</Link>
     </Compile>
+    <Compile Include="Areas\OnlineReg\Models\OnlineRegPerson\HelperTests.cs" />
     <Compile Include="Areas\Reports\Models\Reports\Export\ExportInvolvementsTests.cs" />
+    <Compile Include="Areas\Setup\Controllers\DivisionControllerTests.cs" />
     <Compile Include="TestUtils\FakeOrganizationUtils.cs" />
     <Compile Include="TestUtils\FakeRequestManager.cs" />
     <Compile Include="Areas\OnlineReg\Models\NewAskChurchQuestionTest.cs" />
     <Compile Include="Areas\People\Models\Contact\ContactExtraLocationConfigTests.cs" />
-    <Compile Include="QueryBuilder\PythonScriptsTest.cs" />
-    <Compile Include="QueryBuilder\QueryBuilderTest.cs" />
     <Compile Include="Areas\People\Models\Person\Enrollments\RegistrationsModelTests.cs" />
     <Compile Include="Code\QueryModelTests.cs" />
     <Compile Include="Code\CodeValueModelTests.cs" />
