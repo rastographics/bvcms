@@ -31,12 +31,15 @@ namespace CMSWebTests
                 FakeNewOrganizationModel = new NewOrganizationModel();
                 if(Orgconfig.IsNull())
                 {
-                    FakeOrganization = new Organization() { OrganizationName = "MockName", RegistrationTitle = "MockTitle", Location = "MockLocation", RegistrationTypeId = 8 };
+                    FakeOrganization = new Organization() { OrganizationName = "MockName", RegistrationTitle = "MockTitle", Location = "MockLocation", RegistrationTypeId = RegistrationTypeCode.OnlineGiving };
                 }
                 else
                 {
                     FakeOrganization = Orgconfig;
                 }
+
+                //Add fake registration settings
+                SetFakeSettings(FakeOrganization.RegistrationTypeId, FakeOrganization.OrganizationId);
 
                 FakeNewOrganizationModel.org = FakeOrganization;
 
@@ -49,21 +52,19 @@ namespace CMSWebTests
             }
             return FakeNewOrganizationModel;
         }
-        public static Settings SetFakeSettings(int regType, int orgId)
+        public static Settings SetFakeSettings(int? regType, int orgId)
         {
-            var m = new Settings();
-
             if (regType == RegistrationTypeCode.ChooseVolunteerTimes)
             {
+                var m = new Settings();
                 var timeSlots = new TimeSlots();
                 var ts1 = new TimeSlots.TimeSlot() { DayOfWeek = 0, Name = "MockTimeSlot", Time = System.DateTime.Now };
                 timeSlots.list.Add(ts1);
                 m.TimeSlots = timeSlots;
+                m.OrgId = orgId;
+                return m;
             }
-
-            m.OrgId = orgId;
-
-            return m;
+            return null;
         }
         public static OnlineRegModel GetFakeOnlineRegModel(int OrgId)
         {
