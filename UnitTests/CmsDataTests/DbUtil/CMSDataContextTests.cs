@@ -1,6 +1,7 @@
-﻿using Xunit;
+﻿using CmsData;
+using Xunit;
 
-namespace CmsData.Tests
+namespace CmsDataTests
 {
     [Collection("Database collection")]
     public class CMSDataContextTests
