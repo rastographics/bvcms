@@ -1,4 +1,5 @@
 using CmsData;
+using CmsWeb.Areas.Manage.Models;
 using CmsWeb.Lifecycle;
 using CmsWeb.Membership;
 using CmsWeb.Models;
@@ -6,7 +7,6 @@ using Google.Authenticator;
 using net.openstack.Core.Domain;
 using net.openstack.Providers.Rackspace;
 using System;
-using System.ComponentModel.DataAnnotations;
 using System.Configuration;
 using System.Globalization;
 using System.IO;
@@ -25,6 +25,7 @@ namespace CmsWeb.Areas.Manage.Controllers
     public class AccountController : CmsControllerNoHttps
     {
         private const string LogonPageShellSettingKey = "UX-LoginPageShell";
+        private const string MFAUserId = "MFAUserId"; 
 
         public AccountController(IRequestManager requestManager) : base(requestManager)
         {
@@ -157,11 +158,10 @@ namespace CmsWeb.Areas.Manage.Controllers
                 return Redirect(redirect);
             }
 
-            var user = AccountModel.GetValidToken(Request.QueryString["otltoken"]);
-            if (user.HasValue())
+            var username = AccountModel.GetValidToken(Request.QueryString["otltoken"]);
+            if (username.HasValue())
             {
-                FormsAuthentication.SetAuthCookie(user, false);
-                AccountModel.SetUserInfo(user, Session);
+                AccountModel.FinishLogin(username, Session, false);
                 if (returnUrl.HasValue() && Url.IsLocalUrl(returnUrl))
                 {
                     return Redirect(returnUrl);
@@ -230,84 +230,62 @@ namespace CmsWeb.Areas.Manage.Controllers
             }
 
             var ret = AccountModel.AuthenticateLogon(m.UsernameOrEmail, m.Password, Session, Request, CurrentDatabase);
-            if (ret is string)
+            if (ret.ErrorMessage.HasValue())
             {
-                ViewBag.error = ret.ToString();
+                ViewBag.error = ret.ErrorMessage;
                 return View(m);
             }
 
-            return Redirect("/Auth" + m.ReturnUrlQueryString);
-        }
-
-        [MyRequireHttps]
-        [HttpGet, Route("~/AuthSetup")]
-        public ActionResult AuthSetup()
-        {
-            var user = CurrentDatabase.CurrentUser;
-            if (user == null)
-            {
-                return Redirect("/");
-            }
-
-            TwoFactorAuthenticator tfa = new TwoFactorAuthenticator();
-            var secretKey = Util.PickFirst(Common.Configuration.Current.GoogleAuthenticatorSecretKey, "5af432s567e1rk8mm87rtlw398ty9ytkrj7rndhsd68sbv5gmqc76zwyultrfhjd");
-            var churchName = CurrentDatabase.GetSetting("NameOfChurch", "Touchpoint");
-            var setupInfo = tfa.GenerateSetupCode(churchName, user.Username, $"{Util.Host}.{user.UserId}.{secretKey}", 300, 300, true);
-
-            return View(setupInfo);
-        }
-
-        [MyRequireHttps]
-        [HttpPost, Route("~/AuthSetup")]
-        public ActionResult AuthSetup(FormCollection form)
-        {
-            var passcode = form["passcode"]?.Replace(",", "");
-            var user = CurrentDatabase.CurrentUser;
-            if (user == null)
-            {
-                return Redirect("/");
-            }
-            TwoFactorAuthenticator tfa = new TwoFactorAuthenticator();
-            var secretKey = Util.PickFirst(Common.Configuration.Current.GoogleAuthenticatorSecretKey, "5af432s567e1rk8mm87rtlw398ty9ytkrj7rndhsd68sbv5gmqc76zwyultrfhjd");
-
-            if (passcode?.Length == 6 && tfa.ValidateTwoFactorPIN($"{Util.Host}.{user.UserId}.{secretKey}", passcode))
-            {
-                return View("AuthSetupComplete");
-            }
-
-            ViewBag.Message = "Invalid passcode";
-            var churchName = CurrentDatabase.GetSetting("NameOfChurch", "Touchpoint");
-            var setupInfo = tfa.GenerateSetupCode(churchName, user.Username, $"{Util.Host}.{user.UserId}.{secretKey}", 300, 300, true);
-
-            return View(setupInfo);
-        }
-
-        [MyRequireHttps]
-        [Route("~/Auth")]
-        public ActionResult Auth(AccountInfo m)
-        {
-            var user = CurrentDatabase.CurrentUser;
-            if (user == null)
-            {
-                return Redirect("/");
-            }
-
-            if (user.MFAEnabled && !CurrentDatabase.MFATokens.Any(t => t.UserId == user.UserId && t.Key == Session["MFAToken"].ToString()))
-            {
-                return View();
-            }
-
-            if (user.MustChangePassword)
-            {
-                return Redirect("/Account/ChangePassword");
-            }
-
+            var user = ret.User;
             var access = CurrentDatabase.Setting("LimitAccess", "");
             if (access.HasValue())
             {
                 if (!user.InRole("Developer"))
                 {
                     return Message(access);
+                }
+            }
+
+            if (MembershipService.ShouldPromptForTwoFactorAuthentication(user, CurrentDatabase, Request))
+            {
+                Session[MFAUserId] = user.UserId;
+                m.UsernameOrEmail = user.Username;
+                return View("Auth", m);
+            }
+            else
+            {
+                AccountModel.FinishLogin(user.Username, Session);
+            }
+
+            return Redirect("/Auth" + m.ReturnUrlQueryString);
+        }
+
+        [MyRequireHttps]
+        [Route("~/Auth")]
+        public ActionResult Auth(AccountInfo m)
+        {
+            var userId = Session[MFAUserId] as int?;
+            var user = CurrentDatabase.CurrentUser ?? CurrentDatabase.Users
+                .Where(u => u.UserId == userId && u.Username == m.UsernameOrEmail).SingleOrDefault();
+            if (user == null)
+            {
+                return Redirect("/");
+            }
+
+            if (user.MFAEnabled && !User.Identity.IsAuthenticated)
+            {
+                var passcode = Request["passcode"]?.Replace(",", "");
+                if (MembershipService.ValidateTwoFactorPasscode(user, CurrentDatabase, passcode))
+                {
+                    AccountModel.FinishLogin(user.Username, Session);
+                    MembershipService.SaveTwoFactorAuthenticationToken(CurrentDatabase, Response);
+                    Session.Remove(MFAUserId);
+                }
+                else
+                {
+                    ViewBag.Message = "Invalid passcode";
+                    TryLoadAlternateShell();
+                    return View(m);
                 }
             }
 
@@ -337,6 +315,82 @@ namespace CmsWeb.Areas.Manage.Controllers
             }
 
             return Redirect("/");
+        }
+
+        [MyRequireHttps]
+        [HttpGet, Route("~/AuthSetup")]
+        public ActionResult AuthSetup()
+        {
+            var user = CurrentDatabase.CurrentUser;
+            if (user == null || !MembershipService.IsTwoFactorAuthenticationEnabled(CurrentDatabase))
+            {
+                return Redirect("/");
+            }
+
+            if (!user.Secret.HasValue())
+            {
+                user.Secret = Util.Encrypt(Guid.NewGuid().ToString("N"), "People");
+                CurrentDatabase.SubmitChanges();
+            }
+
+            var setupInfo = MembershipService.TwoFactorAuthenticationSetupInfo(user, CurrentDatabase);
+            return View(setupInfo);
+        }
+
+        [MyRequireHttps]
+        [HttpPost, Route("~/AuthSetup")]
+        public ActionResult AuthSetup(FormCollection form)
+        {
+            var passcode = form["passcode"]?.Replace(",", "");
+            var user = CurrentDatabase.CurrentUser;
+            if (user == null)
+            {
+                return Redirect("/");
+            }
+
+            if (MembershipService.ValidateTwoFactorPasscode(user, CurrentDatabase, passcode))
+            {
+                user.MFAEnabled = true;
+                MembershipService.SaveTwoFactorAuthenticationToken(CurrentDatabase, Response);
+                return View("AuthSetupComplete");
+            }
+
+            ViewBag.Message = "Invalid passcode";
+            var setupInfo = MembershipService.TwoFactorAuthenticationSetupInfo(user, CurrentDatabase);
+
+            return View(setupInfo);
+        }
+
+        [MyRequireHttps]
+        [Route("~/AuthDisable")]
+        public ActionResult AuthDisable()
+        {
+            var user = CurrentDatabase.CurrentUser;
+            string password = null;
+            if (user == null || !user.MFAEnabled || !MembershipService.IsTwoFactorAuthenticationEnabled(CurrentDatabase))
+            {
+                return Redirect("/");
+            }
+            var passcode = Request["passcode"]?.Replace(",", "");
+            password = Request["password"];
+            if (passcode.HasValue() && password.HasValue())
+            {
+                if (AccountModel.AuthenticateLogon(user.Username, password, null, CurrentDatabase).IsValid)
+                {
+                    if (MembershipService.ValidateTwoFactorPasscode(user, CurrentDatabase, passcode))
+                    {
+                        MembershipService.DisableTwoFactorAuth(user, CurrentDatabase, Response);
+                        return View("AuthDisabled");
+                    }
+                    ViewBag.Message = "Invalid passcode";
+                }
+                else
+                {
+                    ViewBag.Message = "Incorrect password for " + user.Username;
+                }
+            }
+            
+            return View();
         }
 
         [MyRequireHttps]
@@ -685,16 +739,6 @@ namespace CmsWeb.Areas.Manage.Controllers
             }
 
             return ModelState.IsValid;
-        }
-
-        public class AccountInfo
-        {
-            [Required]
-            public string UsernameOrEmail { get; set; }
-            public string Password { get; set; }
-            public string ReturnUrl { get; set; }
-            public string ReturnUrlQueryString => ReturnUrl.HasValue() ? $"?returnUrl={ReturnUrl}" : "";
-            public bool Use2FA { get; set; }
         }
     }
 }

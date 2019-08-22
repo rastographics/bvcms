@@ -1,15 +1,7 @@
 ﻿@model Google.Authenticator.SetupCode
 @{
+    Layout = "_Layout.cshtml";
     ViewBag.Title = "Two-factor Authentication Setup";
-
-    if ((bool?)ViewData["hasshell"] == true)
-    {
-        Layout = "_ShellLayout.cshtml";
-    }
-    else
-    {
-        Layout = "_Layout.cshtml";
-    }
 }
 <style>
     form {
@@ -37,21 +29,9 @@
         float: left;
         width: 50%;
     }
-    .fieldset-wrapper fieldset input[name="passcode"] {
-        width: 40px;
-        padding: 10px 0;
-        font-weight: bold;
-        font-size: 24px;
-    }
     .qrcode {
         max-width: 300px;
         width: 100%;
-    }
-    .passcode {
-        margin-bottom: 196px;
-    }
-    .passcode-title {
-        margin-bottom: 130px;
     }
 </style>
 <h1 class="form-header">@ViewBag.Title</h1>
@@ -85,9 +65,14 @@
 {
     <script>
         $(function () {
+            var $form = $('form');
             $('#continue, #back').click(function (event) {
                 event.preventDefault();
-                $('form').toggleClass('step1 step2');
+                $form.toggleClass('step1 step2');
+                if ($form.is('.step2')) {
+                    var p = $form.find('[name=passcode]').val('');
+                    setTimeout(function () { p.first().focus(); }, 500);
+                }
             });
         });
     </script>

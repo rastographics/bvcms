@@ -9,8 +9,6 @@ namespace CmsWeb.Common
     {
         public static Configuration Current => new Configuration();
 
-        public string GoogleAuthenticatorSecretKey => GetString("GoogleAuthenticatorSecretKey");
-
         public bool IsDeveloperMode => GetBool("IsDeveloperMode");
 
         public string OAuth2TokenEndpoint => GetString("OAuth2TokenEndpoint");
@@ -34,6 +32,8 @@ namespace CmsWeb.Common
         public string TenantHostDev => GetString("TenantHostDev");
 
         public string TouchpointAuthServer => GetString("TouchpointAuthServer");
+
+        public string TwoFactorAuthSecretKey => GetString("TwoFactorAuthSecretKey");
 
         /// <summary>
         ///     Returns a string representation of this application setting

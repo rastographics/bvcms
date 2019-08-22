@@ -19,6 +19,8 @@ namespace CmsData
 
         private int? _UserId;
 
+		private DateTime _Expires;
+
         #endregion
 
         #region Extensibility Method Definitions
@@ -34,6 +36,9 @@ namespace CmsData
 
         partial void OnKeyChanging(string value);
         partial void OnKeyChanged();
+
+        partial void OnExpiresChanging(DateTime value);
+        partial void OnExpiresChanged();
 
         #endregion
         public MFAToken()
@@ -101,6 +106,27 @@ namespace CmsData
                     this.SendPropertyChanged("Key");
                     this.OnKeyChanged();
                 }
+            }
+
+        }
+
+        [Column(Name = "Expires", UpdateCheck = UpdateCheck.Never, Storage = "_Expires", DbType = "datetime NOT NULL")]
+        public DateTime Expires
+        {
+            get { return this._Expires; }
+
+            set
+            {
+                if (this._Expires != value)
+                {
+
+                    this.OnExpiresChanging(value);
+                    this.SendPropertyChanging();
+                    this._Expires = value;
+                    this.SendPropertyChanged("Expires");
+                    this.OnExpiresChanged();
+                }
+
             }
 
         }

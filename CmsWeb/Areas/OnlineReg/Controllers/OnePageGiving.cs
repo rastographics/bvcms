@@ -326,21 +326,23 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         public ActionResult OnePageGivingLogin(int id, string username, string password, bool? testing, string source)
         {
             var ret = AccountModel.AuthenticateLogon(username, password, Session, Request, CurrentDatabase);
+            var ev = CurrentDatabase.OrganizationExtras.SingleOrDefault(vv => vv.OrganizationId == id && vv.Field == "LoggedInOrgId");
+            var orgId = ev?.IntValue ?? id;
+            var returnUrl = $"/OnePageGiving/{orgId}{(testing == true ? "?testing=true" : "")}";
 
-            if (ret is string)
+            if (ret.ErrorMessage.HasValue())
             {
-                ModelState.AddModelError("loginerror", ret.ToString());
+                ModelState.AddModelError("loginerror", ret.ErrorMessage);
                 var m = new OnlineRegModel(Request, CurrentDatabase, id, testing, null, null, source);
                 SetHeaders(m);
                 return View("OnePageGiving/Login", m);
+            } else
+            {
+                AccountModel.FinishLogin(ret.User.Username, Session);
             }
             Session["OnlineRegLogin"] = true;
-
-
-            var ev = CurrentDatabase.OrganizationExtras.SingleOrDefault(vv => vv.OrganizationId == id && vv.Field == "LoggedInOrgId");
-            id = ev?.IntValue ?? id;
-            var url = $"/OnePageGiving/{id}{(testing == true ? "?testing=true" : "")}";
-            return Redirect(url);
+            
+            return Redirect(returnUrl);
         }
 
         private bool CheckAddress(PaymentForm pf)

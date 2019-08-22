@@ -407,26 +407,24 @@ namespace CmsWeb.Models
             return UserValidationResult.Valid(user);
         }
 
-        public static object AuthenticateLogon(string userName, string password, HttpSessionStateBase Session, HttpRequestBase Request, CMSDataContext db)
+        public static UserValidationResult AuthenticateLogon(string userName, string password, HttpSessionStateBase Session, HttpRequestBase Request, CMSDataContext db)
         {
             var status = AuthenticateLogon(userName, password, Request.Url.OriginalString, db);
             if (status.IsValid)
             {
-                SetUserInfo(status.User.Username, Session);
-                FormsAuthentication.SetAuthCookie(status.User.Username, false);
-                DbUtil.LogActivity($"User {status.User.Username} logged in");
-                return status.User;
+                return UserValidationResult.Valid(status.User);
             }
-            return status.ErrorMessage;
+            return UserValidationResult.Invalid(UserValidationStatus.IncorrectPassword, status.ErrorMessage);
         }
 
-        public static object AutoLogin(string userName, HttpSessionStateBase Session, HttpRequestBase Request)
+        public static void FinishLogin(string username, HttpSessionStateBase Session, bool logEntry = true)
         {
-#if DEBUG
-            SetUserInfo(userName, Session);
-            FormsAuthentication.SetAuthCookie(userName, false);
-#endif
-            return null;
+            SetUserInfo(username, Session);
+            FormsAuthentication.SetAuthCookie(username, false);
+            if (logEntry)
+            {
+                DbUtil.LogActivity($"User {username} logged in");
+            }
         }
 
         private static void NotifyAdmins(string subject, string message)

@@ -1,4 +1,23 @@
-﻿<div class="form-group text-center passcode">
+﻿@{
+    var passcodeMargin = (ViewData["passcodeMargin"] ?? 196) + "px";
+    var passcodeTitleMargin = (ViewData["passcodeTitleMargin"] ?? 130) + "px";
+    var hideBackButton = Convert.ToBoolean(ViewData["hideBackButton"] ?? false);
+}
+<style>
+    fieldset input[name="passcode"] {
+        width: 40px;
+        padding: 10px 0;
+        font-weight: bold;
+        font-size: 24px;
+    }
+    .passcode {
+        margin-bottom: @(passcodeMargin);
+    }
+    .passcode-title {
+        margin-bottom: @(passcodeTitleMargin);
+    }
+</style>
+<div class="form-group text-center passcode">
     <h3 class="passcode-title">Enter the passcode shown in the authenticator app</h3>
     @for (var i = 1; i <= 6; i++)
     {
@@ -6,33 +25,42 @@
     }
 </div>
 <div class="form-actions">
+    @if (hideBackButton)
+    {
+        <div class="col-xs-2"></div>
+    }
+    else
+    {
     <div class="col-xs-4">
         <button id="back" class="btn btn-danger btn-block btn-lg"><i class="fa fa-lg fa-long-arrow-left"></i></button>
     </div>
+    }
     <div class="col-xs-8">
         <button id="finish" class="btn btn-primary btn-block btn-lg">Finish</button>
     </div>
 </div>
-@section scripts
-{
-    <script>
-        $(function () {
-            var passcodes = $('[name="passcode"]');
-            passcodes.keyup(function (event) {
+<script>
+    (function () {
+        var passcodes = document.querySelectorAll('[name="passcode"]');
+        passcodes.forEach(function (e, i) {
+            e.onkeyup = function (event) {
                 if (0 <= event.key && 9 >= event.key) {
                     var next;
-                    passcodes.each(function (i, e) {
+                    passcodes.forEach(function (e, i) {
                         if (next) {
                             e.focus();
-                            return false;
+                            next = false;
+                        } else {
+                            next = (e === event.target);
                         }
-                        next = (e === event.target);
                     });
+                } else if (13 == event.keyCode || 10 == event.keyCode) {
+                    document.getElementById('finish').click();
                 }
-            })
-            .focusin(function (event) {
+            };
+            e.onfocus = function (event) {
                 event.target.select();
-            });
+            };
         });
-    </script>
-}
+    })();
+</script>

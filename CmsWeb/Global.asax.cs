@@ -153,6 +153,12 @@ namespace CmsWeb
                 }
             }
 
+            var user = db.CurrentUser;
+            if (user != null && user.MustChangePassword)
+            {
+                Response.Redirect("/Account/ChangePassword");
+            }
+
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
         }
 

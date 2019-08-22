@@ -530,12 +530,14 @@
     <Compile Include="Areas\Manage\Controllers\UploadAddressesController.cs" />
     <Compile Include="Areas\Manage\Controllers\ResourceController.cs" />
     <Compile Include="Areas\Manage\Controllers\UploadExcelIpsController.cs" />
+    <Compile Include="Areas\Manage\Models\AccountInfo.cs" />
     <Compile Include="Areas\Manage\Models\Activity\ActivityInfo.cs" />
     <Compile Include="Areas\Manage\Models\BatchModel\BatchRegMessages.cs" />
     <Compile Include="Areas\Manage\Models\BatchModel\BatchRegOptions.cs" />
     <Compile Include="Areas\Manage\Models\BatchModel\BatchRegSettings.cs" />
     <Compile Include="Areas\Manage\Models\BatchModel\FindTagPeople.cs" />
     <Compile Include="Areas\Manage\Models\BatchModel\UpdateOrgs.cs" />
+    <Compile Include="Areas\Manage\Models\LogonResultModel.cs" />
     <Compile Include="Areas\Manage\Models\ResourceModel.cs" />
     <Compile Include="Areas\Manage\Models\ResourceTypeModel.cs" />
     <Compile Include="Areas\Manage\Models\UpdateFieldsLookups.cs" />
@@ -1807,6 +1809,7 @@
     <Content Include="Areas\Manage\Views\Account\AuthSetupComplete.cshtml" />
     <Content Include="Areas\Manage\Views\Account\TwoFactorPasscode.cshtml" />
     <Content Include="Areas\Manage\Views\Account\Auth.cshtml" />
+    <Content Include="Areas\Manage\Views\Account\AuthDisable.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

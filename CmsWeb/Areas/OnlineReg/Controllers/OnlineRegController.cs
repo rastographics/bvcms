@@ -109,10 +109,13 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             fromMethod = "Login";
             var ret = AccountModel.AuthenticateLogon(m.username, m.password, Session, Request, CurrentDatabase);
 
-            if (ret is string)
+            if (ret.ErrorMessage.HasValue())
             {
-                ModelState.AddModelError("authentication", ret.ToString());
+                ModelState.AddModelError("authentication", ret.ErrorMessage);
                 return FlowList(m);
+            } else
+            {
+                AccountModel.FinishLogin(ret.User.Username, Session);
             }
             Session["OnlineRegLogin"] = true;
 

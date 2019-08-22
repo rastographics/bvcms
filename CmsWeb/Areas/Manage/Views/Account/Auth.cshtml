@@ -1,4 +1,4 @@
-﻿@model Google.Authenticator.SetupCode
+﻿@model CmsWeb.Areas.Manage.Models.AccountInfo
 @{
     ViewBag.Title = "Two-factor Authentication";
 
@@ -11,8 +11,6 @@
         Layout = "_Layout.cshtml";
     }
 }
-<style>
-</style>
 <h1 class="form-header">@ViewBag.Title</h1>
 @if (ViewBag.Message != null)
 {
@@ -20,6 +18,8 @@
 }
 @using (Html.BeginForm("Auth", "Account", FormMethod.Post, new { @class = "panel" }))
 {
+    @Html.HiddenFor(m => m.UsernameOrEmail)
+    @Html.HiddenFor(m => m.ReturnUrl)
     <fieldset>
         @Html.Partial("TwoFactorPasscode")
     </fieldset>
