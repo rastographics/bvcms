@@ -29,7 +29,7 @@ namespace CMSWebTests.Areas.Reports.Models.Reports.Export
             controller.ControllerContext = ControllerTestUtils.FakeContextController(controller, routeDataValues);
 
             var m = OrganizationModel.Create(db, FakeRequestManager.FakeRequest().CurrentUser);
-            var FakeOrg = FakeOrganizationUtils.MakeFakeOrganization(RegistrationTypeCode.OnlineGiving);
+            var FakeOrg = FakeOrganizationUtils.MakeFakeOrganization();
             var model = FakeOrganizationUtils.GetFakeOnlineRegModel(FakeOrg.org.OrganizationId);
 
             m.OrgId = FakeOrg.org.OrganizationId;          
