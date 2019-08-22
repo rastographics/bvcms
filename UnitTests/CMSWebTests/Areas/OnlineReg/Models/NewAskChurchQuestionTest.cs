@@ -1,7 +1,7 @@
 ﻿using Xunit;
 using System.Collections;
 using System.Net.Http;
-using CmsData;
+using CmsData.Codes;
 using CmsWeb.Areas.OnlineReg.Models;
 using System.Collections.Generic;
 using Shouldly;
@@ -29,7 +29,7 @@ namespace CMSWebTests.Areas.OnlineReg.Models.AskChurch
             var routeDataValues = new Dictionary<string, string> { { "controller", "OnlineReg" } };
             controller.ControllerContext = ControllerTestUtils.FakeContextController(controller, routeDataValues);
 
-            var FakeOrg = FakeOrganizationUtils.MakeFakeOrganization();
+            var FakeOrg = FakeOrganizationUtils.MakeFakeOrganization(RegistrationTypeCode.OnlineGiving);
             OrgId = FakeOrg.org.OrganizationId;
 
             var model = FakeOrganizationUtils.GetFakeOnlineRegModel(OrgId);

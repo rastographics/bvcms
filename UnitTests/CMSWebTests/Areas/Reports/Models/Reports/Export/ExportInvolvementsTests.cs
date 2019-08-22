@@ -10,6 +10,7 @@ using CmsWeb.Models;
 using CmsWeb.Areas.Org.Models;
 using UtilityExtensions;
 using CmsData;
+using CmsData.Codes;
 using OfficeOpenXml;
 using System.Reflection;
 using CmsWeb;
@@ -28,7 +29,7 @@ namespace CMSWebTests.Areas.Reports.Models.Reports.Export
             controller.ControllerContext = ControllerTestUtils.FakeContextController(controller, routeDataValues);
 
             var m = OrganizationModel.Create(db, FakeRequestManager.FakeRequest().CurrentUser);
-            var FakeOrg = FakeOrganizationUtils.MakeFakeOrganization();
+            var FakeOrg = FakeOrganizationUtils.MakeFakeOrganization(RegistrationTypeCode.OnlineGiving);
             var model = FakeOrganizationUtils.GetFakeOnlineRegModel(FakeOrg.org.OrganizationId);
 
             m.OrgId = FakeOrg.org.OrganizationId;          
