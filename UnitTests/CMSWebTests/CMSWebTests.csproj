@@ -85,6 +85,7 @@
       <HintPath>..\..\packages\System.ValueTuple.4.5.0\lib\net461\System.ValueTuple.dll</HintPath>
     </Reference>
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web.Mvc, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -109,6 +110,9 @@
     <Compile Include="..\SharedTestFixtures\DatabaseCollection.cs">
       <Link>DatabaseCollection.cs</Link>
     </Compile>
+    <Compile Include="Areas\Manage\Models\VolunteerCommitmentsModelTest.cs" />
+    <Compile Include="Areas\OnlineReg\Models\OnlineReg\OnlineRegModelTests.cs" />
+    <Compile Include="Areas\OnlineReg\Models\OnlineReg\PaymentFormTests.cs" />
     <Compile Include="Areas\Reports\Models\Reports\Export\ExportInvolvementsTests.cs" />
     <Compile Include="TestUtils\FakeOrganizationUtils.cs" />
     <Compile Include="TestUtils\FakeRequestManager.cs" />
