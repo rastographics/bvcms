@@ -110,6 +110,7 @@
     <Compile Include="..\SharedTestFixtures\DatabaseCollection.cs">
       <Link>DatabaseCollection.cs</Link>
     </Compile>
+    <Compile Include="Areas\OnlineReg\Models\OnlineRegPerson\HelperTests.cs" />
     <Compile Include="Areas\Manage\Models\VolunteerCommitmentsModelTest.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineReg\OnlineRegModelTests.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineReg\PaymentFormTests.cs" />

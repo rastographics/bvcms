@@ -1,4 +1,6 @@
 ﻿using CmsData;
+using CmsData.Codes;
+using CmsData.Registration;
 using CmsWeb.Areas.Dialog.Models;
 using System.Collections.Generic;
 using CmsWeb.Areas.OnlineReg.Models;
@@ -47,7 +49,22 @@ namespace CMSWebTests
             }
             return FakeNewOrganizationModel;
         }
+        public static Settings SetFakeSettings(int regType, int orgId)
+        {
+            var m = new Settings();
 
+            if (regType == RegistrationTypeCode.ChooseVolunteerTimes)
+            {
+                var timeSlots = new TimeSlots();
+                var ts1 = new TimeSlots.TimeSlot() { DayOfWeek = 0, Name = "MockTimeSlot", Time = System.DateTime.Now };
+                timeSlots.list.Add(ts1);
+                m.TimeSlots = timeSlots;
+            }
+
+            m.OrgId = orgId;
+
+            return m;
+        }
         public static OnlineRegModel GetFakeOnlineRegModel(int OrgId)
         {
             var m = new OnlineRegModel(ContextTestUtils.FakeHttpContext().Request, CMSDataContext.Create(Util.Host), OrgId, null, null, null, null);
