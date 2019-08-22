@@ -172,7 +172,7 @@ namespace CmsWeb.Areas.Manage.Models
             if (curMonth != Sunday.Month)
             {
                 DateTime firstDayOfMonth = new DateTime(CurYear.ToInt(), CurMonth.ToInt(), 1);
-                calcSunday = firstDayOfMonth.AddDays(7 - (int)firstDayOfMonth.DayOfWeek);
+                calcSunday = firstDayOfMonth.DayOfWeek == DayOfWeek.Sunday ? firstDayOfMonth : firstDayOfMonth.AddDays(7 - (int)firstDayOfMonth.DayOfWeek);
             }
 
             for (var sd = calcSunday; sd <= EndDt && sd.Month == curMonth; sd = sd.AddDays(7))
