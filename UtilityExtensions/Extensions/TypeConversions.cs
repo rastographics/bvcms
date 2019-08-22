@@ -43,7 +43,7 @@ namespace UtilityExtensions
             }
             return value == null
                 ? null
-                : Convert.ChangeType(value, type);
+                : !Convert.IsDBNull(value) ? Convert.ChangeType(value, type) : null;
         }
         public static object ChangeTypeSql(this object value, Type type)
         {

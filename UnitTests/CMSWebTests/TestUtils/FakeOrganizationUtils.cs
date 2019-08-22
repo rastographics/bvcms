@@ -16,7 +16,7 @@ namespace CMSWebTests
         public static Organization FakeOrganization { get; set; }
         public static int? OrgId { get; set; }
 
-        public static NewOrganizationModel MakeFakeOrganization()
+        public static NewOrganizationModel MakeFakeOrganization(Organization Orgconfig = null)
         {
             if (FakeNewOrganizationModel == null)
             {
@@ -28,7 +28,14 @@ namespace CMSWebTests
                 OrgId = ((NewOrganizationModel)((System.Web.Mvc.ViewResultBase)NewOrganizationIndex).Model).OrganizationId;
 
                 FakeNewOrganizationModel = new NewOrganizationModel();
-                FakeOrganization = new Organization() { OrganizationName = "MockName", RegistrationTitle = "MockTitle", Location = "MockLocation", RegistrationTypeId = 8 };
+                if(Orgconfig.IsNull())
+                {
+                    FakeOrganization = new Organization() { OrganizationName = "MockName", RegistrationTitle = "MockTitle", Location = "MockLocation", RegistrationTypeId = 8 };
+                }
+                else
+                {
+                    FakeOrganization = Orgconfig;
+                }
 
                 FakeNewOrganizationModel.org = FakeOrganization;
 
