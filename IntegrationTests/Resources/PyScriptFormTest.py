@@ -9,25 +9,25 @@ form = '''<form action='/PyScriptForm' method='post'>
 </form>
 '''
 
-def FindElement(array, id):
-    return next((i for i in array if i.Id == int(id)), None)
+def FindElement(array, ident):
+    return next((i for i in array if i.Id == int(ident)), None)
 
-def DisplayForm(id, records):
-    record = FindElement(records, id)
+def DisplayForm(ident, records):
+    record = FindElement(records, ident)
     rows = model.BuildDisplayRows(record, meta)
-    return form.format( rows, Data.pyscript, 'edit', id)
+    return form.format( rows, Data.pyscript, 'edit', ident)
 
-def EditForm(id):
-    record = FindElement(json.Records, id)
+def EditForm(ident):
+    record = FindElement(json.Records, ident)
     rows = model.BuildFormRows(record, meta)
-    return form.format( rows, Data.pyscript, 'update', id)
+    return form.format( rows, Data.pyscript, 'update', ident)
 
-def UpdateRecord(id, postdata):
-    record = FindElement(json.Records, id)
+def UpdateRecord(ident, postdata):
+    record = FindElement(json.Records, ident)
     for k in record.Keys(meta):
         record.SetValue(k, postdata[k])
     model.WriteContentText('jsondata', str(json))
-    return DisplayForm(id, json.Records)
+    return DisplayForm(ident, json.Records)
 
 if model.HttpMethod == 'get':
     model.Form = DisplayForm(Data.p2, json.Records)

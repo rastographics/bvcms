@@ -197,66 +197,64 @@ namespace CmsWeb.Models
         }
         private IQueryable<Person> FindNames(string q)
         {
-            var qp = Db.People.AsQueryable();
+            if (q.AllDigits())
+                return AllDigitsFind(q);
+            if (Db.Setting("UseAltnameContains"))
+                return AltNameContainsFind(q);
+            return NormalFind(q);
+        }
+
+        private IQueryable<Person> NormalFind(string q)
+        {
             Util.NameSplit(q, out var First, out var Last);
             var hasFirst = First.HasValue();
-
-            if (q.AllDigits())
-            {
-                string phone = null;
-                if (q.HasValue() && q.AllDigits() && q.Length == 7)
-                {
-                    phone = q;
-                }
-
-                if (phone.HasValue())
-                {
-                    var id = Last.ToInt();
-                    qp = from p in qp
-                         where
-                             p.PeopleId == id
-                             || p.CellPhone.Contains(phone)
-                             || p.Family.HomePhone.Contains(phone)
-                             || p.WorkPhone.Contains(phone)
-                         select p;
-                }
-                else
-                {
-                    var id = Last.ToInt();
-                    qp = from p in qp
-                         where p.PeopleId == id
-                         select p;
-                }
-            }
-            else
-            {
-                if (Db.Setting("UseAltnameContains"))
-                {
-                    qp = from p in qp
-                         where
-                         (p.LastName.StartsWith(Last) || p.MaidenName.StartsWith(Last) || p.AltName.Contains(Last)
-                          || p.LastName.StartsWith(q) || p.MaidenName.StartsWith(q))
-                         &&
-                         (!hasFirst || p.FirstName.StartsWith(First) || p.NickName.StartsWith(First) ||
-                          p.MiddleName.StartsWith(First)
-                          || p.LastName.StartsWith(q) || p.MaidenName.StartsWith(q))
-                         select p;
-                }
-                else
-                {
-                    qp = from p in qp
-                         where
-                         (p.LastName.StartsWith(Last) || p.MaidenName.StartsWith(Last)
-                          || p.LastName.StartsWith(q) || p.MaidenName.StartsWith(q))
-                         &&
-                         (!hasFirst || p.FirstName.StartsWith(First) || p.NickName.StartsWith(First) ||
-                          p.MiddleName.StartsWith(First)
-                          || p.LastName.StartsWith(q) || p.MaidenName.StartsWith(q))
-                         select p;
-                }
-            }
+            var qp = Db.People.AsQueryable();
+            qp = from p in qp
+                 where
+                     (p.LastName.StartsWith(Last) || p.MaidenName.StartsWith(Last)
+                                                  || p.LastName.StartsWith(q) || p.MaidenName.StartsWith(q))
+                     &&
+                     (!hasFirst || p.FirstName.StartsWith(First) || p.NickName.StartsWith(First) ||
+                      p.MiddleName.StartsWith(First)
+                      || p.LastName.StartsWith(q) || p.MaidenName.StartsWith(q))
+                 select p;
             return qp;
         }
+
+        private IQueryable<Person> AltNameContainsFind(string q)
+        {
+            Util.NameSplit(q, out var First, out var Last);
+            var hasFirst = First.HasValue();
+            var qp = from p in Db.People
+                 where
+                     (p.LastName.StartsWith(Last) || p.MaidenName.StartsWith(Last) || p.AltName.Contains(Last)
+                      || p.LastName.StartsWith(q) || p.MaidenName.StartsWith(q))
+                     &&
+                     (!hasFirst || p.FirstName.StartsWith(First) || p.NickName.StartsWith(First) ||
+                      p.MiddleName.StartsWith(First)
+                      || p.LastName.StartsWith(q) || p.MaidenName.StartsWith(q))
+                 select p;
+            return qp;
+        }
+
+        private IQueryable<Person> AllDigitsFind(string q)
+        {
+            var id = q.ToInt();
+            if (q.HasValue() && q.Length == 7) // do phone search too 
+            {
+                return from p in Db.People
+                     where
+                         p.PeopleId == id
+                         || p.CellPhone.Contains(q)
+                         || p.Family.HomePhone.Contains(q)
+                         || p.WorkPhone.Contains(q)
+                     select p;
+            }
+            return from p in Db.People
+                 where p.PeopleId == id
+                 select p;
+        }
+
         public class NamesInfo
         {
             public string Name => displayname + (age.HasValue ? $" ({Person.AgeDisplay(age, Pid)})" : "");

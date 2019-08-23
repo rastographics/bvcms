@@ -89,6 +89,5 @@ namespace IntegrationTests.Areas.Manage
             var json = db.ContentText("jsondata", null);
             json.ShouldContain("New York");
         }
-
     }
 }
