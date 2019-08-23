@@ -13,6 +13,11 @@
     }
     initializePopovers();
 
+    $('#showcheckimages').change(function () {
+        var url = location.pathname + (this.checked ? '?images=1' : '?images=0');
+        window.open(url, '_top');
+    });
+
     $('#pid').blur(function () {
         var tr, pid;
         if ($(this).val() === '') {

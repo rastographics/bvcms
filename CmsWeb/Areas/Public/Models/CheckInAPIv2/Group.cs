@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics.CodeAnalysis;
+using CmsData;
 using CmsData.Classes.DataMapper;
 
 namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
@@ -39,12 +40,12 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 		public int subGroupID = 0;
 		public string subGroupName = "";
 
-		public static List<Group> forPersonID( SqlConnection db, int personID, int campus, DateTime date )
+		public static List<Group> forPersonID(CMSDataContext db, int personID, int campus, DateTime date )
 		{
 			List<Group> groups = new List<Group>();
 
-			groups.AddRange( loadMemberGroups( db, personID, campus, date ) );
-			groups.AddRange( loadVisitorGroups( db, personID, campus, date ) );
+            groups.AddRange(loadMemberGroups(db.ReadonlyConnection() as SqlConnection, personID, campus, date));
+            groups.AddRange(loadVisitorGroups(db.ReadonlyConnection() as SqlConnection, personID, campus, date));
 
 			return groups;
 		}

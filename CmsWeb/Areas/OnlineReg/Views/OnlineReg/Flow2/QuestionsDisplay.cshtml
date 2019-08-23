@@ -139,7 +139,8 @@
                     <td>@(Model.setting.AskVisible("AskParents") ? "Parent's Church" : "Church")</td>
                     <td>
                         @(Model.memberus ? "Member of our church" : "not member of our church") <br />
-                        @(Model.otherchurch ? "Active in another Local Church" : "not active in another church")
+                        @(Model.otherchurch ? "Active in another local church" : "not active in another church")
+                        @(Model.nochurch ? "Currently not attending a church" : "active in another church")
                     </td>
                 </tr>
                 break;
@@ -159,6 +160,16 @@
                 <tr>
                     <td><div class="wraparound">@Util.PickFirst(((AskDropdown)ask).Label, "Options")</div></td>
                     <td>@(((AskDropdown)ask).SmallGroupChoice(Model.option).Description)</td>
+                </tr>
+                break;
+            case "AskPassport":
+                <tr>
+                    <td>Passport Number</td>
+                    <td>@Model.passportNumber</td>
+                </tr>
+                <tr>
+                    <td>Passport Expires Date</td>
+                    <td>@Model.passportNumber </td>
                 </tr>
                 break;
             case "AskExtraQuestions":

@@ -78,6 +78,10 @@
                 @Html.EditorFor(m => m.insurance)
                 @Html.EditorFor(m => m.policy)
                 break;
+            case "AskPassport":
+                @Html.EditorFor(m => m.passportNumber)
+                @Html.EditorFor(m => m.passportExpires)
+                break;
             case "AskDoctor":
                 @Html.EditorFor(m => m.doctor)
                 @Html.EditorFor(m => m.docphone)
@@ -131,8 +135,8 @@
                 break;
             case "AskCheckboxes":
                 @(((AskCheckboxes)ask).Columns > 1
-                                                  ? Html.EditorFor(m => m, "AskCheckboxesMatrix", new { ask })
-                                                  : Html.EditorFor(m => m, "AskCheckboxes", new { ask }))
+                                  ? Html.EditorFor(m => m, "AskCheckboxesMatrix", new { ask })
+                                  : Html.EditorFor(m => m, "AskCheckboxes", new { ask }))
                 break;
             case "AskMenu":
                 @Html.EditorFor(m => m, "AskMenu", new { ask })

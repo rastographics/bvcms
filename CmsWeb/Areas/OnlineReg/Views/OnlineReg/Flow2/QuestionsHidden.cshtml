@@ -72,6 +72,10 @@
                 @Html.HiddenFor(m => m.insurance)
                 @Html.HiddenFor(m => m.policy)
                 break;
+            case "AskPassport":
+                @Html.HiddenFor(m => m.passportNumber)
+                @Html.HiddenFor(m => m.passportExpires)
+                break;
             case "AskDoctor":
                 @Html.HiddenFor(m => m.doctor)
                 @Html.HiddenFor(m => m.docphone)
@@ -103,6 +107,7 @@
             case "AskChurch":
                 @Html.HiddenFor(m => m.memberus)
                 @Html.HiddenFor(m => m.otherchurch)
+                @Html.HiddenFor(m => m.nochurch)
                 break;
             case "AskTickets":
                 @Html.HiddenFor(m => m.ntickets)

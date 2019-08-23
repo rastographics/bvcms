@@ -93,7 +93,7 @@ namespace CmsWeb.Areas.People.Controllers
             }
 
             DbUtil.LogActivity($"Uploading Picture for {family.FamilyName(CurrentDatabase)}");
-            family.UploadPicture(CurrentDatabase, picture.InputStream, id);
+            family.UploadPicture(CurrentDatabase, CurrentImageDatabase, picture.InputStream, id);
             return Redirect("/Person2/" + id);
         }
 
@@ -101,7 +101,7 @@ namespace CmsWeb.Areas.People.Controllers
         public ActionResult DeleteFamilyPicture(int id)
         {
             var family = CurrentDatabase.LoadFamilyByPersonId(id);
-            family.DeletePicture(CurrentDatabase);
+            family.DeletePicture(CurrentDatabase, CurrentImageDatabase);
             return Redirect("/Person2/" + id);
         }
     }

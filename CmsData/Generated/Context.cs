@@ -145,7 +145,15 @@ namespace CmsData
         partial void InsertCheckInTime(CheckInTime instance);
         partial void UpdateCheckInTime(CheckInTime instance);
         partial void DeleteCheckInTime(CheckInTime instance);
-        
+
+        partial void InsertCheckinProfiles(CheckinProfiles instance);
+        partial void UpdateCheckinProfiles(CheckinProfiles instance);
+        partial void DeleteCheckinProfiles(CheckinProfiles instance);
+
+        partial void InsertCheckinProfileSettings(CheckinProfileSettings instance);
+        partial void UpdateCheckinProfileSettings(CheckinProfileSettings instance);
+        partial void DeleteCheckinProfileSettings(CheckinProfileSettings instance);
+
         partial void InsertChurchAttReportId(ChurchAttReportId instance);
         partial void UpdateChurchAttReportId(ChurchAttReportId instance);
         partial void DeleteChurchAttReportId(ChurchAttReportId instance);
@@ -1049,7 +1057,17 @@ namespace CmsData
 
 		}
 
-		public Table<ChurchAttReportId> ChurchAttReportIds
+        public Table<CheckinProfiles> CheckinProfiles
+        {
+            get { return this.GetTable<CheckinProfiles>(); }
+        }
+
+        public Table<CheckinProfileSettings> CheckinProfileSettings
+        {
+            get { return this.GetTable<CheckinProfileSettings>(); }
+        }
+
+        public Table<ChurchAttReportId> ChurchAttReportIds
 		{
 			get	{ return this.GetTable<ChurchAttReportId>(); }
 
@@ -3428,7 +3446,7 @@ namespace CmsData
             [Parameter(DbType="datetime")] DateTime? td,
             [Parameter(DbType="int")] int? campusid,
             [Parameter(DbType="bit")] bool? pledges,
-            [Parameter(DbType="bit")] bool? nontaxded,
+            [Parameter(DbType="int")] int? nontaxded,
             [Parameter(DbType="bit")] bool? includeUnclosed,
             [Parameter(DbType="int")] int? tagid,
             [Parameter(DbType="varchar")] string fundids
@@ -3618,10 +3636,11 @@ namespace CmsData
             [Parameter(DbType="datetime")] DateTime? fd,
             [Parameter(DbType="datetime")] DateTime? td,
             [Parameter(DbType="int")] int? campusid,
-            [Parameter(DbType="bit")] bool? nontaxded,
+            [Parameter(DbType="int")] int? nontaxded,
             [Parameter(DbType="bit")] bool? includeUnclosed,
             [Parameter(DbType="int")] int? tagid,
-            [Parameter(DbType="varchar")] string fundids
+            [Parameter(DbType="varchar")] string fundids,
+            [Parameter(DbType = "bit")] bool? pledges
             )
 		{
 			return this.CreateMethodCallQuery<View.GetTotalContributionsDonor>(this, 
@@ -3632,7 +3651,8 @@ namespace CmsData
                 nontaxded,
                 includeUnclosed,
                 tagid,
-                fundids
+                fundids,
+                pledges
                 );
 		}
 

@@ -36,7 +36,7 @@ namespace CmsData
         public static List<Role> AllRoles(CMSDataContext Db)
         {
             var roles = Db.Roles.ToList();
-            return roles.OrderBy(rr => rr.RoleName == "NEW" ? 1 : 0).ThenBy(rr => rr.RoleName).ToList();
+            return roles.OrderBy(rr => rr.RoleName == "NEW" ? 1 : 0).ThenBy(rr => rr.Priority).ToList();
         }
 
         public void SetRoles(CMSDataContext db, string[] value, bool log = true)

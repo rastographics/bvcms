@@ -48,11 +48,11 @@ namespace CmsWeb.Areas.Org.Models
             this.CopyPropertiesFrom(Org, typeof(OrgAttribute));
             this.CopyPropertiesFrom(RegSettings, typeof(RegAttribute));
 
-            if (!db.Organizations.Where(x => x.OrganizationId == id).Select(y => y.RegSettingXml).ToString().Contains("ShowPhoneOnFind"))
+            if (db.Organizations.Where(x => x.OrganizationId == id).Select(y => y.RegSettingXml).ToString().Contains("ShowPhoneOnFind"))
             {
                 ShowPhoneOnFind = true;
             }
-            if (!db.Organizations.Where(x => x.OrganizationId == id).Select(y => y.RegSettingXml).ToString().Contains("ShowDOBOnFind"))
+            if (db.Organizations.Where(x => x.OrganizationId == id).Select(y => y.RegSettingXml).ToString().Contains("ShowDOBOnFind"))
             {
                 ShowDOBOnFind = true;
             }

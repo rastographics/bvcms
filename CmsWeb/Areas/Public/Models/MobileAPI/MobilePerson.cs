@@ -1,4 +1,5 @@
 ﻿using CmsData;
+using ImageData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,7 +37,7 @@ namespace CmsWeb.MobileAPI
 
         public int deceased { get; set; }
 
-        public MobilePerson populate(CmsData.Person p)
+        public MobilePerson populate(Person p, CMSDataContext cmsdb, CMSImageDataContext cmsidb)
         {
             addresses = new Dictionary<string, MobilePersonAddress>();
             emailPhone = new List<MobileContact>();
@@ -128,7 +129,7 @@ namespace CmsWeb.MobileAPI
                 family.Add(m.PeopleId.ToString(), familyMember);
             }
 
-            var q = from re in DbUtil.Db.RelatedFamilies
+            var q = from re in cmsdb.RelatedFamilies
                     where re.FamilyId == p.FamilyId || re.RelatedFamilyId == p.FamilyId
                     let rf = re.RelatedFamilyId == p.FamilyId ? re.RelatedFamily1 : re.RelatedFamily2
                     select new { hohid = rf.HeadOfHouseholdId, description = re.FamilyRelationshipDesc };
@@ -145,7 +146,7 @@ namespace CmsWeb.MobileAPI
 
             if (p.Picture != null)
             {
-                var image = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == p.Picture.SmallId);
+                var image = cmsidb.Images.SingleOrDefault(i => i.Id == p.Picture.SmallId);
 
                 if (image != null)
                 {

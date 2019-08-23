@@ -32,7 +32,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             if (isMissionTrip)
             {
-                m.ProcessType = PaymentProcessTypes.OneTimeGiving;
+                m.ProcessType = PaymentProcessTypes.OnlineRegistration;
             }
             else
             {
@@ -108,7 +108,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         public ActionResult Login(OnlineRegModel m)
         {
             fromMethod = "Login";
-            var ret = AccountModel.AuthenticateLogon(m.username, m.password, Session, Request, CurrentDatabase);
+            var ret = AccountModel.AuthenticateLogon(m.username, m.password, Session, Request, CurrentDatabase, CurrentImageDatabase);
 
             if (ret is string)
             {
@@ -567,6 +567,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             {
                 // goer specified isn't part of this trip
                 return new HttpNotFoundResult();
+            }
+            if (!m.URL.HasValue() || m.URL.Contains("False"))
+            {
+                m.URL = CurrentDatabase.ServerLink($"/OnlineReg/{id}/Giving/{goerid}");
             }
             if (Util.UserPeopleId == goerid)
             {

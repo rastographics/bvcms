@@ -7,6 +7,7 @@
 
 using CmsData;
 using CmsWeb.Models;
+using ImageData;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -559,10 +560,13 @@ namespace CmsWeb.Areas.Reports.Models
             var height = m.Groups["height"].Value.ToDouble();
             var width = m.Groups["width"].Value.ToDouble();
             pg.ReplaceText(code, "");
-            AddPicture(pg, width, height, pic == "pic" ? di.ImageId : di.FamImageId);
+            using (var idb = CMSImageDataContext.Create(HttpContextFactory.Current))
+            {
+                AddPicture(idb, pg, width, height, pic == "pic" ? di.ImageId : di.FamImageId);
+            }
             return true;
         }
-        private void AddPicture(Paragraph pg, double width, double height, int? imageid)
+        private void AddPicture(CMSImageDataContext idb, Paragraph pg, double width, double height, int? imageid)
         {
             const int oversizedpixelsinch = 310;
             const int pixelsinch = 96;
@@ -571,7 +575,7 @@ namespace CmsWeb.Areas.Reports.Models
             var widthpixels = (width * pixelsinch).ToInt();
             var heightpixels = (height * pixelsinch).ToInt();
 
-            var img = ImageData.Image.ImageFromId(imageid);
+            var img = ImageData.Image.ImageFromId(idb, imageid);
             if (img != null)
             {
                 using (var os = img.ResizeToStream(largewidth, largeheight, "pad"))

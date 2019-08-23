@@ -28,6 +28,7 @@ namespace CmsWeb
                     case "AskSMS":
                     case "AskEmContact":
                     case "AskInsurance":
+                    case "AskPassport":
                     case "AskDoctor":
                     case "AskAllergies":
                     case "AskTylenolEtc":

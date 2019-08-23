@@ -69,6 +69,7 @@ namespace CmsData.Registration
         public bool IsAskHeader => Type == "AskHeader";
         public bool IsAskInstruction => Type == "AskInstruction";
         public bool IsAskInsurance => Type == "AskInsurance";
+        public bool IsAskPassport => Type == "AskPassport";
         public bool IsAskMenu => Type == "AskMenu";
         public bool IsAskParents => Type == "AskParents";
         public bool IsAskRequest => Type == "AskRequest";
@@ -99,6 +100,7 @@ namespace CmsData.Registration
 Displays two questions: Insurance name and policy number.
 Good for camp or ball teams where you might a participant might get hurt.
 "},
+            {"AskPassport", @"Displays two questions: Passport number and expires date."},
             {"AskParents", @"Displays two text boxes asking for mother and/or father's names."},
             {"AskSMS", @"Displays yes/no radio buttons for opting in to SMS."},
             {"AskTylenolEtc", @"Asks whether it is ok to give a child Tylenol, Advil, Robitussin, or Maalox."},

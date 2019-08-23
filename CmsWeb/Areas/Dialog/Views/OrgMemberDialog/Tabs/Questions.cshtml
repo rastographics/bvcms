@@ -50,4 +50,22 @@
             </div>
         }
     </div>
+    @if (Model.PassportNumber != null)
+    {
+        var pn = $"{Model.OrgId},{Model.PeopleId},passNum";
+        var pe = $"{Model.OrgId},{Model.PeopleId},passExp";
+        <br />
+        <hr />
+        <div class="well passport-dialog">
+            <h4>Passport</h4>
+            <dl>
+                <dt>Passport Number</dt>
+                <dd class="pre-wrap"><a id="@pn" data-pk="@pn" href="#" data-title="Passport Number" class="clickEditPassport editable editable-click">@Model.PassportNumber</a></dd>
+            </dl>
+            <dl>
+                <dt>Passport Expires</dt>
+                <dd class="pre-wrap"><a id="@pe" data-pk="@pe" href="#" data-title="Passport Expires" class="clickEditPassport editable editable-click">@Model.PassportExpires.ToString("MM/dd/yyyy")</a></dd>
+            </dl>
+        </div>
+    }
 </div>
