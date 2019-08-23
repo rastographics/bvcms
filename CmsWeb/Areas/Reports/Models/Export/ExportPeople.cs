@@ -97,7 +97,7 @@ namespace CmsWeb.Models
 
             if (DbUtil.Db.Setting("UseLabelNameForDonorDetails"))
             {
-                var q = from c in DbUtil.Db.GetContributionsDetails(startdt, enddt, campusid, pledges, nontaxdeductible, includeUnclosed, tagid, fundids)
+                var q = from c in DbUtil.Db.GetContributionsDetails(startdt, enddt, campusid, pledges, nontaxdeductible.ToInt(), includeUnclosed, tagid, fundids)
                         join p in DbUtil.Db.People on c.CreditGiverId equals p.PeopleId
                         let mainFellowship = DbUtil.Db.Organizations.SingleOrDefault(oo => oo.OrganizationId == p.BibleFellowshipClassId).OrganizationName
                         let head1 = DbUtil.Db.People.Single(hh => hh.PeopleId == p.Family.HeadOfHouseholdId)
@@ -145,7 +145,7 @@ namespace CmsWeb.Models
             }
             else
             {
-                var q = from c in DbUtil.Db.GetContributionsDetails(startdt, enddt, campusid, pledges, nontaxdeductible, includeUnclosed, tagid, fundids)
+                var q = from c in DbUtil.Db.GetContributionsDetails(startdt, enddt, campusid, pledges, nontaxdeductible.ToInt(), includeUnclosed, tagid, fundids)
                         join p in DbUtil.Db.People on c.CreditGiverId equals p.PeopleId
                         let mainFellowship = DbUtil.Db.Organizations.SingleOrDefault(oo => oo.OrganizationId == p.BibleFellowshipClassId).OrganizationName
                         let spouse = DbUtil.Db.People.SingleOrDefault(sp => sp.PeopleId == p.SpouseId)
@@ -190,7 +190,8 @@ namespace CmsWeb.Models
 #endif
 
 
-            var q2 = from r in DbUtil.Db.GetTotalContributionsDonor(startdt, enddt, campusid, nontaxdeductible, includeUnclosed, tagid, fundids)
+            var nontaxded = nontaxdeductible.HasValue ? (nontaxdeductible.Value ? 1 : 0) : (int?)null;
+            var q2 = from r in DbUtil.Db.GetTotalContributionsDonor(startdt, enddt, campusid, nontaxded, includeUnclosed, tagid, fundids, null)
                      select new
                      {
                          GiverId = r.CreditGiverId,

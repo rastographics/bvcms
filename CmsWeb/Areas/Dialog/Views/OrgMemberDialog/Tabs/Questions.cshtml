@@ -1,35 +1,54 @@
 ﻿@model CmsWeb.Areas.Dialog.Models.OrgMemberModel
 @{
-  var hadQuestions = false;
-  var admin = User.IsInRole("Admin");
-  var manager = User.IsInRole("ManageGroups");
-  var edit = User.IsInRole("Edit");
+    var hadQuestions = false;
+    var admin = User.IsInRole("Admin");
+    var manager = User.IsInRole("ManageGroups");
+    var edit = User.IsInRole("Edit");
 }
 <div id="regquestions" class="tab-pane">
-  <dl>
-    @if (User.IsInRole("Edit"))
+    <dl>
+        @if (User.IsInRole("Edit"))
+        {
+            foreach (var q in Model.RegQuestions())
+            {
+                hadQuestions = true;
+                var pk = $"{Model.OrgId},{Model.PeopleId},{q.Row},{q.Type}";
+                <dt>@q.Question</dt>
+                <dd class="pre-wrap">
+                    <a id="@pk" data-pk="@pk" href="#" data-title="Answer" class="clickEdit editable editable-click">@q.Answer</a> @if (User.IsInRole("Developer"))
+                    {<a id="@pk" href="#" class="delete">X</a>}
+                </dd>
+            }
+        }
+        else
+        {
+            foreach (var q in Model.RegQuestions())
+            {
+                <dt>@q.Question</dt>
+                <dd class="pre-wrap">@q.Answer</dd>
+            }
+        }
+    </dl>
+    @if (hadQuestions == false && admin || edit || manager)
     {
-      foreach (var q in Model.RegQuestions())
-      {
-        hadQuestions = true;
-        var pk = $"{Model.OrgId},{Model.PeopleId},{q.Row},{q.Type}";
-        <dt>@q.Question</dt>
-        <dd class="pre-wrap">
-          <a id="@pk" data-pk="@pk" href="#" data-title="Answer" class="clickEdit editable editable-click">@q.Answer</a> @if (User.IsInRole("Developer")) { <a id="@pk" href="#" class="delete">X</a> }
-        </dd>
-      }
+        <a id="addQuestions" class="btn btn-success">Add Missing Questions</a>
     }
-    else
+    @if (Model.PassportNumber != null)
     {
-      foreach (var q in Model.RegQuestions())
-      {
-        <dt>@q.Question</dt>
-        <dd class="pre-wrap">@q.Answer</dd>
-      }
+        var pn = $"{Model.OrgId},{Model.PeopleId},passNum";
+        var pe = $"{Model.OrgId},{Model.PeopleId},passExp";
+        <br />
+        <hr />
+        <div class="well passport-dialog">
+            <h4>Passport</h4>
+            <dl>
+                <dt>Passport Number</dt>
+                <dd class="pre-wrap"><a id="@pn" data-pk="@pn" href="#" data-title="Passport Number" class="clickEditPassport editable editable-click">@Model.PassportNumber</a></dd>
+            </dl>
+            <dl>
+                <dt>Passport Expires</dt>
+                <dd class="pre-wrap"><a id="@pe" data-pk="@pe" href="#" data-title="Passport Expires" class="clickEditPassport editable editable-click">@Model.PassportExpires.ToString("MM/dd/yyyy")</a></dd>
+            </dl>
+        </div>
     }
-  </dl>
-  @if (hadQuestions == false && admin || edit || manager)
-  {
-    <a id="addQuestions" class="btn btn-success">Add Missing Questions</a>
-  }
 </div>

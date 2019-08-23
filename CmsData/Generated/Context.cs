@@ -3437,7 +3437,7 @@ namespace CmsData
             [Parameter(DbType="datetime")] DateTime? td,
             [Parameter(DbType="int")] int? campusid,
             [Parameter(DbType="bit")] bool? pledges,
-            [Parameter(DbType="bit")] bool? nontaxded,
+            [Parameter(DbType="int")] int? nontaxded,
             [Parameter(DbType="bit")] bool? includeUnclosed,
             [Parameter(DbType="int")] int? tagid,
             [Parameter(DbType="varchar")] string fundids
@@ -3627,10 +3627,11 @@ namespace CmsData
             [Parameter(DbType="datetime")] DateTime? fd,
             [Parameter(DbType="datetime")] DateTime? td,
             [Parameter(DbType="int")] int? campusid,
-            [Parameter(DbType="bit")] bool? nontaxded,
+            [Parameter(DbType="int")] int? nontaxded,
             [Parameter(DbType="bit")] bool? includeUnclosed,
             [Parameter(DbType="int")] int? tagid,
-            [Parameter(DbType="varchar")] string fundids
+            [Parameter(DbType="varchar")] string fundids,
+            [Parameter(DbType = "bit")] bool? pledges
             )
 		{
 			return this.CreateMethodCallQuery<View.GetTotalContributionsDonor>(this, 
@@ -3641,7 +3642,8 @@ namespace CmsData
                 nontaxded,
                 includeUnclosed,
                 tagid,
-                fundids
+                fundids,
+                pledges
                 );
 		}
 

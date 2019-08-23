@@ -857,6 +857,7 @@
     <Compile Include="Areas\Search\Models\RegistrationSearch\RegistrationSearchModel.cs" />
     <Compile Include="Areas\Search\Models\SavedQuery\SavedQueryInfo.cs" />
     <Compile Include="Areas\Search\Models\SavedQuery\SavedQueryModel.cs" />
+    <Compile Include="Areas\Setup\Models\RoleModel.cs" />
     <Compile Include="Areas\Setup\Models\Pushpay\RecurringManagment.cs" />
     <Compile Include="Areas\Setup\Controllers\GatewayController.cs" />
     <Compile Include="Areas\Setup\Models\GatewayAccountJsonModel.cs" />
@@ -1112,7 +1113,6 @@
     <Compile Include="Code\ModelViewModel.cs" />
     <Compile Include="Code\PaymentValidator.cs" />
     <Compile Include="Code\SmartBinder.cs" />
-    <Compile Include="Code\Image.cs" />
     <Compile Include="Models\HtmlHolder.cs" />
     <Compile Include="Services\MeetingCategory\MeetingCategoryService.cs" />
     <Compile Include="Services\MeetingCategory\IMeetingCategoryService.cs" />
@@ -1257,6 +1257,7 @@
     <Content Include="Content\touchpoint\js\form-ajax.js" />
     <Content Include="Content\touchpoint\js\gateway.js" />
     <Content Include="Content\touchpoint\js\checkin.js" />
+    <Content Include="Content\touchpoint\js\snackbar.js" />
     <Content Include="Content\touchpoint\js\main.js" />
     <Content Include="Content\touchpoint\js\metrozip\metro-zip.js" />
     <Content Include="Content\touchpoint\js\onlineregister.min.js" />
@@ -1840,6 +1841,9 @@
     <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageGiving\_ManagedGivingFundsNew.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\OnePageGiving\NotConfigured.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\MeetingAttendance.cshtml" />
+    <Content Include="Areas\Setup\Views\Roles\Manage.cshtml" />
+    <Content Include="Areas\Setup\Views\Roles\Priorities.cshtml" />
+    <Content Include="Content\touchpoint\src\less\snackbar.less" />
     <Content Include="Areas\People\Views\Shared\PledgesSummary.cshtml" />
     <Content Include="libman.json" />
     <Content Include="Areas\Org\Views\Org\Settings\CheckIn.cshtml" />
@@ -2629,6 +2633,7 @@
     <Content Include="Views\Shared\Menu\Reports.cshtml" />
     <Content Include="Views\Shared\Menu\Admin.cshtml" />
     <Content Include="Views\Shared\Menu\Help.cshtml" />
+    <Content Include="Views\Shared\RoleSettingDefaults.xml" />
     <Content Include="Views\Shared\Toolbar\Toolbar.cshtml" />
     <Content Include="Views\Shared\Toolbar\Email.cshtml" />
     <Content Include="Views\Shared\Toolbar\Gear.cshtml" />

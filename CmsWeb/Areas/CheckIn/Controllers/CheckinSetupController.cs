@@ -112,11 +112,10 @@ namespace CmsWeb.Areas.CheckIn.Controllers
             if (checkinProfile != null)
             {
                 var checkinProfileSettings = CurrentDatabase.CheckinProfileSettings.FirstOrDefault(c => c.CheckinProfileId == ProfileId);
-                Image.DeleteOnSubmit(checkinProfileSettings.BackgroundImage);
+                Image.Delete(CurrentImageDatabase, checkinProfileSettings.BackgroundImage);
                 CurrentDatabase.CheckinProfileSettings.DeleteOnSubmit(checkinProfileSettings);
                 CurrentDatabase.CheckinProfiles.DeleteOnSubmit(checkinProfile);
                 CurrentDatabase.SubmitChanges();
-                ImageData.DbUtil.Db.SubmitChanges();
             }
 
             return new HttpStatusCodeResult(HttpStatusCode.OK);
@@ -188,9 +187,9 @@ namespace CmsWeb.Areas.CheckIn.Controllers
             stream.Read(bits, 0, bits.Length);
             if (imageId == null)
             {
-                return Image.NewImageFromBits(bits).Id;
+                return Image.NewImageFromBits(bits, CurrentImageDatabase).Id;
             }
-            return Image.UpdateImageFromBits(imageId.Value, bits).Id;
+            return CurrentImageDatabase.UpdateImageFromBits(imageId.Value, bits).Id;
         }
     }
 }

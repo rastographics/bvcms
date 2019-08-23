@@ -130,6 +130,7 @@ namespace CmsWeb.Areas.People.Models
         {
             var OrgMembers = (from mm in DbUtil.Db.OrganizationMembers
                      where mm.PeopleId == PeopleId
+                     where (mm.Organization.IsMissionTrip == false || mm.Organization.IsMissionTrip == null) 
                      select new
                      {
                          mm,

@@ -81,17 +81,17 @@
                         <div class="form-group">
                             <div class="checkbox">
                                 <label class="control-label">
-                                    @Html.CheckBox("IncUnclosedBundles") Include unclosed bundles?
+                                    @Html.CheckBox("IncUnclosedBundles") Include unclosed bundles
                                 </label>
                             </div>
                             <div class="checkbox">
                                 <label class="control-label">
-                                    @Html.CheckBox("IncludeBundleType") Include bundle type?
+                                    @Html.CheckBox("IncludeBundleType") Include bundle type
                                 </label>
                             </div>
                             <div class="checkbox">
                                 <label class="control-label">
-                                    @Html.CheckBox("FilterByActiveTag") Filter by active tag?
+                                    @Html.CheckBox("FilterByActiveTag") Filter by active tag
                                 </label>
                             </div>
                         </div>
@@ -156,7 +156,7 @@
             <strong>To Date:</strong> <span id="toDate">@Model.Dt2.GetValueOrDefault().ToShortDateString()</span><br />
             <strong>Tax Status:</strong> <span id="taxStatus">@taxStatusName</span><br />
             <strong>Source:</strong> <span id="sourceName">@sourceName</span><br />
-            <strong>Include unclosed bundles?:</strong> <span id="includeUnClosedBundles">@Model.IncUnclosedBundles</span><br />
+            <strong>Include unclosed bundles:</strong> <span id="includeUnClosedBundles">@Model.IncUnclosedBundles</span><br />
             <strong>Include bundle type:</strong> <span id="includeBundleType">@Model.IncludeBundleType</span>
         </div>
         <div id="results" style="margin-top: 25px;"></div>

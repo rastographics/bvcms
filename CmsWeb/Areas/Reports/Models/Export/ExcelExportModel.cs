@@ -36,12 +36,12 @@ namespace CmsWeb.Models
             {
                 if (row.Table.Columns.Contains(PassportNumber))
                 { 
-                    var passNumber = row.Table.Columns[PassportNumber].ToString();
+                    var passNumber = row[PassportNumber].ToString();
                     row[row.Table.Columns[PassportNumber].Ordinal] = Util.Decrypt(passNumber);
                 }
                 if (row.Table.Columns.Contains(PassportExpires))
                 {
-                    var passExpires = row.Table.Columns[PassportExpires].ToString();
+                    var passExpires = row[PassportExpires].ToString();
                     row[row.Table.Columns[PassportExpires].Ordinal] = Util.Decrypt(passExpires);
                 }
             }
