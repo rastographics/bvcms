@@ -354,6 +354,17 @@ $(function () {
                     return data;
                 }
             });
+            $(".clickEditPassport", f).editable({
+                mode: 'popup',
+                type: 'textarea',
+                url: "/OrgMemberDialog/EditPassport/",
+                params: function (params) {
+                    var data = {};
+                    data['id'] = params.pk;
+                    data['value'] = params.value;
+                    return data;
+                }
+            });
             $(".delete", f).click(function () {
                 ev.preventDefault();
                 var dd = $(this).parent();

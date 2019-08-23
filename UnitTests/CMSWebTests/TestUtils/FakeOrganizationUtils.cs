@@ -5,10 +5,11 @@ using CmsWeb.Areas.OnlineReg.Models;
 using UtilityExtensions;
 using System.Linq;
 using Xunit;
+using SharedTestFixtures;
 
 namespace CMSWebTests
 {
-    [Collection("Database collection")]
+    [Collection(Collections.Database)]
     public class FakeOrganizationUtils
     {
         public static NewOrganizationModel FakeNewOrganizationModel { get; set; }

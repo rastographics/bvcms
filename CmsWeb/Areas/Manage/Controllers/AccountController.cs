@@ -2,6 +2,7 @@ using CmsData;
 using CmsWeb.Lifecycle;
 using CmsWeb.Membership;
 using CmsWeb.Models;
+using ImageData;
 using net.openstack.Core.Domain;
 using net.openstack.Providers.Rackspace;
 using System;
@@ -148,7 +149,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             TryLoadAlternateShell();
 
 
-            var dbExists = DbUtil.CheckDatabaseExists(CurrentDatabase.Host);
+            var dbExists = CmsData.DbUtil.CheckDatabaseExists(CurrentDatabase.Host);
             var redirect = ViewExtensions2.DatabaseErrorUrl(dbExists);
 
             if (redirect != null)
@@ -156,11 +157,11 @@ namespace CmsWeb.Areas.Manage.Controllers
                 return Redirect(redirect);
             }
 
-            var user = AccountModel.GetValidToken(Request.QueryString["otltoken"]);
+            var user = AccountModel.GetValidToken(CurrentDatabase, Request.QueryString["otltoken"]);
             if (user.HasValue())
             {
                 FormsAuthentication.SetAuthCookie(user, false);
-                AccountModel.SetUserInfo(user, Session);
+                AccountModel.SetUserInfo(CurrentDatabase, CurrentImageDatabase, user, Session);
                 if (returnUrl.HasValue() && Url.IsLocalUrl(returnUrl))
                 {
                     return Redirect(returnUrl);
@@ -173,7 +174,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             return View(m);
         }
 
-        public static bool TryImpersonate()
+        public static bool TryImpersonate(CMSDataContext cmsdb, CMSImageDataContext cmsidb)
         {
             if (HttpContextFactory.Current.User.Identity.IsAuthenticated)
             {
@@ -198,7 +199,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             }
 
             var session = HttpContextFactory.Current.Session;
-            AccountModel.SetUserInfo(username, session);
+            AccountModel.SetUserInfo(cmsdb, cmsidb, username, session);
             if (Util.UserId == 0)
             {
                 return false;
@@ -228,7 +229,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                 return View(m);
             }
 
-            var ret = AccountModel.AuthenticateLogon(m.UsernameOrEmail, m.Password, Session, Request, CurrentDatabase);
+            var ret = AccountModel.AuthenticateLogon(m.UsernameOrEmail, m.Password, Session, Request, CurrentDatabase, CurrentImageDatabase);
             if (ret is string)
             {
                 ViewBag.error = ret.ToString();
@@ -250,7 +251,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                 }
             }
 
-            var newleadertag = CurrentDatabase.FetchTag("NewOrgLeadersOnly", user.PeopleId, DbUtil.TagTypeId_System);
+            var newleadertag = CurrentDatabase.FetchTag("NewOrgLeadersOnly", user.PeopleId, CmsData.DbUtil.TagTypeId_System);
             if (newleadertag != null)
             {
                 if (!user.InRole("Access")) // if they already have Access role, then don't limit them with OrgLeadersOnly
@@ -316,15 +317,15 @@ namespace CmsWeb.Areas.Manage.Controllers
                 var message = CurrentDatabase.ContentHtml("ForgotUsername", Resource1.AccountController_ForgotUsername);
                 message = message.Replace("{name}", user.Name);
                 message = message.Replace("{username}", user.Username);
-                CurrentDatabase.EmailRedacted(DbUtil.AdminMail, user.Person, "touchpoint forgot username", message);
+                CurrentDatabase.EmailRedacted(CmsData.DbUtil.AdminMail, user.Person, "touchpoint forgot username", message);
                 CurrentDatabase.SubmitChanges();
-                CurrentDatabase.EmailRedacted(DbUtil.AdminMail,
+                CurrentDatabase.EmailRedacted(CmsData.DbUtil.AdminMail,
                     CMSRoleProvider.provider.GetAdmins(),
                     $"touchpoint user: {user.Name} forgot username", "no content");
             }
             if (!q.Any())
             {
-                CurrentDatabase.EmailRedacted(DbUtil.AdminMail,
+                CurrentDatabase.EmailRedacted(CmsData.DbUtil.AdminMail,
                     CMSRoleProvider.provider.GetAdmins(),
                     $"touchpoint unknown email: {email} forgot username", "no content");
             }
@@ -363,7 +364,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                 return Content("invalid URL");
             }
 
-            var pid = AccountModel.GetValidToken(id).ToInt();
+            var pid = AccountModel.GetValidToken(CurrentDatabase, id).ToInt();
             var p = CurrentDatabase.LoadPersonById(pid);
             if (p == null)
             {
@@ -377,7 +378,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             }
 
             var user = MembershipService.CreateUser(CurrentDatabase, pid);
-            var newleadertag = CurrentDatabase.FetchTag("NewOrgLeadersOnly", p.PeopleId, DbUtil.TagTypeId_System);
+            var newleadertag = CurrentDatabase.FetchTag("NewOrgLeadersOnly", p.PeopleId, CmsData.DbUtil.TagTypeId_System);
             if (newleadertag != null)
             {
                 if (!user.InRole("Access")) // if they already have Access role, then don't limit them with OrgLeadersOnly
@@ -399,7 +400,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                 }
             }
             FormsAuthentication.SetAuthCookie(user.Username, false);
-            AccountModel.SetUserInfo(user.Username, Session);
+            AccountModel.SetUserInfo(CurrentDatabase, CurrentImageDatabase, user.Username, Session);
 
             ViewBag.user = user.Username;
             ViewBag.MinPasswordLength = MembershipService.MinPasswordLength(CurrentDatabase);
@@ -466,7 +467,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             user.FailedPasswordAttemptCount = 0;
             CurrentDatabase.SubmitChanges();
             FormsAuthentication.SetAuthCookie(user.Username, false);
-            AccountModel.SetUserInfo(user.Username, Session);
+            AccountModel.SetUserInfo(CurrentDatabase, CurrentImageDatabase, user.Username, Session);
             ViewBag.user = user.Username;
             ViewBag.MinPasswordLength = MembershipService.MinPasswordLength(CurrentDatabase);
             ViewBag.RequireSpecialCharacter = MembershipService.RequireSpecialCharacter(CurrentDatabase);

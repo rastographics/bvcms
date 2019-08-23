@@ -2,9 +2,9 @@
 using CmsWeb.Models;
 using System.Web.Mvc;
 
-namespace CmsWeb.Areas.Manage.Controllers
+namespace CmsWeb.Areas.CheckIn.Controllers
 {
-    [RouteArea("Manage")]
+    [RouteArea("CheckIn")]
     public class CheckinTimeController : CmsController
     {
         public CheckinTimeController(IRequestManager requestManager) : base(requestManager)

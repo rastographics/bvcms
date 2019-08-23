@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<DefaultSettings>
+    <Location name="Involvement">
+        <setting name="CanEditCGInfoEVs" value="false" friendly="Org Extra Values" true="Allow" false="Disallow" tooltip="Allows user to edit existing extra values on an extra value tab" />
+        <setting name="DisablePersonLinks" value="true" friendly="Person Links" true="Enable" false="Disable" tooltip="Enable/Disable hyperlinking to a person's profile (in orgs)" reverse="true"/>
+        <setting name="EditMemberData" value="true" friendly="Edit Member Data" true="Yes" false="No" tooltip="User can edit another user's Org Member Data or not" />
+        <setting name="HideExtraValueEdit" value="true" friendly="Org Extra Value Edit Button" true="Show" false="Hide" tooltip="Show/Hide the org extra value edit button which allows new extra values to be added" />
+        <setting name="HideGuestsOrgMembers" value="true" friendly="Guest Org Members" true="Show" false="Hide" tooltip="Show/Hide Guest Org Member Tab" reverse="true" />
+        <setting name="HideInactiveOrgMembers" value="true" friendly="Inactive Org Members" true="Show" false="Hide" tooltip="Show/Hide Inactive Org Member Tab" reverse="true" />
+        <setting name="HidePendingOrgMembers" value="true" friendly="Pending Org Members" true="Show" false="Hide" tooltip="Show/Hide Pending Org Member Tab" reverse="true" />
+        <setting name="LeadersCanAlwaysEditOrgContent" value="false" friendly="Edit Org Content" true="Allow" false="Disallow" tooltip="Instead of relying on the EditContent role, Org Leaders can always edit org content" />
+        <setting name="LimitedSearchPerson" value="false" friendly="Add New Person Search" true="Limit" false="Full Access" tooltip="Limits search for a name to “Add Member” so we don’t reveal private info" />
+        <setting name="Organization-CollapseOrgDetails" value="true" friendly="Org Details Box" true="Show" false="Hide" tooltip="Expand / Collapse the top Org Details box" reverse="true" />
+        <setting name="Organization-ShowBirthday" value="true" friendly="Org Show Birthdays" true="Show" false="Hide" tooltip="Show member birthday" />
+        <setting name="Organization-ShowFiltersBar" value="true" friendly="Filters Bar" true="Show" false="Hide" tooltip="Show entire sub-group filters bar" />
+        <setting name="Organization-ShowOptionsMenu" value="true" friendly="Options Menu" true="Show" false="Hide" tooltip="Show Options button and dropdown" />
+        <setting name="Organization-ShowSettingsTab" value="true" friendly="Settings Tab" true="Show" false="Hide" tooltip="Show Settings tab" />
+        <setting name="OrgMembersDropAdd" value="true" friendly="Org Member Row: Drop Button" true="Enable" false="Disable" tooltip="Replace Tag button with Drop button" />
+        <setting name="LimitToolbar" value="false" friendly="Blue Toolbar" true="Limit" false="Full Access" tooltip="Custom blue toolbar" />
+        <setting name="Organization-ShowBlueToolbar" value="true" friendly="Show Blue Toolbar" true="Show" false="Hide" tooltip="Show blue toolbar" />
+        <setting name="Organization-ShowBlueToolbarAdminGearMenu" value="true" friendly="Blue Toolbar: Gear Menu" true="Show" false="Hide" tooltip="Show blue toolbar: gear menu" />
+        <setting name="Organization-ShowBlueToolbarCustomReportsMenu" value="true" friendly="Blue Toolbar Menu Option: Custom Reports Menu" true="Show" false="Hide" tooltip="Show blue toolbar: custom reports menu" />
+        <setting name="Organization-ShowBlueToolbarFullEmailMenu" value="true" friendly="Blue Toolbar: Full Email Menu" true="Show" false="Hide" tooltip="Show blue toolbar: full email menu" />
+        <setting name="Organization-ShowBlueToolbarEmailMembers" value="true" friendly="Blue Toolbar Menu Option: Email Members Only" true="Show" false="Hide" tooltip="Show blue toolbar: a custom action that emails all the members only" />
+        <setting name="Organization-ShowBlueToolbarEmailMembersAndProspects" value="true" friendly="Blue Toolbar Menu Option: Email Members and Prospects" true="Show" false="Hide" tooltip="Show blue toolbar: a custom action that emails all members AND prospects" />
+        <setting name="Organization-ShowBlueToolbarEmailProspects" value="true" friendly="Blue Toolbar Menu Option: Email Prospects Only" true="Show" false="Hide" tooltip="Show blue toolbar: a custom action that emails prospects only" />
+        <setting name="Organization-ShowBlueToolbarExportMenu" value="true" friendly="Blue Toolbar: Export Menu" true="Show" false="Hide" tooltip="Show blue toolbar: export menu" />
+        <setting name="Organization-ShowBlueToolbarMembersOnlyPage" value="true" friendly="Blue Toolbar Menu Option: Members Only Page" true="Show" false="Hide" tooltip="Add Members only page link to blue toolbar" />
+        <setting name="Organization-ShowBlueToolbarVolunteerCalendar" value="true" friendly="Blue Toolbar Menu Option: Volunteer Calendar" true="Show" false="Hide" tooltip="Add Volunteer calendar link to blue toolbar" />
+    </Location>
+    <Location name="Meetings">
+        <setting name="Meeting-AllowEditDescription" value="false" friendly="Edit Description" true="Allow" false="Disallow" tooltip="Allow editing of meeting 'Description' field" />
+        <setting name="Meeting-EnableEditByDefault" value="false" friendly="Enable editing by default" true="On" false="Off" tooltip="Check the 'Enable - Editing' checkbox by default" />
+        <setting name="Meeting-HyperlinkNames" value="true" friendly="Hyperlink Names" true="On" false="Off" tooltip="Enable/Disable hyperlinking to a person's profile (in meetings)" />
+        <setting name="Meeting-ShowAddGuest" value="true" friendly="Add Guest" true="Show" false="Hide" tooltip="Show / Hide 'Add Guest' button" />
+        <setting name="Meeting-ShowAttendType" value="true" friendly="Attend Type" true="Show" false="Hide" tooltip="Attendance view: 'Attend Type' column" />
+        <setting name="Meeting-ShowBlueToolbar" value="true" friendly="Blue Toolbar" true="Show" false="Hide" tooltip="Show / Hide Meeting blue toolbar" />
+        <setting name="Meeting-ShowBlueToolbarIpadAttendance" value="true" friendly="Blue Toolbar - iPad Attendance" true="Show" false="Hide" tooltip="" />
+        <setting name="Meeting-ShowBlueToolbarRollsheet" value="true" friendly="Blue Toolbar - Rollsheet" true="Show" false="Hide" tooltip="" />
+        <setting name="Meeting-ShowCurrentMemberType" value="true" friendly="Current Member Type" true="Show" false="Hide" tooltip="Attendance view: 'Current Member Type' column" />
+        <setting name="Meeting-ShowEnableBox" value="true" friendly="Enable Box" true="Show" false="Hide" tooltip="The 'Enable' set of radio buttons (Editing, Register, Current Members)" />
+        <setting name="Meeting-ShowExtraValuesBox" value="false" friendly="Extra Value Box" true="Show" false="Hide" tooltip="Show / Hide Extra Values box" />
+        <setting name="Meeting-ShowOtherAttend" value="false" friendly="Other Attend" true="Show" false="Hide" tooltip="Attendance view: 'Other Attend' column" />
+        <setting name="Meeting-ShowShowBox" value="true" friendly="Show Box" true="Show" false="Hide" tooltip="The 'Show' set of radio buttons (All, Attends, Absent, Registered)" />
+        <setting name="Meeting-ShowWandTargetBox" value="true" friendly="Wand Target Box" true="Show" false="Hide" tooltip="Show/Hide 'Wand Target' box" />
+        <setting name="Organization-ShowCreateNewMeeting" value="true" friendly="Create New Meeting Button" true="Show" false="Hide" tooltip="'Create New Meeting' button" />
+        <setting name="Organization-ShowDeleteMeeting" value="true" friendly="Delete Meeting Button" true="Show" false="Hide" tooltip="'Delete Meeting' button" />
+    </Location>
+    <Location name="General">
+        <setting name="DisableHomePage" value="false" friendly="Home Page" true="Enable" false="Disable" tooltip="Set home page to user's profile instead of Dashboard" />
+        <setting name="HideNavTabs" value="true" friendly="Top Navigation Tabs" true="Show" false="Hide" tooltip="Show/Hide the main top nav menu bar" reverse="true" />
+        <setting name="OtherGroupsContentOnly" value="true" friendly="Allow Org View to Leaders" true="Enable" false="Disable" tooltip="Restrict org view to orgs where someone is a leader. For other orgs, he should only see Org Content page" />
+    </Location>
+    <Location name="Person">
+        <setting name="Person-ShowBlueToolbar" value="true" friendly="Show Blue Toolbar" true="Show" false="Hide" tooltip="Show blue toolbar" />
+        <setting name="HideEmailDetails" value="false" friendly="Email Details" true="Limited" false="Full Access" tooltip="Hides Emails Received, Emails Sent views only show Email Date, From, and Subject. Prevents user from seeing email details which expose search functionality" />
+        <setting name="HideMinistryTab" value="true" friendly="Ministry Tab" true="Show" false="Hide" tooltip="Show/Hide Ministry Tab on Person's Profile" reverse="true" />
+        <setting name="HideQueries" value="true" friendly="Family Member's Link" true="Enable" false="Disable" tooltip="Disable Family Members link on profile page, because it exposes the search functionality" reverse="true" />
+    </Location>
+</DefaultSettings>

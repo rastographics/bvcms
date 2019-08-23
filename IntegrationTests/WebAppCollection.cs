@@ -1,8 +1,9 @@
-﻿using Xunit;
+﻿using SharedTestFixtures;
+using Xunit;
 
 namespace IntegrationTests
 {
-    [CollectionDefinition("WebApp Collection")]
+    [CollectionDefinition(Collections.Webapp)]
     public class WebAppCollection : ICollectionFixture<WebAppFixture>
     {
         // This class has no code, and is never created. Its purpose is simply

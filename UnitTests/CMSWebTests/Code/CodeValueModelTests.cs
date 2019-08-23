@@ -1,13 +1,14 @@
 ﻿using System.Linq;
 using CmsData;
 using CmsWeb.Code;
+using SharedTestFixtures;
 using Shouldly;
 using UtilityExtensions;
 using Xunit;
 
 namespace CMSWebTests
 {
-    [Collection("Database collection")]
+    [Collection(Collections.Database)]
     public class CodeValueModelTests 
     {
         [Fact]
