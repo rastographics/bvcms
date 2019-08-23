@@ -33,6 +33,11 @@ namespace CmsWeb.Common
 
         public string TouchpointAuthServer => GetString("TouchpointAuthServer");
 
+        public string CmsHost
+        {
+            get { return GetString("cmshost"); }
+        }
+
         /// <summary>
         ///     Returns a string representation of this application setting
         /// </summary>

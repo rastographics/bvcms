@@ -1,24 +1,19 @@
+using ImageData;
 using System.Linq;
 
 namespace CmsData
 {
     public partial class Picture
     {
-        public string ThumbUrl
+        public string GetThumbUrl(CMSImageDataContext db)
         {
-            get
+            if (!ThumbId.HasValue && LargeId.HasValue)
             {
-                if (!ThumbId.HasValue && LargeId.HasValue)
-                {
-                    using (var db = ImageData.DbUtil.Db)
-                    {
-                        var large = db.Images.SingleOrDefault(ii => ii.Id == LargeId);
-                        if (large != null)
-                            ThumbId = large.CreateNewTinyImage(db).Id;
-                    }
-                }
-                return $"/TinyImage/{ThumbId ?? -1}?v={CreatedDate?.Ticks ?? 0}";
+                var large = db.Images.SingleOrDefault(ii => ii.Id == LargeId);
+                if (large != null)
+                    ThumbId = large.CreateNewTinyImage(db).Id;
             }
+            return $"/TinyImage/{ThumbId ?? -1}?v={CreatedDate?.Ticks ?? 0}";
         }
         public string SmallUrl => $"/Portrait/{SmallId ?? SmallMissingGenericId}?v={CreatedDate?.Ticks ?? 0}";
 

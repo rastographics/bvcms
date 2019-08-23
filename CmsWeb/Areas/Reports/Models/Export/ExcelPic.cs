@@ -1,7 +1,4 @@
 using CmsData;
-using ImageData;
-using System.Linq;
-using DbUtil = ImageData.DbUtil;
 
 namespace CmsWeb.Models
 {
@@ -39,19 +36,6 @@ namespace CmsWeb.Models
         public string Married { get; set; }
         public int FamilyId { get; set; }
         public int? ImageId { get; set; }
-
-        public Image GetImage()
-        {
-            Image i = null;
-            try
-            {
-                i = DbUtil.Db.Images.SingleOrDefault(ii => ii.Id == ImageId);
-            }
-            catch
-            {
-            }
-            return i;
-        }
 
         public string ImageUrl()
         {

@@ -1,10 +1,11 @@
 ﻿using IntegrationTests.Support;
+using SharedTestFixtures;
 using Shouldly;
 using Xunit;
 
 namespace IntegrationTests.Areas.Manage
 {
-    [Collection("WebApp Collection")]
+    [Collection(Collections.Webapp)]
     public class GeneralTests : AccountTestBase
     {
         [Fact]

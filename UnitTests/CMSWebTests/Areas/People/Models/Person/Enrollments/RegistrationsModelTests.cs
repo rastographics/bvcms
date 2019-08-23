@@ -3,10 +3,11 @@ using CmsWeb.Areas.People.Models;
 using CmsData;
 using Shouldly;
 using UtilityExtensions;
+using SharedTestFixtures;
 
 namespace CMSWebTests.Areas.People.Models.Person.Enrollments
 {
-    [Collection("Database collection")]
+    [Collection(Collections.Database)]
     public class RegistrationsModelTests
     {
         [Fact]

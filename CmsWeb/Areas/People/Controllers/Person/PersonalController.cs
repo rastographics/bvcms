@@ -62,7 +62,7 @@ namespace CmsWeb.Areas.People.Controllers
 
             var person = CurrentDatabase.LoadPersonById(id);
             DbUtil.LogPersonActivity($"Uploading Picture for {person.Name}", id, person.Name);
-            person.UploadPicture(CurrentDatabase, picture.InputStream);
+            person.UploadPicture(CurrentDatabase, CurrentImageDatabase, picture.InputStream);
             return Redirect("/Person2/" + id);
         }
 
@@ -70,7 +70,7 @@ namespace CmsWeb.Areas.People.Controllers
         public ActionResult DeletePicture(int id)
         {
             var person = CurrentDatabase.LoadPersonById(id);
-            person.DeletePicture(CurrentDatabase);
+            person.DeletePicture(CurrentDatabase, CurrentImageDatabase);
             return Redirect("/Person2/" + id);
         }
 
@@ -78,7 +78,7 @@ namespace CmsWeb.Areas.People.Controllers
         public ActionResult RefreshThumbnail(int id)
         {
             var person = CurrentDatabase.LoadPersonById(id);
-            person.DeleteThumbnail(CurrentDatabase);
+            person.DeleteThumbnail(CurrentDatabase, CurrentImageDatabase);
             return Redirect("/Person2/" + id);
         }
 
