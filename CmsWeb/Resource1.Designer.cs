@@ -581,6 +581,25 @@ namespace CmsWeb {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;
+        ///&lt;DefaultSettings&gt;
+        ///    &lt;setting name=&quot;DisableHomePage&quot; value=&quot;true&quot; /&gt;
+        ///    &lt;setting name=&quot;DisablePersonLinks&quot; value=&quot;true&quot; /&gt;
+        ///    &lt;setting name=&quot;HideEmailDetails&quot; value=&quot;true&quot; /&gt;
+        ///    &lt;setting name=&quot;HideExtraValueEdit&quot; value=&quot;true&quot; /&gt;
+        ///    &lt;setting name=&quot;HideGuestsOrgMembers&quot; value=&quot;true&quot; /&gt;
+        ///    &lt;setting name=&quot;HideInactiveOrgMembers&quot; value=&quot;true&quot; /&gt;
+        ///    &lt;setting name=&quot;HidePendingOrgMembers&quot; value=&quot;true&quot; /&gt;
+        ///    &lt;setting name=&quot;HideMinistryTab&quot; value=&quot;true&quot; /&gt;
+        ///    [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string RoleSettingDefaults {
+            get {
+                return ResourceManager.GetString("RoleSettingDefaults", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hi {first}
         ///&lt;p&gt;Here is your confirmation for {org}.&lt;/p&gt;
         ///DETAILS: &lt;br/&gt;

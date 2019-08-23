@@ -852,6 +852,7 @@
     <Compile Include="Areas\Search\Models\RegistrationSearch\RegistrationSearchModel.cs" />
     <Compile Include="Areas\Search\Models\SavedQuery\SavedQueryInfo.cs" />
     <Compile Include="Areas\Search\Models\SavedQuery\SavedQueryModel.cs" />
+    <Compile Include="Areas\Setup\Models\RoleModel.cs" />
     <Compile Include="Areas\Setup\Models\Pushpay\RecurringManagment.cs" />
     <Compile Include="Areas\Setup\Controllers\GatewayController.cs" />
     <Compile Include="Areas\Setup\Models\GatewayAccountJsonModel.cs" />
@@ -1249,6 +1250,7 @@
     <Content Include="Content\touchpoint\js\finance\transactions.js" />
     <Content Include="Content\touchpoint\js\form-ajax.js" />
     <Content Include="Content\touchpoint\js\gateway.js" />
+    <Content Include="Content\touchpoint\js\snackbar.js" />
     <Content Include="Content\touchpoint\js\main.js" />
     <Content Include="Content\touchpoint\js\metrozip\metro-zip.js" />
     <Content Include="Content\touchpoint\js\onlineregister.min.js" />
@@ -1832,6 +1834,9 @@
     <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageGiving\_ManagedGivingFundsNew.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\OnePageGiving\NotConfigured.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\MeetingAttendance.cshtml" />
+    <Content Include="Areas\Setup\Views\Roles\Manage.cshtml" />
+    <Content Include="Areas\Setup\Views\Roles\Priorities.cshtml" />
+    <Content Include="Content\touchpoint\src\less\snackbar.less" />
     <Content Include="Areas\People\Views\Shared\PledgesSummary.cshtml" />
     <Content Include="libman.json" />
     <Content Include="Areas\CheckIn\Views\Web.config" />
@@ -2618,6 +2623,7 @@
     <Content Include="Views\Shared\Menu\Reports.cshtml" />
     <Content Include="Views\Shared\Menu\Admin.cshtml" />
     <Content Include="Views\Shared\Menu\Help.cshtml" />
+    <Content Include="Views\Shared\RoleSettingDefaults.xml" />
     <Content Include="Views\Shared\Toolbar\Toolbar.cshtml" />
     <Content Include="Views\Shared\Toolbar\Email.cshtml" />
     <Content Include="Views\Shared\Toolbar\Gear.cshtml" />
