@@ -1,9 +1,9 @@
 ﻿using CmsData;
+using CmsData.View;
 using ImageData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using DbUtil = CmsData.DbUtil;
 
 // ReSharper disable MemberInitializerValueIgnored
 // ReSharper disable RedundantDefaultMemberInitializer
@@ -27,7 +27,7 @@ namespace CmsWeb.CheckInAPI
 
         public List<CheckInOrganization> orgs = new List<CheckInOrganization>();
 
-        public CheckInFamilyMember(CmsData.View.CheckinFamilyMember member, int day, int tzOffset)
+        public CheckInFamilyMember(CMSDataContext cmsdb, CMSImageDataContext cmsidb, CheckinFamilyMember member, int day, int tzOffset)
         {
             id = member.Id ?? 0;
             age = member.Age ?? 0;
@@ -37,11 +37,11 @@ namespace CmsWeb.CheckInAPI
             name = member.Name;
             altName = member.AltName;
 
-            Person p = DbUtil.Db.LoadPersonById(id);
+            Person p = cmsdb.LoadPersonById(id);
 
             if (p.Picture != null)
             {
-                Image image = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == p.Picture.SmallId);
+                Image image = cmsidb.Images.SingleOrDefault(i => i.Id == p.Picture.SmallId);
 
                 if (image != null)
                 {
@@ -54,7 +54,7 @@ namespace CmsWeb.CheckInAPI
             addOrg(member, day, tzOffset);
         }
 
-        public void addOrg(CmsData.View.CheckinFamilyMember member, int day, int tzOffset)
+        public void addOrg(CheckinFamilyMember member, int day, int tzOffset)
         {
             CheckInOrganization org = new CheckInOrganization(member, day, tzOffset);
 
