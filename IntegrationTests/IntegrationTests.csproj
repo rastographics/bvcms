@@ -85,6 +85,7 @@
     <Compile Include="Areas\Finance\Views\Bundle\EditTests.cs" />
     <Compile Include="Areas\General\GeneralTests.cs" />
     <Compile Include="Areas\Manage\AccountTests.cs" />
+    <Compile Include="IntegrationTestsUtils\FinanceTestUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\R.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -122,6 +123,10 @@
     <ProjectReference Include="..\TransactionGateway\TransactionGateway.csproj">
       <Project>{bc0c6e33-dfef-4c4e-9e96-997af3d78bcf}</Project>
       <Name>TransactionGateway</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\UnitTests\CmsDataTests\CmsDataTests.csproj">
+      <Project>{9f19265d-148a-4c08-877d-1f686a802be3}</Project>
+      <Name>CmsDataTests</Name>
     </ProjectReference>
     <ProjectReference Include="..\UtilityExtensions\UtilityExtensions.csproj">
       <Project>{c504e3d2-5498-451b-bf82-309623706f11}</Project>
