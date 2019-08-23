@@ -252,7 +252,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
         public FileResult DocumentDownload(int documentId)
         {
             var document = CurrentDatabase.OrgMemberDocuments.SingleOrDefault(o => o.DocumentId == documentId);
-            ImageData.Image i = ImageData.DbUtil.Db.Images.SingleOrDefault(im => im.Id == document.ImageId);
+            ImageData.Image i = CurrentImageDatabase.Images.SingleOrDefault(im => im.Id == document.ImageId);
             var shortType = i.Mimetype;
             i.Mimetype = MimeTypes.MimeTypeFromShortType(shortType);
 

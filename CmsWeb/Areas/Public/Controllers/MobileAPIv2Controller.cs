@@ -1673,7 +1673,7 @@ namespace CmsWeb.Areas.Public.Controllers
 			}
 
 			if( om != null && !mpjo.join ) {
-				om.Drop( CurrentDatabase, DateTime.Now );
+				om.Drop(CurrentDatabase, CurrentImageDatabase, DateTime.Now);
 
 				DbUtil.LogActivity( $"Dropped {om.PeopleId} for {om.Organization.OrganizationId} via {dataIn.getSourceOS()} app", peopleid: om.PeopleId, orgid: om.OrganizationId );
 			}

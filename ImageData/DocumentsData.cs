@@ -6,16 +6,13 @@ namespace ImageData
 {
     public class DocumentsData
     {
-        public static int StoreImageFromDocument(HttpPostedFileBase file)
+        public static int StoreImageFromDocument(CMSImageDataContext db, HttpPostedFileBase file)
         {
-            Image i = GetImageFromFile(file);
-            i.Mimetype = UtilityExtensions.MimeTypes.ShortTypeFromMimeType(i.Mimetype);
-            DbUtil.Db.Images.InsertOnSubmit(i);
-            DbUtil.Db.SubmitChanges();
+            Image i = GetImageFromFile(db, file);
             return i.Id;
         }
 
-        private static Image GetImageFromFile(HttpPostedFileBase file)
+        private static Image GetImageFromFile(CMSImageDataContext db, HttpPostedFileBase file)
         {
             byte[] data;
             using (Stream inputStream = file.InputStream)
@@ -28,7 +25,8 @@ namespace ImageData
                 }
                 data = memoryStream.ToArray();
             }
-            return Image.CreateImageFromType(data, MimeMapping.GetMimeMapping(file.FileName));
+            var mimetype = UtilityExtensions.MimeTypes.ShortTypeFromMimeType(MimeMapping.GetMimeMapping(file.FileName));
+            return Image.CreateImageFromType(data, mimetype, db);
         }
     }
 }

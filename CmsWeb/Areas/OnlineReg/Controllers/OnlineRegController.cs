@@ -3,6 +3,7 @@ using CmsData.Codes;
 using CmsWeb.Areas.OnlineReg.Models;
 using CmsWeb.Models;
 using Elmah;
+using ImageData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -339,10 +340,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (document != null)
             {
                 CurrentDatabase.OrgMemberDocuments.DeleteOnSubmit(document);
-                ImageData.Image.DeleteOnSubmit(document.ImageId);
+                Image.Delete(CurrentImageDatabase, document.ImageId);
                 CurrentDatabase.SubmitChanges();
             }
-            int imageId = ImageData.DocumentsData.StoreImageFromDocument(file);
+            int imageId = ImageData.DocumentsData.StoreImageFromDocument(CurrentImageDatabase, file);
             CurrentDatabase.OrgMemberDocuments.InsertOnSubmit(new OrgMemberDocuments()
             {
                 DocumentName = docName,

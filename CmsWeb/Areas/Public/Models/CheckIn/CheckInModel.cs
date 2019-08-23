@@ -344,22 +344,23 @@ namespace CmsWeb.Models
 
         public void RecordAttend(int PeopleId, int OrgId, bool Present, int thisday)
         {
-            var q = from o in DbUtil.Db.Organizations
+            var db = DbUtil.Db;
+            var q = from o in db.Organizations
                     where o.OrganizationId == OrgId
-                    let p = DbUtil.Db.People.Single(pp => pp.PeopleId == PeopleId)
+                    let p = db.People.Single(pp => pp.PeopleId == PeopleId)
                     select new
                     {
-                        MeetingId = DbUtil.Db.GetTodaysMeetingId(OrgId, thisday),
-                        MeetingTime = DbUtil.Db.GetTodaysMeetingHours(OrgId, thisday).First().Hour,
+                        MeetingId = db.GetTodaysMeetingId(OrgId, thisday),
+                        MeetingTime = db.GetTodaysMeetingHours(OrgId, thisday).First().Hour,
                         o.Location,
                         OrgEntryPoint = o.EntryPointId,
                         p.EntryPointId
                     };
             var info = q.Single();
-            var meeting = DbUtil.Db.Meetings.SingleOrDefault(m => m.MeetingId == info.MeetingId);
+            var meeting = db.Meetings.SingleOrDefault(m => m.MeetingId == info.MeetingId);
             if (info.EntryPointId == null)
             {
-                var p = DbUtil.Db.LoadPersonById(PeopleId);
+                var p = db.LoadPersonById(PeopleId);
                 if (info.OrgEntryPoint > 0)
                 {
                     p.EntryPointId = info.OrgEntryPoint;
@@ -367,7 +368,7 @@ namespace CmsWeb.Models
             }
             if (meeting == null)
             {
-                var acr = (from s in DbUtil.Db.OrgSchedules
+                var acr = (from s in db.OrgSchedules
                            where s.OrganizationId == OrgId
                            where s.SchedTime.Value.TimeOfDay == info.MeetingTime.Value.TimeOfDay
                            where s.SchedDay == thisday
@@ -382,36 +383,37 @@ namespace CmsWeb.Models
                     Location = info.Location,
                     AttendCreditId = acr
                 };
-                DbUtil.Db.Meetings.InsertOnSubmit(meeting);
-                DbUtil.Db.SubmitChanges();
+                db.Meetings.InsertOnSubmit(meeting);
+                db.SubmitChanges();
             }
             Attend.RecordAttendance(PeopleId, meeting.MeetingId, Present);
-            DbUtil.Db.UpdateMeetingCounters(meeting.MeetingId);
+            db.UpdateMeetingCounters(meeting.MeetingId);
         }
 
         public void JoinUnJoinOrg(int PeopleId, int OrgId, bool Member)
         {
-            var om = DbUtil.Db.OrganizationMembers.SingleOrDefault(m => m.PeopleId == PeopleId && m.OrganizationId == OrgId);
+            var db = DbUtil.Db;
+            var om = db.OrganizationMembers.SingleOrDefault(m => m.PeopleId == PeopleId && m.OrganizationId == OrgId);
             if (om == null && Member)
             {
-                om = OrganizationMember.InsertOrgMembers(DbUtil.Db,
+                om = OrganizationMember.InsertOrgMembers(db,
                     OrgId, PeopleId, MemberTypeCode.Member, DateTime.Now, null, false);
             }
             else if (om != null && !Member)
             {
-                om.Drop(DbUtil.Db);
+                om.Drop(db, CMSImageDataContext.Create(db.Host));
             }
 
-            DbUtil.Db.SubmitChanges();
+            db.SubmitChanges();
 
-            var org = DbUtil.Db.LoadOrganizationById(OrgId);
+            var org = db.LoadOrganizationById(OrgId);
             if (org != null && org.NotifyIds.HasValue())
             {
-                var p = DbUtil.Db.LoadPersonById(PeopleId);
+                var p = db.LoadPersonById(PeopleId);
                 var what = Member ? "joined" : "dropped";
-                //                DbUtil.Db.Email(DbUtil.Db.Util.AdminMail,
-                //                    DbUtil.Db.PeopleFromPidString(org.NotifyIds),
-                //                    $"cms check-in, {what} class on " + DbUtil.Db.CmsHost,
+                //                db.Email(DbUtil.Db.Util.AdminMail,
+                //                    db.PeopleFromPidString(org.NotifyIds),
+                //                    $"cms check-in, {what} class on " + db.CmsHost,
                 //                    $"<a href='{Util.ServerLink("/Person2/" + PeopleId)}/Person2/{PeopleId}'>{p.Name}</a> {what} {org.OrganizationName}");
                 DbUtil.LogActivity($"cms check-in, {what} class ({p.PeopleId})");
             }

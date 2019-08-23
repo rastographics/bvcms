@@ -13,6 +13,7 @@ using System.Web;
 using System.Data.SqlClient;
 using CmsData.Codes;
 using CmsData.View;
+using ImageData;
 
 namespace CmsData
 {
@@ -20,16 +21,17 @@ namespace CmsData
     {
         private const string STR_MeetingsToUpdate = "MeetingsToUpdate";
 
-        public EnrollmentTransaction Drop(CMSDataContext db, bool skipTriggerProcessing = false)
+        public EnrollmentTransaction Drop(CMSDataContext db, CMSImageDataContext idb, bool skipTriggerProcessing = false)
         {
-            return Drop(db, DateTime.Now, skipTriggerProcessing);
+            return Drop(db, idb, DateTime.Now, skipTriggerProcessing);
         }
 
-        public EnrollmentTransaction Drop(CMSDataContext db, DateTime dropdate, bool skipTriggerProcessing = false)
+        public EnrollmentTransaction Drop(CMSDataContext db, CMSImageDataContext idb, DateTime dropdate, bool skipTriggerProcessing = false)
         {
-            return Drop(db, dropdate, Organization.OrganizationName, skipTriggerProcessing);
+            return Drop(db, idb, dropdate, Organization.OrganizationName, skipTriggerProcessing);
         }
-        public EnrollmentTransaction Drop(CMSDataContext db, DateTime dropdate, string orgname, bool skipTriggerProcessing = false)
+
+        public EnrollmentTransaction Drop(CMSDataContext db, CMSImageDataContext idb, DateTime dropdate, string orgname, bool skipTriggerProcessing = false)
         {
             db.SubmitChanges();
             while (true)
@@ -86,7 +88,7 @@ namespace CmsData
                     db.PrevOrgMemberExtras.InsertOnSubmit(ev2);
                     db.SubmitChanges();
                 }
-                DeleteDocuments(db);
+                DeleteDocuments(db, idb);
                 db.OrgMemberExtras.DeleteAllOnSubmit(this.OrgMemberExtras);
                 db.OrganizationMembers.DeleteOnSubmit(this);
                 db.ExecuteCommand(@"
@@ -104,12 +106,12 @@ AND a.PeopleId = {2}
             }
         }
 
-        private void DeleteDocuments(CMSDataContext db)
+        private void DeleteDocuments(CMSDataContext db, CMSImageDataContext idb)
         {
             var docs = db.OrgMemberDocuments.Where(p => p.PeopleId == this.PeopleId & p.OrganizationId == this.OrganizationId);
             foreach (var item in docs)
             {
-                ImageData.Image.DeleteOnSubmit(item.ImageId);
+                ImageData.Image.Delete(idb, item.ImageId);
             }
             db.OrgMemberDocuments.DeleteAllOnSubmit(docs);
             db.SubmitChanges();
@@ -754,7 +756,7 @@ AND a.PeopleId = {2}
         {
             DbUtil.LogActivity($"EVOrgMem {op}:{field}", orgid: OrganizationId, peopleid: PeopleId);
         }
-        public static void MoveToOrg(CMSDataContext db, int pid, int fromOrg, int toOrg, bool? moveregdata = true, int toMemberTypeId = -1)
+        public static void MoveToOrg(CMSDataContext db, CMSImageDataContext idb, int pid, int fromOrg, int toOrg, bool? moveregdata = true, int toMemberTypeId = -1)
         {
             if (fromOrg == toOrg)
                 return;
@@ -803,7 +805,7 @@ AND a.PeopleId = {2}
 
             if (om.OrganizationId != tom.OrganizationId)
                 tom.Moved = true;
-            om.Drop(db, skipTriggerProcessing: true);
+            om.Drop(db, idb, skipTriggerProcessing: true);
             db.SubmitChanges();
         }
     }

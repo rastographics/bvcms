@@ -1,5 +1,6 @@
 using CmsData;
 using CmsData.Codes;
+using ImageData;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -89,6 +90,7 @@ namespace CmsWeb.Areas.Dialog.Models
         private static void DoWork(OrgDrop model)
         {
             var db = CMSDataContext.Create(model.Host);
+            var idb = CMSImageDataContext.Create(model.Host);
             var cul = db.Setting("Culture", "en-US");
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
@@ -99,11 +101,11 @@ namespace CmsWeb.Areas.Dialog.Models
                 var om = db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == model.filter.Id);
                 if (model.DropDate.HasValue)
                 {
-                    om.Drop(db, model.DropDate.Value);
+                    om.Drop(db, idb, model.DropDate.Value);
                 }
                 else
                 {
-                    om.Drop(db);
+                    om.Drop(db, idb);
                 }
 
                 db.SubmitChanges();
@@ -128,7 +130,7 @@ namespace CmsWeb.Areas.Dialog.Models
         {
             var org = CurrentDatabase.LoadOrganizationById(orgId);
             var om = org.OrganizationMembers.Single(mm => mm.PeopleId == peopleId);
-            om.Drop(CurrentDatabase);
+            om.Drop(CurrentDatabase, CMSImageDataContext.Create(CurrentDatabase.Host));
             CurrentDatabase.SubmitChanges();
         }
     }
