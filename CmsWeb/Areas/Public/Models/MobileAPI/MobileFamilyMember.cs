@@ -1,7 +1,7 @@
 ﻿using CmsData;
+using ImageData;
 using System;
 using System.Linq;
-using DbUtil = ImageData.DbUtil;
 
 namespace CmsWeb.MobileAPI
 {
@@ -23,7 +23,7 @@ namespace CmsWeb.MobileAPI
 
         public MobileFamilyMember() { }
 
-        public MobileFamilyMember(Person person)
+        public MobileFamilyMember(Person person, CMSImageDataContext cmsidb)
         {
             id = person.PeopleId.ToString();
             name = person.Name ?? "";
@@ -35,7 +35,7 @@ namespace CmsWeb.MobileAPI
 
             if (person.Picture != null)
             {
-                var image = DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.SmallId);
+                var image = cmsidb.Images.SingleOrDefault(i => i.Id == person.Picture.SmallId);
 
                 if (image != null)
                 {
