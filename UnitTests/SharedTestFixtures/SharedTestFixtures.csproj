@@ -88,6 +88,8 @@
   <ItemGroup>
     <Compile Include="DatabaseCollection.cs" />
     <Compile Include="DatabaseFixture.cs" />
+    <Compile Include="FinanceTestBase.cs" />
+    <Compile Include="FinanceTestUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

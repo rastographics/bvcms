@@ -1,5 +1,4 @@
 ﻿using CmsData;
-using IntegrationTests.IntegrationTestsUtils;
 using IntegrationTests.Support;
 using OpenQA.Selenium;
 using Shouldly;
@@ -10,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
+using SharedTestFixtures;
 
 namespace IntegrationTests.Areas.Finance.Views.Bundle
 {
@@ -31,7 +31,7 @@ namespace IntegrationTests.Areas.Finance.Views.Bundle
             PageSource.ShouldContain("Contribution Bundle");
 
             Find(css: "span.input-group-addon").Click();
-            Find(css: "div.bootstrap-datetimepciker-widget").ShouldNotBeNull();
+            Find(css: "div.bootstrap-datetimepicker-widget").ShouldNotBeNull();
         }
     }
 }

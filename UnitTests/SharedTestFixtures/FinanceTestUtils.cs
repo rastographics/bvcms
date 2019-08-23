@@ -1,15 +1,7 @@
 ﻿using CmsData;
-using CmsDataTests.Support;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Xunit;
 
-namespace IntegrationTests.IntegrationTestsUtils
+namespace SharedTestFixtures
 {
-    [Collection("Database collection")]
     public class FinanceTestUtils : FinanceTestBase
     {
         private CMSDataContext db;
