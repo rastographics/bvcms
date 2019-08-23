@@ -18,7 +18,7 @@ namespace CmsDataTests
             var model = new PythonModel(db);
             var dateValue = DateTime.Parse(date);
             var bundleHeader = model.GetBundleHeader(dateValue, DateTime.Now);
-            var contributionDate = model.ParseDate(cDate) ?? DateTime.Now;
+            var contributionDate = model.ParseDate(cDate).Value;
             var detail = model.AddContribution(contributionDate, fundid, amount, checkno, description, peopleid);
             bundleHeader.BundleDetails.Add(detail);
             model.FinishBundle(bundleHeader);
