@@ -96,7 +96,6 @@ namespace CmsWeb.Areas.Dialog.Models
             AmtPaid = OrgMember.AmountPaidTransactions(CurrentDatabase);
             AmtDue = OrgMember.AmountDueTransactions(CurrentDatabase);
 
-
             OrgName = i.OrganizationName;
             Organization = i.Organization;
             OrgMemMemTags = i.OrgMemMemTags.ToList();
