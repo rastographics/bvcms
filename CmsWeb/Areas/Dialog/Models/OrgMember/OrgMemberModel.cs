@@ -96,22 +96,31 @@ namespace CmsWeb.Areas.Dialog.Models
             AmtPaid = OrgMember.AmountPaidTransactions(CurrentDatabase);
             AmtDue = OrgMember.AmountDueTransactions(CurrentDatabase);
 
-            PopulatePassport();
 
             OrgName = i.OrganizationName;
             Organization = i.Organization;
             OrgMemMemTags = i.OrgMemMemTags.ToList();
             Setting = CurrentDatabase.CreateRegistrationSettings(OrgId ?? 0);
+
+            PopulatePassport();
         }
 
         private void PopulatePassport()
         {
             var RecReg = CurrentDatabase.RecRegs.FirstOrDefault(r => r.PeopleId == PeopleId);
-            if (RecReg.PassportNumber != null)
+            if (RecReg != null && OrgSettingsHasPassport())
             {
                 PassportNumber = Util.Decrypt(RecReg.PassportNumber);
-                PassportExpires = DateTime.ParseExact(Util.Decrypt(RecReg.PassportExpires), "MM/dd/yyyy" ,System.Globalization.CultureInfo.InvariantCulture);
+                PassportExpires = DateTime.ParseExact(Util.Decrypt(RecReg.PassportExpires), "MM/dd/yyyy", System.Globalization.CultureInfo.InvariantCulture);
             }
+        }
+
+        private bool OrgSettingsHasPassport()
+        {
+            if (Setting?.AskItems != null)            
+                return Setting.AskItems.Any(a => a.Type == "AskPassport");            
+
+            return false;
         }
 
         public string Group { get; set; }
