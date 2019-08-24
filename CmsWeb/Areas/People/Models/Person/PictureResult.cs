@@ -78,8 +78,10 @@ namespace CmsWeb.Areas.People.Models
                 ImageData.Image i = null;
                 try
                 {
-                    var db = ImageData.CMSImageDataContext.Create(context.HttpContext);
-                    i = ImageData.DbUtil.Db.Images.SingleOrDefault(ii => ii.Id == id);
+                    using (var db = ImageData.CMSImageDataContext.Create(context.HttpContext))
+                    {
+                        i = db.Images.SingleOrDefault(ii => ii.Id == id);
+                    }
                 }
                 catch { }
 

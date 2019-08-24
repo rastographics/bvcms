@@ -325,7 +325,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [HttpPost, Route("~/OnePageGiving/Login/{id:int}")]
         public ActionResult OnePageGivingLogin(int id, string username, string password, bool? testing, string source)
         {
-            var ret = AccountModel.AuthenticateLogon(username, password, Session, Request, CurrentDatabase);
+            var ret = AccountModel.AuthenticateLogon(username, password, Session, Request, CurrentDatabase, CurrentImageDatabase);
 
             if (ret is string)
             {

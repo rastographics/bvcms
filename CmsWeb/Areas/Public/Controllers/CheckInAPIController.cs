@@ -31,7 +31,9 @@ namespace CmsWeb.Areas.Public.Controllers
 
         private static bool Auth()
         {
-            return AccountModel.AuthenticateMobile("Checkin").IsValid;
+            var db = CMSDataContext.Create(HttpContextFactory.Current);
+            var idb = CMSImageDataContext.Create(HttpContextFactory.Current);
+            return AccountModel.AuthenticateMobile(db, idb, "Checkin").IsValid;
         }
 
         public ActionResult Authenticate(string data)
@@ -116,7 +118,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 {
                     if (match.Familyid != null)
                     {
-                        CheckInFamily family = new CheckInFamily(match.Familyid.Value, match.Name, match.Locked ?? false);
+                        CheckInFamily family = new CheckInFamily(match.Familyid.Value, match.Name, match.Locked ?? false, CurrentDatabase, CurrentImageDatabase);
 
                         List<CheckinFamilyMember> members = (from a in CurrentDatabase.CheckinFamilyMembers(match.Familyid, cns.campus, cns.day).ToList()
                                                              orderby a.Position, a.Position == 10 ? a.Genderid : 10, a.Age descending, a.Hour
@@ -124,7 +126,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
                         foreach (CheckinFamilyMember member in members)
                         {
-                            family.addMember(member, cns.day, tzOffset);
+                            family.addMember(CurrentDatabase, CurrentImageDatabase, member, cns.day, tzOffset);
                         }
 
                         families.Add(family);
@@ -161,7 +163,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             FamilyCheckinLock familyLock = CurrentDatabase.FamilyCheckinLocks.SingleOrDefault(f => f.FamilyId == dataIn.argInt);
 
-            CheckInFamily family = new CheckInFamily(cfs.familyID, "", familyLock?.Locked ?? false);
+            CheckInFamily family = new CheckInFamily(cfs.familyID, "", familyLock?.Locked ?? false, CurrentDatabase, CurrentImageDatabase);
 
             List<CheckinFamilyMember> members = (from a in CurrentDatabase.CheckinFamilyMembers(cfs.familyID, cfs.campus, cfs.day).ToList()
                                                  orderby a.Position, a.Position == 10 ? a.Genderid : 10, a.Age descending, a.Hour
@@ -169,7 +171,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             foreach (CheckinFamilyMember member in members)
             {
-                family.addMember(member, cfs.day, tzOffset);
+                family.addMember(CurrentDatabase, CurrentImageDatabase, member, cfs.day, tzOffset);
             }
 
             families.Add(family);
@@ -403,19 +405,19 @@ namespace CmsWeb.Areas.Public.Controllers
                     CurrentImageDatabase.Images.DeleteOnSubmit(imageDataLarge);
                 }
 
-                person.Picture.ThumbId = Image.NewImageFromBits(imageBytes, 50, 50).Id;
-                person.Picture.SmallId = Image.NewImageFromBits(imageBytes, 120, 120).Id;
-                person.Picture.MediumId = Image.NewImageFromBits(imageBytes, 320, 400).Id;
-                person.Picture.LargeId = Image.NewImageFromBits(imageBytes).Id;
+                person.Picture.ThumbId = Image.NewImageFromBits(imageBytes, 50, 50, CurrentImageDatabase).Id;
+                person.Picture.SmallId = Image.NewImageFromBits(imageBytes, 120, 120, CurrentImageDatabase).Id;
+                person.Picture.MediumId = Image.NewImageFromBits(imageBytes, 320, 400, CurrentImageDatabase).Id;
+                person.Picture.LargeId = Image.NewImageFromBits(imageBytes, CurrentImageDatabase).Id;
             }
             else
             {
                 Picture newPicture = new Picture
                 {
-                    ThumbId = Image.NewImageFromBits(imageBytes, 50, 50).Id,
-                    SmallId = Image.NewImageFromBits(imageBytes, 120, 120).Id,
-                    MediumId = Image.NewImageFromBits(imageBytes, 320, 400).Id,
-                    LargeId = Image.NewImageFromBits(imageBytes).Id
+                    ThumbId = Image.NewImageFromBits(imageBytes, 50, 50, CurrentImageDatabase).Id,
+                    SmallId = Image.NewImageFromBits(imageBytes, 120, 120, CurrentImageDatabase).Id,
+                    MediumId = Image.NewImageFromBits(imageBytes, 320, 400, CurrentImageDatabase).Id,
+                    LargeId = Image.NewImageFromBits(imageBytes, CurrentImageDatabase).Id
                 };
 
                 if (person != null)
@@ -488,19 +490,19 @@ namespace CmsWeb.Areas.Public.Controllers
                     CurrentImageDatabase.Images.DeleteOnSubmit(imageDataLarge);
                 }
 
-                family.Picture.ThumbId = Image.NewImageFromBits(imageBytes, 50, 50).Id;
-                family.Picture.SmallId = Image.NewImageFromBits(imageBytes, 120, 120).Id;
-                family.Picture.MediumId = Image.NewImageFromBits(imageBytes, 320, 400).Id;
-                family.Picture.LargeId = Image.NewImageFromBits(imageBytes).Id;
+                family.Picture.ThumbId = Image.NewImageFromBits(imageBytes, 50, 50, CurrentImageDatabase).Id;
+                family.Picture.SmallId = Image.NewImageFromBits(imageBytes, 120, 120, CurrentImageDatabase).Id;
+                family.Picture.MediumId = Image.NewImageFromBits(imageBytes, 320, 400, CurrentImageDatabase).Id;
+                family.Picture.LargeId = Image.NewImageFromBits(imageBytes, CurrentImageDatabase).Id;
             }
             else
             {
                 Picture newPicture = new Picture
                 {
-                    ThumbId = Image.NewImageFromBits(imageBytes, 50, 50).Id,
-                    SmallId = Image.NewImageFromBits(imageBytes, 120, 120).Id,
-                    MediumId = Image.NewImageFromBits(imageBytes, 320, 400).Id,
-                    LargeId = Image.NewImageFromBits(imageBytes).Id
+                    ThumbId = Image.NewImageFromBits(imageBytes, 50, 50, CurrentImageDatabase).Id,
+                    SmallId = Image.NewImageFromBits(imageBytes, 120, 120, CurrentImageDatabase).Id,
+                    MediumId = Image.NewImageFromBits(imageBytes, 320, 400, CurrentImageDatabase).Id,
+                    LargeId = Image.NewImageFromBits(imageBytes, CurrentImageDatabase).Id
                 };
 
                 if (family != null)
@@ -852,7 +854,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             foreach (CheckInPerson person in q2)
             {
-                person.loadImage();
+                person.loadImage(CurrentDatabase, CurrentImageDatabase);
             }
 
             CheckInMessage br = new CheckInMessage();

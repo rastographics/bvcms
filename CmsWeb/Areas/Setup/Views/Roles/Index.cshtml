@@ -8,13 +8,13 @@
     @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
 }
 <div class="row">
-    <div class="col-lg-7">
+    <div class="col-lg-12">
         <div class="box box-responsive">
             <div class="box-title-btn">
                 <div class="box-tools">
                     @using (Html.BeginForm("Create", "Roles"))
                     {
-                        <a href="/Lookups" class="btn btn-default"><i class="fa fa-arrow-circle-left"></i> Back to List</a> <button type="submit" class="btn btn-success"><i class="fa fa-plus-circle"></i> Add Role</button>
+                        <a href="/Lookups" class="btn btn-default"><i class="fa fa-arrow-circle-left"></i> Back to List</a> <a href="/Roles/Priorities" class="btn btn-default">Change Priorities</a> <button type="submit" class="btn btn-success"><i class="fa fa-plus-circle"></i> Add Role</button>
                     }
                 </div>
             </div>
@@ -35,13 +35,16 @@
                                     <td style="width: 100px;">@item.RoleId<a href="#" id="@item.RoleId"></a></td>
                                     @if (item.Hardwired == true)
                                     {
-                                        <td style="width: 500px;">@item.RoleName</td>
-                                        <td style="width: 50px;"></td>
+                                        <td style="width: 370px;">@item.RoleName</td>
+                                        <td style="width: 180px;"><a href="/Roles/@item.RoleId" class="btn btn-default btn-sm">Settings</a></td>
                                     }
                                     else
                                     {
-                                        <td style="width: 500px;"><a id="RoleName.@item.RoleName" data-pk="RoleName.@item.RoleName" class="clickEdit">@item.RoleName</a></td>
-                                        <td style="width: 50px;"><a id="d@(item.RoleId)" href="#" class="delete btn btn-danger btn-sm"><i class="fa fa-trash"></i> Delete</a></td>
+                                        <td style="width: 370px;"><a id="RoleName.@item.RoleName" data-pk="RoleName.@item.RoleName" class="clickEdit">@item.RoleName</a></td>
+                                        <td style="width: 180px;">
+                                            <a href="/Roles/@item.RoleId" class="btn btn-default btn-sm">Settings</a>
+                                            <a id="@(item.RoleId)" href="#" class="delete btn btn-danger btn-sm"><i class="fa fa-trash"></i> Delete</a>
+                                        </td>
                                     }
                                 </tr>
                             }
@@ -52,6 +55,7 @@
                     @using (Html.BeginForm("Create", "Roles"))
                     {
                         <button type="submit" class="btn btn-success btn-block"><i class="fa fa-plus-circle"></i> Add Role</button>
+                        <a href="/Roles/Priorities" class="btn btn-default btn-block">Change Priorities</a>
                         <a href="/Lookups" class="btn btn-default btn-block"><i class="fa fa-arrow-circle-left"></i> Back to List</a>
                     }
                 </div>
@@ -75,6 +79,9 @@
                 mode: 'inline',
                 type: 'text',
                 url: "/Roles/Edit/",
+                success: function (response, newValue) {
+                    if (response.Status == 'error') return response.Message; // will be shown as error in editable form
+                },
                 params: function (params) {
                     var data = {};
                     data['id'] = params.pk;

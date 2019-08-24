@@ -24,6 +24,8 @@ namespace CmsData
 		
 		private bool? _Hardwired;
 		
+		private int? _Priority;
+		
    		
    		private EntitySet<UserRole> _UserRoles;
 		
@@ -43,6 +45,9 @@ namespace CmsData
 		
 		partial void OnHardwiredChanging(bool? value);
 		partial void OnHardwiredChanged();
+		
+		partial void OnPriorityChanging(int? value);
+		partial void OnPriorityChanged();
 		
     #endregion
 		public Role()
@@ -116,6 +121,28 @@ namespace CmsData
 					this._Hardwired = value;
 					this.SendPropertyChanged("Hardwired");
 					this.OnHardwiredChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="Priority", UpdateCheck=UpdateCheck.Never, Storage="_Priority", DbType="int")]
+		public int? Priority
+		{
+			get { return this._Priority; }
+
+			set
+			{
+				if (this._Priority != value)
+				{
+				
+                    this.OnPriorityChanging(value);
+					this.SendPropertyChanging();
+					this._Priority = value;
+					this.SendPropertyChanged("Priority");
+					this.OnPriorityChanged();
 				}
 
 			}
