@@ -1239,6 +1239,12 @@ This search uses multiple steps which cannot be duplicated in a single query.
             var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), pid, orgid);
             return ((int)(result.ReturnValue));
         }
+        [Function(Name = "dbo.MergeCampuses")]
+        public int MergeCampuses([Parameter(DbType = "Int")] int destCampus, [Parameter(DbType = "Int")] int oldCampus)
+        {
+            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), destCampus, oldCampus);
+            return ((int)(result.ReturnValue));
+        }
         [Function(Name = "dbo.PurgePerson")]
         public int PurgePerson([Parameter(DbType = "Int")] int? pid)
         {

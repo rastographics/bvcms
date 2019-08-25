@@ -82,7 +82,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (IsCardTester(pf, "Payment Page"))
             {
                 return Message("Found Card Tester");
-            }            
+            }
 
             int? GatewayId = MultipleGatewayUtils.GatewayId(CurrentDatabase, m?.ProcessType ?? pf.ProcessType);
 
@@ -182,7 +182,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
         [ActionName("Confirm")]
         [HttpPost]
-        public ActionResult Confirm_Post(int? id, string transactionId, decimal? amount)
+        public ActionResult Confirm_Post(int? id, string transactionId, string termsSignature, decimal? amount)
         {
             if (!id.HasValue)
             {
@@ -190,6 +190,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
 
             var m = OnlineRegModel.GetRegistrationFromDatum(id ?? 0, CurrentDatabase);
+            m.TermsSignature = termsSignature == string.Empty ? null : termsSignature;
             if (m == null || m.Completed)
             {
                 if (m == null)
@@ -325,7 +326,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             if ((int)GatewayTypes.Pushpay == GatewayId)
             {
-                ViewBag.Header = "Payment Process";                
+                ViewBag.Header = "Payment Process";
                 if (string.IsNullOrEmpty(MultipleGatewayUtils.Setting(CurrentDatabase, "PushpayMerchant", "", (int)PaymentProcessTypes.OnlineRegistration)))
                     return View("OnePageGiving/NotConfigured");
 

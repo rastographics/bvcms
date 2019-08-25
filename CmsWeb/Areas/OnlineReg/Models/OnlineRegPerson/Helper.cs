@@ -749,14 +749,15 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public bool ShowDOBOnFind()
         {
             var o = masterorg ?? org;
-            return o != null && settings.Values.Any(x => x.ShowDOBOnFind) == true;
+            return o != null && Parent.settings.Values.Any(x => x.ShowPhoneOnFind) == true;
         }
 
         public bool ShowPhoneOnFind()
         {
             var o = masterorg ?? org;
-            return o != null && settings.Values.Any(x => x.ShowPhoneOnFind) == true;
+            return o != null && Parent.settings.Values.Any(x => x.ShowPhoneOnFind) == true;
         }
+
         public int MinimumUserAge => db.Setting("MinimumUserAge", "16").ToInt();
 
     }

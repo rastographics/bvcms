@@ -8,6 +8,7 @@
 using CmsData;
 using CmsData.Codes;
 using CmsData.Registration;
+using CmsWeb.Areas.OnlineReg.Models;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using System;
@@ -236,6 +237,14 @@ namespace CmsWeb.Areas.Reports.Models
                         }
                         if (i.m?.OnlineRegData != null)
                         {
+                            var termsSignature = GetTermsSignature(i.m.PeopleId, i.m.OrganizationId);
+
+                            if (termsSignature != null)
+                            {
+                                t5.AddCell("Terms Signature");
+                                t5.AddCell(termsSignature);
+                            }
+
                             var qlist = from qu in DbUtil.Db.ViewOnlineRegQAs
                                         where qu.OrganizationId == i.m.OrganizationId
                                         where qu.Type == "question" || qu.Type == "text"
@@ -273,6 +282,18 @@ namespace CmsWeb.Areas.Reports.Models
 
             pageEvents.EndPageSet();
             doc.Close();
+        }
+
+        private static string GetTermsSignature(int peopleId, int organizationId)
+        {
+            var regDataId = DbUtil.Db.OrganizationMembers.FirstOrDefault(o => o.PeopleId == peopleId && o.OrganizationId == organizationId).RegistrationDataId;
+            if (regDataId != null)
+            {
+                var regData = DbUtil.Db.RegistrationDatas.FirstOrDefault(o => o.Id == regDataId).Data;
+                var m = Util.DeSerialize<OnlineRegModel>(regData);
+                return m.TermsSignature;
+            }
+            return null;
         }
 
         private static bool SettingVisible(Settings setting, string name)
@@ -500,8 +521,8 @@ namespace CmsWeb.Areas.Reports.Models
 
                 if (x.Organization == null || SettingVisible(setting, "AskPassport"))
                 {
-                    AddValue(table, row, "PassportNumber", Util.Decrypt(x.RecReg.PassportNumber));
-                    AddValue(table, row, "PassportExpires", Util.Decrypt(x.RecReg.PassportExpires));
+                    AddValue(table, row, "PassportNumber", x.RecReg.PassportNumber);
+                    AddValue(table, row, "PassportExpires", x.RecReg.PassportExpires);
                 }
 
                 if (x.Organization == null || SettingVisible(setting, "AskDoctor"))
@@ -518,6 +539,11 @@ namespace CmsWeb.Areas.Reports.Models
 
                 if (x.OrgMembers?.OnlineRegData != null)
                 {
+                    var termsSignature = GetTermsSignature(x.OrgMembers.PeopleId, x.OrgMembers.OrganizationId);
+
+                    if (termsSignature != null)
+                        AddValue(table, row, "Terms Signature", termsSignature);
+
                     var qlist = from qu in DbUtil.Db.ViewOnlineRegQAs
                                 where qu.OrganizationId == x.OrgMembers.OrganizationId
                                 where qu.Type == "question" || qu.Type == "text"
