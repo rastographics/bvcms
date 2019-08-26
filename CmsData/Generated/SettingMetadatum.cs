@@ -1,22 +1,17 @@
-using System; 
+using CmsData.Infrastructure;
+using System;
+using System.ComponentModel;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
-using System.ComponentModel;
-using CmsData.Infrastructure;
 
 namespace CmsData
 {
-	[Table(Name="dbo.SettingMetadata")]
+    [Table(Name="dbo.SettingMetadata")]
 	public partial class SettingMetadatum : INotifyPropertyChanging, INotifyPropertyChanged
 	{
 		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
 		
-	#region Private Fields
+	    #region Private Fields
 		
 		private string _SettingId;
 		
@@ -29,8 +24,6 @@ namespace CmsData
 		private int? _SettingTypeId;
 		
 		private int? _SettingCategoryId;
-		
-   		
     	
 		private EntityRef<Setting> _Setting;
 		
@@ -38,12 +31,12 @@ namespace CmsData
 		
 		private EntityRef<SettingType> _SettingType;
 		
-	#endregion
+	    #endregion
 	
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
+        #region Extensibility Method Definitions
+        partial void OnLoaded();
+        partial void OnValidate(System.Data.Linq.ChangeAction action);
+        partial void OnCreated();
 		
 		partial void OnSettingIdChanging(string value);
 		partial void OnSettingIdChanged();
@@ -63,11 +56,10 @@ namespace CmsData
 		partial void OnSettingCategoryIdChanging(int? value);
 		partial void OnSettingCategoryIdChanged();
 		
-    #endregion
+        #endregion
+
 		public SettingMetadatum()
 		{
-			
-			
 			this._Setting = default(EntityRef<Setting>); 
 			
 			this._SettingCategory = default(EntityRef<SettingCategory>); 
@@ -76,9 +68,8 @@ namespace CmsData
 			
 			OnCreated();
 		}
-
 		
-    #region Columns
+        #region Columns
 		
 		[Column(Name="SettingId", UpdateCheck=UpdateCheck.Never, Storage="_SettingId", DbType="nvarchar(50) NOT NULL", IsPrimaryKey=true)]
 		[IsForeignKey]
@@ -90,7 +81,6 @@ namespace CmsData
 			{
 				if (this._SettingId != value)
 				{
-				
 					if (this._Setting.HasLoadedOrAssignedValue)
 						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
 				
@@ -100,11 +90,8 @@ namespace CmsData
 					this.SendPropertyChanged("SettingId");
 					this.OnSettingIdChanged();
 				}
-
 			}
-
 		}
-
 		
 		[Column(Name="DisplayName", UpdateCheck=UpdateCheck.Never, Storage="_DisplayName", DbType="varchar")]
 		public string DisplayName
@@ -115,18 +102,14 @@ namespace CmsData
 			{
 				if (this._DisplayName != value)
 				{
-				
                     this.OnDisplayNameChanging(value);
 					this.SendPropertyChanging();
 					this._DisplayName = value;
 					this.SendPropertyChanged("DisplayName");
 					this.OnDisplayNameChanged();
 				}
-
 			}
-
 		}
-
 		
 		[Column(Name="Description", UpdateCheck=UpdateCheck.Never, Storage="_Description", DbType="varchar")]
 		public string Description
@@ -137,18 +120,14 @@ namespace CmsData
 			{
 				if (this._Description != value)
 				{
-				
                     this.OnDescriptionChanging(value);
 					this.SendPropertyChanging();
 					this._Description = value;
 					this.SendPropertyChanged("Description");
 					this.OnDescriptionChanged();
 				}
-
 			}
-
 		}
-
 		
 		[Column(Name="DataType", UpdateCheck=UpdateCheck.Never, Storage="_DataType", DbType="int")]
 		public int? DataType
@@ -159,18 +138,14 @@ namespace CmsData
 			{
 				if (this._DataType != value)
 				{
-				
                     this.OnDataTypeChanging(value);
 					this.SendPropertyChanging();
 					this._DataType = value;
 					this.SendPropertyChanged("DataType");
 					this.OnDataTypeChanged();
 				}
-
 			}
-
 		}
-
 		
 		[Column(Name="SettingTypeId", UpdateCheck=UpdateCheck.Never, Storage="_SettingTypeId", DbType="int")]
 		[IsForeignKey]
@@ -182,7 +157,6 @@ namespace CmsData
 			{
 				if (this._SettingTypeId != value)
 				{
-				
 					if (this._SettingType.HasLoadedOrAssignedValue)
 						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
 				
@@ -192,11 +166,8 @@ namespace CmsData
 					this.SendPropertyChanged("SettingTypeId");
 					this.OnSettingTypeIdChanged();
 				}
-
 			}
-
 		}
-
 		
 		[Column(Name="SettingCategoryId", UpdateCheck=UpdateCheck.Never, Storage="_SettingCategoryId", DbType="int")]
 		[IsForeignKey]
@@ -208,7 +179,6 @@ namespace CmsData
 			{
 				if (this._SettingCategoryId != value)
 				{
-				
 					if (this._SettingCategory.HasLoadedOrAssignedValue)
 						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
 				
@@ -218,19 +188,16 @@ namespace CmsData
 					this.SendPropertyChanged("SettingCategoryId");
 					this.OnSettingCategoryIdChanged();
 				}
-
 			}
-
 		}
 
-		
-    #endregion
-        
-    #region Foreign Key Tables
-   		
-	#endregion
-	
-	#region Foreign Keys
+        #endregion
+            
+        #region Foreign Key Tables
+   		    
+	    #endregion
+	    
+	    #region Foreign Keys
     	
 		[Association(Name="FK_SettingMetadata_Setting", Storage="_Setting", ThisKey="SettingId", IsForeignKey=true)]
 		public Setting Setting
@@ -256,23 +223,17 @@ namespace CmsData
 						value.SettingMetadatas.Add(this);
 						
 						this._SettingId = value.Id;
-						
 					}
 
 					else
 					{
-						
 						this._SettingId = default(string);
-						
 					}
 
 					this.SendPropertyChanged("Setting");
 				}
-
 			}
-
 		}
-
 		
 		[Association(Name="FK_SettingMetadata_SettingCategory", Storage="_SettingCategory", ThisKey="SettingCategoryId", IsForeignKey=true)]
 		public SettingCategory SettingCategory
@@ -298,23 +259,17 @@ namespace CmsData
 						value.SettingMetadatas.Add(this);
 						
 						this._SettingCategoryId = value.SettingCategoryId;
-						
 					}
 
 					else
 					{
-						
 						this._SettingCategoryId = default(int?);
-						
 					}
 
 					this.SendPropertyChanged("SettingCategory");
 				}
-
 			}
-
 		}
-
 		
 		[Association(Name="FK_SettingMetadata_SettingType", Storage="_SettingType", ThisKey="SettingTypeId", IsForeignKey=true)]
 		public SettingType SettingType
@@ -340,25 +295,19 @@ namespace CmsData
 						value.SettingMetadatas.Add(this);
 						
 						this._SettingTypeId = value.SettingTypeId;
-						
 					}
 
 					else
 					{
-						
 						this._SettingTypeId = default(int?);
-						
 					}
 
 					this.SendPropertyChanged("SettingType");
 				}
-
 			}
-
 		}
-
 		
-	#endregion
+	    #endregion
 	
 		public event PropertyChangingEventHandler PropertyChanging;
 		protected virtual void SendPropertyChanging()
@@ -373,9 +322,5 @@ namespace CmsData
 			if ((this.PropertyChanged != null))
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 		}
-
-   		
 	}
-
 }
-
