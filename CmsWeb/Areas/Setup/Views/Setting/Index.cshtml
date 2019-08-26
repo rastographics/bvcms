@@ -61,7 +61,7 @@
         <div class="box box-responsive">
             <div class="box-title-btn">
                 <div class="box-tools">
-                    <a href="#" class="btn btn-success create-new"><i class="fa fa-plus-circle"></i> Add Setting</a>
+                    <a href="#" class="btn btn-success create-new" data-add-setting><i class="fa fa-plus-circle"></i> Add Setting</a>
                 </div>
             </div>
             <div class="box-content">
@@ -80,15 +80,6 @@
                         </li>
                     }
                 </ul>
-                <select class="form-control visible-sm-block visible-xs-block nav-select-pills">
-                    <option value="#general">General</option>
-                    @for (var i = 0; i < Model.SettingTypes.Count; i++)
-                    {
-                        <option value="#@Model.SettingTypes[i].SettingType.Name.SlugifyString()">
-                            @Model.SettingTypes[i].SettingType.Name
-                        </option>
-                    }
-                </select>
                 <div class="tab-content" style="border: none">
                     <div class="tab-pane active" id="general">
                         <div class="accordion" id="accordion-general-settings">
@@ -280,6 +271,11 @@
                     var tab = $(e.target).attr('href').replace("#", "#tab-");
                     window.location.hash = tab;
                     localStorage.setItem('last-settings-tab', tab);
+
+                    if (tab === '#tab-general' || tab === '#tab-misc' || tab === '#tab-miscellaneous')
+                        $('[data-add-setting]').show();
+                    else
+                        $('[data-add-setting]').hide();
                 });
 
             var lastTab = localStorage.getItem('last-settings-tab');
@@ -293,6 +289,11 @@
                     tlink.click().tab("show");
                 }
             }
+
+            if (lastTab === '#tab-general' || lastTab === '#tab-misc' || lastTab === '#tab-miscellaneous')
+                $('[data-add-setting]').show();
+            else
+                $('[data-add-setting]').hide();
         });
     </script>
 }
