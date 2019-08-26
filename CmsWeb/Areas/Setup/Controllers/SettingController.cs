@@ -49,6 +49,8 @@ namespace CmsWeb.Areas.Setup.Controllers
             {
                 var m = new Setting { Id = id };
                 CurrentDatabase.Settings.InsertOnSubmit(m);
+                var meta = new SettingMetadatum { SettingId = id };
+                CurrentDatabase.SettingMetadatas.InsertOnSubmit(meta);
                 CurrentDatabase.SubmitChanges();
                 CurrentDatabase.SetSetting(id, null);
             }
