@@ -1,4 +1,5 @@
 ﻿Vue.use(VueMask.VueMaskPlugin);
+Mousetrap.unbind('/');
 
 var Keyboard = window.SimpleKeyboard.default;
 
@@ -13,7 +14,7 @@ new Vue({
         reprintLabels: false,
         idleTimer: false,
         idleStage: 0,
-        idleTimeout: 60000,
+        idleTimeout: 45000,
         profiles: [],
         families: [],
         members: [],
@@ -76,10 +77,12 @@ new Vue({
         },
         phoneMask: function () {
             var len = this.search.phone.replace(/\D/g, '').length;
-            if (len > 4 && len < 11) {
-                return '(###) ###-####?#?#?#?#?#';
+            if (len < 8) {
+                return '###-###########';
+            } else if (len < 11) {
+                return '(###) ###-#########';
             } else {
-                return '##########?#?#?#?#?#';
+                return '###############';
             }
         },
         attendanceUpdated: function () {
@@ -153,13 +156,16 @@ new Vue({
             let vm = this;
             setTimeout(function () {
                 vm.keyboard = new Keyboard({
-                    onChange: function (input) {
+                    onChange: (input) => {
                         vm.search.phone = input;
                     },
-                    onKeyPress: function (button) {
+                    onKeyPress: (button) => {
                         if (button === '{enter}') {
                             vm.find();
                         }
+                    },
+                    onInit: () => {
+                        $(".keyboard-input").focus();
                     },
                     layout: {
                         default: ["1 2 3", "4 5 6", "7 8 9", "{bksp} 0 {enter}"]
@@ -168,7 +174,12 @@ new Vue({
                         '{bksp}': '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" width="38px" viewBox="0 0 512 640" enable-background="new 0 0 512 512" style="margin-top:15px;fill:white;" xml:space="preserve"><path d="M436,136H184.3c-5.3,0-10.4,2.1-14.1,5.9l-108.3,100c-7.8,7.8-7.8,20.5,0,28.3l108.3,100c3.8,3.8,8.8,5.9,14.1,5.9H436  c11,0,20-9,20-20V156C456,145,447,136,436,136z M370.1,301.9c7.8,7.8,5.3,22.9,0,28.3c-3.9,3.9-18.6,9.7-28.3,0L296,284.3  l-45.9,45.9c-9.2,9.2-21.9,6.4-28.3,0c-7.8-7.8-7.8-20.5,0-28.3l45.9-45.9l-45.9-45.9c-7.8-7.8-7.8-20.5,0-28.3s20.5-7.8,28.3,0  l45.9,45.9l45.9-45.9c7.8-7.8,20.5-7.8,28.3,0c7.8,7.8,7.8,20.5,0,28.3L324.3,256L370.1,301.9z"/></svg>',
                         '{enter}': '<i class="fa fa-search"></i>'
                     },
-                    theme: "hg-theme-default hg-layout-numeric numeric-theme"
+                    theme: "hg-theme-default hg-layout-numeric numeric-theme",
+                    autoUseTouchEvents: true,       // use touch events on devices and browsers that support it
+                    disableButtonHold: true,        // holding button only leads to one press
+                    stopMouseDownPropagation: true, // prevent click bubble up on button press
+                    disableCaretPositioning: true,  // force cursor to the end of the input (mask support)
+                    preventMouseDownDefault: true   // prevent loss of focus on button press
                 });
                 $(".keyboard-input").on("input", function (e) {
                     vm.keyboard.setInput(e.target.value);
@@ -179,7 +190,7 @@ new Vue({
             let vm = this;
             clearTimeout(vm.idleTimer);
             if (!vm.profile.DisableTimer) {
-                vm.idleTimer = setTimeout(vm.handleIdle, vm.idleTimeout);
+                vm.idleTimer = setTimeout(vm.handleIdle, vm.idleStage === 1 ? '7000' : vm.idleTimeout);
             }
         },
         handleIdle() {
@@ -206,6 +217,7 @@ new Vue({
                 cancelButtonText: "No"
             }, function () {
                 vm.idleStage = 0;
+                vm.resetIdleTimer();
             });
         },
         portraitStyles(member) {
@@ -401,15 +413,12 @@ new Vue({
                     var disabled = false;
                     var now = vm.timestamp();
                     var start = vm.timestamp(group.date);
-                    console.log(start);
-                    console.log(now);
                     if (vm.profile.EarlyCheckIn && (start - vm.profile.EarlyCheckIn > now) && start > now) {
                         disabled = true;
                     }
                     if (vm.profile.LateCheckIn && (start + vm.profile.LateCheckIn < now) && start < now) {
                         disabled = true;
                     }
-                    console.log(disabled);
                     var attend = member.id + '.' + group.id + '.' + group.date;
                     vm.$set(vm.attendance, attend, {
                         initial: group.checkedIn ? vm.CHECKEDIN : vm.ABSENT,
@@ -420,7 +429,7 @@ new Vue({
                 });
             });
         },
-        toggleAttendance(memberId, groupId, date) {
+        toggleAttendance(memberId, groupId, date, quiet = false) {
             let vm = this;
             var attend = memberId + '.' + groupId + '.' + date;
             var old = vm.attendance[attend];
@@ -434,7 +443,9 @@ new Vue({
                         changed: status !== old.initial
                     });
                 } else {
-                    warning_swal('Can\'t check in', 'This group isn\'t available for check in right now. Please check in with a staff member.');
+                    if (!quiet) {
+                        warning_swal('Can\'t check in', 'This group isn\'t available for check in right now. Please check in with a staff member.');
+                    }
                 }
             } else {
                 // guest
@@ -452,7 +463,18 @@ new Vue({
             for (var i = 0; i < keys.length; i++) {
                 if (vm.attendance[keys[i]].status === vm.ABSENT) {
                     var attend = keys[i].split('.');
-                    vm.toggleAttendance(attend[0], attend[1], attend[2]);
+                    vm.toggleAttendance(attend[0], attend[1], attend[2], true);
+                }
+            }
+            return false;
+        },
+        uncheckAllAttendance() {
+            let vm = this;
+            var keys = Object.keys(vm.attendance);
+            for (var i = 0; i < keys.length; i++) {
+                if (vm.attendance[keys[i]].status === vm.PRESENT) {
+                    var attend = keys[i].split('.');
+                    vm.toggleAttendance(attend[0], attend[1], attend[2], true);
                 }
             }
             return false;
@@ -601,6 +623,13 @@ new Vue({
         var events = ['mousedown', 'scroll', 'touchstart'];
         events.forEach(function (name) {
             document.addEventListener(name, vm.resetIdleTimer, true);
+        });
+
+        // redirect focus on stray clicks to support barcode scanner
+        $('.checkin').click(function () {
+            if (vm.view === 'landing') {
+                $(".keyboard-input").focus();
+            }
         });
     }
 });

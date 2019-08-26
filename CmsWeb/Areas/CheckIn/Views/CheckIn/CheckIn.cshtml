@@ -29,7 +29,7 @@
                 <div class="form-group">
                     <label for="profile">Kiosk Profile</label>
                     <select class="form-control input-lg" name="profile" id="profile" v-model="kiosk.profile">
-                        <option value="default">Default</option>
+                        <option v-if="!profiles.length" value="default">Default</option>
                         <option v-for="profile in profiles" :value="profile.id">{{ profile.name }}</option>
                     </select>
                 </div>
@@ -41,7 +41,7 @@
         <div v-else-if="view == 'landing'" class="landing">
             <h2 class="text-center">Enter your phone number</h2>
             <form v-on:submit.prevent="find">
-                <input type="tel" name="phone" v-mask="phoneMask" v-model="search.phone" autocomplete="off" class="keyboard-input"/>
+                <input type="tel" name="phone" v-model="search.phone" v-mask="phoneMask" autocomplete="off" class="keyboard-input" />
                 <div class="simple-keyboard"></div>
             </form>
         </div>
@@ -105,6 +105,8 @@
             <div class="action-bar">
                 <div class="content">
                     <button v-on:click="checkAllAttendance" class="btn btn-info pull-left">Check All</button>
+                    <button v-if="profile.Testing" v-on:click="uncheckAllAttendance" class="btn btn-info pull-left" style="margin-left:20px;">Uncheck All</button>
+
                     <div style="display:inline-block;position:relative;left: 20px;">
                         <i v-on:click="toggleReprintAll" :class="[reprintLabels ? 'fa-check-square-o' : 'fa-square-o', 'fa', 'fa-2x']" style="margin-top:3px;width:30px;"></i><span style="position:relative;top:-5px;">Reprint all labels</span>
                     </div>

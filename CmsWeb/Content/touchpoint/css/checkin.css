@@ -59,9 +59,10 @@
     max-width: 390px;
     margin: 20px 5px;
     padding: 5px;
+    caret-color: transparent;
 }
 .checkin .landing input:focus {
-    outline: 0;
+    outline: none;
 }
 .checkin .families .family h4 {
     border: 1px solid #e6e6e6;
