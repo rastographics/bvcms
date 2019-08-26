@@ -30,6 +30,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     case "AskChurch":
                         otherchurch = reg.ActiveInAnotherChurch ?? false;
                         memberus = reg.Member ?? false;
+                        nochurch = reg.NoMember ?? false;
                         break;
                     case "AskAllergies":
                         medical = reg.MedicalDescription;

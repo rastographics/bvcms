@@ -70,6 +70,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
                         if (otherchurch)
                             w.Add(pi.Name, otherchurch);
                         break;
+                    case "nochurch":
+                        if (nochurch)
+                            w.Add(pi.Name, nochurch);
+                        break;
                     default:
                         w.Add(pi.Name, pi.GetValue(this, null));
                         break;

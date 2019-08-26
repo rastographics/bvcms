@@ -143,10 +143,10 @@ namespace CmsWeb.Areas.Manage.Controllers
                 try
                 {
                     var captureWebPageBytes = CaptureWebPageBytes(body, 100, 150);
-                    var ii = ImageData.Image.UpdateImageFromBits(content.ThumbID, captureWebPageBytes);
+                    var ii = CurrentImageDatabase.UpdateImageFromBits(content.ThumbID, captureWebPageBytes);
                     if (ii == null)
                     {
-                        content.ThumbID = ImageData.Image.NewImageFromBits(captureWebPageBytes).Id;
+                        content.ThumbID = ImageData.Image.NewImageFromBits(captureWebPageBytes, CurrentImageDatabase).Id;
                     }
 
                     content.DateCreated = DateTime.Now;
