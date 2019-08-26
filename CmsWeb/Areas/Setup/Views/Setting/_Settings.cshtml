@@ -1,5 +1,5 @@
 ﻿@using CmsWeb.Areas.Setup.Models
-@model IEnumerable<CmsData.SettingMetadatum>
+@model SettingListModel
 
 <div class="table-responsive">
     <table id="settings" class="table table-striped">
@@ -13,11 +13,14 @@
                     <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Setting Value" data-content="Click value to edit."><i class="fa fa-info-circle"></i></a>&nbsp;
                     Value
                 </th>
-                <th>Action</th>
+                @if (Model.CanDelete)
+                {
+                    <th>Action</th>
+                }
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model)
+            @foreach (var item in Model.List)
             {
                 <tr>
                     <td>
@@ -52,9 +55,12 @@
                                 break;
                         }
                     </td>
-                    <td>
-                        <a id="d@(item.Setting.Id)" href="#" class="delete btn btn-sm btn-danger"><i class="fa fa-trash"></i> Delete</a>
-                    </td>
+                    @if (Model.CanDelete)
+                    {
+                        <td>
+                            <a id="d@(item.Setting.Id)" href="#" class="delete btn btn-sm btn-danger"><i class="fa fa-trash"></i> Delete</a>
+                        </td>
+                    }
                 </tr>
             }
         </tbody>

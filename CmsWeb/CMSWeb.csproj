@@ -856,6 +856,7 @@
     <Compile Include="Areas\Setup\Models\Pushpay\RecurringManagment.cs" />
     <Compile Include="Areas\Setup\Controllers\GatewayController.cs" />
     <Compile Include="Areas\Setup\Models\GatewayAccountJsonModel.cs" />
+    <Compile Include="Areas\Setup\Models\SettingListModel.cs" />
     <Compile Include="Areas\Setup\Models\SettingModel.cs" />
     <Compile Include="Areas\Setup\Models\SettingTypeModel.cs" />
     <Compile Include="Code\BirthdateValidAttribute.cs" />
