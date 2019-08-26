@@ -62,53 +62,58 @@
                 @Html.HiddenFor(m => m.shirtsize)
                 break;
             case "AskRequest":
-            @Html.HiddenFor(m => m.request)
+                @Html.HiddenFor(m => m.request)
                 break;
             case "AskEmContact":
-            @Html.HiddenFor(m => m.emcontact)
-            @Html.HiddenFor(m => m.emphone)
+                @Html.HiddenFor(m => m.emcontact)
+                @Html.HiddenFor(m => m.emphone)
                 break;
             case "AskInsurance":
-            @Html.HiddenFor(m => m.insurance)
-            @Html.HiddenFor(m => m.policy)
+                @Html.HiddenFor(m => m.insurance)
+                @Html.HiddenFor(m => m.policy)
+                break;
+            case "AskPassport":
+                @Html.HiddenFor(m => m.passportNumber)
+                @Html.HiddenFor(m => m.passportExpires)
                 break;
             case "AskDoctor":
-            @Html.HiddenFor(m => m.doctor)
-            @Html.HiddenFor(m => m.docphone)
+                @Html.HiddenFor(m => m.doctor)
+                @Html.HiddenFor(m => m.docphone)
                 break;
             case "AskAllergies":
                 var allergyname = Html.NameFor2(m => m.medical);
                 <input type="hidden" name="@allergyname" value="@Model.medical" />
                 break;
             case "AskTylenolEtc":
-            @Html.HiddenFor(m => m.tylenol)
-            @Html.HiddenFor(m => m.advil)
-            @Html.HiddenFor(m => m.maalox)
-            @Html.HiddenFor(m => m.robitussin)
+                @Html.HiddenFor(m => m.tylenol)
+                @Html.HiddenFor(m => m.advil)
+                @Html.HiddenFor(m => m.maalox)
+                @Html.HiddenFor(m => m.robitussin)
                 break;
             case "AskParents":
-            @Html.HiddenFor(m => m.mname)
-            @Html.HiddenFor(m => m.fname)
+                @Html.HiddenFor(m => m.mname)
+                @Html.HiddenFor(m => m.fname)
                 break;
             case "AnswersNotRequired":
-            @Html.HiddenFor(m => m.mname)
-            @Html.HiddenFor(m => m.fname)
+                @Html.HiddenFor(m => m.mname)
+                @Html.HiddenFor(m => m.fname)
                 break;
             case "AskSMS":
-            @Html.HiddenFor(m => m.sms)
+                @Html.HiddenFor(m => m.sms)
                 break;
             case "AskCoaching":
-            @Html.HiddenFor(m => m.coaching)
+                @Html.HiddenFor(m => m.coaching)
                 break;
             case "AskChurch":
-            @Html.HiddenFor(m => m.memberus)
-            @Html.HiddenFor(m => m.otherchurch)
+              @Html.HiddenFor(m => m.memberus)
+              @Html.HiddenFor(m => m.otherchurch)
+              @Html.HiddenFor(m => m.nochurch)
                 break;
             case "AskTickets":
-            @Html.HiddenFor(m => m.ntickets)
+                @Html.HiddenFor(m => m.ntickets)
                 break;
             case "AskSuggestedFee":
-            @Html.HiddenFor(m => m.Suggestedfee)
+                @Html.HiddenFor(m => m.Suggestedfee)
                 break;
             case "AskDropdown":
                 var dd = ((AskDropdown)ask);
@@ -169,7 +174,7 @@
                 }
                 break;
             case "AskGradeOptions":
-            @Html.HiddenFor(m => m.gradeoption)
+                @Html.HiddenFor(m => m.gradeoption)
                 break;
         }
     }

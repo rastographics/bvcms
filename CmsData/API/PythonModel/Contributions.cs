@@ -21,11 +21,18 @@ namespace CmsData
         {
             Contribution.FinishBundle(db, bh);
         }
+
+        public BundleDetail AddContribution(DateTime date, int fundid, string amount, string checkno, string description, int peopleid)
+        {
+            return Contribution.AddContribution(db, date, fundid, amount, checkno, description, peopleid);
+        }
+
         public BundleDetail AddContributionDetail(DateTime date, int fundid,
             string amount, string checkno, string routing, string account)
         {
             return Contribution.AddContributionDetail(db, date, fundid, amount, checkno, routing, account);
         }
+
         public static BundleDetail NewBundleDetail(CMSDataContext db, DateTime date, int fundid, string amount)
         {
             var bd = new BundleDetail

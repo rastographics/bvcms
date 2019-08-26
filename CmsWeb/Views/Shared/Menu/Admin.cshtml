@@ -7,7 +7,7 @@
     var managetrans = User.IsInRole("ManageTransactions");
     var edit = User.IsInRole("Edit");
     var sendsms = User.IsInRole("SendSms");
-    var manageResources = User.IsInRole("ManageResources");
+    var manageResources = User.IsInRole("ManageResources") && DbUtil.Db.Setting("Resources-Enabled");
     var design = User.IsInRole("Design");
     var finance = User.IsInRole("Finance") && ((string)Session["testnofinance"]) != "true";
     var financedataentry = User.IsInRole("FinanceDataEntry");
@@ -198,6 +198,8 @@
 
 @helper AdminList2(bool admin, bool design, bool managetrans, bool edit, bool manageemails, bool finance, bool developer, bool manageResources, bool sendsms, bool financedataentry, bool checkin)
 {
+    var attendanceUseMeetingCategory = DbUtil.Db.Setting("AttendanceUseMeetingCategory");
+    var webCheckinEnabled = DbUtil.Db.Setting("EnableWebCheckin");
     if (admin)
     {
         <li class="dropdown-header dropdown-sub-header">Organizations</li>
@@ -213,7 +215,7 @@
         @Helper.LiAnchorLink("Transactions", "/Transactions/", admin || managetrans || finance)
         @Helper.LiAnchorLink("User Email Delegation", "/UsersCanEmailFor/", admin || manageemails)
     }
-    if (manageResources && DbUtil.Db.Setting("Resources-Enabled"))
+    if (manageResources)
     {
         <li class="dropdown-header dropdown-sub-header">Resources</li>
         @Helper.LiAnchorLink("Resource Types", "/ResourceTypes/")
@@ -226,7 +228,7 @@
         @Helper.LiAnchorLink("Activity Log", "/LastActivity/", admin)
         @Helper.LiAnchorLink("Users", "/Users/", admin)
 
-        if (DbUtil.Db.Setting("AttendanceUseMeetingCategory"))
+        if (attendanceUseMeetingCategory)
         {
             @Helper.LiAnchorLink("Meeting Category", "/MeetingCategory/", admin)
         }
@@ -238,7 +240,10 @@
     if (admin || edit)
     {
         <li class="dropdown-header dropdown-sub-header">Checkin</li>
+        if (webCheckinEnabled)
+        {
         @Helper.LiAnchorLink("Checkin Setup", "/CheckinSetup", checkin)
+        }
         @Helper.LiAnchorLink("Checkin Activity", "/CheckinTimes/")
         @Helper.LiAnchorLink("Checkin Labels", "/CheckinLabels", admin)
     }

@@ -57,6 +57,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     case "AskInsurance":
                         ValidateAskInsurance();
                         break;
+                    case "AskPassport":
+                        ValidateAskPassport();
+                        break;
                     case "AskParents":
                         ValidateAskParents();
                         break;
@@ -96,7 +99,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if ((MissionTripSupportGoer ?? 0) != 0 && MissionTripGoerId == 0)
             {
                 modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].MissionTripGoerId), "Please select a participant");
-            }            
+            }
         }
 
         private void ValidateSupportGoerRequired()
@@ -177,6 +180,14 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].insurance), "insurance carrier required");
             if (!policy.HasValue())
                 modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].policy), "insurance policy # required");
+        }
+
+        private void ValidateAskPassport()
+        {
+            if (!passportNumber.HasValue())
+                modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].passportNumber), "passport number required");
+            if (passportExpires == null)
+                modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].passportExpires), "passport expires date required");
         }
 
         private void ValidateAskParents()

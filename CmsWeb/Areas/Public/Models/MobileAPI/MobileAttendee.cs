@@ -1,5 +1,6 @@
 ﻿using CmsData;
 using CmsWeb.Areas.Reports.Models;
+using ImageData;
 using System;
 using System.Linq;
 
@@ -20,7 +21,7 @@ namespace CmsWeb.MobileAPI
         public int pictureX = 0;
         public int pictureY = 0;
 
-        public MobileAttendee populate(RollsheetModel.AttendInfo p)
+        public MobileAttendee populate(CMSDataContext cmsdb, CMSImageDataContext cmsidb, RollsheetModel.AttendInfo p)
         {
             id = p.PeopleId;
             name = p.Name;
@@ -29,11 +30,11 @@ namespace CmsWeb.MobileAPI
             member = p.Member;
             attended = p.Attended;
 
-            Person person = DbUtil.Db.People.SingleOrDefault(e => e.PeopleId == id);
+            Person person = cmsdb.People.SingleOrDefault(e => e.PeopleId == id);
 
             if (person.Picture != null)
             {
-                var image = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.SmallId);
+                var image = cmsidb.Images.SingleOrDefault(i => i.Id == person.Picture.SmallId);
 
                 if (image != null)
                 {

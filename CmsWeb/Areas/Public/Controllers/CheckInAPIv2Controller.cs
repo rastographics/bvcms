@@ -4,13 +4,13 @@ using System.Data.SqlClient;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Web.Mvc;
-using System.Web.Script.Serialization;
-using CmsWeb.Areas.Org.Models;
+using CMSDataContext = CmsData.CMSDataContext;
 using CmsWeb.Areas.Public.Models.CheckInAPIv2;
 using CmsWeb.Areas.Public.Models.CheckInAPIv2.Results;
 using CmsWeb.Areas.Public.Models.CheckInAPIv2.Searches;
 using CmsWeb.Models;
 using CmsWeb.Lifecycle;
+using ImageData;
 using Microsoft.Scripting.Utils;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -42,7 +42,10 @@ namespace CmsWeb.Areas.Public.Controllers
 
 		private static bool Auth()
 		{
-			return AccountModel.AuthenticateMobile( "Checkin" ).IsValid;
+            var db = CMSDataContext.Create(HttpContextFactory.Current);
+            var idb = CMSImageDataContext.Create(HttpContextFactory.Current);
+
+            return AccountModel.AuthenticateMobile(db, idb, "Checkin" ).IsValid;
 		}
 
 		public ActionResult Authenticate( string data )
@@ -137,13 +140,11 @@ namespace CmsWeb.Areas.Public.Controllers
 
 			Message response = new Message();
 			response.setNoError();
-
-			using( var db = new SqlConnection( Util.ConnectionString ) ) {
-                bool returnPictureUrls = message.device == Message.API_DEVICE_WEB;
-				List<Family> families = Family.forSearch( db, cns.search, cns.campus, cns.date, returnPictureUrls );
-
-				response.data = SerializeJSON( families, message.version );
-			}
+            
+            bool returnPictureUrls = message.device == Message.API_DEVICE_WEB;
+			List<Family> families = Family.forSearch(CurrentDatabase, CurrentImageDatabase, cns.search, cns.campus, cns.date, returnPictureUrls );
+            
+			response.data = SerializeJSON( families, message.version );
 
 			return response;
 		}

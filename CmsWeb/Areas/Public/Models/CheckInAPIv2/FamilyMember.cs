@@ -4,7 +4,9 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using CmsData;
 using CmsData.Classes.DataMapper;
+using ImageData;
 
 namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 {
@@ -31,7 +33,7 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 
 		public List<Group> groups = new List<Group>();
 
-		public static List<FamilyMember> forFamilyID( SqlConnection db, int familyID, int campus, DateTime date, bool returnPictureUrls )
+		public static List<FamilyMember> forFamilyID(CMSDataContext cmsdb, CMSImageDataContext cmsidb, int familyID, int campus, DateTime date, bool returnPictureUrls)
 		{
 			List<FamilyMember> members = new List<FamilyMember>();
 			DataTable table = new DataTable();
@@ -67,7 +69,7 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 											  ) AS familyMembers
 										ORDER BY familyMembers.Age DESC, familyMembers.genderID";
 
-			using( SqlCommand cmd = new SqlCommand( qMembers, db ) ) {
+			using( SqlCommand cmd = new SqlCommand( qMembers, cmsdb.ReadonlyConnection() as SqlConnection) ) {
 				SqlParameter parameter = new SqlParameter( "familyID", familyID );
 
 				cmd.Parameters.Add( parameter );
@@ -79,8 +81,8 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 			foreach( DataRow row in table.Rows ) {
 				FamilyMember member = new FamilyMember();
 				member.populate( row );
-				member.loadPicture(returnPictureUrls);
-				member.loadGroups( db, campus, date );
+				member.loadPicture(cmsdb, cmsidb, returnPictureUrls);
+				member.loadGroups(cmsdb, campus, date);
 
 				members.Add( member );
 			}
@@ -88,14 +90,14 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 			return members;
 		}
 
-		private void loadGroups( SqlConnection db, int campus, DateTime date )
+		private void loadGroups(CMSDataContext db, int campus, DateTime date )
 		{
 			groups.AddRange( Group.forPersonID( db, id, campus, date ) );
 		}
 
-		private void loadPicture(bool returnUrl)
+		private void loadPicture(CMSDataContext cmsdb, CMSImageDataContext cmsidb, bool returnUrl)
 		{
-			CmsData.Person person = CmsData.DbUtil.Db.People.SingleOrDefault( p => p.PeopleId == id );
+			var person = cmsdb.People.SingleOrDefault(p => p.PeopleId == id);
             int? ImageId;
 
             if (person == null || person.Picture == null)
@@ -132,7 +134,7 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
                 ImageId = person.Picture.SmallId;
             }
 
-			ImageData.Image image = ImageData.DbUtil.Db.Images.SingleOrDefault( i => i.Id == ImageId );
+			Image image = cmsidb.Images.SingleOrDefault( i => i.Id == ImageId );
 
 			if( image != null ) {
 				picture = Convert.ToBase64String( image.Bits );

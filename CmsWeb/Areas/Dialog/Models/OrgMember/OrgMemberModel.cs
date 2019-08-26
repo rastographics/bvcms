@@ -24,6 +24,8 @@ namespace CmsWeb.Areas.Dialog.Models
         public string NewGroup { get; set; }
         private int? orgId;
         private int? peopleId;
+        public string PassportNumber { get; set; }
+        public DateTime PassportExpires { get; set; }
 
         private CMSDataContext _currentDatabase;
         public CMSDataContext CurrentDatabase
@@ -94,12 +96,23 @@ namespace CmsWeb.Areas.Dialog.Models
             AmtPaid = OrgMember.AmountPaidTransactions(CurrentDatabase);
             AmtDue = OrgMember.AmountDueTransactions(CurrentDatabase);
 
+            PopulatePassport();
+
             OrgName = i.OrganizationName;
             Organization = i.Organization;
             OrgMemMemTags = i.OrgMemMemTags.ToList();
             Setting = CurrentDatabase.CreateRegistrationSettings(OrgId ?? 0);
         }
 
+        private void PopulatePassport()
+        {
+            var RecReg = CurrentDatabase.RecRegs.FirstOrDefault(r => r.PeopleId == PeopleId);
+            if (RecReg.PassportNumber != null)
+            {
+                PassportNumber = Util.Decrypt(RecReg.PassportNumber);
+                PassportExpires = DateTime.ParseExact(Util.Decrypt(RecReg.PassportExpires), "MM/dd/yyyy" ,System.Globalization.CultureInfo.InvariantCulture);
+            }
+        }
 
         public string Group { get; set; }
         public string GroupName

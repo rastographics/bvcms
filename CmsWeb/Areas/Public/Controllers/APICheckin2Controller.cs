@@ -27,7 +27,9 @@ namespace CmsWeb.Areas.Public.Controllers
 
         private static bool Authenticate(string role = "Checkin")
         {
-            return AccountModel.AuthenticateMobile("Checkin").IsValid;
+            var db = CMSDataContext.Create(HttpContextFactory.Current);
+            var idb = CMSImageDataContext.Create(HttpContextFactory.Current);
+            return AccountModel.AuthenticateMobile(db, idb, "Checkin").IsValid;
         }
 
         public ActionResult Match(string id, int campus, int thisday, int? page, string kiosk, bool? kioskmode)
@@ -583,7 +585,7 @@ namespace CmsWeb.Areas.Public.Controllers
         [HttpPost]
         public ContentResult UploadImage(int id)
         {
-            if (!AccountModel.AuthenticateMobile().IsValid)
+            if (!AccountModel.AuthenticateMobile(CurrentDatabase, CurrentImageDatabase).IsValid)
             {
                 return Content("not authorized");
             }
@@ -603,10 +605,10 @@ namespace CmsWeb.Areas.Public.Controllers
             var p = person.Picture;
             p.CreatedDate = Util.Now;
             p.CreatedBy = Util.UserName;
-            p.ThumbId = Image.NewImageFromBits(bits, 50, 50).Id;
-            p.SmallId = Image.NewImageFromBits(bits, 120, 120).Id;
-            p.MediumId = Image.NewImageFromBits(bits, 320, 400).Id;
-            p.LargeId = Image.NewImageFromBits(bits).Id;
+            p.ThumbId = Image.NewImageFromBits(bits, 50, 50, CurrentImageDatabase).Id;
+            p.SmallId = Image.NewImageFromBits(bits, 120, 120, CurrentImageDatabase).Id;
+            p.MediumId = Image.NewImageFromBits(bits, 320, 400, CurrentImageDatabase).Id;
+            p.LargeId = Image.NewImageFromBits(bits, CurrentImageDatabase).Id;
             person.LogPictureUpload(CurrentDatabase, Util.UserPeopleId ?? 1);
             CurrentDatabase.SubmitChanges();
             return Content("done");
@@ -623,9 +625,9 @@ namespace CmsWeb.Areas.Public.Controllers
             if (person.PictureId != null)
             {
                 DbUtil.LogActivity("checkin picture " + id);
-                return new ImageResult(person.Picture.MediumId ?? 0);
+                return new ImageResult(CurrentImageDatabase, person.Picture.MediumId ?? 0);
             }
-            return new ImageResult(0);
+            return new ImageResult(CurrentImageDatabase, 0);
         }
 
         public ActionResult CheckInList()
