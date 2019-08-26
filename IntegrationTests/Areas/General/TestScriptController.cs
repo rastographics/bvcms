@@ -34,7 +34,6 @@ namespace IntegrationTests.Areas.Manage
             PageSource.ShouldContain("parameters testing 123");
             Open($"{rootUrl}PyScript/HelloWorld?p1=testing&p2=123");
             PageSource.ShouldContain("parameters testing 123");
-
         }
         [Fact]
         public void PythonSearchNamesTest()
