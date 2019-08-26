@@ -1,12 +1,13 @@
 ﻿using CmsData;
 using CmsWeb.Areas.Search.Models;
+using SharedTestFixtures;
 using Shouldly;
 using UtilityExtensions;
 using Xunit;
 
 namespace CMSWebTests
 {
-    [Collection("Database collection")]
+    [Collection(Collections.Database)]
     public class QueryModelTests
     {
         [Fact]

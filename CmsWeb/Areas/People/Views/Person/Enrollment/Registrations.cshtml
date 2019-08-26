@@ -29,7 +29,14 @@
         var balance = f.AmtFee - f.AmtPaid;
         <tr>
           <td>
-              <span>@f.OrgName</span>
+            @if (User.IsInRole("Access"))
+            {
+                <a href="/Org/@f.OrgId">@f.OrgName</a>
+            }
+            else
+            {
+                <span>@f.OrgName</span>
+            }
           </td>
           <td class="text-right">@f.AmtFee.ToString2("C")</td>
           <td class="text-right">@f.AmtPaid.ToString2("C")</td>
@@ -37,7 +44,7 @@
             @balance.ToString2("C")
           </td>
           <td style="width: 50px;">
-              <a href="@OrgMemberModel.GetPayLink(f.Organization.OrganizationId, Model.PeopleId)" class="btn btn-default btn-sm">Make Payment</a>
+              <a href="@OrgMemberModel.GetPayLink(f.Organization.OrganizationId, Model.PeopleId)" target="_blank" class="btn btn-default btn-sm">Make Payment</a>
           </td>
         </tr>
       }
@@ -100,7 +107,7 @@
     </table>
     <h4>General</h4>
   }
-  @if(fulfillmentlist.Count > 0 && goerlist.Count < 0)
+  @if(fulfillmentlist.Count > 0 && goerlist.Count == 0)
   {
     <div class="row">
       <div class="col-sm-6">

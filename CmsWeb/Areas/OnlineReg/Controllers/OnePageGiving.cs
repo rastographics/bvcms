@@ -325,7 +325,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [HttpPost, Route("~/OnePageGiving/Login/{id:int}")]
         public ActionResult OnePageGivingLogin(int id, string username, string password, bool? testing, string source)
         {
-            var ret = AccountModel.AuthenticateLogon(username, password, Session, Request, CurrentDatabase);
+            var ret = AccountModel.AuthenticateLogon(username, password, Session, Request, CurrentDatabase, CurrentImageDatabase);
             var ev = CurrentDatabase.OrganizationExtras.SingleOrDefault(vv => vv.OrganizationId == id && vv.Field == "LoggedInOrgId");
             var orgId = ev?.IntValue ?? id;
             var returnUrl = $"/OnePageGiving/{orgId}{(testing == true ? "?testing=true" : "")}";
@@ -338,7 +338,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return View("OnePageGiving/Login", m);
             } else
             {
-                AccountModel.FinishLogin(ret.User.Username, Session);
+                AccountModel.FinishLogin(ret.User.Username, Session, CurrentDatabase, CurrentImageDatabase);
             }
             Session["OnlineRegLogin"] = true;
             

@@ -1,6 +1,9 @@
 using CmsData;
 using CmsData.Codes;
+using CmsWeb.Areas.Manage.Controllers;
+using CmsWeb.Areas.Manage.Models;
 using CmsWeb.Areas.OnlineReg.Models;
+using CmsWeb.Membership;
 using CmsWeb.Models;
 using Elmah;
 using System;
@@ -107,15 +110,24 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         public ActionResult Login(OnlineRegModel m)
         {
             fromMethod = "Login";
-            var ret = AccountModel.AuthenticateLogon(m.username, m.password, Session, Request, CurrentDatabase);
+            var ret = AccountModel.AuthenticateLogon(m.username, m.password, Session, Request, CurrentDatabase, CurrentImageDatabase);
 
             if (ret.ErrorMessage.HasValue())
             {
                 ModelState.AddModelError("authentication", ret.ErrorMessage);
                 return FlowList(m);
-            } else
+            }
+            else  if (MembershipService.ShouldPromptForTwoFactorAuthentication(ret.User, CurrentDatabase, Request))
             {
-                AccountModel.FinishLogin(ret.User.Username, Session);
+                Session[AccountController.MFAUserId] = ret.User.UserId;
+                return View("Auth", new AccountInfo {
+                    UsernameOrEmail = ret.User.Username,
+                    ReturnUrl = RouteExistingRegistration(m)
+                });
+            }
+            else
+            {
+                AccountModel.FinishLogin(ret.User.Username, Session, CurrentDatabase, CurrentImageDatabase);
             }
             Session["OnlineRegLogin"] = true;
 

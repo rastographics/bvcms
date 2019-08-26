@@ -178,103 +178,6 @@
     <OutputPath>bin\x86\test\</OutputPath>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'bvcms2|AnyCPU'">
-    <OutputPath>bin\bvcms2\</OutputPath>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'bvcms2|x86'">
-    <OutputPath>bin\x86\bvcms2\</OutputPath>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release2|AnyCPU'">
-    <OutputPath>bin\Release2\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release2|x86'">
-    <OutputPath>bin\x86\Release2\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'TeamCity|AnyCPU'">
-    <OutputPath>bin\TeamCity\</OutputPath>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'TeamCity|x86'">
-    <OutputPath>bin\x86\TeamCity\</OutputPath>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'test2|AnyCPU'">
-    <OutputPath>bin\test2\</OutputPath>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'test2|x86'">
-    <OutputPath>bin\x86\test2\</OutputPath>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'test3|AnyCPU'">
-    <OutputPath>bin\test3\</OutputPath>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'test3|x86'">
-    <OutputPath>bin\x86\test3\</OutputPath>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Impersonate|AnyCPU'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\Impersonate\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Impersonate|x86'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x86\Impersonate\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'work|AnyCPU'">
-    <OutputPath>bin\work\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'work|x86'">
-    <OutputPath>bin\x86\work\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'staging|AnyCPU'">
     <OutputPath>bin\staging\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
@@ -714,6 +617,8 @@
     <Compile Include="Generated\CheckInLabelEntry.cs" />
     <Compile Include="Generated\CheckInLabelEntryAlignment.cs" />
     <Compile Include="Generated\CheckInLabelType.cs" />
+    <Compile Include="Generated\CheckinProfiles.cs" />
+    <Compile Include="Generated\CheckinProfileSettings.cs" />
     <Compile Include="Generated\CheckInSetting.cs" />
     <Compile Include="Generated\ContactExtra.cs" />
     <Compile Include="Generated\CustomColumn.cs" />
@@ -1397,12 +1302,28 @@
     <Content Include="Migrations\20190507_alter_view_TransactionBalances.sql" />
     <Content Include="Migrations\20190523_add_paymentinfo_gatewayaccountid.sql" />
     <Content Include="Migrations\20190523_Insert_Temporary_Recurring_Giving.sql" />
+    <Content Include="Migrations\20190529_create_SP_GreatPlainsIncomeExport.sql" />
+    <Content Include="Migrations\20190603_add_role_priority.sql" />
     <Content Include="Migrations\20190530_Update_PaymentInfo_PK.sql" />
     <Content Include="Migrations\20190626_Add_RecReg_nomember_Column.sql" />
     <Content Include="Migrations\20190710_Update_MeetingTime_When_Is_Null.sql" />
     <Content Include="Migrations\20190809_alter_function_CurrOrgMembers2_to_add_passport_data.sql" />
     <Content Include="Migrations\20190809_alter_sp_OrgMembers_to_include_passport_data.sql" />
     <Content Include="Migrations\20190812_add_2fa_support.sql" />
+    <Content Include="Migrations\20190821_alter_InvolvementCurrent_function_to_include_family_directory.sql" />
+    <Content Include="Migrations\20190710_Update_MeetingTime_When_Is_Null.sql" />
+    <Content Include="Migrations\20190613_Transform_NoPhoneEmailOnFind_To_New_EVs.sql" />
+    <Content Include="Migrations\20190626_Add_RecReg_nomember_Column.sql" />
+    <Content Include="Migrations\20190710_Update_MeetingTime_When_Is_Null.sql" />
+    <Content Include="Migrations\20190724_add_checkinprofiles_settings_tables.sql" />
+    <Content Include="Migrations\20190725_Update_proc_LedgerIncomeExport.sql" />
+    <Content Include="Migrations\20190729_update_func_GetContributionsDetails.sql" />
+    <Content Include="Migrations\20190730_create_proc_mergecampuses.sql" />
+    <Content Include="Migrations\20190809_alter_function_CurrOrgMembers2_to_add_passport_data.sql" />
+    <Content Include="Migrations\20190809_alter_sp_OrgMembers_to_include_passport_data.sql" />
+    <Content Include="Migrations\20190821_Create_Function_SplitFundIds.sql" />
+    <Content Include="Migrations\20190821_Update_Function_ContributionSearch.sql" />
+    <Content Include="Migrations\20190821_Update_Function_GetTotalContributionsDonor.sql" />
     <Content Include="QueryBuilder\CompareMap.xml">
       <SubType>Designer</SubType>
     </Content>

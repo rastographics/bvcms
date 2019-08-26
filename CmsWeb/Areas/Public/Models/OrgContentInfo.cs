@@ -40,8 +40,11 @@ namespace CmsWeb.Models
                     return "<h2>" + OrgName + "</h2>";
                 }
 
-                var s = ImageData.Image.Content(oc.ImageId ?? 0);
-                return html = s;
+                using (var idb = CMSImageDataContext.Create(HttpContextFactory.Current))
+                {
+                    html = idb.Content(oc.ImageId ?? 0);
+                }
+                return html;
             }
             set
             {

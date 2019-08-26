@@ -12,17 +12,17 @@ namespace ImageData
 {
     public partial class Image
     {
-        public static void Delete(int? id)
+        public static void Delete(CMSImageDataContext db, int? id)
         {
             if (id.HasValue)
             {
-                DbUtil.Db.ExecuteCommand("DELETE dbo.Image WHERE Id = {0}", id);
+                db.ExecuteCommand("DELETE dbo.Image WHERE Id = {0}", id);
             }
         }
 
-        public static Image ImageFromId(int? id)
+        public static Image ImageFromId(CMSImageDataContext db, int? id)
         {
-            return DbUtil.Db.Images.SingleOrDefault(ii => ii.Id == id);
+            return db.Images.SingleOrDefault(ii => ii.Id == id);
         }
 
         public static Image NewImageFromBits(byte[] bits, int w, int h, CMSImageDataContext db)
@@ -43,6 +43,7 @@ namespace ImageData
         private void LoadResizeFromBits(byte[] bits, int w, int h)
         {
             Bits = ResizeFromBits(bits, w, h);
+            Mimetype = "image/jpeg";
         }
 
         public static byte[] ResizeFromBits(byte[] bitsin, int w, int h, string mode = "max")
@@ -62,25 +63,6 @@ namespace ImageData
             var resizeCropSettings = ResizeCropSettings(w, h, mode);
             var ostream = new MemoryStream();
             ImageBuilder.Current.Build(Bits, ostream, resizeCropSettings);
-            ostream.Position = 0;
-            return ostream;
-        }
-
-        public Stream ResizeToStream(string instructions)
-        {
-            var settings = new ResizeSettings(instructions);
-            var ostream = new MemoryStream();
-            ImageBuilder.Current.Build(Bits, ostream, settings);
-            ostream.Position = 0;
-            return ostream;
-        }
-
-        static readonly byte[] onepixelgif = { 0x47, 0x49, 0x46, 0x38, 0x39, 0x61, 0x1, 0x0, 0x1, 0x0, 0x80, 0x0, 0x0, 0xff, 0xff, 0xff, 0x0, 0x0, 0x0, 0x2c, 0x0, 0x0, 0x0, 0x0, 0x1, 0x0, 0x1, 0x0, 0x0, 0x2, 0x2, 0x44, 0x1, 0x0, 0x3b };
-        public static Stream BlankImage(int w, int h)
-        {
-            var resizeCropSettings = ResizeCropSettings(w, h, "pad");
-            var ostream = new MemoryStream();
-            ImageBuilder.Current.Build(onepixelgif, ostream, resizeCropSettings);
             ostream.Position = 0;
             return ostream;
         }
@@ -118,16 +100,6 @@ namespace ImageData
             Length = Bits.Length;
         }
 
-        public static Image NewTextFromBits(byte[] bits, CMSImageDataContext db)
-        {
-            var i = new Image();
-            i.Mimetype = "text/plain";
-            i.Bits = bits;
-            i.Length = i.Bits.Length;
-            InsertImage(db, i);
-            return i;
-        }
-
         public static Image NewImageFromBits(byte[] bits, CMSImageDataContext db)
         {
             var i = new Image();
@@ -135,26 +107,7 @@ namespace ImageData
             InsertImage(db, i);
             return i;
         }
-
-        public static Image UpdateImageFromBits(int imageID, byte[] bits)
-        {
-            Image image;
-            using (var db = DbUtil.Db)
-            {
-                var images = from t in DbUtil.Db.Images
-                             where t.Id == imageID
-                             select t;
-
-                image = images.FirstOrDefault();
-                if (image != null)
-                {
-                    image.LoadImageFromBits(bits);
-                    db.SubmitChanges();
-                }
-            }
-            return image;
-        }
-
+        
         public double Ratio()
         {
             var istream = new MemoryStream(Bits);
@@ -162,20 +115,24 @@ namespace ImageData
             return Convert.ToDouble(img1.Width) / img1.Height;
         }
 
-        private void LoadImageFromBits(byte[] bits)
+        internal void LoadImageFromBits(byte[] bits)
         {
-            var istream = new MemoryStream(bits);
-            var img1 = Drawing.Image.FromStream(istream);
-            var img2 = new Drawing.Bitmap(img1, img1.Width, img1.Height);
-            var ostream = new MemoryStream();
-            img2.Save(ostream, ImageFormat.Jpeg);
-            Mimetype = "image/jpeg";
-            Bits = ostream.GetBuffer();
-            Length = Bits.Length;
-            img1.Dispose();
-            img2.Dispose();
-            istream.Close();
-            ostream.Close();
+            using (var istream = new MemoryStream(bits))
+            {
+                using (var img1 = Drawing.Image.FromStream(istream))
+                {
+                    using (var img2 = new Drawing.Bitmap(img1, img1.Width, img1.Height))
+                    {
+                        using (var ostream = new MemoryStream())
+                        {
+                            img2.Save(ostream, ImageFormat.Jpeg);
+                            Mimetype = "image/jpeg";
+                            Bits = ostream.GetBuffer();
+                            Length = Bits.Length;
+                        }
+                    }
+                }
+            }
         }
 
         public static Image NewImageFromBits(byte[] bits, string type, CMSImageDataContext db)
@@ -205,97 +162,6 @@ namespace ImageData
             Bits = bits;
             Length = Bits.Length;
             Mimetype = type;
-        }
-
-        public static void DeleteOnSubmit(int? imageid)
-        {
-            using (var db = DbUtil.Db)
-            {
-                var i = db.Images.SingleOrDefault(img => img.Id == imageid);
-                if (i == null)
-                {
-                    return;
-                }
-
-                db.Images.DeleteOnSubmit(i);
-            }
-        }
-
-        public bool HasMedical() // special function
-        {
-            var line = Medical();
-            if (!line.HasValue())
-            {
-                return false;
-            }
-
-            if (line.ToLower().Contains("none"))
-            {
-                return false;
-            }
-
-            if (line.ToLower().Contains("n/a"))
-            {
-                return false;
-            }
-
-            if (line.ToLower().Contains("nka"))
-            {
-                return false;
-            }
-
-            return line.HasValue();
-        }
-
-        public string Medical() // special function
-        {
-            if (Mimetype != "text/plain")
-            {
-                return null;
-            }
-
-            var t = Encoding.ASCII.GetString(Bits);
-            var q = from li in t.SplitStr("\r\n")
-                    where li.StartsWith("Medical:")
-                    select li;
-            if (q.Count() == 0)
-            {
-                return null;
-            }
-
-            var a = q.First().Split(':');
-            return a[1].Trim();
-        }
-
-        public bool InterestedInCoaching() // special function
-        {
-            if (Mimetype != "text/plain")
-            {
-                return false;
-            }
-
-            var t = Encoding.ASCII.GetString(Bits);
-            var q = from li in t.SplitStr("\r\n")
-                    where li.StartsWith("<tr><td>Coaching:")
-                    select li;
-            if (q.Count() == 0)
-            {
-                return false;
-            }
-
-            var s = q.First();
-            return Regex.IsMatch(s, @"\A(?:<tr><td>.*</td><td>(1|true)</td></tr>)\Z", RegexOptions.IgnoreCase);
-        }
-
-        public static string Content(int id)
-        {
-            var img = DbUtil.Db.Images.SingleOrDefault(i => i.Id == id);
-            if (img == null || img.Mimetype != "text/plain")
-            {
-                return null;
-            }
-
-            return Encoding.ASCII.GetString(img.Bits);
         }
 
         public override string ToString()

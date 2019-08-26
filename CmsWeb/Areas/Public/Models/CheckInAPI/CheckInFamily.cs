@@ -1,4 +1,5 @@
 ﻿using CmsData;
+using CmsData.View;
 using ImageData;
 using System;
 using System.Collections.Generic;
@@ -22,20 +23,20 @@ namespace CmsWeb.CheckInAPI
 
         public List<CheckInFamilyMember> members = new List<CheckInFamilyMember>();
 
-        public CheckInFamily(int id, string name, bool locked)
+        public CheckInFamily(int id, string name, bool locked, CMSDataContext cmsdb, CMSImageDataContext cmsidb)
         {
             this.id = id;
             this.name = name;
             this.locked = locked;
 
-            Family family = DbUtil.Db.Families.SingleOrDefault(f => f.FamilyId == id);
+            Family family = cmsdb.Families.SingleOrDefault(f => f.FamilyId == id);
 
             if (family == null || family.Picture == null)
             {
                 return;
             }
 
-            Image image = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == family.Picture.SmallId);
+            Image image = cmsidb.Images.SingleOrDefault(i => i.Id == family.Picture.SmallId);
 
             if (image != null)
             {
@@ -43,11 +44,11 @@ namespace CmsWeb.CheckInAPI
             }
         }
 
-        public void addMember(CmsData.View.CheckinFamilyMember newMember, int day, int tzOffset)
+        public void addMember(CMSDataContext cmsdb, CMSImageDataContext cmsidb, CheckinFamilyMember newMember, int day, int tzOffset)
         {
             if (members.Count == 0)
             {
-                members.Add(new CheckInFamilyMember(newMember, day, tzOffset));
+                members.Add(new CheckInFamilyMember(cmsdb, cmsidb, newMember, day, tzOffset));
             }
             else
             {
@@ -62,7 +63,7 @@ namespace CmsWeb.CheckInAPI
                     return;
                 }
 
-                members.Add(new CheckInFamilyMember(newMember, day, tzOffset));
+                members.Add(new CheckInFamilyMember(cmsdb, cmsidb, newMember, day, tzOffset));
             }
         }
     }

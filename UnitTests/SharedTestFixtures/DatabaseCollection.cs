@@ -2,7 +2,7 @@
 
 namespace SharedTestFixtures
 {
-    [CollectionDefinition("Database collection")]
+    [CollectionDefinition(Collections.Database)]
     public class DatabaseCollection : ICollectionFixture<DatabaseFixture>
     {
         // This class has no code, and is never created. Its purpose is simply
