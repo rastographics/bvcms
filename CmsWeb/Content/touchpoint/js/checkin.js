@@ -2,7 +2,7 @@
 
 var Keyboard = window.SimpleKeyboard.default;
 
-var CheckInApp = new Vue({
+new Vue({
     el: '#CheckInApp',
     data: {
         view: false,
@@ -248,6 +248,7 @@ var CheckInApp = new Vue({
                     }
                 },
                 err => {
+                    console.log(err);
                     vm.loading = false;
                     error_swal('Error', 'Unable to load profiles.');
                 }
@@ -305,6 +306,7 @@ var CheckInApp = new Vue({
                         }
                     },
                     err => {
+                        console.log(err);
                         vm.loading = false;
                         error_swal('Error', 'Unable to connect to TouchPoint');
                     }
@@ -379,6 +381,7 @@ var CheckInApp = new Vue({
                     }
                 },
                 err => {
+                    console.log(err);
                     vm.loading = false;
                     vm.loadView('landing');
                     error_swal('Error', 'Something went wrong');
@@ -524,7 +527,6 @@ var CheckInApp = new Vue({
                     vm.loading = false;
                     if (response.status === 200) {
                         if (response.data.error === 0) {
-                            var results = JSON.parse(response.data.data);
                             if (vm.profile.ShowCheckinConfirmation) {
                                 var timeout = setTimeout(function () {
                                     swal.close();
@@ -559,6 +561,7 @@ var CheckInApp = new Vue({
                     }
                 },
                 err => {
+                    console.log(err);
                     vm.loading = false;
                     vm.loadView('landing');
                     error_swal('Error', 'Something went wrong');
@@ -613,14 +616,6 @@ function error_swal(title, message) {
 function warning_swal(title, message) {
     swal({
         type: "info",
-        title: title,
-        text: message
-    });
-}
-
-function success_swal(title, message) {
-    swal({
-        type: "success",
         title: title,
         text: message
     });

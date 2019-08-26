@@ -133,16 +133,13 @@ namespace CmsData
 			{
 				if (this._JsonData != value)
 				{
-				
                     this.OnJsonDataChanging(value);
 					this.SendPropertyChanging();
 					this._JsonData = value;
 					this.SendPropertyChanged("JsonData");
 					this.OnJsonDataChanged();
 				}
-
 			}
-
 		}
 
 		
@@ -169,9 +166,5 @@ namespace CmsData
 			if ((this.PropertyChanged != null))
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 		}
-
-   		
 	}
-
 }
-

@@ -1,4 +1,4 @@
-﻿var checkinSetup = new Vue({
+﻿new Vue({
     el: '#checkinSetup',
     data: {
         CheckinProfiles: [{}],

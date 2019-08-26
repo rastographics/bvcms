@@ -24,8 +24,7 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
         public bool LocationLabels = false;
         public int SecurityType = 0;
         public int ShowCheckinConfirmation = 5;
-
-
+        
         public void populate(CmsData.CheckinProfileSettings s)
         {
             id = s.CheckinProfiles.CheckinProfileId;
