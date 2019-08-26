@@ -24,7 +24,7 @@ namespace CMSWebTests.Areas.Setup.Models
         {
             var model = new SettingModel();
 
-            model.Settings.ShouldBeOfType<List<Setting>>();
+            model.Settings.ShouldBeOfType<List<SettingMetadatum>>();
             model.Settings.Count().ShouldBe(0);
 
             model.SettingTypes.ShouldBeOfType<List<SettingTypeModel>>();
