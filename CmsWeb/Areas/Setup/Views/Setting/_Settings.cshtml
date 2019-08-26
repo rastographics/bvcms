@@ -1,8 +1,5 @@
 ﻿@using CmsWeb.Areas.Setup.Models
-@model IEnumerable<CmsData.Setting>
-@{
-    // TODO: Utilize new DataType column on Setting table for validation
-}
+@model IEnumerable<CmsData.SettingMetadatum>
 
 <div class="table-responsive">
     <table id="settings" class="table table-striped">
@@ -30,7 +27,7 @@
                         }
                         else
                         {
-                            @item.Id
+                            @item.Setting.Id
                         }
                         @if (!string.IsNullOrEmpty(item.Description))
                         {
@@ -41,22 +38,22 @@
                         @switch (item.DataType)
                         {
                             case (int)SettingDataType.Boolean:
-                                <input class="boolean-toggle" type="checkbox" id="@item.Id" name="@item.Id" data-toggle="toggle" data-on="True" data-off="False" data-width="100" checked="@(item.SettingX?.ToLower() == "true")")>
+                                <input class="boolean-toggle" type="checkbox" id="@item.Setting.Id" name="@item.Setting.Id" data-toggle="toggle" data-on="True" data-off="False" data-width="100" checked="@(item.Setting.SettingX?.ToLower() == "true")")>
                                 break;
                             case (int)SettingDataType.Date:
-                                <a class="edit-datetime" id="@item.Id" data-pk="@(item.Id)" data-type="date" data-url="/Setting/Edit">
-                                    @(item.SettingX ?? "Empty")
+                                <a class="edit-datetime" id="@item.Setting.Id" data-pk="@(item.Setting.Id)" data-type="date" data-url="/Setting/Edit">
+                                    @(item.Setting.SettingX ?? "Empty")
                                 </a>
                                 break;
                             default:
-                                <a id="@item.Id" class="clickEdit" data-pk="@(item.Id)">
-                                    @item.SettingX
+                                <a id="@item.Setting.Id" class="clickEdit" data-pk="@(item.Setting.Id)">
+                                    @item.Setting.SettingX
                                 </a>
                                 break;
                         }
                     </td>
                     <td>
-                        <a id="d@(item.Id)" href="#" class="delete btn btn-sm btn-danger"><i class="fa fa-trash"></i> Delete</a>
+                        <a id="d@(item.Setting.Id)" href="#" class="delete btn btn-sm btn-danger"><i class="fa fa-trash"></i> Delete</a>
                     </td>
                 </tr>
             }

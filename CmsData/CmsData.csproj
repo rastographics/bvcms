@@ -858,6 +858,7 @@
     <Compile Include="Generated\ResourceOrganizationType.cs" />
     <Compile Include="Generated\ResourceType.cs" />
     <Compile Include="Generated\SettingCategory.cs" />
+    <Compile Include="Generated\SettingMetadatum.cs" />
     <Compile Include="Generated\SettingType.cs" />
     <Compile Include="Generated\Views\AccessUserInfo.cs" />
     <Compile Include="Generated\Views\ActiveRegistration.cs" />

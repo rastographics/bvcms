@@ -690,6 +690,11 @@ namespace CmsData
         partial void UpdateSettingCategory(SettingCategory instance);
         partial void DeleteSettingCategory(SettingCategory instance);
 
+
+        partial void InsertSettingMetadata(SettingMetadatum instance);
+        partial void UpdateSettingMetadata(SettingMetadatum instance);
+        partial void DeleteSettingMetadata(SettingMetadatum instance);
+
         partial void InsertSMSGroupMember(SMSGroupMember instance);
         partial void UpdateSMSGroupMember(SMSGroupMember instance);
         partial void DeleteSMSGroupMember(SMSGroupMember instance);
@@ -1872,6 +1877,11 @@ namespace CmsData
         public Table<SettingCategory> SettingCategories
         {
             get { return this.GetTable<SettingCategory>(); }
+        }
+
+        public Table<SettingMetadatum> SettingMetadatas
+        {
+            get { return this.GetTable<SettingMetadatum>(); }
         }
 
         public Table<SMSGroupMember> SMSGroupMembers

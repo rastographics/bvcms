@@ -1,17 +1,22 @@
-using CmsData.Infrastructure;
-using System;
-using System.ComponentModel;
+using System; 
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
+using System.Data;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Linq;
+using System.Linq.Expressions;
+using System.ComponentModel;
+using CmsData.Infrastructure;
 
 namespace CmsData
 {
-    [Table(Name="dbo.SettingCategory")]
+	[Table(Name="dbo.SettingCategory")]
 	public partial class SettingCategory : INotifyPropertyChanging, INotifyPropertyChanged
 	{
 		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
 		
-	    #region Private Fields
+	#region Private Fields
 		
 		private int _SettingCategoryId;
 		
@@ -20,49 +25,46 @@ namespace CmsData
 		private int _SettingTypeId;
 		
 		private int _DisplayOrder;
+		
    		
-   		private EntitySet<Setting> _Settings;
+   		private EntitySet<SettingMetadatum> _SettingMetadatas;
+		
     	
 		private EntityRef<SettingType> _SettingType;
-
-        #endregion
-
-        #region Extensibility Method Definitions
-
-        partial void OnLoaded();
-
-        partial void OnValidate(System.Data.Linq.ChangeAction action);
-
-        partial void OnCreated();
+		
+	#endregion
+	
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
 		
 		partial void OnSettingCategoryIdChanging(int value);
-
-        partial void OnSettingCategoryIdChanged();
+		partial void OnSettingCategoryIdChanged();
 		
 		partial void OnNameChanging(string value);
-
-        partial void OnNameChanged();
+		partial void OnNameChanged();
 		
 		partial void OnSettingTypeIdChanging(int value);
-
-        partial void OnSettingTypeIdChanged();
-
+		partial void OnSettingTypeIdChanged();
+		
 		partial void OnDisplayOrderChanging(int value);
-
-        partial void OnDisplayOrderChanged();
-
-        #endregion
-
-        public SettingCategory()
+		partial void OnDisplayOrderChanged();
+		
+    #endregion
+		public SettingCategory()
 		{
-			this._Settings = new EntitySet<Setting>(new Action< Setting>(this.attach_Settings), new Action< Setting>(this.detach_Settings)); 
+			
+			this._SettingMetadatas = new EntitySet<SettingMetadatum>(new Action< SettingMetadatum>(this.attach_SettingMetadatas), new Action< SettingMetadatum>(this.detach_SettingMetadatas)); 
+			
 			
 			this._SettingType = default(EntityRef<SettingType>); 
 			
 			OnCreated();
 		}
+
 		
-        #region Columns
+    #region Columns
 		
 		[Column(Name="SettingCategoryId", UpdateCheck=UpdateCheck.Never, Storage="_SettingCategoryId", AutoSync=AutoSync.OnInsert, DbType="int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
 		public int SettingCategoryId
@@ -73,14 +75,18 @@ namespace CmsData
 			{
 				if (this._SettingCategoryId != value)
 				{
+				
                     this.OnSettingCategoryIdChanging(value);
 					this.SendPropertyChanging();
 					this._SettingCategoryId = value;
 					this.SendPropertyChanged("SettingCategoryId");
 					this.OnSettingCategoryIdChanged();
 				}
+
 			}
+
 		}
+
 		
 		[Column(Name="Name", UpdateCheck=UpdateCheck.Never, Storage="_Name", DbType="nvarchar(50) NOT NULL")]
 		public string Name
@@ -91,15 +97,19 @@ namespace CmsData
 			{
 				if (this._Name != value)
 				{
+				
                     this.OnNameChanging(value);
 					this.SendPropertyChanging();
 					this._Name = value;
 					this.SendPropertyChanged("Name");
 					this.OnNameChanged();
 				}
+
 			}
+
 		}
 
+		
 		[Column(Name="SettingTypeId", UpdateCheck=UpdateCheck.Never, Storage="_SettingTypeId", DbType="int NOT NULL")]
 		[IsForeignKey]
 		public int SettingTypeId
@@ -110,6 +120,7 @@ namespace CmsData
 			{
 				if (this._SettingTypeId != value)
 				{
+				
 					if (this._SettingType.HasLoadedOrAssignedValue)
 						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
 				
@@ -119,8 +130,11 @@ namespace CmsData
 					this.SendPropertyChanged("SettingTypeId");
 					this.OnSettingTypeIdChanged();
 				}
+
 			}
+
 		}
+
 		
 		[Column(Name="DisplayOrder", UpdateCheck=UpdateCheck.Never, Storage="_DisplayOrder", DbType="int NOT NULL")]
 		public int DisplayOrder
@@ -131,30 +145,36 @@ namespace CmsData
 			{
 				if (this._DisplayOrder != value)
 				{
+				
                     this.OnDisplayOrderChanging(value);
 					this.SendPropertyChanging();
 					this._DisplayOrder = value;
 					this.SendPropertyChanged("DisplayOrder");
 					this.OnDisplayOrderChanged();
 				}
-			}
-		}
-		
-        #endregion
-        
-        #region Foreign Key Tables
-   		
-   		[Association(Name="FK_Setting_SettingCategory", Storage="_Settings", OtherKey="SettingCategoryId")]
-   		public EntitySet<Setting> Settings
-   		{
-   		    get { return this._Settings; }
 
-			set	{ this._Settings.Assign(value); }
+			}
+
+		}
+
+		
+    #endregion
+        
+    #region Foreign Key Tables
+   		
+   		[Association(Name="FK_SettingMetadata_SettingCategory", Storage="_SettingMetadatas", OtherKey="SettingCategoryId")]
+   		public EntitySet<SettingMetadatum> SettingMetadatas
+   		{
+   		    get { return this._SettingMetadatas; }
+
+			set	{ this._SettingMetadatas.Assign(value); }
+
    		}
 
-	    #endregion
+		
+	#endregion
 	
-	    #region Foreign Keys
+	#region Foreign Keys
     	
 		[Association(Name="FK_SettingCategory_SettingType", Storage="_SettingType", ThisKey="SettingTypeId", IsForeignKey=true)]
 		public SettingType SettingType
@@ -180,46 +200,55 @@ namespace CmsData
 						value.SettingCategories.Add(this);
 						
 						this._SettingTypeId = value.SettingTypeId;
+						
 					}
 
 					else
 					{
+						
 						this._SettingTypeId = default(int);
+						
 					}
 
 					this.SendPropertyChanged("SettingType");
 				}
+
 			}
+
 		}
+
 		
-	    #endregion
+	#endregion
 	
 		public event PropertyChangingEventHandler PropertyChanging;
-
-        protected virtual void SendPropertyChanging()
+		protected virtual void SendPropertyChanging()
 		{
 			if ((this.PropertyChanging != null))
 				this.PropertyChanging(this, emptyChangingEventArgs);
 		}
 
 		public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void SendPropertyChanged(String propertyName)
+		protected virtual void SendPropertyChanged(String propertyName)
 		{
 			if ((this.PropertyChanged != null))
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 		}
+
    		
-		private void attach_Settings(Setting entity)
+		private void attach_SettingMetadatas(SettingMetadatum entity)
 		{
 			this.SendPropertyChanging();
 			entity.SettingCategory = this;
 		}
 
-		private void detach_Settings(Setting entity)
+		private void detach_SettingMetadatas(SettingMetadatum entity)
 		{
 			this.SendPropertyChanging();
 			entity.SettingCategory = null;
 		}
+
+		
 	}
+
 }
+

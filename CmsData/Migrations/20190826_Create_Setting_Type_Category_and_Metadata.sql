@@ -32,7 +32,7 @@ GO
 IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE Object_ID = Object_ID(N'dbo.SettingMetadata'))
     BEGIN
 		CREATE TABLE [dbo].[SettingMetadata](
-		    [Id] [nvarchar](50) NOT NULL,
+		    [SettingId] [nvarchar](50) NOT NULL,
 		    [DisplayName] [varchar](max) NULL,
 		    [Description] [varchar](max) NULL,
 		    [DataType] [int] NULL,
@@ -40,12 +40,18 @@ IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE Object_ID = Object_ID(N'dbo.Setti
 		    [SettingCategoryId] [int] NULL,
 		CONSTRAINT [PK_SettingMetadata] PRIMARY KEY CLUSTERED 
 		(
-			[Id] ASC
+			[SettingId] ASC
 		)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 		) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 		ALTER TABLE [dbo].[SettingMetadata]  WITH CHECK ADD  CONSTRAINT [FK_SettingMetadata_SettingCategory] FOREIGN KEY([SettingCategoryId])
 			REFERENCES [dbo].[SettingCategory] ([SettingCategoryId])
 		ALTER TABLE [dbo].[SettingMetadata]  WITH CHECK ADD  CONSTRAINT [FK_SettingMetadata_SettingType] FOREIGN KEY([SettingTypeId])
 			REFERENCES [dbo].[SettingType] ([SettingTypeId])
+        ALTER TABLE [dbo].[SettingMetadata]  WITH CHECK ADD  CONSTRAINT [FK_SettingMetadata_Setting] FOREIGN KEY([SettingId])
+			REFERENCES [dbo].[Setting] ([Id])
+
+        INSERT INTO SettingMetadata (SettingId)
+        SELECT Id
+        FROM Setting 
     END
 GO

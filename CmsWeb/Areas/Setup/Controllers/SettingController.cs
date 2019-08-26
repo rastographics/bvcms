@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web.Mvc;
 using CmsWeb.Areas.Setup.Models;
-using Flurl.Util;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Setup.Controllers
@@ -21,10 +20,10 @@ namespace CmsWeb.Areas.Setup.Controllers
         [Route("~/Settings")]
         public ActionResult Index()
         {
-            var m = CurrentDatabase.Settings.AsQueryable();
+            var m = CurrentDatabase.SettingMetadatas.AsQueryable();
             if (!User.IsInRole("Developer"))
             {
-                m = m.Where(vv => (vv.System ?? false) == false);
+                m = m.Where(vv => (vv.Setting.System ?? false) == false);
             }
 
             var settingTypes = m
