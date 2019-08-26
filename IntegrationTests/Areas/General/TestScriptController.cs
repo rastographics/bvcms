@@ -4,10 +4,11 @@ using Shouldly;
 using UtilityExtensions;
 using Xunit;
 using IntegrationTests.Resources;
+using SharedTestFixtures;
 
 namespace IntegrationTests.Areas.Manage
 {
-    [Collection("WebApp Collection")]
+    [Collection(Collections.Webapp)]
     public class TestScriptController : AccountTestBase
     {
         [Fact]
@@ -31,6 +32,9 @@ namespace IntegrationTests.Areas.Manage
             db.WriteContentPython("HelloWorld", "print 'parameters {} {}'.format(Data.p1, Data.p2)");
             Open($"{rootUrl}PyScript/HelloWorld/testing/123");
             PageSource.ShouldContain("parameters testing 123");
+            Open($"{rootUrl}PyScript/HelloWorld?p1=testing&p2=123");
+            PageSource.ShouldContain("parameters testing 123");
+
         }
         [Fact]
         public void PythonSearchNamesTest()
