@@ -62,9 +62,8 @@ namespace CmsWeb.Areas.Search.Controllers
             var m = QueryModel.QueryCode(CurrentDatabase, code);
             return ViewQuery(m);
         }
-        private ActionResult ViewQuery(QueryModel m)
-        {
-            m.Db = CurrentDatabase;
+        private ActionResult ViewQuery(QueryModel m) 
+		{
             InitToolbar(m);
             m.TopClause.IncrementLastRun();
             CurrentDatabase.SubmitChanges();
@@ -85,7 +84,6 @@ namespace CmsWeb.Areas.Search.Controllers
 
         private void InitToolbar(QueryModel m)
         {
-            m.Db = CurrentDatabase;
             ViewBag.OnQueryBuilder = "true";
             ViewBag.TagAction = $"/Query/TagAll/";
             ViewBag.DialogAction = $"/Dialog/TagAll/{m.QueryId}";
@@ -101,7 +99,6 @@ namespace CmsWeb.Areas.Search.Controllers
         {
             try
             {
-                m.Db = CurrentDatabase;
                 m.Cut();
             }
             catch (Exception ex)
@@ -115,7 +112,6 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ActionResult Copy(QueryModel m)
         {
-            m.Db = CurrentDatabase;
             m.Copy();
             return Content("ok");
         }
@@ -123,7 +119,6 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ActionResult Paste(QueryModel m)
         {
-            m.Db = CurrentDatabase;
             m.Paste();
             return View("Conditions", m);
         }
@@ -131,7 +126,6 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ActionResult InsGroupAbove(QueryModel m)
         {
-            m.Db = CurrentDatabase;
             m.InsertGroupAbove();
             return View("Conditions", m);
         }
@@ -139,7 +133,6 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ActionResult MakeTopGroup(QueryModel m)
         {
-            m.Db = CurrentDatabase;
             m.MakeTopGroup();
             return View("Conditions", m);
         }
@@ -147,14 +140,12 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ActionResult CodeSelect(QueryModel m)
         {
-            m.Db = CurrentDatabase;
             return View("EditorTemplates/CodeSelect", m);
         }
 
         [HttpPost]
         public ActionResult SelectCondition(QueryModel m)
         {
-            m.Db = CurrentDatabase;
             m.Comparison = "Equal";
             m.UpdateCondition();
             return View("EditCondition", m);
@@ -163,7 +154,6 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ActionResult EditCondition(QueryModel m)
         {
-            m.Db = CurrentDatabase;
             Response.NoCache();
             m.EditCondition();
             return View(m);
@@ -172,7 +162,6 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ActionResult AddNewCondition(QueryModel m)
         {
-            m.Db = CurrentDatabase;
             m.EditCondition();
             ViewBag.NewId = m.AddConditionToGroup();
             return View("Conditions", m);
@@ -181,7 +170,6 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ActionResult AddNewGroup(QueryModel m)
         {
-            m.Db = CurrentDatabase;
             m.EditCondition();
             ViewBag.NewId = m.AddGroupToGroup();
             return View("Conditions", m);
@@ -190,7 +178,6 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost, Route("ChangeGroup/{comparison}")]
         public ActionResult ChangeGroup(string comparison, QueryModel m)
         {
-            m.Db = CurrentDatabase;
             m.Selected.Comparison = comparison;
             m.TopClause.Save(CurrentDatabase);
             return Content("ok");
@@ -199,7 +186,6 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ActionResult SaveCondition(QueryModel m)
         {
-            m.Db = CurrentDatabase;
             if (m.Validate(ModelState))
             {
                 m.UpdateCondition();
@@ -223,7 +209,6 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ActionResult RemoveCondition(QueryModel m)
         {
-            m.Db = CurrentDatabase;
             m.DeleteCondition();
             m.SelectedId = null;
             return View("Conditions", m);
@@ -232,7 +217,6 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ActionResult ToggleConditionEnabled(QueryModel m)
         {
-            m.Db = CurrentDatabase;
             m.ToggleConditionEnabled();
             m.SelectedId = null;
             return View("Conditions", m);
@@ -241,7 +225,6 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ActionResult Conditions(QueryModel m)
         {
-            m.Db = CurrentDatabase;
             return View("Conditions", m);
         }
 
@@ -262,7 +245,6 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public JsonResult SavedQueries(QueryModel m)
         {
-            m.Db = CurrentDatabase;
             return Json(m.SavedQueries());
         }
 
@@ -318,7 +300,6 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ActionResult Results(QueryModel m)
         {
-            m.Db = CurrentDatabase;
             var starttime = DateTime.Now;
             DbUtil.LogActivity($"QB Results ({DateTime.Now.Subtract(starttime).TotalSeconds:N1}, {m.TopClause.Id})");
             InitToolbar(m);
@@ -392,7 +373,6 @@ namespace CmsWeb.Areas.Search.Controllers
                     CurrentDatabase.ClearTag(workingTag);
                 }
 
-                m.Db = CurrentDatabase;
                 m.TagAll(workingTag);
 
                 Util2.CurrentTag = workingTag.Name;
@@ -407,7 +387,6 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ContentResult UnTagAll(QueryModel m)
         {
-            m.Db = CurrentDatabase;
             m.UntagAll();
             return Content("Add");
         }
@@ -415,7 +394,6 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ContentResult AddContact(QueryModel m)
         {
-            m.Db = CurrentDatabase;
             var cid = Contact.AddContact(m.TopClause.Id);
             return Content("/Contact2/" + cid);
         }
@@ -423,7 +401,6 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ActionResult AddTasks(QueryModel m)
         {
-            m.Db = CurrentDatabase;
             return Content(Task.AddTasks(CurrentDatabase, m.TopClause.Id).ToString());
         }
 

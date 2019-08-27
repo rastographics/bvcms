@@ -9,7 +9,6 @@ namespace CmsWeb.Areas.Search.Models
 {
     public class QueryResults : PagedTableModel<Person, PeopleInfo>
     {
-        internal CMSDataContext Db;
         public string Description { get { return topclause.Description; } }
         public string SaveToDescription { get { return topclause.PreviousName ?? topclause.Description; } }
         public Guid? QueryId { get; set; }
