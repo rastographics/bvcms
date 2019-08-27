@@ -1,4 +1,5 @@
 using CmsData;
+using ImageData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -62,21 +63,22 @@ namespace CmsWeb.Areas.People.Models
                        Uploader = uploader.Name
                    };
         }
-        public static void DeleteDocument(int id, int docid)
+        public static void DeleteDocument(CMSDataContext db, CMSImageDataContext idb, int id, int docid)
         {
-            var m = DbUtil.Db.MemberDocForms.SingleOrDefault(mm => mm.Id == docid && mm.PeopleId == id);
-            ImageData.Image.DeleteOnSubmit(m.SmallId);
-            ImageData.Image.DeleteOnSubmit(m.MediumId);
-            ImageData.Image.DeleteOnSubmit(m.LargeId);
-            DbUtil.Db.MemberDocForms.DeleteOnSubmit(m);
-            DbUtil.Db.SubmitChanges();
+            var m = db.MemberDocForms.SingleOrDefault(mm => mm.Id == docid && mm.PeopleId == id);
+            idb.DeleteOnSubmit(m.SmallId);
+            idb.DeleteOnSubmit(m.MediumId);
+            idb.DeleteOnSubmit(m.LargeId);
+            db.MemberDocForms.DeleteOnSubmit(m);
+            db.SubmitChanges();
+            idb.SubmitChanges();
         }
 
-        internal static void UpdateName(int pk, string value)
+        internal static void UpdateName(CMSDataContext db, int pk, string value)
         {
-            var m = DbUtil.Db.MemberDocForms.Single(mm => mm.Id == pk);
+            var m = db.MemberDocForms.Single(mm => mm.Id == pk);
             m.Name = value;
-            DbUtil.Db.SubmitChanges();
+            db.SubmitChanges();
         }
     }
 }

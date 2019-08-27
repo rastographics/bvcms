@@ -103,7 +103,7 @@ namespace CmsWeb.MobileAPI
         public int statementType = 0;
         public int envelopeOption = 0;
 
-        public MobilePersonExtended populate(Person p, bool includeFamily)
+        public MobilePersonExtended populate(Person p, bool includeFamily, CMSImageDataContext cmsidb)
         {
             id = p.PeopleId;
             familyID = p.FamilyId;
@@ -198,7 +198,7 @@ namespace CmsWeb.MobileAPI
 
                 foreach (Person familyMember in family)
                 {
-                    familyMembers.Add(new MobileFamilyMember(familyMember));
+                    familyMembers.Add(new MobileFamilyMember(familyMember, cmsidb));
                 }
             }
 
@@ -206,7 +206,7 @@ namespace CmsWeb.MobileAPI
 
             if (p.Picture != null)
             {
-                Image image = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == p.Picture.SmallId);
+                Image image = cmsidb.Images.SingleOrDefault(i => i.Id == p.Picture.SmallId);
 
                 if (image != null)
                 {

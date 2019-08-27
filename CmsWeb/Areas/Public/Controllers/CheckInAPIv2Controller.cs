@@ -4,12 +4,12 @@ using System.Data.SqlClient;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Web.Mvc;
-using System.Web.Script.Serialization;
-using CmsWeb.Areas.Org.Models;
+using CMSDataContext = CmsData.CMSDataContext;
 using CmsWeb.Areas.Public.Models.CheckInAPIv2;
 using CmsWeb.Areas.Public.Models.CheckInAPIv2.Results;
 using CmsWeb.Areas.Public.Models.CheckInAPIv2.Searches;
 using CmsWeb.Models;
+using ImageData;
 using Microsoft.Scripting.Utils;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -37,7 +37,10 @@ namespace CmsWeb.Areas.Public.Controllers
 
 		private static bool Auth()
 		{
-			return AccountModel.AuthenticateMobile( "Checkin" ).IsValid;
+            var db = CMSDataContext.Create(HttpContextFactory.Current);
+            var idb = CMSImageDataContext.Create(HttpContextFactory.Current);
+
+            return AccountModel.AuthenticateMobile(db, idb, "Checkin" ).IsValid;
 		}
 
 		public ActionResult Authenticate( string data )
@@ -45,7 +48,8 @@ namespace CmsWeb.Areas.Public.Controllers
 			if( !Auth() )
 				return Message.createErrorReturn( "Authentication failed, please try again", Message.API_ERROR_INVALID_CREDENTIALS );
 
-			List<SettingsEntry> settings = (from s in CmsData.DbUtil.Db.CheckInSettings
+            var db = CMSDataContext.Create(HttpContextFactory.Current);
+            List<SettingsEntry> settings = (from s in db.CheckInSettings
 														where s.Version == 2
 														select new SettingsEntry
 														{
@@ -55,7 +59,7 @@ namespace CmsWeb.Areas.Public.Controllers
 															version = s.Version
 														}).ToList();
 
-			List<State> states = (from s in CmsData.DbUtil.Db.StateLookups
+			List<State> states = (from s in db.StateLookups
 										orderby s.StateName
 										select new State
 										{
@@ -63,7 +67,7 @@ namespace CmsWeb.Areas.Public.Controllers
 											name = s.StateName
 										}).ToList();
 
-			List<Country> countries = (from c in CmsData.DbUtil.Db.Countries
+			List<Country> countries = (from c in db.Countries
 												orderby c.Id
 												select new Country
 												{
@@ -72,7 +76,7 @@ namespace CmsWeb.Areas.Public.Controllers
 													name = c.Description
 												}).ToList();
 
-			List<Campus> campuses = (from c in CmsData.DbUtil.Db.Campus
+			List<Campus> campuses = (from c in db.Campus
 											where c.Organizations.Any( o => o.CanSelfCheckin.Value )
 											orderby c.Id
 											select new Campus
@@ -83,7 +87,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
 			campuses.Insert( 0, new Campus {id = 0, name = "All Campuses"} );
 
-			List<Gender> genders = (from g in CmsData.DbUtil.Db.Genders
+			List<Gender> genders = (from g in db.Genders
 											orderby g.Id
 											select new Gender
 											{
@@ -91,7 +95,7 @@ namespace CmsWeb.Areas.Public.Controllers
 												name = g.Description
 											}).ToList();
 
-			List<MaritalStatus> maritals = (from m in CmsData.DbUtil.Db.MaritalStatuses
+			List<MaritalStatus> maritals = (from m in db.MaritalStatuses
 														orderby m.Id
 														select new MaritalStatus
 														{
@@ -133,11 +137,12 @@ namespace CmsWeb.Areas.Public.Controllers
 			Message response = new Message();
 			response.setNoError();
 
-			using( var db = new SqlConnection( Util.ConnectionString ) ) {
-				List<Family> families = Family.forSearch( db, cns.search, cns.campus, cns.date );
 
-				response.data = SerializeJSON( families, message.version );
-			}
+            var db = CMSDataContext.Create(HttpContextFactory.Current);
+            var idb = CMSImageDataContext.Create(HttpContextFactory.Current);
+            List<Family> families = Family.forSearch(db, idb, cns.search, cns.campus, cns.date );
+
+			response.data = SerializeJSON( families, message.version );
 
 			return response;
 		}

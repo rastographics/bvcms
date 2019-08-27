@@ -70,7 +70,7 @@ namespace CmsWeb.Areas.Setup.Controllers
                         CurrentDatabase.SubmitChanges();
                         return Content(value);
                     case "z":
-                        div.NoDisplayZero = value == "yes";
+                        div.NoDisplayZero = (value == "yes" || value == "1");
                         CurrentDatabase.SubmitChanges();
                         return Content(value);
                 }

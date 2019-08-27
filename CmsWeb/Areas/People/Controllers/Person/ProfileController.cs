@@ -88,21 +88,21 @@ namespace CmsWeb.Areas.People.Controllers
 
             var person = CurrentDatabase.People.Single(pp => pp.PeopleId == id);
             DbUtil.LogPersonActivity($"Uploading Document for {person.Name}", id, person.Name);
-            person.UploadDocument(CurrentDatabase, doc.InputStream, doc.FileName, doc.ContentType);
+            person.UploadDocument(CurrentDatabase, CurrentImageDatabase, doc.InputStream, doc.FileName, doc.ContentType);
             return Redirect("/Person2/" + id);
         }
 
         [HttpPost]
         public ActionResult MemberDocumentUpdateName(int pk, string name, string value)
         {
-            MemberDocModel.UpdateName(pk, value);
+            MemberDocModel.UpdateName(CurrentDatabase, pk, value);
             return new EmptyResult();
         }
 
         [HttpPost, Route("DeleteDocument/{id:int}/{docid:int}")]
         public ActionResult DeleteDocument(int id, int docid)
         {
-            MemberDocModel.DeleteDocument(id, docid);
+            MemberDocModel.DeleteDocument(CurrentDatabase, CurrentImageDatabase, id, docid);
             return View("Profile/Membership/Documents", id);
         }
 

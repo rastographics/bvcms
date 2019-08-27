@@ -8,13 +8,14 @@
 
     var list = (from e in DbUtil.Db.LabelFormats
                 orderby e.Size, e.Name
-                select new {
+                select new
+                {
                     id = e.Id,
                     name = String.Concat(e.Name, "~", e.Size)
                 }).ToList();
     list.Insert(0, new { id = 0, name = "- Select a format -" });
-    
-    if( labelID > 0 )
+
+    if (labelID > 0)
     {
         label = (from e in DbUtil.Db.LabelFormats
                  where e.Id == labelID

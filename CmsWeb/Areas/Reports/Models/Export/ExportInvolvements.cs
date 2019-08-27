@@ -29,6 +29,7 @@ namespace CmsWeb.Models
                          City = p.PrimaryCity,
                          State = p.PrimaryState,
                          Zip = p.PrimaryZip,
+                         FamilyId = p.FamilyId,
                          Name = p.Name,
                          HomePhone = p.HomePhone,
                          WorkPhone = p.WorkPhone,

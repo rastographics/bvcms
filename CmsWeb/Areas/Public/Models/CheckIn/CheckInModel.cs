@@ -1,12 +1,14 @@
 using CmsData;
 using CmsData.Codes;
 using CmsData.View;
+using ImageData;
 using System;
 using System.Collections.Generic;
 using System.Data.Linq.SqlClient;
 using System.Linq;
 using System.Xml.Linq;
 using UtilityExtensions;
+using DbUtil = CmsData.DbUtil;
 
 namespace CmsWeb.Models
 {
@@ -332,13 +334,12 @@ namespace CmsWeb.Models
             return list2;
         }
 
-        private bool HasImage(int? imageid)
+        private bool HasImage(CMSImageDataContext idb, int? imageid)
         {
-            var q = from i in ImageData.DbUtil.Db.Images
+            var q = from i in idb.Images
                     where i.Id == imageid
                     select i.Length;
-            var len = q.SingleOrDefault();
-            return len > 0;
+            return q.Any();
         }
 
         public void RecordAttend(int PeopleId, int OrgId, bool Present, int thisday)
