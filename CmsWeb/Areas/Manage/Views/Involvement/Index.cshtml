@@ -105,15 +105,18 @@
                         '<td>' +
                             '<select class="form-control" data-involvement-type>' +
                                 '<option value="">-- Default --</option>' +
-                                '<option value="Mailing List">Mailing List</option>' +
-                                '<option value="Leader Coach Group">Leader Coach Group</option>' +
-                                '<option value="Community Group">Community Group</option>' +
-                                '<option value="Registration">Registration</option>' +
-                                '<option value="Volunteer Group">Volunteer Group</option>' +
-                                '<option value="Children and Youth Group">Children and Youth Group</option>' +
+                                @foreach (var item in Model.InvolvementTypeList)
+                                {
+                                    @:'<option value="@item.Description">@item.Description</option>' +
+                                }
                             '</select>' +
                         '</td>' +
-                        buildDataColumnCell() +
+                        '<td data-column>' +
+                            '<select class="form-control" data-field disabled>' +
+                                '<option value="">--</option>' +
+                                '<option selected value="Organization">Organization</option>' +
+                            '</select>' +
+                        '</td>' +
                         buildDataColumnCell() +
                         buildDataColumnCell() +
                         buildDataColumnCell() +

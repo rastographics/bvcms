@@ -7,11 +7,11 @@ namespace CmsWeb.Areas.Manage.Models.Involvement
     {
         public CustomizeInvolvementModel(IEnumerable<InvolvementTabModel.OrgType> involvementTypes)
         {
-            var involvementTypeList = involvementTypes.ToList();
+            InvolvementTypeList = involvementTypes.ToList();
 
-            Current = new InvolvementTabModel("InvolvementTableCurrent", involvementTypeList);
-            Pending = new InvolvementTabModel("InvolvementTablePending", involvementTypeList);
-            Previous = new InvolvementTabModel("InvolvementTablePrevious", involvementTypeList);
+            Current = new InvolvementTabModel("InvolvementTableCurrent", InvolvementTypeList);
+            Pending = new InvolvementTabModel("InvolvementTablePending", InvolvementTypeList);
+            Previous = new InvolvementTabModel("InvolvementTablePrevious", InvolvementTypeList);
         }
 
         public InvolvementTabModel Current { get; set; }
@@ -19,5 +19,7 @@ namespace CmsWeb.Areas.Manage.Models.Involvement
         public InvolvementTabModel Pending { get; set; }
 
         public InvolvementTabModel Previous { get; set; }
+
+        public List<InvolvementTabModel.OrgType> InvolvementTypeList { get; set; }
     }
 }
