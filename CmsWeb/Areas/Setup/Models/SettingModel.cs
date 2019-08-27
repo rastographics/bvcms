@@ -20,5 +20,7 @@ namespace CmsWeb.Areas.Setup.Models
     {
         Boolean = 1,
         Date = 2,
+        Text = 3,
+        Obscured = 4
     }
 }

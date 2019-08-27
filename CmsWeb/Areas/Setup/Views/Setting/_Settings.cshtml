@@ -41,11 +41,21 @@
                         @switch (item.DataType)
                         {
                             case (int)SettingDataType.Boolean:
-                                <input class="boolean-toggle" type="checkbox" id="@item.Setting.Id" name="@item.Setting.Id" data-toggle="toggle" data-on="True" data-off="False" data-width="100" checked="@(item.Setting.SettingX?.ToLower() == "true")")>
+                                <input class="boolean-toggle" type="checkbox" id="@item.Setting.Id" name="@item.Setting.Id" data-toggle="toggle" data-on="True" data-off="False" data-width="100" checked="@(item.Setting.SettingX?.ToLower() == "true")" )>
                                 break;
                             case (int)SettingDataType.Date:
                                 <a class="edit-datetime" id="@item.Setting.Id" data-pk="@(item.Setting.Id)" data-type="date" data-url="/Setting/Edit">
                                     @(item.Setting.SettingX ?? "Empty")
+                                </a>
+                                break;
+                            case (int)SettingDataType.Text:
+                                <a id="@item.Setting.Id" class="clickEdit" data-pk="@(item.Setting.Id)">
+                                    @item.Setting.SettingX
+                                </a>
+                                break;
+                            case (int)SettingDataType.Obscured:
+                                <a id="@item.Setting.Id" class="clickEdit" data-pk="@(item.Setting.Id)" data-value="@item.Setting.SettingX">
+                                    ******OBSCURED******
                                 </a>
                                 break;
                             default:
