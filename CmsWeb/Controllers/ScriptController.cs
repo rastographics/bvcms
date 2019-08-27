@@ -21,92 +21,34 @@ namespace CmsWeb.Controllers
         {
         }
 
-#if DEBUG
-        [HttpGet, Route("~/Test/{id?}")]
-        public ActionResult Test(int? id)
+        [Route("~/PythonSearch/Names")]
+        public ActionResult PythonSearchNames(string term)
         {
-            EmailReplacements.ReCodes();
-            return Content("no test");
+            var m = new PythonScriptModel(CurrentDatabase);
+            var n = m.PythonSearch(term, 10).ToArray();
+            return Json(n, JsonRequestBehavior.AllowGet);
         }
-        [HttpGet, Route("~/Warmup")]
-        public ActionResult Warmup()
-        {
-            return View();
-        }
-#endif
-
-        public ActionResult RecordTest(int id, string v)
-        {
-            var o = CurrentDatabase.LoadOrganizationById(id);
-            o.AddEditExtra(CurrentDatabase, "tested", v);
-            CurrentDatabase.SubmitChanges();
-            return Content(v);
-        }
-
-        //todo: use injection
-#if DEBUG
-        [HttpGet, Route("~/TestScript")]
-        [Authorize(Roles = "Developer")]
-        public ActionResult TestScript()
-        {
-            //var id = DbUtil.Db.ScratchPadQuery(@"MemberStatusId = 10[Member] AND LastName = 'C*'");
-
-            var file = Server.MapPath("~/test.py");
-            var logFile = $"RunPythonScriptInBackground.{DateTime.Now:yyyyMMddHHmmss}";
-
-#if false
-            HostingEnvironment.QueueBackgroundWorkItem(ct =>
-            {
-                var pe = new PythonModel(host);
-                //pe.DictionaryAdd("OrgId", "89658");
-                pe.DictionaryAdd("LogFile", logFile);
-                PythonModel.ExecutePythonFile(file, pe);
-            });
-            return View("RunPythonScriptProgress");
-#else
-            var pe = new PythonModel(CurrentDatabase);
-            pe.DictionaryAdd("LogFile", logFile);
-            ViewBag.Text = PythonModel.ExecutePython(file, pe, fromFile: true);
-            return View("Test");
-#endif
-        }
-        [HttpPost, Route("~/TestScript")]
-        [ValidateInput(false)]
-        [Authorize(Roles = "Developer")]
-        public ActionResult TestScript(string script)
-        {
-            return Content(PythonModel.RunScript(CurrentDatabase.Host, script));
-        }
-#endif
-
 
         [HttpGet, Route("~/RunScript/{name}/{parameter?}/{title?}")]
         public ActionResult RunScript(string name, string parameter = null, string title = null)
         {
-            var content = CurrentDatabase.ContentOfTypeSql(name);
-            if (content == null)
+            var m = new SqlScriptModel(CurrentDatabase);
+            var sql = m.FetchScript(name);
+            if (sql == null)
             {
-                return Content("no content");
+                return Message("no sql script named " + name);
             }
-            var d = Request.QueryString.AllKeys.ToDictionary(key => key, key => Request.QueryString[key]);
-            var p = new DynamicParameters();
-            foreach (var kv in d)
+            if (!SqlScriptModel.CanRunScript(sql))
             {
-                p.Add("@" + kv.Key, kv.Value);
+                return Message("Not Authorized to run this script");
             }
-
-            string script = ScriptModel.RunScriptSql(parameter, content, p, ViewBag);
-
-            if (script.StartsWith("Not Authorized"))
-            {
-                return Message(script);
-            }
+            var p = m.FetchParameters();
 
             ViewBag.Report = name;
             ViewBag.Name = title ?? $"{name.SpaceCamelCase()} {parameter}";
-            if (script.Contains("pagebreak"))
+            if (sql.Contains("pagebreak"))
             {
-                ViewBag.report = PythonModel.PageBreakTables(CurrentDatabase, script, p);
+                ViewBag.report = PythonModel.PageBreakTables(CurrentDatabase, sql, p);
                 return View("RunScriptPageBreaks");
             }
             ViewBag.Url = Request.Url?.PathAndQuery;
@@ -116,7 +58,7 @@ namespace CmsWeb.Controllers
             using (var cn = CurrentDatabase.ReadonlyConnection())
             {
                 cn.Open();
-                var rd = cn.ExecuteReader(script, p, commandTimeout: 1200);
+                var rd = cn.ExecuteReader(sql, p, commandTimeout: 1200);
                 ViewBag.ExcelUrl = Request.Url?.AbsoluteUri.Replace("RunScript/", "RunScriptExcel/");
                 html = GridResult.Table(rd, ViewBag.Name2);
             }
@@ -126,6 +68,7 @@ namespace CmsWeb.Controllers
         [HttpGet, Route("~/RunScriptExcel/{scriptname}/{parameter?}")]
         public ActionResult RunScriptExcel(string scriptname, string parameter = null)
         {
+            var model = new SqlScriptModel(CurrentDatabase);
             var content = CurrentDatabase.ContentOfTypeSql(scriptname);
             if (content == null)
             {
@@ -139,7 +82,7 @@ namespace CmsWeb.Controllers
                 p.Add("@" + kv.Key, kv.Value);
             }
 
-            string script = ScriptModel.RunScriptSql(parameter, content, p, ViewBag);
+            string script = model.AddParametersForSql(parameter, content, p, ViewBag);
             if (script.StartsWith("Not Authorized"))
             {
                 return Message(script);
@@ -152,155 +95,108 @@ namespace CmsWeb.Controllers
             }
         }
 
-        [HttpGet, Route("~/PyScript/{name}")]
+        [HttpGet, Route("~/PyScript/{name}/{p1?}/{p2?}")]
         public ActionResult PyScript(string name, string p1, string p2, string v1, string v2)
         {
+            var m = new PythonScriptModel(CurrentDatabase);
+            var script = m.FetchScript(name);
+
+            if (script == null)
+            {
+                return Message("no python script named " + name);
+            }
+            if (!PythonScriptModel.CanRunScript(script))
+            {
+                return Message("Not Authorized to run this script");
+            }
+            if (Regex.IsMatch(script, @"model\.Form\b"))
+            {
+                return Redirect("/PyScriptForm/" + name);
+            }
+            script = m.ReplaceParametersInScript(script, p1, p2, v1, v2);
+
+            ViewBag.report = name;
+            ViewBag.url = Request.Url?.PathAndQuery;
+
+            if (script.Contains("Background Process Completed"))
+            {
+                return RunProgressInBackground(script);
+            }
 #if DEBUG
 #else
             try
             {
 #endif
-            var script = CurrentDatabase.ContentOfTypePythonScript(name);
-            if (!script.HasValue())
-            {
-                return Message("no script named " + name);
-            }
-
-            if (!ScriptModel.CanRunScript(script))
-            {
-                return Message("Not Authorized to run this script");
-            }
-
-            if (Regex.IsMatch(script, @"model\.Form\b"))
-            {
-                return Redirect("/PyScriptForm/" + name);
-            }
-
-            script = script.Replace("@P1", p1 ?? "NULL")
-                    .Replace("@P2", p2 ?? "NULL")
-                    .Replace("V1", v1 ?? "None")
-                    .Replace("V2", v2 ?? "None");
-            if (script.Contains("@qtagid"))
-            {
-                var id = CurrentDatabase.FetchLastQuery().Id;
-                var tag = CurrentDatabase.PopulateSpecialTag(id, DbUtil.TagTypeId_Query);
-                script = script.Replace("@qtagid", tag.Id.ToString());
-            }
-
-            ViewBag.report = name;
-            ViewBag.url = Request.Url?.PathAndQuery;
-            if (script.Contains("Background Process Completed"))
-            {
-                var logFile = $"RunPythonScriptInBackground.{DateTime.Now:yyyyMMddHHmmss}";
-                ViewBag.LogFile = logFile;
-                var qs = Request.Url?.Query;
-
-                HostingEnvironment.QueueBackgroundWorkItem(ct =>
+                var ret = m.RunPythonScript(script, p1, p2);
+                m.pythonModel.Output = ret;
+                if (m.pythonModel.Output.StartsWith("REDIRECT="))
                 {
-                    var qsa = HttpUtility.ParseQueryString(qs ?? "");
-                    var pm = new PythonModel(CurrentDatabase);
-                    pm.DictionaryAdd("LogFile", logFile);
-                    foreach (string key in qsa)
-                    {
-                        pm.DictionaryAdd(key, qsa[key]);
-                    }
-                    string result = pm.RunScript(script);
-                    if (result.HasValue())
-                    {
-                        pm.LogToContent(logFile, result);
-                    }
-                });
-                return View("RunPythonScriptProgress");
-            }
-            var pe = new PythonModel(CurrentDatabase); 
-            if (script.Contains("@BlueToolbarTagId"))
-            {
-                var id = CurrentDatabase.FetchLastQuery().Id;
-                pe.DictionaryAdd("BlueToolbarGuid", id.ToCode());
-            }
-
-            foreach (var key in Request.QueryString.AllKeys)
-            {
-                pe.DictionaryAdd(key, Request.QueryString[key]);
-            }
-
-            pe.Output = ScriptModel.Run(name, pe);
-            if (pe.Output.StartsWith("REDIRECT="))
-            {
-                var a = pe.Output.SplitStr("=", 2);
-                return Redirect(a[1].TrimEnd());
-            }
-
-            return View(pe);
+                    var a = m.pythonModel.Output.SplitStr("=", 2);
+                    return Redirect(a[1].TrimEnd());
+                }
+                return View(m.pythonModel);
 #if DEBUG
 #else
-        }
+            }
             catch (Exception ex)
             {
-                return RedirectShowError(ex.Message);
+                return Message(ex.Message);
             }
 #endif
         }
+
+        private ActionResult RunProgressInBackground(string script)
+        {
+            var logFile = $"RunPythonScriptInBackground.{DateTime.Now:yyyyMMddHHmmss}";
+            ViewBag.LogFile = logFile;
+            var qs = Request.Url?.Query;
+            HostingEnvironment.QueueBackgroundWorkItem(ct =>
+            {
+                var qsa = HttpUtility.ParseQueryString(qs ?? "");
+                var pm = new PythonModel(CurrentDatabase);
+                pm.DictionaryAdd("LogFile", logFile);
+                foreach (string key in qsa)
+                {
+                    pm.DictionaryAdd(key, qsa[key]);
+                }
+
+                string result = pm.RunScript(script);
+                if (result.HasValue())
+                {
+                    pm.LogToContent(logFile, result);
+                }
+            });
+            return View("RunPythonScriptProgress");
+        }
+
         [HttpPost, Route("~/RunPythonScriptProgress2")]
         public ActionResult RunPythonScriptProgress2(string logfile)
         {
             var txt = CurrentDatabase.ContentOfTypeText(logfile);
             return Content(txt);
         }
-        [Route("~/PyScriptForm/{name}")]
-        public ActionResult PyScriptForm(string name)
-        {
-            return Request.HttpMethod.ToUpper() == "GET"
-                ? PyScriptFormGet(name)
-                : PyScriptFormPost(name);
-        }
 
-        private ActionResult PyScriptFormGet(string name)
+        [HttpGet, Route("~/PyScriptForm/{name}/{p1?}/{p2?}")]
+        public ActionResult PyScriptForm(string name, string p1 = null, string p2 = null)
         {
+#if DEBUG
+#else
             try
             {
-                var pe = new PythonModel(CurrentDatabase);
-                foreach (var key in Request.QueryString.AllKeys)
-                {
-                    pe.DictionaryAdd(key, Request.QueryString[key]);
-                }
-
-                pe.Data.pyscript = name;
-                pe.HttpMethod = "get";
-                ScriptModel.Run(name, pe);
-                return View(pe);
+#endif
+                var m = new PythonScriptModel(CurrentDatabase);
+                var script = m.FetchScript(name);
+                m.pythonModel.HttpMethod = "get";
+                m.RunPythonScript(script, p1, p2);
+                return View(m.pythonModel);
+#if DEBUG
+#else
             }
             catch (Exception ex)
             {
                 return RedirectShowError(ex.Message);
             }
-        }
-
-        private ActionResult PyScriptFormPost(string name)
-        {
-            try
-            {
-                var pe = new PythonModel(CurrentDatabase);
-                ScriptModel.GetFilesContent(pe);
-                foreach (var key in Request.Form.AllKeys)
-                {
-                    pe.DictionaryAdd(key, Request.Form[key]);
-                }
-
-                pe.HttpMethod = "post";
-
-                var ret = ScriptModel.Run(name, pe);
-                if (ret.StartsWith("REDIRECT="))
-                {
-                    return Redirect(ret.Substring(9).Trim());
-                }
-
-                return Content(ret);
-            }
-            catch (Exception ex)
-            {
-                return RedirectShowError(ex.Message);
-            }
+#endif
         }
 
         [HttpPost, Route("~/PyScriptForm")]
@@ -308,23 +204,22 @@ namespace CmsWeb.Controllers
         {
             try
             {
-                var pe = new PythonModel(CurrentDatabase);
-                foreach (var key in Request.Form.AllKeys)
+                var model = new PythonScriptModel(CurrentDatabase);
+                var script = model.FetchScript(Request.Form["pyscript"]);
+                model.PrepareHttpPost();
+
+                var ret = model.RunPythonScript(script);
+                if (ret.StartsWith("REDIRECT="))
                 {
-                    pe.DictionaryAdd(key, Request.Form[key]);
+                    return Redirect(ret.Substring(9).Trim());
                 }
-
-                pe.HttpMethod = "post";
-
-                var script = CurrentDatabase.ContentOfTypePythonScript(pe.Data.pyscript);
-                return Content(pe.RunScript(script));
+                return Content(ret);
             }
             catch (Exception ex)
             {
-                return RedirectShowError(ex.Message);
+                return Content($@"<div class='alert alert-danger'>{ex.Message}</div></div>");
             }
         }
-
     }
 
 }

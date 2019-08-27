@@ -1,4 +1,5 @@
 ﻿@{
+    CMSDataContext Db = ViewBag.CurrentDatabase;
     var recentOrgs = Util2.MostRecentOrgs;
 }
 <li class="dropdown dropdown-large">
@@ -17,7 +18,7 @@
                 {
                     <li>@Helper.JQueryIdLink("Add New Organization", "addorg")</li>
                 }
-                @if (User.IsInRole("Checkin") && DbUtil.Db.Setting("EnableCheckinCoordinator"))
+                @if (User.IsInRole("Checkin") && Db.Setting("EnableCheckinCoordinator"))
                 {
                     <li>@Helper.LiAnchorLink("Check-In Coordinator", "/CheckInCoordinator")</li>
                 }
