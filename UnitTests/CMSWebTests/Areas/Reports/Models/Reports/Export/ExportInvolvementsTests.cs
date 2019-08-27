@@ -14,10 +14,11 @@ using CmsData.Codes;
 using OfficeOpenXml;
 using System.Reflection;
 using CmsWeb;
+using SharedTestFixtures;
 
 namespace CMSWebTests.Areas.Reports.Models.Reports.Export
 {
-    [Collection("Database collection")]
+    [Collection(Collections.Database)]
     public class ExportInvolvementsTests
     {
         [Fact]

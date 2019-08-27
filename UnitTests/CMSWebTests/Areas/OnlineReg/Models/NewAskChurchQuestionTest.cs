@@ -6,10 +6,11 @@ using CmsWeb.Areas.OnlineReg.Models;
 using System.Collections.Generic;
 using Shouldly;
 using UtilityExtensions;
+using SharedTestFixtures;
 
 namespace CMSWebTests.Areas.OnlineReg.Models.AskChurch
 {
-    [Collection("Database collection")]
+    [Collection(Collections.Database)]
     public class NewAskChurchQuestionTest
     {
         private int OrgId { get; set; }

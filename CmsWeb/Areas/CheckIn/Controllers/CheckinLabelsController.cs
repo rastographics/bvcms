@@ -2,10 +2,10 @@
 using System.Linq;
 using System.Web.Mvc;
 
-namespace CmsWeb.Areas.Manage.Controllers
+namespace CmsWeb.Areas.CheckIn.Controllers
 {
     [Authorize(Roles = "Admin")]
-    [RouteArea("Manage", AreaPrefix = "CheckinLabels"), Route("{action}/{id?}")]
+    [RouteArea("CheckIn", AreaPrefix = "CheckinLabels"), Route("{action}/{id?}")]
     public class CheckinLabelsController : CMSBaseController
     {
         public CheckinLabelsController(IRequestManager requestManager) : base(requestManager)

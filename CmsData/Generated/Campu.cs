@@ -32,7 +32,6 @@ namespace CmsData
    		private EntitySet<Person> _People;
 		
    		private EntitySet<Resource> _Resources;
-		
     	
 	#endregion
 	
@@ -61,10 +60,9 @@ namespace CmsData
 			
 			this._People = new EntitySet<Person>(new Action< Person>(this.attach_People), new Action< Person>(this.detach_People)); 
 			
-			this._Resources = new EntitySet<Resource>(new Action< Resource>(this.attach_Resources), new Action< Resource>(this.detach_Resources)); 
-			
-			
-			OnCreated();
+			this._Resources = new EntitySet<Resource>(new Action< Resource>(this.attach_Resources), new Action< Resource>(this.detach_Resources));            
+
+            OnCreated();
 		}
 
 		
@@ -191,14 +189,13 @@ namespace CmsData
 
    		}
 
-		
-	#endregion
-	
-	#region Foreign Keys
-    	
-	#endregion
-	
-		public event PropertyChangingEventHandler PropertyChanging;
+        #endregion
+
+        #region Foreign Keys
+
+        #endregion
+
+        public event PropertyChangingEventHandler PropertyChanging;
 		protected virtual void SendPropertyChanging()
 		{
 			if ((this.PropertyChanging != null))
@@ -250,9 +247,6 @@ namespace CmsData
 			this.SendPropertyChanging();
 			entity.Campu = null;
 		}
-
-		
-	}
-
+    }
 }
 
