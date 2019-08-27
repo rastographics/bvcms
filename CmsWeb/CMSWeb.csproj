@@ -1853,7 +1853,6 @@
     <Content Include="Areas\Org\Views\Org\Settings\CheckIn.cshtml" />
     <Content Include="Areas\CheckIn\Views\CheckIn\CheckIn.cshtml" />
     <Content Include="Areas\CheckIn\Views\Web.config" />
-    <Content Include="Areas\CheckIn\Views\Web.config" />
     <Content Include="Areas\CheckIn\Views\CheckinSetup\Index.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
