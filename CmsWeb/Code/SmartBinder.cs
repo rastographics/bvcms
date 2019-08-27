@@ -2,7 +2,10 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
+using CmsData;
 using CmsData.Registration;
+using CmsWeb.Lifecycle;
+using CmsWeb.Models;
 using UtilityExtensions;
 
 namespace CmsWeb
@@ -65,6 +68,14 @@ namespace CmsWeb
                     default:
                         return base.CreateModel(controllerContext, bindingContext, modelType);
                 }
+            }
+
+            if (modelType.IsSubclassOf(typeof(DbBinder)) && controllerContext.Controller is CMSBaseController c)
+            {
+                var m = base.CreateModel(controllerContext, bindingContext, modelType);
+                if(m is DbBinder b)
+                    b.Db = c.CurrentDatabase;
+                return m;
             }
             return base.CreateModel(controllerContext, bindingContext, modelType);
         }
