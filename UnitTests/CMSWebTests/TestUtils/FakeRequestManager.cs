@@ -20,9 +20,9 @@ namespace CMSWebTests
         {
             CurrentHttpContext = ContextTestUtils.FakeHttpContext();
             RequestId = Guid.NewGuid();
-            CurrentUser = ContextTestUtils.FakeHttpContext().User;
+            CurrentUser = CurrentHttpContext.User;
             CurrentDatabase = CMSDataContext.Create(Util.Host);
-            CurrentImageDatabase = CMSImageDataContext.Create(ContextTestUtils.FakeHttpContext());
+            CurrentImageDatabase = CMSImageDataContext.Create(CurrentHttpContext);
         }
 
         public Elmah.ErrorLog GetErrorLog()

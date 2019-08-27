@@ -26,12 +26,15 @@ namespace CMSWebTests
         public static NameValueCollection ServerVariables { get; set; }
 
         public static IDictionary Items { get; set; }
+        public static NameValueCollection Headers { get; set; }
+
         private const string Url = "https://localhost.tpsdb.com";
         
         internal static HttpContextBase FakeHttpContext()
         {
             HttpContext = new Mock<HttpContextBase>();
             Items = new Dictionary<string, object>();
+            Headers = new NameValueCollection();
             Request = new Mock<HttpRequestBase>();
             Response = new Mock<HttpResponseBase>();
             var session = new Mock<HttpSessionStateBase>();
@@ -49,6 +52,7 @@ namespace CMSWebTests
             Request.SetupGet(r => r.Url).Returns(new Uri(Url));
             Request.SetupGet(r => r.QueryString).Returns(new NameValueCollection { });
             Request.SetupGet(r => r.ServerVariables).Returns(ServerVariables);
+            Request.SetupGet(r => r.Headers).Returns(Headers);
 
             Response.SetupGet(ctx => ctx.Output).Returns(new StringWriter(responseBody));
 

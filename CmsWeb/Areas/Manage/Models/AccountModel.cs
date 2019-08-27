@@ -170,7 +170,6 @@ namespace CmsWeb.Models
 
             if (checkOrgLeadersOnly && !Util2.OrgLeadersOnlyChecked)
             {
-                CmsData.DbUtil.LogActivity("iphone leadersonly check " + user.Username);
                 if (!Util2.OrgLeadersOnly && roleProvider.IsUserInRole(user.Username, "OrgLeadersOnly"))
                 {
                     Util2.OrgLeadersOnly = true;
@@ -180,7 +179,7 @@ namespace CmsWeb.Models
                 Util2.OrgLeadersOnlyChecked = true;
             }
 
-            FormsAuthentication.SetAuthCookie(user.Username, false);
+            CMSMembershipProvider.provider.SetAuthCookie(user.Username, false);
             ApiSessionModel.SaveApiSession(userStatus.User, requirePin, HttpContextFactory.Current.Request.Headers["PIN"].ToInt2());
 
             return userStatus;
@@ -332,7 +331,7 @@ namespace CmsWeb.Models
                     break;
                 }
 
-                if (System.Web.Security.Membership.Provider.ValidateUser(u.Username, password))
+                if (CMSMembershipProvider.provider.ValidateUser(u.Username, password))
                 {
                     db.Refresh(RefreshMode.OverwriteCurrentValues, u);
                     user = u;

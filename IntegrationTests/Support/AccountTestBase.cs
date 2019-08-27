@@ -18,60 +18,9 @@ namespace IntegrationTests.Support
 
         public string loginUrl => rootUrl + "Logon?ReturnUrl=%2f";
 
-        protected CmsData.User CreateUser(CmsData.Family family = null, params string[] roles)
+        protected CmsData.User CreateUser()
         {
-            if (family == null)
-            {
-                family = new CmsData.Family();
-                db.Families.InsertOnSubmit(family);
-                db.SubmitChanges();
-            }
-            var person = new CmsData.Person
-            {
-                Family = family,
-                FirstName = RandomString(),
-                LastName = RandomString(),
-                EmailAddress = RandomString() + "@example.com",
-                MemberStatusId = CmsData.Codes.MemberStatusCode.Member,
-                PositionInFamilyId = CmsData.Codes.PositionInFamily.PrimaryAdult,
-            };
-            db.People.InsertOnSubmit(person);
-            db.SubmitChanges();
-
-            var createDate = DateTime.Now;
-            var machineKey = GetValidationKeyFromWebConfig();
-            var passwordhash = CMSMembershipProvider.EncodePassword(password, System.Web.Security.MembershipPasswordFormat.Hashed, machineKey);
-            var user = new CmsData.User
-            {
-                PeopleId = person.PeopleId,
-                Username = username,
-                Password = passwordhash,
-                MustChangePassword = false,
-                IsApproved = true,
-                CreationDate = createDate,
-                LastPasswordChangedDate = createDate,
-                LastActivityDate = createDate,
-                IsLockedOut = false,
-                LastLockedOutDate = createDate,
-                FailedPasswordAttemptWindowStart = createDate,
-                FailedPasswordAnswerAttemptWindowStart = createDate,
-            };
-            db.Users.InsertOnSubmit(user);
-            db.SubmitChanges();
-
-            if (roles.Any())
-            {
-                user.AddRoles(db, roles);
-                db.SubmitChanges();
-            }
-            return user;
-        }
-
-        private string GetValidationKeyFromWebConfig()
-        {
-            var config = LoadWebConfig();
-            var machineKey = config.SelectSingleNode("configuration/system.web/machineKey");
-            return machineKey.Attributes["validationKey"].Value;
+            return base.CreateUser(username, password);
         }
 
         protected void Login(string withPassword = null)
