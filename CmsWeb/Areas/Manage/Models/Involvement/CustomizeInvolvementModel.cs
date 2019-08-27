@@ -1,12 +1,17 @@
-﻿namespace CmsWeb.Areas.Manage.Models.Involvement
+﻿using System.Collections.Generic;
+using System.Linq;
+
+namespace CmsWeb.Areas.Manage.Models.Involvement
 {
     public class CustomizeInvolvementModel
     {
-        public CustomizeInvolvementModel()
+        public CustomizeInvolvementModel(IEnumerable<InvolvementTabModel.OrgType> involvementTypes)
         {
-            Current = new InvolvementTabModel("InvolvementTableCurrent");
-            Pending = new InvolvementTabModel("InvolvementTablePending");
-            Previous = new InvolvementTabModel("InvolvementTablePrevious");
+            var involvementTypeList = involvementTypes.ToList();
+
+            Current = new InvolvementTabModel("InvolvementTableCurrent", involvementTypeList);
+            Pending = new InvolvementTabModel("InvolvementTablePending", involvementTypeList);
+            Previous = new InvolvementTabModel("InvolvementTablePrevious", involvementTypeList);
         }
 
         public InvolvementTabModel Current { get; set; }

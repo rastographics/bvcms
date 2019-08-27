@@ -8,14 +8,11 @@ namespace CmsWeb.Areas.Manage.Models.Involvement
     public class InvolvementTabModel
     {
         private const int COLUMN_MAX = 6;
+        private List<OrgType> _involvementTypeList;
 
-        public InvolvementTabModel()
+        public InvolvementTabModel(string name, List<OrgType> involvementTypeList)
         {
-            Types = new List<InvolvementType>();
-        }
-
-        public InvolvementTabModel(string name)
-        {
+            _involvementTypeList = involvementTypeList;
             Name = name;
             Types = new List<InvolvementType>();
         }
@@ -79,49 +76,21 @@ namespace CmsWeb.Areas.Manage.Models.Involvement
                    column.Sortable == null;
         }
 
+
+        public class OrgType
+        {
+            public int Id { get; set; }
+            public string Description { get; set; }
+        }
+
         public IEnumerable<SelectListItem> TypeSelectList(string selectedValue)
         {
-            var selectList = new List<SelectListItem>
+            return _involvementTypeList.Select(x => new SelectListItem
             {
-                new SelectListItem
-                {
-                    Text = "Mailing List",
-                    Value = "Mailing List"
-                },
-                new SelectListItem
-                {
-                    Text = "Leader Coach Group",
-                    Value = "Leader Coach Group"
-                },
-                new SelectListItem
-                {
-                    Text = "Community Group",
-                    Value = "Community Group"
-                },
-                new SelectListItem
-                {
-                    Text = "Registration",
-                    Value = "Registration"
-                },
-                new SelectListItem
-                {
-                    Text = "Volunteer Group",
-                    Value = "Volunteer Group"
-                },
-                new SelectListItem
-                {
-                    Text = "Children and Youth Group",
-                    Value = "Children and Youth Group"
-                }
-            };
-
-            var selected = selectList.FirstOrDefault(x => x.Value == selectedValue);
-            if (selected != null)
-            {
-                selected.Selected = true;
-            }
-
-            return selectList;
+                Text = x.Description,
+                Value = x.Description,
+                Selected = x.Description == selectedValue
+            });
         }
 
         public IEnumerable<SelectListItem> ColumnSelectList(string selectedValue)

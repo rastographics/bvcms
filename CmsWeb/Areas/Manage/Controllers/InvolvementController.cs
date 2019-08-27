@@ -4,7 +4,6 @@ using CmsWeb.Lifecycle;
 using System.Web.Mvc;
 using CmsData;
 using CmsData.Codes;
-using CmsWeb.Areas.Manage.Models;
 using CmsWeb.Areas.Manage.Models.Involvement;
 
 namespace CmsWeb.Areas.Manage.Controllers
@@ -20,7 +19,9 @@ namespace CmsWeb.Areas.Manage.Controllers
 
         public ActionResult Index()
         {
-            var model = new CustomizeInvolvementModel();
+            var involvementTypes = CurrentDatabase.ExecuteQuery<InvolvementTabModel.OrgType>("select * from lookup.OrganizationType");
+
+            var model = new CustomizeInvolvementModel(involvementTypes);
 
             model.Current.ReadXml(CurrentDatabase.Contents.SingleOrDefault(c => c.Name == model.Current.Name)?.Body ?? Resource1.InvolvementTableCurrent);
             model.Pending.ReadXml(CurrentDatabase.Contents.SingleOrDefault(c => c.Name == model.Pending.Name)?.Body ?? Resource1.InvolvementTablePending);
