@@ -25,10 +25,10 @@
                         @foreach (var column in item.Columns)
                         {
                             <td data-column>
-                                @Html.DropDownListFor(model => column.Field, Model.ColumnSelectList(column.Field), "--", new { @class = "form-control", data_field = string.Empty })
-                                @Html.Hidden("Label", column.Label, new { data_label = string.Empty })
-                                @Html.Hidden("Role", column.Role, new { data_role = string.Empty })
-                                @Html.Hidden("Sortable", column.Sortable.ToString(), new { data_sortable = string.Empty })
+                                @Html.DropDownListFor(model => column.Field, Model.ColumnSelectList(column.Field), "--", column.Field == "Organization" ? new {@class = "form-control", data_field = string.Empty, disabled = true} as object : new {@class = "form-control", data_field = string.Empty})
+                                @Html.Hidden("Label", column.Label, new {data_label = string.Empty})
+                                @Html.Hidden("Role", column.Role, new {data_role = string.Empty})
+                                @Html.Hidden("Sortable", column.Sortable.ToString(), new {data_sortable = string.Empty})
                             </td>
                         }
                         <td>
