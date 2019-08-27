@@ -11,7 +11,7 @@ AS
 BEGIN
 	DECLARE @T TABLE (
 			[COUNT] int,
-			Amount numeric,
+			Amount decimal(12,2),
 			FundId int,
 			FundName nvarchar(512),
 			[ONLINE] BIT,
