@@ -13,7 +13,7 @@ using SharedTestFixtures;
 
 namespace IntegrationTests.Areas.Finance.Views.Bundle
 {
-    [Collection("WebApp Collection")]
+    [Collection("Webapp collection")]
     public class EditTests : AccountTestBase
     {
         [Fact]
@@ -31,7 +31,8 @@ namespace IntegrationTests.Areas.Finance.Views.Bundle
             PageSource.ShouldContain("Contribution Bundle");
 
             Find(css: "span.input-group-addon").Click();
-            Find(css: "div.bootstrap-datetimepicker-widget").ShouldNotBeNull();
+            var timepicker = Find(css: "div.bootstrap-datetimepicker-widget");
+            timepicker.ShouldNotBeNull();
         }
     }
 }
