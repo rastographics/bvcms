@@ -18,6 +18,7 @@ namespace CmsWeb.Models
         public int Online { get; set; }
         public string TaxDedNonTax { get; set; }
         public bool IncUnclosedBundles { get; set; }
+        public bool IncludeBundleType { get; set; }
         public bool FilterByActiveTag { get; set; }
         public string FundSet { get; set; }
 
@@ -59,8 +60,9 @@ namespace CmsWeb.Models
                         fd = Dt1,
                         td = Dt2,
                         campusid,
-                        nontaxded = nontaxdeductible,
-                        includeunclosed = IncUnclosedBundles
+                        nontaxded = nontaxdeductible.HasValue ? nontaxdeductible.ToInt() : (int?)null,
+                        includeunclosed = IncUnclosedBundles,
+                        includeBundleType = IncludeBundleType,
                     }, commandType: CommandType.StoredProcedure);
                     return DbUtil.Db.Connection.ExecuteReader(cd).ToExcel("LedgerIncome.xlsx");
                 case "donorfundtotals":

@@ -6,10 +6,11 @@ using CmsWeb.Areas.OnlineReg.Models;
 using System.Collections.Generic;
 using Shouldly;
 using UtilityExtensions;
+using SharedTestFixtures;
 
 namespace CMSWebTests.Areas.OnlineReg.Models.AskChurch
 {
-    [Collection("Database collection")]
+    [Collection(Collections.Database)]
     public class NewAskChurchQuestionTest
     {
         private int OrgId { get; set; }
@@ -44,15 +45,7 @@ namespace CMSWebTests.Areas.OnlineReg.Models.AskChurch
 
             Assert.NotNull(resultSubmitQuestions);
             Assert.NotNull(resultCompleteRegistration);
-        }
-
-        [Fact]
-        public void ShouldDeleteReg()
-        {
             FakeOrganizationUtils.DeleteOrg(OrgId);
-            var db = CMSDataContext.Create(Util.Host);
-            var CurrentOrg = db.LoadOrganizationById(OrgId);
-            CurrentOrg.ShouldBe(null);
         }
     }
 }

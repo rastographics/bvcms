@@ -119,6 +119,7 @@ namespace CmsData.API
                      select new ContributionInfo
                      {
                          BundleId = bd == null ? 0 : bd.BundleHeaderId,
+                         TranId = c.TranId,
                          ContributionAmount = c.ContributionAmount ?? 0,
                          ContributionDate = c.ContributionDate ?? SqlDateTime.MinValue.Value,
                          ContributionId = c.ContributionId,
