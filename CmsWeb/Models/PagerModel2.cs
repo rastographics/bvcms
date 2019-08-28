@@ -15,7 +15,7 @@ using UtilityExtensions;
 
 namespace CmsWeb.Models
 {
-    public class PagerModel2 : DbBinder
+    public class PagerModel2
     {
         public delegate int CountDelegate();
 
