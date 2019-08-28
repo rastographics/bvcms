@@ -7,8 +7,9 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.Search.Models
 {
-    public class QueryResults : PagedTableModel<Person, PeopleInfo>
+    public class QueryResults : PagedTableModel<Person, PeopleInfo>, IDbBinder
     {
+        public CMSDataContext Db {get; set;}
         public string Description { get { return topclause.Description; } }
         public string SaveToDescription { get { return topclause.PreviousName ?? topclause.Description; } }
         public Guid? QueryId { get; set; }
