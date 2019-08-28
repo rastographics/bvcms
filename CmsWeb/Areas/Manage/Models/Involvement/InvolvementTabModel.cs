@@ -10,6 +10,10 @@ namespace CmsWeb.Areas.Manage.Models.Involvement
         private const int COLUMN_MAX = 6;
         private List<OrgType> _involvementTypeList;
 
+        public InvolvementTabModel()
+        {
+        }
+
         public InvolvementTabModel(string name, List<OrgType> involvementTypeList)
         {
             _involvementTypeList = involvementTypeList;
