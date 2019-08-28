@@ -117,6 +117,11 @@ namespace CmsData
             var cn = GetReadonlyConnection();
             return cn.ExecuteScalar<int>(sql);
         }
+        public string QuerySqlStr(string sql)
+        {
+            var cn = GetReadonlyConnection();
+            return cn.ExecuteScalar<string>(sql);
+        }
         public dynamic QuerySqlTop1(string sql)
         {
             return QuerySqlTop1(sql, null);

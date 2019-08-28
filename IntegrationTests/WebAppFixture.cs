@@ -15,6 +15,7 @@ namespace IntegrationTests
 
         public void Dispose()
         {
+            cmswebInstance.Stop();
             cmswebInstance = null;
         }
     }
