@@ -132,7 +132,7 @@
                         <dl>
                             <dt>Owner</dt>
                             <dd>
-                                <a href="mailto:@Model.OwnerEmail?subject=@Model.Description&body=@link">@Model.Owner</a>
+                                @Model.Owner <a href="mailto:@Model.OwnerEmail?subject=@Model.Description&body=@link"><i class="fa fa-envelope-o"></i></a>
                             </dd>
                         </dl>
                         <dl>
@@ -140,7 +140,7 @@
                             <dd>
                                 @if (Model.CoOwnerId.HasValue)
                                 {
-                                    <a href="mailto:@Model.CoOwnerEmail">@Model.CoOwner</a>
+                                    @Model.CoOwner <a href="mailto:@Model.CoOwnerEmail"><i class="fa fa-envelope-o"></i></a>
                                 }
                             </dd>
                         </dl>
