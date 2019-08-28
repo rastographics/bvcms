@@ -16,7 +16,7 @@ namespace IntegrationTests.Areas.Manage
         {
             username = RandomString();
             password = RandomString();
-            CreateUser(roles: new[] { "Access", "Edit", "Admin" });
+            CreateUser(username, password, roles: new[] { "Access", "Edit", "Admin" });
             Login();
             db.WriteContentPython("HelloWorld", "print 'Hello World'");
             Open($"{rootUrl}PyScript/HelloWorld");
@@ -27,7 +27,7 @@ namespace IntegrationTests.Areas.Manage
         {
             username = RandomString();
             password = RandomString();
-            CreateUser(roles: new[] { "Access", "Edit", "Admin" });
+            CreateUser(username, password, roles: new[] { "Access", "Edit", "Admin" });
             Login();
             db.WriteContentPython("HelloWorld", "print 'parameters {} {}'.format(Data.p1, Data.p2)");
             Open($"{rootUrl}PyScript/HelloWorld/testing/123");
@@ -40,7 +40,7 @@ namespace IntegrationTests.Areas.Manage
         {
             username = RandomString();
             password = RandomString();
-            var user = CreateUser(roles: new[] { "Access", "Edit", "Admin" });
+            var user = CreateUser(username, password, roles: new[] { "Access", "Edit", "Admin" });
             var person = user.Person;
             Login();
             Open($"{rootUrl}PythonSearch/Names?term={person.FirstName.Truncate(4)} {person.LastName.Truncate(4)}");
@@ -51,7 +51,7 @@ namespace IntegrationTests.Areas.Manage
         {
             username = RandomString();
             password = RandomString();
-            CreateUser(roles: new[] { "Access", "Edit", "Admin" });
+            CreateUser(username, password, roles: new[] { "Access", "Edit", "Admin" });
             Login();
             db.WriteContentSql("TestSql", "select 'Hello World'");
             Open($"{rootUrl}RunScript/TestSql");
@@ -72,7 +72,7 @@ namespace IntegrationTests.Areas.Manage
             db.WriteContentPython("record", R.PyScriptFormTest);
             username = RandomString();
             password = RandomString();
-            CreateUser(roles: new[] { "Access", "Edit", "Admin" });
+            CreateUser(username, password, roles: new[] { "Access", "Edit", "Admin" });
             Login();
             Open($"{rootUrl}PyScriptForm/Record/display/2");
             PageSource.ShouldContain("Philadelphia");
