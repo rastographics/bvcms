@@ -157,6 +157,13 @@
     @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-editable/js/bootstrap-editable.min.js")
     <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
     <script type="text/javascript">
+        function toggleCurrentTab() {
+            if (tab === '#tab-general' || tab === '#tab-misc' || tab === '#tab-miscellaneous')
+                $('[data-add-setting]').show();
+            else
+                $('[data-add-setting]').hide();
+        }
+        
         $(function() {
             $.fn.editableform.buttons = '<button type="submit" class="btn btn-primary btn-sm editable-submit">' +
                 '<i class="fa fa-fw fa-check"></i>' +
@@ -247,9 +254,7 @@
                         $(row).animate({ backgroundColor: bgColor }, 1000);
                     });
             }
-        });
 
-        $(function () {
             var tab = window.location.hash;
 
             @foreach (SettingTypeModel settingTypeModel in Model.SettingTypes)
@@ -262,9 +267,7 @@
                     }
                 </text>
             }
-        });
 
-        $(function() {
             $('a[data-toggle="tab"]').on('shown.bs.tab',
                 function(e) {
                     e.preventDefault();
@@ -272,10 +275,7 @@
                     window.location.hash = tab;
                     localStorage.setItem('last-settings-tab', tab);
 
-                    if (tab === '#tab-general' || tab === '#tab-misc' || tab === '#tab-miscellaneous')
-                        $('[data-add-setting]').show();
-                    else
-                        $('[data-add-setting]').hide();
+                    toggleCurrentTab();
                 });
 
             var lastTab = localStorage.getItem('last-settings-tab');
@@ -290,10 +290,7 @@
                 }
             }
 
-            if (lastTab === '#tab-general' || lastTab === '#tab-misc' || lastTab === '#tab-miscellaneous')
-                $('[data-add-setting]').show();
-            else
-                $('[data-add-setting]').hide();
+            toggleCurrentTab();
         });
     </script>
 }

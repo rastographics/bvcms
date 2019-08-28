@@ -6,7 +6,7 @@
         <thead>
             <tr>
                 <th>
-                    <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Setting Code" data-content="Please enter exactly as in the help article, using no spaces. Also, they are case-sensitive."><i class="fa fa-info-circle"></i></a>&nbsp;
+                    <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Setting Code" data-content="Please enter the setting name exactly as it appears in the help article."><i class="fa fa-info-circle"></i></a>&nbsp;
                     Setting
                 </th>
                 <th>
@@ -48,19 +48,21 @@
                                     @(item.Setting.SettingX ?? "Empty")
                                 </a>
                                 break;
-                            case (int)SettingDataType.Text:
-                                <a id="@item.Setting.Id" class="clickEdit" data-pk="@(item.Setting.Id)">
-                                    @item.Setting.SettingX
-                                </a>
-                                break;
                             case (int)SettingDataType.Obscured:
                                 <a id="@item.Setting.Id" class="clickEdit" data-pk="@(item.Setting.Id)" data-value="@item.Setting.SettingX">
-                                    ******OBSCURED******
+                                    @if (item.Setting.SettingX == null)
+                                    {
+                                        @:Empty
+                                    }
+                                    else
+                                    {
+                                        @:•••••••••••••••
+                                    }
                                 </a>
                                 break;
                             default:
                                 <a id="@item.Setting.Id" class="clickEdit" data-pk="@(item.Setting.Id)">
-                                    @item.Setting.SettingX
+                                    @(item.Setting.SettingX ?? "Empty")
                                 </a>
                                 break;
                         }
