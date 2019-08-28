@@ -72,7 +72,7 @@ namespace CmsWeb
             }
             var m = base.CreateModel(controllerContext, bindingContext, modelType);
             if (controllerContext.Controller is CMSBaseController c && m is IDbBinder b)
-                b.Db = c.CurrentDatabase;
+                b.CurrentDatabase = c.CurrentDatabase;
             return m;
         }
 
