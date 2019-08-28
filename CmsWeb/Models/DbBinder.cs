@@ -2,8 +2,8 @@ using CmsData;
 
 namespace CmsWeb.Models
 {
-    public class DbBinder
+    internal interface IDbBinder
     {
-        public CMSDataContext Db { get; set; }
+        CMSDataContext Db { get; set; }
     }
 }

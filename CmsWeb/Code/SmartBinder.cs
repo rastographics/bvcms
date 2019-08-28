@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
@@ -69,15 +70,10 @@ namespace CmsWeb
                         return base.CreateModel(controllerContext, bindingContext, modelType);
                 }
             }
-
-            if (modelType.IsSubclassOf(typeof(DbBinder)) && controllerContext.Controller is CMSBaseController c)
-            {
-                var m = base.CreateModel(controllerContext, bindingContext, modelType);
-                if(m is DbBinder b)
-                    b.Db = c.CurrentDatabase;
-                return m;
-            }
-            return base.CreateModel(controllerContext, bindingContext, modelType);
+            var m = base.CreateModel(controllerContext, bindingContext, modelType);
+            if (controllerContext.Controller is CMSBaseController c && m is IDbBinder b)
+                b.Db = c.CurrentDatabase;
+            return m;
         }
 
         protected override ICustomTypeDescriptor GetTypeDescriptor(ControllerContext controllerContext, ModelBindingContext bindingContext)
