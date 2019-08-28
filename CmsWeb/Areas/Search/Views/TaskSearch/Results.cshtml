@@ -6,7 +6,9 @@
     <table id="results-table" class="table table-striped notwide centered">
       <thead>
       <tr>
-        <th style="width: 5px;"></th>
+        <th style="width: 5px;">
+          <input type="checkbox" id="SelectedAll" />
+        </th>
         <th>@Model.SortLink("Date")</th>
         <th>
           Description<br/>
@@ -109,3 +111,14 @@
   @Html.Hidden("totcnt", Model.Count().ToString("N0"))
   @Html.Partial("PagerHidden", Model)
 </div>
+
+<script type="text/javascript">
+    (function () {
+        document.getElementById('SelectedAll').addEventListener('click', function() {
+            var checked = this.checked;
+            document.querySelectorAll('input[name="SelectedItem"]').forEach(function(element) {
+                element.checked = checked;
+            });
+        });
+    })();
+</script>
