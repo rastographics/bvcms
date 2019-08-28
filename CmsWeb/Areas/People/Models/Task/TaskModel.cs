@@ -161,6 +161,15 @@ namespace CmsWeb.Areas.People.Models.Task
             }
         }
 
+        public bool IsDelegatedPage =>
+            !IsAnOwner || (CanComplete || CanCompleteWithContact) && CanAccept;
+
+        public bool IsAcceptedPage =>
+            !IsOwner && (CanComplete || (CanCompleteWithContact && Description != "New Person Data Entry")) && !CanAccept;
+
+        public bool IsCreatedPage =>
+            IsOwner && (CanComplete || (CanCompleteWithContact && Description != "New Person Data Entry")) && !CanAccept;
+
         public static void AcceptTask(int id, string host, CMSDataContext db)
         {
             var gcm = new GCMHelper(host, db);
