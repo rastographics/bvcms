@@ -114,32 +114,29 @@
             <a href="http://www.google.com/maps?f=d&saddr=@DbUtil.StartAddress&pw=2&daddr=@Model.WhoAddrCityStateZip" target="_blank">Driving Directions</a>
           </li>
         </ul>
-        @if (!string.IsNullOrWhiteSpace(Model.WhoEmail) && !string.IsNullOrWhiteSpace(Model.WhoPhone))
-        {
-          <ul class="list-inline">
-            <li>
-              <i class="fa fa-envelope-o"></i>
-              <a href="mailto:@Model.WhoEmail">@Model.WhoEmail</a>
-            </li>
-            <li>
-              <i class="fa fa-phone"></i>
-              <a href="tel:+@Model.WhoPhone">@Model.WhoPhone</a>
-            </li>
-          </ul>
-        }
-        else
-        {
-          if (!string.IsNullOrWhiteSpace(Model.WhoEmail))
-          {
-            <i class="fa fa-envelope-o"></i>
-            <a href="mailto:@Model.WhoEmail">@Model.WhoEmail</a>
-          }
-          if (!string.IsNullOrWhiteSpace(Model.WhoPhone))
-          {
-            <i class="fa fa-phone"></i>
-            <a href="tel:+@Model.WhoPhone">@Model.WhoPhone</a>
-          }
-        }
+        <ul class="list-inline">
+            @if (!string.IsNullOrWhiteSpace(Model.WhoEmail))
+            {
+                <li>
+                    <i class="fa fa-envelope-o"></i>
+                    <a href="mailto:@Model.WhoEmail">@Model.WhoEmail</a>
+                </li>
+            }
+            @if (!string.IsNullOrWhiteSpace(Model.WhoPhone) && Model.WhoPhone != Model.WhoCellPhone)
+            {
+                <li>
+                    <i class="fa fa-phone"></i>
+                    <a href="tel:+@Model.WhoPhone">@Model.WhoPhone</a>
+                </li>
+            }
+            @if (!string.IsNullOrWhiteSpace(Model.WhoCellPhone))
+            {
+                <li>
+                    <i class="fa fa-phone"></i>
+                    <a href="tel:+@Model.WhoCellPhone">@Model.WhoCellPhone</a>
+                </li>
+            }
+        </ul>
       </div>
     </div>
   }

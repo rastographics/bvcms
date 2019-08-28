@@ -103,6 +103,11 @@ namespace CmsWeb.Areas.People.Models.Task
             get { return Who?.HomePhone?.FmtFone() ?? ""; }
         }
 
+        public string WhoCellPhone
+        {
+            get { return Who?.CellPhone?.FmtFone() ?? ""; }
+        }
+
         public bool Completed { get; set; }
         public DateTime? CompletedContact { get; set; }
         public int? CompletedContactId { get; set; }
