@@ -1845,6 +1845,7 @@
     <Content Include="libman.json" />
     <Content Include="Areas\CheckIn\Views\Web.config" />
     <Content Include="Areas\CheckIn\Views\CheckinSetup\Index.cshtml" />
+    <Content Include="Areas\People\Views\Task\_ActionsMenu.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

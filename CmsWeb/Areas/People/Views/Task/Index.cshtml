@@ -7,6 +7,25 @@
     ViewBag.PageHeader = "Task Details";
     var link = Server.UrlEncode($"{ViewExtensions2.CmsHost}/Task/{Model.Id}");
 }
+@section head{
+    <style type="text/css">
+        @@media all and (max-width: 480px) {
+            .btn-group-xs-block {
+                display: block;
+            }
+
+            .btn-xs-block {
+                width: 100%;
+                display: block;
+            }
+
+            .ul-xs-block {
+                width: 100%;
+                margin-top: 40px;
+            }
+        }
+    </style>
+}
 <div class="row">
     <div class="col-sm-12 col-md-12 col-lg-7">
         <div class="box box-responsive">
@@ -29,74 +48,7 @@
                     }
                     @if (Model.IsOwner || ((Model.CanComplete || Model.CanCompleteWithContact) && !Model.CanAccept))
                     {
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
-                                    aria-expanded="false">
-                                Actions <span class="caret"></span>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-right">
-                                @if (Model.CanAccept)
-                                {
-                                    <li>
-                                        <a href="#" class="accept">
-                                            <i class="fa fa-thumbs-o-up fa-fw"></i> Accept Task
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#" class="decline">
-                                            <i class="fa fa-thumbs-o-down fa-fw"></i> Decline Task
-                                        </a>
-                                    </li>
-                                }
-                                @if (Model.CanComplete)
-                                {
-                                    <li>
-                                        <a href="#" class="complete">
-                                            <i class="fa fa-check fa-fw"></i> Complete Task
-                                        </a>
-                                    </li>
-                                }
-                                @if (Model.CanCompleteWithContact && Model.Description != "New Person Data Entry")
-                                {
-                                    <li>
-                                        <a href="#" class="completewcontact">
-                                            <i class="fa fa-check-square-o fa-fw"></i> Complete Task w/ Contact
-                                        </a>
-                                    </li>
-                                }
-                                @if (Model.IsOwner)
-                                {
-                                    <li class="divider"></li>
-                                    <li>
-                                        <a href="/SearchAdd2/Dialog/taskabout/@Model.Id?displaySkipSearch=false"
-                                           class="searchadd">
-                                            <i class="fa fa-user-plus fa-fw"></i> Change Regarding
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="/Task/Edit/@Model.Id">
-                                            <i class="fa fa-pencil fa-fw"></i> Edit Task
-                                        </a>
-                                    </li>
-                                }
-                                @if (Model.IsOwner)
-                                {
-                                    <li class="divider"></li>
-                                    <li>
-                                        <a href="/SearchAdd2/Dialog/taskowner/@Model.Id?displaySkipSearch=false"
-                                           class="searchadd">
-                                            <i class="fa fa-share-square-o fa-fw"></i> Transfer Ownership
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="/SearchAdd2/Dialog/taskdelegate/@Model.Id?displaySkipSearch=false"
-                                           class="searchadd">
-                                            <i class="fa fa-users fa-fw"></i> Delegate Task
-                                        </a>
-                                    </li>
-                                }
-                            </ul>
-                        </div>
+                        @Html.Partial("_ActionsMenu", Model)
                     }
                 </div>
             </div>
@@ -219,68 +171,11 @@
                         </dl>
                     </div>
                 </div>
+                <!-- MOBILE ACTIONS MENU -->
                 <div class="visible-xs-block">
-                    <div class="btn-group btn-block">
-                        <button type="button" class="btn btn-primary btn-block dropdown-toggle" data-toggle="dropdown"
-                                aria-expanded="false">
-                            Actions <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-right btn-block">
-                            @if (Model.CanAccept)
-                            {
-                                <li>
-                                    <a href="#" class="accept"><i class="fa fa-thumbs-o-up fa-fw"></i> Accept Task</a>
-                                </li>
-                            }
-                            @if (Model.CanComplete)
-                            {
-                                <li>
-                                    <a href="#" class="complete"><i class="fa fa-check fa-fw"></i> Complete Task</a>
-                                </li>
-                            }
-                            @if (Model.CanCompleteWithContact && Model.Description != "New Person Data Entry")
-                            {
-                                <li>
-                                    <a href="#" class="completewcontact">
-                                        <i class="fa fa-check-square-o fa-fw"></i> Complete
-                                        Task w/ Contact
-                                    </a>
-                                </li>
-                            }
-                            @if (Model.IsAnOwner)
-                            {
-                                <li class="divider"></li>
-                                <li>
-                                    <a href="/SearchAdd2/Dialog/taskabout/@Model.Id?displaySkipSearch=false"
-                                       class="searchadd">
-                                        <i class="fa fa-user-plus fa-fw"></i> Change Regarding
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="/Task/Edit/@Model.Id">
-                                        <i class="fa fa-pencil fa-fw"></i> Edit Task
-                                    </a>
-                                </li>
-                            }
-                            @if (Model.IsOwner)
-                            {
-                                <li class="divider"></li>
-                                <li>
-                                    <a href="/SearchAdd2/Dialog/taskowner/@Model.Id?displaySkipSearch=false"
-                                       class="searchadd">
-                                        <i class="fa fa-share-square-o fa-fw"></i> Transfer Ownership
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="/SearchAdd2/Dialog/taskdelegate/@Model.Id?displaySkipSearch=false"
-                                       class="searchadd">
-                                        <i class="fa fa-users fa-fw"></i> Delegate Task
-                                    </a>
-                                </li>
-                            }
-                        </ul>
-                    </div>
+                    @Html.Partial("_ActionsMenu", Model)
                 </div>
+                <!-- /.MOBILE ACTIONS MENU -->
             </div>
         </div>
     </div>

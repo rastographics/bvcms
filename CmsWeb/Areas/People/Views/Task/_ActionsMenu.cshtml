@@ -1,0 +1,70 @@
+﻿@model CmsWeb.Areas.People.Models.Task.TaskModel
+
+<div class="btn-group btn-group-xs-block">
+    <button type="button" class="btn btn-primary dropdown-toggle btn-xs-block" data-toggle="dropdown"
+            aria-expanded="false">
+        Actions <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu dropdown-menu-right ul-xs-block">
+        @if (Model.CanAccept)
+        {
+            <li>
+                <a href="#" class="accept">
+                    <i class="fa fa-thumbs-o-up fa-fw"></i> Accept Task
+                </a>
+            </li>
+            <li>
+                <a href="#" class="decline">
+                    <i class="fa fa-thumbs-o-down fa-fw"></i> Decline Task
+                </a>
+            </li>
+        }
+        @if (Model.CanComplete)
+        {
+            <li>
+                <a href="#" class="complete">
+                    <i class="fa fa-check fa-fw"></i> Complete Task
+                </a>
+            </li>
+        }
+        @if (Model.CanCompleteWithContact && Model.Description != "New Person Data Entry")
+        {
+            <li>
+                <a href="#" class="completewcontact">
+                    <i class="fa fa-check-square-o fa-fw"></i> Complete Task w/ Contact
+                </a>
+            </li>
+        }
+        @if (Model.IsOwner)
+        {
+            <li class="divider"></li>
+            <li>
+                <a href="/SearchAdd2/Dialog/taskabout/@Model.Id?displaySkipSearch=false"
+                   class="searchadd">
+                    <i class="fa fa-user-plus fa-fw"></i> Change Regarding
+                </a>
+            </li>
+            <li>
+                <a href="/Task/Edit/@Model.Id">
+                    <i class="fa fa-pencil fa-fw"></i> Edit Task
+                </a>
+            </li>
+        }
+        @if (Model.IsOwner)
+        {
+            <li class="divider"></li>
+            <li>
+                <a href="/SearchAdd2/Dialog/taskowner/@Model.Id?displaySkipSearch=false"
+                   class="searchadd">
+                    <i class="fa fa-share-square-o fa-fw"></i> Transfer Ownership
+                </a>
+            </li>
+            <li>
+                <a href="/SearchAdd2/Dialog/taskdelegate/@Model.Id?displaySkipSearch=false"
+                   class="searchadd">
+                    <i class="fa fa-users fa-fw"></i> Delegate Task
+                </a>
+            </li>
+        }
+    </ul>
+</div>
