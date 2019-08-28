@@ -132,7 +132,19 @@
                         <dl>
                             <dt>Owner</dt>
                             <dd>
-                                @Model.Owner <a href="mailto:@Model.OwnerEmail?subject=@Model.Description&body=@link"><i class="fa fa-envelope-o"></i></a>
+                                @if (Model.IsOwner)
+                                {
+                                    <a href="/SearchAdd2/Dialog/taskowner/@Model.Id?displaySkipSearch=false" class="searchadd">
+                                        @Model.Owner
+                                    </a>
+                                }
+                                else
+                                {
+                                    @Model.Owner
+                                }
+                                <a href="mailto:@Model.OwnerEmail?subject=@Model.Description&body=@link">
+                                    <i class="fa fa-envelope-o"></i>
+                                </a>
                             </dd>
                         </dl>
                         <dl>
@@ -140,7 +152,19 @@
                             <dd>
                                 @if (Model.CoOwnerId.HasValue)
                                 {
-                                    @Model.CoOwner <a href="mailto:@Model.CoOwnerEmail"><i class="fa fa-envelope-o"></i></a>
+                                    if (Model.IsOwner)
+                                    {
+                                        <a href="/SearchAdd2/Dialog/taskdelegate/@Model.Id?displaySkipSearch=false" class="searchadd">
+                                            @Model.CoOwner
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        @Model.CoOwner
+                                    }
+                                    <a href="mailto:@Model.CoOwnerEmail">
+                                        <i class="fa fa-envelope-o"></i>
+                                    </a>
                                 }
                             </dd>
                         </dl>
