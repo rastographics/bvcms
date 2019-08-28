@@ -8,6 +8,7 @@ using MarkdownDeep;
 using RestSharp;
 using UtilityExtensions;
 using System.Linq;
+using System.Web.Caching;
 using CmsData.API;
 using CmsData.Codes;
 using Dapper;
@@ -35,7 +36,7 @@ namespace CmsData
             return ExecutePython(script, model);
         }
 
-        public string Content(string name)
+        public string Content(string name, string keyword = null)
         {
             var c = db.Content(name);
 #if DEBUG
@@ -47,6 +48,11 @@ namespace CmsData
                 var nam = Path.GetFileNameWithoutExtension(name);
                 var ext = Path.GetExtension(name);
                 int typ = ContentTypeCode.TypeText;
+                if (name.EndsWith(".text.html"))
+                {
+                    ext = Path.GetExtension(nam);
+                    nam = Path.GetFileNameWithoutExtension(nam);
+                }
                 switch (ext)
                 {
                     case ".sql":
@@ -70,10 +76,58 @@ namespace CmsData
                     db.Contents.InsertOnSubmit(c);
                 }
                 c.Body = txt;
+                if(keyword.HasValue())
+                    c.SetKeyWords(db, new [] {keyword});
                 db.SubmitChanges();
             }
 #endif
             return c.Body;
+        }
+        public void WriteContent(string name, string text, string keyword = null)
+        {
+            int typ = ContentTypeCode.TypeText;
+            var c = db.Content(name);
+            if (c == null)
+            {
+#if DEBUG
+                File.WriteAllText(name, text);
+                var nam = Path.GetFileNameWithoutExtension(name);
+                var ext = Path.GetExtension(name);
+                if (name.EndsWith(".text.html"))
+                {
+                    ext = Path.GetExtension(nam);
+                    nam = Path.GetFileNameWithoutExtension(nam);
+                }
+                name = nam;
+                switch (ext)
+                {
+                    case ".sql":
+                        typ = ContentTypeCode.TypeSqlScript;
+                        break;
+                    case ".text":
+                    case ".json":
+                        typ = ContentTypeCode.TypeText;
+                        break;
+                    case ".html":
+                        typ = ContentTypeCode.TypeHtml;
+                        break;
+                }
+#endif
+                c = db.Content(name, typ);
+                if (c == null)
+                {
+                    c = new Content
+                    {
+                        Name = name,
+                        TypeID = typ,
+                    };
+                    db.Contents.InsertOnSubmit(c);
+                }
+            }
+            c.Body = text;
+            if(keyword.HasValue())
+                c.SetKeyWords(db, new [] {keyword});
+            db.SubmitChanges();
         }
 
         public bool DataHas(string key)
@@ -106,11 +160,11 @@ namespace CmsData
 
         public void DictionaryAdd(string key, string value)
         {
-            dictionary.Add(key, value);
+            dictionary[key] = value;
         }
         public void DictionaryAdd(string key, object value)
         {
-            dictionary.Add(key, value);
+            dictionary[key] = value;
         }
 
         public string FmtPhone(string s, string prefix = null)
@@ -127,6 +181,11 @@ namespace CmsData
         {
             var c = db.ContentOfTypeHtml(name);
             return c.Body;
+        }
+        public string PythonContent(string name)
+        {
+            var sql = db.ContentOfTypePythonScript(name);
+            return sql;
         }
         public string SqlContent(string name)
         {
@@ -401,33 +460,15 @@ DELETE dbo.Tag WHERE TypeId = 101 AND Name LIKE @namelike
 
         public void WriteContentSql(string name, string sql)
         {
-            var c = db.Content(name, ContentTypeCode.TypeSqlScript);
-            if (c == null)
-            {
-                c = new Content()
-                {
-                    Name = name,
-                    TypeID = ContentTypeCode.TypeSqlScript
-                };
-                db.Contents.InsertOnSubmit(c);
-            }
-            c.Body = sql;
-            db.SubmitChanges();
+            db.WriteContentSql(name, sql);
+        }
+        public void WriteContentPython(string name, string script)
+        {
+            db.WriteContentPython(name, script);
         }
         public void WriteContentText(string name, string text)
         {
-            var c = db.Content(name, ContentTypeCode.TypeText);
-            if (c == null)
-            {
-                c = new Content()
-                {
-                    Name = name,
-                    TypeID = ContentTypeCode.TypeText
-                };
-                db.Contents.InsertOnSubmit(c);
-            }
-            c.Body = text;
-            db.SubmitChanges();
+            db.WriteContentText(name, text);
         }
         public int TagLastQuery(string defaultcode)
         {
@@ -478,6 +519,16 @@ DELETE dbo.Tag WHERE TypeId = 101 AND Name LIKE @namelike
         {
             return JsonConvert.DeserializeObject<DynamicData>(json);
         }
+        public List<DynamicData> DynamicDataFromJsonArray(string json)
+        {
+            return JsonConvert.DeserializeObject<List<DynamicData>>(json);
+        }
+
+        public List<string> ElementList(IEnumerable<DynamicData> array, string name)
+        {
+            return array.Select(vv => vv.GetValue(name).ToString()).ToList();
+        }
+
         /// <summary>
         /// This returns a csv string of the fundids when a church is using Custom Statements and FundSets for different statements
         /// The csv string can be used in SQL using dbo.SplitInts in a query to match a set of fundids.
@@ -501,5 +552,39 @@ DELETE dbo.Tag WHERE TypeId = 101 AND Name LIKE @namelike
         {
             return HttpContextFactory.Current?.User.IsInRole(role) ?? false;
         }
+
+        public void CreateCustomView(string view, string sql)
+        {
+            if (FromMorningBatch)
+                return;
+            if(!UserIsInRole("developer") || !UserIsInRole("admin"))
+                throw new Exception("must be developer and admin");
+            if(!Regex.IsMatch(view, @"\A[A-z][A-z0-9]*\z"))
+                throw new Exception("view name must be a single alphanumeric word");
+            if (db.Connection.ExecuteScalar<int>("select iif(exists(select name from sys.schemas where name = 'custom'), 1, 0)") == 0)
+                db.Connection.Execute("create schema custom");
+            db.Connection.Execute($"drop view if exists custom.{view}");
+            db.Connection.Execute($"create view custom.{view} as {sql}");
+        }
+
+        public void DebugPrint(string s)
+        {
+            System.Diagnostics.Debug.WriteLine(s);
+        }
+
+        public string GetCacheVariable(string name)
+        {
+            return FromMorningBatch ? string.Empty
+                : HttpRuntime.Cache[db.Host + name]?.ToString() ?? string.Empty;
+        }
+        public void SetCacheVariable(string name, string value)
+        {
+            if(FromMorningBatch)
+                return;
+            HttpRuntime.Cache.Insert(db.Host + name, value, null,
+                DateTime.Now.AddMinutes(1), Cache.NoSlidingExpiration);
+        }
+
+        public bool IsDebug => Util.IsDebug();
     }
 }
