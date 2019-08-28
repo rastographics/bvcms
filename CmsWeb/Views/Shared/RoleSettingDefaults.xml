@@ -36,7 +36,7 @@
         <setting name="Meeting-ShowAttendType" value="true" friendly="Attend Type" true="Show" false="Hide" tooltip="Attendance view: 'Attend Type' column" />
         <setting name="Meeting-ShowBlueToolbar" value="true" friendly="Blue Toolbar" true="Show" false="Hide" tooltip="Show / Hide Meeting blue toolbar" />
         <setting name="Meeting-ShowBlueToolbarIpadAttendance" value="true" friendly="Blue Toolbar - iPad Attendance" true="Show" false="Hide" tooltip="" />
-        <setting name="Meeting-ShowBlueToolbarRollsheet" value="true" friendly="Blue Toolbar - Rollsheet" true="Show" false="Hide" tooltip="" />
+        <setting name="Meeting-ShowBlueToolbarRollsheet" value="true" friendly="Blue Toolbar - Rollsheet Report" true="Show" false="Hide" tooltip="Show / Hide Rollsheet Report option on meetings" />
         <setting name="Meeting-ShowCurrentMemberType" value="true" friendly="Current Member Type" true="Show" false="Hide" tooltip="Attendance view: 'Current Member Type' column" />
         <setting name="Meeting-ShowEnableBox" value="true" friendly="Enable Box" true="Show" false="Hide" tooltip="The 'Enable' set of radio buttons (Editing, Register, Current Members)" />
         <setting name="Meeting-ShowExtraValuesBox" value="false" friendly="Extra Value Box" true="Show" false="Hide" tooltip="Show / Hide Extra Values box" />
