@@ -31,6 +31,7 @@ namespace IntegrationTests.Areas.Finance.Views.Bundle
             PageSource.ShouldContain("Contribution Bundle");
 
             Find(css: "span.input-group-addon").Click();
+            WaitForElement("div.bootstrap-datetimepicker-widget", 1);
             var timepicker = Find(css: "div.bootstrap-datetimepicker-widget");
             timepicker.ShouldNotBeNull();
         }
