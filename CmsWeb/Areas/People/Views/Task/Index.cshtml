@@ -193,7 +193,7 @@
         <dt>Due Date</dt>
         <dd>@Model.Due.ToString2("d")</dd>
       </dl>
-      @if (Model.Description != "New Person Data Entry")
+      @if (Model.Description != "New Person Data Entry" && Model.Completed)
       {
         <dl>
           <dt>Completed Contact</dt>
