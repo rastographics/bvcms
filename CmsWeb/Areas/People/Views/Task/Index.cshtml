@@ -34,10 +34,11 @@
                 <div class="box-tools">
                     @if (Model.CanAccept)
                     {
-                        <a href="#" class="accept btn btn-success"><i class="fa fa-thumbs-o-up fa-fw"></i> Accept Task</a>
+                        <a href="#" class="accept btn btn-success">
+                            <i class="fa fa-thumbs-o-up fa-fw"></i> Accept Task
+                        </a>
                         <a href="#" class="decline btn btn-danger">
-                            <i class="fa fa-thumbs-o-down fa-fw"></i> Decline
-                            Task
+                            <i class="fa fa-thumbs-o-down fa-fw"></i> Decline Task
                         </a>
                     }
                     @if (Model.IsAnOwner)
@@ -46,7 +47,23 @@
                             <i class="fa fa-pencil fa-fw"></i> Edit
                         </a>
                     }
-                    @if (Model.IsOwner || ((Model.CanComplete || Model.CanCompleteWithContact) && !Model.CanAccept))
+                    @if (Model.IsAcceptedPage)
+                    {
+                        if (Model.CanComplete)
+                        {
+                            <a href="#" class="complete btn btn-success">
+                                <i class="fa fa-check fa-fw"></i> Complete Task
+                            </a>
+                            <input type="checkbox" data-complete-with-contact /><span> w/ Contact</span>
+                        }
+                        else if (Model.CanCompleteWithContact && Model.Description != "New Person Data Entry")
+                        {
+                            <a href="#" class="completewcontact btn btn-success">
+                                <i class="fa fa-check fa-fw"></i> Complete Task w/ Contact
+                            </a>
+                        }
+                    }
+                    @if (Model.IsCreatedPage)
                     {
                         @Html.Partial("_ActionsMenu", Model)
                     }
@@ -203,31 +220,44 @@
 </div><!-- /.modal -->
 @section scripts {
     <script type="text/javascript">
+        function setCompleteWithContact() {
+            var taskid = $('#TaskId').val();
+            $.post('/Task/CompleteWithContact/' + taskid,
+                null,
+                function (ret) {
+                    window.location = "/Contact2/" + ret.ContactId + "?edit=true";
+                });
+            return false;
+        }
+
+        function setComplete() {
+            var id = $('#TaskId').val();
+            $.post('/Task/SetComplete/' + id,
+                null,
+                function (ret) {
+                    window.location = "/Task/" + id;
+                });
+            return false;
+        }
+
         $(function () {
             $("body").on("click",
                 'a.completewcontact',
                 function (ev) {
                     ev.preventDefault();
-                    var taskid = $('#TaskId').val();
-                    $.post('/Task/CompleteWithContact/' + taskid,
-                        null,
-                        function (ret) {
-                            window.location = "/Contact2/" + ret.ContactId + "?edit=true";
-                        });
-                    return false;
+                    setCompleteWithContact();
                 });
 
             $("body").on("click",
                 'a.complete',
                 function (ev) {
                     ev.preventDefault();
-                    var id = $('#TaskId').val();
-                    $.post('/Task/SetComplete/' + id,
-                        null,
-                        function (ret) {
-                            window.location = "/Task/" + id;
-                        });
-                    return false;
+                    var withContact = $('[data-complete-with-contact]');
+                    if (withContact.prop('checked')) {
+                        setCompleteWithContact();
+                    } else {
+                        setComplete();
+                    }
                 });
 
             $("body").on("click",
