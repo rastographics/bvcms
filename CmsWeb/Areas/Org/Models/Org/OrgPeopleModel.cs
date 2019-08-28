@@ -16,9 +16,10 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.Org.Models
 {
-    public class OrgPeopleModel : PagedTableModel<OrgFilterPerson, OrgFilterPerson>
+    public class OrgPeopleModel : PagedTableModel<OrgFilterPerson, OrgFilterPerson>, IDbBinder
     {
-        public CMSDataContext Db { get; set; }
+        public CMSDataContext CurrentDatabase { get; set; }
+        internal CMSDataContext Db => CurrentDatabase;
         public Guid QueryId { get; set; }
         public IPrincipal User { get; set; }
 

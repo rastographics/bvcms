@@ -697,7 +697,6 @@ namespace CmsWeb.Areas.Reports.Controllers
         [HttpPost]
         public ActionResult ShirtSizes(OrgSearchModel m)
         {
-            m.CurrentDatabase = CurrentDatabase;
             var orgs = m.FetchOrgs();
             var q = from om in CurrentDatabase.OrganizationMembers
                     join o in orgs on om.OrganizationId equals o.OrganizationId

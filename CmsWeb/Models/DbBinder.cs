@@ -4,6 +4,6 @@ namespace CmsWeb.Models
 {
     internal interface IDbBinder
     {
-        CMSDataContext Db { get; set; }
+        CMSDataContext CurrentDatabase { get; set; }
     }
 }

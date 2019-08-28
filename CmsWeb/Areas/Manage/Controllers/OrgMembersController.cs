@@ -23,7 +23,6 @@ namespace CmsWeb.Areas.Manage.Controllers
         [HttpPost]
         public ActionResult EmailNotices(OrgMembersModel m)
         {
-            m.CurrentDatabase = CurrentDatabase;
             m.SendMovedNotices();
             return View("List", m);
         }
@@ -38,7 +37,6 @@ namespace CmsWeb.Areas.Manage.Controllers
         [HttpPost]
         public ActionResult List(OrgMembersModel m)
         {
-            m.CurrentDatabase = CurrentDatabase;
             m.ValidateIds();
             CurrentDatabase.SetUserPreference("OrgMembersModelIds", $"{m.ProgId}.{m.SourceDivId}.{m.SourceId}");
             CurrentDatabase.SetNoLock();
@@ -47,7 +45,6 @@ namespace CmsWeb.Areas.Manage.Controllers
         [HttpPost]
         public ActionResult ResetMoved(OrgMembersModel m)
         {
-            m.CurrentDatabase = CurrentDatabase;
             m.ResetMoved();
             return View("List", m);
         }

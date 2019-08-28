@@ -6,12 +6,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using CmsWeb.Models;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Org.Models
 {
-    public class OrgGroupsModel
+    public class OrgGroupsModel : IDbBinder
     {
+        public CMSDataContext CurrentDatabase { get; set; }
+        internal CMSDataContext Db => CurrentDatabase;
         public int count;
         private List<SelectListItem> mtypes;
 
@@ -19,11 +22,11 @@ namespace CmsWeb.Areas.Org.Models
         {
         }
 
-        public OrgGroupsModel(int id)
+        public OrgGroupsModel(CMSDataContext db, int id)
         {
+            CurrentDatabase = db;
             orgid = id;
-
-            var org = DbUtil.Db.LoadOrganizationById(orgid);
+            var org = Db.LoadOrganizationById(orgid);
             isRecreationTeam = org.IsRecreationTeam;
         }
 
@@ -39,16 +42,16 @@ namespace CmsWeb.Areas.Org.Models
         public string sort { get; set; }
         public int tagfilter { get; set; }
         public bool isRecreationTeam { get; set; }
-        public bool isAttendanceBySubgroups => DbUtil.Db.LoadOrganizationById(orgid).AttendanceBySubGroups.GetValueOrDefault();
-        public string OrgName => DbUtil.Db.LoadOrganizationById(orgid).OrganizationName;
+        public bool isAttendanceBySubgroups => Db.LoadOrganizationById(orgid).AttendanceBySubGroups.GetValueOrDefault();
+        public string OrgName => Db.LoadOrganizationById(orgid).OrganizationName;
         public int memtype { get; set; }
         public IList<int> List { get; set; } = new List<int>();
         public string AllowCheckin { get; set; }
 
         public GroupDetails GetGroupDetails(int id)
         {
-            var d = from e in DbUtil.Db.OrgMemMemTags
-                    from om in DbUtil.Db.OrganizationMembers.DefaultIfEmpty()
+            var d = from e in Db.OrgMemMemTags
+                    from om in Db.OrganizationMembers.DefaultIfEmpty()
                     where e.MemberTagId == id
                     where om.PeopleId == e.PeopleId
                     where om.OrganizationId == e.OrgId
@@ -68,7 +71,7 @@ namespace CmsWeb.Areas.Org.Models
         public IEnumerable<OrgSchedule> GetOrgSchedules()
         {
             return _orgSchedules ?? (_orgSchedules =
-                (from schedule in DbUtil.Db.OrgSchedules
+                (from schedule in Db.OrgSchedules
                    where schedule.OrganizationId == orgid
                    orderby schedule.SchedDay, schedule.SchedTime
                    select schedule).ToList());
@@ -76,7 +79,7 @@ namespace CmsWeb.Areas.Org.Models
 
         public IEnumerable<MemberTag> GroupsList()
         {
-            return from g in DbUtil.Db.MemberTags
+            return from g in Db.MemberTags
                    where g.OrgId == orgid
                    orderby g.Name
                    select g;
@@ -84,7 +87,7 @@ namespace CmsWeb.Areas.Org.Models
 
         public SelectList Groups()
         {
-            var q = from g in DbUtil.Db.MemberTags
+            var q = from g in Db.MemberTags
                     where g.OrgId == orgid
                     orderby g.Name
                     select new GroupListItem
@@ -102,7 +105,7 @@ namespace CmsWeb.Areas.Org.Models
         {
             if (mtypes == null)
             {
-                var q = from om in DbUtil.Db.OrganizationMembers
+                var q = from om in Db.OrganizationMembers
                         where om.OrganizationId == orgid
                         where (om.Pending ?? false) == false
                         where om.MemberTypeId != MemberTypeCode.InActive
@@ -243,12 +246,12 @@ namespace CmsWeb.Areas.Org.Models
 
         public IQueryable<OrganizationMember> OrgMembers()
         {
-            var q = from om in DbUtil.Db.OrganizationMembers
+            var q = from om in Db.OrganizationMembers
                     where om.OrganizationId == orgid
                     where om.MemberTypeId != MemberTypeCode.Prospect
                     where om.MemberTypeId != MemberTypeCode.InActive
                     where (om.Pending ?? false) == false
-                    where tagfilter == 0 || DbUtil.Db.TagPeople.Any(tt => tt.PeopleId == om.PeopleId && tt.Id == tagfilter)
+                    where tagfilter == 0 || Db.TagPeople.Any(tt => tt.PeopleId == om.PeopleId && tt.Id == tagfilter)
                     //where om.OrgMemMemTags.Any(g => g.MemberTagId == sg) || (sg ?? 0) == 0
                     select om;
             return q;
@@ -264,7 +267,7 @@ namespace CmsWeb.Areas.Org.Models
 
         public void createTeamGroups()
         {
-            var c = from e in DbUtil.Db.OrganizationMembers
+            var c = from e in Db.OrganizationMembers
                     where e.Score == 0
                     where e.OrganizationId == orgid
                     select e;
@@ -273,7 +276,7 @@ namespace CmsWeb.Areas.Org.Models
             {
                 var name = "TM: " + coach.Person.Name;
 
-                var group = DbUtil.Db.MemberTags.SingleOrDefault(g => g.Name == name && g.OrgId == orgid);
+                var group = Db.MemberTags.SingleOrDefault(g => g.Name == name && g.OrgId == orgid);
                 if (group != null)
                 {
                     continue;
@@ -285,19 +288,19 @@ namespace CmsWeb.Areas.Org.Models
                     OrgId = orgid
                 };
 
-                DbUtil.Db.MemberTags.InsertOnSubmit(group);
+                Db.MemberTags.InsertOnSubmit(group);
             }
 
-            DbUtil.Db.SubmitChanges();
+            Db.SubmitChanges();
 
             // Refresh the list
-            var teamList = (from e in DbUtil.Db.MemberTags
+            var teamList = (from e in Db.MemberTags
                             where e.OrgId == orgid
                             where e.Name.StartsWith("TM:")
                             select e).ToList();
 
 
-            var p = (from e in DbUtil.Db.OrganizationMembers
+            var p = (from e in Db.OrganizationMembers
                      where e.Score != 0
                      where e.OrganizationId == orgid
                      select e).ToList();
@@ -325,8 +328,8 @@ namespace CmsWeb.Areas.Org.Models
                     tagBot.OrgId = orgid;
                     tagBot.PeopleId = bot.PeopleId;
 
-                    DbUtil.Db.OrgMemMemTags.InsertOnSubmit(tagTop);
-                    DbUtil.Db.OrgMemMemTags.InsertOnSubmit(tagBot);
+                    Db.OrgMemMemTags.InsertOnSubmit(tagTop);
+                    Db.OrgMemMemTags.InsertOnSubmit(tagBot);
 
                     p.Remove(top);
                     p.Remove(bot);
@@ -349,7 +352,7 @@ namespace CmsWeb.Areas.Org.Models
                     tagBot.OrgId = orgid;
                     tagBot.PeopleId = bot.PeopleId;
 
-                    DbUtil.Db.OrgMemMemTags.InsertOnSubmit(tagBot);
+                    Db.OrgMemMemTags.InsertOnSubmit(tagBot);
 
                     p.Remove(bot);
                 }
@@ -371,13 +374,13 @@ namespace CmsWeb.Areas.Org.Models
                     tagBot.OrgId = orgid;
                     tagBot.PeopleId = bot.PeopleId;
 
-                    DbUtil.Db.OrgMemMemTags.InsertOnSubmit(tagBot);
+                    Db.OrgMemMemTags.InsertOnSubmit(tagBot);
 
                     p.Remove(bot);
                 }
             }
 
-            DbUtil.Db.SubmitChanges();
+            Db.SubmitChanges();
         }
 
         public class GroupDetails

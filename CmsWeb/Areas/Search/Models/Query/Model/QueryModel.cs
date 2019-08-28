@@ -34,7 +34,7 @@ namespace CmsWeb.Areas.Search.Models
         public QueryModel(CMSDataContext db)
             : this()
         {
-            Db = db;
+            CurrentDatabase = db;
         }
 
         public QueryModel(Guid? id, CMSDataContext db)

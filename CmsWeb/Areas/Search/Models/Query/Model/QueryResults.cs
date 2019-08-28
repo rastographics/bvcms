@@ -9,12 +9,15 @@ namespace CmsWeb.Areas.Search.Models
 {
     public class QueryResults : PagedTableModel<Person, PeopleInfo>, IDbBinder
     {
-        public CMSDataContext Db {get; set;}
+        public CMSDataContext CurrentDatabase {get; set;}
+        internal CMSDataContext Db => CurrentDatabase;
+
         public string Description { get { return topclause.Description; } }
         public string SaveToDescription { get { return topclause.PreviousName ?? topclause.Description; } }
         public Guid? QueryId { get; set; }
 
         private Condition topclause;
+
         public Condition TopClause
         {
             get

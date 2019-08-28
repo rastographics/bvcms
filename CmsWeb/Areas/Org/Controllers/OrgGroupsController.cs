@@ -20,7 +20,7 @@ namespace CmsWeb.Areas.Org.Controllers
         [Route("~/OrgGroups/{id:int}")]
         public ActionResult Index(int id)
         {
-            var m = new OrgGroupsModel(id);
+            var m = new OrgGroupsModel(CurrentDatabase, id);
             return View(m);
         }
 
@@ -63,9 +63,9 @@ namespace CmsWeb.Areas.Org.Controllers
 
             try
             {
-                var group = DbUtil.Db.MemberTags.SingleOrDefault(g => g.Id == groupId && g.OrgId == orgId);
+                var group = CurrentDatabase.MemberTags.SingleOrDefault(g => g.Id == groupId && g.OrgId == orgId);
                 group.CheckIn = !group.CheckIn;
-                DbUtil.Db.SubmitChanges();
+                CurrentDatabase.SubmitChanges();
 
                 return Redirect("/OrgGroups/Management/" + orgId);
             }
@@ -175,7 +175,7 @@ namespace CmsWeb.Areas.Org.Controllers
         {
             if (!m.GroupName.HasValue() || m.groupid == 0)
                 return Content("error: no group name");
-            var group = DbUtil.Db.MemberTags.SingleOrDefault(d => d.Id == m.groupid);
+            var group = CurrentDatabase.MemberTags.SingleOrDefault(d => d.Id == m.groupid);
             if (group != null)
             {
                 group.Name = m.GroupName;
@@ -184,7 +184,7 @@ namespace CmsWeb.Areas.Org.Controllers
                 group.CheckInOpenDefault = m.CheckInOpenDefault;
                 group.ScheduleId = m.ScheduleId;
             }
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
             return Redirect("/OrgGroups/Management/" + m.orgid);
         }
 
@@ -329,13 +329,13 @@ namespace CmsWeb.Areas.Org.Controllers
 
         public ActionResult Management(int id)
         {
-            var m = new OrgGroupsModel(id);
+            var m = new OrgGroupsModel(CurrentDatabase, id);
             return View(m);
         }
 
         public ActionResult CreateTeams(int id)
         {
-            var m = new OrgGroupsModel(id);
+            var m = new OrgGroupsModel(CurrentDatabase, id);
             m.createTeamGroups();
 
             return Content("Complete");
