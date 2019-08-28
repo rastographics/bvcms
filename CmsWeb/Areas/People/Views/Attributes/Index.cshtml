@@ -1,11 +1,9 @@
-﻿@using CmsData
-@model PeopleExtra
+﻿@model CmsWeb.Areas.People.Models.AttributesModel
 @{
   Layout = ViewExtensions2.TouchPointLayout();
   ViewBag.Title = "Attributes";
   ViewBag.PageHeader = "Attributes";
-ViewBag.PageSubHeader = $"<a href=\"/Person2/{Model.PeopleId}\">{Model.Person.Name}</a>";
-  var m = DbUtil.Db.ViewAttributes.Where(vv => vv.Field == Model.Field && vv.PeopleId == Model.PeopleId);
+  ViewBag.PageSubHeader = $"<a href=\"/Person2/{Model.PeopleId}\">{Model.Name}</a>";
 }
 <div class="report box box-responsive">
   <div class="box-content">
@@ -15,9 +13,9 @@ ViewBag.PageSubHeader = $"<a href=\"/Person2/{Model.PeopleId}\">{Model.Person.Na
               <tr><th>Name</th><th>Value</th></tr>
               </thead>
               <tbody>
-              @foreach (var r in m)
+              @foreach (var r in Model.Attributes())
               {
-                  <tr><td>@r.Name</td><td>@r.ValueX</td></tr>
+                  <tr><td>@UtilityExtensions.Util.SpaceCamelCase(r.Name)</td><td>@r.ValueX</td></tr>
               }
               </tbody>
               @if (User.IsInRole("Edit"))
