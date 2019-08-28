@@ -1238,7 +1238,6 @@
     <Content Include="Content\touchpoint\js\admin\divisions.js" />
     <Content Include="Content\touchpoint\js\admin\users-email-for.js" />
     <Content Include="Content\touchpoint\js\admin\users.js" />
-    <Content Include="Content\touchpoint\js\app.min.js" />
     <Content Include="Content\touchpoint\js\checkin\checkinsetup.js" />
     <Content Include="Content\touchpoint\js\Coupons.js" />
     <Content Include="Content\touchpoint\js\dialog\search-users.js" />
