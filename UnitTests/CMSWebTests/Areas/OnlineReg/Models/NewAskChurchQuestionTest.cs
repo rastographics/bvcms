@@ -26,12 +26,12 @@ namespace CMSWebTests.Areas.OnlineReg.Models.AskChurch
         [InlineData(false, false, true)]
         public void ShouldPassAskChurchQuestions(bool memberus, bool otherchurch, bool nochurch)
         {
-            ContextTestUtils.FakeHttpContext();
-            var controller = new CmsWeb.Areas.OnlineReg.Controllers.OnlineRegController(FakeRequestManager.FakeRequest());
+            var requestManager = FakeRequestManager.FakeRequest();
+            var controller = new CmsWeb.Areas.OnlineReg.Controllers.OnlineRegController(requestManager);
             var routeDataValues = new Dictionary<string, string> { { "controller", "OnlineReg" } };
-            controller.ControllerContext = ControllerTestUtils.FakeContextController(controller, routeDataValues);
+            controller.ControllerContext = ControllerTestUtils.FakeControllerContext(controller, routeDataValues);
 
-            var FakeOrg = FakeOrganizationUtils.MakeFakeOrganization();
+            var FakeOrg = FakeOrganizationUtils.MakeFakeOrganization(requestManager);
             OrgId = FakeOrg.org.OrganizationId;
 
             var model = FakeOrganizationUtils.GetFakeOnlineRegModel(OrgId);

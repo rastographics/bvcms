@@ -18,11 +18,11 @@ namespace CMSWebTests.Areas.Setup.Controllers
         [InlineData ("yes")]
         public void Should_Change_No_Zero_field(string value)
         {
-            DbUtil.Db = CMSDataContext.Create(Util.Host);
-
-            var controller = new CmsWeb.Areas.Setup.Controllers.DivisionController(FakeRequestManager.FakeRequest());
+            var requestManager = FakeRequestManager.FakeRequest();
+            var db = requestManager.CurrentDatabase;
+            var controller = new CmsWeb.Areas.Setup.Controllers.DivisionController(requestManager);
             var routeDataValues = new Dictionary<string, string> { { "controller", "Division" } };
-            controller.ControllerContext = ControllerTestUtils.FakeContextController(controller, routeDataValues);
+            controller.ControllerContext = ControllerTestUtils.FakeControllerContext(controller, routeDataValues);
             
             Program prog = new Program()
             {
@@ -31,8 +31,8 @@ namespace CMSWebTests.Areas.Setup.Controllers
                 StartHoursOffset = null,
                 EndHoursOffset = null
             };
-            DbUtil.Db.Programs.InsertOnSubmit(prog);
-            DbUtil.Db.SubmitChanges();
+            db.Programs.InsertOnSubmit(prog);
+            db.SubmitChanges();
 
             Division div = new Division()
             {
@@ -46,17 +46,17 @@ namespace CMSWebTests.Areas.Setup.Controllers
                 ReportLine = null,
                 NoDisplayZero = false
             };
-            DbUtil.Db.Divisions.InsertOnSubmit(div);
-            DbUtil.Db.SubmitChanges();
+            db.Divisions.InsertOnSubmit(div);
+            db.SubmitChanges();
 
             controller.Edit("z" + div.Id, value);
 
-            bool? result = DbUtil.Db.Divisions.Where(x => x.Id == div.Id).Select(y => y.NoDisplayZero).First();
+            bool? result = db.Divisions.Where(x => x.Id == div.Id).Select(y => y.NoDisplayZero).First();
             result.ShouldBe(true);
 
-            DbUtil.Db.ExecuteCommand("DELETE FROM [ProgDiv] WHERE [ProgId] = {0} AND [DivId] = {1}", prog.Id, div.Id);
-            DbUtil.Db.ExecuteCommand("DELETE FROM [Division] WHERE [Id] = {0}", div.Id);
-            DbUtil.Db.ExecuteCommand("DELETE FROM [Program] WHERE [Id] = {0}", prog.Id);
+            db.ExecuteCommand("DELETE FROM [ProgDiv] WHERE [ProgId] = {0} AND [DivId] = {1}", prog.Id, div.Id);
+            db.ExecuteCommand("DELETE FROM [Division] WHERE [Id] = {0}", div.Id);
+            db.ExecuteCommand("DELETE FROM [Program] WHERE [Id] = {0}", prog.Id);
         }
     }
 }

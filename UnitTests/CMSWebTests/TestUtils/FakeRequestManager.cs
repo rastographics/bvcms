@@ -22,7 +22,7 @@ namespace CMSWebTests
             RequestId = Guid.NewGuid();
             CurrentUser = CurrentHttpContext.User;
             CurrentDatabase = CMSDataContext.Create(Util.Host);
-            CurrentImageDatabase = CMSImageDataContext.Create(CurrentHttpContext);
+            CurrentImageDatabase = CMSImageDataContext.Create(Util.Host);
         }
 
         public Elmah.ErrorLog GetErrorLog()

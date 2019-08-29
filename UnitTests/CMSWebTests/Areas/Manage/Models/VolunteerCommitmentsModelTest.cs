@@ -15,7 +15,7 @@ namespace CMSWebTests.Areas.Manage.Models
         [InlineData(2020, 2, "02/02/2020")]
         public void ShouldCalculateFirstSundayOfTheMonth(int year, int month, string result)
         {
-            ContextTestUtils.FakeHttpContext();
+            var requestManager = FakeRequestManager.FakeRequest();
             var VolunteerOrgconfig = new Organization()
             {
                 OrganizationName = "MockMasterName",
@@ -24,7 +24,7 @@ namespace CMSWebTests.Areas.Manage.Models
                 RegistrationTypeId = RegistrationTypeCode.ChooseVolunteerTimes,
             };
 
-            var FakeOrg = FakeOrganizationUtils.MakeFakeOrganization(VolunteerOrgconfig);            
+            var FakeOrg = FakeOrganizationUtils.MakeFakeOrganization(requestManager, VolunteerOrgconfig);            
             var m = new VolunteerCommitmentsModel(FakeOrg.org.OrganizationId);            
             var calculatedSunday = m.GetFirstSundayOfTheMonth(year, month);
             calculatedSunday.ToString("MM/dd/yyyy").ShouldBe(result);

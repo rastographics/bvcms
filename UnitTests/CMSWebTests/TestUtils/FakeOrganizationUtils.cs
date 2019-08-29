@@ -8,49 +8,43 @@ using UtilityExtensions;
 using System.Linq;
 using Xunit;
 using SharedTestFixtures;
+using CmsWeb.Lifecycle;
 
 namespace CMSWebTests
 {
     [Collection(Collections.Database)]
     public class FakeOrganizationUtils
     {
-        public static NewOrganizationModel FakeNewOrganizationModel { get; set; }
-        public static Organization FakeOrganization { get; set; }
-        public static int? OrgId { get; set; }
+        //public static NewOrganizationModel FakeNewOrganizationModel { get; set; }
+        //public static Organization FakeOrganization { get; set; }
+        //public static int? OrgId { get; set; }
 
-        public static NewOrganizationModel MakeFakeOrganization(Organization Orgconfig = null)
+        public static NewOrganizationModel MakeFakeOrganization(IRequestManager requestManager, Organization Orgconfig = null)
         {
-            if (FakeNewOrganizationModel == null)
+            var controller = new CmsWeb.Areas.Dialog.Controllers.AddOrganizationController(requestManager);
+            var routeDataValues = new Dictionary<string, string> { { "controller", "AddOrganization" } };
+            controller.ControllerContext = ControllerTestUtils.FakeControllerContext(controller, routeDataValues);
+
+            var NewOrganizationIndex = controller.Index();
+            var OrgId = ((NewOrganizationModel)((System.Web.Mvc.ViewResultBase)NewOrganizationIndex).Model).OrganizationId;
+
+            var FakeNewOrganizationModel = new NewOrganizationModel();
+            Organization FakeOrganization = null;
+            if (Orgconfig.IsNull())
             {
-                var controller = new CmsWeb.Areas.Dialog.Controllers.AddOrganizationController(FakeRequestManager.FakeRequest());
-                var routeDataValues = new Dictionary<string, string> { { "controller", "AddOrganization" } };
-                controller.ControllerContext = ControllerTestUtils.FakeContextController(controller, routeDataValues);
-
-                var NewOrganizationIndex = controller.Index();
-                OrgId = ((NewOrganizationModel)((System.Web.Mvc.ViewResultBase)NewOrganizationIndex).Model).OrganizationId;
-
-                FakeNewOrganizationModel = new NewOrganizationModel();
-                if(Orgconfig.IsNull())
-                {
-                    FakeOrganization = new Organization() { OrganizationName = "MockName", RegistrationTitle = "MockTitle", Location = "MockLocation", RegistrationTypeId = RegistrationTypeCode.OnlineGiving };
-                }
-                else
-                {
-                    FakeOrganization = Orgconfig;
-                }
-
-                //Add fake registration settings
-                SetFakeSettings(FakeOrganization.RegistrationTypeId, FakeOrganization.OrganizationId);
-
-                FakeNewOrganizationModel.org = FakeOrganization;
-
-                controller.Submit((int)OrgId, FakeNewOrganizationModel);
+                FakeOrganization = new Organization() { OrganizationName = "MockName", RegistrationTitle = "MockTitle", Location = "MockLocation", RegistrationTypeId = RegistrationTypeCode.OnlineGiving };
             }
-            else if (!OrgExists(OrgId))
+            else
             {
-                FakeNewOrganizationModel = null;
-                MakeFakeOrganization();
+                FakeOrganization = Orgconfig;
             }
+
+            //Add fake registration settings
+            SetFakeSettings(FakeOrganization.RegistrationTypeId, FakeOrganization.OrganizationId);
+
+            FakeNewOrganizationModel.org = FakeOrganization;
+
+            controller.Submit((int)OrgId, FakeNewOrganizationModel);
             return FakeNewOrganizationModel;
         }
         public static Settings SetFakeSettings(int? regType, int orgId)
@@ -76,17 +70,12 @@ namespace CMSWebTests
 
         public static void DeleteOrg(int OrgId)
         {
-            if (OrgExists(OrgId))
+            var db = CMSDataContext.Create(Util.Host);
+            if (db.Organizations.Any(x => x.OrganizationId == OrgId))
             {
-                FakeOrganization.PurgeOrg(DbUtil.Db);
-                FakeNewOrganizationModel = null;
+                db.Organizations.First(o=>o.OrganizationId == OrgId)
+                    .PurgeOrg(db);
             }
-        }
-
-        private static bool OrgExists(int? OrgId)
-        {
-            DbUtil.Db = CMSDataContext.Create(Util.Host);
-            return DbUtil.Db.Organizations.Where(x => x.OrganizationId == OrgId).IsNotNull() ? true : false;
         }
     }
 }
