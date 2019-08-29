@@ -1,4 +1,5 @@
 ﻿using CmsWeb.Membership;
+using SharedTestFixtures;
 using System;
 using System.Linq;
 using Xunit;

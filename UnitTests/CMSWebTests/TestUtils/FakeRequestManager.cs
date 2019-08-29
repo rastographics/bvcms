@@ -5,6 +5,7 @@ using System.Security.Principal;
 using System.Web;
 using CmsWeb.Lifecycle;
 using UtilityExtensions;
+using SharedTestFixtures;
 
 namespace CMSWebTests
 {
@@ -18,19 +19,19 @@ namespace CMSWebTests
 
         public FakeRequestManager()
         {
-            CurrentHttpContext = ContextTestUtils.FakeHttpContext();
-            RequestId = Guid.NewGuid();
-            CurrentUser = CurrentHttpContext.User;
+            CurrentHttpContext = ContextTestUtils.CreateMockHttpContext().Object;
             CurrentDatabase = CMSDataContext.Create(Util.Host);
-            CurrentImageDatabase = CMSImageDataContext.Create(CurrentHttpContext);
+            CurrentImageDatabase = CMSImageDataContext.Create(Util.Host);
+            CurrentUser = CurrentHttpContext.User;
+            RequestId = Guid.NewGuid();
         }
 
         public Elmah.ErrorLog GetErrorLog()
         {
-            return Elmah.ErrorLog.GetDefault(CurrentHttpContext?.ApplicationInstance?.Context ?? HttpContext.Current);
+            return Elmah.ErrorLog.GetDefault(CurrentHttpContext?.ApplicationInstance?.Context);
         }
 
-        public static IRequestManager FakeRequest()
+        public static IRequestManager Create()
         {
             FakeRequestManager req = new FakeRequestManager();
             IRequestManager request = req;

@@ -88,7 +88,7 @@ namespace IntegrationTests.Areas.Manage
              * since changes were made in another process
              * and the values will still be cached in the current data context
              */
-            db = CMSDataContext.Create(Host);
+            db = CMSDataContext.Create(DatabaseFixture.Host);
             var json = db.ContentText("jsondata", null);
             json.ShouldContain("New York");
         }

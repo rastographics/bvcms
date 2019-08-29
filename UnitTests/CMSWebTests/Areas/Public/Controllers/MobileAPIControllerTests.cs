@@ -15,6 +15,7 @@ using Newtonsoft.Json;
 using System.Web.Mvc;
 using System.Web.Routing;
 using CmsWeb.Membership;
+using CmsWeb.Lifecycle;
 
 namespace CmsWeb.Areas.Public.ControllersTests
 {
@@ -42,17 +43,17 @@ namespace CmsWeb.Areas.Public.ControllersTests
             people.Count.ShouldBeGreaterThan(0);
         }
 
-        private FakeRequestManager SetupRequestManager()
+        private IRequestManager SetupRequestManager()
         {
             var username = RandomString();
             var password = RandomString();
             var user = CreateUser(username, password);
-            var requestManager = new FakeRequestManager();
+            var requestManager = FakeRequestManager.Create();
             var membershipProvider = new MockCMSMembershipProvider { ValidUser = true };
             var roleProvider = new MockCMSRoleProvider();
             CMSMembershipProvider.SetCurrentProvider(membershipProvider);
             CMSRoleProvider.SetCurrentProvider(roleProvider);
-            ContextTestUtils.Headers["Authorization"] = BasicAuthenticationString(username, password);
+            requestManager.CurrentHttpContext.Request.Headers["Authorization"] = BasicAuthenticationString(username, password);
             return requestManager;
         }
     }

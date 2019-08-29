@@ -28,7 +28,7 @@ namespace CmsWeb.Areas.Public.ControllersTests
             var username = RandomString();
             var password = RandomString();
             var user = CreateUser(username, password);
-            var requestManager = new FakeRequestManager();
+            var requestManager = FakeRequestManager.Create();
             var membershipProvider = new MockCMSMembershipProvider { ValidUser = true };
             var roleProvider = new MockCMSRoleProvider();
             db.OrganizationMembers.InsertOnSubmit(new OrganizationMember
@@ -40,7 +40,7 @@ namespace CmsWeb.Areas.Public.ControllersTests
             db.SubmitChanges();
             CMSMembershipProvider.SetCurrentProvider(membershipProvider);
             CMSRoleProvider.SetCurrentProvider(roleProvider);
-            ContextTestUtils.Headers["Authorization"] = BasicAuthenticationString(username, password);
+            requestManager.CurrentHttpContext.Request.Headers["Authorization"] = BasicAuthenticationString(username, password);
             var controller = new MobileAPIv2Controller(requestManager);
             var message = new MobileMessage {
                 argInt = user.PeopleId.Value
