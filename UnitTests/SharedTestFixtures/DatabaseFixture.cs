@@ -35,7 +35,7 @@ namespace SharedTestFixtures
         public static void EnsureDatabaseExists()
         {
             var builder = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["CMS"].ConnectionString);
-            var sqlScriptsPath = Path.GetFullPath(@"..\..\..\SqlScripts");
+            var sqlScriptsPath = FindSqlScriptsPath();
             builder.InitialCatalog = "master";
             var masterConnectionString = builder.ConnectionString;
             builder.InitialCatalog = $"CMSi_{Host}";
@@ -74,6 +74,20 @@ namespace SharedTestFixtures
                 }
             }
             return file;
+        }
+
+        private static string FindSqlScriptsPath()
+        {
+            string dir = null;
+            foreach(var path in new[] { @"..\..\..\..\SqlScripts", @"..\..\..\SqlScripts" })
+            {
+                dir = Path.GetFullPath(path);
+                if (Directory.Exists(dir))
+                {
+                    break;
+                }
+            }
+            return dir;
         }
 
         public void Dispose()
