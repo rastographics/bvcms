@@ -305,6 +305,18 @@ namespace IntegrationTests.Support
                 return false;
             }
         }
+        protected bool IsElementPresent(string css)
+        {
+            try
+            {
+                driver.FindElement(By.CssSelector(css));
+                return true;
+            }
+            catch (NoSuchElementException)
+            {
+                return false;
+            }
+        }
 
         protected bool IsAlertPresent()
         {
@@ -346,7 +358,17 @@ namespace IntegrationTests.Support
             }, maxWaitTimeInSeconds);
         }
 
-        protected void WaitForElement(string css, int maxWaitTimeInSeconds = 10)
+        protected void WaitForElementToDissappear(string css, int maxRetries = 5, bool visible = true)
+        {
+            var ele = Find(css:css, visible: visible);
+            while (maxRetries-- > 0 && ele != null)
+            {
+                Sleep(500);
+                ele = Find(css:css, visible: visible);
+            }
+            Sleep(200);
+        }
+        protected void WaitForElement(string css, int maxWaitTimeInSeconds = 10, bool visible = true)
         {
             IWebElement element = null;
             try
@@ -357,7 +379,7 @@ namespace IntegrationTests.Support
                 {
                     try
                     {
-                        element = Find(By.CssSelector(css));
+                        element = Find(By.CssSelector(css), visible: visible);
                     }
                     catch (InvalidOperationException)
                     {
