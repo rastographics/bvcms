@@ -7,6 +7,7 @@
 
 using CmsData;
 using CmsData.Codes;
+using CmsData.View;
 using CmsWeb.Areas.Finance.Controllers;
 using System;
 using System.Collections.Generic;
@@ -181,7 +182,8 @@ namespace CmsWeb.Models
                     select new
                     {
                         e.PeopleId,
-                        name = e.Person.Name2 + (e.Person.DeceasedDate.HasValue ? "[DECEASED]" : "")
+                        name = e.Person.Name2 + (e.Person.DeceasedDate.HasValue ? "[DECEASED]" : ""),
+                        pledgesSummary = GetPledgesSummary()
                     };
             }
             else
@@ -191,7 +193,8 @@ namespace CmsWeb.Models
                     select new
                     {
                         i.PeopleId,
-                        name = i.Name2 + (i.DeceasedDate.HasValue ? "[DECEASED]" : "")
+                        name = i.Name2 + (i.DeceasedDate.HasValue ? "[DECEASED]" : ""),
+                        pledgesSummary = GetPledgesSummary()
                     };
             }
             var o = q.FirstOrDefault();
@@ -201,6 +204,11 @@ namespace CmsWeb.Models
             }
 
             return o;
+        }
+
+        private List<PledgesSummary> GetPledgesSummary()
+        {
+            return DbUtil.Db.PledgesSummary(pid.ToInt()).ToList();
         }
 
         public static IEnumerable<NamesInfo> Names(string q, int limit)
