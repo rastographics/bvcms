@@ -24,7 +24,8 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 		public string argString = "";
 		public bool argBool = false;
 
-		public string data = "";
+        public string kiosk = "";
+        public string data = "";
 		public string token = "";
 		public string key = "";
 
@@ -106,6 +107,7 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 		public const int API_DEVICE_UNKNOWN = 0;
 		public const int API_DEVICE_IOS = 1;
 		public const int API_DEVICE_ANDROID = 2;
+        public const int API_DEVICE_WEB = 3;
 
 		// API Errors
 		public const int API_ERROR_NONE = 0;
