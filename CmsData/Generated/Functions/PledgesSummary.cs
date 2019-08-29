@@ -60,7 +60,7 @@ namespace CmsData.View
         }
 
         [Column(Name = "AmountPledged", Storage = "_AmountPledged", DbType = "Decimal(38,2)")]
-        public decimal? PledgeAmt
+        public decimal? AmountPledged
         {
             get
             {
