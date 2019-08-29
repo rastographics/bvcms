@@ -2,18 +2,32 @@
 @using CmsData
 @using UtilityExtensions
 @{
-    var giving = Util.UserPeopleId == Util2.CurrentPeopleId && (MultipleGatewayUtils.GatewayId(DbUtil.Db, PaymentProcessTypes.RecurringGiving) != null) && DbUtil.Db.Setting("OnlineGiving", true);
-    var vaultDisabled = DbUtil.Db.Setting("VaultDisabled") && DbUtil.Db.Setting("ExternalManageGivingUrl", "").IsEmpty();
+    var DB = DbUtil.Db;
+    var hasOnlineGiving = Util.UserPeopleId == Util2.CurrentPeopleId && DB.Setting("OnlineGiving", true);
+    var vaultDisabled = DB.Setting("VaultDisabled");
+    var hasRecurringGiving = hasOnlineGiving && MultipleGatewayUtils.GatewayId(DB, PaymentProcessTypes.RecurringGiving).HasValue;
+    var hasOneTimeGiving = hasOnlineGiving && MultipleGatewayUtils.GatewayId(DB, PaymentProcessTypes.OneTimeGiving).HasValue;
+    var hasManageGivingSetup = hasOnlineGiving && (DB.Setting("ExternalManageGivingUrl", "").HasValue() || (hasRecurringGiving && !vaultDisabled));
+    var hasOneTimeGiftSetup = hasOnlineGiving && (DB.Setting("ExternalOneTimeGiftUrl", "").HasValue() || hasOneTimeGiving);
     var campusId = Model.Person.CampusId;
     var checkImageUserView = true;
-    if (DbUtil.Db.Setting("CheckImagesDisabledForUser"))
+    var filter = Model.Filter;
+    var isFinanceRole = User.IsInRole("Finance");
+    var isPledges = Model.isPledges;
+    if (DB.Setting("CheckImagesDisabledForUser"))
     {
-        checkImageUserView = User.IsInRole("Finance");
+        checkImageUserView = isFinanceRole;
     }
 }
 <form class="non-modal ajax">
-    @FormAction(giving, campusId, vaultDisabled)
-    @FormAction(giving, campusId, vaultDisabled, true)
+    @FormAction(hasOneTimeGiftSetup, hasManageGivingSetup, campusId)
+    @FormAction(hasOneTimeGiftSetup, hasManageGivingSetup, campusId, true)
+    @if (filter == "Pledges")
+    {
+        <div class="row">
+            @Html.Partial("PledgesSummary", Model)
+        </div>
+    }
     <div class="row">
         <div class="col-sm-12">
             @Html.Partial("PagerTop", Model)
@@ -21,14 +35,23 @@
                 <table id="results" class="table table-striped">
                     <thead>
                         <tr>
-                            <th>@Model.SortLink("Date")</th>
-                            <th class="text-right">@Model.SortLink("Amount")</th>
-                            <th><span class="pad-left">@Model.SortLink("Fund")</span></th>
-                            <th>@Model.SortLink("Type")</th>
-                            <th>@Model.SortLink("CheckNo")</th>
+                            <th>@Model.SortLinkWFilter("Date", filter)</th>
+                            <th class="text-right">@Model.SortLinkWFilter("Amount", filter)</th>
+                            <th><span class="pad-left">@Model.SortLinkWFilter("Fund", filter)</span></th>
+                            @if (!Model.isPledges)
+                            {
+                                <th>@Model.SortLinkWFilter("Type", filter)</th>
+                                <th>@Model.SortLinkWFilter("CheckNo", filter)</th>
+                            }
                             @if (Model.ShowNames)
                             {
-                                <th>@Model.SortLink("Name")</th>
+                                <th>@Model.SortLinkWFilter("Name", filter)</th>
+                            }
+                            @if (isFinanceRole && Model.isPledges)
+                            {
+                                <th></th>
+                                <th></th>
+                                <th></th>
                             }
                         </tr>
                     </thead>
@@ -37,44 +60,94 @@
                         {
                             <tr>
                                 <td>@c.Date.ToShortDateString()</td>
-                                <td class="text-right">@c.Amount.ToString("N2")</td>
-                                <td><span class="pad-left">@c.Fund</span></td>
-                                <td>@c.Type</td>
-                                <td>@c.CheckNo
-                                    @if (c.ImageId != 0 && checkImageUserView)
-                                    {
-                                        <a href="@Url.Action("GetCheckImage", "GetCheckImage", new {Area = "Dialog", id = c.ContributionId})" class="searchadd pid">
-                                            <i class="fa fa-info-circle"></i>
-                                        </a>
-                                    }
+                                <td class="text-right amount">
+                                    @*@if (isFinanceRole && c.Type == "Pledge")
+                                        {
+                                            <a class="editpledge" pledgeid="@c.ContributionId" href="">@c.Amount.ToString("N2")</a>
+                                        }
+                                        else
+                                        {*@
+                                    @c.Amount.ToString("N2")
+                                    @*}*@
+
                                 </td>
+                                <td><span class="pad-left">@c.Fund</span></td>
+                                @if (!Model.isPledges)
+                                {
+                                    <td>@c.Type</td>
+                                    <td>
+                                        @c.CheckNo
+                                        @if (c.ImageId != 0 && checkImageUserView)
+                                        {
+                                            <a href="@Url.Action("GetCheckImage", "GetCheckImage", new {Area = "Dialog", id = c.ContributionId})" class="searchadd pid">
+                                                <i class="fa fa-info-circle"></i>
+                                            </a>
+                                        }
+                                    </td>
+                                }
                                 @if (Model.ShowNames)
                                 {
                                     <td>@c.Name</td>
+                                }
+                                @*@if (c.Type == "Pledge" && c.PledgeFund)
+                                    {
+                                        <td class="action">
+                                            <div class="btn-group">
+                                                <a href="/Person2/OneTimeGift/@(campusId??0)?contributionId=@c.ContributionId" target="_blank" class="btn btn-default btn-sm fulfillpledge">
+                                                    <i class="fa fa-check-circle-o"></i> Fulfill pledge
+                                                </a>
+                                            </div>
+                                        </td>
+                                    }*@
+                                @if (isFinanceRole && c.Type == "Pledge")
+                                {
+                                    <td class="action">
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-default btn-sm dropdown-toggle mergepledge" pledgeid="@c.ContributionId">
+                                                <i class="fa fa-code-fork"></i> Merge
+                                            </button>
+                                        </div>
+                                    </td>
+                                    <td class="action">
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-default btn-sm dropdown-toggle editpledge" pledgeid="@c.ContributionId" amount="@c.Amount.ToString("N2")">
+                                                <i class="fa fa-pencil-square-o"></i> Edit
+                                            </button>
+                                        </div>
+                                    </td>
+                                    <td class="action">
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-danger btn-sm dropdown-toggle deletepledge" pledgeid="@c.ContributionId">
+                                                <i class="fa fa-times-circle"></i> Delete
+                                            </button>
+                                        </div>
+                                    </td>
                                 }
                             </tr>
                         }
                     </tbody>
                 </table>
-            </div>
-            @Html.Partial("PagerBottom", Model)
+            </div>@Html.Partial("PagerBottom", Model)
             @Html.Partial("PagerHidden", Model)
             @Html.HiddenFor2(m => m.PeopleId)
         </div>
     </div>
 </form>
-@helper FormAction(bool giving, int? campusId, bool vaultDisabled, bool sm = false)
+@helper FormAction(bool hasOneTimeGiftSetup, bool hasManageGivingSetup, int? campusId, bool sm = false)
 {
-    if (giving)
+    if (hasOneTimeGiftSetup || hasManageGivingSetup)
     {
         if (sm)
         {
             <div class="visible-xs-block visible-sm-block">
-                @if (!vaultDisabled)
+                @if (hasManageGivingSetup)
                 {
-                    <a href="/Person2/ManageGiving" target="_blank" class="btn btn-default btn-block"><i class="fa fa-clock-o"></i> Manage Your Recurring Giving</a>
+                <a href="/Person2/ManageGiving" target="_blank" class="btn btn-default btn-block"><i class="fa fa-clock-o"></i> Manage Your Recurring Giving</a>
                 }
+                @if (hasOneTimeGiftSetup)
+                {
                 <a href="/Person2/OneTimeGift/@campusId" target="_blank" class="btn btn-default btn-block">Make a One Time Gift</a>
+                }
             </div>
         }
         else
@@ -82,15 +155,22 @@
             <div class="row hidden-xs hidden-sm">
                 <div class="col-sm-12">
                     <div class="pull-right">
-                        @if (!vaultDisabled)
+                        @if (hasManageGivingSetup)
                         {
-                            <a href="/Person2/ManageGiving" target="_blank" class="btn btn-default"><i class="fa fa-clock-o"></i> Manage Your Recurring Giving</a>
+                        <a href="/Person2/ManageGiving" target="_blank" class="btn btn-default"><i class="fa fa-clock-o"></i> Manage Your Recurring Giving</a>
                         }
+                        @if (hasOneTimeGiftSetup)
+                        {
                         <a href="/Person2/OneTimeGift/@campusId" target="_blank" class="btn btn-default">Make a One Time Gift</a>
+                        }
                     </div>
                 </div>
             </div>
         }
-        <br/>
+        <br />
     }
 }
+<script>
+    unblockPledges();
+    blockPledges();
+</script>

@@ -7,6 +7,7 @@ using UtilityExtensions;
 namespace CmsWeb.Areas.Dialog.Controllers
 {
     [RouteArea("Dialog", AreaPrefix = "GetCheckImage"), Route("{action}/{id?}")]
+    [Authorize(Roles = "Finance,FinanceDataEntry")]
     public class GetCheckImageController : CMSBaseController
     {
         public GetCheckImageController(IRequestManager requestManager) : base(requestManager)
@@ -16,36 +17,38 @@ namespace CmsWeb.Areas.Dialog.Controllers
         // GET: Dialog/GetcheckImage
         public ActionResult GetCheckImage(int id)
         {
-            if (id.IsNull())
-            {
-                id = 0;
-            }
-
-            int imgId = (from c in CurrentDatabase.Contributions
-                         where c.ContributionId == id
-                         select c.ImageID).FirstOrDefault();
-            CheckImageModel chkImageModel = new CheckImageModel();
-            if (imgId != 0)
-            {
-                chkImageModel = GetImageForContribution(imgId);
-            }
+            CheckImageModel chkImageModel = GetImageForContribution(id);
 
             return PartialView("~/Areas/Dialog/Views/GetCheckImage/GetCheckImage.cshtml", chkImageModel);
         }
 
-        public CheckImageModel GetImageForContribution(int imgId)
+        // GET: Dialog/RawCheckImage
+        public ActionResult RawCheckImage(int id)
         {
-            System.Data.Linq.Binary iBinary = (from i in CurrentImageDatabase.Others
-                                               where i.Id == imgId
-                                               select i.First).FirstOrDefault();
+            CheckImageModel chkImageModel = GetImageForContribution(id);
+            return new FileContentResult(chkImageModel.checkImageBytes, "image/png");
+        }
 
-            CheckImageModel chkModel = new CheckImageModel
+        public CheckImageModel GetImageForContribution(int contributionId)
+        {
+            int imgId = (from c in CurrentDatabase.Contributions
+                         where c.ContributionId == contributionId
+                         select c.ImageID).FirstOrDefault();
+
+            CheckImageModel chkModel = null;
+            if (imgId != 0)
             {
-                ImageId = imgId,
-                checkImageBytes = iBinary.ToArray()
-            };
+                System.Data.Linq.Binary iBinary = (from i in CurrentImageDatabase.Others
+                                                   where i.Id == imgId
+                                                   select i.First).FirstOrDefault();
 
-            return chkModel;
+                chkModel = new CheckImageModel
+                {
+                    ImageId = imgId,
+                    checkImageBytes = iBinary.ToArray()
+                };
+            }
+            return chkModel ?? new CheckImageModel();
         }
     }
 }

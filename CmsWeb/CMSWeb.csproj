@@ -397,6 +397,10 @@
     <Compile Include="App_Start\DependencyConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Areas\CheckIn\Controllers\CheckinSetupController.cs" />
+    <Compile Include="Areas\CheckIn\Models\CheckinSetup\CampusModel.cs" />
+    <Compile Include="Areas\CheckIn\Models\CheckinSetup\CheckinProfileModel.cs" />
+    <Compile Include="Areas\CheckIn\Models\CheckinSetup\CheckinProfileSettingsModel.cs" />
     <Compile Include="Areas\Coordinator\Models\CheckinActionDto.cs" />
     <Compile Include="Areas\Coordinator\Models\CheckinAttendeeDto.cs" />
     <Compile Include="Areas\Coordinator\Models\CheckinScheduleDto.cs" />
@@ -632,6 +636,7 @@
     <Compile Include="Areas\People\Models\Contact\ContactExtraLocationConfig.cs" />
     <Compile Include="Areas\People\Models\Downline\DownlineLevelsModel.cs" />
     <Compile Include="Areas\People\Models\Downline\DownlineSummaryModel.cs" />
+    <Compile Include="Areas\People\Models\Person\Giving\PledgesSummary.cs" />
     <Compile Include="Areas\People\Models\Task\TaskModel.cs" />
     <Compile Include="Areas\Public\Controllers\CheckInAPIv2Controller.cs" />
     <Compile Include="Areas\Public\Controllers\CheckScanAPIController.cs" />
@@ -792,7 +797,7 @@
     <Compile Include="Areas\Search\Models\RegistrationSearch\IncompleteRegistrations.cs" />
     <Compile Include="Areas\Reports\Models\Other\WeeklyDecisionsModel.cs" />
     <Compile Include="Areas\Reports\Models\Enrollment\EnrollmentControlModel.cs" />
-    <Compile Include="Areas\Manage\Controllers\CheckinLabelsController.cs" />
+    <Compile Include="Areas\CheckIn\Controllers\CheckinLabelsController.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\OtherRegistrations.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\ManageGiving.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\ManageSubscriptions.cs" />
@@ -815,14 +820,14 @@
     <Compile Include="Areas\Reports\Models\Other\MailingController.cs" />
     <Compile Include="Areas\Reports\Models\Attendance\VisitsAbsentsResult2.cs" />
     <Compile Include="Areas\Reports\Models\Attendance\RallyRollsheetResult.cs" />
-    <Compile Include="Areas\Manage\Controllers\CheckinTimeController.cs" />
+    <Compile Include="Areas\CheckIn\Controllers\CheckinTimeController.cs" />
     <Compile Include="Areas\Manage\Controllers\SMSController.cs" />
     <Compile Include="Areas\Manage\Controllers\UploadPeopleController.cs" />
     <Compile Include="Areas\Finance\Controllers\StatementsController.cs" />
     <Compile Include="Areas\Reports\Models\Export\ExtraExcelResult.cs" />
     <Compile Include="Areas\Org\Models\OrgChildrenModel.cs" />
     <Compile Include="Areas\Manage\Controllers\UsersController.cs" />
-    <Compile Include="Areas\Manage\Models\CheckinTimeModel.cs" />
+    <Compile Include="Areas\CheckIn\Models\CheckinTimeModel.cs" />
     <Compile Include="Areas\Manage\Models\ContentModel.cs" />
     <Compile Include="Areas\Manage\Models\SMSModel.cs" />
     <Compile Include="Areas\Manage\Models\UsersModel.cs" />
@@ -872,6 +877,8 @@
     <Compile Include="Common\Configuration.cs" />
     <Compile Include="Common\Extensions\ObjectExtensions.cs" />
     <Compile Include="Code\ViewUtilities.cs" />
+    <Compile Include="Common\Status\AppStatus.cs" />
+    <Compile Include="Common\Status\StatusHelper.cs" />
     <Compile Include="Controllers\Api\ApiOptions.cs" />
     <Compile Include="Controllers\Api\AuthenticateController.cs" />
     <Compile Include="Controllers\Api\ChAiPeopleController.cs" />
@@ -1101,7 +1108,6 @@
     <Compile Include="Code\ModelViewModel.cs" />
     <Compile Include="Code\PaymentValidator.cs" />
     <Compile Include="Code\SmartBinder.cs" />
-    <Compile Include="Code\Image.cs" />
     <Compile Include="Models\HtmlHolder.cs" />
     <Compile Include="Services\MeetingCategory\MeetingCategoryService.cs" />
     <Compile Include="Services\MeetingCategory\IMeetingCategoryService.cs" />
@@ -1217,8 +1223,6 @@
     <Content Include="Content\touchpoint\img\logo_sm.png" />
     <Content Include="Content\touchpoint\img\male.png" />
     <Content Include="Content\images\tps_full_logo.png" />
-    <Content Include="Content\images\tps_hosting_support.png" />
-    <Content Include="Content\images\tps_hosting_support_avail.png" />
     <Content Include="Content\images\tps_logo.png" />
     <Content Include="Content\select2-3.5.2\select2-bootstrap.css" />
     <Content Include="Content\select2-3.5.2\select2-spinner.gif" />
@@ -1235,6 +1239,7 @@
     <Content Include="Content\touchpoint\js\admin\users-email-for.js" />
     <Content Include="Content\touchpoint\js\admin\users.js" />
     <Content Include="Content\touchpoint\js\app.min.js" />
+    <Content Include="Content\touchpoint\js\checkin\checkinsetup.js" />
     <Content Include="Content\touchpoint\js\Coupons.js" />
     <Content Include="Content\touchpoint\js\dialog\search-users.js" />
     <Content Include="Content\touchpoint\js\edit-custom-report.js" />
@@ -1249,12 +1254,15 @@
     <Content Include="Content\touchpoint\js\main.js" />
     <Content Include="Content\touchpoint\js\metrozip\metro-zip.js" />
     <Content Include="Content\touchpoint\js\onlineregister.min.js" />
+    <Content Include="Content\touchpoint\js\people\givingtab.js" />
     <Content Include="Content\touchpoint\js\people\merge.js" />
     <Content Include="Content\touchpoint\js\search\export-query.js" />
     <Content Include="Content\touchpoint\js\search\TaskSearch.js" />
+    <Content Include="Content\touchpoint\js\swal_messages.js" />
     <Content Include="Content\touchpoint\js\tranhistory.js" />
     <Content Include="Content\touchpoint\js\volunteer\AltCalendar.js" />
     <Content Include="Content\touchpoint\js\volunteer\calendar.js" />
+    <Content Include="Content\touchpoint\js\vue-number-input.js" />
     <Content Include="Content\touchpoint\lib\bootstrap-sweetalert\js\sweetalert.min.js" />
     <Content Include="Content\touchpoint\lib\bootstrap-sweetalert\css\sweetalert.css" />
     <Content Include="Content\touchpoint\lib\ckeditor\plugins\specialLink\dialogs\specialLink.js" />
@@ -1292,8 +1300,6 @@
     <Content Include="Content\touchpoint\lib\bootstrap-tabdrop\js\bootstrap-tabdrop.js" />
     <Content Include="Content\touchpoint\lib\bootstrap-tabdrop\js\extensions_bootstrap-tabdrop.js" />
     <Content Include="Content\touchpoint\lib\bootstrap-typeahead\js\bootstrap3-typeahead.min.js" />
-    <Content Include="Content\touchpoint\lib\ion-sound\sounds\computer_error.mp3" />
-    <Content Include="Content\touchpoint\lib\ion-sound\sounds\glass.mp3" />
     <Content Include="Content\touchpoint\lib\jcrop\css\jcrop.min.css" />
     <Content Include="Content\touchpoint\lib\jcrop\js\jcrop.min.js" />
     <Content Include="Content\touchpoint\lib\jquery-blockUI\js\jquery.blockUI.js" />
@@ -1686,9 +1692,6 @@
     <Content Include="Content\touchpoint\lib\twitter-typeahead\js\typeahead.js" />
     <Content Include="Content\xml.xsl" />
     <Content Include="Content\images\brokencode.jpg" />
-    <Content Include="Content\images\bvcms-logo-on-dark.png" />
-    <Content Include="Content\images\computer_error.mp3" />
-    <Content Include="Content\images\glass.mp3" />
     <Content Include="Content\images\sgfunknown.jpg" />
     <Content Include="Content\img\ajax-loader.gif" />
     <Content Include="Content\css\jquery.mobile-1.3.1.min.css" />
@@ -1834,16 +1837,16 @@
     <Content Include="Areas\Setup\Views\Roles\Manage.cshtml" />
     <Content Include="Areas\Setup\Views\Roles\Priorities.cshtml" />
     <Content Include="Content\touchpoint\src\less\snackbar.less" />
+    <Content Include="Areas\People\Views\Shared\PledgesSummary.cshtml" />
     <Content Include="libman.json" />
+    <Content Include="Areas\CheckIn\Views\Web.config" />
+    <Content Include="Areas\CheckIn\Views\CheckinSetup\Index.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
     <Content Include="Content\touchpoint\src\less\modals.less" />
     <Content Include="Areas\People\Views\Person\Resources\Index.cshtml" />
-    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\staging.pubxml" />
-    <None Include="Properties\PublishProfiles\TeamCity.pubxml" />
-    <None Include="Properties\PublishProfiles\work.pubxml" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Scripts\ReadMe.txt" />
     <Content Include="Views\Shared\EditorTemplates\DateAndTime.cshtml" />
@@ -1948,7 +1951,6 @@
     <Content Include="Content\touchpoint\templates\picturedir4.docx" />
     <Content Include="Areas\Manage\Views\Batch\RunningPythonScript.cshtml" />
     <Content Include="Views\Script\RunPythonScriptProgress.cshtml" />
-    <None Include="Properties\PublishProfiles\test2.pubxml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskText.cshtml" />
     <Content Include="Areas\Org\Views\Org\Dialogs.cshtml" />
     <Content Include="Areas\Org\Views\Org\Other\DivisionList.cshtml" />
@@ -2049,7 +2051,7 @@
     <Content Include="Areas\Reports\Views\Reports\WeeklyDecisions.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\Decisions.cshtml" />
     <Content Include="Areas\People\Views\Person\Enrollment\Pending.cshtml" />
-    <Content Include="Areas\Manage\Views\CheckinLabels\Index.cshtml" />
+    <Content Include="Areas\CheckIn\Views\CheckinLabels\Index.cshtml" />
     <Content Include="Areas\People\Views\Person\Enrollment\Attendance.cshtml" />
     <Content Include="Areas\Public\Views\ExternalServices\BVCMSSupportLink.cshtml" />
     <Content Include="Areas\Manage\Views\Emails\Tracking.cshtml" />
@@ -2307,12 +2309,9 @@
     </None>
     <Content Include="Areas\Manage\Views\Batch\UpdateStatusFlags.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\EnrollmentControl2.cshtml" />
-    <None Include="Properties\PublishProfiles\test3.pubxml" />
     <Content Include="Content\bootstrap-modal\css\bootstrap-modal.css" />
     <Content Include="Content\bootstrap-modal\img\ajax-loader.gif" />
     <Content Include="Content\css\bvcms.css" />
-    <Content Include="Content\images\ding.wav" />
-    <Content Include="Content\img\footer_powered.png" />
     <Content Include="Content\img\glyphicons-halflings-white.png" />
     <Content Include="Content\img\glyphicons-halflings.png" />
     <Content Include="Content\img\header_logo.png" />
@@ -2330,8 +2329,6 @@
     <Content Include="Content\styles\jquery.contextMenu.css" />
     <Content Include="Content\styles\images\animated-overlay.gif" />
     <Content Include="Content\styles\jquery-ui-1.10.0.custom.css" />
-    <Content Include="Content\images\BUZZ.WAV" />
-    <Content Include="Content\img\bvcms-provided.png" />
     <Content Include="Content\img\calendar.png" />
     <Content Include="Content\img\icon-user.png" />
     <Content Include="Content\styles\checkboxtree.css" />
@@ -2362,7 +2359,6 @@
     <Content Include="Content\styles\images\bl.png" />
     <Content Include="Content\styles\images\br.gif" />
     <Content Include="Content\styles\images\br.png" />
-    <Content Include="Content\styles\images\bvcms_8.png" />
     <Content Include="Content\styles\images\calendar.gif" />
     <Content Include="Content\styles\images\checkboxtree\bg-checkbox-checked.gif" />
     <Content Include="Content\styles\images\checkboxtree\bg-checkbox-checkedchildren.gif" />
@@ -2392,7 +2388,6 @@
     <Content Include="healthcheck.txt" />
     <Content Include="Content\images\28pix.gif" />
     <Content Include="Content\images\bullet.png" />
-    <Content Include="Content\images\bvcms-provided.png" />
     <Content Include="Content\images\cross.gif" />
     <Content Include="Content\images\dnarrow.png" />
     <Content Include="Content\images\dnarrowt.png" />
@@ -2485,7 +2480,6 @@
     <Content Include="Content\styles\thickbox.css" />
     <Content Include="Content\styles\touch.css" />
     <Content Include="Content\styles\ui.timepickr.css" />
-    <Content Include="Content\images\zylo.wav" />
     <Content Include="Content\images\calendar.gif" />
     <Content Include="Content\images\Home.png" />
     <Content Include="Content\images\RapidSSL_SEAL-90x50.gif" />
@@ -2779,31 +2773,18 @@
     <Content Include="Views\Script\RunScriptPageBreaks.cshtml" />
     <Content Include="Views\Shared\_LayoutCheckIn.cshtml" />
     <Content Include="Views\Shared\_LayoutNoHeaderFooter.cshtml" />
-    <None Include="Web.Impersonate.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </None>
+    <Content Include="Views\Shared\AdminAlerts.cshtml" />
     <None Include="Web.staging.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </None>
-    <None Include="Web.test2.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </None>
-    <None Include="Web.test3.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </None>
-    <None Include="Web.work.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\images\bvcms132x55.png" />
     <Content Include="Content\touchpoint\lib\jquery.sortElements.js" />
     <Content Include="Content\constants.py" />
     <Content Include="Content\Tutorials\_Home_Index_Menu.cshtml" />
     <Content Include="Content\Tutorials\_Home_Index.cshtml" />
     <Content Include="Errors\SiteDisabled.htm" />
     <Content Include="Content\images\arrowdnup.png" />
-    <Content Include="Content\images\deliveredbybvcms.gif" />
     <Content Include="Content\images\draggable-icon.png" />
     <Content Include="Content\images\dropdown.gif" />
     <Content Include="Content\images\linkselect_bkgrd.png" />
@@ -2823,9 +2804,6 @@
     <Content Include="Content\touchpoint\js\meeting\meeting-ipad.js" />
     <Content Include="Content\touchpoint\js\meeting\Meetings.js" />
     <Content Include="Global.asax" />
-    <Content Include="Content\images\bvcms120.png" />
-    <Content Include="Content\images\bvcms130.png" />
-    <Content Include="Content\images\bvcms150.png" />
     <Content Include="Content\images\req.gif" />
     <Content Include="Content\touchpoint\js\email\Email.js" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageGiving\Setup.cshtml">
@@ -2868,7 +2846,7 @@
     <Content Include="ConnectionStrings.config">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="Areas\Manage\Views\CheckinTime\Index.cshtml" />
+    <Content Include="Areas\CheckIn\Views\CheckinTime\Index.cshtml" />
     <Content Include="Areas\Org\Views\Meeting\tickets.cshtml" />
     <Content Include="Areas\Org\Views\Meeting\ScanTicket.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Other\Timeout.cshtml" />
@@ -3266,7 +3244,6 @@
     </Content>
     <Content Include="Areas\Manage\Views\Batch\ExtraValuesFromPeopleIds.cshtml">
     </Content>
-    <None Include="Properties\PublishProfiles\bvcms2.pubxml" />
     <None Include="Properties\PublishProfiles\test.pubxml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -3366,7 +3343,6 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Content\touchpoint\js\onlinereg\OnlineReg.js" />
-    <Content Include="Views\Shared\bvorg.Master" />
     <Content Include="Views\Shared\Site3b.Master" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -3378,6 +3354,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Areas\CheckIn\Views\Shared\" />
     <Folder Include="Areas\Dialog\Views\Shared\" />
     <Folder Include="Areas\Figures\Views\Shared\" />
     <Folder Include="Areas\Finance\Views\Shared\" />
@@ -3417,7 +3394,10 @@
     </VisualStudio>
   </ProjectExtensions>
   <PropertyGroup>
-    <PreBuildEvent>IF EXIST package.json (npm install &amp;&amp; gulp --no-color)</PreBuildEvent>
+    <PreBuildEvent>pushd $(ProjectDir)
+npm install
+gulp --no-color
+popd</PreBuildEvent>
   </PropertyGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

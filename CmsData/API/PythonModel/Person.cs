@@ -207,6 +207,7 @@ namespace CmsData
             {
                 var pp = db2.LoadPersonById(p.PeopleId);
                 pp.UpdateValue(field, value);
+                p.LogChanges(db2);
                 db2.SubmitChanges();
             }
         }

@@ -1,3 +1,4 @@
+/// <binding ProjectOpened='default' />
 var gulp = require('gulp'),
     less = require('gulp-less'),
     minify = require('gulp-minify-css'),
@@ -95,7 +96,7 @@ gulp.task('compress-js', function(complete) {
         gulp.src(files)
             .pipe(concat(outputName))
             .pipe(uglify())
-            .on('error', function (err) { gutil.log(gutil.colors.red('[Error]'), err.toString()); })
+            .on('error', function (e) { console.error(e); })
             .pipe(gulp.dest(destinationFolder));
     };
 

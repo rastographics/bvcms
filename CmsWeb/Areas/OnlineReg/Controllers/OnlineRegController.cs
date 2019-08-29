@@ -22,7 +22,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [HttpGet]
         [Route("~/OnlineReg/Index/{id:int}")]
         [Route("~/OnlineReg/{id:int}")]
-        public ActionResult Index(int? id, bool? testing, string email, bool? login, string registertag, bool? showfamily, int? goerid, int? gsid, string source)
+        public ActionResult Index(int? id, bool? testing, string email, bool? login, string registertag, bool? showfamily, int? goerid, int? gsid, string source, int? pledgeFund)
         {
             Response.NoCache();
 
@@ -31,12 +31,15 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             if (isMissionTrip)
             {
-                m.ProcessType = PaymentProcessTypes.OneTimeGiving;
+                m.ProcessType = PaymentProcessTypes.OnlineRegistration;
             }
             else
             {
-                m.ProcessType = (m.org?.RegistrationTypeId).GetValueOrDefault() == RegistrationTypeCode.OnlineGiving ? PaymentProcessTypes.OneTimeGiving : PaymentProcessTypes.OnlineRegistration;
+                AssignPaymentProcessType(ref m);
             }
+
+            if (pledgeFund != null)            
+                m.pledgeFundId = pledgeFund.Value;            
 
             SetHeaders(m);
 
@@ -83,11 +86,28 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             return RouteRegistration(m, pid, showfamily);
         }
+
+        private void AssignPaymentProcessType(ref OnlineRegModel m)
+        {
+            switch (m.org?.RegistrationTypeId.GetValueOrDefault())
+            {
+                case RegistrationTypeCode.OnlineGiving:
+                    m.ProcessType = PaymentProcessTypes.OneTimeGiving;
+                    break;
+                case RegistrationTypeCode.ManageGiving:
+                    m.ProcessType = PaymentProcessTypes.RecurringGiving;
+                    break;
+                default:
+                    m.ProcessType = PaymentProcessTypes.OnlineRegistration;
+                    break;
+            }
+        }
+
         [HttpPost]
         public ActionResult Login(OnlineRegModel m)
         {
             fromMethod = "Login";
-            var ret = AccountModel.AuthenticateLogon(m.username, m.password, Session, Request, CurrentDatabase);
+            var ret = AccountModel.AuthenticateLogon(m.username, m.password, Session, Request, CurrentDatabase, CurrentImageDatabase);
 
             if (ret is string)
             {
@@ -512,6 +532,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             {
                 // goer specified isn't part of this trip
                 return new HttpNotFoundResult();
+            }
+            if (!m.URL.HasValue() || m.URL.Contains("False"))
+            {
+                m.URL = CurrentDatabase.ServerLink($"/OnlineReg/{id}/Giving/{goerid}");
             }
             if (Util.UserPeopleId == goerid)
             {

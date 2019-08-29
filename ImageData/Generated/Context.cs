@@ -92,7 +92,7 @@ namespace ImageData
 
         public static CMSImageDataContext Create(HttpContextBase currentHttpContext)
         {
-            var host = currentHttpContext.Request.Url.Authority.Split('.', ':')[0];
+            var host = ConfigurationManager.AppSettings["host"] ?? currentHttpContext.Request.Url.Authority.Split('.', ':')[0];
             return CMSImageDataContext.Create(host);
         }
 
