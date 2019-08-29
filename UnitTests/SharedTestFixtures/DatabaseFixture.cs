@@ -84,5 +84,10 @@ namespace SharedTestFixtures
 
             return context.Object;
         }
+
+        public static CMSDataContext NewDbContext()
+        {
+            return CMSDataContext.Create(Util.Host);
+        }
     }
 }
