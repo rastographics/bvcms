@@ -87,8 +87,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Collections.cs" />
+    <Compile Include="ContextTestUtils.cs" />
     <Compile Include="DatabaseCollection.cs" />
     <Compile Include="DatabaseFixture.cs" />
+    <Compile Include="MockHttpContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
