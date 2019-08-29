@@ -1,29 +1,27 @@
 ﻿using CmsData;
-using System;
+using SharedTestFixtures;
+using Shouldly;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UtilityExtensions;
 using Xunit;
-using Shouldly;
 
 namespace CMSWebTests.Areas.Setup.Controllers
 {
-    [Collection("Database collection")]
+    [Collection(Collections.Database)]
     public class DivisionControllerTests
     {
         [Theory]
-        [InlineData ("1")]
-        [InlineData ("yes")]
+        [InlineData("1")]
+        [InlineData("yes")]
         public void Should_Change_No_Zero_field(string value)
         {
-            var requestManager = FakeRequestManager.FakeRequest();
+            var requestManager = FakeRequestManager.Create();
             var db = requestManager.CurrentDatabase;
             var controller = new CmsWeb.Areas.Setup.Controllers.DivisionController(requestManager);
             var routeDataValues = new Dictionary<string, string> { { "controller", "Division" } };
             controller.ControllerContext = ControllerTestUtils.FakeControllerContext(controller, routeDataValues);
-            
+
             Program prog = new Program()
             {
                 Name = "MockProgram",

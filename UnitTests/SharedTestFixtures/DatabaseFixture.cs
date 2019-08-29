@@ -14,14 +14,7 @@ namespace SharedTestFixtures
         {
             EnsureDatabaseExists();
         }
-
-        private static string ScriptsDirectory()
-        {
-            var dir = Environment.CurrentDirectory;
-            return Path.GetFullPath(Path.Combine(dir, @"..\..\..\..\SqlScripts"));
-        }
-
-
+        
         private static string _host;
         public static string Host => _host ?? (_host = GetHostFromWebConfig());
 

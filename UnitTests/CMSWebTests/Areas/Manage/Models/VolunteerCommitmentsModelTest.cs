@@ -4,9 +4,11 @@ using CmsData;
 using Shouldly;
 using CmsData.Codes;
 using CmsWeb.Areas.Manage.Models;
+using SharedTestFixtures;
 
 namespace CMSWebTests.Areas.Manage.Models
 {
+    [Collection(Collections.Database)]
     public class VolunteerCommitmentsModelTest
     {
         [Theory]
@@ -15,7 +17,7 @@ namespace CMSWebTests.Areas.Manage.Models
         [InlineData(2020, 2, "02/02/2020")]
         public void ShouldCalculateFirstSundayOfTheMonth(int year, int month, string result)
         {
-            var requestManager = FakeRequestManager.FakeRequest();
+            var requestManager = FakeRequestManager.Create();
             var VolunteerOrgconfig = new Organization()
             {
                 OrganizationName = "MockMasterName",

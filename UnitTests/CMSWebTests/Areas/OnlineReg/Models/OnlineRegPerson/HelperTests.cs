@@ -2,19 +2,20 @@
 using CmsData;
 using System.Collections.Generic;
 using Shouldly;
+using SharedTestFixtures;
 
 namespace CMSWebTests.Areas.OnlineReg.Models.OnlineRegPerson
 {
-    [Collection("Database collection")]
+    [Collection(Collections.Database)]
     public class HelperTests
     {
-        private int MasterOrgId { get; set; }
-        private int ChildOrgId { get; set; }
 
         [Fact]
         public void Should_Use_MasterOrg_DOB_Phone_Settings()
         {
-            var requestManager = FakeRequestManager.FakeRequest();
+            int MasterOrgId = 0;
+            int ChildOrgId = 0;
+            var requestManager = FakeRequestManager.Create();
             var controller = new CmsWeb.Areas.OnlineReg.Controllers.OnlineRegController(requestManager);
             var routeDataValues = new Dictionary<string, string> { { "controller", "OnlineReg" } };
             controller.ControllerContext = ControllerTestUtils.FakeControllerContext(controller, routeDataValues);
