@@ -33,7 +33,7 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 
 		public List<Group> groups = new List<Group>();
 
-		public static List<FamilyMember> forFamilyID(CMSDataContext cmsdb, CMSImageDataContext cmsidb, int familyID, int campus, DateTime date )
+		public static List<FamilyMember> forFamilyID(CMSDataContext cmsdb, CMSImageDataContext cmsidb, int familyID, int campus, DateTime date, bool returnPictureUrls)
 		{
 			List<FamilyMember> members = new List<FamilyMember>();
 			DataTable table = new DataTable();
@@ -81,8 +81,8 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 			foreach( DataRow row in table.Rows ) {
 				FamilyMember member = new FamilyMember();
 				member.populate( row );
-				member.loadPicture(cmsdb, cmsidb);
-				member.loadGroups( cmsdb, campus, date );
+				member.loadPicture(cmsdb, cmsidb, returnPictureUrls);
+				member.loadGroups(cmsdb, campus, date);
 
 				members.Add( member );
 			}
@@ -95,13 +95,46 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 			groups.AddRange( Group.forPersonID( db, id, campus, date ) );
 		}
 
-		private void loadPicture(CMSDataContext cmsdb, CMSImageDataContext cmsidb)
+		private void loadPicture(CMSDataContext cmsdb, CMSImageDataContext cmsidb, bool returnUrl)
 		{
-			var person = cmsdb.People.SingleOrDefault( p => p.PeopleId == id );
+			var person = cmsdb.People.SingleOrDefault(p => p.PeopleId == id);
+            int? ImageId;
 
-			if( person == null || person.Picture == null ) return;
+            if (person == null || person.Picture == null)
+            {
+                if (returnUrl)
+                {
+                    var pic = new CmsData.Picture();
+                    picture = pic.MediumUrl;
+                    return;
+                }
+                ImageId = CmsData.Picture.SmallMissingGenericId;
+            }
+            else
+            {
+                pictureX = person.Picture.X.GetValueOrDefault();
+                pictureY = person.Picture.Y.GetValueOrDefault();
 
-			Image image = cmsidb.Images.SingleOrDefault( i => i.Id == person.Picture.SmallId );
+                if (returnUrl)
+                {
+                    switch (person?.Gender?.Code)
+                    {
+                        case "M":
+                            picture = person.Picture.MediumMaleUrl;
+                            break;
+                        case "F":
+                            picture = person.Picture.MediumFemaleUrl;
+                            break;
+                        default:
+                            picture = person.Picture.MediumUrl;
+                            break;
+                    }
+                    return;
+                }
+                ImageId = person.Picture.SmallId;
+            }
+
+			Image image = cmsidb.Images.SingleOrDefault( i => i.Id == ImageId );
 
 			if( image != null ) {
 				picture = Convert.ToBase64String( image.Bits );
