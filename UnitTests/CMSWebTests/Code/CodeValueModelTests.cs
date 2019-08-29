@@ -30,6 +30,7 @@ namespace CMSWebTests
         [Fact]
         public void Should_be_able_to_get_MemberTypeCodes()
         {
+            ContextTestUtils.FakeHttpContext();
             var b = CodeValueModel.MemberTypeCodes();
             b.Count().ShouldBe(16);
         }

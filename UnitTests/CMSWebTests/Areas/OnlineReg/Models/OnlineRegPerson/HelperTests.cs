@@ -19,6 +19,7 @@ namespace CMSWebTests.Areas.OnlineReg.Models.OnlineRegPerson
         [Fact]
         public void Should_Use_MasterOrg_DOB_Phone_Settings()
         {
+            ContextTestUtils.FakeHttpContext();
             var controller = new CmsWeb.Areas.OnlineReg.Controllers.OnlineRegController(FakeRequestManager.FakeRequest());
             var routeDataValues = new Dictionary<string, string> { { "controller", "OnlineReg" } };
             controller.ControllerContext = ControllerTestUtils.FakeContextController(controller, routeDataValues);

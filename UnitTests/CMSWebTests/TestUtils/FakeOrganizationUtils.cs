@@ -69,7 +69,7 @@ namespace CMSWebTests
         }
         public static OnlineRegModel GetFakeOnlineRegModel(int OrgId)
         {
-            var m = new OnlineRegModel(ContextTestUtils.FakeHttpContext().Request, CMSDataContext.Create(Util.Host), OrgId, null, null, null, null);
+            var m = new OnlineRegModel(HttpContextFactory.Current.Request, CMSDataContext.Create(Util.Host), OrgId, null, null, null, null);
             m.UserPeopleId = 1;
             return m;
         }

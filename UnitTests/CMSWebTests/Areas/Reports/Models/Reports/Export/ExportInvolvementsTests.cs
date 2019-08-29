@@ -24,6 +24,7 @@ namespace CMSWebTests.Areas.Reports.Models.Reports.Export
         [Fact]
         public void InvolvementList_Should_Have_FamilyId()
         {
+            ContextTestUtils.FakeHttpContext();
             var db = CMSDataContext.Create(Util.Host);
             var controller = new CmsWeb.Areas.OnlineReg.Controllers.OnlineRegController(FakeRequestManager.FakeRequest());
             var routeDataValues = new Dictionary<string, string> { { "controller", "OnlineReg" } };
