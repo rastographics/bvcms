@@ -54,7 +54,8 @@ namespace CmsWeb.Areas.Setup.Controllers
             {
                 return Redirect($"/Roles/#{existingrole.RoleId}");
             }
-            var r = new Role { RoleName = "NEW" };
+            var priority = CurrentDatabase.Roles.Max(role => role.Priority) + 1;
+            var r = new Role { RoleName = "NEW", Priority = priority };
             CurrentDatabase.Roles.InsertOnSubmit(r);
             CurrentDatabase.SubmitChanges();
             return Redirect($"/Roles/#{r.RoleId}");
