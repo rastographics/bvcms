@@ -9,6 +9,7 @@ using CmsWeb.Areas.Public.Models.CheckInAPIv2;
 using CmsWeb.Areas.Public.Models.CheckInAPIv2.Results;
 using CmsWeb.Areas.Public.Models.CheckInAPIv2.Searches;
 using CmsWeb.Models;
+using CmsWeb.Lifecycle;
 using ImageData;
 using Microsoft.Scripting.Utils;
 using Newtonsoft.Json;
@@ -17,9 +18,13 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.Public.Controllers
 {
-	public class CheckInAPIv2Controller : Controller
-	{
-		public ActionResult Exists()
+	public class CheckInAPIv2Controller : CMSBaseController
+    {
+        public CheckInAPIv2Controller(IRequestManager requestManager) : base(requestManager)
+        {
+        }
+
+        public ActionResult Exists()
 		{
 			// CheckInMessage br = new CheckInMessage();
 			// br.setNoError();
@@ -48,8 +53,7 @@ namespace CmsWeb.Areas.Public.Controllers
 			if( !Auth() )
 				return Message.createErrorReturn( "Authentication failed, please try again", Message.API_ERROR_INVALID_CREDENTIALS );
 
-            var db = CMSDataContext.Create(HttpContextFactory.Current);
-            List<SettingsEntry> settings = (from s in db.CheckInSettings
+			List<SettingsEntry> settings = (from s in CurrentDatabase.CheckInSettings
 														where s.Version == 2
 														select new SettingsEntry
 														{
@@ -59,7 +63,7 @@ namespace CmsWeb.Areas.Public.Controllers
 															version = s.Version
 														}).ToList();
 
-			List<State> states = (from s in db.StateLookups
+			List<State> states = (from s in CurrentDatabase.StateLookups
 										orderby s.StateName
 										select new State
 										{
@@ -67,7 +71,7 @@ namespace CmsWeb.Areas.Public.Controllers
 											name = s.StateName
 										}).ToList();
 
-			List<Country> countries = (from c in db.Countries
+			List<Country> countries = (from c in CurrentDatabase.Countries
 												orderby c.Id
 												select new Country
 												{
@@ -76,7 +80,7 @@ namespace CmsWeb.Areas.Public.Controllers
 													name = c.Description
 												}).ToList();
 
-			List<Campus> campuses = (from c in db.Campus
+			List<Campus> campuses = (from c in CurrentDatabase.Campus
 											where c.Organizations.Any( o => o.CanSelfCheckin.Value )
 											orderby c.Id
 											select new Campus
@@ -87,7 +91,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
 			campuses.Insert( 0, new Campus {id = 0, name = "All Campuses"} );
 
-			List<Gender> genders = (from g in db.Genders
+			List<Gender> genders = (from g in CurrentDatabase.Genders
 											orderby g.Id
 											select new Gender
 											{
@@ -95,7 +99,7 @@ namespace CmsWeb.Areas.Public.Controllers
 												name = g.Description
 											}).ToList();
 
-			List<MaritalStatus> maritals = (from m in db.MaritalStatuses
+			List<MaritalStatus> maritals = (from m in CurrentDatabase.MaritalStatuses
 														orderby m.Id
 														select new MaritalStatus
 														{
@@ -136,18 +140,31 @@ namespace CmsWeb.Areas.Public.Controllers
 
 			Message response = new Message();
 			response.setNoError();
-
-
-            var db = CMSDataContext.Create(HttpContextFactory.Current);
-            var idb = CMSImageDataContext.Create(HttpContextFactory.Current);
-            List<Family> families = Family.forSearch(db, idb, cns.search, cns.campus, cns.date );
-
+            
+            bool returnPictureUrls = message.device == Message.API_DEVICE_WEB;
+			List<Family> families = Family.forSearch(CurrentDatabase, CurrentImageDatabase, cns.search, cns.campus, cns.date, returnPictureUrls );
+            
 			response.data = SerializeJSON( families, message.version );
 
 			return response;
 		}
 
-		[HttpPost]
+        [HttpGet]
+        public ActionResult GetProfiles()
+        {
+            var Profiles = new List<Profile>();
+            var ProfileSettings = CurrentDatabase.CheckinProfileSettings.ToList();
+            foreach (var settings in ProfileSettings)
+            {
+                var Profile = new Profile();
+                Profile.populate(settings);
+                Profiles.Add(Profile);
+            }
+
+            return Json(Profiles, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
 		public ActionResult GetSubgroups( string data )
 		{
 			if( !Auth() )
@@ -177,7 +194,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
 			Message message = Message.createFromString( data );
 
-			CmsData.Person p = CmsData.DbUtil.Db.LoadPersonById( message.id );
+			CmsData.Person p = CurrentDatabase.LoadPersonById( message.id );
 
 			if( p == null ) return Message.createErrorReturn( "Person not found", Message.API_ERROR_PERSON_NOT_FOUND );
 
@@ -203,11 +220,11 @@ namespace CmsWeb.Areas.Public.Controllers
 			person.clean();
 
 			// Create or Edit Family
-			CmsData.Family f = person.familyID > 0 ? CmsData.DbUtil.Db.Families.First( fam => fam.FamilyId == person.familyID ) : new CmsData.Family();
+			CmsData.Family f = person.familyID > 0 ? CurrentDatabase.Families.First( fam => fam.FamilyId == person.familyID ) : new CmsData.Family();
 			person.fillFamily( f );
 
 			if( person.familyID == 0 ) {
-				CmsData.DbUtil.Db.Families.InsertOnSubmit( f );
+				CurrentDatabase.Families.InsertOnSubmit( f );
 			}
 
 			// Create Person
@@ -228,12 +245,12 @@ namespace CmsWeb.Areas.Public.Controllers
 				p.PositionInFamilyId = person.computePositionInFamily( db );
 			}
 
-			// p.PositionInFamilyId = CmsData.DbUtil.Db.ComputePositionInFamily( person.getAge(),
+			// p.PositionInFamilyId = CurrentDatabase.ComputePositionInFamily( person.getAge(),
 			// 																						person.maritalStatusID == CmsData.Codes.MaritalStatusCode.Married, f.FamilyId ) ?? CmsData.Codes.PositionInFamily.PrimaryAdult;
 
 			f.People.Add( p );
 
-			CmsData.DbUtil.Db.SubmitChanges();
+			CurrentDatabase.SubmitChanges();
 
 			AddEditPersonResults results = new AddEditPersonResults();
 			results.familyID = f.FamilyId;
@@ -259,16 +276,16 @@ namespace CmsWeb.Areas.Public.Controllers
 			Person person = JsonConvert.DeserializeObject<Person>( message.data );
 			person.clean();
 
-			CmsData.Person p = CmsData.DbUtil.Db.LoadPersonById( person.id );
+			CmsData.Person p = CurrentDatabase.LoadPersonById( person.id );
 
 			if( p == null ) return Message.createErrorReturn( "Person not found", Message.API_ERROR_PERSON_NOT_FOUND );
 
-			CmsData.Family f = CmsData.DbUtil.Db.Families.First( fam => fam.FamilyId == p.FamilyId );
+			CmsData.Family f = CurrentDatabase.Families.First( fam => fam.FamilyId == p.FamilyId );
 
 			person.fillPerson( p );
 			person.fillFamily( f );
 
-			CmsData.DbUtil.Db.SubmitChanges();
+			CurrentDatabase.SubmitChanges();
 
 			AddEditPersonResults results = new AddEditPersonResults();
 			results.familyID = f.FamilyId;
@@ -318,7 +335,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
 			Message message = Message.createFromString( data );
 
-			CmsData.Person p = CmsData.DbUtil.Db.LoadPersonById( message.id );
+			CmsData.Person p = CurrentDatabase.LoadPersonById( message.id );
 
 			if( p == null ) return Message.createErrorReturn( "Person not found", Message.API_ERROR_PERSON_NOT_FOUND );
 
@@ -329,7 +346,7 @@ namespace CmsWeb.Areas.Public.Controllers
 				CmsData.PeopleExtra extra = p.GetExtraValue( "PIN" );
 				extra.Data = message.data;
 
-				CmsData.DbUtil.Db.SubmitChanges();
+				CurrentDatabase.SubmitChanges();
 
 				response.setNoError();
 				response.count = 1;
@@ -349,14 +366,15 @@ namespace CmsWeb.Areas.Public.Controllers
 			if( !Auth() )
 				return Message.createErrorReturn( "Authentication failed, please try again", Message.API_ERROR_INVALID_CREDENTIALS );
 
-			Message message = Message.createFromString( data );
+            Message response = new Message();
+            Message message = Message.createFromString( data );
             AttendanceBundle bundle = JsonConvert.DeserializeObject<AttendanceBundle>( message.data );
 
 			foreach( Attendance attendance in bundle.attendances ) {
 				foreach( AttendanceGroup group in attendance.groups ) {
-					CmsData.Attend.RecordAttend( CmsData.DbUtil.Db, attendance.peopleID, group.groupID, group.present, group.datetime );
+					CmsData.Attend.RecordAttend( CurrentDatabase, attendance.peopleID, group.groupID, group.present, group.datetime );
 
-					CmsData.Attend attend = CmsData.DbUtil.Db.Attends.FirstOrDefault( a => a.PeopleId == attendance.peopleID && a.OrganizationId == group.groupID && a.MeetingDate == group.datetime );
+					CmsData.Attend attend = CurrentDatabase.Attends.FirstOrDefault( a => a.PeopleId == attendance.peopleID && a.OrganizationId == group.groupID && a.MeetingDate == group.datetime );
 
 					if( attend == null ) continue;
 
@@ -373,11 +391,22 @@ namespace CmsWeb.Areas.Public.Controllers
 					}
 				}
 
-				CmsData.DbUtil.Db.SubmitChanges();
+				CurrentDatabase.SubmitChanges();
 			}
 
-			List<Label> labels = new List<Label>();
-			string securityCode = CmsData.DbUtil.Db.NextSecurityCode().Select( c => c.Code ).Single().Trim();
+            if (message.device == Message.API_DEVICE_WEB)
+            {
+                string bundleData = SerializeJSON(bundle);
+                var m = new CheckInModel();
+                m.SavePrintJob(message.kiosk, null, bundleData);
+                response.setNoError();
+                response.count = 1;
+                response.data = bundleData;
+                return response;
+            }
+
+            List<Label> labels = new List<Label>();
+			string securityCode = CurrentDatabase.NextSecurityCode().Select( c => c.Code ).Single().Trim();
 
 			using( var db = new SqlConnection( Util.ConnectionString ) ) {
 				Dictionary<int, LabelFormat> formats = LabelFormat.forSize( db, bundle.labelSize );
@@ -393,33 +422,32 @@ namespace CmsWeb.Areas.Public.Controllers
 					labels.AddRange( bundle.attendances[0].getSecurityLabel( formats ) );
 				}
 			}
-
-			Message response = new Message();
+            
 			response.setNoError();
 			response.count = 1;
-			response.data = SerializeJSON( labels );
+			response.data = SerializeJSON(labels);
 
 			return response;
 		}
 
 		private void JoinToOrg( int peopleID, int orgID )
 		{
-			CmsData.OrganizationMember om = CmsData.DbUtil.Db.OrganizationMembers.SingleOrDefault( m => m.PeopleId == peopleID && m.OrganizationId == orgID );
+			CmsData.OrganizationMember om = CurrentDatabase.OrganizationMembers.SingleOrDefault( m => m.PeopleId == peopleID && m.OrganizationId == orgID );
 
 			if( om == null ) {
-				om = CmsData.OrganizationMember.InsertOrgMembers( CmsData.DbUtil.Db, orgID, peopleID, CmsData.Codes.MemberTypeCode.Member, DateTime.Today );
+				om = CmsData.OrganizationMember.InsertOrgMembers( CurrentDatabase, orgID, peopleID, CmsData.Codes.MemberTypeCode.Member, DateTime.Today );
 
 				CmsData.DbUtil.LogActivity( $"Joined {om.PeopleId} to {om.Organization.OrganizationId} via Check-In desktop client", peopleid: om.PeopleId, orgid: om.OrganizationId );
 
-				CmsData.DbUtil.Db.SubmitChanges();
+				CurrentDatabase.SubmitChanges();
 
 				// Check Entry Point and replace if Check-In
-				CmsData.Person person = CmsData.DbUtil.Db.People.FirstOrDefault( p => p.PeopleId == peopleID );
+				CmsData.Person person = CurrentDatabase.People.FirstOrDefault( p => p.PeopleId == peopleID );
 
 				if( person?.EntryPoint != null && person.EntryPoint.Code == "CHECKIN" ) {
 					person.EntryPoint = om.Organization.EntryPoint;
 
-					CmsData.DbUtil.Db.SubmitChanges();
+					CurrentDatabase.SubmitChanges();
 				}
 			}
 		}
@@ -433,7 +461,7 @@ namespace CmsWeb.Areas.Public.Controllers
 			Message message = Message.createFromString( data );
 			GroupSearch search = JsonConvert.DeserializeObject<GroupSearch>( message.data );
 
-			CmsData.Person person = (from p in CmsData.DbUtil.Db.People
+			CmsData.Person person = (from p in CurrentDatabase.People
 											where p.PeopleId == search.peopleID
 											select p).SingleOrDefault();
 
@@ -448,8 +476,8 @@ namespace CmsWeb.Areas.Public.Controllers
 				groups = Group.forGroupFinder( db, person.BirthDate, search.campusID, search.dayID, search.showAll ? 1 : 0 );
 			}
 
-			// List<Group> groups = (from org in CmsData.DbUtil.Db.Organizations
-			// 							from schedule in CmsData.DbUtil.Db.OrgSchedules.Where( sc => sc.OrganizationId == org.OrganizationId ).DefaultIfEmpty()
+			// List<Group> groups = (from org in CurrentDatabase.Organizations
+			// 							from schedule in CurrentDatabase.OrgSchedules.Where( sc => sc.OrganizationId == org.OrganizationId ).DefaultIfEmpty()
 			// 							let birthdayStart = org.BirthDayStart ?? DateTime.MaxValue
 			// 							where (org.SuspendCheckin ?? false) == false || search.showAll
 			// 							where person.BirthDate == null || person.BirthDate <= org.BirthDayEnd || org.BirthDayEnd == null || search.showAll

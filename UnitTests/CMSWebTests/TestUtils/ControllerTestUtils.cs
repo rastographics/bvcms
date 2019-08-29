@@ -9,7 +9,7 @@ namespace CMSWebTests
 {
     public class ControllerTestUtils : Controller
     {
-        public static ControllerContext FakeContextController(Controller controller, Dictionary<string, string> routeDataValues)
+        public static ControllerContext FakeControllerContext(Controller controller, Dictionary<string, string> routeDataValues)
         {
             var mock = new Mock<ControllerContext>();
             var routeData = new RouteData();
@@ -33,7 +33,7 @@ namespace CMSWebTests
 
             controller.ControllerContext = mock.Object;
 
-            return controller.ControllerContext;
+            return mock.Object;
         }
 
         private static NameValueCollection MockServerVariables()

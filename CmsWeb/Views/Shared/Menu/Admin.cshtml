@@ -241,12 +241,12 @@
     }
     if (admin || edit)
     {
-        <li class="dropdown-header dropdown-sub-header">Checkin</li>
+        <li class="dropdown-header dropdown-sub-header">Check-In</li>
         if (webCheckinEnabled)
         {
-        @Helper.LiAnchorLink("Checkin Setup", "/CheckinSetup", checkin)
+        @Helper.LiAnchorLink("Check-In Setup", "/CheckinSetup", checkin)
         }
-        @Helper.LiAnchorLink("Checkin Activity", "/CheckinTimes/")
-        @Helper.LiAnchorLink("Checkin Labels", "/CheckinLabels", admin)
+        @Helper.LiAnchorLink("Check-In Activity", "/CheckinTimes/")
+        @Helper.LiAnchorLink("Check-In Labels", "/CheckinLabels", admin)
     }
 }
