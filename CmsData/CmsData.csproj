@@ -1417,7 +1417,7 @@
     <Content Include="Migrations\20190809_alter_function_CurrOrgMembers2_to_add_passport_data.sql" />
     <Content Include="Migrations\20190809_alter_sp_OrgMembers_to_include_passport_data.sql" />
     <Content Include="Migrations\20190725_Update_proc_LedgerIncomeExport.sql" />
-    <Content Include="Migrations\20190729_update_func_GetContributionsDetails.sql" />
+    <Content Include="Migrations\20190826_update_func_GetContributionsDetails.sql" />
     <Content Include="Migrations\20190730_create_proc_mergecampuses.sql" />
     <Content Include="Migrations\20190809_alter_function_CurrOrgMembers2_to_add_passport_data.sql" />
     <Content Include="Migrations\20190809_alter_sp_OrgMembers_to_include_passport_data.sql" />
