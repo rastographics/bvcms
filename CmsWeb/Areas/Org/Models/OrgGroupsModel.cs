@@ -3,11 +3,13 @@ using CmsData.Codes;
 using CmsWeb.Code;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using CmsWeb.Models;
 using UtilityExtensions;
+using LumenWorks.Framework.IO.Csv;
 
 namespace CmsWeb.Areas.Org.Models
 {
@@ -439,6 +441,244 @@ namespace CmsWeb.Areas.Org.Models
                 var s = ischecked ? "class='info'" : "";
                 return new HtmlString(s);
             }
+        }
+
+        public MemberTag MakeNewGroup()
+        {
+            var group = new MemberTag
+            {
+                Name = GroupName,
+                OrgId = orgid,
+                CheckIn = AllowCheckin.ToBool(),
+                ScheduleId = ScheduleId,
+                CheckInOpenDefault = CheckInOpenDefault,
+                CheckInCapacityDefault = CheckInCapacityDefault,
+            };
+            Db.MemberTags.InsertOnSubmit(group);
+            Db.SubmitChanges();
+            groupid = group.Id;
+            return group;
+        }
+        public void EditGroup()
+        {
+            if (!GroupName.HasValue() || groupid == 0)
+            {
+                throw new ArgumentException("error: no group name");
+            }
+            var group = Db.MemberTags.SingleOrDefault(d => d.Id == groupid);
+            if (group != null)
+            {
+                group.Name = GroupName;
+                group.CheckIn = AllowCheckin == "true";
+                group.CheckInCapacityDefault = CheckInCapacityDefault;
+                group.CheckInOpenDefault = CheckInOpenDefault;
+                group.ScheduleId = ScheduleId;
+            }
+            Db.SubmitChanges();
+        }
+
+        public void RenameGroup()
+        {
+            if (!GroupName.HasValue() || groupid == 0)
+            {
+                throw new ArgumentException("error: no group name");
+            }
+            var group = Db.MemberTags.SingleOrDefault(d => d.Id == groupid);
+            if (group != null)
+            {
+                group.Name = GroupName;
+            }
+            Db.SubmitChanges();
+            GroupName = null;
+        }
+        public void AssignSelectedToTargetGroup()
+        {
+            var people = List.ToArray();
+            var memberTag = Db.MemberTags.Single(t => t.Id == groupid && t.OrgId == orgid);
+            var orgmembersToAdd = from om in OrgMembers()
+                                  where om.OrgMemMemTags.All(m => m.MemberTag.Id != groupid)
+                                  where people.Contains(om.PeopleId)
+                                  select om;
+            foreach (var orgmember in orgmembersToAdd)
+            {
+                memberTag.OrgMemMemTags.Add(new OrgMemMemTag
+                {
+                    PeopleId = orgmember.PeopleId,
+                    OrgId = orgmember.OrganizationId
+                });
+            }
+            Db.SubmitChanges();
+        }
+        public void MakeLeaderOfTargetGroup()
+        {
+            var a = List.ToArray();
+            var q2 = from om in OrgMembers()
+                     where a.Contains(om.PeopleId)
+                     select om;
+            if (groupid != null)
+            {
+                foreach (var om in q2)
+                {
+                    om.MakeLeaderOfGroup(Db, groupid.GetValueOrDefault());
+                }
+            }
+            Db.SubmitChanges();
+        }
+
+        public void RemoveAsLeaderOfTargetGroup()
+        {
+            var a = List.ToArray();
+            var q2 = from om in OrgMembers()
+                     where a.Contains(om.PeopleId)
+                     select om;
+            if (groupid != null)
+            {
+                foreach (var om in q2)
+                {
+                    om.RemoveAsLeaderOfGroup(Db, groupid.GetValueOrDefault());
+                }
+            }
+            Db.SubmitChanges();
+        }
+        public void RemoveSelectedFromTargetGroup()
+        {
+            var a = List.ToArray();
+            var sgname = Db.MemberTags.Single(mt => mt.Id == groupid).Name;
+            var q1 = from omt in Db.OrgMemMemTags
+                     where omt.OrgId == orgid
+                     where omt.MemberTag.Name == sgname
+                     where a.Contains(omt.PeopleId)
+                     select omt;
+            Db.OrgMemMemTags.DeleteAllOnSubmit(q1);
+            Db.SubmitChanges();
+        }
+        public void DeleteGroup()
+        {
+            var group = Db.MemberTags.SingleOrDefault(g => g.Id == groupid);
+            if (group != null)
+            {
+                Db.OrgMemMemTags.DeleteAllOnSubmit(group.OrgMemMemTags);
+                Db.MemberTags.DeleteOnSubmit(group);
+                Db.SubmitChanges();
+                groupid = (from v in Groups()
+                             where v.Value != "0"
+                             select v.Value).FirstOrDefault().ToInt();
+            }
+        }
+        public static void DeleteGroups(CMSDataContext Db, int[] groups)
+        {
+            var groupList = Db.MemberTags.Where(t => groups.Contains(t.Id));
+            foreach (var group in groupList)
+            {
+                Db.OrgMemMemTags.DeleteAllOnSubmit(group.OrgMemMemTags);
+                Db.MemberTags.DeleteOnSubmit(group);
+            }
+            Db.SubmitChanges();
+        }
+        public static void UploadScores(CMSDataContext Db, string data, int orgID)
+        {
+            var csv = new CsvReader(new StringReader(data), false, '\t');
+            var list = csv.ToList();
+
+            foreach (var score in list)
+            {
+                var peopleID = score[0].ToInt();
+
+                var player = (from e in Db.OrganizationMembers
+                              where e.OrganizationId == orgID
+                              where e.PeopleId == peopleID
+                              select e).SingleOrDefault();
+
+                if (player != null)
+                {
+                    player.Score = score[1].ToInt();
+                }
+                Db.SubmitChanges();
+            }
+        }
+        public static void SwapPlayers(CMSDataContext Db, string pOne, string pTwo)
+        {
+            string[] splitOne = pOne.Split('-');
+            int orgIDOne = splitOne[0].ToInt();
+            int peopleIDOne = splitOne[1].ToInt();
+
+            string[] splitTwo = pTwo.Split('-');
+            int orgIDTwo = splitTwo[0].ToInt();
+            int peopleIDTwo = splitTwo[1].ToInt();
+
+            var playerOne = (from e in Db.OrganizationMembers
+                             where e.OrganizationId == orgIDOne
+                             where e.PeopleId == peopleIDOne
+                             select e).SingleOrDefault();
+
+            var playerTwo = (from e in Db.OrganizationMembers
+                             where e.OrganizationId == orgIDTwo
+                             where e.PeopleId == peopleIDTwo
+                             select e).SingleOrDefault();
+
+
+            if (playerOne != null)
+            {
+                var pOneTag = playerOne.OrgMemMemTags.FirstOrDefault(t1 => t1.MemberTag.Name.StartsWith("TM:"));
+                if (playerTwo != null)
+                {
+                    var pTwoTag = playerTwo.OrgMemMemTags.FirstOrDefault(t2 => t2.MemberTag.Name.StartsWith("TM:"));
+
+                    if (pTwoTag != null)
+                    {
+                        var pOneNew = new OrgMemMemTag
+                        {
+                            PeopleId = peopleIDOne,
+                            OrgId = pTwoTag.OrgId,
+                            MemberTagId = pTwoTag.MemberTagId
+                        };
+
+                        Db.OrgMemMemTags.DeleteOnSubmit(pTwoTag);
+                        Db.OrgMemMemTags.InsertOnSubmit(pOneNew);
+                    }
+                }
+
+                if (pOneTag != null)
+                {
+                    var pTwoNew = new OrgMemMemTag
+                    {
+                        PeopleId = peopleIDTwo,
+                        OrgId = pOneTag.OrgId,
+                        MemberTagId = pOneTag.MemberTagId
+                    };
+
+                    Db.OrgMemMemTags.DeleteOnSubmit(pOneTag);
+                    Db.OrgMemMemTags.InsertOnSubmit(pTwoNew);
+                }
+            }
+            Db.SubmitChanges();
+        }
+        public static void UpdateScore(CMSDataContext Db, string id, int value)
+        {
+            string[] split = id.Split('-');
+            int orgID = split[0].ToInt();
+            int peopleID = split[1].ToInt();
+
+            var member = (from e in Db.OrganizationMembers
+                          where e.OrganizationId == orgID
+                          where e.PeopleId == peopleID
+                          select e).SingleOrDefault();
+
+            if (member != null)
+            {
+                member.Score = value;
+            }
+            Db.SubmitChanges();
+        }
+        internal static void ToggleCheckin(CMSDataContext Db, int orgId, int groupId)
+        {
+            var group = Db.MemberTags.SingleOrDefault(g => g.Id == groupId && g.OrgId == orgId);
+            if (group is null)
+            {
+                throw new ArgumentException("error: no matching group found");
+            }
+            group.CheckIn = !group.CheckIn;
+            Db.SubmitChanges();
         }
     }
 }
