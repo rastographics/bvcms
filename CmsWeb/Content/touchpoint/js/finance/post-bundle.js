@@ -52,6 +52,7 @@
                 $('#name').val(ret.name);
                 $('#pid').val(ret.PeopleId);
                 $('#amt').focus();
+                console.log(ret.pledgesSummary);
             }
         });
     });
@@ -118,6 +119,7 @@
                     $('#name').val(ret.name);
                     $('#pid').val(ret.PeopleId);
                     $('#amt').focus();
+                    console.log(ret.pledgesSummary);
                 }
             });
         }
