@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Web;
 using UtilityExtensions;
+using System.Linq;
 
 namespace CmsWeb.Areas.OnlineReg.Models
 {
@@ -55,6 +56,32 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 org.AddToExtraText("Python.errors", ex.Message);
                 throw;
             }
+        }
+
+        public void ParseMasterSettings()
+        {
+            var list = new Dictionary<int, Settings>();
+
+            if (masterorgid.HasValue)
+            {
+                foreach (var o in UserSelectClasses(masterorg))
+                {
+                    list[o.OrganizationId] = DbUtil.Db.CreateRegistrationSettings(o.OrganizationId);
+                }
+
+                list[masterorg.OrganizationId] = DbUtil.Db.CreateRegistrationSettings(masterorg.OrganizationId);
+            }
+            else if (_orgid == null)
+            {
+                return;
+            }
+            else if (org != null)
+            {
+                int MasterOrId = DbUtil.Db.Organizations.Where(x => x.OrgPickList.Contains(_orgid.ToString())).Select(y => y.OrganizationId).First();
+                list[MasterOrId] = DbUtil.Db.CreateRegistrationSettings(MasterOrId);
+            }
+
+            HttpContextFactory.Current.Items["RegMasterSettings"] = list;
         }
     }
 }
