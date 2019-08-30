@@ -13,14 +13,16 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public void ParseSettings()
         {
             var list = new Dictionary<int, Settings>();
+            var db = CMSDataContext.Create(HttpContextFactory.Current);
+
             if (masterorgid.HasValue)
             {
                 foreach (var o in UserSelectClasses(masterorg))
                 {
-                    list[o.OrganizationId] = DbUtil.Db.CreateRegistrationSettings(o.OrganizationId);
+                    list[o.OrganizationId] = db.CreateRegistrationSettings(o.OrganizationId);
                 }
 
-                list[masterorg.OrganizationId] = DbUtil.Db.CreateRegistrationSettings(masterorg.OrganizationId);
+                list[masterorg.OrganizationId] = db.CreateRegistrationSettings(masterorg.OrganizationId);
             }
             else if (_orgid == null)
             {
@@ -28,7 +30,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
             else if (org != null)
             {
-                list[_orgid.Value] = DbUtil.Db.CreateRegistrationSettings(_orgid.Value);
+                list[_orgid.Value] = db.CreateRegistrationSettings(_orgid.Value);
             }
 
             HttpContextFactory.Current.Items["RegSettings"] = list;
@@ -38,7 +40,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 return;
             }
 
-            var script = DbUtil.Db.Content(org.AddToSmallGroupScript);
+            var script = db.Content(org.AddToSmallGroupScript);
             if (script == null || !script.Body.HasValue())
             {
                 return;
@@ -61,15 +63,16 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public void ParseMasterSettings()
         {
             var list = new Dictionary<int, Settings>();
+            var db = CMSDataContext.Create(HttpContextFactory.Current);
 
             if (masterorgid.HasValue)
             {
                 foreach (var o in UserSelectClasses(masterorg))
                 {
-                    list[o.OrganizationId] = DbUtil.Db.CreateRegistrationSettings(o.OrganizationId);
+                    list[o.OrganizationId] = db.CreateRegistrationSettings(o.OrganizationId);
                 }
 
-                list[masterorg.OrganizationId] = DbUtil.Db.CreateRegistrationSettings(masterorg.OrganizationId);
+                list[masterorg.OrganizationId] = db.CreateRegistrationSettings(masterorg.OrganizationId);
             }
             else if (_orgid == null)
             {
@@ -77,8 +80,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
             else if (org != null)
             {
-                int MasterOrId = DbUtil.Db.Organizations.Where(x => x.OrgPickList.Contains(_orgid.ToString())).Select(y => y.OrganizationId).First();
-                list[MasterOrId] = DbUtil.Db.CreateRegistrationSettings(MasterOrId);
+                int MasterOrId = db.Organizations.Where(x => x.OrgPickList.Contains(_orgid.ToString())).Select(y => y.OrganizationId).First();
+                list[MasterOrId] = db.CreateRegistrationSettings(MasterOrId);
             }
 
             HttpContextFactory.Current.Items["RegMasterSettings"] = list;
