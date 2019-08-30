@@ -1,4 +1,5 @@
 ﻿using CmsWeb.Membership;
+using SharedTestFixtures;
 using System;
 using System.Linq;
 using Xunit;
@@ -69,7 +70,7 @@ namespace IntegrationTests.Support
 
         private string GetValidationKeyFromWebConfig()
         {
-            var config = LoadWebConfig();
+            var config = DatabaseFixture.LoadWebConfig();
             var machineKey = config.SelectSingleNode("configuration/system.web/machineKey");
             return machineKey.Attributes["validationKey"].Value;
         }

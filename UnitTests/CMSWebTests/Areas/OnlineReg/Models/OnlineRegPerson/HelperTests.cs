@@ -1,72 +1,64 @@
-﻿using Xunit;
+using Xunit;
 using CmsData;
 using System.Collections.Generic;
 using Shouldly;
+using SharedTestFixtures;
 
 namespace CMSWebTests.Areas.OnlineReg.Models.OnlineRegPerson
 {
-    [Collection("Database collection")]
+    [Collection(Collections.Database)]
     public class HelperTests
     {
-        private int MasterOrgId { get; set; }
-        private int ChildOrgId { get; set; }
 
         [Fact]
         public void Should_Use_MasterOrg_DOB_Phone_Settings()
         {
-            var controller = new CmsWeb.Areas.OnlineReg.Controllers.OnlineRegController(FakeRequestManager.FakeRequest());
+            int MasterOrgId = 0;
+            int ChildOrgId = 0;
+            var requestManager = FakeRequestManager.Create();
+            var controller = new CmsWeb.Areas.OnlineReg.Controllers.OnlineRegController(requestManager);
             var routeDataValues = new Dictionary<string, string> { { "controller", "OnlineReg" } };
-            controller.ControllerContext = ControllerTestUtils.FakeContextController(controller, routeDataValues);
-
-            // Create Child Org
-            var ChildOrgconfig = new Organization()
-            {
-                OrganizationName = "MockChildName",
-                RegistrationTitle = "MockChildTitle",
-                Location = "MockChildLocation",
-                RegistrationTypeId = 8,
-                RegSettingXml = XMLSettings(MasterOrgId)
-            };
-
-            var FakeChildOrg = FakeOrganizationUtils.MakeFakeOrganization(ChildOrgconfig);
-            ChildOrgId = FakeChildOrg.org.OrganizationId;
-
-            FakeOrganizationUtils.FakeNewOrganizationModel = null;
+            controller.ControllerContext = ControllerTestUtils.FakeControllerContext(controller, routeDataValues);
 
             // Create Master Org
-            var MasterOrgconfig = new Organization()
-            {
+            var MasterOrgconfig = new Organization() {
                 OrganizationName = "MockMasterName",
                 RegistrationTitle = "MockMasterTitle",
                 Location = "MockLocation",
                 RegistrationTypeId = 20,
-                RegSettingXml = XMLSettings(MasterOrgId, true),
-                OrgPickList = ChildOrgId.ToString()
+                RegSetting = XMLSettings(MasterOrgId)
             };
 
-            var FakeMasterOrg = FakeOrganizationUtils.MakeFakeOrganization(MasterOrgconfig);
+            var FakeMasterOrg = FakeOrganizationUtils.MakeFakeOrganization(requestManager, MasterOrgconfig);
             MasterOrgId = FakeMasterOrg.org.OrganizationId;
 
-            var ChildOnlineRegModel = FakeOrganizationUtils.GetFakeOnlineRegModel(ChildOrgId);
+            // Create Child Org
+            var ChildOrgconfig = new Organization()
+            {
+                OrganizationName = "MockMasterName",
+                RegistrationTitle = "MockMasterTitle",
+                Location = "MockLocation",
+                RegistrationTypeId = 8,
+                ParentOrgId = MasterOrgId
+            };
+
+            var FakeChildOrg = FakeOrganizationUtils.MakeFakeOrganization(requestManager, ChildOrgconfig);
+            ChildOrgId = FakeChildOrg.org.OrganizationId;
+
+            var MasterOnlineRegModel = FakeOrganizationUtils.GetFakeOnlineRegModel(ChildOrgId);
+            var ChildOnlineRegModel = FakeOrganizationUtils.GetFakeOnlineRegModel(MasterOrgId);
+
+            var MasterOnlineRegPersonModel = MasterOnlineRegModel.LoadExistingPerson(ChildOnlineRegModel.UserPeopleId ?? 0, 0);
             var ChildOnlineRegPersonModel = ChildOnlineRegModel.LoadExistingPerson(ChildOnlineRegModel.UserPeopleId ?? 0, 0);
 
-            var MasterOnlineRegModel = FakeOrganizationUtils.GetFakeOnlineRegModel(MasterOrgId);
-            var MasterOnlineRegPersonModel = MasterOnlineRegModel.LoadExistingPerson(MasterOnlineRegModel.UserPeopleId ?? 0, 0);
-
-            bool ChildDOB = ChildOnlineRegPersonModel.ShowDOBOnFind();
-            bool ChildPhone = ChildOnlineRegPersonModel.ShowPhoneOnFind();
-
-            bool MasterDOB = MasterOnlineRegPersonModel.ShowDOBOnFind();
-            bool MasterPhone = MasterOnlineRegPersonModel.ShowPhoneOnFind();
-
-            ChildDOB.ShouldBe(MasterDOB);
-            ChildPhone.ShouldBe(MasterPhone);
+            ChildOnlineRegPersonModel.ShowDOBOnFind().ShouldBe(MasterOnlineRegPersonModel.ShowDOBOnFind());
+            ChildOnlineRegPersonModel.ShowPhoneOnFind().ShouldBe(MasterOnlineRegPersonModel.ShowPhoneOnFind());
 
             FakeOrganizationUtils.DeleteOrg(MasterOrgId);
             FakeOrganizationUtils.DeleteOrg(ChildOrgId);
         }
 
-        private string XMLSettings(int OrgId, bool IsMasterOrg = false)
+        private string XMLSettings(int OrgId)
         {
             string Settings = string.Format(
                 @"<Settings id=""{0}"">" +
@@ -76,10 +68,10 @@ namespace CMSWebTests.Areas.OnlineReg.Models.OnlineRegPerson
                         "<Deposit>15</Deposit>" +
                     "</Fees>" +
                     "<NotRequired>" +
-                        "<ShowDOBOnFind>{1}</ShowDOBOnFind>" +
-                        "<ShowPhoneOnFind>{1}</ShowPhoneOnFind>" +
+                        "<ShowDOBOnFind>True</ShowDOBOnFind>" +
+                        "<ShowPhoneOnFind>True</ShowPhoneOnFind>" +
                     "</NotRequired>" +
-                "</Settings>", OrgId, IsMasterOrg ? "True" : "False");
+                "</Settings>", OrgId);
 
             return Settings;
         }
