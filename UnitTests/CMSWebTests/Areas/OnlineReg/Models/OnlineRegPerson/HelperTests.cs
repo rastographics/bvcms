@@ -9,7 +9,6 @@ namespace CMSWebTests.Areas.OnlineReg.Models.OnlineRegPerson
     [Collection(Collections.Database)]
     public class HelperTests
     {
-
         [Fact]
         public void Should_Use_MasterOrg_DOB_Phone_Settings()
         {
