@@ -199,13 +199,13 @@ namespace CmsWeb.Controllers
 #endif
         }
 
-        [HttpPost, Route("~/PyScriptForm")]
-        public ActionResult PyScriptForm()
+        [HttpPost, Route("~/PyScriptForm/{name?}")]
+        public ActionResult PyScriptForm(string name)
         {
             try
             {
                 var model = new PythonScriptModel(CurrentDatabase);
-                var script = model.FetchScript(Request.Form["pyscript"]);
+                var script = model.FetchScript(name ?? Request.Form["pyscript"]);
                 model.PrepareHttpPost();
 
                 var ret = model.RunPythonScript(script);
