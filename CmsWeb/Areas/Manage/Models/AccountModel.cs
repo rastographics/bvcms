@@ -94,7 +94,7 @@ namespace CmsWeb.Models
 
         public static UserValidationResult AuthenticateMobile(CMSDataContext cmsdb, CMSImageDataContext cmsidb, string requiredRole = null, bool checkOrgLeadersOnly = false, bool requirePin = false)
         {
-            var userStatus = GetUserViaCredentials() ?? GetUserViaSessionToken(requirePin);
+            var userStatus = GetUserViaCredentials() ?? GetUserViaSessionToken(cmsdb, requirePin);
 
             if (userStatus == null)
             {
@@ -140,14 +140,14 @@ namespace CmsWeb.Models
                 Util2.OrgLeadersOnlyChecked = true;
             }
 
-            ApiSessionModel.SaveApiSession(userStatus.User, requirePin, HttpContextFactory.Current.Request.Headers["PIN"].ToInt2());
+            ApiSessionModel.SaveApiSession(cmsdb, userStatus.User, requirePin, HttpContextFactory.Current.Request.Headers["PIN"].ToInt2());
 
             return userStatus;
         }
 
         public static UserValidationResult AuthenticateMobile2(CMSDataContext cmsdb, CMSImageDataContext cmsidb, bool checkOrgLeadersOnly = false, bool requirePin = false)
         {
-            var userStatus = GetUserViaCredentials() ?? GetUserViaSessionToken(requirePin);
+            var userStatus = GetUserViaCredentials() ?? GetUserViaSessionToken(cmsdb, requirePin);
 
             if (userStatus == null)
             {
@@ -180,7 +180,7 @@ namespace CmsWeb.Models
             }
 
             CMSMembershipProvider.provider.SetAuthCookie(user.Username, false);
-            ApiSessionModel.SaveApiSession(userStatus.User, requirePin, HttpContextFactory.Current.Request.Headers["PIN"].ToInt2());
+            ApiSessionModel.SaveApiSession(cmsdb, userStatus.User, requirePin, HttpContextFactory.Current.Request.Headers["PIN"].ToInt2());
 
             return userStatus;
         }
@@ -199,7 +199,7 @@ namespace CmsWeb.Models
                 || userStatus.Status == UserValidationStatus.PinExpired
                 || userStatus.Status == UserValidationStatus.SessionTokenExpired)
             {
-                var result = ApiSessionModel.ResetSessionExpiration(userStatus.User, HttpContextFactory.Current.Request.Headers["PIN"].ToInt2());
+                var result = ApiSessionModel.ResetSessionExpiration(cmsdb, userStatus.User, HttpContextFactory.Current.Request.Headers["PIN"].ToInt2());
                 if (!result)
                 {
                     return UserValidationResult.Invalid(UserValidationStatus.PinInvalid);
@@ -211,12 +211,12 @@ namespace CmsWeb.Models
             return userStatus;
         }
 
-        public static void ExpireSessionToken(string sessionToken)
+        public static void ExpireSessionToken(CMSDataContext db, string sessionToken)
         {
-            ApiSessionModel.ExpireSession(Guid.Parse(sessionToken));
+            ApiSessionModel.ExpireSession(db, Guid.Parse(sessionToken));
         }
 
-        private static UserValidationResult GetUserViaSessionToken(bool requirePin)
+        private static UserValidationResult GetUserViaSessionToken(CMSDataContext db, bool requirePin)
         {
             var sessionToken = HttpContextFactory.Current.Request.Headers["SessionToken"];
             if (string.IsNullOrEmpty(sessionToken))
@@ -225,7 +225,7 @@ namespace CmsWeb.Models
                 return null;
             }
 
-            var result = ApiSessionModel.DetermineApiSessionStatus(Guid.Parse(sessionToken), requirePin, HttpContextFactory.Current.Request.Headers["PIN"].ToInt2());
+            var result = ApiSessionModel.DetermineApiSessionStatus(db, Guid.Parse(sessionToken), requirePin, HttpContextFactory.Current.Request.Headers["PIN"].ToInt2());
 
             //DbUtil.LogActivity("GetUserViaSession==" + result.Status.ToString());
 
