@@ -92,7 +92,7 @@
                 $("#SearchResults2 > ul").css({
                     'max-height': 400,
                     'overflow-y': 'auto'
-                });
+                });               
             }
             else {
                 $.post("/PostBundle/Names", request, function (ret) {
@@ -103,6 +103,8 @@
         select: function (event, ui) {
             $("#name").val(ui.item.Name);
             $("#pid").val(ui.item.Pid);
+            setPledges(ui.item.pledgesSummary);
+            $('#name').popover('show');
             return false;
         }
     }).data("uiAutocomplete")._renderItem = function (ul, item) {
@@ -129,8 +131,6 @@
                     $('#name').val(ret.name);
                     $('#pid').val(ret.PeopleId);
                     $('#amt').focus();
-                    setPledges(ret.pledgesSummary);
-                    $('#name').popover('show');
                 }
             });
         }
@@ -509,8 +509,8 @@
         placement: 'top',
         html: true
     }).on('shown.bs.popover', function () {
-        var popover = jQuery(this);
-        jQuery(this).parent().find('div.popover .close').on('click', function () {
+        var popover = $(this);
+        $(this).parent().find('div.popover .close').on('click', function () {
             popover.popover('hide');
         });
     });
