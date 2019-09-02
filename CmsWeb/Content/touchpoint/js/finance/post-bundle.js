@@ -508,16 +508,15 @@
         trigger: 'manual',
         placement: 'top',
         html: true
-    }).on('shown.bs.popover', function (e) {
+    }).on('shown.bs.popover', function () {
         var popover = jQuery(this);
-        jQuery(this).parent().find('div.popover .close').on('click', function (e) {
+        jQuery(this).parent().find('div.popover .close').on('click', function () {
             popover.popover('hide');
         });
     });
 });
 
 function setPledges(pledgesData) {
-    debugger;
     var pledges = '<div><table><thead><tr><th id="pledgesTable">Id</th><th id="pledgesTable">Fund</th><th id="pledgesTable"">Pledged</th><th id="pledgesTable"">Contributed</th><th id="pledgesTable">Balance</th></tr></thead>';
     $.each(pledgesData, function (idx, obj) {
         pledges = pledges + '<tr><td id="pledgesTable">' + obj.FundId + '</td><td id="pledgesTable">' + obj.FundName + '</td><td id="pledgesTable">' + obj.AmountPledged + '</td><td id="pledgesTable">' + obj.AmountContributed + '</td><td id="pledgesTable">' + obj.Balance + '</td></tr>';        
