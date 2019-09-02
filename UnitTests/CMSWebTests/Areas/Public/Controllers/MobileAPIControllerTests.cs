@@ -19,9 +19,38 @@ using CmsWeb.Lifecycle;
 
 namespace CmsWeb.Areas.Public.ControllersTests
 {
+    [TestClass()]
     [Collection(Collections.Database)]
     public class MobileAPIControllerTests : ControllerTestBase
     {
+        CmsData.User user;
+
+        [Fact]
+        public void AuthenticateTest()
+        {
+            var requestManager = SetupRequestManager();
+            var controller = new MobileAPIController(requestManager);
+            var routeData = new RouteData();
+            controller.ControllerContext = new ControllerContext(requestManager.CurrentHttpContext, routeData, controller);
+            var message = new BaseMessage
+            {
+                data = JsonConvert.SerializeObject(new MobilePostSearch { }),
+                device = BaseMessage.API_DEVICE_ANDROID,
+                key = RandomString(),
+                version = BaseMessage.API_VERSION_2,
+            };
+            var data = message.ToString();
+
+            var result = controller.Authenticate(data) as BaseMessage;
+
+            result.ShouldNotBeNull();
+            result.error.ShouldBe(0);
+            result.token.ShouldNotBeNullOrEmpty();
+
+            var token = Guid.Parse(result.token);
+            db.ApiSessions.Where(s => s.SessionToken == token).Count().ShouldBe(1);
+        }
+
         [Fact]
         public void FetchPeopleTest()
         {
@@ -47,7 +76,7 @@ namespace CmsWeb.Areas.Public.ControllersTests
         {
             var username = RandomString();
             var password = RandomString();
-            var user = CreateUser(username, password);
+            user = CreateUser(username, password);
             var requestManager = FakeRequestManager.Create();
             var membershipProvider = new MockCMSMembershipProvider { ValidUser = true };
             var roleProvider = new MockCMSRoleProvider();

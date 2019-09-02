@@ -117,6 +117,7 @@
     <Compile Include="..\SharedTestFixtures\DatabaseCollection.cs">
       <Link>DatabaseCollection.cs</Link>
     </Compile>
+    <Compile Include="Areas\Manage\Models\AccountModelTests.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineRegPerson\HelperTests.cs" />
     <Compile Include="Areas\Public\Controllers\MobileAPIControllerTests.cs" />
     <Compile Include="Areas\Public\Controllers\MobileAPIv2ControllerTests.cs" />
