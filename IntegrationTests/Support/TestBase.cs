@@ -1,5 +1,6 @@
 ﻿using CmsData;
 using CmsWeb.Lifecycle;
+using SharedTestFixtures;
 using System;
 using System.Configuration;
 using System.Data.SqlClient;
@@ -12,66 +13,14 @@ namespace IntegrationTests.Support
     {
         public TestBase()
         {
-            EnsureDatabaseExists();
+            DatabaseFixture.EnsureDatabaseExists();
         }
 
         private CMSDataContext _db;
         public CMSDataContext db
         {
-            get => _db ?? (_db = CMSDataContext.Create(Host));
+            get => _db ?? (_db = CMSDataContext.Create(DatabaseFixture.Host));
             set => _db = value;
-        }
-
-        private string _host;
-        public string Host => _host ?? (_host = GetHostFromWebConfig());
-
-        private string GetHostFromWebConfig()
-        {
-            var config = LoadWebConfig();
-            var hostKey = config.SelectSingleNode("configuration/appSettings/add[@key='host']");
-            return PickFirst(hostKey?.Attributes["value"].Value, "localhost");
-        }
-
-        private void EnsureDatabaseExists()
-        {
-            var builder = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["CMS"].ConnectionString);
-            var sqlScriptsPath = Path.GetFullPath(@"..\..\..\SqlScripts");
-            builder.InitialCatalog = "master";
-            var masterConnectionString = builder.ConnectionString;
-            builder.InitialCatalog = $"CMSi_{Host}";
-            var imageConnectionString = builder.ConnectionString;
-            builder.InitialCatalog = "ELMAH";
-            var elmahConnectionString = builder.ConnectionString;
-            builder.InitialCatalog = $"CMS_{Host}";
-            var standardConnectionString = builder.ConnectionString;
-
-            if (!DbUtil.DatabaseExists(masterConnectionString, $"CMS_{Host}"))
-            {
-                var result = DbUtil.CreateDatabase(Host, sqlScriptsPath, masterConnectionString, imageConnectionString, elmahConnectionString, standardConnectionString);
-                if (!string.IsNullOrEmpty(result))
-                {
-                    throw new Exception(result);
-                }
-            }
-        }
-
-        protected string PickFirst(params string[] values)
-        {
-            foreach(var value in values)
-            {
-                if (!string.IsNullOrEmpty(value))
-                {
-                    return value;
-                }
-            }
-            return null;
-        }
-
-        protected static XmlDocument LoadWebConfig()
-        {
-            var config = new XmlDocument();
-            config.Load(Path.GetFullPath(@"..\..\..\CmsWeb\web.config"));
-            return config;
         }
 
         static Random randomizer = new Random();
