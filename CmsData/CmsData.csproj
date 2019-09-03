@@ -1426,6 +1426,7 @@
     <Content Include="Migrations\20190821_Update_Function_ContributionSearch.sql" />
     <Content Include="Migrations\20190821_Update_Function_GetTotalContributionsDonor.sql" />
     <Content Include="Migrations\20190828_Create_Func_PledgesSummary.sql" />
+    <Content Include="Migrations\20190902_alter_func_GetContributionsDetails.sql" />
     <Content Include="QueryBuilder\CompareMap.xml">
       <SubType>Designer</SubType>
     </Content>
