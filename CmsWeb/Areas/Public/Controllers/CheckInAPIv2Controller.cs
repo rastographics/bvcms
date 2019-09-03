@@ -333,30 +333,25 @@ namespace CmsWeb.Areas.Public.Controllers
 			if( !Auth() )
 				return Message.createErrorReturn( "Authentication failed, please try again", Message.API_ERROR_INVALID_CREDENTIALS );
 
-			Message message = Message.createFromString( data );
+            Message response = new Message();
+            Message message = Message.createFromString( data );
 
-			CmsData.Person p = CurrentDatabase.LoadPersonById( message.id );
+            var nextId = CurrentDatabase.CheckInPendings.Max(c => c.Id) + 1;
+            var pending = new CmsData.CheckInPending
+            {
+                Id = nextId,
+                Stamp = DateTime.Now,
+                Data = message.data
+            };
 
-			if( p == null ) return Message.createErrorReturn( "Person not found", Message.API_ERROR_PERSON_NOT_FOUND );
+            CurrentDatabase.CheckInPendings.InsertOnSubmit(pending);
+            CurrentDatabase.SubmitChanges();
 
-			Message response = new Message();
-
-			// argBool: True = set, False = get
-			if( message.argBool ) {
-				CmsData.PeopleExtra extra = p.GetExtraValue( "PIN" );
-				extra.Data = message.data;
-
-				CurrentDatabase.SubmitChanges();
-
-				response.setNoError();
-				response.count = 1;
-			} else {
-				response.setNoError();
-				response.count = 1;
-				response.data = p.GetExtra( "PIN" );
-			}
-
-			return response;
+            // todo: return base 64 data for QR code with ID
+            response.setNoError();
+            response.count = 1;
+            response.data = SerializeJSON(message.data);
+            return response;
 		}
 
 		[HttpPost]

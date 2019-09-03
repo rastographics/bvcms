@@ -1053,6 +1053,11 @@ namespace CmsData
 
 		}
 
+        public Table<CheckInPending> CheckInPendings
+        {
+            get { return this.GetTable<CheckInPending>(); }
+        }
+
         public Table<CheckinProfiles> CheckinProfiles
         {
             get { return this.GetTable<CheckinProfiles>(); }
