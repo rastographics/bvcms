@@ -3,6 +3,9 @@ using CmsWeb.Lifecycle;
 using System.Linq;
 using System.Web.Mvc;
 using UtilityExtensions;
+using CmsWeb.Areas.Setup.Models;
+using System.Collections.Generic;
+using System;
 
 namespace CmsWeb.Areas.Setup.Controllers
 {
@@ -10,56 +13,94 @@ namespace CmsWeb.Areas.Setup.Controllers
     [RouteArea("Setup", AreaPrefix = "Roles"), Route("{action=index}/{id?}")]
     public class RolesController : CmsStaffController
     {
-        public RolesController(IRequestManager requestManager) : base(requestManager)
-        {
-        }
-
+        public RolesController(IRequestManager requestManager) : base(requestManager) { }
+        
         public ActionResult Index()
         {
             var r = CmsData.User.AllRoles(CurrentDatabase);
             return View(r);
         }
 
+        [Route("~/Roles/Priorities")]
+        public ActionResult Priorities()
+        {
+            var r = CmsData.User.AllRoles(CurrentDatabase);
+            return View(r);
+        }
+
+        [Route("~/Roles/{id}")]
+        public ActionResult Manage(string id)
+        {
+            var model = new RoleModel(CurrentDatabase);
+
+            var role = CurrentDatabase.Roles.SingleOrDefault(m => m.RoleId == id.ToInt());
+            if (role == null)
+            {
+                TempData["error"] = "Invalid role";
+                return Content("/Error/");
+            }
+            else
+            {
+                ViewBag.Settings = model.SettingsForRole(role);
+                return View(role);
+            }
+        }
+
         [AcceptVerbs(HttpVerbs.Post)]
         public ActionResult Create()
         {
-            var r = new Role { RoleName = "NEW" };
+            var existingrole = CurrentDatabase.Roles.SingleOrDefault(m => m.RoleName == "NEW");
+            if (existingrole != null)
+            {
+                return Redirect($"/Roles/#{existingrole.RoleId}");
+            }
+            var priority = CurrentDatabase.Roles.Max(role => role.Priority) + 1;
+            var r = new Role { RoleName = "NEW", Priority = priority };
             CurrentDatabase.Roles.InsertOnSubmit(r);
             CurrentDatabase.SubmitChanges();
             return Redirect($"/Roles/#{r.RoleId}");
         }
 
         [AcceptVerbs(HttpVerbs.Post)]
-        public ContentResult Edit(string id, string value)
+        public JsonResult Edit(string id, string value)
         {
             var a = id.Split('.');
-            var c = new ContentResult();
-            c.Content = value;
             if (a[1] == value)
             {
-                return c;
+                // no change
+                return Json(new
+                {
+                    Status = "success"
+                });
             }
 
             var existingrole = CurrentDatabase.Roles.SingleOrDefault(m => m.RoleName == value);
             var role = CurrentDatabase.Roles.SingleOrDefault(m => m.RoleName == a[1]);
             if (role == null)
             {
-                TempData["error"] = "no role";
-                return Content("/Error/");
+                return Json(new
+                {
+                    Status = "error",
+                    Message = "Invalid role, try refreshing the page"
+                });
             }
-            if (existingrole != null && existingrole.RoleName != role.RoleName)
+            if (existingrole != null)
             {
-                TempData["error"] = "duplicate role";
-                return Content("/Error/");
+                return Json(new
+                {
+                    Status = "error",
+                    Message = "Existing role with that name, try again"
+                });
             }
-            switch (a[0])
+            if (a[0] == "RoleName")
             {
-                case "RoleName":
-                    role.RoleName = value;
-                    break;
+                role.RoleName = value;
             }
             CurrentDatabase.SubmitChanges();
-            return c;
+            return Json(new
+            {
+                Status = "success"
+            });
         }
 
         [AcceptVerbs(HttpVerbs.Post)]
@@ -80,6 +121,38 @@ namespace CmsWeb.Areas.Setup.Controllers
             CurrentDatabase.Roles.DeleteOnSubmit(role);
             CurrentDatabase.SubmitChanges();
             return new EmptyResult();
+        }
+
+        [Route("~/Roles/SaveSettings")]
+        [HttpPost]
+        public ActionResult SaveSettings(string name, List<RoleModel.Setting> settings)
+        {
+            var model = new RoleModel(CurrentDatabase);
+            try
+            {
+                model.SaveSettingsForRole(name, settings);
+                return Content("success");
+            }
+            catch (Exception ex)
+            {
+                return Content("error: " + ex.ToString());
+            }
+        }
+
+        [Route("~/Roles/SavePriorities")]
+        [HttpPost]
+        public ActionResult SavePriorities(List<int> roles)
+        {
+            var model = new RoleModel(CurrentDatabase);
+            try
+            {
+                model.UpdatePriorities(roles);
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                return Content("error: " + ex.ToString());
+            }
         }
     }
 }

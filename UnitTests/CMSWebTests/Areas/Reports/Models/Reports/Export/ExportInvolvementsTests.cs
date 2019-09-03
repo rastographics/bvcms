@@ -10,25 +10,28 @@ using CmsWeb.Models;
 using CmsWeb.Areas.Org.Models;
 using UtilityExtensions;
 using CmsData;
+using CmsData.Codes;
 using OfficeOpenXml;
 using System.Reflection;
 using CmsWeb;
+using SharedTestFixtures;
 
 namespace CMSWebTests.Areas.Reports.Models.Reports.Export
 {
-    [Collection("Database collection")]
+    [Collection(Collections.Database)]
     public class ExportInvolvementsTests
     {
         [Fact]
         public void InvolvementList_Should_Have_FamilyId()
         {
+            var requestManager = FakeRequestManager.Create();
             var db = CMSDataContext.Create(Util.Host);
-            var controller = new CmsWeb.Areas.OnlineReg.Controllers.OnlineRegController(FakeRequestManager.FakeRequest());
+            var controller = new CmsWeb.Areas.OnlineReg.Controllers.OnlineRegController(requestManager);
             var routeDataValues = new Dictionary<string, string> { { "controller", "OnlineReg" } };
-            controller.ControllerContext = ControllerTestUtils.FakeContextController(controller, routeDataValues);
+            controller.ControllerContext = ControllerTestUtils.FakeControllerContext(controller, routeDataValues);
 
-            var m = OrganizationModel.Create(db, FakeRequestManager.FakeRequest().CurrentUser);
-            var FakeOrg = FakeOrganizationUtils.MakeFakeOrganization();
+            var m = OrganizationModel.Create(db, requestManager.CurrentUser);
+            var FakeOrg = FakeOrganizationUtils.MakeFakeOrganization(requestManager);
             var model = FakeOrganizationUtils.GetFakeOnlineRegModel(FakeOrg.org.OrganizationId);
 
             m.OrgId = FakeOrg.org.OrganizationId;          

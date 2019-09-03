@@ -82,6 +82,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Areas\General\TestScriptController.cs" />
     <Compile Include="Areas\General\GeneralTests.cs" />
     <Compile Include="Areas\Manage\AccountTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -99,6 +100,7 @@
     <Compile Include="WebAppFixture.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\PyScriptFormTest.py" />
     <None Include="app.config" />
     <None Include="packages.config" />
     <None Include="Resources\applicationhost.config">
@@ -122,6 +124,10 @@
       <Project>{bc0c6e33-dfef-4c4e-9e96-997af3d78bcf}</Project>
       <Name>TransactionGateway</Name>
     </ProjectReference>
+    <ProjectReference Include="..\UnitTests\SharedTestFixtures\SharedTestFixtures.csproj">
+      <Project>{37B7DD60-A2CE-4E69-8CC5-4370B95AD908}</Project>
+      <Name>SharedTestFixtures</Name>
+    </ProjectReference>
     <ProjectReference Include="..\UtilityExtensions\UtilityExtensions.csproj">
       <Project>{c504e3d2-5498-451b-bf82-309623706f11}</Project>
       <Name>UtilityExtensions</Name>
@@ -134,6 +140,7 @@
     <EmbeddedResource Include="Resources\R.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>R.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />

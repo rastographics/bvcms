@@ -2,6 +2,7 @@
 using CmsData.Codes;
 using CmsWeb.Areas.Public.Models.CheckScanAPI;
 using CmsWeb.CheckInAPI;
+using CmsWeb.Lifecycle;
 using ImageData;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -10,12 +11,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using UtilityExtensions;
-using DbUtil = CmsData.DbUtil;
 
 namespace CmsWeb.Areas.Public.Controllers
 {
-    public class CheckScanAPIController : Controller
+    public class CheckScanAPIController : CmsController
     {
+        public CheckScanAPIController(IRequestManager requestManager) : base(requestManager)
+        {
+        }
+
         public ActionResult Exists()
         {
             return Content("1");
@@ -63,7 +67,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 return CheckScanMessage.createErrorReturn("Finance role is required for check scanning");
             }
 
-            var funds = (from f in DbUtil.Db.ContributionFunds
+            var funds = (from f in CurrentDatabase.ContributionFunds
                          where f.FundStatusId == 1
                          orderby f.FundName
                          select new
@@ -97,7 +101,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 return CheckScanMessage.createErrorReturn("Finance role is required for check scanning");
             }
 
-            var bundles = (from b in DbUtil.Db.BundleHeaders
+            var bundles = (from b in CurrentDatabase.BundleHeaders
                            where b.BundleStatusId == 1
                            orderby b.BundleHeaderId descending
                            select new
@@ -145,7 +149,7 @@ namespace CmsWeb.Areas.Public.Controllers
                     CreatedBy = user.UserId,
                     ContributionDate = DateTime.Now,
                     CreatedDate = DateTime.Now,
-                    FundId = DbUtil.Db.Setting("DefaultFundId", "1").ToInt(),
+                    FundId = CurrentDatabase.Setting("DefaultFundId", "1").ToInt(),
                     RecordStatus = false,
                     TotalCash = 0,
                     TotalChecks = 0,
@@ -153,12 +157,12 @@ namespace CmsWeb.Areas.Public.Controllers
                     BundleTotal = 0
                 };
 
-                DbUtil.Db.BundleHeaders.InsertOnSubmit(header);
-                DbUtil.Db.SubmitChanges();
+                CurrentDatabase.BundleHeaders.InsertOnSubmit(header);
+                CurrentDatabase.SubmitChanges();
             }
             else
             {
-                header = (from h in DbUtil.Db.BundleHeaders
+                header = (from h in CurrentDatabase.BundleHeaders
                           where h.BundleHeaderId == message.id
                           select h).FirstOrDefault();
             }
@@ -182,11 +186,8 @@ namespace CmsWeb.Areas.Public.Controllers
                     {
                         other.Second = Convert.FromBase64String(entry.back);
                     }
-                    using (var db = ImageData.DbUtil.Db)
-                    {
-                        db.Others.InsertOnSubmit(other);
-                        db.SubmitChanges();
-                    }
+                    CurrentImageDatabase.Others.InsertOnSubmit(other);
+                    CurrentImageDatabase.SubmitChanges();
 
                     var detail = new BundleDetail
                     {
@@ -202,7 +203,7 @@ namespace CmsWeb.Areas.Public.Controllers
                         CreatedBy = user.UserId,
                         CreatedDate = detail.CreatedDate,
                         FundId = header.FundId ?? 0,
-                        PeopleId = FindPerson(entry.routing, entry.account),
+                        PeopleId = FindPerson(CurrentDatabase, entry.routing, entry.account),
                         ContributionDate = header.ContributionDate,
                         ContributionAmount = decimal.Parse(entry.amount),
                         ContributionStatusId = 0,
@@ -215,7 +216,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
                     header.BundleDetails.Add(detail);
 
-                    DbUtil.Db.SubmitChanges();
+                    CurrentDatabase.SubmitChanges();
                 }
 
                 response.setSuccess();
@@ -229,9 +230,9 @@ namespace CmsWeb.Areas.Public.Controllers
             return response;
         }
 
-        private static int? FindPerson(string routing, string account)
+        private static int? FindPerson(CMSDataContext db, string routing, string account)
         {
-            return (from kc in DbUtil.Db.CardIdentifiers
+            return (from kc in db.CardIdentifiers
                     where kc.Id == Util.Encrypt(routing + "|" + account)
                     select kc.PeopleId).SingleOrDefault();
         }

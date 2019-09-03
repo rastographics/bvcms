@@ -1,20 +1,22 @@
 ﻿@using CmsWeb.Controllers
 @using CmsWeb.Models
 @{
+    CMSDataContext Db = ViewBag.CurrentDatabase;
     var admin = User.IsInRole("Admin");
     var developer = User.IsInRole("Developer");
     var manageemails = User.IsInRole("ManageEmails");
     var managetrans = User.IsInRole("ManageTransactions");
     var edit = User.IsInRole("Edit");
     var sendsms = User.IsInRole("SendSms");
-    var manageResources = User.IsInRole("ManageResources");
+    var manageResources = User.IsInRole("ManageResources") && Db.Setting("Resources-Enabled");
     var design = User.IsInRole("Design");
     var finance = User.IsInRole("Finance") && ((string)Session["testnofinance"]) != "true";
     var financedataentry = User.IsInRole("FinanceDataEntry");
     var financeviewonly = User.IsInRole("FinanceViewOnly");
+    var checkin = User.IsInRole("Checkin");
     const bool financetrue = true;
     const bool financefalse = false;
-    var deposititems = ScriptModel.CustomDepositImportMenuItems();
+    var deposititems = PythonScriptModel.CustomDepositImportMenuItems(Db);
 }
 @if (admin || manageemails || managetrans || edit || design || finance || manageResources || financedataentry || financeviewonly)
 {
@@ -62,7 +64,7 @@
                 </li>
                 <li class="col-sm-4">
                     <ul>
-                        @AdminList2(admin, design, managetrans, edit, manageemails, financetrue, developer, manageResources, sendsms, financedataentry)
+                        @AdminList2(admin, design, managetrans, edit, manageemails, financetrue, developer, manageResources, sendsms, financedataentry, checkin)
                     </ul>
                 </li>
                 <li class="col-sm-4">
@@ -99,7 +101,7 @@
                     </li>
                     <li class="col-sm-4">
                         <ul>
-                            @AdminList2(admin, design, managetrans, edit, manageemails, financefalse, developer, manageResources, sendsms, financedataentry)
+                            @AdminList2(admin, design, managetrans, edit, manageemails, financefalse, developer, manageResources, sendsms, financedataentry, checkin)
                         </ul>
                     </li>
                     <li class="col-sm-4">
@@ -140,7 +142,7 @@
             <ul id="admin-menu-col-2" class="dropdown-menu dropdown-menu-large row">
                 <li class="col-sm-6">
                     <ul>
-                        @AdminList2(admin, design, managetrans, edit, manageemails, financefalse, developer, manageResources, sendsms, financedataentry)
+                        @AdminList2(admin, design, managetrans, edit, manageemails, financefalse, developer, manageResources, sendsms, financedataentry, checkin)
                     </ul>
                 </li>
                 <li class="col-sm-6">
@@ -195,8 +197,11 @@
     @Helper.LiAnchorLink("Registration Summary", "/Reports/RegistrationSummary?days=90", admin)
 }
 
-@helper AdminList2(bool admin, bool design, bool managetrans, bool edit, bool manageemails, bool finance, bool developer, bool manageResources, bool sendsms, bool financedataentry)
+@helper AdminList2(bool admin, bool design, bool managetrans, bool edit, bool manageemails, bool finance, bool developer, bool manageResources, bool sendsms, bool financedataentry, bool checkin)
 {
+    CMSDataContext Db = ViewBag.CurrentDatabase;
+    var attendanceUseMeetingCategory = Db.Setting("AttendanceUseMeetingCategory");
+    var webCheckinEnabled = Db.Setting("EnableWebCheckin");
     if (admin)
     {
         <li class="dropdown-header dropdown-sub-header">Organizations</li>
@@ -212,7 +217,7 @@
         @Helper.LiAnchorLink("Transactions", "/Transactions/", admin || managetrans || finance)
         @Helper.LiAnchorLink("User Email Delegation", "/UsersCanEmailFor/", admin || manageemails)
     }
-    if (manageResources && DbUtil.Db.Setting("Resources-Enabled"))
+    if (manageResources)
     {
         <li class="dropdown-header dropdown-sub-header">Resources</li>
         @Helper.LiAnchorLink("Resource Types", "/ResourceTypes/")
@@ -223,11 +228,9 @@
     {
         <li class="dropdown-header dropdown-sub-header">Misc</li>
         @Helper.LiAnchorLink("Activity Log", "/LastActivity/", admin)
-        @Helper.LiAnchorLink("Checkin Activity", "/CheckinTimes/")
-        @Helper.LiAnchorLink("Checkin Labels", "/CheckinLabels", admin)
         @Helper.LiAnchorLink("Users", "/Users/", admin)
 
-        if (DbUtil.Db.Setting("AttendanceUseMeetingCategory"))
+        if (attendanceUseMeetingCategory)
         {
             @Helper.LiAnchorLink("Meeting Category", "/MeetingCategory/", admin)
         }
@@ -235,5 +238,15 @@
     if (financedataentry)
     {
         @Helper.LiAnchorLink("Bundles", "/Bundles/")
+    }
+    if (admin || edit)
+    {
+        <li class="dropdown-header dropdown-sub-header">Check-In</li>
+        if (webCheckinEnabled)
+        {
+        @Helper.LiAnchorLink("Check-In Setup", "/CheckinSetup", checkin)
+        }
+        @Helper.LiAnchorLink("Check-In Activity", "/CheckinTimes/")
+        @Helper.LiAnchorLink("Check-In Labels", "/CheckinLabels", admin)
     }
 }

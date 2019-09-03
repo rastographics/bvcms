@@ -1,4 +1,5 @@
 ﻿using CmsData;
+using SharedTestFixtures;
 using Shouldly;
 using System;
 using UtilityExtensions;
@@ -6,7 +7,7 @@ using Xunit;
 
 namespace CmsDataTests
 {
-    [Collection("Database collection")]
+    [Collection(Collections.Database)]
     public class PythonModelTests
     {
         [Theory]

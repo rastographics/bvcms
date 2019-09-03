@@ -1,3 +1,4 @@
+using ImageData;
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -11,14 +12,15 @@ namespace CmsWeb.Models
     public class ImageResult : ActionResult
     {
         private readonly int Id;
-        public ImageResult(int id)
+        private ImageData.Image image;
+        public ImageResult(CMSImageDataContext idb, int id)
         {
             Id = id;
+            image = id > 0 ? idb.Images.SingleOrDefault(i => i.Id == Id) : null;
         }
         public override void ExecuteResult(ControllerContext context)
         {
             context.HttpContext.Response.Clear();
-            var image = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == Id);
             if (image == null)
             {
                 NoPic(context.HttpContext);

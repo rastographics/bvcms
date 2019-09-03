@@ -1,0 +1,229 @@
+﻿
+@{
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "Check-In Setup";
+    ViewBag.PageHeader = "Check-In Setup";
+}
+<div id="checkinSetup">
+    <div class="col-lg-9">
+        <div class="box box-responsive">
+            <div class="box-content">
+                <div class="table-responsive">
+                    <table id="profiles" class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th style="width: 150px;">
+                                    Check-In Profiles
+                                </th>
+                                <th style="width: 150px;">
+                                    <a class="btn btn-success" v-on:click="CreateCheckinProfile()" href="#">
+                                        <span class="glyphicon glyphicon-plus"></span>&nbsp;Add
+                                    </a>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template v-for="profile in CheckinProfiles">
+                                <tr v-if="profile.Name !== null">
+                                    <td>
+                                        <a v-on:click="modalInfo(profile.CheckinProfileId)" class="blue-avaiable" href="#">
+                                            {{profile.Name}}
+                                        </a>
+                                    </td>
+                                    <td style="width: 50px;">
+                                        <a v-on:click="deleteProfile(profile.CheckinProfileId)" href="#" class="btn btn-sm btn-danger deleteprofile">
+                                            <i class="fa fa-trash"></i>&nbsp;Delete
+                                        </a>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" tabindex="-1" role="dialog" id="config-modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form class="profilesettings-form" v-on:submit.prevent="settingsForm">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                        <h4 v-if="CheckinProfile.Name === null" class="modal-title">New Check-In Profile</h4>
+                        <h4 v-else class="modal-title">{{CheckinProfile.Name}}</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label>Profile Name</label>
+                            </div>
+                            <div class="col-md-6">
+                                <input required v-model="CheckinProfile.Name" type="text" class="form-control" />
+                            </div>
+                        </div>
+                        <br />
+                        <ul class="nav nav-tabs">
+                            <li class="active">
+                                <a href="#general" data-toggle="tab">General</a>
+                            </li>
+                            <li>
+                                <a href="#testing" data-toggle="tab">Testing</a>
+                            </li>
+                            <li>
+                                <a href="#security" data-toggle="tab">Security</a>
+                            </li>
+                            <li>
+                                <a href="#printing" data-toggle="tab">Printing</a>
+                            </li>
+                            <li>
+                                <a href="#design" data-toggle="tab">Design</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <!---------------General Tab---------------------->
+                            <div class="tab-pane active" id="general">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label>Campus</label>
+                                        <select class="form-control" v-model="CampusId">
+                                            <option value="-1">All Campuses</option>
+                                            <option v-for="campus in Campuses" v-bind:value="campus.Id">{{campus.Description}}</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>Logout Code (5 digits)</label>
+                                        <input v-model="CheckinProfileSettings.Logout" class="form-control logoutCode" />
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label>Early Check-In</label>
+                                        <select class="form-control" v-model="EarlyCheck">
+                                            <option value="-1">All Day</option>
+                                            <option v-for="time in TimeLapseList" v-bind:value="time.id">{{time.text}}</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>Late Check-In</label>
+                                        <select class="form-control" v-model="LateCheck">
+                                            <option value="-1">All Day</option>
+                                            <option v-for="time in TimeLapseList" v-bind:value="time.id">{{time.text}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <br />
+                            </div>
+                            <!--------------------------Testing Tab--------------------------------->
+                            <div class="tab-pane" id="testing">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <input v-model="CheckinProfileSettings.Testing" type="checkbox" />
+                                        &nbsp;Enable Testing
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label v-if="CheckinProfileSettings.Testing === true">Test a specific day</label>
+                                        <select v-if="CheckinProfileSettings.Testing === true" v-model="CheckinProfileSettings.TestDay" class="form-control">
+                                            <option v-for="day in DaysOfTheWeek" v-bind:value="day.id">{{day.text}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <div class="col-md-10">
+                                        <input v-model="CheckinProfileSettings.DisableTimer" type="checkbox" />
+                                        &nbsp;Disable <i>'Are you still there'</i> prompt
+                                    </div>
+                                </div>
+                                <br />
+                            </div>
+                            <!---------------------Security---------------------------------------------->
+                            <div class="tab-pane" id="security">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label>Show Check-In Confirmation</label>
+                                        <select v-model="CheckinProfileSettings.ShowCheckinConfirmation" class="form-control">
+                                            <option v-for="time in ShowCheckConfTimes" v-bind:value="time.id">{{time.text}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <br />
+                            </div>
+                            <!---------------------Printing---------------------------------------------->
+                            <div class="tab-pane" id="printing">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <input v-model="CheckinProfileSettings.Guest" type="checkbox" />
+                                        &nbsp;Show Guest Label
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input v-model="CheckinProfileSettings.Location" type="checkbox" />
+                                        &nbsp;Show Location Label
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label>Child Label Cutoff Age</label>
+                                        <number-input v-model="CheckinProfileSettings.CutoffAge" :min="1" :max="99" inline controls class="form-control"></number-input>
+                                    </div>
+                                </div>
+                                <br />
+                            </div>
+                            <!-------------------------------------Desing---------------------------------->
+                            <div class="tab-pane" id="design">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label>Background Image</label>
+                                        <input id="backgroundImage " type="file" ref="BGupload" v-on:change="onFileSelected" accept=".jpg,.jpeg,.png,image/jpeg,image/png" />
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div id="previewImage">
+                                            <img v-if="BGImageURL" style="max-width: 30%;max-height: 30%;" :src="BGImageURL" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p v-if="BGImageName">{{BGImageName}}</p>
+                                    </div>
+                                </div>
+                                <br />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="submit" value="Save" class="btn btn-primary">
+                        <input type="button" value="Cancel" class="btn btn-default" data-dismiss="modal">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts
+{
+    @Fingerprint.Script("/Content/touchpoint/js/checkin/checkinsetup.js")
+    @Fingerprint.Script("/Content/touchpoint/js/vue-number-input.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/jquery-mask/js/jquery-mask.min.js")
+}
+<style>
+    .number-input--inline > input[data-v-016ae424] {
+        display: inline-block;
+        width: inherit;
+    }
+    .number-input__input[data-v-016ae424] {
+        font-size: 1.3rem;
+        border: 1px solid #ddd0;
+        padding: unset;
+        text-align: center;
+    }
+</style>

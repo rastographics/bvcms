@@ -397,6 +397,12 @@
     <Compile Include="App_Start\DependencyConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Areas\CheckIn\Controllers\CheckInController.cs" />
+    <Compile Include="Areas\CheckIn\Models\CheckInModel.cs" />
+    <Compile Include="Areas\CheckIn\Controllers\CheckinSetupController.cs" />
+    <Compile Include="Areas\CheckIn\Models\CheckinSetup\CampusModel.cs" />
+    <Compile Include="Areas\CheckIn\Models\CheckinSetup\CheckinProfileModel.cs" />
+    <Compile Include="Areas\CheckIn\Models\CheckinSetup\CheckinProfileSettingsModel.cs" />
     <Compile Include="Areas\Coordinator\Models\CheckinActionDto.cs" />
     <Compile Include="Areas\Coordinator\Models\CheckinAttendeeDto.cs" />
     <Compile Include="Areas\Coordinator\Models\CheckinScheduleDto.cs" />
@@ -601,6 +607,7 @@
     <Compile Include="Areas\Org\Controllers\Org\Settings\General.cs" />
     <Compile Include="Areas\Org\Controllers\Org\Settings\Main.cs" />
     <Compile Include="Areas\Org\Controllers\Org\Settings\Messages.cs" />
+    <Compile Include="Areas\Org\Controllers\Org\Settings\CheckIn.cs" />
     <Compile Include="Areas\Org\Controllers\Org\Settings\Questions.cs" />
     <Compile Include="Areas\Org\Controllers\Org\Settings\Registration.cs" />
     <Compile Include="Areas\Org\Controllers\Org\Toolbar.cs" />
@@ -615,6 +622,7 @@
     <Compile Include="Areas\Org\Models\Org\Contacts\ContactsReceivedModel.cs" />
     <Compile Include="Areas\Org\Models\Org\OrgSearchFieldsModel.cs" />
     <Compile Include="Areas\Org\Models\Org\ScheduleInfo.cs" />
+    <Compile Include="Areas\Org\Models\Org\SettingsCheckInModel.cs" />
     <Compile Include="Areas\Org\Models\Org\SettingsMessagesModel.cs" />
     <Compile Include="Areas\Org\Models\Org\SettingsGeneralModel.cs" />
     <Compile Include="Areas\Org\Models\Org\SettingsAttendanceModel.cs" />
@@ -629,6 +637,7 @@
     <Compile Include="Areas\People\Controllers\DownlineLevelsController.cs" />
     <Compile Include="Areas\People\Controllers\DownlineSummaryController.cs" />
     <Compile Include="Areas\People\Controllers\DownlineDetailController.cs" />
+    <Compile Include="Areas\People\Models\AttributesModel.cs" />
     <Compile Include="Areas\People\Models\Contact\ContactExtraLocationConfig.cs" />
     <Compile Include="Areas\People\Models\Downline\DownlineLevelsModel.cs" />
     <Compile Include="Areas\People\Models\Downline\DownlineSummaryModel.cs" />
@@ -641,6 +650,7 @@
     <Compile Include="Areas\Public\Models\CheckInAPIv2\AttendanceBundle.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPIv2\AttendanceGroup.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPIv2\Campus.cs" />
+    <Compile Include="Areas\Public\Models\CheckInAPIv2\Profile.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPIv2\Country.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPIv2\Gender.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPIv2\Group.cs" />
@@ -793,7 +803,7 @@
     <Compile Include="Areas\Search\Models\RegistrationSearch\IncompleteRegistrations.cs" />
     <Compile Include="Areas\Reports\Models\Other\WeeklyDecisionsModel.cs" />
     <Compile Include="Areas\Reports\Models\Enrollment\EnrollmentControlModel.cs" />
-    <Compile Include="Areas\Manage\Controllers\CheckinLabelsController.cs" />
+    <Compile Include="Areas\CheckIn\Controllers\CheckinLabelsController.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\OtherRegistrations.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\ManageGiving.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\ManageSubscriptions.cs" />
@@ -816,14 +826,14 @@
     <Compile Include="Areas\Reports\Models\Other\MailingController.cs" />
     <Compile Include="Areas\Reports\Models\Attendance\VisitsAbsentsResult2.cs" />
     <Compile Include="Areas\Reports\Models\Attendance\RallyRollsheetResult.cs" />
-    <Compile Include="Areas\Manage\Controllers\CheckinTimeController.cs" />
+    <Compile Include="Areas\CheckIn\Controllers\CheckinTimeController.cs" />
     <Compile Include="Areas\Manage\Controllers\SMSController.cs" />
     <Compile Include="Areas\Manage\Controllers\UploadPeopleController.cs" />
     <Compile Include="Areas\Finance\Controllers\StatementsController.cs" />
     <Compile Include="Areas\Reports\Models\Export\ExtraExcelResult.cs" />
     <Compile Include="Areas\Org\Models\OrgChildrenModel.cs" />
     <Compile Include="Areas\Manage\Controllers\UsersController.cs" />
-    <Compile Include="Areas\Manage\Models\CheckinTimeModel.cs" />
+    <Compile Include="Areas\CheckIn\Models\CheckinTimeModel.cs" />
     <Compile Include="Areas\Manage\Models\ContentModel.cs" />
     <Compile Include="Areas\Manage\Models\SMSModel.cs" />
     <Compile Include="Areas\Manage\Models\UsersModel.cs" />
@@ -848,6 +858,7 @@
     <Compile Include="Areas\Search\Models\RegistrationSearch\RegistrationSearchModel.cs" />
     <Compile Include="Areas\Search\Models\SavedQuery\SavedQueryInfo.cs" />
     <Compile Include="Areas\Search\Models\SavedQuery\SavedQueryModel.cs" />
+    <Compile Include="Areas\Setup\Models\RoleModel.cs" />
     <Compile Include="Areas\Setup\Models\Pushpay\RecurringManagment.cs" />
     <Compile Include="Areas\Setup\Controllers\GatewayController.cs" />
     <Compile Include="Areas\Setup\Models\GatewayAccountJsonModel.cs" />
@@ -912,6 +923,7 @@
     <Compile Include="Models\Api\ApiPerson.cs" />
     <Compile Include="Models\Api\ApiOrganizationMember.cs" />
     <Compile Include="Models\Api\AddContributionModel.cs" />
+    <Compile Include="Models\DynamicParametersExtensions.cs" />
     <Compile Include="Models\ErrorMessage.cs" />
     <Compile Include="Models\ExtraValue\EntryModel.cs" />
     <Compile Include="Models\ExtraValue\ExtraInfo.cs" />
@@ -1103,8 +1115,9 @@
     <Compile Include="Code\ModelViewModel.cs" />
     <Compile Include="Code\PaymentValidator.cs" />
     <Compile Include="Code\SmartBinder.cs" />
-    <Compile Include="Code\Image.cs" />
     <Compile Include="Models\HtmlHolder.cs" />
+    <Compile Include="Models\PythonScriptModel.cs" />
+    <Compile Include="Models\SqlScriptModel.cs" />
     <Compile Include="Services\MeetingCategory\MeetingCategoryService.cs" />
     <Compile Include="Services\MeetingCategory\IMeetingCategoryService.cs" />
     <Compile Include="Services\CommunicationService.cs" />
@@ -1206,6 +1219,7 @@
     <Content Include="Content\img\textarealine.png" />
     <Content Include="Content\touchpoint\css\account.css" />
     <Content Include="Content\touchpoint\css\app.css" />
+    <Content Include="Content\touchpoint\css\checkin.css" />
     <Content Include="Content\touchpoint\css\editor.css" />
     <Content Include="Content\touchpoint\css\error.css" />
     <Content Include="Content\touchpoint\css\gateway.css" />
@@ -1235,6 +1249,7 @@
     <Content Include="Content\touchpoint\js\admin\users-email-for.js" />
     <Content Include="Content\touchpoint\js\admin\users.js" />
     <Content Include="Content\touchpoint\js\app.min.js" />
+    <Content Include="Content\touchpoint\js\checkin\checkinsetup.js" />
     <Content Include="Content\touchpoint\js\Coupons.js" />
     <Content Include="Content\touchpoint\js\dialog\search-users.js" />
     <Content Include="Content\touchpoint\js\edit-custom-report.js" />
@@ -1245,6 +1260,8 @@
     <Content Include="Content\touchpoint\js\finance\transactions.js" />
     <Content Include="Content\touchpoint\js\form-ajax.js" />
     <Content Include="Content\touchpoint\js\gateway.js" />
+    <Content Include="Content\touchpoint\js\checkin.js" />
+    <Content Include="Content\touchpoint\js\snackbar.js" />
     <Content Include="Content\touchpoint\js\main.js" />
     <Content Include="Content\touchpoint\js\metrozip\metro-zip.js" />
     <Content Include="Content\touchpoint\js\onlineregister.min.js" />
@@ -1252,9 +1269,11 @@
     <Content Include="Content\touchpoint\js\people\merge.js" />
     <Content Include="Content\touchpoint\js\search\export-query.js" />
     <Content Include="Content\touchpoint\js\search\TaskSearch.js" />
+    <Content Include="Content\touchpoint\js\swal_messages.js" />
     <Content Include="Content\touchpoint\js\tranhistory.js" />
     <Content Include="Content\touchpoint\js\volunteer\AltCalendar.js" />
     <Content Include="Content\touchpoint\js\volunteer\calendar.js" />
+    <Content Include="Content\touchpoint\js\vue-number-input.js" />
     <Content Include="Content\touchpoint\lib\bootstrap-sweetalert\js\sweetalert.min.js" />
     <Content Include="Content\touchpoint\lib\bootstrap-sweetalert\css\sweetalert.css" />
     <Content Include="Content\touchpoint\lib\ckeditor\plugins\specialLink\dialogs\specialLink.js" />
@@ -1826,8 +1845,15 @@
     <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageGiving\_ManagedGivingFundsNew.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\OnePageGiving\NotConfigured.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\MeetingAttendance.cshtml" />
+    <Content Include="Areas\Setup\Views\Roles\Manage.cshtml" />
+    <Content Include="Areas\Setup\Views\Roles\Priorities.cshtml" />
+    <Content Include="Content\touchpoint\src\less\snackbar.less" />
     <Content Include="Areas\People\Views\Shared\PledgesSummary.cshtml" />
     <Content Include="libman.json" />
+    <Content Include="Areas\Org\Views\Org\Settings\CheckIn.cshtml" />
+    <Content Include="Areas\CheckIn\Views\CheckIn\CheckIn.cshtml" />
+    <Content Include="Areas\CheckIn\Views\Web.config" />
+    <Content Include="Areas\CheckIn\Views\CheckinSetup\Index.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
@@ -2038,7 +2064,7 @@
     <Content Include="Areas\Reports\Views\Reports\WeeklyDecisions.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\Decisions.cshtml" />
     <Content Include="Areas\People\Views\Person\Enrollment\Pending.cshtml" />
-    <Content Include="Areas\Manage\Views\CheckinLabels\Index.cshtml" />
+    <Content Include="Areas\CheckIn\Views\CheckinLabels\Index.cshtml" />
     <Content Include="Areas\People\Views\Person\Enrollment\Attendance.cshtml" />
     <Content Include="Areas\Public\Views\ExternalServices\BVCMSSupportLink.cshtml" />
     <Content Include="Areas\Manage\Views\Emails\Tracking.cshtml" />
@@ -2478,7 +2504,6 @@
     <Content Include="Areas\Manage\Views\Transactions\ReportByBatchDescription.cshtml" />
     <Compile Include="Code\UnallowedCodeAttribute.cs" />
     <Compile Include="Controllers\SupportController.cs" />
-    <Compile Include="Models\ScriptModel.cs" />
     <Compile Include="Models\SupportRequestModel.cs" />
     <Compile Include="Models\HomeModel.cs" />
     <Compile Include="Areas\Manage\Models\EmailModel.cs" />
@@ -2610,6 +2635,7 @@
     <Content Include="Views\Shared\Menu\Reports.cshtml" />
     <Content Include="Views\Shared\Menu\Admin.cshtml" />
     <Content Include="Views\Shared\Menu\Help.cshtml" />
+    <Content Include="Views\Shared\RoleSettingDefaults.xml" />
     <Content Include="Views\Shared\Toolbar\Toolbar.cshtml" />
     <Content Include="Views\Shared\Toolbar\Email.cshtml" />
     <Content Include="Views\Shared\Toolbar\Gear.cshtml" />
@@ -2638,7 +2664,6 @@
     <Content Include="Views\Home\UserPreferences.cshtml" />
     <Content Include="Views\ExtraValue\EditStandard.cshtml" />
     <Content Include="Views\Home\MyDataSupport.cshtml" />
-    <Content Include="Views\Script\TestScript.cshtml" />
     <Content Include="Views\Shared\OnlineReg2.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\Hyperlink.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\InlineBoolean.cshtml" />
@@ -2749,13 +2774,10 @@
     <Content Include="Views\Script\PyScriptForm.cshtml" />
     <Content Include="Views\Shared\Menu\User.cshtml" />
     <Content Include="Views\Shared\PageError.cshtml" />
-    <Content Include="Views\Script\Test.cshtml" />
     <Content Include="Views\Shared\Toolbar\Custom.cshtml" />
     <Content Include="Views\Shared\PageMessage.cshtml" />
     <Content Include="Areas\Manage\Views\Account\_ShellLayout.cshtml" />
     <Content Include="Views\ExtraValue\Location.cshtml" />
-    <Content Include="Views\Script\Warmup.cshtml" />
-    <Content Include="Views\Script\TestBackground.cshtml" />
     <Content Include="Views\Script\RunScriptPageBreaks.cshtml" />
     <Content Include="Views\Shared\_LayoutCheckIn.cshtml" />
     <Content Include="Views\Shared\_LayoutNoHeaderFooter.cshtml" />
@@ -2832,7 +2854,7 @@
     <Content Include="ConnectionStrings.config">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="Areas\Manage\Views\CheckinTime\Index.cshtml" />
+    <Content Include="Areas\CheckIn\Views\CheckinTime\Index.cshtml" />
     <Content Include="Areas\Org\Views\Meeting\tickets.cshtml" />
     <Content Include="Areas\Org\Views\Meeting\ScanTicket.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Other\Timeout.cshtml" />
@@ -3340,6 +3362,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Areas\CheckIn\Views\Shared\" />
     <Folder Include="Areas\Dialog\Views\Shared\" />
     <Folder Include="Areas\Figures\Views\Shared\" />
     <Folder Include="Areas\Finance\Views\Shared\" />

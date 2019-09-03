@@ -1,15 +1,16 @@
 ﻿using Xunit;
 using System.Collections;
 using System.Net.Http;
-using CmsData;
+using CmsData.Codes;
 using CmsWeb.Areas.OnlineReg.Models;
 using System.Collections.Generic;
 using Shouldly;
 using UtilityExtensions;
+using SharedTestFixtures;
 
 namespace CMSWebTests.Areas.OnlineReg.Models.AskChurch
 {
-    [Collection("Database collection")]
+    [Collection(Collections.Database)]
     public class NewAskChurchQuestionTest
     {
         private int OrgId { get; set; }
@@ -25,11 +26,12 @@ namespace CMSWebTests.Areas.OnlineReg.Models.AskChurch
         [InlineData(false, false, true)]
         public void ShouldPassAskChurchQuestions(bool memberus, bool otherchurch, bool nochurch)
         {
-            var controller = new CmsWeb.Areas.OnlineReg.Controllers.OnlineRegController(FakeRequestManager.FakeRequest());
+            var requestManager = FakeRequestManager.Create();
+            var controller = new CmsWeb.Areas.OnlineReg.Controllers.OnlineRegController(requestManager);
             var routeDataValues = new Dictionary<string, string> { { "controller", "OnlineReg" } };
-            controller.ControllerContext = ControllerTestUtils.FakeContextController(controller, routeDataValues);
+            controller.ControllerContext = ControllerTestUtils.FakeControllerContext(controller, routeDataValues);
 
-            var FakeOrg = FakeOrganizationUtils.MakeFakeOrganization();
+            var FakeOrg = FakeOrganizationUtils.MakeFakeOrganization(requestManager);
             OrgId = FakeOrg.org.OrganizationId;
 
             var model = FakeOrganizationUtils.GetFakeOnlineRegModel(OrgId);
