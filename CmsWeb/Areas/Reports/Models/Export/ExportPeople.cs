@@ -98,7 +98,7 @@ namespace CmsWeb.Models
 
             if (DbUtil.Db.Setting("UseLabelNameForDonorDetails"))
             {
-                var q = from c in DbUtil.Db.GetContributionsDetails(startdt, enddt, campusid, pledges, nontaxdeductible, includeUnclosed, tagid, fundids)                        
+                var q = from c in DbUtil.Db.GetContributionsDetails(startdt, enddt, campusid, pledges, nontaxdeductible.ToInt(), includeUnclosed, tagid, fundids)                        
                         join p in DbUtil.Db.People on c.CreditGiverId equals p.PeopleId
                         where ContributionStatusCode.Recorded.Equals(c.ContributionStatusId)
                         where !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
@@ -148,7 +148,7 @@ namespace CmsWeb.Models
             }
             else
             {
-                var q = from c in DbUtil.Db.GetContributionsDetails(startdt, enddt, campusid, pledges, nontaxdeductible, includeUnclosed, tagid, fundids)
+                var q = from c in DbUtil.Db.GetContributionsDetails(startdt, enddt, campusid, pledges, nontaxdeductible.ToInt(), includeUnclosed, tagid, fundids)
                         join p in DbUtil.Db.People on c.CreditGiverId equals p.PeopleId
                         where ContributionStatusCode.Recorded.Equals(c.ContributionStatusId)
                         where !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
