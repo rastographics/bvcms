@@ -1,4 +1,5 @@
 ﻿using CmsData;
+using CmsData.Codes;
 using CmsWeb.Membership;
 using System;
 using System.IO;
@@ -17,24 +18,24 @@ namespace SharedTestFixtures
         }
 
         private string _host;
-        public string Host => _host ?? (_host = GetHostFromWebConfig());
+        public string Host => _host ?? (_host = DatabaseFixture.Host);
 
-        protected CmsData.User CreateUser(string username, string password, CmsData.Family family = null, params string[] roles)
+        protected User CreateUser(string username, string password, Family family = null, params string[] roles)
         {
             if (family == null)
             {
-                family = new CmsData.Family();
+                family = new Family();
                 db.Families.InsertOnSubmit(family);
                 db.SubmitChanges();
             }
-            var person = new CmsData.Person
+            var person = new Person
             {
                 Family = family,
                 FirstName = RandomString(),
                 LastName = RandomString(),
                 EmailAddress = RandomString() + "@example.com",
-                MemberStatusId = CmsData.Codes.MemberStatusCode.Member,
-                PositionInFamilyId = CmsData.Codes.PositionInFamily.PrimaryAdult,
+                MemberStatusId = MemberStatusCode.Member,
+                PositionInFamilyId = PositionInFamily.PrimaryAdult,
             };
             db.People.InsertOnSubmit(person);
             db.SubmitChanges();
@@ -42,7 +43,7 @@ namespace SharedTestFixtures
             var createDate = DateTime.Now;
             var machineKey = GetValidationKeyFromWebConfig();
             var passwordhash = CMSMembershipProvider.EncodePassword(password, System.Web.Security.MembershipPasswordFormat.Hashed, machineKey);
-            var user = new CmsData.User
+            var user = new User
             {
                 PeopleId = person.PeopleId,
                 Username = username,
@@ -73,13 +74,6 @@ namespace SharedTestFixtures
             var config = LoadWebConfig();
             var machineKey = config.SelectSingleNode("configuration/system.web/machineKey");
             return machineKey.Attributes["validationKey"].Value;
-        }
-
-        private string GetHostFromWebConfig()
-        {
-            var config = LoadWebConfig();
-            var hostKey = config.SelectSingleNode("configuration/appSettings/add[@key='host']");
-            return PickFirst(hostKey?.Attributes["value"].Value, "localhost");
         }
         
         protected string PickFirst(params string[] values)

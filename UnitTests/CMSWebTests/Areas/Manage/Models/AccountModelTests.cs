@@ -16,6 +16,7 @@ using CmsData;
 
 namespace CmsWeb.ModelsTests
 {
+    [Collection(Collections.Database)]
     public class AccountModelTests : ControllerTestBase
     {
         [Fact]
@@ -47,8 +48,6 @@ namespace CmsWeb.ModelsTests
             var password = RandomString();
             var user = CreateUser(username, password);
             var requestManager = FakeRequestManager.Create();
-            var db = requestManager.CurrentDatabase;
-            var idb = requestManager.CurrentImageDatabase;
             var sessionToken = new ApiSession
             {
                 CreatedDate = DateTime.Now,
@@ -65,7 +64,7 @@ namespace CmsWeb.ModelsTests
             CMSMembershipProvider.SetCurrentProvider(membershipProvider);
             CMSRoleProvider.SetCurrentProvider(roleProvider);
 
-            var result = AccountModel.AuthenticateMobile(db, idb);
+            var result = AccountModel.AuthenticateMobile(requestManager.CurrentDatabase, requestManager.CurrentImageDatabase);
 
             result.ErrorMessage.ShouldBeNullOrEmpty();
             result.IsValid.ShouldBeTrue();

@@ -1,10 +1,7 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using CmsWeb.Areas.Public.Controllers;
+﻿using CmsWeb.Areas.Public.Controllers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 using SharedTestFixtures;
 using CMSWebTests.Support;
@@ -19,7 +16,6 @@ using CmsWeb.Lifecycle;
 
 namespace CmsWeb.Areas.Public.ControllersTests
 {
-    [TestClass()]
     [Collection(Collections.Database)]
     public class MobileAPIControllerTests : ControllerTestBase
     {

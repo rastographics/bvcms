@@ -15,10 +15,6 @@ namespace CMSWebTests
     [Collection(Collections.Database)]
     public class FakeOrganizationUtils
     {
-        //public static NewOrganizationModel FakeNewOrganizationModel { get; set; }
-        //public static Organization FakeOrganization { get; set; }
-        //public static int? OrgId { get; set; }
-
         public static NewOrganizationModel MakeFakeOrganization(IRequestManager requestManager, Organization Orgconfig = null)
         {
             var controller = new CmsWeb.Areas.Dialog.Controllers.AddOrganizationController(requestManager);
@@ -63,14 +59,14 @@ namespace CMSWebTests
         }
         public static OnlineRegModel GetFakeOnlineRegModel(int OrgId)
         {
-            var m = new OnlineRegModel(HttpContextFactory.Current.Request, CMSDataContext.Create(Util.Host), OrgId, null, null, null, null);
+            var m = new OnlineRegModel(HttpContextFactory.Current.Request, CMSDataContext.Create(DatabaseFixture.Host), OrgId, null, null, null, null);
             m.UserPeopleId = 1;
             return m;
         }
 
         public static void DeleteOrg(int OrgId)
         {
-            var db = CMSDataContext.Create(Util.Host);
+            var db = CMSDataContext.Create(DatabaseFixture.Host);
             if (db.Organizations.Any(x => x.OrganizationId == OrgId))
             {
                 db.Organizations.First(o=>o.OrganizationId == OrgId)
