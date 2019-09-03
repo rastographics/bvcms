@@ -41,7 +41,8 @@ var jsFiles = [
             'Content/touchpoint/js/export-toolbar.js',
             'Content/touchpoint/js/extra-value.js',
             'Content/touchpoint/js/form-ajax.js',
-            'Content/touchpoint/js/search/search-add.js'
+            'Content/touchpoint/js/search/search-add.js',
+            'Content/touchpoint/js/snackbar.js'
             //DebugFilesEnd
         ],
         outputName: 'app.min.js',
@@ -95,6 +96,7 @@ gulp.task('compress-js', function(complete) {
         gulp.src(files)
             .pipe(concat(outputName))
             .pipe(uglify())
+            .on('error', function (e) { console.error(e); })
             .pipe(gulp.dest(destinationFolder));
     };
 

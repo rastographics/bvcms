@@ -148,7 +148,7 @@ namespace CmsWeb.Models
             }
             else
             {
-                var q = from c in DbUtil.Db.GetContributionsDetails(startdt, enddt, campusid, pledges, nontaxdeductible, includeUnclosed, tagid, fundids)                        
+                var q = from c in DbUtil.Db.GetContributionsDetails(startdt, enddt, campusid, pledges, nontaxdeductible, includeUnclosed, tagid, fundids)
                         join p in DbUtil.Db.People on c.CreditGiverId equals p.PeopleId
                         where ContributionStatusCode.Recorded.Equals(c.ContributionStatusId)
                         where !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
@@ -195,7 +195,8 @@ namespace CmsWeb.Models
 #endif
 
 
-            var q2 = from r in DbUtil.Db.GetTotalContributionsDonor(startdt, enddt, campusid, nontaxdeductible, includeUnclosed, tagid, fundids)
+            var nontaxded = nontaxdeductible.HasValue ? (nontaxdeductible.Value ? 1 : 0) : (int?)null;
+            var q2 = from r in DbUtil.Db.GetTotalContributionsDonor(startdt, enddt, campusid, nontaxded, includeUnclosed, tagid, fundids, null)
                      select new
                      {
                          GiverId = r.CreditGiverId,

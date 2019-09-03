@@ -1,12 +1,14 @@
 using CmsData;
 using CmsData.Codes;
 using CmsData.View;
+using ImageData;
 using System;
 using System.Collections.Generic;
 using System.Data.Linq.SqlClient;
 using System.Linq;
 using System.Xml.Linq;
 using UtilityExtensions;
+using DbUtil = CmsData.DbUtil;
 
 namespace CmsWeb.Models
 {
@@ -32,14 +34,14 @@ namespace CmsWeb.Models
             return x.ToString();
         }
 
-        public void SavePrintJob(string kiosk, string xml)
+        public void SavePrintJob(string kiosk, string xml, string json = null)
         {
             if (!kiosk.HasValue())
             {
                 return;
             }
 
-            var d = new PrintJob { Id = kiosk.Replace(" ", ""), Data = xml, Stamp = DateTime.Now };
+            var d = new PrintJob { Id = kiosk.Replace(" ", ""), Data = xml, JsonData = json, Stamp = DateTime.Now };
             DbUtil.Db.PrintJobs.InsertOnSubmit(d);
             DbUtil.Db.SubmitChanges();
         }
@@ -332,9 +334,9 @@ namespace CmsWeb.Models
             return list2;
         }
 
-        private bool HasImage(int? imageid)
+        private bool HasImage(CMSImageDataContext idb, int? imageid)
         {
-            var q = from i in ImageData.DbUtil.Db.Images
+            var q = from i in idb.Images
                     where i.Id == imageid
                     select i.Length;
             return q.Any();

@@ -4,6 +4,7 @@ using CmsWeb.Code;
 using CmsWeb.Lifecycle;
 using CmsWeb.Models.ExtraValues;
 using System;
+using System.Linq;
 using System.Web.Mvc;
 using UtilityExtensions;
 
@@ -97,6 +98,42 @@ namespace CmsWeb.Areas.Dialog.Controllers
             var c = Content(value);
             return c;
         }
+
+        [HttpPost]
+        public ActionResult EditPassport(string id, string value)
+        {
+            var a = id.Split(',');
+            var oid = a[0].ToInt();
+            var pid = a[1].ToInt();
+            var n = a[2].ToString();
+            UpdatePassport(pid, n, value);
+            DbUtil.LogActivity($"OrgMem EditPassport {n}", oid, pid);
+            var c = Content(value);
+            return c;
+        }
+
+        private void UpdatePassport(int pid, string field, string value)
+        {
+            var recReg = CurrentDatabase.RecRegs.FirstOrDefault(r => r.PeopleId == pid);
+
+            if (recReg != null && field == "passNum")
+                recReg.PassportNumber = Util.Encrypt(value);
+
+            if (recReg != null && field == "passExp" && ParseDate(value) != null)
+                recReg.PassportExpires = Util.Encrypt(ParseDate(value));
+
+            CurrentDatabase.SubmitChanges();
+        }
+
+        private string ParseDate(string value)
+        {
+            string _value = value;
+            if (DateTime.TryParse(_value, out DateTime dt))
+                return string.Format("{0:MM/dd/yyyy}", dt);
+
+            return null;
+        }
+
         [Authorize(Roles = "Developer")]
         [HttpPost, Route("DeleteQuestion/{id}")]
         public ActionResult DeleteQuestion(string id)

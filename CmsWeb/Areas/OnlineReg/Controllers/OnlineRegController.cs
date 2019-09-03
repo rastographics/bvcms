@@ -107,7 +107,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         public ActionResult Login(OnlineRegModel m)
         {
             fromMethod = "Login";
-            var ret = AccountModel.AuthenticateLogon(m.username, m.password, Session, Request, CurrentDatabase);
+            var ret = AccountModel.AuthenticateLogon(m.username, m.password, Session, Request, CurrentDatabase, CurrentImageDatabase);
 
             if (ret is string)
             {

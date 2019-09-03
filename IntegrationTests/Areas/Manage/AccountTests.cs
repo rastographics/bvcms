@@ -1,4 +1,5 @@
 ﻿using IntegrationTests.Support;
+using SharedTestFixtures;
 using Shouldly;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +7,7 @@ using Xunit;
 
 namespace IntegrationTests.Areas.Manage
 {
-    [Collection("WebApp Collection")]
+    [Collection(Collections.Webapp)]
     public class AccountTests : AccountTestBase
     {
         [Fact]
@@ -99,9 +100,10 @@ namespace IntegrationTests.Areas.Manage
             Find(css: ".editable-buttons button[type=submit]").Click();
             Open($"{rootUrl}Roles");
             PageSource.ShouldContain(roleName);
-
+            var adminRole = db.Roles.SingleOrDefault(r => r.RoleName == "Admin");
             var role = db.Roles.SingleOrDefault(r => r.RoleName == roleName);
             role.ShouldNotBeNull();
+            role.Priority.GetValueOrDefault().ShouldBeGreaterThan(adminRole.Priority.GetValueOrDefault());
         }
         
         public void MyData_User_ForgotPassword_Test()

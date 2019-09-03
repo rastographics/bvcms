@@ -1239,6 +1239,12 @@ This search uses multiple steps which cannot be duplicated in a single query.
             var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), pid, orgid);
             return ((int)(result.ReturnValue));
         }
+        [Function(Name = "dbo.MergeCampuses")]
+        public int MergeCampuses([Parameter(DbType = "Int")] int destCampus, [Parameter(DbType = "Int")] int oldCampus)
+        {
+            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), destCampus, oldCampus);
+            return ((int)(result.ReturnValue));
+        }
         [Function(Name = "dbo.PurgePerson")]
         public int PurgePerson([Parameter(DbType = "Int")] int? pid)
         {
@@ -1655,6 +1661,55 @@ This search uses multiple steps which cannot be duplicated in a single query.
         public string ContentSql(string name, string defaultValue)
         {
             return Content2(name, defaultValue, ContentTypeCode.TypeSqlScript);
+        }
+        public void WriteContentSql(string name, string sql, string keyword = null)
+        {
+            var c = Content(name, ContentTypeCode.TypeSqlScript);
+            if (c == null)
+            {
+                c = new Content()
+                {
+                    Name = name,
+                    TypeID = ContentTypeCode.TypeSqlScript
+                };
+                Contents.InsertOnSubmit(c);
+            }
+            c.Body = sql;
+            if(keyword.HasValue())
+                c.SetKeyWords(this, new [] {keyword});
+            SubmitChanges();
+        }
+        public void WriteContentPython(string name, string script, string keyword = null)
+        {
+            var c = Content(name, ContentTypeCode.TypePythonScript);
+            if (c == null)
+            {
+                c = new Content()
+                {
+                    Name = name,
+                    TypeID = ContentTypeCode.TypePythonScript
+                };
+                Contents.InsertOnSubmit(c);
+            }
+            c.Body = script;
+            if(keyword.HasValue())
+                c.SetKeyWords(this, new [] {keyword});
+            SubmitChanges();
+        }
+        public void WriteContentText(string name, string text)
+        {
+            var c = Content(name, ContentTypeCode.TypeText);
+            if (c == null)
+            {
+                c = new Content()
+                {
+                    Name = name,
+                    TypeID = ContentTypeCode.TypeText
+                };
+                Contents.InsertOnSubmit(c);
+            }
+            c.Body = text;
+            SubmitChanges();
         }
         public void SetNoLock()
         {

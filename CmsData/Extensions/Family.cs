@@ -152,7 +152,8 @@ namespace CmsData
             Db.ChangeLogs.InsertOnSubmit(c);
             c.ChangeDetails.Add(new ChangeDetail("Picture", null, "(new upload)"));
         }
-        public void UploadPicture(CMSDataContext db, System.IO.Stream stream, int PeopleId)
+
+        public void UploadPicture(CMSDataContext db, CMSImageDataContext idb, System.IO.Stream stream, int PeopleId)
         {
             if (Picture == null)
             {
@@ -164,28 +165,25 @@ namespace CmsData
             var p = Picture;
             p.CreatedDate = Util.Now;
             p.CreatedBy = Util.UserName;
-            using (var idb = ImageData.DbUtil.Db)
-            {
-                p.ThumbId = Image.NewImageFromBits(bits, 50, 50, idb).Id;
-                p.SmallId = Image.NewImageFromBits(bits, 120, 120, idb).Id;
-                p.MediumId = Image.NewImageFromBits(bits, 320, 400, idb).Id;
-                p.LargeId = Image.NewImageFromBits(bits, idb).Id;
-            }
+            p.ThumbId = Image.NewImageFromBits(bits, 50, 50, idb).Id;
+            p.SmallId = Image.NewImageFromBits(bits, 120, 120, idb).Id;
+            p.MediumId = Image.NewImageFromBits(bits, 320, 400, idb).Id;
+            p.LargeId = Image.NewImageFromBits(bits, idb).Id;
             LogPictureUpload(db, PeopleId, Util.UserPeopleId ?? 1);
             db.SubmitChanges();
-
         }
-        public void DeletePicture(CMSDataContext db)
+
+        public void DeletePicture(CMSDataContext db, CMSImageDataContext idb)
         {
             if (Picture == null)
             {
                 return;
             }
 
-            Image.Delete(Picture.ThumbId);
-            Image.Delete(Picture.SmallId);
-            Image.Delete(Picture.MediumId);
-            Image.Delete(Picture.LargeId);
+            Image.Delete(idb, Picture.ThumbId);
+            Image.Delete(idb, Picture.SmallId);
+            Image.Delete(idb, Picture.MediumId);
+            Image.Delete(idb, Picture.LargeId);
             var pid = PictureId;
             Picture = null;
             db.SubmitChanges();

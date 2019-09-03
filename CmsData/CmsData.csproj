@@ -714,6 +714,8 @@
     <Compile Include="Generated\CheckInLabelEntry.cs" />
     <Compile Include="Generated\CheckInLabelEntryAlignment.cs" />
     <Compile Include="Generated\CheckInLabelType.cs" />
+    <Compile Include="Generated\CheckinProfiles.cs" />
+    <Compile Include="Generated\CheckinProfileSettings.cs" />
     <Compile Include="Generated\CheckInSetting.cs" />
     <Compile Include="Generated\ContactExtra.cs" />
     <Compile Include="Generated\CustomColumn.cs" />
@@ -977,6 +979,8 @@
     <Compile Include="Generated\Views\TransactionSummary.cs" />
     <Compile Include="DbUtil\ITableWithExtraValues.cs" />
     <Content Include="App_Readme\Elmah.txt" />
+    <Content Include="Migrations\20190725_add_printjob_data_field.sql" />
+    <Content Include="Migrations\20190630_Update_ViewAttributes.sql" />
     <Content Include="Migrations\20190709_update_archive_content_sp.sql" />
     <Content Include="Migrations\00000000_sql_migrations_table.sql" />
     <Content Include="Migrations\20181022-3_create_Contributions2SearchIds.sql" />
@@ -987,6 +991,7 @@
     <Content Include="Migrations\20190520_add_acceptiva_to_gateway_tables.sql" />
     <Content Include="Migrations\20190527_add_preconfigured_acceptiva_details.sql" />
     <Content Include="Migrations\20190620_add_passport_reg_setting.sql" />
+    <Content Include="Migrations\20190827_Update_proc_LedgerIncomeExport.sql" />
     <Compile Include="Organization\OrgFilter.cs" />
     <Compile Include="Organization\OrgPerson.cs" />
     <Compile Include="Organization\OrgSchedule.cs" />
@@ -1395,11 +1400,31 @@
     <Content Include="Migrations\20190507_alter_view_TransactionBalances.sql" />
     <Content Include="Migrations\20190523_add_paymentinfo_gatewayaccountid.sql" />
     <Content Include="Migrations\20190523_Insert_Temporary_Recurring_Giving.sql" />
+    <Content Include="Migrations\20190529_create_SP_GreatPlainsIncomeExport.sql" />
+    <Content Include="Migrations\20190603_add_role_priority.sql" />
     <Content Include="Migrations\20190530_Update_PaymentInfo_PK.sql" />
+    <Content Include="Migrations\20190531_drop_SP_GreatPlainsIncomeExport.sql" />
     <Content Include="Migrations\20190626_Add_RecReg_nomember_Column.sql" />
     <Content Include="Migrations\20190809_alter_function_CurrOrgMembers2_to_add_passport_data.sql" />
     <Content Include="Migrations\20190809_alter_sp_OrgMembers_to_include_passport_data.sql" />
     <Content Include="Migrations\20190902_alter_func_GetContributionsDetails.sql" />
+    <Content Include="Migrations\20190821_alter_InvolvementCurrent_function_to_include_family_directory.sql" />
+    <Content Include="Migrations\20190710_Update_MeetingTime_When_Is_Null.sql" />
+    <Content Include="Migrations\20190613_Transform_NoPhoneEmailOnFind_To_New_EVs.sql" />
+    <Content Include="Migrations\20190626_Add_RecReg_nomember_Column.sql" />
+    <Content Include="Migrations\20190710_Update_MeetingTime_When_Is_Null.sql" />
+    <Content Include="Migrations\20190724_add_checkinprofiles_settings_tables.sql" />
+    <Content Include="Migrations\20190626_Add_RecReg_nomember_Column.sql" />
+    <Content Include="Migrations\20190809_alter_function_CurrOrgMembers2_to_add_passport_data.sql" />
+    <Content Include="Migrations\20190809_alter_sp_OrgMembers_to_include_passport_data.sql" />
+    <Content Include="Migrations\20190725_Update_proc_LedgerIncomeExport.sql" />
+    <Content Include="Migrations\20190826_update_func_GetContributionsDetails.sql" />
+    <Content Include="Migrations\20190730_create_proc_mergecampuses.sql" />
+    <Content Include="Migrations\20190809_alter_function_CurrOrgMembers2_to_add_passport_data.sql" />
+    <Content Include="Migrations\20190809_alter_sp_OrgMembers_to_include_passport_data.sql" />
+    <Content Include="Migrations\20190821_Create_Function_SplitFundIds.sql" />
+    <Content Include="Migrations\20190821_Update_Function_ContributionSearch.sql" />
+    <Content Include="Migrations\20190821_Update_Function_GetTotalContributionsDonor.sql" />
     <Content Include="QueryBuilder\CompareMap.xml">
       <SubType>Designer</SubType>
     </Content>
