@@ -1,4 +1,5 @@
 using CmsData;
+using CmsData.Codes;
 using CmsWeb.Membership;
 using MoreLinq;
 using System;
@@ -97,12 +98,14 @@ namespace CmsWeb.Models
 
             if (DbUtil.Db.Setting("UseLabelNameForDonorDetails"))
             {
-                var q = from c in DbUtil.Db.GetContributionsDetails(startdt, enddt, campusid, pledges, nontaxdeductible, includeUnclosed, tagid, fundids)
+                var q = from c in DbUtil.Db.GetContributionsDetails(startdt, enddt, campusid, pledges, nontaxdeductible, includeUnclosed, tagid, fundids)                        
                         join p in DbUtil.Db.People on c.CreditGiverId equals p.PeopleId
+                        where ContributionStatusCode.Recorded.Equals(c.ContributionStatusId)
+                        where !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
                         let mainFellowship = DbUtil.Db.Organizations.SingleOrDefault(oo => oo.OrganizationId == p.BibleFellowshipClassId).OrganizationName
                         let head1 = DbUtil.Db.People.Single(hh => hh.PeopleId == p.Family.HeadOfHouseholdId)
                         let head2 = DbUtil.Db.People.SingleOrDefault(sp => sp.PeopleId == p.Family.HeadOfHouseholdSpouseId)
-                        let altcouple = p.Family.FamilyExtras.SingleOrDefault(ee => (ee.FamilyId == p.FamilyId) && ee.Field == "CoupleName" && p.SpouseId != null).Data
+                        let altcouple = p.Family.FamilyExtras.SingleOrDefault(ee => (ee.FamilyId == p.FamilyId) && ee.Field == "CoupleName" && p.SpouseId != null).Data                        
                         select new
                         {
                             c.FamilyId,
@@ -145,11 +148,13 @@ namespace CmsWeb.Models
             }
             else
             {
-                var q = from c in DbUtil.Db.GetContributionsDetails(startdt, enddt, campusid, pledges, nontaxdeductible, includeUnclosed, tagid, fundids)
+                var q = from c in DbUtil.Db.GetContributionsDetails(startdt, enddt, campusid, pledges, nontaxdeductible, includeUnclosed, tagid, fundids)                        
                         join p in DbUtil.Db.People on c.CreditGiverId equals p.PeopleId
+                        where ContributionStatusCode.Recorded.Equals(c.ContributionStatusId)
+                        where !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
                         let mainFellowship = DbUtil.Db.Organizations.SingleOrDefault(oo => oo.OrganizationId == p.BibleFellowshipClassId).OrganizationName
                         let spouse = DbUtil.Db.People.SingleOrDefault(sp => sp.PeopleId == p.SpouseId)
-                        let altcouple = p.Family.FamilyExtras.SingleOrDefault(ee => (ee.FamilyId == p.FamilyId) && ee.Field == "CoupleName" && p.SpouseId != null).Data
+                        let altcouple = p.Family.FamilyExtras.SingleOrDefault(ee => (ee.FamilyId == p.FamilyId) && ee.Field == "CoupleName" && p.SpouseId != null).Data                        
                         select new
                         {
                             c.FamilyId,
