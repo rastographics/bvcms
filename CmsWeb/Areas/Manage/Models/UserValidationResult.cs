@@ -25,6 +25,7 @@ namespace CmsWeb.Areas.Manage.Models
 
         public static UserValidationResult Invalid(UserValidationStatus status, string errorMessage = null, User user = null)
         {
+            DbUtil.LogActivity($"Invalid log in {status}:{errorMessage} ({user?.Username})");
             return new UserValidationResult { User = user, ErrorMessage = errorMessage, Status = status };
         }
     }

@@ -29,7 +29,7 @@ namespace CmsData.Finance.Tests
             string zip = "03510";
             string phone = "5547946830";
 
-            //var db = CMSDataContext.Create("bellevue");
+            //var db = CMSDataContext.Create(DatabaseFixture.Host);
             //var gateway = db.Gateway(true);
 
             //var response = gateway.PayWithCreditCard(peopleId, amt, cardnumber, expires, description, tranid, cardcode, email, first, last, addr, addr2, city, state, country, zip, phone);
