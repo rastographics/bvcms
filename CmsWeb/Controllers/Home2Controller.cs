@@ -7,7 +7,6 @@ using UtilityExtensions;
 
 namespace CmsWeb.Controllers
 {
-
     public class Home2Controller : CmsController
     {
         public Home2Controller(IRequestManager requestManager) : base(requestManager)
@@ -71,12 +70,14 @@ namespace CmsWeb.Controllers
             var p = CurrentDatabase.LoadPersonById(id);
             return new PictureResult(p.Picture.LargeId ?? 0, w, h, portrait: true, mode: mode);
         }
+
         [Authorize(Roles = "Finance")]
         public ActionResult TurnFinanceOn()
         {
             Session.Remove("testnofinance");
             return Redirect("/Person2/Current");
         }
+
         [Authorize(Roles = "Finance")]
         public ActionResult TurnFinanceOff()
         {
