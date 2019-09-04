@@ -92,6 +92,7 @@
     <Compile Include="DatabaseFixture.cs" />
     <Compile Include="FinanceTestBase.cs" />
     <Compile Include="FinanceTestUtils.cs" />
+    <Compile Include="MockHttpContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

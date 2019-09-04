@@ -10,16 +10,20 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 using SharedTestFixtures;
+using OpenQA.Selenium.Interactions;
 
 namespace IntegrationTests.Areas.Finance.Views.Bundle
 {
-    [Collection("Webapp collection")]
+    [Collection(Collections.Webapp)]
     public class EditTests : AccountTestBase
     {
-        [Fact]
-        public void Should_Open_Datepicker_On_Mobile_Resolutions()
+        [Theory]
+        [InlineData(320)]
+        [InlineData(425)]
+        [InlineData(768)]
+        public void Should_Open_Datepicker_On_Mobile_Resolutions(int width)
         {
-            driver.Manage().Window.Size = new Size(375, 667);
+            driver.Manage().Window.Size = new Size(width, 667);
 
             username = RandomString();
             password = RandomString();
@@ -28,8 +32,31 @@ namespace IntegrationTests.Areas.Finance.Views.Bundle
             Login();
 
             Open($"{rootUrl}Bundle/Edit/{new FinanceTestUtils(db).BundleHeader.BundleHeaderId}");
+            Wait(5);
             PageSource.ShouldContain("Contribution Bundle");
+            Check_If_DateTimePicker_Exists();
 
+            Open($"{rootUrl}Person2/{user.PeopleId}");
+            Wait(5);
+            PageSource.ShouldContain("General");
+
+            Find(css: ".edit-basic").Click();
+            Wait(2);
+            ScrollTo(id: "WeddingDate");
+            Check_If_DateTimePicker_Exists();
+
+            Find(css: ".navbar-toggle").Click();
+            Wait(1);
+            Find(css: "#navbar>.navbar-nav>.dropdown:nth-child(5)").Click();
+            ScrollTo(xpath: "//a[contains(@href, '/FinanceReports/TotalsByFundAgeRange')]");
+            Wait(1);
+            Find(xpath: "//a[contains(@href, '/FinanceReports/DonorTotalSummary')]").Click();
+            Check_If_DateTimePicker_Exists();
+        }
+
+        [Fact]
+        public void Check_If_DateTimePicker_Exists()
+        {
             Find(css: "span.input-group-addon").Click();
             WaitForElement("div.bootstrap-datetimepicker-widget", 1);
             var timepicker = Find(css: "div.bootstrap-datetimepicker-widget");

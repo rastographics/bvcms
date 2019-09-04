@@ -1,5 +1,6 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.Events;
 using OpenQA.Selenium.Support.UI;
 using System;
@@ -179,6 +180,58 @@ namespace IntegrationTests.Support
                 Console.WriteLine("Element not found: {0}", by.ToString());
             }
             return webElement;
+        }
+
+        protected void ScrollTo(IWebElement by = null,
+            string css = null,
+            string id = null,
+            string match = null,
+            string name = null,
+            string tag = null,
+            string text = null,
+            string xpath = null,
+            bool visible = true)
+        {
+            try
+            {
+                if (css != null)
+                {
+                    by = Find(css: css);
+                }
+                if (text != null)
+                {
+                    by = Find(text: text);
+                }
+                if (match != null)
+                {
+                    by = Find(match: match);
+                }
+                if (id != null)
+                {
+                    by = Find(id: id);
+                }
+                if (name != null)
+                {
+                    by = Find(name: name);
+                }
+                if (tag != null)
+                {
+                    by = Find(tag: tag);
+                }
+                if (xpath != null)
+                {
+                    by = Find(xpath: xpath);
+                }
+                if (by != null)
+                {
+                    Actions actions = new Actions(driver);
+                    actions.MoveToElement(by);
+                    actions.Perform();
+                }
+            }
+            catch
+            {
+            }
         }
 
         protected void SaveScreenshot()
