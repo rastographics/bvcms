@@ -116,10 +116,11 @@ namespace CmsData.API
                                   .Description.Contains("Online")
                          ? c.ContributionDesc == "Recurring Giving" ? c.ContributionDesc : "Online"
                          : c.ContributionType.Description
+                     let tran = db.Transactions.Where(t => t.Id == c.TranId).FirstOrDefault()
                      select new ContributionInfo
                      {
                          BundleId = bd == null ? 0 : bd.BundleHeaderId,
-                         TranId = c.TranId,
+                         TranId = tran.TransactionId ?? "",
                          ContributionAmount = c.ContributionAmount ?? 0,
                          ContributionDate = c.ContributionDate ?? SqlDateTime.MinValue.Value,
                          ContributionId = c.ContributionId,
