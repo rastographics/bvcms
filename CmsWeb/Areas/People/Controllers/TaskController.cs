@@ -5,6 +5,7 @@ using MoreLinq;
 using System;
 using System.Linq;
 using System.Web.Mvc;
+using CmsData;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Controllers
@@ -28,6 +29,16 @@ namespace CmsWeb.Areas.People.Controllers
         {
             var t = TaskModel.FetchModel(id, CurrentDatabase.Host, CurrentDatabase);
             return View(t);
+        }
+
+        [HttpPost, Route("~/Task/Edit")]
+        public ContentResult Edit(int pk, string name, string value)
+        {
+            CurrentDatabase.SetTaskDetails(pk, name, value);
+            CurrentDatabase.SubmitChanges();
+            DbUtil.LogActivity($"Edit Task {pk} to {value}", userId: Util.UserId);
+
+            return new ContentResult {Content = value};
         }
 
         [HttpPost, Route("~/Task/Update")]

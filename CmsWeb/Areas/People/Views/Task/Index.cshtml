@@ -8,6 +8,7 @@
     var link = Server.UrlEncode($"{ViewExtensions2.CmsHost}/Task/{Model.Id}");
 }
 @section head{
+    @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
     <style type="text/css">
         @@media all and (max-width: 480px) {
             .btn-group-xs-block {
@@ -24,13 +25,21 @@
                 margin-top: 40px;
             }
         }
+
+        .clickEdit {
+            cursor: pointer;
+        }
     </style>
 }
 <div class="row">
     <div class="col-sm-12 col-md-12 col-lg-7">
         <div class="box box-responsive">
             <div class="box-title-btn">
-                <h5>@Model.Description</h5>
+                <h5>
+                    <a class="clickEdit" data-pk="@(Model.Id)" data-name="@nameof(Model.Description)">
+                        @Model.Description
+                    </a>
+                </h5>
                 <div class="box-tools">
                     @if (Model.CanAccept)
                     {
@@ -125,7 +134,9 @@
                             <dl>
                                 <dt>Limit To Role</dt>
                                 <dd>
-                                    @Model.TaskLimitToRole.Value
+                                    <a class="clickEdit" data-pk="@(Model.Id)" data-name="@nameof(Model.TaskLimitToRole)">
+                                        @Model.TaskLimitToRole.Value
+                                    </a>
                                 </dd>
                             </dl>
                         }
@@ -171,7 +182,9 @@
                         <dl>
                             <dt>Status</dt>
                             <dd>
-                                @Model.Status
+                                <a class="clickEdit" data-pk="@(Model.Id)" data-name="@nameof(Model.Status)">
+                                    @Model.Status
+                                </a>
                                 @if (Model.ShowCompleted)
                                 {
                                     <span>@Model.CompletedOn.ToString2("f")</span>
@@ -190,7 +203,11 @@
                         </dl>
                         <dl>
                             <dt>Due Date</dt>
-                            <dd>@Model.Due.ToString2("d")</dd>
+                            <dd>
+                                <a class="clickEdit" data-pk="@(Model.Id)" data-name="@nameof(Model.Due)">
+                                    @Model.Due.ToString2("d")
+                                </a>
+                            </dd>
                         </dl>
                         @if (Model.Description != "New Person Data Entry" && Model.Completed)
                         {
@@ -208,7 +225,11 @@
                     <div class="col-sm-12">
                         <dl>
                             <dt>Notes</dt>
-                            <dd>@Html.Raw(Model.FmtNotes)</dd>
+                            <dd>
+                                <a class="clickEdit" data-pk="@(Model.Id)" data-name="@nameof(Model.Notes)">
+                                    @Html.Raw(Model.FmtNotes)
+                                </a>
+                            </dd>
                         </dl>
                     </div>
                 </div>
@@ -243,6 +264,7 @@
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 @section scripts {
+    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-editable/js/bootstrap-editable.min.js")
     <script type="text/javascript">
         function setCompleteWithContact() {
             var taskid = $('#TaskId').val();
@@ -265,6 +287,20 @@
         }
 
         $(function () {
+            $.fn.editableform.buttons = '<button type="submit" class="btn btn-primary btn-sm editable-submit">' +
+                '<i class="fa fa-fw fa-check"></i>' +
+                '</button>' +
+                '<button type="button" class="btn btn-default btn-sm editable-cancel">' +
+                '<i class="fa fa-fw fa-times"></i>' +
+                '</button>';
+
+            $(".clickEdit").editable({
+                mode: 'inline',
+                type: 'text',
+                url: '@Url.Action("Edit","Task")',
+                emptytext: 'None'
+            });
+
             $("body").on("click",
                 'a.completewcontact',
                 function (ev) {

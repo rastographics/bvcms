@@ -160,6 +160,11 @@ namespace CmsData
             else
                 setting.SettingX = value;
         }
+        public void SetTaskDetails(int id, string name, string value)
+        {
+            var task = Tasks.Single(c => c.Id == id);
+            task.GetType().GetProperty(name).SetValue(task, value);
+        }
         public void DeleteSetting(string name)
         {
             var list = HttpRuntime.Cache[Host + "Setting"] as Dictionary<string, string>;
