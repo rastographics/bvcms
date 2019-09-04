@@ -2,7 +2,7 @@
 
 namespace SharedTestFixtures
 {
-    public static class ContextTestUtils
+    public class ContextTestUtils
     {
         public static MockHttpContext CreateMockHttpContext()
         {

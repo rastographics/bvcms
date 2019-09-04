@@ -148,7 +148,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 return BaseMessage.createErrorReturn("SessionToken header is required.", BaseMessage.API_ERROR_IMPROPER_HEADER_STRUCTURE);
             }
 
-            AccountModel.ExpireSessionToken(sessionToken);
+            AccountModel.ExpireSessionToken(CurrentDatabase, sessionToken);
 
             Session.Abandon();
 

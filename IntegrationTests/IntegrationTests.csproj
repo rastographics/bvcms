@@ -95,7 +95,6 @@
     <Compile Include="Support\FeatureTestBase.cs" />
     <Compile Include="Support\IISExpress.cs" />
     <Compile Include="Support\Settings.cs" />
-    <Compile Include="Support\TestBase.cs" />
     <Compile Include="WebAppCollection.cs" />
     <Compile Include="WebAppFixture.cs" />
   </ItemGroup>
