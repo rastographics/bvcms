@@ -46,6 +46,7 @@ namespace CmsData
             }
             return def;
         }
+
         public static void SetSessionObj(string key, object value)
         {
             if (HttpContextFactory.Current != null && HttpContextFactory.Current.Session != null)
@@ -69,7 +70,6 @@ namespace CmsData
             get => GetSessionObj(STR_ActiveOrganizationId) as int?;
             set => SetSessionObj(STR_ActiveOrganizationId, value);
         }
-
 
         public static int[] CurrentGroups
         {
@@ -97,7 +97,6 @@ namespace CmsData
             set => SetSessionObj(STR_ActiveGroupMode, value);
         }
 
-
         public static int CurrentPeopleId
         {
             get => GetSessionObj(STR_ActivePersonId, 0).ToInt();
@@ -105,6 +104,7 @@ namespace CmsData
         }
 
         public static string FromMobile => (string)GetSessionObj(STR_FromMobile, null);
+
         public static int? CurrentTagOwnerId
         {
             get
@@ -119,6 +119,7 @@ namespace CmsData
                 return pid;
             }
         }
+
         public static string CurrentTagName
         {
             get
