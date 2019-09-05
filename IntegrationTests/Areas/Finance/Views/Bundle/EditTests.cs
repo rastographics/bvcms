@@ -28,7 +28,7 @@ namespace IntegrationTests.Areas.Finance.Views.Bundle
             username = RandomString();
             password = RandomString();
             string roleName = "role_" + RandomString();
-            var user = CreateUser(roles: new string[] { "Access", "Edit", "Admin", "Finance" });
+            var user = CreateUser(username, password, roles: new string[] { "Access", "Edit", "Admin", "Finance" });
             Login();
 
             Open($"{rootUrl}Bundle/Edit/{new FinanceTestUtils(db).BundleHeader.BundleHeaderId}");
