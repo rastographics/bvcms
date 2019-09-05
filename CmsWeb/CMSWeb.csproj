@@ -1699,7 +1699,7 @@
     <Content Include="gulpfile.js" />
     <Content Include="Content\touchpoint\js\onlinereg\bootstrap-datepicker.js" />
     <Content Include="chart.py" />
-    <Content Include="Areas\Manage\Views\Account\_Layout.cshtml" />
+    <Content Include="Views\Shared\Account\_Layout.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\EditCustomReport.cshtml" />
     <Content Include="Areas\Manage\Views\Account\SetPasswordConfirm.cshtml" />
     <Content Include="Lib\constants.py" />
@@ -1818,8 +1818,8 @@
     <Content Include="libman.json" />
     <Content Include="Areas\Manage\Views\Account\AuthSetup.cshtml" />
     <Content Include="Areas\Manage\Views\Account\AuthSetupComplete.cshtml" />
-    <Content Include="Areas\Manage\Views\Account\TwoFactorPasscode.cshtml" />
-    <Content Include="Areas\Manage\Views\Account\Auth.cshtml" />
+    <Content Include="Views\Shared\Account\TwoFactorPasscode.cshtml" />
+    <Content Include="Views\Shared\Auth.cshtml" />
     <Content Include="Areas\Manage\Views\Account\AuthDisable.cshtml" />
     <Content Include="Areas\CheckIn\Views\Web.config" />
     <Content Include="Areas\CheckIn\Views\CheckinSetup\Index.cshtml" />
@@ -2747,7 +2747,7 @@
     <Content Include="Views\Script\Test.cshtml" />
     <Content Include="Views\Shared\Toolbar\Custom.cshtml" />
     <Content Include="Views\Shared\PageMessage.cshtml" />
-    <Content Include="Areas\Manage\Views\Account\_ShellLayout.cshtml" />
+    <Content Include="Views\Shared\Account\_ShellLayout.cshtml" />
     <Content Include="Views\ExtraValue\Location.cshtml" />
     <Content Include="Views\Script\Warmup.cshtml" />
     <Content Include="Views\Script\TestBackground.cshtml" />

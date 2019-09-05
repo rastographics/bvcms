@@ -1,6 +1,6 @@
 ﻿@model Google.Authenticator.SetupCode
 @{
-    Layout = "_Layout.cshtml";
+    Layout = "~/Views/Shared/Account/_Layout.cshtml";
     ViewBag.Title = "Two-factor Authentication Setup";
 }
 <style>
@@ -57,7 +57,7 @@
         </div>
     </fieldset>
     <fieldset id="step2">
-    @Html.Partial("TwoFactorPasscode")    
+    @Html.Partial("Account/TwoFactorPasscode")    
     </fieldset>
 </div>
 }

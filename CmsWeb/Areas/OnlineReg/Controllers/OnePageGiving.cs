@@ -4,8 +4,11 @@ using System.Linq;
 using System.Web.Mvc;
 using CmsData;
 using CmsData.Codes;
+using CmsWeb.Areas.Manage.Controllers;
+using CmsWeb.Areas.Manage.Models;
 using CmsWeb.Areas.OnlineReg.Models;
 using CmsWeb.Code;
+using CmsWeb.Membership;
 using CmsWeb.Models;
 using Elmah;
 using UtilityExtensions;
@@ -336,9 +339,24 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 var m = new OnlineRegModel(Request, CurrentDatabase, id, testing, null, null, source);
                 SetHeaders(m);
                 return View("OnePageGiving/Login", m);
-            } else
+            }
+            else if (MembershipService.ShouldPromptForTwoFactorAuthentication(ret.User, CurrentDatabase, Request))
+            {
+                Session[AccountController.MFAUserId] = ret.User.UserId;
+                return View("Auth", new AccountInfo
+                {
+                    UsernameOrEmail = ret.User.Username,
+                    ReturnUrl = returnUrl
+                });
+            }
+            else
             {
                 AccountModel.FinishLogin(ret.User.Username, Session, CurrentDatabase, CurrentImageDatabase);
+                if (ret.User.UserId.Equals(Session[AccountController.MFAUserId]))
+                {
+                    MembershipService.SaveTwoFactorAuthenticationToken(CurrentDatabase, Response);
+                    Session.Remove(AccountController.MFAUserId);
+                }
             }
             Session["OnlineRegLogin"] = true;
             

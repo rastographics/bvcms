@@ -7,11 +7,11 @@
 
     if ((bool?)ViewData["hasshell"] == true)
     {
-        Layout = "_ShellLayout.cshtml";
+        Layout = "~/Views/Shared/Account/_ShellLayout.cshtml";
     }
     else
     {
-        Layout = "_Layout.cshtml";
+        Layout = "~/Views/Shared/Account/_Layout.cshtml";
     }
 }
 @if ((bool?)ViewBag.hasshell == true)

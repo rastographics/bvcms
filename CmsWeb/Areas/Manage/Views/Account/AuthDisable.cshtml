@@ -1,6 +1,6 @@
 ﻿@model CmsWeb.Areas.Manage.Models.AccountInfo
 @{
-    Layout = "_Layout.cshtml";
+    Layout = "~/Views/Shared/Account/_Layout.cshtml";
     ViewBag.Title = "Two-factor Authentication";
     ViewData["hideBackButton"] = true;
     ViewData["passcodeMargin"] = 50;
@@ -18,6 +18,6 @@
         @Html.PasswordFor(m => m.Password, new { @class = "form-control input-lg", placeholder = "Password" })
     </div>
     <fieldset>
-        @Html.Partial("TwoFactorPasscode", viewData: ViewData)
+        @Html.Partial("Account/TwoFactorPasscode", viewData: ViewData)
     </fieldset>
 }

@@ -280,8 +280,11 @@ namespace CmsWeb.Areas.Manage.Controllers
                 if (MembershipService.ValidateTwoFactorPasscode(user, CurrentDatabase, passcode))
                 {
                     AccountModel.FinishLogin(user.Username, Session, CurrentDatabase, CurrentImageDatabase);
-                    MembershipService.SaveTwoFactorAuthenticationToken(CurrentDatabase, Response);
-                    Session.Remove(MFAUserId);
+                    if (user.UserId.Equals(Session[MFAUserId]))
+                    {
+                        MembershipService.SaveTwoFactorAuthenticationToken(CurrentDatabase, Response);
+                        Session.Remove(MFAUserId);
+                    }
                 }
                 else
                 {

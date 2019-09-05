@@ -120,14 +120,20 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             else  if (MembershipService.ShouldPromptForTwoFactorAuthentication(ret.User, CurrentDatabase, Request))
             {
                 Session[AccountController.MFAUserId] = ret.User.UserId;
+                ViewData["hasshell"] = true;
                 return View("Auth", new AccountInfo {
                     UsernameOrEmail = ret.User.Username,
-                    ReturnUrl = RouteExistingRegistration(m)
+                    ReturnUrl = RouteExistingRegistration(m) ?? $"/OnlineReg/{m.Orgid}"
                 });
             }
             else
             {
                 AccountModel.FinishLogin(ret.User.Username, Session, CurrentDatabase, CurrentImageDatabase);
+                if (ret.User.UserId.Equals(Session[AccountController.MFAUserId]))
+                {
+                    MembershipService.SaveTwoFactorAuthenticationToken(CurrentDatabase, Response);
+                    Session.Remove(AccountController.MFAUserId);
+                }
             }
             Session["OnlineRegLogin"] = true;
 
