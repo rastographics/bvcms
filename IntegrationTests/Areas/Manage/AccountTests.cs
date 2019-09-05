@@ -83,7 +83,7 @@ namespace IntegrationTests.Areas.Manage
             username = RandomString();
             password = RandomString();
             string roleName = "role_" + RandomString();
-            var user = CreateUser(roles: new string[] { "Access", "Edit", "Admin" });
+            var user = CreateUser(username, password, roles: new string[] { "Access", "Edit", "Admin" });
             Login();
 
             Open($"{rootUrl}Lookups/");
@@ -100,9 +100,10 @@ namespace IntegrationTests.Areas.Manage
             Find(css: ".editable-buttons button[type=submit]").Click();
             Open($"{rootUrl}Roles");
             PageSource.ShouldContain(roleName);
-
+            var adminRole = db.Roles.SingleOrDefault(r => r.RoleName == "Admin");
             var role = db.Roles.SingleOrDefault(r => r.RoleName == roleName);
             role.ShouldNotBeNull();
+            role.Priority.GetValueOrDefault().ShouldBeGreaterThan(adminRole.Priority.GetValueOrDefault());
         }
         
         public void MyData_User_ForgotPassword_Test()

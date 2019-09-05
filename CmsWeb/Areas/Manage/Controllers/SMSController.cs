@@ -1,11 +1,16 @@
 ﻿using System.Web.Mvc;
+using CmsWeb.Lifecycle;
 using CmsWeb.Models;
 
 namespace CmsWeb.Areas.Manage.Controllers
 {
     [RouteArea("Manage")]
-    public class SMSController : Controller
+    public class SMSController : CmsStaffController
     {
+        public SMSController(IRequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [Route("~/SMS/List")]
         public ActionResult Index(SMSModel m)
         {
