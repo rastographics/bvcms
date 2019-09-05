@@ -980,6 +980,8 @@
     <Compile Include="Generated\Views\TransactionSummary.cs" />
     <Compile Include="DbUtil\ITableWithExtraValues.cs" />
     <Content Include="App_Readme\Elmah.txt" />
+    <Content Include="Migrations\20190725_add_printjob_data_field.sql" />
+    <Content Include="Migrations\20190630_Update_ViewAttributes.sql" />
     <Content Include="Migrations\20190709_update_archive_content_sp.sql" />
     <Content Include="Migrations\00000000_sql_migrations_table.sql" />
     <Content Include="Migrations\20181022-3_create_Contributions2SearchIds.sql" />
@@ -990,6 +992,7 @@
     <Content Include="Migrations\20190520_add_acceptiva_to_gateway_tables.sql" />
     <Content Include="Migrations\20190527_add_preconfigured_acceptiva_details.sql" />
     <Content Include="Migrations\20190620_add_passport_reg_setting.sql" />
+    <Content Include="Migrations\20190827_Update_proc_LedgerIncomeExport.sql" />
     <Compile Include="Organization\OrgFilter.cs" />
     <Compile Include="Organization\OrgPerson.cs" />
     <Compile Include="Organization\OrgSchedule.cs" />
@@ -1401,6 +1404,7 @@
     <Content Include="Migrations\20190523_Insert_Temporary_Recurring_Giving.sql" />
     <Content Include="Migrations\20190530_Update_PaymentInfo_PK.sql" />
     <Content Include="Migrations\20190603_add_role_priority.sql" />
+    <Content Include="Migrations\20190531_drop_SP_GreatPlainsIncomeExport.sql" />
     <Content Include="Migrations\20190626_Add_RecReg_nomember_Column.sql" />
     <Content Include="Migrations\20190809_alter_function_CurrOrgMembers2_to_add_passport_data.sql" />
     <Content Include="Migrations\20190809_alter_sp_OrgMembers_to_include_passport_data.sql" />
@@ -1411,8 +1415,11 @@
     <Content Include="Migrations\20190710_Update_MeetingTime_When_Is_Null.sql" />
     <Content Include="Migrations\20190715_create_orgmemberdocuments_table.sql" />
     <Content Include="Migrations\20190724_add_checkinprofiles_settings_tables.sql" />
+    <Content Include="Migrations\20190626_Add_RecReg_nomember_Column.sql" />
+    <Content Include="Migrations\20190809_alter_function_CurrOrgMembers2_to_add_passport_data.sql" />
+    <Content Include="Migrations\20190809_alter_sp_OrgMembers_to_include_passport_data.sql" />
     <Content Include="Migrations\20190725_Update_proc_LedgerIncomeExport.sql" />
-    <Content Include="Migrations\20190729_update_func_GetContributionsDetails.sql" />
+    <Content Include="Migrations\20190826_update_func_GetContributionsDetails.sql" />
     <Content Include="Migrations\20190730_create_proc_mergecampuses.sql" />
     <Content Include="Migrations\20190809_alter_function_CurrOrgMembers2_to_add_passport_data.sql" />
     <Content Include="Migrations\20190809_alter_sp_OrgMembers_to_include_passport_data.sql" />

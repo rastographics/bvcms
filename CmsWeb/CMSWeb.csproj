@@ -397,6 +397,8 @@
     <Compile Include="App_Start\DependencyConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Areas\CheckIn\Controllers\CheckInController.cs" />
+    <Compile Include="Areas\CheckIn\Models\CheckInModel.cs" />
     <Compile Include="Areas\CheckIn\Controllers\CheckinSetupController.cs" />
     <Compile Include="Areas\CheckIn\Models\CheckinSetup\CampusModel.cs" />
     <Compile Include="Areas\CheckIn\Models\CheckinSetup\CheckinProfileModel.cs" />
@@ -605,6 +607,7 @@
     <Compile Include="Areas\Org\Controllers\Org\Settings\General.cs" />
     <Compile Include="Areas\Org\Controllers\Org\Settings\Main.cs" />
     <Compile Include="Areas\Org\Controllers\Org\Settings\Messages.cs" />
+    <Compile Include="Areas\Org\Controllers\Org\Settings\CheckIn.cs" />
     <Compile Include="Areas\Org\Controllers\Org\Settings\Questions.cs" />
     <Compile Include="Areas\Org\Controllers\Org\Settings\Registration.cs" />
     <Compile Include="Areas\Org\Controllers\Org\Toolbar.cs" />
@@ -619,6 +622,7 @@
     <Compile Include="Areas\Org\Models\Org\Contacts\ContactsReceivedModel.cs" />
     <Compile Include="Areas\Org\Models\Org\OrgSearchFieldsModel.cs" />
     <Compile Include="Areas\Org\Models\Org\ScheduleInfo.cs" />
+    <Compile Include="Areas\Org\Models\Org\SettingsCheckInModel.cs" />
     <Compile Include="Areas\Org\Models\Org\SettingsMessagesModel.cs" />
     <Compile Include="Areas\Org\Models\Org\SettingsGeneralModel.cs" />
     <Compile Include="Areas\Org\Models\Org\SettingsAttendanceModel.cs" />
@@ -633,6 +637,7 @@
     <Compile Include="Areas\People\Controllers\DownlineLevelsController.cs" />
     <Compile Include="Areas\People\Controllers\DownlineSummaryController.cs" />
     <Compile Include="Areas\People\Controllers\DownlineDetailController.cs" />
+    <Compile Include="Areas\People\Models\AttributesModel.cs" />
     <Compile Include="Areas\People\Models\Contact\ContactExtraLocationConfig.cs" />
     <Compile Include="Areas\People\Models\Downline\DownlineLevelsModel.cs" />
     <Compile Include="Areas\People\Models\Downline\DownlineSummaryModel.cs" />
@@ -645,6 +650,7 @@
     <Compile Include="Areas\Public\Models\CheckInAPIv2\AttendanceBundle.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPIv2\AttendanceGroup.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPIv2\Campus.cs" />
+    <Compile Include="Areas\Public\Models\CheckInAPIv2\Profile.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPIv2\Country.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPIv2\Gender.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPIv2\Group.cs" />
@@ -917,6 +923,7 @@
     <Compile Include="Models\Api\ApiPerson.cs" />
     <Compile Include="Models\Api\ApiOrganizationMember.cs" />
     <Compile Include="Models\Api\AddContributionModel.cs" />
+    <Compile Include="Models\DynamicParametersExtensions.cs" />
     <Compile Include="Models\ErrorMessage.cs" />
     <Compile Include="Models\ExtraValue\EntryModel.cs" />
     <Compile Include="Models\ExtraValue\ExtraInfo.cs" />
@@ -1109,6 +1116,8 @@
     <Compile Include="Code\PaymentValidator.cs" />
     <Compile Include="Code\SmartBinder.cs" />
     <Compile Include="Models\HtmlHolder.cs" />
+    <Compile Include="Models\PythonScriptModel.cs" />
+    <Compile Include="Models\SqlScriptModel.cs" />
     <Compile Include="Services\MeetingCategory\MeetingCategoryService.cs" />
     <Compile Include="Services\MeetingCategory\IMeetingCategoryService.cs" />
     <Compile Include="Services\CommunicationService.cs" />
@@ -1210,6 +1219,7 @@
     <Content Include="Content\img\textarealine.png" />
     <Content Include="Content\touchpoint\css\account.css" />
     <Content Include="Content\touchpoint\css\app.css" />
+    <Content Include="Content\touchpoint\css\checkin.css" />
     <Content Include="Content\touchpoint\css\editor.css" />
     <Content Include="Content\touchpoint\css\error.css" />
     <Content Include="Content\touchpoint\css\gateway.css" />
@@ -1250,6 +1260,7 @@
     <Content Include="Content\touchpoint\js\finance\transactions.js" />
     <Content Include="Content\touchpoint\js\form-ajax.js" />
     <Content Include="Content\touchpoint\js\gateway.js" />
+    <Content Include="Content\touchpoint\js\checkin.js" />
     <Content Include="Content\touchpoint\js\snackbar.js" />
     <Content Include="Content\touchpoint\js\main.js" />
     <Content Include="Content\touchpoint\js\metrozip\metro-zip.js" />
@@ -1844,6 +1855,8 @@
     <Content Include="Areas\Org\Views\Org\EditorTemplates\OrganizationDocument.cshtml" />
     <Content Include="Areas\Org\Views\Org\DisplayTemplates\AskDocuments.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskDocuments.cshtml" />
+    <Content Include="Areas\Org\Views\Org\Settings\CheckIn.cshtml" />
+    <Content Include="Areas\CheckIn\Views\CheckIn\CheckIn.cshtml" />
     <Content Include="Areas\CheckIn\Views\Web.config" />
     <Content Include="Areas\CheckIn\Views\CheckinSetup\Index.cshtml" />
     <None Include="packages.config">
@@ -2496,7 +2509,6 @@
     <Content Include="Areas\Manage\Views\Transactions\ReportByBatchDescription.cshtml" />
     <Compile Include="Code\UnallowedCodeAttribute.cs" />
     <Compile Include="Controllers\SupportController.cs" />
-    <Compile Include="Models\ScriptModel.cs" />
     <Compile Include="Models\SupportRequestModel.cs" />
     <Compile Include="Models\HomeModel.cs" />
     <Compile Include="Areas\Manage\Models\EmailModel.cs" />
@@ -2657,7 +2669,6 @@
     <Content Include="Views\Home\UserPreferences.cshtml" />
     <Content Include="Views\ExtraValue\EditStandard.cshtml" />
     <Content Include="Views\Home\MyDataSupport.cshtml" />
-    <Content Include="Views\Script\TestScript.cshtml" />
     <Content Include="Views\Shared\OnlineReg2.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\Hyperlink.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\InlineBoolean.cshtml" />
@@ -2768,13 +2779,10 @@
     <Content Include="Views\Script\PyScriptForm.cshtml" />
     <Content Include="Views\Shared\Menu\User.cshtml" />
     <Content Include="Views\Shared\PageError.cshtml" />
-    <Content Include="Views\Script\Test.cshtml" />
     <Content Include="Views\Shared\Toolbar\Custom.cshtml" />
     <Content Include="Views\Shared\PageMessage.cshtml" />
     <Content Include="Areas\Manage\Views\Account\_ShellLayout.cshtml" />
     <Content Include="Views\ExtraValue\Location.cshtml" />
-    <Content Include="Views\Script\Warmup.cshtml" />
-    <Content Include="Views\Script\TestBackground.cshtml" />
     <Content Include="Views\Script\RunScriptPageBreaks.cshtml" />
     <Content Include="Views\Shared\_LayoutCheckIn.cshtml" />
     <Content Include="Views\Shared\_LayoutNoHeaderFooter.cshtml" />

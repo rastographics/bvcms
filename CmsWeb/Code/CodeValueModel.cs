@@ -246,7 +246,7 @@ namespace CmsWeb.Code
 
         public static IEnumerable<CodeValueItem> BundleStatusTypes()
         {
-            var hasDataEntryRole = DbUtil.Db.CurrentRoles().Any(rr => rr == "FinanceDataEntry");
+            var hasDataEntryRole = DbUtil.Db.CurrentRoles().Contains("FinanceDataEntry");
             return from bs in DbUtil.Db.BundleStatusTypes
                    where bs.Id < 2 || hasDataEntryRole
                    select new CodeValueItem

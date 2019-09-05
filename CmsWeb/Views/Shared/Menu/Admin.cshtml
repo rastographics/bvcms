@@ -1,13 +1,14 @@
 ﻿@using CmsWeb.Controllers
 @using CmsWeb.Models
 @{
+    CMSDataContext Db = ViewBag.CurrentDatabase;
     var admin = User.IsInRole("Admin");
     var developer = User.IsInRole("Developer");
     var manageemails = User.IsInRole("ManageEmails");
     var managetrans = User.IsInRole("ManageTransactions");
     var edit = User.IsInRole("Edit");
     var sendsms = User.IsInRole("SendSms");
-    var manageResources = User.IsInRole("ManageResources") && DbUtil.Db.Setting("Resources-Enabled");
+    var manageResources = User.IsInRole("ManageResources") && Db.Setting("Resources-Enabled");
     var design = User.IsInRole("Design");
     var finance = User.IsInRole("Finance") && ((string)Session["testnofinance"]) != "true";
     var financedataentry = User.IsInRole("FinanceDataEntry");
@@ -15,7 +16,7 @@
     var checkin = User.IsInRole("Checkin");
     const bool financetrue = true;
     const bool financefalse = false;
-    var deposititems = ScriptModel.CustomDepositImportMenuItems();
+    var deposititems = PythonScriptModel.CustomDepositImportMenuItems(Db);
 }
 @if (admin || manageemails || managetrans || edit || design || finance || manageResources || financedataentry || financeviewonly)
 {
@@ -198,8 +199,9 @@
 
 @helper AdminList2(bool admin, bool design, bool managetrans, bool edit, bool manageemails, bool finance, bool developer, bool manageResources, bool sendsms, bool financedataentry, bool checkin)
 {
-    var attendanceUseMeetingCategory = DbUtil.Db.Setting("AttendanceUseMeetingCategory");
-    var webCheckinEnabled = DbUtil.Db.Setting("EnableWebCheckin");
+    CMSDataContext Db = ViewBag.CurrentDatabase;
+    var attendanceUseMeetingCategory = Db.Setting("AttendanceUseMeetingCategory");
+    var webCheckinEnabled = Db.Setting("EnableWebCheckin");
     if (admin)
     {
         <li class="dropdown-header dropdown-sub-header">Organizations</li>
@@ -239,12 +241,12 @@
     }
     if (admin || edit)
     {
-        <li class="dropdown-header dropdown-sub-header">Checkin</li>
+        <li class="dropdown-header dropdown-sub-header">Check-In</li>
         if (webCheckinEnabled)
         {
-        @Helper.LiAnchorLink("Checkin Setup", "/CheckinSetup", checkin)
+        @Helper.LiAnchorLink("Check-In Setup", "/CheckinSetup", checkin)
         }
-        @Helper.LiAnchorLink("Checkin Activity", "/CheckinTimes/")
-        @Helper.LiAnchorLink("Checkin Labels", "/CheckinLabels", admin)
+        @Helper.LiAnchorLink("Check-In Activity", "/CheckinTimes/")
+        @Helper.LiAnchorLink("Check-In Labels", "/CheckinLabels", admin)
     }
 }

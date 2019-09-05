@@ -83,6 +83,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Areas\General\TestScriptController.cs" />
     <Compile Include="Areas\General\GeneralTests.cs" />
     <Compile Include="Areas\Manage\AccountTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -95,7 +96,6 @@
     <Compile Include="Support\FeatureTestBase.cs" />
     <Compile Include="Support\IISExpress.cs" />
     <Compile Include="Support\Settings.cs" />
-    <Compile Include="Support\TestBase.cs" />
     <Compile Include="WebAppCollection.cs" />
     <Compile Include="WebAppFixture.cs" />
   </ItemGroup>
@@ -103,6 +103,8 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
+    <Content Include="Resources\PyScriptFormTest.py" />
+    <None Include="app.config" />
     <None Include="packages.config" />
     <None Include="Resources\applicationhost.config">
       <SubType>Designer</SubType>
@@ -141,6 +143,7 @@
     <EmbeddedResource Include="Resources\R.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>R.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
