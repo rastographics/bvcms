@@ -12,12 +12,16 @@ namespace CmsWeb.Membership
 {
 	public class CMSRoleProvider : RoleProvider
 	{
-		public static CMSRoleProvider provider
+        private static CMSRoleProvider _currentProvider;
+
+        public static CMSRoleProvider provider
 		{
-			get { return Roles.Provider as CMSRoleProvider; }
+			get { return _currentProvider ?? Roles.Provider as CMSRoleProvider; }
 		}
 
-		public override string ApplicationName { get { return "cms"; } set { } }
+        public static void SetCurrentProvider(CMSRoleProvider provider) => _currentProvider = provider;
+
+        public override string ApplicationName { get { return "cms"; } set { } }
 
         public CMSDataContext CurrentDatabase => CMSDataContext.Create(HttpContextFactory.Current);
 
