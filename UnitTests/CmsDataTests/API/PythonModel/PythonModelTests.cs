@@ -15,7 +15,7 @@ namespace CmsDataTests
         [InlineData("2019-07-25", "7/22/2019 13:30:00", 1, "50", "1080", "Slush Fund", 1)]
         public void AddContributionTest(string date, string cDate, int fundid, string amount, string checkno, string description, int peopleid)
         {
-            var db = CMSDataContext.Create(Util.Host);
+            var db = CMSDataContext.Create(DatabaseFixture.Host);
             var model = new PythonModel(db);
             var dateValue = DateTime.Parse(date);
             var bundleHeader = model.GetBundleHeader(dateValue, DateTime.Now);
