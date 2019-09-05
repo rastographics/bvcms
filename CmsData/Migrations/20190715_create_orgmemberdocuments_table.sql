@@ -1,11 +1,3 @@
-IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where 
-	TABLE_NAME = 'OrgMemberDocuments' AND 
-	TABLE_SCHEMA = 'dbo')
-	BEGIN
-		DROP TABLE [dbo].[OrgMemberDocuments]
-	END
-GO
-
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where 
 	TABLE_NAME = 'OrgMemberDocuments' AND 
 	TABLE_SCHEMA = 'dbo')
