@@ -213,6 +213,10 @@ namespace CmsWeb.Controllers
                 {
                     return Redirect(ret.Substring(9).Trim());
                 }
+                if (model.pythonModel.Output.HasValue() && !model.pythonModel.Form.HasValue())
+                {
+                    return View("PyScript", model.pythonModel);
+                }
                 return Content(ret);
             }
             catch (Exception ex)
