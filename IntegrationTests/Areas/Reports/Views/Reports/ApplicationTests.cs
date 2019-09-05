@@ -54,7 +54,7 @@ namespace IntegrationTests.Areas.Reports.Views.Reports
             Open($"{rootUrl}OnlineReg/{OrgId}");
             Open($"{rootUrl}Reports/Application/{OrgId}/{user.PeopleId}/MembershipApp2017");
 
-            Wait(6);
+            Wait(10);
 
             PageSource.ShouldContain("ThisTextMustAppearInTests");
             SpecialContentUtils.DeleteSpecialContent(NewSpecialContent.Id);
