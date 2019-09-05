@@ -43,7 +43,7 @@ namespace CmsWeb.Controllers
                 return Message("Not Authorized to run this script");
             }
             var p = m.FetchParameters();
-
+            var pSql = m.AddParametersForSql(parameter, sql, p, ViewBag);
             ViewBag.Report = name;
             ViewBag.Name = title ?? $"{name.SpaceCamelCase()} {parameter}";
             if (sql.Contains("pagebreak"))
