@@ -2,6 +2,7 @@
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.Events;
 using OpenQA.Selenium.Support.UI;
+using SharedTestFixtures;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,7 +13,7 @@ using Xunit;
 
 namespace IntegrationTests.Support
 {
-    public class FeatureTestBase : TestBase
+    public class FeatureTestBase : DatabaseTestBase
     {
         protected string rootUrl => Settings.RootUrl;
 

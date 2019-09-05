@@ -526,15 +526,21 @@ new Vue({
             for (var i = 0; i < keys.length; i++) {
                 if (vm.attendance[keys[i]].changed) {
                     var attend = keys[i].split('.');
-                    var bundle = {
-                        peopleID: attend[0],
-                        groups: [{
-                            groupID: attend[1],
-                            present: vm.attendance[keys[i]].status === vm.PRESENT,
-                            datetime: attend[2]
-                        }]
+                    var peopleId = attend[0];
+                    var group = {
+                        groupID: attend[1],
+                        present: vm.attendance[keys[i]].status === vm.PRESENT,
+                        datetime: attend[2]
                     };
-                    attendances.push(bundle);
+                    if (attendances.hasOwnProperty(peopleId)) {
+                        attendances[peopleId].groups.push(group);
+                    } else {
+                        attendances[peopleId] = {
+                            peopleID: peopleId,
+                            groups: [group]
+                        };
+                    }
+                    
                 }
             }
             var payload = vm.generatePayload({
@@ -542,7 +548,7 @@ new Vue({
                 guestLabels: vm.profile.GuestLabels,
                 locationLabels: vm.profile.LocationLabels,
                 nameTagAge: vm.profile.CutoffAge,
-                attendances: attendances
+                attendances: Object.values(attendances)
             });
             vm.$http.post('/CheckInApiV2/UpdateAttend', payload, vm.apiHeaders).then(
                 response => {

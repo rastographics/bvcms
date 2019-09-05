@@ -26,7 +26,7 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 		public override void ExecuteResult( ControllerContext context )
 		{
 			context.HttpContext.Response.ContentType = "application/json";
-			context.HttpContext.Response.Output.Write( JsonConvert.SerializeObject( this ) );
+			context.HttpContext.Response.Output.Write( this.ToString() );
 		}
 
 		public static MobileMessage createLoginErrorReturn( MobileAuthentication authentication )
@@ -121,7 +121,12 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 			argString = argString.ToLower();
 		}
 
-		public enum Device
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
+        }
+
+        public enum Device
 		{
 			UNKNOW = 0,
 			IOS = 1,

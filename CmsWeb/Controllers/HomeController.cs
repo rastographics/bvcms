@@ -269,6 +269,12 @@ namespace CmsWeb.Controllers
             return new PictureResult(id);
         }
 
+        [Route("~/BackgroundImage/{id:int}")]
+        public ActionResult BackgroundImage(int id)
+        {
+            return new PictureResult(id, shouldBePublic: true);
+        }
+
         [HttpGet, Route("~/ImageSized/{id:int}/{w:int}/{h:int}/{mode}")]
         public ActionResult ImageSized(int id, int w, int h, string mode)
         {
