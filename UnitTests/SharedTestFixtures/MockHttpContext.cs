@@ -14,6 +14,7 @@ namespace SharedTestFixtures
     {
         public Mock<HttpRequestBase> MockRequest { get; set; }
         public Mock<HttpResponseBase> MockResponse { get; set; }
+        public NameValueCollection Headers { get; set; }
         public NameValueCollection ServerVariables { get; set; }
 
         public static IDictionary Items { get; set; }
@@ -29,6 +30,7 @@ namespace SharedTestFixtures
             var user = new Mock<IPrincipal>();
             var identity = new Mock<IIdentity>();
             var responseBody = new StringBuilder();
+            Headers = new NameValueCollection();
             ServerVariables = new NameValueCollection {
                 { "HTTP_X_FORWARDED_FOR", null },
                 { "REMOTE_ADDR", "::1" }
@@ -39,6 +41,7 @@ namespace SharedTestFixtures
             MockRequest.SetupGet(r => r.Url).Returns(new Uri(Url));
             MockRequest.SetupGet(r => r.QueryString).Returns(new NameValueCollection { });
             MockRequest.SetupGet(r => r.ServerVariables).Returns(ServerVariables);
+            MockRequest.SetupGet(r => r.Headers).Returns(Headers);
 
             MockResponse.SetupGet(ctx => ctx.Output).Returns(new StringWriter(responseBody));
 

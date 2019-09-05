@@ -19,7 +19,7 @@ namespace CmsDataTests
         {
             var fromDate = new DateTime(2019, 1, 1);
             var toDate = new DateTime(2019, 7, 31);
-            using (var db = CMSDataContext.Create(Util.Host))
+            using (var db = CMSDataContext.Create(DatabaseFixture.Host))
             {
                 var TotalAmmountContributions = db.Contributions.Where(x => x.ContributionTypeId == 1).Sum(x => x.ContributionAmount) ?? 0;
                 var TotalPledgeAmountContributions = db.Contributions.Where(x => x.ContributionTypeId == 8).Sum(x => x.ContributionAmount) ?? 0;
