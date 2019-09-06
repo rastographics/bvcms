@@ -150,14 +150,15 @@ namespace CmsData
             return myFinalList;
         }
 
-        public List<LineChartDTO> GetFundChartData(int[] fundIds)
+        public List<LineChartDTO> GetFundChartData(int[] fundIds, int? year)
         {
+            int CurrentYear = year ?? DateTime.Now.Year;
             var api = new APIContributionSearchModel(DbUtil.Db);
 
             List<LineChartDTO> myFinalList = new List<LineChartDTO>();
 
             var myList = (from c in DbUtil.Db.Contributions
-                          where c.ContributionDate.Value.Year == (DateTime.Now.Year)
+                          where c.ContributionDate.Value.Year == (CurrentYear)
                 group c by new {c.ContributionDate.Value.Month}
                 into grp
                 select new ChartDTO
@@ -167,7 +168,7 @@ namespace CmsData
                 }).ToList();
 
             var myList1=(from ce in DbUtil.Db.Contributions
-                         where ce.ContributionDate.Value.Year == (DateTime.Now.Year - 1)
+                         where ce.ContributionDate.Value.Year == (CurrentYear - 1)
                     group ce by new { ce.ContributionDate.Value.Month } into grpc
                     select new ChartDTO
                     {
@@ -179,7 +180,7 @@ namespace CmsData
                 if (!(fundIds.Length == 1 && fundIds[0].Equals(0)))
                 {
                     myList = (from c in DbUtil.Db.Contributions
-                        where c.ContributionDate.Value.Year == (DateTime.Now.Year) &&
+                        where c.ContributionDate.Value.Year == (CurrentYear) &&
                               fundIds.Contains(c.FundId)
                         group c by new {c.ContributionDate.Value.Month}
                         into grp
@@ -190,7 +191,7 @@ namespace CmsData
                         }).ToList();
 
                     myList1 = (from ce in DbUtil.Db.Contributions
-                        where ce.ContributionDate.Value.Year == (DateTime.Now.Year - 1) &&
+                        where ce.ContributionDate.Value.Year == (CurrentYear - 1) &&
                               fundIds.Contains(ce.FundId)
                         group ce by new {ce.ContributionDate.Value.Month}
                         into grpc
@@ -218,8 +219,8 @@ namespace CmsData
                     select new LineChartDTO()
                     {
                         ChartName = "MONTHLY GIVING ANALYSIS",
-                        CurYear = DateTime.Now.Year,
-                        PreYear = DateTime.Now.Year -1,
+                        CurYear = CurrentYear,
+                        PreYear = CurrentYear -1,
                         Name = e.Name,
                         Count = rdj == null? null : rdj.Count,
                         Count2 = sdj == null ? 0 : sdj.Count

@@ -31,10 +31,10 @@ namespace CmsWeb.Areas.Figures.Controllers
             return Json(test.GetChartData(progId).ToList(), JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult ChartDisplayView(int[] fundIdsArr)
+        public ActionResult ChartDisplayView(int[] fundIdsArr, int? year)
         {
             var test = new GoogleChartsData();
-            var temp = test.GetFundChartData(fundIdsArr).ToList();
+            var temp = test.GetFundChartData(fundIdsArr, year).ToList();
             return View(temp);
         }
 

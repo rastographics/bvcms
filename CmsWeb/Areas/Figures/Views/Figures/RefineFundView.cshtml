@@ -20,6 +20,21 @@
                 <a class="btn btn-primary" id="DrawChart">Draw Fund Chart</a>
                 <br />
                 <br />
+                <div style="width: 500px">
+                    <div class="form-group">
+                        <label for="sel1">Select Year:</label>
+                        <select class="form-control" name="year" id="year">
+                            <option selected>@DateTime.Now.Year</option>
+                            @for (int i = 1; i < 5; i++)
+                            {
+                                int Year = @DateTime.Now.Year - i;
+                                <option>@Year</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <br />
+                <br />
                 <div class="form-group">
                     <div id="FundContainer">
                         <label for="Fund" class="control-label">Funds</label>
@@ -40,7 +55,8 @@
         e2.style.display = 'block';
         var selectedValues = $('#Fund-DropdownID').val();
         alert(selectedValues);
-        $("#Fund_chart_display").load('/Figures/Figures/ChartDisplayView', { fundIdsArr: selectedValues });
+        var year = document.getElementById('year').value;
+        $("#Fund_chart_display").load('/Figures/Figures/ChartDisplayView', { fundIdsArr: selectedValues, year: year });
     });
 
 </script>
