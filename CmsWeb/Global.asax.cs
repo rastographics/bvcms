@@ -1,5 +1,6 @@
 using CmsData;
 using CmsWeb.Code;
+using CmsWeb.Membership;
 using CmsWeb.Models;
 using Dapper;
 using Elmah;
@@ -153,12 +154,6 @@ namespace CmsWeb
                 }
             }
 
-            var user = db.CurrentUser;
-            if (user != null && user.MustChangePassword)
-            {
-                Response.Redirect("/Account/ChangePassword");
-            }
-
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
         }
 
@@ -185,6 +180,26 @@ namespace CmsWeb
             if (ShouldBypassProcessing())
             {
                 return;
+            }
+
+            if (Context.User != null)
+            {
+                var db = CMSDataContext.Create(new HttpContextWrapper(Context));
+                var user = db.CurrentUser;
+                if (user != null)
+                {
+                    if (MembershipService.IsMFASetupRequired(user, db))
+                    {
+                        if (!Request.Url.PathAndQuery.StartsWith("/Auth"))
+                        {
+                            Response.Redirect("/AuthSetup");
+                        }
+                    }
+                    else if (user.MustChangePassword && !Request.Url.PathAndQuery.StartsWith("/Account/ChangePassword"))
+                    {
+                        Response.Redirect("/Account/ChangePassword");
+                    }
+                }
             }
         }
 

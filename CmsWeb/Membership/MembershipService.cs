@@ -74,6 +74,11 @@ namespace CmsWeb.Membership
             return ret;
         }
 
+        public static bool IsMFASetupRequired(User user, CMSDataContext db) =>
+            !user.MFAEnabled &&
+            IsTwoFactorAuthenticationEnabled(db) &&
+            user.InAnyRole(db.Setting("TwoFactorAuthRequiredRoles", "").ToStringArray());
+
         public static bool IsTwoFactorAuthenticationEnabled(CMSDataContext db) => db.Setting("TwoFactorAuthEnabled");
 
         public static bool ShouldPromptForTwoFactorAuthentication(User user, CMSDataContext db, HttpRequestBase Request)

@@ -7,59 +7,78 @@
     form {
         overflow: hidden;
     }
+
     #step1, #step2 {
         transition: opacity 0.5s ease;
     }
+
     form.step2 #step1 {
         opacity: 0;
     }
+
     form.step1 #step2 {
         opacity: 0;
     }
+
     form.step2 .fieldset-wrapper {
         left: -100%;
     }
+
     .fieldset-wrapper {
         left: 0;
         position: relative;
         transition: all 0.5s ease;
         width: 200%;
     }
-    .fieldset-wrapper fieldset {
-        float: left;
-        width: 50%;
-    }
+
+        .fieldset-wrapper fieldset {
+            float: left;
+            width: 50%;
+        }
+
     .qrcode {
         max-width: 300px;
         width: 100%;
     }
 </style>
 <h1 class="form-header">@ViewBag.Title</h1>
+@if (ViewBag.MFASetupRequired == true)
+{
+    <h4 class="alert alert-info">
+        <p class="text-center">
+            Your system administrator requires your account to have two-factor authentication set up
+        </p>
+    </h4>
+}
 @if (ViewBag.Message != null)
 {
     <h3 class="alert alert-danger">@ViewBag.Message</h3>
 }
 @using (Html.BeginForm("AuthSetup", "Account", FormMethod.Post, new { @class = "panel step1" }))
 {
-<div class="fieldset-wrapper">
-    <fieldset id="step1">
-        <div class="form-group text-center">
-            <h3>Scan this code with the authenticator app</h3>
-            <img class="img-responsive qrcode" src="@Html.HttpsUrl(Model.QrCodeSetupImageUrl)" />
-        </div>
-        @*<div class="form-group text-center">
-                <h4>or copy and paste this code to pair your device</h4>
-                <input readonly class="text-primary" style="width:100%" value="@Model.ManualEntryKey" />
-            </div>*@
-        <div class="form-actions">
-            <h4>Click continue after you have scanned the code</h4>
-            <button id="continue" class="btn btn-primary btn-block btn-lg">Continue</button>
-        </div>
-    </fieldset>
-    <fieldset id="step2">
-    @Html.Partial("Account/TwoFactorPasscode")    
-    </fieldset>
-</div>
+    <div class="fieldset-wrapper">
+        <fieldset id="step1">
+            <div class="form-group text-center">
+                <h3>Scan this code with the authenticator app</h3>
+                <img class="img-responsive qrcode" src="@Html.HttpsUrl(Model.QrCodeSetupImageUrl)" />
+            </div>
+            @*<div class="form-group text-center">
+                    <h4>or copy and paste this code to pair your device</h4>
+                    <input readonly class="text-primary" style="width:100%" value="@Model.ManualEntryKey" />
+                </div>*@
+            <div class="form-actions">
+                <h4>Click continue after you have scanned the code</h4>
+                <button id="continue" class="btn btn-primary btn-block btn-lg">Continue</button>
+            </div>
+        </fieldset>
+        <fieldset id="step2">
+            @Html.Partial("Account/TwoFactorPasscode")
+        </fieldset>
+    </div>
+    <a href="https://docs.touchpointsoftware.com/TwoFactorAuthentication.html"
+       class="help-icon top-right" title="Help" target="_blank">
+        <i class="fa fa-2x fa-question-circle"></i>
+    </a>
 }
 @section scripts
 {

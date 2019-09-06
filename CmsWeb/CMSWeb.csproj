@@ -1838,6 +1838,7 @@
     <Content Include="Areas\CheckIn\Views\CheckIn\CheckIn.cshtml" />
     <Content Include="Areas\CheckIn\Views\Web.config" />
     <Content Include="Areas\CheckIn\Views\CheckinSetup\Index.cshtml" />
+    <Content Include="Areas\Manage\Views\Account\AuthDisabled.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

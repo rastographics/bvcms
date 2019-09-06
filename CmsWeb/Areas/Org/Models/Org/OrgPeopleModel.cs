@@ -8,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
 using System.Linq;
-using System.Security.Principal;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
@@ -21,7 +20,7 @@ namespace CmsWeb.Areas.Org.Models
         public CMSDataContext CurrentDatabase { get; set; }
         internal CMSDataContext Db => CurrentDatabase;
         public Guid QueryId { get; set; }
-        public IPrincipal User { get; set; }
+        public User User => CurrentDatabase.CurrentUser;
 
         public OrgPeopleModel()
             : base("Name", "asc", true)
@@ -372,7 +371,7 @@ to `Add`, `Drop`, `Update` Members etc.
                 case GroupSelectCode.Guest:
                     return false;
                 case GroupSelectCode.Previous:
-                    return HttpContextFactory.Current.User.IsInRole("Developer") || HttpContextFactory.Current.User.IsInRole("Conversion");
+                    return User.InRole("Developer") || User.InRole("Conversion");
                 default:
                     return true;
             }
@@ -385,8 +384,7 @@ to `Add`, `Drop`, `Update` Members etc.
                 return false;
             }
 
-            var u = HttpContextFactory.Current.User;
-            return u.IsInRole("Edit")
+            return User.InRole("Edit")
                 || RoleChecker.HasSetting(SettingName.OrgMembersDropAdd, false);
         }
     }

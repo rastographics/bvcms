@@ -802,8 +802,9 @@ This search uses multiple steps which cannot be duplicated in a single query.
 
         private void GetCurrentUser()
         {
+            var username = HttpContextFactory.Current?.User?.Identity?.Name;
             var q = from u in Users
-                    where u.UserId == Util.UserId
+                    where u.UserId == Util.UserId || u.Username == username
                     select new
                     {
                         u,
