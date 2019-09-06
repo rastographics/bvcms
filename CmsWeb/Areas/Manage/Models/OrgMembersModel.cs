@@ -12,7 +12,7 @@ using UtilityExtensions;
 
 namespace CmsWeb.Models
 {
-    public class OrgMembersModel : LongRunningOperation
+    public class OrgMembersModel : LongRunningOperation, IDbBinder
     {
         private IQueryable<OrganizationMember> members;
 
@@ -511,8 +511,6 @@ WHERE EXISTS(SELECT NULL FROM dbo.DivOrg WHERE OrgId = OrganizationId AND DivId 
 
         public void SendMovedNotices()
         {
-            var Db = CurrentDatabase;
-
             var q = from om in CurrentDatabase.OrganizationMembers
                     where om.Organization.DivOrgs.Any(di => di.DivId == SourceDivId)
                     where om.Moved == true || EmailAllNotices

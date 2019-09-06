@@ -14,7 +14,7 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.Search.Models
 {
-    public class RegistrationSearchModel : PagedTableModel<RegistrationList, RegistrationList>
+    public class RegistrationSearchModel : PagedTableModel<RegistrationList, RegistrationList>, IDbBinder
     {
         public CMSDataContext CurrentDatabase { get; set; }
 
