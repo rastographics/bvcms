@@ -17,15 +17,11 @@ namespace CmsWeb.Areas.Search.Controllers
         {
             Response.NoCache();
             var m = new RegistrationSearchModel() { CurrentDatabase = CurrentDatabase};
-
-            //m.GetFromSession();
             return View(m);
         }
         [HttpPost]
         public ActionResult Results(RegistrationSearchModel m)
         {
-            //m.SaveToSession();
-            m.CurrentDatabase = CurrentDatabase;
             return View(m);
         }
         [HttpPost]
