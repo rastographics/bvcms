@@ -15,9 +15,9 @@ namespace CMSWebTests.Areas.Org.Controllers
         [Fact]
         public void TestOrgGroupsMethods()
         {
-            var controller = new OrgGroupsController(FakeRequestManager.FakeRequest());
+            var controller = new OrgGroupsController(FakeRequestManager.Create());
             var routeDataValues = new Dictionary<string, string>();
-            controller.ControllerContext = ControllerTestUtils.FakeContextController(controller, routeDataValues);
+            controller.ControllerContext = ControllerTestUtils.FakeControllerContext(controller, routeDataValues);
             var db = DatabaseFixture.NewDbContext();
             var groupNames = new []{"Test Group", "Another Name", "Yet Another"};
 
