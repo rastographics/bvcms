@@ -226,7 +226,6 @@ namespace CmsData
                         Count2 = sdj == null ? 0 : sdj.Count
                     }).ToList();
 
-
             return myFinalList;
         }
     }

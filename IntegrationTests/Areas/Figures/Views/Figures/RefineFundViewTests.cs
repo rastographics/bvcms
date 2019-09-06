@@ -1,14 +1,8 @@
-﻿using CmsData;
-using IntegrationTests.Support;
+﻿using IntegrationTests.Support;
 using SharedTestFixtures;
 using Shouldly;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
-
 
 namespace IntegrationTests.Areas.Figures.Views.Figures
 {
