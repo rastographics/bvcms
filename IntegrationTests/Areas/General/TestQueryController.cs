@@ -23,7 +23,7 @@ namespace IntegrationTests.Areas.Manage
         {
             username = RandomString();
             password = RandomString();
-            CreateUser(roles: new[] { "Access", "Edit", "Admin" });
+            CreateUser(username, password, roles: new[] { "Access", "Edit", "Admin" });
             Login();
             Open($"{rootUrl}QueryCode?code=Age>65");
             WaitForElement("input[id=totcnt]");
