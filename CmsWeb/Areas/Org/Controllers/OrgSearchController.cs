@@ -71,7 +71,6 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ActionResult Results(OrgSearchModel m)
         {
-            m.CurrentDatabase = CurrentDatabase;
             Session[STR_OrgSearch] = new OrgSearchInfo(m);
             return View(m);
         }
@@ -93,7 +92,6 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ActionResult ApplyType(int id, OrgSearchModel m)
         {
-            m.CurrentDatabase = CurrentDatabase;
             var t = (id == -1 ? (int?)null : id);
             if (t == 0)
             {
@@ -129,7 +127,6 @@ namespace CmsWeb.Areas.Search.Controllers
                 return Content("");
             }
 
-            m.CurrentDatabase = CurrentDatabase;
             var org = CurrentDatabase.LoadOrganizationById(id);
             if (t.HasValue || org != null)
             {
@@ -181,38 +178,32 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ActionResult ExportExcel(OrgSearchModel m)
         {
-            m.CurrentDatabase = CurrentDatabase;
             return m.OrganizationExcelList();
         }
         [HttpPost]
         public ActionResult ExportMembersExcel(OrgSearchModel m)
         {
-            m.CurrentDatabase = CurrentDatabase;
             return m.OrgsMemberList();
         }
         [HttpPost]
         public ActionResult RegOptions(OrgSearchModel m)
         {
-            m.CurrentDatabase = CurrentDatabase;
             return m.RegOptionsList();
         }
         [HttpPost]
         public ActionResult RegQuestionsUsage(OrgSearchModel m)
         {
-            m.CurrentDatabase = CurrentDatabase;
             return m.RegQuestionsUsage();
         }
         [HttpPost]
         public ActionResult RegSettingUsages(OrgSearchModel m)
         {
-            m.CurrentDatabase = CurrentDatabase;
             return m.RegSettingUsages();
         }
         [HttpPost]
         public ActionResult RegSettingsXml(OrgSearchModel m)
         {
             Response.ContentType = "text/xml";
-            m.CurrentDatabase = CurrentDatabase;
             m.RegSettingsXml(Response.OutputStream);
             return new EmptyResult();
         }
@@ -221,7 +212,6 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult RegMessages(OrgSearchModel m, Settings.Messages messages)
         {
             Response.ContentType = "text/xml";
-            m.CurrentDatabase = CurrentDatabase;
             m.RegMessagesXml(Response.OutputStream, messages);
             return new EmptyResult();
         }
@@ -288,7 +278,6 @@ namespace CmsWeb.Areas.Search.Controllers
         [Route("SqlReport/{report}")]
         public ActionResult SqlReport(OrgSearchModel m, string report, DateTime? dt1 = null, DateTime? dt2 = null)
         {
-            m.CurrentDatabase = CurrentDatabase;
             try
             {
                 var orgs = m.FetchOrgs();
@@ -367,21 +356,18 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ActionResult Count(OrgSearchModel m)
         {
-            m.CurrentDatabase = CurrentDatabase;
             return Content(m.FetchOrgs().Count().ToString());
         }
 
         [HttpPost]
         public ActionResult OrgIds(OrgSearchModel m)
         {
-            m.CurrentDatabase = CurrentDatabase;
             var orgs = m.FetchOrgs();
             return Content(string.Join(",", orgs.Select(oo => oo.OrganizationId)));
         }
         [HttpPost]
         public ActionResult PasteSettings(OrgSearchModel m)
         {
-            m.CurrentDatabase = CurrentDatabase;
             var frorg = (int)Session["OrgCopySettings"];
             var orgs = from os in m.FetchOrgs()
                        join o in CurrentDatabase.Organizations on os.OrganizationId equals o.OrganizationId
@@ -397,7 +383,6 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ActionResult RepairTransactions(OrgSearchModel m)
         {
-            m.CurrentDatabase = CurrentDatabase;
             foreach (var oid in m.FetchOrgs().Select(oo => oo.OrganizationId))
             {
                 CurrentDatabase.PopulateComputedEnrollmentTransactions(oid);
@@ -471,7 +456,6 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ActionResult CreateMeetings(DateTime dt, bool noautoabsents, OrgSearchModel model)
         {
-            model.CurrentDatabase = CurrentDatabase;
             var orgIds = model.FetchOrgs().Select(oo => oo.OrganizationId).ToList();
             foreach (var oid in orgIds)
             {
@@ -483,7 +467,6 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ActionResult MovePendingToMember(OrgSearchModel m)
         {
-            m.CurrentDatabase = CurrentDatabase;
             var orgids = string.Join(",", m.FetchOrgs().Select(mm => mm.OrganizationId));
             var i = CurrentDatabase.Connection.ExecuteScalar($@"
 	UPDATE dbo.OrganizationMembers
@@ -501,7 +484,6 @@ namespace CmsWeb.Areas.Search.Controllers
         [Authorize(Roles = "Attendance")]
         public ActionResult EmailAttendanceNotices(OrgSearchModel m)
         {
-            m.CurrentDatabase = CurrentDatabase;
             m.SendNotices();
             return Content("ok");
         }
@@ -510,14 +492,12 @@ namespace CmsWeb.Areas.Search.Controllers
         [Authorize(Roles = "Attendance")]
         public ActionResult DisplayAttendanceNotices(OrgSearchModel m)
         {
-            m.CurrentDatabase = CurrentDatabase;
             var leaders = m.NoticesToSend();
             return View(leaders);
         }
 
         public ActionResult OrganizationStructure(bool? active, OrgSearchModel m)
         {
-            m.CurrentDatabase = CurrentDatabase;
             var orgs = m.FetchOrgs();
             var q = from os in CurrentDatabase.ViewOrganizationStructures
                     join o in orgs on os.OrgId equals o.OrganizationId
@@ -527,7 +507,6 @@ namespace CmsWeb.Areas.Search.Controllers
 
         public ActionResult ConvertToSearch(OrgSearchModel m)
         {
-            m.CurrentDatabase = CurrentDatabase;
             var s = m.ConvertToSearch();
             return s.StartsWith("Error")
                 ? RedirectShowError(s)
