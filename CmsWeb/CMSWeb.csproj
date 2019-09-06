@@ -906,6 +906,7 @@
     <Compile Include="Controllers\ExtraValue\StandardController.cs" />
     <Compile Include="Controllers\ExtraValue\AdhocController.cs" />
     <Compile Include="Controllers\ExtraValue\ReportsController.cs" />
+    <Compile Include="Controllers\Home2Controller.cs" />
     <Compile Include="Controllers\ScriptController.cs" />
     <Compile Include="Controllers\MobileAppMenuController.cs" />
     <Compile Include="Controllers\WebHookController.cs" />
