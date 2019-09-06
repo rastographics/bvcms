@@ -93,7 +93,7 @@
                                     </div>
                                     <div class="col-md-6">
                                         <label>Logout Code (5 digits)</label>
-                                        <input v-model="CheckinProfileSettings.Logout" class="form-control logoutCode" />
+                                        <input v-model="CheckinProfileSettings.Logout" type="number" min="00000" max="99999" class="form-control logoutCode" />
                                     </div>
                                 </div>
                                 <br />

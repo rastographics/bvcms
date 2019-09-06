@@ -4,6 +4,8 @@ using System.Data.SqlClient;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Web.Mvc;
+using ZXing;
+using ZXing.Common;
 using CmsData;
 using CmsData.Codes;
 using CmsWeb.Areas.Public.Models.CheckInAPIv2;
@@ -19,6 +21,7 @@ using Country = CmsWeb.Areas.Public.Models.CheckInAPIv2.Country;
 using Family = CmsWeb.Areas.Public.Models.CheckInAPIv2.Family;
 using Gender = CmsWeb.Areas.Public.Models.CheckInAPIv2.Gender;
 using MaritalStatus = CmsWeb.Areas.Public.Models.CheckInAPIv2.MaritalStatus;
+using System.Drawing;
 
 namespace CmsWeb.Areas.Public.Controllers
 {
@@ -452,6 +455,14 @@ namespace CmsWeb.Areas.Public.Controllers
 
 			return response;
 		}
+
+        private void GenerateBarcode(string data)
+        {
+            // todo: return base 64 encoded image
+            var QRCode = new ZXing.QrCode.QRCodeWriter();
+            BitMatrix bytes = QRCode.encode(data, BarcodeFormat.QR_CODE, 2, 2);
+        }
+
 
 		// Version for future API changes
 		[SuppressMessage( "ReSharper", "UnusedParameter.Local" )]
