@@ -167,10 +167,10 @@ namespace CmsWeb.Areas.CheckIn.Controllers
 
             if (file != null)
             {
-                var DefaultHost = DbUtil.Db.Setting("DefaultHost", "");
+                var DefaultHost = CurrentDatabase.Setting("DefaultHost", "");
                 checkinProfileSettings.BackgroundImage = StoreBGImage(file, checkinProfileSettings.BackgroundImage);
                 checkinProfileSettings.BackgroundImageName = file.FileName;
-                checkinProfileSettings.BackgroundImageURL = $"{DefaultHost}/Image/{checkinProfileSettings.BackgroundImage}?{DateTime.Now.ToString("yyMMddhhmmss")}";
+                checkinProfileSettings.BackgroundImageURL = $"{Configuration.Current.CmsHost}BackgroundImage/{checkinProfileSettings.BackgroundImage}?{DateTime.Now.ToString("yyMMddhhmmss")}";
             }
 
             return checkinProfileSettings;
@@ -188,7 +188,7 @@ namespace CmsWeb.Areas.CheckIn.Controllers
             stream.Read(bits, 0, bits.Length);
             if (imageId == null)
             {
-                return Image.NewImageFromBits(bits, CurrentImageDatabase).Id;
+                return Image.NewImageFromBits(bits, CurrentImageDatabase, true).Id;
             }
             return CurrentImageDatabase.UpdateImageFromBits(imageId.Value, bits).Id;
         }
