@@ -372,7 +372,7 @@ to `Add`, `Drop`, `Update` Members etc.
                 case GroupSelectCode.Guest:
                     return false;
                 case GroupSelectCode.Previous:
-                    return User.IsInRole("Developer") || User.IsInRole("Conversion");
+                    return HttpContextFactory.Current.User.IsInRole("Developer") || HttpContextFactory.Current.User.IsInRole("Conversion");
                 default:
                     return true;
             }
