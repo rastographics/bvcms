@@ -7,14 +7,17 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.Search.Models
 {
-    public class QueryResults : PagedTableModel<Person, PeopleInfo>
+    public class QueryResults : PagedTableModel<Person, PeopleInfo>, IDbBinder
     {
-        internal CMSDataContext Db;
+        public CMSDataContext CurrentDatabase {get; set;}
+        internal CMSDataContext Db => CurrentDatabase;
+
         public string Description { get { return topclause.Description; } }
         public string SaveToDescription { get { return topclause.PreviousName ?? topclause.Description; } }
         public Guid? QueryId { get; set; }
 
         private Condition topclause;
+
         public Condition TopClause
         {
             get

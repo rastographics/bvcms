@@ -5,11 +5,12 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web.Mvc;
+using CmsWeb.Models;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Org.Models
 {
-    public class SettingsAttendanceModel
+    public class SettingsAttendanceModel : IDbBinder
     {
         public CMSDataContext CurrentDatabase
         {
