@@ -1,0 +1,118 @@
+﻿@using CmsData
+@model CmsWeb.Areas.Org.Models.SettingsCheckInModel
+@{
+    ViewBag.ShowHelp = DbUtil.Db.UserPreference("ShowCheckInHelp");
+    ViewBag.FalseValue = "";
+}
+<form class="ajax">
+    @if (!Html.ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger">
+            @Html.ValidationMessage("Form")
+        </div>
+    }
+    <div class="row">
+        <div class="col-sm-6">
+            <h4>Check In</h4>
+        </div>
+        <div class="col-sm-6">
+            <div class="pull-right hidden-xs">
+                <a href="/Org/CheckInHelpToggle/@Model.Id" class="btn btn-default ajax"><i class="fa fa-question-circle"></i> @(ViewBag.ShowHelp == true ? "Hide Help" : "Show Help")</a>
+                <a href="/Org/CheckInUpdate/@Model.Id" class="btn btn-primary ajax validate">Save</a>
+            </div>
+        </div>
+    </div>
+    <div class="well">
+        <div class="row">
+            <div class="col-sm-6 col-md-4 col-lg-3">
+                @if (User.IsInRole("Edit"))
+                {
+                    @Html.EditorFor(m => m.NumCheckInLabels)
+                }
+                else
+                {
+                    @Html.DisplayFor(m => m.NumCheckInLabels)
+                }
+            </div>
+            <div class="col-sm-6 col-md-4 col-lg-3">
+                @if (User.IsInRole("Edit"))
+                {
+                    @Html.EditorFor(m => m.NumWorkerCheckInLabels)
+                }
+                else
+                {
+                    @Html.DisplayFor(m => m.NumWorkerCheckInLabels)
+                }
+            </div>
+            <div class="col-sm-6 col-md-2 col-lg-3">
+                @if (User.IsInRole("Edit"))
+                {
+                    @Html.EditorFor(m => m.BirthDayStart)
+                }
+                else
+                {
+                    @Html.DisplayFor(m => m.BirthDayStart)
+                }
+            </div>
+            <div class="col-sm-6 col-md-2 col-lg-3">
+                @if (User.IsInRole("Edit"))
+                {
+                    @Html.EditorFor(m => m.BirthDayEnd)
+                }
+                else
+                {
+                    @Html.DisplayFor(m => m.BirthDayEnd)
+                }
+            </div>
+            <div class="col-sm-6 col-md-6 col-lg-3">
+                @if (User.IsInRole("Edit"))
+                {
+                    @Html.EditorFor(m => m.CanSelfCheckin)
+                }
+                else
+                {
+                    @Html.DisplayFor(m => m.CanSelfCheckin, new { FalseValue = "n/a" })
+                }
+            </div>
+            <div class="col-sm-6 col-md-6 col-lg-3">
+                @if (User.IsInRole("Edit"))
+                {
+                    @Html.EditorFor(m => m.SuspendCheckin)
+                }
+                else
+                {
+                    @Html.DisplayFor(m => m.SuspendCheckin, new { FalseValue = "n/a" })
+                }
+            </div>
+            <div class="col-sm-6 col-md-6 col-lg-3">
+                @if (User.IsInRole("Edit"))
+                {
+                    @Html.EditorFor(m => m.NoSecurityLabel)
+                }
+                else
+                {
+                    @Html.DisplayFor(m => m.NoSecurityLabel, new { FalseValue = "n/a" })
+                }
+            </div>
+            <div class="col-sm-6 col-md-6 col-lg-3">
+                @if (User.IsInRole("Edit"))
+                {
+                    @Html.EditorFor(m => m.AllowNonCampusCheckIn)
+                }
+                else
+                {
+                    @Html.DisplayFor(m => m.AllowNonCampusCheckIn, new { FalseValue = "n/a" })
+                }
+            </div>
+        </div>
+    </div>
+    <div class="pull-right hidden-xs">
+        <a href="/Org/CheckInHelpToggle/@Model.Id" class="btn btn-default ajax"><i class="fa fa-question-circle"></i> @(ViewBag.ShowHelp == true ? "Hide Help" : "Show Help")</a>
+        <a href="/Org/CheckInUpdate/@Model.Id" class="btn btn-primary ajax validate">Save</a>
+    </div>
+    <div class="visible-xs-block">
+        <a href="/Org/CheckInUpdate/@Model.Id" class="btn btn-primary btn-block ajax validate">Save</a>
+        <a href="/Org/CheckInHelpToggle/@Model.Id" class="btn btn-default btn-block ajax"><i class="fa fa-question-circle"></i> @(ViewBag.ShowHelp == true ? "Hide Help" : "Show Help")</a>
+    </div>
+    <br /><br />
+</form>     

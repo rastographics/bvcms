@@ -39,13 +39,14 @@ namespace CmsWeb.Lifecycle
     {
         protected IRequestManager RequestManager { get; }
         protected HttpContextBase CurrentHttpContext => RequestManager.CurrentHttpContext;
-        protected CMSDataContext CurrentDatabase => RequestManager.CurrentDatabase;
+        internal CMSDataContext CurrentDatabase => RequestManager.CurrentDatabase;
         protected CMSImageDataContext CurrentImageDatabase => RequestManager.CurrentImageDatabase;
         protected IPrincipal CurrentUser => RequestManager.CurrentUser;
 
         public CMSBaseController(IRequestManager requestManager)
         {
             RequestManager = requestManager;
+            ViewBag.CurrentDatabase = requestManager.CurrentDatabase;
         }
     }
 

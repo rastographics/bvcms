@@ -1,6 +1,7 @@
 ﻿@using CmsWeb.Areas.People.Models
 @model CmsWeb.Models.PagerModel2
 @{
+    CMSDataContext Db = ViewBag.CurrentDatabase;
     var showOrgTypeFilter = Model.GetType() == typeof (CurrentEnrollments) || Model.GetType() == typeof (PreviousEnrollments) || Model.GetType() == typeof (PendingEnrollments);
     var colClasses = showOrgTypeFilter ? "col-lg-12 col-md-12 col-sm-12" : "col-lg-4 col-md-8 col-sm-12";
 }
@@ -18,7 +19,7 @@
             }
             @Html.Partial("Pagination", Model)
         }
-        @if (showOrgTypeFilter && DbUtil.Db.Setting("UX-ShowInvolvementOrgTypeFilter", true))
+        @if (showOrgTypeFilter && Db.Setting("UX-ShowInvolvementOrgTypeFilter", true))
         {
             <span> of types </span><input name="OrgTypesFilter" value="@(string.Join(" ,", ((dynamic)Model).OrgTypesFilter ?? new List<string>()))" class="form-control org-types-filter" id="org-types-filter-@Model.GetType().Name" style="display: inline-block; min-width:180px" />
             <script>

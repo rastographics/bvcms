@@ -91,6 +91,11 @@ namespace UtilityExtensions
 			var patt = new Regex("[^0-9,]");
 			return !patt.IsMatch(str);
 		}
+        public static bool IsDecimal(this object o)
+        {
+            decimal d;
+            return decimal.TryParse(o.ToString(), out d);
+        }
 
         private const string STR_Culture = "Culture";
         public static string Culture

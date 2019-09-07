@@ -1,9 +1,10 @@
 ﻿@{
-    var oldheader = DbUtil.Db.Setting("UseOldHeader", "false").ToBool() ? DbUtil.Db.Content("Header", "") : "";
-    var customheader = DbUtil.Db.Content("CustomHeader", @"");
+    CMSDataContext Db = ViewBag.CurrentDatabase;
+    var oldheader = Db.Setting("UseOldHeader", "false").ToBool() ? Db.Content("Header", "") : "";
+    var customheader = Db.Content("CustomHeader", @"");
 }
 <div id="clientheader">
     @Html.Raw(User.IsInRole("Access")
         ? Util.PickFirst(customheader, oldheader)
-        : Util.PickFirst(DbUtil.Db.Content("MyDataHeader", ""), customheader, oldheader))
+        : Util.PickFirst(Db.Content("MyDataHeader", ""), customheader, oldheader))
 </div>

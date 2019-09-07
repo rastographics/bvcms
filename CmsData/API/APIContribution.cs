@@ -442,7 +442,7 @@ namespace CmsData.API
         public string Description { get; set; }
         public string CheckNo { get; set; }
         public int BundleId { get; set; }
-        public int? TranId { get; set; }
+        public string TranId { get; set; }
         public int ContributionId { get; set; }
         public string ContributionType { get; set; }
         public int ContributionTypeId { get; set; }
