@@ -15,7 +15,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         [Route("~/Users")]
         public ActionResult Index(string id)
         {
-            var m = new UsersModel { name = id };
+            var m = new UsersModel { name = id, CurrentDatabase = CurrentDatabase };
             return View(m);
         }
         [HttpPost]

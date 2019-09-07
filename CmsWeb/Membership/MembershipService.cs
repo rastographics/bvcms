@@ -74,7 +74,7 @@ namespace CmsWeb.Membership
             return ret;
         }
 
-        public static bool IsMFASetupRequired(User user, CMSDataContext db) =>
+        public static bool IsTwoFactorAuthSetupRequired(User user, CMSDataContext db) =>
             !user.MFAEnabled &&
             IsTwoFactorAuthenticationEnabled(db) &&
             user.InAnyRole(db.Setting("TwoFactorAuthRequiredRoles", "").ToStringArray());
@@ -134,7 +134,10 @@ namespace CmsWeb.Membership
             db.MFATokens.DeleteAllOnSubmit(
                 db.MFATokens.Where(m => m.UserId == user.UserId));
             db.SubmitChanges();
-            response.SetCookie(new HttpCookie("_mfa", null) { Expires = DateTime.Now.Date });
+            if (response != null)
+            {
+                response.SetCookie(new HttpCookie("_mfa", null) { Expires = DateTime.Now.Date });
+            }
         }
 
         public static void SaveTwoFactorAuthenticationToken(CMSDataContext db, HttpResponseBase response)

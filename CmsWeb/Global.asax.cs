@@ -188,7 +188,7 @@ namespace CmsWeb
                 var user = db.CurrentUser;
                 if (user != null)
                 {
-                    if (MembershipService.IsMFASetupRequired(user, db))
+                    if (MembershipService.IsTwoFactorAuthSetupRequired(user, db))
                     {
                         if (!Request.Url.PathAndQuery.StartsWith("/Auth"))
                         {

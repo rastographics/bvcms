@@ -339,7 +339,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             }
 
             var setupInfo = MembershipService.TwoFactorAuthenticationSetupInfo(user, CurrentDatabase);
-            ViewBag.MFASetupRequired = MembershipService.IsMFASetupRequired(user, CurrentDatabase);
+            ViewBag.MFASetupRequired = MembershipService.IsTwoFactorAuthSetupRequired(user, CurrentDatabase);
 
             return View(setupInfo);
         }

@@ -1,4 +1,5 @@
 using CmsData;
+using CmsWeb.Membership;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,8 +8,7 @@ using UtilityExtensions;
 
 namespace CmsWeb.Models
 {
-
-    public class UsersModel : PagerModel2
+    public class UsersModel : PagerModel2, IDbBinder
     {
         public class UserInfo
         {
@@ -16,6 +16,7 @@ namespace CmsWeb.Models
             public int? userid { get; set; }
             public string username { get; set; }
             public string name { get; set; }
+            public bool mfaenabled { get; set; }
             public bool online { get; set; }
             public string email { get; set; }
             public DateTime? activity { get; set; }
@@ -24,6 +25,8 @@ namespace CmsWeb.Models
 
         public string name { get; set; }
         public string[] Role { get; set; }
+
+        public bool MFASystemEnabled => MembershipService.IsTwoFactorAuthenticationEnabled(CurrentDatabase);
 
         private int? _count;
         public int Count()
@@ -35,12 +38,14 @@ namespace CmsWeb.Models
 
             return _count.Value;
         }
+
         public UsersModel()
         {
             Sort = "Activity";
             Direction = "desc";
             GetCount = Count;
         }
+
         public IEnumerable<UserInfo> Users()
         {
             var q = ApplySort();
@@ -55,6 +60,7 @@ namespace CmsWeb.Models
                          username = u.Username,
                          email = u.EmailAddress,
                          online = online,
+                         mfaenabled = u.MFAEnabled,
                          peopleid = u.PeopleId,
                          activity = u.LastActivityDate,
                          roles = string.Join(", ", u.Roles.OrderBy(rr => rr))
@@ -64,7 +70,7 @@ namespace CmsWeb.Models
 
         public IEnumerable<SelectListItem> Roles()
         {
-            var q = from r in DbUtil.Db.Roles
+            var q = from r in CurrentDatabase.Roles
                     orderby r.RoleName
                     select new SelectListItem
                     {
@@ -85,7 +91,7 @@ namespace CmsWeb.Models
                 return _users;
             }
 
-            _users = from u in DbUtil.Db.Users select u;
+            _users = from u in CurrentDatabase.Users select u;
             if (name.AllDigits())
             {
                 _users = from u in _users
@@ -117,6 +123,7 @@ namespace CmsWeb.Models
             }
             return _users;
         }
+
         public IQueryable<User> ApplySort()
         {
             var q = FetchUsers();
@@ -134,9 +141,10 @@ namespace CmsWeb.Models
                             orderby u.Person.Name
                             select u;
                         break;
-                    case "Online":
+                    case "2FA":
+                    case "MFAEnabled":
                         q = from u in q
-                            orderby u.Person.Name
+                            orderby u.MFAEnabled
                             select u;
                         break;
                     case "Email":
@@ -144,6 +152,7 @@ namespace CmsWeb.Models
                             orderby u.EmailAddress
                             select u;
                         break;
+                    case "Online":
                     case "Activity":
                         q = from u in q
                             orderby u.LastActivityDate
@@ -165,9 +174,10 @@ namespace CmsWeb.Models
                             orderby u.Person.Name descending
                             select u;
                         break;
-                    case "Online":
+                    case "2FA":
+                    case "MFAEnabled":
                         q = from u in q
-                            orderby u.Person.Name descending
+                            orderby u.MFAEnabled descending
                             select u;
                         break;
                     case "Email":
@@ -175,6 +185,7 @@ namespace CmsWeb.Models
                             orderby u.EmailAddress descending
                             select u;
                         break;
+                    case "Online":
                     case "Activity":
                         q = from u in q
                             orderby u.LastActivityDate descending
