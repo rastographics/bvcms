@@ -1,8 +1,7 @@
-﻿using System;
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
+﻿using CmsData.Infrastructure;
+using System;
 using System.ComponentModel;
-using CmsData.Infrastructure;
+using System.Data.Linq.Mapping;
 
 namespace CmsData
 {
@@ -19,7 +18,7 @@ namespace CmsData
 
         private int? _UserId;
 
-		private DateTime _Expires;
+        private DateTime _Expires;
 
         #endregion
 
@@ -52,29 +51,26 @@ namespace CmsData
         [Column(Name = "Id", UpdateCheck = UpdateCheck.Never, Storage = "_Id", AutoSync = AutoSync.OnInsert, DbType = "uniqueidentifier NOT NULL", IsPrimaryKey = true, IsDbGenerated = true)]
         public Guid Id
         {
-            get { return this._Id; }
+            get => this._Id;
 
             set
             {
                 if (this._Id != value)
                 {
-
                     this.OnIdChanging(value);
                     this.SendPropertyChanging();
                     this._Id = value;
                     this.SendPropertyChanged("Id");
                     this.OnIdChanged();
                 }
-
             }
-
         }
 
         [Column(Name = "UserId", UpdateCheck = UpdateCheck.Never, Storage = "_UserId", DbType = "int")]
         [IsForeignKey]
         public int? UserId
         {
-            get { return this._UserId; }
+            get => this._UserId;
 
             set
             {
@@ -86,15 +82,13 @@ namespace CmsData
                     this.SendPropertyChanged("UserId");
                     this.OnUserIdChanged();
                 }
-
             }
-
         }
 
         [Column(Name = "Key", UpdateCheck = UpdateCheck.Never, Storage = "_Key", DbType = "nvarchar(200)")]
         public string Key
         {
-            get { return this._Key; }
+            get => this._Key;
 
             set
             {
@@ -107,28 +101,24 @@ namespace CmsData
                     this.OnKeyChanged();
                 }
             }
-
         }
 
         [Column(Name = "Expires", UpdateCheck = UpdateCheck.Never, Storage = "_Expires", DbType = "datetime NOT NULL")]
         public DateTime Expires
         {
-            get { return this._Expires; }
+            get => this._Expires;
 
             set
             {
                 if (this._Expires != value)
                 {
-
                     this.OnExpiresChanging(value);
                     this.SendPropertyChanging();
                     this._Expires = value;
                     this.SendPropertyChanged("Expires");
                     this.OnExpiresChanged();
                 }
-
             }
-
         }
 
         #endregion
@@ -145,16 +135,19 @@ namespace CmsData
         protected virtual void SendPropertyChanging()
         {
             if ((this.PropertyChanging != null))
+            {
                 this.PropertyChanging(this, emptyChangingEventArgs);
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void SendPropertyChanged(String propertyName)
         {
             if ((this.PropertyChanged != null))
+            {
                 this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
     }
-
 }
 
