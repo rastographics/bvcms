@@ -1,8 +1,9 @@
 ﻿@using CmsWeb.Areas.Reports.Models
 @{
+  CMSDataContext Db = ViewBag.CurrentDatabase;
   var qid = ViewBag.queryid;
   var oid = ViewBag.oid;
-  var m = new CustomReportsModel(DbUtil.Db, oid);
+  var m = new CustomReportsModel(Db, oid);
   var custom = m.CustomList();
   var sql = m.SqlList();
   var python = m.PythonList();

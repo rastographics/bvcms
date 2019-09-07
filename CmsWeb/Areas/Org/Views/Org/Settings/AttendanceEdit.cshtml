@@ -67,45 +67,6 @@
             </div>
         </div>
     </div>
-    <h4>Check-in</h4>
-    <div class="well">
-        <div class="row">
-            <div class="col-sm-6 col-md-6 col-lg-6">
-                @Html.EditorFor(m => m.NumCheckInLabels)
-            </div>
-            <div class="col-sm-6 col-md-6 col-lg-6">
-                @Html.EditorFor(m => m.NumWorkerCheckInLabels)
-            </div>
-            <div class="col-sm-6 col-md-6 col-lg-6">
-                @Html.EditorFor(m => m.BirthDayStart)
-            </div>
-            <div class="col-sm-6 col-md-6 col-lg-6">
-                @Html.EditorFor(m => m.BirthDayEnd)
-            </div>
-            <div class="col-sm-12 col-md-12 col-lg-12">
-                <label class="checkbox-inline control-label">
-                    @Html.CheckBoxFor(m => m.CanSelfCheckin) Allow self check-in
-                </label>
-                <label class="checkbox-inline control-label">
-                    @Html.CheckBoxFor(m => m.SuspendCheckin) Suspend check-in
-                </label>
-                <label class="checkbox-inline control-label">
-                    @Html.CheckBoxFor(m => m.NoSecurityLabel) No security label required
-                </label>
-            </div>
-            <div class="col-sm-6 col-md-6 col-lg-6">
-                <br />
-                <div class="alert alert-danger">
-                    <b>Warning:</b>
-                    The <i>Allow non campus check-in</i> setting below will have a negative impact on your normal check-in.
-                    Do not use until you understand what it does from the documentation.
-                </div>
-                <label class="checkbox-inline control-label">
-                    @Html.CheckBoxFor(m => m.AllowNonCampusCheckIn) Allow non campus check-in
-                </label><br />
-            </div>
-        </div>
-    </div>
     <div class="pull-right hidden-xs">
         <a href="/Org/Attendance/@Model.Id" class="btn btn-default ajax">Cancel</a>
         <a href="/Org/AttendanceUpdate/@Model.Id" class="btn btn-primary ajax validate">Save</a>

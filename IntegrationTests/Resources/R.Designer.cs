@@ -75,5 +75,26 @@ namespace IntegrationTests.Resources {
                 return ResourceManager.GetString("applicationhostconfig", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to json = model.DynamicDataFromJson(model.Content(&apos;jsondata&apos;))
+        ///meta = model.DynamicDataFromJson(&apos;&apos;&apos;{&apos;Id&apos;:&apos;readonly int&apos;,&apos;Name&apos;:&apos;str&apos;,&apos;City&apos;:&apos;str&apos;,&apos;Work&apos;:&apos;str&apos;}&apos;&apos;&apos;)
+        ///form = &apos;&apos;&apos;&lt;form action=&apos;/PyScriptForm&apos; method=&apos;post&apos;&gt;
+        ///    {}
+        ///    &lt;input id=&apos;submitit&apos; type=&apos;submit&apos; value=&apos;Submit&apos; /&gt;
+        ///    &lt;input type=&apos;hidden&apos; name=&apos;pyscript&apos; value=&apos;{}&apos; /&gt;
+        ///    &lt;input type=&apos;hidden&apos; name=&apos;p1&apos; value=&apos;{}&apos; /&gt;
+        ///    &lt;input type=&apos;hidden&apos; name=&apos;p2&apos; value=&apos;{}&apos; /&gt;
+        ///&lt;/form&gt;
+        ///&apos;&apos;&apos;
+        ///
+        ///def FindElement(array, id):
+        ///    return next((i for i in [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string PyScriptFormTest {
+            get {
+                return ResourceManager.GetString("PyScriptFormTest", resourceCulture);
+            }
+        }
     }
 }

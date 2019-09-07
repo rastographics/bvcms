@@ -55,35 +55,6 @@
             </div>
         </div>
     </div>
-    <h4>Check-in</h4>
-    <div class="well">
-        <div class="row">
-            <div class="col-sm-6 col-md-4 col-lg-3">
-                @Html.DisplayFor(m => m.NumCheckInLabels)
-            </div>
-            <div class="col-sm-6 col-md-4 col-lg-3">
-                @Html.DisplayFor(m => m.NumWorkerCheckInLabels)
-            </div>
-            <div class="col-sm-6 col-md-2 col-lg-3">
-                @Html.DisplayFor(m => m.BirthDayStart)
-            </div>
-            <div class="col-sm-6 col-md-2 col-lg-3">
-                @Html.DisplayFor(m => m.BirthDayEnd)
-            </div>
-            <div class="col-sm-6 col-md-6 col-lg-3">
-                @Html.DisplayFor(m => m.CanSelfCheckin, new { FalseValue = "n/a" })
-            </div>
-            <div class="col-sm-6 col-md-6 col-lg-3">
-                @Html.DisplayFor(m => m.SuspendCheckin, new { FalseValue = "n/a" })
-            </div>
-            <div class="col-sm-6 col-md-6 col-lg-3">
-                @Html.DisplayFor(m => m.NoSecurityLabel, new { FalseValue = "n/a" })
-            </div>
-            <div class="col-sm-6 col-md-6 col-lg-3">
-                @Html.DisplayFor(m => m.AllowNonCampusCheckIn, new { FalseValue = "n/a" })
-            </div>
-        </div>
-    </div>
     @FormAction()
     @FormAction(true)
     <br /><br/>
