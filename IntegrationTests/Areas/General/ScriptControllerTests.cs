@@ -9,7 +9,7 @@ using SharedTestFixtures;
 namespace IntegrationTests.Areas.Manage
 {
     [Collection(Collections.Webapp)]
-    public class TestScriptController : AccountTestBase
+    public class ScriptControllerTests : AccountTestBase
     {
         [Fact]
         public void PyscriptWithoutParameters()

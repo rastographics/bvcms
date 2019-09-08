@@ -82,9 +82,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Areas\General\TestScriptController.cs" />
+    <Compile Include="Areas\General\ScriptControllerTests.cs" />
     <Compile Include="Areas\General\GeneralTests.cs" />
-    <Compile Include="Areas\General\TestQueryController.cs" />
+    <Compile Include="Areas\General\QueryControllerTests.cs" />
     <Compile Include="Areas\Manage\AccountTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\R.Designer.cs">

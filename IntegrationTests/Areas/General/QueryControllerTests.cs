@@ -9,7 +9,7 @@ using SharedTestFixtures;
 namespace IntegrationTests.Areas.Manage
 {
     [Collection(Collections.Webapp)]
-    public class TestQueryController : AccountTestBase
+    public class QueryControllerTests : AccountTestBase
     {
         /// <summary>
         /// This verifies that when QueryModel m is bound in POST operation
