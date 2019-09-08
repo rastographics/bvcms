@@ -45,7 +45,6 @@ namespace CmsData
             OnCreated();
         }
 
-
         #region Columns
 
         [Column(Name = "Id", UpdateCheck = UpdateCheck.Never, Storage = "_Id", AutoSync = AutoSync.OnInsert, DbType = "uniqueidentifier NOT NULL", IsPrimaryKey = true, IsDbGenerated = true)]
@@ -150,4 +149,3 @@ namespace CmsData
         }
     }
 }
-

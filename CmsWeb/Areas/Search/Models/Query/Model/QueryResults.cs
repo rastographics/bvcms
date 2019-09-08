@@ -9,7 +9,6 @@ namespace CmsWeb.Areas.Search.Models
 {
     public class QueryResults : PagedTableModel<Person, PeopleInfo>, IDbBinder
     {
-        public CMSDataContext CurrentDatabase {get; set;}
         internal CMSDataContext Db => CurrentDatabase;
 
         public string Description { get { return topclause.Description; } }
