@@ -1,7 +1,6 @@
 GO
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
+IF OBJECT_ID('[dbo].[PledgesSummary]') IS NOT NULL
+DROP FUNCTION [dbo].[PledgesSummary] 
 GO
 CREATE FUNCTION [dbo].[PledgesSummary] ( @pid INT )
 RETURNS TABLE 
