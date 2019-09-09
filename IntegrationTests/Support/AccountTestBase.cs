@@ -34,6 +34,14 @@ namespace IntegrationTests.Support
             Find(name: "Password").SendKeys(withPassword ?? password);
             Find(css: "input[type=submit]").Click();
         }
+        protected CmsData.User LoginAsAdmin()
+        {
+            username = RandomString();
+            password = RandomString();
+            var person = CreateUser(roles: new[] { "Access", "Edit", "Admin" });
+            Login();
+            return person;
+        }
 
         protected void Logout()
         {
