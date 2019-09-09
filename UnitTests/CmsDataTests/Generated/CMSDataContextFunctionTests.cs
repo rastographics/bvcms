@@ -34,11 +34,7 @@ namespace CmsDataTests
                 actual.Amount.ShouldBe(TotalAmmountContributions + 120);
                 actual.PledgeAmount.ShouldBe(TotalPledgeAmountContributions + 500);
 
-                db.ExecuteCommand("DELETE FROM [BundleDetail] WHERE [BundleHeaderId] = {0} AND [ContributionId] = {1}", bundleHeader.BundleHeaderId, FirstContribution.ContributionId);
-                db.ExecuteCommand("DELETE FROM [BundleDetail] WHERE [BundleHeaderId] = {0} AND [ContributionId] = {1}", bundleHeader.BundleHeaderId, SecondContribution.ContributionId);
-
-                db.ExecuteCommand("DELETE FROM [Contribution] WHERE [ContributionId] = {0}", FirstContribution.ContributionId);
-                db.ExecuteCommand("DELETE FROM [Contribution] WHERE [ContributionId] = {0}", SecondContribution.ContributionId);
+                DeleteAllFromBundle(db, bundleHeader);
             }
         }
 
@@ -63,15 +59,7 @@ namespace CmsDataTests
                 actual.AmountPledged.ShouldBe(TotalPledgeAmount + 500);
                 actual.Balance.ShouldBe((TotalPledgeAmount + 500) - (TotalAmmountContributions + 100 + 20) < 0 ? 0 : (TotalPledgeAmount + 500) - (TotalAmmountContributions + 100 + 20));
 
-                db.ExecuteCommand("DELETE FROM [BundleDetail] WHERE [BundleHeaderId] = {0} AND [ContributionId] = {1}", bundleHeader.BundleHeaderId, FirstContribution.ContributionId);
-                db.ExecuteCommand("DELETE FROM [BundleDetail] WHERE [BundleHeaderId] = {0} AND [ContributionId] = {1}", bundleHeader.BundleHeaderId, SecondContribution.ContributionId);
-                db.ExecuteCommand("DELETE FROM [BundleDetail] WHERE [BundleHeaderId] = {0} AND [ContributionId] = {1}", bundleHeader.BundleHeaderId, Pledges.ContributionId);
-
-                db.ExecuteCommand("DELETE FROM [Contribution] WHERE [ContributionId] = {0}", FirstContribution.ContributionId);
-                db.ExecuteCommand("DELETE FROM [Contribution] WHERE [ContributionId] = {0}", SecondContribution.ContributionId);
-                db.ExecuteCommand("DELETE FROM [Contribution] WHERE [ContributionId] = {0}", Pledges.ContributionId);
-
-                db.ExecuteCommand("DELETE FROM [BundleHeader] WHERE [BundleHeaderId] = {0}", bundleHeader.BundleHeaderId);
+                DeleteAllFromBundle(db, bundleHeader);              
             }
         }
     }
