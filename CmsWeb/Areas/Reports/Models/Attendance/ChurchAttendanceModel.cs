@@ -94,6 +94,7 @@ namespace CmsWeb.Areas.Reports.Models
             public DateTime? Dt1 { get; set; }
             public DateTime? Dt2 { get; set; }
         }
+
         public class DivInfo
         {
             public int DivId { get; set; }
@@ -101,6 +102,7 @@ namespace CmsWeb.Areas.Reports.Models
             public bool NoDisplayZero { get; set; }
             public IEnumerable<MeetInfo> Meetings { get; set; }
         }
+
         public class MeetInfo
         {
             public int OrgId { get; set; }
@@ -110,9 +112,10 @@ namespace CmsWeb.Areas.Reports.Models
             public int Visitors { get; set; }
             public int OutTowners { get; set; }
         }
-        public IEnumerable<ProgInfo> FetchInfo()
+
+        public IEnumerable<ProgInfo> FetchInfo(CMSDataContext db)
         {
-            var q = from p in DbUtil.Db.Programs
+            var q = from p in db.Programs
                     where p.RptGroup != null && p.RptGroup.Length > 0
                     from pd in p.ProgDivs
                     where pd.Division.ReportLine > 0
@@ -151,9 +154,9 @@ namespace CmsWeb.Areas.Reports.Models
                     };
             return q;
         }
-        public static DateTime MostRecentAttendedSunday()
+        public static DateTime MostRecentAttendedSunday(CMSDataContext db)
         {
-            var q = from m in DbUtil.Db.Meetings
+            var q = from m in db.Meetings
                     where m.MeetingDate.Value.Date.DayOfWeek == 0
                     where m.MaxCount > 0
                     where m.MeetingDate < Util.Now
