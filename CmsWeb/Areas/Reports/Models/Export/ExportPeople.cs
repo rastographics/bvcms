@@ -197,6 +197,8 @@ namespace CmsWeb.Models
 
             var nontaxded = nontaxdeductible.HasValue ? (nontaxdeductible.Value ? 1 : 0) : (int?)null;
             var q2 = from r in DbUtil.Db.GetTotalContributionsDonor(startdt, enddt, campusid, nontaxded, includeUnclosed, tagid, fundids, null)
+                     where ContributionStatusCode.Recorded.Equals(r.ContributionStatusId)
+                     where !ContributionTypeCode.ReturnedReversedTypes.Contains(r.ContributionTypeId)
                      select new
                      {
                          GiverId = r.CreditGiverId,
@@ -222,6 +224,8 @@ namespace CmsWeb.Models
             int fundid, int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed, int? tagid, string fundids)
         {
             var q2 = from r in DbUtil.Db.GetTotalContributionsDonorFund(startdt, enddt, campusid, nontaxdeductible, includeUnclosed, tagid, fundids)
+                     where ContributionStatusCode.Recorded.Equals(r.ContributionStatusId)
+                     where !ContributionTypeCode.ReturnedReversedTypes.Contains(r.ContributionTypeId)
                      select new
                      {
                          GiverId = r.CreditGiverId,
