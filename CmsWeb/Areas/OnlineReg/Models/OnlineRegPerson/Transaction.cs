@@ -10,7 +10,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
     {
         public decimal AmountToPay()
         {
-            if (DbUtil.Db.Setting("UseOnlinePayments", "true") == "false")
+            if (CurrentDatabase.Setting("UseOnlinePayments", "true") == "false")
             {
                 return 0;
             }
@@ -187,7 +187,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         internal string GetOthersInTransaction(Transaction transaction)
         {
             var TransactionPeopleIds = transaction.OriginalTrans.TransactionPeople.Select(tt => tt.PeopleId);
-            var q = from pp in DbUtil.Db.People
+            var q = from pp in CurrentDatabase.People
                     where TransactionPeopleIds.Contains(pp.PeopleId)
                     where pp.PeopleId != PeopleId
                     select pp.Name;
