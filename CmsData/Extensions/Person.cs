@@ -1255,13 +1255,14 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                     var sameperson = Util.UserPeopleId == PeopleId;
                     var infinance = (HttpContextFactory.Current.User.IsInRole("Finance") && !HttpContextFactory.Current.User.IsInRole("FundManager"))
                                     && ((string)HttpContextFactory.Current.Session["testnofinance"]) != "true";
+                    var isMyDataUser = Util.IsMyDataUser;
                     var ishead = (new int?[]
                         {
                             Family.HeadOfHouseholdId,
                             Family.HeadOfHouseholdSpouseId
                         })
                         .Contains(Util.UserPeopleId);
-                    canUserSeeGiving = sameperson || infinance || ishead;
+                    canUserSeeGiving = !isMyDataUser && (sameperson || infinance || ishead);
                 }
                 return canUserSeeGiving.Value;
             }
