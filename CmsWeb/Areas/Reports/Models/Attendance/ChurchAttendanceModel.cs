@@ -154,6 +154,7 @@ namespace CmsWeb.Areas.Reports.Models
                     };
             return q;
         }
+
         public static DateTime MostRecentAttendedSunday(CMSDataContext db)
         {
             var q = from m in db.Meetings
