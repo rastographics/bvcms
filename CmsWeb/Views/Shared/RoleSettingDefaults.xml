@@ -15,7 +15,7 @@
         <setting name="Organization-ShowFiltersBar" value="true" friendly="Filters Bar" true="Show" false="Hide" tooltip="Show entire sub-group filters bar" />
         <setting name="Organization-ShowOptionsMenu" value="true" friendly="Options Menu" true="Show" false="Hide" tooltip="Show Options button and dropdown" />
         <setting name="Organization-ShowSettingsTab" value="true" friendly="Settings Tab" true="Show" false="Hide" tooltip="Show Settings tab" />
-        <setting name="OrgMembersDropAdd" value="true" friendly="Org Member Row: Drop Button" true="Enable" false="Disable" tooltip="Replace Tag button with Drop button" />
+        <setting name="OrgMembersDropAdd" value="false" friendly="Org Member Row: Drop Button" true="Enable" false="Disable" tooltip="Replace Tag button with Drop button" />
         <setting name="LimitToolbar" value="false" friendly="Blue Toolbar" true="Limit" false="Full Access" tooltip="Custom blue toolbar" />
         <setting name="Organization-ShowBlueToolbar" value="true" friendly="Show Blue Toolbar" true="Show" false="Hide" tooltip="Show blue toolbar" />
         <setting name="Organization-ShowBlueToolbarAdminGearMenu" value="true" friendly="Blue Toolbar: Gear Menu" true="Show" false="Hide" tooltip="Show blue toolbar: gear menu" />
@@ -36,7 +36,7 @@
         <setting name="Meeting-ShowAttendType" value="true" friendly="Attend Type" true="Show" false="Hide" tooltip="Attendance view: 'Attend Type' column" />
         <setting name="Meeting-ShowBlueToolbar" value="true" friendly="Blue Toolbar" true="Show" false="Hide" tooltip="Show / Hide Meeting blue toolbar" />
         <setting name="Meeting-ShowBlueToolbarIpadAttendance" value="true" friendly="Blue Toolbar - iPad Attendance" true="Show" false="Hide" tooltip="" />
-        <setting name="Meeting-ShowBlueToolbarRollsheet" value="true" friendly="Blue Toolbar - Rollsheet" true="Show" false="Hide" tooltip="" />
+        <setting name="Meeting-ShowBlueToolbarRollsheet" value="true" friendly="Blue Toolbar - Rollsheet Report" true="Show" false="Hide" tooltip="Show / Hide Rollsheet Report option on meetings" />
         <setting name="Meeting-ShowCurrentMemberType" value="true" friendly="Current Member Type" true="Show" false="Hide" tooltip="Attendance view: 'Current Member Type' column" />
         <setting name="Meeting-ShowEnableBox" value="true" friendly="Enable Box" true="Show" false="Hide" tooltip="The 'Enable' set of radio buttons (Editing, Register, Current Members)" />
         <setting name="Meeting-ShowExtraValuesBox" value="false" friendly="Extra Value Box" true="Show" false="Hide" tooltip="Show / Hide Extra Values box" />

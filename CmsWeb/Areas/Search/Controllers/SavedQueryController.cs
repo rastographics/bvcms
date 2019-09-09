@@ -27,7 +27,6 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ActionResult Results(SavedQueryModel m)
         {
-            m.Db = CurrentDatabase;
             return View(m);
         }
         [HttpPost]
@@ -44,7 +43,6 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ActionResult Update(SavedQueryInfo m)
         {
-            m.Db = CurrentDatabase;
             if (m.Name.Equal(Util.ScratchPad2))
             {
                 m.Ispublic = false;
@@ -66,7 +64,6 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ActionResult Code(SavedQueryModel m)
         {
-            m.Db = CurrentDatabase;
             var qlist = from q in m.DefineModelList()
                         select q.QueryId;
             var list = string.Join(",", qlist);
@@ -88,7 +85,6 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ActionResult PythonCode(SavedQueryModel m)
         {
-            m.Db = CurrentDatabase;
             var qlist = from q in m.DefineModelList()
                         select q.QueryId;
             var list = string.Join(",", qlist);

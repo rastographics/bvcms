@@ -2,11 +2,13 @@
 <ul class="nav nav-pills subnav hidden-xs" data-tabparent="Settings-tab">
     <li class="active"><a href="#General" data-toggle="tab">General</a></li>
     <li><a href="#Attendance" data-toggle="tab" class="ajax">Attendance</a></li>
+    <li><a href="#CheckIn" data-toggle="tab" class="ajax">Check In</a></li>
     <li><a href="#extravalues" data-toggle="tab" class="ajax">Extra Values</a></li>
 </ul>
 <select class="form-control visible-xs-block nav-select-pills">
     <option value="#General">General</option>
     <option value="#Attendance">Attendance</option>
+    <option value="#CheckIn">Check In</option>
     <option value="#extravalues">Extra Values</option>
 </select>
 <div class="tab-content" style="border: none;">
@@ -14,6 +16,9 @@
         @Html.Partial("Settings/General", Model.SettingsGeneralModel)
     </div>
     <div class="tab-pane settings" id="Attendance" data-link="/Org/Attendance">
+        @Helper.HiddenId("Id", Model.Id)
+    </div>
+    <div class="tab-pane settings" id="CheckIn" data-link="/Org/CheckIn">
         @Helper.HiddenId("Id", Model.Id)
     </div>
     <div class="tab-pane ajax" id="extravalues" data-link="/ExtraValue/Display/Organization/Standard/@Model.Id">

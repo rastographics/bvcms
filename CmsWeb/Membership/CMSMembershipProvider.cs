@@ -17,9 +17,10 @@ using WebMembership = System.Web.Security.Membership;
 namespace CmsWeb.Membership
 {
 
-    public sealed class CMSMembershipProvider : MembershipProvider
+    public class CMSMembershipProvider : MembershipProvider
     {
-        public static CMSMembershipProvider provider => WebMembership.Provider as CMSMembershipProvider;
+        public static CMSMembershipProvider provider => (_currentProvider ?? WebMembership.Provider) as CMSMembershipProvider;
+        public static void SetCurrentProvider(CMSMembershipProvider provider) => _currentProvider = provider;
 
         private IRequestManager _requestManager;
         public IRequestManager RequestManager
@@ -147,7 +148,15 @@ namespace CmsWeb.Membership
         public override int MinRequiredPasswordLength => pMinRequiredPasswordLength;
         private string pPasswordStrengthRegularExpression;
         public override string PasswordStrengthRegularExpression => pPasswordStrengthRegularExpression;
+
+        public virtual void SetAuthCookie(string username, bool createPersistentCookie = true)
+        {
+            FormsAuthentication.SetAuthCookie(username, createPersistentCookie);
+        }
+
         public bool AdminOverride = false;
+        private static MembershipProvider _currentProvider;
+
         public override bool ChangePassword(string username, string oldPwd, string newPwd)
         {
             username = username?.Split('\\').LastOrDefault();

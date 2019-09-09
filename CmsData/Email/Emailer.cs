@@ -559,24 +559,24 @@ namespace CmsData
                 }
             }
 
-            var q = from to in EmailQueueTos
-                    where to.Id == emailqueue.Id
-                    where to.Sent == null
-                    orderby to.PeopleId
-                    select to;
-            foreach (var to in q)
+            var queue = from t in EmailQueueTos
+                    where t.Id == emailqueue.Id
+                    where t.Sent == null
+                    orderby t.PeopleId
+                    select t;
+            foreach (var queueTo in queue)
             {
                 try
                 {
-                    if (m.OptOuts != null && m.OptOuts.Any(vv => vv.PeopleId == to.PeopleId && vv.OptOutX == true))
+                    if (m.OptOuts != null && m.OptOuts.Any(vv => vv.PeopleId == queueTo.PeopleId && vv.OptOutX == true))
                         continue;
-                    var text = m.DoReplacements(to.PeopleId, to);
+                    var text = m.DoReplacements(queueTo.PeopleId, queueTo);
                     var aa = m.ListAddresses;
 
-                    if (Setting("sendemail", "true") != "false")
+                    if (Setting("sendemail", true))
                     {
-                        SendEmail(from, emailqueue.Subject, text, aa, to, cc);
-                        to.Sent = Util.Now;
+                        SendEmail(from, emailqueue.Subject, text, aa, queueTo, cc);
+                        queueTo.Sent = Util.Now;
                         SubmitChanges();
                     }
                 }
@@ -584,7 +584,7 @@ namespace CmsData
                 {
                     var subject = $"sent emails - error:(emailid={emailqueue.Id}) {CmsHost}";
                     ErrorLog.GetDefault(null).Log(new Error(new Exception(subject, ex)));
-                    SendEmail(from, subject, $"{ex.Message}\n{ex.StackTrace}", Util.ToMailAddressList(from), to);
+                    SendEmail(from, subject, $"{ex.Message}\n{ex.StackTrace}", Util.ToMailAddressList(from), queueTo);
                 }
             }
 

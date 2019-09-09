@@ -1,0 +1,130 @@
+﻿@using CmsWeb
+@using UtilityExtensions
+@{
+    Layout = ViewExtensions2.TouchPointLayoutWithoutHeaderFooter();
+    ViewBag.Title = ViewExtensions2.DbSetting("NameOfChurch", Util.Host) + " Check In";
+}
+@section head
+{
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-keyboard@latest/build/css/index.css">
+    @Fingerprint.Css("/Content/touchpoint/css/checkin.css")
+}
+<div class="checkin" oncontextmenu="return false">
+    <noscript>You've reached the @ViewExtensions2.DbSetting("NameOfChurch", Util.Host) check in portal. JavaScript is required, please enable JavaScript in your browser settings.</noscript>
+    <div id="CheckInApp" :style="customStyles">
+        <div v-if="view == 'login'" class="login">
+            <h2 class="form-header text-center">@ViewExtensions2.DbSetting("NameOfChurch", Util.Host) Check In</h2>
+            <form v-on:submit.prevent="auth" class="panel panel-default">
+                <div class="form-group">
+                    <label for="username">Sign In As</label>
+                    <input type="text" name="username" class="form-control input-lg" placeholder="username or email" required="required" autocomplete="off" autocapitalize="off" autocorrect="off" v-model="user.name" />
+                </div>
+                <div class="form-group">
+                    <input type="password" name="password" class="form-control input-lg" placeholder="password" required="required" v-model="user.password" />
+                </div>
+                <div class="form-group">
+                    <label for="kiosk">Kiosk Name</label>
+                    <input type="text" name="kiosk" class="form-control input-lg" placeholder="KioskName" required="required" v-model="kiosk.name" />
+                </div>
+                <div class="form-group">
+                    <label for="profile">Kiosk Profile</label>
+                    <select class="form-control input-lg" name="profile" id="profile" v-model="kiosk.profile">
+                        <option v-if="!profiles.length" value="default">Default</option>
+                        <option v-for="profile in profiles" :value="profile.id">{{ profile.name }}</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <input type="submit" value="Sign In" class="btn btn-primary btn-block btn-lg">
+                </div>
+            </form>
+        </div>
+        <div v-else-if="view == 'landing'" class="landing">
+            <h2 class="text-center">Enter your phone number</h2>
+            <form v-on:submit.prevent="find">
+                <input type="tel" name="phone" v-model="search.phone" v-mask="phoneMask" autocomplete="off" class="keyboard-input" />
+                <div class="simple-keyboard"></div>
+            </form>
+        </div>
+        <div v-else-if="view == 'families'" class="families results">
+            <div class="row header-bar">
+                <div class="col-xs-12 text-center">
+                    <h2 style="font-weight:300;">Choose your family</h2>
+                </div>
+            </div>
+            <div class="row">
+                <template v-for="family in families">
+                    <div class="col-xs-12 col-md-6 family">
+                        <h4 v-on:click="selectFamily(family)">
+                            <a>{{ family.name }} Family</a>
+                        </h4>
+                    </div>
+                </template>
+            </div>
+            <div class="action-bar">
+                <div class="content">
+                    <a class="btn btn-primary pull-right" v-on:click="loadView('landing')">Return</a>
+                    <span class="clearfix"></span>
+                </div>
+            </div>
+        </div>
+        <div v-else-if="view == 'checkin'" class="results">
+            <div class="row header-bar">
+                <div class="col-xs-12 text-center">
+                    <h2 style="font-weight:300;">Check in</h2>
+                </div>
+            </div>
+            <form v-on:submit.prevent="updateAttendance">
+                <div class="row">
+                    <div v-for="member in members" class="member col-xs-12 col-md-6">
+                        <div class="portrait-container">
+                            <div class="member-portrait" :style="portraitStyles(member)"></div>
+                        </div>
+                        <div class="member-details">
+                            <h4 class="name">{{ member.name }} <span v-if="member.altName.length">({{ member.altName }})</span><span class="badge badge-info" v-if="member.age < profile.CutoffAge">{{ member.age }}</span></h4>
+                            <div v-for="group in member.groups" :class="{ 'disabled': attendance[member.id + '.' + group.id + '.' + group.date].disabled === true }">
+                                <div v-on:click="toggleAttendance(member.id, group.id, group.date)" :class="{ 'primary': attendance[member.id + '.' + group.id + '.' + group.date].status == 2, 'active': attendance[member.id + '.' + group.id + '.' + group.date].status == 1, 'check-container': true }">
+                                    <div>
+                                        <span class="check-label">
+                                            <i class="fa fa-check icon"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div v-on:click="toggleAttendance(member.id, group.id, group.date)" class="member-info">
+                                    <p style="font-size: 12px; margin-bottom: 5px;">{{ group.date | formatDate }}</p>
+                                    <p>{{ group.name }}<span v-if="group.leaderName.length">, {{ group.leaderName }}</span></p>
+                                </div>
+                                <span class="clearfix"></span>
+                            </div>
+                            <div v-if="member.groups.length == 0">
+                                <p>No self check-in available.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="action-bar">
+                <div class="content">
+                    <button v-on:click="checkAllAttendance" class="btn btn-info pull-left">Check All</button>
+                    <button v-if="profile.Testing" v-on:click="uncheckAllAttendance" class="btn btn-info pull-left" style="margin-left:20px;">Uncheck All</button>
+
+                    <div style="display:inline-block;position:relative;left: 20px;">
+                        <i v-on:click="toggleReprintAll" :class="[reprintLabels ? 'fa-check-square-o' : 'fa-square-o', 'fa', 'fa-2x']" style="margin-top:3px;width:30px;"></i><span style="position:relative;top:-5px;">Reprint all labels</span>
+                    </div>
+                    <button v-if="attendanceUpdated" v-on:click="updateAttendance" class="btn btn-success pull-right">Check In</button>
+                    <button v-else type="submit" v-on:click="updateAttendance" class="btn btn-primary pull-right">Return</button>
+                </div>
+            </div>
+        </div>
+        <div v-else class="loading">
+            <div class="panel panel-default">
+                <p>Loading, please wait...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="https://cdn.jsdelivr.net/npm/v-mask/dist/v-mask.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/simple-keyboard@latest/build/index.min.js"></script>
+    @Fingerprint.Script("/Content/touchpoint/js/checkin.js")
+}
