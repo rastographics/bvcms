@@ -1,6 +1,7 @@
 using CmsData;
 using CmsData.Codes;
 using ImageData;
+using CmsWeb.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,7 +13,7 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Models
 {
-    public class OrgDrop : LongRunningOperation
+    public class OrgDrop : LongRunningOperation, IDbBinder
     {
         public const string Op = "orgdrop";
 

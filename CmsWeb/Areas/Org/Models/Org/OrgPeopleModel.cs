@@ -16,9 +16,10 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.Org.Models
 {
-    public class OrgPeopleModel : PagedTableModel<OrgFilterPerson, OrgFilterPerson>
+    public class OrgPeopleModel : PagedTableModel<OrgFilterPerson, OrgFilterPerson>, IDbBinder
     {
-        public CMSDataContext Db { get; set; }
+        public CMSDataContext CurrentDatabase { get; set; }
+        internal CMSDataContext Db => CurrentDatabase;
         public Guid QueryId { get; set; }
         public IPrincipal User { get; set; }
 
@@ -371,7 +372,7 @@ to `Add`, `Drop`, `Update` Members etc.
                 case GroupSelectCode.Guest:
                     return false;
                 case GroupSelectCode.Previous:
-                    return User.IsInRole("Developer") || User.IsInRole("Conversion");
+                    return HttpContextFactory.Current.User.IsInRole("Developer") || HttpContextFactory.Current.User.IsInRole("Conversion");
                 default:
                     return true;
             }
