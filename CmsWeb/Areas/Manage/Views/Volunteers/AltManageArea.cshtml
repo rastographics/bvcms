@@ -188,11 +188,14 @@
                                 hasVolunteers = true;
                                 if (Model.IsLeader)
                                 {
-                                    var myPersonPopContent = "";
-                                    myPersonPopContent = "<a href='#' class='removeVolunteer' target='clear' pid='" + p.PeopleId + "' mid='"+ tsl.MeetingId + "' source='registered'>Remove from Meeting</a><br/>";
-                                    myPersonPopContent = myPersonPopContent + "<a href='#' target='clear' class='removeVolunteer' pid='" + p.PeopleId + "' source='person' target='_blank'>Remove from All</a><br/>";
-                                    myPersonPopContent = myPersonPopContent + "<a href='/Volunteers/EmailPersonInSlot/" + tsl.MeetingId + "/" + p.PeopleId + "' target='_blank'>Email</a><br/>";
-                                    myPersonPopContent = myPersonPopContent + "<a href='/OnlineReg/ManageVolunteer/" + Model.OrgId + "/" + p.PeopleId + "' target='_blank'>Registration Page</a><br/>";
+                                    
+
+                                    var myPersonPopContent = $@"
+                                    <a href=""#/{p.PeopleId}/{tsl.MeetingId}/registered"" class=""removeVolunteer"" target=""clear"" >Remove from Meeting</a><br/>
+                                    <a href=""#/{p.PeopleId}//person"" target=""clear"" class=""removeVolunteer"" pid=""{p.PeopleId}"" source=""person"" >Remove from All</a><br/>
+                                    <a href=""/Volunteers/EmailPersonInSlot/{tsl.MeetingId}/{p.PeopleId}"" target=""_blank"">Email</a><br/>
+                                    <a href=""/OnlineReg/ManageVolunteer/{Model.OrgId}/{p.PeopleId}"" target=""_blank"">Registration Page</a><br/>";
+
                                     var myCommitment = "";
                                     switch (p.Commitment)
                                     {
@@ -207,7 +210,7 @@
                                             break;
                                     }
 
-                                    <div align="right" data-toggle="popover" data-placement="auto right" data-container="body" data-trigger="manual" data-content="@myPersonPopContent">                                       
+                                    <div align="right" data-toggle="popover" data-placement="auto right" data-container="body" data-trigger="manual" data-html="true" data-content="@myPersonPopContent">                                       
                                         <a class="commit-@p.Commitment @(p.OtherCommitments ? "conflict" : "")" tabindex="0" href="#" pid="@p.PeopleId" mid="@tsl.MeetingId" source="registered" title="@p.CommitmentText">
                                             @p.Name @myCommitment
                                         </a>

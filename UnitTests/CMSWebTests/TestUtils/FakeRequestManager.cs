@@ -20,8 +20,8 @@ namespace CMSWebTests
         public FakeRequestManager()
         {
             CurrentHttpContext = ContextTestUtils.CreateMockHttpContext().Object;
-            CurrentDatabase = CMSDataContext.Create(Util.Host);
-            CurrentImageDatabase = CMSImageDataContext.Create(Util.Host);
+            CurrentDatabase = CMSDataContext.Create(DatabaseFixture.Host);
+            CurrentImageDatabase = CMSImageDataContext.Create(DatabaseFixture.Host);
             CurrentUser = CurrentHttpContext.User;
             RequestId = Guid.NewGuid();
         }
@@ -33,9 +33,7 @@ namespace CMSWebTests
 
         public static IRequestManager Create()
         {
-            FakeRequestManager req = new FakeRequestManager();
-            IRequestManager request = req;
-            return request;
+            return new FakeRequestManager();
         }
 
         #region IDisposable Support

@@ -23,7 +23,7 @@ namespace CMSWebTests
         public void Should_be_able_to_get_ContactReasonCodes()
         {
             ContextTestUtils.CreateMockHttpContext();
-            using (var db = CMSDataContext.Create(Util.Host))
+            using (var db = CMSDataContext.Create(DatabaseFixture.Host))
             {
                 var cv = new CodeValueModel(db);
                 var b = cv.ContactReasonCodes();
