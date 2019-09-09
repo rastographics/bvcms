@@ -30,7 +30,7 @@ namespace CmsWeb.Areas.Reports.Models
         public IEnumerable<AttendInfo> list()
         {
             var orgs = FetchOrgs();
-            var q = from a in DbUtil.Db.Attends
+            var q = from a in CurrentDatabase.Attends
                     join o in orgs on a.Meeting.OrganizationId equals o.OrganizationId
                     where a.MeetingDate.Date == CheckinDate
                     where a.AttendanceFlag
