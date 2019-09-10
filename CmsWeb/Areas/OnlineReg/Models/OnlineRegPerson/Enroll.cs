@@ -11,7 +11,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 {
     public partial class OnlineRegPersonModel
     {
-        public CMSDataContext db => CurrentDatabase ?? (CurrentDatabase = DbUtil.Db);
+        private CMSDataContext db => CurrentDatabase ?? (CurrentDatabase = DbUtil.Db);
 
         public OrganizationMember Enroll(Transaction transaction, string payLink)
         {
