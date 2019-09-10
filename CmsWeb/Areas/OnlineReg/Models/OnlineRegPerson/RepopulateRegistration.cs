@@ -141,7 +141,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             if (qlist == null)
             {
-                qlist = (from qu in DbUtil.Db.ViewOnlineRegQAs
+                qlist = (from qu in CurrentDatabase.ViewOnlineRegQAs
                          where qu.PeopleId == om.PeopleId
                          where qu.OrganizationId == om.OrganizationId
                          select qu).ToList();
