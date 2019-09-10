@@ -217,7 +217,7 @@ namespace CmsWeb.Controllers
             }
             catch (Exception ex)
             {
-                return Content($@"<div class='alert alert-danger'>{ex.Message}</div></div>");
+                return Content($@"<div class='alert alert-danger' style='font-family: monospace; white-space: pre;'>{ex.Message}</div></div>");
             }
         }
     }

@@ -50,7 +50,7 @@ namespace CmsData.API
                 var dict = new Dictionary<string, object>();
                 foreach (var kv in pythonDictionary)
                 {
-                    dict.Add("@" + kv.Key, kv.Value);
+                    dict.Add(kv.Key.ToString(), kv.Value);
                 }
 
                 return dict;
@@ -61,7 +61,7 @@ namespace CmsData.API
                 var dict = new Dictionary<string, object>();
                 foreach (var kv in dapperRow)
                 {
-                    dict.Add("@" + kv.Key, kv.Value);
+                    dict.Add(kv.Key, kv.Value);
                 }
 
                 return dict;
@@ -72,7 +72,7 @@ namespace CmsData.API
                 var dict = new Dictionary<string, object>();
                 foreach (var kv in dictionaryss)
                 {
-                    dict.Add("@" + kv.Key, kv.Value);
+                    dict.Add(kv.Key, kv.Value);
                 }
 
                 return dict;

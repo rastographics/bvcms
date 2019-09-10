@@ -1696,7 +1696,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
                 c.SetKeyWords(this, new [] {keyword});
             SubmitChanges();
         }
-        public void WriteContentText(string name, string text)
+        public void WriteContentText(string name, string text, string keyword = null)
         {
             var c = Content(name, ContentTypeCode.TypeText);
             if (c == null)
@@ -1708,6 +1708,8 @@ This search uses multiple steps which cannot be duplicated in a single query.
                 };
                 Contents.InsertOnSubmit(c);
             }
+            if(keyword.HasValue())
+                c.SetKeyWords(this, new [] {keyword});
             c.Body = text;
             SubmitChanges();
         }
