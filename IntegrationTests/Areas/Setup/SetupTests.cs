@@ -16,7 +16,7 @@ namespace IntegrationTests.Areas.Manage
             username = RandomString();
             password = RandomString();
             string roleName = "role_" + RandomString();
-            var user = CreateUser(roles: new string[] { "Access", "Edit", "Admin" });
+            var user = CreateUser(username, password, roles: new string[] { "Access", "Edit", "Admin" });
             Login();
 
             Open($"{rootUrl}Lookups/");
@@ -44,7 +44,7 @@ namespace IntegrationTests.Areas.Manage
         {
             username = RandomString();
             password = RandomString();
-            var user = CreateUser(roles: new string[] { "Access", "Edit", "Admin" });
+            var user = CreateUser(username, password, roles: new string[] { "Access", "Edit", "Admin" });
             Login();
             Toggle_NavTabs_Setting();   // test both states
             Toggle_NavTabs_Setting();
