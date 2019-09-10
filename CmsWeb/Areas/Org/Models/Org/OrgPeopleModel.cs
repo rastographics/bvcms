@@ -324,6 +324,7 @@ namespace CmsWeb.Areas.Org.Models
         public bool ShowBirthday => RoleChecker.HasSetting(SettingName.Organization_ShowBirthday, true);
         public bool ShowTagButtons => RoleChecker.HasSetting(SettingName.Organization_ShowTagButtons, true);
         public bool ShowShowAddress => RoleChecker.HasSetting(SettingName.Organization_ShowAddress, true);
+        public bool ShowCheckin => Db.Setting("EnableWebCheckin") && User.IsInRole("Checkin");
 
         public bool ShowAddress { get; set; }
         public int? Id { get; set; }

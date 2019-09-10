@@ -32,7 +32,7 @@ namespace CmsWeb.Areas.Reports.Models
         {
             var q = FetchOrgs();
             var list = (from o in q
-                        join m in DbUtil.Db.Meetings on o.OrganizationId equals m.OrganizationId into mr
+                        join m in CurrentDatabase.Meetings on o.OrganizationId equals m.OrganizationId into mr
                         from m in mr.Where(m => m.MeetingDate >= Dt1 && m.MeetingDate <= Dt2).DefaultIfEmpty()
                         where (m != null && m.MaxCount > 0) || NoZero == false
                         select new MeetingInfo
@@ -65,7 +65,7 @@ namespace CmsWeb.Areas.Reports.Models
             OtherAttends = list.Sum(m => m.OtherAttends ?? 0);
 
             var attends = from o in q
-                          join m in DbUtil.Db.Meetings on o.OrganizationId equals m.OrganizationId into mr
+                          join m in CurrentDatabase.Meetings on o.OrganizationId equals m.OrganizationId into mr
                           from m in mr.Where(m => m.MeetingDate >= Dt1 && m.MeetingDate <= Dt2)
                           let div = o.Division
                           from a in m.Attends
@@ -120,7 +120,7 @@ namespace CmsWeb.Areas.Reports.Models
 
         public string ConvertToSearch(string type)
         {
-            var cc = DbUtil.Db.ScratchPadCondition();
+            var cc = CurrentDatabase.ScratchPadCondition();
             cc.Reset();
             var c = cc.AddNewClause(type == "Guests" ? QueryType.GuestAsOf : QueryType.AttendedAsOf, CompareType.Equal, "1,True");
             if (ProgramId.HasValue && ProgramId > 0)
@@ -135,7 +135,7 @@ namespace CmsWeb.Areas.Reports.Models
 
             c.StartDate = Dt1;
             c.EndDate = Dt2;
-            cc.Save(DbUtil.Db);
+            cc.Save(CurrentDatabase);
             return "/Query/" + cc.Id;
         }
     }
