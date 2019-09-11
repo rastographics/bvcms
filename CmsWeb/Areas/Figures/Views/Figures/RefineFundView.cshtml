@@ -25,9 +25,8 @@
                         <label for="sel1">Select Year:</label>
                         <select class="form-control" name="year" id="year">
                             <option selected>@DateTime.Now.Year</option>
-                            @for (int i = 1; i < 5; i++)
+                            @foreach (var Year in @ViewBag.Years)
                             {
-                                int Year = @DateTime.Now.Year - i;
                                 <option value="@Year">@Year</option>
                             }
                         </select>

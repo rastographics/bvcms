@@ -1,9 +1,11 @@
 ﻿using CmsData;
 using CmsWeb.Areas.Figures.Models;
 using CmsWeb.Lifecycle;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Figures.Controllers
 {
@@ -53,6 +55,12 @@ namespace CmsWeb.Areas.Figures.Controllers
 
         public ActionResult RefineFundView()
         {
+            var Years = CurrentDatabase.ExecuteQuery<int>("" +
+                "SELECT DISTINCT CAST(YEAR([ContributionDate]) AS INT) " +
+                "FROM [Contribution] " +
+                "WHERE YEAR([ContributionDate]) <> YEAR(GETDATE())").ToList();
+
+            ViewBag.Years = Years;
             return View();
         }
 
