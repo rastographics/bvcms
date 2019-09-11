@@ -58,7 +58,8 @@ namespace CmsWeb.Areas.Figures.Controllers
             var Years = CurrentDatabase.ExecuteQuery<int>("" +
                 "SELECT DISTINCT CAST(YEAR([ContributionDate]) AS INT) " +
                 "FROM [Contribution] " +
-                "WHERE YEAR([ContributionDate]) <> YEAR(GETDATE())").ToList();
+                "WHERE YEAR([ContributionDate]) <> YEAR(GETDATE())" +
+                "ORDER BY YEAR([ContributionDate]) DESC").ToList();
 
             ViewBag.Years = Years;
             return View();
