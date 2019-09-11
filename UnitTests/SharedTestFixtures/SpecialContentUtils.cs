@@ -22,29 +22,33 @@ namespace SharedTestFixtures
             content.Body = "";
             content.DateCreated = DateTime.Now;
 
-            DbUtil.Db = CMSDataContext.Create(Util.Host);
-            DbUtil.Db.Contents.InsertOnSubmit(content);
-            DbUtil.Db.SubmitChanges();
+            var db = CMSDataContext.Create(Util.Host);
+            db.Contents.InsertOnSubmit(content);
+            db.SubmitChanges();
 
             return content;
         }
 
         public static void UpdateSpecialContent(int id, string name, string title, string body, bool? snippet, int? roleid, string contentKeyWords, string stayaftersave = null)
         {
-            var content = DbUtil.Db.Contents.SingleOrDefault(c => c.Id == id);
+            var db = CMSDataContext.Create(Util.Host);
+
+            var content = db.Contents.SingleOrDefault(c => c.Id == id);
             content.Name = name;
             content.Title = string.IsNullOrWhiteSpace(title) ? name : title;
             content.Body = body;
             content.RemoveGrammarly();
             content.RoleID = roleid ?? 0;
             content.Snippet = snippet;
-            content.SetKeyWords(DbUtil.Db, contentKeyWords.SplitStr(",").Select(vv => vv.Trim()).ToArray());
+            content.SetKeyWords(db, contentKeyWords.SplitStr(",").Select(vv => vv.Trim()).ToArray());
         }
 
         public static void DeleteSpecialContent(int id)
         {
-            DbUtil.Db.ExecuteCommand("DELETE FROM dbo.ContentKeywords WHERE Id = {0}", id);
-            DbUtil.Db.ExecuteCommand("DELETE FROM dbo.Content WHERE Id = {0}", id);
+            var db = CMSDataContext.Create(Util.Host);
+
+            db.ExecuteCommand("DELETE FROM dbo.ContentKeywords WHERE Id = {0}", id);
+            db.ExecuteCommand("DELETE FROM dbo.Content WHERE Id = {0}", id);
         }
     }
 }
