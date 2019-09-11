@@ -31,34 +31,52 @@
     }
     else
     {
-    <div class="col-xs-4">
-        <button id="back" class="btn btn-danger btn-block btn-lg"><i class="fa fa-lg fa-long-arrow-left"></i></button>
-    </div>
+        <div class="col-xs-4">
+            <button id="back" class="btn btn-danger btn-block btn-lg" type="reset"><i class="fa fa-lg fa-long-arrow-left"></i></button>
+        </div>
     }
     <div class="col-xs-8">
-        <button id="finish" class="btn btn-primary btn-block btn-lg">Finish</button>
+        <button id="finish" class="btn btn-primary btn-block btn-lg" type="submit">Finish</button>
     </div>
 </div>
 <script>
     (function () {
         var passcodes = document.querySelectorAll('[name="passcode"]');
-        passcodes.forEach(function (e, i) {
-            e.onkeyup = function (event) {
+        passcodes.forEach(function (el) {
+            el.onkeyup = function (event) {
+                var target = event.target;
                 if (0 <= event.key && 9 >= event.key) {
                     var next;
-                    passcodes.forEach(function (e, i) {
+                    passcodes.forEach(function (e) {
                         if (next) {
                             e.focus();
                             next = false;
                         } else {
-                            next = (e === event.target);
+                            next = (e === target && target.value.length);
                         }
                     });
                 } else if (13 == event.keyCode || 10 == event.keyCode) {
-                    document.getElementById('finish').click();
+                    event.preventDefault();
+                    var valid = true;
+                    passcodes.forEach(function (e) {
+                        valid = valid && e.value.length > 0;
+                    });
+                    if (valid) {
+                        document.getElementById('finish').click();
+                    }
+                } else if ('Backspace' === event.key) {
+                    var prev;
+                    passcodes.forEach(function (e) {
+                        if (e === target) {
+                            prev && prev.focus();
+                        }
+                        prev = e;
+                    });
+                } else {
+                    target.value = '';
                 }
             };
-            e.onfocus = function (event) {
+            el.onfocus = function (event) {
                 event.target.select();
             };
         });

@@ -85,13 +85,22 @@
 {
     <script>
         $(function () {
-            var $form = $('form');
+            var $form = $('form'),
+                p = $form.find('[name=passcode]'),
+                tab = 'tabindex',
+                step2btn = '#step2 button',
+                $cont = $('#continue');
+            p.add(step2btn).attr(tab, -1);
             $('#continue, #back').click(function (event) {
                 event.preventDefault();
                 $form.toggleClass('step1 step2');
                 if ($form.is('.step2')) {
-                    var p = $form.find('[name=passcode]').val('');
+                    p.val('').add(step2btn).removeAttr(tab);
+                    $cont.attr(tab, -1);
                     setTimeout(function () { p.first().focus(); }, 500);
+                } else {
+                    p.add(step2btn).attr(tab, -1);
+                    $cont.removeAttr(tab);
                 }
             });
         });
