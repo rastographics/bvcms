@@ -17,7 +17,6 @@ namespace IntegrationTests.Areas.People.Views.Person
 
             username = RandomString();
             password = RandomString();
-
             var user = CreateUser(username, password);
             Login();
 
