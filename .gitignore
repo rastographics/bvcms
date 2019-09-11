@@ -87,5 +87,10 @@ HTMLPage1.html
 test_coverage.xml
 
 #gulp output
+CmsWeb/Content/touchpoint/css/account.css
 CmsWeb/Content/touchpoint/css/app.css
+CmsWeb/Content/touchpoint/css/checkin.css
+CmsWeb/Content/touchpoint/css/editor.css
+CmsWeb/Content/touchpoint/css/error.css
+CmsWeb/Content/touchpoint/css/print.css
 CmsWeb/Content/touchpoint/js/app.min.js

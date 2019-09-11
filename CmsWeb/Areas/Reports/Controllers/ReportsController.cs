@@ -362,9 +362,16 @@ namespace CmsWeb.Areas.Reports.Controllers
         {
             var d1 = dt1.ToDate();
             var d2 = dt2.ToDate();
-            var m = new MeetingsModel { Dt1 = d1, Dt2 = d2, ProgramId = programid, DivisionId = divisionid };
+            var m = new MeetingsModel(CurrentDatabase)
+            {
+                Dt1 = d1,
+                Dt2 = d2,
+                ProgramId = programid,
+                DivisionId = divisionid
+            };
             return View(m);
         }
+
         [HttpPost]
         public ActionResult Meetings(MeetingsModel m)
         {

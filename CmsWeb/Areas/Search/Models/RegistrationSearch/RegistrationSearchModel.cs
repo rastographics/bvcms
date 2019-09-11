@@ -6,6 +6,7 @@
  */
 using CmsData;
 using CmsData.View;
+using CmsWeb.Constants;
 using CmsWeb.Models;
 using System;
 using System.Collections.Generic;
@@ -16,14 +17,26 @@ namespace CmsWeb.Areas.Search.Models
 {
     public class RegistrationSearchModel : PagedTableModel<RegistrationList, RegistrationList>, IDbBinder
     {
-        public CMSDataContext CurrentDatabase { get; set; }
-
         public RegistrationSearchInfo SearchParameters { get; set; }
 
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
         public RegistrationSearchModel()
-            : base("Date", "desc", true)
         {
+            Init();
+        }
+
+        public RegistrationSearchModel(CMSDataContext db) : base(db)
+        {
+            Init();
+        }
+
+        override protected void Init()
+        {
+            Sort = "Date";
+            Direction = "desc";
+            AjaxPager = true;
             SearchParameters = new RegistrationSearchInfo();
+            base.Init();
         }
 
         public override IQueryable<RegistrationList> DefineModelList()
@@ -38,9 +51,7 @@ namespace CmsWeb.Areas.Search.Models
                     select r;
             if (SearchParameters.Registrant.HasValue())
             {
-                string first;
-                string last;
-                Util.NameSplit(SearchParameters.Registrant, out first, out last);
+                Util.NameSplit(SearchParameters.Registrant, out string first, out string last);
                 q = from c in q
                     where first == null || first == "" || c.First.StartsWith(first)
                     where last == null || last == "" || c.Last.StartsWith(last)

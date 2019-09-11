@@ -1,4 +1,5 @@
 using CmsData;
+using CmsWeb.Constants;
 using CmsWeb.Membership;
 using System;
 using System.Collections.Generic;
@@ -39,7 +40,18 @@ namespace CmsWeb.Models
             return _count.Value;
         }
 
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
         public UsersModel()
+        {
+            Init();
+        }
+
+        public UsersModel(CMSDataContext db) : base(db)
+        {
+            Init();
+        }
+
+        private void Init()
         {
             Sort = "Activity";
             Direction = "desc";

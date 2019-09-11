@@ -8,6 +8,7 @@
 using CmsData;
 using CmsData.Codes;
 using CmsWeb.Areas.Search.Controllers;
+using CmsWeb.Constants;
 using CmsWeb.Models;
 using HandlebarsDotNet;
 using System;
@@ -39,12 +40,10 @@ namespace CmsWeb.Areas.Search.Models
         private const string PictureDirectoryTemplateName = "PictureDirectoryTemplate";
         private const string PictureDirectorySqlName = "PictureDirectorySql";
 
-        public PictureDirectoryModel()
-        {
-        }
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
+        public PictureDirectoryModel() { }
 
-        public PictureDirectoryModel(string id)
-            : base("Name", "asc")
+        public PictureDirectoryModel(CMSDataContext db, string id) : base(db, "Name", "asc")
         {
             Url = $"/PictureDirectory/{id}";
             if (id.HasValue())

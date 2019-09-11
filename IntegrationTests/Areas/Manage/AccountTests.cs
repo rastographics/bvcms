@@ -105,7 +105,8 @@ namespace IntegrationTests.Areas.Manage
             role.ShouldNotBeNull();
             role.Priority.GetValueOrDefault().ShouldBeGreaterThan(adminRole.Priority.GetValueOrDefault());
         }
-        
+
+        [Fact]
         public void MyData_User_ForgotPassword_Test()
         {
             username = RandomString();

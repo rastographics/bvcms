@@ -3,6 +3,7 @@ using CmsData.Classes.RoleChecker;
 using CmsData.Codes;
 using CmsData.View;
 using CmsWeb.Code;
+using CmsWeb.Constants;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,8 +20,14 @@ namespace CmsWeb.Areas.Org.Models
     {
         public bool IsVolunteerLeader { get; set; }
 
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
         public OrganizationModel()
         {
+        }
+
+        public OrganizationModel(CMSDataContext db) : base(db)
+        {
+            CurrentDatabase = db;
         }
 
         public int OrgId
@@ -239,12 +246,9 @@ namespace CmsWeb.Areas.Org.Models
             return showCommunityGroupTab.Value;
         }
 
-        public static OrganizationModel Create(CMSDataContext currentDatabase, IPrincipal user)
+        public static OrganizationModel Create(CMSDataContext db, IPrincipal user)
         {
-            return new OrganizationModel
-            {
-                CurrentDatabase = currentDatabase
-            };
+            return new OrganizationModel(db);
         }
     }
 }

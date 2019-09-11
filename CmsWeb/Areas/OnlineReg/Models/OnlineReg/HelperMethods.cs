@@ -472,8 +472,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public string SubmitInstructions()
         {
-            Settings v;
-            settings.TryGetValue(org?.OrganizationId ?? 0, out v);
+            settings.TryGetValue(org?.OrganizationId ?? 0, out Settings v);
             return v?.InstructionSubmit;
         }
 

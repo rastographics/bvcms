@@ -1,4 +1,5 @@
 ﻿using CmsData;
+using CmsWeb.Constants;
 using CmsWeb.Models;
 using System;
 using System.Collections.Generic;
@@ -44,9 +45,23 @@ namespace CmsWeb.Areas.Search.Models
             }
         }
 
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
         public QueryResults()
-            : base("na", "asc")
         {
+            Init();
+        }
+
+        public QueryResults(CMSDataContext db) : base(db)
+        {
+            Init();
+            CurrentDatabase = db;
+        }
+
+        override protected void Init()
+        {
+            Sort = "na";
+            Direction = "asc";
+            base.Init();
         }
 
         public override IQueryable<Person> DefineModelList()

@@ -124,23 +124,20 @@ namespace CmsData
 
             Handlebars.RegisterHelper("FmtMDY", (writer, context, args) =>
             {
-                DateTime dt;
                 var s = args[0].ToString();
-                if(DateTime.TryParse(s, out dt))
+                if(DateTime.TryParse(s, out DateTime dt))
                     writer.Write(dt.ToShortDateString());
             });
             Handlebars.RegisterHelper("FmtDate", (writer, context, args) =>
             {
-                DateTime dt;
                 var s = args[0].ToString();
-                if(DateTime.TryParse(s, out dt))
+                if(DateTime.TryParse(s, out DateTime dt))
                     writer.Write(dt.ToShortDateString());
             });
             Handlebars.RegisterHelper("FmtMoney", (writer, context, args) =>
             {
-                decimal d;
                 var s = args[0].ToString();
-                if(decimal.TryParse(s, out d))
+                if(decimal.TryParse(s, out decimal d))
                     writer.Write(d.ToString("C"));
             });
 

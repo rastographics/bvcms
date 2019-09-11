@@ -1,4 +1,5 @@
 using CmsData;
+using CmsWeb.Constants;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,15 +20,21 @@ namespace CmsWeb.Models
         public CountDelegate GetCount;
         public int? pagesize;
 
-        public CMSDataContext CurrentDatabase { get; set; }
+        public virtual CMSDataContext CurrentDatabase { get; set; }
 
-        public PagerModel2(CountDelegate count)
-            : this()
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
+        public PagerModel2()
         {
-            GetCount = count;
+            Init();
         }
 
-        public PagerModel2()
+        public PagerModel2(CMSDataContext db)
+        {
+            CurrentDatabase = db;
+            Init();
+        }
+
+        private void Init()
         {
             ShowPageSize = true;
         }
@@ -99,11 +106,6 @@ namespace CmsWeb.Models
         }
 
         public int StartRow => (Page.Value - 1) * PageSize;
-
-        public void setCountDelegate(CountDelegate count)
-        {
-            GetCount = count;
-        }
 
         public int LastPage()
         {

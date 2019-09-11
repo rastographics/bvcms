@@ -173,7 +173,7 @@ namespace CmsWeb.Controllers
 
         public ActionResult SwitchTag(string tag)
         {
-            var m = new TagsModel { tag = tag };
+            var m = new TagsModel(CurrentDatabase) { tag = tag };
             m.SetCurrentTag();
             if (Request.UrlReferrer != null)
             {

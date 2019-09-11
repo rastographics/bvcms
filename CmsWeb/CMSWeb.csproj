@@ -367,6 +367,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Areas\CheckIn\Models\CheckinTimeModel.cs" />
+    <Compile Include="Code\Constants.cs" />
     <Compile Include="App_Start\ApiMessageLoggingHandler.cs" />
     <Compile Include="App_Start\ApiAuthorizeAttribute.cs" />
     <Compile Include="App_Start\DependencyConfig.cs" />
@@ -810,7 +812,6 @@
     <Compile Include="Areas\Reports\Models\Export\ExtraExcelResult.cs" />
     <Compile Include="Areas\Org\Models\OrgChildrenModel.cs" />
     <Compile Include="Areas\Manage\Controllers\UsersController.cs" />
-    <Compile Include="Areas\CheckIn\Models\CheckinTimeModel.cs" />
     <Compile Include="Areas\Manage\Models\ContentModel.cs" />
     <Compile Include="Areas\Manage\Models\SMSModel.cs" />
     <Compile Include="Areas\Manage\Models\UsersModel.cs" />
@@ -887,6 +888,7 @@
     <Compile Include="Controllers\ScriptController.cs" />
     <Compile Include="Controllers\MobileAppMenuController.cs" />
     <Compile Include="Controllers\WebHookController.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Lifecycle\RequestManager.cs" />
     <Compile Include="Membership\CMSMembershipProvider.cs" />
     <Compile Include="Membership\CMSRoleProvider.cs" />

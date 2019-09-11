@@ -3,6 +3,7 @@ using CmsData.Classes.RoleChecker;
 using CmsData.Codes;
 using CmsData.View;
 using CmsWeb.Code;
+using CmsWeb.Constants;
 using CmsWeb.Models;
 using System;
 using System.Collections.Generic;
@@ -17,14 +18,27 @@ namespace CmsWeb.Areas.Org.Models
 {
     public class OrgPeopleModel : PagedTableModel<OrgFilterPerson, OrgFilterPerson>, IDbBinder
     {
-        public CMSDataContext CurrentDatabase { get; set; }
         internal CMSDataContext Db => CurrentDatabase;
         public Guid QueryId { get; set; }
         public User User => CurrentDatabase.CurrentUser;
 
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
         public OrgPeopleModel()
-            : base("Name", "asc", true)
         {
+            Init();
+        }
+
+        public OrgPeopleModel(CMSDataContext db) : base(db)
+        {
+            Init();
+        }
+
+        override protected void Init()
+        {
+            Sort = "Name";
+            Direction = "asc";
+            AjaxPager = true;
+            base.Init();
         }
 
         private Organization org;

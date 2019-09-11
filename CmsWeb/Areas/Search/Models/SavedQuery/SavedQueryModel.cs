@@ -9,9 +9,8 @@ using Query = CmsData.Query;
 
 namespace CmsWeb.Areas.Search.Models
 {
-    public class SavedQueryModel : PagedTableModel<Query, SavedQueryInfo>, IDbBinder
+    public class SavedQueryModel : PagedTableModel<Query, SavedQueryInfo>
     {
-        public CMSDataContext CurrentDatabase { get; set;}
         internal CMSDataContext Db => CurrentDatabase;
         public bool admin { get; set; }
         public bool OnlyMine { get; set; }
@@ -20,14 +19,10 @@ namespace CmsWeb.Areas.Search.Models
         public bool ScratchPadsOnly { get; set; }
         public bool StatusFlagsOnly { get; set; }
 
-        public SavedQueryModel(CMSDataContext db) : base("Last Run", "desc", true)
+        public SavedQueryModel(CMSDataContext db) : base(db, "Last Run", "desc", true)
         {
             CurrentDatabase = db;
             admin = Roles.IsUserInRole("Admin");
-        }
-
-        public SavedQueryModel() : base()
-        {
         }
 
         public override IQueryable<Query> DefineModelList()
