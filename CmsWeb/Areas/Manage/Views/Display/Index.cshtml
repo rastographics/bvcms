@@ -329,10 +329,11 @@
     <div class="col-sm-12">
         @if (keywords.Count > 1)
         {
-        <form method="post" action="/Display/SetContentKeywordFilter" style="margin-right: 2em; display: inline">
+        <form method="post" action="/Display/SetContentKeywordFilter" class="form-inline" style="margin-right: 2em; display: inline">
             @Html.Hidden("tab", tab)
-            Keyword Filter: @Html.DropDownList("keywordfilter", keywords)
-            <button type="submit">Set</button>
+            <span>Keyword Filter&nbsp;&nbsp;</span>
+            @Html.DropDownList("keywordfilter", keywords, new { @class="form-control" })
+            <button type="submit" class="btn btn-default">Set</button>
         </form>
         }
         <div class="pull-right" style="display: inline-block">

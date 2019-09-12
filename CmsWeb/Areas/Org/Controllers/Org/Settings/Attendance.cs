@@ -33,7 +33,6 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost]
         public ActionResult AttendanceUpdate(SettingsAttendanceModel m)
         {
-            m.CurrentDatabase = CurrentDatabase;
             m.Update();
             m.UpdateSchedules();
             CurrentDatabase.Refresh(RefreshMode.OverwriteCurrentValues, m.Org.OrgSchedules);

@@ -43,7 +43,7 @@ namespace CmsWeb.Controllers
                 return Message("Not Authorized to run this script");
             }
             var p = m.FetchParameters();
-
+            var pSql = m.AddParametersForSql(parameter, sql, p, ViewBag);
             ViewBag.Report = name;
             ViewBag.Name = title ?? $"{name.SpaceCamelCase()} {parameter}";
             if (sql.Contains("pagebreak"))
@@ -212,6 +212,10 @@ namespace CmsWeb.Controllers
                 if (ret.StartsWith("REDIRECT="))
                 {
                     return Redirect(ret.Substring(9).Trim());
+                }
+                if (model.pythonModel.Output.HasValue() && !model.pythonModel.Form.HasValue())
+                {
+                    return View("PyScript", model.pythonModel);
                 }
                 return Content(ret);
             }
