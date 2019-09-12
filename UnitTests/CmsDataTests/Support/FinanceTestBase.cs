@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UtilityExtensions;
 
 namespace CmsDataTests.Support
 {
@@ -83,10 +84,50 @@ namespace CmsDataTests.Support
             foreach (var item in bundleDetails)
             {
                 var contribution = db.Contributions.SingleOrDefault(c => c.ContributionId == item.ContributionId);
-                db.Contributions.DeleteOnSubmit(contribution);    
+                db.Contributions.DeleteOnSubmit(contribution);
             }
             db.BundleDetails.DeleteAllOnSubmit(bundleDetails);
             db.BundleHeaders.DeleteOnSubmit(bundleHeader);
+            db.SubmitChanges();
+        }
+
+        protected static Contribution CreateContributionRecord(Contribution c)
+        {
+            var now = Util.Now;
+            var r = new Contribution
+            {
+                ContributionStatusId = ContributionStatusCode.Recorded,
+                CreatedBy = Util.UserId1,
+                CreatedDate = now,
+                PeopleId = c.PeopleId,
+                ContributionAmount = c.ContributionAmount,
+                ContributionDate = now.Date,
+                PostingDate = now,
+                FundId = c.FundId,
+            };
+            return r;
+        }
+
+        protected void ReturnContribution(CMSDataContext db, int cid)
+        {
+            var c = db.Contributions.Single(ic => ic.ContributionId == cid);
+            var r = CreateContributionRecord(c);
+            c.ContributionStatusId = ContributionStatusCode.Returned;
+            r.ContributionTypeId = ContributionTypeCode.ReturnedCheck;
+            r.ContributionDesc = "Returned Check for Contribution Id = " + c.ContributionId;
+
+            db.Contributions.InsertOnSubmit(r);
+            db.SubmitChanges();
+        }
+
+        protected void ReverseContribution(CMSDataContext db, int cid)
+        {
+            var c = db.Contributions.Single(ic => ic.ContributionId == cid);
+            var r = CreateContributionRecord(c);
+            c.ContributionStatusId = ContributionStatusCode.Reversed;
+            r.ContributionTypeId = ContributionTypeCode.Reversed;
+            r.ContributionDesc = "Reversed Contribution Id = " + c.ContributionId;
+            db.Contributions.InsertOnSubmit(r);
             db.SubmitChanges();
         }
     }
