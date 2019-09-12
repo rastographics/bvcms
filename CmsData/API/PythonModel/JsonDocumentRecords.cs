@@ -11,35 +11,36 @@ namespace CmsData
     public partial class PythonModel
     {
         public void AddUpdateJsonRecord(string json,
-                string section, object i1, object i2 = null, object i3 = null, object i4 = null)
+                string section, object pk1, object pk2 = null, object pk3 = null, object pk4 = null)
         {
-            var id1 = i1.ToString();
-            var id2 = i2?.ToString() ?? "";
-            var id3 = i3?.ToString() ?? "";
-            var id4 = i4?.ToString() ?? "";
             var dd = DynamicDataFromJson(json);
-            if (dd != null)
+            AddUpdateJsonRecord(dd, section, pk1, pk2, pk3, pk4);
+        }
+        public void AddUpdateJsonRecord(DynamicData data,
+                string section, object pk1, object pk2 = null, object pk3 = null, object pk4 = null)
+        {
+            var id1 = pk1.ToString();
+            var id2 = pk2?.ToString() ?? "";
+            var id3 = pk3?.ToString() ?? "";
+            var id4 = pk4?.ToString() ?? "";
+            var json = "";
+            if (data != null)
             {
-                var emptyvalues = dd.dict.Where(vv => vv.Value?.ToString() == "").Select(vv => vv.Key).ToList();
+                var emptyvalues = data.dict.Where(vv => vv.Value?.ToString() == "").Select(vv => vv.Key).ToList();
                 foreach (var k in emptyvalues)
-                    dd.Remove(k);
-                json = dd.ToString();
+                    data.Remove(k);
+                json = data.ToString();
             }
             db.Connection.Execute("custom.AddUpdateJsonRecord",
                 new { json, section, id1, id2, id3, id4 },
                 commandType: System.Data.CommandType.StoredProcedure);
         }
-        public void AddUpdateJsonRecord(DynamicData data,
-                string section, object i1, object i2 = null, object i3 = null, object i4 = null)
+        public void DeleteJsonRecord(string section, object pk1, object pk2 = null, object pk3 = null, object pk4 = null)
         {
-            AddUpdateJsonRecord(data.ToString(), section, i1, i2, i3, i4);
-        }
-        public void DeleteJsonRecord(string section, object i1, object i2 = null, object i3 = null, object i4 = null)
-        {
-            var id1 = i1.ToString();
-            var id2 = i2?.ToString() ?? "";
-            var id3 = i3?.ToString() ?? "";
-            var id4 = i4?.ToString() ?? "";
+            var id1 = pk1.ToString();
+            var id2 = pk2?.ToString() ?? "";
+            var id3 = pk3?.ToString() ?? "";
+            var id4 = pk4?.ToString() ?? "";
             db.Connection.Execute("custom.DeleteJsonRecord",
                 new { section, id1, id2, id3, id4 },
                 commandType: System.Data.CommandType.StoredProcedure);
