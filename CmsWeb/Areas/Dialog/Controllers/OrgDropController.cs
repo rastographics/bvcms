@@ -27,7 +27,6 @@ namespace CmsWeb.Areas.Dialog.Controllers
         {
             model.Host = CurrentDatabase.Host;
             model.UserId = Util.UserId;
-            model.CurrentDatabase = CurrentDatabase;
             model.UpdateLongRunningOp(CurrentDatabase, OrgDrop.Op);
             if (!model.Started.HasValue)
             {

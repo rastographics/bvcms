@@ -15,7 +15,7 @@ namespace CmsDataTests
     AND HasManagedGiving( FundIdOrBlank='10102' ) = 1[True]
     AND HasPeopleExtraField <> 'RiseRecurAutoStopped'
     AND CampusId = 2[West Side]";
-            var db = CMSDataContext.Create(host: "localhost");
+            var db = CMSDataContext.Create(DatabaseFixture.Host);
             db.PeopleQuery2(query);
         }
     }
