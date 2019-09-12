@@ -1,7 +1,6 @@
 ﻿using CmsData;
 using CmsData.Codes;
 using CmsDataTests.Support;
-using SharedTestFixtures;
 using Shouldly;
 using System;
 using System.Linq;
@@ -10,7 +9,7 @@ using Xunit;
 
 namespace CmsDataTests
 {
-    [Collection(Collections.Database)]
+    [Collection("Database collection")]
     public class CMSDataContextFunctionTests : FinanceTestBase
     {
         //TODO: clean up contributions in the database
@@ -34,11 +33,7 @@ namespace CmsDataTests
                 actual.Amount.ShouldBe(TotalAmmountContributions + 120);
                 actual.PledgeAmount.ShouldBe(TotalPledgeAmountContributions + 500);
 
-                db.ExecuteCommand("DELETE FROM [BundleDetail] WHERE [BundleHeaderId] = {0} AND [ContributionId] = {1}", bundleHeader.BundleHeaderId, FirstContribution.ContributionId);
-                db.ExecuteCommand("DELETE FROM [BundleDetail] WHERE [BundleHeaderId] = {0} AND [ContributionId] = {1}", bundleHeader.BundleHeaderId, SecondContribution.ContributionId);
-
-                db.ExecuteCommand("DELETE FROM [Contribution] WHERE [ContributionId] = {0}", FirstContribution.ContributionId);
-                db.ExecuteCommand("DELETE FROM [Contribution] WHERE [ContributionId] = {0}", SecondContribution.ContributionId);
+                DeleteAllFromBundle(db, bundleHeader);
             }
         }
     }

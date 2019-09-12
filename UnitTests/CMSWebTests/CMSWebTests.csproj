@@ -119,6 +119,7 @@
     <Compile Include="Areas\OnlineReg\Models\OnlineReg\PaymentFormTests.cs" />
     <Compile Include="Areas\Reports\Models\Reports\Export\ExportInvolvementsTests.cs" />
     <Compile Include="Areas\Setup\Controllers\DivisionControllerTests.cs" />
+    <Compile Include="Models\ExportPeopleTest.cs" />
     <Compile Include="TestUtils\FakeOrganizationUtils.cs" />
     <Compile Include="TestUtils\FakeRequestManager.cs" />
     <Compile Include="Areas\OnlineReg\Models\NewAskChurchQuestionTest.cs" />
@@ -152,6 +153,10 @@
     <ProjectReference Include="..\..\UtilityExtensions\UtilityExtensions.csproj">
       <Project>{C504E3D2-5498-451B-BF82-309623706F11}</Project>
       <Name>UtilityExtensions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CmsDataTests\CmsDataTests.csproj">
+      <Project>{9f19265d-148a-4c08-877d-1f686a802be3}</Project>
+      <Name>CmsDataTests</Name>
     </ProjectReference>
     <ProjectReference Include="..\SharedTestFixtures\SharedTestFixtures.csproj">
       <Project>{37b7dd60-a2ce-4e69-8cc5-4370b95ad908}</Project>
