@@ -87,6 +87,7 @@ namespace IntegrationTests.Areas.Manage
             Login();
 
             Open($"{rootUrl}Lookups/");
+            WaitForPageLoad();
             PageSource.ShouldContain("Lookup Codes");
 
             Find(text: "Roles").Click();
@@ -99,6 +100,7 @@ namespace IntegrationTests.Areas.Manage
             Find(css: ".editable-input input[type=text]").SendKeys(roleName);
             Find(css: ".editable-buttons button[type=submit]").Click();
             Open($"{rootUrl}Roles");
+            WaitForPageLoad();
             PageSource.ShouldContain(roleName);
             var adminRole = db.Roles.SingleOrDefault(r => r.RoleName == "Admin");
             var role = db.Roles.SingleOrDefault(r => r.RoleName == roleName);
@@ -124,6 +126,7 @@ namespace IntegrationTests.Areas.Manage
             Find(name: "UsernameOrEmail").SendKeys(username);
             Find(css: "input[type=submit]").Click();
 
+            WaitForPageLoad();
             PageSource.ShouldContain("Password Sent");
 
             db.Refresh(System.Data.Linq.RefreshMode.OverwriteCurrentValues, user);
