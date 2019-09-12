@@ -8,30 +8,37 @@ using System.Linq;
 
 namespace CmsWeb.Models
 {
-    public class MissionTripFundingModel
+    public class MissionTripFundingModel : IDbBinder
     {
-        public MissionTripFundingModel() { }
-        public static List<MissionTripTotal> List(int id)
+        public CMSDataContext CurrentDatabase { get; set; }
+        //public MissionTripFundingModel() { }
+        public MissionTripFundingModel(CMSDataContext db)
         {
-            var q = from t in DbUtil.Db.ViewMissionTripTotals
+            CurrentDatabase = db;
+        }
+
+        public static List<MissionTripTotal> List(int id, CMSDataContext db)
+        {
+            var q = from t in db.ViewMissionTripTotals
                     where t.OrganizationId == id
                     orderby t.OrganizationId, t.SortOrder
                     select t;
             return q.ToList();
         }
+
         public static List<MissionTripTotal> List(OrgSearchModel m)
         {
             var orgids = string.Join(",", m.FetchOrgs().Select(mm => mm.OrganizationId));
-            var q = from t in DbUtil.Db.ViewMissionTripTotals
-                    join i in DbUtil.Db.SplitInts(orgids) on t.OrganizationId equals i.ValueX
+            var q = from t in m.CurrentDatabase.ViewMissionTripTotals
+                    join i in m.CurrentDatabase.SplitInts(orgids) on t.OrganizationId equals i.ValueX
                     orderby t.OrganizationId, t.SortOrder
                     select t;
             return q.ToList();
         }
 
-        public static decimal TotalDue(int? pid, int? oid)
+        public static decimal TotalDue(CMSDataContext db, int? pid, int? oid)
         {
-            var tt = (from t in DbUtil.Db.ViewMissionTripTotals
+            var tt = (from t in db.ViewMissionTripTotals
                       where t.PeopleId == pid && t.OrganizationId == oid
                       select t).SingleOrDefault();
             if (tt == null)

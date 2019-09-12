@@ -28,7 +28,7 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.Search.Models
 {
-    public class OrgSearchModel
+    public class OrgSearchModel : IDbBinder
     {
         private int? _count;
         internal string noticelist;

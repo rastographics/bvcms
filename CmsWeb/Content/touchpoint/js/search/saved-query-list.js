@@ -63,6 +63,27 @@
         return true;
     });
 
+    $.gotoPage = function (ev, pg) {
+        $("input[name=Page]").val(pg);
+        $.getTable();
+        return false;
+    };
+
+    $.setPageSize = function (ev) {
+        $('input[name=Page]').val(1);
+        $("input[name=PageSize]").val($(ev).val());
+        return $.getTable();
+    };
+
+
+    $.getTable = function () {
+        var q = $('#form-saved-query').serialize();
+        $.block();
+        $.post('/SavedQuery/Results', q, function (ret) {
+            $('#results').replaceWith(ret);
+            $.unblock();
+        });
+    };
     $("#SearchQuery").focus();
 
 });

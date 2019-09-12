@@ -1,27 +1,23 @@
-﻿using Xunit;
-using System.Collections;
-using System.Net.Http;
+using Xunit;
 using CmsData;
-using CmsWeb.Areas.OnlineReg.Models;
 using System.Collections.Generic;
 using Shouldly;
-using UtilityExtensions;
-using CmsWeb.Areas.OnlineReg.Models;
+using SharedTestFixtures;
 
 namespace CMSWebTests.Areas.OnlineReg.Models.OnlineRegPerson
 {
-    [Collection("Database collection")]
+    [Collection(Collections.Database)]
     public class HelperTests
     {
-        private int MasterOrgId { get; set; }
-        private int ChildOrgId { get; set; }
-
         [Fact]
         public void Should_Use_MasterOrg_DOB_Phone_Settings()
         {
-            var controller = new CmsWeb.Areas.OnlineReg.Controllers.OnlineRegController(FakeRequestManager.FakeRequest());
+            int MasterOrgId = 0;
+            int ChildOrgId = 0;
+            var requestManager = FakeRequestManager.Create();
+            var controller = new CmsWeb.Areas.OnlineReg.Controllers.OnlineRegController(requestManager);
             var routeDataValues = new Dictionary<string, string> { { "controller", "OnlineReg" } };
-            controller.ControllerContext = ControllerTestUtils.FakeContextController(controller, routeDataValues);
+            controller.ControllerContext = ControllerTestUtils.FakeControllerContext(controller, routeDataValues);
 
             // Create Master Org
             var MasterOrgconfig = new Organization() {
@@ -32,10 +28,8 @@ namespace CMSWebTests.Areas.OnlineReg.Models.OnlineRegPerson
                 RegSetting = XMLSettings(MasterOrgId)
             };
 
-            var FakeMasterOrg = FakeOrganizationUtils.MakeFakeOrganization(MasterOrgconfig);
+            var FakeMasterOrg = FakeOrganizationUtils.MakeFakeOrganization(requestManager, MasterOrgconfig);
             MasterOrgId = FakeMasterOrg.org.OrganizationId;
-
-            FakeOrganizationUtils.FakeNewOrganizationModel = null;
 
             // Create Child Org
             var ChildOrgconfig = new Organization()
@@ -47,7 +41,7 @@ namespace CMSWebTests.Areas.OnlineReg.Models.OnlineRegPerson
                 ParentOrgId = MasterOrgId
             };
 
-            var FakeChildOrg = FakeOrganizationUtils.MakeFakeOrganization(ChildOrgconfig);
+            var FakeChildOrg = FakeOrganizationUtils.MakeFakeOrganization(requestManager, ChildOrgconfig);
             ChildOrgId = FakeChildOrg.org.OrganizationId;
 
             var MasterOnlineRegModel = FakeOrganizationUtils.GetFakeOnlineRegModel(ChildOrgId);

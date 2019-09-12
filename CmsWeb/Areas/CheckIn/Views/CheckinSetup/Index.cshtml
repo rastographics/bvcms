@@ -1,8 +1,8 @@
 ﻿
 @{
     Layout = ViewExtensions2.TouchPointLayout();
-    ViewBag.Title = "Checkin";
-    ViewBag.PageHeader = "Checkin Setup";
+    ViewBag.Title = "Check-In Setup";
+    ViewBag.PageHeader = "Check-In Setup";
 }
 <div id="checkinSetup">
     <div class="col-lg-9">
@@ -13,7 +13,7 @@
                         <thead>
                             <tr>
                                 <th style="width: 150px;">
-                                    Check In Profiles
+                                    Check-In Profiles
                                 </th>
                                 <th style="width: 150px;">
                                     <a class="btn btn-success" v-on:click="CreateCheckinProfile()" href="#">
@@ -145,7 +145,7 @@
                             <div class="tab-pane" id="security">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <label>Show Checkin Confirmation</label>
+                                        <label>Show Check-In Confirmation</label>
                                         <select v-model="CheckinProfileSettings.ShowCheckinConfirmation" class="form-control">
                                             <option v-for="time in ShowCheckConfTimes" v-bind:value="time.id">{{time.text}}</option>
                                         </select>
