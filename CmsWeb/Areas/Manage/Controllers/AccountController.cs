@@ -157,7 +157,13 @@ namespace CmsWeb.Areas.Manage.Controllers
                 return Redirect(redirect);
             }
 
+
             var user = AccountModel.GetValidToken(CurrentDatabase, Request.QueryString["otltoken"]);
+            return LoginAs(user, returnUrl);
+        }
+
+        private ActionResult LoginAs(string user, string returnUrl)
+        {
             if (user.HasValue())
             {
                 FormsAuthentication.SetAuthCookie(user, false);
@@ -170,8 +176,27 @@ namespace CmsWeb.Areas.Manage.Controllers
                 return Redirect("/");
             }
 
-            var m = new AccountInfo { ReturnUrl = returnUrl };
-            return View(m);
+            return View(new AccountInfo { ReturnUrl = returnUrl });
+        }
+
+        [Route("~/Impersonate/{id}")]
+        [MyRequireHttps]
+        public ActionResult Impersonate(string id)
+        {
+            Guid gid = Guid.Parse(id);
+            var link = CurrentDatabase.OneTimeLinks.Where(l =>
+                l.Id == gid &&
+                l.Used == false &&
+                l.Expires < DateTime.Now)
+                .SingleOrDefault();
+
+            if (link != null)
+            {
+                var userid = link.Querystring;
+                return LoginAs(userid, null);
+            }
+
+            return Redirect("/Logon");
         }
 
         public static bool TryImpersonate(CMSDataContext cmsdb, CMSImageDataContext cmsidb)
