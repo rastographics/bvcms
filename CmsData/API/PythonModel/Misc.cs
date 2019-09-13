@@ -42,6 +42,14 @@ namespace CmsData
             var txt = File.ReadAllText(name);
             return txt;
         }
+        public void WriteFile(string path, string text)
+        {
+            File.AppendAllText(path, text);
+        }
+        public void DeleteFile(string path)
+        {
+            File.Delete(path);
+        }
 #endif
         public string Content(string name, string keyword = null)
         {

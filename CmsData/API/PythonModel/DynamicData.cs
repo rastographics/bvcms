@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
+using System.Linq;
 using System.Runtime.Serialization;
 using Newtonsoft.Json.Linq;
 using UtilityExtensions;
@@ -195,7 +196,16 @@ namespace CmsData.API
 
         public override string ToString()
         {
-            return JsonConvert.SerializeObject(dict, Formatting.Indented);
+            var json = JsonConvert.SerializeObject(dict, Formatting.Indented);
+            return json.Replace("'", @"\'");
+        }
+        public string ToFlatString()
+        {
+            var emptyvalues = dict.Where(vv => vv.Value == null || vv.Value?.ToString() == "").Select(vv => vv.Key).ToList();
+            foreach (var k in emptyvalues)
+                this.Remove(k);
+            var json = JsonConvert.SerializeObject(dict);
+            return json.Replace("'", @"\'");
         }
 
         public List<string> Keys(DynamicData metadata = null)
