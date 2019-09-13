@@ -450,7 +450,7 @@ namespace CmsWeb.Models
                 return;
             }
 
-            Session["ActivePerson"] = u.Name;
+            Util.ActivePerson = u.Name;
             if (deleteSpecialTags)
             {
                 CmsData.DbUtil.Db.DeleteSpecialTags(Util.UserPeopleId);
@@ -465,7 +465,10 @@ namespace CmsWeb.Models
                 return null;
             }
 
-            Session["ActivePerson"] = u.Name;
+            if (Session != null)
+            {
+                Util.ActivePerson = u.Name;
+            }
             return u;
         }
 
