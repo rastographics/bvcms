@@ -1,18 +1,17 @@
 ﻿using CmsData;
 using CmsData.Codes;
 using CmsDataTests.Support;
+using SharedTestFixtures;
 using Shouldly;
 using System;
 using System.Linq;
-using UtilityExtensions;
 using Xunit;
 
 namespace CmsDataTests
 {
-    [Collection("Database collection")]
+    [Collection(Collections.Database)]
     public class CMSDataContextFunctionTests : FinanceTestBase
     {
-        //TODO: clean up contributions in the database
         [Fact]
         public void GetTotalContributionsDonorTest()
         {
