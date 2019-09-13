@@ -359,16 +359,65 @@ namespace IntegrationTests.Support
             }, maxWaitTimeInSeconds);
         }
 
-        protected void WaitForElementToDissappear(string css, int maxRetries = 5, bool visible = true)
+        protected void WaitForElementToDisappear(string css, int maxWaitTimeInSeconds = 10, bool visible = true)
         {
-            var ele = Find(css:css, visible: visible);
-            while (maxRetries-- > 0 && ele != null)
+            IWebElement element = null;
+            try
             {
-                Sleep(500);
-                ele = Find(css:css, visible: visible);
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(maxWaitTimeInSeconds));
+
+                wait.Until(d =>
+                {
+                    try
+                    {
+                        element = Find(By.CssSelector(css), visible: visible);
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        //Ignore
+                    }
+                    catch (NoSuchWindowException)
+                    {
+                        //when popup is closed, switch to last windows
+                        driver.SwitchTo().Window(driver.WindowHandles.Last());
+                    }
+                    //In IE7 there are chances we may get state as loaded instead of complete
+                    return (element == null);
+                });
             }
-            Sleep(200);
+            catch (TimeoutException)
+            {
+                //sometimes Page remains in Interactive mode and never becomes Complete, then we can still try to access the controls
+                if (element == null)
+                {
+                    SaveScreenshot();
+                    throw;
+                }
+            }
+            catch (NullReferenceException)
+            {
+                //sometimes Page remains in Interactive mode and never becomes Complete, then we can still try to access the controls
+                if (element != null)
+                {
+                    SaveScreenshot();
+                    throw;
+                }
+            }
+            catch (WebDriverException)
+            {
+                if (driver.WindowHandles.Count == 1)
+                {
+                    driver.SwitchTo().Window(driver.WindowHandles.First());
+                }
+                element = driver.FindElement(By.CssSelector(css));
+                if (element != null)
+                {
+                    SaveScreenshot();
+                    throw;
+                }
+            }
         }
+
         protected void WaitForElement(string css, int maxWaitTimeInSeconds = 10, bool visible = true)
         {
             IWebElement element = null;

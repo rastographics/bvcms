@@ -36,7 +36,7 @@ namespace IntegrationTests.Areas.Manage
         private void DisplayOrgDropdowns()
         {
             Open($"{rootUrl}QueryCode?code=IsMemberOf()=1");
-            WaitForElementToDissappear("div.blockUI.blockOverlay");
+            WaitForElementToDisappear("div.blockUI.blockOverlay");
             Find(css: "li.condition a[title^=IsMemberOf]").Click();
             WaitForElement("input[type=radio][value='0']", visible: false);
         }
