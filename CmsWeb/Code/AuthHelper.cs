@@ -29,7 +29,7 @@ namespace CmsWeb.Code
             if (valid)
             {
                 var roles = CMSRoleProvider.provider;
-                user = AccountModel.SetUserInfo(db, idb, username, context.Session);
+                user = AccountModel.SetUserInfo(db, idb, username);
 
                 var isdev = roles.IsUserInRole(username, "Developer");
                 var isalt = altrole.HasValue() && roles.IsUserInRole(username, altrole);
