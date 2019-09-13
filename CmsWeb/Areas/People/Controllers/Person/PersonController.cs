@@ -85,7 +85,7 @@ namespace CmsWeb.Areas.People.Controllers
             ViewBag.Comments = Util.SafeFormat(m.Person.Comments);
             ViewBag.PeopleId = id.Value;
             Util2.CurrentPeopleId = id.Value;
-            Session["ActivePerson"] = m.Person.Name;
+            Util.ActivePerson = m.Person.Name;
             DbUtil.LogPersonActivity($"Viewing Person: {m.Person.Name}", id.Value, m.Person.Name);
             InitExportToolbar(id);
             return View(m);
@@ -116,7 +116,7 @@ namespace CmsWeb.Areas.People.Controllers
             ViewBag.Comments = Util.SafeFormat(m.Person.Comments);
             ViewBag.PeopleId = id.Value;
             Util2.CurrentPeopleId = id.Value;
-            Session["ActivePerson"] = m.Person.Name;
+            Util.ActivePerson = m.Person.Name;
             DbUtil.LogPersonActivity($"Viewing Person: {m.Person.Name}", id.Value, m.Person.Name);
             InitExportToolbar(id);
             return View("Resources/Index", m);

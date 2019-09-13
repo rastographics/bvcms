@@ -24,13 +24,12 @@ namespace CmsWeb.Code
             var username = cred[0];
             var password = cred[1];
 
+            User user = null;
             var valid = CMSMembershipProvider.provider.ValidateUser(username, password);
             if (valid)
             {
                 var roles = CMSRoleProvider.provider;
-
-                if (context.Session != null)
-                    AccountModel.SetUserInfo(db, idb, username, context.Session);
+                user = AccountModel.SetUserInfo(db, idb, username, context.Session);
 
                 var isdev = roles.IsUserInRole(username, "Developer");
                 var isalt = altrole.HasValue() && roles.IsUserInRole(username, altrole);
@@ -46,13 +45,14 @@ namespace CmsWeb.Code
             if (shouldLog)
                 CmsData.DbUtil.LogActivity(message.Substring(1));
 
-            return new AuthResult {IsAuthenticated = valid, Message = message};
+            return new AuthResult {IsAuthenticated = valid, User = user, Message = message};
         }
     }
 
     internal class AuthResult
     {
         public bool IsAuthenticated { get; set; }
+        public User User { get; set; }
         public string Message { get; set; }
     }
 }
