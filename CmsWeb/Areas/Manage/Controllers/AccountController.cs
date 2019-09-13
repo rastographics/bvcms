@@ -161,7 +161,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             if (user.HasValue())
             {
                 FormsAuthentication.SetAuthCookie(user, false);
-                AccountModel.SetUserInfo(CurrentDatabase, CurrentImageDatabase, user, Session);
+                AccountModel.SetUserInfo(CurrentDatabase, CurrentImageDatabase, user);
                 if (returnUrl.HasValue() && Url.IsLocalUrl(returnUrl))
                 {
                     return Redirect(returnUrl);
@@ -198,8 +198,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                 return false;
             }
 
-            var session = HttpContextFactory.Current.Session;
-            AccountModel.SetUserInfo(cmsdb, cmsidb, username, session);
+            AccountModel.SetUserInfo(cmsdb, cmsidb, username);
             if (Util.UserId == 0)
             {
                 return false;
@@ -400,7 +399,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                 }
             }
             FormsAuthentication.SetAuthCookie(user.Username, false);
-            AccountModel.SetUserInfo(CurrentDatabase, CurrentImageDatabase, user.Username, Session);
+            AccountModel.SetUserInfo(CurrentDatabase, CurrentImageDatabase, user.Username);
 
             ViewBag.user = user.Username;
             ViewBag.MinPasswordLength = MembershipService.MinPasswordLength(CurrentDatabase);
@@ -467,7 +466,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             user.FailedPasswordAttemptCount = 0;
             CurrentDatabase.SubmitChanges();
             FormsAuthentication.SetAuthCookie(user.Username, false);
-            AccountModel.SetUserInfo(CurrentDatabase, CurrentImageDatabase, user.Username, Session);
+            AccountModel.SetUserInfo(CurrentDatabase, CurrentImageDatabase, user.Username);
             ViewBag.user = user.Username;
             ViewBag.MinPasswordLength = MembershipService.MinPasswordLength(CurrentDatabase);
             ViewBag.RequireSpecialCharacter = MembershipService.RequireSpecialCharacter(CurrentDatabase);

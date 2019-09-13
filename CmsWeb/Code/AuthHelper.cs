@@ -9,7 +9,7 @@ using UtilityExtensions;
 
 namespace CmsWeb.Code
 {
-    internal static class AuthHelper
+    public class AuthHelper
     {
         public static AuthResult AuthenticateDeveloper(HttpContextBase context, bool shouldLog = false, string additionalRole = "", string altrole = "")
         {
@@ -29,30 +29,34 @@ namespace CmsWeb.Code
             {
                 var roles = CMSRoleProvider.provider;
 
-                if (context.Session != null)
-                    AccountModel.SetUserInfo(db, idb, username, context.Session);
-
                 var isdev = roles.IsUserInRole(username, "Developer");
                 var isalt = altrole.HasValue() && roles.IsUserInRole(username, altrole);
-                if (!isdev && !isalt)
+                if ((!isdev && !isalt) || (additionalRole.HasValue() && !roles.IsUserInRole(username, additionalRole)))
+                {
                     valid = false;
-
-                if (additionalRole.HasValue() && !roles.IsUserInRole(username, additionalRole))
-                    valid = false;
+                }
             }
 
+            User user = null;
+            if (valid)
+            {
+                user = AccountModel.SetUserInfo(db, idb, username);
+            }
             var message = valid ? $" API {username} authenticated" : $"!API {username} not authenticated";
 
             if (shouldLog)
+            {
                 CmsData.DbUtil.LogActivity(message.Substring(1));
+            }
 
-            return new AuthResult {IsAuthenticated = valid, Message = message};
+            return new AuthResult {IsAuthenticated = valid, User = user, Message = message};
         }
     }
 
-    internal class AuthResult
+    public class AuthResult
     {
         public bool IsAuthenticated { get; set; }
+        public User User { get; set; }
         public string Message { get; set; }
     }
 }
