@@ -110,7 +110,7 @@ namespace CmsWeb.Areas.People.Controllers
             }
 
             FormsAuthentication.SetAuthCookie(user.Username, false);
-            AccountModel.SetUserInfo(CurrentDatabase, CurrentImageDatabase, user.Username, Session);
+            AccountModel.SetUserInfo(CurrentDatabase, CurrentImageDatabase, user.Username);
             Util.UserPeopleId = user.PeopleId;
             Util.UserPreferredName = user.Username;
             return Redirect("/");
