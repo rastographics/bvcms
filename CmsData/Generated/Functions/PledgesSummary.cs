@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
@@ -15,22 +9,22 @@ namespace CmsData.View
     {
         private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
 
-        private int? _FundId;
+        private int _FundId;
 
         private string _FundName;
 
-        private decimal? _AmountPledged;
+        private decimal _AmountPledged;
 
-        private decimal? _AmountContributed;
+        private decimal _AmountContributed;
 
-        private decimal? _Balance;
+        private decimal _Balance;
 
         public PledgesSummary()
         {
         }
 
         [Column(Name = "FundId", Storage = "_FundId", DbType = "int")]
-        public int? FundId
+        public int FundId
         {
             get
             {
@@ -60,7 +54,7 @@ namespace CmsData.View
         }
 
         [Column(Name = "AmountPledged", Storage = "_AmountPledged", DbType = "Decimal(38,2)")]
-        public decimal? AmountPledged
+        public decimal AmountPledged
         {
             get
             {
@@ -75,7 +69,7 @@ namespace CmsData.View
         }
 
         [Column(Name = "AmountContributed", Storage = "_AmountContributed", DbType = "Decimal(38,2)")]
-        public decimal? AmountContributed
+        public decimal AmountContributed
         {
             get
             {
@@ -90,7 +84,7 @@ namespace CmsData.View
         }
 
         [Column(Name = "Balance", Storage = "_Balance", DbType = "Decimal(38,2)")]
-        public decimal? Balance
+        public decimal Balance
         {
             get
             {
