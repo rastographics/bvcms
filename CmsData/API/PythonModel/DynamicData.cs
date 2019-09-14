@@ -197,7 +197,7 @@ namespace CmsData.API
         public override string ToString()
         {
             var json = JsonConvert.SerializeObject(dict, Formatting.Indented);
-            return json.Replace("'", @"\'");
+            return json.Replace("'", @"''");
         }
         public string ToFlatString()
         {
@@ -205,7 +205,7 @@ namespace CmsData.API
             foreach (var k in emptyvalues)
                 this.Remove(k);
             var json = JsonConvert.SerializeObject(dict);
-            return json.Replace("'", @"\'");
+            return json.Replace("'", @"''");
         }
 
         public List<string> Keys(DynamicData metadata = null)
