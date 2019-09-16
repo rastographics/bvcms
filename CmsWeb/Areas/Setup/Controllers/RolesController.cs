@@ -106,7 +106,6 @@ namespace CmsWeb.Areas.Setup.Controllers
         [AcceptVerbs(HttpVerbs.Post)]
         public ActionResult Delete(string id)
         {
-            id = id.Substring(1);
             var role = CurrentDatabase.Roles.SingleOrDefault(m => m.RoleId == id.ToInt());
             if (role == null)
             {
