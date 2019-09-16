@@ -60,7 +60,7 @@ namespace IntegrationTests.Areas.Manage
 
             WaitForElement(".snackbar.success");
 
-            var status = Find(css: "#HideNavTabs + .toggle-group .btn.active").Text;    // "Hide" or "Show"
+            string status = Find(css: "#HideNavTabs + .toggle-group .btn.active").Text;    // "Hide" or "Show"
 
             Open($"{rootUrl}Roles");
             if (status == "Show")
