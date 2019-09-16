@@ -55,10 +55,11 @@ namespace IntegrationTests.Areas.Manage
             Open($"{rootUrl}Roles/1");
 
             Find(css: "button[data-target='#General']").Click();
-            WaitForElement("#General");
+            WaitForElement("#HideNavTabs");
             Find(css: "#HideNavTabs + .toggle-group").Click();
 
             WaitForElement(".snackbar.success");
+            Wait(1);
 
             string status = Find(css: "#HideNavTabs + .toggle-group .btn.active").Text;    // "Hide" or "Show"
 
