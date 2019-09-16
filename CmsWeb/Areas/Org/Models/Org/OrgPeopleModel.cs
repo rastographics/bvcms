@@ -18,7 +18,7 @@ namespace CmsWeb.Areas.Org.Models
 {
     public class OrgPeopleModel : PagedTableModel<OrgFilterPerson, OrgFilterPerson>, IDbBinder
     {
-        internal CMSDataContext Db => CurrentDatabase;
+        internal CMSDataContext Db => CurrentDatabase ?? DbUtil.Db;
         public Guid QueryId { get; set; }
         public User User => CurrentDatabase.CurrentUser;
 

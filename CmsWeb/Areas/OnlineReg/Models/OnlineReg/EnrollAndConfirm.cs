@@ -202,7 +202,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             CurrentDatabase.Email(Util.PickFirst(p.person.FromEmail, notify.FromEmail),
                 notifyIds, Header,
                 $@"{p.person.Name} has registered for {Header}<br/>
-Feepaid for this registrant: {p.AmountToPay():C}<br/>
+Fee paid for this registrant: {p.AmountToPay():C}<br/>
 Others in this registration session: {p.GetOthersInTransaction(Transaction)}<br/>
 Total Fee paid for this registration session: {ts?.TotPaid:C}<br/>
 <pre>{details}</pre>");
