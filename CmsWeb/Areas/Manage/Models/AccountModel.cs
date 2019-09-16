@@ -125,7 +125,7 @@ namespace CmsWeb.Models
             }
 
             UserName2 = user.Username;
-            SetUserInfo(cmsdb, cmsidb, user.Username, HttpContextFactory.Current.Session, deleteSpecialTags: false);
+            SetUserInfo(cmsdb, cmsidb, user.Username, deleteSpecialTags: false);
             //DbUtil.LogActivity("iphone auth " + user.Username);
 
             if (checkOrgLeadersOnly && !Util2.OrgLeadersOnlyChecked)
@@ -166,7 +166,7 @@ namespace CmsWeb.Models
             var roleProvider = CMSRoleProvider.provider;
 
             UserName2 = user.Username;
-            SetUserInfo(cmsdb, cmsidb, user.Username, HttpContextFactory.Current.Session, deleteSpecialTags: false);
+            SetUserInfo(cmsdb, cmsidb, user.Username, deleteSpecialTags: false);
 
             if (checkOrgLeadersOnly && !Util2.OrgLeadersOnlyChecked)
             {
@@ -417,7 +417,7 @@ namespace CmsWeb.Models
 
         public static void FinishLogin(string userName, HttpSessionStateBase Session, CMSDataContext db, CMSImageDataContext idb, bool logEntry = true)
         {
-            SetUserInfo(db, idb, userName, Session);
+            SetUserInfo(db, idb, userName, logEntry);
             FormsAuthentication.SetAuthCookie(userName, false);
             if (logEntry)
             {
@@ -447,34 +447,7 @@ namespace CmsWeb.Models
             CmsData.DbUtil.Db.EmailRedacted(CmsData.DbUtil.AdminMail, notify, subject, message);
         }
 
-        public static void SetUserInfo(CMSDataContext cmsdb, CMSImageDataContext cmsidb, string username, HttpSessionStateBase Session, bool deleteSpecialTags = true)
-        {
-            var u = SetUserInfo(cmsdb, cmsidb, username);
-            if (u == null)
-            {
-                return;
-            }
-
-            Session["ActivePerson"] = u.Name;
-            if (deleteSpecialTags)
-            {
-                CmsData.DbUtil.Db.DeleteSpecialTags(Util.UserPeopleId);
-            }
-        }
-
-        public static User SetUserInfo(CMSDataContext cmsdb, CMSImageDataContext cmsidb, string username, HttpSessionStateBase Session)
-        {
-            var u = SetUserInfo(cmsdb, cmsidb, username);
-            if (u == null)
-            {
-                return null;
-            }
-
-            Session["ActivePerson"] = u.Name;
-            return u;
-        }
-
-        private static User SetUserInfo(CMSDataContext cmsdb, CMSImageDataContext cmsidb, string username)
+        public static User SetUserInfo(CMSDataContext cmsdb, CMSImageDataContext cmsidb, string username, bool deleteSpecialTags = true)
         {
             var i = (from u in cmsdb.Users
                      where u.Username == username
@@ -483,7 +456,7 @@ namespace CmsWeb.Models
             {
                 return null;
             }
-            //var u = cmsdb.Users.SingleOrDefault(us => us.Username == username);
+
             if (i.u != null)
             {
                 Util.UserId = i.u.UserId;
@@ -504,6 +477,16 @@ namespace CmsWeb.Models
                 Util.UserPreferredName = i.PreferredName;
                 Util.UserFullName = i.u.Name;
                 Util.UserFirstName = i.u.Person.FirstName;
+            }
+            else
+            { 
+                return null;
+            }
+
+            Util.ActivePerson = i.u.Name;
+            if (deleteSpecialTags)
+            {
+                cmsdb.DeleteSpecialTags(Util.UserPeopleId);
             }
             return i.u;
         }

@@ -638,7 +638,7 @@ You can do one of these things:
                 }
             }
             Util2.CurrentPeopleId = p.Person.PeopleId;
-            HttpContextFactory.Current.Session["ActivePerson"] = p.Person.Name;
+            Util.ActivePerson = p.Person.Name;
         }
 
         public class ReturnResult

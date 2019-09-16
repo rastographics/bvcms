@@ -71,7 +71,7 @@ namespace CmsWeb
 
                 var db = CMSDataContext.Create(HttpContextFactory.Current);
                 var idb = CMSImageDataContext.Create(HttpContextFactory.Current);
-                AccountModel.SetUserInfo(db, idb, Util.UserName, HttpContextFactory.Current.Session);
+                AccountModel.SetUserInfo(db, idb, Util.UserName);
             }
             Util.Version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
             Util.SessionStarting = true;

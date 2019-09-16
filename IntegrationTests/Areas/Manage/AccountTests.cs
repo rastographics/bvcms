@@ -95,11 +95,13 @@ namespace IntegrationTests.Areas.Manage
 
             Find(css: ".box-tools button[type=submit]").Click();
             Find(id: "RoleName.NEW").Click();
-            WaitForElement(".editable-input input[type=text]");
-            Find(css: ".editable-input input[type=text]").Clear();
-            Find(css: ".editable-input input[type=text]").SendKeys(roleName);
+            var edit = ".editable-input input[type=text]";
+            WaitForElement(edit);
+            Find(css: edit).Clear();
+            Find(css: edit).SendKeys(roleName);
             Find(css: ".editable-buttons button[type=submit]").Click();
-            Open($"{rootUrl}Roles");
+            Wait(1);
+            Open($"{rootUrl}Roles/");
             WaitForPageLoad();
             PageSource.ShouldContain(roleName);
             var adminRole = db.Roles.SingleOrDefault(r => r.RoleName == "Admin");

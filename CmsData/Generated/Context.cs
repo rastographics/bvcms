@@ -3465,9 +3465,20 @@ namespace CmsData
                 );
         }
 
-        [Function(Name = "dbo.PledgeFulfillment", IsComposable = true)]
-        public IQueryable<View.PledgeFulfillment> PledgeFulfillment(
-            [Parameter(DbType = "int")] int? fundid
+        [Function(Name = "dbo.PledgesSummary", IsComposable = true)]
+        public IQueryable<View.PledgesSummary> PledgesSummary(
+            [Parameter(DbType = "int")] int? pid
+            )
+        {
+            return this.CreateMethodCallQuery<View.PledgesSummary>(this,
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                pid
+                );
+        }
+
+        [Function(Name="dbo.PledgeFulfillment", IsComposable = true)]
+		public IQueryable<View.PledgeFulfillment > PledgeFulfillment(
+            [Parameter(DbType="int")] int? fundid
             )
         {
             return this.CreateMethodCallQuery<View.PledgeFulfillment>(this,
