@@ -1,4 +1,7 @@
-﻿if not exists (select * from sys.tables t JOIN sys.schemas s on (t.schema_id = s.schema_id)
+﻿if not exists (select null from information_schema.schemata where schema_name = 'custom' )
+    exec sp_executesql N'CREATE SCHEMA custom'
+go
+if not exists (select * from sys.tables t JOIN sys.schemas s on (t.schema_id = s.schema_id)
 where s.name = 'custom' and t.name = 'JsonDocumentRecords') 
     create table [custom].[JsonDocumentRecords](
     	[Section] [nvarchar](50) not null,

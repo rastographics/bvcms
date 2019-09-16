@@ -992,7 +992,6 @@
     <Content Include="Migrations\20190520_add_acceptiva_to_gateway_tables.sql" />
     <Content Include="Migrations\20190527_add_preconfigured_acceptiva_details.sql" />
     <Content Include="Migrations\20190620_add_passport_reg_setting.sql" />
-    <Content Include="Migrations\20190827_Update_proc_LedgerIncomeExport - Copy.sql" />
     <Content Include="Migrations\20190904_Create_table_JsonDocumentRecords.sql" />
     <Compile Include="Organization\OrgFilter.cs" />
     <Compile Include="Organization\OrgPerson.cs" />
