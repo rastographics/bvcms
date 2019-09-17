@@ -13,7 +13,8 @@ namespace CmsWeb.Models
 {
     public class OrgContentInfo
     {
-        public CMSDataContext CurrentDatabase { get; set; }
+        public CMSDataContext CurrentDatabase { get => _currentDatabase ?? DbUtil.Db; set => _currentDatabase = value; }
+        private CMSDataContext _currentDatabase;
         public int OrgId { get; set; }
         public string error { get; set; }
         public string OrgName { get; set; }

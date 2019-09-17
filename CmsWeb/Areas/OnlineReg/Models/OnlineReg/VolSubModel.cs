@@ -409,6 +409,7 @@ Sorry, I cannot sub for you.</a>";
         private Settings setting;
         public Settings Setting => setting ?? (setting = CurrentDatabase.CreateRegistrationSettings(org.OrganizationId));
 
-        public CMSDataContext CurrentDatabase { get; set; }
+        public CMSDataContext CurrentDatabase { get => _currentDatabase ?? DbUtil.Db; set => _currentDatabase = value; }
+        private CMSDataContext _currentDatabase;
     }
 }
