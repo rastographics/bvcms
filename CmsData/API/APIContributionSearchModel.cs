@@ -164,7 +164,7 @@ namespace CmsData.API
             if (!model.TaxNonTax.HasValue())
                 model.TaxNonTax = "TaxDed";
 
-            contributions = db.Contributions.Join(db.ContributionFunds.ScopedByRoleMembership(), c => c.FundId, cf => cf.FundId, (c, cf) => c);
+            contributions = db.Contributions.Join(db.ContributionFunds.ScopedByRoleMembership(db), c => c.FundId, cf => cf.FundId, (c, cf) => c);
 
             if (!model.IncludeUnclosedBundles)
                 contributions = from c in contributions
