@@ -126,6 +126,7 @@
     <Compile Include="Areas\OnlineReg\Models\OnlineReg\OnlineRegModelTests.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineReg\PaymentFormTests.cs" />
     <Compile Include="Areas\Reports\Models\Reports\Export\ExportInvolvementsTests.cs" />
+    <Compile Include="Areas\Search\Controllers\QueryControllerTests.cs" />
     <Compile Include="Areas\Setup\Controllers\DivisionControllerTests.cs" />
     <Compile Include="Support\ControllerTestBase.cs" />
     <Compile Include="TestUtils\FakeOrganizationUtils.cs" />
