@@ -10,8 +10,6 @@ namespace IntegrationTests.Support
 {
     internal class Settings
     {
-        private static TestContext testContext;
-
         public static string RootUrl => AppSetting("RootUrl", $"http://localhost:{HostPort}/");
 
         public static int HostPort => Convert.ToInt32(AppSetting("HostPort", _hostport ?? GetHostPort()));
@@ -29,11 +27,7 @@ namespace IntegrationTests.Support
 
         private static string ContextSetting(string name, string defaultValue = null)
         {
-            if (testContext != null && testContext.Properties[name] != null)
-            {
-                return Convert.ToString(testContext.Properties[name]);
-            }
-            return defaultValue;
+            return Environment.GetEnvironmentVariable(name) ?? defaultValue;
         }
 
         private static string _hostport;
@@ -64,11 +58,6 @@ namespace IntegrationTests.Support
             var virtualDirectory = config.SelectSingleNode(@"/configuration/system.applicationHost/sites/site[@name='CMSWeb']/application/virtualDirectory");
             virtualDirectory.Attributes["physicalPath"].Value = Path.GetFullPath(@"..\..\..\CmsWeb");
             config.Save(ApplicationHostConfig);
-        }
-
-        public static void Initialize(TestContext context)
-        {
-            testContext = context;
         }
     }
 }

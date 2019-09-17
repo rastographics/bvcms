@@ -90,7 +90,7 @@ namespace CmsDataTests.Support
             db.BundleHeaders.DeleteOnSubmit(bundleHeader);
             db.SubmitChanges();
         }
-
+      
         protected static Contribution CreateContributionRecord(Contribution c)
         {
             var now = Util.Now;

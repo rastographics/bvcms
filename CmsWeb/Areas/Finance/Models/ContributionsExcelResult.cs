@@ -44,11 +44,8 @@ namespace CmsWeb.Models
             }
 
             var tagid = FilterByActiveTag ? db.TagCurrent()?.Id : (int?)null;
-            
-
             var customFundIds = APIContributionSearchModel.GetCustomFundSetList(db, FundSet);
             var authorizedFundIds = db.ContributionFunds.ScopedByRoleMembership().Select(f => f.FundId).ToList();
-
             string fundIds = string.Empty;
 
             if (customFundIds?.Count > 0)

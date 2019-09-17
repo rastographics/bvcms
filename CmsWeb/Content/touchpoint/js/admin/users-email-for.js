@@ -1,17 +1,22 @@
 ﻿$(function () {
     $("a.editcanemail").SearchUsers({
-        UpdateShared: function (topid, topid0) {
-            $.post("/UpdatePersonCanEmailForList/" + topid, { topid0: topid0 }, function (ret) {
-                window.location.reload();
-            });
+        UpdateShared: function (parent, delegate) {
+            if (parent !== undefined) {
+                $.post("/UpdatePersonCanEmailForList/" + parent, { topid0: delegate }, function (ret) {
+                    window.location.reload();
+                });
+            }
         },
-        Select: function (id) {
-            var $a = $("#canemail-" + id);
-            if ($a && $a.length)
-                $a.click();
-            else {
-                $("#new-canemail")[0].href = "/PersonCanEmailForList/" + id;
-                $("#new-canemail").click();
+        Select: function (parent, delegate) {
+            if (delegate === undefined) {
+                var $a = $("#canemail-" + parent);
+                if ($a && $a.length) {
+                    $a.click();
+                } else {
+                    window.setTimeout(function () {
+                        $("#new-canemail").attr('href', "/PersonCanEmailForList/" + parent).click();
+                    }, 300);
+                }
             }
         }
     });
