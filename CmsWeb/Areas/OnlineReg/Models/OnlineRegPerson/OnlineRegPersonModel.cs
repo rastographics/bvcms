@@ -18,7 +18,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
     public partial class OnlineRegPersonModel : IXmlSerializable, IDbBinder
     {
         [XmlIgnore, JsonIgnore]
-        public CMSDataContext CurrentDatabase { get; set; }
+        public CMSDataContext CurrentDatabase { get => _currentDatabase ?? DbUtil.Db; set => _currentDatabase = value; }
+        private CMSDataContext _currentDatabase;
         // IsValidForContinue = false means that there is some reason registrant cannot proceed to the questions page
         public bool IsValidForContinue { get; set; }
         public bool IsValidForNew { get; set; }
