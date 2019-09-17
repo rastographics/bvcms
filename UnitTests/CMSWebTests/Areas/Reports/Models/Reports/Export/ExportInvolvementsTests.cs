@@ -16,11 +16,12 @@ using System.Reflection;
 using CmsWeb;
 using SharedTestFixtures;
 using CmsWeb.Areas.Search.Models;
+using IntegrationTests.Support;
 
 namespace CMSWebTests.Areas.Reports.Models.Reports.Export
 {
     [Collection(Collections.Database)]
-    public class ExportInvolvementsTests
+    public class ExportInvolvementsTests : FeatureTestBase
     {
         [Fact]
         public void InvolvementList_Should_Have_FamilyId()
@@ -70,18 +71,18 @@ namespace CMSWebTests.Areas.Reports.Models.Reports.Export
             var hoh = new Person
             {
                 Family = family,
-                FirstName = FakeOrganizationUtils.RandomString(),
-                LastName = FakeOrganizationUtils.RandomString(),
-                EmailAddress = FakeOrganizationUtils.RandomString() + "@example.com",
+                FirstName = RandomString(),
+                LastName = RandomString(),
+                EmailAddress = RandomString() + "@example.com",
                 MemberStatusId = MemberStatusCode.Member,
                 PositionInFamilyId = PositionInFamily.PrimaryAdult
             };
             var child = new Person
             {
                 Family = family,
-                FirstName = FakeOrganizationUtils.RandomString(),
-                LastName = FakeOrganizationUtils.RandomString(),
-                EmailAddress = FakeOrganizationUtils.RandomString() + "@example.com",
+                FirstName = RandomString(),
+                LastName = RandomString(),
+                EmailAddress = RandomString() + "@example.com",
                 DeceasedDate = DateTime.Now,
                 MemberStatusId = MemberStatusCode.Member,
                 PositionInFamilyId = PositionInFamily.Child

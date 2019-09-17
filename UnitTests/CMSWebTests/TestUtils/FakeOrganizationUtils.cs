@@ -74,17 +74,5 @@ namespace CMSWebTests
                     .PurgeOrg(db);
             }
         }
-
-        public static string RandomString(int length = 8, string prefix = "")
-        {
-            var randomizer = new Random();
-            string rndchars = "QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm1234567890";
-            string s = prefix;
-            while (s.Length < length)
-            {
-                s += rndchars.Substring(randomizer.Next(0, rndchars.Length), 1);
-            }
-            return s;
-        }
     }
 }
