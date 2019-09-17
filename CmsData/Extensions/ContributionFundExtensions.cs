@@ -6,12 +6,12 @@ namespace CmsData
 {
     public static class ContributionFundExtensions
     {
-        public static IQueryable<ContributionFund> ScopedByRoleMembership(this IQueryable<ContributionFund> contributionFunds)
+        public static IQueryable<ContributionFund> ScopedByRoleMembership(this IQueryable<ContributionFund> contributionFunds, CMSDataContext db)
         {
-            return contributionFunds.ScopedByRoleMembership(Roles.GetRolesForUser());
+            return contributionFunds.ScopedByRoleMembership(db, Roles.GetRolesForUser());
         }
 
-        public static IQueryable<ContributionFund> ScopedByRoleMembership(this IQueryable<ContributionFund> contributionFunds, string[] allowedRoles)
+        public static IQueryable<ContributionFund> ScopedByRoleMembership(this IQueryable<ContributionFund> contributionFunds, CMSDataContext db, string[] allowedRoles)
         {
             var financeRole = "Finance";
             var financeViewOnlyRole = "FinanceViewOnly";
@@ -27,7 +27,7 @@ namespace CmsData
                 if (allowedRoles.Contains(fundManagerRole))
                 {
                     return contributionFunds.Where(f => f.FundManagerRoleId != 0)
-                        .Join(DbUtil.Db.Roles, f => f.FundManagerRoleId, r => r.RoleId, (f, r) => new { role = r, fund = f })
+                        .Join(db.Roles, f => f.FundManagerRoleId, r => r.RoleId, (f, r) => new { role = r, fund = f })
                         .Where(r => allowedRoles.Contains(r.role.RoleName))
                         .Select(r => r.fund);
                 }
