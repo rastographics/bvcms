@@ -2,7 +2,10 @@
 <ul class="nav nav-pills subnav hidden-xs" data-tabparent="Settings-tab">
     <li class="active"><a href="#General" data-toggle="tab">General</a></li>
     <li><a href="#Attendance" data-toggle="tab" class="ajax">Attendance</a></li>
+    @if (Model.ShowCheckin)
+    {
     <li><a href="#CheckIn" data-toggle="tab" class="ajax">Check In</a></li>
+    }
     <li><a href="#extravalues" data-toggle="tab" class="ajax">Extra Values</a></li>
 </ul>
 <select class="form-control visible-xs-block nav-select-pills">
