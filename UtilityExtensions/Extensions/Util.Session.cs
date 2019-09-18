@@ -98,7 +98,11 @@ namespace UtilityExtensions
         private const string STR_UserPeopleId = "UserPeopleId";
         public static int? UserPeopleId
         {
-            get => GetFromSession(STR_UserPeopleId).ToInt();
+            get
+            {
+                var v = GetFromSession(STR_UserPeopleId);
+                return v?.ToInt();
+            }
             set => SetValueInSession(STR_UserPeopleId, value);
         }
 

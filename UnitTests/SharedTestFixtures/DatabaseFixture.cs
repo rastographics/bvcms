@@ -55,7 +55,7 @@ namespace SharedTestFixtures
             return config;
         }
 
-        private static string FindWebConfigPath()
+        public static string FindWebConfigPath()
         {
             string file = null;
             foreach(var path in new[] { @"..\..\..\..\CmsWeb\web.config", @"..\..\..\CmsWeb\web.config" })
