@@ -84,7 +84,7 @@ namespace CmsWeb.Areas.Reports.Controllers
             var d1 = dt1.ToDate();
             if (!d1.HasValue)
             {
-                d1 = ChurchAttendanceModel.MostRecentAttendedSunday();
+                d1 = ChurchAttendanceModel.MostRecentAttendedSunday(CurrentDatabase);
             }
 
             var d2 = dt2.ToDate();
@@ -196,7 +196,7 @@ namespace CmsWeb.Areas.Reports.Controllers
             var d = dt.ToDate();
             if (!d.HasValue)
             {
-                d = ChurchAttendanceModel.MostRecentAttendedSunday();
+                d = ChurchAttendanceModel.MostRecentAttendedSunday(CurrentDatabase);
             }
 
             var m = new ChurchAttendanceModel(d.Value);
@@ -210,7 +210,7 @@ namespace CmsWeb.Areas.Reports.Controllers
             var d2 = dt2.ToDate();
             if (!d1.HasValue)
             {
-                d1 = ChurchAttendanceModel.MostRecentAttendedSunday();
+                d1 = ChurchAttendanceModel.MostRecentAttendedSunday(CurrentDatabase);
             }
 
             if (!d2.HasValue)
@@ -370,7 +370,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         {
             if (!m.Dt1.HasValue)
             {
-                m.Dt1 = ChurchAttendanceModel.MostRecentAttendedSunday();
+                m.Dt1 = ChurchAttendanceModel.MostRecentAttendedSunday(CurrentDatabase);
             }
 
             if (!m.Dt2.HasValue)
@@ -422,7 +422,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         [HttpGet, Route("MissionTripFunding/{orgid:int}")]
         public ActionResult MissionTripFunding(int orgid)
         {
-            return View(MissionTripFundingModel.List(orgid));
+            return View(MissionTripFundingModel.List(orgid, CurrentDatabase));
         }
 
         [HttpPost]
@@ -697,7 +697,6 @@ namespace CmsWeb.Areas.Reports.Controllers
         [HttpPost]
         public ActionResult ShirtSizes(OrgSearchModel m)
         {
-            m.CurrentDatabase = CurrentDatabase;
             var orgs = m.FetchOrgs();
             var q = from om in CurrentDatabase.OrganizationMembers
                     join o in orgs on om.OrganizationId equals o.OrganizationId

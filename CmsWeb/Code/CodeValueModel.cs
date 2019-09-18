@@ -453,7 +453,7 @@ namespace CmsWeb.Code
         {
             const int openFundStatusId = 1;
 
-            return Db.ContributionFunds.ScopedByRoleMembership()
+            return Db.ContributionFunds.ScopedByRoleMembership(Db)
                 .Where(fund => fund.FundStatusId == openFundStatusId)
                 .OrderBy(fund => fund.FundId)
                 .Select(fund => new CodeValueItem { Id = fund.FundId, Value = fund.FundName })

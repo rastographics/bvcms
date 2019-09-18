@@ -1,23 +1,30 @@
 ﻿@model PythonModel
 @{
-  ViewBag.Title = Model.Title ?? Model.Header ?? "Test Script";
-  ViewBag.PageHeader = Model.Header;
-  Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = Model.Title ?? Model.Header ?? "Test Script";
+    ViewBag.PageHeader = Model.Header;
+    Layout = ViewExtensions2.TouchPointLayout();
 }
 <div class="box box-responsive">
-  <div class="box-content">
-    @Html.Raw(Model.Output)
-  </div>
-  @if (User.IsInRole("Admin"))
-  {
-    <p>
-      <a href="/Reports/AddReport?report=@Url.Encode(ViewBag.report)&url=@Url.Encode(ViewBag.url)&type=PyScript">Add Report to Menu</a>
-    </p>
-  }
+    <div class="box-content">
+        @Html.Raw(Model.Output)
+    </div>
+    @if (User.IsInRole("Admin"))
+    {
+        <p>
+            <a href="/Reports/AddReport?report=@Url.Encode(ViewBag.report)&url=@Url.Encode(ViewBag.url)&type=PyScript">Add Report to Menu</a>
+        </p>
+    }
 </div>
 @section scripts
 {
+    @if (Model.Script != null && Model.Script.TrimStart().StartsWith("<script"))
+    {
+        @Html.Raw(Model.Script)
+    }
+    else
+    {
     <script>
         @Html.Raw(Model.Script)
     </script>
+    }
 }

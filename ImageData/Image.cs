@@ -100,10 +100,11 @@ namespace ImageData
             Length = Bits.Length;
         }
 
-        public static Image NewImageFromBits(byte[] bits, CMSImageDataContext db)
+        public static Image NewImageFromBits(byte[] bits, CMSImageDataContext db, bool isPublic = false)
         {
             var i = new Image();
             i.LoadImageFromBits(bits);
+            i.IsPublic = isPublic;
             InsertImage(db, i);
             return i;
         }
