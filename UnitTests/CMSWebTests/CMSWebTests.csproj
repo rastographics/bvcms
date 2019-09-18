@@ -160,10 +160,6 @@
       <Project>{512da381-e81b-4121-b978-fc850ec88353}</Project>
       <Name>ImageData</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\IntegrationTests\IntegrationTests.csproj">
-      <Project>{298AF160-14F1-4CA2-8413-F74E100DF3EB}</Project>
-      <Name>IntegrationTests</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\UtilityExtensions\UtilityExtensions.csproj">
       <Project>{C504E3D2-5498-451B-BF82-309623706F11}</Project>
       <Name>UtilityExtensions</Name>

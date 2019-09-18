@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CmsWeb.Areas.People.Models;
 using Shouldly;
 using Xunit;
 using CmsWeb.Models;
@@ -16,12 +13,11 @@ using System.Reflection;
 using CmsWeb;
 using SharedTestFixtures;
 using CmsWeb.Areas.Search.Models;
-using IntegrationTests.Support;
 
 namespace CMSWebTests.Areas.Reports.Models.Reports.Export
 {
     [Collection(Collections.Database)]
-    public class ExportInvolvementsTests : FeatureTestBase
+    public class ExportInvolvementsTests : DatabaseTestBase
     {
         [Fact]
         public void InvolvementList_Should_Have_FamilyId()
