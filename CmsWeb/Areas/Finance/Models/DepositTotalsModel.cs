@@ -32,7 +32,7 @@ namespace CmsWeb.Models
 
         public IEnumerable<DepositDateTotal> FetchData()
         {
-            var authorizedFunds = DbUtil.Db.ContributionFunds.ScopedByRoleMembership().Select(f => f.FundId).ToList();
+            var authorizedFunds = DbUtil.Db.ContributionFunds.ScopedByRoleMembership(DbUtil.Db).Select(f => f.FundId).ToList();
             var authorizedFundsCsv = string.Join(",", authorizedFunds);
 
             var connection = new SqlConnection(Util.ConnectionString);

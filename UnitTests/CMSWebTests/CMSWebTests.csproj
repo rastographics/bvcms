@@ -139,6 +139,7 @@
     <Compile Include="Code\ViewExtensions2Tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestUtils\ControllerTestUtils.cs" />
+    <Compile Include="TestUtils\SettingUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config">

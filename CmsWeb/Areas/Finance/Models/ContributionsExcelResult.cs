@@ -39,7 +39,7 @@ namespace CmsWeb.Models
             //var fundids = APIContributionSearchModel.GetCustomFundSetList(DbUtil.Db. FundSet);
 
             var customFundIds = APIContributionSearchModel.GetCustomFundSetList(DbUtil.Db, FundSet);
-            var authorizedFundIds = DbUtil.Db.ContributionFunds.ScopedByRoleMembership().Select(f => f.FundId).ToList();
+            var authorizedFundIds = DbUtil.Db.ContributionFunds.ScopedByRoleMembership(DbUtil.Db).Select(f => f.FundId).ToList();
 
             string fundIds = string.Empty;
 
