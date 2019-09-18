@@ -57,6 +57,7 @@ namespace IntegrationTests.Areas.Reports.Views.Reports
             WaitForElement("h2", 10);
 
             PageSource.ShouldContain("ThisTextMustAppearInTests");
+
             SpecialContentUtils.DeleteSpecialContent(NewSpecialContent.Id);
         }
 
