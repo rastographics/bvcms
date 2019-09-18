@@ -17,7 +17,7 @@
         <td>
             @if (User.IsInRole("Admin"))
             {
-                <a href="@(DbUtil.Db.ServerLink("/OnlineReg/ConfirmTestXml"))/@Model.DatumId">@Model.Datum.Stamp.FormatDateTm()</a>
+                <a href="/OnlineReg/ConfirmTestXml/@Model.DatumId">@Model.Datum.Stamp.FormatDateTm()</a>
             }
             else
             {
@@ -427,7 +427,7 @@
                 }
                 <tr>
                     <td></td>
-                    <td>Settings.AgeGroup:</td>
+                    <td>Age Group</td>
                     <td>@p.AgeGroup()</td>
                 </tr>
             }

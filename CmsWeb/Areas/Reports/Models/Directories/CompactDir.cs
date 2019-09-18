@@ -1802,7 +1802,7 @@ namespace CmsWeb.Areas.Main.Models.Directories
             var letter = ' ';
             foreach (var f in q)
             {
-                if (f.FamilyName[0] != letter)
+                if (!string.IsNullOrEmpty(f.FamilyName) && f.FamilyName[0] != letter)
                 {
                     letter = f.FamilyName[0];
                     body1.Append(f.AddAlphaRow());

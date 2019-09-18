@@ -32,7 +32,7 @@ namespace CmsWeb.Areas.People.Controllers
             else
             {
                 u = AccountModel.AddUser(Util2.CurrentPeopleId);
-                var name = Session["ActivePerson"] as string;
+                var name = Util.ActivePerson as string;
                 DbUtil.LogPersonActivity($"New User for: {name}", Util2.CurrentPeopleId, name);
                 ViewBag.username = u.Username;
             }
@@ -72,7 +72,7 @@ namespace CmsWeb.Areas.People.Controllers
                 AccountModel.SendNewUserEmail(u);
             }
 
-            var name = Session["ActivePerson"] as string;
+            var name = Util.ActivePerson as string;
             DbUtil.LogPersonActivity($"Update User for: {name}", pp.PeopleId, name);
             InitExportToolbar(user.PeopleId);
             return View("System/Users", pp.Users.AsEnumerable());
@@ -110,7 +110,7 @@ namespace CmsWeb.Areas.People.Controllers
             }
 
             FormsAuthentication.SetAuthCookie(user.Username, false);
-            AccountModel.SetUserInfo(CurrentDatabase, CurrentImageDatabase, user.Username, Session);
+            AccountModel.SetUserInfo(CurrentDatabase, CurrentImageDatabase, user.Username);
             Util.UserPeopleId = user.PeopleId;
             Util.UserPreferredName = user.Username;
             return Redirect("/");
