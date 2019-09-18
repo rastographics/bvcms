@@ -59,7 +59,10 @@ namespace CmsWeb.Areas.Setup.Controllers
                     }
 
                     break;
-
+                case "OrganizationType":
+                    ViewData["LinkValue"] = "/Involvement/Index";
+                    ViewData["LinkText"] = "Involvement Tab Editor";
+                    break;
             }
 
             return View(q);
