@@ -52,7 +52,6 @@ namespace CmsDataTests
             var fromDate = new DateTime(2019, 1, 1);
             using (var db = CMSDataContext.Create(Util.Host))
             {
-
                 var bundleHeader = CreateBundle(db);
                 var FirstContribution = CreateContribution(db, bundleHeader, fromDate, 100, peopleId: 1);
                 var SecondContribution = CreateContribution(db, bundleHeader, fromDate, 20, peopleId: 1);
