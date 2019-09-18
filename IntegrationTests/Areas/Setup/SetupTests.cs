@@ -46,31 +46,29 @@ namespace IntegrationTests.Areas.Manage
             password = RandomString();
             var user = CreateUser(username, password, roles: new string[] { "Access", "Edit", "Admin" });
             Login();
-            Toggle_NavTabs_Setting();   // test both states
-            Toggle_NavTabs_Setting();
+            Toggle_NavTabs_Setting(false);   // test both states
+            Toggle_NavTabs_Setting(true);
         }
 
-        private void Toggle_NavTabs_Setting()
+        private void Toggle_NavTabs_Setting(bool shouldBeVisible)
         {
             Open($"{rootUrl}Roles/1");
 
-            Find(css: "button[data-target='#General']").Click();
+            Find(css: "button[data-target=\"#General\"]").Click();
             WaitForElement("#HideNavTabs");
             Find(css: "#HideNavTabs + .toggle-group").Click();
 
             WaitForElement(".snackbar.success");
-            Wait(1);
 
-            string status = Find(css: "#HideNavTabs + .toggle-group .btn.active").Text;    // "Hide" or "Show"
-
-            Open($"{rootUrl}Roles");
-            if (status == "Show")
+            Open(rootUrl);
+            var navbar = @"<ul class=""nav navbar-nav"">";
+            if (shouldBeVisible)
             {
-                PageSource.ShouldContain("#navbar .dropdown .dropdown-menu");
+                PageSource.ShouldContain(navbar);
             }
             else
             {
-                PageSource.ShouldNotContain("#navbar .dropdown .dropdown-menu");
+                PageSource.ShouldNotContain(navbar);
             }
         }
     }
