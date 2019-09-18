@@ -2,7 +2,11 @@
 using SharedTestFixtures;
 using Shouldly;
 using System;
+using System.Collections.Generic;
 using Xunit;
+using CmsData;
+using UtilityExtensions;
+using System.Linq;
 
 namespace IntegrationTests.Areas.Figures.Views.Figures
 {
@@ -18,7 +22,15 @@ namespace IntegrationTests.Areas.Figures.Views.Figures
             var user = CreateUser(username, password, roles: new string[] { "Access", "Edit", "Admin" });
             Login();
 
-            string YearToTest = (DateTime.Now.Year - RandomNumber(1, 4)).ToString();
+            List<int?> Years = CMSDataContext.Create(Util.Host).Contributions
+                   .Where(x => (x.ContributionDate.HasValue ? ((DateTime)x.ContributionDate).Year : (int?)null) < DateTime.Now.Year)
+                   .ToList()
+                   .Select(x => x.ContributionDate.HasValue ? ((DateTime)x.ContributionDate).Year : (int?)null)
+                   .Distinct()
+                   .OrderByDescending(x => x)
+                   .ToList();
+
+            string YearToTest = Years[RandomNumber(0, Years.Count - 1)].ToString();
 
             Open($"{rootUrl}Figures/Figures/Index");
             WaitForElement("div:nth-child(1) > .btn", 5);

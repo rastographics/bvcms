@@ -55,11 +55,13 @@ namespace CmsWeb.Areas.Figures.Controllers
 
         public ActionResult RefineFundView()
         {
-            var Years = CurrentDatabase.ExecuteQuery<int>("" +
-                "SELECT DISTINCT CAST(YEAR([ContributionDate]) AS INT) " +
-                "FROM [Contribution] " +
-                "WHERE YEAR([ContributionDate]) <> YEAR(GETDATE())" +
-                "ORDER BY YEAR([ContributionDate]) DESC").ToList();
+            List<int?> Years = CurrentDatabase.Contributions
+                   .Where(x => (x.ContributionDate.HasValue ? ((DateTime)x.ContributionDate).Year : (int?)null) < DateTime.Now.Year)
+                   .ToList()
+                   .Select(x => x.ContributionDate.HasValue ? ((DateTime)x.ContributionDate).Year : (int?)null)
+                   .Distinct()
+                   .OrderByDescending(x => x)
+                   .ToList();
 
             ViewBag.Years = Years;
             return View();
