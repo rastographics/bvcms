@@ -20,7 +20,7 @@ namespace IntegrationTests.Areas.People.Views.Person
             var user = CreateUser(username, password);
             Login();
 
-            Open($"{rootUrl}Person2/{user.PeopleId}#tab-personal");
+            Open($"{rootUrl}Person2/{user.PeopleId}");
             WaitForElement(".active:nth-child(2) > a", 5);
             PageSource.ShouldContain("<a href=\"#giving\" aria-controls=\"giving\" data-toggle=\"tab\">Giving</a>");
 
