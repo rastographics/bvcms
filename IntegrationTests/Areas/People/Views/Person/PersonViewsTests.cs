@@ -13,7 +13,7 @@ namespace IntegrationTests.Areas.People.Views.Person
         [Fact]
         public void Should_Hide_Giving_Tab()
         {
-            SettingUtils.InsertSetting("HideGivingTabMyDataUsers", "false");
+            SettingUtils.UpdateSetting("HideGivingTabMyDataUsers", "false");
 
             username = RandomString();
             password = RandomString();
@@ -24,15 +24,12 @@ namespace IntegrationTests.Areas.People.Views.Person
             WaitForElement(".active:nth-child(2) > a", 5);
             PageSource.ShouldContain("<a href=\"#giving\" aria-controls=\"giving\" data-toggle=\"tab\">Giving</a>");
 
-            SettingUtils.EditSetting("HideGivingTabMyDataUsers", "true");
+            SettingUtils.UpdateSetting("HideGivingTabMyDataUsers", "true");
 
-            Open($"{rootUrl}Person2/{user.PeopleId}");
+            Open($"{rootUrl}/Person2/Current"); //refresh page
             WaitForElement(".active:nth-child(2) > a", 5);
             PageSource.ShouldNotContain("<a href=\"#giving\" aria-controls=\"giving\" data-toggle=\"tab\">Giving</a>");
-        }
 
-        public override void Dispose()
-        {
             SettingUtils.DeleteSetting("HideGivingTabMyDataUsers");
         }
     }
