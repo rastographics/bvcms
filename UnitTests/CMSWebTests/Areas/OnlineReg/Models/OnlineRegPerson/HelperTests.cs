@@ -1,4 +1,4 @@
-﻿using Xunit;
+using Xunit;
 using CmsData;
 using System.Collections.Generic;
 using Shouldly;

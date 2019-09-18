@@ -8,7 +8,10 @@
 <select class="form-control visible-xs-block nav-select-pills">
     <option value="#General">General</option>
     <option value="#Attendance">Attendance</option>
+    @if (Model.ShowCheckin)
+    {
     <option value="#CheckIn">Check In</option>
+    }
     <option value="#extravalues">Extra Values</option>
 </select>
 <div class="tab-content" style="border: none;">
@@ -18,9 +21,12 @@
     <div class="tab-pane settings" id="Attendance" data-link="/Org/Attendance">
         @Helper.HiddenId("Id", Model.Id)
     </div>
+    @if (Model.ShowCheckin)
+    {
     <div class="tab-pane settings" id="CheckIn" data-link="/Org/CheckIn">
         @Helper.HiddenId("Id", Model.Id)
     </div>
+    }
     <div class="tab-pane ajax" id="extravalues" data-link="/ExtraValue/Display/Organization/Standard/@Model.Id">
 
     </div>

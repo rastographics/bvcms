@@ -906,6 +906,7 @@
     <Compile Include="Controllers\ExtraValue\StandardController.cs" />
     <Compile Include="Controllers\ExtraValue\AdhocController.cs" />
     <Compile Include="Controllers\ExtraValue\ReportsController.cs" />
+    <Compile Include="Controllers\Home2Controller.cs" />
     <Compile Include="Controllers\ScriptController.cs" />
     <Compile Include="Controllers\MobileAppMenuController.cs" />
     <Compile Include="Controllers\WebHookController.cs" />
@@ -923,6 +924,7 @@
     <Compile Include="Models\Api\ApiPerson.cs" />
     <Compile Include="Models\Api\ApiOrganizationMember.cs" />
     <Compile Include="Models\Api\AddContributionModel.cs" />
+    <Compile Include="Models\DbBinder.cs" />
     <Compile Include="Models\DynamicParametersExtensions.cs" />
     <Compile Include="Models\ErrorMessage.cs" />
     <Compile Include="Models\ExtraValue\EntryModel.cs" />

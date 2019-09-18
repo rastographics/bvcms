@@ -16,9 +16,11 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.Org.Models
 {
-    public class OrgPeopleModel : PagedTableModel<OrgFilterPerson, OrgFilterPerson>
+    public class OrgPeopleModel : PagedTableModel<OrgFilterPerson, OrgFilterPerson>, IDbBinder
     {
-        public CMSDataContext Db { get; set; }
+        public CMSDataContext CurrentDatabase { get => _currentDatabase ?? DbUtil.Db; set => _currentDatabase = value; }
+        private CMSDataContext _currentDatabase;
+        internal CMSDataContext Db => CurrentDatabase;
         public Guid QueryId { get; set; }
         public IPrincipal User { get; set; }
 
@@ -324,6 +326,17 @@ namespace CmsWeb.Areas.Org.Models
         public bool ShowBirthday => RoleChecker.HasSetting(SettingName.Organization_ShowBirthday, true);
         public bool ShowTagButtons => RoleChecker.HasSetting(SettingName.Organization_ShowTagButtons, true);
         public bool ShowShowAddress => RoleChecker.HasSetting(SettingName.Organization_ShowAddress, true);
+        public bool ShowCheckin
+        {
+            get
+            {
+                if (Db != null && User != null)
+                {
+                    return Db.Setting("EnableWebCheckin") && User.IsInRole("Checkin");
+                }
+                return false;
+            }
+        }
 
         public bool ShowAddress { get; set; }
         public int? Id { get; set; }
@@ -371,7 +384,7 @@ to `Add`, `Drop`, `Update` Members etc.
                 case GroupSelectCode.Guest:
                     return false;
                 case GroupSelectCode.Previous:
-                    return User.IsInRole("Developer") || User.IsInRole("Conversion");
+                    return HttpContextFactory.Current.User.IsInRole("Developer") || HttpContextFactory.Current.User.IsInRole("Conversion");
                 default:
                     return true;
             }
