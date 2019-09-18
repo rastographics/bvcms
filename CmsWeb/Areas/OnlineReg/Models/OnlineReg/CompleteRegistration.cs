@@ -131,7 +131,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     p.AddPerson(null, p.org.EntryPointId ?? 0);
                 }
 
-                SpecialRegModel.SaveResults(Orgid ?? 0, List[0].PeopleId ?? 0, List[0].SpecialTest);
+                SpecialRegModel.SaveResults(CurrentDatabase, Orgid ?? 0, List[0].PeopleId ?? 0, List[0].SpecialTest);
                 Log("SpecialJavascript");
                 return RouteModel.ViewAction("Other/SpecialRegistrationResults");
             }
