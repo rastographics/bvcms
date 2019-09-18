@@ -1,0 +1,44 @@
+﻿@model CmsWeb.Areas.Manage.Models.Involvement.InvolvementTabModel
+
+<div class="panel panel-default">
+    <div class="table-responsive">
+        <table class="table table-striped" data-table="@Model.Name">
+            <thead>
+                <tr>
+                    <th>TYPE</th>
+                    <th>Column A</th>
+                    <th>Column B</th>
+                    <th>Column C</th>
+                    <th>Column D</th>
+                    <th>Column E</th>
+                    <th>Column F</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody data-table="@Model.Name">
+                @foreach (var item in Model.Types)
+                {
+                    <tr data-row>
+                        <td>
+                            @Html.DropDownListFor(model => item.Name, Model.TypeSelectList(item.Name), "-- Default --", new { @class = "form-control", data_involvement_type = string.Empty })
+                        </td>
+                        @foreach (var column in item.Columns)
+                        {
+                            <td data-column>
+                                @Html.DropDownListFor(model => column.Field, Model.ColumnSelectList(column.Field), "--", column.Field == "Organization" ? new {@class = "form-control", data_field = string.Empty, disabled = true} as object : new {@class = "form-control", data_field = string.Empty})
+                                @Html.Hidden("Label", column.Label, new {data_label = string.Empty})
+                                @Html.Hidden("Role", column.Role, new {data_role = string.Empty})
+                                @Html.Hidden("Sortable", column.Sortable.ToString(), new {data_sortable = string.Empty})
+                            </td>
+                        }
+                        <td>
+                            <a href="#" class="btn btn-danger" data-remove-row>-</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<a href="#" class="btn btn-default pull-right" data-add-row data-table-name="@Model.Name">+ Add Row</a>
+<a href="#" class="btn btn-primary save" data-save data-table-name="@Model.Name">Save Content</a>
