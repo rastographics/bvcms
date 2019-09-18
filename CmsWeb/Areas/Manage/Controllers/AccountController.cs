@@ -187,11 +187,13 @@ namespace CmsWeb.Areas.Manage.Controllers
             var link = CurrentDatabase.OneTimeLinks.Where(l =>
                 l.Id == gid &&
                 l.Used == false &&
-                l.Expires < DateTime.Now)
+                l.Expires > DateTime.Now)
                 .SingleOrDefault();
 
             if (link != null)
             {
+                link.Used = true;
+                CurrentDatabase.SubmitChanges();
                 var userid = link.Querystring;
                 return LoginAs(userid, null);
             }
