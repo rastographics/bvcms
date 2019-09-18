@@ -98,8 +98,8 @@ namespace IntegrationTests.Areas.Manage
             Find(css: ".editable-input input[type=text]").Clear();
             Find(css: ".editable-input input[type=text]").SendKeys(roleName);
             Find(css: ".editable-buttons button[type=submit]").Click();
-            Open($"{rootUrl}Roles");
-            PageSource.ShouldContain(roleName);
+            Wait(1);
+
             var adminRole = db.Roles.SingleOrDefault(r => r.RoleName == "Admin");
             var role = db.Roles.SingleOrDefault(r => r.RoleName == roleName);
             role.ShouldNotBeNull();
