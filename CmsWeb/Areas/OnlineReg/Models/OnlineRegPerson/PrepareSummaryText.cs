@@ -9,7 +9,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
 {
     public partial class OnlineRegPersonModel
     {
-
         public string PrepareSummaryText(CMSDataContext db)
         {
             if (RecordFamilyAttendance())
@@ -25,7 +24,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             try
             {
-                return SummaryInfo.GetResults(DbUtil.Db, om.PeopleId, om.OrganizationId);
+                return SummaryInfo.GetResults(db, om.PeopleId, om.OrganizationId);
             }
             catch (Exception ex)
             {

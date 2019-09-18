@@ -20,7 +20,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (org != null && Found == true)
             {
                 if (!Parent.SupportMissionTrip)
-                    IsFilled = org.RegLimitCount(DbUtil.Db) >= org.Limit;
+                    IsFilled = org.RegLimitCount(db) >= org.Limit;
                 if (IsFilled)
                     modelState.AddModelError(Parent.GetNameFor(mm => mm.List[id].DateOfBirth), "Sorry, but registration is closed.");
                 if (Found == true)
@@ -56,21 +56,21 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 {
                     IsNew = true;
                     Parent.ConfirmManageSubscriptions();
-                    DbUtil.Db.SubmitChanges();
+                    db.SubmitChanges();
                     return "ManageSubscriptions/OneTimeLinkPartial";
                 }
                 if (Parent.OnlinePledge())
                 {
                     IsNew = true;
                     Parent.SendLinkForPledge();
-                    DbUtil.Db.SubmitChanges();
+                    db.SubmitChanges();
                     return "ManagePledge/OneTimeLinkPartial";
                 }
                 if (Parent.ManageGiving())
                 {
                     IsNew = true;
                     Parent.SendLinkToManageGiving();
-                    DbUtil.Db.SubmitChanges();
+                    db.SubmitChanges();
                     return "ManageGiving/OneTimeLinkPartial";
                 }
                 if (ComputesOrganizationByAge())
@@ -97,7 +97,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 else if (!ManageSubscriptions())
                 {
                     if (!Parent.SupportMissionTrip)
-                        IsFilled = org.RegLimitCount(DbUtil.Db) >= org.Limit;
+                        IsFilled = org.RegLimitCount(db) >= org.Limit;
                     if (IsFilled)
                     {
                         Log("Filled");
@@ -122,7 +122,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 return false;
 
             Parent.ConfirmReregister();
-            DbUtil.Db.SubmitChanges();
+            db.SubmitChanges();
             return true;
         }
         public void AddPerson(Person p, int entrypoint)
@@ -141,15 +141,15 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 };
             else
                 f = p.Family;
-            DbUtil.Db.SubmitChanges();
+            db.SubmitChanges();
 
-            var position = DbUtil.Db.ComputePositionInFamily(age, married == 20 , f.FamilyId) ?? 10;
-            _person = Person.Add(DbUtil.Db, f, position,
+            var position = db.ComputePositionInFamily(age, married == 20 , f.FamilyId) ?? 10;
+            _person = Person.Add(db, f, position,
                 null, FirstName.Trim(), null, LastName.Trim(), DateOfBirth, married == 20, gender ?? 0,
                     OriginCode.Enrollment, entrypoint);
             person.EmailAddress = EmailAddress.Trim();
             person.SendEmailAddress1 = true;
-            person.CampusId = DbUtil.Db.Setting("DefaultCampusId", "").ToInt2();
+            person.CampusId = db.Setting("DefaultCampusId", "").ToInt2();
             if (Campus.ToInt() > 0)
                 person.CampusId = Campus.ToInt();
             else if (org?.CampusId > 0)
@@ -161,8 +161,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
             else if(count > 1)
                 person.Comments = "Added during online registration because there was more than 1 match";
 
-            DbUtil.Db.SubmitChanges();
-            DbUtil.Db.Refresh(RefreshMode.OverwriteCurrentValues, person);
+            db.SubmitChanges();
+            db.Refresh(RefreshMode.OverwriteCurrentValues, person);
             PeopleId = person.PeopleId;
             Log("AddPerson");
         }

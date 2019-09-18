@@ -23,6 +23,9 @@ namespace ImageData
         [Column(Name = "secure", UpdateCheck = UpdateCheck.Never, DbType = "bit")]
         public bool? Secure { get; set; }
 
+        [Column(Name = "IsPublic", UpdateCheck = UpdateCheck.Never, DbType = "bit")]
+        public bool IsPublic { get; set; }
+
         #endregion
 
         #region Events

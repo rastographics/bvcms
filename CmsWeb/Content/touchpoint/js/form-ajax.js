@@ -32,7 +32,7 @@
         var postdata = $form.serialize();
         var url = d.data("link");
 
-        if (url.length > 0) {
+        if (url && url.length > 0) {
             if (!d.hasClass("loaded")) {
                 $.ajax({
                     type: 'POST',

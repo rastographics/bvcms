@@ -54,5 +54,36 @@ namespace SharedTestFixtures
 
             return contribution;
         }
+
+        protected void DeleteContribution(CMSDataContext db, int contributionId)
+        {
+            db.ExecuteCommand("DELETE FROM [Contribution] WHERE [ContributionId] = {0}", contributionId);
+            db.SubmitChanges();
+        }
+
+        protected void DeleteBundleDetail(CMSDataContext db, int bundleHeaderId, int contributionId)
+        {
+            db.ExecuteCommand("DELETE FROM [BundleDetail] WHERE [BundleHeaderId] = {0} AND [ContributionId] = {1}", bundleHeaderId, contributionId);
+            db.SubmitChanges();
+        }
+
+        protected void DeleteBundleHeader(CMSDataContext db, int bundleHeaderId)
+        {
+            db.ExecuteCommand("DELETE FROM [BundleHeader] WHERE [BundleHeaderId] = {0}", bundleHeaderId);
+            db.SubmitChanges();
+        }
+
+        protected void DeleteAllFromBundle(CMSDataContext db, BundleHeader bundleHeader)
+        {
+            var bundleDetails = db.BundleDetails.Where(b => b.BundleHeaderId == bundleHeader.BundleHeaderId);
+            foreach (var item in bundleDetails)
+            {
+                var contribution = db.Contributions.SingleOrDefault(c => c.ContributionId == item.ContributionId);
+                db.Contributions.DeleteOnSubmit(contribution);    
+            }
+            db.BundleDetails.DeleteAllOnSubmit(bundleDetails);
+            db.BundleHeaders.DeleteOnSubmit(bundleHeader);
+            db.SubmitChanges();
+        }
     }
 }

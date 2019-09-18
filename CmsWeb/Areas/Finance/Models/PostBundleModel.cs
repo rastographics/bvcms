@@ -7,6 +7,7 @@
 
 using CmsData;
 using CmsData.Codes;
+using CmsData.View;
 using CmsWeb.Areas.Finance.Controllers;
 using System;
 using System.Collections.Generic;
@@ -181,7 +182,8 @@ namespace CmsWeb.Models
                     select new
                     {
                         e.PeopleId,
-                        name = e.Person.Name2 + (e.Person.DeceasedDate.HasValue ? "[DECEASED]" : "")
+                        name = e.Person.Name2 + (e.Person.DeceasedDate.HasValue ? "[DECEASED]" : ""),
+                        pledgesSummary = GetPledgesSummary(pid.ToInt())
                     };
             }
             else
@@ -191,7 +193,8 @@ namespace CmsWeb.Models
                     select new
                     {
                         i.PeopleId,
-                        name = i.Name2 + (i.DeceasedDate.HasValue ? "[DECEASED]" : "")
+                        name = i.Name2 + (i.DeceasedDate.HasValue ? "[DECEASED]" : ""),
+                        pledgesSummary = GetPledgesSummary(pid.ToInt())
                     };
             }
             var o = q.FirstOrDefault();
@@ -201,6 +204,11 @@ namespace CmsWeb.Models
             }
 
             return o;
+        }
+
+        private static List<PledgesSummary> GetPledgesSummary(int pid)
+        {
+            return DbUtil.Db.PledgesSummary(pid).ToList();
         }
 
         public static IEnumerable<NamesInfo> Names(string q, int limit)
@@ -221,6 +229,7 @@ namespace CmsWeb.Models
                          spouse = spouse.Name,
                          addr = p.PrimaryAddress ?? "",
                          altname = p.AltName,
+                         pledgesSummary = GetPledgesSummary(p.PeopleId)
                      };
             return rp.Take(limit);
         }
@@ -252,7 +261,8 @@ namespace CmsWeb.Models
                                        Amount = c.ContributionAmount,
                                        DateGiven = c.ContributionDate,
                                        CheckNo = c.CheckNo
-                                   }).Take(4).ToList()
+                                   }).Take(4).ToList(),
+                         pledgesSummary = GetPledgesSummary(p.PeopleId)
                      };
             return rp.Take(limit);
         }
@@ -536,6 +546,8 @@ namespace CmsWeb.Models
             internal string email { get; set; }
             public string Email => email.HasValue() ? $"<br>{email}" : "";
             internal string displayname => (showaltname ? $"{name} {altname}" : name);
+
+            public List<PledgesSummary> pledgesSummary { get; set; }
 
             public string RecentGifts
             {

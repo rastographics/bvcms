@@ -84,7 +84,7 @@ namespace CmsWeb.Areas.People.Models
             else
             {
                 return from c in DbUtil.Db.Contributions
-                       join f in DbUtil.Db.ContributionFunds.ScopedByRoleMembership() on c.FundId equals f.FundId
+                       join f in DbUtil.Db.ContributionFunds.ScopedByRoleMembership(DbUtil.Db) on c.FundId equals f.FundId
                        where c.PeopleId == Person.PeopleId
                        && c.ContributionStatusId == ContributionStatusCode.Recorded
                        && !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
@@ -224,7 +224,7 @@ namespace CmsWeb.Areas.People.Models
             var currentUser = dbContext.CurrentUserPerson;
             if (currentUser.PeopleId != person.PeopleId)
             {
-                var authorizedFunds = dbContext.ContributionFunds.ScopedByRoleMembership();
+                var authorizedFunds = dbContext.ContributionFunds.ScopedByRoleMembership(dbContext);
                 var authorizedContributions = from c in contributions
                                               join f in authorizedFunds on c.FundId equals f.FundId
                                               select c;

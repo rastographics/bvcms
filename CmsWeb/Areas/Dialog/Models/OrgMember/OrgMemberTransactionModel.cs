@@ -8,7 +8,7 @@ using System.Web.Mvc;
 
 namespace CmsWeb.Areas.Dialog.Models
 {
-    public class OrgMemberTransactionModel
+    public class OrgMemberTransactionModel : IDbBinder
     {
         private int? orgId;
         private int? peopleId;
@@ -16,11 +16,18 @@ namespace CmsWeb.Areas.Dialog.Models
         private bool isMissionTrip;
         public CmsData.View.TransactionSummary TransactionSummary;
         public decimal Due;
+        public CMSDataContext CurrentDatabase { get; set; }
+
         public OrgMemberTransactionModel() { }
+        public OrgMemberTransactionModel(CMSDataContext db)
+        {
+            CurrentDatabase = db;
+        }
+
         private void Populate()
         {
-            var q = from mm in DbUtil.Db.OrganizationMembers
-                    let ts = DbUtil.Db.ViewTransactionSummaries.SingleOrDefault(tt => tt.RegId == mm.TranId && tt.PeopleId == mm.PeopleId)
+            var q = from mm in CurrentDatabase.OrganizationMembers
+                    let ts = CurrentDatabase.ViewTransactionSummaries.SingleOrDefault(tt => tt.RegId == mm.TranId && tt.PeopleId == mm.PeopleId)
                     where mm.OrganizationId == OrgId && mm.PeopleId == PeopleId
                     select new
                     {
@@ -42,7 +49,7 @@ namespace CmsWeb.Areas.Dialog.Models
             isMissionTrip = i.mt;
             TransactionSummary = i.ts;
             Due = isMissionTrip
-                ? MissionTripFundingModel.TotalDue(peopleId, orgId)
+                ? MissionTripFundingModel.TotalDue(CurrentDatabase, peopleId, orgId)
                 : i.ts != null ? i.ts.TotDue ?? 0 : 0;
         }
 
@@ -106,7 +113,7 @@ namespace CmsWeb.Areas.Dialog.Models
             {
                 if (TransactionSummary == null)
                 {
-                    om.AddToGroup(DbUtil.Db, "Goer");
+                    om.AddToGroup(CurrentDatabase, "Goer");
                     om.Amount = Amount;
                 }
                 if (AdjustFee == false && (Payment ?? 0) != 0)
@@ -119,11 +126,11 @@ namespace CmsWeb.Areas.Dialog.Models
                         OrgId = om.OrganizationId,
                         Created = DateTime.Now,
                     };
-                    DbUtil.Db.GoerSenderAmounts.InsertOnSubmit(gs);
+                    CurrentDatabase.GoerSenderAmounts.InsertOnSubmit(gs);
                 }
             }
             var descriptionForPayment = OnlineRegModel.GetDescriptionForPayment(OrgId);
-            om.AddTransaction(DbUtil.Db, reason, Payment ?? 0, Description, Amount, AdjustFee, descriptionForPayment);
+            om.AddTransaction(CurrentDatabase, reason, Payment ?? 0, Description, Amount, AdjustFee, descriptionForPayment);
             var showcount = "";
             if (TransactionSummary != null && TransactionSummary.NumPeople > 1)
             {
