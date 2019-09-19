@@ -128,6 +128,7 @@
     <Compile Include="Areas\OnlineReg\Models\OnlineReg\PaymentFormTests.cs" />
     <Compile Include="Areas\Reports\Models\Reports\Export\ExportInvolvementsTests.cs" />
     <Compile Include="Areas\Setup\Controllers\DivisionControllerTests.cs" />
+    <Compile Include="Models\ExportPeopleTest.cs" />
     <Compile Include="Controllers\Api\CustomControllerTests.cs" />
     <Compile Include="Support\ControllerTestBase.cs" />
     <Compile Include="TestUtils\FakeOrganizationUtils.cs" />
