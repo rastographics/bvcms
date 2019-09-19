@@ -38,6 +38,10 @@ namespace UtilityExtensions
                 {
                     HttpContextFactory.Current.Session[name] = value;
                 }
+                else
+                {
+                    HttpContextFactory.Current.Items[name] = value;
+                }
             }
         }
 
@@ -53,68 +57,40 @@ namespace UtilityExtensions
                         value = HttpContextFactory.Current.Session[name];
                     }
                 }
+                else
+                {
+                    value = HttpContextFactory.Current.Items[name];
+                }
             }
             return value;
+        }
+
+        private const string STR_ActivePerson = "ActivePerson";
+        public static string ActivePerson
+        {
+            get => GetFromSession(STR_ActivePerson) as string;
+            set => SetValueInSession(STR_ActivePerson, value);
         }
 
         private const string STR_UserPreferredName = "UserPreferredName";
         public static string UserPreferredName
         {
-            get
-            {
-                string name = null;
-                if (HttpContextFactory.Current != null)
-                    if (HttpContextFactory.Current.Session != null)
-                        if (HttpContextFactory.Current.Session[STR_UserPreferredName] != null)
-                            name = HttpContextFactory.Current.Session[STR_UserPreferredName] as String;
-                return name;
-            }
-            set
-            {
-                if (HttpContextFactory.Current != null)
-                    if (HttpContextFactory.Current.Session != null)
-                        HttpContextFactory.Current.Session[STR_UserPreferredName] = value;
-            }
+            get => GetFromSession(STR_UserPreferredName) as string;
+            set => SetValueInSession(STR_UserPreferredName, value);
         }
 
         private const string STR_UserFullName = "UserFullName";
         public static string UserFullName
         {
-            get
-            {
-                string name = "-";
-                if (HttpContextFactory.Current != null)
-                    if (HttpContextFactory.Current.Session != null)
-                        if (HttpContextFactory.Current.Session[STR_UserFullName] != null)
-                            name = HttpContextFactory.Current.Session[STR_UserFullName] as String;
-                return name;
-            }
-            set
-            {
-                if (HttpContextFactory.Current != null)
-                    if (HttpContextFactory.Current.Session != null)
-                        HttpContextFactory.Current.Session[STR_UserFullName] = value;
-            }
+            get => GetFromSession(STR_UserFullName) as string;
+            set => SetValueInSession(STR_UserFullName, value);
         }
 
-        private const string UserFirstNameSessionKey = "UserFirstName";
+        private const string STR_UserFirstName = "UserFirstName";
         public static string UserFirstName
         {
-            get
-            {
-                var name = string.Empty;
-                if (HttpContextFactory.Current != null)
-                    if (HttpContextFactory.Current.Session != null)
-                        if (HttpContextFactory.Current.Session[UserFirstNameSessionKey] != null)
-                            name = HttpContextFactory.Current.Session[UserFirstNameSessionKey] as String;
-                return name;
-            }
-            set
-            {
-                if (HttpContextFactory.Current != null)
-                    if (HttpContextFactory.Current.Session != null)
-                        HttpContextFactory.Current.Session[UserFirstNameSessionKey] = value;
-            }
+            get => GetFromSession(STR_UserFirstName) as string;
+            set => SetValueInSession(STR_UserFirstName, value);
         }
 
         public static int UserId1 => UserId == 0 ? 1 : UserId;
@@ -124,54 +100,24 @@ namespace UtilityExtensions
         {
             get
             {
-                int? id = null;
-                if (HttpContextFactory.Current != null)
-                    if (HttpContextFactory.Current.Session != null)
-                        if (HttpContextFactory.Current.Session[STR_UserPeopleId] != null)
-                            id = HttpContextFactory.Current.Session[STR_UserPeopleId].ToInt();
-                return id;
+                var v = GetFromSession(STR_UserPeopleId);
+                return v?.ToInt();
             }
-            set
-            {
-                if (HttpContextFactory.Current != null)
-                    HttpContextFactory.Current.Session[STR_UserPeopleId] = value;
-            }
+            set => SetValueInSession(STR_UserPeopleId, value);
         }
 
         private const string UserThumbPictureSessionKey = "UserThumbPictureUrl";
         public static string UserThumbPictureUrl
         {
-            get
-            {
-                if (HttpContextFactory.Current != null)
-                    if (HttpContextFactory.Current.Session != null)
-                        if (HttpContextFactory.Current.Session[UserThumbPictureSessionKey] != null)
-                            return (string)HttpContextFactory.Current.Session[UserThumbPictureSessionKey];
-                return string.Empty;
-            }
-            set
-            {
-                if (HttpContextFactory.Current != null)
-                    HttpContextFactory.Current.Session[UserThumbPictureSessionKey] = value;
-            }
+            get => GetFromSession(UserThumbPictureSessionKey) as string;
+            set => SetValueInSession(UserThumbPictureSessionKey, value);
         }
 
         private const string UserThumbPictureBgPosSessionKey = "UserThumbPictureBgPosition";
         public static string UserThumbPictureBgPosition
         {
-            get
-            {
-                if (HttpContextFactory.Current != null)
-                    if (HttpContextFactory.Current.Session != null)
-                        if (HttpContextFactory.Current.Session[UserThumbPictureBgPosSessionKey] != null)
-                            return (string)HttpContextFactory.Current.Session[UserThumbPictureBgPosSessionKey];
-                return string.Empty;
-            }
-            set
-            {
-                if (HttpContextFactory.Current != null)
-                    HttpContextFactory.Current.Session[UserThumbPictureBgPosSessionKey] = value;
-            }
+            get => GetFromSession(UserThumbPictureBgPosSessionKey) as string ?? "";
+            set => SetValueInSession(UserThumbPictureBgPosSessionKey, value);
         }
 
         public static string GetUserName(string name)
@@ -183,6 +129,7 @@ namespace UtilityExtensions
                 return a[1];
             return a[0];
         }
+
         public static bool IsMyDataUser
         {
             get

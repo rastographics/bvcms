@@ -1,5 +1,14 @@
 ﻿$(function () {
 
+    $.fn.popover.Constructor.DEFAULTS.whiteList.table = [];
+    $.fn.popover.Constructor.DEFAULTS.whiteList.tr = [];
+    $.fn.popover.Constructor.DEFAULTS.whiteList.th = [];
+    $.fn.popover.Constructor.DEFAULTS.whiteList.td = [];
+    $.fn.popover.Constructor.DEFAULTS.whiteList.div = [];
+    $.fn.popover.Constructor.DEFAULTS.whiteList.tbody = [];
+    $.fn.popover.Constructor.DEFAULTS.whiteList.thead = [];
+    $.fn.popover.Constructor.DEFAULTS.whiteList.button = [];
+
     var keys = {
         enter: 13,
         tab: 9
@@ -52,6 +61,8 @@
                 $('#name').val(ret.name);
                 $('#pid').val(ret.PeopleId);
                 $('#amt').focus();
+                setPledges(ret.pledgesSummary);
+                $('#name').popover('show');
             }
         });
     });
@@ -81,7 +92,7 @@
                 $("#SearchResults2 > ul").css({
                     'max-height': 400,
                     'overflow-y': 'auto'
-                });
+                });               
             }
             else {
                 $.post("/PostBundle/Names", request, function (ret) {
@@ -92,6 +103,8 @@
         select: function (event, ui) {
             $("#name").val(ui.item.Name);
             $("#pid").val(ui.item.Pid);
+            setPledges(ui.item.pledgesSummary);
+            $('#name').popover('show');
             return false;
         }
     }).data("uiAutocomplete")._renderItem = function (ul, item) {
@@ -487,9 +500,34 @@
         ev.preventDefault();
         $("#campusid").val($("#newcampus").val());
         $('#edit-campus-modal').modal('hide');
-    });
+    });    
 
+    $('#name').popover({
+        title: 'Pledges Summary <span class="close">&times;</span>',
+        content: 'Loading...',
+        trigger: 'manual',
+        placement: 'top',
+        html: true
+    }).on('shown.bs.popover', function () {
+        var popover = $(this);
+        $(this).parent().find('div.popover .close').on('click', function () {
+            popover.popover('hide');
+        });
+    });
 });
+
+function setPledges(pledgesData) {
+    var pledges = '<div><table><thead><tr><th id="pledgesTable">Id</th><th id="pledgesTable">Fund</th><th id="pledgesTable"">Pledged</th><th id="pledgesTable"">Contributed</th><th id="pledgesTable">Balance</th></tr></thead>';
+    $.each(pledgesData, function (idx, obj) {
+        pledges = pledges + '<tr><td id="pledgesTable">' + obj.FundId + '</td><td id="pledgesTable">' + obj.FundName + '</td><td id="pledgesTable">' + obj.AmountPledged + '</td><td id="pledgesTable">' + obj.AmountContributed + '</td><td id="pledgesTable">' + obj.Balance + '</td></tr>';        
+    });
+    pledges = pledges + '</table></div>';
+    $('#name').attr('data-content', pledges);
+    var popoverPledges = $('#name').data('bs.popover');
+    popoverPledges.setContent();
+    popoverPledges.$tip.addClass(popoverPledges.options.placement);
+    popoverPledges.$tip.css('max-width', '100%');
+}
 
 function AddSelected(ret) {
     var tr = $('tr[cid=' + ret.cid + ']');

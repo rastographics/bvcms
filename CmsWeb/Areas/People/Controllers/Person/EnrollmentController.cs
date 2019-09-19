@@ -38,7 +38,7 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpPost]
         public ActionResult Attendance(PersonAttendHistoryModel m)
         {
-            var name = Session["ActivePerson"] as string;
+            var name = Util.ActivePerson as string;
             DbUtil.LogPersonActivity($"Viewing Attendance History for: {name}", m.PeopleId, name);
             return View("Enrollment/Attendance", m);
         }
@@ -47,7 +47,7 @@ namespace CmsWeb.Areas.People.Controllers
         public ActionResult AttendanceFuture(PersonAttendHistoryModel m)
         {
             m.Future = true;
-            var name = Session["ActivePerson"] as string;
+            var name = Util.ActivePerson as string;
             DbUtil.LogPersonActivity($"Viewing Attendance History for: {name}", m.PeopleId, name);
             return View("Enrollment/Attendance", m);
         }

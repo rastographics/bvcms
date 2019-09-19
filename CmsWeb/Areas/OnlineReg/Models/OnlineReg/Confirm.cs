@@ -22,9 +22,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 $"Resume registration for {Header}");
             var msg = "<p>Hi {first},</p>\n<p>Here is the link to continue your registration:</p>\n" + registerLink;
             Debug.Assert((masterorgid ?? Orgid) != null, "m.Orgid != null");
-            var notifyids = DbUtil.Db.NotifyIds((masterorg ?? org).NotifyIds);
-            var p = UserPeopleId.HasValue ? DbUtil.Db.LoadPersonById(UserPeopleId.Value) : List[0].person;
-            DbUtil.Db.Email(notifyids[0].FromEmail, p, $"Continue your registration for {Header}", msg);
+            var notifyids = CurrentDatabase.NotifyIds((masterorg ?? org).NotifyIds);
+            var p = UserPeopleId.HasValue ? CurrentDatabase.LoadPersonById(UserPeopleId.Value) : List[0].person;
+            CurrentDatabase.Email(notifyids[0].FromEmail, p, $"Continue your registration for {Header}", msg);
         }
 
         public string CheckDuplicateGift(decimal? amt)
@@ -35,11 +35,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
 
             var previousTransaction =
-                (from t in DbUtil.Db.Transactions
+                (from t in CurrentDatabase.Transactions
                  where t.Amt == amt
                  where t.OrgId == Orgid
                  where t.TransactionDate > DateTime.Now.AddMinutes(-20)
-                 where DbUtil.Db.Contributions.Any(cc => cc.PeopleId == List[0].PeopleId && cc.TranId == t.Id)
+                 where CurrentDatabase.Contributions.Any(cc => cc.PeopleId == List[0].PeopleId && cc.TranId == t.Id)
                  select t).FirstOrDefault();
 
             if (previousTransaction == null)
@@ -59,10 +59,10 @@ Thank you.
         {
             TranId = ti.Id;
             HistoryAdd("ProcessPayment");
-            var ed = DbUtil.Db.RegistrationDatas.Single(dd => dd.Id == DatumId);
+            var ed = CurrentDatabase.RegistrationDatas.Single(dd => dd.Id == DatumId);
             ed.Data = Util.Serialize(this);
             ed.Completed = true;
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
 
             return ConfirmTransaction(ti);
         }
@@ -176,8 +176,8 @@ Thank you.
             }
 
             var desc = $"{p.person.Name}; {p.person.PrimaryAddress}; {p.person.PrimaryZip}";
-            var staff = DbUtil.Db.StaffPeopleForOrg(org.OrganizationId)[0];
-            var body = GivingConfirmation.PostAndBuild(DbUtil.Db, staff, p.person, p.setting.Body, p.org.OrganizationId, p.FundItemsChosen(), Transaction, desc,
+            var staff = CurrentDatabase.StaffPeopleForOrg(org.OrganizationId)[0];
+            var body = GivingConfirmation.PostAndBuild(CurrentDatabase, staff, p.person, p.setting.Body, p.org.OrganizationId, p.FundItemsChosen(), Transaction, desc,
                 p.setting.DonationFundId);
 
             if (!Transaction.TransactionId.HasValue())
@@ -206,16 +206,16 @@ Thank you.
             }
 
             MailAddress from = null;
-            if (!Util.TryGetMailAddress(DbUtil.Db.StaffEmailForOrg(p.org.OrganizationId), out from))
+            if (!Util.TryGetMailAddress(CurrentDatabase.StaffEmailForOrg(p.org.OrganizationId), out from))
             {
-                from = GetAdminMailAddress();
+                from = GetAdminMailAddress(CurrentDatabase);
             }
 
-            var m = new EmailReplacements(DbUtil.Db, body, from);
-            body = m.DoReplacements(DbUtil.Db, p.person);
+            var m = new EmailReplacements(CurrentDatabase, body, from);
+            body = m.DoReplacements(CurrentDatabase, p.person);
 
-            DbUtil.Db.EmailFinanceInformation(from, p.person, p.setting.Subject, body);
-            DbUtil.Db.EmailFinanceInformation(contributionemail, DbUtil.Db.StaffPeopleForOrg(p.org.OrganizationId),
+            CurrentDatabase.EmailFinanceInformation(from, p.person, p.setting.Subject, body);
+            CurrentDatabase.EmailFinanceInformation(contributionemail, CurrentDatabase.StaffPeopleForOrg(p.org.OrganizationId),
                 "online giving contribution received",
                 $"see contribution records for {p.person.Name} ({p.PeopleId}) {CurrentDatabase.Host}");
             if (p.CreatingAccount)
@@ -226,9 +226,9 @@ Thank you.
             return ConfirmEnum.Confirm;
         }
 
-        private static MailAddress GetAdminMailAddress()
+        private static MailAddress GetAdminMailAddress(CMSDataContext db)
         {
-            return new MailAddress(DbUtil.Db.Setting("AdminMail", ConfigurationManager.AppSettings["supportemail"]));
+            return new MailAddress(db.Setting("AdminMail", ConfigurationManager.AppSettings["supportemail"]));
         }
 
         private void CreateTransactionIfNeeded()
@@ -241,14 +241,14 @@ Thank you.
             HistoryAdd("ConfirmTransaction");
             UpdateDatum(completed: true);
             var pf = PaymentForm.CreatePaymentForm(this);
-            _transaction = pf.CreateTransaction(DbUtil.Db);
+            _transaction = pf.CreateTransaction(CurrentDatabase);
             TranId = _transaction.Id;
         }
 
         public static void ConfirmDuePaidTransaction(Transaction ti, string transactionId, bool sendmail)
         {
             var db = DbUtil.Db;
-            var org = DbUtil.Db.LoadOrganizationById(ti.OrgId);
+            var org = db.LoadOrganizationById(ti.OrgId);
             ti.TransactionId = transactionId;
             if (ti.Testing == true && !ti.TransactionId.Contains("(testing)"))
             {
@@ -256,22 +256,22 @@ Thank you.
             }
 
             var amt = ti.Amt;
-            var due = PaymentForm.AmountDueTrans(DbUtil.Db, ti);
+            var due = PaymentForm.AmountDueTrans(db, ti);
             foreach (var pi in ti.OriginalTrans.TransactionPeople)
             {
-                var p = DbUtil.Db.LoadPersonById(pi.PeopleId);
+                var p = db.LoadPersonById(pi.PeopleId);
                 if (p != null)
                 {
-                    var om = DbUtil.Db.OrganizationMembers.SingleOrDefault(m => m.OrganizationId == ti.OrgId && m.PeopleId == pi.PeopleId);
+                    var om = db.OrganizationMembers.SingleOrDefault(m => m.OrganizationId == ti.OrgId && m.PeopleId == pi.PeopleId);
                     if (om == null)
                     {
                         continue;
                     }
 
-                    DbUtil.Db.SubmitChanges();
+                    db.SubmitChanges();
                     if (org.IsMissionTrip == true)
                     {
-                        DbUtil.Db.GoerSenderAmounts.InsertOnSubmit(
+                        db.GoerSenderAmounts.InsertOnSubmit(
                             new GoerSenderAmount
                             {
                                 Amount = ti.Amt,
@@ -280,9 +280,9 @@ Thank you.
                                 OrgId = org.OrganizationId,
                                 SupporterId = pi.PeopleId,
                             });
-                        var setting = DbUtil.Db.CreateRegistrationSettings(org.OrganizationId);
+                        var setting = db.CreateRegistrationSettings(org.OrganizationId);
                         var fund = setting.DonationFundId;
-                        p.PostUnattendedContribution(DbUtil.Db, ti.Amt ?? 0, fund,
+                        p.PostUnattendedContribution(db, ti.Amt ?? 0, fund,
                             $"SupportMissionTrip: org={org.OrganizationId}; goer={pi.PeopleId}", typecode: BundleTypeCode.Online);
                     }
                     var pay = amt;
@@ -306,22 +306,22 @@ Thank you.
                 }
                 else
                 {
-                    DbUtil.Db.Email(DbUtil.Db.StaffEmailForOrg(org.OrganizationId),
-                        DbUtil.Db.PeopleFromPidString(org.NotifyIds),
+                    db.Email(db.StaffEmailForOrg(org.OrganizationId),
+                        db.PeopleFromPidString(org.NotifyIds),
                         "missing person on payment due",
                         $"Cannot find {pi.Person.Name} ({pi.PeopleId}), payment due completed of {pi.Amt:c} but no record");
                 }
             }
-            DbUtil.Db.SubmitChanges();
+            db.SubmitChanges();
 
             dynamic d = new DynamicData();
             d.Name = Transaction.FullName(ti);
             d.Amt = ti.Amt;
             d.Description = ti.Description;
-            d.Amtdue = PaymentForm.AmountDueTrans(DbUtil.Db, ti);
+            d.Amtdue = PaymentForm.AmountDueTrans(db, ti);
             d.names = string.Join(", ", ti.OriginalTrans.TransactionPeople.Select(i => i.Person.Name));
 
-            var msg = DbUtil.Db.RenderTemplate(@"
+            var msg = db.RenderTemplate(@"
 <p>
     Thank you {{Name}}, for your payment of {{Fmt Amt 'c'}} on {{Description}}.<br/>
     {{#if Amtdue}}
@@ -329,7 +329,7 @@ Thank you.
     {{/if}}
     {{names}}
 </p>", d);
-            var msgstaff = DbUtil.Db.RenderTemplate(@"
+            var msgstaff = db.RenderTemplate(@"
 <p>
     {{Name}} paid {{Fmt Amt 'c'}} on {{Description}}.<br/>
     {{#if Amtdue}}
@@ -339,25 +339,25 @@ Thank you.
 </p>", d);
 
             var pid = ti.FirstTransactionPeopleId();
-            var p0 = DbUtil.Db.LoadPersonById(pid);
+            var p0 = db.LoadPersonById(pid);
             // question: should we be sending to all TransactionPeople?
             if (sendmail)
             {
                 MailAddress staffEmail;
-                if (!Util.TryGetMailAddress(DbUtil.Db.StaffEmailForOrg(org.OrganizationId), out staffEmail))
+                if (!Util.TryGetMailAddress(db.StaffEmailForOrg(org.OrganizationId), out staffEmail))
                 {
-                    staffEmail = GetAdminMailAddress();
+                    staffEmail = GetAdminMailAddress(db);
                 }
                 if (p0 == null)
                 {
-                    DbUtil.Db.SendEmail(staffEmail,
+                    db.SendEmail(staffEmail,
                         "Payment confirmation", msg, Util.ToMailAddressList(Util.FirstAddress(ti.Emails)), pid: pid).Wait();
                 }
                 else
                 {
-                    DbUtil.Db.Email(staffEmail, p0, Util.ToMailAddressList(ti.Emails),
+                    db.Email(staffEmail, p0, Util.ToMailAddressList(ti.Emails),
                         "Payment confirmation", msg, false);
-                    DbUtil.Db.Email(p0.FromEmail, DbUtil.Db.PeopleFromPidString(org.NotifyIds),
+                    db.Email(p0.FromEmail, db.PeopleFromPidString(org.NotifyIds),
                         "payment received for " + ti.Description, msgstaff);
                 }
             }
