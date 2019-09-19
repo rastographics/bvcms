@@ -12,7 +12,7 @@
     @Html.LabelFor(m => m, new { @class = "control-label" })
     <div class="controls">
         <div class="input-group birthdate">
-            @Html.TextBoxFor2(m => m, true, null, new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+            @Html.TextBoxFor2(m => m, true, null, new { @class = "form-control" })<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
         </div>
         @Html.Raw(help)
         @Html.ValidationMessageLabelFor(m => m)
