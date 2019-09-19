@@ -172,13 +172,22 @@
                 '<i class="fa fa-fw fa-times"></i>' +
                 '</button>';
 
-            $(".clickEdit").editable({
-                mode: 'inline',
-                type: 'text',
-                url: "/Setting/Edit/"
+            $(".clickEdit").forEach(function (e) {
+                $(e).editable({
+                    mode: 'inline',
+                    type: $(e).data('type'),
+                    url: "/Setting/Edit/"
+                });
             });
 
             $(".edit-datetime").editable({
+                datepicker: {
+                    todayBtn: true
+                },
+                clear: false
+            });
+
+            $(".edit-int").editable({
                 datepicker: {
                     todayBtn: true
                 },

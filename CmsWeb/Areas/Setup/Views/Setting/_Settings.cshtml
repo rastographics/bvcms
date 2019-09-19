@@ -1,6 +1,20 @@
 ﻿@using CmsWeb.Areas.Setup.Models
 @model SettingListModel
-
+@helper DatatypeString(int dataType) {
+var type = "text";
+switch(dataType)
+{
+    case (int)SettingDataType.Boolean:
+        type = "bool"; break;
+    case (int)SettingDataType.Date:
+        type = "datetime"; break;
+    case (int)SettingDataType.Int:
+        type = "number"; break;
+    case (int)SettingDataType.Obscured:
+        type = "password"; break;
+}
+WriteLiteral(type);
+}
 <div class="table-responsive">
     <table id="settings" class="table table-striped">
         <thead>
@@ -30,7 +44,7 @@
                         }
                         else
                         {
-                            @item.Setting.Id
+                            @item.SettingId
                         }
                         @if (!string.IsNullOrEmpty(item.Description))
                         {
@@ -41,16 +55,16 @@
                         @switch (item.DataType)
                         {
                             case (int)SettingDataType.Boolean:
-                                <input class="boolean-toggle" type="checkbox" id="@item.Setting.Id" name="@item.Setting.Id" data-toggle="toggle" data-on="True" data-off="False" data-width="100" checked="@(item.Setting.SettingX?.ToLower() == "true")" )>
+                                <input class="boolean-toggle" type="checkbox" id="@item.SettingId" name="@item.SettingId" data-toggle="toggle" data-on="True" data-off="False" data-width="100" checked="@(item.Setting?.SettingX?.ToLower() == "true")" )>
                                 break;
                             case (int)SettingDataType.Date:
-                                <a class="edit-datetime" id="@item.Setting.Id" data-pk="@(item.Setting.Id)" data-type="date" data-url="/Setting/Edit">
-                                    @(item.Setting.SettingX ?? "Empty")
+                                <a class="edit-datetime" id="@item.SettingId" data-pk="@(item.SettingId)" data-type="date" data-url="/Setting/Edit">
+                                    @(item.Setting?.SettingX ?? "Empty")
                                 </a>
                                 break;
                             case (int)SettingDataType.Obscured:
-                                <a id="@item.Setting.Id" class="clickEdit" data-pk="@(item.Setting.Id)" data-value="@item.Setting.SettingX">
-                                    @if (item.Setting.SettingX == null)
+                                <a id="@item.SettingId" class="clickEdit" data-pk="@(item.SettingId)" data-value="@item.Setting?.SettingX">
+                                    @if (item.Setting?.SettingX == null)
                                     {
                                         @:Empty
                                     }
@@ -61,8 +75,8 @@
                                 </a>
                                 break;
                             default:
-                                <a id="@item.Setting.Id" class="clickEdit" data-pk="@(item.Setting.Id)">
-                                    @(item.Setting.SettingX ?? "Empty")
+                                <a id="@item.SettingId" class="clickEdit" data-type="@DatatypeString(item.DataType)" data-pk="@(item.SettingId)">
+                                    @(item.Setting?.SettingX ?? "Empty")
                                 </a>
                                 break;
                         }
@@ -70,7 +84,7 @@
                     @if (Model.CanDelete)
                     {
                         <td>
-                            <a id="d@(item.Setting.Id)" href="#" class="delete btn btn-sm btn-danger"><i class="fa fa-trash"></i> Delete</a>
+                            <a id="d@(item.SettingId)" href="#" class="delete btn btn-sm btn-danger"><i class="fa fa-trash"></i> Delete</a>
                         </td>
                     }
                 </tr>
