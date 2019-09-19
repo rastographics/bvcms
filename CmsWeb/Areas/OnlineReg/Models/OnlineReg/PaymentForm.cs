@@ -711,7 +711,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             ti.TransactionId = tinfo.TransactionId;
 
-            ti.Testing = CheckIfIsAcceptivaTesting(ti.Testing.GetValueOrDefault(), m.ProcessType);
+            ti.Testing = CheckIfIsGatewayTesting(ti.Testing.GetValueOrDefault(), m.ProcessType);
 
             if (ti.Testing.GetValueOrDefault() && !ti.TransactionId.Contains("(testing)"))
             {
@@ -738,14 +738,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
             return ti;
         }
 
-        private bool? CheckIfIsAcceptivaTesting(bool testing, PaymentProcessTypes processType)
+        private bool CheckIfIsGatewayTesting(bool testing, PaymentProcessTypes processType)
         {
-            var gatewayId = MultipleGatewayUtils.GatewayId(CurrentDatabase, processType);
-            if (gatewayId == (int)GatewayTypes.Acceptiva && MultipleGatewayUtils.GatewayTesting(CurrentDatabase, ProcessType))
-            {
-                return true;
-            }
-            return testing;
+            return testing || MultipleGatewayUtils.GatewayTesting(CurrentDatabase, ProcessType);
         }
 
         private TransactionResponse PayWithCreditCard(IGateway gateway, int? peopleId, Transaction transaction)
