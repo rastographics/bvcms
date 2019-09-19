@@ -1,6 +1,6 @@
 ﻿@using CmsWeb.Areas.Setup.Models
 @model SettingListModel
-@helper DatatypeString(int dataType) {
+@helper DatatypeString(int? dataType) {
 var type = "text";
 switch(dataType)
 {
@@ -63,7 +63,7 @@ WriteLiteral(type);
                                 </a>
                                 break;
                             case (int)SettingDataType.Obscured:
-                                <a id="@item.SettingId" class="clickEdit" data-pk="@(item.SettingId)" data-value="@item.Setting?.SettingX">
+                                <a id="@item.SettingId" class="clickEdit" data-pk="@(item.SettingId)" data-value="@(item.Setting?.SettingX)">
                                     @if (item.Setting?.SettingX == null)
                                     {
                                         @:Empty
