@@ -55,15 +55,43 @@ namespace CmsData.View
 		private string _St;
 		
 		private string _Zip;
-		
-		
-		public GetTotalContributionsDonor()
+        private int _ContributionStatusId;
+        private int _ContributionTypeId;
+
+        public GetTotalContributionsDonor()
 		{
 		}
 
-		
-		
-		[Column(Name="CreditGiverId", Storage="_CreditGiverId", DbType="int")]
+
+        [Column(Name = "ContributionStatusId", Storage = "_ContributionStatusId", DbType = "int NOT NULL")]
+        public int ContributionStatusId
+        {
+            get
+            {
+                return this._ContributionStatusId;
+            }
+            set
+            {
+                if (this._ContributionStatusId != value)
+                    this._ContributionStatusId = value;
+            }
+        }
+
+        [Column(Name = "ContributionTypeId", Storage = "_ContributionTypeId", DbType = "int NOT NULL")]
+        public int ContributionTypeId
+        {
+            get
+            {
+                return this._ContributionTypeId;
+            }
+            set
+            {
+                if (this._ContributionTypeId != value)
+                    this._ContributionTypeId = value;
+            }
+        }
+
+        [Column(Name="CreditGiverId", Storage="_CreditGiverId", DbType="int")]
 		public int? CreditGiverId
 		{
 			get
