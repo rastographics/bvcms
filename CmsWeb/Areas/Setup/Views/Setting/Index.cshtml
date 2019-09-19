@@ -172,7 +172,7 @@
                 '<i class="fa fa-fw fa-times"></i>' +
                 '</button>';
 
-            $(".clickEdit").forEach(function (e) {
+            $(".clickEdit").each(function (i, e) {
                 $(e).editable({
                     mode: 'inline',
                     type: $(e).data('type'),
