@@ -90,7 +90,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         [HttpPost]
         public ActionResult MeetingsAttendance(DateTime? dt1, DateTime? dt2, OrgSearchModel m)
         {
-            var dt = ChurchAttendanceModel.MostRecentAttendedSunday();
+            var dt = ChurchAttendanceModel.MostRecentAttendedSunday(CurrentDatabase);
             if (!dt1.HasValue)
             {
                 dt1 = new DateTime(dt.Year, 1, 1);
@@ -109,7 +109,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         {
             if (!dt.HasValue)
             {
-                dt = ChurchAttendanceModel.MostRecentAttendedSunday();
+                dt = ChurchAttendanceModel.MostRecentAttendedSunday(CurrentDatabase);
             }
 
             var orgs = string.Join(",", m.FetchOrgs().Select(oo => oo.OrganizationId));

@@ -27,17 +27,17 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 SawExistingAccount = true;
                 var user = person.Users.OrderByDescending(uu => uu.LastActivityDate).First();
 
-                var message = DbUtil.Db.ContentHtml("ExistingUserConfirmation", Resource1.CreateAccount_ExistingUser);
+                var message = CurrentDatabase.ContentHtml("ExistingUserConfirmation", Resource1.CreateAccount_ExistingUser);
                 message = message
                     .Replace("{name}", person.Name)
-                    .Replace("{host}", DbUtil.Db.CmsHost);
+                    .Replace("{host}", CurrentDatabase.CmsHost);
                 Log("AlreadyHaveAccount");
-                DbUtil.Db.Email(DbUtil.AdminMail, person, "Account information for " + DbUtil.Db.Host, message);
+                CurrentDatabase.Email(DbUtil.AdminMail, person, "Account information for " + CurrentDatabase.Host, message);
             }
             else
             {
                 CreatedAccount = true;
-                var user = MembershipService.CreateUser(DbUtil.Db, person.PeopleId);
+                var user = MembershipService.CreateUser(CurrentDatabase, person.PeopleId);
                 Log("SendNewUserEmail");
                 AccountModel.SendNewUserEmail(user.Username);
                 return user;
@@ -53,8 +53,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 Querystring = $"{divid ?? orgid ?? masterorgid},{PeopleId}"
             };
             //var Db = Db;
-            DbUtil.Db.OneTimeLinks.InsertOnSubmit(ot);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.OneTimeLinks.InsertOnSubmit(ot);
+            CurrentDatabase.SubmitChanges();
 
             url = $"{url}{ot.Id.ToCode()}{(!string.IsNullOrWhiteSpace(appendQueryString) ? $"?{appendQueryString}" : string.Empty)}";
 
@@ -63,7 +63,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             message = message.Replace("{name}", person.Name, ignoreCase: true);
             message = message.Replace("{first}", person.PreferredName, ignoreCase: true);
 
-            DbUtil.Db.Email(from, person, subject, message);
+            CurrentDatabase.Email(from, person, subject, message);
         }
     }
 }

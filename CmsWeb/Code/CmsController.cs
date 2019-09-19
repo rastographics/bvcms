@@ -162,7 +162,7 @@ namespace CmsWeb
             Util.Helpfile = $"_{filterContext.ActionDescriptor.ControllerDescriptor.ControllerName}_{filterContext.ActionDescriptor.ActionName}";
             if (Util.UserId == 0 && User.Identity.IsAuthenticated)
             {
-                AccountModel.SetUserInfo(CurrentDatabase, CurrentImageDatabase, User.Identity.Name, Session);
+                AccountModel.SetUserInfo(CurrentDatabase, CurrentImageDatabase, User.Identity.Name);
             }
             CurrentDatabase.UpdateLastActivity(Util.UserId);
             HttpContext.Response.Headers.Add("X-Robots-Tag", "noindex");

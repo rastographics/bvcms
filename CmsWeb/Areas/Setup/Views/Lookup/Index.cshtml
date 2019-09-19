@@ -23,6 +23,10 @@
         <div class="box  box-responsive">
             <div class="box-title-btn">
                 <div class="box-tools">
+                    @if (ViewData["LinkValue"] != null && ViewData["LinkText"] != null)
+                    {
+                        <a href="@ViewData["LinkValue"]" class="btn btn-default"><i class="fa fa-info-circle"></i> @ViewData["LinkText"]</a>
+                    }
                     <a href="/Lookups" class="btn btn-default"><i class="fa fa-arrow-circle-left"></i> Back to List</a>&nbsp;
                     @if (ViewData["HideAdd"] == null || (bool)ViewData["HideAdd"] == false)
                     {
