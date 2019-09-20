@@ -634,6 +634,20 @@ namespace CmsWeb.Areas.Org.Controllers
             return Redirect($"/Meeting/{id}");
         }
 
+        [HttpGet]
+        [Route("~/Meeting/ScheduleAttendance/{orgId:int}/{timestamp:int}")]
+        public ActionResult ScheduleAttendance(int orgId, int timestamp)
+        {
+            var meetingDate = DateTimeOffset.FromUnixTimeSeconds(timestamp).DateTime.ToLocalTime();
+            if ((DateTime.Now - meetingDate).TotalDays >= 7)
+            {
+                return RedirectShowError("This meeting has expired");
+            }
+            var meeting = Meeting.FetchOrCreateMeeting(CurrentDatabase, orgId, meetingDate, true);
+
+            return Redirect($"/Meeting/Attendance/{meeting.MeetingId}?currentMembers=true");
+        }
+
         public ActionResult Attendance(int? id, bool? currentMembers)
         {
             if (!id.HasValue)
