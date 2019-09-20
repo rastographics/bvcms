@@ -10,6 +10,10 @@
         font-weight: bold;
         font-size: 24px;
     }
+    fieldset input[name="passcode"].visible-xs {
+        letter-spacing: .5em;
+        width: 100%;
+    }
     .passcode {
         margin-bottom: @(passcodeMargin);
     }
@@ -19,9 +23,10 @@
 </style>
 <div class="form-group text-center passcode">
     <h3 class="passcode-title">Enter the passcode shown in the authenticator app</h3>
+    <input class="input-lg text-center visible-xs" name="passcode" data-index="0" autocomplete="off" inputmode="numeric" maxlength="6" />
     @for (var i = 1; i <= 6; i++)
     {
-        <input class="input-lg text-center" name="passcode" data-index="@i" autocomplete="off" inputmode="numeric" maxlength="1" required />
+        <input class="input-lg text-center hidden-xs" name="passcode" data-index="@i" autocomplete="off" inputmode="numeric" maxlength="1" />
     }
 </div>
 <div class="form-actions">
@@ -41,7 +46,7 @@
 </div>
 <script>
     (function () {
-        var passcodes = document.querySelectorAll('[name="passcode"]');
+        var passcodes = document.querySelectorAll('[name="passcode"].hidden-xs');
         passcodes.forEach(function (el) {
             el.onkeyup = function (event) {
                 var target = event.target;
@@ -80,5 +85,21 @@
                 event.target.select();
             };
         });
+        function wr() {
+            var req = 'required';
+            var passcodes = document.querySelectorAll('[name="passcode"]');
+            passcodes.forEach(function (el) {
+                if (el.offsetParent) {
+                    var a = document.createAttribute(req);
+                    a.value = req;
+                    el.attributes.setNamedItem(a);
+                } else {
+                    el.attributes.getNamedItem(req) &&
+                    el.attributes.removeNamedItem(req);
+                }
+            });
+        };
+        window.onresize = wr;
+        setTimeout(wr, 500);
     })();
 </script>
