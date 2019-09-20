@@ -31,12 +31,12 @@ namespace CmsData.Classes.ProtectMyMinistry
         public static string[] CREDIT_TYPES_LABELS => new[] { "Credit History" };
         public static string[] CREDIT_TYPES => new[] { IsSecureSearchFaithEnabled() ? "SS Credit" : "Credit" };
 
-        public static void Create(int peopleId, string serviceCode, int reportTypeId, int reportLabelId)
+        public static BackgroundCheck Create(CMSDataContext db, int peopleId, int? userPeopleId, string serviceCode, int reportTypeId, int reportLabelId)
         {
             var bcNew = new BackgroundCheck
             {
                 StatusID = 1,
-                UserID = Util.UserPeopleId ?? 0,
+                UserID = userPeopleId ?? 0,
                 PeopleID = peopleId,
                 ServiceCode = serviceCode, // "Combo", "MVR", "Credit"
                 Created = DateTime.Now,
@@ -44,9 +44,9 @@ namespace CmsData.Classes.ProtectMyMinistry
                 ReportTypeID = reportTypeId,
                 ReportLabelID = reportLabelId
             };
-            var db = DbUtil.Db;
             db.BackgroundChecks.InsertOnSubmit(bcNew);
             db.SubmitChanges();
+            return bcNew;
         }
 
         public static bool Submit(int requestId, string SSN, string driversLicenseNumber, string responseURL, int stateId, string username, string password, string plusCounty, string plusState)
