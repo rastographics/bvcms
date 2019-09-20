@@ -57,7 +57,7 @@ namespace CmsData.Classes.ProtectMyMinistry
             // Get the already created (via create()) background check request
             var backgroundCheck = db.BackgroundChecks.Single(e => e.Id == requestId);
 
-            var labelCode = db.BackgroundCheckLabels.FirstOrDefault(l => l.Id == backgroundCheck.ReportLabelID).Code;
+            var bgCheckLabel = db.BackgroundCheckLabels.FirstOrDefault(l => l.Id == backgroundCheck.ReportLabelID);
 
             if (backgroundCheck == null) return false;
 
@@ -75,7 +75,7 @@ namespace CmsData.Classes.ProtectMyMinistry
                 iPeopleID = backgroundCheck.PeopleID,
                 sUser = username,
                 sPassword = password,
-                sBillingReference = labelCode,
+                sBillingReference = bgCheckLabel == null ? backgroundCheck.Id.ToString() : bgCheckLabel.Code,
                 sSSN = SSN,
                 sServiceCode = backgroundCheck.ServiceCode,
                 sResponseURL = responseURL,
