@@ -162,6 +162,7 @@ namespace CmsWeb.Models
                             : string.Join(", ", p.Family.People
                                 .Where(cc => cc.PositionInFamilyId == 30)
                                 .Where(cc => cc.Age <= 18)
+                                .Where(cc => cc.DeceasedDate == null)
                                 .Select(cc =>
                                     cc.LastName == familyname
                                         ? cc.PreferredName
@@ -203,6 +204,7 @@ namespace CmsWeb.Models
                         Children = p.PositionInFamilyId != 10 ? ""
                             : string.Join(", ", (from cc in p.Family.People
                                                  where cc.PositionInFamilyId == 30
+                                                 where cc.DeceasedDate == null
                                                  //where cc.Age <= 18
                                                  select cc.LastName == familyname
                                                          ? cc.PreferredName
