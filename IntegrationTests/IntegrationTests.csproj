@@ -94,6 +94,7 @@
       <DependentUpon>R.resx</DependentUpon>
     </Compile>
     <Compile Include="Support\AccountTestBase.cs" />
+    <Compile Include="Support\FeatureTestAttribute.cs" />
     <Compile Include="Support\FeatureTestBase.cs" />
     <Compile Include="Support\IISExpress.cs" />
     <Compile Include="Support\Settings.cs" />
