@@ -13,7 +13,8 @@ namespace CmsWeb.Models
 {
     public class OrgContentInfo
     {
-        public CMSDataContext CurrentDatabase { get; set; }
+        public CMSDataContext CurrentDatabase { get => _currentDatabase ?? DbUtil.Db; set => _currentDatabase = value; }
+        private CMSDataContext _currentDatabase;
         public int OrgId { get; set; }
         public string error { get; set; }
         public string OrgName { get; set; }
@@ -40,8 +41,11 @@ namespace CmsWeb.Models
                     return "<h2>" + OrgName + "</h2>";
                 }
 
-                var s = ImageData.Image.Content(oc.ImageId ?? 0);
-                return html = s;
+                using (var idb = CMSImageDataContext.Create(HttpContextFactory.Current))
+                {
+                    html = idb.Content(oc.ImageId ?? 0);
+                }
+                return html;
             }
             set
             {
@@ -50,18 +54,20 @@ namespace CmsWeb.Models
                     oc = new OrgContent { OrgId = OrgId, Landing = true };
                     CurrentDatabase.OrgContents.InsertOnSubmit(oc);
                 }
-                var imageDb = CMSImageDataContext.Create(CurrentDatabase.Host);
-                var i = imageDb.Images.SingleOrDefault(ii => ii.Id == oc.ImageId);
-                if (i != null)
+                using (var imageDb = CMSImageDataContext.Create(CurrentDatabase.Host))
                 {
-                    i.SetText(value);
-                }
-                else
-                {
-                    oc.ImageId = ImageData.Image.NewTextFromString(value).Id;
-                }
+                    var i = imageDb.Images.SingleOrDefault(ii => ii.Id == oc.ImageId);
+                    if (i != null)
+                    {
+                        i.SetText(value);
+                    }
+                    else
+                    {
+                        oc.ImageId = ImageData.Image.NewTextFromString(value, imageDb).Id;
+                    }
 
-                imageDb.SubmitChanges();
+                    imageDb.SubmitChanges();
+                }
 
                 CurrentDatabase.SubmitChanges();
             }

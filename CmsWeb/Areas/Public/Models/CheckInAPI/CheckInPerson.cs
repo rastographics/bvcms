@@ -98,13 +98,13 @@ namespace CmsWeb.CheckInAPI
             return this;
         }
 
-        public void loadImage()
+        public void loadImage(CMSDataContext cmsdb, CMSImageDataContext cmsidb)
         {
-            Person p = CmsData.DbUtil.Db.LoadPersonById(id);
+            Person p = cmsdb.LoadPersonById(id);
 
             if (p.Picture != null)
             {
-                Image image = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == p.Picture.SmallId);
+                Image image = cmsidb.Images.SingleOrDefault(i => i.Id == p.Picture.SmallId);
 
                 if (image != null)
                 {

@@ -1,88 +1,96 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.IO;
-using System.Web;
-using System.Security.Principal;
 using CmsData;
-using Dapper;
-using Moq;
+using System.Xml;
+using System.Configuration;
 using UtilityExtensions;
 
 namespace SharedTestFixtures
 {
     public class DatabaseFixture : IDisposable
     {
-        public static bool BuildDb = true;
-        public static bool DropDb = false;
-        public static IDictionary Items;
-        private const string Url = "https://localhost.tpsdb.com";
-
         public DatabaseFixture()
         {
-            Items = new Dictionary<string, object>();
-            var c = FakeHttpContext();
-            HttpContextFactory.SetCurrentContext(c);
-            var dbname = $"CMS_" + Util.Host;
-            var dbExists = DbUtil.CheckDatabaseExists(dbname).Equals(DbUtil.CheckDatabaseResult.DatabaseExists);
-            if (!dbExists && BuildDb)
+            EnsureDatabaseExists();
+        }
+        
+        private static string _host;
+        public static string Host => _host ?? (_host = GetHostFromWebConfig());
+
+        private static string GetHostFromWebConfig()
+        {
+            var config = LoadWebConfig();
+            var hostKey = config.SelectSingleNode("configuration/appSettings/add[@key='host']");
+            return Util.Host = Util.PickFirst(hostKey?.Attributes["value"].Value, "localhost");
+        }
+
+        public static void EnsureDatabaseExists()
+        {
+            var builder = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["CMS"].ConnectionString);
+            var sqlScriptsPath = FindSqlScriptsPath();
+            builder.InitialCatalog = "master";
+            var masterConnectionString = builder.ConnectionString;
+            builder.InitialCatalog = $"CMSi_{Host}";
+            var imageConnectionString = builder.ConnectionString;
+            builder.InitialCatalog = "ELMAH";
+            var elmahConnectionString = builder.ConnectionString;
+            builder.InitialCatalog = $"CMS_{Host}";
+            var standardConnectionString = builder.ConnectionString;
+
+            if (!DbUtil.DatabaseExists(masterConnectionString, $"CMS_{Host}"))
             {
-                var csMaster = Util.GetConnectionString2("master");
-                var csElmah = Util.GetConnectionString2("elmah");
-                var scriptsDir = ScriptsDirectory();
-                if (DropDb)
-                {
-                    var cn = new SqlConnection(csMaster);
-                    cn.Execute($"DROP DATABASE IF EXISTS {dbname}");
-                }
-                var result = DbUtil.CreateDatabase(
-                    Util.Host,
-                    scriptsDir,
-                    csMaster,
-                    Util.ConnectionStringImage,
-                    csElmah,
-                    Util.ConnectionString);
-                if (result.HasValue())
+                var result = DbUtil.CreateDatabase(Host, sqlScriptsPath, masterConnectionString, imageConnectionString, elmahConnectionString, standardConnectionString);
+                if (!string.IsNullOrEmpty(result))
                 {
                     throw new Exception(result);
                 }
             }
         }
 
-        private static string ScriptsDirectory()
+        public static XmlDocument LoadWebConfig()
         {
-            var dir = Environment.CurrentDirectory;
-            return Path.GetFullPath(Path.Combine(dir, @"..\..\..\..\SqlScripts"));
+            var config = new XmlDocument();
+            config.Load(FindWebConfigPath());
+            return config;
+        }
+
+        public static string FindWebConfigPath()
+        {
+            string file = null;
+            foreach(var path in new[] { @"..\..\..\..\CmsWeb\web.config", @"..\..\..\CmsWeb\web.config" })
+            {
+                file = Path.GetFullPath(path);
+                if (File.Exists(file))
+                {
+                    break;
+                }
+            }
+            return file;
+        }
+
+        private static string FindSqlScriptsPath()
+        {
+            string dir = null;
+            foreach(var path in new[] { @"..\..\..\..\SqlScripts", @"..\..\..\SqlScripts" })
+            {
+                dir = Path.GetFullPath(path);
+                if (Directory.Exists(dir))
+                {
+                    break;
+                }
+            }
+            return dir;
         }
 
         public void Dispose()
         {
-            DbUtil.Db = null;
-            Items = null;
+            //DbUtil.Db = null;
         }
-        internal static HttpContextBase FakeHttpContext()
+
+        public static CMSDataContext NewDbContext()
         {
-            var context = new Mock<HttpContextBase>();
-            var request = new Mock<HttpRequestBase>();
-            var response = new Mock<HttpResponseBase>();
-            var session = new Mock<HttpSessionStateBase>();
-            var server = new Mock<HttpServerUtilityBase>();
-            var user = new Mock<IPrincipal>();
-            var identity = new Mock<IIdentity>();
-
-            user.Setup(usr => usr.Identity).Returns(identity.Object);
-            identity.SetupGet(ident => ident.IsAuthenticated).Returns(true);
-            request.SetupGet(req => req.Url).Returns(new Uri(Url));
-
-            context.Setup(ctx => ctx.Request).Returns(request.Object);
-            context.Setup(ctx => ctx.Response).Returns(response.Object);
-            context.Setup(ctx => ctx.Session).Returns(session.Object);
-            context.Setup(ctx => ctx.Server).Returns(server.Object);
-            context.Setup(ctx => ctx.User).Returns(user.Object);
-            context.Setup(ctx => ctx.Items).Returns(Items);
-
-            return context.Object;
+            return CMSDataContext.Create(Util.Host);
         }
     }
 }

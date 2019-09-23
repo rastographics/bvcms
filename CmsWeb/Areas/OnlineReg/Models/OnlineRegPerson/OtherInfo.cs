@@ -1,8 +1,10 @@
 using CmsData;
 using CmsData.Finance;
 using CmsData.Registration;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Linq;
 using System.Web.Mvc;
 using UtilityExtensions;
@@ -157,10 +159,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public static IEnumerable<SelectListItem> ShirtSizes(CMSDataContext Db, Organization org)
         {
             var setting = Db.CreateRegistrationSettings(org.OrganizationId);
-            return ShirtSizes(setting);
+            return ShirtSizes(Db, setting);
         }
 
-        private static IEnumerable<SelectListItem> ShirtSizes(Settings setting)
+        private static IEnumerable<SelectListItem> ShirtSizes(CMSDataContext Db, Settings setting)
         {
             var list = new List<SelectListItem>();
             list.Insert(0, new SelectListItem { Value = "0", Text = "(please select)" });
@@ -177,7 +179,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
             if (askSize?.AllowLastYear ?? false)
             {
-                var text = Util.PickFirst(Organization.GetExtra(DbUtil.Db, setting.OrgId, "AllowLastYearShirtText"),
+                var text = Util.PickFirst(Organization.GetExtra(Db, setting.OrgId, "AllowLastYearShirtText"),
                     "Use shirt from last year");
                 list.Add(new SelectListItem { Value = "lastyear", Text = text });
             }
@@ -186,7 +188,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public IEnumerable<SelectListItem> ShirtSizes()
         {
-            return ShirtSizes(setting);
+            return ShirtSizes(CurrentDatabase, setting);
         }
 
         public List<SelectListItem> MissionTripGoers()
@@ -250,6 +252,19 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     insurance = rr.Insurance;
                     policy = rr.Policy;
                 }
+                if (setting.AskVisible("AskPassport"))
+                {
+                    passportNumber = Util.Decrypt(rr.PassportNumber);
+                    string pe = Util.Decrypt(rr.PassportExpires);
+                    if (string.IsNullOrEmpty(pe))
+                    {
+                        passportExpires = null;
+                    }
+                    else
+                    {
+                        passportExpires = DateTime.ParseExact(pe, "MM/dd/yyyy", CultureInfo.InvariantCulture);
+                    }
+                }
                 if (setting.AskVisible("AskDoctor"))
                 {
                     docphone = rr.Docphone;
@@ -274,6 +289,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 {
                     otherchurch = rr.ActiveInAnotherChurch ?? false;
                     memberus = rr.Member ?? false;
+                    nochurch = rr.NoMember ?? false;
                 }
                 if (setting.AskVisible("AskTylenolEtc"))
                 {
@@ -321,6 +337,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             {
                 return (setting.AskVisible("AskEmContact")
                         || setting.AskVisible("AskInsurance")
+                        || setting.AskVisible("AskPassport")
                         || setting.AskVisible("AskDoctor")
                         || setting.AskVisible("AskParents"));
             }

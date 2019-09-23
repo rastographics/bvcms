@@ -246,8 +246,8 @@ namespace CmsWeb.Code
 
         public static IEnumerable<CodeValueItem> BundleStatusTypes()
         {
+            var hasDataEntryRole = DbUtil.Db.CurrentRoles().Contains("FinanceDataEntry");
             return from bs in DbUtil.Db.BundleStatusTypes
-                   let hasDataEntryRole = DbUtil.Db.Roles.Any(rr => rr.RoleName == "FinanceDataEntry")
                    where bs.Id < 2 || hasDataEntryRole
                    select new CodeValueItem
                    {
@@ -453,7 +453,7 @@ namespace CmsWeb.Code
         {
             const int openFundStatusId = 1;
 
-            return Db.ContributionFunds.ScopedByRoleMembership()
+            return Db.ContributionFunds.ScopedByRoleMembership(Db)
                 .Where(fund => fund.FundStatusId == openFundStatusId)
                 .OrderBy(fund => fund.FundId)
                 .Select(fund => new CodeValueItem { Id = fund.FundId, Value = fund.FundName })

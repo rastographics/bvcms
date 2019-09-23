@@ -5,11 +5,12 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web.Mvc;
+using CmsWeb.Models;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Org.Models
 {
-    public class SettingsAttendanceModel
+    public class SettingsAttendanceModel : IDbBinder
     {
         public CMSDataContext CurrentDatabase
         {
@@ -96,10 +97,12 @@ namespace CmsWeb.Areas.Org.Models
         {
             get { return PrevMeetingDate.AddDays(7); }
         }
-        public void UpdateSchedules()
+        public void UpdateSchedules(List<OrgSchedule> SchedulesToFix = null)
         {
+            int IdCount = 1;
             var db = CurrentDatabase;
-            var orgSchedules = Org.OrgSchedules.ToList();
+            var orgSchedules = SchedulesToFix ?? Org.OrgSchedules.ToList();
+
             for (int i = orgSchedules.Count - 1; i >= 0; i--)
             {
                 var s = orgSchedules[i];
@@ -117,32 +120,57 @@ namespace CmsWeb.Areas.Org.Models
             db.SubmitChanges();
             foreach (var s in schedules.OrderBy(ss => ss.Id))
             {
+                bool IsNew = true;
                 if (s.Id == 0)
                 {
                     s.Id = (orgSchedules.Count > 0) ? orgSchedules.Max(ss => ss.Id) + 1 : 1;
                 }
+
                 var schedule = orgSchedules.FirstOrDefault(ss => ss.Id == s.Id);
-                if (schedule == null)
+                if (schedule != null)
                 {
-                    schedule = new OrgSchedule
-                    {
-                        OrganizationId = Id,
-                        Id = s.Id,
-                        SchedDay = s.SchedDay.Value.ToInt(),
-                        SchedTime = s.Time.ToDate(),
-                        MeetingTime = s.Time.ToDate(),
-                        NextMeetingDate = s.NextMeetingTime.AddDays(-1),
-                        AttendCreditId = s.AttendCredit.Value.ToInt()
-                    };
-                    db.OrgSchedules.InsertOnSubmit(schedule);
-                    orgSchedules.Add(schedule);
+                    IsNew = false;
+                    db.OrgSchedules.DeleteOnSubmit(schedule);
+                    orgSchedules.Remove(schedule);
+                    db.SubmitChanges();
                 }
-                else
+
+                if (SchedulesToFix.IsNotNull())
                 {
-                    schedule.Update(s.ToOrgSchedule());
+                    s.Id = IdCount;
+                    IdCount++;
                 }
+                CreateScheduleObj(IsNew, s, ref orgSchedules);
             }
             db.SubmitChanges();
+            if (SchedulesToFix.IsNull())
+            {
+                FixgSchedulesIds();
+            }
+        }
+        private void CreateScheduleObj(bool IsNew, ScheduleInfo s, ref List<OrgSchedule> orgSchedules)
+        {
+            var schedule = new OrgSchedule
+            {
+                OrganizationId = Id,
+                Id = s.Id,
+                SchedDay = s.SchedDay.Value.ToInt(),
+                SchedTime = s.Time.ToDate(),
+                MeetingTime = s.SchedDay.ToDate(),
+                AttendCreditId = s.AttendCredit.Value.ToInt()
+            };
+            if (IsNew)
+            {
+                schedule.NextMeetingDate = s.NextMeetingTime;
+            }
+
+            CurrentDatabase.OrgSchedules.InsertOnSubmit(schedule);
+            orgSchedules.Add(schedule);
+        }
+        private void FixgSchedulesIds()
+        {
+            var Schedules = CurrentDatabase.OrgSchedules.Where(x => x.OrganizationId == Org.OrganizationId).ToList();
+            UpdateSchedules(Schedules);
         }
         public SelectList SchedulesPrev()
         {
@@ -222,56 +250,13 @@ e.g. a meeting that spans several hours vs another that is one hour.
 ")]
         public bool AllowAttendOverlap { get; set; }
 
-        [Display(Name = "Allow Self Check-In",
-            Description = @"
-Causes this meeting to show up on the Touchscreen Checkin.
-")]
-        public bool CanSelfCheckin { get; set; }
-
-        [Display(Description = @"
-Causes this meeting to show up only when the magic button is pressed
-")]
-        public bool SuspendCheckin { get; set; }
-
-        [Display(Description = @"
-If you are using self-checkin and you have multiple campuses, 
-and you have an Organization (that is assigned a campus) 
-and you want that organization to display as available for checkin to anyone, 
-regardless of the campus where they are checking in, 
-select this box.
-
-Also, if you have multiple campuses in your database 
-and you do not assign a campus to Organizations used for self-checkin, 
-they will display without this box being checked.
-")]
-        public bool AllowNonCampusCheckIn { get; set; }
-
         [Display(Name = "Offsite Trip",
             Description = @"
 This causes any absents during the period of an offsite trip start and end dates 
 to not be counted negatively for attendance purposes.
 ")]
         public bool Offsite { get; set; }
-
-        [Display(Name = "No security label required",
-            Description = @"
-Used for when children are old enough 
-to not need a security label to be picked up.
-")]
-        public bool NoSecurityLabel { get; set; }
-
-        [Display(Name = "Number of CheckIn Labels",
-            Description = @"
-Default is 1, use 0 if no labels needed.
-")]
-        public int? NumCheckInLabels { get; set; }
-
-        [Display(Name = "Number of Worker CheckIn Labels",
-            Description = @"
-Allows workers to get 1 or 0 labels when checking in.
-")]
-        public int? NumWorkerCheckInLabels { get; set; }
-
+        
         [Display(Description = @"
 Causes people who visited prior to this date to drop off the recent visitor list.
 For when visitors promote to the next grade.
@@ -297,19 +282,5 @@ Default is 2 weeks.
 Number of consecutive absents that causes person to show on Recent Absents report.
 ")]
         public int? ConsecutiveAbsentsThreshold { get; set; }
-
-        [Display(Name = "Start Birthday",
-            Description = @"
-Used on Touchscreen Checkin for when a guest needs to choose a class.
-Also used to prevent someone joining an organization during registration if they are outside the birthday range.
-")]
-        public DateTime? BirthDayStart { get; set; }
-
-        [Display(Name = "End Birthday",
-            Description = @"
-Used on Touchscreen Checkin for when a guest needs to choose a class.
-Also used to prevent someone joining an organization during registration if they are outside the birthday range.
-")]
-        public DateTime? BirthDayEnd { get; set; }
     }
 }

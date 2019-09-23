@@ -3,10 +3,6 @@ using CmsWeb.Code;
 using CmsWeb.Models;
 using Dapper;
 using Elmah;
-using SimpleInjector;
-using SimpleInjector.Integration.Web;
-using SimpleInjector.Integration.Web.Mvc;
-using SimpleInjector.Integration.WebApi;
 using System;
 using System.Configuration;
 using System.Globalization;
@@ -20,6 +16,7 @@ using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Routing;
 using UtilityExtensions;
+using CMSImageDataContext = ImageData.CMSImageDataContext;
 
 namespace CmsWeb
 {
@@ -70,7 +67,10 @@ namespace CmsWeb
                     Response.Redirect(redirect);
                     return;
                 }
-                AccountModel.SetUserInfo(Util.UserName, HttpContextFactory.Current.Session);
+
+                var db = CMSDataContext.Create(HttpContextFactory.Current);
+                var idb = CMSImageDataContext.Create(HttpContextFactory.Current);
+                AccountModel.SetUserInfo(db, idb, Util.UserName);
             }
             Util.Version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
             Util.SessionStarting = true;

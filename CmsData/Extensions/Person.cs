@@ -1255,13 +1255,14 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                     var sameperson = Util.UserPeopleId == PeopleId;
                     var infinance = (HttpContextFactory.Current.User.IsInRole("Finance") && !HttpContextFactory.Current.User.IsInRole("FundManager"))
                                     && ((string)HttpContextFactory.Current.Session["testnofinance"]) != "true";
+                    var isMyDataUserSetting = Util.IsMyDataUser && DbUtil.Db.Setting("HideGivingTabMyDataUsers", "false").ToBool();
                     var ishead = (new int?[]
                         {
                             Family.HeadOfHouseholdId,
                             Family.HeadOfHouseholdSpouseId
                         })
                         .Contains(Util.UserPeopleId);
-                    canUserSeeGiving = sameperson || infinance || ishead;
+                    canUserSeeGiving = !isMyDataUserSetting && (sameperson || infinance || ishead);
                 }
                 return canUserSeeGiving.Value;
             }
@@ -2176,7 +2177,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             db.SubmitChanges();
         }
 
-        public void UploadPicture(CMSDataContext db, Stream stream)
+        public void UploadPicture(CMSDataContext db, CMSImageDataContext idb, Stream stream)
         {
             if (Picture == null)
             {
@@ -2188,44 +2189,44 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             var p = Picture;
             p.CreatedDate = Util.Now;
             p.CreatedBy = Util.UserName;
-            p.ThumbId = Image.NewImageFromBits(bits, 50, 50).Id;
-            p.SmallId = Image.NewImageFromBits(bits, 120, 120).Id;
-            p.MediumId = Image.NewImageFromBits(bits, 320, 400).Id;
-            p.LargeId = Image.NewImageFromBits(bits).Id;
+            p.ThumbId = Image.NewImageFromBits(bits, 50, 50, idb).Id;
+            p.SmallId = Image.NewImageFromBits(bits, 120, 120, idb).Id;
+            p.MediumId = Image.NewImageFromBits(bits, 320, 400, idb).Id;
+            p.LargeId = Image.NewImageFromBits(bits, idb).Id;
             LogPictureUpload(db, Util.UserPeopleId ?? 1);
             db.SubmitChanges();
         }
 
-        public void DeletePicture(CMSDataContext db)
+        public void DeletePicture(CMSDataContext db, CMSImageDataContext idb)
         {
             if (Picture == null)
             {
                 return;
             }
 
-            Image.Delete(Picture.ThumbId);
-            Image.Delete(Picture.SmallId);
-            Image.Delete(Picture.MediumId);
-            Image.Delete(Picture.LargeId);
+            Image.Delete(idb, Picture.ThumbId);
+            Image.Delete(idb, Picture.SmallId);
+            Image.Delete(idb, Picture.MediumId);
+            Image.Delete(idb, Picture.LargeId);
             var pid = PictureId;
             Picture = null;
             db.SubmitChanges();
             db.ExecuteCommand("DELETE dbo.Picture WHERE PictureId = {0}", pid);
         }
 
-        public void DeleteThumbnail(CMSDataContext db)
+        public void DeleteThumbnail(CMSDataContext db, CMSImageDataContext idb)
         {
             if (Picture == null)
             {
                 return;
             }
 
-            Image.Delete(Picture.ThumbId);
+            Image.Delete(idb, Picture.ThumbId);
             Picture.ThumbId = null;
             db.SubmitChanges();
         }
 
-        public void UploadDocument(CMSDataContext db, Stream stream, string name, string mimetype)
+        public void UploadDocument(CMSDataContext db, CMSImageDataContext idb, Stream stream, string name, string mimetype)
         {
             var mdf = new MemberDocForm
             {
@@ -2244,15 +2245,15 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 case "image/gif":
                 case "image/png":
                     mdf.IsDocument = false;
-                    mdf.SmallId = Image.NewImageFromBits(bits, 165, 220).Id;
-                    mdf.MediumId = Image.NewImageFromBits(bits, 675, 900).Id;
-                    mdf.LargeId = Image.NewImageFromBits(bits).Id;
+                    mdf.SmallId = Image.NewImageFromBits(bits, 165, 220, idb).Id;
+                    mdf.MediumId = Image.NewImageFromBits(bits, 675, 900, idb).Id;
+                    mdf.LargeId = Image.NewImageFromBits(bits, idb).Id;
                     break;
                 case "text/plain":
                 case "application/pdf":
                 case "application/msword":
-                case "application/vnd.ms-excel":
-                    mdf.MediumId = Image.NewImageFromBits(bits, mimetype).Id;
+                case "application/msexcel":
+                    mdf.MediumId = Image.NewImageFromBits(bits, mimetype, idb).Id;
                     mdf.SmallId = mdf.MediumId;
                     mdf.LargeId = mdf.MediumId;
                     mdf.IsDocument = true;

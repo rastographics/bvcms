@@ -17,7 +17,8 @@ namespace CmsWeb.Areas.People.Models
         private readonly bool nodefault;
         private int? w, h;
         private readonly string mode;
-        public PictureResult(int id, int? w = null, int? h = null, bool portrait = false, bool tiny = false, bool nodefault = false, string mode = "max")
+        private readonly bool shouldBePublic; 
+        public PictureResult(int id, int? w = null, int? h = null, bool portrait = false, bool tiny = false, bool nodefault = false, string mode = "max", bool shouldBePublic = false)
         {
             this.id = id;
             this.portrait = portrait;
@@ -26,6 +27,7 @@ namespace CmsWeb.Areas.People.Models
             this.w = w;
             this.h = h;
             this.mode = mode;
+            this.shouldBePublic = shouldBePublic;
         }
         public override void ExecuteResult(ControllerContext context)
         {
@@ -78,10 +80,17 @@ namespace CmsWeb.Areas.People.Models
                 ImageData.Image i = null;
                 try
                 {
-                    var db = ImageData.CMSImageDataContext.Create(context.HttpContext);
-                    i = ImageData.DbUtil.Db.Images.SingleOrDefault(ii => ii.Id == id);
+                    using (var db = ImageData.CMSImageDataContext.Create(context.HttpContext))
+                    {
+                        i = db.Images.SingleOrDefault(ii => ii.Id == id);
+                    }
                 }
                 catch { }
+
+                if (i != null && shouldBePublic && !i.IsPublic)
+                {
+                    context.HttpContext.Response.BinaryWrite(NoPic());
+                }
 
                 if (i == null || i.Secure == true)
                 {

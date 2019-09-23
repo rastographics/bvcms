@@ -4,15 +4,18 @@ using System.Web;
 using CmsData;
 using CmsWeb.Membership;
 using CmsWeb.Models;
+using ImageData;
 using UtilityExtensions;
 
 namespace CmsWeb.Code
 {
-    internal static class AuthHelper
+    public class AuthHelper
     {
         public static AuthResult AuthenticateDeveloper(HttpContextBase context, bool shouldLog = false, string additionalRole = "", string altrole = "")
         {
             var auth = context.Request.Headers["Authorization"];
+            var db = CMSDataContext.Create(context);
+            var idb = CMSImageDataContext.Create(context);
 
             if (!auth.HasValue()) return new AuthResult {IsAuthenticated = false, Message = "!API no Authorization Header"};
 
@@ -26,30 +29,34 @@ namespace CmsWeb.Code
             {
                 var roles = CMSRoleProvider.provider;
 
-                if (context.Session != null)
-                    AccountModel.SetUserInfo(username, context.Session);
-
                 var isdev = roles.IsUserInRole(username, "Developer");
                 var isalt = altrole.HasValue() && roles.IsUserInRole(username, altrole);
-                if (!isdev && !isalt)
+                if ((!isdev && !isalt) || (additionalRole.HasValue() && !roles.IsUserInRole(username, additionalRole)))
+                {
                     valid = false;
-
-                if (additionalRole.HasValue() && !roles.IsUserInRole(username, additionalRole))
-                    valid = false;
+                }
             }
 
+            User user = null;
+            if (valid)
+            {
+                user = AccountModel.SetUserInfo(db, idb, username);
+            }
             var message = valid ? $" API {username} authenticated" : $"!API {username} not authenticated";
 
             if (shouldLog)
-                DbUtil.LogActivity(message.Substring(1));
+            {
+                CmsData.DbUtil.LogActivity(message.Substring(1));
+            }
 
-            return new AuthResult {IsAuthenticated = valid, Message = message};
+            return new AuthResult {IsAuthenticated = valid, User = user, Message = message};
         }
     }
 
-    internal class AuthResult
+    public class AuthResult
     {
         public bool IsAuthenticated { get; set; }
+        public User User { get; set; }
         public string Message { get; set; }
     }
 }

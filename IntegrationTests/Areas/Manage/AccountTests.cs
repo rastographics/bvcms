@@ -1,10 +1,13 @@
 ﻿using IntegrationTests.Support;
+using SharedTestFixtures;
 using Shouldly;
+using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 
 namespace IntegrationTests.Areas.Manage
 {
-    [Collection("WebApp Collection")]
+    [Collection(Collections.Webapp)]
     public class AccountTests : AccountTestBase
     {
         [Fact]
@@ -72,6 +75,59 @@ namespace IntegrationTests.Areas.Manage
 
             PageSource.ShouldContain(user.Person.Name);
             PageSource.ShouldContain(user.Person.EmailAddress);
+        }
+
+        [Fact]
+        public void Create_Role_Test()
+        {
+            username = RandomString();
+            password = RandomString();
+            string roleName = "role_" + RandomString();
+            var user = CreateUser(username, password, roles: new string[] { "Access", "Edit", "Admin" });
+            Login();
+
+            Open($"{rootUrl}Lookups/");
+            PageSource.ShouldContain("Lookup Codes");
+
+            Find(text: "Roles").Click();
+            CurrentUrl.ShouldBe($"{rootUrl}Roles");
+
+            Find(css: ".box-tools button[type=submit]").Click();
+            Find(id: "RoleName.NEW").Click();
+            WaitForElement(".editable-input input[type=text]");
+            Find(css: ".editable-input input[type=text]").Clear();
+            Find(css: ".editable-input input[type=text]").SendKeys(roleName);
+            Find(css: ".editable-buttons button[type=submit]").Click();
+            Open($"{rootUrl}Roles");
+            PageSource.ShouldContain(roleName);
+            var adminRole = db.Roles.SingleOrDefault(r => r.RoleName == "Admin");
+            var role = db.Roles.SingleOrDefault(r => r.RoleName == roleName);
+            role.ShouldNotBeNull();
+            role.Priority.GetValueOrDefault().ShouldBeGreaterThan(adminRole.Priority.GetValueOrDefault());
+        }
+
+        [Fact]
+        public void Delete_Role_Test()
+        {
+            username = RandomString();
+            password = RandomString();
+            string roleName = "role_" + RandomString();
+            var role = new CmsData.Role { RoleName = roleName };
+            db.Roles.InsertOnSubmit(role);
+            db.SubmitChanges();
+            var user = CreateUser(username, password, roles: new string[] { "Access", "Edit", "Admin" });
+            Login();
+
+            Open($"{rootUrl}Roles");
+            PageSource.ShouldContain(roleName);
+
+            Find(css: $"a[id=\"{role.RoleId}\"].delete").Click();
+            Wait(0.5);
+            Find(css: "div.showSweetAlert.visible button.confirm").Click();
+            Wait(1);
+
+            role = db.Copy().Roles.SingleOrDefault(r => r.RoleName == roleName);
+            role.ShouldBeNull();
         }
 
         [Fact]

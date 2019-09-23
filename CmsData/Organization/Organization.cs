@@ -474,7 +474,7 @@ namespace CmsData
         }
         public string GetExtra(CMSDataContext db, string field)
         {
-            return GetExtra(db, OrganizationId, field);
+            return GetExtra(db, OrganizationId, field).ToLower();
         }
 
         public void AddEditExtraCode(string field, string value, string location = null)

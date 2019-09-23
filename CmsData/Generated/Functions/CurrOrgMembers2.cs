@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Linq;
 using System.Linq.Expressions;
 using System.ComponentModel;
+using UtilityExtensions;
 
 namespace CmsData.View
 {
@@ -79,6 +80,10 @@ namespace CmsData.View
 		private DateTime? _EnrollDate;
 		
 		private int? _Tickets;
+
+		private string _PassportNumber;
+
+        private string _PassportExpires;
 		
 		
 		public CurrOrgMembers2()
@@ -630,7 +635,34 @@ namespace CmsData.View
 
 		}
 
-		
-    }
+        [Column(Name = "PassportNumber", Storage = "_PassportNumber", DbType = "nvarchar(max)")]
+        public string PassportNumber
+        {
+            get
+            {
+                return Util.Decrypt(this._PassportNumber);
+            }
 
+            set
+            {
+                if (this._PassportNumber != value)
+                    this._PassportNumber = value;
+            }
+        }
+
+        [Column(Name = "PassportExpires", Storage = "_PassportExpires", DbType = "nvarchar(max)")]
+        public string PassportExpires
+        {
+            get
+            {
+                return Util.Decrypt(this._PassportExpires);
+            }
+
+            set
+            {
+                if (this._PassportExpires != value)
+                    this._PassportExpires = value;
+            }
+        }
+    }
 }

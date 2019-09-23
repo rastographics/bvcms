@@ -27,7 +27,7 @@
                 @for (n = 0; n < funds.Length; n++)
                 {
                     var i = funds[n];
-                    var amt = Model.FundItemValue(i.Value.ToInt());
+                    var amt = Model.FundItemValue(i.Value.ToInt()) ?? Model.PledgeFundAmount(i.Value.ToInt());
                     if (amt.HasValue)
                     {
                         tot = (tot ?? 0) + amt;
@@ -113,10 +113,10 @@
                     }
                     else
                     {
-                    <tr>
-                        <td colspan="2"><h4 class="pull-right">TOTAL:</h4></td>
-                        <td style="width:100px;"><h2 class="pull-right" style="margin: 0;">$<span id="total">@tot.ToString2("N2")</span></h2></td>
-                    </tr>
+                        <tr>
+                            <td colspan="2"><h4 class="pull-right">TOTAL:</h4></td>
+                            <td style="width:100px;"><h2 class="pull-right" style="margin: 0;">$<span id="total">@tot.ToString2("N2")</span></h2></td>
+                        </tr>
                     }
                 </tfoot>
             </table>

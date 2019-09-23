@@ -32,6 +32,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         //        }
 
         private Dictionary<int, Settings> _settings;
+        private Dictionary<int, Settings> _MasterSettings;
 
         public Dictionary<int, Settings> settings
         {
@@ -48,6 +49,24 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     _settings = HttpContextFactory.Current.Items["RegSettings"] as Dictionary<int, Settings>;
                 }
                 return _settings;
+            }
+        }
+
+        public Dictionary<int, Settings> MasterSettings
+        {
+            get
+            {
+                if (_MasterSettings == null)
+                {
+                    _MasterSettings = HttpContextFactory.Current.Items["RegMasterSettings"] as Dictionary<int, Settings>;
+                }
+
+                if (_settings == null)
+                {
+                    ParseMasterSettings();
+                    _MasterSettings = HttpContextFactory.Current.Items["RegMasterSettings"] as Dictionary<int, Settings>;
+                }
+                return _MasterSettings;
             }
         }
 
@@ -550,7 +569,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         //TODO: move this to an instance method on PaymentForm and use CurrentDatabase there
         public static string YouMustAgreeStatement(int? orgid) => Util.PickFirst(
             Organization.GetExtra(DbUtil.Db, orgid, "YouMustAgreeStatement"),
-            "<p>You must agree to the terms above for you or your minor child before you can continue with confirmation.</p>");
+            "<p>You must type your full name and click on &quot;I agree to the terms and conditions&quot; above for you or your minor child before you can continue with confirmation.</p>");
 
         public string Terms
         {

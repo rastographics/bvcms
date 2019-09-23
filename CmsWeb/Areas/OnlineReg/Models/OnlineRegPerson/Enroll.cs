@@ -11,12 +11,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 {
     public partial class OnlineRegPersonModel
     {
-        private CMSDataContext _db;
-        public CMSDataContext db
-        {
-            get => _db ?? (_db = DbUtil.Db);
-            set => _db = value;
-        }
+        public CMSDataContext db => CurrentDatabase ?? (CurrentDatabase = DbUtil.Db);
 
         public OrganizationMember Enroll(Transaction transaction, string payLink)
         {
@@ -258,6 +253,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     case "AskChurch":
                         reg.ActiveInAnotherChurch = otherchurch;
                         reg.Member = memberus;
+                        reg.NoMember = nochurch;
                         break;
                     case "AskAllergies":
                         reg.MedAllergy = medical.HasValue();
@@ -290,6 +286,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     case "AskInsurance":
                         reg.Insurance = insurance;
                         reg.Policy = policy;
+                        break;
+                    case "AskPassport":
+                        reg.PassportNumber = Util.Encrypt(passportNumber);
+                        reg.PassportExpires = Util.Encrypt(passportExpires.ToString2("MM/dd/yyyy"));
                         break;
                     case "AskTickets":
                         om.Tickets = ntickets;

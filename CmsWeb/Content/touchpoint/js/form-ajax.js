@@ -32,7 +32,7 @@
         var postdata = $form.serialize();
         var url = d.data("link");
 
-        if (url.length > 0) {
+        if (url && url.length > 0) {
             if (!d.hasClass("loaded")) {
                 $.ajax({
                     type: 'POST',
@@ -198,6 +198,8 @@
             $("input[name='Sort']", $form).val(a.data("sortby"));
         if (a.data("dir"))
             $("input[name='Direction']", $form).val(a.data("dir"));
+        if (a.data("filter"))
+            $("input[name='Filter']", $form).val(a.data("filter"));
 
         var data = $form.serialize();
         if (data.length === 0 || a.data("data") === "none")

@@ -39,13 +39,14 @@ namespace CmsWeb.Lifecycle
     {
         protected IRequestManager RequestManager { get; }
         protected HttpContextBase CurrentHttpContext => RequestManager.CurrentHttpContext;
-        protected CMSDataContext CurrentDatabase => RequestManager.CurrentDatabase;
+        internal CMSDataContext CurrentDatabase => RequestManager.CurrentDatabase;
         protected CMSImageDataContext CurrentImageDatabase => RequestManager.CurrentImageDatabase;
         protected IPrincipal CurrentUser => RequestManager.CurrentUser;
 
         public CMSBaseController(IRequestManager requestManager)
         {
             RequestManager = requestManager;
+            ViewBag.CurrentDatabase = requestManager.CurrentDatabase;
         }
     }
 
@@ -61,23 +62,7 @@ namespace CmsWeb.Lifecycle
             RequestManager = requestManager;
         }
     }
-
-
-    public class CMSConfigurationManager
-    {
-        public const string HostSetting = "Host";
-
-        public bool HasConfiguredValue(string key)
-        {
-            return false;
-        }
-
-        public string GetConfiguredValue(string key)
-        {
-            return string.Empty;
-        }
-    }
-
+    
     public interface IRequestManager
     {
         Guid RequestId { get; }

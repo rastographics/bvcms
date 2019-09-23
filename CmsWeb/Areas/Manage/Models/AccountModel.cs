@@ -2,6 +2,7 @@ using CmsData;
 using CmsData.API;
 using CmsWeb.Areas.Manage.Models;
 using CmsWeb.Membership;
+using ImageData;
 using System;
 using System.Collections.Generic;
 using System.Data.Linq;
@@ -49,7 +50,7 @@ namespace CmsWeb.Models
             return fn;
         }
 
-        public static string GetValidToken(string otltoken)
+        public static string GetValidToken(CMSDataContext db, string otltoken)
         {
             if (!otltoken.HasValue())
             {
@@ -62,7 +63,7 @@ namespace CmsWeb.Models
                 return null;
             }
 
-            var ot = DbUtil.Db.OneTimeLinks.SingleOrDefault(oo => oo.Id == guid.Value);
+            var ot = db.OneTimeLinks.SingleOrDefault(oo => oo.Id == guid.Value);
             if (ot == null)
             {
                 return null;
@@ -79,7 +80,7 @@ namespace CmsWeb.Models
             }
 
             ot.Used = true;
-            DbUtil.Db.SubmitChanges();
+            db.SubmitChanges();
             return ot.Querystring;
         }
 
@@ -91,9 +92,9 @@ namespace CmsWeb.Models
             set { HttpContextFactory.Current.Items[STR_UserName2] = value; }
         }
 
-        public static UserValidationResult AuthenticateMobile(string requiredRole = null, bool checkOrgLeadersOnly = false, bool requirePin = false)
+        public static UserValidationResult AuthenticateMobile(CMSDataContext cmsdb, CMSImageDataContext cmsidb, string requiredRole = null, bool checkOrgLeadersOnly = false, bool requirePin = false)
         {
-            var userStatus = GetUserViaCredentials() ?? GetUserViaSessionToken(requirePin);
+            var userStatus = GetUserViaCredentials() ?? GetUserViaSessionToken(cmsdb, requirePin);
 
             if (userStatus == null)
             {
@@ -124,30 +125,29 @@ namespace CmsWeb.Models
             }
 
             UserName2 = user.Username;
-            SetUserInfo(user.Username, HttpContextFactory.Current.Session, deleteSpecialTags: false);
+            SetUserInfo(cmsdb, cmsidb, user.Username, deleteSpecialTags: false);
             //DbUtil.LogActivity("iphone auth " + user.Username);
 
             if (checkOrgLeadersOnly && !Util2.OrgLeadersOnlyChecked)
             {
-                var db = DbUtil.Db;
-                DbUtil.LogActivity("iphone leadersonly check " + user.Username);
+                CmsData.DbUtil.LogActivity("iphone leadersonly check " + user.Username);
                 if (!Util2.OrgLeadersOnly && roleProvider.IsUserInRole(user.Username, "OrgLeadersOnly"))
                 {
                     Util2.OrgLeadersOnly = true;
-                    DbUtil.Db.SetOrgLeadersOnly();
-                    DbUtil.LogActivity("SetOrgLeadersOnly");
+                    cmsdb.SetOrgLeadersOnly();
+                    CmsData.DbUtil.LogActivity("SetOrgLeadersOnly");
                 }
                 Util2.OrgLeadersOnlyChecked = true;
             }
 
-            ApiSessionModel.SaveApiSession(userStatus.User, requirePin, HttpContextFactory.Current.Request.Headers["PIN"].ToInt2());
+            ApiSessionModel.SaveApiSession(cmsdb, userStatus.User, requirePin, HttpContextFactory.Current.Request.Headers["PIN"].ToInt2());
 
             return userStatus;
         }
 
-        public static UserValidationResult AuthenticateMobile2(bool checkOrgLeadersOnly = false, bool requirePin = false)
+        public static UserValidationResult AuthenticateMobile2(CMSDataContext cmsdb, CMSImageDataContext cmsidb, bool checkOrgLeadersOnly = false, bool requirePin = false)
         {
-            var userStatus = GetUserViaCredentials() ?? GetUserViaSessionToken(requirePin);
+            var userStatus = GetUserViaCredentials() ?? GetUserViaSessionToken(cmsdb, requirePin);
 
             if (userStatus == null)
             {
@@ -166,28 +166,26 @@ namespace CmsWeb.Models
             var roleProvider = CMSRoleProvider.provider;
 
             UserName2 = user.Username;
-            SetUserInfo(user.Username, HttpContextFactory.Current.Session, deleteSpecialTags: false);
+            SetUserInfo(cmsdb, cmsidb, user.Username, deleteSpecialTags: false);
 
             if (checkOrgLeadersOnly && !Util2.OrgLeadersOnlyChecked)
             {
-                var db = DbUtil.Db;
-                DbUtil.LogActivity("iphone leadersonly check " + user.Username);
                 if (!Util2.OrgLeadersOnly && roleProvider.IsUserInRole(user.Username, "OrgLeadersOnly"))
                 {
                     Util2.OrgLeadersOnly = true;
-                    db.SetOrgLeadersOnly();
-                    DbUtil.LogActivity("SetOrgLeadersOnly");
+                    cmsdb.SetOrgLeadersOnly();
+                    CmsData.DbUtil.LogActivity("SetOrgLeadersOnly");
                 }
                 Util2.OrgLeadersOnlyChecked = true;
             }
 
-            FormsAuthentication.SetAuthCookie(user.Username, false);
-            ApiSessionModel.SaveApiSession(userStatus.User, requirePin, HttpContextFactory.Current.Request.Headers["PIN"].ToInt2());
+            CMSMembershipProvider.provider.SetAuthCookie(user.Username, false);
+            ApiSessionModel.SaveApiSession(cmsdb, userStatus.User, requirePin, HttpContextFactory.Current.Request.Headers["PIN"].ToInt2());
 
             return userStatus;
         }
 
-        public static UserValidationResult ResetSessionExpiration(string sessionToken)
+        public static UserValidationResult ResetSessionExpiration(CMSDataContext cmsdb, CMSImageDataContext cmsidb, string sessionToken)
         {
             if (string.IsNullOrEmpty(sessionToken))
             {
@@ -195,13 +193,13 @@ namespace CmsWeb.Models
             }
             //throw new ArgumentNullException("sessionToken");
 
-            var userStatus = AuthenticateMobile(requirePin: true);
+            var userStatus = AuthenticateMobile(cmsdb, cmsidb, requirePin: true);
 
             if (userStatus.Status == UserValidationStatus.Success
                 || userStatus.Status == UserValidationStatus.PinExpired
                 || userStatus.Status == UserValidationStatus.SessionTokenExpired)
             {
-                var result = ApiSessionModel.ResetSessionExpiration(userStatus.User, HttpContextFactory.Current.Request.Headers["PIN"].ToInt2());
+                var result = ApiSessionModel.ResetSessionExpiration(cmsdb, userStatus.User, HttpContextFactory.Current.Request.Headers["PIN"].ToInt2());
                 if (!result)
                 {
                     return UserValidationResult.Invalid(UserValidationStatus.PinInvalid);
@@ -213,12 +211,12 @@ namespace CmsWeb.Models
             return userStatus;
         }
 
-        public static void ExpireSessionToken(string sessionToken)
+        public static void ExpireSessionToken(CMSDataContext db, string sessionToken)
         {
-            ApiSessionModel.ExpireSession(Guid.Parse(sessionToken));
+            ApiSessionModel.ExpireSession(db, Guid.Parse(sessionToken));
         }
 
-        private static UserValidationResult GetUserViaSessionToken(bool requirePin)
+        private static UserValidationResult GetUserViaSessionToken(CMSDataContext db, bool requirePin)
         {
             var sessionToken = HttpContextFactory.Current.Request.Headers["SessionToken"];
             if (string.IsNullOrEmpty(sessionToken))
@@ -227,7 +225,7 @@ namespace CmsWeb.Models
                 return null;
             }
 
-            var result = ApiSessionModel.DetermineApiSessionStatus(Guid.Parse(sessionToken), requirePin, HttpContextFactory.Current.Request.Headers["PIN"].ToInt2());
+            var result = ApiSessionModel.DetermineApiSessionStatus(db, Guid.Parse(sessionToken), requirePin, HttpContextFactory.Current.Request.Headers["PIN"].ToInt2());
 
             //DbUtil.LogActivity("GetUserViaSession==" + result.Status.ToString());
 
@@ -271,7 +269,7 @@ namespace CmsWeb.Models
                 var creds = new NetworkCredential(username, password);
                 UserName2 = creds.UserName;
                 //DbUtil.LogActivity("GetUserViaCreds");
-                return AuthenticateLogon(creds.UserName, creds.Password, HttpContextFactory.Current.Request.Url.OriginalString, DbUtil.Db);
+                return AuthenticateLogon(creds.UserName, creds.Password, HttpContextFactory.Current.Request.Url.OriginalString, CMSDataContext.Create(HttpContextFactory.Current));
             }
 
             //DbUtil.LogActivity("GetUserViaCreds==null");
@@ -333,7 +331,7 @@ namespace CmsWeb.Models
                     break;
                 }
 
-                if (System.Web.Security.Membership.Provider.ValidateUser(u.Username, password))
+                if (CMSMembershipProvider.provider.ValidateUser(u.Username, password))
                 {
                     db.Refresh(RefreshMode.OverwriteCurrentValues, u);
                     user = u;
@@ -353,7 +351,7 @@ namespace CmsWeb.Models
 
             if (user == null && userExists)
             {
-                DbUtil.LogActivity($"failed password #{failedPasswordCount} by {userName}");
+                CmsData.DbUtil.LogActivity($"failed password #{failedPasswordCount} by {userName}");
 
                 if (failedPasswordCount == maxInvalidPasswordAttempts)
                 {
@@ -366,7 +364,7 @@ namespace CmsWeb.Models
 
             if (user == null)
             {
-                DbUtil.LogActivity("attempt to login by non-user " + userName);
+                CmsData.DbUtil.LogActivity("attempt to login by non-user " + userName);
                 return UserValidationResult.Invalid(UserValidationStatus.NoUserFound, DEFAULT_PROBLEM);
             }
 
@@ -407,23 +405,23 @@ namespace CmsWeb.Models
             return UserValidationResult.Valid(user);
         }
 
-        public static object AuthenticateLogon(string userName, string password, HttpSessionStateBase Session, HttpRequestBase Request, CMSDataContext db)
+        public static object AuthenticateLogon(string userName, string password, HttpSessionStateBase Session, HttpRequestBase Request, CMSDataContext db, CMSImageDataContext idb)
         {
             var status = AuthenticateLogon(userName, password, Request.Url.OriginalString, db);
             if (status.IsValid)
             {
-                SetUserInfo(status.User.Username, Session);
+                SetUserInfo(db, idb, status.User.Username);
                 FormsAuthentication.SetAuthCookie(status.User.Username, false);
-                DbUtil.LogActivity($"User {status.User.Username} logged in");
+                CmsData.DbUtil.LogActivity($"User {status.User.Username} logged in");
                 return status.User;
             }
             return status.ErrorMessage;
         }
 
-        public static object AutoLogin(string userName, HttpSessionStateBase Session, HttpRequestBase Request)
+        public static object AutoLogin(string userName, HttpSessionStateBase Session, HttpRequestBase Request, CMSDataContext db, CMSImageDataContext idb)
         {
 #if DEBUG
-            SetUserInfo(userName, Session);
+            SetUserInfo(db, idb, userName);
             FormsAuthentication.SetAuthCookie(userName, false);
 #endif
             return null;
@@ -441,46 +439,19 @@ namespace CmsWeb.Models
                 notify = CMSRoleProvider.provider.GetRoleUsers("Admin").Select(u => u.Person).Distinct();
             }
 
-            DbUtil.Db.EmailRedacted(DbUtil.AdminMail, notify, subject, message);
+            CmsData.DbUtil.Db.EmailRedacted(CmsData.DbUtil.AdminMail, notify, subject, message);
         }
 
-        public static void SetUserInfo(string username, HttpSessionStateBase Session, bool deleteSpecialTags = true)
+        public static User SetUserInfo(CMSDataContext cmsdb, CMSImageDataContext cmsidb, string username, bool deleteSpecialTags = true)
         {
-            var u = SetUserInfo(username);
-            if (u == null)
-            {
-                return;
-            }
-
-            Session["ActivePerson"] = u.Name;
-            if (deleteSpecialTags)
-            {
-                DbUtil.Db.DeleteSpecialTags(Util.UserPeopleId);
-            }
-        }
-
-        public static User SetUserInfo(string username, HttpSessionStateBase Session)
-        {
-            var u = SetUserInfo(username);
-            if (u == null)
-            {
-                return null;
-            }
-
-            Session["ActivePerson"] = u.Name;
-            return u;
-        }
-
-        private static User SetUserInfo(string username)
-        {
-            var i = (from u in DbUtil.Db.Users
+            var i = (from u in cmsdb.Users
                      where u.Username == username
                      select new { u, u.Person.PreferredName }).SingleOrDefault();
             if (i == null)
             {
                 return null;
             }
-            //var u = DbUtil.Db.Users.SingleOrDefault(us => us.Username == username);
+
             if (i.u != null)
             {
                 Util.UserId = i.u.UserId;
@@ -490,7 +461,7 @@ namespace CmsWeb.Models
                 if (i.u.Person?.Picture != null)
                 {
                     var picture = i.u.Person.Picture;
-                    Util.UserThumbPictureUrl = picture.ThumbUrl;
+                    Util.UserThumbPictureUrl = picture.GetThumbUrl(cmsidb);
                     Util.UserThumbPictureBgPosition = picture.X.HasValue || picture.Y.HasValue ?
                         $"{picture.X.GetValueOrDefault()}% {picture.Y.GetValueOrDefault()}%"
                         : "top";
@@ -501,6 +472,16 @@ namespace CmsWeb.Models
                 Util.UserPreferredName = i.PreferredName;
                 Util.UserFullName = i.u.Name;
                 Util.UserFirstName = i.u.Person.FirstName;
+            }
+            else
+            { 
+                return null;
+            }
+
+            Util.ActivePerson = i.u.Name;
+            if (deleteSpecialTags)
+            {
+                cmsdb.DeleteSpecialTags(Util.UserPeopleId);
             }
             return i.u;
         }
@@ -516,16 +497,16 @@ namespace CmsWeb.Models
 
                 if (name.HasValue())
                 {
-                    DbUtil.LogActivity($"user {name} loggedin without a role ");
+                    CmsData.DbUtil.LogActivity($"user {name} loggedin without a role ");
                 }
 
                 FormsAuthentication.SignOut();
                 return "/Errors/AccessDenied.htm";
             }
 
-            if (Roles.IsUserInRole(name, "NoRemoteAccess") && DbUtil.CheckRemoteAccessRole)
+            if (Roles.IsUserInRole(name, "NoRemoteAccess") && CmsData.DbUtil.CheckRemoteAccessRole)
             {
-                NotifyAdmins("NoRemoteAccess", $"{name} tried to login from {DbUtil.Db.Host}");
+                NotifyAdmins("NoRemoteAccess", $"{name} tried to login from {Util.Host}");
                 return "NoRemoteAccess.htm";
             }
 
@@ -534,29 +515,31 @@ namespace CmsWeb.Models
 
         public static User AddUser(int id)
         {
-            var p = DbUtil.Db.People.Single(pe => pe.PeopleId == id);
+            var db = CmsData.DbUtil.Db;
+            var p = db.People.Single(pe => pe.PeopleId == id);
             CMSMembershipProvider.provider.AdminOverride = true;
-            var user = MembershipService.CreateUser(DbUtil.Db, id);
+            var user = MembershipService.CreateUser(db, id);
             CMSMembershipProvider.provider.AdminOverride = false;
             user.MustChangePassword = false;
-            DbUtil.Db.SubmitChanges();
+            db.SubmitChanges();
             return user;
         }
 
         public static void SendNewUserEmail(string username)
         {
-            var user = DbUtil.Db.Users.First(u => u.Username == username);
-            var body = DbUtil.Db.ContentHtml("NewUserWelcome", Resource1.AccountModel_NewUserWelcome);
+            var db = CmsData.DbUtil.Db;
+            var user = db.Users.First(u => u.Username == username);
+            var body = db.ContentHtml("NewUserWelcome", Resource1.AccountModel_NewUserWelcome);
             body = body.Replace("{first}", user.Person.PreferredName);
             body = body.Replace("{name}", user.Person.Name);
-            body = body.Replace("{cmshost}", DbUtil.Db.Setting("DefaultHost", DbUtil.Db.Host));
+            body = body.Replace("{cmshost}", db.Setting("DefaultHost", db.Host));
             body = body.Replace("{username}", user.Username);
             user.ResetPasswordCode = Guid.NewGuid();
-            user.ResetPasswordExpires = DateTime.Now.AddHours(DbUtil.Db.Setting("ResetPasswordExpiresHours", "24").ToInt());
-            var link = DbUtil.Db.ServerLink("/Account/SetPassword/" + user.ResetPasswordCode);
+            user.ResetPasswordExpires = DateTime.Now.AddHours(db.Setting("ResetPasswordExpiresHours", "24").ToInt());
+            var link = db.ServerLink("/Account/SetPassword/" + user.ResetPasswordCode);
             body = body.Replace("{link}", link);
-            DbUtil.Db.SubmitChanges();
-            DbUtil.Db.EmailRedacted(DbUtil.AdminMail, user.Person, "New user welcome", body);
+            db.SubmitChanges();
+            db.EmailRedacted(CmsData.DbUtil.AdminMail, user.Person, "New user welcome", body);
         }
 
         public static void ForgotPassword(string username)
@@ -564,9 +547,10 @@ namespace CmsWeb.Models
             // first find a user with the email address or username
             string msg = null;
             var path = new StringBuilder();
+            var db = CmsData.DbUtil.Db;
 
             username = username.Trim();
-            var q = DbUtil.Db.Users.Where(uu =>
+            var q = db.Users.Where(uu =>
                 uu.Username == username ||
                 uu.Person.EmailAddress == username ||
                 uu.Person.EmailAddress2 == username
@@ -577,8 +561,8 @@ namespace CmsWeb.Models
                 // could not find a user to match
                 // so we look for a person without an account, to match the email address
 
-                var minage = DbUtil.Db.Setting("MinimumUserAge", "16").ToInt();
-                var q2 = from uu in DbUtil.Db.People
+                var minage = db.Setting("MinimumUserAge", "16").ToInt();
+                var q2 = from uu in db.People
                          where uu.EmailAddress == username || uu.EmailAddress2 == username
                          where uu.Age == null || uu.Age >= minage
                          select uu;
@@ -594,34 +578,34 @@ namespace CmsWeb.Models
                             Id = Guid.NewGuid(),
                             Querystring = p.PeopleId.ToString()
                         };
-                        DbUtil.Db.OneTimeLinks.InsertOnSubmit(ot);
-                        DbUtil.Db.SubmitChanges();
-                        var url = DbUtil.Db.ServerLink($"/Account/CreateAccount/{ot.Id.ToCode()}");
-                        msg = DbUtil.Db.ContentHtml("ForgotPasswordReset", Resource1.AccountModel_ForgotPasswordReset);
+                        db.OneTimeLinks.InsertOnSubmit(ot);
+                        db.SubmitChanges();
+                        var url = db.ServerLink($"/Account/CreateAccount/{ot.Id.ToCode()}");
+                        msg = db.ContentHtml("ForgotPasswordReset", Resource1.AccountModel_ForgotPasswordReset);
                         msg = msg.Replace("{name}", p.Name);
                         msg = msg.Replace("{first}", p.PreferredName);
                         msg = msg.Replace("{email}", username);
                         msg = msg.Replace("{resetlink}", url);
-                        DbUtil.Db.SendEmail(Util.FirstAddress(DbUtil.AdminMail),
+                        db.SendEmail(Util.FirstAddress(CmsData.DbUtil.AdminMail),
                             "touchpointsoftware new password link", msg, Util.ToMailAddressList(p.EmailAddress ?? p.EmailAddress2));
                     }
-                    DbUtil.LogActivity($"ForgotPassword ('{username}', {path})");
+                    CmsData.DbUtil.LogActivity($"ForgotPassword ('{username}', {path})");
                     return;
                 }
                 path.Append("p0");
                 if (!Util.ValidEmail(username))
                 {
-                    DbUtil.LogActivity($"ForgotPassword ('{username}', {path})");
+                    CmsData.DbUtil.LogActivity($"ForgotPassword ('{username}', {path})");
                     return;
                 }
                 path.Append("n0");
 
-                msg = DbUtil.Db.ContentHtml("ForgotPasswordBadEmail", Resource1.AccountModel_ForgotPasswordBadEmail);
+                msg = db.ContentHtml("ForgotPasswordBadEmail", Resource1.AccountModel_ForgotPasswordBadEmail);
                 msg = msg.Replace("{email}", username);
-                DbUtil.Db.SendEmail(Util.FirstAddress(DbUtil.AdminMail),
-                    "Forgot password request for " + DbUtil.Db.Setting("NameOfChurch", "bvcms"),
+                db.SendEmail(Util.FirstAddress(CmsData.DbUtil.AdminMail),
+                    "Forgot password request for " + db.Setting("NameOfChurch", "bvcms"),
                     msg, Util.ToMailAddressList(username));
-                DbUtil.LogActivity($"ForgotPassword ('{username}', {path})");
+                CmsData.DbUtil.LogActivity($"ForgotPassword ('{username}', {path})");
                 return;
             }
             path.Append("u+");
@@ -635,17 +619,17 @@ namespace CmsWeb.Models
             {
                 Util.AddGoodAddress(addrlist, user.EmailAddress);
                 user.ResetPasswordCode = Guid.NewGuid();
-                user.ResetPasswordExpires = DateTime.Now.AddHours(DbUtil.Db.Setting("ResetPasswordExpiresHours", "24").ToInt());
-                var link = DbUtil.Db.ServerLink($"/Account/SetPassword/{user.ResetPasswordCode}");
+                user.ResetPasswordExpires = DateTime.Now.AddHours(db.Setting("ResetPasswordExpiresHours", "24").ToInt());
+                var link = db.ServerLink($"/Account/SetPassword/{user.ResetPasswordCode}");
                 sb.Append($@"{user.Name}, <a href=""{link}"">{user.Username}</a><br>");
-                DbUtil.Db.SubmitChanges();
+                db.SubmitChanges();
             }
-            msg = DbUtil.Db.ContentHtml("ForgotPasswordReset2", Resource1.AccountModel_ForgotPasswordReset2);
+            msg = db.ContentHtml("ForgotPasswordReset2", Resource1.AccountModel_ForgotPasswordReset2);
             msg = msg.Replace("{email}", username);
             msg = msg.Replace("{resetlink}", sb.ToString());
-            DbUtil.Db.SendEmail(Util.FirstAddress(DbUtil.AdminMail),
+            db.SendEmail(Util.FirstAddress(CmsData.DbUtil.AdminMail),
                 "TouchPoint password reset link", msg, addrlist);
-            DbUtil.LogActivity($"ForgotPassword ('{username}', {path})");
+            CmsData.DbUtil.LogActivity($"ForgotPassword ('{username}', {path})");
         }
     }
 }

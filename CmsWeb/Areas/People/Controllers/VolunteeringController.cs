@@ -76,34 +76,29 @@ namespace CmsWeb.Areas.People.Controllers
                 case "image/pjpeg":
                 case "image/gif":
                 case "image/png":
+                    f.IsDocument = false;
+
+                    try
                     {
-                        f.IsDocument = false;
-
-                        try
-                        {
-                            f.SmallId = ImageData.Image.NewImageFromBits(bits, 165, 220).Id;
-                            f.MediumId = ImageData.Image.NewImageFromBits(bits, 675, 900).Id;
-                            f.LargeId = ImageData.Image.NewImageFromBits(bits).Id;
-                        }
-                        catch
-                        {
-                            return View("Index", vol);
-                        }
-
-                        break;
+                        f.SmallId = ImageData.Image.NewImageFromBits(bits, 165, 220, CurrentImageDatabase).Id;
+                        f.MediumId = ImageData.Image.NewImageFromBits(bits, 675, 900, CurrentImageDatabase).Id;
+                        f.LargeId = ImageData.Image.NewImageFromBits(bits, CurrentImageDatabase).Id;
                     }
+                    catch
+                    {
+                        return View("Index", vol);
+                    }
+                    break;
 
                 case "text/plain":
                 case "application/pdf":
                 case "application/msword":
                 case "application/vnd.ms-excel":
-                    {
-                        f.MediumId = ImageData.Image.NewImageFromBits(bits, mimetype).Id;
-                        f.SmallId = f.MediumId;
-                        f.LargeId = f.MediumId;
-                        f.IsDocument = true;
-                        break;
-                    }
+                    f.MediumId = ImageData.Image.NewImageFromBits(bits, mimetype, CurrentImageDatabase).Id;
+                    f.SmallId = f.MediumId;
+                    f.LargeId = f.MediumId;
+                    f.IsDocument = true;
+                    break;
 
                 default: return View("Index", vol);
             }
@@ -119,9 +114,9 @@ namespace CmsWeb.Areas.People.Controllers
         {
             var form = CurrentDatabase.VolunteerForms.Single(f => f.Id == id);
 
-            ImageData.Image.DeleteOnSubmit(form.SmallId);
-            ImageData.Image.DeleteOnSubmit(form.MediumId);
-            ImageData.Image.DeleteOnSubmit(form.LargeId);
+            CurrentImageDatabase.DeleteOnSubmit(form.SmallId);
+            CurrentImageDatabase.DeleteOnSubmit(form.MediumId);
+            CurrentImageDatabase.DeleteOnSubmit(form.LargeId);
 
             CurrentDatabase.VolunteerForms.DeleteOnSubmit(form);
             CurrentDatabase.SubmitChanges();
