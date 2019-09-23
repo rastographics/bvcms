@@ -31,9 +31,9 @@ namespace CmsDataTests
                     .Where(x => x.ContributionDate < toDate.AddDays(1))
                     .Sum(x => x.ContributionAmount) ?? 0;
 
-                var bundleHeader = CreateBundle(db);
-                var FirstContribution = CreateContribution(db, bundleHeader, fromDate, 120, peopleId: 1);
-                var SecondContribution = CreateContribution(db, bundleHeader, fromDate, 500, peopleId: 1, contributionType: ContributionTypeCode.Pledge);
+                var bundleHeader = MockContributions.CreateSaveBundle(db);
+                var FirstContribution = MockContributions.CreateSaveContribution(db, bundleHeader, fromDate, 120, peopleId: 1);
+                var SecondContribution = MockContributions.CreateSaveContribution(db, bundleHeader, fromDate, 500, peopleId: 1, contributionType: ContributionTypeCode.Pledge);
 
                 var results = db.GetTotalContributionsDonor(fromDate, toDate, null, null, true, null, null, true).ToList();
                 var actualContributionsAmount = results.Where(x => x.ContributionTypeId == ContributionTypeCode.CheckCash).Sum(x => x.Amount);
@@ -42,7 +42,7 @@ namespace CmsDataTests
                 actualContributionsAmount.ShouldBe(TotalAmmountContributions + 120);
                 actualPledgesAmount.ShouldBe(TotalPledgeAmountContributions + 500);
 
-                DeleteAllFromBundle(db, bundleHeader);
+                MockContributions.DeleteAllFromBundle(db, bundleHeader);
             }
         }
 
@@ -52,10 +52,10 @@ namespace CmsDataTests
             var fromDate = new DateTime(2019, 1, 1);
             using (var db = CMSDataContext.Create(Util.Host))
             {
-                var bundleHeader = CreateBundle(db);
-                var FirstContribution = CreateContribution(db, bundleHeader, fromDate, 100, peopleId: 1);
-                var SecondContribution = CreateContribution(db, bundleHeader, fromDate, 20, peopleId: 1);
-                var Pledges = CreateContribution(db, bundleHeader, fromDate, 500, peopleId: 1, contributionType: ContributionTypeCode.Pledge);
+                var bundleHeader = MockContributions.CreateSaveBundle(db);
+                var FirstContribution = MockContributions.CreateSaveContribution(db, bundleHeader, fromDate, 100, peopleId: 1);
+                var SecondContribution = MockContributions.CreateSaveContribution(db, bundleHeader, fromDate, 20, peopleId: 1);
+                var Pledges = MockContributions.CreateSaveContribution(db, bundleHeader, fromDate, 500, peopleId: 1, contributionType: ContributionTypeCode.Pledge);
 
                 //Get amount contributed to the pledge
                 var TotalAmmountContributions = db.Contributions
@@ -74,7 +74,7 @@ namespace CmsDataTests
                 actual.AmountPledged.ShouldBe(TotalPledgeAmount);
                 actual.Balance.ShouldBe((TotalPledgeAmount) - (TotalAmmountContributions) < 0 ? 0 : (TotalPledgeAmount) - (TotalAmmountContributions));
 
-                DeleteAllFromBundle(db, bundleHeader);              
+                MockContributions.DeleteAllFromBundle(db, bundleHeader);      
             }
         }
     }

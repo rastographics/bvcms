@@ -198,6 +198,7 @@
 
     $('a.update').click(function (event) {
         event.preventDefault();
+        $('#name').popover('hide');
         $.PostRow({ scroll: true });
     });
 
@@ -500,7 +501,7 @@
         ev.preventDefault();
         $("#campusid").val($("#newcampus").val());
         $('#edit-campus-modal').modal('hide');
-    });    
+    });
 
     $('#name').popover({
         title: 'Pledges Summary <span class="close">&times;</span>',

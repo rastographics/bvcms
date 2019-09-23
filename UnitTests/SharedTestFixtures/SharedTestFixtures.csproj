@@ -93,7 +93,9 @@
     <Compile Include="DatabaseFixture.cs" />
     <Compile Include="MockCMSMembershipProvider.cs" />
     <Compile Include="MockCMSRoleProvider.cs" />
+    <Compile Include="MockContributions.cs" />
     <Compile Include="MockHttpContext.cs" />
+    <Compile Include="MockSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DatabaseTestBase.cs" />
   </ItemGroup>

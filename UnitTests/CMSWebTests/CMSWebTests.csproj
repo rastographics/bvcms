@@ -57,6 +57,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\EPPlus.4.5.3.1\lib\net40\EPPlus.dll</HintPath>
     </Reference>
+    <Reference Include="FluentAssertions, Version=5.9.0.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\FluentAssertions.5.9.0\lib\net45\FluentAssertions.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.VisualStudio.TestPlatform.TestFramework, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\MSTest.TestFramework.1.4.0\lib\net45\Microsoft.VisualStudio.TestPlatform.TestFramework.dll</HintPath>
       <Private>True</Private>
@@ -129,6 +132,7 @@
     <Compile Include="Areas\OnlineReg\Models\OnlineReg\PaymentFormTests.cs" />
     <Compile Include="Areas\Reports\Models\Reports\Export\ExportInvolvementsTests.cs" />
     <Compile Include="Areas\Setup\Controllers\DivisionControllerTests.cs" />
+    <Compile Include="Code\PledgesHelperTests.cs" />
     <Compile Include="Models\ExportPeopleTest.cs" />
     <Compile Include="Controllers\Api\CustomControllerTests.cs" />
     <Compile Include="Support\ControllerTestBase.cs" />
@@ -148,7 +152,9 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\CmsData\CmsData.csproj">
