@@ -30,7 +30,16 @@ namespace IntegrationTests.Areas.Figures.Views.Figures
                    .OrderByDescending(x => x)
                    .ToList();
 
-            string YearToTest = Years[RandomNumber(0, Years.Count - 1)].ToString();
+            string YearToTest;
+
+            if (Years.Count == 0)
+            {
+                YearToTest = DateTime.Now.Year.ToString();
+            }
+            else
+            {
+                YearToTest = Years[RandomNumber(0, Years.Count - 1)].ToString();
+            }
 
             Open($"{rootUrl}Figures/Figures/Index");
             WaitForElement("div:nth-child(1) > .btn", 5);
