@@ -20,6 +20,7 @@ namespace IntegrationTests.Areas.Reports.Views.Reports
         [Fact]
         public void Application_Report_Should_Have_Awnsers()
         {
+            driver.Manage().Window.Maximize();
             var requestManager = FakeRequestManager.Create();
 
             var Orgconfig = new Organization()
@@ -53,8 +54,6 @@ namespace IntegrationTests.Areas.Reports.Views.Reports
 
             Open($"{rootUrl}OnlineReg/{OrgId}");
             Open($"{rootUrl}Reports/Application/{OrgId}/{user.PeopleId}/MembershipApp2017");
-
-            WaitForElement("h2", 10);
 
             PageSource.ShouldContain("ThisTextMustAppearInTests");
 
