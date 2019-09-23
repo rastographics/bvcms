@@ -1,16 +1,8 @@
-﻿using CmsData;
-using IntegrationTests.Support;
-using OpenQA.Selenium;
+﻿using IntegrationTests.Support;
 using Shouldly;
-using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 using SharedTestFixtures;
-using OpenQA.Selenium.Interactions;
 
 namespace IntegrationTests.Areas.Finance.Views.Bundle
 {
@@ -53,9 +45,8 @@ namespace IntegrationTests.Areas.Finance.Views.Bundle
             Find(xpath: "//a[contains(@href, '/FinanceReports/DonorTotalSummary')]").Click();
             Check_If_DateTimePicker_Exists();
         }
-
-        [Fact]
-        public void Check_If_DateTimePicker_Exists()
+        
+        protected void Check_If_DateTimePicker_Exists()
         {
             Find(css: "span.input-group-addon").Click();
             WaitForElement("div.bootstrap-datetimepicker-widget", 1);

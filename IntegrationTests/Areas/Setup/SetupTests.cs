@@ -38,7 +38,7 @@ namespace IntegrationTests.Areas.Manage
             role.ShouldNotBeNull();
             role.Priority.GetValueOrDefault().ShouldBeGreaterThan(adminRole.Priority.GetValueOrDefault());
         }
-
+        
         [Fact, FeatureTest]
         public void Role_Setting_HideNavTabs_Test()
         {
