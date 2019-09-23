@@ -638,6 +638,15 @@ namespace CmsWeb.Areas.Org.Controllers
         [Route("~/Meeting/ScheduleAttendance/{orgId:int}/{timestamp:int}")]
         public ActionResult ScheduleAttendance(int orgId, int timestamp)
         {
+            ViewBag.OrgId = orgId;
+            ViewBag.Timestamp = timestamp;
+            return View();
+        }
+
+        [HttpPost]
+        [Route("~/Meeting/ScheduleAttendance/")]
+        public ActionResult PostScheduleAttendance(int orgId, int timestamp)
+        {
             var meetingDate = DateTimeOffset.FromUnixTimeSeconds(timestamp).DateTime.ToLocalTime();
             if ((DateTime.Now - meetingDate).TotalDays >= 7)
             {
