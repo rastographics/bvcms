@@ -61,8 +61,7 @@
                 $('#name').val(ret.name);
                 $('#pid').val(ret.PeopleId);
                 $('#amt').focus();
-                setPledges(ret.pledgesSummary);
-                $('#name').popover('show');
+                showPledgesSummary(ret.pledgesSummary);                
             }
         });
     });
@@ -103,8 +102,7 @@
         select: function (event, ui) {
             $("#name").val(ui.item.Name);
             $("#pid").val(ui.item.Pid);
-            setPledges(ui.item.pledgesSummary);
-            $('#name').popover('show');
+            showPledgesSummary(ui.item.pledgesSummary);            
             return false;
         }
     }).data("uiAutocomplete")._renderItem = function (ul, item) {
@@ -528,6 +526,14 @@ function setPledges(pledgesData) {
     popoverPledges.setContent();
     popoverPledges.$tip.addClass(popoverPledges.options.placement);
     popoverPledges.$tip.css('max-width', '100%');
+}
+
+function showPledgesSummary(pledgesData) {
+    debugger;
+    if (Array.isArray(pledgesData) && pledgesData.length) {
+        setPledges(pledgesData);
+        $('#name').popover('show');
+    }
 }
 
 function AddSelected(ret) {
