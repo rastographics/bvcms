@@ -1219,6 +1219,9 @@
     <Content Include="Migrations\20190809_alter_function_CurrOrgMembers2_to_add_passport_data.sql" />
     <Content Include="Migrations\20190809_alter_sp_OrgMembers_to_include_passport_data.sql" />
     <Content Include="Migrations\20190812_add_2fa_support.sql" />
+    <Content Include="Migrations\20190902_alter_func_GetTotalContributionsDonor.sql" />
+    <Content Include="Migrations\20190909_alter_func_GetTotalContributionsDonorFund.sql" />
+    <Content Include="Migrations\20190902_alter_func_GetContributionsDetails.sql" />
     <Content Include="Migrations\20190821_alter_InvolvementCurrent_function_to_include_family_directory.sql" />
     <Content Include="Migrations\20190710_Update_MeetingTime_When_Is_Null.sql" />
     <Content Include="Migrations\20190613_Transform_NoPhoneEmailOnFind_To_New_EVs.sql" />
