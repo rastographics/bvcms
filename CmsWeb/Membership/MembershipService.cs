@@ -76,6 +76,7 @@ namespace CmsWeb.Membership
 
         public static bool IsTwoFactorAuthSetupRequired(User user, CMSDataContext db) =>
             !user.MFAEnabled &&
+            !user.Person.PeopleExtras.Any(e => e.BitValue == false && e.Field == "TwoFactorAuthSetupRequired") &&
             IsTwoFactorAuthenticationEnabled(db) &&
             user.InAnyRole(db.Setting("TwoFactorAuthRequiredRoles", "").ToStringArray());
 
