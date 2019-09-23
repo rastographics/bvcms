@@ -529,7 +529,6 @@ function setPledges(pledgesData) {
 }
 
 function showPledgesSummary(pledgesData) {
-    debugger;
     if (Array.isArray(pledgesData) && pledgesData.length) {
         setPledges(pledgesData);
         $('#name').popover('show');
