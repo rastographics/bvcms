@@ -693,7 +693,7 @@ namespace CmsWeb.Areas.People.Models.Task
             }
 
             Util2.CurrentPeopleId = WhoId.Value;
-            HttpContextFactory.Current.Session["ActivePerson"] = About;
+            Util.ActivePerson = About;
             var qb = _cmsDataContext.QueryIsCurrentPerson();
             return $"/Reports/Prospect/{qb.QueryId}?form=true";
         }

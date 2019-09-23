@@ -14,7 +14,7 @@ namespace IntegrationTests.Areas.Figures.Views.Figures
     public class RefineFundViewTests : AccountTestBase
     {
         [Fact]
-        public void Shoul_Change_Years_In_Graph()
+        public void Should_Change_Years_In_Graph()
         {
             username = RandomString();
             password = RandomString();

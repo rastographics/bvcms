@@ -15,7 +15,7 @@
         <div class="col-sm-12">
             @Html.Partial("PagerTop", Model)
             <div class="table-responsive">
-                <table class="expanding table table-hover">
+                <table class=" expanding table table-hover">
                     @if(!columnset.HasOrgTypeColumns || Model.Sort != "default")
                     {
                         <thead>
@@ -40,6 +40,7 @@
                         {
                             rownum++;
                             var oddrow = rownum % 2 == 0 ? "oddrow" : "";
+                            var columnCount = columnset.GetColumnsForOrgType(om.OrgType, Model.Sort).Count;
                             if (om.OrgType != pOrgType && Model.Sort == "default")
                             {
                                 if (columnset.HasOrgTypeColumns)
@@ -50,7 +51,7 @@
                                 pOrgType = om.OrgType;
                                 <tr class="section notshown info">
                                     <td><a rel="reveal" title="More Information" href="#" class="reveal"><i class="fa fa-caret-right"></i></a></td>
-                                    <td colspan="@columnset.GetColumnsForOrgType(om.OrgType, Model.Sort).Count"><span style="font-weight: 600;">@om.OrgType</span></td>
+                                    <td colspan="6"><span style="font-weight: 600;">@om.OrgType</span></td>
                                 </tr>
 
                                 if (columnset.HasOrgTypeColumns)
@@ -61,11 +62,19 @@
                                         {
                                             if (column.Sortable)
                                             {
-                                                <th>@Model.SortLink(column.Label, column.Field)</th>
+                                                <th style="width: 250px;">@Model.SortLink(column.Label, column.Field)</th>
                                             }
                                             else
                                             {
-                                                <th>@column.Label</th>
+                                                <th style="width: 250px;">@column.Label</th>
+                                            }
+                                        }
+                                        @{
+                                            var numColumns = columnCount;
+                                            while (numColumns < 6)
+                                            {
+                                                <th style="width: 250px;"></th>
+                                                numColumns++;
                                             }
                                         }
                                     </tr>
@@ -80,9 +89,17 @@
                                     {
                                         <td>@Html.Raw(om.GetColumnValue(column, true, User.IsInRole("OrgLeadersOnly")))</td>
                                     }
+                                    @{
+                                        var numColumns = columnCount;
+                                        while (numColumns < 6)
+                                        {
+                                            <td></td>
+                                            numColumns++;
+                                        }
+                                    }
                                 </tr>
                                 <tr class="details @oddrow">
-                                    <td colspan="@(columnset.GetColumnsForOrgType(om.OrgType, Model.Sort).Count + 1)">
+                                    <td colspan="6">
                                         <div class="collapse indent">
                                             <strong>Program:</strong> <span>@om.ProgramName,</span>
                                             <strong>Division:</strong> <span>@om.DivisionName</span>

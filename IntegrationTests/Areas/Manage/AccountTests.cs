@@ -98,14 +98,39 @@ namespace IntegrationTests.Areas.Manage
             Find(css: ".editable-input input[type=text]").Clear();
             Find(css: ".editable-input input[type=text]").SendKeys(roleName);
             Find(css: ".editable-buttons button[type=submit]").Click();
-            Open($"{rootUrl}Roles");
-            PageSource.ShouldContain(roleName);
+            Wait(1);
+
             var adminRole = db.Roles.SingleOrDefault(r => r.RoleName == "Admin");
             var role = db.Roles.SingleOrDefault(r => r.RoleName == roleName);
             role.ShouldNotBeNull();
             role.Priority.GetValueOrDefault().ShouldBeGreaterThan(adminRole.Priority.GetValueOrDefault());
         }
-        
+
+        [Fact]
+        public void Delete_Role_Test()
+        {
+            username = RandomString();
+            password = RandomString();
+            string roleName = "role_" + RandomString();
+            var role = new CmsData.Role { RoleName = roleName };
+            db.Roles.InsertOnSubmit(role);
+            db.SubmitChanges();
+            var user = CreateUser(username, password, roles: new string[] { "Access", "Edit", "Admin" });
+            Login();
+
+            Open($"{rootUrl}Roles");
+            PageSource.ShouldContain(roleName);
+
+            Find(css: $"a[id=\"{role.RoleId}\"].delete").Click();
+            Wait(0.5);
+            Find(css: "div.showSweetAlert.visible button.confirm").Click();
+            Wait(1);
+
+            role = db.Copy().Roles.SingleOrDefault(r => r.RoleName == roleName);
+            role.ShouldBeNull();
+        }
+
+        [Fact]
         public void MyData_User_ForgotPassword_Test()
         {
             username = RandomString();
