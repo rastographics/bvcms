@@ -26,7 +26,7 @@
             }
         }
 
-        .edit-text, .edit-textarea, .edit-datetime, .edit-select {
+        .edit-text, .edit-textarea, .edit-datetime, .edit-limit-to-role, .edit-status {
             cursor: pointer;
         }
 
@@ -151,7 +151,7 @@
                                 <dd>
                                     @if (Model.IsAnOwner)
                                     {
-                                        <a class="edit-select" data-pk="@(Model.Id)" data-name="@nameof(Model.TaskLimitToRole)" data-url="/Task/Edit">
+                                        <a class="edit-limit-to-role" data-pk="@(Model.Id)" data-name="@nameof(Model.TaskLimitToRole)" data-url="/Task/Edit" data-selected="@Model.TaskLimitToRole">
                                             @(Model.TaskLimitToRole.Value ?? "Empty")
                                         </a>
                                     }
@@ -206,7 +206,7 @@
                             <dd>
                                 @if (Model.IsAnOwner)
                                 {
-                                    <a class="edit-select" data-pk="@(Model.Id)" data-name="@nameof(Model.Status)" data-url="/Task/Edit">
+                                    <a class="edit-status" data-pk="@(Model.Id)" data-name="@nameof(Model.Status)" data-url="/Task/Edit" data-selected="@Model.StatusId">
                                         @(Model.Status ?? "Empty")
                                     </a>
                                 }
@@ -360,10 +360,42 @@
                 emptytext: 'None'
             });
 
-            $(".edit-select").editable({
-                mode: 'inline',
-                type: 'text',
-                emptytext: 'None'
+            $(".edit-status").each(function (i, e) {
+                $(e).editable({
+                    mode: 'inline',
+                    type: 'select',
+                    emptytext: 'None',
+                    value: $(e).data('selected'),    
+                    source: [
+                        {value: 10, text: 'Active'},
+                        {value: 20, text: 'Waiting For'},
+                        {value: 30, text: 'Cancelled - Reschedule'},
+                        {value: 40, text: 'Completed'},
+                        {value: 50, text: 'Pending Acceptance'},
+                        {value: 60, text: 'ReDelegated'},
+                        {value: 70, text: 'Declined'},
+                        {value: 80, text: 'Attempted - Could not reach'},
+                    ]
+                });
+            });
+
+            $(".edit-limit-to-role").each(function(i, e) {
+                $(e).editable({
+                    mode: 'inline',
+                    type: 'select',
+                    emptytext: 'None',
+                    value: $(e).data('selected'),    
+                    source: [
+                        {value: "0", text: '(not specified)'},
+                        {value: "Access", text: 'Access'},
+                        {value: "Admin", text: 'Admin'},
+                        {value: "CG-LC", text: 'CG-LC'},
+                        {value: "Finance", text: 'Finance'},
+                        {value: "Membership", text: 'Membership'},
+                        {value: "Pastor", text: 'Pastor'},
+                        {value: "RiseCampaign", text: 'RiseCampaign'},
+                    ]
+                });
             });
 
             $("body").on("click",

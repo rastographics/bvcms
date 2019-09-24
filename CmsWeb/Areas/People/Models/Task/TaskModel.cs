@@ -145,6 +145,7 @@ namespace CmsWeb.Areas.People.Models.Task
 
         public string Project { get; set; }
         public int SortPriority { get; set; }
+        public int StatusId { get; set; }
         public string Status { get; set; }
         public CodeInfo TaskLimitToRole { get; set; }
         public CodeInfo TaskStatus { get; set; }
@@ -661,6 +662,7 @@ namespace CmsWeb.Areas.People.Models.Task
                         CoOwner = t.CoOwner.Name,
                         CoOwnerEmail = t.CoOwner.EmailAddress,
                         TaskLimitToRole = new CodeInfo(t.LimitToRole, "TaskLimitToRole"),
+                        StatusId = t.TaskStatus.Id,
                         Status = t.TaskStatus.Description,
                         TaskStatus = new CodeInfo(t.StatusId, "TaskStatus"),
                         Completed = t.StatusId == TaskStatusCode.Complete,
