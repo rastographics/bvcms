@@ -36,20 +36,21 @@ namespace CMSWebTests
             using (var db = CMSDataContext.Create(DatabaseFixture.Host))
             {
                 var fromDate = new DateTime(2019, 1, 1);
+                var person = MockPeople.CreateSavePerson(db);
                 var bundleHeader = MockContributions.CreateSaveBundle(db);
-                var firstContribution = MockContributions.CreateSaveContribution(db, bundleHeader, fromDate, 100, peopleId: 1, fundId: 1);
-                var secondContribution = MockContributions.CreateSaveContribution(db, bundleHeader, fromDate, 100, peopleId: 1, fundId: 2);
+                var firstContribution = MockContributions.CreateSaveContribution(db, bundleHeader, fromDate, 100, peopleId: person.PeopleId, fundId: 1);
+                var secondContribution = MockContributions.CreateSaveContribution(db, bundleHeader, fromDate, 100, peopleId: person.PeopleId, fundId: 2);
                 var pledge = MockContributions.CreateSaveContribution(
-                    db, bundleHeader, fromDate, 200, peopleId: 1, fundId: 1, contributionType: ContributionTypeCode.Pledge);
-                var setting = MockSettings.CreateSaveSetting(db, "PostContributionPledgeFunds", "1");
-
+                    db, bundleHeader, fromDate, 200, peopleId: person.PeopleId, fundId: 1, contributionType: ContributionTypeCode.Pledge);
+                var setting = MockSettings.CreateSaveSetting(db, "PostContributionPledgeFunds", "1");                
                 var expected = MockContributions.FilteredPledgesSummary();
 
-                var actual = PledgesHelper.GetFilteredPledgesSummary(db, 1);
+                var actual = PledgesHelper.GetFilteredPledgesSummary(db, person.PeopleId);
                 actual.Should().BeEquivalentTo(expected);
 
                 MockContributions.DeleteAllFromBundle(db, bundleHeader);
                 MockSettings.DeleteSetting(db, setting);
+                //MockPeople.DeleteMockPerson(db, person);
             }         
         }
 

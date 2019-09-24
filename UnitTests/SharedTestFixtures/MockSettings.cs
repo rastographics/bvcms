@@ -1,4 +1,5 @@
 ﻿using CmsData;
+using System.Linq;
 
 namespace SharedTestFixtures
 {
@@ -6,13 +7,16 @@ namespace SharedTestFixtures
     {
         public static Setting CreateSaveSetting(CMSDataContext db, string name, string value)
         {
-            var setting = new Setting
+            var setting = db.Settings.FirstOrDefault(s => s.Id == name);
+            if (setting == null)
             {
-                Id = name,
-                SettingX = value,
-                System = null
-            };
-            db.Settings.InsertOnSubmit(setting);
+                setting = new Setting { Id = name, SettingX = value };
+                db.Settings.InsertOnSubmit(setting);
+            }
+            else
+            {
+                setting.SettingX = value;
+            }
             db.SubmitChanges();
             return setting;
         }
