@@ -26,8 +26,17 @@
             }
         }
 
-        .clickEdit, .edit-datetime, .edit-select {
+        .edit-text, .edit-textarea, .edit-datetime, .edit-select {
             cursor: pointer;
+        }
+
+        .edit-textarea {
+            border-bottom: none !important;
+            display: flex;
+        }
+
+        .edit-textarea p {
+            border-bottom: dashed 1px #0088cc;
         }
     </style>
 }
@@ -38,7 +47,7 @@
                 <h5>
                     @if (Model.IsAnOwner)
                     {
-                        <a class="clickEdit" data-pk="@(Model.Id)" data-name="@nameof(Model.Description)" data-type="text">
+                        <a class="edit-text" data-pk="@(Model.Id)" data-name="@nameof(Model.Description)" data-url="/Task/Edit">
                             @(Model.Description ?? "Empty")
                         </a>
                     } else
@@ -142,7 +151,7 @@
                                 <dd>
                                     @if (Model.IsAnOwner)
                                     {
-                                        <a class="edit-select" data-pk="@(Model.Id)" data-name="@nameof(Model.TaskLimitToRole)" data-type="text" data-url="/Task/Edit">
+                                        <a class="edit-select" data-pk="@(Model.Id)" data-name="@nameof(Model.TaskLimitToRole)" data-url="/Task/Edit">
                                             @(Model.TaskLimitToRole.Value ?? "Empty")
                                         </a>
                                     }
@@ -197,7 +206,7 @@
                             <dd>
                                 @if (Model.IsAnOwner)
                                 {
-                                    <a class="edit-select" data-pk="@(Model.Id)" data-name="@nameof(Model.Status)" data-type="text" data-url="/Task/Edit">
+                                    <a class="edit-select" data-pk="@(Model.Id)" data-name="@nameof(Model.Status)" data-url="/Task/Edit">
                                         @(Model.Status ?? "Empty")
                                     </a>
                                 }
@@ -226,7 +235,7 @@
                             <dd>
                                 @if (Model.IsAnOwner)
                                 {
-                                    <a class="edit-datetime" data-pk="@(Model.Id)" data-name="@nameof(Model.Due)" data-type="date" data-url="/Task/Edit">
+                                    <a class="edit-datetime" data-pk="@(Model.Id)" data-name="@nameof(Model.Due)" data-url="/Task/Edit">
                                         @(Model.Due.ToString2("d") ?? DateTime.Now.ToString("d"))
                                     </a>
                                 }
@@ -255,7 +264,7 @@
                             <dd>
                                 @if (Model.IsAnOwner)
                                 {
-                                    <a class="clickEdit" data-pk="@(Model.Id)" data-name="@nameof(Model.Notes)" data-type="text">
+                                    <a class="edit-textarea" data-pk="@(Model.Id)" data-name="@nameof(Model.Notes)" data-url="/Task/Edit">
                                         @Html.Raw(Model.FmtNotes ?? "Empty")
                                     </a>
                                 }
@@ -328,14 +337,20 @@
                 '<i class="fa fa-fw fa-times"></i>' +
                 '</button>';
 
-            $(".clickEdit").editable({
+            $(".edit-text").editable({
                 mode: 'inline',
                 type: 'text',
-                url: '/Task/Edit',
+                emptytext: 'None'
+            });
+
+            $(".edit-textarea").editable({
+                mode: 'inline',
+                type: 'textarea',
                 emptytext: 'None'
             });
 
             $(".edit-datetime").editable({
+                type: 'date',
                 viewformat: 'm/dd/yyyy',
                 datepicker: {
                     format: 'm/dd/yyyy',    
@@ -348,7 +363,6 @@
             $(".edit-select").editable({
                 mode: 'inline',
                 type: 'text',
-                url: '/Task/Edit',
                 emptytext: 'None'
             });
 
