@@ -1841,6 +1841,7 @@
     <Content Include="Views\Shared\Account\TwoFactorPasscode.cshtml" />
     <Content Include="Views\Shared\Auth.cshtml" />
     <Content Include="Areas\Manage\Views\Account\AuthDisable.cshtml" />
+    <Content Include="Areas\Org\Views\Meeting\ScheduleAttendance.cshtml" />
     <Content Include="Areas\Manage\Views\Involvement\Index.cshtml" />
     <Content Include="Areas\Manage\Views\Involvement\_EditTab.cshtml" />
     <Content Include="Areas\Org\Views\Org\Settings\CheckIn.cshtml" />
