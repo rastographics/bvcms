@@ -163,7 +163,17 @@ namespace CmsData
         public void SetTaskDetails(int id, string name, string value)
         {
             var task = Tasks.Single(c => c.Id == id);
-            task.GetType().GetProperty(name).SetValue(task, value);
+            var field = task.GetType().GetProperty(name);
+
+            switch (name)
+            {
+                case "Due":
+                    field.SetValue(task, DateTime.Parse(value));
+                    break;
+                default:
+                    field.SetValue(task, value);
+                    break;
+            }
         }
         public void DeleteSetting(string name)
         {

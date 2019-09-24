@@ -26,7 +26,7 @@
             }
         }
 
-        .clickEdit {
+        .clickEdit, .edit-datetime, .edit-select {
             cursor: pointer;
         }
     </style>
@@ -36,9 +36,15 @@
         <div class="box box-responsive">
             <div class="box-title-btn">
                 <h5>
-                    <a class="clickEdit" data-pk="@(Model.Id)" data-name="@nameof(Model.Description)">
-                        @Model.Description
-                    </a>
+                    @if (Model.IsAnOwner)
+                    {
+                        <a class="clickEdit" data-pk="@(Model.Id)" data-name="@nameof(Model.Description)" data-type="text">
+                            @(Model.Description ?? "Empty")
+                        </a>
+                    } else
+                    {
+                        <span>@Model.Description</span>;
+                    }
                 </h5>
                 <div class="box-tools">
                     @if (Model.CanAccept)
@@ -134,9 +140,16 @@
                             <dl>
                                 <dt>Limit To Role</dt>
                                 <dd>
-                                    <a class="clickEdit" data-pk="@(Model.Id)" data-name="@nameof(Model.TaskLimitToRole)">
-                                        @Model.TaskLimitToRole.Value
-                                    </a>
+                                    @if (Model.IsAnOwner)
+                                    {
+                                        <a class="edit-select" data-pk="@(Model.Id)" data-name="@nameof(Model.TaskLimitToRole)" data-type="text" data-url="/Task/Edit">
+                                            @(Model.TaskLimitToRole.Value ?? "Empty")
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <span>@Model.TaskLimitToRole.Value</span>
+                                    }
                                 </dd>
                             </dl>
                         }
@@ -182,9 +195,16 @@
                         <dl>
                             <dt>Status</dt>
                             <dd>
-                                <a class="clickEdit" data-pk="@(Model.Id)" data-name="@nameof(Model.Status)">
-                                    @Model.Status
-                                </a>
+                                @if (Model.IsAnOwner)
+                                {
+                                    <a class="edit-select" data-pk="@(Model.Id)" data-name="@nameof(Model.Status)" data-type="text" data-url="/Task/Edit">
+                                        @(Model.Status ?? "Empty")
+                                    </a>
+                                }
+                                else
+                                {
+                                    <span>@Model.Status</span>
+                                }
                                 @if (Model.ShowCompleted)
                                 {
                                     <span>@Model.CompletedOn.ToString2("f")</span>
@@ -204,9 +224,16 @@
                         <dl>
                             <dt>Due Date</dt>
                             <dd>
-                                <a class="clickEdit" data-pk="@(Model.Id)" data-name="@nameof(Model.Due)">
-                                    @Model.Due.ToString2("d")
-                                </a>
+                                @if (Model.IsAnOwner)
+                                {
+                                    <a class="edit-datetime" data-pk="@(Model.Id)" data-name="@nameof(Model.Due)" data-type="date" data-url="/Task/Edit">
+                                        @(Model.Due.ToString2("d") ?? DateTime.Now.ToString("d"))
+                                    </a>
+                                }
+                                else
+                                {
+                                    <span>@Model.Due.ToString2("d")</span>
+                                }
                             </dd>
                         </dl>
                         @if (Model.Description != "New Person Data Entry" && Model.Completed)
@@ -226,9 +253,16 @@
                         <dl>
                             <dt>Notes</dt>
                             <dd>
-                                <a class="clickEdit" data-pk="@(Model.Id)" data-name="@nameof(Model.Notes)">
-                                    @Html.Raw(Model.FmtNotes)
-                                </a>
+                                @if (Model.IsAnOwner)
+                                {
+                                    <a class="clickEdit" data-pk="@(Model.Id)" data-name="@nameof(Model.Notes)" data-type="text">
+                                        @Html.Raw(Model.FmtNotes ?? "Empty")
+                                    </a>
+                                }
+                                else
+                                {
+                                    <span>@Html.Raw(Model.FmtNotes)</span>
+                                }
                             </dd>
                         </dl>
                     </div>
@@ -297,7 +331,24 @@
             $(".clickEdit").editable({
                 mode: 'inline',
                 type: 'text',
-                url: '@Url.Action("Edit","Task")',
+                url: '/Task/Edit',
+                emptytext: 'None'
+            });
+
+            $(".edit-datetime").editable({
+                viewformat: 'm/dd/yyyy',
+                datepicker: {
+                    format: 'm/dd/yyyy',    
+                    todayBtn: true
+                },
+                clear: false,
+                emptytext: 'None'
+            });
+
+            $(".edit-select").editable({
+                mode: 'inline',
+                type: 'text',
+                url: '/Task/Edit',
                 emptytext: 'None'
             });
 
