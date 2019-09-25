@@ -141,18 +141,18 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpGet, Route("~/Task/GetRoles")]
         public JsonResult GetRoles()
         {
-            // TODO: Use real data, do not hardcode
-            return Json(new []
+            var roles = DbUtil.Db.Setting("LimitToRolesForTasks",
+                    DbUtil.Db.Setting("LimitToRolesForContacts", ""))
+                .SplitStr(",").Where(rr => rr.HasValue()).ToArray();
+            if (roles.Length == 0)
             {
-                new {value = "0", text = "(not specified)"},
-                new {value = "Access", text = "Access"},
-                new {value = "Admin", text = "Admin"},
-                new {value = "CG-LC", text = "CG-LC"},
-                new {value = "Finance", text = "Finance"},
-                new {value = "Membership", text = "Membership"},
-                new {value = "Pastor", text = "Pastor"},
-                new {value = "RiseCampaign", text = "RiseCampaign"}
-            }, JsonRequestBehavior.AllowGet);
+                roles = DbUtil.Db.Roles.OrderBy(r => r.RoleName).Select(r => r.RoleName).ToArray();
+            }
+
+            var list = roles.Select(x => new { value = x, text = x }).ToList();
+            list.Insert(0, new { value = "0", text = @"(not specified)" });
+
+            return Json(list, JsonRequestBehavior.AllowGet);
         }
     }
 }
