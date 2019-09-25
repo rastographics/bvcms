@@ -11,11 +11,10 @@ using System.Text.RegularExpressions;
 
 namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 {
-
-    [SuppressMessage("ReSharper", "CollectionNeverQueried.Global")]
-    [SuppressMessage("ReSharper", "UnusedMember.Global")]
-    [SuppressMessage("ReSharper", "NotAccessedField.Global")]
-    [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
+	[SuppressMessage( "ReSharper", "CollectionNeverQueried.Global" )]
+	[SuppressMessage( "ReSharper", "UnusedMember.Global" )]
+	[SuppressMessage( "ReSharper", "NotAccessedField.Global" )]
+	[SuppressMessage( "ReSharper", "MemberCanBePrivate.Global" )]
 	public class Family : DataMapper
 	{
 		public int id = 0;
@@ -27,16 +26,43 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 
 		public readonly List<FamilyMember> members = new List<FamilyMember>();
 
-        public static List<Family> forSearch(CMSDataContext cmsdb, CMSImageDataContext cmsidb, string search, int campus, DateTime date, bool returnPictureUrls)
+		public static Family forID( CMSDataContext dataContext, CMSImageDataContext imageContext, int familyID, int campus, DateTime date )
+		{
+			Family family = new Family();
+			DataTable table = new DataTable();
+
+			string qFamily = @"SELECT family.FamilyId AS id, MAX( head.Name ) AS name
+										FROM dbo.Families family
+											LEFT JOIN dbo.People AS head ON family.HeadOfHouseholdId = head.PeopleId AND head.DeceasedDate IS NULL
+										WHERE family.familyId = @familyID
+										GROUP BY family.FamilyId";
+
+			using( SqlCommand cmd = new SqlCommand( qFamily, dataContext.ReadonlyConnection() as SqlConnection ) ) {
+				SqlParameter parameter = new SqlParameter( "familyID", familyID );
+
+				cmd.Parameters.Add( parameter );
+
+				SqlDataAdapter adapter = new SqlDataAdapter( cmd );
+				adapter.Fill( table );
+			}
+
+			if( table.Rows.Count == 1 ) {
+				family.populate( table.Rows[0] );
+				family.loadMembers( dataContext, imageContext, campus, date, false );
+			}
+
+			return family;
+		}
+
+		public static List<Family> forSearch( CMSDataContext cmsdb, CMSImageDataContext cmsidb, string search, int campus, DateTime date, bool returnPictureUrls )
 		{
 			List<Family> families = new List<Family>();
 			DataTable table = new DataTable();
 
 			string qFamilies;
-            bool isNumeric = Regex.IsMatch(search, @"^\d+$");
+			bool isNumeric = Regex.IsMatch( search, @"^\d+$" );
 
-            if (isNumeric)
-            {
+			if( isNumeric ) {
 				qFamilies = @"SELECT TOP 50
 										family.FamilyId AS id,
 										MAX( head.Name ) AS name,
@@ -61,28 +87,22 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 									GROUP BY family.FamilyId
 									ORDER BY name";
 
-                using (SqlCommand cmd = new SqlCommand(qFamilies, cmsdb.ReadonlyConnection() as SqlConnection))
-                {
-                    SqlParameter parameter = new SqlParameter("search", $"%{search}");
+				using( SqlCommand cmd = new SqlCommand( qFamilies, cmsdb.ReadonlyConnection() as SqlConnection ) ) {
+					SqlParameter parameter = new SqlParameter( "search", $"%{search}" );
 
-                    cmd.Parameters.Add(parameter);
+					cmd.Parameters.Add( parameter );
 
-                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
-                    adapter.Fill(table);
+					SqlDataAdapter adapter = new SqlDataAdapter( cmd );
+					adapter.Fill( table );
 				}
-            }
-            else
-            {
+			} else {
 				string first = "";
 				string last = "";
-                string[] parts = search.Split(' ');
+				string[] parts = search.Split( ' ' );
 
-                if (parts.Length == 1)
-                {
+				if( parts.Length == 1 ) {
 					last = parts[0];
-                }
-                else if (parts.Length > 1)
-                {
+				} else if( parts.Length > 1 ) {
 					first = parts[0];
 					last = parts[1];
 				}
@@ -106,58 +126,52 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 									GROUP BY family.FamilyId
 									ORDER BY name";
 
-                using (SqlCommand cmd = new SqlCommand(qFamilies, cmsdb.ReadonlyConnection() as SqlConnection))
-                {
-                    SqlParameter firstParameter = new SqlParameter("first", $"{first}%");
-                    SqlParameter lastParameter = new SqlParameter("last", $"{last}%");
+				using( SqlCommand cmd = new SqlCommand( qFamilies, cmsdb.ReadonlyConnection() as SqlConnection ) ) {
+					SqlParameter firstParameter = new SqlParameter( "first", $"{first}%" );
+					SqlParameter lastParameter = new SqlParameter( "last", $"{last}%" );
 
-                    cmd.Parameters.Add(firstParameter);
-                    cmd.Parameters.Add(lastParameter);
+					cmd.Parameters.Add( firstParameter );
+					cmd.Parameters.Add( lastParameter );
 
-                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
-                    adapter.Fill(table);
+					SqlDataAdapter adapter = new SqlDataAdapter( cmd );
+					adapter.Fill( table );
 				}
 			}
 
-            foreach (DataRow row in table.Rows)
-            {
+			foreach( DataRow row in table.Rows ) {
 				Family family = new Family();
-                family.populate(row);
-                if (!returnPictureUrls)
-                {
-                family.loadPicture(cmsdb, cmsidb);
-                }
-				family.loadMembers(cmsdb, cmsidb, campus, date, returnPictureUrls);
+				family.populate( row );
+				if( !returnPictureUrls ) {
+					family.loadPicture( cmsdb, cmsidb );
+				}
 
-                families.Add(family);
+				family.loadMembers( cmsdb, cmsidb, campus, date, returnPictureUrls );
+
+				families.Add( family );
 			}
 
 			return families;
 		}
 
-        private void loadMembers(CMSDataContext cmsdb, CMSImageDataContext cmsidb, int campus, DateTime date, bool returnPictureUrls)
+		private void loadMembers( CMSDataContext cmsdb, CMSImageDataContext cmsidb, int campus, DateTime date, bool returnPictureUrls )
 		{
-			members.AddRange(FamilyMember.forFamilyID(cmsdb, cmsidb, id, campus, date, returnPictureUrls));
+			members.AddRange( FamilyMember.forFamilyID( cmsdb, cmsidb, id, campus, date, returnPictureUrls ) );
 		}
 
-        private void loadPicture(CMSDataContext cmsdb, CMSImageDataContext cmsidb)
+		private void loadPicture( CMSDataContext cmsdb, CMSImageDataContext cmsidb )
 		{
-            CmsData.Family family = cmsdb.Families.SingleOrDefault(f => f.FamilyId == id);
-            int? ImageId;
-            if (family == null || family.Picture == null)
-            {
-                ImageId = CmsData.Picture.SmallMissingGenericId;
-            }
-            else
-            {
-                ImageId = family.Picture.SmallId;
-            }
-            
-            Image image = cmsidb.Images.SingleOrDefault(i => i.Id == ImageId);
+			CmsData.Family family = cmsdb.Families.SingleOrDefault( f => f.FamilyId == id );
+			int? ImageId;
+			if( family == null || family.Picture == null ) {
+				ImageId = CmsData.Picture.SmallMissingGenericId;
+			} else {
+				ImageId = family.Picture.SmallId;
+			}
 
-            if (image != null)
-            {
-                picture = Convert.ToBase64String(image.Bits);
+			Image image = cmsidb.Images.SingleOrDefault( i => i.Id == ImageId );
+
+			if( image != null ) {
+				picture = Convert.ToBase64String( image.Bits );
 			}
 		}
 	}
