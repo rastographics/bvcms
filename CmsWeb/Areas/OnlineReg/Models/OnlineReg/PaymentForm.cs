@@ -696,7 +696,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
 
             TransactionResponse tinfo;
-            var gw = CurrentDatabase.Gateway(testing, null, m?.ProcessType ?? PaymentProcessTypes.OnlineRegistration);
+            var processType = m?.ProcessType ?? PaymentProcessTypes.OnlineRegistration;
+            var gw = CurrentDatabase.Gateway(testing, null, processType);
 
             if (SavePayInfo)
             {
@@ -710,6 +711,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
 
             ti.TransactionId = tinfo.TransactionId;
+
+            ti.Testing = CheckIfIsGatewayTesting(ti.Testing.GetValueOrDefault(), processType);
 
             if (ti.Testing.GetValueOrDefault() && !ti.TransactionId.Contains("(testing)"))
             {
@@ -734,6 +737,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             CurrentDatabase.SubmitChanges();
             return ti;
+        }
+
+        private bool CheckIfIsGatewayTesting(bool testing, PaymentProcessTypes processType)
+        {
+            return testing || MultipleGatewayUtils.GatewayTesting(CurrentDatabase, ProcessType);
         }
 
         private TransactionResponse PayWithCreditCard(IGateway gateway, int? peopleId, Transaction transaction)

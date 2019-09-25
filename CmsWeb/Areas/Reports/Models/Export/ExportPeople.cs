@@ -1,4 +1,5 @@
 using CmsData;
+using CmsData.Codes;
 using CmsWeb.Membership;
 using MoreLinq;
 using System;
@@ -13,6 +14,13 @@ namespace CmsWeb.Models
 {
     public class ExportPeople
     {
+        private CMSDataContext _db;
+        public CMSDataContext db
+        {
+            get => _db ?? (_db = DbUtil.Db);
+            set => _db = value;
+        }
+        
         public static EpplusResult FetchExcelLibraryList(Guid queryid)
         {
             //var Db = Db;
@@ -90,19 +98,22 @@ namespace CmsWeb.Models
                     };
             return q.Take(maximumRows).ToDataTable();
         }
-        public static DataTable DonorDetails(DateTime startdt, DateTime enddt,
+
+        public DataTable DonorDetails(DateTime startdt, DateTime enddt,
             int fundid, int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed, int? tagid, string fundids)
         {
-            var UseTitles = !DbUtil.Db.Setting("NoTitlesOnStatements");
+            var UseTitles = !db.Setting("NoTitlesOnStatements");
 
-            if (DbUtil.Db.Setting("UseLabelNameForDonorDetails"))
+            if (db.Setting("UseLabelNameForDonorDetails"))
             {
-                var q = from c in DbUtil.Db.GetContributionsDetails(startdt, enddt, campusid, pledges, nontaxdeductible.ToInt(), includeUnclosed, tagid, fundids)
-                        join p in DbUtil.Db.People on c.CreditGiverId equals p.PeopleId
-                        let mainFellowship = DbUtil.Db.Organizations.SingleOrDefault(oo => oo.OrganizationId == p.BibleFellowshipClassId).OrganizationName
-                        let head1 = DbUtil.Db.People.Single(hh => hh.PeopleId == p.Family.HeadOfHouseholdId)
-                        let head2 = DbUtil.Db.People.SingleOrDefault(sp => sp.PeopleId == p.Family.HeadOfHouseholdSpouseId)
-                        let altcouple = p.Family.FamilyExtras.SingleOrDefault(ee => (ee.FamilyId == p.FamilyId) && ee.Field == "CoupleName" && p.SpouseId != null).Data
+                var q = from c in db.GetContributionsDetails(startdt, enddt, campusid, pledges, (nontaxdeductible is null) ? 3 : nontaxdeductible.ToInt(), includeUnclosed, tagid, fundids)                        
+                        join p in db.People on c.CreditGiverId equals p.PeopleId
+                        where ContributionStatusCode.Recorded.Equals(c.ContributionStatusId)
+                        where !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
+                        let mainFellowship = db.Organizations.SingleOrDefault(oo => oo.OrganizationId == p.BibleFellowshipClassId).OrganizationName
+                        let head1 = db.People.Single(hh => hh.PeopleId == p.Family.HeadOfHouseholdId)
+                        let head2 = db.People.SingleOrDefault(sp => sp.PeopleId == p.Family.HeadOfHouseholdSpouseId)
+                        let altcouple = p.Family.FamilyExtras.SingleOrDefault(ee => (ee.FamilyId == p.FamilyId) && ee.Field == "CoupleName" && p.SpouseId != null).Data                        
                         select new
                         {
                             c.FamilyId,
@@ -138,18 +149,22 @@ namespace CmsWeb.Models
                                             : "Mr. and Mrs. " + head1.Name)
                                         : head1.PreferredName + " and " + head2.PreferredName + " " + head1.LastName +
                                            (head1.SuffixCode.Length > 0 ? ", " + head1.SuffixCode : "")),
-                            p.EmailAddress
-                        };
+                            p.EmailAddress,
+                            c.ContributionStatusId,
+                            c.ContributionTypeId
+                        };                
                 return q.ToDataTable();
 
             }
             else
             {
-                var q = from c in DbUtil.Db.GetContributionsDetails(startdt, enddt, campusid, pledges, nontaxdeductible.ToInt(), includeUnclosed, tagid, fundids)
-                        join p in DbUtil.Db.People on c.CreditGiverId equals p.PeopleId
-                        let mainFellowship = DbUtil.Db.Organizations.SingleOrDefault(oo => oo.OrganizationId == p.BibleFellowshipClassId).OrganizationName
-                        let spouse = DbUtil.Db.People.SingleOrDefault(sp => sp.PeopleId == p.SpouseId)
-                        let altcouple = p.Family.FamilyExtras.SingleOrDefault(ee => (ee.FamilyId == p.FamilyId) && ee.Field == "CoupleName" && p.SpouseId != null).Data
+                var q = from c in db.GetContributionsDetails(startdt, enddt, campusid, pledges, (nontaxdeductible is null) ? 3 : nontaxdeductible.ToInt(), includeUnclosed, tagid, fundids)
+                        join p in db.People on c.CreditGiverId equals p.PeopleId
+                        where ContributionStatusCode.Recorded.Equals(c.ContributionStatusId)
+                        where !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
+                        let mainFellowship = db.Organizations.SingleOrDefault(oo => oo.OrganizationId == p.BibleFellowshipClassId).OrganizationName
+                        let spouse = db.People.SingleOrDefault(sp => sp.PeopleId == p.SpouseId)
+                        let altcouple = p.Family.FamilyExtras.SingleOrDefault(ee => (ee.FamilyId == p.FamilyId) && ee.Field == "CoupleName" && p.SpouseId != null).Data                        
                         select new
                         {
                             c.FamilyId,
@@ -171,12 +186,15 @@ namespace CmsWeb.Models
                             c.BundleType,
                             c.BundleStatus,
                             p.FullAddress,
-                            p.EmailAddress
+                            p.EmailAddress,
+                            c.ContributionStatusId,
+                            c.ContributionTypeId
                         };
+
                 return q.ToDataTable();
             }
         }
-        public static DataTable ExcelDonorTotals(DateTime startdt, DateTime enddt,
+        public DataTable ExcelDonorTotals(DateTime startdt, DateTime enddt,
             int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed, int? tagid, string fundids)
         {
 #if DEBUG2
@@ -191,7 +209,9 @@ namespace CmsWeb.Models
 
 
             var nontaxded = nontaxdeductible.HasValue ? (nontaxdeductible.Value ? 1 : 0) : (int?)null;
-            var q2 = from r in DbUtil.Db.GetTotalContributionsDonor(startdt, enddt, campusid, nontaxded, includeUnclosed, tagid, fundids, null)
+            var q2 = from r in db.GetTotalContributionsDonor(startdt, enddt, campusid, nontaxded, includeUnclosed, tagid, fundids, null)
+                     where ContributionStatusCode.Recorded.Equals(r.ContributionStatusId)
+                     where !ContributionTypeCode.ReturnedReversedTypes.Contains(r.ContributionTypeId)
                      select new
                      {
                          GiverId = r.CreditGiverId,
@@ -209,14 +229,18 @@ namespace CmsWeb.Models
                          r.Addr2,
                          r.City,
                          r.St,
-                         r.Zip
+                         r.Zip,
+                         r.ContributionStatusId,
+                         r.ContributionTypeId
                      };
             return q2.ToDataTable();
         }
-        public static DataTable ExcelDonorFundTotals(DateTime startdt, DateTime enddt,
+        public DataTable ExcelDonorFundTotals(DateTime startdt, DateTime enddt,
             int fundid, int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed, int? tagid, string fundids)
         {
-            var q2 = from r in DbUtil.Db.GetTotalContributionsDonorFund(startdt, enddt, campusid, nontaxdeductible, includeUnclosed, tagid, fundids)
+            var q2 = from r in db.GetTotalContributionsDonorFund(startdt, enddt, campusid, nontaxdeductible, includeUnclosed, tagid, fundids)
+                     where ContributionStatusCode.Recorded.Equals(r.ContributionStatusId)
+                     where !ContributionTypeCode.ReturnedReversedTypes.Contains(r.ContributionTypeId)
                      select new
                      {
                          GiverId = r.CreditGiverId,
@@ -230,6 +254,8 @@ namespace CmsWeb.Models
                          r.MainFellowship,
                          r.MemberStatus,
                          r.JoinDate,
+                         r.ContributionStatusId,
+                         r.ContributionTypeId
                      };
             return q2.ToDataTable();
         }
@@ -280,8 +306,7 @@ namespace CmsWeb.Models
             return q2.ToDataTable().ToExcel("ListFamilyMembers.xlsx");
         }
         public static EpplusResult FetchExcelListFamily(Guid queryid)
-        {
-            //var Db = Db;
+        {            
             var query = DbUtil.Db.PeopleQuery(queryid);
 
             var q = from f in DbUtil.Db.Families
@@ -358,8 +383,7 @@ namespace CmsWeb.Models
         }
 
         public static IEnumerable<ExcelPic> FetchExcelListPics(Guid queryid, int maximumRows)
-        {
-            //var Db = Db;
+        {            
             var query = DbUtil.Db.PeopleQuery(queryid);
             var q = from p in query
                     let om = p.OrganizationMembers.SingleOrDefault(om => om.OrganizationId == p.BibleFellowshipClassId)
