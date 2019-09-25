@@ -13,7 +13,7 @@ namespace CmsData.QueryBuilder
         [ClassData(typeof(PythonScriptsTest))]
         public void ShouldRunPythonScriptFromString(string script)
         {
-            var pe = new PythonModel(CMSDataContext.Create(Util.Host));
+            var pe = new PythonModel(CMSDataContext.Create(DatabaseFixture.Host));
 
             var result = pe.RunScript(script);
             result.ShouldNotBeNull();

@@ -1,6 +1,7 @@
 ﻿using CmsData;
 using CmsData.Codes;
 using CmsDataTests.Support;
+using SharedTestFixtures;
 using Shouldly;
 using System;
 using System.Linq;
@@ -9,35 +10,71 @@ using Xunit;
 
 namespace CmsDataTests
 {
-    [Collection("Database collection")]
+    [Collection(Collections.Database)]
     public class CMSDataContextFunctionTests : FinanceTestBase
     {
-        //TODO: clean up contributions in the database
         [Fact]
         public void GetTotalContributionsDonorTest()
         {
             var fromDate = new DateTime(2019, 1, 1);
             var toDate = new DateTime(2019, 7, 31);
-            using (var db = CMSDataContext.Create(Util.Host))
+            using (var db = CMSDataContext.Create(DatabaseFixture.Host))
             {
-                var TotalAmmountContributions = db.Contributions.Where(x => x.ContributionTypeId == 1).Sum(x => x.ContributionAmount) ?? 0;
-                var TotalPledgeAmountContributions = db.Contributions.Where(x => x.ContributionTypeId == 8).Sum(x => x.ContributionAmount) ?? 0;
+                var TotalAmmountContributions = db.Contributions
+                    .Where(x => x.ContributionTypeId == ContributionTypeCode.CheckCash)
+                    .Where(x => x.ContributionDate >= fromDate)
+                    .Where(x => x.ContributionDate < toDate.AddDays(1))
+                    .Sum(x => x.ContributionAmount) ?? 0;
+                var TotalPledgeAmountContributions = db.Contributions
+                    .Where(x => x.ContributionTypeId == ContributionTypeCode.Pledge)
+                    .Where(x => x.ContributionDate >= fromDate)
+                    .Where(x => x.ContributionDate < toDate.AddDays(1))
+                    .Sum(x => x.ContributionAmount) ?? 0;
 
                 var bundleHeader = CreateBundle(db);
                 var FirstContribution = CreateContribution(db, bundleHeader, fromDate, 120, peopleId: 1);
                 var SecondContribution = CreateContribution(db, bundleHeader, fromDate, 500, peopleId: 1, contributionType: ContributionTypeCode.Pledge);
 
                 var results = db.GetTotalContributionsDonor(fromDate, toDate, null, null, true, null, null, true).ToList();
-                var actual = results.First();
+                var actualContributionsAmount = results.Where(x => x.ContributionTypeId == ContributionTypeCode.CheckCash).Sum(x => x.Amount);
+                var actualPledgesAmount = results.Where(x => x.ContributionTypeId == ContributionTypeCode.Pledge).Sum(x => x.PledgeAmount);
 
-                actual.Amount.ShouldBe(TotalAmmountContributions + 120);
-                actual.PledgeAmount.ShouldBe(TotalPledgeAmountContributions + 500);
+                actualContributionsAmount.ShouldBe(TotalAmmountContributions + 120);
+                actualPledgesAmount.ShouldBe(TotalPledgeAmountContributions + 500);
 
-                db.ExecuteCommand("DELETE FROM [BundleDetail] WHERE [BundleHeaderId] = {0} AND [ContributionId] = {1}", bundleHeader.BundleHeaderId, FirstContribution.ContributionId);
-                db.ExecuteCommand("DELETE FROM [BundleDetail] WHERE [BundleHeaderId] = {0} AND [ContributionId] = {1}", bundleHeader.BundleHeaderId, SecondContribution.ContributionId);
+                DeleteAllFromBundle(db, bundleHeader);
+            }
+        }
 
-                db.ExecuteCommand("DELETE FROM [Contribution] WHERE [ContributionId] = {0}", FirstContribution.ContributionId);
-                db.ExecuteCommand("DELETE FROM [Contribution] WHERE [ContributionId] = {0}", SecondContribution.ContributionId);
+        [Fact]
+        public void PledgesSummaryTest()
+        {
+            var fromDate = new DateTime(2019, 1, 1);
+            using (var db = CMSDataContext.Create(Util.Host))
+            {
+                var bundleHeader = CreateBundle(db);
+                var FirstContribution = CreateContribution(db, bundleHeader, fromDate, 100, peopleId: 1);
+                var SecondContribution = CreateContribution(db, bundleHeader, fromDate, 20, peopleId: 1);
+                var Pledges = CreateContribution(db, bundleHeader, fromDate, 500, peopleId: 1, contributionType: ContributionTypeCode.Pledge);
+
+                //Get amount contributed to the pledge
+                var TotalAmmountContributions = db.Contributions
+                    .Where(x => x.ContributionTypeId == ContributionTypeCode.CheckCash)
+                    .Sum(x => x.ContributionAmount) ?? 0;
+
+                //Get Pledge amount
+                var TotalPledgeAmount = db.Contributions
+                    .Where(x => x.ContributionTypeId == ContributionTypeCode.Pledge && x.PeopleId == 1 && x.FundId == 1)
+                    .Sum(x => x.ContributionAmount) ?? 0;
+
+                var results = db.PledgesSummary(1);
+                var actual = results.ToList().First();
+
+                actual.AmountContributed.ShouldBe(TotalAmmountContributions);
+                actual.AmountPledged.ShouldBe(TotalPledgeAmount);
+                actual.Balance.ShouldBe((TotalPledgeAmount) - (TotalAmmountContributions) < 0 ? 0 : (TotalPledgeAmount) - (TotalAmmountContributions));
+
+                DeleteAllFromBundle(db, bundleHeader);              
             }
         }
     }

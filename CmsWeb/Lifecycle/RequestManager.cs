@@ -39,7 +39,7 @@ namespace CmsWeb.Lifecycle
     {
         protected IRequestManager RequestManager { get; }
         protected HttpContextBase CurrentHttpContext => RequestManager.CurrentHttpContext;
-        protected CMSDataContext CurrentDatabase => RequestManager.CurrentDatabase;
+        internal CMSDataContext CurrentDatabase => RequestManager.CurrentDatabase;
         protected CMSImageDataContext CurrentImageDatabase => RequestManager.CurrentImageDatabase;
         protected IPrincipal CurrentUser => RequestManager.CurrentUser;
 

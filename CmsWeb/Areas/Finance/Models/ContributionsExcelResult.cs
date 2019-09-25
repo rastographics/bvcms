@@ -22,8 +22,16 @@ namespace CmsWeb.Models
         public bool FilterByActiveTag { get; set; }
         public string FundSet { get; set; }
 
+        private CMSDataContext _db;
+        public CMSDataContext db
+        {
+            get => _db ?? (_db = DbUtil.Db);
+            set => _db = value;
+        }        
+
         public EpplusResult ToExcel(string type)
         {
+            var _exportPeople = new ExportPeople();
             bool? nontaxdeductible = null; // both
             switch (TaxDedNonTax)
             {
@@ -35,12 +43,9 @@ namespace CmsWeb.Models
                     break;
             }
 
-            var tagid = FilterByActiveTag ? DbUtil.Db.TagCurrent()?.Id : (int?)null;
-            //var fundids = APIContributionSearchModel.GetCustomFundSetList(DbUtil.Db. FundSet);
-
-            var customFundIds = APIContributionSearchModel.GetCustomFundSetList(DbUtil.Db, FundSet);
-            var authorizedFundIds = DbUtil.Db.ContributionFunds.ScopedByRoleMembership().Select(f => f.FundId).ToList();
-
+            var tagid = FilterByActiveTag ? db.TagCurrent()?.Id : (int?)null;
+            var customFundIds = APIContributionSearchModel.GetCustomFundSetList(db, FundSet);
+            var authorizedFundIds = db.ContributionFunds.ScopedByRoleMembership(db).Select(f => f.FundId).ToList();
             string fundIds = string.Empty;
 
             if (customFundIds?.Count > 0)
@@ -64,15 +69,15 @@ namespace CmsWeb.Models
                         includeunclosed = IncUnclosedBundles,
                         includeBundleType = IncludeBundleType,
                     }, commandType: CommandType.StoredProcedure);
-                    return DbUtil.Db.Connection.ExecuteReader(cd).ToExcel("LedgerIncome.xlsx");
+                    return db.Connection.ExecuteReader(cd).ToExcel("LedgerIncome.xlsx");
                 case "donorfundtotals":
-                    return ExportPeople.ExcelDonorFundTotals(Dt1, Dt2, fundid, campusid, false, nontaxdeductible, IncUnclosedBundles, tagid, fundIds)
+                    return _exportPeople.ExcelDonorFundTotals(Dt1, Dt2, fundid, campusid, false, nontaxdeductible, IncUnclosedBundles, tagid, fundIds)                          
                         .ToExcel("DonorFundTotals.xlsx");
                 case "donortotals":
-                    return ExportPeople.ExcelDonorTotals(Dt1, Dt2, campusid, false, nontaxdeductible, IncUnclosedBundles, tagid, fundIds)
+                    return _exportPeople.ExcelDonorTotals(Dt1, Dt2, campusid, false, nontaxdeductible, IncUnclosedBundles, tagid, fundIds)
                         .ToExcel("DonorTotals.xlsx");
                 case "donordetails":
-                    return ExportPeople.DonorDetails(Dt1, Dt2, fundid, campusid, false, nontaxdeductible, IncUnclosedBundles, tagid, fundIds)
+                    return _exportPeople.DonorDetails(Dt1, Dt2, fundid, campusid, false, nontaxdeductible, IncUnclosedBundles, tagid, fundIds)
                         .ToExcel("DonorDetails.xlsx");
             }
             return null;

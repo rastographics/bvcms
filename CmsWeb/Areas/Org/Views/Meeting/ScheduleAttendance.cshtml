@@ -1,0 +1,20 @@
+﻿@{
+    ViewBag.Title = "Take Attendance";
+    ViewBag.PageHeader = "Take Attendance";
+    Layout = ViewExtensions2.TouchPointLayout();
+}
+<div class="box box-responsive">
+    <div class="box-content">
+        <div class="well">
+            <div class="row">
+                <div class="col-sm-6">
+                    <form action="/Meeting/ScheduleAttendance" method="post">
+                        @Html.Hidden("orgId", (int) ViewBag.OrgId)
+                        @Html.Hidden("timestamp", (int) ViewBag.timestamp)
+                        <button type="submit" class="btn btn-primary">Take Attendance</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

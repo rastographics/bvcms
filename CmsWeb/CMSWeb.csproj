@@ -397,6 +397,8 @@
     <Compile Include="App_Start\DependencyConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Areas\CheckIn\Controllers\CheckInController.cs" />
+    <Compile Include="Areas\CheckIn\Models\CheckInModel.cs" />
     <Compile Include="Areas\CheckIn\Controllers\CheckinSetupController.cs" />
     <Compile Include="Areas\CheckIn\Models\CheckinSetup\CampusModel.cs" />
     <Compile Include="Areas\CheckIn\Models\CheckinSetup\CheckinProfileModel.cs" />
@@ -556,6 +558,7 @@
     <Compile Include="Areas\Main\Models\Other\CouponResponseModel.cs" />
     <Compile Include="Areas\Manage\Controllers\ActivityController.cs" />
     <Compile Include="Areas\Manage\Controllers\BatchMoveAndDelete.cs" />
+    <Compile Include="Areas\Manage\Controllers\InvolvementController.cs" />
     <Compile Include="Areas\Manage\Controllers\UploadAddressesController.cs" />
     <Compile Include="Areas\Manage\Controllers\ResourceController.cs" />
     <Compile Include="Areas\Manage\Controllers\UploadExcelIpsController.cs" />
@@ -565,6 +568,10 @@
     <Compile Include="Areas\Manage\Models\BatchModel\BatchRegSettings.cs" />
     <Compile Include="Areas\Manage\Models\BatchModel\FindTagPeople.cs" />
     <Compile Include="Areas\Manage\Models\BatchModel\UpdateOrgs.cs" />
+    <Compile Include="Areas\Manage\Models\Involvement\CustomizeInvolvementModel.cs" />
+    <Compile Include="Areas\Manage\Models\Involvement\InvolvementColumn.cs" />
+    <Compile Include="Areas\Manage\Models\Involvement\InvolvementTabModel.cs" />
+    <Compile Include="Areas\Manage\Models\Involvement\InvolvementType.cs" />
     <Compile Include="Areas\Manage\Models\ResourceModel.cs" />
     <Compile Include="Areas\Manage\Models\ResourceTypeModel.cs" />
     <Compile Include="Areas\Manage\Models\UpdateFieldsLookups.cs" />
@@ -605,6 +612,7 @@
     <Compile Include="Areas\Org\Controllers\Org\Settings\General.cs" />
     <Compile Include="Areas\Org\Controllers\Org\Settings\Main.cs" />
     <Compile Include="Areas\Org\Controllers\Org\Settings\Messages.cs" />
+    <Compile Include="Areas\Org\Controllers\Org\Settings\CheckIn.cs" />
     <Compile Include="Areas\Org\Controllers\Org\Settings\Questions.cs" />
     <Compile Include="Areas\Org\Controllers\Org\Settings\Registration.cs" />
     <Compile Include="Areas\Org\Controllers\Org\Toolbar.cs" />
@@ -619,6 +627,7 @@
     <Compile Include="Areas\Org\Models\Org\Contacts\ContactsReceivedModel.cs" />
     <Compile Include="Areas\Org\Models\Org\OrgSearchFieldsModel.cs" />
     <Compile Include="Areas\Org\Models\Org\ScheduleInfo.cs" />
+    <Compile Include="Areas\Org\Models\Org\SettingsCheckInModel.cs" />
     <Compile Include="Areas\Org\Models\Org\SettingsMessagesModel.cs" />
     <Compile Include="Areas\Org\Models\Org\SettingsGeneralModel.cs" />
     <Compile Include="Areas\Org\Models\Org\SettingsAttendanceModel.cs" />
@@ -646,6 +655,7 @@
     <Compile Include="Areas\Public\Models\CheckInAPIv2\AttendanceBundle.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPIv2\AttendanceGroup.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPIv2\Campus.cs" />
+    <Compile Include="Areas\Public\Models\CheckInAPIv2\Profile.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPIv2\Country.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPIv2\Gender.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPIv2\Group.cs" />
@@ -901,6 +911,7 @@
     <Compile Include="Controllers\ExtraValue\StandardController.cs" />
     <Compile Include="Controllers\ExtraValue\AdhocController.cs" />
     <Compile Include="Controllers\ExtraValue\ReportsController.cs" />
+    <Compile Include="Controllers\Home2Controller.cs" />
     <Compile Include="Controllers\ScriptController.cs" />
     <Compile Include="Controllers\MobileAppMenuController.cs" />
     <Compile Include="Controllers\WebHookController.cs" />
@@ -918,6 +929,7 @@
     <Compile Include="Models\Api\ApiPerson.cs" />
     <Compile Include="Models\Api\ApiOrganizationMember.cs" />
     <Compile Include="Models\Api\AddContributionModel.cs" />
+    <Compile Include="Models\DbBinder.cs" />
     <Compile Include="Models\DynamicParametersExtensions.cs" />
     <Compile Include="Models\ErrorMessage.cs" />
     <Compile Include="Models\ExtraValue\EntryModel.cs" />
@@ -1214,6 +1226,7 @@
     <Content Include="Content\img\textarealine.png" />
     <Content Include="Content\touchpoint\css\account.css" />
     <Content Include="Content\touchpoint\css\app.css" />
+    <Content Include="Content\touchpoint\css\checkin.css" />
     <Content Include="Content\touchpoint\css\editor.css" />
     <Content Include="Content\touchpoint\css\error.css" />
     <Content Include="Content\touchpoint\css\gateway.css" />
@@ -1254,6 +1267,7 @@
     <Content Include="Content\touchpoint\js\finance\transactions.js" />
     <Content Include="Content\touchpoint\js\form-ajax.js" />
     <Content Include="Content\touchpoint\js\gateway.js" />
+    <Content Include="Content\touchpoint\js\checkin.js" />
     <Content Include="Content\touchpoint\js\snackbar.js" />
     <Content Include="Content\touchpoint\js\main.js" />
     <Content Include="Content\touchpoint\js\metrozip\metro-zip.js" />
@@ -1843,6 +1857,11 @@
     <Content Include="Content\touchpoint\src\less\snackbar.less" />
     <Content Include="Areas\People\Views\Shared\PledgesSummary.cshtml" />
     <Content Include="libman.json" />
+    <Content Include="Areas\Org\Views\Meeting\ScheduleAttendance.cshtml" />
+    <Content Include="Areas\Manage\Views\Involvement\Index.cshtml" />
+    <Content Include="Areas\Manage\Views\Involvement\_EditTab.cshtml" />
+    <Content Include="Areas\Org\Views\Org\Settings\CheckIn.cshtml" />
+    <Content Include="Areas\CheckIn\Views\CheckIn\CheckIn.cshtml" />
     <Content Include="Areas\CheckIn\Views\Web.config" />
     <Content Include="Areas\CheckIn\Views\CheckinSetup\Index.cshtml" />
     <Content Include="Areas\People\Views\Task\_ActionsMenu.cshtml" />

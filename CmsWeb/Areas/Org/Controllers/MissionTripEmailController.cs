@@ -2,14 +2,19 @@ using System.Linq;
 using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.Org.Models;
+using CmsWeb.Lifecycle;
 using Newtonsoft.Json;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Org.Controllers
 {
     [RouteArea("Org", AreaPrefix = "")]
-    public class MissionTripEmailController : Controller
+    public class MissionTripEmailController : CmsStaffController
     {
+        public MissionTripEmailController(IRequestManager requestManager) : base(requestManager)
+        {
+        }
+
         [HttpGet, Route("MissionTripEmail2/{oid}/{pid}")]
         public ActionResult Index(int oid, int pid)
         {

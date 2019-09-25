@@ -13,7 +13,7 @@ namespace CMSWebTests.Areas.People.Models.Person.Enrollments
         [Fact]
         public void Should_Run_FulfillmentList()
         {
-            DbUtil.Db = CMSDataContext.Create(Util.Host);
+            ContextTestUtils.CreateMockHttpContext();
             var m = new RegistrationsModel();
             m.PeopleId = 1;
             var fulfillmentlist = m.FulfillmentList();

@@ -43,7 +43,7 @@ namespace CmsWeb.MobileAPI
 
 			return br;
 		}
-
+        
 		public static BaseMessage createFromString( string json )
 		{
 			if( !string.IsNullOrEmpty( json ) ) {
@@ -101,8 +101,13 @@ namespace CmsWeb.MobileAPI
 			}
 		}
 
-		// API Device Numbers
-		public const int API_DEVICE_UNKNOWN = 0;
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
+        }
+
+        // API Device Numbers
+        public const int API_DEVICE_UNKNOWN = 0;
 		public const int API_DEVICE_IOS = 1;
 		public const int API_DEVICE_ANDROID = 2;
 
