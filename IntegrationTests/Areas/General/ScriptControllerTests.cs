@@ -11,7 +11,7 @@ namespace IntegrationTests.Areas.Manage
     [Collection(Collections.Webapp)]
     public class ScriptControllerTests : AccountTestBase
     {
-        [Fact]
+        [Fact, FeatureTest]
         public void PyscriptWithoutParameters()
         {
             username = RandomString();
@@ -22,7 +22,7 @@ namespace IntegrationTests.Areas.Manage
             Open($"{rootUrl}PyScript/HelloWorld");
             PageSource.ShouldContain("Hello World");
         }
-        [Fact]
+        [Fact, FeatureTest]
         public void PyscriptWithParameters()
         {
             username = RandomString();
@@ -35,7 +35,7 @@ namespace IntegrationTests.Areas.Manage
             Open($"{rootUrl}PyScript/HelloWorld?p1=testing&p2=123");
             PageSource.ShouldContain("parameters testing 123");
         }
-        [Fact]
+        [Fact, FeatureTest]
         public void PythonSearchNamesTest()
         {
             username = RandomString();
@@ -46,7 +46,7 @@ namespace IntegrationTests.Areas.Manage
             Open($"{rootUrl}PythonSearch/Names?term={person.FirstName.Truncate(4)} {person.LastName.Truncate(4)}");
             PageSource.ShouldContain($"{user.Person.LastName}, {user.Person.FirstName}");
         }
-        [Fact]
+        [Fact, FeatureTest]
         public void RunScriptTest()
         {
             username = RandomString();
@@ -62,7 +62,7 @@ namespace IntegrationTests.Areas.Manage
         /// including DynamicData, Forms, Json,
         /// and ScriptController PyScriptForm GET and POST Actions
         /// </summary>
-        [Fact]
+        [Fact, FeatureTest]
         public void PyScriptFormTest()
         {
             db.WriteContentText("jsondata", @"{'Records':[

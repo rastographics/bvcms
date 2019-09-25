@@ -90,6 +90,8 @@
     <Compile Include="ContextTestUtils.cs" />
     <Compile Include="DatabaseCollection.cs" />
     <Compile Include="DatabaseFixture.cs" />
+    <Compile Include="FinanceTestBase.cs" />
+    <Compile Include="FinanceTestUtils.cs" />
     <Compile Include="MockCMSMembershipProvider.cs" />
     <Compile Include="MockCMSRoleProvider.cs" />
     <Compile Include="MockHttpContext.cs" />

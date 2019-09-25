@@ -10,7 +10,7 @@ namespace IntegrationTests.Areas.Manage
     [Collection(Collections.Webapp)]
     public class SetupTests : AccountTestBase
     {
-        [Fact]
+        [Fact, FeatureTest]
         public void Create_Role_Test()
         {
             username = RandomString();
@@ -38,8 +38,8 @@ namespace IntegrationTests.Areas.Manage
             role.ShouldNotBeNull();
             role.Priority.GetValueOrDefault().ShouldBeGreaterThan(adminRole.Priority.GetValueOrDefault());
         }
-
-        [Fact]
+        
+        [Fact, FeatureTest]
         public void Role_Setting_HideNavTabs_Test()
         {
             username = RandomString();

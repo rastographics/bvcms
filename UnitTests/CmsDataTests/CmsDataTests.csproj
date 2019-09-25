@@ -82,7 +82,6 @@
     <Compile Include="Finance\AcceptivaGatewayTests.cs" />
     <Compile Include="Generated\CMSDataContextFunctionTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Support\FinanceTestBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config">
