@@ -239,13 +239,13 @@ namespace IntegrationTests.Support
             }
         }
 
-        internal void SaveScreenshot()
+        internal void SaveScreenshot(string name = "Screenshot")
         {
             Screenshot screenshot = screenShotDriver.GetScreenshot();
-            string file = "Screenshot_" + DateTime.Now.ToString("yyyy-MM-dd_HH.mm.ss_") + RandomString() + ".png";
+            string file = $"{name}_" + DateTime.Now.ToString("yyyy-MM-dd_HH.mm.ss_") + RandomString() + ".png";
             string filename = Path.Combine(Settings.ScreenShotLocation, file);
             screenshot.SaveAsFile(filename, ScreenshotImageFormat.Png);
-            Console.WriteLine("Screen shot saved: {0}", Path.Combine(Settings.ScreenShotUrl));
+            Console.WriteLine("Screen shot saved: {0}", Path.Combine(Settings.ScreenShotUrl, filename));
         }
 
         protected IEnumerable<IWebElement> FindAll(By by = null,
