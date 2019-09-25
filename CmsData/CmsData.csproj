@@ -492,6 +492,14 @@
     <Reference Include="Xceed.Words.NET, Version=1.2.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
       <HintPath>..\packages\DocX.1.2.1\lib\Xceed.Words.NET.dll</HintPath>
     </Reference>
+    <Reference Include="zxing, Version=0.16.4.0, Culture=neutral, PublicKeyToken=4e88037ac681fe60">
+      <HintPath>..\packages\ZXing.Net.0.16.4\lib\net461\zxing.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="zxing.presentation, Version=0.16.4.0, Culture=neutral, PublicKeyToken=4e88037ac681fe60">
+      <HintPath>..\packages\ZXing.Net.0.16.4\lib\net461\zxing.presentation.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="API\ApiSessionModel.cs" />
@@ -519,6 +527,7 @@
     <Compile Include="API\QueryFunctions\Attendance.cs" />
     <Compile Include="API\QueryFunctions\Contributions.cs" />
     <Compile Include="API\QueryFunctions\Query.cs" />
+    <Compile Include="Classes\Barcodes\BarcodeHelper.cs" />
     <Compile Include="Classes\DataMapper\DataMapper.cs" />
     <Compile Include="Charts\GoogleChartsData.cs" />
     <Compile Include="Classes\ExtraValues\Code.cs" />

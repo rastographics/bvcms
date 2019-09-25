@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 using CmsData;
+using CmsData.Classes.Barcodes;
 using CmsData.Codes;
 using CmsData.View;
 using CmsWeb.Areas.People.Models.Task;
@@ -16,11 +20,11 @@ using CmsWeb.MobileAPI;
 using CmsWeb.Models;
 using CmsWeb.Models.iPhone;
 using Dapper;
-using ImageData;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using UtilityExtensions;
 using DbUtil = CmsData.DbUtil;
+using Image = ImageData.Image;
 using MobileAccount = CmsWeb.Areas.Public.Models.MobileAPIv2.MobileAccount;
 using MobileAccountV1 = CmsWeb.MobileAPI.MobileAccount;
 
@@ -402,6 +406,39 @@ namespace CmsWeb.Areas.Public.Controllers
 		}
 
 		[HttpPost]
+		public ActionResult FetchFamily( string data )
+		{
+			MobileMessage message = MobileMessage.createFromString( data );
+
+			MobileAuthentication authentication = new MobileAuthentication( CurrentDatabase );
+			authentication.authenticate( message.instance );
+
+			if( authentication.hasError() ) {
+				return MobileMessage.createLoginErrorReturn( authentication );
+			}
+
+			int familyID = authentication.getUser().Person.FamilyId;
+
+			if( !DateTime.TryParse( message.argString, out DateTime dateTime ) ) {
+				dateTime = DateTime.Now;
+			}
+
+			Models.CheckInAPIv2.Family family = Models.CheckInAPIv2.Family.forID( CurrentDatabase, CurrentImageDatabase, familyID, 0, dateTime );
+
+			MobileMessage response = new MobileMessage();
+			response.setNoError();
+			response.count = 1;
+			response.data = SerializeJSON( family, message.version );
+
+			return response;
+		}
+
+		public FileResult FetchQRCode()
+		{
+			return new FileContentResult( BarcodeHelper.generateQRCode( "https://www.touchpointsoftware.com", 600 ), "image/png" );
+		}
+
+		[HttpPost]
 		public ActionResult FetchPeople( string data )
 		{
 			MobileMessage message = MobileMessage.createFromString( data );
@@ -424,7 +461,7 @@ namespace CmsWeb.Areas.Public.Controllers
 					Dictionary<int, MobilePerson> mpl = new Dictionary<int, MobilePerson>();
 
 					foreach( Person item in m.ApplySearch( mps.guest ).OrderBy( p => p.Name2 ).Take( 100 ) ) {
-						MobilePerson mp = new MobilePerson().populate(item, CurrentDatabase, CurrentImageDatabase);
+						MobilePerson mp = new MobilePerson().populate( item, CurrentDatabase, CurrentImageDatabase );
 
 						mpl.Add( mp.id, mp );
 					}
@@ -438,7 +475,7 @@ namespace CmsWeb.Areas.Public.Controllers
 					List<MobilePerson> mp = new List<MobilePerson>();
 
 					foreach( Person item in m.ApplySearch( mps.guest ).OrderBy( p => p.Name2 ).Take( 100 ) ) {
-						mp.Add( new MobilePerson().populate(item, CurrentDatabase, CurrentImageDatabase) );
+						mp.Add( new MobilePerson().populate( item, CurrentDatabase, CurrentImageDatabase ) );
 					}
 
 					response.data = SerializeJSON( mp, message.version );
@@ -586,10 +623,10 @@ namespace CmsWeb.Areas.Public.Controllers
 			response.count = 1;
 
 			if( message.device == (int) MobileMessage.Device.ANDROID ) {
-				response.data = SerializeJSON( new MobilePerson().populate(person, CurrentDatabase, CurrentImageDatabase), message.version );
+				response.data = SerializeJSON( new MobilePerson().populate( person, CurrentDatabase, CurrentImageDatabase ), message.version );
 			} else {
 				response.data = SerializeJSON( new List<MobilePerson> {
-					new MobilePerson().populate(person, CurrentDatabase, CurrentImageDatabase)
+					new MobilePerson().populate( person, CurrentDatabase, CurrentImageDatabase )
 				}, message.version );
 			}
 
@@ -622,10 +659,10 @@ namespace CmsWeb.Areas.Public.Controllers
 			response.count = 1;
 
 			if( message.device == (int) MobileMessage.Device.ANDROID ) {
-				response.data = SerializeJSON( new MobilePersonExtended().populate(person, message.argBool, CurrentImageDatabase), message.version );
+				response.data = SerializeJSON( new MobilePersonExtended().populate( person, message.argBool, CurrentImageDatabase ), message.version );
 			} else {
 				List<MobilePersonExtended> mp = new List<MobilePersonExtended> {
-					new MobilePersonExtended().populate(person, message.argBool, CurrentImageDatabase)
+					new MobilePersonExtended().populate( person, message.argBool, CurrentImageDatabase )
 				};
 				response.data = SerializeJSON( mp, message.version );
 			}
@@ -947,23 +984,22 @@ namespace CmsWeb.Areas.Public.Controllers
 				if( imageDataLarge != null ) {
 					CurrentImageDatabase.Images.DeleteOnSubmit( imageDataLarge );
 				}
-                person.Picture.ThumbId = Image.NewImageFromBits(imageBytes, 50, 50, CurrentImageDatabase).Id;
-                person.Picture.SmallId = Image.NewImageFromBits(imageBytes, 120, 120, CurrentImageDatabase).Id;
-                person.Picture.MediumId = Image.NewImageFromBits(imageBytes, 320, 400, CurrentImageDatabase).Id;
-                person.Picture.LargeId = Image.NewImageFromBits(imageBytes, CurrentImageDatabase).Id;
-			} else {
-                Picture newPicture = new Picture
-                {
-                    ThumbId = Image.NewImageFromBits(imageBytes, 50, 50, CurrentImageDatabase).Id,
-                    SmallId = Image.NewImageFromBits(imageBytes, 120, 120, CurrentImageDatabase).Id,
-                    MediumId = Image.NewImageFromBits(imageBytes, 320, 400, CurrentImageDatabase).Id,
-                    LargeId = Image.NewImageFromBits(imageBytes, CurrentImageDatabase).Id
-                };
 
-                if (person != null)
-                {
-                    person.Picture = newPicture;
-                }
+				person.Picture.ThumbId = Image.NewImageFromBits( imageBytes, 50, 50, CurrentImageDatabase ).Id;
+				person.Picture.SmallId = Image.NewImageFromBits( imageBytes, 120, 120, CurrentImageDatabase ).Id;
+				person.Picture.MediumId = Image.NewImageFromBits( imageBytes, 320, 400, CurrentImageDatabase ).Id;
+				person.Picture.LargeId = Image.NewImageFromBits( imageBytes, CurrentImageDatabase ).Id;
+			} else {
+				Picture newPicture = new Picture {
+					ThumbId = Image.NewImageFromBits( imageBytes, 50, 50, CurrentImageDatabase ).Id,
+					SmallId = Image.NewImageFromBits( imageBytes, 120, 120, CurrentImageDatabase ).Id,
+					MediumId = Image.NewImageFromBits( imageBytes, 320, 400, CurrentImageDatabase ).Id,
+					LargeId = Image.NewImageFromBits( imageBytes, CurrentImageDatabase ).Id
+				};
+
+				if( person != null ) {
+					person.Picture = newPicture;
+				}
 			}
 
 			CurrentDatabase.SubmitChanges();
@@ -1022,23 +1058,22 @@ namespace CmsWeb.Areas.Public.Controllers
 				if( imageDataLarge != null ) {
 					CurrentImageDatabase.Images.DeleteOnSubmit( imageDataLarge );
 				}
-                family.Picture.ThumbId = Image.NewImageFromBits(imageBytes, 50, 50, CurrentImageDatabase).Id;
-                family.Picture.SmallId = Image.NewImageFromBits(imageBytes, 120, 120, CurrentImageDatabase).Id;
-                family.Picture.MediumId = Image.NewImageFromBits(imageBytes, 320, 400, CurrentImageDatabase).Id;
-                family.Picture.LargeId = Image.NewImageFromBits(imageBytes, CurrentImageDatabase).Id;
-			} else {
-                Picture newPicture = new Picture
-                {
-                    ThumbId = Image.NewImageFromBits(imageBytes, 50, 50, CurrentImageDatabase).Id,
-                    SmallId = Image.NewImageFromBits(imageBytes, 120, 120, CurrentImageDatabase).Id,
-                    MediumId = Image.NewImageFromBits(imageBytes, 320, 400, CurrentImageDatabase).Id,
-                    LargeId = Image.NewImageFromBits(imageBytes, CurrentImageDatabase).Id
-                };
 
-                if (family != null)
-                {
-                    family.Picture = newPicture;
-                }
+				family.Picture.ThumbId = Image.NewImageFromBits( imageBytes, 50, 50, CurrentImageDatabase ).Id;
+				family.Picture.SmallId = Image.NewImageFromBits( imageBytes, 120, 120, CurrentImageDatabase ).Id;
+				family.Picture.MediumId = Image.NewImageFromBits( imageBytes, 320, 400, CurrentImageDatabase ).Id;
+				family.Picture.LargeId = Image.NewImageFromBits( imageBytes, CurrentImageDatabase ).Id;
+			} else {
+				Picture newPicture = new Picture {
+					ThumbId = Image.NewImageFromBits( imageBytes, 50, 50, CurrentImageDatabase ).Id,
+					SmallId = Image.NewImageFromBits( imageBytes, 120, 120, CurrentImageDatabase ).Id,
+					MediumId = Image.NewImageFromBits( imageBytes, 320, 400, CurrentImageDatabase ).Id,
+					LargeId = Image.NewImageFromBits( imageBytes, CurrentImageDatabase ).Id
+				};
+
+				if( family != null ) {
+					family.Picture = newPicture;
+				}
 			}
 
 			CurrentDatabase.SubmitChanges();
@@ -1083,12 +1118,12 @@ namespace CmsWeb.Areas.Public.Controllers
 					Dictionary<int, MobileTask> taskList = new Dictionary<int, MobileTask>();
 
 					foreach( IncompleteTask item in tasks ) {
-						MobileTask task = new MobileTask().populate( item, user.PeopleId ?? 0, CurrentImageDatabase);
+						MobileTask task = new MobileTask().populate( item, user.PeopleId ?? 0, CurrentImageDatabase );
 						taskList.Add( task.id, task );
 					}
 
 					foreach( Task item in complete ) {
-						MobileTask task = new MobileTask().populate( item, user.PeopleId ?? 0, CurrentImageDatabase);
+						MobileTask task = new MobileTask().populate( item, user.PeopleId ?? 0, CurrentImageDatabase );
 						taskList.Add( task.id, task );
 					}
 
@@ -1100,12 +1135,12 @@ namespace CmsWeb.Areas.Public.Controllers
 					List<MobileTask> taskList = new List<MobileTask>();
 
 					foreach( IncompleteTask item in tasks ) {
-						MobileTask task = new MobileTask().populate( item, user.PeopleId ?? 0, CurrentImageDatabase);
+						MobileTask task = new MobileTask().populate( item, user.PeopleId ?? 0, CurrentImageDatabase );
 						taskList.Add( task );
 					}
 
 					foreach( Task item in complete ) {
-						MobileTask task = new MobileTask().populate( item, user.PeopleId ?? 0, CurrentImageDatabase);
+						MobileTask task = new MobileTask().populate( item, user.PeopleId ?? 0, CurrentImageDatabase );
 						taskList.Add( task );
 					}
 
@@ -1379,7 +1414,7 @@ namespace CmsWeb.Areas.Public.Controllers
 			response.count = people.Count;
 
 			foreach( RollsheetModel.AttendInfo person in people ) {
-                mrl.attendees.Add(new MobileAttendee().populate(CurrentDatabase, CurrentImageDatabase, person));
+				mrl.attendees.Add( new MobileAttendee().populate( CurrentDatabase, CurrentImageDatabase, person ) );
 			}
 
 			response.data = SerializeJSON( mrl, message.version );
