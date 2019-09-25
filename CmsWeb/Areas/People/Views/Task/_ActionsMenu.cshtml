@@ -35,31 +35,5 @@
                 </a>
             </li>
         }
-        @if (Model.IsOwner)
-        {
-            <li class="divider"></li>
-            <li>
-                <a href="/SearchAdd2/Dialog/taskabout/@Model.Id?displaySkipSearch=false"
-                   class="searchadd">
-                    <i class="fa fa-user-plus fa-fw"></i> Change Regarding
-                </a>
-            </li>
-        }
-        @if (Model.IsOwner)
-        {
-            <li class="divider"></li>
-            <li>
-                <a href="/SearchAdd2/Dialog/taskowner/@Model.Id?displaySkipSearch=false"
-                   class="searchadd">
-                    <i class="fa fa-share-square-o fa-fw"></i> Transfer Ownership
-                </a>
-            </li>
-            <li>
-                <a href="/SearchAdd2/Dialog/taskdelegate/@Model.Id?displaySkipSearch=false"
-                   class="searchadd">
-                    <i class="fa fa-users fa-fw"></i> Delegate Task
-                </a>
-            </li>
-        }
     </ul>
 </div>

@@ -71,7 +71,7 @@
                             <i class="fa fa-pencil fa-fw"></i> Edit
                         </a>
                     }
-                    @if (Model.IsAcceptedPage)
+                    @if (Model.IsAcceptedPage || Model.IsCreatedPage)
                     {
                         if (Model.CanComplete)
                         {
@@ -86,10 +86,6 @@
                                 <i class="fa fa-check fa-fw"></i> Complete Task w/ Contact
                             </a>
                         }
-                    }
-                    @if (Model.IsCreatedPage)
-                    {
-                        @Html.Partial("_ActionsMenu", Model)
                     }
                 </div>
             </div>
