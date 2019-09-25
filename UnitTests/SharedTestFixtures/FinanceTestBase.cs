@@ -1,13 +1,12 @@
 ﻿using CmsData;
 using CmsData.Codes;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UtilityExtensions;
 
-namespace CmsDataTests.Support
+namespace SharedTestFixtures
 {
     public class FinanceTestBase
     {

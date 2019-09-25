@@ -10,7 +10,7 @@ namespace IntegrationTests.Areas.People.Views.Person
     [Collection(Collections.Webapp)]
     public class PersonViewsTests : AccountTestBase
     {
-        [Fact]
+        [Fact, FeatureTest]
         public void Should_Hide_Giving_Tab()
         {
             SettingUtils.UpdateSetting("HideGivingTabMyDataUsers", "false");
