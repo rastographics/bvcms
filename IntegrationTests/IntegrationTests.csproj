@@ -86,7 +86,6 @@
     <Compile Include="Areas\General\GeneralTests.cs" />
     <Compile Include="Areas\General\QueryControllerTests.cs" />
     <Compile Include="Areas\Finance\Views\Bundle\EditTests.cs" />
-    <Compile Include="Areas\General\GeneralTests.cs" />
     <Compile Include="Areas\General\TestQueryController.cs" />
     <Compile Include="Areas\General\TestScriptController.cs" />
     <Compile Include="Areas\Manage\AccountTests.cs" />
