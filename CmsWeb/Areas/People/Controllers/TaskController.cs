@@ -133,18 +133,9 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpGet, Route("~/Task/GetStatuses")]
         public JsonResult GetStatuses()
         {
-            // TODO: Use real data, do not hardcode
-            return Json(new[]
-            {
-                new {value = 10, text = "Active"},
-                new {value = 20, text = "Waiting For"},
-                new {value = 30, text = "Cancelled - Reschedule"},
-                new {value = 40, text = "Completed"},
-                new {value = 50, text = "Pending Acceptance"},
-                new {value = 60, text = "ReDelegated"},
-                new {value = 70, text = "Declined"},
-                new {value = 80, text = "Attempted - Could not reach"}
-            }, JsonRequestBehavior.AllowGet);
+            var statuses = CurrentDatabase.TaskStatuses.Select(x => new { value = x.Id, text = x.Description });
+
+            return Json(statuses, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet, Route("~/Task/GetRoles")]
