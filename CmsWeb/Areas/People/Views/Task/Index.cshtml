@@ -26,7 +26,7 @@
             }
         }
 
-        .edit-text, .edit-textarea, .edit-datetime, .edit-limit-to-role, .edit-status {
+        .edit-text, .edit-textarea, .edit-datetime, .edit-select {
             cursor: pointer;
         }
 
@@ -151,7 +151,7 @@
                                 <dd>
                                     @if (Model.IsAnOwner)
                                     {
-                                        <a class="edit-limit-to-role" data-pk="@(Model.Id)" data-name="@nameof(Model.TaskLimitToRole)" data-url="/Task/Edit" data-selected="@Model.TaskLimitToRole">
+                                        <a class="edit-select" data-pk="@(Model.Id)" data-name="LimitToRole" data-url="/Task/Edit" data-selected="@Model.TaskLimitToRole" data-source-url="/Task/GetRoles">
                                             @(Model.TaskLimitToRole.Value ?? "Empty")
                                         </a>
                                     }
@@ -206,7 +206,7 @@
                             <dd>
                                 @if (Model.IsAnOwner)
                                 {
-                                    <a class="edit-status" data-pk="@(Model.Id)" data-name="@nameof(Model.Status)" data-url="/Task/Edit" data-selected="@Model.StatusId">
+                                    <a class="edit-select" data-pk="@(Model.Id)" data-name="@nameof(Model.StatusId)" data-url="/Task/Edit" data-selected="@Model.StatusId" data-source-url="/Task/GetStatuses">
                                         @(Model.Status ?? "Empty")
                                     </a>
                                 }
@@ -313,7 +313,7 @@
             var taskid = $('#TaskId').val();
             $.post('/Task/CompleteWithContact/' + taskid,
                 null,
-                function (ret) {
+                function(ret) {
                     window.location = "/Contact2/" + ret.ContactId + "?edit=true";
                 });
             return false;
@@ -323,13 +323,13 @@
             var id = $('#TaskId').val();
             $.post('/Task/SetComplete/' + id,
                 null,
-                function (ret) {
+                function(ret) {
                     window.location = "/Task/" + id;
                 });
             return false;
         }
 
-        $(function () {
+        $(function() {
             $.fn.editableform.buttons = '<button type="submit" class="btn btn-primary btn-sm editable-submit">' +
                 '<i class="fa fa-fw fa-check"></i>' +
                 '</button>' +
@@ -353,61 +353,33 @@
                 type: 'date',
                 viewformat: 'm/dd/yyyy',
                 datepicker: {
-                    format: 'm/dd/yyyy',    
+                    format: 'm/dd/yyyy',
                     todayBtn: true
                 },
                 clear: false,
                 emptytext: 'None'
             });
 
-            $(".edit-status").each(function (i, e) {
+            $(".edit-select").each(function(i, e) {
                 $(e).editable({
                     mode: 'inline',
                     type: 'select',
                     emptytext: 'None',
-                    value: $(e).data('selected'),    
-                    source: [
-                        {value: 10, text: 'Active'},
-                        {value: 20, text: 'Waiting For'},
-                        {value: 30, text: 'Cancelled - Reschedule'},
-                        {value: 40, text: 'Completed'},
-                        {value: 50, text: 'Pending Acceptance'},
-                        {value: 60, text: 'ReDelegated'},
-                        {value: 70, text: 'Declined'},
-                        {value: 80, text: 'Attempted - Could not reach'},
-                    ]
-                });
-            });
-
-            $(".edit-limit-to-role").each(function(i, e) {
-                $(e).editable({
-                    mode: 'inline',
-                    type: 'select',
-                    emptytext: 'None',
-                    value: $(e).data('selected'),    
-                    source: [
-                        {value: "0", text: '(not specified)'},
-                        {value: "Access", text: 'Access'},
-                        {value: "Admin", text: 'Admin'},
-                        {value: "CG-LC", text: 'CG-LC'},
-                        {value: "Finance", text: 'Finance'},
-                        {value: "Membership", text: 'Membership'},
-                        {value: "Pastor", text: 'Pastor'},
-                        {value: "RiseCampaign", text: 'RiseCampaign'},
-                    ]
+                    value: $(e).data('selected'),
+                    source: $(e).data('source-url')
                 });
             });
 
             $("body").on("click",
                 'a.completewcontact',
-                function (ev) {
+                function(ev) {
                     ev.preventDefault();
                     setCompleteWithContact();
                 });
 
             $("body").on("click",
                 'a.complete',
-                function (ev) {
+                function(ev) {
                     ev.preventDefault();
                     var withContact = $('[data-complete-with-contact]');
                     if (withContact.prop('checked')) {
@@ -419,12 +391,12 @@
 
             $("body").on("click",
                 'a.accept',
-                function (ev) {
+                function(ev) {
                     ev.preventDefault();
                     var id = $('#TaskId').val();
                     $.post('/Task/Accept/' + id,
                         null,
-                        function (ret) {
+                        function(ret) {
                             window.location = "/Task/" + id;
                         });
                     return false;
@@ -432,11 +404,11 @@
 
             $("body").on("click",
                 'a.decline',
-                function (ev) {
+                function(ev) {
                     ev.preventDefault();
                     $('#declineModal').modal();
                     $('#declineModal').on('shown.bs.modal',
-                        function () {
+                        function() {
                             $('#declineReason').focus();
                         });
                     return false;
@@ -452,7 +424,7 @@
             var id = $('#TaskId').val();
             $.post(action + id + "?peopleid=" + peopleid,
                 null,
-                function (ret) {
+                function(ret) {
                     window.location = "/Task/" + id;
                 });
         }

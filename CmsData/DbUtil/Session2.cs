@@ -170,6 +170,9 @@ namespace CmsData
                 case "Due":
                     field.SetValue(task, DateTime.Parse(value));
                     break;
+                case "StatusId":
+                    field.SetValue(task, Int32.Parse(value));
+                    break;
                 default:
                     field.SetValue(task, value);
                     break;

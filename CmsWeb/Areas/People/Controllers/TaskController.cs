@@ -130,5 +130,38 @@ namespace CmsWeb.Areas.People.Controllers
             return Content("Done");
         }
 
+        [HttpGet, Route("~/Task/GetStatuses")]
+        public JsonResult GetStatuses()
+        {
+            // TODO: Use real data, do not hardcode
+            return Json(new[]
+            {
+                new {value = 10, text = "Active"},
+                new {value = 20, text = "Waiting For"},
+                new {value = 30, text = "Cancelled - Reschedule"},
+                new {value = 40, text = "Completed"},
+                new {value = 50, text = "Pending Acceptance"},
+                new {value = 60, text = "ReDelegated"},
+                new {value = 70, text = "Declined"},
+                new {value = 80, text = "Attempted - Could not reach"}
+            }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet, Route("~/Task/GetRoles")]
+        public JsonResult GetRoles()
+        {
+            // TODO: Use real data, do not hardcode
+            return Json(new []
+            {
+                new {value = "0", text = "(not specified)"},
+                new {value = "Access", text = "Access"},
+                new {value = "Admin", text = "Admin"},
+                new {value = "CG-LC", text = "CG-LC"},
+                new {value = "Finance", text = "Finance"},
+                new {value = "Membership", text = "Membership"},
+                new {value = "Pastor", text = "Pastor"},
+                new {value = "RiseCampaign", text = "RiseCampaign"}
+            }, JsonRequestBehavior.AllowGet);
+        }
     }
 }
