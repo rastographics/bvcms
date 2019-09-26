@@ -48,7 +48,7 @@ namespace CMSWebTests
                 var actual1 = db.PledgesSummary(person.PeopleId);
                 actual1.ShouldNotBeEmpty();
 
-                var fundString = db.Setting("PostContributionPledgeFunds", "");
+                var fundString = db.GetSetting("PostContributionPledgeFunds", "");
                 var actual2 = PledgesHelper.GetFundIdListFromString(fundString);
                 List<int> fids = new List<int>{
                     1
@@ -71,7 +71,7 @@ namespace CMSWebTests
             {
                 var expected = "1";
                 var setting = MockSettings.CreateSaveSetting(db, "PostContributionPledgeFunds", "1");
-                var actual = db.Setting("PostContributionPledgeFunds", "");
+                var actual = db.GetSetting("PostContributionPledgeFunds", "");
                 actual.ShouldBe(expected);
             }
         }
