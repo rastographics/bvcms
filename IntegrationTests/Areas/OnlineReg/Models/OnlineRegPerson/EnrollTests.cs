@@ -20,7 +20,6 @@ namespace IntegrationTests.Areas.OnlineReg.Models.OnlineRegPerson
         private int OrgId { get; set; }
         private string EmailAddress { get; set; }
 
-
         [Fact]
         public void Should_Store_and_Populate_RegEmail()
         {
