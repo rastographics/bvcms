@@ -27,7 +27,7 @@ namespace CmsDataTests
             {
                 var expected = "1";
                 var setting = MockSettings.CreateSaveSetting(db, "PostContributionPledgeFunds", "1");
-                var actual = db.Setting("PostContributionPledgeFunds", "");
+                var actual = db.GetSetting("PostContributionPledgeFunds", "");
                 actual.ShouldBe(expected);
             }
         }
