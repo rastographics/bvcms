@@ -118,6 +118,7 @@
     <Compile Include="..\SharedTestFixtures\DatabaseCollection.cs">
       <Link>DatabaseCollection.cs</Link>
     </Compile>
+    <Compile Include="Areas\Manage\Models\Involvement\InvolvementTabModelTests.cs" />
     <Compile Include="Areas\Manage\Models\AccountModelTests.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineRegPerson\HelperTests.cs" />
     <Compile Include="Areas\Org\Models\TestOrgGroupsModel.cs" />
@@ -127,7 +128,9 @@
     <Compile Include="Areas\OnlineReg\Models\OnlineReg\OnlineRegModelTests.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineReg\PaymentFormTests.cs" />
     <Compile Include="Areas\Reports\Models\Reports\Export\ExportInvolvementsTests.cs" />
+    <Compile Include="Areas\Search\Controllers\QueryControllerTests.cs" />
     <Compile Include="Areas\Setup\Controllers\DivisionControllerTests.cs" />
+    <Compile Include="Models\ExportPeopleTest.cs" />
     <Compile Include="Controllers\Api\CustomControllerTests.cs" />
     <Compile Include="Support\ControllerTestBase.cs" />
     <Compile Include="TestUtils\FakeOrganizationUtils.cs" />
@@ -140,6 +143,7 @@
     <Compile Include="Code\ViewExtensions2Tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestUtils\ControllerTestUtils.cs" />
+    <Compile Include="TestUtils\SettingUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config">
@@ -163,6 +167,10 @@
     <ProjectReference Include="..\..\UtilityExtensions\UtilityExtensions.csproj">
       <Project>{C504E3D2-5498-451B-BF82-309623706F11}</Project>
       <Name>UtilityExtensions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CmsDataTests\CmsDataTests.csproj">
+      <Project>{9f19265d-148a-4c08-877d-1f686a802be3}</Project>
+      <Name>CmsDataTests</Name>
     </ProjectReference>
     <ProjectReference Include="..\SharedTestFixtures\SharedTestFixtures.csproj">
       <Project>{37b7dd60-a2ce-4e69-8cc5-4370b95ad908}</Project>

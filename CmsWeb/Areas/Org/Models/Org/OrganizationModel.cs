@@ -243,7 +243,8 @@ namespace CmsWeb.Areas.Org.Models
         {
             return new OrganizationModel
             {
-                CurrentDatabase = currentDatabase
+                CurrentDatabase = currentDatabase,
+                User = user,
             };
         }
     }
