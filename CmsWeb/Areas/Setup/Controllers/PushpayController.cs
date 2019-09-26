@@ -157,7 +157,7 @@ namespace CmsWeb.Areas.Setup.Controllers
         public ActionResult OneTime(int PeopleId, int OrgId)
         {
             string mobile = CurrentDatabase.People.SingleOrDefault(p => p.PeopleId == PeopleId).CellPhone;
-            return Redirect($"{_givingLink}?ru={_merchantHandle}&sr=Org_{OrgId}&rcv=false&up={mobile}");
+            return Redirect($"{_givingLink}?ru={_merchantHandle}&sr=Org_{OrgId}&rcv=false&r=no&up={mobile}");
         }
 
         [Route("~/Pushpay/OnePage")]
@@ -222,13 +222,13 @@ namespace CmsWeb.Areas.Setup.Controllers
                 CurrentDatabase.LogActivity($"No datum founded with id: {DatumId}");
                 return View("~/Views/Shared/PageError.cshtml");
             }
-            return Redirect($"{_givingLink}?ru={_merchantHandle}&sr=dat_{DatumId}&rcv=false&up={mobile}&a={Amount}&al=true&fndv=lock");
+            return Redirect($"{_givingLink}?ru={_merchantHandle}&sr=dat_{DatumId}&rcv=false&r=no&up={mobile}&a={Amount}&al=true&fndv=lock");
         }
 
         [Route("~/Pushpay/PayAmtDue/{transactionId:int}/{amtdue:decimal}")]
         public ActionResult PayAmtDue(int transactionId, decimal amtdue)
         {            
-            return Redirect($"{_givingLink}?ru={_merchantHandle}&sr=payamtdue_{transactionId}&rcv=false&a={amtdue}&fndv=lock");
+            return Redirect($"{_givingLink}?ru={_merchantHandle}&sr=payamtdue_{transactionId}&rcv=false&r=no&a={amtdue}&fndv=lock");
         }
 
         [Route("~/Pushpay/CompletePayment")]
