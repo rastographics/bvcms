@@ -120,11 +120,15 @@
             });
 
             var getTotalFund = document.getElementById('Total_Fund');
-            getTotalFund.innerHTML = formatter.format(getTotalfund);
+            if (getTotalFund != undefined) {
+                getTotalFund.innerHTML = formatter.format(getTotalfund);
+            }
+            
 
             var getTotalFund2 = document.getElementById('Total_Fund2');
-            getTotalFund2.innerHTML = getTotalfund;
-
+            if (getTotalFund2 != undefined) {
+                getTotalFund2.innerHTML = getTotalfund;
+            }
         });
     </script>
 

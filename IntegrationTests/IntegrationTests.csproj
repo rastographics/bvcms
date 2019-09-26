@@ -82,6 +82,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Areas\Figures\Views\Figures\RefineFundViewTests.cs" />
     <Compile Include="Areas\Finance\Views\Bundle\EditTests.cs" />
     <Compile Include="Areas\General\GeneralTests.cs" />
     <Compile Include="Areas\General\TestQueryController.cs" />
