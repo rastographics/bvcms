@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using CmsData.Codes;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CmsData
 {
@@ -12,8 +9,8 @@ namespace CmsData
         {
             var q2 = from p in q
                      from m in p.Family.People
-                     where p.PositionInFamilyId !=10
-                     where m.PositionInFamilyId == 10
+                     where p.PositionInFamilyId == PositionInFamily.Child
+                     where m.PositionInFamilyId == PositionInFamily.PrimaryAdult
                      where m.DeceasedDate == null
                      select m.PeopleId;
 

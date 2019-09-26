@@ -23,7 +23,7 @@ namespace CmsDataTests
         public static IEnumerable<object[]> Data_GetParentsIdsTest =>
             new List<object[]>
             {
-                new object[] { GenerateChildrenWithParents(10), 10 }
+                new object[] { GenerateChildrenWithParents(10), 20 }
             };
 
         public static IQueryable<Person> GenerateChildrenWithParents(int numberOfChilds)
