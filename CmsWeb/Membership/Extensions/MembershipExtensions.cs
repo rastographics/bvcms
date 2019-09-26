@@ -1,8 +1,6 @@
 ﻿using CmsData;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
+using System.Security.Principal;
 
 namespace CmsWeb.Membership.Extensions
 {
@@ -19,6 +17,11 @@ namespace CmsWeb.Membership.Extensions
                 user.TempPassword = newpassword;
             }
             CMSMembershipProvider.provider.AdminOverride = false;
+        }
+
+        public static bool InAnyRole(this IPrincipal principal, params string[] roles)
+        {
+            return roles.Any(role => principal.IsInRole(role) == true); 
         }
     }
 }

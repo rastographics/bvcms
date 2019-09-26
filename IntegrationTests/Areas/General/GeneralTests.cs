@@ -8,7 +8,7 @@ namespace IntegrationTests.Areas.Manage
     [Collection(Collections.Webapp)]
     public class GeneralTests : AccountTestBase
     {
-        [Fact]
+        [Fact, FeatureTest]
         public void Page_NotFound_Test()
         {
             username = RandomString();
@@ -23,7 +23,7 @@ namespace IntegrationTests.Areas.Manage
             PageSource.ShouldContain("Not Found");
         }
 
-        [Fact]
+        [Fact, FeatureTest]
         public void Page_NotAuthorized_Test()
         {
             username = RandomString();

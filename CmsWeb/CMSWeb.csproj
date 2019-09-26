@@ -1857,6 +1857,7 @@
     <Content Include="Content\touchpoint\src\less\snackbar.less" />
     <Content Include="Areas\People\Views\Shared\PledgesSummary.cshtml" />
     <Content Include="libman.json" />
+    <Content Include="Areas\Org\Views\Meeting\ScheduleAttendance.cshtml" />
     <Content Include="Areas\Manage\Views\Involvement\Index.cshtml" />
     <Content Include="Areas\Manage\Views\Involvement\_EditTab.cshtml" />
     <Content Include="Areas\Org\Views\Org\Settings\CheckIn.cshtml" />
@@ -3412,8 +3413,8 @@
   </ProjectExtensions>
   <PropertyGroup>
     <PreBuildEvent>pushd $(ProjectDir)
-npm install
-gulp --no-color
+call npm install
+call gulp --no-color
 popd</PreBuildEvent>
   </PropertyGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
