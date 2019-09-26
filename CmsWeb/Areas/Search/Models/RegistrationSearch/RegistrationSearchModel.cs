@@ -16,7 +16,8 @@ namespace CmsWeb.Areas.Search.Models
 {
     public class RegistrationSearchModel : PagedTableModel<RegistrationList, RegistrationList>, IDbBinder
     {
-        public CMSDataContext CurrentDatabase { get; set; }
+        public CMSDataContext CurrentDatabase { get => _currentDatabase ?? DbUtil.Db; set => _currentDatabase = value; }
+        private CMSDataContext _currentDatabase;
 
         public RegistrationSearchInfo SearchParameters { get; set; }
 

@@ -799,6 +799,7 @@
     <Compile Include="Generated\Functions\PastAttendanceCredit.cs" />
     <Compile Include="Generated\Functions\PeopleIdsFromOrgSearch.cs" />
     <Compile Include="Generated\Functions\PledgeBalance.cs" />
+    <Compile Include="Generated\Functions\PledgesSummary.cs" />
     <Compile Include="Generated\Functions\PotentialDup.cs" />
     <Compile Include="Generated\Functions\PotentialSubstitute.cs" />
     <Compile Include="Generated\Functions\RecentAttendInDaysByCountDesc.cs" />
@@ -1407,6 +1408,9 @@
     <Content Include="Migrations\20190626_Add_RecReg_nomember_Column.sql" />
     <Content Include="Migrations\20190809_alter_function_CurrOrgMembers2_to_add_passport_data.sql" />
     <Content Include="Migrations\20190809_alter_sp_OrgMembers_to_include_passport_data.sql" />
+    <Content Include="Migrations\20190902_alter_func_GetTotalContributionsDonor.sql" />
+    <Content Include="Migrations\20190909_alter_func_GetTotalContributionsDonorFund.sql" />
+    <Content Include="Migrations\20190902_alter_func_GetContributionsDetails.sql" />
     <Content Include="Migrations\20190821_alter_InvolvementCurrent_function_to_include_family_directory.sql" />
     <Content Include="Migrations\20190710_Update_MeetingTime_When_Is_Null.sql" />
     <Content Include="Migrations\20190613_Transform_NoPhoneEmailOnFind_To_New_EVs.sql" />
@@ -1424,6 +1428,7 @@
     <Content Include="Migrations\20190821_Create_Function_SplitFundIds.sql" />
     <Content Include="Migrations\20190821_Update_Function_ContributionSearch.sql" />
     <Content Include="Migrations\20190821_Update_Function_GetTotalContributionsDonor.sql" />
+    <Content Include="Migrations\20190828_Create_Func_PledgesSummary.sql" />
     <Content Include="QueryBuilder\CompareMap.xml">
       <SubType>Designer</SubType>
     </Content>

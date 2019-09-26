@@ -157,11 +157,17 @@ namespace CmsWeb.Areas.Manage.Controllers
                 return Redirect(redirect);
             }
 
+
             var user = AccountModel.GetValidToken(CurrentDatabase, Request.QueryString["otltoken"]);
+            return LoginAs(user, returnUrl);
+        }
+
+        private ActionResult LoginAs(string user, string returnUrl)
+        {
             if (user.HasValue())
             {
                 FormsAuthentication.SetAuthCookie(user, false);
-                AccountModel.SetUserInfo(CurrentDatabase, CurrentImageDatabase, user, Session);
+                AccountModel.SetUserInfo(CurrentDatabase, CurrentImageDatabase, user);
                 if (returnUrl.HasValue() && Url.IsLocalUrl(returnUrl))
                 {
                     return Redirect(returnUrl);
@@ -170,8 +176,29 @@ namespace CmsWeb.Areas.Manage.Controllers
                 return Redirect("/");
             }
 
-            var m = new AccountInfo { ReturnUrl = returnUrl };
-            return View(m);
+            return View(new AccountInfo { ReturnUrl = returnUrl });
+        }
+
+        [Route("~/Impersonate/{id}")]
+        [MyRequireHttps]
+        public ActionResult Impersonate(string id)
+        {
+            Guid gid = Guid.Parse(id);
+            var link = CurrentDatabase.OneTimeLinks.Where(l =>
+                l.Id == gid &&
+                l.Used == false &&
+                l.Expires > DateTime.Now)
+                .SingleOrDefault();
+
+            if (link != null)
+            {
+                link.Used = true;
+                CurrentDatabase.SubmitChanges();
+                var userid = link.Querystring;
+                return LoginAs(userid, null);
+            }
+
+            return Redirect("/Logon");
         }
 
         public static bool TryImpersonate(CMSDataContext cmsdb, CMSImageDataContext cmsidb)
@@ -198,8 +225,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                 return false;
             }
 
-            var session = HttpContextFactory.Current.Session;
-            AccountModel.SetUserInfo(cmsdb, cmsidb, username, session);
+            AccountModel.SetUserInfo(cmsdb, cmsidb, username);
             if (Util.UserId == 0)
             {
                 return false;
@@ -400,7 +426,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                 }
             }
             FormsAuthentication.SetAuthCookie(user.Username, false);
-            AccountModel.SetUserInfo(CurrentDatabase, CurrentImageDatabase, user.Username, Session);
+            AccountModel.SetUserInfo(CurrentDatabase, CurrentImageDatabase, user.Username);
 
             ViewBag.user = user.Username;
             ViewBag.MinPasswordLength = MembershipService.MinPasswordLength(CurrentDatabase);
@@ -467,7 +493,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             user.FailedPasswordAttemptCount = 0;
             CurrentDatabase.SubmitChanges();
             FormsAuthentication.SetAuthCookie(user.Username, false);
-            AccountModel.SetUserInfo(CurrentDatabase, CurrentImageDatabase, user.Username, Session);
+            AccountModel.SetUserInfo(CurrentDatabase, CurrentImageDatabase, user.Username);
             ViewBag.user = user.Username;
             ViewBag.MinPasswordLength = MembershipService.MinPasswordLength(CurrentDatabase);
             ViewBag.RequireSpecialCharacter = MembershipService.RequireSpecialCharacter(CurrentDatabase);

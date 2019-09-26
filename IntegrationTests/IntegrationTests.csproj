@@ -82,10 +82,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Areas\Figures\Views\Figures\RefineFundViewTests.cs" />
+    <Compile Include="Areas\Finance\Views\Bundle\EditTests.cs" />
+    <Compile Include="Areas\General\GeneralTests.cs" />
     <Compile Include="Areas\General\TestQueryController.cs" />
     <Compile Include="Areas\General\TestScriptController.cs" />
-    <Compile Include="Areas\General\GeneralTests.cs" />
     <Compile Include="Areas\Manage\AccountTests.cs" />
+    <Compile Include="Areas\Setup\SetupTests.cs" />
+    <Compile Include="Areas\People\Views\Person\PersonViewsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\R.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -93,6 +97,7 @@
       <DependentUpon>R.resx</DependentUpon>
     </Compile>
     <Compile Include="Support\AccountTestBase.cs" />
+    <Compile Include="Support\FeatureTestAttribute.cs" />
     <Compile Include="Support\FeatureTestBase.cs" />
     <Compile Include="Support\IISExpress.cs" />
     <Compile Include="Support\Settings.cs" />
@@ -124,8 +129,12 @@
       <Project>{bc0c6e33-dfef-4c4e-9e96-997af3d78bcf}</Project>
       <Name>TransactionGateway</Name>
     </ProjectReference>
+    <ProjectReference Include="..\UnitTests\CMSWebTests\CMSWebTests.csproj">
+      <Project>{aa7ec494-b0cd-41db-8bcf-76835af223b8}</Project>
+      <Name>CMSWebTests</Name>
+    </ProjectReference>
     <ProjectReference Include="..\UnitTests\SharedTestFixtures\SharedTestFixtures.csproj">
-      <Project>{37B7DD60-A2CE-4E69-8CC5-4370B95AD908}</Project>
+      <Project>{37b7dd60-a2ce-4e69-8cc5-4370b95ad908}</Project>
       <Name>SharedTestFixtures</Name>
     </ProjectReference>
     <ProjectReference Include="..\UtilityExtensions\UtilityExtensions.csproj">
@@ -143,6 +152,10 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

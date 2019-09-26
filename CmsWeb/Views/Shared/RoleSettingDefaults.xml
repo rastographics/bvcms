@@ -2,15 +2,15 @@
 <DefaultSettings>
     <Location name="Involvement">
         <setting name="CanEditCGInfoEVs" value="false" friendly="Org Extra Values" true="Allow" false="Disallow" tooltip="Allows user to edit existing extra values on an extra value tab" />
-        <setting name="DisablePersonLinks" value="true" friendly="Person Links" true="Enable" false="Disable" tooltip="Enable/Disable hyperlinking to a person's profile (in orgs)" reverse="true"/>
+        <setting name="DisablePersonLinks" value="false" friendly="Person Links" true="Enable" false="Disable" tooltip="Enable/Disable hyperlinking to a person's profile (in orgs)" reverse="true"/>
         <setting name="EditMemberData" value="true" friendly="Edit Member Data" true="Yes" false="No" tooltip="User can edit another user's Org Member Data or not" />
         <setting name="HideExtraValueEdit" value="true" friendly="Org Extra Value Edit Button" true="Show" false="Hide" tooltip="Show/Hide the org extra value edit button which allows new extra values to be added" />
-        <setting name="HideGuestsOrgMembers" value="true" friendly="Guest Org Members" true="Show" false="Hide" tooltip="Show/Hide Guest Org Member Tab" reverse="true" />
-        <setting name="HideInactiveOrgMembers" value="true" friendly="Inactive Org Members" true="Show" false="Hide" tooltip="Show/Hide Inactive Org Member Tab" reverse="true" />
-        <setting name="HidePendingOrgMembers" value="true" friendly="Pending Org Members" true="Show" false="Hide" tooltip="Show/Hide Pending Org Member Tab" reverse="true" />
+        <setting name="HideGuestsOrgMembers" value="false" friendly="Guest Org Members" true="Show" false="Hide" tooltip="Show/Hide Guest Org Member Tab" reverse="true" />
+        <setting name="HideInactiveOrgMembers" value="false" friendly="Inactive Org Members" true="Show" false="Hide" tooltip="Show/Hide Inactive Org Member Tab" reverse="true" />
+        <setting name="HidePendingOrgMembers" value="false" friendly="Pending Org Members" true="Show" false="Hide" tooltip="Show/Hide Pending Org Member Tab" reverse="true" />
         <setting name="LeadersCanAlwaysEditOrgContent" value="false" friendly="Edit Org Content" true="Allow" false="Disallow" tooltip="Instead of relying on the EditContent role, Org Leaders can always edit org content" />
         <setting name="LimitedSearchPerson" value="false" friendly="Add New Person Search" true="Limit" false="Full Access" tooltip="Limits search for a name to “Add Member” so we don’t reveal private info" />
-        <setting name="Organization-CollapseOrgDetails" value="true" friendly="Org Details Box" true="Show" false="Hide" tooltip="Expand / Collapse the top Org Details box" reverse="true" />
+        <setting name="Organization-CollapseOrgDetails" value="false" friendly="Org Details Box" true="Show" false="Hide" tooltip="Expand / Collapse the top Org Details box" reverse="true" />
         <setting name="Organization-ShowBirthday" value="true" friendly="Org Show Birthdays" true="Show" false="Hide" tooltip="Show member birthday" />
         <setting name="Organization-ShowFiltersBar" value="true" friendly="Filters Bar" true="Show" false="Hide" tooltip="Show entire sub-group filters bar" />
         <setting name="Organization-ShowOptionsMenu" value="true" friendly="Options Menu" true="Show" false="Hide" tooltip="Show Options button and dropdown" />
@@ -48,13 +48,13 @@
     </Location>
     <Location name="General">
         <setting name="DisableHomePage" value="false" friendly="Home Page" true="Enable" false="Disable" tooltip="Set home page to user's profile instead of Dashboard" />
-        <setting name="HideNavTabs" value="true" friendly="Top Navigation Tabs" true="Show" false="Hide" tooltip="Show/Hide the main top nav menu bar" reverse="true" />
+        <setting name="HideNavTabs" value="false" friendly="Top Navigation Tabs" true="Show" false="Hide" tooltip="Show/Hide the main top nav menu bar" reverse="true" />
         <setting name="OtherGroupsContentOnly" value="true" friendly="Allow Org View to Leaders" true="Enable" false="Disable" tooltip="Restrict org view to orgs where someone is a leader. For other orgs, he should only see Org Content page" />
     </Location>
     <Location name="Person">
         <setting name="Person-ShowBlueToolbar" value="true" friendly="Show Blue Toolbar" true="Show" false="Hide" tooltip="Show blue toolbar" />
         <setting name="HideEmailDetails" value="false" friendly="Email Details" true="Limited" false="Full Access" tooltip="Hides Emails Received, Emails Sent views only show Email Date, From, and Subject. Prevents user from seeing email details which expose search functionality" />
-        <setting name="HideMinistryTab" value="true" friendly="Ministry Tab" true="Show" false="Hide" tooltip="Show/Hide Ministry Tab on Person's Profile" reverse="true" />
-        <setting name="HideQueries" value="true" friendly="Family Member's Link" true="Enable" false="Disable" tooltip="Disable Family Members link on profile page, because it exposes the search functionality" reverse="true" />
+        <setting name="HideMinistryTab" value="false" friendly="Ministry Tab" true="Show" false="Hide" tooltip="Show/Hide Ministry Tab on Person's Profile" reverse="true" />
+        <setting name="HideQueries" value="false" friendly="Family Member's Link" true="Enable" false="Disable" tooltip="Disable Family Members link on profile page, because it exposes the search functionality" reverse="true" />
     </Location>
 </DefaultSettings>

@@ -48,7 +48,7 @@ namespace IntegrationTests.Areas.Manage
         /// This is applicable wherever this pattern is found on any model binding that needs CurrentDatabase
         /// The POST ActionResult exercised is QueryController.Results(QueryModel m)
         /// </summary>
-        [Fact]
+        [Fact, FeatureTest]
         public void DbInQueryModelShouldBeInstantiatedByModelBinding()
         {
             username = RandomString();

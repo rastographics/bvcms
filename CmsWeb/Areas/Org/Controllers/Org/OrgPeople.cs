@@ -16,6 +16,7 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost]
         public ActionResult People(OrgPeopleModel m)
         {
+            m.User = User;
             if (m.FilterIndividuals)
             {
                 if (m.NameFilter.HasValue())
