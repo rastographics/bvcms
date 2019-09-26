@@ -1,9 +1,10 @@
 ﻿using CmsData;
 using CmsData.Codes;
+using System;
 using System.Linq;
 using UtilityExtensions;
 
-namespace CmsDataTests.Support
+namespace SharedTestFixtures
 {
     public class FinanceTestBase
     {
