@@ -49,7 +49,7 @@ namespace CMSWebTests
                 actual.Should().BeEquivalentTo(expected);
 
                 MockContributions.DeleteAllFromBundle(db, bundleHeader);
-                MockSettings.DeleteSetting(db, setting);
+                //MockSettings.DeleteSetting(db, setting);
                 //MockPeople.DeleteMockPerson(db, person);
             }         
         }
