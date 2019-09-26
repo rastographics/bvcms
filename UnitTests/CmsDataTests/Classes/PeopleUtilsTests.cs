@@ -20,16 +20,43 @@ namespace CmsDataTests
             actual.Count().ShouldBe(expected);
         }
 
+        [Theory]
+        [MemberData(nameof(Data_GetPrimarySecundaryIdsTest))]
+        public void GetPrimarySecundaryIdsTest(IQueryable<Person> q, int expected)
+        {
+            var actual = PeopleUtils.GetParentsIds(q);
+            actual.Count().ShouldBe(expected);
+        }
+
         public static IEnumerable<object[]> Data_GetParentsIdsTest =>
             new List<object[]>
             {
                 new object[] { GenerateChildrenWithParents(10), 20 }
             };
 
-        public static IQueryable<Person> GenerateChildrenWithParents(int numberOfChilds)
+        public static IEnumerable<object[]> Data_GetPrimarySecundaryIdsTest =>
+            new List<object[]>
+            {
+                new object[] { GeneratePeople(10, 5), 5 }
+            };
+
+        private static IQueryable<Person> GeneratePeople(int numberOfChilden, int numberOfAdults)
+        {
+            var people = GenerateChildrenWithParents(numberOfChilden).ToList();
+            var adults = GenerateAdults(numberOfAdults).ToList();
+            people.AddRange(adults);
+            return people.AsQueryable();
+        }
+
+        private static IQueryable<Person> GenerateAdults(int numberOfAdults)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static IQueryable<Person> GenerateChildrenWithParents(int numberOfChildren)
         {
             List<Person> children = new List<Person>();
-            for (int i = 0; i < numberOfChilds; i++)
+            for (int i = 0; i < numberOfChildren; i++)
             {
                 var child = CreateChild();
                 children.Add(child);

@@ -16,5 +16,10 @@ namespace CmsData
 
             return q2;
         }
+
+        public static IQueryable<int> GetPrimarySecundaryIds(IQueryable<Person> q)
+        {
+            return q.Where(p => p.PositionInFamilyId != PositionInFamily.Child).Select(p => p.PeopleId);
+        }
     }
 }
