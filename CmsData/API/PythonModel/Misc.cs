@@ -36,13 +36,28 @@ namespace CmsData
             return ExecutePython(script, model);
         }
 
+#if DEBUG
+        public string ReadFile(string name)
+        {
+            var txt = File.ReadAllText(name);
+            return txt;
+        }
+        public void WriteFile(string path, string text)
+        {
+            File.AppendAllText(path, text);
+        }
+        public void DeleteFile(string path)
+        {
+            File.Delete(path);
+        }
+#endif
         public string Content(string name, string keyword = null)
         {
             var c = db.Content(name);
 #if DEBUG
             if (c == null)
             {
-                var txt = File.ReadAllText(name);
+                var txt = ReadFile(name);
                 if (!txt.HasValue())
                     return txt;
                 var nam = Path.GetFileNameWithoutExtension(name);
@@ -83,6 +98,7 @@ namespace CmsData
 #endif
             return c.Body;
         }
+
         public void WriteContent(string name, string text, string keyword = null)
         {
             int typ = ContentTypeCode.TypeText;
@@ -344,6 +360,16 @@ namespace CmsData
             var s = JsonConvert.SerializeObject(data, Formatting.Indented);
             return s.Replace("\r\n", "\n");
         }
+        public string FormatJson(List<dynamic> data)
+        {
+            var s = JsonConvert.SerializeObject(data, Formatting.Indented);
+            return s.Replace("\r\n", "\n");
+        }
+        public string FormatJson(List<DynamicData> data)
+        {
+            var s = JsonConvert.SerializeObject(data, Formatting.Indented);
+            return s.Replace("\r\n", "\n");
+        }
 
         public string Md5Hash(string s)
         {
@@ -458,17 +484,17 @@ DELETE dbo.Tag WHERE TypeId = 101 AND Name LIKE @namelike
             Util2.CurrentTag = "UnNamed";
         }
 
-        public void WriteContentSql(string name, string sql)
+        public void WriteContentSql(string name, string sql, string keyword = null)
         {
-            db.WriteContentSql(name, sql);
+            db.WriteContentSql(name, sql, keyword);
         }
-        public void WriteContentPython(string name, string script)
+        public void WriteContentPython(string name, string script, string keyword = null)
         {
-            db.WriteContentPython(name, script);
+            db.WriteContentPython(name, script, keyword);
         }
-        public void WriteContentText(string name, string text)
+        public void WriteContentText(string name, string text, string keyword = null)
         {
-            db.WriteContentText(name, text);
+            db.WriteContentText(name, text, keyword);
         }
         public int TagLastQuery(string defaultcode)
         {
@@ -550,6 +576,8 @@ DELETE dbo.Tag WHERE TypeId = 101 AND Name LIKE @namelike
 
         public bool UserIsInRole(string role)
         {
+            if (db.FromBatch)
+                return true;
             return HttpContextFactory.Current?.User.IsInRole(role) ?? false;
         }
 
@@ -584,6 +612,13 @@ DELETE dbo.Tag WHERE TypeId = 101 AND Name LIKE @namelike
             HttpRuntime.Cache.Insert(db.Host + name, value, null,
                 DateTime.Now.AddMinutes(1), Cache.NoSlidingExpiration);
         }
+
+#if DEBUG
+        public void ExecuteSql(string sql)
+        {
+            db.Connection.Execute(sql);
+        }
+#endif
 
         public bool IsDebug => Util.IsDebug();
     }

@@ -19,6 +19,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Web;
+using Dapper;
 using UtilityExtensions;
 
 namespace CmsData
@@ -1696,7 +1697,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
                 c.SetKeyWords(this, new [] {keyword});
             SubmitChanges();
         }
-        public void WriteContentText(string name, string text)
+        public void WriteContentText(string name, string text, string keyword = null)
         {
             var c = Content(name, ContentTypeCode.TypeText);
             if (c == null)
@@ -1708,6 +1709,8 @@ This search uses multiple steps which cannot be duplicated in a single query.
                 };
                 Contents.InsertOnSubmit(c);
             }
+            if(keyword.HasValue())
+                c.SetKeyWords(this, new [] {keyword});
             c.Body = text;
             SubmitChanges();
         }
@@ -2030,8 +2033,22 @@ This search uses multiple steps which cannot be duplicated in a single query.
             return (int)(result?.ReturnValue ?? 0);
         }
 
+        public bool ReadOnlyUserExists()
+        {
+            return Connection.ExecuteScalar<int>($@"
+                select iif(exists(select null
+                    from sys.database_principals
+                    where name = 'ro-CMS_{Host}'), 1, 0)") == 1;
+        }
+        /// <summary>
+        /// Prevent error if readonly user does not exist
+        /// This happens for a church who clones the repo.
+        /// An ro-CMS_host user only is used for hosted clients in production
+        /// </summary>
         public DbConnection ReadonlyConnection()
         {
+            if(!ReadOnlyUserExists())
+                return new SqlConnection(Util.ConnectionString);
             var finance = CurrentRoles().Contains("Finance");
             return new SqlConnection(Util.ReadOnlyConnectionString(Host, finance));
         }
