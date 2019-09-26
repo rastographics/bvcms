@@ -109,7 +109,7 @@ namespace SharedTestFixtures
         }
 
         static Random randomizer = new Random();
-        protected static string RandomString(int length = 8, string prefix = "")
+        public static string RandomString(int length = 8, string prefix = "")
         {
             string rndchars = "QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm1234567890";
             string s = prefix;
