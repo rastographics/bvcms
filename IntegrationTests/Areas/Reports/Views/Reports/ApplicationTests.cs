@@ -3,11 +3,6 @@ using CMSWebTests;
 using IntegrationTests.Support;
 using SharedTestFixtures;
 using Shouldly;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace IntegrationTests.Areas.Reports.Views.Reports
@@ -17,7 +12,7 @@ namespace IntegrationTests.Areas.Reports.Views.Reports
     {
         private int OrgId { get; set; }
 
-        [Fact]
+        [Fact, FeatureTest]
         public void Application_Report_Should_Have_Awnsers()
         {
             driver.Manage().Window.Maximize();
