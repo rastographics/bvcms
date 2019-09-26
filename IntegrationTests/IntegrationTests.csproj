@@ -60,6 +60,7 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.Web.Mvc, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="WebDriver, Version=3.141.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -88,6 +89,7 @@
     <Compile Include="Areas\General\TestQueryController.cs" />
     <Compile Include="Areas\General\TestScriptController.cs" />
     <Compile Include="Areas\Manage\AccountTests.cs" />
+    <Compile Include="Areas\OnlineReg\Models\OnlineRegPerson\EnrollTests.cs" />
     <Compile Include="Areas\Setup\SetupTests.cs" />
     <Compile Include="Areas\People\Views\Person\PersonViewsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
