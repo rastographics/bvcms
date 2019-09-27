@@ -69,6 +69,8 @@ namespace CmsData
    		
    		private EntitySet<BundleDetail> _BundleDetails;
 		
+   		private EntitySet<ContributionTag> _ContributionTags;
+		
     	
 		private EntityRef<ContributionFund> _ContributionFund;
 		
@@ -164,6 +166,8 @@ namespace CmsData
 		{
 			
 			this._BundleDetails = new EntitySet<BundleDetail>(new Action< BundleDetail>(this.attach_BundleDetails), new Action< BundleDetail>(this.detach_BundleDetails)); 
+			
+			this._ContributionTags = new EntitySet<ContributionTag>(new Action< ContributionTag>(this.attach_ContributionTags), new Action< ContributionTag>(this.detach_ContributionTags)); 
 			
 			
 			this._ContributionFund = default(EntityRef<ContributionFund>); 
@@ -744,6 +748,16 @@ namespace CmsData
    		}
 
 		
+   		[Association(Name="FK_ContributionTag_Contribution", Storage="_ContributionTags", OtherKey="ContributionId")]
+   		public EntitySet<ContributionTag> ContributionTags
+   		{
+   		    get { return this._ContributionTags; }
+
+			set	{ this._ContributionTags.Assign(value); }
+
+   		}
+
+		
 	#endregion
 	
 	#region Foreign Keys
@@ -982,6 +996,19 @@ namespace CmsData
 		}
 
 		private void detach_BundleDetails(BundleDetail entity)
+		{
+			this.SendPropertyChanging();
+			entity.Contribution = null;
+		}
+
+		
+		private void attach_ContributionTags(ContributionTag entity)
+		{
+			this.SendPropertyChanging();
+			entity.Contribution = this;
+		}
+
+		private void detach_ContributionTags(ContributionTag entity)
 		{
 			this.SendPropertyChanging();
 			entity.Contribution = null;

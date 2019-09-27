@@ -213,7 +213,11 @@ namespace CmsData
         partial void InsertContributionType(ContributionType instance);
         partial void UpdateContributionType(ContributionType instance);
         partial void DeleteContributionType(ContributionType instance);
-        
+
+        partial void InsertContributionTag(ContributionTag instance);
+        partial void UpdateContributionTag(ContributionTag instance);
+        partial void DeleteContributionTag(ContributionTag instance);
+
         partial void InsertCountry(Country instance);
         partial void UpdateCountry(Country instance);
         partial void DeleteCountry(Country instance);
@@ -1151,9 +1155,15 @@ namespace CmsData
 		{
 			get	{ return this.GetTable<ContributionType>(); }
 
-		}
+        }
 
-		public Table<Country> Countries
+        public Table<ContributionTag> ContributionTags
+        {
+            get { return this.GetTable<ContributionTag>(); }
+
+        }
+
+        public Table<Country> Countries
 		{
 			get	{ return this.GetTable<Country>(); }
 
