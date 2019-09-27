@@ -13,6 +13,7 @@ namespace CmsWeb.Areas.Org.Controllers
     {
         public MissionTripEmailController(IRequestManager requestManager) : base(requestManager)
         {
+            NoCheckRole = true;
         }
 
         [HttpGet, Route("MissionTripEmail2/{oid}/{pid}")]
