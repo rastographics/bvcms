@@ -20,37 +20,45 @@ namespace CmsDataTests
             actual.Count().ShouldBe(expected);
         }
 
-        [Theory]
-        [MemberData(nameof(Data_GetPrimarySecundaryIdsTest))]
-        public void GetPrimarySecundaryIdsTest(IQueryable<Person> q, int expected)
-        {
-            var actual = PeopleUtils.GetParentsIds(q);
-            actual.Count().ShouldBe(expected);
-        }
+        //[Theory]
+        //[MemberData(nameof(Data_GetPrimarySecundaryIdsTest))]
+        //public void GetPrimarySecundaryIdsTest(IQueryable<Person> q, int expected)
+        //{
+        //    var actual = PeopleUtils.GetPrimarySecundaryIds(q);
+        //    actual.Count().ShouldBe(expected);
+        //}
 
         public static IEnumerable<object[]> Data_GetParentsIdsTest =>
             new List<object[]>
             {
-                new object[] { GenerateChildrenWithParents(10), 20 }
+                new object[] { GenerateChildrenWithParents(10), 20 },
+                new object[] { GeneratePeople(10, 5, 3), 28 }
             };
 
         public static IEnumerable<object[]> Data_GetPrimarySecundaryIdsTest =>
             new List<object[]>
             {
-                new object[] { GeneratePeople(10, 5), 5 }
+                new object[] { GeneratePeople(10, 5, 3), 8 }
             };
 
-        private static IQueryable<Person> GeneratePeople(int numberOfChilden, int numberOfAdults)
+        private static IQueryable<Person> GeneratePeople(int numberOfChilden, int numberOfPrimary, int numberOfSecondary)
         {
             var people = GenerateChildrenWithParents(numberOfChilden).ToList();
-            var adults = GenerateAdults(numberOfAdults).ToList();
-            people.AddRange(adults);
+            var primary = GenerateAdults(numberOfPrimary, PositionInFamily.PrimaryAdult);
+            var secondary = GenerateAdults(numberOfSecondary, PositionInFamily.SecondaryAdult);
+            people.AddRange(primary);
+            people.AddRange(secondary);
             return people.AsQueryable();
         }
 
-        private static IQueryable<Person> GenerateAdults(int numberOfAdults)
+        private static List<Person> GenerateAdults(int numberOfAdults, int positionInFamily)
         {
-            throw new NotImplementedException();
+            var adults = new List<Person>();
+            for (int i = 0; i < numberOfAdults; i++)
+            {
+                adults.Add(CreatePerson(positionInFamily));
+            }
+            return adults;
         }
 
         public static IQueryable<Person> GenerateChildrenWithParents(int numberOfChildren)
@@ -58,32 +66,19 @@ namespace CmsDataTests
             List<Person> children = new List<Person>();
             for (int i = 0; i < numberOfChildren; i++)
             {
-                var child = CreateChild();
+                var child = CreatePerson(PositionInFamily.Child);
                 children.Add(child);
-                var father = CreateParent(child);
+                var father = CreatePerson(PositionInFamily.PrimaryAdult, child.Family);
                 father.Family.HeadOfHousehold = father;
                 children.Add(father);
-                var mother = CreateParent(child);
+                var mother = CreatePerson(PositionInFamily.PrimaryAdult, child.Family);
                 mother.Family.HeadOfHouseholdSpouseId = mother.PeopleId;
                 children.Add(mother);
             }
             return children.AsQueryable();
         }
 
-        private static Person CreateParent(Person child)
-        {
-            return new Person
-            {
-                Family = child.Family,
-                FirstName = DatabaseTestBase.RandomString(),
-                LastName = DatabaseTestBase.RandomString(),
-                EmailAddress = DatabaseTestBase.RandomString() + "@example.com",
-                MemberStatusId = MemberStatusCode.Member,
-                PositionInFamilyId = PositionInFamily.PrimaryAdult
-            };        
-        }
-
-        public static Person CreateChild(Family family = null)
+        public static Person CreatePerson(int positionInFamily, Family family = null)
         {
             if (family == null)
             {
@@ -99,7 +94,7 @@ namespace CmsDataTests
                 LastName = DatabaseTestBase.RandomString(),
                 EmailAddress = DatabaseTestBase.RandomString() + "@example.com",
                 MemberStatusId = MemberStatusCode.Member,
-                PositionInFamilyId = PositionInFamily.Child,
+                PositionInFamilyId = positionInFamily,
             };
             return child;
         }
