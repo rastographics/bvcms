@@ -118,18 +118,18 @@
                                         <a href="mailto:@Model.WhoEmail" target="_blank" rel="noopener noreferrer">@Model.WhoEmail</a>
                                     </li>
                                 }
-                                @if (!string.IsNullOrWhiteSpace(Model.WhoPhone) && Model.WhoPhone != Model.WhoCellPhone)
-                                {
-                                    <li>
-                                        <i class="fa fa-phone"></i>
-                                        <a href="tel:+@Model.WhoPhone">@Model.WhoPhone</a>
-                                    </li>
-                                }
                                 @if (!string.IsNullOrWhiteSpace(Model.WhoCellPhone))
                                 {
                                     <li>
                                         <i class="fa fa-phone"></i>
-                                        <a href="tel:+@Model.WhoCellPhone">@Model.WhoCellPhone</a>
+                                        C <a href="tel:+@Model.WhoCellPhone">@Model.WhoCellPhone</a>
+                                    </li>
+                                }
+                                @if (!string.IsNullOrWhiteSpace(Model.WhoPhone) && Model.WhoPhone != Model.WhoCellPhone)
+                                {
+                                    <li>
+                                        <i class="fa fa-phone"></i>
+                                        H <a href="tel:+@Model.WhoPhone">@Model.WhoPhone</a>
                                     </li>
                                 }
                             </ul>
