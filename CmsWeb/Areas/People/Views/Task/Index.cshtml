@@ -173,22 +173,19 @@
                         <dl>
                             <dt>Delegated To</dt>
                             <dd>
-                                @if (Model.CoOwnerId.HasValue)
+                                @if (Model.IsOwner)
                                 {
-                                    if (Model.IsOwner)
-                                    {
-                                        <a href="/SearchAdd2/Dialog/taskdelegate/@Model.Id?displaySkipSearch=false" class="searchadd">
-                                            @Model.CoOwner
-                                        </a>
-                                    }
-                                    else
-                                    {
-                                        @Model.CoOwner
-                                    }
-                                    <a href="mailto:@Model.CoOwnerEmail">
-                                        <i class="fa fa-envelope-o"></i>
+                                    <a href="/SearchAdd2/Dialog/taskdelegate/@Model.Id?displaySkipSearch=false" class="searchadd">
+                                        @(Model.CoOwner ?? string.Empty)
                                     </a>
                                 }
+                                else
+                                {
+                                    @Model.CoOwner
+                                }
+                                <a href="mailto:@Model.CoOwnerEmail">
+                                    <i class="fa fa-envelope-o"></i>
+                                </a>
                             </dd>
                         </dl>
                         <dl>
