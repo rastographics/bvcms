@@ -111,7 +111,7 @@
                                 {
                                     <li>
                                         <i class="fa fa-envelope-o"></i>
-                                        <a href="mailto:@Model.WhoEmail">@Model.WhoEmail</a>
+                                        <a href="mailto:@Model.WhoEmail" target="_blank" rel="noopener noreferrer">@Model.WhoEmail</a>
                                     </li>
                                 }
                                 @if (!string.IsNullOrWhiteSpace(Model.WhoPhone) && Model.WhoPhone != Model.WhoCellPhone)
@@ -165,7 +165,7 @@
                                 {
                                     @Model.Owner
                                 }
-                                <a href="mailto:@Model.OwnerEmail?subject=@Model.Description&body=@link">
+                                <a href="mailto:@Model.OwnerEmail?subject=@Model.Description&body=@link" target="_blank" rel="noopener noreferrer">
                                     <i class="fa fa-envelope-o"></i>
                                 </a>
                             </dd>
@@ -183,7 +183,7 @@
                                 {
                                     @Model.CoOwner
                                 }
-                                <a href="mailto:@Model.CoOwnerEmail">
+                                <a href="mailto:@Model.CoOwnerEmail" target="_blank" rel="noopener noreferrer">
                                     <i class="fa fa-envelope-o"></i>
                                 </a>
                             </dd>
