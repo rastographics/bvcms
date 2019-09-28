@@ -38,6 +38,10 @@
         .edit-textarea p {
             border-bottom: dashed 1px #0088cc;
         }
+
+        .textarea-width {
+            width: 300px !important
+        }
     </style>
 }
 <div class="row">
@@ -330,7 +334,8 @@
             $(".edit-textarea").editable({
                 mode: 'inline',
                 type: 'textarea',
-                emptytext: 'None'
+                emptytext: 'None',
+                inputclass: 'textarea-width'
             });
 
             $(".edit-datetime").editable({
