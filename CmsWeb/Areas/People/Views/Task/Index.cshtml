@@ -159,16 +159,19 @@
                                 @if (Model.IsOwner)
                                 {
                                     <a href="/SearchAdd2/Dialog/taskowner/@Model.Id?displaySkipSearch=false" class="searchadd">
-                                        @Model.Owner
+                                        @(Model.Owner ?? "None")
                                     </a>
                                 }
                                 else
                                 {
-                                    @Model.Owner
+                                    @(Model.Owner ?? "None")
                                 }
-                                <a href="mailto:@Model.OwnerEmail?subject=@Model.Description&body=@link" target="_blank" rel="noopener noreferrer">
-                                    <i class="fa fa-envelope-o"></i>
-                                </a>
+                                @if (!string.IsNullOrWhiteSpace(Model.OwnerEmail))
+                                {
+                                    <a href="mailto:@Model.OwnerEmail?subject=@Model.Description&body=@link" target="_blank" rel="noopener noreferrer">
+                                        <i class="fa fa-envelope-o"></i>
+                                    </a>
+                                }
                             </dd>
                         </dl>
                         <dl>
@@ -177,16 +180,19 @@
                                 @if (Model.IsOwner)
                                 {
                                     <a href="/SearchAdd2/Dialog/taskdelegate/@Model.Id?displaySkipSearch=false" class="searchadd">
-                                        @(Model.CoOwner ?? string.Empty)
+                                        @(Model.CoOwner ?? "None")
                                     </a>
                                 }
                                 else
                                 {
-                                    @Model.CoOwner
+                                    @(Model.CoOwner ?? "None")
                                 }
-                                <a href="mailto:@Model.CoOwnerEmail" target="_blank" rel="noopener noreferrer">
-                                    <i class="fa fa-envelope-o"></i>
-                                </a>
+                                @if (!string.IsNullOrWhiteSpace(Model.CoOwnerEmail))
+                                {
+                                    <a href="mailto:@Model.CoOwnerEmail" target="_blank" rel="noopener noreferrer">
+                                        <i class="fa fa-envelope-o"></i>
+                                    </a>
+                                }
                             </dd>
                         </dl>
                         <dl>
