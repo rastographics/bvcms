@@ -365,6 +365,7 @@
     initializeEditable();
 
     $.PostRow = function (options) {
+        $('#name').popover('hide');
         if (!options.q) {
             var n = parseFloat($('#amt').val());
             var plnt = $("#PLNT").val();
