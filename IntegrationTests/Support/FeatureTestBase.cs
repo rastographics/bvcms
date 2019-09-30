@@ -245,7 +245,7 @@ namespace IntegrationTests.Support
             string file = $"{name}_" + DateTime.Now.ToString("yyyy-MM-dd_HH.mm.ss_") + RandomString() + ".png";
             string filename = Path.Combine(Settings.ScreenShotLocation, file);
             screenshot.SaveAsFile(filename, ScreenshotImageFormat.Png);
-            Console.WriteLine("Screen shot saved: {0}", Path.Combine(Settings.ScreenShotUrl, filename));
+            Console.WriteLine("Screen shot saved: {0}", Path.Combine(Settings.ScreenShotUrl, file));
         }
 
         protected IEnumerable<IWebElement> FindAll(By by = null,
@@ -363,6 +363,18 @@ namespace IntegrationTests.Support
                 return false;
             }
         }
+        protected bool IsElementPresent(string css)
+        {
+            try
+            {
+                driver.FindElement(By.CssSelector(css));
+                return true;
+            }
+            catch (NoSuchElementException)
+            {
+                return false;
+            }
+        }
 
         protected bool IsAlertPresent()
         {
@@ -404,7 +416,7 @@ namespace IntegrationTests.Support
             }, maxWaitTimeInSeconds);
         }
 
-        protected void WaitForElement(string css, int maxWaitTimeInSeconds = 10)
+        protected void WaitForElementToDisappear(string css, int maxWaitTimeInSeconds = 10, bool visible = true)
         {
             IWebElement element = null;
             try
@@ -415,7 +427,66 @@ namespace IntegrationTests.Support
                 {
                     try
                     {
-                        element = Find(By.CssSelector(css));
+                        element = Find(By.CssSelector(css), visible: visible);
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        //Ignore
+                    }
+                    catch (NoSuchWindowException)
+                    {
+                        //when popup is closed, switch to last windows
+                        driver.SwitchTo().Window(driver.WindowHandles.Last());
+                    }
+                    //In IE7 there are chances we may get state as loaded instead of complete
+                    return (element == null);
+                });
+            }
+            catch (TimeoutException)
+            {
+                //sometimes Page remains in Interactive mode and never becomes Complete, then we can still try to access the controls
+                if (element == null)
+                {
+                    SaveScreenshot();
+                    throw;
+                }
+            }
+            catch (NullReferenceException)
+            {
+                //sometimes Page remains in Interactive mode and never becomes Complete, then we can still try to access the controls
+                if (element != null)
+                {
+                    SaveScreenshot();
+                    throw;
+                }
+            }
+            catch (WebDriverException)
+            {
+                if (driver.WindowHandles.Count == 1)
+                {
+                    driver.SwitchTo().Window(driver.WindowHandles.First());
+                }
+                element = driver.FindElement(By.CssSelector(css));
+                if (element != null)
+                {
+                    SaveScreenshot();
+                    throw;
+                }
+            }
+        }
+
+        protected void WaitForElement(string css, int maxWaitTimeInSeconds = 10, bool visible = true)
+        {
+            IWebElement element = null;
+            try
+            {
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(maxWaitTimeInSeconds));
+
+                wait.Until(d =>
+                {
+                    try
+                    {
+                        element = Find(By.CssSelector(css), visible: visible);
                     }
                     catch (InvalidOperationException)
                     {
