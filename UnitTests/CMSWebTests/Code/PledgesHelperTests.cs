@@ -45,35 +45,11 @@ namespace CMSWebTests
                 var setting = MockSettings.CreateSaveSetting(db, "PostContributionPledgeFunds", "1");                
                 var expected = MockContributions.FilteredPledgesSummary();
 
-                var actual1 = db.PledgesSummary(person.PeopleId);
-                actual1.ShouldNotBeEmpty();
-
-                var fundString = db.GetSetting("PostContributionPledgeFunds", "");
-                var actual2 = PledgesHelper.GetFundIdListFromString(fundString);
-                List<int> fids = new List<int>{
-                    1
-                };
-                actual2.Should().BeEquivalentTo(fids);
-
-                var actual3 = PledgesHelper.GetFilteredPledgesSummary(db, person.PeopleId);
-                actual3.Should().BeEquivalentTo(expected);
+                var actual = PledgesHelper.GetFilteredPledgesSummary(db, person.PeopleId);
+                actual.Should().BeEquivalentTo(expected);
 
                 MockContributions.DeleteAllFromBundle(db, bundleHeader);
-                //MockSettings.DeleteSetting(db, setting);
-                //MockPeople.DeleteMockPerson(db, person);
             }         
-        }
-
-        [Fact]
-        public void Should_Get_Setting()
-        {
-            using (var db = CMSDataContext.Create(DatabaseFixture.Host))
-            {
-                var expected = "1";
-                var setting = MockSettings.CreateSaveSetting(db, "PostContributionPledgeFunds", "1");
-                var actual = db.GetSetting("PostContributionPledgeFunds", "");
-                actual.ShouldBe(expected);
-            }
         }
 
         public static IEnumerable<object[]> Data_GetFundIdListFromStringTest =>

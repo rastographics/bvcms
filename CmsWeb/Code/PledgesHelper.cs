@@ -28,7 +28,9 @@ namespace CmsWeb.Code
         public static List<PledgesSummary> GetFilteredPledgesSummary(CMSDataContext db, int peopleId)
         {
             var fundString = db.GetSetting("PostContributionPledgeFunds", "");
-            return PledgesSummaryByFundList(db.PledgesSummary(peopleId).ToList(), GetFundIdListFromString(fundString));
+            var b = db.PledgesSummary(peopleId).ToList();
+            var a = PledgesSummaryByFundList(db.PledgesSummary(peopleId).ToList(), GetFundIdListFromString(fundString));
+            return a;
         }
     }
 }
