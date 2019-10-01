@@ -424,7 +424,7 @@ namespace CmsData
         }
         public IQueryable<Person> PersonQueryParents(IQueryable<Person> q)
         {
-            var q2 = PeopleUtils.GetParentsIds(q);
+            var q2 = PeopleUtils.GetParentsAndAdultsIds(q);
             var tag = PopulateTemporaryTag(q2.Distinct());
             var q3 = from p in q
                      let ev = p.PeopleExtras.SingleOrDefault(ee => ee.Field == "Parent" && ee.IntValue > 0)
@@ -443,7 +443,7 @@ namespace CmsData
         public IQueryable<Person> PersonQueryPlusParents(IQueryable<Person> q)
         {
             var tag1 = PopulateTemporaryTag(q.Select(pp => pp.PeopleId).Distinct());
-            var q2 = PeopleUtils.GetParentsIds(q);
+            var q2 = PeopleUtils.GetParentsAndAdultsIds(q);
 
             var tag2 = PopulateTemporaryTag(q2.Distinct());
             var q3 = from p in q
