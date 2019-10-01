@@ -1430,6 +1430,8 @@
     <Content Include="Migrations\20190821_Update_Function_GetTotalContributionsDonor.sql" />
     <Content Include="Migrations\20190924_Update_Email_RecReg.sql" />
     <Content Include="Migrations\20190930_Update_Func_PledgesSummary.sql" />
+    <Content Include="Migrations\20190828_Create_Func_PledgesSummary.sql" />
+    <Content Include="Migrations\20190923_Alt_Func_PledgesSummary.sql" />
     <Content Include="QueryBuilder\CompareMap.xml">
       <SubType>Designer</SubType>
     </Content>
