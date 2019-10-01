@@ -42,11 +42,14 @@ namespace CmsWeb.Areas.People.Models
 
             switch (id)
             {
-                case -2:
-                    WritePng(context, NoPic2());
+                case 0:
+                    WritePng(context, NoPic());
                     break;
                 case -1:
                     WriteJpeg(context, NoPic1());
+                    break;
+                case -2:
+                    WritePng(context, NoPic2());
                     break;
                 case -3:
                     WriteJpeg(context, NoPic3());
