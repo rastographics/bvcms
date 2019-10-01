@@ -1,6 +1,7 @@
-﻿@model CmsWeb.Areas.People.Models.PersonModel
+﻿@using CmsWeb.Membership.Extensions
+@model CmsWeb.Areas.People.Models.PersonModel
 @{
-    var canviewmemberdocs = User.IsInRole("Membership") || User.IsInRole("Admin") || User.IsInRole("MemberDocs");
+    var canviewmemberdocs = User.InAnyRole("Membership", "MemberDocs");
 }
 <ul class="nav nav-pills subnav hidden-sm hidden-xs" data-tabparent="profile">
     <li><a href="#memberstatus" data-toggle="tab" class="ajax">Member</a></li>
@@ -18,11 +19,17 @@
 </ul> 
 <select class="form-control visible-sm-block visible-xs-block nav-select-pills">
     <option value="#memberstatus">Member</option>
-    <option value="#memberdocs">Documents</option>
-    <option value="#comments">Comments</option>
-    <option value="#extravalues">Extra Values</option>
-    <option value="#familyextravalues">Family Extra Values</option>
-    <option value="#entry">Entry</option>
+    @if (User.IsInRole("Access"))
+    {
+        if (canviewmemberdocs)
+        {
+            <option value="#memberdocs">Documents</option>
+            <option value="#comments">Comments</option>
+            <option value="#extravalues">Extra Values</option>
+            <option value="#familyextravalues">Family Extra Values</option>
+            <option value="#entry">Entry</option>
+        }
+    }
 </select>
 <div class="tab-content" style="border: none;">
     <div class="tab-pane" id="memberstatus" data-link="/Person2/Membership/@Model.PeopleId"></div>
