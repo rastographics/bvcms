@@ -47,40 +47,44 @@ namespace IntegrationTests.Areas.Reports.Views.Reports
             */
 
             Open($"{rootUrl}Org/{OrgId}#tab-Registrations-tab");
-            Wait(10);
+            WaitForElementToDisappear(loadingUI);
 
             ScrollTo(css: "#Questions-tab > .ajax");
             Find(css: "#Questions-tab > .ajax").Click();
-            Wait(10);
+            WaitForElementToDisappear(loadingUI);
 
             Find(css: ".col-sm-12 .edit").Click();
-            Wait(15);
+            WaitForElementToDisappear(loadingUI);
 
             Find(css: ".pull-right > .btn-success:nth-child(2)").Click();
-            Wait(10);
+            Wait(1);
 
             Find(css: ".AskText > a").Click();
-            Wait(10);
+            WaitForElement("#QuestionList > div.type-AskText");
 
             Find(css: ".modal-footer > .btn-primary:nth-child(1)").Click();
-            Wait(10);
+            var swal = ".sweet-alert.visible";
+            WaitForElement(swal);
 
             Find(xpath: "//button[contains(.,'Yes, Add Questions')]").Click();
-            Wait(10);
+            WaitForElementToDisappear(".sweet-overlay");
 
-            Find(xpath: "//a[contains(text(),'Add Item')]").Click();
-            Wait(10);
-            
-            var InputAskItem = Find(css: "div.ask-texts > div.well.movable > div.form-group > div.controls > input.form-control:nth-child(1)");
+            Find(css: "#QuestionList > div.type-AskText a.btn.btn-success").Click();
+            WaitForElementToDisappear(loadingUI);
+
+            var input = "div.ask-texts > div.well.movable > div.form-group > div.controls > input.form-control:nth-child(1)";
+            WaitForElement(input);
+
+            var InputAskItem = Find(css: input);
             InputAskItem.Clear();
             InputAskItem.SendKeys("Vow 1 reads: \"Do you acknowledge yourself to be a sinner in the sight of God, justly deserving his displeasure and without hope except through his sovereign mercy?\"");
 
             Find(css: ".ask-texts > .well").Click();
-            Wait(10);
+            WaitForElementToDisappear(loadingUI);
 
             ScrollTo(css: "#Questions-tab > .ajax");
             Find(xpath: "(//a[contains(text(),'Save')])[3]").Click();
-            Wait(10);
+            WaitForElementToDisappear(loadingUI);
 
             Open($"{rootUrl}OnlineReg/{OrgId}");
 

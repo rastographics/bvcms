@@ -18,6 +18,8 @@ namespace IntegrationTests.Support
     {
         protected string rootUrl => Settings.RootUrl;
 
+        protected const string loadingUI = "div.blockUI.blockOverlay";
+
         protected IWebDriver driver;
         protected EventFiringWebDriver eventDriver;
 
