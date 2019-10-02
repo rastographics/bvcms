@@ -58,27 +58,27 @@ namespace IntegrationTests.Areas.Reports.Views.Reports
             Wait(10);
 
             Find(css: ".AskText > a").Click();
-            Wait(5);
+            Wait(10);
 
             Find(css: ".modal-footer > .btn-primary:nth-child(1)").Click();
-            Wait(5);
+            Wait(10);
 
             Find(xpath: "//button[contains(.,'Yes, Add Questions')]").Click();
-            Wait(5);
+            Wait(10);
 
             Find(xpath: "//a[contains(text(),'Add Item')]").Click();
-            Wait(5);
+            Wait(10);
             
             var InputAskItem = Find(css: "div.ask-texts > div.well.movable > div.form-group > div.controls > input.form-control:nth-child(1)");
             InputAskItem.Clear();
             InputAskItem.SendKeys("Vow 1 reads: \"Do you acknowledge yourself to be a sinner in the sight of God, justly deserving his displeasure and without hope except through his sovereign mercy?\"");
 
             Find(css: ".ask-texts > .well").Click();
-            Wait(5);
+            Wait(10);
 
             ScrollTo(css: "#Questions-tab > .ajax");
             Find(xpath: "(//a[contains(text(),'Save')])[3]").Click();
-            Wait(5);
+            Wait(10);
 
             Open($"{rootUrl}OnlineReg/{OrgId}");
 
