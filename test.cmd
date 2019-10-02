@@ -17,11 +17,11 @@ set target_tests=%target_tests% .\UnitTests\UtilityExtensionsTests\bin\Debug\Uti
 set integration_tests=.\IntegrationTests\bin\Debug\IntegrationTests.dll
 echo quit | sqlcmd -S localhost -q "drop database cms_localhost"
 echo quit | sqlcmd -S localhost -q "drop database cmsi_localhost"
-REM %OpenCover% -register:user -target:"%xunit%" -targetargs:"%target_tests% -noshadow -teamcity" -filter:%opencover_filters% -output:"%test_coverage%" || exit 7
-REM IF NOT EXIST %test_coverage% (
-REM   echo File not found: %test_coverage%
-REM   exit 8
-REM )
+%OpenCover% -register:user -target:"%xunit%" -targetargs:"%target_tests% -noshadow -teamcity" -filter:%opencover_filters% -output:"%test_coverage%" || exit 7
+IF NOT EXIST %test_coverage% (
+  echo File not found: %test_coverage%
+  exit 8
+)
 IF "%CodeCovToken%" NEQ "" %codecov% -f "%test_coverage%" -t "%CodeCovToken%"
 set "IISEXPRESS_HOST=%OpenCover%"
 set placeholder="{0}"
