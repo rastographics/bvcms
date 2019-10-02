@@ -23,12 +23,11 @@ namespace IntegrationTests.Areas.Reports.Views.Reports
                 OrganizationName = "MockName",
                 RegistrationTitle = "MockTitle",
                 Location = "MockLocation",
-                RegistrationTypeId = 1,
-                RegSettingXml = XMLSettings()
+                RegistrationTypeId = 1
             };
 
-            var FakeMasterOrg = FakeOrganizationUtils.MakeFakeOrganization(requestManager, Orgconfig);
-            OrgId = FakeMasterOrg.org.OrganizationId;
+            var FakeOrg = FakeOrganizationUtils.MakeFakeOrganization(requestManager, Orgconfig);
+            OrgId = FakeOrg.org.OrganizationId;
 
             var NewSpecialContent = SpecialContentUtils.CreateSpecialContent(0, "MembershipApp2017", null);
             SpecialContentUtils.UpdateSpecialContent(NewSpecialContent.Id, "MembershipApp2017", "MembershipApp2017", GetValidHtmlContent(), false, null, "", null);
@@ -39,15 +38,58 @@ namespace IntegrationTests.Areas.Reports.Views.Reports
             var user = CreateUser(username, password, roles: new string[] { "Access", "Edit", "Admin", "Membership" });
             Login();
 
+            /*
+                Using WaitForElement() doesn't work in this test
+                WaitForElement() only makes the duration of loading spinner longer
+                and causes a "reference not set to an instance of an object" error in the Find() functions below
+            */
+
+            Open($"{rootUrl}Org/{OrgId}#tab-Registrations-tab");
+            Wait(10);
+
+            ScrollTo(css: "#Questions-tab > .ajax");
+            Find(css: "#Questions-tab > .ajax").Click();
+            Wait(10);
+
+            Find(css: ".col-sm-12 .edit").Click();
+            Wait(10);
+
+            Find(css: ".pull-right > .btn-success:nth-child(2)").Click();
+            Wait(10);
+
+            Find(css: ".AskText > a").Click();
+            Wait(5);
+
+            Find(css: ".modal-footer > .btn-primary:nth-child(1)").Click();
+            Wait(5);
+
+            Find(xpath: "//button[contains(.,'Yes, Add Questions')]").Click();
+            Wait(5);
+
+            Find(xpath: "//a[contains(text(),'Add Item')]").Click();
+            Wait(5);
+            
+            var InputAskItem = Find(css: "div.ask-texts > div.well.movable > div.form-group > div.controls > input.form-control:nth-child(1)");
+            InputAskItem.Clear();
+            InputAskItem.SendKeys("Vow 1 reads: \"Do you acknowledge yourself to be a sinner in the sight of God, justly deserving his displeasure and without hope except through his sovereign mercy?\"");
+
+            Find(css: ".ask-texts > .well").Click();
+            Wait(5);
+
+            ScrollTo(css: "#Questions-tab > .ajax");
+            Find(xpath: "(//a[contains(text(),'Save')])[3]").Click();
+            Wait(5);
+
             Open($"{rootUrl}OnlineReg/{OrgId}");
 
             var InputField = Find(id: "List0.Text0_0");
             InputField.Clear();
             InputField.SendKeys("ThisTextMustAppearInTests");
-
             Find(id: "otheredit").Click();
 
-            Open($"{rootUrl}OnlineReg/{OrgId}");
+            WaitForElement("#submitit", 5);
+            Find(id: "submitit").Click();
+
             Open($"{rootUrl}Reports/Application/{OrgId}/{user.PeopleId}/MembershipApp2017");
 
             PageSource.ShouldContain("ThisTextMustAppearInTests");
