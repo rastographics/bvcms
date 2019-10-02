@@ -52,7 +52,7 @@ namespace IntegrationTests.Areas.Reports.Views.Reports
             Wait(10);
 
             Find(css: ".col-sm-12 .edit").Click();
-            Wait(10);
+            Wait(15);
 
             Find(css: ".pull-right > .btn-success:nth-child(2)").Click();
             Wait(10);
