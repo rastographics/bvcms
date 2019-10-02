@@ -68,14 +68,22 @@ namespace IntegrationTests.Support
                 if (!string.IsNullOrEmpty(AppPool))
                     arguments.AppendFormat("/{0}:{1} ", APP_POOL, AppPool);
 
+                var hostExe = Environment.GetEnvironmentVariable("IISEXPRESS_HOST") ?? IIS_EXPRESS;
+                var hostArguments = string.Format(Environment.GetEnvironmentVariable("IISEXPRESS_ARGS") ?? "{0}", arguments.ToString().Trim());
+                File.WriteAllText(@"C:\temp\test.log", $"EXE:{hostExe}\r\nARG:{hostArguments}");
                 process = Process.Start(new ProcessStartInfo()
                 {
-                    FileName = IIS_EXPRESS,
-                    Arguments = arguments.ToString(),
+                    FileName = hostExe,
+                    Arguments = hostArguments,
                     UseShellExecute = true,
                     WindowStyle = ProcessWindowStyle.Minimized,
-                    WorkingDirectory = Path.GetDirectoryName(IIS_EXPRESS)
+                    WorkingDirectory = Path.GetDirectoryName(hostExe)
                 });
+                if (processExited(process))
+                {
+                    Console.WriteLine("Failed to launch iisexpress");
+                    Environment.Exit(-1001);
+                }
             }
         }
 
