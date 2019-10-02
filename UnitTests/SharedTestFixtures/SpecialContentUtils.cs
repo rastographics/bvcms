@@ -41,6 +41,7 @@ namespace SharedTestFixtures
             content.RoleID = roleid ?? 0;
             content.Snippet = snippet;
             content.SetKeyWords(db, contentKeyWords.SplitStr(",").Select(vv => vv.Trim()).ToArray());
+            db.SubmitChanges();
         }
 
         public static void DeleteSpecialContent(int id)

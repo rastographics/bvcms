@@ -11,6 +11,7 @@ namespace IntegrationTests.Areas.Reports.Views.Reports
     public class ApplicationTests : AccountTestBase
     {
         private int OrgId { get; set; }
+        private int SepacialContentId { get; set; }
 
         [Fact, FeatureTest]
         public void Application_Report_Should_Have_Awnsers()
@@ -30,6 +31,7 @@ namespace IntegrationTests.Areas.Reports.Views.Reports
             OrgId = FakeOrg.org.OrganizationId;
 
             var NewSpecialContent = SpecialContentUtils.CreateSpecialContent(0, "MembershipApp2017", null);
+            SepacialContentId = NewSpecialContent.Id;
             SpecialContentUtils.UpdateSpecialContent(NewSpecialContent.Id, "MembershipApp2017", "MembershipApp2017", GetValidHtmlContent(), false, null, "", null);
 
             username = RandomString();
@@ -89,25 +91,24 @@ namespace IntegrationTests.Areas.Reports.Views.Reports
 
             WaitForElement("#submitit", 5);
             Find(id: "submitit").Click();
+            Wait(2);
 
             Open($"{rootUrl}Reports/Application/{OrgId}/{user.PeopleId}/MembershipApp2017");
+            WaitForElement("h2", 5);
 
             PageSource.ShouldContain("ThisTextMustAppearInTests");
-
-            SpecialContentUtils.DeleteSpecialContent(NewSpecialContent.Id);
-        }
-
-        private string XMLSettings()
-        {
-            string Settings = ReportsViewTestsResources.XMLSettings;
-
-            return Settings;
         }
 
         private string GetValidHtmlContent()
         {
             string res = ReportsViewTestsResources.ValidHtmlContent;
             return res;
+        }
+
+        public override void Dispose()
+        {
+            SpecialContentUtils.DeleteSpecialContent(SepacialContentId);
+            FakeOrganizationUtils.DeleteOrg(OrgId);
         }
     }
 }
