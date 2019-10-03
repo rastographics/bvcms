@@ -502,6 +502,7 @@
     <Compile Include="API\PythonModel\Deprecated.cs" />
     <Compile Include="API\PythonModel\Contributions.cs" />
     <Compile Include="API\PythonModel\ExtraValuesOrg.cs" />
+    <Compile Include="API\PythonModel\JsonDocumentRecords.cs" />
     <Compile Include="API\PythonModel\Forms.cs" />
     <Compile Include="API\PythonModel\JsonSerializer.cs" />
     <Compile Include="API\PythonModel\ManagedGiving.cs" />
@@ -992,6 +993,7 @@
     <Content Include="Migrations\20190520_add_acceptiva_to_gateway_tables.sql" />
     <Content Include="Migrations\20190527_add_preconfigured_acceptiva_details.sql" />
     <Content Include="Migrations\20190620_add_passport_reg_setting.sql" />
+    <Content Include="Migrations\20190904_Create_table_JsonDocumentRecords.sql" />
     <Content Include="Migrations\20190802_Alter_Function_GetContributionsDetails.sql" />
     <Content Include="Migrations\20190827_Update_proc_LedgerIncomeExport.sql" />
     <Compile Include="Organization\OrgFilter.cs" />
