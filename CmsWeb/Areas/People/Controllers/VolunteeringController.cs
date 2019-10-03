@@ -12,6 +12,7 @@ using UtilityExtensions;
 namespace CmsWeb.Areas.People.Controllers
 {
     [RouteArea("People", AreaPrefix = "Volunteering"), Route("{action}/{id?}")]
+    [Authorize(Roles = "ViewVolunteerApplication,ApplicationReview")]
     public class VolunteeringController : CMSBaseController
     {
         public VolunteeringController(IRequestManager requestManager) : base(requestManager)
