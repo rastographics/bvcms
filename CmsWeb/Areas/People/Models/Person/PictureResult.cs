@@ -1,4 +1,5 @@
 using CmsData;
+using CmsWeb.Membership.Extensions;
 using System;
 using System.IO;
 using System.Linq;
@@ -17,7 +18,7 @@ namespace CmsWeb.Areas.People.Models
         private readonly bool nodefault;
         private int? w, h;
         private readonly string mode;
-        private readonly bool shouldBePublic; 
+        private readonly bool shouldBePublic;
         public PictureResult(int id, int? w = null, int? h = null, bool portrait = false, bool tiny = false, bool nodefault = false, string mode = "max", bool shouldBePublic = false)
         {
             this.id = id;
@@ -77,22 +78,29 @@ namespace CmsWeb.Areas.People.Models
             }
             else
             {
-                ImageData.Image i = null;
+                ImageData.Image image = null;
                 try
                 {
-                    using (var db = ImageData.CMSImageDataContext.Create(context.HttpContext))
+                    if (GrantPermission(id))
                     {
-                        i = db.Images.SingleOrDefault(ii => ii.Id == id);
+                        using (var db = ImageData.CMSImageDataContext.Create(context.HttpContext))
+                        {
+                            image = db.Images.SingleOrDefault(ii => ii.Id == id);
+                        }
+                    }
+                    else
+                    {
+                        (new HttpUnauthorizedResult()).ExecuteResult(context);
+                        return;
                     }
                 }
                 catch { }
 
-                if (i != null && shouldBePublic && !i.IsPublic)
+                if (shouldBePublic && image?.IsPublic == false)
                 {
                     context.HttpContext.Response.BinaryWrite(NoPic());
                 }
-
-                if (i == null || i.Secure == true)
+                else if (image?.Secure == true)
                 {
                     if (nodefault)
                     {
@@ -116,16 +124,55 @@ namespace CmsWeb.Areas.People.Models
                     if (w.HasValue && h.HasValue)
                     {
                         context.HttpContext.Response.ContentType = "image/jpeg";
-                        var ri = FetchResizedImage(i, w.Value, h.Value, mode);
+                        var ri = FetchResizedImage(image, w.Value, h.Value, mode);
                         context.HttpContext.Response.BinaryWrite(ri);
                     }
                     else
                     {
-                        context.HttpContext.Response.ContentType = i.Mimetype ?? "image/jpeg";
-                        context.HttpContext.Response.BinaryWrite(i.Bits);
+                        context.HttpContext.Response.ContentType = image.Mimetype ?? "image/jpeg";
+                        context.HttpContext.Response.BinaryWrite(image.Bits);
                     }
                 }
             }
+        }
+
+        private bool GrantPermission(int id)
+        {
+            using (var cms = CMSDataContext.Create(HttpContextFactory.Current))
+            {
+                var secured = cms.Setting("SecureProfilePictures");
+                var user = HttpContextFactory.Current.User;
+                if (portrait)
+                {
+                    if (secured && !user.Identity.IsAuthenticated)
+                    {
+                        return false;
+                    }
+                    return cms.People.Any(p =>
+                       p.Picture.LargeId == id
+                    || p.Picture.MediumId == id
+                    || p.Picture.SmallId == id
+                    || p.Picture.ThumbId == id
+                    || p.Family.Picture.LargeId == id
+                    || p.Family.Picture.MediumId == id
+                    || p.Family.Picture.SmallId == id
+                    || p.Family.Picture.ThumbId == id);
+                }
+                else if (user.Identity.IsAuthenticated)
+                {
+                    if (cms.MemberDocForms.Any(m => m.LargeId == id || m.MediumId == id || m.SmallId == id)
+                        && user.InAnyRole("Membership", "MemberDocs"))
+                    {
+                        return true;
+                    }
+                    if (cms.VolunteerForms.Any(m => m.LargeId == id || m.MediumId == id || m.SmallId == id)
+                        && user.InAnyRole("ViewVolunteerApplication", "ApplicationReview"))
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
         private static byte[] NoPic1()

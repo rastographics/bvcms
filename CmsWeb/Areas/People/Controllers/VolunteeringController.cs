@@ -12,6 +12,7 @@ using UtilityExtensions;
 namespace CmsWeb.Areas.People.Controllers
 {
     [RouteArea("People", AreaPrefix = "Volunteering"), Route("{action}/{id?}")]
+    [Authorize(Roles = "ViewVolunteerApplication,ApplicationReview")]
     public class VolunteeringController : CMSBaseController
     {
         public VolunteeringController(IRequestManager requestManager) : base(requestManager)
@@ -127,7 +128,7 @@ namespace CmsWeb.Areas.People.Controllers
         public ActionResult CreateCheck(int id, string code, int type, int label = 0)
         {
             var tabName = type == 1 ? "tab_backgroundChecks" : "tab_creditChecks";
-            ProtectMyMinistryHelper.Create(id, code, type, label);
+            ProtectMyMinistryHelper.Create(CurrentDatabase, id, Util.UserPeopleId, code, type, label);
             return Redirect($"/Volunteering/{id}#{tabName}");
         }
 

@@ -9,6 +9,7 @@ using UtilityExtensions;
 using System.Web.Caching;
 using Dapper;
 using HandlebarsDotNet;
+using System.Web.Configuration;
 
 namespace CmsData
 {
@@ -78,6 +79,7 @@ namespace CmsData
             }
             return "http";
         }
+
         public string ServerLink(string path = "")
         {
             return Util.URLCombine(CmsHost, path);
@@ -95,6 +97,7 @@ namespace CmsData
                 Host = Util.Host;
             }
         }
+
         public string GetSetting(string name, string defaultvalue)
         {
             var setting = Settings.SingleOrDefault(ss => ss.Id == name);
@@ -102,6 +105,7 @@ namespace CmsData
                 return defaultvalue;
             return setting.SettingX ?? defaultvalue ?? string.Empty;
         }
+
         public string Setting(string name, string defaultvalue)
         {
             if (name == null)
@@ -113,8 +117,11 @@ namespace CmsData
                 {
                     list = Settings.ToList().ToDictionary(c => c.Id.Trim(), c => c.SettingX,
                         StringComparer.OrdinalIgnoreCase);
-                    HttpRuntime.Cache.Insert(Host + "Setting", list, null,
+                    if (UseRuntimeSettingsCache)
+                    {
+                        HttpRuntime.Cache.Insert(Host + "Setting", list, null,
                         DateTime.Now.AddSeconds(15), Cache.NoSlidingExpiration);
+                    }
                 }
                 catch (SqlException)
                 {
@@ -126,19 +133,22 @@ namespace CmsData
                 }
             }
             if (list.ContainsKey(name) && list[name].HasValue())
+            {
                 return list[name];
+            }
             if (defaultvalue.HasValue())
+            {
                 return defaultvalue;
+            }
             return string.Empty;
         }
+
         public bool Setting(string name, bool defaultValue = false)
         {
             var setting = Setting(name, null);
-            if (!setting.HasValue())
-                return defaultValue;
-
-            return setting.ToLower() == "true";
+            return !setting.HasValue() ? defaultValue : setting.ToLower() == "true";
         }
+
         public void SetSetting(string name, string value)
         {
             name = name.Trim();
@@ -146,8 +156,11 @@ namespace CmsData
             if (list == null)
             {
                 list = Settings.ToDictionary(c => c.Id.Trim(), c => c.SettingX);
-                HttpRuntime.Cache.Insert(Host + "Setting", list, null,
-                        DateTime.Now.AddSeconds(60), Cache.NoSlidingExpiration);
+                if (UseRuntimeSettingsCache)
+                {
+                    HttpRuntime.Cache.Insert(Host + "Setting", list, null,
+                            DateTime.Now.AddSeconds(60), Cache.NoSlidingExpiration);
+                }
             }
             list[name] = value;
 
@@ -158,16 +171,22 @@ namespace CmsData
                 Settings.InsertOnSubmit(setting);
             }
             else
+            {
                 setting.SettingX = value;
+            }
         }
+
         public void DeleteSetting(string name)
         {
             var list = HttpRuntime.Cache[Host + "Setting"] as Dictionary<string, string>;
             if (list == null)
             {
                 list = Settings.ToDictionary(c => c.Id.Trim(), c => c.SettingX);
-                HttpRuntime.Cache.Insert(Host + "Setting", list, null,
-                        DateTime.Now.AddSeconds(60), Cache.NoSlidingExpiration);
+                if (UseRuntimeSettingsCache)
+                {
+                    HttpRuntime.Cache.Insert(Host + "Setting", list, null,
+                            DateTime.Now.AddSeconds(60), Cache.NoSlidingExpiration);
+                }
             }
             list.Remove(name);
 
@@ -175,13 +194,7 @@ namespace CmsData
             if (setting != null)
                 Settings.DeleteOnSubmit(setting);
         }
-//        public new void Log(string s)
-//        {
-//            var output = ConfigurationManager.AppSettings["SharedFolder"].Replace("%USERPROFILE%", Environment.GetEnvironmentVariable("USERPROFILE"));
-//            output = output + $"\\log-{Host}-{DateTime.Today.ToSortableDate()}.txt";
-//            var text = $"{DateTime.Now.ToSortableTime()} {s}\r\n";
-//            File.AppendAllText(output, text);
-//        }
+
         public void LogActivity(string activity, int? oid = null, int? pid = null, int? did = null, int? uid = null)
         {
             DbUtil.LogActivity(Host, activity, oid, pid, did, uid);
@@ -195,16 +208,21 @@ namespace CmsData
 
                 var user = HttpRuntime.Cache[Host + sendgridmailuser] as string;
                 if (user.HasValue())
+                {
                     return user;
+                }
 
                 user = Setting(sendgridmailuser, "");
-                if(!user.HasValue())
+                if (!user.HasValue())
+                {
                     user = ConfigurationManager.AppSettings[sendgridmailuser];
+                }
                 HttpRuntime.Cache.Insert(Host + sendgridmailuser, user, null, DateTime.Now.AddSeconds(60), Cache.NoSlidingExpiration);
 
                 return user;
             }
         }
+
         public string SendGridMailPassword
         {
             get
@@ -216,21 +234,29 @@ namespace CmsData
                     return user;
 
                 user = Setting(sendgridmailpassword, "");
-                if(!user.HasValue())
+                if (!user.HasValue())
+                {
                     user = ConfigurationManager.AppSettings[sendgridmailpassword];
+                }
                 HttpRuntime.Cache.Insert(Host + sendgridmailpassword, user, null, DateTime.Now.AddSeconds(60), Cache.NoSlidingExpiration);
 
                 return user;
             }
         }
+
+        public bool UseRuntimeSettingsCache => Util.PickFirst(WebConfigurationManager.AppSettings["UseRuntimeSettingsCache"], "true").ToBool();
+
         public bool RegistrationsConverted()
         {
             var converted = (bool?)HttpRuntime.Cache[Host + "-RegistrationsConverted"];
             if (converted.HasValue)
+            {
                 return converted.Value;
+            }
 
             var b = Setting("RegistrationsConverted");
-            if(!b)
+            if (!b)
+            {
                 b = Connection.ExecuteScalar(
                     @"SELECT CASE WHEN EXISTS(
                         		SELECT NULL
@@ -239,14 +265,19 @@ namespace CmsData
                         		AND LEN(ISNULL(RegSetting,'')) > 0
                         		AND RegSettingXml IS NULL
                         	) THEN 1 ELSE 0 END").ToInt() == 0; // 0 == already converted
+            }
             return b;
         }
+
         public void SetRegistrationsConverted()
         {
             SetSetting("RegistrationsConverted", "true");
             SubmitChanges();
-            HttpRuntime.Cache.Insert(Host + "-RegistrationsConverted", true, null,
-                DateTime.Now.AddHours(2), Cache.NoSlidingExpiration);
+            if (UseRuntimeSettingsCache)
+            {
+                HttpRuntime.Cache.Insert(Host + "-RegistrationsConverted", true, null,
+                    DateTime.Now.AddHours(2), Cache.NoSlidingExpiration);
+            }
         }
 
         public string RenderTemplate(string source, object data)

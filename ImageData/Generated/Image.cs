@@ -30,6 +30,7 @@ namespace ImageData
 
         #region Events
 
+        #pragma warning disable 0067
         public event PropertyChangingEventHandler PropertyChanging;
         public event PropertyChangedEventHandler PropertyChanged;
 

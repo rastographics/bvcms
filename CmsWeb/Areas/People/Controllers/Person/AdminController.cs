@@ -50,7 +50,7 @@ namespace CmsWeb.Areas.People.Controllers
             if (p != null)
             {
                 Util2.CurrentPeopleId = p.PeopleId;
-                Session["ActivePerson"] = p.Name;
+                Util.ActivePerson = p.Name;
             }
             else
             {

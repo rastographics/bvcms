@@ -185,55 +185,32 @@ $.SortableDate = function (s) {
 };
 
 $.InitializeDateElements = function () {
-    var extraSmallDevice = $('.device-xs').is(':visible');
-    var smallDevice = $('.device-sm').is(':visible');
-    if (extraSmallDevice || smallDevice) {
-        $(".input-group.date input[type=text]").each(function (index) {
-            var isoSelector = '#' + $(this).attr('id') + 'Iso';
-            $(this).val($(isoSelector).val());
-            if ($(this).data("rule-date")) {
-                $(this).data('rule-date', false);
-            }
-            $(this).attr('type', 'date');
-        });
-
-        $(".input-group.datetime input[type=text]").each(function (index) {
-            var isoSelector = '#' + $(this).attr('id') + 'Iso';
-            $(this).val($(isoSelector).val());
-            if ($(this).data("rule-date")) {
-                $(this).data('rule-date', false);
-            }
-            $(this).attr('type', 'datetime-local');
-        });
+    if ($.cultureDateFormatAlt != '') {
+        $(".input-group.date").datetimepicker({ format: $.cultureDateFormat, extraFormats: [$.cultureDateFormatAlt], widgetPositioning: { horizontal: 'left' } });
+    } else {
+        $(".input-group.date").datetimepicker({ format: $.cultureDateFormat, widgetPositioning: { horizontal: 'left' } });
     }
-    else {
+    if ($.cultureDateTimeFormatAlt != '') {
+        $(".input-group.datetime").datetimepicker({ format: $.cultureDateTimeFormat, extraFormats: [$.cultureDateTimeFormatAlt], widgetPositioning: { horizontal: 'left' } });
+    } else {
+        $(".input-group.datetime").datetimepicker({ format: $.cultureDateTimeFormat, widgetPositioning: { horizontal: 'left' } });
+    }
+
+    $(".input-group.time").datetimepicker({ format: 'h:mm A', widgetPositioning: { horizontal: 'left' } });
+
+    $('.input-group.birthdate span.input-group-addon').click(function () {
+        var inputGroup = $(this).parent();
         if ($.cultureDateFormatAlt != '') {
-            $(".input-group.date").datetimepicker({ format: $.cultureDateFormat, extraFormats: [$.cultureDateFormatAlt], widgetPositioning: { horizontal: 'left' } });
+            $(inputGroup).datetimepicker({ format: $.cultureDateFormat, extraFormats: [$.cultureDateFormatAlt], widgetPositioning: { horizontal: 'left' }, keepInvalid: true });
         } else {
-            $(".input-group.date").datetimepicker({ format: $.cultureDateFormat, widgetPositioning: { horizontal: 'left' } });
+            $(inputGroup).datetimepicker({ format: $.cultureDateFormat, widgetPositioning: { horizontal: 'left' }, keepInvalid: true });
         }
-        if ($.cultureDateTimeFormatAlt != '') {
-            $(".input-group.datetime").datetimepicker({ format: $.cultureDateTimeFormat, extraFormats: [$.cultureDateTimeFormatAlt], widgetPositioning: { horizontal: 'left' } });
-        } else {
-            $(".input-group.datetime").datetimepicker({ format: $.cultureDateTimeFormat, widgetPositioning: { horizontal: 'left' } });
-        }
+        $(inputGroup).data("DateTimePicker").show();
+    });
 
-        $(".input-group.time").datetimepicker({ format: 'h:mm A', widgetPositioning: { horizontal: 'left' } });
-
-        $('.input-group.birthdate span.input-group-addon').click(function () {
-            var inputGroup = $(this).parent();
-            if ($.cultureDateFormatAlt != '') {
-                $(inputGroup).datetimepicker({ format: $.cultureDateFormat, extraFormats: [$.cultureDateFormatAlt], widgetPositioning: { horizontal: 'left' }, keepInvalid: true });
-            } else {
-                $(inputGroup).datetimepicker({ format: $.cultureDateFormat, widgetPositioning: { horizontal: 'left' }, keepInvalid: true });
-            }
-            $(inputGroup).data("DateTimePicker").show();
-        });
-
-        $('.input-group.birthdate').on("dp.hide", function (e) {
-            $(this).data("DateTimePicker").destroy();
-        });
-    }
+    $('.input-group.birthdate').on("dp.hide", function (e) {
+        $(this).data("DateTimePicker").destroy();
+    });
 }
 
 // hookup initialize events when common empty dialog is shown.

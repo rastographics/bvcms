@@ -53,9 +53,12 @@ namespace CmsData.View
 		private string _BundleStatus;
 		
 		private int _ContributionId;
-		
-		
-		public GetContributionsDetail()
+
+        private int _ContributionStatusId;
+
+        private int _ContributionTypeId;
+
+        public GetContributionsDetail()
 		{
 		}
 
@@ -383,7 +386,33 @@ namespace CmsData.View
 
 		}
 
-		
+        [Column(Name = "ContributionStatusId", Storage = "_ContributionStatusId", DbType = "int NOT NULL")]
+        public int ContributionStatusId
+        {
+            get
+            {
+                return this._ContributionStatusId;
+            }
+            set
+            {
+                if (this._ContributionStatusId != value)
+                    this._ContributionStatusId = value;
+            }
+        }
+
+        [Column(Name = "ContributionTypeId", Storage = "_ContributionTypeId", DbType = "int NOT NULL")]
+        public int ContributionTypeId
+        {
+            get
+            {
+                return this._ContributionTypeId;
+            }
+            set
+            {
+                if (this._ContributionTypeId != value)
+                    this._ContributionTypeId = value;
+            }
+        }
     }
 
 }
