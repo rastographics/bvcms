@@ -1,6 +1,8 @@
 :: This script depends on PSTools being added to the PATH
 :: https://docs.microsoft.com/en-us/sysinternals/downloads/pstools
 setlocal
+REG ADD HKCU\Software\Sysinternals\PsKill /v EulaAccepted /t REG_DWORD /d 1 /f
+REG ADD HKCU\Software\Sysinternals\PsList /v EulaAccepted /t REG_DWORD /d 1 /f
 nuget install Codecov -OutputDirectory packages || exit 1
 nuget install OpenCover -OutputDirectory packages || exit 2
 for /f %%f in ('dir /b packages\opencover.*') do set OpenCover=%~dp0packages\%%f\tools\opencover.console.exe
