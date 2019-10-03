@@ -2033,22 +2033,13 @@ This search uses multiple steps which cannot be duplicated in a single query.
             return (int)(result?.ReturnValue ?? 0);
         }
 
-        public bool ReadOnlyUserExists()
-        {
-            return Connection.ExecuteScalar<int>($@"
-                select iif(exists(select null
-                    from sys.database_principals
-                    where name = 'ro-CMS_{Host}'), 1, 0)") == 1;
-        }
         /// <summary>
-        /// Prevent error if readonly user does not exist
-        /// This happens for a church who clones the repo.
-        /// An ro-CMS_host user only is used for hosted clients in production
+        /// The read-only connection will use an ro-CMS_{host} user if the appsettings contain a setting for readonlypassword
+        /// Otherwise, the default connection string is used
         /// </summary>
+        /// <returns cref="SqlConnection" />
         public DbConnection ReadonlyConnection()
         {
-            if(!ReadOnlyUserExists())
-                return new SqlConnection(Util.ConnectionString);
             var finance = CurrentRoles().Contains("Finance");
             return new SqlConnection(Util.ReadOnlyConnectionString(Host, finance));
         }

@@ -1,32 +1,32 @@
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.IO;
-using System.Text.RegularExpressions;
-using System.Web;
-using MarkdownDeep;
-using RestSharp;
-using UtilityExtensions;
-using System.Linq;
-using System.Web.Caching;
 using CmsData.API;
 using CmsData.Codes;
 using Dapper;
 using IronPython.Runtime;
+using MarkdownDeep;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using RestSharp;
 using RestSharp.Authenticators;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Web;
+using System.Web.Caching;
+using UtilityExtensions;
 using Method = RestSharp.Method;
 
 namespace CmsData
 {
     public partial class PythonModel
     {
+        public dynamic Data { get; }
         public string CmsHost => db.ServerLink().TrimEnd('/');
         public bool FromMorningBatch { get; set; }
         public int? QueryTagLimit { get; set; }
         public string UserName => Util.UserName;
-        public dynamic Data { get; }
 
         public string CallScript(string scriptname)
         {
@@ -36,30 +36,53 @@ namespace CmsData
             return ExecutePython(script, model);
         }
 
-#if DEBUG
         public string ReadFile(string name)
         {
-            var txt = File.ReadAllText(name);
-            return txt;
+            if (IsDebug)
+            {
+                return File.ReadAllText(name);
+            }
+            else
+            {
+                throw new Exception();
+            }
         }
+
         public void WriteFile(string path, string text)
         {
-            File.AppendAllText(path, text);
+            if (IsDebug)
+            {
+                File.AppendAllText(path, text);
+            }
+            else
+            {
+                throw new Exception();
+            }
         }
+
         public void DeleteFile(string path)
         {
-            File.Delete(path);
+            if (IsDebug)
+            {
+                File.Delete(path);
+            }
+            else
+            {
+                throw new Exception();
+            }
         }
-#endif
+
         public string Content(string name, string keyword = null)
         {
             var c = db.Content(name);
-#if DEBUG
-            if (c == null)
+            if (IsDebug && c == null)
             {
                 var txt = ReadFile(name);
                 if (!txt.HasValue())
+                {
                     return txt;
+                }
+
                 var nam = Path.GetFileNameWithoutExtension(name);
                 var ext = Path.GetExtension(name);
                 int typ = ContentTypeCode.TypeText;
@@ -91,11 +114,14 @@ namespace CmsData
                     db.Contents.InsertOnSubmit(c);
                 }
                 c.Body = txt;
-                if(keyword.HasValue())
-                    c.SetKeyWords(db, new [] {keyword});
+                if (keyword.HasValue())
+                {
+                    c.SetKeyWords(db, new[] { keyword });
+                }
+
                 db.SubmitChanges();
             }
-#endif
+
             return c.Body;
         }
 
@@ -105,30 +131,31 @@ namespace CmsData
             var c = db.Content(name);
             if (c == null)
             {
-#if DEBUG
-                File.WriteAllText(name, text);
-                var nam = Path.GetFileNameWithoutExtension(name);
-                var ext = Path.GetExtension(name);
-                if (name.EndsWith(".text.html"))
+                if (IsDebug)
                 {
-                    ext = Path.GetExtension(nam);
-                    nam = Path.GetFileNameWithoutExtension(nam);
+                    File.WriteAllText(name, text);
+                    var nam = Path.GetFileNameWithoutExtension(name);
+                    var ext = Path.GetExtension(name);
+                    if (name.EndsWith(".text.html"))
+                    {
+                        ext = Path.GetExtension(nam);
+                        nam = Path.GetFileNameWithoutExtension(nam);
+                    }
+                    name = nam;
+                    switch (ext)
+                    {
+                        case ".sql":
+                            typ = ContentTypeCode.TypeSqlScript;
+                            break;
+                        case ".text":
+                        case ".json":
+                            typ = ContentTypeCode.TypeText;
+                            break;
+                        case ".html":
+                            typ = ContentTypeCode.TypeHtml;
+                            break;
+                    }
                 }
-                name = nam;
-                switch (ext)
-                {
-                    case ".sql":
-                        typ = ContentTypeCode.TypeSqlScript;
-                        break;
-                    case ".text":
-                    case ".json":
-                        typ = ContentTypeCode.TypeText;
-                        break;
-                    case ".html":
-                        typ = ContentTypeCode.TypeHtml;
-                        break;
-                }
-#endif
                 c = db.Content(name, typ);
                 if (c == null)
                 {
@@ -141,8 +168,11 @@ namespace CmsData
                 }
             }
             c.Body = text;
-            if(keyword.HasValue())
-                c.SetKeyWords(db, new [] {keyword});
+            if (keyword.HasValue())
+            {
+                c.SetKeyWords(db, new[] { keyword });
+            }
+
             db.SubmitChanges();
         }
 
@@ -154,7 +184,10 @@ namespace CmsData
         public string Dictionary(string s)
         {
             if (dictionary != null && dictionary.ContainsKey(s))
+            {
                 return dictionary[s].ToString();
+            }
+
             return "";
         }
 
@@ -162,10 +195,12 @@ namespace CmsData
         {
             return new DynamicData();
         }
+
         public DynamicData DynamicData(PythonDictionary dict)
         {
             return new DynamicData(dict);
         }
+
         /// <summary>
         /// Creates a new DynamicData instance populated with a previous instance
         /// </summary>
@@ -178,6 +213,7 @@ namespace CmsData
         {
             dictionary[key] = value;
         }
+
         public void DictionaryAdd(string key, object value)
         {
             dictionary[key] = value;
@@ -198,30 +234,36 @@ namespace CmsData
             var c = db.ContentOfTypeHtml(name);
             return c.Body;
         }
+
         public string PythonContent(string name)
         {
             var sql = db.ContentOfTypePythonScript(name);
             return sql;
         }
+
         public string SqlContent(string name)
         {
             var sql = db.ContentOfTypeSql(name);
             return sql;
         }
+
         public string TextContent(string name)
         {
             return db.ContentOfTypeText(name);
         }
+
         public string TitleContent(string name)
         {
             var c = db.ContentOfTypeHtml(name);
             return c.Title;
         }
+
         public string Draft(string name)
         {
             var c = db.ContentOfTypeSavedDraft(name);
             return c.Body;
         }
+
         public string DraftTitle(string name)
         {
             var c = db.ContentOfTypeSavedDraft(name);
@@ -232,10 +274,14 @@ namespace CmsData
         {
             return Regex.Replace(text, pattern, replacement, RegexOptions.Singleline);
         }
+
         public static string Markdown(string text)
         {
             if (text == null)
+            {
                 return "";
+            }
+
             var md = new Markdown();
             return md.Transform(text.Trim());
         }
@@ -244,62 +290,82 @@ namespace CmsData
         {
             return Regex.Match(s, regex, RegexOptions.IgnoreCase | RegexOptions.Singleline).Value;
         }
+
         public string UrlEncode(string s)
         {
             return HttpUtility.UrlEncode(s);
         }
+
         public string RestGet(string url, PythonDictionary headers, string user = null, string password = null)
         {
-#if DEBUG2
-            var ttt = System.IO.File.ReadAllText(@"C:\dev\bvcms\ttt.json");
-            return ttt;
-#else
             var client = new RestClient(url);
             if (user?.Length > 0 && password?.Length > 0)
+            {
                 client.Authenticator = new HttpBasicAuthenticator(user, password);
+            }
 
             var request = new RestRequest(Method.GET);
             foreach (var kv in headers)
+            {
                 request.AddHeader((string)kv.Key, (string)kv.Value);
+            }
+
             var response = client.Execute(request);
             return response.Content;
-#endif
         }
+
         public string RestPost(string url, PythonDictionary headers, object body, string user = null, string password = null)
         {
             var client = new RestClient(url);
             if (user?.Length > 0 && password?.Length > 0)
+            {
                 client.Authenticator = new HttpBasicAuthenticator(user, password);
+            }
 
             var request = new RestRequest(Method.POST);
             foreach (var kv in headers)
+            {
                 request.AddHeader((string)kv.Key, (string)kv.Value);
+            }
+
             request.AddBody(body);
             var response = client.Execute(request);
             return response.Content;
         }
+
         public string RestPostJson(string url, PythonDictionary headers, object obj, string user = null, string password = null)
         {
             var client = new RestClient(url);
             if (user?.Length > 0 && password?.Length > 0)
+            {
                 client.Authenticator = new HttpBasicAuthenticator(user, password);
+            }
+
             var request = new RestRequest(Method.POST);
             request.JsonSerializer = new RestSharp.Serializers.Shared.JsonSerializer();
             foreach (var kv in headers)
+            {
                 request.AddHeader((string)kv.Key, (string)kv.Value);
+            }
+
             request.AddJsonBody(obj);
             var response = client.Execute(request);
             return response.Content;
         }
+
         public string RestPostXml(string url, PythonDictionary headers, string body, string user = null, string password = null)
         {
             var client = new RestClient(url);
             if (user?.Length > 0 && password?.Length > 0)
+            {
                 client.Authenticator = new HttpBasicAuthenticator(user, password);
+            }
 
             var request = new RestRequest(Method.POST);
             foreach (var kv in headers)
+            {
                 request.AddHeader((string)kv.Key, (string)kv.Value);
+            }
 
             request.RequestFormat = DataFormat.Xml;
             request.AddParameter("text/xml", body, ParameterType.RequestBody);
@@ -307,28 +373,38 @@ namespace CmsData
 
             return response.Content;
         }
+
         public string RestDelete(string url, PythonDictionary headers, string user = null, string password = null)
         {
             var client = new RestClient(url);
             if (user?.Length > 0 && password?.Length > 0)
+            {
                 client.Authenticator = new HttpBasicAuthenticator(user, password);
+            }
+
             var request = new RestRequest(Method.DELETE);
             foreach (var kv in headers)
+            {
                 request.AddHeader((string)kv.Key, (string)kv.Value);
+            }
+
             var response = client.Execute(request);
             return response.Content;
         }
+
         public static dynamic JsonDeserialize(string s)
         {
             dynamic d = JObject.Parse(s);
             return d;
         }
+
         public static IEnumerable<dynamic> JsonDeserialize2(string s)
         {
-            var  list =  JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(s);
+            var list = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(s);
             var list2 = list.Select(vv => new DynamicData(vv));
             return list2;
         }
+
         public string JsonSerialize(object o)
         {
             return JsonConvert.SerializeObject(o);
@@ -338,6 +414,7 @@ namespace CmsData
         {
             return db.Setting(name, def);
         }
+
         public void SetSetting(string name, object value)
         {
             db.SetSetting(name, value.ToString());
@@ -350,21 +427,25 @@ namespace CmsData
             var s = JsonConvert.SerializeObject(d, Formatting.Indented);
             return s.Replace("\r\n", "\n");
         }
+
         public string FormatJson(DynamicData data)
         {
             var json = data.ToString();
             return FormatJson(json);
         }
+
         public string FormatJson(Dictionary<string, object> data)
         {
             var s = JsonConvert.SerializeObject(data, Formatting.Indented);
             return s.Replace("\r\n", "\n");
         }
+
         public string FormatJson(List<dynamic> data)
         {
             var s = JsonConvert.SerializeObject(data, Formatting.Indented);
             return s.Replace("\r\n", "\n");
         }
+
         public string FormatJson(List<DynamicData> data)
         {
             var s = JsonConvert.SerializeObject(data, Formatting.Indented);
@@ -387,6 +468,7 @@ namespace CmsData
             }
             return text;
         }
+
         public void ReplaceQueryFromCode(string encodedguid, string code)
         {
             var queryid = encodedguid.ToGuid();
@@ -427,6 +509,7 @@ namespace CmsData
                      };
             return q2.ToList();
         }
+
         public Dictionary<string, StatusFlag> StatusFlagDictionary(string flags = null)
         {
             var filter = flags?.Split(',');
@@ -458,6 +541,7 @@ namespace CmsData
         {
             db.UpdateStatusFlags();
         }
+
         public void UpdateStatusFlag(string flagid, string encodedguid)
         {
             var temptag = db.PopulateTempTag(new List<int>());
@@ -471,16 +555,20 @@ namespace CmsData
         {
             var qq = db.PeopleQuery2(code);
             if (QueryTagLimit > 0)
+            {
                 qq = qq.Take(QueryTagLimit.Value);
+            }
+
             int tid = db.PopulateSpecialTag(qq, name, DbUtil.TagTypeId_QueryTags);
             return db.TagPeople.Count(v => v.Id == tid);
         }
+
         public void DeleteQueryTags(string namelike)
         {
             db.Connection.Execute(@"
 DELETE dbo.TagPerson FROM dbo.TagPerson tp JOIN dbo.Tag t ON t.Id = tp.Id WHERE t.TypeId = 101 AND t.Name LIKE @namelike
 DELETE dbo.Tag WHERE TypeId = 101 AND Name LIKE @namelike
-", new {namelike});
+", new { namelike });
             Util2.CurrentTag = "UnNamed";
         }
 
@@ -488,14 +576,17 @@ DELETE dbo.Tag WHERE TypeId = 101 AND Name LIKE @namelike
         {
             db.WriteContentSql(name, sql, keyword);
         }
+
         public void WriteContentPython(string name, string script, string keyword = null)
         {
             db.WriteContentPython(name, script, keyword);
         }
+
         public void WriteContentText(string name, string text, string keyword = null)
         {
             db.WriteContentText(name, text, keyword);
         }
+
         public int TagLastQuery(string defaultcode)
         {
             Tag tag = null;
@@ -511,6 +602,7 @@ DELETE dbo.Tag WHERE TypeId = 101 AND Name LIKE @namelike
             }
             return tag.Id;
         }
+
         public CsvHelper.CsvReader CsvReader(string text)
         {
             var csv = new CsvHelper.CsvReader(new StringReader(text));
@@ -529,15 +621,21 @@ DELETE dbo.Tag WHERE TypeId = 101 AND Name LIKE @namelike
         public string AppendIfBoth(string s1, string join, string s2)
         {
             if (s1.HasValue() && s2.HasValue())
+            {
                 return s1 + join + s2;
-            if(s1.HasValue())
+            }
+
+            if (s1.HasValue())
+            {
                 return s1;
+            }
+
             return s2;
         }
         [Obsolete]
         public DynamicData FromJson(string json)
         {
-            var dd =  JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
+            var dd = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
             return new DynamicData(dd);
         }
 
@@ -545,6 +643,7 @@ DELETE dbo.Tag WHERE TypeId = 101 AND Name LIKE @namelike
         {
             return JsonConvert.DeserializeObject<DynamicData>(json);
         }
+
         public List<DynamicData> DynamicDataFromJsonArray(string json)
         {
             return JsonConvert.DeserializeObject<List<DynamicData>>(json);
@@ -563,7 +662,7 @@ DELETE dbo.Tag WHERE TypeId = 101 AND Name LIKE @namelike
         {
             return string.Join(",", APIContributionSearchModel.GetCustomStatementsList(db, name));
         }
-        
+
         public string SpaceCamelCase(string s)
         {
             return s.SpaceCamelCase();
@@ -576,21 +675,31 @@ DELETE dbo.Tag WHERE TypeId = 101 AND Name LIKE @namelike
 
         public bool UserIsInRole(string role)
         {
-            if (db.FromBatch)
-                return true;
-            return HttpContextFactory.Current?.User.IsInRole(role) ?? false;
+            return HttpContextFactory.Current?.User.IsInRole(role) ?? db.FromBatch;
         }
 
         public void CreateCustomView(string view, string sql)
         {
             if (FromMorningBatch)
+            {
                 return;
-            if(!UserIsInRole("developer") || !UserIsInRole("admin"))
+            }
+
+            if (!UserIsInRole("developer") || !UserIsInRole("admin"))
+            {
                 throw new Exception("must be developer and admin");
-            if(!Regex.IsMatch(view, @"\A[A-z][A-z0-9]*\z"))
+            }
+
+            if (!Regex.IsMatch(view, @"\A[A-z][A-z0-9]*\z"))
+            {
                 throw new Exception("view name must be a single alphanumeric word");
+            }
+
             if (db.Connection.ExecuteScalar<int>("select iif(exists(select name from sys.schemas where name = 'custom'), 1, 0)") == 0)
+            {
                 db.Connection.Execute("create schema custom");
+            }
+
             db.Connection.Execute($"drop view if exists custom.{view}");
             db.Connection.Execute($"create view custom.{view} as {sql}");
         }
@@ -605,20 +714,29 @@ DELETE dbo.Tag WHERE TypeId = 101 AND Name LIKE @namelike
             return FromMorningBatch ? string.Empty
                 : HttpRuntime.Cache[db.Host + name]?.ToString() ?? string.Empty;
         }
+
         public void SetCacheVariable(string name, string value)
         {
-            if(FromMorningBatch)
+            if (FromMorningBatch)
+            {
                 return;
+            }
+
             HttpRuntime.Cache.Insert(db.Host + name, value, null,
                 DateTime.Now.AddMinutes(1), Cache.NoSlidingExpiration);
         }
 
-#if DEBUG
         public void ExecuteSql(string sql)
         {
-            db.Connection.Execute(sql);
+            if (IsDebug)
+            {
+                db.Connection.Execute(sql);
+            }
+            else
+            {
+                throw new Exception();
+            }
         }
-#endif
 
         public bool IsDebug => Util.IsDebug();
     }
