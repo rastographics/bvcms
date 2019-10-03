@@ -64,6 +64,13 @@ namespace CmsWeb.Controllers
             return new PictureResult(id);
         }
 
+        [HttpGet]
+        [Route("~/PreviewImage/{id:int}/{w:int?}/{h:int?}")]
+        public ActionResult PreviewImage(int id, int? w, int? h, string mode)
+        {
+            return new PictureResult(id, preview: true);
+        }
+
         [Route("~/BackgroundImage/{id:int}")]
         public ActionResult BackgroundImage(int id)
         {

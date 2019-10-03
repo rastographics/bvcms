@@ -36,6 +36,7 @@
     <div class="device-xs visible-xs-block"></div>
     <div class="device-2xs"></div>
     <div class="modal fade" id="empty-dialog" data-keyboard="false" data-backdrop="static"></div>
+    <div class="snackbar"></div>
     @ViewExtensions2.GoogleAnalytics()
     @ViewExtensions2.jQuery()
     @ViewExtensions2.LoDash()
@@ -48,6 +49,7 @@
     @ViewExtensions2.jQueryValidation()
     @Html.Partial("DatePickerDefaults2")
     @Fingerprint.Script("/Content/touchpoint/js/app.min.js")
+    @Fingerprint.Script("/Content/touchpoint/js/snackbar.js")
     @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-multiselect/js/bootstrap-multiselect.js")
     @Fingerprint.Script("/Content/touchpoint/js/swal_messages.js")
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>

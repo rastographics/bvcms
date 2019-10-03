@@ -146,7 +146,6 @@
     <Compile Include="Exceptions\PermissionDeniedException.cs" />
     <Compile Include="Exceptions\UserException.cs" />
     <Compile Include="Exceptions\UserExceptionCollection.cs" />
-    <Compile Include="Gateways\Acceptiva\AcceptivaConnection.cs" />
     <Compile Include="Gateways\Acceptiva\AcceptivaPayment.cs" />
     <Compile Include="Gateways\ApiClient.cs" />
     <Compile Include="Gateways\IApiClient.cs" />
