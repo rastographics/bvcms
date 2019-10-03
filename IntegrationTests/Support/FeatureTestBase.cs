@@ -18,6 +18,8 @@ namespace IntegrationTests.Support
     {
         protected string rootUrl => Settings.RootUrl;
 
+        protected const string loadingUI = "div.blockUI.blockOverlay";
+
         protected IWebDriver driver;
         protected EventFiringWebDriver eventDriver;
 
@@ -52,9 +54,18 @@ namespace IntegrationTests.Support
                 driver = null;
             }
 
+            ChromeDriver chromedriver;
             ChromeOptions options = new ChromeOptions();
             options.AddArgument("ignore-certificate-errors");
-            var chromedriver = new ChromeDriver(options);
+            var chromedriverDir = Environment.GetEnvironmentVariable("ChromeDriverDir");
+            if (string.IsNullOrEmpty(chromedriverDir))
+            {
+                chromedriver = new ChromeDriver(options);
+            }
+            else
+            {
+                chromedriver = new ChromeDriver(chromedriverDir, options, TimeSpan.FromSeconds(120));
+            }
             driver = chromedriver;
         }
 

@@ -1,9 +1,6 @@
-﻿using CmsData;
-using IntegrationTests.Support;
+﻿using IntegrationTests.Support;
 using Shouldly;
-using UtilityExtensions;
 using Xunit;
-using IntegrationTests.Resources;
 using SharedTestFixtures;
 
 namespace IntegrationTests.Areas.Manage
@@ -36,7 +33,7 @@ namespace IntegrationTests.Areas.Manage
         private void DisplayOrgDropdowns()
         {
             Open($"{rootUrl}QueryCode?code=IsMemberOf()=1");
-            WaitForElementToDisappear("div.blockUI.blockOverlay");
+            WaitForElementToDisappear(loadingUI);
             Find(css: "li.condition a[title^=IsMemberOf]").Click();
             WaitForElement("input[type=radio][value='0']", visible: false);
         }
