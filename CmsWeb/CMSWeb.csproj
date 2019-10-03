@@ -883,6 +883,7 @@
     <Compile Include="Code\DateEmptyOrValidAttribute.cs" />
     <Compile Include="Code\DecimalModelBinder.cs" />
     <Compile Include="Code\JsonNetValueProviderFactory.cs" />
+    <Compile Include="Code\PledgesHelper.cs" />
     <Compile Include="Code\ReportsMenu.cs" />
     <Compile Include="Code\UserInputException.cs" />
     <Compile Include="Common\Configuration.cs" />
@@ -3413,7 +3414,7 @@
   </ProjectExtensions>
   <PropertyGroup>
     <PreBuildEvent>pushd $(ProjectDir)
-call npm install
+call npm install --silent
 call gulp --no-color
 popd</PreBuildEvent>
   </PropertyGroup>
