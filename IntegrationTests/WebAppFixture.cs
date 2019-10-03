@@ -1,6 +1,7 @@
 ﻿using IntegrationTests.Support;
 using SharedTestFixtures;
 using System;
+using System.Net;
 using System.Xml;
 
 namespace IntegrationTests
@@ -14,6 +15,7 @@ namespace IntegrationTests
             Settings.EnsureApplicationHostConfig();
             SetupWebConfig();
             cmswebInstance = IISExpress.Start(Settings.ApplicationHostConfig, "CMSWeb");
+            Warmup();
         }
 
         private void SetupWebConfig()
@@ -44,6 +46,23 @@ namespace IntegrationTests
             {
                 appSettings.RemoveChild(list[0]);
                 xml.Save(DatabaseFixture.FindWebConfigPath());
+            }
+        }
+
+        private void Warmup()
+        {
+            var attempts = 0;
+            while (attempts++ < 100)
+            {
+                try
+                {
+                    using (var client = new WebClient())
+                    {
+                        client.DownloadString(Settings.RootUrl);
+                        break;
+                    }
+                }
+                catch { }
             }
         }
 

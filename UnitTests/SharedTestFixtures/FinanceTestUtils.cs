@@ -15,7 +15,7 @@ namespace SharedTestFixtures
         {
             get
             {
-                return CreateBundle(db, null);
+                return MockContributions.CreateSaveBundle(db, null);
             }
         }
     }

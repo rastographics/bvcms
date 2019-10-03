@@ -73,12 +73,14 @@ namespace CmsWeb.Areas.People.Controllers
         // Member Documents ---------------------------------------------------
 
         [HttpPost]
+        [Authorize(Roles = "Membership,MemberDocs")]
         public ActionResult MemberDocuments(int id)
         {
             return View("Profile/Membership/Documents", id);
         }
 
         [HttpPost]
+        [Authorize(Roles = "Membership,MemberDocs")]
         public ActionResult UploadDocument(int id, HttpPostedFileBase doc)
         {
             if (doc == null)
@@ -93,6 +95,7 @@ namespace CmsWeb.Areas.People.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Membership,MemberDocs")]
         public ActionResult MemberDocumentUpdateName(int pk, string name, string value)
         {
             MemberDocModel.UpdateName(CurrentDatabase, pk, value);
@@ -100,6 +103,7 @@ namespace CmsWeb.Areas.People.Controllers
         }
 
         [HttpPost, Route("DeleteDocument/{id:int}/{docid:int}")]
+        [Authorize(Roles = "Membership,MemberDocs")]
         public ActionResult DeleteDocument(int id, int docid)
         {
             MemberDocModel.DeleteDocument(CurrentDatabase, CurrentImageDatabase, id, docid);
