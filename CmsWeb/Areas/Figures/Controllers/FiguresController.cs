@@ -1,9 +1,11 @@
 ﻿using CmsData;
 using CmsWeb.Areas.Figures.Models;
 using CmsWeb.Lifecycle;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Figures.Controllers
 {
@@ -31,10 +33,10 @@ namespace CmsWeb.Areas.Figures.Controllers
             return Json(test.GetChartData(progId).ToList(), JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult ChartDisplayView(int[] fundIdsArr)
+        public ActionResult ChartDisplayView(int[] fundIdsArr, int? year)
         {
             var test = new GoogleChartsData();
-            var temp = test.GetFundChartData(fundIdsArr).ToList();
+            var temp = test.GetFundChartData(fundIdsArr, year).ToList();
             return View(temp);
         }
 
@@ -53,6 +55,15 @@ namespace CmsWeb.Areas.Figures.Controllers
 
         public ActionResult RefineFundView()
         {
+            List<int?> Years = CurrentDatabase.Contributions
+                   .Where(x => (x.ContributionDate.HasValue ? ((DateTime)x.ContributionDate).Year : (int?)null) < DateTime.Now.Year)
+                   .ToList()
+                   .Select(x => x.ContributionDate.HasValue ? ((DateTime)x.ContributionDate).Year : (int?)null)
+                   .Distinct()
+                   .OrderByDescending(x => x)
+                   .ToList();
+
+            ViewBag.Years = Years;
             return View();
         }
 

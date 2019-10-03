@@ -9,6 +9,7 @@ using CmsData;
 using CmsData.Codes;
 using CmsData.View;
 using CmsWeb.Areas.Finance.Controllers;
+using CmsWeb.Code;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -187,7 +188,7 @@ namespace CmsWeb.Models
                     {
                         e.PeopleId,
                         name = e.Person.Name2 + (e.Person.DeceasedDate.HasValue ? "[DECEASED]" : ""),
-                        pledgesSummary = GetPledgesSummary(pid.ToInt())
+                        pledgesSummary = PledgesHelper.GetFilteredPledgesSummary(DbUtil.Db, pid.ToInt())
                     };
             }
             else
@@ -198,7 +199,7 @@ namespace CmsWeb.Models
                     {
                         i.PeopleId,
                         name = i.Name2 + (i.DeceasedDate.HasValue ? "[DECEASED]" : ""),
-                        pledgesSummary = GetPledgesSummary(pid.ToInt())
+                        pledgesSummary = PledgesHelper.GetFilteredPledgesSummary(DbUtil.Db, pid.ToInt())
                     };
             }
             var o = q.FirstOrDefault();
@@ -208,11 +209,6 @@ namespace CmsWeb.Models
             }
 
             return o;
-        }
-
-        private static List<PledgesSummary> GetPledgesSummary(int pid)
-        {
-            return DbUtil.Db.PledgesSummary(pid).ToList();
         }
 
         public static IEnumerable<NamesInfo> Names(string q, int limit)
@@ -233,7 +229,7 @@ namespace CmsWeb.Models
                          spouse = spouse.Name,
                          addr = p.PrimaryAddress ?? "",
                          altname = p.AltName,
-                         pledgesSummary = GetPledgesSummary(p.PeopleId)
+                         pledgesSummary = PledgesHelper.GetFilteredPledgesSummary(DbUtil.Db, p.PeopleId)
                      };
             return rp.Take(limit);
         }
@@ -266,7 +262,7 @@ namespace CmsWeb.Models
                                        DateGiven = c.ContributionDate,
                                        CheckNo = c.CheckNo
                                    }).Take(4).ToList(),
-                         pledgesSummary = GetPledgesSummary(p.PeopleId)
+                         pledgesSummary = PledgesHelper.GetFilteredPledgesSummary(DbUtil.Db, p.PeopleId)
                      };
             return rp.Take(limit);
         }

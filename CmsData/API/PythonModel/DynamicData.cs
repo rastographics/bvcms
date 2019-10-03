@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
+using System.Linq;
 using System.Runtime.Serialization;
 using Newtonsoft.Json.Linq;
 using UtilityExtensions;
@@ -50,7 +51,7 @@ namespace CmsData.API
                 var dict = new Dictionary<string, object>();
                 foreach (var kv in pythonDictionary)
                 {
-                    dict.Add("@" + kv.Key, kv.Value);
+                    dict.Add(kv.Key.ToString(), kv.Value);
                 }
 
                 return dict;
@@ -61,7 +62,7 @@ namespace CmsData.API
                 var dict = new Dictionary<string, object>();
                 foreach (var kv in dapperRow)
                 {
-                    dict.Add("@" + kv.Key, kv.Value);
+                    dict.Add(kv.Key, kv.Value);
                 }
 
                 return dict;
@@ -72,7 +73,7 @@ namespace CmsData.API
                 var dict = new Dictionary<string, object>();
                 foreach (var kv in dictionaryss)
                 {
-                    dict.Add("@" + kv.Key, kv.Value);
+                    dict.Add(kv.Key, kv.Value);
                 }
 
                 return dict;
@@ -195,7 +196,16 @@ namespace CmsData.API
 
         public override string ToString()
         {
-            return JsonConvert.SerializeObject(dict, Formatting.Indented);
+            var json = JsonConvert.SerializeObject(dict, Formatting.Indented);
+            return json.Replace("'", @"''");
+        }
+        public string ToFlatString()
+        {
+            var emptyvalues = dict.Where(vv => vv.Value == null || vv.Value?.ToString() == "").Select(vv => vv.Key).ToList();
+            foreach (var k in emptyvalues)
+                this.Remove(k);
+            var json = JsonConvert.SerializeObject(dict);
+            return json.Replace("'", @"''");
         }
 
         public List<string> Keys(DynamicData metadata = null)
