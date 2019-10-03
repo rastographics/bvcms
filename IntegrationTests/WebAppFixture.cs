@@ -51,9 +51,18 @@ namespace IntegrationTests
 
         private void Warmup()
         {
-            using (var client = new WebClient())
+            var attempts = 0;
+            while (attempts++ < 100)
             {
-                client.DownloadString(Settings.RootUrl);
+                try
+                {
+                    using (var client = new WebClient())
+                    {
+                        client.DownloadString(Settings.RootUrl);
+                        break;
+                    }
+                }
+                catch { }
             }
         }
 

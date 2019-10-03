@@ -71,6 +71,7 @@ namespace IntegrationTests.Support
                 var hostExe = Environment.GetEnvironmentVariable("IISEXPRESS_HOST") ?? IIS_EXPRESS;
                 var hostArguments = string.Format(Environment.GetEnvironmentVariable("IISEXPRESS_ARGS") ?? "{0}", arguments.ToString().Trim());
 
+                Console.WriteLine($"Starting host {hostExe} {hostArguments}");
                 process = Process.Start(new ProcessStartInfo()
                 {
                     FileName = hostExe,
