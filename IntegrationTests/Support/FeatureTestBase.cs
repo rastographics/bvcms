@@ -56,6 +56,7 @@ namespace IntegrationTests.Support
 
             ChromeOptions options = new ChromeOptions();
             options.AddArgument("ignore-certificate-errors");
+            options.AddArgument("no-sandbox");
             var chromedriver = new ChromeDriver(options);
             driver = chromedriver;
         }
