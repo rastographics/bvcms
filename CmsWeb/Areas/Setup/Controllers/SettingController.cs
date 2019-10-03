@@ -46,6 +46,24 @@ namespace CmsWeb.Areas.Setup.Controllers
             return Redirect($"/Settings/#{id}");
         }
 
+        /// <summary>
+        /// This is for Integration Testing of Settings.
+        /// Prevents having to wait for 60 seconds for the Cache to expire.
+        /// </summary>
+        [HttpGet, Route("~/SetSettingForLocalhost/{name}/{value}")]
+        public ActionResult SetSettingForLocalhost(string name, string value)
+        {
+            if (Util.Host == "localhost")
+            {
+                if (value == "DELETE")
+                    CurrentDatabase.DeleteSetting(name);
+                else
+                    CurrentDatabase.SetSetting(name, value);
+                CurrentDatabase.SubmitChanges();
+                return Content($"{name} {value} done");
+            }
+            return Content("only valid on localhost database");
+        }
         [HttpPost]
         public ContentResult Edit(string pk, string value)
         {

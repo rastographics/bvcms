@@ -61,8 +61,7 @@
                 $('#name').val(ret.name);
                 $('#pid').val(ret.PeopleId);
                 $('#amt').focus();
-                setPledges(ret.pledgesSummary);
-                $('#name').popover('show');
+                showPledgesSummary(ret.pledgesSummary);                
             }
         });
     });
@@ -103,8 +102,7 @@
         select: function (event, ui) {
             $("#name").val(ui.item.Name);
             $("#pid").val(ui.item.Pid);
-            setPledges(ui.item.pledgesSummary);
-            $('#name').popover('show');
+            showPledgesSummary(ui.item.pledgesSummary);            
             return false;
         }
     }).data("uiAutocomplete")._renderItem = function (ul, item) {
@@ -198,6 +196,7 @@
 
     $('a.update').click(function (event) {
         event.preventDefault();
+        $('#name').popover('hide');
         $.PostRow({ scroll: true });
     });
 
@@ -366,6 +365,7 @@
     initializeEditable();
 
     $.PostRow = function (options) {
+        $('#name').popover('hide');
         if (!options.q) {
             var n = parseFloat($('#amt').val());
             var plnt = $("#PLNT").val();
@@ -500,7 +500,7 @@
         ev.preventDefault();
         $("#campusid").val($("#newcampus").val());
         $('#edit-campus-modal').modal('hide');
-    });    
+    });
 
     $('#name').popover({
         title: 'Pledges Summary <span class="close">&times;</span>',
@@ -527,6 +527,13 @@ function setPledges(pledgesData) {
     popoverPledges.setContent();
     popoverPledges.$tip.addClass(popoverPledges.options.placement);
     popoverPledges.$tip.css('max-width', '100%');
+}
+
+function showPledgesSummary(pledgesData) {
+    if (Array.isArray(pledgesData) && pledgesData.length) {
+        setPledges(pledgesData);
+        $('#name').popover('show');
+    }
 }
 
 function AddSelected(ret) {

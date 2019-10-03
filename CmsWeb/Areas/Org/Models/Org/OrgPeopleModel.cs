@@ -3,6 +3,7 @@ using CmsData.Classes.RoleChecker;
 using CmsData.Codes;
 using CmsData.View;
 using CmsWeb.Code;
+using CmsWeb.Membership.Extensions;
 using CmsWeb.Models;
 using System;
 using System.Collections.Generic;
@@ -326,7 +327,7 @@ namespace CmsWeb.Areas.Org.Models
         public bool ShowBirthday => RoleChecker.HasSetting(SettingName.Organization_ShowBirthday, true);
         public bool ShowTagButtons => RoleChecker.HasSetting(SettingName.Organization_ShowTagButtons, true);
         public bool ShowShowAddress => RoleChecker.HasSetting(SettingName.Organization_ShowAddress, true);
-        public bool ShowCheckin => (User != null) && User.IsInRole("Checkin");
+        public bool ShowCheckin => User != null && User.InAnyRole("Checkin", "Edit");
 
         public bool ShowAddress { get; set; }
         public int? Id { get; set; }
