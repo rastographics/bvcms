@@ -535,6 +535,7 @@
     <Compile Include="Classes\OnlineRegSummaryText\OnlineRegPersonModel0.cs" />
     <Compile Include="Classes\OnlineRegSummaryText\SummaryInfo.cs" />
     <Compile Include="Classes\Pbkdf2Hasher.cs" />
+    <Compile Include="Classes\PeopleUtils.cs" />
     <Compile Include="Classes\RoleChecker\RoleChecker.cs" />
     <Compile Include="Classes\style.cs" />
     <Compile Include="DbUtil\CurrentOrg.cs" />
