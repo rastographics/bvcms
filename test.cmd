@@ -1,7 +1,8 @@
+:: This script depends on PSTools being added to the PATH
+:: https://docs.microsoft.com/en-us/sysinternals/downloads/pstools
 setlocal
 nuget install Codecov -OutputDirectory packages || exit 1
 nuget install OpenCover -OutputDirectory packages || exit 2
-nuget update Selenium.WebDriver.ChromeDriver
 for /f %%f in ('dir /b packages\opencover.*') do set OpenCover=%~dp0packages\%%f\tools\opencover.console.exe
 for /f %%f in ('dir /b packages\xunit.runner.console.*') do set xunit=%~dp0packages\%%f\tools\net461\xunit.console.x86.exe
 for /f %%f in ('dir /b packages\codecov.*') do set codecov=%~dp0packages\%%f\tools\codecov.exe
@@ -28,6 +29,19 @@ set placeholder="{0}"
 set "IISEXPRESS_ARGS=-register:user -target:%iisexpress% -targetargs:%placeholder% -output:%test_coverage%"
 del %test_coverage%
 %OpenCover% -register:user -target:"%xunit%" -targetargs:"%integration_tests% -noshadow -teamcity" -filter:%opencover_filters% || exit 9
+
+pskill iisexpress.exe
+:waitforopencover
+@echo off
+pslist opencover.console >nul 2>&1
+IF ERRORLEVEL 1 (
+  goto opencoverexited
+) ELSE (
+  goto waitforopencover
+)
+:opencoverexited
+@echo on
+
 IF NOT EXIST %test_coverage% (
   echo File not found: %test_coverage%
   exit 10

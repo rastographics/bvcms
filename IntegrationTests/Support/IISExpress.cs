@@ -79,7 +79,8 @@ namespace IntegrationTests.Support
                     WindowStyle = ProcessWindowStyle.Minimized,
                     WorkingDirectory = Path.GetDirectoryName(hostExe)
                 });
-                if (processExited(process))
+
+                if (process.WaitForExit(1000))
                 {
                     Console.WriteLine("Failed to launch iisexpress");
                     Environment.Exit(-1001);
