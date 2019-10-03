@@ -8,6 +8,7 @@ nuget install OpenCover -OutputDirectory packages || exit 2
 for /f %%f in ('dir /b packages\opencover.*') do set OpenCover=%~dp0packages\%%f\tools\opencover.console.exe
 for /f %%f in ('dir /b packages\xunit.runner.console.*') do set xunit=%~dp0packages\%%f\tools\net461\xunit.console.x86.exe
 for /f %%f in ('dir /b packages\codecov.*') do set codecov=%~dp0packages\%%f\tools\codecov.exe
+for /f %%f in ('dir /b packages\selenium.webdriver.chromedriver.*') do set chromedriverdir=%~dp0packages\%%f\driver\win32\
 set test_coverage=%~dp0test_coverage.xml
 set opencover_filters="+[*]* -[*Tests]* -[xunit.*]*"
 set iisexpress="%ProgramFiles%\IIS Express\iisexpress.exe"
