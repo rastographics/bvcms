@@ -32,10 +32,10 @@ set "IISEXPRESS_ARGS=-register:user -target:%iisexpress% -targetargs:%placeholde
 del %test_coverage%
 %OpenCover% -register:user -target:"%xunit%" -targetargs:"%integration_tests% -noshadow -teamcity" -filter:%opencover_filters% || exit 9
 
-pskill iisexpress.exe
+pskill -nobanner -t iisexpress.exe
 :waitforopencover
 @echo off
-pslist opencover.console >nul 2>&1
+pslist -nobanner opencover.console >nul 2>&1
 IF ERRORLEVEL 1 (
   goto opencoverexited
 ) ELSE (
