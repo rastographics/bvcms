@@ -1,4 +1,5 @@
 using CmsData;
+using ImageData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,13 +45,14 @@ namespace CmsWeb.Areas.Setup.Models
         }
         public void Promote(int id)
         {
-            var p = DbUtil.Db.Promotions.Single(pr => pr.Id == id);
+            var db = DbUtil.Db;
+            var p = db.Promotions.Single(pr => pr.Id == id);
             var fromdiv = p.FromDivId;
-            var q = from om in DbUtil.Db.OrganizationMembers
+            var q = from om in db.OrganizationMembers
                     where om.Organization.DivOrgs.Any(d => d.DivId == fromdiv)
                     where (om.Pending ?? false) == false
                     let pcid = om.OrgMemberExtras.Where(vv => vv.Field == "PromotingTo").Select(vv => vv.IntValue).SingleOrDefault()
-                    let pc = DbUtil.Db.OrganizationMembers.FirstOrDefault(op =>
+                    let pc = db.OrganizationMembers.FirstOrDefault(op =>
                        op.Pending == true
                        && op.PeopleId == om.PeopleId
                        && op.OrganizationId == pcid)
@@ -61,12 +63,12 @@ namespace CmsWeb.Areas.Setup.Models
             var qlist = q.ToList();
             foreach (var i in qlist)
             {
-                DbUtil.Db.SubmitChanges();
-                i.om.Drop(DbUtil.Db);
-                DbUtil.Db.SubmitChanges();
+                db.SubmitChanges();
+                i.om.Drop(db, CMSImageDataContext.Create(db.Host));
+                db.SubmitChanges();
                 i.pc.Pending = false;
                 i.pc.EnrollmentDate = DateTime.Now;
-                DbUtil.Db.SubmitChanges();
+                db.SubmitChanges();
                 list[i.pc.OrganizationId] = i.pc.Organization;
             }
             foreach (var o in list.Values)
@@ -78,7 +80,7 @@ namespace CmsWeb.Areas.Setup.Models
                 }
             }
 
-            DbUtil.Db.SubmitChanges();
+            db.SubmitChanges();
         }
     }
 }

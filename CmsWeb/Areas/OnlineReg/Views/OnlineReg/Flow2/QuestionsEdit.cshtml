@@ -126,6 +126,9 @@
             case "AskYesNoQuestions":
                 @Html.EditorFor(m => m, "AskYesNoQuestions", new { ask })
                 break;
+            case "AskDocuments":
+                @Html.EditorFor(m => m, "AskDocuments", new { ask })
+                break;
             case "AskDropdown":
                 @Html.EditorFor(m => m.option[ask.UniqueId], "AskDropdown",
                         new { items = Model.DropdownList(ask), label = ((AskDropdown)ask).Label })

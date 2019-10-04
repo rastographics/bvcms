@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using CmsData.API;
 using CmsData.Codes;
+using ImageData;
 using UtilityExtensions;
 
 namespace CmsData
@@ -159,7 +160,7 @@ namespace CmsData
             using (var db2 = NewDataContext())
             {
                 var om = db2.OrganizationMembers.Single(m => m.PeopleId == pid.ToInt() && m.OrganizationId == orgId.ToInt());
-                om.Drop(db2);
+                om.Drop(db2, CMSImageDataContext.Create(db2.Host));
                 db2.SubmitChanges();
             }
         }
@@ -206,7 +207,7 @@ namespace CmsData
         {
             db.LogActivity($"PythonModel.MoveToOrg({pid},{fromOrg},{toOrg})");
             using (var db2 = NewDataContext())
-                OrganizationMember.MoveToOrg(db2, pid.ToInt(), fromOrg.ToInt(), toOrg.ToInt(), moveregdata, toMemberTypeId);
+                OrganizationMember.MoveToOrg(db2, CMSImageDataContext.Create(db2.Host), pid.ToInt(), fromOrg.ToInt(), toOrg.ToInt(), moveregdata, toMemberTypeId);
         }
 
         public List<int> OrganizationIds(int progid, int divid, bool includeInactive = false)

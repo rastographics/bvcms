@@ -159,6 +159,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public Dictionary<int, decimal?> FundItem { get; set; }
         public Dictionary<string, string> SpecialTest { get; set; }
         public List<Dictionary<string, string>> ExtraQuestion { get; set; }
+        public Dictionary<string, bool?> OrganizationDocument { get; set; }
         public List<Dictionary<string, string>> Text { get; set; }
         public Dictionary<string, bool?> YesNoQuestion { get; set; }
         public List<string> option { get; set; }
@@ -168,6 +169,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public OnlineRegPersonModel()
         {
             YesNoQuestion = new Dictionary<string, bool?>();
+            OrganizationDocument = new Dictionary<string, bool?>();
             FundItem = new Dictionary<int, decimal?>();
             Parent = HttpContextFactory.Current.Items["OnlineRegModel"] as OnlineRegModel;
         }
