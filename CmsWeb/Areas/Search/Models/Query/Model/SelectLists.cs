@@ -261,8 +261,9 @@ namespace CmsWeb.Areas.Search.Models
         public IEnumerable<SelectListItem> Divisions(string id)
         {
             var progid = id.GetCsvToken().ToInt();
+            var showAllDivs = Db.Setting("ShowAllOrgsByDefaultInSearchBuilder", true) && progid == 0;
             var q = from div in Db.Divisions
-                    where div.ProgDivs.Any(d => d.ProgId == progid)
+                    where div.ProgDivs.Any(d => d.ProgId == progid || showAllDivs)
                     orderby div.Name
                     select new SelectListItem
                     {
@@ -277,11 +278,12 @@ namespace CmsWeb.Areas.Search.Models
         public IEnumerable<SelectListItem> Organizations(string id)
         {
             var divid = id.GetCsvToken().ToInt();
+            var showAllOrgs = Db.Setting("ShowAllOrgsByDefaultInSearchBuilder", true) && divid == 0;
             var roles = Db.CurrentRoles();
             var q = from ot in Db.DivOrgs
                     where ot.Organization.LimitToRole == null || roles.Contains(ot.Organization.LimitToRole)
                     let name = ot.Organization.OrganizationName
-                    where ot.DivId == divid
+                    where (ot.DivId == divid || showAllOrgs)
                           && (SqlMethods.DateDiffMonth(ot.Organization.OrganizationClosedDate, Util.Now) < 14
                               || ot.Organization.OrganizationStatusId == 30)
                     where Util2.OrgLeadersOnly == false || ot.Organization.SecurityTypeId != 3

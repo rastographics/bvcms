@@ -20,13 +20,13 @@ namespace CmsWeb.Areas.OnlineReg.Models
             return q;
         }
 
-        public static void SaveResults(int id, int peopleId, Dictionary<string, string> items)
+        public static void SaveResults(CMSDataContext db, int id, int peopleId, Dictionary<string, string> items)
         {
-            var org = (from e in DbUtil.Db.Organizations
+            var org = (from e in db.Organizations
                 where e.OrganizationId == id
                 select e).FirstOrDefault();
 
-            var person = (from e in DbUtil.Db.People
+            var person = (from e in db.People
                 where e.PeopleId == peopleId
                 select e).FirstOrDefault();
 
@@ -46,19 +46,19 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 summary.AppendFormat("{0}: {1}<br>", item.Key, item.Value);
             }
 
-            DbUtil.Db.SubmitChanges();
+            db.SubmitChanges();
 
-            var staffList = DbUtil.Db.StaffPeopleForOrg(id);
+            var staffList = db.StaffPeopleForOrg(id);
             var staff = staffList[0];
 
-            var regSettings = DbUtil.Db.CreateRegistrationSettings(id);
+            var regSettings = db.CreateRegistrationSettings(id);
 
             var subject = Util.PickFirst(regSettings.Subject, "No subject");
             var body = Util.PickFirst(regSettings.Body, "confirmation email body not found");
 
             subject = subject.Replace("{org}", org.OrganizationName);
 
-            body = body.Replace("{church}", DbUtil.Db.Setting("NameOfChurch", "church"), true)
+            body = body.Replace("{church}", db.Setting("NameOfChurch", "church"), true)
                 .Replace("{name}", person.Name, true)
                 .Replace("{date}", Util.Now.ToString("d"), true)
                 .Replace("{email}", person.EmailAddress, true)
@@ -68,8 +68,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 .Replace("{contactphone}", org.PhoneNumber.FmtFone(), true)
                 .Replace("{details}", summary.ToString(), true);
 
-            DbUtil.Db.Email(staff.FromEmail, person, subject, body);
-            DbUtil.Db.Email(person.FromEmail, staff, $"Registration completed for {org.OrganizationName}", $"{person.Name} completed {org.OrganizationName}<br/><br/>{summary}");
+            db.Email(staff.FromEmail, person, subject, body);
+            db.Email(person.FromEmail, staff, $"Registration completed for {org.OrganizationName}", $"{person.Name} completed {org.OrganizationName}<br/><br/>{summary}");
         }
     }
 }

@@ -8,12 +8,18 @@ using CmsWeb.Controllers;
 using UtilityExtensions;
 using CmsData.Codes;
 using System.Linq;
+using CmsWeb.Models;
+using CmsData;
+using Newtonsoft.Json;
 
 namespace CmsWeb.Areas.OnlineReg.Models
 {
     [Serializable]
-    public partial class OnlineRegPersonModel : IXmlSerializable
+    public partial class OnlineRegPersonModel : IXmlSerializable, IDbBinder
     {
+        [XmlIgnore, JsonIgnore]
+        public CMSDataContext CurrentDatabase { get => _currentDatabase ?? DbUtil.Db; set => _currentDatabase = value; }
+        private CMSDataContext _currentDatabase;
         // IsValidForContinue = false means that there is some reason registrant cannot proceed to the questions page
         public bool IsValidForContinue { get; set; }
         public bool IsValidForNew { get; set; }

@@ -59,7 +59,7 @@ namespace CmsWeb.Areas.Finance.Controllers
             }
             else
             {
-                var authorizedFunds = CurrentDatabase.ContributionFunds.ScopedByRoleMembership().Select(f => f.FundId).ToList();
+                var authorizedFunds = CurrentDatabase.ContributionFunds.ScopedByRoleMembership(CurrentDatabase).Select(f => f.FundId).ToList();
                 var authorizedFundsCsv = string.Join(",", authorizedFunds);
 
                 queryParameters.Add("@fundids", authorizedFundsCsv);
@@ -125,7 +125,7 @@ namespace CmsWeb.Areas.Finance.Controllers
             var queryParameters = new DynamicParameters();
             queryParameters.Add("@fund", model.Fund.Value.ToInt());
 
-            var authorizedFunds = CurrentDatabase.ContributionFunds.ScopedByRoleMembership().Select(f => f.FundId).ToList();
+            var authorizedFunds = CurrentDatabase.ContributionFunds.ScopedByRoleMembership(CurrentDatabase).Select(f => f.FundId).ToList();
             var authorizedFundsCsv = string.Join(",", authorizedFunds);
             queryParameters.Add("@authorizedFundIds", authorizedFundsCsv);
 
@@ -165,7 +165,7 @@ namespace CmsWeb.Areas.Finance.Controllers
             var fromDate = DateTime.Parse("1/1/1900");
             var toDate = DateTime.Parse("1/1/2099");
             var queryResult = from pledgeReports in CurrentDatabase.PledgeReport(fromDate, toDate, 0)
-                              join allowedFunds in CurrentDatabase.ContributionFunds.ScopedByRoleMembership() on pledgeReports.FundId equals allowedFunds.FundId
+                              join allowedFunds in CurrentDatabase.ContributionFunds.ScopedByRoleMembership(CurrentDatabase) on pledgeReports.FundId equals allowedFunds.FundId
                               orderby pledgeReports.FundId descending
                               select pledgeReports;
 
@@ -359,9 +359,8 @@ namespace CmsWeb.Areas.Finance.Controllers
         public ActionResult ManageGiving2(int id)
         {
             var model = new ManageGivingModel(CurrentDatabase.Host, id);
-            model.testing = true;
-            var body = ViewExtensions2.RenderPartialViewToString(this, "ManageGiving2", model);
-            return SimpleContent(body);
+            model.testing = true; // TODO: Is this really necessary?
+            return View(model);
         }
 
         public ActionResult PledgeFulfillments(int id)

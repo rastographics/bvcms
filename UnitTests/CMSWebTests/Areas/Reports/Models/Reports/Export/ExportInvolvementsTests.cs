@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CmsWeb.Areas.People.Models;
 using Shouldly;
 using Xunit;
 using CmsWeb.Models;
@@ -15,11 +12,12 @@ using OfficeOpenXml;
 using System.Reflection;
 using CmsWeb;
 using SharedTestFixtures;
+using CmsWeb.Areas.Search.Models;
 
 namespace CMSWebTests.Areas.Reports.Models.Reports.Export
 {
     [Collection(Collections.Database)]
-    public class ExportInvolvementsTests
+    public class ExportInvolvementsTests : DatabaseTestBase
     {
         [Fact]
         public void InvolvementList_Should_Have_FamilyId()
@@ -54,6 +52,53 @@ namespace CMSWebTests.Areas.Reports.Models.Reports.Export
                 FamilyId.ShouldBe("FamilyId");
             }
             FakeOrganizationUtils.DeleteOrg(FakeOrg.org.OrganizationId);
+        }
+
+        [Fact]
+        public void ExcelListShouldNotHaveDeceased()
+        {
+            var requestManager = FakeRequestManager.Create();
+            var db = requestManager.CurrentDatabase;
+
+            var family = new Family();
+            db.Families.InsertOnSubmit(family);
+            db.SubmitChanges();
+
+            var hoh = new Person
+            {
+                Family = family,
+                FirstName = RandomString(),
+                LastName = RandomString(),
+                EmailAddress = RandomString() + "@example.com",
+                MemberStatusId = MemberStatusCode.Member,
+                PositionInFamilyId = PositionInFamily.PrimaryAdult
+            };
+            var child = new Person
+            {
+                Family = family,
+                FirstName = RandomString(),
+                LastName = RandomString(),
+                EmailAddress = RandomString() + "@example.com",
+                DeceasedDate = DateTime.Now,
+                MemberStatusId = MemberStatusCode.Member,
+                PositionInFamilyId = PositionInFamily.Child
+            };
+
+            db.People.InsertOnSubmit(hoh);
+            db.People.InsertOnSubmit(child);
+            db.SubmitChanges();
+
+            string code = "FamilyId = " + family.FamilyId;
+            var query = QueryModel.QueryCode(db, code);
+            query.Count().ShouldBeGreaterThan(0);
+
+            var ExcelPics = ExcelExportModel.List(query.QueryId.Value);
+            ExcelPics.Where(p => p.Children.HasValue()).Count().ShouldBe(0);
+
+            db.PurgePerson(hoh.PeopleId);
+            db.PurgePerson(child.PeopleId);
+            db.Families.DeleteOnSubmit(family);
+            db.SubmitChanges();
         }
     }
 }

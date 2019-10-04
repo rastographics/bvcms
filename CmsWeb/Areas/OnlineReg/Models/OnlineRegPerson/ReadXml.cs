@@ -92,7 +92,14 @@ namespace CmsWeb.Areas.OnlineReg.Models
         private void ReadDropdownOption(XElement e, int n)
         {
             InitializeOptionIfNeeded();
-            option[n] = e.Value;
+            if (n < option.Count)
+            {
+                option[n] = e.Value;
+            }
+            else
+            {
+                option.Add(e.Value);
+            }
         }
 
         private void ReadMenuItemChoice(XElement e)

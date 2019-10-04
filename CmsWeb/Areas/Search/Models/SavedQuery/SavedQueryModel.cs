@@ -11,7 +11,8 @@ namespace CmsWeb.Areas.Search.Models
 {
     public class SavedQueryModel : PagedTableModel<Query, SavedQueryInfo>, IDbBinder
     {
-        public CMSDataContext CurrentDatabase { get; set;}
+        public CMSDataContext CurrentDatabase { get => _currentDatabase ?? DbUtil.Db; set => _currentDatabase = value; }
+        private CMSDataContext _currentDatabase;
         internal CMSDataContext Db => CurrentDatabase;
         public bool admin { get; set; }
         public bool OnlyMine { get; set; }
