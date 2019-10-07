@@ -1,4 +1,5 @@
 using CmsData;
+using CmsData.Registration;
 using CmsWeb.Areas.Dialog.Models;
 using CmsWeb.Lifecycle;
 using System.Web.Mvc;
@@ -42,7 +43,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
             }
 
             m.org.OrganizationStatusId = 30;
-            m.org.DivisionId = org.DivisionId;
+            m.org.DivisionId = org.DivisionId;        
 
             CurrentDatabase.Organizations.InsertOnSubmit(m.org);
             CurrentDatabase.SubmitChanges();
@@ -67,6 +68,15 @@ namespace CmsWeb.Areas.Dialog.Controllers
 
                 m.org.CopySettings(CurrentDatabase, id);
             }
+
+            Settings os = new Settings()
+            {
+                ShowDOBOnFind = true,
+                ShowPhoneOnFind = true
+            };
+
+            m.org.RegSettingXml = Util.Serialize(os);
+
             CurrentDatabase.SubmitChanges();
             DbUtil.LogActivity($"Add new org {m.org.OrganizationName}");
             return Redirect($"/Org/{m.org.OrganizationId}");
