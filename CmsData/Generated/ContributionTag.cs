@@ -67,7 +67,6 @@ namespace CmsData
 			{
 				if (this._ContributionId != value)
 				{
-				
 					if (this._Contribution.HasLoadedOrAssignedValue)
 						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
 				
@@ -77,9 +76,7 @@ namespace CmsData
 					this.SendPropertyChanged("ContributionId");
 					this.OnContributionIdChanged();
 				}
-
 			}
-
 		}
 
 		
@@ -92,16 +89,13 @@ namespace CmsData
 			{
 				if (this._TagName != value)
 				{
-				
                     this.OnTagNameChanging(value);
 					this.SendPropertyChanging();
 					this._TagName = value;
 					this.SendPropertyChanged("TagName");
 					this.OnTagNameChanged();
 				}
-
 			}
-
 		}
 
 		
@@ -114,16 +108,13 @@ namespace CmsData
 			{
 				if (this._Priority != value)
 				{
-				
                     this.OnPriorityChanging(value);
 					this.SendPropertyChanging();
 					this._Priority = value;
 					this.SendPropertyChanged("Priority");
 					this.OnPriorityChanged();
 				}
-
 			}
-
 		}
 
 		
@@ -159,21 +150,17 @@ namespace CmsData
 						value.ContributionTags.Add(this);
 						
 						this._ContributionId = value.ContributionId;
-						
 					}
 
 					else
 					{
 						
 						this._ContributionId = default(int);
-						
 					}
 
 					this.SendPropertyChanged("Contribution");
 				}
-
 			}
-
 		}
 
 		
@@ -192,9 +179,6 @@ namespace CmsData
 			if ((this.PropertyChanged != null))
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 		}
-
-   		
 	}
-
 }
 

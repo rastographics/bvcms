@@ -26,7 +26,6 @@ namespace CmsWeb.ModelsTests
         {
             using (var db = CMSDataContext.Create(DatabaseFixture.Host))
             {
-
                 var bundle = new BundleHeader
                 {
                     ChurchId = 1,
