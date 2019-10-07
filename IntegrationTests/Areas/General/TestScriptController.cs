@@ -14,10 +14,7 @@ namespace IntegrationTests.Areas.Manage
         [Fact, FeatureTest]
         public void PyscriptWithoutParameters()
         {
-            username = RandomString();
-            password = RandomString();
-            CreateUser(username, password, roles: new[] { "Access", "Edit", "Admin" });
-            Login();
+            LoginAsAdmin();
             db.WriteContentPython("HelloWorld", "print 'Hello World'");
             Open($"{rootUrl}PyScript/HelloWorld");
             PageSource.ShouldContain("Hello World");
@@ -25,10 +22,7 @@ namespace IntegrationTests.Areas.Manage
         [Fact, FeatureTest]
         public void PyscriptWithParameters()
         {
-            username = RandomString();
-            password = RandomString();
-            CreateUser(username, password, roles: new[] { "Access", "Edit", "Admin" });
-            Login();
+            LoginAsAdmin();
             db.WriteContentPython("HelloWorld", "print 'parameters {} {}'.format(Data.p1, Data.p2)");
             Open($"{rootUrl}PyScript/HelloWorld/testing/123");
             PageSource.ShouldContain("parameters testing 123");
@@ -38,21 +32,14 @@ namespace IntegrationTests.Areas.Manage
         [Fact, FeatureTest]
         public void PythonSearchNamesTest()
         {
-            username = RandomString();
-            password = RandomString();
-            var user = CreateUser(username, password, roles: new[] { "Access", "Edit", "Admin" });
-            var person = user.Person;
-            Login();
+            var person = LoginAsAdmin().Person;
             Open($"{rootUrl}PythonSearch/Names?term={person.FirstName.Truncate(4)} {person.LastName.Truncate(4)}");
-            PageSource.ShouldContain($"{user.Person.LastName}, {user.Person.FirstName}");
+            PageSource.ShouldContain($"{person.LastName}, {person.FirstName}");
         }
         [Fact, FeatureTest]
         public void RunScriptTest()
         {
-            username = RandomString();
-            password = RandomString();
-            CreateUser(username, password, roles: new[] { "Access", "Edit", "Admin" });
-            Login();
+            LoginAsAdmin();
             db.WriteContentSql("TestSql", "select 'Hello World'");
             Open($"{rootUrl}RunScript/TestSql");
             PageSource.ShouldContain("Hello World");
@@ -70,10 +57,7 @@ namespace IntegrationTests.Areas.Manage
     { 'Id': 2, 'Name': 'Betsy Ross', 'City': 'Philadelphia', 'Work': 'seamstress' }
 ]}");
             db.WriteContentPython("record", R.PyScriptFormTest);
-            username = RandomString();
-            password = RandomString();
-            CreateUser(username, password, roles: new[] { "Access", "Edit", "Admin" });
-            Login();
+            LoginAsAdmin();
             Open($"{rootUrl}PyScriptForm/Record/display/2");
             PageSource.ShouldContain("Philadelphia");
 

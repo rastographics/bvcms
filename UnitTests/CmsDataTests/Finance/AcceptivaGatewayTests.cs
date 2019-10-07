@@ -11,23 +11,24 @@ namespace CmsData.Finance.Tests
         [Fact]
         public void PayWithCreditCard()
         {
-            int peopleId = 1;
-            decimal amt = 0;        
-            string cardnumber = "4111111111111111";
-            string expires = "0220";
-            string description = "desc";
-            int tranid = 123;
-            string cardcode = "999";
-            string email = "dahnabez@gmail.com";
-            string first = "Oskar";
-            string last = "Baez";
-            string addr = "addr";
-            string addr2 = "addr2";
-            string city = "mycity";
-            string state = "mystate";
-            string country = "United States";
-            string zip = "03510";
-            string phone = "5547946830";
+            //TODO: Finish this test
+            //int peopleId = 1;
+            //decimal amt = 0;        
+            //string cardnumber = "4111111111111111";
+            //string expires = "0220";
+            //string description = "desc";
+            //int tranid = 123;
+            //string cardcode = "999";
+            //string email = "dahnabez@gmail.com";
+            //string first = "Oskar";
+            //string last = "Baez";
+            //string addr = "addr";
+            //string addr2 = "addr2";
+            //string city = "mycity";
+            //string state = "mystate";
+            //string country = "United States";
+            //string zip = "03510";
+            //string phone = "5547946830";
 
             //var db = CMSDataContext.Create(DatabaseFixture.Host);
             //var gateway = db.Gateway(true);
