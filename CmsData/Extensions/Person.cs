@@ -2487,11 +2487,5 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 return fam?.IsHeadOfHouseold(Util.UserPeopleId) == true;
             }
         }
-
-        public bool ShowDeceasedMember()
-        {
-            bool res = DbUtil.Db.Setting("HideDeceasedFromFamily", false) ? true : false;
-            return res;
-        }
     }
 }

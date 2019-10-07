@@ -42,7 +42,7 @@
                     var portraitUrl = $"/Portrait/{m.PortraitId}?v={picdt.Ticks}";
                     var portraitBgPos = m.PicXPos.HasValue || m.PicYPos.HasValue ? $"{m.PicXPos ?? 0}% {m.PicYPos ?? 0}%" : "top";
 
-                    if (Model.Person.ShowDeceasedMember() && m.IsDeceased == false)
+                    if (!ViewBag.HideDeceasedFromFamily || m.IsDeceased == false)
                     {
                         <li class="@active @ifdeceased" style="font-size: 0.85em;">
                             <a href="/Person2/@m.Id">
