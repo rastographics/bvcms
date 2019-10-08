@@ -24,6 +24,10 @@
                 width: 100%;
                 margin-top: 40px;
             }
+
+            .textarea-width {
+                width: 300px !important
+            }
         }
 
         .edit-text, .edit-textarea, .edit-datetime, .edit-select {
@@ -40,7 +44,13 @@
         }
 
         .textarea-width {
-            width: 300px !important
+            width: 580px !important
+        }
+
+         @@media (max-width: 480px) {
+            .textarea-width {
+                width: 250px !important
+            }
         }
     </style>
 }
