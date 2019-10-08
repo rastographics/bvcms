@@ -19,6 +19,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Web;
+using Dapper;
 using UtilityExtensions;
 
 namespace CmsData
@@ -1696,7 +1697,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
                 c.SetKeyWords(this, new [] {keyword});
             SubmitChanges();
         }
-        public void WriteContentText(string name, string text)
+        public void WriteContentText(string name, string text, string keyword = null)
         {
             var c = Content(name, ContentTypeCode.TypeText);
             if (c == null)
@@ -1708,6 +1709,8 @@ This search uses multiple steps which cannot be duplicated in a single query.
                 };
                 Contents.InsertOnSubmit(c);
             }
+            if(keyword.HasValue())
+                c.SetKeyWords(this, new [] {keyword});
             c.Body = text;
             SubmitChanges();
         }
@@ -2030,6 +2033,11 @@ This search uses multiple steps which cannot be duplicated in a single query.
             return (int)(result?.ReturnValue ?? 0);
         }
 
+        /// <summary>
+        /// The read-only connection will use an ro-CMS_{host} user if the appsettings contain a setting for readonlypassword
+        /// Otherwise, the default connection string is used
+        /// </summary>
+        /// <returns cref="SqlConnection" />
         public DbConnection ReadonlyConnection()
         {
             var finance = CurrentRoles().Contains("Finance");

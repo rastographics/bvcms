@@ -142,6 +142,11 @@ namespace CmsData
             }
         }
 
+        public static string GetValidTagName(string tagname)
+        {
+            return tagname.HasValue() ? tagname : CurrentTagName;
+        }
+
         public static bool OrgLeadersOnly
         {
             get => (bool)GetSessionObj(STR_OrgLeadersOnly, false);

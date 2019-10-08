@@ -242,6 +242,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             om.OnlineRegData = Util.Serialize(this); // saves all answers
 
             var reg = person.SetRecReg();
+            reg.Email = om.RegisterEmail;
             foreach (var ask in setting.AskItems)
             {
                 switch (ask.Type)
