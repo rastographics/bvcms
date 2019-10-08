@@ -1124,6 +1124,8 @@ namespace CmsData
 
         public Table<OrgFilter> OrgFilters => this.GetTable<OrgFilter>();
 
+        public Table<OrgMemberDocuments> OrgMemberDocuments => this.GetTable<OrgMemberDocuments>();
+
         public Table<OrgMemberExtra> OrgMemberExtras => this.GetTable<OrgMemberExtra>();
 
         public Table<OrgMemMemTag> OrgMemMemTags => this.GetTable<OrgMemMemTag>();
@@ -1346,14 +1348,6 @@ namespace CmsData
         public Table<View.MissionTripTotal> ViewMissionTripTotals => this.GetTable<View.MissionTripTotal>();
 
         public Table<View.MoveSchedule> ViewMoveSchedules => this.GetTable<View.MoveSchedule>();
-        public Table<OrgMemberDocuments> OrgMemberDocuments
-        {
-            get { return this.GetTable<OrgMemberDocuments>(); }
-        }
-
-        public Table<Organization> Organizations
-		{
-			get	{ return this.GetTable<Organization>(); }
 
         public Table<View.Nick> ViewNicks => this.GetTable<View.Nick>();
 
