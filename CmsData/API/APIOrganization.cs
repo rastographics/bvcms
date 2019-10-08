@@ -10,6 +10,7 @@ using CmsData.OnlineRegSummaryText;
 using CmsData.Registration;
 using HandlebarsDotNet;
 using UtilityExtensions;
+using ImageData;
 
 namespace CmsData.API
 {
@@ -446,7 +447,7 @@ namespace CmsData.API
                 var om = Db.OrganizationMembers.SingleOrDefault(mm => mm.OrganizationId == OrgId && mm.PeopleId == PeopleId);
                 if (om == null)
                     throw new Exception("no orgmember");
-                om.Drop(Db, DateTime.Now);
+                om.Drop(Db, CMSImageDataContext.Create(Db.Host), DateTime.Now);
                 Db.SubmitChanges();
                 return @"<DropOrgMember status=""ok"" />";
             }

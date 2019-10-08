@@ -393,6 +393,19 @@
                             </tr>
                         }
                         break;
+                    case "AskDocuments":
+                        <tr>
+                            <td><b>Documents Uploaded</b></td>
+                        </tr>
+                        foreach (var a in ((AskDocuments)ask).list.Where(aa => p.OrganizationDocument.ContainsKey(aa.DocumentName)))
+                        {
+                            <tr>
+                                <td></td>
+                                <td>@a.DocumentName</td>
+                                <td>@(p.OrganizationDocument[a.DocumentName] == true ? "Yes" : "No")</td>
+                            </tr>
+                        }
+                        break;
                     case "AskExtraQuestions":
                         foreach (var a in p.ExtraQuestion[ask.UniqueId].Where(aa => aa.Value.HasValue()))
                         {
