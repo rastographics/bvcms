@@ -41,6 +41,8 @@ namespace CmsWeb.Areas.Search.Models
 
         public void UpdateModel(CMSDataContext db)
         {
+            if (db is null) { throw new NullReferenceException("DB context is null"); }
+
             Db = db;
             if (query == null)
             {
