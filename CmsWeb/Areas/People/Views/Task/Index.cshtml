@@ -149,21 +149,6 @@
                 <div class="row">
                     <div class="col-sm-6">
                         <dl>
-                            <dt>Limit To Role</dt>
-                            <dd>
-                                @if (Model.IsAnOwner)
-                                {
-                                    <a class="edit-select" data-pk="@(Model.Id)" data-name="LimitToRole" data-url="/Task/Edit" data-selected="@Model.TaskLimitToRole" data-source-url="/Task/GetRoles">
-                                        @(Model.TaskLimitToRole.Value ?? string.Empty)
-                                    </a>
-                                }
-                                else
-                                {
-                                    <span>@Model.TaskLimitToRole.Value</span>
-                                }
-                            </dd>
-                        </dl>
-                        <dl>
                             <dt>Owner</dt>
                             <dd>
                                 @if (Model.IsOwner)
@@ -246,6 +231,21 @@
                                 else
                                 {
                                     <span>@Model.Due.ToString2("d")</span>
+                                }
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt>Limit To Role</dt>
+                            <dd>
+                                @if (Model.IsAnOwner)
+                                {
+                                    <a class="edit-select" data-pk="@(Model.Id)" data-name="LimitToRole" data-url="/Task/Edit" data-selected="@Model.TaskLimitToRole" data-source-url="/Task/GetRoles">
+                                        @(Model.TaskLimitToRole.Value ?? string.Empty)
+                                    </a>
+                                }
+                                else
+                                {
+                                    <span>@Model.TaskLimitToRole.Value</span>
                                 }
                             </dd>
                         </dl>
