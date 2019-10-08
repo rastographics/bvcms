@@ -39,8 +39,9 @@ namespace CmsWeb.Areas.Search.Models
             this.CopyPropertiesFrom(query);
         }
 
-        public void UpdateModel()
+        public void UpdateModel(CMSDataContext db)
         {
+            Db = db;
             if (query == null)
             {
                 query = Db.LoadQueryById2(QueryId);

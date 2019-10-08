@@ -49,7 +49,7 @@ namespace CmsWeb.Areas.Search.Controllers
             }
 
             m.CanDelete = true; // must be true since they can edit if they got here
-            m.UpdateModel();
+            m.UpdateModel(CurrentDatabase);
             return View("Row", m);
         }
         [HttpPost]
