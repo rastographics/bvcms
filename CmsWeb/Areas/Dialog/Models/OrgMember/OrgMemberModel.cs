@@ -4,6 +4,7 @@ using CmsData.OnlineRegSummaryText;
 using CmsData.Registration;
 using CmsData.View;
 using CmsWeb.Code;
+using ImageData;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -32,6 +33,13 @@ namespace CmsWeb.Areas.Dialog.Models
         {
             get => _currentDatabase ?? (_currentDatabase = DbUtil.Db);
             set => _currentDatabase = value;
+        }
+
+        private CMSImageDataContext _currentImageDatabase;
+        public CMSImageDataContext CurrentImageDatabase
+        {
+            get => _currentImageDatabase ?? (_currentImageDatabase = CMSImageDataContext.Create(CurrentDatabase.Host));
+            set => _currentImageDatabase = value;
         }
 
         private const string AutoOrgLeaderPromotion = "AutoOrgLeaderPromotion";
@@ -345,6 +353,7 @@ namespace CmsWeb.Areas.Dialog.Models
             return om?.PayLink2(db);
         }
         private string supportLink;
+
         public string SupportLink
         {
             get
@@ -386,11 +395,11 @@ Checking the Remove From Enrollment History box will erase all enrollment histor
 
             if (DropDate.HasValue)
             {
-                OrgMember.Drop(CurrentDatabase, DropDate.Value);
+                OrgMember.Drop(CurrentDatabase, CurrentImageDatabase, DropDate.Value);
             }
             else
             {
-                OrgMember.Drop(CurrentDatabase);
+                OrgMember.Drop(CurrentDatabase, CurrentImageDatabase);
             }
 
             CurrentDatabase.SubmitChanges();
@@ -448,6 +457,11 @@ Checking the Remove From Enrollment History box will erase all enrollment histor
         {
             var q = CurrentDatabase.OrgMemberQuestions(OrgId, PeopleId);
             return q;
+        }
+
+        public IEnumerable<OrgMemberDocuments> MemberDocuments()
+        {
+            return CurrentDatabase.OrgMemberDocuments.Where(o => o.PeopleId == PeopleId && o.OrganizationId == OrgId);
         }
 
         public void AddQuestions()

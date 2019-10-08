@@ -105,9 +105,9 @@
                 @Html.HiddenFor(m => m.coaching)
                 break;
             case "AskChurch":
-              @Html.HiddenFor(m => m.memberus)
-              @Html.HiddenFor(m => m.otherchurch)
-              @Html.HiddenFor(m => m.nochurch)
+                @Html.HiddenFor(m => m.memberus)
+                @Html.HiddenFor(m => m.otherchurch)
+                @Html.HiddenFor(m => m.nochurch)
                 break;
             case "AskTickets":
                 @Html.HiddenFor(m => m.ntickets)
@@ -132,6 +132,16 @@
                     var a = eq.list[n];
                     <input type="hidden" name="@(eqname)[@eq.UniqueId][@n].Key" value="@a.Question" />
                     <input type="hidden" name="@(eqname)[@eq.UniqueId][@n].Value" value="@Model.ExtraQuestionValue(eq.UniqueId, a.Question)" />
+                }
+                break;
+            case "AskDocuments":
+                var ad = (AskDocuments)ask;
+                var adname = Html.NameFor2(m => m.OrganizationDocument);
+                for (int n = 0; n < ad.list.Count; n++)
+                {
+                    var a = ad.list[n];
+                    <input type="hidden" name="@(adname)[@n].Key" value="@a.DocumentName" />
+                    <input type="hidden" name="@(adname)[@n].Value" value="@(Model.DocumentUploaded(a.DocumentName, true) ? "True" : "False")" />
                 }
                 break;
             case "AskText":

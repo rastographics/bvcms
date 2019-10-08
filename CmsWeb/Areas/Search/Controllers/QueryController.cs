@@ -356,16 +356,9 @@ namespace CmsWeb.Areas.Search.Controllers
             string resultMessage = string.Empty;
             bool shouldContinue = true;
 
-            if (!tagname.HasValue())
-            {
-                resultMessage = "error: no tag name";
-                shouldContinue = false;
-            }
-
             if (shouldContinue)
             {
-                var usingActiveTag = Util2.CurrentTagName == tagname;
-                var workingTag = CurrentDatabase.FetchOrCreateTag(tagname, Util.UserPeopleId, DbUtil.TagTypeId_Personal);
+                var workingTag = CurrentDatabase.FetchOrCreateTag(Util2.GetValidTagName(tagname), Util.UserPeopleId, DbUtil.TagTypeId_Personal);
                 var shouldEmptyTag = cleartagfirst ?? false;
 
                 if (shouldEmptyTag)

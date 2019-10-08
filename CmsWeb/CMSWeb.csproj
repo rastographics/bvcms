@@ -886,6 +886,7 @@
     <Compile Include="Code\DateEmptyOrValidAttribute.cs" />
     <Compile Include="Code\DecimalModelBinder.cs" />
     <Compile Include="Code\JsonNetValueProviderFactory.cs" />
+    <Compile Include="Code\PledgesHelper.cs" />
     <Compile Include="Code\ReportsMenu.cs" />
     <Compile Include="Code\UserInputException.cs" />
     <Compile Include="Common\Configuration.cs" />
@@ -1275,6 +1276,7 @@
     <Content Include="Content\touchpoint\js\main.js" />
     <Content Include="Content\touchpoint\js\metrozip\metro-zip.js" />
     <Content Include="Content\touchpoint\js\onlineregister.min.js" />
+    <Content Include="Content\touchpoint\js\onlinereg\uploadoc.js" />
     <Content Include="Content\touchpoint\js\people\givingtab.js" />
     <Content Include="Content\touchpoint\js\people\merge.js" />
     <Content Include="Content\touchpoint\js\search\export-query.js" />
@@ -1861,6 +1863,11 @@
     <Content Include="Areas\People\Views\Shared\PledgesSummary.cshtml" />
     <Content Include="libman.json" />
     <Content Include="Areas\Setup\Views\Setting\_Settings.cshtml" />
+    <Content Include="Areas\Org\Views\Org\EditorTemplates\AskDocuments.cshtml" />
+    <Content Include="Areas\Org\Views\Org\EditorTemplates\OrganizationDocument.cshtml" />
+    <Content Include="Areas\Org\Views\Org\DisplayTemplates\AskDocuments.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskDocuments.cshtml" />
+    <Content Include="Areas\Org\Views\Meeting\ScheduleAttendance.cshtml" />
     <Content Include="Areas\Manage\Views\Involvement\Index.cshtml" />
     <Content Include="Areas\Manage\Views\Involvement\_EditTab.cshtml" />
     <Content Include="Areas\Org\Views\Org\Settings\CheckIn.cshtml" />
@@ -3416,8 +3423,8 @@
   </ProjectExtensions>
   <PropertyGroup>
     <PreBuildEvent>pushd $(ProjectDir)
-npm install
-gulp --no-color
+call npm install --silent
+call gulp --no-color
 popd</PreBuildEvent>
   </PropertyGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
