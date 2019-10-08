@@ -511,6 +511,10 @@ namespace CmsData
         partial void UpdateOrganizationMember(OrganizationMember instance);
         partial void DeleteOrganizationMember(OrganizationMember instance);
 
+        partial void InsertOrgMemberDocuments(OrgMemberDocuments instance);
+        partial void UpdateOrgMemberDocuments(OrgMemberDocuments instance);
+        partial void DeleteOrgMemberDocuments(OrgMemberDocuments instance);
+
         partial void InsertOrganization(Organization instance);
         partial void UpdateOrganization(Organization instance);
         partial void DeleteOrganization(Organization instance);
@@ -1342,6 +1346,14 @@ namespace CmsData
         public Table<View.MissionTripTotal> ViewMissionTripTotals => this.GetTable<View.MissionTripTotal>();
 
         public Table<View.MoveSchedule> ViewMoveSchedules => this.GetTable<View.MoveSchedule>();
+        public Table<OrgMemberDocuments> OrgMemberDocuments
+        {
+            get { return this.GetTable<OrgMemberDocuments>(); }
+        }
+
+        public Table<Organization> Organizations
+		{
+			get	{ return this.GetTable<Organization>(); }
 
         public Table<View.Nick> ViewNicks => this.GetTable<View.Nick>();
 

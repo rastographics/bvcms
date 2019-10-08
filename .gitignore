@@ -58,6 +58,7 @@ node_modules/
 
 #other
 secrets.config
+CmsWeb/MyConnectionStrings.config
 CmsWeb/ProdConnectionStrings.config
 CmsWeb/StagingConnectionStrings.config
 cassette-cache/

@@ -268,7 +268,7 @@ namespace CmsWeb.Areas.Public.Controllers
             }
             else if (om != null && !member)
             {
-                om.Drop(CurrentDatabase);
+                om.Drop(CurrentDatabase, CurrentImageDatabase);
                 DbUtil.LogActivity($"iphone drop(org:{orgId} person:{peopleId})");
             }
             CurrentDatabase.SubmitChanges();

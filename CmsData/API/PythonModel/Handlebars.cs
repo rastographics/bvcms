@@ -1,32 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Dynamic;
-using System.IO;
 using System.Web;
-using CmsData;
-using CmsData.API;
 using HandlebarsDotNet;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using Newtonsoft.Json.Linq;
 using UtilityExtensions;
 
 namespace CmsData
 {
     public partial class PythonModel
     {
-        public static void RegisterHelpers(CMSDataContext db, PythonModel pm = null)
+        public static IHandlebars RegisterHelpers(CMSDataContext db, PythonModel pm = null, IHandlebars handlebars = null)
         {
-            Handlebars.RegisterHelper("BottomBorder", (writer, context, args) => { writer.Write(CssStyle.BottomBorder); });
-            Handlebars.RegisterHelper("AlignTop", (writer, context, args) => { writer.Write(CssStyle.AlignTop); });
-            Handlebars.RegisterHelper("AlignRight", (writer, context, args) => { writer.Write(CssStyle.AlignRight); });
-            Handlebars.RegisterHelper("DataLabelStyle", (writer, context, args) => { writer.Write(CssStyle.DataLabelStyle); });
-            Handlebars.RegisterHelper("LabelStyle", (writer, context, args) => { writer.Write(CssStyle.LabelStyle); });
-            Handlebars.RegisterHelper("DataStyle", (writer, context, args) => { writer.Write(CssStyle.DataStyle); });
+            handlebars = handlebars ?? Handlebars.Create();
+            handlebars.RegisterHelper("BottomBorder", (writer, context, args) => { writer.Write(CssStyle.BottomBorder); });
+            handlebars.RegisterHelper("AlignTop", (writer, context, args) => { writer.Write(CssStyle.AlignTop); });
+            handlebars.RegisterHelper("AlignRight", (writer, context, args) => { writer.Write(CssStyle.AlignRight); });
+            handlebars.RegisterHelper("DataLabelStyle", (writer, context, args) => { writer.Write(CssStyle.DataLabelStyle); });
+            handlebars.RegisterHelper("LabelStyle", (writer, context, args) => { writer.Write(CssStyle.LabelStyle); });
+            handlebars.RegisterHelper("DataStyle", (writer, context, args) => { writer.Write(CssStyle.DataStyle); });
 
-            Handlebars.RegisterHelper("ServerLink", (writer, context, args) => { writer.Write(db.ServerLink().TrimEnd('/')); });
-            Handlebars.RegisterHelper("FmtZip", (writer, context, args) => { writer.Write(args[0].ToString().FmtZip()); });
-            Handlebars.RegisterHelper("HtmlComment", (writer, context, args) =>
+            handlebars.RegisterHelper("ServerLink", (writer, context, args) => { writer.Write(db.ServerLink().TrimEnd('/')); });
+            handlebars.RegisterHelper("FmtZip", (writer, context, args) => { writer.Write(args[0].ToString().FmtZip()); });
+            handlebars.RegisterHelper("HtmlComment", (writer, context, args) =>
             {
 #if DEBUG
                 writer.Write($"<h6>{args[0].ToString()} {args[1].ToString()}</h6>");
@@ -34,21 +27,21 @@ namespace CmsData
                 writer.Write($"<!--{args[0].ToString()} {args[1].ToString()}-->");
 #endif
             });
-            Handlebars.RegisterHelper("IfEqual", (writer, options, context, args) =>
+            handlebars.RegisterHelper("IfEqual", (writer, options, context, args) =>
             {
                 if (IsEqual(args))
                     options.Template(writer, (object)context);
                 else
                     options.Inverse(writer, (object)context);
             });
-            Handlebars.RegisterHelper("IfNotEqual", (writer, options, context, args) =>
+            handlebars.RegisterHelper("IfNotEqual", (writer, options, context, args) =>
             {
                 if (!IsEqual(args))
                     options.Template(writer, (object)context);
                 else
                     options.Inverse(writer, (object)context);
             });
-            Handlebars.RegisterHelper("IfCond", (writer, options, context, args) =>
+            handlebars.RegisterHelper("IfCond", (writer, options, context, args) =>
             {
                 var op = HttpUtility.HtmlDecode(args[1].ToString());
                 bool b = false;
@@ -84,35 +77,35 @@ namespace CmsData
                 else
                     options.Inverse(writer, (object)context);
             });
-            Handlebars.RegisterHelper("IfGT", (writer, options, context, args) =>
+            handlebars.RegisterHelper("IfGT", (writer, options, context, args) =>
             {
                 if (Compare2(args) > 0)
                     options.Template(writer, (object)context);
                 else
                     options.Inverse(writer, (object)context);
             });
-            Handlebars.RegisterHelper("IfLT", (writer, options, context, args) =>
+            handlebars.RegisterHelper("IfLT", (writer, options, context, args) =>
             {
                 if (Compare2(args) < 0)
                     options.Template(writer, (object)context);
                 else
                     options.Inverse(writer, (object)context);
             });
-            Handlebars.RegisterHelper("IfGE", (writer, options, context, args) =>
+            handlebars.RegisterHelper("IfGE", (writer, options, context, args) =>
             {
                 if (Compare2(args) <= 0)
                     options.Template(writer, (object)context);
                 else
                     options.Inverse(writer, (object)context);
             });
-            Handlebars.RegisterHelper("IfLE", (writer, options, context, args) =>
+            handlebars.RegisterHelper("IfLE", (writer, options, context, args) =>
             {
                 if (Compare2(args) <= 0)
                     options.Template(writer, (object)context);
                 else
                     options.Inverse(writer, (object)context);
             });
-            Handlebars.RegisterHelper("GetToken", (writer, context, args) =>
+            handlebars.RegisterHelper("GetToken", (writer, context, args) =>
             {
                 var s = args[0].ToString();
                 var n = args[1].ToInt();
@@ -122,19 +115,19 @@ namespace CmsData
                 writer.Write(a[n]?.Trim() ?? "");
             });
 
-            Handlebars.RegisterHelper("FmtMDY", (writer, context, args) =>
+            handlebars.RegisterHelper("FmtMDY", (writer, context, args) =>
             {
                 var s = args[0].ToString();
                 if(DateTime.TryParse(s, out DateTime dt))
                     writer.Write(dt.ToShortDateString());
             });
-            Handlebars.RegisterHelper("FmtDate", (writer, context, args) =>
+            handlebars.RegisterHelper("FmtDate", (writer, context, args) =>
             {
                 var s = args[0].ToString();
                 if(DateTime.TryParse(s, out DateTime dt))
                     writer.Write(dt.ToShortDateString());
             });
-            Handlebars.RegisterHelper("FmtMoney", (writer, context, args) =>
+            handlebars.RegisterHelper("FmtMoney", (writer, context, args) =>
             {
                 var s = args[0].ToString();
                 if(decimal.TryParse(s, out decimal d))
@@ -144,16 +137,16 @@ namespace CmsData
             // Format helper in form of:  {{Fmt value "fmt"}}
             // ex. {{Fmt Total "C"}}
             // fmt is required. Uses standard/custom dotnet format strings
-            Handlebars.RegisterHelper("Fmt", (writer, context, args) =>
+            handlebars.RegisterHelper("Fmt", (writer, context, args) =>
             {
                 var fmt = $"{{0:{args[1]}}}";
                 writer.Write(fmt, args[0]);
             });
 
             // FmtPhone helper in form of:  {{FmtPhone phone# "prefix"}}
-            Handlebars.RegisterHelper("FmtPhone", (writer, context, args) => { writer.Write(args[0].ToString().FmtFone($"{args[1]}")); });
+            handlebars.RegisterHelper("FmtPhone", (writer, context, args) => { writer.Write(args[0].ToString().FmtFone($"{args[1]}")); });
 
-            Handlebars.RegisterHelper("ReplaceCode", (writer, context, args) =>
+            handlebars.RegisterHelper("ReplaceCode", (writer, context, args) =>
             {
                 EmailReplacements r = context.Replacements as EmailReplacements
                     ?? (context.Replacements = new EmailReplacements(db));
@@ -164,7 +157,7 @@ namespace CmsData
                     oid = args[2].ToInt2();
                 writer.Write(r.RenderCode(code, p, oid));
             });
-            Handlebars.RegisterHelper("Json", (writer, options, context, args) =>
+            handlebars.RegisterHelper("Json", (writer, options, context, args) =>
             {
                 dynamic a = JsonDeserialize2(args[0].ToString());
                 foreach (var item in a)
@@ -173,17 +166,19 @@ namespace CmsData
                 }
             });
 
-            Handlebars.RegisterHelper("Calc", (writer, context, args) =>
+            handlebars.RegisterHelper("Calc", (writer, context, args) =>
             {
                 var calcAmt = args[0].ToDouble() - args[1].ToDouble();
                 var calcAmtfmt = $"{{0:{'c'}}}";
                 writer.Write(calcAmtfmt, calcAmt);
             });
 
-            Handlebars.RegisterHelper("ThrowError", (writer, context, args) =>
+            handlebars.RegisterHelper("ThrowError", (writer, context, args) =>
             {
                 throw new Exception("ThrowError called in Handlebars Helper");
             });
+
+            return handlebars;
         }
 
         private static bool IsEqual(object[] args)

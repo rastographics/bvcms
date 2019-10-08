@@ -81,6 +81,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     case "AskYesNoQuestions":
                         ValidateAskYesNoQuestions(ask);
                         break;
+                    case "AskDocuments":
+                        ValidateOrganizationDocuments(ask);
+                        break;
                 }
             ValidatePaymentOption();
             QuestionsOK = modelState.IsValid;
@@ -161,6 +164,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 for (var n = 0; n < eq.list.Count; n++)
                 {
                     var a = eq.list[n];
+                    var req = Parent.GetNameFor(mm => mm.List[Index].ExtraQuestion[eq.UniqueId][a.Question]);
                     if (ExtraQuestion == null || !ExtraQuestion[eq.UniqueId].ContainsKey(a.Question) ||
                         !ExtraQuestion[eq.UniqueId][a.Question].HasValue())
                         modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].ExtraQuestion[eq.UniqueId][a.Question]),
@@ -227,6 +231,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 for (var n = 0; n < tx.list.Count; n++)
                 {
                     var a = tx.list[n];
+                    var namedd = Parent.GetNameFor(mm => mm.List[Index].Text[tx.UniqueId][a.Question]);
                     if (Text == null || !Text[tx.UniqueId].ContainsKey(a.Question) ||
                         !Text[tx.UniqueId][a.Question].HasValue())
                         modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].Text[tx.UniqueId][a.Question]),
@@ -260,6 +265,19 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 if (YesNoQuestion == null || !YesNoQuestion.ContainsKey(a.SmallGroup))
                     modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].YesNoQuestion[a.SmallGroup]),
                         "please select yes or no");
+            }
+        }
+
+        private void ValidateOrganizationDocuments(Ask ask)
+        {
+            for (var n = 0; n < ((AskDocuments)ask).list.Count; n++)
+            {
+                var a = ((AskDocuments)ask).list[n];
+                var namedd = Parent.GetNameFor(mm => mm.List[Index].OrganizationDocument[a.DocumentName]);
+                if (a.Required == true && OrganizationDocument[a.DocumentName] == false)
+                {
+                    modelState.AddModelError("form", "Please upload the required documents");
+                }
             }
         }
 
