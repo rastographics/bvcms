@@ -11,6 +11,7 @@ using CmsData.View;
 using CmsWeb.Areas.Finance.Controllers;
 using CmsWeb.Code;
 using System;
+using CmsWeb.Constants;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
@@ -18,21 +19,25 @@ using UtilityExtensions;
 
 namespace CmsWeb.Models
 {
-    public class PostBundleModel
+    public class PostBundleModel : IDbBinder
     {
         private BundleHeader bundle;
 
-        private CMSDataContext CurrentDatabase;
+        public CMSDataContext CurrentDatabase { get => _currentDatabase ?? DbUtil.Db; set => _currentDatabase = value; }
+        private CMSDataContext _currentDatabase;
 
-        public PostBundleModel()
+        [Obsolete(Errors.ModelBindingConstructorError, error: true)]
+        public PostBundleModel() { }
+
+        public PostBundleModel(CMSDataContext db)
         {
-            this.CurrentDatabase = DbUtil.Db;
+            CurrentDatabase = db;
         }
 
         public PostBundleModel(CMSDataContext db, int id)
         {
             this.id = id;
-            this.CurrentDatabase = db;
+            CurrentDatabase = db;
             PLNT = Bundle.BundleHeaderTypeId == BundleTypeCode.Pledge ? "PL" :
                 Bundle.BundleHeaderTypeId == BundleTypeCode.GiftsInKind ? "GK" :
                     Bundle.BundleHeaderTypeId == BundleTypeCode.Stock ? "SK" : "CN";
@@ -188,7 +193,7 @@ namespace CmsWeb.Models
                     {
                         e.PeopleId,
                         name = e.Person.Name2 + (e.Person.DeceasedDate.HasValue ? "[DECEASED]" : ""),
-                        pledgesSummary = PledgesHelper.GetFilteredPledgesSummary(DbUtil.Db, pid.ToInt())
+                        pledgesSummary = PledgesHelper.GetFilteredPledgesSummary(CurrentDatabase, pid.ToInt())
                     };
             }
             else
@@ -199,7 +204,7 @@ namespace CmsWeb.Models
                     {
                         i.PeopleId,
                         name = i.Name2 + (i.DeceasedDate.HasValue ? "[DECEASED]" : ""),
-                        pledgesSummary = PledgesHelper.GetFilteredPledgesSummary(DbUtil.Db, pid.ToInt())
+                        pledgesSummary = PledgesHelper.GetFilteredPledgesSummary(CurrentDatabase, pid.ToInt())
                     };
             }
             var o = q.FirstOrDefault();
