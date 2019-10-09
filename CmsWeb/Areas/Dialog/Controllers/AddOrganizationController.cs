@@ -50,7 +50,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
             foreach (var div in org.DivOrgs)
             {
                 m.org.DivOrgs.Add(new DivOrg { Organization = m.org, DivId = div.DivId });
-            }
+            }            
 
             if (m.copysettings)
             {
@@ -68,14 +68,15 @@ namespace CmsWeb.Areas.Dialog.Controllers
 
                 m.org.CopySettings(CurrentDatabase, id);
             }
-
-            Settings os = new Settings()
+            else
             {
-                ShowDOBOnFind = true,
-                ShowPhoneOnFind = true
-            };
-
-            m.org.RegSettingXml = Util.Serialize(os);
+                Settings os = new Settings()
+                {
+                    ShowDOBOnFind = true,
+                    ShowPhoneOnFind = true
+                };
+                m.org.RegSettingXml = Util.Serialize(os);
+            }
 
             CurrentDatabase.SubmitChanges();
             DbUtil.LogActivity($"Add new org {m.org.OrganizationName}");

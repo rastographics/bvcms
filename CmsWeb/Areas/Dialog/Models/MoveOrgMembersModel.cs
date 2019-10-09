@@ -1,4 +1,5 @@
 ﻿using CmsData;
+using ImageData;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -98,7 +99,7 @@ namespace CmsWeb.Areas.Dialog.Models
                 var peopleIds = orgsPeople[oid];
                 foreach (var pid in peopleIds)
                 {
-                    OrganizationMember.MoveToOrg(workerContext, pid, oid, model.TargetId, model.MoveRegistrationData, model.ChangeMemberType == true ? model.MoveToMemberTypeId : -1);
+                    OrganizationMember.MoveToOrg(workerContext, CMSImageDataContext.Create(workerContext.Host), pid, oid, model.TargetId, model.MoveRegistrationData, model.ChangeMemberType == true ? model.MoveToMemberTypeId : -1);
                     if (lop != null)
                     {
                         lop.Processed++;

@@ -237,6 +237,7 @@
     <Compile Include="Config\AppConfig.cs" />
     <Compile Include="EnDeCrypt.cs" />
     <Compile Include="Extensions\DateTimeRangeFormatter.cs" />
+    <Compile Include="Extensions\MimeTypes.cs" />
     <Compile Include="Extensions\Util.ConnectionStrings.cs" />
     <Compile Include="Extensions\Extensions.cs" />
     <Compile Include="Extensions\Util.Session.cs" />
@@ -252,6 +253,7 @@
     <Compile Include="Extensions\ObjectUtilities.cs" />
     <Compile Include="Extensions\UtilityExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TmpFiles.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config">

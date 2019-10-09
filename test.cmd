@@ -29,12 +29,12 @@ IF NOT EXIST %test_coverage% (
 IF "%CodeCovToken%" NEQ "" %codecov% -f "%test_coverage%" -t "%CodeCovToken%"
 set "IISEXPRESS_HOST=%OpenCover%"
 set placeholder="{0}"
-set "IISEXPRESS_ARGS=-register:user -target:%iisexpress% -targetargs:%placeholder% -output:%test_coverage%"
+set "IISEXPRESS_ARGS=-register:user -target:%iisexpress% -targetargs:%placeholder% -filter:%opencover_filters% -output:%test_coverage%"
 del %test_coverage%
 %OpenCover% -register:user -target:"%xunit%" -targetargs:"%integration_tests% -noshadow -teamcity" -filter:%opencover_filters% || exit 9
 
-pskill -nobanner -t iisexpress.exe
 :waitforopencover
+pskill -t iisexpress.exe
 @echo off
 pslist -nobanner opencover.console >nul 2>&1
 IF ERRORLEVEL 1 (
