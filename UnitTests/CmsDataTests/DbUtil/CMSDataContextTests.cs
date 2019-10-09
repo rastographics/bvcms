@@ -54,8 +54,7 @@ namespace CmsDataTests
                 var spouse = MockPeople.CreateSavePerson(db, f);
                 spouse.MaritalStatusId = 20;
                 spouse.GenderId = 2;
-                db.SubmitChanges();
-                
+                db.SubmitChanges();                
             }
             using (var db = CMSDataContext.Create(DatabaseFixture.Host))
             {
