@@ -535,6 +535,7 @@
     <Compile Include="Classes\OnlineRegSummaryText\OnlineRegPersonModel0.cs" />
     <Compile Include="Classes\OnlineRegSummaryText\SummaryInfo.cs" />
     <Compile Include="Classes\Pbkdf2Hasher.cs" />
+    <Compile Include="Classes\PeopleUtils.cs" />
     <Compile Include="Classes\RoleChecker\RoleChecker.cs" />
     <Compile Include="Classes\style.cs" />
     <Compile Include="DbUtil\CurrentOrg.cs" />
@@ -848,6 +849,7 @@
     <Compile Include="Generated\MobileAppRoom.cs" />
     <Compile Include="Generated\MobileAppVideoType.cs" />
     <Compile Include="Generated\OrgFilter.cs" />
+    <Compile Include="Generated\OrgMemberDocuments.cs" />
     <Compile Include="Generated\OrgMemberExtra.cs" />
     <Compile Include="Generated\PrevOrgMemberExtra.cs" />
     <Compile Include="Generated\PaymentProcess.cs" />
@@ -1108,6 +1110,7 @@
     <Compile Include="Finance\ManagedGiving.cs" />
     <Compile Include="DbUtil\Dynamic.cs" />
     <Compile Include="Registration\Ask.cs" />
+    <Compile Include="Registration\AskDocuments.cs" />
     <Compile Include="Registration\AskText.cs" />
     <Compile Include="Registration\AskRequest.cs" />
     <Compile Include="Registration\AskSize.cs">
@@ -1406,6 +1409,9 @@
     <Content Include="Migrations\20190507_alter_view_TransactionBalances.sql" />
     <Content Include="Migrations\20190523_add_paymentinfo_gatewayaccountid.sql" />
     <Content Include="Migrations\20190523_Insert_Temporary_Recurring_Giving.sql" />
+    <Content Include="Migrations\20190530_Update_PaymentInfo_PK.sql" />
+    <Content Include="Migrations\20190603_add_role_priority.sql" />
+    <Content Include="Migrations\20190531_drop_SP_GreatPlainsIncomeExport.sql" />
     <Content Include="Migrations\20190603_add_role_priority.sql" />
     <Content Include="Migrations\20190530_Update_PaymentInfo_PK.sql" />
     <Content Include="Migrations\20190626_Add_RecReg_nomember_Column.sql" />
@@ -1420,6 +1426,7 @@
     <Content Include="Migrations\20190613_Transform_NoPhoneEmailOnFind_To_New_EVs.sql" />
     <Content Include="Migrations\20190626_Add_RecReg_nomember_Column.sql" />
     <Content Include="Migrations\20190710_Update_MeetingTime_When_Is_Null.sql" />
+    <Content Include="Migrations\20190715_create_orgmemberdocuments_table.sql" />
     <Content Include="Migrations\20190724_add_checkinprofiles_settings_tables.sql" />
     <Content Include="Migrations\20190626_Add_RecReg_nomember_Column.sql" />
     <Content Include="Migrations\20190809_alter_function_CurrOrgMembers2_to_add_passport_data.sql" />

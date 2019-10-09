@@ -1,6 +1,7 @@
 using CmsData;
 using CmsData.Codes;
 using CmsData.Registration;
+using ImageData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -142,6 +143,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public void UpdateSubscriptions()
         {
+            var db = DbUtil.Db;
             var q = from o in OnlineRegModel.UserSelectClasses(masterorg)
                     let om = o.OrganizationMembers.SingleOrDefault(mm => mm.PeopleId == pid)
                     where om != null
@@ -167,14 +169,14 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             foreach (var om in drops)
             {
-                om.Drop(DbUtil.Db);
-                DbUtil.Db.SubmitChanges();
+                om.Drop(db, CMSImageDataContext.Create(db.Host));
+                db.SubmitChanges();
             }
             foreach (var id in joins)
             {
-                OrganizationMember.InsertOrgMembers(DbUtil.Db,
+                OrganizationMember.InsertOrgMembers(db,
                     id, pid, MemberTypeCode.Member, DateTime.Now, null, false);
-                DbUtil.Db.SubmitChanges();
+                db.SubmitChanges();
                 //DbUtil.Db.UpdateMainFellowship(id);
             }
         }

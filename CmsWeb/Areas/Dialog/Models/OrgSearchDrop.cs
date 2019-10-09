@@ -1,5 +1,6 @@
 using CmsData;
 using CmsWeb.Areas.Search.Models;
+using ImageData;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -65,6 +66,7 @@ namespace CmsWeb.Areas.Dialog.Models
         private void DoWork(OrgSearchDrop model)
         {
             var db = CMSDataContext.Create(model.Host);
+            var idb = CMSImageDataContext.Create(model.Host);
             var cul = db.Setting("Culture", "en-US");
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
@@ -83,11 +85,11 @@ namespace CmsWeb.Areas.Dialog.Models
                     var om = db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == orginfo.Id);
                     if (DropDate.HasValue)
                     {
-                        om.Drop(db, DropDate.Value);
+                        om.Drop(db, idb, DropDate.Value);
                     }
                     else
                     {
-                        om.Drop(db);
+                        om.Drop(db, idb);
                     }
 
                     lop = FetchLongRunningOperation(db, Op, model.QueryId);

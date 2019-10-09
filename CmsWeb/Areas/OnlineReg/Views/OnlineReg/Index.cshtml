@@ -14,6 +14,7 @@
         @Fingerprint.Css("/Content/touchpoint/lib/select2/css/select2.css")
         @Fingerprint.Css("/Content/touchpoint/lib/select2/css/select2-bootstrap.css")
     }
+    @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-sweetalert/css/sweetalert.css")
 }
 @section scripts
 {
@@ -31,7 +32,9 @@
             });
         });
     </script>
+    @Fingerprint.Script("/Content/touchpoint/js/onlinereg/uploadoc.js")
     @Fingerprint.Script("/Content/touchpoint/js/onlinereg/OnlineReg2.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-sweetalert/js/sweetalert.min.js")
     @if (Model.DisplaySpecialFunds)
     {
         @Fingerprint.Script("/Content/touchpoint/lib/select2/js/select2.min.js")

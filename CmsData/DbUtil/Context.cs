@@ -425,13 +425,7 @@ namespace CmsData
         }
         public IQueryable<Person> PersonQueryParents(IQueryable<Person> q)
         {
-            var q2 = from p in q
-                     from m in p.Family.People
-                     where m.PositionInFamilyId == 10
-                     //					 where (m.PositionInFamilyId == 10 && p.PositionInFamilyId != 10)
-                     //					 || (m.PeopleId == p.PeopleId && p.PositionInFamilyId == 10)
-                     where m.DeceasedDate == null
-                     select m.PeopleId;
+            var q2 = PeopleUtils.GetParentsAndAdultsIds(q);
             var tag = PopulateTemporaryTag(q2.Distinct());
             var q3 = from p in q
                      let ev = p.PeopleExtras.SingleOrDefault(ee => ee.Field == "Parent" && ee.IntValue > 0)
@@ -450,13 +444,7 @@ namespace CmsData
         public IQueryable<Person> PersonQueryPlusParents(IQueryable<Person> q)
         {
             var tag1 = PopulateTemporaryTag(q.Select(pp => pp.PeopleId).Distinct());
-            var q2 = from p in q
-                     from m in p.Family.People
-                     where m.PositionInFamilyId == 10
-                     //					 where (m.PositionInFamilyId == 10 && p.PositionInFamilyId != 10)
-                     //					 || (m.PeopleId == p.PeopleId && p.PositionInFamilyId == 10)
-                     where m.DeceasedDate == null
-                     select m.PeopleId;
+            var q2 = PeopleUtils.GetParentsAndAdultsIds(q);
 
             var tag2 = PopulateTemporaryTag(q2.Distinct());
             var q3 = from p in q
