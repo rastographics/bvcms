@@ -47,7 +47,7 @@ namespace IntegrationTests.Areas.Reports.Views.Reports
             */
 
             Open($"{rootUrl}Org/{OrgId}#tab-Registrations-tab");
-            WaitForElementToDisappear(loadingUI);
+            WaitForElementToDisappear(loadingUI, 30);
 
             ScrollTo(css: "#Questions-tab > .ajax");
             Find(css: "#Questions-tab > .ajax").Click();
