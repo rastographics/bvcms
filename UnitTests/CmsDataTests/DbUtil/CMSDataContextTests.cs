@@ -2,6 +2,8 @@ using SharedTestFixtures;
 using CmsData;
 using Xunit;
 using Shouldly;
+using System;
+using System.Linq;
 
 namespace CmsDataTests
 {
@@ -29,6 +31,36 @@ namespace CmsDataTests
                 var setting = MockSettings.CreateSaveSetting(db, "PostContributionPledgeFunds", "1");
                 var actual = db.GetSetting("PostContributionPledgeFunds", "");
                 actual.ShouldBe(expected);
+            }
+        }
+
+        [Fact]
+        public void Should_Set_SpouseId_In_Family()
+        {
+            int familyId;
+            using (var db = CMSDataContext.Create(DatabaseFixture.Host))
+            {
+                var f = new Family
+                {
+                    CreatedDate = DateTime.Now
+                };
+                db.Families.InsertOnSubmit(f);
+                db.SubmitChanges();
+                familyId = f.FamilyId;
+                var head = MockPeople.CreateSavePerson(db, f);
+                head.MaritalStatusId = 20;
+                head.GenderId = 1; 
+                db.SubmitChanges();
+                var spouse = MockPeople.CreateSavePerson(db, f);
+                spouse.MaritalStatusId = 20;
+                spouse.GenderId = 2;
+                db.SubmitChanges();
+                
+            }
+            using (var db = CMSDataContext.Create(DatabaseFixture.Host))
+            {
+                var family = db.Families.FirstOrDefault(p => p.FamilyId == familyId);
+                family.HeadOfHouseholdSpouseId.ShouldNotBeNull();
             }
         }
     }
