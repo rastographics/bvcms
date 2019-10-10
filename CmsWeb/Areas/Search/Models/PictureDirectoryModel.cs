@@ -296,8 +296,8 @@ AND PeopleId = {Util.UserPeopleId}", fromDirectory: true).Any();
         {
             try
             {
-                RegisterHelpers(ctl);
-                var compiledTemplate = Handlebars.Compile(template);
+                var hb = RegisterHelpers(ctl);
+                var compiledTemplate = hb.Compile(template);
                 var s = compiledTemplate(this);
                 return s;
             }
@@ -307,21 +307,21 @@ AND PeopleId = {Util.UserPeopleId}", fromDirectory: true).Any();
             }
         }
 
-        private void RegisterHelpers(PictureDirectoryController ctl)
+        private IHandlebars RegisterHelpers(PictureDirectoryController ctl)
         {
-            PythonModel.RegisterHelpers(DbUtil.Db);
-            Handlebars.RegisterHelper("SmallUrl", (w, ctx, args) =>
+            var handlebars = PythonModel.RegisterHelpers(DbUtil.Db);
+            handlebars.RegisterHelper("SmallUrl", (w, ctx, args) =>
             {
                 GetPictureUrl(ctx, w, ctx.SmallId,
                     Picture.SmallMissingMaleId, Picture.SmallMissingFemaleId, Picture.SmallMissingGenericId);
             });
-            Handlebars.RegisterHelper("MediumUrl", (w, ctx, args) =>
+            handlebars.RegisterHelper("MediumUrl", (w, ctx, args) =>
             {
                 GetPictureUrl(ctx, w, ctx.MediumId,
                     Picture.MediumMissingMaleId, Picture.MediumMissingFemaleId, Picture.MediumMissingGenericId);
             });
-            Handlebars.RegisterHelper("ImagePos", (w, ctx, args) => { w.Write(ctx.X != null || ctx.Y != null ? $"{ctx.X ?? 0}% {ctx.Y ?? 0}%" : "top"); });
-            Handlebars.RegisterHelper("IfAccess", (w, opt, ctx, args) =>
+            handlebars.RegisterHelper("ImagePos", (w, ctx, args) => { w.Write(ctx.X != null || ctx.Y != null ? $"{ctx.X ?? 0}% {ctx.Y ?? 0}%" : "top"); });
+            handlebars.RegisterHelper("IfAccess", (w, opt, ctx, args) =>
             {
                 if (HasAccess)
                 {
@@ -332,17 +332,18 @@ AND PeopleId = {Util.UserPeopleId}", fromDirectory: true).Any();
                     opt.Inverse(w, (object)ctx);
                 }
             });
-            Handlebars.RegisterHelper("PagerTop", (w, ctx, args) => { w.Write(ViewExtensions2.RenderPartialViewToString(ctl, "PagerTop", this)); });
-            Handlebars.RegisterHelper("PagerBottom", (w, ctx, args) => { w.Write(ViewExtensions2.RenderPartialViewToString(ctl, "PagerBottom", this)); });
-            Handlebars.RegisterHelper("PagerHidden", (w, ctx, args) => { w.Write(ViewExtensions2.RenderPartialViewToString(ctl, "PagerHidden", this)); });
-            Handlebars.RegisterHelper("SortBirthday", (w, ctx, args) => { w.Write(SortLink("Birthday")); });
-            Handlebars.RegisterHelper("SortName", (w, ctx, args) => { w.Write(SortLink("Name")); });
-            Handlebars.RegisterHelper("CityStateZip", (w, ctx, args) => { w.Write(Util.FormatCSZ4(ctx.City, ctx.St, ctx.Zip)); });
-            Handlebars.RegisterHelper("BirthDay", (w, ctx, args) =>
+            handlebars.RegisterHelper("PagerTop", (w, ctx, args) => { w.Write(ViewExtensions2.RenderPartialViewToString(ctl, "PagerTop", this)); });
+            handlebars.RegisterHelper("PagerBottom", (w, ctx, args) => { w.Write(ViewExtensions2.RenderPartialViewToString(ctl, "PagerBottom", this)); });
+            handlebars.RegisterHelper("PagerHidden", (w, ctx, args) => { w.Write(ViewExtensions2.RenderPartialViewToString(ctl, "PagerHidden", this)); });
+            handlebars.RegisterHelper("SortBirthday", (w, ctx, args) => { w.Write(SortLink("Birthday")); });
+            handlebars.RegisterHelper("SortName", (w, ctx, args) => { w.Write(SortLink("Name")); });
+            handlebars.RegisterHelper("CityStateZip", (w, ctx, args) => { w.Write(Util.FormatCSZ4(ctx.City, ctx.St, ctx.Zip)); });
+            handlebars.RegisterHelper("BirthDay", (w, ctx, args) =>
             {
                 var dob = (string)ctx.DOB;
                 w.Write(dob.ToDate().ToString2("m"));
             });
+            return handlebars;
         }
 
         private static void GetPictureUrl(dynamic ctx, TextWriter w, int? id,

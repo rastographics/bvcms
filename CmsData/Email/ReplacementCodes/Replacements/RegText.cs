@@ -12,7 +12,7 @@ namespace CmsData
         private string RegTextReplacement(string code, EmailQueueTo emailqueueto)
         {
             var match = RegTextRe.Match(code);
-            var field = match.Groups["field"].Value;
+            var field = match.Groups["field"].Value.Replace("&quot;", @"""");
             var type = match.Groups["type"].Value;
             var answer = (from qa in db.ViewOnlineRegQAs
                           where qa.Question == field

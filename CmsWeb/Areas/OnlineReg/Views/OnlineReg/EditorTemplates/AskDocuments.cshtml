@@ -1,0 +1,37 @@
+﻿@using CmsData.Registration
+@using UtilityExtensions
+@model CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel
+@{
+    var ask = (AskDocuments)ViewBag.ask;
+    var name = Html.NameFor2(m => m.OrganizationDocument);
+}
+<p>Please, upload the following documents</p>
+@for (var i = 0; i < ask.list.Count; i++)
+{
+    var a = ask.list[i];
+    var req = a.Required == true ? "(Required)" : "";
+    <div class="form-group">
+        <div class="col-sm-12">
+            <div class="well">
+                <label for="doc" class="control-label">
+                    @a.DocumentName&nbsp;@req&nbsp;&nbsp;<span class="glyphicon glyphicon-check checkmark" style="color:green;display:none"></span>
+                </label>
+                <div class="form-inline docBlock">
+                    <div class="input-group">
+                        <input class="hdnDocNAme" type="hidden" name="@(name)[@i].Key" value="@a.DocumentName" />
+                        <input class="hdnIsUploaded" type="hidden" name="@(name)[@i].Value" value="false" />
+                        <input class="docInput" type="file" docname="@a.DocumentName" />
+                    </div>
+                    <div class="input-group">
+                        <input type="button" name="Upload" value="Submit Document" class="btn btn-primary btnUploadDoc" />                        
+                    </div>
+                    <div class="input-group">
+                        <input type="button" value="Delete" class="btn btn-danger btnDeleteDoc" disabled />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<input id="registrantId" type="hidden" value="@Model.PeopleId" />
+<input id="orgId" type="hidden" value="@Model.orgid" />

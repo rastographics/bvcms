@@ -9,7 +9,7 @@ namespace IntegrationTests.Areas.Finance.Views.Bundle
     [Collection(Collections.Webapp)]
     public class EditTests : AccountTestBase
     {
-        [Theory]
+        [Theory, FeatureTest]
         [InlineData(320)]
         [InlineData(425)]
         [InlineData(768)]
