@@ -7153,14 +7153,16 @@ namespace CmsData
 		public ISingleResult<TopGiver> TopGivers(
             [Parameter(Name = "top", DbType="int")] int? top,
             [Parameter(Name = "sdate", DbType="datetime")] DateTime? sdate,
-            [Parameter(Name = "edate", DbType="datetime")] DateTime? edate
+            [Parameter(Name = "edate", DbType="datetime")] DateTime? edate,
+            [Parameter(DbType = "varchar")] string fundids
             )
 		{
 			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 top,
                 sdate,
-                edate
-			);
+                edate,
+                fundids
+            );
 			return ((ISingleResult<TopGiver>)(result.ReturnValue));
 		}
         #endregion

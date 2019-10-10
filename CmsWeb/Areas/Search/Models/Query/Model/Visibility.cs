@@ -29,6 +29,7 @@ namespace CmsWeb.Areas.Search.Models
         public bool SavedQueryVisible => fieldMap.HasParam("SavedQueryIdDesc");
         public bool MinistryVisible => fieldMap.HasParam("Ministry");
         public bool QuartersVisible => fieldMap.HasParam("Quarters");
+        public bool FundIdsVisible => fieldMap.HasParam("FundIds");
         public bool TagsVisible => fieldMap.HasParam("Tags");
         public bool PmmLabelsVisible => fieldMap.HasParam("PmmLabels");
         public bool OrgNameVisible => fieldMap.HasParam("OrgName");

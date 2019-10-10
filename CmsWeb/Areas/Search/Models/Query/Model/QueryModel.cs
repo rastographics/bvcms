@@ -80,6 +80,7 @@ namespace CmsWeb.Areas.Search.Models
         public string Days { get; set; }
         public int? Age { get; set; }
         public string Quarters { get; set; }
+        public string FundIds { get; set; }
 
         public string QuartersLabel
         {

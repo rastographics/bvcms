@@ -303,6 +303,9 @@ namespace CmsData
                 case Param.Quarters:
                     c.Quarters = Token.Text.Replace("''", "'");
                     break;
+                case Param.FundIds:
+                    c.Quarters = Token.Text.Replace("''", "'");
+                    break;
                 case Param.Age:
                     c.Age = Token.Text.ToInt2();
                     break;

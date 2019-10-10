@@ -1,13 +1,3 @@
-USE [CMS_parksidechurch]
-GO
-
-/****** Object:  UserDefinedFunction [dbo].[Contributions2]    Script Date: 02/10/2019 04:18:13 p. m. ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
 ALTER function [dbo].[Contributions2]
 (
 	@fd datetime, 
@@ -16,7 +6,7 @@ ALTER function [dbo].[Contributions2]
 	@pledges bit,
 	@nontaxded bit,
 	@includeUnclosed bit,
-	@fundId bit = null
+	@fundids VARCHAR(MAX) = null
 )
 returns table 
 as
@@ -99,7 +89,7 @@ from dbo.Contribution c
 	left outer join dbo.[Transaction] t on t.Id = c.TranId
 	left outer join lookup.Campus ca on ca.Id = c.CampusId
 where c.ContributionTypeId not in (6,7) -- no reversed or returned
-	and(case when @fundId is not null then 1 else isnull())  --c.FundId = @fundId
+	AND (@fundids IS NULL OR EXISTS(SELECT NULL FROM dbo.SplitInts(@fundids) WHERE Value = c.FundId))
 	and ((case when c.ContributionTypeId = 9 then 1 else isnull(f.NonTaxDeductible, 0) end) = @nontaxded or @nontaxded is null)
     and c.ContributionStatusId = 0 -- recorded
 	and (c.ContributionTypeId <> 8 or isnull(@pledges, 1) = 1)

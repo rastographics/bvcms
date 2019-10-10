@@ -114,6 +114,7 @@ namespace CmsData
             w.WriteAttr("OrgType", OrgType);
             w.WriteAttr("Days", Days);
             w.WriteAttr("Quarters", Quarters);
+            w.WriteAttr("FundIds", FundIds);
             w.WriteAttr("Tags", Tags);
             w.WriteAttr("Schedule", Schedule);
             w.WriteAttr("Campus", Campus);
@@ -160,6 +161,7 @@ namespace CmsData
                 OrgType = Attribute(r, "OrgType"),
                 Days = Attribute(r, "Days").ToInt(),
                 Quarters = Attribute(r, "Quarters"),
+                FundIds = Attribute(r, "FundIds"),
                 Tags = Attribute(r, "Tags"),
                 Ministry = Attribute(r, "Ministry"),
                 Schedule = Attribute(r, "Schedule"),

@@ -1000,6 +1000,7 @@ namespace CmsData
         internal Expression IsTopGiver()
         {
             var top = Quarters.ToInt();
+            var fundids = FundIds.Replace(' ', ',');
             var tf = CodeIds == "1";
             if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
             {
@@ -1007,7 +1008,7 @@ namespace CmsData
             }
 
             var mindt = Util.Now.AddDays(-Days).Date;
-            var r = db.TopGivers(top, mindt, Util.Now).ToList();
+            var r = db.TopGivers(top, mindt, Util.Now, fundids).ToList();
             var topgivers = r.Select(g => g.PeopleId).ToList();
             Expression<Func<Person, bool>> pred = p =>
                 topgivers.Contains(p.PeopleId);

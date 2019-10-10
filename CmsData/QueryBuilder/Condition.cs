@@ -75,6 +75,7 @@ namespace CmsData
         public bool IsPublic { get; set; }
         public DateTime CreatedOn { get; set; }
         public string Quarters { get; set; }
+        public string FundIds { get; set; }
         public string SavedQuery { get; set; }
         public string SavedQueryIdDesc => SavedQuery;
         public string Tags { get; set; }
@@ -567,6 +568,7 @@ namespace CmsData
             Organization = from.Organization;
             Program = from.Program;
             Quarters = from.Quarters;
+            FundIds = from.FundIds;
             SavedQuery = from.SavedQuery;
             Schedule = from.Schedule;
             StartDate = from.StartDate;
