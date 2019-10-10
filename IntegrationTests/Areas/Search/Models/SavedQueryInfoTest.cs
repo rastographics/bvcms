@@ -14,7 +14,7 @@ namespace IntegrationTests.Areas.Search.Models
     [Collection(Collections.Webapp)]
     public class SavedQueryInfoTest : AccountTestBase
     {
-        [Fact]        
+        [Fact]
         public void Should_Update_Model()
         {
             using (var db = CMSDataContext.Create(Util.Host))
@@ -23,50 +23,75 @@ namespace IntegrationTests.Areas.Search.Models
                 password = RandomString();
                 var user = CreateUser(username, password, roles: new[] { "Access", "Edit", "Admin" });
                 Login();
+
+                //Edit Saved Search Query
                 Open($"{rootUrl}SavedQueryList");
-                WaitForElement(".edit-saved-query.btn", 5);
-                Find(text: "Edit").Click();
+                WaitForElement($@"div#contact-footer", 5);
+                var trID = Find(css: $@"table#resultsTable > tbody > tr:first-child").GetAttribute("id");
 
-                WaitForElement("input#Name", 5);
-                var preName = Find(css: "input#Name").GetAttribute("Value");
-                var preOwner = Find(css: "input#Owner").GetAttribute("Value");
-                var preIsPublic = Find(css: "input#Ispublic").GetAttribute("checked");
-                var queryID = Find(css: "div.modal-body").FindElement(By.Id("QueryId")).GetAttribute("value");
+                var preName = Find(css: $@"table#resultsTable > tbody > tr#{trID} > td:nth-child(1) > a").Text;
+                var preOwner = Find(css: $@"table#resultsTable > tbody > tr#{trID} > td:nth-child(2)").Text;
+                var preIsPublic = Find(css: $@"table#resultsTable > tbody > tr#{trID} > td:nth-child(3) > i.fa.fa-check");
+                var preIsPublicBool = preIsPublic is null ? false : true;
+                var editbtn = Find(css: $@"table#resultsTable > tbody > tr#{trID} > td:nth-child(6)");
+                editbtn.Click();
 
-                Find(css: "input#Name").SendKeys("Test");
-                Find(css: "input#Owner").SendKeys("Test");
-                Find(css: "input#Ispublic").Click();
-                Find(text: "Save").Click();
+                WaitForElement("input#Ispublic", 5);
 
+                //Update values
+                var txtName = Find(css: "input#Name");
+                var txtOwner = Find(css: "input#Owner");
+                var cboIsPublic = Find(css: "input#Ispublic");
+                var savebtn = Find(text: "Save");
 
-                var rowTD = Find(css: $@"tr#row-{queryID} > a").FindElements(By.TagName("td"));
-                var x = rowTD[0].FindElement(By.TagName("a")).Text;
-                var x1 = rowTD[1].Text;
-                var x2 = rowTD[2].FindElement(By.TagName("i"));
-                //.Text.ShouldBe(preName + "Test");
-                //Find(css: "input#Owner").GetAttribute("Value").ShouldBe(preOwner + "Test");
-                //Find(css: "input#Ispublic").GetAttribute("checked").ShouldBe((preIsPublic is null) ? "cheked" : null);
+                txtName.Clear();
+                txtName.SendKeys("NameTest");
+                txtOwner.Clear();
+                txtOwner.SendKeys("OwnerTest");
+                cboIsPublic.Click();
+                savebtn.Click();
 
-                //Find(css: "input#Owner").
+                WaitForElement($@"div#contact-footer", 5);
 
-                //var queryBeforeUpdate = db.LoadQueryById2(qry.Id);
-                //SavedQueryInfo sqi = new SavedQueryInfo {                    
-                //    Ispublic = true,                    
-                //    Name = "test-case",
-                //    Owner = qry.Owner,
-                //    QueryId = qry.Id                    
-                //    };
+                //Test update
+                var postName = Find(css: $@"table#resultsTable > tbody > tr#{trID} > td:nth-child(1) > a").Text;
+                var postOwner = Find(css: $@"table#resultsTable > tbody > tr#{trID} > td:nth-child(2)").Text;
+                var postIsPublic = Find(css: $@"table#resultsTable > tbody > tr#{trID} > td:nth-child(3) > i.fa.fa-check");
+                var postIsPublicBool = postIsPublic is null ? false : true;
+                var editbtn2 = Find(css: $@"table#resultsTable > tbody > tr#{trID} > td:nth-child(6)");
 
-                //sqi.UpdateModel(db);
+                postName.ShouldBe("NameTest");
+                postOwner.ShouldBe("OwnerTest");
+                postIsPublicBool.ShouldBe(!preIsPublicBool);
 
-                //var queryAfterUpdate = db.LoadQueryById2(qry.Id);
-                //queryAfterUpdate.Name.ShouldBe("test-case");
-                //queryAfterUpdate.Ispublic.ShouldBe(true);
-                //queryAfterUpdate.Owner.ShouldBe(qry.Owner);
-                //queryAfterUpdate.QueryId.ShouldBe(qry.Id);
+                //RollBack
+                editbtn2.Click();
+                WaitForElement("input#Ispublic", 5);
 
+                txtName = Find(css: "input#Name");
+                txtOwner = Find(css: "input#Owner");
+                cboIsPublic = Find(css: "input#Ispublic");
+                savebtn = Find(text: "Save");
+
+                txtName.Clear();
+                txtName.SendKeys(preName);
+                txtOwner.Clear();
+                txtOwner.SendKeys(preOwner);
+                cboIsPublic.Click();
+                savebtn.Click();
+
+                WaitForElement($@"div#contact-footer", 5);
+
+                //Test rollback
+                postName = Find(css: $@"table#resultsTable > tbody > tr#{trID} > td:nth-child(1) > a").Text;
+                postOwner = Find(css: $@"table#resultsTable > tbody > tr#{trID} > td:nth-child(2)").Text;
+                postIsPublic = Find(css: $@"table#resultsTable > tbody > tr#{trID} > td:nth-child(3) > i.fa.fa-check");
+                postIsPublicBool = postIsPublic is null ? false : true;
+
+                postName.ShouldBe(preName);
+                postOwner.ShouldBe(preOwner);
+                postIsPublicBool.ShouldBe(preIsPublicBool);
             }
-                
         }
     }
 }

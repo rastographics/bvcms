@@ -51,7 +51,7 @@ namespace CmsWeb.Areas.Search.Controllers
                 }
 
                 m.CanDelete = true; // must be true since they can edit if they got here
-                m.UpdateModel(CurrentDatabase);
+                m.UpdateModel();
                 return View("Row", m);
             }
             catch(Exception e)
