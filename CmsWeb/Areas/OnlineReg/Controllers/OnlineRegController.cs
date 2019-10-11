@@ -3,9 +3,11 @@ using CmsData.Codes;
 using CmsWeb.Areas.OnlineReg.Models;
 using CmsWeb.Models;
 using Elmah;
+using ImageData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 using System.Web.Security;
@@ -316,6 +318,40 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             bool supportGoerRequired = CurrentDatabase.Setting("MissionSupportRequiredGoer", "false").ToBool();
             m.List[id].ValidateModelQuestions(ModelState, id, supportGoerRequired);
             return FlowList(m);
+        }
+
+        [HttpPost]
+        public JsonResult UploadDocument()
+        {
+            var file = Request.Files[0];
+            Int32.TryParse(Request["registrantId"], out int registrantId);
+            Int32.TryParse(Request["orgId"], out int orgId);
+            var docname = Request["docname"];
+            StoreDocument(file, docname, registrantId, orgId);
+            //string tmpFileName = TmpFiles.CreateTmpFile(file);
+            return Json(new { file.FileName });
+        }
+
+        private void StoreDocument(HttpPostedFileBase file, string docname, int registrantId, int orgId)
+        {
+            var person = CurrentDatabase.People.SingleOrDefault(p => p.PeopleId == registrantId);
+            var docName = $"{docname}_{person.LastName}_{person.FirstName}_{registrantId}";
+            var document = CurrentDatabase.OrgMemberDocuments.SingleOrDefault(o => o.DocumentName == docName & o.PeopleId == registrantId & o.OrganizationId == orgId);
+            if (document != null)
+            {
+                CurrentDatabase.OrgMemberDocuments.DeleteOnSubmit(document);
+                Image.Delete(CurrentImageDatabase, document.ImageId);
+                CurrentDatabase.SubmitChanges();
+            }
+            int imageId = ImageData.DocumentsData.StoreImageFromDocument(CurrentImageDatabase, file);
+            CurrentDatabase.OrgMemberDocuments.InsertOnSubmit(new OrgMemberDocuments()
+            {
+                DocumentName = docName,
+                ImageId = imageId,
+                PeopleId = registrantId,
+                OrganizationId = orgId
+            });
+            CurrentDatabase.SubmitChanges();
         }
 
         [HttpPost]

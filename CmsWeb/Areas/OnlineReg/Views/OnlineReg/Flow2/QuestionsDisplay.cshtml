@@ -182,6 +182,15 @@
                     </tr>
                 }
                 break;
+            case "AskDocuments":
+                foreach (var a in ((AskDocuments)ask).list)
+                {
+                    <tr>
+                        <td><div class="wraparound">@a.DocumentName</div></td>
+                        <td> @(Model.DocumentUploaded(a.DocumentName, true) ? "Document Uploaded" : "") </td>
+                    </tr>
+                }
+                break;
             case "AskText":
                 var tx = (AskText)ask;
                 foreach (var a in tx.list)

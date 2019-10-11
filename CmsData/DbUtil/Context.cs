@@ -19,6 +19,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Web;
+using Dapper;
 using UtilityExtensions;
 
 namespace CmsData
@@ -424,13 +425,7 @@ namespace CmsData
         }
         public IQueryable<Person> PersonQueryParents(IQueryable<Person> q)
         {
-            var q2 = from p in q
-                     from m in p.Family.People
-                     where m.PositionInFamilyId == 10
-                     //					 where (m.PositionInFamilyId == 10 && p.PositionInFamilyId != 10)
-                     //					 || (m.PeopleId == p.PeopleId && p.PositionInFamilyId == 10)
-                     where m.DeceasedDate == null
-                     select m.PeopleId;
+            var q2 = PeopleUtils.GetParentsAndAdultsIds(q);
             var tag = PopulateTemporaryTag(q2.Distinct());
             var q3 = from p in q
                      let ev = p.PeopleExtras.SingleOrDefault(ee => ee.Field == "Parent" && ee.IntValue > 0)
@@ -449,13 +444,7 @@ namespace CmsData
         public IQueryable<Person> PersonQueryPlusParents(IQueryable<Person> q)
         {
             var tag1 = PopulateTemporaryTag(q.Select(pp => pp.PeopleId).Distinct());
-            var q2 = from p in q
-                     from m in p.Family.People
-                     where m.PositionInFamilyId == 10
-                     //					 where (m.PositionInFamilyId == 10 && p.PositionInFamilyId != 10)
-                     //					 || (m.PeopleId == p.PeopleId && p.PositionInFamilyId == 10)
-                     where m.DeceasedDate == null
-                     select m.PeopleId;
+            var q2 = PeopleUtils.GetParentsAndAdultsIds(q);
 
             var tag2 = PopulateTemporaryTag(q2.Distinct());
             var q3 = from p in q
@@ -1696,7 +1685,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
                 c.SetKeyWords(this, new [] {keyword});
             SubmitChanges();
         }
-        public void WriteContentText(string name, string text)
+        public void WriteContentText(string name, string text, string keyword = null)
         {
             var c = Content(name, ContentTypeCode.TypeText);
             if (c == null)
@@ -1708,6 +1697,8 @@ This search uses multiple steps which cannot be duplicated in a single query.
                 };
                 Contents.InsertOnSubmit(c);
             }
+            if(keyword.HasValue())
+                c.SetKeyWords(this, new [] {keyword});
             c.Body = text;
             SubmitChanges();
         }
@@ -2030,6 +2021,11 @@ This search uses multiple steps which cannot be duplicated in a single query.
             return (int)(result?.ReturnValue ?? 0);
         }
 
+        /// <summary>
+        /// The read-only connection will use an ro-CMS_{host} user if the appsettings contain a setting for readonlypassword
+        /// Otherwise, the default connection string is used
+        /// </summary>
+        /// <returns cref="SqlConnection" />
         public DbConnection ReadonlyConnection()
         {
             var finance = CurrentRoles().Contains("Finance");
