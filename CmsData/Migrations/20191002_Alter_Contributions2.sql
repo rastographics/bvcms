@@ -98,5 +98,3 @@ where c.ContributionTypeId not in (6,7) -- no reversed or returned
     and (@campusid = 0 or c.CampusId = @campusid) -- campusid = 0 = all
 )
 GO
-
-

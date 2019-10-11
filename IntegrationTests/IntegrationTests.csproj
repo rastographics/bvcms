@@ -91,6 +91,7 @@
     <Compile Include="Areas\Manage\AccountTests.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineRegPerson\EnrollTests.cs" />
     <Compile Include="Areas\Org\Views\Org\SettingsViewsTests.cs" />
+    <Compile Include="Areas\Search\Views\Query\EditConditionTests.cs" />
     <Compile Include="Areas\Setup\SetupTests.cs" />
     <Compile Include="Areas\People\Views\Person\PersonViewsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
