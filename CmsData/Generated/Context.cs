@@ -2987,7 +2987,8 @@ namespace CmsData
             [Parameter(DbType="int")] int? campusid,
             [Parameter(DbType="bit")] bool? pledges,
             [Parameter(DbType="bit")] bool? nontaxded,
-            [Parameter(DbType="bit")] bool? includeUnclosed
+            [Parameter(DbType="bit")] bool? includeUnclosed,
+            [Parameter(DbType="varchar")] string fundids = null
             )
 		{
 			return this.CreateMethodCallQuery<View.Contributions2>(this, 
@@ -2997,7 +2998,8 @@ namespace CmsData
                 campusid,
                 pledges,
                 nontaxded,
-                includeUnclosed
+                includeUnclosed,
+                fundids
                 );
 		}
 
