@@ -80,7 +80,24 @@ namespace CmsDataTests
         [Fact]
         public void IsTopGiverTest()
         {
+            var fromDate = new DateTime(2019, 1, 1);
+            var toDate = new DateTime(2019, 7, 31);
+            using (var db = CMSDataContext.Create(Util.Host))
+            {
+                var bundleHeader = MockContributions.CreateSaveBundle(db);
+                var FirstContribution = MockContributions.CreateSaveContribution(db, bundleHeader, fromDate, 100, peopleId: 1);
+                var SecondContribution = MockContributions.CreateSaveContribution(db, bundleHeader, fromDate, 20, peopleId: 1);
 
+                var FundIds = $"{FirstContribution.FundId},{SecondContribution.FundId}";
+                var TopGiversResult = db.TopGivers(10, fromDate, toDate, FundIds);
+                var TotalAmmountTopGivers = TopGiversResult.Sum(x => x.Amount);
+
+                var TotalAmmountContributions = db.Contributions.Sum(x => x.ContributionAmount) ?? 0;
+
+                TotalAmmountTopGivers.ShouldBe(TotalAmmountContributions);
+
+                MockContributions.DeleteAllFromBundle(db, bundleHeader);
+            }
         }
     }
 }
