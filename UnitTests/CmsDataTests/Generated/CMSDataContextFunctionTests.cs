@@ -84,6 +84,9 @@ namespace CmsDataTests
             var toDate = new DateTime(2019, 7, 31);
             using (var db = CMSDataContext.Create(Util.Host))
             {
+                // Cleaning Contribution garbage from previous tests
+                db.ExecuteCommand("delete from BundleDetail; delete from BundleHeader; delete from Contribution;");
+
                 var bundleHeader = MockContributions.CreateSaveBundle(db);
                 var FirstContribution = MockContributions.CreateSaveContribution(db, bundleHeader, fromDate, 100, peopleId: 1);
                 var SecondContribution = MockContributions.CreateSaveContribution(db, bundleHeader, fromDate, 20, peopleId: 1);
