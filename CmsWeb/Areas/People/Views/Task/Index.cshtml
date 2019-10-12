@@ -160,12 +160,12 @@
                                 @if (Model.IsOwner)
                                 {
                                     <a href="/SearchAdd2/Dialog/taskowner/@Model.Id?displaySkipSearch=false" class="searchadd">
-                                        @(Model.Owner ?? "None")
+                                        @(Model.Owner ?? "Empty")
                                     </a>
                                 }
                                 else
                                 {
-                                    @(Model.Owner ?? "None")
+                                    @(Model.Owner ?? "Empty")
                                 }
                                 @if (!string.IsNullOrWhiteSpace(Model.OwnerEmail))
                                 {
@@ -181,12 +181,12 @@
                                 @if (Model.IsOwner)
                                 {
                                     <a href="/SearchAdd2/Dialog/taskdelegate/@Model.Id?displaySkipSearch=false" class="searchadd">
-                                        @(Model.CoOwner ?? "None")
+                                        @(Model.CoOwner ?? "Empty")
                                     </a>
                                 }
                                 else
                                 {
-                                    @(Model.CoOwner ?? "None")
+                                    @(Model.CoOwner ?? "Empty")
                                 }
                                 @if (!string.IsNullOrWhiteSpace(Model.CoOwnerEmail))
                                 {
@@ -350,13 +350,11 @@
             $(".edit-text").editable({
                 mode: 'inline',
                 type: 'text',
-                emptytext: 'None'
             });
 
             $(".edit-textarea").editable({
                 mode: 'inline',
                 type: 'textarea',
-                emptytext: 'None',
                 inputclass: 'textarea-width'
             });
 
@@ -368,14 +366,12 @@
                     todayBtn: true
                 },
                 clear: false,
-                emptytext: 'None'
             });
 
             $(".edit-select").each(function(i, e) {
                 $(e).editable({
                     mode: 'inline',
                     type: 'select',
-                    emptytext: 'None',
                     value: $(e).data('selected'),
                     source: $(e).data('source-url')
                 });
