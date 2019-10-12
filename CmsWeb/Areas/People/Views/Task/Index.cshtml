@@ -103,6 +103,13 @@
                     <div class="well">
                         <strong>
                             <a href="/Person2/@Model.WhoId" style="font-size: 1.5em;" target="person">@Model.About</a>
+                            &nbsp;
+                            @if (Model.IsAnOwner)
+                            {
+                                <a href="/SearchAdd2/Dialog/taskabout/@Model.Id?displaySkipSearch=false" class="searchadd">
+                                    <i class="fa fa-pencil"></i>
+                                </a>
+                            }
                         </strong>
                         <br />
                         <a href="@Model.ProspectReportLink()" target="_blank">Prospect Report</a>
