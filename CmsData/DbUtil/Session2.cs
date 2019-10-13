@@ -184,7 +184,14 @@ namespace CmsData
             switch (name)
             {
                 case "Due":
-                    field.SetValue(task, DateTime.Parse(value));
+                    if (string.IsNullOrEmpty(value))
+                    {
+                        field.SetValue(task, null);
+                    }
+                    else
+                    {
+                        field.SetValue(task, DateTime.Parse(value));
+                    }
                     break;
                 case "StatusId":
                     field.SetValue(task, Int32.Parse(value));
