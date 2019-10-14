@@ -29,7 +29,7 @@
                 <div class="form-group">
                     <label for="profile">Kiosk Profile</label>
                     <select class="form-control input-lg" name="profile" id="profile" v-model="kiosk.profile">
-                        <option v-if="!profiles.length" value="default">Default</option>
+                        <option value="default">Default</option>
                         <option v-for="profile in profiles" :value="profile.id">{{ profile.name }}</option>
                     </select>
                 </div>
@@ -44,6 +44,12 @@
                 <input type="tel" name="phone" v-model="search.phone" v-mask="phoneMask" autocomplete="off" class="keyboard-input" />
                 <div class="simple-keyboard"></div>
             </form>
+            <div v-if="profile.Testing" class="action-bar">
+                <div class="content">
+                    <button v-on:click="scannerTest" class="btn btn-warning pull-left" style="margin-right:20px;">Test Scanner</button>
+                    <span class="clearfix"></span>
+                </div>
+            </div>
         </div>
         <div v-else-if="view == 'families'" class="families results">
             <div class="row header-bar">

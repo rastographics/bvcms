@@ -56,6 +56,12 @@ new Vue({
             } else {
                 $.unblockUI();
             }
+        },
+        'search.phone': function (current, previous) {
+            let vm = this;
+            if (current.includes('!') && !previous.includes('!')) {
+                setTimeout(vm.find, 200);
+            }
         }
     },
     filters: {
@@ -78,7 +84,7 @@ new Vue({
         phoneMask: function () {
             var len = this.search.phone.replace(/\D/g, '').length;
             if (len < 8) {
-                return '###-###########';
+                return '?X###-###########';
             } else if (len < 11) {
                 return '(###) ###-#########';
             } else {
@@ -300,6 +306,7 @@ new Vue({
                                 }
                                 // apply settings to the profile
                                 Object.assign(profile, settings);
+                                cookie('Authorization', token);
                                 localStorage.setItem('identity', token);
                                 localStorage.setItem('kiosk', vm.kiosk.name);
                                 localStorage.setItem('profile', JSON.stringify(profile));
@@ -330,6 +337,7 @@ new Vue({
         logout() {
             localStorage.removeItem('identity');
             localStorage.removeItem('profile');
+            cookie('Authorization', "", -1);
             this.search.phone = '';
             this.identity = false;
             this.profile = false;
@@ -345,16 +353,27 @@ new Vue({
         },
         find() {
             let vm = this;
-            var phone = vm.search.phone.replace(/\D/g, '');
+            var phone = vm.search.phone.replace(/[^\d!]/g, '');
             // handle special entry
             if (phone === vm.profile.Logout) {
                 vm.logout();
-                return;
+                return false;
             }
-            if (phone.length < 4 || phone.length > 15) {
+            var isQrCode = phone.includes('!');
+            if (isQrCode && phone === '!0000') {
+                vm.loadView('landing');
+                swal({
+                    title: "Test Scan",
+                    text: "Your scanner is working and set up correctly!",
+                    type: "success"
+                });
+                return false;
+            }
+
+            if (!isQrCode && (phone.length < 4 || phone.length > 15)) {
                 vm.loadView('landing');
                 warning_swal('No results', 'No families found with that number, please try again.');
-                return;
+                return false;
             }
             var payload = vm.generatePayload({
                 search: phone,
@@ -596,8 +615,18 @@ new Vue({
                 }
             );
         },
-        postBarcode() {
-            // todo: post barcode id to self check in endpoint
+        scannerTest() {
+            // disable the timer for testing
+            this.profile.DisableTimer = true;
+            this.resetIdleTimer();
+            var content = document.createElement("span");
+            content.innerHTML = 'You will see a success message if it\'s working properly. Make sure you are using a 2D scanner and that the scanner is set to \'ASCII Mode\'.<img style="display: block; margin: 0px auto; width: 200px; height: 200px;" src = "data:image/jpeg;base64, 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" />';
+            swal({
+                title: "Scan this barcode",
+                confirmButtonText: "OK",
+                allowOutsideClick: "true"
+            });
+            $('.sweet-alert p').append(content);
         }
     },
     mounted() {
@@ -639,6 +668,19 @@ new Vue({
         });
     }
 });
+
+function cookie(name, value, days) {
+    var expires;
+
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toGMTString();
+    } else {
+        expires = "";
+    }
+    document.cookie = encodeURIComponent(name) + "=" + value + expires + "; path=/";
+}
 
 function error_swal(title, message) {
     swal({

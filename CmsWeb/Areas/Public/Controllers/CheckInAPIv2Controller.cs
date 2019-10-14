@@ -4,10 +4,9 @@ using System.Data.SqlClient;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Web.Mvc;
-using ZXing;
-using ZXing.Common;
 using CmsData;
 using CmsData.Codes;
+using CmsData.Classes.Barcodes;
 using CmsWeb.Areas.Public.Models.CheckInAPIv2;
 using CmsWeb.Areas.Public.Models.CheckInAPIv2.Results;
 using CmsWeb.Areas.Public.Models.CheckInAPIv2.Searches;
@@ -21,7 +20,6 @@ using Country = CmsWeb.Areas.Public.Models.CheckInAPIv2.Country;
 using Family = CmsWeb.Areas.Public.Models.CheckInAPIv2.Family;
 using Gender = CmsWeb.Areas.Public.Models.CheckInAPIv2.Gender;
 using MaritalStatus = CmsWeb.Areas.Public.Models.CheckInAPIv2.MaritalStatus;
-using System.Drawing;
 
 namespace CmsWeb.Areas.Public.Controllers
 {
@@ -130,17 +128,31 @@ namespace CmsWeb.Areas.Public.Controllers
 
 			DbUtil.LogActivity( "Check-In Number Search: " + cns.search );
 
-			Message response = new Message();
-			response.setNoError();
+            Message response = new Message();
+            response.setNoError();
 
-			bool returnPictureUrls = message.device == Message.API_DEVICE_WEB;
-			List<Family> families = Family.forSearch( CurrentDatabase, CurrentImageDatabase, cns.search, cns.campus, cns.date, returnPictureUrls );
+            if (cns.search.Contains("!"))
+            {
+                var list = cns.search.Split('!').Where(s => !string.IsNullOrWhiteSpace(s)).ToList();
+                string id = list.First();
+                var pending = CurrentDatabase.CheckInPendings.Where(p => p.Id == id).SingleOrDefault();
+                if (pending != null)
+                {
+                    return UpdateAttend(pending.Data);
+                }
+                else
+                {
+                    return Message.createErrorReturn("Invalid barcode.", Message.API_ERROR_PERSON_NOT_FOUND);
+                }
+            }
 
-			response.data = SerializeJSON( families, message.version );
-
+            bool returnPictureUrls = message.device == Message.API_DEVICE_WEB;
+            List<Family> families = Family.forSearch(CurrentDatabase, CurrentImageDatabase, cns.search, cns.campus, cns.date, returnPictureUrls);
+            response.data = SerializeJSON(families, message.version);
+            
 			return response;
 		}
-
+        
 		[HttpGet]
 		public ActionResult GetProfiles()
 		{
@@ -329,8 +341,8 @@ namespace CmsWeb.Areas.Public.Controllers
 			}
 		}
 
-		[HttpPost]
-		public ActionResult Barcode( string data )
+        [HttpPost]
+		public ActionResult PendingCheckIn( string data )
 		{
 			// Authenticate first
 			if( !Auth() ) {
@@ -341,7 +353,7 @@ namespace CmsWeb.Areas.Public.Controllers
 			Message message = Message.createFromString( data );
 
             var nextId = CurrentDatabase.CheckInPendings.Max(c => c.Id) + 1;
-            var pending = new CmsData.CheckInPending
+            var pending = new CheckInPending
             {
                 Id = nextId,
                 Stamp = DateTime.Now,
@@ -350,11 +362,13 @@ namespace CmsWeb.Areas.Public.Controllers
 
             CurrentDatabase.CheckInPendings.InsertOnSubmit(pending);
             CurrentDatabase.SubmitChanges();
-
-            // todo: return base 64 data for QR code with ID
+            
             response.setNoError();
             response.count = 1;
-            response.data = SerializeJSON(message.data);
+
+            string qrCode = Convert.ToBase64String(BarcodeHelper.generateQRCode("!" + pending.Id, 300));
+
+            response.data = qrCode;
             return response;
 		}
 
@@ -455,14 +469,6 @@ namespace CmsWeb.Areas.Public.Controllers
 
 			return response;
 		}
-
-        private void GenerateBarcode(string data)
-        {
-            // todo: return base 64 encoded image
-            var QRCode = new ZXing.QrCode.QRCodeWriter();
-            BitMatrix bytes = QRCode.encode(data, BarcodeFormat.QR_CODE, 2, 2);
-        }
-
 
 		// Version for future API changes
 		[SuppressMessage( "ReSharper", "UnusedParameter.Local" )]
