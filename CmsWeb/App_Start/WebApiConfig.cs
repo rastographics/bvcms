@@ -26,6 +26,7 @@ namespace CmsWeb
             builder.EntitySet<ApiChAiPerson>("ChAiPeople");
             builder.EntitySet<ApiChAiGift>("ChAiGifts");
 
+            config.Count().Filter().OrderBy().Expand().Select().MaxTop(100);
             config.MapODataServiceRoute(
                 routeName: "ODataApiRoot",
                 routePrefix: "api",
