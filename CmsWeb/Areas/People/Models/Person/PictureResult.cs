@@ -3,6 +3,7 @@ using CmsWeb.Membership.Extensions;
 using System;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.Caching;
 using System.Web.Mvc;
@@ -147,12 +148,26 @@ namespace CmsWeb.Areas.People.Models
 
         private bool GrantPermission(int id)
         {
+            var user = HttpContextFactory.Current.User;
+            var overrideUser = false;
+            if (HttpContextFactory.Current.Request.Cookies.AllKeys.Contains("Authorization")) //For web-based checkin
+            {
+                var auth = HttpContextFactory.Current.Request.Cookies["Authorization"]?.Value?.Substring(6);
+                var authHeader = Encoding.ASCII.GetString(Convert.FromBase64String(auth));
+                var tokens = authHeader.Split(new[] { ':' }, 2);
+                if (tokens.Length > 1)
+                {
+                    if (Membership.CMSMembershipProvider.provider.ValidateUser(tokens[0], tokens[1]))
+                    {
+                        overrideUser = true;
+                    }
+                }
+            }
             using (var cms = CMSDataContext.Create(HttpContextFactory.Current))
             {
-                var secured = cms.Setting("SecureProfilePictures", true);
-                var user = HttpContextFactory.Current.User;
                 if (portrait)
                 {
+                    var secured = !overrideUser && cms.Setting("SecureProfilePictures", true);
                     if (secured && !user.Identity.IsAuthenticated)
                     {
                         return false;

@@ -113,6 +113,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             content.Title = newName;
             content.Body = "";
             content.DateCreated = DateTime.Now;
+            content.CreatedBy = Util.UserName;
             var ContentKeywordFilter = Session["ContentKeywordFilter"] as string;
             if (ContentKeywordFilter.HasValue())
             {
@@ -132,7 +133,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             var content = CurrentDatabase.Contents.SingleOrDefault(c => c.Id == id);
             content.Name = name;
             content.Title = string.IsNullOrWhiteSpace(title) ? name : title;
-            content.Body = body;
+            content.Body = body?.Trim();
             content.RemoveGrammarly();
             content.RoleID = roleid ?? 0;
             content.Snippet = snippet;
@@ -150,6 +151,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                     }
 
                     content.DateCreated = DateTime.Now;
+                    content.CreatedBy = Util.UserName;
                 }
                 catch (Exception ex)
                 {
