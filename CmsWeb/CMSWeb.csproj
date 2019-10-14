@@ -875,7 +875,7 @@
     <Compile Include="Areas\Setup\Controllers\ResourceTypeController.cs" />
     <Compile Include="Code\AuthHelper.cs" />
     <Compile Include="Code\CodeValueList.cs" />
-    <Compile Include="Code\Contstants.cs" />
+    <Compile Include="Code\Constants.cs" />
     <Compile Include="Code\GoogleRecaptcha.cs" />
     <Compile Include="Code\JsonNetResult.cs" />
     <Compile Include="Code\CustomHeader.cs" />
