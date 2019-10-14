@@ -60,15 +60,20 @@
 
     $(document).on('click', '.removeVolunteer', function (e) {
         e.preventDefault();
-        $.block();
+        
+        var params = $(this).attr('href').split('/');
+        var pid = params[1];
+        var mid = params[2];
+        var source = params[3];
+        
         var list = [];
-        if (typeof $(this).attr('pid') != 'undefined') {
-            list.push({
-                source: $(this).attr("source"),
-                pid: $(this).attr("pid"),
-                mid: $(this).attr("mid")
-            });
-        }
+        
+        list.push({
+            source: source,
+            pid: pid,
+            mid: mid
+        });
+        
 
         if (list.length === 0)
             return;
@@ -82,6 +87,7 @@
             SortByWeek: $('#SortByWeek').val(),
             list: list
         };
+        $.block();
         $.ajax({
             url: '/Volunteers/ManageArea/',
             data: JSON.stringify($info),

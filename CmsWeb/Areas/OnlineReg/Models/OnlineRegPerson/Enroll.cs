@@ -11,12 +11,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 {
     public partial class OnlineRegPersonModel
     {
-        private CMSDataContext _db;
-        public CMSDataContext db
-        {
-            get => _db ?? (_db = DbUtil.Db);
-            set => _db = value;
-        }
+        public CMSDataContext db => CurrentDatabase ?? (CurrentDatabase = DbUtil.Db);
 
         public OrganizationMember Enroll(Transaction transaction, string payLink)
         {
@@ -247,6 +242,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             om.OnlineRegData = Util.Serialize(this); // saves all answers
 
             var reg = person.SetRecReg();
+            reg.Email = om.RegisterEmail;
             foreach (var ask in setting.AskItems)
             {
                 switch (ask.Type)

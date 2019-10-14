@@ -1,8 +1,12 @@
 ﻿using System;
+using System.Collections;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
+using CmsData;
 using CmsData.Registration;
+using CmsWeb.Lifecycle;
+using CmsWeb.Models;
 using UtilityExtensions;
 
 namespace CmsWeb
@@ -62,11 +66,16 @@ namespace CmsWeb
                         return new AskText();
                     case "AskGradeOptions":
                         return new AskGradeOptions();
+                    case "AskDocuments":
+                        return new AskDocuments();
                     default:
                         return base.CreateModel(controllerContext, bindingContext, modelType);
                 }
             }
-            return base.CreateModel(controllerContext, bindingContext, modelType);
+            var m = base.CreateModel(controllerContext, bindingContext, modelType);
+            if (controllerContext.Controller is CMSBaseController c && m is IDbBinder b)
+                b.CurrentDatabase = c.CurrentDatabase;
+            return m;
         }
 
         protected override ICustomTypeDescriptor GetTypeDescriptor(ControllerContext controllerContext, ModelBindingContext bindingContext)

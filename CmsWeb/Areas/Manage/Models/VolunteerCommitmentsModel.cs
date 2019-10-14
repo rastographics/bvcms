@@ -146,7 +146,11 @@ namespace CmsWeb.Areas.Manage.Models
                              select g.OrderBy(gg => gg.Time).ToList();
             return monthWeeks.ToList();
         }
-
+        public DateTime GetFirstSundayOfTheMonth(int curYr, int curMt)
+        {
+            DateTime firstDayOfMonth = new DateTime(curYr, curMt, 1);
+            return (firstDayOfMonth.DayOfWeek == DayOfWeek.Sunday) ? firstDayOfMonth : firstDayOfMonth.AddDays(7 - (int)firstDayOfMonth.DayOfWeek);
+        }
         public IEnumerable<Slot> FetchSlotsByMonth(int? curMonth)
         {
             var mlist = (from m in DbUtil.Db.Meetings
@@ -167,13 +171,7 @@ namespace CmsWeb.Areas.Manage.Models
 
             var list = new List<Slot>();
 
-            DateTime calcSunday = Sunday;
-
-            if (curMonth != Sunday.Month)
-            {
-                DateTime firstDayOfMonth = new DateTime(CurYear.ToInt(), CurMonth.ToInt(), 1);
-                calcSunday = firstDayOfMonth.DayOfWeek == DayOfWeek.Sunday ? firstDayOfMonth : firstDayOfMonth.AddDays(7 - (int)firstDayOfMonth.DayOfWeek);
-            }
+            DateTime calcSunday = (curMonth != Sunday.Month) ? GetFirstSundayOfTheMonth(CurYear.ToInt(), CurMonth.ToInt()) : Sunday;
 
             for (var sd = calcSunday; sd <= EndDt && sd.Month == curMonth; sd = sd.AddDays(7))
             {

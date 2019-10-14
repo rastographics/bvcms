@@ -140,7 +140,7 @@
                     <td>
                         @(Model.memberus ? "Member of our church" : "not member of our church") <br />
                         @(Model.otherchurch ? "Active in another local church" : "not active in another church")
-                        @(Model.nochurch ? "Currently not attending a Church" : "active in another church")
+                        @(Model.nochurch ? "Currently not attending a church" : "attending another church")
                     </td>
                 </tr>
                 break;
@@ -179,6 +179,15 @@
                     <tr>
                         <td><div class="wraparound">@a.Question</div></td>
                         <td> @Model.ExtraQuestionAnswer(eq.UniqueId, a.Question)</td>
+                    </tr>
+                }
+                break;
+            case "AskDocuments":
+                foreach (var a in ((AskDocuments)ask).list)
+                {
+                    <tr>
+                        <td><div class="wraparound">@a.DocumentName</div></td>
+                        <td> @(Model.DocumentUploaded(a.DocumentName, true) ? "Document Uploaded" : "") </td>
                     </tr>
                 }
                 break;

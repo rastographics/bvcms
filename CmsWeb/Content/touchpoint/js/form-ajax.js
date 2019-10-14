@@ -32,7 +32,7 @@
         var postdata = $form.serialize();
         var url = d.data("link");
 
-        if (url.length > 0) {
+        if (url && url.length > 0) {
             if (!d.hasClass("loaded")) {
                 $.ajax({
                     type: 'POST',
@@ -256,14 +256,24 @@
                                     if (t.hasOwnProperty(ii))
                                         $.InitFunctions[t[ii]]();
                             }
-                            if ($tabinit.data && $tabinit.data("init2"))
+                            if ($tabinit.data && $tabinit.data("init2")) {
                                 $.InitFunctions[$tabinit.data("init2")]();
-                            if ($form.data("init2"))
+                            }
+                            if ($form.data("init2")) {
                                 $.InitFunctions[$form.data("init2")]();
-                            if (a.data("callback"))
+                            }
+                            if (a.data("callback")) {
                                 $.InitFunctions[a.data("callback")]();
-                            if (a.data("reload"))
+                            }
+                            if (a.data("reload")) {
                                 $(a.data("reload")).click();
+                            }
+                            if ($form.data("snackbar-success")) {
+                                // allow some time for the ui to unblock
+                                window.setTimeout(function () {
+                                    snackbar($form.data("snackbar-success"), "success");
+                                }, 400);
+                            }
                         });
                     }
                 },

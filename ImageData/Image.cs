@@ -100,10 +100,11 @@ namespace ImageData
             Length = Bits.Length;
         }
 
-        public static Image NewImageFromBits(byte[] bits, CMSImageDataContext db)
+        public static Image NewImageFromBits(byte[] bits, CMSImageDataContext db, bool isPublic = false)
         {
             var i = new Image();
             i.LoadImageFromBits(bits);
+            i.IsPublic = isPublic;
             InsertImage(db, i);
             return i;
         }
@@ -136,6 +137,12 @@ namespace ImageData
         }
 
         public static Image NewImageFromBits(byte[] bits, string type, CMSImageDataContext db)
+        {
+            var image = CreateImageFromType(bits, type, db);
+            return image;
+        }
+
+        public static Image CreateImageFromType(byte[] bits, string type, CMSImageDataContext db)
         {
             var i = new Image();
             i.LoadFromBits(bits, type);

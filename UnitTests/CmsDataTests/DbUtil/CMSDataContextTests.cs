@@ -1,6 +1,7 @@
 using SharedTestFixtures;
 using CmsData;
 using Xunit;
+using Shouldly;
 
 namespace CmsDataTests
 {
@@ -15,8 +16,20 @@ namespace CmsDataTests
     AND HasManagedGiving( FundIdOrBlank='10102' ) = 1[True]
     AND HasPeopleExtraField <> 'RiseRecurAutoStopped'
     AND CampusId = 2[West Side]";
-            var db = CMSDataContext.Create(host: "localhost");
+            var db = CMSDataContext.Create(DatabaseFixture.Host);
             db.PeopleQuery2(query);
+        }
+
+        [Fact]
+        public static void Should_Get_Setting()
+        {
+            using (var db = CMSDataContext.Create(DatabaseFixture.Host))
+            {
+                var expected = "1";
+                var setting = MockSettings.CreateSaveSetting(db, "PostContributionPledgeFunds", "1");
+                var actual = db.GetSetting("PostContributionPledgeFunds", "");
+                actual.ShouldBe(expected);
+            }
         }
     }
 }

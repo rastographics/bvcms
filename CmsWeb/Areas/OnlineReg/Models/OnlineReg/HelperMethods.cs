@@ -2,6 +2,7 @@ using CmsData;
 using CmsData.Codes;
 using CmsData.Registration;
 using CmsWeb.Areas.Dialog.Models;
+using ImageData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,6 +33,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         //        }
 
         private Dictionary<int, Settings> _settings;
+        private Dictionary<int, Settings> _MasterSettings;
 
         public Dictionary<int, Settings> settings
         {
@@ -48,6 +50,24 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     _settings = HttpContextFactory.Current.Items["RegSettings"] as Dictionary<int, Settings>;
                 }
                 return _settings;
+            }
+        }
+
+        public Dictionary<int, Settings> MasterSettings
+        {
+            get
+            {
+                if (_MasterSettings == null)
+                {
+                    _MasterSettings = HttpContextFactory.Current.Items["RegMasterSettings"] as Dictionary<int, Settings>;
+                }
+
+                if (_settings == null)
+                {
+                    ParseMasterSettings();
+                    _MasterSettings = HttpContextFactory.Current.Items["RegMasterSettings"] as Dictionary<int, Settings>;
+                }
+                return _MasterSettings;
             }
         }
 
@@ -849,7 +869,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     select om;
             foreach (var om in q)
             {
-                om.Drop(CurrentDatabase, DateTime.Now);
+                om.Drop(CurrentDatabase, CMSImageDataContext.Create(CurrentDatabase.Host), DateTime.Now);
                 CurrentDatabase.ExecuteCommand("DELETE dbo.EnrollmentTransaction WHERE PeopleId = {0} AND OrganizationId = {1}", om.PeopleId, om.OrganizationId);
             }
             CurrentDatabase.SubmitChanges();

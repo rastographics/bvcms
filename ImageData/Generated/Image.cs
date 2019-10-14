@@ -23,10 +23,14 @@ namespace ImageData
         [Column(Name = "secure", UpdateCheck = UpdateCheck.Never, DbType = "bit")]
         public bool? Secure { get; set; }
 
+        [Column(Name = "IsPublic", UpdateCheck = UpdateCheck.Never, DbType = "bit")]
+        public bool IsPublic { get; set; }
+
         #endregion
 
         #region Events
 
+        #pragma warning disable 0067
         public event PropertyChangingEventHandler PropertyChanging;
         public event PropertyChangedEventHandler PropertyChanged;
 

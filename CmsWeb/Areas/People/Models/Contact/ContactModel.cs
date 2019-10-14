@@ -267,7 +267,7 @@ namespace CmsWeb.Areas.People.Models
         public void SetLocationOnContact()
         {
             Location = ContactExtraConfig
-                .GetLocationFor(OrganizationId, Ministry.ToString(), ContactType.ToString(), ContactReason.ToString());
+                .GetLocationFor(OrganizationId, Ministry?.ToString(), ContactType?.ToString(), ContactReason?.ToString());
         }
 
         public void SetLocationOnContact(string ministry, string contactType, string contactReason)

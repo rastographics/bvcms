@@ -94,7 +94,7 @@ namespace CmsWeb.Models
 
         public static UserValidationResult AuthenticateMobile(CMSDataContext cmsdb, CMSImageDataContext cmsidb, string requiredRole = null, bool checkOrgLeadersOnly = false, bool requirePin = false)
         {
-            var userStatus = GetUserViaCredentials() ?? GetUserViaSessionToken(requirePin);
+            var userStatus = GetUserViaCredentials() ?? GetUserViaSessionToken(cmsdb, requirePin);
 
             if (userStatus == null)
             {
@@ -125,7 +125,7 @@ namespace CmsWeb.Models
             }
 
             UserName2 = user.Username;
-            SetUserInfo(cmsdb, cmsidb, user.Username, HttpContextFactory.Current.Session, deleteSpecialTags: false);
+            SetUserInfo(cmsdb, cmsidb, user.Username, deleteSpecialTags: false);
             //DbUtil.LogActivity("iphone auth " + user.Username);
 
             if (checkOrgLeadersOnly && !Util2.OrgLeadersOnlyChecked)
@@ -140,14 +140,14 @@ namespace CmsWeb.Models
                 Util2.OrgLeadersOnlyChecked = true;
             }
 
-            ApiSessionModel.SaveApiSession(userStatus.User, requirePin, HttpContextFactory.Current.Request.Headers["PIN"].ToInt2());
+            ApiSessionModel.SaveApiSession(cmsdb, userStatus.User, requirePin, HttpContextFactory.Current.Request.Headers["PIN"].ToInt2());
 
             return userStatus;
         }
 
         public static UserValidationResult AuthenticateMobile2(CMSDataContext cmsdb, CMSImageDataContext cmsidb, bool checkOrgLeadersOnly = false, bool requirePin = false)
         {
-            var userStatus = GetUserViaCredentials() ?? GetUserViaSessionToken(requirePin);
+            var userStatus = GetUserViaCredentials() ?? GetUserViaSessionToken(cmsdb, requirePin);
 
             if (userStatus == null)
             {
@@ -166,11 +166,10 @@ namespace CmsWeb.Models
             var roleProvider = CMSRoleProvider.provider;
 
             UserName2 = user.Username;
-            SetUserInfo(cmsdb, cmsidb, user.Username, HttpContextFactory.Current.Session, deleteSpecialTags: false);
+            SetUserInfo(cmsdb, cmsidb, user.Username, deleteSpecialTags: false);
 
             if (checkOrgLeadersOnly && !Util2.OrgLeadersOnlyChecked)
             {
-                CmsData.DbUtil.LogActivity("iphone leadersonly check " + user.Username);
                 if (!Util2.OrgLeadersOnly && roleProvider.IsUserInRole(user.Username, "OrgLeadersOnly"))
                 {
                     Util2.OrgLeadersOnly = true;
@@ -180,8 +179,8 @@ namespace CmsWeb.Models
                 Util2.OrgLeadersOnlyChecked = true;
             }
 
-            FormsAuthentication.SetAuthCookie(user.Username, false);
-            ApiSessionModel.SaveApiSession(userStatus.User, requirePin, HttpContextFactory.Current.Request.Headers["PIN"].ToInt2());
+            CMSMembershipProvider.provider.SetAuthCookie(user.Username, false);
+            ApiSessionModel.SaveApiSession(cmsdb, userStatus.User, requirePin, HttpContextFactory.Current.Request.Headers["PIN"].ToInt2());
 
             return userStatus;
         }
@@ -200,7 +199,7 @@ namespace CmsWeb.Models
                 || userStatus.Status == UserValidationStatus.PinExpired
                 || userStatus.Status == UserValidationStatus.SessionTokenExpired)
             {
-                var result = ApiSessionModel.ResetSessionExpiration(userStatus.User, HttpContextFactory.Current.Request.Headers["PIN"].ToInt2());
+                var result = ApiSessionModel.ResetSessionExpiration(cmsdb, userStatus.User, HttpContextFactory.Current.Request.Headers["PIN"].ToInt2());
                 if (!result)
                 {
                     return UserValidationResult.Invalid(UserValidationStatus.PinInvalid);
@@ -212,12 +211,12 @@ namespace CmsWeb.Models
             return userStatus;
         }
 
-        public static void ExpireSessionToken(string sessionToken)
+        public static void ExpireSessionToken(CMSDataContext db, string sessionToken)
         {
-            ApiSessionModel.ExpireSession(Guid.Parse(sessionToken));
+            ApiSessionModel.ExpireSession(db, Guid.Parse(sessionToken));
         }
 
-        private static UserValidationResult GetUserViaSessionToken(bool requirePin)
+        private static UserValidationResult GetUserViaSessionToken(CMSDataContext db, bool requirePin)
         {
             var sessionToken = HttpContextFactory.Current.Request.Headers["SessionToken"];
             if (string.IsNullOrEmpty(sessionToken))
@@ -226,7 +225,7 @@ namespace CmsWeb.Models
                 return null;
             }
 
-            var result = ApiSessionModel.DetermineApiSessionStatus(Guid.Parse(sessionToken), requirePin, HttpContextFactory.Current.Request.Headers["PIN"].ToInt2());
+            var result = ApiSessionModel.DetermineApiSessionStatus(db, Guid.Parse(sessionToken), requirePin, HttpContextFactory.Current.Request.Headers["PIN"].ToInt2());
 
             //DbUtil.LogActivity("GetUserViaSession==" + result.Status.ToString());
 
@@ -332,7 +331,7 @@ namespace CmsWeb.Models
                     break;
                 }
 
-                if (System.Web.Security.Membership.Provider.ValidateUser(u.Username, password))
+                if (CMSMembershipProvider.provider.ValidateUser(u.Username, password))
                 {
                     db.Refresh(RefreshMode.OverwriteCurrentValues, u);
                     user = u;
@@ -411,7 +410,7 @@ namespace CmsWeb.Models
             var status = AuthenticateLogon(userName, password, Request.Url.OriginalString, db);
             if (status.IsValid)
             {
-                SetUserInfo(db, idb, status.User.Username, Session);
+                SetUserInfo(db, idb, status.User.Username);
                 FormsAuthentication.SetAuthCookie(status.User.Username, false);
                 CmsData.DbUtil.LogActivity($"User {status.User.Username} logged in");
                 return status.User;
@@ -422,7 +421,7 @@ namespace CmsWeb.Models
         public static object AutoLogin(string userName, HttpSessionStateBase Session, HttpRequestBase Request, CMSDataContext db, CMSImageDataContext idb)
         {
 #if DEBUG
-            SetUserInfo(db, idb, userName, Session);
+            SetUserInfo(db, idb, userName);
             FormsAuthentication.SetAuthCookie(userName, false);
 #endif
             return null;
@@ -443,34 +442,7 @@ namespace CmsWeb.Models
             CmsData.DbUtil.Db.EmailRedacted(CmsData.DbUtil.AdminMail, notify, subject, message);
         }
 
-        public static void SetUserInfo(CMSDataContext cmsdb, CMSImageDataContext cmsidb, string username, HttpSessionStateBase Session, bool deleteSpecialTags = true)
-        {
-            var u = SetUserInfo(cmsdb, cmsidb, username);
-            if (u == null)
-            {
-                return;
-            }
-
-            Session["ActivePerson"] = u.Name;
-            if (deleteSpecialTags)
-            {
-                CmsData.DbUtil.Db.DeleteSpecialTags(Util.UserPeopleId);
-            }
-        }
-
-        public static User SetUserInfo(CMSDataContext cmsdb, CMSImageDataContext cmsidb, string username, HttpSessionStateBase Session)
-        {
-            var u = SetUserInfo(cmsdb, cmsidb, username);
-            if (u == null)
-            {
-                return null;
-            }
-
-            Session["ActivePerson"] = u.Name;
-            return u;
-        }
-
-        private static User SetUserInfo(CMSDataContext cmsdb, CMSImageDataContext cmsidb, string username)
+        public static User SetUserInfo(CMSDataContext cmsdb, CMSImageDataContext cmsidb, string username, bool deleteSpecialTags = true)
         {
             var i = (from u in cmsdb.Users
                      where u.Username == username
@@ -479,7 +451,7 @@ namespace CmsWeb.Models
             {
                 return null;
             }
-            //var u = cmsdb.Users.SingleOrDefault(us => us.Username == username);
+
             if (i.u != null)
             {
                 Util.UserId = i.u.UserId;
@@ -500,6 +472,16 @@ namespace CmsWeb.Models
                 Util.UserPreferredName = i.PreferredName;
                 Util.UserFullName = i.u.Name;
                 Util.UserFirstName = i.u.Person.FirstName;
+            }
+            else
+            { 
+                return null;
+            }
+
+            Util.ActivePerson = i.u.Name;
+            if (deleteSpecialTags)
+            {
+                cmsdb.DeleteSpecialTags(Util.UserPeopleId);
             }
             return i.u;
         }

@@ -513,7 +513,11 @@ namespace CmsData
         partial void InsertOrganizationMember(OrganizationMember instance);
         partial void UpdateOrganizationMember(OrganizationMember instance);
         partial void DeleteOrganizationMember(OrganizationMember instance);
-        
+
+        partial void InsertOrgMemberDocuments(OrgMemberDocuments instance);
+        partial void UpdateOrgMemberDocuments(OrgMemberDocuments instance);
+        partial void DeleteOrgMemberDocuments(OrgMemberDocuments instance);
+
         partial void InsertOrganization(Organization instance);
         partial void UpdateOrganization(Organization instance);
         partial void DeleteOrganization(Organization instance);
@@ -1604,7 +1608,12 @@ namespace CmsData
 
 		}
 
-		public Table<Organization> Organizations
+        public Table<OrgMemberDocuments> OrgMemberDocuments
+        {
+            get { return this.GetTable<OrgMemberDocuments>(); }
+        }
+
+        public Table<Organization> Organizations
 		{
 			get	{ return this.GetTable<Organization>(); }
 
@@ -4647,7 +4656,18 @@ namespace CmsData
                 );
 		}
 
-		[Function(Name="dbo.PledgeFulfillment", IsComposable = true)]
+        [Function(Name = "dbo.PledgesSummary", IsComposable = true)]
+        public IQueryable<View.PledgesSummary> PledgesSummary(
+            [Parameter(DbType = "int")] int? pid
+            )
+        {
+            return this.CreateMethodCallQuery<View.PledgesSummary>(this,
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                pid
+                );
+        }
+
+        [Function(Name="dbo.PledgeFulfillment", IsComposable = true)]
 		public IQueryable<View.PledgeFulfillment > PledgeFulfillment(
             [Parameter(DbType="int")] int? fundid
             )

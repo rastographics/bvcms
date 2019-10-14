@@ -1,6 +1,7 @@
 using CmsData;
 using CmsData.Codes;
 using CmsWeb.Models;
+using ImageData;
 using System.Collections.Generic;
 using System.Linq;
 using UtilityExtensions;
@@ -102,7 +103,7 @@ namespace CmsWeb.Areas.Dialog.Models
                 return "not moved";
             }
 
-            OrganizationMember.MoveToOrg(DbUtil.Db, PeopleId.Value, OrgId.Value, toid, MoveRegistrationData);
+            OrganizationMember.MoveToOrg(db, CMSImageDataContext.Create(db.Host), PeopleId.Value, OrgId.Value, toid, MoveRegistrationData);
             DbUtil.LogActivity("OrgMem Move to " + toid, OrgId, PeopleId);
 
             var repairExe = HttpContextFactory.Current.Server.MapPath("~/bin/RepairOrg.exe");

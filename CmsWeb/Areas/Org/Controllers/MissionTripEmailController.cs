@@ -2,20 +2,27 @@ using System.Linq;
 using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.Org.Models;
+using CmsWeb.Lifecycle;
 using Newtonsoft.Json;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Org.Controllers
 {
     [RouteArea("Org", AreaPrefix = "")]
-    public class MissionTripEmailController : Controller
+    public class MissionTripEmailController : CmsStaffController
     {
+        public MissionTripEmailController(IRequestManager requestManager) : base(requestManager)
+        {
+            NoCheckRole = true;
+        }
+
         [HttpGet, Route("MissionTripEmail2/{oid}/{pid}")]
         public ActionResult Index(int oid, int pid)
         {
-            var missiongiving = User.IsInRole("MissionGiving") || User.IsInRole("Developer");
-            if (Util.UserPeopleId != pid && !missiongiving)
+            if (Util.UserPeopleId != pid)
+            {
                 return Content("not authorized");
+            }
             DbUtil.LogActivity($"MissionTripEmail {pid}");
             var m = new MissionTripEmailer {PeopleId = pid, OrgId = oid};
             return View(m);
@@ -24,10 +31,10 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpGet, Route("MissionTripEmail2/EmailBody/{oid}/{pid}")]
         public ActionResult EmailBody(int oid, int pid)
         {
-            var missiongiving = User.IsInRole("MissionGiving") || User.IsInRole("Developer");
-            if (Util.UserPeopleId != pid && !missiongiving)
+            if (Util.UserPeopleId != pid)
+            {
                 return Content("not authorized");
-
+            }
             var m = new MissionTripEmailer {PeopleId = pid, OrgId = oid};
             return View(m);
         }

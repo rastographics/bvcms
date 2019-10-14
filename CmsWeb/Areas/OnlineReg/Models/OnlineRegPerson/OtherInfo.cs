@@ -97,6 +97,16 @@ namespace CmsWeb.Areas.OnlineReg.Models
             return false;
         }
 
+        public bool DocumentUploaded(string key, bool value)
+        {
+            if (OrganizationDocument != null && OrganizationDocument.ContainsKey(key))
+            {
+                return OrganizationDocument[key] == value;
+            }
+
+            return false;
+        }
+
         public bool CheckboxChecked(string sg)
         {
             if (Checkbox == null)
@@ -159,10 +169,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public static IEnumerable<SelectListItem> ShirtSizes(CMSDataContext Db, Organization org)
         {
             var setting = Db.CreateRegistrationSettings(org.OrganizationId);
-            return ShirtSizes(setting);
+            return ShirtSizes(Db, setting);
         }
 
-        private static IEnumerable<SelectListItem> ShirtSizes(Settings setting)
+        private static IEnumerable<SelectListItem> ShirtSizes(CMSDataContext Db, Settings setting)
         {
             var list = new List<SelectListItem>();
             list.Insert(0, new SelectListItem { Value = "0", Text = "(please select)" });
@@ -179,7 +189,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
             if (askSize?.AllowLastYear ?? false)
             {
-                var text = Util.PickFirst(Organization.GetExtra(DbUtil.Db, setting.OrgId, "AllowLastYearShirtText"),
+                var text = Util.PickFirst(Organization.GetExtra(Db, setting.OrgId, "AllowLastYearShirtText"),
                     "Use shirt from last year");
                 list.Add(new SelectListItem { Value = "lastyear", Text = text });
             }
@@ -188,7 +198,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public IEnumerable<SelectListItem> ShirtSizes()
         {
-            return ShirtSizes(setting);
+            return ShirtSizes(CurrentDatabase, setting);
         }
 
         public List<SelectListItem> MissionTripGoers()

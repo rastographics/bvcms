@@ -59,13 +59,7 @@ namespace CmsData
         public PythonModel(string dbname, string classname, string script)
             : this(dbname)
         {
-            var engine = Python.CreateEngine();
-            var pc = HostingHelpers.GetLanguageContext(engine) as PythonContext;
-            var hooks = pc?.SystemState.Get__dict__()["path_hooks"] as List;
-            hooks?.Clear();
-            var searchPaths = engine.GetSearchPaths();
-            searchPaths.Add(ConfigurationManager.AppSettings["PythonLibPath"]);
-            engine.SetSearchPaths(searchPaths);
+            ScriptEngine engine = CreateEngine();
             var sc = engine.CreateScriptSourceFromString(script);
 
             var code = sc.Compile();
@@ -137,15 +131,7 @@ namespace CmsData
 
         public static string ExecutePython(string script, PythonModel model, bool fromFile = false)
         {
-            var engine = fromFile
-                ? Python.CreateEngine(new Dictionary<string, object> { ["Debug"] = true })
-                : Python.CreateEngine();
-            var pc = HostingHelpers.GetLanguageContext(engine) as PythonContext;
-            var hooks = pc?.SystemState.Get__dict__()["path_hooks"] as List;
-            hooks?.Clear();
-            var searchPaths = engine.GetSearchPaths();
-            searchPaths.Add(ConfigurationManager.AppSettings["PythonLibPath"]);
-            engine.SetSearchPaths(searchPaths);
+            ScriptEngine engine = CreateEngine(fromFile);
 
             using (var ms = new MemoryStream())
             using (var sw = new StreamWriter(ms))
@@ -182,6 +168,27 @@ namespace CmsData
                     throw new Exception(err);
                 }
             }
+        }
+
+        private static ScriptEngine CreateEngine(bool fromFile = false)
+        {
+            var engine = fromFile
+                            ? Python.CreateEngine(new Dictionary<string, object> { ["Debug"] = true })
+                            : Python.CreateEngine();
+            var pc = HostingHelpers.GetLanguageContext(engine) as PythonContext;
+            var hooks = pc?.SystemState.Get__dict__()["path_hooks"] as List;
+            hooks?.Clear();
+            var searchPaths = engine.GetSearchPaths();
+            var pythonLibPath = ConfigurationManager.AppSettings["PythonLibPath"];
+            if (pythonLibPath != null)
+            {
+                foreach (var path in pythonLibPath.Split(';'))
+                {
+                    searchPaths.Add(path);
+                }
+            }
+            engine.SetSearchPaths(searchPaths);
+            return engine;
         }
 
         public static string ExecutePythonFilex(string dbname, string file)

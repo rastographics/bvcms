@@ -28,7 +28,7 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.Search.Models
 {
-    public class OrgSearchModel
+    public class OrgSearchModel : IDbBinder
     {
         private int? _count;
         internal string noticelist;
@@ -712,8 +712,8 @@ namespace CmsWeb.Areas.Search.Models
                          into leaderlist
                          select leaderlist).ToList();
 
-            PythonModel.RegisterHelpers(CurrentDatabase);
-            var template = HandlebarsDotNet.Handlebars.Compile(Resource1.RecentVisitsAbsents);
+            var handlebars = PythonModel.RegisterHelpers(CurrentDatabase);
+            var template = handlebars.Compile(Resource1.RecentVisitsAbsents);
             var sb = new StringBuilder("Notices sent to:</br>\n<table>\n");
             foreach (var p in plist)
             {

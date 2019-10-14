@@ -1,7 +1,9 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.Events;
 using OpenQA.Selenium.Support.UI;
+using SharedTestFixtures;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,14 +14,18 @@ using Xunit;
 
 namespace IntegrationTests.Support
 {
-    public class FeatureTestBase : TestBase
+    public class FeatureTestBase : DatabaseTestBase
     {
         protected string rootUrl => Settings.RootUrl;
+
+        protected const string loadingUI = "div.blockUI.blockOverlay";
 
         protected IWebDriver driver;
         protected EventFiringWebDriver eventDriver;
 
         protected StringBuilder verificationErrors;
+
+        public static FeatureTestBase Current { get; private set; }
 
         protected IJavaScriptExecutor script
         {
@@ -35,6 +41,7 @@ namespace IntegrationTests.Support
 
         public FeatureTestBase() : base()
         {
+            Current = this;
             verificationErrors = new StringBuilder();
             StartBrowser();
         }
@@ -47,9 +54,18 @@ namespace IntegrationTests.Support
                 driver = null;
             }
 
+            ChromeDriver chromedriver;
             ChromeOptions options = new ChromeOptions();
             options.AddArgument("ignore-certificate-errors");
-            var chromedriver = new ChromeDriver(options);
+            var chromedriverDir = Environment.GetEnvironmentVariable("ChromeDriverDir");
+            if (string.IsNullOrEmpty(chromedriverDir))
+            {
+                chromedriver = new ChromeDriver(options);
+            }
+            else
+            {
+                chromedriver = new ChromeDriver(chromedriverDir, options, TimeSpan.FromSeconds(120));
+            }
             driver = chromedriver;
         }
 
@@ -58,6 +74,7 @@ namespace IntegrationTests.Support
         {
             if (!_disposed)
             {
+                Current = null;
                 _disposed = true;
 
                 IWebElement JSErrors = null;
@@ -180,14 +197,66 @@ namespace IntegrationTests.Support
             }
             return webElement;
         }
+        
+        protected void ScrollTo(IWebElement by = null,
+            string css = null,
+            string id = null,
+            string match = null,
+            string name = null,
+            string tag = null,
+            string text = null,
+            string xpath = null,
+            bool visible = true)
+        {
+            try
+            {
+                if (css != null)
+                {
+                    by = Find(css: css);
+                }
+                if (text != null)
+                {
+                    by = Find(text: text);
+                }
+                if (match != null)
+                {
+                    by = Find(match: match);
+                }
+                if (id != null)
+                {
+                    by = Find(id: id);
+                }
+                if (name != null)
+                {
+                    by = Find(name: name);
+                }
+                if (tag != null)
+                {
+                    by = Find(tag: tag);
+                }
+                if (xpath != null)
+                {
+                    by = Find(xpath: xpath);
+                }
+                if (by != null)
+                {
+                    Actions actions = new Actions(driver);
+                    actions.MoveToElement(by);
+                    actions.Perform();
+                }
+            }
+            catch
+            {
+            }
+        }
 
-        protected void SaveScreenshot()
+        internal void SaveScreenshot(string name = "Screenshot")
         {
             Screenshot screenshot = screenShotDriver.GetScreenshot();
-            string file = "Screenshot_" + DateTime.Now.ToString("yyyy-MM-dd_HH.mm.ss_") + RandomString() + ".png";
+            string file = $"{name}_" + DateTime.Now.ToString("yyyy-MM-dd_HH.mm.ss_") + RandomString() + ".png";
             string filename = Path.Combine(Settings.ScreenShotLocation, file);
             screenshot.SaveAsFile(filename, ScreenshotImageFormat.Png);
-            Console.WriteLine("Screen shot saved: {0}", Path.Combine(Settings.ScreenShotUrl));
+            Console.WriteLine("Screen shot saved: {0}", Path.Combine(Settings.ScreenShotUrl, file));
         }
 
         protected IEnumerable<IWebElement> FindAll(By by = null,
@@ -305,6 +374,18 @@ namespace IntegrationTests.Support
                 return false;
             }
         }
+        protected bool IsElementPresent(string css)
+        {
+            try
+            {
+                driver.FindElement(By.CssSelector(css));
+                return true;
+            }
+            catch (NoSuchElementException)
+            {
+                return false;
+            }
+        }
 
         protected bool IsAlertPresent()
         {
@@ -346,7 +427,7 @@ namespace IntegrationTests.Support
             }, maxWaitTimeInSeconds);
         }
 
-        protected void WaitForElement(string css, int maxWaitTimeInSeconds = 10)
+        protected void WaitForElementToDisappear(string css, int maxWaitTimeInSeconds = 10, bool visible = true)
         {
             IWebElement element = null;
             try
@@ -357,7 +438,66 @@ namespace IntegrationTests.Support
                 {
                     try
                     {
-                        element = Find(By.CssSelector(css));
+                        element = Find(By.CssSelector(css), visible: visible);
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        //Ignore
+                    }
+                    catch (NoSuchWindowException)
+                    {
+                        //when popup is closed, switch to last windows
+                        driver.SwitchTo().Window(driver.WindowHandles.Last());
+                    }
+                    //In IE7 there are chances we may get state as loaded instead of complete
+                    return (element == null);
+                });
+            }
+            catch (TimeoutException)
+            {
+                //sometimes Page remains in Interactive mode and never becomes Complete, then we can still try to access the controls
+                if (element == null)
+                {
+                    SaveScreenshot();
+                    throw;
+                }
+            }
+            catch (NullReferenceException)
+            {
+                //sometimes Page remains in Interactive mode and never becomes Complete, then we can still try to access the controls
+                if (element != null)
+                {
+                    SaveScreenshot();
+                    throw;
+                }
+            }
+            catch (WebDriverException)
+            {
+                if (driver.WindowHandles.Count == 1)
+                {
+                    driver.SwitchTo().Window(driver.WindowHandles.First());
+                }
+                element = driver.FindElement(By.CssSelector(css));
+                if (element != null)
+                {
+                    SaveScreenshot();
+                    throw;
+                }
+            }
+        }
+
+        protected void WaitForElement(string css, int maxWaitTimeInSeconds = 10, bool visible = true)
+        {
+            IWebElement element = null;
+            try
+            {
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(maxWaitTimeInSeconds));
+
+                wait.Until(d =>
+                {
+                    try
+                    {
+                        element = Find(By.CssSelector(css), visible: visible);
                     }
                     catch (InvalidOperationException)
                     {
