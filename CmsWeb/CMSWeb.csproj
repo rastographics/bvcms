@@ -368,7 +368,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Areas\CheckIn\Models\CheckinTimeModel.cs" />
-    <Compile Include="Code\Constants.cs" />
     <Compile Include="App_Start\ApiMessageLoggingHandler.cs" />
     <Compile Include="App_Start\ApiAuthorizeAttribute.cs" />
     <Compile Include="App_Start\DependencyConfig.cs" />

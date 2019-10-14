@@ -1058,8 +1058,6 @@ namespace CmsData
 
         public Table<ContributionTag> ContributionTags => this.GetTable<ContributionTag>();
 
-        public Table<Country> Countries => this.GetTable<Country>();
-
         public Table<LongRunningOperation> LongRunningOperations => this.GetTable<LongRunningOperation>();
 
         public Table<ManagedGiving> ManagedGivings => this.GetTable<ManagedGiving>();
