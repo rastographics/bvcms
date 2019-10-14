@@ -211,6 +211,10 @@ namespace CmsData
         partial void UpdateContributionType(ContributionType instance);
         partial void DeleteContributionType(ContributionType instance);
 
+        partial void InsertContributionTag(ContributionTag instance);
+        partial void UpdateContributionTag(ContributionTag instance);
+        partial void DeleteContributionTag(ContributionTag instance);
+
         partial void InsertCountry(Country instance);
         partial void UpdateCountry(Country instance);
         partial void DeleteCountry(Country instance);
@@ -1051,6 +1055,10 @@ namespace CmsData
         public Table<LabelFormat> LabelFormats => this.GetTable<LabelFormat>();
 
         public Table<LongRunningOp> LongRunningOps => this.GetTable<LongRunningOp>();
+
+        public Table<ContributionTag> ContributionTags => this.GetTable<ContributionTag>();
+
+        public Table<Country> Countries => this.GetTable<Country>();
 
         public Table<LongRunningOperation> LongRunningOperations => this.GetTable<LongRunningOperation>();
 
