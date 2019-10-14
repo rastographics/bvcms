@@ -41,7 +41,9 @@ namespace CmsWeb.Areas.Reports.Controllers
                     Results = GridResult.Table(rd, Name2);
                 }
             }
+            CurrentDatabase.LogActivity($"Run SQL report: {Report}", pid: Util.UserPeopleId, uid: Util.UserId);
         }
+
         public EpplusResult RunSqlExcel()
         {
             DynamicParameters p;
@@ -49,6 +51,7 @@ namespace CmsWeb.Areas.Reports.Controllers
             using (var cn = CurrentDatabase.ReadonlyConnection())
             {
                 cn.Open();
+                CurrentDatabase.LogActivity($"Run SQL report: {Report}", pid: Util.UserPeopleId, uid: Util.UserId);
                 return cn.ExecuteReader(content, p).ToExcel($"{Report.Replace(" ", "")}.xlsx", fromSql: true);
             }
         }
@@ -138,14 +141,17 @@ namespace CmsWeb.Areas.Reports.Controllers
 
             pe.RunScript(content);
             Results = pe.Output;
+
+            CurrentDatabase.LogActivity($"Run Python script: {Report}", pid: Util.UserPeopleId, uid: Util.UserId);
         }
 
         public static bool CanRunScript(string script)
         {
-            if (script.StartsWith("#Roles=") || script.StartsWith("--Roles"))
+            var s = script?.TrimStart();
+            if (s.StartsWith("#Roles=") || s.StartsWith("--Roles"))
             {
                 var re = new Regex("(--|#)Roles=(?<roles>.*)", RegexOptions.IgnoreCase);
-                var roles = re.Match(script).Groups["roles"].Value.Split(',').Select(aa => aa.Trim()).ToArray();
+                var roles = re.Match(s).Groups["roles"].Value.Split(',').Select(aa => aa.Trim()).ToArray();
                 if (roles.Length > 0)
                 {
                     return HttpContextFactory.Current == null || roles.Any(rr => HttpContextFactory.Current.User.IsInRole(rr));
