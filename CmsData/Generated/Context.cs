@@ -213,7 +213,11 @@ namespace CmsData
         partial void InsertContributionType(ContributionType instance);
         partial void UpdateContributionType(ContributionType instance);
         partial void DeleteContributionType(ContributionType instance);
-        
+
+        partial void InsertContributionTag(ContributionTag instance);
+        partial void UpdateContributionTag(ContributionTag instance);
+        partial void DeleteContributionTag(ContributionTag instance);
+
         partial void InsertCountry(Country instance);
         partial void UpdateCountry(Country instance);
         partial void DeleteCountry(Country instance);
@@ -513,7 +517,11 @@ namespace CmsData
         partial void InsertOrganizationMember(OrganizationMember instance);
         partial void UpdateOrganizationMember(OrganizationMember instance);
         partial void DeleteOrganizationMember(OrganizationMember instance);
-        
+
+        partial void InsertOrgMemberDocuments(OrgMemberDocuments instance);
+        partial void UpdateOrgMemberDocuments(OrgMemberDocuments instance);
+        partial void DeleteOrgMemberDocuments(OrgMemberDocuments instance);
+
         partial void InsertOrganization(Organization instance);
         partial void UpdateOrganization(Organization instance);
         partial void DeleteOrganization(Organization instance);
@@ -1156,9 +1164,15 @@ namespace CmsData
 		{
 			get	{ return this.GetTable<ContributionType>(); }
 
-		}
+        }
 
-		public Table<Country> Countries
+        public Table<ContributionTag> ContributionTags
+        {
+            get { return this.GetTable<ContributionTag>(); }
+
+        }
+
+        public Table<Country> Countries
 		{
 			get	{ return this.GetTable<Country>(); }
 
@@ -1609,7 +1623,12 @@ namespace CmsData
 
 		}
 
-		public Table<Organization> Organizations
+        public Table<OrgMemberDocuments> OrgMemberDocuments
+        {
+            get { return this.GetTable<OrgMemberDocuments>(); }
+        }
+
+        public Table<Organization> Organizations
 		{
 			get	{ return this.GetTable<Organization>(); }
 

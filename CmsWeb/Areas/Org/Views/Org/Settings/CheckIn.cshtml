@@ -4,7 +4,7 @@
     ViewBag.ShowHelp = DbUtil.Db.UserPreference("ShowCheckInHelp");
     ViewBag.FalseValue = "";
 }
-<form class="ajax">
+<form class="ajax" data-snackbar-success="Settings saved.">
     @if (!Html.ViewData.ModelState.IsValid)
     {
         <div class="alert alert-danger">

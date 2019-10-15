@@ -1,5 +1,6 @@
 ﻿using CmsData;
 using CmsData.Codes;
+using CmsWeb.Areas.Dialog.Models;
 using CmsWeb.Membership;
 using System;
 using System.IO;
@@ -20,25 +21,29 @@ namespace SharedTestFixtures
         private string _host;
         public string Host => _host ?? (_host = DatabaseFixture.Host);
 
-        protected User CreateUser(string username, string password, Family family = null, params string[] roles)
+        protected User CreateUser(string username, string password, Family family = null, Person person = null, params string[] roles)
         {
-            if (family == null)
+            if(person == null)
             {
-                family = new Family();
-                db.Families.InsertOnSubmit(family);
+                if (family == null)
+                {
+                    family = new Family();
+                    db.Families.InsertOnSubmit(family);
+                    db.SubmitChanges();
+                }
+                person = new Person
+                {
+                    Family = family,
+                    FirstName = RandomString(),
+                    LastName = RandomString(),
+                    EmailAddress = RandomString() + "@example.com",
+                    MemberStatusId = MemberStatusCode.Member,
+                    PositionInFamilyId = PositionInFamily.PrimaryAdult,
+                };
+
+                db.People.InsertOnSubmit(person);
                 db.SubmitChanges();
             }
-            var person = new Person
-            {
-                Family = family,
-                FirstName = RandomString(),
-                LastName = RandomString(),
-                EmailAddress = RandomString() + "@example.com",
-                MemberStatusId = MemberStatusCode.Member,
-                PositionInFamilyId = PositionInFamily.PrimaryAdult,
-            };
-            db.People.InsertOnSubmit(person);
-            db.SubmitChanges();
 
             var createDate = DateTime.Now;
             var machineKey = GetValidationKeyFromWebConfig();
@@ -67,6 +72,34 @@ namespace SharedTestFixtures
                 db.SubmitChanges();
             }
             return user;
+        }
+
+        protected Organization CreateOrganization(string name = null, int? fromId = null, int? type = null, int? campus = null)
+        {
+            Organization org = null;
+            var newOrg = new Organization();
+            if (fromId != null)
+            {
+                org = db.LoadOrganizationById(fromId);
+            }
+            if (org == null)
+            {
+                org = db.Organizations.First();
+            }
+
+            newOrg.CreatedDate = DateTime.Now;
+            newOrg.CreatedBy = 0;
+            newOrg.OrganizationName = name ?? RandomString();
+            newOrg.EntryPointId = org.EntryPointId;
+            newOrg.OrganizationTypeId = type ?? org.OrganizationTypeId;
+            newOrg.OrganizationStatusId = 30;
+            newOrg.DivisionId = org.DivisionId;
+            newOrg.CampusId = campus;
+
+            db.Organizations.InsertOnSubmit(newOrg);
+            db.SubmitChanges();
+
+            return newOrg;
         }
 
         private string GetValidationKeyFromWebConfig()
@@ -109,7 +142,7 @@ namespace SharedTestFixtures
         }
 
         static Random randomizer = new Random();
-        protected static string RandomString(int length = 8, string prefix = "")
+        public static string RandomString(int length = 8, string prefix = "")
         {
             string rndchars = "QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm1234567890";
             string s = prefix;

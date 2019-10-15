@@ -282,8 +282,7 @@ namespace CmsData
 
         public string RenderTemplate(string source, object data)
         {  
-            PythonModel.RegisterHelpers(this);
-            var template = Handlebars.Compile(source);
+            var template = PythonModel.RegisterHelpers(this).Compile(source);
             var result = template(data);
             return result;
         }

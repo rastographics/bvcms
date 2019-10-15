@@ -2,6 +2,7 @@ using CmsData;
 using CmsWeb.Areas.People.Models;
 using CmsWeb.Lifecycle;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
@@ -84,11 +85,20 @@ namespace CmsWeb.Areas.People.Controllers
 
             ViewBag.Comments = Util.SafeFormat(m.Person.Comments);
             ViewBag.PeopleId = id.Value;
+
+            ViewBag.HideDeceasedFromFamily = HideDeceasedFromFamily();
+
             Util2.CurrentPeopleId = id.Value;
             Util.ActivePerson = m.Person.Name;
             DbUtil.LogPersonActivity($"Viewing Person: {m.Person.Name}", id.Value, m.Person.Name);
             InitExportToolbar(id);
             return View(m);
+        }
+
+        private bool HideDeceasedFromFamily()
+        {
+            var hide = Convert.ToBoolean(CurrentDatabase.GetSetting("HideDeceasedFromFamily", "false"));
+            return Util.IsInRole("Admin") ? false: hide;
         }
 
         [HttpGet, Route("~/Person2/{id:int}/Resources")]
