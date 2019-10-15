@@ -1,6 +1,7 @@
 using CmsData;
 using CmsData.Finance;
 using CmsWeb.Code;
+using CmsWeb.Models;
 using Elmah;
 using System;
 using System.Collections.Generic;
@@ -13,11 +14,12 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.OnlineReg.Models
 {
-    public class PaymentForm
+    public class PaymentForm : IDbBinder
     {
+        public CMSDataContext CurrentDatabase { get; set; }
+        internal CMSDataContext Db => CurrentDatabase;
         private bool? _noEChecksAllowed;
         private int? timeOut;
-        private CMSDataContext _currentDatabase;
 
         public string source { get; set; }
         public decimal? AmtToPay { get; set; }
@@ -48,7 +50,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public int DatumId { get; set; }
         public Guid FormId { get; set; }
         public string URL { get; set; }
-        public CMSDataContext CurrentDatabase => _currentDatabase ?? (_currentDatabase = DbUtil.Db);
 
         public int TimeOut
         {
@@ -56,7 +57,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             {
                 if (!timeOut.HasValue)
                 {
-                    timeOut = Util.IsDebug() ? 16000000 : CurrentDatabase.Setting("RegTimeout", "180000").ToInt();
+                    timeOut = Util.IsDebug() ? 16000000 : Db.Setting("RegTimeout", "180000").ToInt();
                 }
 
                 return timeOut.Value;
@@ -81,7 +82,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public bool NoCreditCardsAllowed { get; set; }
         public bool NeedsCityState { get; set; }
         public int? CampusId { get; set; }
-        public bool ShowCampusOnePageGiving => CurrentDatabase.Setting("ShowCampusOnRegistration", "false").ToBool();
+        public bool ShowCampusOnePageGiving => Db.Setting("ShowCampusOnRegistration", "false").ToBool();
 
         public bool NoEChecksAllowed
         {
@@ -89,7 +90,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             {
                 if (!_noEChecksAllowed.HasValue)
                 {
-                    _noEChecksAllowed = CurrentDatabase.Setting("NoEChecksAllowed");
+                    _noEChecksAllowed = Db.Setting("NoEChecksAllowed");
                 }
 
                 return _noEChecksAllowed.Value;
@@ -194,8 +195,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 LastFourACH = Type == PaymentType.Ach ? Account.Last(4) : null
             };
 
-            CurrentDatabase.Transactions.InsertOnSubmit(ti);
-            CurrentDatabase.SubmitChanges();
+            Db.Transactions.InsertOnSubmit(ti);
+            Db.SubmitChanges();
             if (OriginalId == null) // first transaction
             {
                 ti.OriginalId = ti.Id;
@@ -418,7 +419,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private static void ClearMaskedNumbers(PaymentForm pf, PaymentInfo pi)
         {
-            int? GatewayId = MultipleGatewayUtils.GatewayId(DbUtil.Db, pf.ProcessType);
+            int? GatewayId = MultipleGatewayUtils.GatewayId(pf.Db, pf.ProcessType);
 
             var clearBankDetails = false;
             var clearCreditCardDetails = false;
@@ -533,7 +534,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 return;
             }
 
-            CurrentDatabase.SubmitChanges();
+            Db.SubmitChanges();
             modelState.AddModelError("form", "amount zero");
         }
 
@@ -602,7 +603,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 return;
             }
 
-            var gateway = CurrentDatabase.Gateway(testing, null, ProcessType);
+            var gateway = Db.Gateway(testing, null, ProcessType);
 
             if (!modelState.IsValid)
             {
@@ -656,8 +657,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private void InitializePaymentInfo(int peopleId)
         {
-            var person = CurrentDatabase.LoadPersonById(peopleId);
-            var accountId = MultipleGatewayUtils.GetAccount(CurrentDatabase, ProcessType)?.GatewayAccountId;
+            var person = Db.LoadPersonById(peopleId);
+            var accountId = MultipleGatewayUtils.GetAccount(Db, ProcessType)?.GatewayAccountId;
             var pi = person.PaymentInfo(accountId ?? 0);
             if (pi == null)
             {
@@ -671,8 +672,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public Transaction ProcessPaymentTransaction(OnlineRegModel m)
         {
             var ti = (m?.Transaction != null)
-                ? CreateTransaction(CurrentDatabase, m.Transaction, AmtToPay)
-                : CreateTransaction(CurrentDatabase);
+                ? CreateTransaction(Db, m.Transaction, AmtToPay)
+                : CreateTransaction(Db);
 
             int? pid = null;
             if (m != null)
@@ -688,7 +689,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             if (!pid.HasValue)
             {
-                var pds = CurrentDatabase.FindPerson(First, Last, null, Email, Phone);
+                var pds = Db.FindPerson(First, Last, null, Email, Phone);
                 if (pds.Count() == 1)
                 {
                     pid = pds.Single().PeopleId.Value;
@@ -697,7 +698,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             TransactionResponse tinfo;
             var processType = m?.ProcessType ?? PaymentProcessTypes.OnlineRegistration;
-            var gw = CurrentDatabase.Gateway(testing, null, processType);
+            var gw = Db.Gateway(testing, null, processType);
 
             if (SavePayInfo)
             {
@@ -735,13 +736,13 @@ namespace CmsWeb.Areas.OnlineReg.Models
             ti.AuthCode = tinfo.AuthCode;
             ti.TransactionDate = Util.Now;
 
-            CurrentDatabase.SubmitChanges();
+            Db.SubmitChanges();
             return ti;
         }
 
         private bool CheckIfIsGatewayTesting(bool testing, PaymentProcessTypes processType)
         {
-            return testing || MultipleGatewayUtils.GatewayTesting(CurrentDatabase, ProcessType);
+            return testing || MultipleGatewayUtils.GatewayTesting(Db, ProcessType);
         }
 
         private TransactionResponse PayWithCreditCard(IGateway gateway, int? peopleId, Transaction transaction)
@@ -813,7 +814,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
                 OnlineRegModel.ConfirmDuePaidTransaction(ti, ti.TransactionId, true);
 
-                return RouteModel.AmountDue(AmountDueTrans(CurrentDatabase, ti), ti);
+                return RouteModel.AmountDue(AmountDueTrans(Db, ti), ti);
             }
             catch (Exception ex)
             {
@@ -843,7 +844,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             if (transactionApproved)
             {
-                CurrentDatabase.LogActivity($"Payment approved but registration failed: {exMessage}");
+                Db.LogActivity($"Payment approved but registration failed: {exMessage}");
                 return $"Bank transaction was approved but registration failed. Please don't submit the payment again and contact the system administrator.";
             }
             return exMessage;

@@ -7,14 +7,6 @@
 @{
     ViewBag.Title = "Online Registration";
     Layout = "~/Views/Shared/onlinereg2.cshtml";
-    var funame = Html.NameFor2(m => m.FundItem);
-    var db = DbUtil.Db;
-    var funds = CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel.FullFundList(db, Model.DefaultFundIds.Any() ? Model.DefaultFundIds : Model.FallbackDefaultFundIds);
-    var otherFunds = funds.Where(f => !Model.DefaultFundIds.Contains(f.Value)).ToList();
-    var useNewManageGivingBuilder = db.Setting("UseNewManageGivingBuilder", true);
-    var debitcredit = db.GetDebitCreditLabel(PaymentProcessTypes.RecurringGiving);
-    var recaptchaSiteKey = db.Setting("googleReCaptchaSiteKey", ConfigurationManager.AppSettings["googleReCaptchaSiteKey"]);
-    var useRecaptcha = db.Setting("UseRecaptchaForManageGiving") && recaptchaSiteKey.HasValue();
 }
 @section head
 {
@@ -52,7 +44,7 @@
 
         <div class="well">
             <div class="form-group">
-                @if (useNewManageGivingBuilder)
+                @if (Model.useNewManageGivingBuilder)
                 {
                     Html.RenderPartial("ManageGiving/_ManagedGivingFundsNew", Model);
                 }
@@ -64,7 +56,7 @@
         </div>
         <div class="well managed-giving-options">
             @Html.HiddenFor(m => m.StartWhenIsNew)
-            @if (useNewManageGivingBuilder)
+            @if (Model.useNewManageGivingBuilder)
             {
                 var pattern = Model.RepeatPattern;
                 if (pattern == "W" && Model.EveryN.HasValue && Model.EveryN == 2)
@@ -144,7 +136,7 @@
             {
                 <div class="form-group" style="text-align: center; margin-bottom: 1em;">
                     <div class="btn-group" data-toggle="buttons">
-                        @TypeRadio(PaymentType.CreditCard, debitcredit, "left", Model.Type == PaymentType.CreditCard || string.IsNullOrWhiteSpace(Model.Type))
+                        @TypeRadio(PaymentType.CreditCard, Model.debitcredit, "left", Model.Type == PaymentType.CreditCard || string.IsNullOrWhiteSpace(Model.Type))
                         @TypeRadio(PaymentType.Ach, "Bank Account", "right", Model.Type == PaymentType.Ach)
                         @Html.Hidden("allowcc", "true")
                     </div>
@@ -161,21 +153,21 @@
             @if (Model.NoCreditCardsAllowed == false)
             {
                 <div class="Card paymentinfo">
-                    @Html.EditorFor(m => m.CreditCard, new { autocomplete = Model.AutocompleteOnOff, Label = debitcredit })
+                    @Html.EditorFor(m => m.CreditCard, new { autocomplete = Model.AutocompleteOnOff, Label = Model.debitcredit })
                     @Html.EditorFor(m => m.Expires, new { classes = "narrow" })
                     @Html.EditorFor(m => m.CVV, new { classes = "narrow", autocomplete = Model.AutocompleteOnOff })
                     <input type="hidden" id="hdnCreditCardOnFile" data-value="@Request.RequestContext.HttpContext.Session["CreditCardOnFile"]" />
                     <input type="hidden" id="hdnExpiresOnFile" data-value="@Request.RequestContext.HttpContext.Session["ExpiresOnFile"]" />
                 </div>
             }
-        @if (useRecaptcha) {
+        @if (Model.useRecaptcha) {
             <div class="g-recaptcha"
-                 data-sitekey="@recaptchaSiteKey"
+                 data-sitekey="@Model.recaptchaSiteKey"
                  data-callback="recaptcha_callback"
                  data-size="invisible">
             </div>
         }
-        <input type="hidden" id="useRecaptcha" value="@useRecaptcha" />
+        <input type="hidden" id="useRecaptcha" value="@Model.useRecaptcha" />
             @if (Model.NoEChecksAllowed == false)
             {
                 <div class="Bank paymentinfo">

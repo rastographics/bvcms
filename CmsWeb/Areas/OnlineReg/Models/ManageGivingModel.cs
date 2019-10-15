@@ -13,6 +13,7 @@ using CmsData.Finance;
 using CmsData.Registration;
 using CmsWeb.Areas.OnlineReg.Controllers;
 using CmsWeb.Code;
+using CmsWeb.Models;
 using Dapper;
 using Microsoft.Scripting.Utils;
 using Newtonsoft.Json;
@@ -21,31 +22,13 @@ using UtilityExtensions;
 namespace CmsWeb.Areas.OnlineReg.Models
 {
     [Serializable]
-    public class ManageGivingModel
+    public class ManageGivingModel : IDbBinder
     {
+        public CMSDataContext CurrentDatabase { get; set; }
+        internal CMSDataContext Db => CurrentDatabase;
+
         public int pid { get; set; }
         public int orgid { get; set; }
-
-        [NonSerialized]
-        private CMSDataContext _currentDatabase;
-        private CMSDataContext CurrentDatabase
-        {
-            get => _currentDatabase ?? (CurrentDatabase = DbUtil.Db);
-            set
-            {
-                if (_currentDatabase == null)
-                {
-                    _currentDatabase = value;
-
-                    HeadingLabel = CurrentDatabase.Setting("ManageGivingHeaderLabel", "Giving Opportunities");
-#if DEBUG2
-            testing = true;
-#endif
-                    NoCreditCardsAllowed = CurrentDatabase.Setting("NoCreditCardGiving", "false").ToBool();
-                    NoEChecksAllowed = CurrentDatabase.Setting("NoEChecksAllowed", "false").ToBool();
-                }
-            }
-        }
 
         public void SetCurrentDatabase(CMSDataContext db)
         {
@@ -90,7 +73,12 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public string Account { get; set; }
         public bool testing { get; set; }
         public decimal total { get; set; }
-        public string HeadingLabel { get; set; }
+        public string HeadingLabel
+        {
+            get => Db.Setting("ManageGivingHeaderLabel", "Giving Opportunities");
+            set { }
+        }
+
         public string FirstName { get; set; }
         public string Middle { get; set; }
         public string LastName { get; set; }
@@ -100,6 +88,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public string City { get; set; }
         public string State { get; set; }
         public string Country { get; set; }
+
+        public bool useNewManageGivingBuilder => Db.Setting("UseNewManageGivingBuilder", true);
+        public string debitcredit => Db.GetDebitCreditLabel(PaymentProcessTypes.RecurringGiving);
+        public string recaptchaSiteKey => Db.Setting("googleReCaptchaSiteKey", ConfigurationManager.AppSettings["googleReCaptchaSiteKey"]);
+        public bool useRecaptcha => Db.Setting("UseRecaptchaForManageGiving") && recaptchaSiteKey.HasValue();
 
         public IEnumerable<SelectListItem> Countries
         {
@@ -140,8 +133,16 @@ namespace CmsWeb.Areas.OnlineReg.Models
         private Settings _setting;
         public Settings Setting => _setting ?? (_setting = CurrentDatabase.CreateRegistrationSettings(orgid));
 
-        public bool NoCreditCardsAllowed { get; set; }
-        public bool NoEChecksAllowed { get; set; }
+        public bool NoCreditCardsAllowed
+        {
+            get => Db.Setting("NoCreditCardGiving", "false").ToBool();
+            set { }
+        }
+        public bool NoEChecksAllowed
+        {
+            get => Db.Setting("NoEChecksAllowed", "false").ToBool();
+            set { }
+        }
 
         public string SpecialGivingFundsHeader => CurrentDatabase.Setting("SpecialGivingFundsHeader", "Special Giving Funds");
 
