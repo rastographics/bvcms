@@ -13,15 +13,15 @@ namespace CmsDataTests.Classes.ExtraValues
 {
     public class ViewsTests
     {
-        //[Fact]
-        //public void Should_GetViews()
-        //{
-        //    using (var db = CMSDataContext.Create(DatabaseFixture.Host))
-        //    {
-        //        var actual = Views.GetViews(db);
-        //        actual.ShouldNotBeNull();
-        //    }
-        //}
+        [Fact]
+        public void Should_GetViews()
+        {
+            using (var db = CMSDataContext.Create(DatabaseFixture.Host))
+            {
+                var actual = Views.GetViews(db);
+                actual.ShouldNotBeNull();
+            }
+        }
 
         //[Fact]
         //public void Should_GetStandardExtraValuesOrdered()
