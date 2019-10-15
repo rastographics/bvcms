@@ -105,13 +105,10 @@ namespace CMSWebTests.Models
                                          where bh.BundleStatusId == 0
                                          select c;
                 }
-
-                var rc = tableResult.AsEnumerable().Where(row => ContributionTypeCode.ReturnedReversedTypes.Contains(row.Field<int>("ContributionTypeId")));
+                
                 var tableResultTotals = tableResult.AsEnumerable().Sum(row => row.Field<decimal>("Amount"));
                 var totalContributions = dbContributionsQry.Sum(x => x.ContributionAmount) ?? 0;
-
                 totalContributions.ToDouble().ShouldBe(tableResultTotals.ToDouble());
-                rc.Count().ShouldBeLessThan(1);
 
                 foreach (var b in bundleList)
                 {
@@ -156,13 +153,10 @@ namespace CMSWebTests.Models
                                          where bh.BundleStatusId == 0
                                          select c;
                 }
-
-                var rc = tableResult.AsEnumerable().Where(row => ContributionTypeCode.ReturnedReversedTypes.Contains(row.Field<int>("ContributionTypeId")));
+                
                 var tableResultTotals = tableResult.AsEnumerable().Sum(row => row.Field<decimal>("Amount"));
                 var totalContributions = dbContributionsQry.Sum(x => x.ContributionAmount) ?? 0;
-
                 totalContributions.ToDouble().ShouldBe(tableResultTotals.ToDouble());
-                rc.Count().ShouldBeLessThan(1);
 
                 foreach (var b in bundleList)
                 {

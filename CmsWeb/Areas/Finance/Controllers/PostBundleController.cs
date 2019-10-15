@@ -27,7 +27,7 @@ namespace CmsWeb.Areas.Finance.Controllers
         [Route("~/PostBundle/{id:int}")]
         public ActionResult Index(int id)
         {
-            var m = new PostBundleModel(id);
+            var m = new PostBundleModel(CurrentDatabase, id);
             if (m.Bundle == null)
             {
                 return Message("no bundle " + m.id);
@@ -131,7 +131,7 @@ namespace CmsWeb.Areas.Finance.Controllers
 
         public ActionResult FundTotals(int id)
         {
-            var m = new PostBundleModel(id);
+            var m = new PostBundleModel(CurrentDatabase, id);
             return View(m);
         }
 
@@ -227,7 +227,7 @@ namespace CmsWeb.Areas.Finance.Controllers
             var c = CurrentDatabase.Contributions.SingleOrDefault(co => co.ContributionId == iid);
             if (c != null)
             {
-                var m = new PostBundleModel();
+                var m = new PostBundleModel(CurrentDatabase);
                 switch (id.Substring(0, 1))
                 {
                     case "a":
