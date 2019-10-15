@@ -1444,6 +1444,7 @@
     <Content Include="Migrations\20190828_Create_Func_PledgesSummary.sql" />
     <Content Include="Migrations\20190923_Alt_Func_PledgesSummary.sql" />
     <Content Include="Migrations\20191009_alter_func_SpouseId.sql" />
+    <Content Include="Migrations\20191015_Update_MaritalStatus_Families_People_SpouseId.sql" />
     <Content Include="QueryBuilder\CompareMap.xml">
       <SubType>Designer</SubType>
     </Content>
