@@ -23,15 +23,15 @@ namespace CmsDataTests.Classes.ExtraValues
             }
         }
 
-        //[Fact]
-        //public void Should_GetStandardExtraValuesOrdered()
-        //{
-        //    using (var db = CMSDataContext.Create(DatabaseFixture.Host))
-        //    {
-        //        var actual = Views.GetStandardExtraValuesOrdered(db, "People", "Entry");
-        //        actual.ShouldNotBeNull();                
-        //    }
-        //}
+        [Fact]
+        public void Should_GetStandardExtraValuesOrdered()
+        {
+            using (var db = CMSDataContext.Create(DatabaseFixture.Host))
+            {
+                var actual = Views.GetStandardExtraValuesOrdered(db, "People", "Entry");
+                actual.ShouldNotBeNull();
+            }
+        }
 
         //[Fact]
         //public void Should_Name_Be_Timmed_GetStandardExtraValuesOrdered()
