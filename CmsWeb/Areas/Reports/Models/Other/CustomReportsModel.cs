@@ -525,7 +525,7 @@ namespace CmsWeb.Areas.Reports.Models
             return FindReportOnDocument(xdoc, Report);
         }
 
-        public void SaveReport(string originalReportName, string newReportName, IEnumerable<CustomReportColumn> selectedColumns, bool restrictToThisOrg)
+        public bool SaveReport(string originalReportName, string newReportName, IEnumerable<CustomReportColumn> selectedColumns, bool restrictToThisOrg)
         {
             var xdoc = GetCustomReportXml();
 
@@ -570,6 +570,7 @@ namespace CmsWeb.Areas.Reports.Models
                 xdoc.Root?.Add(reportElement);
             }
             SetCustomReportsContent(xdoc.ToString());
+            return true;
         }
 
         public string AddReport(string report, string url, string type)

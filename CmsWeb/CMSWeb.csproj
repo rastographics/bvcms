@@ -654,6 +654,7 @@
     <Compile Include="Areas\Public\Models\CheckInAPIv2\Attendance.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPIv2\AttendanceBundle.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPIv2\AttendanceGroup.cs" />
+    <Compile Include="Areas\Public\Models\CheckInAPIv2\Caching\AttendanceCacheSet.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPIv2\Campus.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPIv2\Profile.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPIv2\Country.cs" />
@@ -877,6 +878,7 @@
     <Compile Include="Areas\Setup\Controllers\ResourceTypeController.cs" />
     <Compile Include="Code\AuthHelper.cs" />
     <Compile Include="Code\CodeValueList.cs" />
+    <Compile Include="Code\Constants.cs" />
     <Compile Include="Code\GoogleRecaptcha.cs" />
     <Compile Include="Code\JsonNetResult.cs" />
     <Compile Include="Code\CustomHeader.cs" />
