@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Web.Mvc;
 using Newtonsoft.Json;
 
@@ -24,8 +25,8 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 		public string argString = "";
 		public bool argBool = false;
 
-        public string kiosk = "";
-        public string data = "";
+		public string kiosk = "";
+		public string data = "";
 		public string token = "";
 		public string key = "";
 
@@ -37,8 +38,7 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 
 		public static Message createErrorReturn( string sErrorMessage, int errorCode = 1 )
 		{
-			return new Message
-			{
+			return new Message {
 				data = sErrorMessage,
 				error = errorCode
 			};
@@ -46,7 +46,9 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 
 		public static Message createTypeErrorReturn()
 		{
-			return new Message {data = "ERROR: Type mis-match in API call."};
+			return new Message {
+				data = "ERROR: Type mis-match in API call."
+			};
 		}
 
 		public static Message createFromString( string json )
@@ -103,11 +105,23 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 			}
 		}
 
+		public string[] getArgStringAsArray( string separator )
+		{
+			string[] separators = { separator };
+			string[] parts = argString.Split( separators, StringSplitOptions.RemoveEmptyEntries );
+
+			for( int iX = 0; iX < parts.Length; iX++ ) {
+				parts[iX] = parts[iX].Trim();
+			}
+
+			return parts;
+		}
+
 		// API Device Numbers
 		public const int API_DEVICE_UNKNOWN = 0;
 		public const int API_DEVICE_IOS = 1;
 		public const int API_DEVICE_ANDROID = 2;
-        public const int API_DEVICE_WEB = 3;
+		public const int API_DEVICE_WEB = 3;
 
 		// API Errors
 		public const int API_ERROR_NONE = 0;
