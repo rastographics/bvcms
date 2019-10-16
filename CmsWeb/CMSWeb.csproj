@@ -1144,6 +1144,7 @@
     <Compile Include="Services\ITokenizationService.cs" />
     <Compile Include="Services\LoggingService.cs" />
     <Compile Include="Services\TokenizationService.cs" />
+    <None Include="Areas\CheckIn\Views\CheckIn\LogOut.cshtml" />
     <Content Include="Areas\Dialog\Views\AddToOrgFromTag\Index.cshtml" />
     <Content Include="Areas\Figures\Views\Figures\AttendanceChartDisplayView.cshtml" />
     <Content Include="Areas\Figures\Views\Figures\ChartDisplayView.cshtml" />

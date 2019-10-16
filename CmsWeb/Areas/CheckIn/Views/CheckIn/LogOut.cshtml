@@ -1,0 +1,16 @@
+﻿@using CmsWeb
+@using UtilityExtensions
+@{
+    Layout = ViewExtensions2.TouchPointLayoutWithoutHeaderFooter();
+    ViewBag.Title = ViewExtensions2.DbSetting("NameOfChurch", Util.Host) + " Check In";
+}
+<div class="checkin">
+    <p><a href="/CheckIn">Click here</a> if you are not automatically redirected.</p>
+</div>
+@section scripts {
+<script type="text/javascript">
+    localStorage.removeItem('identity');
+    localStorage.removeItem('profile');
+    window.location.href = '/CheckIn';
+</script>
+}
