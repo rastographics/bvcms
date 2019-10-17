@@ -13,6 +13,7 @@ namespace CmsWeb.Areas.People.Controllers
         public ActionResult FamilyMembers(int id)
         {
             var m = new FamilyModel(id);
+            ViewBag.HideDeceasedFromFamily = HideDeceasedFromFamily();
             return View("Family/Members", m);
         }
 
