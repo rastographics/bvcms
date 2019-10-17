@@ -94,15 +94,19 @@ namespace SharedTestFixtures
 
         public static void DeleteAllFromBundle(CMSDataContext db, BundleHeader bundleHeader)
         {
-            var bundleDetails = db.BundleDetails.Where(b => b.BundleHeaderId == bundleHeader.BundleHeaderId);
-            foreach (var item in bundleDetails)
+            try
             {
-                var contribution = db.Contributions.SingleOrDefault(c => c.ContributionId == item.ContributionId);
-                db.Contributions.DeleteOnSubmit(contribution);
+                var bundleDetails = db.BundleDetails.Where(b => b.BundleHeaderId == bundleHeader.BundleHeaderId);
+                foreach (var item in bundleDetails)
+                {
+                    var contribution = db.Contributions.SingleOrDefault(c => c.ContributionId == item.ContributionId);
+                    db.Contributions.DeleteOnSubmit(contribution);
+                }
+                db.BundleDetails.DeleteAllOnSubmit(bundleDetails);
+                db.BundleHeaders.DeleteOnSubmit(bundleHeader);
+                db.SubmitChanges();
             }
-            db.BundleDetails.DeleteAllOnSubmit(bundleDetails);
-            db.BundleHeaders.DeleteOnSubmit(bundleHeader);
-            db.SubmitChanges();
+            catch { }
         }
     }
 }

@@ -1,11 +1,11 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using SharedTestFixtures;
 using Shouldly;
 using UtilityExtensions;
 using Xunit;
 
 namespace UtilityExtensionsTests
 {
-    [TestClass()]
+    [Collection(Collections.Miscellaneous)]
     public class UtilTests
     {
         [Theory]
