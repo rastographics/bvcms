@@ -86,6 +86,7 @@
       <Link>DatabaseCollection.cs</Link>
     </Compile>
     <Compile Include="API\PythonModel\PythonModelTests.cs" />
+    <Compile Include="Classes\ExtraValues\ViewsTests.cs" />
     <Compile Include="Classes\PeopleUtilsTests.cs" />
     <Compile Include="Classes\ProtectMyMinistryHelperTests.cs" />
     <Compile Include="DbUtil\CMSDataContextTests.cs" />
