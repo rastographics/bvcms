@@ -14,7 +14,7 @@ namespace IntegrationTests.Areas.Reports.Views.Reports
         private int SepacialContentId { get; set; }
 
         [Fact, FeatureTest]
-        public void Application_Report_Should_Have_Awnsers()
+        public void Application_Report_Should_Have_Answers()
         {
             driver.Manage().Window.Maximize();
             var requestManager = FakeRequestManager.Create();
@@ -113,6 +113,7 @@ namespace IntegrationTests.Areas.Reports.Views.Reports
         {
             SpecialContentUtils.DeleteSpecialContent(SepacialContentId);
             FakeOrganizationUtils.DeleteOrg(OrgId);
+            base.Dispose();
         }
     }
 }

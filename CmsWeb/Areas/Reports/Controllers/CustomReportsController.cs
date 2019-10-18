@@ -54,6 +54,7 @@ namespace CmsWeb.Areas.Reports.Controllers
                 return Message(ex);
             }
         }
+
         [HttpGet]
         [Route("SqlReport/{report}/{id?}")]
         public ActionResult SqlReport(string report, Guid id)
@@ -133,9 +134,8 @@ namespace CmsWeb.Areas.Reports.Controllers
                 try
                 {
                     var m = new CustomReportsModel(CurrentDatabase, vm.OrgId);
-                    m.SaveReport(vm.OriginalReportName, vm.ReportName,
+                    TempDataSaved = m.SaveReport(vm.OriginalReportName, vm.ReportName,
                         vm.Columns.Where(c => c.IsSelected), vm.RestrictToThisOrg);
-                    TempDataSaved = true;
                 }
                 catch (Exception)
                 {
@@ -169,20 +169,20 @@ namespace CmsWeb.Areas.Reports.Controllers
 
         private CustomReportViewModel TempDataCustomReport
         {
-            get { return TempData["tdreport"] as CustomReportViewModel; }
-            set { TempData["tdreport"] = value; }
+            get => TempData["tempdataReport"] as CustomReportViewModel;
+            set => TempData["tempdataReport"] = value;
         }
 
         private ModelStateDictionary TempDataModelState
         {
-            get { return TempData["tdstate"] as ModelStateDictionary; }
-            set { TempData["tdstate"] = value; }
+            get => TempData["tempdataState"] as ModelStateDictionary;
+            set => TempData["tempdataState"] = value;
         }
 
         private bool? TempDataSaved
         {
-            get { return TempData["tdsaved"] as bool?; }
-            set { TempData["tdSaved"] = value; }
+            get => TempData["tempdataSaved"] as bool?;
+            set => TempData["tempdataSaved"] = value;
         }
     }
 }

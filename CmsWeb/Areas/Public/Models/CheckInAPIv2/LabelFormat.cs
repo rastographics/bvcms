@@ -74,7 +74,9 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 			int count = 0;
 
 			foreach( LabelFormatEntry entry in entries ) {
-				if( entry.repeat > count ) count = entry.repeat;
+				if( entry.repeat > count ) {
+					count = entry.repeat;
+				}
 			}
 
 			return count;

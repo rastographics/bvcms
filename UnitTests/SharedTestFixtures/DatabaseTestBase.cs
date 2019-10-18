@@ -21,25 +21,29 @@ namespace SharedTestFixtures
         private string _host;
         public string Host => _host ?? (_host = DatabaseFixture.Host);
 
-        protected User CreateUser(string username, string password, Family family = null, params string[] roles)
+        protected User CreateUser(string username, string password, Family family = null, Person person = null, params string[] roles)
         {
-            if (family == null)
+            if(person == null)
             {
-                family = new Family();
-                db.Families.InsertOnSubmit(family);
+                if (family == null)
+                {
+                    family = new Family();
+                    db.Families.InsertOnSubmit(family);
+                    db.SubmitChanges();
+                }
+                person = new Person
+                {
+                    Family = family,
+                    FirstName = RandomString(),
+                    LastName = RandomString(),
+                    EmailAddress = RandomString() + "@example.com",
+                    MemberStatusId = MemberStatusCode.Member,
+                    PositionInFamilyId = PositionInFamily.PrimaryAdult,
+                };
+
+                db.People.InsertOnSubmit(person);
                 db.SubmitChanges();
             }
-            var person = new Person
-            {
-                Family = family,
-                FirstName = RandomString(),
-                LastName = RandomString(),
-                EmailAddress = RandomString() + "@example.com",
-                MemberStatusId = MemberStatusCode.Member,
-                PositionInFamilyId = PositionInFamily.PrimaryAdult,
-            };
-            db.People.InsertOnSubmit(person);
-            db.SubmitChanges();
 
             var createDate = DateTime.Now;
             var machineKey = GetValidationKeyFromWebConfig();

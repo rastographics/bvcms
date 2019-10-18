@@ -97,12 +97,14 @@
     <Compile Include="DatabaseFixture.cs" />
     <Compile Include="FinanceTestBase.cs" />
     <Compile Include="FinanceTestUtils.cs" />
+    <Compile Include="MockAppSettings.cs" />
     <Compile Include="MockCMSMembershipProvider.cs" />
     <Compile Include="MockCMSRoleProvider.cs" />
     <Compile Include="MockContributions.cs" />
     <Compile Include="MockHttpContext.cs" />
     <Compile Include="MockPeople.cs" />
     <Compile Include="MockSettings.cs" />
+    <Compile Include="FamilyUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DatabaseTestBase.cs" />
     <Compile Include="SpecialContentUtils.cs" />

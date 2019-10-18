@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Web.WebPages;
+using CmsData;
+using CmsWeb.Areas.Public.Models.CheckInAPIv2.Caching;
 
 namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 {
@@ -24,14 +26,14 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 		public Point<decimal> end = new Point<decimal>();
 		public Point<int> size = new Point<int>();
 
-		public LabelEntry( LabelFormatEntry formatEntry, Attendance attendance, AttendanceGroup group = null, int index = 0 )
+		public LabelEntry( AttendanceCacheSet cacheSet, LabelFormatEntry formatEntry, Attendance attendance, AttendanceGroup group = null, int index = 0 )
 		{
 			typeID = formatEntry.typeID;
 
 			switch( formatEntry.typeID ) {
 				case 1:
 					try {
-						data = getField( (LabelField) formatEntry.fieldID, formatEntry.fieldFormat, attendance, group );
+						data = getField( cacheSet, (LabelField) formatEntry.fieldID, formatEntry.fieldFormat, attendance, group );
 					} catch( Exception ) {
 						data = "Format Exception";
 					}
@@ -64,53 +66,57 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 			size.y = formatEntry.height;
 		}
 
-		public string getField( LabelField field, string format, Attendance attendance, AttendanceGroup group )
+		public string getField( AttendanceCacheSet cacheSet, LabelField field, string format, Attendance attendance, AttendanceGroup group )
 		{
 			switch( field.category() ) {
 				case LabelFieldAttribute.CATEGORY_UNUSED:
 					return "";
 
 				case LabelFieldAttribute.CATEGORY_PERSON:
-					return getPersonField( field, format, attendance );
+					return getPersonField( cacheSet, field, format, attendance );
 
 				case LabelFieldAttribute.CATEGORY_PARENTS:
-					return getParentsField( field, format, attendance );
+					return getParentsField( cacheSet, field, format, attendance );
 
 				case LabelFieldAttribute.CATEGORY_GROUP:
-					return getGroupField( field, format, group );
+					return getGroupField( cacheSet, field, format, group );
 
 				default:
 					return "";
 			}
 		}
 
-		private string getPersonField( LabelField field, string format, Attendance attendance )
+		private string getPersonField( AttendanceCacheSet cacheSet, LabelField field, string format, Attendance attendance )
 		{
-			if( attendance.person == null ) return "";
+			CmsData.Person person = cacheSet.getPerson( attendance.peopleID );
+
+			if( person == null ) {
+				return "";
+			}
 
 			switch( field ) {
 				case LabelField.PERSON_SECURITY_CODE:
-					return string.Format( format, attendance.labelSecurityCode );
+					return string.Format( format, cacheSet.securityCode );
 
 				case LabelField.PERSON_FIRST_NAME:
-					return string.Format( format, attendance.person.FirstName );
+					return string.Format( format, person.FirstName );
 
 				case LabelField.PERSON_LAST_NAME:
-					return string.Format( format, attendance.person.LastName );
+					return string.Format( format, person.LastName );
 
 				case LabelField.PERSON_ALLERGIES:
-					return string.Format( format, attendance.person.GetRecReg().MedicalDescription );
+					return string.Format( format, person.GetRecReg().MedicalDescription );
 
 				case LabelField.PERSON_INFO:
-					string allergies = attendance.person.GetRecReg().MedicalDescription.IsEmpty() ? "" : "A";
-					string custody = attendance.person.CustodyIssue.HasValue && attendance.person.CustodyIssue.Value ? "C" : "";
-					string transport = attendance.person.OkTransport.HasValue && attendance.person.OkTransport.Value ? "T" : "";
+					string allergies = person.GetRecReg().MedicalDescription.IsEmpty() ? "" : "A";
+					string custody = person.CustodyIssue.HasValue && person.CustodyIssue.Value ? "C" : "";
+					string transport = person.OkTransport.HasValue && person.OkTransport.Value ? "T" : "";
 
 					return string.Format( format, allergies, custody, transport );
 
 				case LabelField.PERSON_MEMBER_GUEST:
-					string member = attendance.person.MemberStatus.Member ? "Member" : "";
-					string guest = attendance.person.MemberStatus.Member ? "" : "Guest";
+					string member = person.MemberStatus.Member ? "Member" : "";
+					string guest = person.MemberStatus.Member ? "" : "Guest";
 
 					return string.Format( format, member, guest );
 
@@ -119,24 +125,51 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 			}
 		}
 
-		private string getParentsField( LabelField field, string format, Attendance attendance )
+		private string getParentsField( AttendanceCacheSet cacheSet, LabelField field, string format, Attendance attendance )
 		{
-			if( attendance.head == null && attendance.spouse == null ) return "";
+			CmsData.Person person = cacheSet.getPerson( attendance.peopleID );
+
+			if( person == null ) {
+				return "";
+			}
+
+			CmsData.Family family = cacheSet.getFamily( person.FamilyId );
+
+			if( family == null ) {
+				return "";
+			}
+
+			CmsData.Person head = cacheSet.getPerson( family.HeadOfHouseholdId ?? 0 );
+			CmsData.Person spouse = cacheSet.getPerson( family.HeadOfHouseholdSpouseId ?? 0 );
+
+			if( head == null && spouse == null ) {
+				return "";
+			}
 
 			switch( field ) {
 				case LabelField.PARENTS_NAME:
 					List<string> names = new List<string>();
 
-					if( attendance.head != null ) names.Add( attendance.head.FirstName );
-					if( attendance.spouse != null ) names.Add( attendance.spouse.FirstName );
+					if( head != null ) {
+						names.Add( head.FirstName );
+					}
+
+					if( spouse != null ) {
+						names.Add( spouse.FirstName );
+					}
 
 					return string.Format( format, string.Join( ", ", names ) );
 
 				case LabelField.PARENTS_PHONE:
 					List<string> phones = new List<string>();
 
-					if( attendance.head != null && !attendance.head.CellPhone.IsEmpty() ) phones.Add( attendance.head.FirstName + ": " + attendance.head.CellPhone );
-					if( attendance.spouse != null && !attendance.spouse.CellPhone.IsEmpty() ) phones.Add( attendance.spouse.FirstName + ": " + attendance.spouse.CellPhone );
+					if( head != null && !head.CellPhone.IsEmpty() ) {
+						phones.Add( head.FirstName + ": " + head.CellPhone );
+					}
+
+					if( spouse != null && !spouse.CellPhone.IsEmpty() ) {
+						phones.Add( spouse.FirstName + ": " + spouse.CellPhone );
+					}
 
 					return string.Format( format, string.Join( ", ", phones ) );
 
@@ -145,22 +178,33 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 			}
 		}
 
-		private string getGroupField( LabelField field, string format, AttendanceGroup group )
+		private string getGroupField( AttendanceCacheSet cacheSet, LabelField field, string format, AttendanceGroup group )
 		{
-			if( group == null ) return "";
+			if( group == null ) {
+				return "";
+			}
+
+			Organization org;
+			Meeting meeting;
 
 			switch( field ) {
 				case LabelField.GROUP_NAME:
-					return string.Format( format, group.org.OrganizationName );
+					org = cacheSet.getOrganization( group.groupID );
+
+					return org == null ? "" : string.Format( format, org.OrganizationName );
 
 				case LabelField.GROUP_LOCATION:
-					return string.Format( format, group.org.Location );
+					org = cacheSet.getOrganization( group.groupID );
+
+					return org == null ? "" : string.Format( format, org.Location );
 
 				case LabelField.GROUP_SUBGROUPS:
 					return group.subgroupName;
 
 				case LabelField.ATTENDANCE_DATE_TIME:
-					return string.Format( format, group.meeting.MeetingDate );
+					meeting = cacheSet.getMeeting( group.groupID, group.datetime );
+
+					return string.Format( format, meeting.MeetingDate );
 
 				case LabelField.ATTENDANCE_PAGER:
 					return "";
