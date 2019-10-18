@@ -92,12 +92,10 @@ namespace CmsDataTests
                 var SecondContribution = MockContributions.CreateSaveContribution(db, bundleHeader, fromDate, 20, peopleId: 1);
 
                 var FundIds = $"{FirstContribution.FundId},{SecondContribution.FundId}";
-                var TopGiversResult = db.TopGivers(10, fromDate, toDate, FundIds);
-                var TotalAmmountTopGivers = TopGiversResult.Sum(x => x.Amount);
+                var TopGiversResult = db.TopGivers(10, fromDate, toDate, FundIds).ToList();
+                var TotalAmmountTopGivers = TopGiversResult[0].Amount;
 
-                var TotalAmmountContributions = db.Contributions.Sum(x => x.ContributionAmount) ?? 0;
-
-                TotalAmmountTopGivers.ShouldBe(TotalAmmountContributions);
+                TotalAmmountTopGivers.ShouldBe(120);
 
                 MockContributions.DeleteAllFromBundle(db, bundleHeader);
             }
