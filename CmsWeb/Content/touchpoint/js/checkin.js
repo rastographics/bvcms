@@ -464,15 +464,17 @@ new Vue({
                     });
                 });
             });
-            attendances.forEach(function (attendance) {
-                attendance.groups.forEach(function (group) {
-                    var attend = attendance.peopleID + '.' + group.groupID + '.' + group.datetime;
-                    var old = vm.attendance[attend];
-                    if (old.status !== group.present) {
-                        vm.toggleAttendance(attendance.peopleID, group.groupID, group.datetime);
-                    }
+            if (attendances && attendances.length) {
+                attendances.forEach(function (attendance) {
+                    attendance.groups.forEach(function (group) {
+                        var attend = attendance.peopleID + '.' + group.groupID + '.' + group.datetime;
+                        var old = vm.attendance[attend];
+                        if (old.status !== group.present) {
+                            vm.toggleAttendance(attendance.peopleID, group.groupID, group.datetime);
+                        }
+                    });
                 });
-            });
+            }
         },
         toggleAttendance(memberId, groupId, date, quiet = false) {
             let vm = this;
