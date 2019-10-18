@@ -84,7 +84,7 @@ new Vue({
         phoneMask: function () {
             var len = this.search.phone.replace(/\D/g, '').length;
             if (len < 8) {
-                return '?X###-###########';
+                return '?X##############';
             } else if (len < 11) {
                 return '(###) ###-#########';
             } else {
@@ -392,7 +392,12 @@ new Vue({
                                 vm.loadView('families');
                             } else if (results.length === 1) {
                                 vm.families = [];
-                                vm.loadAttendance(results[0].members);
+                                var attendance = null;
+                                if (response.data.argString) {
+                                    // for auto populating attendance
+                                    attendance = JSON.parse(response.data.argString).attendances;
+                                }
+                                vm.loadAttendance(results[0].members, attendance);
                                 vm.loadView('checkin');
                             } else {
                                 vm.loadView('landing');
@@ -423,7 +428,7 @@ new Vue({
             this.loadAttendance(family.members);
             this.loadView('checkin');
         },
-        loadAttendance(members) {
+        loadAttendance(members, attendances) {
             let vm = this;
             vm.attendance = [];
             vm.members = members;
@@ -445,6 +450,15 @@ new Vue({
                         disabled: disabled,
                         changed: false
                     });
+                });
+            });
+            attendances.forEach(function (attendance) {
+                attendance.groups.forEach(function (group) {
+                    var attend = attendance.peopleID + '.' + group.groupID + '.' + group.datetime;
+                    var old = vm.attendance[attend];
+                    if (old.status !== group.present) {
+                        vm.toggleAttendance(attendance.peopleID, group.groupID, group.datetime);
+                    }
                 });
             });
         },

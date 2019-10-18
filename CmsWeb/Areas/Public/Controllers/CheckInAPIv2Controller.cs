@@ -131,6 +131,8 @@ namespace CmsWeb.Areas.Public.Controllers
             Message response = new Message();
             response.setNoError();
 
+            bool returnPictureUrls = message.device == Message.API_DEVICE_WEB;
+
             if (cns.search.Contains("!"))
             {
                 var list = cns.search.Split('!').Where(s => !string.IsNullOrWhiteSpace(s)).ToList();
@@ -138,7 +140,11 @@ namespace CmsWeb.Areas.Public.Controllers
                 var pending = CurrentDatabase.CheckInPendings.Where(p => p.Id == id).SingleOrDefault();
                 if (pending != null)
                 {
-                    return UpdateAttend(pending.Data);
+                    AttendanceBundle bundle = JsonConvert.DeserializeObject<AttendanceBundle>(pending.Data);
+                    List<Family> result = Family.forAttendanceBundle(CurrentDatabase, CurrentImageDatabase, bundle, cns.campus, cns.date, returnPictureUrls);
+                    response.argString = SerializeJSON(bundle, message.version);
+                    response.data = SerializeJSON(result, message.version);
+                    return response;
                 }
                 else
                 {
@@ -146,7 +152,6 @@ namespace CmsWeb.Areas.Public.Controllers
                 }
             }
 
-            bool returnPictureUrls = message.device == Message.API_DEVICE_WEB;
             List<Family> families = Family.forSearch(CurrentDatabase, CurrentImageDatabase, cns.search, cns.campus, cns.date, returnPictureUrls);
             response.data = SerializeJSON(families, message.version);
             

@@ -54,7 +54,22 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 			return family;
 		}
 
-		public static List<Family> forSearch( CMSDataContext cmsdb, CMSImageDataContext cmsidb, string search, int campus, DateTime date, bool returnPictureUrls )
+        public static List<Family> forAttendanceBundle(CMSDataContext cmsdb, CMSImageDataContext cmsidb, AttendanceBundle bundle, int campus, DateTime date, bool returnPictureUrls)
+        {
+            List<Family> families = new List<Family>();
+            Family family = new Family();
+
+            var PeopleIds = bundle.attendances.Select(a => a.peopleID).ToList();
+            int FamilyId = cmsdb.People.Where(p => PeopleIds.Contains(p.PeopleId)).FirstOrDefault().FamilyId;
+
+            family.id = FamilyId;
+            family.loadMembers(cmsdb, cmsidb, campus, date, returnPictureUrls);
+            families.Add(family);
+
+            return families;
+        }
+
+        public static List<Family> forSearch( CMSDataContext cmsdb, CMSImageDataContext cmsidb, string search, int campus, DateTime date, bool returnPictureUrls )
 		{
 			List<Family> families = new List<Family>();
 			DataTable table = new DataTable();
