@@ -49,7 +49,7 @@ namespace CmsDataTests
         public void PledgesSummaryTest()
         {
             var fromDate = new DateTime(2019, 1, 1);
-            using (var db = CMSDataContext.Create(Util.Host))
+            using (var db = CMSDataContext.Create(DatabaseFixture.Host))
             {
                 var bundleHeader = MockContributions.CreateSaveBundle(db);
                 var FirstContribution = MockContributions.CreateSaveContribution(db, bundleHeader, fromDate, 100, peopleId: 1);
@@ -58,7 +58,9 @@ namespace CmsDataTests
 
                 //Get amount contributed to the pledge
                 var TotalAmmountContributions = db.Contributions
-                    .Where(x => x.ContributionTypeId == ContributionTypeCode.CheckCash)
+                    .Where(x => x.FundId == 1)
+                    .Where(x => x.PeopleId == 1)
+                    .Where(x => x.ContributionTypeId != ContributionTypeCode.Pledge)
                     .Sum(x => x.ContributionAmount) ?? 0;
 
                 //Get Pledge amount
