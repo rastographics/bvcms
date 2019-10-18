@@ -147,6 +147,18 @@ new Vue({
             };
             return Object.keys(body).map(key => key + '=' + body[key]).join('&');
         },
+        cookie(name, value, days) {
+            var expires;
+
+            if (days) {
+                var date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                expires = "; expires=" + date.toGMTString();
+            } else {
+                expires = "";
+            }
+            document.cookie = encodeURIComponent(name) + "=" + value + expires + "; path=/";
+        },
         timestamp(dt) {
             var d = new Date(dt);
             if (isNaN(d.getTime())) {
@@ -306,7 +318,7 @@ new Vue({
                                 }
                                 // apply settings to the profile
                                 Object.assign(profile, settings);
-                                cookie('Authorization', token);
+                                vm.cookie('Authorization', token);
                                 localStorage.setItem('identity', token);
                                 localStorage.setItem('kiosk', vm.kiosk.name);
                                 localStorage.setItem('profile', JSON.stringify(profile));
@@ -337,7 +349,7 @@ new Vue({
         logout() {
             localStorage.removeItem('identity');
             localStorage.removeItem('profile');
-            cookie('Authorization', "", -1);
+            this.cookie('Authorization', "", -1);
             this.search.phone = '';
             this.identity = false;
             this.profile = false;
@@ -682,19 +694,6 @@ new Vue({
         });
     }
 });
-
-function cookie(name, value, days) {
-    var expires;
-
-    if (days) {
-        var date = new Date();
-        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-        expires = "; expires=" + date.toGMTString();
-    } else {
-        expires = "";
-    }
-    document.cookie = encodeURIComponent(name) + "=" + value + expires + "; path=/";
-}
 
 function error_swal(title, message) {
     swal({
