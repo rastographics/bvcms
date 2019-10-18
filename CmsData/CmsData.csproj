@@ -721,6 +721,7 @@
     <Compile Include="Generated\CheckinProfileSettings.cs" />
     <Compile Include="Generated\CheckInSetting.cs" />
     <Compile Include="Generated\ContactExtra.cs" />
+    <Compile Include="Generated\ContributionTag.cs" />
     <Compile Include="Generated\CustomColumn.cs" />
     <Compile Include="Generated\Downline.cs" />
     <Compile Include="Generated\DownlineLeader.cs" />
@@ -1441,7 +1442,9 @@
     <Content Include="Migrations\20190924_Update_Email_RecReg.sql" />
     <Content Include="Migrations\20190930_Update_Func_PledgesSummary.sql" />
     <Content Include="Migrations\20190828_Create_Func_PledgesSummary.sql" />
-    <Content Include="Migrations\20190923_Alt_Func_PledgesSummary.sql" />
+    <Content Include="Migrations\20191009_alter_func_SpouseId.sql" />
+    <Content Include="Migrations\20191015_Update_MaritalStatus_Families_People_SpouseId.sql" />
+    <Content Include="Migrations\20191017_Alt_Func_PledgesSummary.sql" />
     <Content Include="QueryBuilder\CompareMap.xml">
       <SubType>Designer</SubType>
     </Content>
