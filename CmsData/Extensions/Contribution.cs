@@ -33,11 +33,11 @@ namespace CmsData
             db.SubmitChanges();
         }
 
-        public static BundleDetail AddContribution(CMSDataContext db, DateTime date, int fundid, string amount, string checkno, string description, int peopleid)
+        public static BundleDetail AddContribution(CMSDataContext db, DateTime date, int fundid, string amount, string checkno, string description, int peopleid, int? contributionTypeId = null)
         {
-            var bd = NewBundleDetail(db, date, fundid, amount);
+            var bd = NewBundleDetail(db, date, fundid, amount, contributionTypeId);
             bd.Contribution.CheckNo = checkno;
-            if (checkno.HasValue() && bd.Contribution.ContributionTypeId == ContributionTypeCode.Reversed)
+            if (!contributionTypeId.HasValue && checkno.HasValue() && bd.Contribution.ContributionTypeId == ContributionTypeCode.Reversed)
             {
                 bd.Contribution.ContributionTypeId = ContributionTypeCode.ReturnedCheck;
             }
@@ -50,14 +50,14 @@ namespace CmsData
         }
 
         public static BundleDetail AddContributionDetail(CMSDataContext db, DateTime date, int fundid,
-            string amount, string checkno, string routing, string account)
+            string amount, string checkno, string routing, string account, int? contributionTypeId = null)
         {
-            var bd = NewBundleDetail(db, date, fundid, amount);
+            var bd = NewBundleDetail(db, date, fundid, amount, contributionTypeId);
             bd.Contribution.CheckNo = checkno;
             int? pid = null;
             if (account.HasValue() && !account.Contains("E+"))
             {
-                var eac = Util.Encrypt(routing + "|" + account);
+                var eac = Util.Encrypt($"{routing}|{account}");
                 var q = from kc in db.CardIdentifiers
                         where kc.Id == eac
                         select kc.PeopleId;
@@ -69,7 +69,7 @@ namespace CmsData
             return bd;
         }
 
-        public static BundleDetail NewBundleDetail(CMSDataContext db, DateTime date, int fundid, string amount)
+        public static BundleDetail NewBundleDetail(CMSDataContext db, DateTime date, int fundid, string amount, int? contributionTypeId)
         {
             var bd = new BundleDetail
             {
@@ -84,7 +84,7 @@ namespace CmsData
                 ContributionDate = date,
                 FundId = fundid,
                 ContributionStatusId = 0,
-                ContributionTypeId = value > 0 ? ContributionTypeCode.CheckCash : ContributionTypeCode.Reversed,
+                ContributionTypeId = contributionTypeId.GetValueOrDefault(value > 0 ? ContributionTypeCode.CheckCash : ContributionTypeCode.Reversed),
                 ContributionAmount = value
             };
             return bd;
