@@ -190,7 +190,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
 
             var m = OnlineRegModel.GetRegistrationFromDatum(id ?? 0, CurrentDatabase);
-            m.TermsSignature = termsSignature == string.Empty ? null : termsSignature;
+            if (m != null)
+            {
+                m.TermsSignature = Util.PickFirst(termsSignature, null);
+            }
             if (m == null || m.Completed)
             {
                 if (m == null)
