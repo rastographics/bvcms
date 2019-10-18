@@ -1164,7 +1164,6 @@ namespace CmsData
         public Table<ContributionTag> ContributionTags
         {
             get { return this.GetTable<ContributionTag>(); }
-
         }
 
         public Table<Country> Countries
