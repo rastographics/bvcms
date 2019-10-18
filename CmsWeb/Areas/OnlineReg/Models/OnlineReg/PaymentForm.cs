@@ -148,6 +148,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
             return n;
         }
 
+        public PaymentForm()
+        {
+            CurrentDatabase = CurrentDatabase ?? CMSDataContext.Create(Util.Host);
+        }
+
         public Transaction CreateTransaction(CMSDataContext Db, decimal? amount = null)
         {
             if (!amount.HasValue)
@@ -419,7 +424,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private static void ClearMaskedNumbers(PaymentForm pf, PaymentInfo pi)
         {
-            int? GatewayId = MultipleGatewayUtils.GatewayId(pf.Db, pf.ProcessType);
+            int? GatewayId = MultipleGatewayUtils.GatewayId(DbUtil.Db, pf.ProcessType);
 
             var clearBankDetails = false;
             var clearCreditCardDetails = false;

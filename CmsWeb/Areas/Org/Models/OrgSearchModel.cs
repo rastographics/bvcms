@@ -45,7 +45,7 @@ namespace CmsWeb.Areas.Search.Models
 
         public OrgSearchModel()
         {
-            CurrentDatabase = CurrentDatabase ?? DbUtil.Db;
+            CurrentDatabase = CurrentDatabase ?? CMSDataContext.Create(Util.Host);
             Pager = new PagerModel2();
             Pager.GetCount = Count;
         }
