@@ -89,9 +89,26 @@ namespace CmsDataTests
                 // Cleaning Contribution garbage from previous tests
                 db.ExecuteCommand("delete from BundleDetail; delete from BundleHeader; delete from Contribution;");
 
+                var family = new Family();
+                db.Families.InsertOnSubmit(family);
+                db.SubmitChanges();
+
+                var person = new Person
+                {
+                    Family = family,
+                    FirstName = "MockPersonFirstName",
+                    LastName = "MockPersonLastName",
+                    EmailAddress = "MockPerson@example.com",
+                    MemberStatusId = MemberStatusCode.Member,
+                    PositionInFamilyId = PositionInFamily.PrimaryAdult,
+                };
+
+                db.People.InsertOnSubmit(person);
+                db.SubmitChanges();
+
                 var bundleHeader = MockContributions.CreateSaveBundle(db);
-                var FirstContribution = MockContributions.CreateSaveContribution(db, bundleHeader, fromDate, 100, peopleId: 1);
-                var SecondContribution = MockContributions.CreateSaveContribution(db, bundleHeader, fromDate, 20, peopleId: 1);
+                var FirstContribution = MockContributions.CreateSaveContribution(db, bundleHeader, fromDate, 100, peopleId: person.PeopleId);
+                var SecondContribution = MockContributions.CreateSaveContribution(db, bundleHeader, fromDate, 20, peopleId: person.PeopleId);
 
                 var FundIds = $"{FirstContribution.FundId},{SecondContribution.FundId}";
                 var TopGiversResult = db.TopGivers(10, fromDate, toDate, FundIds).ToList();
