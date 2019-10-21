@@ -82,8 +82,8 @@ namespace CmsDataTests
         [Fact]
         public void IsTopGiverTest()
         {
-            var fromDate = new DateTime(2019, 4, 4);
-            var toDate = new DateTime(2019, 7, 31);
+            var fromDate = new DateTime(2017, 4, 4);
+            var toDate = new DateTime(2017, 7, 31);
             using (var db = CMSDataContext.Create(Util.Host))
             {
                 // Cleaning Contribution garbage from previous tests
