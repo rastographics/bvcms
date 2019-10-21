@@ -328,6 +328,12 @@ namespace CmsData
                 case Param.Tag:
                     AddTagParam(c);
                     break;
+                case Param.MemberTypes:
+                    AddMemberTypeParam(c);
+                    break;
+                case Param.AttendTypes:
+                    AddAttendTypeParam(c);
+                    break;
                 case Param.SavedQueryIdDesc:
                     c.SavedQuery = Token.Text.Replace("''", "'");
                     break;
@@ -341,6 +347,18 @@ namespace CmsData
         {
             var tag = Token2Csv();
             c.Tags = c.Tags.HasValue() ? $"{c.Tags};{tag}" : tag;
+        }
+
+        private void AddMemberTypeParam(Condition c)
+        {
+            var memberType = Token2Csv();
+            c.MemberTypes = c.MemberTypes.HasValue() ? $"{c.MemberTypes};{memberType}" : memberType;
+        }
+
+        private void AddAttendTypeParam(Condition c)
+        {
+            var attendType = Token2Csv();
+            c.AttendTypes = c.AttendTypes.HasValue() ? $"{ c.AttendTypes};{attendType}" : attendType;
         }
 
         private string Token2Csv()
