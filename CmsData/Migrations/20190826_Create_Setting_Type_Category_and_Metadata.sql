@@ -76,15 +76,14 @@ INSERT INTO dbo.SettingCategory
 (4, 'Security',       (SELECT st.system FROM st), 40),
 (5, 'Check-In',       (SELECT st.features FROM st), 10),
 (6, 'Contacts',       (SELECT st.features FROM st), 20),
-(7, 'Contributions',  (SELECT st.features FROM st), 30),
-(8, 'Mobile App',     (SELECT st.features FROM st), 40),
-(9, 'Registrations',  (SELECT st.features FROM st), 50),
-(10, 'Resources',     (SELECT st.features FROM st), 60),
-(11, 'Small Group Finder', (SELECT st.features FROM st), 70),
-(12, 'Protect My Ministry',     (SELECT st.features FROM st), 10),
-(13, 'Pushpay',  (SELECT st.features FROM st), 20),
-(14, 'Rackspace',     (SELECT st.features FROM st), 30),
-(15, 'Twilio', (SELECT st.features FROM st), 40);
+(7, 'Mobile App',     (SELECT st.features FROM st), 30),
+(8, 'Registrations',  (SELECT st.features FROM st), 40),
+(9, 'Resources',     (SELECT st.features FROM st), 50),
+(10, 'Small Group Finder', (SELECT st.features FROM st), 60),
+(11, 'Protect My Ministry',     (SELECT st.features FROM st), 10),
+(12, 'Pushpay',  (SELECT st.features FROM st), 20),
+(13, 'Rackspace',     (SELECT st.features FROM st), 30),
+(14, 'Twilio', (SELECT st.features FROM st), 40);
 SET IDENTITY_INSERT dbo.SettingCategory OFF;
 GO
 
