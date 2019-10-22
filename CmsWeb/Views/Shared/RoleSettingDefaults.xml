@@ -54,7 +54,7 @@
     <Location name="Person">
         <setting name="Person-ShowBlueToolbar" value="true" friendly="Show Blue Toolbar" true="Show" false="Hide" tooltip="Show blue toolbar" />
         <setting name="HideEmailDetails" value="false" friendly="Email Details" true="Limited" false="Full Access" tooltip="Hides Emails Received, Emails Sent views only show Email Date, From, and Subject. Prevents user from seeing email details which expose search functionality" />
-        <setting name="HideMinistryTab" value="false" friendly="Ministry Tab" true="Show" false="Hide" tooltip="Show/Hide Ministry Tab on Person's Profile" reverse="true" />
+        <setting name="HideMinistryTab" value="true" friendly="Ministry Tab" true="Show" false="Hide" tooltip="Show/Hide Ministry Tab on Person's Profile" reverse="true" />
         <setting name="HideQueries" value="false" friendly="Family Member's Link" true="Enable" false="Disable" tooltip="Disable Family Members link on profile page, because it exposes the search functionality" reverse="true" />
     </Location>
 </DefaultSettings>
