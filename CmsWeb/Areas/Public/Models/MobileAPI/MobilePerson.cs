@@ -1,162 +1,171 @@
-﻿using CmsData;
-using ImageData;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using CmsData;
+using ImageData;
 using UtilityExtensions;
 
+// ReSharper disable CheckNamespace
+// ReSharper disable CollectionNeverQueried.Global
+// ReSharper disable FieldCanBeMadeReadOnly.Global
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable NotAccessedField.Global
 namespace CmsWeb.MobileAPI
 {
-    public class MobilePerson
-    {
-        public int id = 0;
-        public int familyID = 0;
+	public class MobilePerson
+	{
+		public int id;
+		public int familyID;
 
-        public string first { get; set; }
-        public string last { get; set; }
-        public string alt { get; set; }
-        public string suffix { get; set; }
+		public string first = "";
+		public string last = "";
+		public string alt = "";
+		public string suffix = "";
 
-        public string gender { get; set; }
-        public int age { get; set; }
-        public string birthday { get; set; }
+		public string gender = "";
+		public int age;
+		public string birthday = "";
 
-        public string primaryAddress { get; set; }
+		public string primaryAddress = "";
 
-        public Dictionary<string, MobilePersonAddress> addresses { get; set; }
-        public List<MobileContact> emailPhone { get; set; }
-        public Dictionary<string, MobileFamilyMember> family { get; set; }
-        public Dictionary<string, string> relatives { get; set; }
+		public Dictionary<string, MobilePersonAddress> addresses = new Dictionary<string, MobilePersonAddress>();
+		public List<MobileContact> emailPhone = new List<MobileContact>();
+		public Dictionary<string, MobileFamilyMember> family = new Dictionary<string, MobileFamilyMember>();
+		public Dictionary<string, string> relatives = new Dictionary<string, string>();
 
-        public int status { get; set; }
-        public string statusText { get; set; }
+		public int status;
+		public string statusText = "";
 
-        public string picture { get; set; }
-        public int pictureX = 0;
-        public int pictureY = 0;
+		public string picture = "";
+		public int pictureX;
+		public int pictureY;
 
-        public int deceased { get; set; }
+		public int deceased;
 
-        public MobilePerson populate(Person p, CMSDataContext cmsdb, CMSImageDataContext cmsidb)
-        {
-            addresses = new Dictionary<string, MobilePersonAddress>();
-            emailPhone = new List<MobileContact>();
-            family = new Dictionary<string, MobileFamilyMember>();
-            relatives = new Dictionary<string, string>();
+		public MobilePerson populate( Person p, CMSDataContext cmsdb, CMSImageDataContext cmsidb, bool hideAgeYear = false, int hideAgeValue = 0 )
+		{
+			id = p.PeopleId;
+			familyID = p.FamilyId;
 
-            id = p.PeopleId;
-            familyID = p.FamilyId;
+			first = p.PreferredName ?? "";
+			last = p.LastName ?? "";
+			alt = p.AltName ?? "";
+			suffix = p.SuffixCode;
 
-            first = p.PreferredName ?? "";
-            last = p.LastName ?? "";
-            alt = p.AltName ?? "";
-            suffix = p.SuffixCode;
+			if( p.AddressTypeId == 10 ) {
+				primaryAddress = "Family";
+			} else {
+				primaryAddress = "Personal";
+			}
 
-            if (p.AddressTypeId == 10)
-            {
-                primaryAddress = "Family";
-            }
-            else
-            {
-                primaryAddress = "Personal";
-            }
+			MobilePersonAddress familyAddr = new MobilePersonAddress {
+				address1 = p.Family.AddressLineOne ?? "",
+				address2 = p.Family.AddressLineTwo ?? "",
+				city = p.Family.CityName ?? "",
+				state = p.Family.StateCode ?? "",
+				zip = p.Family.ZipCode.FmtZip() ?? ""
+			};
 
-            var familyAddr = new MobilePersonAddress();
-            familyAddr.address1 = p.Family.AddressLineOne ?? "";
-            familyAddr.address2 = p.Family.AddressLineTwo ?? "";
-            familyAddr.city = p.Family.CityName ?? "";
-            familyAddr.state = p.Family.StateCode ?? "";
-            familyAddr.zip = p.Family.ZipCode.FmtZip() ?? "";
+			addresses.Add( "Family", familyAddr );
 
-            addresses.Add("Family", familyAddr);
+			if( !string.IsNullOrEmpty( p.AddressLineOne ) ) {
+				MobilePersonAddress personalAddr = new MobilePersonAddress {
+					address1 = p.AddressLineOne ?? "",
+					address2 = p.AddressLineTwo ?? "",
+					city = p.CityName ?? "",
+					state = p.StateCode ?? "",
+					zip = p.ZipCode.FmtZip() ?? ""
+				};
 
-            if (!string.IsNullOrEmpty(p.AddressLineOne))
-            {
-                var personalAddr = new MobilePersonAddress();
-                personalAddr.address1 = p.AddressLineOne ?? "";
-                personalAddr.address2 = p.AddressLineTwo ?? "";
-                personalAddr.city = p.CityName ?? "";
-                personalAddr.state = p.StateCode ?? "";
-                personalAddr.zip = p.ZipCode.FmtZip() ?? "";
+				addresses.Add( "Personal", personalAddr );
+			}
 
-                addresses.Add("Personal", personalAddr);
-            }
+			gender = p.Gender.Description;
+			age = Person.AgeDisplay( p.Age, p.PeopleId ) ?? 0;
 
-            gender = p.Gender.Description;
-            age = Person.AgeDisplay(p.Age, p.PeopleId) ?? 0;
-            birthday = p.DOB.Length > 0 ? p.DOB : "No Birthday Set";
+			if( hideAgeYear && age > hideAgeValue ) {
+				if( p.BirthMonth > 0 && p.BirthDay > 0 ) {
+					string month = DateTimeFormatInfo.CurrentInfo?.GetAbbreviatedMonthName( p.BirthMonth ?? 0 ) ?? "";
 
-            if (!string.IsNullOrEmpty(p.CellPhone))
-            {
-                emailPhone.Add(new MobileContact(1, "Cell", p.CellPhone.FmtFone()));
-            }
+					birthday = $"{month} {p.BirthDay}";
+				} else {
+					birthday = "No Birthday Set";
+				}
+			} else {
+				birthday = p.DOB.Length > 0 ? p.DOB : "No Birthday Set";
+			}
 
-            if (!string.IsNullOrEmpty(p.HomePhone))
-            {
-                emailPhone.Add(new MobileContact(1, "Home", p.HomePhone.FmtFone()));
-            }
+			// Clear age because of settings (NoBirthYearRole and NoBirthYearOverAge)
+			if( hideAgeYear && age > hideAgeValue ) {
+				age = 0;
+			}
 
-            if (!string.IsNullOrEmpty(p.WorkPhone))
-            {
-                emailPhone.Add(new MobileContact(1, "Work", p.WorkPhone.FmtFone()));
-            }
+			if( !string.IsNullOrEmpty( p.CellPhone ) ) {
+				emailPhone.Add( new MobileContact( 1, "Cell", p.CellPhone.FmtFone() ) );
+			}
 
-            if (!string.IsNullOrEmpty(p.EmailAddress))
-            {
-                emailPhone.Add(new MobileContact(2, "EMail1", p.EmailAddress));
-            }
+			if( !string.IsNullOrEmpty( p.HomePhone ) ) {
+				emailPhone.Add( new MobileContact( 1, "Home", p.HomePhone.FmtFone() ) );
+			}
 
-            if (!string.IsNullOrEmpty(p.EmailAddress2))
-            {
-                emailPhone.Add(new MobileContact(2, "EMail2", p.EmailAddress2));
-            }
+			if( !string.IsNullOrEmpty( p.WorkPhone ) ) {
+				emailPhone.Add( new MobileContact( 1, "Work", p.WorkPhone.FmtFone() ) );
+			}
 
-            status = p.MemberStatusId;
-            statusText = p.MemberStatus.Description;
+			if( !string.IsNullOrEmpty( p.EmailAddress ) ) {
+				emailPhone.Add( new MobileContact( 2, "EMail1", p.EmailAddress ) );
+			}
 
-            deceased = ((p.IsDeceased ?? false) ? 1 : 0);
+			if( !string.IsNullOrEmpty( p.EmailAddress2 ) ) {
+				emailPhone.Add( new MobileContact( 2, "EMail2", p.EmailAddress2 ) );
+			}
 
-            foreach (var m in p.Family.People.Where(mm => mm.PeopleId != p.PeopleId))
-            {
-                var familyMember = new MobileFamilyMember();
-                familyMember.id = m.PeopleId.ToString();
-                familyMember.name = m.Name;
-                familyMember.age = Person.AgeDisplay(m.Age, m.PeopleId).ToString();
-                familyMember.gender = m.Gender.Description;
-                familyMember.position = m.FamilyPosition.Description;
-                familyMember.deceased = m.Deceased;
+			status = p.MemberStatusId;
+			statusText = p.MemberStatus.Description;
 
-                family.Add(m.PeopleId.ToString(), familyMember);
-            }
+			deceased = (p.IsDeceased ?? false) ? 1 : 0;
 
-            var q = from re in cmsdb.RelatedFamilies
-                    where re.FamilyId == p.FamilyId || re.RelatedFamilyId == p.FamilyId
-                    let rf = re.RelatedFamilyId == p.FamilyId ? re.RelatedFamily1 : re.RelatedFamily2
-                    select new { hohid = rf.HeadOfHouseholdId, description = re.FamilyRelationshipDesc };
+			foreach( Person m in p.Family.People.Where( mm => mm.PeopleId != p.PeopleId ) ) {
+				MobileFamilyMember familyMember = new MobileFamilyMember {
+					id = m.PeopleId.ToString(),
+					name = m.Name,
+					age = Person.AgeDisplay( m.Age, m.PeopleId ).ToString(),
+					gender = m.Gender.Description,
+					position = m.FamilyPosition.Description,
+					deceased = m.Deceased
+				};
 
-            foreach (var rf in q)
-            {
-                if (!relatives.ContainsKey(rf.hohid.ToString()))
-                {
-                    relatives.Add(rf.hohid.ToString(), rf.description);
-                }
-            }
+				family.Add( m.PeopleId.ToString(), familyMember );
+			}
 
-            picture = "";
+			var q = from re in cmsdb.RelatedFamilies
+						where re.FamilyId == p.FamilyId || re.RelatedFamilyId == p.FamilyId
+						let rf = re.RelatedFamilyId == p.FamilyId ? re.RelatedFamily1 : re.RelatedFamily2
+						select new {
+							hohid = rf.HeadOfHouseholdId,
+							description = re.FamilyRelationshipDesc
+						};
 
-            if (p.Picture != null)
-            {
-                var image = cmsidb.Images.SingleOrDefault(i => i.Id == p.Picture.SmallId);
+			foreach( var rf in q ) {
+				if( !relatives.ContainsKey( rf.hohid.ToString() ) ) {
+					relatives.Add( rf.hohid.ToString(), rf.description );
+				}
+			}
 
-                if (image != null)
-                {
-                    picture = Convert.ToBase64String(image.Bits);
-                    pictureX = p.Picture.X ?? 0;
-                    pictureY = p.Picture.Y ?? 0;
-                }
-            }
+			picture = "";
 
-            return this;
-        }
-    }
+			if( p.Picture != null ) {
+				Image image = cmsidb.Images.SingleOrDefault( i => i.Id == p.Picture.SmallId );
+
+				if( image != null ) {
+					picture = Convert.ToBase64String( image.Bits );
+					pictureX = p.Picture.X ?? 0;
+					pictureY = p.Picture.Y ?? 0;
+				}
+			}
+
+			return this;
+		}
+	}
 }
