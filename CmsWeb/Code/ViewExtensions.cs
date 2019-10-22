@@ -1083,9 +1083,20 @@ namespace CmsWeb
     <script src=""//cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/additional-methods.min.js""></script>");
         }
 
+        public static HtmlString Vue()
+        {
+            return new HtmlString(@"<script src=""//cdn.jsdelivr.net/npm/vue""></script>
+    <script src=""//cdnjs.cloudflare.com/ajax/libs/vue-resource/1.5.1/vue-resource.min.js""></script>");
+        }
+
         public static HtmlString Moment()
         {
             return new HtmlString("<script src=\"//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js\" type=\"text/javascript\"></script>\n");
+        }
+
+        public static HtmlString Jsapi()
+        {
+            return new HtmlString(@"<script src=""//www.google.com/jsapi""></script>");
         }
 
         public static HtmlString Humanize()

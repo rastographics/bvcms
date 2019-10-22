@@ -159,6 +159,7 @@ namespace CmsData
 
             var myList = (from c in DbUtil.Db.Contributions
                           where c.ContributionDate.Value.Year == (CurrentYear)
+                          where c.ContributionTypeId != 8
                 group c by new {c.ContributionDate.Value.Month}
                 into grp
                 select new ChartDTO
@@ -169,7 +170,8 @@ namespace CmsData
 
             var myList1=(from ce in DbUtil.Db.Contributions
                          where ce.ContributionDate.Value.Year == (CurrentYear - 1)
-                    group ce by new { ce.ContributionDate.Value.Month } into grpc
+                         where ce.ContributionTypeId != 8
+                         group ce by new { ce.ContributionDate.Value.Month } into grpc
                     select new ChartDTO
                     {
                         Name = grpc.First().ContributionDate.Value.ToString("MMM", CultureInfo.InvariantCulture),
