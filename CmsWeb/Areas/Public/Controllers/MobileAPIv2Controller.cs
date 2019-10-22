@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.WebPages;
 using CmsData;
 using CmsData.Classes.Barcodes;
 using CmsData.Codes;
@@ -456,12 +457,17 @@ namespace CmsWeb.Areas.Public.Controllers
 
 			MobileMessage response = new MobileMessage();
 
+			string hideAgeYearRole = CurrentDatabase.Setting( "NoBirthYearRole", "" );
+
+			bool hideAgeYear = !hideAgeYearRole.IsEmpty() && authentication.getUser().InRole( hideAgeYearRole );
+			int hideAgeYearValue = CurrentDatabase.Setting( "NoBirthYearOverAge", "18" ).ToInt();
+
 			switch( (MobileMessage.Device) message.device ) {
 				case MobileMessage.Device.ANDROID: {
 					Dictionary<int, MobilePerson> mpl = new Dictionary<int, MobilePerson>();
 
 					foreach( Person item in m.ApplySearch( mps.guest ).OrderBy( p => p.Name2 ).Take( 100 ) ) {
-						MobilePerson mp = new MobilePerson().populate( item, CurrentDatabase, CurrentImageDatabase );
+						MobilePerson mp = new MobilePerson().populate( item, CurrentDatabase, CurrentImageDatabase, hideAgeYear, hideAgeYearValue );
 
 						mpl.Add( mp.id, mp );
 					}
@@ -475,7 +481,7 @@ namespace CmsWeb.Areas.Public.Controllers
 					List<MobilePerson> mp = new List<MobilePerson>();
 
 					foreach( Person item in m.ApplySearch( mps.guest ).OrderBy( p => p.Name2 ).Take( 100 ) ) {
-						mp.Add( new MobilePerson().populate( item, CurrentDatabase, CurrentImageDatabase ) );
+						mp.Add( new MobilePerson().populate( item, CurrentDatabase, CurrentImageDatabase, hideAgeYear, hideAgeYearValue ) );
 					}
 
 					response.data = SerializeJSON( mp, message.version );
@@ -609,6 +615,11 @@ namespace CmsWeb.Areas.Public.Controllers
 				return MobileMessage.createLoginErrorReturn( authentication );
 			}
 
+			string hideAgeYearRole = CurrentDatabase.Setting( "NoBirthYearRole", "" );
+
+			bool hideAgeYear = !hideAgeYearRole.IsEmpty() && authentication.getUser().InRole( hideAgeYearRole );
+			int hideAgeYearValue = CurrentDatabase.Setting( "NoBirthYearOverAge", "18" ).ToInt();
+
 			MobileMessage response = new MobileMessage();
 
 			Person person = CurrentDatabase.People.SingleOrDefault( p => p.PeopleId == message.argInt );
@@ -623,10 +634,10 @@ namespace CmsWeb.Areas.Public.Controllers
 			response.count = 1;
 
 			if( message.device == (int) MobileMessage.Device.ANDROID ) {
-				response.data = SerializeJSON( new MobilePerson().populate( person, CurrentDatabase, CurrentImageDatabase ), message.version );
+				response.data = SerializeJSON( new MobilePerson().populate( person, CurrentDatabase, CurrentImageDatabase, hideAgeYear, hideAgeYearValue ), message.version );
 			} else {
 				response.data = SerializeJSON( new List<MobilePerson> {
-					new MobilePerson().populate( person, CurrentDatabase, CurrentImageDatabase )
+					new MobilePerson().populate( person, CurrentDatabase, CurrentImageDatabase, hideAgeYear, hideAgeYearValue )
 				}, message.version );
 			}
 
@@ -1708,7 +1719,7 @@ namespace CmsWeb.Areas.Public.Controllers
 			}
 
 			if( om != null && !mpjo.join ) {
-				om.Drop(CurrentDatabase, CurrentImageDatabase, DateTime.Now);
+				om.Drop( CurrentDatabase, CurrentImageDatabase, DateTime.Now );
 
 				DbUtil.LogActivity( $"Dropped {om.PeopleId} for {om.Organization.OrganizationId} via {dataIn.getSourceOS()} app", peopleid: om.PeopleId, orgid: om.OrganizationId );
 			}
