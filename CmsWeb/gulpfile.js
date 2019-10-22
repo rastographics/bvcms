@@ -6,9 +6,9 @@ var gulp = require('gulp'),
     uglify = require('gulp-uglify'),
     concat = require('gulp-concat');
 
-var cssOutput = 'content/touchpoint/css',
-    select2Output = 'content/touchpoint/lib/select2/css',
-    jsOutput = 'content/touchpoint/js';
+var cssOutput = 'Content/touchpoint/css',
+    select2Output = 'Content/touchpoint/lib/select2/css',
+    jsOutput = 'Content/touchpoint/js';
 
 var legacyJsFiles = [
     {
@@ -52,27 +52,27 @@ var jsFiles = [
 
 var lessFiles = [
     {
-        lessFile: 'content/touchpoint/src/less/app.less',
+        lessFile: 'Content/touchpoint/src/less/app.less',
         output: cssOutput
     },
     {
-        lessFile: 'content/touchpoint/src/less/account.less',
+        lessFile: 'Content/touchpoint/src/less/account.less',
         output: cssOutput
     },
     {
-        lessFile: 'content/touchpoint/src/less/error.less',
+        lessFile: 'Content/touchpoint/src/less/error.less',
         output: cssOutput
     },
     {
-        lessFile: 'content/touchpoint/src/less/print.less',
+        lessFile: 'Content/touchpoint/src/less/print.less',
         output: cssOutput
     },
     {
-        lessFile: 'content/touchpoint/src/less/editor.less',
+        lessFile: 'Content/touchpoint/src/less/editor.less',
         output: cssOutput
     },
     {
-        lessFile: 'content/touchpoint/src/less/select2/select2-bootstrap.less',
+        lessFile: 'Content/touchpoint/src/less/select2/select2-bootstrap.less',
         output: select2Output
     }
 ];
