@@ -129,7 +129,7 @@
       <HintPath>..\packages\PropertyChanging.Fody.1.29.3\lib\net452\PropertyChanging.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.configuration" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
