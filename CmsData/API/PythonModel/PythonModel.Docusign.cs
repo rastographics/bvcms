@@ -37,9 +37,9 @@
                 return new DocuSign.eSign.Model.RecipientViewRequest();
             }
 
-            public DocuSign.eSign.Model.RecipientViewRequest ListStatusChangesOptions()
+            public DocuSign.eSign.Api.EnvelopesApi.ListStatusChangesOptions ListStatusChangesOptions()
             {
-                return new DocuSign.eSign.Model.RecipientViewRequest();
+                return new DocuSign.eSign.Api.EnvelopesApi.ListStatusChangesOptions();
             }
 
             public DocuSign.eSign.Client.ApiClient ApiClient()
