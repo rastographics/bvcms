@@ -94,7 +94,7 @@ namespace CmsData
                         Count = Convert.ToInt32(grp.Sum(t => t.MaxCount).Value)
                     });
 
-            if (orgIds.IsNotNull())
+            if (orgIds.IsNotNull() && orgIds[0] > 0)
             {
                 if (!(orgIds.Length == 1 && orgIds[0].Equals(0)))
                 {

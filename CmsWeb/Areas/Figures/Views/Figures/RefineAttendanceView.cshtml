@@ -25,35 +25,28 @@
                     <div class="form-group">
                         <label class="control-label">Program</label>
                         <div id="ProgramContainer">
-                            <select class="Program-DropdownCls" v-model="ProgramId">
+                            <select class="Program-DropdownCls" v-model="ProgramId" v-on:change="OnChangeProgram">
                                 <option value="-1">Select a Program</option>
-                                <option v-for="program in Programs">{{program.ProgName}}</option>
+                                <option v-for="program in Programs" v-bind:value="program.Id">{{program.ProgName}}</option>
                             </select>
-                        </div>
-                        @*<label for="Program" class="control-label">Program</label>
-                            <div id="ProgramContainer">
-                                @Html.Action("ProgramView")
-                            </div>*@
-                    </div>
-                    @*<div class="form-group">
-                            <label for="Division" class="control-label">Division</label>
-                            <div id="DivisionContainer">
-                                @Html.Action("DivisionView")
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="Organization" class="control-label">Organization</label>
-                            <div id="OrganizationContainer">
-                                @Html.Action("OrganizationView")
-                            </div>
-                        </div>*@<div class="form-group">
-                        <label for="Division" class="control-label"></label>
-                        <div id="DivisionContainer">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="Organization" class="control-label"></label>
+                        <label class="control-label">Division</label>
+                        <div id="DivisionContainer">
+                            <select class="Division-DropdownCls" v-model="DivisionId" v-on:change="OnChangeDivision">
+                                <option value="-1">Select a Division</option>
+                                <option v-for="division in Divisions" v-bind:value="division.Id">{{division.DivName}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Organization</label>
                         <div id="OrganizationContainer">
+                            <select class="Organization-DropdownCls" id="Organization-DropdownID" v-model="OrganizationId" multiple="multiple">
+                                <option value="-1">Select an Organization</option>
+                                <option v-for="organization in Organizations" v-bind:value="organization.Id">{{organization.OrgName}}</option>
+                            </select>
                         </div>
                     </div>
                 </div>

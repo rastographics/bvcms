@@ -1,9 +1,12 @@
 ﻿new Vue({
     el: '#fig',
     data: {
-        Programs: [{}],
+        Programs: null,
+        Divisions: null,
+        Organizations: null,
         ProgramId: -1,
-        Test: 'Prueba'
+        DivisionId: -1,
+        OrganizationId: -1
     },
     methods: {
         myFunctionOnLoad: function () {
@@ -27,20 +30,25 @@
                     error_swal('Fatal Error!', 'We are working to fix it');
                 }
             );
+        },
+        OnChangeProgram: function () {
+            this.DivisionsId = -1;
+            this.Organizations = null;
+            this.Divisions = null;
+            if (this.ProgramId > 0) {
+                console.log(this.ProgramId);
+                this.Divisions = this.Programs.find(x => x.Id === this.ProgramId).DivList;
+            }
+        },
+        OnChangeDivision: function () {
+            this.OrganizationId = -1;
+            this.Organizations = null;
+            if (this.DivisionId > 0) {
+                this.Organizations = this.Divisions.find(x => x.Id === this.DivisionId).OrgList;
+            }
         }
     },
     created: function () {
         this.myFunctionOnLoad();
     }
 });
-
-//$(function () {
-//    google.load("visualization", "1", { packages: ["corechart"] });
-
-//    $('#DrawChart').click(function () {
-//        var e = document.getElementById('Attendance_chart_display');
-//        e.style.display = 'block';
-//        var selectedValues = $('#Organization-DropdownID').val();
-//        $("#Attendance_chart_display").load('/Figures/Figures/AttendanceChartDisplayView', { orgIdsArr: selectedValues });
-//    });
-//});
