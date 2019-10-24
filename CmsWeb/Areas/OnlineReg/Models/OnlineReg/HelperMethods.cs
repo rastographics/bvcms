@@ -179,7 +179,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             if (o != null)
             {
-                if ((o.ClassFilled ?? false) || (o.Limit > 0 && o.Limit <= o.RegLimitCount(CurrentDatabase)))
+                if ((o.ClassFilled ?? false) || (o.Limit <= o.RegLimitCount(CurrentDatabase)))
                 {
                     return true;
                 }
