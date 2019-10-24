@@ -226,6 +226,7 @@
     <Compile Include="Classes\Printing\PrinterHelper.cs" />
     <Compile Include="Classes\PrintRawHelper.cs" />
     <Compile Include="Classes\Settings.cs" />
+    <Compile Include="Classes\UserConfig.cs" />
     <Compile Include="Classes\WeekDay.cs" />
     <Compile Include="CommonKeyboard.cs">
       <SubType>Form</SubType>
