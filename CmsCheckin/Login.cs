@@ -46,8 +46,6 @@ namespace CmsCheckin
             username.Text = Program.settings.user;
             password.Text = Program.settings.pass ?? "";
 
-            System.IO.File.WriteAllText(@"C:\Users\Bron\CMSCheckin.config", Newtonsoft.Json.JsonConvert.SerializeObject(Program.settings, Formatting.Indented));
-
             if (username.Text.Length > 0)
             {
                 current = password;
