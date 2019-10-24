@@ -37,7 +37,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
                 CreationDate = Util.Now,
                 Description = m.Description,
                 MemberTypeIds = m.MemberTypeIds != null ? string.Join(",", m.MemberTypeIds) : string.Empty,
-                StatusFlagIds = m.StatusFlagIds != null ? string.Join(",", m.StatusFlagIds) : string.Empty,
+                StatusFlagIds = string.Empty,
                 DivisionId = m.DivisionId,
                 CampusId = m.CampusId,
                 Name = m.Name,

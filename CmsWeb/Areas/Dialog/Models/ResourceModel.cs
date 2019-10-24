@@ -126,7 +126,6 @@ namespace CmsWeb.Areas.Dialog.Models
                     Value = x.Flag
                 }).ToList();
 
-                list.Insert(0, new SelectListItem { Value = "0", Text = "(none)", Selected = true });
                 return list;
             }
         }
