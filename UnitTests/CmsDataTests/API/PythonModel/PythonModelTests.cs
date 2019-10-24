@@ -1,5 +1,6 @@
 ﻿using CmsData;
 using CmsData.Codes;
+using CmsDataTests.Properties;
 using SharedTestFixtures;
 using Shouldly;
 using System;
@@ -69,6 +70,16 @@ namespace CmsDataTests
             detail.Contribution.CheckNo.ShouldBe(checkno);
             detail.Contribution.BankAccount.ShouldNotBeNull();
             MockContributions.DeleteAllFromBundle(db, detail.BundleHeader);
+        }
+
+        [Fact]
+        public void DocusignApiTest()
+        {
+            var db = CMSDataContext.Create(DatabaseFixture.Host);
+            var model = new PythonModel(db);
+            var result = model.RunScript(Resources.DocusignApiTest);
+
+            result.TrimEnd().ShouldBe("[False, False, False, False, False, False, False, False, False]");
         }
 
         public void Dispose()
