@@ -123,7 +123,7 @@ namespace CmsCheckin
 
                 if (existsResults != "1")
                 {
-                    MessageBox.Show("The server you enter is not valid, please try again.\n\n" + webservice, "Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("The server name you entered is not valid, please try again.\n\n" + webservice, "Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
                 else
                 {
