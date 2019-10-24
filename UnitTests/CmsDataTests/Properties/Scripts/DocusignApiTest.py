@@ -8,4 +8,5 @@
     model.docusign.ListStatusChangesOptions() is None,
     model.docusign.ApiClient() is None,
     model.docusign.EnvelopesApi() is None,
+    model.docusign.TemplateRole() is None,
     ]))

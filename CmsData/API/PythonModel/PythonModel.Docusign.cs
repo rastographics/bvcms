@@ -37,6 +37,11 @@
                 return new DocuSign.eSign.Model.RecipientViewRequest();
             }
 
+            public DocuSign.eSign.Model.TemplateRole TemplateRole()
+            {
+                return new DocuSign.eSign.Model.TemplateRole();
+            }
+
             public DocuSign.eSign.Api.EnvelopesApi.ListStatusChangesOptions ListStatusChangesOptions()
             {
                 return new DocuSign.eSign.Api.EnvelopesApi.ListStatusChangesOptions();

@@ -79,7 +79,7 @@ namespace CmsDataTests
             var model = new PythonModel(db);
             var result = model.RunScript(Resources.DocusignApiTest);
 
-            result.TrimEnd().ShouldBe("[False, False, False, False, False, False, False, False, False]");
+            result.TrimEnd().ShouldBe("[False, False, False, False, False, False, False, False, False, False]");
         }
 
         public void Dispose()
