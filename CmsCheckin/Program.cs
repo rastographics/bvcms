@@ -44,8 +44,9 @@ namespace CmsCheckin
 		{
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
-			settings.load();
+            settings.load();
 
 			AdminPINLastAccess = DateTime.Now.AddYears(-1);
 
