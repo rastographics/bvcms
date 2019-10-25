@@ -985,6 +985,7 @@
     <Compile Include="Generated\Views\TransactionSummary.cs" />
     <Compile Include="DbUtil\ITableWithExtraValues.cs" />
     <Content Include="App_Readme\Elmah.txt" />
+    <Content Include="Migrations\20191024_update_backgroundcheck_id.sql" />
     <Content Include="Migrations\20190725_add_printjob_data_field.sql" />
     <Content Include="Migrations\20190630_Update_ViewAttributes.sql" />
     <Content Include="Migrations\20190709_update_archive_content_sp.sql" />
