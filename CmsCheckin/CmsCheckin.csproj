@@ -46,7 +46,7 @@
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>index.html</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>47</ApplicationRevision>
+    <ApplicationRevision>49</ApplicationRevision>
     <ApplicationVersion>1.1.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -226,6 +226,7 @@
     <Compile Include="Classes\Printing\PrinterHelper.cs" />
     <Compile Include="Classes\PrintRawHelper.cs" />
     <Compile Include="Classes\Settings.cs" />
+    <Compile Include="Classes\UserConfig.cs" />
     <Compile Include="Classes\WeekDay.cs" />
     <Compile Include="CommonKeyboard.cs">
       <SubType>Form</SubType>
