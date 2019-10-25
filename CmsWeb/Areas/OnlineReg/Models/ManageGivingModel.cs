@@ -383,7 +383,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             if (Type == PaymentType.CreditCard)
                 PaymentValidator.ValidateCreditCardInfo(modelState,
-                    new PaymentForm
+                    new PaymentForm(CurrentDatabase)
                     {
                         CreditCard = CreditCard,
                         Expires = Expires,
@@ -476,7 +476,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     }
                     else
                     {
-                        var pf = new PaymentForm()
+                        var pf = new PaymentForm(CurrentDatabase)
                         {
                             CreditCard = CreditCard,
                             First = FirstName,

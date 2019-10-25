@@ -91,7 +91,7 @@ Thank you.
 
         public ConfirmEnum ConfirmTransaction(string TransactionReturn)
         {
-            ParseSettings();
+            ParseSettings(CurrentDatabase);
             if (List.Count == 0)
             {
                 throw new Exception(" unexpected, no registrants found in confirmation");

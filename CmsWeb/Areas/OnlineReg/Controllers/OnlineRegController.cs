@@ -365,7 +365,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             fromMethod = "AddAnotherPerson";
             m.HistoryAdd("AddAnotherPerson");
-            m.ParseSettings();
+            m.ParseSettings(CurrentDatabase);
             if (!ModelState.IsValid)
             {
                 return FlowList(m);

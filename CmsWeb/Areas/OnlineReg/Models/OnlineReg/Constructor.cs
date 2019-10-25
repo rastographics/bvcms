@@ -1,6 +1,7 @@
 using CmsData;
 using CmsData.Codes;
 using CmsWeb.Controllers;
+using CmsWeb.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,16 +15,22 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public BadRegistrationException(string msg) : base(msg) { }
     }
 
-    public partial class OnlineRegModel
+    public partial class OnlineRegModel : IDbBinder
     {
+        public CMSDataContext CurrentDatabase { get ; set ; }
+
         public OnlineRegModel()
         {
             HttpContextFactory.Current.Items["OnlineRegModel"] = this;
-            CurrentDatabase = DbUtil.Db;
+        }
+        public OnlineRegModel(CMSDataContext db)
+            :this()
+        {            
+            CurrentDatabase = db;
         }
 
         public OnlineRegModel(HttpRequestBase req, CMSDataContext db, int? id, bool? testing, string email, bool? login, string source)
-            : this()
+            : this(db)
         {
             CurrentDatabase = db;
             Orgid = id;

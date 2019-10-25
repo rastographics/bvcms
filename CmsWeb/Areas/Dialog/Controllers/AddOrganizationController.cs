@@ -18,7 +18,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
         [Route("~/AddOrganization")]
         public ActionResult Index(bool displayCopySettings = false)
         {
-            var m = new NewOrganizationModel(CurrentDatabase.CurrentSessionOrgId, displayCopySettings);
+            var m = new NewOrganizationModel(CurrentDatabase, CurrentDatabase.CurrentSessionOrgId, displayCopySettings);
             m.org.OrganizationName = "";
             m.org.Location = "";
             return View(m);

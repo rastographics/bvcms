@@ -122,6 +122,7 @@
     <Compile Include="Areas\Finance\Models\PostBundleModelTests.cs" />
     <Compile Include="Areas\Manage\Models\Involvement\InvolvementTabModelTests.cs" />
     <Compile Include="Areas\Manage\Models\AccountModelTests.cs" />
+    <Compile Include="Areas\OnlineReg\Models\OnlineRegModelTest.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineRegPerson\HelperTests.cs" />
     <Compile Include="Areas\Org\Models\TestOrgGroupsModel.cs" />
     <Compile Include="Areas\Public\Controllers\MobileAPIControllerTests.cs" />

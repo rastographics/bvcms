@@ -1,6 +1,7 @@
 using CmsData;
 using CmsData.Finance;
 using CmsWeb.Code;
+using CmsWeb.Models;
 using Elmah;
 using System;
 using System.Collections.Generic;
@@ -13,11 +14,10 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.OnlineReg.Models
 {
-    public class PaymentForm
+    public class PaymentForm : IDbBinder
     {
         private bool? _noEChecksAllowed;
-        private int? timeOut;
-        private CMSDataContext _currentDatabase;
+        private int? timeOut;        
 
         public string source { get; set; }
         public decimal? AmtToPay { get; set; }
@@ -47,8 +47,13 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public string Terms { get; set; }
         public int DatumId { get; set; }
         public Guid FormId { get; set; }
-        public string URL { get; set; }
-        public CMSDataContext CurrentDatabase => _currentDatabase ?? (_currentDatabase = DbUtil.Db);
+        public string URL { get; set; }        
+        public CMSDataContext CurrentDatabase { get ; set ; }
+
+        public PaymentForm(CMSDataContext db)
+        {
+            CurrentDatabase = db;
+        }
 
         public int TimeOut
         {
@@ -131,7 +136,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 return "off";
 #endif
             }
-        }
+        }        
 
         public string FullName()
         {
@@ -266,7 +271,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 pi = new PaymentInfo() { GatewayAccountId = accountId ?? 0 };
             }
 
-            var pf = new PaymentForm
+            var pf = new PaymentForm(db)
             {
                 URL = ti.Url,
                 PayBalance = true,
@@ -322,7 +327,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 return null;
             }
 
-            var pf = new PaymentForm
+            var pf = new PaymentForm(m.CurrentDatabase)
             {
                 FormId = Guid.NewGuid(),
                 AmtToPay = m.PayAmount() + (m.donation ?? 0),
@@ -677,7 +682,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             int? pid = null;
             if (m != null)
             {
-                m.ParseSettings();
+                m.ParseSettings(CurrentDatabase);
 
                 pid = m.UserPeopleId;
                 if (m.TranId == null)

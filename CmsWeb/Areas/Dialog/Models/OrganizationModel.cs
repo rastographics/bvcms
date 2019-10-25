@@ -1,5 +1,6 @@
 using CmsData;
 using CmsWeb.Code;
+using CmsWeb.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
@@ -7,25 +8,28 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Models
 {
-    public class NewOrganizationModel
+    public class NewOrganizationModel : IDbBinder
     {
         public Organization org { get; set; }
         public int? OrganizationId { get; set; }
         public bool copysettings { get; set; }
         public bool copyregistration { get; set; }
         public bool DisplayCopySettings { get; set; }
-        public NewOrganizationModel(int? id, bool displayCopySettings = false)
+        public CMSDataContext CurrentDatabase { get; set; }
+
+        public NewOrganizationModel(CMSDataContext db, int? id, bool displayCopySettings = false)
         {
+            CurrentDatabase = db;
             DisplayCopySettings = displayCopySettings;
             if (!id.HasValue)
             {
-                id = DbUtil.Db.Setting("DefaultOrgId", "0").ToInt();
+                id = CurrentDatabase.Setting("DefaultOrgId", "0").ToInt();
             }
 
-            org = DbUtil.Db.LoadOrganizationById(id);
+            org = CurrentDatabase.LoadOrganizationById(id);
             if (org == null)
             {
-                org = DbUtil.Db.Organizations.First();
+                org = CurrentDatabase.Organizations.First();
             }
 
             OrganizationId = org.OrganizationId;
@@ -34,6 +38,12 @@ namespace CmsWeb.Areas.Dialog.Models
         public NewOrganizationModel()
         {
         }
+
+        public NewOrganizationModel(CMSDataContext db)
+        {
+            CurrentDatabase = db;
+        }
+
         private CodeValueModel cv = new CodeValueModel();
 
         public IEnumerable<SelectListItem> CampusList()

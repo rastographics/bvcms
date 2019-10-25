@@ -72,7 +72,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             var om = DbUtil.Db.OrganizationMembers.SingleOrDefault(
                 mm => mm.OrganizationId == Orgid && mm.PeopleId == List[0].PeopleId);
-            ParseSettings();
+            ParseSettings(CurrentDatabase);
 
             if (om != null && settings[om.OrganizationId].AllowReRegister == false && !SupportMissionTrip)
             {

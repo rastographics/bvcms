@@ -5,15 +5,15 @@ using System.Collections.Generic;
 using System.Web;
 using UtilityExtensions;
 using System.Linq;
+using CmsWeb.Models;
 
 namespace CmsWeb.Areas.OnlineReg.Models
 {
     public partial class OnlineRegModel
     {
-        public void ParseSettings()
+        public void ParseSettings(CMSDataContext db)
         {
             var list = new Dictionary<int, Settings>();
-            var db = CMSDataContext.Create(HttpContextFactory.Current);
 
             if (masterorgid.HasValue)
             {
