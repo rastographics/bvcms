@@ -12,7 +12,7 @@ using OpenQA.Selenium;
 namespace IntegrationTests.Areas.Search.Models
 {
     [Collection(Collections.Webapp)]
-    public class SavedQueryInfoTest : AccountTestBase
+    public class SavedQueryInfoTests : AccountTestBase
     {
         [Fact]
         public void Should_Update_Model()
