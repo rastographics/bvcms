@@ -24,7 +24,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             return importer.RunImport(text, date, fundid, fromFile);
         }
 
-        public static BundleHeader GetBundleHeader(DateTime date, DateTime now, DateTime? depositDate = null, int? btid = null)
+        public static BundleHeader GetBundleHeader(DateTime date, DateTime now, int? btid = null)
         {
             var opentype = DbUtil.Db.Roles.Any(rr => rr.RoleName == "FinanceDataEntry")
                 ? BundleStatusCode.OpenForDataEntry
@@ -36,8 +36,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                 ContributionDate = date,
                 CreatedBy = Util.UserId,
                 CreatedDate = now,
-                FundId = DbUtil.Db.Setting("DefaultFundId", "1").ToInt(),
-                DepositDate = depositDate
+                FundId = DbUtil.Db.Setting("DefaultFundId", "1").ToInt()
             };
             DbUtil.Db.BundleHeaders.InsertOnSubmit(bh);
             bh.BundleHeaderTypeId = btid ?? BundleTypeCode.ChecksAndCash;
