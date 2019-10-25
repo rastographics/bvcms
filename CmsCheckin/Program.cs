@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using CmsCheckin.Dialogs;
 using System.Collections.Generic;
 using System.Collections;
+using System.Net;
 
 namespace CmsCheckin
 {
