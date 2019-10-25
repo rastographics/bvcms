@@ -12,9 +12,9 @@ namespace CmsData
 {
     public partial class PythonModel
     {
-        public BundleHeader GetBundleHeader(DateTime date, DateTime now, int? btid = null)
+        public BundleHeader GetBundleHeader(DateTime date, DateTime now, int? btid = null, DateTime? depositDate = null)
         {
-            return Contribution.GetBundleHeader(db, date, now, btid);
+            return Contribution.GetBundleHeader(db, date, now, btid, depositDate);
         }
 
         public void FinishBundle(BundleHeader bh)
