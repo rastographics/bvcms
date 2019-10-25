@@ -48,7 +48,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public int DatumId { get; set; }
         public Guid FormId { get; set; }
         public string URL { get; set; }        
-        public CMSDataContext CurrentDatabase { get ; set ; }
+        public CMSDataContext CurrentDatabase { get; set; }
 
         public PaymentForm(CMSDataContext db)
         {

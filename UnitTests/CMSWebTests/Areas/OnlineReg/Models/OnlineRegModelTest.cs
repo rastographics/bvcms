@@ -22,14 +22,10 @@ namespace CMSWebTests.Areas.OnlineReg.Models
                 RegistrationTypeId = RegistrationTypeCode.JoinOrganization,
                 Limit = 0
             };
-
             var fakeOrg = FakeOrganizationUtils.MakeFakeOrganization(requestManager, orgRegLimitConfig);
-
             OnlineRegModel om = FakeOrganizationUtils.GetFakeOnlineRegModel((int)fakeOrg.org.OrganizationId);
             om.Filled().ShouldBe("registration is full");
-
             FakeOrganizationUtils.DeleteOrg(fakeOrg.org.OrganizationId);
-
         }
     }
 }
