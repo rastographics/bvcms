@@ -46,7 +46,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
                 if (_settings == null)
                 {
-                    ParseSettings();
+                    ParseSettings(CurrentDatabase);
                     _settings = HttpContextFactory.Current.Items["RegSettings"] as Dictionary<int, Settings>;
                 }
                 return _settings;
