@@ -17,7 +17,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
     public partial class OnlineRegModel : IDbBinder
     {
-        public CMSDataContext CurrentDatabase { get ; set ; }
+        public CMSDataContext CurrentDatabase { get; set;}
 
         public OnlineRegModel()
         {
