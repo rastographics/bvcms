@@ -1,13 +1,6 @@
 ﻿using System;
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
 using System.ComponentModel;
-using CmsData.Infrastructure;
+using System.Data.Linq.Mapping;
 
 namespace CmsData
 {
@@ -42,7 +35,7 @@ namespace CmsData
         [Column(Name = "ProcessTypeId", UpdateCheck = UpdateCheck.Never, Storage = "_ProcessTypeId", AutoSync = AutoSync.OnInsert, DbType = "int IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
         public int PeopleId
         {
-            get { return this._ProcessTypeId; }
+            get => this._ProcessTypeId;
 
             set
             {
@@ -62,7 +55,7 @@ namespace CmsData
         [Column(Name = "ProcessTypeName", UpdateCheck = UpdateCheck.Never, Storage = "_ProcessTypeName", DbType = "nvarchar")]
         public string ProcessTypeName
         {
-            get { return this._ProcessTypeName; }
+            get => this._ProcessTypeName;
 
             set
             {
@@ -84,14 +77,18 @@ namespace CmsData
         protected virtual void SendPropertyChanging()
         {
             if ((this.PropertyChanging != null))
+            {
                 this.PropertyChanging(this, emptyChangingEventArgs);
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void SendPropertyChanged(string propertyName)
         {
             if ((this.PropertyChanged != null))
+            {
                 this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
     }
 }

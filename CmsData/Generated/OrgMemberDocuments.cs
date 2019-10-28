@@ -56,7 +56,7 @@ namespace CmsData
         [Column(Name = "DocumentId", UpdateCheck = UpdateCheck.Never, Storage = "_DocumentId", AutoSync = AutoSync.OnInsert, DbType = "int IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
         public int DocumentId
         {
-            get { return this._DocumentId; }
+            get => this._DocumentId;
 
             set
             {
@@ -74,7 +74,7 @@ namespace CmsData
         [Column(Name = "DocumentName", UpdateCheck = UpdateCheck.Never, Storage = "_DocumentName", DbType = "nvarchar(100)")]
         public string DocumentName
         {
-            get { return this._DocumentName; }
+            get => this._DocumentName;
 
             set
             {
@@ -92,7 +92,7 @@ namespace CmsData
         [Column(Name = "ImageId", UpdateCheck = UpdateCheck.Never, Storage = "_ImageId", DbType = "int NOT NULL UNIQUE")]
         public int ImageId
         {
-            get { return this._ImageId; }
+            get => this._ImageId;
 
             set
             {
@@ -111,14 +111,16 @@ namespace CmsData
         [IsForeignKey]
         public int PeopleId
         {
-            get { return this._PeopleId; }
+            get => this._PeopleId;
 
             set
             {
                 if (this._PeopleId != value)
                 {
                     if (this._Person.HasLoadedOrAssignedValue)
+                    {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+                    }
 
                     this.OnPeopleIdChanging(value);
                     this.SendPropertyChanging();
@@ -133,14 +135,16 @@ namespace CmsData
         [IsForeignKey]
         public int OrganizationId
         {
-            get { return this._OrganizationId; }
+            get => this._OrganizationId;
 
             set
             {
                 if (this._OrganizationId != value)
                 {
                     if (this._Organization.HasLoadedOrAssignedValue)
+                    {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+                    }
 
                     this.OnOrganizationIdChanging(value);
                     this.SendPropertyChanging();
@@ -156,7 +160,7 @@ namespace CmsData
         [Association(Name = "Org_Member_Documents_PPL_FK", Storage = "_Person", ThisKey = "PeopleId", IsForeignKey = true)]
         public Person Person
         {
-            get { return this._Person.Entity; }
+            get => this._Person.Entity;
 
             set
             {
@@ -190,7 +194,7 @@ namespace CmsData
         [Association(Name = "Org_Member_Documents_ORG_FK", Storage = "_Organization", ThisKey = "OrganizationId", IsForeignKey = true)]
         public Organization Organization
         {
-            get { return this._Organization.Entity; }
+            get => this._Organization.Entity;
 
             set
             {
@@ -224,14 +228,18 @@ namespace CmsData
         protected virtual void SendPropertyChanging()
         {
             if ((this.PropertyChanging != null))
+            {
                 this.PropertyChanging(this, emptyChangingEventArgs);
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void SendPropertyChanged(string propertyName)
         {
             if ((this.PropertyChanged != null))
+            {
                 this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
     }
 }

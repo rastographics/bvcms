@@ -1,13 +1,6 @@
 ﻿using System;
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
 using System.ComponentModel;
-using CmsData.Infrastructure;
+using System.Data.Linq.Mapping;
 
 namespace CmsData
 {
@@ -56,7 +49,7 @@ namespace CmsData
         [Column(Name = "Id", UpdateCheck = UpdateCheck.Never, Storage = "_Id", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
         public int Id
         {
-            get { return this._Id; }
+            get => this._Id;
 
             set
             {
@@ -78,7 +71,7 @@ namespace CmsData
         [Column(Name = "ApiKey", UpdateCheck = UpdateCheck.Never, Storage = "_ApiKey", DbType = "nvarchar(50) NOT NULL")]
         public string ApiKey
         {
-            get { return this._ApiKey; }
+            get => this._ApiKey;
 
             set
             {
@@ -100,7 +93,7 @@ namespace CmsData
         [Column(Name = "IpAddress", UpdateCheck = UpdateCheck.Never, Storage = "_IpAddress", DbType = "nvarchar(20) NOT NULL")]
         public string IpAddress
         {
-            get { return this._IpAddress; }
+            get => this._IpAddress;
 
             set
             {
@@ -133,14 +126,18 @@ namespace CmsData
         protected virtual void SendPropertyChanging()
         {
             if ((this.PropertyChanging != null))
+            {
                 this.PropertyChanging(this, emptyChangingEventArgs);
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void SendPropertyChanged(String propertyName)
         {
             if ((this.PropertyChanged != null))
+            {
                 this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
 
 

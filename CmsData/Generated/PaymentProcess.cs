@@ -1,13 +1,8 @@
-﻿using System;
+﻿using CmsData.Infrastructure;
+using System;
+using System.ComponentModel;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
-using System.ComponentModel;
-using CmsData.Infrastructure;
 
 namespace CmsData
 {
@@ -48,7 +43,7 @@ namespace CmsData
         [Column(Name = "ProcessId", UpdateCheck = UpdateCheck.Never, Storage = "_ProcessId", AutoSync = AutoSync.OnInsert, DbType = "int IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
         public int ProcessId
         {
-            get { return this._ProcessId; }
+            get => this._ProcessId;
 
             set
             {
@@ -66,7 +61,7 @@ namespace CmsData
         [Column(Name = "ProcessName", UpdateCheck = UpdateCheck.Never, Storage = "_ProcessName", AutoSync = AutoSync.OnInsert, DbType = "nvarchar NOT NULL")]
         public string ProcessName
         {
-            get { return this._ProcessName; }
+            get => this._ProcessName;
 
             set
             {
@@ -85,14 +80,16 @@ namespace CmsData
         [IsForeignKey]
         public int? GatewayAccountId
         {
-            get { return this._GatewayAccountId; }
+            get => this._GatewayAccountId;
 
             set
             {
                 if (this._GatewayAccountId != value)
                 {
                     if (this._GatewayAccount.HasLoadedOrAssignedValue)
+                    {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+                    }
 
                     this.OnGatewayAccountIdChanging(value);
                     this.SendPropertyChanging();
@@ -111,14 +108,18 @@ namespace CmsData
         protected virtual void SendPropertyChanging()
         {
             if ((this.PropertyChanging != null))
+            {
                 this.PropertyChanging(this, emptyChangingEventArgs);
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void SendPropertyChanged(string propertyName)
         {
             if ((this.PropertyChanged != null))
+            {
                 this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
     }
 }

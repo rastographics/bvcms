@@ -57,7 +57,7 @@ namespace CmsData
         [Column(Name = "Id", UpdateCheck = UpdateCheck.Never, Storage = "_Id", AutoSync = AutoSync.OnInsert, DbType = "bigint NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
         public long Id
         {
-            get { return this._Id; }
+            get => this._Id;
 
             set
             {
@@ -79,7 +79,7 @@ namespace CmsData
         [Column(Name = "Description", UpdateCheck = UpdateCheck.Never, Storage = "_Description", DbType = "nvarchar(100)")]
         public string Description
         {
-            get { return this._Description; }
+            get => this._Description;
 
             set
             {
@@ -101,7 +101,7 @@ namespace CmsData
         [Column(Name = "NotBeforeDate", UpdateCheck = UpdateCheck.Never, Storage = "_NotBeforeDate", DbType = "datetime")]
         public DateTime? NotBeforeDate
         {
-            get { return this._NotBeforeDate; }
+            get => this._NotBeforeDate;
 
             set
             {
@@ -123,7 +123,7 @@ namespace CmsData
         [Column(Name = "NotAfterDate", UpdateCheck = UpdateCheck.Never, Storage = "_NotAfterDate", DbType = "datetime")]
         public DateTime? NotAfterDate
         {
-            get { return this._NotAfterDate; }
+            get => this._NotAfterDate;
 
             set
             {
@@ -144,7 +144,7 @@ namespace CmsData
         [Column(Name = "IsExpired", UpdateCheck = UpdateCheck.Never, Storage = "_IsExpired", DbType = "bit NOT NULL")]
         public bool IsExpired
         {
-            get { return this._IsExpired; }
+            get => this._IsExpired;
 
             set
             {

@@ -110,28 +110,30 @@ namespace CmsData
         [IsForeignKey]
         public int CheckinProfileId
         {
-            get { return this._CheckinProfileId; }
+            get => this._CheckinProfileId;
 
             set
             {
                 if (this._CheckinProfileId != value)
                 {
                     if (this._CheckinProfiles.HasLoadedOrAssignedValue)
+                    {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+                    }
 
                     this.OnCheckinProfileIdChanging(value);
                     this.SendPropertyChanging();
                     this._CheckinProfileId = value;
                     this.SendPropertyChanged("CheckinProfileId");
                     this.OnCheckinProfileIdChanged();
-                }            
+                }
             }
         }
 
         [Column(Name = "CampusId", UpdateCheck = UpdateCheck.Never, Storage = "_CampusId", DbType = "int NULL")]
         public int? CampusId
         {
-            get { return this._CampusId; }
+            get => this._CampusId;
 
             set
             {
@@ -149,7 +151,7 @@ namespace CmsData
         [Column(Name = "EarlyCheckin", UpdateCheck = UpdateCheck.Never, Storage = "_EarlyCheckin", DbType = "int NULL")]
         public int? EarlyCheckin
         {
-            get { return this._EarlyCheckin; }
+            get => this._EarlyCheckin;
 
             set
             {
@@ -167,7 +169,7 @@ namespace CmsData
         [Column(Name = "LateCheckin", UpdateCheck = UpdateCheck.Never, Storage = "_LateCheckin", DbType = "int NULL")]
         public int? LateCheckin
         {
-            get { return this._LateCheckin; }
+            get => this._LateCheckin;
 
             set
             {
@@ -185,7 +187,7 @@ namespace CmsData
         [Column(Name = "Testing", UpdateCheck = UpdateCheck.Never, Storage = "_Testing", DbType = "bit NOT NULL")]
         public bool Testing
         {
-            get { return this._Testing; }
+            get => this._Testing;
 
             set
             {
@@ -203,7 +205,7 @@ namespace CmsData
         [Column(Name = "TestDay", UpdateCheck = UpdateCheck.Never, Storage = "_TestDay", DbType = "int NULL")]
         public int? TestDay
         {
-            get { return this._TestDay; }
+            get => this._TestDay;
 
             set
             {
@@ -221,7 +223,7 @@ namespace CmsData
         [Column(Name = "AdminPIN", UpdateCheck = UpdateCheck.Never, Storage = "_AdminPIN", DbType = "nvarchar(max) NULL")]
         public string AdminPIN
         {
-            get { return this._AdminPIN; }
+            get => this._AdminPIN;
 
             set
             {
@@ -239,7 +241,7 @@ namespace CmsData
         [Column(Name = "PINTimeout", UpdateCheck = UpdateCheck.Never, Storage = "_PINTimeout", DbType = "int NULL")]
         public int? PINTimeout
         {
-            get { return this._PINTimeout; }
+            get => this._PINTimeout;
 
             set
             {
@@ -257,7 +259,7 @@ namespace CmsData
         [Column(Name = "DisableJoin", UpdateCheck = UpdateCheck.Never, Storage = "_DisableJoin", DbType = "bit NOT NULL")]
         public bool DisableJoin
         {
-            get { return this._DisableJoin; }
+            get => this._DisableJoin;
 
             set
             {
@@ -275,7 +277,7 @@ namespace CmsData
         [Column(Name = "DisableTimer", UpdateCheck = UpdateCheck.Never, Storage = "_DisableTimer", DbType = "bit NOT NULL")]
         public bool DisableTimer
         {
-            get { return this._DisableTimer; }
+            get => this._DisableTimer;
 
             set
             {
@@ -293,7 +295,7 @@ namespace CmsData
         [Column(Name = "BackgroundImage", UpdateCheck = UpdateCheck.Never, Storage = "_BackgroundImage", DbType = "int NULL")]
         public int? BackgroundImage
         {
-            get { return this._BackgroundImage; }
+            get => this._BackgroundImage;
 
             set
             {
@@ -311,7 +313,7 @@ namespace CmsData
         [Column(Name = "BackgroundImageName", UpdateCheck = UpdateCheck.Never, Storage = "_BackgroundImageName", DbType = "nvarchar(max) NULL")]
         public string BackgroundImageName
         {
-            get { return this._BackgroundImageName; }
+            get => this._BackgroundImageName;
 
             set
             {
@@ -329,7 +331,7 @@ namespace CmsData
         [Column(Name = "BackgroundImageURL", UpdateCheck = UpdateCheck.Never, Storage = "_BackgroundImageURL", DbType = "nvarchar(max) NULL")]
         public string BackgroundImageURL
         {
-            get { return this._BackgroundImageURL; }
+            get => this._BackgroundImageURL;
 
             set
             {
@@ -347,7 +349,7 @@ namespace CmsData
         [Column(Name = "CutoffAge", UpdateCheck = UpdateCheck.Never, Storage = "_CutoffAge", DbType = "int NOT NULL")]
         public int CutoffAge
         {
-            get { return this._CutoffAge; }
+            get => this._CutoffAge;
 
             set
             {
@@ -365,7 +367,7 @@ namespace CmsData
         [Column(Name = "Logout", UpdateCheck = UpdateCheck.Never, Storage = "_Logout", DbType = "nvarchar(max) NULL")]
         public string Logout
         {
-            get { return this._Logout; }
+            get => this._Logout;
 
             set
             {
@@ -383,7 +385,7 @@ namespace CmsData
         [Column(Name = "Guest", UpdateCheck = UpdateCheck.Never, Storage = "_Guest", DbType = "bit NOT NULL")]
         public bool Guest
         {
-            get { return this._Guest; }
+            get => this._Guest;
 
             set
             {
@@ -401,7 +403,7 @@ namespace CmsData
         [Column(Name = "Location", UpdateCheck = UpdateCheck.Never, Storage = "_Location", DbType = "bit NOT NULL")]
         public bool Location
         {
-            get { return this._Location; }
+            get => this._Location;
 
             set
             {
@@ -419,7 +421,7 @@ namespace CmsData
         [Column(Name = "SecurityType", UpdateCheck = UpdateCheck.Never, Storage = "_SecurityType", DbType = "int NOT NULL")]
         public int SecurityType
         {
-            get { return this._SecurityType; }
+            get => this._SecurityType;
 
             set
             {
@@ -437,7 +439,7 @@ namespace CmsData
         [Column(Name = "ShowCheckinConfirmation", UpdateCheck = UpdateCheck.Never, Storage = "_ShowCheckinConfirmation", DbType = "int NOT NULL")]
         public int ShowCheckinConfirmation
         {
-            get { return this._ShowCheckinConfirmation; }
+            get => this._ShowCheckinConfirmation;
 
             set
             {
@@ -457,7 +459,7 @@ namespace CmsData
         [Association(Name = "Checking_Profile_Settings_CP_FK", Storage = "_CheckinProfiles", ThisKey = "CheckinProfileId", IsForeignKey = true)]
         public CheckinProfiles CheckinProfiles
         {
-            get { return this._CheckinProfiles.Entity; }
+            get => this._CheckinProfiles.Entity;
 
             set
             {
@@ -497,14 +499,18 @@ namespace CmsData
         protected virtual void SendPropertyChanging()
         {
             if ((this.PropertyChanging != null))
+            {
                 this.PropertyChanging(this, emptyChangingEventArgs);
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void SendPropertyChanged(string propertyName)
         {
             if ((this.PropertyChanged != null))
+            {
                 this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
     }
 }

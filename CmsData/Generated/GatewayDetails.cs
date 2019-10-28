@@ -1,13 +1,8 @@
-﻿using System;
+﻿using CmsData.Infrastructure;
+using System;
+using System.ComponentModel;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
-using System.ComponentModel;
-using CmsData.Infrastructure;
 
 namespace CmsData
 {
@@ -60,7 +55,7 @@ namespace CmsData
         [Column(Name = "GatewayDetailId", UpdateCheck = UpdateCheck.Never, Storage = "_GatewayDetailId", AutoSync = AutoSync.OnInsert, DbType = "int IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
         public int GatewayDetailId
         {
-            get { return this._GatewayDetailId; }
+            get => this._GatewayDetailId;
 
             set
             {
@@ -79,14 +74,16 @@ namespace CmsData
         [IsForeignKey]
         public int GatewayAccountId
         {
-            get { return this._GatewayAccountId; }
+            get => this._GatewayAccountId;
 
             set
             {
                 if (this._GatewayAccountId != value)
                 {
                     if (this._GatewayAccount.HasLoadedOrAssignedValue)
+                    {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+                    }
 
                     this.OnGatewayAccountIdChanging(value);
                     this.SendPropertyChanging();
@@ -100,7 +97,7 @@ namespace CmsData
         [Column(Name = "GatewayDetailName", UpdateCheck = UpdateCheck.Never, Storage = "_GatewayDetailName", AutoSync = AutoSync.OnInsert, DbType = "nvarchar NOT NULL")]
         public string GatewayDetailName
         {
-            get { return this._GatewayDetailName; }
+            get => this._GatewayDetailName;
 
             set
             {
@@ -118,7 +115,7 @@ namespace CmsData
         [Column(Name = "GatewayDetailValue", UpdateCheck = UpdateCheck.Never, Storage = "_GatewayDetailValue", AutoSync = AutoSync.OnInsert, DbType = "nvarchar NOT NULL")]
         public string GatewayDetailValue
         {
-            get { return this._GatewayDetailValue; }
+            get => this._GatewayDetailValue;
 
             set
             {
@@ -136,7 +133,7 @@ namespace CmsData
         [Column(Name = "IsDefault", UpdateCheck = UpdateCheck.Never, Storage = "_IsDefault", DbType = "bit NOT NULL", IsPrimaryKey = true)]
         public bool IsDefault
         {
-            get { return this._IsDefault; }
+            get => this._IsDefault;
 
             set
             {
@@ -154,7 +151,7 @@ namespace CmsData
         [Column(Name = "IsBoolean", UpdateCheck = UpdateCheck.Never, Storage = "_IsBoolean", DbType = "bit NOT NULL", IsPrimaryKey = true)]
         public bool IsBoolean
         {
-            get { return this._IsBoolean; }
+            get => this._IsBoolean;
 
             set
             {
@@ -177,14 +174,18 @@ namespace CmsData
         protected virtual void SendPropertyChanging()
         {
             if ((this.PropertyChanging != null))
+            {
                 this.PropertyChanging(this, emptyChangingEventArgs);
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void SendPropertyChanged(string propertyName)
         {
             if ((this.PropertyChanged != null))
+            {
                 this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
     }
 }

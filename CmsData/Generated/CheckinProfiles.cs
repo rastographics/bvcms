@@ -1,5 +1,4 @@
-﻿using CmsData.Infrastructure;
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
@@ -41,7 +40,7 @@ namespace CmsData
         [Column(Name = "CheckinProfileId", UpdateCheck = UpdateCheck.Never, Storage = "_CheckinProfileId", AutoSync = AutoSync.OnInsert, DbType = "int IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
         public int CheckinProfileId
         {
-            get { return this._CheckinProfileId; }
+            get => this._CheckinProfileId;
 
             set
             {
@@ -59,7 +58,7 @@ namespace CmsData
         [Column(Name = "Name", UpdateCheck = UpdateCheck.Never, Storage = "_Name", DbType = "nvarchar(100) NOT NULL UNIQUE")]
         public string Name
         {
-            get { return this._Name; }
+            get => this._Name;
 
             set
             {
@@ -82,9 +81,9 @@ namespace CmsData
         [Association(Name = "Checking_Profile_Settings_CP_FK", Storage = "_CheckinProfileSettings", OtherKey = "CheckinProfileId")]
         public EntitySet<CheckinProfileSettings> CheckinProfileSettings
         {
-            get { return this._CheckinProfileSettings; }
+            get => this._CheckinProfileSettings;
 
-            set { this._CheckinProfileSettings.Assign(value); }
+            set => this._CheckinProfileSettings.Assign(value);
         }
         #endregion
 
@@ -92,14 +91,18 @@ namespace CmsData
         protected virtual void SendPropertyChanging()
         {
             if ((this.PropertyChanging != null))
+            {
                 this.PropertyChanging(this, emptyChangingEventArgs);
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void SendPropertyChanged(string propertyName)
         {
             if ((this.PropertyChanged != null))
+            {
                 this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
 
         private void attach_CheckinProfileSettings(CheckinProfileSettings entity)
