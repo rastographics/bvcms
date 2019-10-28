@@ -158,7 +158,7 @@ namespace SharedTestFixtures
             return RandomNumber(2145550000, int.MaxValue).ToString();
         }
 
-        protected static int RandomNumber(int min = 0, int max = 65535)
+        public static int RandomNumber(int min = 0, int max = 65535)
         {
             return randomizer.Next(min, max);
         }
