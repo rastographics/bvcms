@@ -148,6 +148,9 @@ namespace CmsData
             toorg.RollSheetVisitorWks = frorg.RollSheetVisitorWks;
             toorg.GradeAgeStart = frorg.GradeAgeStart;
             toorg.DivisionId = frorg.DivisionId;
+            toorg.Description = frorg.Description;
+            toorg.BirthDayStart = frorg.BirthDayStart;
+            toorg.BirthDayEnd = frorg.BirthDayEnd;
         }
         public Organization CloneOrg(CMSDataContext db, int? divisionId)
         {
