@@ -9,7 +9,7 @@ namespace CmsData
     [Table(Name = "dbo.ChangeDetails")]
     public partial class ChangeDetail : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -21,13 +21,12 @@ namespace CmsData
 
         private string _After;
 
-
-
         private EntityRef<ChangeLog> _ChangeLog;
 
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -45,15 +44,13 @@ namespace CmsData
         partial void OnAfterChanged();
 
         #endregion
+
         public ChangeDetail()
         {
-
-
-            this._ChangeLog = default(EntityRef<ChangeLog>);
+            _ChangeLog = default(EntityRef<ChangeLog>);
 
             OnCreated();
         }
-
 
         #region Columns
 
@@ -61,95 +58,79 @@ namespace CmsData
         [IsForeignKey]
         public int Id
         {
-            get => this._Id;
+            get => _Id;
 
             set
             {
-                if (this._Id != value)
+                if (_Id != value)
                 {
-
-                    if (this._ChangeLog.HasLoadedOrAssignedValue)
+                    if (_ChangeLog.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._Id = value;
-                    this.SendPropertyChanged("Id");
-                    this.OnIdChanged();
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Field", UpdateCheck = UpdateCheck.Never, Storage = "_Field", DbType = "nvarchar(50) NOT NULL", IsPrimaryKey = true)]
         public string Field
         {
-            get => this._Field;
+            get => _Field;
 
             set
             {
-                if (this._Field != value)
+                if (_Field != value)
                 {
-
-                    this.OnFieldChanging(value);
-                    this.SendPropertyChanging();
-                    this._Field = value;
-                    this.SendPropertyChanged("Field");
-                    this.OnFieldChanged();
+                    OnFieldChanging(value);
+                    SendPropertyChanging();
+                    _Field = value;
+                    SendPropertyChanged("Field");
+                    OnFieldChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Before", UpdateCheck = UpdateCheck.Never, Storage = "_Before", DbType = "nvarchar")]
         public string Before
         {
-            get => this._Before;
+            get => _Before;
 
             set
             {
-                if (this._Before != value)
+                if (_Before != value)
                 {
-
-                    this.OnBeforeChanging(value);
-                    this.SendPropertyChanging();
-                    this._Before = value;
-                    this.SendPropertyChanged("Before");
-                    this.OnBeforeChanged();
+                    OnBeforeChanging(value);
+                    SendPropertyChanging();
+                    _Before = value;
+                    SendPropertyChanged("Before");
+                    OnBeforeChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "After", UpdateCheck = UpdateCheck.Never, Storage = "_After", DbType = "nvarchar")]
         public string After
         {
-            get => this._After;
+            get => _After;
 
             set
             {
-                if (this._After != value)
+                if (_After != value)
                 {
-
-                    this.OnAfterChanging(value);
-                    this.SendPropertyChanging();
-                    this._After = value;
-                    this.SendPropertyChanged("After");
-                    this.OnAfterChanged();
+                    OnAfterChanging(value);
+                    SendPropertyChanging();
+                    _After = value;
+                    SendPropertyChanged("After");
+                    OnAfterChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -162,67 +143,59 @@ namespace CmsData
         [Association(Name = "FK_ChangeDetails_ChangeLog", Storage = "_ChangeLog", ThisKey = "Id", IsForeignKey = true)]
         public ChangeLog ChangeLog
         {
-            get => this._ChangeLog.Entity;
+            get => _ChangeLog.Entity;
 
             set
             {
-                ChangeLog previousValue = this._ChangeLog.Entity;
+                ChangeLog previousValue = _ChangeLog.Entity;
                 if (((previousValue != value)
-                            || (this._ChangeLog.HasLoadedOrAssignedValue == false)))
+                            || (_ChangeLog.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._ChangeLog.Entity = null;
+                        _ChangeLog.Entity = null;
                         previousValue.ChangeDetails.Remove(this);
                     }
 
-                    this._ChangeLog.Entity = value;
+                    _ChangeLog.Entity = value;
                     if (value != null)
                     {
                         value.ChangeDetails.Add(this);
 
-                        this._Id = value.Id;
+                        _Id = value.Id;
 
                     }
 
                     else
                     {
-
-                        this._Id = default(int);
+                        _Id = default(int);
 
                     }
 
-                    this.SendPropertyChanged("ChangeLog");
+                    SendPropertyChanged("ChangeLog");
                 }
-
             }
-
         }
-
 
         #endregion
 
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-
     }
-
 }
-

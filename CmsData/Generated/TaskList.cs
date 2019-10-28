@@ -8,7 +8,7 @@ namespace CmsData
     [Table(Name = "dbo.TaskList")]
     public partial class TaskList : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -18,17 +18,16 @@ namespace CmsData
 
         private string _Name;
 
-
         private EntitySet<Task> _CoTasks;
 
         private EntitySet<TaskListOwner> _TaskListOwners;
 
         private EntitySet<Task> _Tasks;
 
-
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -43,87 +42,73 @@ namespace CmsData
         partial void OnNameChanged();
 
         #endregion
+
         public TaskList()
         {
+            _CoTasks = new EntitySet<Task>(new Action<Task>(attach_CoTasks), new Action<Task>(detach_CoTasks));
 
-            this._CoTasks = new EntitySet<Task>(new Action<Task>(this.attach_CoTasks), new Action<Task>(this.detach_CoTasks));
+            _TaskListOwners = new EntitySet<TaskListOwner>(new Action<TaskListOwner>(attach_TaskListOwners), new Action<TaskListOwner>(detach_TaskListOwners));
 
-            this._TaskListOwners = new EntitySet<TaskListOwner>(new Action<TaskListOwner>(this.attach_TaskListOwners), new Action<TaskListOwner>(this.detach_TaskListOwners));
-
-            this._Tasks = new EntitySet<Task>(new Action<Task>(this.attach_Tasks), new Action<Task>(this.detach_Tasks));
-
+            _Tasks = new EntitySet<Task>(new Action<Task>(attach_Tasks), new Action<Task>(detach_Tasks));
 
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "Id", UpdateCheck = UpdateCheck.Never, Storage = "_Id", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
         public int Id
         {
-            get => this._Id;
+            get => _Id;
 
             set
             {
-                if (this._Id != value)
+                if (_Id != value)
                 {
-
-                    this.OnIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._Id = value;
-                    this.SendPropertyChanged("Id");
-                    this.OnIdChanged();
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "CreatedBy", UpdateCheck = UpdateCheck.Never, Storage = "_CreatedBy", DbType = "int")]
         public int? CreatedBy
         {
-            get => this._CreatedBy;
+            get => _CreatedBy;
 
             set
             {
-                if (this._CreatedBy != value)
+                if (_CreatedBy != value)
                 {
-
-                    this.OnCreatedByChanging(value);
-                    this.SendPropertyChanging();
-                    this._CreatedBy = value;
-                    this.SendPropertyChanged("CreatedBy");
-                    this.OnCreatedByChanged();
+                    OnCreatedByChanging(value);
+                    SendPropertyChanging();
+                    _CreatedBy = value;
+                    SendPropertyChanged("CreatedBy");
+                    OnCreatedByChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Name", UpdateCheck = UpdateCheck.Never, Storage = "_Name", DbType = "nvarchar(50)")]
         public string Name
         {
-            get => this._Name;
+            get => _Name;
 
             set
             {
-                if (this._Name != value)
+                if (_Name != value)
                 {
-
-                    this.OnNameChanging(value);
-                    this.SendPropertyChanging();
-                    this._Name = value;
-                    this.SendPropertyChanged("Name");
-                    this.OnNameChanged();
+                    OnNameChanging(value);
+                    SendPropertyChanging();
+                    _Name = value;
+                    SendPropertyChanged("Name");
+                    OnNameChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -132,32 +117,29 @@ namespace CmsData
         [Association(Name = "CoTasks__CoTaskList", Storage = "_CoTasks", OtherKey = "CoListId")]
         public EntitySet<Task> CoTasks
            {
-               get => this._CoTasks;
+               get => _CoTasks;
 
-            set => this._CoTasks.Assign(value);
+            set => _CoTasks.Assign(value);
 
            }
-
 
         [Association(Name = "FK_TaskListOwners_TaskList", Storage = "_TaskListOwners", OtherKey = "TaskListId")]
         public EntitySet<TaskListOwner> TaskListOwners
            {
-               get => this._TaskListOwners;
+               get => _TaskListOwners;
 
-            set => this._TaskListOwners.Assign(value);
+            set => _TaskListOwners.Assign(value);
 
            }
-
 
         [Association(Name = "Tasks__TaskList", Storage = "_Tasks", OtherKey = "ListId")]
         public EntitySet<Task> Tasks
            {
-               get => this._Tasks;
+               get => _Tasks;
 
-            set => this._Tasks.Assign(value);
+            set => _Tasks.Assign(value);
 
            }
-
 
         #endregion
 
@@ -168,62 +150,55 @@ namespace CmsData
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
 
-
         private void attach_CoTasks(Task entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.CoTaskList = this;
         }
 
         private void detach_CoTasks(Task entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.CoTaskList = null;
         }
 
-
         private void attach_TaskListOwners(TaskListOwner entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.TaskList = this;
         }
 
         private void detach_TaskListOwners(TaskListOwner entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.TaskList = null;
         }
 
-
         private void attach_Tasks(Task entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.TaskList = this;
         }
 
         private void detach_Tasks(Task entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.TaskList = null;
         }
-
-
     }
-
 }
-

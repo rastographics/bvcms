@@ -7,7 +7,7 @@ namespace CmsData
     [Table(Name = "dbo.MeetingCategory")]
     public partial class MeetingCategory : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -24,6 +24,7 @@ namespace CmsData
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -44,125 +45,103 @@ namespace CmsData
         partial void OnIsExpiredChanged();
 
         #endregion
+
         public MeetingCategory()
         {
-
-
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "Id", UpdateCheck = UpdateCheck.Never, Storage = "_Id", AutoSync = AutoSync.OnInsert, DbType = "bigint NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
         public long Id
         {
-            get => this._Id;
+            get => _Id;
 
             set
             {
-                if (this._Id != value)
+                if (_Id != value)
                 {
-
-                    this.OnIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._Id = value;
-                    this.SendPropertyChanged("Id");
-                    this.OnIdChanged();
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Description", UpdateCheck = UpdateCheck.Never, Storage = "_Description", DbType = "nvarchar(100)")]
         public string Description
         {
-            get => this._Description;
+            get => _Description;
 
             set
             {
-                if (this._Description != value)
+                if (_Description != value)
                 {
-
-                    this.OnDescriptionChanging(value);
-                    this.SendPropertyChanging();
-                    this._Description = value;
-                    this.SendPropertyChanged("Description");
-                    this.OnDescriptionChanged();
+                    OnDescriptionChanging(value);
+                    SendPropertyChanging();
+                    _Description = value;
+                    SendPropertyChanged("Description");
+                    OnDescriptionChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "NotBeforeDate", UpdateCheck = UpdateCheck.Never, Storage = "_NotBeforeDate", DbType = "datetime")]
         public DateTime? NotBeforeDate
         {
-            get => this._NotBeforeDate;
+            get => _NotBeforeDate;
 
             set
             {
-                if (this._NotBeforeDate != value)
+                if (_NotBeforeDate != value)
                 {
-
-                    this.OnNotBeforeDateChanging(value);
-                    this.SendPropertyChanging();
-                    this._NotBeforeDate = value;
-                    this.SendPropertyChanged("NotBeforeDate");
-                    this.OnNotBeforeDateChanged();
+                    OnNotBeforeDateChanging(value);
+                    SendPropertyChanging();
+                    _NotBeforeDate = value;
+                    SendPropertyChanged("NotBeforeDate");
+                    OnNotBeforeDateChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "NotAfterDate", UpdateCheck = UpdateCheck.Never, Storage = "_NotAfterDate", DbType = "datetime")]
         public DateTime? NotAfterDate
         {
-            get => this._NotAfterDate;
+            get => _NotAfterDate;
 
             set
             {
-                if (this._NotAfterDate != value)
+                if (_NotAfterDate != value)
                 {
-
-                    this.OnNotAfterDateChanging(value);
-                    this.SendPropertyChanging();
-                    this._NotAfterDate = value;
-                    this.SendPropertyChanged("NotAfterDate");
-                    this.OnNotAfterDateChanged();
+                    OnNotAfterDateChanging(value);
+                    SendPropertyChanging();
+                    _NotAfterDate = value;
+                    SendPropertyChanged("NotAfterDate");
+                    OnNotAfterDateChanged();
                 }
-
             }
-
         }
 
         [Column(Name = "IsExpired", UpdateCheck = UpdateCheck.Never, Storage = "_IsExpired", DbType = "bit NOT NULL")]
         public bool IsExpired
         {
-            get => this._IsExpired;
+            get => _IsExpired;
 
             set
             {
-                if (this._IsExpired != value)
+                if (_IsExpired != value)
                 {
-
-                    this.OnIsExpiredChanging(value);
-                    this.SendPropertyChanging();
-                    this._IsExpired = value;
-                    this.SendPropertyChanged("IsExpired");
-                    this.OnIsExpiredChanged();
+                    OnIsExpiredChanging(value);
+                    SendPropertyChanging();
+                    _IsExpired = value;
+                    SendPropertyChanged("IsExpired");
+                    OnIsExpiredChanged();
                 }
-
             }
-
         }
-
-
 
         #endregion
 
@@ -177,23 +156,19 @@ namespace CmsData
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-
     }
-
 }
-

@@ -1,66 +1,48 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="ProspectCounts")]
-	public partial class ProspectCount
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private int _OrganizationId;
-		
-		private int? _Prospectcount;
-		
-		
-		public ProspectCount()
-		{
-		}
+    [Table(Name = "ProspectCounts")]
+    public partial class ProspectCount
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="OrganizationId", Storage="_OrganizationId", DbType="int NOT NULL")]
-		public int OrganizationId
-		{
-			get
-			{
-				return this._OrganizationId;
-			}
+        private int _OrganizationId;
 
-			set
-			{
-				if (this._OrganizationId != value)
-					this._OrganizationId = value;
-			}
+        private int? _Prospectcount;
 
-		}
+        public ProspectCount()
+        {
+        }
 
-		
-		[Column(Name="prospectcount", Storage="_Prospectcount", DbType="int")]
-		public int? Prospectcount
-		{
-			get
-			{
-				return this._Prospectcount;
-			}
+        [Column(Name = "OrganizationId", Storage = "_OrganizationId", DbType = "int NOT NULL")]
+        public int OrganizationId
+        {
+            get => _OrganizationId;
 
-			set
-			{
-				if (this._Prospectcount != value)
-					this._Prospectcount = value;
-			}
+            set
+            {
+                if (_OrganizationId != value)
+                {
+                    _OrganizationId = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "prospectcount", Storage = "_Prospectcount", DbType = "int")]
+        public int? Prospectcount
+        {
+            get => _Prospectcount;
 
-		
+            set
+            {
+                if (_Prospectcount != value)
+                {
+                    _Prospectcount = value;
+                }
+            }
+        }
     }
-
 }

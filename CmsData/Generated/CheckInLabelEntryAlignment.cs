@@ -7,7 +7,7 @@ namespace CmsData
     [Table(Name = "dbo.CheckInLabelEntryAlignment")]
     public partial class CheckInLabelEntryAlignment : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -17,11 +17,10 @@ namespace CmsData
 
         private string _NameY;
 
-
-
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -36,81 +35,67 @@ namespace CmsData
         partial void OnNameYChanged();
 
         #endregion
+
         public CheckInLabelEntryAlignment()
         {
-
-
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "id", UpdateCheck = UpdateCheck.Never, Storage = "_Id", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
         public int Id
         {
-            get => this._Id;
+            get => _Id;
 
             set
             {
-                if (this._Id != value)
+                if (_Id != value)
                 {
-
-                    this.OnIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._Id = value;
-                    this.SendPropertyChanged("Id");
-                    this.OnIdChanged();
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "nameX", UpdateCheck = UpdateCheck.Never, Storage = "_NameX", DbType = "nvarchar(10) NOT NULL")]
         public string NameX
         {
-            get => this._NameX;
+            get => _NameX;
 
             set
             {
-                if (this._NameX != value)
+                if (_NameX != value)
                 {
-
-                    this.OnNameXChanging(value);
-                    this.SendPropertyChanging();
-                    this._NameX = value;
-                    this.SendPropertyChanged("NameX");
-                    this.OnNameXChanged();
+                    OnNameXChanging(value);
+                    SendPropertyChanging();
+                    _NameX = value;
+                    SendPropertyChanged("NameX");
+                    OnNameXChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "nameY", UpdateCheck = UpdateCheck.Never, Storage = "_NameY", DbType = "nvarchar(10) NOT NULL")]
         public string NameY
         {
-            get => this._NameY;
+            get => _NameY;
 
             set
             {
-                if (this._NameY != value)
+                if (_NameY != value)
                 {
-
-                    this.OnNameYChanging(value);
-                    this.SendPropertyChanging();
-                    this._NameY = value;
-                    this.SendPropertyChanged("NameY");
-                    this.OnNameYChanged();
+                    OnNameYChanging(value);
+                    SendPropertyChanging();
+                    _NameY = value;
+                    SendPropertyChanged("NameY");
+                    OnNameYChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -125,23 +110,19 @@ namespace CmsData
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-
     }
-
 }
-

@@ -1,237 +1,192 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="OrganizationStructure")]
-	public partial class OrganizationStructure
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private string _Program;
-		
-		private string _Division;
-		
-		private string _OrgStatus;
-		
-		private string _Organization;
-		
-		private int? _Members;
-		
-		private int? _Previous;
-		
-		private int? _Vistors;
-		
-		private int? _Meetings;
-		
-		private int _ProgId;
-		
-		private int _DivId;
-		
-		private int _OrgId;
-		
-		
-		public OrganizationStructure()
-		{
-		}
+    [Table(Name = "OrganizationStructure")]
+    public partial class OrganizationStructure
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="Program", Storage="_Program", DbType="nvarchar(50)")]
-		public string Program
-		{
-			get
-			{
-				return this._Program;
-			}
+        private string _Program;
 
-			set
-			{
-				if (this._Program != value)
-					this._Program = value;
-			}
+        private string _Division;
 
-		}
+        private string _OrgStatus;
 
-		
-		[Column(Name="Division", Storage="_Division", DbType="nvarchar(50)")]
-		public string Division
-		{
-			get
-			{
-				return this._Division;
-			}
+        private string _Organization;
 
-			set
-			{
-				if (this._Division != value)
-					this._Division = value;
-			}
+        private int? _Members;
 
-		}
+        private int? _Previous;
 
-		
-		[Column(Name="OrgStatus", Storage="_OrgStatus", DbType="nvarchar(50)")]
-		public string OrgStatus
-		{
-			get
-			{
-				return this._OrgStatus;
-			}
+        private int? _Vistors;
 
-			set
-			{
-				if (this._OrgStatus != value)
-					this._OrgStatus = value;
-			}
+        private int? _Meetings;
 
-		}
+        private int _ProgId;
 
-		
-		[Column(Name="Organization", Storage="_Organization", DbType="nvarchar(100) NOT NULL")]
-		public string Organization
-		{
-			get
-			{
-				return this._Organization;
-			}
+        private int _DivId;
 
-			set
-			{
-				if (this._Organization != value)
-					this._Organization = value;
-			}
+        private int _OrgId;
 
-		}
+        public OrganizationStructure()
+        {
+        }
 
-		
-		[Column(Name="Members", Storage="_Members", DbType="int")]
-		public int? Members
-		{
-			get
-			{
-				return this._Members;
-			}
+        [Column(Name = "Program", Storage = "_Program", DbType = "nvarchar(50)")]
+        public string Program
+        {
+            get => _Program;
 
-			set
-			{
-				if (this._Members != value)
-					this._Members = value;
-			}
+            set
+            {
+                if (_Program != value)
+                {
+                    _Program = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "Division", Storage = "_Division", DbType = "nvarchar(50)")]
+        public string Division
+        {
+            get => _Division;
 
-		
-		[Column(Name="Previous", Storage="_Previous", DbType="int")]
-		public int? Previous
-		{
-			get
-			{
-				return this._Previous;
-			}
+            set
+            {
+                if (_Division != value)
+                {
+                    _Division = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._Previous != value)
-					this._Previous = value;
-			}
+        [Column(Name = "OrgStatus", Storage = "_OrgStatus", DbType = "nvarchar(50)")]
+        public string OrgStatus
+        {
+            get => _OrgStatus;
 
-		}
+            set
+            {
+                if (_OrgStatus != value)
+                {
+                    _OrgStatus = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="Vistors", Storage="_Vistors", DbType="int")]
-		public int? Vistors
-		{
-			get
-			{
-				return this._Vistors;
-			}
+        [Column(Name = "Organization", Storage = "_Organization", DbType = "nvarchar(100) NOT NULL")]
+        public string Organization
+        {
+            get => _Organization;
 
-			set
-			{
-				if (this._Vistors != value)
-					this._Vistors = value;
-			}
+            set
+            {
+                if (_Organization != value)
+                {
+                    _Organization = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "Members", Storage = "_Members", DbType = "int")]
+        public int? Members
+        {
+            get => _Members;
 
-		
-		[Column(Name="Meetings", Storage="_Meetings", DbType="int")]
-		public int? Meetings
-		{
-			get
-			{
-				return this._Meetings;
-			}
+            set
+            {
+                if (_Members != value)
+                {
+                    _Members = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._Meetings != value)
-					this._Meetings = value;
-			}
+        [Column(Name = "Previous", Storage = "_Previous", DbType = "int")]
+        public int? Previous
+        {
+            get => _Previous;
 
-		}
+            set
+            {
+                if (_Previous != value)
+                {
+                    _Previous = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="ProgId", Storage="_ProgId", DbType="int NOT NULL")]
-		public int ProgId
-		{
-			get
-			{
-				return this._ProgId;
-			}
+        [Column(Name = "Vistors", Storage = "_Vistors", DbType = "int")]
+        public int? Vistors
+        {
+            get => _Vistors;
 
-			set
-			{
-				if (this._ProgId != value)
-					this._ProgId = value;
-			}
+            set
+            {
+                if (_Vistors != value)
+                {
+                    _Vistors = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "Meetings", Storage = "_Meetings", DbType = "int")]
+        public int? Meetings
+        {
+            get => _Meetings;
 
-		
-		[Column(Name="DivId", Storage="_DivId", DbType="int NOT NULL")]
-		public int DivId
-		{
-			get
-			{
-				return this._DivId;
-			}
+            set
+            {
+                if (_Meetings != value)
+                {
+                    _Meetings = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._DivId != value)
-					this._DivId = value;
-			}
+        [Column(Name = "ProgId", Storage = "_ProgId", DbType = "int NOT NULL")]
+        public int ProgId
+        {
+            get => _ProgId;
 
-		}
+            set
+            {
+                if (_ProgId != value)
+                {
+                    _ProgId = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="OrgId", Storage="_OrgId", DbType="int NOT NULL")]
-		public int OrgId
-		{
-			get
-			{
-				return this._OrgId;
-			}
+        [Column(Name = "DivId", Storage = "_DivId", DbType = "int NOT NULL")]
+        public int DivId
+        {
+            get => _DivId;
 
-			set
-			{
-				if (this._OrgId != value)
-					this._OrgId = value;
-			}
+            set
+            {
+                if (_DivId != value)
+                {
+                    _DivId = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "OrgId", Storage = "_OrgId", DbType = "int NOT NULL")]
+        public int OrgId
+        {
+            get => _OrgId;
 
-		
+            set
+            {
+                if (_OrgId != value)
+                {
+                    _OrgId = value;
+                }
+            }
+        }
     }
-
 }

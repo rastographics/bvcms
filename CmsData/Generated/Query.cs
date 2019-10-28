@@ -7,7 +7,7 @@ namespace CmsData
     [Table(Name = "dbo.Query")]
     public partial class Query : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -29,11 +29,10 @@ namespace CmsData
 
         private Guid? _CopiedFrom;
 
-
-
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -66,213 +65,175 @@ namespace CmsData
         partial void OnCopiedFromChanged();
 
         #endregion
+
         public Query()
         {
-
-
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "QueryId", UpdateCheck = UpdateCheck.Never, Storage = "_QueryId", DbType = "uniqueidentifier NOT NULL", IsPrimaryKey = true)]
         public Guid QueryId
         {
-            get => this._QueryId;
+            get => _QueryId;
 
             set
             {
-                if (this._QueryId != value)
+                if (_QueryId != value)
                 {
-
-                    this.OnQueryIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._QueryId = value;
-                    this.SendPropertyChanged("QueryId");
-                    this.OnQueryIdChanged();
+                    OnQueryIdChanging(value);
+                    SendPropertyChanging();
+                    _QueryId = value;
+                    SendPropertyChanged("QueryId");
+                    OnQueryIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "text", UpdateCheck = UpdateCheck.Never, Storage = "_Text", DbType = "nvarchar")]
         public string Text
         {
-            get => this._Text;
+            get => _Text;
 
             set
             {
-                if (this._Text != value)
+                if (_Text != value)
                 {
-
-                    this.OnTextChanging(value);
-                    this.SendPropertyChanging();
-                    this._Text = value;
-                    this.SendPropertyChanged("Text");
-                    this.OnTextChanged();
+                    OnTextChanging(value);
+                    SendPropertyChanging();
+                    _Text = value;
+                    SendPropertyChanged("Text");
+                    OnTextChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "owner", UpdateCheck = UpdateCheck.Never, Storage = "_Owner", DbType = "nvarchar(50)")]
         public string Owner
         {
-            get => this._Owner;
+            get => _Owner;
 
             set
             {
-                if (this._Owner != value)
+                if (_Owner != value)
                 {
-
-                    this.OnOwnerChanging(value);
-                    this.SendPropertyChanging();
-                    this._Owner = value;
-                    this.SendPropertyChanged("Owner");
-                    this.OnOwnerChanged();
+                    OnOwnerChanging(value);
+                    SendPropertyChanging();
+                    _Owner = value;
+                    SendPropertyChanged("Owner");
+                    OnOwnerChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "created", UpdateCheck = UpdateCheck.Never, Storage = "_Created", DbType = "datetime")]
         public DateTime? Created
         {
-            get => this._Created;
+            get => _Created;
 
             set
             {
-                if (this._Created != value)
+                if (_Created != value)
                 {
-
-                    this.OnCreatedChanging(value);
-                    this.SendPropertyChanging();
-                    this._Created = value;
-                    this.SendPropertyChanged("Created");
-                    this.OnCreatedChanged();
+                    OnCreatedChanging(value);
+                    SendPropertyChanging();
+                    _Created = value;
+                    SendPropertyChanged("Created");
+                    OnCreatedChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "lastRun", UpdateCheck = UpdateCheck.Never, Storage = "_LastRun", DbType = "datetime")]
         public DateTime? LastRun
         {
-            get => this._LastRun;
+            get => _LastRun;
 
             set
             {
-                if (this._LastRun != value)
+                if (_LastRun != value)
                 {
-
-                    this.OnLastRunChanging(value);
-                    this.SendPropertyChanging();
-                    this._LastRun = value;
-                    this.SendPropertyChanged("LastRun");
-                    this.OnLastRunChanged();
+                    OnLastRunChanging(value);
+                    SendPropertyChanging();
+                    _LastRun = value;
+                    SendPropertyChanged("LastRun");
+                    OnLastRunChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "name", UpdateCheck = UpdateCheck.Never, Storage = "_Name", DbType = "nvarchar(100)")]
         public string Name
         {
-            get => this._Name;
+            get => _Name;
 
             set
             {
-                if (this._Name != value)
+                if (_Name != value)
                 {
-
-                    this.OnNameChanging(value);
-                    this.SendPropertyChanging();
-                    this._Name = value;
-                    this.SendPropertyChanged("Name");
-                    this.OnNameChanged();
+                    OnNameChanging(value);
+                    SendPropertyChanging();
+                    _Name = value;
+                    SendPropertyChanged("Name");
+                    OnNameChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ispublic", UpdateCheck = UpdateCheck.Never, Storage = "_Ispublic", DbType = "bit NOT NULL")]
         public bool Ispublic
         {
-            get => this._Ispublic;
+            get => _Ispublic;
 
             set
             {
-                if (this._Ispublic != value)
+                if (_Ispublic != value)
                 {
-
-                    this.OnIspublicChanging(value);
-                    this.SendPropertyChanging();
-                    this._Ispublic = value;
-                    this.SendPropertyChanged("Ispublic");
-                    this.OnIspublicChanged();
+                    OnIspublicChanging(value);
+                    SendPropertyChanging();
+                    _Ispublic = value;
+                    SendPropertyChanged("Ispublic");
+                    OnIspublicChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "runCount", UpdateCheck = UpdateCheck.Never, Storage = "_RunCount", DbType = "int NOT NULL")]
         public int RunCount
         {
-            get => this._RunCount;
+            get => _RunCount;
 
             set
             {
-                if (this._RunCount != value)
+                if (_RunCount != value)
                 {
-
-                    this.OnRunCountChanging(value);
-                    this.SendPropertyChanging();
-                    this._RunCount = value;
-                    this.SendPropertyChanged("RunCount");
-                    this.OnRunCountChanged();
+                    OnRunCountChanging(value);
+                    SendPropertyChanging();
+                    _RunCount = value;
+                    SendPropertyChanged("RunCount");
+                    OnRunCountChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "CopiedFrom", UpdateCheck = UpdateCheck.Never, Storage = "_CopiedFrom", DbType = "uniqueidentifier")]
         public Guid? CopiedFrom
         {
-            get => this._CopiedFrom;
+            get => _CopiedFrom;
 
             set
             {
-                if (this._CopiedFrom != value)
+                if (_CopiedFrom != value)
                 {
-
-                    this.OnCopiedFromChanging(value);
-                    this.SendPropertyChanging();
-                    this._CopiedFrom = value;
-                    this.SendPropertyChanged("CopiedFrom");
-                    this.OnCopiedFromChanged();
+                    OnCopiedFromChanging(value);
+                    SendPropertyChanging();
+                    _CopiedFrom = value;
+                    SendPropertyChanged("CopiedFrom");
+                    OnCopiedFromChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -287,23 +248,19 @@ namespace CmsData
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-
     }
-
 }
-

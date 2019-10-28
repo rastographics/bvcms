@@ -7,7 +7,7 @@ namespace CmsData
     [Table(Name = "dbo.OrgContent")]
     public partial class OrgContent : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -23,11 +23,10 @@ namespace CmsData
 
         private bool? _Landing;
 
-
-
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -51,147 +50,121 @@ namespace CmsData
         partial void OnLandingChanged();
 
         #endregion
+
         public OrgContent()
         {
-
-
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "Id", UpdateCheck = UpdateCheck.Never, Storage = "_Id", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
         public int Id
         {
-            get => this._Id;
+            get => _Id;
 
             set
             {
-                if (this._Id != value)
+                if (_Id != value)
                 {
-
-                    this.OnIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._Id = value;
-                    this.SendPropertyChanged("Id");
-                    this.OnIdChanged();
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "OrgId", UpdateCheck = UpdateCheck.Never, Storage = "_OrgId", DbType = "int")]
         public int? OrgId
         {
-            get => this._OrgId;
+            get => _OrgId;
 
             set
             {
-                if (this._OrgId != value)
+                if (_OrgId != value)
                 {
-
-                    this.OnOrgIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._OrgId = value;
-                    this.SendPropertyChanged("OrgId");
-                    this.OnOrgIdChanged();
+                    OnOrgIdChanging(value);
+                    SendPropertyChanging();
+                    _OrgId = value;
+                    SendPropertyChanged("OrgId");
+                    OnOrgIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "AllowInactive", UpdateCheck = UpdateCheck.Never, Storage = "_AllowInactive", DbType = "bit")]
         public bool? AllowInactive
         {
-            get => this._AllowInactive;
+            get => _AllowInactive;
 
             set
             {
-                if (this._AllowInactive != value)
+                if (_AllowInactive != value)
                 {
-
-                    this.OnAllowInactiveChanging(value);
-                    this.SendPropertyChanging();
-                    this._AllowInactive = value;
-                    this.SendPropertyChanged("AllowInactive");
-                    this.OnAllowInactiveChanged();
+                    OnAllowInactiveChanging(value);
+                    SendPropertyChanging();
+                    _AllowInactive = value;
+                    SendPropertyChanged("AllowInactive");
+                    OnAllowInactiveChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "PublicView", UpdateCheck = UpdateCheck.Never, Storage = "_PublicView", DbType = "bit")]
         public bool? PublicView
         {
-            get => this._PublicView;
+            get => _PublicView;
 
             set
             {
-                if (this._PublicView != value)
+                if (_PublicView != value)
                 {
-
-                    this.OnPublicViewChanging(value);
-                    this.SendPropertyChanging();
-                    this._PublicView = value;
-                    this.SendPropertyChanged("PublicView");
-                    this.OnPublicViewChanged();
+                    OnPublicViewChanging(value);
+                    SendPropertyChanging();
+                    _PublicView = value;
+                    SendPropertyChanged("PublicView");
+                    OnPublicViewChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ImageId", UpdateCheck = UpdateCheck.Never, Storage = "_ImageId", DbType = "int")]
         public int? ImageId
         {
-            get => this._ImageId;
+            get => _ImageId;
 
             set
             {
-                if (this._ImageId != value)
+                if (_ImageId != value)
                 {
-
-                    this.OnImageIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._ImageId = value;
-                    this.SendPropertyChanged("ImageId");
-                    this.OnImageIdChanged();
+                    OnImageIdChanging(value);
+                    SendPropertyChanging();
+                    _ImageId = value;
+                    SendPropertyChanged("ImageId");
+                    OnImageIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Landing", UpdateCheck = UpdateCheck.Never, Storage = "_Landing", DbType = "bit")]
         public bool? Landing
         {
-            get => this._Landing;
+            get => _Landing;
 
             set
             {
-                if (this._Landing != value)
+                if (_Landing != value)
                 {
-
-                    this.OnLandingChanging(value);
-                    this.SendPropertyChanging();
-                    this._Landing = value;
-                    this.SendPropertyChanged("Landing");
-                    this.OnLandingChanged();
+                    OnLandingChanging(value);
+                    SendPropertyChanging();
+                    _Landing = value;
+                    SendPropertyChanged("Landing");
+                    OnLandingChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -206,23 +179,19 @@ namespace CmsData
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-
     }
-
 }
-

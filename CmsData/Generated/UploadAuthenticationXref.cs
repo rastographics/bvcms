@@ -7,7 +7,7 @@ namespace CmsData
     [Table(Name = "disc.UploadAuthenticationXref")]
     public partial class UploadAuthenticationXref : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -15,11 +15,10 @@ namespace CmsData
 
         private string _Postsfor;
 
-
-
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -31,59 +30,49 @@ namespace CmsData
         partial void OnPostsforChanged();
 
         #endregion
+
         public UploadAuthenticationXref()
         {
-
-
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "postinguser", UpdateCheck = UpdateCheck.Never, Storage = "_Postinguser", DbType = "nvarchar(20) NOT NULL", IsPrimaryKey = true)]
         public string Postinguser
         {
-            get => this._Postinguser;
+            get => _Postinguser;
 
             set
             {
-                if (this._Postinguser != value)
+                if (_Postinguser != value)
                 {
-
-                    this.OnPostinguserChanging(value);
-                    this.SendPropertyChanging();
-                    this._Postinguser = value;
-                    this.SendPropertyChanged("Postinguser");
-                    this.OnPostinguserChanged();
+                    OnPostinguserChanging(value);
+                    SendPropertyChanging();
+                    _Postinguser = value;
+                    SendPropertyChanged("Postinguser");
+                    OnPostinguserChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "postsfor", UpdateCheck = UpdateCheck.Never, Storage = "_Postsfor", DbType = "nvarchar(20) NOT NULL", IsPrimaryKey = true)]
         public string Postsfor
         {
-            get => this._Postsfor;
+            get => _Postsfor;
 
             set
             {
-                if (this._Postsfor != value)
+                if (_Postsfor != value)
                 {
-
-                    this.OnPostsforChanging(value);
-                    this.SendPropertyChanging();
-                    this._Postsfor = value;
-                    this.SendPropertyChanged("Postsfor");
-                    this.OnPostsforChanged();
+                    OnPostsforChanging(value);
+                    SendPropertyChanging();
+                    _Postsfor = value;
+                    SendPropertyChanged("Postsfor");
+                    OnPostsforChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -98,23 +87,19 @@ namespace CmsData
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-
     }
-
 }
-

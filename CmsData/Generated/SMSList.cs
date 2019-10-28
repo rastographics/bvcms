@@ -9,7 +9,7 @@ namespace CmsData
     [Table(Name = "dbo.SMSList")]
     public partial class SMSList : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -31,9 +31,7 @@ namespace CmsData
 
         private string _Title;
 
-
         private EntitySet<SMSItem> _SMSItems;
-
 
         private EntityRef<Person> _Person;
 
@@ -42,6 +40,7 @@ namespace CmsData
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -74,231 +73,193 @@ namespace CmsData
         partial void OnTitleChanged();
 
         #endregion
+
         public SMSList()
         {
+            _SMSItems = new EntitySet<SMSItem>(new Action<SMSItem>(attach_SMSItems), new Action<SMSItem>(detach_SMSItems));
 
-            this._SMSItems = new EntitySet<SMSItem>(new Action<SMSItem>(this.attach_SMSItems), new Action<SMSItem>(this.detach_SMSItems));
+            _Person = default(EntityRef<Person>);
 
-
-            this._Person = default(EntityRef<Person>);
-
-            this._SMSGroup = default(EntityRef<SMSGroup>);
+            _SMSGroup = default(EntityRef<SMSGroup>);
 
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "ID", UpdateCheck = UpdateCheck.Never, Storage = "_Id", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
         public int Id
         {
-            get => this._Id;
+            get => _Id;
 
             set
             {
-                if (this._Id != value)
+                if (_Id != value)
                 {
-
-                    this.OnIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._Id = value;
-                    this.SendPropertyChanged("Id");
-                    this.OnIdChanged();
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Created", UpdateCheck = UpdateCheck.Never, Storage = "_Created", DbType = "datetime NOT NULL")]
         public DateTime Created
         {
-            get => this._Created;
+            get => _Created;
 
             set
             {
-                if (this._Created != value)
+                if (_Created != value)
                 {
-
-                    this.OnCreatedChanging(value);
-                    this.SendPropertyChanging();
-                    this._Created = value;
-                    this.SendPropertyChanged("Created");
-                    this.OnCreatedChanged();
+                    OnCreatedChanging(value);
+                    SendPropertyChanging();
+                    _Created = value;
+                    SendPropertyChanged("Created");
+                    OnCreatedChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "SenderID", UpdateCheck = UpdateCheck.Never, Storage = "_SenderID", DbType = "int NOT NULL")]
         [IsForeignKey]
         public int SenderID
         {
-            get => this._SenderID;
+            get => _SenderID;
 
             set
             {
-                if (this._SenderID != value)
+                if (_SenderID != value)
                 {
-
-                    if (this._Person.HasLoadedOrAssignedValue)
+                    if (_Person.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnSenderIDChanging(value);
-                    this.SendPropertyChanging();
-                    this._SenderID = value;
-                    this.SendPropertyChanged("SenderID");
-                    this.OnSenderIDChanged();
+                    OnSenderIDChanging(value);
+                    SendPropertyChanging();
+                    _SenderID = value;
+                    SendPropertyChanged("SenderID");
+                    OnSenderIDChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "SendAt", UpdateCheck = UpdateCheck.Never, Storage = "_SendAt", DbType = "datetime NOT NULL")]
         public DateTime SendAt
         {
-            get => this._SendAt;
+            get => _SendAt;
 
             set
             {
-                if (this._SendAt != value)
+                if (_SendAt != value)
                 {
-
-                    this.OnSendAtChanging(value);
-                    this.SendPropertyChanging();
-                    this._SendAt = value;
-                    this.SendPropertyChanged("SendAt");
-                    this.OnSendAtChanged();
+                    OnSendAtChanging(value);
+                    SendPropertyChanging();
+                    _SendAt = value;
+                    SendPropertyChanged("SendAt");
+                    OnSendAtChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "SendGroupID", UpdateCheck = UpdateCheck.Never, Storage = "_SendGroupID", DbType = "int NOT NULL")]
         [IsForeignKey]
         public int SendGroupID
         {
-            get => this._SendGroupID;
+            get => _SendGroupID;
 
             set
             {
-                if (this._SendGroupID != value)
+                if (_SendGroupID != value)
                 {
-
-                    if (this._SMSGroup.HasLoadedOrAssignedValue)
+                    if (_SMSGroup.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnSendGroupIDChanging(value);
-                    this.SendPropertyChanging();
-                    this._SendGroupID = value;
-                    this.SendPropertyChanged("SendGroupID");
-                    this.OnSendGroupIDChanged();
+                    OnSendGroupIDChanging(value);
+                    SendPropertyChanging();
+                    _SendGroupID = value;
+                    SendPropertyChanged("SendGroupID");
+                    OnSendGroupIDChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Message", UpdateCheck = UpdateCheck.Never, Storage = "_Message", DbType = "nvarchar(1600) NOT NULL")]
         public string Message
         {
-            get => this._Message;
+            get => _Message;
 
             set
             {
-                if (this._Message != value)
+                if (_Message != value)
                 {
-
-                    this.OnMessageChanging(value);
-                    this.SendPropertyChanging();
-                    this._Message = value;
-                    this.SendPropertyChanged("Message");
-                    this.OnMessageChanged();
+                    OnMessageChanging(value);
+                    SendPropertyChanging();
+                    _Message = value;
+                    SendPropertyChanged("Message");
+                    OnMessageChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "SentSMS", UpdateCheck = UpdateCheck.Never, Storage = "_SentSMS", DbType = "int NOT NULL")]
         public int SentSMS
         {
-            get => this._SentSMS;
+            get => _SentSMS;
 
             set
             {
-                if (this._SentSMS != value)
+                if (_SentSMS != value)
                 {
-
-                    this.OnSentSMSChanging(value);
-                    this.SendPropertyChanging();
-                    this._SentSMS = value;
-                    this.SendPropertyChanged("SentSMS");
-                    this.OnSentSMSChanged();
+                    OnSentSMSChanging(value);
+                    SendPropertyChanging();
+                    _SentSMS = value;
+                    SendPropertyChanged("SentSMS");
+                    OnSentSMSChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "SentNone", UpdateCheck = UpdateCheck.Never, Storage = "_SentNone", DbType = "int NOT NULL")]
         public int SentNone
         {
-            get => this._SentNone;
+            get => _SentNone;
 
             set
             {
-                if (this._SentNone != value)
+                if (_SentNone != value)
                 {
-
-                    this.OnSentNoneChanging(value);
-                    this.SendPropertyChanging();
-                    this._SentNone = value;
-                    this.SendPropertyChanged("SentNone");
-                    this.OnSentNoneChanged();
+                    OnSentNoneChanging(value);
+                    SendPropertyChanging();
+                    _SentNone = value;
+                    SendPropertyChanged("SentNone");
+                    OnSentNoneChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Title", UpdateCheck = UpdateCheck.Never, Storage = "_Title", DbType = "nvarchar(150) NOT NULL")]
         public string Title
         {
-            get => this._Title;
+            get => _Title;
 
             set
             {
-                if (this._Title != value)
+                if (_Title != value)
                 {
-
-                    this.OnTitleChanging(value);
-                    this.SendPropertyChanging();
-                    this._Title = value;
-                    this.SendPropertyChanged("Title");
-                    this.OnTitleChanged();
+                    OnTitleChanging(value);
+                    SendPropertyChanging();
+                    _Title = value;
+                    SendPropertyChanged("Title");
+                    OnTitleChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -307,12 +268,11 @@ namespace CmsData
         [Association(Name = "FK_SMSItems_SMSList", Storage = "_SMSItems", OtherKey = "ListID")]
         public EntitySet<SMSItem> SMSItems
            {
-               get => this._SMSItems;
+               get => _SMSItems;
 
-            set => this._SMSItems.Assign(value);
+            set => _SMSItems.Assign(value);
 
            }
-
 
         #endregion
 
@@ -321,122 +281,109 @@ namespace CmsData
         [Association(Name = "FK_SMSList_People", Storage = "_Person", ThisKey = "SenderID", IsForeignKey = true)]
         public Person Person
         {
-            get => this._Person.Entity;
+            get => _Person.Entity;
 
             set
             {
-                Person previousValue = this._Person.Entity;
+                Person previousValue = _Person.Entity;
                 if (((previousValue != value)
-                            || (this._Person.HasLoadedOrAssignedValue == false)))
+                            || (_Person.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._Person.Entity = null;
+                        _Person.Entity = null;
                         previousValue.SMSLists.Remove(this);
                     }
 
-                    this._Person.Entity = value;
+                    _Person.Entity = value;
                     if (value != null)
                     {
                         value.SMSLists.Add(this);
 
-                        this._SenderID = value.PeopleId;
+                        _SenderID = value.PeopleId;
 
                     }
 
                     else
                     {
-
-                        this._SenderID = default(int);
+                        _SenderID = default(int);
 
                     }
 
-                    this.SendPropertyChanged("Person");
+                    SendPropertyChanged("Person");
                 }
-
             }
-
         }
-
 
         [Association(Name = "FK_SMSList_SMSGroups", Storage = "_SMSGroup", ThisKey = "SendGroupID", IsForeignKey = true)]
         public SMSGroup SMSGroup
         {
-            get => this._SMSGroup.Entity;
+            get => _SMSGroup.Entity;
 
             set
             {
-                SMSGroup previousValue = this._SMSGroup.Entity;
+                SMSGroup previousValue = _SMSGroup.Entity;
                 if (((previousValue != value)
-                            || (this._SMSGroup.HasLoadedOrAssignedValue == false)))
+                            || (_SMSGroup.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._SMSGroup.Entity = null;
+                        _SMSGroup.Entity = null;
                         previousValue.SMSLists.Remove(this);
                     }
 
-                    this._SMSGroup.Entity = value;
+                    _SMSGroup.Entity = value;
                     if (value != null)
                     {
                         value.SMSLists.Add(this);
 
-                        this._SendGroupID = value.Id;
+                        _SendGroupID = value.Id;
 
                     }
 
                     else
                     {
-
-                        this._SendGroupID = default(int);
+                        _SendGroupID = default(int);
 
                     }
 
-                    this.SendPropertyChanged("SMSGroup");
+                    SendPropertyChanged("SMSGroup");
                 }
-
             }
-
         }
-
 
         #endregion
 
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
 
-
         private void attach_SMSItems(SMSItem entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.SMSList = this;
         }
 
         private void detach_SMSItems(SMSItem entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.SMSList = null;
         }
-
-
     }
-
 }
-

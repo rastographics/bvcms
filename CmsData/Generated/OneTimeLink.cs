@@ -7,7 +7,7 @@ namespace CmsData
     [Table(Name = "dbo.OneTimeLinks")]
     public partial class OneTimeLink : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -19,11 +19,10 @@ namespace CmsData
 
         private DateTime? _Expires;
 
-
-
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -41,103 +40,85 @@ namespace CmsData
         partial void OnExpiresChanged();
 
         #endregion
+
         public OneTimeLink()
         {
-
-
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "Id", UpdateCheck = UpdateCheck.Never, Storage = "_Id", DbType = "uniqueidentifier NOT NULL", IsPrimaryKey = true)]
         public Guid Id
         {
-            get => this._Id;
+            get => _Id;
 
             set
             {
-                if (this._Id != value)
+                if (_Id != value)
                 {
-
-                    this.OnIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._Id = value;
-                    this.SendPropertyChanged("Id");
-                    this.OnIdChanged();
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "querystring", UpdateCheck = UpdateCheck.Never, Storage = "_Querystring", DbType = "nvarchar(2000)")]
         public string Querystring
         {
-            get => this._Querystring;
+            get => _Querystring;
 
             set
             {
-                if (this._Querystring != value)
+                if (_Querystring != value)
                 {
-
-                    this.OnQuerystringChanging(value);
-                    this.SendPropertyChanging();
-                    this._Querystring = value;
-                    this.SendPropertyChanged("Querystring");
-                    this.OnQuerystringChanged();
+                    OnQuerystringChanging(value);
+                    SendPropertyChanging();
+                    _Querystring = value;
+                    SendPropertyChanged("Querystring");
+                    OnQuerystringChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "used", UpdateCheck = UpdateCheck.Never, Storage = "_Used", DbType = "bit NOT NULL")]
         public bool Used
         {
-            get => this._Used;
+            get => _Used;
 
             set
             {
-                if (this._Used != value)
+                if (_Used != value)
                 {
-
-                    this.OnUsedChanging(value);
-                    this.SendPropertyChanging();
-                    this._Used = value;
-                    this.SendPropertyChanged("Used");
-                    this.OnUsedChanged();
+                    OnUsedChanging(value);
+                    SendPropertyChanging();
+                    _Used = value;
+                    SendPropertyChanged("Used");
+                    OnUsedChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "expires", UpdateCheck = UpdateCheck.Never, Storage = "_Expires", DbType = "datetime")]
         public DateTime? Expires
         {
-            get => this._Expires;
+            get => _Expires;
 
             set
             {
-                if (this._Expires != value)
+                if (_Expires != value)
                 {
-
-                    this.OnExpiresChanging(value);
-                    this.SendPropertyChanging();
-                    this._Expires = value;
-                    this.SendPropertyChanged("Expires");
-                    this.OnExpiresChanged();
+                    OnExpiresChanging(value);
+                    SendPropertyChanging();
+                    _Expires = value;
+                    SendPropertyChanged("Expires");
+                    OnExpiresChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -152,23 +133,19 @@ namespace CmsData
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-
     }
-
 }
-

@@ -1,142 +1,112 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="SearchDivisions")]
-	public partial class SearchDivision
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private int _DivId;
-		
-		private string _Division;
-		
-		private string _Program;
-		
-		private string _Programs;
-		
-		private bool? _IsChecked;
-		
-		private bool? _IsMain;
-		
-		
-		public SearchDivision()
-		{
-		}
+    [Table(Name = "SearchDivisions")]
+    public partial class SearchDivision
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="DivId", Storage="_DivId", DbType="int NOT NULL")]
-		public int DivId
-		{
-			get
-			{
-				return this._DivId;
-			}
+        private int _DivId;
 
-			set
-			{
-				if (this._DivId != value)
-					this._DivId = value;
-			}
+        private string _Division;
 
-		}
+        private string _Program;
 
-		
-		[Column(Name="Division", Storage="_Division", DbType="nvarchar(50)")]
-		public string Division
-		{
-			get
-			{
-				return this._Division;
-			}
+        private string _Programs;
 
-			set
-			{
-				if (this._Division != value)
-					this._Division = value;
-			}
+        private bool? _IsChecked;
 
-		}
+        private bool? _IsMain;
 
-		
-		[Column(Name="Program", Storage="_Program", DbType="nvarchar(50)")]
-		public string Program
-		{
-			get
-			{
-				return this._Program;
-			}
+        public SearchDivision()
+        {
+        }
 
-			set
-			{
-				if (this._Program != value)
-					this._Program = value;
-			}
+        [Column(Name = "DivId", Storage = "_DivId", DbType = "int NOT NULL")]
+        public int DivId
+        {
+            get => _DivId;
 
-		}
+            set
+            {
+                if (_DivId != value)
+                {
+                    _DivId = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="Programs", Storage="_Programs", DbType="nvarchar")]
-		public string Programs
-		{
-			get
-			{
-				return this._Programs;
-			}
+        [Column(Name = "Division", Storage = "_Division", DbType = "nvarchar(50)")]
+        public string Division
+        {
+            get => _Division;
 
-			set
-			{
-				if (this._Programs != value)
-					this._Programs = value;
-			}
+            set
+            {
+                if (_Division != value)
+                {
+                    _Division = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "Program", Storage = "_Program", DbType = "nvarchar(50)")]
+        public string Program
+        {
+            get => _Program;
 
-		
-		[Column(Name="IsChecked", Storage="_IsChecked", DbType="bit")]
-		public bool? IsChecked
-		{
-			get
-			{
-				return this._IsChecked;
-			}
+            set
+            {
+                if (_Program != value)
+                {
+                    _Program = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._IsChecked != value)
-					this._IsChecked = value;
-			}
+        [Column(Name = "Programs", Storage = "_Programs", DbType = "nvarchar")]
+        public string Programs
+        {
+            get => _Programs;
 
-		}
+            set
+            {
+                if (_Programs != value)
+                {
+                    _Programs = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="IsMain", Storage="_IsMain", DbType="bit")]
-		public bool? IsMain
-		{
-			get
-			{
-				return this._IsMain;
-			}
+        [Column(Name = "IsChecked", Storage = "_IsChecked", DbType = "bit")]
+        public bool? IsChecked
+        {
+            get => _IsChecked;
 
-			set
-			{
-				if (this._IsMain != value)
-					this._IsMain = value;
-			}
+            set
+            {
+                if (_IsChecked != value)
+                {
+                    _IsChecked = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "IsMain", Storage = "_IsMain", DbType = "bit")]
+        public bool? IsMain
+        {
+            get => _IsMain;
 
-		
+            set
+            {
+                if (_IsMain != value)
+                {
+                    _IsMain = value;
+                }
+            }
+        }
     }
-
 }

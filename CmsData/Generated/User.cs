@@ -9,7 +9,7 @@ namespace CmsData
     [Table(Name = "dbo.Users")]
     public partial class User : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -71,7 +71,6 @@ namespace CmsData
 
         private DateTime? _ResetPasswordExpires;
 
-
         private EntitySet<Coupon> _Coupons;
 
         private EntitySet<MobileAppDevice> _MobileAppDevices;
@@ -86,12 +85,12 @@ namespace CmsData
 
         private EntitySet<VolunteerForm> _VolunteerFormsUploaded;
 
-
         private EntityRef<Person> _Person;
 
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -184,675 +183,557 @@ namespace CmsData
         partial void OnResetPasswordExpiresChanged();
 
         #endregion
+
         public User()
         {
+            _Coupons = new EntitySet<Coupon>(new Action<Coupon>(attach_Coupons), new Action<Coupon>(detach_Coupons));
 
-            this._Coupons = new EntitySet<Coupon>(new Action<Coupon>(this.attach_Coupons), new Action<Coupon>(this.detach_Coupons));
+            _MobileAppDevices = new EntitySet<MobileAppDevice>(new Action<MobileAppDevice>(attach_MobileAppDevices), new Action<MobileAppDevice>(detach_MobileAppDevices));
 
-            this._MobileAppDevices = new EntitySet<MobileAppDevice>(new Action<MobileAppDevice>(this.attach_MobileAppDevices), new Action<MobileAppDevice>(this.detach_MobileAppDevices));
+            _SMSGroupMembers = new EntitySet<SMSGroupMember>(new Action<SMSGroupMember>(attach_SMSGroupMembers), new Action<SMSGroupMember>(detach_SMSGroupMembers));
 
-            this._SMSGroupMembers = new EntitySet<SMSGroupMember>(new Action<SMSGroupMember>(this.attach_SMSGroupMembers), new Action<SMSGroupMember>(this.detach_SMSGroupMembers));
+            _Preferences = new EntitySet<Preference>(new Action<Preference>(attach_Preferences), new Action<Preference>(detach_Preferences));
 
-            this._Preferences = new EntitySet<Preference>(new Action<Preference>(this.attach_Preferences), new Action<Preference>(this.detach_Preferences));
+            _UserRoles = new EntitySet<UserRole>(new Action<UserRole>(attach_UserRoles), new Action<UserRole>(detach_UserRoles));
 
-            this._UserRoles = new EntitySet<UserRole>(new Action<UserRole>(this.attach_UserRoles), new Action<UserRole>(this.detach_UserRoles));
+            _ApiSessions = new EntitySet<ApiSession>(new Action<ApiSession>(attach_ApiSessions), new Action<ApiSession>(detach_ApiSessions));
 
-            this._ApiSessions = new EntitySet<ApiSession>(new Action<ApiSession>(this.attach_ApiSessions), new Action<ApiSession>(this.detach_ApiSessions));
+            _VolunteerFormsUploaded = new EntitySet<VolunteerForm>(new Action<VolunteerForm>(attach_VolunteerFormsUploaded), new Action<VolunteerForm>(detach_VolunteerFormsUploaded));
 
-            this._VolunteerFormsUploaded = new EntitySet<VolunteerForm>(new Action<VolunteerForm>(this.attach_VolunteerFormsUploaded), new Action<VolunteerForm>(this.detach_VolunteerFormsUploaded));
-
-
-            this._Person = default(EntityRef<Person>);
+            _Person = default(EntityRef<Person>);
 
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "UserId", UpdateCheck = UpdateCheck.Never, Storage = "_UserId", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
         public int UserId
         {
-            get => this._UserId;
+            get => _UserId;
 
             set
             {
-                if (this._UserId != value)
+                if (_UserId != value)
                 {
-
-                    this.OnUserIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._UserId = value;
-                    this.SendPropertyChanged("UserId");
-                    this.OnUserIdChanged();
+                    OnUserIdChanging(value);
+                    SendPropertyChanging();
+                    _UserId = value;
+                    SendPropertyChanged("UserId");
+                    OnUserIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "PeopleId", UpdateCheck = UpdateCheck.Never, Storage = "_PeopleId", DbType = "int")]
         [IsForeignKey]
         public int? PeopleId
         {
-            get => this._PeopleId;
+            get => _PeopleId;
 
             set
             {
-                if (this._PeopleId != value)
+                if (_PeopleId != value)
                 {
-
-                    if (this._Person.HasLoadedOrAssignedValue)
+                    if (_Person.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnPeopleIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._PeopleId = value;
-                    this.SendPropertyChanged("PeopleId");
-                    this.OnPeopleIdChanged();
+                    OnPeopleIdChanging(value);
+                    SendPropertyChanging();
+                    _PeopleId = value;
+                    SendPropertyChanged("PeopleId");
+                    OnPeopleIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Username", UpdateCheck = UpdateCheck.Never, Storage = "_Username", DbType = "nvarchar(50) NOT NULL")]
         public string Username
         {
-            get => this._Username;
+            get => _Username;
 
             set
             {
-                if (this._Username != value)
+                if (_Username != value)
                 {
-
-                    this.OnUsernameChanging(value);
-                    this.SendPropertyChanging();
-                    this._Username = value;
-                    this.SendPropertyChanged("Username");
-                    this.OnUsernameChanged();
+                    OnUsernameChanging(value);
+                    SendPropertyChanging();
+                    _Username = value;
+                    SendPropertyChanged("Username");
+                    OnUsernameChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Comment", UpdateCheck = UpdateCheck.Never, Storage = "_Comment", DbType = "nvarchar(255)")]
         public string Comment
         {
-            get => this._Comment;
+            get => _Comment;
 
             set
             {
-                if (this._Comment != value)
+                if (_Comment != value)
                 {
-
-                    this.OnCommentChanging(value);
-                    this.SendPropertyChanging();
-                    this._Comment = value;
-                    this.SendPropertyChanged("Comment");
-                    this.OnCommentChanged();
+                    OnCommentChanging(value);
+                    SendPropertyChanging();
+                    _Comment = value;
+                    SendPropertyChanged("Comment");
+                    OnCommentChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Password", UpdateCheck = UpdateCheck.Never, Storage = "_Password", DbType = "nvarchar(128) NOT NULL")]
         public string Password
         {
-            get => this._Password;
+            get => _Password;
 
             set
             {
-                if (this._Password != value)
+                if (_Password != value)
                 {
-
-                    this.OnPasswordChanging(value);
-                    this.SendPropertyChanging();
-                    this._Password = value;
-                    this.SendPropertyChanged("Password");
-                    this.OnPasswordChanged();
+                    OnPasswordChanging(value);
+                    SendPropertyChanging();
+                    _Password = value;
+                    SendPropertyChanged("Password");
+                    OnPasswordChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "PasswordQuestion", UpdateCheck = UpdateCheck.Never, Storage = "_PasswordQuestion", DbType = "nvarchar(255)")]
         public string PasswordQuestion
         {
-            get => this._PasswordQuestion;
+            get => _PasswordQuestion;
 
             set
             {
-                if (this._PasswordQuestion != value)
+                if (_PasswordQuestion != value)
                 {
-
-                    this.OnPasswordQuestionChanging(value);
-                    this.SendPropertyChanging();
-                    this._PasswordQuestion = value;
-                    this.SendPropertyChanged("PasswordQuestion");
-                    this.OnPasswordQuestionChanged();
+                    OnPasswordQuestionChanging(value);
+                    SendPropertyChanging();
+                    _PasswordQuestion = value;
+                    SendPropertyChanged("PasswordQuestion");
+                    OnPasswordQuestionChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "PasswordAnswer", UpdateCheck = UpdateCheck.Never, Storage = "_PasswordAnswer", DbType = "nvarchar(255)")]
         public string PasswordAnswer
         {
-            get => this._PasswordAnswer;
+            get => _PasswordAnswer;
 
             set
             {
-                if (this._PasswordAnswer != value)
+                if (_PasswordAnswer != value)
                 {
-
-                    this.OnPasswordAnswerChanging(value);
-                    this.SendPropertyChanging();
-                    this._PasswordAnswer = value;
-                    this.SendPropertyChanged("PasswordAnswer");
-                    this.OnPasswordAnswerChanged();
+                    OnPasswordAnswerChanging(value);
+                    SendPropertyChanging();
+                    _PasswordAnswer = value;
+                    SendPropertyChanged("PasswordAnswer");
+                    OnPasswordAnswerChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "IsApproved", UpdateCheck = UpdateCheck.Never, Storage = "_IsApproved", DbType = "bit NOT NULL")]
         public bool IsApproved
         {
-            get => this._IsApproved;
+            get => _IsApproved;
 
             set
             {
-                if (this._IsApproved != value)
+                if (_IsApproved != value)
                 {
-
-                    this.OnIsApprovedChanging(value);
-                    this.SendPropertyChanging();
-                    this._IsApproved = value;
-                    this.SendPropertyChanged("IsApproved");
-                    this.OnIsApprovedChanged();
+                    OnIsApprovedChanging(value);
+                    SendPropertyChanging();
+                    _IsApproved = value;
+                    SendPropertyChanged("IsApproved");
+                    OnIsApprovedChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "LastActivityDate", UpdateCheck = UpdateCheck.Never, Storage = "_LastActivityDate", DbType = "datetime")]
         public DateTime? LastActivityDate
         {
-            get => this._LastActivityDate;
+            get => _LastActivityDate;
 
             set
             {
-                if (this._LastActivityDate != value)
+                if (_LastActivityDate != value)
                 {
-
-                    this.OnLastActivityDateChanging(value);
-                    this.SendPropertyChanging();
-                    this._LastActivityDate = value;
-                    this.SendPropertyChanged("LastActivityDate");
-                    this.OnLastActivityDateChanged();
+                    OnLastActivityDateChanging(value);
+                    SendPropertyChanging();
+                    _LastActivityDate = value;
+                    SendPropertyChanged("LastActivityDate");
+                    OnLastActivityDateChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "LastLoginDate", UpdateCheck = UpdateCheck.Never, Storage = "_LastLoginDate", DbType = "datetime")]
         public DateTime? LastLoginDate
         {
-            get => this._LastLoginDate;
+            get => _LastLoginDate;
 
             set
             {
-                if (this._LastLoginDate != value)
+                if (_LastLoginDate != value)
                 {
-
-                    this.OnLastLoginDateChanging(value);
-                    this.SendPropertyChanging();
-                    this._LastLoginDate = value;
-                    this.SendPropertyChanged("LastLoginDate");
-                    this.OnLastLoginDateChanged();
+                    OnLastLoginDateChanging(value);
+                    SendPropertyChanging();
+                    _LastLoginDate = value;
+                    SendPropertyChanged("LastLoginDate");
+                    OnLastLoginDateChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "LastPasswordChangedDate", UpdateCheck = UpdateCheck.Never, Storage = "_LastPasswordChangedDate", DbType = "datetime")]
         public DateTime? LastPasswordChangedDate
         {
-            get => this._LastPasswordChangedDate;
+            get => _LastPasswordChangedDate;
 
             set
             {
-                if (this._LastPasswordChangedDate != value)
+                if (_LastPasswordChangedDate != value)
                 {
-
-                    this.OnLastPasswordChangedDateChanging(value);
-                    this.SendPropertyChanging();
-                    this._LastPasswordChangedDate = value;
-                    this.SendPropertyChanged("LastPasswordChangedDate");
-                    this.OnLastPasswordChangedDateChanged();
+                    OnLastPasswordChangedDateChanging(value);
+                    SendPropertyChanging();
+                    _LastPasswordChangedDate = value;
+                    SendPropertyChanged("LastPasswordChangedDate");
+                    OnLastPasswordChangedDateChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "CreationDate", UpdateCheck = UpdateCheck.Never, Storage = "_CreationDate", DbType = "datetime")]
         public DateTime? CreationDate
         {
-            get => this._CreationDate;
+            get => _CreationDate;
 
             set
             {
-                if (this._CreationDate != value)
+                if (_CreationDate != value)
                 {
-
-                    this.OnCreationDateChanging(value);
-                    this.SendPropertyChanging();
-                    this._CreationDate = value;
-                    this.SendPropertyChanged("CreationDate");
-                    this.OnCreationDateChanged();
+                    OnCreationDateChanging(value);
+                    SendPropertyChanging();
+                    _CreationDate = value;
+                    SendPropertyChanged("CreationDate");
+                    OnCreationDateChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "IsLockedOut", UpdateCheck = UpdateCheck.Never, Storage = "_IsLockedOut", DbType = "bit NOT NULL")]
         public bool IsLockedOut
         {
-            get => this._IsLockedOut;
+            get => _IsLockedOut;
 
             set
             {
-                if (this._IsLockedOut != value)
+                if (_IsLockedOut != value)
                 {
-
-                    this.OnIsLockedOutChanging(value);
-                    this.SendPropertyChanging();
-                    this._IsLockedOut = value;
-                    this.SendPropertyChanged("IsLockedOut");
-                    this.OnIsLockedOutChanged();
+                    OnIsLockedOutChanging(value);
+                    SendPropertyChanging();
+                    _IsLockedOut = value;
+                    SendPropertyChanged("IsLockedOut");
+                    OnIsLockedOutChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "LastLockedOutDate", UpdateCheck = UpdateCheck.Never, Storage = "_LastLockedOutDate", DbType = "datetime")]
         public DateTime? LastLockedOutDate
         {
-            get => this._LastLockedOutDate;
+            get => _LastLockedOutDate;
 
             set
             {
-                if (this._LastLockedOutDate != value)
+                if (_LastLockedOutDate != value)
                 {
-
-                    this.OnLastLockedOutDateChanging(value);
-                    this.SendPropertyChanging();
-                    this._LastLockedOutDate = value;
-                    this.SendPropertyChanged("LastLockedOutDate");
-                    this.OnLastLockedOutDateChanged();
+                    OnLastLockedOutDateChanging(value);
+                    SendPropertyChanging();
+                    _LastLockedOutDate = value;
+                    SendPropertyChanged("LastLockedOutDate");
+                    OnLastLockedOutDateChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "FailedPasswordAttemptCount", UpdateCheck = UpdateCheck.Never, Storage = "_FailedPasswordAttemptCount", DbType = "int NOT NULL")]
         public int FailedPasswordAttemptCount
         {
-            get => this._FailedPasswordAttemptCount;
+            get => _FailedPasswordAttemptCount;
 
             set
             {
-                if (this._FailedPasswordAttemptCount != value)
+                if (_FailedPasswordAttemptCount != value)
                 {
-
-                    this.OnFailedPasswordAttemptCountChanging(value);
-                    this.SendPropertyChanging();
-                    this._FailedPasswordAttemptCount = value;
-                    this.SendPropertyChanged("FailedPasswordAttemptCount");
-                    this.OnFailedPasswordAttemptCountChanged();
+                    OnFailedPasswordAttemptCountChanging(value);
+                    SendPropertyChanging();
+                    _FailedPasswordAttemptCount = value;
+                    SendPropertyChanged("FailedPasswordAttemptCount");
+                    OnFailedPasswordAttemptCountChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "FailedPasswordAttemptWindowStart", UpdateCheck = UpdateCheck.Never, Storage = "_FailedPasswordAttemptWindowStart", DbType = "datetime")]
         public DateTime? FailedPasswordAttemptWindowStart
         {
-            get => this._FailedPasswordAttemptWindowStart;
+            get => _FailedPasswordAttemptWindowStart;
 
             set
             {
-                if (this._FailedPasswordAttemptWindowStart != value)
+                if (_FailedPasswordAttemptWindowStart != value)
                 {
-
-                    this.OnFailedPasswordAttemptWindowStartChanging(value);
-                    this.SendPropertyChanging();
-                    this._FailedPasswordAttemptWindowStart = value;
-                    this.SendPropertyChanged("FailedPasswordAttemptWindowStart");
-                    this.OnFailedPasswordAttemptWindowStartChanged();
+                    OnFailedPasswordAttemptWindowStartChanging(value);
+                    SendPropertyChanging();
+                    _FailedPasswordAttemptWindowStart = value;
+                    SendPropertyChanged("FailedPasswordAttemptWindowStart");
+                    OnFailedPasswordAttemptWindowStartChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "FailedPasswordAnswerAttemptCount", UpdateCheck = UpdateCheck.Never, Storage = "_FailedPasswordAnswerAttemptCount", DbType = "int NOT NULL")]
         public int FailedPasswordAnswerAttemptCount
         {
-            get => this._FailedPasswordAnswerAttemptCount;
+            get => _FailedPasswordAnswerAttemptCount;
 
             set
             {
-                if (this._FailedPasswordAnswerAttemptCount != value)
+                if (_FailedPasswordAnswerAttemptCount != value)
                 {
-
-                    this.OnFailedPasswordAnswerAttemptCountChanging(value);
-                    this.SendPropertyChanging();
-                    this._FailedPasswordAnswerAttemptCount = value;
-                    this.SendPropertyChanged("FailedPasswordAnswerAttemptCount");
-                    this.OnFailedPasswordAnswerAttemptCountChanged();
+                    OnFailedPasswordAnswerAttemptCountChanging(value);
+                    SendPropertyChanging();
+                    _FailedPasswordAnswerAttemptCount = value;
+                    SendPropertyChanged("FailedPasswordAnswerAttemptCount");
+                    OnFailedPasswordAnswerAttemptCountChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "FailedPasswordAnswerAttemptWindowStart", UpdateCheck = UpdateCheck.Never, Storage = "_FailedPasswordAnswerAttemptWindowStart", DbType = "datetime")]
         public DateTime? FailedPasswordAnswerAttemptWindowStart
         {
-            get => this._FailedPasswordAnswerAttemptWindowStart;
+            get => _FailedPasswordAnswerAttemptWindowStart;
 
             set
             {
-                if (this._FailedPasswordAnswerAttemptWindowStart != value)
+                if (_FailedPasswordAnswerAttemptWindowStart != value)
                 {
-
-                    this.OnFailedPasswordAnswerAttemptWindowStartChanging(value);
-                    this.SendPropertyChanging();
-                    this._FailedPasswordAnswerAttemptWindowStart = value;
-                    this.SendPropertyChanged("FailedPasswordAnswerAttemptWindowStart");
-                    this.OnFailedPasswordAnswerAttemptWindowStartChanged();
+                    OnFailedPasswordAnswerAttemptWindowStartChanging(value);
+                    SendPropertyChanging();
+                    _FailedPasswordAnswerAttemptWindowStart = value;
+                    SendPropertyChanged("FailedPasswordAnswerAttemptWindowStart");
+                    OnFailedPasswordAnswerAttemptWindowStartChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "EmailAddress", UpdateCheck = UpdateCheck.Never, Storage = "_EmailAddress", DbType = "nvarchar(100)", IsDbGenerated = true)]
         public string EmailAddress
         {
-            get => this._EmailAddress;
+            get => _EmailAddress;
 
             set
             {
-                if (this._EmailAddress != value)
+                if (_EmailAddress != value)
                 {
-
-                    this.OnEmailAddressChanging(value);
-                    this.SendPropertyChanging();
-                    this._EmailAddress = value;
-                    this.SendPropertyChanged("EmailAddress");
-                    this.OnEmailAddressChanged();
+                    OnEmailAddressChanging(value);
+                    SendPropertyChanging();
+                    _EmailAddress = value;
+                    SendPropertyChanged("EmailAddress");
+                    OnEmailAddressChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ItemsInGrid", UpdateCheck = UpdateCheck.Never, Storage = "_ItemsInGrid", DbType = "int")]
         public int? ItemsInGrid
         {
-            get => this._ItemsInGrid;
+            get => _ItemsInGrid;
 
             set
             {
-                if (this._ItemsInGrid != value)
+                if (_ItemsInGrid != value)
                 {
-
-                    this.OnItemsInGridChanging(value);
-                    this.SendPropertyChanging();
-                    this._ItemsInGrid = value;
-                    this.SendPropertyChanged("ItemsInGrid");
-                    this.OnItemsInGridChanged();
+                    OnItemsInGridChanging(value);
+                    SendPropertyChanging();
+                    _ItemsInGrid = value;
+                    SendPropertyChanged("ItemsInGrid");
+                    OnItemsInGridChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "CurrentCart", UpdateCheck = UpdateCheck.Never, Storage = "_CurrentCart", DbType = "nvarchar(100)")]
         public string CurrentCart
         {
-            get => this._CurrentCart;
+            get => _CurrentCart;
 
             set
             {
-                if (this._CurrentCart != value)
+                if (_CurrentCart != value)
                 {
-
-                    this.OnCurrentCartChanging(value);
-                    this.SendPropertyChanging();
-                    this._CurrentCart = value;
-                    this.SendPropertyChanged("CurrentCart");
-                    this.OnCurrentCartChanged();
+                    OnCurrentCartChanging(value);
+                    SendPropertyChanging();
+                    _CurrentCart = value;
+                    SendPropertyChanged("CurrentCart");
+                    OnCurrentCartChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "MustChangePassword", UpdateCheck = UpdateCheck.Never, Storage = "_MustChangePassword", DbType = "bit NOT NULL")]
         public bool MustChangePassword
         {
-            get => this._MustChangePassword;
+            get => _MustChangePassword;
 
             set
             {
-                if (this._MustChangePassword != value)
+                if (_MustChangePassword != value)
                 {
-
-                    this.OnMustChangePasswordChanging(value);
-                    this.SendPropertyChanging();
-                    this._MustChangePassword = value;
-                    this.SendPropertyChanged("MustChangePassword");
-                    this.OnMustChangePasswordChanged();
+                    OnMustChangePasswordChanging(value);
+                    SendPropertyChanging();
+                    _MustChangePassword = value;
+                    SendPropertyChanged("MustChangePassword");
+                    OnMustChangePasswordChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Host", UpdateCheck = UpdateCheck.Never, Storage = "_Host", DbType = "nvarchar(100)")]
         public string Host
         {
-            get => this._Host;
+            get => _Host;
 
             set
             {
-                if (this._Host != value)
+                if (_Host != value)
                 {
-
-                    this.OnHostChanging(value);
-                    this.SendPropertyChanging();
-                    this._Host = value;
-                    this.SendPropertyChanged("Host");
-                    this.OnHostChanged();
+                    OnHostChanging(value);
+                    SendPropertyChanging();
+                    _Host = value;
+                    SendPropertyChanged("Host");
+                    OnHostChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "TempPassword", UpdateCheck = UpdateCheck.Never, Storage = "_TempPassword", DbType = "nvarchar(128)")]
         public string TempPassword
         {
-            get => this._TempPassword;
+            get => _TempPassword;
 
             set
             {
-                if (this._TempPassword != value)
+                if (_TempPassword != value)
                 {
-
-                    this.OnTempPasswordChanging(value);
-                    this.SendPropertyChanging();
-                    this._TempPassword = value;
-                    this.SendPropertyChanged("TempPassword");
-                    this.OnTempPasswordChanged();
+                    OnTempPasswordChanging(value);
+                    SendPropertyChanging();
+                    _TempPassword = value;
+                    SendPropertyChanged("TempPassword");
+                    OnTempPasswordChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Name", UpdateCheck = UpdateCheck.Never, Storage = "_Name", DbType = "nvarchar(50)")]
         public string Name
         {
-            get => this._Name;
+            get => _Name;
 
             set
             {
-                if (this._Name != value)
+                if (_Name != value)
                 {
-
-                    this.OnNameChanging(value);
-                    this.SendPropertyChanging();
-                    this._Name = value;
-                    this.SendPropertyChanged("Name");
-                    this.OnNameChanged();
+                    OnNameChanging(value);
+                    SendPropertyChanging();
+                    _Name = value;
+                    SendPropertyChanged("Name");
+                    OnNameChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Name2", UpdateCheck = UpdateCheck.Never, Storage = "_Name2", DbType = "nvarchar(50)")]
         public string Name2
         {
-            get => this._Name2;
+            get => _Name2;
 
             set
             {
-                if (this._Name2 != value)
+                if (_Name2 != value)
                 {
-
-                    this.OnName2Changing(value);
-                    this.SendPropertyChanging();
-                    this._Name2 = value;
-                    this.SendPropertyChanged("Name2");
-                    this.OnName2Changed();
+                    OnName2Changing(value);
+                    SendPropertyChanging();
+                    _Name2 = value;
+                    SendPropertyChanged("Name2");
+                    OnName2Changed();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ResetPasswordCode", UpdateCheck = UpdateCheck.Never, Storage = "_ResetPasswordCode", DbType = "uniqueidentifier")]
         public Guid? ResetPasswordCode
         {
-            get => this._ResetPasswordCode;
+            get => _ResetPasswordCode;
 
             set
             {
-                if (this._ResetPasswordCode != value)
+                if (_ResetPasswordCode != value)
                 {
-
-                    this.OnResetPasswordCodeChanging(value);
-                    this.SendPropertyChanging();
-                    this._ResetPasswordCode = value;
-                    this.SendPropertyChanged("ResetPasswordCode");
-                    this.OnResetPasswordCodeChanged();
+                    OnResetPasswordCodeChanging(value);
+                    SendPropertyChanging();
+                    _ResetPasswordCode = value;
+                    SendPropertyChanged("ResetPasswordCode");
+                    OnResetPasswordCodeChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "DefaultGroup", UpdateCheck = UpdateCheck.Never, Storage = "_DefaultGroup", DbType = "nvarchar(50)")]
         public string DefaultGroup
         {
-            get => this._DefaultGroup;
+            get => _DefaultGroup;
 
             set
             {
-                if (this._DefaultGroup != value)
+                if (_DefaultGroup != value)
                 {
-
-                    this.OnDefaultGroupChanging(value);
-                    this.SendPropertyChanging();
-                    this._DefaultGroup = value;
-                    this.SendPropertyChanged("DefaultGroup");
-                    this.OnDefaultGroupChanged();
+                    OnDefaultGroupChanging(value);
+                    SendPropertyChanging();
+                    _DefaultGroup = value;
+                    SendPropertyChanged("DefaultGroup");
+                    OnDefaultGroupChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ResetPasswordExpires", UpdateCheck = UpdateCheck.Never, Storage = "_ResetPasswordExpires", DbType = "datetime")]
         public DateTime? ResetPasswordExpires
         {
-            get => this._ResetPasswordExpires;
+            get => _ResetPasswordExpires;
 
             set
             {
-                if (this._ResetPasswordExpires != value)
+                if (_ResetPasswordExpires != value)
                 {
-
-                    this.OnResetPasswordExpiresChanging(value);
-                    this.SendPropertyChanging();
-                    this._ResetPasswordExpires = value;
-                    this.SendPropertyChanged("ResetPasswordExpires");
-                    this.OnResetPasswordExpiresChanged();
+                    OnResetPasswordExpiresChanging(value);
+                    SendPropertyChanging();
+                    _ResetPasswordExpires = value;
+                    SendPropertyChanged("ResetPasswordExpires");
+                    OnResetPasswordExpiresChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -861,72 +742,65 @@ namespace CmsData
         [Association(Name = "FK_Coupons_Users", Storage = "_Coupons", OtherKey = "UserId")]
         public EntitySet<Coupon> Coupons
            {
-               get => this._Coupons;
+               get => _Coupons;
 
-            set => this._Coupons.Assign(value);
+            set => _Coupons.Assign(value);
 
            }
-
 
         [Association(Name = "FK_MobileAppDevices_Users", Storage = "_MobileAppDevices", OtherKey = "UserID")]
         public EntitySet<MobileAppDevice> MobileAppDevices
            {
-               get => this._MobileAppDevices;
+               get => _MobileAppDevices;
 
-            set => this._MobileAppDevices.Assign(value);
+            set => _MobileAppDevices.Assign(value);
 
            }
-
 
         [Association(Name = "FK_SMSGroupMembers_Users", Storage = "_SMSGroupMembers", OtherKey = "UserID")]
         public EntitySet<SMSGroupMember> SMSGroupMembers
            {
-               get => this._SMSGroupMembers;
+               get => _SMSGroupMembers;
 
-            set => this._SMSGroupMembers.Assign(value);
+            set => _SMSGroupMembers.Assign(value);
 
            }
-
 
         [Association(Name = "FK_UserPreferences_Users", Storage = "_Preferences", OtherKey = "UserId")]
         public EntitySet<Preference> Preferences
            {
-               get => this._Preferences;
+               get => _Preferences;
 
-            set => this._Preferences.Assign(value);
+            set => _Preferences.Assign(value);
 
            }
-
 
         [Association(Name = "FK_UserRole_Users", Storage = "_UserRoles", OtherKey = "UserId")]
         public EntitySet<UserRole> UserRoles
            {
-               get => this._UserRoles;
+               get => _UserRoles;
 
-            set => this._UserRoles.Assign(value);
+            set => _UserRoles.Assign(value);
 
            }
-
 
         [Association(Name = "FK_Users_ApiSession", Storage = "_ApiSessions", OtherKey = "UserId")]
         public EntitySet<ApiSession> ApiSessions
            {
-               get => this._ApiSessions;
+               get => _ApiSessions;
 
-            set => this._ApiSessions.Assign(value);
+            set => _ApiSessions.Assign(value);
 
            }
-
 
         [Association(Name = "VolunteerFormsUploaded__Uploader", Storage = "_VolunteerFormsUploaded", OtherKey = "UploaderId")]
         public EntitySet<VolunteerForm> VolunteerFormsUploaded
            {
-               get => this._VolunteerFormsUploaded;
+               get => _VolunteerFormsUploaded;
 
-            set => this._VolunteerFormsUploaded.Assign(value);
+            set => _VolunteerFormsUploaded.Assign(value);
 
            }
-
 
         #endregion
 
@@ -935,158 +809,143 @@ namespace CmsData
         [Association(Name = "FK_Users_People", Storage = "_Person", ThisKey = "PeopleId", IsForeignKey = true)]
         public Person Person
         {
-            get => this._Person.Entity;
+            get => _Person.Entity;
 
             set
             {
-                Person previousValue = this._Person.Entity;
+                Person previousValue = _Person.Entity;
                 if (((previousValue != value)
-                            || (this._Person.HasLoadedOrAssignedValue == false)))
+                            || (_Person.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._Person.Entity = null;
+                        _Person.Entity = null;
                         previousValue.Users.Remove(this);
                     }
 
-                    this._Person.Entity = value;
+                    _Person.Entity = value;
                     if (value != null)
                     {
                         value.Users.Add(this);
 
-                        this._PeopleId = value.PeopleId;
+                        _PeopleId = value.PeopleId;
 
                     }
 
                     else
                     {
-
-                        this._PeopleId = default(int?);
+                        _PeopleId = default(int?);
 
                     }
 
-                    this.SendPropertyChanged("Person");
+                    SendPropertyChanged("Person");
                 }
-
             }
-
         }
-
 
         #endregion
 
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
 
-
         private void attach_Coupons(Coupon entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.User = this;
         }
 
         private void detach_Coupons(Coupon entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.User = null;
         }
 
-
         private void attach_MobileAppDevices(MobileAppDevice entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.User = this;
         }
 
         private void detach_MobileAppDevices(MobileAppDevice entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.User = null;
         }
 
-
         private void attach_SMSGroupMembers(SMSGroupMember entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.User = this;
         }
 
         private void detach_SMSGroupMembers(SMSGroupMember entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.User = null;
         }
 
-
         private void attach_Preferences(Preference entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.User = this;
         }
 
         private void detach_Preferences(Preference entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.User = null;
         }
 
-
         private void attach_UserRoles(UserRole entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.User = this;
         }
 
         private void detach_UserRoles(UserRole entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.User = null;
         }
 
-
         private void attach_ApiSessions(ApiSession entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.User = this;
         }
 
         private void detach_ApiSessions(ApiSession entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.User = null;
         }
 
-
         private void attach_VolunteerFormsUploaded(VolunteerForm entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.Uploader = this;
         }
 
         private void detach_VolunteerFormsUploaded(VolunteerForm entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.Uploader = null;
         }
-
-
     }
-
 }
-

@@ -7,7 +7,7 @@ namespace CmsData
     [Table(Name = "dbo.DownlineLeaders")]
     public partial class DownlineLeader : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -21,11 +21,10 @@ namespace CmsData
 
         private int? _Levels;
 
-
-
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -46,125 +45,103 @@ namespace CmsData
         partial void OnLevelsChanged();
 
         #endregion
+
         public DownlineLeader()
         {
-
-
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "CategoryId", UpdateCheck = UpdateCheck.Never, Storage = "_CategoryId", DbType = "int")]
         public int? CategoryId
         {
-            get => this._CategoryId;
+            get => _CategoryId;
 
             set
             {
-                if (this._CategoryId != value)
+                if (_CategoryId != value)
                 {
-
-                    this.OnCategoryIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._CategoryId = value;
-                    this.SendPropertyChanged("CategoryId");
-                    this.OnCategoryIdChanged();
+                    OnCategoryIdChanging(value);
+                    SendPropertyChanging();
+                    _CategoryId = value;
+                    SendPropertyChanged("CategoryId");
+                    OnCategoryIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "PeopleId", UpdateCheck = UpdateCheck.Never, Storage = "_PeopleId", DbType = "int")]
         public int? PeopleId
         {
-            get => this._PeopleId;
+            get => _PeopleId;
 
             set
             {
-                if (this._PeopleId != value)
+                if (_PeopleId != value)
                 {
-
-                    this.OnPeopleIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._PeopleId = value;
-                    this.SendPropertyChanged("PeopleId");
-                    this.OnPeopleIdChanged();
+                    OnPeopleIdChanging(value);
+                    SendPropertyChanging();
+                    _PeopleId = value;
+                    SendPropertyChanged("PeopleId");
+                    OnPeopleIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Name", UpdateCheck = UpdateCheck.Never, Storage = "_Name", DbType = "nvarchar(100)")]
         public string Name
         {
-            get => this._Name;
+            get => _Name;
 
             set
             {
-                if (this._Name != value)
+                if (_Name != value)
                 {
-
-                    this.OnNameChanging(value);
-                    this.SendPropertyChanging();
-                    this._Name = value;
-                    this.SendPropertyChanged("Name");
-                    this.OnNameChanged();
+                    OnNameChanging(value);
+                    SendPropertyChanging();
+                    _Name = value;
+                    SendPropertyChanged("Name");
+                    OnNameChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Cnt", UpdateCheck = UpdateCheck.Never, Storage = "_Cnt", DbType = "int")]
         public int? Cnt
         {
-            get => this._Cnt;
+            get => _Cnt;
 
             set
             {
-                if (this._Cnt != value)
+                if (_Cnt != value)
                 {
-
-                    this.OnCntChanging(value);
-                    this.SendPropertyChanging();
-                    this._Cnt = value;
-                    this.SendPropertyChanged("Cnt");
-                    this.OnCntChanged();
+                    OnCntChanging(value);
+                    SendPropertyChanging();
+                    _Cnt = value;
+                    SendPropertyChanged("Cnt");
+                    OnCntChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Levels", UpdateCheck = UpdateCheck.Never, Storage = "_Levels", DbType = "int")]
         public int? Levels
         {
-            get => this._Levels;
+            get => _Levels;
 
             set
             {
-                if (this._Levels != value)
+                if (_Levels != value)
                 {
-
-                    this.OnLevelsChanging(value);
-                    this.SendPropertyChanging();
-                    this._Levels = value;
-                    this.SendPropertyChanged("Levels");
-                    this.OnLevelsChanged();
+                    OnLevelsChanging(value);
+                    SendPropertyChanging();
+                    _Levels = value;
+                    SendPropertyChanged("Levels");
+                    OnLevelsChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -179,23 +156,19 @@ namespace CmsData
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-
     }
-
 }
-

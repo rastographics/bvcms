@@ -7,7 +7,7 @@ namespace CmsData
     [Table(Name = "CMS_VOLUNTEER.APPLICATION_TBL")]
     public partial class Application : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -67,11 +67,10 @@ namespace CmsData
 
         private DateTime? _ModifiedDate;
 
-
-
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -161,631 +160,517 @@ namespace CmsData
         partial void OnModifiedDateChanged();
 
         #endregion
+
         public Application()
         {
-
-
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "APPLICATION_ID", UpdateCheck = UpdateCheck.Never, Storage = "_ApplicationId", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
         public int ApplicationId
         {
-            get => this._ApplicationId;
+            get => _ApplicationId;
 
             set
             {
-                if (this._ApplicationId != value)
+                if (_ApplicationId != value)
                 {
-
-                    this.OnApplicationIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._ApplicationId = value;
-                    this.SendPropertyChanged("ApplicationId");
-                    this.OnApplicationIdChanged();
+                    OnApplicationIdChanging(value);
+                    SendPropertyChanging();
+                    _ApplicationId = value;
+                    SendPropertyChanged("ApplicationId");
+                    OnApplicationIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "POSITION_ID", UpdateCheck = UpdateCheck.Never, Storage = "_PositionId", DbType = "int NOT NULL")]
         public int PositionId
         {
-            get => this._PositionId;
+            get => _PositionId;
 
             set
             {
-                if (this._PositionId != value)
+                if (_PositionId != value)
                 {
-
-                    this.OnPositionIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._PositionId = value;
-                    this.SendPropertyChanged("PositionId");
-                    this.OnPositionIdChanged();
+                    OnPositionIdChanging(value);
+                    SendPropertyChanging();
+                    _PositionId = value;
+                    SendPropertyChanged("PositionId");
+                    OnPositionIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "PEOPLE_ID", UpdateCheck = UpdateCheck.Never, Storage = "_PeopleId", DbType = "int NOT NULL")]
         public int PeopleId
         {
-            get => this._PeopleId;
+            get => _PeopleId;
 
             set
             {
-                if (this._PeopleId != value)
+                if (_PeopleId != value)
                 {
-
-                    this.OnPeopleIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._PeopleId = value;
-                    this.SendPropertyChanged("PeopleId");
-                    this.OnPeopleIdChanged();
+                    OnPeopleIdChanging(value);
+                    SendPropertyChanging();
+                    _PeopleId = value;
+                    SendPropertyChanged("PeopleId");
+                    OnPeopleIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "SUBMITTED_DATE", UpdateCheck = UpdateCheck.Never, Storage = "_SubmittedDate", DbType = "datetime NOT NULL")]
         public DateTime SubmittedDate
         {
-            get => this._SubmittedDate;
+            get => _SubmittedDate;
 
             set
             {
-                if (this._SubmittedDate != value)
+                if (_SubmittedDate != value)
                 {
-
-                    this.OnSubmittedDateChanging(value);
-                    this.SendPropertyChanging();
-                    this._SubmittedDate = value;
-                    this.SendPropertyChanged("SubmittedDate");
-                    this.OnSubmittedDateChanged();
+                    OnSubmittedDateChanging(value);
+                    SendPropertyChanging();
+                    _SubmittedDate = value;
+                    SendPropertyChanged("SubmittedDate");
+                    OnSubmittedDateChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "RECORD_STATUS", UpdateCheck = UpdateCheck.Never, Storage = "_RecordStatus", DbType = "varchar(1) NOT NULL")]
         public string RecordStatus
         {
-            get => this._RecordStatus;
+            get => _RecordStatus;
 
             set
             {
-                if (this._RecordStatus != value)
+                if (_RecordStatus != value)
                 {
-
-                    this.OnRecordStatusChanging(value);
-                    this.SendPropertyChanging();
-                    this._RecordStatus = value;
-                    this.SendPropertyChanged("RecordStatus");
-                    this.OnRecordStatusChanged();
+                    OnRecordStatusChanging(value);
+                    SendPropertyChanging();
+                    _RecordStatus = value;
+                    SendPropertyChanged("RecordStatus");
+                    OnRecordStatusChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "APPLICATION_STATUS_ID", UpdateCheck = UpdateCheck.Never, Storage = "_ApplicationStatusId", DbType = "varchar(2) NOT NULL")]
         public string ApplicationStatusId
         {
-            get => this._ApplicationStatusId;
+            get => _ApplicationStatusId;
 
             set
             {
-                if (this._ApplicationStatusId != value)
+                if (_ApplicationStatusId != value)
                 {
-
-                    this.OnApplicationStatusIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._ApplicationStatusId = value;
-                    this.SendPropertyChanged("ApplicationStatusId");
-                    this.OnApplicationStatusIdChanged();
+                    OnApplicationStatusIdChanging(value);
+                    SendPropertyChanging();
+                    _ApplicationStatusId = value;
+                    SendPropertyChanged("ApplicationStatusId");
+                    OnApplicationStatusIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "SPIRITUAL_GIFT", UpdateCheck = UpdateCheck.Never, Storage = "_SpiritualGift", DbType = "varchar(50) NOT NULL")]
         public string SpiritualGift
         {
-            get => this._SpiritualGift;
+            get => _SpiritualGift;
 
             set
             {
-                if (this._SpiritualGift != value)
+                if (_SpiritualGift != value)
                 {
-
-                    this.OnSpiritualGiftChanging(value);
-                    this.SendPropertyChanging();
-                    this._SpiritualGift = value;
-                    this.SendPropertyChanged("SpiritualGift");
-                    this.OnSpiritualGiftChanged();
+                    OnSpiritualGiftChanging(value);
+                    SendPropertyChanging();
+                    _SpiritualGift = value;
+                    SendPropertyChanged("SpiritualGift");
+                    OnSpiritualGiftChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "SIGNATURE_DATE", UpdateCheck = UpdateCheck.Never, Storage = "_SignatureDate", DbType = "datetime")]
         public DateTime? SignatureDate
         {
-            get => this._SignatureDate;
+            get => _SignatureDate;
 
             set
             {
-                if (this._SignatureDate != value)
+                if (_SignatureDate != value)
                 {
-
-                    this.OnSignatureDateChanging(value);
-                    this.SendPropertyChanging();
-                    this._SignatureDate = value;
-                    this.SendPropertyChanged("SignatureDate");
-                    this.OnSignatureDateChanged();
+                    OnSignatureDateChanging(value);
+                    SendPropertyChanging();
+                    _SignatureDate = value;
+                    SendPropertyChanged("SignatureDate");
+                    OnSignatureDateChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "APPLICATION_WITNESS_ID", UpdateCheck = UpdateCheck.Never, Storage = "_ApplicationWitnessId", DbType = "int")]
         public int? ApplicationWitnessId
         {
-            get => this._ApplicationWitnessId;
+            get => _ApplicationWitnessId;
 
             set
             {
-                if (this._ApplicationWitnessId != value)
+                if (_ApplicationWitnessId != value)
                 {
-
-                    this.OnApplicationWitnessIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._ApplicationWitnessId = value;
-                    this.SendPropertyChanged("ApplicationWitnessId");
-                    this.OnApplicationWitnessIdChanged();
+                    OnApplicationWitnessIdChanging(value);
+                    SendPropertyChanging();
+                    _ApplicationWitnessId = value;
+                    SendPropertyChanged("ApplicationWitnessId");
+                    OnApplicationWitnessIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "WITNESS_DATE", UpdateCheck = UpdateCheck.Never, Storage = "_WitnessDate", DbType = "datetime")]
         public DateTime? WitnessDate
         {
-            get => this._WitnessDate;
+            get => _WitnessDate;
 
             set
             {
-                if (this._WitnessDate != value)
+                if (_WitnessDate != value)
                 {
-
-                    this.OnWitnessDateChanging(value);
-                    this.SendPropertyChanging();
-                    this._WitnessDate = value;
-                    this.SendPropertyChanged("WitnessDate");
-                    this.OnWitnessDateChanged();
+                    OnWitnessDateChanging(value);
+                    SendPropertyChanging();
+                    _WitnessDate = value;
+                    SendPropertyChanged("WitnessDate");
+                    OnWitnessDateChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ULTIMUS_INCIDENT_ID", UpdateCheck = UpdateCheck.Never, Storage = "_UltimusIncidentId", DbType = "varchar(50)")]
         public string UltimusIncidentId
         {
-            get => this._UltimusIncidentId;
+            get => _UltimusIncidentId;
 
             set
             {
-                if (this._UltimusIncidentId != value)
+                if (_UltimusIncidentId != value)
                 {
-
-                    this.OnUltimusIncidentIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._UltimusIncidentId = value;
-                    this.SendPropertyChanged("UltimusIncidentId");
-                    this.OnUltimusIncidentIdChanged();
+                    OnUltimusIncidentIdChanging(value);
+                    SendPropertyChanging();
+                    _UltimusIncidentId = value;
+                    SendPropertyChanged("UltimusIncidentId");
+                    OnUltimusIncidentIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "MINISTRY_REVIEW_STATUS_ID", UpdateCheck = UpdateCheck.Never, Storage = "_MinistryReviewStatusId", DbType = "varchar(2)")]
         public string MinistryReviewStatusId
         {
-            get => this._MinistryReviewStatusId;
+            get => _MinistryReviewStatusId;
 
             set
             {
-                if (this._MinistryReviewStatusId != value)
+                if (_MinistryReviewStatusId != value)
                 {
-
-                    this.OnMinistryReviewStatusIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._MinistryReviewStatusId = value;
-                    this.SendPropertyChanged("MinistryReviewStatusId");
-                    this.OnMinistryReviewStatusIdChanged();
+                    OnMinistryReviewStatusIdChanging(value);
+                    SendPropertyChanging();
+                    _MinistryReviewStatusId = value;
+                    SendPropertyChanged("MinistryReviewStatusId");
+                    OnMinistryReviewStatusIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "MINISTRY_REVIEW_DATE", UpdateCheck = UpdateCheck.Never, Storage = "_MinistryReviewDate", DbType = "datetime")]
         public DateTime? MinistryReviewDate
         {
-            get => this._MinistryReviewDate;
+            get => _MinistryReviewDate;
 
             set
             {
-                if (this._MinistryReviewDate != value)
+                if (_MinistryReviewDate != value)
                 {
-
-                    this.OnMinistryReviewDateChanging(value);
-                    this.SendPropertyChanging();
-                    this._MinistryReviewDate = value;
-                    this.SendPropertyChanged("MinistryReviewDate");
-                    this.OnMinistryReviewDateChanged();
+                    OnMinistryReviewDateChanging(value);
+                    SendPropertyChanging();
+                    _MinistryReviewDate = value;
+                    SendPropertyChanged("MinistryReviewDate");
+                    OnMinistryReviewDateChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "MINISTRY_COMMENTS", UpdateCheck = UpdateCheck.Never, Storage = "_MinistryComments", DbType = "varchar(256)")]
         public string MinistryComments
         {
-            get => this._MinistryComments;
+            get => _MinistryComments;
 
             set
             {
-                if (this._MinistryComments != value)
+                if (_MinistryComments != value)
                 {
-
-                    this.OnMinistryCommentsChanging(value);
-                    this.SendPropertyChanging();
-                    this._MinistryComments = value;
-                    this.SendPropertyChanged("MinistryComments");
-                    this.OnMinistryCommentsChanged();
+                    OnMinistryCommentsChanging(value);
+                    SendPropertyChanging();
+                    _MinistryComments = value;
+                    SendPropertyChanged("MinistryComments");
+                    OnMinistryCommentsChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "LAY_MIN_REVIEW_STATUS_ID", UpdateCheck = UpdateCheck.Never, Storage = "_LayMinReviewStatusId", DbType = "varchar(2)")]
         public string LayMinReviewStatusId
         {
-            get => this._LayMinReviewStatusId;
+            get => _LayMinReviewStatusId;
 
             set
             {
-                if (this._LayMinReviewStatusId != value)
+                if (_LayMinReviewStatusId != value)
                 {
-
-                    this.OnLayMinReviewStatusIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._LayMinReviewStatusId = value;
-                    this.SendPropertyChanged("LayMinReviewStatusId");
-                    this.OnLayMinReviewStatusIdChanged();
+                    OnLayMinReviewStatusIdChanging(value);
+                    SendPropertyChanging();
+                    _LayMinReviewStatusId = value;
+                    SendPropertyChanged("LayMinReviewStatusId");
+                    OnLayMinReviewStatusIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "LAY_MIN_REVIEW_DATE", UpdateCheck = UpdateCheck.Never, Storage = "_LayMinReviewDate", DbType = "datetime")]
         public DateTime? LayMinReviewDate
         {
-            get => this._LayMinReviewDate;
+            get => _LayMinReviewDate;
 
             set
             {
-                if (this._LayMinReviewDate != value)
+                if (_LayMinReviewDate != value)
                 {
-
-                    this.OnLayMinReviewDateChanging(value);
-                    this.SendPropertyChanging();
-                    this._LayMinReviewDate = value;
-                    this.SendPropertyChanged("LayMinReviewDate");
-                    this.OnLayMinReviewDateChanged();
+                    OnLayMinReviewDateChanging(value);
+                    SendPropertyChanging();
+                    _LayMinReviewDate = value;
+                    SendPropertyChanged("LayMinReviewDate");
+                    OnLayMinReviewDateChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "LAY_MIN_COMMENTS", UpdateCheck = UpdateCheck.Never, Storage = "_LayMinComments", DbType = "varchar(256)")]
         public string LayMinComments
         {
-            get => this._LayMinComments;
+            get => _LayMinComments;
 
             set
             {
-                if (this._LayMinComments != value)
+                if (_LayMinComments != value)
                 {
-
-                    this.OnLayMinCommentsChanging(value);
-                    this.SendPropertyChanging();
-                    this._LayMinComments = value;
-                    this.SendPropertyChanged("LayMinComments");
-                    this.OnLayMinCommentsChanged();
+                    OnLayMinCommentsChanging(value);
+                    SendPropertyChanging();
+                    _LayMinComments = value;
+                    SendPropertyChanged("LayMinComments");
+                    OnLayMinCommentsChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "BIB_GUID_REVIEW_STATUS_ID", UpdateCheck = UpdateCheck.Never, Storage = "_BibGuidReviewStatusId", DbType = "varchar(2)")]
         public string BibGuidReviewStatusId
         {
-            get => this._BibGuidReviewStatusId;
+            get => _BibGuidReviewStatusId;
 
             set
             {
-                if (this._BibGuidReviewStatusId != value)
+                if (_BibGuidReviewStatusId != value)
                 {
-
-                    this.OnBibGuidReviewStatusIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._BibGuidReviewStatusId = value;
-                    this.SendPropertyChanged("BibGuidReviewStatusId");
-                    this.OnBibGuidReviewStatusIdChanged();
+                    OnBibGuidReviewStatusIdChanging(value);
+                    SendPropertyChanging();
+                    _BibGuidReviewStatusId = value;
+                    SendPropertyChanged("BibGuidReviewStatusId");
+                    OnBibGuidReviewStatusIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "BIB_GUID_REVIEW_DATE", UpdateCheck = UpdateCheck.Never, Storage = "_BibGuidReviewDate", DbType = "datetime")]
         public DateTime? BibGuidReviewDate
         {
-            get => this._BibGuidReviewDate;
+            get => _BibGuidReviewDate;
 
             set
             {
-                if (this._BibGuidReviewDate != value)
+                if (_BibGuidReviewDate != value)
                 {
-
-                    this.OnBibGuidReviewDateChanging(value);
-                    this.SendPropertyChanging();
-                    this._BibGuidReviewDate = value;
-                    this.SendPropertyChanged("BibGuidReviewDate");
-                    this.OnBibGuidReviewDateChanged();
+                    OnBibGuidReviewDateChanging(value);
+                    SendPropertyChanging();
+                    _BibGuidReviewDate = value;
+                    SendPropertyChanged("BibGuidReviewDate");
+                    OnBibGuidReviewDateChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "BIB_GUID_COMMENTS", UpdateCheck = UpdateCheck.Never, Storage = "_BibGuidComments", DbType = "varchar(256)")]
         public string BibGuidComments
         {
-            get => this._BibGuidComments;
+            get => _BibGuidComments;
 
             set
             {
-                if (this._BibGuidComments != value)
+                if (_BibGuidComments != value)
                 {
-
-                    this.OnBibGuidCommentsChanging(value);
-                    this.SendPropertyChanging();
-                    this._BibGuidComments = value;
-                    this.SendPropertyChanged("BibGuidComments");
-                    this.OnBibGuidCommentsChanged();
+                    OnBibGuidCommentsChanging(value);
+                    SendPropertyChanging();
+                    _BibGuidComments = value;
+                    SendPropertyChanged("BibGuidComments");
+                    OnBibGuidCommentsChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "OFC_PASTOR_REVIEW_STATUS_ID", UpdateCheck = UpdateCheck.Never, Storage = "_OfcPastorReviewStatusId", DbType = "varchar(2)")]
         public string OfcPastorReviewStatusId
         {
-            get => this._OfcPastorReviewStatusId;
+            get => _OfcPastorReviewStatusId;
 
             set
             {
-                if (this._OfcPastorReviewStatusId != value)
+                if (_OfcPastorReviewStatusId != value)
                 {
-
-                    this.OnOfcPastorReviewStatusIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._OfcPastorReviewStatusId = value;
-                    this.SendPropertyChanged("OfcPastorReviewStatusId");
-                    this.OnOfcPastorReviewStatusIdChanged();
+                    OnOfcPastorReviewStatusIdChanging(value);
+                    SendPropertyChanging();
+                    _OfcPastorReviewStatusId = value;
+                    SendPropertyChanged("OfcPastorReviewStatusId");
+                    OnOfcPastorReviewStatusIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "OFC_PASTOR_REVIEW_DATE", UpdateCheck = UpdateCheck.Never, Storage = "_OfcPastorReviewDate", DbType = "datetime")]
         public DateTime? OfcPastorReviewDate
         {
-            get => this._OfcPastorReviewDate;
+            get => _OfcPastorReviewDate;
 
             set
             {
-                if (this._OfcPastorReviewDate != value)
+                if (_OfcPastorReviewDate != value)
                 {
-
-                    this.OnOfcPastorReviewDateChanging(value);
-                    this.SendPropertyChanging();
-                    this._OfcPastorReviewDate = value;
-                    this.SendPropertyChanged("OfcPastorReviewDate");
-                    this.OnOfcPastorReviewDateChanged();
+                    OnOfcPastorReviewDateChanging(value);
+                    SendPropertyChanging();
+                    _OfcPastorReviewDate = value;
+                    SendPropertyChanged("OfcPastorReviewDate");
+                    OnOfcPastorReviewDateChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "OFC_PASTOR_COMMENTS", UpdateCheck = UpdateCheck.Never, Storage = "_OfcPastorComments", DbType = "varchar(256)")]
         public string OfcPastorComments
         {
-            get => this._OfcPastorComments;
+            get => _OfcPastorComments;
 
             set
             {
-                if (this._OfcPastorComments != value)
+                if (_OfcPastorComments != value)
                 {
-
-                    this.OnOfcPastorCommentsChanging(value);
-                    this.SendPropertyChanging();
-                    this._OfcPastorComments = value;
-                    this.SendPropertyChanged("OfcPastorComments");
-                    this.OnOfcPastorCommentsChanged();
+                    OnOfcPastorCommentsChanging(value);
+                    SendPropertyChanging();
+                    _OfcPastorComments = value;
+                    SendPropertyChanged("OfcPastorComments");
+                    OnOfcPastorCommentsChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "CHURCH_ID", UpdateCheck = UpdateCheck.Never, Storage = "_ChurchId", DbType = "int")]
         public int? ChurchId
         {
-            get => this._ChurchId;
+            get => _ChurchId;
 
             set
             {
-                if (this._ChurchId != value)
+                if (_ChurchId != value)
                 {
-
-                    this.OnChurchIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._ChurchId = value;
-                    this.SendPropertyChanged("ChurchId");
-                    this.OnChurchIdChanged();
+                    OnChurchIdChanging(value);
+                    SendPropertyChanging();
+                    _ChurchId = value;
+                    SendPropertyChanged("ChurchId");
+                    OnChurchIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "CREATED_BY", UpdateCheck = UpdateCheck.Never, Storage = "_CreatedBy", DbType = "int")]
         public int? CreatedBy
         {
-            get => this._CreatedBy;
+            get => _CreatedBy;
 
             set
             {
-                if (this._CreatedBy != value)
+                if (_CreatedBy != value)
                 {
-
-                    this.OnCreatedByChanging(value);
-                    this.SendPropertyChanging();
-                    this._CreatedBy = value;
-                    this.SendPropertyChanged("CreatedBy");
-                    this.OnCreatedByChanged();
+                    OnCreatedByChanging(value);
+                    SendPropertyChanging();
+                    _CreatedBy = value;
+                    SendPropertyChanged("CreatedBy");
+                    OnCreatedByChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "CREATED_DATE", UpdateCheck = UpdateCheck.Never, Storage = "_CreatedDate", DbType = "datetime")]
         public DateTime? CreatedDate
         {
-            get => this._CreatedDate;
+            get => _CreatedDate;
 
             set
             {
-                if (this._CreatedDate != value)
+                if (_CreatedDate != value)
                 {
-
-                    this.OnCreatedDateChanging(value);
-                    this.SendPropertyChanging();
-                    this._CreatedDate = value;
-                    this.SendPropertyChanged("CreatedDate");
-                    this.OnCreatedDateChanged();
+                    OnCreatedDateChanging(value);
+                    SendPropertyChanging();
+                    _CreatedDate = value;
+                    SendPropertyChanged("CreatedDate");
+                    OnCreatedDateChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "MODIFIED_BY", UpdateCheck = UpdateCheck.Never, Storage = "_ModifiedBy", DbType = "int")]
         public int? ModifiedBy
         {
-            get => this._ModifiedBy;
+            get => _ModifiedBy;
 
             set
             {
-                if (this._ModifiedBy != value)
+                if (_ModifiedBy != value)
                 {
-
-                    this.OnModifiedByChanging(value);
-                    this.SendPropertyChanging();
-                    this._ModifiedBy = value;
-                    this.SendPropertyChanged("ModifiedBy");
-                    this.OnModifiedByChanged();
+                    OnModifiedByChanging(value);
+                    SendPropertyChanging();
+                    _ModifiedBy = value;
+                    SendPropertyChanged("ModifiedBy");
+                    OnModifiedByChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "MODIFIED_DATE", UpdateCheck = UpdateCheck.Never, Storage = "_ModifiedDate", DbType = "datetime")]
         public DateTime? ModifiedDate
         {
-            get => this._ModifiedDate;
+            get => _ModifiedDate;
 
             set
             {
-                if (this._ModifiedDate != value)
+                if (_ModifiedDate != value)
                 {
-
-                    this.OnModifiedDateChanging(value);
-                    this.SendPropertyChanging();
-                    this._ModifiedDate = value;
-                    this.SendPropertyChanged("ModifiedDate");
-                    this.OnModifiedDateChanged();
+                    OnModifiedDateChanging(value);
+                    SendPropertyChanging();
+                    _ModifiedDate = value;
+                    SendPropertyChanged("ModifiedDate");
+                    OnModifiedDateChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -800,23 +685,19 @@ namespace CmsData
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-
     }
-
 }
-

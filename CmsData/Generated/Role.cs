@@ -8,7 +8,7 @@ namespace CmsData
     [Table(Name = "dbo.Roles")]
     public partial class Role : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -20,13 +20,12 @@ namespace CmsData
 
         private int? _Priority;
 
-
         private EntitySet<UserRole> _UserRoles;
-
 
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -44,105 +43,87 @@ namespace CmsData
         partial void OnPriorityChanged();
 
         #endregion
+
         public Role()
         {
-
-            this._UserRoles = new EntitySet<UserRole>(new Action<UserRole>(this.attach_UserRoles), new Action<UserRole>(this.detach_UserRoles));
-
+            _UserRoles = new EntitySet<UserRole>(new Action<UserRole>(attach_UserRoles), new Action<UserRole>(detach_UserRoles));
 
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "RoleName", UpdateCheck = UpdateCheck.Never, Storage = "_RoleName", DbType = "nvarchar(50)")]
         public string RoleName
         {
-            get => this._RoleName;
+            get => _RoleName;
 
             set
             {
-                if (this._RoleName != value)
+                if (_RoleName != value)
                 {
-
-                    this.OnRoleNameChanging(value);
-                    this.SendPropertyChanging();
-                    this._RoleName = value;
-                    this.SendPropertyChanged("RoleName");
-                    this.OnRoleNameChanged();
+                    OnRoleNameChanging(value);
+                    SendPropertyChanging();
+                    _RoleName = value;
+                    SendPropertyChanged("RoleName");
+                    OnRoleNameChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "RoleId", UpdateCheck = UpdateCheck.Never, Storage = "_RoleId", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
         public int RoleId
         {
-            get => this._RoleId;
+            get => _RoleId;
 
             set
             {
-                if (this._RoleId != value)
+                if (_RoleId != value)
                 {
-
-                    this.OnRoleIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._RoleId = value;
-                    this.SendPropertyChanged("RoleId");
-                    this.OnRoleIdChanged();
+                    OnRoleIdChanging(value);
+                    SendPropertyChanging();
+                    _RoleId = value;
+                    SendPropertyChanged("RoleId");
+                    OnRoleIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "hardwired", UpdateCheck = UpdateCheck.Never, Storage = "_Hardwired", DbType = "bit")]
         public bool? Hardwired
         {
-            get => this._Hardwired;
+            get => _Hardwired;
 
             set
             {
-                if (this._Hardwired != value)
+                if (_Hardwired != value)
                 {
-
-                    this.OnHardwiredChanging(value);
-                    this.SendPropertyChanging();
-                    this._Hardwired = value;
-                    this.SendPropertyChanged("Hardwired");
-                    this.OnHardwiredChanged();
+                    OnHardwiredChanging(value);
+                    SendPropertyChanging();
+                    _Hardwired = value;
+                    SendPropertyChanged("Hardwired");
+                    OnHardwiredChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Priority", UpdateCheck = UpdateCheck.Never, Storage = "_Priority", DbType = "int")]
         public int? Priority
         {
-            get => this._Priority;
+            get => _Priority;
 
             set
             {
-                if (this._Priority != value)
+                if (_Priority != value)
                 {
-
-                    this.OnPriorityChanging(value);
-                    this.SendPropertyChanging();
-                    this._Priority = value;
-                    this.SendPropertyChanged("Priority");
-                    this.OnPriorityChanged();
+                    OnPriorityChanging(value);
+                    SendPropertyChanging();
+                    _Priority = value;
+                    SendPropertyChanged("Priority");
+                    OnPriorityChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -151,12 +132,11 @@ namespace CmsData
         [Association(Name = "FK_UserRole_Roles", Storage = "_UserRoles", OtherKey = "RoleId")]
         public EntitySet<UserRole> UserRoles
            {
-               get => this._UserRoles;
+               get => _UserRoles;
 
-            set => this._UserRoles.Assign(value);
+            set => _UserRoles.Assign(value);
 
            }
-
 
         #endregion
 
@@ -167,36 +147,31 @@ namespace CmsData
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
 
-
         private void attach_UserRoles(UserRole entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.Role = this;
         }
 
         private void detach_UserRoles(UserRole entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.Role = null;
         }
-
-
     }
-
 }
-

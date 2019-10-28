@@ -1,85 +1,64 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="WeeklyAttendsForOrgs")]
-	public partial class WeeklyAttendsForOrg
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private int _PeopleId;
-		
-		private bool _Attended;
-		
-		private DateTime _Sunday;
-		
-		
-		public WeeklyAttendsForOrg()
-		{
-		}
+    [Table(Name = "WeeklyAttendsForOrgs")]
+    public partial class WeeklyAttendsForOrg
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="PeopleId", Storage="_PeopleId", DbType="int NOT NULL")]
-		public int PeopleId
-		{
-			get
-			{
-				return this._PeopleId;
-			}
+        private int _PeopleId;
 
-			set
-			{
-				if (this._PeopleId != value)
-					this._PeopleId = value;
-			}
+        private bool _Attended;
 
-		}
+        private DateTime _Sunday;
 
-		
-		[Column(Name="Attended", Storage="_Attended", DbType="bit NOT NULL")]
-		public bool Attended
-		{
-			get
-			{
-				return this._Attended;
-			}
+        public WeeklyAttendsForOrg()
+        {
+        }
 
-			set
-			{
-				if (this._Attended != value)
-					this._Attended = value;
-			}
+        [Column(Name = "PeopleId", Storage = "_PeopleId", DbType = "int NOT NULL")]
+        public int PeopleId
+        {
+            get => _PeopleId;
 
-		}
+            set
+            {
+                if (_PeopleId != value)
+                {
+                    _PeopleId = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="Sunday", Storage="_Sunday", DbType="datetime NOT NULL")]
-		public DateTime Sunday
-		{
-			get
-			{
-				return this._Sunday;
-			}
+        [Column(Name = "Attended", Storage = "_Attended", DbType = "bit NOT NULL")]
+        public bool Attended
+        {
+            get => _Attended;
 
-			set
-			{
-				if (this._Sunday != value)
-					this._Sunday = value;
-			}
+            set
+            {
+                if (_Attended != value)
+                {
+                    _Attended = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "Sunday", Storage = "_Sunday", DbType = "datetime NOT NULL")]
+        public DateTime Sunday
+        {
+            get => _Sunday;
 
-		
+            set
+            {
+                if (_Sunday != value)
+                {
+                    _Sunday = value;
+                }
+            }
+        }
     }
-
 }

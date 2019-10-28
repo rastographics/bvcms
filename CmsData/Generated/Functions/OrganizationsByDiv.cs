@@ -1,180 +1,144 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="OrganizationsByDiv")]
-	public partial class OrganizationsByDiv
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private int _OrganizationId;
-		
-		private string _OrganizationName;
-		
-		private string _Location;
-		
-		private string _OrganizationCode;
-		
-		private int? _LeaderId;
-		
-		private string _FirstName;
-		
-		private string _LastName;
-		
-		private int? _MemberCount;
-		
-		
-		public OrganizationsByDiv()
-		{
-		}
+    [Table(Name = "OrganizationsByDiv")]
+    public partial class OrganizationsByDiv
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="ORGANIZATION_ID", Storage="_OrganizationId", DbType="int NOT NULL")]
-		public int OrganizationId
-		{
-			get
-			{
-				return this._OrganizationId;
-			}
+        private int _OrganizationId;
 
-			set
-			{
-				if (this._OrganizationId != value)
-					this._OrganizationId = value;
-			}
+        private string _OrganizationName;
 
-		}
+        private string _Location;
 
-		
-		[Column(Name="ORGANIZATION_NAME", Storage="_OrganizationName", DbType="varchar(40) NOT NULL")]
-		public string OrganizationName
-		{
-			get
-			{
-				return this._OrganizationName;
-			}
+        private string _OrganizationCode;
 
-			set
-			{
-				if (this._OrganizationName != value)
-					this._OrganizationName = value;
-			}
+        private int? _LeaderId;
 
-		}
+        private string _FirstName;
 
-		
-		[Column(Name="LOCATION", Storage="_Location", DbType="varchar(40)")]
-		public string Location
-		{
-			get
-			{
-				return this._Location;
-			}
+        private string _LastName;
 
-			set
-			{
-				if (this._Location != value)
-					this._Location = value;
-			}
+        private int? _MemberCount;
 
-		}
+        public OrganizationsByDiv()
+        {
+        }
 
-		
-		[Column(Name="ORGANIZATION_CODE", Storage="_OrganizationCode", DbType="varchar(10) NOT NULL")]
-		public string OrganizationCode
-		{
-			get
-			{
-				return this._OrganizationCode;
-			}
+        [Column(Name = "ORGANIZATION_ID", Storage = "_OrganizationId", DbType = "int NOT NULL")]
+        public int OrganizationId
+        {
+            get => _OrganizationId;
 
-			set
-			{
-				if (this._OrganizationCode != value)
-					this._OrganizationCode = value;
-			}
+            set
+            {
+                if (_OrganizationId != value)
+                {
+                    _OrganizationId = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "ORGANIZATION_NAME", Storage = "_OrganizationName", DbType = "varchar(40) NOT NULL")]
+        public string OrganizationName
+        {
+            get => _OrganizationName;
 
-		
-		[Column(Name="LeaderId", Storage="_LeaderId", DbType="int")]
-		public int? LeaderId
-		{
-			get
-			{
-				return this._LeaderId;
-			}
+            set
+            {
+                if (_OrganizationName != value)
+                {
+                    _OrganizationName = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._LeaderId != value)
-					this._LeaderId = value;
-			}
+        [Column(Name = "LOCATION", Storage = "_Location", DbType = "varchar(40)")]
+        public string Location
+        {
+            get => _Location;
 
-		}
+            set
+            {
+                if (_Location != value)
+                {
+                    _Location = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="FIRST_NAME", Storage="_FirstName", DbType="varchar(15)")]
-		public string FirstName
-		{
-			get
-			{
-				return this._FirstName;
-			}
+        [Column(Name = "ORGANIZATION_CODE", Storage = "_OrganizationCode", DbType = "varchar(10) NOT NULL")]
+        public string OrganizationCode
+        {
+            get => _OrganizationCode;
 
-			set
-			{
-				if (this._FirstName != value)
-					this._FirstName = value;
-			}
+            set
+            {
+                if (_OrganizationCode != value)
+                {
+                    _OrganizationCode = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "LeaderId", Storage = "_LeaderId", DbType = "int")]
+        public int? LeaderId
+        {
+            get => _LeaderId;
 
-		
-		[Column(Name="LAST_NAME", Storage="_LastName", DbType="varchar(20)")]
-		public string LastName
-		{
-			get
-			{
-				return this._LastName;
-			}
+            set
+            {
+                if (_LeaderId != value)
+                {
+                    _LeaderId = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._LastName != value)
-					this._LastName = value;
-			}
+        [Column(Name = "FIRST_NAME", Storage = "_FirstName", DbType = "varchar(15)")]
+        public string FirstName
+        {
+            get => _FirstName;
 
-		}
+            set
+            {
+                if (_FirstName != value)
+                {
+                    _FirstName = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="MemberCount", Storage="_MemberCount", DbType="int")]
-		public int? MemberCount
-		{
-			get
-			{
-				return this._MemberCount;
-			}
+        [Column(Name = "LAST_NAME", Storage = "_LastName", DbType = "varchar(20)")]
+        public string LastName
+        {
+            get => _LastName;
 
-			set
-			{
-				if (this._MemberCount != value)
-					this._MemberCount = value;
-			}
+            set
+            {
+                if (_LastName != value)
+                {
+                    _LastName = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "MemberCount", Storage = "_MemberCount", DbType = "int")]
+        public int? MemberCount
+        {
+            get => _MemberCount;
 
-		
+            set
+            {
+                if (_MemberCount != value)
+                {
+                    _MemberCount = value;
+                }
+            }
+        }
     }
-
 }

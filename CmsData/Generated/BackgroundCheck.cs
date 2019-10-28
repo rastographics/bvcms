@@ -9,7 +9,7 @@ namespace CmsData
     [Table(Name = "dbo.BackgroundChecks")]
     public partial class BackgroundCheck : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -39,8 +39,6 @@ namespace CmsData
 
         private int _ReportLabelID;
 
-
-
         private EntityRef<Person> _Person;
 
         private EntityRef<Person> _User;
@@ -48,6 +46,7 @@ namespace CmsData
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -92,317 +91,263 @@ namespace CmsData
         partial void OnReportLabelIDChanged();
 
         #endregion
+
         public BackgroundCheck()
         {
+            _Person = default(EntityRef<Person>);
 
-
-            this._Person = default(EntityRef<Person>);
-
-            this._User = default(EntityRef<Person>);
+            _User = default(EntityRef<Person>);
 
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "ID", UpdateCheck = UpdateCheck.Never, Storage = "_Id", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
         public int Id
         {
-            get => this._Id;
+            get => _Id;
 
             set
             {
-                if (this._Id != value)
+                if (_Id != value)
                 {
-
-                    this.OnIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._Id = value;
-                    this.SendPropertyChanged("Id");
-                    this.OnIdChanged();
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Created", UpdateCheck = UpdateCheck.Never, Storage = "_Created", DbType = "datetime NOT NULL")]
         public DateTime Created
         {
-            get => this._Created;
+            get => _Created;
 
             set
             {
-                if (this._Created != value)
+                if (_Created != value)
                 {
-
-                    this.OnCreatedChanging(value);
-                    this.SendPropertyChanging();
-                    this._Created = value;
-                    this.SendPropertyChanged("Created");
-                    this.OnCreatedChanged();
+                    OnCreatedChanging(value);
+                    SendPropertyChanging();
+                    _Created = value;
+                    SendPropertyChanged("Created");
+                    OnCreatedChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Updated", UpdateCheck = UpdateCheck.Never, Storage = "_Updated", DbType = "datetime NOT NULL")]
         public DateTime Updated
         {
-            get => this._Updated;
+            get => _Updated;
 
             set
             {
-                if (this._Updated != value)
+                if (_Updated != value)
                 {
-
-                    this.OnUpdatedChanging(value);
-                    this.SendPropertyChanging();
-                    this._Updated = value;
-                    this.SendPropertyChanged("Updated");
-                    this.OnUpdatedChanged();
+                    OnUpdatedChanging(value);
+                    SendPropertyChanging();
+                    _Updated = value;
+                    SendPropertyChanged("Updated");
+                    OnUpdatedChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "UserID", UpdateCheck = UpdateCheck.Never, Storage = "_UserID", DbType = "int NOT NULL")]
         [IsForeignKey]
         public int UserID
         {
-            get => this._UserID;
+            get => _UserID;
 
             set
             {
-                if (this._UserID != value)
+                if (_UserID != value)
                 {
-
-                    if (this._User.HasLoadedOrAssignedValue)
+                    if (_User.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnUserIDChanging(value);
-                    this.SendPropertyChanging();
-                    this._UserID = value;
-                    this.SendPropertyChanged("UserID");
-                    this.OnUserIDChanged();
+                    OnUserIDChanging(value);
+                    SendPropertyChanging();
+                    _UserID = value;
+                    SendPropertyChanged("UserID");
+                    OnUserIDChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "StatusID", UpdateCheck = UpdateCheck.Never, Storage = "_StatusID", DbType = "int NOT NULL")]
         public int StatusID
         {
-            get => this._StatusID;
+            get => _StatusID;
 
             set
             {
-                if (this._StatusID != value)
+                if (_StatusID != value)
                 {
-
-                    this.OnStatusIDChanging(value);
-                    this.SendPropertyChanging();
-                    this._StatusID = value;
-                    this.SendPropertyChanged("StatusID");
-                    this.OnStatusIDChanged();
+                    OnStatusIDChanging(value);
+                    SendPropertyChanging();
+                    _StatusID = value;
+                    SendPropertyChanged("StatusID");
+                    OnStatusIDChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "PeopleID", UpdateCheck = UpdateCheck.Never, Storage = "_PeopleID", DbType = "int NOT NULL")]
         [IsForeignKey]
         public int PeopleID
         {
-            get => this._PeopleID;
+            get => _PeopleID;
 
             set
             {
-                if (this._PeopleID != value)
+                if (_PeopleID != value)
                 {
-
-                    if (this._Person.HasLoadedOrAssignedValue)
+                    if (_Person.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnPeopleIDChanging(value);
-                    this.SendPropertyChanging();
-                    this._PeopleID = value;
-                    this.SendPropertyChanged("PeopleID");
-                    this.OnPeopleIDChanged();
+                    OnPeopleIDChanging(value);
+                    SendPropertyChanging();
+                    _PeopleID = value;
+                    SendPropertyChanged("PeopleID");
+                    OnPeopleIDChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ServiceCode", UpdateCheck = UpdateCheck.Never, Storage = "_ServiceCode", DbType = "nvarchar(25) NOT NULL")]
         public string ServiceCode
         {
-            get => this._ServiceCode;
+            get => _ServiceCode;
 
             set
             {
-                if (this._ServiceCode != value)
+                if (_ServiceCode != value)
                 {
-
-                    this.OnServiceCodeChanging(value);
-                    this.SendPropertyChanging();
-                    this._ServiceCode = value;
-                    this.SendPropertyChanged("ServiceCode");
-                    this.OnServiceCodeChanged();
+                    OnServiceCodeChanging(value);
+                    SendPropertyChanging();
+                    _ServiceCode = value;
+                    SendPropertyChanged("ServiceCode");
+                    OnServiceCodeChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ReportID", UpdateCheck = UpdateCheck.Never, Storage = "_ReportID", DbType = "int NOT NULL")]
         public int ReportID
         {
-            get => this._ReportID;
+            get => _ReportID;
 
             set
             {
-                if (this._ReportID != value)
+                if (_ReportID != value)
                 {
-
-                    this.OnReportIDChanging(value);
-                    this.SendPropertyChanging();
-                    this._ReportID = value;
-                    this.SendPropertyChanged("ReportID");
-                    this.OnReportIDChanged();
+                    OnReportIDChanging(value);
+                    SendPropertyChanging();
+                    _ReportID = value;
+                    SendPropertyChanged("ReportID");
+                    OnReportIDChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ReportLink", UpdateCheck = UpdateCheck.Never, Storage = "_ReportLink", DbType = "nvarchar(255)")]
         public string ReportLink
         {
-            get => this._ReportLink;
+            get => _ReportLink;
 
             set
             {
-                if (this._ReportLink != value)
+                if (_ReportLink != value)
                 {
-
-                    this.OnReportLinkChanging(value);
-                    this.SendPropertyChanging();
-                    this._ReportLink = value;
-                    this.SendPropertyChanged("ReportLink");
-                    this.OnReportLinkChanged();
+                    OnReportLinkChanging(value);
+                    SendPropertyChanging();
+                    _ReportLink = value;
+                    SendPropertyChanged("ReportLink");
+                    OnReportLinkChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "IssueCount", UpdateCheck = UpdateCheck.Never, Storage = "_IssueCount", DbType = "int NOT NULL")]
         public int IssueCount
         {
-            get => this._IssueCount;
+            get => _IssueCount;
 
             set
             {
-                if (this._IssueCount != value)
+                if (_IssueCount != value)
                 {
-
-                    this.OnIssueCountChanging(value);
-                    this.SendPropertyChanging();
-                    this._IssueCount = value;
-                    this.SendPropertyChanged("IssueCount");
-                    this.OnIssueCountChanged();
+                    OnIssueCountChanging(value);
+                    SendPropertyChanging();
+                    _IssueCount = value;
+                    SendPropertyChanged("IssueCount");
+                    OnIssueCountChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ErrorMessages", UpdateCheck = UpdateCheck.Never, Storage = "_ErrorMessages", DbType = "nvarchar")]
         public string ErrorMessages
         {
-            get => this._ErrorMessages;
+            get => _ErrorMessages;
 
             set
             {
-                if (this._ErrorMessages != value)
+                if (_ErrorMessages != value)
                 {
-
-                    this.OnErrorMessagesChanging(value);
-                    this.SendPropertyChanging();
-                    this._ErrorMessages = value;
-                    this.SendPropertyChanged("ErrorMessages");
-                    this.OnErrorMessagesChanged();
+                    OnErrorMessagesChanging(value);
+                    SendPropertyChanging();
+                    _ErrorMessages = value;
+                    SendPropertyChanged("ErrorMessages");
+                    OnErrorMessagesChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ReportTypeID", UpdateCheck = UpdateCheck.Never, Storage = "_ReportTypeID", DbType = "int NOT NULL")]
         public int ReportTypeID
         {
-            get => this._ReportTypeID;
+            get => _ReportTypeID;
 
             set
             {
-                if (this._ReportTypeID != value)
+                if (_ReportTypeID != value)
                 {
-
-                    this.OnReportTypeIDChanging(value);
-                    this.SendPropertyChanging();
-                    this._ReportTypeID = value;
-                    this.SendPropertyChanged("ReportTypeID");
-                    this.OnReportTypeIDChanged();
+                    OnReportTypeIDChanging(value);
+                    SendPropertyChanging();
+                    _ReportTypeID = value;
+                    SendPropertyChanged("ReportTypeID");
+                    OnReportTypeIDChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ReportLabelID", UpdateCheck = UpdateCheck.Never, Storage = "_ReportLabelID", DbType = "int NOT NULL")]
         public int ReportLabelID
         {
-            get => this._ReportLabelID;
+            get => _ReportLabelID;
 
             set
             {
-                if (this._ReportLabelID != value)
+                if (_ReportLabelID != value)
                 {
-
-                    this.OnReportLabelIDChanging(value);
-                    this.SendPropertyChanging();
-                    this._ReportLabelID = value;
-                    this.SendPropertyChanged("ReportLabelID");
-                    this.OnReportLabelIDChanged();
+                    OnReportLabelIDChanging(value);
+                    SendPropertyChanging();
+                    _ReportLabelID = value;
+                    SendPropertyChanged("ReportLabelID");
+                    OnReportLabelIDChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -415,109 +360,97 @@ namespace CmsData
         [Association(Name = "FK_BackgroundChecks_People", Storage = "_Person", ThisKey = "PeopleID", IsForeignKey = true)]
         public Person Person
         {
-            get => this._Person.Entity;
+            get => _Person.Entity;
 
             set
             {
-                Person previousValue = this._Person.Entity;
+                Person previousValue = _Person.Entity;
                 if (((previousValue != value)
-                            || (this._Person.HasLoadedOrAssignedValue == false)))
+                            || (_Person.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._Person.Entity = null;
+                        _Person.Entity = null;
                         previousValue.BackgroundChecks.Remove(this);
                     }
 
-                    this._Person.Entity = value;
+                    _Person.Entity = value;
                     if (value != null)
                     {
                         value.BackgroundChecks.Add(this);
 
-                        this._PeopleID = value.PeopleId;
+                        _PeopleID = value.PeopleId;
 
                     }
 
                     else
                     {
-
-                        this._PeopleID = default(int);
+                        _PeopleID = default(int);
 
                     }
 
-                    this.SendPropertyChanged("Person");
+                    SendPropertyChanged("Person");
                 }
-
             }
-
         }
-
 
         [Association(Name = "People__User", Storage = "_User", ThisKey = "UserID", IsForeignKey = true)]
         public Person User
         {
-            get => this._User.Entity;
+            get => _User.Entity;
 
             set
             {
-                Person previousValue = this._User.Entity;
+                Person previousValue = _User.Entity;
                 if (((previousValue != value)
-                            || (this._User.HasLoadedOrAssignedValue == false)))
+                            || (_User.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._User.Entity = null;
+                        _User.Entity = null;
                         previousValue.People.Remove(this);
                     }
 
-                    this._User.Entity = value;
+                    _User.Entity = value;
                     if (value != null)
                     {
                         value.People.Add(this);
 
-                        this._UserID = value.PeopleId;
+                        _UserID = value.PeopleId;
 
                     }
 
                     else
                     {
-
-                        this._UserID = default(int);
+                        _UserID = default(int);
 
                     }
 
-                    this.SendPropertyChanged("User");
+                    SendPropertyChanged("User");
                 }
-
             }
-
         }
-
 
         #endregion
 
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-
     }
-
 }
-

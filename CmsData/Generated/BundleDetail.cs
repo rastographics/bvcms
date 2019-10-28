@@ -9,7 +9,7 @@ namespace CmsData
     [Table(Name = "dbo.BundleDetail")]
     public partial class BundleDetail : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -29,8 +29,6 @@ namespace CmsData
 
         private int? _RefPeopleId;
 
-
-
         private EntityRef<BundleHeader> _BundleHeader;
 
         private EntityRef<Contribution> _Contribution;
@@ -38,6 +36,7 @@ namespace CmsData
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -67,207 +66,173 @@ namespace CmsData
         partial void OnRefPeopleIdChanged();
 
         #endregion
+
         public BundleDetail()
         {
+            _BundleHeader = default(EntityRef<BundleHeader>);
 
-
-            this._BundleHeader = default(EntityRef<BundleHeader>);
-
-            this._Contribution = default(EntityRef<Contribution>);
+            _Contribution = default(EntityRef<Contribution>);
 
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "BundleDetailId", UpdateCheck = UpdateCheck.Never, Storage = "_BundleDetailId", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
         public int BundleDetailId
         {
-            get => this._BundleDetailId;
+            get => _BundleDetailId;
 
             set
             {
-                if (this._BundleDetailId != value)
+                if (_BundleDetailId != value)
                 {
-
-                    this.OnBundleDetailIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._BundleDetailId = value;
-                    this.SendPropertyChanged("BundleDetailId");
-                    this.OnBundleDetailIdChanged();
+                    OnBundleDetailIdChanging(value);
+                    SendPropertyChanging();
+                    _BundleDetailId = value;
+                    SendPropertyChanged("BundleDetailId");
+                    OnBundleDetailIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "BundleHeaderId", UpdateCheck = UpdateCheck.Never, Storage = "_BundleHeaderId", DbType = "int NOT NULL")]
         [IsForeignKey]
         public int BundleHeaderId
         {
-            get => this._BundleHeaderId;
+            get => _BundleHeaderId;
 
             set
             {
-                if (this._BundleHeaderId != value)
+                if (_BundleHeaderId != value)
                 {
-
-                    if (this._BundleHeader.HasLoadedOrAssignedValue)
+                    if (_BundleHeader.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnBundleHeaderIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._BundleHeaderId = value;
-                    this.SendPropertyChanged("BundleHeaderId");
-                    this.OnBundleHeaderIdChanged();
+                    OnBundleHeaderIdChanging(value);
+                    SendPropertyChanging();
+                    _BundleHeaderId = value;
+                    SendPropertyChanged("BundleHeaderId");
+                    OnBundleHeaderIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ContributionId", UpdateCheck = UpdateCheck.Never, Storage = "_ContributionId", DbType = "int NOT NULL")]
         [IsForeignKey]
         public int ContributionId
         {
-            get => this._ContributionId;
+            get => _ContributionId;
 
             set
             {
-                if (this._ContributionId != value)
+                if (_ContributionId != value)
                 {
-
-                    if (this._Contribution.HasLoadedOrAssignedValue)
+                    if (_Contribution.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnContributionIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._ContributionId = value;
-                    this.SendPropertyChanged("ContributionId");
-                    this.OnContributionIdChanged();
+                    OnContributionIdChanging(value);
+                    SendPropertyChanging();
+                    _ContributionId = value;
+                    SendPropertyChanged("ContributionId");
+                    OnContributionIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "CreatedBy", UpdateCheck = UpdateCheck.Never, Storage = "_CreatedBy", DbType = "int NOT NULL")]
         public int CreatedBy
         {
-            get => this._CreatedBy;
+            get => _CreatedBy;
 
             set
             {
-                if (this._CreatedBy != value)
+                if (_CreatedBy != value)
                 {
-
-                    this.OnCreatedByChanging(value);
-                    this.SendPropertyChanging();
-                    this._CreatedBy = value;
-                    this.SendPropertyChanged("CreatedBy");
-                    this.OnCreatedByChanged();
+                    OnCreatedByChanging(value);
+                    SendPropertyChanging();
+                    _CreatedBy = value;
+                    SendPropertyChanged("CreatedBy");
+                    OnCreatedByChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "CreatedDate", UpdateCheck = UpdateCheck.Never, Storage = "_CreatedDate", DbType = "datetime NOT NULL")]
         public DateTime CreatedDate
         {
-            get => this._CreatedDate;
+            get => _CreatedDate;
 
             set
             {
-                if (this._CreatedDate != value)
+                if (_CreatedDate != value)
                 {
-
-                    this.OnCreatedDateChanging(value);
-                    this.SendPropertyChanging();
-                    this._CreatedDate = value;
-                    this.SendPropertyChanged("CreatedDate");
-                    this.OnCreatedDateChanged();
+                    OnCreatedDateChanging(value);
+                    SendPropertyChanging();
+                    _CreatedDate = value;
+                    SendPropertyChanged("CreatedDate");
+                    OnCreatedDateChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "BundleSort1", UpdateCheck = UpdateCheck.Never, Storage = "_BundleSort1", DbType = "int")]
         public int? BundleSort1
         {
-            get => this._BundleSort1;
+            get => _BundleSort1;
 
             set
             {
-                if (this._BundleSort1 != value)
+                if (_BundleSort1 != value)
                 {
-
-                    this.OnBundleSort1Changing(value);
-                    this.SendPropertyChanging();
-                    this._BundleSort1 = value;
-                    this.SendPropertyChanged("BundleSort1");
-                    this.OnBundleSort1Changed();
+                    OnBundleSort1Changing(value);
+                    SendPropertyChanging();
+                    _BundleSort1 = value;
+                    SendPropertyChanged("BundleSort1");
+                    OnBundleSort1Changed();
                 }
-
             }
-
         }
-
 
         [Column(Name = "RefOrgId", UpdateCheck = UpdateCheck.Never, Storage = "_RefOrgId", DbType = "int")]
         public int? RefOrgId
         {
-            get => this._RefOrgId;
+            get => _RefOrgId;
 
             set
             {
-                if (this._RefOrgId != value)
+                if (_RefOrgId != value)
                 {
-
-                    this.OnRefOrgIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._RefOrgId = value;
-                    this.SendPropertyChanged("RefOrgId");
-                    this.OnRefOrgIdChanged();
+                    OnRefOrgIdChanging(value);
+                    SendPropertyChanging();
+                    _RefOrgId = value;
+                    SendPropertyChanged("RefOrgId");
+                    OnRefOrgIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "RefPeopleId", UpdateCheck = UpdateCheck.Never, Storage = "_RefPeopleId", DbType = "int")]
         public int? RefPeopleId
         {
-            get => this._RefPeopleId;
+            get => _RefPeopleId;
 
             set
             {
-                if (this._RefPeopleId != value)
+                if (_RefPeopleId != value)
                 {
-
-                    this.OnRefPeopleIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._RefPeopleId = value;
-                    this.SendPropertyChanged("RefPeopleId");
-                    this.OnRefPeopleIdChanged();
+                    OnRefPeopleIdChanging(value);
+                    SendPropertyChanging();
+                    _RefPeopleId = value;
+                    SendPropertyChanged("RefPeopleId");
+                    OnRefPeopleIdChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -280,109 +245,97 @@ namespace CmsData
         [Association(Name = "BUNDLE_DETAIL_BUNDLE_FK", Storage = "_BundleHeader", ThisKey = "BundleHeaderId", IsForeignKey = true)]
         public BundleHeader BundleHeader
         {
-            get => this._BundleHeader.Entity;
+            get => _BundleHeader.Entity;
 
             set
             {
-                BundleHeader previousValue = this._BundleHeader.Entity;
+                BundleHeader previousValue = _BundleHeader.Entity;
                 if (((previousValue != value)
-                            || (this._BundleHeader.HasLoadedOrAssignedValue == false)))
+                            || (_BundleHeader.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._BundleHeader.Entity = null;
+                        _BundleHeader.Entity = null;
                         previousValue.BundleDetails.Remove(this);
                     }
 
-                    this._BundleHeader.Entity = value;
+                    _BundleHeader.Entity = value;
                     if (value != null)
                     {
                         value.BundleDetails.Add(this);
 
-                        this._BundleHeaderId = value.BundleHeaderId;
+                        _BundleHeaderId = value.BundleHeaderId;
 
                     }
 
                     else
                     {
-
-                        this._BundleHeaderId = default(int);
+                        _BundleHeaderId = default(int);
 
                     }
 
-                    this.SendPropertyChanged("BundleHeader");
+                    SendPropertyChanged("BundleHeader");
                 }
-
             }
-
         }
-
 
         [Association(Name = "BUNDLE_DETAIL_CONTR_FK", Storage = "_Contribution", ThisKey = "ContributionId", IsForeignKey = true)]
         public Contribution Contribution
         {
-            get => this._Contribution.Entity;
+            get => _Contribution.Entity;
 
             set
             {
-                Contribution previousValue = this._Contribution.Entity;
+                Contribution previousValue = _Contribution.Entity;
                 if (((previousValue != value)
-                            || (this._Contribution.HasLoadedOrAssignedValue == false)))
+                            || (_Contribution.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._Contribution.Entity = null;
+                        _Contribution.Entity = null;
                         previousValue.BundleDetails.Remove(this);
                     }
 
-                    this._Contribution.Entity = value;
+                    _Contribution.Entity = value;
                     if (value != null)
                     {
                         value.BundleDetails.Add(this);
 
-                        this._ContributionId = value.ContributionId;
+                        _ContributionId = value.ContributionId;
 
                     }
 
                     else
                     {
-
-                        this._ContributionId = default(int);
+                        _ContributionId = default(int);
 
                     }
 
-                    this.SendPropertyChanged("Contribution");
+                    SendPropertyChanged("Contribution");
                 }
-
             }
-
         }
-
 
         #endregion
 
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-
     }
-
 }
-

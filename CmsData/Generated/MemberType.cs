@@ -9,7 +9,7 @@ namespace CmsData
     [Table(Name = "lookup.MemberType")]
     public partial class MemberType : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -27,19 +27,18 @@ namespace CmsData
 
         private bool _Inactive;
 
-
         private EntitySet<Attend> _Attends;
 
         private EntitySet<EnrollmentTransaction> _EnrollmentTransactions;
 
         private EntitySet<OrganizationMember> _OrganizationMembers;
 
-
         private EntityRef<AttendType> _AttendType;
 
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -66,183 +65,153 @@ namespace CmsData
         partial void OnInactiveChanged();
 
         #endregion
+
         public MemberType()
         {
+            _Attends = new EntitySet<Attend>(new Action<Attend>(attach_Attends), new Action<Attend>(detach_Attends));
 
-            this._Attends = new EntitySet<Attend>(new Action<Attend>(this.attach_Attends), new Action<Attend>(this.detach_Attends));
+            _EnrollmentTransactions = new EntitySet<EnrollmentTransaction>(new Action<EnrollmentTransaction>(attach_EnrollmentTransactions), new Action<EnrollmentTransaction>(detach_EnrollmentTransactions));
 
-            this._EnrollmentTransactions = new EntitySet<EnrollmentTransaction>(new Action<EnrollmentTransaction>(this.attach_EnrollmentTransactions), new Action<EnrollmentTransaction>(this.detach_EnrollmentTransactions));
+            _OrganizationMembers = new EntitySet<OrganizationMember>(new Action<OrganizationMember>(attach_OrganizationMembers), new Action<OrganizationMember>(detach_OrganizationMembers));
 
-            this._OrganizationMembers = new EntitySet<OrganizationMember>(new Action<OrganizationMember>(this.attach_OrganizationMembers), new Action<OrganizationMember>(this.detach_OrganizationMembers));
-
-
-            this._AttendType = default(EntityRef<AttendType>);
+            _AttendType = default(EntityRef<AttendType>);
 
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "Id", UpdateCheck = UpdateCheck.Never, Storage = "_Id", DbType = "int NOT NULL", IsPrimaryKey = true)]
         public int Id
         {
-            get => this._Id;
+            get => _Id;
 
             set
             {
-                if (this._Id != value)
+                if (_Id != value)
                 {
-
-                    this.OnIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._Id = value;
-                    this.SendPropertyChanged("Id");
-                    this.OnIdChanged();
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Code", UpdateCheck = UpdateCheck.Never, Storage = "_Code", DbType = "nvarchar(20)")]
         public string Code
         {
-            get => this._Code;
+            get => _Code;
 
             set
             {
-                if (this._Code != value)
+                if (_Code != value)
                 {
-
-                    this.OnCodeChanging(value);
-                    this.SendPropertyChanging();
-                    this._Code = value;
-                    this.SendPropertyChanged("Code");
-                    this.OnCodeChanged();
+                    OnCodeChanging(value);
+                    SendPropertyChanging();
+                    _Code = value;
+                    SendPropertyChanged("Code");
+                    OnCodeChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Description", UpdateCheck = UpdateCheck.Never, Storage = "_Description", DbType = "nvarchar(100)")]
         public string Description
         {
-            get => this._Description;
+            get => _Description;
 
             set
             {
-                if (this._Description != value)
+                if (_Description != value)
                 {
-
-                    this.OnDescriptionChanging(value);
-                    this.SendPropertyChanging();
-                    this._Description = value;
-                    this.SendPropertyChanged("Description");
-                    this.OnDescriptionChanged();
+                    OnDescriptionChanging(value);
+                    SendPropertyChanging();
+                    _Description = value;
+                    SendPropertyChanged("Description");
+                    OnDescriptionChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "AttendanceTypeId", UpdateCheck = UpdateCheck.Never, Storage = "_AttendanceTypeId", DbType = "int")]
         [IsForeignKey]
         public int? AttendanceTypeId
         {
-            get => this._AttendanceTypeId;
+            get => _AttendanceTypeId;
 
             set
             {
-                if (this._AttendanceTypeId != value)
+                if (_AttendanceTypeId != value)
                 {
-
-                    if (this._AttendType.HasLoadedOrAssignedValue)
+                    if (_AttendType.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnAttendanceTypeIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._AttendanceTypeId = value;
-                    this.SendPropertyChanged("AttendanceTypeId");
-                    this.OnAttendanceTypeIdChanged();
+                    OnAttendanceTypeIdChanging(value);
+                    SendPropertyChanging();
+                    _AttendanceTypeId = value;
+                    SendPropertyChanged("AttendanceTypeId");
+                    OnAttendanceTypeIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Hardwired", UpdateCheck = UpdateCheck.Never, Storage = "_Hardwired", DbType = "bit")]
         public bool? Hardwired
         {
-            get => this._Hardwired;
+            get => _Hardwired;
 
             set
             {
-                if (this._Hardwired != value)
+                if (_Hardwired != value)
                 {
-
-                    this.OnHardwiredChanging(value);
-                    this.SendPropertyChanging();
-                    this._Hardwired = value;
-                    this.SendPropertyChanged("Hardwired");
-                    this.OnHardwiredChanged();
+                    OnHardwiredChanging(value);
+                    SendPropertyChanging();
+                    _Hardwired = value;
+                    SendPropertyChanged("Hardwired");
+                    OnHardwiredChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Pending", UpdateCheck = UpdateCheck.Never, Storage = "_Pending", DbType = "bit NOT NULL")]
         public bool Pending
         {
-            get => this._Pending;
+            get => _Pending;
 
             set
             {
-                if (this._Pending != value)
+                if (_Pending != value)
                 {
-
-                    this.OnPendingChanging(value);
-                    this.SendPropertyChanging();
-                    this._Pending = value;
-                    this.SendPropertyChanged("Pending");
-                    this.OnPendingChanged();
+                    OnPendingChanging(value);
+                    SendPropertyChanging();
+                    _Pending = value;
+                    SendPropertyChanged("Pending");
+                    OnPendingChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Inactive", UpdateCheck = UpdateCheck.Never, Storage = "_Inactive", DbType = "bit NOT NULL")]
         public bool Inactive
         {
-            get => this._Inactive;
+            get => _Inactive;
 
             set
             {
-                if (this._Inactive != value)
+                if (_Inactive != value)
                 {
-
-                    this.OnInactiveChanging(value);
-                    this.SendPropertyChanging();
-                    this._Inactive = value;
-                    this.SendPropertyChanged("Inactive");
-                    this.OnInactiveChanged();
+                    OnInactiveChanging(value);
+                    SendPropertyChanging();
+                    _Inactive = value;
+                    SendPropertyChanged("Inactive");
+                    OnInactiveChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -251,32 +220,29 @@ namespace CmsData
         [Association(Name = "FK_Attend_MemberType", Storage = "_Attends", OtherKey = "MemberTypeId")]
         public EntitySet<Attend> Attends
            {
-               get => this._Attends;
+               get => _Attends;
 
-            set => this._Attends.Assign(value);
+            set => _Attends.Assign(value);
 
            }
-
 
         [Association(Name = "FK_ENROLLMENT_TRANSACTION_TBL_MemberType", Storage = "_EnrollmentTransactions", OtherKey = "MemberTypeId")]
         public EntitySet<EnrollmentTransaction> EnrollmentTransactions
            {
-               get => this._EnrollmentTransactions;
+               get => _EnrollmentTransactions;
 
-            set => this._EnrollmentTransactions.Assign(value);
+            set => _EnrollmentTransactions.Assign(value);
 
            }
-
 
         [Association(Name = "FK_ORGANIZATION_MEMBERS_TBL_MemberType", Storage = "_OrganizationMembers", OtherKey = "MemberTypeId")]
         public EntitySet<OrganizationMember> OrganizationMembers
            {
-               get => this._OrganizationMembers;
+               get => _OrganizationMembers;
 
-            set => this._OrganizationMembers.Assign(value);
+            set => _OrganizationMembers.Assign(value);
 
            }
-
 
         #endregion
 
@@ -285,106 +251,95 @@ namespace CmsData
         [Association(Name = "FK_MemberType_AttendType", Storage = "_AttendType", ThisKey = "AttendanceTypeId", IsForeignKey = true)]
         public AttendType AttendType
         {
-            get => this._AttendType.Entity;
+            get => _AttendType.Entity;
 
             set
             {
-                AttendType previousValue = this._AttendType.Entity;
+                AttendType previousValue = _AttendType.Entity;
                 if (((previousValue != value)
-                            || (this._AttendType.HasLoadedOrAssignedValue == false)))
+                            || (_AttendType.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._AttendType.Entity = null;
+                        _AttendType.Entity = null;
                         previousValue.MemberTypes.Remove(this);
                     }
 
-                    this._AttendType.Entity = value;
+                    _AttendType.Entity = value;
                     if (value != null)
                     {
                         value.MemberTypes.Add(this);
 
-                        this._AttendanceTypeId = value.Id;
+                        _AttendanceTypeId = value.Id;
 
                     }
 
                     else
                     {
-
-                        this._AttendanceTypeId = default(int?);
+                        _AttendanceTypeId = default(int?);
 
                     }
 
-                    this.SendPropertyChanged("AttendType");
+                    SendPropertyChanged("AttendType");
                 }
-
             }
-
         }
-
 
         #endregion
 
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
 
-
         private void attach_Attends(Attend entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.MemberType = this;
         }
 
         private void detach_Attends(Attend entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.MemberType = null;
         }
 
-
         private void attach_EnrollmentTransactions(EnrollmentTransaction entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.MemberType = this;
         }
 
         private void detach_EnrollmentTransactions(EnrollmentTransaction entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.MemberType = null;
         }
 
-
         private void attach_OrganizationMembers(OrganizationMember entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.MemberType = this;
         }
 
         private void detach_OrganizationMembers(OrganizationMember entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.MemberType = null;
         }
-
-
     }
-
 }
-

@@ -8,7 +8,7 @@ namespace CmsData
     [Table(Name = "lookup.Campus")]
     public partial class Campu : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -20,7 +20,6 @@ namespace CmsData
 
         private bool? _Hardwired;
 
-
         private EntitySet<Organization> _Organizations;
 
         private EntitySet<Person> _People;
@@ -30,6 +29,7 @@ namespace CmsData
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -47,108 +47,91 @@ namespace CmsData
         partial void OnHardwiredChanged();
 
         #endregion
+
         public Campu()
         {
+            _Organizations = new EntitySet<Organization>(new Action<Organization>(attach_Organizations), new Action<Organization>(detach_Organizations));
 
-            this._Organizations = new EntitySet<Organization>(new Action<Organization>(this.attach_Organizations), new Action<Organization>(this.detach_Organizations));
+            _People = new EntitySet<Person>(new Action<Person>(attach_People), new Action<Person>(detach_People));
 
-            this._People = new EntitySet<Person>(new Action<Person>(this.attach_People), new Action<Person>(this.detach_People));
-
-            this._Resources = new EntitySet<Resource>(new Action<Resource>(this.attach_Resources), new Action<Resource>(this.detach_Resources));
+            _Resources = new EntitySet<Resource>(new Action<Resource>(attach_Resources), new Action<Resource>(detach_Resources));
 
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "Id", UpdateCheck = UpdateCheck.Never, Storage = "_Id", DbType = "int NOT NULL", IsPrimaryKey = true)]
         public int Id
         {
-            get => this._Id;
+            get => _Id;
 
             set
             {
-                if (this._Id != value)
+                if (_Id != value)
                 {
-
-                    this.OnIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._Id = value;
-                    this.SendPropertyChanged("Id");
-                    this.OnIdChanged();
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Code", UpdateCheck = UpdateCheck.Never, Storage = "_Code", DbType = "nvarchar(20)")]
         public string Code
         {
-            get => this._Code;
+            get => _Code;
 
             set
             {
-                if (this._Code != value)
+                if (_Code != value)
                 {
-
-                    this.OnCodeChanging(value);
-                    this.SendPropertyChanging();
-                    this._Code = value;
-                    this.SendPropertyChanged("Code");
-                    this.OnCodeChanged();
+                    OnCodeChanging(value);
+                    SendPropertyChanging();
+                    _Code = value;
+                    SendPropertyChanged("Code");
+                    OnCodeChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Description", UpdateCheck = UpdateCheck.Never, Storage = "_Description", DbType = "nvarchar(100)")]
         public string Description
         {
-            get => this._Description;
+            get => _Description;
 
             set
             {
-                if (this._Description != value)
+                if (_Description != value)
                 {
-
-                    this.OnDescriptionChanging(value);
-                    this.SendPropertyChanging();
-                    this._Description = value;
-                    this.SendPropertyChanged("Description");
-                    this.OnDescriptionChanged();
+                    OnDescriptionChanging(value);
+                    SendPropertyChanging();
+                    _Description = value;
+                    SendPropertyChanged("Description");
+                    OnDescriptionChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Hardwired", UpdateCheck = UpdateCheck.Never, Storage = "_Hardwired", DbType = "bit")]
         public bool? Hardwired
         {
-            get => this._Hardwired;
+            get => _Hardwired;
 
             set
             {
-                if (this._Hardwired != value)
+                if (_Hardwired != value)
                 {
-
-                    this.OnHardwiredChanging(value);
-                    this.SendPropertyChanging();
-                    this._Hardwired = value;
-                    this.SendPropertyChanged("Hardwired");
-                    this.OnHardwiredChanged();
+                    OnHardwiredChanging(value);
+                    SendPropertyChanging();
+                    _Hardwired = value;
+                    SendPropertyChanged("Hardwired");
+                    OnHardwiredChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -157,29 +140,27 @@ namespace CmsData
         [Association(Name = "FK_Organizations_Campus", Storage = "_Organizations", OtherKey = "CampusId")]
         public EntitySet<Organization> Organizations
            {
-               get => this._Organizations;
+               get => _Organizations;
 
-            set => this._Organizations.Assign(value);
+            set => _Organizations.Assign(value);
 
            }
-
 
         [Association(Name = "FK_People_Campus", Storage = "_People", OtherKey = "CampusId")]
         public EntitySet<Person> People
            {
-               get => this._People;
+               get => _People;
 
-            set => this._People.Assign(value);
+            set => _People.Assign(value);
 
            }
-
 
         [Association(Name = "FK_Resource_Campus", Storage = "_Resources", OtherKey = "CampusId")]
         public EntitySet<Resource> Resources
            {
-               get => this._Resources;
+               get => _Resources;
 
-            set => this._Resources.Assign(value);
+            set => _Resources.Assign(value);
 
            }
 
@@ -192,59 +173,55 @@ namespace CmsData
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
 
-
         private void attach_Organizations(Organization entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.Campu = this;
         }
 
         private void detach_Organizations(Organization entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.Campu = null;
         }
 
-
         private void attach_People(Person entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.Campu = this;
         }
 
         private void detach_People(Person entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.Campu = null;
         }
 
-
         private void attach_Resources(Resource entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.Campu = this;
         }
 
         private void detach_Resources(Resource entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.Campu = null;
         }
     }
 }
-

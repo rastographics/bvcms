@@ -1,66 +1,48 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="XpDivOrg")]
-	public partial class XpDivOrg
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private int _DivId;
-		
-		private int _OrgId;
-		
-		
-		public XpDivOrg()
-		{
-		}
+    [Table(Name = "XpDivOrg")]
+    public partial class XpDivOrg
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="DivId", Storage="_DivId", DbType="int NOT NULL")]
-		public int DivId
-		{
-			get
-			{
-				return this._DivId;
-			}
+        private int _DivId;
 
-			set
-			{
-				if (this._DivId != value)
-					this._DivId = value;
-			}
+        private int _OrgId;
 
-		}
+        public XpDivOrg()
+        {
+        }
 
-		
-		[Column(Name="OrgId", Storage="_OrgId", DbType="int NOT NULL")]
-		public int OrgId
-		{
-			get
-			{
-				return this._OrgId;
-			}
+        [Column(Name = "DivId", Storage = "_DivId", DbType = "int NOT NULL")]
+        public int DivId
+        {
+            get => _DivId;
 
-			set
-			{
-				if (this._OrgId != value)
-					this._OrgId = value;
-			}
+            set
+            {
+                if (_DivId != value)
+                {
+                    _DivId = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "OrgId", Storage = "_OrgId", DbType = "int NOT NULL")]
+        public int OrgId
+        {
+            get => _OrgId;
 
-		
+            set
+            {
+                if (_OrgId != value)
+                {
+                    _OrgId = value;
+                }
+            }
+        }
     }
-
 }

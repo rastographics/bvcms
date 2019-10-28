@@ -1,237 +1,192 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="UserList")]
-	public partial class UserList
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private string _Username;
-		
-		private int _UserId;
-		
-		private string _Name;
-		
-		private string _Name2;
-		
-		private bool _IsApproved;
-		
-		private bool _MustChangePassword;
-		
-		private bool _IsLockedOut;
-		
-		private string _EmailAddress;
-		
-		private DateTime? _LastActivityDate;
-		
-		private int? _PeopleId;
-		
-		private string _Roles;
-		
-		
-		public UserList()
-		{
-		}
+    [Table(Name = "UserList")]
+    public partial class UserList
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="Username", Storage="_Username", DbType="nvarchar(50) NOT NULL")]
-		public string Username
-		{
-			get
-			{
-				return this._Username;
-			}
+        private string _Username;
 
-			set
-			{
-				if (this._Username != value)
-					this._Username = value;
-			}
+        private int _UserId;
 
-		}
+        private string _Name;
 
-		
-		[Column(Name="UserId", Storage="_UserId", DbType="int NOT NULL")]
-		public int UserId
-		{
-			get
-			{
-				return this._UserId;
-			}
+        private string _Name2;
 
-			set
-			{
-				if (this._UserId != value)
-					this._UserId = value;
-			}
+        private bool _IsApproved;
 
-		}
+        private bool _MustChangePassword;
 
-		
-		[Column(Name="Name", Storage="_Name", DbType="nvarchar(50)")]
-		public string Name
-		{
-			get
-			{
-				return this._Name;
-			}
+        private bool _IsLockedOut;
 
-			set
-			{
-				if (this._Name != value)
-					this._Name = value;
-			}
+        private string _EmailAddress;
 
-		}
+        private DateTime? _LastActivityDate;
 
-		
-		[Column(Name="Name2", Storage="_Name2", DbType="nvarchar(50)")]
-		public string Name2
-		{
-			get
-			{
-				return this._Name2;
-			}
+        private int? _PeopleId;
 
-			set
-			{
-				if (this._Name2 != value)
-					this._Name2 = value;
-			}
+        private string _Roles;
 
-		}
+        public UserList()
+        {
+        }
 
-		
-		[Column(Name="IsApproved", Storage="_IsApproved", DbType="bit NOT NULL")]
-		public bool IsApproved
-		{
-			get
-			{
-				return this._IsApproved;
-			}
+        [Column(Name = "Username", Storage = "_Username", DbType = "nvarchar(50) NOT NULL")]
+        public string Username
+        {
+            get => _Username;
 
-			set
-			{
-				if (this._IsApproved != value)
-					this._IsApproved = value;
-			}
+            set
+            {
+                if (_Username != value)
+                {
+                    _Username = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "UserId", Storage = "_UserId", DbType = "int NOT NULL")]
+        public int UserId
+        {
+            get => _UserId;
 
-		
-		[Column(Name="MustChangePassword", Storage="_MustChangePassword", DbType="bit NOT NULL")]
-		public bool MustChangePassword
-		{
-			get
-			{
-				return this._MustChangePassword;
-			}
+            set
+            {
+                if (_UserId != value)
+                {
+                    _UserId = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._MustChangePassword != value)
-					this._MustChangePassword = value;
-			}
+        [Column(Name = "Name", Storage = "_Name", DbType = "nvarchar(50)")]
+        public string Name
+        {
+            get => _Name;
 
-		}
+            set
+            {
+                if (_Name != value)
+                {
+                    _Name = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="IsLockedOut", Storage="_IsLockedOut", DbType="bit NOT NULL")]
-		public bool IsLockedOut
-		{
-			get
-			{
-				return this._IsLockedOut;
-			}
+        [Column(Name = "Name2", Storage = "_Name2", DbType = "nvarchar(50)")]
+        public string Name2
+        {
+            get => _Name2;
 
-			set
-			{
-				if (this._IsLockedOut != value)
-					this._IsLockedOut = value;
-			}
+            set
+            {
+                if (_Name2 != value)
+                {
+                    _Name2 = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "IsApproved", Storage = "_IsApproved", DbType = "bit NOT NULL")]
+        public bool IsApproved
+        {
+            get => _IsApproved;
 
-		
-		[Column(Name="EmailAddress", Storage="_EmailAddress", DbType="nvarchar(100)")]
-		public string EmailAddress
-		{
-			get
-			{
-				return this._EmailAddress;
-			}
+            set
+            {
+                if (_IsApproved != value)
+                {
+                    _IsApproved = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._EmailAddress != value)
-					this._EmailAddress = value;
-			}
+        [Column(Name = "MustChangePassword", Storage = "_MustChangePassword", DbType = "bit NOT NULL")]
+        public bool MustChangePassword
+        {
+            get => _MustChangePassword;
 
-		}
+            set
+            {
+                if (_MustChangePassword != value)
+                {
+                    _MustChangePassword = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="LastActivityDate", Storage="_LastActivityDate", DbType="datetime")]
-		public DateTime? LastActivityDate
-		{
-			get
-			{
-				return this._LastActivityDate;
-			}
+        [Column(Name = "IsLockedOut", Storage = "_IsLockedOut", DbType = "bit NOT NULL")]
+        public bool IsLockedOut
+        {
+            get => _IsLockedOut;
 
-			set
-			{
-				if (this._LastActivityDate != value)
-					this._LastActivityDate = value;
-			}
+            set
+            {
+                if (_IsLockedOut != value)
+                {
+                    _IsLockedOut = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "EmailAddress", Storage = "_EmailAddress", DbType = "nvarchar(100)")]
+        public string EmailAddress
+        {
+            get => _EmailAddress;
 
-		
-		[Column(Name="PeopleId", Storage="_PeopleId", DbType="int")]
-		public int? PeopleId
-		{
-			get
-			{
-				return this._PeopleId;
-			}
+            set
+            {
+                if (_EmailAddress != value)
+                {
+                    _EmailAddress = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._PeopleId != value)
-					this._PeopleId = value;
-			}
+        [Column(Name = "LastActivityDate", Storage = "_LastActivityDate", DbType = "datetime")]
+        public DateTime? LastActivityDate
+        {
+            get => _LastActivityDate;
 
-		}
+            set
+            {
+                if (_LastActivityDate != value)
+                {
+                    _LastActivityDate = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="Roles", Storage="_Roles", DbType="nvarchar(500)")]
-		public string Roles
-		{
-			get
-			{
-				return this._Roles;
-			}
+        [Column(Name = "PeopleId", Storage = "_PeopleId", DbType = "int")]
+        public int? PeopleId
+        {
+            get => _PeopleId;
 
-			set
-			{
-				if (this._Roles != value)
-					this._Roles = value;
-			}
+            set
+            {
+                if (_PeopleId != value)
+                {
+                    _PeopleId = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "Roles", Storage = "_Roles", DbType = "nvarchar(500)")]
+        public string Roles
+        {
+            get => _Roles;
 
-		
+            set
+            {
+                if (_Roles != value)
+                {
+                    _Roles = value;
+                }
+            }
+        }
     }
-
 }

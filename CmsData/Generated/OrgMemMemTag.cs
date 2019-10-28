@@ -9,7 +9,7 @@ namespace CmsData
     [Table(Name = "dbo.OrgMemMemTags")]
     public partial class OrgMemMemTag : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -23,8 +23,6 @@ namespace CmsData
 
         private bool? _IsLeader;
 
-
-
         private EntityRef<MemberTag> _MemberTag;
 
         private EntityRef<OrganizationMember> _OrganizationMember;
@@ -32,6 +30,7 @@ namespace CmsData
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -52,17 +51,15 @@ namespace CmsData
         partial void OnIsLeaderChanged();
 
         #endregion
+
         public OrgMemMemTag()
         {
+            _MemberTag = default(EntityRef<MemberTag>);
 
-
-            this._MemberTag = default(EntityRef<MemberTag>);
-
-            this._OrganizationMember = default(EntityRef<OrganizationMember>);
+            _OrganizationMember = default(EntityRef<OrganizationMember>);
 
             OnCreated();
         }
-
 
         #region Columns
 
@@ -70,129 +67,109 @@ namespace CmsData
         [IsForeignKey]
         public int OrgId
         {
-            get => this._OrgId;
+            get => _OrgId;
 
             set
             {
-                if (this._OrgId != value)
+                if (_OrgId != value)
                 {
-
-                    if (this._OrganizationMember.HasLoadedOrAssignedValue)
+                    if (_OrganizationMember.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnOrgIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._OrgId = value;
-                    this.SendPropertyChanged("OrgId");
-                    this.OnOrgIdChanged();
+                    OnOrgIdChanging(value);
+                    SendPropertyChanging();
+                    _OrgId = value;
+                    SendPropertyChanged("OrgId");
+                    OnOrgIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "PeopleId", UpdateCheck = UpdateCheck.Never, Storage = "_PeopleId", DbType = "int NOT NULL", IsPrimaryKey = true)]
         [IsForeignKey]
         public int PeopleId
         {
-            get => this._PeopleId;
+            get => _PeopleId;
 
             set
             {
-                if (this._PeopleId != value)
+                if (_PeopleId != value)
                 {
-
-                    if (this._OrganizationMember.HasLoadedOrAssignedValue)
+                    if (_OrganizationMember.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnPeopleIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._PeopleId = value;
-                    this.SendPropertyChanged("PeopleId");
-                    this.OnPeopleIdChanged();
+                    OnPeopleIdChanging(value);
+                    SendPropertyChanging();
+                    _PeopleId = value;
+                    SendPropertyChanged("PeopleId");
+                    OnPeopleIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "MemberTagId", UpdateCheck = UpdateCheck.Never, Storage = "_MemberTagId", DbType = "int NOT NULL", IsPrimaryKey = true)]
         [IsForeignKey]
         public int MemberTagId
         {
-            get => this._MemberTagId;
+            get => _MemberTagId;
 
             set
             {
-                if (this._MemberTagId != value)
+                if (_MemberTagId != value)
                 {
-
-                    if (this._MemberTag.HasLoadedOrAssignedValue)
+                    if (_MemberTag.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnMemberTagIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._MemberTagId = value;
-                    this.SendPropertyChanged("MemberTagId");
-                    this.OnMemberTagIdChanged();
+                    OnMemberTagIdChanging(value);
+                    SendPropertyChanging();
+                    _MemberTagId = value;
+                    SendPropertyChanged("MemberTagId");
+                    OnMemberTagIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Number", UpdateCheck = UpdateCheck.Never, Storage = "_Number", DbType = "int")]
         public int? Number
         {
-            get => this._Number;
+            get => _Number;
 
             set
             {
-                if (this._Number != value)
+                if (_Number != value)
                 {
-
-                    this.OnNumberChanging(value);
-                    this.SendPropertyChanging();
-                    this._Number = value;
-                    this.SendPropertyChanged("Number");
-                    this.OnNumberChanged();
+                    OnNumberChanging(value);
+                    SendPropertyChanging();
+                    _Number = value;
+                    SendPropertyChanged("Number");
+                    OnNumberChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "IsLeader", UpdateCheck = UpdateCheck.Never, Storage = "_IsLeader", DbType = "bit")]
         public bool? IsLeader
         {
-            get => this._IsLeader;
+            get => _IsLeader;
 
             set
             {
-                if (this._IsLeader != value)
+                if (_IsLeader != value)
                 {
-
-                    this.OnIsLeaderChanging(value);
-                    this.SendPropertyChanging();
-                    this._IsLeader = value;
-                    this.SendPropertyChanged("IsLeader");
-                    this.OnIsLeaderChanged();
+                    OnIsLeaderChanging(value);
+                    SendPropertyChanging();
+                    _IsLeader = value;
+                    SendPropertyChanged("IsLeader");
+                    OnIsLeaderChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -205,113 +182,101 @@ namespace CmsData
         [Association(Name = "FK_OrgMemMemTags_MemberTags", Storage = "_MemberTag", ThisKey = "MemberTagId", IsForeignKey = true)]
         public MemberTag MemberTag
         {
-            get => this._MemberTag.Entity;
+            get => _MemberTag.Entity;
 
             set
             {
-                MemberTag previousValue = this._MemberTag.Entity;
+                MemberTag previousValue = _MemberTag.Entity;
                 if (((previousValue != value)
-                            || (this._MemberTag.HasLoadedOrAssignedValue == false)))
+                            || (_MemberTag.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._MemberTag.Entity = null;
+                        _MemberTag.Entity = null;
                         previousValue.OrgMemMemTags.Remove(this);
                     }
 
-                    this._MemberTag.Entity = value;
+                    _MemberTag.Entity = value;
                     if (value != null)
                     {
                         value.OrgMemMemTags.Add(this);
 
-                        this._MemberTagId = value.Id;
+                        _MemberTagId = value.Id;
 
                     }
 
                     else
                     {
-
-                        this._MemberTagId = default(int);
+                        _MemberTagId = default(int);
 
                     }
 
-                    this.SendPropertyChanged("MemberTag");
+                    SendPropertyChanged("MemberTag");
                 }
-
             }
-
         }
-
 
         [Association(Name = "FK_OrgMemMemTags_OrganizationMembers", Storage = "_OrganizationMember", ThisKey = "OrgId,PeopleId", IsForeignKey = true)]
         public OrganizationMember OrganizationMember
         {
-            get => this._OrganizationMember.Entity;
+            get => _OrganizationMember.Entity;
 
             set
             {
-                OrganizationMember previousValue = this._OrganizationMember.Entity;
+                OrganizationMember previousValue = _OrganizationMember.Entity;
                 if (((previousValue != value)
-                            || (this._OrganizationMember.HasLoadedOrAssignedValue == false)))
+                            || (_OrganizationMember.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._OrganizationMember.Entity = null;
+                        _OrganizationMember.Entity = null;
                         previousValue.OrgMemMemTags.Remove(this);
                     }
 
-                    this._OrganizationMember.Entity = value;
+                    _OrganizationMember.Entity = value;
                     if (value != null)
                     {
                         value.OrgMemMemTags.Add(this);
 
-                        this._OrgId = value.OrganizationId;
+                        _OrgId = value.OrganizationId;
 
-                        this._PeopleId = value.PeopleId;
+                        _PeopleId = value.PeopleId;
 
                     }
 
                     else
                     {
+                        _OrgId = default(int);
 
-                        this._OrgId = default(int);
-
-                        this._PeopleId = default(int);
+                        _PeopleId = default(int);
 
                     }
 
-                    this.SendPropertyChanged("OrganizationMember");
+                    SendPropertyChanged("OrganizationMember");
                 }
-
             }
-
         }
-
 
         #endregion
 
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-
     }
-
 }
-

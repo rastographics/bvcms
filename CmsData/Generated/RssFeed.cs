@@ -7,7 +7,7 @@ namespace CmsData
     [Table(Name = "dbo.RssFeed")]
     public partial class RssFeed : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -19,11 +19,10 @@ namespace CmsData
 
         private DateTime? _LastModified;
 
-
-
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -41,103 +40,85 @@ namespace CmsData
         partial void OnLastModifiedChanged();
 
         #endregion
+
         public RssFeed()
         {
-
-
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "Url", UpdateCheck = UpdateCheck.Never, Storage = "_Url", DbType = "nvarchar(150) NOT NULL", IsPrimaryKey = true)]
         public string Url
         {
-            get => this._Url;
+            get => _Url;
 
             set
             {
-                if (this._Url != value)
+                if (_Url != value)
                 {
-
-                    this.OnUrlChanging(value);
-                    this.SendPropertyChanging();
-                    this._Url = value;
-                    this.SendPropertyChanged("Url");
-                    this.OnUrlChanged();
+                    OnUrlChanging(value);
+                    SendPropertyChanging();
+                    _Url = value;
+                    SendPropertyChanged("Url");
+                    OnUrlChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Data", UpdateCheck = UpdateCheck.Never, Storage = "_Data", DbType = "nvarchar")]
         public string Data
         {
-            get => this._Data;
+            get => _Data;
 
             set
             {
-                if (this._Data != value)
+                if (_Data != value)
                 {
-
-                    this.OnDataChanging(value);
-                    this.SendPropertyChanging();
-                    this._Data = value;
-                    this.SendPropertyChanged("Data");
-                    this.OnDataChanged();
+                    OnDataChanging(value);
+                    SendPropertyChanging();
+                    _Data = value;
+                    SendPropertyChanged("Data");
+                    OnDataChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ETag", UpdateCheck = UpdateCheck.Never, Storage = "_ETag", DbType = "nvarchar(150)")]
         public string ETag
         {
-            get => this._ETag;
+            get => _ETag;
 
             set
             {
-                if (this._ETag != value)
+                if (_ETag != value)
                 {
-
-                    this.OnETagChanging(value);
-                    this.SendPropertyChanging();
-                    this._ETag = value;
-                    this.SendPropertyChanged("ETag");
-                    this.OnETagChanged();
+                    OnETagChanging(value);
+                    SendPropertyChanging();
+                    _ETag = value;
+                    SendPropertyChanged("ETag");
+                    OnETagChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "LastModified", UpdateCheck = UpdateCheck.Never, Storage = "_LastModified", DbType = "datetime")]
         public DateTime? LastModified
         {
-            get => this._LastModified;
+            get => _LastModified;
 
             set
             {
-                if (this._LastModified != value)
+                if (_LastModified != value)
                 {
-
-                    this.OnLastModifiedChanging(value);
-                    this.SendPropertyChanging();
-                    this._LastModified = value;
-                    this.SendPropertyChanged("LastModified");
-                    this.OnLastModifiedChanged();
+                    OnLastModifiedChanging(value);
+                    SendPropertyChanging();
+                    _LastModified = value;
+                    SendPropertyChanged("LastModified");
+                    OnLastModifiedChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -152,23 +133,19 @@ namespace CmsData
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-
     }
-
 }
-

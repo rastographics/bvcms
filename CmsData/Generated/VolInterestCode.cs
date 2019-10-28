@@ -8,7 +8,7 @@ namespace CmsData
     [Table(Name = "dbo.VolInterestCodes")]
     public partial class VolInterestCode : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -20,13 +20,12 @@ namespace CmsData
 
         private string _Org;
 
-
         private EntitySet<VolInterestInterestCode> _VolInterestInterestCodes;
-
 
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -44,105 +43,87 @@ namespace CmsData
         partial void OnOrgChanged();
 
         #endregion
+
         public VolInterestCode()
         {
-
-            this._VolInterestInterestCodes = new EntitySet<VolInterestInterestCode>(new Action<VolInterestInterestCode>(this.attach_VolInterestInterestCodes), new Action<VolInterestInterestCode>(this.detach_VolInterestInterestCodes));
-
+            _VolInterestInterestCodes = new EntitySet<VolInterestInterestCode>(new Action<VolInterestInterestCode>(attach_VolInterestInterestCodes), new Action<VolInterestInterestCode>(detach_VolInterestInterestCodes));
 
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "Id", UpdateCheck = UpdateCheck.Never, Storage = "_Id", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
         public int Id
         {
-            get => this._Id;
+            get => _Id;
 
             set
             {
-                if (this._Id != value)
+                if (_Id != value)
                 {
-
-                    this.OnIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._Id = value;
-                    this.SendPropertyChanged("Id");
-                    this.OnIdChanged();
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Description", UpdateCheck = UpdateCheck.Never, Storage = "_Description", DbType = "nvarchar(180)")]
         public string Description
         {
-            get => this._Description;
+            get => _Description;
 
             set
             {
-                if (this._Description != value)
+                if (_Description != value)
                 {
-
-                    this.OnDescriptionChanging(value);
-                    this.SendPropertyChanging();
-                    this._Description = value;
-                    this.SendPropertyChanged("Description");
-                    this.OnDescriptionChanged();
+                    OnDescriptionChanging(value);
+                    SendPropertyChanging();
+                    _Description = value;
+                    SendPropertyChanged("Description");
+                    OnDescriptionChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Code", UpdateCheck = UpdateCheck.Never, Storage = "_Code", DbType = "nvarchar(100)")]
         public string Code
         {
-            get => this._Code;
+            get => _Code;
 
             set
             {
-                if (this._Code != value)
+                if (_Code != value)
                 {
-
-                    this.OnCodeChanging(value);
-                    this.SendPropertyChanging();
-                    this._Code = value;
-                    this.SendPropertyChanged("Code");
-                    this.OnCodeChanged();
+                    OnCodeChanging(value);
+                    SendPropertyChanging();
+                    _Code = value;
+                    SendPropertyChanged("Code");
+                    OnCodeChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Org", UpdateCheck = UpdateCheck.Never, Storage = "_Org", DbType = "nvarchar(150)")]
         public string Org
         {
-            get => this._Org;
+            get => _Org;
 
             set
             {
-                if (this._Org != value)
+                if (_Org != value)
                 {
-
-                    this.OnOrgChanging(value);
-                    this.SendPropertyChanging();
-                    this._Org = value;
-                    this.SendPropertyChanged("Org");
-                    this.OnOrgChanged();
+                    OnOrgChanging(value);
+                    SendPropertyChanging();
+                    _Org = value;
+                    SendPropertyChanged("Org");
+                    OnOrgChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -151,12 +132,11 @@ namespace CmsData
         [Association(Name = "FK_VolInterestInterestCodes_VolInterestCodes", Storage = "_VolInterestInterestCodes", OtherKey = "InterestCodeId")]
         public EntitySet<VolInterestInterestCode> VolInterestInterestCodes
            {
-               get => this._VolInterestInterestCodes;
+               get => _VolInterestInterestCodes;
 
-            set => this._VolInterestInterestCodes.Assign(value);
+            set => _VolInterestInterestCodes.Assign(value);
 
            }
-
 
         #endregion
 
@@ -167,36 +147,31 @@ namespace CmsData
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
 
-
         private void attach_VolInterestInterestCodes(VolInterestInterestCode entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.VolInterestCode = this;
         }
 
         private void detach_VolInterestInterestCodes(VolInterestInterestCode entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.VolInterestCode = null;
         }
-
-
     }
-
 }
-

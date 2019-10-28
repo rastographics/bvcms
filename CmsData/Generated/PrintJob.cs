@@ -7,7 +7,7 @@ namespace CmsData
     [Table(Name = "dbo.PrintJob")]
     public partial class PrintJob : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -19,11 +19,10 @@ namespace CmsData
 
         private string _JsonData;
 
-
-
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -41,100 +40,85 @@ namespace CmsData
         partial void OnJsonDataChanged();
 
         #endregion
+
         public PrintJob()
         {
-
-
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "Id", UpdateCheck = UpdateCheck.Never, Storage = "_Id", DbType = "nvarchar(50) NOT NULL", IsPrimaryKey = true)]
         public string Id
         {
-            get => this._Id;
+            get => _Id;
 
             set
             {
-                if (this._Id != value)
+                if (_Id != value)
                 {
-
-                    this.OnIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._Id = value;
-                    this.SendPropertyChanged("Id");
-                    this.OnIdChanged();
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Stamp", UpdateCheck = UpdateCheck.Never, Storage = "_Stamp", DbType = "datetime NOT NULL", IsPrimaryKey = true)]
         public DateTime Stamp
         {
-            get => this._Stamp;
+            get => _Stamp;
 
             set
             {
-                if (this._Stamp != value)
+                if (_Stamp != value)
                 {
-
-                    this.OnStampChanging(value);
-                    this.SendPropertyChanging();
-                    this._Stamp = value;
-                    this.SendPropertyChanged("Stamp");
-                    this.OnStampChanged();
+                    OnStampChanging(value);
+                    SendPropertyChanging();
+                    _Stamp = value;
+                    SendPropertyChanged("Stamp");
+                    OnStampChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Data", UpdateCheck = UpdateCheck.Never, Storage = "_Data", DbType = "nvarchar")]
         public string Data
         {
-            get => this._Data;
+            get => _Data;
 
             set
             {
-                if (this._Data != value)
+                if (_Data != value)
                 {
-
-                    this.OnDataChanging(value);
-                    this.SendPropertyChanging();
-                    this._Data = value;
-                    this.SendPropertyChanged("Data");
-                    this.OnDataChanged();
+                    OnDataChanging(value);
+                    SendPropertyChanging();
+                    _Data = value;
+                    SendPropertyChanged("Data");
+                    OnDataChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "JsonData", UpdateCheck = UpdateCheck.Never, Storage = "_JsonData", DbType = "nvarchar")]
         public string JsonData
         {
-            get => this._JsonData;
+            get => _JsonData;
 
             set
             {
-                if (this._JsonData != value)
+                if (_JsonData != value)
                 {
-                    this.OnJsonDataChanging(value);
-                    this.SendPropertyChanging();
-                    this._JsonData = value;
-                    this.SendPropertyChanged("JsonData");
-                    this.OnJsonDataChanged();
+                    OnJsonDataChanging(value);
+                    SendPropertyChanging();
+                    _JsonData = value;
+                    SendPropertyChanged("JsonData");
+                    OnJsonDataChanged();
                 }
             }
         }
-
 
         #endregion
 
@@ -149,18 +133,18 @@ namespace CmsData
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
     }

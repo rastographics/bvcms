@@ -9,7 +9,7 @@ namespace CmsData
     [Table(Name = "dbo.ResourceAttachment")]
     public partial class ResourceAttachment : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -29,13 +29,12 @@ namespace CmsData
 
         private int? _DisplayOrder;
 
-
-
         private EntityRef<Resource> _Resource;
 
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -65,199 +64,165 @@ namespace CmsData
         partial void OnDisplayOrderChanged();
 
         #endregion
+
         public ResourceAttachment()
         {
-
-
-            this._Resource = default(EntityRef<Resource>);
+            _Resource = default(EntityRef<Resource>);
 
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "ResourceAttachmentId", UpdateCheck = UpdateCheck.Never, Storage = "_ResourceAttachmentId", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
         public int ResourceAttachmentId
         {
-            get => this._ResourceAttachmentId;
+            get => _ResourceAttachmentId;
 
             set
             {
-                if (this._ResourceAttachmentId != value)
+                if (_ResourceAttachmentId != value)
                 {
-
-                    this.OnResourceAttachmentIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._ResourceAttachmentId = value;
-                    this.SendPropertyChanged("ResourceAttachmentId");
-                    this.OnResourceAttachmentIdChanged();
+                    OnResourceAttachmentIdChanging(value);
+                    SendPropertyChanging();
+                    _ResourceAttachmentId = value;
+                    SendPropertyChanged("ResourceAttachmentId");
+                    OnResourceAttachmentIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ResourceId", UpdateCheck = UpdateCheck.Never, Storage = "_ResourceId", DbType = "int NOT NULL")]
         [IsForeignKey]
         public int ResourceId
         {
-            get => this._ResourceId;
+            get => _ResourceId;
 
             set
             {
-                if (this._ResourceId != value)
+                if (_ResourceId != value)
                 {
-
-                    if (this._Resource.HasLoadedOrAssignedValue)
+                    if (_Resource.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnResourceIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._ResourceId = value;
-                    this.SendPropertyChanged("ResourceId");
-                    this.OnResourceIdChanged();
+                    OnResourceIdChanging(value);
+                    SendPropertyChanging();
+                    _ResourceId = value;
+                    SendPropertyChanged("ResourceId");
+                    OnResourceIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "FilePath", UpdateCheck = UpdateCheck.Never, Storage = "_FilePath", DbType = "nvarchar")]
         public string FilePath
         {
-            get => this._FilePath;
+            get => _FilePath;
 
             set
             {
-                if (this._FilePath != value)
+                if (_FilePath != value)
                 {
-
-                    this.OnFilePathChanging(value);
-                    this.SendPropertyChanging();
-                    this._FilePath = value;
-                    this.SendPropertyChanged("FilePath");
-                    this.OnFilePathChanged();
+                    OnFilePathChanging(value);
+                    SendPropertyChanging();
+                    _FilePath = value;
+                    SendPropertyChanged("FilePath");
+                    OnFilePathChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "FileTypeId", UpdateCheck = UpdateCheck.Never, Storage = "_FileTypeId", DbType = "int")]
         public int? FileTypeId
         {
-            get => this._FileTypeId;
+            get => _FileTypeId;
 
             set
             {
-                if (this._FileTypeId != value)
+                if (_FileTypeId != value)
                 {
-
-                    this.OnFileTypeIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._FileTypeId = value;
-                    this.SendPropertyChanged("FileTypeId");
-                    this.OnFileTypeIdChanged();
+                    OnFileTypeIdChanging(value);
+                    SendPropertyChanging();
+                    _FileTypeId = value;
+                    SendPropertyChanged("FileTypeId");
+                    OnFileTypeIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Name", UpdateCheck = UpdateCheck.Never, Storage = "_Name", DbType = "nvarchar(100)")]
         public string Name
         {
-            get => this._Name;
+            get => _Name;
 
             set
             {
-                if (this._Name != value)
+                if (_Name != value)
                 {
-
-                    this.OnNameChanging(value);
-                    this.SendPropertyChanging();
-                    this._Name = value;
-                    this.SendPropertyChanged("Name");
-                    this.OnNameChanged();
+                    OnNameChanging(value);
+                    SendPropertyChanging();
+                    _Name = value;
+                    SendPropertyChanged("Name");
+                    OnNameChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "CreationDate", UpdateCheck = UpdateCheck.Never, Storage = "_CreationDate", DbType = "datetime")]
         public DateTime? CreationDate
         {
-            get => this._CreationDate;
+            get => _CreationDate;
 
             set
             {
-                if (this._CreationDate != value)
+                if (_CreationDate != value)
                 {
-
-                    this.OnCreationDateChanging(value);
-                    this.SendPropertyChanging();
-                    this._CreationDate = value;
-                    this.SendPropertyChanged("CreationDate");
-                    this.OnCreationDateChanged();
+                    OnCreationDateChanging(value);
+                    SendPropertyChanging();
+                    _CreationDate = value;
+                    SendPropertyChanged("CreationDate");
+                    OnCreationDateChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "UpdateDate", UpdateCheck = UpdateCheck.Never, Storage = "_UpdateDate", DbType = "datetime")]
         public DateTime? UpdateDate
         {
-            get => this._UpdateDate;
+            get => _UpdateDate;
 
             set
             {
-                if (this._UpdateDate != value)
+                if (_UpdateDate != value)
                 {
-
-                    this.OnUpdateDateChanging(value);
-                    this.SendPropertyChanging();
-                    this._UpdateDate = value;
-                    this.SendPropertyChanged("UpdateDate");
-                    this.OnUpdateDateChanged();
+                    OnUpdateDateChanging(value);
+                    SendPropertyChanging();
+                    _UpdateDate = value;
+                    SendPropertyChanged("UpdateDate");
+                    OnUpdateDateChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "DisplayOrder", UpdateCheck = UpdateCheck.Never, Storage = "_DisplayOrder", DbType = "int")]
         public int? DisplayOrder
         {
-            get => this._DisplayOrder;
+            get => _DisplayOrder;
 
             set
             {
-                if (this._DisplayOrder != value)
+                if (_DisplayOrder != value)
                 {
-
-                    this.OnDisplayOrderChanging(value);
-                    this.SendPropertyChanging();
-                    this._DisplayOrder = value;
-                    this.SendPropertyChanged("DisplayOrder");
-                    this.OnDisplayOrderChanged();
+                    OnDisplayOrderChanging(value);
+                    SendPropertyChanging();
+                    _DisplayOrder = value;
+                    SendPropertyChanged("DisplayOrder");
+                    OnDisplayOrderChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -270,67 +235,59 @@ namespace CmsData
         [Association(Name = "FK_ResourceAttachment_Resource", Storage = "_Resource", ThisKey = "ResourceId", IsForeignKey = true)]
         public Resource Resource
         {
-            get => this._Resource.Entity;
+            get => _Resource.Entity;
 
             set
             {
-                Resource previousValue = this._Resource.Entity;
+                Resource previousValue = _Resource.Entity;
                 if (((previousValue != value)
-                            || (this._Resource.HasLoadedOrAssignedValue == false)))
+                            || (_Resource.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._Resource.Entity = null;
+                        _Resource.Entity = null;
                         previousValue.ResourceAttachments.Remove(this);
                     }
 
-                    this._Resource.Entity = value;
+                    _Resource.Entity = value;
                     if (value != null)
                     {
                         value.ResourceAttachments.Add(this);
 
-                        this._ResourceId = value.ResourceId;
+                        _ResourceId = value.ResourceId;
 
                     }
 
                     else
                     {
-
-                        this._ResourceId = default(int);
+                        _ResourceId = default(int);
 
                     }
 
-                    this.SendPropertyChanged("Resource");
+                    SendPropertyChanged("Resource");
                 }
-
             }
-
         }
-
 
         #endregion
 
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-
     }
-
 }
-

@@ -9,7 +9,7 @@ namespace CmsData
     [Table(Name = "dbo.TransactionPeople")]
     public partial class TransactionPerson : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -23,8 +23,6 @@ namespace CmsData
 
         private bool? _Donor;
 
-
-
         private EntityRef<Person> _Person;
 
         private EntityRef<Transaction> _Transaction;
@@ -32,6 +30,7 @@ namespace CmsData
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -52,17 +51,15 @@ namespace CmsData
         partial void OnDonorChanged();
 
         #endregion
+
         public TransactionPerson()
         {
+            _Person = default(EntityRef<Person>);
 
-
-            this._Person = default(EntityRef<Person>);
-
-            this._Transaction = default(EntityRef<Transaction>);
+            _Transaction = default(EntityRef<Transaction>);
 
             OnCreated();
         }
-
 
         #region Columns
 
@@ -70,123 +67,103 @@ namespace CmsData
         [IsForeignKey]
         public int Id
         {
-            get => this._Id;
+            get => _Id;
 
             set
             {
-                if (this._Id != value)
+                if (_Id != value)
                 {
-
-                    if (this._Transaction.HasLoadedOrAssignedValue)
+                    if (_Transaction.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._Id = value;
-                    this.SendPropertyChanged("Id");
-                    this.OnIdChanged();
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "PeopleId", UpdateCheck = UpdateCheck.Never, Storage = "_PeopleId", DbType = "int NOT NULL", IsPrimaryKey = true)]
         [IsForeignKey]
         public int PeopleId
         {
-            get => this._PeopleId;
+            get => _PeopleId;
 
             set
             {
-                if (this._PeopleId != value)
+                if (_PeopleId != value)
                 {
-
-                    if (this._Person.HasLoadedOrAssignedValue)
+                    if (_Person.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnPeopleIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._PeopleId = value;
-                    this.SendPropertyChanged("PeopleId");
-                    this.OnPeopleIdChanged();
+                    OnPeopleIdChanging(value);
+                    SendPropertyChanging();
+                    _PeopleId = value;
+                    SendPropertyChanged("PeopleId");
+                    OnPeopleIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Amt", UpdateCheck = UpdateCheck.Never, Storage = "_Amt", DbType = "money")]
         public decimal? Amt
         {
-            get => this._Amt;
+            get => _Amt;
 
             set
             {
-                if (this._Amt != value)
+                if (_Amt != value)
                 {
-
-                    this.OnAmtChanging(value);
-                    this.SendPropertyChanging();
-                    this._Amt = value;
-                    this.SendPropertyChanged("Amt");
-                    this.OnAmtChanged();
+                    OnAmtChanging(value);
+                    SendPropertyChanging();
+                    _Amt = value;
+                    SendPropertyChanged("Amt");
+                    OnAmtChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "OrgId", UpdateCheck = UpdateCheck.Never, Storage = "_OrgId", DbType = "int")]
         public int? OrgId
         {
-            get => this._OrgId;
+            get => _OrgId;
 
             set
             {
-                if (this._OrgId != value)
+                if (_OrgId != value)
                 {
-
-                    this.OnOrgIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._OrgId = value;
-                    this.SendPropertyChanged("OrgId");
-                    this.OnOrgIdChanged();
+                    OnOrgIdChanging(value);
+                    SendPropertyChanging();
+                    _OrgId = value;
+                    SendPropertyChanged("OrgId");
+                    OnOrgIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Donor", UpdateCheck = UpdateCheck.Never, Storage = "_Donor", DbType = "bit")]
         public bool? Donor
         {
-            get => this._Donor;
+            get => _Donor;
 
             set
             {
-                if (this._Donor != value)
+                if (_Donor != value)
                 {
-
-                    this.OnDonorChanging(value);
-                    this.SendPropertyChanging();
-                    this._Donor = value;
-                    this.SendPropertyChanged("Donor");
-                    this.OnDonorChanged();
+                    OnDonorChanging(value);
+                    SendPropertyChanging();
+                    _Donor = value;
+                    SendPropertyChanged("Donor");
+                    OnDonorChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -199,109 +176,97 @@ namespace CmsData
         [Association(Name = "FK_TransactionPeople_Person", Storage = "_Person", ThisKey = "PeopleId", IsForeignKey = true)]
         public Person Person
         {
-            get => this._Person.Entity;
+            get => _Person.Entity;
 
             set
             {
-                Person previousValue = this._Person.Entity;
+                Person previousValue = _Person.Entity;
                 if (((previousValue != value)
-                            || (this._Person.HasLoadedOrAssignedValue == false)))
+                            || (_Person.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._Person.Entity = null;
+                        _Person.Entity = null;
                         previousValue.TransactionPeople.Remove(this);
                     }
 
-                    this._Person.Entity = value;
+                    _Person.Entity = value;
                     if (value != null)
                     {
                         value.TransactionPeople.Add(this);
 
-                        this._PeopleId = value.PeopleId;
+                        _PeopleId = value.PeopleId;
 
                     }
 
                     else
                     {
-
-                        this._PeopleId = default(int);
+                        _PeopleId = default(int);
 
                     }
 
-                    this.SendPropertyChanged("Person");
+                    SendPropertyChanged("Person");
                 }
-
             }
-
         }
-
 
         [Association(Name = "FK_TransactionPeople_Transaction", Storage = "_Transaction", ThisKey = "Id", IsForeignKey = true)]
         public Transaction Transaction
         {
-            get => this._Transaction.Entity;
+            get => _Transaction.Entity;
 
             set
             {
-                Transaction previousValue = this._Transaction.Entity;
+                Transaction previousValue = _Transaction.Entity;
                 if (((previousValue != value)
-                            || (this._Transaction.HasLoadedOrAssignedValue == false)))
+                            || (_Transaction.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._Transaction.Entity = null;
+                        _Transaction.Entity = null;
                         previousValue.TransactionPeople.Remove(this);
                     }
 
-                    this._Transaction.Entity = value;
+                    _Transaction.Entity = value;
                     if (value != null)
                     {
                         value.TransactionPeople.Add(this);
 
-                        this._Id = value.Id;
+                        _Id = value.Id;
 
                     }
 
                     else
                     {
-
-                        this._Id = default(int);
+                        _Id = default(int);
 
                     }
 
-                    this.SendPropertyChanged("Transaction");
+                    SendPropertyChanged("Transaction");
                 }
-
             }
-
         }
-
 
         #endregion
 
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-
     }
-
 }
-

@@ -9,7 +9,7 @@ namespace CmsData
     [Table(Name = "dbo.ContributionTag")]
     public partial class ContributionTag : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -19,13 +19,12 @@ namespace CmsData
 
         private int? _Priority;
 
-
-
         private EntityRef<Contribution> _Contribution;
 
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -40,15 +39,13 @@ namespace CmsData
         partial void OnPriorityChanged();
 
         #endregion
+
         public ContributionTag()
         {
-
-
-            this._Contribution = default(EntityRef<Contribution>);
+            _Contribution = default(EntityRef<Contribution>);
 
             OnCreated();
         }
-
 
         #region Columns
 
@@ -56,64 +53,61 @@ namespace CmsData
         [IsForeignKey]
         public int ContributionId
         {
-            get => this._ContributionId;
+            get => _ContributionId;
 
             set
             {
-                if (this._ContributionId != value)
+                if (_ContributionId != value)
                 {
-                    if (this._Contribution.HasLoadedOrAssignedValue)
+                    if (_Contribution.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnContributionIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._ContributionId = value;
-                    this.SendPropertyChanged("ContributionId");
-                    this.OnContributionIdChanged();
+                    OnContributionIdChanging(value);
+                    SendPropertyChanging();
+                    _ContributionId = value;
+                    SendPropertyChanged("ContributionId");
+                    OnContributionIdChanged();
                 }
             }
         }
-
 
         [Column(Name = "TagName", UpdateCheck = UpdateCheck.Never, Storage = "_TagName", DbType = "varchar(50) NOT NULL", IsPrimaryKey = true)]
         public string TagName
         {
-            get => this._TagName;
+            get => _TagName;
 
             set
             {
-                if (this._TagName != value)
+                if (_TagName != value)
                 {
-                    this.OnTagNameChanging(value);
-                    this.SendPropertyChanging();
-                    this._TagName = value;
-                    this.SendPropertyChanged("TagName");
-                    this.OnTagNameChanged();
+                    OnTagNameChanging(value);
+                    SendPropertyChanging();
+                    _TagName = value;
+                    SendPropertyChanged("TagName");
+                    OnTagNameChanged();
                 }
             }
         }
-
 
         [Column(Name = "Priority", UpdateCheck = UpdateCheck.Never, Storage = "_Priority", DbType = "int")]
         public int? Priority
         {
-            get => this._Priority;
+            get => _Priority;
 
             set
             {
-                if (this._Priority != value)
+                if (_Priority != value)
                 {
-                    this.OnPriorityChanging(value);
-                    this.SendPropertyChanging();
-                    this._Priority = value;
-                    this.SendPropertyChanged("Priority");
-                    this.OnPriorityChanged();
+                    OnPriorityChanging(value);
+                    SendPropertyChanging();
+                    _Priority = value;
+                    SendPropertyChanged("Priority");
+                    OnPriorityChanged();
                 }
             }
         }
-
 
         #endregion
 
@@ -126,60 +120,57 @@ namespace CmsData
         [Association(Name = "FK_ContributionTag_Contribution", Storage = "_Contribution", ThisKey = "ContributionId", IsForeignKey = true)]
         public Contribution Contribution
         {
-            get => this._Contribution.Entity;
+            get => _Contribution.Entity;
 
             set
             {
-                Contribution previousValue = this._Contribution.Entity;
+                Contribution previousValue = _Contribution.Entity;
                 if (((previousValue != value)
-                            || (this._Contribution.HasLoadedOrAssignedValue == false)))
+                            || (_Contribution.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._Contribution.Entity = null;
+                        _Contribution.Entity = null;
                         previousValue.ContributionTags.Remove(this);
                     }
 
-                    this._Contribution.Entity = value;
+                    _Contribution.Entity = value;
                     if (value != null)
                     {
                         value.ContributionTags.Add(this);
 
-                        this._ContributionId = value.ContributionId;
+                        _ContributionId = value.ContributionId;
                     }
 
                     else
                     {
-
-                        this._ContributionId = default(int);
+                        _ContributionId = default(int);
                     }
 
-                    this.SendPropertyChanged("Contribution");
+                    SendPropertyChanged("Contribution");
                 }
             }
         }
-
 
         #endregion
 
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
     }
 }
-

@@ -7,7 +7,7 @@ namespace CmsData
     [Table(Name = "dbo.Downline")]
     public partial class Downline : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -29,11 +29,10 @@ namespace CmsData
 
         private DateTime? _EndDt;
 
-
-
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -66,213 +65,175 @@ namespace CmsData
         partial void OnEndDtChanged();
 
         #endregion
+
         public Downline()
         {
-
-
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "CategoryId", UpdateCheck = UpdateCheck.Never, Storage = "_CategoryId", DbType = "int")]
         public int? CategoryId
         {
-            get => this._CategoryId;
+            get => _CategoryId;
 
             set
             {
-                if (this._CategoryId != value)
+                if (_CategoryId != value)
                 {
-
-                    this.OnCategoryIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._CategoryId = value;
-                    this.SendPropertyChanged("CategoryId");
-                    this.OnCategoryIdChanged();
+                    OnCategoryIdChanging(value);
+                    SendPropertyChanging();
+                    _CategoryId = value;
+                    SendPropertyChanged("CategoryId");
+                    OnCategoryIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "DownlineId", UpdateCheck = UpdateCheck.Never, Storage = "_DownlineId", DbType = "int")]
         public int? DownlineId
         {
-            get => this._DownlineId;
+            get => _DownlineId;
 
             set
             {
-                if (this._DownlineId != value)
+                if (_DownlineId != value)
                 {
-
-                    this.OnDownlineIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._DownlineId = value;
-                    this.SendPropertyChanged("DownlineId");
-                    this.OnDownlineIdChanged();
+                    OnDownlineIdChanging(value);
+                    SendPropertyChanging();
+                    _DownlineId = value;
+                    SendPropertyChanged("DownlineId");
+                    OnDownlineIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Generation", UpdateCheck = UpdateCheck.Never, Storage = "_Generation", DbType = "int")]
         public int? Generation
         {
-            get => this._Generation;
+            get => _Generation;
 
             set
             {
-                if (this._Generation != value)
+                if (_Generation != value)
                 {
-
-                    this.OnGenerationChanging(value);
-                    this.SendPropertyChanging();
-                    this._Generation = value;
-                    this.SendPropertyChanged("Generation");
-                    this.OnGenerationChanged();
+                    OnGenerationChanging(value);
+                    SendPropertyChanging();
+                    _Generation = value;
+                    SendPropertyChanged("Generation");
+                    OnGenerationChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "OrgId", UpdateCheck = UpdateCheck.Never, Storage = "_OrgId", DbType = "int")]
         public int? OrgId
         {
-            get => this._OrgId;
+            get => _OrgId;
 
             set
             {
-                if (this._OrgId != value)
+                if (_OrgId != value)
                 {
-
-                    this.OnOrgIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._OrgId = value;
-                    this.SendPropertyChanged("OrgId");
-                    this.OnOrgIdChanged();
+                    OnOrgIdChanging(value);
+                    SendPropertyChanging();
+                    _OrgId = value;
+                    SendPropertyChanged("OrgId");
+                    OnOrgIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "LeaderId", UpdateCheck = UpdateCheck.Never, Storage = "_LeaderId", DbType = "int")]
         public int? LeaderId
         {
-            get => this._LeaderId;
+            get => _LeaderId;
 
             set
             {
-                if (this._LeaderId != value)
+                if (_LeaderId != value)
                 {
-
-                    this.OnLeaderIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._LeaderId = value;
-                    this.SendPropertyChanged("LeaderId");
-                    this.OnLeaderIdChanged();
+                    OnLeaderIdChanging(value);
+                    SendPropertyChanging();
+                    _LeaderId = value;
+                    SendPropertyChanged("LeaderId");
+                    OnLeaderIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "DiscipleId", UpdateCheck = UpdateCheck.Never, Storage = "_DiscipleId", DbType = "int")]
         public int? DiscipleId
         {
-            get => this._DiscipleId;
+            get => _DiscipleId;
 
             set
             {
-                if (this._DiscipleId != value)
+                if (_DiscipleId != value)
                 {
-
-                    this.OnDiscipleIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._DiscipleId = value;
-                    this.SendPropertyChanged("DiscipleId");
-                    this.OnDiscipleIdChanged();
+                    OnDiscipleIdChanging(value);
+                    SendPropertyChanging();
+                    _DiscipleId = value;
+                    SendPropertyChanged("DiscipleId");
+                    OnDiscipleIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "StartDt", UpdateCheck = UpdateCheck.Never, Storage = "_StartDt", DbType = "datetime")]
         public DateTime? StartDt
         {
-            get => this._StartDt;
+            get => _StartDt;
 
             set
             {
-                if (this._StartDt != value)
+                if (_StartDt != value)
                 {
-
-                    this.OnStartDtChanging(value);
-                    this.SendPropertyChanging();
-                    this._StartDt = value;
-                    this.SendPropertyChanged("StartDt");
-                    this.OnStartDtChanged();
+                    OnStartDtChanging(value);
+                    SendPropertyChanging();
+                    _StartDt = value;
+                    SendPropertyChanged("StartDt");
+                    OnStartDtChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Trace", UpdateCheck = UpdateCheck.Never, Storage = "_Trace", DbType = "varchar(400)")]
         public string Trace
         {
-            get => this._Trace;
+            get => _Trace;
 
             set
             {
-                if (this._Trace != value)
+                if (_Trace != value)
                 {
-
-                    this.OnTraceChanging(value);
-                    this.SendPropertyChanging();
-                    this._Trace = value;
-                    this.SendPropertyChanged("Trace");
-                    this.OnTraceChanged();
+                    OnTraceChanging(value);
+                    SendPropertyChanging();
+                    _Trace = value;
+                    SendPropertyChanged("Trace");
+                    OnTraceChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "EndDt", UpdateCheck = UpdateCheck.Never, Storage = "_EndDt", DbType = "datetime")]
         public DateTime? EndDt
         {
-            get => this._EndDt;
+            get => _EndDt;
 
             set
             {
-                if (this._EndDt != value)
+                if (_EndDt != value)
                 {
-
-                    this.OnEndDtChanging(value);
-                    this.SendPropertyChanging();
-                    this._EndDt = value;
-                    this.SendPropertyChanged("EndDt");
-                    this.OnEndDtChanged();
+                    OnEndDtChanging(value);
+                    SendPropertyChanging();
+                    _EndDt = value;
+                    SendPropertyChanged("EndDt");
+                    OnEndDtChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -287,23 +248,19 @@ namespace CmsData
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-
     }
-
 }
-

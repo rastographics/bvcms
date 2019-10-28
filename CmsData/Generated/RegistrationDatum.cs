@@ -8,7 +8,7 @@ namespace CmsData
     [Table(Name = "dbo.RegistrationData")]
     public partial class RegistrationDatum : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -26,13 +26,12 @@ namespace CmsData
 
         private bool? _Abandoned;
 
-
         private EntitySet<OrganizationMember> _OrganizationMembers;
-
 
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -59,171 +58,141 @@ namespace CmsData
         partial void OnAbandonedChanged();
 
         #endregion
+
         public RegistrationDatum()
         {
-
-            this._OrganizationMembers = new EntitySet<OrganizationMember>(new Action<OrganizationMember>(this.attach_OrganizationMembers), new Action<OrganizationMember>(this.detach_OrganizationMembers));
-
+            _OrganizationMembers = new EntitySet<OrganizationMember>(new Action<OrganizationMember>(attach_OrganizationMembers), new Action<OrganizationMember>(detach_OrganizationMembers));
 
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "Id", UpdateCheck = UpdateCheck.Never, Storage = "_Id", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
         public int Id
         {
-            get => this._Id;
+            get => _Id;
 
             set
             {
-                if (this._Id != value)
+                if (_Id != value)
                 {
-
-                    this.OnIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._Id = value;
-                    this.SendPropertyChanged("Id");
-                    this.OnIdChanged();
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Data", UpdateCheck = UpdateCheck.Never, Storage = "_Data", DbType = "xml")]
         public string Data
         {
-            get => this._Data;
+            get => _Data;
 
             set
             {
-                if (this._Data != value)
+                if (_Data != value)
                 {
-
-                    this.OnDataChanging(value);
-                    this.SendPropertyChanging();
-                    this._Data = value;
-                    this.SendPropertyChanged("Data");
-                    this.OnDataChanged();
+                    OnDataChanging(value);
+                    SendPropertyChanging();
+                    _Data = value;
+                    SendPropertyChanged("Data");
+                    OnDataChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Stamp", UpdateCheck = UpdateCheck.Never, Storage = "_Stamp", DbType = "datetime")]
         public DateTime? Stamp
         {
-            get => this._Stamp;
+            get => _Stamp;
 
             set
             {
-                if (this._Stamp != value)
+                if (_Stamp != value)
                 {
-
-                    this.OnStampChanging(value);
-                    this.SendPropertyChanging();
-                    this._Stamp = value;
-                    this.SendPropertyChanged("Stamp");
-                    this.OnStampChanged();
+                    OnStampChanging(value);
+                    SendPropertyChanging();
+                    _Stamp = value;
+                    SendPropertyChanged("Stamp");
+                    OnStampChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "completed", UpdateCheck = UpdateCheck.Never, Storage = "_Completed", DbType = "bit")]
         public bool? Completed
         {
-            get => this._Completed;
+            get => _Completed;
 
             set
             {
-                if (this._Completed != value)
+                if (_Completed != value)
                 {
-
-                    this.OnCompletedChanging(value);
-                    this.SendPropertyChanging();
-                    this._Completed = value;
-                    this.SendPropertyChanged("Completed");
-                    this.OnCompletedChanged();
+                    OnCompletedChanging(value);
+                    SendPropertyChanging();
+                    _Completed = value;
+                    SendPropertyChanged("Completed");
+                    OnCompletedChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "OrganizationId", UpdateCheck = UpdateCheck.Never, Storage = "_OrganizationId", DbType = "int")]
         public int? OrganizationId
         {
-            get => this._OrganizationId;
+            get => _OrganizationId;
 
             set
             {
-                if (this._OrganizationId != value)
+                if (_OrganizationId != value)
                 {
-
-                    this.OnOrganizationIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._OrganizationId = value;
-                    this.SendPropertyChanged("OrganizationId");
-                    this.OnOrganizationIdChanged();
+                    OnOrganizationIdChanging(value);
+                    SendPropertyChanging();
+                    _OrganizationId = value;
+                    SendPropertyChanged("OrganizationId");
+                    OnOrganizationIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "UserPeopleId", UpdateCheck = UpdateCheck.Never, Storage = "_UserPeopleId", DbType = "int")]
         public int? UserPeopleId
         {
-            get => this._UserPeopleId;
+            get => _UserPeopleId;
 
             set
             {
-                if (this._UserPeopleId != value)
+                if (_UserPeopleId != value)
                 {
-
-                    this.OnUserPeopleIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._UserPeopleId = value;
-                    this.SendPropertyChanged("UserPeopleId");
-                    this.OnUserPeopleIdChanged();
+                    OnUserPeopleIdChanging(value);
+                    SendPropertyChanging();
+                    _UserPeopleId = value;
+                    SendPropertyChanged("UserPeopleId");
+                    OnUserPeopleIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "abandoned", UpdateCheck = UpdateCheck.Never, Storage = "_Abandoned", DbType = "bit")]
         public bool? Abandoned
         {
-            get => this._Abandoned;
+            get => _Abandoned;
 
             set
             {
-                if (this._Abandoned != value)
+                if (_Abandoned != value)
                 {
-
-                    this.OnAbandonedChanging(value);
-                    this.SendPropertyChanging();
-                    this._Abandoned = value;
-                    this.SendPropertyChanged("Abandoned");
-                    this.OnAbandonedChanged();
+                    OnAbandonedChanging(value);
+                    SendPropertyChanging();
+                    _Abandoned = value;
+                    SendPropertyChanged("Abandoned");
+                    OnAbandonedChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -232,12 +201,11 @@ namespace CmsData
         [Association(Name = "FK_OrganizationMembers_RegistrationData", Storage = "_OrganizationMembers", OtherKey = "RegistrationDataId")]
         public EntitySet<OrganizationMember> OrganizationMembers
            {
-               get => this._OrganizationMembers;
+               get => _OrganizationMembers;
 
-            set => this._OrganizationMembers.Assign(value);
+            set => _OrganizationMembers.Assign(value);
 
            }
-
 
         #endregion
 
@@ -248,36 +216,31 @@ namespace CmsData
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
 
-
         private void attach_OrganizationMembers(OrganizationMember entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.RegistrationDatum = this;
         }
 
         private void detach_OrganizationMembers(OrganizationMember entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.RegistrationDatum = null;
         }
-
-
     }
-
 }
-

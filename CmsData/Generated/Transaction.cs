@@ -9,7 +9,7 @@ namespace CmsData
     [Table(Name = "dbo.Transaction")]
     public partial class Transaction : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -109,13 +109,11 @@ namespace CmsData
 
         private string _Country;
 
-
         private EntitySet<OrganizationMember> _OrganizationMembers;
 
         private EntitySet<TransactionPerson> _TransactionPeople;
 
         private EntitySet<Transaction> _Transactions;
-
 
         private EntityRef<Person> _Person;
 
@@ -124,6 +122,7 @@ namespace CmsData
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -273,1093 +272,899 @@ namespace CmsData
         partial void OnCountryChanged();
 
         #endregion
+
         public Transaction()
         {
+            _OrganizationMembers = new EntitySet<OrganizationMember>(new Action<OrganizationMember>(attach_OrganizationMembers), new Action<OrganizationMember>(detach_OrganizationMembers));
 
-            this._OrganizationMembers = new EntitySet<OrganizationMember>(new Action<OrganizationMember>(this.attach_OrganizationMembers), new Action<OrganizationMember>(this.detach_OrganizationMembers));
+            _TransactionPeople = new EntitySet<TransactionPerson>(new Action<TransactionPerson>(attach_TransactionPeople), new Action<TransactionPerson>(detach_TransactionPeople));
 
-            this._TransactionPeople = new EntitySet<TransactionPerson>(new Action<TransactionPerson>(this.attach_TransactionPeople), new Action<TransactionPerson>(this.detach_TransactionPeople));
+            _Transactions = new EntitySet<Transaction>(new Action<Transaction>(attach_Transactions), new Action<Transaction>(detach_Transactions));
 
-            this._Transactions = new EntitySet<Transaction>(new Action<Transaction>(this.attach_Transactions), new Action<Transaction>(this.detach_Transactions));
+            _Person = default(EntityRef<Person>);
 
-
-            this._Person = default(EntityRef<Person>);
-
-            this._OriginalTransaction = default(EntityRef<Transaction>);
+            _OriginalTransaction = default(EntityRef<Transaction>);
 
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "Id", UpdateCheck = UpdateCheck.Never, Storage = "_Id", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
         public int Id
         {
-            get => this._Id;
+            get => _Id;
 
             set
             {
-                if (this._Id != value)
+                if (_Id != value)
                 {
-
-                    this.OnIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._Id = value;
-                    this.SendPropertyChanged("Id");
-                    this.OnIdChanged();
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "TransactionDate", UpdateCheck = UpdateCheck.Never, Storage = "_TransactionDate", DbType = "datetime")]
         public DateTime? TransactionDate
         {
-            get => this._TransactionDate;
+            get => _TransactionDate;
 
             set
             {
-                if (this._TransactionDate != value)
+                if (_TransactionDate != value)
                 {
-
-                    this.OnTransactionDateChanging(value);
-                    this.SendPropertyChanging();
-                    this._TransactionDate = value;
-                    this.SendPropertyChanged("TransactionDate");
-                    this.OnTransactionDateChanged();
+                    OnTransactionDateChanging(value);
+                    SendPropertyChanging();
+                    _TransactionDate = value;
+                    SendPropertyChanged("TransactionDate");
+                    OnTransactionDateChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "TransactionGateway", UpdateCheck = UpdateCheck.Never, Storage = "_TransactionGateway", DbType = "nvarchar(50)")]
         public string TransactionGateway
         {
-            get => this._TransactionGateway;
+            get => _TransactionGateway;
 
             set
             {
-                if (this._TransactionGateway != value)
+                if (_TransactionGateway != value)
                 {
-
-                    this.OnTransactionGatewayChanging(value);
-                    this.SendPropertyChanging();
-                    this._TransactionGateway = value;
-                    this.SendPropertyChanged("TransactionGateway");
-                    this.OnTransactionGatewayChanged();
+                    OnTransactionGatewayChanging(value);
+                    SendPropertyChanging();
+                    _TransactionGateway = value;
+                    SendPropertyChanged("TransactionGateway");
+                    OnTransactionGatewayChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "DatumId", UpdateCheck = UpdateCheck.Never, Storage = "_DatumId", DbType = "int")]
         public int? DatumId
         {
-            get => this._DatumId;
+            get => _DatumId;
 
             set
             {
-                if (this._DatumId != value)
+                if (_DatumId != value)
                 {
-
-                    this.OnDatumIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._DatumId = value;
-                    this.SendPropertyChanged("DatumId");
-                    this.OnDatumIdChanged();
+                    OnDatumIdChanging(value);
+                    SendPropertyChanging();
+                    _DatumId = value;
+                    SendPropertyChanged("DatumId");
+                    OnDatumIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "testing", UpdateCheck = UpdateCheck.Never, Storage = "_Testing", DbType = "bit")]
         public bool? Testing
         {
-            get => this._Testing;
+            get => _Testing;
 
             set
             {
-                if (this._Testing != value)
+                if (_Testing != value)
                 {
-
-                    this.OnTestingChanging(value);
-                    this.SendPropertyChanging();
-                    this._Testing = value;
-                    this.SendPropertyChanged("Testing");
-                    this.OnTestingChanged();
+                    OnTestingChanging(value);
+                    SendPropertyChanging();
+                    _Testing = value;
+                    SendPropertyChanged("Testing");
+                    OnTestingChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "amt", UpdateCheck = UpdateCheck.Never, Storage = "_Amt", DbType = "money")]
         public decimal? Amt
         {
-            get => this._Amt;
+            get => _Amt;
 
             set
             {
-                if (this._Amt != value)
+                if (_Amt != value)
                 {
-
-                    this.OnAmtChanging(value);
-                    this.SendPropertyChanging();
-                    this._Amt = value;
-                    this.SendPropertyChanged("Amt");
-                    this.OnAmtChanged();
+                    OnAmtChanging(value);
+                    SendPropertyChanging();
+                    _Amt = value;
+                    SendPropertyChanged("Amt");
+                    OnAmtChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ApprovalCode", UpdateCheck = UpdateCheck.Never, Storage = "_ApprovalCode", DbType = "nvarchar(150)")]
         public string ApprovalCode
         {
-            get => this._ApprovalCode;
+            get => _ApprovalCode;
 
             set
             {
-                if (this._ApprovalCode != value)
+                if (_ApprovalCode != value)
                 {
-
-                    this.OnApprovalCodeChanging(value);
-                    this.SendPropertyChanging();
-                    this._ApprovalCode = value;
-                    this.SendPropertyChanged("ApprovalCode");
-                    this.OnApprovalCodeChanged();
+                    OnApprovalCodeChanging(value);
+                    SendPropertyChanging();
+                    _ApprovalCode = value;
+                    SendPropertyChanged("ApprovalCode");
+                    OnApprovalCodeChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Approved", UpdateCheck = UpdateCheck.Never, Storage = "_Approved", DbType = "bit")]
         public bool? Approved
         {
-            get => this._Approved;
+            get => _Approved;
 
             set
             {
-                if (this._Approved != value)
+                if (_Approved != value)
                 {
-
-                    this.OnApprovedChanging(value);
-                    this.SendPropertyChanging();
-                    this._Approved = value;
-                    this.SendPropertyChanged("Approved");
-                    this.OnApprovedChanged();
+                    OnApprovedChanging(value);
+                    SendPropertyChanging();
+                    _Approved = value;
+                    SendPropertyChanged("Approved");
+                    OnApprovedChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "TransactionId", UpdateCheck = UpdateCheck.Never, Storage = "_TransactionId", DbType = "nvarchar(50)")]
         public string TransactionId
         {
-            get => this._TransactionId;
+            get => _TransactionId;
 
             set
             {
-                if (this._TransactionId != value)
+                if (_TransactionId != value)
                 {
-
-                    this.OnTransactionIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._TransactionId = value;
-                    this.SendPropertyChanged("TransactionId");
-                    this.OnTransactionIdChanged();
+                    OnTransactionIdChanging(value);
+                    SendPropertyChanging();
+                    _TransactionId = value;
+                    SendPropertyChanged("TransactionId");
+                    OnTransactionIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Message", UpdateCheck = UpdateCheck.Never, Storage = "_Message", DbType = "nvarchar(150)")]
         public string Message
         {
-            get => this._Message;
+            get => _Message;
 
             set
             {
-                if (this._Message != value)
+                if (_Message != value)
                 {
-
-                    this.OnMessageChanging(value);
-                    this.SendPropertyChanging();
-                    this._Message = value;
-                    this.SendPropertyChanged("Message");
-                    this.OnMessageChanged();
+                    OnMessageChanging(value);
+                    SendPropertyChanging();
+                    _Message = value;
+                    SendPropertyChanged("Message");
+                    OnMessageChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "AuthCode", UpdateCheck = UpdateCheck.Never, Storage = "_AuthCode", DbType = "nvarchar(150)")]
         public string AuthCode
         {
-            get => this._AuthCode;
+            get => _AuthCode;
 
             set
             {
-                if (this._AuthCode != value)
+                if (_AuthCode != value)
                 {
-
-                    this.OnAuthCodeChanging(value);
-                    this.SendPropertyChanging();
-                    this._AuthCode = value;
-                    this.SendPropertyChanged("AuthCode");
-                    this.OnAuthCodeChanged();
+                    OnAuthCodeChanging(value);
+                    SendPropertyChanging();
+                    _AuthCode = value;
+                    SendPropertyChanged("AuthCode");
+                    OnAuthCodeChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "amtdue", UpdateCheck = UpdateCheck.Never, Storage = "_Amtdue", DbType = "money")]
         public decimal? Amtdue
         {
-            get => this._Amtdue;
+            get => _Amtdue;
 
             set
             {
-                if (this._Amtdue != value)
+                if (_Amtdue != value)
                 {
-
-                    this.OnAmtdueChanging(value);
-                    this.SendPropertyChanging();
-                    this._Amtdue = value;
-                    this.SendPropertyChanged("Amtdue");
-                    this.OnAmtdueChanged();
+                    OnAmtdueChanging(value);
+                    SendPropertyChanging();
+                    _Amtdue = value;
+                    SendPropertyChanged("Amtdue");
+                    OnAmtdueChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "URL", UpdateCheck = UpdateCheck.Never, Storage = "_Url", DbType = "nvarchar(300)")]
         public string Url
         {
-            get => this._Url;
+            get => _Url;
 
             set
             {
-                if (this._Url != value)
+                if (_Url != value)
                 {
-
-                    this.OnUrlChanging(value);
-                    this.SendPropertyChanging();
-                    this._Url = value;
-                    this.SendPropertyChanged("Url");
-                    this.OnUrlChanged();
+                    OnUrlChanging(value);
+                    SendPropertyChanging();
+                    _Url = value;
+                    SendPropertyChanged("Url");
+                    OnUrlChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Description", UpdateCheck = UpdateCheck.Never, Storage = "_Description", DbType = "nvarchar(180)")]
         public string Description
         {
-            get => this._Description;
+            get => _Description;
 
             set
             {
-                if (this._Description != value)
+                if (_Description != value)
                 {
-
-                    this.OnDescriptionChanging(value);
-                    this.SendPropertyChanging();
-                    this._Description = value;
-                    this.SendPropertyChanged("Description");
-                    this.OnDescriptionChanged();
+                    OnDescriptionChanging(value);
+                    SendPropertyChanging();
+                    _Description = value;
+                    SendPropertyChanged("Description");
+                    OnDescriptionChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Name", UpdateCheck = UpdateCheck.Never, Storage = "_Name", DbType = "nvarchar(100)")]
         public string Name
         {
-            get => this._Name;
+            get => _Name;
 
             set
             {
-                if (this._Name != value)
+                if (_Name != value)
                 {
-
-                    this.OnNameChanging(value);
-                    this.SendPropertyChanging();
-                    this._Name = value;
-                    this.SendPropertyChanged("Name");
-                    this.OnNameChanged();
+                    OnNameChanging(value);
+                    SendPropertyChanging();
+                    _Name = value;
+                    SendPropertyChanged("Name");
+                    OnNameChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Address", UpdateCheck = UpdateCheck.Never, Storage = "_Address", DbType = "nvarchar(50)")]
         public string Address
         {
-            get => this._Address;
+            get => _Address;
 
             set
             {
-                if (this._Address != value)
+                if (_Address != value)
                 {
-
-                    this.OnAddressChanging(value);
-                    this.SendPropertyChanging();
-                    this._Address = value;
-                    this.SendPropertyChanged("Address");
-                    this.OnAddressChanged();
+                    OnAddressChanging(value);
+                    SendPropertyChanging();
+                    _Address = value;
+                    SendPropertyChanged("Address");
+                    OnAddressChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "City", UpdateCheck = UpdateCheck.Never, Storage = "_City", DbType = "nvarchar(50)")]
         public string City
         {
-            get => this._City;
+            get => _City;
 
             set
             {
-                if (this._City != value)
+                if (_City != value)
                 {
-
-                    this.OnCityChanging(value);
-                    this.SendPropertyChanging();
-                    this._City = value;
-                    this.SendPropertyChanged("City");
-                    this.OnCityChanged();
+                    OnCityChanging(value);
+                    SendPropertyChanging();
+                    _City = value;
+                    SendPropertyChanged("City");
+                    OnCityChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "State", UpdateCheck = UpdateCheck.Never, Storage = "_State", DbType = "nvarchar(20)")]
         public string State
         {
-            get => this._State;
+            get => _State;
 
             set
             {
-                if (this._State != value)
+                if (_State != value)
                 {
-
-                    this.OnStateChanging(value);
-                    this.SendPropertyChanging();
-                    this._State = value;
-                    this.SendPropertyChanged("State");
-                    this.OnStateChanged();
+                    OnStateChanging(value);
+                    SendPropertyChanging();
+                    _State = value;
+                    SendPropertyChanged("State");
+                    OnStateChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Zip", UpdateCheck = UpdateCheck.Never, Storage = "_Zip", DbType = "nvarchar(15)")]
         public string Zip
         {
-            get => this._Zip;
+            get => _Zip;
 
             set
             {
-                if (this._Zip != value)
+                if (_Zip != value)
                 {
-
-                    this.OnZipChanging(value);
-                    this.SendPropertyChanging();
-                    this._Zip = value;
-                    this.SendPropertyChanged("Zip");
-                    this.OnZipChanged();
+                    OnZipChanging(value);
+                    SendPropertyChanging();
+                    _Zip = value;
+                    SendPropertyChanged("Zip");
+                    OnZipChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Phone", UpdateCheck = UpdateCheck.Never, Storage = "_Phone", DbType = "nvarchar(20)")]
         public string Phone
         {
-            get => this._Phone;
+            get => _Phone;
 
             set
             {
-                if (this._Phone != value)
+                if (_Phone != value)
                 {
-
-                    this.OnPhoneChanging(value);
-                    this.SendPropertyChanging();
-                    this._Phone = value;
-                    this.SendPropertyChanged("Phone");
-                    this.OnPhoneChanged();
+                    OnPhoneChanging(value);
+                    SendPropertyChanging();
+                    _Phone = value;
+                    SendPropertyChanged("Phone");
+                    OnPhoneChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Emails", UpdateCheck = UpdateCheck.Never, Storage = "_Emails", DbType = "nvarchar")]
         public string Emails
         {
-            get => this._Emails;
+            get => _Emails;
 
             set
             {
-                if (this._Emails != value)
+                if (_Emails != value)
                 {
-
-                    this.OnEmailsChanging(value);
-                    this.SendPropertyChanging();
-                    this._Emails = value;
-                    this.SendPropertyChanged("Emails");
-                    this.OnEmailsChanged();
+                    OnEmailsChanging(value);
+                    SendPropertyChanging();
+                    _Emails = value;
+                    SendPropertyChanged("Emails");
+                    OnEmailsChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Participants", UpdateCheck = UpdateCheck.Never, Storage = "_Participants", DbType = "nvarchar")]
         public string Participants
         {
-            get => this._Participants;
+            get => _Participants;
 
             set
             {
-                if (this._Participants != value)
+                if (_Participants != value)
                 {
-
-                    this.OnParticipantsChanging(value);
-                    this.SendPropertyChanging();
-                    this._Participants = value;
-                    this.SendPropertyChanged("Participants");
-                    this.OnParticipantsChanged();
+                    OnParticipantsChanging(value);
+                    SendPropertyChanging();
+                    _Participants = value;
+                    SendPropertyChanged("Participants");
+                    OnParticipantsChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "OrgId", UpdateCheck = UpdateCheck.Never, Storage = "_OrgId", DbType = "int")]
         public int? OrgId
         {
-            get => this._OrgId;
+            get => _OrgId;
 
             set
             {
-                if (this._OrgId != value)
+                if (_OrgId != value)
                 {
-
-                    this.OnOrgIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._OrgId = value;
-                    this.SendPropertyChanged("OrgId");
-                    this.OnOrgIdChanged();
+                    OnOrgIdChanging(value);
+                    SendPropertyChanging();
+                    _OrgId = value;
+                    SendPropertyChanged("OrgId");
+                    OnOrgIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "OriginalId", UpdateCheck = UpdateCheck.Never, Storage = "_OriginalId", DbType = "int")]
         [IsForeignKey]
         public int? OriginalId
         {
-            get => this._OriginalId;
+            get => _OriginalId;
 
             set
             {
-                if (this._OriginalId != value)
+                if (_OriginalId != value)
                 {
-
-                    if (this._OriginalTransaction.HasLoadedOrAssignedValue)
+                    if (_OriginalTransaction.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnOriginalIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._OriginalId = value;
-                    this.SendPropertyChanged("OriginalId");
-                    this.OnOriginalIdChanged();
+                    OnOriginalIdChanging(value);
+                    SendPropertyChanging();
+                    _OriginalId = value;
+                    SendPropertyChanged("OriginalId");
+                    OnOriginalIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "regfees", UpdateCheck = UpdateCheck.Never, Storage = "_Regfees", DbType = "money")]
         public decimal? Regfees
         {
-            get => this._Regfees;
+            get => _Regfees;
 
             set
             {
-                if (this._Regfees != value)
+                if (_Regfees != value)
                 {
-
-                    this.OnRegfeesChanging(value);
-                    this.SendPropertyChanging();
-                    this._Regfees = value;
-                    this.SendPropertyChanged("Regfees");
-                    this.OnRegfeesChanged();
+                    OnRegfeesChanging(value);
+                    SendPropertyChanging();
+                    _Regfees = value;
+                    SendPropertyChanged("Regfees");
+                    OnRegfeesChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "donate", UpdateCheck = UpdateCheck.Never, Storage = "_Donate", DbType = "money")]
         public decimal? Donate
         {
-            get => this._Donate;
+            get => _Donate;
 
             set
             {
-                if (this._Donate != value)
+                if (_Donate != value)
                 {
-
-                    this.OnDonateChanging(value);
-                    this.SendPropertyChanging();
-                    this._Donate = value;
-                    this.SendPropertyChanged("Donate");
-                    this.OnDonateChanged();
+                    OnDonateChanging(value);
+                    SendPropertyChanging();
+                    _Donate = value;
+                    SendPropertyChanged("Donate");
+                    OnDonateChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "fund", UpdateCheck = UpdateCheck.Never, Storage = "_Fund", DbType = "nvarchar(50)")]
         public string Fund
         {
-            get => this._Fund;
+            get => _Fund;
 
             set
             {
-                if (this._Fund != value)
+                if (_Fund != value)
                 {
-
-                    this.OnFundChanging(value);
-                    this.SendPropertyChanging();
-                    this._Fund = value;
-                    this.SendPropertyChanged("Fund");
-                    this.OnFundChanged();
+                    OnFundChanging(value);
+                    SendPropertyChanging();
+                    _Fund = value;
+                    SendPropertyChanged("Fund");
+                    OnFundChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "financeonly", UpdateCheck = UpdateCheck.Never, Storage = "_Financeonly", DbType = "bit")]
         public bool? Financeonly
         {
-            get => this._Financeonly;
+            get => _Financeonly;
 
             set
             {
-                if (this._Financeonly != value)
+                if (_Financeonly != value)
                 {
-
-                    this.OnFinanceonlyChanging(value);
-                    this.SendPropertyChanging();
-                    this._Financeonly = value;
-                    this.SendPropertyChanged("Financeonly");
-                    this.OnFinanceonlyChanged();
+                    OnFinanceonlyChanging(value);
+                    SendPropertyChanging();
+                    _Financeonly = value;
+                    SendPropertyChanged("Financeonly");
+                    OnFinanceonlyChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "voided", UpdateCheck = UpdateCheck.Never, Storage = "_Voided", DbType = "bit")]
         public bool? Voided
         {
-            get => this._Voided;
+            get => _Voided;
 
             set
             {
-                if (this._Voided != value)
+                if (_Voided != value)
                 {
-
-                    this.OnVoidedChanging(value);
-                    this.SendPropertyChanging();
-                    this._Voided = value;
-                    this.SendPropertyChanged("Voided");
-                    this.OnVoidedChanged();
+                    OnVoidedChanging(value);
+                    SendPropertyChanging();
+                    _Voided = value;
+                    SendPropertyChanged("Voided");
+                    OnVoidedChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "credited", UpdateCheck = UpdateCheck.Never, Storage = "_Credited", DbType = "bit")]
         public bool? Credited
         {
-            get => this._Credited;
+            get => _Credited;
 
             set
             {
-                if (this._Credited != value)
+                if (_Credited != value)
                 {
-
-                    this.OnCreditedChanging(value);
-                    this.SendPropertyChanging();
-                    this._Credited = value;
-                    this.SendPropertyChanged("Credited");
-                    this.OnCreditedChanged();
+                    OnCreditedChanging(value);
+                    SendPropertyChanging();
+                    _Credited = value;
+                    SendPropertyChanged("Credited");
+                    OnCreditedChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "coupon", UpdateCheck = UpdateCheck.Never, Storage = "_Coupon", DbType = "bit")]
         public bool? Coupon
         {
-            get => this._Coupon;
+            get => _Coupon;
 
             set
             {
-                if (this._Coupon != value)
+                if (_Coupon != value)
                 {
-
-                    this.OnCouponChanging(value);
-                    this.SendPropertyChanging();
-                    this._Coupon = value;
-                    this.SendPropertyChanged("Coupon");
-                    this.OnCouponChanged();
+                    OnCouponChanging(value);
+                    SendPropertyChanging();
+                    _Coupon = value;
+                    SendPropertyChanged("Coupon");
+                    OnCouponChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "moneytran", UpdateCheck = UpdateCheck.Never, Storage = "_Moneytran", DbType = "bit", IsDbGenerated = true)]
         public bool? Moneytran
         {
-            get => this._Moneytran;
+            get => _Moneytran;
 
             set
             {
-                if (this._Moneytran != value)
+                if (_Moneytran != value)
                 {
-
-                    this.OnMoneytranChanging(value);
-                    this.SendPropertyChanging();
-                    this._Moneytran = value;
-                    this.SendPropertyChanged("Moneytran");
-                    this.OnMoneytranChanged();
+                    OnMoneytranChanging(value);
+                    SendPropertyChanging();
+                    _Moneytran = value;
+                    SendPropertyChanged("Moneytran");
+                    OnMoneytranChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "settled", UpdateCheck = UpdateCheck.Never, Storage = "_Settled", DbType = "datetime")]
         public DateTime? Settled
         {
-            get => this._Settled;
+            get => _Settled;
 
             set
             {
-                if (this._Settled != value)
+                if (_Settled != value)
                 {
-
-                    this.OnSettledChanging(value);
-                    this.SendPropertyChanging();
-                    this._Settled = value;
-                    this.SendPropertyChanged("Settled");
-                    this.OnSettledChanged();
+                    OnSettledChanging(value);
+                    SendPropertyChanging();
+                    _Settled = value;
+                    SendPropertyChanged("Settled");
+                    OnSettledChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "batch", UpdateCheck = UpdateCheck.Never, Storage = "_Batch", DbType = "datetime")]
         public DateTime? Batch
         {
-            get => this._Batch;
+            get => _Batch;
 
             set
             {
-                if (this._Batch != value)
+                if (_Batch != value)
                 {
-
-                    this.OnBatchChanging(value);
-                    this.SendPropertyChanging();
-                    this._Batch = value;
-                    this.SendPropertyChanged("Batch");
-                    this.OnBatchChanged();
+                    OnBatchChanging(value);
+                    SendPropertyChanging();
+                    _Batch = value;
+                    SendPropertyChanged("Batch");
+                    OnBatchChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "batchref", UpdateCheck = UpdateCheck.Never, Storage = "_Batchref", DbType = "nvarchar(50)")]
         public string Batchref
         {
-            get => this._Batchref;
+            get => _Batchref;
 
             set
             {
-                if (this._Batchref != value)
+                if (_Batchref != value)
                 {
-
-                    this.OnBatchrefChanging(value);
-                    this.SendPropertyChanging();
-                    this._Batchref = value;
-                    this.SendPropertyChanged("Batchref");
-                    this.OnBatchrefChanged();
+                    OnBatchrefChanging(value);
+                    SendPropertyChanging();
+                    _Batchref = value;
+                    SendPropertyChanged("Batchref");
+                    OnBatchrefChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "batchtyp", UpdateCheck = UpdateCheck.Never, Storage = "_Batchtyp", DbType = "nvarchar(50)")]
         public string Batchtyp
         {
-            get => this._Batchtyp;
+            get => _Batchtyp;
 
             set
             {
-                if (this._Batchtyp != value)
+                if (_Batchtyp != value)
                 {
-
-                    this.OnBatchtypChanging(value);
-                    this.SendPropertyChanging();
-                    this._Batchtyp = value;
-                    this.SendPropertyChanged("Batchtyp");
-                    this.OnBatchtypChanged();
+                    OnBatchtypChanging(value);
+                    SendPropertyChanging();
+                    _Batchtyp = value;
+                    SendPropertyChanged("Batchtyp");
+                    OnBatchtypChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "fromsage", UpdateCheck = UpdateCheck.Never, Storage = "_Fromsage", DbType = "bit")]
         public bool? Fromsage
         {
-            get => this._Fromsage;
+            get => _Fromsage;
 
             set
             {
-                if (this._Fromsage != value)
+                if (_Fromsage != value)
                 {
-
-                    this.OnFromsageChanging(value);
-                    this.SendPropertyChanging();
-                    this._Fromsage = value;
-                    this.SendPropertyChanged("Fromsage");
-                    this.OnFromsageChanged();
+                    OnFromsageChanging(value);
+                    SendPropertyChanging();
+                    _Fromsage = value;
+                    SendPropertyChanged("Fromsage");
+                    OnFromsageChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "LoginPeopleId", UpdateCheck = UpdateCheck.Never, Storage = "_LoginPeopleId", DbType = "int")]
         [IsForeignKey]
         public int? LoginPeopleId
         {
-            get => this._LoginPeopleId;
+            get => _LoginPeopleId;
 
             set
             {
-                if (this._LoginPeopleId != value)
+                if (_LoginPeopleId != value)
                 {
-
-                    if (this._Person.HasLoadedOrAssignedValue)
+                    if (_Person.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnLoginPeopleIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._LoginPeopleId = value;
-                    this.SendPropertyChanged("LoginPeopleId");
-                    this.OnLoginPeopleIdChanged();
+                    OnLoginPeopleIdChanging(value);
+                    SendPropertyChanging();
+                    _LoginPeopleId = value;
+                    SendPropertyChanged("LoginPeopleId");
+                    OnLoginPeopleIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "First", UpdateCheck = UpdateCheck.Never, Storage = "_First", DbType = "nvarchar(50)")]
         public string First
         {
-            get => this._First;
+            get => _First;
 
             set
             {
-                if (this._First != value)
+                if (_First != value)
                 {
-
-                    this.OnFirstChanging(value);
-                    this.SendPropertyChanging();
-                    this._First = value;
-                    this.SendPropertyChanged("First");
-                    this.OnFirstChanged();
+                    OnFirstChanging(value);
+                    SendPropertyChanging();
+                    _First = value;
+                    SendPropertyChanged("First");
+                    OnFirstChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "MiddleInitial", UpdateCheck = UpdateCheck.Never, Storage = "_MiddleInitial", DbType = "nvarchar(1)")]
         public string MiddleInitial
         {
-            get => this._MiddleInitial;
+            get => _MiddleInitial;
 
             set
             {
-                if (this._MiddleInitial != value)
+                if (_MiddleInitial != value)
                 {
-
-                    this.OnMiddleInitialChanging(value);
-                    this.SendPropertyChanging();
-                    this._MiddleInitial = value;
-                    this.SendPropertyChanged("MiddleInitial");
-                    this.OnMiddleInitialChanged();
+                    OnMiddleInitialChanging(value);
+                    SendPropertyChanging();
+                    _MiddleInitial = value;
+                    SendPropertyChanged("MiddleInitial");
+                    OnMiddleInitialChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Last", UpdateCheck = UpdateCheck.Never, Storage = "_Last", DbType = "nvarchar(50)")]
         public string Last
         {
-            get => this._Last;
+            get => _Last;
 
             set
             {
-                if (this._Last != value)
+                if (_Last != value)
                 {
-
-                    this.OnLastChanging(value);
-                    this.SendPropertyChanging();
-                    this._Last = value;
-                    this.SendPropertyChanged("Last");
-                    this.OnLastChanged();
+                    OnLastChanging(value);
+                    SendPropertyChanging();
+                    _Last = value;
+                    SendPropertyChanged("Last");
+                    OnLastChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Suffix", UpdateCheck = UpdateCheck.Never, Storage = "_Suffix", DbType = "nvarchar(10)")]
         public string Suffix
         {
-            get => this._Suffix;
+            get => _Suffix;
 
             set
             {
-                if (this._Suffix != value)
+                if (_Suffix != value)
                 {
-
-                    this.OnSuffixChanging(value);
-                    this.SendPropertyChanging();
-                    this._Suffix = value;
-                    this.SendPropertyChanged("Suffix");
-                    this.OnSuffixChanged();
+                    OnSuffixChanging(value);
+                    SendPropertyChanging();
+                    _Suffix = value;
+                    SendPropertyChanged("Suffix");
+                    OnSuffixChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "AdjustFee", UpdateCheck = UpdateCheck.Never, Storage = "_AdjustFee", DbType = "bit")]
         public bool? AdjustFee
         {
-            get => this._AdjustFee;
+            get => _AdjustFee;
 
             set
             {
-                if (this._AdjustFee != value)
+                if (_AdjustFee != value)
                 {
-
-                    this.OnAdjustFeeChanging(value);
-                    this.SendPropertyChanging();
-                    this._AdjustFee = value;
-                    this.SendPropertyChanged("AdjustFee");
-                    this.OnAdjustFeeChanged();
+                    OnAdjustFeeChanging(value);
+                    SendPropertyChanging();
+                    _AdjustFee = value;
+                    SendPropertyChanged("AdjustFee");
+                    OnAdjustFeeChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "LastFourCC", UpdateCheck = UpdateCheck.Never, Storage = "_LastFourCC", DbType = "nvarchar(4)")]
         public string LastFourCC
         {
-            get => this._LastFourCC;
+            get => _LastFourCC;
 
             set
             {
-                if (this._LastFourCC != value)
+                if (_LastFourCC != value)
                 {
-
-                    this.OnLastFourCCChanging(value);
-                    this.SendPropertyChanging();
-                    this._LastFourCC = value;
-                    this.SendPropertyChanged("LastFourCC");
-                    this.OnLastFourCCChanged();
+                    OnLastFourCCChanging(value);
+                    SendPropertyChanging();
+                    _LastFourCC = value;
+                    SendPropertyChanged("LastFourCC");
+                    OnLastFourCCChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "LastFourACH", UpdateCheck = UpdateCheck.Never, Storage = "_LastFourACH", DbType = "nvarchar(4)")]
         public string LastFourACH
         {
-            get => this._LastFourACH;
+            get => _LastFourACH;
 
             set
             {
-                if (this._LastFourACH != value)
+                if (_LastFourACH != value)
                 {
-
-                    this.OnLastFourACHChanging(value);
-                    this.SendPropertyChanging();
-                    this._LastFourACH = value;
-                    this.SendPropertyChanged("LastFourACH");
-                    this.OnLastFourACHChanged();
+                    OnLastFourACHChanging(value);
+                    SendPropertyChanging();
+                    _LastFourACH = value;
+                    SendPropertyChanged("LastFourACH");
+                    OnLastFourACHChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "PaymentType", UpdateCheck = UpdateCheck.Never, Storage = "_PaymentType", DbType = "nvarchar(1)")]
         public string PaymentType
         {
-            get => this._PaymentType;
+            get => _PaymentType;
 
             set
             {
-                if (this._PaymentType != value)
+                if (_PaymentType != value)
                 {
-
-                    this.OnPaymentTypeChanging(value);
-                    this.SendPropertyChanging();
-                    this._PaymentType = value;
-                    this.SendPropertyChanged("PaymentType");
-                    this.OnPaymentTypeChanged();
+                    OnPaymentTypeChanging(value);
+                    SendPropertyChanging();
+                    _PaymentType = value;
+                    SendPropertyChanged("PaymentType");
+                    OnPaymentTypeChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Address2", UpdateCheck = UpdateCheck.Never, Storage = "_Address2", DbType = "nvarchar(50)")]
         public string Address2
         {
-            get => this._Address2;
+            get => _Address2;
 
             set
             {
-                if (this._Address2 != value)
+                if (_Address2 != value)
                 {
-
-                    this.OnAddress2Changing(value);
-                    this.SendPropertyChanging();
-                    this._Address2 = value;
-                    this.SendPropertyChanged("Address2");
-                    this.OnAddress2Changed();
+                    OnAddress2Changing(value);
+                    SendPropertyChanging();
+                    _Address2 = value;
+                    SendPropertyChanged("Address2");
+                    OnAddress2Changed();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Country", UpdateCheck = UpdateCheck.Never, Storage = "_Country", DbType = "nvarchar(50)")]
         public string Country
         {
-            get => this._Country;
+            get => _Country;
 
             set
             {
-                if (this._Country != value)
+                if (_Country != value)
                 {
-
-                    this.OnCountryChanging(value);
-                    this.SendPropertyChanging();
-                    this._Country = value;
-                    this.SendPropertyChanged("Country");
-                    this.OnCountryChanged();
+                    OnCountryChanging(value);
+                    SendPropertyChanging();
+                    _Country = value;
+                    SendPropertyChanged("Country");
+                    OnCountryChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -1368,32 +1173,29 @@ namespace CmsData
         [Association(Name = "FK_OrganizationMembers_Transaction", Storage = "_OrganizationMembers", OtherKey = "TranId")]
         public EntitySet<OrganizationMember> OrganizationMembers
            {
-               get => this._OrganizationMembers;
+               get => _OrganizationMembers;
 
-            set => this._OrganizationMembers.Assign(value);
+            set => _OrganizationMembers.Assign(value);
 
            }
-
 
         [Association(Name = "FK_TransactionPeople_Transaction", Storage = "_TransactionPeople", OtherKey = "Id")]
         public EntitySet<TransactionPerson> TransactionPeople
            {
-               get => this._TransactionPeople;
+               get => _TransactionPeople;
 
-            set => this._TransactionPeople.Assign(value);
+            set => _TransactionPeople.Assign(value);
 
            }
-
 
         [Association(Name = "Transactions__OriginalTransaction", Storage = "_Transactions", OtherKey = "OriginalId")]
         public EntitySet<Transaction> Transactions
            {
-               get => this._Transactions;
+               get => _Transactions;
 
-            set => this._Transactions.Assign(value);
+            set => _Transactions.Assign(value);
 
            }
-
 
         #endregion
 
@@ -1402,148 +1204,133 @@ namespace CmsData
         [Association(Name = "FK_Transaction_People", Storage = "_Person", ThisKey = "LoginPeopleId", IsForeignKey = true)]
         public Person Person
         {
-            get => this._Person.Entity;
+            get => _Person.Entity;
 
             set
             {
-                Person previousValue = this._Person.Entity;
+                Person previousValue = _Person.Entity;
                 if (((previousValue != value)
-                            || (this._Person.HasLoadedOrAssignedValue == false)))
+                            || (_Person.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._Person.Entity = null;
+                        _Person.Entity = null;
                         previousValue.Transactions.Remove(this);
                     }
 
-                    this._Person.Entity = value;
+                    _Person.Entity = value;
                     if (value != null)
                     {
                         value.Transactions.Add(this);
 
-                        this._LoginPeopleId = value.PeopleId;
+                        _LoginPeopleId = value.PeopleId;
 
                     }
 
                     else
                     {
-
-                        this._LoginPeopleId = default(int?);
+                        _LoginPeopleId = default(int?);
 
                     }
 
-                    this.SendPropertyChanged("Person");
+                    SendPropertyChanged("Person");
                 }
-
             }
-
         }
-
 
         [Association(Name = "Transactions__OriginalTransaction", Storage = "_OriginalTransaction", ThisKey = "OriginalId", IsForeignKey = true)]
         public Transaction OriginalTransaction
         {
-            get => this._OriginalTransaction.Entity;
+            get => _OriginalTransaction.Entity;
 
             set
             {
-                Transaction previousValue = this._OriginalTransaction.Entity;
+                Transaction previousValue = _OriginalTransaction.Entity;
                 if (((previousValue != value)
-                            || (this._OriginalTransaction.HasLoadedOrAssignedValue == false)))
+                            || (_OriginalTransaction.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._OriginalTransaction.Entity = null;
+                        _OriginalTransaction.Entity = null;
                         previousValue.Transactions.Remove(this);
                     }
 
-                    this._OriginalTransaction.Entity = value;
+                    _OriginalTransaction.Entity = value;
                     if (value != null)
                     {
                         value.Transactions.Add(this);
 
-                        this._OriginalId = value.Id;
+                        _OriginalId = value.Id;
 
                     }
 
                     else
                     {
-
-                        this._OriginalId = default(int?);
+                        _OriginalId = default(int?);
 
                     }
 
-                    this.SendPropertyChanged("OriginalTransaction");
+                    SendPropertyChanged("OriginalTransaction");
                 }
-
             }
-
         }
-
 
         #endregion
 
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
 
-
         private void attach_OrganizationMembers(OrganizationMember entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.Transaction = this;
         }
 
         private void detach_OrganizationMembers(OrganizationMember entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.Transaction = null;
         }
 
-
         private void attach_TransactionPeople(TransactionPerson entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.Transaction = this;
         }
 
         private void detach_TransactionPeople(TransactionPerson entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.Transaction = null;
         }
 
-
         private void attach_Transactions(Transaction entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.OriginalTransaction = this;
         }
 
         private void detach_Transactions(Transaction entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.OriginalTransaction = null;
         }
-
-
     }
-
 }
-

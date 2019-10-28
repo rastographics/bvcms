@@ -9,7 +9,7 @@ namespace CmsData
     [Table(Name = "dbo.Contact")]
     public partial class Contact : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -51,7 +51,6 @@ namespace CmsData
 
         private int? _OrganizationId;
 
-
         private EntitySet<Contactee> _contactees;
 
         private EntitySet<Contactor> _contactsMakers;
@@ -61,7 +60,6 @@ namespace CmsData
         private EntitySet<Task> _TasksAssigned;
 
         private EntitySet<Task> _TasksCompleted;
-
 
         private EntityRef<Organization> _organization;
 
@@ -74,6 +72,7 @@ namespace CmsData
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -136,475 +135,397 @@ namespace CmsData
         partial void OnOrganizationIdChanged();
 
         #endregion
+
         public Contact()
         {
+            _contactees = new EntitySet<Contactee>(new Action<Contactee>(attach_contactees), new Action<Contactee>(detach_contactees));
 
-            this._contactees = new EntitySet<Contactee>(new Action<Contactee>(this.attach_contactees), new Action<Contactee>(this.detach_contactees));
+            _contactsMakers = new EntitySet<Contactor>(new Action<Contactor>(attach_contactsMakers), new Action<Contactor>(detach_contactsMakers));
 
-            this._contactsMakers = new EntitySet<Contactor>(new Action<Contactor>(this.attach_contactsMakers), new Action<Contactor>(this.detach_contactsMakers));
+            _ContactExtras = new EntitySet<ContactExtra>(new Action<ContactExtra>(attach_ContactExtras), new Action<ContactExtra>(detach_ContactExtras));
 
-            this._ContactExtras = new EntitySet<ContactExtra>(new Action<ContactExtra>(this.attach_ContactExtras), new Action<ContactExtra>(this.detach_ContactExtras));
+            _TasksAssigned = new EntitySet<Task>(new Action<Task>(attach_TasksAssigned), new Action<Task>(detach_TasksAssigned));
 
-            this._TasksAssigned = new EntitySet<Task>(new Action<Task>(this.attach_TasksAssigned), new Action<Task>(this.detach_TasksAssigned));
+            _TasksCompleted = new EntitySet<Task>(new Action<Task>(attach_TasksCompleted), new Action<Task>(detach_TasksCompleted));
 
-            this._TasksCompleted = new EntitySet<Task>(new Action<Task>(this.attach_TasksCompleted), new Action<Task>(this.detach_TasksCompleted));
+            _organization = default(EntityRef<Organization>);
 
+            _ContactType = default(EntityRef<ContactType>);
 
-            this._organization = default(EntityRef<Organization>);
+            _Ministry = default(EntityRef<Ministry>);
 
-            this._ContactType = default(EntityRef<ContactType>);
-
-            this._Ministry = default(EntityRef<Ministry>);
-
-            this._ContactReason = default(EntityRef<ContactReason>);
+            _ContactReason = default(EntityRef<ContactReason>);
 
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "ContactId", UpdateCheck = UpdateCheck.Never, Storage = "_ContactId", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
         public int ContactId
         {
-            get => this._ContactId;
+            get => _ContactId;
 
             set
             {
-                if (this._ContactId != value)
+                if (_ContactId != value)
                 {
-
-                    this.OnContactIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._ContactId = value;
-                    this.SendPropertyChanged("ContactId");
-                    this.OnContactIdChanged();
+                    OnContactIdChanging(value);
+                    SendPropertyChanging();
+                    _ContactId = value;
+                    SendPropertyChanged("ContactId");
+                    OnContactIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "CreatedBy", UpdateCheck = UpdateCheck.Never, Storage = "_CreatedBy", DbType = "int NOT NULL")]
         public int CreatedBy
         {
-            get => this._CreatedBy;
+            get => _CreatedBy;
 
             set
             {
-                if (this._CreatedBy != value)
+                if (_CreatedBy != value)
                 {
-
-                    this.OnCreatedByChanging(value);
-                    this.SendPropertyChanging();
-                    this._CreatedBy = value;
-                    this.SendPropertyChanged("CreatedBy");
-                    this.OnCreatedByChanged();
+                    OnCreatedByChanging(value);
+                    SendPropertyChanging();
+                    _CreatedBy = value;
+                    SendPropertyChanged("CreatedBy");
+                    OnCreatedByChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "CreatedDate", UpdateCheck = UpdateCheck.Never, Storage = "_CreatedDate", DbType = "datetime NOT NULL")]
         public DateTime CreatedDate
         {
-            get => this._CreatedDate;
+            get => _CreatedDate;
 
             set
             {
-                if (this._CreatedDate != value)
+                if (_CreatedDate != value)
                 {
-
-                    this.OnCreatedDateChanging(value);
-                    this.SendPropertyChanging();
-                    this._CreatedDate = value;
-                    this.SendPropertyChanged("CreatedDate");
-                    this.OnCreatedDateChanged();
+                    OnCreatedDateChanging(value);
+                    SendPropertyChanging();
+                    _CreatedDate = value;
+                    SendPropertyChanged("CreatedDate");
+                    OnCreatedDateChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ContactTypeId", UpdateCheck = UpdateCheck.Never, Storage = "_ContactTypeId", DbType = "int")]
         [IsForeignKey]
         public int? ContactTypeId
         {
-            get => this._ContactTypeId;
+            get => _ContactTypeId;
 
             set
             {
-                if (this._ContactTypeId != value)
+                if (_ContactTypeId != value)
                 {
-
-                    if (this._ContactType.HasLoadedOrAssignedValue)
+                    if (_ContactType.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnContactTypeIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._ContactTypeId = value;
-                    this.SendPropertyChanged("ContactTypeId");
-                    this.OnContactTypeIdChanged();
+                    OnContactTypeIdChanging(value);
+                    SendPropertyChanging();
+                    _ContactTypeId = value;
+                    SendPropertyChanged("ContactTypeId");
+                    OnContactTypeIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ContactDate", UpdateCheck = UpdateCheck.Never, Storage = "_ContactDate", DbType = "datetime NOT NULL")]
         public DateTime ContactDate
         {
-            get => this._ContactDate;
+            get => _ContactDate;
 
             set
             {
-                if (this._ContactDate != value)
+                if (_ContactDate != value)
                 {
-
-                    this.OnContactDateChanging(value);
-                    this.SendPropertyChanging();
-                    this._ContactDate = value;
-                    this.SendPropertyChanged("ContactDate");
-                    this.OnContactDateChanged();
+                    OnContactDateChanging(value);
+                    SendPropertyChanging();
+                    _ContactDate = value;
+                    SendPropertyChanged("ContactDate");
+                    OnContactDateChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ContactReasonId", UpdateCheck = UpdateCheck.Never, Storage = "_ContactReasonId", DbType = "int")]
         [IsForeignKey]
         public int? ContactReasonId
         {
-            get => this._ContactReasonId;
+            get => _ContactReasonId;
 
             set
             {
-                if (this._ContactReasonId != value)
+                if (_ContactReasonId != value)
                 {
-
-                    if (this._ContactReason.HasLoadedOrAssignedValue)
+                    if (_ContactReason.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnContactReasonIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._ContactReasonId = value;
-                    this.SendPropertyChanged("ContactReasonId");
-                    this.OnContactReasonIdChanged();
+                    OnContactReasonIdChanging(value);
+                    SendPropertyChanging();
+                    _ContactReasonId = value;
+                    SendPropertyChanged("ContactReasonId");
+                    OnContactReasonIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "MinistryId", UpdateCheck = UpdateCheck.Never, Storage = "_MinistryId", DbType = "int")]
         [IsForeignKey]
         public int? MinistryId
         {
-            get => this._MinistryId;
+            get => _MinistryId;
 
             set
             {
-                if (this._MinistryId != value)
+                if (_MinistryId != value)
                 {
-
-                    if (this._Ministry.HasLoadedOrAssignedValue)
+                    if (_Ministry.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnMinistryIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._MinistryId = value;
-                    this.SendPropertyChanged("MinistryId");
-                    this.OnMinistryIdChanged();
+                    OnMinistryIdChanging(value);
+                    SendPropertyChanging();
+                    _MinistryId = value;
+                    SendPropertyChanged("MinistryId");
+                    OnMinistryIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "NotAtHome", UpdateCheck = UpdateCheck.Never, Storage = "_NotAtHome", DbType = "bit")]
         public bool? NotAtHome
         {
-            get => this._NotAtHome;
+            get => _NotAtHome;
 
             set
             {
-                if (this._NotAtHome != value)
+                if (_NotAtHome != value)
                 {
-
-                    this.OnNotAtHomeChanging(value);
-                    this.SendPropertyChanging();
-                    this._NotAtHome = value;
-                    this.SendPropertyChanged("NotAtHome");
-                    this.OnNotAtHomeChanged();
+                    OnNotAtHomeChanging(value);
+                    SendPropertyChanging();
+                    _NotAtHome = value;
+                    SendPropertyChanged("NotAtHome");
+                    OnNotAtHomeChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "LeftDoorHanger", UpdateCheck = UpdateCheck.Never, Storage = "_LeftDoorHanger", DbType = "bit")]
         public bool? LeftDoorHanger
         {
-            get => this._LeftDoorHanger;
+            get => _LeftDoorHanger;
 
             set
             {
-                if (this._LeftDoorHanger != value)
+                if (_LeftDoorHanger != value)
                 {
-
-                    this.OnLeftDoorHangerChanging(value);
-                    this.SendPropertyChanging();
-                    this._LeftDoorHanger = value;
-                    this.SendPropertyChanged("LeftDoorHanger");
-                    this.OnLeftDoorHangerChanged();
+                    OnLeftDoorHangerChanging(value);
+                    SendPropertyChanging();
+                    _LeftDoorHanger = value;
+                    SendPropertyChanged("LeftDoorHanger");
+                    OnLeftDoorHangerChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "LeftMessage", UpdateCheck = UpdateCheck.Never, Storage = "_LeftMessage", DbType = "bit")]
         public bool? LeftMessage
         {
-            get => this._LeftMessage;
+            get => _LeftMessage;
 
             set
             {
-                if (this._LeftMessage != value)
+                if (_LeftMessage != value)
                 {
-
-                    this.OnLeftMessageChanging(value);
-                    this.SendPropertyChanging();
-                    this._LeftMessage = value;
-                    this.SendPropertyChanged("LeftMessage");
-                    this.OnLeftMessageChanged();
+                    OnLeftMessageChanging(value);
+                    SendPropertyChanging();
+                    _LeftMessage = value;
+                    SendPropertyChanged("LeftMessage");
+                    OnLeftMessageChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "GospelShared", UpdateCheck = UpdateCheck.Never, Storage = "_GospelShared", DbType = "bit")]
         public bool? GospelShared
         {
-            get => this._GospelShared;
+            get => _GospelShared;
 
             set
             {
-                if (this._GospelShared != value)
+                if (_GospelShared != value)
                 {
-
-                    this.OnGospelSharedChanging(value);
-                    this.SendPropertyChanging();
-                    this._GospelShared = value;
-                    this.SendPropertyChanged("GospelShared");
-                    this.OnGospelSharedChanged();
+                    OnGospelSharedChanging(value);
+                    SendPropertyChanging();
+                    _GospelShared = value;
+                    SendPropertyChanged("GospelShared");
+                    OnGospelSharedChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "PrayerRequest", UpdateCheck = UpdateCheck.Never, Storage = "_PrayerRequest", DbType = "bit")]
         public bool? PrayerRequest
         {
-            get => this._PrayerRequest;
+            get => _PrayerRequest;
 
             set
             {
-                if (this._PrayerRequest != value)
+                if (_PrayerRequest != value)
                 {
-
-                    this.OnPrayerRequestChanging(value);
-                    this.SendPropertyChanging();
-                    this._PrayerRequest = value;
-                    this.SendPropertyChanged("PrayerRequest");
-                    this.OnPrayerRequestChanged();
+                    OnPrayerRequestChanging(value);
+                    SendPropertyChanging();
+                    _PrayerRequest = value;
+                    SendPropertyChanged("PrayerRequest");
+                    OnPrayerRequestChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ContactMade", UpdateCheck = UpdateCheck.Never, Storage = "_ContactMade", DbType = "bit")]
         public bool? ContactMade
         {
-            get => this._ContactMade;
+            get => _ContactMade;
 
             set
             {
-                if (this._ContactMade != value)
+                if (_ContactMade != value)
                 {
-
-                    this.OnContactMadeChanging(value);
-                    this.SendPropertyChanging();
-                    this._ContactMade = value;
-                    this.SendPropertyChanged("ContactMade");
-                    this.OnContactMadeChanged();
+                    OnContactMadeChanging(value);
+                    SendPropertyChanging();
+                    _ContactMade = value;
+                    SendPropertyChanged("ContactMade");
+                    OnContactMadeChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "GiftBagGiven", UpdateCheck = UpdateCheck.Never, Storage = "_GiftBagGiven", DbType = "bit")]
         public bool? GiftBagGiven
         {
-            get => this._GiftBagGiven;
+            get => _GiftBagGiven;
 
             set
             {
-                if (this._GiftBagGiven != value)
+                if (_GiftBagGiven != value)
                 {
-
-                    this.OnGiftBagGivenChanging(value);
-                    this.SendPropertyChanging();
-                    this._GiftBagGiven = value;
-                    this.SendPropertyChanged("GiftBagGiven");
-                    this.OnGiftBagGivenChanged();
+                    OnGiftBagGivenChanging(value);
+                    SendPropertyChanging();
+                    _GiftBagGiven = value;
+                    SendPropertyChanged("GiftBagGiven");
+                    OnGiftBagGivenChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Comments", UpdateCheck = UpdateCheck.Never, Storage = "_Comments", DbType = "nvarchar")]
         public string Comments
         {
-            get => this._Comments;
+            get => _Comments;
 
             set
             {
-                if (this._Comments != value)
+                if (_Comments != value)
                 {
-
-                    this.OnCommentsChanging(value);
-                    this.SendPropertyChanging();
-                    this._Comments = value;
-                    this.SendPropertyChanged("Comments");
-                    this.OnCommentsChanged();
+                    OnCommentsChanging(value);
+                    SendPropertyChanging();
+                    _Comments = value;
+                    SendPropertyChanged("Comments");
+                    OnCommentsChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ModifiedBy", UpdateCheck = UpdateCheck.Never, Storage = "_ModifiedBy", DbType = "int")]
         public int? ModifiedBy
         {
-            get => this._ModifiedBy;
+            get => _ModifiedBy;
 
             set
             {
-                if (this._ModifiedBy != value)
+                if (_ModifiedBy != value)
                 {
-
-                    this.OnModifiedByChanging(value);
-                    this.SendPropertyChanging();
-                    this._ModifiedBy = value;
-                    this.SendPropertyChanged("ModifiedBy");
-                    this.OnModifiedByChanged();
+                    OnModifiedByChanging(value);
+                    SendPropertyChanging();
+                    _ModifiedBy = value;
+                    SendPropertyChanged("ModifiedBy");
+                    OnModifiedByChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ModifiedDate", UpdateCheck = UpdateCheck.Never, Storage = "_ModifiedDate", DbType = "datetime")]
         public DateTime? ModifiedDate
         {
-            get => this._ModifiedDate;
+            get => _ModifiedDate;
 
             set
             {
-                if (this._ModifiedDate != value)
+                if (_ModifiedDate != value)
                 {
-
-                    this.OnModifiedDateChanging(value);
-                    this.SendPropertyChanging();
-                    this._ModifiedDate = value;
-                    this.SendPropertyChanged("ModifiedDate");
-                    this.OnModifiedDateChanged();
+                    OnModifiedDateChanging(value);
+                    SendPropertyChanging();
+                    _ModifiedDate = value;
+                    SendPropertyChanged("ModifiedDate");
+                    OnModifiedDateChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "LimitToRole", UpdateCheck = UpdateCheck.Never, Storage = "_LimitToRole", DbType = "nvarchar(50)")]
         public string LimitToRole
         {
-            get => this._LimitToRole;
+            get => _LimitToRole;
 
             set
             {
-                if (this._LimitToRole != value)
+                if (_LimitToRole != value)
                 {
-
-                    this.OnLimitToRoleChanging(value);
-                    this.SendPropertyChanging();
-                    this._LimitToRole = value;
-                    this.SendPropertyChanged("LimitToRole");
-                    this.OnLimitToRoleChanged();
+                    OnLimitToRoleChanging(value);
+                    SendPropertyChanging();
+                    _LimitToRole = value;
+                    SendPropertyChanged("LimitToRole");
+                    OnLimitToRoleChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "OrganizationId", UpdateCheck = UpdateCheck.Never, Storage = "_OrganizationId", DbType = "int")]
         [IsForeignKey]
         public int? OrganizationId
         {
-            get => this._OrganizationId;
+            get => _OrganizationId;
 
             set
             {
-                if (this._OrganizationId != value)
+                if (_OrganizationId != value)
                 {
-
-                    if (this._organization.HasLoadedOrAssignedValue)
+                    if (_organization.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnOrganizationIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._OrganizationId = value;
-                    this.SendPropertyChanged("OrganizationId");
-                    this.OnOrganizationIdChanged();
+                    OnOrganizationIdChanging(value);
+                    SendPropertyChanging();
+                    _OrganizationId = value;
+                    SendPropertyChanged("OrganizationId");
+                    OnOrganizationIdChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -613,52 +534,47 @@ namespace CmsData
         [Association(Name = "contactees__contact", Storage = "_contactees", OtherKey = "ContactId")]
         public EntitySet<Contactee> contactees
            {
-               get => this._contactees;
+               get => _contactees;
 
-            set => this._contactees.Assign(value);
+            set => _contactees.Assign(value);
 
            }
-
 
         [Association(Name = "contactsMakers__contact", Storage = "_contactsMakers", OtherKey = "ContactId")]
         public EntitySet<Contactor> contactsMakers
            {
-               get => this._contactsMakers;
+               get => _contactsMakers;
 
-            set => this._contactsMakers.Assign(value);
+            set => _contactsMakers.Assign(value);
 
            }
-
 
         [Association(Name = "FK_ContactExtra_Contact", Storage = "_ContactExtras", OtherKey = "ContactId")]
         public EntitySet<ContactExtra> ContactExtras
            {
-               get => this._ContactExtras;
+               get => _ContactExtras;
 
-            set => this._ContactExtras.Assign(value);
+            set => _ContactExtras.Assign(value);
 
            }
-
 
         [Association(Name = "TasksAssigned__SourceContact", Storage = "_TasksAssigned", OtherKey = "SourceContactId")]
         public EntitySet<Task> TasksAssigned
            {
-               get => this._TasksAssigned;
+               get => _TasksAssigned;
 
-            set => this._TasksAssigned.Assign(value);
+            set => _TasksAssigned.Assign(value);
 
            }
-
 
         [Association(Name = "TasksCompleted__CompletedContact", Storage = "_TasksCompleted", OtherKey = "CompletedContactId")]
         public EntitySet<Task> TasksCompleted
            {
-               get => this._TasksCompleted;
+               get => _TasksCompleted;
 
-            set => this._TasksCompleted.Assign(value);
+            set => _TasksCompleted.Assign(value);
 
            }
-
 
         #endregion
 
@@ -667,258 +583,233 @@ namespace CmsData
         [Association(Name = "contactsHad__organization", Storage = "_organization", ThisKey = "OrganizationId", IsForeignKey = true)]
         public Organization organization
         {
-            get => this._organization.Entity;
+            get => _organization.Entity;
 
             set
             {
-                Organization previousValue = this._organization.Entity;
+                Organization previousValue = _organization.Entity;
                 if (((previousValue != value)
-                            || (this._organization.HasLoadedOrAssignedValue == false)))
+                            || (_organization.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._organization.Entity = null;
+                        _organization.Entity = null;
                         previousValue.contactsHad.Remove(this);
                     }
 
-                    this._organization.Entity = value;
+                    _organization.Entity = value;
                     if (value != null)
                     {
                         value.contactsHad.Add(this);
 
-                        this._OrganizationId = value.OrganizationId;
+                        _OrganizationId = value.OrganizationId;
 
                     }
 
                     else
                     {
-
-                        this._OrganizationId = default(int?);
+                        _OrganizationId = default(int?);
 
                     }
 
-                    this.SendPropertyChanged("organization");
+                    SendPropertyChanged("organization");
                 }
-
             }
-
         }
-
 
         [Association(Name = "FK_Contacts_ContactTypes", Storage = "_ContactType", ThisKey = "ContactTypeId", IsForeignKey = true)]
         public ContactType ContactType
         {
-            get => this._ContactType.Entity;
+            get => _ContactType.Entity;
 
             set
             {
-                ContactType previousValue = this._ContactType.Entity;
+                ContactType previousValue = _ContactType.Entity;
                 if (((previousValue != value)
-                            || (this._ContactType.HasLoadedOrAssignedValue == false)))
+                            || (_ContactType.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._ContactType.Entity = null;
+                        _ContactType.Entity = null;
                         previousValue.Contacts.Remove(this);
                     }
 
-                    this._ContactType.Entity = value;
+                    _ContactType.Entity = value;
                     if (value != null)
                     {
                         value.Contacts.Add(this);
 
-                        this._ContactTypeId = value.Id;
+                        _ContactTypeId = value.Id;
 
                     }
 
                     else
                     {
-
-                        this._ContactTypeId = default(int?);
+                        _ContactTypeId = default(int?);
 
                     }
 
-                    this.SendPropertyChanged("ContactType");
+                    SendPropertyChanged("ContactType");
                 }
-
             }
-
         }
-
 
         [Association(Name = "FK_Contacts_Ministries", Storage = "_Ministry", ThisKey = "MinistryId", IsForeignKey = true)]
         public Ministry Ministry
         {
-            get => this._Ministry.Entity;
+            get => _Ministry.Entity;
 
             set
             {
-                Ministry previousValue = this._Ministry.Entity;
+                Ministry previousValue = _Ministry.Entity;
                 if (((previousValue != value)
-                            || (this._Ministry.HasLoadedOrAssignedValue == false)))
+                            || (_Ministry.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._Ministry.Entity = null;
+                        _Ministry.Entity = null;
                         previousValue.Contacts.Remove(this);
                     }
 
-                    this._Ministry.Entity = value;
+                    _Ministry.Entity = value;
                     if (value != null)
                     {
                         value.Contacts.Add(this);
 
-                        this._MinistryId = value.MinistryId;
+                        _MinistryId = value.MinistryId;
 
                     }
 
                     else
                     {
-
-                        this._MinistryId = default(int?);
+                        _MinistryId = default(int?);
 
                     }
 
-                    this.SendPropertyChanged("Ministry");
+                    SendPropertyChanged("Ministry");
                 }
-
             }
-
         }
-
 
         [Association(Name = "FK_NewContacts_ContactReasons", Storage = "_ContactReason", ThisKey = "ContactReasonId", IsForeignKey = true)]
         public ContactReason ContactReason
         {
-            get => this._ContactReason.Entity;
+            get => _ContactReason.Entity;
 
             set
             {
-                ContactReason previousValue = this._ContactReason.Entity;
+                ContactReason previousValue = _ContactReason.Entity;
                 if (((previousValue != value)
-                            || (this._ContactReason.HasLoadedOrAssignedValue == false)))
+                            || (_ContactReason.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._ContactReason.Entity = null;
+                        _ContactReason.Entity = null;
                         previousValue.Contacts.Remove(this);
                     }
 
-                    this._ContactReason.Entity = value;
+                    _ContactReason.Entity = value;
                     if (value != null)
                     {
                         value.Contacts.Add(this);
 
-                        this._ContactReasonId = value.Id;
+                        _ContactReasonId = value.Id;
 
                     }
 
                     else
                     {
-
-                        this._ContactReasonId = default(int?);
+                        _ContactReasonId = default(int?);
 
                     }
 
-                    this.SendPropertyChanged("ContactReason");
+                    SendPropertyChanged("ContactReason");
                 }
-
             }
-
         }
-
 
         #endregion
 
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
 
-
         private void attach_contactees(Contactee entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.contact = this;
         }
 
         private void detach_contactees(Contactee entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.contact = null;
         }
 
-
         private void attach_contactsMakers(Contactor entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.contact = this;
         }
 
         private void detach_contactsMakers(Contactor entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.contact = null;
         }
 
-
         private void attach_ContactExtras(ContactExtra entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.Contact = this;
         }
 
         private void detach_ContactExtras(ContactExtra entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.Contact = null;
         }
 
-
         private void attach_TasksAssigned(Task entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.SourceContact = this;
         }
 
         private void detach_TasksAssigned(Task entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.SourceContact = null;
         }
 
-
         private void attach_TasksCompleted(Task entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.CompletedContact = this;
         }
 
         private void detach_TasksCompleted(Task entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.CompletedContact = null;
         }
-
-
     }
-
 }
-

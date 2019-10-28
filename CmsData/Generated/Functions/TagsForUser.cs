@@ -1,104 +1,80 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="TagsForUser")]
-	public partial class TagsForUser
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private int _Id;
-		
-		private string _Name;
-		
-		private int _TypeId;
-		
-		private string _Owner;
-		
-		
-		public TagsForUser()
-		{
-		}
+    [Table(Name = "TagsForUser")]
+    public partial class TagsForUser
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="Id", Storage="_Id", DbType="int NOT NULL")]
-		public int Id
-		{
-			get
-			{
-				return this._Id;
-			}
+        private int _Id;
 
-			set
-			{
-				if (this._Id != value)
-					this._Id = value;
-			}
+        private string _Name;
 
-		}
+        private int _TypeId;
 
-		
-		[Column(Name="Name", Storage="_Name", DbType="varchar(50) NOT NULL")]
-		public string Name
-		{
-			get
-			{
-				return this._Name;
-			}
+        private string _Owner;
 
-			set
-			{
-				if (this._Name != value)
-					this._Name = value;
-			}
+        public TagsForUser()
+        {
+        }
 
-		}
+        [Column(Name = "Id", Storage = "_Id", DbType = "int NOT NULL")]
+        public int Id
+        {
+            get => _Id;
 
-		
-		[Column(Name="TypeId", Storage="_TypeId", DbType="int NOT NULL")]
-		public int TypeId
-		{
-			get
-			{
-				return this._TypeId;
-			}
+            set
+            {
+                if (_Id != value)
+                {
+                    _Id = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._TypeId != value)
-					this._TypeId = value;
-			}
+        [Column(Name = "Name", Storage = "_Name", DbType = "varchar(50) NOT NULL")]
+        public string Name
+        {
+            get => _Name;
 
-		}
+            set
+            {
+                if (_Name != value)
+                {
+                    _Name = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="Owner", Storage="_Owner", DbType="varchar(50)")]
-		public string Owner
-		{
-			get
-			{
-				return this._Owner;
-			}
+        [Column(Name = "TypeId", Storage = "_TypeId", DbType = "int NOT NULL")]
+        public int TypeId
+        {
+            get => _TypeId;
 
-			set
-			{
-				if (this._Owner != value)
-					this._Owner = value;
-			}
+            set
+            {
+                if (_TypeId != value)
+                {
+                    _TypeId = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "Owner", Storage = "_Owner", DbType = "varchar(50)")]
+        public string Owner
+        {
+            get => _Owner;
 
-		
+            set
+            {
+                if (_Owner != value)
+                {
+                    _Owner = value;
+                }
+            }
+        }
     }
-
 }

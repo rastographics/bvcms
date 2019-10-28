@@ -9,7 +9,7 @@ namespace CmsData
     [Table(Name = "dbo.SMSItems")]
     public partial class SMSItem : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -31,8 +31,6 @@ namespace CmsData
 
         private string _ErrorMessage;
 
-
-
         private EntityRef<Person> _Person;
 
         private EntityRef<SMSList> _SMSList;
@@ -40,6 +38,7 @@ namespace CmsData
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -72,229 +71,191 @@ namespace CmsData
         partial void OnErrorMessageChanged();
 
         #endregion
+
         public SMSItem()
         {
+            _Person = default(EntityRef<Person>);
 
-
-            this._Person = default(EntityRef<Person>);
-
-            this._SMSList = default(EntityRef<SMSList>);
+            _SMSList = default(EntityRef<SMSList>);
 
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "ID", UpdateCheck = UpdateCheck.Never, Storage = "_Id", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
         public int Id
         {
-            get => this._Id;
+            get => _Id;
 
             set
             {
-                if (this._Id != value)
+                if (_Id != value)
                 {
-
-                    this.OnIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._Id = value;
-                    this.SendPropertyChanged("Id");
-                    this.OnIdChanged();
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ListID", UpdateCheck = UpdateCheck.Never, Storage = "_ListID", DbType = "int NOT NULL")]
         [IsForeignKey]
         public int ListID
         {
-            get => this._ListID;
+            get => _ListID;
 
             set
             {
-                if (this._ListID != value)
+                if (_ListID != value)
                 {
-
-                    if (this._SMSList.HasLoadedOrAssignedValue)
+                    if (_SMSList.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnListIDChanging(value);
-                    this.SendPropertyChanging();
-                    this._ListID = value;
-                    this.SendPropertyChanged("ListID");
-                    this.OnListIDChanged();
+                    OnListIDChanging(value);
+                    SendPropertyChanging();
+                    _ListID = value;
+                    SendPropertyChanged("ListID");
+                    OnListIDChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "PeopleID", UpdateCheck = UpdateCheck.Never, Storage = "_PeopleID", DbType = "int NOT NULL")]
         [IsForeignKey]
         public int PeopleID
         {
-            get => this._PeopleID;
+            get => _PeopleID;
 
             set
             {
-                if (this._PeopleID != value)
+                if (_PeopleID != value)
                 {
-
-                    if (this._Person.HasLoadedOrAssignedValue)
+                    if (_Person.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnPeopleIDChanging(value);
-                    this.SendPropertyChanging();
-                    this._PeopleID = value;
-                    this.SendPropertyChanged("PeopleID");
-                    this.OnPeopleIDChanged();
+                    OnPeopleIDChanging(value);
+                    SendPropertyChanging();
+                    _PeopleID = value;
+                    SendPropertyChanged("PeopleID");
+                    OnPeopleIDChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Sent", UpdateCheck = UpdateCheck.Never, Storage = "_Sent", DbType = "bit NOT NULL")]
         public bool Sent
         {
-            get => this._Sent;
+            get => _Sent;
 
             set
             {
-                if (this._Sent != value)
+                if (_Sent != value)
                 {
-
-                    this.OnSentChanging(value);
-                    this.SendPropertyChanging();
-                    this._Sent = value;
-                    this.SendPropertyChanged("Sent");
-                    this.OnSentChanged();
+                    OnSentChanging(value);
+                    SendPropertyChanging();
+                    _Sent = value;
+                    SendPropertyChanged("Sent");
+                    OnSentChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Number", UpdateCheck = UpdateCheck.Never, Storage = "_Number", DbType = "nvarchar(25) NOT NULL")]
         public string Number
         {
-            get => this._Number;
+            get => _Number;
 
             set
             {
-                if (this._Number != value)
+                if (_Number != value)
                 {
-
-                    this.OnNumberChanging(value);
-                    this.SendPropertyChanging();
-                    this._Number = value;
-                    this.SendPropertyChanged("Number");
-                    this.OnNumberChanged();
+                    OnNumberChanging(value);
+                    SendPropertyChanging();
+                    _Number = value;
+                    SendPropertyChanged("Number");
+                    OnNumberChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "NoNumber", UpdateCheck = UpdateCheck.Never, Storage = "_NoNumber", DbType = "bit NOT NULL")]
         public bool NoNumber
         {
-            get => this._NoNumber;
+            get => _NoNumber;
 
             set
             {
-                if (this._NoNumber != value)
+                if (_NoNumber != value)
                 {
-
-                    this.OnNoNumberChanging(value);
-                    this.SendPropertyChanging();
-                    this._NoNumber = value;
-                    this.SendPropertyChanged("NoNumber");
-                    this.OnNoNumberChanged();
+                    OnNoNumberChanging(value);
+                    SendPropertyChanging();
+                    _NoNumber = value;
+                    SendPropertyChanged("NoNumber");
+                    OnNoNumberChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "NoOptIn", UpdateCheck = UpdateCheck.Never, Storage = "_NoOptIn", DbType = "bit NOT NULL")]
         public bool NoOptIn
         {
-            get => this._NoOptIn;
+            get => _NoOptIn;
 
             set
             {
-                if (this._NoOptIn != value)
+                if (_NoOptIn != value)
                 {
-
-                    this.OnNoOptInChanging(value);
-                    this.SendPropertyChanging();
-                    this._NoOptIn = value;
-                    this.SendPropertyChanged("NoOptIn");
-                    this.OnNoOptInChanged();
+                    OnNoOptInChanging(value);
+                    SendPropertyChanging();
+                    _NoOptIn = value;
+                    SendPropertyChanged("NoOptIn");
+                    OnNoOptInChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ResultStatus", UpdateCheck = UpdateCheck.WhenChanged, Storage = "_ResultStatus", DbType = "varchar(50)")]
         public string ResultStatus
         {
-            get => this._ResultStatus;
+            get => _ResultStatus;
 
             set
             {
-                if (this._ResultStatus != value)
+                if (_ResultStatus != value)
                 {
-
-                    this.OnResultStatusChanging(value);
-                    this.SendPropertyChanging();
-                    this._ResultStatus = value;
-                    this.SendPropertyChanged("ResultStatus");
-                    this.OnResultStatusChanged();
+                    OnResultStatusChanging(value);
+                    SendPropertyChanging();
+                    _ResultStatus = value;
+                    SendPropertyChanged("ResultStatus");
+                    OnResultStatusChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ErrorMessage", UpdateCheck = UpdateCheck.WhenChanged, Storage = "_ErrorMessage", DbType = "varchar(300)")]
         public string ErrorMessage
         {
-            get => this._ErrorMessage;
+            get => _ErrorMessage;
 
             set
             {
-                if (this._ErrorMessage != value)
+                if (_ErrorMessage != value)
                 {
-
-                    this.OnErrorMessageChanging(value);
-                    this.SendPropertyChanging();
-                    this._ErrorMessage = value;
-                    this.SendPropertyChanged("ErrorMessage");
-                    this.OnErrorMessageChanged();
+                    OnErrorMessageChanging(value);
+                    SendPropertyChanging();
+                    _ErrorMessage = value;
+                    SendPropertyChanged("ErrorMessage");
+                    OnErrorMessageChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -307,109 +268,97 @@ namespace CmsData
         [Association(Name = "FK_SMSItems_People", Storage = "_Person", ThisKey = "PeopleID", IsForeignKey = true)]
         public Person Person
         {
-            get => this._Person.Entity;
+            get => _Person.Entity;
 
             set
             {
-                Person previousValue = this._Person.Entity;
+                Person previousValue = _Person.Entity;
                 if (((previousValue != value)
-                            || (this._Person.HasLoadedOrAssignedValue == false)))
+                            || (_Person.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._Person.Entity = null;
+                        _Person.Entity = null;
                         previousValue.SMSItems.Remove(this);
                     }
 
-                    this._Person.Entity = value;
+                    _Person.Entity = value;
                     if (value != null)
                     {
                         value.SMSItems.Add(this);
 
-                        this._PeopleID = value.PeopleId;
+                        _PeopleID = value.PeopleId;
 
                     }
 
                     else
                     {
-
-                        this._PeopleID = default(int);
+                        _PeopleID = default(int);
 
                     }
 
-                    this.SendPropertyChanged("Person");
+                    SendPropertyChanged("Person");
                 }
-
             }
-
         }
-
 
         [Association(Name = "FK_SMSItems_SMSList", Storage = "_SMSList", ThisKey = "ListID", IsForeignKey = true)]
         public SMSList SMSList
         {
-            get => this._SMSList.Entity;
+            get => _SMSList.Entity;
 
             set
             {
-                SMSList previousValue = this._SMSList.Entity;
+                SMSList previousValue = _SMSList.Entity;
                 if (((previousValue != value)
-                            || (this._SMSList.HasLoadedOrAssignedValue == false)))
+                            || (_SMSList.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._SMSList.Entity = null;
+                        _SMSList.Entity = null;
                         previousValue.SMSItems.Remove(this);
                     }
 
-                    this._SMSList.Entity = value;
+                    _SMSList.Entity = value;
                     if (value != null)
                     {
                         value.SMSItems.Add(this);
 
-                        this._ListID = value.Id;
+                        _ListID = value.Id;
 
                     }
 
                     else
                     {
-
-                        this._ListID = default(int);
+                        _ListID = default(int);
 
                     }
 
-                    this.SendPropertyChanged("SMSList");
+                    SendPropertyChanged("SMSList");
                 }
-
             }
-
         }
-
 
         #endregion
 
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-
     }
-
 }
-

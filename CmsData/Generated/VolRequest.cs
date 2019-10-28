@@ -9,7 +9,7 @@ namespace CmsData
     [Table(Name = "dbo.VolRequest")]
     public partial class VolRequest : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -25,8 +25,6 @@ namespace CmsData
 
         private bool? _CanVol;
 
-
-
         private EntityRef<Meeting> _Meeting;
 
         private EntityRef<Person> _Requestor;
@@ -36,6 +34,7 @@ namespace CmsData
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -59,19 +58,17 @@ namespace CmsData
         partial void OnCanVolChanged();
 
         #endregion
+
         public VolRequest()
         {
+            _Meeting = default(EntityRef<Meeting>);
 
+            _Requestor = default(EntityRef<Person>);
 
-            this._Meeting = default(EntityRef<Meeting>);
-
-            this._Requestor = default(EntityRef<Person>);
-
-            this._Volunteer = default(EntityRef<Person>);
+            _Volunteer = default(EntityRef<Person>);
 
             OnCreated();
         }
-
 
         #region Columns
 
@@ -79,151 +76,127 @@ namespace CmsData
         [IsForeignKey]
         public int MeetingId
         {
-            get => this._MeetingId;
+            get => _MeetingId;
 
             set
             {
-                if (this._MeetingId != value)
+                if (_MeetingId != value)
                 {
-
-                    if (this._Meeting.HasLoadedOrAssignedValue)
+                    if (_Meeting.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnMeetingIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._MeetingId = value;
-                    this.SendPropertyChanged("MeetingId");
-                    this.OnMeetingIdChanged();
+                    OnMeetingIdChanging(value);
+                    SendPropertyChanging();
+                    _MeetingId = value;
+                    SendPropertyChanged("MeetingId");
+                    OnMeetingIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "RequestorId", UpdateCheck = UpdateCheck.Never, Storage = "_RequestorId", DbType = "int NOT NULL", IsPrimaryKey = true)]
         [IsForeignKey]
         public int RequestorId
         {
-            get => this._RequestorId;
+            get => _RequestorId;
 
             set
             {
-                if (this._RequestorId != value)
+                if (_RequestorId != value)
                 {
-
-                    if (this._Requestor.HasLoadedOrAssignedValue)
+                    if (_Requestor.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnRequestorIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._RequestorId = value;
-                    this.SendPropertyChanged("RequestorId");
-                    this.OnRequestorIdChanged();
+                    OnRequestorIdChanging(value);
+                    SendPropertyChanging();
+                    _RequestorId = value;
+                    SendPropertyChanged("RequestorId");
+                    OnRequestorIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Requested", UpdateCheck = UpdateCheck.Never, Storage = "_Requested", DbType = "datetime NOT NULL", IsPrimaryKey = true)]
         public DateTime Requested
         {
-            get => this._Requested;
+            get => _Requested;
 
             set
             {
-                if (this._Requested != value)
+                if (_Requested != value)
                 {
-
-                    this.OnRequestedChanging(value);
-                    this.SendPropertyChanging();
-                    this._Requested = value;
-                    this.SendPropertyChanged("Requested");
-                    this.OnRequestedChanged();
+                    OnRequestedChanging(value);
+                    SendPropertyChanging();
+                    _Requested = value;
+                    SendPropertyChanged("Requested");
+                    OnRequestedChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "VolunteerId", UpdateCheck = UpdateCheck.Never, Storage = "_VolunteerId", DbType = "int NOT NULL", IsPrimaryKey = true)]
         [IsForeignKey]
         public int VolunteerId
         {
-            get => this._VolunteerId;
+            get => _VolunteerId;
 
             set
             {
-                if (this._VolunteerId != value)
+                if (_VolunteerId != value)
                 {
-
-                    if (this._Volunteer.HasLoadedOrAssignedValue)
+                    if (_Volunteer.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnVolunteerIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._VolunteerId = value;
-                    this.SendPropertyChanged("VolunteerId");
-                    this.OnVolunteerIdChanged();
+                    OnVolunteerIdChanging(value);
+                    SendPropertyChanging();
+                    _VolunteerId = value;
+                    SendPropertyChanged("VolunteerId");
+                    OnVolunteerIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Responded", UpdateCheck = UpdateCheck.Never, Storage = "_Responded", DbType = "datetime")]
         public DateTime? Responded
         {
-            get => this._Responded;
+            get => _Responded;
 
             set
             {
-                if (this._Responded != value)
+                if (_Responded != value)
                 {
-
-                    this.OnRespondedChanging(value);
-                    this.SendPropertyChanging();
-                    this._Responded = value;
-                    this.SendPropertyChanged("Responded");
-                    this.OnRespondedChanged();
+                    OnRespondedChanging(value);
+                    SendPropertyChanging();
+                    _Responded = value;
+                    SendPropertyChanged("Responded");
+                    OnRespondedChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "CanVol", UpdateCheck = UpdateCheck.Never, Storage = "_CanVol", DbType = "bit")]
         public bool? CanVol
         {
-            get => this._CanVol;
+            get => _CanVol;
 
             set
             {
-                if (this._CanVol != value)
+                if (_CanVol != value)
                 {
-
-                    this.OnCanVolChanging(value);
-                    this.SendPropertyChanging();
-                    this._CanVol = value;
-                    this.SendPropertyChanged("CanVol");
-                    this.OnCanVolChanged();
+                    OnCanVolChanging(value);
+                    SendPropertyChanging();
+                    _CanVol = value;
+                    SendPropertyChanged("CanVol");
+                    OnCanVolChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -236,151 +209,135 @@ namespace CmsData
         [Association(Name = "VolRequests__Meeting", Storage = "_Meeting", ThisKey = "MeetingId", IsForeignKey = true)]
         public Meeting Meeting
         {
-            get => this._Meeting.Entity;
+            get => _Meeting.Entity;
 
             set
             {
-                Meeting previousValue = this._Meeting.Entity;
+                Meeting previousValue = _Meeting.Entity;
                 if (((previousValue != value)
-                            || (this._Meeting.HasLoadedOrAssignedValue == false)))
+                            || (_Meeting.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._Meeting.Entity = null;
+                        _Meeting.Entity = null;
                         previousValue.VolRequests.Remove(this);
                     }
 
-                    this._Meeting.Entity = value;
+                    _Meeting.Entity = value;
                     if (value != null)
                     {
                         value.VolRequests.Add(this);
 
-                        this._MeetingId = value.MeetingId;
+                        _MeetingId = value.MeetingId;
 
                     }
 
                     else
                     {
-
-                        this._MeetingId = default(int);
+                        _MeetingId = default(int);
 
                     }
 
-                    this.SendPropertyChanged("Meeting");
+                    SendPropertyChanged("Meeting");
                 }
-
             }
-
         }
-
 
         [Association(Name = "VolRequests__Requestor", Storage = "_Requestor", ThisKey = "RequestorId", IsForeignKey = true)]
         public Person Requestor
         {
-            get => this._Requestor.Entity;
+            get => _Requestor.Entity;
 
             set
             {
-                Person previousValue = this._Requestor.Entity;
+                Person previousValue = _Requestor.Entity;
                 if (((previousValue != value)
-                            || (this._Requestor.HasLoadedOrAssignedValue == false)))
+                            || (_Requestor.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._Requestor.Entity = null;
+                        _Requestor.Entity = null;
                         previousValue.VolRequests.Remove(this);
                     }
 
-                    this._Requestor.Entity = value;
+                    _Requestor.Entity = value;
                     if (value != null)
                     {
                         value.VolRequests.Add(this);
 
-                        this._RequestorId = value.PeopleId;
+                        _RequestorId = value.PeopleId;
 
                     }
 
                     else
                     {
-
-                        this._RequestorId = default(int);
+                        _RequestorId = default(int);
 
                     }
 
-                    this.SendPropertyChanged("Requestor");
+                    SendPropertyChanged("Requestor");
                 }
-
             }
-
         }
-
 
         [Association(Name = "VolResponses__Volunteer", Storage = "_Volunteer", ThisKey = "VolunteerId", IsForeignKey = true)]
         public Person Volunteer
         {
-            get => this._Volunteer.Entity;
+            get => _Volunteer.Entity;
 
             set
             {
-                Person previousValue = this._Volunteer.Entity;
+                Person previousValue = _Volunteer.Entity;
                 if (((previousValue != value)
-                            || (this._Volunteer.HasLoadedOrAssignedValue == false)))
+                            || (_Volunteer.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._Volunteer.Entity = null;
+                        _Volunteer.Entity = null;
                         previousValue.VolResponses.Remove(this);
                     }
 
-                    this._Volunteer.Entity = value;
+                    _Volunteer.Entity = value;
                     if (value != null)
                     {
                         value.VolResponses.Add(this);
 
-                        this._VolunteerId = value.PeopleId;
+                        _VolunteerId = value.PeopleId;
 
                     }
 
                     else
                     {
-
-                        this._VolunteerId = default(int);
+                        _VolunteerId = default(int);
 
                     }
 
-                    this.SendPropertyChanged("Volunteer");
+                    SendPropertyChanged("Volunteer");
                 }
-
             }
-
         }
-
 
         #endregion
 
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-
     }
-
 }
-

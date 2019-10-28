@@ -7,7 +7,7 @@ namespace CmsData
     [Table(Name = "dbo.LongRunningOperation")]
     public partial class LongRunningOperation : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -27,11 +27,10 @@ namespace CmsData
 
         private string _CustomMessage;
 
-
-
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -61,191 +60,157 @@ namespace CmsData
         partial void OnCustomMessageChanged();
 
         #endregion
+
         public LongRunningOperation()
         {
-
-
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "QueryId", UpdateCheck = UpdateCheck.Never, Storage = "_QueryId", DbType = "uniqueidentifier NOT NULL", IsPrimaryKey = true)]
         public Guid QueryId
         {
-            get => this._QueryId;
+            get => _QueryId;
 
             set
             {
-                if (this._QueryId != value)
+                if (_QueryId != value)
                 {
-
-                    this.OnQueryIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._QueryId = value;
-                    this.SendPropertyChanged("QueryId");
-                    this.OnQueryIdChanged();
+                    OnQueryIdChanging(value);
+                    SendPropertyChanging();
+                    _QueryId = value;
+                    SendPropertyChanged("QueryId");
+                    OnQueryIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "operation", UpdateCheck = UpdateCheck.Never, Storage = "_Operation", DbType = "nvarchar(25)")]
         public string Operation
         {
-            get => this._Operation;
+            get => _Operation;
 
             set
             {
-                if (this._Operation != value)
+                if (_Operation != value)
                 {
-
-                    this.OnOperationChanging(value);
-                    this.SendPropertyChanging();
-                    this._Operation = value;
-                    this.SendPropertyChanged("Operation");
-                    this.OnOperationChanged();
+                    OnOperationChanging(value);
+                    SendPropertyChanging();
+                    _Operation = value;
+                    SendPropertyChanged("Operation");
+                    OnOperationChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "started", UpdateCheck = UpdateCheck.Never, Storage = "_Started", DbType = "datetime")]
         public DateTime? Started
         {
-            get => this._Started;
+            get => _Started;
 
             set
             {
-                if (this._Started != value)
+                if (_Started != value)
                 {
-
-                    this.OnStartedChanging(value);
-                    this.SendPropertyChanging();
-                    this._Started = value;
-                    this.SendPropertyChanged("Started");
-                    this.OnStartedChanged();
+                    OnStartedChanging(value);
+                    SendPropertyChanging();
+                    _Started = value;
+                    SendPropertyChanged("Started");
+                    OnStartedChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "count", UpdateCheck = UpdateCheck.Never, Storage = "_Count", DbType = "int")]
         public int? Count
         {
-            get => this._Count;
+            get => _Count;
 
             set
             {
-                if (this._Count != value)
+                if (_Count != value)
                 {
-
-                    this.OnCountChanging(value);
-                    this.SendPropertyChanging();
-                    this._Count = value;
-                    this.SendPropertyChanged("Count");
-                    this.OnCountChanged();
+                    OnCountChanging(value);
+                    SendPropertyChanging();
+                    _Count = value;
+                    SendPropertyChanged("Count");
+                    OnCountChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "processed", UpdateCheck = UpdateCheck.Never, Storage = "_Processed", DbType = "int")]
         public int? Processed
         {
-            get => this._Processed;
+            get => _Processed;
 
             set
             {
-                if (this._Processed != value)
+                if (_Processed != value)
                 {
-
-                    this.OnProcessedChanging(value);
-                    this.SendPropertyChanging();
-                    this._Processed = value;
-                    this.SendPropertyChanged("Processed");
-                    this.OnProcessedChanged();
+                    OnProcessedChanging(value);
+                    SendPropertyChanging();
+                    _Processed = value;
+                    SendPropertyChanged("Processed");
+                    OnProcessedChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "completed", UpdateCheck = UpdateCheck.Never, Storage = "_Completed", DbType = "datetime")]
         public DateTime? Completed
         {
-            get => this._Completed;
+            get => _Completed;
 
             set
             {
-                if (this._Completed != value)
+                if (_Completed != value)
                 {
-
-                    this.OnCompletedChanging(value);
-                    this.SendPropertyChanging();
-                    this._Completed = value;
-                    this.SendPropertyChanged("Completed");
-                    this.OnCompletedChanged();
+                    OnCompletedChanging(value);
+                    SendPropertyChanging();
+                    _Completed = value;
+                    SendPropertyChanged("Completed");
+                    OnCompletedChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ElapsedTime", UpdateCheck = UpdateCheck.Never, Storage = "_ElapsedTime", DbType = "varchar(20)", IsDbGenerated = true)]
         public string ElapsedTime
         {
-            get => this._ElapsedTime;
+            get => _ElapsedTime;
 
             set
             {
-                if (this._ElapsedTime != value)
+                if (_ElapsedTime != value)
                 {
-
-                    this.OnElapsedTimeChanging(value);
-                    this.SendPropertyChanging();
-                    this._ElapsedTime = value;
-                    this.SendPropertyChanged("ElapsedTime");
-                    this.OnElapsedTimeChanged();
+                    OnElapsedTimeChanging(value);
+                    SendPropertyChanging();
+                    _ElapsedTime = value;
+                    SendPropertyChanged("ElapsedTime");
+                    OnElapsedTimeChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "CustomMessage", UpdateCheck = UpdateCheck.Never, Storage = "_CustomMessage", DbType = "nvarchar(200)")]
         public string CustomMessage
         {
-            get => this._CustomMessage;
+            get => _CustomMessage;
 
             set
             {
-                if (this._CustomMessage != value)
+                if (_CustomMessage != value)
                 {
-
-                    this.OnCustomMessageChanging(value);
-                    this.SendPropertyChanging();
-                    this._CustomMessage = value;
-                    this.SendPropertyChanged("CustomMessage");
-                    this.OnCustomMessageChanged();
+                    OnCustomMessageChanging(value);
+                    SendPropertyChanging();
+                    _CustomMessage = value;
+                    SendPropertyChanged("CustomMessage");
+                    OnCustomMessageChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -260,23 +225,19 @@ namespace CmsData
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-
     }
-
 }
-

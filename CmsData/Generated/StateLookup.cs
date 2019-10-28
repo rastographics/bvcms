@@ -7,7 +7,7 @@ namespace CmsData
     [Table(Name = "lookup.StateLookup")]
     public partial class StateLookup : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -17,11 +17,10 @@ namespace CmsData
 
         private bool? _Hardwired;
 
-
-
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -36,81 +35,67 @@ namespace CmsData
         partial void OnHardwiredChanged();
 
         #endregion
+
         public StateLookup()
         {
-
-
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "StateCode", UpdateCheck = UpdateCheck.Never, Storage = "_StateCode", DbType = "nvarchar(10) NOT NULL", IsPrimaryKey = true)]
         public string StateCode
         {
-            get => this._StateCode;
+            get => _StateCode;
 
             set
             {
-                if (this._StateCode != value)
+                if (_StateCode != value)
                 {
-
-                    this.OnStateCodeChanging(value);
-                    this.SendPropertyChanging();
-                    this._StateCode = value;
-                    this.SendPropertyChanged("StateCode");
-                    this.OnStateCodeChanged();
+                    OnStateCodeChanging(value);
+                    SendPropertyChanging();
+                    _StateCode = value;
+                    SendPropertyChanged("StateCode");
+                    OnStateCodeChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "StateName", UpdateCheck = UpdateCheck.Never, Storage = "_StateName", DbType = "nvarchar(30)")]
         public string StateName
         {
-            get => this._StateName;
+            get => _StateName;
 
             set
             {
-                if (this._StateName != value)
+                if (_StateName != value)
                 {
-
-                    this.OnStateNameChanging(value);
-                    this.SendPropertyChanging();
-                    this._StateName = value;
-                    this.SendPropertyChanged("StateName");
-                    this.OnStateNameChanged();
+                    OnStateNameChanging(value);
+                    SendPropertyChanging();
+                    _StateName = value;
+                    SendPropertyChanged("StateName");
+                    OnStateNameChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Hardwired", UpdateCheck = UpdateCheck.Never, Storage = "_Hardwired", DbType = "bit")]
         public bool? Hardwired
         {
-            get => this._Hardwired;
+            get => _Hardwired;
 
             set
             {
-                if (this._Hardwired != value)
+                if (_Hardwired != value)
                 {
-
-                    this.OnHardwiredChanging(value);
-                    this.SendPropertyChanging();
-                    this._Hardwired = value;
-                    this.SendPropertyChanged("Hardwired");
-                    this.OnHardwiredChanged();
+                    OnHardwiredChanging(value);
+                    SendPropertyChanging();
+                    _Hardwired = value;
+                    SendPropertyChanged("Hardwired");
+                    OnHardwiredChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -125,23 +110,19 @@ namespace CmsData
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-
     }
-
 }
-

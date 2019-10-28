@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Data.Linq.Mapping;
 
@@ -7,7 +7,7 @@ namespace CmsData
     [Table(Name = "dbo.ApiUserInfo")]
     public partial class ApiUserInfo : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -17,11 +17,10 @@ namespace CmsData
 
         private string _IpAddress;
 
-
-
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -36,81 +35,67 @@ namespace CmsData
         partial void OnIpAddressChanged();
 
         #endregion
+
         public ApiUserInfo()
         {
-
-
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "Id", UpdateCheck = UpdateCheck.Never, Storage = "_Id", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
         public int Id
         {
-            get => this._Id;
+            get => _Id;
 
             set
             {
-                if (this._Id != value)
+                if (_Id != value)
                 {
-
-                    this.OnIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._Id = value;
-                    this.SendPropertyChanged("Id");
-                    this.OnIdChanged();
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ApiKey", UpdateCheck = UpdateCheck.Never, Storage = "_ApiKey", DbType = "nvarchar(50) NOT NULL")]
         public string ApiKey
         {
-            get => this._ApiKey;
+            get => _ApiKey;
 
             set
             {
-                if (this._ApiKey != value)
+                if (_ApiKey != value)
                 {
-
-                    this.OnApiKeyChanging(value);
-                    this.SendPropertyChanging();
-                    this._ApiKey = value;
-                    this.SendPropertyChanged("ApiKey");
-                    this.OnApiKeyChanged();
+                    OnApiKeyChanging(value);
+                    SendPropertyChanging();
+                    _ApiKey = value;
+                    SendPropertyChanged("ApiKey");
+                    OnApiKeyChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "IpAddress", UpdateCheck = UpdateCheck.Never, Storage = "_IpAddress", DbType = "nvarchar(20) NOT NULL")]
         public string IpAddress
         {
-            get => this._IpAddress;
+            get => _IpAddress;
 
             set
             {
-                if (this._IpAddress != value)
+                if (_IpAddress != value)
                 {
-
-                    this.OnIpAddressChanging(value);
-                    this.SendPropertyChanging();
-                    this._IpAddress = value;
-                    this.SendPropertyChanged("IpAddress");
-                    this.OnIpAddressChanged();
+                    OnIpAddressChanging(value);
+                    SendPropertyChanging();
+                    _IpAddress = value;
+                    SendPropertyChanged("IpAddress");
+                    OnIpAddressChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -125,23 +110,19 @@ namespace CmsData
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-
     }
-
 }
-

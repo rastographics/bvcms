@@ -9,7 +9,7 @@ namespace CmsData
     [Table(Name = "dbo.Zips")]
     public partial class Zip : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -17,13 +17,12 @@ namespace CmsData
 
         private int? _MetroMarginalCode;
 
-
-
         private EntityRef<ResidentCode> _ResidentCode;
 
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -35,67 +34,57 @@ namespace CmsData
         partial void OnMetroMarginalCodeChanged();
 
         #endregion
+
         public Zip()
         {
-
-
-            this._ResidentCode = default(EntityRef<ResidentCode>);
+            _ResidentCode = default(EntityRef<ResidentCode>);
 
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "ZipCode", UpdateCheck = UpdateCheck.Never, Storage = "_ZipCode", DbType = "nvarchar(10) NOT NULL", IsPrimaryKey = true)]
         public string ZipCode
         {
-            get => this._ZipCode;
+            get => _ZipCode;
 
             set
             {
-                if (this._ZipCode != value)
+                if (_ZipCode != value)
                 {
-
-                    this.OnZipCodeChanging(value);
-                    this.SendPropertyChanging();
-                    this._ZipCode = value;
-                    this.SendPropertyChanged("ZipCode");
-                    this.OnZipCodeChanged();
+                    OnZipCodeChanging(value);
+                    SendPropertyChanging();
+                    _ZipCode = value;
+                    SendPropertyChanged("ZipCode");
+                    OnZipCodeChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "MetroMarginalCode", UpdateCheck = UpdateCheck.Never, Storage = "_MetroMarginalCode", DbType = "int")]
         [IsForeignKey]
         public int? MetroMarginalCode
         {
-            get => this._MetroMarginalCode;
+            get => _MetroMarginalCode;
 
             set
             {
-                if (this._MetroMarginalCode != value)
+                if (_MetroMarginalCode != value)
                 {
-
-                    if (this._ResidentCode.HasLoadedOrAssignedValue)
+                    if (_ResidentCode.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnMetroMarginalCodeChanging(value);
-                    this.SendPropertyChanging();
-                    this._MetroMarginalCode = value;
-                    this.SendPropertyChanged("MetroMarginalCode");
-                    this.OnMetroMarginalCodeChanged();
+                    OnMetroMarginalCodeChanging(value);
+                    SendPropertyChanging();
+                    _MetroMarginalCode = value;
+                    SendPropertyChanged("MetroMarginalCode");
+                    OnMetroMarginalCodeChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -108,67 +97,59 @@ namespace CmsData
         [Association(Name = "FK_Zips_ResidentCode", Storage = "_ResidentCode", ThisKey = "MetroMarginalCode", IsForeignKey = true)]
         public ResidentCode ResidentCode
         {
-            get => this._ResidentCode.Entity;
+            get => _ResidentCode.Entity;
 
             set
             {
-                ResidentCode previousValue = this._ResidentCode.Entity;
+                ResidentCode previousValue = _ResidentCode.Entity;
                 if (((previousValue != value)
-                            || (this._ResidentCode.HasLoadedOrAssignedValue == false)))
+                            || (_ResidentCode.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._ResidentCode.Entity = null;
+                        _ResidentCode.Entity = null;
                         previousValue.Zips.Remove(this);
                     }
 
-                    this._ResidentCode.Entity = value;
+                    _ResidentCode.Entity = value;
                     if (value != null)
                     {
                         value.Zips.Add(this);
 
-                        this._MetroMarginalCode = value.Id;
+                        _MetroMarginalCode = value.Id;
 
                     }
 
                     else
                     {
-
-                        this._MetroMarginalCode = default(int?);
+                        _MetroMarginalCode = default(int?);
 
                     }
 
-                    this.SendPropertyChanged("ResidentCode");
+                    SendPropertyChanged("ResidentCode");
                 }
-
             }
-
         }
-
 
         #endregion
 
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-
     }
-
 }
-

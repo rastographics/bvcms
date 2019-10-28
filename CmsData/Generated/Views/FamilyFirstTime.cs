@@ -1,104 +1,80 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="FamilyFirstTimes")]
-	public partial class FamilyFirstTime
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private int _FamilyId;
-		
-		private int? _HeadOfHouseholdId;
-		
-		private DateTime? _FirstDate;
-		
-		private DateTime? _CreatedDate;
-		
-		
-		public FamilyFirstTime()
-		{
-		}
+    [Table(Name = "FamilyFirstTimes")]
+    public partial class FamilyFirstTime
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="FamilyId", Storage="_FamilyId", DbType="int NOT NULL")]
-		public int FamilyId
-		{
-			get
-			{
-				return this._FamilyId;
-			}
+        private int _FamilyId;
 
-			set
-			{
-				if (this._FamilyId != value)
-					this._FamilyId = value;
-			}
+        private int? _HeadOfHouseholdId;
 
-		}
+        private DateTime? _FirstDate;
 
-		
-		[Column(Name="HeadOfHouseholdId", Storage="_HeadOfHouseholdId", DbType="int")]
-		public int? HeadOfHouseholdId
-		{
-			get
-			{
-				return this._HeadOfHouseholdId;
-			}
+        private DateTime? _CreatedDate;
 
-			set
-			{
-				if (this._HeadOfHouseholdId != value)
-					this._HeadOfHouseholdId = value;
-			}
+        public FamilyFirstTime()
+        {
+        }
 
-		}
+        [Column(Name = "FamilyId", Storage = "_FamilyId", DbType = "int NOT NULL")]
+        public int FamilyId
+        {
+            get => _FamilyId;
 
-		
-		[Column(Name="FirstDate", Storage="_FirstDate", DbType="datetime")]
-		public DateTime? FirstDate
-		{
-			get
-			{
-				return this._FirstDate;
-			}
+            set
+            {
+                if (_FamilyId != value)
+                {
+                    _FamilyId = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._FirstDate != value)
-					this._FirstDate = value;
-			}
+        [Column(Name = "HeadOfHouseholdId", Storage = "_HeadOfHouseholdId", DbType = "int")]
+        public int? HeadOfHouseholdId
+        {
+            get => _HeadOfHouseholdId;
 
-		}
+            set
+            {
+                if (_HeadOfHouseholdId != value)
+                {
+                    _HeadOfHouseholdId = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="CreatedDate", Storage="_CreatedDate", DbType="datetime")]
-		public DateTime? CreatedDate
-		{
-			get
-			{
-				return this._CreatedDate;
-			}
+        [Column(Name = "FirstDate", Storage = "_FirstDate", DbType = "datetime")]
+        public DateTime? FirstDate
+        {
+            get => _FirstDate;
 
-			set
-			{
-				if (this._CreatedDate != value)
-					this._CreatedDate = value;
-			}
+            set
+            {
+                if (_FirstDate != value)
+                {
+                    _FirstDate = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "CreatedDate", Storage = "_CreatedDate", DbType = "datetime")]
+        public DateTime? CreatedDate
+        {
+            get => _CreatedDate;
 
-		
+            set
+            {
+                if (_CreatedDate != value)
+                {
+                    _CreatedDate = value;
+                }
+            }
+        }
     }
-
 }

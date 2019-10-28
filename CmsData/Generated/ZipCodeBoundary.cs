@@ -7,7 +7,7 @@ namespace CmsData
     [Table(Name = "dbo.ZipCodeBoundary")]
     public partial class ZipCodeBoundary : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -21,11 +21,10 @@ namespace CmsData
 
         private double _Lon;
 
-
-
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -46,125 +45,103 @@ namespace CmsData
         partial void OnLonChanged();
 
         #endregion
+
         public ZipCodeBoundary()
         {
-
-
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "Id", UpdateCheck = UpdateCheck.Never, Storage = "_Id", DbType = "int NOT NULL", IsPrimaryKey = true)]
         public int Id
         {
-            get => this._Id;
+            get => _Id;
 
             set
             {
-                if (this._Id != value)
+                if (_Id != value)
                 {
-
-                    this.OnIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._Id = value;
-                    this.SendPropertyChanged("Id");
-                    this.OnIdChanged();
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "State", UpdateCheck = UpdateCheck.Never, Storage = "_State", DbType = "varchar(256) NOT NULL")]
         public string State
         {
-            get => this._State;
+            get => _State;
 
             set
             {
-                if (this._State != value)
+                if (_State != value)
                 {
-
-                    this.OnStateChanging(value);
-                    this.SendPropertyChanging();
-                    this._State = value;
-                    this.SendPropertyChanged("State");
-                    this.OnStateChanged();
+                    OnStateChanging(value);
+                    SendPropertyChanging();
+                    _State = value;
+                    SendPropertyChanged("State");
+                    OnStateChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ZipCode", UpdateCheck = UpdateCheck.Never, Storage = "_ZipCode", DbType = "char(5) NOT NULL")]
         public string ZipCode
         {
-            get => this._ZipCode;
+            get => _ZipCode;
 
             set
             {
-                if (this._ZipCode != value)
+                if (_ZipCode != value)
                 {
-
-                    this.OnZipCodeChanging(value);
-                    this.SendPropertyChanging();
-                    this._ZipCode = value;
-                    this.SendPropertyChanged("ZipCode");
-                    this.OnZipCodeChanged();
+                    OnZipCodeChanging(value);
+                    SendPropertyChanging();
+                    _ZipCode = value;
+                    SendPropertyChanged("ZipCode");
+                    OnZipCodeChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Lat", UpdateCheck = UpdateCheck.Never, Storage = "_Lat", DbType = "float NOT NULL")]
         public double Lat
         {
-            get => this._Lat;
+            get => _Lat;
 
             set
             {
-                if (this._Lat != value)
+                if (_Lat != value)
                 {
-
-                    this.OnLatChanging(value);
-                    this.SendPropertyChanging();
-                    this._Lat = value;
-                    this.SendPropertyChanged("Lat");
-                    this.OnLatChanged();
+                    OnLatChanging(value);
+                    SendPropertyChanging();
+                    _Lat = value;
+                    SendPropertyChanged("Lat");
+                    OnLatChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Lon", UpdateCheck = UpdateCheck.Never, Storage = "_Lon", DbType = "float NOT NULL")]
         public double Lon
         {
-            get => this._Lon;
+            get => _Lon;
 
             set
             {
-                if (this._Lon != value)
+                if (_Lon != value)
                 {
-
-                    this.OnLonChanging(value);
-                    this.SendPropertyChanging();
-                    this._Lon = value;
-                    this.SendPropertyChanged("Lon");
-                    this.OnLonChanged();
+                    OnLonChanging(value);
+                    SendPropertyChanging();
+                    _Lon = value;
+                    SendPropertyChanged("Lon");
+                    OnLonChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -179,23 +156,19 @@ namespace CmsData
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-
     }
-
 }
-

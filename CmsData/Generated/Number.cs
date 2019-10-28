@@ -7,17 +7,16 @@ namespace CmsData
     [Table(Name = "dbo.Numbers")]
     public partial class Number : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
         private long? _NumberX;
 
-
-
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -26,37 +25,31 @@ namespace CmsData
         partial void OnNumberXChanged();
 
         #endregion
+
         public Number()
         {
-
-
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "Number", UpdateCheck = UpdateCheck.Never, Storage = "_NumberX", DbType = "bigint")]
         public long? NumberX
         {
-            get => this._NumberX;
+            get => _NumberX;
 
             set
             {
-                if (this._NumberX != value)
+                if (_NumberX != value)
                 {
-
-                    this.OnNumberXChanging(value);
-                    this.SendPropertyChanging();
-                    this._NumberX = value;
-                    this.SendPropertyChanged("NumberX");
-                    this.OnNumberXChanged();
+                    OnNumberXChanging(value);
+                    SendPropertyChanging();
+                    _NumberX = value;
+                    SendPropertyChanged("NumberX");
+                    OnNumberXChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -71,23 +64,19 @@ namespace CmsData
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-
     }
-
 }
-

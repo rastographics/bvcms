@@ -1,408 +1,336 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="TPStats")]
-	public partial class TPStat
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private int? _Nrecs;
-		
-		private int? _Nmembers;
-		
-		private int? _Olgive;
-		
-		private int? _Give;
-		
-		private int _Wag;
-		
-		private int? _Checkin;
-		
-		private DateTime _Lastdt;
-		
-		private string _Lastp;
-		
-		private int? _Nlogs;
-		
-		private int? _Nlogs30;
-		
-		private int? _Norgs;
-		
-		private DateTime? _Created;
-		
-		private DateTime? _Converted;
-		
-		private int? _Nusers;
-		
-		private int? _Nmydata;
-		
-		private int? _Nadmins;
-		
-		private int? _Reg;
-		
-		private DateTime? _Firstactive;
-		
-		private int? _Notam;
-		
-		private int? _Campuses;
-		
-		
-		public TPStat()
-		{
-		}
+    [Table(Name = "TPStats")]
+    public partial class TPStat
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="nrecs", Storage="_Nrecs", DbType="int")]
-		public int? Nrecs
-		{
-			get
-			{
-				return this._Nrecs;
-			}
+        private int? _Nrecs;
 
-			set
-			{
-				if (this._Nrecs != value)
-					this._Nrecs = value;
-			}
+        private int? _Nmembers;
 
-		}
+        private int? _Olgive;
 
-		
-		[Column(Name="nmembers", Storage="_Nmembers", DbType="int")]
-		public int? Nmembers
-		{
-			get
-			{
-				return this._Nmembers;
-			}
+        private int? _Give;
 
-			set
-			{
-				if (this._Nmembers != value)
-					this._Nmembers = value;
-			}
+        private int _Wag;
 
-		}
+        private int? _Checkin;
 
-		
-		[Column(Name="olgive", Storage="_Olgive", DbType="int")]
-		public int? Olgive
-		{
-			get
-			{
-				return this._Olgive;
-			}
+        private DateTime _Lastdt;
 
-			set
-			{
-				if (this._Olgive != value)
-					this._Olgive = value;
-			}
+        private string _Lastp;
 
-		}
+        private int? _Nlogs;
 
-		
-		[Column(Name="give", Storage="_Give", DbType="int")]
-		public int? Give
-		{
-			get
-			{
-				return this._Give;
-			}
+        private int? _Nlogs30;
 
-			set
-			{
-				if (this._Give != value)
-					this._Give = value;
-			}
+        private int? _Norgs;
 
-		}
+        private DateTime? _Created;
 
-		
-		[Column(Name="wag", Storage="_Wag", DbType="int NOT NULL")]
-		public int Wag
-		{
-			get
-			{
-				return this._Wag;
-			}
+        private DateTime? _Converted;
 
-			set
-			{
-				if (this._Wag != value)
-					this._Wag = value;
-			}
+        private int? _Nusers;
 
-		}
+        private int? _Nmydata;
 
-		
-		[Column(Name="checkin", Storage="_Checkin", DbType="int")]
-		public int? Checkin
-		{
-			get
-			{
-				return this._Checkin;
-			}
+        private int? _Nadmins;
 
-			set
-			{
-				if (this._Checkin != value)
-					this._Checkin = value;
-			}
+        private int? _Reg;
 
-		}
+        private DateTime? _Firstactive;
 
-		
-		[Column(Name="lastdt", Storage="_Lastdt", DbType="datetime NOT NULL")]
-		public DateTime Lastdt
-		{
-			get
-			{
-				return this._Lastdt;
-			}
+        private int? _Notam;
 
-			set
-			{
-				if (this._Lastdt != value)
-					this._Lastdt = value;
-			}
+        private int? _Campuses;
 
-		}
+        public TPStat()
+        {
+        }
 
-		
-		[Column(Name="lastp", Storage="_Lastp", DbType="nvarchar(50) NOT NULL")]
-		public string Lastp
-		{
-			get
-			{
-				return this._Lastp;
-			}
+        [Column(Name = "nrecs", Storage = "_Nrecs", DbType = "int")]
+        public int? Nrecs
+        {
+            get => _Nrecs;
 
-			set
-			{
-				if (this._Lastp != value)
-					this._Lastp = value;
-			}
+            set
+            {
+                if (_Nrecs != value)
+                {
+                    _Nrecs = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "nmembers", Storage = "_Nmembers", DbType = "int")]
+        public int? Nmembers
+        {
+            get => _Nmembers;
 
-		
-		[Column(Name="nlogs", Storage="_Nlogs", DbType="int")]
-		public int? Nlogs
-		{
-			get
-			{
-				return this._Nlogs;
-			}
+            set
+            {
+                if (_Nmembers != value)
+                {
+                    _Nmembers = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._Nlogs != value)
-					this._Nlogs = value;
-			}
+        [Column(Name = "olgive", Storage = "_Olgive", DbType = "int")]
+        public int? Olgive
+        {
+            get => _Olgive;
 
-		}
+            set
+            {
+                if (_Olgive != value)
+                {
+                    _Olgive = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="nlogs30", Storage="_Nlogs30", DbType="int")]
-		public int? Nlogs30
-		{
-			get
-			{
-				return this._Nlogs30;
-			}
+        [Column(Name = "give", Storage = "_Give", DbType = "int")]
+        public int? Give
+        {
+            get => _Give;
 
-			set
-			{
-				if (this._Nlogs30 != value)
-					this._Nlogs30 = value;
-			}
+            set
+            {
+                if (_Give != value)
+                {
+                    _Give = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "wag", Storage = "_Wag", DbType = "int NOT NULL")]
+        public int Wag
+        {
+            get => _Wag;
 
-		
-		[Column(Name="norgs", Storage="_Norgs", DbType="int")]
-		public int? Norgs
-		{
-			get
-			{
-				return this._Norgs;
-			}
+            set
+            {
+                if (_Wag != value)
+                {
+                    _Wag = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._Norgs != value)
-					this._Norgs = value;
-			}
+        [Column(Name = "checkin", Storage = "_Checkin", DbType = "int")]
+        public int? Checkin
+        {
+            get => _Checkin;
 
-		}
+            set
+            {
+                if (_Checkin != value)
+                {
+                    _Checkin = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="created", Storage="_Created", DbType="datetime")]
-		public DateTime? Created
-		{
-			get
-			{
-				return this._Created;
-			}
+        [Column(Name = "lastdt", Storage = "_Lastdt", DbType = "datetime NOT NULL")]
+        public DateTime Lastdt
+        {
+            get => _Lastdt;
 
-			set
-			{
-				if (this._Created != value)
-					this._Created = value;
-			}
+            set
+            {
+                if (_Lastdt != value)
+                {
+                    _Lastdt = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "lastp", Storage = "_Lastp", DbType = "nvarchar(50) NOT NULL")]
+        public string Lastp
+        {
+            get => _Lastp;
 
-		
-		[Column(Name="converted", Storage="_Converted", DbType="datetime")]
-		public DateTime? Converted
-		{
-			get
-			{
-				return this._Converted;
-			}
+            set
+            {
+                if (_Lastp != value)
+                {
+                    _Lastp = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._Converted != value)
-					this._Converted = value;
-			}
+        [Column(Name = "nlogs", Storage = "_Nlogs", DbType = "int")]
+        public int? Nlogs
+        {
+            get => _Nlogs;
 
-		}
+            set
+            {
+                if (_Nlogs != value)
+                {
+                    _Nlogs = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="nusers", Storage="_Nusers", DbType="int")]
-		public int? Nusers
-		{
-			get
-			{
-				return this._Nusers;
-			}
+        [Column(Name = "nlogs30", Storage = "_Nlogs30", DbType = "int")]
+        public int? Nlogs30
+        {
+            get => _Nlogs30;
 
-			set
-			{
-				if (this._Nusers != value)
-					this._Nusers = value;
-			}
+            set
+            {
+                if (_Nlogs30 != value)
+                {
+                    _Nlogs30 = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "norgs", Storage = "_Norgs", DbType = "int")]
+        public int? Norgs
+        {
+            get => _Norgs;
 
-		
-		[Column(Name="nmydata", Storage="_Nmydata", DbType="int")]
-		public int? Nmydata
-		{
-			get
-			{
-				return this._Nmydata;
-			}
+            set
+            {
+                if (_Norgs != value)
+                {
+                    _Norgs = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._Nmydata != value)
-					this._Nmydata = value;
-			}
+        [Column(Name = "created", Storage = "_Created", DbType = "datetime")]
+        public DateTime? Created
+        {
+            get => _Created;
 
-		}
+            set
+            {
+                if (_Created != value)
+                {
+                    _Created = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="nadmins", Storage="_Nadmins", DbType="int")]
-		public int? Nadmins
-		{
-			get
-			{
-				return this._Nadmins;
-			}
+        [Column(Name = "converted", Storage = "_Converted", DbType = "datetime")]
+        public DateTime? Converted
+        {
+            get => _Converted;
 
-			set
-			{
-				if (this._Nadmins != value)
-					this._Nadmins = value;
-			}
+            set
+            {
+                if (_Converted != value)
+                {
+                    _Converted = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "nusers", Storage = "_Nusers", DbType = "int")]
+        public int? Nusers
+        {
+            get => _Nusers;
 
-		
-		[Column(Name="reg", Storage="_Reg", DbType="int")]
-		public int? Reg
-		{
-			get
-			{
-				return this._Reg;
-			}
+            set
+            {
+                if (_Nusers != value)
+                {
+                    _Nusers = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._Reg != value)
-					this._Reg = value;
-			}
+        [Column(Name = "nmydata", Storage = "_Nmydata", DbType = "int")]
+        public int? Nmydata
+        {
+            get => _Nmydata;
 
-		}
+            set
+            {
+                if (_Nmydata != value)
+                {
+                    _Nmydata = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="firstactive", Storage="_Firstactive", DbType="datetime")]
-		public DateTime? Firstactive
-		{
-			get
-			{
-				return this._Firstactive;
-			}
+        [Column(Name = "nadmins", Storage = "_Nadmins", DbType = "int")]
+        public int? Nadmins
+        {
+            get => _Nadmins;
 
-			set
-			{
-				if (this._Firstactive != value)
-					this._Firstactive = value;
-			}
+            set
+            {
+                if (_Nadmins != value)
+                {
+                    _Nadmins = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "reg", Storage = "_Reg", DbType = "int")]
+        public int? Reg
+        {
+            get => _Reg;
 
-		
-		[Column(Name="notam", Storage="_Notam", DbType="int")]
-		public int? Notam
-		{
-			get
-			{
-				return this._Notam;
-			}
+            set
+            {
+                if (_Reg != value)
+                {
+                    _Reg = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._Notam != value)
-					this._Notam = value;
-			}
+        [Column(Name = "firstactive", Storage = "_Firstactive", DbType = "datetime")]
+        public DateTime? Firstactive
+        {
+            get => _Firstactive;
 
-		}
+            set
+            {
+                if (_Firstactive != value)
+                {
+                    _Firstactive = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="campuses", Storage="_Campuses", DbType="int")]
-		public int? Campuses
-		{
-			get
-			{
-				return this._Campuses;
-			}
+        [Column(Name = "notam", Storage = "_Notam", DbType = "int")]
+        public int? Notam
+        {
+            get => _Notam;
 
-			set
-			{
-				if (this._Campuses != value)
-					this._Campuses = value;
-			}
+            set
+            {
+                if (_Notam != value)
+                {
+                    _Notam = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "campuses", Storage = "_Campuses", DbType = "int")]
+        public int? Campuses
+        {
+            get => _Campuses;
 
-		
+            set
+            {
+                if (_Campuses != value)
+                {
+                    _Campuses = value;
+                }
+            }
+        }
     }
-
 }

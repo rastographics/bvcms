@@ -1,408 +1,336 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="PeopleBasicModifed")]
-	public partial class PeopleBasicModifed
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private int _PeopleId;
-		
-		private int _FamilyId;
-		
-		private int _PositionInFamilyId;
-		
-		private int? _CampusId;
-		
-		private string _FirstName;
-		
-		private string _LastName;
-		
-		private int _GenderId;
-		
-		private DateTime? _BirthDate;
-		
-		private string _EmailAddress;
-		
-		private int _MaritalStatusId;
-		
-		private string _PrimaryAddress;
-		
-		private string _PrimaryCity;
-		
-		private string _PrimaryState;
-		
-		private string _PrimaryZip;
-		
-		private string _HomePhone;
-		
-		private string _WorkPhone;
-		
-		private string _CellPhone;
-		
-		private DateTime? _CreatedDate;
-		
-		private DateTime? _ModifiedDate;
-		
-		private bool? _IsDeceased;
-		
-		
-		public PeopleBasicModifed()
-		{
-		}
+    [Table(Name = "PeopleBasicModifed")]
+    public partial class PeopleBasicModifed
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="PeopleId", Storage="_PeopleId", AutoSync=AutoSync.OnInsert, DbType="int NOT NULL IDENTITY", IsDbGenerated=true)]
-		public int PeopleId
-		{
-			get
-			{
-				return this._PeopleId;
-			}
+        private int _PeopleId;
 
-			set
-			{
-				if (this._PeopleId != value)
-					this._PeopleId = value;
-			}
+        private int _FamilyId;
 
-		}
+        private int _PositionInFamilyId;
 
-		
-		[Column(Name="FamilyId", Storage="_FamilyId", DbType="int NOT NULL")]
-		public int FamilyId
-		{
-			get
-			{
-				return this._FamilyId;
-			}
+        private int? _CampusId;
 
-			set
-			{
-				if (this._FamilyId != value)
-					this._FamilyId = value;
-			}
+        private string _FirstName;
 
-		}
+        private string _LastName;
 
-		
-		[Column(Name="PositionInFamilyId", Storage="_PositionInFamilyId", DbType="int NOT NULL")]
-		public int PositionInFamilyId
-		{
-			get
-			{
-				return this._PositionInFamilyId;
-			}
+        private int _GenderId;
 
-			set
-			{
-				if (this._PositionInFamilyId != value)
-					this._PositionInFamilyId = value;
-			}
+        private DateTime? _BirthDate;
 
-		}
+        private string _EmailAddress;
 
-		
-		[Column(Name="CampusId", Storage="_CampusId", DbType="int")]
-		public int? CampusId
-		{
-			get
-			{
-				return this._CampusId;
-			}
+        private int _MaritalStatusId;
 
-			set
-			{
-				if (this._CampusId != value)
-					this._CampusId = value;
-			}
+        private string _PrimaryAddress;
 
-		}
+        private string _PrimaryCity;
 
-		
-		[Column(Name="FirstName", Storage="_FirstName", DbType="nvarchar(25)")]
-		public string FirstName
-		{
-			get
-			{
-				return this._FirstName;
-			}
+        private string _PrimaryState;
 
-			set
-			{
-				if (this._FirstName != value)
-					this._FirstName = value;
-			}
+        private string _PrimaryZip;
 
-		}
+        private string _HomePhone;
 
-		
-		[Column(Name="LastName", Storage="_LastName", DbType="nvarchar(100) NOT NULL")]
-		public string LastName
-		{
-			get
-			{
-				return this._LastName;
-			}
+        private string _WorkPhone;
 
-			set
-			{
-				if (this._LastName != value)
-					this._LastName = value;
-			}
+        private string _CellPhone;
 
-		}
+        private DateTime? _CreatedDate;
 
-		
-		[Column(Name="GenderId", Storage="_GenderId", DbType="int NOT NULL")]
-		public int GenderId
-		{
-			get
-			{
-				return this._GenderId;
-			}
+        private DateTime? _ModifiedDate;
 
-			set
-			{
-				if (this._GenderId != value)
-					this._GenderId = value;
-			}
+        private bool? _IsDeceased;
 
-		}
+        public PeopleBasicModifed()
+        {
+        }
 
-		
-		[Column(Name="BirthDate", Storage="_BirthDate", DbType="datetime")]
-		public DateTime? BirthDate
-		{
-			get
-			{
-				return this._BirthDate;
-			}
+        [Column(Name = "PeopleId", Storage = "_PeopleId", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsDbGenerated = true)]
+        public int PeopleId
+        {
+            get => _PeopleId;
 
-			set
-			{
-				if (this._BirthDate != value)
-					this._BirthDate = value;
-			}
+            set
+            {
+                if (_PeopleId != value)
+                {
+                    _PeopleId = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "FamilyId", Storage = "_FamilyId", DbType = "int NOT NULL")]
+        public int FamilyId
+        {
+            get => _FamilyId;
 
-		
-		[Column(Name="EmailAddress", Storage="_EmailAddress", DbType="nvarchar(150)")]
-		public string EmailAddress
-		{
-			get
-			{
-				return this._EmailAddress;
-			}
+            set
+            {
+                if (_FamilyId != value)
+                {
+                    _FamilyId = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._EmailAddress != value)
-					this._EmailAddress = value;
-			}
+        [Column(Name = "PositionInFamilyId", Storage = "_PositionInFamilyId", DbType = "int NOT NULL")]
+        public int PositionInFamilyId
+        {
+            get => _PositionInFamilyId;
 
-		}
+            set
+            {
+                if (_PositionInFamilyId != value)
+                {
+                    _PositionInFamilyId = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="MaritalStatusId", Storage="_MaritalStatusId", DbType="int NOT NULL")]
-		public int MaritalStatusId
-		{
-			get
-			{
-				return this._MaritalStatusId;
-			}
+        [Column(Name = "CampusId", Storage = "_CampusId", DbType = "int")]
+        public int? CampusId
+        {
+            get => _CampusId;
 
-			set
-			{
-				if (this._MaritalStatusId != value)
-					this._MaritalStatusId = value;
-			}
+            set
+            {
+                if (_CampusId != value)
+                {
+                    _CampusId = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "FirstName", Storage = "_FirstName", DbType = "nvarchar(25)")]
+        public string FirstName
+        {
+            get => _FirstName;
 
-		
-		[Column(Name="PrimaryAddress", Storage="_PrimaryAddress", DbType="nvarchar(100)")]
-		public string PrimaryAddress
-		{
-			get
-			{
-				return this._PrimaryAddress;
-			}
+            set
+            {
+                if (_FirstName != value)
+                {
+                    _FirstName = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._PrimaryAddress != value)
-					this._PrimaryAddress = value;
-			}
+        [Column(Name = "LastName", Storage = "_LastName", DbType = "nvarchar(100) NOT NULL")]
+        public string LastName
+        {
+            get => _LastName;
 
-		}
+            set
+            {
+                if (_LastName != value)
+                {
+                    _LastName = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="PrimaryCity", Storage="_PrimaryCity", DbType="nvarchar(30)")]
-		public string PrimaryCity
-		{
-			get
-			{
-				return this._PrimaryCity;
-			}
+        [Column(Name = "GenderId", Storage = "_GenderId", DbType = "int NOT NULL")]
+        public int GenderId
+        {
+            get => _GenderId;
 
-			set
-			{
-				if (this._PrimaryCity != value)
-					this._PrimaryCity = value;
-			}
+            set
+            {
+                if (_GenderId != value)
+                {
+                    _GenderId = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "BirthDate", Storage = "_BirthDate", DbType = "datetime")]
+        public DateTime? BirthDate
+        {
+            get => _BirthDate;
 
-		
-		[Column(Name="PrimaryState", Storage="_PrimaryState", DbType="nvarchar(20)")]
-		public string PrimaryState
-		{
-			get
-			{
-				return this._PrimaryState;
-			}
+            set
+            {
+                if (_BirthDate != value)
+                {
+                    _BirthDate = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._PrimaryState != value)
-					this._PrimaryState = value;
-			}
+        [Column(Name = "EmailAddress", Storage = "_EmailAddress", DbType = "nvarchar(150)")]
+        public string EmailAddress
+        {
+            get => _EmailAddress;
 
-		}
+            set
+            {
+                if (_EmailAddress != value)
+                {
+                    _EmailAddress = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="PrimaryZip", Storage="_PrimaryZip", DbType="nvarchar(15)")]
-		public string PrimaryZip
-		{
-			get
-			{
-				return this._PrimaryZip;
-			}
+        [Column(Name = "MaritalStatusId", Storage = "_MaritalStatusId", DbType = "int NOT NULL")]
+        public int MaritalStatusId
+        {
+            get => _MaritalStatusId;
 
-			set
-			{
-				if (this._PrimaryZip != value)
-					this._PrimaryZip = value;
-			}
+            set
+            {
+                if (_MaritalStatusId != value)
+                {
+                    _MaritalStatusId = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "PrimaryAddress", Storage = "_PrimaryAddress", DbType = "nvarchar(100)")]
+        public string PrimaryAddress
+        {
+            get => _PrimaryAddress;
 
-		
-		[Column(Name="HomePhone", Storage="_HomePhone", DbType="nvarchar(20)")]
-		public string HomePhone
-		{
-			get
-			{
-				return this._HomePhone;
-			}
+            set
+            {
+                if (_PrimaryAddress != value)
+                {
+                    _PrimaryAddress = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._HomePhone != value)
-					this._HomePhone = value;
-			}
+        [Column(Name = "PrimaryCity", Storage = "_PrimaryCity", DbType = "nvarchar(30)")]
+        public string PrimaryCity
+        {
+            get => _PrimaryCity;
 
-		}
+            set
+            {
+                if (_PrimaryCity != value)
+                {
+                    _PrimaryCity = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="WorkPhone", Storage="_WorkPhone", DbType="nvarchar(20)")]
-		public string WorkPhone
-		{
-			get
-			{
-				return this._WorkPhone;
-			}
+        [Column(Name = "PrimaryState", Storage = "_PrimaryState", DbType = "nvarchar(20)")]
+        public string PrimaryState
+        {
+            get => _PrimaryState;
 
-			set
-			{
-				if (this._WorkPhone != value)
-					this._WorkPhone = value;
-			}
+            set
+            {
+                if (_PrimaryState != value)
+                {
+                    _PrimaryState = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "PrimaryZip", Storage = "_PrimaryZip", DbType = "nvarchar(15)")]
+        public string PrimaryZip
+        {
+            get => _PrimaryZip;
 
-		
-		[Column(Name="CellPhone", Storage="_CellPhone", DbType="nvarchar(20)")]
-		public string CellPhone
-		{
-			get
-			{
-				return this._CellPhone;
-			}
+            set
+            {
+                if (_PrimaryZip != value)
+                {
+                    _PrimaryZip = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._CellPhone != value)
-					this._CellPhone = value;
-			}
+        [Column(Name = "HomePhone", Storage = "_HomePhone", DbType = "nvarchar(20)")]
+        public string HomePhone
+        {
+            get => _HomePhone;
 
-		}
+            set
+            {
+                if (_HomePhone != value)
+                {
+                    _HomePhone = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="CreatedDate", Storage="_CreatedDate", DbType="datetime")]
-		public DateTime? CreatedDate
-		{
-			get
-			{
-				return this._CreatedDate;
-			}
+        [Column(Name = "WorkPhone", Storage = "_WorkPhone", DbType = "nvarchar(20)")]
+        public string WorkPhone
+        {
+            get => _WorkPhone;
 
-			set
-			{
-				if (this._CreatedDate != value)
-					this._CreatedDate = value;
-			}
+            set
+            {
+                if (_WorkPhone != value)
+                {
+                    _WorkPhone = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "CellPhone", Storage = "_CellPhone", DbType = "nvarchar(20)")]
+        public string CellPhone
+        {
+            get => _CellPhone;
 
-		
-		[Column(Name="ModifiedDate", Storage="_ModifiedDate", DbType="datetime")]
-		public DateTime? ModifiedDate
-		{
-			get
-			{
-				return this._ModifiedDate;
-			}
+            set
+            {
+                if (_CellPhone != value)
+                {
+                    _CellPhone = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._ModifiedDate != value)
-					this._ModifiedDate = value;
-			}
+        [Column(Name = "CreatedDate", Storage = "_CreatedDate", DbType = "datetime")]
+        public DateTime? CreatedDate
+        {
+            get => _CreatedDate;
 
-		}
+            set
+            {
+                if (_CreatedDate != value)
+                {
+                    _CreatedDate = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="IsDeceased", Storage="_IsDeceased", DbType="bit")]
-		public bool? IsDeceased
-		{
-			get
-			{
-				return this._IsDeceased;
-			}
+        [Column(Name = "ModifiedDate", Storage = "_ModifiedDate", DbType = "datetime")]
+        public DateTime? ModifiedDate
+        {
+            get => _ModifiedDate;
 
-			set
-			{
-				if (this._IsDeceased != value)
-					this._IsDeceased = value;
-			}
+            set
+            {
+                if (_ModifiedDate != value)
+                {
+                    _ModifiedDate = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "IsDeceased", Storage = "_IsDeceased", DbType = "bit")]
+        public bool? IsDeceased
+        {
+            get => _IsDeceased;
 
-		
+            set
+            {
+                if (_IsDeceased != value)
+                {
+                    _IsDeceased = value;
+                }
+            }
+        }
     }
-
 }

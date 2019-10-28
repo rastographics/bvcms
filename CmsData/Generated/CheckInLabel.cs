@@ -7,7 +7,7 @@ namespace CmsData
     [Table(Name = "dbo.CheckInLabel")]
     public partial class CheckInLabel : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -21,11 +21,10 @@ namespace CmsData
 
         private int _Maximum;
 
-
-
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -46,125 +45,103 @@ namespace CmsData
         partial void OnMaximumChanged();
 
         #endregion
+
         public CheckInLabel()
         {
-
-
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "id", UpdateCheck = UpdateCheck.Never, Storage = "_Id", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
         public int Id
         {
-            get => this._Id;
+            get => _Id;
 
             set
             {
-                if (this._Id != value)
+                if (_Id != value)
                 {
-
-                    this.OnIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._Id = value;
-                    this.SendPropertyChanged("Id");
-                    this.OnIdChanged();
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "typeID", UpdateCheck = UpdateCheck.Never, Storage = "_TypeID", DbType = "int NOT NULL")]
         public int TypeID
         {
-            get => this._TypeID;
+            get => _TypeID;
 
             set
             {
-                if (this._TypeID != value)
+                if (_TypeID != value)
                 {
-
-                    this.OnTypeIDChanging(value);
-                    this.SendPropertyChanging();
-                    this._TypeID = value;
-                    this.SendPropertyChanged("TypeID");
-                    this.OnTypeIDChanged();
+                    OnTypeIDChanging(value);
+                    SendPropertyChanging();
+                    _TypeID = value;
+                    SendPropertyChanged("TypeID");
+                    OnTypeIDChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "name", UpdateCheck = UpdateCheck.Never, Storage = "_Name", DbType = "nvarchar(50) NOT NULL")]
         public string Name
         {
-            get => this._Name;
+            get => _Name;
 
             set
             {
-                if (this._Name != value)
+                if (_Name != value)
                 {
-
-                    this.OnNameChanging(value);
-                    this.SendPropertyChanging();
-                    this._Name = value;
-                    this.SendPropertyChanged("Name");
-                    this.OnNameChanged();
+                    OnNameChanging(value);
+                    SendPropertyChanging();
+                    _Name = value;
+                    SendPropertyChanged("Name");
+                    OnNameChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "minimum", UpdateCheck = UpdateCheck.Never, Storage = "_Minimum", DbType = "int NOT NULL")]
         public int Minimum
         {
-            get => this._Minimum;
+            get => _Minimum;
 
             set
             {
-                if (this._Minimum != value)
+                if (_Minimum != value)
                 {
-
-                    this.OnMinimumChanging(value);
-                    this.SendPropertyChanging();
-                    this._Minimum = value;
-                    this.SendPropertyChanged("Minimum");
-                    this.OnMinimumChanged();
+                    OnMinimumChanging(value);
+                    SendPropertyChanging();
+                    _Minimum = value;
+                    SendPropertyChanged("Minimum");
+                    OnMinimumChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "maximum", UpdateCheck = UpdateCheck.Never, Storage = "_Maximum", DbType = "int NOT NULL")]
         public int Maximum
         {
-            get => this._Maximum;
+            get => _Maximum;
 
             set
             {
-                if (this._Maximum != value)
+                if (_Maximum != value)
                 {
-
-                    this.OnMaximumChanging(value);
-                    this.SendPropertyChanging();
-                    this._Maximum = value;
-                    this.SendPropertyChanged("Maximum");
-                    this.OnMaximumChanged();
+                    OnMaximumChanging(value);
+                    SendPropertyChanging();
+                    _Maximum = value;
+                    SendPropertyChanged("Maximum");
+                    OnMaximumChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -179,23 +156,19 @@ namespace CmsData
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-
     }
-
 }
-

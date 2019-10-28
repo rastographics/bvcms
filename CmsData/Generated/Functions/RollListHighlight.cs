@@ -1,351 +1,288 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="RollListHighlight")]
-	public partial class RollListHighlight
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private int? _Section;
-		
-		private int? _PeopleId;
-		
-		private string _Name;
-		
-		private string _Last;
-		
-		private int? _FamilyId;
-		
-		private string _First;
-		
-		private string _Email;
-		
-		private bool? _Attended;
-		
-		private int? _CommitmentId;
-		
-		private string _CurrMemberType;
-		
-		private string _MemberType;
-		
-		private string _AttendType;
-		
-		private int? _OtherAttends;
-		
-		private bool? _CurrMember;
-		
-		private bool? _Highlight;
-		
-		private string _ChurchMemberStatus;
-		
-		private string _IPadAttendanceExtra;
-		
-		
-		public RollListHighlight()
-		{
-		}
+    [Table(Name = "RollListHighlight")]
+    public partial class RollListHighlight
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="Section", Storage="_Section", DbType="int")]
-		public int? Section
-		{
-			get
-			{
-				return this._Section;
-			}
+        private int? _Section;
 
-			set
-			{
-				if (this._Section != value)
-					this._Section = value;
-			}
+        private int? _PeopleId;
 
-		}
+        private string _Name;
 
-		
-		[Column(Name="PeopleId", Storage="_PeopleId", DbType="int")]
-		public int? PeopleId
-		{
-			get
-			{
-				return this._PeopleId;
-			}
+        private string _Last;
 
-			set
-			{
-				if (this._PeopleId != value)
-					this._PeopleId = value;
-			}
+        private int? _FamilyId;
 
-		}
+        private string _First;
 
-		
-		[Column(Name="Name", Storage="_Name", DbType="nvarchar(100)")]
-		public string Name
-		{
-			get
-			{
-				return this._Name;
-			}
+        private string _Email;
 
-			set
-			{
-				if (this._Name != value)
-					this._Name = value;
-			}
+        private bool? _Attended;
 
-		}
+        private int? _CommitmentId;
 
-		
-		[Column(Name="Last", Storage="_Last", DbType="nvarchar(100)")]
-		public string Last
-		{
-			get
-			{
-				return this._Last;
-			}
+        private string _CurrMemberType;
 
-			set
-			{
-				if (this._Last != value)
-					this._Last = value;
-			}
+        private string _MemberType;
 
-		}
+        private string _AttendType;
 
-		
-		[Column(Name="FamilyId", Storage="_FamilyId", DbType="int")]
-		public int? FamilyId
-		{
-			get
-			{
-				return this._FamilyId;
-			}
+        private int? _OtherAttends;
 
-			set
-			{
-				if (this._FamilyId != value)
-					this._FamilyId = value;
-			}
+        private bool? _CurrMember;
 
-		}
+        private bool? _Highlight;
 
-		
-		[Column(Name="First", Storage="_First", DbType="nvarchar(50)")]
-		public string First
-		{
-			get
-			{
-				return this._First;
-			}
+        private string _ChurchMemberStatus;
 
-			set
-			{
-				if (this._First != value)
-					this._First = value;
-			}
+        private string _IPadAttendanceExtra;
 
-		}
+        public RollListHighlight()
+        {
+        }
 
-		
-		[Column(Name="Email", Storage="_Email", DbType="nvarchar(100)")]
-		public string Email
-		{
-			get
-			{
-				return this._Email;
-			}
+        [Column(Name = "Section", Storage = "_Section", DbType = "int")]
+        public int? Section
+        {
+            get => _Section;
 
-			set
-			{
-				if (this._Email != value)
-					this._Email = value;
-			}
+            set
+            {
+                if (_Section != value)
+                {
+                    _Section = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "PeopleId", Storage = "_PeopleId", DbType = "int")]
+        public int? PeopleId
+        {
+            get => _PeopleId;
 
-		
-		[Column(Name="Attended", Storage="_Attended", DbType="bit")]
-		public bool? Attended
-		{
-			get
-			{
-				return this._Attended;
-			}
+            set
+            {
+                if (_PeopleId != value)
+                {
+                    _PeopleId = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._Attended != value)
-					this._Attended = value;
-			}
+        [Column(Name = "Name", Storage = "_Name", DbType = "nvarchar(100)")]
+        public string Name
+        {
+            get => _Name;
 
-		}
+            set
+            {
+                if (_Name != value)
+                {
+                    _Name = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="CommitmentId", Storage="_CommitmentId", DbType="int")]
-		public int? CommitmentId
-		{
-			get
-			{
-				return this._CommitmentId;
-			}
+        [Column(Name = "Last", Storage = "_Last", DbType = "nvarchar(100)")]
+        public string Last
+        {
+            get => _Last;
 
-			set
-			{
-				if (this._CommitmentId != value)
-					this._CommitmentId = value;
-			}
+            set
+            {
+                if (_Last != value)
+                {
+                    _Last = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "FamilyId", Storage = "_FamilyId", DbType = "int")]
+        public int? FamilyId
+        {
+            get => _FamilyId;
 
-		
-		[Column(Name="CurrMemberType", Storage="_CurrMemberType", DbType="nvarchar(100)")]
-		public string CurrMemberType
-		{
-			get
-			{
-				return this._CurrMemberType;
-			}
+            set
+            {
+                if (_FamilyId != value)
+                {
+                    _FamilyId = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._CurrMemberType != value)
-					this._CurrMemberType = value;
-			}
+        [Column(Name = "First", Storage = "_First", DbType = "nvarchar(50)")]
+        public string First
+        {
+            get => _First;
 
-		}
+            set
+            {
+                if (_First != value)
+                {
+                    _First = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="MemberType", Storage="_MemberType", DbType="nvarchar(100)")]
-		public string MemberType
-		{
-			get
-			{
-				return this._MemberType;
-			}
+        [Column(Name = "Email", Storage = "_Email", DbType = "nvarchar(100)")]
+        public string Email
+        {
+            get => _Email;
 
-			set
-			{
-				if (this._MemberType != value)
-					this._MemberType = value;
-			}
+            set
+            {
+                if (_Email != value)
+                {
+                    _Email = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "Attended", Storage = "_Attended", DbType = "bit")]
+        public bool? Attended
+        {
+            get => _Attended;
 
-		
-		[Column(Name="AttendType", Storage="_AttendType", DbType="nvarchar(100)")]
-		public string AttendType
-		{
-			get
-			{
-				return this._AttendType;
-			}
+            set
+            {
+                if (_Attended != value)
+                {
+                    _Attended = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._AttendType != value)
-					this._AttendType = value;
-			}
+        [Column(Name = "CommitmentId", Storage = "_CommitmentId", DbType = "int")]
+        public int? CommitmentId
+        {
+            get => _CommitmentId;
 
-		}
+            set
+            {
+                if (_CommitmentId != value)
+                {
+                    _CommitmentId = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="OtherAttends", Storage="_OtherAttends", DbType="int")]
-		public int? OtherAttends
-		{
-			get
-			{
-				return this._OtherAttends;
-			}
+        [Column(Name = "CurrMemberType", Storage = "_CurrMemberType", DbType = "nvarchar(100)")]
+        public string CurrMemberType
+        {
+            get => _CurrMemberType;
 
-			set
-			{
-				if (this._OtherAttends != value)
-					this._OtherAttends = value;
-			}
+            set
+            {
+                if (_CurrMemberType != value)
+                {
+                    _CurrMemberType = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "MemberType", Storage = "_MemberType", DbType = "nvarchar(100)")]
+        public string MemberType
+        {
+            get => _MemberType;
 
-		
-		[Column(Name="CurrMember", Storage="_CurrMember", DbType="bit")]
-		public bool? CurrMember
-		{
-			get
-			{
-				return this._CurrMember;
-			}
+            set
+            {
+                if (_MemberType != value)
+                {
+                    _MemberType = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._CurrMember != value)
-					this._CurrMember = value;
-			}
+        [Column(Name = "AttendType", Storage = "_AttendType", DbType = "nvarchar(100)")]
+        public string AttendType
+        {
+            get => _AttendType;
 
-		}
+            set
+            {
+                if (_AttendType != value)
+                {
+                    _AttendType = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="Highlight", Storage="_Highlight", DbType="bit")]
-		public bool? Highlight
-		{
-			get
-			{
-				return this._Highlight;
-			}
+        [Column(Name = "OtherAttends", Storage = "_OtherAttends", DbType = "int")]
+        public int? OtherAttends
+        {
+            get => _OtherAttends;
 
-			set
-			{
-				if (this._Highlight != value)
-					this._Highlight = value;
-			}
+            set
+            {
+                if (_OtherAttends != value)
+                {
+                    _OtherAttends = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "CurrMember", Storage = "_CurrMember", DbType = "bit")]
+        public bool? CurrMember
+        {
+            get => _CurrMember;
 
-		
-		[Column(Name="ChurchMemberStatus", Storage="_ChurchMemberStatus", DbType="nvarchar(100)")]
-		public string ChurchMemberStatus
-		{
-			get
-			{
-				return this._ChurchMemberStatus;
-			}
+            set
+            {
+                if (_CurrMember != value)
+                {
+                    _CurrMember = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._ChurchMemberStatus != value)
-					this._ChurchMemberStatus = value;
-			}
+        [Column(Name = "Highlight", Storage = "_Highlight", DbType = "bit")]
+        public bool? Highlight
+        {
+            get => _Highlight;
 
-		}
+            set
+            {
+                if (_Highlight != value)
+                {
+                    _Highlight = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="iPadAttendanceExtra", Storage="_IPadAttendanceExtra", DbType="nvarchar(500)")]
-		public string IPadAttendanceExtra
-		{
-			get
-			{
-				return this._IPadAttendanceExtra;
-			}
+        [Column(Name = "ChurchMemberStatus", Storage = "_ChurchMemberStatus", DbType = "nvarchar(100)")]
+        public string ChurchMemberStatus
+        {
+            get => _ChurchMemberStatus;
 
-			set
-			{
-				if (this._IPadAttendanceExtra != value)
-					this._IPadAttendanceExtra = value;
-			}
+            set
+            {
+                if (_ChurchMemberStatus != value)
+                {
+                    _ChurchMemberStatus = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "iPadAttendanceExtra", Storage = "_IPadAttendanceExtra", DbType = "nvarchar(500)")]
+        public string IPadAttendanceExtra
+        {
+            get => _IPadAttendanceExtra;
 
-		
+            set
+            {
+                if (_IPadAttendanceExtra != value)
+                {
+                    _IPadAttendanceExtra = value;
+                }
+            }
+        }
     }
-
 }

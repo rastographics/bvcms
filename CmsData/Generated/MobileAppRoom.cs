@@ -7,7 +7,7 @@ namespace CmsData
     [Table(Name = "dbo.MobileAppRoom")]
     public partial class MobileAppRoom : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -25,11 +25,10 @@ namespace CmsData
 
         private bool _Enabled;
 
-
-
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -56,169 +55,139 @@ namespace CmsData
         partial void OnEnabledChanged();
 
         #endregion
+
         public MobileAppRoom()
         {
-
-
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "id", UpdateCheck = UpdateCheck.Never, Storage = "_Id", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
         public int Id
         {
-            get => this._Id;
+            get => _Id;
 
             set
             {
-                if (this._Id != value)
+                if (_Id != value)
                 {
-
-                    this.OnIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._Id = value;
-                    this.SendPropertyChanged("Id");
-                    this.OnIdChanged();
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "floor", UpdateCheck = UpdateCheck.Never, Storage = "_Floor", DbType = "int NOT NULL")]
         public int Floor
         {
-            get => this._Floor;
+            get => _Floor;
 
             set
             {
-                if (this._Floor != value)
+                if (_Floor != value)
                 {
-
-                    this.OnFloorChanging(value);
-                    this.SendPropertyChanging();
-                    this._Floor = value;
-                    this.SendPropertyChanged("Floor");
-                    this.OnFloorChanged();
+                    OnFloorChanging(value);
+                    SendPropertyChanging();
+                    _Floor = value;
+                    SendPropertyChanged("Floor");
+                    OnFloorChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "name", UpdateCheck = UpdateCheck.Never, Storage = "_Name", DbType = "nvarchar(100) NOT NULL")]
         public string Name
         {
-            get => this._Name;
+            get => _Name;
 
             set
             {
-                if (this._Name != value)
+                if (_Name != value)
                 {
-
-                    this.OnNameChanging(value);
-                    this.SendPropertyChanging();
-                    this._Name = value;
-                    this.SendPropertyChanged("Name");
-                    this.OnNameChanged();
+                    OnNameChanging(value);
+                    SendPropertyChanging();
+                    _Name = value;
+                    SendPropertyChanged("Name");
+                    OnNameChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "room", UpdateCheck = UpdateCheck.Never, Storage = "_Room", DbType = "nvarchar(50) NOT NULL")]
         public string Room
         {
-            get => this._Room;
+            get => _Room;
 
             set
             {
-                if (this._Room != value)
+                if (_Room != value)
                 {
-
-                    this.OnRoomChanging(value);
-                    this.SendPropertyChanging();
-                    this._Room = value;
-                    this.SendPropertyChanged("Room");
-                    this.OnRoomChanged();
+                    OnRoomChanging(value);
+                    SendPropertyChanging();
+                    _Room = value;
+                    SendPropertyChanged("Room");
+                    OnRoomChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "x", UpdateCheck = UpdateCheck.Never, Storage = "_X", DbType = "int NOT NULL")]
         public int X
         {
-            get => this._X;
+            get => _X;
 
             set
             {
-                if (this._X != value)
+                if (_X != value)
                 {
-
-                    this.OnXChanging(value);
-                    this.SendPropertyChanging();
-                    this._X = value;
-                    this.SendPropertyChanged("X");
-                    this.OnXChanged();
+                    OnXChanging(value);
+                    SendPropertyChanging();
+                    _X = value;
+                    SendPropertyChanged("X");
+                    OnXChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "y", UpdateCheck = UpdateCheck.Never, Storage = "_Y", DbType = "int NOT NULL")]
         public int Y
         {
-            get => this._Y;
+            get => _Y;
 
             set
             {
-                if (this._Y != value)
+                if (_Y != value)
                 {
-
-                    this.OnYChanging(value);
-                    this.SendPropertyChanging();
-                    this._Y = value;
-                    this.SendPropertyChanged("Y");
-                    this.OnYChanged();
+                    OnYChanging(value);
+                    SendPropertyChanging();
+                    _Y = value;
+                    SendPropertyChanged("Y");
+                    OnYChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "enabled", UpdateCheck = UpdateCheck.Never, Storage = "_Enabled", DbType = "bit NOT NULL")]
         public bool Enabled
         {
-            get => this._Enabled;
+            get => _Enabled;
 
             set
             {
-                if (this._Enabled != value)
+                if (_Enabled != value)
                 {
-
-                    this.OnEnabledChanging(value);
-                    this.SendPropertyChanging();
-                    this._Enabled = value;
-                    this.SendPropertyChanged("Enabled");
-                    this.OnEnabledChanged();
+                    OnEnabledChanging(value);
+                    SendPropertyChanging();
+                    _Enabled = value;
+                    SendPropertyChanged("Enabled");
+                    OnEnabledChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -233,23 +202,19 @@ namespace CmsData
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-
     }
-
 }
-

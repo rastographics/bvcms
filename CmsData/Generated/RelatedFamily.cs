@@ -9,7 +9,7 @@ namespace CmsData
     [Table(Name = "dbo.RelatedFamilies")]
     public partial class RelatedFamily : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -27,8 +27,6 @@ namespace CmsData
 
         private DateTime? _ModifiedDate;
 
-
-
         private EntityRef<Family> _RelatedFamily1;
 
         private EntityRef<Family> _RelatedFamily2;
@@ -36,6 +34,7 @@ namespace CmsData
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -62,17 +61,15 @@ namespace CmsData
         partial void OnModifiedDateChanged();
 
         #endregion
+
         public RelatedFamily()
         {
+            _RelatedFamily1 = default(EntityRef<Family>);
 
-
-            this._RelatedFamily1 = default(EntityRef<Family>);
-
-            this._RelatedFamily2 = default(EntityRef<Family>);
+            _RelatedFamily2 = default(EntityRef<Family>);
 
             OnCreated();
         }
-
 
         #region Columns
 
@@ -80,167 +77,139 @@ namespace CmsData
         [IsForeignKey]
         public int FamilyId
         {
-            get => this._FamilyId;
+            get => _FamilyId;
 
             set
             {
-                if (this._FamilyId != value)
+                if (_FamilyId != value)
                 {
-
-                    if (this._RelatedFamily1.HasLoadedOrAssignedValue)
+                    if (_RelatedFamily1.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnFamilyIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._FamilyId = value;
-                    this.SendPropertyChanged("FamilyId");
-                    this.OnFamilyIdChanged();
+                    OnFamilyIdChanging(value);
+                    SendPropertyChanging();
+                    _FamilyId = value;
+                    SendPropertyChanged("FamilyId");
+                    OnFamilyIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "RelatedFamilyId", UpdateCheck = UpdateCheck.Never, Storage = "_RelatedFamilyId", DbType = "int NOT NULL", IsPrimaryKey = true)]
         [IsForeignKey]
         public int RelatedFamilyId
         {
-            get => this._RelatedFamilyId;
+            get => _RelatedFamilyId;
 
             set
             {
-                if (this._RelatedFamilyId != value)
+                if (_RelatedFamilyId != value)
                 {
-
-                    if (this._RelatedFamily2.HasLoadedOrAssignedValue)
+                    if (_RelatedFamily2.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnRelatedFamilyIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._RelatedFamilyId = value;
-                    this.SendPropertyChanged("RelatedFamilyId");
-                    this.OnRelatedFamilyIdChanged();
+                    OnRelatedFamilyIdChanging(value);
+                    SendPropertyChanging();
+                    _RelatedFamilyId = value;
+                    SendPropertyChanged("RelatedFamilyId");
+                    OnRelatedFamilyIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "CreatedBy", UpdateCheck = UpdateCheck.Never, Storage = "_CreatedBy", DbType = "int NOT NULL")]
         public int CreatedBy
         {
-            get => this._CreatedBy;
+            get => _CreatedBy;
 
             set
             {
-                if (this._CreatedBy != value)
+                if (_CreatedBy != value)
                 {
-
-                    this.OnCreatedByChanging(value);
-                    this.SendPropertyChanging();
-                    this._CreatedBy = value;
-                    this.SendPropertyChanged("CreatedBy");
-                    this.OnCreatedByChanged();
+                    OnCreatedByChanging(value);
+                    SendPropertyChanging();
+                    _CreatedBy = value;
+                    SendPropertyChanged("CreatedBy");
+                    OnCreatedByChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "CreatedDate", UpdateCheck = UpdateCheck.Never, Storage = "_CreatedDate", DbType = "datetime NOT NULL")]
         public DateTime CreatedDate
         {
-            get => this._CreatedDate;
+            get => _CreatedDate;
 
             set
             {
-                if (this._CreatedDate != value)
+                if (_CreatedDate != value)
                 {
-
-                    this.OnCreatedDateChanging(value);
-                    this.SendPropertyChanging();
-                    this._CreatedDate = value;
-                    this.SendPropertyChanged("CreatedDate");
-                    this.OnCreatedDateChanged();
+                    OnCreatedDateChanging(value);
+                    SendPropertyChanging();
+                    _CreatedDate = value;
+                    SendPropertyChanged("CreatedDate");
+                    OnCreatedDateChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "FamilyRelationshipDesc", UpdateCheck = UpdateCheck.Never, Storage = "_FamilyRelationshipDesc", DbType = "nvarchar(256) NOT NULL")]
         public string FamilyRelationshipDesc
         {
-            get => this._FamilyRelationshipDesc;
+            get => _FamilyRelationshipDesc;
 
             set
             {
-                if (this._FamilyRelationshipDesc != value)
+                if (_FamilyRelationshipDesc != value)
                 {
-
-                    this.OnFamilyRelationshipDescChanging(value);
-                    this.SendPropertyChanging();
-                    this._FamilyRelationshipDesc = value;
-                    this.SendPropertyChanged("FamilyRelationshipDesc");
-                    this.OnFamilyRelationshipDescChanged();
+                    OnFamilyRelationshipDescChanging(value);
+                    SendPropertyChanging();
+                    _FamilyRelationshipDesc = value;
+                    SendPropertyChanged("FamilyRelationshipDesc");
+                    OnFamilyRelationshipDescChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ModifiedBy", UpdateCheck = UpdateCheck.Never, Storage = "_ModifiedBy", DbType = "int")]
         public int? ModifiedBy
         {
-            get => this._ModifiedBy;
+            get => _ModifiedBy;
 
             set
             {
-                if (this._ModifiedBy != value)
+                if (_ModifiedBy != value)
                 {
-
-                    this.OnModifiedByChanging(value);
-                    this.SendPropertyChanging();
-                    this._ModifiedBy = value;
-                    this.SendPropertyChanged("ModifiedBy");
-                    this.OnModifiedByChanged();
+                    OnModifiedByChanging(value);
+                    SendPropertyChanging();
+                    _ModifiedBy = value;
+                    SendPropertyChanged("ModifiedBy");
+                    OnModifiedByChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ModifiedDate", UpdateCheck = UpdateCheck.Never, Storage = "_ModifiedDate", DbType = "datetime")]
         public DateTime? ModifiedDate
         {
-            get => this._ModifiedDate;
+            get => _ModifiedDate;
 
             set
             {
-                if (this._ModifiedDate != value)
+                if (_ModifiedDate != value)
                 {
-
-                    this.OnModifiedDateChanging(value);
-                    this.SendPropertyChanging();
-                    this._ModifiedDate = value;
-                    this.SendPropertyChanged("ModifiedDate");
-                    this.OnModifiedDateChanged();
+                    OnModifiedDateChanging(value);
+                    SendPropertyChanging();
+                    _ModifiedDate = value;
+                    SendPropertyChanged("ModifiedDate");
+                    OnModifiedDateChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -253,109 +222,97 @@ namespace CmsData
         [Association(Name = "RelatedFamilies1__RelatedFamily1", Storage = "_RelatedFamily1", ThisKey = "FamilyId", IsForeignKey = true)]
         public Family RelatedFamily1
         {
-            get => this._RelatedFamily1.Entity;
+            get => _RelatedFamily1.Entity;
 
             set
             {
-                Family previousValue = this._RelatedFamily1.Entity;
+                Family previousValue = _RelatedFamily1.Entity;
                 if (((previousValue != value)
-                            || (this._RelatedFamily1.HasLoadedOrAssignedValue == false)))
+                            || (_RelatedFamily1.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._RelatedFamily1.Entity = null;
+                        _RelatedFamily1.Entity = null;
                         previousValue.RelatedFamilies1.Remove(this);
                     }
 
-                    this._RelatedFamily1.Entity = value;
+                    _RelatedFamily1.Entity = value;
                     if (value != null)
                     {
                         value.RelatedFamilies1.Add(this);
 
-                        this._FamilyId = value.FamilyId;
+                        _FamilyId = value.FamilyId;
 
                     }
 
                     else
                     {
-
-                        this._FamilyId = default(int);
+                        _FamilyId = default(int);
 
                     }
 
-                    this.SendPropertyChanged("RelatedFamily1");
+                    SendPropertyChanged("RelatedFamily1");
                 }
-
             }
-
         }
-
 
         [Association(Name = "RelatedFamilies2__RelatedFamily2", Storage = "_RelatedFamily2", ThisKey = "RelatedFamilyId", IsForeignKey = true)]
         public Family RelatedFamily2
         {
-            get => this._RelatedFamily2.Entity;
+            get => _RelatedFamily2.Entity;
 
             set
             {
-                Family previousValue = this._RelatedFamily2.Entity;
+                Family previousValue = _RelatedFamily2.Entity;
                 if (((previousValue != value)
-                            || (this._RelatedFamily2.HasLoadedOrAssignedValue == false)))
+                            || (_RelatedFamily2.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._RelatedFamily2.Entity = null;
+                        _RelatedFamily2.Entity = null;
                         previousValue.RelatedFamilies2.Remove(this);
                     }
 
-                    this._RelatedFamily2.Entity = value;
+                    _RelatedFamily2.Entity = value;
                     if (value != null)
                     {
                         value.RelatedFamilies2.Add(this);
 
-                        this._RelatedFamilyId = value.FamilyId;
+                        _RelatedFamilyId = value.FamilyId;
 
                     }
 
                     else
                     {
-
-                        this._RelatedFamilyId = default(int);
+                        _RelatedFamilyId = default(int);
 
                     }
 
-                    this.SendPropertyChanged("RelatedFamily2");
+                    SendPropertyChanged("RelatedFamily2");
                 }
-
             }
-
         }
-
 
         #endregion
 
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-
     }
-
 }
-

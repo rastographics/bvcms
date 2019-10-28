@@ -7,7 +7,7 @@ namespace CmsData
     [Table(Name = "disc.ReadPlan")]
     public partial class ReadPlan : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -27,11 +27,10 @@ namespace CmsData
 
         private int? _EndVerse;
 
-
-
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -61,191 +60,157 @@ namespace CmsData
         partial void OnEndVerseChanged();
 
         #endregion
+
         public ReadPlan()
         {
-
-
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "Day", UpdateCheck = UpdateCheck.Never, Storage = "_Day", DbType = "int NOT NULL", IsPrimaryKey = true)]
         public int Day
         {
-            get => this._Day;
+            get => _Day;
 
             set
             {
-                if (this._Day != value)
+                if (_Day != value)
                 {
-
-                    this.OnDayChanging(value);
-                    this.SendPropertyChanging();
-                    this._Day = value;
-                    this.SendPropertyChanged("Day");
-                    this.OnDayChanged();
+                    OnDayChanging(value);
+                    SendPropertyChanging();
+                    _Day = value;
+                    SendPropertyChanged("Day");
+                    OnDayChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Section", UpdateCheck = UpdateCheck.Never, Storage = "_Section", DbType = "int NOT NULL", IsPrimaryKey = true)]
         public int Section
         {
-            get => this._Section;
+            get => _Section;
 
             set
             {
-                if (this._Section != value)
+                if (_Section != value)
                 {
-
-                    this.OnSectionChanging(value);
-                    this.SendPropertyChanging();
-                    this._Section = value;
-                    this.SendPropertyChanged("Section");
-                    this.OnSectionChanged();
+                    OnSectionChanging(value);
+                    SendPropertyChanging();
+                    _Section = value;
+                    SendPropertyChanged("Section");
+                    OnSectionChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "StartBook", UpdateCheck = UpdateCheck.Never, Storage = "_StartBook", DbType = "int")]
         public int? StartBook
         {
-            get => this._StartBook;
+            get => _StartBook;
 
             set
             {
-                if (this._StartBook != value)
+                if (_StartBook != value)
                 {
-
-                    this.OnStartBookChanging(value);
-                    this.SendPropertyChanging();
-                    this._StartBook = value;
-                    this.SendPropertyChanged("StartBook");
-                    this.OnStartBookChanged();
+                    OnStartBookChanging(value);
+                    SendPropertyChanging();
+                    _StartBook = value;
+                    SendPropertyChanged("StartBook");
+                    OnStartBookChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "StartChap", UpdateCheck = UpdateCheck.Never, Storage = "_StartChap", DbType = "int")]
         public int? StartChap
         {
-            get => this._StartChap;
+            get => _StartChap;
 
             set
             {
-                if (this._StartChap != value)
+                if (_StartChap != value)
                 {
-
-                    this.OnStartChapChanging(value);
-                    this.SendPropertyChanging();
-                    this._StartChap = value;
-                    this.SendPropertyChanged("StartChap");
-                    this.OnStartChapChanged();
+                    OnStartChapChanging(value);
+                    SendPropertyChanging();
+                    _StartChap = value;
+                    SendPropertyChanged("StartChap");
+                    OnStartChapChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "StartVerse", UpdateCheck = UpdateCheck.Never, Storage = "_StartVerse", DbType = "int")]
         public int? StartVerse
         {
-            get => this._StartVerse;
+            get => _StartVerse;
 
             set
             {
-                if (this._StartVerse != value)
+                if (_StartVerse != value)
                 {
-
-                    this.OnStartVerseChanging(value);
-                    this.SendPropertyChanging();
-                    this._StartVerse = value;
-                    this.SendPropertyChanged("StartVerse");
-                    this.OnStartVerseChanged();
+                    OnStartVerseChanging(value);
+                    SendPropertyChanging();
+                    _StartVerse = value;
+                    SendPropertyChanged("StartVerse");
+                    OnStartVerseChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "EndBook", UpdateCheck = UpdateCheck.Never, Storage = "_EndBook", DbType = "int")]
         public int? EndBook
         {
-            get => this._EndBook;
+            get => _EndBook;
 
             set
             {
-                if (this._EndBook != value)
+                if (_EndBook != value)
                 {
-
-                    this.OnEndBookChanging(value);
-                    this.SendPropertyChanging();
-                    this._EndBook = value;
-                    this.SendPropertyChanged("EndBook");
-                    this.OnEndBookChanged();
+                    OnEndBookChanging(value);
+                    SendPropertyChanging();
+                    _EndBook = value;
+                    SendPropertyChanged("EndBook");
+                    OnEndBookChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "EndChap", UpdateCheck = UpdateCheck.Never, Storage = "_EndChap", DbType = "int")]
         public int? EndChap
         {
-            get => this._EndChap;
+            get => _EndChap;
 
             set
             {
-                if (this._EndChap != value)
+                if (_EndChap != value)
                 {
-
-                    this.OnEndChapChanging(value);
-                    this.SendPropertyChanging();
-                    this._EndChap = value;
-                    this.SendPropertyChanged("EndChap");
-                    this.OnEndChapChanged();
+                    OnEndChapChanging(value);
+                    SendPropertyChanging();
+                    _EndChap = value;
+                    SendPropertyChanged("EndChap");
+                    OnEndChapChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "EndVerse", UpdateCheck = UpdateCheck.Never, Storage = "_EndVerse", DbType = "int")]
         public int? EndVerse
         {
-            get => this._EndVerse;
+            get => _EndVerse;
 
             set
             {
-                if (this._EndVerse != value)
+                if (_EndVerse != value)
                 {
-
-                    this.OnEndVerseChanging(value);
-                    this.SendPropertyChanging();
-                    this._EndVerse = value;
-                    this.SendPropertyChanged("EndVerse");
-                    this.OnEndVerseChanged();
+                    OnEndVerseChanging(value);
+                    SendPropertyChanging();
+                    _EndVerse = value;
+                    SendPropertyChanged("EndVerse");
+                    OnEndVerseChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -260,23 +225,19 @@ namespace CmsData
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-
     }
-
 }
-

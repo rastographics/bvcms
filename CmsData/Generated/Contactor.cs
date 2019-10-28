@@ -9,15 +9,13 @@ namespace CmsData
     [Table(Name = "dbo.Contactors")]
     public partial class Contactor : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
         private int _ContactId;
 
         private int _PeopleId;
-
-
 
         private EntityRef<Person> _person;
 
@@ -26,6 +24,7 @@ namespace CmsData
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -37,17 +36,15 @@ namespace CmsData
         partial void OnPeopleIdChanged();
 
         #endregion
+
         public Contactor()
         {
+            _person = default(EntityRef<Person>);
 
-
-            this._person = default(EntityRef<Person>);
-
-            this._contact = default(EntityRef<Contact>);
+            _contact = default(EntityRef<Contact>);
 
             OnCreated();
         }
-
 
         #region Columns
 
@@ -55,57 +52,49 @@ namespace CmsData
         [IsForeignKey]
         public int ContactId
         {
-            get => this._ContactId;
+            get => _ContactId;
 
             set
             {
-                if (this._ContactId != value)
+                if (_ContactId != value)
                 {
-
-                    if (this._contact.HasLoadedOrAssignedValue)
+                    if (_contact.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnContactIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._ContactId = value;
-                    this.SendPropertyChanged("ContactId");
-                    this.OnContactIdChanged();
+                    OnContactIdChanging(value);
+                    SendPropertyChanging();
+                    _ContactId = value;
+                    SendPropertyChanged("ContactId");
+                    OnContactIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "PeopleId", UpdateCheck = UpdateCheck.Never, Storage = "_PeopleId", DbType = "int NOT NULL", IsPrimaryKey = true)]
         [IsForeignKey]
         public int PeopleId
         {
-            get => this._PeopleId;
+            get => _PeopleId;
 
             set
             {
-                if (this._PeopleId != value)
+                if (_PeopleId != value)
                 {
-
-                    if (this._person.HasLoadedOrAssignedValue)
+                    if (_person.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnPeopleIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._PeopleId = value;
-                    this.SendPropertyChanged("PeopleId");
-                    this.OnPeopleIdChanged();
+                    OnPeopleIdChanging(value);
+                    SendPropertyChanging();
+                    _PeopleId = value;
+                    SendPropertyChanged("PeopleId");
+                    OnPeopleIdChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -118,109 +107,97 @@ namespace CmsData
         [Association(Name = "contactsMade__person", Storage = "_person", ThisKey = "PeopleId", IsForeignKey = true)]
         public Person person
         {
-            get => this._person.Entity;
+            get => _person.Entity;
 
             set
             {
-                Person previousValue = this._person.Entity;
+                Person previousValue = _person.Entity;
                 if (((previousValue != value)
-                            || (this._person.HasLoadedOrAssignedValue == false)))
+                            || (_person.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._person.Entity = null;
+                        _person.Entity = null;
                         previousValue.contactsMade.Remove(this);
                     }
 
-                    this._person.Entity = value;
+                    _person.Entity = value;
                     if (value != null)
                     {
                         value.contactsMade.Add(this);
 
-                        this._PeopleId = value.PeopleId;
+                        _PeopleId = value.PeopleId;
 
                     }
 
                     else
                     {
-
-                        this._PeopleId = default(int);
+                        _PeopleId = default(int);
 
                     }
 
-                    this.SendPropertyChanged("person");
+                    SendPropertyChanged("person");
                 }
-
             }
-
         }
-
 
         [Association(Name = "contactsMakers__contact", Storage = "_contact", ThisKey = "ContactId", IsForeignKey = true)]
         public Contact contact
         {
-            get => this._contact.Entity;
+            get => _contact.Entity;
 
             set
             {
-                Contact previousValue = this._contact.Entity;
+                Contact previousValue = _contact.Entity;
                 if (((previousValue != value)
-                            || (this._contact.HasLoadedOrAssignedValue == false)))
+                            || (_contact.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._contact.Entity = null;
+                        _contact.Entity = null;
                         previousValue.contactsMakers.Remove(this);
                     }
 
-                    this._contact.Entity = value;
+                    _contact.Entity = value;
                     if (value != null)
                     {
                         value.contactsMakers.Add(this);
 
-                        this._ContactId = value.ContactId;
+                        _ContactId = value.ContactId;
 
                     }
 
                     else
                     {
-
-                        this._ContactId = default(int);
+                        _ContactId = default(int);
 
                     }
 
-                    this.SendPropertyChanged("contact");
+                    SendPropertyChanged("contact");
                 }
-
             }
-
         }
-
 
         #endregion
 
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-
     }
-
 }
-

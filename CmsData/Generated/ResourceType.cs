@@ -8,7 +8,7 @@ namespace CmsData
     [Table(Name = "dbo.ResourceType")]
     public partial class ResourceType : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -18,15 +18,14 @@ namespace CmsData
 
         private int _DisplayOrder;
 
-
         private EntitySet<Resource> _Resources;
 
         private EntitySet<ResourceCategory> _ResourceCategories;
 
-
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -41,85 +40,71 @@ namespace CmsData
         partial void OnDisplayOrderChanged();
 
         #endregion
+
         public ResourceType()
         {
+            _Resources = new EntitySet<Resource>(new Action<Resource>(attach_Resources), new Action<Resource>(detach_Resources));
 
-            this._Resources = new EntitySet<Resource>(new Action<Resource>(this.attach_Resources), new Action<Resource>(this.detach_Resources));
-
-            this._ResourceCategories = new EntitySet<ResourceCategory>(new Action<ResourceCategory>(this.attach_ResourceCategories), new Action<ResourceCategory>(this.detach_ResourceCategories));
-
+            _ResourceCategories = new EntitySet<ResourceCategory>(new Action<ResourceCategory>(attach_ResourceCategories), new Action<ResourceCategory>(detach_ResourceCategories));
 
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "ResourceTypeId", UpdateCheck = UpdateCheck.Never, Storage = "_ResourceTypeId", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
         public int ResourceTypeId
         {
-            get => this._ResourceTypeId;
+            get => _ResourceTypeId;
 
             set
             {
-                if (this._ResourceTypeId != value)
+                if (_ResourceTypeId != value)
                 {
-
-                    this.OnResourceTypeIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._ResourceTypeId = value;
-                    this.SendPropertyChanged("ResourceTypeId");
-                    this.OnResourceTypeIdChanged();
+                    OnResourceTypeIdChanging(value);
+                    SendPropertyChanging();
+                    _ResourceTypeId = value;
+                    SendPropertyChanged("ResourceTypeId");
+                    OnResourceTypeIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Name", UpdateCheck = UpdateCheck.Never, Storage = "_Name", DbType = "varchar(50) NOT NULL")]
         public string Name
         {
-            get => this._Name;
+            get => _Name;
 
             set
             {
-                if (this._Name != value)
+                if (_Name != value)
                 {
-
-                    this.OnNameChanging(value);
-                    this.SendPropertyChanging();
-                    this._Name = value;
-                    this.SendPropertyChanged("Name");
-                    this.OnNameChanged();
+                    OnNameChanging(value);
+                    SendPropertyChanging();
+                    _Name = value;
+                    SendPropertyChanged("Name");
+                    OnNameChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "DisplayOrder", UpdateCheck = UpdateCheck.Never, Storage = "_DisplayOrder", DbType = "int NOT NULL")]
         public int DisplayOrder
         {
-            get => this._DisplayOrder;
+            get => _DisplayOrder;
 
             set
             {
-                if (this._DisplayOrder != value)
+                if (_DisplayOrder != value)
                 {
-
-                    this.OnDisplayOrderChanging(value);
-                    this.SendPropertyChanging();
-                    this._DisplayOrder = value;
-                    this.SendPropertyChanged("DisplayOrder");
-                    this.OnDisplayOrderChanged();
+                    OnDisplayOrderChanging(value);
+                    SendPropertyChanging();
+                    _DisplayOrder = value;
+                    SendPropertyChanged("DisplayOrder");
+                    OnDisplayOrderChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -128,22 +113,20 @@ namespace CmsData
         [Association(Name = "FK_Resource_ResourceType", Storage = "_Resources", OtherKey = "ResourceTypeId")]
         public EntitySet<Resource> Resources
            {
-               get => this._Resources;
+               get => _Resources;
 
-            set => this._Resources.Assign(value);
+            set => _Resources.Assign(value);
 
            }
-
 
         [Association(Name = "FK_ResourceCategory_ResourceType", Storage = "_ResourceCategories", OtherKey = "ResourceTypeId")]
         public EntitySet<ResourceCategory> ResourceCategories
            {
-               get => this._ResourceCategories;
+               get => _ResourceCategories;
 
-            set => this._ResourceCategories.Assign(value);
+            set => _ResourceCategories.Assign(value);
 
            }
-
 
         #endregion
 
@@ -154,49 +137,43 @@ namespace CmsData
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
 
-
         private void attach_Resources(Resource entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.ResourceType = this;
         }
 
         private void detach_Resources(Resource entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.ResourceType = null;
         }
 
-
         private void attach_ResourceCategories(ResourceCategory entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.ResourceType = this;
         }
 
         private void detach_ResourceCategories(ResourceCategory entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.ResourceType = null;
         }
-
-
     }
-
 }
-

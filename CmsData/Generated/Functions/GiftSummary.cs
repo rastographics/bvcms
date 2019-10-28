@@ -7,8 +7,7 @@ namespace CmsData.View
     [Table(Name = "GiftSummary")]
     public partial class GiftSummary
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         private decimal? _Total;
 
@@ -16,67 +15,50 @@ namespace CmsData.View
 
         private string _FundDescription;
 
-
         public GiftSummary()
         {
         }
 
-
-
         [Column(Name = "Total", Storage = "_Total", DbType = "Decimal(38,2)")]
         public decimal? Total
         {
-            get
-            {
-                return this._Total;
-            }
+            get => _Total;
 
             set
             {
-                if (this._Total != value)
+                if (_Total != value)
                 {
-                    this._Total = value;
+                    _Total = value;
                 }
             }
-
         }
-
 
         [Column(Name = "FundName", Storage = "_FundName", DbType = "nvarchar(256) NOT NULL")]
         public string FundName
         {
-            get
-            {
-                return this._FundName;
-            }
+            get => _FundName;
 
             set
             {
-                if (this._FundName != value)
+                if (_FundName != value)
                 {
-                    this._FundName = value;
+                    _FundName = value;
                 }
             }
-
         }
 
         [Column(Name = "FundDescription", Storage = "_FundDescription", DbType = "nvarchar(256)")]
         public string FundDescription
         {
-            get
-            {
-                return this._FundDescription;
-            }
+            get => _FundDescription;
 
             set
             {
-                if (this._FundDescription != value)
+                if (_FundDescription != value)
                 {
-                    this._FundDescription = value;
+                    _FundDescription = value;
                 }
             }
         }
-
     }
-
 }

@@ -7,7 +7,7 @@ namespace CmsData
     [Table(Name = "dbo.MobileAppIcons")]
     public partial class MobileAppIcon : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -19,11 +19,10 @@ namespace CmsData
 
         private string _Url;
 
-
-
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -41,103 +40,85 @@ namespace CmsData
         partial void OnUrlChanged();
 
         #endregion
+
         public MobileAppIcon()
         {
-
-
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "id", UpdateCheck = UpdateCheck.Never, Storage = "_Id", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
         public int Id
         {
-            get => this._Id;
+            get => _Id;
 
             set
             {
-                if (this._Id != value)
+                if (_Id != value)
                 {
-
-                    this.OnIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._Id = value;
-                    this.SendPropertyChanged("Id");
-                    this.OnIdChanged();
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "setID", UpdateCheck = UpdateCheck.Never, Storage = "_SetID", DbType = "int NOT NULL")]
         public int SetID
         {
-            get => this._SetID;
+            get => _SetID;
 
             set
             {
-                if (this._SetID != value)
+                if (_SetID != value)
                 {
-
-                    this.OnSetIDChanging(value);
-                    this.SendPropertyChanging();
-                    this._SetID = value;
-                    this.SendPropertyChanged("SetID");
-                    this.OnSetIDChanged();
+                    OnSetIDChanging(value);
+                    SendPropertyChanging();
+                    _SetID = value;
+                    SendPropertyChanged("SetID");
+                    OnSetIDChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "actionID", UpdateCheck = UpdateCheck.Never, Storage = "_ActionID", DbType = "int NOT NULL")]
         public int ActionID
         {
-            get => this._ActionID;
+            get => _ActionID;
 
             set
             {
-                if (this._ActionID != value)
+                if (_ActionID != value)
                 {
-
-                    this.OnActionIDChanging(value);
-                    this.SendPropertyChanging();
-                    this._ActionID = value;
-                    this.SendPropertyChanged("ActionID");
-                    this.OnActionIDChanged();
+                    OnActionIDChanging(value);
+                    SendPropertyChanging();
+                    _ActionID = value;
+                    SendPropertyChanged("ActionID");
+                    OnActionIDChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "url", UpdateCheck = UpdateCheck.Never, Storage = "_Url", DbType = "nvarchar(200) NOT NULL")]
         public string Url
         {
-            get => this._Url;
+            get => _Url;
 
             set
             {
-                if (this._Url != value)
+                if (_Url != value)
                 {
-
-                    this.OnUrlChanging(value);
-                    this.SendPropertyChanging();
-                    this._Url = value;
-                    this.SendPropertyChanged("Url");
-                    this.OnUrlChanged();
+                    OnUrlChanging(value);
+                    SendPropertyChanging();
+                    _Url = value;
+                    SendPropertyChanged("Url");
+                    OnUrlChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -152,23 +133,19 @@ namespace CmsData
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-
     }
-
 }
-

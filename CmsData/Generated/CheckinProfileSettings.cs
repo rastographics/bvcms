@@ -1,4 +1,4 @@
-﻿using CmsData.Infrastructure;
+using CmsData.Infrastructure;
 using System;
 using System.ComponentModel;
 using System.Data.Linq;
@@ -9,9 +9,10 @@ namespace CmsData
     [Table(Name = "dbo.CheckinProfileSettings")]
     public partial class CheckinProfileSettings
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
+
         private int _CheckinProfileId;
         private int? _CampusId;
         private int? _EarlyCheckin;
@@ -36,6 +37,7 @@ namespace CmsData
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -100,32 +102,33 @@ namespace CmsData
 
         public CheckinProfileSettings()
         {
-            this._CheckinProfiles = default(EntityRef<CheckinProfiles>);
+            _CheckinProfiles = default(EntityRef<CheckinProfiles>);
 
             OnCreated();
         }
 
         #region Columns
+
         [Column(Name = "CheckinProfileId", UpdateCheck = UpdateCheck.Never, Storage = "_CheckinProfileId", DbType = "int NOT NULL UNIQUE", IsPrimaryKey = true)]
         [IsForeignKey]
         public int CheckinProfileId
         {
-            get => this._CheckinProfileId;
+            get => _CheckinProfileId;
 
             set
             {
-                if (this._CheckinProfileId != value)
+                if (_CheckinProfileId != value)
                 {
-                    if (this._CheckinProfiles.HasLoadedOrAssignedValue)
+                    if (_CheckinProfiles.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnCheckinProfileIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._CheckinProfileId = value;
-                    this.SendPropertyChanged("CheckinProfileId");
-                    this.OnCheckinProfileIdChanged();
+                    OnCheckinProfileIdChanging(value);
+                    SendPropertyChanging();
+                    _CheckinProfileId = value;
+                    SendPropertyChanged("CheckinProfileId");
+                    OnCheckinProfileIdChanged();
                 }
             }
         }
@@ -133,17 +136,17 @@ namespace CmsData
         [Column(Name = "CampusId", UpdateCheck = UpdateCheck.Never, Storage = "_CampusId", DbType = "int NULL")]
         public int? CampusId
         {
-            get => this._CampusId;
+            get => _CampusId;
 
             set
             {
-                if (this._CampusId != value)
+                if (_CampusId != value)
                 {
-                    this.OnCampusIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._CampusId = value;
-                    this.SendPropertyChanged("CampusId");
-                    this.OnCampusIdChanged();
+                    OnCampusIdChanging(value);
+                    SendPropertyChanging();
+                    _CampusId = value;
+                    SendPropertyChanged("CampusId");
+                    OnCampusIdChanged();
                 }
             }
         }
@@ -151,17 +154,17 @@ namespace CmsData
         [Column(Name = "EarlyCheckin", UpdateCheck = UpdateCheck.Never, Storage = "_EarlyCheckin", DbType = "int NULL")]
         public int? EarlyCheckin
         {
-            get => this._EarlyCheckin;
+            get => _EarlyCheckin;
 
             set
             {
-                if (this._EarlyCheckin != value)
+                if (_EarlyCheckin != value)
                 {
-                    this.OnEarlyCheckinChanging(value);
-                    this.SendPropertyChanging();
-                    this._EarlyCheckin = value;
-                    this.SendPropertyChanged("EarlyCheckin");
-                    this.OnEarlyCheckinChanged();
+                    OnEarlyCheckinChanging(value);
+                    SendPropertyChanging();
+                    _EarlyCheckin = value;
+                    SendPropertyChanged("EarlyCheckin");
+                    OnEarlyCheckinChanged();
                 }
             }
         }
@@ -169,17 +172,17 @@ namespace CmsData
         [Column(Name = "LateCheckin", UpdateCheck = UpdateCheck.Never, Storage = "_LateCheckin", DbType = "int NULL")]
         public int? LateCheckin
         {
-            get => this._LateCheckin;
+            get => _LateCheckin;
 
             set
             {
-                if (this._LateCheckin != value)
+                if (_LateCheckin != value)
                 {
-                    this.OnLateCheckinChanging(value);
-                    this.SendPropertyChanging();
-                    this._LateCheckin = value;
-                    this.SendPropertyChanged("LateCheckin");
-                    this.OnLateCheckinChanged();
+                    OnLateCheckinChanging(value);
+                    SendPropertyChanging();
+                    _LateCheckin = value;
+                    SendPropertyChanged("LateCheckin");
+                    OnLateCheckinChanged();
                 }
             }
         }
@@ -187,17 +190,17 @@ namespace CmsData
         [Column(Name = "Testing", UpdateCheck = UpdateCheck.Never, Storage = "_Testing", DbType = "bit NOT NULL")]
         public bool Testing
         {
-            get => this._Testing;
+            get => _Testing;
 
             set
             {
-                if (this._Testing != value)
+                if (_Testing != value)
                 {
-                    this.OnTestingChanging(value);
-                    this.SendPropertyChanging();
-                    this._Testing = value;
-                    this.SendPropertyChanged("Testing");
-                    this.OnTestingChanged();
+                    OnTestingChanging(value);
+                    SendPropertyChanging();
+                    _Testing = value;
+                    SendPropertyChanged("Testing");
+                    OnTestingChanged();
                 }
             }
         }
@@ -205,17 +208,17 @@ namespace CmsData
         [Column(Name = "TestDay", UpdateCheck = UpdateCheck.Never, Storage = "_TestDay", DbType = "int NULL")]
         public int? TestDay
         {
-            get => this._TestDay;
+            get => _TestDay;
 
             set
             {
-                if (this._TestDay != value)
+                if (_TestDay != value)
                 {
-                    this.OnTestDayChanging(value);
-                    this.SendPropertyChanging();
-                    this._TestDay = value;
-                    this.SendPropertyChanged("TestDay");
-                    this.OnTestDayChanged();
+                    OnTestDayChanging(value);
+                    SendPropertyChanging();
+                    _TestDay = value;
+                    SendPropertyChanged("TestDay");
+                    OnTestDayChanged();
                 }
             }
         }
@@ -223,17 +226,17 @@ namespace CmsData
         [Column(Name = "AdminPIN", UpdateCheck = UpdateCheck.Never, Storage = "_AdminPIN", DbType = "nvarchar(max) NULL")]
         public string AdminPIN
         {
-            get => this._AdminPIN;
+            get => _AdminPIN;
 
             set
             {
-                if (this._AdminPIN != value)
+                if (_AdminPIN != value)
                 {
-                    this.OnAdminPINChanging(value);
-                    this.SendPropertyChanging();
-                    this._AdminPIN = value;
-                    this.SendPropertyChanged("AdminPIN");
-                    this.OnAdminPINChanged();
+                    OnAdminPINChanging(value);
+                    SendPropertyChanging();
+                    _AdminPIN = value;
+                    SendPropertyChanged("AdminPIN");
+                    OnAdminPINChanged();
                 }
             }
         }
@@ -241,17 +244,17 @@ namespace CmsData
         [Column(Name = "PINTimeout", UpdateCheck = UpdateCheck.Never, Storage = "_PINTimeout", DbType = "int NULL")]
         public int? PINTimeout
         {
-            get => this._PINTimeout;
+            get => _PINTimeout;
 
             set
             {
-                if (this._PINTimeout != value)
+                if (_PINTimeout != value)
                 {
-                    this.OnPINTimeoutChanging(value);
-                    this.SendPropertyChanging();
-                    this._PINTimeout = value;
-                    this.SendPropertyChanged("PINTimeout");
-                    this.OnPINTimeoutChanged();
+                    OnPINTimeoutChanging(value);
+                    SendPropertyChanging();
+                    _PINTimeout = value;
+                    SendPropertyChanged("PINTimeout");
+                    OnPINTimeoutChanged();
                 }
             }
         }
@@ -259,17 +262,17 @@ namespace CmsData
         [Column(Name = "DisableJoin", UpdateCheck = UpdateCheck.Never, Storage = "_DisableJoin", DbType = "bit NOT NULL")]
         public bool DisableJoin
         {
-            get => this._DisableJoin;
+            get => _DisableJoin;
 
             set
             {
-                if (this._DisableJoin != value)
+                if (_DisableJoin != value)
                 {
-                    this.OnDisableJoinChanging(value);
-                    this.SendPropertyChanging();
-                    this._DisableJoin = value;
-                    this.SendPropertyChanged("DisableJoin");
-                    this.OnDisableJoinChanged();
+                    OnDisableJoinChanging(value);
+                    SendPropertyChanging();
+                    _DisableJoin = value;
+                    SendPropertyChanged("DisableJoin");
+                    OnDisableJoinChanged();
                 }
             }
         }
@@ -277,17 +280,17 @@ namespace CmsData
         [Column(Name = "DisableTimer", UpdateCheck = UpdateCheck.Never, Storage = "_DisableTimer", DbType = "bit NOT NULL")]
         public bool DisableTimer
         {
-            get => this._DisableTimer;
+            get => _DisableTimer;
 
             set
             {
-                if (this._DisableTimer != value)
+                if (_DisableTimer != value)
                 {
-                    this.OnDisableTimerChanging(value);
-                    this.SendPropertyChanging();
-                    this._DisableTimer = value;
-                    this.SendPropertyChanged("DisableTimer");
-                    this.OnDisableTimerChanged();
+                    OnDisableTimerChanging(value);
+                    SendPropertyChanging();
+                    _DisableTimer = value;
+                    SendPropertyChanged("DisableTimer");
+                    OnDisableTimerChanged();
                 }
             }
         }
@@ -295,17 +298,17 @@ namespace CmsData
         [Column(Name = "BackgroundImage", UpdateCheck = UpdateCheck.Never, Storage = "_BackgroundImage", DbType = "int NULL")]
         public int? BackgroundImage
         {
-            get => this._BackgroundImage;
+            get => _BackgroundImage;
 
             set
             {
-                if (this._BackgroundImage != value)
+                if (_BackgroundImage != value)
                 {
-                    this.OnBackgroundImageChanging(value);
-                    this.SendPropertyChanging();
-                    this._BackgroundImage = value;
-                    this.SendPropertyChanged("BackgroundImage");
-                    this.OnBackgroundImageChanged();
+                    OnBackgroundImageChanging(value);
+                    SendPropertyChanging();
+                    _BackgroundImage = value;
+                    SendPropertyChanged("BackgroundImage");
+                    OnBackgroundImageChanged();
                 }
             }
         }
@@ -313,17 +316,17 @@ namespace CmsData
         [Column(Name = "BackgroundImageName", UpdateCheck = UpdateCheck.Never, Storage = "_BackgroundImageName", DbType = "nvarchar(max) NULL")]
         public string BackgroundImageName
         {
-            get => this._BackgroundImageName;
+            get => _BackgroundImageName;
 
             set
             {
-                if (this._BackgroundImageName != value)
+                if (_BackgroundImageName != value)
                 {
-                    this.OnBackgroundImageNameChanging(value);
-                    this.SendPropertyChanging();
-                    this._BackgroundImageName = value;
-                    this.SendPropertyChanged("BackgroundImageName");
-                    this.OnBackgroundImageNameChanged();
+                    OnBackgroundImageNameChanging(value);
+                    SendPropertyChanging();
+                    _BackgroundImageName = value;
+                    SendPropertyChanged("BackgroundImageName");
+                    OnBackgroundImageNameChanged();
                 }
             }
         }
@@ -331,17 +334,17 @@ namespace CmsData
         [Column(Name = "BackgroundImageURL", UpdateCheck = UpdateCheck.Never, Storage = "_BackgroundImageURL", DbType = "nvarchar(max) NULL")]
         public string BackgroundImageURL
         {
-            get => this._BackgroundImageURL;
+            get => _BackgroundImageURL;
 
             set
             {
-                if (this._BackgroundImageURL != value)
+                if (_BackgroundImageURL != value)
                 {
-                    this.OnBackgroundImageURLChanging(value);
-                    this.SendPropertyChanging();
-                    this._BackgroundImageURL = value;
-                    this.SendPropertyChanged("BackgroundImageURL");
-                    this.OnBackgroundImageURLChanged();
+                    OnBackgroundImageURLChanging(value);
+                    SendPropertyChanging();
+                    _BackgroundImageURL = value;
+                    SendPropertyChanged("BackgroundImageURL");
+                    OnBackgroundImageURLChanged();
                 }
             }
         }
@@ -349,17 +352,17 @@ namespace CmsData
         [Column(Name = "CutoffAge", UpdateCheck = UpdateCheck.Never, Storage = "_CutoffAge", DbType = "int NOT NULL")]
         public int CutoffAge
         {
-            get => this._CutoffAge;
+            get => _CutoffAge;
 
             set
             {
-                if (this._CutoffAge != value)
+                if (_CutoffAge != value)
                 {
-                    this.OnCutoffAgeChanging(value);
-                    this.SendPropertyChanging();
-                    this._CutoffAge = value;
-                    this.SendPropertyChanged("CutoffAge");
-                    this.OnCutoffAgeChanged();
+                    OnCutoffAgeChanging(value);
+                    SendPropertyChanging();
+                    _CutoffAge = value;
+                    SendPropertyChanged("CutoffAge");
+                    OnCutoffAgeChanged();
                 }
             }
         }
@@ -367,17 +370,17 @@ namespace CmsData
         [Column(Name = "Logout", UpdateCheck = UpdateCheck.Never, Storage = "_Logout", DbType = "nvarchar(max) NULL")]
         public string Logout
         {
-            get => this._Logout;
+            get => _Logout;
 
             set
             {
-                if (this._Logout != value)
+                if (_Logout != value)
                 {
-                    this.OnLogoutChanging(value);
-                    this.SendPropertyChanging();
-                    this._Logout = value;
-                    this.SendPropertyChanged("Logout");
-                    this.OnLogoutChanged();
+                    OnLogoutChanging(value);
+                    SendPropertyChanging();
+                    _Logout = value;
+                    SendPropertyChanged("Logout");
+                    OnLogoutChanged();
                 }
             }
         }
@@ -385,17 +388,17 @@ namespace CmsData
         [Column(Name = "Guest", UpdateCheck = UpdateCheck.Never, Storage = "_Guest", DbType = "bit NOT NULL")]
         public bool Guest
         {
-            get => this._Guest;
+            get => _Guest;
 
             set
             {
-                if (this._Guest != value)
+                if (_Guest != value)
                 {
-                    this.OnGuestChanging(value);
-                    this.SendPropertyChanging();
-                    this._Guest = value;
-                    this.SendPropertyChanged("Guest");
-                    this.OnGuestChanged();
+                    OnGuestChanging(value);
+                    SendPropertyChanging();
+                    _Guest = value;
+                    SendPropertyChanged("Guest");
+                    OnGuestChanged();
                 }
             }
         }
@@ -403,17 +406,17 @@ namespace CmsData
         [Column(Name = "Location", UpdateCheck = UpdateCheck.Never, Storage = "_Location", DbType = "bit NOT NULL")]
         public bool Location
         {
-            get => this._Location;
+            get => _Location;
 
             set
             {
-                if (this._Location != value)
+                if (_Location != value)
                 {
-                    this.OnLocationChanging(value);
-                    this.SendPropertyChanging();
-                    this._Location = value;
-                    this.SendPropertyChanged("Location");
-                    this.OnLocationChanged();
+                    OnLocationChanging(value);
+                    SendPropertyChanging();
+                    _Location = value;
+                    SendPropertyChanged("Location");
+                    OnLocationChanged();
                 }
             }
         }
@@ -421,17 +424,17 @@ namespace CmsData
         [Column(Name = "SecurityType", UpdateCheck = UpdateCheck.Never, Storage = "_SecurityType", DbType = "int NOT NULL")]
         public int SecurityType
         {
-            get => this._SecurityType;
+            get => _SecurityType;
 
             set
             {
-                if (this._SecurityType != value)
+                if (_SecurityType != value)
                 {
-                    this.OnSecurityTypeChanging(value);
-                    this.SendPropertyChanging();
-                    this._SecurityType = value;
-                    this.SendPropertyChanged("SecurityType");
-                    this.OnSecurityTypeChanged();
+                    OnSecurityTypeChanging(value);
+                    SendPropertyChanging();
+                    _SecurityType = value;
+                    SendPropertyChanged("SecurityType");
+                    OnSecurityTypeChanged();
                 }
             }
         }
@@ -439,77 +442,82 @@ namespace CmsData
         [Column(Name = "ShowCheckinConfirmation", UpdateCheck = UpdateCheck.Never, Storage = "_ShowCheckinConfirmation", DbType = "int NOT NULL")]
         public int ShowCheckinConfirmation
         {
-            get => this._ShowCheckinConfirmation;
+            get => _ShowCheckinConfirmation;
 
             set
             {
-                if (this._ShowCheckinConfirmation != value)
+                if (_ShowCheckinConfirmation != value)
                 {
-                    this.OnShowCheckinConfirmationChanging(value);
-                    this.SendPropertyChanging();
-                    this._ShowCheckinConfirmation = value;
-                    this.SendPropertyChanged("ShowCheckinConfirmation");
-                    this.OnShowCheckinConfirmationChanged();
+                    OnShowCheckinConfirmationChanging(value);
+                    SendPropertyChanging();
+                    _ShowCheckinConfirmation = value;
+                    SendPropertyChanged("ShowCheckinConfirmation");
+                    OnShowCheckinConfirmationChanged();
                 }
             }
         }
+
         #endregion
 
         #region Foreign Keys
+
         [Association(Name = "Checking_Profile_Settings_CP_FK", Storage = "_CheckinProfiles", ThisKey = "CheckinProfileId", IsForeignKey = true)]
         public CheckinProfiles CheckinProfiles
         {
-            get => this._CheckinProfiles.Entity;
+            get => _CheckinProfiles.Entity;
 
             set
             {
-                CheckinProfiles previousValue = this._CheckinProfiles.Entity;
+                CheckinProfiles previousValue = _CheckinProfiles.Entity;
                 if (((previousValue != value)
-                            || (this._CheckinProfiles.HasLoadedOrAssignedValue == false)))
+                            || (_CheckinProfiles.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._CheckinProfiles.Entity = null;
+                        _CheckinProfiles.Entity = null;
                         previousValue.CheckinProfileSettings.Remove(this);
                     }
 
-                    this._CheckinProfiles.Entity = value;
+                    _CheckinProfiles.Entity = value;
                     if (value != null)
                     {
                         value.CheckinProfileSettings.Add(this);
 
-                        this._CheckinProfileId = value.CheckinProfileId;
-                    }
-                    else
-                    {
-                        this._CheckinProfileId = default(int);
+                        _CheckinProfileId = value.CheckinProfileId;
                     }
 
-                    this.SendPropertyChanged("CheckinProfiles");
+                    else
+                    {
+                        _CheckinProfileId = default(int);
+                    }
+
+                    SendPropertyChanged("CheckinProfiles");
                 }
             }
         }
+
         #endregion
 
         #region Foreign Key Tables
+
         #endregion
 
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
     }

@@ -8,7 +8,7 @@ namespace CmsData
     [Table(Name = "dbo.Audits")]
     public partial class Audit : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -24,13 +24,12 @@ namespace CmsData
 
         private DateTime _AuditDate;
 
-
         private EntitySet<AuditValue> _AuditValues;
-
 
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -54,149 +53,123 @@ namespace CmsData
         partial void OnAuditDateChanged();
 
         #endregion
+
         public Audit()
         {
-
-            this._AuditValues = new EntitySet<AuditValue>(new Action<AuditValue>(this.attach_AuditValues), new Action<AuditValue>(this.detach_AuditValues));
-
+            _AuditValues = new EntitySet<AuditValue>(new Action<AuditValue>(attach_AuditValues), new Action<AuditValue>(detach_AuditValues));
 
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "Id", UpdateCheck = UpdateCheck.Never, Storage = "_Id", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
         public int Id
         {
-            get => this._Id;
+            get => _Id;
 
             set
             {
-                if (this._Id != value)
+                if (_Id != value)
                 {
-
-                    this.OnIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._Id = value;
-                    this.SendPropertyChanged("Id");
-                    this.OnIdChanged();
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Action", UpdateCheck = UpdateCheck.Never, Storage = "_Action", DbType = "nvarchar(20) NOT NULL")]
         public string Action
         {
-            get => this._Action;
+            get => _Action;
 
             set
             {
-                if (this._Action != value)
+                if (_Action != value)
                 {
-
-                    this.OnActionChanging(value);
-                    this.SendPropertyChanging();
-                    this._Action = value;
-                    this.SendPropertyChanged("Action");
-                    this.OnActionChanged();
+                    OnActionChanging(value);
+                    SendPropertyChanging();
+                    _Action = value;
+                    SendPropertyChanged("Action");
+                    OnActionChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "TableName", UpdateCheck = UpdateCheck.Never, Storage = "_TableName", DbType = "nvarchar(100) NOT NULL")]
         public string TableName
         {
-            get => this._TableName;
+            get => _TableName;
 
             set
             {
-                if (this._TableName != value)
+                if (_TableName != value)
                 {
-
-                    this.OnTableNameChanging(value);
-                    this.SendPropertyChanging();
-                    this._TableName = value;
-                    this.SendPropertyChanged("TableName");
-                    this.OnTableNameChanged();
+                    OnTableNameChanging(value);
+                    SendPropertyChanging();
+                    _TableName = value;
+                    SendPropertyChanged("TableName");
+                    OnTableNameChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "TableKey", UpdateCheck = UpdateCheck.Never, Storage = "_TableKey", DbType = "int")]
         public int? TableKey
         {
-            get => this._TableKey;
+            get => _TableKey;
 
             set
             {
-                if (this._TableKey != value)
+                if (_TableKey != value)
                 {
-
-                    this.OnTableKeyChanging(value);
-                    this.SendPropertyChanging();
-                    this._TableKey = value;
-                    this.SendPropertyChanged("TableKey");
-                    this.OnTableKeyChanged();
+                    OnTableKeyChanging(value);
+                    SendPropertyChanging();
+                    _TableKey = value;
+                    SendPropertyChanged("TableKey");
+                    OnTableKeyChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "UserName", UpdateCheck = UpdateCheck.Never, Storage = "_UserName", DbType = "nvarchar(50) NOT NULL")]
         public string UserName
         {
-            get => this._UserName;
+            get => _UserName;
 
             set
             {
-                if (this._UserName != value)
+                if (_UserName != value)
                 {
-
-                    this.OnUserNameChanging(value);
-                    this.SendPropertyChanging();
-                    this._UserName = value;
-                    this.SendPropertyChanged("UserName");
-                    this.OnUserNameChanged();
+                    OnUserNameChanging(value);
+                    SendPropertyChanging();
+                    _UserName = value;
+                    SendPropertyChanged("UserName");
+                    OnUserNameChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "AuditDate", UpdateCheck = UpdateCheck.Never, Storage = "_AuditDate", DbType = "smalldatetime NOT NULL")]
         public DateTime AuditDate
         {
-            get => this._AuditDate;
+            get => _AuditDate;
 
             set
             {
-                if (this._AuditDate != value)
+                if (_AuditDate != value)
                 {
-
-                    this.OnAuditDateChanging(value);
-                    this.SendPropertyChanging();
-                    this._AuditDate = value;
-                    this.SendPropertyChanged("AuditDate");
-                    this.OnAuditDateChanged();
+                    OnAuditDateChanging(value);
+                    SendPropertyChanging();
+                    _AuditDate = value;
+                    SendPropertyChanged("AuditDate");
+                    OnAuditDateChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -205,12 +178,11 @@ namespace CmsData
         [Association(Name = "FK_AuditValues_Audits", Storage = "_AuditValues", OtherKey = "AuditId")]
         public EntitySet<AuditValue> AuditValues
            {
-               get => this._AuditValues;
+               get => _AuditValues;
 
-            set => this._AuditValues.Assign(value);
+            set => _AuditValues.Assign(value);
 
            }
-
 
         #endregion
 
@@ -221,36 +193,31 @@ namespace CmsData
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
 
-
         private void attach_AuditValues(AuditValue entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.Audit = this;
         }
 
         private void detach_AuditValues(AuditValue entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.Audit = null;
         }
-
-
     }
-
 }
-

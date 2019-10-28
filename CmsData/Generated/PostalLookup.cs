@@ -7,7 +7,7 @@ namespace CmsData
     [Table(Name = "lookup.PostalLookup")]
     public partial class PostalLookup : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -23,11 +23,10 @@ namespace CmsData
 
         private bool? _Hardwired;
 
-
-
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -51,147 +50,121 @@ namespace CmsData
         partial void OnHardwiredChanged();
 
         #endregion
+
         public PostalLookup()
         {
-
-
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "PostalCode", UpdateCheck = UpdateCheck.Never, Storage = "_PostalCode", DbType = "nvarchar(15) NOT NULL", IsPrimaryKey = true)]
         public string PostalCode
         {
-            get => this._PostalCode;
+            get => _PostalCode;
 
             set
             {
-                if (this._PostalCode != value)
+                if (_PostalCode != value)
                 {
-
-                    this.OnPostalCodeChanging(value);
-                    this.SendPropertyChanging();
-                    this._PostalCode = value;
-                    this.SendPropertyChanged("PostalCode");
-                    this.OnPostalCodeChanged();
+                    OnPostalCodeChanging(value);
+                    SendPropertyChanging();
+                    _PostalCode = value;
+                    SendPropertyChanged("PostalCode");
+                    OnPostalCodeChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "CityName", UpdateCheck = UpdateCheck.Never, Storage = "_CityName", DbType = "nvarchar(20)")]
         public string CityName
         {
-            get => this._CityName;
+            get => _CityName;
 
             set
             {
-                if (this._CityName != value)
+                if (_CityName != value)
                 {
-
-                    this.OnCityNameChanging(value);
-                    this.SendPropertyChanging();
-                    this._CityName = value;
-                    this.SendPropertyChanged("CityName");
-                    this.OnCityNameChanged();
+                    OnCityNameChanging(value);
+                    SendPropertyChanging();
+                    _CityName = value;
+                    SendPropertyChanged("CityName");
+                    OnCityNameChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "StateCode", UpdateCheck = UpdateCheck.Never, Storage = "_StateCode", DbType = "nvarchar(20)")]
         public string StateCode
         {
-            get => this._StateCode;
+            get => _StateCode;
 
             set
             {
-                if (this._StateCode != value)
+                if (_StateCode != value)
                 {
-
-                    this.OnStateCodeChanging(value);
-                    this.SendPropertyChanging();
-                    this._StateCode = value;
-                    this.SendPropertyChanged("StateCode");
-                    this.OnStateCodeChanged();
+                    OnStateCodeChanging(value);
+                    SendPropertyChanging();
+                    _StateCode = value;
+                    SendPropertyChanged("StateCode");
+                    OnStateCodeChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "CountryName", UpdateCheck = UpdateCheck.Never, Storage = "_CountryName", DbType = "nvarchar(30)")]
         public string CountryName
         {
-            get => this._CountryName;
+            get => _CountryName;
 
             set
             {
-                if (this._CountryName != value)
+                if (_CountryName != value)
                 {
-
-                    this.OnCountryNameChanging(value);
-                    this.SendPropertyChanging();
-                    this._CountryName = value;
-                    this.SendPropertyChanged("CountryName");
-                    this.OnCountryNameChanged();
+                    OnCountryNameChanging(value);
+                    SendPropertyChanging();
+                    _CountryName = value;
+                    SendPropertyChanged("CountryName");
+                    OnCountryNameChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ResCodeId", UpdateCheck = UpdateCheck.Never, Storage = "_ResCodeId", DbType = "int")]
         public int? ResCodeId
         {
-            get => this._ResCodeId;
+            get => _ResCodeId;
 
             set
             {
-                if (this._ResCodeId != value)
+                if (_ResCodeId != value)
                 {
-
-                    this.OnResCodeIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._ResCodeId = value;
-                    this.SendPropertyChanged("ResCodeId");
-                    this.OnResCodeIdChanged();
+                    OnResCodeIdChanging(value);
+                    SendPropertyChanging();
+                    _ResCodeId = value;
+                    SendPropertyChanged("ResCodeId");
+                    OnResCodeIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Hardwired", UpdateCheck = UpdateCheck.Never, Storage = "_Hardwired", DbType = "bit")]
         public bool? Hardwired
         {
-            get => this._Hardwired;
+            get => _Hardwired;
 
             set
             {
-                if (this._Hardwired != value)
+                if (_Hardwired != value)
                 {
-
-                    this.OnHardwiredChanging(value);
-                    this.SendPropertyChanging();
-                    this._Hardwired = value;
-                    this.SendPropertyChanged("Hardwired");
-                    this.OnHardwiredChanged();
+                    OnHardwiredChanging(value);
+                    SendPropertyChanging();
+                    _Hardwired = value;
+                    SendPropertyChanged("Hardwired");
+                    OnHardwiredChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -206,23 +179,19 @@ namespace CmsData
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-
     }
-
 }
-

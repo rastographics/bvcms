@@ -9,7 +9,7 @@ namespace CmsData
     [Table(Name = "dbo.MobileAppDevices")]
     public partial class MobileAppDevice : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -37,8 +37,6 @@ namespace CmsData
 
         private string _CodeEmail;
 
-
-
         private EntityRef<Person> _Person;
 
         private EntityRef<User> _User;
@@ -46,6 +44,7 @@ namespace CmsData
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -87,295 +86,245 @@ namespace CmsData
         partial void OnCodeEmailChanged();
 
         #endregion
+
         public MobileAppDevice()
         {
+            _Person = default(EntityRef<Person>);
 
-
-            this._Person = default(EntityRef<Person>);
-
-            this._User = default(EntityRef<User>);
+            _User = default(EntityRef<User>);
 
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "id", UpdateCheck = UpdateCheck.Never, Storage = "_Id", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
         public int Id
         {
-            get => this._Id;
+            get => _Id;
 
             set
             {
-                if (this._Id != value)
+                if (_Id != value)
                 {
-
-                    this.OnIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._Id = value;
-                    this.SendPropertyChanged("Id");
-                    this.OnIdChanged();
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "created", UpdateCheck = UpdateCheck.Never, Storage = "_Created", DbType = "datetime NOT NULL")]
         public DateTime Created
         {
-            get => this._Created;
+            get => _Created;
 
             set
             {
-                if (this._Created != value)
+                if (_Created != value)
                 {
-
-                    this.OnCreatedChanging(value);
-                    this.SendPropertyChanging();
-                    this._Created = value;
-                    this.SendPropertyChanged("Created");
-                    this.OnCreatedChanged();
+                    OnCreatedChanging(value);
+                    SendPropertyChanging();
+                    _Created = value;
+                    SendPropertyChanged("Created");
+                    OnCreatedChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "lastSeen", UpdateCheck = UpdateCheck.Never, Storage = "_LastSeen", DbType = "datetime NOT NULL")]
         public DateTime LastSeen
         {
-            get => this._LastSeen;
+            get => _LastSeen;
 
             set
             {
-                if (this._LastSeen != value)
+                if (_LastSeen != value)
                 {
-
-                    this.OnLastSeenChanging(value);
-                    this.SendPropertyChanging();
-                    this._LastSeen = value;
-                    this.SendPropertyChanged("LastSeen");
-                    this.OnLastSeenChanged();
+                    OnLastSeenChanging(value);
+                    SendPropertyChanging();
+                    _LastSeen = value;
+                    SendPropertyChanged("LastSeen");
+                    OnLastSeenChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "deviceTypeID", UpdateCheck = UpdateCheck.Never, Storage = "_DeviceTypeID", DbType = "int NOT NULL")]
         public int DeviceTypeID
         {
-            get => this._DeviceTypeID;
+            get => _DeviceTypeID;
 
             set
             {
-                if (this._DeviceTypeID != value)
+                if (_DeviceTypeID != value)
                 {
-
-                    this.OnDeviceTypeIDChanging(value);
-                    this.SendPropertyChanging();
-                    this._DeviceTypeID = value;
-                    this.SendPropertyChanged("DeviceTypeID");
-                    this.OnDeviceTypeIDChanged();
+                    OnDeviceTypeIDChanging(value);
+                    SendPropertyChanging();
+                    _DeviceTypeID = value;
+                    SendPropertyChanged("DeviceTypeID");
+                    OnDeviceTypeIDChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "instanceID", UpdateCheck = UpdateCheck.Never, Storage = "_InstanceID", DbType = "varchar(255) NOT NULL")]
         public string InstanceID
         {
-            get => this._InstanceID;
+            get => _InstanceID;
 
             set
             {
-                if (this._InstanceID != value)
+                if (_InstanceID != value)
                 {
-
-                    this.OnInstanceIDChanging(value);
-                    this.SendPropertyChanging();
-                    this._InstanceID = value;
-                    this.SendPropertyChanged("InstanceID");
-                    this.OnInstanceIDChanged();
+                    OnInstanceIDChanging(value);
+                    SendPropertyChanging();
+                    _InstanceID = value;
+                    SendPropertyChanged("InstanceID");
+                    OnInstanceIDChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "notificationID", UpdateCheck = UpdateCheck.Never, Storage = "_NotificationID", DbType = "varchar NOT NULL")]
         public string NotificationID
         {
-            get => this._NotificationID;
+            get => _NotificationID;
 
             set
             {
-                if (this._NotificationID != value)
+                if (_NotificationID != value)
                 {
-
-                    this.OnNotificationIDChanging(value);
-                    this.SendPropertyChanging();
-                    this._NotificationID = value;
-                    this.SendPropertyChanged("NotificationID");
-                    this.OnNotificationIDChanged();
+                    OnNotificationIDChanging(value);
+                    SendPropertyChanging();
+                    _NotificationID = value;
+                    SendPropertyChanged("NotificationID");
+                    OnNotificationIDChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "userID", UpdateCheck = UpdateCheck.Never, Storage = "_UserID", DbType = "int")]
         [IsForeignKey]
         public int? UserID
         {
-            get => this._UserID;
+            get => _UserID;
 
             set
             {
-                if (this._UserID != value)
+                if (_UserID != value)
                 {
-
-                    if (this._User.HasLoadedOrAssignedValue)
+                    if (_User.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnUserIDChanging(value);
-                    this.SendPropertyChanging();
-                    this._UserID = value;
-                    this.SendPropertyChanged("UserID");
-                    this.OnUserIDChanged();
+                    OnUserIDChanging(value);
+                    SendPropertyChanging();
+                    _UserID = value;
+                    SendPropertyChanged("UserID");
+                    OnUserIDChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "peopleID", UpdateCheck = UpdateCheck.Never, Storage = "_PeopleID", DbType = "int")]
         [IsForeignKey]
         public int? PeopleID
         {
-            get => this._PeopleID;
+            get => _PeopleID;
 
             set
             {
-                if (this._PeopleID != value)
+                if (_PeopleID != value)
                 {
-
-                    if (this._Person.HasLoadedOrAssignedValue)
+                    if (_Person.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnPeopleIDChanging(value);
-                    this.SendPropertyChanging();
-                    this._PeopleID = value;
-                    this.SendPropertyChanged("PeopleID");
-                    this.OnPeopleIDChanged();
+                    OnPeopleIDChanging(value);
+                    SendPropertyChanging();
+                    _PeopleID = value;
+                    SendPropertyChanged("PeopleID");
+                    OnPeopleIDChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "authentication", UpdateCheck = UpdateCheck.Never, Storage = "_Authentication", DbType = "varchar(64) NOT NULL")]
         public string Authentication
         {
-            get => this._Authentication;
+            get => _Authentication;
 
             set
             {
-                if (this._Authentication != value)
+                if (_Authentication != value)
                 {
-
-                    this.OnAuthenticationChanging(value);
-                    this.SendPropertyChanging();
-                    this._Authentication = value;
-                    this.SendPropertyChanged("Authentication");
-                    this.OnAuthenticationChanged();
+                    OnAuthenticationChanging(value);
+                    SendPropertyChanging();
+                    _Authentication = value;
+                    SendPropertyChanged("Authentication");
+                    OnAuthenticationChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "code", UpdateCheck = UpdateCheck.Never, Storage = "_Code", DbType = "varchar(64) NOT NULL")]
         public string Code
         {
-            get => this._Code;
+            get => _Code;
 
             set
             {
-                if (this._Code != value)
+                if (_Code != value)
                 {
-
-                    this.OnCodeChanging(value);
-                    this.SendPropertyChanging();
-                    this._Code = value;
-                    this.SendPropertyChanged("Code");
-                    this.OnCodeChanged();
+                    OnCodeChanging(value);
+                    SendPropertyChanging();
+                    _Code = value;
+                    SendPropertyChanged("Code");
+                    OnCodeChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "codeExpires", UpdateCheck = UpdateCheck.Never, Storage = "_CodeExpires", DbType = "datetime NOT NULL")]
         public DateTime CodeExpires
         {
-            get => this._CodeExpires;
+            get => _CodeExpires;
 
             set
             {
-                if (this._CodeExpires != value)
+                if (_CodeExpires != value)
                 {
-
-                    this.OnCodeExpiresChanging(value);
-                    this.SendPropertyChanging();
-                    this._CodeExpires = value;
-                    this.SendPropertyChanged("CodeExpires");
-                    this.OnCodeExpiresChanged();
+                    OnCodeExpiresChanging(value);
+                    SendPropertyChanging();
+                    _CodeExpires = value;
+                    SendPropertyChanged("CodeExpires");
+                    OnCodeExpiresChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "codeEmail", UpdateCheck = UpdateCheck.Never, Storage = "_CodeEmail", DbType = "varchar(255) NOT NULL")]
         public string CodeEmail
         {
-            get => this._CodeEmail;
+            get => _CodeEmail;
 
             set
             {
-                if (this._CodeEmail != value)
+                if (_CodeEmail != value)
                 {
-
-                    this.OnCodeEmailChanging(value);
-                    this.SendPropertyChanging();
-                    this._CodeEmail = value;
-                    this.SendPropertyChanged("CodeEmail");
-                    this.OnCodeEmailChanged();
+                    OnCodeEmailChanging(value);
+                    SendPropertyChanging();
+                    _CodeEmail = value;
+                    SendPropertyChanged("CodeEmail");
+                    OnCodeEmailChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -388,109 +337,97 @@ namespace CmsData
         [Association(Name = "FK_MobileAppDevices_People", Storage = "_Person", ThisKey = "PeopleID", IsForeignKey = true)]
         public Person Person
         {
-            get => this._Person.Entity;
+            get => _Person.Entity;
 
             set
             {
-                Person previousValue = this._Person.Entity;
+                Person previousValue = _Person.Entity;
                 if (((previousValue != value)
-                            || (this._Person.HasLoadedOrAssignedValue == false)))
+                            || (_Person.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._Person.Entity = null;
+                        _Person.Entity = null;
                         previousValue.MobileAppDevices.Remove(this);
                     }
 
-                    this._Person.Entity = value;
+                    _Person.Entity = value;
                     if (value != null)
                     {
                         value.MobileAppDevices.Add(this);
 
-                        this._PeopleID = value.PeopleId;
+                        _PeopleID = value.PeopleId;
 
                     }
 
                     else
                     {
-
-                        this._PeopleID = default(int?);
+                        _PeopleID = default(int?);
 
                     }
 
-                    this.SendPropertyChanged("Person");
+                    SendPropertyChanged("Person");
                 }
-
             }
-
         }
-
 
         [Association(Name = "FK_MobileAppDevices_Users", Storage = "_User", ThisKey = "UserID", IsForeignKey = true)]
         public User User
         {
-            get => this._User.Entity;
+            get => _User.Entity;
 
             set
             {
-                User previousValue = this._User.Entity;
+                User previousValue = _User.Entity;
                 if (((previousValue != value)
-                            || (this._User.HasLoadedOrAssignedValue == false)))
+                            || (_User.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._User.Entity = null;
+                        _User.Entity = null;
                         previousValue.MobileAppDevices.Remove(this);
                     }
 
-                    this._User.Entity = value;
+                    _User.Entity = value;
                     if (value != null)
                     {
                         value.MobileAppDevices.Add(this);
 
-                        this._UserID = value.UserId;
+                        _UserID = value.UserId;
 
                     }
 
                     else
                     {
-
-                        this._UserID = default(int?);
+                        _UserID = default(int?);
 
                     }
 
-                    this.SendPropertyChanged("User");
+                    SendPropertyChanged("User");
                 }
-
             }
-
         }
-
 
         #endregion
 
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-
     }
-
 }
-

@@ -7,7 +7,7 @@ namespace CmsData
     [Table(Name = "CMS_VOLUNTEER.INTEREST_TBL")]
     public partial class Interest : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -29,11 +29,10 @@ namespace CmsData
 
         private int? _ChurchId;
 
-
-
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -66,213 +65,175 @@ namespace CmsData
         partial void OnChurchIdChanged();
 
         #endregion
+
         public Interest()
         {
-
-
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "INTEREST_ID", UpdateCheck = UpdateCheck.Never, Storage = "_InterestId", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
         public int InterestId
         {
-            get => this._InterestId;
+            get => _InterestId;
 
             set
             {
-                if (this._InterestId != value)
+                if (_InterestId != value)
                 {
-
-                    this.OnInterestIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._InterestId = value;
-                    this.SendPropertyChanged("InterestId");
-                    this.OnInterestIdChanged();
+                    OnInterestIdChanging(value);
+                    SendPropertyChanging();
+                    _InterestId = value;
+                    SendPropertyChanged("InterestId");
+                    OnInterestIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "POSITION_ID", UpdateCheck = UpdateCheck.Never, Storage = "_PositionId", DbType = "int")]
         public int? PositionId
         {
-            get => this._PositionId;
+            get => _PositionId;
 
             set
             {
-                if (this._PositionId != value)
+                if (_PositionId != value)
                 {
-
-                    this.OnPositionIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._PositionId = value;
-                    this.SendPropertyChanged("PositionId");
-                    this.OnPositionIdChanged();
+                    OnPositionIdChanging(value);
+                    SendPropertyChanging();
+                    _PositionId = value;
+                    SendPropertyChanged("PositionId");
+                    OnPositionIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "INTEREST_PEOPLE_ID", UpdateCheck = UpdateCheck.Never, Storage = "_InterestPeopleId", DbType = "int")]
         public int? InterestPeopleId
         {
-            get => this._InterestPeopleId;
+            get => _InterestPeopleId;
 
             set
             {
-                if (this._InterestPeopleId != value)
+                if (_InterestPeopleId != value)
                 {
-
-                    this.OnInterestPeopleIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._InterestPeopleId = value;
-                    this.SendPropertyChanged("InterestPeopleId");
-                    this.OnInterestPeopleIdChanged();
+                    OnInterestPeopleIdChanging(value);
+                    SendPropertyChanging();
+                    _InterestPeopleId = value;
+                    SendPropertyChanged("InterestPeopleId");
+                    OnInterestPeopleIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "CREATED_BY", UpdateCheck = UpdateCheck.Never, Storage = "_CreatedBy", DbType = "int")]
         public int? CreatedBy
         {
-            get => this._CreatedBy;
+            get => _CreatedBy;
 
             set
             {
-                if (this._CreatedBy != value)
+                if (_CreatedBy != value)
                 {
-
-                    this.OnCreatedByChanging(value);
-                    this.SendPropertyChanging();
-                    this._CreatedBy = value;
-                    this.SendPropertyChanged("CreatedBy");
-                    this.OnCreatedByChanged();
+                    OnCreatedByChanging(value);
+                    SendPropertyChanging();
+                    _CreatedBy = value;
+                    SendPropertyChanged("CreatedBy");
+                    OnCreatedByChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "CREATED_DATE", UpdateCheck = UpdateCheck.Never, Storage = "_CreatedDate", DbType = "datetime")]
         public DateTime? CreatedDate
         {
-            get => this._CreatedDate;
+            get => _CreatedDate;
 
             set
             {
-                if (this._CreatedDate != value)
+                if (_CreatedDate != value)
                 {
-
-                    this.OnCreatedDateChanging(value);
-                    this.SendPropertyChanging();
-                    this._CreatedDate = value;
-                    this.SendPropertyChanged("CreatedDate");
-                    this.OnCreatedDateChanged();
+                    OnCreatedDateChanging(value);
+                    SendPropertyChanging();
+                    _CreatedDate = value;
+                    SendPropertyChanged("CreatedDate");
+                    OnCreatedDateChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "MODIFIED_BY", UpdateCheck = UpdateCheck.Never, Storage = "_ModifiedBy", DbType = "int")]
         public int? ModifiedBy
         {
-            get => this._ModifiedBy;
+            get => _ModifiedBy;
 
             set
             {
-                if (this._ModifiedBy != value)
+                if (_ModifiedBy != value)
                 {
-
-                    this.OnModifiedByChanging(value);
-                    this.SendPropertyChanging();
-                    this._ModifiedBy = value;
-                    this.SendPropertyChanged("ModifiedBy");
-                    this.OnModifiedByChanged();
+                    OnModifiedByChanging(value);
+                    SendPropertyChanging();
+                    _ModifiedBy = value;
+                    SendPropertyChanged("ModifiedBy");
+                    OnModifiedByChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "MODIFIED_DATE", UpdateCheck = UpdateCheck.Never, Storage = "_ModifiedDate", DbType = "datetime")]
         public DateTime? ModifiedDate
         {
-            get => this._ModifiedDate;
+            get => _ModifiedDate;
 
             set
             {
-                if (this._ModifiedDate != value)
+                if (_ModifiedDate != value)
                 {
-
-                    this.OnModifiedDateChanging(value);
-                    this.SendPropertyChanging();
-                    this._ModifiedDate = value;
-                    this.SendPropertyChanged("ModifiedDate");
-                    this.OnModifiedDateChanged();
+                    OnModifiedDateChanging(value);
+                    SendPropertyChanging();
+                    _ModifiedDate = value;
+                    SendPropertyChanged("ModifiedDate");
+                    OnModifiedDateChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "RECORD_STATUS", UpdateCheck = UpdateCheck.Never, Storage = "_RecordStatus", DbType = "varchar(1)")]
         public string RecordStatus
         {
-            get => this._RecordStatus;
+            get => _RecordStatus;
 
             set
             {
-                if (this._RecordStatus != value)
+                if (_RecordStatus != value)
                 {
-
-                    this.OnRecordStatusChanging(value);
-                    this.SendPropertyChanging();
-                    this._RecordStatus = value;
-                    this.SendPropertyChanged("RecordStatus");
-                    this.OnRecordStatusChanged();
+                    OnRecordStatusChanging(value);
+                    SendPropertyChanging();
+                    _RecordStatus = value;
+                    SendPropertyChanged("RecordStatus");
+                    OnRecordStatusChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "CHURCH_ID", UpdateCheck = UpdateCheck.Never, Storage = "_ChurchId", DbType = "int")]
         public int? ChurchId
         {
-            get => this._ChurchId;
+            get => _ChurchId;
 
             set
             {
-                if (this._ChurchId != value)
+                if (_ChurchId != value)
                 {
-
-                    this.OnChurchIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._ChurchId = value;
-                    this.SendPropertyChanged("ChurchId");
-                    this.OnChurchIdChanged();
+                    OnChurchIdChanging(value);
+                    SendPropertyChanging();
+                    _ChurchId = value;
+                    SendPropertyChanged("ChurchId");
+                    OnChurchIdChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -287,23 +248,19 @@ namespace CmsData
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-
     }
-
 }
-

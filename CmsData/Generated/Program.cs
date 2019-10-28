@@ -8,7 +8,7 @@ namespace CmsData
     [Table(Name = "dbo.Program")]
     public partial class Program : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -22,15 +22,14 @@ namespace CmsData
 
         private decimal? _EndHoursOffset;
 
-
         private EntitySet<Division> _Divisions;
 
         private EntitySet<ProgDiv> _ProgDivs;
 
-
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -51,129 +50,107 @@ namespace CmsData
         partial void OnEndHoursOffsetChanged();
 
         #endregion
+
         public Program()
         {
+            _Divisions = new EntitySet<Division>(new Action<Division>(attach_Divisions), new Action<Division>(detach_Divisions));
 
-            this._Divisions = new EntitySet<Division>(new Action<Division>(this.attach_Divisions), new Action<Division>(this.detach_Divisions));
-
-            this._ProgDivs = new EntitySet<ProgDiv>(new Action<ProgDiv>(this.attach_ProgDivs), new Action<ProgDiv>(this.detach_ProgDivs));
-
+            _ProgDivs = new EntitySet<ProgDiv>(new Action<ProgDiv>(attach_ProgDivs), new Action<ProgDiv>(detach_ProgDivs));
 
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "Id", UpdateCheck = UpdateCheck.Never, Storage = "_Id", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
         public int Id
         {
-            get => this._Id;
+            get => _Id;
 
             set
             {
-                if (this._Id != value)
+                if (_Id != value)
                 {
-
-                    this.OnIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._Id = value;
-                    this.SendPropertyChanged("Id");
-                    this.OnIdChanged();
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Name", UpdateCheck = UpdateCheck.Never, Storage = "_Name", DbType = "nvarchar(50)")]
         public string Name
         {
-            get => this._Name;
+            get => _Name;
 
             set
             {
-                if (this._Name != value)
+                if (_Name != value)
                 {
-
-                    this.OnNameChanging(value);
-                    this.SendPropertyChanging();
-                    this._Name = value;
-                    this.SendPropertyChanged("Name");
-                    this.OnNameChanged();
+                    OnNameChanging(value);
+                    SendPropertyChanging();
+                    _Name = value;
+                    SendPropertyChanged("Name");
+                    OnNameChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "RptGroup", UpdateCheck = UpdateCheck.Never, Storage = "_RptGroup", DbType = "nvarchar(200)")]
         public string RptGroup
         {
-            get => this._RptGroup;
+            get => _RptGroup;
 
             set
             {
-                if (this._RptGroup != value)
+                if (_RptGroup != value)
                 {
-
-                    this.OnRptGroupChanging(value);
-                    this.SendPropertyChanging();
-                    this._RptGroup = value;
-                    this.SendPropertyChanged("RptGroup");
-                    this.OnRptGroupChanged();
+                    OnRptGroupChanging(value);
+                    SendPropertyChanging();
+                    _RptGroup = value;
+                    SendPropertyChanged("RptGroup");
+                    OnRptGroupChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "StartHoursOffset", UpdateCheck = UpdateCheck.Never, Storage = "_StartHoursOffset", DbType = "real")]
         public decimal? StartHoursOffset
         {
-            get => this._StartHoursOffset;
+            get => _StartHoursOffset;
 
             set
             {
-                if (this._StartHoursOffset != value)
+                if (_StartHoursOffset != value)
                 {
-
-                    this.OnStartHoursOffsetChanging(value);
-                    this.SendPropertyChanging();
-                    this._StartHoursOffset = value;
-                    this.SendPropertyChanged("StartHoursOffset");
-                    this.OnStartHoursOffsetChanged();
+                    OnStartHoursOffsetChanging(value);
+                    SendPropertyChanging();
+                    _StartHoursOffset = value;
+                    SendPropertyChanged("StartHoursOffset");
+                    OnStartHoursOffsetChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "EndHoursOffset", UpdateCheck = UpdateCheck.Never, Storage = "_EndHoursOffset", DbType = "real")]
         public decimal? EndHoursOffset
         {
-            get => this._EndHoursOffset;
+            get => _EndHoursOffset;
 
             set
             {
-                if (this._EndHoursOffset != value)
+                if (_EndHoursOffset != value)
                 {
-
-                    this.OnEndHoursOffsetChanging(value);
-                    this.SendPropertyChanging();
-                    this._EndHoursOffset = value;
-                    this.SendPropertyChanged("EndHoursOffset");
-                    this.OnEndHoursOffsetChanged();
+                    OnEndHoursOffsetChanging(value);
+                    SendPropertyChanging();
+                    _EndHoursOffset = value;
+                    SendPropertyChanged("EndHoursOffset");
+                    OnEndHoursOffsetChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -182,22 +159,20 @@ namespace CmsData
         [Association(Name = "FK_Division_Program", Storage = "_Divisions", OtherKey = "ProgId")]
         public EntitySet<Division> Divisions
            {
-               get => this._Divisions;
+               get => _Divisions;
 
-            set => this._Divisions.Assign(value);
+            set => _Divisions.Assign(value);
 
            }
-
 
         [Association(Name = "FK_ProgDiv_Program", Storage = "_ProgDivs", OtherKey = "ProgId")]
         public EntitySet<ProgDiv> ProgDivs
            {
-               get => this._ProgDivs;
+               get => _ProgDivs;
 
-            set => this._ProgDivs.Assign(value);
+            set => _ProgDivs.Assign(value);
 
            }
-
 
         #endregion
 
@@ -208,48 +183,43 @@ namespace CmsData
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
 
-
         private void attach_Divisions(Division entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.Program = this;
         }
 
         private void detach_Divisions(Division entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.Program = null;
         }
 
-
         private void attach_ProgDivs(ProgDiv entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.Program = this;
         }
 
         private void detach_ProgDivs(ProgDiv entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.Program = null;
         }
-
-
     }
-
 }

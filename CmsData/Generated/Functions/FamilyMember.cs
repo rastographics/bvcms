@@ -1,351 +1,288 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="FamilyMembers")]
-	public partial class FamilyMember
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private int _Id;
-		
-		private int _PortraitId;
-		
-		private DateTime? _PicDate;
-		
-		private int? _PicXPos;
-		
-		private int? _PicYPos;
-		
-		private DateTime? _DeceasedDate;
-		
-		private string _Name;
-		
-		private int? _Age;
-		
-		private int _GenderId;
-		
-		private string _Color;
-		
-		private int _PositionInFamilyId;
-		
-		private string _PositionInFamily;
-		
-		private string _SpouseIndicator;
-		
-		private string _Email;
-		
-		private bool? _IsDeceased;
-		
-		private string _MemberStatus;
-		
-		private string _Gender;
-		
-		
-		public FamilyMember()
-		{
-		}
+    [Table(Name = "FamilyMembers")]
+    public partial class FamilyMember
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="Id", Storage="_Id", DbType="int NOT NULL")]
-		public int Id
-		{
-			get
-			{
-				return this._Id;
-			}
+        private int _Id;
 
-			set
-			{
-				if (this._Id != value)
-					this._Id = value;
-			}
+        private int _PortraitId;
 
-		}
+        private DateTime? _PicDate;
 
-		
-		[Column(Name="PortraitId", Storage="_PortraitId", DbType="int NOT NULL")]
-		public int PortraitId
-		{
-			get
-			{
-				return this._PortraitId;
-			}
+        private int? _PicXPos;
 
-			set
-			{
-				if (this._PortraitId != value)
-					this._PortraitId = value;
-			}
+        private int? _PicYPos;
 
-		}
+        private DateTime? _DeceasedDate;
 
-		
-		[Column(Name="PicDate", Storage="_PicDate", DbType="datetime")]
-		public DateTime? PicDate
-		{
-			get
-			{
-				return this._PicDate;
-			}
+        private string _Name;
 
-			set
-			{
-				if (this._PicDate != value)
-					this._PicDate = value;
-			}
+        private int? _Age;
 
-		}
+        private int _GenderId;
 
-		
-		[Column(Name="PicXPos", Storage="_PicXPos", DbType="int")]
-		public int? PicXPos
-		{
-			get
-			{
-				return this._PicXPos;
-			}
+        private string _Color;
 
-			set
-			{
-				if (this._PicXPos != value)
-					this._PicXPos = value;
-			}
+        private int _PositionInFamilyId;
 
-		}
+        private string _PositionInFamily;
 
-		
-		[Column(Name="PicYPos", Storage="_PicYPos", DbType="int")]
-		public int? PicYPos
-		{
-			get
-			{
-				return this._PicYPos;
-			}
+        private string _SpouseIndicator;
 
-			set
-			{
-				if (this._PicYPos != value)
-					this._PicYPos = value;
-			}
+        private string _Email;
 
-		}
+        private bool? _IsDeceased;
 
-		
-		[Column(Name="DeceasedDate", Storage="_DeceasedDate", DbType="datetime")]
-		public DateTime? DeceasedDate
-		{
-			get
-			{
-				return this._DeceasedDate;
-			}
+        private string _MemberStatus;
 
-			set
-			{
-				if (this._DeceasedDate != value)
-					this._DeceasedDate = value;
-			}
+        private string _Gender;
 
-		}
+        public FamilyMember()
+        {
+        }
 
-		
-		[Column(Name="Name", Storage="_Name", DbType="nvarchar(138)")]
-		public string Name
-		{
-			get
-			{
-				return this._Name;
-			}
+        [Column(Name = "Id", Storage = "_Id", DbType = "int NOT NULL")]
+        public int Id
+        {
+            get => _Id;
 
-			set
-			{
-				if (this._Name != value)
-					this._Name = value;
-			}
+            set
+            {
+                if (_Id != value)
+                {
+                    _Id = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "PortraitId", Storage = "_PortraitId", DbType = "int NOT NULL")]
+        public int PortraitId
+        {
+            get => _PortraitId;
 
-		
-		[Column(Name="Age", Storage="_Age", DbType="int")]
-		public int? Age
-		{
-			get
-			{
-				return this._Age;
-			}
+            set
+            {
+                if (_PortraitId != value)
+                {
+                    _PortraitId = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._Age != value)
-					this._Age = value;
-			}
+        [Column(Name = "PicDate", Storage = "_PicDate", DbType = "datetime")]
+        public DateTime? PicDate
+        {
+            get => _PicDate;
 
-		}
+            set
+            {
+                if (_PicDate != value)
+                {
+                    _PicDate = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="GenderId", Storage="_GenderId", DbType="int NOT NULL")]
-		public int GenderId
-		{
-			get
-			{
-				return this._GenderId;
-			}
+        [Column(Name = "PicXPos", Storage = "_PicXPos", DbType = "int")]
+        public int? PicXPos
+        {
+            get => _PicXPos;
 
-			set
-			{
-				if (this._GenderId != value)
-					this._GenderId = value;
-			}
+            set
+            {
+                if (_PicXPos != value)
+                {
+                    _PicXPos = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "PicYPos", Storage = "_PicYPos", DbType = "int")]
+        public int? PicYPos
+        {
+            get => _PicYPos;
 
-		
-		[Column(Name="Color", Storage="_Color", DbType="varchar(1) NOT NULL")]
-		public string Color
-		{
-			get
-			{
-				return this._Color;
-			}
+            set
+            {
+                if (_PicYPos != value)
+                {
+                    _PicYPos = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._Color != value)
-					this._Color = value;
-			}
+        [Column(Name = "DeceasedDate", Storage = "_DeceasedDate", DbType = "datetime")]
+        public DateTime? DeceasedDate
+        {
+            get => _DeceasedDate;
 
-		}
+            set
+            {
+                if (_DeceasedDate != value)
+                {
+                    _DeceasedDate = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="PositionInFamilyId", Storage="_PositionInFamilyId", DbType="int NOT NULL")]
-		public int PositionInFamilyId
-		{
-			get
-			{
-				return this._PositionInFamilyId;
-			}
+        [Column(Name = "Name", Storage = "_Name", DbType = "nvarchar(138)")]
+        public string Name
+        {
+            get => _Name;
 
-			set
-			{
-				if (this._PositionInFamilyId != value)
-					this._PositionInFamilyId = value;
-			}
+            set
+            {
+                if (_Name != value)
+                {
+                    _Name = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "Age", Storage = "_Age", DbType = "int")]
+        public int? Age
+        {
+            get => _Age;
 
-		
-		[Column(Name="PositionInFamily", Storage="_PositionInFamily", DbType="nvarchar(100)")]
-		public string PositionInFamily
-		{
-			get
-			{
-				return this._PositionInFamily;
-			}
+            set
+            {
+                if (_Age != value)
+                {
+                    _Age = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._PositionInFamily != value)
-					this._PositionInFamily = value;
-			}
+        [Column(Name = "GenderId", Storage = "_GenderId", DbType = "int NOT NULL")]
+        public int GenderId
+        {
+            get => _GenderId;
 
-		}
+            set
+            {
+                if (_GenderId != value)
+                {
+                    _GenderId = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="SpouseIndicator", Storage="_SpouseIndicator", DbType="varchar(1) NOT NULL")]
-		public string SpouseIndicator
-		{
-			get
-			{
-				return this._SpouseIndicator;
-			}
+        [Column(Name = "Color", Storage = "_Color", DbType = "varchar(1) NOT NULL")]
+        public string Color
+        {
+            get => _Color;
 
-			set
-			{
-				if (this._SpouseIndicator != value)
-					this._SpouseIndicator = value;
-			}
+            set
+            {
+                if (_Color != value)
+                {
+                    _Color = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "PositionInFamilyId", Storage = "_PositionInFamilyId", DbType = "int NOT NULL")]
+        public int PositionInFamilyId
+        {
+            get => _PositionInFamilyId;
 
-		
-		[Column(Name="Email", Storage="_Email", DbType="nvarchar(150)")]
-		public string Email
-		{
-			get
-			{
-				return this._Email;
-			}
+            set
+            {
+                if (_PositionInFamilyId != value)
+                {
+                    _PositionInFamilyId = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._Email != value)
-					this._Email = value;
-			}
+        [Column(Name = "PositionInFamily", Storage = "_PositionInFamily", DbType = "nvarchar(100)")]
+        public string PositionInFamily
+        {
+            get => _PositionInFamily;
 
-		}
+            set
+            {
+                if (_PositionInFamily != value)
+                {
+                    _PositionInFamily = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="isDeceased", Storage="_IsDeceased", DbType="bit")]
-		public bool? IsDeceased
-		{
-			get
-			{
-				return this._IsDeceased;
-			}
+        [Column(Name = "SpouseIndicator", Storage = "_SpouseIndicator", DbType = "varchar(1) NOT NULL")]
+        public string SpouseIndicator
+        {
+            get => _SpouseIndicator;
 
-			set
-			{
-				if (this._IsDeceased != value)
-					this._IsDeceased = value;
-			}
+            set
+            {
+                if (_SpouseIndicator != value)
+                {
+                    _SpouseIndicator = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "Email", Storage = "_Email", DbType = "nvarchar(150)")]
+        public string Email
+        {
+            get => _Email;
 
-		
-		[Column(Name="MemberStatus", Storage="_MemberStatus", DbType="nvarchar(50)")]
-		public string MemberStatus
-		{
-			get
-			{
-				return this._MemberStatus;
-			}
+            set
+            {
+                if (_Email != value)
+                {
+                    _Email = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._MemberStatus != value)
-					this._MemberStatus = value;
-			}
+        [Column(Name = "isDeceased", Storage = "_IsDeceased", DbType = "bit")]
+        public bool? IsDeceased
+        {
+            get => _IsDeceased;
 
-		}
+            set
+            {
+                if (_IsDeceased != value)
+                {
+                    _IsDeceased = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="Gender", Storage="_Gender", DbType="nvarchar(20)")]
-		public string Gender
-		{
-			get
-			{
-				return this._Gender;
-			}
+        [Column(Name = "MemberStatus", Storage = "_MemberStatus", DbType = "nvarchar(50)")]
+        public string MemberStatus
+        {
+            get => _MemberStatus;
 
-			set
-			{
-				if (this._Gender != value)
-					this._Gender = value;
-			}
+            set
+            {
+                if (_MemberStatus != value)
+                {
+                    _MemberStatus = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "Gender", Storage = "_Gender", DbType = "nvarchar(20)")]
+        public string Gender
+        {
+            get => _Gender;
 
-		
+            set
+            {
+                if (_Gender != value)
+                {
+                    _Gender = value;
+                }
+            }
+        }
     }
-
 }

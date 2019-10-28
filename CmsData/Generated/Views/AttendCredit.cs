@@ -1,123 +1,96 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="AttendCredits")]
-	public partial class AttendCredit
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private int _OrganizationId;
-		
-		private int _PeopleId;
-		
-		private bool? _Attended;
-		
-		private DateTime? _WeekDate;
-		
-		private int? _OtherAttends;
-		
-		
-		public AttendCredit()
-		{
-		}
+    [Table(Name = "AttendCredits")]
+    public partial class AttendCredit
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="OrganizationId", Storage="_OrganizationId", DbType="int NOT NULL")]
-		public int OrganizationId
-		{
-			get
-			{
-				return this._OrganizationId;
-			}
+        private int _OrganizationId;
 
-			set
-			{
-				if (this._OrganizationId != value)
-					this._OrganizationId = value;
-			}
+        private int _PeopleId;
 
-		}
+        private bool? _Attended;
 
-		
-		[Column(Name="PeopleId", Storage="_PeopleId", DbType="int NOT NULL")]
-		public int PeopleId
-		{
-			get
-			{
-				return this._PeopleId;
-			}
+        private DateTime? _WeekDate;
 
-			set
-			{
-				if (this._PeopleId != value)
-					this._PeopleId = value;
-			}
+        private int? _OtherAttends;
 
-		}
+        public AttendCredit()
+        {
+        }
 
-		
-		[Column(Name="Attended", Storage="_Attended", DbType="bit")]
-		public bool? Attended
-		{
-			get
-			{
-				return this._Attended;
-			}
+        [Column(Name = "OrganizationId", Storage = "_OrganizationId", DbType = "int NOT NULL")]
+        public int OrganizationId
+        {
+            get => _OrganizationId;
 
-			set
-			{
-				if (this._Attended != value)
-					this._Attended = value;
-			}
+            set
+            {
+                if (_OrganizationId != value)
+                {
+                    _OrganizationId = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "PeopleId", Storage = "_PeopleId", DbType = "int NOT NULL")]
+        public int PeopleId
+        {
+            get => _PeopleId;
 
-		
-		[Column(Name="WeekDate", Storage="_WeekDate", DbType="datetime")]
-		public DateTime? WeekDate
-		{
-			get
-			{
-				return this._WeekDate;
-			}
+            set
+            {
+                if (_PeopleId != value)
+                {
+                    _PeopleId = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._WeekDate != value)
-					this._WeekDate = value;
-			}
+        [Column(Name = "Attended", Storage = "_Attended", DbType = "bit")]
+        public bool? Attended
+        {
+            get => _Attended;
 
-		}
+            set
+            {
+                if (_Attended != value)
+                {
+                    _Attended = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="OtherAttends", Storage="_OtherAttends", DbType="int")]
-		public int? OtherAttends
-		{
-			get
-			{
-				return this._OtherAttends;
-			}
+        [Column(Name = "WeekDate", Storage = "_WeekDate", DbType = "datetime")]
+        public DateTime? WeekDate
+        {
+            get => _WeekDate;
 
-			set
-			{
-				if (this._OtherAttends != value)
-					this._OtherAttends = value;
-			}
+            set
+            {
+                if (_WeekDate != value)
+                {
+                    _WeekDate = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "OtherAttends", Storage = "_OtherAttends", DbType = "int")]
+        public int? OtherAttends
+        {
+            get => _OtherAttends;
 
-		
+            set
+            {
+                if (_OtherAttends != value)
+                {
+                    _OtherAttends = value;
+                }
+            }
+        }
     }
-
 }

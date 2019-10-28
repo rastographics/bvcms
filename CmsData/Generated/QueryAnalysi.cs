@@ -7,7 +7,7 @@ namespace CmsData
     [Table(Name = "dbo.QueryAnalysis")]
     public partial class QueryAnalysi : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -23,11 +23,10 @@ namespace CmsData
 
         private bool? _Updated;
 
-
-
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -51,147 +50,121 @@ namespace CmsData
         partial void OnUpdatedChanged();
 
         #endregion
+
         public QueryAnalysi()
         {
-
-
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "Id", UpdateCheck = UpdateCheck.Never, Storage = "_Id", DbType = "uniqueidentifier NOT NULL")]
         public Guid Id
         {
-            get => this._Id;
+            get => _Id;
 
             set
             {
-                if (this._Id != value)
+                if (_Id != value)
                 {
-
-                    this.OnIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._Id = value;
-                    this.SendPropertyChanged("Id");
-                    this.OnIdChanged();
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Seconds", UpdateCheck = UpdateCheck.Never, Storage = "_Seconds", DbType = "int")]
         public int? Seconds
         {
-            get => this._Seconds;
+            get => _Seconds;
 
             set
             {
-                if (this._Seconds != value)
+                if (_Seconds != value)
                 {
-
-                    this.OnSecondsChanging(value);
-                    this.SendPropertyChanging();
-                    this._Seconds = value;
-                    this.SendPropertyChanged("Seconds");
-                    this.OnSecondsChanged();
+                    OnSecondsChanging(value);
+                    SendPropertyChanging();
+                    _Seconds = value;
+                    SendPropertyChanged("Seconds");
+                    OnSecondsChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "OriginalCount", UpdateCheck = UpdateCheck.Never, Storage = "_OriginalCount", DbType = "int")]
         public int? OriginalCount
         {
-            get => this._OriginalCount;
+            get => _OriginalCount;
 
             set
             {
-                if (this._OriginalCount != value)
+                if (_OriginalCount != value)
                 {
-
-                    this.OnOriginalCountChanging(value);
-                    this.SendPropertyChanging();
-                    this._OriginalCount = value;
-                    this.SendPropertyChanged("OriginalCount");
-                    this.OnOriginalCountChanged();
+                    OnOriginalCountChanging(value);
+                    SendPropertyChanging();
+                    _OriginalCount = value;
+                    SendPropertyChanged("OriginalCount");
+                    OnOriginalCountChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ParsedCount", UpdateCheck = UpdateCheck.Never, Storage = "_ParsedCount", DbType = "int")]
         public int? ParsedCount
         {
-            get => this._ParsedCount;
+            get => _ParsedCount;
 
             set
             {
-                if (this._ParsedCount != value)
+                if (_ParsedCount != value)
                 {
-
-                    this.OnParsedCountChanging(value);
-                    this.SendPropertyChanging();
-                    this._ParsedCount = value;
-                    this.SendPropertyChanged("ParsedCount");
-                    this.OnParsedCountChanged();
+                    OnParsedCountChanging(value);
+                    SendPropertyChanging();
+                    _ParsedCount = value;
+                    SendPropertyChanged("ParsedCount");
+                    OnParsedCountChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Message", UpdateCheck = UpdateCheck.Never, Storage = "_Message", DbType = "varchar")]
         public string Message
         {
-            get => this._Message;
+            get => _Message;
 
             set
             {
-                if (this._Message != value)
+                if (_Message != value)
                 {
-
-                    this.OnMessageChanging(value);
-                    this.SendPropertyChanging();
-                    this._Message = value;
-                    this.SendPropertyChanged("Message");
-                    this.OnMessageChanged();
+                    OnMessageChanging(value);
+                    SendPropertyChanging();
+                    _Message = value;
+                    SendPropertyChanged("Message");
+                    OnMessageChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Updated", UpdateCheck = UpdateCheck.Never, Storage = "_Updated", DbType = "bit")]
         public bool? Updated
         {
-            get => this._Updated;
+            get => _Updated;
 
             set
             {
-                if (this._Updated != value)
+                if (_Updated != value)
                 {
-
-                    this.OnUpdatedChanging(value);
-                    this.SendPropertyChanging();
-                    this._Updated = value;
-                    this.SendPropertyChanged("Updated");
-                    this.OnUpdatedChanged();
+                    OnUpdatedChanging(value);
+                    SendPropertyChanging();
+                    _Updated = value;
+                    SendPropertyChanged("Updated");
+                    OnUpdatedChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -206,23 +179,19 @@ namespace CmsData
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-
     }
-
 }
-

@@ -9,7 +9,7 @@ namespace CmsData
     [Table(Name = "dbo.CheckInTimes")]
     public partial class CheckInTime : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -27,11 +27,9 @@ namespace CmsData
 
         private int? _AccessTypeID;
 
-
         private EntitySet<CheckInActivity> _CheckInActivities;
 
         private EntitySet<CheckInTime> _Guests;
-
 
         private EntityRef<Person> _Person;
 
@@ -40,6 +38,7 @@ namespace CmsData
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -66,189 +65,159 @@ namespace CmsData
         partial void OnAccessTypeIDChanged();
 
         #endregion
+
         public CheckInTime()
         {
+            _CheckInActivities = new EntitySet<CheckInActivity>(new Action<CheckInActivity>(attach_CheckInActivities), new Action<CheckInActivity>(detach_CheckInActivities));
 
-            this._CheckInActivities = new EntitySet<CheckInActivity>(new Action<CheckInActivity>(this.attach_CheckInActivities), new Action<CheckInActivity>(this.detach_CheckInActivities));
+            _Guests = new EntitySet<CheckInTime>(new Action<CheckInTime>(attach_Guests), new Action<CheckInTime>(detach_Guests));
 
-            this._Guests = new EntitySet<CheckInTime>(new Action<CheckInTime>(this.attach_Guests), new Action<CheckInTime>(this.detach_Guests));
+            _Person = default(EntityRef<Person>);
 
-
-            this._Person = default(EntityRef<Person>);
-
-            this._GuestOf = default(EntityRef<CheckInTime>);
+            _GuestOf = default(EntityRef<CheckInTime>);
 
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "Id", UpdateCheck = UpdateCheck.Never, Storage = "_Id", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
         public int Id
         {
-            get => this._Id;
+            get => _Id;
 
             set
             {
-                if (this._Id != value)
+                if (_Id != value)
                 {
-
-                    this.OnIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._Id = value;
-                    this.SendPropertyChanged("Id");
-                    this.OnIdChanged();
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "PeopleId", UpdateCheck = UpdateCheck.Never, Storage = "_PeopleId", DbType = "int")]
         [IsForeignKey]
         public int? PeopleId
         {
-            get => this._PeopleId;
+            get => _PeopleId;
 
             set
             {
-                if (this._PeopleId != value)
+                if (_PeopleId != value)
                 {
-
-                    if (this._Person.HasLoadedOrAssignedValue)
+                    if (_Person.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnPeopleIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._PeopleId = value;
-                    this.SendPropertyChanged("PeopleId");
-                    this.OnPeopleIdChanged();
+                    OnPeopleIdChanging(value);
+                    SendPropertyChanging();
+                    _PeopleId = value;
+                    SendPropertyChanged("PeopleId");
+                    OnPeopleIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "CheckInTime", UpdateCheck = UpdateCheck.Never, Storage = "_CheckInTimeX", DbType = "datetime")]
         public DateTime? CheckInTimeX
         {
-            get => this._CheckInTimeX;
+            get => _CheckInTimeX;
 
             set
             {
-                if (this._CheckInTimeX != value)
+                if (_CheckInTimeX != value)
                 {
-
-                    this.OnCheckInTimeXChanging(value);
-                    this.SendPropertyChanging();
-                    this._CheckInTimeX = value;
-                    this.SendPropertyChanged("CheckInTimeX");
-                    this.OnCheckInTimeXChanged();
+                    OnCheckInTimeXChanging(value);
+                    SendPropertyChanging();
+                    _CheckInTimeX = value;
+                    SendPropertyChanged("CheckInTimeX");
+                    OnCheckInTimeXChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "GuestOfId", UpdateCheck = UpdateCheck.Never, Storage = "_GuestOfId", DbType = "int")]
         [IsForeignKey]
         public int? GuestOfId
         {
-            get => this._GuestOfId;
+            get => _GuestOfId;
 
             set
             {
-                if (this._GuestOfId != value)
+                if (_GuestOfId != value)
                 {
-
-                    if (this._GuestOf.HasLoadedOrAssignedValue)
+                    if (_GuestOf.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnGuestOfIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._GuestOfId = value;
-                    this.SendPropertyChanged("GuestOfId");
-                    this.OnGuestOfIdChanged();
+                    OnGuestOfIdChanging(value);
+                    SendPropertyChanging();
+                    _GuestOfId = value;
+                    SendPropertyChanged("GuestOfId");
+                    OnGuestOfIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "location", UpdateCheck = UpdateCheck.Never, Storage = "_Location", DbType = "nvarchar(50)")]
         public string Location
         {
-            get => this._Location;
+            get => _Location;
 
             set
             {
-                if (this._Location != value)
+                if (_Location != value)
                 {
-
-                    this.OnLocationChanging(value);
-                    this.SendPropertyChanging();
-                    this._Location = value;
-                    this.SendPropertyChanged("Location");
-                    this.OnLocationChanged();
+                    OnLocationChanging(value);
+                    SendPropertyChanging();
+                    _Location = value;
+                    SendPropertyChanged("Location");
+                    OnLocationChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "GuestOfPersonID", UpdateCheck = UpdateCheck.Never, Storage = "_GuestOfPersonID", DbType = "int NOT NULL")]
         public int GuestOfPersonID
         {
-            get => this._GuestOfPersonID;
+            get => _GuestOfPersonID;
 
             set
             {
-                if (this._GuestOfPersonID != value)
+                if (_GuestOfPersonID != value)
                 {
-
-                    this.OnGuestOfPersonIDChanging(value);
-                    this.SendPropertyChanging();
-                    this._GuestOfPersonID = value;
-                    this.SendPropertyChanged("GuestOfPersonID");
-                    this.OnGuestOfPersonIDChanged();
+                    OnGuestOfPersonIDChanging(value);
+                    SendPropertyChanging();
+                    _GuestOfPersonID = value;
+                    SendPropertyChanged("GuestOfPersonID");
+                    OnGuestOfPersonIDChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "AccessTypeID", UpdateCheck = UpdateCheck.Never, Storage = "_AccessTypeID", DbType = "int")]
         public int? AccessTypeID
         {
-            get => this._AccessTypeID;
+            get => _AccessTypeID;
 
             set
             {
-                if (this._AccessTypeID != value)
+                if (_AccessTypeID != value)
                 {
-
-                    this.OnAccessTypeIDChanging(value);
-                    this.SendPropertyChanging();
-                    this._AccessTypeID = value;
-                    this.SendPropertyChanged("AccessTypeID");
-                    this.OnAccessTypeIDChanged();
+                    OnAccessTypeIDChanging(value);
+                    SendPropertyChanging();
+                    _AccessTypeID = value;
+                    SendPropertyChanged("AccessTypeID");
+                    OnAccessTypeIDChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -257,22 +226,20 @@ namespace CmsData
         [Association(Name = "FK_CheckInActivity_CheckInTimes", Storage = "_CheckInActivities", OtherKey = "Id")]
         public EntitySet<CheckInActivity> CheckInActivities
            {
-               get => this._CheckInActivities;
+               get => _CheckInActivities;
 
-            set => this._CheckInActivities.Assign(value);
+            set => _CheckInActivities.Assign(value);
 
            }
-
 
         [Association(Name = "Guests__GuestOf", Storage = "_Guests", OtherKey = "GuestOfId")]
         public EntitySet<CheckInTime> Guests
            {
-               get => this._Guests;
+               get => _Guests;
 
-            set => this._Guests.Assign(value);
+            set => _Guests.Assign(value);
 
            }
-
 
         #endregion
 
@@ -281,135 +248,121 @@ namespace CmsData
         [Association(Name = "FK_CheckInTimes_People", Storage = "_Person", ThisKey = "PeopleId", IsForeignKey = true)]
         public Person Person
         {
-            get => this._Person.Entity;
+            get => _Person.Entity;
 
             set
             {
-                Person previousValue = this._Person.Entity;
+                Person previousValue = _Person.Entity;
                 if (((previousValue != value)
-                            || (this._Person.HasLoadedOrAssignedValue == false)))
+                            || (_Person.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._Person.Entity = null;
+                        _Person.Entity = null;
                         previousValue.CheckInTimes.Remove(this);
                     }
 
-                    this._Person.Entity = value;
+                    _Person.Entity = value;
                     if (value != null)
                     {
                         value.CheckInTimes.Add(this);
 
-                        this._PeopleId = value.PeopleId;
+                        _PeopleId = value.PeopleId;
 
                     }
 
                     else
                     {
-
-                        this._PeopleId = default(int?);
+                        _PeopleId = default(int?);
 
                     }
 
-                    this.SendPropertyChanged("Person");
+                    SendPropertyChanged("Person");
                 }
-
             }
-
         }
-
 
         [Association(Name = "Guests__GuestOf", Storage = "_GuestOf", ThisKey = "GuestOfId", IsForeignKey = true)]
         public CheckInTime GuestOf
         {
-            get => this._GuestOf.Entity;
+            get => _GuestOf.Entity;
 
             set
             {
-                CheckInTime previousValue = this._GuestOf.Entity;
+                CheckInTime previousValue = _GuestOf.Entity;
                 if (((previousValue != value)
-                            || (this._GuestOf.HasLoadedOrAssignedValue == false)))
+                            || (_GuestOf.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._GuestOf.Entity = null;
+                        _GuestOf.Entity = null;
                         previousValue.Guests.Remove(this);
                     }
 
-                    this._GuestOf.Entity = value;
+                    _GuestOf.Entity = value;
                     if (value != null)
                     {
                         value.Guests.Add(this);
 
-                        this._GuestOfId = value.Id;
+                        _GuestOfId = value.Id;
 
                     }
 
                     else
                     {
-
-                        this._GuestOfId = default(int?);
+                        _GuestOfId = default(int?);
 
                     }
 
-                    this.SendPropertyChanged("GuestOf");
+                    SendPropertyChanged("GuestOf");
                 }
-
             }
-
         }
-
 
         #endregion
 
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
 
-
         private void attach_CheckInActivities(CheckInActivity entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.CheckInTime = this;
         }
 
         private void detach_CheckInActivities(CheckInActivity entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.CheckInTime = null;
         }
 
-
         private void attach_Guests(CheckInTime entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.GuestOf = this;
         }
 
         private void detach_Guests(CheckInTime entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.GuestOf = null;
         }
-
-
     }
-
 }
-

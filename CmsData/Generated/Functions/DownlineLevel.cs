@@ -1,199 +1,160 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="DownlineLevels")]
-	public partial class DownlineLevel
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private int? _Level;
-		
-		private string _OrganizationName;
-		
-		private string _Leader;
-		
-		private int? _OrgId;
-		
-		private int? _LeaderId;
-		
-		private int? _Cnt;
-		
-		private DateTime? _StartDt;
-		
-		private DateTime? _EndDt;
-		
-		private int? _MaxRows;
-		
-		
-		public DownlineLevel()
-		{
-		}
+    [Table(Name = "DownlineLevels")]
+    public partial class DownlineLevel
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="Level", Storage="_Level", DbType="int")]
-		public int? Level
-		{
-			get
-			{
-				return this._Level;
-			}
+        private int? _Level;
 
-			set
-			{
-				if (this._Level != value)
-					this._Level = value;
-			}
+        private string _OrganizationName;
 
-		}
+        private string _Leader;
 
-		
-		[Column(Name="OrganizationName", Storage="_OrganizationName", DbType="nvarchar(100) NOT NULL")]
-		public string OrganizationName
-		{
-			get
-			{
-				return this._OrganizationName;
-			}
+        private int? _OrgId;
 
-			set
-			{
-				if (this._OrganizationName != value)
-					this._OrganizationName = value;
-			}
+        private int? _LeaderId;
 
-		}
+        private int? _Cnt;
 
-		
-		[Column(Name="Leader", Storage="_Leader", DbType="nvarchar(139)")]
-		public string Leader
-		{
-			get
-			{
-				return this._Leader;
-			}
+        private DateTime? _StartDt;
 
-			set
-			{
-				if (this._Leader != value)
-					this._Leader = value;
-			}
+        private DateTime? _EndDt;
 
-		}
+        private int? _MaxRows;
 
-		
-		[Column(Name="OrgId", Storage="_OrgId", DbType="int")]
-		public int? OrgId
-		{
-			get
-			{
-				return this._OrgId;
-			}
+        public DownlineLevel()
+        {
+        }
 
-			set
-			{
-				if (this._OrgId != value)
-					this._OrgId = value;
-			}
+        [Column(Name = "Level", Storage = "_Level", DbType = "int")]
+        public int? Level
+        {
+            get => _Level;
 
-		}
+            set
+            {
+                if (_Level != value)
+                {
+                    _Level = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="LeaderId", Storage="_LeaderId", DbType="int")]
-		public int? LeaderId
-		{
-			get
-			{
-				return this._LeaderId;
-			}
+        [Column(Name = "OrganizationName", Storage = "_OrganizationName", DbType = "nvarchar(100) NOT NULL")]
+        public string OrganizationName
+        {
+            get => _OrganizationName;
 
-			set
-			{
-				if (this._LeaderId != value)
-					this._LeaderId = value;
-			}
+            set
+            {
+                if (_OrganizationName != value)
+                {
+                    _OrganizationName = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "Leader", Storage = "_Leader", DbType = "nvarchar(139)")]
+        public string Leader
+        {
+            get => _Leader;
 
-		
-		[Column(Name="Cnt", Storage="_Cnt", DbType="int")]
-		public int? Cnt
-		{
-			get
-			{
-				return this._Cnt;
-			}
+            set
+            {
+                if (_Leader != value)
+                {
+                    _Leader = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._Cnt != value)
-					this._Cnt = value;
-			}
+        [Column(Name = "OrgId", Storage = "_OrgId", DbType = "int")]
+        public int? OrgId
+        {
+            get => _OrgId;
 
-		}
+            set
+            {
+                if (_OrgId != value)
+                {
+                    _OrgId = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="StartDt", Storage="_StartDt", DbType="datetime")]
-		public DateTime? StartDt
-		{
-			get
-			{
-				return this._StartDt;
-			}
+        [Column(Name = "LeaderId", Storage = "_LeaderId", DbType = "int")]
+        public int? LeaderId
+        {
+            get => _LeaderId;
 
-			set
-			{
-				if (this._StartDt != value)
-					this._StartDt = value;
-			}
+            set
+            {
+                if (_LeaderId != value)
+                {
+                    _LeaderId = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "Cnt", Storage = "_Cnt", DbType = "int")]
+        public int? Cnt
+        {
+            get => _Cnt;
 
-		
-		[Column(Name="EndDt", Storage="_EndDt", DbType="datetime")]
-		public DateTime? EndDt
-		{
-			get
-			{
-				return this._EndDt;
-			}
+            set
+            {
+                if (_Cnt != value)
+                {
+                    _Cnt = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._EndDt != value)
-					this._EndDt = value;
-			}
+        [Column(Name = "StartDt", Storage = "_StartDt", DbType = "datetime")]
+        public DateTime? StartDt
+        {
+            get => _StartDt;
 
-		}
+            set
+            {
+                if (_StartDt != value)
+                {
+                    _StartDt = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="MaxRows", Storage="_MaxRows", DbType="int")]
-		public int? MaxRows
-		{
-			get
-			{
-				return this._MaxRows;
-			}
+        [Column(Name = "EndDt", Storage = "_EndDt", DbType = "datetime")]
+        public DateTime? EndDt
+        {
+            get => _EndDt;
 
-			set
-			{
-				if (this._MaxRows != value)
-					this._MaxRows = value;
-			}
+            set
+            {
+                if (_EndDt != value)
+                {
+                    _EndDt = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "MaxRows", Storage = "_MaxRows", DbType = "int")]
+        public int? MaxRows
+        {
+            get => _MaxRows;
 
-		
+            set
+            {
+                if (_MaxRows != value)
+                {
+                    _MaxRows = value;
+                }
+            }
+        }
     }
-
 }

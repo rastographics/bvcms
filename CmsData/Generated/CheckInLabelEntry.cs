@@ -7,7 +7,7 @@ namespace CmsData
     [Table(Name = "dbo.CheckInLabelEntry")]
     public partial class CheckInLabelEntry : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -45,11 +45,10 @@ namespace CmsData
 
         private int _Height;
 
-
-
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -106,389 +105,319 @@ namespace CmsData
         partial void OnHeightChanged();
 
         #endregion
+
         public CheckInLabelEntry()
         {
-
-
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "id", UpdateCheck = UpdateCheck.Never, Storage = "_Id", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
         public int Id
         {
-            get => this._Id;
+            get => _Id;
 
             set
             {
-                if (this._Id != value)
+                if (_Id != value)
                 {
-
-                    this.OnIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._Id = value;
-                    this.SendPropertyChanged("Id");
-                    this.OnIdChanged();
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "labelID", UpdateCheck = UpdateCheck.Never, Storage = "_LabelID", DbType = "int NOT NULL")]
         public int LabelID
         {
-            get => this._LabelID;
+            get => _LabelID;
 
             set
             {
-                if (this._LabelID != value)
+                if (_LabelID != value)
                 {
-
-                    this.OnLabelIDChanging(value);
-                    this.SendPropertyChanging();
-                    this._LabelID = value;
-                    this.SendPropertyChanged("LabelID");
-                    this.OnLabelIDChanged();
+                    OnLabelIDChanging(value);
+                    SendPropertyChanging();
+                    _LabelID = value;
+                    SendPropertyChanged("LabelID");
+                    OnLabelIDChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "typeID", UpdateCheck = UpdateCheck.Never, Storage = "_TypeID", DbType = "int NOT NULL")]
         public int TypeID
         {
-            get => this._TypeID;
+            get => _TypeID;
 
             set
             {
-                if (this._TypeID != value)
+                if (_TypeID != value)
                 {
-
-                    this.OnTypeIDChanging(value);
-                    this.SendPropertyChanging();
-                    this._TypeID = value;
-                    this.SendPropertyChanged("TypeID");
-                    this.OnTypeIDChanged();
+                    OnTypeIDChanging(value);
+                    SendPropertyChanging();
+                    _TypeID = value;
+                    SendPropertyChanged("TypeID");
+                    OnTypeIDChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "repeat", UpdateCheck = UpdateCheck.Never, Storage = "_Repeat", DbType = "int NOT NULL")]
         public int Repeat
         {
-            get => this._Repeat;
+            get => _Repeat;
 
             set
             {
-                if (this._Repeat != value)
+                if (_Repeat != value)
                 {
-
-                    this.OnRepeatChanging(value);
-                    this.SendPropertyChanging();
-                    this._Repeat = value;
-                    this.SendPropertyChanged("Repeat");
-                    this.OnRepeatChanged();
+                    OnRepeatChanging(value);
+                    SendPropertyChanging();
+                    _Repeat = value;
+                    SendPropertyChanged("Repeat");
+                    OnRepeatChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "offset", UpdateCheck = UpdateCheck.Never, Storage = "_Offset", DbType = "decimal NOT NULL")]
         public decimal Offset
         {
-            get => this._Offset;
+            get => _Offset;
 
             set
             {
-                if (this._Offset != value)
+                if (_Offset != value)
                 {
-
-                    this.OnOffsetChanging(value);
-                    this.SendPropertyChanging();
-                    this._Offset = value;
-                    this.SendPropertyChanged("Offset");
-                    this.OnOffsetChanged();
+                    OnOffsetChanging(value);
+                    SendPropertyChanging();
+                    _Offset = value;
+                    SendPropertyChanged("Offset");
+                    OnOffsetChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "font", UpdateCheck = UpdateCheck.Never, Storage = "_Font", DbType = "nvarchar(25) NOT NULL")]
         public string Font
         {
-            get => this._Font;
+            get => _Font;
 
             set
             {
-                if (this._Font != value)
+                if (_Font != value)
                 {
-
-                    this.OnFontChanging(value);
-                    this.SendPropertyChanging();
-                    this._Font = value;
-                    this.SendPropertyChanged("Font");
-                    this.OnFontChanged();
+                    OnFontChanging(value);
+                    SendPropertyChanging();
+                    _Font = value;
+                    SendPropertyChanged("Font");
+                    OnFontChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "fontSize", UpdateCheck = UpdateCheck.Never, Storage = "_FontSize", DbType = "int NOT NULL")]
         public int FontSize
         {
-            get => this._FontSize;
+            get => _FontSize;
 
             set
             {
-                if (this._FontSize != value)
+                if (_FontSize != value)
                 {
-
-                    this.OnFontSizeChanging(value);
-                    this.SendPropertyChanging();
-                    this._FontSize = value;
-                    this.SendPropertyChanged("FontSize");
-                    this.OnFontSizeChanged();
+                    OnFontSizeChanging(value);
+                    SendPropertyChanging();
+                    _FontSize = value;
+                    SendPropertyChanged("FontSize");
+                    OnFontSizeChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "fieldID", UpdateCheck = UpdateCheck.Never, Storage = "_FieldID", DbType = "int NOT NULL")]
         public int FieldID
         {
-            get => this._FieldID;
+            get => _FieldID;
 
             set
             {
-                if (this._FieldID != value)
+                if (_FieldID != value)
                 {
-
-                    this.OnFieldIDChanging(value);
-                    this.SendPropertyChanging();
-                    this._FieldID = value;
-                    this.SendPropertyChanged("FieldID");
-                    this.OnFieldIDChanged();
+                    OnFieldIDChanging(value);
+                    SendPropertyChanging();
+                    _FieldID = value;
+                    SendPropertyChanged("FieldID");
+                    OnFieldIDChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "fieldFormat", UpdateCheck = UpdateCheck.Never, Storage = "_FieldFormat", DbType = "nvarchar(100) NOT NULL")]
         public string FieldFormat
         {
-            get => this._FieldFormat;
+            get => _FieldFormat;
 
             set
             {
-                if (this._FieldFormat != value)
+                if (_FieldFormat != value)
                 {
-
-                    this.OnFieldFormatChanging(value);
-                    this.SendPropertyChanging();
-                    this._FieldFormat = value;
-                    this.SendPropertyChanged("FieldFormat");
-                    this.OnFieldFormatChanged();
+                    OnFieldFormatChanging(value);
+                    SendPropertyChanging();
+                    _FieldFormat = value;
+                    SendPropertyChanged("FieldFormat");
+                    OnFieldFormatChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "startX", UpdateCheck = UpdateCheck.Never, Storage = "_StartX", DbType = "decimal NOT NULL")]
         public decimal StartX
         {
-            get => this._StartX;
+            get => _StartX;
 
             set
             {
-                if (this._StartX != value)
+                if (_StartX != value)
                 {
-
-                    this.OnStartXChanging(value);
-                    this.SendPropertyChanging();
-                    this._StartX = value;
-                    this.SendPropertyChanged("StartX");
-                    this.OnStartXChanged();
+                    OnStartXChanging(value);
+                    SendPropertyChanging();
+                    _StartX = value;
+                    SendPropertyChanged("StartX");
+                    OnStartXChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "startY", UpdateCheck = UpdateCheck.Never, Storage = "_StartY", DbType = "decimal NOT NULL")]
         public decimal StartY
         {
-            get => this._StartY;
+            get => _StartY;
 
             set
             {
-                if (this._StartY != value)
+                if (_StartY != value)
                 {
-
-                    this.OnStartYChanging(value);
-                    this.SendPropertyChanging();
-                    this._StartY = value;
-                    this.SendPropertyChanged("StartY");
-                    this.OnStartYChanged();
+                    OnStartYChanging(value);
+                    SendPropertyChanging();
+                    _StartY = value;
+                    SendPropertyChanged("StartY");
+                    OnStartYChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "alignX", UpdateCheck = UpdateCheck.Never, Storage = "_AlignX", DbType = "int NOT NULL")]
         public int AlignX
         {
-            get => this._AlignX;
+            get => _AlignX;
 
             set
             {
-                if (this._AlignX != value)
+                if (_AlignX != value)
                 {
-
-                    this.OnAlignXChanging(value);
-                    this.SendPropertyChanging();
-                    this._AlignX = value;
-                    this.SendPropertyChanged("AlignX");
-                    this.OnAlignXChanged();
+                    OnAlignXChanging(value);
+                    SendPropertyChanging();
+                    _AlignX = value;
+                    SendPropertyChanged("AlignX");
+                    OnAlignXChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "alignY", UpdateCheck = UpdateCheck.Never, Storage = "_AlignY", DbType = "int NOT NULL")]
         public int AlignY
         {
-            get => this._AlignY;
+            get => _AlignY;
 
             set
             {
-                if (this._AlignY != value)
+                if (_AlignY != value)
                 {
-
-                    this.OnAlignYChanging(value);
-                    this.SendPropertyChanging();
-                    this._AlignY = value;
-                    this.SendPropertyChanged("AlignY");
-                    this.OnAlignYChanged();
+                    OnAlignYChanging(value);
+                    SendPropertyChanging();
+                    _AlignY = value;
+                    SendPropertyChanged("AlignY");
+                    OnAlignYChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "endX", UpdateCheck = UpdateCheck.Never, Storage = "_EndX", DbType = "decimal NOT NULL")]
         public decimal EndX
         {
-            get => this._EndX;
+            get => _EndX;
 
             set
             {
-                if (this._EndX != value)
+                if (_EndX != value)
                 {
-
-                    this.OnEndXChanging(value);
-                    this.SendPropertyChanging();
-                    this._EndX = value;
-                    this.SendPropertyChanged("EndX");
-                    this.OnEndXChanged();
+                    OnEndXChanging(value);
+                    SendPropertyChanging();
+                    _EndX = value;
+                    SendPropertyChanged("EndX");
+                    OnEndXChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "endY", UpdateCheck = UpdateCheck.Never, Storage = "_EndY", DbType = "decimal NOT NULL")]
         public decimal EndY
         {
-            get => this._EndY;
+            get => _EndY;
 
             set
             {
-                if (this._EndY != value)
+                if (_EndY != value)
                 {
-
-                    this.OnEndYChanging(value);
-                    this.SendPropertyChanging();
-                    this._EndY = value;
-                    this.SendPropertyChanged("EndY");
-                    this.OnEndYChanged();
+                    OnEndYChanging(value);
+                    SendPropertyChanging();
+                    _EndY = value;
+                    SendPropertyChanged("EndY");
+                    OnEndYChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "width", UpdateCheck = UpdateCheck.Never, Storage = "_Width", DbType = "int NOT NULL")]
         public int Width
         {
-            get => this._Width;
+            get => _Width;
 
             set
             {
-                if (this._Width != value)
+                if (_Width != value)
                 {
-
-                    this.OnWidthChanging(value);
-                    this.SendPropertyChanging();
-                    this._Width = value;
-                    this.SendPropertyChanged("Width");
-                    this.OnWidthChanged();
+                    OnWidthChanging(value);
+                    SendPropertyChanging();
+                    _Width = value;
+                    SendPropertyChanged("Width");
+                    OnWidthChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "height", UpdateCheck = UpdateCheck.Never, Storage = "_Height", DbType = "int NOT NULL")]
         public int Height
         {
-            get => this._Height;
+            get => _Height;
 
             set
             {
-                if (this._Height != value)
+                if (_Height != value)
                 {
-
-                    this.OnHeightChanging(value);
-                    this.SendPropertyChanging();
-                    this._Height = value;
-                    this.SendPropertyChanged("Height");
-                    this.OnHeightChanged();
+                    OnHeightChanging(value);
+                    SendPropertyChanging();
+                    _Height = value;
+                    SendPropertyChanged("Height");
+                    OnHeightChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -503,23 +432,19 @@ namespace CmsData
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-
     }
-
 }
-

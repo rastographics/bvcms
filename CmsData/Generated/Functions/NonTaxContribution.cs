@@ -7,8 +7,7 @@ namespace CmsData.View
     [Table(Name = "NonTaxContributions")]
     public partial class NonTaxContribution
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         private int _ContributionId;
 
@@ -26,163 +25,120 @@ namespace CmsData.View
 
         private string _FundDescription;
 
-
         public NonTaxContribution()
         {
         }
 
-
-
         [Column(Name = "ContributionId", Storage = "_ContributionId", DbType = "int NOT NULL")]
         public int ContributionId
         {
-            get
-            {
-                return this._ContributionId;
-            }
+            get => _ContributionId;
 
             set
             {
-                if (this._ContributionId != value)
+                if (_ContributionId != value)
                 {
-                    this._ContributionId = value;
+                    _ContributionId = value;
                 }
             }
-
         }
-
 
         [Column(Name = "ContributionAmount", Storage = "_ContributionAmount", DbType = "Decimal(11,2)")]
         public decimal? ContributionAmount
         {
-            get
-            {
-                return this._ContributionAmount;
-            }
+            get => _ContributionAmount;
 
             set
             {
-                if (this._ContributionAmount != value)
+                if (_ContributionAmount != value)
                 {
-                    this._ContributionAmount = value;
+                    _ContributionAmount = value;
                 }
             }
-
         }
-
 
         [Column(Name = "ContributionDate", Storage = "_ContributionDate", DbType = "datetime")]
         public DateTime? ContributionDate
         {
-            get
-            {
-                return this._ContributionDate;
-            }
+            get => _ContributionDate;
 
             set
             {
-                if (this._ContributionDate != value)
+                if (_ContributionDate != value)
                 {
-                    this._ContributionDate = value;
+                    _ContributionDate = value;
                 }
             }
-
         }
-
 
         [Column(Name = "FundName", Storage = "_FundName", DbType = "nvarchar(256) NOT NULL")]
         public string FundName
         {
-            get
-            {
-                return this._FundName;
-            }
+            get => _FundName;
 
             set
             {
-                if (this._FundName != value)
+                if (_FundName != value)
                 {
-                    this._FundName = value;
+                    _FundName = value;
                 }
             }
-
         }
-
 
         [Column(Name = "CheckNo", Storage = "_CheckNo", DbType = "nvarchar(20)")]
         public string CheckNo
         {
-            get
-            {
-                return this._CheckNo;
-            }
+            get => _CheckNo;
 
             set
             {
-                if (this._CheckNo != value)
+                if (_CheckNo != value)
                 {
-                    this._CheckNo = value;
+                    _CheckNo = value;
                 }
             }
-
         }
-
 
         [Column(Name = "Name", Storage = "_Name", DbType = "nvarchar(138)")]
         public string Name
         {
-            get
-            {
-                return this._Name;
-            }
+            get => _Name;
 
             set
             {
-                if (this._Name != value)
+                if (_Name != value)
                 {
-                    this._Name = value;
+                    _Name = value;
                 }
             }
-
         }
-
 
         [Column(Name = "Description", Storage = "_Description", DbType = "nvarchar(256)")]
         public string Description
         {
-            get
-            {
-                return this._Description;
-            }
+            get => _Description;
 
             set
             {
-                if (this._Description != value)
+                if (_Description != value)
                 {
-                    this._Description = value;
+                    _Description = value;
                 }
             }
-
         }
 
         [Column(Name = "FundDescription", Storage = "_FundDescription", DbType = "nvarchar(256)")]
         public string FundDescription
         {
-            get
-            {
-                return this._FundDescription;
-            }
+            get => _FundDescription;
 
             set
             {
-                if (this._FundDescription != value)
+                if (_FundDescription != value)
                 {
-                    this._FundDescription = value;
+                    _FundDescription = value;
                 }
             }
         }
-
-
     }
-
 }

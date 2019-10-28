@@ -9,7 +9,7 @@ namespace CmsData
     [Table(Name = "dbo.BundleHeader")]
     public partial class BundleHeader : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -49,9 +49,7 @@ namespace CmsData
 
         private int? _ReferenceIdType;
 
-
         private EntitySet<BundleDetail> _BundleDetails;
-
 
         private EntityRef<ContributionFund> _Fund;
 
@@ -62,6 +60,7 @@ namespace CmsData
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -121,437 +120,363 @@ namespace CmsData
         partial void OnReferenceIdTypeChanged();
 
         #endregion
+
         public BundleHeader()
         {
+            _BundleDetails = new EntitySet<BundleDetail>(new Action<BundleDetail>(attach_BundleDetails), new Action<BundleDetail>(detach_BundleDetails));
 
-            this._BundleDetails = new EntitySet<BundleDetail>(new Action<BundleDetail>(this.attach_BundleDetails), new Action<BundleDetail>(this.detach_BundleDetails));
+            _Fund = default(EntityRef<ContributionFund>);
 
+            _BundleHeaderType = default(EntityRef<BundleHeaderType>);
 
-            this._Fund = default(EntityRef<ContributionFund>);
-
-            this._BundleHeaderType = default(EntityRef<BundleHeaderType>);
-
-            this._BundleStatusType = default(EntityRef<BundleStatusType>);
+            _BundleStatusType = default(EntityRef<BundleStatusType>);
 
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "BundleHeaderId", UpdateCheck = UpdateCheck.Never, Storage = "_BundleHeaderId", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
         public int BundleHeaderId
         {
-            get => this._BundleHeaderId;
+            get => _BundleHeaderId;
 
             set
             {
-                if (this._BundleHeaderId != value)
+                if (_BundleHeaderId != value)
                 {
-
-                    this.OnBundleHeaderIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._BundleHeaderId = value;
-                    this.SendPropertyChanged("BundleHeaderId");
-                    this.OnBundleHeaderIdChanged();
+                    OnBundleHeaderIdChanging(value);
+                    SendPropertyChanging();
+                    _BundleHeaderId = value;
+                    SendPropertyChanged("BundleHeaderId");
+                    OnBundleHeaderIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ChurchId", UpdateCheck = UpdateCheck.Never, Storage = "_ChurchId", DbType = "int NOT NULL")]
         public int ChurchId
         {
-            get => this._ChurchId;
+            get => _ChurchId;
 
             set
             {
-                if (this._ChurchId != value)
+                if (_ChurchId != value)
                 {
-
-                    this.OnChurchIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._ChurchId = value;
-                    this.SendPropertyChanged("ChurchId");
-                    this.OnChurchIdChanged();
+                    OnChurchIdChanging(value);
+                    SendPropertyChanging();
+                    _ChurchId = value;
+                    SendPropertyChanged("ChurchId");
+                    OnChurchIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "CreatedBy", UpdateCheck = UpdateCheck.Never, Storage = "_CreatedBy", DbType = "int NOT NULL")]
         public int CreatedBy
         {
-            get => this._CreatedBy;
+            get => _CreatedBy;
 
             set
             {
-                if (this._CreatedBy != value)
+                if (_CreatedBy != value)
                 {
-
-                    this.OnCreatedByChanging(value);
-                    this.SendPropertyChanging();
-                    this._CreatedBy = value;
-                    this.SendPropertyChanged("CreatedBy");
-                    this.OnCreatedByChanged();
+                    OnCreatedByChanging(value);
+                    SendPropertyChanging();
+                    _CreatedBy = value;
+                    SendPropertyChanged("CreatedBy");
+                    OnCreatedByChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "CreatedDate", UpdateCheck = UpdateCheck.Never, Storage = "_CreatedDate", DbType = "datetime NOT NULL")]
         public DateTime CreatedDate
         {
-            get => this._CreatedDate;
+            get => _CreatedDate;
 
             set
             {
-                if (this._CreatedDate != value)
+                if (_CreatedDate != value)
                 {
-
-                    this.OnCreatedDateChanging(value);
-                    this.SendPropertyChanging();
-                    this._CreatedDate = value;
-                    this.SendPropertyChanged("CreatedDate");
-                    this.OnCreatedDateChanged();
+                    OnCreatedDateChanging(value);
+                    SendPropertyChanging();
+                    _CreatedDate = value;
+                    SendPropertyChanged("CreatedDate");
+                    OnCreatedDateChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "RecordStatus", UpdateCheck = UpdateCheck.Never, Storage = "_RecordStatus", DbType = "bit NOT NULL")]
         public bool RecordStatus
         {
-            get => this._RecordStatus;
+            get => _RecordStatus;
 
             set
             {
-                if (this._RecordStatus != value)
+                if (_RecordStatus != value)
                 {
-
-                    this.OnRecordStatusChanging(value);
-                    this.SendPropertyChanging();
-                    this._RecordStatus = value;
-                    this.SendPropertyChanged("RecordStatus");
-                    this.OnRecordStatusChanged();
+                    OnRecordStatusChanging(value);
+                    SendPropertyChanging();
+                    _RecordStatus = value;
+                    SendPropertyChanged("RecordStatus");
+                    OnRecordStatusChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "BundleStatusId", UpdateCheck = UpdateCheck.Never, Storage = "_BundleStatusId", DbType = "int NOT NULL")]
         [IsForeignKey]
         public int BundleStatusId
         {
-            get => this._BundleStatusId;
+            get => _BundleStatusId;
 
             set
             {
-                if (this._BundleStatusId != value)
+                if (_BundleStatusId != value)
                 {
-
-                    if (this._BundleStatusType.HasLoadedOrAssignedValue)
+                    if (_BundleStatusType.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnBundleStatusIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._BundleStatusId = value;
-                    this.SendPropertyChanged("BundleStatusId");
-                    this.OnBundleStatusIdChanged();
+                    OnBundleStatusIdChanging(value);
+                    SendPropertyChanging();
+                    _BundleStatusId = value;
+                    SendPropertyChanged("BundleStatusId");
+                    OnBundleStatusIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ContributionDate", UpdateCheck = UpdateCheck.Never, Storage = "_ContributionDate", DbType = "datetime NOT NULL")]
         public DateTime ContributionDate
         {
-            get => this._ContributionDate;
+            get => _ContributionDate;
 
             set
             {
-                if (this._ContributionDate != value)
+                if (_ContributionDate != value)
                 {
-
-                    this.OnContributionDateChanging(value);
-                    this.SendPropertyChanging();
-                    this._ContributionDate = value;
-                    this.SendPropertyChanged("ContributionDate");
-                    this.OnContributionDateChanged();
+                    OnContributionDateChanging(value);
+                    SendPropertyChanging();
+                    _ContributionDate = value;
+                    SendPropertyChanged("ContributionDate");
+                    OnContributionDateChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "BundleHeaderTypeId", UpdateCheck = UpdateCheck.Never, Storage = "_BundleHeaderTypeId", DbType = "int NOT NULL")]
         [IsForeignKey]
         public int BundleHeaderTypeId
         {
-            get => this._BundleHeaderTypeId;
+            get => _BundleHeaderTypeId;
 
             set
             {
-                if (this._BundleHeaderTypeId != value)
+                if (_BundleHeaderTypeId != value)
                 {
-
-                    if (this._BundleHeaderType.HasLoadedOrAssignedValue)
+                    if (_BundleHeaderType.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnBundleHeaderTypeIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._BundleHeaderTypeId = value;
-                    this.SendPropertyChanged("BundleHeaderTypeId");
-                    this.OnBundleHeaderTypeIdChanged();
+                    OnBundleHeaderTypeIdChanging(value);
+                    SendPropertyChanging();
+                    _BundleHeaderTypeId = value;
+                    SendPropertyChanged("BundleHeaderTypeId");
+                    OnBundleHeaderTypeIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "DepositDate", UpdateCheck = UpdateCheck.Never, Storage = "_DepositDate", DbType = "datetime")]
         public DateTime? DepositDate
         {
-            get => this._DepositDate;
+            get => _DepositDate;
 
             set
             {
-                if (this._DepositDate != value)
+                if (_DepositDate != value)
                 {
-
-                    this.OnDepositDateChanging(value);
-                    this.SendPropertyChanging();
-                    this._DepositDate = value;
-                    this.SendPropertyChanged("DepositDate");
-                    this.OnDepositDateChanged();
+                    OnDepositDateChanging(value);
+                    SendPropertyChanging();
+                    _DepositDate = value;
+                    SendPropertyChanged("DepositDate");
+                    OnDepositDateChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "BundleTotal", UpdateCheck = UpdateCheck.Never, Storage = "_BundleTotal", DbType = "Decimal(10,2)")]
         public decimal? BundleTotal
         {
-            get => this._BundleTotal;
+            get => _BundleTotal;
 
             set
             {
-                if (this._BundleTotal != value)
+                if (_BundleTotal != value)
                 {
-
-                    this.OnBundleTotalChanging(value);
-                    this.SendPropertyChanging();
-                    this._BundleTotal = value;
-                    this.SendPropertyChanged("BundleTotal");
-                    this.OnBundleTotalChanged();
+                    OnBundleTotalChanging(value);
+                    SendPropertyChanging();
+                    _BundleTotal = value;
+                    SendPropertyChanged("BundleTotal");
+                    OnBundleTotalChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "TotalCash", UpdateCheck = UpdateCheck.Never, Storage = "_TotalCash", DbType = "Decimal(10,2)")]
         public decimal? TotalCash
         {
-            get => this._TotalCash;
+            get => _TotalCash;
 
             set
             {
-                if (this._TotalCash != value)
+                if (_TotalCash != value)
                 {
-
-                    this.OnTotalCashChanging(value);
-                    this.SendPropertyChanging();
-                    this._TotalCash = value;
-                    this.SendPropertyChanged("TotalCash");
-                    this.OnTotalCashChanged();
+                    OnTotalCashChanging(value);
+                    SendPropertyChanging();
+                    _TotalCash = value;
+                    SendPropertyChanged("TotalCash");
+                    OnTotalCashChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "TotalChecks", UpdateCheck = UpdateCheck.Never, Storage = "_TotalChecks", DbType = "Decimal(10,2)")]
         public decimal? TotalChecks
         {
-            get => this._TotalChecks;
+            get => _TotalChecks;
 
             set
             {
-                if (this._TotalChecks != value)
+                if (_TotalChecks != value)
                 {
-
-                    this.OnTotalChecksChanging(value);
-                    this.SendPropertyChanging();
-                    this._TotalChecks = value;
-                    this.SendPropertyChanged("TotalChecks");
-                    this.OnTotalChecksChanged();
+                    OnTotalChecksChanging(value);
+                    SendPropertyChanging();
+                    _TotalChecks = value;
+                    SendPropertyChanged("TotalChecks");
+                    OnTotalChecksChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "TotalEnvelopes", UpdateCheck = UpdateCheck.Never, Storage = "_TotalEnvelopes", DbType = "Decimal(10,2)")]
         public decimal? TotalEnvelopes
         {
-            get => this._TotalEnvelopes;
+            get => _TotalEnvelopes;
 
             set
             {
-                if (this._TotalEnvelopes != value)
+                if (_TotalEnvelopes != value)
                 {
-
-                    this.OnTotalEnvelopesChanging(value);
-                    this.SendPropertyChanging();
-                    this._TotalEnvelopes = value;
-                    this.SendPropertyChanged("TotalEnvelopes");
-                    this.OnTotalEnvelopesChanged();
+                    OnTotalEnvelopesChanging(value);
+                    SendPropertyChanging();
+                    _TotalEnvelopes = value;
+                    SendPropertyChanged("TotalEnvelopes");
+                    OnTotalEnvelopesChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ModifiedBy", UpdateCheck = UpdateCheck.Never, Storage = "_ModifiedBy", DbType = "int")]
         public int? ModifiedBy
         {
-            get => this._ModifiedBy;
+            get => _ModifiedBy;
 
             set
             {
-                if (this._ModifiedBy != value)
+                if (_ModifiedBy != value)
                 {
-
-                    this.OnModifiedByChanging(value);
-                    this.SendPropertyChanging();
-                    this._ModifiedBy = value;
-                    this.SendPropertyChanged("ModifiedBy");
-                    this.OnModifiedByChanged();
+                    OnModifiedByChanging(value);
+                    SendPropertyChanging();
+                    _ModifiedBy = value;
+                    SendPropertyChanged("ModifiedBy");
+                    OnModifiedByChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ModifiedDate", UpdateCheck = UpdateCheck.Never, Storage = "_ModifiedDate", DbType = "datetime")]
         public DateTime? ModifiedDate
         {
-            get => this._ModifiedDate;
+            get => _ModifiedDate;
 
             set
             {
-                if (this._ModifiedDate != value)
+                if (_ModifiedDate != value)
                 {
-
-                    this.OnModifiedDateChanging(value);
-                    this.SendPropertyChanging();
-                    this._ModifiedDate = value;
-                    this.SendPropertyChanged("ModifiedDate");
-                    this.OnModifiedDateChanged();
+                    OnModifiedDateChanging(value);
+                    SendPropertyChanging();
+                    _ModifiedDate = value;
+                    SendPropertyChanged("ModifiedDate");
+                    OnModifiedDateChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "FundId", UpdateCheck = UpdateCheck.Never, Storage = "_FundId", DbType = "int")]
         [IsForeignKey]
         public int? FundId
         {
-            get => this._FundId;
+            get => _FundId;
 
             set
             {
-                if (this._FundId != value)
+                if (_FundId != value)
                 {
-
-                    if (this._Fund.HasLoadedOrAssignedValue)
+                    if (_Fund.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnFundIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._FundId = value;
-                    this.SendPropertyChanged("FundId");
-                    this.OnFundIdChanged();
+                    OnFundIdChanging(value);
+                    SendPropertyChanging();
+                    _FundId = value;
+                    SendPropertyChanged("FundId");
+                    OnFundIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ReferenceId", UpdateCheck = UpdateCheck.Never, Storage = "_ReferenceId", DbType = "nvarchar(100)")]
         public string ReferenceId
         {
-            get => this._ReferenceId;
+            get => _ReferenceId;
 
             set
             {
-                if (this._ReferenceId != value)
+                if (_ReferenceId != value)
                 {
-
-                    this.OnReferenceIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._ReferenceId = value;
-                    this.SendPropertyChanged("ReferenceId");
-                    this.OnReferenceIdChanged();
+                    OnReferenceIdChanging(value);
+                    SendPropertyChanging();
+                    _ReferenceId = value;
+                    SendPropertyChanged("ReferenceId");
+                    OnReferenceIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ReferenceIdType", UpdateCheck = UpdateCheck.Never, Storage = "_ReferenceIdType", DbType = "int")]
         public int? ReferenceIdType
         {
-            get => this._ReferenceIdType;
+            get => _ReferenceIdType;
 
             set
             {
-                if (this._ReferenceIdType != value)
+                if (_ReferenceIdType != value)
                 {
-
-                    this.OnReferenceIdTypeChanging(value);
-                    this.SendPropertyChanging();
-                    this._ReferenceIdType = value;
-                    this.SendPropertyChanged("ReferenceIdType");
-                    this.OnReferenceIdTypeChanged();
+                    OnReferenceIdTypeChanging(value);
+                    SendPropertyChanging();
+                    _ReferenceIdType = value;
+                    SendPropertyChanged("ReferenceIdType");
+                    OnReferenceIdTypeChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -560,12 +485,11 @@ namespace CmsData
         [Association(Name = "BUNDLE_DETAIL_BUNDLE_FK", Storage = "_BundleDetails", OtherKey = "BundleHeaderId")]
         public EntitySet<BundleDetail> BundleDetails
            {
-               get => this._BundleDetails;
+               get => _BundleDetails;
 
-            set => this._BundleDetails.Assign(value);
+            set => _BundleDetails.Assign(value);
 
            }
-
 
         #endregion
 
@@ -574,164 +498,147 @@ namespace CmsData
         [Association(Name = "BundleHeaders__Fund", Storage = "_Fund", ThisKey = "FundId", IsForeignKey = true)]
         public ContributionFund Fund
         {
-            get => this._Fund.Entity;
+            get => _Fund.Entity;
 
             set
             {
-                ContributionFund previousValue = this._Fund.Entity;
+                ContributionFund previousValue = _Fund.Entity;
                 if (((previousValue != value)
-                            || (this._Fund.HasLoadedOrAssignedValue == false)))
+                            || (_Fund.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._Fund.Entity = null;
+                        _Fund.Entity = null;
                         previousValue.BundleHeaders.Remove(this);
                     }
 
-                    this._Fund.Entity = value;
+                    _Fund.Entity = value;
                     if (value != null)
                     {
                         value.BundleHeaders.Add(this);
 
-                        this._FundId = value.FundId;
+                        _FundId = value.FundId;
 
                     }
 
                     else
                     {
-
-                        this._FundId = default(int?);
+                        _FundId = default(int?);
 
                     }
 
-                    this.SendPropertyChanged("Fund");
+                    SendPropertyChanged("Fund");
                 }
-
             }
-
         }
-
 
         [Association(Name = "FK_BUNDLE_HEADER_TBL_BundleHeaderTypes", Storage = "_BundleHeaderType", ThisKey = "BundleHeaderTypeId", IsForeignKey = true)]
         public BundleHeaderType BundleHeaderType
         {
-            get => this._BundleHeaderType.Entity;
+            get => _BundleHeaderType.Entity;
 
             set
             {
-                BundleHeaderType previousValue = this._BundleHeaderType.Entity;
+                BundleHeaderType previousValue = _BundleHeaderType.Entity;
                 if (((previousValue != value)
-                            || (this._BundleHeaderType.HasLoadedOrAssignedValue == false)))
+                            || (_BundleHeaderType.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._BundleHeaderType.Entity = null;
+                        _BundleHeaderType.Entity = null;
                         previousValue.BundleHeaders.Remove(this);
                     }
 
-                    this._BundleHeaderType.Entity = value;
+                    _BundleHeaderType.Entity = value;
                     if (value != null)
                     {
                         value.BundleHeaders.Add(this);
 
-                        this._BundleHeaderTypeId = value.Id;
+                        _BundleHeaderTypeId = value.Id;
 
                     }
 
                     else
                     {
-
-                        this._BundleHeaderTypeId = default(int);
+                        _BundleHeaderTypeId = default(int);
 
                     }
 
-                    this.SendPropertyChanged("BundleHeaderType");
+                    SendPropertyChanged("BundleHeaderType");
                 }
-
             }
-
         }
-
 
         [Association(Name = "FK_BUNDLE_HEADER_TBL_BundleStatusTypes", Storage = "_BundleStatusType", ThisKey = "BundleStatusId", IsForeignKey = true)]
         public BundleStatusType BundleStatusType
         {
-            get => this._BundleStatusType.Entity;
+            get => _BundleStatusType.Entity;
 
             set
             {
-                BundleStatusType previousValue = this._BundleStatusType.Entity;
+                BundleStatusType previousValue = _BundleStatusType.Entity;
                 if (((previousValue != value)
-                            || (this._BundleStatusType.HasLoadedOrAssignedValue == false)))
+                            || (_BundleStatusType.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._BundleStatusType.Entity = null;
+                        _BundleStatusType.Entity = null;
                         previousValue.BundleHeaders.Remove(this);
                     }
 
-                    this._BundleStatusType.Entity = value;
+                    _BundleStatusType.Entity = value;
                     if (value != null)
                     {
                         value.BundleHeaders.Add(this);
 
-                        this._BundleStatusId = value.Id;
+                        _BundleStatusId = value.Id;
 
                     }
 
                     else
                     {
-
-                        this._BundleStatusId = default(int);
+                        _BundleStatusId = default(int);
 
                     }
 
-                    this.SendPropertyChanged("BundleStatusType");
+                    SendPropertyChanged("BundleStatusType");
                 }
-
             }
-
         }
-
 
         #endregion
 
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
 
-
         private void attach_BundleDetails(BundleDetail entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.BundleHeader = this;
         }
 
         private void detach_BundleDetails(BundleDetail entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.BundleHeader = null;
         }
-
-
     }
-
 }
-

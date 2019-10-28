@@ -9,7 +9,7 @@ namespace CmsData
     [Table(Name = "dbo.PaymentInfo")]
     public partial class PaymentInfo : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -76,6 +76,7 @@ namespace CmsData
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -168,15 +169,13 @@ namespace CmsData
         partial void OnGatewayAccountIdChanged();
 
         #endregion
+
         public PaymentInfo()
         {
-
-
-            this._Person = default(EntityRef<Person>);
+            _Person = default(EntityRef<Person>);
 
             OnCreated();
         }
-
 
         #region Columns
 
@@ -184,571 +183,472 @@ namespace CmsData
         [IsForeignKey]
         public int PeopleId
         {
-            get => this._PeopleId;
+            get => _PeopleId;
 
             set
             {
-                if (this._PeopleId != value)
+                if (_PeopleId != value)
                 {
-
-                    if (this._Person.HasLoadedOrAssignedValue)
+                    if (_Person.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnPeopleIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._PeopleId = value;
-                    this.SendPropertyChanged("PeopleId");
-                    this.OnPeopleIdChanged();
+                    OnPeopleIdChanging(value);
+                    SendPropertyChanging();
+                    _PeopleId = value;
+                    SendPropertyChanged("PeopleId");
+                    OnPeopleIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "AuNetCustId", UpdateCheck = UpdateCheck.Never, Storage = "_AuNetCustId", DbType = "int")]
         public int? AuNetCustId
         {
-            get => this._AuNetCustId;
+            get => _AuNetCustId;
 
             set
             {
-                if (this._AuNetCustId != value)
+                if (_AuNetCustId != value)
                 {
-
-                    this.OnAuNetCustIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._AuNetCustId = value;
-                    this.SendPropertyChanged("AuNetCustId");
-                    this.OnAuNetCustIdChanged();
+                    OnAuNetCustIdChanging(value);
+                    SendPropertyChanging();
+                    _AuNetCustId = value;
+                    SendPropertyChanged("AuNetCustId");
+                    OnAuNetCustIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "AuNetCustPayId", UpdateCheck = UpdateCheck.Never, Storage = "_AuNetCustPayId", DbType = "int")]
         public int? AuNetCustPayId
         {
-            get => this._AuNetCustPayId;
+            get => _AuNetCustPayId;
 
             set
             {
-                if (this._AuNetCustPayId != value)
+                if (_AuNetCustPayId != value)
                 {
-
-                    this.OnAuNetCustPayIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._AuNetCustPayId = value;
-                    this.SendPropertyChanged("AuNetCustPayId");
-                    this.OnAuNetCustPayIdChanged();
+                    OnAuNetCustPayIdChanging(value);
+                    SendPropertyChanging();
+                    _AuNetCustPayId = value;
+                    SendPropertyChanged("AuNetCustPayId");
+                    OnAuNetCustPayIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "SageBankGuid", UpdateCheck = UpdateCheck.Never, Storage = "_SageBankGuid", DbType = "uniqueidentifier")]
         public Guid? SageBankGuid
         {
-            get => this._SageBankGuid;
+            get => _SageBankGuid;
 
             set
             {
-                if (this._SageBankGuid != value)
+                if (_SageBankGuid != value)
                 {
-
-                    this.OnSageBankGuidChanging(value);
-                    this.SendPropertyChanging();
-                    this._SageBankGuid = value;
-                    this.SendPropertyChanged("SageBankGuid");
-                    this.OnSageBankGuidChanged();
+                    OnSageBankGuidChanging(value);
+                    SendPropertyChanging();
+                    _SageBankGuid = value;
+                    SendPropertyChanged("SageBankGuid");
+                    OnSageBankGuidChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "SageCardGuid", UpdateCheck = UpdateCheck.Never, Storage = "_SageCardGuid", DbType = "uniqueidentifier")]
         public Guid? SageCardGuid
         {
-            get => this._SageCardGuid;
+            get => _SageCardGuid;
 
             set
             {
-                if (this._SageCardGuid != value)
+                if (_SageCardGuid != value)
                 {
-
-                    this.OnSageCardGuidChanging(value);
-                    this.SendPropertyChanging();
-                    this._SageCardGuid = value;
-                    this.SendPropertyChanged("SageCardGuid");
-                    this.OnSageCardGuidChanged();
+                    OnSageCardGuidChanging(value);
+                    SendPropertyChanging();
+                    _SageCardGuid = value;
+                    SendPropertyChanged("SageCardGuid");
+                    OnSageCardGuidChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "MaskedAccount", UpdateCheck = UpdateCheck.Never, Storage = "_MaskedAccount", DbType = "nvarchar(30)")]
         public string MaskedAccount
         {
-            get => this._MaskedAccount;
+            get => _MaskedAccount;
 
             set
             {
-                if (this._MaskedAccount != value)
+                if (_MaskedAccount != value)
                 {
-
-                    this.OnMaskedAccountChanging(value);
-                    this.SendPropertyChanging();
-                    this._MaskedAccount = value;
-                    this.SendPropertyChanged("MaskedAccount");
-                    this.OnMaskedAccountChanged();
+                    OnMaskedAccountChanging(value);
+                    SendPropertyChanging();
+                    _MaskedAccount = value;
+                    SendPropertyChanged("MaskedAccount");
+                    OnMaskedAccountChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "MaskedCard", UpdateCheck = UpdateCheck.Never, Storage = "_MaskedCard", DbType = "nvarchar(30)")]
         public string MaskedCard
         {
-            get => this._MaskedCard;
+            get => _MaskedCard;
 
             set
             {
-                if (this._MaskedCard != value)
+                if (_MaskedCard != value)
                 {
-
-                    this.OnMaskedCardChanging(value);
-                    this.SendPropertyChanging();
-                    this._MaskedCard = value;
-                    this.SendPropertyChanged("MaskedCard");
-                    this.OnMaskedCardChanged();
+                    OnMaskedCardChanging(value);
+                    SendPropertyChanging();
+                    _MaskedCard = value;
+                    SendPropertyChanged("MaskedCard");
+                    OnMaskedCardChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Expires", UpdateCheck = UpdateCheck.Never, Storage = "_Expires", DbType = "nvarchar(10)")]
         public string Expires
         {
-            get => this._Expires;
+            get => _Expires;
 
             set
             {
-                if (this._Expires != value)
+                if (_Expires != value)
                 {
-
-                    this.OnExpiresChanging(value);
-                    this.SendPropertyChanging();
-                    this._Expires = value;
-                    this.SendPropertyChanged("Expires");
-                    this.OnExpiresChanged();
+                    OnExpiresChanging(value);
+                    SendPropertyChanging();
+                    _Expires = value;
+                    SendPropertyChanged("Expires");
+                    OnExpiresChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "testing", UpdateCheck = UpdateCheck.Never, Storage = "_Testing", DbType = "bit")]
         public bool? Testing
         {
-            get => this._Testing;
+            get => _Testing;
 
             set
             {
-                if (this._Testing != value)
+                if (_Testing != value)
                 {
-
-                    this.OnTestingChanging(value);
-                    this.SendPropertyChanging();
-                    this._Testing = value;
-                    this.SendPropertyChanged("Testing");
-                    this.OnTestingChanged();
+                    OnTestingChanging(value);
+                    SendPropertyChanging();
+                    _Testing = value;
+                    SendPropertyChanged("Testing");
+                    OnTestingChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "PreferredGivingType", UpdateCheck = UpdateCheck.Never, Storage = "_PreferredGivingType", DbType = "nvarchar(2)")]
         public string PreferredGivingType
         {
-            get => this._PreferredGivingType;
+            get => _PreferredGivingType;
 
             set
             {
-                if (this._PreferredGivingType != value)
+                if (_PreferredGivingType != value)
                 {
-
-                    this.OnPreferredGivingTypeChanging(value);
-                    this.SendPropertyChanging();
-                    this._PreferredGivingType = value;
-                    this.SendPropertyChanged("PreferredGivingType");
-                    this.OnPreferredGivingTypeChanged();
+                    OnPreferredGivingTypeChanging(value);
+                    SendPropertyChanging();
+                    _PreferredGivingType = value;
+                    SendPropertyChanged("PreferredGivingType");
+                    OnPreferredGivingTypeChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "PreferredPaymentType", UpdateCheck = UpdateCheck.Never, Storage = "_PreferredPaymentType", DbType = "nvarchar(2)")]
         public string PreferredPaymentType
         {
-            get => this._PreferredPaymentType;
+            get => _PreferredPaymentType;
 
             set
             {
-                if (this._PreferredPaymentType != value)
+                if (_PreferredPaymentType != value)
                 {
-
-                    this.OnPreferredPaymentTypeChanging(value);
-                    this.SendPropertyChanging();
-                    this._PreferredPaymentType = value;
-                    this.SendPropertyChanged("PreferredPaymentType");
-                    this.OnPreferredPaymentTypeChanged();
+                    OnPreferredPaymentTypeChanging(value);
+                    SendPropertyChanging();
+                    _PreferredPaymentType = value;
+                    SendPropertyChanged("PreferredPaymentType");
+                    OnPreferredPaymentTypeChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Routing", UpdateCheck = UpdateCheck.Never, Storage = "_Routing", DbType = "nvarchar(10)")]
         public string Routing
         {
-            get => this._Routing;
+            get => _Routing;
 
             set
             {
-                if (this._Routing != value)
+                if (_Routing != value)
                 {
-
-                    this.OnRoutingChanging(value);
-                    this.SendPropertyChanging();
-                    this._Routing = value;
-                    this.SendPropertyChanged("Routing");
-                    this.OnRoutingChanged();
+                    OnRoutingChanging(value);
+                    SendPropertyChanging();
+                    _Routing = value;
+                    SendPropertyChanged("Routing");
+                    OnRoutingChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "FirstName", UpdateCheck = UpdateCheck.Never, Storage = "_FirstName", DbType = "nvarchar(50)")]
         public string FirstName
         {
-            get => this._FirstName;
+            get => _FirstName;
 
             set
             {
-                if (this._FirstName != value)
+                if (_FirstName != value)
                 {
-
-                    this.OnFirstNameChanging(value);
-                    this.SendPropertyChanging();
-                    this._FirstName = value;
-                    this.SendPropertyChanged("FirstName");
-                    this.OnFirstNameChanged();
+                    OnFirstNameChanging(value);
+                    SendPropertyChanging();
+                    _FirstName = value;
+                    SendPropertyChanged("FirstName");
+                    OnFirstNameChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "MiddleInitial", UpdateCheck = UpdateCheck.Never, Storage = "_MiddleInitial", DbType = "nvarchar(10)")]
         public string MiddleInitial
         {
-            get => this._MiddleInitial;
+            get => _MiddleInitial;
 
             set
             {
-                if (this._MiddleInitial != value)
+                if (_MiddleInitial != value)
                 {
-
-                    this.OnMiddleInitialChanging(value);
-                    this.SendPropertyChanging();
-                    this._MiddleInitial = value;
-                    this.SendPropertyChanged("MiddleInitial");
-                    this.OnMiddleInitialChanged();
+                    OnMiddleInitialChanging(value);
+                    SendPropertyChanging();
+                    _MiddleInitial = value;
+                    SendPropertyChanged("MiddleInitial");
+                    OnMiddleInitialChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "LastName", UpdateCheck = UpdateCheck.Never, Storage = "_LastName", DbType = "nvarchar(50)")]
         public string LastName
         {
-            get => this._LastName;
+            get => _LastName;
 
             set
             {
-                if (this._LastName != value)
+                if (_LastName != value)
                 {
-
-                    this.OnLastNameChanging(value);
-                    this.SendPropertyChanging();
-                    this._LastName = value;
-                    this.SendPropertyChanged("LastName");
-                    this.OnLastNameChanged();
+                    OnLastNameChanging(value);
+                    SendPropertyChanging();
+                    _LastName = value;
+                    SendPropertyChanged("LastName");
+                    OnLastNameChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Suffix", UpdateCheck = UpdateCheck.Never, Storage = "_Suffix", DbType = "nvarchar(10)")]
         public string Suffix
         {
-            get => this._Suffix;
+            get => _Suffix;
 
             set
             {
-                if (this._Suffix != value)
+                if (_Suffix != value)
                 {
-
-                    this.OnSuffixChanging(value);
-                    this.SendPropertyChanging();
-                    this._Suffix = value;
-                    this.SendPropertyChanged("Suffix");
-                    this.OnSuffixChanged();
+                    OnSuffixChanging(value);
+                    SendPropertyChanging();
+                    _Suffix = value;
+                    SendPropertyChanged("Suffix");
+                    OnSuffixChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Address", UpdateCheck = UpdateCheck.Never, Storage = "_Address", DbType = "nvarchar(50)")]
         public string Address
         {
-            get => this._Address;
+            get => _Address;
 
             set
             {
-                if (this._Address != value)
+                if (_Address != value)
                 {
-
-                    this.OnAddressChanging(value);
-                    this.SendPropertyChanging();
-                    this._Address = value;
-                    this.SendPropertyChanged("Address");
-                    this.OnAddressChanged();
+                    OnAddressChanging(value);
+                    SendPropertyChanging();
+                    _Address = value;
+                    SendPropertyChanged("Address");
+                    OnAddressChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "City", UpdateCheck = UpdateCheck.Never, Storage = "_City", DbType = "nvarchar(50)")]
         public string City
         {
-            get => this._City;
+            get => _City;
 
             set
             {
-                if (this._City != value)
+                if (_City != value)
                 {
-
-                    this.OnCityChanging(value);
-                    this.SendPropertyChanging();
-                    this._City = value;
-                    this.SendPropertyChanged("City");
-                    this.OnCityChanged();
+                    OnCityChanging(value);
+                    SendPropertyChanging();
+                    _City = value;
+                    SendPropertyChanged("City");
+                    OnCityChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "State", UpdateCheck = UpdateCheck.Never, Storage = "_State", DbType = "nvarchar(10)")]
         public string State
         {
-            get => this._State;
+            get => _State;
 
             set
             {
-                if (this._State != value)
+                if (_State != value)
                 {
-
-                    this.OnStateChanging(value);
-                    this.SendPropertyChanging();
-                    this._State = value;
-                    this.SendPropertyChanged("State");
-                    this.OnStateChanged();
+                    OnStateChanging(value);
+                    SendPropertyChanging();
+                    _State = value;
+                    SendPropertyChanged("State");
+                    OnStateChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Zip", UpdateCheck = UpdateCheck.Never, Storage = "_Zip", DbType = "nvarchar(15)")]
         public string Zip
         {
-            get => this._Zip;
+            get => _Zip;
 
             set
             {
-                if (this._Zip != value)
+                if (_Zip != value)
                 {
-
-                    this.OnZipChanging(value);
-                    this.SendPropertyChanging();
-                    this._Zip = value;
-                    this.SendPropertyChanged("Zip");
-                    this.OnZipChanged();
+                    OnZipChanging(value);
+                    SendPropertyChanging();
+                    _Zip = value;
+                    SendPropertyChanged("Zip");
+                    OnZipChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Phone", UpdateCheck = UpdateCheck.Never, Storage = "_Phone", DbType = "nvarchar(25)")]
         public string Phone
         {
-            get => this._Phone;
+            get => _Phone;
 
             set
             {
-                if (this._Phone != value)
+                if (_Phone != value)
                 {
-
-                    this.OnPhoneChanging(value);
-                    this.SendPropertyChanging();
-                    this._Phone = value;
-                    this.SendPropertyChanged("Phone");
-                    this.OnPhoneChanged();
+                    OnPhoneChanging(value);
+                    SendPropertyChanging();
+                    _Phone = value;
+                    SendPropertyChanged("Phone");
+                    OnPhoneChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "TbnBankVaultId", UpdateCheck = UpdateCheck.Never, Storage = "_TbnBankVaultId", DbType = "int")]
         public int? TbnBankVaultId
         {
-            get => this._TbnBankVaultId;
+            get => _TbnBankVaultId;
 
             set
             {
-                if (this._TbnBankVaultId != value)
+                if (_TbnBankVaultId != value)
                 {
-
-                    this.OnTbnBankVaultIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._TbnBankVaultId = value;
-                    this.SendPropertyChanged("TbnBankVaultId");
-                    this.OnTbnBankVaultIdChanged();
+                    OnTbnBankVaultIdChanging(value);
+                    SendPropertyChanging();
+                    _TbnBankVaultId = value;
+                    SendPropertyChanged("TbnBankVaultId");
+                    OnTbnBankVaultIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "TbnCardVaultId", UpdateCheck = UpdateCheck.Never, Storage = "_TbnCardVaultId", DbType = "int")]
         public int? TbnCardVaultId
         {
-            get => this._TbnCardVaultId;
+            get => _TbnCardVaultId;
 
             set
             {
-                if (this._TbnCardVaultId != value)
+                if (_TbnCardVaultId != value)
                 {
-
-                    this.OnTbnCardVaultIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._TbnCardVaultId = value;
-                    this.SendPropertyChanged("TbnCardVaultId");
-                    this.OnTbnCardVaultIdChanged();
+                    OnTbnCardVaultIdChanging(value);
+                    SendPropertyChanging();
+                    _TbnCardVaultId = value;
+                    SendPropertyChanged("TbnCardVaultId");
+                    OnTbnCardVaultIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "AuNetCustPayBankId", UpdateCheck = UpdateCheck.Never, Storage = "_AuNetCustPayBankId", DbType = "int")]
         public int? AuNetCustPayBankId
         {
-            get => this._AuNetCustPayBankId;
+            get => _AuNetCustPayBankId;
 
             set
             {
-                if (this._AuNetCustPayBankId != value)
+                if (_AuNetCustPayBankId != value)
                 {
-
-                    this.OnAuNetCustPayBankIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._AuNetCustPayBankId = value;
-                    this.SendPropertyChanged("AuNetCustPayBankId");
-                    this.OnAuNetCustPayBankIdChanged();
+                    OnAuNetCustPayBankIdChanging(value);
+                    SendPropertyChanging();
+                    _AuNetCustPayBankId = value;
+                    SendPropertyChanged("AuNetCustPayBankId");
+                    OnAuNetCustPayBankIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "BluePayCardVaultId", UpdateCheck = UpdateCheck.Never, Storage = "_BluePayCardVaultId", DbType = "nvarchar(50)")]
         public string BluePayCardVaultId
         {
-            get => this._BluePayCardVaultId;
+            get => _BluePayCardVaultId;
 
             set
             {
-                if (this._BluePayCardVaultId != value)
+                if (_BluePayCardVaultId != value)
                 {
-
-                    this.OnBluePayCardVaultIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._BluePayCardVaultId = value;
-                    this.SendPropertyChanged("BluePayCardVaultId");
-                    this.OnBluePayCardVaultIdChanged();
+                    OnBluePayCardVaultIdChanging(value);
+                    SendPropertyChanging();
+                    _BluePayCardVaultId = value;
+                    SendPropertyChanged("BluePayCardVaultId");
+                    OnBluePayCardVaultIdChanged();
                 }
-
             }
-
         }
 
         [Column(Name = "AcceptivaPayerId", UpdateCheck = UpdateCheck.Never, Storage = "_AcceptivaPayerId", DbType = "nvarchar(50)")]
         public string AcceptivaPayerId
         {
-            get => this._AcceptivaPayerId;
+            get => _AcceptivaPayerId;
 
             set
             {
-                if (this._AcceptivaPayerId != value)
+                if (_AcceptivaPayerId != value)
                 {
-                    this.OnAcceptivaPayerIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._AcceptivaPayerId = value;
-                    this.SendPropertyChanged("AcceptivaPayerId");
-                    this.OnAcceptivaPayerIdChanged();
+                    OnAcceptivaPayerIdChanging(value);
+                    SendPropertyChanging();
+                    _AcceptivaPayerId = value;
+                    SendPropertyChanged("AcceptivaPayerId");
+                    OnAcceptivaPayerIdChanged();
                 }
             }
         }
@@ -756,71 +656,61 @@ namespace CmsData
         [Column(Name = "Address2", UpdateCheck = UpdateCheck.Never, Storage = "_Address2", DbType = "nvarchar(50)")]
         public string Address2
         {
-            get => this._Address2;
+            get => _Address2;
 
             set
             {
-                if (this._Address2 != value)
+                if (_Address2 != value)
                 {
-
-                    this.OnAddress2Changing(value);
-                    this.SendPropertyChanging();
-                    this._Address2 = value;
-                    this.SendPropertyChanged("Address2");
-                    this.OnAddress2Changed();
+                    OnAddress2Changing(value);
+                    SendPropertyChanging();
+                    _Address2 = value;
+                    SendPropertyChanged("Address2");
+                    OnAddress2Changed();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Country", UpdateCheck = UpdateCheck.Never, Storage = "_Country", DbType = "nvarchar(50)")]
         public string Country
         {
-            get => this._Country;
+            get => _Country;
 
             set
             {
-                if (this._Country != value)
+                if (_Country != value)
                 {
-
-                    this.OnCountryChanging(value);
-                    this.SendPropertyChanging();
-                    this._Country = value;
-                    this.SendPropertyChanged("Country");
-                    this.OnCountryChanged();
+                    OnCountryChanging(value);
+                    SendPropertyChanging();
+                    _Country = value;
+                    SendPropertyChanged("Country");
+                    OnCountryChanged();
                 }
-
             }
-
         }
 
         [Column(Name = "GatewayAccountId", UpdateCheck = UpdateCheck.Never, Storage = "_GatewayAccountId", DbType = "int NOT NULL", IsPrimaryKey = true)]
         [IsForeignKey]
         public int GatewayAccountId
         {
-            get => this._GatewayAccountId;
+            get => _GatewayAccountId;
 
             set
             {
-                if (this._GatewayAccountId != value)
+                if (_GatewayAccountId != value)
                 {
-
-                    if (this._Person.HasLoadedOrAssignedValue)
+                    if (_Person.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnGatewayAccountIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._GatewayAccountId = value;
-                    this.SendPropertyChanged("GatewayAccountId");
-                    this.OnGatewayAccountIdChanged();
+                    OnGatewayAccountIdChanging(value);
+                    SendPropertyChanging();
+                    _GatewayAccountId = value;
+                    SendPropertyChanged("GatewayAccountId");
+                    OnGatewayAccountIdChanged();
                 }
-
             }
-
         }
 
         #endregion
@@ -834,64 +724,59 @@ namespace CmsData
         [Association(Name = "FK_PaymentInfo_People", Storage = "_Person", ThisKey = "PeopleId", IsForeignKey = true)]
         public Person Person
         {
-            get => this._Person.Entity;
+            get => _Person.Entity;
 
             set
             {
-                Person previousValue = this._Person.Entity;
+                Person previousValue = _Person.Entity;
                 if (((previousValue != value)
-                            || (this._Person.HasLoadedOrAssignedValue == false)))
+                            || (_Person.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._Person.Entity = null;
+                        _Person.Entity = null;
                         previousValue.PaymentInfos.Remove(this);
                     }
 
-                    this._Person.Entity = value;
+                    _Person.Entity = value;
                     if (value != null)
                     {
                         value.PaymentInfos.Add(this);
 
-                        this._PeopleId = value.PeopleId;
+                        _PeopleId = value.PeopleId;
 
                     }
 
                     else
                     {
-
-                        this._PeopleId = default(int);
+                        _PeopleId = default(int);
 
                     }
 
-                    this.SendPropertyChanged("Person");
+                    SendPropertyChanged("Person");
                 }
-
             }
-
         }
-
 
         #endregion
 
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
     }
 }
-

@@ -9,15 +9,13 @@ namespace CmsData
     [Table(Name = "dbo.TagShare")]
     public partial class TagShare : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
         private int _TagId;
 
         private int _PeopleId;
-
-
 
         private EntityRef<Person> _Person;
 
@@ -26,6 +24,7 @@ namespace CmsData
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -37,17 +36,15 @@ namespace CmsData
         partial void OnPeopleIdChanged();
 
         #endregion
+
         public TagShare()
         {
+            _Person = default(EntityRef<Person>);
 
-
-            this._Person = default(EntityRef<Person>);
-
-            this._Tag = default(EntityRef<Tag>);
+            _Tag = default(EntityRef<Tag>);
 
             OnCreated();
         }
-
 
         #region Columns
 
@@ -55,57 +52,49 @@ namespace CmsData
         [IsForeignKey]
         public int TagId
         {
-            get => this._TagId;
+            get => _TagId;
 
             set
             {
-                if (this._TagId != value)
+                if (_TagId != value)
                 {
-
-                    if (this._Tag.HasLoadedOrAssignedValue)
+                    if (_Tag.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnTagIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._TagId = value;
-                    this.SendPropertyChanged("TagId");
-                    this.OnTagIdChanged();
+                    OnTagIdChanging(value);
+                    SendPropertyChanging();
+                    _TagId = value;
+                    SendPropertyChanged("TagId");
+                    OnTagIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "PeopleId", UpdateCheck = UpdateCheck.Never, Storage = "_PeopleId", DbType = "int NOT NULL", IsPrimaryKey = true)]
         [IsForeignKey]
         public int PeopleId
         {
-            get => this._PeopleId;
+            get => _PeopleId;
 
             set
             {
-                if (this._PeopleId != value)
+                if (_PeopleId != value)
                 {
-
-                    if (this._Person.HasLoadedOrAssignedValue)
+                    if (_Person.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnPeopleIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._PeopleId = value;
-                    this.SendPropertyChanged("PeopleId");
-                    this.OnPeopleIdChanged();
+                    OnPeopleIdChanging(value);
+                    SendPropertyChanging();
+                    _PeopleId = value;
+                    SendPropertyChanged("PeopleId");
+                    OnPeopleIdChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -118,109 +107,97 @@ namespace CmsData
         [Association(Name = "FK_TagShare_People", Storage = "_Person", ThisKey = "PeopleId", IsForeignKey = true)]
         public Person Person
         {
-            get => this._Person.Entity;
+            get => _Person.Entity;
 
             set
             {
-                Person previousValue = this._Person.Entity;
+                Person previousValue = _Person.Entity;
                 if (((previousValue != value)
-                            || (this._Person.HasLoadedOrAssignedValue == false)))
+                            || (_Person.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._Person.Entity = null;
+                        _Person.Entity = null;
                         previousValue.TagShares.Remove(this);
                     }
 
-                    this._Person.Entity = value;
+                    _Person.Entity = value;
                     if (value != null)
                     {
                         value.TagShares.Add(this);
 
-                        this._PeopleId = value.PeopleId;
+                        _PeopleId = value.PeopleId;
 
                     }
 
                     else
                     {
-
-                        this._PeopleId = default(int);
+                        _PeopleId = default(int);
 
                     }
 
-                    this.SendPropertyChanged("Person");
+                    SendPropertyChanged("Person");
                 }
-
             }
-
         }
-
 
         [Association(Name = "FK_TagShare_Tag", Storage = "_Tag", ThisKey = "TagId", IsForeignKey = true)]
         public Tag Tag
         {
-            get => this._Tag.Entity;
+            get => _Tag.Entity;
 
             set
             {
-                Tag previousValue = this._Tag.Entity;
+                Tag previousValue = _Tag.Entity;
                 if (((previousValue != value)
-                            || (this._Tag.HasLoadedOrAssignedValue == false)))
+                            || (_Tag.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._Tag.Entity = null;
+                        _Tag.Entity = null;
                         previousValue.TagShares.Remove(this);
                     }
 
-                    this._Tag.Entity = value;
+                    _Tag.Entity = value;
                     if (value != null)
                     {
                         value.TagShares.Add(this);
 
-                        this._TagId = value.Id;
+                        _TagId = value.Id;
 
                     }
 
                     else
                     {
-
-                        this._TagId = default(int);
+                        _TagId = default(int);
 
                     }
 
-                    this.SendPropertyChanged("Tag");
+                    SendPropertyChanged("Tag");
                 }
-
             }
-
         }
-
 
         #endregion
 
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-
     }
-
 }
-

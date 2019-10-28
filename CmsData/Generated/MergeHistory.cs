@@ -7,7 +7,7 @@ namespace CmsData
     [Table(Name = "dbo.MergeHistory")]
     public partial class MergeHistory : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -27,11 +27,10 @@ namespace CmsData
 
         private string _Action;
 
-
-
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -61,191 +60,157 @@ namespace CmsData
         partial void OnActionChanged();
 
         #endregion
+
         public MergeHistory()
         {
-
-
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "FromId", UpdateCheck = UpdateCheck.Never, Storage = "_FromId", DbType = "int NOT NULL", IsPrimaryKey = true)]
         public int FromId
         {
-            get => this._FromId;
+            get => _FromId;
 
             set
             {
-                if (this._FromId != value)
+                if (_FromId != value)
                 {
-
-                    this.OnFromIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._FromId = value;
-                    this.SendPropertyChanged("FromId");
-                    this.OnFromIdChanged();
+                    OnFromIdChanging(value);
+                    SendPropertyChanging();
+                    _FromId = value;
+                    SendPropertyChanged("FromId");
+                    OnFromIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ToId", UpdateCheck = UpdateCheck.Never, Storage = "_ToId", DbType = "int NOT NULL", IsPrimaryKey = true)]
         public int ToId
         {
-            get => this._ToId;
+            get => _ToId;
 
             set
             {
-                if (this._ToId != value)
+                if (_ToId != value)
                 {
-
-                    this.OnToIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._ToId = value;
-                    this.SendPropertyChanged("ToId");
-                    this.OnToIdChanged();
+                    OnToIdChanging(value);
+                    SendPropertyChanging();
+                    _ToId = value;
+                    SendPropertyChanged("ToId");
+                    OnToIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "FromName", UpdateCheck = UpdateCheck.Never, Storage = "_FromName", DbType = "nvarchar(150)")]
         public string FromName
         {
-            get => this._FromName;
+            get => _FromName;
 
             set
             {
-                if (this._FromName != value)
+                if (_FromName != value)
                 {
-
-                    this.OnFromNameChanging(value);
-                    this.SendPropertyChanging();
-                    this._FromName = value;
-                    this.SendPropertyChanged("FromName");
-                    this.OnFromNameChanged();
+                    OnFromNameChanging(value);
+                    SendPropertyChanging();
+                    _FromName = value;
+                    SendPropertyChanged("FromName");
+                    OnFromNameChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ToName", UpdateCheck = UpdateCheck.Never, Storage = "_ToName", DbType = "nvarchar(150)")]
         public string ToName
         {
-            get => this._ToName;
+            get => _ToName;
 
             set
             {
-                if (this._ToName != value)
+                if (_ToName != value)
                 {
-
-                    this.OnToNameChanging(value);
-                    this.SendPropertyChanging();
-                    this._ToName = value;
-                    this.SendPropertyChanged("ToName");
-                    this.OnToNameChanged();
+                    OnToNameChanging(value);
+                    SendPropertyChanging();
+                    _ToName = value;
+                    SendPropertyChanged("ToName");
+                    OnToNameChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Dt", UpdateCheck = UpdateCheck.Never, Storage = "_Dt", DbType = "datetime NOT NULL", IsPrimaryKey = true)]
         public DateTime Dt
         {
-            get => this._Dt;
+            get => _Dt;
 
             set
             {
-                if (this._Dt != value)
+                if (_Dt != value)
                 {
-
-                    this.OnDtChanging(value);
-                    this.SendPropertyChanging();
-                    this._Dt = value;
-                    this.SendPropertyChanged("Dt");
-                    this.OnDtChanged();
+                    OnDtChanging(value);
+                    SendPropertyChanging();
+                    _Dt = value;
+                    SendPropertyChanged("Dt");
+                    OnDtChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "WhoName", UpdateCheck = UpdateCheck.Never, Storage = "_WhoName", DbType = "nvarchar(150)")]
         public string WhoName
         {
-            get => this._WhoName;
+            get => _WhoName;
 
             set
             {
-                if (this._WhoName != value)
+                if (_WhoName != value)
                 {
-
-                    this.OnWhoNameChanging(value);
-                    this.SendPropertyChanging();
-                    this._WhoName = value;
-                    this.SendPropertyChanged("WhoName");
-                    this.OnWhoNameChanged();
+                    OnWhoNameChanging(value);
+                    SendPropertyChanging();
+                    _WhoName = value;
+                    SendPropertyChanged("WhoName");
+                    OnWhoNameChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "WhoId", UpdateCheck = UpdateCheck.Never, Storage = "_WhoId", DbType = "int")]
         public int? WhoId
         {
-            get => this._WhoId;
+            get => _WhoId;
 
             set
             {
-                if (this._WhoId != value)
+                if (_WhoId != value)
                 {
-
-                    this.OnWhoIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._WhoId = value;
-                    this.SendPropertyChanged("WhoId");
-                    this.OnWhoIdChanged();
+                    OnWhoIdChanging(value);
+                    SendPropertyChanging();
+                    _WhoId = value;
+                    SendPropertyChanged("WhoId");
+                    OnWhoIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Action", UpdateCheck = UpdateCheck.Never, Storage = "_Action", DbType = "varchar(50)")]
         public string Action
         {
-            get => this._Action;
+            get => _Action;
 
             set
             {
-                if (this._Action != value)
+                if (_Action != value)
                 {
-
-                    this.OnActionChanging(value);
-                    this.SendPropertyChanging();
-                    this._Action = value;
-                    this.SendPropertyChanged("Action");
-                    this.OnActionChanged();
+                    OnActionChanging(value);
+                    SendPropertyChanging();
+                    _Action = value;
+                    SendPropertyChanged("Action");
+                    OnActionChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -260,23 +225,19 @@ namespace CmsData
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-
     }
-
 }
-

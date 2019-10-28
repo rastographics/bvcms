@@ -8,7 +8,7 @@ namespace CmsData
     [Table(Name = "dbo.ContributionFund")]
     public partial class ContributionFund : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -52,17 +52,16 @@ namespace CmsData
 
         private int _FundManagerRoleId;
 
-
         private EntitySet<BundleHeader> _BundleHeaders;
 
         private EntitySet<Contribution> _Contributions;
 
         private EntitySet<RecurringAmount> _RecurringAmounts;
 
-
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -128,461 +127,379 @@ namespace CmsData
         partial void OnFundManagerRoleIdChanged();
 
         #endregion
+
         public ContributionFund()
         {
+            _BundleHeaders = new EntitySet<BundleHeader>(new Action<BundleHeader>(attach_BundleHeaders), new Action<BundleHeader>(detach_BundleHeaders));
 
-            this._BundleHeaders = new EntitySet<BundleHeader>(new Action<BundleHeader>(this.attach_BundleHeaders), new Action<BundleHeader>(this.detach_BundleHeaders));
+            _Contributions = new EntitySet<Contribution>(new Action<Contribution>(attach_Contributions), new Action<Contribution>(detach_Contributions));
 
-            this._Contributions = new EntitySet<Contribution>(new Action<Contribution>(this.attach_Contributions), new Action<Contribution>(this.detach_Contributions));
-
-            this._RecurringAmounts = new EntitySet<RecurringAmount>(new Action<RecurringAmount>(this.attach_RecurringAmounts), new Action<RecurringAmount>(this.detach_RecurringAmounts));
-
+            _RecurringAmounts = new EntitySet<RecurringAmount>(new Action<RecurringAmount>(attach_RecurringAmounts), new Action<RecurringAmount>(detach_RecurringAmounts));
 
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "FundId", UpdateCheck = UpdateCheck.Never, Storage = "_FundId", DbType = "int NOT NULL", IsPrimaryKey = true)]
         public int FundId
         {
-            get => this._FundId;
+            get => _FundId;
 
             set
             {
-                if (this._FundId != value)
+                if (_FundId != value)
                 {
-
-                    this.OnFundIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._FundId = value;
-                    this.SendPropertyChanged("FundId");
-                    this.OnFundIdChanged();
+                    OnFundIdChanging(value);
+                    SendPropertyChanging();
+                    _FundId = value;
+                    SendPropertyChanged("FundId");
+                    OnFundIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "CreatedBy", UpdateCheck = UpdateCheck.Never, Storage = "_CreatedBy", DbType = "int NOT NULL")]
         public int CreatedBy
         {
-            get => this._CreatedBy;
+            get => _CreatedBy;
 
             set
             {
-                if (this._CreatedBy != value)
+                if (_CreatedBy != value)
                 {
-
-                    this.OnCreatedByChanging(value);
-                    this.SendPropertyChanging();
-                    this._CreatedBy = value;
-                    this.SendPropertyChanged("CreatedBy");
-                    this.OnCreatedByChanged();
+                    OnCreatedByChanging(value);
+                    SendPropertyChanging();
+                    _CreatedBy = value;
+                    SendPropertyChanged("CreatedBy");
+                    OnCreatedByChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "CreatedDate", UpdateCheck = UpdateCheck.Never, Storage = "_CreatedDate", DbType = "datetime NOT NULL")]
         public DateTime CreatedDate
         {
-            get => this._CreatedDate;
+            get => _CreatedDate;
 
             set
             {
-                if (this._CreatedDate != value)
+                if (_CreatedDate != value)
                 {
-
-                    this.OnCreatedDateChanging(value);
-                    this.SendPropertyChanging();
-                    this._CreatedDate = value;
-                    this.SendPropertyChanged("CreatedDate");
-                    this.OnCreatedDateChanged();
+                    OnCreatedDateChanging(value);
+                    SendPropertyChanging();
+                    _CreatedDate = value;
+                    SendPropertyChanged("CreatedDate");
+                    OnCreatedDateChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "FundName", UpdateCheck = UpdateCheck.Never, Storage = "_FundName", DbType = "nvarchar(256) NOT NULL")]
         public string FundName
         {
-            get => this._FundName;
+            get => _FundName;
 
             set
             {
-                if (this._FundName != value)
+                if (_FundName != value)
                 {
-
-                    this.OnFundNameChanging(value);
-                    this.SendPropertyChanging();
-                    this._FundName = value;
-                    this.SendPropertyChanged("FundName");
-                    this.OnFundNameChanged();
+                    OnFundNameChanging(value);
+                    SendPropertyChanging();
+                    _FundName = value;
+                    SendPropertyChanged("FundName");
+                    OnFundNameChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "FundDescription", UpdateCheck = UpdateCheck.Never, Storage = "_FundDescription", DbType = "nvarchar(256)")]
         public string FundDescription
         {
-            get => this._FundDescription;
+            get => _FundDescription;
 
             set
             {
-                if (this._FundDescription != value)
+                if (_FundDescription != value)
                 {
-
-                    this.OnFundDescriptionChanging(value);
-                    this.SendPropertyChanging();
-                    this._FundDescription = value;
-                    this.SendPropertyChanged("FundDescription");
-                    this.OnFundDescriptionChanged();
+                    OnFundDescriptionChanging(value);
+                    SendPropertyChanging();
+                    _FundDescription = value;
+                    SendPropertyChanged("FundDescription");
+                    OnFundDescriptionChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "FundStatusId", UpdateCheck = UpdateCheck.Never, Storage = "_FundStatusId", DbType = "int NOT NULL")]
         public int FundStatusId
         {
-            get => this._FundStatusId;
+            get => _FundStatusId;
 
             set
             {
-                if (this._FundStatusId != value)
+                if (_FundStatusId != value)
                 {
-
-                    this.OnFundStatusIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._FundStatusId = value;
-                    this.SendPropertyChanged("FundStatusId");
-                    this.OnFundStatusIdChanged();
+                    OnFundStatusIdChanging(value);
+                    SendPropertyChanging();
+                    _FundStatusId = value;
+                    SendPropertyChanged("FundStatusId");
+                    OnFundStatusIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "FundTypeId", UpdateCheck = UpdateCheck.Never, Storage = "_FundTypeId", DbType = "int NOT NULL")]
         public int FundTypeId
         {
-            get => this._FundTypeId;
+            get => _FundTypeId;
 
             set
             {
-                if (this._FundTypeId != value)
+                if (_FundTypeId != value)
                 {
-
-                    this.OnFundTypeIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._FundTypeId = value;
-                    this.SendPropertyChanged("FundTypeId");
-                    this.OnFundTypeIdChanged();
+                    OnFundTypeIdChanging(value);
+                    SendPropertyChanging();
+                    _FundTypeId = value;
+                    SendPropertyChanged("FundTypeId");
+                    OnFundTypeIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "FundPledgeFlag", UpdateCheck = UpdateCheck.Never, Storage = "_FundPledgeFlag", DbType = "bit NOT NULL")]
         public bool FundPledgeFlag
         {
-            get => this._FundPledgeFlag;
+            get => _FundPledgeFlag;
 
             set
             {
-                if (this._FundPledgeFlag != value)
+                if (_FundPledgeFlag != value)
                 {
-
-                    this.OnFundPledgeFlagChanging(value);
-                    this.SendPropertyChanging();
-                    this._FundPledgeFlag = value;
-                    this.SendPropertyChanged("FundPledgeFlag");
-                    this.OnFundPledgeFlagChanged();
+                    OnFundPledgeFlagChanging(value);
+                    SendPropertyChanging();
+                    _FundPledgeFlag = value;
+                    SendPropertyChanged("FundPledgeFlag");
+                    OnFundPledgeFlagChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "FundAccountCode", UpdateCheck = UpdateCheck.Never, Storage = "_FundAccountCode", DbType = "int")]
         public int? FundAccountCode
         {
-            get => this._FundAccountCode;
+            get => _FundAccountCode;
 
             set
             {
-                if (this._FundAccountCode != value)
+                if (_FundAccountCode != value)
                 {
-
-                    this.OnFundAccountCodeChanging(value);
-                    this.SendPropertyChanging();
-                    this._FundAccountCode = value;
-                    this.SendPropertyChanged("FundAccountCode");
-                    this.OnFundAccountCodeChanged();
+                    OnFundAccountCodeChanging(value);
+                    SendPropertyChanging();
+                    _FundAccountCode = value;
+                    SendPropertyChanged("FundAccountCode");
+                    OnFundAccountCodeChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "FundIncomeDept", UpdateCheck = UpdateCheck.Never, Storage = "_FundIncomeDept", DbType = "nvarchar(25)")]
         public string FundIncomeDept
         {
-            get => this._FundIncomeDept;
+            get => _FundIncomeDept;
 
             set
             {
-                if (this._FundIncomeDept != value)
+                if (_FundIncomeDept != value)
                 {
-
-                    this.OnFundIncomeDeptChanging(value);
-                    this.SendPropertyChanging();
-                    this._FundIncomeDept = value;
-                    this.SendPropertyChanged("FundIncomeDept");
-                    this.OnFundIncomeDeptChanged();
+                    OnFundIncomeDeptChanging(value);
+                    SendPropertyChanging();
+                    _FundIncomeDept = value;
+                    SendPropertyChanged("FundIncomeDept");
+                    OnFundIncomeDeptChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "FundIncomeAccount", UpdateCheck = UpdateCheck.Never, Storage = "_FundIncomeAccount", DbType = "nvarchar(25)")]
         public string FundIncomeAccount
         {
-            get => this._FundIncomeAccount;
+            get => _FundIncomeAccount;
 
             set
             {
-                if (this._FundIncomeAccount != value)
+                if (_FundIncomeAccount != value)
                 {
-
-                    this.OnFundIncomeAccountChanging(value);
-                    this.SendPropertyChanging();
-                    this._FundIncomeAccount = value;
-                    this.SendPropertyChanged("FundIncomeAccount");
-                    this.OnFundIncomeAccountChanged();
+                    OnFundIncomeAccountChanging(value);
+                    SendPropertyChanging();
+                    _FundIncomeAccount = value;
+                    SendPropertyChanged("FundIncomeAccount");
+                    OnFundIncomeAccountChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "FundIncomeFund", UpdateCheck = UpdateCheck.Never, Storage = "_FundIncomeFund", DbType = "nvarchar(25)")]
         public string FundIncomeFund
         {
-            get => this._FundIncomeFund;
+            get => _FundIncomeFund;
 
             set
             {
-                if (this._FundIncomeFund != value)
+                if (_FundIncomeFund != value)
                 {
-
-                    this.OnFundIncomeFundChanging(value);
-                    this.SendPropertyChanging();
-                    this._FundIncomeFund = value;
-                    this.SendPropertyChanged("FundIncomeFund");
-                    this.OnFundIncomeFundChanged();
+                    OnFundIncomeFundChanging(value);
+                    SendPropertyChanging();
+                    _FundIncomeFund = value;
+                    SendPropertyChanged("FundIncomeFund");
+                    OnFundIncomeFundChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "FundCashDept", UpdateCheck = UpdateCheck.Never, Storage = "_FundCashDept", DbType = "nvarchar(25)")]
         public string FundCashDept
         {
-            get => this._FundCashDept;
+            get => _FundCashDept;
 
             set
             {
-                if (this._FundCashDept != value)
+                if (_FundCashDept != value)
                 {
-
-                    this.OnFundCashDeptChanging(value);
-                    this.SendPropertyChanging();
-                    this._FundCashDept = value;
-                    this.SendPropertyChanged("FundCashDept");
-                    this.OnFundCashDeptChanged();
+                    OnFundCashDeptChanging(value);
+                    SendPropertyChanging();
+                    _FundCashDept = value;
+                    SendPropertyChanged("FundCashDept");
+                    OnFundCashDeptChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "FundCashAccount", UpdateCheck = UpdateCheck.Never, Storage = "_FundCashAccount", DbType = "nvarchar(25)")]
         public string FundCashAccount
         {
-            get => this._FundCashAccount;
+            get => _FundCashAccount;
 
             set
             {
-                if (this._FundCashAccount != value)
+                if (_FundCashAccount != value)
                 {
-
-                    this.OnFundCashAccountChanging(value);
-                    this.SendPropertyChanging();
-                    this._FundCashAccount = value;
-                    this.SendPropertyChanged("FundCashAccount");
-                    this.OnFundCashAccountChanged();
+                    OnFundCashAccountChanging(value);
+                    SendPropertyChanging();
+                    _FundCashAccount = value;
+                    SendPropertyChanged("FundCashAccount");
+                    OnFundCashAccountChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "FundCashFund", UpdateCheck = UpdateCheck.Never, Storage = "_FundCashFund", DbType = "nvarchar(25)")]
         public string FundCashFund
         {
-            get => this._FundCashFund;
+            get => _FundCashFund;
 
             set
             {
-                if (this._FundCashFund != value)
+                if (_FundCashFund != value)
                 {
-
-                    this.OnFundCashFundChanging(value);
-                    this.SendPropertyChanging();
-                    this._FundCashFund = value;
-                    this.SendPropertyChanged("FundCashFund");
-                    this.OnFundCashFundChanged();
+                    OnFundCashFundChanging(value);
+                    SendPropertyChanging();
+                    _FundCashFund = value;
+                    SendPropertyChanged("FundCashFund");
+                    OnFundCashFundChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "OnlineSort", UpdateCheck = UpdateCheck.Never, Storage = "_OnlineSort", DbType = "int")]
         public int? OnlineSort
         {
-            get => this._OnlineSort;
+            get => _OnlineSort;
 
             set
             {
-                if (this._OnlineSort != value)
+                if (_OnlineSort != value)
                 {
-
-                    this.OnOnlineSortChanging(value);
-                    this.SendPropertyChanging();
-                    this._OnlineSort = value;
-                    this.SendPropertyChanged("OnlineSort");
-                    this.OnOnlineSortChanged();
+                    OnOnlineSortChanging(value);
+                    SendPropertyChanging();
+                    _OnlineSort = value;
+                    SendPropertyChanged("OnlineSort");
+                    OnOnlineSortChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "NonTaxDeductible", UpdateCheck = UpdateCheck.Never, Storage = "_NonTaxDeductible", DbType = "bit")]
         public bool? NonTaxDeductible
         {
-            get => this._NonTaxDeductible;
+            get => _NonTaxDeductible;
 
             set
             {
-                if (this._NonTaxDeductible != value)
+                if (_NonTaxDeductible != value)
                 {
-
-                    this.OnNonTaxDeductibleChanging(value);
-                    this.SendPropertyChanging();
-                    this._NonTaxDeductible = value;
-                    this.SendPropertyChanged("NonTaxDeductible");
-                    this.OnNonTaxDeductibleChanged();
+                    OnNonTaxDeductibleChanging(value);
+                    SendPropertyChanging();
+                    _NonTaxDeductible = value;
+                    SendPropertyChanged("NonTaxDeductible");
+                    OnNonTaxDeductibleChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "QBIncomeAccount", UpdateCheck = UpdateCheck.Never, Storage = "_QBIncomeAccount", DbType = "int NOT NULL")]
         public int QBIncomeAccount
         {
-            get => this._QBIncomeAccount;
+            get => _QBIncomeAccount;
 
             set
             {
-                if (this._QBIncomeAccount != value)
+                if (_QBIncomeAccount != value)
                 {
-
-                    this.OnQBIncomeAccountChanging(value);
-                    this.SendPropertyChanging();
-                    this._QBIncomeAccount = value;
-                    this.SendPropertyChanged("QBIncomeAccount");
-                    this.OnQBIncomeAccountChanged();
+                    OnQBIncomeAccountChanging(value);
+                    SendPropertyChanging();
+                    _QBIncomeAccount = value;
+                    SendPropertyChanged("QBIncomeAccount");
+                    OnQBIncomeAccountChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "QBAssetAccount", UpdateCheck = UpdateCheck.Never, Storage = "_QBAssetAccount", DbType = "int NOT NULL")]
         public int QBAssetAccount
         {
-            get => this._QBAssetAccount;
+            get => _QBAssetAccount;
 
             set
             {
-                if (this._QBAssetAccount != value)
+                if (_QBAssetAccount != value)
                 {
-
-                    this.OnQBAssetAccountChanging(value);
-                    this.SendPropertyChanging();
-                    this._QBAssetAccount = value;
-                    this.SendPropertyChanged("QBAssetAccount");
-                    this.OnQBAssetAccountChanged();
+                    OnQBAssetAccountChanging(value);
+                    SendPropertyChanging();
+                    _QBAssetAccount = value;
+                    SendPropertyChanged("QBAssetAccount");
+                    OnQBAssetAccountChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "FundManagerRoleId", UpdateCheck = UpdateCheck.Never, Storage = "_FundManagerRoleId", DbType = "int NOT NULL")]
         public int FundManagerRoleId
         {
-            get => this._FundManagerRoleId;
+            get => _FundManagerRoleId;
 
             set
             {
-                if (this._FundManagerRoleId != value)
+                if (_FundManagerRoleId != value)
                 {
-
-                    this.OnFundManagerRoleIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._FundManagerRoleId = value;
-                    this.SendPropertyChanged("FundManagerRoleId");
-                    this.OnFundManagerRoleIdChanged();
+                    OnFundManagerRoleIdChanging(value);
+                    SendPropertyChanging();
+                    _FundManagerRoleId = value;
+                    SendPropertyChanged("FundManagerRoleId");
+                    OnFundManagerRoleIdChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -591,32 +508,29 @@ namespace CmsData
         [Association(Name = "BundleHeaders__Fund", Storage = "_BundleHeaders", OtherKey = "FundId")]
         public EntitySet<BundleHeader> BundleHeaders
            {
-               get => this._BundleHeaders;
+               get => _BundleHeaders;
 
-            set => this._BundleHeaders.Assign(value);
+            set => _BundleHeaders.Assign(value);
 
            }
-
 
         [Association(Name = "FK_Contribution_ContributionFund", Storage = "_Contributions", OtherKey = "FundId")]
         public EntitySet<Contribution> Contributions
            {
-               get => this._Contributions;
+               get => _Contributions;
 
-            set => this._Contributions.Assign(value);
+            set => _Contributions.Assign(value);
 
            }
-
 
         [Association(Name = "FK_RecurringAmounts_ContributionFund", Storage = "_RecurringAmounts", OtherKey = "FundId")]
         public EntitySet<RecurringAmount> RecurringAmounts
            {
-               get => this._RecurringAmounts;
+               get => _RecurringAmounts;
 
-            set => this._RecurringAmounts.Assign(value);
+            set => _RecurringAmounts.Assign(value);
 
            }
-
 
         #endregion
 
@@ -627,62 +541,55 @@ namespace CmsData
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
 
-
         private void attach_BundleHeaders(BundleHeader entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.Fund = this;
         }
 
         private void detach_BundleHeaders(BundleHeader entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.Fund = null;
         }
 
-
         private void attach_Contributions(Contribution entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.ContributionFund = this;
         }
 
         private void detach_Contributions(Contribution entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.ContributionFund = null;
         }
 
-
         private void attach_RecurringAmounts(RecurringAmount entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.ContributionFund = this;
         }
 
         private void detach_RecurringAmounts(RecurringAmount entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.ContributionFund = null;
         }
-
-
     }
-
 }
-

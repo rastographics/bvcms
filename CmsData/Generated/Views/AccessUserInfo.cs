@@ -1,370 +1,304 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="AccessUserInfo")]
-	public partial class AccessUserInfo
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private int? _PeopleId;
-		
-		private string _Roles;
-		
-		private DateTime? _Lastactive;
-		
-		private string _First;
-		
-		private string _Goesby;
-		
-		private string _Last;
-		
-		private int _Married;
-		
-		private int _Gender;
-		
-		private string _Cphone;
-		
-		private string _Hphone;
-		
-		private string _Wphone;
-		
-		private int? _Bday;
-		
-		private int? _Bmon;
-		
-		private int? _Byear;
-		
-		private string _Company;
-		
-		private string _Email;
-		
-		private string _Emali2;
-		
-		private string _Username;
-		
-		
-		public AccessUserInfo()
-		{
-		}
+    [Table(Name = "AccessUserInfo")]
+    public partial class AccessUserInfo
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="PeopleId", Storage="_PeopleId", DbType="int")]
-		public int? PeopleId
-		{
-			get
-			{
-				return this._PeopleId;
-			}
+        private int? _PeopleId;
 
-			set
-			{
-				if (this._PeopleId != value)
-					this._PeopleId = value;
-			}
+        private string _Roles;
 
-		}
+        private DateTime? _Lastactive;
 
-		
-		[Column(Name="roles", Storage="_Roles", DbType="nvarchar")]
-		public string Roles
-		{
-			get
-			{
-				return this._Roles;
-			}
+        private string _First;
 
-			set
-			{
-				if (this._Roles != value)
-					this._Roles = value;
-			}
+        private string _Goesby;
 
-		}
+        private string _Last;
 
-		
-		[Column(Name="lastactive", Storage="_Lastactive", DbType="datetime")]
-		public DateTime? Lastactive
-		{
-			get
-			{
-				return this._Lastactive;
-			}
+        private int _Married;
 
-			set
-			{
-				if (this._Lastactive != value)
-					this._Lastactive = value;
-			}
+        private int _Gender;
 
-		}
+        private string _Cphone;
 
-		
-		[Column(Name="first", Storage="_First", DbType="nvarchar(25)")]
-		public string First
-		{
-			get
-			{
-				return this._First;
-			}
+        private string _Hphone;
 
-			set
-			{
-				if (this._First != value)
-					this._First = value;
-			}
+        private string _Wphone;
 
-		}
+        private int? _Bday;
 
-		
-		[Column(Name="goesby", Storage="_Goesby", DbType="nvarchar(25)")]
-		public string Goesby
-		{
-			get
-			{
-				return this._Goesby;
-			}
+        private int? _Bmon;
 
-			set
-			{
-				if (this._Goesby != value)
-					this._Goesby = value;
-			}
+        private int? _Byear;
 
-		}
+        private string _Company;
 
-		
-		[Column(Name="last", Storage="_Last", DbType="nvarchar(100) NOT NULL")]
-		public string Last
-		{
-			get
-			{
-				return this._Last;
-			}
+        private string _Email;
 
-			set
-			{
-				if (this._Last != value)
-					this._Last = value;
-			}
+        private string _Emali2;
 
-		}
+        private string _Username;
 
-		
-		[Column(Name="married", Storage="_Married", DbType="int NOT NULL")]
-		public int Married
-		{
-			get
-			{
-				return this._Married;
-			}
+        public AccessUserInfo()
+        {
+        }
 
-			set
-			{
-				if (this._Married != value)
-					this._Married = value;
-			}
+        [Column(Name = "PeopleId", Storage = "_PeopleId", DbType = "int")]
+        public int? PeopleId
+        {
+            get => _PeopleId;
 
-		}
+            set
+            {
+                if (_PeopleId != value)
+                {
+                    _PeopleId = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="gender", Storage="_Gender", DbType="int NOT NULL")]
-		public int Gender
-		{
-			get
-			{
-				return this._Gender;
-			}
+        [Column(Name = "roles", Storage = "_Roles", DbType = "nvarchar")]
+        public string Roles
+        {
+            get => _Roles;
 
-			set
-			{
-				if (this._Gender != value)
-					this._Gender = value;
-			}
+            set
+            {
+                if (_Roles != value)
+                {
+                    _Roles = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "lastactive", Storage = "_Lastactive", DbType = "datetime")]
+        public DateTime? Lastactive
+        {
+            get => _Lastactive;
 
-		
-		[Column(Name="cphone", Storage="_Cphone", DbType="nvarchar(20)")]
-		public string Cphone
-		{
-			get
-			{
-				return this._Cphone;
-			}
+            set
+            {
+                if (_Lastactive != value)
+                {
+                    _Lastactive = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._Cphone != value)
-					this._Cphone = value;
-			}
+        [Column(Name = "first", Storage = "_First", DbType = "nvarchar(25)")]
+        public string First
+        {
+            get => _First;
 
-		}
+            set
+            {
+                if (_First != value)
+                {
+                    _First = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="hphone", Storage="_Hphone", DbType="nvarchar(20)")]
-		public string Hphone
-		{
-			get
-			{
-				return this._Hphone;
-			}
+        [Column(Name = "goesby", Storage = "_Goesby", DbType = "nvarchar(25)")]
+        public string Goesby
+        {
+            get => _Goesby;
 
-			set
-			{
-				if (this._Hphone != value)
-					this._Hphone = value;
-			}
+            set
+            {
+                if (_Goesby != value)
+                {
+                    _Goesby = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "last", Storage = "_Last", DbType = "nvarchar(100) NOT NULL")]
+        public string Last
+        {
+            get => _Last;
 
-		
-		[Column(Name="wphone", Storage="_Wphone", DbType="nvarchar(20)")]
-		public string Wphone
-		{
-			get
-			{
-				return this._Wphone;
-			}
+            set
+            {
+                if (_Last != value)
+                {
+                    _Last = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._Wphone != value)
-					this._Wphone = value;
-			}
+        [Column(Name = "married", Storage = "_Married", DbType = "int NOT NULL")]
+        public int Married
+        {
+            get => _Married;
 
-		}
+            set
+            {
+                if (_Married != value)
+                {
+                    _Married = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="bday", Storage="_Bday", DbType="int")]
-		public int? Bday
-		{
-			get
-			{
-				return this._Bday;
-			}
+        [Column(Name = "gender", Storage = "_Gender", DbType = "int NOT NULL")]
+        public int Gender
+        {
+            get => _Gender;
 
-			set
-			{
-				if (this._Bday != value)
-					this._Bday = value;
-			}
+            set
+            {
+                if (_Gender != value)
+                {
+                    _Gender = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "cphone", Storage = "_Cphone", DbType = "nvarchar(20)")]
+        public string Cphone
+        {
+            get => _Cphone;
 
-		
-		[Column(Name="bmon", Storage="_Bmon", DbType="int")]
-		public int? Bmon
-		{
-			get
-			{
-				return this._Bmon;
-			}
+            set
+            {
+                if (_Cphone != value)
+                {
+                    _Cphone = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._Bmon != value)
-					this._Bmon = value;
-			}
+        [Column(Name = "hphone", Storage = "_Hphone", DbType = "nvarchar(20)")]
+        public string Hphone
+        {
+            get => _Hphone;
 
-		}
+            set
+            {
+                if (_Hphone != value)
+                {
+                    _Hphone = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="byear", Storage="_Byear", DbType="int")]
-		public int? Byear
-		{
-			get
-			{
-				return this._Byear;
-			}
+        [Column(Name = "wphone", Storage = "_Wphone", DbType = "nvarchar(20)")]
+        public string Wphone
+        {
+            get => _Wphone;
 
-			set
-			{
-				if (this._Byear != value)
-					this._Byear = value;
-			}
+            set
+            {
+                if (_Wphone != value)
+                {
+                    _Wphone = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "bday", Storage = "_Bday", DbType = "int")]
+        public int? Bday
+        {
+            get => _Bday;
 
-		
-		[Column(Name="company", Storage="_Company", DbType="nvarchar(120)")]
-		public string Company
-		{
-			get
-			{
-				return this._Company;
-			}
+            set
+            {
+                if (_Bday != value)
+                {
+                    _Bday = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._Company != value)
-					this._Company = value;
-			}
+        [Column(Name = "bmon", Storage = "_Bmon", DbType = "int")]
+        public int? Bmon
+        {
+            get => _Bmon;
 
-		}
+            set
+            {
+                if (_Bmon != value)
+                {
+                    _Bmon = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="email", Storage="_Email", DbType="nvarchar(150)")]
-		public string Email
-		{
-			get
-			{
-				return this._Email;
-			}
+        [Column(Name = "byear", Storage = "_Byear", DbType = "int")]
+        public int? Byear
+        {
+            get => _Byear;
 
-			set
-			{
-				if (this._Email != value)
-					this._Email = value;
-			}
+            set
+            {
+                if (_Byear != value)
+                {
+                    _Byear = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "company", Storage = "_Company", DbType = "nvarchar(120)")]
+        public string Company
+        {
+            get => _Company;
 
-		
-		[Column(Name="emali2", Storage="_Emali2", DbType="nvarchar(60)")]
-		public string Emali2
-		{
-			get
-			{
-				return this._Emali2;
-			}
+            set
+            {
+                if (_Company != value)
+                {
+                    _Company = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._Emali2 != value)
-					this._Emali2 = value;
-			}
+        [Column(Name = "email", Storage = "_Email", DbType = "nvarchar(150)")]
+        public string Email
+        {
+            get => _Email;
 
-		}
+            set
+            {
+                if (_Email != value)
+                {
+                    _Email = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="Username", Storage="_Username", DbType="nvarchar(50) NOT NULL")]
-		public string Username
-		{
-			get
-			{
-				return this._Username;
-			}
+        [Column(Name = "emali2", Storage = "_Emali2", DbType = "nvarchar(60)")]
+        public string Emali2
+        {
+            get => _Emali2;
 
-			set
-			{
-				if (this._Username != value)
-					this._Username = value;
-			}
+            set
+            {
+                if (_Emali2 != value)
+                {
+                    _Emali2 = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "Username", Storage = "_Username", DbType = "nvarchar(50) NOT NULL")]
+        public string Username
+        {
+            get => _Username;
 
-		
+            set
+            {
+                if (_Username != value)
+                {
+                    _Username = value;
+                }
+            }
+        }
     }
-
 }

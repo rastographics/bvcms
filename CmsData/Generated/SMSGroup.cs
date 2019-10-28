@@ -8,7 +8,7 @@ namespace CmsData
     [Table(Name = "dbo.SMSGroups")]
     public partial class SMSGroup : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -26,10 +26,10 @@ namespace CmsData
 
         private EntitySet<SMSList> _SMSLists;
 
-
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -50,128 +50,107 @@ namespace CmsData
         partial void OnIsDeletedChanged();
 
         #endregion
+
         public SMSGroup()
         {
+            _SMSGroupMembers = new EntitySet<SMSGroupMember>(new Action<SMSGroupMember>(attach_SMSGroupMembers), new Action<SMSGroupMember>(detach_SMSGroupMembers));
 
-            this._SMSGroupMembers = new EntitySet<SMSGroupMember>(new Action<SMSGroupMember>(this.attach_SMSGroupMembers), new Action<SMSGroupMember>(this.detach_SMSGroupMembers));
-
-            this._SMSLists = new EntitySet<SMSList>(new Action<SMSList>(this.attach_SMSLists), new Action<SMSList>(this.detach_SMSLists));
-
+            _SMSLists = new EntitySet<SMSList>(new Action<SMSList>(attach_SMSLists), new Action<SMSList>(detach_SMSLists));
 
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "ID", UpdateCheck = UpdateCheck.Never, Storage = "_Id", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
         public int Id
         {
-            get => this._Id;
+            get => _Id;
 
             set
             {
-                if (this._Id != value)
+                if (_Id != value)
                 {
-
-                    this.OnIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._Id = value;
-                    this.SendPropertyChanged("Id");
-                    this.OnIdChanged();
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Name", UpdateCheck = UpdateCheck.Never, Storage = "_Name", DbType = "nvarchar(50) NOT NULL")]
         public string Name
         {
-            get => this._Name;
+            get => _Name;
 
             set
             {
-                if (this._Name != value)
+                if (_Name != value)
                 {
-
-                    this.OnNameChanging(value);
-                    this.SendPropertyChanging();
-                    this._Name = value;
-                    this.SendPropertyChanged("Name");
-                    this.OnNameChanged();
+                    OnNameChanging(value);
+                    SendPropertyChanging();
+                    _Name = value;
+                    SendPropertyChanged("Name");
+                    OnNameChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Description", UpdateCheck = UpdateCheck.Never, Storage = "_Description", DbType = "nvarchar NOT NULL")]
         public string Description
         {
-            get => this._Description;
+            get => _Description;
 
             set
             {
-                if (this._Description != value)
+                if (_Description != value)
                 {
-
-                    this.OnDescriptionChanging(value);
-                    this.SendPropertyChanging();
-                    this._Description = value;
-                    this.SendPropertyChanged("Description");
-                    this.OnDescriptionChanged();
+                    OnDescriptionChanging(value);
+                    SendPropertyChanging();
+                    _Description = value;
+                    SendPropertyChanged("Description");
+                    OnDescriptionChanged();
                 }
-
             }
-
         }
 
         [Column(Name = "SystemFlag", UpdateCheck = UpdateCheck.Never, Storage = "_SystemFlag", DbType = "bit NOT NULL")]
         public bool SystemFlag
         {
-            get => this._SystemFlag;
+            get => _SystemFlag;
 
             set
             {
-                if (this._SystemFlag != value)
+                if (_SystemFlag != value)
                 {
-
-                    this.OnSystemFlagChanging(value);
-                    this.SendPropertyChanging();
-                    this._SystemFlag = value;
-                    this.SendPropertyChanged("SystemFlag");
-                    this.OnSystemFlagChanged();
+                    OnSystemFlagChanging(value);
+                    SendPropertyChanging();
+                    _SystemFlag = value;
+                    SendPropertyChanged("SystemFlag");
+                    OnSystemFlagChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "IsDeleted", UpdateCheck = UpdateCheck.Never, Storage = "_IsDeleted", DbType = "bit NOT NULL")]
         public bool IsDeleted
         {
-            get => this._IsDeleted;
+            get => _IsDeleted;
 
             set
             {
-                if (this._IsDeleted != value)
+                if (_IsDeleted != value)
                 {
-
-                    this.OnIsDeletedChanging(value);
-                    this.SendPropertyChanging();
-                    this._IsDeleted = value;
-                    this.SendPropertyChanged("IsDeleted");
-                    this.OnIsDeletedChanged();
+                    OnIsDeletedChanging(value);
+                    SendPropertyChanging();
+                    _IsDeleted = value;
+                    SendPropertyChanged("IsDeleted");
+                    OnIsDeletedChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -180,22 +159,20 @@ namespace CmsData
         [Association(Name = "FK_SMSGroupMembers_SMSGroups", Storage = "_SMSGroupMembers", OtherKey = "GroupID")]
         public EntitySet<SMSGroupMember> SMSGroupMembers
            {
-               get => this._SMSGroupMembers;
+               get => _SMSGroupMembers;
 
-            set => this._SMSGroupMembers.Assign(value);
+            set => _SMSGroupMembers.Assign(value);
 
            }
-
 
         [Association(Name = "FK_SMSList_SMSGroups", Storage = "_SMSLists", OtherKey = "SendGroupID")]
         public EntitySet<SMSList> SMSLists
            {
-               get => this._SMSLists;
+               get => _SMSLists;
 
-            set => this._SMSLists.Assign(value);
+            set => _SMSLists.Assign(value);
 
            }
-
 
         #endregion
 
@@ -206,49 +183,43 @@ namespace CmsData
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
 
-
         private void attach_SMSGroupMembers(SMSGroupMember entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.SMSGroup = this;
         }
 
         private void detach_SMSGroupMembers(SMSGroupMember entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.SMSGroup = null;
         }
 
-
         private void attach_SMSLists(SMSList entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.SMSGroup = this;
         }
 
         private void detach_SMSLists(SMSList entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.SMSGroup = null;
         }
-
-
     }
-
 }
-

@@ -1,218 +1,176 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="DownlineDetails")]
-	public partial class DownlineDetail
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private string _OrganizationName;
-		
-		private string _Leader;
-		
-		private string _Student;
-		
-		private string _Trace;
-		
-		private int? _OrgId;
-		
-		private int? _LeaderId;
-		
-		private int? _DiscipleId;
-		
-		private DateTime? _StartDt;
-		
-		private DateTime? _EndDt;
-		
-		private int? _MaxRows;
-		
-		
-		public DownlineDetail()
-		{
-		}
+    [Table(Name = "DownlineDetails")]
+    public partial class DownlineDetail
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="OrganizationName", Storage="_OrganizationName", DbType="nvarchar(100) NOT NULL")]
-		public string OrganizationName
-		{
-			get
-			{
-				return this._OrganizationName;
-			}
+        private string _OrganizationName;
 
-			set
-			{
-				if (this._OrganizationName != value)
-					this._OrganizationName = value;
-			}
+        private string _Leader;
 
-		}
+        private string _Student;
 
-		
-		[Column(Name="Leader", Storage="_Leader", DbType="nvarchar(139)")]
-		public string Leader
-		{
-			get
-			{
-				return this._Leader;
-			}
+        private string _Trace;
 
-			set
-			{
-				if (this._Leader != value)
-					this._Leader = value;
-			}
+        private int? _OrgId;
 
-		}
+        private int? _LeaderId;
 
-		
-		[Column(Name="Student", Storage="_Student", DbType="nvarchar(139)")]
-		public string Student
-		{
-			get
-			{
-				return this._Student;
-			}
+        private int? _DiscipleId;
 
-			set
-			{
-				if (this._Student != value)
-					this._Student = value;
-			}
+        private DateTime? _StartDt;
 
-		}
+        private DateTime? _EndDt;
 
-		
-		[Column(Name="Trace", Storage="_Trace", DbType="varchar(400)")]
-		public string Trace
-		{
-			get
-			{
-				return this._Trace;
-			}
+        private int? _MaxRows;
 
-			set
-			{
-				if (this._Trace != value)
-					this._Trace = value;
-			}
+        public DownlineDetail()
+        {
+        }
 
-		}
+        [Column(Name = "OrganizationName", Storage = "_OrganizationName", DbType = "nvarchar(100) NOT NULL")]
+        public string OrganizationName
+        {
+            get => _OrganizationName;
 
-		
-		[Column(Name="OrgId", Storage="_OrgId", DbType="int")]
-		public int? OrgId
-		{
-			get
-			{
-				return this._OrgId;
-			}
+            set
+            {
+                if (_OrganizationName != value)
+                {
+                    _OrganizationName = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._OrgId != value)
-					this._OrgId = value;
-			}
+        [Column(Name = "Leader", Storage = "_Leader", DbType = "nvarchar(139)")]
+        public string Leader
+        {
+            get => _Leader;
 
-		}
+            set
+            {
+                if (_Leader != value)
+                {
+                    _Leader = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="LeaderId", Storage="_LeaderId", DbType="int")]
-		public int? LeaderId
-		{
-			get
-			{
-				return this._LeaderId;
-			}
+        [Column(Name = "Student", Storage = "_Student", DbType = "nvarchar(139)")]
+        public string Student
+        {
+            get => _Student;
 
-			set
-			{
-				if (this._LeaderId != value)
-					this._LeaderId = value;
-			}
+            set
+            {
+                if (_Student != value)
+                {
+                    _Student = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "Trace", Storage = "_Trace", DbType = "varchar(400)")]
+        public string Trace
+        {
+            get => _Trace;
 
-		
-		[Column(Name="DiscipleId", Storage="_DiscipleId", DbType="int")]
-		public int? DiscipleId
-		{
-			get
-			{
-				return this._DiscipleId;
-			}
+            set
+            {
+                if (_Trace != value)
+                {
+                    _Trace = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._DiscipleId != value)
-					this._DiscipleId = value;
-			}
+        [Column(Name = "OrgId", Storage = "_OrgId", DbType = "int")]
+        public int? OrgId
+        {
+            get => _OrgId;
 
-		}
+            set
+            {
+                if (_OrgId != value)
+                {
+                    _OrgId = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="StartDt", Storage="_StartDt", DbType="datetime")]
-		public DateTime? StartDt
-		{
-			get
-			{
-				return this._StartDt;
-			}
+        [Column(Name = "LeaderId", Storage = "_LeaderId", DbType = "int")]
+        public int? LeaderId
+        {
+            get => _LeaderId;
 
-			set
-			{
-				if (this._StartDt != value)
-					this._StartDt = value;
-			}
+            set
+            {
+                if (_LeaderId != value)
+                {
+                    _LeaderId = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "DiscipleId", Storage = "_DiscipleId", DbType = "int")]
+        public int? DiscipleId
+        {
+            get => _DiscipleId;
 
-		
-		[Column(Name="EndDt", Storage="_EndDt", DbType="datetime")]
-		public DateTime? EndDt
-		{
-			get
-			{
-				return this._EndDt;
-			}
+            set
+            {
+                if (_DiscipleId != value)
+                {
+                    _DiscipleId = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._EndDt != value)
-					this._EndDt = value;
-			}
+        [Column(Name = "StartDt", Storage = "_StartDt", DbType = "datetime")]
+        public DateTime? StartDt
+        {
+            get => _StartDt;
 
-		}
+            set
+            {
+                if (_StartDt != value)
+                {
+                    _StartDt = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="MaxRows", Storage="_MaxRows", DbType="int")]
-		public int? MaxRows
-		{
-			get
-			{
-				return this._MaxRows;
-			}
+        [Column(Name = "EndDt", Storage = "_EndDt", DbType = "datetime")]
+        public DateTime? EndDt
+        {
+            get => _EndDt;
 
-			set
-			{
-				if (this._MaxRows != value)
-					this._MaxRows = value;
-			}
+            set
+            {
+                if (_EndDt != value)
+                {
+                    _EndDt = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "MaxRows", Storage = "_MaxRows", DbType = "int")]
+        public int? MaxRows
+        {
+            get => _MaxRows;
 
-		
+            set
+            {
+                if (_MaxRows != value)
+                {
+                    _MaxRows = value;
+                }
+            }
+        }
     }
-
 }

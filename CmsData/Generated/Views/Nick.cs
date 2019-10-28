@@ -1,66 +1,48 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="Nick")]
-	public partial class Nick
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private string _NickName;
-		
-		private int? _Count;
-		
-		
-		public Nick()
-		{
-		}
+    [Table(Name = "Nick")]
+    public partial class Nick
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="NickName", Storage="_NickName", DbType="nvarchar(25)")]
-		public string NickName
-		{
-			get
-			{
-				return this._NickName;
-			}
+        private string _NickName;
 
-			set
-			{
-				if (this._NickName != value)
-					this._NickName = value;
-			}
+        private int? _Count;
 
-		}
+        public Nick()
+        {
+        }
 
-		
-		[Column(Name="count", Storage="_Count", DbType="int")]
-		public int? Count
-		{
-			get
-			{
-				return this._Count;
-			}
+        [Column(Name = "NickName", Storage = "_NickName", DbType = "nvarchar(25)")]
+        public string NickName
+        {
+            get => _NickName;
 
-			set
-			{
-				if (this._Count != value)
-					this._Count = value;
-			}
+            set
+            {
+                if (_NickName != value)
+                {
+                    _NickName = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "count", Storage = "_Count", DbType = "int")]
+        public int? Count
+        {
+            get => _Count;
 
-		
+            set
+            {
+                if (_Count != value)
+                {
+                    _Count = value;
+                }
+            }
+        }
     }
-
 }

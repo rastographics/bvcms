@@ -9,7 +9,7 @@ namespace CmsData
     [Table(Name = "dbo.MemberDocForm")]
     public partial class MemberDocForm : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -33,13 +33,12 @@ namespace CmsData
 
         private string _Name;
 
-
-
         private EntityRef<Person> _Person;
 
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -75,243 +74,201 @@ namespace CmsData
         partial void OnNameChanged();
 
         #endregion
+
         public MemberDocForm()
         {
-
-
-            this._Person = default(EntityRef<Person>);
+            _Person = default(EntityRef<Person>);
 
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "Id", UpdateCheck = UpdateCheck.Never, Storage = "_Id", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
         public int Id
         {
-            get => this._Id;
+            get => _Id;
 
             set
             {
-                if (this._Id != value)
+                if (_Id != value)
                 {
-
-                    this.OnIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._Id = value;
-                    this.SendPropertyChanged("Id");
-                    this.OnIdChanged();
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "PeopleId", UpdateCheck = UpdateCheck.Never, Storage = "_PeopleId", DbType = "int NOT NULL")]
         [IsForeignKey]
         public int PeopleId
         {
-            get => this._PeopleId;
+            get => _PeopleId;
 
             set
             {
-                if (this._PeopleId != value)
+                if (_PeopleId != value)
                 {
-
-                    if (this._Person.HasLoadedOrAssignedValue)
+                    if (_Person.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnPeopleIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._PeopleId = value;
-                    this.SendPropertyChanged("PeopleId");
-                    this.OnPeopleIdChanged();
+                    OnPeopleIdChanging(value);
+                    SendPropertyChanging();
+                    _PeopleId = value;
+                    SendPropertyChanged("PeopleId");
+                    OnPeopleIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "DocDate", UpdateCheck = UpdateCheck.Never, Storage = "_DocDate", DbType = "datetime")]
         public DateTime? DocDate
         {
-            get => this._DocDate;
+            get => _DocDate;
 
             set
             {
-                if (this._DocDate != value)
+                if (_DocDate != value)
                 {
-
-                    this.OnDocDateChanging(value);
-                    this.SendPropertyChanging();
-                    this._DocDate = value;
-                    this.SendPropertyChanged("DocDate");
-                    this.OnDocDateChanged();
+                    OnDocDateChanging(value);
+                    SendPropertyChanging();
+                    _DocDate = value;
+                    SendPropertyChanged("DocDate");
+                    OnDocDateChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "UploaderId", UpdateCheck = UpdateCheck.Never, Storage = "_UploaderId", DbType = "int")]
         public int? UploaderId
         {
-            get => this._UploaderId;
+            get => _UploaderId;
 
             set
             {
-                if (this._UploaderId != value)
+                if (_UploaderId != value)
                 {
-
-                    this.OnUploaderIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._UploaderId = value;
-                    this.SendPropertyChanged("UploaderId");
-                    this.OnUploaderIdChanged();
+                    OnUploaderIdChanging(value);
+                    SendPropertyChanging();
+                    _UploaderId = value;
+                    SendPropertyChanged("UploaderId");
+                    OnUploaderIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "IsDocument", UpdateCheck = UpdateCheck.Never, Storage = "_IsDocument", DbType = "bit")]
         public bool? IsDocument
         {
-            get => this._IsDocument;
+            get => _IsDocument;
 
             set
             {
-                if (this._IsDocument != value)
+                if (_IsDocument != value)
                 {
-
-                    this.OnIsDocumentChanging(value);
-                    this.SendPropertyChanging();
-                    this._IsDocument = value;
-                    this.SendPropertyChanged("IsDocument");
-                    this.OnIsDocumentChanged();
+                    OnIsDocumentChanging(value);
+                    SendPropertyChanging();
+                    _IsDocument = value;
+                    SendPropertyChanged("IsDocument");
+                    OnIsDocumentChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Purpose", UpdateCheck = UpdateCheck.Never, Storage = "_Purpose", DbType = "nvarchar(30)")]
         public string Purpose
         {
-            get => this._Purpose;
+            get => _Purpose;
 
             set
             {
-                if (this._Purpose != value)
+                if (_Purpose != value)
                 {
-
-                    this.OnPurposeChanging(value);
-                    this.SendPropertyChanging();
-                    this._Purpose = value;
-                    this.SendPropertyChanged("Purpose");
-                    this.OnPurposeChanged();
+                    OnPurposeChanging(value);
+                    SendPropertyChanging();
+                    _Purpose = value;
+                    SendPropertyChanged("Purpose");
+                    OnPurposeChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "LargeId", UpdateCheck = UpdateCheck.Never, Storage = "_LargeId", DbType = "int")]
         public int? LargeId
         {
-            get => this._LargeId;
+            get => _LargeId;
 
             set
             {
-                if (this._LargeId != value)
+                if (_LargeId != value)
                 {
-
-                    this.OnLargeIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._LargeId = value;
-                    this.SendPropertyChanged("LargeId");
-                    this.OnLargeIdChanged();
+                    OnLargeIdChanging(value);
+                    SendPropertyChanging();
+                    _LargeId = value;
+                    SendPropertyChanged("LargeId");
+                    OnLargeIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "MediumId", UpdateCheck = UpdateCheck.Never, Storage = "_MediumId", DbType = "int")]
         public int? MediumId
         {
-            get => this._MediumId;
+            get => _MediumId;
 
             set
             {
-                if (this._MediumId != value)
+                if (_MediumId != value)
                 {
-
-                    this.OnMediumIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._MediumId = value;
-                    this.SendPropertyChanged("MediumId");
-                    this.OnMediumIdChanged();
+                    OnMediumIdChanging(value);
+                    SendPropertyChanging();
+                    _MediumId = value;
+                    SendPropertyChanged("MediumId");
+                    OnMediumIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "SmallId", UpdateCheck = UpdateCheck.Never, Storage = "_SmallId", DbType = "int")]
         public int? SmallId
         {
-            get => this._SmallId;
+            get => _SmallId;
 
             set
             {
-                if (this._SmallId != value)
+                if (_SmallId != value)
                 {
-
-                    this.OnSmallIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._SmallId = value;
-                    this.SendPropertyChanged("SmallId");
-                    this.OnSmallIdChanged();
+                    OnSmallIdChanging(value);
+                    SendPropertyChanging();
+                    _SmallId = value;
+                    SendPropertyChanged("SmallId");
+                    OnSmallIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Name", UpdateCheck = UpdateCheck.Never, Storage = "_Name", DbType = "nvarchar(100)")]
         public string Name
         {
-            get => this._Name;
+            get => _Name;
 
             set
             {
-                if (this._Name != value)
+                if (_Name != value)
                 {
-
-                    this.OnNameChanging(value);
-                    this.SendPropertyChanging();
-                    this._Name = value;
-                    this.SendPropertyChanged("Name");
-                    this.OnNameChanged();
+                    OnNameChanging(value);
+                    SendPropertyChanging();
+                    _Name = value;
+                    SendPropertyChanged("Name");
+                    OnNameChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -324,67 +281,59 @@ namespace CmsData
         [Association(Name = "FK_MemberDocForm_PEOPLE_TBL", Storage = "_Person", ThisKey = "PeopleId", IsForeignKey = true)]
         public Person Person
         {
-            get => this._Person.Entity;
+            get => _Person.Entity;
 
             set
             {
-                Person previousValue = this._Person.Entity;
+                Person previousValue = _Person.Entity;
                 if (((previousValue != value)
-                            || (this._Person.HasLoadedOrAssignedValue == false)))
+                            || (_Person.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._Person.Entity = null;
+                        _Person.Entity = null;
                         previousValue.MemberDocForms.Remove(this);
                     }
 
-                    this._Person.Entity = value;
+                    _Person.Entity = value;
                     if (value != null)
                     {
                         value.MemberDocForms.Add(this);
 
-                        this._PeopleId = value.PeopleId;
+                        _PeopleId = value.PeopleId;
 
                     }
 
                     else
                     {
-
-                        this._PeopleId = default(int);
+                        _PeopleId = default(int);
 
                     }
 
-                    this.SendPropertyChanged("Person");
+                    SendPropertyChanged("Person");
                 }
-
             }
-
         }
-
 
         #endregion
 
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-
     }
-
 }
-

@@ -1,85 +1,64 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="UserRoles")]
-	public partial class UserRole
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private string _Name;
-		
-		private string _EmailAddress;
-		
-		private string _Roles;
-		
-		
-		public UserRole()
-		{
-		}
+    [Table(Name = "UserRoles")]
+    public partial class UserRole
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="Name", Storage="_Name", DbType="nvarchar(50)")]
-		public string Name
-		{
-			get
-			{
-				return this._Name;
-			}
+        private string _Name;
 
-			set
-			{
-				if (this._Name != value)
-					this._Name = value;
-			}
+        private string _EmailAddress;
 
-		}
+        private string _Roles;
 
-		
-		[Column(Name="EmailAddress", Storage="_EmailAddress", DbType="nvarchar(100)")]
-		public string EmailAddress
-		{
-			get
-			{
-				return this._EmailAddress;
-			}
+        public UserRole()
+        {
+        }
 
-			set
-			{
-				if (this._EmailAddress != value)
-					this._EmailAddress = value;
-			}
+        [Column(Name = "Name", Storage = "_Name", DbType = "nvarchar(50)")]
+        public string Name
+        {
+            get => _Name;
 
-		}
+            set
+            {
+                if (_Name != value)
+                {
+                    _Name = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="Roles", Storage="_Roles", DbType="nvarchar")]
-		public string Roles
-		{
-			get
-			{
-				return this._Roles;
-			}
+        [Column(Name = "EmailAddress", Storage = "_EmailAddress", DbType = "nvarchar(100)")]
+        public string EmailAddress
+        {
+            get => _EmailAddress;
 
-			set
-			{
-				if (this._Roles != value)
-					this._Roles = value;
-			}
+            set
+            {
+                if (_EmailAddress != value)
+                {
+                    _EmailAddress = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "Roles", Storage = "_Roles", DbType = "nvarchar")]
+        public string Roles
+        {
+            get => _Roles;
 
-		
+            set
+            {
+                if (_Roles != value)
+                {
+                    _Roles = value;
+                }
+            }
+        }
     }
-
 }

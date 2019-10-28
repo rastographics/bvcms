@@ -7,7 +7,7 @@ namespace CmsData
     [Table(Name = "dbo.Address")]
     public partial class Address : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -31,11 +31,10 @@ namespace CmsData
 
         private string _Type;
 
-
-
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -71,235 +70,193 @@ namespace CmsData
         partial void OnTypeChanged();
 
         #endregion
+
         public Address()
         {
-
-
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "Id", UpdateCheck = UpdateCheck.Never, Storage = "_Id", DbType = "int NOT NULL", IsPrimaryKey = true)]
         public int Id
         {
-            get => this._Id;
+            get => _Id;
 
             set
             {
-                if (this._Id != value)
+                if (_Id != value)
                 {
-
-                    this.OnIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._Id = value;
-                    this.SendPropertyChanged("Id");
-                    this.OnIdChanged();
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Address", UpdateCheck = UpdateCheck.Never, Storage = "_AddressX", DbType = "nvarchar(50)")]
         public string AddressX
         {
-            get => this._AddressX;
+            get => _AddressX;
 
             set
             {
-                if (this._AddressX != value)
+                if (_AddressX != value)
                 {
-
-                    this.OnAddressXChanging(value);
-                    this.SendPropertyChanging();
-                    this._AddressX = value;
-                    this.SendPropertyChanged("AddressX");
-                    this.OnAddressXChanged();
+                    OnAddressXChanging(value);
+                    SendPropertyChanging();
+                    _AddressX = value;
+                    SendPropertyChanged("AddressX");
+                    OnAddressXChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Address2", UpdateCheck = UpdateCheck.Never, Storage = "_Address2", DbType = "nvarchar(50)")]
         public string Address2
         {
-            get => this._Address2;
+            get => _Address2;
 
             set
             {
-                if (this._Address2 != value)
+                if (_Address2 != value)
                 {
-
-                    this.OnAddress2Changing(value);
-                    this.SendPropertyChanging();
-                    this._Address2 = value;
-                    this.SendPropertyChanged("Address2");
-                    this.OnAddress2Changed();
+                    OnAddress2Changing(value);
+                    SendPropertyChanging();
+                    _Address2 = value;
+                    SendPropertyChanged("Address2");
+                    OnAddress2Changed();
                 }
-
             }
-
         }
-
 
         [Column(Name = "City", UpdateCheck = UpdateCheck.Never, Storage = "_City", DbType = "nvarchar(50)")]
         public string City
         {
-            get => this._City;
+            get => _City;
 
             set
             {
-                if (this._City != value)
+                if (_City != value)
                 {
-
-                    this.OnCityChanging(value);
-                    this.SendPropertyChanging();
-                    this._City = value;
-                    this.SendPropertyChanged("City");
-                    this.OnCityChanged();
+                    OnCityChanging(value);
+                    SendPropertyChanging();
+                    _City = value;
+                    SendPropertyChanged("City");
+                    OnCityChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "State", UpdateCheck = UpdateCheck.Never, Storage = "_State", DbType = "nvarchar(50)")]
         public string State
         {
-            get => this._State;
+            get => _State;
 
             set
             {
-                if (this._State != value)
+                if (_State != value)
                 {
-
-                    this.OnStateChanging(value);
-                    this.SendPropertyChanging();
-                    this._State = value;
-                    this.SendPropertyChanged("State");
-                    this.OnStateChanged();
+                    OnStateChanging(value);
+                    SendPropertyChanging();
+                    _State = value;
+                    SendPropertyChanged("State");
+                    OnStateChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Zip", UpdateCheck = UpdateCheck.Never, Storage = "_Zip", DbType = "nvarchar(50)")]
         public string Zip
         {
-            get => this._Zip;
+            get => _Zip;
 
             set
             {
-                if (this._Zip != value)
+                if (_Zip != value)
                 {
-
-                    this.OnZipChanging(value);
-                    this.SendPropertyChanging();
-                    this._Zip = value;
-                    this.SendPropertyChanged("Zip");
-                    this.OnZipChanged();
+                    OnZipChanging(value);
+                    SendPropertyChanging();
+                    _Zip = value;
+                    SendPropertyChanged("Zip");
+                    OnZipChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "BadAddress", UpdateCheck = UpdateCheck.Never, Storage = "_BadAddress", DbType = "bit")]
         public bool? BadAddress
         {
-            get => this._BadAddress;
+            get => _BadAddress;
 
             set
             {
-                if (this._BadAddress != value)
+                if (_BadAddress != value)
                 {
-
-                    this.OnBadAddressChanging(value);
-                    this.SendPropertyChanging();
-                    this._BadAddress = value;
-                    this.SendPropertyChanged("BadAddress");
-                    this.OnBadAddressChanged();
+                    OnBadAddressChanging(value);
+                    SendPropertyChanging();
+                    _BadAddress = value;
+                    SendPropertyChanged("BadAddress");
+                    OnBadAddressChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "FromDt", UpdateCheck = UpdateCheck.Never, Storage = "_FromDt", DbType = "datetime")]
         public DateTime? FromDt
         {
-            get => this._FromDt;
+            get => _FromDt;
 
             set
             {
-                if (this._FromDt != value)
+                if (_FromDt != value)
                 {
-
-                    this.OnFromDtChanging(value);
-                    this.SendPropertyChanging();
-                    this._FromDt = value;
-                    this.SendPropertyChanged("FromDt");
-                    this.OnFromDtChanged();
+                    OnFromDtChanging(value);
+                    SendPropertyChanging();
+                    _FromDt = value;
+                    SendPropertyChanged("FromDt");
+                    OnFromDtChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ToDt", UpdateCheck = UpdateCheck.Never, Storage = "_ToDt", DbType = "datetime")]
         public DateTime? ToDt
         {
-            get => this._ToDt;
+            get => _ToDt;
 
             set
             {
-                if (this._ToDt != value)
+                if (_ToDt != value)
                 {
-
-                    this.OnToDtChanging(value);
-                    this.SendPropertyChanging();
-                    this._ToDt = value;
-                    this.SendPropertyChanged("ToDt");
-                    this.OnToDtChanged();
+                    OnToDtChanging(value);
+                    SendPropertyChanging();
+                    _ToDt = value;
+                    SendPropertyChanged("ToDt");
+                    OnToDtChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Type", UpdateCheck = UpdateCheck.Never, Storage = "_Type", DbType = "nvarchar(50)")]
         public string Type
         {
-            get => this._Type;
+            get => _Type;
 
             set
             {
-                if (this._Type != value)
+                if (_Type != value)
                 {
-
-                    this.OnTypeChanging(value);
-                    this.SendPropertyChanging();
-                    this._Type = value;
-                    this.SendPropertyChanged("Type");
-                    this.OnTypeChanged();
+                    OnTypeChanging(value);
+                    SendPropertyChanging();
+                    _Type = value;
+                    SendPropertyChanged("Type");
+                    OnTypeChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -314,23 +271,19 @@ namespace CmsData
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-
     }
-
 }
-

@@ -1,85 +1,64 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="RegsettingUsage")]
-	public partial class RegsettingUsage
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private int _OrganizationId;
-		
-		private string _OrganizationName;
-		
-		private string _Usage;
-		
-		
-		public RegsettingUsage()
-		{
-		}
+    [Table(Name = "RegsettingUsage")]
+    public partial class RegsettingUsage
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="OrganizationId", Storage="_OrganizationId", AutoSync=AutoSync.OnInsert, DbType="int NOT NULL IDENTITY", IsDbGenerated=true)]
-		public int OrganizationId
-		{
-			get
-			{
-				return this._OrganizationId;
-			}
+        private int _OrganizationId;
 
-			set
-			{
-				if (this._OrganizationId != value)
-					this._OrganizationId = value;
-			}
+        private string _OrganizationName;
 
-		}
+        private string _Usage;
 
-		
-		[Column(Name="OrganizationName", Storage="_OrganizationName", DbType="nvarchar(100) NOT NULL")]
-		public string OrganizationName
-		{
-			get
-			{
-				return this._OrganizationName;
-			}
+        public RegsettingUsage()
+        {
+        }
 
-			set
-			{
-				if (this._OrganizationName != value)
-					this._OrganizationName = value;
-			}
+        [Column(Name = "OrganizationId", Storage = "_OrganizationId", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsDbGenerated = true)]
+        public int OrganizationId
+        {
+            get => _OrganizationId;
 
-		}
+            set
+            {
+                if (_OrganizationId != value)
+                {
+                    _OrganizationId = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="Usage", Storage="_Usage", DbType="varchar(961) NOT NULL")]
-		public string Usage
-		{
-			get
-			{
-				return this._Usage;
-			}
+        [Column(Name = "OrganizationName", Storage = "_OrganizationName", DbType = "nvarchar(100) NOT NULL")]
+        public string OrganizationName
+        {
+            get => _OrganizationName;
 
-			set
-			{
-				if (this._Usage != value)
-					this._Usage = value;
-			}
+            set
+            {
+                if (_OrganizationName != value)
+                {
+                    _OrganizationName = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "Usage", Storage = "_Usage", DbType = "varchar(961) NOT NULL")]
+        public string Usage
+        {
+            get => _Usage;
 
-		
+            set
+            {
+                if (_Usage != value)
+                {
+                    _Usage = value;
+                }
+            }
+        }
     }
-
 }

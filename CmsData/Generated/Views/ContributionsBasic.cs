@@ -1,199 +1,160 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="ContributionsBasic")]
-	public partial class ContributionsBasic
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private int _ContributionId;
-		
-		private int? _PeopleId;
-		
-		private int _FamilyId;
-		
-		private decimal? _ContributionAmount;
-		
-		private DateTime? _ContributionDate;
-		
-		private string _CheckNo;
-		
-		private int _ContributionTypeId;
-		
-		private int _FundId;
-		
-		private int _BundleHeaderTypeId;
-		
-		
-		public ContributionsBasic()
-		{
-		}
+    [Table(Name = "ContributionsBasic")]
+    public partial class ContributionsBasic
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="ContributionId", Storage="_ContributionId", DbType="int NOT NULL")]
-		public int ContributionId
-		{
-			get
-			{
-				return this._ContributionId;
-			}
+        private int _ContributionId;
 
-			set
-			{
-				if (this._ContributionId != value)
-					this._ContributionId = value;
-			}
+        private int? _PeopleId;
 
-		}
+        private int _FamilyId;
 
-		
-		[Column(Name="PeopleId", Storage="_PeopleId", DbType="int")]
-		public int? PeopleId
-		{
-			get
-			{
-				return this._PeopleId;
-			}
+        private decimal? _ContributionAmount;
 
-			set
-			{
-				if (this._PeopleId != value)
-					this._PeopleId = value;
-			}
+        private DateTime? _ContributionDate;
 
-		}
+        private string _CheckNo;
 
-		
-		[Column(Name="FamilyId", Storage="_FamilyId", DbType="int NOT NULL")]
-		public int FamilyId
-		{
-			get
-			{
-				return this._FamilyId;
-			}
+        private int _ContributionTypeId;
 
-			set
-			{
-				if (this._FamilyId != value)
-					this._FamilyId = value;
-			}
+        private int _FundId;
 
-		}
+        private int _BundleHeaderTypeId;
 
-		
-		[Column(Name="ContributionAmount", Storage="_ContributionAmount", DbType="Decimal(11,2)")]
-		public decimal? ContributionAmount
-		{
-			get
-			{
-				return this._ContributionAmount;
-			}
+        public ContributionsBasic()
+        {
+        }
 
-			set
-			{
-				if (this._ContributionAmount != value)
-					this._ContributionAmount = value;
-			}
+        [Column(Name = "ContributionId", Storage = "_ContributionId", DbType = "int NOT NULL")]
+        public int ContributionId
+        {
+            get => _ContributionId;
 
-		}
+            set
+            {
+                if (_ContributionId != value)
+                {
+                    _ContributionId = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="ContributionDate", Storage="_ContributionDate", DbType="datetime")]
-		public DateTime? ContributionDate
-		{
-			get
-			{
-				return this._ContributionDate;
-			}
+        [Column(Name = "PeopleId", Storage = "_PeopleId", DbType = "int")]
+        public int? PeopleId
+        {
+            get => _PeopleId;
 
-			set
-			{
-				if (this._ContributionDate != value)
-					this._ContributionDate = value;
-			}
+            set
+            {
+                if (_PeopleId != value)
+                {
+                    _PeopleId = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "FamilyId", Storage = "_FamilyId", DbType = "int NOT NULL")]
+        public int FamilyId
+        {
+            get => _FamilyId;
 
-		
-		[Column(Name="CheckNo", Storage="_CheckNo", DbType="nvarchar(20)")]
-		public string CheckNo
-		{
-			get
-			{
-				return this._CheckNo;
-			}
+            set
+            {
+                if (_FamilyId != value)
+                {
+                    _FamilyId = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._CheckNo != value)
-					this._CheckNo = value;
-			}
+        [Column(Name = "ContributionAmount", Storage = "_ContributionAmount", DbType = "Decimal(11,2)")]
+        public decimal? ContributionAmount
+        {
+            get => _ContributionAmount;
 
-		}
+            set
+            {
+                if (_ContributionAmount != value)
+                {
+                    _ContributionAmount = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="ContributionTypeId", Storage="_ContributionTypeId", DbType="int NOT NULL")]
-		public int ContributionTypeId
-		{
-			get
-			{
-				return this._ContributionTypeId;
-			}
+        [Column(Name = "ContributionDate", Storage = "_ContributionDate", DbType = "datetime")]
+        public DateTime? ContributionDate
+        {
+            get => _ContributionDate;
 
-			set
-			{
-				if (this._ContributionTypeId != value)
-					this._ContributionTypeId = value;
-			}
+            set
+            {
+                if (_ContributionDate != value)
+                {
+                    _ContributionDate = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "CheckNo", Storage = "_CheckNo", DbType = "nvarchar(20)")]
+        public string CheckNo
+        {
+            get => _CheckNo;
 
-		
-		[Column(Name="FundId", Storage="_FundId", DbType="int NOT NULL")]
-		public int FundId
-		{
-			get
-			{
-				return this._FundId;
-			}
+            set
+            {
+                if (_CheckNo != value)
+                {
+                    _CheckNo = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._FundId != value)
-					this._FundId = value;
-			}
+        [Column(Name = "ContributionTypeId", Storage = "_ContributionTypeId", DbType = "int NOT NULL")]
+        public int ContributionTypeId
+        {
+            get => _ContributionTypeId;
 
-		}
+            set
+            {
+                if (_ContributionTypeId != value)
+                {
+                    _ContributionTypeId = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="BundleHeaderTypeId", Storage="_BundleHeaderTypeId", DbType="int NOT NULL")]
-		public int BundleHeaderTypeId
-		{
-			get
-			{
-				return this._BundleHeaderTypeId;
-			}
+        [Column(Name = "FundId", Storage = "_FundId", DbType = "int NOT NULL")]
+        public int FundId
+        {
+            get => _FundId;
 
-			set
-			{
-				if (this._BundleHeaderTypeId != value)
-					this._BundleHeaderTypeId = value;
-			}
+            set
+            {
+                if (_FundId != value)
+                {
+                    _FundId = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "BundleHeaderTypeId", Storage = "_BundleHeaderTypeId", DbType = "int NOT NULL")]
+        public int BundleHeaderTypeId
+        {
+            get => _BundleHeaderTypeId;
 
-		
+            set
+            {
+                if (_BundleHeaderTypeId != value)
+                {
+                    _BundleHeaderTypeId = value;
+                }
+            }
+        }
     }
-
 }

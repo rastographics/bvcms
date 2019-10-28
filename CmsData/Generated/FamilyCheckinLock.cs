@@ -9,7 +9,7 @@ namespace CmsData
     [Table(Name = "dbo.FamilyCheckinLock")]
     public partial class FamilyCheckinLock : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -19,13 +19,12 @@ namespace CmsData
 
         private DateTime _Created;
 
-
-
         private EntityRef<Family> _Family;
 
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -40,15 +39,13 @@ namespace CmsData
         partial void OnCreatedChanged();
 
         #endregion
+
         public FamilyCheckinLock()
         {
-
-
-            this._Family = default(EntityRef<Family>);
+            _Family = default(EntityRef<Family>);
 
             OnCreated();
         }
-
 
         #region Columns
 
@@ -56,73 +53,61 @@ namespace CmsData
         [IsForeignKey]
         public int FamilyId
         {
-            get => this._FamilyId;
+            get => _FamilyId;
 
             set
             {
-                if (this._FamilyId != value)
+                if (_FamilyId != value)
                 {
-
-                    if (this._Family.HasLoadedOrAssignedValue)
+                    if (_Family.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnFamilyIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._FamilyId = value;
-                    this.SendPropertyChanged("FamilyId");
-                    this.OnFamilyIdChanged();
+                    OnFamilyIdChanging(value);
+                    SendPropertyChanging();
+                    _FamilyId = value;
+                    SendPropertyChanged("FamilyId");
+                    OnFamilyIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Locked", UpdateCheck = UpdateCheck.Never, Storage = "_Locked", DbType = "bit NOT NULL")]
         public bool Locked
         {
-            get => this._Locked;
+            get => _Locked;
 
             set
             {
-                if (this._Locked != value)
+                if (_Locked != value)
                 {
-
-                    this.OnLockedChanging(value);
-                    this.SendPropertyChanging();
-                    this._Locked = value;
-                    this.SendPropertyChanged("Locked");
-                    this.OnLockedChanged();
+                    OnLockedChanging(value);
+                    SendPropertyChanging();
+                    _Locked = value;
+                    SendPropertyChanged("Locked");
+                    OnLockedChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Created", UpdateCheck = UpdateCheck.Never, Storage = "_Created", DbType = "datetime NOT NULL")]
         public DateTime Created
         {
-            get => this._Created;
+            get => _Created;
 
             set
             {
-                if (this._Created != value)
+                if (_Created != value)
                 {
-
-                    this.OnCreatedChanging(value);
-                    this.SendPropertyChanging();
-                    this._Created = value;
-                    this.SendPropertyChanged("Created");
-                    this.OnCreatedChanged();
+                    OnCreatedChanging(value);
+                    SendPropertyChanging();
+                    _Created = value;
+                    SendPropertyChanged("Created");
+                    OnCreatedChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -135,67 +120,59 @@ namespace CmsData
         [Association(Name = "FK_FamilyCheckinLock_FamilyCheckinLock1", Storage = "_Family", ThisKey = "FamilyId", IsForeignKey = true)]
         public Family Family
         {
-            get => this._Family.Entity;
+            get => _Family.Entity;
 
             set
             {
-                Family previousValue = this._Family.Entity;
+                Family previousValue = _Family.Entity;
                 if (((previousValue != value)
-                            || (this._Family.HasLoadedOrAssignedValue == false)))
+                            || (_Family.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._Family.Entity = null;
+                        _Family.Entity = null;
                         previousValue.FamilyCheckinLocks.Remove(this);
                     }
 
-                    this._Family.Entity = value;
+                    _Family.Entity = value;
                     if (value != null)
                     {
                         value.FamilyCheckinLocks.Add(this);
 
-                        this._FamilyId = value.FamilyId;
+                        _FamilyId = value.FamilyId;
 
                     }
 
                     else
                     {
-
-                        this._FamilyId = default(int);
+                        _FamilyId = default(int);
 
                     }
 
-                    this.SendPropertyChanged("Family");
+                    SendPropertyChanged("Family");
                 }
-
             }
-
         }
-
 
         #endregion
 
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-
     }
-
 }
-

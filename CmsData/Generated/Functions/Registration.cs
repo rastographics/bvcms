@@ -1,237 +1,192 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="Registrations")]
-	public partial class Registration
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private int _Id;
-		
-		private DateTime? _Stamp;
-		
-		private int? _OrganizationId;
-		
-		private string _OrganizationName;
-		
-		private int? _PeopleId;
-		
-		private string _Name;
-		
-		private string _Dob;
-		
-		private string _First;
-		
-		private string _Last;
-		
-		private int? _Cnt;
-		
-		private bool? _Completed;
-		
-		
-		public Registration()
-		{
-		}
+    [Table(Name = "Registrations")]
+    public partial class Registration
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="Id", Storage="_Id", DbType="int NOT NULL")]
-		public int Id
-		{
-			get
-			{
-				return this._Id;
-			}
+        private int _Id;
 
-			set
-			{
-				if (this._Id != value)
-					this._Id = value;
-			}
+        private DateTime? _Stamp;
 
-		}
+        private int? _OrganizationId;
 
-		
-		[Column(Name="Stamp", Storage="_Stamp", DbType="datetime")]
-		public DateTime? Stamp
-		{
-			get
-			{
-				return this._Stamp;
-			}
+        private string _OrganizationName;
 
-			set
-			{
-				if (this._Stamp != value)
-					this._Stamp = value;
-			}
+        private int? _PeopleId;
 
-		}
+        private string _Name;
 
-		
-		[Column(Name="OrganizationId", Storage="_OrganizationId", DbType="int")]
-		public int? OrganizationId
-		{
-			get
-			{
-				return this._OrganizationId;
-			}
+        private string _Dob;
 
-			set
-			{
-				if (this._OrganizationId != value)
-					this._OrganizationId = value;
-			}
+        private string _First;
 
-		}
+        private string _Last;
 
-		
-		[Column(Name="OrganizationName", Storage="_OrganizationName", DbType="nvarchar(100)")]
-		public string OrganizationName
-		{
-			get
-			{
-				return this._OrganizationName;
-			}
+        private int? _Cnt;
 
-			set
-			{
-				if (this._OrganizationName != value)
-					this._OrganizationName = value;
-			}
+        private bool? _Completed;
 
-		}
+        public Registration()
+        {
+        }
 
-		
-		[Column(Name="PeopleId", Storage="_PeopleId", DbType="int")]
-		public int? PeopleId
-		{
-			get
-			{
-				return this._PeopleId;
-			}
+        [Column(Name = "Id", Storage = "_Id", DbType = "int NOT NULL")]
+        public int Id
+        {
+            get => _Id;
 
-			set
-			{
-				if (this._PeopleId != value)
-					this._PeopleId = value;
-			}
+            set
+            {
+                if (_Id != value)
+                {
+                    _Id = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "Stamp", Storage = "_Stamp", DbType = "datetime")]
+        public DateTime? Stamp
+        {
+            get => _Stamp;
 
-		
-		[Column(Name="Name", Storage="_Name", DbType="nvarchar(138)")]
-		public string Name
-		{
-			get
-			{
-				return this._Name;
-			}
+            set
+            {
+                if (_Stamp != value)
+                {
+                    _Stamp = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._Name != value)
-					this._Name = value;
-			}
+        [Column(Name = "OrganizationId", Storage = "_OrganizationId", DbType = "int")]
+        public int? OrganizationId
+        {
+            get => _OrganizationId;
 
-		}
+            set
+            {
+                if (_OrganizationId != value)
+                {
+                    _OrganizationId = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="dob", Storage="_Dob", DbType="varchar(50)")]
-		public string Dob
-		{
-			get
-			{
-				return this._Dob;
-			}
+        [Column(Name = "OrganizationName", Storage = "_OrganizationName", DbType = "nvarchar(100)")]
+        public string OrganizationName
+        {
+            get => _OrganizationName;
 
-			set
-			{
-				if (this._Dob != value)
-					this._Dob = value;
-			}
+            set
+            {
+                if (_OrganizationName != value)
+                {
+                    _OrganizationName = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "PeopleId", Storage = "_PeopleId", DbType = "int")]
+        public int? PeopleId
+        {
+            get => _PeopleId;
 
-		
-		[Column(Name="first", Storage="_First", DbType="varchar(50)")]
-		public string First
-		{
-			get
-			{
-				return this._First;
-			}
+            set
+            {
+                if (_PeopleId != value)
+                {
+                    _PeopleId = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._First != value)
-					this._First = value;
-			}
+        [Column(Name = "Name", Storage = "_Name", DbType = "nvarchar(138)")]
+        public string Name
+        {
+            get => _Name;
 
-		}
+            set
+            {
+                if (_Name != value)
+                {
+                    _Name = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="last", Storage="_Last", DbType="varchar(50)")]
-		public string Last
-		{
-			get
-			{
-				return this._Last;
-			}
+        [Column(Name = "dob", Storage = "_Dob", DbType = "varchar(50)")]
+        public string Dob
+        {
+            get => _Dob;
 
-			set
-			{
-				if (this._Last != value)
-					this._Last = value;
-			}
+            set
+            {
+                if (_Dob != value)
+                {
+                    _Dob = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "first", Storage = "_First", DbType = "varchar(50)")]
+        public string First
+        {
+            get => _First;
 
-		
-		[Column(Name="cnt", Storage="_Cnt", DbType="int")]
-		public int? Cnt
-		{
-			get
-			{
-				return this._Cnt;
-			}
+            set
+            {
+                if (_First != value)
+                {
+                    _First = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._Cnt != value)
-					this._Cnt = value;
-			}
+        [Column(Name = "last", Storage = "_Last", DbType = "varchar(50)")]
+        public string Last
+        {
+            get => _Last;
 
-		}
+            set
+            {
+                if (_Last != value)
+                {
+                    _Last = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="completed", Storage="_Completed", DbType="bit")]
-		public bool? Completed
-		{
-			get
-			{
-				return this._Completed;
-			}
+        [Column(Name = "cnt", Storage = "_Cnt", DbType = "int")]
+        public int? Cnt
+        {
+            get => _Cnt;
 
-			set
-			{
-				if (this._Completed != value)
-					this._Completed = value;
-			}
+            set
+            {
+                if (_Cnt != value)
+                {
+                    _Cnt = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "completed", Storage = "_Completed", DbType = "bit")]
+        public bool? Completed
+        {
+            get => _Completed;
 
-		
+            set
+            {
+                if (_Completed != value)
+                {
+                    _Completed = value;
+                }
+            }
+        }
     }
-
 }

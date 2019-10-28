@@ -7,7 +7,7 @@ namespace CmsData
     [Table(Name = "dbo.CheckedBatches")]
     public partial class CheckedBatch : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -15,11 +15,10 @@ namespace CmsData
 
         private DateTime? _CheckedX;
 
-
-
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -31,59 +30,49 @@ namespace CmsData
         partial void OnCheckedXChanged();
 
         #endregion
+
         public CheckedBatch()
         {
-
-
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "BatchRef", UpdateCheck = UpdateCheck.Never, Storage = "_BatchRef", DbType = "nvarchar(50) NOT NULL", IsPrimaryKey = true)]
         public string BatchRef
         {
-            get => this._BatchRef;
+            get => _BatchRef;
 
             set
             {
-                if (this._BatchRef != value)
+                if (_BatchRef != value)
                 {
-
-                    this.OnBatchRefChanging(value);
-                    this.SendPropertyChanging();
-                    this._BatchRef = value;
-                    this.SendPropertyChanged("BatchRef");
-                    this.OnBatchRefChanged();
+                    OnBatchRefChanging(value);
+                    SendPropertyChanging();
+                    _BatchRef = value;
+                    SendPropertyChanged("BatchRef");
+                    OnBatchRefChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Checked", UpdateCheck = UpdateCheck.Never, Storage = "_CheckedX", DbType = "datetime")]
         public DateTime? CheckedX
         {
-            get => this._CheckedX;
+            get => _CheckedX;
 
             set
             {
-                if (this._CheckedX != value)
+                if (_CheckedX != value)
                 {
-
-                    this.OnCheckedXChanging(value);
-                    this.SendPropertyChanging();
-                    this._CheckedX = value;
-                    this.SendPropertyChanged("CheckedX");
-                    this.OnCheckedXChanged();
+                    OnCheckedXChanging(value);
+                    SendPropertyChanging();
+                    _CheckedX = value;
+                    SendPropertyChanged("CheckedX");
+                    OnCheckedXChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -98,23 +87,19 @@ namespace CmsData
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-
     }
-
 }
-

@@ -9,7 +9,7 @@ namespace CmsData
     [Table(Name = "dbo.SubRequest")]
     public partial class SubRequest : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -25,8 +25,6 @@ namespace CmsData
 
         private bool? _CanSub;
 
-
-
         private EntityRef<Attend> _Attend;
 
         private EntityRef<Person> _Requestor;
@@ -36,6 +34,7 @@ namespace CmsData
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -59,19 +58,17 @@ namespace CmsData
         partial void OnCanSubChanged();
 
         #endregion
+
         public SubRequest()
         {
+            _Attend = default(EntityRef<Attend>);
 
+            _Requestor = default(EntityRef<Person>);
 
-            this._Attend = default(EntityRef<Attend>);
-
-            this._Requestor = default(EntityRef<Person>);
-
-            this._Substitute = default(EntityRef<Person>);
+            _Substitute = default(EntityRef<Person>);
 
             OnCreated();
         }
-
 
         #region Columns
 
@@ -79,151 +76,127 @@ namespace CmsData
         [IsForeignKey]
         public int AttendId
         {
-            get => this._AttendId;
+            get => _AttendId;
 
             set
             {
-                if (this._AttendId != value)
+                if (_AttendId != value)
                 {
-
-                    if (this._Attend.HasLoadedOrAssignedValue)
+                    if (_Attend.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnAttendIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._AttendId = value;
-                    this.SendPropertyChanged("AttendId");
-                    this.OnAttendIdChanged();
+                    OnAttendIdChanging(value);
+                    SendPropertyChanging();
+                    _AttendId = value;
+                    SendPropertyChanged("AttendId");
+                    OnAttendIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "RequestorId", UpdateCheck = UpdateCheck.Never, Storage = "_RequestorId", DbType = "int NOT NULL", IsPrimaryKey = true)]
         [IsForeignKey]
         public int RequestorId
         {
-            get => this._RequestorId;
+            get => _RequestorId;
 
             set
             {
-                if (this._RequestorId != value)
+                if (_RequestorId != value)
                 {
-
-                    if (this._Requestor.HasLoadedOrAssignedValue)
+                    if (_Requestor.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnRequestorIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._RequestorId = value;
-                    this.SendPropertyChanged("RequestorId");
-                    this.OnRequestorIdChanged();
+                    OnRequestorIdChanging(value);
+                    SendPropertyChanging();
+                    _RequestorId = value;
+                    SendPropertyChanged("RequestorId");
+                    OnRequestorIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Requested", UpdateCheck = UpdateCheck.Never, Storage = "_Requested", DbType = "datetime NOT NULL", IsPrimaryKey = true)]
         public DateTime Requested
         {
-            get => this._Requested;
+            get => _Requested;
 
             set
             {
-                if (this._Requested != value)
+                if (_Requested != value)
                 {
-
-                    this.OnRequestedChanging(value);
-                    this.SendPropertyChanging();
-                    this._Requested = value;
-                    this.SendPropertyChanged("Requested");
-                    this.OnRequestedChanged();
+                    OnRequestedChanging(value);
+                    SendPropertyChanging();
+                    _Requested = value;
+                    SendPropertyChanged("Requested");
+                    OnRequestedChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "SubstituteId", UpdateCheck = UpdateCheck.Never, Storage = "_SubstituteId", DbType = "int NOT NULL", IsPrimaryKey = true)]
         [IsForeignKey]
         public int SubstituteId
         {
-            get => this._SubstituteId;
+            get => _SubstituteId;
 
             set
             {
-                if (this._SubstituteId != value)
+                if (_SubstituteId != value)
                 {
-
-                    if (this._Substitute.HasLoadedOrAssignedValue)
+                    if (_Substitute.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnSubstituteIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._SubstituteId = value;
-                    this.SendPropertyChanged("SubstituteId");
-                    this.OnSubstituteIdChanged();
+                    OnSubstituteIdChanging(value);
+                    SendPropertyChanging();
+                    _SubstituteId = value;
+                    SendPropertyChanged("SubstituteId");
+                    OnSubstituteIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Responded", UpdateCheck = UpdateCheck.Never, Storage = "_Responded", DbType = "datetime")]
         public DateTime? Responded
         {
-            get => this._Responded;
+            get => _Responded;
 
             set
             {
-                if (this._Responded != value)
+                if (_Responded != value)
                 {
-
-                    this.OnRespondedChanging(value);
-                    this.SendPropertyChanging();
-                    this._Responded = value;
-                    this.SendPropertyChanged("Responded");
-                    this.OnRespondedChanged();
+                    OnRespondedChanging(value);
+                    SendPropertyChanging();
+                    _Responded = value;
+                    SendPropertyChanged("Responded");
+                    OnRespondedChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "CanSub", UpdateCheck = UpdateCheck.Never, Storage = "_CanSub", DbType = "bit")]
         public bool? CanSub
         {
-            get => this._CanSub;
+            get => _CanSub;
 
             set
             {
-                if (this._CanSub != value)
+                if (_CanSub != value)
                 {
-
-                    this.OnCanSubChanging(value);
-                    this.SendPropertyChanging();
-                    this._CanSub = value;
-                    this.SendPropertyChanged("CanSub");
-                    this.OnCanSubChanged();
+                    OnCanSubChanging(value);
+                    SendPropertyChanging();
+                    _CanSub = value;
+                    SendPropertyChanged("CanSub");
+                    OnCanSubChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -236,151 +209,135 @@ namespace CmsData
         [Association(Name = "SubRequests__Attend", Storage = "_Attend", ThisKey = "AttendId", IsForeignKey = true)]
         public Attend Attend
         {
-            get => this._Attend.Entity;
+            get => _Attend.Entity;
 
             set
             {
-                Attend previousValue = this._Attend.Entity;
+                Attend previousValue = _Attend.Entity;
                 if (((previousValue != value)
-                            || (this._Attend.HasLoadedOrAssignedValue == false)))
+                            || (_Attend.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._Attend.Entity = null;
+                        _Attend.Entity = null;
                         previousValue.SubRequests.Remove(this);
                     }
 
-                    this._Attend.Entity = value;
+                    _Attend.Entity = value;
                     if (value != null)
                     {
                         value.SubRequests.Add(this);
 
-                        this._AttendId = value.AttendId;
+                        _AttendId = value.AttendId;
 
                     }
 
                     else
                     {
-
-                        this._AttendId = default(int);
+                        _AttendId = default(int);
 
                     }
 
-                    this.SendPropertyChanged("Attend");
+                    SendPropertyChanged("Attend");
                 }
-
             }
-
         }
-
 
         [Association(Name = "SubRequests__Requestor", Storage = "_Requestor", ThisKey = "RequestorId", IsForeignKey = true)]
         public Person Requestor
         {
-            get => this._Requestor.Entity;
+            get => _Requestor.Entity;
 
             set
             {
-                Person previousValue = this._Requestor.Entity;
+                Person previousValue = _Requestor.Entity;
                 if (((previousValue != value)
-                            || (this._Requestor.HasLoadedOrAssignedValue == false)))
+                            || (_Requestor.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._Requestor.Entity = null;
+                        _Requestor.Entity = null;
                         previousValue.SubRequests.Remove(this);
                     }
 
-                    this._Requestor.Entity = value;
+                    _Requestor.Entity = value;
                     if (value != null)
                     {
                         value.SubRequests.Add(this);
 
-                        this._RequestorId = value.PeopleId;
+                        _RequestorId = value.PeopleId;
 
                     }
 
                     else
                     {
-
-                        this._RequestorId = default(int);
+                        _RequestorId = default(int);
 
                     }
 
-                    this.SendPropertyChanged("Requestor");
+                    SendPropertyChanged("Requestor");
                 }
-
             }
-
         }
-
 
         [Association(Name = "SubResponses__Substitute", Storage = "_Substitute", ThisKey = "SubstituteId", IsForeignKey = true)]
         public Person Substitute
         {
-            get => this._Substitute.Entity;
+            get => _Substitute.Entity;
 
             set
             {
-                Person previousValue = this._Substitute.Entity;
+                Person previousValue = _Substitute.Entity;
                 if (((previousValue != value)
-                            || (this._Substitute.HasLoadedOrAssignedValue == false)))
+                            || (_Substitute.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._Substitute.Entity = null;
+                        _Substitute.Entity = null;
                         previousValue.SubResponses.Remove(this);
                     }
 
-                    this._Substitute.Entity = value;
+                    _Substitute.Entity = value;
                     if (value != null)
                     {
                         value.SubResponses.Add(this);
 
-                        this._SubstituteId = value.PeopleId;
+                        _SubstituteId = value.PeopleId;
 
                     }
 
                     else
                     {
-
-                        this._SubstituteId = default(int);
+                        _SubstituteId = default(int);
 
                     }
 
-                    this.SendPropertyChanged("Substitute");
+                    SendPropertyChanged("Substitute");
                 }
-
             }
-
         }
-
 
         #endregion
 
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-
     }
-
 }
-

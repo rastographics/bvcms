@@ -9,15 +9,13 @@ namespace CmsData
     [Table(Name = "dbo.UserRole")]
     public partial class UserRole : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
         private int _UserId;
 
         private int _RoleId;
-
-
 
         private EntityRef<Role> _Role;
 
@@ -26,6 +24,7 @@ namespace CmsData
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -37,17 +36,15 @@ namespace CmsData
         partial void OnRoleIdChanged();
 
         #endregion
+
         public UserRole()
         {
+            _Role = default(EntityRef<Role>);
 
-
-            this._Role = default(EntityRef<Role>);
-
-            this._User = default(EntityRef<User>);
+            _User = default(EntityRef<User>);
 
             OnCreated();
         }
-
 
         #region Columns
 
@@ -55,57 +52,49 @@ namespace CmsData
         [IsForeignKey]
         public int UserId
         {
-            get => this._UserId;
+            get => _UserId;
 
             set
             {
-                if (this._UserId != value)
+                if (_UserId != value)
                 {
-
-                    if (this._User.HasLoadedOrAssignedValue)
+                    if (_User.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnUserIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._UserId = value;
-                    this.SendPropertyChanged("UserId");
-                    this.OnUserIdChanged();
+                    OnUserIdChanging(value);
+                    SendPropertyChanging();
+                    _UserId = value;
+                    SendPropertyChanged("UserId");
+                    OnUserIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "RoleId", UpdateCheck = UpdateCheck.Never, Storage = "_RoleId", DbType = "int NOT NULL", IsPrimaryKey = true)]
         [IsForeignKey]
         public int RoleId
         {
-            get => this._RoleId;
+            get => _RoleId;
 
             set
             {
-                if (this._RoleId != value)
+                if (_RoleId != value)
                 {
-
-                    if (this._Role.HasLoadedOrAssignedValue)
+                    if (_Role.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnRoleIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._RoleId = value;
-                    this.SendPropertyChanged("RoleId");
-                    this.OnRoleIdChanged();
+                    OnRoleIdChanging(value);
+                    SendPropertyChanging();
+                    _RoleId = value;
+                    SendPropertyChanged("RoleId");
+                    OnRoleIdChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -118,109 +107,97 @@ namespace CmsData
         [Association(Name = "FK_UserRole_Roles", Storage = "_Role", ThisKey = "RoleId", IsForeignKey = true)]
         public Role Role
         {
-            get => this._Role.Entity;
+            get => _Role.Entity;
 
             set
             {
-                Role previousValue = this._Role.Entity;
+                Role previousValue = _Role.Entity;
                 if (((previousValue != value)
-                            || (this._Role.HasLoadedOrAssignedValue == false)))
+                            || (_Role.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._Role.Entity = null;
+                        _Role.Entity = null;
                         previousValue.UserRoles.Remove(this);
                     }
 
-                    this._Role.Entity = value;
+                    _Role.Entity = value;
                     if (value != null)
                     {
                         value.UserRoles.Add(this);
 
-                        this._RoleId = value.RoleId;
+                        _RoleId = value.RoleId;
 
                     }
 
                     else
                     {
-
-                        this._RoleId = default(int);
+                        _RoleId = default(int);
 
                     }
 
-                    this.SendPropertyChanged("Role");
+                    SendPropertyChanged("Role");
                 }
-
             }
-
         }
-
 
         [Association(Name = "FK_UserRole_Users", Storage = "_User", ThisKey = "UserId", IsForeignKey = true)]
         public User User
         {
-            get => this._User.Entity;
+            get => _User.Entity;
 
             set
             {
-                User previousValue = this._User.Entity;
+                User previousValue = _User.Entity;
                 if (((previousValue != value)
-                            || (this._User.HasLoadedOrAssignedValue == false)))
+                            || (_User.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._User.Entity = null;
+                        _User.Entity = null;
                         previousValue.UserRoles.Remove(this);
                     }
 
-                    this._User.Entity = value;
+                    _User.Entity = value;
                     if (value != null)
                     {
                         value.UserRoles.Add(this);
 
-                        this._UserId = value.UserId;
+                        _UserId = value.UserId;
 
                     }
 
                     else
                     {
-
-                        this._UserId = default(int);
+                        _UserId = default(int);
 
                     }
 
-                    this.SendPropertyChanged("User");
+                    SendPropertyChanged("User");
                 }
-
             }
-
         }
-
 
         #endregion
 
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-
     }
-
 }
-

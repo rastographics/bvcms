@@ -8,7 +8,7 @@ namespace CmsData
     [Table(Name = "dbo.Content")]
     public partial class Content : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -42,13 +42,12 @@ namespace CmsData
 
         private bool? _Snippet;
 
-
         private EntitySet<ContentKeyWord> _ContentKeyWords;
-
 
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -99,347 +98,285 @@ namespace CmsData
         partial void OnSnippetChanged();
 
         #endregion
+
         public Content()
         {
-
-            this._ContentKeyWords = new EntitySet<ContentKeyWord>(new Action<ContentKeyWord>(this.attach_ContentKeyWords), new Action<ContentKeyWord>(this.detach_ContentKeyWords));
-
+            _ContentKeyWords = new EntitySet<ContentKeyWord>(new Action<ContentKeyWord>(attach_ContentKeyWords), new Action<ContentKeyWord>(detach_ContentKeyWords));
 
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "Name", UpdateCheck = UpdateCheck.Never, Storage = "_Name", DbType = "nvarchar(400) NOT NULL")]
         public string Name
         {
-            get => this._Name;
+            get => _Name;
 
             set
             {
-                if (this._Name != value)
+                if (_Name != value)
                 {
-
-                    this.OnNameChanging(value);
-                    this.SendPropertyChanging();
-                    this._Name = value;
-                    this.SendPropertyChanged("Name");
-                    this.OnNameChanged();
+                    OnNameChanging(value);
+                    SendPropertyChanging();
+                    _Name = value;
+                    SendPropertyChanged("Name");
+                    OnNameChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Title", UpdateCheck = UpdateCheck.Never, Storage = "_Title", DbType = "nvarchar(500)")]
         public string Title
         {
-            get => this._Title;
+            get => _Title;
 
             set
             {
-                if (this._Title != value)
+                if (_Title != value)
                 {
-
-                    this.OnTitleChanging(value);
-                    this.SendPropertyChanging();
-                    this._Title = value;
-                    this.SendPropertyChanged("Title");
-                    this.OnTitleChanged();
+                    OnTitleChanging(value);
+                    SendPropertyChanging();
+                    _Title = value;
+                    SendPropertyChanged("Title");
+                    OnTitleChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Body", UpdateCheck = UpdateCheck.Never, Storage = "_Body", DbType = "nvarchar")]
         public string Body
         {
-            get => this._Body;
+            get => _Body;
 
             set
             {
-                if (this._Body != value)
+                if (_Body != value)
                 {
-
-                    this.OnBodyChanging(value);
-                    this.SendPropertyChanging();
-                    this._Body = value;
-                    this.SendPropertyChanged("Body");
-                    this.OnBodyChanged();
+                    OnBodyChanging(value);
+                    SendPropertyChanging();
+                    _Body = value;
+                    SendPropertyChanged("Body");
+                    OnBodyChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "DateCreated", UpdateCheck = UpdateCheck.Never, Storage = "_DateCreated", DbType = "datetime")]
         public DateTime? DateCreated
         {
-            get => this._DateCreated;
+            get => _DateCreated;
 
             set
             {
-                if (this._DateCreated != value)
+                if (_DateCreated != value)
                 {
-
-                    this.OnDateCreatedChanging(value);
-                    this.SendPropertyChanging();
-                    this._DateCreated = value;
-                    this.SendPropertyChanged("DateCreated");
-                    this.OnDateCreatedChanged();
+                    OnDateCreatedChanging(value);
+                    SendPropertyChanging();
+                    _DateCreated = value;
+                    SendPropertyChanged("DateCreated");
+                    OnDateCreatedChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Id", UpdateCheck = UpdateCheck.Never, Storage = "_Id", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
         public int Id
         {
-            get => this._Id;
+            get => _Id;
 
             set
             {
-                if (this._Id != value)
+                if (_Id != value)
                 {
-
-                    this.OnIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._Id = value;
-                    this.SendPropertyChanged("Id");
-                    this.OnIdChanged();
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "TextOnly", UpdateCheck = UpdateCheck.Never, Storage = "_TextOnly", DbType = "bit")]
         public bool? TextOnly
         {
-            get => this._TextOnly;
+            get => _TextOnly;
 
             set
             {
-                if (this._TextOnly != value)
+                if (_TextOnly != value)
                 {
-
-                    this.OnTextOnlyChanging(value);
-                    this.SendPropertyChanging();
-                    this._TextOnly = value;
-                    this.SendPropertyChanged("TextOnly");
-                    this.OnTextOnlyChanged();
+                    OnTextOnlyChanging(value);
+                    SendPropertyChanging();
+                    _TextOnly = value;
+                    SendPropertyChanged("TextOnly");
+                    OnTextOnlyChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "TypeID", UpdateCheck = UpdateCheck.Never, Storage = "_TypeID", DbType = "int NOT NULL")]
         public int TypeID
         {
-            get => this._TypeID;
+            get => _TypeID;
 
             set
             {
-                if (this._TypeID != value)
+                if (_TypeID != value)
                 {
-
-                    this.OnTypeIDChanging(value);
-                    this.SendPropertyChanging();
-                    this._TypeID = value;
-                    this.SendPropertyChanged("TypeID");
-                    this.OnTypeIDChanged();
+                    OnTypeIDChanging(value);
+                    SendPropertyChanging();
+                    _TypeID = value;
+                    SendPropertyChanged("TypeID");
+                    OnTypeIDChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ThumbID", UpdateCheck = UpdateCheck.Never, Storage = "_ThumbID", DbType = "int NOT NULL")]
         public int ThumbID
         {
-            get => this._ThumbID;
+            get => _ThumbID;
 
             set
             {
-                if (this._ThumbID != value)
+                if (_ThumbID != value)
                 {
-
-                    this.OnThumbIDChanging(value);
-                    this.SendPropertyChanging();
-                    this._ThumbID = value;
-                    this.SendPropertyChanged("ThumbID");
-                    this.OnThumbIDChanged();
+                    OnThumbIDChanging(value);
+                    SendPropertyChanging();
+                    _ThumbID = value;
+                    SendPropertyChanged("ThumbID");
+                    OnThumbIDChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "RoleID", UpdateCheck = UpdateCheck.Never, Storage = "_RoleID", DbType = "int NOT NULL")]
         public int RoleID
         {
-            get => this._RoleID;
+            get => _RoleID;
 
             set
             {
-                if (this._RoleID != value)
+                if (_RoleID != value)
                 {
-
-                    this.OnRoleIDChanging(value);
-                    this.SendPropertyChanging();
-                    this._RoleID = value;
-                    this.SendPropertyChanged("RoleID");
-                    this.OnRoleIDChanged();
+                    OnRoleIDChanging(value);
+                    SendPropertyChanging();
+                    _RoleID = value;
+                    SendPropertyChanged("RoleID");
+                    OnRoleIDChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "OwnerID", UpdateCheck = UpdateCheck.Never, Storage = "_OwnerID", DbType = "int NOT NULL")]
         public int OwnerID
         {
-            get => this._OwnerID;
+            get => _OwnerID;
 
             set
             {
-                if (this._OwnerID != value)
+                if (_OwnerID != value)
                 {
-
-                    this.OnOwnerIDChanging(value);
-                    this.SendPropertyChanging();
-                    this._OwnerID = value;
-                    this.SendPropertyChanged("OwnerID");
-                    this.OnOwnerIDChanged();
+                    OnOwnerIDChanging(value);
+                    SendPropertyChanging();
+                    _OwnerID = value;
+                    SendPropertyChanged("OwnerID");
+                    OnOwnerIDChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "CreatedBy", UpdateCheck = UpdateCheck.Never, Storage = "_CreatedBy", DbType = "nvarchar(50)")]
         public string CreatedBy
         {
-            get => this._CreatedBy;
+            get => _CreatedBy;
 
             set
             {
-                if (this._CreatedBy != value)
+                if (_CreatedBy != value)
                 {
-
-                    this.OnCreatedByChanging(value);
-                    this.SendPropertyChanging();
-                    this._CreatedBy = value;
-                    this.SendPropertyChanged("CreatedBy");
-                    this.OnCreatedByChanged();
+                    OnCreatedByChanging(value);
+                    SendPropertyChanging();
+                    _CreatedBy = value;
+                    SendPropertyChanged("CreatedBy");
+                    OnCreatedByChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Archived", UpdateCheck = UpdateCheck.Never, Storage = "_Archived", DbType = "datetime")]
         public DateTime? Archived
         {
-            get => this._Archived;
+            get => _Archived;
 
             set
             {
-                if (this._Archived != value)
+                if (_Archived != value)
                 {
-
-                    this.OnArchivedChanging(value);
-                    this.SendPropertyChanging();
-                    this._Archived = value;
-                    this.SendPropertyChanged("Archived");
-                    this.OnArchivedChanged();
+                    OnArchivedChanging(value);
+                    SendPropertyChanging();
+                    _Archived = value;
+                    SendPropertyChanged("Archived");
+                    OnArchivedChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ArchivedFromId", UpdateCheck = UpdateCheck.Never, Storage = "_ArchivedFromId", DbType = "int")]
         public int? ArchivedFromId
         {
-            get => this._ArchivedFromId;
+            get => _ArchivedFromId;
 
             set
             {
-                if (this._ArchivedFromId != value)
+                if (_ArchivedFromId != value)
                 {
-
-                    this.OnArchivedFromIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._ArchivedFromId = value;
-                    this.SendPropertyChanged("ArchivedFromId");
-                    this.OnArchivedFromIdChanged();
+                    OnArchivedFromIdChanging(value);
+                    SendPropertyChanging();
+                    _ArchivedFromId = value;
+                    SendPropertyChanged("ArchivedFromId");
+                    OnArchivedFromIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "UseTimes", UpdateCheck = UpdateCheck.Never, Storage = "_UseTimes", DbType = "int")]
         public int? UseTimes
         {
-            get => this._UseTimes;
+            get => _UseTimes;
 
             set
             {
-                if (this._UseTimes != value)
+                if (_UseTimes != value)
                 {
-
-                    this.OnUseTimesChanging(value);
-                    this.SendPropertyChanging();
-                    this._UseTimes = value;
-                    this.SendPropertyChanged("UseTimes");
-                    this.OnUseTimesChanged();
+                    OnUseTimesChanging(value);
+                    SendPropertyChanging();
+                    _UseTimes = value;
+                    SendPropertyChanged("UseTimes");
+                    OnUseTimesChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Snippet", UpdateCheck = UpdateCheck.Never, Storage = "_Snippet", DbType = "bit")]
         public bool? Snippet
         {
-            get => this._Snippet;
+            get => _Snippet;
 
             set
             {
-                if (this._Snippet != value)
+                if (_Snippet != value)
                 {
-
-                    this.OnSnippetChanging(value);
-                    this.SendPropertyChanging();
-                    this._Snippet = value;
-                    this.SendPropertyChanged("Snippet");
-                    this.OnSnippetChanged();
+                    OnSnippetChanging(value);
+                    SendPropertyChanging();
+                    _Snippet = value;
+                    SendPropertyChanged("Snippet");
+                    OnSnippetChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -448,12 +385,11 @@ namespace CmsData
         [Association(Name = "FK_ContentKeyWords_Content", Storage = "_ContentKeyWords", OtherKey = "Id")]
         public EntitySet<ContentKeyWord> ContentKeyWords
            {
-               get => this._ContentKeyWords;
+               get => _ContentKeyWords;
 
-            set => this._ContentKeyWords.Assign(value);
+            set => _ContentKeyWords.Assign(value);
 
            }
-
 
         #endregion
 
@@ -464,36 +400,31 @@ namespace CmsData
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
 
-
         private void attach_ContentKeyWords(ContentKeyWord entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.Content = this;
         }
 
         private void detach_ContentKeyWords(ContentKeyWord entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.Content = null;
         }
-
-
     }
-
 }
-

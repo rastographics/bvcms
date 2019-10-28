@@ -1,123 +1,96 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="CheckinMatch")]
-	public partial class CheckinMatch
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private int? _Familyid;
-		
-		private string _Areacode;
-		
-		private string _Name;
-		
-		private string _Phone;
-		
-		private bool? _Locked;
-		
-		
-		public CheckinMatch()
-		{
-		}
+    [Table(Name = "CheckinMatch")]
+    public partial class CheckinMatch
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="familyid", Storage="_Familyid", DbType="int")]
-		public int? Familyid
-		{
-			get
-			{
-				return this._Familyid;
-			}
+        private int? _Familyid;
 
-			set
-			{
-				if (this._Familyid != value)
-					this._Familyid = value;
-			}
+        private string _Areacode;
 
-		}
+        private string _Name;
 
-		
-		[Column(Name="areacode", Storage="_Areacode", DbType="nvarchar(3)")]
-		public string Areacode
-		{
-			get
-			{
-				return this._Areacode;
-			}
+        private string _Phone;
 
-			set
-			{
-				if (this._Areacode != value)
-					this._Areacode = value;
-			}
+        private bool? _Locked;
 
-		}
+        public CheckinMatch()
+        {
+        }
 
-		
-		[Column(Name="NAME", Storage="_Name", DbType="nvarchar(100)")]
-		public string Name
-		{
-			get
-			{
-				return this._Name;
-			}
+        [Column(Name = "familyid", Storage = "_Familyid", DbType = "int")]
+        public int? Familyid
+        {
+            get => _Familyid;
 
-			set
-			{
-				if (this._Name != value)
-					this._Name = value;
-			}
+            set
+            {
+                if (_Familyid != value)
+                {
+                    _Familyid = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "areacode", Storage = "_Areacode", DbType = "nvarchar(3)")]
+        public string Areacode
+        {
+            get => _Areacode;
 
-		
-		[Column(Name="phone", Storage="_Phone", DbType="nvarchar(20)")]
-		public string Phone
-		{
-			get
-			{
-				return this._Phone;
-			}
+            set
+            {
+                if (_Areacode != value)
+                {
+                    _Areacode = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._Phone != value)
-					this._Phone = value;
-			}
+        [Column(Name = "NAME", Storage = "_Name", DbType = "nvarchar(100)")]
+        public string Name
+        {
+            get => _Name;
 
-		}
+            set
+            {
+                if (_Name != value)
+                {
+                    _Name = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="locked", Storage="_Locked", DbType="bit")]
-		public bool? Locked
-		{
-			get
-			{
-				return this._Locked;
-			}
+        [Column(Name = "phone", Storage = "_Phone", DbType = "nvarchar(20)")]
+        public string Phone
+        {
+            get => _Phone;
 
-			set
-			{
-				if (this._Locked != value)
-					this._Locked = value;
-			}
+            set
+            {
+                if (_Phone != value)
+                {
+                    _Phone = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "locked", Storage = "_Locked", DbType = "bit")]
+        public bool? Locked
+        {
+            get => _Locked;
 
-		
+            set
+            {
+                if (_Locked != value)
+                {
+                    _Locked = value;
+                }
+            }
+        }
     }
-
 }

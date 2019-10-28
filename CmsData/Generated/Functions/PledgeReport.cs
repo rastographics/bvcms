@@ -1,142 +1,112 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="PledgeReport")]
-	public partial class PledgeReport
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private int _FundId;
-		
-		private string _FundName;
-		
-		private decimal? _Plg;
-		
-		private decimal? _ToPledge;
-		
-		private decimal? _NotToPledge;
-		
-		private decimal? _ToFund;
-		
-		
-		public PledgeReport()
-		{
-		}
+    [Table(Name = "PledgeReport")]
+    public partial class PledgeReport
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="FundId", Storage="_FundId", DbType="int NOT NULL")]
-		public int FundId
-		{
-			get
-			{
-				return this._FundId;
-			}
+        private int _FundId;
 
-			set
-			{
-				if (this._FundId != value)
-					this._FundId = value;
-			}
+        private string _FundName;
 
-		}
+        private decimal? _Plg;
 
-		
-		[Column(Name="FundName", Storage="_FundName", DbType="nvarchar(256) NOT NULL")]
-		public string FundName
-		{
-			get
-			{
-				return this._FundName;
-			}
+        private decimal? _ToPledge;
 
-			set
-			{
-				if (this._FundName != value)
-					this._FundName = value;
-			}
+        private decimal? _NotToPledge;
 
-		}
+        private decimal? _ToFund;
 
-		
-		[Column(Name="Plg", Storage="_Plg", DbType="Decimal(38,2)")]
-		public decimal? Plg
-		{
-			get
-			{
-				return this._Plg;
-			}
+        public PledgeReport()
+        {
+        }
 
-			set
-			{
-				if (this._Plg != value)
-					this._Plg = value;
-			}
+        [Column(Name = "FundId", Storage = "_FundId", DbType = "int NOT NULL")]
+        public int FundId
+        {
+            get => _FundId;
 
-		}
+            set
+            {
+                if (_FundId != value)
+                {
+                    _FundId = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="ToPledge", Storage="_ToPledge", DbType="Decimal(38,2)")]
-		public decimal? ToPledge
-		{
-			get
-			{
-				return this._ToPledge;
-			}
+        [Column(Name = "FundName", Storage = "_FundName", DbType = "nvarchar(256) NOT NULL")]
+        public string FundName
+        {
+            get => _FundName;
 
-			set
-			{
-				if (this._ToPledge != value)
-					this._ToPledge = value;
-			}
+            set
+            {
+                if (_FundName != value)
+                {
+                    _FundName = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "Plg", Storage = "_Plg", DbType = "Decimal(38,2)")]
+        public decimal? Plg
+        {
+            get => _Plg;
 
-		
-		[Column(Name="NotToPledge", Storage="_NotToPledge", DbType="Decimal(38,2)")]
-		public decimal? NotToPledge
-		{
-			get
-			{
-				return this._NotToPledge;
-			}
+            set
+            {
+                if (_Plg != value)
+                {
+                    _Plg = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._NotToPledge != value)
-					this._NotToPledge = value;
-			}
+        [Column(Name = "ToPledge", Storage = "_ToPledge", DbType = "Decimal(38,2)")]
+        public decimal? ToPledge
+        {
+            get => _ToPledge;
 
-		}
+            set
+            {
+                if (_ToPledge != value)
+                {
+                    _ToPledge = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="ToFund", Storage="_ToFund", DbType="Decimal(38,2)")]
-		public decimal? ToFund
-		{
-			get
-			{
-				return this._ToFund;
-			}
+        [Column(Name = "NotToPledge", Storage = "_NotToPledge", DbType = "Decimal(38,2)")]
+        public decimal? NotToPledge
+        {
+            get => _NotToPledge;
 
-			set
-			{
-				if (this._ToFund != value)
-					this._ToFund = value;
-			}
+            set
+            {
+                if (_NotToPledge != value)
+                {
+                    _NotToPledge = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "ToFund", Storage = "_ToFund", DbType = "Decimal(38,2)")]
+        public decimal? ToFund
+        {
+            get => _ToFund;
 
-		
+            set
+            {
+                if (_ToFund != value)
+                {
+                    _ToFund = value;
+                }
+            }
+        }
     }
-
 }

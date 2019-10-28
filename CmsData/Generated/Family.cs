@@ -9,7 +9,7 @@ namespace CmsData
     [Table(Name = "dbo.Families")]
     public partial class Family : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -67,7 +67,6 @@ namespace CmsData
 
         private int? _PictureId;
 
-
         private EntitySet<FamilyCheckinLock> _FamilyCheckinLocks;
 
         private EntitySet<FamilyExtra> _FamilyExtras;
@@ -77,7 +76,6 @@ namespace CmsData
         private EntitySet<RelatedFamily> _RelatedFamilies1;
 
         private EntitySet<RelatedFamily> _RelatedFamilies2;
-
 
         private EntityRef<Person> _HeadOfHousehold;
 
@@ -90,6 +88,7 @@ namespace CmsData
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -176,651 +175,541 @@ namespace CmsData
         partial void OnPictureIdChanged();
 
         #endregion
+
         public Family()
         {
+            _FamilyCheckinLocks = new EntitySet<FamilyCheckinLock>(new Action<FamilyCheckinLock>(attach_FamilyCheckinLocks), new Action<FamilyCheckinLock>(detach_FamilyCheckinLocks));
 
-            this._FamilyCheckinLocks = new EntitySet<FamilyCheckinLock>(new Action<FamilyCheckinLock>(this.attach_FamilyCheckinLocks), new Action<FamilyCheckinLock>(this.detach_FamilyCheckinLocks));
+            _FamilyExtras = new EntitySet<FamilyExtra>(new Action<FamilyExtra>(attach_FamilyExtras), new Action<FamilyExtra>(detach_FamilyExtras));
 
-            this._FamilyExtras = new EntitySet<FamilyExtra>(new Action<FamilyExtra>(this.attach_FamilyExtras), new Action<FamilyExtra>(this.detach_FamilyExtras));
+            _People = new EntitySet<Person>(new Action<Person>(attach_People), new Action<Person>(detach_People));
 
-            this._People = new EntitySet<Person>(new Action<Person>(this.attach_People), new Action<Person>(this.detach_People));
+            _RelatedFamilies1 = new EntitySet<RelatedFamily>(new Action<RelatedFamily>(attach_RelatedFamilies1), new Action<RelatedFamily>(detach_RelatedFamilies1));
 
-            this._RelatedFamilies1 = new EntitySet<RelatedFamily>(new Action<RelatedFamily>(this.attach_RelatedFamilies1), new Action<RelatedFamily>(this.detach_RelatedFamilies1));
+            _RelatedFamilies2 = new EntitySet<RelatedFamily>(new Action<RelatedFamily>(attach_RelatedFamilies2), new Action<RelatedFamily>(detach_RelatedFamilies2));
 
-            this._RelatedFamilies2 = new EntitySet<RelatedFamily>(new Action<RelatedFamily>(this.attach_RelatedFamilies2), new Action<RelatedFamily>(this.detach_RelatedFamilies2));
+            _HeadOfHousehold = default(EntityRef<Person>);
 
+            _HeadOfHouseholdSpouse = default(EntityRef<Person>);
 
-            this._HeadOfHousehold = default(EntityRef<Person>);
+            _Picture = default(EntityRef<Picture>);
 
-            this._HeadOfHouseholdSpouse = default(EntityRef<Person>);
-
-            this._Picture = default(EntityRef<Picture>);
-
-            this._ResidentCode = default(EntityRef<ResidentCode>);
+            _ResidentCode = default(EntityRef<ResidentCode>);
 
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "FamilyId", UpdateCheck = UpdateCheck.Never, Storage = "_FamilyId", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
         public int FamilyId
         {
-            get => this._FamilyId;
+            get => _FamilyId;
 
             set
             {
-                if (this._FamilyId != value)
+                if (_FamilyId != value)
                 {
-
-                    this.OnFamilyIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._FamilyId = value;
-                    this.SendPropertyChanged("FamilyId");
-                    this.OnFamilyIdChanged();
+                    OnFamilyIdChanging(value);
+                    SendPropertyChanging();
+                    _FamilyId = value;
+                    SendPropertyChanged("FamilyId");
+                    OnFamilyIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "CreatedBy", UpdateCheck = UpdateCheck.Never, Storage = "_CreatedBy", DbType = "int NOT NULL")]
         public int CreatedBy
         {
-            get => this._CreatedBy;
+            get => _CreatedBy;
 
             set
             {
-                if (this._CreatedBy != value)
+                if (_CreatedBy != value)
                 {
-
-                    this.OnCreatedByChanging(value);
-                    this.SendPropertyChanging();
-                    this._CreatedBy = value;
-                    this.SendPropertyChanged("CreatedBy");
-                    this.OnCreatedByChanged();
+                    OnCreatedByChanging(value);
+                    SendPropertyChanging();
+                    _CreatedBy = value;
+                    SendPropertyChanged("CreatedBy");
+                    OnCreatedByChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "CreatedDate", UpdateCheck = UpdateCheck.Never, Storage = "_CreatedDate", DbType = "datetime")]
         public DateTime? CreatedDate
         {
-            get => this._CreatedDate;
+            get => _CreatedDate;
 
             set
             {
-                if (this._CreatedDate != value)
+                if (_CreatedDate != value)
                 {
-
-                    this.OnCreatedDateChanging(value);
-                    this.SendPropertyChanging();
-                    this._CreatedDate = value;
-                    this.SendPropertyChanged("CreatedDate");
-                    this.OnCreatedDateChanged();
+                    OnCreatedDateChanging(value);
+                    SendPropertyChanging();
+                    _CreatedDate = value;
+                    SendPropertyChanged("CreatedDate");
+                    OnCreatedDateChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "RecordStatus", UpdateCheck = UpdateCheck.Never, Storage = "_RecordStatus", DbType = "bit NOT NULL")]
         public bool RecordStatus
         {
-            get => this._RecordStatus;
+            get => _RecordStatus;
 
             set
             {
-                if (this._RecordStatus != value)
+                if (_RecordStatus != value)
                 {
-
-                    this.OnRecordStatusChanging(value);
-                    this.SendPropertyChanging();
-                    this._RecordStatus = value;
-                    this.SendPropertyChanged("RecordStatus");
-                    this.OnRecordStatusChanged();
+                    OnRecordStatusChanging(value);
+                    SendPropertyChanging();
+                    _RecordStatus = value;
+                    SendPropertyChanged("RecordStatus");
+                    OnRecordStatusChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "BadAddressFlag", UpdateCheck = UpdateCheck.Never, Storage = "_BadAddressFlag", DbType = "bit")]
         public bool? BadAddressFlag
         {
-            get => this._BadAddressFlag;
+            get => _BadAddressFlag;
 
             set
             {
-                if (this._BadAddressFlag != value)
+                if (_BadAddressFlag != value)
                 {
-
-                    this.OnBadAddressFlagChanging(value);
-                    this.SendPropertyChanging();
-                    this._BadAddressFlag = value;
-                    this.SendPropertyChanged("BadAddressFlag");
-                    this.OnBadAddressFlagChanged();
+                    OnBadAddressFlagChanging(value);
+                    SendPropertyChanging();
+                    _BadAddressFlag = value;
+                    SendPropertyChanged("BadAddressFlag");
+                    OnBadAddressFlagChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "AltBadAddressFlag", UpdateCheck = UpdateCheck.Never, Storage = "_AltBadAddressFlag", DbType = "bit")]
         public bool? AltBadAddressFlag
         {
-            get => this._AltBadAddressFlag;
+            get => _AltBadAddressFlag;
 
             set
             {
-                if (this._AltBadAddressFlag != value)
+                if (_AltBadAddressFlag != value)
                 {
-
-                    this.OnAltBadAddressFlagChanging(value);
-                    this.SendPropertyChanging();
-                    this._AltBadAddressFlag = value;
-                    this.SendPropertyChanged("AltBadAddressFlag");
-                    this.OnAltBadAddressFlagChanged();
+                    OnAltBadAddressFlagChanging(value);
+                    SendPropertyChanging();
+                    _AltBadAddressFlag = value;
+                    SendPropertyChanged("AltBadAddressFlag");
+                    OnAltBadAddressFlagChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ResCodeId", UpdateCheck = UpdateCheck.Never, Storage = "_ResCodeId", DbType = "int")]
         [IsForeignKey]
         public int? ResCodeId
         {
-            get => this._ResCodeId;
+            get => _ResCodeId;
 
             set
             {
-                if (this._ResCodeId != value)
+                if (_ResCodeId != value)
                 {
-
-                    if (this._ResidentCode.HasLoadedOrAssignedValue)
+                    if (_ResidentCode.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnResCodeIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._ResCodeId = value;
-                    this.SendPropertyChanged("ResCodeId");
-                    this.OnResCodeIdChanged();
+                    OnResCodeIdChanging(value);
+                    SendPropertyChanging();
+                    _ResCodeId = value;
+                    SendPropertyChanged("ResCodeId");
+                    OnResCodeIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "AltResCodeId", UpdateCheck = UpdateCheck.Never, Storage = "_AltResCodeId", DbType = "int")]
         public int? AltResCodeId
         {
-            get => this._AltResCodeId;
+            get => _AltResCodeId;
 
             set
             {
-                if (this._AltResCodeId != value)
+                if (_AltResCodeId != value)
                 {
-
-                    this.OnAltResCodeIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._AltResCodeId = value;
-                    this.SendPropertyChanged("AltResCodeId");
-                    this.OnAltResCodeIdChanged();
+                    OnAltResCodeIdChanging(value);
+                    SendPropertyChanging();
+                    _AltResCodeId = value;
+                    SendPropertyChanged("AltResCodeId");
+                    OnAltResCodeIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "AddressFromDate", UpdateCheck = UpdateCheck.Never, Storage = "_AddressFromDate", DbType = "datetime")]
         public DateTime? AddressFromDate
         {
-            get => this._AddressFromDate;
+            get => _AddressFromDate;
 
             set
             {
-                if (this._AddressFromDate != value)
+                if (_AddressFromDate != value)
                 {
-
-                    this.OnAddressFromDateChanging(value);
-                    this.SendPropertyChanging();
-                    this._AddressFromDate = value;
-                    this.SendPropertyChanged("AddressFromDate");
-                    this.OnAddressFromDateChanged();
+                    OnAddressFromDateChanging(value);
+                    SendPropertyChanging();
+                    _AddressFromDate = value;
+                    SendPropertyChanged("AddressFromDate");
+                    OnAddressFromDateChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "AddressToDate", UpdateCheck = UpdateCheck.Never, Storage = "_AddressToDate", DbType = "datetime")]
         public DateTime? AddressToDate
         {
-            get => this._AddressToDate;
+            get => _AddressToDate;
 
             set
             {
-                if (this._AddressToDate != value)
+                if (_AddressToDate != value)
                 {
-
-                    this.OnAddressToDateChanging(value);
-                    this.SendPropertyChanging();
-                    this._AddressToDate = value;
-                    this.SendPropertyChanged("AddressToDate");
-                    this.OnAddressToDateChanged();
+                    OnAddressToDateChanging(value);
+                    SendPropertyChanging();
+                    _AddressToDate = value;
+                    SendPropertyChanged("AddressToDate");
+                    OnAddressToDateChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "AddressLineOne", UpdateCheck = UpdateCheck.Never, Storage = "_AddressLineOne", DbType = "nvarchar(100)")]
         public string AddressLineOne
         {
-            get => this._AddressLineOne;
+            get => _AddressLineOne;
 
             set
             {
-                if (this._AddressLineOne != value)
+                if (_AddressLineOne != value)
                 {
-
-                    this.OnAddressLineOneChanging(value);
-                    this.SendPropertyChanging();
-                    this._AddressLineOne = value;
-                    this.SendPropertyChanged("AddressLineOne");
-                    this.OnAddressLineOneChanged();
+                    OnAddressLineOneChanging(value);
+                    SendPropertyChanging();
+                    _AddressLineOne = value;
+                    SendPropertyChanged("AddressLineOne");
+                    OnAddressLineOneChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "AddressLineTwo", UpdateCheck = UpdateCheck.Never, Storage = "_AddressLineTwo", DbType = "nvarchar(100)")]
         public string AddressLineTwo
         {
-            get => this._AddressLineTwo;
+            get => _AddressLineTwo;
 
             set
             {
-                if (this._AddressLineTwo != value)
+                if (_AddressLineTwo != value)
                 {
-
-                    this.OnAddressLineTwoChanging(value);
-                    this.SendPropertyChanging();
-                    this._AddressLineTwo = value;
-                    this.SendPropertyChanged("AddressLineTwo");
-                    this.OnAddressLineTwoChanged();
+                    OnAddressLineTwoChanging(value);
+                    SendPropertyChanging();
+                    _AddressLineTwo = value;
+                    SendPropertyChanged("AddressLineTwo");
+                    OnAddressLineTwoChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "CityName", UpdateCheck = UpdateCheck.Never, Storage = "_CityName", DbType = "nvarchar(30)")]
         public string CityName
         {
-            get => this._CityName;
+            get => _CityName;
 
             set
             {
-                if (this._CityName != value)
+                if (_CityName != value)
                 {
-
-                    this.OnCityNameChanging(value);
-                    this.SendPropertyChanging();
-                    this._CityName = value;
-                    this.SendPropertyChanged("CityName");
-                    this.OnCityNameChanged();
+                    OnCityNameChanging(value);
+                    SendPropertyChanging();
+                    _CityName = value;
+                    SendPropertyChanged("CityName");
+                    OnCityNameChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "StateCode", UpdateCheck = UpdateCheck.Never, Storage = "_StateCode", DbType = "nvarchar(30)")]
         public string StateCode
         {
-            get => this._StateCode;
+            get => _StateCode;
 
             set
             {
-                if (this._StateCode != value)
+                if (_StateCode != value)
                 {
-
-                    this.OnStateCodeChanging(value);
-                    this.SendPropertyChanging();
-                    this._StateCode = value;
-                    this.SendPropertyChanged("StateCode");
-                    this.OnStateCodeChanged();
+                    OnStateCodeChanging(value);
+                    SendPropertyChanging();
+                    _StateCode = value;
+                    SendPropertyChanged("StateCode");
+                    OnStateCodeChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ZipCode", UpdateCheck = UpdateCheck.Never, Storage = "_ZipCode", DbType = "nvarchar(15)")]
         public string ZipCode
         {
-            get => this._ZipCode;
+            get => _ZipCode;
 
             set
             {
-                if (this._ZipCode != value)
+                if (_ZipCode != value)
                 {
-
-                    this.OnZipCodeChanging(value);
-                    this.SendPropertyChanging();
-                    this._ZipCode = value;
-                    this.SendPropertyChanged("ZipCode");
-                    this.OnZipCodeChanged();
+                    OnZipCodeChanging(value);
+                    SendPropertyChanging();
+                    _ZipCode = value;
+                    SendPropertyChanged("ZipCode");
+                    OnZipCodeChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "CountryName", UpdateCheck = UpdateCheck.Never, Storage = "_CountryName", DbType = "nvarchar(40)")]
         public string CountryName
         {
-            get => this._CountryName;
+            get => _CountryName;
 
             set
             {
-                if (this._CountryName != value)
+                if (_CountryName != value)
                 {
-
-                    this.OnCountryNameChanging(value);
-                    this.SendPropertyChanging();
-                    this._CountryName = value;
-                    this.SendPropertyChanged("CountryName");
-                    this.OnCountryNameChanged();
+                    OnCountryNameChanging(value);
+                    SendPropertyChanging();
+                    _CountryName = value;
+                    SendPropertyChanged("CountryName");
+                    OnCountryNameChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "StreetName", UpdateCheck = UpdateCheck.Never, Storage = "_StreetName", DbType = "nvarchar(40)")]
         public string StreetName
         {
-            get => this._StreetName;
+            get => _StreetName;
 
             set
             {
-                if (this._StreetName != value)
+                if (_StreetName != value)
                 {
-
-                    this.OnStreetNameChanging(value);
-                    this.SendPropertyChanging();
-                    this._StreetName = value;
-                    this.SendPropertyChanged("StreetName");
-                    this.OnStreetNameChanged();
+                    OnStreetNameChanging(value);
+                    SendPropertyChanging();
+                    _StreetName = value;
+                    SendPropertyChanged("StreetName");
+                    OnStreetNameChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "HomePhone", UpdateCheck = UpdateCheck.Never, Storage = "_HomePhone", DbType = "nvarchar(20)")]
         public string HomePhone
         {
-            get => this._HomePhone;
+            get => _HomePhone;
 
             set
             {
-                if (this._HomePhone != value)
+                if (_HomePhone != value)
                 {
-
-                    this.OnHomePhoneChanging(value);
-                    this.SendPropertyChanging();
-                    this._HomePhone = value;
-                    this.SendPropertyChanged("HomePhone");
-                    this.OnHomePhoneChanged();
+                    OnHomePhoneChanging(value);
+                    SendPropertyChanging();
+                    _HomePhone = value;
+                    SendPropertyChanged("HomePhone");
+                    OnHomePhoneChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ModifiedBy", UpdateCheck = UpdateCheck.Never, Storage = "_ModifiedBy", DbType = "int")]
         public int? ModifiedBy
         {
-            get => this._ModifiedBy;
+            get => _ModifiedBy;
 
             set
             {
-                if (this._ModifiedBy != value)
+                if (_ModifiedBy != value)
                 {
-
-                    this.OnModifiedByChanging(value);
-                    this.SendPropertyChanging();
-                    this._ModifiedBy = value;
-                    this.SendPropertyChanged("ModifiedBy");
-                    this.OnModifiedByChanged();
+                    OnModifiedByChanging(value);
+                    SendPropertyChanging();
+                    _ModifiedBy = value;
+                    SendPropertyChanged("ModifiedBy");
+                    OnModifiedByChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ModifiedDate", UpdateCheck = UpdateCheck.Never, Storage = "_ModifiedDate", DbType = "datetime")]
         public DateTime? ModifiedDate
         {
-            get => this._ModifiedDate;
+            get => _ModifiedDate;
 
             set
             {
-                if (this._ModifiedDate != value)
+                if (_ModifiedDate != value)
                 {
-
-                    this.OnModifiedDateChanging(value);
-                    this.SendPropertyChanging();
-                    this._ModifiedDate = value;
-                    this.SendPropertyChanged("ModifiedDate");
-                    this.OnModifiedDateChanged();
+                    OnModifiedDateChanging(value);
+                    SendPropertyChanging();
+                    _ModifiedDate = value;
+                    SendPropertyChanged("ModifiedDate");
+                    OnModifiedDateChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "HeadOfHouseholdId", UpdateCheck = UpdateCheck.Never, Storage = "_HeadOfHouseholdId", DbType = "int")]
         [IsForeignKey]
         public int? HeadOfHouseholdId
         {
-            get => this._HeadOfHouseholdId;
+            get => _HeadOfHouseholdId;
 
             set
             {
-                if (this._HeadOfHouseholdId != value)
+                if (_HeadOfHouseholdId != value)
                 {
-
-                    if (this._HeadOfHousehold.HasLoadedOrAssignedValue)
+                    if (_HeadOfHousehold.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnHeadOfHouseholdIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._HeadOfHouseholdId = value;
-                    this.SendPropertyChanged("HeadOfHouseholdId");
-                    this.OnHeadOfHouseholdIdChanged();
+                    OnHeadOfHouseholdIdChanging(value);
+                    SendPropertyChanging();
+                    _HeadOfHouseholdId = value;
+                    SendPropertyChanged("HeadOfHouseholdId");
+                    OnHeadOfHouseholdIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "HeadOfHouseholdSpouseId", UpdateCheck = UpdateCheck.Never, Storage = "_HeadOfHouseholdSpouseId", DbType = "int")]
         [IsForeignKey]
         public int? HeadOfHouseholdSpouseId
         {
-            get => this._HeadOfHouseholdSpouseId;
+            get => _HeadOfHouseholdSpouseId;
 
             set
             {
-                if (this._HeadOfHouseholdSpouseId != value)
+                if (_HeadOfHouseholdSpouseId != value)
                 {
-
-                    if (this._HeadOfHouseholdSpouse.HasLoadedOrAssignedValue)
+                    if (_HeadOfHouseholdSpouse.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnHeadOfHouseholdSpouseIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._HeadOfHouseholdSpouseId = value;
-                    this.SendPropertyChanged("HeadOfHouseholdSpouseId");
-                    this.OnHeadOfHouseholdSpouseIdChanged();
+                    OnHeadOfHouseholdSpouseIdChanging(value);
+                    SendPropertyChanging();
+                    _HeadOfHouseholdSpouseId = value;
+                    SendPropertyChanged("HeadOfHouseholdSpouseId");
+                    OnHeadOfHouseholdSpouseIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "CoupleFlag", UpdateCheck = UpdateCheck.Never, Storage = "_CoupleFlag", DbType = "int")]
         public int? CoupleFlag
         {
-            get => this._CoupleFlag;
+            get => _CoupleFlag;
 
             set
             {
-                if (this._CoupleFlag != value)
+                if (_CoupleFlag != value)
                 {
-
-                    this.OnCoupleFlagChanging(value);
-                    this.SendPropertyChanging();
-                    this._CoupleFlag = value;
-                    this.SendPropertyChanged("CoupleFlag");
-                    this.OnCoupleFlagChanged();
+                    OnCoupleFlagChanging(value);
+                    SendPropertyChanging();
+                    _CoupleFlag = value;
+                    SendPropertyChanged("CoupleFlag");
+                    OnCoupleFlagChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "HomePhoneLU", UpdateCheck = UpdateCheck.Never, Storage = "_HomePhoneLU", DbType = "char(7)")]
         public string HomePhoneLU
         {
-            get => this._HomePhoneLU;
+            get => _HomePhoneLU;
 
             set
             {
-                if (this._HomePhoneLU != value)
+                if (_HomePhoneLU != value)
                 {
-
-                    this.OnHomePhoneLUChanging(value);
-                    this.SendPropertyChanging();
-                    this._HomePhoneLU = value;
-                    this.SendPropertyChanged("HomePhoneLU");
-                    this.OnHomePhoneLUChanged();
+                    OnHomePhoneLUChanging(value);
+                    SendPropertyChanging();
+                    _HomePhoneLU = value;
+                    SendPropertyChanged("HomePhoneLU");
+                    OnHomePhoneLUChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "HomePhoneAC", UpdateCheck = UpdateCheck.Never, Storage = "_HomePhoneAC", DbType = "char(3)")]
         public string HomePhoneAC
         {
-            get => this._HomePhoneAC;
+            get => _HomePhoneAC;
 
             set
             {
-                if (this._HomePhoneAC != value)
+                if (_HomePhoneAC != value)
                 {
-
-                    this.OnHomePhoneACChanging(value);
-                    this.SendPropertyChanging();
-                    this._HomePhoneAC = value;
-                    this.SendPropertyChanged("HomePhoneAC");
-                    this.OnHomePhoneACChanged();
+                    OnHomePhoneACChanging(value);
+                    SendPropertyChanging();
+                    _HomePhoneAC = value;
+                    SendPropertyChanged("HomePhoneAC");
+                    OnHomePhoneACChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Comments", UpdateCheck = UpdateCheck.Never, Storage = "_Comments", DbType = "nvarchar(3000)")]
         public string Comments
         {
-            get => this._Comments;
+            get => _Comments;
 
             set
             {
-                if (this._Comments != value)
+                if (_Comments != value)
                 {
-
-                    this.OnCommentsChanging(value);
-                    this.SendPropertyChanging();
-                    this._Comments = value;
-                    this.SendPropertyChanged("Comments");
-                    this.OnCommentsChanged();
+                    OnCommentsChanging(value);
+                    SendPropertyChanging();
+                    _Comments = value;
+                    SendPropertyChanged("Comments");
+                    OnCommentsChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "PictureId", UpdateCheck = UpdateCheck.Never, Storage = "_PictureId", DbType = "int")]
         [IsForeignKey]
         public int? PictureId
         {
-            get => this._PictureId;
+            get => _PictureId;
 
             set
             {
-                if (this._PictureId != value)
+                if (_PictureId != value)
                 {
-
-                    if (this._Picture.HasLoadedOrAssignedValue)
+                    if (_Picture.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnPictureIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._PictureId = value;
-                    this.SendPropertyChanged("PictureId");
-                    this.OnPictureIdChanged();
+                    OnPictureIdChanging(value);
+                    SendPropertyChanging();
+                    _PictureId = value;
+                    SendPropertyChanged("PictureId");
+                    OnPictureIdChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -829,52 +718,47 @@ namespace CmsData
         [Association(Name = "FK_FamilyCheckinLock_FamilyCheckinLock1", Storage = "_FamilyCheckinLocks", OtherKey = "FamilyId")]
         public EntitySet<FamilyCheckinLock> FamilyCheckinLocks
            {
-               get => this._FamilyCheckinLocks;
+               get => _FamilyCheckinLocks;
 
-            set => this._FamilyCheckinLocks.Assign(value);
+            set => _FamilyCheckinLocks.Assign(value);
 
            }
-
 
         [Association(Name = "FK_FamilyExtra_Family", Storage = "_FamilyExtras", OtherKey = "FamilyId")]
         public EntitySet<FamilyExtra> FamilyExtras
            {
-               get => this._FamilyExtras;
+               get => _FamilyExtras;
 
-            set => this._FamilyExtras.Assign(value);
+            set => _FamilyExtras.Assign(value);
 
            }
-
 
         [Association(Name = "FK_People_Families", Storage = "_People", OtherKey = "FamilyId")]
         public EntitySet<Person> People
            {
-               get => this._People;
+               get => _People;
 
-            set => this._People.Assign(value);
+            set => _People.Assign(value);
 
            }
-
 
         [Association(Name = "RelatedFamilies1__RelatedFamily1", Storage = "_RelatedFamilies1", OtherKey = "FamilyId")]
         public EntitySet<RelatedFamily> RelatedFamilies1
            {
-               get => this._RelatedFamilies1;
+               get => _RelatedFamilies1;
 
-            set => this._RelatedFamilies1.Assign(value);
+            set => _RelatedFamilies1.Assign(value);
 
            }
-
 
         [Association(Name = "RelatedFamilies2__RelatedFamily2", Storage = "_RelatedFamilies2", OtherKey = "RelatedFamilyId")]
         public EntitySet<RelatedFamily> RelatedFamilies2
            {
-               get => this._RelatedFamilies2;
+               get => _RelatedFamilies2;
 
-            set => this._RelatedFamilies2.Assign(value);
+            set => _RelatedFamilies2.Assign(value);
 
            }
-
 
         #endregion
 
@@ -883,258 +767,233 @@ namespace CmsData
         [Association(Name = "FamiliesHeaded__HeadOfHousehold", Storage = "_HeadOfHousehold", ThisKey = "HeadOfHouseholdId", IsForeignKey = true)]
         public Person HeadOfHousehold
         {
-            get => this._HeadOfHousehold.Entity;
+            get => _HeadOfHousehold.Entity;
 
             set
             {
-                Person previousValue = this._HeadOfHousehold.Entity;
+                Person previousValue = _HeadOfHousehold.Entity;
                 if (((previousValue != value)
-                            || (this._HeadOfHousehold.HasLoadedOrAssignedValue == false)))
+                            || (_HeadOfHousehold.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._HeadOfHousehold.Entity = null;
+                        _HeadOfHousehold.Entity = null;
                         previousValue.FamiliesHeaded.Remove(this);
                     }
 
-                    this._HeadOfHousehold.Entity = value;
+                    _HeadOfHousehold.Entity = value;
                     if (value != null)
                     {
                         value.FamiliesHeaded.Add(this);
 
-                        this._HeadOfHouseholdId = value.PeopleId;
+                        _HeadOfHouseholdId = value.PeopleId;
 
                     }
 
                     else
                     {
-
-                        this._HeadOfHouseholdId = default(int?);
+                        _HeadOfHouseholdId = default(int?);
 
                     }
 
-                    this.SendPropertyChanged("HeadOfHousehold");
+                    SendPropertyChanged("HeadOfHousehold");
                 }
-
             }
-
         }
-
 
         [Association(Name = "FamiliesHeaded2__HeadOfHouseholdSpouse", Storage = "_HeadOfHouseholdSpouse", ThisKey = "HeadOfHouseholdSpouseId", IsForeignKey = true)]
         public Person HeadOfHouseholdSpouse
         {
-            get => this._HeadOfHouseholdSpouse.Entity;
+            get => _HeadOfHouseholdSpouse.Entity;
 
             set
             {
-                Person previousValue = this._HeadOfHouseholdSpouse.Entity;
+                Person previousValue = _HeadOfHouseholdSpouse.Entity;
                 if (((previousValue != value)
-                            || (this._HeadOfHouseholdSpouse.HasLoadedOrAssignedValue == false)))
+                            || (_HeadOfHouseholdSpouse.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._HeadOfHouseholdSpouse.Entity = null;
+                        _HeadOfHouseholdSpouse.Entity = null;
                         previousValue.FamiliesHeaded2.Remove(this);
                     }
 
-                    this._HeadOfHouseholdSpouse.Entity = value;
+                    _HeadOfHouseholdSpouse.Entity = value;
                     if (value != null)
                     {
                         value.FamiliesHeaded2.Add(this);
 
-                        this._HeadOfHouseholdSpouseId = value.PeopleId;
+                        _HeadOfHouseholdSpouseId = value.PeopleId;
 
                     }
 
                     else
                     {
-
-                        this._HeadOfHouseholdSpouseId = default(int?);
+                        _HeadOfHouseholdSpouseId = default(int?);
 
                     }
 
-                    this.SendPropertyChanged("HeadOfHouseholdSpouse");
+                    SendPropertyChanged("HeadOfHouseholdSpouse");
                 }
-
             }
-
         }
-
 
         [Association(Name = "FK_Families_Picture", Storage = "_Picture", ThisKey = "PictureId", IsForeignKey = true)]
         public Picture Picture
         {
-            get => this._Picture.Entity;
+            get => _Picture.Entity;
 
             set
             {
-                Picture previousValue = this._Picture.Entity;
+                Picture previousValue = _Picture.Entity;
                 if (((previousValue != value)
-                            || (this._Picture.HasLoadedOrAssignedValue == false)))
+                            || (_Picture.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._Picture.Entity = null;
+                        _Picture.Entity = null;
                         previousValue.Families.Remove(this);
                     }
 
-                    this._Picture.Entity = value;
+                    _Picture.Entity = value;
                     if (value != null)
                     {
                         value.Families.Add(this);
 
-                        this._PictureId = value.PictureId;
+                        _PictureId = value.PictureId;
 
                     }
 
                     else
                     {
-
-                        this._PictureId = default(int?);
+                        _PictureId = default(int?);
 
                     }
 
-                    this.SendPropertyChanged("Picture");
+                    SendPropertyChanged("Picture");
                 }
-
             }
-
         }
-
 
         [Association(Name = "ResCodeFamilies__ResidentCode", Storage = "_ResidentCode", ThisKey = "ResCodeId", IsForeignKey = true)]
         public ResidentCode ResidentCode
         {
-            get => this._ResidentCode.Entity;
+            get => _ResidentCode.Entity;
 
             set
             {
-                ResidentCode previousValue = this._ResidentCode.Entity;
+                ResidentCode previousValue = _ResidentCode.Entity;
                 if (((previousValue != value)
-                            || (this._ResidentCode.HasLoadedOrAssignedValue == false)))
+                            || (_ResidentCode.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._ResidentCode.Entity = null;
+                        _ResidentCode.Entity = null;
                         previousValue.ResCodeFamilies.Remove(this);
                     }
 
-                    this._ResidentCode.Entity = value;
+                    _ResidentCode.Entity = value;
                     if (value != null)
                     {
                         value.ResCodeFamilies.Add(this);
 
-                        this._ResCodeId = value.Id;
+                        _ResCodeId = value.Id;
 
                     }
 
                     else
                     {
-
-                        this._ResCodeId = default(int?);
+                        _ResCodeId = default(int?);
 
                     }
 
-                    this.SendPropertyChanged("ResidentCode");
+                    SendPropertyChanged("ResidentCode");
                 }
-
             }
-
         }
-
 
         #endregion
 
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
 
-
         private void attach_FamilyCheckinLocks(FamilyCheckinLock entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.Family = this;
         }
 
         private void detach_FamilyCheckinLocks(FamilyCheckinLock entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.Family = null;
         }
 
-
         private void attach_FamilyExtras(FamilyExtra entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.Family = this;
         }
 
         private void detach_FamilyExtras(FamilyExtra entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.Family = null;
         }
 
-
         private void attach_People(Person entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.Family = this;
         }
 
         private void detach_People(Person entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.Family = null;
         }
 
-
         private void attach_RelatedFamilies1(RelatedFamily entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.RelatedFamily1 = this;
         }
 
         private void detach_RelatedFamilies1(RelatedFamily entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.RelatedFamily1 = null;
         }
 
-
         private void attach_RelatedFamilies2(RelatedFamily entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.RelatedFamily2 = this;
         }
 
         private void detach_RelatedFamilies2(RelatedFamily entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.RelatedFamily2 = null;
         }
-
-
     }
-
 }
-

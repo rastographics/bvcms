@@ -7,7 +7,7 @@ namespace CmsData
     [Table(Name = "dbo.MobileAppActions")]
     public partial class MobileAppAction : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -37,11 +37,10 @@ namespace CmsData
 
         private int _Rebranded;
 
-
-
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -86,301 +85,247 @@ namespace CmsData
         partial void OnRebrandedChanged();
 
         #endregion
+
         public MobileAppAction()
         {
-
-
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "id", UpdateCheck = UpdateCheck.Never, Storage = "_Id", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
         public int Id
         {
-            get => this._Id;
+            get => _Id;
 
             set
             {
-                if (this._Id != value)
+                if (_Id != value)
                 {
-
-                    this.OnIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._Id = value;
-                    this.SendPropertyChanged("Id");
-                    this.OnIdChanged();
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "type", UpdateCheck = UpdateCheck.Never, Storage = "_Type", DbType = "int NOT NULL")]
         public int Type
         {
-            get => this._Type;
+            get => _Type;
 
             set
             {
-                if (this._Type != value)
+                if (_Type != value)
                 {
-
-                    this.OnTypeChanging(value);
-                    this.SendPropertyChanging();
-                    this._Type = value;
-                    this.SendPropertyChanged("Type");
-                    this.OnTypeChanged();
+                    OnTypeChanging(value);
+                    SendPropertyChanging();
+                    _Type = value;
+                    SendPropertyChanged("Type");
+                    OnTypeChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "title", UpdateCheck = UpdateCheck.Never, Storage = "_Title", DbType = "nvarchar(50) NOT NULL")]
         public string Title
         {
-            get => this._Title;
+            get => _Title;
 
             set
             {
-                if (this._Title != value)
+                if (_Title != value)
                 {
-
-                    this.OnTitleChanging(value);
-                    this.SendPropertyChanging();
-                    this._Title = value;
-                    this.SendPropertyChanged("Title");
-                    this.OnTitleChanged();
+                    OnTitleChanging(value);
+                    SendPropertyChanging();
+                    _Title = value;
+                    SendPropertyChanged("Title");
+                    OnTitleChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "option", UpdateCheck = UpdateCheck.Never, Storage = "_Option", DbType = "int NOT NULL")]
         public int Option
         {
-            get => this._Option;
+            get => _Option;
 
             set
             {
-                if (this._Option != value)
+                if (_Option != value)
                 {
-
-                    this.OnOptionChanging(value);
-                    this.SendPropertyChanging();
-                    this._Option = value;
-                    this.SendPropertyChanged("Option");
-                    this.OnOptionChanged();
+                    OnOptionChanging(value);
+                    SendPropertyChanging();
+                    _Option = value;
+                    SendPropertyChanged("Option");
+                    OnOptionChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "data", UpdateCheck = UpdateCheck.Never, Storage = "_Data", DbType = "nvarchar NOT NULL")]
         public string Data
         {
-            get => this._Data;
+            get => _Data;
 
             set
             {
-                if (this._Data != value)
+                if (_Data != value)
                 {
-
-                    this.OnDataChanging(value);
-                    this.SendPropertyChanging();
-                    this._Data = value;
-                    this.SendPropertyChanged("Data");
-                    this.OnDataChanged();
+                    OnDataChanging(value);
+                    SendPropertyChanging();
+                    _Data = value;
+                    SendPropertyChanged("Data");
+                    OnDataChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "order", UpdateCheck = UpdateCheck.Never, Storage = "_Order", DbType = "int NOT NULL")]
         public int Order
         {
-            get => this._Order;
+            get => _Order;
 
             set
             {
-                if (this._Order != value)
+                if (_Order != value)
                 {
-
-                    this.OnOrderChanging(value);
-                    this.SendPropertyChanging();
-                    this._Order = value;
-                    this.SendPropertyChanged("Order");
-                    this.OnOrderChanged();
+                    OnOrderChanging(value);
+                    SendPropertyChanging();
+                    _Order = value;
+                    SendPropertyChanged("Order");
+                    OnOrderChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "loginType", UpdateCheck = UpdateCheck.Never, Storage = "_LoginType", DbType = "int NOT NULL")]
         public int LoginType
         {
-            get => this._LoginType;
+            get => _LoginType;
 
             set
             {
-                if (this._LoginType != value)
+                if (_LoginType != value)
                 {
-
-                    this.OnLoginTypeChanging(value);
-                    this.SendPropertyChanging();
-                    this._LoginType = value;
-                    this.SendPropertyChanged("LoginType");
-                    this.OnLoginTypeChanged();
+                    OnLoginTypeChanging(value);
+                    SendPropertyChanging();
+                    _LoginType = value;
+                    SendPropertyChanged("LoginType");
+                    OnLoginTypeChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "enabled", UpdateCheck = UpdateCheck.Never, Storage = "_Enabled", DbType = "bit NOT NULL")]
         public bool Enabled
         {
-            get => this._Enabled;
+            get => _Enabled;
 
             set
             {
-                if (this._Enabled != value)
+                if (_Enabled != value)
                 {
-
-                    this.OnEnabledChanging(value);
-                    this.SendPropertyChanging();
-                    this._Enabled = value;
-                    this.SendPropertyChanged("Enabled");
-                    this.OnEnabledChanged();
+                    OnEnabledChanging(value);
+                    SendPropertyChanging();
+                    _Enabled = value;
+                    SendPropertyChanged("Enabled");
+                    OnEnabledChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "roles", UpdateCheck = UpdateCheck.Never, Storage = "_Roles", DbType = "nvarchar NOT NULL")]
         public string Roles
         {
-            get => this._Roles;
+            get => _Roles;
 
             set
             {
-                if (this._Roles != value)
+                if (_Roles != value)
                 {
-
-                    this.OnRolesChanging(value);
-                    this.SendPropertyChanging();
-                    this._Roles = value;
-                    this.SendPropertyChanged("Roles");
-                    this.OnRolesChanged();
+                    OnRolesChanging(value);
+                    SendPropertyChanging();
+                    _Roles = value;
+                    SendPropertyChanged("Roles");
+                    OnRolesChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "api", UpdateCheck = UpdateCheck.Never, Storage = "_Api", DbType = "int NOT NULL")]
         public int Api
         {
-            get => this._Api;
+            get => _Api;
 
             set
             {
-                if (this._Api != value)
+                if (_Api != value)
                 {
-
-                    this.OnApiChanging(value);
-                    this.SendPropertyChanging();
-                    this._Api = value;
-                    this.SendPropertyChanged("Api");
-                    this.OnApiChanged();
+                    OnApiChanging(value);
+                    SendPropertyChanging();
+                    _Api = value;
+                    SendPropertyChanged("Api");
+                    OnApiChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "active", UpdateCheck = UpdateCheck.Never, Storage = "_Active", DbType = "datetime NOT NULL")]
         public DateTime Active
         {
-            get => this._Active;
+            get => _Active;
 
             set
             {
-                if (this._Active != value)
+                if (_Active != value)
                 {
-
-                    this.OnActiveChanging(value);
-                    this.SendPropertyChanging();
-                    this._Active = value;
-                    this.SendPropertyChanged("Active");
-                    this.OnActiveChanged();
+                    OnActiveChanging(value);
+                    SendPropertyChanging();
+                    _Active = value;
+                    SendPropertyChanged("Active");
+                    OnActiveChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "altTitle", UpdateCheck = UpdateCheck.Never, Storage = "_AltTitle", DbType = "nvarchar(50) NOT NULL")]
         public string AltTitle
         {
-            get => this._AltTitle;
+            get => _AltTitle;
 
             set
             {
-                if (this._AltTitle != value)
+                if (_AltTitle != value)
                 {
-
-                    this.OnAltTitleChanging(value);
-                    this.SendPropertyChanging();
-                    this._AltTitle = value;
-                    this.SendPropertyChanged("AltTitle");
-                    this.OnAltTitleChanged();
+                    OnAltTitleChanging(value);
+                    SendPropertyChanging();
+                    _AltTitle = value;
+                    SendPropertyChanged("AltTitle");
+                    OnAltTitleChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "rebranded", UpdateCheck = UpdateCheck.Never, Storage = "_Rebranded", DbType = "int NOT NULL")]
         public int Rebranded
         {
-            get => this._Rebranded;
+            get => _Rebranded;
 
             set
             {
-                if (this._Rebranded != value)
+                if (_Rebranded != value)
                 {
-
-                    this.OnRebrandedChanging(value);
-                    this.SendPropertyChanging();
-                    this._Rebranded = value;
-                    this.SendPropertyChanged("Rebranded");
-                    this.OnRebrandedChanged();
+                    OnRebrandedChanging(value);
+                    SendPropertyChanging();
+                    _Rebranded = value;
+                    SendPropertyChanged("Rebranded");
+                    OnRebrandedChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -395,23 +340,19 @@ namespace CmsData
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-
     }
-
 }
-

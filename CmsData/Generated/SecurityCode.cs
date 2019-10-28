@@ -7,7 +7,7 @@ namespace CmsData
     [Table(Name = "dbo.SecurityCodes")]
     public partial class SecurityCode : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -17,11 +17,10 @@ namespace CmsData
 
         private DateTime? _DateUsed;
 
-
-
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -36,81 +35,67 @@ namespace CmsData
         partial void OnDateUsedChanged();
 
         #endregion
+
         public SecurityCode()
         {
-
-
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "Id", UpdateCheck = UpdateCheck.Never, Storage = "_Id", DbType = "int NOT NULL", IsPrimaryKey = true)]
         public int Id
         {
-            get => this._Id;
+            get => _Id;
 
             set
             {
-                if (this._Id != value)
+                if (_Id != value)
                 {
-
-                    this.OnIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._Id = value;
-                    this.SendPropertyChanged("Id");
-                    this.OnIdChanged();
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Code", UpdateCheck = UpdateCheck.Never, Storage = "_Code", DbType = "char(4) NOT NULL")]
         public string Code
         {
-            get => this._Code;
+            get => _Code;
 
             set
             {
-                if (this._Code != value)
+                if (_Code != value)
                 {
-
-                    this.OnCodeChanging(value);
-                    this.SendPropertyChanging();
-                    this._Code = value;
-                    this.SendPropertyChanged("Code");
-                    this.OnCodeChanged();
+                    OnCodeChanging(value);
+                    SendPropertyChanging();
+                    _Code = value;
+                    SendPropertyChanged("Code");
+                    OnCodeChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "DateUsed", UpdateCheck = UpdateCheck.Never, Storage = "_DateUsed", DbType = "datetime")]
         public DateTime? DateUsed
         {
-            get => this._DateUsed;
+            get => _DateUsed;
 
             set
             {
-                if (this._DateUsed != value)
+                if (_DateUsed != value)
                 {
-
-                    this.OnDateUsedChanging(value);
-                    this.SendPropertyChanging();
-                    this._DateUsed = value;
-                    this.SendPropertyChanged("DateUsed");
-                    this.OnDateUsedChanged();
+                    OnDateUsedChanging(value);
+                    SendPropertyChanging();
+                    _DateUsed = value;
+                    SendPropertyChanged("DateUsed");
+                    OnDateUsedChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -125,23 +110,19 @@ namespace CmsData
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-
     }
-
 }
-

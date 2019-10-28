@@ -9,7 +9,7 @@ namespace CmsData
     [Table(Name = "dbo.ApiSession")]
     public partial class ApiSession : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -23,13 +23,12 @@ namespace CmsData
 
         private DateTime _CreatedDate;
 
-
-
         private EntityRef<User> _User;
 
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -50,15 +49,13 @@ namespace CmsData
         partial void OnCreatedDateChanged();
 
         #endregion
+
         public ApiSession()
         {
-
-
-            this._User = default(EntityRef<User>);
+            _User = default(EntityRef<User>);
 
             OnCreated();
         }
-
 
         #region Columns
 
@@ -66,117 +63,97 @@ namespace CmsData
         [IsForeignKey]
         public int UserId
         {
-            get => this._UserId;
+            get => _UserId;
 
             set
             {
-                if (this._UserId != value)
+                if (_UserId != value)
                 {
-
-                    if (this._User.HasLoadedOrAssignedValue)
+                    if (_User.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnUserIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._UserId = value;
-                    this.SendPropertyChanged("UserId");
-                    this.OnUserIdChanged();
+                    OnUserIdChanging(value);
+                    SendPropertyChanging();
+                    _UserId = value;
+                    SendPropertyChanged("UserId");
+                    OnUserIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "SessionToken", UpdateCheck = UpdateCheck.Never, Storage = "_SessionToken", DbType = "uniqueidentifier NOT NULL")]
         public Guid SessionToken
         {
-            get => this._SessionToken;
+            get => _SessionToken;
 
             set
             {
-                if (this._SessionToken != value)
+                if (_SessionToken != value)
                 {
-
-                    this.OnSessionTokenChanging(value);
-                    this.SendPropertyChanging();
-                    this._SessionToken = value;
-                    this.SendPropertyChanged("SessionToken");
-                    this.OnSessionTokenChanged();
+                    OnSessionTokenChanging(value);
+                    SendPropertyChanging();
+                    _SessionToken = value;
+                    SendPropertyChanged("SessionToken");
+                    OnSessionTokenChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "PIN", UpdateCheck = UpdateCheck.Never, Storage = "_Pin", DbType = "int")]
         public int? Pin
         {
-            get => this._Pin;
+            get => _Pin;
 
             set
             {
-                if (this._Pin != value)
+                if (_Pin != value)
                 {
-
-                    this.OnPinChanging(value);
-                    this.SendPropertyChanging();
-                    this._Pin = value;
-                    this.SendPropertyChanged("Pin");
-                    this.OnPinChanged();
+                    OnPinChanging(value);
+                    SendPropertyChanging();
+                    _Pin = value;
+                    SendPropertyChanged("Pin");
+                    OnPinChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "LastAccessedDate", UpdateCheck = UpdateCheck.Never, Storage = "_LastAccessedDate", DbType = "datetime NOT NULL")]
         public DateTime LastAccessedDate
         {
-            get => this._LastAccessedDate;
+            get => _LastAccessedDate;
 
             set
             {
-                if (this._LastAccessedDate != value)
+                if (_LastAccessedDate != value)
                 {
-
-                    this.OnLastAccessedDateChanging(value);
-                    this.SendPropertyChanging();
-                    this._LastAccessedDate = value;
-                    this.SendPropertyChanged("LastAccessedDate");
-                    this.OnLastAccessedDateChanged();
+                    OnLastAccessedDateChanging(value);
+                    SendPropertyChanging();
+                    _LastAccessedDate = value;
+                    SendPropertyChanged("LastAccessedDate");
+                    OnLastAccessedDateChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "CreatedDate", UpdateCheck = UpdateCheck.Never, Storage = "_CreatedDate", DbType = "datetime NOT NULL")]
         public DateTime CreatedDate
         {
-            get => this._CreatedDate;
+            get => _CreatedDate;
 
             set
             {
-                if (this._CreatedDate != value)
+                if (_CreatedDate != value)
                 {
-
-                    this.OnCreatedDateChanging(value);
-                    this.SendPropertyChanging();
-                    this._CreatedDate = value;
-                    this.SendPropertyChanged("CreatedDate");
-                    this.OnCreatedDateChanged();
+                    OnCreatedDateChanging(value);
+                    SendPropertyChanging();
+                    _CreatedDate = value;
+                    SendPropertyChanged("CreatedDate");
+                    OnCreatedDateChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -189,67 +166,59 @@ namespace CmsData
         [Association(Name = "FK_Users_ApiSession", Storage = "_User", ThisKey = "UserId", IsForeignKey = true)]
         public User User
         {
-            get => this._User.Entity;
+            get => _User.Entity;
 
             set
             {
-                User previousValue = this._User.Entity;
+                User previousValue = _User.Entity;
                 if (((previousValue != value)
-                            || (this._User.HasLoadedOrAssignedValue == false)))
+                            || (_User.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._User.Entity = null;
+                        _User.Entity = null;
                         previousValue.ApiSessions.Remove(this);
                     }
 
-                    this._User.Entity = value;
+                    _User.Entity = value;
                     if (value != null)
                     {
                         value.ApiSessions.Add(this);
 
-                        this._UserId = value.UserId;
+                        _UserId = value.UserId;
 
                     }
 
                     else
                     {
-
-                        this._UserId = default(int);
+                        _UserId = default(int);
 
                     }
 
-                    this.SendPropertyChanged("User");
+                    SendPropertyChanged("User");
                 }
-
             }
-
         }
-
 
         #endregion
 
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-
     }
-
 }
-

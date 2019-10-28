@@ -9,7 +9,7 @@ namespace CmsData
     [Table(Name = "dbo.RecurringAmounts")]
     public partial class RecurringAmount : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -26,6 +26,7 @@ namespace CmsData
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -40,17 +41,15 @@ namespace CmsData
         partial void OnAmtChanged();
 
         #endregion
+
         public RecurringAmount()
         {
+            _ContributionFund = default(EntityRef<ContributionFund>);
 
-
-            this._ContributionFund = default(EntityRef<ContributionFund>);
-
-            this._Person = default(EntityRef<Person>);
+            _Person = default(EntityRef<Person>);
 
             OnCreated();
         }
-
 
         #region Columns
 
@@ -58,77 +57,66 @@ namespace CmsData
         [IsForeignKey]
         public int PeopleId
         {
-            get => this._PeopleId;
+            get => _PeopleId;
 
             set
             {
-                if (this._PeopleId != value)
+                if (_PeopleId != value)
                 {
-
-                    if (this._Person.HasLoadedOrAssignedValue)
+                    if (_Person.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnPeopleIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._PeopleId = value;
-                    this.SendPropertyChanged("PeopleId");
-                    this.OnPeopleIdChanged();
+                    OnPeopleIdChanging(value);
+                    SendPropertyChanging();
+                    _PeopleId = value;
+                    SendPropertyChanged("PeopleId");
+                    OnPeopleIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "FundId", UpdateCheck = UpdateCheck.Never, Storage = "_FundId", DbType = "int NOT NULL", IsPrimaryKey = true)]
         [IsForeignKey]
         public int FundId
         {
-            get => this._FundId;
+            get => _FundId;
 
             set
             {
-                if (this._FundId != value)
+                if (_FundId != value)
                 {
-
-                    if (this._ContributionFund.HasLoadedOrAssignedValue)
+                    if (_ContributionFund.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnFundIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._FundId = value;
-                    this.SendPropertyChanged("FundId");
-                    this.OnFundIdChanged();
+                    OnFundIdChanging(value);
+                    SendPropertyChanging();
+                    _FundId = value;
+                    SendPropertyChanged("FundId");
+                    OnFundIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Amt", UpdateCheck = UpdateCheck.Never, Storage = "_Amt", DbType = "money")]
         public decimal? Amt
         {
-            get => this._Amt;
+            get => _Amt;
 
             set
             {
-                if (this._Amt != value)
+                if (_Amt != value)
                 {
-
-                    this.OnAmtChanging(value);
-                    this.SendPropertyChanging();
-                    this._Amt = value;
-                    this.SendPropertyChanged("Amt");
-                    this.OnAmtChanged();
+                    OnAmtChanging(value);
+                    SendPropertyChanging();
+                    _Amt = value;
+                    SendPropertyChanged("Amt");
+                    OnAmtChanged();
                 }
-
             }
-
         }
 
         #endregion
@@ -142,109 +130,97 @@ namespace CmsData
         [Association(Name = "FK_RecurringAmounts_ContributionFund", Storage = "_ContributionFund", ThisKey = "FundId", IsForeignKey = true)]
         public ContributionFund ContributionFund
         {
-            get => this._ContributionFund.Entity;
+            get => _ContributionFund.Entity;
 
             set
             {
-                ContributionFund previousValue = this._ContributionFund.Entity;
+                ContributionFund previousValue = _ContributionFund.Entity;
                 if (((previousValue != value)
-                            || (this._ContributionFund.HasLoadedOrAssignedValue == false)))
+                            || (_ContributionFund.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._ContributionFund.Entity = null;
+                        _ContributionFund.Entity = null;
                         previousValue.RecurringAmounts.Remove(this);
                     }
 
-                    this._ContributionFund.Entity = value;
+                    _ContributionFund.Entity = value;
                     if (value != null)
                     {
                         value.RecurringAmounts.Add(this);
 
-                        this._FundId = value.FundId;
+                        _FundId = value.FundId;
 
                     }
 
                     else
                     {
-
-                        this._FundId = default(int);
+                        _FundId = default(int);
 
                     }
 
-                    this.SendPropertyChanged("ContributionFund");
+                    SendPropertyChanged("ContributionFund");
                 }
-
             }
-
         }
-
 
         [Association(Name = "FK_RecurringAmounts_People", Storage = "_Person", ThisKey = "PeopleId", IsForeignKey = true)]
         public Person Person
         {
-            get => this._Person.Entity;
+            get => _Person.Entity;
 
             set
             {
-                Person previousValue = this._Person.Entity;
+                Person previousValue = _Person.Entity;
                 if (((previousValue != value)
-                            || (this._Person.HasLoadedOrAssignedValue == false)))
+                            || (_Person.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._Person.Entity = null;
+                        _Person.Entity = null;
                         previousValue.RecurringAmounts.Remove(this);
                     }
 
-                    this._Person.Entity = value;
+                    _Person.Entity = value;
                     if (value != null)
                     {
                         value.RecurringAmounts.Add(this);
 
-                        this._PeopleId = value.PeopleId;
+                        _PeopleId = value.PeopleId;
 
                     }
 
                     else
                     {
-
-                        this._PeopleId = default(int);
+                        _PeopleId = default(int);
 
                     }
 
-                    this.SendPropertyChanged("Person");
+                    SendPropertyChanged("Person");
                 }
-
             }
-
         }
-
 
         #endregion
 
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-
     }
-
 }
-

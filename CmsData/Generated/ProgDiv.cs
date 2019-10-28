@@ -9,15 +9,13 @@ namespace CmsData
     [Table(Name = "dbo.ProgDiv")]
     public partial class ProgDiv : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
         private int _ProgId;
 
         private int _DivId;
-
-
 
         private EntityRef<Division> _Division;
 
@@ -26,6 +24,7 @@ namespace CmsData
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -37,17 +36,15 @@ namespace CmsData
         partial void OnDivIdChanged();
 
         #endregion
+
         public ProgDiv()
         {
+            _Division = default(EntityRef<Division>);
 
-
-            this._Division = default(EntityRef<Division>);
-
-            this._Program = default(EntityRef<Program>);
+            _Program = default(EntityRef<Program>);
 
             OnCreated();
         }
-
 
         #region Columns
 
@@ -55,57 +52,49 @@ namespace CmsData
         [IsForeignKey]
         public int ProgId
         {
-            get => this._ProgId;
+            get => _ProgId;
 
             set
             {
-                if (this._ProgId != value)
+                if (_ProgId != value)
                 {
-
-                    if (this._Program.HasLoadedOrAssignedValue)
+                    if (_Program.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnProgIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._ProgId = value;
-                    this.SendPropertyChanged("ProgId");
-                    this.OnProgIdChanged();
+                    OnProgIdChanging(value);
+                    SendPropertyChanging();
+                    _ProgId = value;
+                    SendPropertyChanged("ProgId");
+                    OnProgIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "DivId", UpdateCheck = UpdateCheck.Never, Storage = "_DivId", DbType = "int NOT NULL", IsPrimaryKey = true)]
         [IsForeignKey]
         public int DivId
         {
-            get => this._DivId;
+            get => _DivId;
 
             set
             {
-                if (this._DivId != value)
+                if (_DivId != value)
                 {
-
-                    if (this._Division.HasLoadedOrAssignedValue)
+                    if (_Division.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnDivIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._DivId = value;
-                    this.SendPropertyChanged("DivId");
-                    this.OnDivIdChanged();
+                    OnDivIdChanging(value);
+                    SendPropertyChanging();
+                    _DivId = value;
+                    SendPropertyChanged("DivId");
+                    OnDivIdChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -118,109 +107,97 @@ namespace CmsData
         [Association(Name = "FK_ProgDiv_Division", Storage = "_Division", ThisKey = "DivId", IsForeignKey = true)]
         public Division Division
         {
-            get => this._Division.Entity;
+            get => _Division.Entity;
 
             set
             {
-                Division previousValue = this._Division.Entity;
+                Division previousValue = _Division.Entity;
                 if (((previousValue != value)
-                            || (this._Division.HasLoadedOrAssignedValue == false)))
+                            || (_Division.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._Division.Entity = null;
+                        _Division.Entity = null;
                         previousValue.ProgDivs.Remove(this);
                     }
 
-                    this._Division.Entity = value;
+                    _Division.Entity = value;
                     if (value != null)
                     {
                         value.ProgDivs.Add(this);
 
-                        this._DivId = value.Id;
+                        _DivId = value.Id;
 
                     }
 
                     else
                     {
-
-                        this._DivId = default(int);
+                        _DivId = default(int);
 
                     }
 
-                    this.SendPropertyChanged("Division");
+                    SendPropertyChanged("Division");
                 }
-
             }
-
         }
-
 
         [Association(Name = "FK_ProgDiv_Program", Storage = "_Program", ThisKey = "ProgId", IsForeignKey = true)]
         public Program Program
         {
-            get => this._Program.Entity;
+            get => _Program.Entity;
 
             set
             {
-                Program previousValue = this._Program.Entity;
+                Program previousValue = _Program.Entity;
                 if (((previousValue != value)
-                            || (this._Program.HasLoadedOrAssignedValue == false)))
+                            || (_Program.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._Program.Entity = null;
+                        _Program.Entity = null;
                         previousValue.ProgDivs.Remove(this);
                     }
 
-                    this._Program.Entity = value;
+                    _Program.Entity = value;
                     if (value != null)
                     {
                         value.ProgDivs.Add(this);
 
-                        this._ProgId = value.Id;
+                        _ProgId = value.Id;
 
                     }
 
                     else
                     {
-
-                        this._ProgId = default(int);
+                        _ProgId = default(int);
 
                     }
 
-                    this.SendPropertyChanged("Program");
+                    SendPropertyChanged("Program");
                 }
-
             }
-
         }
-
 
         #endregion
 
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-
     }
-
 }
-

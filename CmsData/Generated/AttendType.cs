@@ -8,7 +8,7 @@ namespace CmsData
     [Table(Name = "lookup.AttendType")]
     public partial class AttendType : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -24,15 +24,14 @@ namespace CmsData
 
         private bool _Guest;
 
-
         private EntitySet<Attend> _Attends;
 
         private EntitySet<MemberType> _MemberTypes;
 
-
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -56,151 +55,125 @@ namespace CmsData
         partial void OnGuestChanged();
 
         #endregion
+
         public AttendType()
         {
+            _Attends = new EntitySet<Attend>(new Action<Attend>(attach_Attends), new Action<Attend>(detach_Attends));
 
-            this._Attends = new EntitySet<Attend>(new Action<Attend>(this.attach_Attends), new Action<Attend>(this.detach_Attends));
-
-            this._MemberTypes = new EntitySet<MemberType>(new Action<MemberType>(this.attach_MemberTypes), new Action<MemberType>(this.detach_MemberTypes));
-
+            _MemberTypes = new EntitySet<MemberType>(new Action<MemberType>(attach_MemberTypes), new Action<MemberType>(detach_MemberTypes));
 
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "Id", UpdateCheck = UpdateCheck.Never, Storage = "_Id", DbType = "int NOT NULL", IsPrimaryKey = true)]
         public int Id
         {
-            get => this._Id;
+            get => _Id;
 
             set
             {
-                if (this._Id != value)
+                if (_Id != value)
                 {
-
-                    this.OnIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._Id = value;
-                    this.SendPropertyChanged("Id");
-                    this.OnIdChanged();
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Code", UpdateCheck = UpdateCheck.Never, Storage = "_Code", DbType = "nvarchar(20)")]
         public string Code
         {
-            get => this._Code;
+            get => _Code;
 
             set
             {
-                if (this._Code != value)
+                if (_Code != value)
                 {
-
-                    this.OnCodeChanging(value);
-                    this.SendPropertyChanging();
-                    this._Code = value;
-                    this.SendPropertyChanged("Code");
-                    this.OnCodeChanged();
+                    OnCodeChanging(value);
+                    SendPropertyChanging();
+                    _Code = value;
+                    SendPropertyChanged("Code");
+                    OnCodeChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Description", UpdateCheck = UpdateCheck.Never, Storage = "_Description", DbType = "nvarchar(100)")]
         public string Description
         {
-            get => this._Description;
+            get => _Description;
 
             set
             {
-                if (this._Description != value)
+                if (_Description != value)
                 {
-
-                    this.OnDescriptionChanging(value);
-                    this.SendPropertyChanging();
-                    this._Description = value;
-                    this.SendPropertyChanged("Description");
-                    this.OnDescriptionChanged();
+                    OnDescriptionChanging(value);
+                    SendPropertyChanging();
+                    _Description = value;
+                    SendPropertyChanged("Description");
+                    OnDescriptionChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Hardwired", UpdateCheck = UpdateCheck.Never, Storage = "_Hardwired", DbType = "bit")]
         public bool? Hardwired
         {
-            get => this._Hardwired;
+            get => _Hardwired;
 
             set
             {
-                if (this._Hardwired != value)
+                if (_Hardwired != value)
                 {
-
-                    this.OnHardwiredChanging(value);
-                    this.SendPropertyChanging();
-                    this._Hardwired = value;
-                    this.SendPropertyChanged("Hardwired");
-                    this.OnHardwiredChanged();
+                    OnHardwiredChanging(value);
+                    SendPropertyChanging();
+                    _Hardwired = value;
+                    SendPropertyChanged("Hardwired");
+                    OnHardwiredChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Worker", UpdateCheck = UpdateCheck.Never, Storage = "_Worker", DbType = "bit NOT NULL")]
         public bool Worker
         {
-            get => this._Worker;
+            get => _Worker;
 
             set
             {
-                if (this._Worker != value)
+                if (_Worker != value)
                 {
-
-                    this.OnWorkerChanging(value);
-                    this.SendPropertyChanging();
-                    this._Worker = value;
-                    this.SendPropertyChanged("Worker");
-                    this.OnWorkerChanged();
+                    OnWorkerChanging(value);
+                    SendPropertyChanging();
+                    _Worker = value;
+                    SendPropertyChanged("Worker");
+                    OnWorkerChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Guest", UpdateCheck = UpdateCheck.Never, Storage = "_Guest", DbType = "bit NOT NULL")]
         public bool Guest
         {
-            get => this._Guest;
+            get => _Guest;
 
             set
             {
-                if (this._Guest != value)
+                if (_Guest != value)
                 {
-
-                    this.OnGuestChanging(value);
-                    this.SendPropertyChanging();
-                    this._Guest = value;
-                    this.SendPropertyChanged("Guest");
-                    this.OnGuestChanged();
+                    OnGuestChanging(value);
+                    SendPropertyChanging();
+                    _Guest = value;
+                    SendPropertyChanged("Guest");
+                    OnGuestChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -209,22 +182,20 @@ namespace CmsData
         [Association(Name = "FK_AttendWithAbsents_TBL_AttendType", Storage = "_Attends", OtherKey = "AttendanceTypeId")]
         public EntitySet<Attend> Attends
            {
-               get => this._Attends;
+               get => _Attends;
 
-            set => this._Attends.Assign(value);
+            set => _Attends.Assign(value);
 
            }
-
 
         [Association(Name = "FK_MemberType_AttendType", Storage = "_MemberTypes", OtherKey = "AttendanceTypeId")]
         public EntitySet<MemberType> MemberTypes
            {
-               get => this._MemberTypes;
+               get => _MemberTypes;
 
-            set => this._MemberTypes.Assign(value);
+            set => _MemberTypes.Assign(value);
 
            }
-
 
         #endregion
 
@@ -235,49 +206,43 @@ namespace CmsData
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
 
-
         private void attach_Attends(Attend entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.AttendType = this;
         }
 
         private void detach_Attends(Attend entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.AttendType = null;
         }
 
-
         private void attach_MemberTypes(MemberType entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.AttendType = this;
         }
 
         private void detach_MemberTypes(MemberType entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.AttendType = null;
         }
-
-
     }
-
 }
-

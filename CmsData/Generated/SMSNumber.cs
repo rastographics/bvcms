@@ -7,7 +7,7 @@ namespace CmsData
     [Table(Name = "dbo.SMSNumbers")]
     public partial class SMSNumber : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -19,11 +19,10 @@ namespace CmsData
 
         private DateTime _LastUpdated;
 
-
-
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -41,103 +40,85 @@ namespace CmsData
         partial void OnLastUpdatedChanged();
 
         #endregion
+
         public SMSNumber()
         {
-
-
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "ID", UpdateCheck = UpdateCheck.Never, Storage = "_Id", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
         public int Id
         {
-            get => this._Id;
+            get => _Id;
 
             set
             {
-                if (this._Id != value)
+                if (_Id != value)
                 {
-
-                    this.OnIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._Id = value;
-                    this.SendPropertyChanged("Id");
-                    this.OnIdChanged();
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "GroupID", UpdateCheck = UpdateCheck.Never, Storage = "_GroupID", DbType = "int NOT NULL")]
         public int GroupID
         {
-            get => this._GroupID;
+            get => _GroupID;
 
             set
             {
-                if (this._GroupID != value)
+                if (_GroupID != value)
                 {
-
-                    this.OnGroupIDChanging(value);
-                    this.SendPropertyChanging();
-                    this._GroupID = value;
-                    this.SendPropertyChanged("GroupID");
-                    this.OnGroupIDChanged();
+                    OnGroupIDChanging(value);
+                    SendPropertyChanging();
+                    _GroupID = value;
+                    SendPropertyChanged("GroupID");
+                    OnGroupIDChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Number", UpdateCheck = UpdateCheck.Never, Storage = "_Number", DbType = "nvarchar(50) NOT NULL")]
         public string Number
         {
-            get => this._Number;
+            get => _Number;
 
             set
             {
-                if (this._Number != value)
+                if (_Number != value)
                 {
-
-                    this.OnNumberChanging(value);
-                    this.SendPropertyChanging();
-                    this._Number = value;
-                    this.SendPropertyChanged("Number");
-                    this.OnNumberChanged();
+                    OnNumberChanging(value);
+                    SendPropertyChanging();
+                    _Number = value;
+                    SendPropertyChanged("Number");
+                    OnNumberChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "LastUpdated", UpdateCheck = UpdateCheck.Never, Storage = "_LastUpdated", DbType = "datetime NOT NULL")]
         public DateTime LastUpdated
         {
-            get => this._LastUpdated;
+            get => _LastUpdated;
 
             set
             {
-                if (this._LastUpdated != value)
+                if (_LastUpdated != value)
                 {
-
-                    this.OnLastUpdatedChanging(value);
-                    this.SendPropertyChanging();
-                    this._LastUpdated = value;
-                    this.SendPropertyChanged("LastUpdated");
-                    this.OnLastUpdatedChanged();
+                    OnLastUpdatedChanging(value);
+                    SendPropertyChanging();
+                    _LastUpdated = value;
+                    SendPropertyChanged("LastUpdated");
+                    OnLastUpdatedChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -152,23 +133,19 @@ namespace CmsData
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-
     }
-
 }
-

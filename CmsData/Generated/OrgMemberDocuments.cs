@@ -1,4 +1,4 @@
-﻿using CmsData.Infrastructure;
+using CmsData.Infrastructure;
 using System;
 using System.ComponentModel;
 using System.Data.Linq;
@@ -9,9 +9,10 @@ namespace CmsData
     [Table(Name = "dbo.OrgMemberDocuments")]
     public partial class OrgMemberDocuments
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
+
         private int _DocumentId;
         private string _DocumentName;
         private int _ImageId;
@@ -23,6 +24,7 @@ namespace CmsData
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -45,28 +47,29 @@ namespace CmsData
 
         public OrgMemberDocuments()
         {
-            this._Person = default(EntityRef<Person>);
+            _Person = default(EntityRef<Person>);
 
-            this._Organization = default(EntityRef<Organization>);
+            _Organization = default(EntityRef<Organization>);
 
             OnCreated();
         }
 
         #region Columns
+
         [Column(Name = "DocumentId", UpdateCheck = UpdateCheck.Never, Storage = "_DocumentId", AutoSync = AutoSync.OnInsert, DbType = "int IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
         public int DocumentId
         {
-            get => this._DocumentId;
+            get => _DocumentId;
 
             set
             {
-                if (this._DocumentId != value)
+                if (_DocumentId != value)
                 {
-                    this.OnDocumentIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._DocumentId = value;
-                    this.SendPropertyChanged("DocumentId");
-                    this.OnDocumentIdChanged();
+                    OnDocumentIdChanging(value);
+                    SendPropertyChanging();
+                    _DocumentId = value;
+                    SendPropertyChanged("DocumentId");
+                    OnDocumentIdChanged();
                 }
             }
         }
@@ -74,17 +77,17 @@ namespace CmsData
         [Column(Name = "DocumentName", UpdateCheck = UpdateCheck.Never, Storage = "_DocumentName", DbType = "nvarchar(100)")]
         public string DocumentName
         {
-            get => this._DocumentName;
+            get => _DocumentName;
 
             set
             {
-                if (this._DocumentName != value)
+                if (_DocumentName != value)
                 {
-                    this.OnDocumentNameChanging(value);
-                    this.SendPropertyChanging();
-                    this._DocumentName = value;
-                    this.SendPropertyChanged("DocumentName");
-                    this.OnDocumentNameChanged();
+                    OnDocumentNameChanging(value);
+                    SendPropertyChanging();
+                    _DocumentName = value;
+                    SendPropertyChanged("DocumentName");
+                    OnDocumentNameChanged();
                 }
             }
         }
@@ -92,17 +95,17 @@ namespace CmsData
         [Column(Name = "ImageId", UpdateCheck = UpdateCheck.Never, Storage = "_ImageId", DbType = "int NOT NULL UNIQUE")]
         public int ImageId
         {
-            get => this._ImageId;
+            get => _ImageId;
 
             set
             {
-                if (this._ImageId != value)
+                if (_ImageId != value)
                 {
-                    this.OnImageIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._ImageId = value;
-                    this.SendPropertyChanged("ImageId");
-                    this.OnImageIdChanged();
+                    OnImageIdChanging(value);
+                    SendPropertyChanging();
+                    _ImageId = value;
+                    SendPropertyChanged("ImageId");
+                    OnImageIdChanged();
                 }
             }
         }
@@ -111,22 +114,22 @@ namespace CmsData
         [IsForeignKey]
         public int PeopleId
         {
-            get => this._PeopleId;
+            get => _PeopleId;
 
             set
             {
-                if (this._PeopleId != value)
+                if (_PeopleId != value)
                 {
-                    if (this._Person.HasLoadedOrAssignedValue)
+                    if (_Person.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnPeopleIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._PeopleId = value;
-                    this.SendPropertyChanged("PeopleId");
-                    this.OnPeopleIdChanged();
+                    OnPeopleIdChanging(value);
+                    SendPropertyChanging();
+                    _PeopleId = value;
+                    SendPropertyChanged("PeopleId");
+                    OnPeopleIdChanged();
                 }
             }
         }
@@ -135,58 +138,61 @@ namespace CmsData
         [IsForeignKey]
         public int OrganizationId
         {
-            get => this._OrganizationId;
+            get => _OrganizationId;
 
             set
             {
-                if (this._OrganizationId != value)
+                if (_OrganizationId != value)
                 {
-                    if (this._Organization.HasLoadedOrAssignedValue)
+                    if (_Organization.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnOrganizationIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._OrganizationId = value;
-                    this.SendPropertyChanged("PeopleId");
-                    this.OnOrganizationIdChanged();
+                    OnOrganizationIdChanging(value);
+                    SendPropertyChanging();
+                    _OrganizationId = value;
+                    SendPropertyChanged("PeopleId");
+                    OnOrganizationIdChanged();
                 }
             }
         }
+
         #endregion
 
         #region Foreign Keys
+
         [Association(Name = "Org_Member_Documents_PPL_FK", Storage = "_Person", ThisKey = "PeopleId", IsForeignKey = true)]
         public Person Person
         {
-            get => this._Person.Entity;
+            get => _Person.Entity;
 
             set
             {
-                Person previousValue = this._Person.Entity;
+                Person previousValue = _Person.Entity;
                 if (((previousValue != value)
-                            || (this._Person.HasLoadedOrAssignedValue == false)))
+                            || (_Person.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._Person.Entity = null;
+                        _Person.Entity = null;
                         previousValue.OrgMemberDocuments.Remove(this);
                     }
 
-                    this._Person.Entity = value;
+                    _Person.Entity = value;
                     if (value != null)
                     {
                         value.OrgMemberDocuments.Add(this);
-                        this._PeopleId = value.PeopleId;
-                    }
-                    else
-                    {
-                        this._PeopleId = default(int);
+                        _PeopleId = value.PeopleId;
                     }
 
-                    this.SendPropertyChanged("Person");
+                    else
+                    {
+                        _PeopleId = default(int);
+                    }
+
+                    SendPropertyChanged("Person");
                 }
             }
         }
@@ -194,51 +200,55 @@ namespace CmsData
         [Association(Name = "Org_Member_Documents_ORG_FK", Storage = "_Organization", ThisKey = "OrganizationId", IsForeignKey = true)]
         public Organization Organization
         {
-            get => this._Organization.Entity;
+            get => _Organization.Entity;
 
             set
             {
-                Organization previousValue = this._Organization.Entity;
+                Organization previousValue = _Organization.Entity;
                 if (((previousValue != value)
-                            || (this._Organization.HasLoadedOrAssignedValue == false)))
+                            || (_Organization.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._Organization.Entity = null;
+                        _Organization.Entity = null;
                         previousValue.OrgMemberDocuments.Remove(this);
                     }
 
-                    this._Organization.Entity = value;
+                    _Organization.Entity = value;
                     if (value != null)
                     {
                         value.OrgMemberDocuments.Add(this);
-                        this._OrganizationId = value.OrganizationId;
+                        _OrganizationId = value.OrganizationId;
                     }
+
                     else
                     {
-                        this._OrganizationId = default(int);
+                        _OrganizationId = default(int);
                     }
-                    this.SendPropertyChanged("Organization");
+
+                    SendPropertyChanged("Organization");
                 }
             }
         }
+
         #endregion
+
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
     }

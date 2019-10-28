@@ -7,7 +7,7 @@ namespace CmsData
     [Table(Name = "dbo.CheckInSettings")]
     public partial class CheckInSetting : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -19,11 +19,10 @@ namespace CmsData
 
         private int _Version;
 
-
-
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -41,103 +40,85 @@ namespace CmsData
         partial void OnVersionChanged();
 
         #endregion
+
         public CheckInSetting()
         {
-
-
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "id", UpdateCheck = UpdateCheck.Never, Storage = "_Id", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
         public int Id
         {
-            get => this._Id;
+            get => _Id;
 
             set
             {
-                if (this._Id != value)
+                if (_Id != value)
                 {
-
-                    this.OnIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._Id = value;
-                    this.SendPropertyChanged("Id");
-                    this.OnIdChanged();
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "name", UpdateCheck = UpdateCheck.Never, Storage = "_Name", DbType = "nvarchar(50) NOT NULL")]
         public string Name
         {
-            get => this._Name;
+            get => _Name;
 
             set
             {
-                if (this._Name != value)
+                if (_Name != value)
                 {
-
-                    this.OnNameChanging(value);
-                    this.SendPropertyChanging();
-                    this._Name = value;
-                    this.SendPropertyChanged("Name");
-                    this.OnNameChanged();
+                    OnNameChanging(value);
+                    SendPropertyChanging();
+                    _Name = value;
+                    SendPropertyChanged("Name");
+                    OnNameChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "settings", UpdateCheck = UpdateCheck.Never, Storage = "_Settings", DbType = "nvarchar NOT NULL")]
         public string Settings
         {
-            get => this._Settings;
+            get => _Settings;
 
             set
             {
-                if (this._Settings != value)
+                if (_Settings != value)
                 {
-
-                    this.OnSettingsChanging(value);
-                    this.SendPropertyChanging();
-                    this._Settings = value;
-                    this.SendPropertyChanged("Settings");
-                    this.OnSettingsChanged();
+                    OnSettingsChanging(value);
+                    SendPropertyChanging();
+                    _Settings = value;
+                    SendPropertyChanged("Settings");
+                    OnSettingsChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "version", UpdateCheck = UpdateCheck.Never, Storage = "_Version", DbType = "int NOT NULL")]
         public int Version
         {
-            get => this._Version;
+            get => _Version;
 
             set
             {
-                if (this._Version != value)
+                if (_Version != value)
                 {
-
-                    this.OnVersionChanging(value);
-                    this.SendPropertyChanging();
-                    this._Version = value;
-                    this.SendPropertyChanged("Version");
-                    this.OnVersionChanged();
+                    OnVersionChanging(value);
+                    SendPropertyChanging();
+                    _Version = value;
+                    SendPropertyChanged("Version");
+                    OnVersionChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -152,23 +133,19 @@ namespace CmsData
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-
     }
-
 }
-

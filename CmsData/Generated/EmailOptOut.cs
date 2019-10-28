@@ -9,7 +9,7 @@ namespace CmsData
     [Table(Name = "dbo.EmailOptOut")]
     public partial class EmailOptOut : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -19,13 +19,12 @@ namespace CmsData
 
         private DateTime? _DateX;
 
-
-
         private EntityRef<Person> _Person;
 
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -40,15 +39,13 @@ namespace CmsData
         partial void OnDateXChanged();
 
         #endregion
+
         public EmailOptOut()
         {
-
-
-            this._Person = default(EntityRef<Person>);
+            _Person = default(EntityRef<Person>);
 
             OnCreated();
         }
-
 
         #region Columns
 
@@ -56,73 +53,61 @@ namespace CmsData
         [IsForeignKey]
         public int ToPeopleId
         {
-            get => this._ToPeopleId;
+            get => _ToPeopleId;
 
             set
             {
-                if (this._ToPeopleId != value)
+                if (_ToPeopleId != value)
                 {
-
-                    if (this._Person.HasLoadedOrAssignedValue)
+                    if (_Person.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnToPeopleIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._ToPeopleId = value;
-                    this.SendPropertyChanged("ToPeopleId");
-                    this.OnToPeopleIdChanged();
+                    OnToPeopleIdChanging(value);
+                    SendPropertyChanging();
+                    _ToPeopleId = value;
+                    SendPropertyChanged("ToPeopleId");
+                    OnToPeopleIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "FromEmail", UpdateCheck = UpdateCheck.Never, Storage = "_FromEmail", DbType = "nvarchar(50) NOT NULL", IsPrimaryKey = true)]
         public string FromEmail
         {
-            get => this._FromEmail;
+            get => _FromEmail;
 
             set
             {
-                if (this._FromEmail != value)
+                if (_FromEmail != value)
                 {
-
-                    this.OnFromEmailChanging(value);
-                    this.SendPropertyChanging();
-                    this._FromEmail = value;
-                    this.SendPropertyChanged("FromEmail");
-                    this.OnFromEmailChanged();
+                    OnFromEmailChanging(value);
+                    SendPropertyChanging();
+                    _FromEmail = value;
+                    SendPropertyChanged("FromEmail");
+                    OnFromEmailChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Date", UpdateCheck = UpdateCheck.Never, Storage = "_DateX", DbType = "datetime")]
         public DateTime? DateX
         {
-            get => this._DateX;
+            get => _DateX;
 
             set
             {
-                if (this._DateX != value)
+                if (_DateX != value)
                 {
-
-                    this.OnDateXChanging(value);
-                    this.SendPropertyChanging();
-                    this._DateX = value;
-                    this.SendPropertyChanged("DateX");
-                    this.OnDateXChanged();
+                    OnDateXChanging(value);
+                    SendPropertyChanging();
+                    _DateX = value;
+                    SendPropertyChanged("DateX");
+                    OnDateXChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -135,67 +120,59 @@ namespace CmsData
         [Association(Name = "FK_EmailOptOut_People", Storage = "_Person", ThisKey = "ToPeopleId", IsForeignKey = true)]
         public Person Person
         {
-            get => this._Person.Entity;
+            get => _Person.Entity;
 
             set
             {
-                Person previousValue = this._Person.Entity;
+                Person previousValue = _Person.Entity;
                 if (((previousValue != value)
-                            || (this._Person.HasLoadedOrAssignedValue == false)))
+                            || (_Person.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._Person.Entity = null;
+                        _Person.Entity = null;
                         previousValue.EmailOptOuts.Remove(this);
                     }
 
-                    this._Person.Entity = value;
+                    _Person.Entity = value;
                     if (value != null)
                     {
                         value.EmailOptOuts.Add(this);
 
-                        this._ToPeopleId = value.PeopleId;
+                        _ToPeopleId = value.PeopleId;
 
                     }
 
                     else
                     {
-
-                        this._ToPeopleId = default(int);
+                        _ToPeopleId = default(int);
 
                     }
 
-                    this.SendPropertyChanged("Person");
+                    SendPropertyChanged("Person");
                 }
-
             }
-
         }
-
 
         #endregion
 
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-
     }
-
 }
-

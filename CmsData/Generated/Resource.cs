@@ -9,7 +9,7 @@ namespace CmsData
     [Table(Name = "dbo.Resource")]
     public partial class Resource : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -43,13 +43,11 @@ namespace CmsData
 
         private string _StatusFlagIds;
 
-
         private EntitySet<ResourceAttachment> _ResourceAttachments;
 
         private EntitySet<ResourceOrganization> _ResourceOrganizations;
 
         private EntitySet<ResourceOrganizationType> _ResourceOrganizationTypes;
-
 
         private EntityRef<Campu> _Campu;
 
@@ -66,6 +64,7 @@ namespace CmsData
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -116,399 +115,337 @@ namespace CmsData
         partial void OnStatusFlagIdsChanged();
 
         #endregion
+
         public Resource()
         {
+            _ResourceAttachments = new EntitySet<ResourceAttachment>(new Action<ResourceAttachment>(attach_ResourceAttachments), new Action<ResourceAttachment>(detach_ResourceAttachments));
 
-            this._ResourceAttachments = new EntitySet<ResourceAttachment>(new Action<ResourceAttachment>(this.attach_ResourceAttachments), new Action<ResourceAttachment>(this.detach_ResourceAttachments));
+            _ResourceOrganizations = new EntitySet<ResourceOrganization>(new Action<ResourceOrganization>(attach_ResourceOrganizations), new Action<ResourceOrganization>(detach_ResourceOrganizations));
 
-            this._ResourceOrganizations = new EntitySet<ResourceOrganization>(new Action<ResourceOrganization>(this.attach_ResourceOrganizations), new Action<ResourceOrganization>(this.detach_ResourceOrganizations));
+            _ResourceOrganizationTypes = new EntitySet<ResourceOrganizationType>(new Action<ResourceOrganizationType>(attach_ResourceOrganizationTypes), new Action<ResourceOrganizationType>(detach_ResourceOrganizationTypes));
 
-            this._ResourceOrganizationTypes = new EntitySet<ResourceOrganizationType>(new Action<ResourceOrganizationType>(this.attach_ResourceOrganizationTypes), new Action<ResourceOrganizationType>(this.detach_ResourceOrganizationTypes));
+            _Campu = default(EntityRef<Campu>);
 
+            _Division = default(EntityRef<Division>);
 
-            this._Campu = default(EntityRef<Campu>);
+            _Organization = default(EntityRef<Organization>);
 
-            this._Division = default(EntityRef<Division>);
+            _OrganizationType = default(EntityRef<OrganizationType>);
 
-            this._Organization = default(EntityRef<Organization>);
+            _ResourceCategory = default(EntityRef<ResourceCategory>);
 
-            this._OrganizationType = default(EntityRef<OrganizationType>);
-
-            this._ResourceCategory = default(EntityRef<ResourceCategory>);
-
-            this._ResourceType = default(EntityRef<ResourceType>);
+            _ResourceType = default(EntityRef<ResourceType>);
 
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "ResourceId", UpdateCheck = UpdateCheck.Never, Storage = "_ResourceId", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
         public int ResourceId
         {
-            get => this._ResourceId;
+            get => _ResourceId;
 
             set
             {
-                if (this._ResourceId != value)
+                if (_ResourceId != value)
                 {
-
-                    this.OnResourceIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._ResourceId = value;
-                    this.SendPropertyChanged("ResourceId");
-                    this.OnResourceIdChanged();
+                    OnResourceIdChanging(value);
+                    SendPropertyChanging();
+                    _ResourceId = value;
+                    SendPropertyChanged("ResourceId");
+                    OnResourceIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Name", UpdateCheck = UpdateCheck.Never, Storage = "_Name", DbType = "nvarchar(100)")]
         public string Name
         {
-            get => this._Name;
+            get => _Name;
 
             set
             {
-                if (this._Name != value)
+                if (_Name != value)
                 {
-
-                    this.OnNameChanging(value);
-                    this.SendPropertyChanging();
-                    this._Name = value;
-                    this.SendPropertyChanged("Name");
-                    this.OnNameChanged();
+                    OnNameChanging(value);
+                    SendPropertyChanging();
+                    _Name = value;
+                    SendPropertyChanged("Name");
+                    OnNameChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Description", UpdateCheck = UpdateCheck.Never, Storage = "_Description", DbType = "nvarchar")]
         public string Description
         {
-            get => this._Description;
+            get => _Description;
 
             set
             {
-                if (this._Description != value)
+                if (_Description != value)
                 {
-
-                    this.OnDescriptionChanging(value);
-                    this.SendPropertyChanging();
-                    this._Description = value;
-                    this.SendPropertyChanged("Description");
-                    this.OnDescriptionChanged();
+                    OnDescriptionChanging(value);
+                    SendPropertyChanging();
+                    _Description = value;
+                    SendPropertyChanged("Description");
+                    OnDescriptionChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "CreationDate", UpdateCheck = UpdateCheck.Never, Storage = "_CreationDate", DbType = "datetime")]
         public DateTime? CreationDate
         {
-            get => this._CreationDate;
+            get => _CreationDate;
 
             set
             {
-                if (this._CreationDate != value)
+                if (_CreationDate != value)
                 {
-
-                    this.OnCreationDateChanging(value);
-                    this.SendPropertyChanging();
-                    this._CreationDate = value;
-                    this.SendPropertyChanged("CreationDate");
-                    this.OnCreationDateChanged();
+                    OnCreationDateChanging(value);
+                    SendPropertyChanging();
+                    _CreationDate = value;
+                    SendPropertyChanged("CreationDate");
+                    OnCreationDateChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "UpdateDate", UpdateCheck = UpdateCheck.Never, Storage = "_UpdateDate", DbType = "datetime")]
         public DateTime? UpdateDate
         {
-            get => this._UpdateDate;
+            get => _UpdateDate;
 
             set
             {
-                if (this._UpdateDate != value)
+                if (_UpdateDate != value)
                 {
-
-                    this.OnUpdateDateChanging(value);
-                    this.SendPropertyChanging();
-                    this._UpdateDate = value;
-                    this.SendPropertyChanged("UpdateDate");
-                    this.OnUpdateDateChanged();
+                    OnUpdateDateChanging(value);
+                    SendPropertyChanging();
+                    _UpdateDate = value;
+                    SendPropertyChanged("UpdateDate");
+                    OnUpdateDateChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "PeopleId", UpdateCheck = UpdateCheck.Never, Storage = "_PeopleId", DbType = "int")]
         public int? PeopleId
         {
-            get => this._PeopleId;
+            get => _PeopleId;
 
             set
             {
-                if (this._PeopleId != value)
+                if (_PeopleId != value)
                 {
-
-                    this.OnPeopleIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._PeopleId = value;
-                    this.SendPropertyChanged("PeopleId");
-                    this.OnPeopleIdChanged();
+                    OnPeopleIdChanging(value);
+                    SendPropertyChanging();
+                    _PeopleId = value;
+                    SendPropertyChanged("PeopleId");
+                    OnPeopleIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "OrganizationId", UpdateCheck = UpdateCheck.Never, Storage = "_OrganizationId", DbType = "int")]
         [IsForeignKey]
         public int? OrganizationId
         {
-            get => this._OrganizationId;
+            get => _OrganizationId;
 
             set
             {
-                if (this._OrganizationId != value)
+                if (_OrganizationId != value)
                 {
-
-                    if (this._Organization.HasLoadedOrAssignedValue)
+                    if (_Organization.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnOrganizationIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._OrganizationId = value;
-                    this.SendPropertyChanged("OrganizationId");
-                    this.OnOrganizationIdChanged();
+                    OnOrganizationIdChanging(value);
+                    SendPropertyChanging();
+                    _OrganizationId = value;
+                    SendPropertyChanged("OrganizationId");
+                    OnOrganizationIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "CampusId", UpdateCheck = UpdateCheck.Never, Storage = "_CampusId", DbType = "int")]
         [IsForeignKey]
         public int? CampusId
         {
-            get => this._CampusId;
+            get => _CampusId;
 
             set
             {
-                if (this._CampusId != value)
+                if (_CampusId != value)
                 {
-
-                    if (this._Campu.HasLoadedOrAssignedValue)
+                    if (_Campu.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnCampusIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._CampusId = value;
-                    this.SendPropertyChanged("CampusId");
-                    this.OnCampusIdChanged();
+                    OnCampusIdChanging(value);
+                    SendPropertyChanging();
+                    _CampusId = value;
+                    SendPropertyChanged("CampusId");
+                    OnCampusIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "DivisionId", UpdateCheck = UpdateCheck.Never, Storage = "_DivisionId", DbType = "int")]
         [IsForeignKey]
         public int? DivisionId
         {
-            get => this._DivisionId;
+            get => _DivisionId;
 
             set
             {
-                if (this._DivisionId != value)
+                if (_DivisionId != value)
                 {
-
-                    if (this._Division.HasLoadedOrAssignedValue)
+                    if (_Division.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnDivisionIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._DivisionId = value;
-                    this.SendPropertyChanged("DivisionId");
-                    this.OnDivisionIdChanged();
+                    OnDivisionIdChanging(value);
+                    SendPropertyChanging();
+                    _DivisionId = value;
+                    SendPropertyChanged("DivisionId");
+                    OnDivisionIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "MemberTypeIds", UpdateCheck = UpdateCheck.Never, Storage = "_MemberTypeIds", DbType = "nvarchar(50)")]
         public string MemberTypeIds
         {
-            get => this._MemberTypeIds;
+            get => _MemberTypeIds;
 
             set
             {
-                if (this._MemberTypeIds != value)
+                if (_MemberTypeIds != value)
                 {
-
-                    this.OnMemberTypeIdsChanging(value);
-                    this.SendPropertyChanging();
-                    this._MemberTypeIds = value;
-                    this.SendPropertyChanged("MemberTypeIds");
-                    this.OnMemberTypeIdsChanged();
+                    OnMemberTypeIdsChanging(value);
+                    SendPropertyChanging();
+                    _MemberTypeIds = value;
+                    SendPropertyChanged("MemberTypeIds");
+                    OnMemberTypeIdsChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "DisplayOrder", UpdateCheck = UpdateCheck.Never, Storage = "_DisplayOrder", DbType = "int")]
         public int? DisplayOrder
         {
-            get => this._DisplayOrder;
+            get => _DisplayOrder;
 
             set
             {
-                if (this._DisplayOrder != value)
+                if (_DisplayOrder != value)
                 {
-
-                    this.OnDisplayOrderChanging(value);
-                    this.SendPropertyChanging();
-                    this._DisplayOrder = value;
-                    this.SendPropertyChanged("DisplayOrder");
-                    this.OnDisplayOrderChanged();
+                    OnDisplayOrderChanging(value);
+                    SendPropertyChanging();
+                    _DisplayOrder = value;
+                    SendPropertyChanged("DisplayOrder");
+                    OnDisplayOrderChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ResourceTypeId", UpdateCheck = UpdateCheck.Never, Storage = "_ResourceTypeId", DbType = "int NOT NULL")]
         [IsForeignKey]
         public int ResourceTypeId
         {
-            get => this._ResourceTypeId;
+            get => _ResourceTypeId;
 
             set
             {
-                if (this._ResourceTypeId != value)
+                if (_ResourceTypeId != value)
                 {
-
-                    if (this._ResourceType.HasLoadedOrAssignedValue)
+                    if (_ResourceType.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnResourceTypeIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._ResourceTypeId = value;
-                    this.SendPropertyChanged("ResourceTypeId");
-                    this.OnResourceTypeIdChanged();
+                    OnResourceTypeIdChanging(value);
+                    SendPropertyChanging();
+                    _ResourceTypeId = value;
+                    SendPropertyChanged("ResourceTypeId");
+                    OnResourceTypeIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ResourceCategoryId", UpdateCheck = UpdateCheck.Never, Storage = "_ResourceCategoryId", DbType = "int NOT NULL")]
         [IsForeignKey]
         public int ResourceCategoryId
         {
-            get => this._ResourceCategoryId;
+            get => _ResourceCategoryId;
 
             set
             {
-                if (this._ResourceCategoryId != value)
+                if (_ResourceCategoryId != value)
                 {
-
-                    if (this._ResourceCategory.HasLoadedOrAssignedValue)
+                    if (_ResourceCategory.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnResourceCategoryIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._ResourceCategoryId = value;
-                    this.SendPropertyChanged("ResourceCategoryId");
-                    this.OnResourceCategoryIdChanged();
+                    OnResourceCategoryIdChanging(value);
+                    SendPropertyChanging();
+                    _ResourceCategoryId = value;
+                    SendPropertyChanged("ResourceCategoryId");
+                    OnResourceCategoryIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "OrganizationTypeId", UpdateCheck = UpdateCheck.Never, Storage = "_OrganizationTypeId", DbType = "int")]
         [IsForeignKey]
         public int? OrganizationTypeId
         {
-            get => this._OrganizationTypeId;
+            get => _OrganizationTypeId;
 
             set
             {
-                if (this._OrganizationTypeId != value)
+                if (_OrganizationTypeId != value)
                 {
-
-                    if (this._OrganizationType.HasLoadedOrAssignedValue)
+                    if (_OrganizationType.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnOrganizationTypeIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._OrganizationTypeId = value;
-                    this.SendPropertyChanged("OrganizationTypeId");
-                    this.OnOrganizationTypeIdChanged();
+                    OnOrganizationTypeIdChanging(value);
+                    SendPropertyChanging();
+                    _OrganizationTypeId = value;
+                    SendPropertyChanged("OrganizationTypeId");
+                    OnOrganizationTypeIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "StatusFlagIds", UpdateCheck = UpdateCheck.Never, Storage = "_StatusFlagIds", DbType = "nvarchar")]
         public string StatusFlagIds
         {
-            get => this._StatusFlagIds;
+            get => _StatusFlagIds;
 
             set
             {
-                if (this._StatusFlagIds != value)
+                if (_StatusFlagIds != value)
                 {
-
-                    this.OnStatusFlagIdsChanging(value);
-                    this.SendPropertyChanging();
-                    this._StatusFlagIds = value;
-                    this.SendPropertyChanged("StatusFlagIds");
-                    this.OnStatusFlagIdsChanged();
+                    OnStatusFlagIdsChanging(value);
+                    SendPropertyChanging();
+                    _StatusFlagIds = value;
+                    SendPropertyChanged("StatusFlagIds");
+                    OnStatusFlagIdsChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -517,32 +454,29 @@ namespace CmsData
         [Association(Name = "FK_ResourceAttachment_Resource", Storage = "_ResourceAttachments", OtherKey = "ResourceId")]
         public EntitySet<ResourceAttachment> ResourceAttachments
            {
-               get => this._ResourceAttachments;
+               get => _ResourceAttachments;
 
-            set => this._ResourceAttachments.Assign(value);
+            set => _ResourceAttachments.Assign(value);
 
            }
-
 
         [Association(Name = "FK_ResourceOrganization_Resource", Storage = "_ResourceOrganizations", OtherKey = "ResourceId")]
         public EntitySet<ResourceOrganization> ResourceOrganizations
            {
-               get => this._ResourceOrganizations;
+               get => _ResourceOrganizations;
 
-            set => this._ResourceOrganizations.Assign(value);
+            set => _ResourceOrganizations.Assign(value);
 
            }
-
 
         [Association(Name = "FK_ResourceOrganizationType_Resource", Storage = "_ResourceOrganizationTypes", OtherKey = "ResourceId")]
         public EntitySet<ResourceOrganizationType> ResourceOrganizationTypes
            {
-               get => this._ResourceOrganizationTypes;
+               get => _ResourceOrganizationTypes;
 
-            set => this._ResourceOrganizationTypes.Assign(value);
+            set => _ResourceOrganizationTypes.Assign(value);
 
            }
-
 
         #endregion
 
@@ -551,316 +485,285 @@ namespace CmsData
         [Association(Name = "FK_Resource_Campus", Storage = "_Campu", ThisKey = "CampusId", IsForeignKey = true)]
         public Campu Campu
         {
-            get => this._Campu.Entity;
+            get => _Campu.Entity;
 
             set
             {
-                Campu previousValue = this._Campu.Entity;
+                Campu previousValue = _Campu.Entity;
                 if (((previousValue != value)
-                            || (this._Campu.HasLoadedOrAssignedValue == false)))
+                            || (_Campu.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._Campu.Entity = null;
+                        _Campu.Entity = null;
                         previousValue.Resources.Remove(this);
                     }
 
-                    this._Campu.Entity = value;
+                    _Campu.Entity = value;
                     if (value != null)
                     {
                         value.Resources.Add(this);
 
-                        this._CampusId = value.Id;
+                        _CampusId = value.Id;
 
                     }
 
                     else
                     {
-
-                        this._CampusId = default(int?);
+                        _CampusId = default(int?);
 
                     }
 
-                    this.SendPropertyChanged("Campu");
+                    SendPropertyChanged("Campu");
                 }
-
             }
-
         }
-
 
         [Association(Name = "FK_Resource_Division", Storage = "_Division", ThisKey = "DivisionId", IsForeignKey = true)]
         public Division Division
         {
-            get => this._Division.Entity;
+            get => _Division.Entity;
 
             set
             {
-                Division previousValue = this._Division.Entity;
+                Division previousValue = _Division.Entity;
                 if (((previousValue != value)
-                            || (this._Division.HasLoadedOrAssignedValue == false)))
+                            || (_Division.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._Division.Entity = null;
+                        _Division.Entity = null;
                         previousValue.Resources.Remove(this);
                     }
 
-                    this._Division.Entity = value;
+                    _Division.Entity = value;
                     if (value != null)
                     {
                         value.Resources.Add(this);
 
-                        this._DivisionId = value.Id;
+                        _DivisionId = value.Id;
 
                     }
 
                     else
                     {
-
-                        this._DivisionId = default(int?);
+                        _DivisionId = default(int?);
 
                     }
 
-                    this.SendPropertyChanged("Division");
+                    SendPropertyChanged("Division");
                 }
-
             }
-
         }
-
 
         [Association(Name = "FK_Resource_Organization", Storage = "_Organization", ThisKey = "OrganizationId", IsForeignKey = true)]
         public Organization Organization
         {
-            get => this._Organization.Entity;
+            get => _Organization.Entity;
 
             set
             {
-                Organization previousValue = this._Organization.Entity;
+                Organization previousValue = _Organization.Entity;
                 if (((previousValue != value)
-                            || (this._Organization.HasLoadedOrAssignedValue == false)))
+                            || (_Organization.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._Organization.Entity = null;
+                        _Organization.Entity = null;
                         previousValue.Resources.Remove(this);
                     }
 
-                    this._Organization.Entity = value;
+                    _Organization.Entity = value;
                     if (value != null)
                     {
                         value.Resources.Add(this);
 
-                        this._OrganizationId = value.OrganizationId;
+                        _OrganizationId = value.OrganizationId;
 
                     }
 
                     else
                     {
-
-                        this._OrganizationId = default(int?);
+                        _OrganizationId = default(int?);
 
                     }
 
-                    this.SendPropertyChanged("Organization");
+                    SendPropertyChanged("Organization");
                 }
-
             }
-
         }
-
 
         [Association(Name = "FK_Resource_OrganizationType", Storage = "_OrganizationType", ThisKey = "OrganizationTypeId", IsForeignKey = true)]
         public OrganizationType OrganizationType
         {
-            get => this._OrganizationType.Entity;
+            get => _OrganizationType.Entity;
 
             set
             {
-                OrganizationType previousValue = this._OrganizationType.Entity;
+                OrganizationType previousValue = _OrganizationType.Entity;
                 if (((previousValue != value)
-                            || (this._OrganizationType.HasLoadedOrAssignedValue == false)))
+                            || (_OrganizationType.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._OrganizationType.Entity = null;
+                        _OrganizationType.Entity = null;
                         previousValue.Resources.Remove(this);
                     }
 
-                    this._OrganizationType.Entity = value;
+                    _OrganizationType.Entity = value;
                     if (value != null)
                     {
                         value.Resources.Add(this);
 
-                        this._OrganizationTypeId = value.Id;
+                        _OrganizationTypeId = value.Id;
 
                     }
 
                     else
                     {
-
-                        this._OrganizationTypeId = default(int?);
+                        _OrganizationTypeId = default(int?);
 
                     }
 
-                    this.SendPropertyChanged("OrganizationType");
+                    SendPropertyChanged("OrganizationType");
                 }
-
             }
-
         }
-
 
         [Association(Name = "FK_Resource_ResourceCategory", Storage = "_ResourceCategory", ThisKey = "ResourceCategoryId", IsForeignKey = true)]
         public ResourceCategory ResourceCategory
         {
-            get => this._ResourceCategory.Entity;
+            get => _ResourceCategory.Entity;
 
             set
             {
-                ResourceCategory previousValue = this._ResourceCategory.Entity;
+                ResourceCategory previousValue = _ResourceCategory.Entity;
                 if (((previousValue != value)
-                            || (this._ResourceCategory.HasLoadedOrAssignedValue == false)))
+                            || (_ResourceCategory.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._ResourceCategory.Entity = null;
+                        _ResourceCategory.Entity = null;
                         previousValue.Resources.Remove(this);
                     }
 
-                    this._ResourceCategory.Entity = value;
+                    _ResourceCategory.Entity = value;
                     if (value != null)
                     {
                         value.Resources.Add(this);
 
-                        this._ResourceCategoryId = value.ResourceCategoryId;
+                        _ResourceCategoryId = value.ResourceCategoryId;
 
                     }
 
                     else
                     {
-
-                        this._ResourceCategoryId = default(int);
+                        _ResourceCategoryId = default(int);
 
                     }
 
-                    this.SendPropertyChanged("ResourceCategory");
+                    SendPropertyChanged("ResourceCategory");
                 }
-
             }
-
         }
-
 
         [Association(Name = "FK_Resource_ResourceType", Storage = "_ResourceType", ThisKey = "ResourceTypeId", IsForeignKey = true)]
         public ResourceType ResourceType
         {
-            get => this._ResourceType.Entity;
+            get => _ResourceType.Entity;
 
             set
             {
-                ResourceType previousValue = this._ResourceType.Entity;
+                ResourceType previousValue = _ResourceType.Entity;
                 if (((previousValue != value)
-                            || (this._ResourceType.HasLoadedOrAssignedValue == false)))
+                            || (_ResourceType.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._ResourceType.Entity = null;
+                        _ResourceType.Entity = null;
                         previousValue.Resources.Remove(this);
                     }
 
-                    this._ResourceType.Entity = value;
+                    _ResourceType.Entity = value;
                     if (value != null)
                     {
                         value.Resources.Add(this);
 
-                        this._ResourceTypeId = value.ResourceTypeId;
+                        _ResourceTypeId = value.ResourceTypeId;
 
                     }
 
                     else
                     {
-
-                        this._ResourceTypeId = default(int);
+                        _ResourceTypeId = default(int);
 
                     }
 
-                    this.SendPropertyChanged("ResourceType");
+                    SendPropertyChanged("ResourceType");
                 }
-
             }
-
         }
-
 
         #endregion
 
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
 
-
         private void attach_ResourceAttachments(ResourceAttachment entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.Resource = this;
         }
 
         private void detach_ResourceAttachments(ResourceAttachment entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.Resource = null;
         }
 
-
         private void attach_ResourceOrganizations(ResourceOrganization entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.Resource = this;
         }
 
         private void detach_ResourceOrganizations(ResourceOrganization entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.Resource = null;
         }
 
-
         private void attach_ResourceOrganizationTypes(ResourceOrganizationType entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.Resource = this;
         }
 
         private void detach_ResourceOrganizationTypes(ResourceOrganizationType entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.Resource = null;
         }
-
-
     }
-
 }
-

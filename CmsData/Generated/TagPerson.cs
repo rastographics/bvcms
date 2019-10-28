@@ -9,7 +9,7 @@ namespace CmsData
     [Table(Name = "dbo.TagPerson")]
     public partial class TagPerson : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -19,8 +19,6 @@ namespace CmsData
 
         private DateTime? _DateCreated;
 
-
-
         private EntityRef<Tag> _Tag;
 
         private EntityRef<Person> _Person;
@@ -28,6 +26,7 @@ namespace CmsData
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -42,17 +41,15 @@ namespace CmsData
         partial void OnDateCreatedChanged();
 
         #endregion
+
         public TagPerson()
         {
+            _Tag = default(EntityRef<Tag>);
 
-
-            this._Tag = default(EntityRef<Tag>);
-
-            this._Person = default(EntityRef<Person>);
+            _Person = default(EntityRef<Person>);
 
             OnCreated();
         }
-
 
         #region Columns
 
@@ -60,79 +57,67 @@ namespace CmsData
         [IsForeignKey]
         public int Id
         {
-            get => this._Id;
+            get => _Id;
 
             set
             {
-                if (this._Id != value)
+                if (_Id != value)
                 {
-
-                    if (this._Tag.HasLoadedOrAssignedValue)
+                    if (_Tag.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._Id = value;
-                    this.SendPropertyChanged("Id");
-                    this.OnIdChanged();
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "PeopleId", UpdateCheck = UpdateCheck.Never, Storage = "_PeopleId", DbType = "int NOT NULL", IsPrimaryKey = true)]
         [IsForeignKey]
         public int PeopleId
         {
-            get => this._PeopleId;
+            get => _PeopleId;
 
             set
             {
-                if (this._PeopleId != value)
+                if (_PeopleId != value)
                 {
-
-                    if (this._Person.HasLoadedOrAssignedValue)
+                    if (_Person.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnPeopleIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._PeopleId = value;
-                    this.SendPropertyChanged("PeopleId");
-                    this.OnPeopleIdChanged();
+                    OnPeopleIdChanging(value);
+                    SendPropertyChanging();
+                    _PeopleId = value;
+                    SendPropertyChanged("PeopleId");
+                    OnPeopleIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "DateCreated", UpdateCheck = UpdateCheck.Never, Storage = "_DateCreated", DbType = "datetime")]
         public DateTime? DateCreated
         {
-            get => this._DateCreated;
+            get => _DateCreated;
 
             set
             {
-                if (this._DateCreated != value)
+                if (_DateCreated != value)
                 {
-
-                    this.OnDateCreatedChanging(value);
-                    this.SendPropertyChanging();
-                    this._DateCreated = value;
-                    this.SendPropertyChanged("DateCreated");
-                    this.OnDateCreatedChanged();
+                    OnDateCreatedChanging(value);
+                    SendPropertyChanging();
+                    _DateCreated = value;
+                    SendPropertyChanged("DateCreated");
+                    OnDateCreatedChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -145,109 +130,97 @@ namespace CmsData
         [Association(Name = "PersonTags__Tag", Storage = "_Tag", ThisKey = "Id", IsForeignKey = true)]
         public Tag Tag
         {
-            get => this._Tag.Entity;
+            get => _Tag.Entity;
 
             set
             {
-                Tag previousValue = this._Tag.Entity;
+                Tag previousValue = _Tag.Entity;
                 if (((previousValue != value)
-                            || (this._Tag.HasLoadedOrAssignedValue == false)))
+                            || (_Tag.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._Tag.Entity = null;
+                        _Tag.Entity = null;
                         previousValue.PersonTags.Remove(this);
                     }
 
-                    this._Tag.Entity = value;
+                    _Tag.Entity = value;
                     if (value != null)
                     {
                         value.PersonTags.Add(this);
 
-                        this._Id = value.Id;
+                        _Id = value.Id;
 
                     }
 
                     else
                     {
-
-                        this._Id = default(int);
+                        _Id = default(int);
 
                     }
 
-                    this.SendPropertyChanged("Tag");
+                    SendPropertyChanged("Tag");
                 }
-
             }
-
         }
-
 
         [Association(Name = "Tags__Person", Storage = "_Person", ThisKey = "PeopleId", IsForeignKey = true)]
         public Person Person
         {
-            get => this._Person.Entity;
+            get => _Person.Entity;
 
             set
             {
-                Person previousValue = this._Person.Entity;
+                Person previousValue = _Person.Entity;
                 if (((previousValue != value)
-                            || (this._Person.HasLoadedOrAssignedValue == false)))
+                            || (_Person.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._Person.Entity = null;
+                        _Person.Entity = null;
                         previousValue.Tags.Remove(this);
                     }
 
-                    this._Person.Entity = value;
+                    _Person.Entity = value;
                     if (value != null)
                     {
                         value.Tags.Add(this);
 
-                        this._PeopleId = value.PeopleId;
+                        _PeopleId = value.PeopleId;
 
                     }
 
                     else
                     {
-
-                        this._PeopleId = default(int);
+                        _PeopleId = default(int);
 
                     }
 
-                    this.SendPropertyChanged("Person");
+                    SendPropertyChanged("Person");
                 }
-
             }
-
         }
-
 
         #endregion
 
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-
     }
-
 }
-

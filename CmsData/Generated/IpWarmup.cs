@@ -7,7 +7,7 @@ namespace CmsData
     [Table(Name = "dbo.IpWarmup")]
     public partial class IpWarmup : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -21,11 +21,10 @@ namespace CmsData
 
         private int? _Totaltries;
 
-
-
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -46,125 +45,103 @@ namespace CmsData
         partial void OnTotaltriesChanged();
 
         #endregion
+
         public IpWarmup()
         {
-
-
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "epoch", UpdateCheck = UpdateCheck.Never, Storage = "_Epoch", DbType = "datetime")]
         public DateTime? Epoch
         {
-            get => this._Epoch;
+            get => _Epoch;
 
             set
             {
-                if (this._Epoch != value)
+                if (_Epoch != value)
                 {
-
-                    this.OnEpochChanging(value);
-                    this.SendPropertyChanging();
-                    this._Epoch = value;
-                    this.SendPropertyChanged("Epoch");
-                    this.OnEpochChanged();
+                    OnEpochChanging(value);
+                    SendPropertyChanging();
+                    _Epoch = value;
+                    SendPropertyChanged("Epoch");
+                    OnEpochChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "sentsince", UpdateCheck = UpdateCheck.Never, Storage = "_Sentsince", DbType = "int")]
         public int? Sentsince
         {
-            get => this._Sentsince;
+            get => _Sentsince;
 
             set
             {
-                if (this._Sentsince != value)
+                if (_Sentsince != value)
                 {
-
-                    this.OnSentsinceChanging(value);
-                    this.SendPropertyChanging();
-                    this._Sentsince = value;
-                    this.SendPropertyChanged("Sentsince");
-                    this.OnSentsinceChanged();
+                    OnSentsinceChanging(value);
+                    SendPropertyChanging();
+                    _Sentsince = value;
+                    SendPropertyChanged("Sentsince");
+                    OnSentsinceChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "since", UpdateCheck = UpdateCheck.Never, Storage = "_Since", DbType = "datetime")]
         public DateTime? Since
         {
-            get => this._Since;
+            get => _Since;
 
             set
             {
-                if (this._Since != value)
+                if (_Since != value)
                 {
-
-                    this.OnSinceChanging(value);
-                    this.SendPropertyChanging();
-                    this._Since = value;
-                    this.SendPropertyChanged("Since");
-                    this.OnSinceChanged();
+                    OnSinceChanging(value);
+                    SendPropertyChanging();
+                    _Since = value;
+                    SendPropertyChanged("Since");
+                    OnSinceChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "totalsent", UpdateCheck = UpdateCheck.Never, Storage = "_Totalsent", DbType = "int")]
         public int? Totalsent
         {
-            get => this._Totalsent;
+            get => _Totalsent;
 
             set
             {
-                if (this._Totalsent != value)
+                if (_Totalsent != value)
                 {
-
-                    this.OnTotalsentChanging(value);
-                    this.SendPropertyChanging();
-                    this._Totalsent = value;
-                    this.SendPropertyChanged("Totalsent");
-                    this.OnTotalsentChanged();
+                    OnTotalsentChanging(value);
+                    SendPropertyChanging();
+                    _Totalsent = value;
+                    SendPropertyChanged("Totalsent");
+                    OnTotalsentChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "totaltries", UpdateCheck = UpdateCheck.Never, Storage = "_Totaltries", DbType = "int")]
         public int? Totaltries
         {
-            get => this._Totaltries;
+            get => _Totaltries;
 
             set
             {
-                if (this._Totaltries != value)
+                if (_Totaltries != value)
                 {
-
-                    this.OnTotaltriesChanging(value);
-                    this.SendPropertyChanging();
-                    this._Totaltries = value;
-                    this.SendPropertyChanged("Totaltries");
-                    this.OnTotaltriesChanged();
+                    OnTotaltriesChanging(value);
+                    SendPropertyChanging();
+                    _Totaltries = value;
+                    SendPropertyChanged("Totaltries");
+                    OnTotaltriesChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -179,23 +156,19 @@ namespace CmsData
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-
     }
-
 }
-

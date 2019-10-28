@@ -1,275 +1,224 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="XpContribution")]
-	public partial class XpContribution
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private int _ContributionId;
-		
-		private int? _PeopleId;
-		
-		private string _BundleType;
-		
-		private DateTime? _DepositDate;
-		
-		private string _Fund;
-		
-		private string _Type;
-		
-		private DateTime? _DateX;
-		
-		private decimal? _Amount;
-		
-		private string _Description;
-		
-		private string _Status;
-		
-		private bool? _Pledge;
-		
-		private string _CheckNo;
-		
-		private string _Campus;
-		
-		
-		public XpContribution()
-		{
-		}
+    [Table(Name = "XpContribution")]
+    public partial class XpContribution
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="ContributionId", Storage="_ContributionId", DbType="int NOT NULL")]
-		public int ContributionId
-		{
-			get
-			{
-				return this._ContributionId;
-			}
+        private int _ContributionId;
 
-			set
-			{
-				if (this._ContributionId != value)
-					this._ContributionId = value;
-			}
+        private int? _PeopleId;
 
-		}
+        private string _BundleType;
 
-		
-		[Column(Name="PeopleId", Storage="_PeopleId", DbType="int")]
-		public int? PeopleId
-		{
-			get
-			{
-				return this._PeopleId;
-			}
+        private DateTime? _DepositDate;
 
-			set
-			{
-				if (this._PeopleId != value)
-					this._PeopleId = value;
-			}
+        private string _Fund;
 
-		}
+        private string _Type;
 
-		
-		[Column(Name="BundleType", Storage="_BundleType", DbType="nvarchar(50)")]
-		public string BundleType
-		{
-			get
-			{
-				return this._BundleType;
-			}
+        private DateTime? _DateX;
 
-			set
-			{
-				if (this._BundleType != value)
-					this._BundleType = value;
-			}
+        private decimal? _Amount;
 
-		}
+        private string _Description;
 
-		
-		[Column(Name="DepositDate", Storage="_DepositDate", DbType="datetime")]
-		public DateTime? DepositDate
-		{
-			get
-			{
-				return this._DepositDate;
-			}
+        private string _Status;
 
-			set
-			{
-				if (this._DepositDate != value)
-					this._DepositDate = value;
-			}
+        private bool? _Pledge;
 
-		}
+        private string _CheckNo;
 
-		
-		[Column(Name="Fund", Storage="_Fund", DbType="nvarchar(256)")]
-		public string Fund
-		{
-			get
-			{
-				return this._Fund;
-			}
+        private string _Campus;
 
-			set
-			{
-				if (this._Fund != value)
-					this._Fund = value;
-			}
+        public XpContribution()
+        {
+        }
 
-		}
+        [Column(Name = "ContributionId", Storage = "_ContributionId", DbType = "int NOT NULL")]
+        public int ContributionId
+        {
+            get => _ContributionId;
 
-		
-		[Column(Name="Type", Storage="_Type", DbType="nvarchar(50)")]
-		public string Type
-		{
-			get
-			{
-				return this._Type;
-			}
+            set
+            {
+                if (_ContributionId != value)
+                {
+                    _ContributionId = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._Type != value)
-					this._Type = value;
-			}
+        [Column(Name = "PeopleId", Storage = "_PeopleId", DbType = "int")]
+        public int? PeopleId
+        {
+            get => _PeopleId;
 
-		}
+            set
+            {
+                if (_PeopleId != value)
+                {
+                    _PeopleId = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="Date", Storage="_DateX", DbType="datetime")]
-		public DateTime? DateX
-		{
-			get
-			{
-				return this._DateX;
-			}
+        [Column(Name = "BundleType", Storage = "_BundleType", DbType = "nvarchar(50)")]
+        public string BundleType
+        {
+            get => _BundleType;
 
-			set
-			{
-				if (this._DateX != value)
-					this._DateX = value;
-			}
+            set
+            {
+                if (_BundleType != value)
+                {
+                    _BundleType = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "DepositDate", Storage = "_DepositDate", DbType = "datetime")]
+        public DateTime? DepositDate
+        {
+            get => _DepositDate;
 
-		
-		[Column(Name="Amount", Storage="_Amount", DbType="Decimal(11,2)")]
-		public decimal? Amount
-		{
-			get
-			{
-				return this._Amount;
-			}
+            set
+            {
+                if (_DepositDate != value)
+                {
+                    _DepositDate = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._Amount != value)
-					this._Amount = value;
-			}
+        [Column(Name = "Fund", Storage = "_Fund", DbType = "nvarchar(256)")]
+        public string Fund
+        {
+            get => _Fund;
 
-		}
+            set
+            {
+                if (_Fund != value)
+                {
+                    _Fund = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="Description", Storage="_Description", DbType="nvarchar(256)")]
-		public string Description
-		{
-			get
-			{
-				return this._Description;
-			}
+        [Column(Name = "Type", Storage = "_Type", DbType = "nvarchar(50)")]
+        public string Type
+        {
+            get => _Type;
 
-			set
-			{
-				if (this._Description != value)
-					this._Description = value;
-			}
+            set
+            {
+                if (_Type != value)
+                {
+                    _Type = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "Date", Storage = "_DateX", DbType = "datetime")]
+        public DateTime? DateX
+        {
+            get => _DateX;
 
-		
-		[Column(Name="Status", Storage="_Status", DbType="nvarchar(50)")]
-		public string Status
-		{
-			get
-			{
-				return this._Status;
-			}
+            set
+            {
+                if (_DateX != value)
+                {
+                    _DateX = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._Status != value)
-					this._Status = value;
-			}
+        [Column(Name = "Amount", Storage = "_Amount", DbType = "Decimal(11,2)")]
+        public decimal? Amount
+        {
+            get => _Amount;
 
-		}
+            set
+            {
+                if (_Amount != value)
+                {
+                    _Amount = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="Pledge", Storage="_Pledge", DbType="bit")]
-		public bool? Pledge
-		{
-			get
-			{
-				return this._Pledge;
-			}
+        [Column(Name = "Description", Storage = "_Description", DbType = "nvarchar(256)")]
+        public string Description
+        {
+            get => _Description;
 
-			set
-			{
-				if (this._Pledge != value)
-					this._Pledge = value;
-			}
+            set
+            {
+                if (_Description != value)
+                {
+                    _Description = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "Status", Storage = "_Status", DbType = "nvarchar(50)")]
+        public string Status
+        {
+            get => _Status;
 
-		
-		[Column(Name="CheckNo", Storage="_CheckNo", DbType="nvarchar(20)")]
-		public string CheckNo
-		{
-			get
-			{
-				return this._CheckNo;
-			}
+            set
+            {
+                if (_Status != value)
+                {
+                    _Status = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._CheckNo != value)
-					this._CheckNo = value;
-			}
+        [Column(Name = "Pledge", Storage = "_Pledge", DbType = "bit")]
+        public bool? Pledge
+        {
+            get => _Pledge;
 
-		}
+            set
+            {
+                if (_Pledge != value)
+                {
+                    _Pledge = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="Campus", Storage="_Campus", DbType="nvarchar(100)")]
-		public string Campus
-		{
-			get
-			{
-				return this._Campus;
-			}
+        [Column(Name = "CheckNo", Storage = "_CheckNo", DbType = "nvarchar(20)")]
+        public string CheckNo
+        {
+            get => _CheckNo;
 
-			set
-			{
-				if (this._Campus != value)
-					this._Campus = value;
-			}
+            set
+            {
+                if (_CheckNo != value)
+                {
+                    _CheckNo = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "Campus", Storage = "_Campus", DbType = "nvarchar(100)")]
+        public string Campus
+        {
+            get => _Campus;
 
-		
+            set
+            {
+                if (_Campus != value)
+                {
+                    _Campus = value;
+                }
+            }
+        }
     }
-
 }

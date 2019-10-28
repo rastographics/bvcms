@@ -1,123 +1,96 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="AttendanceCredits")]
-	public partial class AttendanceCredit
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private bool? _Attended;
-		
-		private int? _Year;
-		
-		private int? _Week;
-		
-		private int? _AttendCreditCode;
-		
-		private int? _AttendanceTypeId;
-		
-		
-		public AttendanceCredit()
-		{
-		}
+    [Table(Name = "AttendanceCredits")]
+    public partial class AttendanceCredit
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="Attended", Storage="_Attended", DbType="bit")]
-		public bool? Attended
-		{
-			get
-			{
-				return this._Attended;
-			}
+        private bool? _Attended;
 
-			set
-			{
-				if (this._Attended != value)
-					this._Attended = value;
-			}
+        private int? _Year;
 
-		}
+        private int? _Week;
 
-		
-		[Column(Name="Year", Storage="_Year", DbType="int")]
-		public int? Year
-		{
-			get
-			{
-				return this._Year;
-			}
+        private int? _AttendCreditCode;
 
-			set
-			{
-				if (this._Year != value)
-					this._Year = value;
-			}
+        private int? _AttendanceTypeId;
 
-		}
+        public AttendanceCredit()
+        {
+        }
 
-		
-		[Column(Name="Week", Storage="_Week", DbType="int")]
-		public int? Week
-		{
-			get
-			{
-				return this._Week;
-			}
+        [Column(Name = "Attended", Storage = "_Attended", DbType = "bit")]
+        public bool? Attended
+        {
+            get => _Attended;
 
-			set
-			{
-				if (this._Week != value)
-					this._Week = value;
-			}
+            set
+            {
+                if (_Attended != value)
+                {
+                    _Attended = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "Year", Storage = "_Year", DbType = "int")]
+        public int? Year
+        {
+            get => _Year;
 
-		
-		[Column(Name="AttendCreditCode", Storage="_AttendCreditCode", DbType="int")]
-		public int? AttendCreditCode
-		{
-			get
-			{
-				return this._AttendCreditCode;
-			}
+            set
+            {
+                if (_Year != value)
+                {
+                    _Year = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._AttendCreditCode != value)
-					this._AttendCreditCode = value;
-			}
+        [Column(Name = "Week", Storage = "_Week", DbType = "int")]
+        public int? Week
+        {
+            get => _Week;
 
-		}
+            set
+            {
+                if (_Week != value)
+                {
+                    _Week = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="AttendanceTypeId", Storage="_AttendanceTypeId", DbType="int")]
-		public int? AttendanceTypeId
-		{
-			get
-			{
-				return this._AttendanceTypeId;
-			}
+        [Column(Name = "AttendCreditCode", Storage = "_AttendCreditCode", DbType = "int")]
+        public int? AttendCreditCode
+        {
+            get => _AttendCreditCode;
 
-			set
-			{
-				if (this._AttendanceTypeId != value)
-					this._AttendanceTypeId = value;
-			}
+            set
+            {
+                if (_AttendCreditCode != value)
+                {
+                    _AttendCreditCode = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "AttendanceTypeId", Storage = "_AttendanceTypeId", DbType = "int")]
+        public int? AttendanceTypeId
+        {
+            get => _AttendanceTypeId;
 
-		
+            set
+            {
+                if (_AttendanceTypeId != value)
+                {
+                    _AttendanceTypeId = value;
+                }
+            }
+        }
     }
-
 }

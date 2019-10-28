@@ -1,142 +1,112 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="CheckinByDate")]
-	public partial class CheckinByDate
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private int? _PeopleId;
-		
-		private string _Name;
-		
-		private int? _OrgId;
-		
-		private string _OrgName;
-		
-		private string _Time;
-		
-		private bool? _Present;
-		
-		
-		public CheckinByDate()
-		{
-		}
+    [Table(Name = "CheckinByDate")]
+    public partial class CheckinByDate
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="PeopleId", Storage="_PeopleId", DbType="int")]
-		public int? PeopleId
-		{
-			get
-			{
-				return this._PeopleId;
-			}
+        private int? _PeopleId;
 
-			set
-			{
-				if (this._PeopleId != value)
-					this._PeopleId = value;
-			}
+        private string _Name;
 
-		}
+        private int? _OrgId;
 
-		
-		[Column(Name="Name", Storage="_Name", DbType="varchar(100)")]
-		public string Name
-		{
-			get
-			{
-				return this._Name;
-			}
+        private string _OrgName;
 
-			set
-			{
-				if (this._Name != value)
-					this._Name = value;
-			}
+        private string _Time;
 
-		}
+        private bool? _Present;
 
-		
-		[Column(Name="OrgId", Storage="_OrgId", DbType="int")]
-		public int? OrgId
-		{
-			get
-			{
-				return this._OrgId;
-			}
+        public CheckinByDate()
+        {
+        }
 
-			set
-			{
-				if (this._OrgId != value)
-					this._OrgId = value;
-			}
+        [Column(Name = "PeopleId", Storage = "_PeopleId", DbType = "int")]
+        public int? PeopleId
+        {
+            get => _PeopleId;
 
-		}
+            set
+            {
+                if (_PeopleId != value)
+                {
+                    _PeopleId = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="OrgName", Storage="_OrgName", DbType="varchar(100)")]
-		public string OrgName
-		{
-			get
-			{
-				return this._OrgName;
-			}
+        [Column(Name = "Name", Storage = "_Name", DbType = "varchar(100)")]
+        public string Name
+        {
+            get => _Name;
 
-			set
-			{
-				if (this._OrgName != value)
-					this._OrgName = value;
-			}
+            set
+            {
+                if (_Name != value)
+                {
+                    _Name = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "OrgId", Storage = "_OrgId", DbType = "int")]
+        public int? OrgId
+        {
+            get => _OrgId;
 
-		
-		[Column(Name="time", Storage="_Time", DbType="time")]
-		public string Time
-		{
-			get
-			{
-				return this._Time;
-			}
+            set
+            {
+                if (_OrgId != value)
+                {
+                    _OrgId = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._Time != value)
-					this._Time = value;
-			}
+        [Column(Name = "OrgName", Storage = "_OrgName", DbType = "varchar(100)")]
+        public string OrgName
+        {
+            get => _OrgName;
 
-		}
+            set
+            {
+                if (_OrgName != value)
+                {
+                    _OrgName = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="present", Storage="_Present", DbType="bit")]
-		public bool? Present
-		{
-			get
-			{
-				return this._Present;
-			}
+        [Column(Name = "time", Storage = "_Time", DbType = "time")]
+        public string Time
+        {
+            get => _Time;
 
-			set
-			{
-				if (this._Present != value)
-					this._Present = value;
-			}
+            set
+            {
+                if (_Time != value)
+                {
+                    _Time = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "present", Storage = "_Present", DbType = "bit")]
+        public bool? Present
+        {
+            get => _Present;
 
-		
+            set
+            {
+                if (_Present != value)
+                {
+                    _Present = value;
+                }
+            }
+        }
     }
-
 }

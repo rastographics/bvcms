@@ -9,7 +9,7 @@ namespace CmsData
     [Table(Name = "dbo.Tag")]
     public partial class Tag : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -29,17 +29,16 @@ namespace CmsData
 
         private DateTime? _Created;
 
-
         private EntitySet<TagShare> _TagShares;
 
         private EntitySet<TagPerson> _PersonTags;
-
 
         private EntityRef<Person> _PersonOwner;
 
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -69,203 +68,169 @@ namespace CmsData
         partial void OnCreatedChanged();
 
         #endregion
+
         public Tag()
         {
+            _TagShares = new EntitySet<TagShare>(new Action<TagShare>(attach_TagShares), new Action<TagShare>(detach_TagShares));
 
-            this._TagShares = new EntitySet<TagShare>(new Action<TagShare>(this.attach_TagShares), new Action<TagShare>(this.detach_TagShares));
+            _PersonTags = new EntitySet<TagPerson>(new Action<TagPerson>(attach_PersonTags), new Action<TagPerson>(detach_PersonTags));
 
-            this._PersonTags = new EntitySet<TagPerson>(new Action<TagPerson>(this.attach_PersonTags), new Action<TagPerson>(this.detach_PersonTags));
-
-
-            this._PersonOwner = default(EntityRef<Person>);
+            _PersonOwner = default(EntityRef<Person>);
 
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "Id", UpdateCheck = UpdateCheck.Never, Storage = "_Id", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
         public int Id
         {
-            get => this._Id;
+            get => _Id;
 
             set
             {
-                if (this._Id != value)
+                if (_Id != value)
                 {
-
-                    this.OnIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._Id = value;
-                    this.SendPropertyChanged("Id");
-                    this.OnIdChanged();
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Name", UpdateCheck = UpdateCheck.Never, Storage = "_Name", DbType = "nvarchar(200) NOT NULL")]
         public string Name
         {
-            get => this._Name;
+            get => _Name;
 
             set
             {
-                if (this._Name != value)
+                if (_Name != value)
                 {
-
-                    this.OnNameChanging(value);
-                    this.SendPropertyChanging();
-                    this._Name = value;
-                    this.SendPropertyChanged("Name");
-                    this.OnNameChanged();
+                    OnNameChanging(value);
+                    SendPropertyChanging();
+                    _Name = value;
+                    SendPropertyChanged("Name");
+                    OnNameChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "TypeId", UpdateCheck = UpdateCheck.Never, Storage = "_TypeId", DbType = "int NOT NULL")]
         public int TypeId
         {
-            get => this._TypeId;
+            get => _TypeId;
 
             set
             {
-                if (this._TypeId != value)
+                if (_TypeId != value)
                 {
-
-                    this.OnTypeIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._TypeId = value;
-                    this.SendPropertyChanged("TypeId");
-                    this.OnTypeIdChanged();
+                    OnTypeIdChanging(value);
+                    SendPropertyChanging();
+                    _TypeId = value;
+                    SendPropertyChanged("TypeId");
+                    OnTypeIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Owner", UpdateCheck = UpdateCheck.Never, Storage = "_Owner", DbType = "nvarchar(50)")]
         public string Owner
         {
-            get => this._Owner;
+            get => _Owner;
 
             set
             {
-                if (this._Owner != value)
+                if (_Owner != value)
                 {
-
-                    this.OnOwnerChanging(value);
-                    this.SendPropertyChanging();
-                    this._Owner = value;
-                    this.SendPropertyChanged("Owner");
-                    this.OnOwnerChanged();
+                    OnOwnerChanging(value);
+                    SendPropertyChanging();
+                    _Owner = value;
+                    SendPropertyChanged("Owner");
+                    OnOwnerChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Active", UpdateCheck = UpdateCheck.Never, Storage = "_Active", DbType = "bit")]
         public bool? Active
         {
-            get => this._Active;
+            get => _Active;
 
             set
             {
-                if (this._Active != value)
+                if (_Active != value)
                 {
-
-                    this.OnActiveChanging(value);
-                    this.SendPropertyChanging();
-                    this._Active = value;
-                    this.SendPropertyChanged("Active");
-                    this.OnActiveChanged();
+                    OnActiveChanging(value);
+                    SendPropertyChanging();
+                    _Active = value;
+                    SendPropertyChanged("Active");
+                    OnActiveChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "PeopleId", UpdateCheck = UpdateCheck.Never, Storage = "_PeopleId", DbType = "int")]
         [IsForeignKey]
         public int? PeopleId
         {
-            get => this._PeopleId;
+            get => _PeopleId;
 
             set
             {
-                if (this._PeopleId != value)
+                if (_PeopleId != value)
                 {
-
-                    if (this._PersonOwner.HasLoadedOrAssignedValue)
+                    if (_PersonOwner.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    this.OnPeopleIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._PeopleId = value;
-                    this.SendPropertyChanged("PeopleId");
-                    this.OnPeopleIdChanged();
+                    OnPeopleIdChanging(value);
+                    SendPropertyChanging();
+                    _PeopleId = value;
+                    SendPropertyChanged("PeopleId");
+                    OnPeopleIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "OwnerName", UpdateCheck = UpdateCheck.Never, Storage = "_OwnerName", DbType = "nvarchar(100)", IsDbGenerated = true)]
         public string OwnerName
         {
-            get => this._OwnerName;
+            get => _OwnerName;
 
             set
             {
-                if (this._OwnerName != value)
+                if (_OwnerName != value)
                 {
-
-                    this.OnOwnerNameChanging(value);
-                    this.SendPropertyChanging();
-                    this._OwnerName = value;
-                    this.SendPropertyChanged("OwnerName");
-                    this.OnOwnerNameChanged();
+                    OnOwnerNameChanging(value);
+                    SendPropertyChanging();
+                    _OwnerName = value;
+                    SendPropertyChanged("OwnerName");
+                    OnOwnerNameChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Created", UpdateCheck = UpdateCheck.Never, Storage = "_Created", DbType = "datetime")]
         public DateTime? Created
         {
-            get => this._Created;
+            get => _Created;
 
             set
             {
-                if (this._Created != value)
+                if (_Created != value)
                 {
-
-                    this.OnCreatedChanging(value);
-                    this.SendPropertyChanging();
-                    this._Created = value;
-                    this.SendPropertyChanged("Created");
-                    this.OnCreatedChanged();
+                    OnCreatedChanging(value);
+                    SendPropertyChanging();
+                    _Created = value;
+                    SendPropertyChanged("Created");
+                    OnCreatedChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -274,22 +239,20 @@ namespace CmsData
         [Association(Name = "FK_TagShare_Tag", Storage = "_TagShares", OtherKey = "TagId")]
         public EntitySet<TagShare> TagShares
            {
-               get => this._TagShares;
+               get => _TagShares;
 
-            set => this._TagShares.Assign(value);
+            set => _TagShares.Assign(value);
 
            }
-
 
         [Association(Name = "PersonTags__Tag", Storage = "_PersonTags", OtherKey = "Id")]
         public EntitySet<TagPerson> PersonTags
            {
-               get => this._PersonTags;
+               get => _PersonTags;
 
-            set => this._PersonTags.Assign(value);
+            set => _PersonTags.Assign(value);
 
            }
-
 
         #endregion
 
@@ -298,93 +261,83 @@ namespace CmsData
         [Association(Name = "TagsOwned__PersonOwner", Storage = "_PersonOwner", ThisKey = "PeopleId", IsForeignKey = true)]
         public Person PersonOwner
         {
-            get => this._PersonOwner.Entity;
+            get => _PersonOwner.Entity;
 
             set
             {
-                Person previousValue = this._PersonOwner.Entity;
+                Person previousValue = _PersonOwner.Entity;
                 if (((previousValue != value)
-                            || (this._PersonOwner.HasLoadedOrAssignedValue == false)))
+                            || (_PersonOwner.HasLoadedOrAssignedValue == false)))
                 {
-                    this.SendPropertyChanging();
+                    SendPropertyChanging();
                     if (previousValue != null)
                     {
-                        this._PersonOwner.Entity = null;
+                        _PersonOwner.Entity = null;
                         previousValue.TagsOwned.Remove(this);
                     }
 
-                    this._PersonOwner.Entity = value;
+                    _PersonOwner.Entity = value;
                     if (value != null)
                     {
                         value.TagsOwned.Add(this);
 
-                        this._PeopleId = value.PeopleId;
+                        _PeopleId = value.PeopleId;
 
                     }
 
                     else
                     {
-
-                        this._PeopleId = default(int?);
+                        _PeopleId = default(int?);
 
                     }
 
-                    this.SendPropertyChanged("PersonOwner");
+                    SendPropertyChanged("PersonOwner");
                 }
-
             }
-
         }
-
 
         #endregion
 
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
 
-
         private void attach_TagShares(TagShare entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.Tag = this;
         }
 
         private void detach_TagShares(TagShare entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.Tag = null;
         }
 
-
         private void attach_PersonTags(TagPerson entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.Tag = this;
         }
 
         private void detach_PersonTags(TagPerson entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.Tag = null;
         }
-
-
     }
-
 }
-

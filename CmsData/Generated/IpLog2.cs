@@ -7,7 +7,7 @@ namespace CmsData
     [Table(Name = "dbo.IpLog2")]
     public partial class IpLog2 : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -15,11 +15,10 @@ namespace CmsData
 
         private DateTime? _Tm;
 
-
-
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -31,59 +30,49 @@ namespace CmsData
         partial void OnTmChanged();
 
         #endregion
+
         public IpLog2()
         {
-
-
             OnCreated();
         }
-
 
         #region Columns
 
         [Column(Name = "ip", UpdateCheck = UpdateCheck.Never, Storage = "_Ip", DbType = "varchar(50)")]
         public string Ip
         {
-            get => this._Ip;
+            get => _Ip;
 
             set
             {
-                if (this._Ip != value)
+                if (_Ip != value)
                 {
-
-                    this.OnIpChanging(value);
-                    this.SendPropertyChanging();
-                    this._Ip = value;
-                    this.SendPropertyChanged("Ip");
-                    this.OnIpChanged();
+                    OnIpChanging(value);
+                    SendPropertyChanging();
+                    _Ip = value;
+                    SendPropertyChanged("Ip");
+                    OnIpChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "tm", UpdateCheck = UpdateCheck.Never, Storage = "_Tm", DbType = "datetime")]
         public DateTime? Tm
         {
-            get => this._Tm;
+            get => _Tm;
 
             set
             {
-                if (this._Tm != value)
+                if (_Tm != value)
                 {
-
-                    this.OnTmChanging(value);
-                    this.SendPropertyChanging();
-                    this._Tm = value;
-                    this.SendPropertyChanged("Tm");
-                    this.OnTmChanged();
+                    OnTmChanging(value);
+                    SendPropertyChanging();
+                    _Tm = value;
+                    SendPropertyChanged("Tm");
+                    OnTmChanged();
                 }
-
             }
-
         }
-
 
         #endregion
 
@@ -98,23 +87,19 @@ namespace CmsData
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
+            if ((PropertyChanging != null))
             {
-                this.PropertyChanging(this, emptyChangingEventArgs);
+                PropertyChanging(this, emptyChangingEventArgs);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
+            if ((PropertyChanged != null))
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-
     }
-
 }
-
