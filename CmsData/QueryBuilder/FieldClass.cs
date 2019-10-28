@@ -81,6 +81,16 @@ namespace CmsData
                         foreach (var t in tags.Split(';'))
                             list.AddParamCode("Tag", t);
                         break;
+                    case Param.MemberTypes:
+                        var memberTypes = prop.ToString();
+                        foreach (var m in memberTypes.Split(';'))
+                            list.AddParamCode("MemberType", m);
+                        break;
+                    case Param.AttendTypes:
+                        var attendTypes = prop.ToString();
+                        foreach (var a in attendTypes.Split(';'))
+                            list.AddParamCode("AttendType", a);
+                        break;
                     case Param.OnlineReg:
                         list.AddParamCode(attr, prop, -1);
                         break;
@@ -229,7 +239,9 @@ namespace CmsData
         PmmLabels,
         Tags,
         Tag,
-        SavedQueryIdDesc
+        SavedQueryIdDesc,
+        MemberTypes,
+        AttendTypes
     }
     public class ConditionConfig
     {

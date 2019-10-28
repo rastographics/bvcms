@@ -78,7 +78,7 @@
         @if (Model.DaysVisible)
         {
             <div class="col-sm-6">
-               @Html.EditorFor(m => m.Days)
+                @Html.EditorFor(m => m.Days)
             </div>
         }
         @if (Model.AgeVisible)
@@ -132,7 +132,7 @@
         @if (Model.OrgTypeVisible)
         {
             <div class="col-sm-6">
-               @Html.EditorFor(m => m.OrgType, "DropDown", new { items = Model.OrgTypes() })
+                @Html.EditorFor(m => m.OrgType, "DropDown", new { items = Model.OrgTypes() })
             </div>
         }
         @if (Model.OrgType2Visible)
@@ -151,6 +151,18 @@
         {
             <div class="col-sm-6">
                 @Html.EditorFor(m => m.Campus, "DropDown", new { items = Model.Campuses() })
+            </div>
+        }
+        @if (Model.MemberTypesVisible)
+        {
+            <div class="col-sm-6">
+                @Html.EditorFor(m => m.MemberTypeValues, "MultiSelect", new { items = Model.MemberTypeData() })
+            </div>
+        }
+        @if (Model.AttendTypesVisible)
+        {
+            <div class="col-sm-6">
+                @Html.EditorFor(m => m.AttendTypeValues, "MultiSelect", new { items = Model.AttendTypeData() })
             </div>
         }
     </div>

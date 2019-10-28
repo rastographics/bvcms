@@ -35,6 +35,8 @@ namespace CmsWeb.Areas.Search.Models
         public bool OrgNameVisible => fieldMap.HasParam("OrgName");
         public bool OrgStatusVisible => fieldMap.HasParam("OrgStatus");
         public bool OnlineRegVisible => fieldMap.HasParam("OnlineReg");
+        public bool MemberTypesVisible => fieldMap.HasParam("MemberTypes");
+        public bool AttendTypesVisible => fieldMap.HasParam("AttendTypes");
 
         public bool AutoRun => (Db?.UserPreference("QueryAutoRun", "false") ?? "").ToBool();
 

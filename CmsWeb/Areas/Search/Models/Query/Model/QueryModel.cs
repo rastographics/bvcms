@@ -107,6 +107,28 @@ namespace CmsWeb.Areas.Search.Models
             set { Tags = string.Join(";", value); }
         }
 
+        // Must use seperate variable to not conlict with Tags
+        // and Attend Types
+        public string MemberTypes { get; set; }
+
+        [SkipFieldOnCopyProperties]
+        public List<string> MemberTypeValues
+        {
+            get { return (MemberTypes ?? "").Split(';').ToList(); }
+            set { MemberTypes = string.Join(";", value); }
+        }
+
+        // Must use seperate variable to not conflict with Tags
+        // and Member Types
+        public string AttendTypes { get; set; }
+
+        [SkipFieldOnCopyProperties]
+        public List<string> AttendTypeValues
+        {
+            get { return (AttendTypes ?? "").Split(';').ToList(); }
+            set { AttendTypes = string.Join(";", value); }
+        }
+
         public List<string> CodeValues
         {
             get { return (CodeIdValue ?? "").Split(';').ToList(); }
@@ -263,6 +285,16 @@ namespace CmsWeb.Areas.Search.Models
             if (TagsVisible && string.Join(",", Tags).Length > 500)
             {
                 m.AddModelError("tagvalues", "too many tags selected");
+            }
+
+            if (MemberTypesVisible && string.Join(",", MemberTypes).Length > 3000)
+            {
+                m.AddModelError("membertypevalues", "too many member types selected");
+            }
+
+            if (AttendTypesVisible && string.Join(",", AttendTypes).Length > 500)
+            {
+                m.AddModelError("attendtypevalues", "too many attend types selected");
             }
 
             if (Comparison == "Contains")
