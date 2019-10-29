@@ -43,6 +43,7 @@ namespace CmsData
             db = dbContext.Copy();
             dictionary = new Dictionary<string, object>();
             Data = new DynamicData(dictionary);
+            FromMorningBatch = db.FromBatch;
         }
 
         public PythonModel(CMSDataContext dbContext, Dictionary<string, object> dict)
@@ -50,6 +51,7 @@ namespace CmsData
             db = dbContext.Copy();
             dictionary = dict;
             Data = new DynamicData(dictionary);
+            FromMorningBatch = db.FromBatch;
         }
 
         /// <summary>

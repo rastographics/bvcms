@@ -96,7 +96,7 @@ namespace CmsWeb.Areas.People.Models
             }
             catch { }
 
-            if (shouldBePublic && image?.IsPublic == false)
+            if (image.IsNull() || (shouldBePublic && image?.IsPublic == false))
             {
                 WritePng(context, NoPic());
             }
