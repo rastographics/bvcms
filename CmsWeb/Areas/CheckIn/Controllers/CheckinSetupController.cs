@@ -169,7 +169,7 @@ namespace CmsWeb.Areas.CheckIn.Controllers
             {
                 checkinProfileSettings.BackgroundImage = StoreBGImage(file, checkinProfileSettings.BackgroundImage);
                 checkinProfileSettings.BackgroundImageName = file.FileName;
-                checkinProfileSettings.BackgroundImageURL = $"{Configuration.Current.CmsHost}BackgroundImage/{checkinProfileSettings.BackgroundImage}?{DateTime.Now.ToString("yyMMddhhmmss")}";
+                checkinProfileSettings.BackgroundImageURL = $"/BackgroundImage/{checkinProfileSettings.BackgroundImage}?{DateTime.Now.ToString("yyMMddhhmmss")}";
             }
 
             return checkinProfileSettings;

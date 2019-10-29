@@ -272,6 +272,9 @@ new Vue({
                     vm.loading = false;
                     if (response.status === 200) {
                         vm.profiles = response.data;
+                        if (vm.profiles.length) {
+                            vm.kiosk.profile = vm.profiles[0].id;
+                        }
                     }
                     else {
                         warning_swal('Couldn\'t load profiles', 'Something went wrong, try again later');
@@ -356,6 +359,7 @@ new Vue({
             this.profiles = [];
             this.loadView('login');
             this.getProfiles();
+            window.location = "/CheckIn";
         },
         reset() {
             // called on session timeout if kiosk has been idle too long
@@ -675,6 +679,7 @@ new Vue({
         }
         var identity = localStorage.getItem('identity');
         if (identity && identity.length) {
+            vm.cookie('Authorization', identity);
             vm.identity = identity;
             vm.loadView('landing');
         } else {

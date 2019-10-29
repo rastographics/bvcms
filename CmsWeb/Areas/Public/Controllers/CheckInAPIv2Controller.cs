@@ -375,9 +375,67 @@ namespace CmsWeb.Areas.Public.Controllers
 
             response.data = qrCode;
             return response;
-		}
+        }
 
-		[HttpPost]
+        [HttpPost]
+        public ActionResult GetPendingCheckIn(string data)
+        {
+            // Authenticate first
+            if (!Auth())
+            {
+                return Message.createErrorReturn("Authentication failed, please try again", Message.API_ERROR_INVALID_CREDENTIALS);
+            }
+
+            Message message = Message.createFromString(data);
+
+            CheckInPending pending = CurrentDatabase.CheckInPendings.Where(c => c.Id == message.argString).SingleOrDefault();
+
+            if (pending == null)
+            {
+                return Message.createErrorReturn("Pending check in not found", Message.API_ERROR_PENDING_CHECKIN_NOT_FOUND);
+            }
+
+            Message response = new Message();
+            response.setNoError();
+            response.count = 1;
+            response.data = SerializeJSON(pending);
+
+            return response;
+        }
+
+        [HttpPost]
+        public ActionResult UpdatePendingCheckIn(string data)
+        {
+            // Authenticate first
+            if (!Auth())
+            {
+                return Message.createErrorReturn("Authentication failed, please try again", Message.API_ERROR_INVALID_CREDENTIALS);
+            }
+
+            Message message = Message.createFromString(data);
+            CheckInPending updated = JsonConvert.DeserializeObject<CheckInPending>(message.data);
+
+            CheckInPending existing = CurrentDatabase.CheckInPendings.Where(c => c.Id == updated.Id).SingleOrDefault();
+
+            if (existing == null)
+            {
+                return Message.createErrorReturn("Pending check in not found", Message.API_ERROR_PENDING_CHECKIN_NOT_FOUND);
+            }
+
+            existing.Stamp = updated.Stamp;
+            existing.Data = updated.Data;
+
+            CurrentDatabase.SubmitChanges();
+
+            Message response = new Message();
+            response.setNoError();
+            response.count = 1;
+            response.data = SerializeJSON(existing);
+
+            return response;
+        }
+
+        [HttpPost]
 		public ActionResult UpdateAttend( string data )
 		{
 			// Authenticate first

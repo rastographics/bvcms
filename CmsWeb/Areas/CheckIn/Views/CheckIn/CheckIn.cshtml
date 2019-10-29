@@ -29,7 +29,6 @@
                 <div class="form-group">
                     <label for="profile">Kiosk Profile</label>
                     <select class="form-control input-lg" name="profile" id="profile" v-model="kiosk.profile">
-                        <option value="default">Default</option>
                         <option v-for="profile in profiles" :value="profile.id">{{ profile.name }}</option>
                     </select>
                 </div>
