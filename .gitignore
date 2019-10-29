@@ -72,7 +72,6 @@ CmsDataSqlClr_.*.sqlproj
 *.pubxml.user
 *.pubxml
 /PythonApplication1/TextFile1.txt
-/CmsWeb/Properties/PublishProfiles/test.pubxml
 /CmsWeb/Properties/PublishProfiles/test2.pubxml
 /CmsWeb/Properties/PublishProfiles/test3.pubxml
 /CmsWeb/SimSun.ttf
@@ -92,3 +91,4 @@ test_coverage.xml
 #gulp output
 CmsWeb/Content/touchpoint/css/app.css
 CmsWeb/Content/touchpoint/js/app.min.js
+/*env.cmd

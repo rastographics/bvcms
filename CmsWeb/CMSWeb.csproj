@@ -1877,6 +1877,7 @@
     </None>
     <Content Include="Content\touchpoint\src\less\modals.less" />
     <Content Include="Areas\People\Views\Person\Resources\Index.cshtml" />
+    <None Include="Properties\PublishProfiles\release.pubxml" />
     <None Include="Properties\PublishProfiles\staging.pubxml" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Scripts\ReadMe.txt" />
