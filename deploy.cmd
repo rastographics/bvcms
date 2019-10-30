@@ -12,5 +12,5 @@ set buildoutput=%~dp0build\Deploy\%buildconfiguration%\Files
 
 for %%i IN (%webservers%) DO cmd /c deployserver.cmd %%i %site% %DeployUsername% %DeployPassword% %buildconfiguration%
 
-if EXIST %USERPROFILE%\Documents\published%site%.ps1 powershell.exe %USERPROFILE%\Documents\published%site%.ps1 %buildconfiguration%
+if EXIST %USERPROFILE%\Documents\published%site%.ps1 powershell.exe %USERPROFILE%\Documents\published%site%.ps1 -build %buildconfiguration%
 endlocal
