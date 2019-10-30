@@ -6,6 +6,7 @@ using System.Globalization;
 using System.Linq;
 using UtilityExtensions;
 using CmsData.API;
+using CmsData.Codes;
 
 namespace CmsData
 {
@@ -159,7 +160,7 @@ namespace CmsData
 
             var myList = (from c in DbUtil.Db.Contributions
                           where c.ContributionDate.Value.Year == (CurrentYear)
-                          where c.ContributionTypeId != 8
+                          where c.ContributionTypeId != ContributionTypeCode.Pledge
                 group c by new {c.ContributionDate.Value.Month}
                 into grp
                 select new ChartDTO
@@ -170,7 +171,7 @@ namespace CmsData
 
             var myList1=(from ce in DbUtil.Db.Contributions
                          where ce.ContributionDate.Value.Year == (CurrentYear - 1)
-                         where ce.ContributionTypeId != 8
+                         where ce.ContributionTypeId != ContributionTypeCode.Pledge
                          group ce by new { ce.ContributionDate.Value.Month } into grpc
                     select new ChartDTO
                     {
