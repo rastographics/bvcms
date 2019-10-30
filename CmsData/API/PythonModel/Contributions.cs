@@ -27,10 +27,21 @@ namespace CmsData
             return Contribution.AddContribution(db, date, fundid, amount, checkno, description, peopleid);
         }
 
+        public BundleDetail AddContribution(DateTime date, int fundid, string amount, string checkno, string description, int peopleid, int contributionTypeId)
+        {
+            return Contribution.AddContribution(db, date, fundid, amount, checkno, description, peopleid, contributionTypeId);
+        }
+
         public BundleDetail AddContributionDetail(DateTime date, int fundid,
             string amount, string checkno, string routing, string account)
         {
             return Contribution.AddContributionDetail(db, date, fundid, amount, checkno, routing, account);
+        }
+
+        public BundleDetail AddContributionDetail(DateTime date, int fundid,
+            string amount, string checkno, string routing, string account, int contributionTypeId)
+        {
+            return Contribution.AddContributionDetail(db, date, fundid, amount, checkno, routing, account, contributionTypeId);
         }
 
         public static BundleDetail NewBundleDetail(CMSDataContext db, DateTime date, int fundid, string amount)

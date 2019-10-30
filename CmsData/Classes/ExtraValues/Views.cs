@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
 using UtilityExtensions;
@@ -126,7 +127,10 @@ namespace CmsData.ExtraValue
             var values = q.ToList();
             var n = 1;
             foreach (var ff in values)
+            {
+                ff.Name = ff.Name.Trim();
                 ff.Order = n++;
+            }
             return values;
         }
     }

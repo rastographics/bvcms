@@ -122,10 +122,10 @@
     <value>..\QueryBuilder\CompareMap.xml;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="Details2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\classes\onlineregsummarytext\details2.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>..\Classes\OnlineRegSummaryText\Details2.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="FieldMap" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\querybuilder\fieldmap.csv;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>..\QueryBuilder\FieldMap.csv;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
   <data name="ManagedGiving_FailedGivingMessage" xml:space="preserve">
     <value>{first},

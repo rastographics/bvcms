@@ -97,6 +97,7 @@
     <Compile Include="DatabaseFixture.cs" />
     <Compile Include="FinanceTestBase.cs" />
     <Compile Include="FinanceTestUtils.cs" />
+    <Compile Include="MockAppSettings.cs" />
     <Compile Include="MockCMSMembershipProvider.cs" />
     <Compile Include="MockCMSRoleProvider.cs" />
     <Compile Include="MockContributions.cs" />
