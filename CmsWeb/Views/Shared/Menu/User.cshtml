@@ -1,4 +1,5 @@
-﻿@{
+﻿@using CmsWeb.Membership
+@{
     var finance = User.IsInRole("Finance");
     var edituser = User.IsInRole("Edit");
     var targetperson = Util2.TargetLinkPeople;
@@ -19,6 +20,7 @@
 </a>
 <ul class="dropdown-menu">
     @Helper.LiAnchorLink("Profile", "/Person2/" + Util.UserPeopleId)
+    @ViewExtensions2.TwoFactorAuthSetupLink()
     @Helper.LiAnchorLink("Change Password", "/Account/ChangePassword/")
     <li class="divider"></li>
     <li>

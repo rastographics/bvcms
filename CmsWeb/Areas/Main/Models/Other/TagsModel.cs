@@ -6,6 +6,8 @@
  */
 using CmsData;
 using CmsWeb.Code;
+using CmsWeb.Constants;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UtilityExtensions;
@@ -14,7 +16,6 @@ namespace CmsWeb.Models
 {
     public class TagsModel : PagerModel2
     {
-        //private readonly CMSDataContext Db;
         private int TagTypeId { get; set; }
         private string TagName { get; set; }
         private int? TagOwner { get; set; }
@@ -22,13 +23,34 @@ namespace CmsWeb.Models
         public string tag { get; set; }
         public string tagname { get; set; }
 
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
         public TagsModel()
         {
-            //Db = Db;
+        }
+
+        public TagsModel(CMSDataContext db) : base(db)
+        {
+            CurrentDatabase = db;
+        }
+
+        CMSDataContext _db;
+        override public CMSDataContext CurrentDatabase
+        {
+            get => _db;
+            set
+            {
+                _db = value;
+                Init();
+            }
+        }
+
+        private void Init()
+        {
             Direction = "asc";
             GetCount = Count;
             SetCurrentTag();
         }
+
         public void SetCurrentTag()
         {
             if (tag.HasValue())
@@ -60,21 +82,21 @@ namespace CmsWeb.Models
             }
 
             people = Util2.OrgLeadersOnly
-                ? DbUtil.Db.OrgLeadersOnlyTag2().People(DbUtil.Db)
-                : DbUtil.Db.People.Select(p => p);
+                ? CurrentDatabase.OrgLeadersOnlyTag2().People(CurrentDatabase)
+                : CurrentDatabase.People.Select(p => p);
 
             if (usersonly)
             {
                 people = people.Where(p => p.Users.Any());
             }
 
-            var tagid = DbUtil.Db.TagCurrent().Id;
+            var tagid = CurrentDatabase.TagCurrent().Id;
             people = people.Where(p => p.Tags.Any(tp => tp.Id == tagid));
             return people;
         }
         public int SharedCount()
         {
-            return DbUtil.Db.TagCurrent().TagShares.Count();
+            return CurrentDatabase.TagCurrent().TagShares.Count();
         }
         public IEnumerable<MailingController.TaggedPersonInfo> PeopleList()
         {
@@ -216,23 +238,23 @@ namespace CmsWeb.Models
         private CodeValueModel cv = new CodeValueModel();
         public List<CodeValueItem> Tags()
         {
-            var t = DbUtil.Db.TagCurrent();
+            var t = CurrentDatabase.TagCurrent();
             var tags = cv.UserTags(Util.UserPeopleId);
             return tags;
         }
         public string GetShareIds()
         {
-            var t = DbUtil.Db.TagCurrent();
+            var t = CurrentDatabase.TagCurrent();
             var s = string.Join(",", t.TagShares.Select(tt => tt.PeopleId).ToArray());
             return s;
         }
         public string ShareIds { get; set; }
         public void SetShareIds()
         {
-            var tag = DbUtil.Db.TagCurrent();
+            var tag = CurrentDatabase.TagCurrent();
             var selected_pids = ShareIds.SplitStr(",").Select(s => s.ToInt()).ToArray();
             var userDeletes = tag.TagShares.Where(ts => !selected_pids.Contains(ts.PeopleId));
-            DbUtil.Db.TagShares.DeleteAllOnSubmit(userDeletes);
+            CurrentDatabase.TagShares.DeleteAllOnSubmit(userDeletes);
             var tag_pids = tag.TagShares.Select(ts => ts.PeopleId).ToArray();
             var userAdds = from pid in selected_pids
                            join tpid in tag_pids on pid equals tpid into j
@@ -244,7 +266,7 @@ namespace CmsWeb.Models
                 tag.TagShares.Add(new TagShare { PeopleId = pid });
             }
 
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
         }
         private int? _count;
         public int Count()
@@ -264,7 +286,7 @@ namespace CmsWeb.Models
             {
                 if (!currentTagId.HasValue)
                 {
-                    currentTagId = DbUtil.Db.TagCurrent().Id;
+                    currentTagId = CurrentDatabase.TagCurrent().Id;
                 }
 
                 return currentTagId ?? 0;
