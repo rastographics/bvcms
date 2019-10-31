@@ -76,101 +76,6 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'BVCMSProduction|AnyCPU'">
-    <OutputPath>bin\BVCMSProduction\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <CodeAnalysisLogFile>bin\Release\CmsData.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
-    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
-    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
-    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
-    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'BVCMSProduction|x86'">
-    <OutputPath>bin\x86\BVCMSProduction\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <CodeAnalysisLogFile>bin\x86\Release\CmsData.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
-    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
-    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
-    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
-    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
-    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
-    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'CMSTest|AnyCPU'">
-    <OutputPath>bin\CMSTest\</OutputPath>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'CMSTest|x86'">
-    <OutputPath>bin\x86\CMSTest\</OutputPath>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'CMSWebProduction|AnyCPU'">
-    <OutputPath>bin\CMSWebProduction\</OutputPath>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'CMSWebProduction|x86'">
-    <OutputPath>bin\x86\CMSWebProduction\</OutputPath>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'CMS2Production|AnyCPU'">
-    <OutputPath>bin\CMS2Production\</OutputPath>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'CMS2Production|x86'">
-    <OutputPath>bin\x86\CMS2Production\</OutputPath>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Rackspace|AnyCPU'">
-    <OutputPath>bin\Rackspace\</OutputPath>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Rackspace|x86'">
-    <OutputPath>bin\x86\Rackspace\</OutputPath>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Bellevue3|AnyCPU'">
-    <OutputPath>bin\Bellevue3\</OutputPath>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
-    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Bellevue3|x86'">
-    <OutputPath>bin\x86\Bellevue3\</OutputPath>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'bvcms|AnyCPU'">
-    <OutputPath>bin\bvcms\</OutputPath>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'bvcms|x86'">
-    <OutputPath>bin\x86\bvcms\</OutputPath>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'bellevue|AnyCPU'">
-    <OutputPath>bin\bellevue\</OutputPath>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'bellevue|x86'">
-    <OutputPath>bin\x86\bellevue\</OutputPath>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'test|AnyCPU'">
     <OutputPath>bin\test\</OutputPath>
     <Prefer32Bit>false</Prefer32Bit>
@@ -178,103 +83,6 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'test|x86'">
     <OutputPath>bin\x86\test\</OutputPath>
     <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'bvcms2|AnyCPU'">
-    <OutputPath>bin\bvcms2\</OutputPath>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'bvcms2|x86'">
-    <OutputPath>bin\x86\bvcms2\</OutputPath>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release2|AnyCPU'">
-    <OutputPath>bin\Release2\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release2|x86'">
-    <OutputPath>bin\x86\Release2\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'TeamCity|AnyCPU'">
-    <OutputPath>bin\TeamCity\</OutputPath>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'TeamCity|x86'">
-    <OutputPath>bin\x86\TeamCity\</OutputPath>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'test2|AnyCPU'">
-    <OutputPath>bin\test2\</OutputPath>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'test2|x86'">
-    <OutputPath>bin\x86\test2\</OutputPath>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'test3|AnyCPU'">
-    <OutputPath>bin\test3\</OutputPath>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'test3|x86'">
-    <OutputPath>bin\x86\test3\</OutputPath>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Impersonate|AnyCPU'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\Impersonate\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Impersonate|x86'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x86\Impersonate\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'work|AnyCPU'">
-    <OutputPath>bin\work\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'work|x86'">
-    <OutputPath>bin\x86\work\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'staging|AnyCPU'">
     <OutputPath>bin\staging\</OutputPath>
@@ -413,7 +221,6 @@
     <Reference Include="System.Net" />
     <Reference Include="System.Net.Http, Version=4.1.1.3, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Net.Http.4.3.4\lib\net46\System.Net.Http.dll</HintPath>
-      <Private>True</Private>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Net.Http.Formatting, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -847,6 +654,7 @@
     <Compile Include="Generated\LongRunningOperation.cs" />
     <Compile Include="Generated\MeetingCategory.cs" />
     <Compile Include="Generated\MergeHistory.cs" />
+    <Compile Include="Generated\MFAToken.cs" />
     <Compile Include="Generated\MobileAppAction.cs" />
     <Compile Include="Generated\MobileAppActionType.cs" />
     <Compile Include="Generated\MobileAppAudioType.cs" />
@@ -995,22 +803,7 @@
     <Compile Include="Generated\Views\TransactionSummary.cs" />
     <Compile Include="DbUtil\ITableWithExtraValues.cs" />
     <Content Include="App_Readme\Elmah.txt" />
-    <Content Include="Migrations\20190903_create_checkin_pending_table.sql" />
-    <Content Include="Migrations\20190725_add_printjob_data_field.sql" />
-    <Content Include="Migrations\20190630_Update_ViewAttributes.sql" />
-    <Content Include="Migrations\20190709_update_archive_content_sp.sql" />
     <Content Include="Migrations\00000000_sql_migrations_table.sql" />
-    <Content Include="Migrations\20181022-3_create_Contributions2SearchIds.sql" />
-    <Content Include="Migrations\20181023_emailqueue-perf-index-updates.sql" />
-    <Content Include="Migrations\20181029_userstable-perf-index-updates.sql" />
-    <Content Include="Migrations\20181205_nullable-columns-in-Attend-table.sql" />
-    <Content Include="Migrations\20190508_Add_PaymentInfo_AcceptivaPayerId_Column.sql" />
-    <Content Include="Migrations\20190520_add_acceptiva_to_gateway_tables.sql" />
-    <Content Include="Migrations\20190527_add_preconfigured_acceptiva_details.sql" />
-    <Content Include="Migrations\20190620_add_passport_reg_setting.sql" />
-    <Content Include="Migrations\20190904_Create_table_JsonDocumentRecords.sql" />
-    <Content Include="Migrations\20190802_Alter_Function_GetContributionsDetails.sql" />
-    <Content Include="Migrations\20190827_Update_proc_LedgerIncomeExport.sql" />
     <Compile Include="Organization\OrgFilter.cs" />
     <Compile Include="Organization\OrgPerson.cs" />
     <Compile Include="Organization\OrgSchedule.cs" />
@@ -1373,89 +1166,6 @@
     <Resource Include="Classes\OnlineRegSummaryText\Details2.xml">
       <SubType>Designer</SubType>
     </Resource>
-    <Content Include="Migrations\20180924_Remove_Custom_Task_Role.sql" />
-    <Content Include="Migrations\20180719_send-attendance-link.sql" />
-    <Content Include="Migrations\20180801_CheckInUpdates.sql" />
-    <Content Include="Migrations\20180720_StoredProcedure_CHAIDonationsReport2.sql" />
-    <Content Include="Migrations\20180720_StoredProcedure_GetDepositDateTotalsUsingAuthorizedFunds.sql" />
-    <Content Include="Migrations\20180720_Table_ContributionFunds.sql" />
-    <Content Include="Migrations\20180806_update_purge_person_sproc.sql" />
-    <Content Include="Migrations\20180817_update_enrollment_history_func.sql" />
-    <Content Include="Migrations\20180827_sms-number-group-system-flag.sql" />
-    <Content Include="Migrations\20181111_alter_Contributions2SearchIds_func.sql" />
-    <Content Include="Migrations\20181111_create_TagContributionsFromIds_proc.sql" />
-    <Content Include="Migrations\20181022-4_create_TagContributions_func.sql" />
-    <Content Include="Migrations\20181022-2_create_ContributionsTag_table.sql" />
-    <Content Include="Migrations\20181011_add_contribution_origin_column.sql" />
-    <Content Include="Migrations\20181004_update_NonTaxDed_include_both_contributions.sql" />
-    <Content Include="Migrations\20180919_add-sms-groups-deleted-flag.sql" />
-    <Content Include="Migrations\20180831_add_fundmanager_role.sql" />
-    <Content Include="Migrations\20180831_add-description-to-contribution-functions.sql" />
-    <Content Include="Migrations\20181022-1_fix_contributions2_func_for_individuals.sql" />
-    <Content Include="Migrations\20181031_split_first_lastname_add_Email_GetTotalContributionsDonor.sql" />
-    <Content Include="Migrations\20181019_add_pushpay_pk.sql" />
-    <Content Include="Migrations\20181015_add_pushpay_schema.sql" />
-    <Content Include="Migrations\20180919_add-performance-indexes.sql" />
-    <Content Include="Migrations\20180919_fix-duplicates-in-org-filter-current.sql" />
-    <Content Include="Migrations\20181011_update_spouseId_function.sql" />
-    <Content Include="Migrations\20181128_upd_enrolled_before_the_meetingdate.sql" />
-    <Content Include="Migrations\20181106_alter_SMSList_Message_column.sql" />
-    <Content Include="Migrations\20181031_add_viewvolunteerapplication_role.sql" />
-    <Content Include="Migrations\20181115_add_recurring_amounts_disabled_column.sql" />
-    <Content Include="Migrations\20181120_Update_GetContributionDetails_func.sql" />
-    <Content Include="Migrations\20181206_create_RemoveFromEnrollmentHistory_proc.sql" />
-    <Content Include="Migrations\20190125_add_mission_trip_funding_page_fields.sql" />
-    <Content Include="Migrations\20190106_ja-members-null-enrollmentdate-fix.sql" />
-    <Content Include="Migrations\20181218_ja-members-not-included-attendance-fix.sql" />
-    <Content Include="Migrations\20181211_update_inactive_recurring_amounts.sql" />
-    <Content Include="Migrations\20181205_create_CreateZipCodesRange_proc.sql" />
-    <Content Include="Migrations\20181220_create_CompleteZip_func.sql" />
-    <Content Include="Migrations\20181220_create_DeleteZipCodesRange_proc.sql" />
-    <Content Include="Migrations\20190114_ja_create_fnc_FindPersonByPayerKey.sql" />
-    <Content Include="Migrations\20190107_meetingcategory.sql" />
-    <Content Include="Migrations\20190118_alter_donors_function_for_spouse_legal_name.sql" />
-    <Content Include="Migrations\20190117_pushpay_schema_updates.sql" />
-    <Content Include="Migrations\20190222_create_Gateway_Structure.sql" />
-    <Content Include="Migrations\20190415_create_FamilyGiverFunds_func.sql" />
-    <Content Include="Migrations\20190507_alter_view_TransactionBalances.sql" />
-    <Content Include="Migrations\20190523_add_paymentinfo_gatewayaccountid.sql" />
-    <Content Include="Migrations\20190523_Insert_Temporary_Recurring_Giving.sql" />
-    <Content Include="Migrations\20190530_Update_PaymentInfo_PK.sql" />
-    <Content Include="Migrations\20190603_add_role_priority.sql" />
-    <Content Include="Migrations\20190531_drop_SP_GreatPlainsIncomeExport.sql" />
-    <Content Include="Migrations\20190603_add_role_priority.sql" />
-    <Content Include="Migrations\20190530_Update_PaymentInfo_PK.sql" />
-    <Content Include="Migrations\20190626_Add_RecReg_nomember_Column.sql" />
-    <Content Include="Migrations\20190809_alter_function_CurrOrgMembers2_to_add_passport_data.sql" />
-    <Content Include="Migrations\20190809_alter_sp_OrgMembers_to_include_passport_data.sql" />
-    <Content Include="Migrations\20190902_alter_func_GetTotalContributionsDonor.sql" />
-    <Content Include="Migrations\20190903_Update_image_db_ispublic.sql" />
-    <Content Include="Migrations\20190909_alter_func_GetTotalContributionsDonorFund.sql" />
-    <Content Include="Migrations\20190902_alter_func_GetContributionsDetails.sql" />
-    <Content Include="Migrations\20190821_alter_InvolvementCurrent_function_to_include_family_directory.sql" />
-    <Content Include="Migrations\20190710_Update_MeetingTime_When_Is_Null.sql" />
-    <Content Include="Migrations\20190613_Transform_NoPhoneEmailOnFind_To_New_EVs.sql" />
-    <Content Include="Migrations\20190626_Add_RecReg_nomember_Column.sql" />
-    <Content Include="Migrations\20190710_Update_MeetingTime_When_Is_Null.sql" />
-    <Content Include="Migrations\20190715_create_orgmemberdocuments_table.sql" />
-    <Content Include="Migrations\20190724_add_checkinprofiles_settings_tables.sql" />
-    <Content Include="Migrations\20190626_Add_RecReg_nomember_Column.sql" />
-    <Content Include="Migrations\20190809_alter_function_CurrOrgMembers2_to_add_passport_data.sql" />
-    <Content Include="Migrations\20190809_alter_sp_OrgMembers_to_include_passport_data.sql" />
-    <Content Include="Migrations\20190725_Update_proc_LedgerIncomeExport.sql" />
-    <Content Include="Migrations\20190826_update_func_GetContributionsDetails.sql" />
-    <Content Include="Migrations\20190730_create_proc_mergecampuses.sql" />
-    <Content Include="Migrations\20190809_alter_function_CurrOrgMembers2_to_add_passport_data.sql" />
-    <Content Include="Migrations\20190809_alter_sp_OrgMembers_to_include_passport_data.sql" />
-    <Content Include="Migrations\20190821_Create_Function_SplitFundIds.sql" />
-    <Content Include="Migrations\20190821_Update_Function_ContributionSearch.sql" />
-    <Content Include="Migrations\20190821_Update_Function_GetTotalContributionsDonor.sql" />
-    <Content Include="Migrations\20190924_Update_Email_RecReg.sql" />
-    <Content Include="Migrations\20190930_Update_Func_PledgesSummary.sql" />
-    <Content Include="Migrations\20190828_Create_Func_PledgesSummary.sql" />
-    <Content Include="Migrations\20191009_alter_func_SpouseId.sql" />
-    <Content Include="Migrations\20191015_Update_MaritalStatus_Families_People_SpouseId.sql" />
-    <Content Include="Migrations\20191017_Alt_Func_PledgesSummary.sql" />
     <Content Include="QueryBuilder\CompareMap.xml">
       <SubType>Designer</SubType>
     </Content>
