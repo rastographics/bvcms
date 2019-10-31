@@ -18,7 +18,7 @@ namespace CmsWeb.Areas.Main.Controllers
         [Route("~/Tags")]
         public ActionResult Index(string tag)
         {
-            var m = new TagsModel();
+            var m = new TagsModel(CurrentDatabase);
             if (tag.HasValue())
             {
                 m.tag = tag;
@@ -56,7 +56,7 @@ namespace CmsWeb.Areas.Main.Controllers
             t.DeleteTag(CurrentDatabase);
             CurrentDatabase.SubmitChanges();
             Util2.CurrentTag = "UnNamed";
-            var m = new TagsModel();
+            var m = new TagsModel(CurrentDatabase);
             return View("Tags", m);
         }
 

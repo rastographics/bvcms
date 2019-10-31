@@ -1,11 +1,5 @@
-/* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church
- * Licensed under the GNU General Public License (GPL v2)
- * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license
- */
-
 using CmsData;
+using CmsWeb.Constants;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +9,7 @@ using UtilityExtensions;
 
 namespace CmsWeb.Models
 {
-    public class PagerModel2
+    public class PagerModel2 : IDbBinder
     {
         public delegate int CountDelegate();
 
@@ -26,13 +20,21 @@ namespace CmsWeb.Models
         public CountDelegate GetCount;
         public int? pagesize;
 
-        public PagerModel2(CountDelegate count)
-            : this()
+        public virtual CMSDataContext CurrentDatabase { get; set; }
+
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
+        public PagerModel2()
         {
-            GetCount = count;
+            Init();
         }
 
-        public PagerModel2()
+        public PagerModel2(CMSDataContext db)
+        {
+            CurrentDatabase = db;
+            Init();
+        }
+
+        private void Init()
         {
             ShowPageSize = true;
         }
@@ -83,14 +85,14 @@ namespace CmsWeb.Models
                     return pagesize.Value;
                 }
 
-                pagesize = DbUtil.Db.UserPreference("PageSize", "10").ToInt();
+                pagesize = CurrentDatabase.UserPreference("PageSize", "10").ToInt();
                 return pagesize.Value;
             }
             set
             {
                 if (pagesizes.Contains(value))
                 {
-                    DbUtil.Db.SetUserPreference("PageSize", value);
+                    CurrentDatabase.SetUserPreference("PageSize", value);
                 }
 
                 pagesize = value;
@@ -104,11 +106,6 @@ namespace CmsWeb.Models
         }
 
         public int StartRow => (Page.Value - 1) * PageSize;
-
-        public void setCountDelegate(CountDelegate count)
-        {
-            GetCount = count;
-        }
 
         public int LastPage()
         {

@@ -1,6 +1,8 @@
 using CmsData;
 using CmsData.View;
+using CmsWeb.Constants;
 using CmsWeb.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UtilityExtensions;
@@ -17,12 +19,25 @@ namespace CmsWeb.Areas.People.Models
         public int? DownlineLevels { get; set; }
         public string Trace { get; set; }
 
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
         public DownlineDetailModel()
-            : base("", "", true)
         {
-            UseDbPager = true;
+            Init();
         }
 
+        public DownlineDetailModel(CMSDataContext db) : base(db)
+        {
+            Init();
+        }
+
+        protected override void Init()
+        {
+            base.Init();
+            Sort = "";
+            Direction = "";
+            AjaxPager = true;
+            UseDbPager = true;
+        }
 
         private string name;
         public string Name
@@ -31,7 +46,7 @@ namespace CmsWeb.Areas.People.Models
             {
                 if (!name.HasValue() && DownlineId.HasValue)
                 {
-                    var i = DbUtil.Db.DownlineLeaders.Single(dd => dd.CategoryId == CategoryId && dd.PeopleId == DownlineId);
+                    var i = CurrentDatabase.DownlineLeaders.Single(dd => dd.CategoryId == CategoryId && dd.PeopleId == DownlineId);
                     name = i.Name;
                     DownlineCount = i.Cnt;
                     DownlineLevels = i.Levels;
@@ -46,7 +61,7 @@ namespace CmsWeb.Areas.People.Models
             {
                 if (!category.HasValue() && CategoryId.HasValue)
                 {
-                    category = DbUtil.Db.DownlineCategories(CategoryId).Single().Name;
+                    category = CurrentDatabase.DownlineCategories(CategoryId).Single().Name;
                 }
 
                 return category;
@@ -62,7 +77,7 @@ namespace CmsWeb.Areas.People.Models
                 return rows;
             }
 
-            rows = (from a in DbUtil.Db.DownlineDetails(CategoryId, DownlineId, Level, Page, PageSize)
+            rows = (from a in CurrentDatabase.DownlineDetails(CategoryId, DownlineId, Level, Page, PageSize)
                     select a).ToList();
             count = rows.Count == 0 ? 0 : rows[0].MaxRows;
             return rows;
@@ -85,7 +100,7 @@ namespace CmsWeb.Areas.People.Models
 
         public IEnumerable<DownlineSingleTrace> TraceList()
         {
-            return DbUtil.Db.DownlineSingleTrace(CategoryId, DownlineId, Trace).OrderBy(mm => mm.Generation);
+            return CurrentDatabase.DownlineSingleTrace(CategoryId, DownlineId, Trace).OrderBy(mm => mm.Generation);
         }
     }
 }
