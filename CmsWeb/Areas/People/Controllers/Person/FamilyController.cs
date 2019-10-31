@@ -12,7 +12,7 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpPost]
         public ActionResult FamilyMembers(int id)
         {
-            var m = new FamilyModel(id);
+            var m = new FamilyModel(CurrentDatabase, id);
             ViewBag.HideDeceasedFromFamily = HideDeceasedFromFamily();
             return View("Family/Members", m);
         }
@@ -20,7 +20,7 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpPost]
         public ActionResult RelatedFamilies(int id)
         {
-            var m = new FamilyModel(id);
+            var m = new FamilyModel(CurrentDatabase, id);
             return View("Family/Related", m);
         }
 
@@ -30,7 +30,7 @@ namespace CmsWeb.Areas.People.Controllers
             var r = CurrentDatabase.RelatedFamilies.SingleOrDefault(rr => rr.FamilyId == id1 && rr.RelatedFamilyId == id2);
             r.FamilyRelationshipDesc = value.Truncate(256);
             CurrentDatabase.SubmitChanges();
-            var m = new FamilyModel(id);
+            var m = new FamilyModel(CurrentDatabase, id);
             return View("Family/Related", m);
         }
 
@@ -40,7 +40,7 @@ namespace CmsWeb.Areas.People.Controllers
             var r = CurrentDatabase.RelatedFamilies.SingleOrDefault(rf => rf.FamilyId == id1 && rf.RelatedFamilyId == id2);
             CurrentDatabase.RelatedFamilies.DeleteOnSubmit(r);
             CurrentDatabase.SubmitChanges();
-            var m = new FamilyModel(id);
+            var m = new FamilyModel(CurrentDatabase, id);
             return View("Family/Related", m);
         }
 

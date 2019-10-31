@@ -16,8 +16,9 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult Index(string id = null)
         {
             ViewBag.Controller = this;
-            return View("Index", new PictureDirectoryModel(id));
+            return View("Index", new PictureDirectoryModel(CurrentDatabase, id));
         }
+
         [HttpPost]
         public ActionResult Results(PictureDirectoryModel m)
         {
