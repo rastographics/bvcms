@@ -1,0 +1,19 @@
+﻿@{
+    ViewBag.Title = "Two-factor Authentication Setup";
+
+    if ((bool?)ViewData["hasshell"] == true)
+    {
+        Layout = "~/Views/Shared/Account/_ShellLayout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/Account/_Layout.cshtml";
+    }
+}
+<h1 class="form-header">@ViewBag.Title</h1>
+<div class="alert alert-success" role="alert">
+    Two-factor authentication was set up successfully
+</div>
+<div class="panel">
+    <a href="/" class="btn btn-primary btn-lg active btn-block">Return to Home</a>
+</div>

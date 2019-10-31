@@ -6,7 +6,9 @@
  */
 using CmsData;
 using CmsData.View;
+using CmsWeb.Constants;
 using CmsWeb.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -21,16 +23,26 @@ namespace CmsWeb.Areas.Dialog.Models
         public int? TargetDivision { get; set; }
         public bool Adding { get; set; }
 
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
         public SearchDivisionsModel()
         {
             AjaxPager = true;
             PageSize = 10;
             ShowPageSize = false;
         }
-        public SearchDivisionsModel(int id)
-            : this()
+
+        public SearchDivisionsModel(CMSDataContext db, int id) : base(db)
         {
+            Init();
             Id = id;
+        }
+
+        protected override void Init()
+        {
+            AjaxPager = true;
+            PageSize = 10;
+            ShowPageSize = false;
+            base.Init();
         }
 
         public void AddRemoveDiv()
