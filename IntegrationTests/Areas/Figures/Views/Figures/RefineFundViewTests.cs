@@ -53,8 +53,7 @@ namespace IntegrationTests.Areas.Figures.Views.Figures
 
             Find(id: "DrawChart").Click();
 
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(2));
-            wait.Until(d => IsAlertPresent());
+            WaitFor(d => IsAlertPresent(), 2);
             driver.SwitchTo().Alert().Dismiss();
 
             WaitForElement("#Fund_chart_display svg > g:nth-child(4)", 5);
