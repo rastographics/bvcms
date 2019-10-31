@@ -120,7 +120,7 @@ WHERE eqt.Id = @emailQueueId
                     break;
                 default:
                     _count = CountOfAllRecipients;
-                    Pager = new PagerModel2(DbUtil.Db);
+                    Pager = new PagerModel2(DbUtil.Db) { GetCount = Count };
                     break;
             }
 
@@ -130,7 +130,7 @@ WHERE eqt.Id = @emailQueueId
 
         private void SetPager(int? page, int? pageSize)
         {
-            Pager = new PagerModel2(DbUtil.Db);
+            Pager = new PagerModel2(DbUtil.Db) { GetCount = Count };
             if (pageSize.HasValue)
             {
                 Pager.PageSize = pageSize.Value;
