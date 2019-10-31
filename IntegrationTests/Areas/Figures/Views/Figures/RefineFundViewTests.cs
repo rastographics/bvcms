@@ -7,6 +7,7 @@ using Xunit;
 using CmsData;
 using UtilityExtensions;
 using System.Linq;
+using OpenQA.Selenium.Support.UI;
 
 namespace IntegrationTests.Areas.Figures.Views.Figures
 {
@@ -52,6 +53,7 @@ namespace IntegrationTests.Areas.Figures.Views.Figures
 
             Find(id: "DrawChart").Click();
 
+            WaitFor(d => IsAlertPresent(), 2);
             driver.SwitchTo().Alert().Dismiss();
 
             WaitForElement("#Fund_chart_display svg > g:nth-child(4)", 5);
