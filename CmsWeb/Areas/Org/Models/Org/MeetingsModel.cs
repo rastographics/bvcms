@@ -4,6 +4,8 @@ using CmsData;
 using CmsWeb.Models;
 using UtilityExtensions;
 using CmsData.Classes.RoleChecker;
+using System;
+using CmsWeb.Constants;
 
 namespace CmsWeb.Areas.Org.Models
 {
@@ -15,8 +17,13 @@ namespace CmsWeb.Areas.Org.Models
         public bool ShowCreateNewMeeting => RoleChecker.HasSetting(SettingName.Organization_ShowCreateNewMeeting, true);
         public bool ShowDeleteMeeting => RoleChecker.HasSetting(SettingName.Organization_ShowDeleteMeeting, true);
 
-        public MeetingsModel() 
-            : base("", "", true) { }
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
+        public MeetingsModel()
+        {
+            Sort = "";
+            Direction = "";
+            AjaxPager = true;
+        }
             
         public override IQueryable<Meeting> DefineModelList()
         {

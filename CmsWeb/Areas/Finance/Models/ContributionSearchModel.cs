@@ -1,21 +1,14 @@
-/* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church
- * Licensed under the GNU General Public License (GPL v2)
- * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license
- */
-
 using CmsData;
 using CmsData.API;
 using CmsData.Codes;
 using CmsWeb.Code;
+using CmsWeb.Constants;
 using MoreLinq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Web;
 using System.Web.Mvc;
 using UtilityExtensions;
 
@@ -23,7 +16,17 @@ namespace CmsWeb.Models
 {
     public class ContributionSearchModel : PagerModel2
     {
-        private APIContributionSearchModel api { get; set; }
+        private APIContributionSearchModel _api;
+        private APIContributionSearchModel api
+        {
+            get => _api ?? (api = new APIContributionSearchModel(CurrentDatabase));
+            set
+            {
+                _api = value;
+                Init();
+            }
+        }
+
         public ContributionSearchInfo SearchInfo { get; set; }
 
         private string _name = null;
@@ -33,7 +36,7 @@ namespace CmsWeb.Models
             {
                 if (!_name.HasValue())
                 {
-                    _name = (from p in DbUtil.Db.People
+                    _name = (from p in CurrentDatabase.People
                              where p.PeopleId == SearchInfo.PeopleId
                              select p.Name).SingleOrDefault() ?? "";
                 }
@@ -42,7 +45,7 @@ namespace CmsWeb.Models
             }
         }
 
-        private void Setup()
+        private void Init()
         {
             GetCount = api.Count;
             Sort = "Date";
@@ -50,20 +53,17 @@ namespace CmsWeb.Models
             SearchInfo = api.model;
         }
 
-        public ContributionSearchModel(APIContributionSearchModel api)
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
+        public ContributionSearchModel() { }
+
+        public ContributionSearchModel(CMSDataContext db, APIContributionSearchModel api) : base(db)
         {
             this.api = api;
-            Setup();
         }
-        public ContributionSearchModel()
+
+        public ContributionSearchModel(CMSDataContext db, ContributionSearchInfo m) : base(db)
         {
-            api = new APIContributionSearchModel(DbUtil.Db);
-            Setup();
-        }
-        public ContributionSearchModel(ContributionSearchInfo m)
-        {
-            api = new APIContributionSearchModel(DbUtil.Db, m);
-            Setup();
+            api = new APIContributionSearchModel(db, m);
         }
 
         public IEnumerable<ContributionInfo> ContributionsList()
@@ -207,7 +207,7 @@ namespace CmsWeb.Models
         public IEnumerable<SelectListItem> Years()
         {
             // todo: the "years" dropdown on contribution/index doesn't correctly show the years if coming from a giving statement of the spouse in all cases because this search is only off of the donors peopleid.
-            var q = from c in DbUtil.Db.Contributions
+            var q = from c in CurrentDatabase.Contributions
                     where c.PeopleId == SearchInfo.PeopleId || SearchInfo.PeopleId == null
                     group c by c.ContributionDate.Value.Year
                         into g
@@ -220,7 +220,7 @@ namespace CmsWeb.Models
 
         public IEnumerable<SelectListItem> Funds()
         {
-            var list = (from c in DbUtil.Db.Contributions
+            var list = (from c in CurrentDatabase.Contributions
                         where c.PeopleId == SearchInfo.PeopleId || SearchInfo.PeopleId == null
                         group c by new { c.FundId, c.ContributionFund.FundName }
                             into g
@@ -244,25 +244,25 @@ namespace CmsWeb.Models
 
         public void Return(int cid)
         {
-            var c = DbUtil.Db.Contributions.Single(ic => ic.ContributionId == cid);
+            var c = CurrentDatabase.Contributions.Single(ic => ic.ContributionId == cid);
             var r = CreateContributionRecord(c);
             c.ContributionStatusId = ContributionStatusCode.Returned;
             r.ContributionTypeId = ContributionTypeCode.ReturnedCheck;
             r.ContributionDesc = "Returned Check for Contribution Id = " + c.ContributionId;
 
-            DbUtil.Db.Contributions.InsertOnSubmit(r);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.Contributions.InsertOnSubmit(r);
+            CurrentDatabase.SubmitChanges();
         }
 
         public void Reverse(int cid)
         {
-            var c = DbUtil.Db.Contributions.Single(ic => ic.ContributionId == cid);
+            var c = CurrentDatabase.Contributions.Single(ic => ic.ContributionId == cid);
             var r = CreateContributionRecord(c);
             c.ContributionStatusId = ContributionStatusCode.Reversed;
             r.ContributionTypeId = ContributionTypeCode.Reversed;
             r.ContributionDesc = "Reversed Contribution Id = " + c.ContributionId;
-            DbUtil.Db.Contributions.InsertOnSubmit(r);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.Contributions.InsertOnSubmit(r);
+            CurrentDatabase.SubmitChanges();
         }
 
         public static Contribution CreateContributionRecord(Contribution c)
@@ -325,9 +325,9 @@ namespace CmsWeb.Models
                 return null;
             }
 
-            var oldfund = DbUtil.Db.ContributionFunds.Single(ff => ff.FundId == SearchInfo.FundId);
-            var newfund = DbUtil.Db.ContributionFunds.SingleOrDefault(ff => ff.FundId == newfundid) ??
-                          DbUtil.Db.FetchOrCreateFund(newfundid.Value, oldfund.FundDescription);
+            var oldfund = CurrentDatabase.ContributionFunds.Single(ff => ff.FundId == SearchInfo.FundId);
+            var newfund = CurrentDatabase.ContributionFunds.SingleOrDefault(ff => ff.FundId == newfundid) ??
+                          CurrentDatabase.FetchOrCreateFund(newfundid.Value, oldfund.FundDescription);
 
             SearchInfo.Name = null;
             var q = api.FetchContributions();
@@ -341,8 +341,8 @@ UPDATE dbo.Contribution SET FundId = {0} WHERE ContributionId = {1} AND FundId =
                 c.PeopleId, c.ContributionAmount, oldfund.FundDescription, newfund.FundDescription);
             }
             var sql = sb.ToString();
-            DbUtil.Db.ContentText($"MovedFunds-{DateTime.Now}", sql);
-            DbUtil.Db.ExecuteCommand(sql);
+            CurrentDatabase.ContentText($"MovedFunds-{DateTime.Now}", sql);
+            CurrentDatabase.ExecuteCommand(sql);
             return "/Contributions?fundId=" + newfundid;
         }
     }
