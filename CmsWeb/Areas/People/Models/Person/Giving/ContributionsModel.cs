@@ -32,6 +32,7 @@ namespace CmsWeb.Areas.People.Models
         public bool ShowTypes;
         public bool isPledges = false;
         public List<PledgesSummary> PledgesSummary { get; set; }
+        public List<GivingSummary> GivingSummary { get; set; }
         [DisplayName("Electronic Only"), TrackChanges]
         public bool ElectronicStatement { get; set; }
         [DisplayName("Statement Option")]
@@ -103,6 +104,17 @@ namespace CmsWeb.Areas.People.Models
             return PledgesSummary;
         }
 
+        public List<GivingSummary> GetGivingSummary()
+        {
+            IQueryable<Contribution> contributionRecords = GetContributionRecords();
+            GivingSummary = new List<GivingSummary>();
+            foreach (Contribution contribution in contributionRecords.Where(p => p.ContributionTypeId != ContributionTypeCode.Pledge))
+            {
+                AddGivingSummary(contribution, contributionRecords);
+            }
+            return GivingSummary;
+        }
+
         private void AddSummaryPledge(Contribution contribution, IQueryable<Contribution> contributionRecords)
         {
             var fundName = contribution.ContributionFund.FundName;
@@ -124,6 +136,27 @@ namespace CmsWeb.Areas.People.Models
                     AmountPledged = amountPledged,
                     AmountContributed = amountContributed,
                     Balance = amountPledged - amountContributed < 0 ? 0 : amountPledged - amountContributed
+                });
+            }
+        }
+
+        private void AddGivingSummary(Contribution contribution, IQueryable<Contribution> contributionRecords)
+        {
+            var fundName = contribution.ContributionFund.FundName;
+            if (!GivingSummary.Any(p => p.Fund == fundName))
+            {
+                List<Contribution> contributionsThisFund = contributionRecords
+                    .Where(c => c.ContributionTypeId != ContributionTypeCode.Pledge && c.ContributionFund.FundName == fundName).ToList();
+                decimal amountContributed = 0;
+                if (contributionsThisFund.Count != 0)
+                {
+                    amountContributed = contributionsThisFund.Sum(c => c.ContributionAmount ?? 0);
+                }
+                GivingSummary.Add(new GivingSummary()
+                {
+                    FundId = contribution.ContributionFund.FundId,
+                    Fund = fundName,
+                    AmountContributed = amountContributed
                 });
             }
         }

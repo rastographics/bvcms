@@ -69,6 +69,7 @@ namespace CmsWeb.Areas.People.Models
             Picture = i.Picture;
             FamilyPicture = i.FamilyPicture;
             StatusFlags = (statusflags ?? "").Split(',');
+            ShowCombinedGiving = db.GetSetting("CombinedGivingSummary", "") == "true";
 
             basic = new BasicPersonInfo(p.PeopleId);
 
@@ -114,6 +115,7 @@ namespace CmsWeb.Areas.People.Models
         public string[] StatusFlags { get; set; }
         public string Name { get; set; }
         public string MemberStatus { get; set; }
+        public bool ShowCombinedGiving { get; set; }
 
         public FamilyModel FamilyModel => familyModel ?? (familyModel = new FamilyModel(PeopleId));
 

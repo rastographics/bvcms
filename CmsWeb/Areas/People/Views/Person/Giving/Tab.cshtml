@@ -1,28 +1,58 @@
 ﻿@model CmsWeb.Areas.People.Models.PersonModel
 @using CmsData
 <ul class="nav nav-pills subnav hidden-sm hidden-xs" data-tabparent="giving">
-    <li><a href="#contributions" data-toggle="tab" class="ajax">Contributions</a></li>
-    <li><a href="#pledges" data-toggle="tab" class="ajax">Pledges</a></li>
+    @if (Model.ShowCombinedGiving)
+    {
+        <li><a href="#combinedGiving" data-toggle="tab" class="ajax">Contributions</a></li>
+    }
+    else
+    {
+        <li><a href="#contributions" data-toggle="tab" class="ajax">Contributions</a></li>
+        <li><a href="#pledges" data-toggle="tab" class="ajax">Pledges</a></li>
+    }
     <li><a href="#statements" data-toggle="tab" class="ajax">Statements</a></li>
 </ul>
 <select class="form-control visible-sm-block visible-xs-block nav-select-pills">
     <optgroup>
-        <option value="#contributions">Contributions</option>
-        <option value="#pledges">Pledges</option>
+        @if (Model.ShowCombinedGiving)
+        {
+            <option value="#combinedGiving">Contributions</option>
+        }
+        else
+        {
+            <option value="#contributions">Contributions</option>
+            <option value="#pledges">Pledges</option>
+        }
     </optgroup>
     <optgroup label="_________________________">
         <option value="#statements">Statements</option>
     </optgroup>
 </select>
 <div class="tab-content" style="border: none;">
-    <div class="tab-pane" id="contributions" data-link="/Person2/Contributions">
-        @Helper.HiddenId("PeopleId", Util2.CurrentPeopleId)
-        @Helper.HiddenParameter("Filter", "Contributions")
-    </div>
-    <div class="tab-pane" id="pledges" data-link="/Person2/Contributions">
-        @Helper.HiddenId("PeopleId", Util2.CurrentPeopleId)
-        @Helper.HiddenParameter("Filter", "Pledges")
-    </div>
+    @if (Model.ShowCombinedGiving)
+    {
+        <div class="tab-pane" id="combinedGiving" data-link="/Person2/Contributions">
+            @*<div data-link="/Person2/Contributions">*@
+            @Helper.HiddenId("PeopleId", Util2.CurrentPeopleId)
+            @Helper.HiddenParameter("Filter", "Pledges")
+            @*</div>
+                <div data-link="/Person2/Contributions">
+                    @Helper.HiddenId("PeopleId", Util2.CurrentPeopleId)
+                    @Helper.HiddenParameter("Filter", "Contributions")
+                </div>*@
+        </div>
+    }
+    else
+    {
+        <div class="tab-pane" id="contributions" data-link="/Person2/Contributions">
+            @Helper.HiddenId("PeopleId", Util2.CurrentPeopleId)
+            @Helper.HiddenParameter("Filter", "Contributions")
+        </div>
+        <div class="tab-pane" id="pledges" data-link="/Person2/Contributions">
+            @Helper.HiddenId("PeopleId", Util2.CurrentPeopleId)
+            @Helper.HiddenParameter("Filter", "Pledges")
+        </div>
+    }
     <div class="tab-pane" id="statements" data-link="/Person2/Statements">
         @Helper.HiddenId("PeopleId", Util2.CurrentPeopleId)
     </div>
