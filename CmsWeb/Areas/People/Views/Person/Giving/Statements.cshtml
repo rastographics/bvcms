@@ -27,7 +27,7 @@
                             <th class="text-right">Amount</th>
                         </tr>
                     </thead>
-                    @foreach (var year in ContributionsModel.Statements(Model.PeopleId))
+                    @foreach (var year in ContributionsModel.Statements(DbUtil.Db, Model.PeopleId))
                     {
                         TotalAmount += year.Amount;
                         TotalCount += year.Count;

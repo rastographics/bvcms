@@ -16,7 +16,7 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult Index()
         {
             Response.NoCache();
-            var m = new TaskSearchModel();
+            var m = new TaskSearchModel(CurrentDatabase);
 
             m.Search.GetPreference();
             return View(m);
@@ -32,31 +32,35 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ActionResult Clear()
         {
-            var m = new TaskSearchModel();
+            var m = new TaskSearchModel(CurrentDatabase);
             m.Search.ClearPreference();
             return Redirect("/TaskSearch");
         }
+
         public ActionResult DelegateNames(string term, string options)
         {
-            var search = new TaskSearchModel();
+            var search = new TaskSearchModel(CurrentDatabase);
             var n = search.FindNames("Delegate", term, 10, options);
             return Json(n, JsonRequestBehavior.AllowGet);
         }
+
         public ActionResult OwnerNames(string term, string options)
         {
-            var search = new TaskSearchModel();
+            var search = new TaskSearchModel(CurrentDatabase);
             var n = search.FindNames("Owner", term, 10, options);
             return Json(n, JsonRequestBehavior.AllowGet);
         }
+
         public ActionResult OriginatorNames(string term, string options)
         {
-            var search = new TaskSearchModel();
+            var search = new TaskSearchModel(CurrentDatabase);
             var n = search.FindNames("Originator", term, 10, options);
             return Json(n, JsonRequestBehavior.AllowGet);
         }
+
         public ActionResult AboutNames(string term, string options)
         {
-            var search = new TaskSearchModel();
+            var search = new TaskSearchModel(CurrentDatabase);
             var n = search.FindNames("About", term, 10, options);
             return Json(n, JsonRequestBehavior.AllowGet);
         }
@@ -68,6 +72,7 @@ namespace CmsWeb.Areas.Search.Controllers
             m.Search.SavePreference();
             return Redirect("/TaskSearch");
         }
+
         [HttpPost]
         public ActionResult UnArchive(TaskSearchModel m)
         {
@@ -75,6 +80,7 @@ namespace CmsWeb.Areas.Search.Controllers
             m.Search.SavePreference();
             return Redirect("/TaskSearch");
         }
+
         [HttpPost]
         public ActionResult Delete(TaskSearchModel m)
         {
@@ -82,6 +88,7 @@ namespace CmsWeb.Areas.Search.Controllers
             m.Search.SavePreference();
             return Redirect("/TaskSearch");
         }
+
         [HttpPost]
         public ActionResult Delegate(int id, TaskSearchModel m)
         {
@@ -89,6 +96,7 @@ namespace CmsWeb.Areas.Search.Controllers
             m.Search.SavePreference();
             return Redirect("/TaskSearch");
         }
+
         [HttpPost]
         public ActionResult Complete(TaskSearchModel m)
         {

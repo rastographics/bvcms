@@ -16,7 +16,7 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult Index()
         {
             Response.NoCache();
-            var m = new ContactSearchModel();
+            var m = new ContactSearchModel(CurrentDatabase);
 
             m.GetFromSession();
             return View(m);
@@ -32,7 +32,7 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ActionResult Clear()
         {
-            var m = new ContactSearchModel();
+            var m = new ContactSearchModel(CurrentDatabase);
             m.ClearSession();
             return Redirect("/ContactSearch2");
         }
@@ -47,7 +47,7 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpGet]
         public ActionResult ContactTypeQuery(int id)
         {
-            var gid = ContactSearchModel.ContactTypeQuery(id);
+            var gid = ContactSearchModel.ContactTypeQuery(CurrentDatabase, id);
             return Redirect($"/Query/{gid}");
         }
 
@@ -76,7 +76,7 @@ namespace CmsWeb.Areas.Search.Controllers
         [Authorize(Roles = "Developer")]
         public ActionResult DeleteContactsForType(int id)
         {
-            ContactSearchModel.DeleteContactsForType(id);
+            ContactSearchModel.DeleteContactsForType(CurrentDatabase, id);
             return Redirect("/ContactSearch/ContactTypeTotals");
         }
     }

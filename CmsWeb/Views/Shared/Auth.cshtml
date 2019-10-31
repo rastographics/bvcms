@@ -1,0 +1,32 @@
+﻿@model CmsWeb.Areas.Manage.Models.AccountInfo
+@{
+    ViewBag.Title = "Two-factor Authentication";
+    ViewData["hideBackButton"] = true;
+    var hasShell = (bool?)ViewData["hasshell"] == true;
+    if (hasShell)
+    {
+        Layout = "~/Views/Shared/Account/_ShellLayout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/Account/_Layout.cshtml";
+    }
+}
+
+@if (hasShell)
+{
+    @ViewExtensions2.GoogleFonts()
+    @ViewExtensions2.FontAwesome()
+}
+<h1 class="form-header">@ViewBag.Title</h1>
+@if (ViewBag.Message != null)
+{
+    <h3 class="alert alert-danger">@ViewBag.Message</h3>
+}
+<form action="/Auth" method="post" class="panel">
+    @Html.HiddenFor(m => m.UsernameOrEmail)
+    @Html.HiddenFor(m => m.ReturnUrl)
+    <fieldset>
+        @Html.Partial("Account/TwoFactorPasscode", viewData: ViewData)
+    </fieldset>
+</form>

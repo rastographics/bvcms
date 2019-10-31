@@ -16,7 +16,6 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost]
         public ActionResult People(OrgPeopleModel m)
         {
-            m.User = User;
             if (m.FilterIndividuals)
             {
                 if (m.NameFilter.HasValue())
@@ -174,7 +173,6 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost]
         public ActionResult CheckAll(OrgPeopleModel m)
         {
-            m.User = User;
             var list = m.CurrentNotChecked();
             CurrentDatabase.TagAll(list, m.OrgTag);
             return PartialView("People", m);
@@ -183,7 +181,6 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost]
         public ActionResult CheckNone(OrgPeopleModel m)
         {
-            m.User = User;
             var list = m.CurrentChecked();
             CurrentDatabase.UnTagAll(list, m.OrgTag);
             return PartialView("People", m);
