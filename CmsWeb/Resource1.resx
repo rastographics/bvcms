@@ -119,7 +119,7 @@
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="APITestPlan" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>areas\public\controllers\apitestplan.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-16</value>
+    <value>Areas\Public\Controllers\APITestPlan.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-16</value>
   </data>
   <data name="VolunteerRequestModel_ComposeMessage_Body" xml:space="preserve">
     <value>
@@ -311,7 +311,7 @@ FontSizeEmail: 9
     <value>CustomColumns.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="ReportsMenu" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>views\shared\menu\reportsmenu.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>Views\Shared\Menu\ReportsMenu.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="SettingsRegistrationModel_DefaulConfirmation" xml:space="preserve">
     <value>Hi {first}
@@ -323,7 +323,7 @@ Your Ministry Team for {org}
 &lt;/p&gt;</value>
   </data>
   <data name="RecentVisitsAbsents" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>areas\org\views\orgsearch\recentvisitsabsents.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>Areas\Org\Views\OrgSearch\RecentVisitsAbsents.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="VolSubModel_VolunteerSubConfirm" xml:space="preserve">
     <value>
@@ -398,13 +398,13 @@ so that your data will not stay duplicated.&lt;/p&gt;
 &lt;/OrgSearch&gt;</value>
   </data>
   <data name="PictureDirectoryTemplate" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>areas\search\views\picturedirectory\results.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>Areas\Search\Views\PictureDirectory\Results.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="PictureDirectorySql" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>areas\search\views\picturedirectory\picturedirectory.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>Areas\Search\Views\PictureDirectory\PictureDirectory.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
   <data name="DocxAveryLabel" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>areas\reports\models\avery\docxaverylabel.docx;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>Areas\Reports\Models\Avery\DocxAveryLabel.docx;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="DocxRollsheet" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Areas\Reports\Models\Attendance\DocxRollsheet.docx;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>

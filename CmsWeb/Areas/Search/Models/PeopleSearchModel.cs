@@ -1,13 +1,7 @@
-/* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church 
- * Licensed under the GNU General Public License (GPL v2)
- * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
- */
-
 using CmsData;
 using CmsWeb.Areas.Search.Models;
 using CmsWeb.Code;
+using CmsWeb.Constants;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,7 +30,6 @@ namespace CmsWeb.Models
         public int marital { get; set; }
         public int gender { get; set; }
 
-        //public string nameHelp = HttpUtility.HtmlEncode(@"
         public string nameHelp = ViewExtensions2.Markdown(@"
 Search names using starting letters of *First*`space`*Last* 
 or just Last or *First*`space` for first name match only.
@@ -45,7 +38,6 @@ or just Last or *First*`space` for first name match only.
 
     public class PeopleSearchModel : PagerModel2
     {
-        //private readonly CMSDataContext Db;
         private int TagTypeId { get; set; }
         private string TagName { get; set; }
         private int? TagOwner { get; set; }
@@ -53,9 +45,20 @@ or just Last or *First*`space` for first name match only.
 
         public PeopleSearchInfo m;
 
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
         public PeopleSearchModel()
         {
-            //Db = Db;
+            Init();
+        }
+
+        public PeopleSearchModel(CMSDataContext db, bool fromAddGuest = false) : base(db)
+        {
+            Init();
+            MobileAddGuest = db.Setting("RelaxAppAddGuest", "false").ToBool() && fromAddGuest;
+        }
+
+        private void Init()
+        {
             Direction = "asc";
             Sort = "Name";
             TagTypeId = DbUtil.TagTypeId_Personal;
@@ -63,12 +66,6 @@ or just Last or *First*`space` for first name match only.
             TagOwner = Util2.CurrentTagOwnerId;
             m = new PeopleSearchInfo();
             GetCount = Count;
-        }
-
-        public PeopleSearchModel(bool fromAddGuest = false)
-            : this()
-        {
-            MobileAddGuest = DbUtil.Db.Setting("RelaxAppAddGuest", "false").ToBool() && fromAddGuest;
         }
 
         public bool usersonly { get; set; }
@@ -82,11 +79,11 @@ or just Last or *First*`space` for first name match only.
                 return people;
             }
 
-            DbUtil.Db.SetNoLock();
+            CurrentDatabase.SetNoLock();
 
             people = Util2.OrgLeadersOnly && !MobileAddGuest
-                ? DbUtil.Db.OrgLeadersOnlyTag2().People(DbUtil.Db)
-                : DbUtil.Db.People.AsQueryable();
+                ? CurrentDatabase.OrgLeadersOnlyTag2().People(CurrentDatabase)
+                : CurrentDatabase.People.AsQueryable();
 
             if (usersonly)
             {
@@ -129,7 +126,7 @@ or just Last or *First*`space` for first name match only.
                                  where p.PeopleId == last.ToInt()
                                  select p;
                     }
-                    else if (DbUtil.Db.Setting("UseAltnameContains"))
+                    else if (CurrentDatabase.Setting("UseAltnameContains"))
                     {
                         people = from p in people
                                  where p.LastName.StartsWith(m.name) || p.MaidenName.StartsWith(m.name) || p.AltName.Contains(last)
@@ -392,8 +389,8 @@ or just Last or *First*`space` for first name match only.
 
         public IEnumerable<SelectListItem> Campuses()
         {
-            var qc = DbUtil.Db.Campus.AsQueryable();
-            qc = DbUtil.Db.Setting("SortCampusByCode")
+            var qc = CurrentDatabase.Campus.AsQueryable();
+            qc = CurrentDatabase.Setting("SortCampusByCode")
                 ? qc.OrderBy(cc => cc.Code)
                 : qc.OrderBy(cc => cc.Description);
             var list = (from c in qc
@@ -443,7 +440,7 @@ or just Last or *First*`space` for first name match only.
 
         public string ConvertToSearch()
         {
-            var cc = DbUtil.Db.ScratchPadCondition();
+            var cc = CurrentDatabase.ScratchPadCondition();
             cc.Reset();
 
             if (m.memberstatus > 0)
@@ -478,7 +475,7 @@ or just Last or *First*`space` for first name match only.
                     {
                         var g = cc.AddNewGroupClause();
                         g.SetComparisonType(CompareType.AnyTrue);
-                        var compareTypeAltname = DbUtil.Db.Setting("UseAltnameContains")
+                        var compareTypeAltname = CurrentDatabase.Setting("UseAltnameContains")
                             ? CompareType.Contains : CompareType.StartsWith;
                         g.AddNewClause(QueryType.AltName, compareTypeAltname, m.name);
                         g.AddNewClause(QueryType.LastName, CompareType.StartsWith, m.name);
@@ -581,7 +578,7 @@ or just Last or *First*`space` for first name match only.
 
             cc.AddNewClause(QueryType.IncludeDeceased, CompareType.Equal, "1,True");
 
-            cc.Save(DbUtil.Db);
+            cc.Save(CurrentDatabase);
             return "/Query/" + cc.Id;
         }
 

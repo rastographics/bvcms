@@ -16,14 +16,16 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult Index()
         {
             Response.NoCache();
-            var m = new RegistrationSearchModel() { CurrentDatabase = CurrentDatabase};
+            var m = new RegistrationSearchModel(CurrentDatabase);
             return View(m);
         }
+
         [HttpPost]
         public ActionResult Results(RegistrationSearchModel m)
         {
             return View(m);
         }
+
         [HttpPost]
         public ActionResult Clear()
         {
@@ -31,20 +33,23 @@ namespace CmsWeb.Areas.Search.Controllers
             //m.ClearSession();
             return Redirect("/RegistrationSearch");
         }
+
         [HttpGet, Route("~/IncompleteRegistrationsOrg/{id:int}")]
         public ActionResult IncompleteRegistrationsOrg(int id, int? days)
         {
-            var m = new IncompleteRegistrations(id, days);
+            var m = new IncompleteRegistrations(CurrentDatabase, id, days);
 
             return View("IncompleteRegistrations", m);
         }
+
         [HttpPost, Route("~/IncompleteRegistrations")]
         public ActionResult IncompleteRegistrations(OrgSearchModel orgsearch, int? days)
         {
-            var m = new IncompleteRegistrations(orgsearch, days);
+            var m = new IncompleteRegistrations(CurrentDatabase, orgsearch, days);
 
             return View("IncompleteRegistrations", m);
         }
+
         [HttpPost, Route("~/IncompleteRegistrations/Results")]
         public ActionResult IncompleteResults(IncompleteRegistrations m)
         {
