@@ -1,6 +1,8 @@
 using CmsData;
 using CmsData.View;
+using CmsWeb.Constants;
 using CmsWeb.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UtilityExtensions;
@@ -12,9 +14,24 @@ namespace CmsWeb.Areas.People.Models
     {
         public int? CategoryId { get; set; }
 
-        public DownlineSummaryModel()
-            : base("", "", true)
+
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
+        public DownlineSummaryModel() : base()
         {
+            Init();
+        }
+
+        public DownlineSummaryModel(CMSDataContext db) : base(db)
+        {
+            Init();
+        }
+
+        protected override void Init()
+        {
+            base.Init();
+            Sort = "";
+            Direction = "";
+            AjaxPager = true;
             UseDbPager = true;
         }
 
@@ -25,7 +42,7 @@ namespace CmsWeb.Areas.People.Models
             {
                 if (!category.HasValue() && CategoryId.HasValue)
                 {
-                    category = DbUtil.Db.DownlineCategories(CategoryId).Single().Name;
+                    category = CurrentDatabase.DownlineCategories(CategoryId).Single().Name;
                 }
 
                 return category;
@@ -41,7 +58,7 @@ namespace CmsWeb.Areas.People.Models
                 return rows;
             }
 
-            rows = (from a in DbUtil.Db.DownlineSummary(CategoryId, Page, PageSize)
+            rows = (from a in CurrentDatabase.DownlineSummary(CategoryId, Page, PageSize)
                     select a).ToList();
             count = rows.Count == 0 ? 0 : rows[0].MaxRows;
             return rows;

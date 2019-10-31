@@ -18,7 +18,7 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost, Route("SearchAdd2/Dialog/{type}/{typeid?}")]
         public ActionResult Dialog(string type, string typeid, bool displaySkipSearch = true)
         {
-            var m = new SearchAddModel(type, typeid, displaySkipSearch);
+            var m = new SearchAddModel(CurrentDatabase, type, typeid, displaySkipSearch);
             return View("SearchPerson", m);
         }
 
