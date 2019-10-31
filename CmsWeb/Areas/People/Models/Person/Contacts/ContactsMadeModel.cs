@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using CmsData;
-using CmsWeb.Models;
+using CmsWeb.Constants;
 
 namespace CmsWeb.Areas.People.Models
 {
@@ -12,7 +11,11 @@ namespace CmsWeb.Areas.People.Models
         public override string AddContact { get { return "/Person2/AddContactMade/" + PeopleId; } }
         public override string AddContactButton { get { return "Add Contact Made By This Person"; } }
 
-        public ContactsMadeModel() { }
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
+        public ContactsMadeModel() : base() { }
+
+        public ContactsMadeModel(CMSDataContext db) : base(db) { }
+
         override public IQueryable<Contact> DefineModelList()
         {
             return from c in FilteredModelList()
