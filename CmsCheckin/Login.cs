@@ -32,7 +32,7 @@ namespace CmsCheckin
             //if (Program.settings.popupForVersion < 1) {
             //	MessageBox.Show("The Check-In program has been updated,\nplease verify the following settings:\n\n" +
             //		"Login Page\n\n- Server name (e.g. <yourchurch>.tpsdb.com)\n- Username\n- Password\n- Printer\n- Advanced Page Size (Optional)\n\n" +
-            //		"Settings Page\n\n- Campus\n- Early Checkin Hours\n- Late Checkin Minutes\n- Checkboxes at the bottom", "New Version", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            //		"Settings Page\n\n- Campus\n- Early Checkin Hours\n- Late Checkin Minutes\n- Checkboxes at the bottom", "New Version", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
             //	Program.settings.setPopupForVersion(1);
             //}
@@ -44,6 +44,7 @@ namespace CmsCheckin
 
             URL.Text = Program.settings.subdomain.Replace(".tpsdb.com", "").Replace(".bvcms.com", "");
             username.Text = Program.settings.user;
+            password.Text = Program.settings.pass ?? "";
 
             if (username.Text.Length > 0)
             {
@@ -54,6 +55,10 @@ namespace CmsCheckin
             {
                 current = URL;
                 this.ActiveControl = URL;
+            }
+            if (password.Text.Length > 0)
+            {
+                onLoginClick(null, null);
             }
         }
 
@@ -107,6 +112,7 @@ namespace CmsCheckin
             Program.settings.user = username.Text;
             Program.settings.pass = password.Text;
             Program.settings.save();
+            var webservice = Program.settings.createURL();
 
             try
             {
@@ -117,7 +123,7 @@ namespace CmsCheckin
 
                 if (existsResults != "1")
                 {
-                    MessageBox.Show("The server name you entered is not valid, please try again.\n\n" + Program.settings.createURL(), "Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("The server name you entered is not valid, please try again.\n\n" + webservice, "Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
                 else
                 {
@@ -146,7 +152,7 @@ namespace CmsCheckin
                     {
                         if (bm.error == -6)
                         {
-                            MessageBox.Show("Your username or password was incorrect, please try again.", "Server Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            MessageBox.Show("Your username or password was incorrect, please try again.", "Server Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         else
                         {
@@ -155,9 +161,9 @@ namespace CmsCheckin
                     }
                 }
             }
-            catch (WebException)
+            catch (WebException ex)
             {
-                MessageBox.Show("Could not connect to: " + Program.settings.createURL(), "Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Could not connect to: " + webservice + "\r\n\r\n" + ex.Message, "Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

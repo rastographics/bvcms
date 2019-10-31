@@ -51,8 +51,6 @@ namespace CmsWeb.Models
             }
         }
 
-        //        public string FormattedHtmlBody => TidyLib.FormatHtml(queue.Body);
-
         public EmailModel() { }
 
         public FilterType FilterType { get; private set; }
@@ -122,7 +120,7 @@ WHERE eqt.Id = @emailQueueId
                     break;
                 default:
                     _count = CountOfAllRecipients;
-                    Pager = new PagerModel2(Count);
+                    Pager = new PagerModel2(DbUtil.Db);
                     break;
             }
 
@@ -132,7 +130,7 @@ WHERE eqt.Id = @emailQueueId
 
         private void SetPager(int? page, int? pageSize)
         {
-            Pager = new PagerModel2(Count);
+            Pager = new PagerModel2(DbUtil.Db);
             if (pageSize.HasValue)
             {
                 Pager.PageSize = pageSize.Value;

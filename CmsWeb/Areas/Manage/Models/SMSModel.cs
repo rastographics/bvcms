@@ -16,7 +16,10 @@ namespace CmsWeb.Models
 
         public SMSModel()
         {
-            Pager = new PagerModel2(Count);
+            Pager = new PagerModel2(DbUtil.Db)
+            {
+                GetCount = Count
+            };
         }
 
         public int Count()

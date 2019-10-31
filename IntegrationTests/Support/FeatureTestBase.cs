@@ -552,7 +552,7 @@ namespace IntegrationTests.Support
             {
                 WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(maxWaitTimeInSeconds));
 
-                //Checks every 500 ms whether predicate returns true if returns exit otherwise keep trying till it returns ture
+                //Checks every 500 ms whether predicate returns true; if returns exit otherwise keep trying till it returns true
                 wait.Until(d =>
                 {
                     try

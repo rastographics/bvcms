@@ -26,18 +26,18 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             string req = Request["request"];
 
-            int iBillingReference = 0;
             int iReportID = 0;
 
             string sReportLink = "";
             string sOrderID = "";
+            string sBillingReference = "";
 
             bool bHasAlerts = false;
 
             XDocument xd = XDocument.Parse(req, LoadOptions.None);
 
             iReportID = Int32.Parse(xd.Root.Element("ReportID").Value);
-            iBillingReference = Int32.Parse(xd.Root.Element("Order").Element("BillingReferenceCode").Value);
+            sBillingReference = xd.Root.Element("Order").Element("BillingReferenceCode").Value;
 
             if (xd.Root.Element("Order").Element("Alerts") != null)
             {
@@ -48,8 +48,16 @@ namespace CmsWeb.Areas.Public.Controllers
             sOrderID = xd.Root.Element("Order").Element("OrderDetail").Attribute("OrderId").Value;
 
             var check = (from e in CurrentDatabase.BackgroundChecks
-                         where e.Id == iBillingReference
-                         select e).Single();
+                         where e.BillingRefId == sBillingReference
+                         select e).SingleOrDefault();
+
+            int RefId;
+            if (check == null && int.TryParse(sBillingReference, out RefId))
+            {
+                check = (from e in CurrentDatabase.BackgroundChecks
+                         where e.Id == RefId
+                         select e).SingleOrDefault();
+            }
 
             if (check != null)
             {

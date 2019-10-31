@@ -1,3 +1,5 @@
+using CmsData;
+using CmsWeb.Constants;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,24 +11,23 @@ namespace CmsWeb.Models
         internal int? count;
         internal IQueryable<TModel> list;
 
-        protected PagedTableModel(string defaultSort, string defaultDirection)
-            : this()
-        {
-            Sort = defaultSort;
-            Direction = defaultDirection;
-        }
-
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
         protected PagedTableModel()
         {
-            GetCount = Count;
+            Init();
         }
 
-        protected PagedTableModel(string defaultSort, string defaultDirection, bool useAjax)
-            : this()
+        protected PagedTableModel(CMSDataContext db, string defaultSort = "", string defaultDirection = "", bool useAjax = false) : base(db)
         {
+            Init();
             Sort = defaultSort;
             Direction = defaultDirection;
             AjaxPager = useAjax;
+        }
+
+        protected virtual void Init()
+        {
+            GetCount = Count;
         }
 
         public bool UseDbPager { get; set; }
