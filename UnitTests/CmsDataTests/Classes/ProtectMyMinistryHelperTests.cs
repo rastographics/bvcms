@@ -36,8 +36,8 @@ namespace CmsDataTests
         {
             var bgChLabel = new BackgroundCheckLabel
             {
-                Id = 10,
-                Code = "ABC",
+                Id = db.BackgroundCheckLabels.Max(m => m.Id) + 1,
+                Code = DatabaseTestBase.RandomString(),
                 Description = "Description",
                 Hardwired = false
             };
