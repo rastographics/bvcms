@@ -13,7 +13,6 @@ namespace CmsData
         private static MappingSource mappingSource = new AttributeMappingSource();
 
         #region Extensibility Method Definitions
-
         partial void OnCreated();
 
         partial void InsertActivityLog(ActivityLog instance);
@@ -5993,7 +5992,6 @@ namespace CmsData
             );
             return ((ISingleResult<TopGiver>)(result.ReturnValue));
         }
-
         #endregion
 
     }

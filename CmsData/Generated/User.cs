@@ -55,6 +55,10 @@ namespace CmsData
 
         private string _CurrentCart;
 
+        private bool _MFAEnabled;
+
+        private string _Secret;
+
         private bool _MustChangePassword;
 
         private string _Host;
@@ -90,7 +94,6 @@ namespace CmsData
         #endregion
 
         #region Extensibility Method Definitions
-
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -157,6 +160,12 @@ namespace CmsData
 
         partial void OnCurrentCartChanging(string value);
         partial void OnCurrentCartChanged();
+
+        partial void OnMFAEnabledChanging(bool value);
+        partial void OnMFAEnabledChanged();
+
+        partial void OnSecretChanging(string value);
+        partial void OnSecretChanged();
 
         partial void OnMustChangePasswordChanging(bool value);
         partial void OnMustChangePasswordChanged();

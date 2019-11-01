@@ -39,6 +39,8 @@ namespace CmsData
 
         private int _ReportLabelID;
 
+        private string _BillingRefId;
+
         private EntityRef<Person> _Person;
 
         private EntityRef<Person> _User;
@@ -89,6 +91,9 @@ namespace CmsData
 
         partial void OnReportLabelIDChanging(int value);
         partial void OnReportLabelIDChanged();
+
+        partial void OnBillingRefIdChanging(string value);
+        partial void OnBillingRefIdChanged();
 
         #endregion
 
@@ -349,6 +354,24 @@ namespace CmsData
             }
         }
 
+        [Column(Name = "BillingRefId", UpdateCheck = UpdateCheck.Never, Storage = "_BillingRefId", DbType = "nvarchar(50) NOT NULL")]
+        public string BillingRefId
+        {
+            get => _BillingRefId;
+
+            set
+            {
+                if (_BillingRefId != value)
+                {
+                    OnBillingRefIdChanging(value);
+                    SendPropertyChanging();
+                    _BillingRefId = value;
+                    SendPropertyChanged("BillingRefId");
+                    OnBillingRefIdChanged();
+                }
+            }
+        }
+
         #endregion
 
         #region Foreign Key Tables
@@ -381,9 +404,7 @@ namespace CmsData
                         value.BackgroundChecks.Add(this);
 
                         _PeopleID = value.PeopleId;
-
                     }
-
                     else
                     {
                         _PeopleID = default(int);
@@ -421,7 +442,6 @@ namespace CmsData
                         _UserID = value.PeopleId;
 
                     }
-
                     else
                     {
                         _UserID = default(int);
