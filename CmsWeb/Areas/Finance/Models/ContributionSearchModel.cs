@@ -19,7 +19,7 @@ namespace CmsWeb.Models
         private APIContributionSearchModel _api;
         private APIContributionSearchModel api
         {
-            get => _api ?? (api = new APIContributionSearchModel(CurrentDatabase));
+            get => _api ?? (api = new APIContributionSearchModel(CurrentDatabase, SearchInfo));
             set
             {
                 _api = value;
