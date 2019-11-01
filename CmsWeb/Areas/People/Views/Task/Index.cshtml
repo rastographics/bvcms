@@ -377,9 +377,10 @@
             $(".edit-datetime").editable({
                 type: 'date',
                 viewformat: 'm/dd/yyyy',
+                savenochange: true,
+                showbuttons: false,
                 datepicker: {
                     format: 'm/dd/yyyy',
-                    todayBtn: true
                 },
             });
 
