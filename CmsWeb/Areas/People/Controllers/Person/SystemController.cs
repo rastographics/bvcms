@@ -1,5 +1,6 @@
 using CmsData;
 using CmsWeb.Areas.People.Models;
+using CmsWeb.Membership;
 using CmsWeb.Membership.Extensions;
 using CmsWeb.Models;
 using System;
@@ -89,12 +90,25 @@ namespace CmsWeb.Areas.People.Controllers
         }
 
         [HttpGet, Authorize(Roles = "Admin")]
+        public ActionResult Disable2FA(int id)
+        {
+            var user = CurrentDatabase.Users.SingleOrDefault(uu => uu.UserId == id);
+            if (user == null)
+            {
+                return HttpNotFound();
+            }
+            MembershipService.DisableTwoFactorAuth(user, CurrentDatabase, null);
+
+            return Redirect($"/Person2/{id}#tab-user");
+        }
+
+        [HttpGet, Authorize(Roles = "Admin")]
         public ActionResult Impersonate(int id)
         {
             var user = CurrentDatabase.Users.SingleOrDefault(uu => uu.UserId == id);
             if (user == null)
             {
-                return Content("no user");
+                return HttpNotFound();
             }
 
             if (user.Roles.Contains("Finance") && !User.IsInRole("Finance"))

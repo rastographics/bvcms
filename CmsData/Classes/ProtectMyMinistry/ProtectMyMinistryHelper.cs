@@ -84,6 +84,9 @@ namespace CmsData.Classes.ProtectMyMinistry
                 sPlusState = plusState
             };
 
+            // Update PK
+            backgroundCheck.BillingRefId = bundle.sBillingReference;
+
             // Get State (if MVR)
             if (backgroundCheck.ServiceCode == "MVR" && stateId > 0)
             {

@@ -14,7 +14,7 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpGet, Route("~/DownlineSummary/{category:int}")]
         public ActionResult Index(int category)
         {
-            var m = new DownlineSummaryModel
+            var m = new DownlineSummaryModel(CurrentDatabase)
             {
                 CategoryId = category
             };

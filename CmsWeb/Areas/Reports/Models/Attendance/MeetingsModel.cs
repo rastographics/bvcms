@@ -1,5 +1,6 @@
 using CmsData;
 using CmsWeb.Areas.Search.Models;
+using CmsWeb.Constants;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,8 +14,19 @@ namespace CmsWeb.Areas.Reports.Models
 
         public bool NoZero { get; set; }
 
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
         public MeetingsModel()
         {
+        }
+
+        public MeetingsModel(CMSDataContext db) : base(db)
+        {
+            Init();
+        }
+
+        protected override void Init()
+        {
+            base.Init();
             Pager.Direction = "asc";
             Pager.Sort = "--Attendance--";
             NoZero = true;

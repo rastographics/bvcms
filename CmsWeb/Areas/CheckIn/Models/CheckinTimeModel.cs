@@ -1,68 +1,46 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using System.Diagnostics;
 using CmsData;
 using UtilityExtensions;
 using System.Data.Linq;
+using CmsWeb.Constants;
 
 namespace CmsWeb.Models
 {
-    /*
-     * Update for Special Access
-
-        UPDATE c
-        SET c.AccessTypeID = 4
-        FROM dbo.CheckInTimes c
-        INNER JOIN dbo.People ON c.PeopleId = dbo.People.PeopleId
-        WHERE MemberStatusId != 10
-	    AND GuestOfId IS NULL
-    
-     * Update for Members
-    
-        UPDATE c
-        SET c.AccessTypeID = 1
-        FROM dbo.CheckInTimes c
-        INNER JOIN dbo.People ON c.PeopleId = dbo.People.PeopleId
-        WHERE MemberStatusId = 10
-    
-     * Update for Guest of Members
-     
-        UPDATE c
-        SET c.AccessTypeID = 3
-        FROM dbo.CheckInTimes c
-        INNER JOIN dbo.People ON c.PeopleId = dbo.People.PeopleId
-        WHERE MemberStatusId != 10
-	        AND GuestOfId IS NOT NULL
-    */
-    public class CheckinTimeModel
+    public class CheckinTimeModel : IDbBinder
     {
         public static string ALL_ACTIVITIES = "- All Activities -";
 
         public string namesearch { get; set; }
         public DateTime? dateStart { get; set; }
         public DateTime? dateEnd { get; set; }
-        //public int peopleid { get; set; }
         public int accesstype { get; set; }
         public string location { get; set; }
         public string activity { get; set; }
 
         public PagerModel2 Pager { get; set; }
 
-        public CheckinTimeModel()
+        public CMSDataContext CurrentDatabase { get; set; }
+
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
+        public CheckinTimeModel() { }
+
+        public CheckinTimeModel(CMSDataContext db) : base()
         {
-            Pager = new PagerModel2();
-            Pager.setCountDelegate(Count);
-            Pager.Direction = "desc";
-            Pager.Sort = "Date/Time";
+            Pager = new PagerModel2(CurrentDatabase)
+            {
+                GetCount = Count,
+                Direction = "desc",
+                Sort = "Date/Time",
+            };
             var locs = Locations();
-            location = DbUtil.Db.UserPreference("checkintimes-location", locs.FirstOrDefault());
+            location = CurrentDatabase.UserPreference("checkintimes-location", locs.FirstOrDefault());
         }
 
         public List<string> Activities()
         {
-            var q = from a in DbUtil.Db.CheckInActivities
+            var q = from a in CurrentDatabase.CheckInActivities
                     group a.Activity by a.Activity into g
                     select g.Key;
             var list = q.ToList();
@@ -72,7 +50,7 @@ namespace CmsWeb.Models
 
         public List<string> AccessTypes(bool bForDropDown = false)
         {
-            var q = from a in DbUtil.Db.BuildingAccessTypes
+            var q = from a in CurrentDatabase.BuildingAccessTypes
                     select a.Description;
             var list = q.ToList();
 
@@ -87,7 +65,7 @@ namespace CmsWeb.Models
         {
             if (locations == null)
             {
-                var q = from t in DbUtil.Db.CheckInTimes
+                var q = from t in CurrentDatabase.CheckInTimes
                         where t.Location != null
                         group t.Location by t.Location
                             into g
@@ -111,14 +89,6 @@ namespace CmsWeb.Models
         {
             public int members { get; set; }
             public int guests { get; set; }
-            /*
-            private string _name;
-            public string name
-            {
-                get { return _name.HasValue() ? _name : "Not Specified"; }
-                set { _name = value; }
-            }
-             */
         }
 
         private CountInfo _counts;
@@ -145,22 +115,22 @@ namespace CmsWeb.Models
 
         public List<ActivityCount> FetchActivityCount()
         {
-            var q1 = from e in DbUtil.Db.CheckInTimes
-                     join c in DbUtil.Db.CheckInActivities on e.Id equals c.Id
+            var q1 = from e in CurrentDatabase.CheckInTimes
+                     join c in CurrentDatabase.CheckInActivities on e.Id equals c.Id
                      where e.Location == location
                      where e.CheckInTimeX >= dateStart || dateStart == null
                      where e.CheckInTimeX < dateEnd || dateEnd == null
                      group c by c.Activity into grouped
                      select new ActivityCount() { name = grouped.Key, count = grouped.Count() };
 
-            var q2 = from e in DbUtil.Db.CheckInTimes
+            var q2 = from e in CurrentDatabase.CheckInTimes
                      where e.Location == location
                      where e.CheckInTimeX >= dateStart || dateStart == null
                      where e.CheckInTimeX < dateEnd || dateEnd == null
                      group e by e.PeopleId into grouped
                      select new { key = grouped.Key };
 
-            var q3 = from e in DbUtil.Db.CheckInTimes
+            var q3 = from e in CurrentDatabase.CheckInTimes
                      where e.Location == location
                      where e.CheckInTimeX >= dateStart || dateStart == null
                      where e.CheckInTimeX < dateEnd || dateEnd == null
@@ -187,7 +157,7 @@ namespace CmsWeb.Models
             if (dateEnd != null)
                 dateEnd = dateEnd.Value.AddHours(24);
 
-            var q = from t in DbUtil.Db.CheckInTimes
+            var q = from t in CurrentDatabase.CheckInTimes
                     where t.Location == location
                     where t.CheckInTimeX >= dateStart || dateStart == null
                     where t.CheckInTimeX < dateEnd || dateEnd == null
@@ -197,7 +167,7 @@ namespace CmsWeb.Models
                     select t;
 
             // count
-            var q2 = from t in DbUtil.Db.CheckInTimes
+            var q2 = from t in CurrentDatabase.CheckInTimes
                      where t.Location == location
                      where t.CheckInTimeX >= dateStart || dateStart == null
                      where t.CheckInTimeX < dateEnd || dateEnd == null
@@ -222,15 +192,16 @@ namespace CmsWeb.Models
                     select t;
             }
 
-            CountInfo ci = new CountInfo();
+            CountInfo ci = new CountInfo
+            {
+                members = (from c in q2
+                           where c.AccessTypeID == 1
+                           select c).Count(),
 
-            ci.members = (from c in q2
-                          where c.AccessTypeID == 1
-                          select c).Count();
-
-            ci.guests = (from c in q2
+                guests = (from c in q2
                           where c.AccessTypeID != 1
-                          select c).Count();
+                          select c).Count()
+            };
 
             _counts = ci;
 
@@ -315,9 +286,8 @@ namespace CmsWeb.Models
 
         private IQueryable<CheckInTime> ApplyNameSearch(IQueryable<CheckInTime> q, string namesearch)
         {
-            string First, Last;
 
-            NameSplit(namesearch, out First, out Last);
+            NameSplit(namesearch, out string First, out string Last);
 
             if (First.HasValue())
             {

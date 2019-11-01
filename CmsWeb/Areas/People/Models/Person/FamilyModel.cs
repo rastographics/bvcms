@@ -1,5 +1,6 @@
 using CmsData;
 using CmsData.View;
+using CmsWeb.Constants;
 using CmsWeb.Models;
 using System;
 using System.Collections.Generic;
@@ -9,13 +10,17 @@ namespace CmsWeb.Areas.People.Models
 {
     public class FamilyModel : PagedTableModel<FamilyMember, FamilyMember>
     {
-        public CmsData.Person Person;
+        public Person Person;
+
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
         public FamilyModel() { }
-        public FamilyModel(int id)
+
+        public FamilyModel(CMSDataContext db, int id) : base(db)
         {
-            Person = DbUtil.Db.LoadPersonById(id);
+            Person = db.LoadPersonById(id);
             pagesize = 100;
         }
+
         private Family family;
         public Family Family
         {
