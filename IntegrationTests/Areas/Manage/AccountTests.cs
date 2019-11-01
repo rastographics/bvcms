@@ -119,6 +119,7 @@ namespace IntegrationTests.Areas.Manage
             Find(name: "UsernameOrEmail").SendKeys(username);
             Find(css: "input[type=submit]").Click();
 
+            WaitForPageLoad();
             PageSource.ShouldContain("Password Sent");
 
             db.Refresh(System.Data.Linq.RefreshMode.OverwriteCurrentValues, user);

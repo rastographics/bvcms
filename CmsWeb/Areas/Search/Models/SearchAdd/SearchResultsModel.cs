@@ -1,12 +1,6 @@
-/* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church
- * Licensed under the GNU General Public License (GPL v2)
- * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license
- */
-
 using CmsData;
 using CmsData.Classes.RoleChecker;
+using CmsWeb.Constants;
 using CmsWeb.Models;
 using MoreLinq;
 using System;
@@ -22,10 +16,24 @@ namespace CmsWeb.Areas.Search.Models
     {
         private readonly string[] usersOnlyContextTypes = { "taskdelegate", "taskowner", "taskdelegate2" };
 
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
         public SearchResultsModel()
-            : base(null, null, true)
         {
+            Init();
+        }
+
+        public SearchResultsModel(CMSDataContext db) : base(db)
+        {
+            Init();
+        }
+
+        protected override void Init()
+        {
+            base.Init();
             ShowPageSize = false;
+            Sort = null;
+            Direction = null;
+            AjaxPager = true;
         }
 
         public string AddContext { get; set; }
@@ -63,8 +71,8 @@ namespace CmsWeb.Areas.Search.Models
 
             //var db = Db;
             var q = Util2.OrgLeadersOnly
-                ? DbUtil.Db.OrgLeadersOnlyTag2().People(DbUtil.Db)
-                : DbUtil.Db.People.AsQueryable();
+                ? CurrentDatabase.OrgLeadersOnlyTag2().People(CurrentDatabase)
+                : CurrentDatabase.People.AsQueryable();
 
             if (UsersOnly)
             {
@@ -73,7 +81,7 @@ namespace CmsWeb.Areas.Search.Models
 
             if (OnlineRegTypeSearch)
             {
-                return from pid in DbUtil.Db.FindPerson(FirstName, LastName, dob.ToDate(), Email, Phone)
+                return from pid in CurrentDatabase.FindPerson(FirstName, LastName, dob.ToDate(), Email, Phone)
                        join p in q on pid.PeopleId equals p.PeopleId
                        select p;
             }
@@ -98,7 +106,7 @@ namespace CmsWeb.Areas.Search.Models
                 }
                 else
                 {
-                    q = DbUtil.Db.Setting("UseAltnameContains")
+                    q = CurrentDatabase.Setting("UseAltnameContains")
                         ? from p in q
                           where p.LastName.StartsWith(last) || p.MaidenName.StartsWith(last) || p.AltName.Contains(last)
                           select p
@@ -202,10 +210,10 @@ namespace CmsWeb.Areas.Search.Models
         private IQueryable<Person> RunLimitedSearch()
         {
             var matches = new List<Person>();
-            var results = DbUtil.Db.FindPerson(FirstName, LastName, null, Email, null);
+            var results = CurrentDatabase.FindPerson(FirstName, LastName, null, Email, null);
             foreach (var result in results)
             {
-                matches.Add(DbUtil.Db.LoadPersonById(result.PeopleId.GetValueOrDefault()));
+                matches.Add(CurrentDatabase.LoadPersonById(result.PeopleId.GetValueOrDefault()));
             }
             return matches.AsQueryable();
         }

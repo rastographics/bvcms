@@ -82,9 +82,11 @@ namespace ImageData
         public static CMSImageDataContext Create(string host)
         {
             var cs = ConfigurationManager.ConnectionStrings["CMS"];
-            var cb = new SqlConnectionStringBuilder(cs.ConnectionString);
-            cb.InitialCatalog = $"CMSi_{host}";
-            cb.PersistSecurityInfo = true;
+            var cb = new SqlConnectionStringBuilder(cs.ConnectionString)
+            {
+                InitialCatalog = $"CMSi_{host}",
+                PersistSecurityInfo = true
+            };
             var connectionString = cb.ConnectionString;
 
             return new CMSImageDataContext(connectionString);
@@ -92,7 +94,7 @@ namespace ImageData
 
         public static CMSImageDataContext Create(HttpContextBase currentHttpContext)
         {
-            var host = ConfigurationManager.AppSettings["host"] ?? currentHttpContext.Request.Url.Authority.Split('.', ':')[0];
+            var host = UtilityExtensions.Util.PickFirst(ConfigurationManager.AppSettings["host"], currentHttpContext.Request.Url.Authority.Split('.', ':')[0]);
             return CMSImageDataContext.Create(host);
         }
 
