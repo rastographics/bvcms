@@ -9,6 +9,7 @@
 }
 @section head{
     @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
     <style type="text/css">
         @@media all and (max-width: 480px) {
             .btn-group-xs-block {
@@ -84,7 +85,7 @@
                             <i class="fa fa-thumbs-o-down fa-fw"></i> Decline Task
                         </a>
                     }
-                    @if (Model.IsAcceptedPage || Model.IsCreatedPage)
+                    @if (Model.IsAcceptedPage || Model.IsCreatedPage && !Model.IsOwner)
                     {
                         if (Model.CanComplete)
                         {
@@ -224,7 +225,16 @@
                                 }
                             </dd>
                         </dl>
-                    </div>
+                        @if (Model.IsOwner)
+                        {
+                            <dl>
+                                <dt>Force Complete With Contact</dt>
+                                <dd>
+                                    <input class="edit-boolean" type="checkbox" id="@Model.Id" name="ForceCompleteWContact" data-toggle="toggle" data-on="True" data-off="False" data-width="100" checked="@Model.ForceCompleteWithContact" )>
+                                </dd>
+                            </dl>
+                        }
+                        </div>
                     <div class="col-sm-6">
                         <dl>
                             <dt>Created Date</dt>
@@ -323,6 +333,7 @@
 </div><!-- /.modal -->
 @section scripts {
     @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-editable/js/bootstrap-editable.min.js")
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
     <script type="text/javascript">
         function setCompleteWithContact() {
             var taskid = $('#TaskId').val();
@@ -378,6 +389,14 @@
                     type: 'select',
                     value: $(e).data('selected'),
                     source: $(e).data('source-url')
+                });
+            });
+
+            $('.edit-boolean').on('change', function () {
+                $.ajax({
+                    type: 'POST',
+                    url: '/Task/Edit',
+                    data: { pk: $(this).attr('id'), name: $(this).attr('name'), value: $(this).prop('checked') }
                 });
             });
 

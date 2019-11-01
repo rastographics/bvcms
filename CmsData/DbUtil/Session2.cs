@@ -196,6 +196,9 @@ namespace CmsData
                 case "StatusId":
                     field.SetValue(task, Int32.Parse(value));
                     break;
+                case "ForceCompleteWContact":
+                    field.SetValue(task, Boolean.Parse(value));
+                    break;
                 default:
                     field.SetValue(task, value);
                     break;

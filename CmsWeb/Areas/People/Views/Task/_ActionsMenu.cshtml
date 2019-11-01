@@ -19,21 +19,24 @@
                 </a>
             </li>
         }
-        @if (Model.CanComplete)
+        @if (!Model.IsOwner)
         {
-            <li>
-                <a href="#" class="complete">
-                    <i class="fa fa-check fa-fw"></i> Complete Task
-                </a>
-            </li>
-        }
-        @if (Model.CanCompleteWithContact && Model.Description != "New Person Data Entry")
-        {
-            <li>
-                <a href="#" class="completewcontact">
-                    <i class="fa fa-check-square-o fa-fw"></i> Complete Task w/ Contact
-                </a>
-            </li>
+            if (Model.CanComplete)
+            {
+                <li>
+                    <a href="#" class="complete">
+                        <i class="fa fa-check fa-fw"></i> Complete Task
+                    </a>
+                </li>
+            }
+            if (Model.CanCompleteWithContact && Model.Description != "New Person Data Entry")
+            {
+                <li>
+                    <a href="#" class="completewcontact">
+                        <i class="fa fa-check-square-o fa-fw"></i> Complete Task w/ Contact
+                    </a>
+                </li>
+            }
         }
     </ul>
 </div>
