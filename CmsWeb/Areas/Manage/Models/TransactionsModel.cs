@@ -39,11 +39,8 @@ namespace CmsWeb.Models
                 Direction = "desc",
                 GetCount = Count
             };
-            if (User != null)
-            {
-                finance = User.InRole("Finance");
-                admin = User.InRole("Admin") || User.InRole("ManageTransactions");
-            }
+            finance = User != null ? User.InRole("Finance") : false;
+            admin = User != null ? (User.InRole("Admin") || User.InRole("ManageTransactions")) : false;
         }
 
         public TransactionsModel(CMSDataContext db, int? tranid, string reference = "", string desc = "")
