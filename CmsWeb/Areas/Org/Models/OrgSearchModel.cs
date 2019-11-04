@@ -1,10 +1,3 @@
-/* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church
- * Licensed under the GNU General Public License (GPL v2)
- * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license
- */
-
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -20,6 +13,7 @@ using CmsData.Registration;
 using CmsData.View;
 using CmsWeb.Areas.Manage.Controllers;
 using CmsWeb.Areas.Reports.Controllers;
+using CmsWeb.Constants;
 using CmsWeb.Models;
 using Dapper;
 using MoreLinq;
@@ -34,20 +28,31 @@ namespace CmsWeb.Areas.Search.Models
         internal string noticelist;
         private List<OrgSearch> _organizations;
 
-        public CMSDataContext CurrentDatabase { get; set; }
+        private CMSDataContext _db;
+        public CMSDataContext CurrentDatabase
+        {
+            get => _db;
+            set
+            {
+                _db = value;
+                Init();
+            }
+        }
+
+        protected virtual void Init()
+        {
+            Pager = new PagerModel2(CurrentDatabase)
+            {
+                GetCount = Count
+            };
+        }
+
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
+        public OrgSearchModel() { }
 
         public OrgSearchModel(CMSDataContext db)
         {
             CurrentDatabase = db;
-            Pager = new PagerModel2();
-            Pager.GetCount = Count;
-        }
-
-        public OrgSearchModel()
-        {
-            CurrentDatabase = CurrentDatabase ?? CMSDataContext.Create(Util.Host);
-            Pager = new PagerModel2();
-            Pager.GetCount = Count;
         }
 
         public string Name { get; set; }

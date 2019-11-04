@@ -8,6 +8,7 @@
 using CmsData;
 using CmsData.Codes;
 using CmsWeb.Areas.Search.Controllers;
+using CmsWeb.Constants;
 using CmsWeb.Models;
 using HandlebarsDotNet;
 using System;
@@ -39,12 +40,10 @@ namespace CmsWeb.Areas.Search.Models
         private const string PictureDirectoryTemplateName = "PictureDirectoryTemplate";
         private const string PictureDirectorySqlName = "PictureDirectorySql";
 
-        public PictureDirectoryModel()
-        {
-        }
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
+        public PictureDirectoryModel() { }
 
-        public PictureDirectoryModel(string id)
-            : base("Name", "asc")
+        public PictureDirectoryModel(CMSDataContext db, string id) : base(db, "Name", "asc")
         {
             Url = $"/PictureDirectory/{id}";
             if (id.HasValue())
@@ -83,7 +82,7 @@ namespace CmsWeb.Areas.Search.Models
 
         private void GetConfiguration()
         {
-            Selector = DbUtil.Db.Setting("PictureDirectorySelector", "");
+            Selector = CurrentDatabase.Setting("PictureDirectorySelector", "");
             if (OrgId.HasValue)
             {
                 Selector = "FromUrl";
@@ -105,36 +104,36 @@ namespace CmsWeb.Areas.Search.Models
             {
                 if (!CanView.HasValue)
                 {
-                    CanView = HttpContextFactory.Current.User.IsInRole("Admin") || DbUtil.Db.PeopleQuery2($@"
+                    CanView = HttpContextFactory.Current.User.IsInRole("Admin") || CurrentDatabase.PeopleQuery2($@"
 IsMemberOfDirectory( Org={OrgId} ) = 1 
 AND PeopleId = {Util.UserPeopleId}", fromDirectory: true).Any();
                 }
                 //HasDirectory = (om.Organization.PublishDirectory ?? 0) > 0,
 
                 TemplateName = Util.PickFirst(
-                    Organization.GetExtra(DbUtil.Db, OrgId.Value, PictureDirectoryTemplateName),
+                    Organization.GetExtra(CurrentDatabase, OrgId.Value, PictureDirectoryTemplateName),
                     PictureDirectoryTemplateName);
                 SqlName = Util.PickFirst(
-                    Organization.GetExtra(DbUtil.Db, OrgId.Value, PictureDirectorySqlName),
+                    Organization.GetExtra(CurrentDatabase, OrgId.Value, PictureDirectorySqlName),
                     PictureDirectorySqlName);
             }
             else if (DivId.HasValue)
             {
                 if (!CanView.HasValue)
                 {
-                    CanView = HttpContextFactory.Current.User.IsInRole("Admin") || DbUtil.Db.PeopleQuery2($@"
+                    CanView = HttpContextFactory.Current.User.IsInRole("Admin") || CurrentDatabase.PeopleQuery2($@"
 IsMemberOfDirectory( Div={DivId} ) = 1 
 AND PeopleId = {Util.UserPeopleId}", fromDirectory: true).Any();
                 }
 
                 TemplateName = PictureDirectoryTemplateName + "-" + Selector;
-                if (!DbUtil.Db.Contents.Any(vv => vv.Name == TemplateName && vv.TypeID == ContentTypeCode.TypeText))
+                if (!CurrentDatabase.Contents.Any(vv => vv.Name == TemplateName && vv.TypeID == ContentTypeCode.TypeText))
                 {
                     TemplateName = PictureDirectoryTemplateName;
                 }
 
                 SqlName = PictureDirectorySqlName + "-" + Selector;
-                if (!DbUtil.Db.Contents.Any(vv => vv.Name == TemplateName && vv.TypeID == ContentTypeCode.TypeSqlScript))
+                if (!CurrentDatabase.Contents.Any(vv => vv.Name == TemplateName && vv.TypeID == ContentTypeCode.TypeSqlScript))
                 {
                     TemplateName = PictureDirectoryTemplateName;
                 }
@@ -143,14 +142,14 @@ AND PeopleId = {Util.UserPeopleId}", fromDirectory: true).Any();
             {
                 if (!CanView.HasValue)
                 {
-                    var hasstatus = (from v in DbUtil.Db.StatusFlags(StatusFlag)
+                    var hasstatus = (from v in CurrentDatabase.StatusFlags(StatusFlag)
                                      where v.PeopleId == Util.UserPeopleId
                                      where v.StatusFlags != null
                                      select v).Any();
                     CanView = hasstatus || HttpContextFactory.Current.User.IsInRole("Admin");
                 }
-                TemplateName = DbUtil.Db.Setting(PictureDirectoryTemplateName, PictureDirectoryTemplateName);
-                SqlName = DbUtil.Db.Setting(PictureDirectorySqlName, PictureDirectorySqlName);
+                TemplateName = CurrentDatabase.Setting(PictureDirectoryTemplateName, PictureDirectoryTemplateName);
+                SqlName = CurrentDatabase.Setting(PictureDirectorySqlName, PictureDirectorySqlName);
             }
             else
             {
@@ -206,29 +205,29 @@ AND PeopleId = {Util.UserPeopleId}", fromDirectory: true).Any();
             IQueryable<Person> qmembers;
             if (CanView != true)
             {
-                qmembers = DbUtil.Db.PeopleQuery2("PeopleId = 0");
+                qmembers = CurrentDatabase.PeopleQuery2("PeopleId = 0");
             }
             else if (StatusFlag.HasValue())
             {
-                qmembers = DbUtil.Db.PeopleQuery2($"StatusFlag = '{StatusFlag}'", fromDirectory: true);
+                qmembers = CurrentDatabase.PeopleQuery2($"StatusFlag = '{StatusFlag}'", fromDirectory: true);
             }
             else if (OrgId.HasValue)
             {
-                qmembers = DbUtil.Db.PeopleQuery2($"IsMemberOfDirectory( Org={OrgId} ) = 1 ", fromDirectory: true);
+                qmembers = CurrentDatabase.PeopleQuery2($"IsMemberOfDirectory( Org={OrgId} ) = 1 ", fromDirectory: true);
             }
             else if (DivId.HasValue)
             {
-                qmembers = DbUtil.Db.PeopleQuery2($"IsMemberOfDirectory( Div={DivId} ) = 1", fromDirectory: true);
+                qmembers = CurrentDatabase.PeopleQuery2($"IsMemberOfDirectory( Div={DivId} ) = 1", fromDirectory: true);
             }
             else
             {
-                qmembers = DbUtil.Db.PeopleQuery2("PeopleId = 0");
+                qmembers = CurrentDatabase.PeopleQuery2("PeopleId = 0");
             }
 
             if (Name.HasValue())
             {
                 qmembers = from p in qmembers
-                           where p.Family.HeadOfHousehold.LastName.Contains(Name) || p.Name.Contains(Name)
+                           where p.Family.HeadOfHousehold.LastName.Contains(Name.Trim()) || p.Name.Contains(Name.Trim())
                            select p;
             }
 
@@ -253,7 +252,7 @@ AND PeopleId = {Util.UserPeopleId}", fromDirectory: true).Any();
                         break;
                     case "Birthday":
                         q = from p in q
-                            orderby DbUtil.Db.NextBirthday(p.PeopleId)
+                            orderby CurrentDatabase.NextBirthday(p.PeopleId)
                             select p;
                         orderBy = "ORDER BY dbo.NextBirthday(p.PeopleId)";
                         break;
@@ -275,7 +274,7 @@ AND PeopleId = {Util.UserPeopleId}", fromDirectory: true).Any();
                         break;
                     case "Birthday":
                         q = from p in q
-                            orderby DbUtil.Db.NextBirthday(p.PeopleId) descending
+                            orderby CurrentDatabase.NextBirthday(p.PeopleId) descending
                             select p;
                         orderBy = "ORDER BY dbo.NextBirthday(p.PeopleId) DESC";
                         break;
@@ -286,9 +285,9 @@ AND PeopleId = {Util.UserPeopleId}", fromDirectory: true).Any();
 
         public override IEnumerable<dynamic> DefineViewList(IQueryable<Person> q)
         {
-            var tagid = DbUtil.Db.PopulateTemporaryTag(q.Select(vv => vv.PeopleId)).Id;
+            var tagid = CurrentDatabase.PopulateTemporaryTag(q.Select(vv => vv.PeopleId)).Id;
             sql = sql.Replace("@p1", tagid.ToString());
-            var qf = new QueryFunctions(DbUtil.Db);
+            var qf = new QueryFunctions(CurrentDatabase);
             return qf.QuerySql($"{sql}\n{orderBy}", tagid);
         }
 
@@ -309,7 +308,7 @@ AND PeopleId = {Util.UserPeopleId}", fromDirectory: true).Any();
 
         private IHandlebars RegisterHelpers(PictureDirectoryController ctl)
         {
-            var handlebars = PythonModel.RegisterHelpers(DbUtil.Db);
+            var handlebars = PythonModel.RegisterHelpers(CurrentDatabase);
             handlebars.RegisterHelper("SmallUrl", (w, ctx, args) =>
             {
                 GetPictureUrl(ctx, w, ctx.SmallId,
