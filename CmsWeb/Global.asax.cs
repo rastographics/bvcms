@@ -1,5 +1,6 @@
 using CmsData;
 using CmsWeb.Code;
+using CmsWeb.Membership;
 using CmsWeb.Models;
 using Dapper;
 using Elmah;
@@ -180,6 +181,26 @@ namespace CmsWeb
             {
                 return;
             }
+
+            if (Context.User != null)
+            {
+                var db = CMSDataContext.Create(new HttpContextWrapper(Context));
+                var user = db.CurrentUser;
+                if (user != null)
+                {
+                    if (MembershipService.IsTwoFactorAuthSetupRequired(user, db))
+                    {
+                        if (!Request.Url.PathAndQuery.StartsWith("/Auth"))
+                        {
+                            Response.Redirect("/AuthSetup");
+                        }
+                    }
+                    else if (user.MustChangePassword && !Request.Url.PathAndQuery.StartsWith("/Account/ChangePassword"))
+                    {
+                        Response.Redirect("/Account/ChangePassword");
+                    }
+                }
+            }
         }
 
         public void ErrorLog_Logged(object sender, ErrorLoggedEventArgs args)
@@ -191,9 +212,8 @@ namespace CmsWeb
         public void ErrorMail_Filtering(object sender, ExceptionFilterEventArgs e)
         {
             var ex = e.Exception.GetBaseException();
-            var httpex = ex as HttpException;
 
-            if (httpex != null)
+            if (ex is HttpException httpex)
             {
                 var status = httpex.GetHttpCode();
                 if (status == 400 || status == 404)
@@ -219,9 +239,8 @@ namespace CmsWeb
         public void ErrorLog_Filtering(object sender, ExceptionFilterEventArgs e)
         {
             var ex = e.Exception.GetBaseException();
-            var httpex = ex as HttpException;
 
-            if (httpex != null)
+            if (ex is HttpException httpex)
             {
                 var status = httpex.GetHttpCode();
                 if (status == 400 || status == 404)
@@ -254,8 +273,7 @@ namespace CmsWeb
 
         private static void FilterOutSensitiveFormData(ExceptionFilterEventArgs e)
         {
-            var ctx = e.Context as HttpContext;
-            if (ctx == null)
+            if (!(e.Context is HttpContext ctx))
             {
                 return;
             }
@@ -324,6 +342,7 @@ namespace CmsWeb
             var url = Request.Url.OriginalString;
 
             return url.Contains("/Errors/", ignoreCase: true) ||
+                url.Contains("/Account/LogOff", ignoreCase: true) ||
                 url.Contains("/Content/touchpoint/", ignoreCase: true) ||
                 url.Contains("healthcheck.txt", ignoreCase: true) ||
                 url.Contains("analytics.txt", ignoreCase: true) ||

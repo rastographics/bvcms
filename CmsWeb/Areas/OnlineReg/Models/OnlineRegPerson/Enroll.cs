@@ -11,7 +11,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 {
     public partial class OnlineRegPersonModel
     {
-        public CMSDataContext db => CurrentDatabase ?? (CurrentDatabase = DbUtil.Db);
+        private CMSDataContext db => CurrentDatabase ?? (CurrentDatabase = DbUtil.Db);
 
         public OrganizationMember Enroll(Transaction transaction, string payLink)
         {
@@ -365,8 +365,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private void SaveDropdownChoice(OrganizationMember om, Ask ask)
         {
-            var askdd = ask as AskDropdown;
-            if (askdd == null)
+            if (!(ask is AskDropdown askdd))
             {
                 return;
             }
@@ -393,8 +392,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private void SaveMenuChoices(OrganizationMember om, Ask ask)
         {
-            var askmn = ask as AskMenu;
-            if (askmn == null)
+            if (!(ask is AskMenu askmn))
             {
                 return;
             }
@@ -420,8 +418,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private void SaveCheckboxChoices(OrganizationMember om, Ask ask)
         {
-            var askcb = ask as AskCheckboxes;
-            if (askcb == null)
+            if (!(ask is AskCheckboxes askcb))
             {
                 return;
             }
@@ -454,8 +451,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private void SaveYesNoChoices(OrganizationMember om, Ask ask)
         {
-            var askyn = ask as AskYesNoQuestions;
-            if (askyn == null)
+            if (!(ask is AskYesNoQuestions askyn))
             {
                 return;
             }
@@ -531,8 +527,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                         continue;
                     }
 
-                    string first, last;
-                    Util.NameSplit(fm.Name, out first, out last);
+                    Util.NameSplit(fm.Name, out string first, out string last);
                     if (!first.HasValue())
                     {
                         first = last;

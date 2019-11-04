@@ -1,8 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using CmsData;
 using CmsData.Codes;
+using CmsWeb.Constants;
 using CmsWeb.Models;
 using UtilityExtensions;
 
@@ -13,15 +14,30 @@ namespace CmsWeb.Areas.People.Models
         public int PeopleId { get; set; }
         public bool Future { get; set; }
 
-        public PersonAttendHistoryModel()
-            : base("Meeting", "", true) 
-        { }
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
+        public PersonAttendHistoryModel() : base()
+        {
+            Init();
+        }
+
+        public PersonAttendHistoryModel(CMSDataContext db) : base(db)
+        {
+            Init();
+        }
+
+        protected override void Init()
+        {
+            base.Init();
+            Sort = "Meeting";
+            Direction = "";
+            AjaxPager = true;
+        }
 
         override public IQueryable<Attend> DefineModelList()
         {
             var midnight = Util.Now.Date.AddDays(1);
-            var roles = DbUtil.Db.CurrentRoles();
-            var q = from a in DbUtil.Db.Attends
+            var roles = CurrentDatabase.CurrentRoles();
+            var q = from a in CurrentDatabase.Attends
                       let org = a.Meeting.Organization
                       where a.PeopleId == PeopleId
                       where !(org.SecurityTypeId == 3 && Util2.OrgLeadersOnly)
@@ -38,7 +54,7 @@ namespace CmsWeb.Areas.People.Models
         override public IEnumerable<AttendInfo> DefineViewList(IQueryable<Attend> q)
         {
             return from a in q
-                   let conflict = DbUtil.Db.ViewMeetingConflicts.Any(mm => 
+                   let conflict = CurrentDatabase.ViewMeetingConflicts.Any(mm => 
                        a.PeopleId == mm.PeopleId 
                        && a.MeetingDate == mm.MeetingDate 
                        && (mm.OrgId1 == a.OrganizationId || mm.OrgId2 == a.OrganizationId ) )

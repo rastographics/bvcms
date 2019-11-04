@@ -6,7 +6,9 @@
  */
 using CmsData;
 using CmsData.View;
+using CmsWeb.Constants;
 using CmsWeb.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -21,31 +23,41 @@ namespace CmsWeb.Areas.Dialog.Models
         public int? TargetDivision { get; set; }
         public bool Adding { get; set; }
 
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
         public SearchDivisionsModel()
         {
             AjaxPager = true;
             PageSize = 10;
             ShowPageSize = false;
         }
-        public SearchDivisionsModel(int id)
-            : this()
+
+        public SearchDivisionsModel(CMSDataContext db, int id) : base(db)
         {
+            Init();
             Id = id;
+        }
+
+        protected override void Init()
+        {
+            AjaxPager = true;
+            PageSize = 10;
+            ShowPageSize = false;
+            base.Init();
         }
 
         public void AddRemoveDiv()
         {
-            var d = DbUtil.Db.DivOrgs.SingleOrDefault(dd => dd.DivId == TargetDivision && dd.OrgId == Id);
+            var d = CurrentDatabase.DivOrgs.SingleOrDefault(dd => dd.DivId == TargetDivision && dd.OrgId == Id);
             if (Adding && d == null && TargetDivision.HasValue)
             {
                 d = new DivOrg { OrgId = Id, DivId = TargetDivision.Value };
-                DbUtil.Db.DivOrgs.InsertOnSubmit(d);
-                DbUtil.Db.SubmitChanges();
+                CurrentDatabase.DivOrgs.InsertOnSubmit(d);
+                CurrentDatabase.SubmitChanges();
             }
             else if (!Adding && d != null)
             {
-                DbUtil.Db.DivOrgs.DeleteOnSubmit(d);
-                DbUtil.Db.SubmitChanges();
+                CurrentDatabase.DivOrgs.DeleteOnSubmit(d);
+                CurrentDatabase.SubmitChanges();
             }
             Page = 1;
         }
@@ -53,7 +65,7 @@ namespace CmsWeb.Areas.Dialog.Models
         public override IQueryable<SearchDivision> DefineModelList()
         {
 
-            return DbUtil.Db.SearchDivisions(Id, name);
+            return CurrentDatabase.SearchDivisions(Id, name);
         }
 
         public override IQueryable<SearchDivision> DefineModelSort(IQueryable<SearchDivision> q)
