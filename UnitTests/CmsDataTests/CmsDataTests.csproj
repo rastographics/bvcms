@@ -78,6 +78,7 @@
     <Compile Include="..\SharedTestFixtures\DatabaseCollection.cs">
       <Link>DatabaseCollection.cs</Link>
     </Compile>
+    <Compile Include="API\APIContributionSearchModelTests.cs" />
     <Compile Include="API\PythonModel\PythonModelTests.cs" />
     <Compile Include="Classes\ExtraValues\ViewsTests.cs" />
     <Compile Include="Classes\PeopleUtilsTests.cs" />
