@@ -197,6 +197,16 @@ namespace IntegrationTests.Support
             }
             return webElement;
         }
+
+        protected void RepeatUntil(Action action, Func<bool> condition, int maxIterations = 10)
+        {
+            int iterations = 0;
+            do
+            {
+                action();
+                iterations++;
+            } while (maxIterations > iterations && !condition());
+        }
         
         protected void ScrollTo(IWebElement by = null,
             string css = null,
