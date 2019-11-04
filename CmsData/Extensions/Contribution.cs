@@ -7,7 +7,7 @@ namespace CmsData
 {
     public partial class Contribution
     {
-        public static BundleHeader GetBundleHeader(CMSDataContext db, DateTime date, DateTime now, int? btid = null)
+        public static BundleHeader GetBundleHeader(CMSDataContext db, DateTime date, DateTime now, int? btid = null, DateTime? depositDate = null)
         {
             var opentype = db.Roles.Any(rr => rr.RoleName == "FinanceDataEntry")
                 ? BundleStatusCode.OpenForDataEntry
@@ -19,7 +19,8 @@ namespace CmsData
                 ContributionDate = date,
                 CreatedBy = Util.UserId,
                 CreatedDate = now,
-                FundId = db.Setting("DefaultFundId", "1").ToInt()
+                FundId = db.Setting("DefaultFundId", "1").ToInt(),
+                DepositDate = depositDate
             };
             db.BundleHeaders.InsertOnSubmit(bh);
             bh.BundleHeaderTypeId = btid ?? BundleTypeCode.ChecksAndCash;
