@@ -792,23 +792,26 @@ This search uses multiple steps which cannot be duplicated in a single query.
         private void GetCurrentUser()
         {
             var username = HttpContextFactory.Current?.User?.Identity?.Name;
-            var q = from u in Users
-                    where u.UserId == Util.UserId || u.Username == username
-                    select new
-                    {
-                        u,
-                        roleids = u.UserRoles.Select(uu => uu.RoleId).ToArray(),
-                        roles = u.UserRoles.Select(uu => uu.Role.RoleName).ToArray(),
-                    };
-            var i = q.SingleOrDefault();
-            if (i == null)
+            if (username.HasValue())
             {
-                return;
-            }
+                var q = from u in Users
+                        where u.UserId == Util.UserId || u.Username == username
+                        select new
+                        {
+                            u,
+                            roleids = u.UserRoles.Select(uu => uu.RoleId).ToArray(),
+                            roles = u.UserRoles.Select(uu => uu.Role.RoleName).ToArray(),
+                        };
+                var i = q.SingleOrDefault();
+                if (i == null)
+                {
+                    return;
+                }
 
-            _roles = i.roles;
-            _roleids = i.roleids;
-            CurrentUser = i.u;
+                _roles = i.roles;
+                _roleids = i.roleids;
+                CurrentUser = i.u;
+            }
         }
 
         private string[] _roles;

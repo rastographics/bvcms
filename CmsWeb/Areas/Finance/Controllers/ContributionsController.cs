@@ -82,8 +82,9 @@ namespace CmsWeb.Areas.Finance.Controllers
             return View(m);
         }
         [HttpPost]
-        public ActionResult Results(ContributionSearchModel m)
+        public ActionResult Results(ContributionSearchInfo SearchInfo)
         {
+            ContributionSearchModel m = new ContributionSearchModel(CurrentDatabase, SearchInfo);
             var ret = m.CheckConversion();
             if (ret.HasValue())
             {

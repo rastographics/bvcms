@@ -19,6 +19,7 @@ namespace CmsWeb.Models
 
         protected PagedTableModel(CMSDataContext db, string defaultSort = "", string defaultDirection = "", bool useAjax = false) : base(db)
         {
+            CurrentDatabase = db;
             Init();
             Sort = defaultSort;
             Direction = defaultDirection;
