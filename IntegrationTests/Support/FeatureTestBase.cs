@@ -546,7 +546,6 @@ namespace IntegrationTests.Support
                 {
                     driver.SwitchTo().Window(driver.WindowHandles.First());
                 }
-                element = driver.FindElement(By.CssSelector(css));
                 if (element == null)
                 {
                     SaveScreenshot();
