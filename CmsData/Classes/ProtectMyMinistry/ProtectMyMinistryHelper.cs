@@ -42,7 +42,8 @@ namespace CmsData.Classes.ProtectMyMinistry
                 Created = DateTime.Now,
                 Updated = DateTime.Now,
                 ReportTypeID = reportTypeId,
-                ReportLabelID = reportLabelId
+                ReportLabelID = reportLabelId,
+                BillingRefId = ""
             };
             db.BackgroundChecks.InsertOnSubmit(bcNew);
             db.SubmitChanges();

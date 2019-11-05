@@ -168,7 +168,7 @@ namespace CmsWeb.Areas.Search.Models
         {
             var campuslist = CurrentDatabase.Setting("CampusRequired") ? "CampusNoNoCampus" : "Campus";
 
-            var p = new PendingPersonModel
+            var p = new PendingPersonModel(CurrentDatabase)
             {
                 FamilyId = familyid,
                 index = PendingList.Count,
@@ -183,10 +183,6 @@ namespace CmsWeb.Areas.Search.Models
                 p.FamilyId = NextNewFamilyId();
                 p.IsNewFamily = true;
             }
-#if DEBUG
-            p.FirstName = "David";
-            p.LastName = "Carr." + DateTime.Now.Millisecond;
-#endif
             PendingList.Add(p);
             return p;
         }
@@ -201,7 +197,7 @@ namespace CmsWeb.Areas.Search.Models
         internal void AddExisting(int id)
         {
             var p = CurrentDatabase.LoadPersonById(id);
-            var pp = new PendingPersonModel();
+            var pp = new PendingPersonModel(CurrentDatabase);
             pp.CopyPropertiesFrom(p);
             pp.LoadAddress();
             PendingList.Add(pp);
