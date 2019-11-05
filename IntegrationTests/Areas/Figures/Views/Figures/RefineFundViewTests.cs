@@ -53,7 +53,7 @@ namespace IntegrationTests.Areas.Figures.Views.Figures
 
             Find(id: "DrawChart").Click();
 
-            WaitForElement("#Fund_chart_display svg > g:nth-child(4)", 5);
+            WaitForElement("#Fund_chart_display svg > g:nth-child(5)", 5);
             driver.PageSource.ShouldContain(YearToTest);
         }
     }
