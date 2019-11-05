@@ -6,7 +6,7 @@ using SharedTestFixtures;
 namespace IntegrationTests.Areas.Manage
 {
     [Collection(Collections.Webapp)]
-    public class TestQueryController : AccountTestBase
+    public class QueryControllerTests : AccountTestBase
     {
         [Fact]
         public void TestSearchBuilderOrgsDropdownOption()
@@ -53,7 +53,7 @@ namespace IntegrationTests.Areas.Manage
             CreateUser(username, password, roles: new[] { "Access", "Edit", "Admin" });
             Login();
             Open($"{rootUrl}QueryCode?code=Age>65");
-            WaitForElement("input[id=totcnt]");
+            WaitForElement("input#totcnt");
             PageSource.ShouldContain("David Carroll");
         }
     }

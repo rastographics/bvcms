@@ -1,9 +1,10 @@
 using CmsData;
 using CmsData.View;
+using CmsWeb.Constants;
 using CmsWeb.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.WebPages;
 using UtilityExtensions;
 
@@ -11,6 +12,25 @@ namespace CmsWeb.Areas.People.Models
 {
     public class PreviousEnrollments : PagedTableModel<InvolvementPreviou, OrgMemberInfo>
     {
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
+        public PreviousEnrollments()
+        {
+            Init();
+        }
+
+        public PreviousEnrollments(CMSDataContext db) : base(db)
+        {
+            Init();
+        }
+
+        protected override void Init()
+        {
+            base.Init();
+            Sort = "default";
+            Direction = "asc";
+            AjaxPager = true;
+        }
+
         public int? PeopleId { get; set; }
         public Person Person
         {
@@ -18,7 +38,7 @@ namespace CmsWeb.Areas.People.Models
             {
                 if (_person == null && PeopleId.HasValue)
                 {
-                    _person = DbUtil.Db.LoadPersonById(PeopleId.Value);
+                    _person = CurrentDatabase.LoadPersonById(PeopleId.Value);
                 }
 
                 return _person;
@@ -38,11 +58,11 @@ namespace CmsWeb.Areas.People.Models
 
                     if (isInAccess && !isInOrgLeadersOnly)
                     {
-                        defaultFilter = DbUtil.Db.Setting("UX-DefaultAccessInvolvementOrgTypeFilter", "");
+                        defaultFilter = CurrentDatabase.Setting("UX-DefaultAccessInvolvementOrgTypeFilter", "");
                     }
                     else
                     {
-                        defaultFilter = DbUtil.Db.Setting("UX-DefaultInvolvementOrgTypeFilter", "");
+                        defaultFilter = CurrentDatabase.Setting("UX-DefaultInvolvementOrgTypeFilter", "");
                     }
 
                     _orgTypesFilter = string.IsNullOrEmpty(defaultFilter) ?
@@ -69,20 +89,16 @@ namespace CmsWeb.Areas.People.Models
             get
             {
                 var excludedTypes =
-                     DbUtil.Db.Setting("UX-ExcludeFromInvolvementOrgTypeFilter", "").Split(',').Select(x => x.Trim());
+                     CurrentDatabase.Setting("UX-ExcludeFromInvolvementOrgTypeFilter", "").Split(',').Select(x => x.Trim());
                 return DefineModelList(false).Select(x => x.OrgType).Distinct().Where(x => !excludedTypes.Contains(x));
             }
         }
 
-        public PreviousEnrollments()
-            : base("default", "asc", true)
-        { }
-
         public IQueryable<InvolvementPreviou> DefineModelList(bool useOrgFilter)
         {
             var limitvisibility = Util2.OrgLeadersOnly || !HttpContextFactory.Current.User.IsInRole("Access");
-            var roles = DbUtil.Db.CurrentRoles();
-            return from etd in DbUtil.Db.InvolvementPrevious(PeopleId, Util.UserId)
+            var roles = CurrentDatabase.CurrentRoles();
+            return from etd in CurrentDatabase.InvolvementPrevious(PeopleId, Util.UserId)
                    where etd.TransactionStatus == false
                    where etd.PeopleId == PeopleId
                    where etd.TransactionTypeId >= 4

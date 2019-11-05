@@ -1,0 +1,23 @@
+﻿@model CmsWeb.Areas.Manage.Models.AccountInfo
+@{
+    Layout = "~/Views/Shared/Account/_Layout.cshtml";
+    ViewBag.Title = "Two-factor Authentication";
+    ViewData["hideBackButton"] = true;
+    ViewData["passcodeMargin"] = 50;
+    ViewData["passcodeTitleMargin"] = 30;
+}
+<h1 class="form-header">Verify your identity to disable two-factor authentication</h1>
+@if (ViewBag.Message != null)
+{
+    <h3 class="alert alert-danger">@ViewBag.Message</h3>
+}
+@using (Html.BeginForm("AuthDisable", "Account", FormMethod.Post, new { @class = "panel" }))
+{
+    <h3>Enter your password</h3>
+    <div class="form-group">
+        @Html.PasswordFor(m => m.Password, new { @class = "form-control input-lg", placeholder = "Password" })
+    </div>
+    <fieldset>
+        @Html.Partial("Account/TwoFactorPasscode", viewData: ViewData)
+    </fieldset>
+}

@@ -50,13 +50,15 @@ namespace CmsData
 	        if (!url.HasValue() || !password.HasValue())
 	            return new AddressResult { Line1 = line1, Line2 = line2, City = city, State = st, Zip = zip };
 
-			var wc = new MyWebClient();
-			var coll = new NameValueCollection();
-			coll.Add("line1", line1);
-			coll.Add("line2", line2);
-			coll.Add("csz", Util.FormatCSZ(city, st, zip));
-			coll.Add("passcode", password);
-			try
+			var wc = new WebClientWithTimeout();
+            var coll = new NameValueCollection
+            {
+                { "line1", line1 },
+                { "line2", line2 },
+                { "csz", Util.FormatCSZ(city, st, zip) },
+                { "passcode", password }
+            };
+            try
 			{
 				var resp = wc.UploadValues(url, "POST", coll);
 				var s = Encoding.UTF8.GetString(resp);
@@ -82,16 +84,15 @@ namespace CmsData
 				return new AddressResult { Line1 = "error" };
 			}
 		}
-	class MyWebClient : WebClient
-	{
 
-
-		protected override WebRequest GetWebRequest(Uri uri)
-		{
-			WebRequest w = base.GetWebRequest(uri);
-			w.Timeout = 1000;
-			return w;
-		}
-	}
-}
+	    class WebClientWithTimeout : WebClient
+	    {
+		    protected override WebRequest GetWebRequest(Uri uri)
+		    {
+			    WebRequest w = base.GetWebRequest(uri);
+			    w.Timeout = 1000;
+			    return w;
+		    }
+	    }
+    }
 }

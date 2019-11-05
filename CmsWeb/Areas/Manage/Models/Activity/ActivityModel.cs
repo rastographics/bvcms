@@ -1,5 +1,6 @@
 using CmsData;
 using CmsData.View;
+using CmsWeb.Constants;
 using CmsWeb.Models;
 using System;
 using System.Collections.Generic;
@@ -22,9 +23,23 @@ namespace CmsWeb.Areas.Manage.Models
         public int? Lookback { get; set; }
         public DateTime? EndDate { get; set; }
 
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
         public ActivityModel()
-            : base("Activity", "", true)
         {
+            Init();
+        }
+
+        public ActivityModel(CMSDataContext db) : base(db)
+        {
+            Init();
+        }
+
+        protected override void Init()
+        {
+            base.Init();
+            Sort = "Activity";
+            Direction = "";
+            AjaxPager = true;
             UseDbPager = true;
         }
 

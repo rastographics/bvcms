@@ -1,20 +1,23 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using CmsData;
-using CmsWeb.Models;
+using CmsWeb.Constants;
 
 namespace CmsWeb.Areas.People.Models
 {
     public class TasksAboutModel : TasksModel
     {
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
         public TasksAboutModel() { }
+
         public override IQueryable<CmsData.Task> DefineModelList()
         {
             return from t in FilteredModelList()
                    where t.WhoId == Person.PeopleId
                    select t;
         }
+
         public override string AddTask { get { return "/Person2/AddTaskAbout/" + PeopleId; } }
 
         public override IEnumerable<TaskInfo> DefineViewList(IQueryable<CmsData.Task> q)

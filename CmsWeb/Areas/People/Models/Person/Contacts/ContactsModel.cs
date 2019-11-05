@@ -1,7 +1,8 @@
 ﻿using CmsData;
+using CmsWeb.Constants;
 using CmsWeb.Models;
+using System;
 using System.Linq;
-using System.Web;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Models
@@ -12,22 +13,37 @@ namespace CmsWeb.Areas.People.Models
         public int? PeopleId
         {
             get { return Person == null ? (int?)null : Person.PeopleId; }
-            set { Person = DbUtil.Db.LoadPersonById(value ?? 0); }
+            set { Person = CurrentDatabase.LoadPersonById(value ?? 0); }
         }
 
-        protected ContactsModel()
-            : base("Date", "desc", true)
-        { }
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
+        public ContactsModel()
+        {
+            Init();
+        }
+
+        public ContactsModel(CMSDataContext db) : base(db)
+        {
+            Init();
+        }
+
+        protected override void Init()
+        {
+            base.Init();
+            Sort = "Date";
+            Direction = "desc";
+            AjaxPager = true;
+        }
 
         public abstract string AddContact { get; }
         public abstract string AddContactButton { get; }
 
         public IQueryable<Contact> FilteredModelList()
         {
-            var u = DbUtil.Db.CurrentUser;
+            var u = CurrentDatabase.CurrentUser;
             var roles = u.UserRoles.Select(uu => uu.Role.RoleName.ToLower()).ToArray();
             var ManagePrivateContacts = HttpContextFactory.Current.User.IsInRole("ManagePrivateContacts");
-            return from c in DbUtil.Db.Contacts
+            return from c in CurrentDatabase.Contacts
                    where (c.LimitToRole ?? "") == "" || roles.Contains(c.LimitToRole) || ManagePrivateContacts
                    select c;
         }

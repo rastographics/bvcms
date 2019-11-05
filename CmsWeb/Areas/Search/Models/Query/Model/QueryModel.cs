@@ -1,5 +1,6 @@
 using CmsData;
 using CmsWeb.Code;
+using CmsWeb.Constants;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,14 +27,15 @@ namespace CmsWeb.Areas.Search.Models
         public Guid? SelectedId { get; set; }
         public string CodeIdValue { get; set; }
 
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
         public QueryModel()
         {
-            ConditionName = "Group";
+            Init();
         }
 
-        public QueryModel(CMSDataContext db)
-            : this()
+        public QueryModel(CMSDataContext db) : base(db)
         {
+            Init();
             CurrentDatabase = db;
         }
 
@@ -42,6 +44,12 @@ namespace CmsWeb.Areas.Search.Models
         {
             QueryId = id;
             DbUtil.LogActivity($"Running Query ({id})");
+        }
+
+        override protected void Init()
+        {
+            base.Init();
+            ConditionName = "Group";
         }
 
         public string Program { get; set; }
@@ -104,6 +112,28 @@ namespace CmsWeb.Areas.Search.Models
         {
             get { return (Tags ?? "").Split(';').ToList(); }
             set { Tags = string.Join(";", value); }
+        }
+
+        // Must use seperate variable to not conlict with Tags
+        // and Attend Types
+        public string MemberTypes { get; set; }
+
+        [SkipFieldOnCopyProperties]
+        public List<string> MemberTypeValues
+        {
+            get { return (MemberTypes ?? "").Split(';').ToList(); }
+            set { MemberTypes = string.Join(";", value); }
+        }
+
+        // Must use seperate variable to not conflict with Tags
+        // and Member Types
+        public string AttendTypes { get; set; }
+
+        [SkipFieldOnCopyProperties]
+        public List<string> AttendTypeValues
+        {
+            get { return (AttendTypes ?? "").Split(';').ToList(); }
+            set { AttendTypes = string.Join(";", value); }
         }
 
         public List<string> CodeValues
@@ -262,6 +292,16 @@ namespace CmsWeb.Areas.Search.Models
             if (TagsVisible && string.Join(",", Tags).Length > 500)
             {
                 m.AddModelError("tagvalues", "too many tags selected");
+            }
+
+            if (MemberTypesVisible && string.Join(",", MemberTypes).Length > 3000)
+            {
+                m.AddModelError("membertypevalues", "too many member types selected");
+            }
+
+            if (AttendTypesVisible && string.Join(",", AttendTypes).Length > 500)
+            {
+                m.AddModelError("attendtypevalues", "too many attend types selected");
             }
 
             if (Comparison == "Contains")

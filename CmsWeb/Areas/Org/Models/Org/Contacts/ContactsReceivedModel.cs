@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using CmsData;
 using CmsWeb.Areas.People.Models;
-using CmsWeb.Models;
+using CmsWeb.Constants;
 
 namespace CmsWeb.Areas.Org.Models
 {
@@ -11,7 +11,12 @@ namespace CmsWeb.Areas.Org.Models
     {
         public override string AddContact { get { return "/Org/AddContactReceived/" + OrganizationId; } }
         public override string AddContactButton { get { return "Add Contact Received By This Organization"; } }
-        public ContactsReceivedModel() { }
+
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
+        public ContactsReceivedModel() : base() { }
+
+        public ContactsReceivedModel(CMSDataContext db) : base(db) { }
+
         override public IQueryable<Contact> DefineModelList()
         {
             return from c in FilteredModelList()
