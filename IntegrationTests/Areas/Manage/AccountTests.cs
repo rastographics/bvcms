@@ -56,7 +56,8 @@ namespace IntegrationTests.Areas.Manage
 
             Login();
             var newPassword = RandomString() + "1!";
-            Find(css: profileMenu).Click();
+            RepeatUntil(() => Find(css: profileMenu).Click(),
+                condition: () => (Find(text: "Change Password") != null));
             Find(text: "Change Password").Click();
 
             CurrentUrl.ShouldBe($"{rootUrl}Account/ChangePassword/");
@@ -119,6 +120,7 @@ namespace IntegrationTests.Areas.Manage
             Find(name: "UsernameOrEmail").SendKeys(username);
             Find(css: "input[type=submit]").Click();
 
+            WaitForPageLoad();
             PageSource.ShouldContain("Password Sent");
 
             db.Refresh(System.Data.Linq.RefreshMode.OverwriteCurrentValues, user);

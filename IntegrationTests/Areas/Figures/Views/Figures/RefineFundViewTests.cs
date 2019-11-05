@@ -7,6 +7,7 @@ using Xunit;
 using CmsData;
 using UtilityExtensions;
 using System.Linq;
+using OpenQA.Selenium.Support.UI;
 
 namespace IntegrationTests.Areas.Figures.Views.Figures
 {
@@ -51,8 +52,6 @@ namespace IntegrationTests.Areas.Figures.Views.Figures
             YearDropdown.SendKeys(YearToTest);
 
             Find(id: "DrawChart").Click();
-
-            driver.SwitchTo().Alert().Dismiss();
 
             WaitForElement("#Fund_chart_display svg > g:nth-child(4)", 5);
             driver.PageSource.ShouldContain(YearToTest);

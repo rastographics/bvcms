@@ -2,14 +2,16 @@
 @using UtilityExtensions
 @using roles = CmsData.User
 @model roles
-
+@{
+    var mfaEnabled = Model.MFAEnabled && CmsWeb.Membership.MembershipService.IsTwoFactorAuthenticationEnabled(DbUtil.Db);
+}
 <form class="ajax" autocomplete="off">
     <div class="row">
         <div class="col-sm-7">
             <h4>Manage User @Model.Username</h4>
         </div>
         <div class="col-sm-5">
-            @FormAction()
+            @FormAction(mfaEnabled)
         </div>
     </div>
     <input style="display:none" type="text" name="fakeusernameremembered" />
@@ -136,7 +138,7 @@
             User created @Model.CreationDate.FormatDateTm()
         </small>
     </p>
-    @FormAction(true)
+    @FormAction(mfaEnabled, true)
 </form>
 @helper Role(string role)
 {
@@ -152,7 +154,7 @@
     <input name="role" value="@role" class="ckbox" type="checkbox" @(Model.Roles.Any(ro => ro == role) ? "checked='checked'" : "") /> @role
   </label>
 }
-@helper FormAction(bool xs = false)
+@helper FormAction(bool mfaEnabled, bool xs = false)
 {
     if (xs)
     {
@@ -166,6 +168,10 @@
                     <li><a href="/Person2/UserUpdate/@Model.UserId" class="validate ajax"><i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save User Account</a></li>
                     <li><a href="/Person2/UserDelete/@Model.UserId" class="ajax" data-confirm="Are you sure you want to remove User @Model.Username?" data-confirm-type="warning" data-confirm-btn-class="btn-danger" data-confirm-btn-text="Yes, remove user!"><i class="fa fa-trash"></i>&nbsp;&nbsp;Delete User Account</a></li>
                     <li><a href="/Person2/Impersonate/@Model.UserId"><i class="fa fa-sign-in"></i>&nbsp;&nbsp;Impersonate User</a></li>
+                    @if (mfaEnabled)
+                    {
+                    <li><a href="/Person2/Disable2FA/@Model.UserId"><i class="fa fa-unlock-alt"></i>&nbsp;&nbsp;Disable 2FA</a></li>
+                    }
                     <li class="divider"></li>
                     <li><a class="ajax" href="/Person2/Users/@Model.PeopleId"><i class="fa fa-arrow-circle-left"></i>&nbsp;&nbsp;Back to List</a></li>
                 </ul>
@@ -183,6 +189,10 @@
                     <li><a href="/Person2/UserUpdate/@Model.UserId" class="validate ajax"><i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save User Account</a></li>
                     <li><a href="/Person2/UserDelete/@Model.UserId" class="ajax" data-confirm="Are you sure you want to remove User @Model.Username?" data-confirm-type="warning" data-confirm-btn-class="btn-danger" data-confirm-btn-text="Yes, remove user!"><i class="fa fa-trash"></i>&nbsp;&nbsp;Delete User Account</a></li>
                     <li><a href="/Person2/Impersonate/@Model.UserId"><i class="fa fa-sign-in"></i>&nbsp;&nbsp;Impersonate User</a></li>
+                    @if (mfaEnabled)
+                    {
+                    <li><a href="/Person2/Disable2FA/@Model.UserId"><i class="fa fa-unlock-alt"></i>&nbsp;&nbsp;Disable 2FA</a></li>
+                    }
                     <li class="divider"></li>
                     <li><a class="ajax" href="/Person2/Users/@Model.PeopleId"><i class="fa fa-arrow-circle-left"></i>&nbsp;&nbsp;Back to List</a></li>
                 </ul>

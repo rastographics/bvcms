@@ -167,9 +167,10 @@ namespace CmsWeb.Areas.CheckIn.Controllers
 
             if (file != null)
             {
+                var DefaultHost = CurrentDatabase.Setting("DefaultHost", "");
                 checkinProfileSettings.BackgroundImage = StoreBGImage(file, checkinProfileSettings.BackgroundImage);
                 checkinProfileSettings.BackgroundImageName = file.FileName;
-                checkinProfileSettings.BackgroundImageURL = $"{Configuration.Current.CmsHost}BackgroundImage/{checkinProfileSettings.BackgroundImage}?{DateTime.Now.ToString("yyMMddhhmmss")}";
+                checkinProfileSettings.BackgroundImageURL = $"{DefaultHost}/BackgroundImage/{checkinProfileSettings.BackgroundImage}?{DateTime.Now.ToString("yyMMddhhmmss")}";
             }
 
             return checkinProfileSettings;

@@ -22,7 +22,7 @@ namespace CmsWeb.Models
         }
         public static EpplusResult ToExcel(this DataTable dt, string filename = "People.xlsx", bool useTable = false)
         {
-            dt = DecryptPassportData(dt);
+            DecryptData(dt);
             var ep = new ExcelPackage();
             ep.AddSheet(dt, filename, useTable);
             return new EpplusResult(ep, filename);
@@ -30,23 +30,22 @@ namespace CmsWeb.Models
 
         private const string PassportNumber = "PassportNumber";
         private const string PassportExpires = "PassportExpires";
-        private static DataTable DecryptPassportData(DataTable dt)
+        private static void DecryptData(DataTable dt)
         {
             foreach (DataRow row in dt.Rows)
             {
-                if (row.Table.Columns.Contains(PassportNumber))
-                { 
-                    var passNumber = row[PassportNumber].ToString();
-                    row[row.Table.Columns[PassportNumber].Ordinal] = Util.Decrypt(passNumber);
-                }
-                if (row.Table.Columns.Contains(PassportExpires))
-                {
-                    var passExpires = row[PassportExpires].ToString();
-                    row[row.Table.Columns[PassportExpires].Ordinal] = Util.Decrypt(passExpires);
-                }
+                DecryptField(row, PassportNumber);
+                DecryptField(row, PassportExpires);
             }
+        }
 
-            return dt;
+        private static void DecryptField(DataRow row, string field)
+        {
+            if (row.Table.Columns.Contains(field))
+            {
+                var value = row.Table.Columns[field].ToString();
+                row[row.Table.Columns[field].Ordinal] = Util.Decrypt(value);
+            }
         }
 
         public static EpplusResult ToExcel(this IDataReader rd, string filename = null, bool useTable = false, bool fromSql = false)

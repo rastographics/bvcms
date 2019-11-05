@@ -1,5 +1,6 @@
 using CmsData;
 using CmsData.View;
+using CmsWeb.Constants;
 using MoreLinq;
 using System;
 using System.Collections.Generic;
@@ -10,15 +11,41 @@ using UtilityExtensions;
 
 namespace CmsWeb.Models
 {
-    public class TransactionsModel
+    public class TransactionsModel : IDbBinder
     {
         private int? _count;
         private IQueryable<TransactionList> _transactions;
         public int nameid;
-
-        public TransactionsModel(int? tranid, string reference = "", string desc = "")
-            : this()
+        private CMSDataContext _db;
+        public CMSDataContext CurrentDatabase
         {
+            get => _db;
+            set
+            {
+                _db = value;
+                Init();
+            }
+        }
+        private User User => _db.CurrentUser;
+
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
+        public TransactionsModel() { }
+
+        private void Init()
+        {
+            Pager = new PagerModel2(CurrentDatabase)
+            {
+                Sort = "Date",
+                Direction = "desc",
+                GetCount = Count
+            };
+            finance = User.InRole("Finance");
+            admin = User.InRole("Admin") || User.InRole("ManageTransactions");
+        }
+
+        public TransactionsModel(CMSDataContext db, int? tranid, string reference = "", string desc = "")
+        {
+            CurrentDatabase = db;
             name = tranid.ToString();
             if (!tranid.HasValue)
             {
@@ -33,15 +60,6 @@ namespace CmsWeb.Models
             {
                 description = desc;
             }
-        }
-
-        public TransactionsModel()
-        {
-            Pager = new PagerModel2(Count);
-            Pager.Sort = "Date";
-            Pager.Direction = "desc";
-            finance = HttpContextFactory.Current.User.IsInRole("Finance");
-            admin = HttpContextFactory.Current.User.IsInRole("Admin") || HttpContextFactory.Current.User.IsInRole("ManageTransactions");
         }
 
         public string description { get; set; }
@@ -109,14 +127,13 @@ namespace CmsWeb.Models
                 name = null;
             }
 
-            string first, last;
-            Util.NameSplit(name, out first, out last);
+            Util.NameSplit(name, out string first, out string last);
             var hasfirst = first.HasValue();
-            var roles = DbUtil.Db.CurrentRoles();
+            var roles = CurrentDatabase.CurrentRoles();
             nameid = name.ToInt();
             _transactions
-                = from t in DbUtil.Db.ViewTransactionLists
-                  join org in DbUtil.Db.Organizations on t.OrgId equals org.OrganizationId
+                = from t in CurrentDatabase.ViewTransactionLists
+                  join org in CurrentDatabase.Organizations on t.OrgId equals org.OrganizationId
                   let donate = t.Donate ?? 0
                   where org.LimitToRole == null || roles.Contains(org.LimitToRole)
                   where t.Amt >= gtamount || gtamount == null
@@ -149,7 +166,7 @@ namespace CmsWeb.Models
                 }
             }
 
-            if (!HttpContextFactory.Current.User.IsInRole("Finance"))
+            if (!User.InRole("Finance"))
             {
                 _transactions = _transactions.Where(tt => (tt.Financeonly ?? false) == false);
             }
@@ -276,9 +293,9 @@ namespace CmsWeb.Models
         private void CheckBatchDates(DateTime start, DateTime end)
         {
             IGateway[] gateways = new[] {
-                DbUtil.Db.Gateway(false, null, PaymentProcessTypes.OneTimeGiving, false),
-                DbUtil.Db.Gateway(false, null, PaymentProcessTypes.OnlineRegistration, false),
-                DbUtil.Db.Gateway(false, null, PaymentProcessTypes.RecurringGiving, false)
+                CurrentDatabase.Gateway(false, null, PaymentProcessTypes.OneTimeGiving, false),
+                CurrentDatabase.Gateway(false, null, PaymentProcessTypes.OnlineRegistration, false),
+                CurrentDatabase.Gateway(false, null, PaymentProcessTypes.RecurringGiving, false)
             };
             foreach (var gateway in gateways.Where(g => g.IsNotNull()).DistinctBy(g => g.Identifier))
             {
@@ -418,12 +435,12 @@ namespace CmsWeb.Models
 
         public IQueryable<SupporterInfo> Supporters()
         {
-            return from gs in DbUtil.Db.GoerSenderAmounts
+            return from gs in CurrentDatabase.GoerSenderAmounts
                    where gs.GoerId == GoerId
                    where gs.SupporterId != gs.GoerId
-                   let sp = DbUtil.Db.People.Single(ss => ss.PeopleId == gs.SupporterId)
-                   let gp = DbUtil.Db.People.Single(ss => ss.PeopleId == gs.GoerId)
-                   let o = DbUtil.Db.Organizations.Single(oo => oo.OrganizationId == gs.OrgId)
+                   let sp = CurrentDatabase.People.Single(ss => ss.PeopleId == gs.SupporterId)
+                   let gp = CurrentDatabase.People.Single(ss => ss.PeopleId == gs.GoerId)
+                   let o = CurrentDatabase.Organizations.Single(oo => oo.OrganizationId == gs.OrgId)
                    orderby gs.Created descending
                    select new SupporterInfo
                    {
@@ -439,7 +456,7 @@ namespace CmsWeb.Models
 
         public List<MissionTripBalanceInfo> MissionTripBalances()
         {
-            var q = from gs in DbUtil.Db.GoerSenderAmounts
+            var q = from gs in CurrentDatabase.GoerSenderAmounts
                     where gs.GoerId == GoerId
                     group gs by new { gs.GoerId, gs.OrgId, gs.Organization.OrganizationName } into g
                     select new MissionTripBalanceInfo
@@ -447,19 +464,19 @@ namespace CmsWeb.Models
                         GoerId = g.Key.GoerId ?? 0,
                         OrgId = g.Key.OrgId,
                         TripName = g.Key.OrganizationName,
-                        Balance = OrganizationMember.AmountDue(DbUtil.Db, g.Key.OrgId, g.Key.GoerId ?? 0)
+                        Balance = OrganizationMember.AmountDue(CurrentDatabase, g.Key.OrgId, g.Key.GoerId ?? 0)
                     };
             return q.ToList().Where(vv => vv.Balance > 0).ToList();
         }
 
         public IQueryable<SupporterInfo> SelfSupports()
         {
-            return from gs in DbUtil.Db.GoerSenderAmounts
+            return from gs in CurrentDatabase.GoerSenderAmounts
                    where gs.GoerId == GoerId
                    where gs.SupporterId == gs.GoerId
-                   let sp = DbUtil.Db.People.Single(ss => ss.PeopleId == gs.SupporterId)
-                   let gp = DbUtil.Db.People.Single(ss => ss.PeopleId == gs.GoerId)
-                   let o = DbUtil.Db.Organizations.Single(oo => oo.OrganizationId == gs.OrgId)
+                   let sp = CurrentDatabase.People.Single(ss => ss.PeopleId == gs.SupporterId)
+                   let gp = CurrentDatabase.People.Single(ss => ss.PeopleId == gs.GoerId)
+                   let o = CurrentDatabase.Organizations.Single(oo => oo.OrganizationId == gs.OrgId)
                    orderby gs.Created descending
                    select new SupporterInfo
                    {
@@ -475,12 +492,12 @@ namespace CmsWeb.Models
 
         public IQueryable<SupporterInfo> SupportOthers()
         {
-            return from gs in DbUtil.Db.GoerSenderAmounts
+            return from gs in CurrentDatabase.GoerSenderAmounts
                    where gs.SupporterId == SenderId
                    where gs.SupporterId != (gs.GoerId ?? 0)
-                   let gp = DbUtil.Db.People.SingleOrDefault(ss => ss.PeopleId == gs.GoerId)
-                   let sp = DbUtil.Db.People.Single(ss => ss.PeopleId == gs.SupporterId)
-                   let o = DbUtil.Db.Organizations.Single(oo => oo.OrganizationId == gs.OrgId)
+                   let gp = CurrentDatabase.People.SingleOrDefault(ss => ss.PeopleId == gs.GoerId)
+                   let sp = CurrentDatabase.People.Single(ss => ss.PeopleId == gs.SupporterId)
+                   let o = CurrentDatabase.Organizations.Single(oo => oo.OrganizationId == gs.OrgId)
                    orderby gs.Created descending
                    select new SupporterInfo
                    {

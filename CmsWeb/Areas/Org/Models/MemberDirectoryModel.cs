@@ -1,13 +1,8 @@
-/* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church
- * Licensed under the GNU General Public License (GPL v2)
- * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license
- */
-
 using CmsData;
 using CmsData.Codes;
+using CmsWeb.Constants;
 using CmsWeb.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
@@ -20,17 +15,18 @@ namespace CmsWeb.Areas.Org.Models
         private int? count;
         private IQueryable<Person> members;
 
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
         public MemberDirectoryModel()
         {
-            GetCount = Count;
-            Sort = "Family";
+            Init();
         }
 
-        public MemberDirectoryModel(int oid)
-            : this()
+        public MemberDirectoryModel(CMSDataContext db, int oid) : base(db)
         {
+            Init();
+            CurrentDatabase = db;
             OrgId = oid;
-            var q = from o in DbUtil.Db.Organizations
+            var q = from o in db.Organizations
                     where o.OrganizationId == OrgId
                     select new
                     {
@@ -39,6 +35,12 @@ namespace CmsWeb.Areas.Org.Models
                     };
             OrgName = q.Single().OrganizationName;
             FamilyOption = q.Single().PublishDirectory == 2;
+        }
+
+        private void Init()
+        {
+            GetCount = Count;
+            Sort = "Family";
         }
 
         public string Name { get; set; }
@@ -59,7 +61,7 @@ namespace CmsWeb.Areas.Org.Models
             if (Sort == "Birthday")
             {
                 q1 = from p in q1
-                     orderby DbUtil.Db.NextBirthday(p.PeopleId)
+                     orderby CurrentDatabase.NextBirthday(p.PeopleId)
                      select p;
             }
             else
@@ -126,14 +128,14 @@ namespace CmsWeb.Areas.Org.Models
                 return members;
             }
 
-            var q = from o in DbUtil.Db.Organizations
+            var q = from o in CurrentDatabase.Organizations
                     where o.OrganizationId == OrgId
                     select o.PublishDirectory;
             FamilyOption = q.Single() == 2;
 
             if (FamilyOption)
             {
-                members = from p in DbUtil.Db.People
+                members = from p in CurrentDatabase.People
                           where p.Family.People.Any(pp =>
                               pp.OrganizationMembers.Any(mm =>
                                   mm.OrganizationId == OrgId
@@ -145,7 +147,7 @@ namespace CmsWeb.Areas.Org.Models
             }
             else
             {
-                members = from p in DbUtil.Db.People
+                members = from p in CurrentDatabase.People
                           where p.OrganizationMembers.Any(mm =>
                               mm.OrganizationId == OrgId
                               && (mm.Pending ?? false) == false

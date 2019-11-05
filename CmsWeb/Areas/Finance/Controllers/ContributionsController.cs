@@ -5,10 +5,7 @@ using System.Data.SqlClient;
 using System.Web.Mvc;
 using System.Web.Routing;
 using CmsData;
-using CmsWeb.Common.Extensions;
 using CmsWeb.Models;
-using Dapper;
-using MoreLinq;
 using Newtonsoft.Json;
 using UtilityExtensions;
 using ContributionSearchModel = CmsWeb.Models.ContributionSearchModel;
@@ -50,7 +47,7 @@ namespace CmsWeb.Areas.Finance.Controllers
             {
                 api.FundSet = fundSet;
             }
-            var m = new ContributionSearchModel(api);
+            var m = new ContributionSearchModel(CurrentDatabase, api);
             return View(m);
         }
         [Route("~/ContributionsJsonSearch/{file}/{name}")]
@@ -81,12 +78,13 @@ namespace CmsWeb.Areas.Finance.Controllers
                 IncludeUnclosedBundles = includeunclosedbundles ?? false,
                 BundleType = bundletype
             };
-            var m = new ContributionSearchModel(api);
+            var m = new ContributionSearchModel(CurrentDatabase, api);
             return View(m);
         }
         [HttpPost]
-        public ActionResult Results(ContributionSearchModel m)
+        public ActionResult Results(ContributionSearchInfo SearchInfo)
         {
+            ContributionSearchModel m = new ContributionSearchModel(CurrentDatabase, SearchInfo);
             var ret = m.CheckConversion();
             if (ret.HasValue())
             {
