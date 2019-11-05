@@ -117,26 +117,21 @@ namespace CmsData
         {
             var frorg = db.LoadOrganizationById(fromid);
 
-            //only Copy settings
-            NotifyIds = frorg.NotifyIds;
-            FirstMeetingDate = frorg.FirstMeetingDate;
-            LastDayBeforeExtra = frorg.LastDayBeforeExtra;
-            LastMeetingDate = frorg.LastMeetingDate;
-            Limit = frorg.Limit;
-            RegistrationTypeId = frorg.RegistrationTypeId;
-            RegStart = frorg.RegStart;
-            RegEnd = frorg.RegEnd;
-            IsMissionTrip = frorg.IsMissionTrip;
-            AddToSmallGroupScript = frorg.AddToSmallGroupScript;
-
-            RegSetting = frorg.RegSetting;
-            RegSettingXml = frorg.RegSettingXml;
-
             CopySettings2(frorg, this);
             db.SubmitChanges();
         }
         public static void CopySettings2(Organization frorg, Organization toorg)
         {
+            toorg.NotifyIds = frorg.NotifyIds;
+            toorg.FirstMeetingDate = frorg.FirstMeetingDate;
+            toorg.LastDayBeforeExtra = frorg.LastDayBeforeExtra;
+            toorg.LastMeetingDate = frorg.LastMeetingDate;
+            toorg.Limit = frorg.Limit;
+            toorg.RegistrationTypeId = frorg.RegistrationTypeId;
+            toorg.RegStart = frorg.RegStart;
+            toorg.RegEnd = frorg.RegEnd;
+            toorg.IsMissionTrip = frorg.IsMissionTrip;
+            toorg.AddToSmallGroupScript = frorg.AddToSmallGroupScript;            
             toorg.AllowNonCampusCheckIn = frorg.AllowNonCampusCheckIn;
             toorg.AllowAttendOverlap = frorg.AllowAttendOverlap;
             toorg.CanSelfCheckin = frorg.CanSelfCheckin;
@@ -148,6 +143,12 @@ namespace CmsData
             toorg.RollSheetVisitorWks = frorg.RollSheetVisitorWks;
             toorg.GradeAgeStart = frorg.GradeAgeStart;
             toorg.DivisionId = frorg.DivisionId;
+            toorg.Description = frorg.Description;
+            toorg.BirthDayStart = frorg.BirthDayStart;
+            toorg.BirthDayEnd = frorg.BirthDayEnd;
+
+            toorg.RegSetting = frorg.RegSetting;
+            toorg.RegSettingXml = frorg.RegSettingXml;
         }
         public Organization CloneOrg(CMSDataContext db, int? divisionId)
         {
