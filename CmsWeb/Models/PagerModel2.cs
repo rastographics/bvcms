@@ -85,14 +85,14 @@ namespace CmsWeb.Models
                     return pagesize.Value;
                 }
 
-                pagesize = CurrentDatabase.UserPreference("PageSize", "10").ToInt();
+                pagesize = CurrentDatabase?.UserPreference("PageSize", "10").ToInt();
                 return pagesize.Value;
             }
             set
             {
                 if (pagesizes.Contains(value))
                 {
-                    CurrentDatabase.SetUserPreference("PageSize", value);
+                    CurrentDatabase?.SetUserPreference("PageSize", value);
                 }
 
                 pagesize = value;

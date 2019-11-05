@@ -53,10 +53,7 @@ namespace IntegrationTests.Areas.Figures.Views.Figures
 
             Find(id: "DrawChart").Click();
 
-            WaitFor(d => IsAlertPresent(), 2);
-            driver.SwitchTo().Alert().Dismiss();
-
-            WaitForElement("#Fund_chart_display svg > g:nth-child(4)", 5);
+            WaitForElement("#Fund_chart_display svg > g:nth-child(5)", 5);
             driver.PageSource.ShouldContain(YearToTest);
         }
     }

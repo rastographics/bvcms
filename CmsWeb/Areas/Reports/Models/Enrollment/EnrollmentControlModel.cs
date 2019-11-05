@@ -8,6 +8,7 @@
 using CmsData;
 using CmsWeb.Areas.Search.Models;
 using CmsWeb.Code;
+using CmsWeb.Models;
 using Dapper;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,7 @@ using System.Linq;
 namespace CmsWeb.Areas.Reports.Models
 {
     public class EnrollmentControlModel
-    {        
+    {  
         public class MemberInfo
         {
             public int Id { get; set; }
@@ -24,16 +25,16 @@ namespace CmsWeb.Areas.Reports.Models
             public string Location { get; set; }
             public string MemberType { get; set; }
         }
-        public EnrollmentControlModel() { }
+        public EnrollmentControlModel() { }        
         public static IEnumerable<MemberInfo> List(OrgSearchModel model, string na = "", bool usecurrenttag = false)
-        {
+        {            
             var orgs = model.FetchOrgs();
-            var q = from m in DbUtil.Db.OrganizationMembers
+            var q = from m in model.CurrentDatabase.OrganizationMembers
                     join o in orgs on m.OrganizationId equals o.OrganizationId
                     select m;
             if (usecurrenttag)
             {
-                var tagid = DbUtil.Db.TagCurrent().Id;
+                var tagid = model.CurrentDatabase.TagCurrent().Id;
                 q = from m in q
                     where m.Person.Tags.Any(tt => tt.Id == tagid)
                     select m;
