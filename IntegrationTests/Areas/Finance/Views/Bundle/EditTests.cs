@@ -48,6 +48,7 @@ namespace IntegrationTests.Areas.Finance.Views.Bundle
         
         protected void Check_If_DateTimePicker_Exists()
         {
+            WaitForElementToDisappear(loadingUI);
             Find(css: "span.input-group-addon").Click();
             WaitForElement("div.bootstrap-datetimepicker-widget", 1);
             var timepicker = Find(css: "div.bootstrap-datetimepicker-widget");
