@@ -86,6 +86,7 @@
     <Compile Include="Extensions\ContributionTests.cs" />
     <Compile Include="Finance\AcceptivaGatewayTests.cs" />
     <Compile Include="Generated\CMSDataContextFunctionTests.cs" />
+    <Compile Include="Organization\OrganizationTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
