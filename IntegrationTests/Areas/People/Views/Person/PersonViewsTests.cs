@@ -121,6 +121,7 @@ namespace IntegrationTests.Areas.People.Views.Person
             Find(id: "Name").SendKeys("MockResource");
             Find(css: "#new-resource-modal>div>form>div.modal-footer>a.btn.btn-primary.validate.submit").Click();
 
+            MaximizeWindow();
             Open($"{rootUrl}Person2/1#tab-resources");
             WaitForElement(css: "#resources>ul>li>a", maxWaitTimeInSeconds: 5);
 
