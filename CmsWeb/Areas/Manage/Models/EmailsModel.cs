@@ -1,17 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Collections;
 using System.Linq;
-using System.Data.Linq;
 using CmsData;
 using UtilityExtensions;
-using System.Web.Mvc;
-using System.Text;
-using System.Net.Mail;
-using System.Web.UI.WebControls;
-using System.Web.UI;
-using System.Web;
-using System.Web.Security;
 
 namespace CmsWeb.Models
 {
@@ -53,9 +44,12 @@ namespace CmsWeb.Models
         }
         public EmailsModel()
         {
-            Pager = new PagerModel2(Count);
-            Pager.Sort = "Sent/Scheduled";
-            Pager.Direction = "desc";
+            Pager = new PagerModel2(DbUtil.Db)
+            {
+                GetCount = Count,
+                Sort = "Sent/Scheduled",
+                Direction = "desc",
+            };
         }
         public IEnumerable<EmailQueueInfo> Emails()
         {

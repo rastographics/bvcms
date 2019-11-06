@@ -710,7 +710,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
             else
             {
-                tinfo = Type == PaymentType.Ach
+                tinfo = (Type == PaymentType.Ach)
                     ? PayWithCheck(gw, pid, ti)
                     : PayWithCreditCard(gw, pid, ti);
             }

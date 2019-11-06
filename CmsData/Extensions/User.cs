@@ -8,10 +8,9 @@ namespace CmsData
 {
     public partial class User
     {
-        public bool InRole(string role)
-        {
-            return Roles.Any(ro => ro == role);
-        }
+        public bool InRole(string role) => Roles.Any(ro => ro == role);
+
+        public bool InAnyRole(params string[] roles) => roles.Any(r => InRole(r));
 
         public bool IsOnLine
         {

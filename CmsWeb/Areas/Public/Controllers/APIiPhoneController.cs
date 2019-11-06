@@ -48,7 +48,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             Response.NoCache();
 
-            var m = new PeopleSearchModel();
+            var m = new PeopleSearchModel(CurrentDatabase);
             m.m.name = name;
             m.m.communication = comm;
             m.m.address = addr;
@@ -70,7 +70,7 @@ namespace CmsWeb.Areas.Public.Controllers
             Response.NoCache();
 
             DbUtil.LogActivity($"iphone search '{name}'");
-            var m = new PeopleSearchModel();
+            var m = new PeopleSearchModel(CurrentDatabase);
             m.m.name = name;
             m.m.communication = comm;
             m.m.address = addr;

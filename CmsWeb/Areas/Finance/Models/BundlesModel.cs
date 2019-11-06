@@ -1,5 +1,6 @@
 ﻿using CmsData;
 using CmsData.Codes;
+using CmsWeb.Constants;
 using CmsWeb.Models;
 using System;
 using System.Collections.Generic;
@@ -22,18 +23,30 @@ namespace CmsWeb.Areas.Finance.Models
             return count.Value;
         }
 
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
         public BundlesModel()
+        {
+            Init();
+        }
+
+        public BundlesModel(CMSDataContext db) : base(db)
+        {
+            Init();
+        }
+
+        private void Init()
         {
             GetCount = Count;
             Sort = "Status";
         }
+
         private IQueryable<CmsData.View.BundleList> bundles;
 
         private IQueryable<CmsData.View.BundleList> FetchBundles()
         {
             if (bundles == null)
             {
-                bundles = from b in DbUtil.Db.ViewBundleLists select b;
+                bundles = from b in CurrentDatabase.ViewBundleLists select b;
             }
 
             if (HttpContextFactory.Current.User.IsInRole("FinanceDataEntry"))

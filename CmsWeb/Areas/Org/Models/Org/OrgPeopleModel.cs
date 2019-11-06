@@ -3,13 +3,13 @@ using CmsData.Classes.RoleChecker;
 using CmsData.Codes;
 using CmsData.View;
 using CmsWeb.Code;
+using CmsWeb.Constants;
 using CmsWeb.Membership.Extensions;
 using CmsWeb.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
 using System.Linq;
-using System.Security.Principal;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
@@ -19,15 +19,27 @@ namespace CmsWeb.Areas.Org.Models
 {
     public class OrgPeopleModel : PagedTableModel<OrgFilterPerson, OrgFilterPerson>, IDbBinder
     {
-        public CMSDataContext CurrentDatabase { get => _currentDatabase ?? DbUtil.Db; set => _currentDatabase = value; }
-        private CMSDataContext _currentDatabase;
         internal CMSDataContext Db => CurrentDatabase;
         public Guid QueryId { get; set; }
-        public IPrincipal User { get; set; }
+        public User User => CurrentDatabase.CurrentUser;
 
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
         public OrgPeopleModel()
-            : base("Name", "asc", true)
         {
+            Init();
+        }
+
+        public OrgPeopleModel(CMSDataContext db) : base(db)
+        {
+            Init();
+        }
+
+        override protected void Init()
+        {
+            Sort = "Name";
+            Direction = "asc";
+            AjaxPager = true;
+            base.Init();
         }
 
         private Organization org;
@@ -375,7 +387,7 @@ to `Add`, `Drop`, `Update` Members etc.
                 case GroupSelectCode.Guest:
                     return false;
                 case GroupSelectCode.Previous:
-                    return HttpContextFactory.Current.User.IsInRole("Developer") || HttpContextFactory.Current.User.IsInRole("Conversion");
+                    return User.InRole("Developer") || User.InRole("Conversion");
                 default:
                     return true;
             }
@@ -388,8 +400,7 @@ to `Add`, `Drop`, `Update` Members etc.
                 return false;
             }
 
-            var u = HttpContextFactory.Current.User;
-            return u.IsInRole("Edit")
+            return User.InRole("Edit")
                 || RoleChecker.HasSetting(SettingName.OrgMembersDropAdd, false);
         }
     }

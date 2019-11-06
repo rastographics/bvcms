@@ -1,6 +1,10 @@
 ﻿@using CmsData
 @model IEnumerable<User>
-@helper Roles(User user) {
+@{
+    var mfaSystemEnabled = CmsWeb.Membership.MembershipService.IsTwoFactorAuthenticationEnabled(DbUtil.Db);
+}
+@helper Roles(User user)
+{
     var roles = string.Join(", ", user.Roles);
     if (string.IsNullOrWhiteSpace(roles))
     {
@@ -25,6 +29,10 @@
             <thead>
                 <tr>
                     <th>Username</th>
+                    @if (mfaSystemEnabled)
+                    {
+                    <th>2FA</th>
+                    }
                     <th>Roles</th>
                     <th style="width: 50px;">Actions</th>
                 </tr>
@@ -32,25 +40,34 @@
             <tbody>
                 @foreach (var u in Model)
                 {
-                    <tr>
-                        <td class="nowrap">
-                            @if ((User.IsInRole("Admin") && !u.InRole("Developer")) || User.IsInRole("Developer"))
-                            {
-                                <a class="ajax" href="/Person2/UserEdit/@u.UserId"><span>@u.Username</span></a>
-                            }
-                            else
-                            {
-                                @u.Username
-                            }
+                <tr>
+                    <td class="nowrap">
+                        @if ((User.IsInRole("Admin") && !u.InRole("Developer")) || User.IsInRole("Developer"))
+                        {
+                            <a class="ajax" href="/Person2/UserEdit/@u.UserId"><span>@u.Username</span></a>
+                        }
+                        else
+                        {
+                            @u.Username
+                        }
+                    </td>
+                    @if (mfaSystemEnabled)
+                    {
+                        <td class="text-center">
+                        @if (u.MFAEnabled)
+                        {
+                            <i class="fa fa-check"></i>
+                        }
                         </td>
-                        <td>@Roles(u)</td>
-                        <td style="width: 50px;">
-                            @if ((User.IsInRole("Admin") && !u.InRole("Developer")) || User.IsInRole("Developer"))
-                            {
-                                <a class="ajax btn btn-default btn-sm" href="/Person2/UserEdit/@u.UserId"><i class="fa fa-pencil"></i> Edit</a>
-                            }
-                        </td>
-                    </tr>
+                    }
+                    <td>@Roles(u)</td>
+                    <td style="width: 50px;">
+                        @if ((User.IsInRole("Admin") && !u.InRole("Developer")) || User.IsInRole("Developer"))
+                        {
+                            <a class="ajax btn btn-default btn-sm" href="/Person2/UserEdit/@u.UserId"><i class="fa fa-pencil"></i> Edit</a>
+                        }
+                    </td>
+                </tr>
                 }
             </tbody>
         </table>

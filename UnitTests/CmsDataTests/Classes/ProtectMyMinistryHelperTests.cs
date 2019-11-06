@@ -34,10 +34,15 @@ namespace CmsDataTests
 
         private BackgroundCheckLabel CreateLabel(CMSDataContext db)
         {
+            var Id = 10;
+            if (db.BackgroundCheckLabels.Any())
+            {
+                Id = db.BackgroundCheckLabels.Max(m => m.Id) + 1;
+            }
             var bgChLabel = new BackgroundCheckLabel
             {
-                Id = 10,
-                Code = "ABC",
+                Id = Id,
+                Code = DatabaseTestBase.RandomString(),
                 Description = "Description",
                 Hardwired = false
             };

@@ -1,6 +1,8 @@
 using CmsData;
 using CmsData.View;
+using CmsWeb.Constants;
 using CmsWeb.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.WebPages;
@@ -10,6 +12,25 @@ namespace CmsWeb.Areas.People.Models
 {
     public class PendingEnrollments : PagedTableModel<InvolvementCurrent, OrgMemberInfo>
     {
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
+        public PendingEnrollments()
+        {
+            Init();
+        }
+
+        public PendingEnrollments(CMSDataContext db) : base(db)
+        {
+            Init();
+        }
+
+        protected override void Init()
+        {
+            base.Init();
+            Sort = "";
+            Direction = "";
+            AjaxPager = true;
+        }
+
         public int? PeopleId { get; set; }
         public Person Person
         {
@@ -72,10 +93,6 @@ namespace CmsWeb.Areas.People.Models
                 return DefineModelList(false).Select(x => x.OrgType).Distinct().Where(x => !excludedTypes.Contains(x));
             }
         }
-
-        public PendingEnrollments()
-            : base("", "", true)
-        { }
 
         public IQueryable<InvolvementCurrent> DefineModelList(bool useOrgFilter)
         {

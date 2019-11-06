@@ -7,11 +7,11 @@
 using CmsData;
 using CmsData.View;
 using CmsWeb.Code;
+using CmsWeb.Constants;
 using CmsWeb.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Search.Models
@@ -20,9 +20,23 @@ namespace CmsWeb.Areas.Search.Models
     {
         public ContactSearchInfo SearchParameters { get; set; }
 
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
         public ContactSearchModel()
-            : base("Date", "desc", true)
         {
+            Init();
+        }
+
+        public ContactSearchModel(CMSDataContext db) : base(db)
+        {
+            Init();
+        }
+
+        override protected void Init()
+        {
+            base.Init();
+            Sort = "Date";
+            Direction = "desc";
+            AjaxPager = true;
             SearchParameters = new ContactSearchInfo();
         }
 
@@ -34,13 +48,13 @@ namespace CmsWeb.Areas.Search.Models
 
             if (Util2.OrgLeadersOnly)
             {
-                ppl = DbUtil.Db.OrgLeadersOnlyTag2().People(DbUtil.Db).Select(pp => pp.PeopleId);
+                ppl = CurrentDatabase.OrgLeadersOnlyTag2().People(CurrentDatabase).Select(pp => pp.PeopleId);
             }
 
-            var u = DbUtil.Db.CurrentUser;
+            var u = CurrentDatabase.CurrentUser;
             var roles = u.UserRoles.Select(uu => uu.Role.RoleName.ToLower()).ToArray();
             var managePrivateContacts = HttpContextFactory.Current.User.IsInRole("ManagePrivateContacts");
-            var q = from c in DbUtil.Db.Contacts
+            var q = from c in CurrentDatabase.Contacts
                     where (c.LimitToRole ?? "") == "" || roles.Contains(c.LimitToRole) || managePrivateContacts
                     select c;
 
@@ -73,14 +87,14 @@ namespace CmsWeb.Areas.Search.Models
                 if (pid > 0)
                 {
                     q = from c in q
-                        where DbUtil.Db.Users.Any(uu => c.CreatedBy == uu.UserId && uu.Person.PeopleId == pid)
+                        where CurrentDatabase.Users.Any(uu => c.CreatedBy == uu.UserId && uu.Person.PeopleId == pid)
                         select c;
                 }
                 else
                 {
                     q = from c in q
                         where
-                            DbUtil.Db.Users.Any(
+                            CurrentDatabase.Users.Any(
                                 uu => c.CreatedBy == uu.UserId && uu.Username == SearchParameters.CreatedBy)
                         select c;
                 }
@@ -244,10 +258,10 @@ namespace CmsWeb.Areas.Search.Models
                                  + (o.PrayerRequest == true ? "PR " : "")
                                  + (o.GiftBagGiven == true ? "GB " : ""),
                        ContacteeList = o.OrganizationId.HasValue ? o.organization.OrganizationName :
-                                        string.Join(", ", (from c in DbUtil.Db.Contactees
+                                        string.Join(", ", (from c in CurrentDatabase.Contactees
                                                            where c.ContactId == o.ContactId
                                                            select c.person.Name).Take(3)),
-                       ContactorList = string.Join(", ", (from c in DbUtil.Db.Contactors
+                       ContactorList = string.Join(", ", (from c in CurrentDatabase.Contactors
                                                           where c.ContactId == o.ContactId
                                                           select c.person.Name).Take(3))
 
@@ -257,7 +271,7 @@ namespace CmsWeb.Areas.Search.Models
         public IEnumerable<ContactorSummaryInfo> ContactorSummary()
         {
             int ministryid = SearchParameters.Ministry.Value.ToInt();
-            var q = from c in DbUtil.Db.Contactors
+            var q = from c in CurrentDatabase.Contactors
                     where c.contact.ContactDate >= SearchParameters.StartDate || SearchParameters.StartDate == null
                     where c.contact.ContactDate <= SearchParameters.EndDate || SearchParameters.EndDate == null
                     where ministryid == 0 || ministryid == c.contact.MinistryId
@@ -284,7 +298,7 @@ namespace CmsWeb.Areas.Search.Models
 
         public IEnumerable<ContactSummaryInfo> ContactSummary()
         {
-            return from i in DbUtil.Db.ContactSummary(
+            return from i in CurrentDatabase.ContactSummary(
                 SearchParameters.StartDate,
                 SearchParameters.EndDate,
                 SearchParameters.Ministry.Value.ToInt(),
@@ -304,7 +318,7 @@ namespace CmsWeb.Areas.Search.Models
 
         public IEnumerable<ContactTypeTotal> ContactTypeTotals()
         {
-            return from c in DbUtil.Db.ContactTypeTotals(SearchParameters.StartDate, SearchParameters.EndDate, SearchParameters.Ministry.Value.ToInt())
+            return from c in CurrentDatabase.ContactTypeTotals(SearchParameters.StartDate, SearchParameters.EndDate, SearchParameters.Ministry.Value.ToInt())
                    orderby c.Count descending
                    select c;
         }
@@ -316,15 +330,17 @@ namespace CmsWeb.Areas.Search.Models
                 && !SearchParameters.EndDate.HasValue
                 && SearchParameters.Ministry.Value.ToInt() == 0;
         }
-        public static void DeleteContactsForType(int id)
+
+        public static void DeleteContactsForType(CMSDataContext db, int id)
         {
-            DbUtil.Db.ExecuteCommand("DELETE dbo.Contactees FROM dbo.Contactees ce JOIN dbo.Contact c ON ce.ContactId = c.ContactId WHERE c.ContactTypeId = {0}", id);
-            DbUtil.Db.ExecuteCommand("DELETE dbo.Contactors FROM dbo.Contactors co JOIN dbo.Contact c ON co.ContactId = c.ContactId WHERE c.ContactTypeId = {0}", id);
-            DbUtil.Db.ExecuteCommand("DELETE dbo.Contact WHERE ContactTypeId = {0}", id);
+            db.ExecuteCommand("DELETE dbo.Contactees FROM dbo.Contactees ce JOIN dbo.Contact c ON ce.ContactId = c.ContactId WHERE c.ContactTypeId = {0}", id);
+            db.ExecuteCommand("DELETE dbo.Contactors FROM dbo.Contactors co JOIN dbo.Contact c ON co.ContactId = c.ContactId WHERE c.ContactTypeId = {0}", id);
+            db.ExecuteCommand("DELETE dbo.Contact WHERE ContactTypeId = {0}", id);
         }
+
         public Guid ConvertToQuery()
         {
-            var c = DbUtil.Db.ScratchPadCondition();
+            var c = CurrentDatabase.ScratchPadCondition();
             c.Reset();
             var clause = c.AddNewClause(QueryType.MadeContactTypeAsOf, CompareType.Equal, "1,True");
             clause.Program = SearchParameters.Ministry.Value;
@@ -336,12 +352,13 @@ namespace CmsWeb.Areas.Search.Models
                     select v.IdValue;
             var idvalue = q.Single();
             clause.CodeIdValue = idvalue;
-            c.Save(DbUtil.Db);
+            c.Save(CurrentDatabase);
             return c.Id;
         }
-        public static Guid ContactTypeQuery(int id)
+
+        public static Guid ContactTypeQuery(CMSDataContext db, int id)
         {
-            var c = DbUtil.Db.ScratchPadCondition();
+            var c = db.ScratchPadCondition();
             c.Reset();
             var comp = CompareType.Equal;
             var clause = c.AddNewClause(QueryType.RecentContactType, comp, "1,True");
@@ -351,7 +368,7 @@ namespace CmsWeb.Areas.Search.Models
                     where v.Id == id
                     select v.IdValue;
             clause.CodeIdValue = q.Single();
-            c.Save(DbUtil.Db);
+            c.Save(db);
             return c.Id;
         }
 
