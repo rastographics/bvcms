@@ -53,7 +53,7 @@ namespace IntegrationTests.Areas.Manage
             CreateUser(username, password, roles: new[] { "Access", "Edit", "Admin" });
             Login();
             Open($"{rootUrl}QueryCode?code=Age>65");
-            WaitForElement("input#totcnt");
+            WaitForElementToDisappear(loadingUI);
             PageSource.ShouldContain("David Carroll");
         }
     }
