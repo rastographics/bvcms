@@ -96,7 +96,7 @@ namespace IntegrationTests.Areas.Manage
             Find(css: $"a[id=\"{role.RoleId}\"].delete").Click();
             Wait(0.5);
             Find(css: "div.showSweetAlert.visible button.confirm").Click();
-            Wait(1);
+            WaitFor(d => PageSource.Contains("<h2>Deleted!</h2>"));
 
             role = db.Copy().Roles.SingleOrDefault(r => r.RoleName == roleName);
             role.ShouldBeNull();
