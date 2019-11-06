@@ -53,7 +53,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                                Name = (anonymous ? "Anonymous" : g.Sender.Name),
                                Amt = (g.Amount ?? 0)
                            };
-                var transactions = new TransactionsModel(OrgMember.TranId) { GoerId = Goer.PeopleId };
+                var transactions = new TransactionsModel(CurrentDatabase, OrgMember.TranId) { GoerId = Goer.PeopleId };
                 var summaries = CurrentDatabase.ViewTransactionSummaries.SingleOrDefault(ts => ts.RegId == OrgMember.TranId && ts.PeopleId == Goer.PeopleId && ts.OrganizationId == org.OrganizationId);
                 Supporters = supporters      // combine and total multiple gifts from the same supporter id
                     .GroupBy(s => s.Id)

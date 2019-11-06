@@ -1,6 +1,8 @@
 using CmsData;
 using CmsData.View;
+using CmsWeb.Constants;
 using CmsWeb.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UtilityExtensions;
@@ -15,15 +17,30 @@ namespace CmsWeb.Areas.People.Models
             set
             {
                 peopleid = value;
-                Person = DbUtil.Db.LoadPersonById(peopleid);
+                Person = CurrentDatabase.LoadPersonById(peopleid);
             }
         }
         private int peopleid;
         public Person Person;
 
-        public ChangesModel()
-            : base("Time", "desc", true)
-        { }
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
+        public ChangesModel() : base()
+        {
+            Init();
+        }
+
+        public ChangesModel(CMSDataContext db) : base(db)
+        {
+            Init();
+        }
+
+        protected override void Init()
+        {
+            base.Init();
+            Sort = "Time";
+            Direction = "desc";
+            AjaxPager = true;
+        }
 
         public void Reverse(string field, string value, string pf)
         {
@@ -31,19 +48,19 @@ namespace CmsWeb.Areas.People.Models
             {
                 case "p":
                     Person.UpdateValueFromText(field, value);
-                    Person.LogChanges(DbUtil.Db, Util.UserPeopleId ?? 0);
+                    Person.LogChanges(CurrentDatabase, Util.UserPeopleId ?? 0);
                     break;
                 case "f":
                     Person.Family.UpdateValueFromText(field, value);
-                    Person.Family.LogChanges(DbUtil.Db, PeopleId, Util.UserPeopleId ?? 0);
+                    Person.Family.LogChanges(CurrentDatabase, PeopleId, Util.UserPeopleId ?? 0);
                     break;
             }
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
         }
 
         public override IQueryable<ChangeLogDetail> DefineModelList()
         {
-            return from c in DbUtil.Db.ViewChangeLogDetails
+            return from c in CurrentDatabase.ViewChangeLogDetails
                    where c.PeopleId == PeopleId || c.FamilyId == Person.FamilyId
                    select c;
         }
@@ -62,7 +79,7 @@ namespace CmsWeb.Areas.People.Models
         public override IEnumerable<ChangeLogInfo> DefineViewList(IQueryable<ChangeLogDetail> q)
         {
             var q1 = (from c in q
-                      let userp = DbUtil.Db.People.SingleOrDefault(u => u.PeopleId == c.UserPeopleId)
+                      let userp = CurrentDatabase.People.SingleOrDefault(u => u.PeopleId == c.UserPeopleId)
                       select new ChangeLogInfo()
                       {
                           User = c.UserPeopleId == 0 ? "Admin Script" : userp.Name,

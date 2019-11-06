@@ -405,24 +405,29 @@ namespace CmsWeb.Models
             return UserValidationResult.Valid(user);
         }
 
-        public static object AuthenticateLogon(string userName, string password, HttpSessionStateBase Session, HttpRequestBase Request, CMSDataContext db, CMSImageDataContext idb)
+        public static UserValidationResult AuthenticateLogon(string userName, string password, HttpSessionStateBase Session, HttpRequestBase Request, CMSDataContext db, CMSImageDataContext idb)
         {
             var status = AuthenticateLogon(userName, password, Request.Url.OriginalString, db);
             if (status.IsValid)
             {
-                SetUserInfo(db, idb, status.User.Username);
-                FormsAuthentication.SetAuthCookie(status.User.Username, false);
-                CmsData.DbUtil.LogActivity($"User {status.User.Username} logged in");
-                return status.User;
+                return UserValidationResult.Valid(status.User);
             }
-            return status.ErrorMessage;
+            return UserValidationResult.Invalid(UserValidationStatus.IncorrectPassword, status.ErrorMessage);
         }
 
+        public static void FinishLogin(string userName, HttpSessionStateBase Session, CMSDataContext db, CMSImageDataContext idb, bool logEntry = true)
+        {
+            SetUserInfo(db, idb, userName, logEntry);
+            FormsAuthentication.SetAuthCookie(userName, false);
+            if (logEntry)
+            {
+                DbUtil.LogActivity($"User {userName} logged in");
+            }
+        }
         public static object AutoLogin(string userName, HttpSessionStateBase Session, HttpRequestBase Request, CMSDataContext db, CMSImageDataContext idb)
         {
 #if DEBUG
-            SetUserInfo(db, idb, userName);
-            FormsAuthentication.SetAuthCookie(userName, false);
+            FinishLogin(userName, Session, db, idb, false);
 #endif
             return null;
         }

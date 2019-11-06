@@ -124,7 +124,9 @@ namespace CmsData
             w.WriteAttr("OrgStatus", OrgStatus);
             w.WriteAttr("OrgType2", OrgType2);
             w.WriteAttr("OrgName", OrgName);
-            if(IsScratchPad) // disabled conditions only work on scratchpad
+            w.WriteAttr("MemberTypes", MemberTypes);
+            w.WriteAttr("AttendTypes", AttendTypes);
+            if (IsScratchPad) // disabled conditions only work on scratchpad
                 w.WriteAttr("DisableOnScratchpad", DisableOnScratchpad);
         }
         public static Condition Import(string text, string name = null, bool newGuids = false, Guid? topguid = null)
@@ -171,6 +173,8 @@ namespace CmsData
                 OrgStatus = Attribute(r, "OrgStatus"),
                 OnlineReg = Attribute(r, "OnlineReg"),
                 OrgType2 = Attribute(r, "OrgType2").ToInt(),
+                MemberTypes = Attribute(r, "MemberTypes"),
+                AttendTypes = Attribute(r, "AttendTypes"),
                 AllConditions = allClauses
             };
             if (p == null)

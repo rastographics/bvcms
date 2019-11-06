@@ -8,15 +8,17 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using CmsData;
 using CmsWeb.Areas.Search.Models;
+using CmsWeb.Constants;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Reports.Models
 {
     public class WeeklyAttendanceModel : OrgSearchModel
     {
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
         public WeeklyAttendanceModel() { }
+
         public IEnumerable<AttendInfo> Attendances()
         {
             var Orgs = FetchOrgs();
