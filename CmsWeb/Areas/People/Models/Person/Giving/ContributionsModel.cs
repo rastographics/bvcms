@@ -58,6 +58,7 @@ namespace CmsWeb.Areas.People.Models
             switch (Filter)
             {
                 case "Contributions":
+                case "CombineGiving":
                     return contributionRecords.Where(p => p.ContributionTypeId != ContributionTypeCode.Pledge);
                 case "Pledges":
                     isPledges = true;

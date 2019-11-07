@@ -1,0 +1,32 @@
+﻿@using UtilityExtensions
+@using CmsData
+@model CmsWeb.Areas.People.Models.ContributionsModel
+@{
+    var campusId = Model.Person.CampusId;
+    var GivingSummary = Model.GetGivingSummary();    
+}
+<div class="row">
+    <div class="col-sm-6">
+        <h3>Giving Summary</h3>
+    </div>
+    <div class="col-sm-6">
+    </div>
+</div>
+<table class="table table-striped">
+    <tr>
+        <th>Fund</th>
+        <th class="text-right">Contributed</th>
+    </tr>
+    @if (GivingSummary != null)
+    {
+        foreach (var p in GivingSummary)
+        {
+            <tr>
+                <td>
+                    @p.Fund
+                </td>
+                <td class="text-right">@p.AmountContributed.ToString("C")</td>
+            </tr>
+        }
+    }
+</table>

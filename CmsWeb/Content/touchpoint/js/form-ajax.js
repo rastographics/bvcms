@@ -27,11 +27,73 @@
         }
         $this.data('clicked', true);
         var state = $this.attr("href") || $this.data("target");
+        if ($this.hasClass('combined')) {
+            $.renderCombinedAjax(state);
+        }
+        else
+        {
+            var d = $(state);
+            $.renderAjax(d, state);
+        }
+    });
+
+    $('body').on('change', 'select.nav-select-pills', function (event) {
+        $("a[href='" + $(this).val() + "']").click().tab("show");
+    });
+
+    $("div.tab-pane").on("click", "a.ajax-refresh", function (event) {
+        event.preventDefault();
+        var d = $(this).closest("div.tab-pane");
+        $.formAjaxClick($(this), d.data("link"), d.data("action"));
+        return false;
+    });
+    $("body").on("click", "form.ajax a.ajax-refresh", function (event) {
+        event.preventDefault();
+        $.formAjaxClick($(this));
+        return false;
+    });
+
+    $('body').on('click', 'form.ajax a.submit', function (event) {
+        event.preventDefault();
+        var t = $(this);
+        if (t.data("confirm"))
+            swal({
+                title: t.data("confirm"),
+                text: t.data("confirm-text"),
+                type: t.data("confirm-type"),
+                showCancelButton: true,
+                confirmButtonClass: t.data("confirm-btn-class"),
+                confirmButtonText: t.data("confirm-btn-text"),
+                closeOnConfirm: true
+            },
+            function () {
+                $.formAjaxSubmit(t);
+            });
+        else
+            $.formAjaxSubmit(t);
+        return false;
+    });
+
+    $.formAjaxSubmit = function (a) {
+        var $form = a.closest("form.ajax");
+        $form.attr("action", a[0].href);
+        if (!a.hasClass("validate") || $form.valid()) {
+            $form.submit();
+        }
+    };
+
+    $.renderCombinedAjax = function (state) {
         var d = $(state);
+        var d1 = d.find("div#filter1");
+        var d2 = d.find("div#filter2");
+        $.renderAjax(d1, state);
+        $.renderAjax(d2, state);
+    };
+
+    $.renderAjax = function (d, state) {
         var $form = d.find("form.ajax");
         var postdata = $form.serialize();
         var url = d.data("link");
-
         if (url && url.length > 0) {
             if (!d.hasClass("loaded")) {
                 $.ajax({
@@ -78,51 +140,6 @@
             }
         }
         return true;
-    });
-
-    $('body').on('change', 'select.nav-select-pills', function (event) {
-        $("a[href='" + $(this).val() + "']").click().tab("show");
-    });
-
-    $("div.tab-pane").on("click", "a.ajax-refresh", function (event) {
-        event.preventDefault();
-        var d = $(this).closest("div.tab-pane");
-        $.formAjaxClick($(this), d.data("link"), d.data("action"));
-        return false;
-    });
-    $("body").on("click", "form.ajax a.ajax-refresh", function (event) {
-        event.preventDefault();
-        $.formAjaxClick($(this));
-        return false;
-    });
-
-    $('body').on('click', 'form.ajax a.submit', function (event) {
-        event.preventDefault();
-        var t = $(this);
-        if (t.data("confirm"))
-            swal({
-                title: t.data("confirm"),
-                text: t.data("confirm-text"),
-                type: t.data("confirm-type"),
-                showCancelButton: true,
-                confirmButtonClass: t.data("confirm-btn-class"),
-                confirmButtonText: t.data("confirm-btn-text"),
-                closeOnConfirm: true
-            },
-            function () {
-                $.formAjaxSubmit(t);
-            });
-        else
-            $.formAjaxSubmit(t);
-        return false;
-    });
-
-    $.formAjaxSubmit = function (a) {
-        var $form = a.closest("form.ajax");
-        $form.attr("action", a[0].href);
-        if (!a.hasClass("validate") || $form.valid()) {
-            $form.submit();
-        }
     };
 
     $('body').on('click', 'form.ajax input.ajax', function () {
