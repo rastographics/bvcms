@@ -116,7 +116,7 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost]
         public ActionResult ContactsReceived(int id)
         {
-            var m = new ContactsReceivedModel
+            var m = new ContactsReceivedModel(CurrentDatabase)
             {
                 OrganizationId = id
             };

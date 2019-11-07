@@ -173,10 +173,11 @@ namespace CmsWeb.Areas.Manage.Controllers
         public ActionResult DeleteAttachment(int id)
         {
             var attachment = CurrentDatabase.ResourceAttachments.FirstOrDefault(x => x.ResourceAttachmentId == id);
-            var resourceId = attachment.ResourceId;
+            int resourceId = 0;
 
             if (attachment != null)
             {
+                resourceId = attachment.ResourceId;
                 CurrentDatabase.ResourceAttachments.DeleteOnSubmit(attachment);
                 CurrentDatabase.SubmitChanges();
             }

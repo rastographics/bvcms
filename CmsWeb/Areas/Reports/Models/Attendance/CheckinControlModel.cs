@@ -6,6 +6,7 @@
  */
 using CmsData;
 using CmsWeb.Areas.Search.Models;
+using CmsWeb.Constants;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +27,12 @@ namespace CmsWeb.Areas.Reports.Models
             public DateTime MeetingTime { get; set; }
             public string AttendType { get; set; }
         }
+
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
         public CheckinControlModel() { }
+
+        public CheckinControlModel(CMSDataContext db) : base(db) { }
+
         public IEnumerable<AttendInfo> list()
         {
             var orgs = FetchOrgs();

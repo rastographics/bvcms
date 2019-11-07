@@ -21,7 +21,7 @@ namespace CmsWeb.Areas.Org.Controllers
                 && (User.IsInRole("Admin") || CurrentDatabase.OrganizationMembers.Any(
                     mm => mm.OrganizationId == id && mm.PeopleId == UtilityExtensions.Util.UserPeopleId)))
             {
-                return View(new MemberDirectoryModel(id));
+                return View(new MemberDirectoryModel(CurrentDatabase, id));
             }
 
             return RedirectToAction("NoAccess");
