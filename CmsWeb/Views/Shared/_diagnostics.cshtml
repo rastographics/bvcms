@@ -1,0 +1,17 @@
+﻿@if (Request.IsLocal)
+{
+<script>
+    (function () {
+        var errorElement = document.createElement('DIV');
+        errorElement.className = 'js-errors';
+        errorElement.id = 'JSErrors';
+        errorElement.style.display = 'none';
+        document.body.appendChild(errorElement);
+        window.onerror = function (msg, url, line, col, error) {
+            var errorInfo = msg + '\n' + url + ':' + line + ', ' + col + '\n' + error;
+            errorElement.appendChild(document.createElement('P')).textContent = errorInfo;
+        }
+    })();
+</script>
+}
+

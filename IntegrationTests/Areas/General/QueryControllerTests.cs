@@ -8,7 +8,7 @@ namespace IntegrationTests.Areas.Manage
     [Collection(Collections.Webapp)]
     public class QueryControllerTests : AccountTestBase
     {
-        [Fact]
+        [Fact, FeatureTest]
         public void TestSearchBuilderOrgsDropdownOption()
         {
             const string finddivision = "input[type=radio][value$='First Division']";
