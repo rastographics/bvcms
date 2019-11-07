@@ -22,7 +22,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [Route("~/OnlineReg/ProcessExternalPayment/{reference}")]
         public ActionResult ProcessExternalPayment(string reference)
         {
-            PaymentForm pf = new PaymentForm()
+            PaymentForm pf = new PaymentForm(CurrentDatabase)
             {
                 extTransactionId = 0
             };

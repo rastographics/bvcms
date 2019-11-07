@@ -14,7 +14,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 _masterorgid = value;
                 if (value > 0)
                 {
-                    ParseSettings();
+                    ParseSettings(CurrentDatabase);
                 }
             }
         }
@@ -29,7 +29,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 if (value > 0)
                 {
                     CheckMasterOrg();
-                    ParseSettings();
+                    ParseSettings(CurrentDatabase);
                 }
             }
         }

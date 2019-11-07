@@ -204,7 +204,7 @@ namespace CmsWeb.Areas.Setup.Controllers
         [Route("~/Pushpay/Registration/{DatumId:int}")]
         public ActionResult Registration(int DatumId)
         {
-            OnlineRegModel m = new OnlineRegModel();
+            OnlineRegModel m = new OnlineRegModel(CurrentDatabase);
             decimal? Amount = 0;
             string mobile = string.Empty;
             RegistrationDatum datum = CurrentDatabase.RegistrationDatas.SingleOrDefault(d => d.Id == DatumId);
@@ -311,7 +311,7 @@ namespace CmsWeb.Areas.Setup.Controllers
 
         private async Task<ActionResult> RegistrationProcess(string paymentToken, int datumId)
         {
-            OnlineRegModel m = new OnlineRegModel();
+            OnlineRegModel m = new OnlineRegModel(CurrentDatabase);
             RegistrationDatum datum = CurrentDatabase.RegistrationDatas.SingleOrDefault(d => d.Id == datumId);
             m = Util.DeSerialize<OnlineRegModel>(datum.Data);
             PaymentForm pf = PaymentForm.CreatePaymentForm(m);

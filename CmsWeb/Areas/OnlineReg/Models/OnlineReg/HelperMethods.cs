@@ -46,7 +46,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
                 if (_settings == null)
                 {
-                    ParseSettings();
+                    ParseSettings(CurrentDatabase);
                     _settings = HttpContextFactory.Current.Items["RegSettings"] as Dictionary<int, Settings>;
                 }
                 return _settings;
@@ -179,7 +179,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             if (o != null)
             {
-                if ((o.ClassFilled ?? false) || (o.Limit > 0 && o.Limit <= o.RegLimitCount(CurrentDatabase)))
+                if ((o.ClassFilled ?? false) || (o.Limit <= o.RegLimitCount(CurrentDatabase)))
                 {
                     return true;
                 }
