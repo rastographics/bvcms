@@ -2,6 +2,7 @@
 using Shouldly;
 using Xunit;
 using SharedTestFixtures;
+using CMSWebTests;
 
 namespace IntegrationTests.Areas.Manage
 {
@@ -17,13 +18,13 @@ namespace IntegrationTests.Areas.Manage
 
             LoginAsAdmin();
 
-            Open($"{rootUrl}SetSettingForLocalhost/{settingname}/DELETE");
+            SettingUtils.DeleteSetting(settingname);
             WaitForPageLoad();
             DisplayOrgDropdowns();
             IsElementPresent(finddivision).ShouldBeTrue();
             IsElementPresent(findorg).ShouldBeTrue();
 
-            Open($"{rootUrl}SetSettingForLocalhost/{settingname}/false");
+            SettingUtils.UpdateSetting(settingname, "false");
             WaitForPageLoad();
             DisplayOrgDropdowns();
             IsElementPresent(finddivision).ShouldBeFalse();
