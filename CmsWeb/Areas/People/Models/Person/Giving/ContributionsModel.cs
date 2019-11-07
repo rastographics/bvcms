@@ -98,7 +98,7 @@ namespace CmsWeb.Areas.People.Models
         {
             IQueryable<Contribution> contributionRecords = GetContributionRecords();
             PledgesSummary = new List<PledgesSummary>();
-            foreach (Contribution contribution in contributionRecords.Where(p => p.ContributionTypeId == ContributionTypeCode.Pledge))
+            foreach (Contribution contribution in contributionRecords.Where(p => p.ContributionTypeId == ContributionTypeCode.Pledge).OrderByDescending(c => c.ContributionDate))
             {
                 AddSummaryPledge(contribution, contributionRecords);
             }
@@ -109,7 +109,7 @@ namespace CmsWeb.Areas.People.Models
         {
             IQueryable<Contribution> contributionRecords = GetContributionRecords();
             GivingSummary = new List<GivingSummary>();
-            foreach (Contribution contribution in contributionRecords.Where(p => p.ContributionTypeId != ContributionTypeCode.Pledge))
+            foreach (Contribution contribution in contributionRecords.Where(p => p.ContributionTypeId != ContributionTypeCode.Pledge).OrderByDescending(c => c.ContributionDate))
             {
                 AddGivingSummary(contribution, contributionRecords);
             }
