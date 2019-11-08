@@ -61,5 +61,28 @@ namespace IntegrationTests.Areas.People.Views.Person
             deceasedMember = Find(css: "#family_members > li.alert-danger");
             deceasedMember.ShouldBe(null);
         }
+
+        [Fact, FeatureTest]
+        public void Should_Show_Combine_Giving_Summaries()
+        {
+            SettingUtils.UpdateSetting("CombinedGivingSummary", "true");
+
+            username = RandomString();
+            password = RandomString();
+            var user = CreateUser(username, password);
+            Login();
+
+            Open($"{rootUrl}Person2/{user.PeopleId}");
+            WaitForElement(".active:nth-child(2) > a", 5);
+            PageSource.ShouldContain("<a href=\"#giving\" aria-controls=\"giving\" data-toggle=\"tab\">Giving</a>");
+
+            Find(text: "Giving").Click();
+            WaitForElement("#filter2 .row:nth-child(2)", 10);
+
+            PageSource.ShouldContain("Pledge Summary");
+            PageSource.ShouldContain("Pledge Detail");
+            PageSource.ShouldContain("Giving Summary");
+            PageSource.ShouldContain("Giving Detail");
+        }
     }
 }
