@@ -7,13 +7,10 @@
 @ViewExtensions2.GoogleCharts()
 
     <script type="text/javascript">
-        // get the chart data from the server.
         $(function () {
-            var chartData;
+            var chartData = @Html.Raw(Json.Encode(Model));
             google.charts.load('current', { packages: ['corechart'] });
             google.charts.setOnLoadCallback(function () {
-                var model = '@Html.Raw(Json.Encode(Model))';
-                chartData = JSON.parse(model);
                 //Creates a data table for storing the map data .chart api access this data for displaying            
                 var data2 = new google.visualization.DataTable();
                 //Adding columns to data table to insert the chart data

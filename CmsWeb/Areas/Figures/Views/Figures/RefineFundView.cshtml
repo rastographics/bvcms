@@ -51,11 +51,8 @@
 
     <script type="text/javascript">
         $(function () {
+            google.charts.load('current', { packages: ['corechart'] });
             $('#Fund-DropdownID').multiSelect();
-            (function loadChart() {
-                if (!window.google) { return setTimeout(loadChart, 100); }
-                google.charts.load('current', { packages: ['corechart'] });
-            })();
             $('#DrawChart').click(function () {
                 var e = document.getElementById('Fund_chart_display');
                 e.style.display = 'block';

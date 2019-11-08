@@ -9,14 +9,10 @@
 <script type="text/javascript">
 
     $(function () {
-        var chartData;
-        // get the chart data from the server.
+        var chartData = @Html.Raw(Json.Encode(Model));
+
         google.charts.load('current', { packages: ['corechart'] });
         google.charts.setOnLoadCallback(function () {
-
-            var model = '@Html.Raw(Json.Encode(Model))';
-            chartData = JSON.parse(model);
-
             // Instantiate and draw our chart, passing in some options
             var chartwidth = $('#Attendance_chart_display').width();
             var chartheight = $('#Attendance_chart_display').height();
