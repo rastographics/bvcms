@@ -1,5 +1,6 @@
 using CmsData;
 using CmsWeb.Code;
+using CmsWeb.Constants;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,14 +27,15 @@ namespace CmsWeb.Areas.Search.Models
         public Guid? SelectedId { get; set; }
         public string CodeIdValue { get; set; }
 
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
         public QueryModel()
         {
-            ConditionName = "Group";
+            Init();
         }
 
-        public QueryModel(CMSDataContext db)
-            : this()
+        public QueryModel(CMSDataContext db) : base(db)
         {
+            Init();
             CurrentDatabase = db;
         }
 
@@ -42,6 +44,12 @@ namespace CmsWeb.Areas.Search.Models
         {
             QueryId = id;
             DbUtil.LogActivity($"Running Query ({id})");
+        }
+
+        override protected void Init()
+        {
+            base.Init();
+            ConditionName = "Group";
         }
 
         public string Program { get; set; }

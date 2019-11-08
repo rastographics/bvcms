@@ -117,7 +117,7 @@ namespace CmsWeb.Areas.People.Models
         public string MemberStatus { get; set; }
         public bool ShowCombinedGiving { get; set; }
 
-        public FamilyModel FamilyModel => familyModel ?? (familyModel = new FamilyModel(PeopleId));
+        public FamilyModel FamilyModel => familyModel ?? (familyModel = new FamilyModel(CurrentDatabase, PeopleId));
 
         public IEnumerable<User> Users => users ?? (users = Person.Users);
 

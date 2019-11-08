@@ -18,7 +18,7 @@
         <div class="col-md-8">
             <div>
                 @{
-                    var statementEntries = ContributionsModel.Statements(Model.PeopleId).ToList();
+                    var statementEntries = ContributionsModel.Statements(DbUtil.Db, Model.PeopleId).ToList();
                     foreach (var year in statementEntries.Select(s => s.StartDate.Year).Distinct())
                     {
                         var startDate = new DateTime(year, 1, 1);

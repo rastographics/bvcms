@@ -14,7 +14,7 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpGet, Route("~/DownlineDetail/{category}/{peopleid:int}/{level:int}")]
         public ActionResult Index(int category, int peopleid, int level)
         {
-            var m = new DownlineDetailModel
+            var m = new DownlineDetailModel(CurrentDatabase)
             {
                 CategoryId = category,
                 DownlineId = peopleid,
@@ -31,7 +31,7 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpGet, Route("~/DownlineTrace/{category}/{peopleid}")]
         public ActionResult Trace(int category, int peopleid, string trace)
         {
-            var m = new DownlineDetailModel
+            var m = new DownlineDetailModel(CurrentDatabase)
             {
                 CategoryId = category,
                 DownlineId = peopleid,
