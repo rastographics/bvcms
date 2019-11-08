@@ -79,6 +79,8 @@ namespace CmsData
         public string SavedQueryIdDesc => SavedQuery;
         public string Tags { get; set; }
         public string PmmLabels => Tags;
+        public string MemberTypes { get; set; }
+        public string AttendTypes { get; set; }
 
         public string Schedule { get; set; }
         public int ScheduleInt => Schedule.GetCsvToken().ToInt();
@@ -554,6 +556,7 @@ namespace CmsData
         {
             Id = Guid.NewGuid();
             Age = from.Age;
+            AttendTypes = from.AttendTypes;
             Order = from.Order;
             CodeIdValue = from.CodeIdValue;
             Comparison = from.Comparison;
@@ -564,6 +567,7 @@ namespace CmsData
             Division = from.Division;
             EndDate = from.EndDate;
             ConditionName = from.ConditionName;
+            MemberTypes = from.MemberTypes;
             Organization = from.Organization;
             Program = from.Program;
             Quarters = from.Quarters;

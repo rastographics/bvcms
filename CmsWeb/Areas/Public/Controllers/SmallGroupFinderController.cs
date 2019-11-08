@@ -15,13 +15,21 @@ namespace CmsWeb.Areas.Public.Controllers
 
         public ActionResult Index(string id, bool useShell = true)
         {
-            var check = (from e in CurrentDatabase.Contents
-                         where e.Name == "SGF-" + id + ".xml"
-                         select e).SingleOrDefault();
-
-            if (check == null)
+            if (id != Request.QueryString["id"])
             {
-                return new HttpNotFoundResult("Page not found!");
+                var query = HttpUtility.ParseQueryString(Request.QueryString.ToQueryString());
+                query["id"] = id;
+                var urlFormat = "/SmallGroupFinder/Index?" + query.ToQueryString();
+                return Redirect(urlFormat);
+            }
+
+            var check = (from e in CurrentDatabase.Contents
+                         where e.Name == $"SGF-{id}.xml"
+                         select e).Any();
+
+            if (!check)
+            {
+                return new HttpNotFoundResult();
             }
 
             var sgfm = BuildSmallGroupFinderModel(id, useShell);

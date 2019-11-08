@@ -1,0 +1,19 @@
+﻿@model AskDocuments
+@using CmsData.Registration
+<div class="well">
+    <label class="ask-question">
+        Upload Documents
+    </label>
+    @if (ViewBag.ShowHelp != false)
+    {
+        <div class="alert alert-info">@Html.Markdown(Model.Help)</div>
+    }
+    @Html.DisplayFor(m => m.TargetExtraValue)
+    @foreach (var i in Model.list)
+    {
+        <div class="well">
+            @Html.DisplayFor(m => i.DocumentName)
+            @Html.DisplayFor(m => i.Required)
+        </div>
+    }
+</div>

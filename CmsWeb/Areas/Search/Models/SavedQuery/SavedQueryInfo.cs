@@ -1,12 +1,15 @@
 using CmsData;
 using CmsWeb.Code;
+using CmsWeb.Constants;
+using CmsWeb.Models;
 using System;
 
 namespace CmsWeb.Areas.Search.Models
 {
-    public class SavedQueryInfo
+    public class SavedQueryInfo : IDbBinder
     {
-        internal CMSDataContext Db;
+        internal CMSDataContext Db => CurrentDatabase;
+        public CMSDataContext CurrentDatabase { get; set; }
 
         [NoUpdate]
         public Guid QueryId { get; set; }
@@ -24,17 +27,19 @@ namespace CmsWeb.Areas.Search.Models
 
         public Query query;
 
+        [Obsolete(Errors.ModelBindingConstructorError, error: true)]
         public SavedQueryInfo() { }
         public SavedQueryInfo(CMSDataContext db)
         {
-            Db = db;
+            CurrentDatabase = db;
         }
+
         [NoUpdate]
         public bool CanDelete { get; set; }
 
         public SavedQueryInfo(Guid id, CMSDataContext db)
         {
-            Db = db;
+            CurrentDatabase = db;
             query = Db.LoadQueryById2(id);
             this.CopyPropertiesFrom(query);
         }

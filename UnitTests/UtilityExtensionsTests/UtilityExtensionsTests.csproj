@@ -104,6 +104,10 @@
       <Project>{C504E3D2-5498-451B-BF82-309623706F11}</Project>
       <Name>UtilityExtensions</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SharedTestFixtures\SharedTestFixtures.csproj">
+      <Project>{37B7DD60-A2CE-4E69-8CC5-4370B95AD908}</Project>
+      <Name>SharedTestFixtures</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

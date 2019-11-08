@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using CmsCheckin.Dialogs;
 using System.Collections.Generic;
 using System.Collections;
+using System.Net;
 
 namespace CmsCheckin
 {
@@ -44,8 +45,9 @@ namespace CmsCheckin
 		{
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
-			settings.load();
+            settings.load();
 
 			AdminPINLastAccess = DateTime.Now.AddYears(-1);
 

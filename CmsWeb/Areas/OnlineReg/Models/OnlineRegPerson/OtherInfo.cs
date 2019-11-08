@@ -97,6 +97,16 @@ namespace CmsWeb.Areas.OnlineReg.Models
             return false;
         }
 
+        public bool DocumentUploaded(string key, bool value)
+        {
+            if (OrganizationDocument != null && OrganizationDocument.ContainsKey(key))
+            {
+                return OrganizationDocument[key] == value;
+            }
+
+            return false;
+        }
+
         public bool CheckboxChecked(string sg)
         {
             if (Checkbox == null)

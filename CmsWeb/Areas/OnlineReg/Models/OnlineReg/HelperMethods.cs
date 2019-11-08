@@ -2,6 +2,7 @@ using CmsData;
 using CmsData.Codes;
 using CmsData.Registration;
 using CmsWeb.Areas.Dialog.Models;
+using ImageData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -472,8 +473,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public string SubmitInstructions()
         {
-            Settings v;
-            settings.TryGetValue(org?.OrganizationId ?? 0, out v);
+            settings.TryGetValue(org?.OrganizationId ?? 0, out Settings v);
             return v?.InstructionSubmit;
         }
 
@@ -868,7 +868,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     select om;
             foreach (var om in q)
             {
-                om.Drop(CurrentDatabase, DateTime.Now);
+                om.Drop(CurrentDatabase, CMSImageDataContext.Create(CurrentDatabase.Host), DateTime.Now);
                 CurrentDatabase.ExecuteCommand("DELETE dbo.EnrollmentTransaction WHERE PeopleId = {0} AND OrganizationId = {1}", om.PeopleId, om.OrganizationId);
             }
             CurrentDatabase.SubmitChanges();

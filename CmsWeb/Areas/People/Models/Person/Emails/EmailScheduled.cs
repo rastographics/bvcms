@@ -1,17 +1,21 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using CmsData;
-using CmsWeb.Models;
+using CmsWeb.Constants;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Models
 {
     public class EmailScheduledModel : EmailModel
     {
-        public EmailScheduledModel() { }
-        
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
+        public EmailScheduledModel() : base() { }
+
+        public EmailScheduledModel(CMSDataContext db) : base(db) { }
+
         override public IQueryable<EmailQueue> DefineModelList()
         {
-            var q = from e in DbUtil.Db.EmailQueues
+            var q = from e in CurrentDatabase.EmailQueues
                     where !(e.Transactional ?? false)
                     where e.Sent == null && e.SendWhen != null
                     where e.QueuedBy == Person.PeopleId

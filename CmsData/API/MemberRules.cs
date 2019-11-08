@@ -13,6 +13,7 @@ using CmsData.Codes;
 using System.Web;
 using IronPython.Runtime;
 using Microsoft.Scripting.Hosting.Providers;
+using ImageData;
 
 namespace CmsData
 {
@@ -31,7 +32,7 @@ namespace CmsData
                         where om.PeopleId == PeopleId
                         select om).ToList();
             foreach (var om in list)
-                om.Drop(Db, DateTime.Now);
+                om.Drop(Db, CMSImageDataContext.Create(Db.Host), DateTime.Now);
         }
         public string errorReturn;
 

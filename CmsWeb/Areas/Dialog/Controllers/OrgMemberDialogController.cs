@@ -247,5 +247,23 @@ namespace CmsWeb.Areas.Dialog.Controllers
             m.Delete(name);
             return Content("deleted");
         }
+
+        [HttpGet, Route("DocumentDownload/{documentId}")]
+        public FileResult DocumentDownload(int documentId)
+        {
+            var document = CurrentDatabase.OrgMemberDocuments.SingleOrDefault(o => o.DocumentId == documentId);
+            ImageData.Image i = CurrentImageDatabase.Images.SingleOrDefault(im => im.Id == document.ImageId);
+            var shortType = i.Mimetype;
+            i.Mimetype = MimeTypes.MimeTypeFromShortType(shortType);
+
+            var cd = new System.Net.Mime.ContentDisposition
+            {
+                FileName = $"{document.DocumentName}{shortType}",
+                Inline = false,
+            };
+            Response.AppendHeader("Content-Disposition", cd.ToString());
+
+            return File(i.Bits, i.Mimetype);
+        }
     }
 }

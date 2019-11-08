@@ -414,6 +414,104 @@ namespace CmsWeb.Areas.Search.Models
                     };
             return q;
         }
+        public IEnumerable<SelectListItem> MemberTypeData()
+        {
+            var qCV = new CodeValueModel().MemberTypesList().ToList();
+            qCV.Insert(0, new CodeValueItem
+            {
+                Id = 0,
+                Code = "TY",
+                Value = "(not specified)"
+            });
+
+            // Can not use ToIdValueSelectList.  This references TagValues.
+            // This member function references member types using MemberTypesList.
+            // return ToIdValueSelectList(q);
+            // Fixed a problem in which an empty value would select a selection
+            // with an Id of 0.
+            IEnumerable<SelectListItem> qSL;
+            if (!IsEmptyValues(MemberTypeValues))
+            {
+                qSL = from s in qCV
+                      select new SelectListItem
+                      {
+                          Value = $"{s.Id},{s.Value}",
+                          Text = s.Value,
+                          Selected = MemberTypeValues.Any(vv => vv.GetCsvToken().ToInt() == s.Id)
+                      };
+            }
+            else
+            {
+                qSL = from s in qCV
+                      select new SelectListItem
+                      {
+                          Value = $"{s.Id},{s.Value}",
+                          Text = s.Value,
+                          Selected = false
+                      };
+            }
+            return qSL;
+        }
+        public IEnumerable<SelectListItem> AttendTypeData()
+        {
+            var qCV = new CodeValueModel().AttendTypesList().ToList();
+            qCV.Insert(0, new CodeValueItem
+            {
+                Id = 0,
+                Code = "TY",
+                Value = "(not specified)"
+            });
+
+            // Can not use ToIdValueSelectList.  This references TagValues.
+            // This member function references attend types using AttendTypesList.
+            // return ToIdValueSelectList(q);
+            // Fixed a problem in which an empty value would select a selection
+            // with an Id of 0.
+            IEnumerable<SelectListItem> qSL;
+            if (!IsEmptyValues(AttendTypeValues))
+            {
+                qSL = from s in qCV
+                      select new SelectListItem
+                      {
+                          Value = $"{s.Id},{s.Value}",
+                          Text = s.Value,
+                          Selected = AttendTypeValues.Any(vv => vv.GetCsvToken().ToInt() == s.Id)
+                      };
+            }
+            else
+            {
+                qSL = from s in qCV
+                      select new SelectListItem
+                      {
+                          Value = $"{s.Id},{s.Value}",
+                          Text = s.Value,
+                          Selected = false
+                      };
+            }
+            return qSL;
+        }
+
+        /// <summary>
+        /// This is a common function to check if the values list is empty or null.
+        /// </summary>
+        /// <param name="listValues">The name of a values list (i.e., MemberTypeValues)</param>
+        /// <returns>true if it is empty or false if it is not</returns>
+        public bool IsEmptyValues(List<string> listValues)
+        {
+            if (listValues == null)
+            {
+                return true;
+            }
+            switch (listValues.Count)
+            {
+                case 0:
+                    return true;
+                case 1:
+                    return string.IsNullOrEmpty(listValues[0]);
+                default:
+                    return false;
+            }
+        }
 
     }
 }

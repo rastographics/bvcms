@@ -146,49 +146,47 @@ namespace CmsCheckin
 
         public void load()
         {
+            var userConfig = UserConfig.Load();
             //Login
-            ssl = Settings1.Default.UseSSL;
-            subdomain = Settings1.Default.URL;
-            user = Settings1.Default.username;
+            ssl = userConfig.UseSSL ?? Settings1.Default.UseSSL;
+            subdomain = userConfig.URL ?? Settings1.Default.URL;
+            user = userConfig.username ?? Settings1.Default.username;
+            pass = userConfig.password;
 
             // First Column
-            campus = Settings1.Default.Campus;
+            campus = userConfig.Campus ?? Settings1.Default.Campus;
             dayOfWeek = (int)DateTime.Now.DayOfWeek;
-            earlyHours = Settings1.Default.LeadHours;
-            lateMinutes = Settings1.Default.LateMinutes;
+            earlyHours = userConfig.LeadHours ?? Settings1.Default.LeadHours;
+            lateMinutes = userConfig.LateMinutes ?? Settings1.Default.LateMinutes;
 
-            buildingMode = Settings1.Default.BuildingMode;
-            building = Settings1.Default.Building;
+            buildingMode = userConfig.BuildingMode ?? Settings1.Default.BuildingMode;
+            building = userConfig.Building ?? Settings1.Default.Building;
 
             // Second Column
-            printMode = Settings1.Default.PrintMode;
-            printForKiosks = Settings1.Default.Kiosks;
-            printer = Settings1.Default.Printer;
-            kioskName = Settings1.Default.KioskName;
+            printMode = userConfig.PrintMode ?? Settings1.Default.PrintMode;
+            printForKiosks = userConfig.Kiosks ?? Settings1.Default.Kiosks;
+            printer = userConfig.Printer ?? Settings1.Default.Printer;
+            kioskName = userConfig.KioskName ?? Settings1.Default.KioskName;
 
-            advancedPageSize = Settings1.Default.AdvancedPageSize;
-            printerWidth = Settings1.Default.PrinterWidth;
-            printerHeight = Settings1.Default.PrinterHeight;
+            advancedPageSize = userConfig.AdvancedPageSize ?? Settings1.Default.AdvancedPageSize;
+            printerWidth = userConfig.PrinterWidth ?? Settings1.Default.PrinterWidth;
+            printerHeight = userConfig.PrinterHeight ?? Settings1.Default.PrinterHeight;
 
             // Third Column
-            disableLocationLabels = Settings1.Default.DisableLocationLabels;
-            extraLabel = Settings1.Default.ExtraBlankLabel;
-            securityLabelPerChild = Settings1.Default.SecurityLabelPerChild;
-            useOldDatamaxFormat = Settings1.Default.OldLabels;
+            disableLocationLabels = userConfig.DisableLocationLabels ?? Settings1.Default.DisableLocationLabels;
+            extraLabel = userConfig.ExtraBlankLabel ?? Settings1.Default.ExtraBlankLabel;
+            securityLabelPerChild = userConfig.SecurityLabelPerChild ?? Settings1.Default.SecurityLabelPerChild;
+            useOldDatamaxFormat = userConfig.OldLabels ?? Settings1.Default.OldLabels;
 
-            askFriend = Settings1.Default.AskEmFriend;
-            askChurch = Settings1.Default.AskChurch;
-            askChurchName = Settings1.Default.AskChurchName;
-            askGrade = Settings1.Default.AskGrade;
-
-            //fullScreen = Settings1.Default.?;
-            //hideCursor = Settings1.Default.?;
-            //enableTimer = Settings1.Default.?;
-            disableJoin = Settings1.Default.DisableJoin;
+            askFriend = userConfig.AskEmFriend ?? Settings1.Default.AskEmFriend;
+            askChurch = userConfig.AskChurch ?? Settings1.Default.AskChurch;
+            askChurchName = userConfig.AskChurchName ?? Settings1.Default.AskChurchName;
+            askGrade = userConfig.AskGrade ?? Settings1.Default.AskGrade;
+            disableJoin = userConfig.DisableJoin ?? Settings1.Default.DisableJoin;
 
             // Fourth Column
-            adminPIN = Settings1.Default.AdminPIN;
-            adminPINTimeout = Settings1.Default.AdminPINTimeout;
+            adminPIN = userConfig.AdminPIN ?? Settings1.Default.AdminPIN;
+            adminPINTimeout = userConfig.AdminPINTimeout ?? Settings1.Default.AdminPINTimeout;
             int.TryParse(adminPINTimeout, out adminPINTimeoutNumber);
         }
 
@@ -228,10 +226,6 @@ namespace CmsCheckin
             Settings1.Default.AskChurch = askChurch;
             Settings1.Default.AskChurchName = askChurchName;
             Settings1.Default.AskGrade = askGrade;
-
-            //Settings1.Default.? = fullScreen;
-            //Settings1.Default.? = hideCursor;
-            //Settings1.Default.? = enableTimer;
             Settings1.Default.DisableJoin = disableJoin;
 
             // Fourth Column

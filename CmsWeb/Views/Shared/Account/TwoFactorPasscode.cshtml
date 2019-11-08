@@ -1,0 +1,105 @@
+﻿@{
+    var passcodeMargin = (ViewData["passcodeMargin"] ?? 196) + "px";
+    var passcodeTitleMargin = (ViewData["passcodeTitleMargin"] ?? 130) + "px";
+    var hideBackButton = Convert.ToBoolean(ViewData["hideBackButton"] ?? false);
+}
+<style>
+    fieldset input[name="passcode"] {
+        width: 40px;
+        padding: 10px 0;
+        font-weight: bold;
+        font-size: 24px;
+    }
+    fieldset input[name="passcode"].visible-xs {
+        letter-spacing: .5em;
+        width: 100%;
+    }
+    .passcode {
+        margin-bottom: @(passcodeMargin);
+    }
+    .passcode-title {
+        margin-bottom: @(passcodeTitleMargin);
+    }
+</style>
+<div class="form-group text-center passcode">
+    <h3 class="passcode-title">Enter the passcode shown in the authenticator app</h3>
+    <input class="input-lg text-center visible-xs" name="passcode" data-index="0" autocomplete="off" inputmode="numeric" maxlength="6" />
+    @for (var i = 1; i <= 6; i++)
+    {
+        <input class="input-lg text-center hidden-xs" name="passcode" data-index="@i" autocomplete="off" inputmode="numeric" maxlength="1" />
+    }
+</div>
+<div class="form-actions">
+    @if (hideBackButton)
+    {
+        <div class="col-xs-2"></div>
+    }
+    else
+    {
+        <div class="col-xs-4">
+            <button id="back" class="btn btn-danger btn-block btn-lg" type="reset"><i class="fa fa-lg fa-long-arrow-left"></i></button>
+        </div>
+    }
+    <div class="col-xs-8">
+        <button id="finish" class="btn btn-primary btn-block btn-lg" type="submit">Finish</button>
+    </div>
+</div>
+<script>
+    (function () {
+        var passcodes = document.querySelectorAll('[name="passcode"].hidden-xs');
+        passcodes.forEach(function (el) {
+            el.onkeyup = function (event) {
+                var target = event.target;
+                if (0 <= event.key && 9 >= event.key) {
+                    var next;
+                    passcodes.forEach(function (e) {
+                        if (next) {
+                            e.focus();
+                            next = false;
+                        } else {
+                            next = (e === target && target.value.length);
+                        }
+                    });
+                } else if (13 == event.keyCode || 10 == event.keyCode) {
+                    event.preventDefault();
+                    var valid = true;
+                    passcodes.forEach(function (e) {
+                        valid = valid && e.value.length > 0;
+                    });
+                    if (valid) {
+                        document.getElementById('finish').click();
+                    }
+                } else if ('Backspace' === event.key) {
+                    var prev;
+                    passcodes.forEach(function (e) {
+                        if (e === target) {
+                            prev && prev.focus();
+                        }
+                        prev = e;
+                    });
+                } else {
+                    target.value = '';
+                }
+            };
+            el.onfocus = function (event) {
+                event.target.select();
+            };
+        });
+        function wr() {
+            var req = 'required';
+            var passcodes = document.querySelectorAll('[name="passcode"]');
+            passcodes.forEach(function (el) {
+                if (el.offsetParent) {
+                    var a = document.createAttribute(req);
+                    a.value = req;
+                    el.attributes.setNamedItem(a);
+                } else {
+                    el.attributes.getNamedItem(req) &&
+                    el.attributes.removeNamedItem(req);
+                }
+            });
+        };
+        window.onresize = wr;
+        setTimeout(wr, 500);
+    })();
+</script>

@@ -1,28 +1,13 @@
-/* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church 
- * Licensed under the GNU General Public License (GPL v2)
- * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
- */
 using System;
-using System.Dynamic;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Web;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.ComponentModel;
 using System.Linq;
-using System.Configuration;
 using System.Data;
-using System.Net.Mail;
-using System.IO;
-using System.Security.Cryptography;
 using System.Globalization;
-using System.Xml;
 using System.Xml.Linq;
-using System.Xml.Serialization;
 using CsQuery.ExtensionMethods.Internal;
 using System.Data.SqlTypes;
 
@@ -45,6 +30,7 @@ namespace UtilityExtensions
                 ? null
                 : !Convert.IsDBNull(value) ? Convert.ChangeType(value, type) : null;
         }
+
         public static object ChangeTypeSql(this object value, Type type)
         {
             if (type == null)
@@ -82,18 +68,21 @@ namespace UtilityExtensions
 
             return datetime;
         }
+
         public static int ToInt(this string s)
         {
             int i = 0;
             int.TryParse(s, out i);
             return i;
         }
+
         public static long ToLong(this string s)
         {
             long i = 0;
             long.TryParse(s, out i);
             return i;
         }
+
         public static long? ToLong2(this string s)
         {
             long ii;
@@ -101,6 +90,7 @@ namespace UtilityExtensions
                 return ii;
             return null;
         }
+
         public static DateTime? ToDate(this string s)
         {
             if (s == null)
@@ -127,6 +117,7 @@ namespace UtilityExtensions
         {
             return a?.Value.ToDate();
         }
+
         public static DateTime? ToDate(this object o)
         {
             if (o == null)
@@ -135,6 +126,7 @@ namespace UtilityExtensions
                 return DateTime.FromOADate((double)o);
             return o.ToString().ToDate();
         }
+
         public static int? ToInt2(this string s)
         {
             int? r = null;
@@ -143,6 +135,7 @@ namespace UtilityExtensions
                 r = i;
             return r;
         }
+
         public static int? ToInt2(this XAttribute a)
         {
             if (a == null)
@@ -153,6 +146,7 @@ namespace UtilityExtensions
                 r = i;
             return r;
         }
+
         public static int? ToInt2(this XElement e)
         {
             if (e == null)
@@ -163,12 +157,14 @@ namespace UtilityExtensions
                 r = i;
             return r;
         }
+
         public static bool? ToBool2(this string s)
         {
             bool b;
             bool.TryParse(s, out b);
             return b;
         }
+
         public static bool ToBool(this string s)
         {
             if (string.IsNullOrEmpty(s))
@@ -177,6 +173,7 @@ namespace UtilityExtensions
             bool.TryParse(s, out b);
             return b;
         }
+
         public static bool ToBool(this XAttribute a)
         {
             if (a == null)
@@ -187,21 +184,25 @@ namespace UtilityExtensions
             bool.TryParse(a.Value, out b);
             return b;
         }
+
         public static bool ToBool(this XElement e)
         {
             return e != null && e.Value.ToBool();
         }
+
         public static bool ToBool(this object o)
         {
             if (o is bool)
                 return (bool)o;
             return $"{o}".ToBool();
         }
+
         public static int ToInt(this double d)
         {
             var i = Convert.ToInt32(d);
             return i;
         }
+
         public static int? ToInt2(this object o)
         {
             int? r = null;
@@ -211,6 +212,7 @@ namespace UtilityExtensions
                 return r;
             return (int)o.ChangeType(typeof(int));
         }
+
         public static int ToInt(this object o)
         {
             if (o == null || o == DBNull.Value)
@@ -220,6 +222,7 @@ namespace UtilityExtensions
                 return s.ToInt();
             return (int)o.ChangeType(typeof(int));
         }
+
         public static decimal? ToDecimal(this string s)
         {
             decimal? r = null;
@@ -228,14 +231,17 @@ namespace UtilityExtensions
                 r = i;
             return r;
         }
+
         public static decimal? ToDecimal(this XAttribute a)
         {
             return a?.Value.ToDecimal();
         }
+
         public static decimal? ToDecimal(this XElement e)
         {
             return e?.Value.ToDecimal();
         }
+
         public static float ToFloat(this string s)
         {
             var r = 0f;
@@ -244,14 +250,17 @@ namespace UtilityExtensions
                 r = i;
             return r;
         }
+
         public static bool DateTryParse(this string date, out DateTime dt)
         {
             return DateTime.TryParse(date, out dt);
         }
+
         public static bool DateTryParseUS(this string date, out DateTime dt)
         {
             return DateTime.TryParse(date, CultureInfo.GetCultureInfo("en-US"), DateTimeStyles.None, out dt);
         }
+
         public static decimal? GetAmount(this string s)
         {
             if (!s.HasValue())
@@ -267,6 +276,7 @@ namespace UtilityExtensions
             var a = digits.ToString().ToDecimal();
             return a;
         }
+
         public static string ToSuitableId(this string s)
         {
             var v = Regex.Replace(s.Replace('/','-'), @"\[|\]|\s|\(|\)|,|=|/|'|#|:", "_").Replace("__", "_").TrimEnd('_');
@@ -289,6 +299,7 @@ namespace UtilityExtensions
             var a = s.ToSuitableId().Split('_');
             return string.Join("", a.Select(vv => vv.ToProper())).Truncate(150);
         }
+
         public static string ToCode(this Guid guid)
         {
             string encoded = Convert.ToBase64String(guid.ToByteArray());
@@ -297,6 +308,7 @@ namespace UtilityExtensions
               .Replace("+", "-");
             return encoded.Substring(0, 22);
         }
+
         public static Guid? ToGuid(this string value)
         {
             try
@@ -312,10 +324,12 @@ namespace UtilityExtensions
                 return null;
             }
         }
+
         public static string GuidToQuerystring(this Guid guid)
         {
             return HttpUtility.UrlEncode(guid.ToString());
         }
+
         public static Guid? QuerystringToGuid(this string value)
         {
             try
@@ -328,36 +342,51 @@ namespace UtilityExtensions
                 return null;
             }
         }
+
         public static double? ToNullableDouble(this object o)
         {
             if (o is DBNull)
                 return null;
             return Convert.ToDouble(o);
         }
+
         public static double ToDouble(this object o)
         {
             if (o is DBNull)
                 return 0;
             return Convert.ToDouble(o);
         }
+
         public static decimal? ToNullableDecimal(this object o)
         {
             if (o is DBNull)
                 return null;
             return Convert.ToDecimal(o);
         }
+
         public static DateTime? ToNullableDate(this object o)
         {
             if (o is DBNull)
                 return null;
             return o.ToDate();
         }
+
         public static int? ToNullableInt(this object o)
         {
             if (o is DBNull)
                 return null;
             return o.ToInt();
         }
+
+        public static string[] ToStringArray(this string value)
+        {
+            if (value.HasValue())
+            {
+                return value.Split(",;".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+            }
+            return new string[] { };
+        }
+
         public static IEnumerable<T> Select<T>(this IDataReader reader, Func<IDataReader, T> projection)
         {
             while (reader.Read())

@@ -145,6 +145,12 @@ This will prevent your registration from working properly.
         }
 
         [HttpPost]
+        public ActionResult NewOrganizationDocument(string id)
+        {
+            return PartialView("EditorTemplates/OrganizationDocument", new AskDocuments.OrganizationDocument { Name = id });
+        }
+
+        [HttpPost]
         public ActionResult NewAsk(string id, string type)
         {
             ViewBag.ShowHelp = CurrentDatabase.UserPreference("ShowQuestionsHelp");
@@ -189,6 +195,8 @@ This will prevent your registration from working properly.
                     return PartialView(template, new AskText {Name = id});
                 case "AskGradeOptions":
                     return PartialView(template, new AskGradeOptions {Name = id});
+                case "AskDocuments":
+                    return PartialView(template, new AskDocuments { Name = id });
             }
             return Content("unexpected type " + type);
         }

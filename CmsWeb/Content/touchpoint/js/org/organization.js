@@ -568,7 +568,8 @@ $(function () {
         "AskHeader",
         "AskInstruction",
         "AskMenu",
-        "AskText"
+        "AskText",
+        "AskDocuments"
     ];
 
     $.InitFunctions.updateQuestionList = function () {

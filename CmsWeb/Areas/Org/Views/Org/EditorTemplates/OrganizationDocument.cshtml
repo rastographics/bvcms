@@ -1,0 +1,14 @@
+﻿@model CmsData.Registration.AskDocuments.OrganizationDocument
+@using (var ci = Html.BeginCollectionItem(Model.Name))
+{
+    <div class="well movable">
+        @Html.Raw(ci.hiddenindex)
+        <div class="row">
+            <div class="col-sm-12">
+                @Html.Partial("EditorTemplates/QuestionsMenu", new ViewDataDictionary { { "ConfirmDelete", false } })
+            </div>
+        </div>
+        @Html.EditorFor(m => m.DocumentName)
+        @Html.EditorFor(m => m.Required)
+    </div>
+}

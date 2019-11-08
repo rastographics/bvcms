@@ -359,9 +359,8 @@ namespace CmsWeb.Areas.Finance.Controllers
         public ActionResult ManageGiving2(int id)
         {
             var model = new ManageGivingModel(CurrentDatabase.Host, id);
-            model.testing = true;
-            var body = ViewExtensions2.RenderPartialViewToString(this, "ManageGiving2", model);
-            return SimpleContent(body);
+            model.testing = true; // TODO: Is this really necessary?
+            return View(model);
         }
 
         public ActionResult PledgeFulfillments(int id)

@@ -115,7 +115,7 @@
                                             </h4>
                                         </div>
                                         <div id="collapse-@i-@category.Key.SettingCategoryId" class="collapse" data-parent="#accordion-@(i)">
-                                            @Html.Partial("_Settings", new SettingListModel(settingTypeGroup.Settings) { CanDelete = false })
+                                            @Html.Partial("_Settings", new SettingListModel(category.Key.SettingMetadatas) { CanDelete = false })
                                         </div>
                                     </div>
                                 }

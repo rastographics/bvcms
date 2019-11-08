@@ -10,7 +10,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
     {
         public decimal AmountToPay()
         {
-            if (CurrentDatabase.Setting("UseOnlinePayments", "true") == "false")
+            if (DbUtil.Db.Setting("UseOnlinePayments", "true") == "false")
             {
                 return 0;
             }

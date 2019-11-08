@@ -1,5 +1,7 @@
 using CmsData;
 using CmsWeb.Code;
+using CmsWeb.Constants;
+using CmsWeb.Models;
 using Dapper;
 using System;
 using System.Collections.Generic;
@@ -8,15 +10,14 @@ using System.ComponentModel.DataAnnotations;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
-using System.Web;
 using System.Web.Mvc;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Models
 {
-    public class ContactModel : IValidatableObject
+    public class ContactModel : IValidatableObject, IDbBinder
     {
-        public CMSDataContext CurrentDatabase;
+        public CMSDataContext CurrentDatabase { get; set; }
         private bool? canViewComments;
         private string _incomplete;
         private string _limitToRole;
@@ -47,11 +48,24 @@ namespace CmsWeb.Areas.People.Models
 
         public CodeInfo ContactType { get; set; }
         public CodeInfo ContactReason { get; set; }
+        public string Location { get; set; }
         public CodeInfo Ministry { get; set; }
-
         public int? OrganizationId { get; set; }
 
-        public string Location { get; set; }
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
+        public ContactModel() { }
+
+        public ContactModel(CMSDataContext db, int id)
+        {
+            CurrentDatabase = db;
+            LoadContact(id);
+            if (contact != null)
+            {
+                this.CopyPropertiesFrom(contact);
+            }
+
+            SetLocationOnContact();
+        }
 
         public IEnumerable<SelectListItem> Roles()
         {
@@ -135,23 +149,6 @@ namespace CmsWeb.Areas.People.Models
             Ministers = new ContactorsModel(id);
             MinisteredTo.CanViewComments = CanViewComments;
             Ministers.CanViewComments = CanViewComments;
-        }
-
-        public ContactModel()
-        {
-            CurrentDatabase = DbUtil.Db;
-        }
-
-        public ContactModel(CMSDataContext db, int id)
-        {
-            CurrentDatabase = db;
-            LoadContact(id);
-            if (contact != null)
-            {
-                this.CopyPropertiesFrom(contact);
-            }
-
-            SetLocationOnContact();
         }
 
         public bool CanView;

@@ -75,7 +75,6 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
     <Reference Include="xunit.abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
       <HintPath>..\..\packages\xunit.abstractions.2.0.3\lib\net35\xunit.abstractions.dll</HintPath>
@@ -97,12 +96,14 @@
     <Compile Include="DatabaseFixture.cs" />
     <Compile Include="FinanceTestBase.cs" />
     <Compile Include="FinanceTestUtils.cs" />
+    <Compile Include="MockAppSettings.cs" />
     <Compile Include="MockCMSMembershipProvider.cs" />
     <Compile Include="MockCMSRoleProvider.cs" />
     <Compile Include="MockContributions.cs" />
     <Compile Include="MockHttpContext.cs" />
     <Compile Include="MockPeople.cs" />
     <Compile Include="MockSettings.cs" />
+    <Compile Include="FamilyUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DatabaseTestBase.cs" />
     <Compile Include="SpecialContentUtils.cs" />

@@ -212,26 +212,42 @@ namespace CmsWeb.Models
             var q2 = from r in db.GetTotalContributionsDonor(startdt, enddt, campusid, nontaxded, includeUnclosed, tagid, fundids, null)
                      where ContributionStatusCode.Recorded.Equals(r.ContributionStatusId)
                      where !ContributionTypeCode.ReturnedReversedTypes.Contains(r.ContributionTypeId)
-                     select new
+                     group r by new
                      {
-                         GiverId = r.CreditGiverId,
-                         Count = r.Count ?? 0,
-                         Amount = r.Amount ?? 0m,
-                         Pledged = r.PledgeAmount ?? 0m,
+                         r.CreditGiverId,
+                         r.Count,
+                         r.PledgeAmount,
                          r.Email,
-                         FirstName = r.Head_FirstName,
-                         LastName = r.Head_LastName,
-                         Spouse = r.SpouseName ?? "",
-                         MainFellowship = r.MainFellowship ?? "",
-                         MemberStatus = r.MemberStatus ?? "",
+                         r.Head_FirstName,
+                         r.Head_LastName,
+                         r.SpouseName,
+                         r.MainFellowship,
+                         r.MemberStatus,
                          r.JoinDate,
                          r.Addr,
                          r.Addr2,
                          r.City,
                          r.St,
-                         r.Zip,
-                         r.ContributionStatusId,
-                         r.ContributionTypeId
+                         r.Zip                         
+                     } into rr
+                     select new
+                     {
+                         GiverId = rr.Key.CreditGiverId,
+                         Count = rr.Key.Count ?? 0,
+                         Amount = rr.Sum(x => x.Amount) ?? 0m,
+                         Pledged = rr.Key.PledgeAmount ?? 0m,
+                         rr.Key.Email,
+                         FirstName = rr.Key.Head_FirstName,
+                         LastName = rr.Key.Head_LastName,
+                         Spouse = rr.Key.SpouseName ?? "",
+                         MainFellowship = rr.Key.MainFellowship ?? "",
+                         MemberStatus = rr.Key.MemberStatus ?? "",
+                         rr.Key.JoinDate,
+                         rr.Key.Addr,
+                         rr.Key.Addr2,
+                         rr.Key.City,
+                         rr.Key.St,
+                         rr.Key.Zip
                      };
             return q2.ToDataTable();
         }
@@ -241,21 +257,32 @@ namespace CmsWeb.Models
             var q2 = from r in db.GetTotalContributionsDonorFund(startdt, enddt, campusid, nontaxdeductible, includeUnclosed, tagid, fundids)
                      where ContributionStatusCode.Recorded.Equals(r.ContributionStatusId)
                      where !ContributionTypeCode.ReturnedReversedTypes.Contains(r.ContributionTypeId)
-                     select new
+                     group r by new
                      {
-                         GiverId = r.CreditGiverId,
-                         Count = r.Count ?? 0,
-                         Amount = r.Amount ?? 0m,
-                         Pledged = r.PledgeAmount ?? 0m,
-                         Name = r.HeadName,
-                         SpouseName = r.SpouseName ?? "",
-                         r.FundName,
+                         r.CreditGiverId,
+                         r.HeadName,
+                         r.SpouseName,
+                         r.Count,
+                         r.PledgeAmount,
                          r.FundId,
+                         r.FundName,
                          r.MainFellowship,
                          r.MemberStatus,
-                         r.JoinDate,
-                         r.ContributionStatusId,
-                         r.ContributionTypeId
+                         r.JoinDate
+                     } into rr
+                     select new
+                     {
+                         GiverId = rr.Key.CreditGiverId,
+                         Count = rr.Key.Count ?? 0,
+                         Amount = rr.Sum(x => x.Amount) ?? 0m,
+                         Pledged = rr.Key.PledgeAmount ?? 0m,
+                         Name = rr.Key.HeadName,
+                         SpouseName = rr.Key.SpouseName ?? "",
+                         rr.Key.FundName,
+                         rr.Key.FundId,
+                         rr.Key.MainFellowship,
+                         rr.Key.MemberStatus,
+                         rr.Key.JoinDate
                      };
             return q2.ToDataTable();
         }

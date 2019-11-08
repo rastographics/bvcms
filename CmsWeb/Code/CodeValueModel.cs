@@ -203,6 +203,31 @@ namespace CmsWeb.Code
                    };
         }
 
+        public static IEnumerable<SelectListItem> AttendTypes()
+        {
+            var cv = new CodeValueModel();
+            var types = ConvertToSelect(cv.AttendTypesList(), "Id").ToList();
+            types.Insert(0, new SelectListItem { Value = "0", Text = "(not specified)" });
+            return types;
+        }
+
+        /// <summary>
+        /// This will be the actual list
+        /// </summary>
+        public List<CodeValueItem> AttendTypesList()
+        {
+            var q = from a in DbUtil.Db.AttendTypes
+                    orderby a.Description
+                    select new CodeValueItem
+                    {
+                        Id = a.Id,
+                        Code = a.Code,
+                        Value = a.Description
+                    };
+            var list = q.ToList();
+            return list;
+        }
+
         public List<CodeValueItem> BackgroundStatuses()
         {
             var list = new List<CodeValueItem>();
@@ -639,6 +664,31 @@ namespace CmsWeb.Code
                          Value = mt.Description
                      };
             return q2;
+        }
+
+        public static IEnumerable<SelectListItem> MemberTypes()
+        {
+            var cv = new CodeValueModel();
+            var types = ConvertToSelect(cv.MemberTypesList(), "Id").ToList();
+            types.Insert(0, new SelectListItem { Value = "0", Text = "(not specified)" });
+            return types;
+        }
+
+        ///  <summary>
+        ///  This will be the actual list
+        /// </summary>
+        public List<CodeValueItem> MemberTypesList()
+        {
+            var q = from m in DbUtil.Db.MemberTypes
+                    orderby m.Description
+                    select new CodeValueItem
+                    {
+                        Id = m.Id,
+                        Code = m.Code,
+                        Value = m.Description
+                    };
+            var list = q.ToList();
+            return list;
         }
 
         public IEnumerable<CodeValueItem> Ministries()

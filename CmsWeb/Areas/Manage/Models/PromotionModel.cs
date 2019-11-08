@@ -1,5 +1,6 @@
 using CmsData;
 using CmsData.Codes;
+using ImageData;
 using MoreLinq;
 using System.Collections.Generic;
 using System.Data;
@@ -251,11 +252,13 @@ namespace CmsWeb.Models
                 RemoveAssignments();
                 return;
             }
-            var t = DbUtil.Db.Organizations.SingleOrDefault(o => o.OrganizationId == TargetClassId);
+            var db = DbUtil.Db;
+            var t = db.Organizations.SingleOrDefault(o => o.OrganizationId == TargetClassId);
             if (t == null)
             {
                 return;
             }
+
 
             foreach (var i in selected)
             {
@@ -264,18 +267,18 @@ namespace CmsWeb.Models
                 var pid = a[0].ToInt();
 
                 // this is their membership where they are currently a member
-                var fom = DbUtil.Db.OrganizationMembers.Single(m => m.OrganizationId == foid && m.PeopleId == pid);
+                var fom = db.OrganizationMembers.Single(m => m.OrganizationId == foid && m.PeopleId == pid);
 
                 // drop pending in previously assigned to org
-                var prevtoid = fom.GetExtra(DbUtil.Db, "PromotingTo").ToInt();
-                var prevto = DbUtil.Db.OrganizationMembers.SingleOrDefault(m => m.OrganizationId == prevtoid && m.PeopleId == pid && m.Pending == true);
-                prevto?.Drop(DbUtil.Db);
-                DbUtil.Db.SubmitChanges();
+                var prevtoid = fom.GetExtra(db, "PromotingTo").ToInt();
+                var prevto = db.OrganizationMembers.SingleOrDefault(m => m.OrganizationId == prevtoid && m.PeopleId == pid && m.Pending == true);
+                prevto?.Drop(db, CMSImageDataContext.Create(db.Host));
+                db.SubmitChanges();
 
                 // now put them in the to class as pending member
                 if (t.OrganizationId != fom.OrganizationId) // prevent promoting into the same class as they are currently in
                 {
-                    OrganizationMember.InsertOrgMembers(DbUtil.Db,
+                    OrganizationMember.InsertOrgMembers(db,
                         t.OrganizationId,
                         a[0].ToInt(),
                         fom.MemberTypeId, // keep their Existing membertype
@@ -283,10 +286,10 @@ namespace CmsWeb.Models
                         null, true);
                     // record where they will be going
                     fom.AddEditExtraInt("PromotingTo", t.OrganizationId);
-                    DbUtil.Db.SubmitChanges();
+                    db.SubmitChanges();
                 }
             }
-            DbUtil.Db.UpdateMainFellowship(t.OrganizationId);
+            db.UpdateMainFellowship(t.OrganizationId);
         }
 
         private void RemoveAssignments()
@@ -296,16 +299,17 @@ namespace CmsWeb.Models
                 var a = i.Split(',');
                 var foid = a[1].ToInt();
                 var pid = a[0].ToInt();
+                var db = DbUtil.Db;
 
                 // this is their membership where they are currently a member
-                var fom = DbUtil.Db.OrganizationMembers.Single(m => m.OrganizationId == foid && m.PeopleId == pid);
+                var fom = db.OrganizationMembers.Single(m => m.OrganizationId == foid && m.PeopleId == pid);
 
                 // drop pending in previously assigned to org
-                var prevtoid = fom.GetExtra(DbUtil.Db, "PromotingTo").ToInt();
-                var prevto = DbUtil.Db.OrganizationMembers.SingleOrDefault(m => m.OrganizationId == prevtoid && m.PeopleId == pid && m.Pending == true);
-                prevto?.Drop(DbUtil.Db);
-                fom.RemoveExtraValue(DbUtil.Db, "PromotingTo");
-                DbUtil.Db.SubmitChanges();
+                var prevtoid = fom.GetExtra(db, "PromotingTo").ToInt();
+                var prevto = db.OrganizationMembers.SingleOrDefault(m => m.OrganizationId == prevtoid && m.PeopleId == pid && m.Pending == true);
+                prevto?.Drop(db, CMSImageDataContext.Create(db.Host));
+                fom.RemoveExtraValue(db, "PromotingTo");
+                db.SubmitChanges();
             }
         }
 

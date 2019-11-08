@@ -43,14 +43,22 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ActionResult Update(SavedQueryInfo m)
         {
-            if (m.Name.Equal(Util.ScratchPad2))
+            try
             {
-                m.Ispublic = false;
-            }
+                if (m.Name.Equal(Util.ScratchPad2))
+                {
+                    m.Ispublic = false;
+                }
 
-            m.CanDelete = true; // must be true since they can edit if they got here
-            m.UpdateModel();
-            return View("Row", m);
+                m.CanDelete = true; // must be true since they can edit if they got here
+                m.UpdateModel();
+                return View("Row", m);
+            }
+            catch(Exception e)
+            {
+                DbUtil.LogActivity($@"error: {e.Message} StackTrace: {e.StackTrace}");
+                return PageMessage($@"error: {e.Message} ");
+            }
         }
         [HttpPost]
         public ActionResult Delete(Guid id)

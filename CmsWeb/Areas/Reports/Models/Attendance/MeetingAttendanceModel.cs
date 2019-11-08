@@ -79,7 +79,7 @@ namespace CmsWeb.Areas.Reports.Models.Attendance
             if (weeks.Count > 0 && weeks[0] >= StartDt) {
                 StartDt = weeks[0];
             }
-            if (weeks[weeks.Count - 1] != EndDt)
+            if (weeks.Count > 0 && weeks[weeks.Count - 1] != EndDt)
             {
                 weeks.Add(EndDt);
             }

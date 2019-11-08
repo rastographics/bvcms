@@ -1,6 +1,7 @@
 ﻿using CmsData;
 using CmsData.Codes;
 using CmsWeb.Code;
+using CmsWeb.Constants;
 using CmsWeb.Models;
 using System;
 using System.Collections.Generic;
@@ -19,7 +20,7 @@ namespace CmsWeb.Areas.People.Models
             set
             {
                 peopleid = value;
-                Person = DbUtil.Db.LoadPersonById(peopleid);
+                Person = CurrentDatabase.LoadPersonById(peopleid);
                 ContributionOptions = new CodeInfo(Person.ContributionOptionsId, "ContributionOptions");
                 EnvelopeOptions = new CodeInfo(Person.EnvelopeOptionsId, "EnvelopeOptions");
                 ElectronicStatement = Person.ElectronicStatement ?? false;
@@ -38,9 +39,26 @@ namespace CmsWeb.Areas.People.Models
         public CodeInfo ContributionOptions { get; set; }
         [DisplayName("Envelope Option")]
         public CodeInfo EnvelopeOptions { get; set; }
+
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
         public ContributionsModel()
-            : base("Date", "desc", true)
-        { }
+        {
+            Init();
+        }
+
+        public ContributionsModel(CMSDataContext db) : base(db)
+        {
+            Init();
+        }
+
+        protected override void Init()
+        {
+            base.Init();
+            Sort = "Completed";
+            Direction = "desc";
+            AjaxPager = true;
+        }
+
         public override IQueryable<Contribution> DefineModelList()
         {
             IQueryable<Contribution> contributionRecords;
@@ -68,14 +86,14 @@ namespace CmsWeb.Areas.People.Models
 
         private IQueryable<Contribution> GetContributionRecords()
         {
-            var currentUser = DbUtil.Db.CurrentUserPerson;
+            var currentUser = CurrentDatabase.CurrentUserPerson;
             var isFinanceUser = Roles.GetRolesForUser().Contains("Finance");
             var isCurrentUser = currentUser.PeopleId == Person.PeopleId;
             var isSpouse = currentUser.PeopleId == Person.SpouseId;
             var isFamilyMember = currentUser.FamilyId == Person.FamilyId;
             if (isCurrentUser || (isSpouse && (Person.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint) || isFamilyMember || isFinanceUser)
             {
-                return from c in DbUtil.Db.Contributions
+                return from c in CurrentDatabase.Contributions
                        where (c.PeopleId == Person.PeopleId || (c.PeopleId == Person.SpouseId && (Person.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint))
                        && c.ContributionStatusId == ContributionStatusCode.Recorded
                        && !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
@@ -83,8 +101,8 @@ namespace CmsWeb.Areas.People.Models
             }
             else
             {
-                return from c in DbUtil.Db.Contributions
-                       join f in DbUtil.Db.ContributionFunds.ScopedByRoleMembership(DbUtil.Db) on c.FundId equals f.FundId
+                return from c in CurrentDatabase.Contributions
+                       join f in CurrentDatabase.ContributionFunds.ScopedByRoleMembership(CurrentDatabase) on c.FundId equals f.FundId
                        where c.PeopleId == Person.PeopleId
                        && c.ContributionStatusId == ContributionStatusCode.Recorded
                        && !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
@@ -181,6 +199,7 @@ namespace CmsWeb.Areas.People.Models
                     return q.OrderByDescending(c => c.ContributionDate);
             }
         }
+
         public override IEnumerable<ContributionInfo> DefineViewList(IQueryable<Contribution> q)
         {
             var q2 = from c in q
@@ -205,26 +224,22 @@ namespace CmsWeb.Areas.People.Models
                      };
             return q2;
         }
-        public static IEnumerable<StatementInfoWithFund> Statements(int? id)
-        {
-            return Statements(id, null);
-        }
-
-        public static IEnumerable<StatementInfoWithFund> Statements(int? id, int[] includedFundIds)
+        
+        public static IEnumerable<StatementInfoWithFund> Statements(CMSDataContext db, int? id, int[] includedFundIds = null)
         {
             if (!id.HasValue)
             {
                 throw new ArgumentException("Missing id");
             }
-            var dbContext = DbUtil.Db;
-            var person = dbContext.LoadPersonById(id.Value);
-            var contributions = (from c in dbContext.Contributions2(new DateTime(1900, 1, 1), new DateTime(3000, 12, 31), 0, false, null, true)
+
+            var person = db.LoadPersonById(id.Value);
+            var contributions = (from c in db.Contributions2(new DateTime(1900, 1, 1), new DateTime(3000, 12, 31), 0, false, null, true)
                                  where (c.PeopleId == person.PeopleId || (c.PeopleId == person.SpouseId && (person.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint))
                                  select c).ToList();
-            var currentUser = dbContext.CurrentUserPerson;
+            var currentUser = db.CurrentUserPerson;
             if (currentUser.PeopleId != person.PeopleId)
             {
-                var authorizedFunds = dbContext.ContributionFunds.ScopedByRoleMembership(dbContext);
+                var authorizedFunds = db.ContributionFunds.ScopedByRoleMembership(db);
                 var authorizedContributions = from c in contributions
                                               join f in authorizedFunds on c.FundId equals f.FundId
                                               select c;
@@ -235,7 +250,7 @@ namespace CmsWeb.Areas.People.Models
                 contributions = contributions.Where(c => includedFundIds.Contains(c.FundId)).ToList();
             }
 
-            var shouldGroupByFunds = dbContext.Setting("EnableContributionFundsOnStatementDisplay");
+            var shouldGroupByFunds = db.Setting("EnableContributionFundsOnStatementDisplay");
 
             IEnumerable<StatementInfoWithFund> result;
 
@@ -255,7 +270,7 @@ namespace CmsWeb.Areas.People.Models
                               FundGroupName = string.Empty
                           }).ToList();
 
-                var displayNameHelper = new CustomFundSetDisplayHelper(dbContext);
+                var displayNameHelper = new CustomFundSetDisplayHelper(db);
                 displayNameHelper.ProcessList(result);
 
                 // hack: grouping done in memory since these fundids are stored as XML and not easily accessed in SQL

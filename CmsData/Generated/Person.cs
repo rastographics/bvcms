@@ -360,6 +360,8 @@ namespace CmsData
    		private EntitySet<VolRequest> _VolRequests;
 		
    		private EntitySet<VolRequest> _VolResponses;
+
+   		private EntitySet<OrgMemberDocuments> _OrgMemberDocuments;
 		
     	
 		private EntityRef<Organization> _BFClass;
@@ -873,7 +875,9 @@ namespace CmsData
 			
 			this._VolRequests = new EntitySet<VolRequest>(new Action< VolRequest>(this.attach_VolRequests), new Action< VolRequest>(this.detach_VolRequests)); 
 			
-			this._VolResponses = new EntitySet<VolRequest>(new Action< VolRequest>(this.attach_VolResponses), new Action< VolRequest>(this.detach_VolResponses)); 
+			this._VolResponses = new EntitySet<VolRequest>(new Action< VolRequest>(this.attach_VolResponses), new Action< VolRequest>(this.detach_VolResponses));
+
+			this._OrgMemberDocuments = new EntitySet<OrgMemberDocuments>(new Action< OrgMemberDocuments>(this.attach_OrgMemberDocuments), new Action< OrgMemberDocuments>(this.detach_OrgMemberDocuments)); 
 			
 			
 			this._BFClass = default(EntityRef<Organization>); 
@@ -4017,8 +4021,16 @@ namespace CmsData
 
    		}
 
-		
-   		[Association(Name="People__User", Storage="_People", OtherKey="UserID")]
+        [Association(Name = "Org_Member_Documents_PPL_FK", Storage = "_OrgMemberDocuments", OtherKey = "PeopleId")]
+        public EntitySet<OrgMemberDocuments> OrgMemberDocuments
+        {
+            get { return this._OrgMemberDocuments; }
+
+            set { this._OrgMemberDocuments.Assign(value); }
+        }
+
+
+        [Association(Name="People__User", Storage="_People", OtherKey="UserID")]
    		public EntitySet<BackgroundCheck> People
    		{
    		    get { return this._People; }
@@ -5573,8 +5585,20 @@ namespace CmsData
 			entity.Person = null;
 		}
 
-		
-		private void attach_People(BackgroundCheck entity)
+        private void attach_OrgMemberDocuments(OrgMemberDocuments entity)
+        {
+            this.SendPropertyChanging();
+            entity.Person = this;
+        }
+
+        private void detach_OrgMemberDocuments(OrgMemberDocuments entity)
+        {
+            this.SendPropertyChanging();
+            entity.Person = null;
+        }
+
+
+        private void attach_People(BackgroundCheck entity)
 		{
 			this.SendPropertyChanging();
 			entity.User = this;

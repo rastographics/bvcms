@@ -1,4 +1,4 @@
-:: This script depends on PSTools being added to the PATH
+:: This script depends on Nuget and PSTools being added to the PATH
 :: https://docs.microsoft.com/en-us/sysinternals/downloads/pstools
 setlocal
 REG ADD HKCU\Software\Sysinternals\PsKill /v EulaAccepted /t REG_DWORD /d 1 /f
@@ -29,13 +29,13 @@ IF NOT EXIST %test_coverage% (
 IF "%CodeCovToken%" NEQ "" %codecov% -f "%test_coverage%" -t "%CodeCovToken%"
 set "IISEXPRESS_HOST=%OpenCover%"
 set placeholder="{0}"
-set "IISEXPRESS_ARGS=-register:user -target:%iisexpress% -targetargs:%placeholder% -output:%test_coverage%"
+set "IISEXPRESS_ARGS=-register:user -target:%iisexpress% -targetargs:%placeholder% -filter:%opencover_filters% -output:%test_coverage%"
 del %test_coverage%
 %OpenCover% -register:user -target:"%xunit%" -targetargs:"%integration_tests% -noshadow -teamcity" -filter:%opencover_filters% || exit 9
 
-pskill -nobanner -t iisexpress.exe
-:waitforopencover
 @echo off
+pskill -t iisexpress.exe
+:waitforopencover
 pslist -nobanner opencover.console >nul 2>&1
 IF ERRORLEVEL 1 (
   goto opencoverexited

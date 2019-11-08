@@ -138,6 +138,12 @@ namespace ImageData
 
         public static Image NewImageFromBits(byte[] bits, string type, CMSImageDataContext db)
         {
+            var image = CreateImageFromType(bits, type, db);
+            return image;
+        }
+
+        public static Image CreateImageFromType(byte[] bits, string type, CMSImageDataContext db)
+        {
             var i = new Image();
             i.LoadFromBits(bits, type);
             InsertImage(db, i);

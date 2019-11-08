@@ -480,7 +480,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
             BaseMessage br = new BaseMessage();
 
-            var m = new PeopleSearchModel(mps.guest);
+            var m = new PeopleSearchModel(CurrentDatabase, mps.guest);
             m.m.name = mps.name;
             m.m.communication = mps.comm;
             m.m.address = mps.addr;
@@ -1791,7 +1791,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
             if (om != null && !mpjo.join)
             {
-                om.Drop(CurrentDatabase, DateTime.Now);
+                om.Drop(CurrentDatabase, CurrentImageDatabase, DateTime.Now);
 
                 DbUtil.LogActivity($"Dropped {om.PeopleId} for {om.Organization.OrganizationId} via {dataIn.getSourceOS()} app", peopleid: om.PeopleId, orgid: om.OrganizationId);
             }

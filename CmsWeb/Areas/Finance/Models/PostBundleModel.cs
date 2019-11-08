@@ -11,6 +11,7 @@ using CmsData.View;
 using CmsWeb.Areas.Finance.Controllers;
 using CmsWeb.Code;
 using System;
+using CmsWeb.Constants;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
@@ -18,17 +19,25 @@ using UtilityExtensions;
 
 namespace CmsWeb.Models
 {
-    public class PostBundleModel
+    public class PostBundleModel : IDbBinder
     {
         private BundleHeader bundle;
 
-        public PostBundleModel()
+        public CMSDataContext CurrentDatabase { get => _currentDatabase ?? DbUtil.Db; set => _currentDatabase = value; }
+        private CMSDataContext _currentDatabase;
+
+        [Obsolete(Errors.ModelBindingConstructorError, error: true)]
+        public PostBundleModel() { }
+
+        public PostBundleModel(CMSDataContext db)
         {
+            CurrentDatabase = db;
         }
 
-        public PostBundleModel(int id)
+        public PostBundleModel(CMSDataContext db, int id)
         {
             this.id = id;
+            CurrentDatabase = db;
             PLNT = Bundle.BundleHeaderTypeId == BundleTypeCode.Pledge ? "PL" :
                 Bundle.BundleHeaderTypeId == BundleTypeCode.GiftsInKind ? "GK" :
                     Bundle.BundleHeaderTypeId == BundleTypeCode.Stock ? "SK" : "CN";
@@ -55,7 +64,7 @@ namespace CmsWeb.Models
             {
                 if (bundle == null)
                 {
-                    bundle = DbUtil.Db.BundleHeaders.SingleOrDefault(bh => bh.BundleHeaderId == id);
+                    bundle = CurrentDatabase.BundleHeaders.SingleOrDefault(bh => bh.BundleHeaderId == id);
                     if (bundle?.FundId != null)
                     {
                         FundName = bundle.Fund.FundName;
@@ -75,7 +84,7 @@ namespace CmsWeb.Models
 
         public IEnumerable<ContributionInfo> FetchContributions(int? cid = null)
         {
-            var q = from d in DbUtil.Db.BundleDetails
+            var q = from d in CurrentDatabase.BundleDetails
                     where d.BundleHeaderId == id || cid != null
                     where cid == null || d.ContributionId == cid
                     let sort = d.BundleSort1 > 0 ? d.BundleSort1 : d.BundleDetailId
@@ -128,7 +137,7 @@ namespace CmsWeb.Models
 
         public IEnumerable<FundTotal> TotalsByFund()
         {
-            var q = from d in DbUtil.Db.BundleDetails
+            var q = from d in CurrentDatabase.BundleDetails
                     where d.BundleHeaderId == id
                     group d by new { d.Contribution.ContributionFund.FundName, d.Contribution.ContributionFund.FundId }
                     into g
@@ -144,9 +153,9 @@ namespace CmsWeb.Models
 
         public IEnumerable<SelectListItem> Funds()
         {
-            var fundSortSetting = DbUtil.Db.Setting("SortContributionFundsByFieldName", "FundId");
+            var fundSortSetting = CurrentDatabase.Setting("SortContributionFundsByFieldName", "FundId");
 
-            var query = DbUtil.Db.ContributionFunds.Where(cf => cf.FundStatusId == 1);
+            var query = CurrentDatabase.ContributionFunds.Where(cf => cf.FundStatusId == 1);
 
             if (fundSortSetting == "FundName")
             {
@@ -176,7 +185,7 @@ namespace CmsWeb.Models
             if (!string.IsNullOrEmpty(pid) && (pid[0] == 'e' || pid[0] == '-'))
             {
                 var env = pid.Substring(1).ToInt();
-                q = from e in DbUtil.Db.PeopleExtras
+                q = from e in CurrentDatabase.PeopleExtras
                     where e.Field == "EnvelopeNumber"
                     where e.IntValue == env
                     orderby e.Person.Family.HeadOfHouseholdId == e.PeopleId ? 1 : 2
@@ -184,18 +193,18 @@ namespace CmsWeb.Models
                     {
                         e.PeopleId,
                         name = e.Person.Name2 + (e.Person.DeceasedDate.HasValue ? "[DECEASED]" : ""),
-                        pledgesSummary = PledgesHelper.GetFilteredPledgesSummary(DbUtil.Db, pid.ToInt())
+                        pledgesSummary = PledgesHelper.GetFilteredPledgesSummary(CurrentDatabase, pid.ToInt())
                     };
             }
             else
             {
-                q = from i in DbUtil.Db.People
+                q = from i in CurrentDatabase.People
                     where i.PeopleId == pid.ToInt()
                     select new
                     {
                         i.PeopleId,
                         name = i.Name2 + (i.DeceasedDate.HasValue ? "[DECEASED]" : ""),
-                        pledgesSummary = PledgesHelper.GetFilteredPledgesSummary(DbUtil.Db, pid.ToInt())
+                        pledgesSummary = PledgesHelper.GetFilteredPledgesSummary(CurrentDatabase, pid.ToInt())
                     };
             }
             var o = q.FirstOrDefault();
@@ -335,7 +344,7 @@ namespace CmsWeb.Models
         {
             var cinfo = FetchContributions(cid).Single();
             var body = ViewExtensions2.RenderPartialViewToString(ctl, "Row", cinfo);
-            var q = from c in DbUtil.Db.Contributions
+            var q = from c in CurrentDatabase.Contributions
                     let bh = c.BundleDetails.First().BundleHeader
                     where c.ContributionId == cid
                     select new
@@ -386,7 +395,7 @@ namespace CmsWeb.Models
                 decimal? othersplitamt = null;
                 if (splitfrom > 0)
                 {
-                    var q = from c in DbUtil.Db.Contributions
+                    var q = from c in CurrentDatabase.Contributions
                             where c.ContributionId == splitfrom
                             select new
                             {
@@ -398,7 +407,7 @@ namespace CmsWeb.Models
                     contributiondate = i.c.ContributionDate;
                     i.c.ContributionAmount = othersplitamt;
                     imageid = i.c.ImageID;
-                    DbUtil.Db.SubmitChanges();
+                    CurrentDatabase.SubmitChanges();
                     bd.BundleSort1 = i.bd.BundleDetailId;
                 }
 
@@ -417,7 +426,7 @@ namespace CmsWeb.Models
                     ImageID = imageid
                 };
                 Bundle.BundleDetails.Add(bd);
-                DbUtil.Db.SubmitChanges();
+                CurrentDatabase.SubmitChanges();
                 return ContributionRowData(ctl, bd.ContributionId, othersplitamt);
             }
             catch (Exception ex)
@@ -428,13 +437,13 @@ namespace CmsWeb.Models
 
         public object UpdateContribution(PostBundleController ctl)
         {
-            var c = DbUtil.Db.Contributions.SingleOrDefault(cc => cc.ContributionId == editid);
+            var c = CurrentDatabase.Contributions.SingleOrDefault(cc => cc.ContributionId == editid);
             if (c == null)
             {
                 return null;
             }
 
-            var identifier = DbUtil.Db.CardIdentifiers.SingleOrDefault(ci => ci.Id == c.BankAccount);
+            var identifier = CurrentDatabase.CardIdentifiers.SingleOrDefault(ci => ci.Id == c.BankAccount);
 
             if (identifier != null)
             {
@@ -470,7 +479,7 @@ namespace CmsWeb.Models
             c.ContributionDate = contributiondate;
             c.CheckNo = checkno?.Trim();
 
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
 
             return ContributionRowData(ctl, c.ContributionId);
         }
@@ -481,10 +490,12 @@ namespace CmsWeb.Models
             if (bd != null)
             {
                 var c = bd.Contribution;
-                DbUtil.Db.BundleDetails.DeleteOnSubmit(bd);
+                var tags = CurrentDatabase.ContributionTags.Where(tag => tag.ContributionId == c.ContributionId);
+                CurrentDatabase.ContributionTags.DeleteAllOnSubmit(tags);
+                CurrentDatabase.BundleDetails.DeleteOnSubmit(bd);
                 Bundle.BundleDetails.Remove(bd);
-                DbUtil.Db.Contributions.DeleteOnSubmit(c);
-                DbUtil.Db.SubmitChanges();
+                CurrentDatabase.Contributions.DeleteOnSubmit(c);
+                CurrentDatabase.SubmitChanges();
             }
 
             var totalItems = Bundle.BundleDetails.Sum(d => d.Contribution.ContributionAmount);

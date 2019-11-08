@@ -10,6 +10,7 @@ using CmsData.Classes.GoogleCloudMessaging;
 using CmsData.Codes;
 using CmsData.View;
 using CmsWeb.Areas.People.Models.Task;
+using CmsWeb.Constants;
 using CmsWeb.Models;
 using Dapper;
 using System;
@@ -23,25 +24,29 @@ namespace CmsWeb.Areas.Search.Models
     public class TaskSearchModel : PagedTableModel<TaskSearch, TaskSearch>
     {
         private readonly GCMHelper _gcm;
-        private readonly string _host;
-        private readonly CMSDataContext _dataContext;
+        private string _host => CurrentDatabase.Host;
 
         public TaskSearchInfo Search { get; set; }
 
         public int[] SelectedItem { get; set; }
 
-        public TaskSearchModel() : base("Date", "desc", true)
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
+        public TaskSearchModel()
+        {
+            Sort = "Date";
+            Direction = "desc";
+            AjaxPager = true;
+        }
+
+        public TaskSearchModel(CMSDataContext db) : base(db, "Date", "desc", true)
         {
             Search = new TaskSearchInfo();
-
-            _host = Util.Host;
-            _dataContext = CMSDataContext.Create(_host);
-            _gcm = new GCMHelper(_host, _dataContext);
+            _gcm = new GCMHelper(db.Host, CurrentDatabase);
         }
 
         public override IQueryable<TaskSearch> DefineModelList()
         {
-            var q = GetBaseResults(_dataContext, Search.GetOptions());
+            var q = GetBaseResults(CurrentDatabase, Search.GetOptions());
 
             if (Search.About.HasValue())
             {
@@ -133,33 +138,33 @@ namespace CmsWeb.Areas.Search.Models
 
         internal void Archive()
         {
-            _dataContext.Connection.Execute("UPDATE dbo.Task SET Archive = 1 WHERE Id IN @ids", new { ids = SelectedItem });
+            CurrentDatabase.Connection.Execute("UPDATE dbo.Task SET Archive = 1 WHERE Id IN @ids", new { ids = SelectedItem });
         }
 
         internal void UnArchive()
         {
-            _dataContext.Connection.Execute("UPDATE dbo.Task SET Archive = 0 WHERE Id IN @ids", new { ids = SelectedItem });
+            CurrentDatabase.Connection.Execute("UPDATE dbo.Task SET Archive = 0 WHERE Id IN @ids", new { ids = SelectedItem });
         }
 
         internal void Delete()
         {
-            _dataContext.Connection.Execute("DELETE dbo.Task WHERE Id IN @ids", new { ids = SelectedItem });
+            CurrentDatabase.Connection.Execute("DELETE dbo.Task WHERE Id IN @ids", new { ids = SelectedItem });
         }
 
         internal void Delegate(int toPeopleId)
         {
-            var owners = (from o in _dataContext.Tasks
+            var owners = (from o in CurrentDatabase.Tasks
                           where SelectedItem.Contains(o.Id)
                           select o.OwnerId).Distinct().ToList();
 
-            var delegates = (from o in _dataContext.Tasks
+            var delegates = (from o in CurrentDatabase.Tasks
                              where SelectedItem.Contains(o.Id)
                              where o.CoOwnerId != null
                              select o.CoOwnerId ?? 0).Distinct().ToList();
 
             foreach (var tid in SelectedItem)
             {
-                TaskModel.Delegate(tid, toPeopleId, _host, _dataContext, true, true);
+                TaskModel.Delegate(tid, toPeopleId, _host, CurrentDatabase, true, true);
             }
 
             if (Util.UserPeopleId.HasValue)
@@ -181,7 +186,7 @@ namespace CmsWeb.Areas.Search.Models
                 _gcm.sendRefresh(Util.UserPeopleId.Value, GCMHelper.ACTION_REFRESH);
             }
 
-            _dataContext.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
         }
 
         private IQueryable<TaskSearch> GetBaseResults(CMSDataContext db, TaskSearchInfo.OptionInfo opt)
@@ -285,7 +290,7 @@ namespace CmsWeb.Areas.Search.Models
         public string[] FindNames(string type, string term, int limit, string optionstring)
         {
             var options = TaskSearchInfo.GetOptions(optionstring);
-            var q = GetBaseResults(_dataContext, options);
+            var q = GetBaseResults(CurrentDatabase, options);
 
             switch (type)
             {
@@ -316,7 +321,7 @@ namespace CmsWeb.Areas.Search.Models
 
         public void Complete()
         {
-            _dataContext.Connection.Execute("UPDATE dbo.Task SET StatusId = 40, CompletedOn = GETDATE() WHERE Id IN @ids", new { ids = SelectedItem });
+            CurrentDatabase.Connection.Execute("UPDATE dbo.Task SET StatusId = 40, CompletedOn = GETDATE() WHERE Id IN @ids", new { ids = SelectedItem });
         }
     }
 }

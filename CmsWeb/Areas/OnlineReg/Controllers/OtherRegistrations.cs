@@ -592,7 +592,7 @@ or contact the church if you need help.</p>
 
             var om = CurrentDatabase.OrganizationMembers.SingleOrDefault(mm => mm.OrganizationId == li.oid && mm.PeopleId == li.pid);
 
-            om?.Drop(CurrentDatabase);
+            om?.Drop(CurrentDatabase, CurrentImageDatabase);
             li.ot.Used = true;
             CurrentDatabase.SubmitChanges();
 
