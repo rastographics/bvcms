@@ -1,12 +1,12 @@
-﻿using IntegrationTests.Support;
+﻿using CmsData;
+using IntegrationTests.Support;
 using SharedTestFixtures;
 using Shouldly;
 using System;
 using System.Collections.Generic;
-using Xunit;
-using CmsData;
-using UtilityExtensions;
 using System.Linq;
+using UtilityExtensions;
+using Xunit;
 
 namespace IntegrationTests.Areas.Figures.Views.Figures
 {
@@ -51,9 +51,8 @@ namespace IntegrationTests.Areas.Figures.Views.Figures
             var YearDropdown = Find(id: "year");
             YearDropdown.SendKeys(YearToTest);
 
-            Find(id: "DrawChart").Click();
-
-            WaitForElement("#Fund_chart_display svg > g:nth-child(5)");
+            RepeatUntil(() => Find(id: "DrawChart").Click(),
+                condition: () => Find(css: "#Fund_chart_display svg > g:nth-child(5)") != null);
             PageSource.ShouldContain(YearToTest);
         }
     }
