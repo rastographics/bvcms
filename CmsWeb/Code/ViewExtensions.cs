@@ -999,9 +999,24 @@ namespace CmsWeb
             return null;
         }
 
+        private static HtmlString IncludeOnce(string tag)
+        {
+            if (!HttpContextFactory.Current.Items.Contains(tag))
+            {
+                HttpContextFactory.Current.Items.Add(tag, true);
+                return new HtmlString(tag);
+            }
+            return new HtmlString("");
+        }
+
+        public static HtmlString GoogleCharts()
+        {
+            return IncludeOnce("<script type=\"text/javascript\" src=\"https://www.gstatic.com/charts/loader.js\"></script>");
+        }
+
         public static HtmlString GoogleReCaptcha()
         {
-            return new HtmlString("<script src=\"https://www.google.com/recaptcha/api.js\"></script>");
+            return IncludeOnce("<script src=\"https://www.google.com/recaptcha/api.js\"></script>");
         }
 
         public static HtmlString OldStyles()
@@ -1029,7 +1044,7 @@ namespace CmsWeb
         }
         public static HtmlString Bootstrap3()
         {
-            return new HtmlString(@"<script src=""//maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js""></script>");
+            return IncludeOnce(@"<script src=""//maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js""></script>");
         }
 
         public static HtmlString BootstrapToggleCss()
@@ -1058,7 +1073,7 @@ namespace CmsWeb
 
         public static HtmlString jQueryMobile()
         {
-            return new HtmlString("<script src='//code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js'></script>\n");
+            return IncludeOnce("<script src='//code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js'></script>\n");
         }
 
         public static HtmlString jQueryMobileCss()
@@ -1068,7 +1083,7 @@ namespace CmsWeb
 
         public static HtmlString jQuery()
         {
-            return new HtmlString("<script src='//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js'></script>\n");
+            return IncludeOnce("<script src='//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js'></script>\n");
         }
 
         public static HtmlString jQueryUICss()
@@ -1078,29 +1093,29 @@ namespace CmsWeb
 
         public static HtmlString jQueryUI()
         {
-            return new HtmlString(@"<script src=""//ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js""></script>");
+            return IncludeOnce(@"<script src=""//ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js""></script>");
         }
 
         public static HtmlString jQueryValidation()
         {
-            return new HtmlString(@"<script src=""//cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.min.js""></script>
+            return IncludeOnce(@"<script src=""//cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.min.js""></script>
     <script src=""//cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/additional-methods.min.js""></script>");
         }
 
         public static HtmlString Vue()
         {
-            return new HtmlString(@"<script src=""//cdn.jsdelivr.net/npm/vue""></script>
+            return IncludeOnce(@"<script src=""//cdn.jsdelivr.net/npm/vue""></script>
     <script src=""//cdnjs.cloudflare.com/ajax/libs/vue-resource/1.5.1/vue-resource.min.js""></script>");
         }
 
         public static HtmlString Moment()
         {
-            return new HtmlString("<script src=\"//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js\" type=\"text/javascript\"></script>\n");
+            return IncludeOnce("<script src=\"//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js\" type=\"text/javascript\"></script>\n");
         }
 
         public static HtmlString Jsapi()
         {
-            return new HtmlString(@"<script src=""//www.google.com/jsapi""></script>");
+            return IncludeOnce(@"<script src=""https://www.google.com/jsapi"" async></script>");
         }
 
         public static HtmlString Humanize()
@@ -1115,7 +1130,7 @@ namespace CmsWeb
 
         public static HtmlString LoDash()
         {
-            return new HtmlString(@"<script src=""//cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.min.js""></script>");
+            return IncludeOnce(@"<script src=""//cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.min.js""></script>");
         }
 
         public static HtmlString Sortable()

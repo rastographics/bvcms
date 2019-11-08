@@ -4,6 +4,7 @@ using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.Events;
 using OpenQA.Selenium.Support.UI;
 using SharedTestFixtures;
+using Shouldly;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -77,16 +78,6 @@ namespace IntegrationTests.Support
                 Current = null;
                 _disposed = true;
 
-                IWebElement JSErrors = null;
-                try
-                {
-                    JSErrors = driver.FindElement(By.Id("JSErrors"));
-                }
-                catch { }
-                if (JSErrors != null)
-                {
-                    verificationErrors.Append(JSErrors.Text);
-                }
                 try
                 {
                     driver?.Quit();
@@ -98,8 +89,6 @@ namespace IntegrationTests.Support
                 }
 
                 base.Dispose();
-
-                Assert.Equal("", verificationErrors.ToString());
             }
         }
 
@@ -267,6 +256,22 @@ namespace IntegrationTests.Support
             string filename = Path.Combine(Settings.ScreenShotLocation, file);
             screenshot.SaveAsFile(filename, ScreenshotImageFormat.Png);
             Console.WriteLine("Screen shot saved: {0}", Path.Combine(Settings.ScreenShotUrl, file));
+        }
+
+        internal void ShouldNotHaveScriptError()
+        {
+            IWebElement JSErrors = null;
+            try
+            {
+                JSErrors = driver.FindElement(By.Id("JSErrors"));
+            }
+            catch { }
+            if (JSErrors != null)
+            {
+                verificationErrors.Append(JSErrors.Text);
+            }
+
+            verificationErrors.ToString().ShouldBeEmpty();
         }
 
         protected IEnumerable<IWebElement> FindAll(By by = null,
