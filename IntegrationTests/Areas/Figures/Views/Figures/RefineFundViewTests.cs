@@ -7,14 +7,13 @@ using Xunit;
 using CmsData;
 using UtilityExtensions;
 using System.Linq;
-using OpenQA.Selenium.Support.UI;
 
 namespace IntegrationTests.Areas.Figures.Views.Figures
 {
     [Collection(Collections.Webapp)]
     public class RefineFundViewTests : AccountTestBase
     {
-        [Fact]
+        [Fact, FeatureTest]
         public void Should_Change_Years_In_Graph()
         {
             username = RandomString();
@@ -55,7 +54,7 @@ namespace IntegrationTests.Areas.Figures.Views.Figures
             Find(id: "DrawChart").Click();
 
             WaitForElement("#Fund_chart_display svg > g:nth-child(5)");
-            driver.PageSource.ShouldContain(YearToTest);
+            PageSource.ShouldContain(YearToTest);
         }
     }
 }
