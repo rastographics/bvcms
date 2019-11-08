@@ -59,7 +59,7 @@ WriteLiteral(type);
                                 break;
                             case (int)SettingDataType.Date:
                                 <a class="edit-datetime" id="@item.SettingId" data-pk="@(item.SettingId)" data-type="date" data-url="/Setting/Edit">
-                                    @(item.Setting?.SettingX ?? "Empty")
+                                    @(item.Setting?.SettingX ?? "")
                                 </a>
                                 break;
                             case (int)SettingDataType.Obscured:
@@ -76,7 +76,7 @@ WriteLiteral(type);
                                 break;
                             default:
                                 <a id="@item.SettingId" class="clickEdit" data-type="@DatatypeString(item.DataType)" data-pk="@(item.SettingId)">
-                                    @(item.Setting?.SettingX ?? "Empty")
+                                    @(item.Setting?.SettingX ?? "")
                                 </a>
                                 break;
                         }
