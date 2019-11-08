@@ -117,8 +117,11 @@ namespace CmsWeb.Areas.Dialog.Models
             var RecReg = CurrentDatabase.RecRegs.FirstOrDefault(r => r.PeopleId == PeopleId);
             if (RecReg != null && OrgSettingsHasPassport())
             {
-                PassportNumber = Util.Decrypt(RecReg.PassportNumber);
-                PassportExpires = DateTime.ParseExact(Util.Decrypt(RecReg.PassportExpires), "MM/dd/yyyy", System.Globalization.CultureInfo.InvariantCulture);
+                PassportNumber = RecReg.PassportNumber.IsNotNull() ? Util.Decrypt(RecReg.PassportNumber) : null;
+                if (RecReg.PassportExpires.IsNotNull())
+                {
+                    PassportExpires = DateTime.ParseExact(Util.Decrypt(RecReg.PassportExpires), "MM/dd/yyyy", System.Globalization.CultureInfo.InvariantCulture);
+                }
             }
         }
 

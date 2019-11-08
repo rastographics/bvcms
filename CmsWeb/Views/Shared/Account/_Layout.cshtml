@@ -23,6 +23,14 @@
                 <a href="/" class="logo">
                     <div class="demo-logo"><img src="@Url.Content("~/Content/touchpoint/img/logo.png")" alt="" class="logo-img"></div>
                 </a>
+                @if (ViewBag.showLogoutButton == true)
+                {
+                <div class="text-right inline">
+                    <a href="/Account/LogOff" class="btn btn-default">
+                        Log out
+                    </a>
+                </div>
+                }
             </div>
             @Html.Partial("Notices")
             @RenderBody()

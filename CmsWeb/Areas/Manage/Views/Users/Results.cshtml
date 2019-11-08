@@ -1,5 +1,8 @@
 ﻿@using UtilityExtensions
 @model CmsWeb.Models.UsersModel
+@{
+    var mfaSystemEnabled = Model.MFASystemEnabled;
+}
 <div id="results">
     @Html.Partial("PagerTop", Model)
     <div class="table-responsive">
@@ -10,6 +13,10 @@
                     <th><a href="#" class="sortable">Username</a></th>
                     <th>People Id</th>
                     <th><a href="#" class="sortable">Name</a></th>
+                    @if (mfaSystemEnabled)
+                    {
+                        <th class="text-center"><a href="#" class="sortable">2FA</a></th>
+                    }
                     <th class="text-center"><a href="#" class="sortable">Online</a></th>
                     <th><a href="#" class="sortable">Email</a></th>
                     <th><a href="#" class="sortable">Activity</a></th>
@@ -28,6 +35,15 @@
                         <td>@u.username</td>
                         <td>@u.peopleid</td>
                         <td>@Helper.AnchorLink(@u.name, "/Person2/" + u.peopleid) </td>
+                        @if (mfaSystemEnabled)
+                        {
+                        <td class="text-center">
+                            @if (u.mfaenabled)
+                            {
+                                <i class="fa fa-check"></i>
+                            }
+                        </td>
+                        }
                         <td class="text-center">
                             @if (u.online)
                             {

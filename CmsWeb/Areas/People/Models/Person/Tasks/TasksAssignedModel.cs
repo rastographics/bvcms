@@ -1,12 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using CmsData;
+using CmsWeb.Constants;
 
 namespace CmsWeb.Areas.People.Models
 {
     public class TasksAssignedModel : TasksModel
     {
-        public TasksAssignedModel() { }
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
+        public TasksAssignedModel()
+        {
+        }
+
         override public IQueryable<CmsData.Task> DefineModelList()
         {
             return from t in FilteredModelList()
