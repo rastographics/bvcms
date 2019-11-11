@@ -2025,6 +2025,12 @@ This search uses multiple steps which cannot be duplicated in a single query.
             return (int)(result?.ReturnValue ?? 0);
         }
 
+        public int AddExtraValueDataIfNotExist(int? personId, string key, string value, DateTime? datevalue, string text, int? intvalue, bool? bitvalue)
+        {
+            var evExist = PeopleExtras.Where(x => x.PeopleId == personId && x.Field == key);
+            return (evExist.Count() < 1) ? AddExtraValueData(personId, key, value, datevalue, text, intvalue, bitvalue) : 0;
+        }
+
         /// <summary>
         /// The read-only connection will use an ro-CMS_{host} user if the appsettings contain a setting for readonlypassword
         /// Otherwise, the default connection string is used
