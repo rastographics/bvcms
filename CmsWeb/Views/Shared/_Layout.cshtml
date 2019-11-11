@@ -54,8 +54,9 @@
     @Fingerprint.Script("/Content/touchpoint/js/swal_messages.js")
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-resource/1.5.1/vue-resource.min.js"></script>
-    @RenderSection("scripts", false)
     @Html.Partial("SearchBox")
     @Html.Partial("AdminAlerts")
+    @Html.Partial("_diagnostics")
+    @RenderSection("scripts", false)
 </body>
 </html>
