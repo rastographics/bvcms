@@ -19,14 +19,30 @@ namespace CmsWeb.Models
         public string location { get; set; }
         public string activity { get; set; }
 
+        private IEnumerable<CheckinTimeEx> _times;
+        private CMSDataContext _currentDatabase;
+
         public PagerModel2 Pager { get; set; }
 
-        public CMSDataContext CurrentDatabase { get; set; }
+        public CMSDataContext CurrentDatabase
+        {
+            get => _currentDatabase;
+            set
+            {
+                _currentDatabase = value;
+                Init();
+            }
+        }
 
         [Obsolete(Errors.ModelBindingConstructorError, true)]
         public CheckinTimeModel() { }
 
         public CheckinTimeModel(CMSDataContext db) : base()
+        {
+            CurrentDatabase = db;
+        }
+
+        private void Init()
         {
             Pager = new PagerModel2(CurrentDatabase)
             {
@@ -69,7 +85,7 @@ namespace CmsWeb.Models
                         where t.Location != null
                         group t.Location by t.Location
                             into g
-                            select g.Key;
+                        select g.Key;
                 locations = q.ToList();
             }
             return locations;
@@ -147,7 +163,6 @@ namespace CmsWeb.Models
             return lq;
         }
 
-        private IEnumerable<CheckinTimeEx> _times;
         public IEnumerable<CheckinTimeEx> FetchTimes()
         {
             if (_times != null)
@@ -188,8 +203,8 @@ namespace CmsWeb.Models
                     select t;
 
                 q2 = from t in q2
-                    where t.CheckInActivities.Any(z => z.Activity == activity)
-                    select t;
+                     where t.CheckInActivities.Any(z => z.Activity == activity)
+                     select t;
             }
 
             CountInfo ci = new CountInfo
@@ -296,9 +311,9 @@ namespace CmsWeb.Models
                         &&
                         (p.Person.FirstName.StartsWith(First) || p.Person.NickName.StartsWith(First) || p.Person.MiddleName.StartsWith(First) || p.Person.LastName.StartsWith(namesearch) || p.Person.MaidenName.StartsWith(namesearch))
                         ||
-                        p.Guests.Any( g => (g.Person.LastName.StartsWith(Last) || g.Person.MaidenName.StartsWith(Last) || g.Person.LastName.StartsWith(namesearch) || g.Person.MaidenName.StartsWith(namesearch) )
-                        &&
-                        (g.Person.FirstName.StartsWith(First) || g.Person.NickName.StartsWith(First) || g.Person.MiddleName.StartsWith(First) || g.Person.LastName.StartsWith(namesearch) || g.Person.MaidenName.StartsWith(namesearch)))
+                        p.Guests.Any(g => (g.Person.LastName.StartsWith(Last) || g.Person.MaidenName.StartsWith(Last) || g.Person.LastName.StartsWith(namesearch) || g.Person.MaidenName.StartsWith(namesearch))
+                       &&
+                       (g.Person.FirstName.StartsWith(First) || g.Person.NickName.StartsWith(First) || g.Person.MiddleName.StartsWith(First) || g.Person.LastName.StartsWith(namesearch) || g.Person.MaidenName.StartsWith(namesearch)))
                     select p;
             }
             else
