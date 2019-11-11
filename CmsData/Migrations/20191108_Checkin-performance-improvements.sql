@@ -315,7 +315,7 @@ BEGIN
 		INSERT INTO dbo.AttendanceStatsUpdate
 		(MeetingId, OrganizationId, PeopleId, OtherMeetings)
 		VALUES (@MeetingId, @orgid, @PeopleId, STUFF((
-												   SELECT ',' + id 
+												   SELECT ',' + CAST(id as varchar)
 												   FROM @OtherMeetings 
 												   FOR XML PATH('')
 											   ), 1, 1, ''))
