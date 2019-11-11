@@ -219,10 +219,11 @@ namespace CmsWeb.Areas.Public.Models
 
         public List<FilterItem> getFilterItems(int id)
         {
-            var orgTypes = DbUtil.Db.Setting("SGF-OrgTypes", "").Split(',').Select(x => x.Trim()).Where(x => !string.IsNullOrEmpty(x));
-
             var f = getFilter(id);
             var i = new List<FilterItem>();
+
+            var excludes = f.exclude?.Split(',') ?? new string[] { };
+            var orgTypes = DbUtil.Db.Setting("SGF-OrgTypes", "").Split(',').Select(x => x.Trim()).Where(x => !string.IsNullOrEmpty(x) || !excludes.Contains(x));
 
             if (f.locked)
             {

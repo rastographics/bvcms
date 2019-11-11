@@ -424,6 +424,7 @@ namespace CmsWeb.Models
                 DbUtil.LogActivity($"User {userName} logged in");
             }
         }
+
         public static object AutoLogin(string userName, HttpSessionStateBase Session, HttpRequestBase Request, CMSDataContext db, CMSImageDataContext idb)
         {
 #if DEBUG
