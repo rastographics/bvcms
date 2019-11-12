@@ -34,21 +34,20 @@ namespace IntegrationTests.Areas.OnlineReg.Views
             createOrgWithFee();
 
             Open($"{rootUrl}Org/{OrgId}#tab-Registrations-tab");
-            Wait(10);
+            WaitForElementToDisappear(loadingUI, maxWaitTimeInSeconds: 10);
 
             ScrollTo(css: "#Registration > form > h4:nth-child(3)");
-            WaitForElement(css: "#Fees-tab > a", maxWaitTimeInSeconds: 5);
             Find(css: "#Fees-tab > a").Click();
-            Wait(7);
+            WaitForElementToDisappear(loadingUI, maxWaitTimeInSeconds: 10);
 
             Find(css: "#Fees .row .edit").Click();
-            Wait(10);
+            WaitForElementToDisappear(loadingUI, maxWaitTimeInSeconds: 10);
 
             ScrollTo(id: "Fee");
             Find(id: "Fee").Clear();
             Find(id: "Fee").SendKeys("5");
             Find(css: ".pull-right:nth-child(1) > .validate").Click();
-            Wait(7);
+            Wait(5);
 
             Open($"{rootUrl}OnlineReg/{OrgId}");
 
