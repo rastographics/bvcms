@@ -27,7 +27,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
         [NonSerialized]
         private CMSDataContext _currentDatabase;
         public CMSDataContext CurrentDatabase { get => _currentDatabase ?? DbUtil.Db; set => _currentDatabase = value; }
-        
 
         public int pid { get; set; }
         public int orgid { get; set; }
