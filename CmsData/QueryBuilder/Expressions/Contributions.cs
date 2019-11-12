@@ -1000,7 +1000,7 @@ namespace CmsData
         internal Expression IsTopGiver()
         {
             var top = Quarters.ToInt();
-            var fundids = FundIds.Replace(' ', ',');
+            var fundids = FundIds?.Replace(' ', ',');
             var tf = CodeIds == "1";
             if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
             {
