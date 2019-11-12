@@ -34,16 +34,17 @@ namespace IntegrationTests.Areas.OnlineReg.Views
             createOrgWithFee();
 
             Open($"{rootUrl}Org/{OrgId}#tab-Registrations-tab");
-
-            ScrollTo(css: "#Fees-tab>a");
             Wait(10);
 
-            Find(css: "#Fees-tab>a").Click();
+            ScrollTo(css: "#Registration > form > h4:nth-child(3)");
+            WaitForElement(css: "#Fees-tab > a", maxWaitTimeInSeconds: 5);
+            Find(css: "#Fees-tab > a").Click();
             Wait(7);
 
             Find(css: "#Fees .row .edit").Click();
-            Wait(7);
+            Wait(10);
 
+            ScrollTo(id: "Fee");
             Find(id: "Fee").Clear();
             Find(id: "Fee").SendKeys("5");
             Find(css: ".pull-right:nth-child(1) > .validate").Click();
@@ -107,7 +108,7 @@ namespace IntegrationTests.Areas.OnlineReg.Views
             var routeDataValues = new Dictionary<string, string> { { "controller", "OnlineReg" } };
             controller.ControllerContext = ControllerTestUtils.FakeControllerContext(controller, routeDataValues);
 
-            var FakeOrg = FakeOrganizationUtils.MakeFakeOrganization(requestManager, new CmsData.Organization()
+            var FakeOrg = FakeOrganizationUtils.MakeFakeOrganization(requestManager, new Organization()
             {
                 OrganizationName = "MockName",
                 RegistrationTitle = "MockTitle",
