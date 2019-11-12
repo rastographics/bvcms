@@ -33,7 +33,7 @@ namespace CmsWeb.Areas.Public.ControllersTests
             org.NoSecurityLabel = true;
             org.NumCheckInLabels = 0;
             db.SubmitChanges();
-            var meetingTime = new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute - now.Minute % 15, 0);
+            var meetingTime = new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute - (now.Minute % 15), 0);
             Meeting.FetchOrCreateMeeting(db, org.OrganizationId, meetingTime, noautoabsents: true);
 
             var requestManager = FakeRequestManager.Create();
