@@ -11,22 +11,18 @@
     methods: {
         myFunctionOnLoad: function () {
             this.GetPrograms();
-            console.log(this.Test);
         },
         GetPrograms: function () {
             this.$http.get('/Figures/GetPrograms').then(
                 response => {
                     if (response.status === 200) {
                         this.Programs = response.body;
-                        console.log(this.Programs);
                     }
                     else {
-                        console.log(response);
                         warning_swal('Warning!', 'Something went wrong, try again later');
                     }
                 },
                 err => {
-                    console.log(err);
                     error_swal('Fatal Error!', 'We are working to fix it');
                 }
             );
@@ -36,7 +32,6 @@
             this.Organizations = null;
             this.Divisions = null;
             if (this.ProgramId > 0) {
-                console.log(this.ProgramId);
                 this.Divisions = this.Programs.find(x => x.Id === this.ProgramId).DivList;
             }
         },
