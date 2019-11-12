@@ -1,5 +1,7 @@
 using CmsData;
+using CmsWeb.Constants;
 using CmsWeb.Models;
+using System;
 using System.Collections.Generic;
 using System.Data.Linq.SqlClient;
 using System.Linq;
@@ -11,8 +13,6 @@ namespace CmsWeb.Areas.Search.Models
 {
     public class SavedQueryModel : PagedTableModel<Query, SavedQueryInfo>
     {
-        public CMSDataContext CurrentDatabase { get => _currentDatabase ?? DbUtil.Db; set => _currentDatabase = value; }
-        private CMSDataContext _currentDatabase;
         internal CMSDataContext Db => CurrentDatabase;
         public bool admin { get; set; }
         public bool OnlyMine { get; set; }
@@ -20,6 +20,9 @@ namespace CmsWeb.Areas.Search.Models
         public string SearchQuery { get; set; }
         public bool ScratchPadsOnly { get; set; }
         public bool StatusFlagsOnly { get; set; }
+
+        [Obsolete(Errors.ModelBindingConstructorError, error: true)]
+        public SavedQueryModel():base() { }
 
         public SavedQueryModel(CMSDataContext db) : base(db, "Last Run", "desc", true)
         {

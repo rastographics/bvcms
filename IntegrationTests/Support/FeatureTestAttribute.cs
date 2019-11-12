@@ -8,6 +8,7 @@ namespace IntegrationTests.Support
         public override void After(MethodInfo methodUnderTest)
         {
             FeatureTestBase.Current?.SaveScreenshot(methodUnderTest.Name);
+            FeatureTestBase.Current?.ShouldNotHaveScriptError();
         }
     }
 }

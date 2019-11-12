@@ -2,13 +2,14 @@
 using Shouldly;
 using Xunit;
 using SharedTestFixtures;
+using CMSWebTests;
 
 namespace IntegrationTests.Areas.Manage
 {
     [Collection(Collections.Webapp)]
     public class QueryControllerTests : AccountTestBase
     {
-        [Fact]
+        [Fact, FeatureTest]
         public void TestSearchBuilderOrgsDropdownOption()
         {
             const string finddivision = "input[type=radio][value$='First Division']";
@@ -17,13 +18,13 @@ namespace IntegrationTests.Areas.Manage
 
             LoginAsAdmin();
 
-            Open($"{rootUrl}SetSettingForLocalhost/{settingname}/DELETE");
+            SettingUtils.DeleteSetting(settingname);
             WaitForPageLoad();
             DisplayOrgDropdowns();
             IsElementPresent(finddivision).ShouldBeTrue();
             IsElementPresent(findorg).ShouldBeTrue();
 
-            Open($"{rootUrl}SetSettingForLocalhost/{settingname}/false");
+            SettingUtils.UpdateSetting(settingname, "false");
             WaitForPageLoad();
             DisplayOrgDropdowns();
             IsElementPresent(finddivision).ShouldBeFalse();
@@ -53,7 +54,7 @@ namespace IntegrationTests.Areas.Manage
             CreateUser(username, password, roles: new[] { "Access", "Edit", "Admin" });
             Login();
             Open($"{rootUrl}QueryCode?code=Age>65");
-            WaitForElement("input#totcnt");
+            WaitForElementToDisappear(loadingUI);
             PageSource.ShouldContain("David Carroll");
         }
     }
