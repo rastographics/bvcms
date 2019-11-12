@@ -682,7 +682,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             int? pid = null;
             if (m != null)
             {
-                m.ParseSettings(CurrentDatabase);
+                m.ParseSettings();
 
                 pid = m.UserPeopleId;
                 if (m.TranId == null)

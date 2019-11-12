@@ -11,7 +11,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 {
     public partial class OnlineRegModel
     {
-        public void ParseSettings(CMSDataContext db)
+        public void ParseSettings()
         {
             var list = new Dictionary<int, Settings>();
 
@@ -19,10 +19,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
             {
                 foreach (var o in UserSelectClasses(masterorg))
                 {
-                    list[o.OrganizationId] = db.CreateRegistrationSettings(o.OrganizationId);
+                    list[o.OrganizationId] = CurrentDatabase.CreateRegistrationSettings(o.OrganizationId);
                 }
 
-                list[masterorg.OrganizationId] = db.CreateRegistrationSettings(masterorg.OrganizationId);
+                list[masterorg.OrganizationId] = CurrentDatabase.CreateRegistrationSettings(masterorg.OrganizationId);
             }
             else if (_orgid == null)
             {
@@ -30,7 +30,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
             else if (org != null)
             {
-                list[_orgid.Value] = db.CreateRegistrationSettings(_orgid.Value);
+                list[_orgid.Value] = CurrentDatabase.CreateRegistrationSettings(_orgid.Value);
             }
 
             HttpContextFactory.Current.Items["RegSettings"] = list;
@@ -40,7 +40,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 return;
             }
 
-            var script = db.Content(org.AddToSmallGroupScript);
+            var script = CurrentDatabase.Content(org.AddToSmallGroupScript);
             if (script == null || !script.Body.HasValue())
             {
                 return;

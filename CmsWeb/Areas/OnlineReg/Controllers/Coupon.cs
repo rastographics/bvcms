@@ -20,7 +20,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     return Json(new { error = "coupon not find your registration" });
                 }
 
-                m.ParseSettings(CurrentDatabase);
+                m.ParseSettings();
             }
 
             if (!pf.Coupon.HasValue())
@@ -126,7 +126,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
 
             var m = OnlineRegModel.GetRegistrationFromDatum(id, CurrentDatabase);
-            m.ParseSettings(CurrentDatabase);
+            m.ParseSettings();
             var coupon = Coupon.ToUpper().Replace(" ", "");
             var admincoupon = CurrentDatabase.Setting("AdminCoupon", "ifj4ijweoij").ToUpper().Replace(" ", "");
             if (coupon == admincoupon)

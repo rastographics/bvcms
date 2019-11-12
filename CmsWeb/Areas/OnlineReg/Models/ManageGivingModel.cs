@@ -24,8 +24,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
     [Serializable]
     public class ManageGivingModel : IDbBinder
     {
-        public CMSDataContext CurrentDatabase { get; set; }
-        internal CMSDataContext Db => CurrentDatabase;
+        [NonSerialized]
+        private CMSDataContext _currentDatabase;
+        public CMSDataContext CurrentDatabase { get => _currentDatabase ?? DbUtil.Db; set => _currentDatabase = value; }
+        
 
         public int pid { get; set; }
         public int orgid { get; set; }
@@ -75,7 +77,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public decimal total { get; set; }
         public string HeadingLabel
         {
-            get => Db.Setting("ManageGivingHeaderLabel", "Giving Opportunities");
+            get => CurrentDatabase.Setting("ManageGivingHeaderLabel", "Giving Opportunities");
             set { }
         }
 
@@ -89,10 +91,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public string State { get; set; }
         public string Country { get; set; }
 
-        public bool useNewManageGivingBuilder => Db.Setting("UseNewManageGivingBuilder", true);
-        public string debitcredit => Db.GetDebitCreditLabel(PaymentProcessTypes.RecurringGiving);
-        public string recaptchaSiteKey => Db.Setting("googleReCaptchaSiteKey", ConfigurationManager.AppSettings["googleReCaptchaSiteKey"]);
-        public bool useRecaptcha => Db.Setting("UseRecaptchaForManageGiving") && recaptchaSiteKey.HasValue();
+        public bool useNewManageGivingBuilder => CurrentDatabase.Setting("UseNewManageGivingBuilder", true);
+        public string debitcredit => CurrentDatabase.GetDebitCreditLabel(PaymentProcessTypes.RecurringGiving);
+        public string recaptchaSiteKey => CurrentDatabase.Setting("googleReCaptchaSiteKey", ConfigurationManager.AppSettings["googleReCaptchaSiteKey"]);
+        public bool useRecaptcha => CurrentDatabase.Setting("UseRecaptchaForManageGiving") && recaptchaSiteKey.HasValue();
 
         public IEnumerable<SelectListItem> Countries
         {
@@ -135,12 +137,12 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public bool NoCreditCardsAllowed
         {
-            get => Db.Setting("NoCreditCardGiving", "false").ToBool();
+            get => CurrentDatabase.Setting("NoCreditCardGiving", "false").ToBool();
             set { }
         }
         public bool NoEChecksAllowed
         {
-            get => Db.Setting("NoEChecksAllowed", "false").ToBool();
+            get => CurrentDatabase.Setting("NoEChecksAllowed", "false").ToBool();
             set { }
         }
 

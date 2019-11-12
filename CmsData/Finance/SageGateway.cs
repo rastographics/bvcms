@@ -55,11 +55,16 @@ namespace CmsData.Finance
         {
             var person = db.LoadPersonById(peopleId);
             var paymentInfo = person.PaymentInfo(GatewayAccountId);
-            if (paymentInfo == null)
+
+            // Delete paymentinfo instead of update it fix all the database context issues here
+            if (paymentInfo != null)
             {
-                paymentInfo = new PaymentInfo() { GatewayAccountId = GatewayAccountId };
-                person.PaymentInfos.Add(paymentInfo);
+                db.PaymentInfos.DeleteOnSubmit(paymentInfo);
+                db.SubmitChanges();
             }
+
+            paymentInfo = new PaymentInfo() { GatewayAccountId = GatewayAccountId };
+            person.PaymentInfos.Add(paymentInfo);
 
             if (type == PaymentType.CreditCard)
             {
