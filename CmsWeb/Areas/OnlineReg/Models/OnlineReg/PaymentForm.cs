@@ -16,6 +16,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
 {
     public class PaymentForm : IDbBinder
     {
+        private CMSDataContext _currentDatabase;
+        public CMSDataContext CurrentDatabase { get => _currentDatabase ?? DbUtil.Db; set => _currentDatabase = value; }
+
         private bool? _noEChecksAllowed;
         private int? timeOut;        
 
@@ -47,8 +50,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public string Terms { get; set; }
         public int DatumId { get; set; }
         public Guid FormId { get; set; }
-        public string URL { get; set; }        
-        public CMSDataContext CurrentDatabase { get; set; }
+        public string URL { get; set; }
+
+        public PaymentForm()
+        {
+        }
 
         public PaymentForm(CMSDataContext db)
         {
