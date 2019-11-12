@@ -1,6 +1,7 @@
 using CmsData;
 using CmsData.Finance;
 using CmsWeb.Code;
+using CmsWeb.Constants;
 using CmsWeb.Models;
 using Elmah;
 using System;
@@ -17,7 +18,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
     public class PaymentForm : IDbBinder
     {
         private CMSDataContext _currentDatabase;
-        public CMSDataContext CurrentDatabase { get => _currentDatabase ?? DbUtil.Db; set => _currentDatabase = value; }
+        public CMSDataContext CurrentDatabase { get => _currentDatabase ?? CMSDataContext.Create(HttpContextFactory.Current); set => _currentDatabase = value; }
 
         private bool? _noEChecksAllowed;
         private int? timeOut;        
@@ -52,8 +53,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public Guid FormId { get; set; }
         public string URL { get; set; }
 
+        [Obsolete(Errors.ModelBindingConstructorError, error: true)]
         public PaymentForm()
         {
+
         }
 
         public PaymentForm(CMSDataContext db)
