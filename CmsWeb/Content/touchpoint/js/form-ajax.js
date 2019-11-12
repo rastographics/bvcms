@@ -227,7 +227,7 @@
         return false;
     };
 
-    $.loadTabContent() = function ($load, type, url, data, a, $tabinit, $form) {
+    $.loadTabContent = function ($load, type, url, data, a, $tabinit, $form) {
         var isModal = $load.hasClass("modal-form");
         $.ajax({
             type: type,
