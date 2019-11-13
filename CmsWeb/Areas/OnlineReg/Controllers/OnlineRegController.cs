@@ -392,7 +392,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return FlowList(m);
             }
 
-            m.List.Add(new OnlineRegPersonModel
+            m.List.Add(new OnlineRegPersonModel(CurrentDatabase)
             {
                 orgid = m.Orgid,
                 masterorgid = m.masterorgid,
