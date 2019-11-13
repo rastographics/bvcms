@@ -64,9 +64,24 @@ namespace CmsData
                 return new DocuSign.eSign.Model.SignHere();
             }
 
+            public DocuSign.eSign.Model.Tabs Tabs()
+            {
+                return new DocuSign.eSign.Model.Tabs();
+            }
+
             public DocuSign.eSign.Model.TemplateRole TemplateRole()
             {
                 return new DocuSign.eSign.Model.TemplateRole();
+            }
+
+            public DocuSign.eSign.Model.TemplateTabs TemplateTabs()
+            {
+                return new DocuSign.eSign.Model.TemplateTabs();
+            }
+
+            public DocuSign.eSign.Model.Text Text()
+            {
+                return new DocuSign.eSign.Model.Text();
             }
         }
     }

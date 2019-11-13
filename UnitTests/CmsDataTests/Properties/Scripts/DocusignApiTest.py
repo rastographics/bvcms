@@ -10,5 +10,8 @@
     model.docusign.RecipientViewRequest() is None,
     model.docusign.Signer() is None,
     model.docusign.SignHere() is None,
+    model.docusign.Tabs() is None,
     model.docusign.TemplateRole() is None,
+    model.docusign.TemplateTabs() is None,
+    model.docusign.Text() is None,
     ]))
