@@ -1,6 +1,8 @@
 using CmsData;
 using CmsWeb.Areas.People.Models;
 using CmsWeb.Code;
+using CmsWeb.Constants;
+using CmsWeb.Models;
 using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -11,8 +13,16 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.Search.Models
 {
-    public class PendingPersonModel
+    public class PendingPersonModel : IDbBinder
     {
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
+        public PendingPersonModel() { }
+        public PendingPersonModel(CMSDataContext db)
+        {
+            CurrentDatabase = db;
+        }
+
+        public CMSDataContext CurrentDatabase { get; set; }
         public int index { get; set; }
         public string context { get; set; }
 
@@ -101,7 +111,7 @@ namespace CmsWeb.Areas.Search.Models
             {
                 if (_family == null && FamilyId > 0)
                 {
-                    _family = DbUtil.Db.Families.Single(f => f.FamilyId == FamilyId);
+                    _family = CurrentDatabase.Families.Single(f => f.FamilyId == FamilyId);
                 }
 
                 return _family;
@@ -117,7 +127,7 @@ namespace CmsWeb.Areas.Search.Models
             {
                 if (person == null && PeopleId.HasValue)
                 {
-                    person = DbUtil.Db.LoadPersonById(PeopleId.Value);
+                    person = CurrentDatabase.LoadPersonById(PeopleId.Value);
                 }
 
                 return person;
@@ -127,11 +137,11 @@ namespace CmsWeb.Areas.Search.Models
         public AddressInfo AddressInfo { get; set; }
 
         public string PotentialDuplicate { get; set; }
-        public PendingPersonModel() { }
+
         internal void CheckDuplicate()
         {
-            var pids = DbUtil.Db.FindPerson(FirstName, LastName, Birthday, null, CellPhone.GetDigits()).Select(pp => pp.PeopleId).ToList();
-            var q = from p in DbUtil.Db.People
+            var pids = CurrentDatabase.FindPerson(FirstName, LastName, Birthday, null, CellPhone.GetDigits()).Select(pp => pp.PeopleId).ToList();
+            var q = from p in CurrentDatabase.People
                     where pids.Contains(p.PeopleId)
                     select new { p.PeopleId, p.Name, p.PrimaryAddress, p.Age, };
             var sb = new StringBuilder();
@@ -168,7 +178,7 @@ namespace CmsWeb.Areas.Search.Models
             }
             NickName = NickName?.Trim();
 
-            var position = DbUtil.Db.ComputePositionInFamily(Age ?? -1, MaritalStatus.Value == "20", FamilyId) ?? 10;
+            var position = CurrentDatabase.ComputePositionInFamily(Age ?? -1, MaritalStatus.Value == "20", FamilyId) ?? 10;
 
             FirstName = FirstName.Trim();
             if (FirstName == "na")
@@ -176,7 +186,7 @@ namespace CmsWeb.Areas.Search.Models
                 FirstName = "";
             }
 
-            person = Person.Add(DbUtil.Db, f, position,
+            person = Person.Add(CurrentDatabase, f, position,
                                  null, FirstName.Trim(), NickName, LastName.Trim(), DOB, false, Gender.Value.ToInt(),
                                  originid, entrypointid);
 
@@ -188,15 +198,15 @@ namespace CmsWeb.Areas.Search.Models
                 campusid = null;
             }
 
-            Person.CampusId = Util.PickFirst(campusid.ToString(), DbUtil.Db.Setting("DefaultCampusId", "")).ToInt2();
+            Person.CampusId = Util.PickFirst(campusid.ToString(), CurrentDatabase.Setting("DefaultCampusId", "")).ToInt2();
             if (Person.CampusId == 0)
             {
                 Person.CampusId = null;
             }
 
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
             DbUtil.LogActivity($"AddPerson {person.PeopleId}");
-            DbUtil.Db.Refresh(RefreshMode.OverwriteCurrentValues, Person);
+            CurrentDatabase.Refresh(RefreshMode.OverwriteCurrentValues, Person);
             PeopleId = Person.PeopleId;
         }
 

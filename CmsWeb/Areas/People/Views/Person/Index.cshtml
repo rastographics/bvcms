@@ -18,15 +18,8 @@
         showResourcesTab = Model.PeopleId == Util.UserPeopleId || User.IsInRole("ViewResources");
     }
 
-    var showMinistryTab = false;
-    if (User.IsInRole("OrgLeadersOnly"))
-    {
-        showMinistryTab = !RoleChecker.HasSetting(SettingName.HideMinistryTab, false);
-    }
-    else if (User.IsInRole("Access"))
-    {
-        showMinistryTab = true;
-    }
+    var showMinistryTab = !RoleChecker.HasSetting(SettingName.HideMinistryTab, false);
+
 }
 @section head
 {
