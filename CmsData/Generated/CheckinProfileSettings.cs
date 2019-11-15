@@ -486,7 +486,6 @@ namespace CmsData
 
                         _CheckinProfileId = value.CheckinProfileId;
                     }
-
                     else
                     {
                         _CheckinProfileId = default(int);

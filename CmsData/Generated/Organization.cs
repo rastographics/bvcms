@@ -215,7 +215,7 @@ namespace CmsData
 
         private EntitySet<OrganizationMember> _OrganizationMembers;
 
-        private EntitySet<OrgMemberDocuments> _OrgMemberDocuments;
+        private EntitySet<OrgMemberDocument> _OrgMemberDocuments;
 
         private EntityRef<Organization> _ParentOrg;
 
@@ -529,7 +529,7 @@ namespace CmsData
 
             _OrganizationMembers = new EntitySet<OrganizationMember>(new Action<OrganizationMember>(attach_OrganizationMembers), new Action<OrganizationMember>(detach_OrganizationMembers));
 
-            _OrgMemberDocuments = new EntitySet<OrgMemberDocuments>(new Action<OrgMemberDocuments>(attach_OrgMemberDocuments), new Action<OrgMemberDocuments>(detach_OrgMemberDocuments));
+            _OrgMemberDocuments = new EntitySet<OrgMemberDocument>(new Action<OrgMemberDocument>(attach_OrgMemberDocuments), new Action<OrgMemberDocument>(detach_OrgMemberDocuments));
 
             _ParentOrg = default(EntityRef<Organization>);
 
@@ -2262,7 +2262,7 @@ namespace CmsData
            }
 
         [Association(Name = "Org_Member_Documents_ORG_FK", Storage = "_OrgMemberDocuments", OtherKey = "OrganizationId")]
-        public EntitySet<OrgMemberDocuments> OrgMemberDocuments
+        public EntitySet<OrgMemberDocument> OrgMemberDocuments
         {
                get => _OrgMemberDocuments;
 
@@ -2763,13 +2763,13 @@ namespace CmsData
             entity.Organization = null;
         }
 
-        private void attach_OrgMemberDocuments(OrgMemberDocuments entity)
+        private void attach_OrgMemberDocuments(OrgMemberDocument entity)
         {
             SendPropertyChanging();
             entity.Organization = this;
         }
 
-        private void detach_OrgMemberDocuments(OrgMemberDocuments entity)
+        private void detach_OrgMemberDocuments(OrgMemberDocument entity)
         {
             SendPropertyChanging();
             entity.Organization = null;

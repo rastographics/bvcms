@@ -515,9 +515,9 @@ namespace CmsData
         partial void UpdateOrganizationMember(OrganizationMember instance);
         partial void DeleteOrganizationMember(OrganizationMember instance);
 
-        partial void InsertOrgMemberDocuments(OrgMemberDocuments instance);
-        partial void UpdateOrgMemberDocuments(OrgMemberDocuments instance);
-        partial void DeleteOrgMemberDocuments(OrgMemberDocuments instance);
+        partial void InsertOrgMemberDocuments(OrgMemberDocument instance);
+        partial void UpdateOrgMemberDocuments(OrgMemberDocument instance);
+        partial void DeleteOrgMemberDocuments(OrgMemberDocument instance);
 
         partial void InsertOrganization(Organization instance);
         partial void UpdateOrganization(Organization instance);
@@ -1116,7 +1116,7 @@ namespace CmsData
 
         public Table<OrganizationMember> OrganizationMembers => GetTable<OrganizationMember>();
 
-        public Table<OrgMemberDocuments> OrgMemberDocuments => GetTable<OrgMemberDocuments>();
+        public Table<OrgMemberDocument> OrgMemberDocuments => GetTable<OrgMemberDocument>();
 
         public Table<Organization> Organizations => GetTable<Organization>();
 
@@ -5995,6 +5995,5 @@ namespace CmsData
             return ((ISingleResult<TopGiver>)(result.ReturnValue));
         }
         #endregion
-
     }
 }

@@ -355,7 +355,7 @@ namespace CmsData
 
         private EntitySet<VolRequest> _VolResponses;
 
-        private EntitySet<OrgMemberDocuments> _OrgMemberDocuments;
+        private EntitySet<OrgMemberDocument> _OrgMemberDocuments;
 
         private EntityRef<Organization> _BFClass;
 
@@ -871,7 +871,7 @@ namespace CmsData
 
             _VolResponses = new EntitySet<VolRequest>(new Action<VolRequest>(attach_VolResponses), new Action<VolRequest>(detach_VolResponses));
 
-            _OrgMemberDocuments = new EntitySet<OrgMemberDocuments>(new Action<OrgMemberDocuments>(attach_OrgMemberDocuments), new Action<OrgMemberDocuments>(detach_OrgMemberDocuments));
+            _OrgMemberDocuments = new EntitySet<OrgMemberDocument>(new Action<OrgMemberDocument>(attach_OrgMemberDocuments), new Action<OrgMemberDocument>(detach_OrgMemberDocuments));
 
             _BFClass = default(EntityRef<Organization>);
 
@@ -3544,7 +3544,7 @@ namespace CmsData
            }
 
         [Association(Name = "Org_Member_Documents_PPL_FK", Storage = "_OrgMemberDocuments", OtherKey = "PeopleId")]
-        public EntitySet<OrgMemberDocuments> OrgMemberDocuments
+        public EntitySet<OrgMemberDocument> OrgMemberDocuments
         {
             get => _OrgMemberDocuments;
 
@@ -4973,13 +4973,13 @@ namespace CmsData
             entity.Person = null;
         }
 
-        private void attach_OrgMemberDocuments(OrgMemberDocuments entity)
+        private void attach_OrgMemberDocuments(OrgMemberDocument entity)
         {
             SendPropertyChanging();
             entity.Person = this;
         }
 
-        private void detach_OrgMemberDocuments(OrgMemberDocuments entity)
+        private void detach_OrgMemberDocuments(OrgMemberDocument entity)
         {
             SendPropertyChanging();
             entity.Person = null;

@@ -7,7 +7,7 @@ using System.Data.Linq.Mapping;
 namespace CmsData
 {
     [Table(Name = "dbo.OrgMemberDocuments")]
-    public partial class OrgMemberDocuments
+    public partial class OrgMemberDocument
     {
         private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
@@ -45,7 +45,7 @@ namespace CmsData
         partial void OnOrganizationIdChanged();
         #endregion
 
-        public OrgMemberDocuments()
+        public OrgMemberDocument()
         {
             _Person = default(EntityRef<Person>);
 
@@ -186,7 +186,6 @@ namespace CmsData
                         value.OrgMemberDocuments.Add(this);
                         _PeopleId = value.PeopleId;
                     }
-
                     else
                     {
                         _PeopleId = default(int);
@@ -221,7 +220,6 @@ namespace CmsData
                         value.OrgMemberDocuments.Add(this);
                         _OrganizationId = value.OrganizationId;
                     }
-
                     else
                     {
                         _OrganizationId = default(int);
