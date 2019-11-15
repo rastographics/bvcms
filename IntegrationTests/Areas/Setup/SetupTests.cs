@@ -26,6 +26,7 @@ namespace IntegrationTests.Areas.Manage
             CurrentUrl.ShouldBe($"{rootUrl}Roles");
 
             Find(css: ".box-tools button[type=submit]").Click();
+            WaitForElement("#RoleName.NEW");
             var newRole = Find(id: "RoleName.NEW");
             ScrollTo(newRole);
             newRole.Click();
