@@ -1,4 +1,5 @@
 ﻿using IntegrationTests.Support;
+using OpenQA.Selenium;
 using SharedTestFixtures;
 using Shouldly;
 using System.Collections.Generic;
@@ -25,8 +26,8 @@ namespace IntegrationTests.Areas.Manage
             Find(text: "Roles").Click();
             CurrentUrl.ShouldBe($"{rootUrl}Roles");
 
-            Find(css: ".box-tools button[type=submit]").Click();
-            WaitForElement("#RoleName.NEW");
+            RepeatUntil(() => Find(css: ".box-tools button[type=submit]").Click(),
+                condition: () => Find(id: "RoleName.NEW") != null);
             var newRole = Find(id: "RoleName.NEW");
             ScrollTo(newRole);
             newRole.Click();
@@ -36,6 +37,7 @@ namespace IntegrationTests.Areas.Manage
             Find(css: ".editable-buttons button[type=submit]").Click();
             Open($"{rootUrl}Roles");
             PageSource.ShouldContain(roleName);
+
             var adminRole = db.Roles.SingleOrDefault(r => r.RoleName == "Admin");
             var role = db.Roles.SingleOrDefault(r => r.RoleName == roleName);
             role.ShouldNotBeNull();
