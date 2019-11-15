@@ -61,6 +61,7 @@ namespace IntegrationTests.Areas.Manage
             Find(text: "Change Password").Click();
 
             CurrentUrl.ShouldBe($"{rootUrl}Account/ChangePassword/");
+            Wait(1);
 
             Find(id: "currentPassword").SendKeys(password);
             Find(id: "newPassword").SendKeys(newPassword);
