@@ -618,6 +618,42 @@ namespace CmsData
             }
         }
 
+        [Column(Name = "MFAEnabled", UpdateCheck = UpdateCheck.Never, Storage = "_MFAEnabled", DbType = "bit NOT NULL")]
+        public bool MFAEnabled
+        {
+            get { return _MFAEnabled; }
+
+            set
+            {
+                if (_MFAEnabled != value)
+                {
+                    OnMFAEnabledChanging(value);
+                    SendPropertyChanging();
+                    _MFAEnabled = value;
+                    SendPropertyChanged("MFAEnabled");
+                    OnMFAEnabledChanged();
+                }
+            }
+        }
+
+        [Column(Name = "Secret", UpdateCheck = UpdateCheck.Never, Storage = "_Secret", DbType = "nvarchar(64) NULL")]
+        public string Secret
+        {
+            get { return _Secret; }
+
+            set
+            {
+                if (_Secret != value)
+                {
+                    OnSecretChanging(value);
+                    SendPropertyChanging();
+                    _Secret = value;
+                    SendPropertyChanged("Secret");
+                    OnSecretChanged();
+                }
+            }
+        }
+
         [Column(Name = "Host", UpdateCheck = UpdateCheck.Never, Storage = "_Host", DbType = "nvarchar(100)")]
         public string Host
         {

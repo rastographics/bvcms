@@ -1080,6 +1080,8 @@ namespace CmsData
 
         public Table<MergeHistory> MergeHistories => GetTable<MergeHistory>();
 
+        public Table<MFAToken> MFATokens => GetTable<MFAToken>();
+
         public Table<Ministry> Ministries => GetTable<Ministry>();
 
         public Table<MobileAppAction> MobileAppActions => GetTable<MobileAppAction>();
