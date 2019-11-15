@@ -4,6 +4,7 @@
 :: 2 = The name of the site to deploy to
 :: 3 = The deployment user name
 :: 4 = The deployment password
+:: Example: deployserver 192.168.0.15 cms administrator adminpassword Release
 :: Optionally set the environment variables for %bringdown% and %bringup% to run a script on the server before and after deployment
 :: Optionally set the environment variable for %setupscript% to run a setup script on the server after deployment
 :: Optionally set %on_error% to the command you want to run if a step fails
