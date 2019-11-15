@@ -30,7 +30,7 @@ del %test_coverage%
 %OpenCover% -register:user -target:"%xunit%" -targetargs:"%integration_tests% -noshadow -teamcity" -filter:%opencover_filters% || exit 9
 
 @echo off
-taskkill /IM iisexpress.exe
+taskkill /F /IM iisexpress.exe
 :waitforopencover
 tasklist /FI "IMAGENAME eq opencover.console.exe" 2>NUL | find /I /N "No tasks">NUL
 IF ERRORLEVEL 1 (
