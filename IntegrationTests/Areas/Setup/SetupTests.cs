@@ -26,7 +26,9 @@ namespace IntegrationTests.Areas.Manage
             CurrentUrl.ShouldBe($"{rootUrl}Roles");
 
             Find(css: ".box-tools button[type=submit]").Click();
-            Find(id: "RoleName.NEW").Click();
+            var newRole = Find(id: "RoleName.NEW");
+            ScrollTo(newRole);
+            newRole.Click();
             WaitForElement(".editable-input input[type=text]");
             Find(css: ".editable-input input[type=text]").Clear();
             Find(css: ".editable-input input[type=text]").SendKeys(roleName);
@@ -55,7 +57,7 @@ namespace IntegrationTests.Areas.Manage
             Open($"{rootUrl}Roles/1");
 
             Find(css: "button[data-target=\"#General\"]").Click();
-            WaitForElement("#HideNavTabs");
+            Wait(0.5);
             Find(css: "#HideNavTabs + .toggle-group").Click();
 
             WaitForElement(".snackbar.success");
