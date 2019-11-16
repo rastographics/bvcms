@@ -1,85 +1,64 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="Sprocs")]
-	public partial class Sproc
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private string _Type;
-		
-		private string _Name;
-		
-		private string _Code;
-		
-		
-		public Sproc()
-		{
-		}
+    [Table(Name = "Sprocs")]
+    public partial class Sproc
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="type", Storage="_Type", DbType="nvarchar(20)")]
-		public string Type
-		{
-			get
-			{
-				return this._Type;
-			}
+        private string _Type;
 
-			set
-			{
-				if (this._Type != value)
-					this._Type = value;
-			}
+        private string _Name;
 
-		}
+        private string _Code;
 
-		
-		[Column(Name="Name", Storage="_Name", DbType="nvarchar(128) NOT NULL")]
-		public string Name
-		{
-			get
-			{
-				return this._Name;
-			}
+        public Sproc()
+        {
+        }
 
-			set
-			{
-				if (this._Name != value)
-					this._Name = value;
-			}
+        [Column(Name = "type", Storage = "_Type", DbType = "nvarchar(20)")]
+        public string Type
+        {
+            get => _Type;
 
-		}
+            set
+            {
+                if (_Type != value)
+                {
+                    _Type = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="Code", Storage="_Code", DbType="nvarchar(4000)")]
-		public string Code
-		{
-			get
-			{
-				return this._Code;
-			}
+        [Column(Name = "Name", Storage = "_Name", DbType = "nvarchar(128) NOT NULL")]
+        public string Name
+        {
+            get => _Name;
 
-			set
-			{
-				if (this._Code != value)
-					this._Code = value;
-			}
+            set
+            {
+                if (_Name != value)
+                {
+                    _Name = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "Code", Storage = "_Code", DbType = "nvarchar(4000)")]
+        public string Code
+        {
+            get => _Code;
 
-		
+            set
+            {
+                if (_Code != value)
+                {
+                    _Code = value;
+                }
+            }
+        }
     }
-
 }

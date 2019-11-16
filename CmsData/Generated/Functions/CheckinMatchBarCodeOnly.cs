@@ -1,85 +1,64 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="CheckinMatchBarCodeOnly")]
-	public partial class CheckinMatchBarCodeOnly
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private int? _Familyid;
-		
-		private string _Name;
-		
-		private bool? _Locked;
-		
-		
-		public CheckinMatchBarCodeOnly()
-		{
-		}
+    [Table(Name = "CheckinMatchBarCodeOnly")]
+    public partial class CheckinMatchBarCodeOnly
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="familyid", Storage="_Familyid", DbType="int")]
-		public int? Familyid
-		{
-			get
-			{
-				return this._Familyid;
-			}
+        private int? _Familyid;
 
-			set
-			{
-				if (this._Familyid != value)
-					this._Familyid = value;
-			}
+        private string _Name;
 
-		}
+        private bool? _Locked;
 
-		
-		[Column(Name="NAME", Storage="_Name", DbType="nvarchar(100)")]
-		public string Name
-		{
-			get
-			{
-				return this._Name;
-			}
+        public CheckinMatchBarCodeOnly()
+        {
+        }
 
-			set
-			{
-				if (this._Name != value)
-					this._Name = value;
-			}
+        [Column(Name = "familyid", Storage = "_Familyid", DbType = "int")]
+        public int? Familyid
+        {
+            get => _Familyid;
 
-		}
+            set
+            {
+                if (_Familyid != value)
+                {
+                    _Familyid = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="locked", Storage="_Locked", DbType="bit")]
-		public bool? Locked
-		{
-			get
-			{
-				return this._Locked;
-			}
+        [Column(Name = "NAME", Storage = "_Name", DbType = "nvarchar(100)")]
+        public string Name
+        {
+            get => _Name;
 
-			set
-			{
-				if (this._Locked != value)
-					this._Locked = value;
-			}
+            set
+            {
+                if (_Name != value)
+                {
+                    _Name = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "locked", Storage = "_Locked", DbType = "bit")]
+        public bool? Locked
+        {
+            get => _Locked;
 
-		
+            set
+            {
+                if (_Locked != value)
+                {
+                    _Locked = value;
+                }
+            }
+        }
     }
-
 }
