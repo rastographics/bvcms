@@ -70,7 +70,8 @@ namespace IntegrationTests.Areas.Manage
 
             PageSource.ShouldContain("Password Changed");
 
-            Find(text: "Return to Home").Click();
+            RepeatUntil(() => Find(text: "Return to Home").Click(),
+                condition: () => Find(css: profileMenu) != null);
 
             Logout();
             Login(withPassword: newPassword);
