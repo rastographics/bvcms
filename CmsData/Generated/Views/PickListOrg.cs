@@ -1,47 +1,32 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="PickListOrgs")]
-	public partial class PickListOrg
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private int? _OrgId;
-		
-		
-		public PickListOrg()
-		{
-		}
+    [Table(Name = "PickListOrgs")]
+    public partial class PickListOrg
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="OrgId", Storage="_OrgId", DbType="int")]
-		public int? OrgId
-		{
-			get
-			{
-				return this._OrgId;
-			}
+        private int? _OrgId;
 
-			set
-			{
-				if (this._OrgId != value)
-					this._OrgId = value;
-			}
+        public PickListOrg()
+        {
+        }
 
-		}
+        [Column(Name = "OrgId", Storage = "_OrgId", DbType = "int")]
+        public int? OrgId
+        {
+            get => _OrgId;
 
-		
+            set
+            {
+                if (_OrgId != value)
+                {
+                    _OrgId = value;
+                }
+            }
+        }
     }
-
 }

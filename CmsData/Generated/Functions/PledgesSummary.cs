@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Data.Linq.Mapping;
 
@@ -7,7 +7,7 @@ namespace CmsData.View
     [Table(Name = "PledgesSummary")]
     public partial class PledgesSummary
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         private int _FundId;
 
@@ -26,75 +26,70 @@ namespace CmsData.View
         [Column(Name = "FundId", Storage = "_FundId", DbType = "int")]
         public int FundId
         {
-            get
-            {
-                return this._FundId;
-            }
+            get => _FundId;
 
             set
             {
-                if (this._FundId != value)
-                    this._FundId = value;
+                if (_FundId != value)
+                {
+                    _FundId = value;
+                }
             }
         }
 
         [Column(Name = "FundName", Storage = "_FundName", DbType = "nvarchar(max)")]
         public string FundName
         {
-            get
-            {
-                return this._FundName;
-            }
+            get => _FundName;
 
             set
             {
-                if (this._FundName != value)
-                    this._FundName = value;
+                if (_FundName != value)
+                {
+                    _FundName = value;
+                }
             }
         }
 
         [Column(Name = "AmountPledged", Storage = "_AmountPledged", DbType = "Decimal(38,2)")]
         public decimal AmountPledged
         {
-            get
-            {
-                return this._AmountPledged;
-            }
+            get => _AmountPledged;
 
             set
             {
-                if (this._AmountPledged != value)
-                    this._AmountPledged = value;
+                if (_AmountPledged != value)
+                {
+                    _AmountPledged = value;
+                }
             }
         }
 
         [Column(Name = "AmountContributed", Storage = "_AmountContributed", DbType = "Decimal(38,2)")]
         public decimal AmountContributed
         {
-            get
-            {
-                return this._AmountContributed;
-            }
+            get => _AmountContributed;
 
             set
             {
-                if (this._AmountContributed != value)
-                    this._AmountContributed = value;
+                if (_AmountContributed != value)
+                {
+                    _AmountContributed = value;
+                }
             }
         }
 
         [Column(Name = "Balance", Storage = "_Balance", DbType = "Decimal(38,2)")]
         public decimal Balance
         {
-            get
-            {
-                return this._Balance;
-            }
+            get => _Balance;
 
             set
             {
-                if (this._Balance != value)
-                    this._Balance = value;
+                if (_Balance != value)
+                {
+                    _Balance = value;
+                }
             }
         }
     }

@@ -1,22 +1,18 @@
-﻿using System;
+using CmsData.Infrastructure;
+using System;
+using System.ComponentModel;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
-using System.ComponentModel;
-using CmsData.Infrastructure;
 
 namespace CmsData
 {
     [Table(Name = "dbo.PaymentProcess")]
     public partial class PaymentProcess : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
+
         private int _ProcessId;
         private string _ProcessName;
         private int? _GatewayAccountId;
@@ -25,6 +21,7 @@ namespace CmsData
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -45,20 +42,21 @@ namespace CmsData
         }
 
         #region Columns
+
         [Column(Name = "ProcessId", UpdateCheck = UpdateCheck.Never, Storage = "_ProcessId", AutoSync = AutoSync.OnInsert, DbType = "int IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
         public int ProcessId
         {
-            get { return this._ProcessId; }
+            get => _ProcessId;
 
             set
             {
-                if (this._ProcessId != value)
+                if (_ProcessId != value)
                 {
-                    this.OnProcessIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._ProcessId = value;
-                    this.SendPropertyChanged("ProcessId");
-                    this.OnProcessIdChanged();
+                    OnProcessIdChanging(value);
+                    SendPropertyChanging();
+                    _ProcessId = value;
+                    SendPropertyChanged("ProcessId");
+                    OnProcessIdChanged();
                 }
             }
         }
@@ -66,17 +64,17 @@ namespace CmsData
         [Column(Name = "ProcessName", UpdateCheck = UpdateCheck.Never, Storage = "_ProcessName", AutoSync = AutoSync.OnInsert, DbType = "nvarchar NOT NULL")]
         public string ProcessName
         {
-            get { return this._ProcessName; }
+            get => _ProcessName;
 
             set
             {
-                if (this._ProcessName != value)
+                if (_ProcessName != value)
                 {
-                    this.OnProcessNameChanging(value);
-                    this.SendPropertyChanging();
-                    this._ProcessName = value;
-                    this.SendPropertyChanged("ProcessName");
-                    this.OnProcessNameChanged();
+                    OnProcessNameChanging(value);
+                    SendPropertyChanging();
+                    _ProcessName = value;
+                    SendPropertyChanged("ProcessName");
+                    OnProcessNameChanged();
                 }
             }
         }
@@ -85,40 +83,48 @@ namespace CmsData
         [IsForeignKey]
         public int? GatewayAccountId
         {
-            get { return this._GatewayAccountId; }
+            get => _GatewayAccountId;
 
             set
             {
-                if (this._GatewayAccountId != value)
+                if (_GatewayAccountId != value)
                 {
-                    if (this._GatewayAccount.HasLoadedOrAssignedValue)
+                    if (_GatewayAccount.HasLoadedOrAssignedValue)
+                    {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+                    }
 
-                    this.OnGatewayAccountIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._GatewayAccountId = value;
-                    this.SendPropertyChanged("GatewayAccountId");
-                    this.OnGatewayAccountIdChanged();
+                    OnGatewayAccountIdChanging(value);
+                    SendPropertyChanging();
+                    _GatewayAccountId = value;
+                    SendPropertyChanged("GatewayAccountId");
+                    OnGatewayAccountIdChanged();
                 }
             }
         }
+
         #endregion
 
         #region Foreign Keys
+
         #endregion
 
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
-                this.PropertyChanging(this, emptyChangingEventArgs);
+            if ((PropertyChanging != null))
+            {
+                PropertyChanging(this, emptyChangingEventArgs);
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            if ((PropertyChanged != null))
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
     }
 }

@@ -1,204 +1,174 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
-using CmsData.Infrastructure;
+using System.Data.Linq.Mapping;
 
 namespace CmsData
 {
-	[Table(Name="dbo.DownlineLeaders")]
-	public partial class DownlineLeader : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-	#region Private Fields
-		
-		private int? _CategoryId;
-		
-		private int? _PeopleId;
-		
-		private string _Name;
-		
-		private int? _Cnt;
-		
-		private int? _Levels;
-		
-   		
-    	
-	#endregion
-	
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-		
-		partial void OnCategoryIdChanging(int? value);
-		partial void OnCategoryIdChanged();
-		
-		partial void OnPeopleIdChanging(int? value);
-		partial void OnPeopleIdChanged();
-		
-		partial void OnNameChanging(string value);
-		partial void OnNameChanged();
-		
-		partial void OnCntChanging(int? value);
-		partial void OnCntChanged();
-		
-		partial void OnLevelsChanging(int? value);
-		partial void OnLevelsChanged();
-		
-    #endregion
-		public DownlineLeader()
-		{
-			
-			
-			OnCreated();
-		}
+    [Table(Name = "dbo.DownlineLeaders")]
+    public partial class DownlineLeader : INotifyPropertyChanging, INotifyPropertyChanged
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-    #region Columns
-		
-		[Column(Name="CategoryId", UpdateCheck=UpdateCheck.Never, Storage="_CategoryId", DbType="int")]
-		public int? CategoryId
-		{
-			get { return this._CategoryId; }
+        #region Private Fields
 
-			set
-			{
-				if (this._CategoryId != value)
-				{
-				
-                    this.OnCategoryIdChanging(value);
-					this.SendPropertyChanging();
-					this._CategoryId = value;
-					this.SendPropertyChanged("CategoryId");
-					this.OnCategoryIdChanged();
-				}
+        private int? _CategoryId;
 
-			}
+        private int? _PeopleId;
 
-		}
+        private string _Name;
 
-		
-		[Column(Name="PeopleId", UpdateCheck=UpdateCheck.Never, Storage="_PeopleId", DbType="int")]
-		public int? PeopleId
-		{
-			get { return this._PeopleId; }
+        private int? _Cnt;
 
-			set
-			{
-				if (this._PeopleId != value)
-				{
-				
-                    this.OnPeopleIdChanging(value);
-					this.SendPropertyChanging();
-					this._PeopleId = value;
-					this.SendPropertyChanged("PeopleId");
-					this.OnPeopleIdChanged();
-				}
+        private int? _Levels;
 
-			}
+        #endregion
 
-		}
+        #region Extensibility Method Definitions
 
-		
-		[Column(Name="Name", UpdateCheck=UpdateCheck.Never, Storage="_Name", DbType="nvarchar(100)")]
-		public string Name
-		{
-			get { return this._Name; }
+        partial void OnLoaded();
+        partial void OnValidate(System.Data.Linq.ChangeAction action);
+        partial void OnCreated();
 
-			set
-			{
-				if (this._Name != value)
-				{
-				
-                    this.OnNameChanging(value);
-					this.SendPropertyChanging();
-					this._Name = value;
-					this.SendPropertyChanged("Name");
-					this.OnNameChanged();
-				}
+        partial void OnCategoryIdChanging(int? value);
+        partial void OnCategoryIdChanged();
 
-			}
+        partial void OnPeopleIdChanging(int? value);
+        partial void OnPeopleIdChanged();
 
-		}
+        partial void OnNameChanging(string value);
+        partial void OnNameChanged();
 
-		
-		[Column(Name="Cnt", UpdateCheck=UpdateCheck.Never, Storage="_Cnt", DbType="int")]
-		public int? Cnt
-		{
-			get { return this._Cnt; }
+        partial void OnCntChanging(int? value);
+        partial void OnCntChanged();
 
-			set
-			{
-				if (this._Cnt != value)
-				{
-				
-                    this.OnCntChanging(value);
-					this.SendPropertyChanging();
-					this._Cnt = value;
-					this.SendPropertyChanged("Cnt");
-					this.OnCntChanged();
-				}
+        partial void OnLevelsChanging(int? value);
+        partial void OnLevelsChanged();
 
-			}
+        #endregion
 
-		}
+        public DownlineLeader()
+        {
+            OnCreated();
+        }
 
-		
-		[Column(Name="Levels", UpdateCheck=UpdateCheck.Never, Storage="_Levels", DbType="int")]
-		public int? Levels
-		{
-			get { return this._Levels; }
+        #region Columns
 
-			set
-			{
-				if (this._Levels != value)
-				{
-				
-                    this.OnLevelsChanging(value);
-					this.SendPropertyChanging();
-					this._Levels = value;
-					this.SendPropertyChanged("Levels");
-					this.OnLevelsChanged();
-				}
+        [Column(Name = "CategoryId", UpdateCheck = UpdateCheck.Never, Storage = "_CategoryId", DbType = "int")]
+        public int? CategoryId
+        {
+            get => _CategoryId;
 
-			}
+            set
+            {
+                if (_CategoryId != value)
+                {
+                    OnCategoryIdChanging(value);
+                    SendPropertyChanging();
+                    _CategoryId = value;
+                    SendPropertyChanged("CategoryId");
+                    OnCategoryIdChanged();
+                }
+            }
+        }
 
-		}
+        [Column(Name = "PeopleId", UpdateCheck = UpdateCheck.Never, Storage = "_PeopleId", DbType = "int")]
+        public int? PeopleId
+        {
+            get => _PeopleId;
 
-		
-    #endregion
-        
-    #region Foreign Key Tables
-   		
-	#endregion
-	
-	#region Foreign Keys
-    	
-	#endregion
-	
-		public event PropertyChangingEventHandler PropertyChanging;
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-				this.PropertyChanging(this, emptyChangingEventArgs);
-		}
+            set
+            {
+                if (_PeopleId != value)
+                {
+                    OnPeopleIdChanging(value);
+                    SendPropertyChanging();
+                    _PeopleId = value;
+                    SendPropertyChanged("PeopleId");
+                    OnPeopleIdChanged();
+                }
+            }
+        }
 
-		public event PropertyChangedEventHandler PropertyChanged;
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-		}
+        [Column(Name = "Name", UpdateCheck = UpdateCheck.Never, Storage = "_Name", DbType = "nvarchar(100)")]
+        public string Name
+        {
+            get => _Name;
 
-   		
-	}
+            set
+            {
+                if (_Name != value)
+                {
+                    OnNameChanging(value);
+                    SendPropertyChanging();
+                    _Name = value;
+                    SendPropertyChanged("Name");
+                    OnNameChanged();
+                }
+            }
+        }
 
+        [Column(Name = "Cnt", UpdateCheck = UpdateCheck.Never, Storage = "_Cnt", DbType = "int")]
+        public int? Cnt
+        {
+            get => _Cnt;
+
+            set
+            {
+                if (_Cnt != value)
+                {
+                    OnCntChanging(value);
+                    SendPropertyChanging();
+                    _Cnt = value;
+                    SendPropertyChanged("Cnt");
+                    OnCntChanged();
+                }
+            }
+        }
+
+        [Column(Name = "Levels", UpdateCheck = UpdateCheck.Never, Storage = "_Levels", DbType = "int")]
+        public int? Levels
+        {
+            get => _Levels;
+
+            set
+            {
+                if (_Levels != value)
+                {
+                    OnLevelsChanging(value);
+                    SendPropertyChanging();
+                    _Levels = value;
+                    SendPropertyChanged("Levels");
+                    OnLevelsChanged();
+                }
+            }
+        }
+
+        #endregion
+
+        #region Foreign Key Tables
+
+        #endregion
+
+        #region Foreign Keys
+
+        #endregion
+
+        public event PropertyChangingEventHandler PropertyChanging;
+        protected virtual void SendPropertyChanging()
+        {
+            if ((PropertyChanging != null))
+            {
+                PropertyChanging(this, emptyChangingEventArgs);
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void SendPropertyChanged(string propertyName)
+        {
+            if ((PropertyChanged != null))
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
 }
-

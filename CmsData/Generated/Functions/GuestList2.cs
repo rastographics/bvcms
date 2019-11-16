@@ -1,104 +1,80 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="GuestList2")]
-	public partial class GuestList2
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private int _PeopleId;
-		
-		private DateTime _LastAttendDt;
-		
-		private bool _Hidden;
-		
-		private int? _MemberTypeId;
-		
-		
-		public GuestList2()
-		{
-		}
+    [Table(Name = "GuestList2")]
+    public partial class GuestList2
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="PeopleId", Storage="_PeopleId", DbType="int NOT NULL")]
-		public int PeopleId
-		{
-			get
-			{
-				return this._PeopleId;
-			}
+        private int _PeopleId;
 
-			set
-			{
-				if (this._PeopleId != value)
-					this._PeopleId = value;
-			}
+        private DateTime _LastAttendDt;
 
-		}
+        private bool _Hidden;
 
-		
-		[Column(Name="LastAttendDt", Storage="_LastAttendDt", DbType="datetime NOT NULL")]
-		public DateTime LastAttendDt
-		{
-			get
-			{
-				return this._LastAttendDt;
-			}
+        private int? _MemberTypeId;
 
-			set
-			{
-				if (this._LastAttendDt != value)
-					this._LastAttendDt = value;
-			}
+        public GuestList2()
+        {
+        }
 
-		}
+        [Column(Name = "PeopleId", Storage = "_PeopleId", DbType = "int NOT NULL")]
+        public int PeopleId
+        {
+            get => _PeopleId;
 
-		
-		[Column(Name="Hidden", Storage="_Hidden", DbType="bit NOT NULL")]
-		public bool Hidden
-		{
-			get
-			{
-				return this._Hidden;
-			}
+            set
+            {
+                if (_PeopleId != value)
+                {
+                    _PeopleId = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._Hidden != value)
-					this._Hidden = value;
-			}
+        [Column(Name = "LastAttendDt", Storage = "_LastAttendDt", DbType = "datetime NOT NULL")]
+        public DateTime LastAttendDt
+        {
+            get => _LastAttendDt;
 
-		}
+            set
+            {
+                if (_LastAttendDt != value)
+                {
+                    _LastAttendDt = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="MemberTypeId", Storage="_MemberTypeId", DbType="int")]
-		public int? MemberTypeId
-		{
-			get
-			{
-				return this._MemberTypeId;
-			}
+        [Column(Name = "Hidden", Storage = "_Hidden", DbType = "bit NOT NULL")]
+        public bool Hidden
+        {
+            get => _Hidden;
 
-			set
-			{
-				if (this._MemberTypeId != value)
-					this._MemberTypeId = value;
-			}
+            set
+            {
+                if (_Hidden != value)
+                {
+                    _Hidden = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "MemberTypeId", Storage = "_MemberTypeId", DbType = "int")]
+        public int? MemberTypeId
+        {
+            get => _MemberTypeId;
 
-		
+            set
+            {
+                if (_MemberTypeId != value)
+                {
+                    _MemberTypeId = value;
+                }
+            }
+        }
     }
-
 }
