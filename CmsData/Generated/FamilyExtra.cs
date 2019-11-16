@@ -1,416 +1,362 @@
-using System; 
+using CmsData.Infrastructure;
+using System;
+using System.ComponentModel;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
-using System.ComponentModel;
-using CmsData.Infrastructure;
 
 namespace CmsData
 {
-	[Table(Name="dbo.FamilyExtra")]
-	public partial class FamilyExtra : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-	#region Private Fields
-		
-		private int _FamilyId;
-		
-		private string _Field;
-		
-		private string _StrValue;
-		
-		private DateTime? _DateValue;
-		
-		private DateTime _TransactionTime;
-		
-		private string _Data;
-		
-		private int? _IntValue;
-		
-		private bool? _BitValue;
-		
-		private string _FieldValue;
-		
-		private bool? _UseAllValues;
-		
-		private string _Type;
-		
-   		
-    	
-		private EntityRef<Family> _Family;
-		
-	#endregion
-	
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-		
-		partial void OnFamilyIdChanging(int value);
-		partial void OnFamilyIdChanged();
-		
-		partial void OnFieldChanging(string value);
-		partial void OnFieldChanged();
-		
-		partial void OnStrValueChanging(string value);
-		partial void OnStrValueChanged();
-		
-		partial void OnDateValueChanging(DateTime? value);
-		partial void OnDateValueChanged();
-		
-		partial void OnTransactionTimeChanging(DateTime value);
-		partial void OnTransactionTimeChanged();
-		
-		partial void OnDataChanging(string value);
-		partial void OnDataChanged();
-		
-		partial void OnIntValueChanging(int? value);
-		partial void OnIntValueChanged();
-		
-		partial void OnBitValueChanging(bool? value);
-		partial void OnBitValueChanged();
-		
-		partial void OnFieldValueChanging(string value);
-		partial void OnFieldValueChanged();
-		
-		partial void OnUseAllValuesChanging(bool? value);
-		partial void OnUseAllValuesChanged();
-		
-		partial void OnTypeChanging(string value);
-		partial void OnTypeChanged();
-		
-    #endregion
-		public FamilyExtra()
-		{
-			
-			
-			this._Family = default(EntityRef<Family>); 
-			
-			OnCreated();
-		}
+    [Table(Name = "dbo.FamilyExtra")]
+    public partial class FamilyExtra : INotifyPropertyChanging, INotifyPropertyChanged
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-    #region Columns
-		
-		[Column(Name="FamilyId", UpdateCheck=UpdateCheck.Never, Storage="_FamilyId", DbType="int NOT NULL", IsPrimaryKey=true)]
-		[IsForeignKey]
-		public int FamilyId
-		{
-			get { return this._FamilyId; }
+        #region Private Fields
 
-			set
-			{
-				if (this._FamilyId != value)
-				{
-				
-					if (this._Family.HasLoadedOrAssignedValue)
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-				
-                    this.OnFamilyIdChanging(value);
-					this.SendPropertyChanging();
-					this._FamilyId = value;
-					this.SendPropertyChanged("FamilyId");
-					this.OnFamilyIdChanged();
-				}
+        private int _FamilyId;
 
-			}
+        private string _Field;
 
-		}
+        private string _StrValue;
 
-		
-		[Column(Name="Field", UpdateCheck=UpdateCheck.Never, Storage="_Field", DbType="nvarchar(50) NOT NULL", IsPrimaryKey=true)]
-		public string Field
-		{
-			get { return this._Field; }
+        private DateTime? _DateValue;
 
-			set
-			{
-				if (this._Field != value)
-				{
-				
-                    this.OnFieldChanging(value);
-					this.SendPropertyChanging();
-					this._Field = value;
-					this.SendPropertyChanged("Field");
-					this.OnFieldChanged();
-				}
+        private DateTime _TransactionTime;
 
-			}
+        private string _Data;
 
-		}
+        private int? _IntValue;
 
-		
-		[Column(Name="StrValue", UpdateCheck=UpdateCheck.Never, Storage="_StrValue", DbType="nvarchar(200)")]
-		public string StrValue
-		{
-			get { return this._StrValue; }
+        private bool? _BitValue;
 
-			set
-			{
-				if (this._StrValue != value)
-				{
-				
-                    this.OnStrValueChanging(value);
-					this.SendPropertyChanging();
-					this._StrValue = value;
-					this.SendPropertyChanged("StrValue");
-					this.OnStrValueChanged();
-				}
+        private string _FieldValue;
 
-			}
+        private bool? _UseAllValues;
 
-		}
+        private string _Type;
 
-		
-		[Column(Name="DateValue", UpdateCheck=UpdateCheck.Never, Storage="_DateValue", DbType="datetime")]
-		public DateTime? DateValue
-		{
-			get { return this._DateValue; }
+        private EntityRef<Family> _Family;
 
-			set
-			{
-				if (this._DateValue != value)
-				{
-				
-                    this.OnDateValueChanging(value);
-					this.SendPropertyChanging();
-					this._DateValue = value;
-					this.SendPropertyChanged("DateValue");
-					this.OnDateValueChanged();
-				}
+        #endregion
 
-			}
+        #region Extensibility Method Definitions
 
-		}
+        partial void OnLoaded();
+        partial void OnValidate(System.Data.Linq.ChangeAction action);
+        partial void OnCreated();
 
-		
-		[Column(Name="TransactionTime", UpdateCheck=UpdateCheck.Never, Storage="_TransactionTime", DbType="datetime NOT NULL")]
-		public DateTime TransactionTime
-		{
-			get { return this._TransactionTime; }
+        partial void OnFamilyIdChanging(int value);
+        partial void OnFamilyIdChanged();
 
-			set
-			{
-				if (this._TransactionTime != value)
-				{
-				
-                    this.OnTransactionTimeChanging(value);
-					this.SendPropertyChanging();
-					this._TransactionTime = value;
-					this.SendPropertyChanged("TransactionTime");
-					this.OnTransactionTimeChanged();
-				}
+        partial void OnFieldChanging(string value);
+        partial void OnFieldChanged();
 
-			}
+        partial void OnStrValueChanging(string value);
+        partial void OnStrValueChanged();
 
-		}
+        partial void OnDateValueChanging(DateTime? value);
+        partial void OnDateValueChanged();
 
-		
-		[Column(Name="Data", UpdateCheck=UpdateCheck.Never, Storage="_Data", DbType="nvarchar")]
-		public string Data
-		{
-			get { return this._Data; }
+        partial void OnTransactionTimeChanging(DateTime value);
+        partial void OnTransactionTimeChanged();
 
-			set
-			{
-				if (this._Data != value)
-				{
-				
-                    this.OnDataChanging(value);
-					this.SendPropertyChanging();
-					this._Data = value;
-					this.SendPropertyChanged("Data");
-					this.OnDataChanged();
-				}
+        partial void OnDataChanging(string value);
+        partial void OnDataChanged();
 
-			}
+        partial void OnIntValueChanging(int? value);
+        partial void OnIntValueChanged();
 
-		}
+        partial void OnBitValueChanging(bool? value);
+        partial void OnBitValueChanged();
 
-		
-		[Column(Name="IntValue", UpdateCheck=UpdateCheck.Never, Storage="_IntValue", DbType="int")]
-		public int? IntValue
-		{
-			get { return this._IntValue; }
+        partial void OnFieldValueChanging(string value);
+        partial void OnFieldValueChanged();
 
-			set
-			{
-				if (this._IntValue != value)
-				{
-				
-                    this.OnIntValueChanging(value);
-					this.SendPropertyChanging();
-					this._IntValue = value;
-					this.SendPropertyChanged("IntValue");
-					this.OnIntValueChanged();
-				}
+        partial void OnUseAllValuesChanging(bool? value);
+        partial void OnUseAllValuesChanged();
 
-			}
+        partial void OnTypeChanging(string value);
+        partial void OnTypeChanged();
 
-		}
+        #endregion
 
-		
-		[Column(Name="BitValue", UpdateCheck=UpdateCheck.Never, Storage="_BitValue", DbType="bit")]
-		public bool? BitValue
-		{
-			get { return this._BitValue; }
+        public FamilyExtra()
+        {
+            _Family = default(EntityRef<Family>);
 
-			set
-			{
-				if (this._BitValue != value)
-				{
-				
-                    this.OnBitValueChanging(value);
-					this.SendPropertyChanging();
-					this._BitValue = value;
-					this.SendPropertyChanged("BitValue");
-					this.OnBitValueChanged();
-				}
+            OnCreated();
+        }
 
-			}
+        #region Columns
 
-		}
+        [Column(Name = "FamilyId", UpdateCheck = UpdateCheck.Never, Storage = "_FamilyId", DbType = "int NOT NULL", IsPrimaryKey = true)]
+        [IsForeignKey]
+        public int FamilyId
+        {
+            get => _FamilyId;
 
-		
-		[Column(Name="FieldValue", UpdateCheck=UpdateCheck.Never, Storage="_FieldValue", DbType="nvarchar(251)", IsDbGenerated=true)]
-		public string FieldValue
-		{
-			get { return this._FieldValue; }
+            set
+            {
+                if (_FamilyId != value)
+                {
+                    if (_Family.HasLoadedOrAssignedValue)
+                    {
+                        throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+                    }
 
-			set
-			{
-				if (this._FieldValue != value)
-				{
-				
-                    this.OnFieldValueChanging(value);
-					this.SendPropertyChanging();
-					this._FieldValue = value;
-					this.SendPropertyChanged("FieldValue");
-					this.OnFieldValueChanged();
-				}
+                    OnFamilyIdChanging(value);
+                    SendPropertyChanging();
+                    _FamilyId = value;
+                    SendPropertyChanged("FamilyId");
+                    OnFamilyIdChanged();
+                }
+            }
+        }
 
-			}
+        [Column(Name = "Field", UpdateCheck = UpdateCheck.Never, Storage = "_Field", DbType = "nvarchar(50) NOT NULL", IsPrimaryKey = true)]
+        public string Field
+        {
+            get => _Field;
 
-		}
+            set
+            {
+                if (_Field != value)
+                {
+                    OnFieldChanging(value);
+                    SendPropertyChanging();
+                    _Field = value;
+                    SendPropertyChanged("Field");
+                    OnFieldChanged();
+                }
+            }
+        }
 
-		
-		[Column(Name="UseAllValues", UpdateCheck=UpdateCheck.Never, Storage="_UseAllValues", DbType="bit")]
-		public bool? UseAllValues
-		{
-			get { return this._UseAllValues; }
+        [Column(Name = "StrValue", UpdateCheck = UpdateCheck.Never, Storage = "_StrValue", DbType = "nvarchar(200)")]
+        public string StrValue
+        {
+            get => _StrValue;
 
-			set
-			{
-				if (this._UseAllValues != value)
-				{
-				
-                    this.OnUseAllValuesChanging(value);
-					this.SendPropertyChanging();
-					this._UseAllValues = value;
-					this.SendPropertyChanged("UseAllValues");
-					this.OnUseAllValuesChanged();
-				}
+            set
+            {
+                if (_StrValue != value)
+                {
+                    OnStrValueChanging(value);
+                    SendPropertyChanging();
+                    _StrValue = value;
+                    SendPropertyChanged("StrValue");
+                    OnStrValueChanged();
+                }
+            }
+        }
 
-			}
+        [Column(Name = "DateValue", UpdateCheck = UpdateCheck.Never, Storage = "_DateValue", DbType = "datetime")]
+        public DateTime? DateValue
+        {
+            get => _DateValue;
 
-		}
+            set
+            {
+                if (_DateValue != value)
+                {
+                    OnDateValueChanging(value);
+                    SendPropertyChanging();
+                    _DateValue = value;
+                    SendPropertyChanged("DateValue");
+                    OnDateValueChanged();
+                }
+            }
+        }
 
-		
-		[Column(Name="Type", UpdateCheck=UpdateCheck.Never, Storage="_Type", DbType="varchar(22) NOT NULL", IsDbGenerated=true)]
-		public string Type
-		{
-			get { return this._Type; }
+        [Column(Name = "TransactionTime", UpdateCheck = UpdateCheck.Never, Storage = "_TransactionTime", DbType = "datetime NOT NULL")]
+        public DateTime TransactionTime
+        {
+            get => _TransactionTime;
 
-			set
-			{
-				if (this._Type != value)
-				{
-				
-                    this.OnTypeChanging(value);
-					this.SendPropertyChanging();
-					this._Type = value;
-					this.SendPropertyChanged("Type");
-					this.OnTypeChanged();
-				}
+            set
+            {
+                if (_TransactionTime != value)
+                {
+                    OnTransactionTimeChanging(value);
+                    SendPropertyChanging();
+                    _TransactionTime = value;
+                    SendPropertyChanged("TransactionTime");
+                    OnTransactionTimeChanged();
+                }
+            }
+        }
 
-			}
+        [Column(Name = "Data", UpdateCheck = UpdateCheck.Never, Storage = "_Data", DbType = "nvarchar")]
+        public string Data
+        {
+            get => _Data;
 
-		}
+            set
+            {
+                if (_Data != value)
+                {
+                    OnDataChanging(value);
+                    SendPropertyChanging();
+                    _Data = value;
+                    SendPropertyChanged("Data");
+                    OnDataChanged();
+                }
+            }
+        }
 
-		
-    #endregion
-        
-    #region Foreign Key Tables
-   		
-	#endregion
-	
-	#region Foreign Keys
-    	
-		[Association(Name="FK_FamilyExtra_Family", Storage="_Family", ThisKey="FamilyId", IsForeignKey=true)]
-		public Family Family
-		{
-			get { return this._Family.Entity; }
+        [Column(Name = "IntValue", UpdateCheck = UpdateCheck.Never, Storage = "_IntValue", DbType = "int")]
+        public int? IntValue
+        {
+            get => _IntValue;
 
-			set
-			{
-				Family previousValue = this._Family.Entity;
-				if (((previousValue != value) 
-							|| (this._Family.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if (previousValue != null)
-					{
-						this._Family.Entity = null;
-						previousValue.FamilyExtras.Remove(this);
-					}
+            set
+            {
+                if (_IntValue != value)
+                {
+                    OnIntValueChanging(value);
+                    SendPropertyChanging();
+                    _IntValue = value;
+                    SendPropertyChanged("IntValue");
+                    OnIntValueChanged();
+                }
+            }
+        }
 
-					this._Family.Entity = value;
-					if (value != null)
-					{
-						value.FamilyExtras.Add(this);
-						
-						this._FamilyId = value.FamilyId;
-						
-					}
+        [Column(Name = "BitValue", UpdateCheck = UpdateCheck.Never, Storage = "_BitValue", DbType = "bit")]
+        public bool? BitValue
+        {
+            get => _BitValue;
 
-					else
-					{
-						
-						this._FamilyId = default(int);
-						
-					}
+            set
+            {
+                if (_BitValue != value)
+                {
+                    OnBitValueChanging(value);
+                    SendPropertyChanging();
+                    _BitValue = value;
+                    SendPropertyChanged("BitValue");
+                    OnBitValueChanged();
+                }
+            }
+        }
 
-					this.SendPropertyChanged("Family");
-				}
+        [Column(Name = "FieldValue", UpdateCheck = UpdateCheck.Never, Storage = "_FieldValue", DbType = "nvarchar(251)", IsDbGenerated = true)]
+        public string FieldValue
+        {
+            get => _FieldValue;
 
-			}
+            set
+            {
+                if (_FieldValue != value)
+                {
+                    OnFieldValueChanging(value);
+                    SendPropertyChanging();
+                    _FieldValue = value;
+                    SendPropertyChanged("FieldValue");
+                    OnFieldValueChanged();
+                }
+            }
+        }
 
-		}
+        [Column(Name = "UseAllValues", UpdateCheck = UpdateCheck.Never, Storage = "_UseAllValues", DbType = "bit")]
+        public bool? UseAllValues
+        {
+            get => _UseAllValues;
 
-		
-	#endregion
-	
-		public event PropertyChangingEventHandler PropertyChanging;
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-				this.PropertyChanging(this, emptyChangingEventArgs);
-		}
+            set
+            {
+                if (_UseAllValues != value)
+                {
+                    OnUseAllValuesChanging(value);
+                    SendPropertyChanging();
+                    _UseAllValues = value;
+                    SendPropertyChanged("UseAllValues");
+                    OnUseAllValuesChanged();
+                }
+            }
+        }
 
-		public event PropertyChangedEventHandler PropertyChanged;
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-		}
+        [Column(Name = "Type", UpdateCheck = UpdateCheck.Never, Storage = "_Type", DbType = "varchar(22) NOT NULL", IsDbGenerated = true)]
+        public string Type
+        {
+            get => _Type;
 
-   		
-	}
+            set
+            {
+                if (_Type != value)
+                {
+                    OnTypeChanging(value);
+                    SendPropertyChanging();
+                    _Type = value;
+                    SendPropertyChanged("Type");
+                    OnTypeChanged();
+                }
+            }
+        }
 
+        #endregion
+
+        #region Foreign Key Tables
+
+        #endregion
+
+        #region Foreign Keys
+
+        [Association(Name = "FK_FamilyExtra_Family", Storage = "_Family", ThisKey = "FamilyId", IsForeignKey = true)]
+        public Family Family
+        {
+            get => _Family.Entity;
+
+            set
+            {
+                Family previousValue = _Family.Entity;
+                if (((previousValue != value)
+                            || (_Family.HasLoadedOrAssignedValue == false)))
+                {
+                    SendPropertyChanging();
+                    if (previousValue != null)
+                    {
+                        _Family.Entity = null;
+                        previousValue.FamilyExtras.Remove(this);
+                    }
+
+                    _Family.Entity = value;
+                    if (value != null)
+                    {
+                        value.FamilyExtras.Add(this);
+
+                        _FamilyId = value.FamilyId;
+
+                    }
+
+                    else
+                    {
+                        _FamilyId = default(int);
+
+                    }
+
+                    SendPropertyChanged("Family");
+                }
+            }
+        }
+
+        #endregion
+
+        public event PropertyChangingEventHandler PropertyChanging;
+        protected virtual void SendPropertyChanging()
+        {
+            if ((PropertyChanging != null))
+            {
+                PropertyChanging(this, emptyChangingEventArgs);
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void SendPropertyChanged(string propertyName)
+        {
+            if ((PropertyChanged != null))
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
 }
-

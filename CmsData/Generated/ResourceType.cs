@@ -1,204 +1,179 @@
-using System; 
+using System;
+using System.ComponentModel;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
-using System.ComponentModel;
-using CmsData.Infrastructure;
 
 namespace CmsData
 {
-	[Table(Name="dbo.ResourceType")]
-	public partial class ResourceType : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-	#region Private Fields
-		
-		private int _ResourceTypeId;
-		
-		private string _Name;
-		
-		private int _DisplayOrder;
-		
-   		
-   		private EntitySet<Resource> _Resources;
-		
-   		private EntitySet<ResourceCategory> _ResourceCategories;
-		
-    	
-	#endregion
-	
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-		
-		partial void OnResourceTypeIdChanging(int value);
-		partial void OnResourceTypeIdChanged();
-		
-		partial void OnNameChanging(string value);
-		partial void OnNameChanged();
-		
-		partial void OnDisplayOrderChanging(int value);
-		partial void OnDisplayOrderChanged();
-		
-    #endregion
-		public ResourceType()
-		{
-			
-			this._Resources = new EntitySet<Resource>(new Action< Resource>(this.attach_Resources), new Action< Resource>(this.detach_Resources)); 
-			
-			this._ResourceCategories = new EntitySet<ResourceCategory>(new Action< ResourceCategory>(this.attach_ResourceCategories), new Action< ResourceCategory>(this.detach_ResourceCategories)); 
-			
-			
-			OnCreated();
-		}
+    [Table(Name = "dbo.ResourceType")]
+    public partial class ResourceType : INotifyPropertyChanging, INotifyPropertyChanged
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-    #region Columns
-		
-		[Column(Name="ResourceTypeId", UpdateCheck=UpdateCheck.Never, Storage="_ResourceTypeId", AutoSync=AutoSync.OnInsert, DbType="int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int ResourceTypeId
-		{
-			get { return this._ResourceTypeId; }
+        #region Private Fields
 
-			set
-			{
-				if (this._ResourceTypeId != value)
-				{
-				
-                    this.OnResourceTypeIdChanging(value);
-					this.SendPropertyChanging();
-					this._ResourceTypeId = value;
-					this.SendPropertyChanged("ResourceTypeId");
-					this.OnResourceTypeIdChanged();
-				}
+        private int _ResourceTypeId;
 
-			}
+        private string _Name;
 
-		}
+        private int _DisplayOrder;
 
-		
-		[Column(Name="Name", UpdateCheck=UpdateCheck.Never, Storage="_Name", DbType="varchar(50) NOT NULL")]
-		public string Name
-		{
-			get { return this._Name; }
+        private EntitySet<Resource> _Resources;
 
-			set
-			{
-				if (this._Name != value)
-				{
-				
-                    this.OnNameChanging(value);
-					this.SendPropertyChanging();
-					this._Name = value;
-					this.SendPropertyChanged("Name");
-					this.OnNameChanged();
-				}
+        private EntitySet<ResourceCategory> _ResourceCategories;
 
-			}
+        #endregion
 
-		}
+        #region Extensibility Method Definitions
 
-		
-		[Column(Name="DisplayOrder", UpdateCheck=UpdateCheck.Never, Storage="_DisplayOrder", DbType="int NOT NULL")]
-		public int DisplayOrder
-		{
-			get { return this._DisplayOrder; }
+        partial void OnLoaded();
+        partial void OnValidate(System.Data.Linq.ChangeAction action);
+        partial void OnCreated();
 
-			set
-			{
-				if (this._DisplayOrder != value)
-				{
-				
-                    this.OnDisplayOrderChanging(value);
-					this.SendPropertyChanging();
-					this._DisplayOrder = value;
-					this.SendPropertyChanged("DisplayOrder");
-					this.OnDisplayOrderChanged();
-				}
+        partial void OnResourceTypeIdChanging(int value);
+        partial void OnResourceTypeIdChanged();
 
-			}
+        partial void OnNameChanging(string value);
+        partial void OnNameChanged();
 
-		}
+        partial void OnDisplayOrderChanging(int value);
+        partial void OnDisplayOrderChanged();
 
-		
-    #endregion
-        
-    #region Foreign Key Tables
-   		
-   		[Association(Name="FK_Resource_ResourceType", Storage="_Resources", OtherKey="ResourceTypeId")]
-   		public EntitySet<Resource> Resources
-   		{
-   		    get { return this._Resources; }
+        #endregion
 
-			set	{ this._Resources.Assign(value); }
+        public ResourceType()
+        {
+            _Resources = new EntitySet<Resource>(new Action<Resource>(attach_Resources), new Action<Resource>(detach_Resources));
 
-   		}
+            _ResourceCategories = new EntitySet<ResourceCategory>(new Action<ResourceCategory>(attach_ResourceCategories), new Action<ResourceCategory>(detach_ResourceCategories));
 
-		
-   		[Association(Name="FK_ResourceCategory_ResourceType", Storage="_ResourceCategories", OtherKey="ResourceTypeId")]
-   		public EntitySet<ResourceCategory> ResourceCategories
-   		{
-   		    get { return this._ResourceCategories; }
+            OnCreated();
+        }
 
-			set	{ this._ResourceCategories.Assign(value); }
+        #region Columns
 
-   		}
+        [Column(Name = "ResourceTypeId", UpdateCheck = UpdateCheck.Never, Storage = "_ResourceTypeId", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
+        public int ResourceTypeId
+        {
+            get => _ResourceTypeId;
 
-		
-	#endregion
-	
-	#region Foreign Keys
-    	
-	#endregion
-	
-		public event PropertyChangingEventHandler PropertyChanging;
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-				this.PropertyChanging(this, emptyChangingEventArgs);
-		}
+            set
+            {
+                if (_ResourceTypeId != value)
+                {
+                    OnResourceTypeIdChanging(value);
+                    SendPropertyChanging();
+                    _ResourceTypeId = value;
+                    SendPropertyChanged("ResourceTypeId");
+                    OnResourceTypeIdChanged();
+                }
+            }
+        }
 
-		public event PropertyChangedEventHandler PropertyChanged;
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-		}
+        [Column(Name = "Name", UpdateCheck = UpdateCheck.Never, Storage = "_Name", DbType = "varchar(50) NOT NULL")]
+        public string Name
+        {
+            get => _Name;
 
-   		
-		private void attach_Resources(Resource entity)
-		{
-			this.SendPropertyChanging();
-			entity.ResourceType = this;
-		}
+            set
+            {
+                if (_Name != value)
+                {
+                    OnNameChanging(value);
+                    SendPropertyChanging();
+                    _Name = value;
+                    SendPropertyChanged("Name");
+                    OnNameChanged();
+                }
+            }
+        }
 
-		private void detach_Resources(Resource entity)
-		{
-			this.SendPropertyChanging();
-			entity.ResourceType = null;
-		}
+        [Column(Name = "DisplayOrder", UpdateCheck = UpdateCheck.Never, Storage = "_DisplayOrder", DbType = "int NOT NULL")]
+        public int DisplayOrder
+        {
+            get => _DisplayOrder;
 
-		
-		private void attach_ResourceCategories(ResourceCategory entity)
-		{
-			this.SendPropertyChanging();
-			entity.ResourceType = this;
-		}
+            set
+            {
+                if (_DisplayOrder != value)
+                {
+                    OnDisplayOrderChanging(value);
+                    SendPropertyChanging();
+                    _DisplayOrder = value;
+                    SendPropertyChanged("DisplayOrder");
+                    OnDisplayOrderChanged();
+                }
+            }
+        }
 
-		private void detach_ResourceCategories(ResourceCategory entity)
-		{
-			this.SendPropertyChanging();
-			entity.ResourceType = null;
-		}
+        #endregion
 
-		
-	}
+        #region Foreign Key Tables
 
+        [Association(Name = "FK_Resource_ResourceType", Storage = "_Resources", OtherKey = "ResourceTypeId")]
+        public EntitySet<Resource> Resources
+           {
+               get => _Resources;
+
+            set => _Resources.Assign(value);
+
+           }
+
+        [Association(Name = "FK_ResourceCategory_ResourceType", Storage = "_ResourceCategories", OtherKey = "ResourceTypeId")]
+        public EntitySet<ResourceCategory> ResourceCategories
+           {
+               get => _ResourceCategories;
+
+            set => _ResourceCategories.Assign(value);
+
+           }
+
+        #endregion
+
+        #region Foreign Keys
+
+        #endregion
+
+        public event PropertyChangingEventHandler PropertyChanging;
+        protected virtual void SendPropertyChanging()
+        {
+            if ((PropertyChanging != null))
+            {
+                PropertyChanging(this, emptyChangingEventArgs);
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void SendPropertyChanged(string propertyName)
+        {
+            if ((PropertyChanged != null))
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        private void attach_Resources(Resource entity)
+        {
+            SendPropertyChanging();
+            entity.ResourceType = this;
+        }
+
+        private void detach_Resources(Resource entity)
+        {
+            SendPropertyChanging();
+            entity.ResourceType = null;
+        }
+
+        private void attach_ResourceCategories(ResourceCategory entity)
+        {
+            SendPropertyChanging();
+            entity.ResourceType = this;
+        }
+
+        private void detach_ResourceCategories(ResourceCategory entity)
+        {
+            SendPropertyChanging();
+            entity.ResourceType = null;
+        }
+    }
 }
-

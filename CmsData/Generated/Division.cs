@@ -1,578 +1,514 @@
-using System; 
+using CmsData.Infrastructure;
+using System;
+using System.ComponentModel;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
-using System.ComponentModel;
-using CmsData.Infrastructure;
 
 namespace CmsData
 {
-	[Table(Name="dbo.Division")]
-	public partial class Division : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-	#region Private Fields
-		
-		private int _Id;
-		
-		private string _Name;
-		
-		private int? _ProgId;
-		
-		private int? _SortOrder;
-		
-		private string _EmailMessage;
-		
-		private string _EmailSubject;
-		
-		private string _Instructions;
-		
-		private string _Terms;
-		
-		private int? _ReportLine;
-		
-		private bool? _NoDisplayZero;
-		
-   		
-   		private EntitySet<Coupon> _Coupons;
-		
-   		private EntitySet<DivOrg> _DivOrgs;
-		
-   		private EntitySet<Organization> _Organizations;
-		
-   		private EntitySet<ProgDiv> _ProgDivs;
-		
-   		private EntitySet<Resource> _Resources;
-		
-   		private EntitySet<Promotion> _FromPromotions;
-		
-   		private EntitySet<Promotion> _ToPromotions;
-		
-    	
-		private EntityRef<Program> _Program;
-		
-	#endregion
-	
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-		
-		partial void OnIdChanging(int value);
-		partial void OnIdChanged();
-		
-		partial void OnNameChanging(string value);
-		partial void OnNameChanged();
-		
-		partial void OnProgIdChanging(int? value);
-		partial void OnProgIdChanged();
-		
-		partial void OnSortOrderChanging(int? value);
-		partial void OnSortOrderChanged();
-		
-		partial void OnEmailMessageChanging(string value);
-		partial void OnEmailMessageChanged();
-		
-		partial void OnEmailSubjectChanging(string value);
-		partial void OnEmailSubjectChanged();
-		
-		partial void OnInstructionsChanging(string value);
-		partial void OnInstructionsChanged();
-		
-		partial void OnTermsChanging(string value);
-		partial void OnTermsChanged();
-		
-		partial void OnReportLineChanging(int? value);
-		partial void OnReportLineChanged();
-		
-		partial void OnNoDisplayZeroChanging(bool? value);
-		partial void OnNoDisplayZeroChanged();
-		
-    #endregion
-		public Division()
-		{
-			
-			this._Coupons = new EntitySet<Coupon>(new Action< Coupon>(this.attach_Coupons), new Action< Coupon>(this.detach_Coupons)); 
-			
-			this._DivOrgs = new EntitySet<DivOrg>(new Action< DivOrg>(this.attach_DivOrgs), new Action< DivOrg>(this.detach_DivOrgs)); 
-			
-			this._Organizations = new EntitySet<Organization>(new Action< Organization>(this.attach_Organizations), new Action< Organization>(this.detach_Organizations)); 
-			
-			this._ProgDivs = new EntitySet<ProgDiv>(new Action< ProgDiv>(this.attach_ProgDivs), new Action< ProgDiv>(this.detach_ProgDivs)); 
-			
-			this._Resources = new EntitySet<Resource>(new Action< Resource>(this.attach_Resources), new Action< Resource>(this.detach_Resources)); 
-			
-			this._FromPromotions = new EntitySet<Promotion>(new Action< Promotion>(this.attach_FromPromotions), new Action< Promotion>(this.detach_FromPromotions)); 
-			
-			this._ToPromotions = new EntitySet<Promotion>(new Action< Promotion>(this.attach_ToPromotions), new Action< Promotion>(this.detach_ToPromotions)); 
-			
-			
-			this._Program = default(EntityRef<Program>); 
-			
-			OnCreated();
-		}
-
-		
-    #region Columns
-		
-		[Column(Name="Id", UpdateCheck=UpdateCheck.Never, Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int Id
-		{
-			get { return this._Id; }
-
-			set
-			{
-				if (this._Id != value)
-				{
-				
-                    this.OnIdChanging(value);
-					this.SendPropertyChanging();
-					this._Id = value;
-					this.SendPropertyChanged("Id");
-					this.OnIdChanged();
-				}
-
-			}
-
-		}
-
-		
-		[Column(Name="Name", UpdateCheck=UpdateCheck.Never, Storage="_Name", DbType="nvarchar(50)")]
-		public string Name
-		{
-			get { return this._Name; }
-
-			set
-			{
-				if (this._Name != value)
-				{
-				
-                    this.OnNameChanging(value);
-					this.SendPropertyChanging();
-					this._Name = value;
-					this.SendPropertyChanged("Name");
-					this.OnNameChanged();
-				}
-
-			}
-
-		}
-
-		
-		[Column(Name="ProgId", UpdateCheck=UpdateCheck.Never, Storage="_ProgId", DbType="int")]
-		[IsForeignKey]
-		public int? ProgId
-		{
-			get { return this._ProgId; }
-
-			set
-			{
-				if (this._ProgId != value)
-				{
-				
-					if (this._Program.HasLoadedOrAssignedValue)
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-				
-                    this.OnProgIdChanging(value);
-					this.SendPropertyChanging();
-					this._ProgId = value;
-					this.SendPropertyChanged("ProgId");
-					this.OnProgIdChanged();
-				}
-
-			}
-
-		}
-
-		
-		[Column(Name="SortOrder", UpdateCheck=UpdateCheck.Never, Storage="_SortOrder", DbType="int")]
-		public int? SortOrder
-		{
-			get { return this._SortOrder; }
-
-			set
-			{
-				if (this._SortOrder != value)
-				{
-				
-                    this.OnSortOrderChanging(value);
-					this.SendPropertyChanging();
-					this._SortOrder = value;
-					this.SendPropertyChanged("SortOrder");
-					this.OnSortOrderChanged();
-				}
-
-			}
-
-		}
-
-		
-		[Column(Name="EmailMessage", UpdateCheck=UpdateCheck.Never, Storage="_EmailMessage", DbType="nvarchar")]
-		public string EmailMessage
-		{
-			get { return this._EmailMessage; }
-
-			set
-			{
-				if (this._EmailMessage != value)
-				{
-				
-                    this.OnEmailMessageChanging(value);
-					this.SendPropertyChanging();
-					this._EmailMessage = value;
-					this.SendPropertyChanged("EmailMessage");
-					this.OnEmailMessageChanged();
-				}
-
-			}
-
-		}
-
-		
-		[Column(Name="EmailSubject", UpdateCheck=UpdateCheck.Never, Storage="_EmailSubject", DbType="nvarchar(100)")]
-		public string EmailSubject
-		{
-			get { return this._EmailSubject; }
-
-			set
-			{
-				if (this._EmailSubject != value)
-				{
-				
-                    this.OnEmailSubjectChanging(value);
-					this.SendPropertyChanging();
-					this._EmailSubject = value;
-					this.SendPropertyChanged("EmailSubject");
-					this.OnEmailSubjectChanged();
-				}
-
-			}
-
-		}
-
-		
-		[Column(Name="Instructions", UpdateCheck=UpdateCheck.Never, Storage="_Instructions", DbType="nvarchar")]
-		public string Instructions
-		{
-			get { return this._Instructions; }
-
-			set
-			{
-				if (this._Instructions != value)
-				{
-				
-                    this.OnInstructionsChanging(value);
-					this.SendPropertyChanging();
-					this._Instructions = value;
-					this.SendPropertyChanged("Instructions");
-					this.OnInstructionsChanged();
-				}
-
-			}
-
-		}
-
-		
-		[Column(Name="Terms", UpdateCheck=UpdateCheck.Never, Storage="_Terms", DbType="nvarchar")]
-		public string Terms
-		{
-			get { return this._Terms; }
-
-			set
-			{
-				if (this._Terms != value)
-				{
-				
-                    this.OnTermsChanging(value);
-					this.SendPropertyChanging();
-					this._Terms = value;
-					this.SendPropertyChanged("Terms");
-					this.OnTermsChanged();
-				}
-
-			}
-
-		}
-
-		
-		[Column(Name="ReportLine", UpdateCheck=UpdateCheck.Never, Storage="_ReportLine", DbType="int")]
-		public int? ReportLine
-		{
-			get { return this._ReportLine; }
-
-			set
-			{
-				if (this._ReportLine != value)
-				{
-				
-                    this.OnReportLineChanging(value);
-					this.SendPropertyChanging();
-					this._ReportLine = value;
-					this.SendPropertyChanged("ReportLine");
-					this.OnReportLineChanged();
-				}
-
-			}
-
-		}
-
-		
-		[Column(Name="NoDisplayZero", UpdateCheck=UpdateCheck.Never, Storage="_NoDisplayZero", DbType="bit")]
-		public bool? NoDisplayZero
-		{
-			get { return this._NoDisplayZero; }
-
-			set
-			{
-				if (this._NoDisplayZero != value)
-				{
-				
-                    this.OnNoDisplayZeroChanging(value);
-					this.SendPropertyChanging();
-					this._NoDisplayZero = value;
-					this.SendPropertyChanged("NoDisplayZero");
-					this.OnNoDisplayZeroChanged();
-				}
-
-			}
-
-		}
-
-		
-    #endregion
-        
-    #region Foreign Key Tables
-   		
-   		[Association(Name="FK_Coupons_Division", Storage="_Coupons", OtherKey="DivId")]
-   		public EntitySet<Coupon> Coupons
-   		{
-   		    get { return this._Coupons; }
-
-			set	{ this._Coupons.Assign(value); }
-
-   		}
-
-		
-   		[Association(Name="FK_DivOrg_Division", Storage="_DivOrgs", OtherKey="DivId")]
-   		public EntitySet<DivOrg> DivOrgs
-   		{
-   		    get { return this._DivOrgs; }
-
-			set	{ this._DivOrgs.Assign(value); }
-
-   		}
-
-		
-   		[Association(Name="FK_Organizations_Division", Storage="_Organizations", OtherKey="DivisionId")]
-   		public EntitySet<Organization> Organizations
-   		{
-   		    get { return this._Organizations; }
-
-			set	{ this._Organizations.Assign(value); }
-
-   		}
-
-		
-   		[Association(Name="FK_ProgDiv_Division", Storage="_ProgDivs", OtherKey="DivId")]
-   		public EntitySet<ProgDiv> ProgDivs
-   		{
-   		    get { return this._ProgDivs; }
-
-			set	{ this._ProgDivs.Assign(value); }
-
-   		}
-
-		
-   		[Association(Name="FK_Resource_Division", Storage="_Resources", OtherKey="DivisionId")]
-   		public EntitySet<Resource> Resources
-   		{
-   		    get { return this._Resources; }
-
-			set	{ this._Resources.Assign(value); }
-
-   		}
-
-		
-   		[Association(Name="FromPromotions__FromDivision", Storage="_FromPromotions", OtherKey="FromDivId")]
-   		public EntitySet<Promotion> FromPromotions
-   		{
-   		    get { return this._FromPromotions; }
-
-			set	{ this._FromPromotions.Assign(value); }
-
-   		}
-
-		
-   		[Association(Name="ToPromotions__ToDivision", Storage="_ToPromotions", OtherKey="ToDivId")]
-   		public EntitySet<Promotion> ToPromotions
-   		{
-   		    get { return this._ToPromotions; }
-
-			set	{ this._ToPromotions.Assign(value); }
-
-   		}
-
-		
-	#endregion
-	
-	#region Foreign Keys
-    	
-		[Association(Name="FK_Division_Program", Storage="_Program", ThisKey="ProgId", IsForeignKey=true)]
-		public Program Program
-		{
-			get { return this._Program.Entity; }
-
-			set
-			{
-				Program previousValue = this._Program.Entity;
-				if (((previousValue != value) 
-							|| (this._Program.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if (previousValue != null)
-					{
-						this._Program.Entity = null;
-						previousValue.Divisions.Remove(this);
-					}
-
-					this._Program.Entity = value;
-					if (value != null)
-					{
-						value.Divisions.Add(this);
-						
-						this._ProgId = value.Id;
-						
-					}
-
-					else
-					{
-						
-						this._ProgId = default(int?);
-						
-					}
-
-					this.SendPropertyChanged("Program");
-				}
-
-			}
-
-		}
-
-		
-	#endregion
-	
-		public event PropertyChangingEventHandler PropertyChanging;
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-				this.PropertyChanging(this, emptyChangingEventArgs);
-		}
-
-		public event PropertyChangedEventHandler PropertyChanged;
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-		}
-
-   		
-		private void attach_Coupons(Coupon entity)
-		{
-			this.SendPropertyChanging();
-			entity.Division = this;
-		}
-
-		private void detach_Coupons(Coupon entity)
-		{
-			this.SendPropertyChanging();
-			entity.Division = null;
-		}
-
-		
-		private void attach_DivOrgs(DivOrg entity)
-		{
-			this.SendPropertyChanging();
-			entity.Division = this;
-		}
-
-		private void detach_DivOrgs(DivOrg entity)
-		{
-			this.SendPropertyChanging();
-			entity.Division = null;
-		}
-
-		
-		private void attach_Organizations(Organization entity)
-		{
-			this.SendPropertyChanging();
-			entity.Division = this;
-		}
-
-		private void detach_Organizations(Organization entity)
-		{
-			this.SendPropertyChanging();
-			entity.Division = null;
-		}
-
-		
-		private void attach_ProgDivs(ProgDiv entity)
-		{
-			this.SendPropertyChanging();
-			entity.Division = this;
-		}
-
-		private void detach_ProgDivs(ProgDiv entity)
-		{
-			this.SendPropertyChanging();
-			entity.Division = null;
-		}
-
-		
-		private void attach_Resources(Resource entity)
-		{
-			this.SendPropertyChanging();
-			entity.Division = this;
-		}
-
-		private void detach_Resources(Resource entity)
-		{
-			this.SendPropertyChanging();
-			entity.Division = null;
-		}
-
-		
-		private void attach_FromPromotions(Promotion entity)
-		{
-			this.SendPropertyChanging();
-			entity.FromDivision = this;
-		}
-
-		private void detach_FromPromotions(Promotion entity)
-		{
-			this.SendPropertyChanging();
-			entity.FromDivision = null;
-		}
-
-		
-		private void attach_ToPromotions(Promotion entity)
-		{
-			this.SendPropertyChanging();
-			entity.ToDivision = this;
-		}
-
-		private void detach_ToPromotions(Promotion entity)
-		{
-			this.SendPropertyChanging();
-			entity.ToDivision = null;
-		}
-
-		
-	}
+    [Table(Name = "dbo.Division")]
+    public partial class Division : INotifyPropertyChanging, INotifyPropertyChanged
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
+        #region Private Fields
+
+        private int _Id;
+
+        private string _Name;
+
+        private int? _ProgId;
+
+        private int? _SortOrder;
+
+        private string _EmailMessage;
+
+        private string _EmailSubject;
+
+        private string _Instructions;
+
+        private string _Terms;
+
+        private int? _ReportLine;
+
+        private bool? _NoDisplayZero;
+
+        private EntitySet<Coupon> _Coupons;
+
+        private EntitySet<DivOrg> _DivOrgs;
+
+        private EntitySet<Organization> _Organizations;
+
+        private EntitySet<ProgDiv> _ProgDivs;
+
+        private EntitySet<Resource> _Resources;
+
+        private EntitySet<Promotion> _FromPromotions;
+
+        private EntitySet<Promotion> _ToPromotions;
+
+        private EntityRef<Program> _Program;
+
+        #endregion
+
+        #region Extensibility Method Definitions
+
+        partial void OnLoaded();
+        partial void OnValidate(System.Data.Linq.ChangeAction action);
+        partial void OnCreated();
+
+        partial void OnIdChanging(int value);
+        partial void OnIdChanged();
+
+        partial void OnNameChanging(string value);
+        partial void OnNameChanged();
+
+        partial void OnProgIdChanging(int? value);
+        partial void OnProgIdChanged();
+
+        partial void OnSortOrderChanging(int? value);
+        partial void OnSortOrderChanged();
+
+        partial void OnEmailMessageChanging(string value);
+        partial void OnEmailMessageChanged();
+
+        partial void OnEmailSubjectChanging(string value);
+        partial void OnEmailSubjectChanged();
+
+        partial void OnInstructionsChanging(string value);
+        partial void OnInstructionsChanged();
+
+        partial void OnTermsChanging(string value);
+        partial void OnTermsChanged();
+
+        partial void OnReportLineChanging(int? value);
+        partial void OnReportLineChanged();
+
+        partial void OnNoDisplayZeroChanging(bool? value);
+        partial void OnNoDisplayZeroChanged();
+
+        #endregion
+
+        public Division()
+        {
+            _Coupons = new EntitySet<Coupon>(new Action<Coupon>(attach_Coupons), new Action<Coupon>(detach_Coupons));
+
+            _DivOrgs = new EntitySet<DivOrg>(new Action<DivOrg>(attach_DivOrgs), new Action<DivOrg>(detach_DivOrgs));
+
+            _Organizations = new EntitySet<Organization>(new Action<Organization>(attach_Organizations), new Action<Organization>(detach_Organizations));
+
+            _ProgDivs = new EntitySet<ProgDiv>(new Action<ProgDiv>(attach_ProgDivs), new Action<ProgDiv>(detach_ProgDivs));
+
+            _Resources = new EntitySet<Resource>(new Action<Resource>(attach_Resources), new Action<Resource>(detach_Resources));
+
+            _FromPromotions = new EntitySet<Promotion>(new Action<Promotion>(attach_FromPromotions), new Action<Promotion>(detach_FromPromotions));
+
+            _ToPromotions = new EntitySet<Promotion>(new Action<Promotion>(attach_ToPromotions), new Action<Promotion>(detach_ToPromotions));
+
+            _Program = default(EntityRef<Program>);
+
+            OnCreated();
+        }
+
+        #region Columns
+
+        [Column(Name = "Id", UpdateCheck = UpdateCheck.Never, Storage = "_Id", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
+        public int Id
+        {
+            get => _Id;
+
+            set
+            {
+                if (_Id != value)
+                {
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
+                }
+            }
+        }
+
+        [Column(Name = "Name", UpdateCheck = UpdateCheck.Never, Storage = "_Name", DbType = "nvarchar(50)")]
+        public string Name
+        {
+            get => _Name;
+
+            set
+            {
+                if (_Name != value)
+                {
+                    OnNameChanging(value);
+                    SendPropertyChanging();
+                    _Name = value;
+                    SendPropertyChanged("Name");
+                    OnNameChanged();
+                }
+            }
+        }
+
+        [Column(Name = "ProgId", UpdateCheck = UpdateCheck.Never, Storage = "_ProgId", DbType = "int")]
+        [IsForeignKey]
+        public int? ProgId
+        {
+            get => _ProgId;
+
+            set
+            {
+                if (_ProgId != value)
+                {
+                    if (_Program.HasLoadedOrAssignedValue)
+                    {
+                        throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+                    }
+
+                    OnProgIdChanging(value);
+                    SendPropertyChanging();
+                    _ProgId = value;
+                    SendPropertyChanged("ProgId");
+                    OnProgIdChanged();
+                }
+            }
+        }
+
+        [Column(Name = "SortOrder", UpdateCheck = UpdateCheck.Never, Storage = "_SortOrder", DbType = "int")]
+        public int? SortOrder
+        {
+            get => _SortOrder;
+
+            set
+            {
+                if (_SortOrder != value)
+                {
+                    OnSortOrderChanging(value);
+                    SendPropertyChanging();
+                    _SortOrder = value;
+                    SendPropertyChanged("SortOrder");
+                    OnSortOrderChanged();
+                }
+            }
+        }
+
+        [Column(Name = "EmailMessage", UpdateCheck = UpdateCheck.Never, Storage = "_EmailMessage", DbType = "nvarchar")]
+        public string EmailMessage
+        {
+            get => _EmailMessage;
+
+            set
+            {
+                if (_EmailMessage != value)
+                {
+                    OnEmailMessageChanging(value);
+                    SendPropertyChanging();
+                    _EmailMessage = value;
+                    SendPropertyChanged("EmailMessage");
+                    OnEmailMessageChanged();
+                }
+            }
+        }
+
+        [Column(Name = "EmailSubject", UpdateCheck = UpdateCheck.Never, Storage = "_EmailSubject", DbType = "nvarchar(100)")]
+        public string EmailSubject
+        {
+            get => _EmailSubject;
+
+            set
+            {
+                if (_EmailSubject != value)
+                {
+                    OnEmailSubjectChanging(value);
+                    SendPropertyChanging();
+                    _EmailSubject = value;
+                    SendPropertyChanged("EmailSubject");
+                    OnEmailSubjectChanged();
+                }
+            }
+        }
+
+        [Column(Name = "Instructions", UpdateCheck = UpdateCheck.Never, Storage = "_Instructions", DbType = "nvarchar")]
+        public string Instructions
+        {
+            get => _Instructions;
+
+            set
+            {
+                if (_Instructions != value)
+                {
+                    OnInstructionsChanging(value);
+                    SendPropertyChanging();
+                    _Instructions = value;
+                    SendPropertyChanged("Instructions");
+                    OnInstructionsChanged();
+                }
+            }
+        }
+
+        [Column(Name = "Terms", UpdateCheck = UpdateCheck.Never, Storage = "_Terms", DbType = "nvarchar")]
+        public string Terms
+        {
+            get => _Terms;
+
+            set
+            {
+                if (_Terms != value)
+                {
+                    OnTermsChanging(value);
+                    SendPropertyChanging();
+                    _Terms = value;
+                    SendPropertyChanged("Terms");
+                    OnTermsChanged();
+                }
+            }
+        }
+
+        [Column(Name = "ReportLine", UpdateCheck = UpdateCheck.Never, Storage = "_ReportLine", DbType = "int")]
+        public int? ReportLine
+        {
+            get => _ReportLine;
+
+            set
+            {
+                if (_ReportLine != value)
+                {
+                    OnReportLineChanging(value);
+                    SendPropertyChanging();
+                    _ReportLine = value;
+                    SendPropertyChanged("ReportLine");
+                    OnReportLineChanged();
+                }
+            }
+        }
+
+        [Column(Name = "NoDisplayZero", UpdateCheck = UpdateCheck.Never, Storage = "_NoDisplayZero", DbType = "bit")]
+        public bool? NoDisplayZero
+        {
+            get => _NoDisplayZero;
+
+            set
+            {
+                if (_NoDisplayZero != value)
+                {
+                    OnNoDisplayZeroChanging(value);
+                    SendPropertyChanging();
+                    _NoDisplayZero = value;
+                    SendPropertyChanged("NoDisplayZero");
+                    OnNoDisplayZeroChanged();
+                }
+            }
+        }
+
+        #endregion
+
+        #region Foreign Key Tables
+
+        [Association(Name = "FK_Coupons_Division", Storage = "_Coupons", OtherKey = "DivId")]
+        public EntitySet<Coupon> Coupons
+           {
+               get => _Coupons;
+
+            set => _Coupons.Assign(value);
+
+           }
+
+        [Association(Name = "FK_DivOrg_Division", Storage = "_DivOrgs", OtherKey = "DivId")]
+        public EntitySet<DivOrg> DivOrgs
+           {
+               get => _DivOrgs;
+
+            set => _DivOrgs.Assign(value);
+
+           }
+
+        [Association(Name = "FK_Organizations_Division", Storage = "_Organizations", OtherKey = "DivisionId")]
+        public EntitySet<Organization> Organizations
+           {
+               get => _Organizations;
+
+            set => _Organizations.Assign(value);
+
+           }
+
+        [Association(Name = "FK_ProgDiv_Division", Storage = "_ProgDivs", OtherKey = "DivId")]
+        public EntitySet<ProgDiv> ProgDivs
+           {
+               get => _ProgDivs;
+
+            set => _ProgDivs.Assign(value);
+
+           }
+
+        [Association(Name = "FK_Resource_Division", Storage = "_Resources", OtherKey = "DivisionId")]
+        public EntitySet<Resource> Resources
+           {
+               get => _Resources;
+
+            set => _Resources.Assign(value);
+
+           }
+
+        [Association(Name = "FromPromotions__FromDivision", Storage = "_FromPromotions", OtherKey = "FromDivId")]
+        public EntitySet<Promotion> FromPromotions
+           {
+               get => _FromPromotions;
+
+            set => _FromPromotions.Assign(value);
+
+           }
+
+        [Association(Name = "ToPromotions__ToDivision", Storage = "_ToPromotions", OtherKey = "ToDivId")]
+        public EntitySet<Promotion> ToPromotions
+           {
+               get => _ToPromotions;
+
+            set => _ToPromotions.Assign(value);
+
+           }
+
+        #endregion
+
+        #region Foreign Keys
+
+        [Association(Name = "FK_Division_Program", Storage = "_Program", ThisKey = "ProgId", IsForeignKey = true)]
+        public Program Program
+        {
+            get => _Program.Entity;
+
+            set
+            {
+                Program previousValue = _Program.Entity;
+                if (((previousValue != value)
+                            || (_Program.HasLoadedOrAssignedValue == false)))
+                {
+                    SendPropertyChanging();
+                    if (previousValue != null)
+                    {
+                        _Program.Entity = null;
+                        previousValue.Divisions.Remove(this);
+                    }
+
+                    _Program.Entity = value;
+                    if (value != null)
+                    {
+                        value.Divisions.Add(this);
+
+                        _ProgId = value.Id;
+
+                    }
+
+                    else
+                    {
+                        _ProgId = default(int?);
+
+                    }
+
+                    SendPropertyChanged("Program");
+                }
+            }
+        }
+
+        #endregion
+
+        public event PropertyChangingEventHandler PropertyChanging;
+        protected virtual void SendPropertyChanging()
+        {
+            if ((PropertyChanging != null))
+            {
+                PropertyChanging(this, emptyChangingEventArgs);
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void SendPropertyChanged(string propertyName)
+        {
+            if ((PropertyChanged != null))
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        private void attach_Coupons(Coupon entity)
+        {
+            SendPropertyChanging();
+            entity.Division = this;
+        }
+
+        private void detach_Coupons(Coupon entity)
+        {
+            SendPropertyChanging();
+            entity.Division = null;
+        }
+
+        private void attach_DivOrgs(DivOrg entity)
+        {
+            SendPropertyChanging();
+            entity.Division = this;
+        }
+
+        private void detach_DivOrgs(DivOrg entity)
+        {
+            SendPropertyChanging();
+            entity.Division = null;
+        }
+
+        private void attach_Organizations(Organization entity)
+        {
+            SendPropertyChanging();
+            entity.Division = this;
+        }
+
+        private void detach_Organizations(Organization entity)
+        {
+            SendPropertyChanging();
+            entity.Division = null;
+        }
+
+        private void attach_ProgDivs(ProgDiv entity)
+        {
+            SendPropertyChanging();
+            entity.Division = this;
+        }
+
+        private void detach_ProgDivs(ProgDiv entity)
+        {
+            SendPropertyChanging();
+            entity.Division = null;
+        }
+
+        private void attach_Resources(Resource entity)
+        {
+            SendPropertyChanging();
+            entity.Division = this;
+        }
+
+        private void detach_Resources(Resource entity)
+        {
+            SendPropertyChanging();
+            entity.Division = null;
+        }
+
+        private void attach_FromPromotions(Promotion entity)
+        {
+            SendPropertyChanging();
+            entity.FromDivision = this;
+        }
+
+        private void detach_FromPromotions(Promotion entity)
+        {
+            SendPropertyChanging();
+            entity.FromDivision = null;
+        }
+
+        private void attach_ToPromotions(Promotion entity)
+        {
+            SendPropertyChanging();
+            entity.ToDivision = this;
+        }
+
+        private void detach_ToPromotions(Promotion entity)
+        {
+            SendPropertyChanging();
+            entity.ToDivision = null;
+        }
+    }
 }
-

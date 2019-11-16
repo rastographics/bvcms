@@ -1,4 +1,3 @@
-﻿using CmsData.Infrastructure;
 using System;
 using System.ComponentModel;
 using System.Data.Linq;
@@ -9,9 +8,10 @@ namespace CmsData
     [Table(Name = "dbo.CheckinProfiles")]
     public partial class CheckinProfiles
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
+
         private int _CheckinProfileId;
         private string _Name;
 
@@ -19,6 +19,7 @@ namespace CmsData
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -32,26 +33,27 @@ namespace CmsData
 
         public CheckinProfiles()
         {
-            this._CheckinProfileSettings = new EntitySet<CheckinProfileSettings>(new Action<CheckinProfileSettings>(this.attach_CheckinProfileSettings), new Action<CheckinProfileSettings>(this.detach_CheckinProfileSettings));
+            _CheckinProfileSettings = new EntitySet<CheckinProfileSettings>(new Action<CheckinProfileSettings>(attach_CheckinProfileSettings), new Action<CheckinProfileSettings>(detach_CheckinProfileSettings));
 
             OnCreated();
         }
 
         #region Columns
+
         [Column(Name = "CheckinProfileId", UpdateCheck = UpdateCheck.Never, Storage = "_CheckinProfileId", AutoSync = AutoSync.OnInsert, DbType = "int IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
         public int CheckinProfileId
         {
-            get { return this._CheckinProfileId; }
+            get => _CheckinProfileId;
 
             set
             {
-                if (this._CheckinProfileId != value)
+                if (_CheckinProfileId != value)
                 {
-                    this.OnCheckinProfileIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._CheckinProfileId = value;
-                    this.SendPropertyChanged("CheckinProfileId");
-                    this.OnCheckinProfileIdChanged();
+                    OnCheckinProfileIdChanging(value);
+                    SendPropertyChanging();
+                    _CheckinProfileId = value;
+                    SendPropertyChanged("CheckinProfileId");
+                    OnCheckinProfileIdChanged();
                 }
             }
         }
@@ -59,58 +61,66 @@ namespace CmsData
         [Column(Name = "Name", UpdateCheck = UpdateCheck.Never, Storage = "_Name", DbType = "nvarchar(100) NOT NULL UNIQUE")]
         public string Name
         {
-            get { return this._Name; }
+            get => _Name;
 
             set
             {
-                if (this._Name != value)
+                if (_Name != value)
                 {
-                    this.OnNameChanging(value);
-                    this.SendPropertyChanging();
-                    this._Name = value;
-                    this.SendPropertyChanged("Name");
-                    this.OnNameChanged();
+                    OnNameChanging(value);
+                    SendPropertyChanging();
+                    _Name = value;
+                    SendPropertyChanged("Name");
+                    OnNameChanged();
                 }
             }
         }
+
         #endregion
 
-        #region Foreign Keys        
+        #region Foreign Keys
+
         #endregion
 
         #region Foreign Key Tables
+
         [Association(Name = "Checking_Profile_Settings_CP_FK", Storage = "_CheckinProfileSettings", OtherKey = "CheckinProfileId")]
         public EntitySet<CheckinProfileSettings> CheckinProfileSettings
         {
-            get { return this._CheckinProfileSettings; }
+            get => _CheckinProfileSettings;
 
-            set { this._CheckinProfileSettings.Assign(value); }
+            set => _CheckinProfileSettings.Assign(value);
         }
+
         #endregion
 
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
-                this.PropertyChanging(this, emptyChangingEventArgs);
+            if ((PropertyChanging != null))
+            {
+                PropertyChanging(this, emptyChangingEventArgs);
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            if ((PropertyChanged != null))
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
 
         private void attach_CheckinProfileSettings(CheckinProfileSettings entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.CheckinProfiles = this;
         }
 
         private void detach_CheckinProfileSettings(CheckinProfileSettings entity)
         {
-            this.SendPropertyChanging();
+            SendPropertyChanging();
             entity.CheckinProfiles = null;
         }
     }

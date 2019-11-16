@@ -1,47 +1,32 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="TransactionSearch")]
-	public partial class TransactionSearch
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private int? _Id;
-		
-		
-		public TransactionSearch()
-		{
-		}
+    [Table(Name = "TransactionSearch")]
+    public partial class TransactionSearch
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="Id", Storage="_Id", DbType="int")]
-		public int? Id
-		{
-			get
-			{
-				return this._Id;
-			}
+        private int? _Id;
 
-			set
-			{
-				if (this._Id != value)
-					this._Id = value;
-			}
+        public TransactionSearch()
+        {
+        }
 
-		}
+        [Column(Name = "Id", Storage = "_Id", DbType = "int")]
+        public int? Id
+        {
+            get => _Id;
 
-		
+            set
+            {
+                if (_Id != value)
+                {
+                    _Id = value;
+                }
+            }
+        }
     }
-
 }

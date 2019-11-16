@@ -1,416 +1,362 @@
-using System; 
+using CmsData.Infrastructure;
+using System;
+using System.ComponentModel;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
-using System.ComponentModel;
-using CmsData.Infrastructure;
 
 namespace CmsData
 {
-	[Table(Name="dbo.MeetingExtra")]
-	public partial class MeetingExtra : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-	#region Private Fields
-		
-		private int _MeetingId;
-		
-		private string _Field;
-		
-		private string _Data;
-		
-		private string _DataType;
-		
-		private string _StrValue;
-		
-		private DateTime? _DateValue;
-		
-		private int? _IntValue;
-		
-		private bool? _BitValue;
-		
-		private DateTime? _TransactionTime;
-		
-		private bool? _UseAllValues;
-		
-		private string _Type;
-		
-   		
-    	
-		private EntityRef<Meeting> _Meeting;
-		
-	#endregion
-	
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-		
-		partial void OnMeetingIdChanging(int value);
-		partial void OnMeetingIdChanged();
-		
-		partial void OnFieldChanging(string value);
-		partial void OnFieldChanged();
-		
-		partial void OnDataChanging(string value);
-		partial void OnDataChanged();
-		
-		partial void OnDataTypeChanging(string value);
-		partial void OnDataTypeChanged();
-		
-		partial void OnStrValueChanging(string value);
-		partial void OnStrValueChanged();
-		
-		partial void OnDateValueChanging(DateTime? value);
-		partial void OnDateValueChanged();
-		
-		partial void OnIntValueChanging(int? value);
-		partial void OnIntValueChanged();
-		
-		partial void OnBitValueChanging(bool? value);
-		partial void OnBitValueChanged();
-		
-		partial void OnTransactionTimeChanging(DateTime? value);
-		partial void OnTransactionTimeChanged();
-		
-		partial void OnUseAllValuesChanging(bool? value);
-		partial void OnUseAllValuesChanged();
-		
-		partial void OnTypeChanging(string value);
-		partial void OnTypeChanged();
-		
-    #endregion
-		public MeetingExtra()
-		{
-			
-			
-			this._Meeting = default(EntityRef<Meeting>); 
-			
-			OnCreated();
-		}
+    [Table(Name = "dbo.MeetingExtra")]
+    public partial class MeetingExtra : INotifyPropertyChanging, INotifyPropertyChanged
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-    #region Columns
-		
-		[Column(Name="MeetingId", UpdateCheck=UpdateCheck.Never, Storage="_MeetingId", DbType="int NOT NULL", IsPrimaryKey=true)]
-		[IsForeignKey]
-		public int MeetingId
-		{
-			get { return this._MeetingId; }
+        #region Private Fields
 
-			set
-			{
-				if (this._MeetingId != value)
-				{
-				
-					if (this._Meeting.HasLoadedOrAssignedValue)
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-				
-                    this.OnMeetingIdChanging(value);
-					this.SendPropertyChanging();
-					this._MeetingId = value;
-					this.SendPropertyChanged("MeetingId");
-					this.OnMeetingIdChanged();
-				}
+        private int _MeetingId;
 
-			}
+        private string _Field;
 
-		}
+        private string _Data;
 
-		
-		[Column(Name="Field", UpdateCheck=UpdateCheck.Never, Storage="_Field", DbType="nvarchar(50) NOT NULL", IsPrimaryKey=true)]
-		public string Field
-		{
-			get { return this._Field; }
+        private string _DataType;
 
-			set
-			{
-				if (this._Field != value)
-				{
-				
-                    this.OnFieldChanging(value);
-					this.SendPropertyChanging();
-					this._Field = value;
-					this.SendPropertyChanged("Field");
-					this.OnFieldChanged();
-				}
+        private string _StrValue;
 
-			}
+        private DateTime? _DateValue;
 
-		}
+        private int? _IntValue;
 
-		
-		[Column(Name="Data", UpdateCheck=UpdateCheck.Never, Storage="_Data", DbType="nvarchar")]
-		public string Data
-		{
-			get { return this._Data; }
+        private bool? _BitValue;
 
-			set
-			{
-				if (this._Data != value)
-				{
-				
-                    this.OnDataChanging(value);
-					this.SendPropertyChanging();
-					this._Data = value;
-					this.SendPropertyChanged("Data");
-					this.OnDataChanged();
-				}
+        private DateTime? _TransactionTime;
 
-			}
+        private bool? _UseAllValues;
 
-		}
+        private string _Type;
 
-		
-		[Column(Name="DataType", UpdateCheck=UpdateCheck.Never, Storage="_DataType", DbType="nvarchar(5)")]
-		public string DataType
-		{
-			get { return this._DataType; }
+        private EntityRef<Meeting> _Meeting;
 
-			set
-			{
-				if (this._DataType != value)
-				{
-				
-                    this.OnDataTypeChanging(value);
-					this.SendPropertyChanging();
-					this._DataType = value;
-					this.SendPropertyChanged("DataType");
-					this.OnDataTypeChanged();
-				}
+        #endregion
 
-			}
+        #region Extensibility Method Definitions
 
-		}
+        partial void OnLoaded();
+        partial void OnValidate(System.Data.Linq.ChangeAction action);
+        partial void OnCreated();
 
-		
-		[Column(Name="StrValue", UpdateCheck=UpdateCheck.Never, Storage="_StrValue", DbType="nvarchar(200)")]
-		public string StrValue
-		{
-			get { return this._StrValue; }
+        partial void OnMeetingIdChanging(int value);
+        partial void OnMeetingIdChanged();
 
-			set
-			{
-				if (this._StrValue != value)
-				{
-				
-                    this.OnStrValueChanging(value);
-					this.SendPropertyChanging();
-					this._StrValue = value;
-					this.SendPropertyChanged("StrValue");
-					this.OnStrValueChanged();
-				}
+        partial void OnFieldChanging(string value);
+        partial void OnFieldChanged();
 
-			}
+        partial void OnDataChanging(string value);
+        partial void OnDataChanged();
 
-		}
+        partial void OnDataTypeChanging(string value);
+        partial void OnDataTypeChanged();
 
-		
-		[Column(Name="DateValue", UpdateCheck=UpdateCheck.Never, Storage="_DateValue", DbType="datetime")]
-		public DateTime? DateValue
-		{
-			get { return this._DateValue; }
+        partial void OnStrValueChanging(string value);
+        partial void OnStrValueChanged();
 
-			set
-			{
-				if (this._DateValue != value)
-				{
-				
-                    this.OnDateValueChanging(value);
-					this.SendPropertyChanging();
-					this._DateValue = value;
-					this.SendPropertyChanged("DateValue");
-					this.OnDateValueChanged();
-				}
+        partial void OnDateValueChanging(DateTime? value);
+        partial void OnDateValueChanged();
 
-			}
+        partial void OnIntValueChanging(int? value);
+        partial void OnIntValueChanged();
 
-		}
+        partial void OnBitValueChanging(bool? value);
+        partial void OnBitValueChanged();
 
-		
-		[Column(Name="IntValue", UpdateCheck=UpdateCheck.Never, Storage="_IntValue", DbType="int")]
-		public int? IntValue
-		{
-			get { return this._IntValue; }
+        partial void OnTransactionTimeChanging(DateTime? value);
+        partial void OnTransactionTimeChanged();
 
-			set
-			{
-				if (this._IntValue != value)
-				{
-				
-                    this.OnIntValueChanging(value);
-					this.SendPropertyChanging();
-					this._IntValue = value;
-					this.SendPropertyChanged("IntValue");
-					this.OnIntValueChanged();
-				}
+        partial void OnUseAllValuesChanging(bool? value);
+        partial void OnUseAllValuesChanged();
 
-			}
+        partial void OnTypeChanging(string value);
+        partial void OnTypeChanged();
 
-		}
+        #endregion
 
-		
-		[Column(Name="BitValue", UpdateCheck=UpdateCheck.Never, Storage="_BitValue", DbType="bit")]
-		public bool? BitValue
-		{
-			get { return this._BitValue; }
+        public MeetingExtra()
+        {
+            _Meeting = default(EntityRef<Meeting>);
 
-			set
-			{
-				if (this._BitValue != value)
-				{
-				
-                    this.OnBitValueChanging(value);
-					this.SendPropertyChanging();
-					this._BitValue = value;
-					this.SendPropertyChanged("BitValue");
-					this.OnBitValueChanged();
-				}
+            OnCreated();
+        }
 
-			}
+        #region Columns
 
-		}
+        [Column(Name = "MeetingId", UpdateCheck = UpdateCheck.Never, Storage = "_MeetingId", DbType = "int NOT NULL", IsPrimaryKey = true)]
+        [IsForeignKey]
+        public int MeetingId
+        {
+            get => _MeetingId;
 
-		
-		[Column(Name="TransactionTime", UpdateCheck=UpdateCheck.Never, Storage="_TransactionTime", DbType="datetime")]
-		public DateTime? TransactionTime
-		{
-			get { return this._TransactionTime; }
+            set
+            {
+                if (_MeetingId != value)
+                {
+                    if (_Meeting.HasLoadedOrAssignedValue)
+                    {
+                        throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+                    }
 
-			set
-			{
-				if (this._TransactionTime != value)
-				{
-				
-                    this.OnTransactionTimeChanging(value);
-					this.SendPropertyChanging();
-					this._TransactionTime = value;
-					this.SendPropertyChanged("TransactionTime");
-					this.OnTransactionTimeChanged();
-				}
+                    OnMeetingIdChanging(value);
+                    SendPropertyChanging();
+                    _MeetingId = value;
+                    SendPropertyChanged("MeetingId");
+                    OnMeetingIdChanged();
+                }
+            }
+        }
 
-			}
+        [Column(Name = "Field", UpdateCheck = UpdateCheck.Never, Storage = "_Field", DbType = "nvarchar(50) NOT NULL", IsPrimaryKey = true)]
+        public string Field
+        {
+            get => _Field;
 
-		}
+            set
+            {
+                if (_Field != value)
+                {
+                    OnFieldChanging(value);
+                    SendPropertyChanging();
+                    _Field = value;
+                    SendPropertyChanged("Field");
+                    OnFieldChanged();
+                }
+            }
+        }
 
-		
-		[Column(Name="UseAllValues", UpdateCheck=UpdateCheck.Never, Storage="_UseAllValues", DbType="bit")]
-		public bool? UseAllValues
-		{
-			get { return this._UseAllValues; }
+        [Column(Name = "Data", UpdateCheck = UpdateCheck.Never, Storage = "_Data", DbType = "nvarchar")]
+        public string Data
+        {
+            get => _Data;
 
-			set
-			{
-				if (this._UseAllValues != value)
-				{
-				
-                    this.OnUseAllValuesChanging(value);
-					this.SendPropertyChanging();
-					this._UseAllValues = value;
-					this.SendPropertyChanged("UseAllValues");
-					this.OnUseAllValuesChanged();
-				}
+            set
+            {
+                if (_Data != value)
+                {
+                    OnDataChanging(value);
+                    SendPropertyChanging();
+                    _Data = value;
+                    SendPropertyChanged("Data");
+                    OnDataChanged();
+                }
+            }
+        }
 
-			}
+        [Column(Name = "DataType", UpdateCheck = UpdateCheck.Never, Storage = "_DataType", DbType = "nvarchar(5)")]
+        public string DataType
+        {
+            get => _DataType;
 
-		}
+            set
+            {
+                if (_DataType != value)
+                {
+                    OnDataTypeChanging(value);
+                    SendPropertyChanging();
+                    _DataType = value;
+                    SendPropertyChanged("DataType");
+                    OnDataTypeChanged();
+                }
+            }
+        }
 
-		
-		[Column(Name="Type", UpdateCheck=UpdateCheck.Never, Storage="_Type", DbType="varchar(22) NOT NULL", IsDbGenerated=true)]
-		public string Type
-		{
-			get { return this._Type; }
+        [Column(Name = "StrValue", UpdateCheck = UpdateCheck.Never, Storage = "_StrValue", DbType = "nvarchar(200)")]
+        public string StrValue
+        {
+            get => _StrValue;
 
-			set
-			{
-				if (this._Type != value)
-				{
-				
-                    this.OnTypeChanging(value);
-					this.SendPropertyChanging();
-					this._Type = value;
-					this.SendPropertyChanged("Type");
-					this.OnTypeChanged();
-				}
+            set
+            {
+                if (_StrValue != value)
+                {
+                    OnStrValueChanging(value);
+                    SendPropertyChanging();
+                    _StrValue = value;
+                    SendPropertyChanged("StrValue");
+                    OnStrValueChanged();
+                }
+            }
+        }
 
-			}
+        [Column(Name = "DateValue", UpdateCheck = UpdateCheck.Never, Storage = "_DateValue", DbType = "datetime")]
+        public DateTime? DateValue
+        {
+            get => _DateValue;
 
-		}
+            set
+            {
+                if (_DateValue != value)
+                {
+                    OnDateValueChanging(value);
+                    SendPropertyChanging();
+                    _DateValue = value;
+                    SendPropertyChanged("DateValue");
+                    OnDateValueChanged();
+                }
+            }
+        }
 
-		
-    #endregion
-        
-    #region Foreign Key Tables
-   		
-	#endregion
-	
-	#region Foreign Keys
-    	
-		[Association(Name="FK_MeetingExtra_Meetings", Storage="_Meeting", ThisKey="MeetingId", IsForeignKey=true)]
-		public Meeting Meeting
-		{
-			get { return this._Meeting.Entity; }
+        [Column(Name = "IntValue", UpdateCheck = UpdateCheck.Never, Storage = "_IntValue", DbType = "int")]
+        public int? IntValue
+        {
+            get => _IntValue;
 
-			set
-			{
-				Meeting previousValue = this._Meeting.Entity;
-				if (((previousValue != value) 
-							|| (this._Meeting.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if (previousValue != null)
-					{
-						this._Meeting.Entity = null;
-						previousValue.MeetingExtras.Remove(this);
-					}
+            set
+            {
+                if (_IntValue != value)
+                {
+                    OnIntValueChanging(value);
+                    SendPropertyChanging();
+                    _IntValue = value;
+                    SendPropertyChanged("IntValue");
+                    OnIntValueChanged();
+                }
+            }
+        }
 
-					this._Meeting.Entity = value;
-					if (value != null)
-					{
-						value.MeetingExtras.Add(this);
-						
-						this._MeetingId = value.MeetingId;
-						
-					}
+        [Column(Name = "BitValue", UpdateCheck = UpdateCheck.Never, Storage = "_BitValue", DbType = "bit")]
+        public bool? BitValue
+        {
+            get => _BitValue;
 
-					else
-					{
-						
-						this._MeetingId = default(int);
-						
-					}
+            set
+            {
+                if (_BitValue != value)
+                {
+                    OnBitValueChanging(value);
+                    SendPropertyChanging();
+                    _BitValue = value;
+                    SendPropertyChanged("BitValue");
+                    OnBitValueChanged();
+                }
+            }
+        }
 
-					this.SendPropertyChanged("Meeting");
-				}
+        [Column(Name = "TransactionTime", UpdateCheck = UpdateCheck.Never, Storage = "_TransactionTime", DbType = "datetime")]
+        public DateTime? TransactionTime
+        {
+            get => _TransactionTime;
 
-			}
+            set
+            {
+                if (_TransactionTime != value)
+                {
+                    OnTransactionTimeChanging(value);
+                    SendPropertyChanging();
+                    _TransactionTime = value;
+                    SendPropertyChanged("TransactionTime");
+                    OnTransactionTimeChanged();
+                }
+            }
+        }
 
-		}
+        [Column(Name = "UseAllValues", UpdateCheck = UpdateCheck.Never, Storage = "_UseAllValues", DbType = "bit")]
+        public bool? UseAllValues
+        {
+            get => _UseAllValues;
 
-		
-	#endregion
-	
-		public event PropertyChangingEventHandler PropertyChanging;
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-				this.PropertyChanging(this, emptyChangingEventArgs);
-		}
+            set
+            {
+                if (_UseAllValues != value)
+                {
+                    OnUseAllValuesChanging(value);
+                    SendPropertyChanging();
+                    _UseAllValues = value;
+                    SendPropertyChanged("UseAllValues");
+                    OnUseAllValuesChanged();
+                }
+            }
+        }
 
-		public event PropertyChangedEventHandler PropertyChanged;
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-		}
+        [Column(Name = "Type", UpdateCheck = UpdateCheck.Never, Storage = "_Type", DbType = "varchar(22) NOT NULL", IsDbGenerated = true)]
+        public string Type
+        {
+            get => _Type;
 
-   		
-	}
+            set
+            {
+                if (_Type != value)
+                {
+                    OnTypeChanging(value);
+                    SendPropertyChanging();
+                    _Type = value;
+                    SendPropertyChanged("Type");
+                    OnTypeChanged();
+                }
+            }
+        }
 
+        #endregion
+
+        #region Foreign Key Tables
+
+        #endregion
+
+        #region Foreign Keys
+
+        [Association(Name = "FK_MeetingExtra_Meetings", Storage = "_Meeting", ThisKey = "MeetingId", IsForeignKey = true)]
+        public Meeting Meeting
+        {
+            get => _Meeting.Entity;
+
+            set
+            {
+                Meeting previousValue = _Meeting.Entity;
+                if (((previousValue != value)
+                            || (_Meeting.HasLoadedOrAssignedValue == false)))
+                {
+                    SendPropertyChanging();
+                    if (previousValue != null)
+                    {
+                        _Meeting.Entity = null;
+                        previousValue.MeetingExtras.Remove(this);
+                    }
+
+                    _Meeting.Entity = value;
+                    if (value != null)
+                    {
+                        value.MeetingExtras.Add(this);
+
+                        _MeetingId = value.MeetingId;
+
+                    }
+
+                    else
+                    {
+                        _MeetingId = default(int);
+
+                    }
+
+                    SendPropertyChanged("Meeting");
+                }
+            }
+        }
+
+        #endregion
+
+        public event PropertyChangingEventHandler PropertyChanging;
+        protected virtual void SendPropertyChanging()
+        {
+            if ((PropertyChanging != null))
+            {
+                PropertyChanging(this, emptyChangingEventArgs);
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void SendPropertyChanged(string propertyName)
+        {
+            if ((PropertyChanged != null))
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
 }
-
