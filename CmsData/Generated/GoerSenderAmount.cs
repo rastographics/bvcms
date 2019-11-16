@@ -1,435 +1,389 @@
-using System; 
+using CmsData.Infrastructure;
+using System;
+using System.ComponentModel;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
-using System.ComponentModel;
-using CmsData.Infrastructure;
 
 namespace CmsData
 {
-	[Table(Name="dbo.GoerSenderAmounts")]
-	public partial class GoerSenderAmount : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-	#region Private Fields
-		
-		private int _Id;
-		
-		private int _OrgId;
-		
-		private int _SupporterId;
-		
-		private int? _GoerId;
-		
-		private decimal? _Amount;
-		
-		private DateTime? _Created;
-		
-		private bool? _InActive;
-		
-		private bool? _NoNoticeToGoer;
-		
-   		
-    	
-		private EntityRef<Organization> _Organization;
-		
-		private EntityRef<Person> _Goer;
-		
-		private EntityRef<Person> _Sender;
-		
-	#endregion
-	
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-		
-		partial void OnIdChanging(int value);
-		partial void OnIdChanged();
-		
-		partial void OnOrgIdChanging(int value);
-		partial void OnOrgIdChanged();
-		
-		partial void OnSupporterIdChanging(int value);
-		partial void OnSupporterIdChanged();
-		
-		partial void OnGoerIdChanging(int? value);
-		partial void OnGoerIdChanged();
-		
-		partial void OnAmountChanging(decimal? value);
-		partial void OnAmountChanged();
-		
-		partial void OnCreatedChanging(DateTime? value);
-		partial void OnCreatedChanged();
-		
-		partial void OnInActiveChanging(bool? value);
-		partial void OnInActiveChanged();
-		
-		partial void OnNoNoticeToGoerChanging(bool? value);
-		partial void OnNoNoticeToGoerChanged();
-		
-    #endregion
-		public GoerSenderAmount()
-		{
-			
-			
-			this._Organization = default(EntityRef<Organization>); 
-			
-			this._Goer = default(EntityRef<Person>); 
-			
-			this._Sender = default(EntityRef<Person>); 
-			
-			OnCreated();
-		}
+    [Table(Name = "dbo.GoerSenderAmounts")]
+    public partial class GoerSenderAmount : INotifyPropertyChanging, INotifyPropertyChanged
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-    #region Columns
-		
-		[Column(Name="Id", UpdateCheck=UpdateCheck.Never, Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int Id
-		{
-			get { return this._Id; }
+        #region Private Fields
 
-			set
-			{
-				if (this._Id != value)
-				{
-				
-                    this.OnIdChanging(value);
-					this.SendPropertyChanging();
-					this._Id = value;
-					this.SendPropertyChanged("Id");
-					this.OnIdChanged();
-				}
+        private int _Id;
 
-			}
+        private int _OrgId;
 
-		}
+        private int _SupporterId;
 
-		
-		[Column(Name="OrgId", UpdateCheck=UpdateCheck.Never, Storage="_OrgId", DbType="int NOT NULL")]
-		[IsForeignKey]
-		public int OrgId
-		{
-			get { return this._OrgId; }
+        private int? _GoerId;
 
-			set
-			{
-				if (this._OrgId != value)
-				{
-				
-					if (this._Organization.HasLoadedOrAssignedValue)
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-				
-                    this.OnOrgIdChanging(value);
-					this.SendPropertyChanging();
-					this._OrgId = value;
-					this.SendPropertyChanged("OrgId");
-					this.OnOrgIdChanged();
-				}
+        private decimal? _Amount;
 
-			}
+        private DateTime? _Created;
 
-		}
+        private bool? _InActive;
 
-		
-		[Column(Name="SupporterId", UpdateCheck=UpdateCheck.Never, Storage="_SupporterId", DbType="int NOT NULL")]
-		[IsForeignKey]
-		public int SupporterId
-		{
-			get { return this._SupporterId; }
+        private bool? _NoNoticeToGoer;
 
-			set
-			{
-				if (this._SupporterId != value)
-				{
-				
-					if (this._Goer.HasLoadedOrAssignedValue)
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-				
-                    this.OnSupporterIdChanging(value);
-					this.SendPropertyChanging();
-					this._SupporterId = value;
-					this.SendPropertyChanged("SupporterId");
-					this.OnSupporterIdChanged();
-				}
+        private EntityRef<Organization> _Organization;
 
-			}
+        private EntityRef<Person> _Goer;
 
-		}
+        private EntityRef<Person> _Sender;
 
-		
-		[Column(Name="GoerId", UpdateCheck=UpdateCheck.Never, Storage="_GoerId", DbType="int")]
-		[IsForeignKey]
-		public int? GoerId
-		{
-			get { return this._GoerId; }
+        #endregion
 
-			set
-			{
-				if (this._GoerId != value)
-				{
-				
-					if (this._Sender.HasLoadedOrAssignedValue)
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-				
-                    this.OnGoerIdChanging(value);
-					this.SendPropertyChanging();
-					this._GoerId = value;
-					this.SendPropertyChanged("GoerId");
-					this.OnGoerIdChanged();
-				}
+        #region Extensibility Method Definitions
 
-			}
+        partial void OnLoaded();
+        partial void OnValidate(System.Data.Linq.ChangeAction action);
+        partial void OnCreated();
 
-		}
+        partial void OnIdChanging(int value);
+        partial void OnIdChanged();
 
-		
-		[Column(Name="Amount", UpdateCheck=UpdateCheck.Never, Storage="_Amount", DbType="money")]
-		public decimal? Amount
-		{
-			get { return this._Amount; }
+        partial void OnOrgIdChanging(int value);
+        partial void OnOrgIdChanged();
 
-			set
-			{
-				if (this._Amount != value)
-				{
-				
-                    this.OnAmountChanging(value);
-					this.SendPropertyChanging();
-					this._Amount = value;
-					this.SendPropertyChanged("Amount");
-					this.OnAmountChanged();
-				}
+        partial void OnSupporterIdChanging(int value);
+        partial void OnSupporterIdChanged();
 
-			}
+        partial void OnGoerIdChanging(int? value);
+        partial void OnGoerIdChanged();
 
-		}
+        partial void OnAmountChanging(decimal? value);
+        partial void OnAmountChanged();
 
-		
-		[Column(Name="Created", UpdateCheck=UpdateCheck.Never, Storage="_Created", DbType="datetime")]
-		public DateTime? Created
-		{
-			get { return this._Created; }
+        partial void OnCreatedChanging(DateTime? value);
+        partial void OnCreatedChanged();
 
-			set
-			{
-				if (this._Created != value)
-				{
-				
-                    this.OnCreatedChanging(value);
-					this.SendPropertyChanging();
-					this._Created = value;
-					this.SendPropertyChanged("Created");
-					this.OnCreatedChanged();
-				}
+        partial void OnInActiveChanging(bool? value);
+        partial void OnInActiveChanged();
 
-			}
+        partial void OnNoNoticeToGoerChanging(bool? value);
+        partial void OnNoNoticeToGoerChanged();
 
-		}
+        #endregion
 
-		
-		[Column(Name="InActive", UpdateCheck=UpdateCheck.Never, Storage="_InActive", DbType="bit")]
-		public bool? InActive
-		{
-			get { return this._InActive; }
+        public GoerSenderAmount()
+        {
+            _Organization = default(EntityRef<Organization>);
 
-			set
-			{
-				if (this._InActive != value)
-				{
-				
-                    this.OnInActiveChanging(value);
-					this.SendPropertyChanging();
-					this._InActive = value;
-					this.SendPropertyChanged("InActive");
-					this.OnInActiveChanged();
-				}
+            _Goer = default(EntityRef<Person>);
 
-			}
+            _Sender = default(EntityRef<Person>);
 
-		}
+            OnCreated();
+        }
 
-		
-		[Column(Name="NoNoticeToGoer", UpdateCheck=UpdateCheck.Never, Storage="_NoNoticeToGoer", DbType="bit")]
-		public bool? NoNoticeToGoer
-		{
-			get { return this._NoNoticeToGoer; }
+        #region Columns
 
-			set
-			{
-				if (this._NoNoticeToGoer != value)
-				{
-				
-                    this.OnNoNoticeToGoerChanging(value);
-					this.SendPropertyChanging();
-					this._NoNoticeToGoer = value;
-					this.SendPropertyChanged("NoNoticeToGoer");
-					this.OnNoNoticeToGoerChanged();
-				}
+        [Column(Name = "Id", UpdateCheck = UpdateCheck.Never, Storage = "_Id", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
+        public int Id
+        {
+            get => _Id;
 
-			}
+            set
+            {
+                if (_Id != value)
+                {
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
+                }
+            }
+        }
 
-		}
+        [Column(Name = "OrgId", UpdateCheck = UpdateCheck.Never, Storage = "_OrgId", DbType = "int NOT NULL")]
+        [IsForeignKey]
+        public int OrgId
+        {
+            get => _OrgId;
 
-		
-    #endregion
-        
-    #region Foreign Key Tables
-   		
-	#endregion
-	
-	#region Foreign Keys
-    	
-		[Association(Name="FK_GoerSenderAmounts_Organizations", Storage="_Organization", ThisKey="OrgId", IsForeignKey=true)]
-		public Organization Organization
-		{
-			get { return this._Organization.Entity; }
+            set
+            {
+                if (_OrgId != value)
+                {
+                    if (_Organization.HasLoadedOrAssignedValue)
+                    {
+                        throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+                    }
 
-			set
-			{
-				Organization previousValue = this._Organization.Entity;
-				if (((previousValue != value) 
-							|| (this._Organization.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if (previousValue != null)
-					{
-						this._Organization.Entity = null;
-						previousValue.GoerSenderAmounts.Remove(this);
-					}
+                    OnOrgIdChanging(value);
+                    SendPropertyChanging();
+                    _OrgId = value;
+                    SendPropertyChanged("OrgId");
+                    OnOrgIdChanged();
+                }
+            }
+        }
 
-					this._Organization.Entity = value;
-					if (value != null)
-					{
-						value.GoerSenderAmounts.Add(this);
-						
-						this._OrgId = value.OrganizationId;
-						
-					}
+        [Column(Name = "SupporterId", UpdateCheck = UpdateCheck.Never, Storage = "_SupporterId", DbType = "int NOT NULL")]
+        [IsForeignKey]
+        public int SupporterId
+        {
+            get => _SupporterId;
 
-					else
-					{
-						
-						this._OrgId = default(int);
-						
-					}
+            set
+            {
+                if (_SupporterId != value)
+                {
+                    if (_Goer.HasLoadedOrAssignedValue)
+                    {
+                        throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+                    }
 
-					this.SendPropertyChanged("Organization");
-				}
+                    OnSupporterIdChanging(value);
+                    SendPropertyChanging();
+                    _SupporterId = value;
+                    SendPropertyChanged("SupporterId");
+                    OnSupporterIdChanged();
+                }
+            }
+        }
 
-			}
+        [Column(Name = "GoerId", UpdateCheck = UpdateCheck.Never, Storage = "_GoerId", DbType = "int")]
+        [IsForeignKey]
+        public int? GoerId
+        {
+            get => _GoerId;
 
-		}
+            set
+            {
+                if (_GoerId != value)
+                {
+                    if (_Sender.HasLoadedOrAssignedValue)
+                    {
+                        throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+                    }
 
-		
-		[Association(Name="GoerAmounts__Goer", Storage="_Goer", ThisKey="GoerId", IsForeignKey=true)]
-		public Person Goer
-		{
-			get { return this._Goer.Entity; }
+                    OnGoerIdChanging(value);
+                    SendPropertyChanging();
+                    _GoerId = value;
+                    SendPropertyChanged("GoerId");
+                    OnGoerIdChanged();
+                }
+            }
+        }
 
-			set
-			{
-				Person previousValue = this._Goer.Entity;
-				if (((previousValue != value) 
-							|| (this._Goer.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if (previousValue != null)
-					{
-						this._Goer.Entity = null;
-						previousValue.GoerAmounts.Remove(this);
-					}
+        [Column(Name = "Amount", UpdateCheck = UpdateCheck.Never, Storage = "_Amount", DbType = "money")]
+        public decimal? Amount
+        {
+            get => _Amount;
 
-					this._Goer.Entity = value;
-					if (value != null)
-					{
-						value.GoerAmounts.Add(this);
-						
-						this._GoerId = value.PeopleId;
-						
-					}
+            set
+            {
+                if (_Amount != value)
+                {
+                    OnAmountChanging(value);
+                    SendPropertyChanging();
+                    _Amount = value;
+                    SendPropertyChanged("Amount");
+                    OnAmountChanged();
+                }
+            }
+        }
 
-					else
-					{
-						
-						this._GoerId = default(int);
-						
-					}
+        [Column(Name = "Created", UpdateCheck = UpdateCheck.Never, Storage = "_Created", DbType = "datetime")]
+        public DateTime? Created
+        {
+            get => _Created;
 
-					this.SendPropertyChanged("Goer");
-				}
+            set
+            {
+                if (_Created != value)
+                {
+                    OnCreatedChanging(value);
+                    SendPropertyChanging();
+                    _Created = value;
+                    SendPropertyChanged("Created");
+                    OnCreatedChanged();
+                }
+            }
+        }
 
-			}
+        [Column(Name = "InActive", UpdateCheck = UpdateCheck.Never, Storage = "_InActive", DbType = "bit")]
+        public bool? InActive
+        {
+            get => _InActive;
 
-		}
+            set
+            {
+                if (_InActive != value)
+                {
+                    OnInActiveChanging(value);
+                    SendPropertyChanging();
+                    _InActive = value;
+                    SendPropertyChanged("InActive");
+                    OnInActiveChanged();
+                }
+            }
+        }
 
-		
-		[Association(Name="SenderAmounts__Sender", Storage="_Sender", ThisKey="SupporterId", IsForeignKey=true)]
-		public Person Sender
-		{
-			get { return this._Sender.Entity; }
+        [Column(Name = "NoNoticeToGoer", UpdateCheck = UpdateCheck.Never, Storage = "_NoNoticeToGoer", DbType = "bit")]
+        public bool? NoNoticeToGoer
+        {
+            get => _NoNoticeToGoer;
 
-			set
-			{
-				Person previousValue = this._Sender.Entity;
-				if (((previousValue != value) 
-							|| (this._Sender.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if (previousValue != null)
-					{
-						this._Sender.Entity = null;
-						previousValue.SenderAmounts.Remove(this);
-					}
+            set
+            {
+                if (_NoNoticeToGoer != value)
+                {
+                    OnNoNoticeToGoerChanging(value);
+                    SendPropertyChanging();
+                    _NoNoticeToGoer = value;
+                    SendPropertyChanged("NoNoticeToGoer");
+                    OnNoNoticeToGoerChanged();
+                }
+            }
+        }
 
-					this._Sender.Entity = value;
-					if (value != null)
-					{
-						value.SenderAmounts.Add(this);
-						
-						this._SupporterId = value.PeopleId;
-						
-					}
+        #endregion
 
-					else
-					{
-						
-						this._SupporterId = default(int);
-						
-					}
+        #region Foreign Key Tables
 
-					this.SendPropertyChanged("Sender");
-				}
+        #endregion
 
-			}
+        #region Foreign Keys
 
-		}
+        [Association(Name = "FK_GoerSenderAmounts_Organizations", Storage = "_Organization", ThisKey = "OrgId", IsForeignKey = true)]
+        public Organization Organization
+        {
+            get => _Organization.Entity;
 
-		
-	#endregion
-	
-		public event PropertyChangingEventHandler PropertyChanging;
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-				this.PropertyChanging(this, emptyChangingEventArgs);
-		}
+            set
+            {
+                Organization previousValue = _Organization.Entity;
+                if (((previousValue != value)
+                            || (_Organization.HasLoadedOrAssignedValue == false)))
+                {
+                    SendPropertyChanging();
+                    if (previousValue != null)
+                    {
+                        _Organization.Entity = null;
+                        previousValue.GoerSenderAmounts.Remove(this);
+                    }
 
-		public event PropertyChangedEventHandler PropertyChanged;
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-		}
+                    _Organization.Entity = value;
+                    if (value != null)
+                    {
+                        value.GoerSenderAmounts.Add(this);
 
-   		
-	}
+                        _OrgId = value.OrganizationId;
 
+                    }
+
+                    else
+                    {
+                        _OrgId = default(int);
+
+                    }
+
+                    SendPropertyChanged("Organization");
+                }
+            }
+        }
+
+        [Association(Name = "GoerAmounts__Goer", Storage = "_Goer", ThisKey = "GoerId", IsForeignKey = true)]
+        public Person Goer
+        {
+            get => _Goer.Entity;
+
+            set
+            {
+                Person previousValue = _Goer.Entity;
+                if (((previousValue != value)
+                            || (_Goer.HasLoadedOrAssignedValue == false)))
+                {
+                    SendPropertyChanging();
+                    if (previousValue != null)
+                    {
+                        _Goer.Entity = null;
+                        previousValue.GoerAmounts.Remove(this);
+                    }
+
+                    _Goer.Entity = value;
+                    if (value != null)
+                    {
+                        value.GoerAmounts.Add(this);
+
+                        _GoerId = value.PeopleId;
+
+                    }
+
+                    else
+                    {
+                        _GoerId = default(int);
+
+                    }
+
+                    SendPropertyChanged("Goer");
+                }
+            }
+        }
+
+        [Association(Name = "SenderAmounts__Sender", Storage = "_Sender", ThisKey = "SupporterId", IsForeignKey = true)]
+        public Person Sender
+        {
+            get => _Sender.Entity;
+
+            set
+            {
+                Person previousValue = _Sender.Entity;
+                if (((previousValue != value)
+                            || (_Sender.HasLoadedOrAssignedValue == false)))
+                {
+                    SendPropertyChanging();
+                    if (previousValue != null)
+                    {
+                        _Sender.Entity = null;
+                        previousValue.SenderAmounts.Remove(this);
+                    }
+
+                    _Sender.Entity = value;
+                    if (value != null)
+                    {
+                        value.SenderAmounts.Add(this);
+
+                        _SupporterId = value.PeopleId;
+
+                    }
+
+                    else
+                    {
+                        _SupporterId = default(int);
+
+                    }
+
+                    SendPropertyChanged("Sender");
+                }
+            }
+        }
+
+        #endregion
+
+        public event PropertyChangingEventHandler PropertyChanging;
+        protected virtual void SendPropertyChanging()
+        {
+            if ((PropertyChanging != null))
+            {
+                PropertyChanging(this, emptyChangingEventArgs);
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void SendPropertyChanged(string propertyName)
+        {
+            if ((PropertyChanged != null))
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
 }
-

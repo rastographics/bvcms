@@ -1,284 +1,243 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData
 {
-	[Table(Name="dbo.ActivityOld")]
-	public partial class ActivityOld : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-	#region Private Fields
-		
-		private long _Id;
-		
-		private DateTime? _ActivityDate;
-		
-		private int? _UserId;
-		
-		private string _Activity;
-		
-		private string _PageUrl;
-		
-		private string _Machine;
-		
-		private int? _OrgId;
-		
-		private int? _PeopleId;
-		
-   		
-    	
-	#endregion
-	
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-		
-		partial void OnIdChanging(long value);
-		partial void OnIdChanged();
-		
-		partial void OnActivityDateChanging(DateTime? value);
-		partial void OnActivityDateChanged();
-		
-		partial void OnUserIdChanging(int? value);
-		partial void OnUserIdChanged();
-		
-		partial void OnActivityChanging(string value);
-		partial void OnActivityChanged();
-		
-		partial void OnPageUrlChanging(string value);
-		partial void OnPageUrlChanged();
-		
-		partial void OnMachineChanging(string value);
-		partial void OnMachineChanged();
-		
-		partial void OnOrgIdChanging(int? value);
-		partial void OnOrgIdChanged();
-		
-		partial void OnPeopleIdChanging(int? value);
-		partial void OnPeopleIdChanged();
-		
-    #endregion
-		public ActivityOld()
-		{
-			
-			
-			OnCreated();
-		}
+    [Table(Name = "dbo.ActivityOld")]
+    public partial class ActivityOld : INotifyPropertyChanging, INotifyPropertyChanged
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-    #region Columns
-		
-		[Column(Name="Id", UpdateCheck=UpdateCheck.Never, Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="bigint NOT NULL IDENTITY", IsDbGenerated=true)]
-		public long Id
-		{
-			get { return this._Id; }
+        #region Private Fields
 
-			set
-			{
-				if (this._Id != value)
-				{
-				
-                    this.OnIdChanging(value);
-					this.SendPropertyChanging();
-					this._Id = value;
-					this.SendPropertyChanged("Id");
-					this.OnIdChanged();
-				}
+        private long _Id;
 
-			}
+        private DateTime? _ActivityDate;
 
-		}
+        private int? _UserId;
 
-		
-		[Column(Name="ActivityDate", UpdateCheck=UpdateCheck.Never, Storage="_ActivityDate", DbType="datetime")]
-		public DateTime? ActivityDate
-		{
-			get { return this._ActivityDate; }
+        private string _Activity;
 
-			set
-			{
-				if (this._ActivityDate != value)
-				{
-				
-                    this.OnActivityDateChanging(value);
-					this.SendPropertyChanging();
-					this._ActivityDate = value;
-					this.SendPropertyChanged("ActivityDate");
-					this.OnActivityDateChanged();
-				}
+        private string _PageUrl;
 
-			}
+        private string _Machine;
 
-		}
+        private int? _OrgId;
 
-		
-		[Column(Name="UserId", UpdateCheck=UpdateCheck.Never, Storage="_UserId", DbType="int")]
-		public int? UserId
-		{
-			get { return this._UserId; }
+        private int? _PeopleId;
 
-			set
-			{
-				if (this._UserId != value)
-				{
-				
-                    this.OnUserIdChanging(value);
-					this.SendPropertyChanging();
-					this._UserId = value;
-					this.SendPropertyChanged("UserId");
-					this.OnUserIdChanged();
-				}
+        #endregion
 
-			}
+        #region Extensibility Method Definitions
 
-		}
+        partial void OnLoaded();
+        partial void OnValidate(System.Data.Linq.ChangeAction action);
+        partial void OnCreated();
 
-		
-		[Column(Name="Activity", UpdateCheck=UpdateCheck.Never, Storage="_Activity", DbType="varchar(200)")]
-		public string Activity
-		{
-			get { return this._Activity; }
+        partial void OnIdChanging(long value);
+        partial void OnIdChanged();
 
-			set
-			{
-				if (this._Activity != value)
-				{
-				
-                    this.OnActivityChanging(value);
-					this.SendPropertyChanging();
-					this._Activity = value;
-					this.SendPropertyChanged("Activity");
-					this.OnActivityChanged();
-				}
+        partial void OnActivityDateChanging(DateTime? value);
+        partial void OnActivityDateChanged();
 
-			}
+        partial void OnUserIdChanging(int? value);
+        partial void OnUserIdChanged();
 
-		}
+        partial void OnActivityChanging(string value);
+        partial void OnActivityChanged();
 
-		
-		[Column(Name="PageUrl", UpdateCheck=UpdateCheck.Never, Storage="_PageUrl", DbType="varchar(410)")]
-		public string PageUrl
-		{
-			get { return this._PageUrl; }
+        partial void OnPageUrlChanging(string value);
+        partial void OnPageUrlChanged();
 
-			set
-			{
-				if (this._PageUrl != value)
-				{
-				
-                    this.OnPageUrlChanging(value);
-					this.SendPropertyChanging();
-					this._PageUrl = value;
-					this.SendPropertyChanged("PageUrl");
-					this.OnPageUrlChanged();
-				}
+        partial void OnMachineChanging(string value);
+        partial void OnMachineChanged();
 
-			}
+        partial void OnOrgIdChanging(int? value);
+        partial void OnOrgIdChanged();
 
-		}
+        partial void OnPeopleIdChanging(int? value);
+        partial void OnPeopleIdChanged();
 
-		
-		[Column(Name="Machine", UpdateCheck=UpdateCheck.Never, Storage="_Machine", DbType="varchar(50)")]
-		public string Machine
-		{
-			get { return this._Machine; }
+        #endregion
 
-			set
-			{
-				if (this._Machine != value)
-				{
-				
-                    this.OnMachineChanging(value);
-					this.SendPropertyChanging();
-					this._Machine = value;
-					this.SendPropertyChanged("Machine");
-					this.OnMachineChanged();
-				}
+        public ActivityOld()
+        {
+            OnCreated();
+        }
 
-			}
+        #region Columns
 
-		}
+        [Column(Name = "Id", UpdateCheck = UpdateCheck.Never, Storage = "_Id", AutoSync = AutoSync.OnInsert, DbType = "bigint NOT NULL IDENTITY", IsDbGenerated = true)]
+        public long Id
+        {
+            get => _Id;
 
-		
-		[Column(Name="OrgId", UpdateCheck=UpdateCheck.Never, Storage="_OrgId", DbType="int")]
-		public int? OrgId
-		{
-			get { return this._OrgId; }
+            set
+            {
+                if (_Id != value)
+                {
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
+                }
+            }
+        }
 
-			set
-			{
-				if (this._OrgId != value)
-				{
-				
-                    this.OnOrgIdChanging(value);
-					this.SendPropertyChanging();
-					this._OrgId = value;
-					this.SendPropertyChanged("OrgId");
-					this.OnOrgIdChanged();
-				}
+        [Column(Name = "ActivityDate", UpdateCheck = UpdateCheck.Never, Storage = "_ActivityDate", DbType = "datetime")]
+        public DateTime? ActivityDate
+        {
+            get => _ActivityDate;
 
-			}
+            set
+            {
+                if (_ActivityDate != value)
+                {
+                    OnActivityDateChanging(value);
+                    SendPropertyChanging();
+                    _ActivityDate = value;
+                    SendPropertyChanged("ActivityDate");
+                    OnActivityDateChanged();
+                }
+            }
+        }
 
-		}
+        [Column(Name = "UserId", UpdateCheck = UpdateCheck.Never, Storage = "_UserId", DbType = "int")]
+        public int? UserId
+        {
+            get => _UserId;
 
-		
-		[Column(Name="PeopleId", UpdateCheck=UpdateCheck.Never, Storage="_PeopleId", DbType="int")]
-		public int? PeopleId
-		{
-			get { return this._PeopleId; }
+            set
+            {
+                if (_UserId != value)
+                {
+                    OnUserIdChanging(value);
+                    SendPropertyChanging();
+                    _UserId = value;
+                    SendPropertyChanged("UserId");
+                    OnUserIdChanged();
+                }
+            }
+        }
 
-			set
-			{
-				if (this._PeopleId != value)
-				{
-				
-                    this.OnPeopleIdChanging(value);
-					this.SendPropertyChanging();
-					this._PeopleId = value;
-					this.SendPropertyChanged("PeopleId");
-					this.OnPeopleIdChanged();
-				}
+        [Column(Name = "Activity", UpdateCheck = UpdateCheck.Never, Storage = "_Activity", DbType = "varchar(200)")]
+        public string Activity
+        {
+            get => _Activity;
 
-			}
+            set
+            {
+                if (_Activity != value)
+                {
+                    OnActivityChanging(value);
+                    SendPropertyChanging();
+                    _Activity = value;
+                    SendPropertyChanged("Activity");
+                    OnActivityChanged();
+                }
+            }
+        }
 
-		}
+        [Column(Name = "PageUrl", UpdateCheck = UpdateCheck.Never, Storage = "_PageUrl", DbType = "varchar(410)")]
+        public string PageUrl
+        {
+            get => _PageUrl;
 
-		
-    #endregion
-        
-    #region Foreign Key Tables
-   		
-	#endregion
-	
-	#region Foreign Keys
-    	
-	#endregion
-	
-		public event PropertyChangingEventHandler PropertyChanging;
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-				this.PropertyChanging(this, emptyChangingEventArgs);
-		}
+            set
+            {
+                if (_PageUrl != value)
+                {
+                    OnPageUrlChanging(value);
+                    SendPropertyChanging();
+                    _PageUrl = value;
+                    SendPropertyChanged("PageUrl");
+                    OnPageUrlChanged();
+                }
+            }
+        }
 
-		public event PropertyChangedEventHandler PropertyChanged;
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-		}
+        [Column(Name = "Machine", UpdateCheck = UpdateCheck.Never, Storage = "_Machine", DbType = "varchar(50)")]
+        public string Machine
+        {
+            get => _Machine;
 
-   		
-	}
+            set
+            {
+                if (_Machine != value)
+                {
+                    OnMachineChanging(value);
+                    SendPropertyChanging();
+                    _Machine = value;
+                    SendPropertyChanged("Machine");
+                    OnMachineChanged();
+                }
+            }
+        }
 
+        [Column(Name = "OrgId", UpdateCheck = UpdateCheck.Never, Storage = "_OrgId", DbType = "int")]
+        public int? OrgId
+        {
+            get => _OrgId;
+
+            set
+            {
+                if (_OrgId != value)
+                {
+                    OnOrgIdChanging(value);
+                    SendPropertyChanging();
+                    _OrgId = value;
+                    SendPropertyChanged("OrgId");
+                    OnOrgIdChanged();
+                }
+            }
+        }
+
+        [Column(Name = "PeopleId", UpdateCheck = UpdateCheck.Never, Storage = "_PeopleId", DbType = "int")]
+        public int? PeopleId
+        {
+            get => _PeopleId;
+
+            set
+            {
+                if (_PeopleId != value)
+                {
+                    OnPeopleIdChanging(value);
+                    SendPropertyChanging();
+                    _PeopleId = value;
+                    SendPropertyChanged("PeopleId");
+                    OnPeopleIdChanged();
+                }
+            }
+        }
+
+        #endregion
+
+        #region Foreign Key Tables
+
+        #endregion
+
+        #region Foreign Keys
+
+        #endregion
+
+        public event PropertyChangingEventHandler PropertyChanging;
+        protected virtual void SendPropertyChanging()
+        {
+            if ((PropertyChanging != null))
+            {
+                PropertyChanging(this, emptyChangingEventArgs);
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void SendPropertyChanged(string propertyName)
+        {
+            if ((PropertyChanged != null))
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
 }
-
