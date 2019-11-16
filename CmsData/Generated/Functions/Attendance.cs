@@ -1,85 +1,64 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="Attendance")]
-	public partial class Attendance
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private int _PeopleId;
-		
-		private string _Attendstr;
-		
-		private decimal? _Pct;
-		
-		
-		public Attendance()
-		{
-		}
+    [Table(Name = "Attendance")]
+    public partial class Attendance
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="People_id", Storage="_PeopleId", DbType="int NOT NULL")]
-		public int PeopleId
-		{
-			get
-			{
-				return this._PeopleId;
-			}
+        private int _PeopleId;
 
-			set
-			{
-				if (this._PeopleId != value)
-					this._PeopleId = value;
-			}
+        private string _Attendstr;
 
-		}
+        private decimal? _Pct;
 
-		
-		[Column(Name="attendstr", Storage="_Attendstr", DbType="varchar(52)")]
-		public string Attendstr
-		{
-			get
-			{
-				return this._Attendstr;
-			}
+        public Attendance()
+        {
+        }
 
-			set
-			{
-				if (this._Attendstr != value)
-					this._Attendstr = value;
-			}
+        [Column(Name = "People_id", Storage = "_PeopleId", DbType = "int NOT NULL")]
+        public int PeopleId
+        {
+            get => _PeopleId;
 
-		}
+            set
+            {
+                if (_PeopleId != value)
+                {
+                    _PeopleId = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="pct", Storage="_Pct", DbType="real")]
-		public decimal? Pct
-		{
-			get
-			{
-				return this._Pct;
-			}
+        [Column(Name = "attendstr", Storage = "_Attendstr", DbType = "varchar(52)")]
+        public string Attendstr
+        {
+            get => _Attendstr;
 
-			set
-			{
-				if (this._Pct != value)
-					this._Pct = value;
-			}
+            set
+            {
+                if (_Attendstr != value)
+                {
+                    _Attendstr = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "pct", Storage = "_Pct", DbType = "real")]
+        public decimal? Pct
+        {
+            get => _Pct;
 
-		
+            set
+            {
+                if (_Pct != value)
+                {
+                    _Pct = value;
+                }
+            }
+        }
     }
-
 }

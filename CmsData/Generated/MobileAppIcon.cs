@@ -1,177 +1,151 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
-using CmsData.Infrastructure;
+using System.Data.Linq.Mapping;
 
 namespace CmsData
 {
-	[Table(Name="dbo.MobileAppIcons")]
-	public partial class MobileAppIcon : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-	#region Private Fields
-		
-		private int _Id;
-		
-		private int _SetID;
-		
-		private int _ActionID;
-		
-		private string _Url;
-		
-   		
-    	
-	#endregion
-	
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-		
-		partial void OnIdChanging(int value);
-		partial void OnIdChanged();
-		
-		partial void OnSetIDChanging(int value);
-		partial void OnSetIDChanged();
-		
-		partial void OnActionIDChanging(int value);
-		partial void OnActionIDChanged();
-		
-		partial void OnUrlChanging(string value);
-		partial void OnUrlChanged();
-		
-    #endregion
-		public MobileAppIcon()
-		{
-			
-			
-			OnCreated();
-		}
+    [Table(Name = "dbo.MobileAppIcons")]
+    public partial class MobileAppIcon : INotifyPropertyChanging, INotifyPropertyChanged
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-    #region Columns
-		
-		[Column(Name="id", UpdateCheck=UpdateCheck.Never, Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int Id
-		{
-			get { return this._Id; }
+        #region Private Fields
 
-			set
-			{
-				if (this._Id != value)
-				{
-				
-                    this.OnIdChanging(value);
-					this.SendPropertyChanging();
-					this._Id = value;
-					this.SendPropertyChanged("Id");
-					this.OnIdChanged();
-				}
+        private int _Id;
 
-			}
+        private int _SetID;
 
-		}
+        private int _ActionID;
 
-		
-		[Column(Name="setID", UpdateCheck=UpdateCheck.Never, Storage="_SetID", DbType="int NOT NULL")]
-		public int SetID
-		{
-			get { return this._SetID; }
+        private string _Url;
 
-			set
-			{
-				if (this._SetID != value)
-				{
-				
-                    this.OnSetIDChanging(value);
-					this.SendPropertyChanging();
-					this._SetID = value;
-					this.SendPropertyChanged("SetID");
-					this.OnSetIDChanged();
-				}
+        #endregion
 
-			}
+        #region Extensibility Method Definitions
 
-		}
+        partial void OnLoaded();
+        partial void OnValidate(System.Data.Linq.ChangeAction action);
+        partial void OnCreated();
 
-		
-		[Column(Name="actionID", UpdateCheck=UpdateCheck.Never, Storage="_ActionID", DbType="int NOT NULL")]
-		public int ActionID
-		{
-			get { return this._ActionID; }
+        partial void OnIdChanging(int value);
+        partial void OnIdChanged();
 
-			set
-			{
-				if (this._ActionID != value)
-				{
-				
-                    this.OnActionIDChanging(value);
-					this.SendPropertyChanging();
-					this._ActionID = value;
-					this.SendPropertyChanged("ActionID");
-					this.OnActionIDChanged();
-				}
+        partial void OnSetIDChanging(int value);
+        partial void OnSetIDChanged();
 
-			}
+        partial void OnActionIDChanging(int value);
+        partial void OnActionIDChanged();
 
-		}
+        partial void OnUrlChanging(string value);
+        partial void OnUrlChanged();
 
-		
-		[Column(Name="url", UpdateCheck=UpdateCheck.Never, Storage="_Url", DbType="nvarchar(200) NOT NULL")]
-		public string Url
-		{
-			get { return this._Url; }
+        #endregion
 
-			set
-			{
-				if (this._Url != value)
-				{
-				
-                    this.OnUrlChanging(value);
-					this.SendPropertyChanging();
-					this._Url = value;
-					this.SendPropertyChanged("Url");
-					this.OnUrlChanged();
-				}
+        public MobileAppIcon()
+        {
+            OnCreated();
+        }
 
-			}
+        #region Columns
 
-		}
+        [Column(Name = "id", UpdateCheck = UpdateCheck.Never, Storage = "_Id", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
+        public int Id
+        {
+            get => _Id;
 
-		
-    #endregion
-        
-    #region Foreign Key Tables
-   		
-	#endregion
-	
-	#region Foreign Keys
-    	
-	#endregion
-	
-		public event PropertyChangingEventHandler PropertyChanging;
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-				this.PropertyChanging(this, emptyChangingEventArgs);
-		}
+            set
+            {
+                if (_Id != value)
+                {
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
+                }
+            }
+        }
 
-		public event PropertyChangedEventHandler PropertyChanged;
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-		}
+        [Column(Name = "setID", UpdateCheck = UpdateCheck.Never, Storage = "_SetID", DbType = "int NOT NULL")]
+        public int SetID
+        {
+            get => _SetID;
 
-   		
-	}
+            set
+            {
+                if (_SetID != value)
+                {
+                    OnSetIDChanging(value);
+                    SendPropertyChanging();
+                    _SetID = value;
+                    SendPropertyChanged("SetID");
+                    OnSetIDChanged();
+                }
+            }
+        }
 
+        [Column(Name = "actionID", UpdateCheck = UpdateCheck.Never, Storage = "_ActionID", DbType = "int NOT NULL")]
+        public int ActionID
+        {
+            get => _ActionID;
+
+            set
+            {
+                if (_ActionID != value)
+                {
+                    OnActionIDChanging(value);
+                    SendPropertyChanging();
+                    _ActionID = value;
+                    SendPropertyChanged("ActionID");
+                    OnActionIDChanged();
+                }
+            }
+        }
+
+        [Column(Name = "url", UpdateCheck = UpdateCheck.Never, Storage = "_Url", DbType = "nvarchar(200) NOT NULL")]
+        public string Url
+        {
+            get => _Url;
+
+            set
+            {
+                if (_Url != value)
+                {
+                    OnUrlChanging(value);
+                    SendPropertyChanging();
+                    _Url = value;
+                    SendPropertyChanged("Url");
+                    OnUrlChanged();
+                }
+            }
+        }
+
+        #endregion
+
+        #region Foreign Key Tables
+
+        #endregion
+
+        #region Foreign Keys
+
+        #endregion
+
+        public event PropertyChangingEventHandler PropertyChanging;
+        protected virtual void SendPropertyChanging()
+        {
+            if ((PropertyChanging != null))
+            {
+                PropertyChanging(this, emptyChangingEventArgs);
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void SendPropertyChanged(string propertyName)
+        {
+            if ((PropertyChanged != null))
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
 }
-

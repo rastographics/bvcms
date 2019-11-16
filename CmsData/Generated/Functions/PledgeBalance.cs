@@ -1,123 +1,96 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="PledgeBalances")]
-	public partial class PledgeBalance
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private int? _CreditGiverId;
-		
-		private int? _SpouseId;
-		
-		private decimal? _PledgeAmt;
-		
-		private decimal? _GivenAmt;
-		
-		private decimal? _Balance;
-		
-		
-		public PledgeBalance()
-		{
-		}
+    [Table(Name = "PledgeBalances")]
+    public partial class PledgeBalance
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="CreditGiverId", Storage="_CreditGiverId", DbType="int")]
-		public int? CreditGiverId
-		{
-			get
-			{
-				return this._CreditGiverId;
-			}
+        private int? _CreditGiverId;
 
-			set
-			{
-				if (this._CreditGiverId != value)
-					this._CreditGiverId = value;
-			}
+        private int? _SpouseId;
 
-		}
+        private decimal? _PledgeAmt;
 
-		
-		[Column(Name="SpouseId", Storage="_SpouseId", DbType="int")]
-		public int? SpouseId
-		{
-			get
-			{
-				return this._SpouseId;
-			}
+        private decimal? _GivenAmt;
 
-			set
-			{
-				if (this._SpouseId != value)
-					this._SpouseId = value;
-			}
+        private decimal? _Balance;
 
-		}
+        public PledgeBalance()
+        {
+        }
 
-		
-		[Column(Name="PledgeAmt", Storage="_PledgeAmt", DbType="Decimal(38,2)")]
-		public decimal? PledgeAmt
-		{
-			get
-			{
-				return this._PledgeAmt;
-			}
+        [Column(Name = "CreditGiverId", Storage = "_CreditGiverId", DbType = "int")]
+        public int? CreditGiverId
+        {
+            get => _CreditGiverId;
 
-			set
-			{
-				if (this._PledgeAmt != value)
-					this._PledgeAmt = value;
-			}
+            set
+            {
+                if (_CreditGiverId != value)
+                {
+                    _CreditGiverId = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "SpouseId", Storage = "_SpouseId", DbType = "int")]
+        public int? SpouseId
+        {
+            get => _SpouseId;
 
-		
-		[Column(Name="GivenAmt", Storage="_GivenAmt", DbType="Decimal(38,2)")]
-		public decimal? GivenAmt
-		{
-			get
-			{
-				return this._GivenAmt;
-			}
+            set
+            {
+                if (_SpouseId != value)
+                {
+                    _SpouseId = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._GivenAmt != value)
-					this._GivenAmt = value;
-			}
+        [Column(Name = "PledgeAmt", Storage = "_PledgeAmt", DbType = "Decimal(38,2)")]
+        public decimal? PledgeAmt
+        {
+            get => _PledgeAmt;
 
-		}
+            set
+            {
+                if (_PledgeAmt != value)
+                {
+                    _PledgeAmt = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="Balance", Storage="_Balance", DbType="Decimal(38,2)")]
-		public decimal? Balance
-		{
-			get
-			{
-				return this._Balance;
-			}
+        [Column(Name = "GivenAmt", Storage = "_GivenAmt", DbType = "Decimal(38,2)")]
+        public decimal? GivenAmt
+        {
+            get => _GivenAmt;
 
-			set
-			{
-				if (this._Balance != value)
-					this._Balance = value;
-			}
+            set
+            {
+                if (_GivenAmt != value)
+                {
+                    _GivenAmt = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "Balance", Storage = "_Balance", DbType = "Decimal(38,2)")]
+        public decimal? Balance
+        {
+            get => _Balance;
 
-		
+            set
+            {
+                if (_Balance != value)
+                {
+                    _Balance = value;
+                }
+            }
+        }
     }
-
 }

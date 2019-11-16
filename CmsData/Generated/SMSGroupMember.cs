@@ -1,250 +1,226 @@
-using System; 
+using CmsData.Infrastructure;
+using System;
+using System.ComponentModel;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
-using System.ComponentModel;
-using CmsData.Infrastructure;
 
 namespace CmsData
 {
-	[Table(Name="dbo.SMSGroupMembers")]
-	public partial class SMSGroupMember : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-	#region Private Fields
-		
-		private int _Id;
-		
-		private int _GroupID;
-		
-		private int _UserID;
-		
-   		
-    	
-		private EntityRef<SMSGroup> _SMSGroup;
-		
-		private EntityRef<User> _User;
-		
-	#endregion
-	
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-		
-		partial void OnIdChanging(int value);
-		partial void OnIdChanged();
-		
-		partial void OnGroupIDChanging(int value);
-		partial void OnGroupIDChanged();
-		
-		partial void OnUserIDChanging(int value);
-		partial void OnUserIDChanged();
-		
-    #endregion
-		public SMSGroupMember()
-		{
-			
-			
-			this._SMSGroup = default(EntityRef<SMSGroup>); 
-			
-			this._User = default(EntityRef<User>); 
-			
-			OnCreated();
-		}
+    [Table(Name = "dbo.SMSGroupMembers")]
+    public partial class SMSGroupMember : INotifyPropertyChanging, INotifyPropertyChanged
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-    #region Columns
-		
-		[Column(Name="ID", UpdateCheck=UpdateCheck.Never, Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int Id
-		{
-			get { return this._Id; }
+        #region Private Fields
 
-			set
-			{
-				if (this._Id != value)
-				{
-				
-                    this.OnIdChanging(value);
-					this.SendPropertyChanging();
-					this._Id = value;
-					this.SendPropertyChanged("Id");
-					this.OnIdChanged();
-				}
+        private int _Id;
 
-			}
+        private int _GroupID;
 
-		}
+        private int _UserID;
 
-		
-		[Column(Name="GroupID", UpdateCheck=UpdateCheck.Never, Storage="_GroupID", DbType="int NOT NULL")]
-		[IsForeignKey]
-		public int GroupID
-		{
-			get { return this._GroupID; }
+        private EntityRef<SMSGroup> _SMSGroup;
 
-			set
-			{
-				if (this._GroupID != value)
-				{
-				
-					if (this._SMSGroup.HasLoadedOrAssignedValue)
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-				
-                    this.OnGroupIDChanging(value);
-					this.SendPropertyChanging();
-					this._GroupID = value;
-					this.SendPropertyChanged("GroupID");
-					this.OnGroupIDChanged();
-				}
+        private EntityRef<User> _User;
 
-			}
+        #endregion
 
-		}
+        #region Extensibility Method Definitions
 
-		
-		[Column(Name="UserID", UpdateCheck=UpdateCheck.Never, Storage="_UserID", DbType="int NOT NULL")]
-		[IsForeignKey]
-		public int UserID
-		{
-			get { return this._UserID; }
+        partial void OnLoaded();
+        partial void OnValidate(System.Data.Linq.ChangeAction action);
+        partial void OnCreated();
 
-			set
-			{
-				if (this._UserID != value)
-				{
-				
-					if (this._User.HasLoadedOrAssignedValue)
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-				
-                    this.OnUserIDChanging(value);
-					this.SendPropertyChanging();
-					this._UserID = value;
-					this.SendPropertyChanged("UserID");
-					this.OnUserIDChanged();
-				}
+        partial void OnIdChanging(int value);
+        partial void OnIdChanged();
 
-			}
+        partial void OnGroupIDChanging(int value);
+        partial void OnGroupIDChanged();
 
-		}
+        partial void OnUserIDChanging(int value);
+        partial void OnUserIDChanged();
 
-		
-    #endregion
-        
-    #region Foreign Key Tables
-   		
-	#endregion
-	
-	#region Foreign Keys
-    	
-		[Association(Name="FK_SMSGroupMembers_SMSGroups", Storage="_SMSGroup", ThisKey="GroupID", IsForeignKey=true)]
-		public SMSGroup SMSGroup
-		{
-			get { return this._SMSGroup.Entity; }
+        #endregion
 
-			set
-			{
-				SMSGroup previousValue = this._SMSGroup.Entity;
-				if (((previousValue != value) 
-							|| (this._SMSGroup.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if (previousValue != null)
-					{
-						this._SMSGroup.Entity = null;
-						previousValue.SMSGroupMembers.Remove(this);
-					}
+        public SMSGroupMember()
+        {
+            _SMSGroup = default(EntityRef<SMSGroup>);
 
-					this._SMSGroup.Entity = value;
-					if (value != null)
-					{
-						value.SMSGroupMembers.Add(this);
-						
-						this._GroupID = value.Id;
-						
-					}
+            _User = default(EntityRef<User>);
 
-					else
-					{
-						
-						this._GroupID = default(int);
-						
-					}
+            OnCreated();
+        }
 
-					this.SendPropertyChanged("SMSGroup");
-				}
+        #region Columns
 
-			}
+        [Column(Name = "ID", UpdateCheck = UpdateCheck.Never, Storage = "_Id", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
+        public int Id
+        {
+            get => _Id;
 
-		}
+            set
+            {
+                if (_Id != value)
+                {
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
+                }
+            }
+        }
 
-		
-		[Association(Name="FK_SMSGroupMembers_Users", Storage="_User", ThisKey="UserID", IsForeignKey=true)]
-		public User User
-		{
-			get { return this._User.Entity; }
+        [Column(Name = "GroupID", UpdateCheck = UpdateCheck.Never, Storage = "_GroupID", DbType = "int NOT NULL")]
+        [IsForeignKey]
+        public int GroupID
+        {
+            get => _GroupID;
 
-			set
-			{
-				User previousValue = this._User.Entity;
-				if (((previousValue != value) 
-							|| (this._User.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if (previousValue != null)
-					{
-						this._User.Entity = null;
-						previousValue.SMSGroupMembers.Remove(this);
-					}
+            set
+            {
+                if (_GroupID != value)
+                {
+                    if (_SMSGroup.HasLoadedOrAssignedValue)
+                    {
+                        throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+                    }
 
-					this._User.Entity = value;
-					if (value != null)
-					{
-						value.SMSGroupMembers.Add(this);
-						
-						this._UserID = value.UserId;
-						
-					}
+                    OnGroupIDChanging(value);
+                    SendPropertyChanging();
+                    _GroupID = value;
+                    SendPropertyChanged("GroupID");
+                    OnGroupIDChanged();
+                }
+            }
+        }
 
-					else
-					{
-						
-						this._UserID = default(int);
-						
-					}
+        [Column(Name = "UserID", UpdateCheck = UpdateCheck.Never, Storage = "_UserID", DbType = "int NOT NULL")]
+        [IsForeignKey]
+        public int UserID
+        {
+            get => _UserID;
 
-					this.SendPropertyChanged("User");
-				}
+            set
+            {
+                if (_UserID != value)
+                {
+                    if (_User.HasLoadedOrAssignedValue)
+                    {
+                        throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+                    }
 
-			}
+                    OnUserIDChanging(value);
+                    SendPropertyChanging();
+                    _UserID = value;
+                    SendPropertyChanged("UserID");
+                    OnUserIDChanged();
+                }
+            }
+        }
 
-		}
+        #endregion
 
-		
-	#endregion
-	
-		public event PropertyChangingEventHandler PropertyChanging;
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-				this.PropertyChanging(this, emptyChangingEventArgs);
-		}
+        #region Foreign Key Tables
 
-		public event PropertyChangedEventHandler PropertyChanged;
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-		}
+        #endregion
 
-   		
-	}
+        #region Foreign Keys
 
+        [Association(Name = "FK_SMSGroupMembers_SMSGroups", Storage = "_SMSGroup", ThisKey = "GroupID", IsForeignKey = true)]
+        public SMSGroup SMSGroup
+        {
+            get => _SMSGroup.Entity;
+
+            set
+            {
+                SMSGroup previousValue = _SMSGroup.Entity;
+                if (((previousValue != value)
+                            || (_SMSGroup.HasLoadedOrAssignedValue == false)))
+                {
+                    SendPropertyChanging();
+                    if (previousValue != null)
+                    {
+                        _SMSGroup.Entity = null;
+                        previousValue.SMSGroupMembers.Remove(this);
+                    }
+
+                    _SMSGroup.Entity = value;
+                    if (value != null)
+                    {
+                        value.SMSGroupMembers.Add(this);
+
+                        _GroupID = value.Id;
+
+                    }
+
+                    else
+                    {
+                        _GroupID = default(int);
+
+                    }
+
+                    SendPropertyChanged("SMSGroup");
+                }
+            }
+        }
+
+        [Association(Name = "FK_SMSGroupMembers_Users", Storage = "_User", ThisKey = "UserID", IsForeignKey = true)]
+        public User User
+        {
+            get => _User.Entity;
+
+            set
+            {
+                User previousValue = _User.Entity;
+                if (((previousValue != value)
+                            || (_User.HasLoadedOrAssignedValue == false)))
+                {
+                    SendPropertyChanging();
+                    if (previousValue != null)
+                    {
+                        _User.Entity = null;
+                        previousValue.SMSGroupMembers.Remove(this);
+                    }
+
+                    _User.Entity = value;
+                    if (value != null)
+                    {
+                        value.SMSGroupMembers.Add(this);
+
+                        _UserID = value.UserId;
+
+                    }
+
+                    else
+                    {
+                        _UserID = default(int);
+
+                    }
+
+                    SendPropertyChanged("User");
+                }
+            }
+        }
+
+        #endregion
+
+        public event PropertyChangingEventHandler PropertyChanging;
+        protected virtual void SendPropertyChanging()
+        {
+            if ((PropertyChanging != null))
+            {
+                PropertyChanging(this, emptyChangingEventArgs);
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void SendPropertyChanged(string propertyName)
+        {
+            if ((PropertyChanged != null))
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
 }
-

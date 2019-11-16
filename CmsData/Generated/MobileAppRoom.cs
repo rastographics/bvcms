@@ -1,258 +1,220 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
-using CmsData.Infrastructure;
+using System.Data.Linq.Mapping;
 
 namespace CmsData
 {
-	[Table(Name="dbo.MobileAppRoom")]
-	public partial class MobileAppRoom : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-	#region Private Fields
-		
-		private int _Id;
-		
-		private int _Floor;
-		
-		private string _Name;
-		
-		private string _Room;
-		
-		private int _X;
-		
-		private int _Y;
-		
-		private bool _Enabled;
-		
-   		
-    	
-	#endregion
-	
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-		
-		partial void OnIdChanging(int value);
-		partial void OnIdChanged();
-		
-		partial void OnFloorChanging(int value);
-		partial void OnFloorChanged();
-		
-		partial void OnNameChanging(string value);
-		partial void OnNameChanged();
-		
-		partial void OnRoomChanging(string value);
-		partial void OnRoomChanged();
-		
-		partial void OnXChanging(int value);
-		partial void OnXChanged();
-		
-		partial void OnYChanging(int value);
-		partial void OnYChanged();
-		
-		partial void OnEnabledChanging(bool value);
-		partial void OnEnabledChanged();
-		
-    #endregion
-		public MobileAppRoom()
-		{
-			
-			
-			OnCreated();
-		}
+    [Table(Name = "dbo.MobileAppRoom")]
+    public partial class MobileAppRoom : INotifyPropertyChanging, INotifyPropertyChanged
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-    #region Columns
-		
-		[Column(Name="id", UpdateCheck=UpdateCheck.Never, Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int Id
-		{
-			get { return this._Id; }
+        #region Private Fields
 
-			set
-			{
-				if (this._Id != value)
-				{
-				
-                    this.OnIdChanging(value);
-					this.SendPropertyChanging();
-					this._Id = value;
-					this.SendPropertyChanged("Id");
-					this.OnIdChanged();
-				}
+        private int _Id;
 
-			}
+        private int _Floor;
 
-		}
+        private string _Name;
 
-		
-		[Column(Name="floor", UpdateCheck=UpdateCheck.Never, Storage="_Floor", DbType="int NOT NULL")]
-		public int Floor
-		{
-			get { return this._Floor; }
+        private string _Room;
 
-			set
-			{
-				if (this._Floor != value)
-				{
-				
-                    this.OnFloorChanging(value);
-					this.SendPropertyChanging();
-					this._Floor = value;
-					this.SendPropertyChanged("Floor");
-					this.OnFloorChanged();
-				}
+        private int _X;
 
-			}
+        private int _Y;
 
-		}
+        private bool _Enabled;
 
-		
-		[Column(Name="name", UpdateCheck=UpdateCheck.Never, Storage="_Name", DbType="nvarchar(100) NOT NULL")]
-		public string Name
-		{
-			get { return this._Name; }
+        #endregion
 
-			set
-			{
-				if (this._Name != value)
-				{
-				
-                    this.OnNameChanging(value);
-					this.SendPropertyChanging();
-					this._Name = value;
-					this.SendPropertyChanged("Name");
-					this.OnNameChanged();
-				}
+        #region Extensibility Method Definitions
 
-			}
+        partial void OnLoaded();
+        partial void OnValidate(System.Data.Linq.ChangeAction action);
+        partial void OnCreated();
 
-		}
+        partial void OnIdChanging(int value);
+        partial void OnIdChanged();
 
-		
-		[Column(Name="room", UpdateCheck=UpdateCheck.Never, Storage="_Room", DbType="nvarchar(50) NOT NULL")]
-		public string Room
-		{
-			get { return this._Room; }
+        partial void OnFloorChanging(int value);
+        partial void OnFloorChanged();
 
-			set
-			{
-				if (this._Room != value)
-				{
-				
-                    this.OnRoomChanging(value);
-					this.SendPropertyChanging();
-					this._Room = value;
-					this.SendPropertyChanged("Room");
-					this.OnRoomChanged();
-				}
+        partial void OnNameChanging(string value);
+        partial void OnNameChanged();
 
-			}
+        partial void OnRoomChanging(string value);
+        partial void OnRoomChanged();
 
-		}
+        partial void OnXChanging(int value);
+        partial void OnXChanged();
 
-		
-		[Column(Name="x", UpdateCheck=UpdateCheck.Never, Storage="_X", DbType="int NOT NULL")]
-		public int X
-		{
-			get { return this._X; }
+        partial void OnYChanging(int value);
+        partial void OnYChanged();
 
-			set
-			{
-				if (this._X != value)
-				{
-				
-                    this.OnXChanging(value);
-					this.SendPropertyChanging();
-					this._X = value;
-					this.SendPropertyChanged("X");
-					this.OnXChanged();
-				}
+        partial void OnEnabledChanging(bool value);
+        partial void OnEnabledChanged();
 
-			}
+        #endregion
 
-		}
+        public MobileAppRoom()
+        {
+            OnCreated();
+        }
 
-		
-		[Column(Name="y", UpdateCheck=UpdateCheck.Never, Storage="_Y", DbType="int NOT NULL")]
-		public int Y
-		{
-			get { return this._Y; }
+        #region Columns
 
-			set
-			{
-				if (this._Y != value)
-				{
-				
-                    this.OnYChanging(value);
-					this.SendPropertyChanging();
-					this._Y = value;
-					this.SendPropertyChanged("Y");
-					this.OnYChanged();
-				}
+        [Column(Name = "id", UpdateCheck = UpdateCheck.Never, Storage = "_Id", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
+        public int Id
+        {
+            get => _Id;
 
-			}
+            set
+            {
+                if (_Id != value)
+                {
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
+                }
+            }
+        }
 
-		}
+        [Column(Name = "floor", UpdateCheck = UpdateCheck.Never, Storage = "_Floor", DbType = "int NOT NULL")]
+        public int Floor
+        {
+            get => _Floor;
 
-		
-		[Column(Name="enabled", UpdateCheck=UpdateCheck.Never, Storage="_Enabled", DbType="bit NOT NULL")]
-		public bool Enabled
-		{
-			get { return this._Enabled; }
+            set
+            {
+                if (_Floor != value)
+                {
+                    OnFloorChanging(value);
+                    SendPropertyChanging();
+                    _Floor = value;
+                    SendPropertyChanged("Floor");
+                    OnFloorChanged();
+                }
+            }
+        }
 
-			set
-			{
-				if (this._Enabled != value)
-				{
-				
-                    this.OnEnabledChanging(value);
-					this.SendPropertyChanging();
-					this._Enabled = value;
-					this.SendPropertyChanged("Enabled");
-					this.OnEnabledChanged();
-				}
+        [Column(Name = "name", UpdateCheck = UpdateCheck.Never, Storage = "_Name", DbType = "nvarchar(100) NOT NULL")]
+        public string Name
+        {
+            get => _Name;
 
-			}
+            set
+            {
+                if (_Name != value)
+                {
+                    OnNameChanging(value);
+                    SendPropertyChanging();
+                    _Name = value;
+                    SendPropertyChanged("Name");
+                    OnNameChanged();
+                }
+            }
+        }
 
-		}
+        [Column(Name = "room", UpdateCheck = UpdateCheck.Never, Storage = "_Room", DbType = "nvarchar(50) NOT NULL")]
+        public string Room
+        {
+            get => _Room;
 
-		
-    #endregion
-        
-    #region Foreign Key Tables
-   		
-	#endregion
-	
-	#region Foreign Keys
-    	
-	#endregion
-	
-		public event PropertyChangingEventHandler PropertyChanging;
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-				this.PropertyChanging(this, emptyChangingEventArgs);
-		}
+            set
+            {
+                if (_Room != value)
+                {
+                    OnRoomChanging(value);
+                    SendPropertyChanging();
+                    _Room = value;
+                    SendPropertyChanged("Room");
+                    OnRoomChanged();
+                }
+            }
+        }
 
-		public event PropertyChangedEventHandler PropertyChanged;
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-		}
+        [Column(Name = "x", UpdateCheck = UpdateCheck.Never, Storage = "_X", DbType = "int NOT NULL")]
+        public int X
+        {
+            get => _X;
 
-   		
-	}
+            set
+            {
+                if (_X != value)
+                {
+                    OnXChanging(value);
+                    SendPropertyChanging();
+                    _X = value;
+                    SendPropertyChanged("X");
+                    OnXChanged();
+                }
+            }
+        }
 
+        [Column(Name = "y", UpdateCheck = UpdateCheck.Never, Storage = "_Y", DbType = "int NOT NULL")]
+        public int Y
+        {
+            get => _Y;
+
+            set
+            {
+                if (_Y != value)
+                {
+                    OnYChanging(value);
+                    SendPropertyChanging();
+                    _Y = value;
+                    SendPropertyChanged("Y");
+                    OnYChanged();
+                }
+            }
+        }
+
+        [Column(Name = "enabled", UpdateCheck = UpdateCheck.Never, Storage = "_Enabled", DbType = "bit NOT NULL")]
+        public bool Enabled
+        {
+            get => _Enabled;
+
+            set
+            {
+                if (_Enabled != value)
+                {
+                    OnEnabledChanging(value);
+                    SendPropertyChanging();
+                    _Enabled = value;
+                    SendPropertyChanged("Enabled");
+                    OnEnabledChanged();
+                }
+            }
+        }
+
+        #endregion
+
+        #region Foreign Key Tables
+
+        #endregion
+
+        #region Foreign Keys
+
+        #endregion
+
+        public event PropertyChangingEventHandler PropertyChanging;
+        protected virtual void SendPropertyChanging()
+        {
+            if ((PropertyChanging != null))
+            {
+                PropertyChanging(this, emptyChangingEventArgs);
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void SendPropertyChanged(string propertyName)
+        {
+            if ((PropertyChanged != null))
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
 }
-

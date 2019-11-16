@@ -1,223 +1,203 @@
-using System; 
+using CmsData.Infrastructure;
+using System;
+using System.ComponentModel;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
-using System.ComponentModel;
-using CmsData.Infrastructure;
 
 namespace CmsData
 {
-	[Table(Name="dbo.ResourceOrganization")]
-	public partial class ResourceOrganization : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-	#region Private Fields
-		
-		private int _ResourceId;
-		
-		private int _OrganizationId;
-		
-   		
-    	
-		private EntityRef<Organization> _Organization;
-		
-		private EntityRef<Resource> _Resource;
-		
-	#endregion
-	
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-		
-		partial void OnResourceIdChanging(int value);
-		partial void OnResourceIdChanged();
-		
-		partial void OnOrganizationIdChanging(int value);
-		partial void OnOrganizationIdChanged();
-		
-    #endregion
-		public ResourceOrganization()
-		{
-			
-			
-			this._Organization = default(EntityRef<Organization>); 
-			
-			this._Resource = default(EntityRef<Resource>); 
-			
-			OnCreated();
-		}
+    [Table(Name = "dbo.ResourceOrganization")]
+    public partial class ResourceOrganization : INotifyPropertyChanging, INotifyPropertyChanged
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-    #region Columns
-		
-		[Column(Name="ResourceId", UpdateCheck=UpdateCheck.Never, Storage="_ResourceId", DbType="int NOT NULL", IsPrimaryKey=true)]
-		[IsForeignKey]
-		public int ResourceId
-		{
-			get { return this._ResourceId; }
+        #region Private Fields
 
-			set
-			{
-				if (this._ResourceId != value)
-				{
-				
-					if (this._Resource.HasLoadedOrAssignedValue)
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-				
-                    this.OnResourceIdChanging(value);
-					this.SendPropertyChanging();
-					this._ResourceId = value;
-					this.SendPropertyChanged("ResourceId");
-					this.OnResourceIdChanged();
-				}
+        private int _ResourceId;
 
-			}
+        private int _OrganizationId;
 
-		}
+        private EntityRef<Organization> _Organization;
 
-		
-		[Column(Name="OrganizationId", UpdateCheck=UpdateCheck.Never, Storage="_OrganizationId", DbType="int NOT NULL", IsPrimaryKey=true)]
-		[IsForeignKey]
-		public int OrganizationId
-		{
-			get { return this._OrganizationId; }
+        private EntityRef<Resource> _Resource;
 
-			set
-			{
-				if (this._OrganizationId != value)
-				{
-				
-					if (this._Organization.HasLoadedOrAssignedValue)
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-				
-                    this.OnOrganizationIdChanging(value);
-					this.SendPropertyChanging();
-					this._OrganizationId = value;
-					this.SendPropertyChanged("OrganizationId");
-					this.OnOrganizationIdChanged();
-				}
+        #endregion
 
-			}
+        #region Extensibility Method Definitions
 
-		}
+        partial void OnLoaded();
+        partial void OnValidate(System.Data.Linq.ChangeAction action);
+        partial void OnCreated();
 
-		
-    #endregion
-        
-    #region Foreign Key Tables
-   		
-	#endregion
-	
-	#region Foreign Keys
-    	
-		[Association(Name="FK_ResourceOrganization_Organizations", Storage="_Organization", ThisKey="OrganizationId", IsForeignKey=true)]
-		public Organization Organization
-		{
-			get { return this._Organization.Entity; }
+        partial void OnResourceIdChanging(int value);
+        partial void OnResourceIdChanged();
 
-			set
-			{
-				Organization previousValue = this._Organization.Entity;
-				if (((previousValue != value) 
-							|| (this._Organization.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if (previousValue != null)
-					{
-						this._Organization.Entity = null;
-						previousValue.ResourceOrganizations.Remove(this);
-					}
+        partial void OnOrganizationIdChanging(int value);
+        partial void OnOrganizationIdChanged();
 
-					this._Organization.Entity = value;
-					if (value != null)
-					{
-						value.ResourceOrganizations.Add(this);
-						
-						this._OrganizationId = value.OrganizationId;
-						
-					}
+        #endregion
 
-					else
-					{
-						
-						this._OrganizationId = default(int);
-						
-					}
+        public ResourceOrganization()
+        {
+            _Organization = default(EntityRef<Organization>);
 
-					this.SendPropertyChanged("Organization");
-				}
+            _Resource = default(EntityRef<Resource>);
 
-			}
+            OnCreated();
+        }
 
-		}
+        #region Columns
 
-		
-		[Association(Name="FK_ResourceOrganization_Resource", Storage="_Resource", ThisKey="ResourceId", IsForeignKey=true)]
-		public Resource Resource
-		{
-			get { return this._Resource.Entity; }
+        [Column(Name = "ResourceId", UpdateCheck = UpdateCheck.Never, Storage = "_ResourceId", DbType = "int NOT NULL", IsPrimaryKey = true)]
+        [IsForeignKey]
+        public int ResourceId
+        {
+            get => _ResourceId;
 
-			set
-			{
-				Resource previousValue = this._Resource.Entity;
-				if (((previousValue != value) 
-							|| (this._Resource.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if (previousValue != null)
-					{
-						this._Resource.Entity = null;
-						previousValue.ResourceOrganizations.Remove(this);
-					}
+            set
+            {
+                if (_ResourceId != value)
+                {
+                    if (_Resource.HasLoadedOrAssignedValue)
+                    {
+                        throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+                    }
 
-					this._Resource.Entity = value;
-					if (value != null)
-					{
-						value.ResourceOrganizations.Add(this);
-						
-						this._ResourceId = value.ResourceId;
-						
-					}
+                    OnResourceIdChanging(value);
+                    SendPropertyChanging();
+                    _ResourceId = value;
+                    SendPropertyChanged("ResourceId");
+                    OnResourceIdChanged();
+                }
+            }
+        }
 
-					else
-					{
-						
-						this._ResourceId = default(int);
-						
-					}
+        [Column(Name = "OrganizationId", UpdateCheck = UpdateCheck.Never, Storage = "_OrganizationId", DbType = "int NOT NULL", IsPrimaryKey = true)]
+        [IsForeignKey]
+        public int OrganizationId
+        {
+            get => _OrganizationId;
 
-					this.SendPropertyChanged("Resource");
-				}
+            set
+            {
+                if (_OrganizationId != value)
+                {
+                    if (_Organization.HasLoadedOrAssignedValue)
+                    {
+                        throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+                    }
 
-			}
+                    OnOrganizationIdChanging(value);
+                    SendPropertyChanging();
+                    _OrganizationId = value;
+                    SendPropertyChanged("OrganizationId");
+                    OnOrganizationIdChanged();
+                }
+            }
+        }
 
-		}
+        #endregion
 
-		
-	#endregion
-	
-		public event PropertyChangingEventHandler PropertyChanging;
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-				this.PropertyChanging(this, emptyChangingEventArgs);
-		}
+        #region Foreign Key Tables
 
-		public event PropertyChangedEventHandler PropertyChanged;
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-		}
+        #endregion
 
-   		
-	}
+        #region Foreign Keys
 
+        [Association(Name = "FK_ResourceOrganization_Organizations", Storage = "_Organization", ThisKey = "OrganizationId", IsForeignKey = true)]
+        public Organization Organization
+        {
+            get => _Organization.Entity;
+
+            set
+            {
+                Organization previousValue = _Organization.Entity;
+                if (((previousValue != value)
+                            || (_Organization.HasLoadedOrAssignedValue == false)))
+                {
+                    SendPropertyChanging();
+                    if (previousValue != null)
+                    {
+                        _Organization.Entity = null;
+                        previousValue.ResourceOrganizations.Remove(this);
+                    }
+
+                    _Organization.Entity = value;
+                    if (value != null)
+                    {
+                        value.ResourceOrganizations.Add(this);
+
+                        _OrganizationId = value.OrganizationId;
+
+                    }
+
+                    else
+                    {
+                        _OrganizationId = default(int);
+
+                    }
+
+                    SendPropertyChanged("Organization");
+                }
+            }
+        }
+
+        [Association(Name = "FK_ResourceOrganization_Resource", Storage = "_Resource", ThisKey = "ResourceId", IsForeignKey = true)]
+        public Resource Resource
+        {
+            get => _Resource.Entity;
+
+            set
+            {
+                Resource previousValue = _Resource.Entity;
+                if (((previousValue != value)
+                            || (_Resource.HasLoadedOrAssignedValue == false)))
+                {
+                    SendPropertyChanging();
+                    if (previousValue != null)
+                    {
+                        _Resource.Entity = null;
+                        previousValue.ResourceOrganizations.Remove(this);
+                    }
+
+                    _Resource.Entity = value;
+                    if (value != null)
+                    {
+                        value.ResourceOrganizations.Add(this);
+
+                        _ResourceId = value.ResourceId;
+
+                    }
+
+                    else
+                    {
+                        _ResourceId = default(int);
+
+                    }
+
+                    SendPropertyChanged("Resource");
+                }
+            }
+        }
+
+        #endregion
+
+        public event PropertyChangingEventHandler PropertyChanging;
+        protected virtual void SendPropertyChanging()
+        {
+            if ((PropertyChanging != null))
+            {
+                PropertyChanging(this, emptyChangingEventArgs);
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void SendPropertyChanged(string propertyName)
+        {
+            if ((PropertyChanged != null))
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
 }
-

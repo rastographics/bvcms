@@ -1,275 +1,224 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="RecentAbsents")]
-	public partial class RecentAbsent
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private int _OrganizationId;
-		
-		private string _OrganizationName;
-		
-		private string _LeaderName;
-		
-		private int? _Consecutive;
-		
-		private int _PeopleId;
-		
-		private string _Name2;
-		
-		private string _HomePhone;
-		
-		private string _CellPhone;
-		
-		private string _EmailAddress;
-		
-		private DateTime? _LastAttend;
-		
-		private DateTime? _LastMeeting;
-		
-		private int _MeetingId;
-		
-		private int? _ConsecutiveAbsentsThreshold;
-		
-		
-		public RecentAbsent()
-		{
-		}
+    [Table(Name = "RecentAbsents")]
+    public partial class RecentAbsent
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="OrganizationId", Storage="_OrganizationId", DbType="int NOT NULL")]
-		public int OrganizationId
-		{
-			get
-			{
-				return this._OrganizationId;
-			}
+        private int _OrganizationId;
 
-			set
-			{
-				if (this._OrganizationId != value)
-					this._OrganizationId = value;
-			}
+        private string _OrganizationName;
 
-		}
+        private string _LeaderName;
 
-		
-		[Column(Name="OrganizationName", Storage="_OrganizationName", DbType="nvarchar(100) NOT NULL")]
-		public string OrganizationName
-		{
-			get
-			{
-				return this._OrganizationName;
-			}
+        private int? _Consecutive;
 
-			set
-			{
-				if (this._OrganizationName != value)
-					this._OrganizationName = value;
-			}
+        private int _PeopleId;
 
-		}
+        private string _Name2;
 
-		
-		[Column(Name="LeaderName", Storage="_LeaderName", DbType="nvarchar(50)")]
-		public string LeaderName
-		{
-			get
-			{
-				return this._LeaderName;
-			}
+        private string _HomePhone;
 
-			set
-			{
-				if (this._LeaderName != value)
-					this._LeaderName = value;
-			}
+        private string _CellPhone;
 
-		}
+        private string _EmailAddress;
 
-		
-		[Column(Name="consecutive", Storage="_Consecutive", DbType="int")]
-		public int? Consecutive
-		{
-			get
-			{
-				return this._Consecutive;
-			}
+        private DateTime? _LastAttend;
 
-			set
-			{
-				if (this._Consecutive != value)
-					this._Consecutive = value;
-			}
+        private DateTime? _LastMeeting;
 
-		}
+        private int _MeetingId;
 
-		
-		[Column(Name="PeopleId", Storage="_PeopleId", DbType="int NOT NULL")]
-		public int PeopleId
-		{
-			get
-			{
-				return this._PeopleId;
-			}
+        private int? _ConsecutiveAbsentsThreshold;
 
-			set
-			{
-				if (this._PeopleId != value)
-					this._PeopleId = value;
-			}
+        public RecentAbsent()
+        {
+        }
 
-		}
+        [Column(Name = "OrganizationId", Storage = "_OrganizationId", DbType = "int NOT NULL")]
+        public int OrganizationId
+        {
+            get => _OrganizationId;
 
-		
-		[Column(Name="Name2", Storage="_Name2", DbType="nvarchar(139)")]
-		public string Name2
-		{
-			get
-			{
-				return this._Name2;
-			}
+            set
+            {
+                if (_OrganizationId != value)
+                {
+                    _OrganizationId = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._Name2 != value)
-					this._Name2 = value;
-			}
+        [Column(Name = "OrganizationName", Storage = "_OrganizationName", DbType = "nvarchar(100) NOT NULL")]
+        public string OrganizationName
+        {
+            get => _OrganizationName;
 
-		}
+            set
+            {
+                if (_OrganizationName != value)
+                {
+                    _OrganizationName = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="HomePhone", Storage="_HomePhone", DbType="nvarchar(20)")]
-		public string HomePhone
-		{
-			get
-			{
-				return this._HomePhone;
-			}
+        [Column(Name = "LeaderName", Storage = "_LeaderName", DbType = "nvarchar(50)")]
+        public string LeaderName
+        {
+            get => _LeaderName;
 
-			set
-			{
-				if (this._HomePhone != value)
-					this._HomePhone = value;
-			}
+            set
+            {
+                if (_LeaderName != value)
+                {
+                    _LeaderName = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "consecutive", Storage = "_Consecutive", DbType = "int")]
+        public int? Consecutive
+        {
+            get => _Consecutive;
 
-		
-		[Column(Name="CellPhone", Storage="_CellPhone", DbType="nvarchar(20)")]
-		public string CellPhone
-		{
-			get
-			{
-				return this._CellPhone;
-			}
+            set
+            {
+                if (_Consecutive != value)
+                {
+                    _Consecutive = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._CellPhone != value)
-					this._CellPhone = value;
-			}
+        [Column(Name = "PeopleId", Storage = "_PeopleId", DbType = "int NOT NULL")]
+        public int PeopleId
+        {
+            get => _PeopleId;
 
-		}
+            set
+            {
+                if (_PeopleId != value)
+                {
+                    _PeopleId = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="EmailAddress", Storage="_EmailAddress", DbType="nvarchar(150)")]
-		public string EmailAddress
-		{
-			get
-			{
-				return this._EmailAddress;
-			}
+        [Column(Name = "Name2", Storage = "_Name2", DbType = "nvarchar(139)")]
+        public string Name2
+        {
+            get => _Name2;
 
-			set
-			{
-				if (this._EmailAddress != value)
-					this._EmailAddress = value;
-			}
+            set
+            {
+                if (_Name2 != value)
+                {
+                    _Name2 = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "HomePhone", Storage = "_HomePhone", DbType = "nvarchar(20)")]
+        public string HomePhone
+        {
+            get => _HomePhone;
 
-		
-		[Column(Name="LastAttend", Storage="_LastAttend", DbType="datetime")]
-		public DateTime? LastAttend
-		{
-			get
-			{
-				return this._LastAttend;
-			}
+            set
+            {
+                if (_HomePhone != value)
+                {
+                    _HomePhone = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._LastAttend != value)
-					this._LastAttend = value;
-			}
+        [Column(Name = "CellPhone", Storage = "_CellPhone", DbType = "nvarchar(20)")]
+        public string CellPhone
+        {
+            get => _CellPhone;
 
-		}
+            set
+            {
+                if (_CellPhone != value)
+                {
+                    _CellPhone = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="LastMeeting", Storage="_LastMeeting", DbType="datetime")]
-		public DateTime? LastMeeting
-		{
-			get
-			{
-				return this._LastMeeting;
-			}
+        [Column(Name = "EmailAddress", Storage = "_EmailAddress", DbType = "nvarchar(150)")]
+        public string EmailAddress
+        {
+            get => _EmailAddress;
 
-			set
-			{
-				if (this._LastMeeting != value)
-					this._LastMeeting = value;
-			}
+            set
+            {
+                if (_EmailAddress != value)
+                {
+                    _EmailAddress = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "LastAttend", Storage = "_LastAttend", DbType = "datetime")]
+        public DateTime? LastAttend
+        {
+            get => _LastAttend;
 
-		
-		[Column(Name="MeetingId", Storage="_MeetingId", DbType="int NOT NULL")]
-		public int MeetingId
-		{
-			get
-			{
-				return this._MeetingId;
-			}
+            set
+            {
+                if (_LastAttend != value)
+                {
+                    _LastAttend = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._MeetingId != value)
-					this._MeetingId = value;
-			}
+        [Column(Name = "LastMeeting", Storage = "_LastMeeting", DbType = "datetime")]
+        public DateTime? LastMeeting
+        {
+            get => _LastMeeting;
 
-		}
+            set
+            {
+                if (_LastMeeting != value)
+                {
+                    _LastMeeting = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="ConsecutiveAbsentsThreshold", Storage="_ConsecutiveAbsentsThreshold", DbType="int")]
-		public int? ConsecutiveAbsentsThreshold
-		{
-			get
-			{
-				return this._ConsecutiveAbsentsThreshold;
-			}
+        [Column(Name = "MeetingId", Storage = "_MeetingId", DbType = "int NOT NULL")]
+        public int MeetingId
+        {
+            get => _MeetingId;
 
-			set
-			{
-				if (this._ConsecutiveAbsentsThreshold != value)
-					this._ConsecutiveAbsentsThreshold = value;
-			}
+            set
+            {
+                if (_MeetingId != value)
+                {
+                    _MeetingId = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "ConsecutiveAbsentsThreshold", Storage = "_ConsecutiveAbsentsThreshold", DbType = "int")]
+        public int? ConsecutiveAbsentsThreshold
+        {
+            get => _ConsecutiveAbsentsThreshold;
 
-		
+            set
+            {
+                if (_ConsecutiveAbsentsThreshold != value)
+                {
+                    _ConsecutiveAbsentsThreshold = value;
+                }
+            }
+        }
     }
-
 }

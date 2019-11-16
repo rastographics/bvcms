@@ -1,199 +1,160 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="AppRegistrations")]
-	public partial class AppRegistration
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private int _OrganizationId;
-		
-		private string _Title;
-		
-		private string _OrganizationName;
-		
-		private string _Description;
-		
-		private string _AppCategory;
-		
-		private string _PublicSortOrder;
-		
-		private bool? _UseRegisterLink2;
-		
-		private DateTime? _RegStart;
-		
-		private DateTime? _RegEnd;
-		
-		
-		public AppRegistration()
-		{
-		}
+    [Table(Name = "AppRegistrations")]
+    public partial class AppRegistration
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="OrganizationId", Storage="_OrganizationId", DbType="int NOT NULL")]
-		public int OrganizationId
-		{
-			get
-			{
-				return this._OrganizationId;
-			}
+        private int _OrganizationId;
 
-			set
-			{
-				if (this._OrganizationId != value)
-					this._OrganizationId = value;
-			}
+        private string _Title;
 
-		}
+        private string _OrganizationName;
 
-		
-		[Column(Name="Title", Storage="_Title", DbType="nvarchar(200)")]
-		public string Title
-		{
-			get
-			{
-				return this._Title;
-			}
+        private string _Description;
 
-			set
-			{
-				if (this._Title != value)
-					this._Title = value;
-			}
+        private string _AppCategory;
 
-		}
+        private string _PublicSortOrder;
 
-		
-		[Column(Name="OrganizationName", Storage="_OrganizationName", DbType="nvarchar(100) NOT NULL")]
-		public string OrganizationName
-		{
-			get
-			{
-				return this._OrganizationName;
-			}
+        private bool? _UseRegisterLink2;
 
-			set
-			{
-				if (this._OrganizationName != value)
-					this._OrganizationName = value;
-			}
+        private DateTime? _RegStart;
 
-		}
+        private DateTime? _RegEnd;
 
-		
-		[Column(Name="Description", Storage="_Description", DbType="nvarchar")]
-		public string Description
-		{
-			get
-			{
-				return this._Description;
-			}
+        public AppRegistration()
+        {
+        }
 
-			set
-			{
-				if (this._Description != value)
-					this._Description = value;
-			}
+        [Column(Name = "OrganizationId", Storage = "_OrganizationId", DbType = "int NOT NULL")]
+        public int OrganizationId
+        {
+            get => _OrganizationId;
 
-		}
+            set
+            {
+                if (_OrganizationId != value)
+                {
+                    _OrganizationId = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="AppCategory", Storage="_AppCategory", DbType="varchar(15)")]
-		public string AppCategory
-		{
-			get
-			{
-				return this._AppCategory;
-			}
+        [Column(Name = "Title", Storage = "_Title", DbType = "nvarchar(200)")]
+        public string Title
+        {
+            get => _Title;
 
-			set
-			{
-				if (this._AppCategory != value)
-					this._AppCategory = value;
-			}
+            set
+            {
+                if (_Title != value)
+                {
+                    _Title = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "OrganizationName", Storage = "_OrganizationName", DbType = "nvarchar(100) NOT NULL")]
+        public string OrganizationName
+        {
+            get => _OrganizationName;
 
-		
-		[Column(Name="PublicSortOrder", Storage="_PublicSortOrder", DbType="varchar(15)")]
-		public string PublicSortOrder
-		{
-			get
-			{
-				return this._PublicSortOrder;
-			}
+            set
+            {
+                if (_OrganizationName != value)
+                {
+                    _OrganizationName = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._PublicSortOrder != value)
-					this._PublicSortOrder = value;
-			}
+        [Column(Name = "Description", Storage = "_Description", DbType = "nvarchar")]
+        public string Description
+        {
+            get => _Description;
 
-		}
+            set
+            {
+                if (_Description != value)
+                {
+                    _Description = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="UseRegisterLink2", Storage="_UseRegisterLink2", DbType="bit")]
-		public bool? UseRegisterLink2
-		{
-			get
-			{
-				return this._UseRegisterLink2;
-			}
+        [Column(Name = "AppCategory", Storage = "_AppCategory", DbType = "varchar(15)")]
+        public string AppCategory
+        {
+            get => _AppCategory;
 
-			set
-			{
-				if (this._UseRegisterLink2 != value)
-					this._UseRegisterLink2 = value;
-			}
+            set
+            {
+                if (_AppCategory != value)
+                {
+                    _AppCategory = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "PublicSortOrder", Storage = "_PublicSortOrder", DbType = "varchar(15)")]
+        public string PublicSortOrder
+        {
+            get => _PublicSortOrder;
 
-		
-		[Column(Name="RegStart", Storage="_RegStart", DbType="datetime")]
-		public DateTime? RegStart
-		{
-			get
-			{
-				return this._RegStart;
-			}
+            set
+            {
+                if (_PublicSortOrder != value)
+                {
+                    _PublicSortOrder = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._RegStart != value)
-					this._RegStart = value;
-			}
+        [Column(Name = "UseRegisterLink2", Storage = "_UseRegisterLink2", DbType = "bit")]
+        public bool? UseRegisterLink2
+        {
+            get => _UseRegisterLink2;
 
-		}
+            set
+            {
+                if (_UseRegisterLink2 != value)
+                {
+                    _UseRegisterLink2 = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="RegEnd", Storage="_RegEnd", DbType="datetime")]
-		public DateTime? RegEnd
-		{
-			get
-			{
-				return this._RegEnd;
-			}
+        [Column(Name = "RegStart", Storage = "_RegStart", DbType = "datetime")]
+        public DateTime? RegStart
+        {
+            get => _RegStart;
 
-			set
-			{
-				if (this._RegEnd != value)
-					this._RegEnd = value;
-			}
+            set
+            {
+                if (_RegStart != value)
+                {
+                    _RegStart = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "RegEnd", Storage = "_RegEnd", DbType = "datetime")]
+        public DateTime? RegEnd
+        {
+            get => _RegEnd;
 
-		
+            set
+            {
+                if (_RegEnd != value)
+                {
+                    _RegEnd = value;
+                }
+            }
+        }
     }
-
 }

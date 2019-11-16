@@ -1,258 +1,227 @@
-using System; 
+using System;
+using System.ComponentModel;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
-using System.ComponentModel;
-using CmsData.Infrastructure;
 
 namespace CmsData
 {
-	[Table(Name="lookup.OrganizationType")]
-	public partial class OrganizationType : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-	#region Private Fields
-		
-		private int _Id;
-		
-		private string _Code;
-		
-		private string _Description;
-		
-		private bool? _Hardwired;
-		
-   		
-   		private EntitySet<Organization> _Organizations;
-		
-   		private EntitySet<Resource> _Resources;
-		
-   		private EntitySet<ResourceOrganizationType> _ResourceOrganizationTypes;
-		
-    	
-	#endregion
-	
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-		
-		partial void OnIdChanging(int value);
-		partial void OnIdChanged();
-		
-		partial void OnCodeChanging(string value);
-		partial void OnCodeChanged();
-		
-		partial void OnDescriptionChanging(string value);
-		partial void OnDescriptionChanged();
-		
-		partial void OnHardwiredChanging(bool? value);
-		partial void OnHardwiredChanged();
-		
-    #endregion
-		public OrganizationType()
-		{
-			
-			this._Organizations = new EntitySet<Organization>(new Action< Organization>(this.attach_Organizations), new Action< Organization>(this.detach_Organizations)); 
-			
-			this._Resources = new EntitySet<Resource>(new Action< Resource>(this.attach_Resources), new Action< Resource>(this.detach_Resources)); 
-			
-			this._ResourceOrganizationTypes = new EntitySet<ResourceOrganizationType>(new Action< ResourceOrganizationType>(this.attach_ResourceOrganizationTypes), new Action< ResourceOrganizationType>(this.detach_ResourceOrganizationTypes)); 
-			
-			
-			OnCreated();
-		}
+    [Table(Name = "lookup.OrganizationType")]
+    public partial class OrganizationType : INotifyPropertyChanging, INotifyPropertyChanged
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-    #region Columns
-		
-		[Column(Name="Id", UpdateCheck=UpdateCheck.Never, Storage="_Id", DbType="int NOT NULL", IsPrimaryKey=true)]
-		public int Id
-		{
-			get { return this._Id; }
+        #region Private Fields
 
-			set
-			{
-				if (this._Id != value)
-				{
-				
-                    this.OnIdChanging(value);
-					this.SendPropertyChanging();
-					this._Id = value;
-					this.SendPropertyChanged("Id");
-					this.OnIdChanged();
-				}
+        private int _Id;
 
-			}
+        private string _Code;
 
-		}
+        private string _Description;
 
-		
-		[Column(Name="Code", UpdateCheck=UpdateCheck.Never, Storage="_Code", DbType="nvarchar(20)")]
-		public string Code
-		{
-			get { return this._Code; }
+        private bool? _Hardwired;
 
-			set
-			{
-				if (this._Code != value)
-				{
-				
-                    this.OnCodeChanging(value);
-					this.SendPropertyChanging();
-					this._Code = value;
-					this.SendPropertyChanged("Code");
-					this.OnCodeChanged();
-				}
+        private EntitySet<Organization> _Organizations;
 
-			}
+        private EntitySet<Resource> _Resources;
 
-		}
+        private EntitySet<ResourceOrganizationType> _ResourceOrganizationTypes;
 
-		
-		[Column(Name="Description", UpdateCheck=UpdateCheck.Never, Storage="_Description", DbType="nvarchar(50)")]
-		public string Description
-		{
-			get { return this._Description; }
+        #endregion
 
-			set
-			{
-				if (this._Description != value)
-				{
-				
-                    this.OnDescriptionChanging(value);
-					this.SendPropertyChanging();
-					this._Description = value;
-					this.SendPropertyChanged("Description");
-					this.OnDescriptionChanged();
-				}
+        #region Extensibility Method Definitions
 
-			}
+        partial void OnLoaded();
+        partial void OnValidate(System.Data.Linq.ChangeAction action);
+        partial void OnCreated();
 
-		}
+        partial void OnIdChanging(int value);
+        partial void OnIdChanged();
 
-		
-		[Column(Name="Hardwired", UpdateCheck=UpdateCheck.Never, Storage="_Hardwired", DbType="bit")]
-		public bool? Hardwired
-		{
-			get { return this._Hardwired; }
+        partial void OnCodeChanging(string value);
+        partial void OnCodeChanged();
 
-			set
-			{
-				if (this._Hardwired != value)
-				{
-				
-                    this.OnHardwiredChanging(value);
-					this.SendPropertyChanging();
-					this._Hardwired = value;
-					this.SendPropertyChanged("Hardwired");
-					this.OnHardwiredChanged();
-				}
+        partial void OnDescriptionChanging(string value);
+        partial void OnDescriptionChanged();
 
-			}
+        partial void OnHardwiredChanging(bool? value);
+        partial void OnHardwiredChanged();
 
-		}
+        #endregion
 
-		
-    #endregion
-        
-    #region Foreign Key Tables
-   		
-   		[Association(Name="FK_Organizations_OrganizationType", Storage="_Organizations", OtherKey="OrganizationTypeId")]
-   		public EntitySet<Organization> Organizations
-   		{
-   		    get { return this._Organizations; }
+        public OrganizationType()
+        {
+            _Organizations = new EntitySet<Organization>(new Action<Organization>(attach_Organizations), new Action<Organization>(detach_Organizations));
 
-			set	{ this._Organizations.Assign(value); }
+            _Resources = new EntitySet<Resource>(new Action<Resource>(attach_Resources), new Action<Resource>(detach_Resources));
 
-   		}
+            _ResourceOrganizationTypes = new EntitySet<ResourceOrganizationType>(new Action<ResourceOrganizationType>(attach_ResourceOrganizationTypes), new Action<ResourceOrganizationType>(detach_ResourceOrganizationTypes));
 
-		
-   		[Association(Name="FK_Resource_OrganizationType", Storage="_Resources", OtherKey="OrganizationTypeId")]
-   		public EntitySet<Resource> Resources
-   		{
-   		    get { return this._Resources; }
+            OnCreated();
+        }
 
-			set	{ this._Resources.Assign(value); }
+        #region Columns
 
-   		}
+        [Column(Name = "Id", UpdateCheck = UpdateCheck.Never, Storage = "_Id", DbType = "int NOT NULL", IsPrimaryKey = true)]
+        public int Id
+        {
+            get => _Id;
 
-		
-   		[Association(Name="FK_ResourceOrganizationType_OrganizationType", Storage="_ResourceOrganizationTypes", OtherKey="OrganizationTypeId")]
-   		public EntitySet<ResourceOrganizationType> ResourceOrganizationTypes
-   		{
-   		    get { return this._ResourceOrganizationTypes; }
+            set
+            {
+                if (_Id != value)
+                {
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
+                }
+            }
+        }
 
-			set	{ this._ResourceOrganizationTypes.Assign(value); }
+        [Column(Name = "Code", UpdateCheck = UpdateCheck.Never, Storage = "_Code", DbType = "nvarchar(20)")]
+        public string Code
+        {
+            get => _Code;
 
-   		}
+            set
+            {
+                if (_Code != value)
+                {
+                    OnCodeChanging(value);
+                    SendPropertyChanging();
+                    _Code = value;
+                    SendPropertyChanged("Code");
+                    OnCodeChanged();
+                }
+            }
+        }
 
-		
-	#endregion
-	
-	#region Foreign Keys
-    	
-	#endregion
-	
-		public event PropertyChangingEventHandler PropertyChanging;
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-				this.PropertyChanging(this, emptyChangingEventArgs);
-		}
+        [Column(Name = "Description", UpdateCheck = UpdateCheck.Never, Storage = "_Description", DbType = "nvarchar(50)")]
+        public string Description
+        {
+            get => _Description;
 
-		public event PropertyChangedEventHandler PropertyChanged;
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-		}
+            set
+            {
+                if (_Description != value)
+                {
+                    OnDescriptionChanging(value);
+                    SendPropertyChanging();
+                    _Description = value;
+                    SendPropertyChanged("Description");
+                    OnDescriptionChanged();
+                }
+            }
+        }
 
-   		
-		private void attach_Organizations(Organization entity)
-		{
-			this.SendPropertyChanging();
-			entity.OrganizationType = this;
-		}
+        [Column(Name = "Hardwired", UpdateCheck = UpdateCheck.Never, Storage = "_Hardwired", DbType = "bit")]
+        public bool? Hardwired
+        {
+            get => _Hardwired;
 
-		private void detach_Organizations(Organization entity)
-		{
-			this.SendPropertyChanging();
-			entity.OrganizationType = null;
-		}
+            set
+            {
+                if (_Hardwired != value)
+                {
+                    OnHardwiredChanging(value);
+                    SendPropertyChanging();
+                    _Hardwired = value;
+                    SendPropertyChanged("Hardwired");
+                    OnHardwiredChanged();
+                }
+            }
+        }
 
-		
-		private void attach_Resources(Resource entity)
-		{
-			this.SendPropertyChanging();
-			entity.OrganizationType = this;
-		}
+        #endregion
 
-		private void detach_Resources(Resource entity)
-		{
-			this.SendPropertyChanging();
-			entity.OrganizationType = null;
-		}
+        #region Foreign Key Tables
 
-		
-		private void attach_ResourceOrganizationTypes(ResourceOrganizationType entity)
-		{
-			this.SendPropertyChanging();
-			entity.OrganizationType = this;
-		}
+        [Association(Name = "FK_Organizations_OrganizationType", Storage = "_Organizations", OtherKey = "OrganizationTypeId")]
+        public EntitySet<Organization> Organizations
+           {
+               get => _Organizations;
 
-		private void detach_ResourceOrganizationTypes(ResourceOrganizationType entity)
-		{
-			this.SendPropertyChanging();
-			entity.OrganizationType = null;
-		}
+            set => _Organizations.Assign(value);
 
-		
-	}
+           }
 
+        [Association(Name = "FK_Resource_OrganizationType", Storage = "_Resources", OtherKey = "OrganizationTypeId")]
+        public EntitySet<Resource> Resources
+           {
+               get => _Resources;
+
+            set => _Resources.Assign(value);
+
+           }
+
+        [Association(Name = "FK_ResourceOrganizationType_OrganizationType", Storage = "_ResourceOrganizationTypes", OtherKey = "OrganizationTypeId")]
+        public EntitySet<ResourceOrganizationType> ResourceOrganizationTypes
+           {
+               get => _ResourceOrganizationTypes;
+
+            set => _ResourceOrganizationTypes.Assign(value);
+
+           }
+
+        #endregion
+
+        #region Foreign Keys
+
+        #endregion
+
+        public event PropertyChangingEventHandler PropertyChanging;
+        protected virtual void SendPropertyChanging()
+        {
+            if ((PropertyChanging != null))
+            {
+                PropertyChanging(this, emptyChangingEventArgs);
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void SendPropertyChanged(string propertyName)
+        {
+            if ((PropertyChanged != null))
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        private void attach_Organizations(Organization entity)
+        {
+            SendPropertyChanging();
+            entity.OrganizationType = this;
+        }
+
+        private void detach_Organizations(Organization entity)
+        {
+            SendPropertyChanging();
+            entity.OrganizationType = null;
+        }
+
+        private void attach_Resources(Resource entity)
+        {
+            SendPropertyChanging();
+            entity.OrganizationType = this;
+        }
+
+        private void detach_Resources(Resource entity)
+        {
+            SendPropertyChanging();
+            entity.OrganizationType = null;
+        }
+
+        private void attach_ResourceOrganizationTypes(ResourceOrganizationType entity)
+        {
+            SendPropertyChanging();
+            entity.OrganizationType = this;
+        }
+
+        private void detach_ResourceOrganizationTypes(ResourceOrganizationType entity)
+        {
+            SendPropertyChanging();
+            entity.OrganizationType = null;
+        }
+    }
 }
-
