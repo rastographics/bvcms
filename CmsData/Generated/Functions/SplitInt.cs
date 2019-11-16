@@ -1,47 +1,32 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="SplitInts")]
-	public partial class SplitInt
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private int? _ValueX;
-		
-		
-		public SplitInt()
-		{
-		}
+    [Table(Name = "SplitInts")]
+    public partial class SplitInt
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="Value", Storage="_ValueX", DbType="int")]
-		public int? ValueX
-		{
-			get
-			{
-				return this._ValueX;
-			}
+        private int? _ValueX;
 
-			set
-			{
-				if (this._ValueX != value)
-					this._ValueX = value;
-			}
+        public SplitInt()
+        {
+        }
 
-		}
+        [Column(Name = "Value", Storage = "_ValueX", DbType = "int")]
+        public int? ValueX
+        {
+            get => _ValueX;
 
-		
+            set
+            {
+                if (_ValueX != value)
+                {
+                    _ValueX = value;
+                }
+            }
+        }
     }
-
 }

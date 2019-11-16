@@ -1,177 +1,151 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
-using CmsData.Infrastructure;
+using System.Data.Linq.Mapping;
 
 namespace CmsData
 {
-	[Table(Name="dbo.LabelFormats")]
-	public partial class LabelFormat : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-	#region Private Fields
-		
-		private int _Id;
-		
-		private string _Name;
-		
-		private int _Size;
-		
-		private string _Format;
-		
-   		
-    	
-	#endregion
-	
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-		
-		partial void OnIdChanging(int value);
-		partial void OnIdChanged();
-		
-		partial void OnNameChanging(string value);
-		partial void OnNameChanged();
-		
-		partial void OnSizeChanging(int value);
-		partial void OnSizeChanged();
-		
-		partial void OnFormatChanging(string value);
-		partial void OnFormatChanged();
-		
-    #endregion
-		public LabelFormat()
-		{
-			
-			
-			OnCreated();
-		}
+    [Table(Name = "dbo.LabelFormats")]
+    public partial class LabelFormat : INotifyPropertyChanging, INotifyPropertyChanged
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-    #region Columns
-		
-		[Column(Name="Id", UpdateCheck=UpdateCheck.Never, Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int Id
-		{
-			get { return this._Id; }
+        #region Private Fields
 
-			set
-			{
-				if (this._Id != value)
-				{
-				
-                    this.OnIdChanging(value);
-					this.SendPropertyChanging();
-					this._Id = value;
-					this.SendPropertyChanged("Id");
-					this.OnIdChanged();
-				}
+        private int _Id;
 
-			}
+        private string _Name;
 
-		}
+        private int _Size;
 
-		
-		[Column(Name="Name", UpdateCheck=UpdateCheck.Never, Storage="_Name", DbType="nvarchar(30) NOT NULL")]
-		public string Name
-		{
-			get { return this._Name; }
+        private string _Format;
 
-			set
-			{
-				if (this._Name != value)
-				{
-				
-                    this.OnNameChanging(value);
-					this.SendPropertyChanging();
-					this._Name = value;
-					this.SendPropertyChanged("Name");
-					this.OnNameChanged();
-				}
+        #endregion
 
-			}
+        #region Extensibility Method Definitions
 
-		}
+        partial void OnLoaded();
+        partial void OnValidate(System.Data.Linq.ChangeAction action);
+        partial void OnCreated();
 
-		
-		[Column(Name="Size", UpdateCheck=UpdateCheck.Never, Storage="_Size", DbType="int NOT NULL")]
-		public int Size
-		{
-			get { return this._Size; }
+        partial void OnIdChanging(int value);
+        partial void OnIdChanged();
 
-			set
-			{
-				if (this._Size != value)
-				{
-				
-                    this.OnSizeChanging(value);
-					this.SendPropertyChanging();
-					this._Size = value;
-					this.SendPropertyChanged("Size");
-					this.OnSizeChanged();
-				}
+        partial void OnNameChanging(string value);
+        partial void OnNameChanged();
 
-			}
+        partial void OnSizeChanging(int value);
+        partial void OnSizeChanged();
 
-		}
+        partial void OnFormatChanging(string value);
+        partial void OnFormatChanged();
 
-		
-		[Column(Name="Format", UpdateCheck=UpdateCheck.Never, Storage="_Format", DbType="text(2147483647) NOT NULL")]
-		public string Format
-		{
-			get { return this._Format; }
+        #endregion
 
-			set
-			{
-				if (this._Format != value)
-				{
-				
-                    this.OnFormatChanging(value);
-					this.SendPropertyChanging();
-					this._Format = value;
-					this.SendPropertyChanged("Format");
-					this.OnFormatChanged();
-				}
+        public LabelFormat()
+        {
+            OnCreated();
+        }
 
-			}
+        #region Columns
 
-		}
+        [Column(Name = "Id", UpdateCheck = UpdateCheck.Never, Storage = "_Id", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
+        public int Id
+        {
+            get => _Id;
 
-		
-    #endregion
-        
-    #region Foreign Key Tables
-   		
-	#endregion
-	
-	#region Foreign Keys
-    	
-	#endregion
-	
-		public event PropertyChangingEventHandler PropertyChanging;
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-				this.PropertyChanging(this, emptyChangingEventArgs);
-		}
+            set
+            {
+                if (_Id != value)
+                {
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
+                }
+            }
+        }
 
-		public event PropertyChangedEventHandler PropertyChanged;
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-		}
+        [Column(Name = "Name", UpdateCheck = UpdateCheck.Never, Storage = "_Name", DbType = "nvarchar(30) NOT NULL")]
+        public string Name
+        {
+            get => _Name;
 
-   		
-	}
+            set
+            {
+                if (_Name != value)
+                {
+                    OnNameChanging(value);
+                    SendPropertyChanging();
+                    _Name = value;
+                    SendPropertyChanged("Name");
+                    OnNameChanged();
+                }
+            }
+        }
 
+        [Column(Name = "Size", UpdateCheck = UpdateCheck.Never, Storage = "_Size", DbType = "int NOT NULL")]
+        public int Size
+        {
+            get => _Size;
+
+            set
+            {
+                if (_Size != value)
+                {
+                    OnSizeChanging(value);
+                    SendPropertyChanging();
+                    _Size = value;
+                    SendPropertyChanged("Size");
+                    OnSizeChanged();
+                }
+            }
+        }
+
+        [Column(Name = "Format", UpdateCheck = UpdateCheck.Never, Storage = "_Format", DbType = "text(2147483647) NOT NULL")]
+        public string Format
+        {
+            get => _Format;
+
+            set
+            {
+                if (_Format != value)
+                {
+                    OnFormatChanging(value);
+                    SendPropertyChanging();
+                    _Format = value;
+                    SendPropertyChanged("Format");
+                    OnFormatChanged();
+                }
+            }
+        }
+
+        #endregion
+
+        #region Foreign Key Tables
+
+        #endregion
+
+        #region Foreign Keys
+
+        #endregion
+
+        public event PropertyChangingEventHandler PropertyChanging;
+        protected virtual void SendPropertyChanging()
+        {
+            if ((PropertyChanging != null))
+            {
+                PropertyChanging(this, emptyChangingEventArgs);
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void SendPropertyChanged(string propertyName)
+        {
+            if ((PropertyChanged != null))
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
 }
-

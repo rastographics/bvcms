@@ -657,7 +657,7 @@
     <Compile Include="Generated\MobileAppRoom.cs" />
     <Compile Include="Generated\MobileAppVideoType.cs" />
     <Compile Include="Generated\OrgFilter.cs" />
-    <Compile Include="Generated\OrgMemberDocuments.cs" />
+    <Compile Include="Generated\OrgMemberDocument.cs" />
     <Compile Include="Generated\OrgMemberExtra.cs" />
     <Compile Include="Generated\PrevOrgMemberExtra.cs" />
     <Compile Include="Generated\PaymentProcess.cs" />

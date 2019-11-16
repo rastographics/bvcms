@@ -1,231 +1,200 @@
-using System; 
+using System;
+using System.ComponentModel;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
-using System.ComponentModel;
-using CmsData.Infrastructure;
 
 namespace CmsData
 {
-	[Table(Name="lookup.OrganizationStatus")]
-	public partial class OrganizationStatus : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-	#region Private Fields
-		
-		private int _Id;
-		
-		private string _Code;
-		
-		private string _Description;
-		
-		private bool? _Hardwired;
-		
-		private bool _Active;
-		
-   		
-   		private EntitySet<Organization> _Organizations;
-		
-    	
-	#endregion
-	
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-		
-		partial void OnIdChanging(int value);
-		partial void OnIdChanged();
-		
-		partial void OnCodeChanging(string value);
-		partial void OnCodeChanged();
-		
-		partial void OnDescriptionChanging(string value);
-		partial void OnDescriptionChanged();
-		
-		partial void OnHardwiredChanging(bool? value);
-		partial void OnHardwiredChanged();
-		
-		partial void OnActiveChanging(bool value);
-		partial void OnActiveChanged();
-		
-    #endregion
-		public OrganizationStatus()
-		{
-			
-			this._Organizations = new EntitySet<Organization>(new Action< Organization>(this.attach_Organizations), new Action< Organization>(this.detach_Organizations)); 
-			
-			
-			OnCreated();
-		}
+    [Table(Name = "lookup.OrganizationStatus")]
+    public partial class OrganizationStatus : INotifyPropertyChanging, INotifyPropertyChanged
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-    #region Columns
-		
-		[Column(Name="Id", UpdateCheck=UpdateCheck.Never, Storage="_Id", DbType="int NOT NULL", IsPrimaryKey=true)]
-		public int Id
-		{
-			get { return this._Id; }
+        #region Private Fields
 
-			set
-			{
-				if (this._Id != value)
-				{
-				
-                    this.OnIdChanging(value);
-					this.SendPropertyChanging();
-					this._Id = value;
-					this.SendPropertyChanged("Id");
-					this.OnIdChanged();
-				}
+        private int _Id;
 
-			}
+        private string _Code;
 
-		}
+        private string _Description;
 
-		
-		[Column(Name="Code", UpdateCheck=UpdateCheck.Never, Storage="_Code", DbType="nvarchar(20)")]
-		public string Code
-		{
-			get { return this._Code; }
+        private bool? _Hardwired;
 
-			set
-			{
-				if (this._Code != value)
-				{
-				
-                    this.OnCodeChanging(value);
-					this.SendPropertyChanging();
-					this._Code = value;
-					this.SendPropertyChanged("Code");
-					this.OnCodeChanged();
-				}
+        private bool _Active;
 
-			}
+        private EntitySet<Organization> _Organizations;
 
-		}
+        #endregion
 
-		
-		[Column(Name="Description", UpdateCheck=UpdateCheck.Never, Storage="_Description", DbType="nvarchar(50)")]
-		public string Description
-		{
-			get { return this._Description; }
+        #region Extensibility Method Definitions
 
-			set
-			{
-				if (this._Description != value)
-				{
-				
-                    this.OnDescriptionChanging(value);
-					this.SendPropertyChanging();
-					this._Description = value;
-					this.SendPropertyChanged("Description");
-					this.OnDescriptionChanged();
-				}
+        partial void OnLoaded();
+        partial void OnValidate(System.Data.Linq.ChangeAction action);
+        partial void OnCreated();
 
-			}
+        partial void OnIdChanging(int value);
+        partial void OnIdChanged();
 
-		}
+        partial void OnCodeChanging(string value);
+        partial void OnCodeChanged();
 
-		
-		[Column(Name="Hardwired", UpdateCheck=UpdateCheck.Never, Storage="_Hardwired", DbType="bit")]
-		public bool? Hardwired
-		{
-			get { return this._Hardwired; }
+        partial void OnDescriptionChanging(string value);
+        partial void OnDescriptionChanged();
 
-			set
-			{
-				if (this._Hardwired != value)
-				{
-				
-                    this.OnHardwiredChanging(value);
-					this.SendPropertyChanging();
-					this._Hardwired = value;
-					this.SendPropertyChanged("Hardwired");
-					this.OnHardwiredChanged();
-				}
+        partial void OnHardwiredChanging(bool? value);
+        partial void OnHardwiredChanged();
 
-			}
+        partial void OnActiveChanging(bool value);
+        partial void OnActiveChanged();
 
-		}
+        #endregion
 
-		
-		[Column(Name="Active", UpdateCheck=UpdateCheck.Never, Storage="_Active", DbType="bit NOT NULL")]
-		public bool Active
-		{
-			get { return this._Active; }
+        public OrganizationStatus()
+        {
+            _Organizations = new EntitySet<Organization>(new Action<Organization>(attach_Organizations), new Action<Organization>(detach_Organizations));
 
-			set
-			{
-				if (this._Active != value)
-				{
-				
-                    this.OnActiveChanging(value);
-					this.SendPropertyChanging();
-					this._Active = value;
-					this.SendPropertyChanged("Active");
-					this.OnActiveChanged();
-				}
+            OnCreated();
+        }
 
-			}
+        #region Columns
 
-		}
+        [Column(Name = "Id", UpdateCheck = UpdateCheck.Never, Storage = "_Id", DbType = "int NOT NULL", IsPrimaryKey = true)]
+        public int Id
+        {
+            get => _Id;
 
-		
-    #endregion
-        
-    #region Foreign Key Tables
-   		
-   		[Association(Name="FK_ORGANIZATIONS_TBL_OrganizationStatus", Storage="_Organizations", OtherKey="OrganizationStatusId")]
-   		public EntitySet<Organization> Organizations
-   		{
-   		    get { return this._Organizations; }
+            set
+            {
+                if (_Id != value)
+                {
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
+                }
+            }
+        }
 
-			set	{ this._Organizations.Assign(value); }
+        [Column(Name = "Code", UpdateCheck = UpdateCheck.Never, Storage = "_Code", DbType = "nvarchar(20)")]
+        public string Code
+        {
+            get => _Code;
 
-   		}
+            set
+            {
+                if (_Code != value)
+                {
+                    OnCodeChanging(value);
+                    SendPropertyChanging();
+                    _Code = value;
+                    SendPropertyChanged("Code");
+                    OnCodeChanged();
+                }
+            }
+        }
 
-		
-	#endregion
-	
-	#region Foreign Keys
-    	
-	#endregion
-	
-		public event PropertyChangingEventHandler PropertyChanging;
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-				this.PropertyChanging(this, emptyChangingEventArgs);
-		}
+        [Column(Name = "Description", UpdateCheck = UpdateCheck.Never, Storage = "_Description", DbType = "nvarchar(50)")]
+        public string Description
+        {
+            get => _Description;
 
-		public event PropertyChangedEventHandler PropertyChanged;
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-		}
+            set
+            {
+                if (_Description != value)
+                {
+                    OnDescriptionChanging(value);
+                    SendPropertyChanging();
+                    _Description = value;
+                    SendPropertyChanged("Description");
+                    OnDescriptionChanged();
+                }
+            }
+        }
 
-   		
-		private void attach_Organizations(Organization entity)
-		{
-			this.SendPropertyChanging();
-			entity.OrganizationStatus = this;
-		}
+        [Column(Name = "Hardwired", UpdateCheck = UpdateCheck.Never, Storage = "_Hardwired", DbType = "bit")]
+        public bool? Hardwired
+        {
+            get => _Hardwired;
 
-		private void detach_Organizations(Organization entity)
-		{
-			this.SendPropertyChanging();
-			entity.OrganizationStatus = null;
-		}
+            set
+            {
+                if (_Hardwired != value)
+                {
+                    OnHardwiredChanging(value);
+                    SendPropertyChanging();
+                    _Hardwired = value;
+                    SendPropertyChanged("Hardwired");
+                    OnHardwiredChanged();
+                }
+            }
+        }
 
-		
-	}
+        [Column(Name = "Active", UpdateCheck = UpdateCheck.Never, Storage = "_Active", DbType = "bit NOT NULL")]
+        public bool Active
+        {
+            get => _Active;
 
+            set
+            {
+                if (_Active != value)
+                {
+                    OnActiveChanging(value);
+                    SendPropertyChanging();
+                    _Active = value;
+                    SendPropertyChanged("Active");
+                    OnActiveChanged();
+                }
+            }
+        }
+
+        #endregion
+
+        #region Foreign Key Tables
+
+        [Association(Name = "FK_ORGANIZATIONS_TBL_OrganizationStatus", Storage = "_Organizations", OtherKey = "OrganizationStatusId")]
+        public EntitySet<Organization> Organizations
+           {
+               get => _Organizations;
+
+            set => _Organizations.Assign(value);
+
+           }
+
+        #endregion
+
+        #region Foreign Keys
+
+        #endregion
+
+        public event PropertyChangingEventHandler PropertyChanging;
+        protected virtual void SendPropertyChanging()
+        {
+            if ((PropertyChanging != null))
+            {
+                PropertyChanging(this, emptyChangingEventArgs);
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void SendPropertyChanged(string propertyName)
+        {
+            if ((PropertyChanged != null))
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        private void attach_Organizations(Organization entity)
+        {
+            SendPropertyChanging();
+            entity.OrganizationStatus = this;
+        }
+
+        private void detach_Organizations(Organization entity)
+        {
+            SendPropertyChanging();
+            entity.OrganizationStatus = null;
+        }
+    }
 }
-

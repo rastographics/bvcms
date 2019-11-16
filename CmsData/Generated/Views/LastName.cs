@@ -1,66 +1,48 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="LastName")]
-	public partial class LastName
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private string _LastNameX;
-		
-		private int? _Count;
-		
-		
-		public LastName()
-		{
-		}
+    [Table(Name = "LastName")]
+    public partial class LastName
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="LastName", Storage="_LastNameX", DbType="nvarchar(100) NOT NULL")]
-		public string LastNameX
-		{
-			get
-			{
-				return this._LastNameX;
-			}
+        private string _LastNameX;
 
-			set
-			{
-				if (this._LastNameX != value)
-					this._LastNameX = value;
-			}
+        private int? _Count;
 
-		}
+        public LastName()
+        {
+        }
 
-		
-		[Column(Name="count", Storage="_Count", DbType="int")]
-		public int? Count
-		{
-			get
-			{
-				return this._Count;
-			}
+        [Column(Name = "LastName", Storage = "_LastNameX", DbType = "nvarchar(100) NOT NULL")]
+        public string LastNameX
+        {
+            get => _LastNameX;
 
-			set
-			{
-				if (this._Count != value)
-					this._Count = value;
-			}
+            set
+            {
+                if (_LastNameX != value)
+                {
+                    _LastNameX = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "count", Storage = "_Count", DbType = "int")]
+        public int? Count
+        {
+            get => _Count;
 
-		
+            set
+            {
+                if (_Count != value)
+                {
+                    _Count = value;
+                }
+            }
+        }
     }
-
 }

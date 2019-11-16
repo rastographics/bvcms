@@ -1,104 +1,80 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="MeetingsDataForDateRange")]
-	public partial class MeetingsDataForDateRange
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private string _Organization;
-		
-		private string _LeaderName;
-		
-		private DateTime? _Dt;
-		
-		private int? _Cnt;
-		
-		
-		public MeetingsDataForDateRange()
-		{
-		}
+    [Table(Name = "MeetingsDataForDateRange")]
+    public partial class MeetingsDataForDateRange
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="Organization", Storage="_Organization", DbType="nvarchar(100) NOT NULL")]
-		public string Organization
-		{
-			get
-			{
-				return this._Organization;
-			}
+        private string _Organization;
 
-			set
-			{
-				if (this._Organization != value)
-					this._Organization = value;
-			}
+        private string _LeaderName;
 
-		}
+        private DateTime? _Dt;
 
-		
-		[Column(Name="LeaderName", Storage="_LeaderName", DbType="nvarchar(50)")]
-		public string LeaderName
-		{
-			get
-			{
-				return this._LeaderName;
-			}
+        private int? _Cnt;
 
-			set
-			{
-				if (this._LeaderName != value)
-					this._LeaderName = value;
-			}
+        public MeetingsDataForDateRange()
+        {
+        }
 
-		}
+        [Column(Name = "Organization", Storage = "_Organization", DbType = "nvarchar(100) NOT NULL")]
+        public string Organization
+        {
+            get => _Organization;
 
-		
-		[Column(Name="dt", Storage="_Dt", DbType="datetime")]
-		public DateTime? Dt
-		{
-			get
-			{
-				return this._Dt;
-			}
+            set
+            {
+                if (_Organization != value)
+                {
+                    _Organization = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._Dt != value)
-					this._Dt = value;
-			}
+        [Column(Name = "LeaderName", Storage = "_LeaderName", DbType = "nvarchar(50)")]
+        public string LeaderName
+        {
+            get => _LeaderName;
 
-		}
+            set
+            {
+                if (_LeaderName != value)
+                {
+                    _LeaderName = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="cnt", Storage="_Cnt", DbType="int")]
-		public int? Cnt
-		{
-			get
-			{
-				return this._Cnt;
-			}
+        [Column(Name = "dt", Storage = "_Dt", DbType = "datetime")]
+        public DateTime? Dt
+        {
+            get => _Dt;
 
-			set
-			{
-				if (this._Cnt != value)
-					this._Cnt = value;
-			}
+            set
+            {
+                if (_Dt != value)
+                {
+                    _Dt = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "cnt", Storage = "_Cnt", DbType = "int")]
+        public int? Cnt
+        {
+            get => _Cnt;
 
-		
+            set
+            {
+                if (_Cnt != value)
+                {
+                    _Cnt = value;
+                }
+            }
+        }
     }
-
 }
