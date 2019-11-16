@@ -1,258 +1,227 @@
-using System; 
+using System;
+using System.ComponentModel;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
-using System.ComponentModel;
-using CmsData.Infrastructure;
 
 namespace CmsData
 {
-	[Table(Name="lookup.ResidentCode")]
-	public partial class ResidentCode : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-	#region Private Fields
-		
-		private int _Id;
-		
-		private string _Code;
-		
-		private string _Description;
-		
-		private bool? _Hardwired;
-		
-   		
-   		private EntitySet<Zip> _Zips;
-		
-   		private EntitySet<Family> _ResCodeFamilies;
-		
-   		private EntitySet<Person> _ResCodePeople;
-		
-    	
-	#endregion
-	
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-		
-		partial void OnIdChanging(int value);
-		partial void OnIdChanged();
-		
-		partial void OnCodeChanging(string value);
-		partial void OnCodeChanged();
-		
-		partial void OnDescriptionChanging(string value);
-		partial void OnDescriptionChanged();
-		
-		partial void OnHardwiredChanging(bool? value);
-		partial void OnHardwiredChanged();
-		
-    #endregion
-		public ResidentCode()
-		{
-			
-			this._Zips = new EntitySet<Zip>(new Action< Zip>(this.attach_Zips), new Action< Zip>(this.detach_Zips)); 
-			
-			this._ResCodeFamilies = new EntitySet<Family>(new Action< Family>(this.attach_ResCodeFamilies), new Action< Family>(this.detach_ResCodeFamilies)); 
-			
-			this._ResCodePeople = new EntitySet<Person>(new Action< Person>(this.attach_ResCodePeople), new Action< Person>(this.detach_ResCodePeople)); 
-			
-			
-			OnCreated();
-		}
+    [Table(Name = "lookup.ResidentCode")]
+    public partial class ResidentCode : INotifyPropertyChanging, INotifyPropertyChanged
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-    #region Columns
-		
-		[Column(Name="Id", UpdateCheck=UpdateCheck.Never, Storage="_Id", DbType="int NOT NULL", IsPrimaryKey=true)]
-		public int Id
-		{
-			get { return this._Id; }
+        #region Private Fields
 
-			set
-			{
-				if (this._Id != value)
-				{
-				
-                    this.OnIdChanging(value);
-					this.SendPropertyChanging();
-					this._Id = value;
-					this.SendPropertyChanged("Id");
-					this.OnIdChanged();
-				}
+        private int _Id;
 
-			}
+        private string _Code;
 
-		}
+        private string _Description;
 
-		
-		[Column(Name="Code", UpdateCheck=UpdateCheck.Never, Storage="_Code", DbType="nvarchar(20)")]
-		public string Code
-		{
-			get { return this._Code; }
+        private bool? _Hardwired;
 
-			set
-			{
-				if (this._Code != value)
-				{
-				
-                    this.OnCodeChanging(value);
-					this.SendPropertyChanging();
-					this._Code = value;
-					this.SendPropertyChanged("Code");
-					this.OnCodeChanged();
-				}
+        private EntitySet<Zip> _Zips;
 
-			}
+        private EntitySet<Family> _ResCodeFamilies;
 
-		}
+        private EntitySet<Person> _ResCodePeople;
 
-		
-		[Column(Name="Description", UpdateCheck=UpdateCheck.Never, Storage="_Description", DbType="nvarchar(100)")]
-		public string Description
-		{
-			get { return this._Description; }
+        #endregion
 
-			set
-			{
-				if (this._Description != value)
-				{
-				
-                    this.OnDescriptionChanging(value);
-					this.SendPropertyChanging();
-					this._Description = value;
-					this.SendPropertyChanged("Description");
-					this.OnDescriptionChanged();
-				}
+        #region Extensibility Method Definitions
 
-			}
+        partial void OnLoaded();
+        partial void OnValidate(System.Data.Linq.ChangeAction action);
+        partial void OnCreated();
 
-		}
+        partial void OnIdChanging(int value);
+        partial void OnIdChanged();
 
-		
-		[Column(Name="Hardwired", UpdateCheck=UpdateCheck.Never, Storage="_Hardwired", DbType="bit")]
-		public bool? Hardwired
-		{
-			get { return this._Hardwired; }
+        partial void OnCodeChanging(string value);
+        partial void OnCodeChanged();
 
-			set
-			{
-				if (this._Hardwired != value)
-				{
-				
-                    this.OnHardwiredChanging(value);
-					this.SendPropertyChanging();
-					this._Hardwired = value;
-					this.SendPropertyChanged("Hardwired");
-					this.OnHardwiredChanged();
-				}
+        partial void OnDescriptionChanging(string value);
+        partial void OnDescriptionChanged();
 
-			}
+        partial void OnHardwiredChanging(bool? value);
+        partial void OnHardwiredChanged();
 
-		}
+        #endregion
 
-		
-    #endregion
-        
-    #region Foreign Key Tables
-   		
-   		[Association(Name="FK_Zips_ResidentCode", Storage="_Zips", OtherKey="MetroMarginalCode")]
-   		public EntitySet<Zip> Zips
-   		{
-   		    get { return this._Zips; }
+        public ResidentCode()
+        {
+            _Zips = new EntitySet<Zip>(new Action<Zip>(attach_Zips), new Action<Zip>(detach_Zips));
 
-			set	{ this._Zips.Assign(value); }
+            _ResCodeFamilies = new EntitySet<Family>(new Action<Family>(attach_ResCodeFamilies), new Action<Family>(detach_ResCodeFamilies));
 
-   		}
+            _ResCodePeople = new EntitySet<Person>(new Action<Person>(attach_ResCodePeople), new Action<Person>(detach_ResCodePeople));
 
-		
-   		[Association(Name="ResCodeFamilies__ResidentCode", Storage="_ResCodeFamilies", OtherKey="ResCodeId")]
-   		public EntitySet<Family> ResCodeFamilies
-   		{
-   		    get { return this._ResCodeFamilies; }
+            OnCreated();
+        }
 
-			set	{ this._ResCodeFamilies.Assign(value); }
+        #region Columns
 
-   		}
+        [Column(Name = "Id", UpdateCheck = UpdateCheck.Never, Storage = "_Id", DbType = "int NOT NULL", IsPrimaryKey = true)]
+        public int Id
+        {
+            get => _Id;
 
-		
-   		[Association(Name="ResCodePeople__ResidentCode", Storage="_ResCodePeople", OtherKey="ResCodeId")]
-   		public EntitySet<Person> ResCodePeople
-   		{
-   		    get { return this._ResCodePeople; }
+            set
+            {
+                if (_Id != value)
+                {
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
+                }
+            }
+        }
 
-			set	{ this._ResCodePeople.Assign(value); }
+        [Column(Name = "Code", UpdateCheck = UpdateCheck.Never, Storage = "_Code", DbType = "nvarchar(20)")]
+        public string Code
+        {
+            get => _Code;
 
-   		}
+            set
+            {
+                if (_Code != value)
+                {
+                    OnCodeChanging(value);
+                    SendPropertyChanging();
+                    _Code = value;
+                    SendPropertyChanged("Code");
+                    OnCodeChanged();
+                }
+            }
+        }
 
-		
-	#endregion
-	
-	#region Foreign Keys
-    	
-	#endregion
-	
-		public event PropertyChangingEventHandler PropertyChanging;
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-				this.PropertyChanging(this, emptyChangingEventArgs);
-		}
+        [Column(Name = "Description", UpdateCheck = UpdateCheck.Never, Storage = "_Description", DbType = "nvarchar(100)")]
+        public string Description
+        {
+            get => _Description;
 
-		public event PropertyChangedEventHandler PropertyChanged;
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-		}
+            set
+            {
+                if (_Description != value)
+                {
+                    OnDescriptionChanging(value);
+                    SendPropertyChanging();
+                    _Description = value;
+                    SendPropertyChanged("Description");
+                    OnDescriptionChanged();
+                }
+            }
+        }
 
-   		
-		private void attach_Zips(Zip entity)
-		{
-			this.SendPropertyChanging();
-			entity.ResidentCode = this;
-		}
+        [Column(Name = "Hardwired", UpdateCheck = UpdateCheck.Never, Storage = "_Hardwired", DbType = "bit")]
+        public bool? Hardwired
+        {
+            get => _Hardwired;
 
-		private void detach_Zips(Zip entity)
-		{
-			this.SendPropertyChanging();
-			entity.ResidentCode = null;
-		}
+            set
+            {
+                if (_Hardwired != value)
+                {
+                    OnHardwiredChanging(value);
+                    SendPropertyChanging();
+                    _Hardwired = value;
+                    SendPropertyChanged("Hardwired");
+                    OnHardwiredChanged();
+                }
+            }
+        }
 
-		
-		private void attach_ResCodeFamilies(Family entity)
-		{
-			this.SendPropertyChanging();
-			entity.ResidentCode = this;
-		}
+        #endregion
 
-		private void detach_ResCodeFamilies(Family entity)
-		{
-			this.SendPropertyChanging();
-			entity.ResidentCode = null;
-		}
+        #region Foreign Key Tables
 
-		
-		private void attach_ResCodePeople(Person entity)
-		{
-			this.SendPropertyChanging();
-			entity.ResidentCode = this;
-		}
+        [Association(Name = "FK_Zips_ResidentCode", Storage = "_Zips", OtherKey = "MetroMarginalCode")]
+        public EntitySet<Zip> Zips
+           {
+               get => _Zips;
 
-		private void detach_ResCodePeople(Person entity)
-		{
-			this.SendPropertyChanging();
-			entity.ResidentCode = null;
-		}
+            set => _Zips.Assign(value);
 
-		
-	}
+           }
 
+        [Association(Name = "ResCodeFamilies__ResidentCode", Storage = "_ResCodeFamilies", OtherKey = "ResCodeId")]
+        public EntitySet<Family> ResCodeFamilies
+           {
+               get => _ResCodeFamilies;
+
+            set => _ResCodeFamilies.Assign(value);
+
+           }
+
+        [Association(Name = "ResCodePeople__ResidentCode", Storage = "_ResCodePeople", OtherKey = "ResCodeId")]
+        public EntitySet<Person> ResCodePeople
+           {
+               get => _ResCodePeople;
+
+            set => _ResCodePeople.Assign(value);
+
+           }
+
+        #endregion
+
+        #region Foreign Keys
+
+        #endregion
+
+        public event PropertyChangingEventHandler PropertyChanging;
+        protected virtual void SendPropertyChanging()
+        {
+            if ((PropertyChanging != null))
+            {
+                PropertyChanging(this, emptyChangingEventArgs);
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void SendPropertyChanged(string propertyName)
+        {
+            if ((PropertyChanged != null))
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        private void attach_Zips(Zip entity)
+        {
+            SendPropertyChanging();
+            entity.ResidentCode = this;
+        }
+
+        private void detach_Zips(Zip entity)
+        {
+            SendPropertyChanging();
+            entity.ResidentCode = null;
+        }
+
+        private void attach_ResCodeFamilies(Family entity)
+        {
+            SendPropertyChanging();
+            entity.ResidentCode = this;
+        }
+
+        private void detach_ResCodeFamilies(Family entity)
+        {
+            SendPropertyChanging();
+            entity.ResidentCode = null;
+        }
+
+        private void attach_ResCodePeople(Person entity)
+        {
+            SendPropertyChanging();
+            entity.ResidentCode = this;
+        }
+
+        private void detach_ResCodePeople(Person entity)
+        {
+            SendPropertyChanging();
+            entity.ResidentCode = null;
+        }
+    }
 }
-

@@ -1,10 +1,4 @@
-﻿/* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church
- * Licensed under the GNU General Public License (GPL v2)
- * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license
- */
-using CmsData.Codes;
+﻿using CmsData.Codes;
 using CmsData.Finance;
 using System;
 using System.Collections.Generic;
@@ -792,23 +786,26 @@ This search uses multiple steps which cannot be duplicated in a single query.
         private void GetCurrentUser()
         {
             var username = HttpContextFactory.Current?.User?.Identity?.Name;
-            var q = from u in Users
-                    where u.UserId == Util.UserId || u.Username == username
-                    select new
-                    {
-                        u,
-                        roleids = u.UserRoles.Select(uu => uu.RoleId).ToArray(),
-                        roles = u.UserRoles.Select(uu => uu.Role.RoleName).ToArray(),
-                    };
-            var i = q.SingleOrDefault();
-            if (i == null)
+            if (username.HasValue())
             {
-                return;
-            }
+                var q = from u in Users
+                        where u.UserId == Util.UserId || u.Username == username
+                        select new
+                        {
+                            u,
+                            roleids = u.UserRoles.Select(uu => uu.RoleId).ToArray(),
+                            roles = u.UserRoles.Select(uu => uu.Role.RoleName).ToArray(),
+                        };
+                var i = q.SingleOrDefault();
+                if (i == null)
+                {
+                    return;
+                }
 
-            _roles = i.roles;
-            _roleids = i.roleids;
-            CurrentUser = i.u;
+                _roles = i.roles;
+                _roleids = i.roleids;
+                CurrentUser = i.u;
+            }
         }
 
         private string[] _roles;

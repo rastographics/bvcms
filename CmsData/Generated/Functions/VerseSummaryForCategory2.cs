@@ -1,180 +1,144 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="VerseSummaryForCategory2")]
-	public partial class VerseSummaryForCategory2
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private int _Id;
-		
-		private string _Reference;
-		
-		private string _ShortText;
-		
-		private int? _CategoryCount;
-		
-		private int? _Book;
-		
-		private int? _Chapter;
-		
-		private int? _VerseNum;
-		
-		private bool? _InCategory;
-		
-		
-		public VerseSummaryForCategory2()
-		{
-		}
+    [Table(Name = "VerseSummaryForCategory2")]
+    public partial class VerseSummaryForCategory2
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="id", Storage="_Id", DbType="int NOT NULL")]
-		public int Id
-		{
-			get
-			{
-				return this._Id;
-			}
+        private int _Id;
 
-			set
-			{
-				if (this._Id != value)
-					this._Id = value;
-			}
+        private string _Reference;
 
-		}
+        private string _ShortText;
 
-		
-		[Column(Name="Reference", Storage="_Reference", DbType="nvarchar(203)")]
-		public string Reference
-		{
-			get
-			{
-				return this._Reference;
-			}
+        private int? _CategoryCount;
 
-			set
-			{
-				if (this._Reference != value)
-					this._Reference = value;
-			}
+        private int? _Book;
 
-		}
+        private int? _Chapter;
 
-		
-		[Column(Name="ShortText", Storage="_ShortText", DbType="nvarchar")]
-		public string ShortText
-		{
-			get
-			{
-				return this._ShortText;
-			}
+        private int? _VerseNum;
 
-			set
-			{
-				if (this._ShortText != value)
-					this._ShortText = value;
-			}
+        private bool? _InCategory;
 
-		}
+        public VerseSummaryForCategory2()
+        {
+        }
 
-		
-		[Column(Name="CategoryCount", Storage="_CategoryCount", DbType="int")]
-		public int? CategoryCount
-		{
-			get
-			{
-				return this._CategoryCount;
-			}
+        [Column(Name = "id", Storage = "_Id", DbType = "int NOT NULL")]
+        public int Id
+        {
+            get => _Id;
 
-			set
-			{
-				if (this._CategoryCount != value)
-					this._CategoryCount = value;
-			}
+            set
+            {
+                if (_Id != value)
+                {
+                    _Id = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "Reference", Storage = "_Reference", DbType = "nvarchar(203)")]
+        public string Reference
+        {
+            get => _Reference;
 
-		
-		[Column(Name="Book", Storage="_Book", DbType="int")]
-		public int? Book
-		{
-			get
-			{
-				return this._Book;
-			}
+            set
+            {
+                if (_Reference != value)
+                {
+                    _Reference = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._Book != value)
-					this._Book = value;
-			}
+        [Column(Name = "ShortText", Storage = "_ShortText", DbType = "nvarchar")]
+        public string ShortText
+        {
+            get => _ShortText;
 
-		}
+            set
+            {
+                if (_ShortText != value)
+                {
+                    _ShortText = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="Chapter", Storage="_Chapter", DbType="int")]
-		public int? Chapter
-		{
-			get
-			{
-				return this._Chapter;
-			}
+        [Column(Name = "CategoryCount", Storage = "_CategoryCount", DbType = "int")]
+        public int? CategoryCount
+        {
+            get => _CategoryCount;
 
-			set
-			{
-				if (this._Chapter != value)
-					this._Chapter = value;
-			}
+            set
+            {
+                if (_CategoryCount != value)
+                {
+                    _CategoryCount = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "Book", Storage = "_Book", DbType = "int")]
+        public int? Book
+        {
+            get => _Book;
 
-		
-		[Column(Name="VerseNum", Storage="_VerseNum", DbType="int")]
-		public int? VerseNum
-		{
-			get
-			{
-				return this._VerseNum;
-			}
+            set
+            {
+                if (_Book != value)
+                {
+                    _Book = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._VerseNum != value)
-					this._VerseNum = value;
-			}
+        [Column(Name = "Chapter", Storage = "_Chapter", DbType = "int")]
+        public int? Chapter
+        {
+            get => _Chapter;
 
-		}
+            set
+            {
+                if (_Chapter != value)
+                {
+                    _Chapter = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="InCategory", Storage="_InCategory", DbType="bit")]
-		public bool? InCategory
-		{
-			get
-			{
-				return this._InCategory;
-			}
+        [Column(Name = "VerseNum", Storage = "_VerseNum", DbType = "int")]
+        public int? VerseNum
+        {
+            get => _VerseNum;
 
-			set
-			{
-				if (this._InCategory != value)
-					this._InCategory = value;
-			}
+            set
+            {
+                if (_VerseNum != value)
+                {
+                    _VerseNum = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "InCategory", Storage = "_InCategory", DbType = "bit")]
+        public bool? InCategory
+        {
+            get => _InCategory;
 
-		
+            set
+            {
+                if (_InCategory != value)
+                {
+                    _InCategory = value;
+                }
+            }
+        }
     }
-
 }

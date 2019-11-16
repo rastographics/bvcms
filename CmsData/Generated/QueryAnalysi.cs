@@ -1,231 +1,197 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
-using CmsData.Infrastructure;
+using System.Data.Linq.Mapping;
 
 namespace CmsData
 {
-	[Table(Name="dbo.QueryAnalysis")]
-	public partial class QueryAnalysi : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-	#region Private Fields
-		
-		private Guid _Id;
-		
-		private int? _Seconds;
-		
-		private int? _OriginalCount;
-		
-		private int? _ParsedCount;
-		
-		private string _Message;
-		
-		private bool? _Updated;
-		
-   		
-    	
-	#endregion
-	
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-		
-		partial void OnIdChanging(Guid value);
-		partial void OnIdChanged();
-		
-		partial void OnSecondsChanging(int? value);
-		partial void OnSecondsChanged();
-		
-		partial void OnOriginalCountChanging(int? value);
-		partial void OnOriginalCountChanged();
-		
-		partial void OnParsedCountChanging(int? value);
-		partial void OnParsedCountChanged();
-		
-		partial void OnMessageChanging(string value);
-		partial void OnMessageChanged();
-		
-		partial void OnUpdatedChanging(bool? value);
-		partial void OnUpdatedChanged();
-		
-    #endregion
-		public QueryAnalysi()
-		{
-			
-			
-			OnCreated();
-		}
+    [Table(Name = "dbo.QueryAnalysis")]
+    public partial class QueryAnalysi : INotifyPropertyChanging, INotifyPropertyChanged
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-    #region Columns
-		
-		[Column(Name="Id", UpdateCheck=UpdateCheck.Never, Storage="_Id", DbType="uniqueidentifier NOT NULL")]
-		public Guid Id
-		{
-			get { return this._Id; }
+        #region Private Fields
 
-			set
-			{
-				if (this._Id != value)
-				{
-				
-                    this.OnIdChanging(value);
-					this.SendPropertyChanging();
-					this._Id = value;
-					this.SendPropertyChanged("Id");
-					this.OnIdChanged();
-				}
+        private Guid _Id;
 
-			}
+        private int? _Seconds;
 
-		}
+        private int? _OriginalCount;
 
-		
-		[Column(Name="Seconds", UpdateCheck=UpdateCheck.Never, Storage="_Seconds", DbType="int")]
-		public int? Seconds
-		{
-			get { return this._Seconds; }
+        private int? _ParsedCount;
 
-			set
-			{
-				if (this._Seconds != value)
-				{
-				
-                    this.OnSecondsChanging(value);
-					this.SendPropertyChanging();
-					this._Seconds = value;
-					this.SendPropertyChanged("Seconds");
-					this.OnSecondsChanged();
-				}
+        private string _Message;
 
-			}
+        private bool? _Updated;
 
-		}
+        #endregion
 
-		
-		[Column(Name="OriginalCount", UpdateCheck=UpdateCheck.Never, Storage="_OriginalCount", DbType="int")]
-		public int? OriginalCount
-		{
-			get { return this._OriginalCount; }
+        #region Extensibility Method Definitions
 
-			set
-			{
-				if (this._OriginalCount != value)
-				{
-				
-                    this.OnOriginalCountChanging(value);
-					this.SendPropertyChanging();
-					this._OriginalCount = value;
-					this.SendPropertyChanged("OriginalCount");
-					this.OnOriginalCountChanged();
-				}
+        partial void OnLoaded();
+        partial void OnValidate(System.Data.Linq.ChangeAction action);
+        partial void OnCreated();
 
-			}
+        partial void OnIdChanging(Guid value);
+        partial void OnIdChanged();
 
-		}
+        partial void OnSecondsChanging(int? value);
+        partial void OnSecondsChanged();
 
-		
-		[Column(Name="ParsedCount", UpdateCheck=UpdateCheck.Never, Storage="_ParsedCount", DbType="int")]
-		public int? ParsedCount
-		{
-			get { return this._ParsedCount; }
+        partial void OnOriginalCountChanging(int? value);
+        partial void OnOriginalCountChanged();
 
-			set
-			{
-				if (this._ParsedCount != value)
-				{
-				
-                    this.OnParsedCountChanging(value);
-					this.SendPropertyChanging();
-					this._ParsedCount = value;
-					this.SendPropertyChanged("ParsedCount");
-					this.OnParsedCountChanged();
-				}
+        partial void OnParsedCountChanging(int? value);
+        partial void OnParsedCountChanged();
 
-			}
+        partial void OnMessageChanging(string value);
+        partial void OnMessageChanged();
 
-		}
+        partial void OnUpdatedChanging(bool? value);
+        partial void OnUpdatedChanged();
 
-		
-		[Column(Name="Message", UpdateCheck=UpdateCheck.Never, Storage="_Message", DbType="varchar")]
-		public string Message
-		{
-			get { return this._Message; }
+        #endregion
 
-			set
-			{
-				if (this._Message != value)
-				{
-				
-                    this.OnMessageChanging(value);
-					this.SendPropertyChanging();
-					this._Message = value;
-					this.SendPropertyChanged("Message");
-					this.OnMessageChanged();
-				}
+        public QueryAnalysi()
+        {
+            OnCreated();
+        }
 
-			}
+        #region Columns
 
-		}
+        [Column(Name = "Id", UpdateCheck = UpdateCheck.Never, Storage = "_Id", DbType = "uniqueidentifier NOT NULL")]
+        public Guid Id
+        {
+            get => _Id;
 
-		
-		[Column(Name="Updated", UpdateCheck=UpdateCheck.Never, Storage="_Updated", DbType="bit")]
-		public bool? Updated
-		{
-			get { return this._Updated; }
+            set
+            {
+                if (_Id != value)
+                {
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
+                }
+            }
+        }
 
-			set
-			{
-				if (this._Updated != value)
-				{
-				
-                    this.OnUpdatedChanging(value);
-					this.SendPropertyChanging();
-					this._Updated = value;
-					this.SendPropertyChanged("Updated");
-					this.OnUpdatedChanged();
-				}
+        [Column(Name = "Seconds", UpdateCheck = UpdateCheck.Never, Storage = "_Seconds", DbType = "int")]
+        public int? Seconds
+        {
+            get => _Seconds;
 
-			}
+            set
+            {
+                if (_Seconds != value)
+                {
+                    OnSecondsChanging(value);
+                    SendPropertyChanging();
+                    _Seconds = value;
+                    SendPropertyChanged("Seconds");
+                    OnSecondsChanged();
+                }
+            }
+        }
 
-		}
+        [Column(Name = "OriginalCount", UpdateCheck = UpdateCheck.Never, Storage = "_OriginalCount", DbType = "int")]
+        public int? OriginalCount
+        {
+            get => _OriginalCount;
 
-		
-    #endregion
-        
-    #region Foreign Key Tables
-   		
-	#endregion
-	
-	#region Foreign Keys
-    	
-	#endregion
-	
-		public event PropertyChangingEventHandler PropertyChanging;
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-				this.PropertyChanging(this, emptyChangingEventArgs);
-		}
+            set
+            {
+                if (_OriginalCount != value)
+                {
+                    OnOriginalCountChanging(value);
+                    SendPropertyChanging();
+                    _OriginalCount = value;
+                    SendPropertyChanged("OriginalCount");
+                    OnOriginalCountChanged();
+                }
+            }
+        }
 
-		public event PropertyChangedEventHandler PropertyChanged;
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-		}
+        [Column(Name = "ParsedCount", UpdateCheck = UpdateCheck.Never, Storage = "_ParsedCount", DbType = "int")]
+        public int? ParsedCount
+        {
+            get => _ParsedCount;
 
-   		
-	}
+            set
+            {
+                if (_ParsedCount != value)
+                {
+                    OnParsedCountChanging(value);
+                    SendPropertyChanging();
+                    _ParsedCount = value;
+                    SendPropertyChanged("ParsedCount");
+                    OnParsedCountChanged();
+                }
+            }
+        }
 
+        [Column(Name = "Message", UpdateCheck = UpdateCheck.Never, Storage = "_Message", DbType = "varchar")]
+        public string Message
+        {
+            get => _Message;
+
+            set
+            {
+                if (_Message != value)
+                {
+                    OnMessageChanging(value);
+                    SendPropertyChanging();
+                    _Message = value;
+                    SendPropertyChanged("Message");
+                    OnMessageChanged();
+                }
+            }
+        }
+
+        [Column(Name = "Updated", UpdateCheck = UpdateCheck.Never, Storage = "_Updated", DbType = "bit")]
+        public bool? Updated
+        {
+            get => _Updated;
+
+            set
+            {
+                if (_Updated != value)
+                {
+                    OnUpdatedChanging(value);
+                    SendPropertyChanging();
+                    _Updated = value;
+                    SendPropertyChanged("Updated");
+                    OnUpdatedChanged();
+                }
+            }
+        }
+
+        #endregion
+
+        #region Foreign Key Tables
+
+        #endregion
+
+        #region Foreign Keys
+
+        #endregion
+
+        public event PropertyChangingEventHandler PropertyChanging;
+        protected virtual void SendPropertyChanging()
+        {
+            if ((PropertyChanging != null))
+            {
+                PropertyChanging(this, emptyChangingEventArgs);
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void SendPropertyChanged(string propertyName)
+        {
+            if ((PropertyChanged != null))
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
 }
-
