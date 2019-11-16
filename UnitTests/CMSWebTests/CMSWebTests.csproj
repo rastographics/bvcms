@@ -124,6 +124,7 @@
     <Compile Include="Areas\OnlineReg\Models\OnlineRegPerson\HelperTests.cs" />
     <Compile Include="Areas\Org\Models\TestOrgGroupsModel.cs" />
     <Compile Include="Areas\Public\Controllers\APIPersonControllerTests.cs" />
+    <Compile Include="Areas\Public\Controllers\CheckInAPIControllerTests.cs" />
     <Compile Include="Areas\Public\Controllers\MobileAPIControllerTests.cs" />
     <Compile Include="Areas\Public\Controllers\MobileAPIv2ControllerTests.cs" />
     <Compile Include="Areas\Manage\Models\VolunteerCommitmentsModelTest.cs" />

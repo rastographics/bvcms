@@ -1,142 +1,112 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="InProgressRegistrations")]
-	public partial class InProgressRegistration
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private string _Name;
-		
-		private string _OrganizationName;
-		
-		private DateTime? _Stamp;
-		
-		private int _PeopleId;
-		
-		private int _OrganizationId;
-		
-		private int _RegDataId;
-		
-		
-		public InProgressRegistration()
-		{
-		}
+    [Table(Name = "InProgressRegistrations")]
+    public partial class InProgressRegistration
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="Name", Storage="_Name", DbType="nvarchar(138)")]
-		public string Name
-		{
-			get
-			{
-				return this._Name;
-			}
+        private string _Name;
 
-			set
-			{
-				if (this._Name != value)
-					this._Name = value;
-			}
+        private string _OrganizationName;
 
-		}
+        private DateTime? _Stamp;
 
-		
-		[Column(Name="OrganizationName", Storage="_OrganizationName", DbType="nvarchar(100) NOT NULL")]
-		public string OrganizationName
-		{
-			get
-			{
-				return this._OrganizationName;
-			}
+        private int _PeopleId;
 
-			set
-			{
-				if (this._OrganizationName != value)
-					this._OrganizationName = value;
-			}
+        private int _OrganizationId;
 
-		}
+        private int _RegDataId;
 
-		
-		[Column(Name="Stamp", Storage="_Stamp", DbType="datetime")]
-		public DateTime? Stamp
-		{
-			get
-			{
-				return this._Stamp;
-			}
+        public InProgressRegistration()
+        {
+        }
 
-			set
-			{
-				if (this._Stamp != value)
-					this._Stamp = value;
-			}
+        [Column(Name = "Name", Storage = "_Name", DbType = "nvarchar(138)")]
+        public string Name
+        {
+            get => _Name;
 
-		}
+            set
+            {
+                if (_Name != value)
+                {
+                    _Name = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="PeopleId", Storage="_PeopleId", DbType="int NOT NULL")]
-		public int PeopleId
-		{
-			get
-			{
-				return this._PeopleId;
-			}
+        [Column(Name = "OrganizationName", Storage = "_OrganizationName", DbType = "nvarchar(100) NOT NULL")]
+        public string OrganizationName
+        {
+            get => _OrganizationName;
 
-			set
-			{
-				if (this._PeopleId != value)
-					this._PeopleId = value;
-			}
+            set
+            {
+                if (_OrganizationName != value)
+                {
+                    _OrganizationName = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "Stamp", Storage = "_Stamp", DbType = "datetime")]
+        public DateTime? Stamp
+        {
+            get => _Stamp;
 
-		
-		[Column(Name="OrganizationId", Storage="_OrganizationId", DbType="int NOT NULL")]
-		public int OrganizationId
-		{
-			get
-			{
-				return this._OrganizationId;
-			}
+            set
+            {
+                if (_Stamp != value)
+                {
+                    _Stamp = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._OrganizationId != value)
-					this._OrganizationId = value;
-			}
+        [Column(Name = "PeopleId", Storage = "_PeopleId", DbType = "int NOT NULL")]
+        public int PeopleId
+        {
+            get => _PeopleId;
 
-		}
+            set
+            {
+                if (_PeopleId != value)
+                {
+                    _PeopleId = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="RegDataId", Storage="_RegDataId", DbType="int NOT NULL")]
-		public int RegDataId
-		{
-			get
-			{
-				return this._RegDataId;
-			}
+        [Column(Name = "OrganizationId", Storage = "_OrganizationId", DbType = "int NOT NULL")]
+        public int OrganizationId
+        {
+            get => _OrganizationId;
 
-			set
-			{
-				if (this._RegDataId != value)
-					this._RegDataId = value;
-			}
+            set
+            {
+                if (_OrganizationId != value)
+                {
+                    _OrganizationId = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "RegDataId", Storage = "_RegDataId", DbType = "int NOT NULL")]
+        public int RegDataId
+        {
+            get => _RegDataId;
 
-		
+            set
+            {
+                if (_RegDataId != value)
+                {
+                    _RegDataId = value;
+                }
+            }
+        }
     }
-
 }

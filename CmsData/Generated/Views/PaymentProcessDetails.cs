@@ -1,19 +1,13 @@
-﻿using System;
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
     [Table(Name = "PaymentProcessDetails")]
     public partial class PaymentProcessDetails
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         private int _ProcessId;
         private string _ProcessName;
@@ -27,141 +21,131 @@ namespace CmsData.View
 
         public PaymentProcessDetails()
         {
-
         }
 
         [Column(Name = "ProcessId", Storage = "_ProcessId", DbType = "int")]
         public int ProcessId
         {
-            get
-            {
-                return this._ProcessId;
-            }
+            get => _ProcessId;
 
             set
             {
-                if (this._ProcessId != value)
-                    this._ProcessId = value;
+                if (_ProcessId != value)
+                {
+                    _ProcessId = value;
+                }
             }
         }
 
         [Column(Name = "ProcessName", Storage = "_ProcessName", DbType = "nvarchar")]
         public string ProcessName
         {
-            get
-            {
-                return this._ProcessName;
-            }
+            get => _ProcessName;
 
             set
             {
-                if (this._ProcessName != value)
-                    this._ProcessName = value;
+                if (_ProcessName != value)
+                {
+                    _ProcessName = value;
+                }
             }
         }
 
         [Column(Name = "GatewayAccountId", Storage = "_GatewayAccountId", DbType = "int")]
         public int? GatewayAccountId
         {
-            get
-            {
-                return this._GatewayAccountId;
-            }
+            get => _GatewayAccountId;
 
             set
             {
-                if (this._GatewayAccountId != value)
-                    this._GatewayAccountId = value;
+                if (_GatewayAccountId != value)
+                {
+                    _GatewayAccountId = value;
+                }
             }
         }
 
         [Column(Name = "GatewayAccountName", Storage = "_GatewayAccountName", DbType = "nvarchar")]
         public string GatewayAccountName
         {
-            get
-            {
-                return this._GatewayAccountName;
-            }
+            get => _GatewayAccountName;
 
             set
             {
-                if (this._GatewayAccountName != value)
-                    this._GatewayAccountName = value;
+                if (_GatewayAccountName != value)
+                {
+                    _GatewayAccountName = value;
+                }
             }
         }
 
         [Column(Name = "GatewayId", Storage = "_GatewayId", DbType = "int")]
         public int? GatewayId
         {
-            get
-            {
-                return this._GatewayId;
-            }
+            get => _GatewayId;
 
             set
             {
-                if (this._GatewayId != value)
-                    this._GatewayId = value;
+                if (_GatewayId != value)
+                {
+                    _GatewayId = value;
+                }
             }
         }
 
         [Column(Name = "GatewayDetailName", Storage = "_GatewayDetailName", DbType = "nvarchar NOT NULL")]
         public string GatewayDetailName
         {
-            get
-            {
-                return this._GatewayDetailName;
-            }
+            get => _GatewayDetailName;
 
             set
             {
-                if (this._GatewayDetailName != value)
-                    this._GatewayDetailName = value;
+                if (_GatewayDetailName != value)
+                {
+                    _GatewayDetailName = value;
+                }
             }
         }
 
         [Column(Name = "GatewayDetailValue", Storage = "_GatewayDetailValue", DbType = "nvarchar NOT NULL")]
         public string GatewayDetailValue
         {
-            get
-            {
-                return this._GatewayDetailValue;
-            }
+            get => _GatewayDetailValue;
 
             set
             {
-                if (this._GatewayDetailValue != value)
-                    this._GatewayDetailValue = value;
+                if (_GatewayDetailValue != value)
+                {
+                    _GatewayDetailValue = value;
+                }
             }
         }
 
         [Column(Name = "IsDefault", Storage = "_IsDefault", DbType = "bit NOT NULL")]
         public bool? IsDefault
         {
-            get
-            {
-                return this._IsDefault;
-            }
+            get => _IsDefault;
 
             set
             {
-                if (this._IsDefault != value)
-                    this._IsDefault = value;
+                if (_IsDefault != value)
+                {
+                    _IsDefault = value;
+                }
             }
         }
 
         [Column(Name = "IsBoolean", Storage = "_IsBoolean", DbType = "bit NOT NULL")]
         public bool? IsBoolean
         {
-            get
-            {
-                return this._IsBoolean;
-            }
+            get => _IsBoolean;
 
             set
             {
-                if (this._IsBoolean != value)
-                    this._IsBoolean = value;
+                if (_IsBoolean != value)
+                {
+                    _IsBoolean = value;
+                }
             }
         }
     }

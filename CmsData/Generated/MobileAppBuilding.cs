@@ -1,177 +1,151 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
-using CmsData.Infrastructure;
+using System.Data.Linq.Mapping;
 
 namespace CmsData
 {
-	[Table(Name="dbo.MobileAppBuilding")]
-	public partial class MobileAppBuilding : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-	#region Private Fields
-		
-		private int _Id;
-		
-		private string _Name;
-		
-		private int _Order;
-		
-		private bool _Enabled;
-		
-   		
-    	
-	#endregion
-	
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-		
-		partial void OnIdChanging(int value);
-		partial void OnIdChanged();
-		
-		partial void OnNameChanging(string value);
-		partial void OnNameChanged();
-		
-		partial void OnOrderChanging(int value);
-		partial void OnOrderChanged();
-		
-		partial void OnEnabledChanging(bool value);
-		partial void OnEnabledChanged();
-		
-    #endregion
-		public MobileAppBuilding()
-		{
-			
-			
-			OnCreated();
-		}
+    [Table(Name = "dbo.MobileAppBuilding")]
+    public partial class MobileAppBuilding : INotifyPropertyChanging, INotifyPropertyChanged
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-    #region Columns
-		
-		[Column(Name="id", UpdateCheck=UpdateCheck.Never, Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int Id
-		{
-			get { return this._Id; }
+        #region Private Fields
 
-			set
-			{
-				if (this._Id != value)
-				{
-				
-                    this.OnIdChanging(value);
-					this.SendPropertyChanging();
-					this._Id = value;
-					this.SendPropertyChanged("Id");
-					this.OnIdChanged();
-				}
+        private int _Id;
 
-			}
+        private string _Name;
 
-		}
+        private int _Order;
 
-		
-		[Column(Name="name", UpdateCheck=UpdateCheck.Never, Storage="_Name", DbType="nvarchar(100) NOT NULL")]
-		public string Name
-		{
-			get { return this._Name; }
+        private bool _Enabled;
 
-			set
-			{
-				if (this._Name != value)
-				{
-				
-                    this.OnNameChanging(value);
-					this.SendPropertyChanging();
-					this._Name = value;
-					this.SendPropertyChanged("Name");
-					this.OnNameChanged();
-				}
+        #endregion
 
-			}
+        #region Extensibility Method Definitions
 
-		}
+        partial void OnLoaded();
+        partial void OnValidate(System.Data.Linq.ChangeAction action);
+        partial void OnCreated();
 
-		
-		[Column(Name="order", UpdateCheck=UpdateCheck.Never, Storage="_Order", DbType="int NOT NULL")]
-		public int Order
-		{
-			get { return this._Order; }
+        partial void OnIdChanging(int value);
+        partial void OnIdChanged();
 
-			set
-			{
-				if (this._Order != value)
-				{
-				
-                    this.OnOrderChanging(value);
-					this.SendPropertyChanging();
-					this._Order = value;
-					this.SendPropertyChanged("Order");
-					this.OnOrderChanged();
-				}
+        partial void OnNameChanging(string value);
+        partial void OnNameChanged();
 
-			}
+        partial void OnOrderChanging(int value);
+        partial void OnOrderChanged();
 
-		}
+        partial void OnEnabledChanging(bool value);
+        partial void OnEnabledChanged();
 
-		
-		[Column(Name="enabled", UpdateCheck=UpdateCheck.Never, Storage="_Enabled", DbType="bit NOT NULL")]
-		public bool Enabled
-		{
-			get { return this._Enabled; }
+        #endregion
 
-			set
-			{
-				if (this._Enabled != value)
-				{
-				
-                    this.OnEnabledChanging(value);
-					this.SendPropertyChanging();
-					this._Enabled = value;
-					this.SendPropertyChanged("Enabled");
-					this.OnEnabledChanged();
-				}
+        public MobileAppBuilding()
+        {
+            OnCreated();
+        }
 
-			}
+        #region Columns
 
-		}
+        [Column(Name = "id", UpdateCheck = UpdateCheck.Never, Storage = "_Id", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
+        public int Id
+        {
+            get => _Id;
 
-		
-    #endregion
-        
-    #region Foreign Key Tables
-   		
-	#endregion
-	
-	#region Foreign Keys
-    	
-	#endregion
-	
-		public event PropertyChangingEventHandler PropertyChanging;
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-				this.PropertyChanging(this, emptyChangingEventArgs);
-		}
+            set
+            {
+                if (_Id != value)
+                {
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
+                }
+            }
+        }
 
-		public event PropertyChangedEventHandler PropertyChanged;
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-		}
+        [Column(Name = "name", UpdateCheck = UpdateCheck.Never, Storage = "_Name", DbType = "nvarchar(100) NOT NULL")]
+        public string Name
+        {
+            get => _Name;
 
-   		
-	}
+            set
+            {
+                if (_Name != value)
+                {
+                    OnNameChanging(value);
+                    SendPropertyChanging();
+                    _Name = value;
+                    SendPropertyChanged("Name");
+                    OnNameChanged();
+                }
+            }
+        }
 
+        [Column(Name = "order", UpdateCheck = UpdateCheck.Never, Storage = "_Order", DbType = "int NOT NULL")]
+        public int Order
+        {
+            get => _Order;
+
+            set
+            {
+                if (_Order != value)
+                {
+                    OnOrderChanging(value);
+                    SendPropertyChanging();
+                    _Order = value;
+                    SendPropertyChanged("Order");
+                    OnOrderChanged();
+                }
+            }
+        }
+
+        [Column(Name = "enabled", UpdateCheck = UpdateCheck.Never, Storage = "_Enabled", DbType = "bit NOT NULL")]
+        public bool Enabled
+        {
+            get => _Enabled;
+
+            set
+            {
+                if (_Enabled != value)
+                {
+                    OnEnabledChanging(value);
+                    SendPropertyChanging();
+                    _Enabled = value;
+                    SendPropertyChanged("Enabled");
+                    OnEnabledChanged();
+                }
+            }
+        }
+
+        #endregion
+
+        #region Foreign Key Tables
+
+        #endregion
+
+        #region Foreign Keys
+
+        #endregion
+
+        public event PropertyChangingEventHandler PropertyChanging;
+        protected virtual void SendPropertyChanging()
+        {
+            if ((PropertyChanging != null))
+            {
+                PropertyChanging(this, emptyChangingEventArgs);
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void SendPropertyChanged(string propertyName)
+        {
+            if ((PropertyChanged != null))
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
 }
-
