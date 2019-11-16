@@ -1,223 +1,203 @@
-using System; 
+using CmsData.Infrastructure;
+using System;
+using System.ComponentModel;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
-using System.ComponentModel;
-using CmsData.Infrastructure;
 
 namespace CmsData
 {
-	[Table(Name="dbo.TaskListOwners")]
-	public partial class TaskListOwner : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-	#region Private Fields
-		
-		private int _TaskListId;
-		
-		private int _PeopleId;
-		
-   		
-    	
-		private EntityRef<Person> _Person;
-		
-		private EntityRef<TaskList> _TaskList;
-		
-	#endregion
-	
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-		
-		partial void OnTaskListIdChanging(int value);
-		partial void OnTaskListIdChanged();
-		
-		partial void OnPeopleIdChanging(int value);
-		partial void OnPeopleIdChanged();
-		
-    #endregion
-		public TaskListOwner()
-		{
-			
-			
-			this._Person = default(EntityRef<Person>); 
-			
-			this._TaskList = default(EntityRef<TaskList>); 
-			
-			OnCreated();
-		}
+    [Table(Name = "dbo.TaskListOwners")]
+    public partial class TaskListOwner : INotifyPropertyChanging, INotifyPropertyChanged
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-    #region Columns
-		
-		[Column(Name="TaskListId", UpdateCheck=UpdateCheck.Never, Storage="_TaskListId", DbType="int NOT NULL", IsPrimaryKey=true)]
-		[IsForeignKey]
-		public int TaskListId
-		{
-			get { return this._TaskListId; }
+        #region Private Fields
 
-			set
-			{
-				if (this._TaskListId != value)
-				{
-				
-					if (this._TaskList.HasLoadedOrAssignedValue)
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-				
-                    this.OnTaskListIdChanging(value);
-					this.SendPropertyChanging();
-					this._TaskListId = value;
-					this.SendPropertyChanged("TaskListId");
-					this.OnTaskListIdChanged();
-				}
+        private int _TaskListId;
 
-			}
+        private int _PeopleId;
 
-		}
+        private EntityRef<Person> _Person;
 
-		
-		[Column(Name="PeopleId", UpdateCheck=UpdateCheck.Never, Storage="_PeopleId", DbType="int NOT NULL", IsPrimaryKey=true)]
-		[IsForeignKey]
-		public int PeopleId
-		{
-			get { return this._PeopleId; }
+        private EntityRef<TaskList> _TaskList;
 
-			set
-			{
-				if (this._PeopleId != value)
-				{
-				
-					if (this._Person.HasLoadedOrAssignedValue)
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-				
-                    this.OnPeopleIdChanging(value);
-					this.SendPropertyChanging();
-					this._PeopleId = value;
-					this.SendPropertyChanged("PeopleId");
-					this.OnPeopleIdChanged();
-				}
+        #endregion
 
-			}
+        #region Extensibility Method Definitions
 
-		}
+        partial void OnLoaded();
+        partial void OnValidate(System.Data.Linq.ChangeAction action);
+        partial void OnCreated();
 
-		
-    #endregion
-        
-    #region Foreign Key Tables
-   		
-	#endregion
-	
-	#region Foreign Keys
-    	
-		[Association(Name="FK_TaskListOwners_PEOPLE_TBL", Storage="_Person", ThisKey="PeopleId", IsForeignKey=true)]
-		public Person Person
-		{
-			get { return this._Person.Entity; }
+        partial void OnTaskListIdChanging(int value);
+        partial void OnTaskListIdChanged();
 
-			set
-			{
-				Person previousValue = this._Person.Entity;
-				if (((previousValue != value) 
-							|| (this._Person.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if (previousValue != null)
-					{
-						this._Person.Entity = null;
-						previousValue.TaskListOwners.Remove(this);
-					}
+        partial void OnPeopleIdChanging(int value);
+        partial void OnPeopleIdChanged();
 
-					this._Person.Entity = value;
-					if (value != null)
-					{
-						value.TaskListOwners.Add(this);
-						
-						this._PeopleId = value.PeopleId;
-						
-					}
+        #endregion
 
-					else
-					{
-						
-						this._PeopleId = default(int);
-						
-					}
+        public TaskListOwner()
+        {
+            _Person = default(EntityRef<Person>);
 
-					this.SendPropertyChanged("Person");
-				}
+            _TaskList = default(EntityRef<TaskList>);
 
-			}
+            OnCreated();
+        }
 
-		}
+        #region Columns
 
-		
-		[Association(Name="FK_TaskListOwners_TaskList", Storage="_TaskList", ThisKey="TaskListId", IsForeignKey=true)]
-		public TaskList TaskList
-		{
-			get { return this._TaskList.Entity; }
+        [Column(Name = "TaskListId", UpdateCheck = UpdateCheck.Never, Storage = "_TaskListId", DbType = "int NOT NULL", IsPrimaryKey = true)]
+        [IsForeignKey]
+        public int TaskListId
+        {
+            get => _TaskListId;
 
-			set
-			{
-				TaskList previousValue = this._TaskList.Entity;
-				if (((previousValue != value) 
-							|| (this._TaskList.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if (previousValue != null)
-					{
-						this._TaskList.Entity = null;
-						previousValue.TaskListOwners.Remove(this);
-					}
+            set
+            {
+                if (_TaskListId != value)
+                {
+                    if (_TaskList.HasLoadedOrAssignedValue)
+                    {
+                        throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+                    }
 
-					this._TaskList.Entity = value;
-					if (value != null)
-					{
-						value.TaskListOwners.Add(this);
-						
-						this._TaskListId = value.Id;
-						
-					}
+                    OnTaskListIdChanging(value);
+                    SendPropertyChanging();
+                    _TaskListId = value;
+                    SendPropertyChanged("TaskListId");
+                    OnTaskListIdChanged();
+                }
+            }
+        }
 
-					else
-					{
-						
-						this._TaskListId = default(int);
-						
-					}
+        [Column(Name = "PeopleId", UpdateCheck = UpdateCheck.Never, Storage = "_PeopleId", DbType = "int NOT NULL", IsPrimaryKey = true)]
+        [IsForeignKey]
+        public int PeopleId
+        {
+            get => _PeopleId;
 
-					this.SendPropertyChanged("TaskList");
-				}
+            set
+            {
+                if (_PeopleId != value)
+                {
+                    if (_Person.HasLoadedOrAssignedValue)
+                    {
+                        throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+                    }
 
-			}
+                    OnPeopleIdChanging(value);
+                    SendPropertyChanging();
+                    _PeopleId = value;
+                    SendPropertyChanged("PeopleId");
+                    OnPeopleIdChanged();
+                }
+            }
+        }
 
-		}
+        #endregion
 
-		
-	#endregion
-	
-		public event PropertyChangingEventHandler PropertyChanging;
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-				this.PropertyChanging(this, emptyChangingEventArgs);
-		}
+        #region Foreign Key Tables
 
-		public event PropertyChangedEventHandler PropertyChanged;
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-		}
+        #endregion
 
-   		
-	}
+        #region Foreign Keys
 
+        [Association(Name = "FK_TaskListOwners_PEOPLE_TBL", Storage = "_Person", ThisKey = "PeopleId", IsForeignKey = true)]
+        public Person Person
+        {
+            get => _Person.Entity;
+
+            set
+            {
+                Person previousValue = _Person.Entity;
+                if (((previousValue != value)
+                            || (_Person.HasLoadedOrAssignedValue == false)))
+                {
+                    SendPropertyChanging();
+                    if (previousValue != null)
+                    {
+                        _Person.Entity = null;
+                        previousValue.TaskListOwners.Remove(this);
+                    }
+
+                    _Person.Entity = value;
+                    if (value != null)
+                    {
+                        value.TaskListOwners.Add(this);
+
+                        _PeopleId = value.PeopleId;
+
+                    }
+
+                    else
+                    {
+                        _PeopleId = default(int);
+
+                    }
+
+                    SendPropertyChanged("Person");
+                }
+            }
+        }
+
+        [Association(Name = "FK_TaskListOwners_TaskList", Storage = "_TaskList", ThisKey = "TaskListId", IsForeignKey = true)]
+        public TaskList TaskList
+        {
+            get => _TaskList.Entity;
+
+            set
+            {
+                TaskList previousValue = _TaskList.Entity;
+                if (((previousValue != value)
+                            || (_TaskList.HasLoadedOrAssignedValue == false)))
+                {
+                    SendPropertyChanging();
+                    if (previousValue != null)
+                    {
+                        _TaskList.Entity = null;
+                        previousValue.TaskListOwners.Remove(this);
+                    }
+
+                    _TaskList.Entity = value;
+                    if (value != null)
+                    {
+                        value.TaskListOwners.Add(this);
+
+                        _TaskListId = value.Id;
+
+                    }
+
+                    else
+                    {
+                        _TaskListId = default(int);
+
+                    }
+
+                    SendPropertyChanged("TaskList");
+                }
+            }
+        }
+
+        #endregion
+
+        public event PropertyChangingEventHandler PropertyChanging;
+        protected virtual void SendPropertyChanging()
+        {
+            if ((PropertyChanging != null))
+            {
+                PropertyChanging(this, emptyChangingEventArgs);
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void SendPropertyChanged(string propertyName)
+        {
+            if ((PropertyChanged != null))
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
 }
-

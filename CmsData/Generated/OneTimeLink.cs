@@ -1,177 +1,151 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
-using CmsData.Infrastructure;
+using System.Data.Linq.Mapping;
 
 namespace CmsData
 {
-	[Table(Name="dbo.OneTimeLinks")]
-	public partial class OneTimeLink : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-	#region Private Fields
-		
-		private Guid _Id;
-		
-		private string _Querystring;
-		
-		private bool _Used;
-		
-		private DateTime? _Expires;
-		
-   		
-    	
-	#endregion
-	
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-		
-		partial void OnIdChanging(Guid value);
-		partial void OnIdChanged();
-		
-		partial void OnQuerystringChanging(string value);
-		partial void OnQuerystringChanged();
-		
-		partial void OnUsedChanging(bool value);
-		partial void OnUsedChanged();
-		
-		partial void OnExpiresChanging(DateTime? value);
-		partial void OnExpiresChanged();
-		
-    #endregion
-		public OneTimeLink()
-		{
-			
-			
-			OnCreated();
-		}
+    [Table(Name = "dbo.OneTimeLinks")]
+    public partial class OneTimeLink : INotifyPropertyChanging, INotifyPropertyChanged
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-    #region Columns
-		
-		[Column(Name="Id", UpdateCheck=UpdateCheck.Never, Storage="_Id", DbType="uniqueidentifier NOT NULL", IsPrimaryKey=true)]
-		public Guid Id
-		{
-			get { return this._Id; }
+        #region Private Fields
 
-			set
-			{
-				if (this._Id != value)
-				{
-				
-                    this.OnIdChanging(value);
-					this.SendPropertyChanging();
-					this._Id = value;
-					this.SendPropertyChanged("Id");
-					this.OnIdChanged();
-				}
+        private Guid _Id;
 
-			}
+        private string _Querystring;
 
-		}
+        private bool _Used;
 
-		
-		[Column(Name="querystring", UpdateCheck=UpdateCheck.Never, Storage="_Querystring", DbType="nvarchar(2000)")]
-		public string Querystring
-		{
-			get { return this._Querystring; }
+        private DateTime? _Expires;
 
-			set
-			{
-				if (this._Querystring != value)
-				{
-				
-                    this.OnQuerystringChanging(value);
-					this.SendPropertyChanging();
-					this._Querystring = value;
-					this.SendPropertyChanged("Querystring");
-					this.OnQuerystringChanged();
-				}
+        #endregion
 
-			}
+        #region Extensibility Method Definitions
 
-		}
+        partial void OnLoaded();
+        partial void OnValidate(System.Data.Linq.ChangeAction action);
+        partial void OnCreated();
 
-		
-		[Column(Name="used", UpdateCheck=UpdateCheck.Never, Storage="_Used", DbType="bit NOT NULL")]
-		public bool Used
-		{
-			get { return this._Used; }
+        partial void OnIdChanging(Guid value);
+        partial void OnIdChanged();
 
-			set
-			{
-				if (this._Used != value)
-				{
-				
-                    this.OnUsedChanging(value);
-					this.SendPropertyChanging();
-					this._Used = value;
-					this.SendPropertyChanged("Used");
-					this.OnUsedChanged();
-				}
+        partial void OnQuerystringChanging(string value);
+        partial void OnQuerystringChanged();
 
-			}
+        partial void OnUsedChanging(bool value);
+        partial void OnUsedChanged();
 
-		}
+        partial void OnExpiresChanging(DateTime? value);
+        partial void OnExpiresChanged();
 
-		
-		[Column(Name="expires", UpdateCheck=UpdateCheck.Never, Storage="_Expires", DbType="datetime")]
-		public DateTime? Expires
-		{
-			get { return this._Expires; }
+        #endregion
 
-			set
-			{
-				if (this._Expires != value)
-				{
-				
-                    this.OnExpiresChanging(value);
-					this.SendPropertyChanging();
-					this._Expires = value;
-					this.SendPropertyChanged("Expires");
-					this.OnExpiresChanged();
-				}
+        public OneTimeLink()
+        {
+            OnCreated();
+        }
 
-			}
+        #region Columns
 
-		}
+        [Column(Name = "Id", UpdateCheck = UpdateCheck.Never, Storage = "_Id", DbType = "uniqueidentifier NOT NULL", IsPrimaryKey = true)]
+        public Guid Id
+        {
+            get => _Id;
 
-		
-    #endregion
-        
-    #region Foreign Key Tables
-   		
-	#endregion
-	
-	#region Foreign Keys
-    	
-	#endregion
-	
-		public event PropertyChangingEventHandler PropertyChanging;
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-				this.PropertyChanging(this, emptyChangingEventArgs);
-		}
+            set
+            {
+                if (_Id != value)
+                {
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
+                }
+            }
+        }
 
-		public event PropertyChangedEventHandler PropertyChanged;
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-		}
+        [Column(Name = "querystring", UpdateCheck = UpdateCheck.Never, Storage = "_Querystring", DbType = "nvarchar(2000)")]
+        public string Querystring
+        {
+            get => _Querystring;
 
-   		
-	}
+            set
+            {
+                if (_Querystring != value)
+                {
+                    OnQuerystringChanging(value);
+                    SendPropertyChanging();
+                    _Querystring = value;
+                    SendPropertyChanged("Querystring");
+                    OnQuerystringChanged();
+                }
+            }
+        }
 
+        [Column(Name = "used", UpdateCheck = UpdateCheck.Never, Storage = "_Used", DbType = "bit NOT NULL")]
+        public bool Used
+        {
+            get => _Used;
+
+            set
+            {
+                if (_Used != value)
+                {
+                    OnUsedChanging(value);
+                    SendPropertyChanging();
+                    _Used = value;
+                    SendPropertyChanged("Used");
+                    OnUsedChanged();
+                }
+            }
+        }
+
+        [Column(Name = "expires", UpdateCheck = UpdateCheck.Never, Storage = "_Expires", DbType = "datetime")]
+        public DateTime? Expires
+        {
+            get => _Expires;
+
+            set
+            {
+                if (_Expires != value)
+                {
+                    OnExpiresChanging(value);
+                    SendPropertyChanging();
+                    _Expires = value;
+                    SendPropertyChanged("Expires");
+                    OnExpiresChanged();
+                }
+            }
+        }
+
+        #endregion
+
+        #region Foreign Key Tables
+
+        #endregion
+
+        #region Foreign Keys
+
+        #endregion
+
+        public event PropertyChangingEventHandler PropertyChanging;
+        protected virtual void SendPropertyChanging()
+        {
+            if ((PropertyChanging != null))
+            {
+                PropertyChanging(this, emptyChangingEventArgs);
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void SendPropertyChanged(string propertyName)
+        {
+            if ((PropertyChanged != null))
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
 }
-

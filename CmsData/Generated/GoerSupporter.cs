@@ -1,385 +1,341 @@
-using System; 
+using CmsData.Infrastructure;
+using System;
+using System.ComponentModel;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
-using System.ComponentModel;
-using CmsData.Infrastructure;
 
 namespace CmsData
 {
-	[Table(Name="dbo.GoerSupporter")]
-	public partial class GoerSupporter : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-	#region Private Fields
-		
-		private int _Id;
-		
-		private int _GoerId;
-		
-		private int? _SupporterId;
-		
-		private string _NoDbEmail;
-		
-		private bool? _Active;
-		
-		private bool? _Unsubscribe;
-		
-		private DateTime _Created;
-		
-		private string _Salutation;
-		
-   		
-    	
-		private EntityRef<Person> _Supporter;
-		
-		private EntityRef<Person> _Goer;
-		
-	#endregion
-	
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-		
-		partial void OnIdChanging(int value);
-		partial void OnIdChanged();
-		
-		partial void OnGoerIdChanging(int value);
-		partial void OnGoerIdChanged();
-		
-		partial void OnSupporterIdChanging(int? value);
-		partial void OnSupporterIdChanged();
-		
-		partial void OnNoDbEmailChanging(string value);
-		partial void OnNoDbEmailChanged();
-		
-		partial void OnActiveChanging(bool? value);
-		partial void OnActiveChanged();
-		
-		partial void OnUnsubscribeChanging(bool? value);
-		partial void OnUnsubscribeChanged();
-		
-		partial void OnCreatedChanging(DateTime value);
-		partial void OnCreatedChanged();
-		
-		partial void OnSalutationChanging(string value);
-		partial void OnSalutationChanged();
-		
-    #endregion
-		public GoerSupporter()
-		{
-			
-			
-			this._Supporter = default(EntityRef<Person>); 
-			
-			this._Goer = default(EntityRef<Person>); 
-			
-			OnCreated();
-		}
+    [Table(Name = "dbo.GoerSupporter")]
+    public partial class GoerSupporter : INotifyPropertyChanging, INotifyPropertyChanged
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-    #region Columns
-		
-		[Column(Name="Id", UpdateCheck=UpdateCheck.Never, Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int Id
-		{
-			get { return this._Id; }
+        #region Private Fields
 
-			set
-			{
-				if (this._Id != value)
-				{
-				
-                    this.OnIdChanging(value);
-					this.SendPropertyChanging();
-					this._Id = value;
-					this.SendPropertyChanged("Id");
-					this.OnIdChanged();
-				}
+        private int _Id;
 
-			}
+        private int _GoerId;
 
-		}
+        private int? _SupporterId;
 
-		
-		[Column(Name="GoerId", UpdateCheck=UpdateCheck.Never, Storage="_GoerId", DbType="int NOT NULL")]
-		[IsForeignKey]
-		public int GoerId
-		{
-			get { return this._GoerId; }
+        private string _NoDbEmail;
 
-			set
-			{
-				if (this._GoerId != value)
-				{
-				
-					if (this._Goer.HasLoadedOrAssignedValue)
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-				
-                    this.OnGoerIdChanging(value);
-					this.SendPropertyChanging();
-					this._GoerId = value;
-					this.SendPropertyChanged("GoerId");
-					this.OnGoerIdChanged();
-				}
+        private bool? _Active;
 
-			}
+        private bool? _Unsubscribe;
 
-		}
+        private DateTime _Created;
 
-		
-		[Column(Name="SupporterId", UpdateCheck=UpdateCheck.Never, Storage="_SupporterId", DbType="int")]
-		[IsForeignKey]
-		public int? SupporterId
-		{
-			get { return this._SupporterId; }
+        private string _Salutation;
 
-			set
-			{
-				if (this._SupporterId != value)
-				{
-				
-					if (this._Supporter.HasLoadedOrAssignedValue)
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-				
-                    this.OnSupporterIdChanging(value);
-					this.SendPropertyChanging();
-					this._SupporterId = value;
-					this.SendPropertyChanged("SupporterId");
-					this.OnSupporterIdChanged();
-				}
+        private EntityRef<Person> _Supporter;
 
-			}
+        private EntityRef<Person> _Goer;
 
-		}
+        #endregion
 
-		
-		[Column(Name="NoDbEmail", UpdateCheck=UpdateCheck.Never, Storage="_NoDbEmail", DbType="varchar(80)")]
-		public string NoDbEmail
-		{
-			get { return this._NoDbEmail; }
+        #region Extensibility Method Definitions
 
-			set
-			{
-				if (this._NoDbEmail != value)
-				{
-				
-                    this.OnNoDbEmailChanging(value);
-					this.SendPropertyChanging();
-					this._NoDbEmail = value;
-					this.SendPropertyChanged("NoDbEmail");
-					this.OnNoDbEmailChanged();
-				}
+        partial void OnLoaded();
+        partial void OnValidate(System.Data.Linq.ChangeAction action);
+        partial void OnCreated();
 
-			}
+        partial void OnIdChanging(int value);
+        partial void OnIdChanged();
 
-		}
+        partial void OnGoerIdChanging(int value);
+        partial void OnGoerIdChanged();
 
-		
-		[Column(Name="Active", UpdateCheck=UpdateCheck.Never, Storage="_Active", DbType="bit")]
-		public bool? Active
-		{
-			get { return this._Active; }
+        partial void OnSupporterIdChanging(int? value);
+        partial void OnSupporterIdChanged();
 
-			set
-			{
-				if (this._Active != value)
-				{
-				
-                    this.OnActiveChanging(value);
-					this.SendPropertyChanging();
-					this._Active = value;
-					this.SendPropertyChanged("Active");
-					this.OnActiveChanged();
-				}
+        partial void OnNoDbEmailChanging(string value);
+        partial void OnNoDbEmailChanged();
 
-			}
+        partial void OnActiveChanging(bool? value);
+        partial void OnActiveChanged();
 
-		}
+        partial void OnUnsubscribeChanging(bool? value);
+        partial void OnUnsubscribeChanged();
 
-		
-		[Column(Name="Unsubscribe", UpdateCheck=UpdateCheck.Never, Storage="_Unsubscribe", DbType="bit")]
-		public bool? Unsubscribe
-		{
-			get { return this._Unsubscribe; }
+        partial void OnCreatedChanging(DateTime value);
+        partial void OnCreatedChanged();
 
-			set
-			{
-				if (this._Unsubscribe != value)
-				{
-				
-                    this.OnUnsubscribeChanging(value);
-					this.SendPropertyChanging();
-					this._Unsubscribe = value;
-					this.SendPropertyChanged("Unsubscribe");
-					this.OnUnsubscribeChanged();
-				}
+        partial void OnSalutationChanging(string value);
+        partial void OnSalutationChanged();
 
-			}
+        #endregion
 
-		}
+        public GoerSupporter()
+        {
+            _Supporter = default(EntityRef<Person>);
 
-		
-		[Column(Name="Created", UpdateCheck=UpdateCheck.Never, Storage="_Created", DbType="datetime NOT NULL")]
-		public DateTime Created
-		{
-			get { return this._Created; }
+            _Goer = default(EntityRef<Person>);
 
-			set
-			{
-				if (this._Created != value)
-				{
-				
-                    this.OnCreatedChanging(value);
-					this.SendPropertyChanging();
-					this._Created = value;
-					this.SendPropertyChanged("Created");
-					this.OnCreatedChanged();
-				}
+            OnCreated();
+        }
 
-			}
+        #region Columns
 
-		}
+        [Column(Name = "Id", UpdateCheck = UpdateCheck.Never, Storage = "_Id", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
+        public int Id
+        {
+            get => _Id;
 
-		
-		[Column(Name="Salutation", UpdateCheck=UpdateCheck.Never, Storage="_Salutation", DbType="nvarchar(80)")]
-		public string Salutation
-		{
-			get { return this._Salutation; }
+            set
+            {
+                if (_Id != value)
+                {
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
+                }
+            }
+        }
 
-			set
-			{
-				if (this._Salutation != value)
-				{
-				
-                    this.OnSalutationChanging(value);
-					this.SendPropertyChanging();
-					this._Salutation = value;
-					this.SendPropertyChanged("Salutation");
-					this.OnSalutationChanged();
-				}
+        [Column(Name = "GoerId", UpdateCheck = UpdateCheck.Never, Storage = "_GoerId", DbType = "int NOT NULL")]
+        [IsForeignKey]
+        public int GoerId
+        {
+            get => _GoerId;
 
-			}
+            set
+            {
+                if (_GoerId != value)
+                {
+                    if (_Goer.HasLoadedOrAssignedValue)
+                    {
+                        throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+                    }
 
-		}
+                    OnGoerIdChanging(value);
+                    SendPropertyChanging();
+                    _GoerId = value;
+                    SendPropertyChanged("GoerId");
+                    OnGoerIdChanged();
+                }
+            }
+        }
 
-		
-    #endregion
-        
-    #region Foreign Key Tables
-   		
-	#endregion
-	
-	#region Foreign Keys
-    	
-		[Association(Name="FK_Goers__Supporter", Storage="_Supporter", ThisKey="SupporterId", IsForeignKey=true)]
-		public Person Supporter
-		{
-			get { return this._Supporter.Entity; }
+        [Column(Name = "SupporterId", UpdateCheck = UpdateCheck.Never, Storage = "_SupporterId", DbType = "int")]
+        [IsForeignKey]
+        public int? SupporterId
+        {
+            get => _SupporterId;
 
-			set
-			{
-				Person previousValue = this._Supporter.Entity;
-				if (((previousValue != value) 
-							|| (this._Supporter.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if (previousValue != null)
-					{
-						this._Supporter.Entity = null;
-						previousValue.FK_Goers.Remove(this);
-					}
+            set
+            {
+                if (_SupporterId != value)
+                {
+                    if (_Supporter.HasLoadedOrAssignedValue)
+                    {
+                        throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+                    }
 
-					this._Supporter.Entity = value;
-					if (value != null)
-					{
-						value.FK_Goers.Add(this);
-						
-						this._SupporterId = value.PeopleId;
-						
-					}
+                    OnSupporterIdChanging(value);
+                    SendPropertyChanging();
+                    _SupporterId = value;
+                    SendPropertyChanged("SupporterId");
+                    OnSupporterIdChanged();
+                }
+            }
+        }
 
-					else
-					{
-						
-						this._SupporterId = default(int?);
-						
-					}
+        [Column(Name = "NoDbEmail", UpdateCheck = UpdateCheck.Never, Storage = "_NoDbEmail", DbType = "varchar(80)")]
+        public string NoDbEmail
+        {
+            get => _NoDbEmail;
 
-					this.SendPropertyChanged("Supporter");
-				}
+            set
+            {
+                if (_NoDbEmail != value)
+                {
+                    OnNoDbEmailChanging(value);
+                    SendPropertyChanging();
+                    _NoDbEmail = value;
+                    SendPropertyChanged("NoDbEmail");
+                    OnNoDbEmailChanged();
+                }
+            }
+        }
 
-			}
+        [Column(Name = "Active", UpdateCheck = UpdateCheck.Never, Storage = "_Active", DbType = "bit")]
+        public bool? Active
+        {
+            get => _Active;
 
-		}
+            set
+            {
+                if (_Active != value)
+                {
+                    OnActiveChanging(value);
+                    SendPropertyChanging();
+                    _Active = value;
+                    SendPropertyChanged("Active");
+                    OnActiveChanged();
+                }
+            }
+        }
 
-		
-		[Association(Name="FK_Supporters__Goer", Storage="_Goer", ThisKey="GoerId", IsForeignKey=true)]
-		public Person Goer
-		{
-			get { return this._Goer.Entity; }
+        [Column(Name = "Unsubscribe", UpdateCheck = UpdateCheck.Never, Storage = "_Unsubscribe", DbType = "bit")]
+        public bool? Unsubscribe
+        {
+            get => _Unsubscribe;
 
-			set
-			{
-				Person previousValue = this._Goer.Entity;
-				if (((previousValue != value) 
-							|| (this._Goer.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if (previousValue != null)
-					{
-						this._Goer.Entity = null;
-						previousValue.FK_Supporters.Remove(this);
-					}
+            set
+            {
+                if (_Unsubscribe != value)
+                {
+                    OnUnsubscribeChanging(value);
+                    SendPropertyChanging();
+                    _Unsubscribe = value;
+                    SendPropertyChanged("Unsubscribe");
+                    OnUnsubscribeChanged();
+                }
+            }
+        }
 
-					this._Goer.Entity = value;
-					if (value != null)
-					{
-						value.FK_Supporters.Add(this);
-						
-						this._GoerId = value.PeopleId;
-						
-					}
+        [Column(Name = "Created", UpdateCheck = UpdateCheck.Never, Storage = "_Created", DbType = "datetime NOT NULL")]
+        public DateTime Created
+        {
+            get => _Created;
 
-					else
-					{
-						
-						this._GoerId = default(int);
-						
-					}
+            set
+            {
+                if (_Created != value)
+                {
+                    OnCreatedChanging(value);
+                    SendPropertyChanging();
+                    _Created = value;
+                    SendPropertyChanged("Created");
+                    OnCreatedChanged();
+                }
+            }
+        }
 
-					this.SendPropertyChanged("Goer");
-				}
+        [Column(Name = "Salutation", UpdateCheck = UpdateCheck.Never, Storage = "_Salutation", DbType = "nvarchar(80)")]
+        public string Salutation
+        {
+            get => _Salutation;
 
-			}
+            set
+            {
+                if (_Salutation != value)
+                {
+                    OnSalutationChanging(value);
+                    SendPropertyChanging();
+                    _Salutation = value;
+                    SendPropertyChanged("Salutation");
+                    OnSalutationChanged();
+                }
+            }
+        }
 
-		}
+        #endregion
 
-		
-	#endregion
-	
-		public event PropertyChangingEventHandler PropertyChanging;
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-				this.PropertyChanging(this, emptyChangingEventArgs);
-		}
+        #region Foreign Key Tables
 
-		public event PropertyChangedEventHandler PropertyChanged;
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-		}
+        #endregion
 
-   		
-	}
+        #region Foreign Keys
 
+        [Association(Name = "FK_Goers__Supporter", Storage = "_Supporter", ThisKey = "SupporterId", IsForeignKey = true)]
+        public Person Supporter
+        {
+            get => _Supporter.Entity;
+
+            set
+            {
+                Person previousValue = _Supporter.Entity;
+                if (((previousValue != value)
+                            || (_Supporter.HasLoadedOrAssignedValue == false)))
+                {
+                    SendPropertyChanging();
+                    if (previousValue != null)
+                    {
+                        _Supporter.Entity = null;
+                        previousValue.FK_Goers.Remove(this);
+                    }
+
+                    _Supporter.Entity = value;
+                    if (value != null)
+                    {
+                        value.FK_Goers.Add(this);
+
+                        _SupporterId = value.PeopleId;
+
+                    }
+
+                    else
+                    {
+                        _SupporterId = default(int?);
+
+                    }
+
+                    SendPropertyChanged("Supporter");
+                }
+            }
+        }
+
+        [Association(Name = "FK_Supporters__Goer", Storage = "_Goer", ThisKey = "GoerId", IsForeignKey = true)]
+        public Person Goer
+        {
+            get => _Goer.Entity;
+
+            set
+            {
+                Person previousValue = _Goer.Entity;
+                if (((previousValue != value)
+                            || (_Goer.HasLoadedOrAssignedValue == false)))
+                {
+                    SendPropertyChanging();
+                    if (previousValue != null)
+                    {
+                        _Goer.Entity = null;
+                        previousValue.FK_Supporters.Remove(this);
+                    }
+
+                    _Goer.Entity = value;
+                    if (value != null)
+                    {
+                        value.FK_Supporters.Add(this);
+
+                        _GoerId = value.PeopleId;
+
+                    }
+
+                    else
+                    {
+                        _GoerId = default(int);
+
+                    }
+
+                    SendPropertyChanged("Goer");
+                }
+            }
+        }
+
+        #endregion
+
+        public event PropertyChangingEventHandler PropertyChanging;
+        protected virtual void SendPropertyChanging()
+        {
+            if ((PropertyChanging != null))
+            {
+                PropertyChanging(this, emptyChangingEventArgs);
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void SendPropertyChanged(string propertyName)
+        {
+            if ((PropertyChanged != null))
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
 }
-

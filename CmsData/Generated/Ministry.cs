@@ -1,393 +1,338 @@
-using System; 
+using System;
+using System.ComponentModel;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
-using System.ComponentModel;
-using CmsData.Infrastructure;
 
 namespace CmsData
 {
-	[Table(Name="dbo.Ministries")]
-	public partial class Ministry : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-	#region Private Fields
-		
-		private int _MinistryId;
-		
-		private string _MinistryName;
-		
-		private int? _CreatedBy;
-		
-		private DateTime? _CreatedDate;
-		
-		private int? _ModifiedBy;
-		
-		private DateTime? _ModifiedDate;
-		
-		private bool? _RecordStatus;
-		
-		private int? _DepartmentId;
-		
-		private string _MinistryDescription;
-		
-		private int? _MinistryContactId;
-		
-		private int? _ChurchId;
-		
-   		
-   		private EntitySet<Contact> _Contacts;
-		
-    	
-	#endregion
-	
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-		
-		partial void OnMinistryIdChanging(int value);
-		partial void OnMinistryIdChanged();
-		
-		partial void OnMinistryNameChanging(string value);
-		partial void OnMinistryNameChanged();
-		
-		partial void OnCreatedByChanging(int? value);
-		partial void OnCreatedByChanged();
-		
-		partial void OnCreatedDateChanging(DateTime? value);
-		partial void OnCreatedDateChanged();
-		
-		partial void OnModifiedByChanging(int? value);
-		partial void OnModifiedByChanged();
-		
-		partial void OnModifiedDateChanging(DateTime? value);
-		partial void OnModifiedDateChanged();
-		
-		partial void OnRecordStatusChanging(bool? value);
-		partial void OnRecordStatusChanged();
-		
-		partial void OnDepartmentIdChanging(int? value);
-		partial void OnDepartmentIdChanged();
-		
-		partial void OnMinistryDescriptionChanging(string value);
-		partial void OnMinistryDescriptionChanged();
-		
-		partial void OnMinistryContactIdChanging(int? value);
-		partial void OnMinistryContactIdChanged();
-		
-		partial void OnChurchIdChanging(int? value);
-		partial void OnChurchIdChanged();
-		
-    #endregion
-		public Ministry()
-		{
-			
-			this._Contacts = new EntitySet<Contact>(new Action< Contact>(this.attach_Contacts), new Action< Contact>(this.detach_Contacts)); 
-			
-			
-			OnCreated();
-		}
+    [Table(Name = "dbo.Ministries")]
+    public partial class Ministry : INotifyPropertyChanging, INotifyPropertyChanged
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-    #region Columns
-		
-		[Column(Name="MinistryId", UpdateCheck=UpdateCheck.Never, Storage="_MinistryId", AutoSync=AutoSync.OnInsert, DbType="int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int MinistryId
-		{
-			get { return this._MinistryId; }
+        #region Private Fields
 
-			set
-			{
-				if (this._MinistryId != value)
-				{
-				
-                    this.OnMinistryIdChanging(value);
-					this.SendPropertyChanging();
-					this._MinistryId = value;
-					this.SendPropertyChanged("MinistryId");
-					this.OnMinistryIdChanged();
-				}
+        private int _MinistryId;
 
-			}
+        private string _MinistryName;
 
-		}
+        private int? _CreatedBy;
 
-		
-		[Column(Name="MinistryName", UpdateCheck=UpdateCheck.Never, Storage="_MinistryName", DbType="nvarchar(50)")]
-		public string MinistryName
-		{
-			get { return this._MinistryName; }
+        private DateTime? _CreatedDate;
 
-			set
-			{
-				if (this._MinistryName != value)
-				{
-				
-                    this.OnMinistryNameChanging(value);
-					this.SendPropertyChanging();
-					this._MinistryName = value;
-					this.SendPropertyChanged("MinistryName");
-					this.OnMinistryNameChanged();
-				}
+        private int? _ModifiedBy;
 
-			}
+        private DateTime? _ModifiedDate;
 
-		}
+        private bool? _RecordStatus;
 
-		
-		[Column(Name="CreatedBy", UpdateCheck=UpdateCheck.Never, Storage="_CreatedBy", DbType="int")]
-		public int? CreatedBy
-		{
-			get { return this._CreatedBy; }
+        private int? _DepartmentId;
 
-			set
-			{
-				if (this._CreatedBy != value)
-				{
-				
-                    this.OnCreatedByChanging(value);
-					this.SendPropertyChanging();
-					this._CreatedBy = value;
-					this.SendPropertyChanged("CreatedBy");
-					this.OnCreatedByChanged();
-				}
+        private string _MinistryDescription;
 
-			}
+        private int? _MinistryContactId;
 
-		}
+        private int? _ChurchId;
 
-		
-		[Column(Name="CreatedDate", UpdateCheck=UpdateCheck.Never, Storage="_CreatedDate", DbType="datetime")]
-		public DateTime? CreatedDate
-		{
-			get { return this._CreatedDate; }
+        private EntitySet<Contact> _Contacts;
 
-			set
-			{
-				if (this._CreatedDate != value)
-				{
-				
-                    this.OnCreatedDateChanging(value);
-					this.SendPropertyChanging();
-					this._CreatedDate = value;
-					this.SendPropertyChanged("CreatedDate");
-					this.OnCreatedDateChanged();
-				}
+        #endregion
 
-			}
+        #region Extensibility Method Definitions
 
-		}
+        partial void OnLoaded();
+        partial void OnValidate(System.Data.Linq.ChangeAction action);
+        partial void OnCreated();
 
-		
-		[Column(Name="ModifiedBy", UpdateCheck=UpdateCheck.Never, Storage="_ModifiedBy", DbType="int")]
-		public int? ModifiedBy
-		{
-			get { return this._ModifiedBy; }
+        partial void OnMinistryIdChanging(int value);
+        partial void OnMinistryIdChanged();
 
-			set
-			{
-				if (this._ModifiedBy != value)
-				{
-				
-                    this.OnModifiedByChanging(value);
-					this.SendPropertyChanging();
-					this._ModifiedBy = value;
-					this.SendPropertyChanged("ModifiedBy");
-					this.OnModifiedByChanged();
-				}
+        partial void OnMinistryNameChanging(string value);
+        partial void OnMinistryNameChanged();
 
-			}
+        partial void OnCreatedByChanging(int? value);
+        partial void OnCreatedByChanged();
 
-		}
+        partial void OnCreatedDateChanging(DateTime? value);
+        partial void OnCreatedDateChanged();
 
-		
-		[Column(Name="ModifiedDate", UpdateCheck=UpdateCheck.Never, Storage="_ModifiedDate", DbType="datetime")]
-		public DateTime? ModifiedDate
-		{
-			get { return this._ModifiedDate; }
+        partial void OnModifiedByChanging(int? value);
+        partial void OnModifiedByChanged();
 
-			set
-			{
-				if (this._ModifiedDate != value)
-				{
-				
-                    this.OnModifiedDateChanging(value);
-					this.SendPropertyChanging();
-					this._ModifiedDate = value;
-					this.SendPropertyChanged("ModifiedDate");
-					this.OnModifiedDateChanged();
-				}
+        partial void OnModifiedDateChanging(DateTime? value);
+        partial void OnModifiedDateChanged();
 
-			}
+        partial void OnRecordStatusChanging(bool? value);
+        partial void OnRecordStatusChanged();
 
-		}
+        partial void OnDepartmentIdChanging(int? value);
+        partial void OnDepartmentIdChanged();
 
-		
-		[Column(Name="RecordStatus", UpdateCheck=UpdateCheck.Never, Storage="_RecordStatus", DbType="bit")]
-		public bool? RecordStatus
-		{
-			get { return this._RecordStatus; }
+        partial void OnMinistryDescriptionChanging(string value);
+        partial void OnMinistryDescriptionChanged();
 
-			set
-			{
-				if (this._RecordStatus != value)
-				{
-				
-                    this.OnRecordStatusChanging(value);
-					this.SendPropertyChanging();
-					this._RecordStatus = value;
-					this.SendPropertyChanged("RecordStatus");
-					this.OnRecordStatusChanged();
-				}
+        partial void OnMinistryContactIdChanging(int? value);
+        partial void OnMinistryContactIdChanged();
 
-			}
+        partial void OnChurchIdChanging(int? value);
+        partial void OnChurchIdChanged();
 
-		}
+        #endregion
 
-		
-		[Column(Name="DepartmentId", UpdateCheck=UpdateCheck.Never, Storage="_DepartmentId", DbType="int")]
-		public int? DepartmentId
-		{
-			get { return this._DepartmentId; }
+        public Ministry()
+        {
+            _Contacts = new EntitySet<Contact>(new Action<Contact>(attach_Contacts), new Action<Contact>(detach_Contacts));
 
-			set
-			{
-				if (this._DepartmentId != value)
-				{
-				
-                    this.OnDepartmentIdChanging(value);
-					this.SendPropertyChanging();
-					this._DepartmentId = value;
-					this.SendPropertyChanged("DepartmentId");
-					this.OnDepartmentIdChanged();
-				}
+            OnCreated();
+        }
 
-			}
+        #region Columns
 
-		}
+        [Column(Name = "MinistryId", UpdateCheck = UpdateCheck.Never, Storage = "_MinistryId", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
+        public int MinistryId
+        {
+            get => _MinistryId;
 
-		
-		[Column(Name="MinistryDescription", UpdateCheck=UpdateCheck.Never, Storage="_MinistryDescription", DbType="nvarchar(512)")]
-		public string MinistryDescription
-		{
-			get { return this._MinistryDescription; }
+            set
+            {
+                if (_MinistryId != value)
+                {
+                    OnMinistryIdChanging(value);
+                    SendPropertyChanging();
+                    _MinistryId = value;
+                    SendPropertyChanged("MinistryId");
+                    OnMinistryIdChanged();
+                }
+            }
+        }
 
-			set
-			{
-				if (this._MinistryDescription != value)
-				{
-				
-                    this.OnMinistryDescriptionChanging(value);
-					this.SendPropertyChanging();
-					this._MinistryDescription = value;
-					this.SendPropertyChanged("MinistryDescription");
-					this.OnMinistryDescriptionChanged();
-				}
+        [Column(Name = "MinistryName", UpdateCheck = UpdateCheck.Never, Storage = "_MinistryName", DbType = "nvarchar(50)")]
+        public string MinistryName
+        {
+            get => _MinistryName;
 
-			}
+            set
+            {
+                if (_MinistryName != value)
+                {
+                    OnMinistryNameChanging(value);
+                    SendPropertyChanging();
+                    _MinistryName = value;
+                    SendPropertyChanged("MinistryName");
+                    OnMinistryNameChanged();
+                }
+            }
+        }
 
-		}
+        [Column(Name = "CreatedBy", UpdateCheck = UpdateCheck.Never, Storage = "_CreatedBy", DbType = "int")]
+        public int? CreatedBy
+        {
+            get => _CreatedBy;
 
-		
-		[Column(Name="MinistryContactId", UpdateCheck=UpdateCheck.Never, Storage="_MinistryContactId", DbType="int")]
-		public int? MinistryContactId
-		{
-			get { return this._MinistryContactId; }
+            set
+            {
+                if (_CreatedBy != value)
+                {
+                    OnCreatedByChanging(value);
+                    SendPropertyChanging();
+                    _CreatedBy = value;
+                    SendPropertyChanged("CreatedBy");
+                    OnCreatedByChanged();
+                }
+            }
+        }
 
-			set
-			{
-				if (this._MinistryContactId != value)
-				{
-				
-                    this.OnMinistryContactIdChanging(value);
-					this.SendPropertyChanging();
-					this._MinistryContactId = value;
-					this.SendPropertyChanged("MinistryContactId");
-					this.OnMinistryContactIdChanged();
-				}
+        [Column(Name = "CreatedDate", UpdateCheck = UpdateCheck.Never, Storage = "_CreatedDate", DbType = "datetime")]
+        public DateTime? CreatedDate
+        {
+            get => _CreatedDate;
 
-			}
+            set
+            {
+                if (_CreatedDate != value)
+                {
+                    OnCreatedDateChanging(value);
+                    SendPropertyChanging();
+                    _CreatedDate = value;
+                    SendPropertyChanged("CreatedDate");
+                    OnCreatedDateChanged();
+                }
+            }
+        }
 
-		}
+        [Column(Name = "ModifiedBy", UpdateCheck = UpdateCheck.Never, Storage = "_ModifiedBy", DbType = "int")]
+        public int? ModifiedBy
+        {
+            get => _ModifiedBy;
 
-		
-		[Column(Name="ChurchId", UpdateCheck=UpdateCheck.Never, Storage="_ChurchId", DbType="int")]
-		public int? ChurchId
-		{
-			get { return this._ChurchId; }
+            set
+            {
+                if (_ModifiedBy != value)
+                {
+                    OnModifiedByChanging(value);
+                    SendPropertyChanging();
+                    _ModifiedBy = value;
+                    SendPropertyChanged("ModifiedBy");
+                    OnModifiedByChanged();
+                }
+            }
+        }
 
-			set
-			{
-				if (this._ChurchId != value)
-				{
-				
-                    this.OnChurchIdChanging(value);
-					this.SendPropertyChanging();
-					this._ChurchId = value;
-					this.SendPropertyChanged("ChurchId");
-					this.OnChurchIdChanged();
-				}
+        [Column(Name = "ModifiedDate", UpdateCheck = UpdateCheck.Never, Storage = "_ModifiedDate", DbType = "datetime")]
+        public DateTime? ModifiedDate
+        {
+            get => _ModifiedDate;
 
-			}
+            set
+            {
+                if (_ModifiedDate != value)
+                {
+                    OnModifiedDateChanging(value);
+                    SendPropertyChanging();
+                    _ModifiedDate = value;
+                    SendPropertyChanged("ModifiedDate");
+                    OnModifiedDateChanged();
+                }
+            }
+        }
 
-		}
+        [Column(Name = "RecordStatus", UpdateCheck = UpdateCheck.Never, Storage = "_RecordStatus", DbType = "bit")]
+        public bool? RecordStatus
+        {
+            get => _RecordStatus;
 
-		
-    #endregion
-        
-    #region Foreign Key Tables
-   		
-   		[Association(Name="FK_Contacts_Ministries", Storage="_Contacts", OtherKey="MinistryId")]
-   		public EntitySet<Contact> Contacts
-   		{
-   		    get { return this._Contacts; }
+            set
+            {
+                if (_RecordStatus != value)
+                {
+                    OnRecordStatusChanging(value);
+                    SendPropertyChanging();
+                    _RecordStatus = value;
+                    SendPropertyChanged("RecordStatus");
+                    OnRecordStatusChanged();
+                }
+            }
+        }
 
-			set	{ this._Contacts.Assign(value); }
+        [Column(Name = "DepartmentId", UpdateCheck = UpdateCheck.Never, Storage = "_DepartmentId", DbType = "int")]
+        public int? DepartmentId
+        {
+            get => _DepartmentId;
 
-   		}
+            set
+            {
+                if (_DepartmentId != value)
+                {
+                    OnDepartmentIdChanging(value);
+                    SendPropertyChanging();
+                    _DepartmentId = value;
+                    SendPropertyChanged("DepartmentId");
+                    OnDepartmentIdChanged();
+                }
+            }
+        }
 
-		
-	#endregion
-	
-	#region Foreign Keys
-    	
-	#endregion
-	
-		public event PropertyChangingEventHandler PropertyChanging;
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-				this.PropertyChanging(this, emptyChangingEventArgs);
-		}
+        [Column(Name = "MinistryDescription", UpdateCheck = UpdateCheck.Never, Storage = "_MinistryDescription", DbType = "nvarchar(512)")]
+        public string MinistryDescription
+        {
+            get => _MinistryDescription;
 
-		public event PropertyChangedEventHandler PropertyChanged;
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-		}
+            set
+            {
+                if (_MinistryDescription != value)
+                {
+                    OnMinistryDescriptionChanging(value);
+                    SendPropertyChanging();
+                    _MinistryDescription = value;
+                    SendPropertyChanged("MinistryDescription");
+                    OnMinistryDescriptionChanged();
+                }
+            }
+        }
 
-   		
-		private void attach_Contacts(Contact entity)
-		{
-			this.SendPropertyChanging();
-			entity.Ministry = this;
-		}
+        [Column(Name = "MinistryContactId", UpdateCheck = UpdateCheck.Never, Storage = "_MinistryContactId", DbType = "int")]
+        public int? MinistryContactId
+        {
+            get => _MinistryContactId;
 
-		private void detach_Contacts(Contact entity)
-		{
-			this.SendPropertyChanging();
-			entity.Ministry = null;
-		}
+            set
+            {
+                if (_MinistryContactId != value)
+                {
+                    OnMinistryContactIdChanging(value);
+                    SendPropertyChanging();
+                    _MinistryContactId = value;
+                    SendPropertyChanged("MinistryContactId");
+                    OnMinistryContactIdChanged();
+                }
+            }
+        }
 
-		
-	}
+        [Column(Name = "ChurchId", UpdateCheck = UpdateCheck.Never, Storage = "_ChurchId", DbType = "int")]
+        public int? ChurchId
+        {
+            get => _ChurchId;
 
+            set
+            {
+                if (_ChurchId != value)
+                {
+                    OnChurchIdChanging(value);
+                    SendPropertyChanging();
+                    _ChurchId = value;
+                    SendPropertyChanged("ChurchId");
+                    OnChurchIdChanged();
+                }
+            }
+        }
+
+        #endregion
+
+        #region Foreign Key Tables
+
+        [Association(Name = "FK_Contacts_Ministries", Storage = "_Contacts", OtherKey = "MinistryId")]
+        public EntitySet<Contact> Contacts
+           {
+               get => _Contacts;
+
+            set => _Contacts.Assign(value);
+
+           }
+
+        #endregion
+
+        #region Foreign Keys
+
+        #endregion
+
+        public event PropertyChangingEventHandler PropertyChanging;
+        protected virtual void SendPropertyChanging()
+        {
+            if ((PropertyChanging != null))
+            {
+                PropertyChanging(this, emptyChangingEventArgs);
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void SendPropertyChanged(string propertyName)
+        {
+            if ((PropertyChanged != null))
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        private void attach_Contacts(Contact entity)
+        {
+            SendPropertyChanging();
+            entity.Ministry = this;
+        }
+
+        private void detach_Contacts(Contact entity)
+        {
+            SendPropertyChanging();
+            entity.Ministry = null;
+        }
+    }
 }
-

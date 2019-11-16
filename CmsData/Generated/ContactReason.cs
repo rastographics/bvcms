@@ -1,204 +1,177 @@
-using System; 
+using System;
+using System.ComponentModel;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
-using System.ComponentModel;
-using CmsData.Infrastructure;
 
 namespace CmsData
 {
-	[Table(Name="lookup.ContactReason")]
-	public partial class ContactReason : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-	#region Private Fields
-		
-		private int _Id;
-		
-		private string _Code;
-		
-		private string _Description;
-		
-		private bool? _Hardwired;
-		
-   		
-   		private EntitySet<Contact> _Contacts;
-		
-    	
-	#endregion
-	
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-		
-		partial void OnIdChanging(int value);
-		partial void OnIdChanged();
-		
-		partial void OnCodeChanging(string value);
-		partial void OnCodeChanged();
-		
-		partial void OnDescriptionChanging(string value);
-		partial void OnDescriptionChanged();
-		
-		partial void OnHardwiredChanging(bool? value);
-		partial void OnHardwiredChanged();
-		
-    #endregion
-		public ContactReason()
-		{
-			
-			this._Contacts = new EntitySet<Contact>(new Action< Contact>(this.attach_Contacts), new Action< Contact>(this.detach_Contacts)); 
-			
-			
-			OnCreated();
-		}
+    [Table(Name = "lookup.ContactReason")]
+    public partial class ContactReason : INotifyPropertyChanging, INotifyPropertyChanged
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-    #region Columns
-		
-		[Column(Name="Id", UpdateCheck=UpdateCheck.Never, Storage="_Id", DbType="int NOT NULL", IsPrimaryKey=true)]
-		public int Id
-		{
-			get { return this._Id; }
+        #region Private Fields
 
-			set
-			{
-				if (this._Id != value)
-				{
-				
-                    this.OnIdChanging(value);
-					this.SendPropertyChanging();
-					this._Id = value;
-					this.SendPropertyChanged("Id");
-					this.OnIdChanged();
-				}
+        private int _Id;
 
-			}
+        private string _Code;
 
-		}
+        private string _Description;
 
-		
-		[Column(Name="Code", UpdateCheck=UpdateCheck.Never, Storage="_Code", DbType="nvarchar(20) NOT NULL")]
-		public string Code
-		{
-			get { return this._Code; }
+        private bool? _Hardwired;
 
-			set
-			{
-				if (this._Code != value)
-				{
-				
-                    this.OnCodeChanging(value);
-					this.SendPropertyChanging();
-					this._Code = value;
-					this.SendPropertyChanged("Code");
-					this.OnCodeChanged();
-				}
+        private EntitySet<Contact> _Contacts;
 
-			}
+        #endregion
 
-		}
+        #region Extensibility Method Definitions
 
-		
-		[Column(Name="Description", UpdateCheck=UpdateCheck.Never, Storage="_Description", DbType="nvarchar(100) NOT NULL")]
-		public string Description
-		{
-			get { return this._Description; }
+        partial void OnLoaded();
+        partial void OnValidate(System.Data.Linq.ChangeAction action);
+        partial void OnCreated();
 
-			set
-			{
-				if (this._Description != value)
-				{
-				
-                    this.OnDescriptionChanging(value);
-					this.SendPropertyChanging();
-					this._Description = value;
-					this.SendPropertyChanged("Description");
-					this.OnDescriptionChanged();
-				}
+        partial void OnIdChanging(int value);
+        partial void OnIdChanged();
 
-			}
+        partial void OnCodeChanging(string value);
+        partial void OnCodeChanged();
 
-		}
+        partial void OnDescriptionChanging(string value);
+        partial void OnDescriptionChanged();
 
-		
-		[Column(Name="Hardwired", UpdateCheck=UpdateCheck.Never, Storage="_Hardwired", DbType="bit")]
-		public bool? Hardwired
-		{
-			get { return this._Hardwired; }
+        partial void OnHardwiredChanging(bool? value);
+        partial void OnHardwiredChanged();
 
-			set
-			{
-				if (this._Hardwired != value)
-				{
-				
-                    this.OnHardwiredChanging(value);
-					this.SendPropertyChanging();
-					this._Hardwired = value;
-					this.SendPropertyChanged("Hardwired");
-					this.OnHardwiredChanged();
-				}
+        #endregion
 
-			}
+        public ContactReason()
+        {
+            _Contacts = new EntitySet<Contact>(new Action<Contact>(attach_Contacts), new Action<Contact>(detach_Contacts));
 
-		}
+            OnCreated();
+        }
 
-		
-    #endregion
-        
-    #region Foreign Key Tables
-   		
-   		[Association(Name="FK_NewContacts_ContactReasons", Storage="_Contacts", OtherKey="ContactReasonId")]
-   		public EntitySet<Contact> Contacts
-   		{
-   		    get { return this._Contacts; }
+        #region Columns
 
-			set	{ this._Contacts.Assign(value); }
+        [Column(Name = "Id", UpdateCheck = UpdateCheck.Never, Storage = "_Id", DbType = "int NOT NULL", IsPrimaryKey = true)]
+        public int Id
+        {
+            get => _Id;
 
-   		}
+            set
+            {
+                if (_Id != value)
+                {
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
+                }
+            }
+        }
 
-		
-	#endregion
-	
-	#region Foreign Keys
-    	
-	#endregion
-	
-		public event PropertyChangingEventHandler PropertyChanging;
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-				this.PropertyChanging(this, emptyChangingEventArgs);
-		}
+        [Column(Name = "Code", UpdateCheck = UpdateCheck.Never, Storage = "_Code", DbType = "nvarchar(20) NOT NULL")]
+        public string Code
+        {
+            get => _Code;
 
-		public event PropertyChangedEventHandler PropertyChanged;
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-		}
+            set
+            {
+                if (_Code != value)
+                {
+                    OnCodeChanging(value);
+                    SendPropertyChanging();
+                    _Code = value;
+                    SendPropertyChanged("Code");
+                    OnCodeChanged();
+                }
+            }
+        }
 
-   		
-		private void attach_Contacts(Contact entity)
-		{
-			this.SendPropertyChanging();
-			entity.ContactReason = this;
-		}
+        [Column(Name = "Description", UpdateCheck = UpdateCheck.Never, Storage = "_Description", DbType = "nvarchar(100) NOT NULL")]
+        public string Description
+        {
+            get => _Description;
 
-		private void detach_Contacts(Contact entity)
-		{
-			this.SendPropertyChanging();
-			entity.ContactReason = null;
-		}
+            set
+            {
+                if (_Description != value)
+                {
+                    OnDescriptionChanging(value);
+                    SendPropertyChanging();
+                    _Description = value;
+                    SendPropertyChanged("Description");
+                    OnDescriptionChanged();
+                }
+            }
+        }
 
-		
-	}
+        [Column(Name = "Hardwired", UpdateCheck = UpdateCheck.Never, Storage = "_Hardwired", DbType = "bit")]
+        public bool? Hardwired
+        {
+            get => _Hardwired;
 
+            set
+            {
+                if (_Hardwired != value)
+                {
+                    OnHardwiredChanging(value);
+                    SendPropertyChanging();
+                    _Hardwired = value;
+                    SendPropertyChanged("Hardwired");
+                    OnHardwiredChanged();
+                }
+            }
+        }
+
+        #endregion
+
+        #region Foreign Key Tables
+
+        [Association(Name = "FK_NewContacts_ContactReasons", Storage = "_Contacts", OtherKey = "ContactReasonId")]
+        public EntitySet<Contact> Contacts
+           {
+               get => _Contacts;
+
+            set => _Contacts.Assign(value);
+
+           }
+
+        #endregion
+
+        #region Foreign Keys
+
+        #endregion
+
+        public event PropertyChangingEventHandler PropertyChanging;
+        protected virtual void SendPropertyChanging()
+        {
+            if ((PropertyChanging != null))
+            {
+                PropertyChanging(this, emptyChangingEventArgs);
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void SendPropertyChanged(string propertyName)
+        {
+            if ((PropertyChanged != null))
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        private void attach_Contacts(Contact entity)
+        {
+            SendPropertyChanging();
+            entity.ContactReason = this;
+        }
+
+        private void detach_Contacts(Contact entity)
+        {
+            SendPropertyChanging();
+            entity.ContactReason = null;
+        }
+    }
 }
-

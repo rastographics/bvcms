@@ -103,7 +103,8 @@ namespace CmsWeb.Membership
             }
             TwoFactorAuthenticator tfa = new TwoFactorAuthenticator();
             var secretKey = Get2FASecret(db);
-            var churchName = db.GetSetting("NameOfChurch", "TouchPoint");
+            var churchName = db.GetSetting("NameOfChurch", "");
+            churchName = churchName.HasValue() ? $"TouchPoint - {churchName}" : churchName = "TouchPoint";
             var userSecret = Get2FAUserSecret(user, secretKey);
             var size = 300;
             var displayName = $"{user.Username}@{Util.Host}".Replace(" ", "-");
@@ -151,7 +152,7 @@ namespace CmsWeb.Membership
             var token = new MFAToken {
                 Expires = expires,
                 Key = key,
-                UserId = db.CurrentUser.UserId
+                UserId = Util.UserId
             };
             db.MFATokens.InsertOnSubmit(token);
             db.SubmitChanges();

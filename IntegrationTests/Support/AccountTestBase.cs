@@ -15,9 +15,11 @@ namespace IntegrationTests.Support
 
         public string loginUrl => rootUrl + "Logon?ReturnUrl=%2f";
 
+        protected override bool UseSharedDriver => true;
+
         protected CmsData.User CreateUser()
         {
-            return base.CreateUser(username, password);
+            return CreateUser(username, password);
         }
 
         protected void Login(string withPassword = null)

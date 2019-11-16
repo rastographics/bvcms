@@ -19,8 +19,8 @@ set target_tests=.\UnitTests\CMSDataTests\bin\Debug\CMSDataTests.dll
 set target_tests=%target_tests% .\UnitTests\CMSWebTests\bin\Debug\CMSWebTests.dll
 set target_tests=%target_tests% .\UnitTests\UtilityExtensionsTests\bin\Debug\UtilityExtensionsTests.dll
 set integration_tests=.\IntegrationTests\bin\Debug\IntegrationTests.dll
-echo quit | sqlcmd -S localhost -q "drop database cms_localhost"
-echo quit | sqlcmd -S localhost -q "drop database cmsi_localhost"
+echo quit | sqlcmd -S localhost -q "IF DB_ID('CMS_localhost') IS NOT NULL ALTER DATABASE cms_localhost SET SINGLE_USER WITH ROLLBACK IMMEDIATE;drop database cms_localhost"
+echo quit | sqlcmd -S localhost -q "IF DB_ID('CMSi_localhost') IS NOT NULL ALTER DATABASE cmsi_localhost SET SINGLE_USER WITH ROLLBACK IMMEDIATE;drop database cmsi_localhost"
 %OpenCover% -register:user -target:"%xunit%" -targetargs:"%target_tests% -noshadow -teamcity" -filter:%opencover_filters% -output:"%test_coverage%" || exit 7
 IF NOT EXIST %test_coverage% (
   echo File not found: %test_coverage%

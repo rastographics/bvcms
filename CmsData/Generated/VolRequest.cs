@@ -1,381 +1,343 @@
-using System; 
+using CmsData.Infrastructure;
+using System;
+using System.ComponentModel;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
-using System.ComponentModel;
-using CmsData.Infrastructure;
 
 namespace CmsData
 {
-	[Table(Name="dbo.VolRequest")]
-	public partial class VolRequest : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-	#region Private Fields
-		
-		private int _MeetingId;
-		
-		private int _RequestorId;
-		
-		private DateTime _Requested;
-		
-		private int _VolunteerId;
-		
-		private DateTime? _Responded;
-		
-		private bool? _CanVol;
-		
-   		
-    	
-		private EntityRef<Meeting> _Meeting;
-		
-		private EntityRef<Person> _Requestor;
-		
-		private EntityRef<Person> _Volunteer;
-		
-	#endregion
-	
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-		
-		partial void OnMeetingIdChanging(int value);
-		partial void OnMeetingIdChanged();
-		
-		partial void OnRequestorIdChanging(int value);
-		partial void OnRequestorIdChanged();
-		
-		partial void OnRequestedChanging(DateTime value);
-		partial void OnRequestedChanged();
-		
-		partial void OnVolunteerIdChanging(int value);
-		partial void OnVolunteerIdChanged();
-		
-		partial void OnRespondedChanging(DateTime? value);
-		partial void OnRespondedChanged();
-		
-		partial void OnCanVolChanging(bool? value);
-		partial void OnCanVolChanged();
-		
-    #endregion
-		public VolRequest()
-		{
-			
-			
-			this._Meeting = default(EntityRef<Meeting>); 
-			
-			this._Requestor = default(EntityRef<Person>); 
-			
-			this._Volunteer = default(EntityRef<Person>); 
-			
-			OnCreated();
-		}
+    [Table(Name = "dbo.VolRequest")]
+    public partial class VolRequest : INotifyPropertyChanging, INotifyPropertyChanged
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-    #region Columns
-		
-		[Column(Name="MeetingId", UpdateCheck=UpdateCheck.Never, Storage="_MeetingId", DbType="int NOT NULL", IsPrimaryKey=true)]
-		[IsForeignKey]
-		public int MeetingId
-		{
-			get { return this._MeetingId; }
+        #region Private Fields
 
-			set
-			{
-				if (this._MeetingId != value)
-				{
-				
-					if (this._Meeting.HasLoadedOrAssignedValue)
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-				
-                    this.OnMeetingIdChanging(value);
-					this.SendPropertyChanging();
-					this._MeetingId = value;
-					this.SendPropertyChanged("MeetingId");
-					this.OnMeetingIdChanged();
-				}
+        private int _MeetingId;
 
-			}
+        private int _RequestorId;
 
-		}
+        private DateTime _Requested;
 
-		
-		[Column(Name="RequestorId", UpdateCheck=UpdateCheck.Never, Storage="_RequestorId", DbType="int NOT NULL", IsPrimaryKey=true)]
-		[IsForeignKey]
-		public int RequestorId
-		{
-			get { return this._RequestorId; }
+        private int _VolunteerId;
 
-			set
-			{
-				if (this._RequestorId != value)
-				{
-				
-					if (this._Requestor.HasLoadedOrAssignedValue)
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-				
-                    this.OnRequestorIdChanging(value);
-					this.SendPropertyChanging();
-					this._RequestorId = value;
-					this.SendPropertyChanged("RequestorId");
-					this.OnRequestorIdChanged();
-				}
+        private DateTime? _Responded;
 
-			}
+        private bool? _CanVol;
 
-		}
+        private EntityRef<Meeting> _Meeting;
 
-		
-		[Column(Name="Requested", UpdateCheck=UpdateCheck.Never, Storage="_Requested", DbType="datetime NOT NULL", IsPrimaryKey=true)]
-		public DateTime Requested
-		{
-			get { return this._Requested; }
+        private EntityRef<Person> _Requestor;
 
-			set
-			{
-				if (this._Requested != value)
-				{
-				
-                    this.OnRequestedChanging(value);
-					this.SendPropertyChanging();
-					this._Requested = value;
-					this.SendPropertyChanged("Requested");
-					this.OnRequestedChanged();
-				}
+        private EntityRef<Person> _Volunteer;
 
-			}
+        #endregion
 
-		}
+        #region Extensibility Method Definitions
 
-		
-		[Column(Name="VolunteerId", UpdateCheck=UpdateCheck.Never, Storage="_VolunteerId", DbType="int NOT NULL", IsPrimaryKey=true)]
-		[IsForeignKey]
-		public int VolunteerId
-		{
-			get { return this._VolunteerId; }
+        partial void OnLoaded();
+        partial void OnValidate(System.Data.Linq.ChangeAction action);
+        partial void OnCreated();
 
-			set
-			{
-				if (this._VolunteerId != value)
-				{
-				
-					if (this._Volunteer.HasLoadedOrAssignedValue)
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-				
-                    this.OnVolunteerIdChanging(value);
-					this.SendPropertyChanging();
-					this._VolunteerId = value;
-					this.SendPropertyChanged("VolunteerId");
-					this.OnVolunteerIdChanged();
-				}
+        partial void OnMeetingIdChanging(int value);
+        partial void OnMeetingIdChanged();
 
-			}
+        partial void OnRequestorIdChanging(int value);
+        partial void OnRequestorIdChanged();
 
-		}
+        partial void OnRequestedChanging(DateTime value);
+        partial void OnRequestedChanged();
 
-		
-		[Column(Name="Responded", UpdateCheck=UpdateCheck.Never, Storage="_Responded", DbType="datetime")]
-		public DateTime? Responded
-		{
-			get { return this._Responded; }
+        partial void OnVolunteerIdChanging(int value);
+        partial void OnVolunteerIdChanged();
 
-			set
-			{
-				if (this._Responded != value)
-				{
-				
-                    this.OnRespondedChanging(value);
-					this.SendPropertyChanging();
-					this._Responded = value;
-					this.SendPropertyChanged("Responded");
-					this.OnRespondedChanged();
-				}
+        partial void OnRespondedChanging(DateTime? value);
+        partial void OnRespondedChanged();
 
-			}
+        partial void OnCanVolChanging(bool? value);
+        partial void OnCanVolChanged();
 
-		}
+        #endregion
 
-		
-		[Column(Name="CanVol", UpdateCheck=UpdateCheck.Never, Storage="_CanVol", DbType="bit")]
-		public bool? CanVol
-		{
-			get { return this._CanVol; }
+        public VolRequest()
+        {
+            _Meeting = default(EntityRef<Meeting>);
 
-			set
-			{
-				if (this._CanVol != value)
-				{
-				
-                    this.OnCanVolChanging(value);
-					this.SendPropertyChanging();
-					this._CanVol = value;
-					this.SendPropertyChanged("CanVol");
-					this.OnCanVolChanged();
-				}
+            _Requestor = default(EntityRef<Person>);
 
-			}
+            _Volunteer = default(EntityRef<Person>);
 
-		}
+            OnCreated();
+        }
 
-		
-    #endregion
-        
-    #region Foreign Key Tables
-   		
-	#endregion
-	
-	#region Foreign Keys
-    	
-		[Association(Name="VolRequests__Meeting", Storage="_Meeting", ThisKey="MeetingId", IsForeignKey=true)]
-		public Meeting Meeting
-		{
-			get { return this._Meeting.Entity; }
+        #region Columns
 
-			set
-			{
-				Meeting previousValue = this._Meeting.Entity;
-				if (((previousValue != value) 
-							|| (this._Meeting.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if (previousValue != null)
-					{
-						this._Meeting.Entity = null;
-						previousValue.VolRequests.Remove(this);
-					}
+        [Column(Name = "MeetingId", UpdateCheck = UpdateCheck.Never, Storage = "_MeetingId", DbType = "int NOT NULL", IsPrimaryKey = true)]
+        [IsForeignKey]
+        public int MeetingId
+        {
+            get => _MeetingId;
 
-					this._Meeting.Entity = value;
-					if (value != null)
-					{
-						value.VolRequests.Add(this);
-						
-						this._MeetingId = value.MeetingId;
-						
-					}
+            set
+            {
+                if (_MeetingId != value)
+                {
+                    if (_Meeting.HasLoadedOrAssignedValue)
+                    {
+                        throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+                    }
 
-					else
-					{
-						
-						this._MeetingId = default(int);
-						
-					}
+                    OnMeetingIdChanging(value);
+                    SendPropertyChanging();
+                    _MeetingId = value;
+                    SendPropertyChanged("MeetingId");
+                    OnMeetingIdChanged();
+                }
+            }
+        }
 
-					this.SendPropertyChanged("Meeting");
-				}
+        [Column(Name = "RequestorId", UpdateCheck = UpdateCheck.Never, Storage = "_RequestorId", DbType = "int NOT NULL", IsPrimaryKey = true)]
+        [IsForeignKey]
+        public int RequestorId
+        {
+            get => _RequestorId;
 
-			}
+            set
+            {
+                if (_RequestorId != value)
+                {
+                    if (_Requestor.HasLoadedOrAssignedValue)
+                    {
+                        throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+                    }
 
-		}
+                    OnRequestorIdChanging(value);
+                    SendPropertyChanging();
+                    _RequestorId = value;
+                    SendPropertyChanged("RequestorId");
+                    OnRequestorIdChanged();
+                }
+            }
+        }
 
-		
-		[Association(Name="VolRequests__Requestor", Storage="_Requestor", ThisKey="RequestorId", IsForeignKey=true)]
-		public Person Requestor
-		{
-			get { return this._Requestor.Entity; }
+        [Column(Name = "Requested", UpdateCheck = UpdateCheck.Never, Storage = "_Requested", DbType = "datetime NOT NULL", IsPrimaryKey = true)]
+        public DateTime Requested
+        {
+            get => _Requested;
 
-			set
-			{
-				Person previousValue = this._Requestor.Entity;
-				if (((previousValue != value) 
-							|| (this._Requestor.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if (previousValue != null)
-					{
-						this._Requestor.Entity = null;
-						previousValue.VolRequests.Remove(this);
-					}
+            set
+            {
+                if (_Requested != value)
+                {
+                    OnRequestedChanging(value);
+                    SendPropertyChanging();
+                    _Requested = value;
+                    SendPropertyChanged("Requested");
+                    OnRequestedChanged();
+                }
+            }
+        }
 
-					this._Requestor.Entity = value;
-					if (value != null)
-					{
-						value.VolRequests.Add(this);
-						
-						this._RequestorId = value.PeopleId;
-						
-					}
+        [Column(Name = "VolunteerId", UpdateCheck = UpdateCheck.Never, Storage = "_VolunteerId", DbType = "int NOT NULL", IsPrimaryKey = true)]
+        [IsForeignKey]
+        public int VolunteerId
+        {
+            get => _VolunteerId;
 
-					else
-					{
-						
-						this._RequestorId = default(int);
-						
-					}
+            set
+            {
+                if (_VolunteerId != value)
+                {
+                    if (_Volunteer.HasLoadedOrAssignedValue)
+                    {
+                        throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+                    }
 
-					this.SendPropertyChanged("Requestor");
-				}
+                    OnVolunteerIdChanging(value);
+                    SendPropertyChanging();
+                    _VolunteerId = value;
+                    SendPropertyChanged("VolunteerId");
+                    OnVolunteerIdChanged();
+                }
+            }
+        }
 
-			}
+        [Column(Name = "Responded", UpdateCheck = UpdateCheck.Never, Storage = "_Responded", DbType = "datetime")]
+        public DateTime? Responded
+        {
+            get => _Responded;
 
-		}
+            set
+            {
+                if (_Responded != value)
+                {
+                    OnRespondedChanging(value);
+                    SendPropertyChanging();
+                    _Responded = value;
+                    SendPropertyChanged("Responded");
+                    OnRespondedChanged();
+                }
+            }
+        }
 
-		
-		[Association(Name="VolResponses__Volunteer", Storage="_Volunteer", ThisKey="VolunteerId", IsForeignKey=true)]
-		public Person Volunteer
-		{
-			get { return this._Volunteer.Entity; }
+        [Column(Name = "CanVol", UpdateCheck = UpdateCheck.Never, Storage = "_CanVol", DbType = "bit")]
+        public bool? CanVol
+        {
+            get => _CanVol;
 
-			set
-			{
-				Person previousValue = this._Volunteer.Entity;
-				if (((previousValue != value) 
-							|| (this._Volunteer.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if (previousValue != null)
-					{
-						this._Volunteer.Entity = null;
-						previousValue.VolResponses.Remove(this);
-					}
+            set
+            {
+                if (_CanVol != value)
+                {
+                    OnCanVolChanging(value);
+                    SendPropertyChanging();
+                    _CanVol = value;
+                    SendPropertyChanged("CanVol");
+                    OnCanVolChanged();
+                }
+            }
+        }
 
-					this._Volunteer.Entity = value;
-					if (value != null)
-					{
-						value.VolResponses.Add(this);
-						
-						this._VolunteerId = value.PeopleId;
-						
-					}
+        #endregion
 
-					else
-					{
-						
-						this._VolunteerId = default(int);
-						
-					}
+        #region Foreign Key Tables
 
-					this.SendPropertyChanged("Volunteer");
-				}
+        #endregion
 
-			}
+        #region Foreign Keys
 
-		}
+        [Association(Name = "VolRequests__Meeting", Storage = "_Meeting", ThisKey = "MeetingId", IsForeignKey = true)]
+        public Meeting Meeting
+        {
+            get => _Meeting.Entity;
 
-		
-	#endregion
-	
-		public event PropertyChangingEventHandler PropertyChanging;
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-				this.PropertyChanging(this, emptyChangingEventArgs);
-		}
+            set
+            {
+                Meeting previousValue = _Meeting.Entity;
+                if (((previousValue != value)
+                            || (_Meeting.HasLoadedOrAssignedValue == false)))
+                {
+                    SendPropertyChanging();
+                    if (previousValue != null)
+                    {
+                        _Meeting.Entity = null;
+                        previousValue.VolRequests.Remove(this);
+                    }
 
-		public event PropertyChangedEventHandler PropertyChanged;
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-		}
+                    _Meeting.Entity = value;
+                    if (value != null)
+                    {
+                        value.VolRequests.Add(this);
 
-   		
-	}
+                        _MeetingId = value.MeetingId;
 
+                    }
+
+                    else
+                    {
+                        _MeetingId = default(int);
+
+                    }
+
+                    SendPropertyChanged("Meeting");
+                }
+            }
+        }
+
+        [Association(Name = "VolRequests__Requestor", Storage = "_Requestor", ThisKey = "RequestorId", IsForeignKey = true)]
+        public Person Requestor
+        {
+            get => _Requestor.Entity;
+
+            set
+            {
+                Person previousValue = _Requestor.Entity;
+                if (((previousValue != value)
+                            || (_Requestor.HasLoadedOrAssignedValue == false)))
+                {
+                    SendPropertyChanging();
+                    if (previousValue != null)
+                    {
+                        _Requestor.Entity = null;
+                        previousValue.VolRequests.Remove(this);
+                    }
+
+                    _Requestor.Entity = value;
+                    if (value != null)
+                    {
+                        value.VolRequests.Add(this);
+
+                        _RequestorId = value.PeopleId;
+
+                    }
+
+                    else
+                    {
+                        _RequestorId = default(int);
+
+                    }
+
+                    SendPropertyChanged("Requestor");
+                }
+            }
+        }
+
+        [Association(Name = "VolResponses__Volunteer", Storage = "_Volunteer", ThisKey = "VolunteerId", IsForeignKey = true)]
+        public Person Volunteer
+        {
+            get => _Volunteer.Entity;
+
+            set
+            {
+                Person previousValue = _Volunteer.Entity;
+                if (((previousValue != value)
+                            || (_Volunteer.HasLoadedOrAssignedValue == false)))
+                {
+                    SendPropertyChanging();
+                    if (previousValue != null)
+                    {
+                        _Volunteer.Entity = null;
+                        previousValue.VolResponses.Remove(this);
+                    }
+
+                    _Volunteer.Entity = value;
+                    if (value != null)
+                    {
+                        value.VolResponses.Add(this);
+
+                        _VolunteerId = value.PeopleId;
+
+                    }
+
+                    else
+                    {
+                        _VolunteerId = default(int);
+
+                    }
+
+                    SendPropertyChanged("Volunteer");
+                }
+            }
+        }
+
+        #endregion
+
+        public event PropertyChangingEventHandler PropertyChanging;
+        protected virtual void SendPropertyChanging()
+        {
+            if ((PropertyChanging != null))
+            {
+                PropertyChanging(this, emptyChangingEventArgs);
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void SendPropertyChanged(string propertyName)
+        {
+            if ((PropertyChanged != null))
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
 }
-
