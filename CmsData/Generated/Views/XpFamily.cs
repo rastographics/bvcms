@@ -1,313 +1,256 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="XpFamily")]
-	public partial class XpFamily
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private int _FamilyId;
-		
-		private DateTime? _AddressFromDate;
-		
-		private DateTime? _AddressToDate;
-		
-		private string _AddressLineOne;
-		
-		private string _AddressLineTwo;
-		
-		private string _CityName;
-		
-		private string _StateCode;
-		
-		private string _ZipCode;
-		
-		private string _CountryName;
-		
-		private string _ResCode;
-		
-		private string _HomePhone;
-		
-		private int? _HeadOfHouseholdId;
-		
-		private int? _HeadOfHouseholdSpouseId;
-		
-		private int? _CoupleFlag;
-		
-		private string _Comments;
-		
-		
-		public XpFamily()
-		{
-		}
+    [Table(Name = "XpFamily")]
+    public partial class XpFamily
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="FamilyId", Storage="_FamilyId", DbType="int NOT NULL")]
-		public int FamilyId
-		{
-			get
-			{
-				return this._FamilyId;
-			}
+        private int _FamilyId;
 
-			set
-			{
-				if (this._FamilyId != value)
-					this._FamilyId = value;
-			}
+        private DateTime? _AddressFromDate;
 
-		}
+        private DateTime? _AddressToDate;
 
-		
-		[Column(Name="AddressFromDate", Storage="_AddressFromDate", DbType="datetime")]
-		public DateTime? AddressFromDate
-		{
-			get
-			{
-				return this._AddressFromDate;
-			}
+        private string _AddressLineOne;
 
-			set
-			{
-				if (this._AddressFromDate != value)
-					this._AddressFromDate = value;
-			}
+        private string _AddressLineTwo;
 
-		}
+        private string _CityName;
 
-		
-		[Column(Name="AddressToDate", Storage="_AddressToDate", DbType="datetime")]
-		public DateTime? AddressToDate
-		{
-			get
-			{
-				return this._AddressToDate;
-			}
+        private string _StateCode;
 
-			set
-			{
-				if (this._AddressToDate != value)
-					this._AddressToDate = value;
-			}
+        private string _ZipCode;
 
-		}
+        private string _CountryName;
 
-		
-		[Column(Name="AddressLineOne", Storage="_AddressLineOne", DbType="nvarchar(100)")]
-		public string AddressLineOne
-		{
-			get
-			{
-				return this._AddressLineOne;
-			}
+        private string _ResCode;
 
-			set
-			{
-				if (this._AddressLineOne != value)
-					this._AddressLineOne = value;
-			}
+        private string _HomePhone;
 
-		}
+        private int? _HeadOfHouseholdId;
 
-		
-		[Column(Name="AddressLineTwo", Storage="_AddressLineTwo", DbType="nvarchar(100)")]
-		public string AddressLineTwo
-		{
-			get
-			{
-				return this._AddressLineTwo;
-			}
+        private int? _HeadOfHouseholdSpouseId;
 
-			set
-			{
-				if (this._AddressLineTwo != value)
-					this._AddressLineTwo = value;
-			}
+        private int? _CoupleFlag;
 
-		}
+        private string _Comments;
 
-		
-		[Column(Name="CityName", Storage="_CityName", DbType="nvarchar(30)")]
-		public string CityName
-		{
-			get
-			{
-				return this._CityName;
-			}
+        public XpFamily()
+        {
+        }
 
-			set
-			{
-				if (this._CityName != value)
-					this._CityName = value;
-			}
+        [Column(Name = "FamilyId", Storage = "_FamilyId", DbType = "int NOT NULL")]
+        public int FamilyId
+        {
+            get => _FamilyId;
 
-		}
+            set
+            {
+                if (_FamilyId != value)
+                {
+                    _FamilyId = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="StateCode", Storage="_StateCode", DbType="nvarchar(30)")]
-		public string StateCode
-		{
-			get
-			{
-				return this._StateCode;
-			}
+        [Column(Name = "AddressFromDate", Storage = "_AddressFromDate", DbType = "datetime")]
+        public DateTime? AddressFromDate
+        {
+            get => _AddressFromDate;
 
-			set
-			{
-				if (this._StateCode != value)
-					this._StateCode = value;
-			}
+            set
+            {
+                if (_AddressFromDate != value)
+                {
+                    _AddressFromDate = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "AddressToDate", Storage = "_AddressToDate", DbType = "datetime")]
+        public DateTime? AddressToDate
+        {
+            get => _AddressToDate;
 
-		
-		[Column(Name="ZipCode", Storage="_ZipCode", DbType="nvarchar(15)")]
-		public string ZipCode
-		{
-			get
-			{
-				return this._ZipCode;
-			}
+            set
+            {
+                if (_AddressToDate != value)
+                {
+                    _AddressToDate = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._ZipCode != value)
-					this._ZipCode = value;
-			}
+        [Column(Name = "AddressLineOne", Storage = "_AddressLineOne", DbType = "nvarchar(100)")]
+        public string AddressLineOne
+        {
+            get => _AddressLineOne;
 
-		}
+            set
+            {
+                if (_AddressLineOne != value)
+                {
+                    _AddressLineOne = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="CountryName", Storage="_CountryName", DbType="nvarchar(40)")]
-		public string CountryName
-		{
-			get
-			{
-				return this._CountryName;
-			}
+        [Column(Name = "AddressLineTwo", Storage = "_AddressLineTwo", DbType = "nvarchar(100)")]
+        public string AddressLineTwo
+        {
+            get => _AddressLineTwo;
 
-			set
-			{
-				if (this._CountryName != value)
-					this._CountryName = value;
-			}
+            set
+            {
+                if (_AddressLineTwo != value)
+                {
+                    _AddressLineTwo = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "CityName", Storage = "_CityName", DbType = "nvarchar(30)")]
+        public string CityName
+        {
+            get => _CityName;
 
-		
-		[Column(Name="ResCode", Storage="_ResCode", DbType="nvarchar(100)")]
-		public string ResCode
-		{
-			get
-			{
-				return this._ResCode;
-			}
+            set
+            {
+                if (_CityName != value)
+                {
+                    _CityName = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._ResCode != value)
-					this._ResCode = value;
-			}
+        [Column(Name = "StateCode", Storage = "_StateCode", DbType = "nvarchar(30)")]
+        public string StateCode
+        {
+            get => _StateCode;
 
-		}
+            set
+            {
+                if (_StateCode != value)
+                {
+                    _StateCode = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="HomePhone", Storage="_HomePhone", DbType="nvarchar(20)")]
-		public string HomePhone
-		{
-			get
-			{
-				return this._HomePhone;
-			}
+        [Column(Name = "ZipCode", Storage = "_ZipCode", DbType = "nvarchar(15)")]
+        public string ZipCode
+        {
+            get => _ZipCode;
 
-			set
-			{
-				if (this._HomePhone != value)
-					this._HomePhone = value;
-			}
+            set
+            {
+                if (_ZipCode != value)
+                {
+                    _ZipCode = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "CountryName", Storage = "_CountryName", DbType = "nvarchar(40)")]
+        public string CountryName
+        {
+            get => _CountryName;
 
-		
-		[Column(Name="HeadOfHouseholdId", Storage="_HeadOfHouseholdId", DbType="int")]
-		public int? HeadOfHouseholdId
-		{
-			get
-			{
-				return this._HeadOfHouseholdId;
-			}
+            set
+            {
+                if (_CountryName != value)
+                {
+                    _CountryName = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._HeadOfHouseholdId != value)
-					this._HeadOfHouseholdId = value;
-			}
+        [Column(Name = "ResCode", Storage = "_ResCode", DbType = "nvarchar(100)")]
+        public string ResCode
+        {
+            get => _ResCode;
 
-		}
+            set
+            {
+                if (_ResCode != value)
+                {
+                    _ResCode = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="HeadOfHouseholdSpouseId", Storage="_HeadOfHouseholdSpouseId", DbType="int")]
-		public int? HeadOfHouseholdSpouseId
-		{
-			get
-			{
-				return this._HeadOfHouseholdSpouseId;
-			}
+        [Column(Name = "HomePhone", Storage = "_HomePhone", DbType = "nvarchar(20)")]
+        public string HomePhone
+        {
+            get => _HomePhone;
 
-			set
-			{
-				if (this._HeadOfHouseholdSpouseId != value)
-					this._HeadOfHouseholdSpouseId = value;
-			}
+            set
+            {
+                if (_HomePhone != value)
+                {
+                    _HomePhone = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "HeadOfHouseholdId", Storage = "_HeadOfHouseholdId", DbType = "int")]
+        public int? HeadOfHouseholdId
+        {
+            get => _HeadOfHouseholdId;
 
-		
-		[Column(Name="CoupleFlag", Storage="_CoupleFlag", DbType="int")]
-		public int? CoupleFlag
-		{
-			get
-			{
-				return this._CoupleFlag;
-			}
+            set
+            {
+                if (_HeadOfHouseholdId != value)
+                {
+                    _HeadOfHouseholdId = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._CoupleFlag != value)
-					this._CoupleFlag = value;
-			}
+        [Column(Name = "HeadOfHouseholdSpouseId", Storage = "_HeadOfHouseholdSpouseId", DbType = "int")]
+        public int? HeadOfHouseholdSpouseId
+        {
+            get => _HeadOfHouseholdSpouseId;
 
-		}
+            set
+            {
+                if (_HeadOfHouseholdSpouseId != value)
+                {
+                    _HeadOfHouseholdSpouseId = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="Comments", Storage="_Comments", DbType="nvarchar(3000)")]
-		public string Comments
-		{
-			get
-			{
-				return this._Comments;
-			}
+        [Column(Name = "CoupleFlag", Storage = "_CoupleFlag", DbType = "int")]
+        public int? CoupleFlag
+        {
+            get => _CoupleFlag;
 
-			set
-			{
-				if (this._Comments != value)
-					this._Comments = value;
-			}
+            set
+            {
+                if (_CoupleFlag != value)
+                {
+                    _CoupleFlag = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "Comments", Storage = "_Comments", DbType = "nvarchar(3000)")]
+        public string Comments
+        {
+            get => _Comments;
 
-		
+            set
+            {
+                if (_Comments != value)
+                {
+                    _Comments = value;
+                }
+            }
+        }
     }
-
 }

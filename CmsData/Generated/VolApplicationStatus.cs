@@ -1,231 +1,202 @@
-using System; 
+using System;
+using System.ComponentModel;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
-using System.ComponentModel;
-using CmsData.Infrastructure;
 
 namespace CmsData
 {
-	[Table(Name="lookup.VolApplicationStatus")]
-	public partial class VolApplicationStatus : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-	#region Private Fields
-		
-		private int _Id;
-		
-		private string _Code;
-		
-		private string _Description;
-		
-		private bool? _Hardwired;
-		
-   		
-   		private EntitySet<Volunteer> _Volunteers;
-		
-   		private EntitySet<Volunteer> _StatusMvrId;
-		
-    	
-	#endregion
-	
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-		
-		partial void OnIdChanging(int value);
-		partial void OnIdChanged();
-		
-		partial void OnCodeChanging(string value);
-		partial void OnCodeChanged();
-		
-		partial void OnDescriptionChanging(string value);
-		partial void OnDescriptionChanged();
-		
-		partial void OnHardwiredChanging(bool? value);
-		partial void OnHardwiredChanged();
-		
-    #endregion
-		public VolApplicationStatus()
-		{
-			
-			this._Volunteers = new EntitySet<Volunteer>(new Action< Volunteer>(this.attach_Volunteers), new Action< Volunteer>(this.detach_Volunteers)); 
-			
-			this._StatusMvrId = new EntitySet<Volunteer>(new Action< Volunteer>(this.attach_StatusMvrId), new Action< Volunteer>(this.detach_StatusMvrId)); 
-			
-			
-			OnCreated();
-		}
+    [Table(Name = "lookup.VolApplicationStatus")]
+    public partial class VolApplicationStatus : INotifyPropertyChanging, INotifyPropertyChanged
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-    #region Columns
-		
-		[Column(Name="Id", UpdateCheck=UpdateCheck.Never, Storage="_Id", DbType="int NOT NULL", IsPrimaryKey=true)]
-		public int Id
-		{
-			get { return this._Id; }
+        #region Private Fields
 
-			set
-			{
-				if (this._Id != value)
-				{
-				
-                    this.OnIdChanging(value);
-					this.SendPropertyChanging();
-					this._Id = value;
-					this.SendPropertyChanged("Id");
-					this.OnIdChanged();
-				}
+        private int _Id;
 
-			}
+        private string _Code;
 
-		}
+        private string _Description;
 
-		
-		[Column(Name="Code", UpdateCheck=UpdateCheck.Never, Storage="_Code", DbType="nvarchar(10)")]
-		public string Code
-		{
-			get { return this._Code; }
+        private bool? _Hardwired;
 
-			set
-			{
-				if (this._Code != value)
-				{
-				
-                    this.OnCodeChanging(value);
-					this.SendPropertyChanging();
-					this._Code = value;
-					this.SendPropertyChanged("Code");
-					this.OnCodeChanged();
-				}
+        private EntitySet<Volunteer> _Volunteers;
 
-			}
+        private EntitySet<Volunteer> _StatusMvrId;
 
-		}
+        #endregion
 
-		
-		[Column(Name="Description", UpdateCheck=UpdateCheck.Never, Storage="_Description", DbType="nvarchar(50)")]
-		public string Description
-		{
-			get { return this._Description; }
+        #region Extensibility Method Definitions
 
-			set
-			{
-				if (this._Description != value)
-				{
-				
-                    this.OnDescriptionChanging(value);
-					this.SendPropertyChanging();
-					this._Description = value;
-					this.SendPropertyChanged("Description");
-					this.OnDescriptionChanged();
-				}
+        partial void OnLoaded();
+        partial void OnValidate(System.Data.Linq.ChangeAction action);
+        partial void OnCreated();
 
-			}
+        partial void OnIdChanging(int value);
+        partial void OnIdChanged();
 
-		}
+        partial void OnCodeChanging(string value);
+        partial void OnCodeChanged();
 
-		
-		[Column(Name="Hardwired", UpdateCheck=UpdateCheck.Never, Storage="_Hardwired", DbType="bit")]
-		public bool? Hardwired
-		{
-			get { return this._Hardwired; }
+        partial void OnDescriptionChanging(string value);
+        partial void OnDescriptionChanged();
 
-			set
-			{
-				if (this._Hardwired != value)
-				{
-				
-                    this.OnHardwiredChanging(value);
-					this.SendPropertyChanging();
-					this._Hardwired = value;
-					this.SendPropertyChanged("Hardwired");
-					this.OnHardwiredChanged();
-				}
+        partial void OnHardwiredChanging(bool? value);
+        partial void OnHardwiredChanged();
 
-			}
+        #endregion
 
-		}
+        public VolApplicationStatus()
+        {
+            _Volunteers = new EntitySet<Volunteer>(new Action<Volunteer>(attach_Volunteers), new Action<Volunteer>(detach_Volunteers));
 
-		
-    #endregion
-        
-    #region Foreign Key Tables
-   		
-   		[Association(Name="FK_Volunteer_VolApplicationStatus", Storage="_Volunteers", OtherKey="StatusId")]
-   		public EntitySet<Volunteer> Volunteers
-   		{
-   		    get { return this._Volunteers; }
+            _StatusMvrId = new EntitySet<Volunteer>(new Action<Volunteer>(attach_StatusMvrId), new Action<Volunteer>(detach_StatusMvrId));
 
-			set	{ this._Volunteers.Assign(value); }
+            OnCreated();
+        }
 
-   		}
+        #region Columns
 
-		
-   		[Association(Name="StatusMvrId__StatusMvr", Storage="_StatusMvrId", OtherKey="MVRStatusId")]
-   		public EntitySet<Volunteer> StatusMvrId
-   		{
-   		    get { return this._StatusMvrId; }
+        [Column(Name = "Id", UpdateCheck = UpdateCheck.Never, Storage = "_Id", DbType = "int NOT NULL", IsPrimaryKey = true)]
+        public int Id
+        {
+            get => _Id;
 
-			set	{ this._StatusMvrId.Assign(value); }
+            set
+            {
+                if (_Id != value)
+                {
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
+                }
+            }
+        }
 
-   		}
+        [Column(Name = "Code", UpdateCheck = UpdateCheck.Never, Storage = "_Code", DbType = "nvarchar(10)")]
+        public string Code
+        {
+            get => _Code;
 
-		
-	#endregion
-	
-	#region Foreign Keys
-    	
-	#endregion
-	
-		public event PropertyChangingEventHandler PropertyChanging;
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-				this.PropertyChanging(this, emptyChangingEventArgs);
-		}
+            set
+            {
+                if (_Code != value)
+                {
+                    OnCodeChanging(value);
+                    SendPropertyChanging();
+                    _Code = value;
+                    SendPropertyChanged("Code");
+                    OnCodeChanged();
+                }
+            }
+        }
 
-		public event PropertyChangedEventHandler PropertyChanged;
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-		}
+        [Column(Name = "Description", UpdateCheck = UpdateCheck.Never, Storage = "_Description", DbType = "nvarchar(50)")]
+        public string Description
+        {
+            get => _Description;
 
-   		
-		private void attach_Volunteers(Volunteer entity)
-		{
-			this.SendPropertyChanging();
-			entity.VolApplicationStatus = this;
-		}
+            set
+            {
+                if (_Description != value)
+                {
+                    OnDescriptionChanging(value);
+                    SendPropertyChanging();
+                    _Description = value;
+                    SendPropertyChanged("Description");
+                    OnDescriptionChanged();
+                }
+            }
+        }
 
-		private void detach_Volunteers(Volunteer entity)
-		{
-			this.SendPropertyChanging();
-			entity.VolApplicationStatus = null;
-		}
+        [Column(Name = "Hardwired", UpdateCheck = UpdateCheck.Never, Storage = "_Hardwired", DbType = "bit")]
+        public bool? Hardwired
+        {
+            get => _Hardwired;
 
-		
-		private void attach_StatusMvrId(Volunteer entity)
-		{
-			this.SendPropertyChanging();
-			entity.StatusMvr = this;
-		}
+            set
+            {
+                if (_Hardwired != value)
+                {
+                    OnHardwiredChanging(value);
+                    SendPropertyChanging();
+                    _Hardwired = value;
+                    SendPropertyChanged("Hardwired");
+                    OnHardwiredChanged();
+                }
+            }
+        }
 
-		private void detach_StatusMvrId(Volunteer entity)
-		{
-			this.SendPropertyChanging();
-			entity.StatusMvr = null;
-		}
+        #endregion
 
-		
-	}
+        #region Foreign Key Tables
 
+        [Association(Name = "FK_Volunteer_VolApplicationStatus", Storage = "_Volunteers", OtherKey = "StatusId")]
+        public EntitySet<Volunteer> Volunteers
+           {
+               get => _Volunteers;
+
+            set => _Volunteers.Assign(value);
+
+           }
+
+        [Association(Name = "StatusMvrId__StatusMvr", Storage = "_StatusMvrId", OtherKey = "MVRStatusId")]
+        public EntitySet<Volunteer> StatusMvrId
+           {
+               get => _StatusMvrId;
+
+            set => _StatusMvrId.Assign(value);
+
+           }
+
+        #endregion
+
+        #region Foreign Keys
+
+        #endregion
+
+        public event PropertyChangingEventHandler PropertyChanging;
+        protected virtual void SendPropertyChanging()
+        {
+            if ((PropertyChanging != null))
+            {
+                PropertyChanging(this, emptyChangingEventArgs);
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void SendPropertyChanged(string propertyName)
+        {
+            if ((PropertyChanged != null))
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        private void attach_Volunteers(Volunteer entity)
+        {
+            SendPropertyChanging();
+            entity.VolApplicationStatus = this;
+        }
+
+        private void detach_Volunteers(Volunteer entity)
+        {
+            SendPropertyChanging();
+            entity.VolApplicationStatus = null;
+        }
+
+        private void attach_StatusMvrId(Volunteer entity)
+        {
+            SendPropertyChanging();
+            entity.StatusMvr = this;
+        }
+
+        private void detach_StatusMvrId(Volunteer entity)
+        {
+            SendPropertyChanging();
+            entity.StatusMvr = null;
+        }
+    }
 }
-

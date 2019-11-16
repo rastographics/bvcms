@@ -1,85 +1,64 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="GenRanges")]
-	public partial class GenRange
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private int? _Amt;
-		
-		private int? _MinAmt;
-		
-		private int? _MaxAmt;
-		
-		
-		public GenRange()
-		{
-		}
+    [Table(Name = "GenRanges")]
+    public partial class GenRange
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="amt", Storage="_Amt", DbType="int")]
-		public int? Amt
-		{
-			get
-			{
-				return this._Amt;
-			}
+        private int? _Amt;
 
-			set
-			{
-				if (this._Amt != value)
-					this._Amt = value;
-			}
+        private int? _MinAmt;
 
-		}
+        private int? _MaxAmt;
 
-		
-		[Column(Name="MinAmt", Storage="_MinAmt", DbType="int")]
-		public int? MinAmt
-		{
-			get
-			{
-				return this._MinAmt;
-			}
+        public GenRange()
+        {
+        }
 
-			set
-			{
-				if (this._MinAmt != value)
-					this._MinAmt = value;
-			}
+        [Column(Name = "amt", Storage = "_Amt", DbType = "int")]
+        public int? Amt
+        {
+            get => _Amt;
 
-		}
+            set
+            {
+                if (_Amt != value)
+                {
+                    _Amt = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="MaxAmt", Storage="_MaxAmt", DbType="int")]
-		public int? MaxAmt
-		{
-			get
-			{
-				return this._MaxAmt;
-			}
+        [Column(Name = "MinAmt", Storage = "_MinAmt", DbType = "int")]
+        public int? MinAmt
+        {
+            get => _MinAmt;
 
-			set
-			{
-				if (this._MaxAmt != value)
-					this._MaxAmt = value;
-			}
+            set
+            {
+                if (_MinAmt != value)
+                {
+                    _MinAmt = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "MaxAmt", Storage = "_MaxAmt", DbType = "int")]
+        public int? MaxAmt
+        {
+            get => _MaxAmt;
 
-		
+            set
+            {
+                if (_MaxAmt != value)
+                {
+                    _MaxAmt = value;
+                }
+            }
+        }
     }
-
 }
