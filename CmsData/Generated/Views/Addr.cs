@@ -1,66 +1,48 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="Addr")]
-	public partial class Addr
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private string _Street;
-		
-		private int? _Count;
-		
-		
-		public Addr()
-		{
-		}
+    [Table(Name = "Addr")]
+    public partial class Addr
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="Street", Storage="_Street", DbType="varchar(50)")]
-		public string Street
-		{
-			get
-			{
-				return this._Street;
-			}
+        private string _Street;
 
-			set
-			{
-				if (this._Street != value)
-					this._Street = value;
-			}
+        private int? _Count;
 
-		}
+        public Addr()
+        {
+        }
 
-		
-		[Column(Name="count", Storage="_Count", DbType="int")]
-		public int? Count
-		{
-			get
-			{
-				return this._Count;
-			}
+        [Column(Name = "Street", Storage = "_Street", DbType = "varchar(50)")]
+        public string Street
+        {
+            get => _Street;
 
-			set
-			{
-				if (this._Count != value)
-					this._Count = value;
-			}
+            set
+            {
+                if (_Street != value)
+                {
+                    _Street = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "count", Storage = "_Count", DbType = "int")]
+        public int? Count
+        {
+            get => _Count;
 
-		
+            set
+            {
+                if (_Count != value)
+                {
+                    _Count = value;
+                }
+            }
+        }
     }
-
 }

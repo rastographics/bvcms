@@ -382,7 +382,9 @@ namespace UtilityExtensions
         {
             if (value.HasValue())
             {
-                return value.Split(",;".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                return value.Split(",;".ToCharArray(), StringSplitOptions.RemoveEmptyEntries)
+                    .Select(t => t.Trim())
+                    .ToArray();
             }
             return new string[] { };
         }

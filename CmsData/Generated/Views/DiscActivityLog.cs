@@ -1,104 +1,80 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="DiscActivityLog")]
-	public partial class DiscActivityLog
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private string _Name2;
-		
-		private string _PageUrl;
-		
-		private string _PageTitle;
-		
-		private DateTime? _VisitTime;
-		
-		
-		public DiscActivityLog()
-		{
-		}
+    [Table(Name = "DiscActivityLog")]
+    public partial class DiscActivityLog
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="Name2", Storage="_Name2", DbType="varchar(50)")]
-		public string Name2
-		{
-			get
-			{
-				return this._Name2;
-			}
+        private string _Name2;
 
-			set
-			{
-				if (this._Name2 != value)
-					this._Name2 = value;
-			}
+        private string _PageUrl;
 
-		}
+        private string _PageTitle;
 
-		
-		[Column(Name="PageUrl", Storage="_PageUrl", DbType="varchar(150)")]
-		public string PageUrl
-		{
-			get
-			{
-				return this._PageUrl;
-			}
+        private DateTime? _VisitTime;
 
-			set
-			{
-				if (this._PageUrl != value)
-					this._PageUrl = value;
-			}
+        public DiscActivityLog()
+        {
+        }
 
-		}
+        [Column(Name = "Name2", Storage = "_Name2", DbType = "varchar(50)")]
+        public string Name2
+        {
+            get => _Name2;
 
-		
-		[Column(Name="PageTitle", Storage="_PageTitle", DbType="varchar(100) NOT NULL")]
-		public string PageTitle
-		{
-			get
-			{
-				return this._PageTitle;
-			}
+            set
+            {
+                if (_Name2 != value)
+                {
+                    _Name2 = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._PageTitle != value)
-					this._PageTitle = value;
-			}
+        [Column(Name = "PageUrl", Storage = "_PageUrl", DbType = "varchar(150)")]
+        public string PageUrl
+        {
+            get => _PageUrl;
 
-		}
+            set
+            {
+                if (_PageUrl != value)
+                {
+                    _PageUrl = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="VisitTime", Storage="_VisitTime", DbType="datetime")]
-		public DateTime? VisitTime
-		{
-			get
-			{
-				return this._VisitTime;
-			}
+        [Column(Name = "PageTitle", Storage = "_PageTitle", DbType = "varchar(100) NOT NULL")]
+        public string PageTitle
+        {
+            get => _PageTitle;
 
-			set
-			{
-				if (this._VisitTime != value)
-					this._VisitTime = value;
-			}
+            set
+            {
+                if (_PageTitle != value)
+                {
+                    _PageTitle = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "VisitTime", Storage = "_VisitTime", DbType = "datetime")]
+        public DateTime? VisitTime
+        {
+            get => _VisitTime;
 
-		
+            set
+            {
+                if (_VisitTime != value)
+                {
+                    _VisitTime = value;
+                }
+            }
+        }
     }
-
 }

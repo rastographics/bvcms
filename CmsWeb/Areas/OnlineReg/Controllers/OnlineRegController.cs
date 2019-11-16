@@ -365,7 +365,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 CurrentDatabase.SubmitChanges();
             }
             int imageId = ImageData.DocumentsData.StoreImageFromDocument(CurrentImageDatabase, file);
-            CurrentDatabase.OrgMemberDocuments.InsertOnSubmit(new OrgMemberDocuments()
+            CurrentDatabase.OrgMemberDocuments.InsertOnSubmit(new OrgMemberDocument()
             {
                 DocumentName = docName,
                 ImageId = imageId,
