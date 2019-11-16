@@ -1,275 +1,224 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="OrgPeopleGuests")]
-	public partial class OrgPeopleGuest
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private int _PeopleId;
-		
-		private string _Tab;
-		
-		private string _GroupCode;
-		
-		private int? _AttPct;
-		
-		private DateTime _LastAttended;
-		
-		private DateTime? _Joined;
-		
-		private DateTime? _Dropped;
-		
-		private DateTime? _InactiveDate;
-		
-		private string _MemberCode;
-		
-		private string _MemberType;
-		
-		private bool _Hidden;
-		
-		private string _Groups;
-		
-		private int? _Grade;
-		
-		
-		public OrgPeopleGuest()
-		{
-		}
+    [Table(Name = "OrgPeopleGuests")]
+    public partial class OrgPeopleGuest
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="PeopleId", Storage="_PeopleId", DbType="int NOT NULL")]
-		public int PeopleId
-		{
-			get
-			{
-				return this._PeopleId;
-			}
+        private int _PeopleId;
 
-			set
-			{
-				if (this._PeopleId != value)
-					this._PeopleId = value;
-			}
+        private string _Tab;
 
-		}
+        private string _GroupCode;
 
-		
-		[Column(Name="Tab", Storage="_Tab", DbType="varchar(6) NOT NULL")]
-		public string Tab
-		{
-			get
-			{
-				return this._Tab;
-			}
+        private int? _AttPct;
 
-			set
-			{
-				if (this._Tab != value)
-					this._Tab = value;
-			}
+        private DateTime _LastAttended;
 
-		}
+        private DateTime? _Joined;
 
-		
-		[Column(Name="GroupCode", Storage="_GroupCode", DbType="varchar(2) NOT NULL")]
-		public string GroupCode
-		{
-			get
-			{
-				return this._GroupCode;
-			}
+        private DateTime? _Dropped;
 
-			set
-			{
-				if (this._GroupCode != value)
-					this._GroupCode = value;
-			}
+        private DateTime? _InactiveDate;
 
-		}
+        private string _MemberCode;
 
-		
-		[Column(Name="AttPct", Storage="_AttPct", DbType="int")]
-		public int? AttPct
-		{
-			get
-			{
-				return this._AttPct;
-			}
+        private string _MemberType;
 
-			set
-			{
-				if (this._AttPct != value)
-					this._AttPct = value;
-			}
+        private bool _Hidden;
 
-		}
+        private string _Groups;
 
-		
-		[Column(Name="LastAttended", Storage="_LastAttended", DbType="datetime NOT NULL")]
-		public DateTime LastAttended
-		{
-			get
-			{
-				return this._LastAttended;
-			}
+        private int? _Grade;
 
-			set
-			{
-				if (this._LastAttended != value)
-					this._LastAttended = value;
-			}
+        public OrgPeopleGuest()
+        {
+        }
 
-		}
+        [Column(Name = "PeopleId", Storage = "_PeopleId", DbType = "int NOT NULL")]
+        public int PeopleId
+        {
+            get => _PeopleId;
 
-		
-		[Column(Name="Joined", Storage="_Joined", DbType="datetime")]
-		public DateTime? Joined
-		{
-			get
-			{
-				return this._Joined;
-			}
+            set
+            {
+                if (_PeopleId != value)
+                {
+                    _PeopleId = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._Joined != value)
-					this._Joined = value;
-			}
+        [Column(Name = "Tab", Storage = "_Tab", DbType = "varchar(6) NOT NULL")]
+        public string Tab
+        {
+            get => _Tab;
 
-		}
+            set
+            {
+                if (_Tab != value)
+                {
+                    _Tab = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="Dropped", Storage="_Dropped", DbType="datetime")]
-		public DateTime? Dropped
-		{
-			get
-			{
-				return this._Dropped;
-			}
+        [Column(Name = "GroupCode", Storage = "_GroupCode", DbType = "varchar(2) NOT NULL")]
+        public string GroupCode
+        {
+            get => _GroupCode;
 
-			set
-			{
-				if (this._Dropped != value)
-					this._Dropped = value;
-			}
+            set
+            {
+                if (_GroupCode != value)
+                {
+                    _GroupCode = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "AttPct", Storage = "_AttPct", DbType = "int")]
+        public int? AttPct
+        {
+            get => _AttPct;
 
-		
-		[Column(Name="InactiveDate", Storage="_InactiveDate", DbType="datetime")]
-		public DateTime? InactiveDate
-		{
-			get
-			{
-				return this._InactiveDate;
-			}
+            set
+            {
+                if (_AttPct != value)
+                {
+                    _AttPct = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._InactiveDate != value)
-					this._InactiveDate = value;
-			}
+        [Column(Name = "LastAttended", Storage = "_LastAttended", DbType = "datetime NOT NULL")]
+        public DateTime LastAttended
+        {
+            get => _LastAttended;
 
-		}
+            set
+            {
+                if (_LastAttended != value)
+                {
+                    _LastAttended = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="MemberCode", Storage="_MemberCode", DbType="nvarchar(20)")]
-		public string MemberCode
-		{
-			get
-			{
-				return this._MemberCode;
-			}
+        [Column(Name = "Joined", Storage = "_Joined", DbType = "datetime")]
+        public DateTime? Joined
+        {
+            get => _Joined;
 
-			set
-			{
-				if (this._MemberCode != value)
-					this._MemberCode = value;
-			}
+            set
+            {
+                if (_Joined != value)
+                {
+                    _Joined = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "Dropped", Storage = "_Dropped", DbType = "datetime")]
+        public DateTime? Dropped
+        {
+            get => _Dropped;
 
-		
-		[Column(Name="MemberType", Storage="_MemberType", DbType="nvarchar(100)")]
-		public string MemberType
-		{
-			get
-			{
-				return this._MemberType;
-			}
+            set
+            {
+                if (_Dropped != value)
+                {
+                    _Dropped = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._MemberType != value)
-					this._MemberType = value;
-			}
+        [Column(Name = "InactiveDate", Storage = "_InactiveDate", DbType = "datetime")]
+        public DateTime? InactiveDate
+        {
+            get => _InactiveDate;
 
-		}
+            set
+            {
+                if (_InactiveDate != value)
+                {
+                    _InactiveDate = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="Hidden", Storage="_Hidden", DbType="bit NOT NULL")]
-		public bool Hidden
-		{
-			get
-			{
-				return this._Hidden;
-			}
+        [Column(Name = "MemberCode", Storage = "_MemberCode", DbType = "nvarchar(20)")]
+        public string MemberCode
+        {
+            get => _MemberCode;
 
-			set
-			{
-				if (this._Hidden != value)
-					this._Hidden = value;
-			}
+            set
+            {
+                if (_MemberCode != value)
+                {
+                    _MemberCode = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "MemberType", Storage = "_MemberType", DbType = "nvarchar(100)")]
+        public string MemberType
+        {
+            get => _MemberType;
 
-		
-		[Column(Name="Groups", Storage="_Groups", DbType="nvarchar")]
-		public string Groups
-		{
-			get
-			{
-				return this._Groups;
-			}
+            set
+            {
+                if (_MemberType != value)
+                {
+                    _MemberType = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._Groups != value)
-					this._Groups = value;
-			}
+        [Column(Name = "Hidden", Storage = "_Hidden", DbType = "bit NOT NULL")]
+        public bool Hidden
+        {
+            get => _Hidden;
 
-		}
+            set
+            {
+                if (_Hidden != value)
+                {
+                    _Hidden = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="Grade", Storage="_Grade", DbType="int")]
-		public int? Grade
-		{
-			get
-			{
-				return this._Grade;
-			}
+        [Column(Name = "Groups", Storage = "_Groups", DbType = "nvarchar")]
+        public string Groups
+        {
+            get => _Groups;
 
-			set
-			{
-				if (this._Grade != value)
-					this._Grade = value;
-			}
+            set
+            {
+                if (_Groups != value)
+                {
+                    _Groups = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "Grade", Storage = "_Grade", DbType = "int")]
+        public int? Grade
+        {
+            get => _Grade;
 
-		
+            set
+            {
+                if (_Grade != value)
+                {
+                    _Grade = value;
+                }
+            }
+        }
     }
-
 }
