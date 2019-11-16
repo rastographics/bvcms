@@ -1,4 +1,5 @@
 ﻿using IntegrationTests.Support;
+using OpenQA.Selenium.Chrome;
 using SharedTestFixtures;
 using System;
 using System.Net;
@@ -9,6 +10,8 @@ namespace IntegrationTests
     public class WebAppFixture : IDisposable
     {
         private IISExpress cmswebInstance;
+
+        private static ChromeDriver SharedChromeDriver { get; set; }
 
         public WebAppFixture()
         {
@@ -66,10 +69,38 @@ namespace IntegrationTests
             }
         }
 
+        public static ChromeDriver GetChromeDriver(bool shared)
+        {
+            if (shared && SharedChromeDriver != null)
+            {
+                return SharedChromeDriver;
+            }
+            ChromeDriver chromeDriver;
+            ChromeOptions options = new ChromeOptions();
+            options.AddArgument("ignore-certificate-errors");
+            var chromedriverDir = Environment.GetEnvironmentVariable("ChromeDriverDir");
+            if (string.IsNullOrEmpty(chromedriverDir))
+            {
+                chromeDriver = new ChromeDriver(options);
+            }
+            else
+            {
+                chromeDriver = new ChromeDriver(chromedriverDir, options, TimeSpan.FromSeconds(120));
+            }
+
+            if (shared)
+            {
+                SharedChromeDriver = chromeDriver;
+            }
+            return chromeDriver;
+        }
+
         public void Dispose()
         {
-            cmswebInstance.Stop();
+            cmswebInstance?.Stop();
             cmswebInstance = null;
+            SharedChromeDriver?.Quit();
+            SharedChromeDriver = null;
             CleanupWebConfig();
         }
     }

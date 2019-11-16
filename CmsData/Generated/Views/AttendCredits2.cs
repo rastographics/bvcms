@@ -1,123 +1,96 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="AttendCredits2")]
-	public partial class AttendCredits2
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private int _OrganizationId;
-		
-		private int _PeopleId;
-		
-		private bool? _Attended;
-		
-		private int? _WeekNumber;
-		
-		private int? _AttendanceTypeId;
-		
-		
-		public AttendCredits2()
-		{
-		}
+    [Table(Name = "AttendCredits2")]
+    public partial class AttendCredits2
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="OrganizationId", Storage="_OrganizationId", DbType="int NOT NULL")]
-		public int OrganizationId
-		{
-			get
-			{
-				return this._OrganizationId;
-			}
+        private int _OrganizationId;
 
-			set
-			{
-				if (this._OrganizationId != value)
-					this._OrganizationId = value;
-			}
+        private int _PeopleId;
 
-		}
+        private bool? _Attended;
 
-		
-		[Column(Name="PeopleId", Storage="_PeopleId", DbType="int NOT NULL")]
-		public int PeopleId
-		{
-			get
-			{
-				return this._PeopleId;
-			}
+        private int? _WeekNumber;
 
-			set
-			{
-				if (this._PeopleId != value)
-					this._PeopleId = value;
-			}
+        private int? _AttendanceTypeId;
 
-		}
+        public AttendCredits2()
+        {
+        }
 
-		
-		[Column(Name="Attended", Storage="_Attended", DbType="bit")]
-		public bool? Attended
-		{
-			get
-			{
-				return this._Attended;
-			}
+        [Column(Name = "OrganizationId", Storage = "_OrganizationId", DbType = "int NOT NULL")]
+        public int OrganizationId
+        {
+            get => _OrganizationId;
 
-			set
-			{
-				if (this._Attended != value)
-					this._Attended = value;
-			}
+            set
+            {
+                if (_OrganizationId != value)
+                {
+                    _OrganizationId = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "PeopleId", Storage = "_PeopleId", DbType = "int NOT NULL")]
+        public int PeopleId
+        {
+            get => _PeopleId;
 
-		
-		[Column(Name="WeekNumber", Storage="_WeekNumber", DbType="int")]
-		public int? WeekNumber
-		{
-			get
-			{
-				return this._WeekNumber;
-			}
+            set
+            {
+                if (_PeopleId != value)
+                {
+                    _PeopleId = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._WeekNumber != value)
-					this._WeekNumber = value;
-			}
+        [Column(Name = "Attended", Storage = "_Attended", DbType = "bit")]
+        public bool? Attended
+        {
+            get => _Attended;
 
-		}
+            set
+            {
+                if (_Attended != value)
+                {
+                    _Attended = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="AttendanceTypeId", Storage="_AttendanceTypeId", DbType="int")]
-		public int? AttendanceTypeId
-		{
-			get
-			{
-				return this._AttendanceTypeId;
-			}
+        [Column(Name = "WeekNumber", Storage = "_WeekNumber", DbType = "int")]
+        public int? WeekNumber
+        {
+            get => _WeekNumber;
 
-			set
-			{
-				if (this._AttendanceTypeId != value)
-					this._AttendanceTypeId = value;
-			}
+            set
+            {
+                if (_WeekNumber != value)
+                {
+                    _WeekNumber = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "AttendanceTypeId", Storage = "_AttendanceTypeId", DbType = "int")]
+        public int? AttendanceTypeId
+        {
+            get => _AttendanceTypeId;
 
-		
+            set
+            {
+                if (_AttendanceTypeId != value)
+                {
+                    _AttendanceTypeId = value;
+                }
+            }
+        }
     }
-
 }

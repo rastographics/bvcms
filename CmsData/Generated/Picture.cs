@@ -1,366 +1,317 @@
-using System; 
+using System;
+using System.ComponentModel;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
-using System.ComponentModel;
-using CmsData.Infrastructure;
 
 namespace CmsData
 {
-	[Table(Name="dbo.Picture")]
-	public partial class Picture : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-	#region Private Fields
-		
-		private int _PictureId;
-		
-		private DateTime? _CreatedDate;
-		
-		private string _CreatedBy;
-		
-		private int? _LargeId;
-		
-		private int? _MediumId;
-		
-		private int? _SmallId;
-		
-		private int? _ThumbId;
-		
-		private int? _X;
-		
-		private int? _Y;
-		
-   		
-   		private EntitySet<Family> _Families;
-		
-   		private EntitySet<Person> _People;
-		
-    	
-	#endregion
-	
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-		
-		partial void OnPictureIdChanging(int value);
-		partial void OnPictureIdChanged();
-		
-		partial void OnCreatedDateChanging(DateTime? value);
-		partial void OnCreatedDateChanged();
-		
-		partial void OnCreatedByChanging(string value);
-		partial void OnCreatedByChanged();
-		
-		partial void OnLargeIdChanging(int? value);
-		partial void OnLargeIdChanged();
-		
-		partial void OnMediumIdChanging(int? value);
-		partial void OnMediumIdChanged();
-		
-		partial void OnSmallIdChanging(int? value);
-		partial void OnSmallIdChanged();
-		
-		partial void OnThumbIdChanging(int? value);
-		partial void OnThumbIdChanged();
-		
-		partial void OnXChanging(int? value);
-		partial void OnXChanged();
-		
-		partial void OnYChanging(int? value);
-		partial void OnYChanged();
-		
-    #endregion
-		public Picture()
-		{
-			
-			this._Families = new EntitySet<Family>(new Action< Family>(this.attach_Families), new Action< Family>(this.detach_Families)); 
-			
-			this._People = new EntitySet<Person>(new Action< Person>(this.attach_People), new Action< Person>(this.detach_People)); 
-			
-			
-			OnCreated();
-		}
+    [Table(Name = "dbo.Picture")]
+    public partial class Picture : INotifyPropertyChanging, INotifyPropertyChanged
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-    #region Columns
-		
-		[Column(Name="PictureId", UpdateCheck=UpdateCheck.Never, Storage="_PictureId", AutoSync=AutoSync.OnInsert, DbType="int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int PictureId
-		{
-			get { return this._PictureId; }
+        #region Private Fields
 
-			set
-			{
-				if (this._PictureId != value)
-				{
-				
-                    this.OnPictureIdChanging(value);
-					this.SendPropertyChanging();
-					this._PictureId = value;
-					this.SendPropertyChanged("PictureId");
-					this.OnPictureIdChanged();
-				}
+        private int _PictureId;
 
-			}
+        private DateTime? _CreatedDate;
 
-		}
+        private string _CreatedBy;
 
-		
-		[Column(Name="CreatedDate", UpdateCheck=UpdateCheck.Never, Storage="_CreatedDate", DbType="datetime")]
-		public DateTime? CreatedDate
-		{
-			get { return this._CreatedDate; }
+        private int? _LargeId;
 
-			set
-			{
-				if (this._CreatedDate != value)
-				{
-				
-                    this.OnCreatedDateChanging(value);
-					this.SendPropertyChanging();
-					this._CreatedDate = value;
-					this.SendPropertyChanged("CreatedDate");
-					this.OnCreatedDateChanged();
-				}
+        private int? _MediumId;
 
-			}
+        private int? _SmallId;
 
-		}
+        private int? _ThumbId;
 
-		
-		[Column(Name="CreatedBy", UpdateCheck=UpdateCheck.Never, Storage="_CreatedBy", DbType="nvarchar(50)")]
-		public string CreatedBy
-		{
-			get { return this._CreatedBy; }
+        private int? _X;
 
-			set
-			{
-				if (this._CreatedBy != value)
-				{
-				
-                    this.OnCreatedByChanging(value);
-					this.SendPropertyChanging();
-					this._CreatedBy = value;
-					this.SendPropertyChanged("CreatedBy");
-					this.OnCreatedByChanged();
-				}
+        private int? _Y;
 
-			}
+        private EntitySet<Family> _Families;
 
-		}
+        private EntitySet<Person> _People;
 
-		
-		[Column(Name="LargeId", UpdateCheck=UpdateCheck.Never, Storage="_LargeId", DbType="int")]
-		public int? LargeId
-		{
-			get { return this._LargeId; }
+        #endregion
 
-			set
-			{
-				if (this._LargeId != value)
-				{
-				
-                    this.OnLargeIdChanging(value);
-					this.SendPropertyChanging();
-					this._LargeId = value;
-					this.SendPropertyChanged("LargeId");
-					this.OnLargeIdChanged();
-				}
+        #region Extensibility Method Definitions
 
-			}
+        partial void OnLoaded();
+        partial void OnValidate(System.Data.Linq.ChangeAction action);
+        partial void OnCreated();
 
-		}
+        partial void OnPictureIdChanging(int value);
+        partial void OnPictureIdChanged();
 
-		
-		[Column(Name="MediumId", UpdateCheck=UpdateCheck.Never, Storage="_MediumId", DbType="int")]
-		public int? MediumId
-		{
-			get { return this._MediumId; }
+        partial void OnCreatedDateChanging(DateTime? value);
+        partial void OnCreatedDateChanged();
 
-			set
-			{
-				if (this._MediumId != value)
-				{
-				
-                    this.OnMediumIdChanging(value);
-					this.SendPropertyChanging();
-					this._MediumId = value;
-					this.SendPropertyChanged("MediumId");
-					this.OnMediumIdChanged();
-				}
+        partial void OnCreatedByChanging(string value);
+        partial void OnCreatedByChanged();
 
-			}
+        partial void OnLargeIdChanging(int? value);
+        partial void OnLargeIdChanged();
 
-		}
+        partial void OnMediumIdChanging(int? value);
+        partial void OnMediumIdChanged();
 
-		
-		[Column(Name="SmallId", UpdateCheck=UpdateCheck.Never, Storage="_SmallId", DbType="int")]
-		public int? SmallId
-		{
-			get { return this._SmallId; }
+        partial void OnSmallIdChanging(int? value);
+        partial void OnSmallIdChanged();
 
-			set
-			{
-				if (this._SmallId != value)
-				{
-				
-                    this.OnSmallIdChanging(value);
-					this.SendPropertyChanging();
-					this._SmallId = value;
-					this.SendPropertyChanged("SmallId");
-					this.OnSmallIdChanged();
-				}
+        partial void OnThumbIdChanging(int? value);
+        partial void OnThumbIdChanged();
 
-			}
+        partial void OnXChanging(int? value);
+        partial void OnXChanged();
 
-		}
+        partial void OnYChanging(int? value);
+        partial void OnYChanged();
 
-		
-		[Column(Name="ThumbId", UpdateCheck=UpdateCheck.Never, Storage="_ThumbId", DbType="int")]
-		public int? ThumbId
-		{
-			get { return this._ThumbId; }
+        #endregion
 
-			set
-			{
-				if (this._ThumbId != value)
-				{
-				
-                    this.OnThumbIdChanging(value);
-					this.SendPropertyChanging();
-					this._ThumbId = value;
-					this.SendPropertyChanged("ThumbId");
-					this.OnThumbIdChanged();
-				}
+        public Picture()
+        {
+            _Families = new EntitySet<Family>(new Action<Family>(attach_Families), new Action<Family>(detach_Families));
 
-			}
+            _People = new EntitySet<Person>(new Action<Person>(attach_People), new Action<Person>(detach_People));
 
-		}
+            OnCreated();
+        }
 
-		
-		[Column(Name="X", UpdateCheck=UpdateCheck.Never, Storage="_X", DbType="int")]
-		public int? X
-		{
-			get { return this._X; }
+        #region Columns
 
-			set
-			{
-				if (this._X != value)
-				{
-				
-                    this.OnXChanging(value);
-					this.SendPropertyChanging();
-					this._X = value;
-					this.SendPropertyChanged("X");
-					this.OnXChanged();
-				}
+        [Column(Name = "PictureId", UpdateCheck = UpdateCheck.Never, Storage = "_PictureId", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
+        public int PictureId
+        {
+            get => _PictureId;
 
-			}
+            set
+            {
+                if (_PictureId != value)
+                {
+                    OnPictureIdChanging(value);
+                    SendPropertyChanging();
+                    _PictureId = value;
+                    SendPropertyChanged("PictureId");
+                    OnPictureIdChanged();
+                }
+            }
+        }
 
-		}
+        [Column(Name = "CreatedDate", UpdateCheck = UpdateCheck.Never, Storage = "_CreatedDate", DbType = "datetime")]
+        public DateTime? CreatedDate
+        {
+            get => _CreatedDate;
 
-		
-		[Column(Name="Y", UpdateCheck=UpdateCheck.Never, Storage="_Y", DbType="int")]
-		public int? Y
-		{
-			get { return this._Y; }
+            set
+            {
+                if (_CreatedDate != value)
+                {
+                    OnCreatedDateChanging(value);
+                    SendPropertyChanging();
+                    _CreatedDate = value;
+                    SendPropertyChanged("CreatedDate");
+                    OnCreatedDateChanged();
+                }
+            }
+        }
 
-			set
-			{
-				if (this._Y != value)
-				{
-				
-                    this.OnYChanging(value);
-					this.SendPropertyChanging();
-					this._Y = value;
-					this.SendPropertyChanged("Y");
-					this.OnYChanged();
-				}
+        [Column(Name = "CreatedBy", UpdateCheck = UpdateCheck.Never, Storage = "_CreatedBy", DbType = "nvarchar(50)")]
+        public string CreatedBy
+        {
+            get => _CreatedBy;
 
-			}
+            set
+            {
+                if (_CreatedBy != value)
+                {
+                    OnCreatedByChanging(value);
+                    SendPropertyChanging();
+                    _CreatedBy = value;
+                    SendPropertyChanged("CreatedBy");
+                    OnCreatedByChanged();
+                }
+            }
+        }
 
-		}
+        [Column(Name = "LargeId", UpdateCheck = UpdateCheck.Never, Storage = "_LargeId", DbType = "int")]
+        public int? LargeId
+        {
+            get => _LargeId;
 
-		
-    #endregion
-        
-    #region Foreign Key Tables
-   		
-   		[Association(Name="FK_Families_Picture", Storage="_Families", OtherKey="PictureId")]
-   		public EntitySet<Family> Families
-   		{
-   		    get { return this._Families; }
+            set
+            {
+                if (_LargeId != value)
+                {
+                    OnLargeIdChanging(value);
+                    SendPropertyChanging();
+                    _LargeId = value;
+                    SendPropertyChanged("LargeId");
+                    OnLargeIdChanged();
+                }
+            }
+        }
 
-			set	{ this._Families.Assign(value); }
+        [Column(Name = "MediumId", UpdateCheck = UpdateCheck.Never, Storage = "_MediumId", DbType = "int")]
+        public int? MediumId
+        {
+            get => _MediumId;
 
-   		}
+            set
+            {
+                if (_MediumId != value)
+                {
+                    OnMediumIdChanging(value);
+                    SendPropertyChanging();
+                    _MediumId = value;
+                    SendPropertyChanged("MediumId");
+                    OnMediumIdChanged();
+                }
+            }
+        }
 
-		
-   		[Association(Name="FK_PEOPLE_TBL_Picture", Storage="_People", OtherKey="PictureId")]
-   		public EntitySet<Person> People
-   		{
-   		    get { return this._People; }
+        [Column(Name = "SmallId", UpdateCheck = UpdateCheck.Never, Storage = "_SmallId", DbType = "int")]
+        public int? SmallId
+        {
+            get => _SmallId;
 
-			set	{ this._People.Assign(value); }
+            set
+            {
+                if (_SmallId != value)
+                {
+                    OnSmallIdChanging(value);
+                    SendPropertyChanging();
+                    _SmallId = value;
+                    SendPropertyChanged("SmallId");
+                    OnSmallIdChanged();
+                }
+            }
+        }
 
-   		}
+        [Column(Name = "ThumbId", UpdateCheck = UpdateCheck.Never, Storage = "_ThumbId", DbType = "int")]
+        public int? ThumbId
+        {
+            get => _ThumbId;
 
-		
-	#endregion
-	
-	#region Foreign Keys
-    	
-	#endregion
-	
-		public event PropertyChangingEventHandler PropertyChanging;
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-				this.PropertyChanging(this, emptyChangingEventArgs);
-		}
+            set
+            {
+                if (_ThumbId != value)
+                {
+                    OnThumbIdChanging(value);
+                    SendPropertyChanging();
+                    _ThumbId = value;
+                    SendPropertyChanged("ThumbId");
+                    OnThumbIdChanged();
+                }
+            }
+        }
 
-		public event PropertyChangedEventHandler PropertyChanged;
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-		}
+        [Column(Name = "X", UpdateCheck = UpdateCheck.Never, Storage = "_X", DbType = "int")]
+        public int? X
+        {
+            get => _X;
 
-   		
-		private void attach_Families(Family entity)
-		{
-			this.SendPropertyChanging();
-			entity.Picture = this;
-		}
+            set
+            {
+                if (_X != value)
+                {
+                    OnXChanging(value);
+                    SendPropertyChanging();
+                    _X = value;
+                    SendPropertyChanged("X");
+                    OnXChanged();
+                }
+            }
+        }
 
-		private void detach_Families(Family entity)
-		{
-			this.SendPropertyChanging();
-			entity.Picture = null;
-		}
+        [Column(Name = "Y", UpdateCheck = UpdateCheck.Never, Storage = "_Y", DbType = "int")]
+        public int? Y
+        {
+            get => _Y;
 
-		
-		private void attach_People(Person entity)
-		{
-			this.SendPropertyChanging();
-			entity.Picture = this;
-		}
+            set
+            {
+                if (_Y != value)
+                {
+                    OnYChanging(value);
+                    SendPropertyChanging();
+                    _Y = value;
+                    SendPropertyChanged("Y");
+                    OnYChanged();
+                }
+            }
+        }
 
-		private void detach_People(Person entity)
-		{
-			this.SendPropertyChanging();
-			entity.Picture = null;
-		}
+        #endregion
 
-		
-	}
+        #region Foreign Key Tables
 
+        [Association(Name = "FK_Families_Picture", Storage = "_Families", OtherKey = "PictureId")]
+        public EntitySet<Family> Families
+           {
+               get => _Families;
+
+            set => _Families.Assign(value);
+
+           }
+
+        [Association(Name = "FK_PEOPLE_TBL_Picture", Storage = "_People", OtherKey = "PictureId")]
+        public EntitySet<Person> People
+           {
+               get => _People;
+
+            set => _People.Assign(value);
+
+           }
+
+        #endregion
+
+        #region Foreign Keys
+
+        #endregion
+
+        public event PropertyChangingEventHandler PropertyChanging;
+        protected virtual void SendPropertyChanging()
+        {
+            if ((PropertyChanging != null))
+            {
+                PropertyChanging(this, emptyChangingEventArgs);
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void SendPropertyChanged(string propertyName)
+        {
+            if ((PropertyChanged != null))
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        private void attach_Families(Family entity)
+        {
+            SendPropertyChanging();
+            entity.Picture = this;
+        }
+
+        private void detach_Families(Family entity)
+        {
+            SendPropertyChanging();
+            entity.Picture = null;
+        }
+
+        private void attach_People(Person entity)
+        {
+            SendPropertyChanging();
+            entity.Picture = this;
+        }
+
+        private void detach_People(Person entity)
+        {
+            SendPropertyChanging();
+            entity.Picture = null;
+        }
+    }
 }
-

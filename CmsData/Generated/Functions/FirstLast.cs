@@ -1,66 +1,48 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="FirstLast")]
-	public partial class FirstLast
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private string _First;
-		
-		private string _Last;
-		
-		
-		public FirstLast()
-		{
-		}
+    [Table(Name = "FirstLast")]
+    public partial class FirstLast
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="First", Storage="_First", DbType="nvarchar(150)")]
-		public string First
-		{
-			get
-			{
-				return this._First;
-			}
+        private string _First;
 
-			set
-			{
-				if (this._First != value)
-					this._First = value;
-			}
+        private string _Last;
 
-		}
+        public FirstLast()
+        {
+        }
 
-		
-		[Column(Name="Last", Storage="_Last", DbType="nvarchar(150)")]
-		public string Last
-		{
-			get
-			{
-				return this._Last;
-			}
+        [Column(Name = "First", Storage = "_First", DbType = "nvarchar(150)")]
+        public string First
+        {
+            get => _First;
 
-			set
-			{
-				if (this._Last != value)
-					this._Last = value;
-			}
+            set
+            {
+                if (_First != value)
+                {
+                    _First = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "Last", Storage = "_Last", DbType = "nvarchar(150)")]
+        public string Last
+        {
+            get => _Last;
 
-		
+            set
+            {
+                if (_Last != value)
+                {
+                    _Last = value;
+                }
+            }
+        }
     }
-
 }

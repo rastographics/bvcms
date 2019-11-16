@@ -1,123 +1,96 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="GivingChangeQuartersFund")]
-	public partial class GivingChangeQuartersFund
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private int _PeopleId;
-		
-		private decimal _TotalPeriod1;
-		
-		private decimal _TotalPeriod2;
-		
-		private decimal? _PctChange;
-		
-		private string _Change;
-		
-		
-		public GivingChangeQuartersFund()
-		{
-		}
+    [Table(Name = "GivingChangeQuartersFund")]
+    public partial class GivingChangeQuartersFund
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="PeopleId", Storage="_PeopleId", DbType="int NOT NULL")]
-		public int PeopleId
-		{
-			get
-			{
-				return this._PeopleId;
-			}
+        private int _PeopleId;
 
-			set
-			{
-				if (this._PeopleId != value)
-					this._PeopleId = value;
-			}
+        private decimal _TotalPeriod1;
 
-		}
+        private decimal _TotalPeriod2;
 
-		
-		[Column(Name="TotalPeriod1", Storage="_TotalPeriod1", DbType="Decimal(38,2) NOT NULL")]
-		public decimal TotalPeriod1
-		{
-			get
-			{
-				return this._TotalPeriod1;
-			}
+        private decimal? _PctChange;
 
-			set
-			{
-				if (this._TotalPeriod1 != value)
-					this._TotalPeriod1 = value;
-			}
+        private string _Change;
 
-		}
+        public GivingChangeQuartersFund()
+        {
+        }
 
-		
-		[Column(Name="TotalPeriod2", Storage="_TotalPeriod2", DbType="Decimal(38,2) NOT NULL")]
-		public decimal TotalPeriod2
-		{
-			get
-			{
-				return this._TotalPeriod2;
-			}
+        [Column(Name = "PeopleId", Storage = "_PeopleId", DbType = "int NOT NULL")]
+        public int PeopleId
+        {
+            get => _PeopleId;
 
-			set
-			{
-				if (this._TotalPeriod2 != value)
-					this._TotalPeriod2 = value;
-			}
+            set
+            {
+                if (_PeopleId != value)
+                {
+                    _PeopleId = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "TotalPeriod1", Storage = "_TotalPeriod1", DbType = "Decimal(38,2) NOT NULL")]
+        public decimal TotalPeriod1
+        {
+            get => _TotalPeriod1;
 
-		
-		[Column(Name="PctChange", Storage="_PctChange", DbType="Decimal(38,6)")]
-		public decimal? PctChange
-		{
-			get
-			{
-				return this._PctChange;
-			}
+            set
+            {
+                if (_TotalPeriod1 != value)
+                {
+                    _TotalPeriod1 = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._PctChange != value)
-					this._PctChange = value;
-			}
+        [Column(Name = "TotalPeriod2", Storage = "_TotalPeriod2", DbType = "Decimal(38,2) NOT NULL")]
+        public decimal TotalPeriod2
+        {
+            get => _TotalPeriod2;
 
-		}
+            set
+            {
+                if (_TotalPeriod2 != value)
+                {
+                    _TotalPeriod2 = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="Change", Storage="_Change", DbType="nvarchar(4000)")]
-		public string Change
-		{
-			get
-			{
-				return this._Change;
-			}
+        [Column(Name = "PctChange", Storage = "_PctChange", DbType = "Decimal(38,6)")]
+        public decimal? PctChange
+        {
+            get => _PctChange;
 
-			set
-			{
-				if (this._Change != value)
-					this._Change = value;
-			}
+            set
+            {
+                if (_PctChange != value)
+                {
+                    _PctChange = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "Change", Storage = "_Change", DbType = "nvarchar(4000)")]
+        public string Change
+        {
+            get => _Change;
 
-		
+            set
+            {
+                if (_Change != value)
+                {
+                    _Change = value;
+                }
+            }
+        }
     }
-
 }

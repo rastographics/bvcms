@@ -1,104 +1,80 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="DepositDateTotals")]
-	public partial class DepositDateTotal
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private DateTime? _DepositDate;
-		
-		private decimal? _TotalHeader;
-		
-		private decimal? _TotalContributions;
-		
-		private int? _Count;
-		
-		
-		public DepositDateTotal()
-		{
-		}
+    [Table(Name = "DepositDateTotals")]
+    public partial class DepositDateTotal
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="DepositDate", Storage="_DepositDate", DbType="datetime")]
-		public DateTime? DepositDate
-		{
-			get
-			{
-				return this._DepositDate;
-			}
+        private DateTime? _DepositDate;
 
-			set
-			{
-				if (this._DepositDate != value)
-					this._DepositDate = value;
-			}
+        private decimal? _TotalHeader;
 
-		}
+        private decimal? _TotalContributions;
 
-		
-		[Column(Name="TotalHeader", Storage="_TotalHeader", DbType="Decimal(38,2)")]
-		public decimal? TotalHeader
-		{
-			get
-			{
-				return this._TotalHeader;
-			}
+        private int? _Count;
 
-			set
-			{
-				if (this._TotalHeader != value)
-					this._TotalHeader = value;
-			}
+        public DepositDateTotal()
+        {
+        }
 
-		}
+        [Column(Name = "DepositDate", Storage = "_DepositDate", DbType = "datetime")]
+        public DateTime? DepositDate
+        {
+            get => _DepositDate;
 
-		
-		[Column(Name="TotalContributions", Storage="_TotalContributions", DbType="Decimal(38,2)")]
-		public decimal? TotalContributions
-		{
-			get
-			{
-				return this._TotalContributions;
-			}
+            set
+            {
+                if (_DepositDate != value)
+                {
+                    _DepositDate = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._TotalContributions != value)
-					this._TotalContributions = value;
-			}
+        [Column(Name = "TotalHeader", Storage = "_TotalHeader", DbType = "Decimal(38,2)")]
+        public decimal? TotalHeader
+        {
+            get => _TotalHeader;
 
-		}
+            set
+            {
+                if (_TotalHeader != value)
+                {
+                    _TotalHeader = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="Count", Storage="_Count", DbType="int")]
-		public int? Count
-		{
-			get
-			{
-				return this._Count;
-			}
+        [Column(Name = "TotalContributions", Storage = "_TotalContributions", DbType = "Decimal(38,2)")]
+        public decimal? TotalContributions
+        {
+            get => _TotalContributions;
 
-			set
-			{
-				if (this._Count != value)
-					this._Count = value;
-			}
+            set
+            {
+                if (_TotalContributions != value)
+                {
+                    _TotalContributions = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "Count", Storage = "_Count", DbType = "int")]
+        public int? Count
+        {
+            get => _Count;
 
-		
+            set
+            {
+                if (_Count != value)
+                {
+                    _Count = value;
+                }
+            }
+        }
     }
-
 }

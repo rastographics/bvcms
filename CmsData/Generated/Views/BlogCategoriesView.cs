@@ -1,66 +1,48 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="BlogCategoriesView")]
-	public partial class BlogCategoriesView
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private string _Category;
-		
-		private int? _N;
-		
-		
-		public BlogCategoriesView()
-		{
-		}
+    [Table(Name = "BlogCategoriesView")]
+    public partial class BlogCategoriesView
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="Category", Storage="_Category", DbType="varchar(50)")]
-		public string Category
-		{
-			get
-			{
-				return this._Category;
-			}
+        private string _Category;
 
-			set
-			{
-				if (this._Category != value)
-					this._Category = value;
-			}
+        private int? _N;
 
-		}
+        public BlogCategoriesView()
+        {
+        }
 
-		
-		[Column(Name="n", Storage="_N", DbType="int")]
-		public int? N
-		{
-			get
-			{
-				return this._N;
-			}
+        [Column(Name = "Category", Storage = "_Category", DbType = "varchar(50)")]
+        public string Category
+        {
+            get => _Category;
 
-			set
-			{
-				if (this._N != value)
-					this._N = value;
-			}
+            set
+            {
+                if (_Category != value)
+                {
+                    _Category = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "n", Storage = "_N", DbType = "int")]
+        public int? N
+        {
+            get => _N;
 
-		
+            set
+            {
+                if (_N != value)
+                {
+                    _N = value;
+                }
+            }
+        }
     }
-
 }

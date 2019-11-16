@@ -1,104 +1,80 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="FamilyGiver")]
-	public partial class FamilyGiver
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private int _FamilyId;
-		
-		private int _PeopleId;
-		
-		private bool? _FamGive;
-		
-		private bool? _FamPledge;
-		
-		
-		public FamilyGiver()
-		{
-		}
+    [Table(Name = "FamilyGiver")]
+    public partial class FamilyGiver
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="FamilyId", Storage="_FamilyId", DbType="int NOT NULL")]
-		public int FamilyId
-		{
-			get
-			{
-				return this._FamilyId;
-			}
+        private int _FamilyId;
 
-			set
-			{
-				if (this._FamilyId != value)
-					this._FamilyId = value;
-			}
+        private int _PeopleId;
 
-		}
+        private bool? _FamGive;
 
-		
-		[Column(Name="PeopleId", Storage="_PeopleId", DbType="int NOT NULL")]
-		public int PeopleId
-		{
-			get
-			{
-				return this._PeopleId;
-			}
+        private bool? _FamPledge;
 
-			set
-			{
-				if (this._PeopleId != value)
-					this._PeopleId = value;
-			}
+        public FamilyGiver()
+        {
+        }
 
-		}
+        [Column(Name = "FamilyId", Storage = "_FamilyId", DbType = "int NOT NULL")]
+        public int FamilyId
+        {
+            get => _FamilyId;
 
-		
-		[Column(Name="FamGive", Storage="_FamGive", DbType="bit")]
-		public bool? FamGive
-		{
-			get
-			{
-				return this._FamGive;
-			}
+            set
+            {
+                if (_FamilyId != value)
+                {
+                    _FamilyId = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._FamGive != value)
-					this._FamGive = value;
-			}
+        [Column(Name = "PeopleId", Storage = "_PeopleId", DbType = "int NOT NULL")]
+        public int PeopleId
+        {
+            get => _PeopleId;
 
-		}
+            set
+            {
+                if (_PeopleId != value)
+                {
+                    _PeopleId = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="FamPledge", Storage="_FamPledge", DbType="bit")]
-		public bool? FamPledge
-		{
-			get
-			{
-				return this._FamPledge;
-			}
+        [Column(Name = "FamGive", Storage = "_FamGive", DbType = "bit")]
+        public bool? FamGive
+        {
+            get => _FamGive;
 
-			set
-			{
-				if (this._FamPledge != value)
-					this._FamPledge = value;
-			}
+            set
+            {
+                if (_FamGive != value)
+                {
+                    _FamGive = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "FamPledge", Storage = "_FamPledge", DbType = "bit")]
+        public bool? FamPledge
+        {
+            get => _FamPledge;
 
-		
+            set
+            {
+                if (_FamPledge != value)
+                {
+                    _FamPledge = value;
+                }
+            }
+        }
     }
-
 }
