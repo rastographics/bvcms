@@ -108,6 +108,7 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
                 // They match on an email plus everything else
                 if (person.Users.Any())
                 {
+                    user = person.Users.First();
                     results = Results.CreateFoundPersonExistingUser;
                 }
                 else

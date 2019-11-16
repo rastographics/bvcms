@@ -1,104 +1,80 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="VisitNumberSinceDate")]
-	public partial class VisitNumberSinceDate
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private int _PeopleId;
-		
-		private string _Name;
-		
-		private DateTime _MeetingDate;
-		
-		private long? _Rank;
-		
-		
-		public VisitNumberSinceDate()
-		{
-		}
+    [Table(Name = "VisitNumberSinceDate")]
+    public partial class VisitNumberSinceDate
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="PeopleId", Storage="_PeopleId", DbType="int NOT NULL")]
-		public int PeopleId
-		{
-			get
-			{
-				return this._PeopleId;
-			}
+        private int _PeopleId;
 
-			set
-			{
-				if (this._PeopleId != value)
-					this._PeopleId = value;
-			}
+        private string _Name;
 
-		}
+        private DateTime _MeetingDate;
 
-		
-		[Column(Name="Name", Storage="_Name", DbType="varchar(126)")]
-		public string Name
-		{
-			get
-			{
-				return this._Name;
-			}
+        private long? _Rank;
 
-			set
-			{
-				if (this._Name != value)
-					this._Name = value;
-			}
+        public VisitNumberSinceDate()
+        {
+        }
 
-		}
+        [Column(Name = "PeopleId", Storage = "_PeopleId", DbType = "int NOT NULL")]
+        public int PeopleId
+        {
+            get => _PeopleId;
 
-		
-		[Column(Name="MeetingDate", Storage="_MeetingDate", DbType="datetime NOT NULL")]
-		public DateTime MeetingDate
-		{
-			get
-			{
-				return this._MeetingDate;
-			}
+            set
+            {
+                if (_PeopleId != value)
+                {
+                    _PeopleId = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._MeetingDate != value)
-					this._MeetingDate = value;
-			}
+        [Column(Name = "Name", Storage = "_Name", DbType = "varchar(126)")]
+        public string Name
+        {
+            get => _Name;
 
-		}
+            set
+            {
+                if (_Name != value)
+                {
+                    _Name = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="Rank", Storage="_Rank", DbType="bigint")]
-		public long? Rank
-		{
-			get
-			{
-				return this._Rank;
-			}
+        [Column(Name = "MeetingDate", Storage = "_MeetingDate", DbType = "datetime NOT NULL")]
+        public DateTime MeetingDate
+        {
+            get => _MeetingDate;
 
-			set
-			{
-				if (this._Rank != value)
-					this._Rank = value;
-			}
+            set
+            {
+                if (_MeetingDate != value)
+                {
+                    _MeetingDate = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "Rank", Storage = "_Rank", DbType = "bigint")]
+        public long? Rank
+        {
+            get => _Rank;
 
-		
+            set
+            {
+                if (_Rank != value)
+                {
+                    _Rank = value;
+                }
+            }
+        }
     }
-
 }

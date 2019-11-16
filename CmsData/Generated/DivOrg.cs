@@ -1,250 +1,226 @@
-using System; 
+using CmsData.Infrastructure;
+using System;
+using System.ComponentModel;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
-using System.ComponentModel;
-using CmsData.Infrastructure;
 
 namespace CmsData
 {
-	[Table(Name="dbo.DivOrg")]
-	public partial class DivOrg : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-	#region Private Fields
-		
-		private int _DivId;
-		
-		private int _OrgId;
-		
-		private int? _Id;
-		
-   		
-    	
-		private EntityRef<Division> _Division;
-		
-		private EntityRef<Organization> _Organization;
-		
-	#endregion
-	
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-		
-		partial void OnDivIdChanging(int value);
-		partial void OnDivIdChanged();
-		
-		partial void OnOrgIdChanging(int value);
-		partial void OnOrgIdChanged();
-		
-		partial void OnIdChanging(int? value);
-		partial void OnIdChanged();
-		
-    #endregion
-		public DivOrg()
-		{
-			
-			
-			this._Division = default(EntityRef<Division>); 
-			
-			this._Organization = default(EntityRef<Organization>); 
-			
-			OnCreated();
-		}
+    [Table(Name = "dbo.DivOrg")]
+    public partial class DivOrg : INotifyPropertyChanging, INotifyPropertyChanged
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-    #region Columns
-		
-		[Column(Name="DivId", UpdateCheck=UpdateCheck.Never, Storage="_DivId", DbType="int NOT NULL", IsPrimaryKey=true)]
-		[IsForeignKey]
-		public int DivId
-		{
-			get { return this._DivId; }
+        #region Private Fields
 
-			set
-			{
-				if (this._DivId != value)
-				{
-				
-					if (this._Division.HasLoadedOrAssignedValue)
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-				
-                    this.OnDivIdChanging(value);
-					this.SendPropertyChanging();
-					this._DivId = value;
-					this.SendPropertyChanged("DivId");
-					this.OnDivIdChanged();
-				}
+        private int _DivId;
 
-			}
+        private int _OrgId;
 
-		}
+        private int? _Id;
 
-		
-		[Column(Name="OrgId", UpdateCheck=UpdateCheck.Never, Storage="_OrgId", DbType="int NOT NULL", IsPrimaryKey=true)]
-		[IsForeignKey]
-		public int OrgId
-		{
-			get { return this._OrgId; }
+        private EntityRef<Division> _Division;
 
-			set
-			{
-				if (this._OrgId != value)
-				{
-				
-					if (this._Organization.HasLoadedOrAssignedValue)
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-				
-                    this.OnOrgIdChanging(value);
-					this.SendPropertyChanging();
-					this._OrgId = value;
-					this.SendPropertyChanged("OrgId");
-					this.OnOrgIdChanged();
-				}
+        private EntityRef<Organization> _Organization;
 
-			}
+        #endregion
 
-		}
+        #region Extensibility Method Definitions
 
-		
-		[Column(Name="id", UpdateCheck=UpdateCheck.Never, Storage="_Id", DbType="int")]
-		public int? Id
-		{
-			get { return this._Id; }
+        partial void OnLoaded();
+        partial void OnValidate(System.Data.Linq.ChangeAction action);
+        partial void OnCreated();
 
-			set
-			{
-				if (this._Id != value)
-				{
-				
-                    this.OnIdChanging(value);
-					this.SendPropertyChanging();
-					this._Id = value;
-					this.SendPropertyChanged("Id");
-					this.OnIdChanged();
-				}
+        partial void OnDivIdChanging(int value);
+        partial void OnDivIdChanged();
 
-			}
+        partial void OnOrgIdChanging(int value);
+        partial void OnOrgIdChanged();
 
-		}
+        partial void OnIdChanging(int? value);
+        partial void OnIdChanged();
 
-		
-    #endregion
-        
-    #region Foreign Key Tables
-   		
-	#endregion
-	
-	#region Foreign Keys
-    	
-		[Association(Name="FK_DivOrg_Division", Storage="_Division", ThisKey="DivId", IsForeignKey=true)]
-		public Division Division
-		{
-			get { return this._Division.Entity; }
+        #endregion
 
-			set
-			{
-				Division previousValue = this._Division.Entity;
-				if (((previousValue != value) 
-							|| (this._Division.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if (previousValue != null)
-					{
-						this._Division.Entity = null;
-						previousValue.DivOrgs.Remove(this);
-					}
+        public DivOrg()
+        {
+            _Division = default(EntityRef<Division>);
 
-					this._Division.Entity = value;
-					if (value != null)
-					{
-						value.DivOrgs.Add(this);
-						
-						this._DivId = value.Id;
-						
-					}
+            _Organization = default(EntityRef<Organization>);
 
-					else
-					{
-						
-						this._DivId = default(int);
-						
-					}
+            OnCreated();
+        }
 
-					this.SendPropertyChanged("Division");
-				}
+        #region Columns
 
-			}
+        [Column(Name = "DivId", UpdateCheck = UpdateCheck.Never, Storage = "_DivId", DbType = "int NOT NULL", IsPrimaryKey = true)]
+        [IsForeignKey]
+        public int DivId
+        {
+            get => _DivId;
 
-		}
+            set
+            {
+                if (_DivId != value)
+                {
+                    if (_Division.HasLoadedOrAssignedValue)
+                    {
+                        throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+                    }
 
-		
-		[Association(Name="FK_DivOrg_Organizations", Storage="_Organization", ThisKey="OrgId", IsForeignKey=true)]
-		public Organization Organization
-		{
-			get { return this._Organization.Entity; }
+                    OnDivIdChanging(value);
+                    SendPropertyChanging();
+                    _DivId = value;
+                    SendPropertyChanged("DivId");
+                    OnDivIdChanged();
+                }
+            }
+        }
 
-			set
-			{
-				Organization previousValue = this._Organization.Entity;
-				if (((previousValue != value) 
-							|| (this._Organization.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if (previousValue != null)
-					{
-						this._Organization.Entity = null;
-						previousValue.DivOrgs.Remove(this);
-					}
+        [Column(Name = "OrgId", UpdateCheck = UpdateCheck.Never, Storage = "_OrgId", DbType = "int NOT NULL", IsPrimaryKey = true)]
+        [IsForeignKey]
+        public int OrgId
+        {
+            get => _OrgId;
 
-					this._Organization.Entity = value;
-					if (value != null)
-					{
-						value.DivOrgs.Add(this);
-						
-						this._OrgId = value.OrganizationId;
-						
-					}
+            set
+            {
+                if (_OrgId != value)
+                {
+                    if (_Organization.HasLoadedOrAssignedValue)
+                    {
+                        throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+                    }
 
-					else
-					{
-						
-						this._OrgId = default(int);
-						
-					}
+                    OnOrgIdChanging(value);
+                    SendPropertyChanging();
+                    _OrgId = value;
+                    SendPropertyChanged("OrgId");
+                    OnOrgIdChanged();
+                }
+            }
+        }
 
-					this.SendPropertyChanged("Organization");
-				}
+        [Column(Name = "id", UpdateCheck = UpdateCheck.Never, Storage = "_Id", DbType = "int")]
+        public int? Id
+        {
+            get => _Id;
 
-			}
+            set
+            {
+                if (_Id != value)
+                {
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
+                }
+            }
+        }
 
-		}
+        #endregion
 
-		
-	#endregion
-	
-		public event PropertyChangingEventHandler PropertyChanging;
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-				this.PropertyChanging(this, emptyChangingEventArgs);
-		}
+        #region Foreign Key Tables
 
-		public event PropertyChangedEventHandler PropertyChanged;
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-		}
+        #endregion
 
-   		
-	}
+        #region Foreign Keys
 
+        [Association(Name = "FK_DivOrg_Division", Storage = "_Division", ThisKey = "DivId", IsForeignKey = true)]
+        public Division Division
+        {
+            get => _Division.Entity;
+
+            set
+            {
+                Division previousValue = _Division.Entity;
+                if (((previousValue != value)
+                            || (_Division.HasLoadedOrAssignedValue == false)))
+                {
+                    SendPropertyChanging();
+                    if (previousValue != null)
+                    {
+                        _Division.Entity = null;
+                        previousValue.DivOrgs.Remove(this);
+                    }
+
+                    _Division.Entity = value;
+                    if (value != null)
+                    {
+                        value.DivOrgs.Add(this);
+
+                        _DivId = value.Id;
+
+                    }
+
+                    else
+                    {
+                        _DivId = default(int);
+
+                    }
+
+                    SendPropertyChanged("Division");
+                }
+            }
+        }
+
+        [Association(Name = "FK_DivOrg_Organizations", Storage = "_Organization", ThisKey = "OrgId", IsForeignKey = true)]
+        public Organization Organization
+        {
+            get => _Organization.Entity;
+
+            set
+            {
+                Organization previousValue = _Organization.Entity;
+                if (((previousValue != value)
+                            || (_Organization.HasLoadedOrAssignedValue == false)))
+                {
+                    SendPropertyChanging();
+                    if (previousValue != null)
+                    {
+                        _Organization.Entity = null;
+                        previousValue.DivOrgs.Remove(this);
+                    }
+
+                    _Organization.Entity = value;
+                    if (value != null)
+                    {
+                        value.DivOrgs.Add(this);
+
+                        _OrgId = value.OrganizationId;
+
+                    }
+
+                    else
+                    {
+                        _OrgId = default(int);
+
+                    }
+
+                    SendPropertyChanged("Organization");
+                }
+            }
+        }
+
+        #endregion
+
+        public event PropertyChangingEventHandler PropertyChanging;
+        protected virtual void SendPropertyChanging()
+        {
+            if ((PropertyChanging != null))
+            {
+                PropertyChanging(this, emptyChangingEventArgs);
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void SendPropertyChanged(string propertyName)
+        {
+            if ((PropertyChanged != null))
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
 }
-
