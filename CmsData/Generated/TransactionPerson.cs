@@ -1,304 +1,272 @@
-using System; 
+using CmsData.Infrastructure;
+using System;
+using System.ComponentModel;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
-using System.ComponentModel;
-using CmsData.Infrastructure;
 
 namespace CmsData
 {
-	[Table(Name="dbo.TransactionPeople")]
-	public partial class TransactionPerson : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-	#region Private Fields
-		
-		private int _Id;
-		
-		private int _PeopleId;
-		
-		private decimal? _Amt;
-		
-		private int? _OrgId;
-		
-		private bool? _Donor;
-		
-   		
-    	
-		private EntityRef<Person> _Person;
-		
-		private EntityRef<Transaction> _Transaction;
-		
-	#endregion
-	
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-		
-		partial void OnIdChanging(int value);
-		partial void OnIdChanged();
-		
-		partial void OnPeopleIdChanging(int value);
-		partial void OnPeopleIdChanged();
-		
-		partial void OnAmtChanging(decimal? value);
-		partial void OnAmtChanged();
-		
-		partial void OnOrgIdChanging(int? value);
-		partial void OnOrgIdChanged();
-		
-		partial void OnDonorChanging(bool? value);
-		partial void OnDonorChanged();
-		
-    #endregion
-		public TransactionPerson()
-		{
-			
-			
-			this._Person = default(EntityRef<Person>); 
-			
-			this._Transaction = default(EntityRef<Transaction>); 
-			
-			OnCreated();
-		}
+    [Table(Name = "dbo.TransactionPeople")]
+    public partial class TransactionPerson : INotifyPropertyChanging, INotifyPropertyChanged
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-    #region Columns
-		
-		[Column(Name="Id", UpdateCheck=UpdateCheck.Never, Storage="_Id", DbType="int NOT NULL", IsPrimaryKey=true)]
-		[IsForeignKey]
-		public int Id
-		{
-			get { return this._Id; }
+        #region Private Fields
 
-			set
-			{
-				if (this._Id != value)
-				{
-				
-					if (this._Transaction.HasLoadedOrAssignedValue)
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-				
-                    this.OnIdChanging(value);
-					this.SendPropertyChanging();
-					this._Id = value;
-					this.SendPropertyChanged("Id");
-					this.OnIdChanged();
-				}
+        private int _Id;
 
-			}
+        private int _PeopleId;
 
-		}
+        private decimal? _Amt;
 
-		
-		[Column(Name="PeopleId", UpdateCheck=UpdateCheck.Never, Storage="_PeopleId", DbType="int NOT NULL", IsPrimaryKey=true)]
-		[IsForeignKey]
-		public int PeopleId
-		{
-			get { return this._PeopleId; }
+        private int? _OrgId;
 
-			set
-			{
-				if (this._PeopleId != value)
-				{
-				
-					if (this._Person.HasLoadedOrAssignedValue)
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-				
-                    this.OnPeopleIdChanging(value);
-					this.SendPropertyChanging();
-					this._PeopleId = value;
-					this.SendPropertyChanged("PeopleId");
-					this.OnPeopleIdChanged();
-				}
+        private bool? _Donor;
 
-			}
+        private EntityRef<Person> _Person;
 
-		}
+        private EntityRef<Transaction> _Transaction;
 
-		
-		[Column(Name="Amt", UpdateCheck=UpdateCheck.Never, Storage="_Amt", DbType="money")]
-		public decimal? Amt
-		{
-			get { return this._Amt; }
+        #endregion
 
-			set
-			{
-				if (this._Amt != value)
-				{
-				
-                    this.OnAmtChanging(value);
-					this.SendPropertyChanging();
-					this._Amt = value;
-					this.SendPropertyChanged("Amt");
-					this.OnAmtChanged();
-				}
+        #region Extensibility Method Definitions
 
-			}
+        partial void OnLoaded();
+        partial void OnValidate(System.Data.Linq.ChangeAction action);
+        partial void OnCreated();
 
-		}
+        partial void OnIdChanging(int value);
+        partial void OnIdChanged();
 
-		
-		[Column(Name="OrgId", UpdateCheck=UpdateCheck.Never, Storage="_OrgId", DbType="int")]
-		public int? OrgId
-		{
-			get { return this._OrgId; }
+        partial void OnPeopleIdChanging(int value);
+        partial void OnPeopleIdChanged();
 
-			set
-			{
-				if (this._OrgId != value)
-				{
-				
-                    this.OnOrgIdChanging(value);
-					this.SendPropertyChanging();
-					this._OrgId = value;
-					this.SendPropertyChanged("OrgId");
-					this.OnOrgIdChanged();
-				}
+        partial void OnAmtChanging(decimal? value);
+        partial void OnAmtChanged();
 
-			}
+        partial void OnOrgIdChanging(int? value);
+        partial void OnOrgIdChanged();
 
-		}
+        partial void OnDonorChanging(bool? value);
+        partial void OnDonorChanged();
 
-		
-		[Column(Name="Donor", UpdateCheck=UpdateCheck.Never, Storage="_Donor", DbType="bit")]
-		public bool? Donor
-		{
-			get { return this._Donor; }
+        #endregion
 
-			set
-			{
-				if (this._Donor != value)
-				{
-				
-                    this.OnDonorChanging(value);
-					this.SendPropertyChanging();
-					this._Donor = value;
-					this.SendPropertyChanged("Donor");
-					this.OnDonorChanged();
-				}
+        public TransactionPerson()
+        {
+            _Person = default(EntityRef<Person>);
 
-			}
+            _Transaction = default(EntityRef<Transaction>);
 
-		}
+            OnCreated();
+        }
 
-		
-    #endregion
-        
-    #region Foreign Key Tables
-   		
-	#endregion
-	
-	#region Foreign Keys
-    	
-		[Association(Name="FK_TransactionPeople_Person", Storage="_Person", ThisKey="PeopleId", IsForeignKey=true)]
-		public Person Person
-		{
-			get { return this._Person.Entity; }
+        #region Columns
 
-			set
-			{
-				Person previousValue = this._Person.Entity;
-				if (((previousValue != value) 
-							|| (this._Person.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if (previousValue != null)
-					{
-						this._Person.Entity = null;
-						previousValue.TransactionPeople.Remove(this);
-					}
+        [Column(Name = "Id", UpdateCheck = UpdateCheck.Never, Storage = "_Id", DbType = "int NOT NULL", IsPrimaryKey = true)]
+        [IsForeignKey]
+        public int Id
+        {
+            get => _Id;
 
-					this._Person.Entity = value;
-					if (value != null)
-					{
-						value.TransactionPeople.Add(this);
-						
-						this._PeopleId = value.PeopleId;
-						
-					}
+            set
+            {
+                if (_Id != value)
+                {
+                    if (_Transaction.HasLoadedOrAssignedValue)
+                    {
+                        throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+                    }
 
-					else
-					{
-						
-						this._PeopleId = default(int);
-						
-					}
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
+                }
+            }
+        }
 
-					this.SendPropertyChanged("Person");
-				}
+        [Column(Name = "PeopleId", UpdateCheck = UpdateCheck.Never, Storage = "_PeopleId", DbType = "int NOT NULL", IsPrimaryKey = true)]
+        [IsForeignKey]
+        public int PeopleId
+        {
+            get => _PeopleId;
 
-			}
+            set
+            {
+                if (_PeopleId != value)
+                {
+                    if (_Person.HasLoadedOrAssignedValue)
+                    {
+                        throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+                    }
 
-		}
+                    OnPeopleIdChanging(value);
+                    SendPropertyChanging();
+                    _PeopleId = value;
+                    SendPropertyChanged("PeopleId");
+                    OnPeopleIdChanged();
+                }
+            }
+        }
 
-		
-		[Association(Name="FK_TransactionPeople_Transaction", Storage="_Transaction", ThisKey="Id", IsForeignKey=true)]
-		public Transaction Transaction
-		{
-			get { return this._Transaction.Entity; }
+        [Column(Name = "Amt", UpdateCheck = UpdateCheck.Never, Storage = "_Amt", DbType = "money")]
+        public decimal? Amt
+        {
+            get => _Amt;
 
-			set
-			{
-				Transaction previousValue = this._Transaction.Entity;
-				if (((previousValue != value) 
-							|| (this._Transaction.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if (previousValue != null)
-					{
-						this._Transaction.Entity = null;
-						previousValue.TransactionPeople.Remove(this);
-					}
+            set
+            {
+                if (_Amt != value)
+                {
+                    OnAmtChanging(value);
+                    SendPropertyChanging();
+                    _Amt = value;
+                    SendPropertyChanged("Amt");
+                    OnAmtChanged();
+                }
+            }
+        }
 
-					this._Transaction.Entity = value;
-					if (value != null)
-					{
-						value.TransactionPeople.Add(this);
-						
-						this._Id = value.Id;
-						
-					}
+        [Column(Name = "OrgId", UpdateCheck = UpdateCheck.Never, Storage = "_OrgId", DbType = "int")]
+        public int? OrgId
+        {
+            get => _OrgId;
 
-					else
-					{
-						
-						this._Id = default(int);
-						
-					}
+            set
+            {
+                if (_OrgId != value)
+                {
+                    OnOrgIdChanging(value);
+                    SendPropertyChanging();
+                    _OrgId = value;
+                    SendPropertyChanged("OrgId");
+                    OnOrgIdChanged();
+                }
+            }
+        }
 
-					this.SendPropertyChanged("Transaction");
-				}
+        [Column(Name = "Donor", UpdateCheck = UpdateCheck.Never, Storage = "_Donor", DbType = "bit")]
+        public bool? Donor
+        {
+            get => _Donor;
 
-			}
+            set
+            {
+                if (_Donor != value)
+                {
+                    OnDonorChanging(value);
+                    SendPropertyChanging();
+                    _Donor = value;
+                    SendPropertyChanged("Donor");
+                    OnDonorChanged();
+                }
+            }
+        }
 
-		}
+        #endregion
 
-		
-	#endregion
-	
-		public event PropertyChangingEventHandler PropertyChanging;
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-				this.PropertyChanging(this, emptyChangingEventArgs);
-		}
+        #region Foreign Key Tables
 
-		public event PropertyChangedEventHandler PropertyChanged;
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-		}
+        #endregion
 
-   		
-	}
+        #region Foreign Keys
 
+        [Association(Name = "FK_TransactionPeople_Person", Storage = "_Person", ThisKey = "PeopleId", IsForeignKey = true)]
+        public Person Person
+        {
+            get => _Person.Entity;
+
+            set
+            {
+                Person previousValue = _Person.Entity;
+                if (((previousValue != value)
+                            || (_Person.HasLoadedOrAssignedValue == false)))
+                {
+                    SendPropertyChanging();
+                    if (previousValue != null)
+                    {
+                        _Person.Entity = null;
+                        previousValue.TransactionPeople.Remove(this);
+                    }
+
+                    _Person.Entity = value;
+                    if (value != null)
+                    {
+                        value.TransactionPeople.Add(this);
+
+                        _PeopleId = value.PeopleId;
+
+                    }
+
+                    else
+                    {
+                        _PeopleId = default(int);
+
+                    }
+
+                    SendPropertyChanged("Person");
+                }
+            }
+        }
+
+        [Association(Name = "FK_TransactionPeople_Transaction", Storage = "_Transaction", ThisKey = "Id", IsForeignKey = true)]
+        public Transaction Transaction
+        {
+            get => _Transaction.Entity;
+
+            set
+            {
+                Transaction previousValue = _Transaction.Entity;
+                if (((previousValue != value)
+                            || (_Transaction.HasLoadedOrAssignedValue == false)))
+                {
+                    SendPropertyChanging();
+                    if (previousValue != null)
+                    {
+                        _Transaction.Entity = null;
+                        previousValue.TransactionPeople.Remove(this);
+                    }
+
+                    _Transaction.Entity = value;
+                    if (value != null)
+                    {
+                        value.TransactionPeople.Add(this);
+
+                        _Id = value.Id;
+
+                    }
+
+                    else
+                    {
+                        _Id = default(int);
+
+                    }
+
+                    SendPropertyChanged("Transaction");
+                }
+            }
+        }
+
+        #endregion
+
+        public event PropertyChangingEventHandler PropertyChanging;
+        protected virtual void SendPropertyChanging()
+        {
+            if ((PropertyChanging != null))
+            {
+                PropertyChanging(this, emptyChangingEventArgs);
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void SendPropertyChanged(string propertyName)
+        {
+            if ((PropertyChanged != null))
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
 }
-

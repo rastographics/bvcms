@@ -1,104 +1,80 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="MeetingConflicts")]
-	public partial class MeetingConflict
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private int _PeopleId;
-		
-		private int? _OrgId1;
-		
-		private int? _OrgId2;
-		
-		private DateTime _MeetingDate;
-		
-		
-		public MeetingConflict()
-		{
-		}
+    [Table(Name = "MeetingConflicts")]
+    public partial class MeetingConflict
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="PeopleId", Storage="_PeopleId", DbType="int NOT NULL")]
-		public int PeopleId
-		{
-			get
-			{
-				return this._PeopleId;
-			}
+        private int _PeopleId;
 
-			set
-			{
-				if (this._PeopleId != value)
-					this._PeopleId = value;
-			}
+        private int? _OrgId1;
 
-		}
+        private int? _OrgId2;
 
-		
-		[Column(Name="OrgId1", Storage="_OrgId1", DbType="int")]
-		public int? OrgId1
-		{
-			get
-			{
-				return this._OrgId1;
-			}
+        private DateTime _MeetingDate;
 
-			set
-			{
-				if (this._OrgId1 != value)
-					this._OrgId1 = value;
-			}
+        public MeetingConflict()
+        {
+        }
 
-		}
+        [Column(Name = "PeopleId", Storage = "_PeopleId", DbType = "int NOT NULL")]
+        public int PeopleId
+        {
+            get => _PeopleId;
 
-		
-		[Column(Name="OrgId2", Storage="_OrgId2", DbType="int")]
-		public int? OrgId2
-		{
-			get
-			{
-				return this._OrgId2;
-			}
+            set
+            {
+                if (_PeopleId != value)
+                {
+                    _PeopleId = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._OrgId2 != value)
-					this._OrgId2 = value;
-			}
+        [Column(Name = "OrgId1", Storage = "_OrgId1", DbType = "int")]
+        public int? OrgId1
+        {
+            get => _OrgId1;
 
-		}
+            set
+            {
+                if (_OrgId1 != value)
+                {
+                    _OrgId1 = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="MeetingDate", Storage="_MeetingDate", DbType="datetime NOT NULL")]
-		public DateTime MeetingDate
-		{
-			get
-			{
-				return this._MeetingDate;
-			}
+        [Column(Name = "OrgId2", Storage = "_OrgId2", DbType = "int")]
+        public int? OrgId2
+        {
+            get => _OrgId2;
 
-			set
-			{
-				if (this._MeetingDate != value)
-					this._MeetingDate = value;
-			}
+            set
+            {
+                if (_OrgId2 != value)
+                {
+                    _OrgId2 = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "MeetingDate", Storage = "_MeetingDate", DbType = "datetime NOT NULL")]
+        public DateTime MeetingDate
+        {
+            get => _MeetingDate;
 
-		
+            set
+            {
+                if (_MeetingDate != value)
+                {
+                    _MeetingDate = value;
+                }
+            }
+        }
     }
-
 }
