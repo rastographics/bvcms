@@ -1,389 +1,320 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="IncompleteTasks")]
-	public partial class IncompleteTask
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private DateTime _CreatedOn;
-		
-		private string _Owner;
-		
-		private string _DelegatedTo;
-		
-		private string _Description;
-		
-		private string _DeclineReason;
-		
-		private string _About;
-		
-		private string _Notes;
-		
-		private string _Status;
-		
-		private bool? _ForceCompleteWContact;
-		
-		private int _Id;
-		
-		private int _OwnerId;
-		
-		private int? _CoOwnerId;
-		
-		private int? _WhoId;
-		
-		private int? _StatusId;
-		
-		private int? _SourceContactId;
-		
-		private DateTime? _Due;
-		
-		private int? _AboutPictureId;
-		
-		private int? _PictureX;
-		
-		private int? _PictureY;
-		
-		
-		public IncompleteTask()
-		{
-		}
+    [Table(Name = "IncompleteTasks")]
+    public partial class IncompleteTask
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="CreatedOn", Storage="_CreatedOn", DbType="datetime NOT NULL")]
-		public DateTime CreatedOn
-		{
-			get
-			{
-				return this._CreatedOn;
-			}
+        private DateTime _CreatedOn;
 
-			set
-			{
-				if (this._CreatedOn != value)
-					this._CreatedOn = value;
-			}
+        private string _Owner;
 
-		}
+        private string _DelegatedTo;
 
-		
-		[Column(Name="Owner", Storage="_Owner", DbType="nvarchar(138)")]
-		public string Owner
-		{
-			get
-			{
-				return this._Owner;
-			}
+        private string _Description;
 
-			set
-			{
-				if (this._Owner != value)
-					this._Owner = value;
-			}
+        private string _DeclineReason;
 
-		}
+        private string _About;
 
-		
-		[Column(Name="DelegatedTo", Storage="_DelegatedTo", DbType="nvarchar(138)")]
-		public string DelegatedTo
-		{
-			get
-			{
-				return this._DelegatedTo;
-			}
+        private string _Notes;
 
-			set
-			{
-				if (this._DelegatedTo != value)
-					this._DelegatedTo = value;
-			}
+        private string _Status;
 
-		}
+        private bool? _ForceCompleteWContact;
 
-		
-		[Column(Name="Description", Storage="_Description", DbType="nvarchar(100)")]
-		public string Description
-		{
-			get
-			{
-				return this._Description;
-			}
+        private int _Id;
 
-			set
-			{
-				if (this._Description != value)
-					this._Description = value;
-			}
+        private int _OwnerId;
 
-		}
+        private int? _CoOwnerId;
 
-		
-		[Column(Name="DeclineReason", Storage="_DeclineReason", DbType="nvarchar")]
-		public string DeclineReason
-		{
-			get
-			{
-				return this._DeclineReason;
-			}
+        private int? _WhoId;
 
-			set
-			{
-				if (this._DeclineReason != value)
-					this._DeclineReason = value;
-			}
+        private int? _StatusId;
 
-		}
+        private int? _SourceContactId;
 
-		
-		[Column(Name="About", Storage="_About", DbType="nvarchar(138)")]
-		public string About
-		{
-			get
-			{
-				return this._About;
-			}
+        private DateTime? _Due;
 
-			set
-			{
-				if (this._About != value)
-					this._About = value;
-			}
+        private int? _AboutPictureId;
 
-		}
+        private int? _PictureX;
 
-		
-		[Column(Name="Notes", Storage="_Notes", DbType="nvarchar")]
-		public string Notes
-		{
-			get
-			{
-				return this._Notes;
-			}
+        private int? _PictureY;
 
-			set
-			{
-				if (this._Notes != value)
-					this._Notes = value;
-			}
+        public IncompleteTask()
+        {
+        }
 
-		}
+        [Column(Name = "CreatedOn", Storage = "_CreatedOn", DbType = "datetime NOT NULL")]
+        public DateTime CreatedOn
+        {
+            get => _CreatedOn;
 
-		
-		[Column(Name="Status", Storage="_Status", DbType="nvarchar(100)")]
-		public string Status
-		{
-			get
-			{
-				return this._Status;
-			}
+            set
+            {
+                if (_CreatedOn != value)
+                {
+                    _CreatedOn = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._Status != value)
-					this._Status = value;
-			}
+        [Column(Name = "Owner", Storage = "_Owner", DbType = "nvarchar(138)")]
+        public string Owner
+        {
+            get => _Owner;
 
-		}
+            set
+            {
+                if (_Owner != value)
+                {
+                    _Owner = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="ForceCompleteWContact", Storage="_ForceCompleteWContact", DbType="bit")]
-		public bool? ForceCompleteWContact
-		{
-			get
-			{
-				return this._ForceCompleteWContact;
-			}
+        [Column(Name = "DelegatedTo", Storage = "_DelegatedTo", DbType = "nvarchar(138)")]
+        public string DelegatedTo
+        {
+            get => _DelegatedTo;
 
-			set
-			{
-				if (this._ForceCompleteWContact != value)
-					this._ForceCompleteWContact = value;
-			}
+            set
+            {
+                if (_DelegatedTo != value)
+                {
+                    _DelegatedTo = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "Description", Storage = "_Description", DbType = "nvarchar(100)")]
+        public string Description
+        {
+            get => _Description;
 
-		
-		[Column(Name="Id", Storage="_Id", DbType="int NOT NULL")]
-		public int Id
-		{
-			get
-			{
-				return this._Id;
-			}
+            set
+            {
+                if (_Description != value)
+                {
+                    _Description = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._Id != value)
-					this._Id = value;
-			}
+        [Column(Name = "DeclineReason", Storage = "_DeclineReason", DbType = "nvarchar")]
+        public string DeclineReason
+        {
+            get => _DeclineReason;
 
-		}
+            set
+            {
+                if (_DeclineReason != value)
+                {
+                    _DeclineReason = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="OwnerId", Storage="_OwnerId", DbType="int NOT NULL")]
-		public int OwnerId
-		{
-			get
-			{
-				return this._OwnerId;
-			}
+        [Column(Name = "About", Storage = "_About", DbType = "nvarchar(138)")]
+        public string About
+        {
+            get => _About;
 
-			set
-			{
-				if (this._OwnerId != value)
-					this._OwnerId = value;
-			}
+            set
+            {
+                if (_About != value)
+                {
+                    _About = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "Notes", Storage = "_Notes", DbType = "nvarchar")]
+        public string Notes
+        {
+            get => _Notes;
 
-		
-		[Column(Name="CoOwnerId", Storage="_CoOwnerId", DbType="int")]
-		public int? CoOwnerId
-		{
-			get
-			{
-				return this._CoOwnerId;
-			}
+            set
+            {
+                if (_Notes != value)
+                {
+                    _Notes = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._CoOwnerId != value)
-					this._CoOwnerId = value;
-			}
+        [Column(Name = "Status", Storage = "_Status", DbType = "nvarchar(100)")]
+        public string Status
+        {
+            get => _Status;
 
-		}
+            set
+            {
+                if (_Status != value)
+                {
+                    _Status = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="WhoId", Storage="_WhoId", DbType="int")]
-		public int? WhoId
-		{
-			get
-			{
-				return this._WhoId;
-			}
+        [Column(Name = "ForceCompleteWContact", Storage = "_ForceCompleteWContact", DbType = "bit")]
+        public bool? ForceCompleteWContact
+        {
+            get => _ForceCompleteWContact;
 
-			set
-			{
-				if (this._WhoId != value)
-					this._WhoId = value;
-			}
+            set
+            {
+                if (_ForceCompleteWContact != value)
+                {
+                    _ForceCompleteWContact = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "Id", Storage = "_Id", DbType = "int NOT NULL")]
+        public int Id
+        {
+            get => _Id;
 
-		
-		[Column(Name="StatusId", Storage="_StatusId", DbType="int")]
-		public int? StatusId
-		{
-			get
-			{
-				return this._StatusId;
-			}
+            set
+            {
+                if (_Id != value)
+                {
+                    _Id = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._StatusId != value)
-					this._StatusId = value;
-			}
+        [Column(Name = "OwnerId", Storage = "_OwnerId", DbType = "int NOT NULL")]
+        public int OwnerId
+        {
+            get => _OwnerId;
 
-		}
+            set
+            {
+                if (_OwnerId != value)
+                {
+                    _OwnerId = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="SourceContactId", Storage="_SourceContactId", DbType="int")]
-		public int? SourceContactId
-		{
-			get
-			{
-				return this._SourceContactId;
-			}
+        [Column(Name = "CoOwnerId", Storage = "_CoOwnerId", DbType = "int")]
+        public int? CoOwnerId
+        {
+            get => _CoOwnerId;
 
-			set
-			{
-				if (this._SourceContactId != value)
-					this._SourceContactId = value;
-			}
+            set
+            {
+                if (_CoOwnerId != value)
+                {
+                    _CoOwnerId = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "WhoId", Storage = "_WhoId", DbType = "int")]
+        public int? WhoId
+        {
+            get => _WhoId;
 
-		
-		[Column(Name="Due", Storage="_Due", DbType="datetime")]
-		public DateTime? Due
-		{
-			get
-			{
-				return this._Due;
-			}
+            set
+            {
+                if (_WhoId != value)
+                {
+                    _WhoId = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._Due != value)
-					this._Due = value;
-			}
+        [Column(Name = "StatusId", Storage = "_StatusId", DbType = "int")]
+        public int? StatusId
+        {
+            get => _StatusId;
 
-		}
+            set
+            {
+                if (_StatusId != value)
+                {
+                    _StatusId = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="AboutPictureId", Storage="_AboutPictureId", DbType="int")]
-		public int? AboutPictureId
-		{
-			get
-			{
-				return this._AboutPictureId;
-			}
+        [Column(Name = "SourceContactId", Storage = "_SourceContactId", DbType = "int")]
+        public int? SourceContactId
+        {
+            get => _SourceContactId;
 
-			set
-			{
-				if (this._AboutPictureId != value)
-					this._AboutPictureId = value;
-			}
+            set
+            {
+                if (_SourceContactId != value)
+                {
+                    _SourceContactId = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "Due", Storage = "_Due", DbType = "datetime")]
+        public DateTime? Due
+        {
+            get => _Due;
 
-		
-		[Column(Name="PictureX", Storage="_PictureX", DbType="int")]
-		public int? PictureX
-		{
-			get
-			{
-				return this._PictureX;
-			}
+            set
+            {
+                if (_Due != value)
+                {
+                    _Due = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._PictureX != value)
-					this._PictureX = value;
-			}
+        [Column(Name = "AboutPictureId", Storage = "_AboutPictureId", DbType = "int")]
+        public int? AboutPictureId
+        {
+            get => _AboutPictureId;
 
-		}
+            set
+            {
+                if (_AboutPictureId != value)
+                {
+                    _AboutPictureId = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="PictureY", Storage="_PictureY", DbType="int")]
-		public int? PictureY
-		{
-			get
-			{
-				return this._PictureY;
-			}
+        [Column(Name = "PictureX", Storage = "_PictureX", DbType = "int")]
+        public int? PictureX
+        {
+            get => _PictureX;
 
-			set
-			{
-				if (this._PictureY != value)
-					this._PictureY = value;
-			}
+            set
+            {
+                if (_PictureX != value)
+                {
+                    _PictureX = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "PictureY", Storage = "_PictureY", DbType = "int")]
+        public int? PictureY
+        {
+            get => _PictureY;
 
-		
+            set
+            {
+                if (_PictureY != value)
+                {
+                    _PictureY = value;
+                }
+            }
+        }
     }
-
 }

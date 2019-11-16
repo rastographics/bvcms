@@ -1,258 +1,223 @@
-using System; 
+using System;
+using System.ComponentModel;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
-using System.ComponentModel;
-using CmsData.Infrastructure;
 
 namespace CmsData
 {
-	[Table(Name="lookup.MaritalStatus")]
-	public partial class MaritalStatus : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-	#region Private Fields
-		
-		private int _Id;
-		
-		private string _Code;
-		
-		private string _Description;
-		
-		private bool? _Hardwired;
-		
-		private int _Single;
-		
-		private int _Married;
-		
-   		
-   		private EntitySet<Person> _People;
-		
-    	
-	#endregion
-	
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-		
-		partial void OnIdChanging(int value);
-		partial void OnIdChanged();
-		
-		partial void OnCodeChanging(string value);
-		partial void OnCodeChanged();
-		
-		partial void OnDescriptionChanging(string value);
-		partial void OnDescriptionChanged();
-		
-		partial void OnHardwiredChanging(bool? value);
-		partial void OnHardwiredChanged();
-		
-		partial void OnSingleChanging(int value);
-		partial void OnSingleChanged();
-		
-		partial void OnMarriedChanging(int value);
-		partial void OnMarriedChanged();
-		
-    #endregion
-		public MaritalStatus()
-		{
-			
-			this._People = new EntitySet<Person>(new Action< Person>(this.attach_People), new Action< Person>(this.detach_People)); 
-			
-			
-			OnCreated();
-		}
+    [Table(Name = "lookup.MaritalStatus")]
+    public partial class MaritalStatus : INotifyPropertyChanging, INotifyPropertyChanged
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-    #region Columns
-		
-		[Column(Name="Id", UpdateCheck=UpdateCheck.Never, Storage="_Id", DbType="int NOT NULL", IsPrimaryKey=true)]
-		public int Id
-		{
-			get { return this._Id; }
+        #region Private Fields
 
-			set
-			{
-				if (this._Id != value)
-				{
-				
-                    this.OnIdChanging(value);
-					this.SendPropertyChanging();
-					this._Id = value;
-					this.SendPropertyChanged("Id");
-					this.OnIdChanged();
-				}
+        private int _Id;
 
-			}
+        private string _Code;
 
-		}
+        private string _Description;
 
-		
-		[Column(Name="Code", UpdateCheck=UpdateCheck.Never, Storage="_Code", DbType="nvarchar(20)")]
-		public string Code
-		{
-			get { return this._Code; }
+        private bool? _Hardwired;
 
-			set
-			{
-				if (this._Code != value)
-				{
-				
-                    this.OnCodeChanging(value);
-					this.SendPropertyChanging();
-					this._Code = value;
-					this.SendPropertyChanged("Code");
-					this.OnCodeChanged();
-				}
+        private int _Single;
 
-			}
+        private int _Married;
 
-		}
+        private EntitySet<Person> _People;
 
-		
-		[Column(Name="Description", UpdateCheck=UpdateCheck.Never, Storage="_Description", DbType="nvarchar(100)")]
-		public string Description
-		{
-			get { return this._Description; }
+        #endregion
 
-			set
-			{
-				if (this._Description != value)
-				{
-				
-                    this.OnDescriptionChanging(value);
-					this.SendPropertyChanging();
-					this._Description = value;
-					this.SendPropertyChanged("Description");
-					this.OnDescriptionChanged();
-				}
+        #region Extensibility Method Definitions
 
-			}
+        partial void OnLoaded();
+        partial void OnValidate(System.Data.Linq.ChangeAction action);
+        partial void OnCreated();
 
-		}
+        partial void OnIdChanging(int value);
+        partial void OnIdChanged();
 
-		
-		[Column(Name="Hardwired", UpdateCheck=UpdateCheck.Never, Storage="_Hardwired", DbType="bit")]
-		public bool? Hardwired
-		{
-			get { return this._Hardwired; }
+        partial void OnCodeChanging(string value);
+        partial void OnCodeChanged();
 
-			set
-			{
-				if (this._Hardwired != value)
-				{
-				
-                    this.OnHardwiredChanging(value);
-					this.SendPropertyChanging();
-					this._Hardwired = value;
-					this.SendPropertyChanged("Hardwired");
-					this.OnHardwiredChanged();
-				}
+        partial void OnDescriptionChanging(string value);
+        partial void OnDescriptionChanged();
 
-			}
+        partial void OnHardwiredChanging(bool? value);
+        partial void OnHardwiredChanged();
 
-		}
+        partial void OnSingleChanging(int value);
+        partial void OnSingleChanged();
 
-		
-		[Column(Name="Single", UpdateCheck=UpdateCheck.Never, Storage="_Single", DbType="int NOT NULL")]
-		public int Single
-		{
-			get { return this._Single; }
+        partial void OnMarriedChanging(int value);
+        partial void OnMarriedChanged();
 
-			set
-			{
-				if (this._Single != value)
-				{
-				
-                    this.OnSingleChanging(value);
-					this.SendPropertyChanging();
-					this._Single = value;
-					this.SendPropertyChanged("Single");
-					this.OnSingleChanged();
-				}
+        #endregion
 
-			}
+        public MaritalStatus()
+        {
+            _People = new EntitySet<Person>(new Action<Person>(attach_People), new Action<Person>(detach_People));
 
-		}
+            OnCreated();
+        }
 
-		
-		[Column(Name="Married", UpdateCheck=UpdateCheck.Never, Storage="_Married", DbType="int NOT NULL")]
-		public int Married
-		{
-			get { return this._Married; }
+        #region Columns
 
-			set
-			{
-				if (this._Married != value)
-				{
-				
-                    this.OnMarriedChanging(value);
-					this.SendPropertyChanging();
-					this._Married = value;
-					this.SendPropertyChanged("Married");
-					this.OnMarriedChanged();
-				}
+        [Column(Name = "Id", UpdateCheck = UpdateCheck.Never, Storage = "_Id", DbType = "int NOT NULL", IsPrimaryKey = true)]
+        public int Id
+        {
+            get => _Id;
 
-			}
+            set
+            {
+                if (_Id != value)
+                {
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
+                }
+            }
+        }
 
-		}
+        [Column(Name = "Code", UpdateCheck = UpdateCheck.Never, Storage = "_Code", DbType = "nvarchar(20)")]
+        public string Code
+        {
+            get => _Code;
 
-		
-    #endregion
-        
-    #region Foreign Key Tables
-   		
-   		[Association(Name="FK_People_MaritalStatus", Storage="_People", OtherKey="MaritalStatusId")]
-   		public EntitySet<Person> People
-   		{
-   		    get { return this._People; }
+            set
+            {
+                if (_Code != value)
+                {
+                    OnCodeChanging(value);
+                    SendPropertyChanging();
+                    _Code = value;
+                    SendPropertyChanged("Code");
+                    OnCodeChanged();
+                }
+            }
+        }
 
-			set	{ this._People.Assign(value); }
+        [Column(Name = "Description", UpdateCheck = UpdateCheck.Never, Storage = "_Description", DbType = "nvarchar(100)")]
+        public string Description
+        {
+            get => _Description;
 
-   		}
+            set
+            {
+                if (_Description != value)
+                {
+                    OnDescriptionChanging(value);
+                    SendPropertyChanging();
+                    _Description = value;
+                    SendPropertyChanged("Description");
+                    OnDescriptionChanged();
+                }
+            }
+        }
 
-		
-	#endregion
-	
-	#region Foreign Keys
-    	
-	#endregion
-	
-		public event PropertyChangingEventHandler PropertyChanging;
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-				this.PropertyChanging(this, emptyChangingEventArgs);
-		}
+        [Column(Name = "Hardwired", UpdateCheck = UpdateCheck.Never, Storage = "_Hardwired", DbType = "bit")]
+        public bool? Hardwired
+        {
+            get => _Hardwired;
 
-		public event PropertyChangedEventHandler PropertyChanged;
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-		}
+            set
+            {
+                if (_Hardwired != value)
+                {
+                    OnHardwiredChanging(value);
+                    SendPropertyChanging();
+                    _Hardwired = value;
+                    SendPropertyChanged("Hardwired");
+                    OnHardwiredChanged();
+                }
+            }
+        }
 
-   		
-		private void attach_People(Person entity)
-		{
-			this.SendPropertyChanging();
-			entity.MaritalStatus = this;
-		}
+        [Column(Name = "Single", UpdateCheck = UpdateCheck.Never, Storage = "_Single", DbType = "int NOT NULL")]
+        public int Single
+        {
+            get => _Single;
 
-		private void detach_People(Person entity)
-		{
-			this.SendPropertyChanging();
-			entity.MaritalStatus = null;
-		}
+            set
+            {
+                if (_Single != value)
+                {
+                    OnSingleChanging(value);
+                    SendPropertyChanging();
+                    _Single = value;
+                    SendPropertyChanged("Single");
+                    OnSingleChanged();
+                }
+            }
+        }
 
-		
-	}
+        [Column(Name = "Married", UpdateCheck = UpdateCheck.Never, Storage = "_Married", DbType = "int NOT NULL")]
+        public int Married
+        {
+            get => _Married;
 
+            set
+            {
+                if (_Married != value)
+                {
+                    OnMarriedChanging(value);
+                    SendPropertyChanging();
+                    _Married = value;
+                    SendPropertyChanged("Married");
+                    OnMarriedChanged();
+                }
+            }
+        }
+
+        #endregion
+
+        #region Foreign Key Tables
+
+        [Association(Name = "FK_People_MaritalStatus", Storage = "_People", OtherKey = "MaritalStatusId")]
+        public EntitySet<Person> People
+           {
+               get => _People;
+
+            set => _People.Assign(value);
+
+           }
+
+        #endregion
+
+        #region Foreign Keys
+
+        #endregion
+
+        public event PropertyChangingEventHandler PropertyChanging;
+        protected virtual void SendPropertyChanging()
+        {
+            if ((PropertyChanging != null))
+            {
+                PropertyChanging(this, emptyChangingEventArgs);
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void SendPropertyChanged(string propertyName)
+        {
+            if ((PropertyChanged != null))
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        private void attach_People(Person entity)
+        {
+            SendPropertyChanging();
+            entity.MaritalStatus = this;
+        }
+
+        private void detach_People(Person entity)
+        {
+            SendPropertyChanging();
+            entity.MaritalStatus = null;
+        }
+    }
 }
-

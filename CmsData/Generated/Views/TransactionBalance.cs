@@ -1,199 +1,160 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="TransactionBalances")]
-	public partial class TransactionBalance
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private int _BalancesId;
-		
-		private decimal? _BegBal;
-		
-		private decimal? _Payment;
-		
-		private decimal? _TotDue;
-		
-		private int? _NumPeople;
-		
-		private string _People;
-		
-		private bool? _CanVoid;
-		
-		private bool? _CanCredit;
-		
-		private bool? _IsAdjustment;
-		
-		
-		public TransactionBalance()
-		{
-		}
+    [Table(Name = "TransactionBalances")]
+    public partial class TransactionBalance
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="BalancesId", Storage="_BalancesId", AutoSync=AutoSync.OnInsert, DbType="int NOT NULL IDENTITY", IsDbGenerated=true)]
-		public int BalancesId
-		{
-			get
-			{
-				return this._BalancesId;
-			}
+        private int _BalancesId;
 
-			set
-			{
-				if (this._BalancesId != value)
-					this._BalancesId = value;
-			}
+        private decimal? _BegBal;
 
-		}
+        private decimal? _Payment;
 
-		
-		[Column(Name="BegBal", Storage="_BegBal", DbType="money")]
-		public decimal? BegBal
-		{
-			get
-			{
-				return this._BegBal;
-			}
+        private decimal? _TotDue;
 
-			set
-			{
-				if (this._BegBal != value)
-					this._BegBal = value;
-			}
+        private int? _NumPeople;
 
-		}
+        private string _People;
 
-		
-		[Column(Name="Payment", Storage="_Payment", DbType="money")]
-		public decimal? Payment
-		{
-			get
-			{
-				return this._Payment;
-			}
+        private bool? _CanVoid;
 
-			set
-			{
-				if (this._Payment != value)
-					this._Payment = value;
-			}
+        private bool? _CanCredit;
 
-		}
+        private bool? _IsAdjustment;
 
-		
-		[Column(Name="TotDue", Storage="_TotDue", DbType="money")]
-		public decimal? TotDue
-		{
-			get
-			{
-				return this._TotDue;
-			}
+        public TransactionBalance()
+        {
+        }
 
-			set
-			{
-				if (this._TotDue != value)
-					this._TotDue = value;
-			}
+        [Column(Name = "BalancesId", Storage = "_BalancesId", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsDbGenerated = true)]
+        public int BalancesId
+        {
+            get => _BalancesId;
 
-		}
+            set
+            {
+                if (_BalancesId != value)
+                {
+                    _BalancesId = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="NumPeople", Storage="_NumPeople", DbType="int")]
-		public int? NumPeople
-		{
-			get
-			{
-				return this._NumPeople;
-			}
+        [Column(Name = "BegBal", Storage = "_BegBal", DbType = "money")]
+        public decimal? BegBal
+        {
+            get => _BegBal;
 
-			set
-			{
-				if (this._NumPeople != value)
-					this._NumPeople = value;
-			}
+            set
+            {
+                if (_BegBal != value)
+                {
+                    _BegBal = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "Payment", Storage = "_Payment", DbType = "money")]
+        public decimal? Payment
+        {
+            get => _Payment;
 
-		
-		[Column(Name="People", Storage="_People", DbType="nvarchar")]
-		public string People
-		{
-			get
-			{
-				return this._People;
-			}
+            set
+            {
+                if (_Payment != value)
+                {
+                    _Payment = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._People != value)
-					this._People = value;
-			}
+        [Column(Name = "TotDue", Storage = "_TotDue", DbType = "money")]
+        public decimal? TotDue
+        {
+            get => _TotDue;
 
-		}
+            set
+            {
+                if (_TotDue != value)
+                {
+                    _TotDue = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="CanVoid", Storage="_CanVoid", DbType="bit")]
-		public bool? CanVoid
-		{
-			get
-			{
-				return this._CanVoid;
-			}
+        [Column(Name = "NumPeople", Storage = "_NumPeople", DbType = "int")]
+        public int? NumPeople
+        {
+            get => _NumPeople;
 
-			set
-			{
-				if (this._CanVoid != value)
-					this._CanVoid = value;
-			}
+            set
+            {
+                if (_NumPeople != value)
+                {
+                    _NumPeople = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "People", Storage = "_People", DbType = "nvarchar")]
+        public string People
+        {
+            get => _People;
 
-		
-		[Column(Name="CanCredit", Storage="_CanCredit", DbType="bit")]
-		public bool? CanCredit
-		{
-			get
-			{
-				return this._CanCredit;
-			}
+            set
+            {
+                if (_People != value)
+                {
+                    _People = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._CanCredit != value)
-					this._CanCredit = value;
-			}
+        [Column(Name = "CanVoid", Storage = "_CanVoid", DbType = "bit")]
+        public bool? CanVoid
+        {
+            get => _CanVoid;
 
-		}
+            set
+            {
+                if (_CanVoid != value)
+                {
+                    _CanVoid = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="IsAdjustment", Storage="_IsAdjustment", DbType="bit")]
-		public bool? IsAdjustment
-		{
-			get
-			{
-				return this._IsAdjustment;
-			}
+        [Column(Name = "CanCredit", Storage = "_CanCredit", DbType = "bit")]
+        public bool? CanCredit
+        {
+            get => _CanCredit;
 
-			set
-			{
-				if (this._IsAdjustment != value)
-					this._IsAdjustment = value;
-			}
+            set
+            {
+                if (_CanCredit != value)
+                {
+                    _CanCredit = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "IsAdjustment", Storage = "_IsAdjustment", DbType = "bit")]
+        public bool? IsAdjustment
+        {
+            get => _IsAdjustment;
 
-		
+            set
+            {
+                if (_IsAdjustment != value)
+                {
+                    _IsAdjustment = value;
+                }
+            }
+        }
     }
-
 }
