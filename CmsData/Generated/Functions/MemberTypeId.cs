@@ -1,47 +1,32 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="MemberTypeIds")]
-	public partial class MemberTypeId
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private int _MemberTypeIdX;
-		
-		
-		public MemberTypeId()
-		{
-		}
+    [Table(Name = "MemberTypeIds")]
+    public partial class MemberTypeId
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="member_type_id", Storage="_MemberTypeIdX", DbType="int NOT NULL")]
-		public int MemberTypeIdX
-		{
-			get
-			{
-				return this._MemberTypeIdX;
-			}
+        private int _MemberTypeIdX;
 
-			set
-			{
-				if (this._MemberTypeIdX != value)
-					this._MemberTypeIdX = value;
-			}
+        public MemberTypeId()
+        {
+        }
 
-		}
+        [Column(Name = "member_type_id", Storage = "_MemberTypeIdX", DbType = "int NOT NULL")]
+        public int MemberTypeIdX
+        {
+            get => _MemberTypeIdX;
 
-		
+            set
+            {
+                if (_MemberTypeIdX != value)
+                {
+                    _MemberTypeIdX = value;
+                }
+            }
+        }
     }
-
 }
