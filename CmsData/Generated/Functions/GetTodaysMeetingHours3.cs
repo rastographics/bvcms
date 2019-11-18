@@ -1,66 +1,48 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="GetTodaysMeetingHours3")]
-	public partial class GetTodaysMeetingHours3
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private DateTime? _Hour;
-		
-		private int? _OrganizationId;
-		
-		
-		public GetTodaysMeetingHours3()
-		{
-		}
+    [Table(Name = "GetTodaysMeetingHours3")]
+    public partial class GetTodaysMeetingHours3
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="hour", Storage="_Hour", DbType="datetime")]
-		public DateTime? Hour
-		{
-			get
-			{
-				return this._Hour;
-			}
+        private DateTime? _Hour;
 
-			set
-			{
-				if (this._Hour != value)
-					this._Hour = value;
-			}
+        private int? _OrganizationId;
 
-		}
+        public GetTodaysMeetingHours3()
+        {
+        }
 
-		
-		[Column(Name="OrganizationId", Storage="_OrganizationId", DbType="int")]
-		public int? OrganizationId
-		{
-			get
-			{
-				return this._OrganizationId;
-			}
+        [Column(Name = "hour", Storage = "_Hour", DbType = "datetime")]
+        public DateTime? Hour
+        {
+            get => _Hour;
 
-			set
-			{
-				if (this._OrganizationId != value)
-					this._OrganizationId = value;
-			}
+            set
+            {
+                if (_Hour != value)
+                {
+                    _Hour = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "OrganizationId", Storage = "_OrganizationId", DbType = "int")]
+        public int? OrganizationId
+        {
+            get => _OrganizationId;
 
-		
+            set
+            {
+                if (_OrganizationId != value)
+                {
+                    _OrganizationId = value;
+                }
+            }
+        }
     }
-
 }

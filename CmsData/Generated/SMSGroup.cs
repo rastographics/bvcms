@@ -1,256 +1,225 @@
-using System; 
+using System;
+using System.ComponentModel;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
-using System.ComponentModel;
-using CmsData.Infrastructure;
 
 namespace CmsData
 {
-	[Table(Name="dbo.SMSGroups")]
-	public partial class SMSGroup : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-	#region Private Fields
-		
-		private int _Id;
-		
-		private string _Name;
-		
-		private string _Description;
-		
-		private bool _SystemFlag;
-		
-		private bool _IsDeleted;
-		
-   		private EntitySet<SMSGroupMember> _SMSGroupMembers;
-		
-   		private EntitySet<SMSList> _SMSLists;
-		
-    	
-	#endregion
-	
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-		
-		partial void OnIdChanging(int value);
-		partial void OnIdChanged();
-		
-		partial void OnNameChanging(string value);
-		partial void OnNameChanged();
-		
-		partial void OnDescriptionChanging(string value);
-		partial void OnDescriptionChanged();
-		
-		partial void OnSystemFlagChanging(bool value);
-		partial void OnSystemFlagChanged();
-		
-		partial void OnIsDeletedChanging(bool value);
-		partial void OnIsDeletedChanged();
-		
-    #endregion
-		public SMSGroup()
-		{
-			
-			this._SMSGroupMembers = new EntitySet<SMSGroupMember>(new Action< SMSGroupMember>(this.attach_SMSGroupMembers), new Action< SMSGroupMember>(this.detach_SMSGroupMembers)); 
-			
-			this._SMSLists = new EntitySet<SMSList>(new Action< SMSList>(this.attach_SMSLists), new Action< SMSList>(this.detach_SMSLists)); 
-			
-			
-			OnCreated();
-		}
+    [Table(Name = "dbo.SMSGroups")]
+    public partial class SMSGroup : INotifyPropertyChanging, INotifyPropertyChanged
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-    #region Columns
-		
-		[Column(Name="ID", UpdateCheck=UpdateCheck.Never, Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int Id
-		{
-			get { return this._Id; }
+        #region Private Fields
 
-			set
-			{
-				if (this._Id != value)
-				{
-				
-                    this.OnIdChanging(value);
-					this.SendPropertyChanging();
-					this._Id = value;
-					this.SendPropertyChanged("Id");
-					this.OnIdChanged();
-				}
+        private int _Id;
 
-			}
+        private string _Name;
 
-		}
+        private string _Description;
 
-		
-		[Column(Name="Name", UpdateCheck=UpdateCheck.Never, Storage="_Name", DbType="nvarchar(50) NOT NULL")]
-		public string Name
-		{
-			get { return this._Name; }
+        private bool _SystemFlag;
 
-			set
-			{
-				if (this._Name != value)
-				{
-				
-                    this.OnNameChanging(value);
-					this.SendPropertyChanging();
-					this._Name = value;
-					this.SendPropertyChanged("Name");
-					this.OnNameChanged();
-				}
+        private bool _IsDeleted;
 
-			}
+        private EntitySet<SMSGroupMember> _SMSGroupMembers;
 
-		}
+        private EntitySet<SMSList> _SMSLists;
 
-		
-		[Column(Name="Description", UpdateCheck=UpdateCheck.Never, Storage="_Description", DbType="nvarchar NOT NULL")]
-		public string Description
-		{
-			get { return this._Description; }
+        #endregion
 
-			set
-			{
-				if (this._Description != value)
-				{
-				
-                    this.OnDescriptionChanging(value);
-					this.SendPropertyChanging();
-					this._Description = value;
-					this.SendPropertyChanged("Description");
-					this.OnDescriptionChanged();
-				}
+        #region Extensibility Method Definitions
 
-			}
+        partial void OnLoaded();
+        partial void OnValidate(System.Data.Linq.ChangeAction action);
+        partial void OnCreated();
 
-		}
-		
-		[Column(Name="SystemFlag", UpdateCheck=UpdateCheck.Never, Storage="_SystemFlag", DbType="bit NOT NULL")]
-		public bool SystemFlag
-		{
-			get { return this._SystemFlag; }
+        partial void OnIdChanging(int value);
+        partial void OnIdChanged();
 
-			set
-			{
-				if (this._SystemFlag != value)
-				{
-				
-                    this.OnSystemFlagChanging(value);
-					this.SendPropertyChanging();
-					this._SystemFlag = value;
-					this.SendPropertyChanged("SystemFlag");
-					this.OnSystemFlagChanged();
-				}
+        partial void OnNameChanging(string value);
+        partial void OnNameChanged();
 
-			}
+        partial void OnDescriptionChanging(string value);
+        partial void OnDescriptionChanged();
 
-		}
+        partial void OnSystemFlagChanging(bool value);
+        partial void OnSystemFlagChanged();
 
-		
-		[Column(Name="IsDeleted", UpdateCheck=UpdateCheck.Never, Storage="_IsDeleted", DbType="bit NOT NULL")]
-		public bool IsDeleted
-		{
-			get { return this._IsDeleted; }
+        partial void OnIsDeletedChanging(bool value);
+        partial void OnIsDeletedChanged();
 
-			set
-			{
-				if (this._IsDeleted != value)
-				{
-				
-                    this.OnIsDeletedChanging(value);
-					this.SendPropertyChanging();
-					this._IsDeleted = value;
-					this.SendPropertyChanged("IsDeleted");
-					this.OnIsDeletedChanged();
-				}
+        #endregion
 
-			}
+        public SMSGroup()
+        {
+            _SMSGroupMembers = new EntitySet<SMSGroupMember>(new Action<SMSGroupMember>(attach_SMSGroupMembers), new Action<SMSGroupMember>(detach_SMSGroupMembers));
 
-		}
+            _SMSLists = new EntitySet<SMSList>(new Action<SMSList>(attach_SMSLists), new Action<SMSList>(detach_SMSLists));
 
-		
-    #endregion
-        
-    #region Foreign Key Tables
-   		
-   		[Association(Name="FK_SMSGroupMembers_SMSGroups", Storage="_SMSGroupMembers", OtherKey="GroupID")]
-   		public EntitySet<SMSGroupMember> SMSGroupMembers
-   		{
-   		    get { return this._SMSGroupMembers; }
+            OnCreated();
+        }
 
-			set	{ this._SMSGroupMembers.Assign(value); }
+        #region Columns
 
-   		}
+        [Column(Name = "ID", UpdateCheck = UpdateCheck.Never, Storage = "_Id", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
+        public int Id
+        {
+            get => _Id;
 
-		
-   		[Association(Name="FK_SMSList_SMSGroups", Storage="_SMSLists", OtherKey="SendGroupID")]
-   		public EntitySet<SMSList> SMSLists
-   		{
-   		    get { return this._SMSLists; }
+            set
+            {
+                if (_Id != value)
+                {
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
+                }
+            }
+        }
 
-			set	{ this._SMSLists.Assign(value); }
+        [Column(Name = "Name", UpdateCheck = UpdateCheck.Never, Storage = "_Name", DbType = "nvarchar(50) NOT NULL")]
+        public string Name
+        {
+            get => _Name;
 
-   		}
+            set
+            {
+                if (_Name != value)
+                {
+                    OnNameChanging(value);
+                    SendPropertyChanging();
+                    _Name = value;
+                    SendPropertyChanged("Name");
+                    OnNameChanged();
+                }
+            }
+        }
 
-		
-	#endregion
-	
-	#region Foreign Keys
-    	
-	#endregion
-	
-		public event PropertyChangingEventHandler PropertyChanging;
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-				this.PropertyChanging(this, emptyChangingEventArgs);
-		}
+        [Column(Name = "Description", UpdateCheck = UpdateCheck.Never, Storage = "_Description", DbType = "nvarchar NOT NULL")]
+        public string Description
+        {
+            get => _Description;
 
-		public event PropertyChangedEventHandler PropertyChanged;
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-		}
+            set
+            {
+                if (_Description != value)
+                {
+                    OnDescriptionChanging(value);
+                    SendPropertyChanging();
+                    _Description = value;
+                    SendPropertyChanged("Description");
+                    OnDescriptionChanged();
+                }
+            }
+        }
 
-   		
-		private void attach_SMSGroupMembers(SMSGroupMember entity)
-		{
-			this.SendPropertyChanging();
-			entity.SMSGroup = this;
-		}
+        [Column(Name = "SystemFlag", UpdateCheck = UpdateCheck.Never, Storage = "_SystemFlag", DbType = "bit NOT NULL")]
+        public bool SystemFlag
+        {
+            get => _SystemFlag;
 
-		private void detach_SMSGroupMembers(SMSGroupMember entity)
-		{
-			this.SendPropertyChanging();
-			entity.SMSGroup = null;
-		}
+            set
+            {
+                if (_SystemFlag != value)
+                {
+                    OnSystemFlagChanging(value);
+                    SendPropertyChanging();
+                    _SystemFlag = value;
+                    SendPropertyChanged("SystemFlag");
+                    OnSystemFlagChanged();
+                }
+            }
+        }
 
-		
-		private void attach_SMSLists(SMSList entity)
-		{
-			this.SendPropertyChanging();
-			entity.SMSGroup = this;
-		}
+        [Column(Name = "IsDeleted", UpdateCheck = UpdateCheck.Never, Storage = "_IsDeleted", DbType = "bit NOT NULL")]
+        public bool IsDeleted
+        {
+            get => _IsDeleted;
 
-		private void detach_SMSLists(SMSList entity)
-		{
-			this.SendPropertyChanging();
-			entity.SMSGroup = null;
-		}
+            set
+            {
+                if (_IsDeleted != value)
+                {
+                    OnIsDeletedChanging(value);
+                    SendPropertyChanging();
+                    _IsDeleted = value;
+                    SendPropertyChanged("IsDeleted");
+                    OnIsDeletedChanged();
+                }
+            }
+        }
 
-		
-	}
+        #endregion
 
+        #region Foreign Key Tables
+
+        [Association(Name = "FK_SMSGroupMembers_SMSGroups", Storage = "_SMSGroupMembers", OtherKey = "GroupID")]
+        public EntitySet<SMSGroupMember> SMSGroupMembers
+           {
+               get => _SMSGroupMembers;
+
+            set => _SMSGroupMembers.Assign(value);
+
+           }
+
+        [Association(Name = "FK_SMSList_SMSGroups", Storage = "_SMSLists", OtherKey = "SendGroupID")]
+        public EntitySet<SMSList> SMSLists
+           {
+               get => _SMSLists;
+
+            set => _SMSLists.Assign(value);
+
+           }
+
+        #endregion
+
+        #region Foreign Keys
+
+        #endregion
+
+        public event PropertyChangingEventHandler PropertyChanging;
+        protected virtual void SendPropertyChanging()
+        {
+            if ((PropertyChanging != null))
+            {
+                PropertyChanging(this, emptyChangingEventArgs);
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void SendPropertyChanged(string propertyName)
+        {
+            if ((PropertyChanged != null))
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        private void attach_SMSGroupMembers(SMSGroupMember entity)
+        {
+            SendPropertyChanging();
+            entity.SMSGroup = this;
+        }
+
+        private void detach_SMSGroupMembers(SMSGroupMember entity)
+        {
+            SendPropertyChanging();
+            entity.SMSGroup = null;
+        }
+
+        private void attach_SMSLists(SMSList entity)
+        {
+            SendPropertyChanging();
+            entity.SMSGroup = this;
+        }
+
+        private void detach_SMSLists(SMSList entity)
+        {
+            SendPropertyChanging();
+            entity.SMSGroup = null;
+        }
+    }
 }
-

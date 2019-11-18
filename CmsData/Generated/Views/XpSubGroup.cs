@@ -1,85 +1,64 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="XpSubGroup")]
-	public partial class XpSubGroup
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private int _OrgId;
-		
-		private int _PeopleId;
-		
-		private string _Name;
-		
-		
-		public XpSubGroup()
-		{
-		}
+    [Table(Name = "XpSubGroup")]
+    public partial class XpSubGroup
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="OrgId", Storage="_OrgId", DbType="int NOT NULL")]
-		public int OrgId
-		{
-			get
-			{
-				return this._OrgId;
-			}
+        private int _OrgId;
 
-			set
-			{
-				if (this._OrgId != value)
-					this._OrgId = value;
-			}
+        private int _PeopleId;
 
-		}
+        private string _Name;
 
-		
-		[Column(Name="PeopleId", Storage="_PeopleId", DbType="int NOT NULL")]
-		public int PeopleId
-		{
-			get
-			{
-				return this._PeopleId;
-			}
+        public XpSubGroup()
+        {
+        }
 
-			set
-			{
-				if (this._PeopleId != value)
-					this._PeopleId = value;
-			}
+        [Column(Name = "OrgId", Storage = "_OrgId", DbType = "int NOT NULL")]
+        public int OrgId
+        {
+            get => _OrgId;
 
-		}
+            set
+            {
+                if (_OrgId != value)
+                {
+                    _OrgId = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="Name", Storage="_Name", DbType="nvarchar(200)")]
-		public string Name
-		{
-			get
-			{
-				return this._Name;
-			}
+        [Column(Name = "PeopleId", Storage = "_PeopleId", DbType = "int NOT NULL")]
+        public int PeopleId
+        {
+            get => _PeopleId;
 
-			set
-			{
-				if (this._Name != value)
-					this._Name = value;
-			}
+            set
+            {
+                if (_PeopleId != value)
+                {
+                    _PeopleId = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "Name", Storage = "_Name", DbType = "nvarchar(200)")]
+        public string Name
+        {
+            get => _Name;
 
-		
+            set
+            {
+                if (_Name != value)
+                {
+                    _Name = value;
+                }
+            }
+        }
     }
-
 }

@@ -1,142 +1,112 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="GetPledgedTotalsBothIfJoint")]
-	public partial class GetPledgedTotalsBothIfJoint
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private int _FamilyId;
-		
-		private int? _PeopleId;
-		
-		private string _Name;
-		
-		private decimal? _PledgeAmount;
-		
-		private decimal? _Amount;
-		
-		private decimal? _Balance;
-		
-		
-		public GetPledgedTotalsBothIfJoint()
-		{
-		}
+    [Table(Name = "GetPledgedTotalsBothIfJoint")]
+    public partial class GetPledgedTotalsBothIfJoint
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="FamilyId", Storage="_FamilyId", DbType="int NOT NULL")]
-		public int FamilyId
-		{
-			get
-			{
-				return this._FamilyId;
-			}
+        private int _FamilyId;
 
-			set
-			{
-				if (this._FamilyId != value)
-					this._FamilyId = value;
-			}
+        private int? _PeopleId;
 
-		}
+        private string _Name;
 
-		
-		[Column(Name="PeopleId", Storage="_PeopleId", DbType="int")]
-		public int? PeopleId
-		{
-			get
-			{
-				return this._PeopleId;
-			}
+        private decimal? _PledgeAmount;
 
-			set
-			{
-				if (this._PeopleId != value)
-					this._PeopleId = value;
-			}
+        private decimal? _Amount;
 
-		}
+        private decimal? _Balance;
 
-		
-		[Column(Name="Name", Storage="_Name", DbType="nvarchar(139)")]
-		public string Name
-		{
-			get
-			{
-				return this._Name;
-			}
+        public GetPledgedTotalsBothIfJoint()
+        {
+        }
 
-			set
-			{
-				if (this._Name != value)
-					this._Name = value;
-			}
+        [Column(Name = "FamilyId", Storage = "_FamilyId", DbType = "int NOT NULL")]
+        public int FamilyId
+        {
+            get => _FamilyId;
 
-		}
+            set
+            {
+                if (_FamilyId != value)
+                {
+                    _FamilyId = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="PledgeAmount", Storage="_PledgeAmount", DbType="Decimal(38,2)")]
-		public decimal? PledgeAmount
-		{
-			get
-			{
-				return this._PledgeAmount;
-			}
+        [Column(Name = "PeopleId", Storage = "_PeopleId", DbType = "int")]
+        public int? PeopleId
+        {
+            get => _PeopleId;
 
-			set
-			{
-				if (this._PledgeAmount != value)
-					this._PledgeAmount = value;
-			}
+            set
+            {
+                if (_PeopleId != value)
+                {
+                    _PeopleId = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "Name", Storage = "_Name", DbType = "nvarchar(139)")]
+        public string Name
+        {
+            get => _Name;
 
-		
-		[Column(Name="Amount", Storage="_Amount", DbType="Decimal(38,2)")]
-		public decimal? Amount
-		{
-			get
-			{
-				return this._Amount;
-			}
+            set
+            {
+                if (_Name != value)
+                {
+                    _Name = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._Amount != value)
-					this._Amount = value;
-			}
+        [Column(Name = "PledgeAmount", Storage = "_PledgeAmount", DbType = "Decimal(38,2)")]
+        public decimal? PledgeAmount
+        {
+            get => _PledgeAmount;
 
-		}
+            set
+            {
+                if (_PledgeAmount != value)
+                {
+                    _PledgeAmount = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="Balance", Storage="_Balance", DbType="Decimal(38,2)")]
-		public decimal? Balance
-		{
-			get
-			{
-				return this._Balance;
-			}
+        [Column(Name = "Amount", Storage = "_Amount", DbType = "Decimal(38,2)")]
+        public decimal? Amount
+        {
+            get => _Amount;
 
-			set
-			{
-				if (this._Balance != value)
-					this._Balance = value;
-			}
+            set
+            {
+                if (_Amount != value)
+                {
+                    _Amount = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "Balance", Storage = "_Balance", DbType = "Decimal(38,2)")]
+        public decimal? Balance
+        {
+            get => _Balance;
 
-		
+            set
+            {
+                if (_Balance != value)
+                {
+                    _Balance = value;
+                }
+            }
+        }
     }
-
 }

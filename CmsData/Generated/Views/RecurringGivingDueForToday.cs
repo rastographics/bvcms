@@ -1,85 +1,64 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="RecurringGivingDueForToday")]
-	public partial class RecurringGivingDueForToday
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private int _PeopleId;
-		
-		private string _Name2;
-		
-		private decimal? _Amt;
-		
-		
-		public RecurringGivingDueForToday()
-		{
-		}
+    [Table(Name = "RecurringGivingDueForToday")]
+    public partial class RecurringGivingDueForToday
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="PeopleId", Storage="_PeopleId", DbType="int NOT NULL")]
-		public int PeopleId
-		{
-			get
-			{
-				return this._PeopleId;
-			}
+        private int _PeopleId;
 
-			set
-			{
-				if (this._PeopleId != value)
-					this._PeopleId = value;
-			}
+        private string _Name2;
 
-		}
+        private decimal? _Amt;
 
-		
-		[Column(Name="Name2", Storage="_Name2", DbType="nvarchar(139)")]
-		public string Name2
-		{
-			get
-			{
-				return this._Name2;
-			}
+        public RecurringGivingDueForToday()
+        {
+        }
 
-			set
-			{
-				if (this._Name2 != value)
-					this._Name2 = value;
-			}
+        [Column(Name = "PeopleId", Storage = "_PeopleId", DbType = "int NOT NULL")]
+        public int PeopleId
+        {
+            get => _PeopleId;
 
-		}
+            set
+            {
+                if (_PeopleId != value)
+                {
+                    _PeopleId = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="Amt", Storage="_Amt", DbType="money")]
-		public decimal? Amt
-		{
-			get
-			{
-				return this._Amt;
-			}
+        [Column(Name = "Name2", Storage = "_Name2", DbType = "nvarchar(139)")]
+        public string Name2
+        {
+            get => _Name2;
 
-			set
-			{
-				if (this._Amt != value)
-					this._Amt = value;
-			}
+            set
+            {
+                if (_Name2 != value)
+                {
+                    _Name2 = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "Amt", Storage = "_Amt", DbType = "money")]
+        public decimal? Amt
+        {
+            get => _Amt;
 
-		
+            set
+            {
+                if (_Amt != value)
+                {
+                    _Amt = value;
+                }
+            }
+        }
     }
-
 }
