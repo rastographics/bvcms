@@ -16,16 +16,16 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 {
                     if (PeopleId.HasValue)
                     {
-                        _person = DbUtil.Db.LoadPersonById(PeopleId.Value);
+                        _person = CurrentDatabase.LoadPersonById(PeopleId.Value);
                         count = 1;
                     }
                     else
                     {
-                        var list = DbUtil.Db.FindPerson(FirstName, LastName, birthday, EmailAddress, Phone.GetDigits()).ToList();
+                        var list = CurrentDatabase.FindPerson(FirstName, LastName, birthday, EmailAddress, Phone.GetDigits()).ToList();
                         count = list.Count;
                         if (count == 1)
                         {
-                            _person = DbUtil.Db.LoadPersonById(list[0].PeopleId ?? 0);
+                            _person = CurrentDatabase.LoadPersonById(list[0].PeopleId ?? 0);
                         }
 
                         if (_person != null)

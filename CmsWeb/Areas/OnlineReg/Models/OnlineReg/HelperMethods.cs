@@ -623,7 +623,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public OnlineRegPersonModel LoadExistingPerson(int id, int index)
         {
             var person = CurrentDatabase.LoadPersonById(id);
-            var p = new OnlineRegPersonModel
+            var p = new OnlineRegPersonModel(CurrentDatabase)
             {
                 Campus = person.CampusId.GetValueOrDefault().ToString(),
                 DateOfBirth = person.DOB,
@@ -879,7 +879,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public OnlineRegPersonModel GetFreshFindInfo(int id)
         {
             var p = List[id];
-            List[id] = new OnlineRegPersonModel
+            List[id] = new OnlineRegPersonModel(CurrentDatabase)
             {
                 FirstName = p.FirstName,
                 LastName = p.LastName,
@@ -897,7 +897,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             List.RemoveAt(n);
             if (List.Count == 0)
             {
-                List.Add(new OnlineRegPersonModel
+                List.Add(new OnlineRegPersonModel(CurrentDatabase)
                 {
                     orgid = Orgid,
                     masterorgid = masterorgid,
