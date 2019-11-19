@@ -91,7 +91,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (Util.ValidEmail(email) && ProcessType == PaymentProcessTypes.OnlineRegistration)
             {
                 var person =
-                    new OnlineRegPersonModel
+                    new OnlineRegPersonModel(CurrentDatabase)
                     {
                         orgid = Orgid,
                         masterorgid = masterorgid,
@@ -107,7 +107,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             List = new List<OnlineRegPersonModel>
                 {
-                    new OnlineRegPersonModel
+                    new OnlineRegPersonModel(CurrentDatabase)
                         {
                             orgid = Orgid,
                             masterorgid = masterorgid,
