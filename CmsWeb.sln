@@ -15,12 +15,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3A0B0841-CE00-4EA1-AEB8-7595CAF9E349}"
 	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
 		build.cmd = build.cmd
 		deploy.cmd = deploy.cmd
 		deployserver.cmd = deployserver.cmd
+		test.cmd = test.cmd
 		Migrate-Databases.ps1 = Migrate-Databases.ps1
 		migrate.cmd = migrate.cmd
-		ReadMe.md = ReadMe.md
 		WE-Markdown.css = WE-Markdown.css
 		WE-settings.xml = WE-settings.xml
 	EndProjectSection

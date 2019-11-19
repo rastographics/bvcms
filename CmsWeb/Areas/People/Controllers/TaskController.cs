@@ -5,6 +5,7 @@ using MoreLinq;
 using System;
 using System.Linq;
 using System.Web.Mvc;
+using CmsData;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Controllers
@@ -28,6 +29,16 @@ namespace CmsWeb.Areas.People.Controllers
         {
             var t = TaskModel.FetchModel(id, CurrentDatabase.Host, CurrentDatabase);
             return View(t);
+        }
+
+        [HttpPost, Route("~/Task/Edit")]
+        public ContentResult Edit(int pk, string name, string value)
+        {
+            CurrentDatabase.SetTaskDetails(pk, name, value);
+            CurrentDatabase.SubmitChanges();
+            DbUtil.LogActivity($"Edit Task {pk} to {value}", userId: Util.UserId);
+
+            return new ContentResult {Content = value};
         }
 
         [HttpPost, Route("~/Task/Update")]
@@ -119,5 +130,29 @@ namespace CmsWeb.Areas.People.Controllers
             return Content("Done");
         }
 
+        [HttpGet, Route("~/Task/GetStatuses")]
+        public JsonResult GetStatuses()
+        {
+            var statuses = CurrentDatabase.TaskStatuses.Select(x => new { value = x.Id, text = x.Description });
+
+            return Json(statuses, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet, Route("~/Task/GetRoles")]
+        public JsonResult GetRoles()
+        {
+            var roles = DbUtil.Db.Setting("LimitToRolesForTasks",
+                    DbUtil.Db.Setting("LimitToRolesForContacts", ""))
+                .SplitStr(",").Where(rr => rr.HasValue()).ToArray();
+            if (roles.Length == 0)
+            {
+                roles = DbUtil.Db.Roles.OrderBy(r => r.RoleName).Select(r => r.RoleName).ToArray();
+            }
+
+            var list = roles.Select(x => new { value = x, text = x }).ToList();
+            list.Insert(0, new { value = "0", text = @"(not specified)" });
+
+            return Json(list, JsonRequestBehavior.AllowGet);
+        }
     }
 }
