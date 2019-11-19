@@ -534,7 +534,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                         last = LastName;
                     }
                     var uperson = db.LoadPersonById(PeopleId ?? 0);
-                    var p = new OnlineRegPersonModel()
+                    var p = new OnlineRegPersonModel(CurrentDatabase)
                     {
                         FirstName = first,
                         LastName = last,

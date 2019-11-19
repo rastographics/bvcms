@@ -1,66 +1,48 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="Split")]
-	public partial class Split
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private int _TokenID;
-		
-		private string _ValueX;
-		
-		
-		public Split()
-		{
-		}
+    [Table(Name = "Split")]
+    public partial class Split
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="TokenID", Storage="_TokenID", AutoSync=AutoSync.OnInsert, DbType="int NOT NULL IDENTITY", IsDbGenerated=true)]
-		public int TokenID
-		{
-			get
-			{
-				return this._TokenID;
-			}
+        private int _TokenID;
 
-			set
-			{
-				if (this._TokenID != value)
-					this._TokenID = value;
-			}
+        private string _ValueX;
 
-		}
+        public Split()
+        {
+        }
 
-		
-		[Column(Name="Value", Storage="_ValueX", DbType="nvarchar(4000)")]
-		public string ValueX
-		{
-			get
-			{
-				return this._ValueX;
-			}
+        [Column(Name = "TokenID", Storage = "_TokenID", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsDbGenerated = true)]
+        public int TokenID
+        {
+            get => _TokenID;
 
-			set
-			{
-				if (this._ValueX != value)
-					this._ValueX = value;
-			}
+            set
+            {
+                if (_TokenID != value)
+                {
+                    _TokenID = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "Value", Storage = "_ValueX", DbType = "nvarchar(4000)")]
+        public string ValueX
+        {
+            get => _ValueX;
 
-		
+            set
+            {
+                if (_ValueX != value)
+                {
+                    _ValueX = value;
+                }
+            }
+        }
     }
-
 }

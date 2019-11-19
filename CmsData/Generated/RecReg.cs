@@ -1,147 +1,141 @@
-using System; 
+using CmsData.Infrastructure;
+using System;
+using System.ComponentModel;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
-using System.ComponentModel;
-using CmsData.Infrastructure;
 
 namespace CmsData
 {
-	[Table(Name="dbo.RecReg")]
-	public partial class RecReg : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-	#region Private Fields
-		
-		private int _Id;
-		
-		private int? _PeopleId;
-		
-		private int? _ImgId;
-		
-		private bool? _IsDocument;
-		
-		private bool? _ActiveInAnotherChurch;
-		
-		private string _ShirtSize;
-		
-		private bool? _MedAllergy;
-		
-		private string _Email;
-		
-		private string _MedicalDescription;
-		
-		private string _Fname;
-		
-		private string _Mname;
-		
-		private bool? _Coaching;
-		
-		private bool? _Member;
+    [Table(Name = "dbo.RecReg")]
+    public partial class RecReg : INotifyPropertyChanging, INotifyPropertyChanged
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		private bool? _NoMember;
-		
-		private string _Emcontact;
-		
-		private string _Emphone;
-		
-		private string _Doctor;
-		
-		private string _Docphone;
-		
-		private string _Insurance;
-		
-		private string _Policy;
+        #region Private Fields
+
+        private int _Id;
+
+        private int? _PeopleId;
+
+        private int? _ImgId;
+
+        private bool? _IsDocument;
+
+        private bool? _ActiveInAnotherChurch;
+
+        private string _ShirtSize;
+
+        private bool? _MedAllergy;
+
+        private string _Email;
+
+        private string _MedicalDescription;
+
+        private string _Fname;
+
+        private string _Mname;
+
+        private bool? _Coaching;
+
+        private bool? _Member;
+
+        private bool? _NoMember;
+
+        private string _Emcontact;
+
+        private string _Emphone;
+
+        private string _Doctor;
+
+        private string _Docphone;
+
+        private string _Insurance;
+
+        private string _Policy;
 
         private string _PassportNumber;
 
         private string _PassportExpires;
 
         private string _Comments;
-		
-		private bool? _Tylenol;
-		
-		private bool? _Advil;
-		
-		private bool? _Maalox;
-		
-		private bool? _Robitussin;
-		
-   		
-    	
-		private EntityRef<Person> _Person;
-		
-	#endregion
-	
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-		
-		partial void OnIdChanging(int value);
-		partial void OnIdChanged();
-		
-		partial void OnPeopleIdChanging(int? value);
-		partial void OnPeopleIdChanged();
-		
-		partial void OnImgIdChanging(int? value);
-		partial void OnImgIdChanged();
-		
-		partial void OnIsDocumentChanging(bool? value);
-		partial void OnIsDocumentChanged();
-		
-		partial void OnActiveInAnotherChurchChanging(bool? value);
-		partial void OnActiveInAnotherChurchChanged();
-		
-		partial void OnShirtSizeChanging(string value);
-		partial void OnShirtSizeChanged();
-		
-		partial void OnMedAllergyChanging(bool? value);
-		partial void OnMedAllergyChanged();
-		
-		partial void OnEmailChanging(string value);
-		partial void OnEmailChanged();
-		
-		partial void OnMedicalDescriptionChanging(string value);
-		partial void OnMedicalDescriptionChanged();
-		
-		partial void OnFnameChanging(string value);
-		partial void OnFnameChanged();
-		
-		partial void OnMnameChanging(string value);
-		partial void OnMnameChanged();
-		
-		partial void OnCoachingChanging(bool? value);
-		partial void OnCoachingChanged();
-		
-		partial void OnMemberChanging(bool? value);
-		partial void OnMemberChanged();
+
+        private bool? _Tylenol;
+
+        private bool? _Advil;
+
+        private bool? _Maalox;
+
+        private bool? _Robitussin;
+
+        private EntityRef<Person> _Person;
+
+        #endregion
+
+        #region Extensibility Method Definitions
+
+        partial void OnLoaded();
+        partial void OnValidate(System.Data.Linq.ChangeAction action);
+        partial void OnCreated();
+
+        partial void OnIdChanging(int value);
+        partial void OnIdChanged();
+
+        partial void OnPeopleIdChanging(int? value);
+        partial void OnPeopleIdChanged();
+
+        partial void OnImgIdChanging(int? value);
+        partial void OnImgIdChanged();
+
+        partial void OnIsDocumentChanging(bool? value);
+        partial void OnIsDocumentChanged();
+
+        partial void OnActiveInAnotherChurchChanging(bool? value);
+        partial void OnActiveInAnotherChurchChanged();
+
+        partial void OnShirtSizeChanging(string value);
+        partial void OnShirtSizeChanged();
+
+        partial void OnMedAllergyChanging(bool? value);
+        partial void OnMedAllergyChanged();
+
+        partial void OnEmailChanging(string value);
+        partial void OnEmailChanged();
+
+        partial void OnMedicalDescriptionChanging(string value);
+        partial void OnMedicalDescriptionChanged();
+
+        partial void OnFnameChanging(string value);
+        partial void OnFnameChanged();
+
+        partial void OnMnameChanging(string value);
+        partial void OnMnameChanged();
+
+        partial void OnCoachingChanging(bool? value);
+        partial void OnCoachingChanged();
+
+        partial void OnMemberChanging(bool? value);
+        partial void OnMemberChanged();
 
         partial void OnNoMemberChanging(bool? value);
         partial void OnNoMemberChanged();
 
         partial void OnEmcontactChanging(string value);
-		partial void OnEmcontactChanged();
-		
-		partial void OnEmphoneChanging(string value);
-		partial void OnEmphoneChanged();
-		
-		partial void OnDoctorChanging(string value);
-		partial void OnDoctorChanged();
-		
-		partial void OnDocphoneChanging(string value);
-		partial void OnDocphoneChanged();
-		
-		partial void OnInsuranceChanging(string value);
-		partial void OnInsuranceChanged();
-		
-		partial void OnPolicyChanging(string value);
-		partial void OnPolicyChanged();
+        partial void OnEmcontactChanged();
+
+        partial void OnEmphoneChanging(string value);
+        partial void OnEmphoneChanged();
+
+        partial void OnDoctorChanging(string value);
+        partial void OnDoctorChanged();
+
+        partial void OnDocphoneChanging(string value);
+        partial void OnDocphoneChanged();
+
+        partial void OnInsuranceChanging(string value);
+        partial void OnInsuranceChanged();
+
+        partial void OnPolicyChanging(string value);
+        partial void OnPolicyChanged();
 
         partial void OnPassportNumberChanging(string value);
         partial void OnPassportNumberChanged();
@@ -150,482 +144,411 @@ namespace CmsData
         partial void OnPassportExpiresChanged();
 
         partial void OnCommentsChanging(string value);
-		partial void OnCommentsChanged();
-		
-		partial void OnTylenolChanging(bool? value);
-		partial void OnTylenolChanged();
-		
-		partial void OnAdvilChanging(bool? value);
-		partial void OnAdvilChanged();
-		
-		partial void OnMaaloxChanging(bool? value);
-		partial void OnMaaloxChanged();
-		
-		partial void OnRobitussinChanging(bool? value);
-		partial void OnRobitussinChanged();
-		
-    #endregion
-		public RecReg()
-		{
-			
-			
-			this._Person = default(EntityRef<Person>); 
-			
-			OnCreated();
-		}
+        partial void OnCommentsChanged();
 
-		
-    #region Columns
-		
-		[Column(Name="Id", UpdateCheck=UpdateCheck.Never, Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int Id
-		{
-			get { return this._Id; }
+        partial void OnTylenolChanging(bool? value);
+        partial void OnTylenolChanged();
 
-			set
-			{
-				if (this._Id != value)
-				{
-				
-                    this.OnIdChanging(value);
-					this.SendPropertyChanging();
-					this._Id = value;
-					this.SendPropertyChanged("Id");
-					this.OnIdChanged();
-				}
+        partial void OnAdvilChanging(bool? value);
+        partial void OnAdvilChanged();
 
-			}
+        partial void OnMaaloxChanging(bool? value);
+        partial void OnMaaloxChanged();
 
-		}
+        partial void OnRobitussinChanging(bool? value);
+        partial void OnRobitussinChanged();
 
-		
-		[Column(Name="PeopleId", UpdateCheck=UpdateCheck.Never, Storage="_PeopleId", DbType="int")]
-		[IsForeignKey]
-		public int? PeopleId
-		{
-			get { return this._PeopleId; }
+        #endregion
 
-			set
-			{
-				if (this._PeopleId != value)
-				{
-				
-					if (this._Person.HasLoadedOrAssignedValue)
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-				
-                    this.OnPeopleIdChanging(value);
-					this.SendPropertyChanging();
-					this._PeopleId = value;
-					this.SendPropertyChanged("PeopleId");
-					this.OnPeopleIdChanged();
-				}
-
-			}
-
-		}
-
-		
-		[Column(Name="ImgId", UpdateCheck=UpdateCheck.Never, Storage="_ImgId", DbType="int")]
-		public int? ImgId
-		{
-			get { return this._ImgId; }
-
-			set
-			{
-				if (this._ImgId != value)
-				{
-				
-                    this.OnImgIdChanging(value);
-					this.SendPropertyChanging();
-					this._ImgId = value;
-					this.SendPropertyChanged("ImgId");
-					this.OnImgIdChanged();
-				}
-
-			}
-
-		}
-
-		
-		[Column(Name="IsDocument", UpdateCheck=UpdateCheck.Never, Storage="_IsDocument", DbType="bit")]
-		public bool? IsDocument
-		{
-			get { return this._IsDocument; }
-
-			set
-			{
-				if (this._IsDocument != value)
-				{
-				
-                    this.OnIsDocumentChanging(value);
-					this.SendPropertyChanging();
-					this._IsDocument = value;
-					this.SendPropertyChanged("IsDocument");
-					this.OnIsDocumentChanged();
-				}
-
-			}
-
-		}
-
-		
-		[Column(Name="ActiveInAnotherChurch", UpdateCheck=UpdateCheck.Never, Storage="_ActiveInAnotherChurch", DbType="bit")]
-		public bool? ActiveInAnotherChurch
-		{
-			get { return this._ActiveInAnotherChurch; }
-
-			set
-			{
-				if (this._ActiveInAnotherChurch != value)
-				{
-				
-                    this.OnActiveInAnotherChurchChanging(value);
-					this.SendPropertyChanging();
-					this._ActiveInAnotherChurch = value;
-					this.SendPropertyChanged("ActiveInAnotherChurch");
-					this.OnActiveInAnotherChurchChanged();
-				}
-
-			}
-
-		}
-
-		
-		[Column(Name="ShirtSize", UpdateCheck=UpdateCheck.Never, Storage="_ShirtSize", DbType="nvarchar(50)")]
-		public string ShirtSize
-		{
-			get { return this._ShirtSize; }
-
-			set
-			{
-				if (this._ShirtSize != value)
-				{
-				
-                    this.OnShirtSizeChanging(value);
-					this.SendPropertyChanging();
-					this._ShirtSize = value;
-					this.SendPropertyChanged("ShirtSize");
-					this.OnShirtSizeChanged();
-				}
-
-			}
-
-		}
-
-		
-		[Column(Name="MedAllergy", UpdateCheck=UpdateCheck.Never, Storage="_MedAllergy", DbType="bit")]
-		public bool? MedAllergy
-		{
-			get { return this._MedAllergy; }
-
-			set
-			{
-				if (this._MedAllergy != value)
-				{
-				
-                    this.OnMedAllergyChanging(value);
-					this.SendPropertyChanging();
-					this._MedAllergy = value;
-					this.SendPropertyChanged("MedAllergy");
-					this.OnMedAllergyChanged();
-				}
-
-			}
-
-		}
-
-		
-		[Column(Name="email", UpdateCheck=UpdateCheck.Never, Storage="_Email", DbType="nvarchar(80)")]
-		public string Email
-		{
-			get { return this._Email; }
-
-			set
-			{
-				if (this._Email != value)
-				{
-				
-                    this.OnEmailChanging(value);
-					this.SendPropertyChanging();
-					this._Email = value;
-					this.SendPropertyChanged("Email");
-					this.OnEmailChanged();
-				}
-
-			}
-
-		}
-
-		
-		[Column(Name="MedicalDescription", UpdateCheck=UpdateCheck.Never, Storage="_MedicalDescription", DbType="nvarchar(1000)")]
-		public string MedicalDescription
-		{
-			get { return this._MedicalDescription; }
-
-			set
-			{
-				if (this._MedicalDescription != value)
-				{
-				
-                    this.OnMedicalDescriptionChanging(value);
-					this.SendPropertyChanging();
-					this._MedicalDescription = value;
-					this.SendPropertyChanged("MedicalDescription");
-					this.OnMedicalDescriptionChanged();
-				}
-
-			}
-
-		}
-
-		
-		[Column(Name="fname", UpdateCheck=UpdateCheck.Never, Storage="_Fname", DbType="nvarchar(80)")]
-		public string Fname
-		{
-			get { return this._Fname; }
-
-			set
-			{
-				if (this._Fname != value)
-				{
-				
-                    this.OnFnameChanging(value);
-					this.SendPropertyChanging();
-					this._Fname = value;
-					this.SendPropertyChanged("Fname");
-					this.OnFnameChanged();
-				}
-
-			}
-
-		}
-
-		
-		[Column(Name="mname", UpdateCheck=UpdateCheck.Never, Storage="_Mname", DbType="nvarchar(80)")]
-		public string Mname
-		{
-			get { return this._Mname; }
-
-			set
-			{
-				if (this._Mname != value)
-				{
-				
-                    this.OnMnameChanging(value);
-					this.SendPropertyChanging();
-					this._Mname = value;
-					this.SendPropertyChanged("Mname");
-					this.OnMnameChanged();
-				}
-
-			}
-
-		}
-
-		
-		[Column(Name="coaching", UpdateCheck=UpdateCheck.Never, Storage="_Coaching", DbType="bit")]
-		public bool? Coaching
-		{
-			get { return this._Coaching; }
-
-			set
-			{
-				if (this._Coaching != value)
-				{
-				
-                    this.OnCoachingChanging(value);
-					this.SendPropertyChanging();
-					this._Coaching = value;
-					this.SendPropertyChanged("Coaching");
-					this.OnCoachingChanged();
-				}
-
-			}
-
-		}
-
-		
-		[Column(Name="member", UpdateCheck=UpdateCheck.Never, Storage="_Member", DbType="bit")]
-		public bool? Member
-		{
-			get { return this._Member; }
-
-			set
-			{
-				if (this._Member != value)
-				{
-				
-                    this.OnMemberChanging(value);
-					this.SendPropertyChanging();
-					this._Member = value;
-					this.SendPropertyChanged("Member");
-					this.OnMemberChanged();
-				}
-
-			}
-
-		}
-
-        [Column(Name = "nomember", UpdateCheck = UpdateCheck.Never, Storage = "_NoMember", DbType = "bit")]
-        public bool? NoMember
+        public RecReg()
         {
-            get { return this._NoMember; }
+            _Person = default(EntityRef<Person>);
+
+            OnCreated();
+        }
+
+        #region Columns
+
+        [Column(Name = "Id", UpdateCheck = UpdateCheck.Never, Storage = "_Id", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
+        public int Id
+        {
+            get => _Id;
 
             set
             {
-                if (this._NoMember != value)
+                if (_Id != value)
                 {
-                    this.OnNoMemberChanging(value);
-                    this.SendPropertyChanging();
-                    this._NoMember = value;
-                    this.SendPropertyChanged("NoMember");
-                    this.OnNoMemberChanged();
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
                 }
             }
         }
 
-        [Column(Name="emcontact", UpdateCheck=UpdateCheck.Never, Storage="_Emcontact", DbType="nvarchar(100)")]
-		public string Emcontact
-		{
-			get { return this._Emcontact; }
+        [Column(Name = "PeopleId", UpdateCheck = UpdateCheck.Never, Storage = "_PeopleId", DbType = "int")]
+        [IsForeignKey]
+        public int? PeopleId
+        {
+            get => _PeopleId;
 
-			set
-			{
-				if (this._Emcontact != value)
-				{
-                    this.OnEmcontactChanging(value);
-					this.SendPropertyChanging();
-					this._Emcontact = value;
-					this.SendPropertyChanged("Emcontact");
-					this.OnEmcontactChanged();
-				}
-			}
-		}
+            set
+            {
+                if (_PeopleId != value)
+                {
+                    if (_Person.HasLoadedOrAssignedValue)
+                    {
+                        throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+                    }
 
-		
-		[Column(Name="emphone", UpdateCheck=UpdateCheck.Never, Storage="_Emphone", DbType="nvarchar(50)")]
-		public string Emphone
-		{
-			get { return this._Emphone; }
+                    OnPeopleIdChanging(value);
+                    SendPropertyChanging();
+                    _PeopleId = value;
+                    SendPropertyChanged("PeopleId");
+                    OnPeopleIdChanged();
+                }
+            }
+        }
 
-			set
-			{
-				if (this._Emphone != value)
-				{
-				
-                    this.OnEmphoneChanging(value);
-					this.SendPropertyChanging();
-					this._Emphone = value;
-					this.SendPropertyChanged("Emphone");
-					this.OnEmphoneChanged();
-				}
+        [Column(Name = "ImgId", UpdateCheck = UpdateCheck.Never, Storage = "_ImgId", DbType = "int")]
+        public int? ImgId
+        {
+            get => _ImgId;
 
-			}
+            set
+            {
+                if (_ImgId != value)
+                {
+                    OnImgIdChanging(value);
+                    SendPropertyChanging();
+                    _ImgId = value;
+                    SendPropertyChanged("ImgId");
+                    OnImgIdChanged();
+                }
+            }
+        }
 
-		}
+        [Column(Name = "IsDocument", UpdateCheck = UpdateCheck.Never, Storage = "_IsDocument", DbType = "bit")]
+        public bool? IsDocument
+        {
+            get => _IsDocument;
 
-		
-		[Column(Name="doctor", UpdateCheck=UpdateCheck.Never, Storage="_Doctor", DbType="nvarchar(100)")]
-		public string Doctor
-		{
-			get { return this._Doctor; }
+            set
+            {
+                if (_IsDocument != value)
+                {
+                    OnIsDocumentChanging(value);
+                    SendPropertyChanging();
+                    _IsDocument = value;
+                    SendPropertyChanged("IsDocument");
+                    OnIsDocumentChanged();
+                }
+            }
+        }
 
-			set
-			{
-				if (this._Doctor != value)
-				{
-				
-                    this.OnDoctorChanging(value);
-					this.SendPropertyChanging();
-					this._Doctor = value;
-					this.SendPropertyChanged("Doctor");
-					this.OnDoctorChanged();
-				}
+        [Column(Name = "ActiveInAnotherChurch", UpdateCheck = UpdateCheck.Never, Storage = "_ActiveInAnotherChurch", DbType = "bit")]
+        public bool? ActiveInAnotherChurch
+        {
+            get => _ActiveInAnotherChurch;
 
-			}
+            set
+            {
+                if (_ActiveInAnotherChurch != value)
+                {
+                    OnActiveInAnotherChurchChanging(value);
+                    SendPropertyChanging();
+                    _ActiveInAnotherChurch = value;
+                    SendPropertyChanged("ActiveInAnotherChurch");
+                    OnActiveInAnotherChurchChanged();
+                }
+            }
+        }
 
-		}
+        [Column(Name = "ShirtSize", UpdateCheck = UpdateCheck.Never, Storage = "_ShirtSize", DbType = "nvarchar(50)")]
+        public string ShirtSize
+        {
+            get => _ShirtSize;
 
-		
-		[Column(Name="docphone", UpdateCheck=UpdateCheck.Never, Storage="_Docphone", DbType="nvarchar(50)")]
-		public string Docphone
-		{
-			get { return this._Docphone; }
+            set
+            {
+                if (_ShirtSize != value)
+                {
+                    OnShirtSizeChanging(value);
+                    SendPropertyChanging();
+                    _ShirtSize = value;
+                    SendPropertyChanged("ShirtSize");
+                    OnShirtSizeChanged();
+                }
+            }
+        }
 
-			set
-			{
-				if (this._Docphone != value)
-				{
-				
-                    this.OnDocphoneChanging(value);
-					this.SendPropertyChanging();
-					this._Docphone = value;
-					this.SendPropertyChanged("Docphone");
-					this.OnDocphoneChanged();
-				}
+        [Column(Name = "MedAllergy", UpdateCheck = UpdateCheck.Never, Storage = "_MedAllergy", DbType = "bit")]
+        public bool? MedAllergy
+        {
+            get => _MedAllergy;
 
-			}
+            set
+            {
+                if (_MedAllergy != value)
+                {
+                    OnMedAllergyChanging(value);
+                    SendPropertyChanging();
+                    _MedAllergy = value;
+                    SendPropertyChanged("MedAllergy");
+                    OnMedAllergyChanged();
+                }
+            }
+        }
 
-		}
+        [Column(Name = "email", UpdateCheck = UpdateCheck.Never, Storage = "_Email", DbType = "nvarchar(80)")]
+        public string Email
+        {
+            get => _Email;
 
-		
-		[Column(Name="insurance", UpdateCheck=UpdateCheck.Never, Storage="_Insurance", DbType="nvarchar(100)")]
-		public string Insurance
-		{
-			get { return this._Insurance; }
+            set
+            {
+                if (_Email != value)
+                {
+                    OnEmailChanging(value);
+                    SendPropertyChanging();
+                    _Email = value;
+                    SendPropertyChanged("Email");
+                    OnEmailChanged();
+                }
+            }
+        }
 
-			set
-			{
-				if (this._Insurance != value)
-				{
-				
-                    this.OnInsuranceChanging(value);
-					this.SendPropertyChanging();
-					this._Insurance = value;
-					this.SendPropertyChanged("Insurance");
-					this.OnInsuranceChanged();
-				}
+        [Column(Name = "MedicalDescription", UpdateCheck = UpdateCheck.Never, Storage = "_MedicalDescription", DbType = "nvarchar(1000)")]
+        public string MedicalDescription
+        {
+            get => _MedicalDescription;
 
-			}
+            set
+            {
+                if (_MedicalDescription != value)
+                {
+                    OnMedicalDescriptionChanging(value);
+                    SendPropertyChanging();
+                    _MedicalDescription = value;
+                    SendPropertyChanged("MedicalDescription");
+                    OnMedicalDescriptionChanged();
+                }
+            }
+        }
 
-		}
+        [Column(Name = "fname", UpdateCheck = UpdateCheck.Never, Storage = "_Fname", DbType = "nvarchar(80)")]
+        public string Fname
+        {
+            get => _Fname;
 
-		
-		[Column(Name="policy", UpdateCheck=UpdateCheck.Never, Storage="_Policy", DbType="nvarchar(100)")]
-		public string Policy
-		{
-			get { return this._Policy; }
+            set
+            {
+                if (_Fname != value)
+                {
+                    OnFnameChanging(value);
+                    SendPropertyChanging();
+                    _Fname = value;
+                    SendPropertyChanged("Fname");
+                    OnFnameChanged();
+                }
+            }
+        }
 
-			set
-			{
-				if (this._Policy != value)
-				{
-				
-                    this.OnPolicyChanging(value);
-					this.SendPropertyChanging();
-					this._Policy = value;
-					this.SendPropertyChanged("Policy");
-					this.OnPolicyChanged();
-				}
+        [Column(Name = "mname", UpdateCheck = UpdateCheck.Never, Storage = "_Mname", DbType = "nvarchar(80)")]
+        public string Mname
+        {
+            get => _Mname;
 
-			}
+            set
+            {
+                if (_Mname != value)
+                {
+                    OnMnameChanging(value);
+                    SendPropertyChanging();
+                    _Mname = value;
+                    SendPropertyChanged("Mname");
+                    OnMnameChanged();
+                }
+            }
+        }
 
-		}
+        [Column(Name = "coaching", UpdateCheck = UpdateCheck.Never, Storage = "_Coaching", DbType = "bit")]
+        public bool? Coaching
+        {
+            get => _Coaching;
+
+            set
+            {
+                if (_Coaching != value)
+                {
+                    OnCoachingChanging(value);
+                    SendPropertyChanging();
+                    _Coaching = value;
+                    SendPropertyChanged("Coaching");
+                    OnCoachingChanged();
+                }
+            }
+        }
+
+        [Column(Name = "member", UpdateCheck = UpdateCheck.Never, Storage = "_Member", DbType = "bit")]
+        public bool? Member
+        {
+            get => _Member;
+
+            set
+            {
+                if (_Member != value)
+                {
+                    OnMemberChanging(value);
+                    SendPropertyChanging();
+                    _Member = value;
+                    SendPropertyChanged("Member");
+                    OnMemberChanged();
+                }
+            }
+        }
+
+        [Column(Name = "nomember", UpdateCheck = UpdateCheck.Never, Storage = "_NoMember", DbType = "bit")]
+        public bool? NoMember
+        {
+            get => _NoMember;
+
+            set
+            {
+                if (_NoMember != value)
+                {
+                    OnNoMemberChanging(value);
+                    SendPropertyChanging();
+                    _NoMember = value;
+                    SendPropertyChanged("NoMember");
+                    OnNoMemberChanged();
+                }
+            }
+        }
+
+        [Column(Name = "emcontact", UpdateCheck = UpdateCheck.Never, Storage = "_Emcontact", DbType = "nvarchar(100)")]
+        public string Emcontact
+        {
+            get => _Emcontact;
+
+            set
+            {
+                if (_Emcontact != value)
+                {
+                    OnEmcontactChanging(value);
+                    SendPropertyChanging();
+                    _Emcontact = value;
+                    SendPropertyChanged("Emcontact");
+                    OnEmcontactChanged();
+                }
+            }
+        }
+
+        [Column(Name = "emphone", UpdateCheck = UpdateCheck.Never, Storage = "_Emphone", DbType = "nvarchar(50)")]
+        public string Emphone
+        {
+            get => _Emphone;
+
+            set
+            {
+                if (_Emphone != value)
+                {
+                    OnEmphoneChanging(value);
+                    SendPropertyChanging();
+                    _Emphone = value;
+                    SendPropertyChanged("Emphone");
+                    OnEmphoneChanged();
+                }
+            }
+        }
+
+        [Column(Name = "doctor", UpdateCheck = UpdateCheck.Never, Storage = "_Doctor", DbType = "nvarchar(100)")]
+        public string Doctor
+        {
+            get => _Doctor;
+
+            set
+            {
+                if (_Doctor != value)
+                {
+                    OnDoctorChanging(value);
+                    SendPropertyChanging();
+                    _Doctor = value;
+                    SendPropertyChanged("Doctor");
+                    OnDoctorChanged();
+                }
+            }
+        }
+
+        [Column(Name = "docphone", UpdateCheck = UpdateCheck.Never, Storage = "_Docphone", DbType = "nvarchar(50)")]
+        public string Docphone
+        {
+            get => _Docphone;
+
+            set
+            {
+                if (_Docphone != value)
+                {
+                    OnDocphoneChanging(value);
+                    SendPropertyChanging();
+                    _Docphone = value;
+                    SendPropertyChanged("Docphone");
+                    OnDocphoneChanged();
+                }
+            }
+        }
+
+        [Column(Name = "insurance", UpdateCheck = UpdateCheck.Never, Storage = "_Insurance", DbType = "nvarchar(100)")]
+        public string Insurance
+        {
+            get => _Insurance;
+
+            set
+            {
+                if (_Insurance != value)
+                {
+                    OnInsuranceChanging(value);
+                    SendPropertyChanging();
+                    _Insurance = value;
+                    SendPropertyChanged("Insurance");
+                    OnInsuranceChanged();
+                }
+            }
+        }
+
+        [Column(Name = "policy", UpdateCheck = UpdateCheck.Never, Storage = "_Policy", DbType = "nvarchar(100)")]
+        public string Policy
+        {
+            get => _Policy;
+
+            set
+            {
+                if (_Policy != value)
+                {
+                    OnPolicyChanging(value);
+                    SendPropertyChanging();
+                    _Policy = value;
+                    SendPropertyChanged("Policy");
+                    OnPolicyChanged();
+                }
+            }
+        }
 
         [Column(Name = "passportnumber", UpdateCheck = UpdateCheck.Never, Storage = "_PassportNumber", DbType = "nvarchar(100)")]
         public string PassportNumber
         {
-            get { return this._PassportNumber; }
+            get => _PassportNumber;
 
             set
             {
-                if (this._PassportNumber != value)
+                if (_PassportNumber != value)
                 {
-                    this.OnPassportNumberChanging(value);
-                    this.SendPropertyChanging();
-                    this._PassportNumber = value;
-                    this.SendPropertyChanged("PassportNumber");
-                    this.OnPassportNumberChanged();
+                    OnPassportNumberChanging(value);
+                    SendPropertyChanging();
+                    _PassportNumber = value;
+                    SendPropertyChanged("PassportNumber");
+                    OnPassportNumberChanged();
                 }
             }
         }
@@ -633,192 +556,175 @@ namespace CmsData
         [Column(Name = "passportexpires", UpdateCheck = UpdateCheck.Never, Storage = "_PassportExpires", DbType = "nvarchar(100)")]
         public string PassportExpires
         {
-            get { return this._PassportExpires; }
+            get => _PassportExpires;
 
             set
             {
-                if (this._PassportExpires != value)
+                if (_PassportExpires != value)
                 {
-                    this.OnPassportExpiresChanging(value);
-                    this.SendPropertyChanging();
-                    this._PassportExpires = value;
-                    this.SendPropertyChanged("PassportExpires");
-                    this.OnPassportExpiresChanged();
+                    OnPassportExpiresChanging(value);
+                    SendPropertyChanging();
+                    _PassportExpires = value;
+                    SendPropertyChanged("PassportExpires");
+                    OnPassportExpiresChanged();
                 }
             }
         }
 
-        [Column(Name="Comments", UpdateCheck=UpdateCheck.Never, Storage="_Comments", DbType="nvarchar")]
-		public string Comments
-		{
-			get { return this._Comments; }
+        [Column(Name = "Comments", UpdateCheck = UpdateCheck.Never, Storage = "_Comments", DbType = "nvarchar")]
+        public string Comments
+        {
+            get => _Comments;
 
-			set
-			{
-				if (this._Comments != value)
-				{
-				
-                    this.OnCommentsChanging(value);
-					this.SendPropertyChanging();
-					this._Comments = value;
-					this.SendPropertyChanged("Comments");
-					this.OnCommentsChanged();
-				}
-			}
-		}
-		
-		[Column(Name="Tylenol", UpdateCheck=UpdateCheck.Never, Storage="_Tylenol", DbType="bit")]
-		public bool? Tylenol
-		{
-			get { return this._Tylenol; }
+            set
+            {
+                if (_Comments != value)
+                {
+                    OnCommentsChanging(value);
+                    SendPropertyChanging();
+                    _Comments = value;
+                    SendPropertyChanged("Comments");
+                    OnCommentsChanged();
+                }
+            }
+        }
 
-			set
-			{
-				if (this._Tylenol != value)
-				{
-				
-                    this.OnTylenolChanging(value);
-					this.SendPropertyChanging();
-					this._Tylenol = value;
-					this.SendPropertyChanged("Tylenol");
-					this.OnTylenolChanged();
-				}
+        [Column(Name = "Tylenol", UpdateCheck = UpdateCheck.Never, Storage = "_Tylenol", DbType = "bit")]
+        public bool? Tylenol
+        {
+            get => _Tylenol;
 
-			}
+            set
+            {
+                if (_Tylenol != value)
+                {
+                    OnTylenolChanging(value);
+                    SendPropertyChanging();
+                    _Tylenol = value;
+                    SendPropertyChanged("Tylenol");
+                    OnTylenolChanged();
+                }
+            }
+        }
 
-		}
+        [Column(Name = "Advil", UpdateCheck = UpdateCheck.Never, Storage = "_Advil", DbType = "bit")]
+        public bool? Advil
+        {
+            get => _Advil;
 
-		
-		[Column(Name="Advil", UpdateCheck=UpdateCheck.Never, Storage="_Advil", DbType="bit")]
-		public bool? Advil
-		{
-			get { return this._Advil; }
+            set
+            {
+                if (_Advil != value)
+                {
+                    OnAdvilChanging(value);
+                    SendPropertyChanging();
+                    _Advil = value;
+                    SendPropertyChanged("Advil");
+                    OnAdvilChanged();
+                }
+            }
+        }
 
-			set
-			{
-				if (this._Advil != value)
-				{
-				
-                    this.OnAdvilChanging(value);
-					this.SendPropertyChanging();
-					this._Advil = value;
-					this.SendPropertyChanged("Advil");
-					this.OnAdvilChanged();
-				}
+        [Column(Name = "Maalox", UpdateCheck = UpdateCheck.Never, Storage = "_Maalox", DbType = "bit")]
+        public bool? Maalox
+        {
+            get => _Maalox;
 
-			}
+            set
+            {
+                if (_Maalox != value)
+                {
+                    OnMaaloxChanging(value);
+                    SendPropertyChanging();
+                    _Maalox = value;
+                    SendPropertyChanged("Maalox");
+                    OnMaaloxChanged();
+                }
+            }
+        }
 
-		}
+        [Column(Name = "Robitussin", UpdateCheck = UpdateCheck.Never, Storage = "_Robitussin", DbType = "bit")]
+        public bool? Robitussin
+        {
+            get => _Robitussin;
 
-		
-		[Column(Name="Maalox", UpdateCheck=UpdateCheck.Never, Storage="_Maalox", DbType="bit")]
-		public bool? Maalox
-		{
-			get { return this._Maalox; }
+            set
+            {
+                if (_Robitussin != value)
+                {
+                    OnRobitussinChanging(value);
+                    SendPropertyChanging();
+                    _Robitussin = value;
+                    SendPropertyChanged("Robitussin");
+                    OnRobitussinChanged();
+                }
+            }
+        }
 
-			set
-			{
-				if (this._Maalox != value)
-				{
-				
-                    this.OnMaaloxChanging(value);
-					this.SendPropertyChanging();
-					this._Maalox = value;
-					this.SendPropertyChanged("Maalox");
-					this.OnMaaloxChanged();
-				}
+        #endregion
 
-			}
+        #region Foreign Key Tables
 
-		}
+        #endregion
 
-		
-		[Column(Name="Robitussin", UpdateCheck=UpdateCheck.Never, Storage="_Robitussin", DbType="bit")]
-		public bool? Robitussin
-		{
-			get { return this._Robitussin; }
+        #region Foreign Keys
 
-			set
-			{
-				if (this._Robitussin != value)
-				{
-				
-                    this.OnRobitussinChanging(value);
-					this.SendPropertyChanging();
-					this._Robitussin = value;
-					this.SendPropertyChanged("Robitussin");
-					this.OnRobitussinChanged();
-				}
+        [Association(Name = "FK_RecReg_People", Storage = "_Person", ThisKey = "PeopleId", IsForeignKey = true)]
+        public Person Person
+        {
+            get => _Person.Entity;
 
-			}
+            set
+            {
+                Person previousValue = _Person.Entity;
+                if (((previousValue != value)
+                            || (_Person.HasLoadedOrAssignedValue == false)))
+                {
+                    SendPropertyChanging();
+                    if (previousValue != null)
+                    {
+                        _Person.Entity = null;
+                        previousValue.RecRegs.Remove(this);
+                    }
 
-		}
+                    _Person.Entity = value;
+                    if (value != null)
+                    {
+                        value.RecRegs.Add(this);
 
-		
-    #endregion
-        
-    #region Foreign Key Tables
-   		
-	#endregion
-	
-	#region Foreign Keys
-    	
-		[Association(Name="FK_RecReg_People", Storage="_Person", ThisKey="PeopleId", IsForeignKey=true)]
-		public Person Person
-		{
-			get { return this._Person.Entity; }
+                        _PeopleId = value.PeopleId;
 
-			set
-			{
-				Person previousValue = this._Person.Entity;
-				if (((previousValue != value) 
-							|| (this._Person.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if (previousValue != null)
-					{
-						this._Person.Entity = null;
-						previousValue.RecRegs.Remove(this);
-					}
+                    }
 
-					this._Person.Entity = value;
-					if (value != null)
-					{
-						value.RecRegs.Add(this);
-						
-						this._PeopleId = value.PeopleId;
-						
-					}
+                    else
+                    {
+                        _PeopleId = default(int?);
 
-					else
-					{
-						
-						this._PeopleId = default(int?);
-						
-					}
+                    }
 
-					this.SendPropertyChanged("Person");
-				}
+                    SendPropertyChanged("Person");
+                }
+            }
+        }
 
-			}
+        #endregion
 
-		}
+        public event PropertyChangingEventHandler PropertyChanging;
+        protected virtual void SendPropertyChanging()
+        {
+            if ((PropertyChanging != null))
+            {
+                PropertyChanging(this, emptyChangingEventArgs);
+            }
+        }
 
-		
-	#endregion
-	
-		public event PropertyChangingEventHandler PropertyChanging;
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-				this.PropertyChanging(this, emptyChangingEventArgs);
-		}
-
-		public event PropertyChangedEventHandler PropertyChanged;
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-		}	
-	}
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void SendPropertyChanged(string propertyName)
+        {
+            if ((PropertyChanged != null))
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
 }

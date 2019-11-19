@@ -775,12 +775,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (IsInMasterOrg())
             {
                 var MasterShowDOBOnFind = MasterSettings.Values.Any(x => x.ShowDOBOnFind);
-
-                if (!MasterShowDOBOnFind)
-                {
-                    return o != null && settings.Values.Any(x => x.ShowDOBOnFind);
-                }
-
                 return o != null && MasterShowDOBOnFind;
             }
 
@@ -794,12 +788,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (IsInMasterOrg())
             {
                 var MasterShowPhoneOnFind = MasterSettings.Values.Any(x => x.ShowPhoneOnFind);
-
-                if (!MasterShowPhoneOnFind)
-                {
-                    return o != null && settings.Values.Any(x => x.ShowPhoneOnFind);
-                }
-
                 return o != null && MasterShowPhoneOnFind;
             }
 

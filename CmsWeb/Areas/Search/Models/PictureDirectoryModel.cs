@@ -226,8 +226,9 @@ AND PeopleId = {Util.UserPeopleId}", fromDirectory: true).Any();
 
             if (Name.HasValue())
             {
+                var n = Name.Trim();
                 qmembers = from p in qmembers
-                           where p.Family.HeadOfHousehold.LastName.Contains(Name.Trim()) || p.Name.Contains(Name.Trim())
+                           where p.Family.HeadOfHousehold.LastName.Contains(n) || p.Name.Contains(n)
                            select p;
             }
 

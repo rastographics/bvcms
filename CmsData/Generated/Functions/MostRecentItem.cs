@@ -1,85 +1,64 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="MostRecentItems")]
-	public partial class MostRecentItem
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private int? _Id;
-		
-		private string _Name;
-		
-		private string _Type;
-		
-		
-		public MostRecentItem()
-		{
-		}
+    [Table(Name = "MostRecentItems")]
+    public partial class MostRecentItem
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="Id", Storage="_Id", DbType="int")]
-		public int? Id
-		{
-			get
-			{
-				return this._Id;
-			}
+        private int? _Id;
 
-			set
-			{
-				if (this._Id != value)
-					this._Id = value;
-			}
+        private string _Name;
 
-		}
+        private string _Type;
 
-		
-		[Column(Name="Name", Storage="_Name", DbType="nvarchar(150)")]
-		public string Name
-		{
-			get
-			{
-				return this._Name;
-			}
+        public MostRecentItem()
+        {
+        }
 
-			set
-			{
-				if (this._Name != value)
-					this._Name = value;
-			}
+        [Column(Name = "Id", Storage = "_Id", DbType = "int")]
+        public int? Id
+        {
+            get => _Id;
 
-		}
+            set
+            {
+                if (_Id != value)
+                {
+                    _Id = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="Type", Storage="_Type", DbType="nvarchar(3)")]
-		public string Type
-		{
-			get
-			{
-				return this._Type;
-			}
+        [Column(Name = "Name", Storage = "_Name", DbType = "nvarchar(150)")]
+        public string Name
+        {
+            get => _Name;
 
-			set
-			{
-				if (this._Type != value)
-					this._Type = value;
-			}
+            set
+            {
+                if (_Name != value)
+                {
+                    _Name = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "Type", Storage = "_Type", DbType = "nvarchar(3)")]
+        public string Type
+        {
+            get => _Type;
 
-		
+            set
+            {
+                if (_Type != value)
+                {
+                    _Type = value;
+                }
+            }
+        }
     }
-
 }

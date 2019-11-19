@@ -1,5 +1,4 @@
 ﻿using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.Events;
 using OpenQA.Selenium.Support.UI;
@@ -15,7 +14,7 @@ using Xunit;
 
 namespace IntegrationTests.Support
 {
-    public class FeatureTestBase : DatabaseTestBase
+    public abstract class FeatureTestBase : DatabaseTestBase
     {
         protected string rootUrl => Settings.RootUrl;
 
@@ -27,6 +26,8 @@ namespace IntegrationTests.Support
         protected StringBuilder verificationErrors;
 
         public static FeatureTestBase Current { get; private set; }
+
+        protected abstract bool UseSharedDriver { get; }
 
         protected IJavaScriptExecutor script
         {
@@ -49,25 +50,17 @@ namespace IntegrationTests.Support
 
         protected void StartBrowser()
         {
-            if (driver != null)
+            if (driver != null && !UseSharedDriver)
             {
                 driver.Quit();
                 driver = null;
             }
 
-            ChromeDriver chromedriver;
-            ChromeOptions options = new ChromeOptions();
-            options.AddArgument("ignore-certificate-errors");
-            var chromedriverDir = Environment.GetEnvironmentVariable("ChromeDriverDir");
-            if (string.IsNullOrEmpty(chromedriverDir))
+            driver = WebAppFixture.GetChromeDriver(UseSharedDriver);
+            if (UseSharedDriver)
             {
-                chromedriver = new ChromeDriver(options);
+                ClearCookies();
             }
-            else
-            {
-                chromedriver = new ChromeDriver(chromedriverDir, options, TimeSpan.FromSeconds(120));
-            }
-            driver = chromedriver;
         }
 
         private bool _disposed;
@@ -80,8 +73,11 @@ namespace IntegrationTests.Support
 
                 try
                 {
-                    driver?.Quit();
-                    driver = null;
+                    if (!UseSharedDriver)
+                    {
+                        driver?.Quit();
+                        driver = null;
+                    }
                 }
                 catch (Exception)
                 {
@@ -103,7 +99,7 @@ namespace IntegrationTests.Support
             Thread.Sleep(milliseconds);
         }
 
-        protected void ClearCookies()
+        internal void ClearCookies()
         {
             driver.Manage().Cookies.DeleteAllCookies();
         }
@@ -415,7 +411,7 @@ namespace IntegrationTests.Support
             }
         }
 
-        protected void MaximizeWindow(IWindow window = null)
+        internal void MaximizeWindow(IWindow window = null)
         {
             (window ?? driver.Manage().Window).Maximize();
         }
