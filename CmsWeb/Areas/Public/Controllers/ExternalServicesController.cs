@@ -48,16 +48,8 @@ namespace CmsWeb.Areas.Public.Controllers
             sOrderID = xd.Root.Element("Order").Element("OrderDetail").Attribute("OrderId").Value;
 
             var check = (from e in CurrentDatabase.BackgroundChecks
-                         where e.BillingRefId == sBillingReference
+                         where e.ReportID == iReportID
                          select e).SingleOrDefault();
-
-            int RefId;
-            if (check == null && int.TryParse(sBillingReference, out RefId))
-            {
-                check = (from e in CurrentDatabase.BackgroundChecks
-                         where e.Id == RefId
-                         select e).SingleOrDefault();
-            }
 
             if (check != null)
             {
