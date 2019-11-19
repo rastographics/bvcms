@@ -5,6 +5,7 @@ using System.Web;
 using CmsData;
 using CmsData.ExtraValue;
 using CmsWeb.Code;
+using CmsWeb.Constants;
 using Dapper;
 using Newtonsoft.Json;
 using UtilityExtensions;
@@ -37,7 +38,9 @@ namespace CmsWeb.Models.ExtraValues
             }
         }
 
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
         public ExtraValueModel() { }
+
         public ExtraValueModel(CMSDataContext db) : base()
         {
             CurrentDatabase = db;

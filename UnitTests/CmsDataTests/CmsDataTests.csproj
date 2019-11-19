@@ -106,10 +106,6 @@
       <Project>{98aee43c-4226-49e7-bd46-c1a85467eced}</Project>
       <Name>CmsData</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\CmsWeb\CMSWeb.csproj">
-      <Project>{FC942D51-94B5-456B-9683-0BA000A1EAF4}</Project>
-      <Name>CMSWeb</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\UtilityExtensions\UtilityExtensions.csproj">
       <Project>{C504E3D2-5498-451B-BF82-309623706F11}</Project>
       <Name>UtilityExtensions</Name>

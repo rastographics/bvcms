@@ -5,7 +5,6 @@ using Shouldly;
 using System;
 using System.Linq;
 using System.Globalization;
-using CmsWeb.Models.ExtraValues;
 
 namespace CmsDataTests
 {
@@ -65,21 +64,26 @@ namespace CmsDataTests
             }
         }
 
-        [InlineData("PushPayKey","keyXYZ","20190101",null,null,null)]
+        [InlineData("PushPayKey","keyXYZ",null,null,null)]
         [Theory]
-        public void Should_Insert_EV_Only_If_does_not_Exist(string key, string value, string datevalue, string text, int? intvalue, bool? bitvalue)
+        public void Should_Insert_EV_Only_If_does_not_Exist(string key, string value, string text, int? intvalue, bool? bitvalue)
         {
             using (var db = CMSDataContext.Create(DatabaseFixture.Host))
             {
+                var datevalue = DateTime.Now;
                 var person = db.People.FirstOrDefault();
-                int extraValId = db.AddExtraValueDataIfNotExist(person.PeopleId, key, value, DateTime.ParseExact(datevalue,"yyyyMMdd",CultureInfo.InvariantCulture), text, intvalue, bitvalue);
-                int attempt2 = db.AddExtraValueDataIfNotExist(person.PeopleId, key, value, DateTime.ParseExact(datevalue, "yyyyMMdd", CultureInfo.InvariantCulture), text, intvalue, bitvalue);
+                int extraValId = db.AddExtraValueDataIfNotExist(person.PeopleId, key, value, datevalue, text, intvalue, bitvalue);
+                db.SubmitChanges();
+                int attempt2 = db.AddExtraValueDataIfNotExist(person.PeopleId, key, value, datevalue, text, intvalue, bitvalue);
                 attempt2.ShouldBe(0);
-                var m = new ExtraValueModel(extraValId, "People", "Standard");
-                m.Delete(key);
-            }
-                
+                db.SubmitChanges();
 
+                var extraValue = db.PeopleExtras.SingleOrDefault(p => p.PeopleId == person.PeopleId && p.Field == key && p.Instance == extraValId);
+                extraValue.ShouldNotBe(null);
+
+                db.PeopleExtras.DeleteOnSubmit(extraValue);
+                db.SubmitChanges();
+            }               
         }
     }
 }
