@@ -21,10 +21,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		deployserver.cmd = deployserver.cmd
 		test.cmd = test.cmd
 		Migrate-Databases.ps1 = Migrate-Databases.ps1
-		migrate.cmd = migrate.cmd
-		ReadMe.md = ReadMe.md
-		README.md = README.md
-		test.cmd = test.cmd
+		migrate.cmd = migrate.cmd		
 		WE-Markdown.css = WE-Markdown.css
 		WE-settings.xml = WE-settings.xml
 	EndProjectSection
