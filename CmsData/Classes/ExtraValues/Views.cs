@@ -24,9 +24,7 @@ namespace CmsData.ExtraValue
             var xml = DbUtil.StandardExtraValues2(db, nocache);
 
             var f = Util.DeSerialize<Views>(xml);
-            if (f == null)
-                return new Views();
-            return f;
+            return f ?? new Views();
         }
         public static List<Value> GetStandardExtraValues(CMSDataContext db, string table, bool nocache = false, string location = null)
         {
