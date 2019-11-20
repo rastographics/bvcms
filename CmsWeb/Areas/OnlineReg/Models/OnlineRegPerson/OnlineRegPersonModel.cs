@@ -198,10 +198,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public List<string> option { get; set; }
         public List<string> Checkbox { get; set; }
         public List<Dictionary<string, int?>> MenuItem { get; set; }
-
         
-
-
         public int Index { get; set; }
 
         public bool LastItem()
