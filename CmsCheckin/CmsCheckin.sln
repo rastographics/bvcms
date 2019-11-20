@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.902
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CmsCheckin", "CmsCheckin.csproj", "{6F00AEE1-5D32-4ACF-9B58-D3B3D12A3D04}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
+		staging|Any CPU = staging|Any CPU
+		staging|x86 = staging|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6F00AEE1-5D32-4ACF-9B58-D3B3D12A3D04}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F00AEE1-5D32-4ACF-9B58-D3B3D12A3D04}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F00AEE1-5D32-4ACF-9B58-D3B3D12A3D04}.Debug|x86.ActiveCfg = Debug|x86
+		{6F00AEE1-5D32-4ACF-9B58-D3B3D12A3D04}.Debug|x86.Build.0 = Debug|x86
+		{6F00AEE1-5D32-4ACF-9B58-D3B3D12A3D04}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F00AEE1-5D32-4ACF-9B58-D3B3D12A3D04}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F00AEE1-5D32-4ACF-9B58-D3B3D12A3D04}.Release|x86.ActiveCfg = Release|x86
+		{6F00AEE1-5D32-4ACF-9B58-D3B3D12A3D04}.Release|x86.Build.0 = Release|x86
+		{6F00AEE1-5D32-4ACF-9B58-D3B3D12A3D04}.staging|Any CPU.ActiveCfg = staging|Any CPU
+		{6F00AEE1-5D32-4ACF-9B58-D3B3D12A3D04}.staging|Any CPU.Build.0 = staging|Any CPU
+		{6F00AEE1-5D32-4ACF-9B58-D3B3D12A3D04}.staging|x86.ActiveCfg = staging|x86
+		{6F00AEE1-5D32-4ACF-9B58-D3B3D12A3D04}.staging|x86.Build.0 = staging|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1EED4715-2569-4EF5-ACC4-035657B6CC49}
+	EndGlobalSection
+EndGlobal
