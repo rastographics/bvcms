@@ -32,12 +32,20 @@ namespace CmsWeb.Areas.Dialog.Models
         }
 
         [Obsolete(Errors.ModelBindingConstructorError, true)]
-        public OrgMembersUpdate(){}
+        public OrgMembersUpdate() { }
 
         public OrgMembersUpdate(CMSDataContext db)
         {
             CurrentDatabase = db;
         }
+
+        public OrgMembersUpdate(Guid id, string host, CMSDataContext db)
+            : this(db)
+        {
+            Host = host;
+            QueryId = id;
+        }
+
         public Guid QueryId
         {
             get { return queryId; }
@@ -57,13 +65,6 @@ namespace CmsWeb.Areas.Dialog.Models
                 Count = CurrentDatabase.OrgFilterIds(queryId).Count();
                 GroupSelect = filter.GroupSelect;
             }
-        }
-
-        public OrgMembersUpdate(Guid id, string host, CMSDataContext db)
-            : this(db)
-        {
-            Host = host;
-            QueryId = id;
         }
 
         public int? Count;

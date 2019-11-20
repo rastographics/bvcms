@@ -1,6 +1,8 @@
 using CmsData;
 using CmsWeb.Code;
+using CmsWeb.Constants;
 using CmsWeb.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
@@ -10,16 +12,21 @@ namespace CmsWeb.Areas.Dialog.Models
 {
     public class NewOrganizationModel : IDbBinder
     {
-        public Organization org { get; set; }
-        public int? OrganizationId { get; set; }
-        public bool copysettings { get; set; }
-        public bool copyregistration { get; set; }
-        public bool DisplayCopySettings { get; set; }
-        public CMSDataContext CurrentDatabase { get; set; }
+        private CMSDataContext _currentDatabase;
+        public CMSDataContext CurrentDatabase
+        {
+            get => _currentDatabase ?? DbUtil.Db;
+            set { _currentDatabase = value; }
+        }
+
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
+        public NewOrganizationModel() { }
+
+        public NewOrganizationModel(CMSDataContext db) { CurrentDatabase = db; }
 
         public NewOrganizationModel(CMSDataContext db, int? id, bool displayCopySettings = false)
-        {
-            CurrentDatabase = db;
+            : this(db)
+        {   
             DisplayCopySettings = displayCopySettings;
             if (!id.HasValue)
             {
@@ -35,14 +42,11 @@ namespace CmsWeb.Areas.Dialog.Models
             OrganizationId = org.OrganizationId;
         }
 
-        public NewOrganizationModel()
-        {
-        }
-
-        public NewOrganizationModel(CMSDataContext db)
-        {
-            CurrentDatabase = db;
-        }
+        public Organization org { get; set; }
+        public int? OrganizationId { get; set; }
+        public bool copysettings { get; set; }
+        public bool copyregistration { get; set; }
+        public bool DisplayCopySettings { get; set; }
 
         private CodeValueModel cv = new CodeValueModel();
 
