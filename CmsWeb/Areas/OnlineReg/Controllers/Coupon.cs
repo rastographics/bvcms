@@ -34,7 +34,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             {
                 if (pf.PayBalance)
                 {
-                    var tic = pf.CreateTransaction(CurrentDatabase, pf.AmtToPay);
+                    var tic = pf.CreateTransaction(pf.AmtToPay);
                     return Json(new { confirm = $"/onlinereg/ConfirmDuePaid/{tic.Id}?TransactionID=AdminCoupon&Amount={tic.Amt}" });
                 }
                 else
@@ -72,7 +72,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return Json(new { error = "coupon canceled" });
             }
 
-            var ti = pf.CreateTransaction(CurrentDatabase, Math.Min(c.Amount ?? 0m, pf.AmtToPay ?? 0m));
+            var ti = pf.CreateTransaction(Math.Min(c.Amount ?? 0m, pf.AmtToPay ?? 0m));
             if (m != null) // Start this transaction in the chain
             {
                 m.HistoryAdd("ApplyCoupon");
@@ -83,7 +83,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             if ((c.Amount > 0 && pf.AmtToPay > 0) || !pf.PayBalance)
             {
-                OnlineRegModel.ConfirmDuePaidTransaction(ti, tid, false);
+                OnlineRegModel.ConfirmDuePaidTransaction(ti, tid, false, CurrentDatabase);
             }
 
             var msg = $"<i class='red'>Your coupon for {c.Amount:n2} has been applied, your balance is now {ti.Amtdue:n2}</i>.";

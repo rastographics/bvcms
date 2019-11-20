@@ -414,7 +414,7 @@ namespace CmsWeb.Areas.Setup.Controllers
                 Description = pf.Description,
                 OrgId = pf.OrgId,
                 Url = pf.URL,
-                TransactionGateway = OnlineRegModel.GetTransactionGateway(pf.ProcessType)?.GatewayAccountName,
+                TransactionGateway = OnlineRegModel.GetTransactionGateway(CurrentDatabase, pf.ProcessType)?.GatewayAccountName,
                 Address = "Street1",
                 Address2 = "123",
                 City = "My City",

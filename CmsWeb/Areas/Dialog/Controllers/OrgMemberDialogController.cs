@@ -162,7 +162,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
         [HttpPost]
         public ActionResult AddMissionSupport(MissionSupportModel m)
         {
-            m.PostContribution();
+            m.PostContribution(CurrentDatabase);
             return View("MissionSupportDone", m);
         }
 

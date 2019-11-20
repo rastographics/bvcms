@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using UtilityExtensions;
+using CmsWeb.Constants;
 
 namespace CmsWeb.Areas.OnlineReg.Models
 {
@@ -16,16 +17,28 @@ namespace CmsWeb.Areas.OnlineReg.Models
     }
 
     public partial class OnlineRegModel : IDbBinder
-    {
-        public CMSDataContext CurrentDatabase { get ; set ; }
+    {        
+        public CMSDataContext CurrentDatabase
+        {
+            get => _currentDatabase ?? DbUtil.Db;
+            set
+            {
+                _currentDatabase = value;
+                Init();
+            }
+        }
 
-        public OnlineRegModel()
+        private void Init()
         {
             HttpContextFactory.Current.Items["OnlineRegModel"] = this;
         }
+        private CMSDataContext _currentDatabase;
+
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
+        public OnlineRegModel() { Init(); }
+
         public OnlineRegModel(CMSDataContext db)
-            :this()
-        {            
+        {
             CurrentDatabase = db;
         }
 
@@ -70,7 +83,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     throw new BadRegistrationException("no registration allowed on this org");
                 }
             }
-            this.testing = testing == true || DbUtil.Db.Setting("OnlineRegTesting", Util.IsDebug() ? "true" : "false").ToBool();
+            this.testing = testing == true || CurrentDatabase.Setting("OnlineRegTesting", Util.IsDebug() ? "true" : "false").ToBool();
 
             // the email passed in is valid or they did not specify login
             if (AllowAnonymous && (Util.ValidEmail(email) || login != true))
@@ -127,11 +140,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
                         }
                 };
         }
-        public static string GetDescriptionForPayment(int? id)
+        public static string GetDescriptionForPayment(int? id, CMSDataContext db)
         {
             try
             {
-                var m = new OnlineRegModel(null, DbUtil.Db, id, false, null, null, null);
+                var m = new OnlineRegModel(null, db, id, false, null, null, null);
                 return m.DescriptionForPayment;
             }
             catch (Exception)

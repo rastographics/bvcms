@@ -82,22 +82,22 @@ namespace CmsWeb.Areas.Dialog.Models
         }
 
         public string ToGoerName;
-        internal void PostContribution()
+        internal void PostContribution(CMSDataContext db)
         {
             if (!(AmountGeneral > 0) && !(AmountGoer > 0))
             {
                 return;
             }
 
-            var org = DbUtil.Db.LoadOrganizationById(OrgId);
-            var notifyIds = DbUtil.Db.NotifyIds(org.GiftNotifyIds);
-            var person = DbUtil.Db.LoadPersonById(PeopleId ?? 0);
-            var setting = DbUtil.Db.CreateRegistrationSettings(OrgId ?? 0);
+            var org = db.LoadOrganizationById(OrgId);
+            var notifyIds = db.NotifyIds(org.GiftNotifyIds);
+            var person = db.LoadPersonById(PeopleId ?? 0);
+            var setting = db.CreateRegistrationSettings(OrgId ?? 0);
             var fund = setting.DonationFundId;
             if (AmountGoer > 0)
             {
                 var goerid = Goer.Value.ToInt();
-                DbUtil.Db.GoerSenderAmounts.InsertOnSubmit(
+                db.GoerSenderAmounts.InsertOnSubmit(
                     new GoerSenderAmount
                     {
                         Amount = AmountGoer,
@@ -106,27 +106,27 @@ namespace CmsWeb.Areas.Dialog.Models
                         OrgId = org.OrganizationId,
                         SupporterId = PeopleId ?? 0,
                     });
-                var c = person.PostUnattendedContribution(DbUtil.Db,
+                var c = person.PostUnattendedContribution(db,
                     AmountGoer ?? 0, fund,
                     $"SupportMissionTrip: org={OrgId}; goer={Goer.Value}", typecode: BundleTypeCode.MissionTrip);
                 c.CheckNo = (CheckNo ?? "").Trim().Truncate(20);
                 if (PeopleId == goerid)
                 {
-                    var om = DbUtil.Db.OrganizationMembers.Single(
+                    var om = db.OrganizationMembers.Single(
                         mm => mm.PeopleId == goerid && mm.OrganizationId == OrgId);
-                    var descriptionForPayment = OnlineRegModel.GetDescriptionForPayment(OrgId);
-                    om.AddTransaction(DbUtil.Db, "Payment", AmountGoer ?? 0, "Payment", pmtDescription: descriptionForPayment);
+                    var descriptionForPayment = OnlineRegModel.GetDescriptionForPayment(OrgId, db);
+                    om.AddTransaction(db, "Payment", AmountGoer ?? 0, "Payment", pmtDescription: descriptionForPayment);
                 }
                 // send notices
-                var goer = DbUtil.Db.LoadPersonById(goerid);
+                var goer = db.LoadPersonById(goerid);
                 ToGoerName = "to " + goer.Name;
-                DbUtil.Db.Email(notifyIds[0].FromEmail, goer, org.OrganizationName + "-donation",
+                db.Email(notifyIds[0].FromEmail, goer, org.OrganizationName + "-donation",
                     $"{AmountGoer:C} donation received from {person.Name}");
                 DbUtil.LogActivity("OrgMem SupportMissionTrip goer=" + goerid, OrgId, PeopleId);
             }
             if (AmountGeneral > 0)
             {
-                DbUtil.Db.GoerSenderAmounts.InsertOnSubmit(
+                db.GoerSenderAmounts.InsertOnSubmit(
                     new GoerSenderAmount
                     {
                         Amount = AmountGeneral,
@@ -134,7 +134,7 @@ namespace CmsWeb.Areas.Dialog.Models
                         OrgId = org.OrganizationId,
                         SupporterId = PeopleId ?? 0
                     });
-                var c = person.PostUnattendedContribution(DbUtil.Db,
+                var c = person.PostUnattendedContribution(db,
                     AmountGeneral ?? 0, fund,
                     $"SupportMissionTrip: org={OrgId}", typecode: BundleTypeCode.MissionTrip);
                 if (CheckNo.HasValue())
@@ -144,7 +144,7 @@ namespace CmsWeb.Areas.Dialog.Models
 
                 DbUtil.LogActivity("OrgMem SupportMissionTrip", OrgId, PeopleId);
             }
-            DbUtil.Db.SubmitChanges();
+            db.SubmitChanges();
         }
     }
 }

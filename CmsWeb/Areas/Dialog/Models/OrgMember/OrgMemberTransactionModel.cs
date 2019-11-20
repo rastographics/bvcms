@@ -129,7 +129,7 @@ namespace CmsWeb.Areas.Dialog.Models
                     CurrentDatabase.GoerSenderAmounts.InsertOnSubmit(gs);
                 }
             }
-            var descriptionForPayment = OnlineRegModel.GetDescriptionForPayment(OrgId);
+            var descriptionForPayment = OnlineRegModel.GetDescriptionForPayment(OrgId, CurrentDatabase);
             om.AddTransaction(CurrentDatabase, reason, Payment ?? 0, Description, Amount, AdjustFee, descriptionForPayment);
             var showcount = "";
             if (TransactionSummary != null && TransactionSummary.NumPeople > 1)
