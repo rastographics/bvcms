@@ -230,7 +230,7 @@ Total Fee paid for this registration session: {ts?.TotPaid:C}<br/>
                 return null;
             }
 
-            ParseSettings(CurrentDatabase);
+            ParseSettings();
             return _masterSettings = settings[masterorgid.Value];
         }
 
