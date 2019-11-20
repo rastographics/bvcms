@@ -1,8 +1,5 @@
 using CmsData;
 using CmsWeb.Code;
-using CmsWeb.Constants;
-using CmsWeb.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
@@ -10,44 +7,33 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Models
 {
-    public class NewOrganizationModel : IDbBinder
+    public class NewOrganizationModel
     {
-        private CMSDataContext _currentDatabase;
-        public CMSDataContext CurrentDatabase
-        {
-            get => _currentDatabase ?? DbUtil.Db;
-            set { _currentDatabase = value; }
-        }
-
-        [Obsolete(Errors.ModelBindingConstructorError, true)]
-        public NewOrganizationModel() { }
-
-        public NewOrganizationModel(CMSDataContext db) { CurrentDatabase = db; }
-
-        public NewOrganizationModel(CMSDataContext db, int? id, bool displayCopySettings = false)
-            : this(db)
-        {   
-            DisplayCopySettings = displayCopySettings;
-            if (!id.HasValue)
-            {
-                id = CurrentDatabase.Setting("DefaultOrgId", "0").ToInt();
-            }
-
-            org = CurrentDatabase.LoadOrganizationById(id);
-            if (org == null)
-            {
-                org = CurrentDatabase.Organizations.First();
-            }
-
-            OrganizationId = org.OrganizationId;
-        }
-
         public Organization org { get; set; }
         public int? OrganizationId { get; set; }
         public bool copysettings { get; set; }
         public bool copyregistration { get; set; }
         public bool DisplayCopySettings { get; set; }
+        public NewOrganizationModel(int? id, bool displayCopySettings = false)
+        {
+            DisplayCopySettings = displayCopySettings;
+            if (!id.HasValue)
+            {
+                id = DbUtil.Db.Setting("DefaultOrgId", "0").ToInt();
+            }
 
+            org = DbUtil.Db.LoadOrganizationById(id);
+            if (org == null)
+            {
+                org = DbUtil.Db.Organizations.First();
+            }
+
+            OrganizationId = org.OrganizationId;
+        }
+
+        public NewOrganizationModel()
+        {
+        }
         private CodeValueModel cv = new CodeValueModel();
 
         public IEnumerable<SelectListItem> CampusList()

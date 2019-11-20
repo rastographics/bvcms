@@ -24,9 +24,8 @@ namespace CMSWebTests
 
             var NewOrganizationIndex = controller.Index();
             var OrgId = ((NewOrganizationModel)((System.Web.Mvc.ViewResultBase)NewOrganizationIndex).Model).OrganizationId;
-
-            var db = CMSDataContext.Create(DatabaseFixture.Host);
-            var FakeNewOrganizationModel = new NewOrganizationModel(db);
+            
+            var FakeNewOrganizationModel = new NewOrganizationModel();
             Organization FakeOrganization = null;
             if (Orgconfig.IsNull())
             {

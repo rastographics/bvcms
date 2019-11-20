@@ -2,6 +2,7 @@ using CmsData;
 using CmsData.Codes;
 using CmsWeb.Areas.OnlineReg.Models;
 using CmsWeb.Code;
+using CmsWeb.Constants;
 using CmsWeb.Models;
 using System;
 using System.Linq;
@@ -12,6 +13,7 @@ namespace CmsWeb.Areas.Dialog.Models
 {
     public class MissionSupportModel : IDbBinder
     {
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
         public MissionSupportModel() { }
         public MissionSupportModel(CMSDataContext db ) { CurrentDatabase = db; }
         private CMSDataContext _currentDatabase;
