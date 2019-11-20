@@ -18,7 +18,7 @@ namespace CmsData
 		
 	#region Private Fields
 		
-		private string _Id;
+		private int _Id;
 		
 		private DateTime _Stamp;
 		
@@ -33,7 +33,7 @@ namespace CmsData
     partial void OnValidate(System.Data.Linq.ChangeAction action);
     partial void OnCreated();
 		
-		partial void OnIdChanging(string value);
+		partial void OnIdChanging(int value);
 		partial void OnIdChanged();
 		
 		partial void OnStampChanging(DateTime value);
@@ -53,8 +53,8 @@ namespace CmsData
 		
     #region Columns
 		
-		[Column(Name="Id", UpdateCheck=UpdateCheck.Never, Storage="_Id", DbType="nvarchar(50) NOT NULL", IsPrimaryKey=true)]
-		public string Id
+		[Column(Name="Id", UpdateCheck=UpdateCheck.Never, Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int Id
 		{
 			get { return this._Id; }
 
@@ -75,7 +75,7 @@ namespace CmsData
 		}
 
 		
-		[Column(Name="Stamp", UpdateCheck=UpdateCheck.Never, Storage="_Stamp", DbType="datetime NOT NULL", IsPrimaryKey=true)]
+		[Column(Name="Stamp", UpdateCheck=UpdateCheck.Never, Storage="_Stamp", DbType="datetime NOT NULL")]
 		public DateTime Stamp
 		{
 			get { return this._Stamp; }

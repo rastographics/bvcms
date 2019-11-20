@@ -3,13 +3,9 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES where
 	TABLE_SCHEMA = 'dbo')
 	BEGIN	
         CREATE TABLE [dbo].[CheckInPending](
-	        [Id] [nvarchar](50) NOT NULL,
+	        [Id] [int] IDENTITY NOT NULL PRIMARY KEY,
 	        [Stamp] [datetime] NOT NULL,
-	        [Data] [nvarchar](max) NULL,
-         CONSTRAINT [PK_Data] PRIMARY KEY CLUSTERED 
-        (
-	        [Id] ASC,
-	        [Stamp] ASC
-        ));
+	        [Data] [nvarchar](max) NULL
+            )
 	END
 GO

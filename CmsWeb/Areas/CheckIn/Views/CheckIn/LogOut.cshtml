@@ -9,8 +9,11 @@
 </div>
 @section scripts {
 <script type="text/javascript">
+    var date = new Date();
+    date.setFullYear(2010);
     localStorage.removeItem('identity');
     localStorage.removeItem('profile');
+    document.cookie = encodeURIComponent('Authorization') + "=" + value + "; expires =" + date.toGMTString() + "; path=/";
     window.location.href = '/CheckIn';
 </script>
 }

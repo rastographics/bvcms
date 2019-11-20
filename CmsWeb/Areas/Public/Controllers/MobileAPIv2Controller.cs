@@ -434,11 +434,6 @@ namespace CmsWeb.Areas.Public.Controllers
 			return response;
 		}
 
-		public FileResult FetchQRCode()
-		{
-			return new FileContentResult( BarcodeHelper.generateQRCode( "https://www.touchpointsoftware.com", 600 ), "image/png" );
-		}
-
 		[HttpPost]
 		public ActionResult FetchPeople( string data )
 		{

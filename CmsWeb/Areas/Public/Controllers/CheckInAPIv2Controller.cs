@@ -137,7 +137,7 @@ namespace CmsWeb.Areas.Public.Controllers
             {
                 var list = cns.search.Split('!').Where(s => !string.IsNullOrWhiteSpace(s)).ToList();
                 string id = list.First();
-                var pending = CurrentDatabase.CheckInPendings.Where(p => p.Id == id).SingleOrDefault();
+                var pending = CurrentDatabase.CheckInPendings.Where(p => p.Id == id.ToInt()).SingleOrDefault();
                 if (pending != null)
                 {
                     AttendanceBundle bundle = JsonConvert.DeserializeObject<AttendanceBundle>(pending.Data);
@@ -356,11 +356,9 @@ namespace CmsWeb.Areas.Public.Controllers
             
             Message response = new Message();
 			Message message = Message.createFromString( data );
-
-            var nextId = CurrentDatabase.CheckInPendings.Max(c => c.Id) + 1;
+            
             var pending = new CheckInPending
             {
-                Id = nextId,
                 Stamp = DateTime.Now,
                 Data = message.data
             };
@@ -388,7 +386,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             Message message = Message.createFromString(data);
 
-            CheckInPending pending = CurrentDatabase.CheckInPendings.Where(c => c.Id == message.argString).SingleOrDefault();
+            CheckInPending pending = CurrentDatabase.CheckInPendings.Where(c => c.Id == message.id).SingleOrDefault();
 
             if (pending == null)
             {
