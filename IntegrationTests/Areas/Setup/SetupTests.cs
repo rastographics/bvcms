@@ -35,7 +35,7 @@ namespace IntegrationTests.Areas.Manage
             Find(css: ".editable-input input[type=text]").Clear();
             Find(css: ".editable-input input[type=text]").SendKeys(roleName);
             Find(css: ".editable-buttons button[type=submit]").Click();
-            WaitForPageLoad();
+            Wait(2);
 
             var adminRole = db.Roles.SingleOrDefault(r => r.RoleName == "Admin");
             var role = db.Roles.SingleOrDefault(r => r.RoleName == roleName);
