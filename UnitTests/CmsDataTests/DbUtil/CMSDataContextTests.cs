@@ -4,6 +4,7 @@ using Xunit;
 using Shouldly;
 using System;
 using System.Linq;
+using System.Globalization;
 
 namespace CmsDataTests
 {
@@ -69,6 +70,28 @@ namespace CmsDataTests
                 var family = db.Families.FirstOrDefault(p => p.FamilyId == familyId);
                 family.HeadOfHouseholdSpouseId.ShouldNotBeNull();
             }
+        }
+
+        [InlineData("PushPayKey","keyXYZ",null,null,null)]
+        [Theory]
+        public void Should_Insert_EV_Only_If_does_not_Exist(string key, string value, string text, int? intvalue, bool? bitvalue)
+        {
+            using (var db = CMSDataContext.Create(DatabaseFixture.Host))
+            {
+                var datevalue = DateTime.Now;
+                var person = db.People.FirstOrDefault();
+                int extraValId = db.AddExtraValueDataIfNotExist(person.PeopleId, key, value, datevalue, text, intvalue, bitvalue);
+                db.SubmitChanges();
+                int attempt2 = db.AddExtraValueDataIfNotExist(person.PeopleId, key, value, datevalue, text, intvalue, bitvalue);
+                attempt2.ShouldBe(0);
+                db.SubmitChanges();
+
+                var extraValue = db.PeopleExtras.SingleOrDefault(p => p.PeopleId == person.PeopleId && p.Field == key && p.Instance == extraValId);
+                extraValue.ShouldNotBe(null);
+
+                db.PeopleExtras.DeleteOnSubmit(extraValue);
+                db.SubmitChanges();
+            }               
         }
     }
 }
