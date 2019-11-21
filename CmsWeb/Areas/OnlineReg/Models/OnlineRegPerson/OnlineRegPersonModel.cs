@@ -35,6 +35,23 @@ namespace CmsWeb.Areas.OnlineReg.Models
             Parent = HttpContextFactory.Current?.Items["OnlineRegModel"] as OnlineRegModel;
         }
 
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
+        public OnlineRegPersonModel() { }
+        public OnlineRegPersonModel(CMSDataContext db)
+        {
+            CurrentDatabase = db;
+        }
+
+        private OnlineRegModel _parent;
+        public OnlineRegModel Parent
+        {
+            get => _parent ?? HttpContextFactory.Current?.Items["OnlineRegModel"] as OnlineRegModel;
+            set
+            {
+                _parent = value;
+            }
+        }
+
         private CMSDataContext _currentDatabase;
         // IsValidForContinue = false means that there is some reason registrant cannot proceed to the questions page
         public bool IsValidForContinue { get; set; }
@@ -181,16 +198,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public List<string> option { get; set; }
         public List<string> Checkbox { get; set; }
         public List<Dictionary<string, int?>> MenuItem { get; set; }
-
-        [Obsolete(Errors.ModelBindingConstructorError, true)]
-        public OnlineRegPersonModel() { }
-        public OnlineRegPersonModel(CMSDataContext db)
-        {
-            CurrentDatabase = db;
-        }
-
-        public OnlineRegModel Parent;
-
+        
         public int Index { get; set; }
 
         public bool LastItem()
