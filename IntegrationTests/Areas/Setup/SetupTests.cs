@@ -30,8 +30,8 @@ namespace IntegrationTests.Areas.Manage
                 condition: () => Find(id: "RoleName.NEW") != null);
             var newRole = Find(id: "RoleName.NEW");
             ScrollTo(newRole);
-            newRole.Click();
-            WaitForElement(".editable-input input[type=text]");
+            RepeatUntil(() => newRole.Click(),
+                condition: () => Find(css: ".editable-input input[type=text]") != null);
             Find(css: ".editable-input input[type=text]").Clear();
             Find(css: ".editable-input input[type=text]").SendKeys(roleName);
             Find(css: ".editable-buttons button[type=submit]").Click();
