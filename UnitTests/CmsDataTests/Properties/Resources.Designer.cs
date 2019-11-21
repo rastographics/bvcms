@@ -62,21 +62,61 @@ namespace CmsDataTests.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to print (str([
-        ///    model.docusign.Document() is None,
-        ///    model.docusign.Signer() is None,
-        ///    model.docusign.SignHere() is None,
-        ///    model.docusign.Recipients() is None,
-        ///    model.docusign.EnvelopeDefinition() is None,
-        ///    model.docusign.RecipientViewRequest() is None,
-        ///    model.docusign.ListStatusChangesOptions() is None,
         ///    model.docusign.ApiClient() is None,
+        ///    model.docusign.Configuration() is None,
+        ///    model.docusign.Document() is None,
+        ///    model.docusign.EnvelopeDefinition() is None,
         ///    model.docusign.EnvelopesApi() is None,
-        ///    ]))
-        ///.
+        ///    model.docusign.EnvelopesApi(&quot;https://localhost/&quot;) is None,
+        ///    model.docusign.ListStatusChangesOptions() is None,
+        ///    model.docusign.Recipients() is None,
+        ///    model.docusign.RecipientViewRequest() is None,
+        ///    model.docusign.Signer() is None,
+        ///    model.docusign.SignHer [rest of string was truncated]&quot;;.
         /// </summary>
         public static string DocusignApiTest {
             get {
                 return ResourceManager.GetString("DocusignApiTest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;p&gt;10/17/2019 - 11/27/2019&lt;/p&gt;
+        ///    &lt;p&gt;11/13/2019 12:00:00 AM&lt;/p&gt;
+        ///    &lt;p&gt;CC&lt;/p&gt;
+        ///    &lt;p&gt;Test Template Org&lt;/p&gt;
+        ///    &lt;p&gt;1234-567890&lt;/p&gt;
+        ///    &lt;p&gt;99.95&lt;/p&gt;
+        ///    &lt;p&gt;102,938.67&lt;/p&gt;
+        ///    &lt;p&gt;11/14/2019 12:00:00 AM&lt;/p&gt;
+        ///    &lt;p&gt;ACH&lt;/p&gt;
+        ///    &lt;p&gt;Some Other Org&lt;/p&gt;
+        ///    &lt;p&gt;1234-XXXXXX&lt;/p&gt;
+        ///    &lt;p&gt;109.00&lt;/p&gt;
+        ///    &lt;p&gt;360.00&lt;/p&gt;
+        ///.
+        /// </summary>
+        public static string RenderTemplateResults {
+            get {
+                return ResourceManager.GetString("RenderTemplateResults", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;p&gt;{{header.DateFrom}} - &lt;p&gt;{{header.DateTo}}&lt;/p&gt;
+        ///{{#each results}}
+        ///    &lt;p&gt;{{trans_date}}&lt;/p&gt;
+        ///    &lt;p&gt;{{Payment_Type}}&lt;/p&gt;
+        ///    &lt;p&gt;{{OrganizationName}}&lt;/p&gt;
+        ///    &lt;p&gt;{{account_code}}&lt;/p&gt;
+        ///    &lt;p&gt;{{Fmt Amount &quot;N2&quot;}}&lt;/p&gt;
+        ///    &lt;p&gt;{{Fmt total_amt &quot;N2&quot;}}&lt;/p&gt;
+        ///{{/each}}
+        ///.
+        /// </summary>
+        public static string RenderTemplateTest {
+            get {
+                return ResourceManager.GetString("RenderTemplateTest", resourceCulture);
             }
         }
     }

@@ -8,15 +8,29 @@
 using CmsData;
 using CmsWeb.Areas.Search.Models;
 using CmsWeb.Code;
+using CmsWeb.Constants;
 using CmsWeb.Models;
 using Dapper;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace CmsWeb.Areas.Reports.Models
 {
-    public class EnrollmentControlModel
-    {  
+    public class EnrollmentControlModel : IDbBinder
+    {
+        private CMSDataContext _currentDatabase;
+        public CMSDataContext CurrentDatabase
+        {
+            get => _currentDatabase ?? DbUtil.Db;
+            set { _currentDatabase = value; }
+        }
+
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
+        public EnrollmentControlModel() { }
+
+        public EnrollmentControlModel(CMSDataContext db) { CurrentDatabase = db; }
+
         public class MemberInfo
         {
             public int Id { get; set; }
@@ -25,9 +39,9 @@ namespace CmsWeb.Areas.Reports.Models
             public string Location { get; set; }
             public string MemberType { get; set; }
         }
-        public EnrollmentControlModel() { }        
+
         public static IEnumerable<MemberInfo> List(OrgSearchModel model, string na = "", bool usecurrenttag = false)
-        {            
+        {
             var orgs = model.FetchOrgs();
             var q = from m in model.CurrentDatabase.OrganizationMembers
                     join o in orgs on m.OrganizationId equals o.OrganizationId

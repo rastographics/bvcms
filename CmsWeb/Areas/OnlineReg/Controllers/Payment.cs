@@ -22,7 +22,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [Route("~/OnlineReg/ProcessExternalPayment/{reference}")]
         public ActionResult ProcessExternalPayment(string reference)
         {
-            PaymentForm pf = new PaymentForm()
+            PaymentForm pf = new PaymentForm(CurrentDatabase)
             {
                 extTransactionId = 0
             };
@@ -379,7 +379,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 #if DEBUG
             ti.Testing = true;
 #endif
-            OnlineRegModel.ConfirmDuePaidTransaction(ti, transactionId, sendmail: true);
+            OnlineRegModel.ConfirmDuePaidTransaction(ti, transactionId, sendmail: true, db: CurrentDatabase);
             ViewBag.amtdue = PaymentForm.AmountDueTrans(CurrentDatabase, ti).ToString("C");
             SetHeaders(ti.OrgId ?? 0);
             DbUtil.LogActivity("OnlineReg PayDueConfirm", ti.OrgId, ti.LoginPeopleId ?? ti.FirstTransactionPeopleId());
@@ -409,7 +409,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 #if DEBUG
             ti.Testing = true;
 #endif
-            OnlineRegModel.ConfirmDuePaidTransaction(ti, transactionId, sendmail: true);
+            OnlineRegModel.ConfirmDuePaidTransaction(ti, transactionId, sendmail: true, db: CurrentDatabase);
             ViewBag.amtdue = PaymentForm.AmountDueTrans(CurrentDatabase, ti).ToString("C");
             SetHeaders(ti.OrgId ?? 0);
             DbUtil.LogActivity("OnlineReg PayDueConfirm", ti.OrgId, ti.LoginPeopleId ?? ti.FirstTransactionPeopleId());

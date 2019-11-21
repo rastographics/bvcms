@@ -10,8 +10,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 {
     [Serializable]
     public partial class OnlineRegModel : IXmlSerializable
-    {
-        CMSDataContext CurrentDatabase { get; set; }
+    {        
         public string Campus { get; set; }
         public string DefaultFunds { get; set; }
         public bool? testing { get; set; }

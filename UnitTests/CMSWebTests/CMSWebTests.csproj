@@ -121,9 +121,11 @@
     <Compile Include="Areas\Finance\Models\PostBundleModelTests.cs" />
     <Compile Include="Areas\Manage\Models\Involvement\InvolvementTabModelTests.cs" />
     <Compile Include="Areas\Manage\Models\AccountModelTests.cs" />
+    <Compile Include="Areas\OnlineReg\Models\OnlineRegModelTest.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineRegPerson\HelperTests.cs" />
     <Compile Include="Areas\Org\Models\TestOrgGroupsModel.cs" />
     <Compile Include="Areas\Public\Controllers\CheckInAPIControllerTests.cs" />
+    <Compile Include="Areas\Public\Controllers\APIPersonControllerTests.cs" />
     <Compile Include="Areas\Public\Controllers\MobileAPIControllerTests.cs" />
     <Compile Include="Areas\Public\Controllers\MobileAPIv2ControllerTests.cs" />
     <Compile Include="Areas\Manage\Models\VolunteerCommitmentsModelTest.cs" />
@@ -132,6 +134,7 @@
     <Compile Include="Areas\Public\Models\SmallGroupFinderModelTests.cs" />
     <Compile Include="Areas\Reports\Models\Reports\Export\ExportInvolvementsTests.cs" />
     <Compile Include="Areas\Search\Controllers\QueryControllerTests.cs" />
+    <Compile Include="Areas\Search\Models\OrgSearchModelTests.cs" />
     <Compile Include="Areas\Setup\Controllers\DivisionControllerTests.cs" />
     <Compile Include="Code\PledgesHelperTests.cs" />
     <Compile Include="Models\ExportPeopleTest.cs" />
