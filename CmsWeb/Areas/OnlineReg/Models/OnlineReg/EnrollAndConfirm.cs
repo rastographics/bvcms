@@ -492,7 +492,7 @@ Total Fee paid for this registration session: {ts?.TotPaid:C}<br/>
                 transactionPeople.Add(tp);
             }
 
-            if (SupportMissionTrip && GoerId == _list[0].PeopleId)
+            if (SupportMissionTrip && GoerId == List[0].PeopleId)
             {
                 // reload transaction because it is not in this context
                 var om = CurrentDatabase.OrganizationMembers.SingleOrDefault(mm => mm.PeopleId == GoerId && mm.OrganizationId == Orgid);

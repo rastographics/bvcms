@@ -241,13 +241,12 @@ Thank you.
             HistoryAdd("ConfirmTransaction");
             UpdateDatum(completed: true);
             var pf = PaymentForm.CreatePaymentForm(this);
-            _transaction = pf.CreateTransaction(CurrentDatabase);
+            _transaction = pf.CreateTransaction();
             TranId = _transaction.Id;
         }
 
-        public static void ConfirmDuePaidTransaction(Transaction ti, string transactionId, bool sendmail)
-        {
-            var db = DbUtil.Db;
+        public static void ConfirmDuePaidTransaction(Transaction ti, string transactionId, bool sendmail, CMSDataContext db)
+        {            
             var org = db.LoadOrganizationById(ti.OrgId);
             ti.TransactionId = transactionId;
             if (ti.Testing == true && !ti.TransactionId.Contains("(testing)"))

@@ -2,23 +2,56 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Web;
 using System.Xml.Serialization;
 using CmsWeb.Controllers;
 using UtilityExtensions;
 using CmsData.Codes;
 using System.Linq;
-using CmsWeb.Models;
 using CmsData;
+using CmsWeb.Constants;
+using CmsWeb.Models;
 using Newtonsoft.Json;
 
 namespace CmsWeb.Areas.OnlineReg.Models
 {
-    [Serializable]
     public partial class OnlineRegPersonModel : IXmlSerializable, IDbBinder
     {
-        [XmlIgnore, JsonIgnore]
-        public CMSDataContext CurrentDatabase { get => _currentDatabase ?? DbUtil.Db; set => _currentDatabase = value; }
+        [XmlIgnore, JsonIgnore, System.Web.Script.Serialization.ScriptIgnore]
+        public CMSDataContext CurrentDatabase
+        {
+            get => _currentDatabase ?? DbUtil.Db;
+            set
+            {
+                _currentDatabase = value;
+                Init();
+            }
+        }
+
+        private void Init()
+        {
+            YesNoQuestion = new Dictionary<string, bool?>();
+            OrganizationDocument = new Dictionary<string, bool?>();
+            FundItem = new Dictionary<int, decimal?>();
+            Parent = HttpContextFactory.Current?.Items["OnlineRegModel"] as OnlineRegModel;
+        }
+
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
+        public OnlineRegPersonModel() { }
+        public OnlineRegPersonModel(CMSDataContext db)
+        {
+            CurrentDatabase = db;
+        }
+
+        private OnlineRegModel _parent;
+        public OnlineRegModel Parent
+        {
+            get => _parent ?? HttpContextFactory.Current?.Items["OnlineRegModel"] as OnlineRegModel;
+            set
+            {
+                _parent = value;
+            }
+        }
+
         private CMSDataContext _currentDatabase;
         // IsValidForContinue = false means that there is some reason registrant cannot proceed to the questions page
         public bool IsValidForContinue { get; set; }
@@ -32,7 +65,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public bool? Found { get; set; }
         public bool IsNew { get; set; }
         public bool QuestionsOK { get; set; }
-        public CmsData.PaymentProcessTypes ProcessType { get; set; }
+        public PaymentProcessTypes ProcessType { get; set; }
         public int? pledgeFundId { get; set; }
 
         private bool? loggedin;
@@ -165,17 +198,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public List<string> option { get; set; }
         public List<string> Checkbox { get; set; }
         public List<Dictionary<string, int?>> MenuItem { get; set; }
-
-        public OnlineRegPersonModel()
-        {
-            YesNoQuestion = new Dictionary<string, bool?>();
-            OrganizationDocument = new Dictionary<string, bool?>();
-            FundItem = new Dictionary<int, decimal?>();
-            Parent = HttpContextFactory.Current.Items["OnlineRegModel"] as OnlineRegModel;
-        }
-
-        public OnlineRegModel Parent;
-
+        
         public int Index { get; set; }
 
         public bool LastItem()

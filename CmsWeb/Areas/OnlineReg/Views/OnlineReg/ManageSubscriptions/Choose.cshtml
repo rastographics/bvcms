@@ -16,7 +16,7 @@
   @Html.Hidden("pid", Model.pid)
   @Html.Hidden("masterorgid", Model.masterorgid)
   <table id="subs" class="table" style="width: auto; display:table">
-    @foreach (var o in Model.OrderSubs(Model.FetchSubs()))
+    @foreach (var o in Model.OrderSubs(Model.FetchSubs(Model.CurrentDatabase)))
     {
       <tr>
         <td class="top" align="right">
