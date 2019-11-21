@@ -2069,5 +2069,12 @@ This search uses multiple steps which cannot be duplicated in a single query.
                 Setting("DebitCreditLabel-Giving", defaultLabel) :
                 Setting("DebitCreditLabel-Registrations", defaultLabel);
         }
+
+        [Function(Name = "dbo.UpdateAllSpouseId")]
+        public int UpdateAllSpouseId()
+        {
+            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())));
+            return ((int)(result.ReturnValue));
+        }
     }
 }

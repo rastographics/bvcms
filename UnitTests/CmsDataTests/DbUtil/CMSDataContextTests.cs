@@ -40,24 +40,32 @@ namespace CmsDataTests
             int familyId;
             using (var db = CMSDataContext.Create(DatabaseFixture.Host))
             {
-                var f = new Family
-                {
-                    CreatedDate = DateTime.Now
-                };
-                db.Families.InsertOnSubmit(f);
-                db.SubmitChanges();
-                familyId = f.FamilyId;
-                var head = MockPeople.CreateSavePerson(db, f);
-                head.MaritalStatusId = 20;
-                head.GenderId = 1; 
-                db.SubmitChanges();
-                var spouse = MockPeople.CreateSavePerson(db, f);
-                spouse.MaritalStatusId = 20;
-                spouse.GenderId = 2;
-                db.SubmitChanges();                
+                familyId = MockPeople.CreateSaveCouple(db);
             }
             using (var db = CMSDataContext.Create(DatabaseFixture.Host))
             {
+                var family = db.Families.FirstOrDefault(p => p.FamilyId == familyId);
+                family.HeadOfHouseholdSpouseId.ShouldNotBeNull();
+            }
+        }
+
+        [Fact]
+        public void Should_ShouldUpdateAllSpouseId()
+        {
+            int familyId;
+            using (var db = CMSDataContext.Create(DatabaseFixture.Host))
+            {
+                familyId = MockPeople.CreateSaveCouple(db);
+            }
+            using (var db = CMSDataContext.Create(DatabaseFixture.Host))
+            {
+                var family = db.Families.FirstOrDefault(p => p.FamilyId == familyId);
+                family.HeadOfHouseholdSpouseId = null;
+                db.SubmitChanges();
+            }
+            using (var db = CMSDataContext.Create(DatabaseFixture.Host))
+            {
+                db.UpdateAllSpouseId();
                 var family = db.Families.FirstOrDefault(p => p.FamilyId == familyId);
                 family.HeadOfHouseholdSpouseId.ShouldNotBeNull();
             }
