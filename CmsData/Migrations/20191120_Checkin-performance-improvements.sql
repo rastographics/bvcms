@@ -368,16 +368,21 @@ BEGIN
     AND MeetingDate <= @maxfuturemeeting;
     
     SELECT @yearago = DATEADD(YEAR, -1, @lastmeet);
-		
-	WITH InlineView as (
-		SELECT	PeopleId,
-				CONVERT(INT, EffAttendFlag) Attended, 
+	
+	WITH om as (
+		SELECT o.PeopleId, o.OrganizationId 
+		FROM dbo.OrganizationMembers o
+		WHERE o.OrganizationId = @orgid
+	),
+	v as (
+		SELECT	a.PeopleId,
+				CONVERT(INT, a.EffAttendFlag) Attended, 
 				DATEPART(yy, m.MeetingDate) [Year], 
 				DATEPART(ww, m.MeetingDate) [Week], 
 				s.ScheduleId,
-				AttendanceTypeId,
+				a.AttendanceTypeId,
 				CASE WHEN ISNULL(m.AttendCreditId, 1) = 1 
-					THEN AttendId + 20 -- make every meeting count, 20 gets it out of the way of AttendCredit codes
+					THEN a.AttendId + 20 -- make every meeting count, 20 gets it out of the way of AttendCredit codes
 					ELSE m.AttendCreditId
 				END AttendCredit
 		FROM dbo.Attend a
@@ -390,15 +395,15 @@ BEGIN
 			AND m.MeetingDate <= @maxfuturemeeting
 	),
 	t as (	
-	SELECT 
-		PeopleId,
-		CONVERT(BIT, MAX(Attended)) Attended,
-		[Year],
-		[Week],
-		AttendCredit,
-		MAX(AttendanceTypeId) AS AttendanceTypeId
-	FROM InlineView
-	GROUP BY PeopleId, [Year], [Week], AttendCredit
+		SELECT 
+			PeopleId,
+			CONVERT(BIT, MAX(Attended)) Attended,
+			[Year],
+			[Week],
+			AttendCredit,
+			MAX(AttendanceTypeId) AS AttendanceTypeId
+		FROM v
+		GROUP BY PeopleId, [Year], [Week], AttendCredit
 	),
 	t2 as (
 	SELECT PeopleId
@@ -409,19 +414,19 @@ BEGIN
 			AND AttendanceFlag = 1) LastAttended
 		, CONVERT(FLOAT, ISNULL((SELECT COUNT(PeopleId)
 			FROM (
-					SELECT TOP 52 PeopleId, Attended
+					SELECT TOP 52 t.PeopleId, t.Attended
 					FROM t 
-					WHERE PeopleId = om.PeopleId
-					ORDER BY [Year] DESC, [Week] DESC
+					WHERE t.PeopleId = om.PeopleId
+					ORDER BY t.[Year] DESC, t.[Week] DESC
 				  ) tt 
 		    WHERE Attended = 1),0))
 			/
 			NULLIF((SELECT COUNT(PeopleId) 
 			FROM (
-					SELECT TOP 52 PeopleId, Attended 
+					SELECT TOP 52 t.PeopleId, t.Attended
 					FROM t 
-					WHERE PeopleId = om.PeopleId
-					ORDER BY [Year] DESC, [Week] DESC
+					WHERE t.PeopleId = om.PeopleId
+					ORDER BY t.[Year] DESC, t.[Week] DESC
 				  ) tt 
 			WHERE Attended IS NOT NULL),0) * 100.0
 		 AttPct
@@ -431,8 +436,8 @@ BEGIN
 				CASE AttendanceTypeId
 				WHEN 20 THEN 'V'
 				WHEN 70 THEN 'I'
-				WHEN 90 THEN 'G'
 				WHEN 80 THEN 'O'
+				WHEN 90 THEN 'G'
 				WHEN 110 THEN '*'
 				ELSE '*'
 				END
@@ -443,13 +448,13 @@ BEGIN
 				  WHERE t.PeopleId = om.PeopleId
 				  FOR XML PATH(''))
 		 ) AttStr 	 
-		FROM dbo.OrganizationMembers om WHERE OrganizationId = @orgid
+		FROM om
 	)
 	UPDATE dbo.OrganizationMembers
 	SET LastAttended = t2.LastAttended,
 		AttendStr = t2.AttStr,
 		AttendPct = t2.AttPct
-	FROM dbo.OrganizationMembers m
+	FROM om m
 	JOIN t2 ON t2.PeopleId = m.PeopleId
 	WHERE m.OrganizationId = @orgid;
 
