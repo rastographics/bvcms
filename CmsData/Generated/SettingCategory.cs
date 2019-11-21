@@ -9,7 +9,7 @@ namespace CmsData
     [Table(Name="dbo.SettingCategory")]
 	public partial class SettingCategory : INotifyPropertyChanging, INotifyPropertyChanged
 	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs(String.Empty);
 		
 	    #region Private Fields
 		

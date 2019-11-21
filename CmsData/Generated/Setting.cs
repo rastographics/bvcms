@@ -5,18 +5,18 @@ using System.Data.Linq.Mapping;
 
 namespace CmsData
 {
-    [Table(Name="dbo.Setting")]
-	public partial class Setting : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-	    #region Private Fields
-		
-		private string _Id;
-		
-		private string _SettingX;
-		
-		private bool? _System;
+    [Table(Name = "dbo.Setting")]
+    public partial class Setting : INotifyPropertyChanging, INotifyPropertyChanged
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
+
+        #region Private Fields
+
+        private string _Id;
+
+        private string _SettingX;
+
+        private bool? _System;
 		
    		private EntitySet<SettingMetadatum> _SettingMetadatas;
 
@@ -27,21 +27,21 @@ namespace CmsData
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
-		
-		partial void OnIdChanging(string value);
-		partial void OnIdChanged();
-		
-		partial void OnSettingXChanging(string value);
-		partial void OnSettingXChanged();
-		
-		partial void OnSystemChanging(bool? value);
-		partial void OnSystemChanged();
+
+        partial void OnIdChanging(string value);
+        partial void OnIdChanged();
+
+        partial void OnSettingXChanging(string value);
+        partial void OnSettingXChanged();
+
+        partial void OnSystemChanging(bool? value);
+        partial void OnSystemChanged();
 
         #endregion
 
         public Setting()
 		{
-			this._SettingMetadatas = new EntitySet<SettingMetadatum>(new Action< SettingMetadatum>(this.attach_SettingMetadatas), new Action< SettingMetadatum>(this.detach_SettingMetadatas)); 
+			_SettingMetadatas = new EntitySet<SettingMetadatum>(new Action< SettingMetadatum>(attach_SettingMetadatas), new Action< SettingMetadatum>(detach_SettingMetadatas)); 
 			
 			OnCreated();
 		}
@@ -51,17 +51,17 @@ namespace CmsData
 		[Column(Name="Id", UpdateCheck=UpdateCheck.Never, Storage="_Id", DbType="nvarchar(50) NOT NULL", IsPrimaryKey=true)]
 		public string Id
 		{
-			get { return this._Id; }
+			get { return _Id; }
 
 			set
 			{
-				if (this._Id != value)
+				if (_Id != value)
 				{
-                    this.OnIdChanging(value);
-					this.SendPropertyChanging();
-					this._Id = value;
-					this.SendPropertyChanged("Id");
-					this.OnIdChanged();
+                    OnIdChanging(value);
+					SendPropertyChanging();
+					_Id = value;
+					SendPropertyChanged("Id");
+					OnIdChanged();
 				}
 			}
 		}
@@ -69,17 +69,17 @@ namespace CmsData
 		[Column(Name="Setting", UpdateCheck=UpdateCheck.Never, Storage="_SettingX", DbType="nvarchar")]
 		public string SettingX
 		{
-			get { return this._SettingX; }
+			get { return _SettingX; }
 
 			set
 			{
-				if (this._SettingX != value)
+				if (_SettingX != value)
 				{
-                    this.OnSettingXChanging(value);
-					this.SendPropertyChanging();
-					this._SettingX = value;
-					this.SendPropertyChanged("SettingX");
-					this.OnSettingXChanged();
+                    OnSettingXChanging(value);
+					SendPropertyChanging();
+					_SettingX = value;
+					SendPropertyChanged("SettingX");
+					OnSettingXChanged();
 				}
 			}
 		}
@@ -87,17 +87,17 @@ namespace CmsData
 		[Column(Name="System", UpdateCheck=UpdateCheck.Never, Storage="_System", DbType="bit")]
 		public bool? System
 		{
-			get { return this._System; }
+			get { return _System; }
 
 			set
 			{
-				if (this._System != value)
+				if (_System != value)
 				{
-                    this.OnSystemChanging(value);
-					this.SendPropertyChanging();
-					this._System = value;
-					this.SendPropertyChanged("System");
-					this.OnSystemChanged();
+                    OnSystemChanging(value);
+					SendPropertyChanging();
+					_System = value;
+					SendPropertyChanged("System");
+					OnSystemChanged();
 				}
 			}
 		}
@@ -109,9 +109,9 @@ namespace CmsData
    		[Association(Name="FK_SettingMetadata_Setting", Storage="_SettingMetadatas", OtherKey="SettingId")]
    		public EntitySet<SettingMetadatum> SettingMetadatas
    		{
-   		    get { return this._SettingMetadatas; }
+   		    get { return _SettingMetadatas; }
 
-			set	{ this._SettingMetadatas.Assign(value); }
+			set	{ _SettingMetadatas.Assign(value); }
    		}
 		
 	    #endregion
@@ -124,26 +124,26 @@ namespace CmsData
 
 		protected virtual void SendPropertyChanging()
 		{
-			if ((this.PropertyChanging != null))
-				this.PropertyChanging(this, emptyChangingEventArgs);
+			if ((PropertyChanging != null))
+				PropertyChanging(this, emptyChangingEventArgs);
 		}
 
 		public event PropertyChangedEventHandler PropertyChanged;
 		protected virtual void SendPropertyChanged(String propertyName)
 		{
-			if ((this.PropertyChanged != null))
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			if ((PropertyChanged != null))
+				PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 		}
    		
 		private void attach_SettingMetadatas(SettingMetadatum entity)
 		{
-			this.SendPropertyChanging();
+			SendPropertyChanging();
 			entity.Setting = this;
 		}
 
 		private void detach_SettingMetadatas(SettingMetadatum entity)
 		{
-			this.SendPropertyChanging();
+			SendPropertyChanging();
 			entity.Setting = null;
 		}
 	}

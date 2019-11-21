@@ -20,7 +20,7 @@ namespace SharedTestFixtures
         public static IDictionary Items { get; set; }
         private const string Url = "https://localhost.tpsdb.com";
 
-        public MockHttpContext()
+        public MockHttpContext(bool isAuthenticated = true)
         {
             Items = new Dictionary<string, object>();
             MockRequest = new Mock<HttpRequestBase>();
@@ -30,20 +30,24 @@ namespace SharedTestFixtures
             var user = new Mock<IPrincipal>();
             var identity = new Mock<IIdentity>();
             var responseBody = new StringBuilder();
+            var cachePolicyBase = new Mock<HttpCachePolicyBase>();
             Headers = new NameValueCollection();
             ServerVariables = new NameValueCollection {
                 { "HTTP_X_FORWARDED_FOR", null },
                 { "REMOTE_ADDR", "::1" }
             };
+            var cookies = new HttpCookieCollection();
 
             user.Setup(usr => usr.Identity).Returns(identity.Object);
-            identity.SetupGet(ident => ident.IsAuthenticated).Returns(true);
+            identity.SetupGet(ident => ident.IsAuthenticated).Returns(isAuthenticated);
             MockRequest.SetupGet(r => r.Url).Returns(new Uri(Url));
             MockRequest.SetupGet(r => r.QueryString).Returns(new NameValueCollection { });
             MockRequest.SetupGet(r => r.ServerVariables).Returns(ServerVariables);
             MockRequest.SetupGet(r => r.Headers).Returns(Headers);
+            MockRequest.SetupGet(r => r.Cookies).Returns(cookies);
 
             MockResponse.SetupGet(ctx => ctx.Output).Returns(new StringWriter(responseBody));
+            MockResponse.SetupGet(ctx => ctx.Cache).Returns(cachePolicyBase.Object);
 
             SetupGet(ctx => ctx.Request).Returns(MockRequest.Object);
             SetupGet(ctx => ctx.Response).Returns(MockResponse.Object);
@@ -51,6 +55,7 @@ namespace SharedTestFixtures
             SetupGet(ctx => ctx.Server).Returns(server.Object);
             SetupGet(ctx => ctx.User).Returns(user.Object);
             SetupGet(ctx => ctx.Items).Returns(Items);
+            SetupGet(ctx => ctx.Cache).Returns(HttpRuntime.Cache);
         }
     }
 }
