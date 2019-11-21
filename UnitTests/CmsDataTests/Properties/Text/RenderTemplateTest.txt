@@ -1,0 +1,9 @@
+<p>{{header.DateFrom}} - {{header.DateTo}}</p>
+{{#each results}}
+    <p>{{trans_date}}</p>
+    <p>{{Payment_Type}}</p>
+    <p>{{OrganizationName}}</p>
+    <p>{{account_code}}</p>
+    <p>{{Fmt Amount "N2"}}</p>
+    <p>{{Fmt total_amt "N2"}}</p>
+{{/each}}

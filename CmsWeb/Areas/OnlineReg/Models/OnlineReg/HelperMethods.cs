@@ -98,9 +98,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             get
             {
-                if (_list.Count > 0)
+                if (List.Count > 0)
                 {
-                    return _list[_list.Count - 1];
+                    return List[List.Count - 1];
                 }
 
                 return null;

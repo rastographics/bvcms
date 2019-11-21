@@ -21,7 +21,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                           where p.DeceasedDate == null
                           select new { p.PeopleId, p.Name2, p.Age, p.Name }).ToList();
             var q = from m in family
-                    where _list.All(vv => vv.PeopleId != m.PeopleId)
+                    where List.All(vv => vv.PeopleId != m.PeopleId)
                     orderby m.PeopleId == user.Family.HeadOfHouseholdId ? 1 :
                             m.PeopleId == user.Family.HeadOfHouseholdSpouseId ? 2 :
                             3, m.Age descending, m.Name2
