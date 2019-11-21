@@ -1,104 +1,80 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="City")]
-	public partial class City
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private string _CityX;
-		
-		private string _State;
-		
-		private string _Zip;
-		
-		private int? _Count;
-		
-		
-		public City()
-		{
-		}
+    [Table(Name = "City")]
+    public partial class City
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="City", Storage="_CityX", DbType="nvarchar(30)")]
-		public string CityX
-		{
-			get
-			{
-				return this._CityX;
-			}
+        private string _CityX;
 
-			set
-			{
-				if (this._CityX != value)
-					this._CityX = value;
-			}
+        private string _State;
 
-		}
+        private string _Zip;
 
-		
-		[Column(Name="State", Storage="_State", DbType="nvarchar(20)")]
-		public string State
-		{
-			get
-			{
-				return this._State;
-			}
+        private int? _Count;
 
-			set
-			{
-				if (this._State != value)
-					this._State = value;
-			}
+        public City()
+        {
+        }
 
-		}
+        [Column(Name = "City", Storage = "_CityX", DbType = "nvarchar(30)")]
+        public string CityX
+        {
+            get => _CityX;
 
-		
-		[Column(Name="Zip", Storage="_Zip", DbType="nvarchar(15)")]
-		public string Zip
-		{
-			get
-			{
-				return this._Zip;
-			}
+            set
+            {
+                if (_CityX != value)
+                {
+                    _CityX = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._Zip != value)
-					this._Zip = value;
-			}
+        [Column(Name = "State", Storage = "_State", DbType = "nvarchar(20)")]
+        public string State
+        {
+            get => _State;
 
-		}
+            set
+            {
+                if (_State != value)
+                {
+                    _State = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="count", Storage="_Count", DbType="int")]
-		public int? Count
-		{
-			get
-			{
-				return this._Count;
-			}
+        [Column(Name = "Zip", Storage = "_Zip", DbType = "nvarchar(15)")]
+        public string Zip
+        {
+            get => _Zip;
 
-			set
-			{
-				if (this._Count != value)
-					this._Count = value;
-			}
+            set
+            {
+                if (_Zip != value)
+                {
+                    _Zip = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "count", Storage = "_Count", DbType = "int")]
+        public int? Count
+        {
+            get => _Count;
 
-		
+            set
+            {
+                if (_Count != value)
+                {
+                    _Count = value;
+                }
+            }
+        }
     }
-
 }

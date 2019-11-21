@@ -17,9 +17,9 @@ namespace CMSWebTests
         public CMSDataContext CurrentDatabase { get; private set; }
         public CMSImageDataContext CurrentImageDatabase { get; private set; }
 
-        public FakeRequestManager()
+        public FakeRequestManager(bool isAuthenticated)
         {
-            CurrentHttpContext = ContextTestUtils.CreateMockHttpContext().Object;
+            CurrentHttpContext = ContextTestUtils.CreateMockHttpContext(isAuthenticated).Object;
             CurrentDatabase = CMSDataContext.Create(DatabaseFixture.Host);
             CurrentImageDatabase = CMSImageDataContext.Create(DatabaseFixture.Host);
             CurrentUser = CurrentHttpContext.User;
@@ -31,9 +31,9 @@ namespace CMSWebTests
             return Elmah.ErrorLog.GetDefault(CurrentHttpContext?.ApplicationInstance?.Context);
         }
 
-        public static IRequestManager Create()
+        public static IRequestManager Create(bool isAuthenticated = true)
         {
-            return new FakeRequestManager();
+            return new FakeRequestManager(isAuthenticated);
         }
 
         #region IDisposable Support

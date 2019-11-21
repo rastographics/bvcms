@@ -1,199 +1,160 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="SenderGifts")]
-	public partial class SenderGift
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private int _OrgId;
-		
-		private string _Trip;
-		
-		private int _SenderId;
-		
-		private string _Sender;
-		
-		private int? _GoerId;
-		
-		private string _Goer;
-		
-		private DateTime? _DateGiven;
-		
-		private decimal? _Amt;
-		
-		private string _NoticeSent;
-		
-		
-		public SenderGift()
-		{
-		}
+    [Table(Name = "SenderGifts")]
+    public partial class SenderGift
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="OrgId", Storage="_OrgId", DbType="int NOT NULL")]
-		public int OrgId
-		{
-			get
-			{
-				return this._OrgId;
-			}
+        private int _OrgId;
 
-			set
-			{
-				if (this._OrgId != value)
-					this._OrgId = value;
-			}
+        private string _Trip;
 
-		}
+        private int _SenderId;
 
-		
-		[Column(Name="Trip", Storage="_Trip", DbType="nvarchar(100) NOT NULL")]
-		public string Trip
-		{
-			get
-			{
-				return this._Trip;
-			}
+        private string _Sender;
 
-			set
-			{
-				if (this._Trip != value)
-					this._Trip = value;
-			}
+        private int? _GoerId;
 
-		}
+        private string _Goer;
 
-		
-		[Column(Name="SenderId", Storage="_SenderId", DbType="int NOT NULL")]
-		public int SenderId
-		{
-			get
-			{
-				return this._SenderId;
-			}
+        private DateTime? _DateGiven;
 
-			set
-			{
-				if (this._SenderId != value)
-					this._SenderId = value;
-			}
+        private decimal? _Amt;
 
-		}
+        private string _NoticeSent;
 
-		
-		[Column(Name="Sender", Storage="_Sender", DbType="nvarchar(139)")]
-		public string Sender
-		{
-			get
-			{
-				return this._Sender;
-			}
+        public SenderGift()
+        {
+        }
 
-			set
-			{
-				if (this._Sender != value)
-					this._Sender = value;
-			}
+        [Column(Name = "OrgId", Storage = "_OrgId", DbType = "int NOT NULL")]
+        public int OrgId
+        {
+            get => _OrgId;
 
-		}
+            set
+            {
+                if (_OrgId != value)
+                {
+                    _OrgId = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="GoerId", Storage="_GoerId", DbType="int")]
-		public int? GoerId
-		{
-			get
-			{
-				return this._GoerId;
-			}
+        [Column(Name = "Trip", Storage = "_Trip", DbType = "nvarchar(100) NOT NULL")]
+        public string Trip
+        {
+            get => _Trip;
 
-			set
-			{
-				if (this._GoerId != value)
-					this._GoerId = value;
-			}
+            set
+            {
+                if (_Trip != value)
+                {
+                    _Trip = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "SenderId", Storage = "_SenderId", DbType = "int NOT NULL")]
+        public int SenderId
+        {
+            get => _SenderId;
 
-		
-		[Column(Name="Goer", Storage="_Goer", DbType="nvarchar(139)")]
-		public string Goer
-		{
-			get
-			{
-				return this._Goer;
-			}
+            set
+            {
+                if (_SenderId != value)
+                {
+                    _SenderId = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._Goer != value)
-					this._Goer = value;
-			}
+        [Column(Name = "Sender", Storage = "_Sender", DbType = "nvarchar(139)")]
+        public string Sender
+        {
+            get => _Sender;
 
-		}
+            set
+            {
+                if (_Sender != value)
+                {
+                    _Sender = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="DateGiven", Storage="_DateGiven", DbType="datetime")]
-		public DateTime? DateGiven
-		{
-			get
-			{
-				return this._DateGiven;
-			}
+        [Column(Name = "GoerId", Storage = "_GoerId", DbType = "int")]
+        public int? GoerId
+        {
+            get => _GoerId;
 
-			set
-			{
-				if (this._DateGiven != value)
-					this._DateGiven = value;
-			}
+            set
+            {
+                if (_GoerId != value)
+                {
+                    _GoerId = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "Goer", Storage = "_Goer", DbType = "nvarchar(139)")]
+        public string Goer
+        {
+            get => _Goer;
 
-		
-		[Column(Name="Amt", Storage="_Amt", DbType="money")]
-		public decimal? Amt
-		{
-			get
-			{
-				return this._Amt;
-			}
+            set
+            {
+                if (_Goer != value)
+                {
+                    _Goer = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._Amt != value)
-					this._Amt = value;
-			}
+        [Column(Name = "DateGiven", Storage = "_DateGiven", DbType = "datetime")]
+        public DateTime? DateGiven
+        {
+            get => _DateGiven;
 
-		}
+            set
+            {
+                if (_DateGiven != value)
+                {
+                    _DateGiven = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="NoticeSent", Storage="_NoticeSent", DbType="varchar(9) NOT NULL")]
-		public string NoticeSent
-		{
-			get
-			{
-				return this._NoticeSent;
-			}
+        [Column(Name = "Amt", Storage = "_Amt", DbType = "money")]
+        public decimal? Amt
+        {
+            get => _Amt;
 
-			set
-			{
-				if (this._NoticeSent != value)
-					this._NoticeSent = value;
-			}
+            set
+            {
+                if (_Amt != value)
+                {
+                    _Amt = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "NoticeSent", Storage = "_NoticeSent", DbType = "varchar(9) NOT NULL")]
+        public string NoticeSent
+        {
+            get => _NoticeSent;
 
-		
+            set
+            {
+                if (_NoticeSent != value)
+                {
+                    _NoticeSent = value;
+                }
+            }
+        }
     }
-
 }
