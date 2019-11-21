@@ -34,13 +34,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
             CurrentDatabase = db;
         }
 
-        private Organization _masterorg;
-        private Person _Person;
-        private string _summary;
-        private Settings setting;
-
-        
-
         public ManageSubsModel(int pid, int id)
         {
             this.pid = pid;
@@ -53,7 +46,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
             masterorgid = id;
             _masterorg = org;
         }
-
+        private Organization _masterorg;
+        private Person _Person;
+        private string _summary;
+        private Settings setting;
         public int pid { get; set; }
         public int masterorgid { get; set; }
 

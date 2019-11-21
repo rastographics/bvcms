@@ -19,7 +19,6 @@ namespace CmsWeb.Areas.Public.ControllersTests
     [Collection(Collections.Database)]
     public class APIPersonControllerTests : ControllerTestBase
     {
-
         [Fact]
         public void PortraitTest()
         {
