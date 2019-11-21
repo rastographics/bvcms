@@ -63,7 +63,7 @@ namespace CmsData
                     {
                         var uname = CmsData.Util2.FetchUsername(db2, p.PreferredName, p.LastName);
                         var pword = Guid.NewGuid().ToString();
-                        user = new User() {PeopleId = p.PeopleId, Password = pword, Username = uname, MustChangePassword = false, IsApproved = true, Name = p.Name};
+                        user = new User() { PeopleId = p.PeopleId, Password = pword, Username = uname, MustChangePassword = false, IsApproved = true, Name = p.Name };
                         db2.SubmitChanges();
                         db2.Users.InsertOnSubmit(user);
                         user.AddRole(db2, role);
@@ -116,7 +116,7 @@ namespace CmsData
                 db2.SubmitChanges();
                 var taskLink = Task.TaskLink(db2, description, t.Id);
                 db2.Email(
-                    db2.Setting("AdminMail",ConfigurationManager.AppSettings["supportemail"]), // from email
+                    db2.Setting("AdminMail", ConfigurationManager.AppSettings["supportemail"]), // from email
                     minister, // to person
                     "TASK: " + description, // subject
                     $@"{taskLink}<br/>{about.Name}<p>{notes}</p>"); // body
@@ -135,6 +135,15 @@ namespace CmsData
                 db.PurgePerson(pid);
                 db.LogActivity($"Python DeletePerson {pid}");
             }
+        }
+
+        public void UpdateAllSpouseId()
+        {
+            if (!HttpContextFactory.Current.User.IsInRole("developer"))
+                db.LogActivity("Python UpdateAllSpouseId denied");
+
+            db.UpdateAllSpouseId();
+            db.LogActivity($"Python UpdateAllSpouseId");
         }
 
         public APIPerson.Person GetPerson(object pid)
@@ -335,7 +344,7 @@ namespace CmsData
 
         public void UpdateElectronicStatement(object query, bool tf)
         {
-            using(var db2 = NewDataContext())
+            using (var db2 = NewDataContext())
             {
                 var list = db2.PeopleQuery2(query);
                 foreach (var p in list)

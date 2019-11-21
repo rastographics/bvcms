@@ -4,6 +4,7 @@ using Xunit;
 using Shouldly;
 using System;
 using System.Linq;
+using System.Globalization;
 
 namespace CmsDataTests
 {
@@ -40,27 +41,57 @@ namespace CmsDataTests
             int familyId;
             using (var db = CMSDataContext.Create(DatabaseFixture.Host))
             {
-                var f = new Family
-                {
-                    CreatedDate = DateTime.Now
-                };
-                db.Families.InsertOnSubmit(f);
-                db.SubmitChanges();
-                familyId = f.FamilyId;
-                var head = MockPeople.CreateSavePerson(db, f);
-                head.MaritalStatusId = 20;
-                head.GenderId = 1; 
-                db.SubmitChanges();
-                var spouse = MockPeople.CreateSavePerson(db, f);
-                spouse.MaritalStatusId = 20;
-                spouse.GenderId = 2;
-                db.SubmitChanges();                
+                familyId = MockPeople.CreateSaveCouple(db);
             }
             using (var db = CMSDataContext.Create(DatabaseFixture.Host))
             {
                 var family = db.Families.FirstOrDefault(p => p.FamilyId == familyId);
                 family.HeadOfHouseholdSpouseId.ShouldNotBeNull();
             }
+        }
+
+        [Fact]
+        public void Should_ShouldUpdateAllSpouseId()
+        {
+            int familyId;
+            using (var db = CMSDataContext.Create(DatabaseFixture.Host))
+            {
+                familyId = MockPeople.CreateSaveCouple(db);
+            }
+            using (var db = CMSDataContext.Create(DatabaseFixture.Host))
+            {
+                var family = db.Families.FirstOrDefault(p => p.FamilyId == familyId);
+                family.HeadOfHouseholdSpouseId = null;
+                db.SubmitChanges();
+            }
+            using (var db = CMSDataContext.Create(DatabaseFixture.Host))
+            {
+                db.UpdateAllSpouseId();
+                var family = db.Families.FirstOrDefault(p => p.FamilyId == familyId);
+                family.HeadOfHouseholdSpouseId.ShouldNotBeNull();
+            }
+        }
+
+        [InlineData("PushPayKey","keyXYZ",null,null,null)]
+        [Theory]
+        public void Should_Insert_EV_Only_If_does_not_Exist(string key, string value, string text, int? intvalue, bool? bitvalue)
+        {
+            using (var db = CMSDataContext.Create(DatabaseFixture.Host))
+            {
+                var datevalue = DateTime.Now;
+                var person = db.People.FirstOrDefault();
+                int extraValId = db.AddExtraValueDataIfNotExist(person.PeopleId, key, value, datevalue, text, intvalue, bitvalue);
+                db.SubmitChanges();
+                int attempt2 = db.AddExtraValueDataIfNotExist(person.PeopleId, key, value, datevalue, text, intvalue, bitvalue);
+                attempt2.ShouldBe(0);
+                db.SubmitChanges();
+
+                var extraValue = db.PeopleExtras.SingleOrDefault(p => p.PeopleId == person.PeopleId && p.Field == key && p.Instance == extraValId);
+                extraValue.ShouldNotBe(null);
+
+                db.PeopleExtras.DeleteOnSubmit(extraValue);
+                db.SubmitChanges();
+            }               
         }
     }
 }

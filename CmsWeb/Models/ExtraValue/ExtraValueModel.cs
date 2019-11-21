@@ -5,13 +5,14 @@ using System.Web;
 using CmsData;
 using CmsData.ExtraValue;
 using CmsWeb.Code;
+using CmsWeb.Constants;
 using Dapper;
 using Newtonsoft.Json;
 using UtilityExtensions;
 
 namespace CmsWeb.Models.ExtraValues
 {
-    public class ExtraValueModel
+    public class ExtraValueModel : IDbBinder
     {
         public string Location { get; set; }
         public int Id { get; set; }
@@ -27,20 +28,36 @@ namespace CmsWeb.Models.ExtraValues
         public bool? ValueBit { get; set; }
         public int? ValueInt { get; set; }
 
+        private CMSDataContext _currentDatabase;
+        public CMSDataContext CurrentDatabase
+        {
+            get => _currentDatabase;
+            set
+            {
+                _currentDatabase = value;                
+            }
+        }
+
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
+        public ExtraValueModel() { }
+
+        public ExtraValueModel(CMSDataContext db) : base()
+        {
+            CurrentDatabase = db;
+        }
         public Guid CurrentPersonQueryId()
         {
-            var qb = DbUtil.Db.QueryIsCurrentPerson();
+            var qb = CurrentDatabase.QueryIsCurrentPerson();
             return qb.QueryId;
         }
 
         public int? CurrentPersonMainFellowshipId()
         {
-            var qb = (from p in DbUtil.Db.People
+            var qb = (from p in CurrentDatabase.People
                       where p.PeopleId == Id
                       select p.BibleFellowshipClassId).SingleOrDefault();
             return qb;
-        }
-        public ExtraValueModel() { }
+        }        
         public ExtraValueModel(int id, string table)
             : this(id, table, null)
         {

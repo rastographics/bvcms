@@ -346,7 +346,7 @@ namespace PushPay
             // add extra value
             if (payer.Key.HasValue())
             {
-                db.AddExtraValueData(PersonId, PushPayKey, payer.Key, null, null, null, null);
+                db.AddExtraValueDataIfNotExist(PersonId, PushPayKey, payer.Key, null, null, null, null);
             }
             return PersonId;
         }
