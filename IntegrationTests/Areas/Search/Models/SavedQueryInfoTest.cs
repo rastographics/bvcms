@@ -14,7 +14,7 @@ namespace IntegrationTests.Areas.Search.Models
     [Collection(Collections.Webapp)]
     public class SavedQueryInfoTest : AccountTestBase
     {
-        [Fact]
+        [Fact, FeatureTest]
         public void Should_Update_Model()
         {
             using (var db = CMSDataContext.Create(Util.Host))

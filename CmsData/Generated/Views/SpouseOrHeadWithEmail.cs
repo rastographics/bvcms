@@ -1,47 +1,32 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="SpouseOrHeadWithEmail")]
-	public partial class SpouseOrHeadWithEmail
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private int? _PeopleId;
-		
-		
-		public SpouseOrHeadWithEmail()
-		{
-		}
+    [Table(Name = "SpouseOrHeadWithEmail")]
+    public partial class SpouseOrHeadWithEmail
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="PeopleId", Storage="_PeopleId", DbType="int")]
-		public int? PeopleId
-		{
-			get
-			{
-				return this._PeopleId;
-			}
+        private int? _PeopleId;
 
-			set
-			{
-				if (this._PeopleId != value)
-					this._PeopleId = value;
-			}
+        public SpouseOrHeadWithEmail()
+        {
+        }
 
-		}
+        [Column(Name = "PeopleId", Storage = "_PeopleId", DbType = "int")]
+        public int? PeopleId
+        {
+            get => _PeopleId;
 
-		
+            set
+            {
+                if (_PeopleId != value)
+                {
+                    _PeopleId = value;
+                }
+            }
+        }
     }
-
 }

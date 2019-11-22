@@ -1,223 +1,203 @@
-using System; 
+using CmsData.Infrastructure;
+using System;
+using System.ComponentModel;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
-using System.ComponentModel;
-using CmsData.Infrastructure;
 
 namespace CmsData
 {
-	[Table(Name="dbo.VolInterestInterestCodes")]
-	public partial class VolInterestInterestCode : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-	#region Private Fields
-		
-		private int _PeopleId;
-		
-		private int _InterestCodeId;
-		
-   		
-    	
-		private EntityRef<Person> _Person;
-		
-		private EntityRef<VolInterestCode> _VolInterestCode;
-		
-	#endregion
-	
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-		
-		partial void OnPeopleIdChanging(int value);
-		partial void OnPeopleIdChanged();
-		
-		partial void OnInterestCodeIdChanging(int value);
-		partial void OnInterestCodeIdChanged();
-		
-    #endregion
-		public VolInterestInterestCode()
-		{
-			
-			
-			this._Person = default(EntityRef<Person>); 
-			
-			this._VolInterestCode = default(EntityRef<VolInterestCode>); 
-			
-			OnCreated();
-		}
+    [Table(Name = "dbo.VolInterestInterestCodes")]
+    public partial class VolInterestInterestCode : INotifyPropertyChanging, INotifyPropertyChanged
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-    #region Columns
-		
-		[Column(Name="PeopleId", UpdateCheck=UpdateCheck.Never, Storage="_PeopleId", DbType="int NOT NULL", IsPrimaryKey=true)]
-		[IsForeignKey]
-		public int PeopleId
-		{
-			get { return this._PeopleId; }
+        #region Private Fields
 
-			set
-			{
-				if (this._PeopleId != value)
-				{
-				
-					if (this._Person.HasLoadedOrAssignedValue)
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-				
-                    this.OnPeopleIdChanging(value);
-					this.SendPropertyChanging();
-					this._PeopleId = value;
-					this.SendPropertyChanged("PeopleId");
-					this.OnPeopleIdChanged();
-				}
+        private int _PeopleId;
 
-			}
+        private int _InterestCodeId;
 
-		}
+        private EntityRef<Person> _Person;
 
-		
-		[Column(Name="InterestCodeId", UpdateCheck=UpdateCheck.Never, Storage="_InterestCodeId", DbType="int NOT NULL", IsPrimaryKey=true)]
-		[IsForeignKey]
-		public int InterestCodeId
-		{
-			get { return this._InterestCodeId; }
+        private EntityRef<VolInterestCode> _VolInterestCode;
 
-			set
-			{
-				if (this._InterestCodeId != value)
-				{
-				
-					if (this._VolInterestCode.HasLoadedOrAssignedValue)
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-				
-                    this.OnInterestCodeIdChanging(value);
-					this.SendPropertyChanging();
-					this._InterestCodeId = value;
-					this.SendPropertyChanged("InterestCodeId");
-					this.OnInterestCodeIdChanged();
-				}
+        #endregion
 
-			}
+        #region Extensibility Method Definitions
 
-		}
+        partial void OnLoaded();
+        partial void OnValidate(System.Data.Linq.ChangeAction action);
+        partial void OnCreated();
 
-		
-    #endregion
-        
-    #region Foreign Key Tables
-   		
-	#endregion
-	
-	#region Foreign Keys
-    	
-		[Association(Name="FK_VolInterestInterestCodes_People", Storage="_Person", ThisKey="PeopleId", IsForeignKey=true)]
-		public Person Person
-		{
-			get { return this._Person.Entity; }
+        partial void OnPeopleIdChanging(int value);
+        partial void OnPeopleIdChanged();
 
-			set
-			{
-				Person previousValue = this._Person.Entity;
-				if (((previousValue != value) 
-							|| (this._Person.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if (previousValue != null)
-					{
-						this._Person.Entity = null;
-						previousValue.VolInterestInterestCodes.Remove(this);
-					}
+        partial void OnInterestCodeIdChanging(int value);
+        partial void OnInterestCodeIdChanged();
 
-					this._Person.Entity = value;
-					if (value != null)
-					{
-						value.VolInterestInterestCodes.Add(this);
-						
-						this._PeopleId = value.PeopleId;
-						
-					}
+        #endregion
 
-					else
-					{
-						
-						this._PeopleId = default(int);
-						
-					}
+        public VolInterestInterestCode()
+        {
+            _Person = default(EntityRef<Person>);
 
-					this.SendPropertyChanged("Person");
-				}
+            _VolInterestCode = default(EntityRef<VolInterestCode>);
 
-			}
+            OnCreated();
+        }
 
-		}
+        #region Columns
 
-		
-		[Association(Name="FK_VolInterestInterestCodes_VolInterestCodes", Storage="_VolInterestCode", ThisKey="InterestCodeId", IsForeignKey=true)]
-		public VolInterestCode VolInterestCode
-		{
-			get { return this._VolInterestCode.Entity; }
+        [Column(Name = "PeopleId", UpdateCheck = UpdateCheck.Never, Storage = "_PeopleId", DbType = "int NOT NULL", IsPrimaryKey = true)]
+        [IsForeignKey]
+        public int PeopleId
+        {
+            get => _PeopleId;
 
-			set
-			{
-				VolInterestCode previousValue = this._VolInterestCode.Entity;
-				if (((previousValue != value) 
-							|| (this._VolInterestCode.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if (previousValue != null)
-					{
-						this._VolInterestCode.Entity = null;
-						previousValue.VolInterestInterestCodes.Remove(this);
-					}
+            set
+            {
+                if (_PeopleId != value)
+                {
+                    if (_Person.HasLoadedOrAssignedValue)
+                    {
+                        throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+                    }
 
-					this._VolInterestCode.Entity = value;
-					if (value != null)
-					{
-						value.VolInterestInterestCodes.Add(this);
-						
-						this._InterestCodeId = value.Id;
-						
-					}
+                    OnPeopleIdChanging(value);
+                    SendPropertyChanging();
+                    _PeopleId = value;
+                    SendPropertyChanged("PeopleId");
+                    OnPeopleIdChanged();
+                }
+            }
+        }
 
-					else
-					{
-						
-						this._InterestCodeId = default(int);
-						
-					}
+        [Column(Name = "InterestCodeId", UpdateCheck = UpdateCheck.Never, Storage = "_InterestCodeId", DbType = "int NOT NULL", IsPrimaryKey = true)]
+        [IsForeignKey]
+        public int InterestCodeId
+        {
+            get => _InterestCodeId;
 
-					this.SendPropertyChanged("VolInterestCode");
-				}
+            set
+            {
+                if (_InterestCodeId != value)
+                {
+                    if (_VolInterestCode.HasLoadedOrAssignedValue)
+                    {
+                        throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+                    }
 
-			}
+                    OnInterestCodeIdChanging(value);
+                    SendPropertyChanging();
+                    _InterestCodeId = value;
+                    SendPropertyChanged("InterestCodeId");
+                    OnInterestCodeIdChanged();
+                }
+            }
+        }
 
-		}
+        #endregion
 
-		
-	#endregion
-	
-		public event PropertyChangingEventHandler PropertyChanging;
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-				this.PropertyChanging(this, emptyChangingEventArgs);
-		}
+        #region Foreign Key Tables
 
-		public event PropertyChangedEventHandler PropertyChanged;
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-		}
+        #endregion
 
-   		
-	}
+        #region Foreign Keys
 
+        [Association(Name = "FK_VolInterestInterestCodes_People", Storage = "_Person", ThisKey = "PeopleId", IsForeignKey = true)]
+        public Person Person
+        {
+            get => _Person.Entity;
+
+            set
+            {
+                Person previousValue = _Person.Entity;
+                if (((previousValue != value)
+                            || (_Person.HasLoadedOrAssignedValue == false)))
+                {
+                    SendPropertyChanging();
+                    if (previousValue != null)
+                    {
+                        _Person.Entity = null;
+                        previousValue.VolInterestInterestCodes.Remove(this);
+                    }
+
+                    _Person.Entity = value;
+                    if (value != null)
+                    {
+                        value.VolInterestInterestCodes.Add(this);
+
+                        _PeopleId = value.PeopleId;
+
+                    }
+
+                    else
+                    {
+                        _PeopleId = default(int);
+
+                    }
+
+                    SendPropertyChanged("Person");
+                }
+            }
+        }
+
+        [Association(Name = "FK_VolInterestInterestCodes_VolInterestCodes", Storage = "_VolInterestCode", ThisKey = "InterestCodeId", IsForeignKey = true)]
+        public VolInterestCode VolInterestCode
+        {
+            get => _VolInterestCode.Entity;
+
+            set
+            {
+                VolInterestCode previousValue = _VolInterestCode.Entity;
+                if (((previousValue != value)
+                            || (_VolInterestCode.HasLoadedOrAssignedValue == false)))
+                {
+                    SendPropertyChanging();
+                    if (previousValue != null)
+                    {
+                        _VolInterestCode.Entity = null;
+                        previousValue.VolInterestInterestCodes.Remove(this);
+                    }
+
+                    _VolInterestCode.Entity = value;
+                    if (value != null)
+                    {
+                        value.VolInterestInterestCodes.Add(this);
+
+                        _InterestCodeId = value.Id;
+
+                    }
+
+                    else
+                    {
+                        _InterestCodeId = default(int);
+
+                    }
+
+                    SendPropertyChanged("VolInterestCode");
+                }
+            }
+        }
+
+        #endregion
+
+        public event PropertyChangingEventHandler PropertyChanging;
+        protected virtual void SendPropertyChanging()
+        {
+            if ((PropertyChanging != null))
+            {
+                PropertyChanging(this, emptyChangingEventArgs);
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void SendPropertyChanged(string propertyName)
+        {
+            if ((PropertyChanged != null))
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
 }
-

@@ -10,9 +10,9 @@ namespace CmsData.Registration
         public override string Help => @"
 Registrants can upload documents with this question.
 
-File extention allows are .doc .docx .jpg .png .pdf .xls .xlsx .csv.
+File extensions allowed are .doc .docx .jpg .png .pdf .xls .xlsx .csv.
 
-You need to indicate how much documents the registrant needs to upload, the document's name and if it's required.
+Indicate how many documents the registrant needs to upload, the document's name and if it is required.
 ";
         public bool TargetExtraValue { get; set; }
         public List<OrganizationDocument> list { get; private set; }
@@ -22,6 +22,7 @@ You need to indicate how much documents the registrant needs to upload, the docu
         {
             list = new List<OrganizationDocument>();
         }
+
         public override void WriteXml(APIWriter w)
         {
             if (list.Count == 0)
@@ -32,6 +33,7 @@ You need to indicate how much documents the registrant needs to upload, the docu
                 q.WriteXml(w);
             w.End();
         }
+
         public new static AskDocuments ReadXml(XElement e)
         {
             var ad = new AskDocuments
@@ -42,6 +44,7 @@ You need to indicate how much documents the registrant needs to upload, the docu
                 ad.list.Add(OrganizationDocument.ReadXml(ee));
             return ad;
         }
+
         public partial class OrganizationDocument
         {
             public string Name { get; set; }

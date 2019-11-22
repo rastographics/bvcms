@@ -103,6 +103,11 @@ namespace CmsWeb.Areas.People.Models.Task
             get { return Who?.HomePhone?.FmtFone() ?? ""; }
         }
 
+        public string WhoCellPhone
+        {
+            get { return Who?.CellPhone?.FmtFone() ?? ""; }
+        }
+
         public bool Completed { get; set; }
         public DateTime? CompletedContact { get; set; }
         public int? CompletedContactId { get; set; }
@@ -140,6 +145,7 @@ namespace CmsWeb.Areas.People.Models.Task
 
         public string Project { get; set; }
         public int SortPriority { get; set; }
+        public int StatusId { get; set; }
         public string Status { get; set; }
         public CodeInfo TaskLimitToRole { get; set; }
         public CodeInfo TaskStatus { get; set; }
@@ -155,6 +161,15 @@ namespace CmsWeb.Areas.People.Models.Task
                 }
             }
         }
+
+        public bool IsDelegatedPage =>
+            !IsAnOwner || (CanComplete || CanCompleteWithContact) && CanAccept;
+
+        public bool IsAcceptedPage =>
+            !IsOwner && (CanComplete || (CanCompleteWithContact && Description != "New Person Data Entry")) && !CanAccept;
+
+        public bool IsCreatedPage =>
+            IsOwner && (CanComplete || (CanCompleteWithContact && Description != "New Person Data Entry")) && !CanAccept;
 
         public static void AcceptTask(int id, string host, CMSDataContext db)
         {
@@ -647,6 +662,7 @@ namespace CmsWeb.Areas.People.Models.Task
                         CoOwner = t.CoOwner.Name,
                         CoOwnerEmail = t.CoOwner.EmailAddress,
                         TaskLimitToRole = new CodeInfo(t.LimitToRole, "TaskLimitToRole"),
+                        StatusId = t.TaskStatus.Id,
                         Status = t.TaskStatus.Description,
                         TaskStatus = new CodeInfo(t.StatusId, "TaskStatus"),
                         Completed = t.StatusId == TaskStatusCode.Complete,

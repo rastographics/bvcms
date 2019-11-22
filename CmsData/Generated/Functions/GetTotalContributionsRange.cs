@@ -1,85 +1,64 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="GetTotalContributionsRange")]
-	public partial class GetTotalContributionsRange
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private decimal? _Total;
-		
-		private int? _Count;
-		
-		private int _Range;
-		
-		
-		public GetTotalContributionsRange()
-		{
-		}
+    [Table(Name = "GetTotalContributionsRange")]
+    public partial class GetTotalContributionsRange
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="Total", Storage="_Total", DbType="Decimal(38,2)")]
-		public decimal? Total
-		{
-			get
-			{
-				return this._Total;
-			}
+        private decimal? _Total;
 
-			set
-			{
-				if (this._Total != value)
-					this._Total = value;
-			}
+        private int? _Count;
 
-		}
+        private int _Range;
 
-		
-		[Column(Name="Count", Storage="_Count", DbType="int")]
-		public int? Count
-		{
-			get
-			{
-				return this._Count;
-			}
+        public GetTotalContributionsRange()
+        {
+        }
 
-			set
-			{
-				if (this._Count != value)
-					this._Count = value;
-			}
+        [Column(Name = "Total", Storage = "_Total", DbType = "Decimal(38,2)")]
+        public decimal? Total
+        {
+            get => _Total;
 
-		}
+            set
+            {
+                if (_Total != value)
+                {
+                    _Total = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="RANGE", Storage="_Range", DbType="int NOT NULL")]
-		public int Range
-		{
-			get
-			{
-				return this._Range;
-			}
+        [Column(Name = "Count", Storage = "_Count", DbType = "int")]
+        public int? Count
+        {
+            get => _Count;
 
-			set
-			{
-				if (this._Range != value)
-					this._Range = value;
-			}
+            set
+            {
+                if (_Count != value)
+                {
+                    _Count = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "RANGE", Storage = "_Range", DbType = "int NOT NULL")]
+        public int Range
+        {
+            get => _Range;
 
-		
+            set
+            {
+                if (_Range != value)
+                {
+                    _Range = value;
+                }
+            }
+        }
     }
-
 }

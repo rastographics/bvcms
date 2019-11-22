@@ -1,161 +1,128 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="StockGifts")]
-	public partial class StockGift
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private int _ContributionId;
-		
-		private decimal? _ContributionAmount;
-		
-		private DateTime? _ContributionDate;
-		
-		private string _FundName;
-		
-		private string _CheckNo;
-		
-		private string _Name;
-		
-		private string _Description;
-		
-		
-		public StockGift()
-		{
-		}
+    [Table(Name = "StockGifts")]
+    public partial class StockGift
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="ContributionId", Storage="_ContributionId", DbType="int NOT NULL")]
-		public int ContributionId
-		{
-			get
-			{
-				return this._ContributionId;
-			}
+        private int _ContributionId;
 
-			set
-			{
-				if (this._ContributionId != value)
-					this._ContributionId = value;
-			}
+        private decimal? _ContributionAmount;
 
-		}
+        private DateTime? _ContributionDate;
 
-		
-		[Column(Name="ContributionAmount", Storage="_ContributionAmount", DbType="Decimal(11,2)")]
-		public decimal? ContributionAmount
-		{
-			get
-			{
-				return this._ContributionAmount;
-			}
+        private string _FundName;
 
-			set
-			{
-				if (this._ContributionAmount != value)
-					this._ContributionAmount = value;
-			}
+        private string _CheckNo;
 
-		}
+        private string _Name;
 
-		
-		[Column(Name="ContributionDate", Storage="_ContributionDate", DbType="datetime")]
-		public DateTime? ContributionDate
-		{
-			get
-			{
-				return this._ContributionDate;
-			}
+        private string _Description;
 
-			set
-			{
-				if (this._ContributionDate != value)
-					this._ContributionDate = value;
-			}
+        public StockGift()
+        {
+        }
 
-		}
+        [Column(Name = "ContributionId", Storage = "_ContributionId", DbType = "int NOT NULL")]
+        public int ContributionId
+        {
+            get => _ContributionId;
 
-		
-		[Column(Name="FundName", Storage="_FundName", DbType="nvarchar(256) NOT NULL")]
-		public string FundName
-		{
-			get
-			{
-				return this._FundName;
-			}
+            set
+            {
+                if (_ContributionId != value)
+                {
+                    _ContributionId = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._FundName != value)
-					this._FundName = value;
-			}
+        [Column(Name = "ContributionAmount", Storage = "_ContributionAmount", DbType = "Decimal(11,2)")]
+        public decimal? ContributionAmount
+        {
+            get => _ContributionAmount;
 
-		}
+            set
+            {
+                if (_ContributionAmount != value)
+                {
+                    _ContributionAmount = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="CheckNo", Storage="_CheckNo", DbType="nvarchar(20)")]
-		public string CheckNo
-		{
-			get
-			{
-				return this._CheckNo;
-			}
+        [Column(Name = "ContributionDate", Storage = "_ContributionDate", DbType = "datetime")]
+        public DateTime? ContributionDate
+        {
+            get => _ContributionDate;
 
-			set
-			{
-				if (this._CheckNo != value)
-					this._CheckNo = value;
-			}
+            set
+            {
+                if (_ContributionDate != value)
+                {
+                    _ContributionDate = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "FundName", Storage = "_FundName", DbType = "nvarchar(256) NOT NULL")]
+        public string FundName
+        {
+            get => _FundName;
 
-		
-		[Column(Name="Name", Storage="_Name", DbType="nvarchar(138)")]
-		public string Name
-		{
-			get
-			{
-				return this._Name;
-			}
+            set
+            {
+                if (_FundName != value)
+                {
+                    _FundName = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._Name != value)
-					this._Name = value;
-			}
+        [Column(Name = "CheckNo", Storage = "_CheckNo", DbType = "nvarchar(20)")]
+        public string CheckNo
+        {
+            get => _CheckNo;
 
-		}
+            set
+            {
+                if (_CheckNo != value)
+                {
+                    _CheckNo = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="Description", Storage="_Description", DbType="nvarchar(256)")]
-		public string Description
-		{
-			get
-			{
-				return this._Description;
-			}
+        [Column(Name = "Name", Storage = "_Name", DbType = "nvarchar(138)")]
+        public string Name
+        {
+            get => _Name;
 
-			set
-			{
-				if (this._Description != value)
-					this._Description = value;
-			}
+            set
+            {
+                if (_Name != value)
+                {
+                    _Name = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "Description", Storage = "_Description", DbType = "nvarchar(256)")]
+        public string Description
+        {
+            get => _Description;
 
-		
+            set
+            {
+                if (_Description != value)
+                {
+                    _Description = value;
+                }
+            }
+        }
     }
-
 }

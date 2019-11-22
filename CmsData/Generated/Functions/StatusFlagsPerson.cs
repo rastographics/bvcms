@@ -1,104 +1,80 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="StatusFlagsPerson")]
-	public partial class StatusFlagsPerson
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private string _Flag;
-		
-		private string _Name;
-		
-		private string _RoleName;
-		
-		private int _TokenID;
-		
-		
-		public StatusFlagsPerson()
-		{
-		}
+    [Table(Name = "StatusFlagsPerson")]
+    public partial class StatusFlagsPerson
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="Flag", Storage="_Flag", DbType="nvarchar(200) NOT NULL")]
-		public string Flag
-		{
-			get
-			{
-				return this._Flag;
-			}
+        private string _Flag;
 
-			set
-			{
-				if (this._Flag != value)
-					this._Flag = value;
-			}
+        private string _Name;
 
-		}
+        private string _RoleName;
 
-		
-		[Column(Name="Name", Storage="_Name", DbType="varchar(100)")]
-		public string Name
-		{
-			get
-			{
-				return this._Name;
-			}
+        private int _TokenID;
 
-			set
-			{
-				if (this._Name != value)
-					this._Name = value;
-			}
+        public StatusFlagsPerson()
+        {
+        }
 
-		}
+        [Column(Name = "Flag", Storage = "_Flag", DbType = "nvarchar(200) NOT NULL")]
+        public string Flag
+        {
+            get => _Flag;
 
-		
-		[Column(Name="RoleName", Storage="_RoleName", DbType="nvarchar(50)")]
-		public string RoleName
-		{
-			get
-			{
-				return this._RoleName;
-			}
+            set
+            {
+                if (_Flag != value)
+                {
+                    _Flag = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._RoleName != value)
-					this._RoleName = value;
-			}
+        [Column(Name = "Name", Storage = "_Name", DbType = "varchar(100)")]
+        public string Name
+        {
+            get => _Name;
 
-		}
+            set
+            {
+                if (_Name != value)
+                {
+                    _Name = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="TokenID", Storage="_TokenID", DbType="int NOT NULL")]
-		public int TokenID
-		{
-			get
-			{
-				return this._TokenID;
-			}
+        [Column(Name = "RoleName", Storage = "_RoleName", DbType = "nvarchar(50)")]
+        public string RoleName
+        {
+            get => _RoleName;
 
-			set
-			{
-				if (this._TokenID != value)
-					this._TokenID = value;
-			}
+            set
+            {
+                if (_RoleName != value)
+                {
+                    _RoleName = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "TokenID", Storage = "_TokenID", DbType = "int NOT NULL")]
+        public int TokenID
+        {
+            get => _TokenID;
 
-		
+            set
+            {
+                if (_TokenID != value)
+                {
+                    _TokenID = value;
+                }
+            }
+        }
     }
-
 }

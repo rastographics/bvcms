@@ -2,6 +2,8 @@ using CmsData;
 using CmsData.Codes;
 using CmsWeb.Areas.OnlineReg.Models;
 using CmsWeb.Code;
+using CmsWeb.Constants;
+using CmsWeb.Models;
 using System;
 using System.Linq;
 using System.Web.Mvc;
@@ -9,14 +11,24 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Models
 {
-    public class MissionSupportModel
+    public class MissionSupportModel : IDbBinder
     {
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
+        public MissionSupportModel() { }
+        public MissionSupportModel(CMSDataContext db ) { CurrentDatabase = db; }
+        private CMSDataContext _currentDatabase;
+        public CMSDataContext CurrentDatabase
+        {
+            get => _currentDatabase ?? DbUtil.Db;
+            set{ _currentDatabase = value; }
+        }
+
         private int? orgId;
         private int? peopleId;
-        public MissionSupportModel() { }
+        
         private void Populate()
         {
-            var i = (from mm in DbUtil.Db.OrganizationMembers
+            var i = (from mm in CurrentDatabase.OrganizationMembers
                      where mm.OrganizationId == OrgId && mm.PeopleId == PeopleId
                      select new
                      {
@@ -67,7 +79,7 @@ namespace CmsWeb.Areas.Dialog.Models
 
         public SelectList GoerList()
         {
-            var q = from om in DbUtil.Db.OrganizationMembers
+            var q = from om in CurrentDatabase.OrganizationMembers
                     where om.OrgMemMemTags.Any(mm => mm.MemberTag.Name == "Goer")
                     where om.OrganizationId == OrgId
                     orderby om.Person.Name2
@@ -89,15 +101,15 @@ namespace CmsWeb.Areas.Dialog.Models
                 return;
             }
 
-            var org = DbUtil.Db.LoadOrganizationById(OrgId);
-            var notifyIds = DbUtil.Db.NotifyIds(org.GiftNotifyIds);
-            var person = DbUtil.Db.LoadPersonById(PeopleId ?? 0);
-            var setting = DbUtil.Db.CreateRegistrationSettings(OrgId ?? 0);
+            var org = CurrentDatabase.LoadOrganizationById(OrgId);
+            var notifyIds = CurrentDatabase.NotifyIds(org.GiftNotifyIds);
+            var person = CurrentDatabase.LoadPersonById(PeopleId ?? 0);
+            var setting = CurrentDatabase.CreateRegistrationSettings(OrgId ?? 0);
             var fund = setting.DonationFundId;
             if (AmountGoer > 0)
             {
                 var goerid = Goer.Value.ToInt();
-                DbUtil.Db.GoerSenderAmounts.InsertOnSubmit(
+                CurrentDatabase.GoerSenderAmounts.InsertOnSubmit(
                     new GoerSenderAmount
                     {
                         Amount = AmountGoer,
@@ -106,27 +118,27 @@ namespace CmsWeb.Areas.Dialog.Models
                         OrgId = org.OrganizationId,
                         SupporterId = PeopleId ?? 0,
                     });
-                var c = person.PostUnattendedContribution(DbUtil.Db,
+                var c = person.PostUnattendedContribution(CurrentDatabase,
                     AmountGoer ?? 0, fund,
                     $"SupportMissionTrip: org={OrgId}; goer={Goer.Value}", typecode: BundleTypeCode.MissionTrip);
                 c.CheckNo = (CheckNo ?? "").Trim().Truncate(20);
                 if (PeopleId == goerid)
                 {
-                    var om = DbUtil.Db.OrganizationMembers.Single(
+                    var om = CurrentDatabase.OrganizationMembers.Single(
                         mm => mm.PeopleId == goerid && mm.OrganizationId == OrgId);
-                    var descriptionForPayment = OnlineRegModel.GetDescriptionForPayment(OrgId);
-                    om.AddTransaction(DbUtil.Db, "Payment", AmountGoer ?? 0, "Payment", pmtDescription: descriptionForPayment);
+                    var descriptionForPayment = OnlineRegModel.GetDescriptionForPayment(OrgId, CurrentDatabase);
+                    om.AddTransaction(CurrentDatabase, "Payment", AmountGoer ?? 0, "Payment", pmtDescription: descriptionForPayment);
                 }
                 // send notices
-                var goer = DbUtil.Db.LoadPersonById(goerid);
+                var goer = CurrentDatabase.LoadPersonById(goerid);
                 ToGoerName = "to " + goer.Name;
-                DbUtil.Db.Email(notifyIds[0].FromEmail, goer, org.OrganizationName + "-donation",
+                CurrentDatabase.Email(notifyIds[0].FromEmail, goer, org.OrganizationName + "-donation",
                     $"{AmountGoer:C} donation received from {person.Name}");
                 DbUtil.LogActivity("OrgMem SupportMissionTrip goer=" + goerid, OrgId, PeopleId);
             }
             if (AmountGeneral > 0)
             {
-                DbUtil.Db.GoerSenderAmounts.InsertOnSubmit(
+                CurrentDatabase.GoerSenderAmounts.InsertOnSubmit(
                     new GoerSenderAmount
                     {
                         Amount = AmountGeneral,
@@ -134,7 +146,7 @@ namespace CmsWeb.Areas.Dialog.Models
                         OrgId = org.OrganizationId,
                         SupporterId = PeopleId ?? 0
                     });
-                var c = person.PostUnattendedContribution(DbUtil.Db,
+                var c = person.PostUnattendedContribution(CurrentDatabase,
                     AmountGeneral ?? 0, fund,
                     $"SupportMissionTrip: org={OrgId}", typecode: BundleTypeCode.MissionTrip);
                 if (CheckNo.HasValue())
@@ -144,7 +156,7 @@ namespace CmsWeb.Areas.Dialog.Models
 
                 DbUtil.LogActivity("OrgMem SupportMissionTrip", OrgId, PeopleId);
             }
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
         }
     }
 }

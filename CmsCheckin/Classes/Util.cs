@@ -514,12 +514,17 @@ namespace CmsCheckin
 		}
 		public static PrintJobs FetchPrintJob()
 		{
-			var wc = Util.CreateWebClient();
-			var url = Program.settings.createURI("Checkin2/FetchPrintJobs/" + Program.settings.printForKiosks);
-			var xml = wc.DownloadString(url);
-			var xs = new XmlSerializer(typeof(PrintJobs));
-			var sr = new StringReader(xml);
-			var j = (PrintJobs)xs.Deserialize(sr);
+            var j = new PrintJobs();
+            try
+            {
+                var wc = Util.CreateWebClient();
+                var url = Program.settings.createURI("Checkin2/FetchPrintJobs/" + Program.settings.printForKiosks);
+                var xml = wc.DownloadString(url);
+                var xs = new XmlSerializer(typeof(PrintJobs));
+                var sr = new StringReader(xml);
+                j = (PrintJobs)xs.Deserialize(sr);
+            }
+            catch { } //ignorable error
 			return j;
 		}
 

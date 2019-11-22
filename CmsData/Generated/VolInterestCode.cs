@@ -1,204 +1,177 @@
-using System; 
+using System;
+using System.ComponentModel;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
-using System.ComponentModel;
-using CmsData.Infrastructure;
 
 namespace CmsData
 {
-	[Table(Name="dbo.VolInterestCodes")]
-	public partial class VolInterestCode : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-	#region Private Fields
-		
-		private int _Id;
-		
-		private string _Description;
-		
-		private string _Code;
-		
-		private string _Org;
-		
-   		
-   		private EntitySet<VolInterestInterestCode> _VolInterestInterestCodes;
-		
-    	
-	#endregion
-	
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-		
-		partial void OnIdChanging(int value);
-		partial void OnIdChanged();
-		
-		partial void OnDescriptionChanging(string value);
-		partial void OnDescriptionChanged();
-		
-		partial void OnCodeChanging(string value);
-		partial void OnCodeChanged();
-		
-		partial void OnOrgChanging(string value);
-		partial void OnOrgChanged();
-		
-    #endregion
-		public VolInterestCode()
-		{
-			
-			this._VolInterestInterestCodes = new EntitySet<VolInterestInterestCode>(new Action< VolInterestInterestCode>(this.attach_VolInterestInterestCodes), new Action< VolInterestInterestCode>(this.detach_VolInterestInterestCodes)); 
-			
-			
-			OnCreated();
-		}
+    [Table(Name = "dbo.VolInterestCodes")]
+    public partial class VolInterestCode : INotifyPropertyChanging, INotifyPropertyChanged
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-    #region Columns
-		
-		[Column(Name="Id", UpdateCheck=UpdateCheck.Never, Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int Id
-		{
-			get { return this._Id; }
+        #region Private Fields
 
-			set
-			{
-				if (this._Id != value)
-				{
-				
-                    this.OnIdChanging(value);
-					this.SendPropertyChanging();
-					this._Id = value;
-					this.SendPropertyChanged("Id");
-					this.OnIdChanged();
-				}
+        private int _Id;
 
-			}
+        private string _Description;
 
-		}
+        private string _Code;
 
-		
-		[Column(Name="Description", UpdateCheck=UpdateCheck.Never, Storage="_Description", DbType="nvarchar(180)")]
-		public string Description
-		{
-			get { return this._Description; }
+        private string _Org;
 
-			set
-			{
-				if (this._Description != value)
-				{
-				
-                    this.OnDescriptionChanging(value);
-					this.SendPropertyChanging();
-					this._Description = value;
-					this.SendPropertyChanged("Description");
-					this.OnDescriptionChanged();
-				}
+        private EntitySet<VolInterestInterestCode> _VolInterestInterestCodes;
 
-			}
+        #endregion
 
-		}
+        #region Extensibility Method Definitions
 
-		
-		[Column(Name="Code", UpdateCheck=UpdateCheck.Never, Storage="_Code", DbType="nvarchar(100)")]
-		public string Code
-		{
-			get { return this._Code; }
+        partial void OnLoaded();
+        partial void OnValidate(System.Data.Linq.ChangeAction action);
+        partial void OnCreated();
 
-			set
-			{
-				if (this._Code != value)
-				{
-				
-                    this.OnCodeChanging(value);
-					this.SendPropertyChanging();
-					this._Code = value;
-					this.SendPropertyChanged("Code");
-					this.OnCodeChanged();
-				}
+        partial void OnIdChanging(int value);
+        partial void OnIdChanged();
 
-			}
+        partial void OnDescriptionChanging(string value);
+        partial void OnDescriptionChanged();
 
-		}
+        partial void OnCodeChanging(string value);
+        partial void OnCodeChanged();
 
-		
-		[Column(Name="Org", UpdateCheck=UpdateCheck.Never, Storage="_Org", DbType="nvarchar(150)")]
-		public string Org
-		{
-			get { return this._Org; }
+        partial void OnOrgChanging(string value);
+        partial void OnOrgChanged();
 
-			set
-			{
-				if (this._Org != value)
-				{
-				
-                    this.OnOrgChanging(value);
-					this.SendPropertyChanging();
-					this._Org = value;
-					this.SendPropertyChanged("Org");
-					this.OnOrgChanged();
-				}
+        #endregion
 
-			}
+        public VolInterestCode()
+        {
+            _VolInterestInterestCodes = new EntitySet<VolInterestInterestCode>(new Action<VolInterestInterestCode>(attach_VolInterestInterestCodes), new Action<VolInterestInterestCode>(detach_VolInterestInterestCodes));
 
-		}
+            OnCreated();
+        }
 
-		
-    #endregion
-        
-    #region Foreign Key Tables
-   		
-   		[Association(Name="FK_VolInterestInterestCodes_VolInterestCodes", Storage="_VolInterestInterestCodes", OtherKey="InterestCodeId")]
-   		public EntitySet<VolInterestInterestCode> VolInterestInterestCodes
-   		{
-   		    get { return this._VolInterestInterestCodes; }
+        #region Columns
 
-			set	{ this._VolInterestInterestCodes.Assign(value); }
+        [Column(Name = "Id", UpdateCheck = UpdateCheck.Never, Storage = "_Id", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
+        public int Id
+        {
+            get => _Id;
 
-   		}
+            set
+            {
+                if (_Id != value)
+                {
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
+                }
+            }
+        }
 
-		
-	#endregion
-	
-	#region Foreign Keys
-    	
-	#endregion
-	
-		public event PropertyChangingEventHandler PropertyChanging;
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-				this.PropertyChanging(this, emptyChangingEventArgs);
-		}
+        [Column(Name = "Description", UpdateCheck = UpdateCheck.Never, Storage = "_Description", DbType = "nvarchar(180)")]
+        public string Description
+        {
+            get => _Description;
 
-		public event PropertyChangedEventHandler PropertyChanged;
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-		}
+            set
+            {
+                if (_Description != value)
+                {
+                    OnDescriptionChanging(value);
+                    SendPropertyChanging();
+                    _Description = value;
+                    SendPropertyChanged("Description");
+                    OnDescriptionChanged();
+                }
+            }
+        }
 
-   		
-		private void attach_VolInterestInterestCodes(VolInterestInterestCode entity)
-		{
-			this.SendPropertyChanging();
-			entity.VolInterestCode = this;
-		}
+        [Column(Name = "Code", UpdateCheck = UpdateCheck.Never, Storage = "_Code", DbType = "nvarchar(100)")]
+        public string Code
+        {
+            get => _Code;
 
-		private void detach_VolInterestInterestCodes(VolInterestInterestCode entity)
-		{
-			this.SendPropertyChanging();
-			entity.VolInterestCode = null;
-		}
+            set
+            {
+                if (_Code != value)
+                {
+                    OnCodeChanging(value);
+                    SendPropertyChanging();
+                    _Code = value;
+                    SendPropertyChanged("Code");
+                    OnCodeChanged();
+                }
+            }
+        }
 
-		
-	}
+        [Column(Name = "Org", UpdateCheck = UpdateCheck.Never, Storage = "_Org", DbType = "nvarchar(150)")]
+        public string Org
+        {
+            get => _Org;
 
+            set
+            {
+                if (_Org != value)
+                {
+                    OnOrgChanging(value);
+                    SendPropertyChanging();
+                    _Org = value;
+                    SendPropertyChanged("Org");
+                    OnOrgChanged();
+                }
+            }
+        }
+
+        #endregion
+
+        #region Foreign Key Tables
+
+        [Association(Name = "FK_VolInterestInterestCodes_VolInterestCodes", Storage = "_VolInterestInterestCodes", OtherKey = "InterestCodeId")]
+        public EntitySet<VolInterestInterestCode> VolInterestInterestCodes
+           {
+               get => _VolInterestInterestCodes;
+
+            set => _VolInterestInterestCodes.Assign(value);
+
+           }
+
+        #endregion
+
+        #region Foreign Keys
+
+        #endregion
+
+        public event PropertyChangingEventHandler PropertyChanging;
+        protected virtual void SendPropertyChanging()
+        {
+            if ((PropertyChanging != null))
+            {
+                PropertyChanging(this, emptyChangingEventArgs);
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void SendPropertyChanged(string propertyName)
+        {
+            if ((PropertyChanged != null))
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        private void attach_VolInterestInterestCodes(VolInterestInterestCode entity)
+        {
+            SendPropertyChanging();
+            entity.VolInterestCode = this;
+        }
+
+        private void detach_VolInterestInterestCodes(VolInterestInterestCode entity)
+        {
+            SendPropertyChanging();
+            entity.VolInterestCode = null;
+        }
+    }
 }
-
