@@ -30,6 +30,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private void Init()
         {
+            foreach(var person in List)
+            {
+                person.CurrentDatabase = CurrentDatabase;
+            }
             HttpContextFactory.Current.Items["OnlineRegModel"] = this;
         }
         private CMSDataContext _currentDatabase;
