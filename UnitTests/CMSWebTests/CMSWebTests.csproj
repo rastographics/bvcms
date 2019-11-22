@@ -137,8 +137,9 @@
     <Compile Include="Areas\Search\Models\OrgSearchModelTests.cs" />
     <Compile Include="Areas\Setup\Controllers\DivisionControllerTests.cs" />
     <Compile Include="Code\PledgesHelperTests.cs" />
-    <Compile Include="Models\ExportPeopleTest.cs" />
+    <Compile Include="Models\ExportPeopleTests.cs" />
     <Compile Include="Controllers\Api\CustomControllerTests.cs" />
+    <Compile Include="Models\IDbBinderTests.cs" />
     <Compile Include="Support\ControllerTestBase.cs" />
     <Compile Include="TestUtils\FakeOrganizationUtils.cs" />
     <Compile Include="TestUtils\FakeRequestManager.cs" />
