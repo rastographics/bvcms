@@ -159,7 +159,7 @@ namespace CmsWeb.Areas.CheckIn.Controllers
             checkinProfileSettings.DisableJoin = jsonSettings.DisableJoin;
             checkinProfileSettings.DisableTimer = jsonSettings.DisableTimer;
             checkinProfileSettings.CutoffAge = jsonSettings.CutoffAge;
-            checkinProfileSettings.Logout = LogoutIsValid(jsonSettings.Logout) ? jsonSettings.Logout : "00000";
+            checkinProfileSettings.Logout = LogoutIsValid(jsonSettings.Logout) ? jsonSettings.Logout.PadLeft(5,'0') : "00000";
             checkinProfileSettings.Guest = jsonSettings.Guest;
             checkinProfileSettings.Location = jsonSettings.Location;
             checkinProfileSettings.SecurityType = jsonSettings.SecurityType;
@@ -170,7 +170,7 @@ namespace CmsWeb.Areas.CheckIn.Controllers
                 var DefaultHost = CurrentDatabase.Setting("DefaultHost", "");
                 checkinProfileSettings.BackgroundImage = StoreBGImage(file, checkinProfileSettings.BackgroundImage);
                 checkinProfileSettings.BackgroundImageName = file.FileName;
-                checkinProfileSettings.BackgroundImageURL = $"{DefaultHost}/BackgroundImage/{checkinProfileSettings.BackgroundImage}?{DateTime.Now.ToString("yyMMddhhmmss")}";
+                checkinProfileSettings.BackgroundImageURL = $"/BackgroundImage/{checkinProfileSettings.BackgroundImage}?{DateTime.Now.ToString("yyMMddhhmmss")}";
             }
 
             return checkinProfileSettings;
@@ -178,7 +178,7 @@ namespace CmsWeb.Areas.CheckIn.Controllers
 
         private bool LogoutIsValid(string logout)
         {
-            return Regex.Match(logout, @"\d{4}").Success;            
+            return logout.All(Char.IsDigit);         
         }
 
         private int StoreBGImage(HttpPostedFileBase file, int? imageId)
