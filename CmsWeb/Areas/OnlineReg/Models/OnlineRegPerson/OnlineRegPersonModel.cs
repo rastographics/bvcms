@@ -29,10 +29,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private void Init()
         {
-            YesNoQuestion = new Dictionary<string, bool?>();
-            OrganizationDocument = new Dictionary<string, bool?>();
-            FundItem = new Dictionary<int, decimal?>();
-            Parent = HttpContextFactory.Current?.Items["OnlineRegModel"] as OnlineRegModel;
+            YesNoQuestion = YesNoQuestion ?? new Dictionary<string, bool?>();
+            OrganizationDocument = OrganizationDocument ?? new Dictionary<string, bool?>();
+            FundItem = FundItem ?? new Dictionary<int, decimal?>();
+            Parent = Parent ?? HttpContextFactory.Current?.Items["OnlineRegModel"] as OnlineRegModel;
         }
 
         [Obsolete(Errors.ModelBindingConstructorError, true)]
