@@ -525,3 +525,113 @@ IF NOT EXISTS( SELECT 1 FROM sys.stats WHERE object_id = OBJECT_ID('dbo.Meetings
 AND name='ST_Meetings_MeetingId_OrganizationId_MeetingDate')
 CREATE STATISTICS [ST_Meetings_MeetingId_OrganizationId_MeetingDate] ON [dbo].[Meetings]([MeetingId], [OrganizationId], [MeetingDate])
 GO
+
+if NOT EXISTS(SELECT OBJECT_ID('AddAbsentsToMeetingMessage', 'message'))
+CREATE MESSAGE TYPE [AddAbsentsToMeetingMessage]
+AUTHORIZATION [dbo]
+VALIDATION=NONE
+GO
+
+if NOT EXISTS(SELECT OBJECT_ID('AddAbsentsToMeetingContract', 'contract'))
+CREATE CONTRACT [AddAbsentsToMeetingContract]
+AUTHORIZATION [dbo] ( 
+[AddAbsentsToMeetingMessage] SENT BY INITIATOR
+)
+GO
+
+DROP PROCEDURE IF EXISTS [dbo].[AddAbsentsToMeetingProc]
+GO
+CREATE PROCEDURE [dbo].[AddAbsentsToMeetingProc]
+AS
+BEGIN
+	DECLARE @mid INT, @dlgId UNIQUEIDENTIFIER	
+
+	WHILE(1=1)
+	BEGIN
+		RECEIVE top(1) @mid = CONVERT(INT, message_body), @dlgId = conversation_handle FROM dbo.AddAbsentsToMeetingQueue
+		IF @@ROWCOUNT = 0		
+			BREAK;
+		IF @mid IS NOT NULL
+			EXEC dbo.AddAbsentsToMeeting @mid
+		END CONVERSATION @dlgId WITH CLEANUP
+	END	
+END
+GO
+
+if NOT EXISTS(SELECT OBJECT_ID('AddAbsentsToMeetingQueue', 'queue'))
+CREATE QUEUE [dbo].[AddAbsentsToMeetingQueue] 
+WITH STATUS=ON, 
+RETENTION=OFF,
+POISON_MESSAGE_HANDLING (STATUS=ON), 
+ACTIVATION (
+STATUS=ON, 
+PROCEDURE_NAME=[dbo].[AddAbsentsToMeetingProc], 
+MAX_QUEUE_READERS=3, 
+EXECUTE AS OWNER
+)
+ON [PRIMARY]
+GO
+
+if NOT EXISTS(SELECT OBJECT_ID('AddAbsentsToMeetingService', 'service'))
+CREATE SERVICE [AddAbsentsToMeetingService]
+AUTHORIZATION [dbo]
+ON QUEUE [dbo].[AddAbsentsToMeetingQueue]
+(
+[AddAbsentsToMeetingContract]
+)
+GO
+
+ALTER TRIGGER [dbo].[insMeeting] 
+   ON  [dbo].[Meetings]
+   AFTER INSERT
+AS 
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	DECLARE @oid INT,
+			@mid INT,
+			@mdt DATETIME,
+			@mbr INT,
+			@atyp INT,
+			@grp INT,
+			@pid INT,
+			@offsite INT,
+			@acr INT,
+			@NoAutoAbsents BIT,
+			@firstdt DATETIME,
+			@lastdt DATETIME
+	
+	SELECT 
+		@oid = OrganizationId,
+		@mid = MeetingId,
+		@mdt = MeetingDate,
+		@grp = GroupMeetingFlag,
+		@acr = AttendCreditId,
+		@NoAutoAbsents = NoAutoAbsents
+	FROM INSERTED
+	
+	IF (@NoAutoAbsents = 1)
+		RETURN
+	
+	SELECT @NoAutoAbsents = NoAutoAbsents, @firstdt = FirstMeetingDate, @lastdt = DATEADD(d, 1, LastMeetingDate)
+	FROM dbo.Organizations WHERE OrganizationId = @oid
+	IF (@NoAutoAbsents <> 1)
+	BEGIN
+		DECLARE @usebroker BIT = (SELECT is_broker_enabled FROM sys.databases WHERE name = DB_NAME())
+		IF @usebroker = 1
+		BEGIN
+			DECLARE @dialog UNIQUEIDENTIFIER
+			BEGIN DIALOG CONVERSATION @dialog
+				FROM SERVICE AddAbsentsToMeetingService
+				TO SERVICE 'AddAbsentsToMeetingService'
+				ON CONTRACT AddAbsentsToMeetingContract
+				WITH ENCRYPTION = OFF;
+			SEND ON CONVERSATION @dialog MESSAGE TYPE AddAbsentsToMeetingMessage (@oid)
+		END
+		ELSE
+			EXEC dbo.AddAbsentsToMeeting @mid
+	END
+END
+GO
