@@ -464,6 +464,39 @@ BEGIN
 END
 GO
 
+ALTER PROC [dbo].[AttendUpdateN] (@pid INT, @max INT)
+AS
+BEGIN
+
+	IF (SELECT COUNT(*) FROM dbo.Attend WHERE PeopleId = @pid AND AttendanceFlag = 1) > @max
+		RETURN 0;
+
+	UPDATE dbo.Attend
+	SET SeqNo = NULL
+	WHERE PeopleId = @pid;
+	
+	WITH tt as (
+			SELECT DISTINCT TOP(5) CAST(MeetingDate AS DATE) MeetingDate
+			FROM dbo.Attend
+	        WHERE PeopleId = @pid AND AttendanceFlag = 1
+			ORDER BY MeetingDate
+	)
+	,yy as (
+		SELECT MeetingDate, ROW_NUMBER() OVER(ORDER BY MeetingDate) AS Rnk
+	    FROM tt
+	)
+	,vv AS (
+		SELECT a.AttendId, yy.Rnk FROM dbo.Attend a
+		JOIN yy ON CAST(a.MeetingDate AS DATE) = yy.MeetingDate
+		WHERE a.PeopleId = @pid
+	) 
+	UPDATE attend
+	SET SeqNo = vv.Rnk
+	FROM dbo.Attend attend 
+	join vv ON vv.AttendId = attend.AttendId
+END
+GO
+
 IF NOT EXISTS( SELECT 1 FROM sys.indexes WHERE object_id = OBJECT_ID('dbo.Attend')
 AND name='IX_Attend_MeetingId_PeopleId_MeetingDate_AttendanceTypeId_AttendId_EffAttendFlag')
 CREATE NONCLUSTERED INDEX [IX_Attend_MeetingId_PeopleId_MeetingDate_AttendanceTypeId_AttendId_EffAttendFlag] ON [dbo].[Attend]
