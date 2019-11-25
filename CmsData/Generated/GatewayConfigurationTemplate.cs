@@ -1,22 +1,18 @@
-﻿using System;
+using CmsData.Infrastructure;
+using System;
+using System.ComponentModel;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
-using System.ComponentModel;
-using CmsData.Infrastructure;
 
 namespace CmsData
 {
     [Table(Name = "lookup.GatewayConfigurationTemplate")]
     public partial class GatewayConfigurationTemplate
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
         #region Private Fields
+
         private int _GatewayDetailId;
         private int _GatewayId;
         private string _GatewayDetailName;
@@ -27,6 +23,7 @@ namespace CmsData
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -53,20 +50,21 @@ namespace CmsData
         }
 
         #region Columns
+
         [Column(Name = "GatewayDetailId", UpdateCheck = UpdateCheck.Never, Storage = "_GatewayDetailId", AutoSync = AutoSync.OnInsert, DbType = "int IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
         public int GatewayDetailId
         {
-            get { return this._GatewayDetailId; }
+            get => _GatewayDetailId;
 
             set
             {
-                if (this._GatewayDetailId != value)
+                if (_GatewayDetailId != value)
                 {
-                    this.OnGatewayDetailIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._GatewayDetailId = value;
-                    this.SendPropertyChanged("GatewayDetailId");
-                    this.OnGatewayDetailIdChanged();
+                    OnGatewayDetailIdChanging(value);
+                    SendPropertyChanging();
+                    _GatewayDetailId = value;
+                    SendPropertyChanged("GatewayDetailId");
+                    OnGatewayDetailIdChanged();
                 }
             }
         }
@@ -75,20 +73,22 @@ namespace CmsData
         [IsForeignKey]
         public int GatewayId
         {
-            get { return this._GatewayId; }
+            get => _GatewayId;
 
             set
             {
-                if (this._GatewayId != value)
+                if (_GatewayId != value)
                 {
-                    if (this._Gateways.HasLoadedOrAssignedValue)
+                    if (_Gateways.HasLoadedOrAssignedValue)
+                    {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+                    }
 
-                    this.OnGatewayIdChanging(value);
-                    this.SendPropertyChanging();
-                    this._GatewayId = value;
-                    this.SendPropertyChanged("GatewayId");
-                    this.OnGatewayIdChanged();
+                    OnGatewayIdChanging(value);
+                    SendPropertyChanging();
+                    _GatewayId = value;
+                    SendPropertyChanged("GatewayId");
+                    OnGatewayIdChanged();
                 }
             }
         }
@@ -96,17 +96,17 @@ namespace CmsData
         [Column(Name = "GatewayDetailName", UpdateCheck = UpdateCheck.Never, Storage = "_GatewayDetailName", AutoSync = AutoSync.OnInsert, DbType = "nvarchar NOT NULL")]
         public string GatewayDetailName
         {
-            get { return this._GatewayDetailName; }
+            get => _GatewayDetailName;
 
             set
             {
-                if (this._GatewayDetailName != value)
+                if (_GatewayDetailName != value)
                 {
-                    this.OnGatewayDetailNameChanging(value);
-                    this.SendPropertyChanging();
-                    this._GatewayDetailName = value;
-                    this.SendPropertyChanged("GatewayDetailName");
-                    this.OnGatewayDetailNameChanged();
+                    OnGatewayDetailNameChanging(value);
+                    SendPropertyChanging();
+                    _GatewayDetailName = value;
+                    SendPropertyChanged("GatewayDetailName");
+                    OnGatewayDetailNameChanged();
                 }
             }
         }
@@ -114,17 +114,17 @@ namespace CmsData
         [Column(Name = "GatewayDetailValue", UpdateCheck = UpdateCheck.Never, Storage = "_GatewayDetailValue", AutoSync = AutoSync.OnInsert, DbType = "nvarchar NOT NULL")]
         public string GatewayDetailValue
         {
-            get { return this._GatewayDetailValue; }
+            get => _GatewayDetailValue;
 
             set
             {
-                if (this._GatewayDetailValue != value)
+                if (_GatewayDetailValue != value)
                 {
-                    this.OnGatewayDetailValueChanging(value);
-                    this.SendPropertyChanging();
-                    this._GatewayDetailValue = value;
-                    this.SendPropertyChanged("GatewayDetailValue");
-                    this.OnGatewayDetailValueChanged();
+                    OnGatewayDetailValueChanging(value);
+                    SendPropertyChanging();
+                    _GatewayDetailValue = value;
+                    SendPropertyChanged("GatewayDetailValue");
+                    OnGatewayDetailValueChanged();
                 }
             }
         }
@@ -132,37 +132,43 @@ namespace CmsData
         [Column(Name = "IsBoolean", UpdateCheck = UpdateCheck.Never, Storage = "_IsBoolean", DbType = "bit NOT NULL")]
         public bool IsBoolean
         {
-            get { return this._IsBoolean; }
+            get => _IsBoolean;
 
             set
             {
-                if (this._IsBoolean != value)
+                if (_IsBoolean != value)
                 {
-                    this.OnIsBooleanChanging(value);
-                    this.SendPropertyChanging();
-                    this._IsBoolean = value;
-                    this.SendPropertyChanged("IsBoolean");
-                    this.OnIsBooleanChanged();
+                    OnIsBooleanChanging(value);
+                    SendPropertyChanging();
+                    _IsBoolean = value;
+                    SendPropertyChanged("IsBoolean");
+                    OnIsBooleanChanged();
                 }
             }
         }
+
         #endregion
 
         #region Foreign Keys
+
         #endregion
 
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((this.PropertyChanging != null))
-                this.PropertyChanging(this, emptyChangingEventArgs);
+            if ((PropertyChanging != null))
+            {
+                PropertyChanging(this, emptyChangingEventArgs);
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((this.PropertyChanged != null))
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            if ((PropertyChanged != null))
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
     }
 }

@@ -12,7 +12,7 @@ namespace CmsWeb.Models
         internal IQueryable<TModel> list;
 
         [Obsolete(Errors.ModelBindingConstructorError, true)]
-        protected PagedTableModel()
+        public PagedTableModel()
         {
             Init();
         }

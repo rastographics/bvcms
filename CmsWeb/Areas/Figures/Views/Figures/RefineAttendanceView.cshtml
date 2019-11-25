@@ -3,13 +3,8 @@
     ViewBag.Title = "Figures";
     ViewBag.PageHeader = "Refine Attendance Chart";
 }
-@ViewExtensions2.jQuery()
-@ViewExtensions2.jQueryUI()
-
-@ViewExtensions2.Jsapi()
 
 @Fingerprint.Css("/Content/touchpoint/lib/jquery-multi-select/css/multi-select.css")
-@Fingerprint.Script("/Content/touchpoint/lib/jquery-multi-select/js/jquery.multi-select.js")
 
 <div id="fig">
     <div class="row">
@@ -55,16 +50,26 @@
     </div>
 </div>
 
-@ViewExtensions2.Vue()
-@Fingerprint.Script("/Content/touchpoint/js/figures/figures.js")
+@section scripts
+{
+    @ViewExtensions2.jQuery()
+    @ViewExtensions2.jQueryUI()
+    @Fingerprint.Script("/Content/touchpoint/lib/jquery-multi-select/js/jquery.multi-select.js")
 
-<script type="text/javascript">
-    google.load("visualization", "1", { packages: ["corechart"] });
+    @ViewExtensions2.Vue()
+    @Fingerprint.Script("/Content/touchpoint/js/figures/figures.js")
+    @ViewExtensions2.GoogleCharts()
 
-    $('#DrawChart').click(function () {
-        var e = document.getElementById('Attendance_chart_display');
-        e.style.display = 'block';
-        var selectedValues = $('#Organization-DropdownID').val();
-        $("#Attendance_chart_display").load('/Figures/Figures/AttendanceChartDisplayView', { orgIdsArr: selectedValues });
-    });
-</script>
+    <script type="text/javascript">
+        $(function () {
+            google.charts.load('current', { packages: ['corechart'] });
+
+            $('#DrawChart').click(function () {
+                var e = document.getElementById('Attendance_chart_display');
+                e.style.display = 'block';
+                var selectedValues = $('#Organization-DropdownID').val();
+                $("#Attendance_chart_display").load('/Figures/Figures/AttendanceChartDisplayView', { orgIdsArr: selectedValues });
+            });
+        });
+    </script>
+}

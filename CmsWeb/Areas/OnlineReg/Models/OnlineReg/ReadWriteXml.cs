@@ -25,7 +25,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 {
                     case "List":
                         foreach (var ee in e.Elements())
-                            _list.Add(Util.DeSerialize<OnlineRegPersonModel>(ee.ToString()));
+                        {
+                            OnlineRegPersonModel personModel = Util.DeSerialize<OnlineRegPersonModel>(ee.ToString());
+                            personModel.CurrentDatabase = CurrentDatabase;
+                            List.Add(personModel);
+                        }
                         break;
                     case "History":
                         foreach (var ee in e.Elements())
@@ -48,7 +52,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 {
                     case "List":
                         w.Start("List");
-                        foreach (var i in _list)
+                        foreach (var i in List)
                             Util.Serialize(i, writer);
                         w.End();
                         break;

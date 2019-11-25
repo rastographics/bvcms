@@ -1,161 +1,128 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
+using System.Data.Linq.Mapping;
 
 namespace CmsData.View
 {
-	[Table(Name="RecentAttendance")]
-	public partial class RecentAttendance
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		
-		private int _PeopleId;
-		
-		private string _Name;
-		
-		private DateTime _Lastattend;
-		
-		private decimal? _AttendPct;
-		
-		private string _AttendStr;
-		
-		private string _Attendtype;
-		
-		private int _Visitor;
-		
-		
-		public RecentAttendance()
-		{
-		}
+    [Table(Name = "RecentAttendance")]
+    public partial class RecentAttendance
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-		
-		[Column(Name="PeopleId", Storage="_PeopleId", DbType="int NOT NULL")]
-		public int PeopleId
-		{
-			get
-			{
-				return this._PeopleId;
-			}
+        private int _PeopleId;
 
-			set
-			{
-				if (this._PeopleId != value)
-					this._PeopleId = value;
-			}
+        private string _Name;
 
-		}
+        private DateTime _Lastattend;
 
-		
-		[Column(Name="NAME", Storage="_Name", DbType="nvarchar(138)")]
-		public string Name
-		{
-			get
-			{
-				return this._Name;
-			}
+        private decimal? _AttendPct;
 
-			set
-			{
-				if (this._Name != value)
-					this._Name = value;
-			}
+        private string _AttendStr;
 
-		}
+        private string _Attendtype;
 
-		
-		[Column(Name="lastattend", Storage="_Lastattend", DbType="datetime NOT NULL")]
-		public DateTime Lastattend
-		{
-			get
-			{
-				return this._Lastattend;
-			}
+        private int _Visitor;
 
-			set
-			{
-				if (this._Lastattend != value)
-					this._Lastattend = value;
-			}
+        public RecentAttendance()
+        {
+        }
 
-		}
+        [Column(Name = "PeopleId", Storage = "_PeopleId", DbType = "int NOT NULL")]
+        public int PeopleId
+        {
+            get => _PeopleId;
 
-		
-		[Column(Name="AttendPct", Storage="_AttendPct", DbType="real")]
-		public decimal? AttendPct
-		{
-			get
-			{
-				return this._AttendPct;
-			}
+            set
+            {
+                if (_PeopleId != value)
+                {
+                    _PeopleId = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._AttendPct != value)
-					this._AttendPct = value;
-			}
+        [Column(Name = "NAME", Storage = "_Name", DbType = "nvarchar(138)")]
+        public string Name
+        {
+            get => _Name;
 
-		}
+            set
+            {
+                if (_Name != value)
+                {
+                    _Name = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="AttendStr", Storage="_AttendStr", DbType="nvarchar(200)")]
-		public string AttendStr
-		{
-			get
-			{
-				return this._AttendStr;
-			}
+        [Column(Name = "lastattend", Storage = "_Lastattend", DbType = "datetime NOT NULL")]
+        public DateTime Lastattend
+        {
+            get => _Lastattend;
 
-			set
-			{
-				if (this._AttendStr != value)
-					this._AttendStr = value;
-			}
+            set
+            {
+                if (_Lastattend != value)
+                {
+                    _Lastattend = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "AttendPct", Storage = "_AttendPct", DbType = "real")]
+        public decimal? AttendPct
+        {
+            get => _AttendPct;
 
-		
-		[Column(Name="attendtype", Storage="_Attendtype", DbType="nvarchar(100)")]
-		public string Attendtype
-		{
-			get
-			{
-				return this._Attendtype;
-			}
+            set
+            {
+                if (_AttendPct != value)
+                {
+                    _AttendPct = value;
+                }
+            }
+        }
 
-			set
-			{
-				if (this._Attendtype != value)
-					this._Attendtype = value;
-			}
+        [Column(Name = "AttendStr", Storage = "_AttendStr", DbType = "nvarchar(200)")]
+        public string AttendStr
+        {
+            get => _AttendStr;
 
-		}
+            set
+            {
+                if (_AttendStr != value)
+                {
+                    _AttendStr = value;
+                }
+            }
+        }
 
-		
-		[Column(Name="visitor", Storage="_Visitor", DbType="int NOT NULL")]
-		public int Visitor
-		{
-			get
-			{
-				return this._Visitor;
-			}
+        [Column(Name = "attendtype", Storage = "_Attendtype", DbType = "nvarchar(100)")]
+        public string Attendtype
+        {
+            get => _Attendtype;
 
-			set
-			{
-				if (this._Visitor != value)
-					this._Visitor = value;
-			}
+            set
+            {
+                if (_Attendtype != value)
+                {
+                    _Attendtype = value;
+                }
+            }
+        }
 
-		}
+        [Column(Name = "visitor", Storage = "_Visitor", DbType = "int NOT NULL")]
+        public int Visitor
+        {
+            get => _Visitor;
 
-		
+            set
+            {
+                if (_Visitor != value)
+                {
+                    _Visitor = value;
+                }
+            }
+        }
     }
-
 }

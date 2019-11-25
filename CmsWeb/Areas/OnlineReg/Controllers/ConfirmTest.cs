@@ -42,6 +42,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 try
                 {
                     var m = Util.DeSerialize<OnlineRegModel>(ed.Data);
+                    m.CurrentDatabase = CurrentDatabase;
                     var i = new ConfirmTestInfo
                     {
                         ed = ed,
@@ -79,6 +80,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 try
                 {
                     var m = Util.DeSerialize<OnlineRegModel>(ed.Data);
+                    m.CurrentDatabase = CurrentDatabase;
                     m.Datum = ed;
                     var i = new ConfirmTestInfo
                     {

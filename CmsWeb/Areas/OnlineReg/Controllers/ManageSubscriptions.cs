@@ -44,7 +44,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [AcceptVerbs(HttpVerbs.Post)]
         public ActionResult ConfirmSubscriptions(ManageSubsModel m)
         {
-            m.UpdateSubscriptions();
+            m.UpdateSubscriptions(CurrentDatabase);
 
             var Staff = CurrentDatabase.StaffPeopleForOrg(m.masterorgid);
 

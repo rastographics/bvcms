@@ -480,7 +480,7 @@ or contact the church if you need help.</p>
             var pid = TempData["PeopleId"] as int?;
             ViewBag.Token = TempData["token"];
 
-            var m = new OnlineRegModel { Orgid = id };
+            var m = new OnlineRegModel(CurrentDatabase) { Orgid = id };
             if (User.Identity.IsAuthenticated)
             {
                 return View(otherRegisterlinkmaster, m);

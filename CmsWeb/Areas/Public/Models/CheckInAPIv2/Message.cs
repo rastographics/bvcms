@@ -126,9 +126,9 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 		// API Errors
 		public const int API_ERROR_NONE = 0;
 		public const int API_ERROR_INVALID_CREDENTIALS = -6;
-
-		// API People Errors
+        
 		public const int API_ERROR_PERSON_NOT_FOUND = 100;
+        public const int API_ERROR_PENDING_CHECKIN_NOT_FOUND = 101;
 
 		// API Check-In Version
 		// Version 1 is the initial release

@@ -23,8 +23,7 @@ namespace CMSWebTests
             controller.ControllerContext = ControllerTestUtils.FakeControllerContext(controller, routeDataValues);
 
             var NewOrganizationIndex = controller.Index();
-            var OrgId = ((NewOrganizationModel)((System.Web.Mvc.ViewResultBase)NewOrganizationIndex).Model).OrganizationId;
-
+            var OrgId = ((NewOrganizationModel)((System.Web.Mvc.ViewResultBase)NewOrganizationIndex).Model).OrganizationId;            
             var FakeNewOrganizationModel = new NewOrganizationModel();
             Organization FakeOrganization = null;
             if (Orgconfig.IsNull())

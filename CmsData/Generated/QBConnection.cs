@@ -1,285 +1,243 @@
-using System; 
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
 using System.ComponentModel;
-using CmsData.Infrastructure;
+using System.Data.Linq.Mapping;
 
 namespace CmsData
 {
-	[Table(Name="dbo.QBConnections")]
-	public partial class QBConnection : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-	#region Private Fields
-		
-		private int _Id;
-		
-		private DateTime _Creation;
-		
-		private int _UserID;
-		
-		private byte _Active;
-		
-		private string _DataSource;
-		
-		private string _Token;
-		
-		private string _Secret;
-		
-		private string _RealmID;
-		
-   		
-    	
-	#endregion
-	
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-		
-		partial void OnIdChanging(int value);
-		partial void OnIdChanged();
-		
-		partial void OnCreationChanging(DateTime value);
-		partial void OnCreationChanged();
-		
-		partial void OnUserIDChanging(int value);
-		partial void OnUserIDChanged();
-		
-		partial void OnActiveChanging(byte value);
-		partial void OnActiveChanged();
-		
-		partial void OnDataSourceChanging(string value);
-		partial void OnDataSourceChanged();
-		
-		partial void OnTokenChanging(string value);
-		partial void OnTokenChanged();
-		
-		partial void OnSecretChanging(string value);
-		partial void OnSecretChanged();
-		
-		partial void OnRealmIDChanging(string value);
-		partial void OnRealmIDChanged();
-		
-    #endregion
-		public QBConnection()
-		{
-			
-			
-			OnCreated();
-		}
+    [Table(Name = "dbo.QBConnections")]
+    public partial class QBConnection : INotifyPropertyChanging, INotifyPropertyChanged
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
 
-		
-    #region Columns
-		
-		[Column(Name="ID", UpdateCheck=UpdateCheck.Never, Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int Id
-		{
-			get { return this._Id; }
+        #region Private Fields
 
-			set
-			{
-				if (this._Id != value)
-				{
-				
-                    this.OnIdChanging(value);
-					this.SendPropertyChanging();
-					this._Id = value;
-					this.SendPropertyChanged("Id");
-					this.OnIdChanged();
-				}
+        private int _Id;
 
-			}
+        private DateTime _Creation;
 
-		}
+        private int _UserID;
 
-		
-		[Column(Name="Creation", UpdateCheck=UpdateCheck.Never, Storage="_Creation", DbType="datetime NOT NULL")]
-		public DateTime Creation
-		{
-			get { return this._Creation; }
+        private byte _Active;
 
-			set
-			{
-				if (this._Creation != value)
-				{
-				
-                    this.OnCreationChanging(value);
-					this.SendPropertyChanging();
-					this._Creation = value;
-					this.SendPropertyChanged("Creation");
-					this.OnCreationChanged();
-				}
+        private string _DataSource;
 
-			}
+        private string _Token;
 
-		}
+        private string _Secret;
 
-		
-		[Column(Name="UserID", UpdateCheck=UpdateCheck.Never, Storage="_UserID", DbType="int NOT NULL")]
-		public int UserID
-		{
-			get { return this._UserID; }
+        private string _RealmID;
 
-			set
-			{
-				if (this._UserID != value)
-				{
-				
-                    this.OnUserIDChanging(value);
-					this.SendPropertyChanging();
-					this._UserID = value;
-					this.SendPropertyChanged("UserID");
-					this.OnUserIDChanged();
-				}
+        #endregion
 
-			}
+        #region Extensibility Method Definitions
 
-		}
+        partial void OnLoaded();
+        partial void OnValidate(System.Data.Linq.ChangeAction action);
+        partial void OnCreated();
 
-		
-		[Column(Name="Active", UpdateCheck=UpdateCheck.Never, Storage="_Active", DbType="tinyint NOT NULL")]
-		public byte Active
-		{
-			get { return this._Active; }
+        partial void OnIdChanging(int value);
+        partial void OnIdChanged();
 
-			set
-			{
-				if (this._Active != value)
-				{
-				
-                    this.OnActiveChanging(value);
-					this.SendPropertyChanging();
-					this._Active = value;
-					this.SendPropertyChanged("Active");
-					this.OnActiveChanged();
-				}
+        partial void OnCreationChanging(DateTime value);
+        partial void OnCreationChanged();
 
-			}
+        partial void OnUserIDChanging(int value);
+        partial void OnUserIDChanged();
 
-		}
+        partial void OnActiveChanging(byte value);
+        partial void OnActiveChanged();
 
-		
-		[Column(Name="DataSource", UpdateCheck=UpdateCheck.Never, Storage="_DataSource", DbType="char(3) NOT NULL")]
-		public string DataSource
-		{
-			get { return this._DataSource; }
+        partial void OnDataSourceChanging(string value);
+        partial void OnDataSourceChanged();
 
-			set
-			{
-				if (this._DataSource != value)
-				{
-				
-                    this.OnDataSourceChanging(value);
-					this.SendPropertyChanging();
-					this._DataSource = value;
-					this.SendPropertyChanged("DataSource");
-					this.OnDataSourceChanged();
-				}
+        partial void OnTokenChanging(string value);
+        partial void OnTokenChanged();
 
-			}
+        partial void OnSecretChanging(string value);
+        partial void OnSecretChanged();
 
-		}
+        partial void OnRealmIDChanging(string value);
+        partial void OnRealmIDChanged();
 
-		
-		[Column(Name="Token", UpdateCheck=UpdateCheck.Never, Storage="_Token", DbType="nvarchar NOT NULL")]
-		public string Token
-		{
-			get { return this._Token; }
+        #endregion
 
-			set
-			{
-				if (this._Token != value)
-				{
-				
-                    this.OnTokenChanging(value);
-					this.SendPropertyChanging();
-					this._Token = value;
-					this.SendPropertyChanged("Token");
-					this.OnTokenChanged();
-				}
+        public QBConnection()
+        {
+            OnCreated();
+        }
 
-			}
+        #region Columns
 
-		}
+        [Column(Name = "ID", UpdateCheck = UpdateCheck.Never, Storage = "_Id", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
+        public int Id
+        {
+            get => _Id;
 
-		
-		[Column(Name="Secret", UpdateCheck=UpdateCheck.Never, Storage="_Secret", DbType="nvarchar NOT NULL")]
-		public string Secret
-		{
-			get { return this._Secret; }
+            set
+            {
+                if (_Id != value)
+                {
+                    OnIdChanging(value);
+                    SendPropertyChanging();
+                    _Id = value;
+                    SendPropertyChanged("Id");
+                    OnIdChanged();
+                }
+            }
+        }
 
-			set
-			{
-				if (this._Secret != value)
-				{
-				
-                    this.OnSecretChanging(value);
-					this.SendPropertyChanging();
-					this._Secret = value;
-					this.SendPropertyChanged("Secret");
-					this.OnSecretChanged();
-				}
+        [Column(Name = "Creation", UpdateCheck = UpdateCheck.Never, Storage = "_Creation", DbType = "datetime NOT NULL")]
+        public DateTime Creation
+        {
+            get => _Creation;
 
-			}
+            set
+            {
+                if (_Creation != value)
+                {
+                    OnCreationChanging(value);
+                    SendPropertyChanging();
+                    _Creation = value;
+                    SendPropertyChanged("Creation");
+                    OnCreationChanged();
+                }
+            }
+        }
 
-		}
+        [Column(Name = "UserID", UpdateCheck = UpdateCheck.Never, Storage = "_UserID", DbType = "int NOT NULL")]
+        public int UserID
+        {
+            get => _UserID;
 
-		
-		[Column(Name="RealmID", UpdateCheck=UpdateCheck.Never, Storage="_RealmID", DbType="nvarchar NOT NULL")]
-		public string RealmID
-		{
-			get { return this._RealmID; }
+            set
+            {
+                if (_UserID != value)
+                {
+                    OnUserIDChanging(value);
+                    SendPropertyChanging();
+                    _UserID = value;
+                    SendPropertyChanged("UserID");
+                    OnUserIDChanged();
+                }
+            }
+        }
 
-			set
-			{
-				if (this._RealmID != value)
-				{
-				
-                    this.OnRealmIDChanging(value);
-					this.SendPropertyChanging();
-					this._RealmID = value;
-					this.SendPropertyChanged("RealmID");
-					this.OnRealmIDChanged();
-				}
+        [Column(Name = "Active", UpdateCheck = UpdateCheck.Never, Storage = "_Active", DbType = "tinyint NOT NULL")]
+        public byte Active
+        {
+            get => _Active;
 
-			}
+            set
+            {
+                if (_Active != value)
+                {
+                    OnActiveChanging(value);
+                    SendPropertyChanging();
+                    _Active = value;
+                    SendPropertyChanged("Active");
+                    OnActiveChanged();
+                }
+            }
+        }
 
-		}
+        [Column(Name = "DataSource", UpdateCheck = UpdateCheck.Never, Storage = "_DataSource", DbType = "char(3) NOT NULL")]
+        public string DataSource
+        {
+            get => _DataSource;
 
-		
-    #endregion
-        
-    #region Foreign Key Tables
-   		
-	#endregion
-	
-	#region Foreign Keys
-    	
-	#endregion
-	
-		public event PropertyChangingEventHandler PropertyChanging;
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-				this.PropertyChanging(this, emptyChangingEventArgs);
-		}
+            set
+            {
+                if (_DataSource != value)
+                {
+                    OnDataSourceChanging(value);
+                    SendPropertyChanging();
+                    _DataSource = value;
+                    SendPropertyChanged("DataSource");
+                    OnDataSourceChanged();
+                }
+            }
+        }
 
-		public event PropertyChangedEventHandler PropertyChanged;
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-		}
+        [Column(Name = "Token", UpdateCheck = UpdateCheck.Never, Storage = "_Token", DbType = "nvarchar NOT NULL")]
+        public string Token
+        {
+            get => _Token;
 
-   		
-	}
+            set
+            {
+                if (_Token != value)
+                {
+                    OnTokenChanging(value);
+                    SendPropertyChanging();
+                    _Token = value;
+                    SendPropertyChanged("Token");
+                    OnTokenChanged();
+                }
+            }
+        }
 
+        [Column(Name = "Secret", UpdateCheck = UpdateCheck.Never, Storage = "_Secret", DbType = "nvarchar NOT NULL")]
+        public string Secret
+        {
+            get => _Secret;
+
+            set
+            {
+                if (_Secret != value)
+                {
+                    OnSecretChanging(value);
+                    SendPropertyChanging();
+                    _Secret = value;
+                    SendPropertyChanged("Secret");
+                    OnSecretChanged();
+                }
+            }
+        }
+
+        [Column(Name = "RealmID", UpdateCheck = UpdateCheck.Never, Storage = "_RealmID", DbType = "nvarchar NOT NULL")]
+        public string RealmID
+        {
+            get => _RealmID;
+
+            set
+            {
+                if (_RealmID != value)
+                {
+                    OnRealmIDChanging(value);
+                    SendPropertyChanging();
+                    _RealmID = value;
+                    SendPropertyChanged("RealmID");
+                    OnRealmIDChanged();
+                }
+            }
+        }
+
+        #endregion
+
+        #region Foreign Key Tables
+
+        #endregion
+
+        #region Foreign Keys
+
+        #endregion
+
+        public event PropertyChangingEventHandler PropertyChanging;
+        protected virtual void SendPropertyChanging()
+        {
+            if ((PropertyChanging != null))
+            {
+                PropertyChanging(this, emptyChangingEventArgs);
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void SendPropertyChanged(string propertyName)
+        {
+            if ((PropertyChanged != null))
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
 }
-

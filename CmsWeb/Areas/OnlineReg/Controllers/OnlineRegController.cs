@@ -365,7 +365,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 CurrentDatabase.SubmitChanges();
             }
             int imageId = ImageData.DocumentsData.StoreImageFromDocument(CurrentImageDatabase, file);
-            CurrentDatabase.OrgMemberDocuments.InsertOnSubmit(new OrgMemberDocuments()
+            CurrentDatabase.OrgMemberDocuments.InsertOnSubmit(new OrgMemberDocument()
             {
                 DocumentName = docName,
                 ImageId = imageId,
@@ -392,7 +392,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return FlowList(m);
             }
 
-            m.List.Add(new OnlineRegPersonModel
+            m.List.Add(new OnlineRegPersonModel(CurrentDatabase)
             {
                 orgid = m.Orgid,
                 masterorgid = m.masterorgid,
@@ -461,6 +461,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return Message("Registration cannot be completed after a page refresh.");
             }
             var m = Util.DeSerialize<OnlineRegModel>(s);
+            m.CurrentDatabase = CurrentDatabase;
             var msg = m.CheckExpiredOrCompleted();
             if (msg.HasValue())
             {
