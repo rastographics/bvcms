@@ -1,11 +1,13 @@
 using CmsData;
 using CmsData.Codes;
 using CmsWeb.Controllers;
+using CmsWeb.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using UtilityExtensions;
+using CmsWeb.Constants;
 
 namespace CmsWeb.Areas.OnlineReg.Models
 {
@@ -14,16 +16,38 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public BadRegistrationException(string msg) : base(msg) { }
     }
 
-    public partial class OnlineRegModel
-    {
-        public OnlineRegModel()
+    public partial class OnlineRegModel : IDbBinder
+    {        
+        public CMSDataContext CurrentDatabase
         {
+            get => _currentDatabase ?? DbUtil.Db;
+            set
+            {
+                _currentDatabase = value;
+                Init();
+            }
+        }
+
+        private void Init()
+        {
+            foreach(var person in List)
+            {
+                person.CurrentDatabase = CurrentDatabase;
+            }
             HttpContextFactory.Current.Items["OnlineRegModel"] = this;
-            CurrentDatabase = DbUtil.Db;
+        }
+        private CMSDataContext _currentDatabase;
+
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
+        public OnlineRegModel() { Init(); }
+
+        public OnlineRegModel(CMSDataContext db)
+        {
+            CurrentDatabase = db;
         }
 
         public OnlineRegModel(HttpRequestBase req, CMSDataContext db, int? id, bool? testing, string email, bool? login, string source)
-            : this()
+            : this(db)
         {
             CurrentDatabase = db;
             Orgid = id;
@@ -63,7 +87,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     throw new BadRegistrationException("no registration allowed on this org");
                 }
             }
-            this.testing = testing == true || DbUtil.Db.Setting("OnlineRegTesting", Util.IsDebug() ? "true" : "false").ToBool();
+            this.testing = testing == true || CurrentDatabase.Setting("OnlineRegTesting", Util.IsDebug() ? "true" : "false").ToBool();
 
             // the email passed in is valid or they did not specify login
             if (AllowAnonymous && (Util.ValidEmail(email) || login != true))
@@ -91,7 +115,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (Util.ValidEmail(email) && ProcessType == PaymentProcessTypes.OnlineRegistration)
             {
                 var person =
-                    new OnlineRegPersonModel
+                    new OnlineRegPersonModel(CurrentDatabase)
                     {
                         orgid = Orgid,
                         masterorgid = masterorgid,
@@ -107,7 +131,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             List = new List<OnlineRegPersonModel>
                 {
-                    new OnlineRegPersonModel
+                    new OnlineRegPersonModel(CurrentDatabase)
                         {
                             orgid = Orgid,
                             masterorgid = masterorgid,
@@ -120,11 +144,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
                         }
                 };
         }
-        public static string GetDescriptionForPayment(int? id)
+        public static string GetDescriptionForPayment(int? id, CMSDataContext db)
         {
             try
             {
-                var m = new OnlineRegModel(null, DbUtil.Db, id, false, null, null, null);
+                var m = new OnlineRegModel(null, db, id, false, null, null, null);
                 return m.DescriptionForPayment;
             }
             catch (Exception)

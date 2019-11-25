@@ -32,6 +32,27 @@ namespace SharedTestFixtures
 
             return person;
         }
+       
+        public static int CreateSaveCouple(CMSDataContext db)
+        {
+            var f = new Family
+            {
+                CreatedDate = DateTime.Now
+            };
+            db.Families.InsertOnSubmit(f);
+            db.SubmitChanges();
+            var familyId = f.FamilyId;
+            var head = CreateSavePerson(db, f);
+            head.MaritalStatusId = 20;
+            head.GenderId = 1;
+            db.SubmitChanges();
+            var spouse = CreateSavePerson(db, f);
+            spouse.MaritalStatusId = 20;
+            spouse.GenderId = 2;
+            db.SubmitChanges();
+
+            return familyId;
+        }
 
         public static void DeleteMockPerson(CMSDataContext db, Person person)
         {

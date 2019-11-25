@@ -10,22 +10,22 @@ namespace CmsWeb.Areas.OnlineReg.Models
     {
         public bool UserNeedsSelection;
 
-        public static IQueryable<Organization> UserSelectClasses(Organization masterorg)
+        public IQueryable<Organization> UserSelectClasses(Organization masterorg)
         {
             if (!masterorg.OrgPickList.HasValue())
             {
-                return DbUtil.Db.Organizations.Where(oo => false);
+                return CurrentDatabase.Organizations.Where(oo => false);
             }
 
             var cklist = masterorg.OrgPickList.Split(',').Select(oo => oo.ToInt()).ToList();
 
-            var q = from o in DbUtil.Db.Organizations
+            var q = from o in CurrentDatabase.Organizations
                     where cklist.Contains(o.OrganizationId)
                     select o;
             return q;
         }
 
-        public static List<Organization> OrderedClasses(Organization masterorg)
+        public List<Organization> OrderedClasses(Organization masterorg)
         {
             if (masterorg == null)
             {
@@ -54,11 +54,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
             return Classes(masterorg, cid ?? 0);
         }
 
-        public static List<ClassInfo> Classes(Organization masterorg, int id)
+        public List<ClassInfo> Classes(Organization masterorg, int id)
         {
             var q = from o in OrderedClasses(masterorg)
                     let hasroom = (o.ClassFilled ?? false) == false
-                        && ((o.Limit ?? 0) == 0 || o.Limit > o.RegLimitCount(DbUtil.Db))
+                        && ((o.Limit ?? 0) == 0 || o.Limit > o.RegLimitCount(CurrentDatabase))
                         && (o.RegistrationClosed ?? false) == false
                         && (o.RegEnd ?? DateTime.MaxValue) > Util.Now
                         && (o.RegStart ?? DateTime.MinValue) <= Util.Now

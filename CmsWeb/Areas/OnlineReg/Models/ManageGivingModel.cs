@@ -13,6 +13,8 @@ using CmsData.Finance;
 using CmsData.Registration;
 using CmsWeb.Areas.OnlineReg.Controllers;
 using CmsWeb.Code;
+using CmsWeb.Constants;
+using CmsWeb.Models;
 using Dapper;
 using Microsoft.Scripting.Utils;
 using Newtonsoft.Json;
@@ -21,14 +23,14 @@ using UtilityExtensions;
 namespace CmsWeb.Areas.OnlineReg.Models
 {
     [Serializable]
-    public class ManageGivingModel
+    public class ManageGivingModel : IDbBinder
     {
         public int pid { get; set; }
         public int orgid { get; set; }
 
         [NonSerialized]
         private CMSDataContext _currentDatabase;
-        private CMSDataContext CurrentDatabase
+        public CMSDataContext CurrentDatabase
         {
             get => _currentDatabase ?? (CurrentDatabase = DbUtil.Db);
             set
@@ -147,6 +149,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public bool HasManagedGiving => person?.ManagedGiving() != null;
 
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
         public ManageGivingModel() { }
         public ManageGivingModel(CMSDataContext db)
         {
@@ -383,7 +386,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             if (Type == PaymentType.CreditCard)
                 PaymentValidator.ValidateCreditCardInfo(modelState,
-                    new PaymentForm
+                    new PaymentForm(CurrentDatabase)
                     {
                         CreditCard = CreditCard,
                         Expires = Expires,
@@ -476,7 +479,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     }
                     else
                     {
-                        var pf = new PaymentForm()
+                        var pf = new PaymentForm(CurrentDatabase)
                         {
                             CreditCard = CreditCard,
                             First = FirstName,
@@ -664,7 +667,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public string AutocompleteOnOff => Util.IsDebug() ? "on" : "off";
 
-        public bool ManagedGivingStopped { get; private set; }
+        public bool ManagedGivingStopped { get; private set; }        
 
         public void CancelManagedGiving(int peopleId)
         {

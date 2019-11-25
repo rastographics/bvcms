@@ -2,7 +2,7 @@ using CmsData;
 
 namespace CmsWeb.Models
 {
-    internal interface IDbBinder
+    public interface IDbBinder
     {
         CMSDataContext CurrentDatabase { get; set; }
     }

@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Web.Mvc;
 using CmsData;
 using CmsData.Codes;
+using CmsData.Classes.Barcodes;
 using CmsWeb.Areas.Public.Models.CheckInAPIv2;
 using CmsWeb.Areas.Public.Models.CheckInAPIv2.Results;
 using CmsWeb.Areas.Public.Models.CheckInAPIv2.Searches;
@@ -126,17 +128,36 @@ namespace CmsWeb.Areas.Public.Controllers
 
 			DbUtil.LogActivity( "Check-In Number Search: " + cns.search );
 
-			Message response = new Message();
-			response.setNoError();
+            Message response = new Message();
+            response.setNoError();
 
-			bool returnPictureUrls = message.device == Message.API_DEVICE_WEB;
-			List<Family> families = Family.forSearch( CurrentDatabase, CurrentImageDatabase, cns.search, cns.campus, cns.date, returnPictureUrls );
+            bool returnPictureUrls = message.device == Message.API_DEVICE_WEB;
 
-			response.data = SerializeJSON( families, message.version );
+            if (cns.search.Contains("!"))
+            {
+                var list = cns.search.Split('!').Where(s => !string.IsNullOrWhiteSpace(s)).ToList();
+                string id = list.First();
+                var pending = CurrentDatabase.CheckInPendings.Where(p => p.Id == id.ToInt()).SingleOrDefault();
+                if (pending != null)
+                {
+                    AttendanceBundle bundle = JsonConvert.DeserializeObject<AttendanceBundle>(pending.Data);
+                    List<Family> result = Family.forAttendanceBundle(CurrentDatabase, CurrentImageDatabase, bundle, cns.campus, cns.date, returnPictureUrls);
+                    response.argString = SerializeJSON(bundle, message.version);
+                    response.data = SerializeJSON(result, message.version);
+                    return response;
+                }
+                else
+                {
+                    return Message.createErrorReturn("Invalid barcode.", Message.API_ERROR_PERSON_NOT_FOUND);
+                }
+            }
 
+            List<Family> families = Family.forSearch(CurrentDatabase, CurrentImageDatabase, cns.search, cns.campus, cns.date, returnPictureUrls);
+            response.data = SerializeJSON(families, message.version);
+            
 			return response;
 		}
-
+        
 		[HttpGet]
 		public ActionResult GetProfiles()
 		{
@@ -325,43 +346,94 @@ namespace CmsWeb.Areas.Public.Controllers
 			}
 		}
 
-		[HttpPost]
-		public ActionResult Barcode( string data )
+        [HttpPost]
+		public ActionResult PendingCheckIn( string data )
 		{
 			// Authenticate first
 			if( !Auth() ) {
 				return Message.createErrorReturn( "Authentication failed, please try again", Message.API_ERROR_INVALID_CREDENTIALS );
 			}
-
+            
+            Message response = new Message();
 			Message message = Message.createFromString( data );
+            
+            var pending = new CheckInPending
+            {
+                Stamp = DateTime.Now,
+                Data = message.data
+            };
 
-			CmsData.Person p = CurrentDatabase.LoadPersonById( message.id );
+            CurrentDatabase.CheckInPendings.InsertOnSubmit(pending);
+            CurrentDatabase.SubmitChanges();
+            
+            response.setNoError();
+            response.count = 1;
 
-			if( p == null ) {
-				return Message.createErrorReturn( "Person not found", Message.API_ERROR_PERSON_NOT_FOUND );
-			}
+            string qrCode = Convert.ToBase64String(BarcodeHelper.generateQRCode("!" + pending.Id, 300));
 
-			Message response = new Message();
+            response.data = qrCode;
+            return response;
+        }
 
-			// argBool: True = set, False = get
-			if( message.argBool ) {
-				PeopleExtra extra = p.GetExtraValue( "PIN" );
-				extra.Data = message.data;
+        [HttpPost]
+        public ActionResult GetPendingCheckIn(string data)
+        {
+            // Authenticate first
+            if (!Auth())
+            {
+                return Message.createErrorReturn("Authentication failed, please try again", Message.API_ERROR_INVALID_CREDENTIALS);
+            }
 
-				CurrentDatabase.SubmitChanges();
+            Message message = Message.createFromString(data);
 
-				response.setNoError();
-				response.count = 1;
-			} else {
-				response.setNoError();
-				response.count = 1;
-				response.data = p.GetExtra( "PIN" );
-			}
+            CheckInPending pending = CurrentDatabase.CheckInPendings.Where(c => c.Id == message.id).SingleOrDefault();
 
-			return response;
-		}
+            if (pending == null)
+            {
+                return Message.createErrorReturn("Pending check in not found", Message.API_ERROR_PENDING_CHECKIN_NOT_FOUND);
+            }
 
-		[HttpPost]
+            Message response = new Message();
+            response.setNoError();
+            response.count = 1;
+            response.data = SerializeJSON(pending);
+
+            return response;
+        }
+
+        [HttpPost]
+        public ActionResult UpdatePendingCheckIn(string data)
+        {
+            // Authenticate first
+            if (!Auth())
+            {
+                return Message.createErrorReturn("Authentication failed, please try again", Message.API_ERROR_INVALID_CREDENTIALS);
+            }
+
+            Message message = Message.createFromString(data);
+            CheckInPending updated = JsonConvert.DeserializeObject<CheckInPending>(message.data);
+
+            CheckInPending existing = CurrentDatabase.CheckInPendings.Where(c => c.Id == updated.Id).SingleOrDefault();
+
+            if (existing == null)
+            {
+                return Message.createErrorReturn("Pending check in not found", Message.API_ERROR_PENDING_CHECKIN_NOT_FOUND);
+            }
+
+            existing.Stamp = updated.Stamp;
+            existing.Data = updated.Data;
+
+            CurrentDatabase.SubmitChanges();
+
+            Message response = new Message();
+            response.setNoError();
+            response.count = 1;
+            response.data = SerializeJSON(existing);
+
+            return response;
+        }
+
+        [HttpPost]
 		public ActionResult UpdateAttend( string data )
 		{
 			// Authenticate first

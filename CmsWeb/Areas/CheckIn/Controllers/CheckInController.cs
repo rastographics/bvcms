@@ -18,5 +18,11 @@ namespace CmsWeb.Areas.CheckIn.Controllers
         {
             return View("~/Areas/CheckIn/Views/CheckIn/CheckIn.cshtml");
         }
+
+        [HttpGet, Route("~/CheckIn/Logout")]
+        public ActionResult Logout()
+        {
+            return View("~/Areas/CheckIn/Views/CheckIn/LogOut.cshtml");
+        }
     }
 }

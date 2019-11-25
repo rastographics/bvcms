@@ -10,8 +10,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 {
     [Serializable]
     public partial class OnlineRegModel : IXmlSerializable
-    {
-        CMSDataContext CurrentDatabase { get; set; }
+    {        
         public string Campus { get; set; }
         public string DefaultFunds { get; set; }
         public bool? testing { get; set; }
@@ -43,13 +42,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public string registertag { get; set; }
         public string registerLinkType { get; set; }
 
-        private List<OnlineRegPersonModel> _list = new List<OnlineRegPersonModel>();
-
-        public List<OnlineRegPersonModel> List
-        {
-            get { return _list; }
-            set { _list = value; }
-        }
+        public List<OnlineRegPersonModel> List { get; set; } = new List<OnlineRegPersonModel>();
 
         [XmlIgnore]
         [DisplayName("Password")]
