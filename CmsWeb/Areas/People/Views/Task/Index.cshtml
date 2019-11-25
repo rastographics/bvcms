@@ -76,7 +76,7 @@
                     }
                 </h5>
                 <div class="box-tools">
-                    @if (Model.CanAccept)
+                    @if (Model.CanAccept && !Model.IsOwner)
                     {
                         <a href="#" class="accept btn btn-success">
                             <i class="fa fa-thumbs-o-up fa-fw"></i> Accept Task
@@ -85,7 +85,7 @@
                             <i class="fa fa-thumbs-o-down fa-fw"></i> Decline Task
                         </a>
                     }
-                    @if (Model.IsAcceptedPage || Model.IsCreatedPage && !Model.IsOwner)
+                    @if (Model.IsAcceptedPage || Model.IsCreatedPage || Model.IsOwner)
                     {
                         if (Model.CanComplete)
                         {
