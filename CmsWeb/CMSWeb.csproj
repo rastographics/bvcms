@@ -1865,6 +1865,7 @@
     <Content Include="Areas\CheckIn\Views\CheckinSetup\Index.cshtml" />
     <Content Include="Areas\People\Views\Task\_ActionsMenu.cshtml" />
     <Content Include="Areas\Manage\Views\Account\AuthDisabled.cshtml" />
+    <Content Include="Areas\People\Views\Task\OldIndex.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

@@ -21,7 +21,8 @@ namespace CmsWeb.Areas.People.Controllers
         public ActionResult Index(int id)
         {
             var t = TaskModel.FetchModel(id, CurrentDatabase.Host, CurrentDatabase);
-            return View(t);
+            var viewName = CurrentDatabase.Setting("UseOldTaskUI") ? "OldIndex" : "Index";
+            return View(viewName, t);
         }
 
         [HttpGet]
