@@ -461,6 +461,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return Message("Registration cannot be completed after a page refresh.");
             }
             var m = Util.DeSerialize<OnlineRegModel>(s);
+            m.CurrentDatabase = CurrentDatabase;
             var msg = m.CheckExpiredOrCompleted();
             if (msg.HasValue())
             {

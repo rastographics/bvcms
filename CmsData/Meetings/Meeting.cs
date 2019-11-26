@@ -90,7 +90,7 @@ namespace CmsData
                 return e.IntValue.ToString();
             return e.BitValue.ToString();
         }
-        public static Meeting FetchOrCreateMeeting(CMSDataContext Db, int OrgId, DateTime dt, bool? noautoabsents = null)
+        public static Meeting FetchOrCreateMeeting(CMSDataContext Db, int OrgId, DateTime dt, bool? noautoabsents = true)
         {
             var meeting = (from m in Db.Meetings
                            where m.OrganizationId == OrgId && m.MeetingDate == dt

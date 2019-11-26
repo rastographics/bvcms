@@ -312,6 +312,14 @@
     <Reference Include="Xceed.Words.NET, Version=1.2.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
       <HintPath>..\packages\DocX.1.2.1\lib\Xceed.Words.NET.dll</HintPath>
     </Reference>
+    <Reference Include="zxing, Version=0.16.4.0, Culture=neutral, PublicKeyToken=4e88037ac681fe60">
+      <HintPath>..\packages\ZXing.Net.0.16.4\lib\net461\zxing.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="zxing.presentation, Version=0.16.4.0, Culture=neutral, PublicKeyToken=4e88037ac681fe60">
+      <HintPath>..\packages\ZXing.Net.0.16.4\lib\net461\zxing.presentation.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="API\ApiSessionModel.cs" />
@@ -341,6 +349,7 @@
     <Compile Include="API\QueryFunctions\Attendance.cs" />
     <Compile Include="API\QueryFunctions\Contributions.cs" />
     <Compile Include="API\QueryFunctions\Query.cs" />
+    <Compile Include="Classes\Barcodes\BarcodeHelper.cs" />
     <Compile Include="Classes\DataMapper\DataMapper.cs" />
     <Compile Include="Charts\GoogleChartsData.cs" />
     <Compile Include="Classes\ExtraValues\Code.cs" />
@@ -537,6 +546,7 @@
     <Compile Include="Generated\CheckInLabelEntry.cs" />
     <Compile Include="Generated\CheckInLabelEntryAlignment.cs" />
     <Compile Include="Generated\CheckInLabelType.cs" />
+    <Compile Include="Generated\CheckInPending.cs" />
     <Compile Include="Generated\CheckinProfiles.cs" />
     <Compile Include="Generated\CheckinProfileSettings.cs" />
     <Compile Include="Generated\CheckInSetting.cs" />
@@ -806,6 +816,7 @@
     <Compile Include="Generated\Views\TransactionSummary.cs" />
     <Compile Include="DbUtil\ITableWithExtraValues.cs" />
     <Content Include="App_Readme\Elmah.txt" />
+    <Content Include="Migrations\20191112_add_dob_and_phone_fields_to_options_view.sql" />
     <Content Include="Migrations\00000000_sql_migrations_table.sql" />
     <Compile Include="Organization\OrgFilter.cs" />
     <Compile Include="Organization\OrgPerson.cs" />
@@ -1169,6 +1180,7 @@
     <Resource Include="Classes\OnlineRegSummaryText\Details2.xml">
       <SubType>Designer</SubType>
     </Resource>
+    <Content Include="Migrations\20191111_Create_SP_UpdateAllSpouseId.sql" />
     <Content Include="QueryBuilder\CompareMap.xml">
       <SubType>Designer</SubType>
     </Content>

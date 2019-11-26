@@ -1,4 +1,9 @@
-﻿.checkin {
+﻿@media (min-width: 1632px) {
+    .container-fluid {
+        width: auto !important;
+    }
+}
+.checkin {
     background-color: #f5f5f5 !important;
     user-select: none;
 }
