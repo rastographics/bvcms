@@ -305,7 +305,8 @@ namespace CmsWeb.Areas.People.Models
                                   : c.ContributionDesc == "Recurring Giving"
                                       ? c.ContributionDesc
                                       : "Online",
-                         PledgeFund = c.ContributionFund.FundPledgeFlag
+                         PledgeFund = c.ContributionFund.FundPledgeFlag,
+                         TranId = c.TranId
                      };
             return q2;
         }
