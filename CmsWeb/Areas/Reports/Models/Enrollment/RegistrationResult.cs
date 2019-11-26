@@ -286,11 +286,13 @@ namespace CmsWeb.Areas.Reports.Models
 
         private static string GetTermsSignature(int peopleId, int organizationId)
         {
-            var regDataId = DbUtil.Db.OrganizationMembers.FirstOrDefault(o => o.PeopleId == peopleId && o.OrganizationId == organizationId).RegistrationDataId;
+            var db = DbUtil.Db;
+            var regDataId = db.OrganizationMembers.FirstOrDefault(o => o.PeopleId == peopleId && o.OrganizationId == organizationId).RegistrationDataId;
             if (regDataId != null)
             {
-                var regData = DbUtil.Db.RegistrationDatas.FirstOrDefault(o => o.Id == regDataId).Data;
+                var regData = db.RegistrationDatas.FirstOrDefault(o => o.Id == regDataId).Data;
                 var m = Util.DeSerialize<OnlineRegModel>(regData);
+                m.CurrentDatabase = db;
                 return m.TermsSignature;
             }
             return null;

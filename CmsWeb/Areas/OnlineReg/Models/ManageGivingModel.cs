@@ -13,6 +13,7 @@ using CmsData.Finance;
 using CmsData.Registration;
 using CmsWeb.Areas.OnlineReg.Controllers;
 using CmsWeb.Code;
+using CmsWeb.Constants;
 using CmsWeb.Models;
 using Dapper;
 using Microsoft.Scripting.Utils;
@@ -26,7 +27,14 @@ namespace CmsWeb.Areas.OnlineReg.Models
     {
         [NonSerialized]
         private CMSDataContext _currentDatabase;
-        public CMSDataContext CurrentDatabase { get => _currentDatabase ?? DbUtil.Db; set => _currentDatabase = value; }
+        public CMSDataContext CurrentDatabase
+        {
+            get => _currentDatabase ?? (CurrentDatabase = DbUtil.Db);
+            set
+            {
+                if (_currentDatabase == null)
+                {
+                    _currentDatabase = value;
 
         public int pid { get; set; }
         public int orgid { get; set; }
@@ -149,6 +157,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public bool HasManagedGiving => person?.ManagedGiving() != null;
 
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
         public ManageGivingModel() { }
         public ManageGivingModel(CMSDataContext db)
         {
@@ -666,7 +675,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public string AutocompleteOnOff => Util.IsDebug() ? "on" : "off";
 
-        public bool ManagedGivingStopped { get; private set; }
+        public bool ManagedGivingStopped { get; private set; }        
 
         public void CancelManagedGiving(int peopleId)
         {

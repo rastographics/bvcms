@@ -211,6 +211,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             if (datum != null)
             {
                 m = Util.DeSerialize<OnlineRegModel>(datum.Data);
+                m.CurrentDatabase = CurrentDatabase;
                 var pf = PaymentForm.CreatePaymentForm(m);
                 //Needs to redirect in case cupons are enable.
                 Amount = pf.AmtToPay;
@@ -314,6 +315,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             OnlineRegModel m = new OnlineRegModel(CurrentDatabase);
             RegistrationDatum datum = CurrentDatabase.RegistrationDatas.SingleOrDefault(d => d.Id == datumId);
             m = Util.DeSerialize<OnlineRegModel>(datum.Data);
+            m.CurrentDatabase = CurrentDatabase;
             PaymentForm pf = PaymentForm.CreatePaymentForm(m);
 
             Payment payment = await _pushpayPayment.GetPayment(paymentToken);
@@ -414,7 +416,7 @@ namespace CmsWeb.Areas.Setup.Controllers
                 Description = pf.Description,
                 OrgId = pf.OrgId,
                 Url = pf.URL,
-                TransactionGateway = OnlineRegModel.GetTransactionGateway(pf.ProcessType)?.GatewayAccountName,
+                TransactionGateway = OnlineRegModel.GetTransactionGateway(CurrentDatabase, pf.ProcessType)?.GatewayAccountName,
                 Address = "Street1",
                 Address2 = "123",
                 City = "My City",

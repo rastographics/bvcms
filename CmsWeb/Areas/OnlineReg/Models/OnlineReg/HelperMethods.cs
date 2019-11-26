@@ -824,6 +824,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             try
             {
                 var m = Util.DeSerialize<OnlineRegModel>(ed.Data);
+                m.CurrentDatabase = db;
                 m.Datum = ed;
                 m.DatumId = id;
                 m.Completed = ed.Completed ?? false;
