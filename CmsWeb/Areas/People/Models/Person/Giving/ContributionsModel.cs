@@ -42,7 +42,7 @@ namespace CmsWeb.Areas.People.Models
         [DisplayName("Envelope Option")]
         public CodeInfo EnvelopeOptions { get; set; }
 
-        private List<string> GivingYears = new List<string>(){ "YearToDate", "AllYears" };
+        private List<string> GivingYears = new List<string>(){ "Year To Date", "All Years" };
         public DateTime GivingStartDate { get; set; }
         public DateTime GivingEndDate { get; set; }
 
@@ -73,10 +73,10 @@ namespace CmsWeb.Areas.People.Models
                         .OrderBy(x => x.ContributionDate)
                         .First().ContributionDate.Value.Year;
                 var currentYear = DateTime.Now.Year;
-                while (oldestYear <= currentYear)
+                while (currentYear >= oldestYear)
                 {
-                    GivingYears.Add(oldestYear.ToString());
-                    oldestYear++;
+                    GivingYears.Add(currentYear.ToString());
+                    currentYear--;
                 }
             }
         }
@@ -114,7 +114,7 @@ namespace CmsWeb.Areas.People.Models
         private IQueryable<Contribution> ApplyYear(IQueryable<Contribution> contributionRecords)
         {
             GivingEndDate = DateTime.Now;
-            switch (Year)
+            switch (Year.Replace(" ",""))
             {
                 case null:
                 case "YearToDate":

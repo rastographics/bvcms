@@ -73,13 +73,13 @@
                                 <th>@Model.SortLinkWFilter("Type", filter)</th>
                                 <th>@Model.SortLinkWFilter("CheckNo", filter)</th>
                             }
-                            @if (isFinanceRole && !Model.isPledges)
-                            {
-                                <th></th>
-                            }
                             @if (Model.ShowNames)
                             {
                                 <th>@Model.SortLinkWFilter("Name", filter)</th>
+                            }
+                            @if (isFinanceRole && !Model.isPledges)
+                            {
+                                <th></th>
                             }
                             @if (isFinanceRole && Model.isPledges)
                             {
@@ -111,12 +111,16 @@
                                         }
                                     </td>
                                 }
+                                @if (Model.ShowNames)
+                                {
+                                    <td>@c.Name</td>
+                                }
                                 @if (isFinanceRole && !Model.isPledges)
                                 {
                                     <td class="action">
                                         <div class="btn-group">
                                             <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                                ... <span class="caret"></span>
+                                                <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
                                             </button>
                                             <ul class="dropdown-menu dropdown-menu-right" role="menu">
                                                 @if (c.TranId != null)
@@ -127,10 +131,6 @@
                                             </ul>
                                         </div>
                                     </td>
-                                }
-                                @if (Model.ShowNames)
-                                {
-                                    <td>@c.Name</td>
                                 }
                                 @if (isFinanceRole && c.Type == "Pledge")
                                 {
