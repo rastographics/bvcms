@@ -9,8 +9,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
     public partial class OnlineRegPersonModel
     {
         public decimal AmountToPay()
-        {
-            if (DbUtil.Db.Setting("UseOnlinePayments", "true") == "false")
+        {            
+            if (CurrentDatabase.Setting("UseOnlinePayments", "true") == "false")
             {
                 return 0;
             }
@@ -37,7 +37,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 : TotalAmount();
         }
         public decimal TotalAmount()
-        {
+        {           
             if (org == null)
             {
                 return 0;
@@ -112,7 +112,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             return amt;
         }
         public decimal TotalOther()
-        {
+        {            
             decimal amt = 0;
             if (Parent.SupportMissionTrip)
             {
@@ -158,8 +158,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
                         amt += setting.ExtraFee.Value;
                     }
                 }
-
-                if (FundItem.Count > 0)
+                
+                if ((FundItem?.Count ?? 0 ) > 0)
                 {
                     amt += FundItemsChosen().Sum(f => f.Amt);
                 }

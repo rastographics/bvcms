@@ -179,7 +179,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             if (o != null)
             {
-                if ((o.ClassFilled ?? false) || (o.Limit > 0 && o.Limit <= o.RegLimitCount(CurrentDatabase)))
+                if ((o.ClassFilled ?? false) || (o.Limit <= o.RegLimitCount(CurrentDatabase)))
                 {
                     return true;
                 }
@@ -824,6 +824,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             try
             {
                 var m = Util.DeSerialize<OnlineRegModel>(ed.Data);
+                m.CurrentDatabase = db;
                 m.Datum = ed;
                 m.DatumId = id;
                 m.Completed = ed.Completed ?? false;

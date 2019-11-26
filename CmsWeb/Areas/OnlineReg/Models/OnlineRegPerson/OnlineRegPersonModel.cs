@@ -29,10 +29,27 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private void Init()
         {
-            YesNoQuestion = new Dictionary<string, bool?>();
-            OrganizationDocument = new Dictionary<string, bool?>();
-            FundItem = new Dictionary<int, decimal?>();
-            Parent = HttpContextFactory.Current?.Items["OnlineRegModel"] as OnlineRegModel;
+            YesNoQuestion = YesNoQuestion ?? new Dictionary<string, bool?>();
+            OrganizationDocument = OrganizationDocument ?? new Dictionary<string, bool?>();
+            FundItem = FundItem ?? new Dictionary<int, decimal?>();
+            Parent = Parent ?? HttpContextFactory.Current?.Items["OnlineRegModel"] as OnlineRegModel;
+        }
+
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
+        public OnlineRegPersonModel() { }
+        public OnlineRegPersonModel(CMSDataContext db)
+        {
+            CurrentDatabase = db;
+        }
+
+        private OnlineRegModel _parent;
+        public OnlineRegModel Parent
+        {
+            get => _parent ?? HttpContextFactory.Current?.Items["OnlineRegModel"] as OnlineRegModel;
+            set
+            {
+                _parent = value;
+            }
         }
 
         private CMSDataContext _currentDatabase;
@@ -181,16 +198,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public List<string> option { get; set; }
         public List<string> Checkbox { get; set; }
         public List<Dictionary<string, int?>> MenuItem { get; set; }
-
-        [Obsolete(Errors.ModelBindingConstructorError, true)]
-        public OnlineRegPersonModel() { }
-        public OnlineRegPersonModel(CMSDataContext db)
-        {
-            CurrentDatabase = db;
-        }
-
-        public OnlineRegModel Parent;
-
+        
         public int Index { get; set; }
 
         public bool LastItem()
