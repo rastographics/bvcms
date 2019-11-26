@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Web.Mvc;
 using System.Web.Security;
 using System.Xml.Linq;
 
@@ -41,6 +42,10 @@ namespace CmsWeb.Areas.People.Models
         [DisplayName("Envelope Option")]
         public CodeInfo EnvelopeOptions { get; set; }
 
+        private List<string> GivingYears = new List<string>(){ "YearToDate", "AllYears" };
+        public DateTime GivingStartDate { get; set; }
+        public DateTime GivingEndDate { get; set; }
+
         [Obsolete(Errors.ModelBindingConstructorError, true)]
         public ContributionsModel()
         {
@@ -60,11 +65,31 @@ namespace CmsWeb.Areas.People.Models
             AjaxPager = true;
         }
 
+        public void SetGivingYears(IQueryable<Contribution> contributions)
+        {
+            if (contributions != null && contributions.Count() > 0)
+            {
+                var oldestYear = contributions
+                        .OrderBy(x => x.ContributionDate)
+                        .First().ContributionDate.Value.Year;
+                var currentYear = DateTime.Now.Year;
+                while (oldestYear <= currentYear)
+                {
+                    GivingYears.Add(oldestYear.ToString());
+                    oldestYear++;
+                }
+            }
+        }
+
         public override IQueryable<Contribution> DefineModelList()
         {
             IQueryable<Contribution> contributionRecords;
             contributionRecords = GetContributionRecords();
             IQueryable<Contribution> filteredRecords = ApplyFilter(contributionRecords);
+            if (Filter != "Pledges")
+            {
+                filteredRecords = ApplyYear(filteredRecords);
+            }
             var items = filteredRecords.ToList();
             ShowNames = filteredRecords.Any(c => c.PeopleId != Person.PeopleId);
             ShowTypes = filteredRecords.Any(c => ContributionTypeCode.SpecialTypes.Contains(c.ContributionTypeId));
@@ -84,6 +109,26 @@ namespace CmsWeb.Areas.People.Models
                 default:
                     return contributionRecords;
             }
+        }
+
+        private IQueryable<Contribution> ApplyYear(IQueryable<Contribution> contributionRecords)
+        {
+            GivingEndDate = DateTime.Now;
+            switch (Year)
+            {
+                case null:
+                case "YearToDate":
+                    GivingStartDate = new DateTime(GivingEndDate.Year, 1, 1);
+                    break;
+                case "AllYears":
+                    GivingStartDate = new DateTime(1980, 1, 1);
+                    break;
+                default:
+                    GivingStartDate = new DateTime(int.Parse(Year), 1, 1);
+                    GivingEndDate = new DateTime(int.Parse(Year), 12, 31);
+                    break;
+            }
+            return contributionRecords.Where(p => p.ContributionDate >= GivingStartDate && p.ContributionDate <= GivingEndDate);
         }
 
         private IQueryable<Contribution> GetContributionRecords()
@@ -123,9 +168,15 @@ namespace CmsWeb.Areas.People.Models
             return PledgesSummary;
         }
 
+        public IEnumerable<SelectListItem> GivingYearsList()
+        {
+            SetGivingYears(ApplyFilter(GetContributionRecords()));
+            return GivingYears.Select(i => new SelectListItem { Text = i, Selected = Year == i });
+        }
+
         public List<GivingSummary> GetGivingSummary()
         {
-            IQueryable<Contribution> contributionRecords = GetContributionRecords();
+            IQueryable<Contribution> contributionRecords = ApplyYear(GetContributionRecords());
             GivingSummary = new List<GivingSummary>();
             foreach (Contribution contribution in contributionRecords.Where(p => p.ContributionTypeId != ContributionTypeCode.Pledge).OrderByDescending(c => c.ContributionDate))
             {

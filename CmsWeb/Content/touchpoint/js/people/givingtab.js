@@ -81,6 +81,18 @@
     });
 });
 
+$(function () {
+    $('body').on('change', 'form.ajax #GivingYear', function (event) {
+        event.preventDefault();
+        var t = $(this);
+        console.log($(t).val());
+        var $form = t.closest("form.ajax");
+        $("input[name='Year']", $form).val($(t).val());
+        $.formAjaxClick(t);
+        return false;
+    });
+});
+
 function editPledge(id, amt) {
     $.ajax({
         url: 'EditPledge',

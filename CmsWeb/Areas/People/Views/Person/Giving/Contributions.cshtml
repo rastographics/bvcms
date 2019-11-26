@@ -31,106 +31,133 @@
             @Html.Partial("PledgesSummary", Model)
         </div>
     }
-    @if (filter == "CombineGiving")
+    else
     {
+        <div class="row">
+            <div class="col-sm-6">
+                <h3>Giving Summary</h3>
+            </div>
+            <div class="col-sm-6">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-4 col-md-8 col-sm-12 form-inline">
+                <span>Filter by year </span>@Html.DropDownList("GivingYear", Model.GivingYearsList(), new { @class = "form-control" })
+            </div>
+        </div>
+        <br />
         <div class="row">
             @Html.Partial("CombineGiving", Model)
         </div>
     }
-        <div class="row">
-            @if (filter == "CombineGiving")
-            {
-                <h3>Giving Detail</h3>
-            }
-            @if (filter == "Pledges")
-            {
-                <h3>Pledge Detail</h3>
-            }
-            <div class="col-sm-12">
-                @Html.Partial("PagerTop", Model)
-                <div class="table-responsive">
-                    <table id="results" class="table table-striped">
-                        <thead>
+    <div class="row">
+        @if (filter == "Pledges")
+        {
+            <h3>Pledge Detail</h3>
+        }
+        else
+        {
+            <h3>Giving Detail</h3>
+        }
+        <div class="col-sm-12">
+            @Html.Partial("PagerTop", Model)
+            <div class="table-responsive">
+                <table id="results" class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>@Model.SortLinkWFilter("Date", filter)</th>
+                            <th class="text-right">@Model.SortLinkWFilter("Amount", filter)</th>
+                            <th><span class="pad-left">@Model.SortLinkWFilter("Fund", filter)</span></th>
+                            @if (!Model.isPledges)
+                            {
+                                <th>@Model.SortLinkWFilter("Type", filter)</th>
+                                <th>@Model.SortLinkWFilter("CheckNo", filter)</th>
+                                <th></th>
+                            }
+                            @if (Model.ShowNames)
+                            {
+                                <th>@Model.SortLinkWFilter("Name", filter)</th>
+                            }
+                            @if (isFinanceRole && Model.isPledges)
+                            {
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var c in Model.ViewList())
+                        {
                             <tr>
-                                <th>@Model.SortLinkWFilter("Date", filter)</th>
-                                <th class="text-right">@Model.SortLinkWFilter("Amount", filter)</th>
-                                <th><span class="pad-left">@Model.SortLinkWFilter("Fund", filter)</span></th>
+                                <td>@c.Date.ToShortDateString()</td>
+                                <td class="text-right amount">
+                                    @c.Amount.ToString("N2")
+                                </td>
+                                <td><span class="pad-left">@c.Fund</span></td>
                                 @if (!Model.isPledges)
                                 {
-                                    <th>@Model.SortLinkWFilter("Type", filter)</th>
-                                    <th>@Model.SortLinkWFilter("CheckNo", filter)</th>
+                                    <td>@c.Type</td>
+                                    <td>
+                                        @c.CheckNo
+                                        @if (c.ImageId != 0 && checkImageUserView)
+                                        {
+                                            <a href="@Url.Action("GetCheckImage", "GetCheckImage", new {Area = "Dialog", id = c.ContributionId})" class="searchadd pid">
+                                                <i class="fa fa-info-circle"></i>
+                                            </a>
+                                        }
+                                    </td>
+                                    <td class="action">
+                                        <div class="btn-group">
+                                            <div class="dropdown">
+                                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    ...
+                                                </button>
+                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                    <a class="dropdown-item" href="#"><i class="fa fa-external-link"></i> Transaction</a>
+                                                    <a class="dropdown-item" href="#"><i class="fa fa-external-link"></i> Bundle</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
                                 }
                                 @if (Model.ShowNames)
                                 {
-                                    <th>@Model.SortLinkWFilter("Name", filter)</th>
+                                    <td>@c.Name</td>
                                 }
-                                @if (isFinanceRole && Model.isPledges)
+                                @if (isFinanceRole && c.Type == "Pledge")
                                 {
-                                    <th></th>
-                                    <th></th>
-                                    <th></th>
+                                    <td class="action">
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-default btn-sm dropdown-toggle mergepledge" pledgeid="@c.ContributionId">
+                                                <i class="fa fa-code-fork"></i> Merge
+                                            </button>
+                                        </div>
+                                    </td>
+                                    <td class="action">
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-default btn-sm dropdown-toggle editpledge" pledgeid="@c.ContributionId" amount="@c.Amount.ToString("N2")">
+                                                <i class="fa fa-pencil-square-o"></i> Edit
+                                            </button>
+                                        </div>
+                                    </td>
+                                    <td class="action">
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-danger btn-sm dropdown-toggle deletepledge" pledgeid="@c.ContributionId">
+                                                <i class="fa fa-times-circle"></i> Delete
+                                            </button>
+                                        </div>
+                                    </td>
                                 }
                             </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var c in Model.ViewList())
-                            {
-                                <tr>
-                                    <td>@c.Date.ToShortDateString()</td>
-                                    <td class="text-right amount">
-                                        @c.Amount.ToString("N2")
-                                    </td>
-                                    <td><span class="pad-left">@c.Fund</span></td>
-                                    @if (!Model.isPledges)
-                                    {
-                                        <td>@c.Type</td>
-                                        <td>
-                                            @c.CheckNo
-                                            @if (c.ImageId != 0 && checkImageUserView)
-                                            {
-                                                <a href="@Url.Action("GetCheckImage", "GetCheckImage", new {Area = "Dialog", id = c.ContributionId})" class="searchadd pid">
-                                                    <i class="fa fa-info-circle"></i>
-                                                </a>
-                                            }
-                                        </td>
-                                    }
-                                    @if (Model.ShowNames)
-                                    {
-                                        <td>@c.Name</td>
-                                    }
-                                    @if (isFinanceRole && c.Type == "Pledge")
-                                    {
-                                        <td class="action">
-                                            <div class="btn-group">
-                                                <button type="button" class="btn btn-default btn-sm dropdown-toggle mergepledge" pledgeid="@c.ContributionId">
-                                                    <i class="fa fa-code-fork"></i> Merge
-                                                </button>
-                                            </div>
-                                        </td>
-                                        <td class="action">
-                                            <div class="btn-group">
-                                                <button type="button" class="btn btn-default btn-sm dropdown-toggle editpledge" pledgeid="@c.ContributionId" amount="@c.Amount.ToString("N2")">
-                                                    <i class="fa fa-pencil-square-o"></i> Edit
-                                                </button>
-                                            </div>
-                                        </td>
-                                        <td class="action">
-                                            <div class="btn-group">
-                                                <button type="button" class="btn btn-danger btn-sm dropdown-toggle deletepledge" pledgeid="@c.ContributionId">
-                                                    <i class="fa fa-times-circle"></i> Delete
-                                                </button>
-                                            </div>
-                                        </td>
-                                    }
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>@Html.Partial("PagerBottom", Model)
-                @Html.Partial("PagerHidden", Model)
-                @Html.HiddenFor2(m => m.PeopleId)
-            </div>
+                        }
+                    </tbody>
+                </table>
+            </div>@Html.Partial("PagerBottom", Model)
+            @Html.Partial("PagerHidden", Model)
+            @Html.HiddenFor2(m => m.PeopleId)
         </div>
+    </div>
 </form>
 <br />
 @helper FormAction(bool hasOneTimeGiftSetup, bool hasManageGivingSetup, int? campusId, bool sm = false)

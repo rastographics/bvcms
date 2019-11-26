@@ -39,6 +39,7 @@
             <div id="filter2" class="tab-pane" data-link="/Person2/Contributions">                
                 @Helper.HiddenId("PeopleId", Util2.CurrentPeopleId)
                 @Helper.HiddenParameter("Filter", "CombineGiving")
+                @Helper.HiddenParameter("Year", "YearToDate")
             </div>
         </div>
     }
@@ -47,6 +48,7 @@
         <div class="tab-pane" id="contributions" data-link="/Person2/Contributions">
             @Helper.HiddenId("PeopleId", Util2.CurrentPeopleId)
             @Helper.HiddenParameter("Filter", "Contributions")
+            @Helper.HiddenParameter("Year", "YearToDate")
         </div>
         <div class="tab-pane" id="pledges" data-link="/Person2/Contributions">
             @Helper.HiddenId("PeopleId", Util2.CurrentPeopleId)
