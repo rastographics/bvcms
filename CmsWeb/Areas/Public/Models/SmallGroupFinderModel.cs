@@ -222,8 +222,7 @@ namespace CmsWeb.Areas.Public.Models
             var f = getFilter(id);
             var i = new List<FilterItem>();
 
-            var excludes = f.exclude?.Split(',') ?? new string[] { };
-            var orgTypes = DbUtil.Db.Setting("SGF-OrgTypes", "").Split(',').Select(x => x.Trim()).Where(x => !string.IsNullOrEmpty(x) || !excludes.Contains(x));
+            var orgTypes = DbUtil.Db.Setting("SGF-OrgTypes", "").Split(',').Select(x => x.Trim()).Where(x => !string.IsNullOrEmpty(x));
 
             if (f.locked)
             {
@@ -276,6 +275,12 @@ namespace CmsWeb.Areas.Public.Models
                                      x.IntValue?.ToString() ??
                                      x.BitValue?.ToString()
                          }).DistinctBy(n => n.value).ToList();
+                }
+
+                if (f.name == "SGF:Type")
+                {
+                    var orgExcludes = f.exclude?.Split(',') ?? new string[] { };
+                    i = i.Where(x => !orgExcludes.Contains(x.value)).ToList();
                 }
 
                 i.Insert(0, new FilterItem { value = SHOW_ALL });
