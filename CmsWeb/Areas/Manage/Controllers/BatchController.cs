@@ -301,7 +301,13 @@ namespace CmsWeb.Areas.Manage.Controllers
         [Authorize(Roles = "Finance")]
         public ActionResult DoGiving()
         {
+            string date = Request.QueryString.AllKeys.Contains("date") ? Request.QueryString["date"] : null;
+            if (date.HasValue() && DateTime.TryParse(date, out DateTime parsedDate))
+            {
+                Util.Today = parsedDate;
+            }
             ManagedGiving.DoAllGiving(CurrentDatabase);
+            Util.ResetToday();
             return Content("done");
         }
         [HttpGet]
