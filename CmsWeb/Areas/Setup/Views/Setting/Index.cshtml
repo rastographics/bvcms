@@ -74,11 +74,11 @@
                             <span>General</span>
                         </a>
                     </li>
-                    @for (var i = 0; i < Model.SettingTypes.Count; i++)
+                    @foreach(var item in Model.SettingTypes)
                     {
-                        <li class="resource-type-tab" data-id="@Model.SettingTypes[i].SettingType.SettingTypeId">
-                            <a href="#@Model.SettingTypes[i].SettingType.Name.SlugifyString()" data-toggle="tab">
-                                <span>@Model.SettingTypes[i].SettingType.Name</span>
+                        <li class="resource-type-tab" data-id="@item.SettingType.SettingTypeId">
+                            <a href="#@item.SettingType.Name.SlugifyString()" data-toggle="tab">
+                                <span>@item.SettingType.Name</span>
                             </a>
                         </li>
                     }
@@ -95,7 +95,7 @@
                                     </h4>
                                 </div>
                                 <div id="general-accordion" class="collapse in" data-parent="#accordion-general-settings">
-                                    @Html.Partial("_Settings", new SettingListModel(Model.Settings) { CanDelete = true })
+                                    @Html.Partial("_Settings", new SettingListModel(Model.GeneralSettings) { CanDelete = true })
                                 </div>
                             </div>
                         </div>

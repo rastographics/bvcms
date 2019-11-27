@@ -32,7 +32,7 @@ namespace CmsWeb.Areas.Setup.Controllers
                 .ToList();
 
             return View(new SettingModel {
-                Settings = m.Where(x => x.SettingType == null).ToList(),
+                GeneralSettings = m.Where(x => x.SettingType == null).ToList(),
                 SettingTypes = settingTypes.Where(x => x.SettingType != null).ToList()
             });
         }
