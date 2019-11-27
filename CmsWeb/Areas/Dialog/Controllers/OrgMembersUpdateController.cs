@@ -16,7 +16,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
         [Route("~/OrgMembersUpdate/{qid:guid}")]
         public ActionResult Index(Guid qid)
         {
-            var m = new OrgMembersUpdate(qid, CurrentDatabase.Host);
+            var m = new OrgMembersUpdate(qid, CurrentDatabase.Host, CurrentDatabase);
             return View(m);
         }
         [HttpPost, Route("Update")]

@@ -365,6 +365,12 @@
     <Reference Include="Xceed.Words.NET, Version=1.2.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
       <HintPath>..\packages\DocX.1.2.1\lib\Xceed.Words.NET.dll</HintPath>
     </Reference>
+    <Reference Include="zxing, Version=0.16.4.0, Culture=neutral, PublicKeyToken=4e88037ac681fe60, processorArchitecture=MSIL">
+      <HintPath>..\packages\ZXing.Net.0.16.4\lib\net461\zxing.dll</HintPath>
+    </Reference>
+    <Reference Include="zxing.presentation, Version=0.16.4.0, Culture=neutral, PublicKeyToken=4e88037ac681fe60, processorArchitecture=MSIL">
+      <HintPath>..\packages\ZXing.Net.0.16.4\lib\net461\zxing.presentation.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Areas\CheckIn\Models\CheckinTimeModel.cs" />
@@ -913,7 +919,7 @@
     <Compile Include="Models\Api\ApiPerson.cs" />
     <Compile Include="Models\Api\ApiOrganizationMember.cs" />
     <Compile Include="Models\Api\AddContributionModel.cs" />
-    <Compile Include="Models\DbBinder.cs" />
+    <Compile Include="Models\IDbBinder.cs" />
     <Compile Include="Models\DynamicParametersExtensions.cs" />
     <Compile Include="Models\ErrorMessage.cs" />
     <Compile Include="Models\ExtraValue\EntryModel.cs" />
@@ -1119,6 +1125,7 @@
     <Compile Include="Services\ITokenizationService.cs" />
     <Compile Include="Services\LoggingService.cs" />
     <Compile Include="Services\TokenizationService.cs" />
+    <None Include="Areas\CheckIn\Views\CheckIn\LogOut.cshtml" />
     <Content Include="Areas\Dialog\Views\AddToOrgFromTag\Index.cshtml" />
     <Content Include="Areas\Figures\Views\Figures\AttendanceChartDisplayView.cshtml" />
     <Content Include="Areas\Figures\Views\Figures\ChartDisplayView.cshtml" />

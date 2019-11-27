@@ -152,7 +152,8 @@ namespace CmsWeb.Areas.Dialog.Controllers
                 GroupMeetingFlag = model.ByGroup,
                 Location = organization.Location,
                 MeetingDate = model.MeetingDate,
-                AttendCreditId = model.AttendCredit.Value.ToInt()
+                AttendCreditId = model.AttendCredit.Value.ToInt(),
+                NoAutoAbsents = true
             };
             CurrentDatabase.Meetings.InsertOnSubmit(mt);
             CurrentDatabase.SubmitChanges();

@@ -38,7 +38,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 throw new Exception("Unexpected onlinereg state: IsValidForNew is true and in ValidateModelForFind");
             }
 
-            DbUtil.Db.SetNoLock();
+            CurrentDatabase.SetNoLock();
             modelState = modelstate;
             IsValidForContinue = true; // true till proven false
             IsValidForExisting = true; // true till proven false
@@ -225,7 +225,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].DateOfBirth), "birthday required");
             }
 
-            var minage = DbUtil.Db.Setting("MinimumUserAge", "16").ToInt();
+            var minage = CurrentDatabase.Setting("MinimumUserAge", "16").ToInt();
             if (orgid == Util.CreateAccountCode && age < minage)
             {
                 modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].DateOfBirth),
