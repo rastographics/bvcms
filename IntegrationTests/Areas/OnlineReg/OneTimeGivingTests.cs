@@ -34,7 +34,6 @@ namespace IntegrationTests.Areas.OnlineReg
             SwitchToWindow(d => d.Title == "Online Registration");
 
             CurrentUrl.ShouldBe($"{rootUrl}OnlineReg/{orgId}");
-
         }
     }
 }
