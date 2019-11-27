@@ -925,6 +925,8 @@ namespace CmsData
         public Table<CheckInSetting> CheckInSettings => GetTable<CheckInSetting>();
 
         public Table<CheckInTime> CheckInTimes => GetTable<CheckInTime>();
+        
+        public Table<CheckInPending> CheckInPendings => GetTable<CheckInPending>();
 
         public Table<CheckinProfiles> CheckinProfiles => GetTable<CheckinProfiles>();
 

@@ -444,7 +444,8 @@ namespace CmsWeb.Areas.Search.Controllers
                     GroupMeetingFlag = false,
                     Location = organization.Location,
                     MeetingDate = dt,
-                    AttendCreditId = attcred
+                    AttendCreditId = attcred,
+                    NoAutoAbsents = true
                 };
                 CurrentDatabase.Meetings.InsertOnSubmit(newMtg);
                 CurrentDatabase.SubmitChanges();

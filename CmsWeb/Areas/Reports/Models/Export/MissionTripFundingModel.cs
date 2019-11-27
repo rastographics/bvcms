@@ -1,8 +1,10 @@
 using CmsData;
 using CmsData.View;
 using CmsWeb.Areas.Search.Models;
+using CmsWeb.Constants;
 using OfficeOpenXml;
 using OfficeOpenXml.Table;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,7 +13,9 @@ namespace CmsWeb.Models
     public class MissionTripFundingModel : IDbBinder
     {
         public CMSDataContext CurrentDatabase { get; set; }
-        //public MissionTripFundingModel() { }
+
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
+        public MissionTripFundingModel() { }
         public MissionTripFundingModel(CMSDataContext db)
         {
             CurrentDatabase = db;

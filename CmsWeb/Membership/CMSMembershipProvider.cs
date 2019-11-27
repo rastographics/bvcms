@@ -661,7 +661,7 @@ namespace CmsWeb.Membership
             }
             catch (Exception ex)
             {
-                var errorlog = RequestManager.GetErrorLog();
+                var errorlog = RequestManager?.GetErrorLog();
                 if (errorlog == null)
                 {
                     throw;
