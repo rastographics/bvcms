@@ -106,29 +106,11 @@ namespace UtilityExtensions
         private const string StrDateSimulation = "DateSimulation";
         public static bool DateSimulation
         {
-            get
-            {
-                bool? sim = false;
-                if (HttpContextFactory.Current != null)
-                {
-                    if (HttpContextFactory.Current != null)
-                    {
-                        if (HttpContextFactory.Current.Items[StrDateSimulation] != null)
-                        {
-                            sim = (bool)HttpContextFactory.Current.Items[StrDateSimulation];
-                        }
-                    }
-                }
-                return sim ?? false;
-            }
+            get => GetFromSession(StrDateSimulation, false) as bool? ?? false;
+            
             set
             {
-                if (HttpContextFactory.Current == null)
-                {
-                    return;
-                }
-
-                HttpContextFactory.Current.Items[StrDateSimulation] = value;
+                SetValueInSession(StrDateSimulation, value);
             }
         }
 
@@ -167,19 +149,15 @@ namespace UtilityExtensions
                     return now;
                 }
 
-                if (HttpContextFactory.Current == null)
+                var value = GetFromSession(StrToday);
+                if (value != null)
                 {
-                    return now;
-                }
-
-                if (HttpContextFactory.Current.Session[StrToday] != null)
-                {
-                    now = (DateTime)HttpContextFactory.Current.Session[StrToday];
+                    now = (DateTime)value;
                 }
 
                 return now.Date;
             }
-            set => HttpContextFactory.Current.Session[StrToday] = value;
+            set => SetValueInSession(StrToday, value);
         }
 
         public static void ResetToday()
