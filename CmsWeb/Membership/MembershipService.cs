@@ -148,7 +148,7 @@ namespace CmsWeb.Membership
 
             var expirationDays = db.Setting("TwoFactorAuthExpirationDays", "30").ToInt();
             var expires = DateTime.Now.AddDays(expirationDays);
-            var key = string.Join("", "123456".Select(c => Guid.NewGuid().ToString("N")));
+            var key = string.Join("", "123".Select(c => Guid.NewGuid().ToString("N")));
             var token = new MFAToken {
                 Expires = expires,
                 Key = key,
