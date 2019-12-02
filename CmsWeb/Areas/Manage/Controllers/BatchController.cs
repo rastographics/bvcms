@@ -304,10 +304,12 @@ namespace CmsWeb.Areas.Manage.Controllers
             string date = Request.QueryString.AllKeys.Contains("date") ? Request.QueryString["date"] : null;
             if (date.HasValue() && DateTime.TryParse(date, out DateTime parsedDate))
             {
+                Util.DateSimulation = true;
                 Util.Today = parsedDate;
             }
             ManagedGiving.DoAllGiving(CurrentDatabase);
             Util.ResetToday();
+            Util.DateSimulation = false;
             return Content("done");
         }
         [HttpGet]
