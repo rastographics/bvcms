@@ -9,7 +9,7 @@ namespace CmsData
     [Table(Name = "dbo.SettingCategory")]
     public partial class SettingCategory : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs(string.Empty);
 
         #region Private Fields
 
@@ -159,8 +159,7 @@ namespace CmsData
             set
             {
                 SettingType previousValue = _SettingType.Entity;
-                if (((previousValue != value)
-                            || (_SettingType.HasLoadedOrAssignedValue == false)))
+                if (previousValue != value || _SettingType.HasLoadedOrAssignedValue == false)
                 {
                     SendPropertyChanging();
                     if (previousValue != null)
@@ -176,7 +175,6 @@ namespace CmsData
 
                         _SettingTypeId = value.SettingTypeId;
                     }
-
                     else
                     {
                         _SettingTypeId = default(int);
@@ -192,19 +190,13 @@ namespace CmsData
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((PropertyChanging != null))
-            {
-                PropertyChanging(this, emptyChangingEventArgs);
-            }
+            PropertyChanging?.Invoke(this, emptyChangingEventArgs);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((PropertyChanged != null))
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         private void attach_SettingMetadatas(SettingMetadatum entity)

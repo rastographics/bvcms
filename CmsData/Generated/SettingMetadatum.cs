@@ -1,5 +1,4 @@
 using CmsData.Infrastructure;
-using System;
 using System.ComponentModel;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
@@ -9,7 +8,7 @@ namespace CmsData
     [Table(Name = "dbo.SettingMetadata")]
     public partial class SettingMetadatum : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs(string.Empty);
 
         #region Private Fields
 
@@ -198,7 +197,6 @@ namespace CmsData
 
                         _SettingId = value.Id;
                     }
-
                     else
                     {
                         _SettingId = default(string);
@@ -234,7 +232,6 @@ namespace CmsData
 
                         _SettingCategoryId = value.SettingCategoryId;
                     }
-
                     else
                     {
                         _SettingCategoryId = default(int?);
@@ -250,19 +247,13 @@ namespace CmsData
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((PropertyChanging != null))
-            {
-                PropertyChanging(this, emptyChangingEventArgs);
-            }
+            PropertyChanging?.Invoke(this, emptyChangingEventArgs);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((PropertyChanged != null))
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

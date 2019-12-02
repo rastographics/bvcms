@@ -8,7 +8,7 @@ namespace CmsData
     [Table(Name = "dbo.SettingType")]
     public partial class SettingType : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs(string.Empty);
 
         #region Private Fields
 
@@ -41,7 +41,6 @@ namespace CmsData
 
         public SettingType()
         {
-
             _SettingCategories = new EntitySet<SettingCategory>(new Action<SettingCategory>(attach_SettingCategories), new Action<SettingCategory>(detach_SettingCategories));
 
             OnCreated();
@@ -124,19 +123,13 @@ namespace CmsData
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((PropertyChanging != null))
-            {
-                PropertyChanging(this, emptyChangingEventArgs);
-            }
+            PropertyChanging?.Invoke(this, emptyChangingEventArgs);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(String propertyName)
+        protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((PropertyChanged != null))
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         private void attach_SettingCategories(SettingCategory entity)
