@@ -65,6 +65,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                 return AjaxErrorMessage(ex);
             }
         }
+
         [Authorize(Roles = "Admin")]
         public ActionResult UpdateRegSettings()
         {
@@ -89,6 +90,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                 return AjaxErrorMessage(ex);
             }
         }
+
         [Authorize(Roles = "Admin")]
         public ActionResult UpdateRegOptions()
         {
@@ -113,6 +115,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                 return AjaxErrorMessage(ex);
             }
         }
+
         [Authorize(Roles = "Admin")]
         public ActionResult UpdateRegMessages()
         {
@@ -304,6 +307,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             ManagedGiving.DoAllGiving(CurrentDatabase);
             return Content("done");
         }
+
         [HttpGet]
         [Authorize(Roles = "Developer")]
         public ActionResult DoGiving1(int id)
@@ -314,24 +318,6 @@ namespace CmsWeb.Areas.Manage.Controllers
             rg.DoGiving(CurrentDatabase);
             return Content($"done with {id}");
         }
-
-        //        [HttpGet]
-        //        [Authorize(Roles = "Admin")]
-        //        public ActionResult SQLView(string id)
-        //        {
-        //            try
-        //            {
-        //                var cmd = new SqlCommand("select * from guest." + id.Replace(" ", ""));
-        //                cmd.Connection = new SqlConnection(Util.ConnectionString);
-        //                cmd.Connection.Open();
-        //                var rdr = cmd.ExecuteReader();
-        //                return View(rdr);
-        //            }
-        //            catch (Exception)
-        //            {
-        //                return Content("cannot find view guest." + id);
-        //            }
-        //        }
 
         [HttpGet]
         [Authorize(Roles = "Admin")]
@@ -362,6 +348,5 @@ namespace CmsWeb.Areas.Manage.Controllers
         {
             return View();
         }
-
     }
 }

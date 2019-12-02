@@ -9,17 +9,10 @@ namespace CmsWeb.Areas.Setup.Models
         public SettingType SettingType { get; set; }
         public IEnumerable<SettingMetadatum> Settings { get; set; }
         public SettingTypeModel() { }
-        public SettingTypeModel(SettingType resourceType)
-        {
-            SettingType = resourceType;
-            Settings = resourceType.SettingMetadatas
-                .OrderBy(r => r.SettingCategory.DisplayOrder)
-                .ThenBy(r => r.SettingType.DisplayOrder);
-        }
 
-        public SettingTypeModel(SettingType resourceType, IEnumerable<SettingMetadatum> resources)
+        public SettingTypeModel(IEnumerable<SettingMetadatum> resources)
         {
-            SettingType = resourceType;
+            SettingType = resources.First().SettingCategory.SettingType;
             Settings = resources;
         }
     }

@@ -20,8 +20,6 @@ namespace CmsData
 
         private EntitySet<SettingCategory> _SettingCategories;
 
-        private EntitySet<SettingMetadatum> _SettingMetadatas;
-
         #endregion
 
         #region Extensibility Method Definitions
@@ -45,8 +43,6 @@ namespace CmsData
         {
 
             _SettingCategories = new EntitySet<SettingCategory>(new Action<SettingCategory>(attach_SettingCategories), new Action<SettingCategory>(detach_SettingCategories));
-
-            _SettingMetadatas = new EntitySet<SettingMetadatum>(new Action<SettingMetadatum>(attach_SettingMetadatas), new Action<SettingMetadatum>(detach_SettingMetadatas));
 
             OnCreated();
         }
@@ -119,14 +115,6 @@ namespace CmsData
             set => _SettingCategories.Assign(value);
         }
 
-        [Association(Name = "FK_SettingMetadata_SettingType", Storage = "_SettingMetadatas", OtherKey = "SettingTypeId")]
-        public EntitySet<SettingMetadatum> SettingMetadatas
-        {
-            get => _SettingMetadatas;
-
-            set => _SettingMetadatas.Assign(value);
-        }
-
         #endregion
 
         #region Foreign Keys
@@ -158,18 +146,6 @@ namespace CmsData
         }
 
         private void detach_SettingCategories(SettingCategory entity)
-        {
-            SendPropertyChanging();
-            entity.SettingType = null;
-        }
-
-        private void attach_SettingMetadatas(SettingMetadatum entity)
-        {
-            SendPropertyChanging();
-            entity.SettingType = this;
-        }
-
-        private void detach_SettingMetadatas(SettingMetadatum entity)
         {
             SendPropertyChanging();
             entity.SettingType = null;

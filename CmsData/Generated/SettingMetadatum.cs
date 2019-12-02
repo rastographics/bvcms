@@ -21,15 +21,11 @@ namespace CmsData
 
         private int? _DataType;
 
-        private int? _SettingTypeId;
-
         private int? _SettingCategoryId;
 
         private EntityRef<Setting> _Setting;
 
         private EntityRef<SettingCategory> _SettingCategory;
-
-        private EntityRef<SettingType> _SettingType;
 
         #endregion
 
@@ -51,9 +47,6 @@ namespace CmsData
         partial void OnDataTypeChanging(int? value);
         partial void OnDataTypeChanged();
 
-        partial void OnSettingTypeIdChanging(int? value);
-        partial void OnSettingTypeIdChanged();
-
         partial void OnSettingCategoryIdChanging(int? value);
         partial void OnSettingCategoryIdChanged();
 
@@ -64,8 +57,6 @@ namespace CmsData
             _Setting = default(EntityRef<Setting>);
 
             _SettingCategory = default(EntityRef<SettingCategory>);
-
-            _SettingType = default(EntityRef<SettingType>);
 
             OnCreated();
         }
@@ -146,30 +137,6 @@ namespace CmsData
                     _DataType = value;
                     SendPropertyChanged("DataType");
                     OnDataTypeChanged();
-                }
-            }
-        }
-
-        [Column(Name = "SettingTypeId", UpdateCheck = UpdateCheck.Never, Storage = "_SettingTypeId", DbType = "int")]
-        [IsForeignKey]
-        public int? SettingTypeId
-        {
-            get => _SettingTypeId;
-
-            set
-            {
-                if (_SettingTypeId != value)
-                {
-                    if (_SettingType.HasLoadedOrAssignedValue)
-                    {
-                        throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-                    }
-
-                    OnSettingTypeIdChanging(value);
-                    SendPropertyChanging();
-                    _SettingTypeId = value;
-                    SendPropertyChanged("SettingTypeId");
-                    OnSettingTypeIdChanged();
                 }
             }
         }
@@ -274,42 +241,6 @@ namespace CmsData
                     }
 
                     SendPropertyChanged("SettingCategory");
-                }
-            }
-        }
-
-        [Association(Name = "FK_SettingMetadata_SettingType", Storage = "_SettingType", ThisKey = "SettingTypeId", IsForeignKey = true)]
-        public SettingType SettingType
-        {
-            get => _SettingType.Entity;
-
-            set
-            {
-                SettingType previousValue = _SettingType.Entity;
-                if (((previousValue != value)
-                            || (_SettingType.HasLoadedOrAssignedValue == false)))
-                {
-                    SendPropertyChanging();
-                    if (previousValue != null)
-                    {
-                        _SettingType.Entity = null;
-                        previousValue.SettingMetadatas.Remove(this);
-                    }
-
-                    _SettingType.Entity = value;
-                    if (value != null)
-                    {
-                        value.SettingMetadatas.Add(this);
-
-                        _SettingTypeId = value.SettingTypeId;
-                    }
-
-                    else
-                    {
-                        _SettingTypeId = default(int?);
-                    }
-
-                    SendPropertyChanged("SettingType");
                 }
             }
         }

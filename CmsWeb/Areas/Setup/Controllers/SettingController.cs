@@ -27,12 +27,12 @@ namespace CmsWeb.Areas.Setup.Controllers
             }
 
             var settingTypes = m
-                .GroupBy(x => x.SettingTypeId)
-                .Select(x => new SettingTypeModel(x.First().SettingType, x))
+                .GroupBy(x => x.SettingCategory.SettingTypeId)
+                .Select(x => new SettingTypeModel(x))
                 .ToList();
 
             return View(new SettingModel {
-                GeneralSettings = m.Where(x => x.SettingType == null).ToList(),
+                GeneralSettings = m.Where(x => x.SettingCategory == null).ToList(),
                 SettingTypes = settingTypes.Where(x => x.SettingType != null).ToList()
             });
         }
