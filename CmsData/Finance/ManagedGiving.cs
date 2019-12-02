@@ -10,7 +10,7 @@ namespace CmsData
     {
         public DateTime FindNextDate(DateTime ndt)
         {
-            if (ndt.Date == Util.Now.Date)
+            if (ndt.Date == Util.Now.Date && !Util.DateSimulation)
                 ndt = ndt.AddDays(1).Date;
             if (StartWhen.HasValue && ndt.Date < StartWhen)
                 ndt = StartWhen.Value;
