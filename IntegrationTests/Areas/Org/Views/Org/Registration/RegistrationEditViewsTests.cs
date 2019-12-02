@@ -42,6 +42,8 @@ namespace IntegrationTests.Areas.Org.Views.Org.Registration
             var user = CreateUser(username, password, roles: new string[] { "Edit", "Access" });
             Login();
 
+            SettingUtils.UpdateSetting("RelaxedReqAdminOnly", "true");
+
             Open($"{rootUrl}Org/{OrgId}#tab-Registrations-tab");
             WaitForElementToDisappear(loadingUI);
 
