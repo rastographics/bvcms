@@ -48,8 +48,8 @@ namespace CmsWeb.Models
         private void Init()
         {
             GetCount = api.Count;
-            Sort = "Date";
-            Direction = "desc";
+            if (Sort == null) Sort = "Date";
+            if (Direction == null) Direction = "desc";
             SearchInfo = api.model;
         }
 
