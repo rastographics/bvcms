@@ -292,7 +292,7 @@ namespace PushPay
 
             if (hasKey)
             {
-                PersonId = db.PeopleExtras.Where(p => p.Field == PushPayKey && p.StrValue == payer.Key).Select(p => p.PeopleId).SingleOrDefault();
+                PersonId = db.PeopleExtras.Where(p => p.Field == PushPayKey && p.Data == payer.Key).Select(p => p.PeopleId).SingleOrDefault();
                 if (PersonId.HasValue && PersonId != 0)
                 {
                     return PersonId;
@@ -346,7 +346,7 @@ namespace PushPay
             // add extra value
             if (payer.Key.HasValue())
             {
-                db.AddExtraValueDataIfNotExist(PersonId, PushPayKey, payer.Key, null, null, null, null);
+                db.AddExtraValueDataIfNotExist(PersonId, PushPayKey, null, null, payer.Key, null, null);
             }
             return PersonId;
         }
