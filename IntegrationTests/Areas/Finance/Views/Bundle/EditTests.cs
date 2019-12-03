@@ -30,6 +30,7 @@ namespace IntegrationTests.Areas.Finance.Views.Bundle
 
             Open($"{rootUrl}Person2/{user.PeopleId}");
             WaitForElement(css: ".edit-basic");
+            WaitForElementToDisappear(loadingUI);
 
             Find(css: ".edit-basic").Click();
             Wait(2);
