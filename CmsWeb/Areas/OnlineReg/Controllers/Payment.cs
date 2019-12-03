@@ -30,6 +30,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             {
                 RegistrationDatum datum = CurrentDatabase.RegistrationDatas.SingleOrDefault(d => d.Id == Int32.Parse(reference.Substring(4)));
                 OnlineRegModel m = Util.DeSerialize<OnlineRegModel>(datum.Data);
+                m.CurrentDatabase = CurrentDatabase;
                 pf = PaymentForm.CreatePaymentForm(m);
             }
             if (reference.Substring(0, 3) == "tra")
@@ -60,6 +61,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (ed != null)
             {
                 m = Util.DeSerialize<OnlineRegModel>(ed.Data);
+                m.CurrentDatabase = CurrentDatabase;
             }
 
 #if DEBUG

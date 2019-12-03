@@ -1,6 +1,7 @@
 using CmsData;
 using CmsData.Finance;
 using CmsWeb.Code;
+using CmsWeb.Constants;
 using CmsWeb.Models;
 using Elmah;
 using System;
@@ -50,6 +51,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public string URL { get; set; }        
         public CMSDataContext CurrentDatabase { get; set; }
 
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
+        public PaymentForm() { }
         public PaymentForm(CMSDataContext db)
         {
             CurrentDatabase = db;

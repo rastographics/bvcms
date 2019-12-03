@@ -315,6 +315,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             OnlineRegModel m = new OnlineRegModel(CurrentDatabase);
             RegistrationDatum datum = CurrentDatabase.RegistrationDatas.SingleOrDefault(d => d.Id == datumId);
             m = Util.DeSerialize<OnlineRegModel>(datum.Data);
+            m.CurrentDatabase = CurrentDatabase;
             PaymentForm pf = PaymentForm.CreatePaymentForm(m);
 
             Payment payment = await _pushpayPayment.GetPayment(paymentToken);

@@ -108,6 +108,7 @@ We have saved your progress. An email with a link to finish this registration wi
             if (ed != null)
             {
                 var m = Util.DeSerialize<OnlineRegModel>(ed.Data);
+                m.CurrentDatabase = CurrentDatabase;
                 m.HistoryAdd("saveprogress");
                 if (m.UserPeopleId == null)
                     m.UserPeopleId = Util.UserPeopleId;
@@ -128,6 +129,7 @@ We have saved your progress. An email with a link to finish this registration wi
             if (ed == null)
                 return View("Other/Unknown");
             var m = Util.DeSerialize<OnlineRegModel>(ed.Data);
+            m.CurrentDatabase = CurrentDatabase;
             m.FinishLaterNotice();
             return View("Continue/FinishLater", m);
         }

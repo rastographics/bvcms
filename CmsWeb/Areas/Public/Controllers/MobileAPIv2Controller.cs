@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -7,6 +10,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.WebPages;
 using CmsData;
+using CmsData.Classes.Barcodes;
 using CmsData.Codes;
 using CmsData.View;
 using CmsWeb.Areas.People.Models.Task;
@@ -17,11 +21,11 @@ using CmsWeb.MobileAPI;
 using CmsWeb.Models;
 using CmsWeb.Models.iPhone;
 using Dapper;
-using ImageData;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using UtilityExtensions;
 using DbUtil = CmsData.DbUtil;
+using Image = ImageData.Image;
 using MobileAccount = CmsWeb.Areas.Public.Models.MobileAPIv2.MobileAccount;
 using MobileAccountV1 = CmsWeb.MobileAPI.MobileAccount;
 
@@ -398,6 +402,34 @@ namespace CmsWeb.Areas.Public.Controllers
 			MobileMessage response = new MobileMessage();
 			response.setNoError();
 			response.data = CurrentDatabase.ServerLink( message.argBool ? $"OnlineReg/RegisterLink/{ot.Id.ToCode()}?showfamily=true&{message.getSourceQueryString()}" : $"OnlineReg/RegisterLink/{ot.Id.ToCode()}?{message.getSourceQueryString()}" );
+
+			return response;
+		}
+
+		[HttpPost]
+		public ActionResult FetchFamily( string data )
+		{
+			MobileMessage message = MobileMessage.createFromString( data );
+
+			MobileAuthentication authentication = new MobileAuthentication( CurrentDatabase );
+			authentication.authenticate( message.instance );
+
+			if( authentication.hasError() ) {
+				return MobileMessage.createLoginErrorReturn( authentication );
+			}
+
+			int familyID = authentication.getUser().Person.FamilyId;
+
+			if( !DateTime.TryParse( message.argString, out DateTime dateTime ) ) {
+				dateTime = DateTime.Now;
+			}
+
+			Models.CheckInAPIv2.Family family = Models.CheckInAPIv2.Family.forID( CurrentDatabase, CurrentImageDatabase, familyID, 0, dateTime );
+
+			MobileMessage response = new MobileMessage();
+			response.setNoError();
+			response.count = 1;
+			response.data = SerializeJSON( family, message.version );
 
 			return response;
 		}
