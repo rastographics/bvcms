@@ -368,13 +368,13 @@
                 type: 'text',
             });
 
-            $(".edit-textarea").editable({
+            $('.edit-textarea').editable({
                 mode: 'inline',
                 type: 'textarea',
                 inputclass: 'textarea-width'
             });
 
-            $(".edit-datetime").editable({
+            $('.edit-datetime').editable({
                 type: 'date',
                 viewformat: 'm/dd/yyyy',
                 savenochange: true,
@@ -384,7 +384,7 @@
                 },
             });
 
-            $(".edit-select").each(function(i, e) {
+            $('.edit-select').each(function(i, e) {
                 $(e).editable({
                     mode: 'inline',
                     type: 'select',
@@ -401,14 +401,14 @@
                 });
             });
 
-            $("body").on("click",
+            $('body').on('click',
                 'a.completewcontact',
                 function(ev) {
                     ev.preventDefault();
                     setCompleteWithContact();
                 });
 
-            $("body").on("click",
+            $('body').on('click',
                 'a.complete',
                 function(ev) {
                     ev.preventDefault();
@@ -420,7 +420,7 @@
                     }
                 });
 
-            $("body").on("click",
+            $('body').on('click',
                 'a.accept',
                 function(ev) {
                     ev.preventDefault();
@@ -433,7 +433,7 @@
                     return false;
                 });
 
-            $("body").on("click",
+            $('body').on('click',
                 'a.decline',
                 function(ev) {
                     ev.preventDefault();
