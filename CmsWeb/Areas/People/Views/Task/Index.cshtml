@@ -76,7 +76,7 @@
                     }
                 </h5>
                 <div class="box-tools">
-                    @if (Model.CanAccept)
+                    @if (Model.CanAccept && !Model.IsOwner)
                     {
                         <a href="#" class="accept btn btn-success">
                             <i class="fa fa-thumbs-o-up fa-fw"></i> Accept Task
@@ -85,20 +85,14 @@
                             <i class="fa fa-thumbs-o-down fa-fw"></i> Decline Task
                         </a>
                     }
-                    @if (Model.IsAcceptedPage || Model.IsCreatedPage && !Model.IsOwner)
+                    @if (Model.IsAcceptedPage || Model.IsCreatedPage || Model.IsOwner)
                     {
-                        if (Model.CanComplete)
-                        {
-                            <a href="#" class="complete btn btn-success">
-                                <i class="fa fa-check fa-fw"></i> Complete Task
-                            </a>
-                        }
-                        else if (Model.CanCompleteWithContact && Model.Description != "New Person Data Entry")
-                        {
-                            <a href="#" class="completewcontact btn btn-success">
-                                <i class="fa fa-check fa-fw"></i> Complete Task w/ Contact
-                            </a>
-                        }
+                        <a href="#" class="complete btn btn-success hide">
+                            <i class="fa fa-check fa-fw"></i> Complete Task
+                        </a>
+                        <a href="#" class="completewcontact btn btn-success hide">
+                            <i class="fa fa-check fa-fw"></i> Complete Task w/ Contact
+                        </a>
                     }
                 </div>
             </div>
@@ -335,6 +329,10 @@
     @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-editable/js/bootstrap-editable.min.js")
     <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
     <script type="text/javascript">
+        @* These are just for the initial view setup *@
+        var canComplete = @(Model.CanComplete.ToString().ToLower());
+        var canCompleteWithContact = @(Model.CanCompleteWithContact.ToString().ToLower());
+        var forceCompleteWithContact = @(Model.ForceCompleteWithContact.ToString().ToLower());
         function setCompleteWithContact() {
             var taskid = $('#TaskId').val();
             $.post('/Task/CompleteWithContact/' + taskid,
@@ -355,7 +353,29 @@
             return false;
         }
 
-        $(function() {
+        function showOrHide(element, show) {
+            if (show) {
+                element.removeClass('hide');
+            } else {
+                element.addClass('hide');
+            }
+        }
+
+        function updateButtons(canComplete, canCompleteWithContact, forceContact) {
+            var b1 = $('.box-tools a.complete');
+            var b2 = $('.box-tools a.completewcontact');
+            showOrHide(b1, canComplete && !forceContact);
+            showOrHide(b2, canCompleteWithContact && forceContact);
+        }
+
+        $(function () {
+            $(document).ajaxComplete(function (event, xhr, settings) {
+                if (settings.url.indexOf('/Task/Edit') > -1) {
+                    var result = xhr.responseJSON;
+                    updateButtons(result.CanComplete, result.CanCompleteWithContact, result.ForceCompleteWithContact);
+                }
+            });
+            updateButtons(canComplete, canCompleteWithContact, forceCompleteWithContact);
             $.fn.editableform.buttons = '<button type="submit" class="btn btn-primary btn-sm editable-submit">' +
                 '<i class="fa fa-fw fa-check"></i>' +
                 '</button>' +
@@ -368,13 +388,13 @@
                 type: 'text',
             });
 
-            $(".edit-textarea").editable({
+            $('.edit-textarea').editable({
                 mode: 'inline',
                 type: 'textarea',
                 inputclass: 'textarea-width'
             });
 
-            $(".edit-datetime").editable({
+            $('.edit-datetime').editable({
                 type: 'date',
                 viewformat: 'm/dd/yyyy',
                 savenochange: true,
@@ -384,7 +404,7 @@
                 },
             });
 
-            $(".edit-select").each(function(i, e) {
+            $('.edit-select').each(function(i, e) {
                 $(e).editable({
                     mode: 'inline',
                     type: 'select',
@@ -401,14 +421,14 @@
                 });
             });
 
-            $("body").on("click",
+            $('body').on('click',
                 'a.completewcontact',
                 function(ev) {
                     ev.preventDefault();
                     setCompleteWithContact();
                 });
 
-            $("body").on("click",
+            $('body').on('click',
                 'a.complete',
                 function(ev) {
                     ev.preventDefault();
@@ -420,7 +440,7 @@
                     }
                 });
 
-            $("body").on("click",
+            $('body').on('click',
                 'a.accept',
                 function(ev) {
                     ev.preventDefault();
@@ -433,7 +453,7 @@
                     return false;
                 });
 
-            $("body").on("click",
+            $('body').on('click',
                 'a.decline',
                 function(ev) {
                     ev.preventDefault();
