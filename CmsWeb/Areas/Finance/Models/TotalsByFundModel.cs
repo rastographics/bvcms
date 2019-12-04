@@ -14,7 +14,7 @@ using UtilityExtensions;
 
 namespace CmsWeb.Models
 {
-    public class TotalsByFundModel
+    public class TotalsByFundModel :IDbBinder
     {
         public DateTime? Dt1 { get; set; }
         public DateTime? Dt2 { get; set; }
@@ -29,10 +29,22 @@ namespace CmsWeb.Models
         public bool IncludeBundleType { get; set; }
         public bool NonTaxDeductible { get; set; }
         public bool FilterByActiveTag { get; set; }
+
+        private CMSDataContext _currentDatabase;
+        public CMSDataContext CurrentDatabase
+        {
+            get => _currentDatabase;
+            set
+            {
+                _currentDatabase = value;
+            }
+        }
+
         public EpplusResult epr;
 
-        public TotalsByFundModel()
+        public TotalsByFundModel(CMSDataContext db)
         {
+            CurrentDatabase = db;
             var today = Util.Now.Date;
             var first = new DateTime(today.Year, today.Month, 1);
             if (today.Day < 8)

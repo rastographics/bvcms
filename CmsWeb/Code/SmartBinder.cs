@@ -17,7 +17,7 @@ namespace CmsWeb
         protected override object CreateModel(ControllerContext controllerContext, ModelBindingContext bindingContext, Type modelType)
         {
             string type = null;
-            if (modelType == typeof (Ask))
+            if (modelType == typeof(Ask))
             {
                 var requestname = bindingContext.ModelName + ".Type";
                 var value = controllerContext.Controller.ValueProvider.GetValue(requestname);
@@ -72,12 +72,18 @@ namespace CmsWeb
                         return base.CreateModel(controllerContext, bindingContext, modelType);
                 }
             }
-            var m = base.CreateModel(controllerContext, bindingContext, modelType);
+
+            /* IDBBinder model creation
+             * if the model has a constructor with CMSDataContext parameter use it to create the model first.
+             * else use base.CreateModel
+             */            
+            var m = (Object)Activator.CreateInstance(modelType, ((CMSBaseController)controllerContext.Controller).CurrentDatabase);
+            m = m ?? base.CreateModel(controllerContext, bindingContext, modelType);
             if (controllerContext.Controller is CMSBaseController c && m is IDbBinder b)
                 b.CurrentDatabase = c.CurrentDatabase;
             return m;
         }
-
+        
         protected override ICustomTypeDescriptor GetTypeDescriptor(ControllerContext controllerContext, ModelBindingContext bindingContext)
         {
             if (bindingContext.ModelType == typeof (Ask) && bindingContext.Model != null)

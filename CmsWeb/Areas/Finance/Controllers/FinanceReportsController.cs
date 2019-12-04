@@ -189,7 +189,7 @@ namespace CmsWeb.Areas.Finance.Controllers
         [HttpGet]
         public ActionResult DonorTotalsByRange()
         {
-            var model = new TotalsByFundModel();
+            var model = new TotalsByFundModel(CurrentDatabase);
             return View(model);
         }
 
@@ -202,7 +202,7 @@ namespace CmsWeb.Areas.Finance.Controllers
         [HttpGet]
         public ActionResult TotalsByFund()
         {
-            var model = new TotalsByFundModel();
+            var model = new TotalsByFundModel(CurrentDatabase);
             return View(model);
         }
 
