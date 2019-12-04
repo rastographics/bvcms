@@ -43,6 +43,10 @@ namespace UtilityExtensions
                     HttpContextFactory.Current.Items[name] = value;
                 }
             }
+            else
+            {
+                Thread.SetData(Thread.GetNamedDataSlot(name), value);
+            }
         }
 
         private static object GetFromSession(string name, object defaultValue = null)
@@ -61,6 +65,10 @@ namespace UtilityExtensions
                 {
                     value = HttpContextFactory.Current.Items[name];
                 }
+            }
+            else
+            {
+                value = Thread.GetData(Thread.GetNamedDataSlot(name));
             }
             return value;
         }
