@@ -12,15 +12,21 @@ using UtilityExtensions;
 
 namespace CmsWeb.Models
 {
-    public class ExportPeople
+    public class ExportPeople : IDbBinder
     {
-        private CMSDataContext _db;
-        public CMSDataContext db
+        private CMSDataContext _currentDatabase;
+        public CMSDataContext CurrentDatabase
         {
-            get => _db ?? (_db = DbUtil.Db);
-            set => _db = value;
+            get => _currentDatabase;
+            set
+            {
+                _currentDatabase = value;
+            }
         }
-        
+        public ExportPeople(CMSDataContext db)
+        {
+            CurrentDatabase = db;
+        }
         public static EpplusResult FetchExcelLibraryList(Guid queryid)
         {
             //var Db = Db;
@@ -102,17 +108,17 @@ namespace CmsWeb.Models
         public DataTable DonorDetails(DateTime startdt, DateTime enddt,
             int fundid, int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed, int? tagid, string fundids)
         {
-            var UseTitles = !db.Setting("NoTitlesOnStatements");
+            var UseTitles = !CurrentDatabase.Setting("NoTitlesOnStatements");
 
-            if (db.Setting("UseLabelNameForDonorDetails"))
+            if (CurrentDatabase.Setting("UseLabelNameForDonorDetails"))
             {
-                var q = from c in db.GetContributionsDetails(startdt, enddt, campusid, pledges, (nontaxdeductible is null) ? 3 : nontaxdeductible.ToInt(), includeUnclosed, tagid, fundids)                        
-                        join p in db.People on c.CreditGiverId equals p.PeopleId
+                var q = from c in CurrentDatabase.GetContributionsDetails(startdt, enddt, campusid, pledges, (nontaxdeductible is null) ? 3 : nontaxdeductible.ToInt(), includeUnclosed, tagid, fundids)                        
+                        join p in CurrentDatabase.People on c.CreditGiverId equals p.PeopleId
                         where ContributionStatusCode.Recorded.Equals(c.ContributionStatusId)
                         where !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
-                        let mainFellowship = db.Organizations.SingleOrDefault(oo => oo.OrganizationId == p.BibleFellowshipClassId).OrganizationName
-                        let head1 = db.People.Single(hh => hh.PeopleId == p.Family.HeadOfHouseholdId)
-                        let head2 = db.People.SingleOrDefault(sp => sp.PeopleId == p.Family.HeadOfHouseholdSpouseId)
+                        let mainFellowship = CurrentDatabase.Organizations.SingleOrDefault(oo => oo.OrganizationId == p.BibleFellowshipClassId).OrganizationName
+                        let head1 = CurrentDatabase.People.Single(hh => hh.PeopleId == p.Family.HeadOfHouseholdId)
+                        let head2 = CurrentDatabase.People.SingleOrDefault(sp => sp.PeopleId == p.Family.HeadOfHouseholdSpouseId)
                         let altcouple = p.Family.FamilyExtras.SingleOrDefault(ee => (ee.FamilyId == p.FamilyId) && ee.Field == "CoupleName" && p.SpouseId != null).Data                        
                         select new
                         {
@@ -158,12 +164,12 @@ namespace CmsWeb.Models
             }
             else
             {
-                var q = from c in db.GetContributionsDetails(startdt, enddt, campusid, pledges, (nontaxdeductible is null) ? 3 : nontaxdeductible.ToInt(), includeUnclosed, tagid, fundids)
-                        join p in db.People on c.CreditGiverId equals p.PeopleId
+                var q = from c in CurrentDatabase.GetContributionsDetails(startdt, enddt, campusid, pledges, (nontaxdeductible is null) ? 3 : nontaxdeductible.ToInt(), includeUnclosed, tagid, fundids)
+                        join p in CurrentDatabase.People on c.CreditGiverId equals p.PeopleId
                         where ContributionStatusCode.Recorded.Equals(c.ContributionStatusId)
                         where !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
-                        let mainFellowship = db.Organizations.SingleOrDefault(oo => oo.OrganizationId == p.BibleFellowshipClassId).OrganizationName
-                        let spouse = db.People.SingleOrDefault(sp => sp.PeopleId == p.SpouseId)
+                        let mainFellowship = CurrentDatabase.Organizations.SingleOrDefault(oo => oo.OrganizationId == p.BibleFellowshipClassId).OrganizationName
+                        let spouse = CurrentDatabase.People.SingleOrDefault(sp => sp.PeopleId == p.SpouseId)
                         let altcouple = p.Family.FamilyExtras.SingleOrDefault(ee => (ee.FamilyId == p.FamilyId) && ee.Field == "CoupleName" && p.SpouseId != null).Data                        
                         select new
                         {
@@ -209,7 +215,7 @@ namespace CmsWeb.Models
 
 
             var nontaxded = nontaxdeductible.HasValue ? (nontaxdeductible.Value ? 1 : 0) : (int?)null;
-            var q2 = from r in db.GetTotalContributionsDonor(startdt, enddt, campusid, nontaxded, includeUnclosed, tagid, fundids, null)
+            var q2 = from r in CurrentDatabase.GetTotalContributionsDonor(startdt, enddt, campusid, nontaxded, includeUnclosed, tagid, fundids, null)
                      where ContributionStatusCode.Recorded.Equals(r.ContributionStatusId)
                      where !ContributionTypeCode.ReturnedReversedTypes.Contains(r.ContributionTypeId)
                      group r by new
@@ -254,7 +260,7 @@ namespace CmsWeb.Models
         public DataTable ExcelDonorFundTotals(DateTime startdt, DateTime enddt,
             int fundid, int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed, int? tagid, string fundids)
         {
-            var q2 = from r in db.GetTotalContributionsDonorFund(startdt, enddt, campusid, nontaxdeductible, includeUnclosed, tagid, fundids)
+            var q2 = from r in CurrentDatabase.GetTotalContributionsDonorFund(startdt, enddt, campusid, nontaxdeductible, includeUnclosed, tagid, fundids)
                      where ContributionStatusCode.Recorded.Equals(r.ContributionStatusId)
                      where !ContributionTypeCode.ReturnedReversedTypes.Contains(r.ContributionTypeId)
                      group r by new

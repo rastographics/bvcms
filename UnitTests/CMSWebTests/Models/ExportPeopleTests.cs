@@ -29,7 +29,7 @@ namespace CMSWebTests.Models
             {   
                 var bundleList = CreateTestContributionSet(db, Util.Now.Date);
 
-                var _exportPeople = new ExportPeople();
+                var _exportPeople = new ExportPeople(db);
                 DateTime exportStartDt = new DateTime(Util.Now.Date.Year, 1, 1);
                 DateTime exportEndDt = new DateTime(Util.Now.Date.Year, 12, 31);
                 DataTable tableResult = _exportPeople.DonorDetails(exportStartDt, exportEndDt, fundid, campusid, pledges, nontaxdeductible, includeUnclosed, tagid, fundids);
@@ -81,7 +81,7 @@ namespace CMSWebTests.Models
             using (var db = CMSDataContext.Create(Util.Host))
             {
                 var bundleList = CreateTestContributionSet(db, Util.Now.Date);
-                var _exportPeople = new ExportPeople();
+                var _exportPeople = new ExportPeople(db);
                 DateTime exportStartDt = new DateTime(Util.Now.Date.Year, 1, 1);
                 DateTime exportEndDt = new DateTime(Util.Now.Date.Year, 12, 31);
                 DataTable tableResult = _exportPeople.ExcelDonorTotals(exportStartDt,exportEndDt,campusid,pledges,nontaxdeductible,includeUnclosed, tagid, fundids);
@@ -129,7 +129,7 @@ namespace CMSWebTests.Models
             using (var db = CMSDataContext.Create(Util.Host))
             {
                 var bundleList = CreateTestContributionSet(db, Util.Now.Date);
-                var _exportPeople = new ExportPeople();
+                var _exportPeople = new ExportPeople(db);
                 DateTime exportStartDt = new DateTime(Util.Now.Date.Year, 1, 1);
                 DateTime exportEndDt = new DateTime(Util.Now.Date.Year, 12, 31);
                 DataTable tableResult = _exportPeople.ExcelDonorFundTotals(exportStartDt, exportEndDt, fundid, campusid, pledges, nontaxdeductible, includeUnclosed, tagid, fundids);
