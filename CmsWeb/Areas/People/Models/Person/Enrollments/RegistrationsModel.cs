@@ -26,13 +26,11 @@ namespace CmsWeb.Areas.People.Models
         }
         private Person person;
 
-        //[Obsolete(Errors.ModelBindingConstructorError, true)]
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
         public RegistrationsModel() { }
 
         public RegistrationsModel(CMSDataContext db)        
         { CurrentDatabase = db; }
-        
-        
 
         public RegistrationsModel(int id)
         {
