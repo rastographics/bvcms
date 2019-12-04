@@ -165,7 +165,16 @@
     else
     {
       <div class="alert-warning">
-        Admin role is required to edit the relaxed requirements settings.
+          Admin role is required to edit the relaxed requirements settings.
+          @Html.HiddenFor(m => m.NoReqBirthYear, new { @readonly = "readonly" })
+          @Html.HiddenFor(m => m.NotReqDOB, new { @readonly = "readonly" })
+          @Html.HiddenFor(m => m.NotReqAddr, new { @readonly = "readonly" })
+          @Html.HiddenFor(m => m.NotReqZip, new { @readonly = "readonly" })
+          @Html.HiddenFor(m => m.NotReqPhone, new { @readonly = "readonly" })
+          @Html.HiddenFor(m => m.NotReqGender, new { @readonly = "readonly" })
+          @Html.HiddenFor(m => m.NotReqMarital, new { @readonly = "readonly" })
+          @Html.HiddenFor(m => m.ShowDOBOnFind, new { @readonly = "readonly" })
+          @Html.HiddenFor(m => m.ShowPhoneOnFind, new { @readonly = "readonly" })
       </div>
     }
   </div>
