@@ -9,7 +9,7 @@
     url = "/Person2/InlineEdit/" + Model.PeopleId,
     source = "/Person2/InlineCodes/"
   };
-  var evmodel = new ExtraValueModel(Model.PeopleId, "People", "Membership");
+  var evmodel = new ExtraValueModel(DbUtil.Db, Model.PeopleId, "People", "Membership");
   var newMemberClassLabel = DbUtil.Db.Setting("NewMemberClassLabel", "New Member Class");
   ViewBag.EvLocationLabel = DbUtil.Db.Setting("ExtraMembershipDataLabel", "Extra Membership Data");
 }

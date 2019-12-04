@@ -176,7 +176,7 @@ namespace CmsData
             }
         }
 		
-        public void SetTaskDetails(int id, string name, string value)
+        public Task SetTaskDetails(int id, string name, string value)
         {
             var task = Tasks.Single(c => c.Id == id);
             var field = task.GetType().GetProperty(name);
@@ -194,15 +194,16 @@ namespace CmsData
                     }
                     break;
                 case "StatusId":
-                    field.SetValue(task, Int32.Parse(value));
+                    field.SetValue(task, int.Parse(value));
                     break;
                 case "ForceCompleteWContact":
-                    field.SetValue(task, Boolean.Parse(value));
+                    field.SetValue(task, bool.Parse(value));
                     break;
                 default:
                     field.SetValue(task, value);
                     break;
             }
+            return task;
         }
 		
         public void DeleteSetting(string name)
