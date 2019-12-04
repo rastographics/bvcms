@@ -3,23 +3,39 @@
 @model CmsWeb.Areas.People.Models.ContributionsModel
 @{
     var campusId = Model.Person.CampusId;
-    var GivingSummary = Model.GetGivingSummary();    
+    var GivingSummary = Model.GetGivingSummary();
 }
-<table class="table table-striped">
-    <tr>
-        <th>Fund</th>
-        <th class="text-right">Contributed</th>
-    </tr>
-    @if (GivingSummary != null)
-    {
-        foreach (var p in GivingSummary)
-        {
+<div class="row">
+    <h3>
+        <a id="giving-summary-collapse" data-toggle="collapse" href="#giving-summary-section" aria-expanded="true" aria-controls="giving-summary-section"><i class="fa fa-chevron-circle-down"></i></a>&nbsp;Giving Summary
+    </h3>
+</div>
+<br />
+<div class="row collapse in" id="giving-summary-section">
+    <div class="row">
+        <div class="col-lg-4 col-md-8 col-sm-12 form-inline">
+            <span>Filter by year </span>@Html.DropDownList("GivingYear", Model.GivingYearsList(), new { @class = "form-control" })
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <table class="table table-striped">
             <tr>
-                <td>
-                    @p.Fund
-                </td>
-                <td class="text-right">@p.AmountContributed.ToString("C")</td>
+                <th>Fund</th>
+                <th class="text-right">Contributed</th>
             </tr>
-        }
-    }
-</table>
+            @if (GivingSummary != null)
+            {
+                foreach (var p in GivingSummary)
+                {
+                    <tr>
+                        <td>
+                            @p.Fund
+                        </td>
+                        <td class="text-right">@p.AmountContributed.ToString("C")</td>
+                    </tr>
+                }
+            }
+        </table>
+    </div>
+</div>

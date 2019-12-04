@@ -12,6 +12,7 @@
     var campusId = Model.Person.CampusId;
     var checkImageUserView = true;
     var filter = Model.Filter;
+    var detailName = filter == "Pledges" ? "Pledge" : "Giving";
     var isFinanceRole = User.IsInRole("Finance");
     var isPledges = Model.isPledges;
     if (DB.Setting("CheckImagesDisabledForUser"))
@@ -27,39 +28,18 @@
     }
     @if (filter == "Pledges")
     {
-        <div class="row">
-            @Html.Partial("PledgesSummary", Model)
-        </div>
+        @Html.Partial("PledgesSummary", Model)
     }
     else
     {
-        <div class="row">
-            <div class="col-sm-6">
-                <h3>Giving Summary</h3>
-            </div>
-            <div class="col-sm-6">
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-4 col-md-8 col-sm-12 form-inline">
-                <span>Filter by year </span>@Html.DropDownList("GivingYear", Model.GivingYearsList(), new { @class = "form-control" })
-            </div>
-        </div>
-        <br />
-        <div class="row">
-            @Html.Partial("CombineGiving", Model)
-        </div>
+        @Html.Partial("CombineGiving", Model)
     }
     <div class="row">
-        @if (filter == "Pledges")
-        {
-            <h3>Pledge Detail</h3>
-        }
-        else
-        {
-            <h3>Giving Detail</h3>
-        }
-        <div class="col-sm-12">
+        <h3>
+            <a id="@detailName-detail-collapse" data-toggle="collapse" href="#@detailName-section" aria-expanded="true" aria-controls="@detailName-section"><i class="fa fa-chevron-circle-down"></i></a>&nbsp;@detailName Detail
+        </h3>
+        <br />
+        <div class="row collapse in" id="@detailName-section">
             @Html.Partial("PagerTop", Model)
             <div class="table-responsive">
                 <table id="results" class="table table-striped">
@@ -202,7 +182,6 @@
                 </div>
             </div>
         }
-        <br />
     }
 }
 <script>

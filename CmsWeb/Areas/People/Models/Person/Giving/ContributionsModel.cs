@@ -42,7 +42,7 @@ namespace CmsWeb.Areas.People.Models
         [DisplayName("Envelope Option")]
         public CodeInfo EnvelopeOptions { get; set; }
 
-        private List<string> GivingYears = new List<string>(){ "Year To Date", "All Years" };
+        private List<string> GivingYears = new List<string>() { "Year To Date", "Previous And Current", "All Years" };
         public DateTime GivingStartDate { get; set; }
         public DateTime GivingEndDate { get; set; }
 
@@ -114,7 +114,7 @@ namespace CmsWeb.Areas.People.Models
         private IQueryable<Contribution> ApplyYear(IQueryable<Contribution> contributionRecords)
         {
             GivingEndDate = DateTime.Now;
-            switch (Year.Replace(" ",""))
+            switch (Year.Replace(" ", ""))
             {
                 case null:
                 case "YearToDate":
@@ -122,6 +122,9 @@ namespace CmsWeb.Areas.People.Models
                     break;
                 case "AllYears":
                     GivingStartDate = new DateTime(1980, 1, 1);
+                    break;
+                case "PreviousAndCurrent":
+                    GivingStartDate = GivingStartDate = new DateTime(GivingEndDate.Year - 1, 1, 1);
                     break;
                 default:
                     GivingStartDate = new DateTime(int.Parse(Year), 1, 1);
@@ -165,7 +168,15 @@ namespace CmsWeb.Areas.People.Models
             {
                 AddSummaryPledge(contribution, contributionRecords);
             }
-            return PledgesSummary;
+            return OrderPledgesByOnlineSort();
+        }
+
+        private List<PledgesSummary> OrderPledgesByOnlineSort()
+        {
+            var withSort = PledgesSummary.Where(p => p.FundOnlineSort != null).OrderBy(c => c.FundOnlineSort).ToList();
+            var withoutSort = PledgesSummary.Where(p => p.FundOnlineSort == null).OrderBy(c => c.Fund).ToList();
+            withSort.AddRange(withoutSort);
+            return withSort;
         }
 
         public IEnumerable<SelectListItem> GivingYearsList()
@@ -188,8 +199,10 @@ namespace CmsWeb.Areas.People.Models
         private void AddSummaryPledge(Contribution contribution, IQueryable<Contribution> contributionRecords)
         {
             var fundName = contribution.ContributionFund.FundName;
+            var fundOnlineSort = contribution.ContributionFund.OnlineSort;
             if (!PledgesSummary.Any(p => p.Fund == fundName))
             {
+                var lastPledgeDate = contribution.ContributionDate;
                 decimal amountPledged = contributionRecords.Where(c => c.ContributionTypeId == ContributionTypeCode.Pledge && c.ContributionFund.FundName == fundName)
                                                     .Sum(c => c.ContributionAmount ?? 0);
                 List<Contribution> contributionsThisFund = contributionRecords
@@ -205,7 +218,9 @@ namespace CmsWeb.Areas.People.Models
                     Fund = fundName,
                     AmountPledged = amountPledged,
                     AmountContributed = amountContributed,
-                    Balance = amountPledged - amountContributed < 0 ? 0 : amountPledged - amountContributed
+                    Balance = amountPledged - amountContributed < 0 ? 0 : amountPledged - amountContributed,
+                    LastPledgeDate = contribution.ContributionDate.Value,
+                    FundOnlineSort = contribution.ContributionFund.OnlineSort
                 });
             }
         }
@@ -310,7 +325,7 @@ namespace CmsWeb.Areas.People.Models
                      };
             return q2;
         }
-        
+
         public static IEnumerable<StatementInfoWithFund> Statements(CMSDataContext db, int? id, int[] includedFundIds = null)
         {
             if (!id.HasValue)
