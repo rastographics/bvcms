@@ -13,6 +13,16 @@
     var checkImageUserView = true;
     var filter = Model.Filter;
     var detailName = filter == "Pledges" ? "Pledge" : "Giving";
+    var detailCollapse = "in";
+    if (detailName == "Pledge")
+    {
+        detailCollapse = Model.pledgeDetCollapse == true ? "in" : "";
+    }
+    else
+    {
+        detailCollapse = Model.givingDetCollapse == true ? "in" : "";
+    }
+    var collapseArrow = detailCollapse == "in" ? "down" : "right";
     var isFinanceRole = User.IsInRole("Finance");
     var isPledges = Model.isPledges;
     if (DB.Setting("CheckImagesDisabledForUser"))
@@ -36,10 +46,10 @@
     }
     <div class="row">
         <h3>
-            <a id="@detailName-detail-collapse" data-toggle="collapse" href="#@detailName-section" aria-expanded="true" aria-controls="@detailName-section"><i class="fa fa-chevron-circle-down"></i></a>&nbsp;@detailName Detail
+            <a id="@detailName-detail-collapse" data-toggle="collapse" href="#@detailName-detail-section" aria-expanded="true" aria-controls="@detailName-detail-section"><i class="fa fa-chevron-circle-@collapseArrow"></i></a>&nbsp;@detailName Detail
         </h3>
         <br />
-        <div class="row collapse in" id="@detailName-section">
+        <div class="row collapse @detailCollapse" id="@detailName-detail-section">
             @Html.Partial("PagerTop", Model)
             <div class="table-responsive">
                 <table id="results" class="table table-striped">
@@ -187,4 +197,26 @@
 <script>
     unblockPledges();
     blockPledges();
+
+    $(function () {
+        $('#Giving-detail-section').on('hide.bs.collapse', function () {
+            toggleIcons($('#Giving-detail-collapse i'), false);
+            saveUserHistory('givingdetail', false);
+        });
+
+        $('#Giving-detail-section').on('show.bs.collapse', function () {
+            toggleIcons($('#Giving-detail-collapse i'), true);
+            saveUserHistory('givingdetail', true);
+        });
+
+        $('#Pledge-detail-section').on('hide.bs.collapse', function () {
+            toggleIcons($('#Pledge-detail-collapse i'), false);
+            saveUserHistory('pledgedetail', false);
+        });
+
+        $('#Pledge-detail-section').on('show.bs.collapse', function () {
+            toggleIcons($('#Pledge-detail-collapse i'), true);
+            saveUserHistory('pledgedetail', true);
+        });
+    });
 </script>

@@ -5,14 +5,16 @@
     var campusId = Model.Person.CampusId;
     var PledgesSummary = Model.GetPledgesSummary();
     var giving = Util.UserPeopleId == Util2.CurrentPeopleId && (MultipleGatewayUtils.GatewayId(DbUtil.Db, PaymentProcessTypes.RecurringGiving) != null) && DbUtil.Db.Setting("OnlineGiving", true);
+    var pledgeSumCollapse = Model.pledgeSumCollapse == true ? "in" : "";
+    var collapseArrow = pledgeSumCollapse == "in" ? "down" : "right";
 }
 <div class="row">
     <h3>
-        <a id="pledge-summary-collapse" data-toggle="collapse" href="#pledge-summary-section" aria-expanded="true" aria-controls="pledge-summary-section"><i class="fa fa-chevron-circle-down"></i></a>&nbsp;Pledge Summary
+        <a id="pledge-summary-collapse" data-toggle="collapse" href="#pledge-summary-section" aria-expanded="true" aria-controls="pledge-summary-section"><i class="fa fa-chevron-circle-@collapseArrow"></i></a>&nbsp;Pledge Summary
     </h3>
 </div>
 <br />
-<div class="row collapse in" id="pledge-summary-section">
+<div class="row collapse @pledgeSumCollapse" id="pledge-summary-section">
     <div class="row">
         <table class="table table-striped">
             <tr>
@@ -53,3 +55,17 @@
         </table>
     </div>
 </div>
+
+<script>
+    $(function () {
+        $('#pledge-summary-section').on('hide.bs.collapse', function () {
+            toggleIcons($('#pledge-summary-collapse i'), false);
+            saveUserHistory('pledgesummary', false);
+        });
+
+        $('#pledge-summary-section').on('show.bs.collapse', function () {
+            toggleIcons($('#pledge-summary-collapse i'), true);
+            saveUserHistory('pledgesummary', true);
+        });
+    });
+</script>

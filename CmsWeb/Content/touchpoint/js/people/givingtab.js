@@ -81,7 +81,7 @@
     });
 });
 
-$(function () {      
+$(function () {
     $('body').on('change', 'form.ajax #GivingYear', function (event) {
         event.preventDefault();
         var t = $(this);
@@ -92,6 +92,14 @@ $(function () {
         return false;
     });
 });
+
+function toggleIcons(ele, expand) {
+    if (expand) {
+        $(ele).removeClass("fa-chevron-circle-right").addClass('fa-chevron-circle-down');
+    } else {
+        $(ele).removeClass("fa-chevron-circle-down").addClass('fa-chevron-circle-right');
+    }
+}
 
 function saveUserHistory(key, value) {    
     $.ajax({

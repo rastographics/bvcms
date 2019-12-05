@@ -15,11 +15,9 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpPost]
         public ActionResult Contributions(ContributionsModel m)
         {
-            var a = GetUserHistory("Year");
-            if (!string.IsNullOrEmpty(a))
-                m.Year = a;
+            m = GetGivingUserPreferences(m);            
             return View("Giving/Contributions", m);
-        }
+        }        
 
         [HttpPost]
         public ActionResult Statements(ContributionsModel m)
@@ -182,6 +180,31 @@ namespace CmsWeb.Areas.People.Controllers
         {
             var value = Util2.GetSessionObj($"ushgiving-{key}");
             return value == null ? string.Empty : value.ToString();
+        }
+
+        private ContributionsModel GetGivingUserPreferences(ContributionsModel m)
+        {
+            var Year = GetUserHistory("Year");
+            if (!string.IsNullOrEmpty(Year))
+                m.Year = Year;
+
+            var givingsummary = GetUserHistory("givingsummary");
+            if (!string.IsNullOrEmpty(givingsummary))
+                m.givingSumCollapse = givingsummary.ToBool();
+
+            var pledgesummary = GetUserHistory("pledgesummary");
+            if (!string.IsNullOrEmpty(pledgesummary))
+                m.pledgeSumCollapse = pledgesummary.ToBool();
+
+            var givingdetail = GetUserHistory("givingdetail");
+            if (!string.IsNullOrEmpty(givingdetail))
+                m.givingDetCollapse = givingdetail.ToBool();
+
+            var pledgedetail = GetUserHistory("pledgedetail");
+            if (!string.IsNullOrEmpty(pledgedetail))
+                m.pledgeDetCollapse = pledgedetail.ToBool();
+
+            return m;
         }
 
         [HttpPut]

@@ -46,6 +46,11 @@ namespace CmsWeb.Areas.People.Models
         public DateTime GivingStartDate { get; set; }
         public DateTime GivingEndDate { get; set; }
 
+        public bool givingSumCollapse = true;
+        public bool givingDetCollapse = true;
+        public bool pledgeSumCollapse = true;
+        public bool pledgeDetCollapse = true;
+
         [Obsolete(Errors.ModelBindingConstructorError, true)]
         public ContributionsModel()
         {
