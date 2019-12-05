@@ -445,7 +445,7 @@ namespace CmsWeb.Areas.Search.Controllers
                     Location = organization.Location,
                     MeetingDate = dt,
                     AttendCreditId = attcred,
-                    NoAutoAbsents = true
+                    NoAutoAbsents = !CurrentDatabase.Setting("AttendanceAutoAbsents")
                 };
                 CurrentDatabase.Meetings.InsertOnSubmit(newMtg);
                 CurrentDatabase.SubmitChanges();

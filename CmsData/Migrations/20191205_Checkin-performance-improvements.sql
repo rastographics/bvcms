@@ -628,19 +628,27 @@ BEGIN
 	FROM dbo.Organizations WHERE OrganizationId = @oid
 	IF (@NoAutoAbsents <> 1)
 	BEGIN
-		DECLARE @usebroker BIT = (SELECT is_broker_enabled FROM sys.databases WHERE name = DB_NAME())
-		IF @usebroker = 1
+		IF EXISTS(SELECT 1 FROM dbo.Setting s WHERE s.Id='AttendCountUpdatesOffline' and s.Setting = 'true')
 		BEGIN
-			DECLARE @dialog UNIQUEIDENTIFIER
-			BEGIN DIALOG CONVERSATION @dialog
-				FROM SERVICE AddAbsentsToMeetingService
-				TO SERVICE 'AddAbsentsToMeetingService'
-				ON CONTRACT AddAbsentsToMeetingContract
-				WITH ENCRYPTION = OFF;
-			SEND ON CONVERSATION @dialog MESSAGE TYPE AddAbsentsToMeetingMessage (@oid)
+			INSERT INTO dbo.AttendanceStatsUpdate
+			(MeetingId, OrganizationId, PeopleId, OtherMeetings)
+			VALUES (@mid, @orgid, 0, '')
 		END
-		ELSE
-			EXEC dbo.AddAbsentsToMeeting @mid
+		ELSE 
+			DECLARE @usebroker BIT = (SELECT is_broker_enabled FROM sys.databases WHERE name = DB_NAME())
+			IF @usebroker = 1
+			BEGIN
+				DECLARE @dialog UNIQUEIDENTIFIER
+				BEGIN DIALOG CONVERSATION @dialog
+					FROM SERVICE AddAbsentsToMeetingService
+					TO SERVICE 'AddAbsentsToMeetingService'
+					ON CONTRACT AddAbsentsToMeetingContract
+					WITH ENCRYPTION = OFF;
+				SEND ON CONVERSATION @dialog MESSAGE TYPE AddAbsentsToMeetingMessage (@oid)
+			END
+			ELSE
+				EXEC dbo.AddAbsentsToMeeting @mid	
+		END
 	END
 END
 GO
