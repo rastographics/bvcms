@@ -216,13 +216,13 @@ namespace CmsWeb.Areas.Dialog.Controllers
         [HttpPost, Route("ExtraValues/{oid}/{pid}")]
         public ActionResult ExtraValues(int oid, int pid)
         {
-            var em = new ExtraValueModel(oid, pid, "OrgMember", "Adhoc");
+            var em = new ExtraValueModel(CurrentDatabase, oid, pid, "OrgMember", "Adhoc");
             return View("Tabs/ExtraValue/Adhoc", em);
         }
         [HttpPost, Route("NewExtraValue/{oid}/{pid}")]
         public ActionResult NewExtraValue(int oid, int pid)
         {
-            var m = new NewExtraValueModel(oid, pid, "OrgMember", "Adhoc");
+            var m = new NewExtraValueModel(CurrentDatabase, oid, pid, "OrgMember", "Adhoc");
             return View("Tabs/ExtraValue/NewAdhoc", m);
         }
         [HttpPost]
@@ -237,13 +237,13 @@ namespace CmsWeb.Areas.Dialog.Controllers
                 ViewBag.Error = ex.Message;
                 return View("Tabs/ExtraValue/NewAdHoc", m);
             }
-            var em = new ExtraValueModel(m.Id, m.Id2, "OrgMember", "Adhoc");
+            var em = new ExtraValueModel(CurrentDatabase, m.Id, m.Id2, "OrgMember", "Adhoc");
             return View("Tabs/ExtraValue/Adhoc", em);
         }
         [HttpPost, Route("DeleteExtraValue/{oid:int}/{pid:int}")]
         public ActionResult DeleteExtraValue(int oid, int pid, string name)
         {
-            var m = new ExtraValueModel(oid, pid, "OrgMember", "Adhoc");
+            var m = new ExtraValueModel(CurrentDatabase, oid, pid, "OrgMember", "Adhoc");
             m.Delete(name);
             return Content("deleted");
         }
