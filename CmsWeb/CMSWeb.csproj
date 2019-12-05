@@ -880,6 +880,7 @@
     <Compile Include="Controllers\Api\AuthenticateController.cs" />
     <Compile Include="Controllers\Api\ChAiPeopleController.cs" />
     <Compile Include="Controllers\Api\ChAiGiftsController.cs" />
+    <Compile Include="Controllers\Api\MeetingsController.cs" />
     <Compile Include="Controllers\Api\PostController.cs" />
     <Compile Include="Controllers\Api\CustomController.cs" />
     <Compile Include="Controllers\Api\Lookup\BundleHeaderTypesController.cs" />
@@ -908,6 +909,7 @@
     <Compile Include="Membership\Extensions\MembershipExtensions.cs" />
     <Compile Include="Membership\MembershipService.cs" />
     <Compile Include="Models\Api\ApiChAiGift.cs" />
+    <Compile Include="Models\Api\ApiMeeting.cs" />
     <Compile Include="Models\Api\ApiOrganization.cs" />
     <Compile Include="Models\Api\ApiLookup.cs" />
     <Compile Include="Models\Api\ApiContribution.cs" />
