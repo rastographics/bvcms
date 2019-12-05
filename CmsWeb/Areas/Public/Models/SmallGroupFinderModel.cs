@@ -257,8 +257,10 @@ namespace CmsWeb.Areas.Public.Models
                 }
                 else
                 {
+                    var orgExcludes = f.name == "SGF:Type" ? (f.exclude?.Split(',') ?? new string[] { }) : new string[] { };
                     i = (from e in DbUtil.Db.OrganizationExtras
                          where e.Organization.DivOrgs.Any(ee => _divList.Contains(ee.DivId)) || orgTypes.Contains(e.Organization.OrganizationType.Description)
+                         where !orgExcludes.Contains(e.Data)
                          where e.Field == f.name
                          orderby e.Data ??
                              e.StrValue ??
@@ -275,12 +277,6 @@ namespace CmsWeb.Areas.Public.Models
                                      x.IntValue?.ToString() ??
                                      x.BitValue?.ToString()
                          }).DistinctBy(n => n.value).ToList();
-                }
-
-                if (f.name == "SGF:Type")
-                {
-                    var orgExcludes = f.exclude?.Split(',') ?? new string[] { };
-                    i = i.Where(x => !orgExcludes.Contains(x.value)).ToList();
                 }
 
                 i.Insert(0, new FilterItem { value = SHOW_ALL });
