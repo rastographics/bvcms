@@ -1,15 +1,10 @@
-/* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church 
- * Licensed under the GNU General Public License (GPL v2)
- * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
- */
 using CmsData;
 using CmsData.API;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Finance.Models.Report
 {
@@ -41,7 +36,8 @@ namespace CmsWeb.Areas.Finance.Models.Report
         {
             var response = context.HttpContext.Response;
             response.ContentType = "application/pdf";
-            response.AddHeader("content-disposition", "filename=foo.pdf");
+            var filename = $"Statement-{ToDate:d}".SlugifyString("-", false);
+            response.AddHeader("content-disposition", $"filename={filename}.pdf");
             var cs = ContributionStatements.GetStatementSpecification(DbUtil.Db, statementType ?? "all");
 
             if (showCheckNo || showNotes)
