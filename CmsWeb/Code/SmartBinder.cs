@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
@@ -16,7 +17,8 @@ namespace CmsWeb
         
         protected override object CreateModel(ControllerContext controllerContext, ModelBindingContext bindingContext, Type modelType)
         {
-            string type = null;
+            var db = ((CMSBaseController)controllerContext?.Controller)?.CurrentDatabase;
+            string type = null;            
             if (modelType == typeof(Ask))
             {
                 var requestname = bindingContext.ModelName + ".Type";
@@ -73,12 +75,10 @@ namespace CmsWeb
                 }
             }
 
-            /* IDBBinder model creation
-             * if the model has a constructor with CMSDataContext parameter use it to create the model first.
-             * else use base.CreateModel
-             */            
-            var m = (Object)Activator.CreateInstance(modelType, ((CMSBaseController)controllerContext.Controller).CurrentDatabase);
-            m = m ?? base.CreateModel(controllerContext, bindingContext, modelType);
+            /* Create model using base.CreateModel(controllerContext, bindingContext, modelType) only If model does not implement IDBBinder*/
+            var modelConstructorDB = modelType.GetConstructor((new List<Type>() { typeof(CMSDataContext) }).ToArray());
+            var m = (modelConstructorDB.IsNotNull()) ? (Object)Activator.CreateInstance(modelType, db) : base.CreateModel(controllerContext, bindingContext, modelType);
+
             if (controllerContext.Controller is CMSBaseController c && m is IDbBinder b)
                 b.CurrentDatabase = c.CurrentDatabase;
             return m;

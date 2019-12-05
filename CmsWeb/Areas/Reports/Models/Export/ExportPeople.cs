@@ -112,14 +112,12 @@ namespace CmsWeb.Models
 
             if (CurrentDatabase.Setting("UseLabelNameForDonorDetails"))
             {
-                var q = from c in CurrentDatabase.GetContributionsDetails(startdt, enddt, campusid, pledges, (nontaxdeductible is null) ? 3 : nontaxdeductible.ToInt(), includeUnclosed, tagid, fundids)                        
+                var q = from c in CurrentDatabase.GetContributionsDetails(startdt, enddt, campusid, pledges, nontaxdeductible.ToInt(), includeUnclosed, tagid, fundids)
                         join p in CurrentDatabase.People on c.CreditGiverId equals p.PeopleId
-                        where ContributionStatusCode.Recorded.Equals(c.ContributionStatusId)
-                        where !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
                         let mainFellowship = CurrentDatabase.Organizations.SingleOrDefault(oo => oo.OrganizationId == p.BibleFellowshipClassId).OrganizationName
                         let head1 = CurrentDatabase.People.Single(hh => hh.PeopleId == p.Family.HeadOfHouseholdId)
                         let head2 = CurrentDatabase.People.SingleOrDefault(sp => sp.PeopleId == p.Family.HeadOfHouseholdSpouseId)
-                        let altcouple = p.Family.FamilyExtras.SingleOrDefault(ee => (ee.FamilyId == p.FamilyId) && ee.Field == "CoupleName" && p.SpouseId != null).Data                        
+                        let altcouple = p.Family.FamilyExtras.SingleOrDefault(ee => (ee.FamilyId == p.FamilyId) && ee.Field == "CoupleName" && p.SpouseId != null).Data
                         select new
                         {
                             c.FamilyId,
@@ -155,22 +153,18 @@ namespace CmsWeb.Models
                                             : "Mr. and Mrs. " + head1.Name)
                                         : head1.PreferredName + " and " + head2.PreferredName + " " + head1.LastName +
                                            (head1.SuffixCode.Length > 0 ? ", " + head1.SuffixCode : "")),
-                            p.EmailAddress,
-                            c.ContributionStatusId,
-                            c.ContributionTypeId
-                        };                
+                            p.EmailAddress
+                        };
                 return q.ToDataTable();
 
             }
             else
             {
-                var q = from c in CurrentDatabase.GetContributionsDetails(startdt, enddt, campusid, pledges, (nontaxdeductible is null) ? 3 : nontaxdeductible.ToInt(), includeUnclosed, tagid, fundids)
+                var q = from c in CurrentDatabase.GetContributionsDetails(startdt, enddt, campusid, pledges, nontaxdeductible.ToInt(), includeUnclosed, tagid, fundids)
                         join p in CurrentDatabase.People on c.CreditGiverId equals p.PeopleId
-                        where ContributionStatusCode.Recorded.Equals(c.ContributionStatusId)
-                        where !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
                         let mainFellowship = CurrentDatabase.Organizations.SingleOrDefault(oo => oo.OrganizationId == p.BibleFellowshipClassId).OrganizationName
                         let spouse = CurrentDatabase.People.SingleOrDefault(sp => sp.PeopleId == p.SpouseId)
-                        let altcouple = p.Family.FamilyExtras.SingleOrDefault(ee => (ee.FamilyId == p.FamilyId) && ee.Field == "CoupleName" && p.SpouseId != null).Data                        
+                        let altcouple = p.Family.FamilyExtras.SingleOrDefault(ee => (ee.FamilyId == p.FamilyId) && ee.Field == "CoupleName" && p.SpouseId != null).Data
                         select new
                         {
                             c.FamilyId,
@@ -192,11 +186,8 @@ namespace CmsWeb.Models
                             c.BundleType,
                             c.BundleStatus,
                             p.FullAddress,
-                            p.EmailAddress,
-                            c.ContributionStatusId,
-                            c.ContributionTypeId
+                            p.EmailAddress
                         };
-
                 return q.ToDataTable();
             }
         }
@@ -212,48 +203,26 @@ namespace CmsWeb.Models
                foreach (var s in v)
                   tw.WriteLine(s);
 #endif
-
-
-            var nontaxded = nontaxdeductible.HasValue ? (nontaxdeductible.Value ? 1 : 0) : (int?)null;
+            var nontaxded = nontaxdeductible.HasValue ? (nontaxdeductible.Value ? 1 : 0) : (int?)null;            
             var q2 = from r in CurrentDatabase.GetTotalContributionsDonor(startdt, enddt, campusid, nontaxded, includeUnclosed, tagid, fundids, null)
-                     where ContributionStatusCode.Recorded.Equals(r.ContributionStatusId)
-                     where !ContributionTypeCode.ReturnedReversedTypes.Contains(r.ContributionTypeId)
-                     group r by new
+                     select new
                      {
-                         r.CreditGiverId,
-                         r.Count,
-                         r.PledgeAmount,
+                         GiverId = r.CreditGiverId,
+                         Count = r.Count ?? 0,
+                         Amount = r.Amount ?? 0m,
+                         Pledged = r.PledgeAmount ?? 0m,
                          r.Email,
-                         r.Head_FirstName,
-                         r.Head_LastName,
-                         r.SpouseName,
-                         r.MainFellowship,
-                         r.MemberStatus,
+                         FirstName = r.Head_FirstName,
+                         LastName = r.Head_LastName,
+                         Spouse = r.SpouseName ?? "",
+                         MainFellowship = r.MainFellowship ?? "",
+                         MemberStatus = r.MemberStatus ?? "",
                          r.JoinDate,
                          r.Addr,
                          r.Addr2,
                          r.City,
                          r.St,
-                         r.Zip                         
-                     } into rr
-                     select new
-                     {
-                         GiverId = rr.Key.CreditGiverId,
-                         Count = rr.Key.Count ?? 0,
-                         Amount = rr.Sum(x => x.Amount) ?? 0m,
-                         Pledged = rr.Key.PledgeAmount ?? 0m,
-                         rr.Key.Email,
-                         FirstName = rr.Key.Head_FirstName,
-                         LastName = rr.Key.Head_LastName,
-                         Spouse = rr.Key.SpouseName ?? "",
-                         MainFellowship = rr.Key.MainFellowship ?? "",
-                         MemberStatus = rr.Key.MemberStatus ?? "",
-                         rr.Key.JoinDate,
-                         rr.Key.Addr,
-                         rr.Key.Addr2,
-                         rr.Key.City,
-                         rr.Key.St,
-                         rr.Key.Zip
+                         r.Zip
                      };
             return q2.ToDataTable();
         }
