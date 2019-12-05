@@ -1,10 +1,3 @@
-/* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church
- * Licensed under the GNU General Public License (GPL v2)
- * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license
- */
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,7 +25,6 @@ namespace CmsWeb.Areas.Reports.Models
         private readonly float[] w3 = {40, 130};
         private Font bigboldfont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 12);
         private Document doc;
-        private DateTime dt;
         private readonly int mtgid;
         private readonly string prefix;
         private PdfPTable t;
@@ -46,13 +38,6 @@ namespace CmsWeb.Areas.Reports.Models
         public override void ExecuteResult(ControllerContext context)
         {
             var response = context.HttpContext.Response;
-            response.ContentType = "application/pdf";
-            response.AddHeader("content-disposition", "filename=foo.pdf");
-
-            dt = Util.Now;
-
-            doc = new Document(PageSize.LETTER.Rotate(), 36, 36, 64, 64);
-            var w = PdfWriter.GetInstance(doc, response.OutputStream);
 
             var i = (from m in DbUtil.Db.Meetings
                      where m.MeetingId == mtgid
@@ -62,6 +47,13 @@ namespace CmsWeb.Areas.Reports.Models
                          m.Organization.LeaderName,
                          m.MeetingDate
                      }).SingleOrDefault();
+
+            var filename = $"Guests-Absentees-Contact-Report-{i.OrganizationName}-{i.MeetingDate:d}".SlugifyString("-", false);
+            response.ContentType = "application/pdf";
+            response.AddHeader("content-disposition", $"filename={filename}.pdf");
+
+            doc = new Document(PageSize.LETTER.Rotate(), 36, 36, 64, 64);
+            var w = PdfWriter.GetInstance(doc, response.OutputStream);
 
             w.PageEvent = pageEvents;
             doc.Open();

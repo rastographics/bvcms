@@ -42,7 +42,7 @@ namespace CmsWeb.Areas.Reports.Models
         {
             var Response = context.HttpContext.Response;
             Response.ContentType = "application/pdf";
-            Response.AddHeader("content-disposition", "filename=foo.pdf");
+            Response.AddHeader("content-disposition", "filename=FamilyReport.pdf");
 
             dt = Util.Now;
 
@@ -102,7 +102,6 @@ namespace CmsWeb.Areas.Reports.Models
                         color = BaseColor.WHITE;
                     }
 
-                    Debug.WriteLine("{0:##}: {1}", p.order, p.person.Name);
                     AddRow(ft, p.person, fn, color);
                     fn++;
                 }
