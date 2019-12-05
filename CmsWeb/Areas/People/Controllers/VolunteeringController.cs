@@ -275,7 +275,7 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpPost]
         public ActionResult ExtraValues(int id)
         {
-            var m = new ExtraValueModel(id, "People", "Volunteer");
+            var m = new ExtraValueModel(CurrentDatabase, id, "People", "Volunteer");
             ViewBag.EvLocationLabel = CurrentDatabase.Setting("ExtraVolunteerDataLabel", "Extra Volunteer Data");
             return View("/Views/ExtraValue/Location.cshtml", m);
         }
