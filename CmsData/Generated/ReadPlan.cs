@@ -7,7 +7,7 @@ namespace CmsData
     [Table(Name = "disc.ReadPlan")]
     public partial class ReadPlan : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         #region Private Fields
 

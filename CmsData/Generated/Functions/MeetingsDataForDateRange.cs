@@ -7,7 +7,7 @@ namespace CmsData.View
     [Table(Name = "MeetingsDataForDateRange")]
     public partial class MeetingsDataForDateRange
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         private string _Organization;
 

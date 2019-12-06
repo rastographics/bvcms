@@ -8,7 +8,7 @@ namespace CmsData
     [Table(Name = "lookup.VolApplicationStatus")]
     public partial class VolApplicationStatus : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         #region Private Fields
 
