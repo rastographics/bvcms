@@ -4,7 +4,7 @@
 @model CmsWeb.Areas.People.Models.ContactModel
 @{
     var prewrap = Model.Ministry.ToString() == "TouchPoint Support" ? "" : "pre-wrap";
-    var evmodel = new ExtraValueModel(Model.ContactId, "Contact", Model.Location);
+    var evmodel = new ExtraValueModel(DbUtil.Db, Model.ContactId, "Contact", Model.Location);
 }
 <form class="form ajax" method="post" data-init="Editable" data-init2="ExtraEditable">
     @if (Model.Incomplete.HasValue())

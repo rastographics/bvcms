@@ -1,10 +1,3 @@
-/* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church
- * Licensed under the GNU General Public License (GPL v2)
- * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license
- */
-
 using CmsData;
 using CmsWeb.Models;
 using iTextSharp.text;
@@ -24,7 +17,6 @@ namespace CmsWeb.Areas.Reports.Models
         private readonly Font font = FontFactory.GetFont(FontFactory.HELVETICA, 10);
         private readonly Font monofont = FontFactory.GetFont(FontFactory.COURIER, 8);
         private Document doc;
-        private DateTime dt;
         private int? mtgid;
         private readonly Font smallfont = FontFactory.GetFont(FontFactory.HELVETICA, 8, new GrayColor(50));
 
@@ -36,13 +28,6 @@ namespace CmsWeb.Areas.Reports.Models
         public override void ExecuteResult(ControllerContext context)
         {
             var Response = context.HttpContext.Response;
-            Response.ContentType = "application/pdf";
-            Response.AddHeader("content-disposition", "filename=foo.pdf");
-
-            dt = Util.Now;
-
-            doc = new Document(PageSize.LETTER.Rotate(), 36, 36, 64, 64);
-            var w = PdfWriter.GetInstance(doc, Response.OutputStream);
 
             var i = (from m in DbUtil.Db.Meetings
                      where m.MeetingId == mtgid
@@ -52,6 +37,13 @@ namespace CmsWeb.Areas.Reports.Models
                          m.Organization.LeaderName,
                          m.MeetingDate
                      }).SingleOrDefault();
+
+            var filename = $"Guests-Absents-Report-{i.OrganizationName}-{i.MeetingDate:d}".SlugifyString("-", false);
+            Response.ContentType = "application/pdf";
+            Response.AddHeader("content-disposition", $"filename={filename}.pdf");
+
+            doc = new Document(PageSize.LETTER.Rotate(), 36, 36, 64, 64);
+            var w = PdfWriter.GetInstance(doc, Response.OutputStream);
 
             w.PageEvent = new HeadFoot
             {

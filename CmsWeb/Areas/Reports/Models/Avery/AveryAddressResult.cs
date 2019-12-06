@@ -77,7 +77,7 @@ namespace CmsWeb.Areas.Reports.Models
                 return;
             }
             Response.ContentType = "application/pdf";
-            Response.AddHeader("content-disposition", "filename=foo.pdf");
+            Response.AddHeader("content-disposition", "filename=AveryAddress.pdf");
 
             var document = new Document(PageSize.LETTER);
             document.SetMargins(50f, 36f, 32f, 36f);

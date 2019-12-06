@@ -39,7 +39,6 @@ namespace CmsWeb.Areas.Reports.Models
         private Font font = FontFactory.GetFont(FontFactory.HELVETICA, 10);
         private Font smallfont = FontFactory.GetFont(FontFactory.HELVETICA, 8, new GrayColor(50));
         private Document doc;
-        private DateTime dt;
 
         private int? mtgid;
         public AttendeeResult(int? meetingid)
@@ -50,13 +49,6 @@ namespace CmsWeb.Areas.Reports.Models
         public override void ExecuteResult(ControllerContext context)
         {
             var Response = context.HttpContext.Response;
-            Response.ContentType = "application/pdf";
-            Response.AddHeader("content-disposition", "filename=foo.pdf");
-
-            dt = Util.Now;
-
-            doc = new Document(PageSize.LETTER.Rotate(), 36, 36, 64, 64);
-            var w = PdfWriter.GetInstance(doc, Response.OutputStream);
 
             var i = (from m in DbUtil.Db.Meetings
                      where m.MeetingId == mtgid
@@ -67,6 +59,12 @@ namespace CmsWeb.Areas.Reports.Models
                          m.MeetingDate
                      }).SingleOrDefault();
 
+            var filename = $"{i.OrganizationName}-{i.LeaderName}-{i.MeetingDate:d}".SlugifyString("-", false);
+            Response.ContentType = "application/pdf";
+            Response.AddHeader("content-disposition", $"filename={filename}.pdf");
+
+            doc = new Document(PageSize.LETTER.Rotate(), 36, 36, 64, 64);
+            var w = PdfWriter.GetInstance(doc, Response.OutputStream);
             w.PageEvent = new HeadFoot
             {
                 HeaderText = $"Attendee Report: {i.OrganizationName} - {i.LeaderName} {i.MeetingDate:g}",

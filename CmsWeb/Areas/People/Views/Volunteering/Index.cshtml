@@ -425,8 +425,7 @@
 <div class="row">
     <div class="col-md-9">
         <form id="ev-form" class="ajax" method="post" action="/Volunteering/ExtraValues/@Model.PeopleId" data-init="Editable" data-init2="ExtraEditable" data-results="#ExtraValueLocation">
-            @{ var m = new ExtraValueModel(Model.PeopleId, "People", "Volunteer"); }
-            @Html.Partial("/Views/ExtraValue/Location.cshtml", m)
+            @Html.Partial("/Views/ExtraValue/Location.cshtml", new ExtraValueModel(DbUtil.Db, Model.PeopleId, "People", "Volunteer"))
         </form>
     </div>
 </div>

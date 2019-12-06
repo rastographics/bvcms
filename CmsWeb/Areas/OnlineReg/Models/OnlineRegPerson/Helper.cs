@@ -778,7 +778,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 return o != null && MasterShowDOBOnFind;
             }
 
-            return o != null && settings.Values.Any(x => x.ShowDOBOnFind);
+            return o != null && settings.Values.Where(x => x.OrgId == o.OrganizationId).Any(x => x.ShowDOBOnFind);
         }
 
         public bool ShowPhoneOnFind()
@@ -791,7 +791,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 return o != null && MasterShowPhoneOnFind;
             }
 
-            return o != null && settings.Values.Any(x => x.ShowPhoneOnFind);
+            return o != null && settings.Values.Where(x => x.OrgId == o.OrganizationId).Any(x => x.ShowPhoneOnFind);
         }
 
         public int MinimumUserAge => db.Setting("MinimumUserAge", "16").ToInt();
