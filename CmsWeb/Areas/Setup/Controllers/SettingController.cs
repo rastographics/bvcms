@@ -27,6 +27,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             }
 
             var settingTypes = m
+                .Where(x => x.SettingCategory != null)
                 .GroupBy(x => x.SettingCategory.SettingTypeId)
                 .Select(x => new SettingTypeModel(x))
                 .ToList();
