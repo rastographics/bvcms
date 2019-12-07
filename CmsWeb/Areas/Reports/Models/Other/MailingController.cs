@@ -202,7 +202,7 @@ namespace CmsWeb.Models
             {
                 q1 = from p in q
                          // exclude person who has a partner who is already in the list and with different PeopleID.
-                     where !(p.SpouseId != null && q.Any(pp => pp.PeopleId == p.SpouseId && pp.PeopleId < p.PeopleId)
+                     where !(p.SpouseId != null && q.Any(pp => pp.PeopleId == p.SpouseId && pp.PeopleId == p.Family.HeadOfHouseholdId)
                         )
                      where (p.PrimaryBadAddrFlag ?? 0) == 0
                      where p.DoNotMailFlag == false
@@ -212,7 +212,7 @@ namespace CmsWeb.Models
             {
                 q1 = from p in q
                          // exclude person who has a partner who is already in the list and with different PeopleID.
-                     where !(p.SpouseId != null && q.Any(pp => pp.PeopleId == p.SpouseId && pp.PeopleId < p.PeopleId))
+                     where !(p.SpouseId != null && q.Any(pp => pp.PeopleId == p.SpouseId && pp.PeopleId == p.Family.HeadOfHouseholdId))
                      select p;
             }
 
