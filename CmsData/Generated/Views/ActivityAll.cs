@@ -7,7 +7,7 @@ namespace CmsData.View
     [Table(Name = "ActivityAll")]
     public partial class ActivityAll
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         private string _Machine;
 

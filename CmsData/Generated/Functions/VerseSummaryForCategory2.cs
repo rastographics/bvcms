@@ -7,7 +7,7 @@ namespace CmsData.View
     [Table(Name = "VerseSummaryForCategory2")]
     public partial class VerseSummaryForCategory2
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         private int _Id;
 

@@ -9,7 +9,7 @@ namespace CmsData
     [Table(Name = "dbo.OrgMemberDocuments")]
     public partial class OrgMemberDocument
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         #region Private Fields
 

@@ -7,7 +7,7 @@ namespace CmsData
     [Table(Name = "lookup.BuildingAccessTypes")]
     public partial class BuildingAccessType : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         #region Private Fields
 
