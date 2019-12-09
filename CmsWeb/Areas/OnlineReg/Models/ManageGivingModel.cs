@@ -35,6 +35,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 if (_currentDatabase == null)
                 {
                     _currentDatabase = value;
+                }
+            }
+        }
 
         public int pid { get; set; }
         public int orgid { get; set; }
