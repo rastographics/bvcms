@@ -110,9 +110,16 @@ namespace CmsDataTests
             result.ShouldBe(Resources.RenderTemplateResults);
         }
 
+        [Fact]
+        public void Python_Result_Should_Have_All_SQL_Results()
+        {
+            var db = CMSDataContext.Create(DatabaseFixture.Host);
+            var model = new PythonModel(db);
+        }
+
         public void Dispose()
         {
             MockAppSettings.Remove("PublicKey", "PublicSalt");
-        }
+        }  
     }
 }
