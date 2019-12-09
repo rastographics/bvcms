@@ -23,18 +23,19 @@ namespace CmsWeb.Areas.Reports.Models
         {
             var Response = context.HttpContext.Response;
 
-            Response.Clear();
-            Response.ContentType = "application/pdf";
-            Response.AddHeader("content-disposition", "filename=foo.pdf");
-            var doc = new Document(PageSize.LETTER, 36, 36, 36, 42);
-            var w = PdfWriter.GetInstance(doc, Response.OutputStream);
 
-            string scheduletext = String.Empty;
+            string scheduletext = string.Empty;
             var sdt = CmsData.Organization.GetDateFromScheduleId(OrgSearch.ScheduleId ?? 0);
             if (sdt.HasValue)
                 scheduletext = sdt.Value.ToString("dddd h:mm tt");
 
             var headtext = $"Enrollment Control Report {scheduletext}";
+            var filename = headtext.SlugifyString("-", false);
+            Response.Clear();
+            Response.ContentType = "application/pdf";
+            Response.AddHeader("content-disposition", $"filename={filename}.pdf");
+            var doc = new Document(PageSize.LETTER, 36, 36, 36, 42);
+            var w = PdfWriter.GetInstance(doc, Response.OutputStream);
             w.PageEvent = new HeadFoot(headtext);
 
             var boldfont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 8);

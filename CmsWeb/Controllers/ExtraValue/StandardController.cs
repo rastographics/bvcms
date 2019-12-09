@@ -11,14 +11,14 @@ namespace CmsWeb.Controllers
         [HttpPost, Route("ExtraValue/NewStandard/{table}/{location}/{id:int}")]
         public ActionResult NewStandard(string location, string table, int id)
         {
-            var m = new NewExtraValueModel(id, table, location);
+            var m = new NewExtraValueModel(CurrentDatabase, id, table, location);
             return View(m);
         }
         [ValidateInput(false)]
         [HttpPost, Route("ExtraValue/EditStandard/{table}")]
         public ActionResult EditStandard(string table, int id, string location, string name)
         {
-            var m = new NewExtraValueModel(id, table, name, location);
+            var m = new NewExtraValueModel(CurrentDatabase, id, table, name, location);
             return View(m);
         }
         [ValidateInput(false)]
@@ -31,13 +31,13 @@ namespace CmsWeb.Controllers
             i.value.Codes = m.ConvertToCodes();
             i.value.Link = Server.HtmlEncode(m.ExtraValueLink);
             i.views.Save(CurrentDatabase);
-            return View("ListStandard", new ExtraValueModel(m.Id, m.ExtraValueTable, m.ExtraValueLocation));
+            return View("ListStandard", new ExtraValueModel(CurrentDatabase, m.Id, m.ExtraValueTable, m.ExtraValueLocation));
         }
 
         [HttpPost, Route("ExtraValue/ListStandard/{table}/{location}/{id:int}")]
         public ActionResult ListStandard(string table, string location, int id)
         {
-            var m = new ExtraValueModel(id, table, location);
+            var m = new ExtraValueModel(CurrentDatabase, id, table, location);
             return View(m);
         }
 
@@ -45,7 +45,7 @@ namespace CmsWeb.Controllers
         [HttpPost, Route("ExtraValue/DeleteStandard/{table}/{location}")]
         public ActionResult DeleteStandard(string table, string location, string name, bool removedata)
         {
-            var m = new ExtraValueModel(table, location);
+            var m = new ExtraValueModel(CurrentDatabase, table, location);
             m.DeleteStandard(name, removedata);
             return Content("ok");
         }
@@ -53,7 +53,7 @@ namespace CmsWeb.Controllers
         [HttpPost, Route("ExtraValue/Delete/{table}/{location}/{id:int}")]
         public ActionResult Delete(string table, string location, int id, string name)
         {
-            var m = new ExtraValueModel(id, table, location);
+            var m = new ExtraValueModel(CurrentDatabase, id, table, location);
             m.Delete(name);
             return View("Standard", m);
         }
@@ -83,16 +83,16 @@ namespace CmsWeb.Controllers
         [HttpPost, Route("ExtraValue/ApplyOrder/{table}/{location}")]
         public ActionResult ApplyOrder(string table, string location, Dictionary<string, int> orders)
         {
-            var m = new ExtraValueModel(table, location);
+            var m = new ExtraValueModel(CurrentDatabase, table, location);
             m.ApplyOrder(orders);
-            m = new ExtraValueModel(table, location);
+            m = new ExtraValueModel(CurrentDatabase, table, location);
             return View("ListStandard", m);
         }
 
         [HttpPost, Route("ExtraValue/SwitchMultiline/{table}/{location}")]
         public ActionResult SwitchMultiline(string table, string location, string name)
         {
-            var m = new ExtraValueModel(table, location);
+            var m = new ExtraValueModel(CurrentDatabase, table, location);
             m.SwitchMultiline(name);
             return View("ListStandard", m);
         }
@@ -100,7 +100,7 @@ namespace CmsWeb.Controllers
         [HttpGet, Route("ExtraValue/ConvertToStandard/{table}")]
         public ActionResult ConvertToStandard(string table, string name)
         {
-            var m = new NewExtraValueModel(0, table, "Standard");
+            var m = new NewExtraValueModel(CurrentDatabase, 0, table, "Standard");
             m.ConvertToStandard(name);
             return Redirect("/ExtraValue/Summary/" + table);
         }
@@ -112,7 +112,7 @@ namespace CmsWeb.Controllers
         [HttpPost, Route("ExtraValue/Location/{table}/{location}/{id:int}")]
         public ActionResult Location(string location, string table, int id, string label)
         {
-            var m = new ExtraValueModel(id, table, location);
+            var m = new ExtraValueModel(CurrentDatabase, id, table, location);
             ViewBag.EvLocationLabel = label;
             return View(m);
         }

@@ -7,7 +7,7 @@ namespace CmsData
     [Table(Name = "lookup.MeetingType")]
     public partial class MeetingType : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         #region Private Fields
 

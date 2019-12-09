@@ -7,7 +7,7 @@ namespace CmsData.View
     [Table(Name = "XpContact")]
     public partial class XpContact
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         private int _ContactId;
 

@@ -7,7 +7,7 @@ namespace CmsData
     [Table(Name = "lookup.GatewayServiceType")]
     public partial class GatewayServiceType : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         #region Private Fields
 

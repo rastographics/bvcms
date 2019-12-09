@@ -7,7 +7,7 @@ namespace CmsData.View
     [Table(Name = "RecurringGivingDueForToday")]
     public partial class RecurringGivingDueForToday
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         private int _PeopleId;
 

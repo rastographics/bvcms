@@ -7,7 +7,7 @@ namespace CmsData
     [Table(Name = "CMS_VOLUNTEER.APPLICATION_PREREQ_TBL")]
     public partial class ApplicationPrereq : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         #region Private Fields
 

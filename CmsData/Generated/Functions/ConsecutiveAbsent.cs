@@ -7,7 +7,7 @@ namespace CmsData.View
     [Table(Name = "ConsecutiveAbsents")]
     public partial class ConsecutiveAbsent
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         private int _OrganizationId;
 

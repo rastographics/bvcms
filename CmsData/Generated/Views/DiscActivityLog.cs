@@ -7,7 +7,7 @@ namespace CmsData.View
     [Table(Name = "DiscActivityLog")]
     public partial class DiscActivityLog
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         private string _Name2;
 

@@ -7,7 +7,7 @@ namespace CmsData.View
     [Table(Name = "GenRanges")]
     public partial class GenRange
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         private int? _Amt;
 
