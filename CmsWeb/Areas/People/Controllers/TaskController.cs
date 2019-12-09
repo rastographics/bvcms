@@ -32,13 +32,13 @@ namespace CmsWeb.Areas.People.Controllers
         }
 
         [HttpPost, Route("~/Task/Edit")]
-        public ContentResult Edit(int pk, string name, string value)
+        public ActionResult Edit(int pk, string name, string value)
         {
-            CurrentDatabase.SetTaskDetails(pk, name, value);
+            var task = CurrentDatabase.SetTaskDetails(pk, name, value);
             CurrentDatabase.SubmitChanges();
             DbUtil.LogActivity($"Edit Task {pk} to {value}", userId: Util.UserId);
 
-            return new ContentResult {Content = value};
+            return Json(TaskModel.WithTask(task, CurrentDatabase.Host, CurrentDatabase));
         }
 
         [HttpPost, Route("~/Task/Update")]

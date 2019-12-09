@@ -9,7 +9,7 @@ namespace CmsData
     [Table(Name = "dbo.PeopleExtra")]
     public partial class PeopleExtra : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         #region Private Fields
 

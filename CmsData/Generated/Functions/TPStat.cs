@@ -7,7 +7,7 @@ namespace CmsData.View
     [Table(Name = "TPStats")]
     public partial class TPStat
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         private int? _Nrecs;
 

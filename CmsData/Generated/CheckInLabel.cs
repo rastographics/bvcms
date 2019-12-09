@@ -7,7 +7,7 @@ namespace CmsData
     [Table(Name = "dbo.CheckInLabel")]
     public partial class CheckInLabel : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         #region Private Fields
 

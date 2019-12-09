@@ -7,7 +7,7 @@ namespace CmsData.View
     [Table(Name = "NonTaxContributions")]
     public partial class NonTaxContribution
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         private int _ContributionId;
 
