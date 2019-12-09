@@ -26,15 +26,15 @@ namespace CmsWeb.Areas.Setup.Controllers
                 m = m.Where(vv => (vv.System ?? false) == false);
             }
 
-            var settingTypes = m
-                .Where(x => x.SettingMetadata != null)
-                .GroupBy(x => x.SettingMetadata.SettingCategory.SettingTypeId)
-                .Select(x => new SettingTypeModel(x.Select(s => s.SettingMetadata)))
+            var settingTypes = CurrentDatabase.SettingMetadatas
+                .Where(vv => (vv.Setting.System ?? false) == false)
+                .GroupBy(x => x.SettingCategory.SettingTypeId)
+                .Select(x => new SettingTypeModel(x))
                 .ToList();
 
             return View(new SettingModel {
                 GeneralSettings = m.Where(x => x.SettingMetadata == null).ToList(),
-                SettingTypes = settingTypes.Where(x => x.SettingType != null).ToList()
+                SettingTypes = settingTypes.ToList()
             });
         }
 
