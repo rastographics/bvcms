@@ -7,7 +7,7 @@ namespace CmsData.View
     [Table(Name = "PickListOrgs2")]
     public partial class PickListOrgs2
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         private int _OrganizationId;
 

@@ -8,7 +8,7 @@ namespace CmsData
     [Table(Name = "dbo.QueryBuilderClauses")]
     public partial class QueryBuilderClause : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         #region Private Fields
 

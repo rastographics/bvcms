@@ -535,7 +535,117 @@ AND name='ST_Meetings_MeetingId_OrganizationId_MeetingDate')
 CREATE STATISTICS [ST_Meetings_MeetingId_OrganizationId_MeetingDate] ON [dbo].[Meetings]([MeetingId], [OrganizationId], [MeetingDate])
 GO
 
-if NOT EXISTS(SELECT OBJECT_ID('AddAbsentsToMeetingMessage', 'message'))
+ALTER PROC [dbo].[AddAbsentsToMeeting](@mid INT)
+AS
+BEGIN
+
+	DECLARE @oid INT,
+			@mdt DATETIME,
+			@mbr INT,
+			@atyp INT,
+			@grp INT,
+			@pid INT,
+			@offsite INT,
+			@acr INT,
+			@NoAutoAbsents BIT,
+			@firstdt DATETIME,
+			@lastdt DATETIME
+
+	SELECT 
+		@oid = m.OrganizationId,
+		@mid = m.MeetingId,
+		@mdt = m.MeetingDate,
+		@grp = m.GroupMeetingFlag,
+		@NoAutoAbsents = m.NoAutoAbsents,
+		@firstdt = o.FirstMeetingDate,
+		@lastdt = DATEADD(d, 1, o.LastMeetingDate)
+	FROM dbo.Meetings m
+	JOIN dbo.Organizations o ON o.OrganizationId = m.OrganizationId
+	WHERE m.MeetingId = @mid
+
+	SELECT @acr = AttendCreditId
+	FROM dbo.OrgSchedule
+	WHERE OrganizationId = @oid
+	AND CAST(SchedTime AS TIME) = CAST(@mdt AS TIME)
+	AND SchedDay = (DATEPART(dw, @mdt) - 1)
+
+	DECLARE c CURSOR FOR
+	SELECT m.PeopleId, m.MemberTypeId, mt.AttendanceTypeId 
+	FROM dbo.OrganizationMembers m
+	JOIN lookup.MemberType mt ON m.MemberTypeId = mt.Id
+	LEFT JOIN dbo.Attend a ON a.PeopleId = m.PeopleId AND a.MeetingId = @mid
+	WHERE m.OrganizationId = @oid
+	AND EnrollmentDate < @mdt
+	AND @acr IS NOT NULL
+	AND m.MemberTypeId <> 230 -- Inactive
+	AND m.MemberTypeId <> 311 -- Prospect
+	AND ISNULL(m.Pending, 0) = 0
+	AND a.PeopleId IS NULL
+
+	OPEN c;
+	FETCH NEXT FROM c INTO @pid, @mbr, @atyp;
+	
+	WHILE @@FETCH_STATUS = 0
+	BEGIN
+		
+		IF (@firstdt IS NULL OR @mdt > @firstdt) AND (@lastdt IS NULL OR @mdt < @lastdt)
+			SELECT @offsite = CASE WHEN EXISTS(	
+					SELECT NULL FROM dbo.OrganizationMembers om
+					JOIN dbo.Organizations o ON om.OrganizationId = o.OrganizationId
+					WHERE om.PeopleId = @pid
+					AND om.OrganizationId <> @oid
+					AND o.Offsite = 1
+					AND o.FirstMeetingDate <= @mdt
+					AND @mdt <= DATEADD(d, 1, o.LastMeetingDate))
+				THEN 1 ELSE 0 END
+		ELSE
+			SET @offsite = 0
+			
+		INSERT INTO dbo.Attend
+		        ( PeopleId ,
+		          MeetingId ,
+		          OrganizationId ,
+		          MeetingDate ,
+		          MemberTypeId ,
+		          AttendanceTypeId ,
+		          CreatedDate ,
+		          AttendanceFlag ,
+		          OtherAttends 
+		        )
+		VALUES  ( @pid , -- PeopleId - int
+		          @mid , -- MeetingId - int
+		          @oid , -- OrganizationId - int
+		          @mdt , -- MeetingDate - datetime
+		          @mbr , -- MemberTypeId - int
+		          CASE WHEN @grp = 1 THEN 90 WHEN @offsite = 1 THEN 80 ELSE @atyp END , -- AttendanceTypeId - int
+		          GETDATE() , -- CreatedDate - datetime
+		          0 , -- AttendanceFlag - bit
+		          @offsite
+		        )
+		FETCH NEXT FROM c INTO @pid, @mbr, @atyp;
+	END;
+	CLOSE c;
+	DEALLOCATE c;
+	IF @acr IS NOT NULL
+	BEGIN
+		DECLARE @usebroker BIT = (SELECT is_broker_enabled FROM sys.databases WHERE name = DB_NAME())
+		IF @usebroker = 1
+		BEGIN
+			DECLARE @dialog UNIQUEIDENTIFIER
+			BEGIN DIALOG CONVERSATION @dialog
+			  FROM SERVICE UpdateAttendStrService
+			  TO SERVICE 'UpdateAttendStrService'
+			  ON CONTRACT UpdateAttendStrContract
+			  WITH ENCRYPTION = OFF;
+			SEND ON CONVERSATION @dialog MESSAGE TYPE UpdateAttendStrMessage (@oid)
+		END
+		ELSE
+			EXEC dbo.UpdateAllAttendStr @oid
+		END		
+	END
+GO
+
+IF NOT EXISTS(SELECT OBJECT_ID('AddAbsentsToMeetingMessage', 'message'))
 CREATE MESSAGE TYPE [AddAbsentsToMeetingMessage]
 AUTHORIZATION [dbo]
 VALIDATION=NONE
@@ -562,6 +672,7 @@ BEGIN
 			BREAK;
 		IF @mid IS NOT NULL
 			EXEC dbo.AddAbsentsToMeeting @mid
+			
 		END CONVERSATION @dlgId WITH CLEANUP
 	END	
 END
@@ -632,7 +743,7 @@ BEGIN
 		BEGIN
 			INSERT INTO dbo.AttendanceStatsUpdate
 			(MeetingId, OrganizationId, PeopleId, OtherMeetings)
-			VALUES (@mid, @orgid, 0, '')
+			VALUES (@mid, @oid, 0, '')
 		END
 		ELSE 
 			DECLARE @usebroker BIT = (SELECT is_broker_enabled FROM sys.databases WHERE name = DB_NAME())
@@ -650,5 +761,4 @@ BEGIN
 				EXEC dbo.AddAbsentsToMeeting @mid	
 		END
 	END
-END
 GO

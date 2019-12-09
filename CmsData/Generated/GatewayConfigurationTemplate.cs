@@ -9,7 +9,7 @@ namespace CmsData
     [Table(Name = "lookup.GatewayConfigurationTemplate")]
     public partial class GatewayConfigurationTemplate
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         #region Private Fields
 

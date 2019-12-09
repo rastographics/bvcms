@@ -7,7 +7,7 @@ namespace CmsData
     [Table(Name = "lookup.FamilyRelationship")]
     public partial class FamilyRelationship : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         #region Private Fields
 

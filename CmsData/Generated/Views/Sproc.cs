@@ -7,7 +7,7 @@ namespace CmsData.View
     [Table(Name = "Sprocs")]
     public partial class Sproc
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         private string _Type;
 
