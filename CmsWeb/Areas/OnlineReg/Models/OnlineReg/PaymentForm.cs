@@ -1,6 +1,8 @@
 using CmsData;
 using CmsData.Finance;
 using CmsWeb.Code;
+using CmsWeb.Constants;
+using CmsWeb.Models;
 using Elmah;
 using System;
 using System.Collections.Generic;
@@ -13,11 +15,10 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.OnlineReg.Models
 {
-    public class PaymentForm
+    public class PaymentForm : IDbBinder
     {
         private bool? _noEChecksAllowed;
-        private int? timeOut;
-        private CMSDataContext _currentDatabase;
+        private int? timeOut;        
 
         public string source { get; set; }
         public decimal? AmtToPay { get; set; }
@@ -47,8 +48,15 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public string Terms { get; set; }
         public int DatumId { get; set; }
         public Guid FormId { get; set; }
-        public string URL { get; set; }
-        public CMSDataContext CurrentDatabase => _currentDatabase ?? (_currentDatabase = DbUtil.Db);
+        public string URL { get; set; }        
+        public CMSDataContext CurrentDatabase { get; set; }
+
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
+        public PaymentForm() { }
+        public PaymentForm(CMSDataContext db)
+        {
+            CurrentDatabase = db;
+        }
 
         public int TimeOut
         {
@@ -131,7 +139,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 return "off";
 #endif
             }
-        }
+        }        
 
         public string FullName()
         {
@@ -147,8 +155,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
             return n;
         }
 
-        public Transaction CreateTransaction(CMSDataContext Db, decimal? amount = null)
-        {
+        public Transaction CreateTransaction(decimal? amount = null)
+        {            
             if (!amount.HasValue)
             {
                 amount = AmtToPay;
@@ -177,7 +185,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 Description = Description,
                 OrgId = OrgId,
                 Url = URL,
-                TransactionGateway = OnlineRegModel.GetTransactionGateway(ProcessType)?.GatewayAccountName,
+                TransactionGateway = OnlineRegModel.GetTransactionGateway(CurrentDatabase, ProcessType)?.GatewayAccountName,
                 Address = Address.Truncate(50),
                 Address2 = Address2.Truncate(50),
                 City = City,
@@ -266,7 +274,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 pi = new PaymentInfo() { GatewayAccountId = accountId ?? 0 };
             }
 
-            var pf = new PaymentForm
+            var pf = new PaymentForm(db)
             {
                 URL = ti.Url,
                 PayBalance = true,
@@ -322,7 +330,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 return null;
             }
 
-            var pf = new PaymentForm
+            var pf = new PaymentForm(m.CurrentDatabase)
             {
                 FormId = Guid.NewGuid(),
                 AmtToPay = m.PayAmount() + (m.donation ?? 0),
@@ -418,7 +426,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private static void ClearMaskedNumbers(PaymentForm pf, PaymentInfo pi)
         {
-            int? GatewayId = MultipleGatewayUtils.GatewayId(DbUtil.Db, pf.ProcessType);
+            int? GatewayId = MultipleGatewayUtils.GatewayId(pf.CurrentDatabase, pf.ProcessType);
 
             var clearBankDetails = false;
             var clearCreditCardDetails = false;
@@ -476,7 +484,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 OrgId = t.OrgId,
                 Url = t.Url,
                 Address = t.Address,
-                TransactionGateway = OnlineRegModel.GetTransactionGateway()?.GatewayAccountName,
+                TransactionGateway = OnlineRegModel.GetTransactionGateway(db)?.GatewayAccountName,
                 City = t.City,
                 State = t.State,
                 Zip = t.Zip,
@@ -672,7 +680,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             var ti = (m?.Transaction != null)
                 ? CreateTransaction(CurrentDatabase, m.Transaction, AmtToPay)
-                : CreateTransaction(CurrentDatabase);
+                : CreateTransaction();
 
             int? pid = null;
             if (m != null)
@@ -811,7 +819,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     return m.FinishRegistration(ti);
                 }
 
-                OnlineRegModel.ConfirmDuePaidTransaction(ti, ti.TransactionId, true);
+                OnlineRegModel.ConfirmDuePaidTransaction(ti, ti.TransactionId, true, CurrentDatabase);
 
                 return RouteModel.AmountDue(AmountDueTrans(CurrentDatabase, ti), ti);
             }
@@ -872,7 +880,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     Message = "External Payment error",
                 };
             }
-            Transaction ti = DbUtil.Db.Transactions.Where(p => p.Id == extTransactionId).FirstOrDefault();
+            Transaction ti = CurrentDatabase.Transactions.Where(p => p.Id == extTransactionId).FirstOrDefault();
             orgId = ti.OrgId.Value;
 
             HttpContextFactory.Current.Session["FormId"] = FormId;
@@ -881,9 +889,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 m.DatumId = DatumId; // todo: not sure this is necessary
                 return m.FinishRegistration(ti);
             }
-            OnlineRegModel.ConfirmDuePaidTransaction(ti, ti.TransactionId, true);
+            OnlineRegModel.ConfirmDuePaidTransaction(ti, ti.TransactionId, true, CurrentDatabase);
 
-            return RouteModel.AmountDue(AmountDueTrans(DbUtil.Db, ti), ti);
+            return RouteModel.AmountDue(AmountDueTrans(CurrentDatabase, ti), ti);
         }
 
         public void CheckTesting()

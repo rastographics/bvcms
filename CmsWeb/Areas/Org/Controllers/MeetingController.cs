@@ -465,7 +465,8 @@ namespace CmsWeb.Areas.Org.Controllers
                     GroupMeetingFlag = false,
                     Location = organization.Location,
                     MeetingDate = dt,
-                    AttendCreditId = attcred
+                    AttendCreditId = attcred,
+                    NoAutoAbsents = !CurrentDatabase.Setting("AttendanceAutoAbsents")
                 };
                 CurrentDatabase.Meetings.InsertOnSubmit(newMtg);
                 CurrentDatabase.SubmitChanges();
@@ -652,7 +653,7 @@ namespace CmsWeb.Areas.Org.Controllers
             {
                 return RedirectShowError("This meeting has expired");
             }
-            var meeting = Meeting.FetchOrCreateMeeting(CurrentDatabase, orgId, meetingDate, true);
+            var meeting = Meeting.FetchOrCreateMeeting(CurrentDatabase, orgId, meetingDate, !CurrentDatabase.Setting("AttendanceAutoAbsents"));
 
             return Redirect($"/Meeting/Attendance/{meeting.MeetingId}?currentMembers=true");
         }

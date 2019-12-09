@@ -9,7 +9,7 @@ namespace CmsData
     [Table(Name = "dbo.PaymentInfo")]
     public partial class PaymentInfo : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         #region Private Fields
 

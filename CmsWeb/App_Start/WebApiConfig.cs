@@ -21,6 +21,7 @@ namespace CmsWeb
             builder.EntitySet<ApiPerson>("People");
             builder.EntitySet<ApiContribution>("Contributions");
             builder.EntitySet<ApiContributionFund>("Funds");
+            builder.EntitySet<ApiMeeting>("Meetings");
             builder.EntitySet<ApiOrganization>("Organizations");
             builder.EntitySet<ApiOrganizationMember>("OrganizationMembers");
             builder.EntitySet<ApiChAiPerson>("ChAiPeople");

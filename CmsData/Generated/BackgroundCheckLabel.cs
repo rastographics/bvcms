@@ -7,7 +7,7 @@ namespace CmsData
     [Table(Name = "lookup.BackgroundCheckLabels")]
     public partial class BackgroundCheckLabel : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         #region Private Fields
 

@@ -7,7 +7,7 @@ namespace CmsData.View
     [Table(Name = "RegsettingMessages")]
     public partial class RegsettingMessage
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         private int _OrganizationId;
 

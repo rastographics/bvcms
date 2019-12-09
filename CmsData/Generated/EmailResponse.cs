@@ -9,7 +9,7 @@ namespace CmsData
     [Table(Name = "dbo.EmailResponses")]
     public partial class EmailResponse : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         #region Private Fields
 

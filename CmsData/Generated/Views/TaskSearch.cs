@@ -7,7 +7,7 @@ namespace CmsData.View
     [Table(Name = "TaskSearch")]
     public partial class TaskSearch
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         private DateTime? _Created;
 
