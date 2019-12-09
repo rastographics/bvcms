@@ -7,7 +7,7 @@ namespace CmsData.View
     [Table(Name = "Donors")]
     public partial class Donor
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         private string _PrimaryAddress;
 

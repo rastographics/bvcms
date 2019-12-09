@@ -7,7 +7,7 @@ namespace CmsData.View
     [Table(Name = "RecentAttendInDaysByCountDesc")]
     public partial class RecentAttendInDaysByCountDesc
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         private int _PeopleId;
 

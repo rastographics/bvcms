@@ -694,6 +694,9 @@
     <Compile Include="Generated\ResourceOrganization.cs" />
     <Compile Include="Generated\ResourceOrganizationType.cs" />
     <Compile Include="Generated\ResourceType.cs" />
+    <Compile Include="Generated\SettingCategory.cs" />
+    <Compile Include="Generated\SettingMetadatum.cs" />
+    <Compile Include="Generated\SettingType.cs" />
     <Compile Include="Generated\Views\AccessUserInfo.cs" />
     <Compile Include="Generated\Views\ActiveRegistration.cs" />
     <Compile Include="Generated\Views\AllLookup.cs" />
@@ -816,7 +819,6 @@
     <Compile Include="Generated\Views\TransactionSummary.cs" />
     <Compile Include="DbUtil\ITableWithExtraValues.cs" />
     <Content Include="App_Readme\Elmah.txt" />
-    <Content Include="Migrations\20191112_add_dob_and_phone_fields_to_options_view.sql" />
     <Content Include="Migrations\00000000_sql_migrations_table.sql" />
     <Compile Include="Organization\OrgFilter.cs" />
     <Compile Include="Organization\OrgPerson.cs" />
@@ -1180,7 +1182,6 @@
     <Resource Include="Classes\OnlineRegSummaryText\Details2.xml">
       <SubType>Designer</SubType>
     </Resource>
-    <Content Include="Migrations\20191111_Create_SP_UpdateAllSpouseId.sql" />
     <Content Include="QueryBuilder\CompareMap.xml">
       <SubType>Designer</SubType>
     </Content>

@@ -9,7 +9,7 @@ namespace CmsData
     [Table(Name = "dbo.BackgroundChecks")]
     public partial class BackgroundCheck : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         #region Private Fields
 

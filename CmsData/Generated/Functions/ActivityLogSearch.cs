@@ -7,7 +7,7 @@ namespace CmsData.View
     [Table(Name = "ActivityLogSearch")]
     public partial class ActivityLogSearch
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         private string _Machine;
 

@@ -9,7 +9,7 @@ namespace CmsData
     [Table(Name = "dbo.RecurringAmounts")]
     public partial class RecurringAmount : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         #region Private Fields
 

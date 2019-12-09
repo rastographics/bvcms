@@ -1,4 +1,6 @@
-﻿@model IEnumerable<CmsData.Setting>
+﻿@using CmsWeb.Areas.Setup.Models
+@using UtilityExtensions
+@model CmsWeb.Areas.Setup.Models.SettingModel
 @{
     Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Settings";
@@ -7,46 +9,122 @@
 @section head{
     <meta name="format-detection" content="telephone=no" />
     @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+    <style>
+        .btn-link i {
+            transition: transform ease 0.3s;
+            transform: rotate(90deg);
+            margin-right: 10px;
+        }
+
+        .btn-link.collapsed i {
+            transform: rotate(0deg);
+        }
+
+        .btn-link:focus, .btn-link:active {
+            outline: 0 !important;
+            border: 0 !important;
+        }
+
+        .btn-link {
+            text-decoration: none !important;
+        }
+
+        label {
+            font-weight: normal;
+            margin-bottom: 0;
+        }
+
+        .panel-body {
+            padding: 0 !important;
+        }
+
+        .dow {
+            display: none;
+        }
+
+        .day {
+            width: 25px !important;
+        }
+
+        .prev:after {
+            content: "\02C2"
+        }
+
+        .next:after {
+            content: "\02C3"
+        }
+        #settings > tbody > tr {
+            height: 50px;
+        }
+    </style>
 }
 <div class="row">
     <div class="col-lg-9">
         <div class="box box-responsive">
             <div class="box-title-btn">
                 <div class="box-tools">
-                    <a href="#" class="btn btn-success create-new"><i class="fa fa-plus-circle"></i> Add Setting</a>
+                    <a href="#" class="btn btn-success create-new" data-add-setting><i class="fa fa-plus-circle"></i> Add Setting</a>
                 </div>
             </div>
             <div class="box-content">
-                <div class="table-responsive">
-                    <table id="settings" class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th style="width: 100px;">
-                                    <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Setting Code" data-content="Please enter exactly as in the help article, using no spaces. Also, they are case-sensitive."><i class="fa fa-info-circle"></i></a>&nbsp;
-                                    Setting Code
-                                </th>
-                                <th style="width: 500px;">
-                                    <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Setting Value" data-content="Click value to edit."><i class="fa fa-info-circle"></i></a>&nbsp;
-                                    Setting Value
-                                </th>
-                                <th style="width: 50px;">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in Model)
-                            {
-                                <tr>
-                                    <td style="width: 100px;">@item.Id</td>
-                                    <td style="width: 500px;">
-                                        <a id="@item.Id" class="clickEdit" data-pk="@(item.Id)">@item.SettingX</a>
-                                    </td>
-                                    <td style="width: 50px;">
-                                        <a id="d@(item.Id)" href="#" class="delete btn btn-sm btn-danger"><i class="fa fa-trash"></i> Delete</a>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
+                <ul class="nav nav-pills subnav hidden-sm hidden-xs">
+                    <li class="settings-type-tab active" data-id="1">
+                        <a href="#general" data-toggle="tab">
+                            <span>General</span>
+                        </a>
+                    </li>
+                    @foreach(var item in Model.SettingTypes)
+                    {
+                        <li class="resource-type-tab" data-id="@item.SettingType.SettingTypeId">
+                            <a href="#@item.SettingType.Name.SlugifyString()" data-toggle="tab">
+                                <span>@item.SettingType.Name</span>
+                            </a>
+                        </li>
+                    }
+                </ul>
+                <div class="tab-content" style="border: none">
+                    <div class="tab-pane active" id="general">
+                        <div class="accordion" id="accordion-general-settings">
+                            <div class="panel panel-default">
+                                <div class="panel-heading" id="general-settings">
+                                    <h4 style="margin:0;">
+                                        <button class="btn btn-link notcollapsed" type="button" data-toggle="collapse" data-target="#general-accordion" aria-expanded="true" aria-controls="general-accordion">
+                                            <i class="fa fa-chevron-right"></i> All
+                                        </button>
+                                    </h4>
+                                </div>
+                                <div id="general-accordion" class="collapse in" data-parent="#accordion-general-settings">
+                                    @Html.Partial("_Settings", new SettingListModel(Model.GeneralSettings) { CanDelete = true })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @for (int i = 0; i < Model.SettingTypes.Count; i++)
+                    {
+                        var settingTypeGroup = Model.SettingTypes[i];
+
+                        <div class="tab-pane"
+                             id="@settingTypeGroup.SettingType.Name.SlugifyString()">
+                            <div class="accordion" id="accordion-@(i)" role="tablist">
+                                @foreach (var category in settingTypeGroup.Settings.GroupBy(x => x.SettingCategory).OrderBy(x => x.Key.DisplayOrder))
+                                {
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading" id="@i-@category.Key.SettingCategoryId">
+                                            <h4 style="margin: 0;">
+                                                <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapse-@i-@category.Key.SettingCategoryId" aria-expanded="true" aria-controls="test">
+                                                    <i class="fa fa-chevron-right"></i> @category.Key.Name
+                                                </button>
+                                            </h4>
+                                        </div>
+                                        <div id="collapse-@i-@category.Key.SettingCategoryId" class="collapse" data-parent="#accordion-@(i)">
+                                            @Html.Partial("_Settings", new SettingListModel(category.Key.SettingMetadatas) { CanDelete = false })
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
                 </div>
                 <a href="#" class="btn btn-success btn-block visible-xs-block create-new"><i class="fa fa-plus-circle"></i> Add Setting</a>
             </div>
@@ -80,7 +158,15 @@
 @section scripts
 {
     @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-editable/js/bootstrap-editable.min.js")
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
     <script type="text/javascript">
+        function toggleCurrentTab(tab) {
+            if (!tab || tab === '#tab-general' || tab === '#tab-misc' || tab === '#tab-miscellaneous')
+                $('[data-add-setting]').show();
+            else
+                $('[data-add-setting]').hide();
+        }
+        
         $(function() {
             $.fn.editableform.buttons = '<button type="submit" class="btn btn-primary btn-sm editable-submit">' +
                 '<i class="fa fa-fw fa-check"></i>' +
@@ -89,10 +175,34 @@
                 '<i class="fa fa-fw fa-times"></i>' +
                 '</button>';
 
-            $(".clickEdit").editable({
-                mode: 'inline',
-                type: 'text',
-                url: "/Setting/Edit/"
+            $(".clickEdit").each(function (i, e) {
+                $(e).editable({
+                    mode: 'inline',
+                    type: $(e).data('type'),
+                    url: "/Setting/Edit/"
+                });
+            });
+
+            $(".edit-datetime").editable({
+                datepicker: {
+                    todayBtn: true
+                },
+                clear: false
+            });
+
+            $(".edit-int").editable({
+                datepicker: {
+                    todayBtn: true
+                },
+                clear: false
+            });
+
+            $('.boolean-toggle').on('change', function () {
+                $.ajax({
+                    type: 'POST',
+                    url: '/Setting/Edit',
+                    data: { pk: $(this).attr('name'), value: $(this).prop('checked') }
+                });
             });
 
             $("a.delete").click(function(e) {
@@ -107,19 +217,21 @@
                         closeOnConfirm: false
                     },
                     function() {
-                        $.post("/Setting/Delete/" + id, null, function(ret) {
-                            if (ret && ret.error)
-                                swal("Error!", ret.error, "error");
-                            else {
-                                swal({
-                                        title: "Deleted!",
-                                        type: "success"
-                                    },
-                                    function() {
-                                        window.location = "/Settings/";
-                                    });
-                            }
-                        });
+                        $.post("/Setting/Delete/" + id,
+                            null,
+                            function(ret) {
+                                if (ret && ret.error)
+                                    swal("Error!", ret.error, "error");
+                                else {
+                                    swal({
+                                            title: "Deleted!",
+                                            type: "success"
+                                        },
+                                        function() {
+                                            window.location = "/Settings/";
+                                        });
+                                }
+                            });
                     });
             });
 
@@ -129,9 +241,10 @@
                 return false;
             });
 
-            $('#new-modal').on('shown.bs.modal', function() {
-                $("#Id").val('').focus();
-            });
+            $('#new-modal').on('shown.bs.modal',
+                function() {
+                    $("#Id").val('').focus();
+                });
 
             $('[data-toggle="popover"]').popover({ html: true });
             $('[data-toggle="popover"]').click(function(ev) {
@@ -140,17 +253,56 @@
 
             // positions scrollbar and highlights new setting.
             var hash = document.location.hash;
-            if (hash) {
+            if (hash && hash.search('#tab') != 0) {
                 var offset = $(hash).offset();
                 offset.top -= 80;
                 $('body').animate({ scrollTop: offset.top }, 500);
 
                 var row = $(hash).closest('tr');
                 var bgColor = $(row).css('background-color');
-                $(row).animate({ backgroundColor: '#eaab00' }, 1000, function () {
-                    $(row).animate({ backgroundColor: bgColor }, 1000);
-                });
+                $(row).animate({ backgroundColor: '#eaab00' },
+                    1000,
+                    function() {
+                        $(row).animate({ backgroundColor: bgColor }, 1000);
+                    });
             }
+
+            var tab = window.location.hash;
+
+            @foreach (SettingTypeModel settingTypeModel in Model.SettingTypes)
+            {
+                <text>
+                    if (tab === '#tab-@settingTypeModel.SettingType.Name.SlugifyString()') {
+                        var id = "#@settingTypeModel.SettingType.Name.SlugifyString()";
+                        $("a[href='" + id + "']").click().tab("show");
+                        $("option[value='" + id + "']").prop('selected', true);
+                    }
+                </text>
+            }
+
+            $('a[data-toggle="tab"]').on('shown.bs.tab',
+                function(e) {
+                    e.preventDefault();
+                    var tab = $(e.target).attr('href').replace("#", "#tab-");
+                    window.location.hash = tab;
+                    localStorage.setItem('last-settings-tab', tab);
+
+                    toggleCurrentTab(tab);
+                });
+
+            var lastTab = localStorage.getItem('last-settings-tab');
+            if (window.location.hash) {
+                lastTab = window.location.hash;
+            }
+            if (lastTab) {
+                var tlink = $("a[href='" + lastTab.replace("tab-", "") + "']");
+                if (tlink.attr("href") !== '#') {
+                    localStorage.setItem('last-settings-tab', tlink.attr("href").replace('#', '#tab-'));
+                    tlink.click().tab("show");
+                }
+            }
+
+            toggleCurrentTab(tab);
         });
     </script>
 }
