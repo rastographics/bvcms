@@ -18,18 +18,19 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
     public partial class OnlineRegModel : IDbBinder
     {
-        public CMSDataContext CurrentDatabase { get => _currentDatabase ?? DbUtil.Db; set => _currentDatabase = value; }
+        [NonSerialized]
         private CMSDataContext _currentDatabase;
-
-        public OnlineRegModel()
+        public CMSDataContext CurrentDatabase
         {
-            get => _currentDatabase ?? DbUtil.Db;
+            get => _currentDatabase ?? (CurrentDatabase = DbUtil.Db);
             set
             {
-                _currentDatabase = value;
-                Init();
+                if (_currentDatabase == null)
+                {
+                    _currentDatabase = value;
+                }
             }
-        }
+        } 
 
         private void Init()
         {
@@ -44,6 +45,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
             :this()
         {            
             CurrentDatabase = db;
+        }
+
+        public OnlineRegModel()
+        {
+            
         }
 
         public OnlineRegModel(HttpRequestBase req, CMSDataContext db, int? id, bool? testing, string email, bool? login, string source)
