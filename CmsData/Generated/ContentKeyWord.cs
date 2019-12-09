@@ -9,7 +9,7 @@ namespace CmsData
     [Table(Name = "dbo.ContentKeyWords")]
     public partial class ContentKeyWord : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         #region Private Fields
 

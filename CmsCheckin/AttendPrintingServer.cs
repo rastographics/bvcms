@@ -58,7 +58,7 @@ namespace CmsCheckin
 
 			var pj = Util.FetchPrintJob();
 
-			if (pj.jobs.Count > 0) {
+			if (pj.jobs?.Count > 0) {
 				dtLastPrint = DateTime.Now;
 
 				foreach (var j in pj.jobs) {

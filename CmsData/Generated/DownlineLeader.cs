@@ -7,7 +7,7 @@ namespace CmsData
     [Table(Name = "dbo.DownlineLeaders")]
     public partial class DownlineLeader : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         #region Private Fields
 

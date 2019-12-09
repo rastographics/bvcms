@@ -8,7 +8,7 @@ namespace CmsData
     [Table(Name = "CMS_MAILINGS.DIST_LIST_MEMBERS_TBL")]
     public partial class DistListMember : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         #region Private Fields
 

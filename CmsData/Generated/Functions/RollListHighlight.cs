@@ -7,7 +7,7 @@ namespace CmsData.View
     [Table(Name = "RollListHighlight")]
     public partial class RollListHighlight
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         private int? _Section;
 

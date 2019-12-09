@@ -851,6 +851,9 @@
     <Compile Include="Areas\Setup\Models\Pushpay\RecurringManagment.cs" />
     <Compile Include="Areas\Setup\Controllers\GatewayController.cs" />
     <Compile Include="Areas\Setup\Models\GatewayAccountJsonModel.cs" />
+    <Compile Include="Areas\Setup\Models\SettingListModel.cs" />
+    <Compile Include="Areas\Setup\Models\SettingModel.cs" />
+    <Compile Include="Areas\Setup\Models\SettingTypeModel.cs" />
     <Compile Include="Code\BirthdateValidAttribute.cs" />
     <Compile Include="Code\CMSWebViewPage.cs" />
     <Compile Include="Areas\Setup\Controllers\PushpayController.cs" />
@@ -1849,6 +1852,7 @@
     <Content Include="Content\touchpoint\src\less\snackbar.less" />
     <Content Include="Areas\People\Views\Shared\PledgesSummary.cshtml" />
     <Content Include="libman.json" />
+    <Content Include="Areas\Setup\Views\Setting\_Settings.cshtml" />
     <Content Include="Areas\Manage\Views\Account\AuthSetup.cshtml" />
     <Content Include="Areas\Manage\Views\Account\AuthSetupComplete.cshtml" />
     <Content Include="Views\Shared\Account\TwoFactorPasscode.cshtml" />
