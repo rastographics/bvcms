@@ -7,7 +7,7 @@ namespace CmsData.View
     [Table(Name = "FailedEmails")]
     public partial class FailedEmail
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         private DateTime? _Time;
 

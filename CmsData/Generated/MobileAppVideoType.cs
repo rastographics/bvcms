@@ -7,7 +7,7 @@ namespace CmsData
     [Table(Name = "dbo.MobileAppVideoTypes")]
     public partial class MobileAppVideoType : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         #region Private Fields
 

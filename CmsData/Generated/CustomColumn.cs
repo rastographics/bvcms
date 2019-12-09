@@ -7,7 +7,7 @@ namespace CmsData
     [Table(Name = "dbo.CustomColumns")]
     public partial class CustomColumn : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         #region Private Fields
 

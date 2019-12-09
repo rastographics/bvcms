@@ -7,7 +7,7 @@ namespace CmsData.View
     [Table(Name = "PastAttendanceCredits")]
     public partial class PastAttendanceCredit
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         private bool? _Attended;
 

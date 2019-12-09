@@ -7,7 +7,7 @@ namespace CmsData.View
     [Table(Name = "CheckinMatch")]
     public partial class CheckinMatch
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         private int? _Familyid;
 

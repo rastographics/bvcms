@@ -7,7 +7,7 @@ namespace CmsData
     [Table(Name = "dbo.PrintJob")]
     public partial class PrintJob : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         #region Private Fields
 

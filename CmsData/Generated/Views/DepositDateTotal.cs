@@ -7,7 +7,7 @@ namespace CmsData.View
     [Table(Name = "DepositDateTotals")]
     public partial class DepositDateTotal
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         private DateTime? _DepositDate;
 

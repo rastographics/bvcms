@@ -7,7 +7,7 @@ namespace CmsData.View
     [Table(Name = "SplitInts")]
     public partial class SplitInt
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         private int? _ValueX;
 

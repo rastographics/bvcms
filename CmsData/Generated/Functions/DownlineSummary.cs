@@ -7,7 +7,7 @@ namespace CmsData.View
     [Table(Name = "DownlineSummary")]
     public partial class DownlineSummary
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         private int? _Rank;
 
