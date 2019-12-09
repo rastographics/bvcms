@@ -162,9 +162,9 @@ namespace CmsWeb.Areas.Public.Controllers
 		public ActionResult GetProfiles()
 		{
 			List<Profile> profiles = new List<Profile>();
-			List<CheckinProfileSettings> profileSettings = CurrentDatabase.CheckinProfileSettings.ToList();
+			List<CheckinProfileSetting> profileSettings = CurrentDatabase.CheckinProfileSettings.ToList();
 
-			foreach( CheckinProfileSettings settings in profileSettings ) {
+			foreach( CheckinProfileSetting settings in profileSettings ) {
 				Profile profile = new Profile();
 				profile.populate( settings );
 

@@ -25,14 +25,12 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
         public int SecurityType = 0;
         public int ShowCheckinConfirmation = 5;
         
-        public void populate(CmsData.CheckinProfileSettings s)
+        public void populate(CmsData.CheckinProfileSetting s)
         {
-            id = s.CheckinProfiles.CheckinProfileId;
-            name = s.CheckinProfiles.Name;
+            id = s.CheckinProfile.CheckinProfileId;
+            name = s.CheckinProfile.Name;
 
             CampusId = (s.CampusId == null) ? 0 : s.CampusId.Value;
-            EarlyCheckIn = (s.EarlyCheckin == -1) ? 0 : s.EarlyCheckin;
-            LateCheckIn = (s.LateCheckin == -1) ? 0 : s.LateCheckin;
             Testing = s.Testing;
             TestDay = s.TestDay;
             DisableJoin = s.DisableJoin;

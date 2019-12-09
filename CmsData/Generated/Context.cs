@@ -143,13 +143,13 @@ namespace CmsData
         partial void UpdateCheckInTime(CheckInTime instance);
         partial void DeleteCheckInTime(CheckInTime instance);
 
-        partial void InsertCheckinProfiles(CheckinProfiles instance);
-        partial void UpdateCheckinProfiles(CheckinProfiles instance);
-        partial void DeleteCheckinProfiles(CheckinProfiles instance);
+        partial void InsertCheckinProfile(CheckinProfile instance);
+        partial void UpdateCheckinProfile(CheckinProfile instance);
+        partial void DeleteCheckinProfile(CheckinProfile instance);
 
-        partial void InsertCheckinProfileSettings(CheckinProfileSettings instance);
-        partial void UpdateCheckinProfileSettings(CheckinProfileSettings instance);
-        partial void DeleteCheckinProfileSettings(CheckinProfileSettings instance);
+        partial void InsertCheckinProfileSetting(CheckinProfileSetting instance);
+        partial void UpdateCheckinProfileSetting(CheckinProfileSetting instance);
+        partial void DeleteCheckinProfileSetting(CheckinProfileSetting instance);
 
         partial void InsertChurchAttReportId(ChurchAttReportId instance);
         partial void UpdateChurchAttReportId(ChurchAttReportId instance);
@@ -940,9 +940,9 @@ namespace CmsData
         
         public Table<CheckInPending> CheckInPendings => GetTable<CheckInPending>();
 
-        public Table<CheckinProfiles> CheckinProfiles => GetTable<CheckinProfiles>();
+        public Table<CheckinProfile> CheckinProfiles => GetTable<CheckinProfile>();
 
-        public Table<CheckinProfileSettings> CheckinProfileSettings => GetTable<CheckinProfileSettings>();
+        public Table<CheckinProfileSetting> CheckinProfileSettings => GetTable<CheckinProfileSetting>();
 
         public Table<ChurchAttReportId> ChurchAttReportIds => GetTable<ChurchAttReportId>();
 
