@@ -687,6 +687,18 @@ namespace CmsData
         partial void UpdateSetting(Setting instance);
         partial void DeleteSetting(Setting instance);
 
+        partial void InsertSettingType(SettingType instance);
+        partial void UpdateSettingType(SettingType instance);
+        partial void DeleteSettingType(SettingType instance);
+
+        partial void InsertSettingCategory(SettingCategory instance);
+        partial void UpdateSettingCategory(SettingCategory instance);
+        partial void DeleteSettingCategory(SettingCategory instance);
+
+        partial void InsertSettingMetadata(SettingMetadatum instance);
+        partial void UpdateSettingMetadata(SettingMetadatum instance);
+        partial void DeleteSettingMetadata(SettingMetadatum instance);
+
         partial void InsertSMSGroupMember(SMSGroupMember instance);
         partial void UpdateSMSGroupMember(SMSGroupMember instance);
         partial void DeleteSMSGroupMember(SMSGroupMember instance);
@@ -1203,6 +1215,12 @@ namespace CmsData
         public Table<SecurityCode> SecurityCodes => GetTable<SecurityCode>();
 
         public Table<Setting> Settings => GetTable<Setting>();
+
+        public Table<SettingType> SettingTypes => GetTable<SettingType>();
+
+        public Table<SettingCategory> SettingCategories => GetTable<SettingCategory>();
+
+        public Table<SettingMetadatum> SettingMetadatas => GetTable<SettingMetadatum>();
 
         public Table<SMSGroupMember> SMSGroupMembers => GetTable<SMSGroupMember>();
 

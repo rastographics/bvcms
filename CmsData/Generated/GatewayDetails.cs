@@ -9,7 +9,7 @@ namespace CmsData
     [Table(Name = "dbo.GatewayDetails")]
     public partial class GatewayDetails
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         #region Private Fields
 

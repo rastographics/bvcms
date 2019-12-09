@@ -9,7 +9,7 @@ namespace CmsData
     [Table(Name = "dbo.RelatedFamilies")]
     public partial class RelatedFamily : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         #region Private Fields
 

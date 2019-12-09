@@ -7,7 +7,7 @@ namespace CmsData
     [Table(Name = "dbo.MobileAppActions")]
     public partial class MobileAppAction : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         #region Private Fields
 

@@ -42,11 +42,11 @@ namespace CmsWeb.Areas.Reports.Models
 
         public override void ExecuteResult(ControllerContext context)
         {
-            var Response = context.HttpContext.Response;
-            Response.ContentType = "application/pdf";
-            Response.AddHeader("content-disposition", "filename=foo.pdf");
-
             dt = Util.Now;
+            var Response = context.HttpContext.Response;
+            var filename = $"Weekly-Attendance-{dt:d}".SlugifyString("-", false);
+            Response.ContentType = "application/pdf";
+            Response.AddHeader("content-disposition", $"filename={filename}.pdf");
 
             doc = new Document(PageSize.LETTER.Rotate(), 36, 36, 64, 64);
             var w = PdfWriter.GetInstance(doc, Response.OutputStream);

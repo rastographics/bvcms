@@ -99,7 +99,7 @@ namespace CmsWeb.Areas.People.Controllers
             }
             MembershipService.DisableTwoFactorAuth(user, CurrentDatabase, null);
 
-            return Redirect($"/Person2/{id}#tab-user");
+            return Redirect($"/Person2/{user.PeopleId}#tab-user");
         }
 
         [HttpGet, Authorize(Roles = "Admin")]

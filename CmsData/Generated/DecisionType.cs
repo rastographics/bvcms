@@ -8,7 +8,7 @@ namespace CmsData
     [Table(Name = "lookup.DecisionType")]
     public partial class DecisionType : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         #region Private Fields
 

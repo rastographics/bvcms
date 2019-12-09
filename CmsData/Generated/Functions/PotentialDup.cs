@@ -7,7 +7,7 @@ namespace CmsData.View
     [Table(Name = "PotentialDups")]
     public partial class PotentialDup
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         private int _PeopleId0;
 

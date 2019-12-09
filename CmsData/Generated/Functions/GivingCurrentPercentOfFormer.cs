@@ -7,7 +7,7 @@ namespace CmsData.View
     [Table(Name = "GivingCurrentPercentOfFormer")]
     public partial class GivingCurrentPercentOfFormer
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         private int _Pid;
 
