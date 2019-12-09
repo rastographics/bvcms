@@ -7,7 +7,7 @@ namespace CmsData.View
     [Table(Name = "MostRecentItems")]
     public partial class MostRecentItem
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         private int? _Id;
 

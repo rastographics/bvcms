@@ -7,7 +7,7 @@ namespace CmsData.View
     [Table(Name = "SearchNoDiacritics")]
     public partial class SearchNoDiacritic
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         private int _PeopleId;
 

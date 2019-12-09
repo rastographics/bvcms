@@ -9,7 +9,7 @@ namespace CmsData
     [Table(Name = "dbo.GoerSupporter")]
     public partial class GoerSupporter : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         #region Private Fields
 

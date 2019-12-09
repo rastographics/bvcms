@@ -7,7 +7,7 @@ namespace CmsData.View
     [Table(Name = "UserRoles")]
     public partial class UserRole
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         private string _Name;
 

@@ -7,7 +7,7 @@ namespace CmsData.View
     [Table(Name = "Split")]
     public partial class Split
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         private int _TokenID;
 

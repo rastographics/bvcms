@@ -7,7 +7,7 @@ namespace CmsData.View
     [Table(Name = "QBClauses")]
     public partial class QBClause
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         private int? _QueryId;
 

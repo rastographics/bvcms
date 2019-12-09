@@ -7,7 +7,7 @@ namespace CmsData
     [Table(Name = "dbo.QueryStats")]
     public partial class QueryStat : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         #region Private Fields
 

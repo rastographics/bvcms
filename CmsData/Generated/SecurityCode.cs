@@ -7,7 +7,7 @@ namespace CmsData
     [Table(Name = "dbo.SecurityCodes")]
     public partial class SecurityCode : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         #region Private Fields
 
