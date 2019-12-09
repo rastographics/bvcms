@@ -7,11 +7,11 @@ namespace CmsWeb.Areas.Setup.Models
     {
         public SettingModel()
         {
-            GeneralSettings = new List<SettingMetadatum>();
+            GeneralSettings = new List<Setting>();
             SettingTypes = new List<SettingTypeModel>();
         }
 
-        public IEnumerable<SettingMetadatum> GeneralSettings { get; set; }
+        public IEnumerable<Setting> GeneralSettings { get; set; }
 
         public List<SettingTypeModel> SettingTypes { get; set; }
     }
