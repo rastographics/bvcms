@@ -632,7 +632,7 @@ BEGIN
 		BEGIN
 			INSERT INTO dbo.AttendanceStatsUpdate
 			(MeetingId, OrganizationId, PeopleId, OtherMeetings)
-			VALUES (@mid, @orgid, 0, '')
+			VALUES (@mid, @oid, 0, '')
 		END
 		ELSE 
 			DECLARE @usebroker BIT = (SELECT is_broker_enabled FROM sys.databases WHERE name = DB_NAME())
@@ -650,5 +650,4 @@ BEGIN
 				EXEC dbo.AddAbsentsToMeeting @mid	
 		END
 	END
-END
 GO

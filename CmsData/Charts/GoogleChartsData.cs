@@ -150,40 +150,37 @@ namespace CmsData
 
             return myFinalList;
         }
-
-        public List<LineChartDTO> GetFundChartData(int[] fundIds, int? year)
+        private List<ChartDTO> GetChartContributions(CMSDataContext db, int currentYear)
+        {
+            return (from c in db.Contributions
+                    where c.ContributionDate.Value.Year == (currentYear)
+                    where c.ContributionTypeId != ContributionTypeCode.Pledge &&
+                    !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
+                    group c by new { c.ContributionDate.Value.Month }
+                 into grp
+                    select new ChartDTO
+                    {
+                        Name = grp.First().ContributionDate.Value.ToString("MMM", CultureInfo.InvariantCulture),
+                        Count = Convert.ToInt32(grp.Sum(t => t.ContributionAmount).Value)
+                    }).ToList();
+        }
+        public List<LineChartDTO> GetFundChartData(int[] fundIds, int? year, CMSDataContext db)
         {
             int CurrentYear = year ?? DateTime.Now.Year;
-            var api = new APIContributionSearchModel(DbUtil.Db);
+            var api = new APIContributionSearchModel(db);
 
             List<LineChartDTO> myFinalList = new List<LineChartDTO>();
 
-            var myList = (from c in DbUtil.Db.Contributions
-                          where c.ContributionDate.Value.Year == (CurrentYear)
-                          where c.ContributionTypeId != ContributionTypeCode.Pledge
-                group c by new {c.ContributionDate.Value.Month}
-                into grp
-                select new ChartDTO
-                {
-                    Name = grp.First().ContributionDate.Value.ToString("MMM", CultureInfo.InvariantCulture),
-                    Count = Convert.ToInt32(grp.Sum(t => t.ContributionAmount).Value)
-                }).ToList();
+            var myList = GetChartContributions(db, CurrentYear);
+            var myList1 = GetChartContributions(db, CurrentYear - 1);
 
-            var myList1=(from ce in DbUtil.Db.Contributions
-                         where ce.ContributionDate.Value.Year == (CurrentYear - 1)
-                         where ce.ContributionTypeId != ContributionTypeCode.Pledge
-                         group ce by new { ce.ContributionDate.Value.Month } into grpc
-                    select new ChartDTO
-                    {
-                        Name = grpc.First().ContributionDate.Value.ToString("MMM", CultureInfo.InvariantCulture),
-                        Count = Convert.ToInt32(grpc.Sum(t => t.ContributionAmount).Value)
-                    }).ToList();
             if (fundIds.IsNotNull())
             {
                 if (!(fundIds.Length == 1 && fundIds[0].Equals(0)))
                 {
-                    myList = (from c in DbUtil.Db.Contributions
-                        where c.ContributionDate.Value.Year == (CurrentYear) &&
+                    myList = (from c in db.Contributions
+                        where c.ContributionDate.Value.Year == (CurrentYear) &&                              
+                              !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId) &&
                               fundIds.Contains(c.FundId)
                         group c by new {c.ContributionDate.Value.Month}
                         into grp
@@ -193,8 +190,9 @@ namespace CmsData
                             Count = Convert.ToInt32(grp.Sum(t => t.ContributionAmount).Value)
                         }).ToList();
 
-                    myList1 = (from ce in DbUtil.Db.Contributions
+                    myList1 = (from ce in db.Contributions
                         where ce.ContributionDate.Value.Year == (CurrentYear - 1) &&
+                              !ContributionTypeCode.ReturnedReversedTypes.Contains(ce.ContributionTypeId) &&
                               fundIds.Contains(ce.FundId)
                         group ce by new {ce.ContributionDate.Value.Month}
                         into grpc
