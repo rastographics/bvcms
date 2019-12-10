@@ -65,6 +65,20 @@ namespace CmsWeb.Controllers
         }
 
         [HttpGet]
+        [Route("~/MemberDocs/{id}")]
+        public ActionResult MemberDocs(int id)
+        {
+            return new PictureResult(id, memberdoc: true);
+        }
+
+        [HttpGet]
+        [Route("~/FinanceDocs/{id}")]
+        public ActionResult FinanceDocs(int id)
+        {
+            return new PictureResult(id, financedoc: true);
+        }
+
+        [HttpGet]
         [Route("~/PreviewImage/{id:int}/{w:int?}/{h:int?}")]
         public ActionResult PreviewImage(int id, int? w, int? h, string mode)
         {

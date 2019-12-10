@@ -10,21 +10,21 @@ namespace CmsWeb.Areas.People.Models
     {
         public int Id { get; set; }
         public DateTime? DocDate { get; set; }
-        public int? ThumbId { get; set; }
-        public int? LargeId { get; set; }
         public int? Docid { get; set; }
-        public string Uploader { get; set; }
-        public bool? IsDocument { get; set; }
-        public string Name { get; set; }
+        public bool Finance { get; set; }
         public string FormName { get; set; }
+        public bool? IsDocument { get; set; }
+        public int? LargeId { get; set; }
+        public string Name { get; set; }
+        public int? ThumbId { get; set; }
+        public string Uploader { get; set; }
 
-        public string DocUrl => IsDocument == true
-            ? "/Image/" + Docid
-            : "/Image/" + LargeId;
+        public string DocUrl => (Finance ? "/FinanceDocs/" : "/MemberDocs/") + (IsDocument == true ? Docid : LargeId);
 
-        public string ImgUrl => IsDocument == true
+        public string ImgUrl => IsDocument == true 
             ? "/Content/images/adobe.png"
             : "/Image/" + ThumbId;
+
 
         public MemberDocModel() { }
 
@@ -45,6 +45,7 @@ namespace CmsWeb.Areas.People.Models
                        IsDocument = f.IsDocument,
                        Name = f.Person.Name,
                        FormName = f.Name,
+                       Finance = f.Finance,
                        Uploader = uploader.Name
                    };
         }
