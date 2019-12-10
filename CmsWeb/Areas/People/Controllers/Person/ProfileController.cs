@@ -76,12 +76,32 @@ namespace CmsWeb.Areas.People.Controllers
         [Authorize(Roles = "Membership,MemberDocs")]
         public ActionResult MemberDocuments(int id)
         {
-            return View("Profile/Membership/Documents", id);
+            var model = new PersonDocumentsModel
+            {
+                PeopleId = id,
+                CanEdit = User.IsInRole("Membership") || User.IsInRole("Admin"),
+                Title = "Membership Documents"
+            };
+            return View("Profile/Membership/Documents", model);
         }
 
         [HttpPost]
-        [Authorize(Roles = "Membership,MemberDocs")]
-        public ActionResult UploadDocument(int id, HttpPostedFileBase doc)
+        [Authorize(Roles = "Finance")]
+        public ActionResult FinanceDocuments(int id)
+        {
+            var model = new PersonDocumentsModel
+            {
+                PeopleId = id,
+                Finance = true,
+                CanEdit = User.IsInRole("Finance") || User.IsInRole("Admin"),
+                Title = "Finance Documents"
+            };
+            return View("Profile/Membership/Documents", model);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Finance,Membership,MemberDocs")]
+        public ActionResult UploadDocument(int id, HttpPostedFileBase doc, bool finance)
         {
             if (doc == null)
             {
@@ -90,12 +110,12 @@ namespace CmsWeb.Areas.People.Controllers
 
             var person = CurrentDatabase.People.Single(pp => pp.PeopleId == id);
             DbUtil.LogPersonActivity($"Uploading Document for {person.Name}", id, person.Name);
-            person.UploadDocument(CurrentDatabase, CurrentImageDatabase, doc.InputStream, doc.FileName, doc.ContentType);
+            person.UploadDocument(CurrentDatabase, CurrentImageDatabase, doc.InputStream, doc.FileName, doc.ContentType, finance);
             return Redirect("/Person2/" + id);
         }
 
         [HttpPost]
-        [Authorize(Roles = "Membership,MemberDocs")]
+        [Authorize(Roles = "Finance,Membership,MemberDocs")]
         public ActionResult MemberDocumentUpdateName(int pk, string name, string value)
         {
             MemberDocModel.UpdateName(CurrentDatabase, pk, value);
@@ -103,7 +123,7 @@ namespace CmsWeb.Areas.People.Controllers
         }
 
         [HttpPost, Route("DeleteDocument/{id:int}/{docid:int}")]
-        [Authorize(Roles = "Membership,MemberDocs")]
+        [Authorize(Roles = "Finance,Membership,MemberDocs")]
         public ActionResult DeleteDocument(int id, int docid)
         {
             MemberDocModel.DeleteDocument(CurrentDatabase, CurrentImageDatabase, id, docid);

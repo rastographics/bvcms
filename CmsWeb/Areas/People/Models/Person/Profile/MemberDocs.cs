@@ -18,37 +18,22 @@ namespace CmsWeb.Areas.People.Models
         public string Name { get; set; }
         public string FormName { get; set; }
 
-        public string DocUrl
-        {
-            get
-            {
-                if (IsDocument == true)
-                {
-                    return "/Image/" + Docid;
-                }
+        public string DocUrl => IsDocument == true
+            ? "/Image/" + Docid
+            : "/Image/" + LargeId;
 
-                return "/Image/" + LargeId;
-            }
-        }
+        public string ImgUrl => IsDocument == true
+            ? "/Content/images/adobe.png"
+            : "/Image/" + ThumbId;
 
-        public string ImgUrl
-        {
-            get
-            {
-                if (IsDocument == true)
-                {
-                    return "/Content/images/adobe.png";
-                }
-
-                return "/Image/" + ThumbId;
-            }
-        }
         public MemberDocModel() { }
-        public static IEnumerable<MemberDocModel> DocForms(int id)
+
+        public static IEnumerable<MemberDocModel> DocForms(CMSDataContext db, int peopleId, bool finance)
         {
-            return from f in DbUtil.Db.MemberDocForms
-                   where f.PeopleId == id
-                   let uploader = DbUtil.Db.People.SingleOrDefault(uu => uu.PeopleId == f.UploaderId)
+            return from f in db.MemberDocForms
+                   where f.PeopleId == peopleId
+                   where f.Finance == finance
+                   let uploader = db.People.SingleOrDefault(uu => uu.PeopleId == f.UploaderId)
                    orderby f.DocDate
                    select new MemberDocModel
                    {
@@ -63,6 +48,7 @@ namespace CmsWeb.Areas.People.Models
                        Uploader = uploader.Name
                    };
         }
+
         public static void DeleteDocument(CMSDataContext db, CMSImageDataContext idb, int id, int docid)
         {
             var m = db.MemberDocForms.SingleOrDefault(mm => mm.Id == docid && mm.PeopleId == id);
