@@ -150,14 +150,12 @@ namespace CmsData
 
             return myFinalList;
         }
-        private List<ChartDTO> GetChartContributions(CMSDataContext db, int currentYear, int[] fundIds = null)
+        
+        private List<ChartDTO> GetChartContributions(CMSDataContext db, int year, int[] fundIds = null)
         {
             if (fundIds.IsNotNull())
             {
-                return (from c in db.Contributions
-                 where c.ContributionDate.Value.Year == (currentYear) &&
-                       !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId) &&
-                       fundIds.Contains(c.FundId)
+                return (from c in Contribution.GetContributionsPerYear(db, year, fundIds)
                  group c by new { c.ContributionDate.Value.Month }
                         into grp
                  select new ChartDTO
@@ -167,10 +165,7 @@ namespace CmsData
                  }).ToList();
             }
             else {
-            return (from c in db.Contributions
-                    where c.ContributionDate.Value.Year == (currentYear)
-                    where c.ContributionTypeId != ContributionTypeCode.Pledge &&
-                    !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
+            return (from c in Contribution.GetContributionsPerYear(db, year)
                     group c by new { c.ContributionDate.Value.Month }
                  into grp
                     select new ChartDTO

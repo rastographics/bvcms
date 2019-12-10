@@ -1,5 +1,6 @@
 ﻿using CmsData.Codes;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using UtilityExtensions;
 
@@ -97,6 +98,26 @@ namespace CmsData
                              orderby f.FundId
                              select f.FundId).First();
             return firstfund;
+        }
+
+        public static List<Contribution> GetContributions(CMSDataContext db, int[] fundids = null, bool includeReturnedReversed = false, bool includePledges = false)
+        {
+            var fundFlag = fundids.IsNull();
+            var q = (
+                from c in db.Contributions
+                where (!includeReturnedReversed || !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId))
+                    && (!includePledges || c.ContributionTypeId != ContributionTypeCode.Pledge)
+                select c
+                   );
+             return (fundids.IsNotNull()) ? q.Where(x => fundids.Contains(x.FundId)).ToList(): q.ToList();
+        }
+
+        public static List<Contribution> GetContributionsPerYear(CMSDataContext db, int? year, int[] fundids = null, bool includeReturnedReversed = false, bool includePledges = false)
+        {
+            var yearFlag = year.IsNull();
+            return (from c in Contribution.GetContributions(db, fundids, includeReturnedReversed, includePledges)
+                    where ( !yearFlag || c.ContributionDate.Value.Year == (year))
+                    select c).ToList();
         }
     }
 }
