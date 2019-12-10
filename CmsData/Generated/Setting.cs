@@ -18,7 +18,7 @@ namespace CmsData
 
         private bool? _System;
 		
-   		private EntitySet<SettingMetadatum> _SettingMetadatas;
+   		private EntityRef<SettingMetadatum> _SettingMetadata;
 
         #endregion
 
@@ -41,9 +41,9 @@ namespace CmsData
 
         public Setting()
 		{
-			_SettingMetadatas = new EntitySet<SettingMetadatum>(new Action< SettingMetadatum>(attach_SettingMetadatas), new Action< SettingMetadatum>(detach_SettingMetadatas)); 
-			
-			OnCreated();
+			_SettingMetadata = default(EntityRef<SettingMetadatum>);
+
+            OnCreated();
 		}
 		
         #region Columns
@@ -106,21 +106,34 @@ namespace CmsData
         
         #region Foreign Key Tables
    		
-   		[Association(Name="FK_SettingMetadata_Setting", Storage="_SettingMetadatas", OtherKey="SettingId")]
-   		public EntitySet<SettingMetadatum> SettingMetadatas
-   		{
-   		    get { return _SettingMetadatas; }
+   		[Association(Name="FK_SettingMetadata_Setting", Storage="_SettingMetadata", OtherKey="SettingId")]
+   		public SettingMetadatum SettingMetadata
+        {
+            get => _SettingMetadata.Entity;
+            set
+            {
+                SettingMetadatum previousValue = _SettingMetadata.Entity;
+                if (previousValue != value || _SettingMetadata.HasLoadedOrAssignedValue == false)
+                {
+                    SendPropertyChanging();
+                    _SettingMetadata.Entity = value;
+                    if (value != null)
+                    {
+                        value.Setting = this;
+                    }
 
-			set	{ _SettingMetadatas.Assign(value); }
-   		}
-		
-	    #endregion
-	    
-	    #region Foreign Keys
-    	    
-	    #endregion
-	
-		public event PropertyChangingEventHandler PropertyChanging;
+                    SendPropertyChanged("SettingMetadata");
+                }
+            }
+        }
+
+        #endregion
+
+        #region Foreign Keys
+
+        #endregion
+
+        public event PropertyChangingEventHandler PropertyChanging;
 
 		protected virtual void SendPropertyChanging()
 		{

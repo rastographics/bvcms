@@ -20,21 +20,21 @@ namespace CmsWeb.Areas.Setup.Controllers
         [Route("~/Settings")]
         public ActionResult Index()
         {
-            var m = CurrentDatabase.SettingMetadatas.AsQueryable();
+            var m = CurrentDatabase.Settings.AsQueryable();
             if (!User.IsInRole("Developer"))
             {
-                m = m.Where(vv => (vv.Setting.System ?? false) == false);
+                m = m.Where(vv => (vv.System ?? false) == false);
             }
 
-            var settingTypes = m
-                .Where(x => x.SettingCategory != null)
+            var settingTypes = CurrentDatabase.SettingMetadatas
+                .Where(vv => (vv.Setting.System ?? false) == false)
                 .GroupBy(x => x.SettingCategory.SettingTypeId)
                 .Select(x => new SettingTypeModel(x))
                 .ToList();
 
             return View(new SettingModel {
-                GeneralSettings = m.Where(x => x.SettingCategory == null).ToList(),
-                SettingTypes = settingTypes.Where(x => x.SettingType != null).ToList()
+                GeneralSettings = m.Where(x => x.SettingMetadata == null).ToList(),
+                SettingTypes = settingTypes.ToList()
             });
         }
 
