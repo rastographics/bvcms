@@ -24,8 +24,7 @@ namespace CmsWeb.Areas.People.Models
         public string ImgUrl => IsDocument == true 
             ? "/Content/images/adobe.png"
             : "/Image/" + ThumbId;
-
-
+        
         public MemberDocModel() { }
 
         public static IEnumerable<MemberDocModel> DocForms(CMSDataContext db, int peopleId, bool finance)
