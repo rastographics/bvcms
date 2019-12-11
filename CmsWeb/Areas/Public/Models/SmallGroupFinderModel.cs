@@ -257,7 +257,7 @@ namespace CmsWeb.Areas.Public.Models
                 }
                 else
                 {
-                    var orgExcludes = f.name == "Group Type" ? (f.exclude?.Split(',') ?? new string[] { }) : new string[] { };
+                    var orgExcludes = f.name == "Group Type" || f.name == "SGF:Type" ? (f.exclude?.Split(',') ?? new string[] { }) : new string[] { };
                     i = (from e in DbUtil.Db.OrganizationExtras
                          where e.Organization.DivOrgs.Any(ee => _divList.Contains(ee.DivId)) || orgTypes.Contains(e.Organization.OrganizationType.Description)
                          where !orgExcludes.Contains(e.Data)
