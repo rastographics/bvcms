@@ -7,7 +7,7 @@ namespace CmsData.View
     [Table(Name = "GetTotalContributionsDonor2")]
     public partial class GetTotalContributionsDonor2
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         private int? _CreditGiverId;
 

@@ -145,6 +145,7 @@
     <Compile Include="TestUtils\FakeRequestManager.cs" />
     <Compile Include="Areas\OnlineReg\Models\NewAskChurchQuestionTest.cs" />
     <Compile Include="Areas\People\Models\Contact\ContactExtraLocationConfigTests.cs" />
+    <Compile Include="Areas\Setup\Models\SettingModelTests.cs" />
     <Compile Include="Areas\People\Models\Person\Enrollments\RegistrationsModelTests.cs" />
     <Compile Include="Code\QueryModelTests.cs" />
     <Compile Include="Code\CodeValueModelTests.cs" />

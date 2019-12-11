@@ -2238,6 +2238,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             db.MemberDocForms.InsertOnSubmit(mdf);
             var bits = new byte[stream.Length];
             stream.Read(bits, 0, bits.Length);
+            mimetype = GetShortMimeType(mimetype);
             switch (mimetype)
             {
                 case "image/jpeg":
@@ -2262,6 +2263,22 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                     throw new FormatException("file type not supported: " + mimetype);
             }
             db.SubmitChanges();
+        }
+
+        private string GetShortMimeType(string mimetype)
+        {
+            mimetype = mimetype?.ToLower();
+            switch (mimetype)
+            {
+                case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+                    mimetype = "application/msword";
+                    break;
+                case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+                case "application/vnd.ms-excel":
+                    mimetype = "application/msexcel";
+                    break;
+            }
+            return mimetype;
         }
 
         public void SplitFamily(CMSDataContext db)

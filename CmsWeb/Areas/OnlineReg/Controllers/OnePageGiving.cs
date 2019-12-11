@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Web.Mvc;
 using CmsData;
@@ -25,6 +26,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             try
             {
                 var m = new OnlineRegModel(Request, CurrentDatabase, id, testing, null, null, source);
+                if (!m.org.IsOnePageOnlineGiving(CurrentDatabase))
+                {
+                    return Redirect($"/OnlineReg/{id}" + Request.Url.Query);
+                }
 
                 var pid = Util.UserPeopleId;
                 if (pid.HasValue)

@@ -7,7 +7,7 @@ namespace CmsData.View
     [Table(Name = "RegistrationGradeOptions")]
     public partial class RegistrationGradeOption
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         private int _OrganizationId;
 

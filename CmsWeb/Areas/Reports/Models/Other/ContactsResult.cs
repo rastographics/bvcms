@@ -1,10 +1,3 @@
-/* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church
- * Licensed under the GNU General Public License (GPL v2)
- * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license
- */
-
 using CmsData;
 using CmsWeb.Code;
 using iTextSharp.text;
@@ -34,6 +27,9 @@ namespace CmsWeb.Areas.Reports.Models
         private Document doc;
         private DateTime dt;
         private PdfPTable t;
+        private bool sortAddress;
+        private string OrganizationName;
+        private string HeaderText;
         private readonly Font xsmallfont = FontFactory.GetFont(FontFactory.HELVETICA, 7, new GrayColor(50));
 
         public ContactsResult(Guid id, bool? sortAddress, string orgname)
@@ -43,23 +39,24 @@ namespace CmsWeb.Areas.Reports.Models
             OrganizationName = orgname;
         }
 
-        private bool sortAddress { get; }
-        private string OrganizationName { get; }
-
         public override void ExecuteResult(ControllerContext context)
         {
             var Response = context.HttpContext.Response;
-            Response.ContentType = "application/pdf";
-            Response.AddHeader("content-disposition", "filename=foo.pdf");
 
             dt = Util.Now;
+
+            HeaderText = OrganizationName.HasValue()
+                ? $"Contacts - {OrganizationName}: {dt:d}"
+                : $"Contact Report: {dt:d}";
+            var filename = HeaderText.SlugifyString("-", false);
+            Response.ContentType = "application/pdf";
+            Response.AddHeader("content-disposition", $"filename={filename}.pdf");
 
             doc = new Document(PageSize.LETTER.Rotate(), 36, 36, 64, 64);
             var w = PdfWriter.GetInstance(doc, Response.OutputStream);
             w.PageEvent = pageEvents;
             doc.Open();
             dc = w.DirectContent;
-
             StartPageSet();
             var q = DbUtil.Db.PeopleQuery(qid);
 
@@ -103,14 +100,7 @@ namespace CmsWeb.Areas.Reports.Models
             t.DefaultCell.Border = border;
             t.DefaultCell.Padding = 5;
             t.HeaderRows = 1;
-            if (OrganizationName.HasValue())
-            {
-                pageEvents.StartPageSet($"Contacts - {OrganizationName}: {dt:d}");
-            }
-            else
-            {
-                pageEvents.StartPageSet($"Contact Report: {dt:d}");
-            }
+            pageEvents.StartPageSet(HeaderText);
 
             var t2 = new PdfPTable(w2);
             t2.WidthPercentage = 100;

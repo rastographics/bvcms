@@ -7,7 +7,7 @@ namespace CmsData
     [Table(Name = "CMS_VOLUNTEER.INTEREST_TBL")]
     public partial class Interest : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         #region Private Fields
 

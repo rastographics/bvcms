@@ -55,7 +55,7 @@ namespace CmsWeb.Areas.People.Models.Task
 
         public bool CanCompleteWithContact
         {
-            get { return IsAnOwner && TaskStatus.IntVal != TaskStatusCode.Complete && WhoId != null; }
+            get { return IsAnOwner && TaskStatus.IntVal != TaskStatusCode.Complete && WhoId != null && Description != "New Person Data Entry"; }
         }
 
         public string ContactUrl
@@ -642,37 +642,42 @@ namespace CmsWeb.Areas.People.Models.Task
         {
             var q = from t in db.Tasks
                     where t.Id == id
-                    select new TaskModel(host, db)
-                    {
-                        Id = id,
-                        OwnerId = t.OwnerId,
-                        WhoId = t.WhoId,
-                        Description = t.Description,
-                        CoOwnerId = t.CoOwnerId,
-                        Location = t.Location,
-                        Project = t.Project,
-                        CompletedContactId = t.CompletedContactId,
-                        Notes = t.Notes,
-                        CreatedOn = t.CreatedOn,
-                        CompletedOn = t.CompletedOn,
-                        DeclineReason = t.DeclineReason,
-                        Owner = t.Owner.Name,
-                        OwnerEmail = t.Owner.EmailAddress,
-                        SortDue = t.Due ?? DateTime.MaxValue.Date,
-                        CoOwner = t.CoOwner.Name,
-                        CoOwnerEmail = t.CoOwner.EmailAddress,
-                        TaskLimitToRole = new CodeInfo(t.LimitToRole, "TaskLimitToRole"),
-                        StatusId = t.TaskStatus.Id,
-                        Status = t.TaskStatus.Description,
-                        TaskStatus = new CodeInfo(t.StatusId, "TaskStatus"),
-                        Completed = t.StatusId == TaskStatusCode.Complete,
-                        SortPriority = t.Priority ?? 4,
-                        IsCoOwner = t.CoOwnerId != null && t.CoOwnerId == Util.UserPeopleId,
-                        IsOwner = t.OwnerId == Util.UserPeopleId,
-                        CompletedContact = t.CompletedContact.ContactDate,
-                        ForceCompleteWithContact = t.ForceCompleteWContact ?? false
-                    };
-            return q.Single();
+                    select t;
+            return WithTask(q.Single(), host, db);
+        }
+
+        public static TaskModel WithTask(CmsData.Task task, string host, CMSDataContext db)
+        {
+            return new TaskModel(host, db)
+            {
+                Id = task.Id,
+                OwnerId = task.OwnerId,
+                WhoId = task.WhoId,
+                Description = task.Description,
+                CoOwnerId = task.CoOwnerId,
+                Location = task.Location,
+                Project = task.Project,
+                CompletedContactId = task.CompletedContactId,
+                Notes = task.Notes,
+                CreatedOn = task.CreatedOn,
+                CompletedOn = task.CompletedOn,
+                DeclineReason = task.DeclineReason,
+                Owner = task.Owner.Name,
+                OwnerEmail = task.Owner.EmailAddress,
+                SortDue = task.Due ?? DateTime.MaxValue.Date,
+                CoOwner = task.CoOwner?.Name,
+                CoOwnerEmail = task.CoOwner?.EmailAddress,
+                TaskLimitToRole = new CodeInfo(task.LimitToRole, "TaskLimitToRole"),
+                StatusId = task.TaskStatus.Id,
+                Status = task.TaskStatus.Description,
+                TaskStatus = new CodeInfo(task.StatusId, "TaskStatus"),
+                Completed = task.StatusId == TaskStatusCode.Complete,
+                SortPriority = task.Priority ?? 4,
+                IsCoOwner = task.CoOwnerId != null && task.CoOwnerId == Util.UserPeopleId,
+                IsOwner = task.OwnerId == Util.UserPeopleId,
+                CompletedContact = task.CompletedContact?.ContactDate,
+                ForceCompleteWithContact = task.ForceCompleteWContact ?? false
+            };
         }
 
         public static void NotifyIfNeeded(StringBuilder sb, CmsData.Task task, string host, CMSDataContext db)

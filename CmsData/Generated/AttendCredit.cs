@@ -8,7 +8,7 @@ namespace CmsData
     [Table(Name = "lookup.AttendCredit")]
     public partial class AttendCredit : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         #region Private Fields
 

@@ -9,7 +9,7 @@ namespace CmsData
     [Table(Name = "dbo.ContributionTag")]
     public partial class ContributionTag : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         #region Private Fields
 

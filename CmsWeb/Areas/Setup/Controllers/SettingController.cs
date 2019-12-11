@@ -3,6 +3,7 @@ using CmsWeb.Lifecycle;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web.Mvc;
+using CmsWeb.Areas.Setup.Models;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Setup.Controllers
@@ -25,7 +26,16 @@ namespace CmsWeb.Areas.Setup.Controllers
                 m = m.Where(vv => (vv.System ?? false) == false);
             }
 
-            return View(m);
+            var settingTypes = CurrentDatabase.SettingMetadatas
+                .Where(vv => (vv.Setting.System ?? false) == false)
+                .GroupBy(x => x.SettingCategory.SettingTypeId)
+                .Select(x => new SettingTypeModel(x))
+                .ToList();
+
+            return View(new SettingModel {
+                GeneralSettings = m.Where(x => x.SettingMetadata == null).ToList(),
+                SettingTypes = settingTypes.ToList()
+            });
         }
 
         [HttpPost]
@@ -40,6 +50,8 @@ namespace CmsWeb.Areas.Setup.Controllers
             {
                 var m = new Setting { Id = id };
                 CurrentDatabase.Settings.InsertOnSubmit(m);
+                var meta = new SettingMetadatum { SettingId = id };
+                CurrentDatabase.SettingMetadatas.InsertOnSubmit(meta);
                 CurrentDatabase.SubmitChanges();
                 CurrentDatabase.SetSetting(id, null);
             }
