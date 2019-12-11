@@ -62,6 +62,22 @@ namespace CmsWeb.Areas.People.Models.Tests
         [Fact]
         public void DeleteDocumentTest()
         {
+            var rm = CMSWebTestsResources.ResourceManager;
+            var person = CreatePerson();
+            person.UploadDocument(db, idb, rm.GetFileStream("DocFormsTest1"), RandomString(), "application/pdf", true);
+            person.UploadDocument(db, idb, rm.GetFileStream("DocFormsTest1"), RandomString(), "application/pdf", false);
+
+            var financedocs = MemberDocModel.DocForms(db, person.PeopleId, true);
+            var doc1 = financedocs.First();
+            MemberDocModel.DeleteDocument(db, idb, person.PeopleId, doc1.Id);
+            MemberDocModel.DocForms(db.Copy(), person.PeopleId, true)
+                .Count().ShouldBe(0);
+
+            var memberdocs = MemberDocModel.DocForms(db, person.PeopleId, false);
+            var doc2 = memberdocs.First();
+            MemberDocModel.DeleteDocument(db, idb, person.PeopleId, doc2.Id);
+            MemberDocModel.DocForms(db.Copy(), person.PeopleId, false)
+                .Count().ShouldBe(0);
         }
     }
 }
