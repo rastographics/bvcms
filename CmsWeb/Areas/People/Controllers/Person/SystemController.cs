@@ -36,6 +36,7 @@ namespace CmsWeb.Areas.People.Controllers
                 var name = Util.ActivePerson as string;
                 DbUtil.LogPersonActivity($"New User for: {name}", Util2.CurrentPeopleId, name);
                 ViewBag.username = u.Username;
+                u.MustChangePassword = true;
             }
             ViewBag.sendwelcome = false;
             return View("System/UserEdit", u);
