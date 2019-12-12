@@ -19,11 +19,12 @@ namespace CmsWeb.Areas.People.Models
         public int? ThumbId { get; set; }
         public string Uploader { get; set; }
 
-        public string DocUrl => (Finance ? "/FinanceDocs/" : "/MemberDocs/") + (IsDocument == true ? Docid : LargeId);
+        private string DocsRoot => (Finance ? "/FinanceDocs/" : "/MemberDocs/");
+        public string DocUrl => DocsRoot + (IsDocument == true ? Docid : LargeId);
 
         public string ImgUrl => IsDocument == true 
             ? "/Content/images/adobe.png"
-            : "/Image/" + ThumbId;
+            : DocsRoot + ThumbId;
         
         public MemberDocModel() { }
 
