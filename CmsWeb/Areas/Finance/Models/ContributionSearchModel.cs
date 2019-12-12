@@ -198,6 +198,16 @@ namespace CmsWeb.Models
                     new CodeValueItem { Id = 0, Value = "Not Online" },
                 }, "Id", "Value", SearchInfo.Online.ToString());
         }
+        public SelectList PushPayOptions()
+        {
+            return new SelectList(
+                new List<CodeValueItem>
+                {
+                    new CodeValueItem { Id = 2, Value = "Both PushPay & Not" },
+                    new CodeValueItem { Id = 1, Value = "PushPay" },
+                    new CodeValueItem { Id = 0, Value = "Not PushPay" },
+                }, "Id", "Value", SearchInfo.PushPay.ToString());
+        }
         public IEnumerable<SelectListItem> BundleTypes()
         {
             var list = new CodeValueModel().BundleHeaderTypes0().ToList();

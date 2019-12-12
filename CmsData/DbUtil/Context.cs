@@ -15,6 +15,7 @@ using System.Text.RegularExpressions;
 using System.Web;
 using Dapper;
 using UtilityExtensions;
+using System.Text;
 
 namespace CmsData
 {
@@ -785,7 +786,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
 
         private void GetCurrentUser()
         {
-            var username = HttpContextFactory.Current?.User?.Identity?.Name;
+            var username = GetUserNameFromHttpContext();
             if (username.HasValue())
             {
                 var q = from u in Users
@@ -806,6 +807,26 @@ This search uses multiple steps which cannot be duplicated in a single query.
                 _roleids = i.roleids;
                 CurrentUser = i.u;
             }
+        }
+
+        private string GetUserNameFromHttpContext()
+        {
+            string username = HttpContextFactory.Current?.User?.Identity?.Name;
+            if (!username.HasValue())
+            {
+                var auth = HttpContextFactory.Current?.Request?.Headers?.Get("Authorization");
+                if (auth.HasValue())
+                {
+                    auth = auth.Substring(6);
+                    var authHeader = Encoding.ASCII.GetString(Convert.FromBase64String(auth));
+                    var tokens = authHeader.Split(new[] { ':' }, 2);
+                    if (tokens.Length > 1)
+                    {
+                        username = tokens[0];
+                    }
+                }
+            }
+            return username;
         }
 
         private string[] _roles;
