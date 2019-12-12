@@ -38,6 +38,7 @@ namespace CmsData.API
         public bool IncludeUnclosedBundles { get; set; }
         public bool Mobile { get; set; }
         public int Online { get; set; }
+        public int PushPay { get; set; }
         public bool FilterByActiveTag { get; set; }
         public string FundSet { get; set; }
 
@@ -51,6 +52,7 @@ namespace CmsData.API
         {
             TaxNonTax = "TaxDed";
             Online = 2; // Both
+            PushPay = 2; // Both
         }
     }
 
@@ -159,21 +161,29 @@ namespace CmsData.API
             // it is called ContributionSearch
 
             if (contributions != null)
+            {
                 return contributions;
+            }
 
             if (!model.TaxNonTax.HasValue())
+            {
                 model.TaxNonTax = "TaxDed";
+            }
 
             contributions = db.Contributions.Join(db.ContributionFunds.ScopedByRoleMembership(db), c => c.FundId, cf => cf.FundId, (c, cf) => c);
 
             if (!model.IncludeUnclosedBundles)
+            {
                 contributions = from c in contributions
                                 where c.BundleDetails.Any(dd => dd.BundleHeader.BundleStatusId == BundleStatusCode.Closed)
                                 select c;
+            }
             if (model.Mobile)
+            {
                 contributions = from c in contributions
                                 where c.Source > 0
                                 select c;
+            }
 
             switch (model.TaxNonTax)
             {
@@ -224,43 +234,72 @@ namespace CmsData.API
 
 
             if (model.PeopleId > 0)
+            {
                 contributions = from c in contributions
                                 where c.PeopleId == model.PeopleId
                                 select c;
+            }
 
             if (model.MinAmt.HasValue)
+            {
                 contributions = from c in contributions
                                 where c.ContributionAmount >= model.MinAmt
                                 select c;
+            }
+
             if (model.MaxAmt.HasValue)
+            {
                 contributions = from c in contributions
                                 where c.ContributionAmount <= model.MaxAmt
                                 select c;
+            }
 
             if (model.StartDate.HasValue)
+            {
                 contributions = from c in contributions
                                 where c.ContributionDate >= model.StartDate
                                 select c;
+            }
 
             if (model.EndDate.HasValue)
+            {
                 contributions = from c in contributions
                                 where c.ContributionDate < model.EndDate.Value.AddDays(1)
                                 select c;
+            }
 
             if (model.Online == 1)
+            {
                 contributions = from c in contributions
                                 where c.BundleDetails.Any(dd => dd.BundleHeader.BundleHeaderTypeId == BundleTypeCode.Online)
                                 select c;
+            }
             else if (model.Online == 0)
+            {
                 contributions = from c in contributions
                                 where c.BundleDetails.All(dd => dd.BundleHeader.BundleHeaderTypeId != BundleTypeCode.Online)
                                 select c;
+            }
 
+            if (model.PushPay == 1)
+            {
+                contributions = from c in contributions
+                                where c.Origin == ContributionOriginCode.PushPay
+                                select c;
+
+            } else if (model.PushPay == 0)
+            {
+                contributions = from c in contributions
+                                where c.Origin == ContributionOriginCode.Default
+                                select c;
+            }
             var i = model.Name.ToInt();
             if (i > 0)
+            {
                 contributions = from c in contributions
                                 where c.Person.PeopleId == i
                                 select c;
+            }
             else if (model.Name.AllDigitsCommas())
             {
                 var ids = model.Name.Split(',').Select(vv => vv.ToInt()).ToList();
@@ -269,49 +308,67 @@ namespace CmsData.API
                                 select c;
             }
             else if (model.Name.HasValue())
+            {
                 contributions = from c in contributions
                                 where c.Person.Name.Contains(model.Name)
                                 select c;
+            }
 
-            if(model.Comments?.StartsWith("Meta:") == true)
+            if (model.Comments?.StartsWith("Meta:") == true)
+            {
                 contributions = from c in contributions
                                 where c.MetaInfo.StartsWith(model.Comments.Substring(5))
                                 select c;
+            }
             else if (model.Comments.HasValue())
+            {
                 contributions = from c in contributions
                                 where c.ContributionDesc.Contains(model.Comments)
                                       || c.CheckNo == model.Comments
                                       || c.ContributionId == model.Comments.ToInt()
                                 select c;
+            }
 
             if ((model.Type ?? 0) != 0)
+            {
                 contributions = from c in contributions
                                 where c.ContributionTypeId == model.Type
                                 select c;
+            }
 
             if ((model.CampusId ?? 0) != 0)
+            {
                 contributions = from c in contributions
                                 where (c.CampusId ?? c.Person.CampusId) == model.CampusId
                                 select c;
+            }
 
             if (model.BundleType == 9999)
+            {
                 contributions = from c in contributions
                                 where !c.BundleDetails.Any()
                                 select c;
+            }
             else if ((model.BundleType ?? 0) != 0)
+            {
                 contributions = from c in contributions
                                 where c.BundleDetails.First().BundleHeader.BundleHeaderTypeId == model.BundleType
                                 select c;
+            }
 
             if (model.Year.HasValue && model.Year > 0)
+            {
                 contributions = from c in contributions
                                 where c.ContributionDate.Value.Year == model.Year
                                 select c;
+            }
 
             if (model.FundId.HasValue && model.FundId != 0)
+            {
                 contributions = from c in contributions
                                 where c.FundId == model.FundId
                                 select c;
+            }
 
             if (model.FilterByActiveTag)
             {
@@ -320,13 +377,16 @@ namespace CmsData.API
                                 where db.TagPeople.Any(vv => vv.PeopleId == c.PeopleId && vv.Id == tagid)
                                 select c;
             }
+
             if (model.FundSet.HasValue())
             {
                 var funds = GetCustomFundSetList(db, model.FundSet);
-                if(funds != null)
+                if (funds != null)
+                {
                     contributions = from c in contributions
                                     where funds.Contains(c.FundId)
                                     select c;
+                }
             }
             return contributions;
         }

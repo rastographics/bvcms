@@ -7,6 +7,7 @@
     ViewBag.PageHeader = "Contributions";
     Layout = ViewExtensions2.TouchPointLayout();
     var customFundsList = ContributionStatements.CustomFundSetSelectList(DbUtil.Db); //hack: using static method to get db for now
+    var usingPushPay = DbUtil.Db.Setting("PushPayEnableImport");
 }
 <div class="box box-responsive">
     <div class="box-content">
@@ -115,7 +116,16 @@
                             @Html.DropDownListFor(vv => vv.SearchInfo.TaxNonTax, Model.TaxTypes(), new { @class = "form-control" })
                         </div>
                     </div>
-                </div>
+                    @if (usingPushPay == true)
+                    {
+                        <div class="col-lg-3 col-md-3 col-sm-4">
+                            <div class="form-group">
+                                <label for="SearchInfo_PushPay" class="control-label">PushPay</label>
+                                @Html.DropDownListFor(vv => vv.SearchInfo.PushPay, Model.PushPayOptions(), new { @class = "form-control" })
+                            </div>
+                        </div>
+                    }
+                    </div>
                 <div class="row">
                     <div class="col-lg-3 col-md-3 col-sm-4">
                         <div class="form-group">
@@ -139,17 +149,17 @@
                         <div class="form-group">
                             <div class="checkbox">
                                 <label class="control-label">
-                                    @Html.CheckBoxFor(vv => vv.SearchInfo.IncludeUnclosedBundles) Include unclosed bundles?
+                                    @Html.CheckBoxFor(vv => vv.SearchInfo.IncludeUnclosedBundles) Include unclosed bundles
                                 </label>
                             </div>
                             <div class="checkbox">
                                 <label class="control-label">
-                                    @Html.CheckBoxFor(vv => vv.SearchInfo.Mobile) From mobile application?
+                                    @Html.CheckBoxFor(vv => vv.SearchInfo.Mobile) From mobile application
                                 </label>
                             </div>
                             <div class="checkbox">
                                 <label class="control-label">
-                                    @Html.CheckBoxFor(vv => vv.SearchInfo.FilterByActiveTag) Filter by Active Tag?
+                                    @Html.CheckBoxFor(vv => vv.SearchInfo.FilterByActiveTag) Filter by Active Tag
                                 </label>
                             </div>
                         </div>
