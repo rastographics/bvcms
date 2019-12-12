@@ -5,6 +5,7 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
 using CmsData;
+using CmsWeb.Lifecycle;
 using MoreLinq;
 using System;
 using System.Collections.Generic;
@@ -14,8 +15,12 @@ using UtilityExtensions;
 
 namespace CmsWeb.Models
 {
-    public class MailingController
+    public class MailingController : CmsController
     {
+        public MailingController(IRequestManager requestManager) : base(requestManager)
+        {
+        }
+
         public bool UseTitles { get; set; }
         public bool UseMailFlags { get; set; }
 
@@ -323,17 +328,55 @@ namespace CmsWeb.Models
             return query;
         }
 
-        public EpplusResult FetchExcelCouplesBoth(Guid queryId, int maximumRows)
+        public class CouplesBothInfo
         {
-            var q = DbUtil.Db.PopulateSpecialTag(queryId, DbUtil.TagTypeId_CouplesHelper).People(DbUtil.Db);
+            public int PeopleId { get; internal set; }
+            public int FamilyId { get; internal set; }
+            public string LabelName { get; internal set; }
+            public string FirstName { get; internal set; }
+            public string FirstNameSpouse { get; internal set; }
+            public string LastName { get; internal set; }
+            public string Address { get; internal set; }
+            public string Address2 { get; internal set; }
+            public string City { get; internal set; }
+            public string State { get; internal set; }
+            public string Zip { get; internal set; }
+            public string Email { get; internal set; }
+            public string EmailSpouse { get; internal set; }
+            public string HomePhone { get; internal set; }
+            public string MemberStatus { get; internal set; }
+            public string Employer { get; internal set; }
+            public string MailingAddress { get; internal set; }
+            public string CoupleName { get; internal set; }
+            public int GenderId { get; internal set; }
+            public int PositionInFamilyId { get; internal set; }
+            public bool isHeadOfHouseHold { get; internal set; }
+
+            public Person ToPerson()
+            {
+                return new Person
+                {
+                    PeopleId = PeopleId,
+                    FamilyId = FamilyId,
+                    FirstName = FirstName,
+                    LastName = LastName,                    
+                    PositionInFamilyId = PositionInFamilyId,
+                    EmailAddress = Email                    
+                };
+            }
+        }
+        public List<CouplesBothInfo> GetCouplesBothList(Guid queryId, int maximumRows)
+        {            
+            var q = CurrentDatabase.PopulateSpecialTag(queryId, DbUtil.TagTypeId_CouplesHelper).People(CurrentDatabase);
             var q1 = EliminateCoupleDoublets(q);
             var q2 = from p in q1
                          // get spouse if in the query
                      let altaddr = p.Family.FamilyExtras.SingleOrDefault(ee => ee.FamilyId == p.FamilyId && ee.Field == "MailingAddress").Data
                      let altcouple = p.Family.FamilyExtras.FirstOrDefault(ee => ee.FamilyId == p.PeopleId && ee.Field == "CoupleName" && p.SpouseId != null).Data
                      let spouse = q.SingleOrDefault(sp => sp.PeopleId == p.SpouseId)
-                     select new
+                     select new CouplesBothInfo
                      {
+                         //This people ID has to be HeadOfHouseHoldID
                          PeopleId = p.PeopleId,
                          LabelName = (spouse == null ? (UseTitles ? (p.TitleCode != null ? p.TitleCode + " " + p.Name : p.Name) : p.Name) :
                              (p.Family.HeadOfHouseholdId == p.PeopleId ?
@@ -356,8 +399,16 @@ namespace CmsWeb.Models
                          Employer = p.EmployerOther,
                          MailingAddress = altaddr,
                          CoupleName = altcouple,
+                         FamilyId = p.FamilyId,
+                         GenderId = p.GenderId,
+                         PositionInFamilyId = p.PositionInFamilyId,
+                         isHeadOfHouseHold = (p.Family.HeadOfHouseholdId == p.PeopleId)
                      };
-            return q2.Take(maximumRows).ToDataTable().ToExcel("CouplesBoth.xlsx");
+            return q2.Take(maximumRows).ToList();
+        }
+        public EpplusResult FetchExcelCouplesBoth(Guid queryId, int maximumRows)
+        {
+            return GetCouplesBothList(queryId, maximumRows).ToDataTable().ToExcel("CouplesBoth.xlsx");
         }
 
         public EpplusResult FetchExcelCouplesEither(Guid queryId, int maximumRows)

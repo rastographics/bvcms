@@ -6,11 +6,19 @@ using System.Web.Mvc;
 using CmsData;
 using UtilityExtensions;
 using Xceed.Words.NET;
+using CmsWeb.Lifecycle;
 
 namespace CmsWeb.Models
 {
     public class DocXAveryLabels : ActionResult
     {
+        private IRequestManager _requestManager;
+        public IRequestManager RequestManager
+        {
+            get => _requestManager;
+            set => _requestManager = value;
+        }
+
         public int Skip = 0;
         public string Format;
         public bool? Titles;
@@ -27,7 +35,7 @@ namespace CmsWeb.Models
 
         public override void ExecuteResult(ControllerContext context)
         {
-            var ctl = new MailingController { UseTitles = Titles ?? false, UseMailFlags = UseMailFlags ?? false };
+            var ctl = new MailingController(RequestManager) { UseTitles = Titles ?? false, UseMailFlags = UseMailFlags ?? false };
             var response = context.HttpContext.Response;
             IEnumerable<MailingController.MailingInfo> q = null;
             switch (Format)

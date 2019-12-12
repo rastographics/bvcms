@@ -12,59 +12,114 @@ using OfficeOpenXml;
 using System.Reflection;
 using CmsWeb;
 using SharedTestFixtures;
-using CmsWeb.Areas.Search.Models;
+using CmsWeb.Areas.OnlineReg.Controllers;
+using CMSWebTests.TestUtils;
+using static CmsWeb.Models.MailingController;
 
 namespace CMSWebTests.Areas.Reports.Models.Reports
 {
     [Collection(Collections.Database)]
     public class MailingControllerTests : DatabaseTestBase
     {
+
         [Fact]
-        public void FetchExcelCouplesBoth_Should_Show_Correct_Head_Of_House_Id()
+        public void GetCouplesBothList_Should_Pull_Proper_HoHPeopleID()
         {
+            /* Excel export should pull proper Head of Household PeopleID*/
+
             var requestManager = FakeRequestManager.Create();
             var db = requestManager.CurrentDatabase;
-            var controller = new CmsWeb.Areas.OnlineReg.Controllers.OnlineRegController(requestManager);
+            var controller = new OnlineRegController(requestManager);
             var routeDataValues = new Dictionary<string, string> { { "controller", "OnlineReg" } };
             controller.ControllerContext = ControllerTestUtils.FakeControllerContext(controller, routeDataValues);
 
             var m = OrganizationModel.Create(db, requestManager.CurrentUser);
             var FakeOrg = FakeOrganizationUtils.MakeFakeOrganization(requestManager);
+            var oid = FakeOrg.org.OrganizationId;
+            m.OrgId = oid;
+            var wife = CreateUser(RandomString(), RandomString());          
 
-            var wife = CreateUser(RandomString(), RandomString());
-            wife.Person.GenderId = 2;
-            wife.Person.MaritalStatusId = MaritalStatusCode.Married;
+            //Create family and then Execute GetCouplesBothList to see if the right HeadOfHouseHoldId is retrieved...
+            var p = CreateFakeFamily(oid, m, controller);
+            var mailingModel = new MailingController(requestManager);
+            var ExcelCouplesBoth = mailingModel.GetCouplesBothList(m.QueryId, 500);
+
+            //assert
+
+
+            FakeOrganizationUtils.DeleteOrg(FakeOrg.org.OrganizationId);
+            RemoveFakePeopleFromDB(ToPeople(ExcelCouplesBoth), db);
+            
+        }
+
+        private List<Person> ToPeople(List<CouplesBothInfo> couples)
+        {
+            var ppl = new List<Person>();
+            foreach (var c in couples)
+            {
+                ppl.Add(c.ToPerson());
+            }
+            return ppl;
+        }
+
+        private User CreateFamilyMember(int genderID, int maritalStatusId, int positionInFamilyId, Family f = null)
+        {
+            var p = CreateUser(RandomString(), RandomString(), family:f, positionInFamilyId: positionInFamilyId, maritalStatusId: maritalStatusId, genderId: genderID);            
             db.SubmitChanges();
-            var model = FakeOrganizationUtils.GetFakeOnlineRegModel(FakeOrg.org.OrganizationId, wife.UserId);
-            m.OrgId = FakeOrg.org.OrganizationId;
-            var resultSubmitQuestions = controller.SubmitQuestions(0, model);
-            var resultCompleteRegistration = controller.CompleteRegistration(model);
+            return p;
+        }
 
-            var husband = CreateUser(RandomString(), RandomString());
-            husband.Person.GenderId = 1;
-            husband.Person.MaritalStatusId = MaritalStatusCode.Married;
-            db.SubmitChanges();
-            var model2 = FakeOrganizationUtils.GetFakeOnlineRegModel(FakeOrg.org.OrganizationId, husband.UserId);
-            m.OrgId = FakeOrg.org.OrganizationId;
-            var resultSubmitQuestions2 = controller.SubmitQuestions(0, model2);
-            var resultCompleteRegistration2 = controller.CompleteRegistration(model2);
+        private List<Person> CreateFakeFamily(int oid, OrganizationModel om, OnlineRegController orc)
+        {
+            var family = new List<Person>();
 
-            var mailingModel = new MailingController();
-            var ExcelCouplesBoth = mailingModel.FetchExcelCouplesBoth(m.QueryId, 500);
-            var pkg = typeof(EpplusResult).GetField("pkg", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(ExcelCouplesBoth);
+            var husband = CreateFamilyMember(GenderCode.Male, MaritalStatusCode.Married, PositionInFamily.PrimaryAdult);
+            var orm = FakeOrganizationUtils.GetFakeOnlineRegModel(oid, husband.UserId);
+            var resultSubmitQuestions = orc.SubmitQuestions(0, orm);
+            var resultCompleteRegistration = orc.CompleteRegistration(orm);
+            family.Add(husband.Person);
 
-            //using (ExcelPackage package = (ExcelPackage)pkg)
-            //{
-            //    ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
+            var wife = CreateFamilyMember(GenderCode.Female, MaritalStatusCode.Married, PositionInFamily.PrimaryAdult, husband.Person.Family);
+            orm = FakeOrganizationUtils.GetFakeOnlineRegModel(oid, wife.UserId);
+            resultSubmitQuestions = orc.SubmitQuestions(0, orm);
+            resultCompleteRegistration = orc.CompleteRegistration(orm);
+            family.Add(wife.Person);
 
-            //    object[,] cellValues = (object[,])worksheet.Cells.Value;
-            //    List<string> ReportColumns = cellValues.Cast<object>().ToList().ConvertAll(x => Convert.ToString(x));
-            //    var FamilyId = worksheet.Cells[1, 2].Value.ToString().Trim();
+            var child1 = CreateFamilyMember(GenderCode.Female, MaritalStatusCode.Single, PositionInFamily.Child, husband.Person.Family);
+            orm = FakeOrganizationUtils.GetFakeOnlineRegModel(oid, child1.UserId);
+            resultSubmitQuestions = orc.SubmitQuestions(0, orm);
+            resultCompleteRegistration = orc.CompleteRegistration(orm);
+            family.Add(child1.Person);
 
-            //    ReportColumns.ShouldContain("FamilyId");
-            //    FamilyId.ShouldBe("FamilyId");
-            //}
-            //FakeOrganizationUtils.DeleteOrg(FakeOrg.org.OrganizationId);
+            var child2 = CreateFamilyMember(GenderCode.Male, MaritalStatusCode.Single, PositionInFamily.Child, husband.Person.Family);
+            orm = FakeOrganizationUtils.GetFakeOnlineRegModel(oid, child2.UserId);
+            resultSubmitQuestions = orc.SubmitQuestions(0, orm);
+            resultCompleteRegistration = orc.CompleteRegistration(orm);
+            family.Add(child2.Person);
+
+            var secAdult = CreateFamilyMember(GenderCode.Male, MaritalStatusCode.Single, PositionInFamily.SecondaryAdult, husband.Person.Family);
+            orm = FakeOrganizationUtils.GetFakeOnlineRegModel(oid, secAdult.UserId);
+            resultSubmitQuestions = orc.SubmitQuestions(0, orm);
+            resultCompleteRegistration = orc.CompleteRegistration(orm);
+            family.Add(secAdult.Person);
+
+            return family;
+        }
+
+        private void RemoveFakePeopleFromDB(List<Person> peopleList, CMSDataContext db)
+        {
+            var families = new List<Family>();
+            foreach (var p in peopleList)
+            {
+                var f = db.Families.SingleOrDefault(ff => ff.FamilyId == p.FamilyId);                    
+                db.PurgePerson(p.PeopleId);
+                if(!families.Contains(f)){ families.Add(f); }                
+                db.SubmitChanges();
+            }
+            foreach (var f in families)
+            {
+                db.Families.DeleteOnSubmit(f);
+            }
         }
     }
 }
