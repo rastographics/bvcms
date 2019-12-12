@@ -7,7 +7,7 @@ namespace CmsData.View
     [Table(Name = "CustomMenuRoles")]
     public partial class CustomMenuRole
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         private string _Link;
 

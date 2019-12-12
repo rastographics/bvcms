@@ -7,7 +7,7 @@ namespace CmsData.View
     [Table(Name = "TableColumns")]
     public partial class TableColumn
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         private string _Database;
 

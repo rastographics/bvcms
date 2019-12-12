@@ -7,7 +7,7 @@ namespace CmsData
     [Table(Name = "dbo.MergeHistory")]
     public partial class MergeHistory : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         #region Private Fields
 

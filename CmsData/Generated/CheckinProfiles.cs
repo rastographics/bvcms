@@ -8,7 +8,7 @@ namespace CmsData
     [Table(Name = "dbo.CheckinProfiles")]
     public partial class CheckinProfiles
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         #region Private Fields
 
