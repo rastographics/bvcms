@@ -1,6 +1,7 @@
 using CmsData;
 using CmsData.Codes;
 using CmsWeb.Areas.People.Models;
+using CmsWeb.Membership.Extensions;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -79,7 +80,7 @@ namespace CmsWeb.Areas.People.Controllers
             var model = new PersonDocumentsModel
             {
                 PeopleId = id,
-                CanEdit = User.IsInRole("Membership") || User.IsInRole("Admin"),
+                CanEdit = User.InAnyRole("Membership", "Admin"),
                 Title = "Membership Documents"
             };
             return View("Profile/Membership/Documents", model);
@@ -93,7 +94,7 @@ namespace CmsWeb.Areas.People.Controllers
             {
                 PeopleId = id,
                 Finance = true,
-                CanEdit = User.IsInRole("Finance") || User.IsInRole("Admin"),
+                CanEdit = User.InAnyRole("Finance", "FinanceAdmin", "Admin"),
                 Title = "Finance Documents"
             };
             return View("Profile/Membership/Documents", model);
