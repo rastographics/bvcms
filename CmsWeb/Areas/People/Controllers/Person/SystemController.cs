@@ -46,7 +46,6 @@ namespace CmsWeb.Areas.People.Controllers
         public ActionResult UserUpdate(int id, string u, string p, bool sendwelcome, bool mustchangepassword, string[] role)
         {
             var user = CurrentDatabase.Users.Single(us => us.UserId == id);
-            user.MustChangePassword = mustchangepassword;
             if (u.HasValue() && user.Username != u)
             {
                 var uu = CurrentDatabase.Users.SingleOrDefault(us => us.Username == u);
@@ -63,6 +62,7 @@ namespace CmsWeb.Areas.People.Controllers
                 user.ChangePassword(p);
             }
 
+            user.MustChangePassword = mustchangepassword;
             CurrentDatabase.SubmitChanges();
             if (!user.PeopleId.HasValue)
             {
