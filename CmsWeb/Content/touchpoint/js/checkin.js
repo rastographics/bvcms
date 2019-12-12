@@ -36,9 +36,9 @@ new Vue({
             'CampusId': 0,
             'CutoffAge': 18,
             'DisableTimer': false,
-            'EarlyCheckIn': 60,
+            'EarlyCheckin': 60,
             'GuestLabels': false,
-            'LateCheckIn': 60,
+            'LateCheckin': 60,
             'Testing': false,
             'LocationLabels': false,
             'Logout': '12345',
@@ -453,12 +453,16 @@ new Vue({
                     var disabled = false;
                     var now = vm.timestamp();
                     var start = vm.timestamp(group.date);
-                    if (vm.profile.EarlyCheckIn && (start - vm.profile.EarlyCheckIn > now) && start > now) {
+                    // use the check in times from the class if present, otherwise fall back to the db default which is attached to the profile
+                    var early = group.EarlyCheckin != null ? group.EarlyCheckin : vm.profile.EarlyCheckin;
+                    var late = group.LateCheckin != null ? group.LateCheckin : vm.profile.LateCheckin;
+                    if (early && (start - early > now) && start > now) {
                         disabled = true;
                     }
-                    if (vm.profile.LateCheckIn && (start + vm.profile.LateCheckIn < now) && start < now) {
+                    if (late && (start + late < now) && start < now) {
                         disabled = true;
                     }
+                    console.log('group:' + group.id + ' early:' + early + ' late:' + late + ' disabled:' + disabled);
                     var attend = member.id + '.' + group.id + '.' + group.date;
                     vm.$set(vm.attendance, attend, {
                         initial: group.checkedIn ? vm.CHECKEDIN : vm.ABSENT,

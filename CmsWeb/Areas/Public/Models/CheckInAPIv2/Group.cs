@@ -23,6 +23,9 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 		public DateTime? birthdayStart = DateTime.MinValue;
 		public DateTime? birthdayEnd = DateTime.MinValue;
 
+        public int? EarlyCheckin;
+        public int? LateCheckin;
+
 		public bool allowOverlap = false;
 
 		public string location = "";
@@ -43,7 +46,6 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 		public static List<Group> forPersonID(CMSDataContext db, int personID, int campus, DateTime date )
 		{
 			List<Group> groups = new List<Group>();
-
             groups.AddRange(loadMemberGroups(db.ReadonlyConnection() as SqlConnection, personID, campus, date));
             groups.AddRange(loadVisitorGroups(db.ReadonlyConnection() as SqlConnection, personID, campus, date));
 
@@ -121,7 +123,9 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 											schedule.Id AS scheduleID,
 											ISNULL( attend.AttendanceFlag, 0 ) AS checkedIn,
 											attend.SubGroupID AS subGroupID,
-											attend.SubGroupName AS subGroupName
+											attend.SubGroupName AS subGroupName,
+                                            org.EarlyCheckin,
+                                            org.LateCheckin
 										FROM dbo.OrganizationMembers AS member
 											LEFT JOIN dbo.Organizations AS org ON org.OrganizationId = member.OrganizationId
 											LEFT JOIN dbo.OrgSchedule AS schedule ON schedule.OrganizationId = org.OrganizationId
@@ -160,7 +164,6 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 			foreach( DataRow row in table.Rows ) {
 				Group group = new Group();
 				group.populate( row );
-
 				groups.Add( group );
 			}
 
@@ -183,7 +186,9 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 										schedule.NextMeetingDate AS date,
 										attend.AttendanceFlag AS checkedIn,
 										attend.SubGroupID AS subGroupID,
-										attend.SubGroupName AS subGroupName
+										attend.SubGroupName AS subGroupName,
+                                        org.EarlyCheckin,
+                                        org.LateCheckin
 									FROM (SELECT org.OrganizationId
 											FROM Attend AS attend
 												INNER JOIN Organizations AS org ON org.OrganizationId = attend.OrganizationId

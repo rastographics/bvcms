@@ -26,6 +26,7 @@ namespace CmsWeb.Models
         public CheckinProfileSettingsModel()
         {
             CutoffAge = 18;
+            ShowCheckinConfirmation = 5;
         }
     }
 }

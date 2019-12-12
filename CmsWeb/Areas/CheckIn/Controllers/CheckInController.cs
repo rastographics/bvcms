@@ -16,7 +16,14 @@ namespace CmsWeb.Areas.CheckIn.Controllers
         [HttpGet, Route("~/CheckIn")]
         public ActionResult CheckIn()
         {
-            return View("~/Areas/CheckIn/Views/CheckIn/CheckIn.cshtml");
+            if (CurrentDatabase.Setting("EnableWebCheckin"))
+            {
+                return View("~/Areas/CheckIn/Views/CheckIn/CheckIn.cshtml");
+            }
+            else
+            {
+                return Content("Web Checkin isn't enabled.");
+            }
         }
 
         [HttpGet, Route("~/CheckIn/Logout")]

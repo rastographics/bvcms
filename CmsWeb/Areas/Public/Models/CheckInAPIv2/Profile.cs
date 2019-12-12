@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using CmsData;
 
 namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 {
@@ -11,8 +12,8 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
         public string name = "Default";
 
         public int CampusId = 0;
-        public int? EarlyCheckIn = 60;
-        public int? LateCheckIn = 60;
+        public int EarlyCheckin = 60;
+        public int LateCheckin = 60;
         public bool Testing = false;
         public int? TestDay = null;
         public bool DisableJoin = false;
@@ -24,7 +25,13 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
         public bool LocationLabels = false;
         public int SecurityType = 0;
         public int ShowCheckinConfirmation = 5;
-        
+
+        public Profile(CMSDataContext CurrentDatabase)
+        {
+            EarlyCheckin = int.TryParse(CurrentDatabase.GetSetting("EarlyCheckin", "60"), out EarlyCheckin) ? EarlyCheckin : 60;
+            LateCheckin = int.TryParse(CurrentDatabase.GetSetting("LateCheckin", "60"), out LateCheckin) ? LateCheckin : 60;
+        }
+
         public void populate(CmsData.CheckinProfileSetting s)
         {
             id = s.CheckinProfile.CheckinProfileId;

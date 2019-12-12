@@ -41,6 +41,10 @@ namespace CmsWeb.Areas.CheckIn.Controllers
         [Route("~/CheckinSetup/GetCheckinProfiles")]
         public JsonResult GetCheckinProfiles()
         {
+            if (CurrentDatabase.CheckinProfiles.Count() == 0)
+            {
+                CheckinProfilesModel.CreateDefault(CurrentDatabase);
+            }
             var CheckinProfiles = CurrentDatabase.CheckinProfiles.ProjectTo<CheckinProfilesModel>(_config).ToList();
             foreach (var item in CheckinProfiles)
             {

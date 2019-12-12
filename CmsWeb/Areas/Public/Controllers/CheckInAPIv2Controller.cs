@@ -160,12 +160,17 @@ namespace CmsWeb.Areas.Public.Controllers
         
 		[HttpGet]
 		public ActionResult GetProfiles()
-		{
-			List<Profile> profiles = new List<Profile>();
+        {
+            if (CurrentDatabase.CheckinProfiles.Count() == 0)
+            {
+                CheckinProfilesModel.CreateDefault(CurrentDatabase);
+            }
+
+            List<Profile> profiles = new List<Profile>();
 			List<CheckinProfileSetting> profileSettings = CurrentDatabase.CheckinProfileSettings.ToList();
 
 			foreach( CheckinProfileSetting settings in profileSettings ) {
-				Profile profile = new Profile();
+				Profile profile = new Profile(CurrentDatabase);
 				profile.populate( settings );
 
 				profiles.Add( profile );

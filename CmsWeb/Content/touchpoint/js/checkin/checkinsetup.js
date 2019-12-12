@@ -103,6 +103,21 @@
                 }
             );
         },
+        deletePrompt(profile) {
+            let vm = this;
+            swal({
+                title: "Are you sure?",
+                text: "You're about to delete the " + profile.Name + " profile.",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "btn-confirm",
+                confirmButtonText: "Delete it",
+                showLoaderOnConfirm: true,
+                closeOnConfirm: false
+            }, function () {
+                vm.deleteProfile(profile.CheckinProfileId);
+            });
+        },
         deleteProfile(CheckinProfileId) {
             this.$http.delete('/CheckinSetup/DeleteProfile/' + CheckinProfileId).then(
                 response => {
@@ -143,11 +158,11 @@
         validateSettingsForm() {
             let adminPIN = this.CheckinProfileSettings.AdminPIN;
             let logoutPIN = this.CheckinProfileSettings.Logout;
-            if (adminPIN.length < 4 || adminPIN.length > 6 || !$.isNumeric(adminPIN)) {
+            if (!adminPIN || adminPIN.length < 4 || adminPIN.length > 6 || !$.isNumeric(adminPIN)) {
                 error_swal('Invalid admin code', 'Please choose a numeric admin code that is between 4 and 6 digits long.');
                 return false;
             }
-            if (logoutPIN.length < 4 || logoutPIN.length > 6 || !$.isNumeric(logoutPIN)) {
+            if (!logoutPIN || logoutPIN.length < 4 || logoutPIN.length > 6 || !$.isNumeric(logoutPIN)) {
                 error_swal('Invalid logout code', 'Please choose a numeric logout code that is between 4 and 6 digits long.');
                 return false;
             }
