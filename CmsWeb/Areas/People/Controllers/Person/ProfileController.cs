@@ -86,7 +86,7 @@ namespace CmsWeb.Areas.People.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Finance")]
+        [Authorize(Roles = "Finance,FinanceAdmin")]
         public ActionResult FinanceDocuments(int id)
         {
             var model = new PersonDocumentsModel
@@ -100,7 +100,7 @@ namespace CmsWeb.Areas.People.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Finance,Membership,MemberDocs")]
+        [Authorize(Roles = "Finance,FinanceAdmin,Membership,MemberDocs")]
         public ActionResult UploadDocument(int id, HttpPostedFileBase doc, bool finance)
         {
             if (doc == null)
@@ -115,7 +115,7 @@ namespace CmsWeb.Areas.People.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Finance,Membership,MemberDocs")]
+        [Authorize(Roles = "Finance,FinanceAdmin,Membership,MemberDocs")]
         public ActionResult MemberDocumentUpdateName(int pk, string name, string value)
         {
             MemberDocModel.UpdateName(CurrentDatabase, pk, value);
@@ -123,11 +123,11 @@ namespace CmsWeb.Areas.People.Controllers
         }
 
         [HttpPost, Route("DeleteDocument/{id:int}/{docid:int}")]
-        [Authorize(Roles = "Finance,Membership,MemberDocs")]
+        [Authorize(Roles = "Finance,FinanceAdmin,Membership,MemberDocs")]
         public ActionResult DeleteDocument(int id, int docid)
         {
-            MemberDocModel.DeleteDocument(CurrentDatabase, CurrentImageDatabase, id, docid);
-            return View("Profile/Membership/Documents", id);
+            var doc = MemberDocModel.DeleteDocument(CurrentDatabase, CurrentImageDatabase, id, docid);
+            return doc.Finance ? FinanceDocuments(id) : MemberDocuments(id);
         }
 
         // Comments ---------------------------------------------------

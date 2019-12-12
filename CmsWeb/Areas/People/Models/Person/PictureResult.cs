@@ -202,7 +202,7 @@ namespace CmsWeb.Areas.People.Models
                     }
                     if (financedoc)
                     {
-                        return user.IsInRole("Finance");
+                        return user.InAnyRole("Finance", "FinanceAdmin");
                     }
                     if (cms.VolunteerForms.Any(m => m.LargeId == id || m.MediumId == id || m.SmallId == id)
                         && user.InAnyRole("ViewVolunteerApplication", "ApplicationReview"))

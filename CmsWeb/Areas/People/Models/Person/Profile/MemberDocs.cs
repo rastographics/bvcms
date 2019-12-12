@@ -49,7 +49,7 @@ namespace CmsWeb.Areas.People.Models
                    };
         }
 
-        public static void DeleteDocument(CMSDataContext db, CMSImageDataContext idb, int id, int docid)
+        public static MemberDocForm DeleteDocument(CMSDataContext db, CMSImageDataContext idb, int id, int docid)
         {
             var m = db.MemberDocForms.SingleOrDefault(mm => mm.Id == docid && mm.PeopleId == id);
             idb.DeleteOnSubmit(m.SmallId);
@@ -58,6 +58,7 @@ namespace CmsWeb.Areas.People.Models
             db.MemberDocForms.DeleteOnSubmit(m);
             db.SubmitChanges();
             idb.SubmitChanges();
+            return m;
         }
 
         internal static void UpdateName(CMSDataContext db, int pk, string value)
