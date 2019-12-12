@@ -1017,7 +1017,6 @@
     <Compile Include="Generated\Campu.cs" />
     <Compile Include="Generated\CardIdentifier.cs" />
     <Compile Include="Generated\CheckInTime.cs" />
-    <Compile Include="Generated\DUser.cs" />
     <Compile Include="Generated\Functions\VerseSummaryForCategory2.cs" />
     <Compile Include="Generated\ReadPlan.cs" />
     <Compile Include="Generated\UploadAuthenticationXref.cs" />

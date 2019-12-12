@@ -28,7 +28,8 @@ namespace CmsWeb.Areas.Setup.Controllers
 
             var settingTypes = CurrentDatabase.SettingMetadatas
                 .Where(vv => (vv.Setting.System ?? false) == false)
-                .GroupBy(x => x.SettingCategory.SettingTypeId)
+                .Where(vv => vv.SettingCategory != null)
+                .GroupBy(x => x.SettingCategory.SettingType)
                 .Select(x => new SettingTypeModel(x))
                 .ToList();
 

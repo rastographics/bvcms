@@ -42,9 +42,10 @@ namespace CmsWeb.Areas.People.Controllers
         }
 
         [HttpPost, Authorize(Roles = "Admin")]
-        public ActionResult UserUpdate(int id, string u, string p, bool sendwelcome, string[] role)
+        public ActionResult UserUpdate(int id, string u, string p, bool sendwelcome, bool mustchangepassword, string[] role)
         {
             var user = CurrentDatabase.Users.Single(us => us.UserId == id);
+            user.MustChangePassword = mustchangepassword;
             if (u.HasValue() && user.Username != u)
             {
                 var uu = CurrentDatabase.Users.SingleOrDefault(us => us.Username == u);
