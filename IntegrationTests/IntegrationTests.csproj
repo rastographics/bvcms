@@ -103,9 +103,8 @@
       <DependentUpon>ReportsViewTestsResources.resx</DependentUpon>
     </Compile>
     <Compile Include="Areas\People\Views\Person\PersonViewsTests.cs" />
-    <Compile Include="Areas\Search\Models\SavedQueryInfoTests.cs" />
-    <Compile Include="Areas\Setup\Views\Gateway\GatewayTests.cs" />
     <Compile Include="Areas\Search\Models\SavedQueryInfoTest.cs" />
+    <Compile Include="Areas\Setup\Views\Gateway\GatewayTests.cs" />
     <Compile Include="Areas\Setup\SettingsTests.cs" />
     <Compile Include="Areas\Setup\SetupTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
