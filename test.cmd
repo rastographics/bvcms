@@ -12,6 +12,7 @@ echo using %OpenCover%
 echo using %xunit%
 echo using %codecov%
 set target_tests=.\UnitTests\CMSDataTests\bin\Debug\CMSDataTests.dll
+set target_tests=%target_tests% .\UnitTests\ImageDataTests\bin\Debug\ImageDataTests.dll
 set target_tests=%target_tests% .\UnitTests\CMSWebTests\bin\Debug\CMSWebTests.dll
 set target_tests=%target_tests% .\UnitTests\UtilityExtensionsTests\bin\Debug\UtilityExtensionsTests.dll
 set integration_tests=.\IntegrationTests\bin\Debug\IntegrationTests.dll
@@ -27,7 +28,7 @@ set "IISEXPRESS_HOST=%OpenCover%"
 set placeholder="{0}"
 set "IISEXPRESS_ARGS=-register:user -target:%iisexpress% -targetargs:%placeholder% -filter:%opencover_filters% -output:%test_coverage%"
 del %test_coverage%
-%OpenCover% -register:user -target:"%xunit%" -targetargs:"%integration_tests% -noshadow -teamcity" -filter:%opencover_filters% || exit 9
+::%OpenCover% -register:user -target:"%xunit%" -targetargs:"%integration_tests% -noshadow -teamcity" -filter:%opencover_filters% || exit 9
 
 @echo off
 taskkill /F /IM iisexpress.exe
