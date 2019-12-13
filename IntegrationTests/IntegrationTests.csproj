@@ -92,6 +92,7 @@
     <Compile Include="Areas\General\GeneralTests.cs" />
     <Compile Include="Areas\General\QueryControllerTests.cs" />
     <Compile Include="Areas\Manage\AccountTests.cs" />
+    <Compile Include="Areas\Org\Views\Org\Registration\FeesTests.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineRegPerson\EnrollTests.cs" />
     <Compile Include="Areas\Org\Views\Org\Registration\RegistrationEditViewsTests.cs" />
     <Compile Include="Areas\Org\Views\Org\SettingsViewsTests.cs" />

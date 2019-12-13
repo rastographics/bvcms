@@ -100,6 +100,7 @@
     <Compile Include="MockCMSMembershipProvider.cs" />
     <Compile Include="MockCMSRoleProvider.cs" />
     <Compile Include="MockContributions.cs" />
+    <Compile Include="MockGateways.cs" />
     <Compile Include="MockHttpContext.cs" />
     <Compile Include="MockPeople.cs" />
     <Compile Include="MockSettings.cs" />
