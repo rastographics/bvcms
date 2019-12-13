@@ -36,13 +36,14 @@ namespace CmsWeb.Areas.People.Controllers
                 var name = Util.ActivePerson as string;
                 DbUtil.LogPersonActivity($"New User for: {name}", Util2.CurrentPeopleId, name);
                 ViewBag.username = u.Username;
+                u.MustChangePassword = true;
             }
             ViewBag.sendwelcome = false;
             return View("System/UserEdit", u);
         }
 
         [HttpPost, Authorize(Roles = "Admin")]
-        public ActionResult UserUpdate(int id, string u, string p, bool sendwelcome, string[] role)
+        public ActionResult UserUpdate(int id, string u, string p, bool sendwelcome, bool mustchangepassword, string[] role)
         {
             var user = CurrentDatabase.Users.Single(us => us.UserId == id);
             if (u.HasValue() && user.Username != u)
@@ -61,6 +62,7 @@ namespace CmsWeb.Areas.People.Controllers
                 user.ChangePassword(p);
             }
 
+            user.MustChangePassword = mustchangepassword;
             CurrentDatabase.SubmitChanges();
             if (!user.PeopleId.HasValue)
             {
