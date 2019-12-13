@@ -36,7 +36,9 @@ namespace CmsWeb.Areas.People.Models.Tests
             model.LargeId = RandomNumber();
             model.ThumbId = RandomNumber();
             model.DocUrl.ShouldBe($"/MemberDocs/{model.LargeId}");
-            model.ImgUrl.ShouldBe($"/Image/{model.ThumbId}");
+            model.ImgUrl.ShouldBe($"/MemberDocs/{model.ThumbId}");
+            model.Finance = true;
+            model.ImgUrl.ShouldBe($"/FinanceDocs/{model.ThumbId}");
         }
 
         [Fact]
