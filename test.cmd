@@ -28,7 +28,7 @@ set "IISEXPRESS_HOST=%OpenCover%"
 set placeholder="{0}"
 set "IISEXPRESS_ARGS=-register:user -target:%iisexpress% -targetargs:%placeholder% -filter:%opencover_filters% -output:%test_coverage%"
 del %test_coverage%
-::%OpenCover% -register:user -target:"%xunit%" -targetargs:"%integration_tests% -noshadow -teamcity" -filter:%opencover_filters% || exit 9
+%OpenCover% -register:user -target:"%xunit%" -targetargs:"%integration_tests% -noshadow -teamcity" -filter:%opencover_filters% || exit 9
 
 @echo off
 taskkill /F /IM iisexpress.exe
