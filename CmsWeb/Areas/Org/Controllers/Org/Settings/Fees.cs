@@ -12,7 +12,7 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost]
         public ActionResult Fees(int id)
         {
-            var m = new SettingsFeesModel(id);
+            var m = new SettingsFeesModel(CurrentDatabase, id);
             return PartialView("Registration/Fees", m);
         }
 
@@ -20,7 +20,7 @@ namespace CmsWeb.Areas.Org.Controllers
         public ActionResult FeesHelpToggle(int id)
         {
             CurrentDatabase.ToggleUserPreference("ShowFeesHelp");
-            var m = new SettingsFeesModel(id);
+            var m = new SettingsFeesModel(CurrentDatabase, id);
             return PartialView("Registration/Fees", m);
         }
 
@@ -28,7 +28,7 @@ namespace CmsWeb.Areas.Org.Controllers
         [Authorize(Roles = "Edit")]
         public ActionResult FeesEdit(int id)
         {
-            var m = new SettingsFeesModel(id);
+            var m = new SettingsFeesModel(CurrentDatabase, id);
             return PartialView("Registration/FeesEdit", m);
         }
 
