@@ -1,6 +1,8 @@
 ﻿using CmsData;
 using CmsData.Registration;
 using CmsWeb.Code;
+using CmsWeb.Constants;
+using CmsWeb.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -8,9 +10,13 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CmsWeb.Areas.Org.Models
 {
-    public class SettingsFeesModel
+    public class SettingsFeesModel : IDbBinder
     {
         public Organization Org;
+
+        public CMSDataContext CurrentDatabase { get; set; }
+
+        public bool IsPushpay { get; set; }
 
         public int Id
         {
@@ -19,32 +25,35 @@ namespace CmsWeb.Areas.Org.Models
             {
                 if (Org == null)
                 {
-                    Org = DbUtil.Db.LoadOrganizationById(value);
+                    Org = CurrentDatabase.LoadOrganizationById(value);
                 }
             }
         }
 
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
         public SettingsFeesModel()
         {
         }
 
-        public SettingsFeesModel(int id)
+        public SettingsFeesModel(CMSDataContext db, int id)
         {
+            CurrentDatabase = db;
             Id = id;
             this.CopyPropertiesFrom(Org, typeof(OrgAttribute));
             this.CopyPropertiesFrom(RegSettings, typeof(RegAttribute));
+            IsPushpay = (int)GatewayTypes.Pushpay == MultipleGatewayUtils.GatewayId(CurrentDatabase, PaymentProcessTypes.OnlineRegistration);
         }
         public void Update()
         {
             this.CopyPropertiesTo(Org, typeof(OrgAttribute));
             RegSettings.OrgFees.Clear();
             this.CopyPropertiesTo(RegSettings, typeof(RegAttribute));
-            var os = DbUtil.Db.CreateRegistrationSettings(RegSettings.ToString(), Id);
+            var os = CurrentDatabase.CreateRegistrationSettings(RegSettings.ToString(), Id);
             Org.UpdateRegSetting(os);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
         }
 
-        private Settings RegSettings => regsettings ?? (regsettings = DbUtil.Db.CreateRegistrationSettings(Id));
+        private Settings RegSettings => regsettings ?? (regsettings = CurrentDatabase.CreateRegistrationSettings(Id));
         private Settings regsettings;
 
         [Reg, Display(Description = FeeDescription)]
@@ -94,6 +103,9 @@ namespace CmsWeb.Areas.Org.Models
         [Reg, Display(Description = ExtraValueFeeNameDescription)]
         public string ExtraValueFeeName { get; set; }
 
+        [Reg, Display(Description = PushpayFundNameDescription)]
+        public string PushpayFundName { get; set; }
+
         #region Descriptions
 
         private const string FeeDescription = "The base fee for the registration";
@@ -139,7 +151,9 @@ If it is zero, the payment page will be skipped.";
 
         private const string ExtraValueFeeNameDescription = @"The fee will be taken from this Extra Value field.";
 
-        #endregion
+        private const string PushpayFundNameDescription = @"The Fund Name you want to use in Pushpay for this Organization.
+If this field is empty or doesn't exist, Pushpay will take the default fund you have set up";
 
+        #endregion
     }
 }
