@@ -13,9 +13,9 @@ namespace CmsWeb.ModelsTests
         public void SavePrintJobTest()
         {
             var model = new CheckInModel(db);
-            model.SavePrintJob("Kiosk1", null, "{\"fake\":\"json string test\"}");
+            model.SavePrintJob("TestKiosk1", null, "{\"fake\":\"test json\"}");
 
-            db.PrintJobs.Count().ShouldBeGreaterThan(0);
+            db.PrintJobs.Where(m => m.Id == "TestKiosk1").Count().ShouldBeGreaterThan(0);
         }
     }
 }
