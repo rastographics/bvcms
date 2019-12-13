@@ -7,7 +7,7 @@ namespace CmsData
     [Table(Name = "dbo.IpLog2")]
     public partial class IpLog2 : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         #region Private Fields
 

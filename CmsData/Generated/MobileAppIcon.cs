@@ -7,7 +7,7 @@ namespace CmsData
     [Table(Name = "dbo.MobileAppIcons")]
     public partial class MobileAppIcon : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         #region Private Fields
 

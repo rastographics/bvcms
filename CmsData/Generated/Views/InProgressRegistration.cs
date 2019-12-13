@@ -7,7 +7,7 @@ namespace CmsData.View
     [Table(Name = "InProgressRegistrations")]
     public partial class InProgressRegistration
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         private string _Name;
 

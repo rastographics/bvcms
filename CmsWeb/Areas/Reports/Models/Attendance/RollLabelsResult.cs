@@ -42,7 +42,7 @@ namespace CmsWeb.Areas.Reports.Models
         {
             var Response = context.HttpContext.Response;
             Response.ContentType = "application/pdf";
-            Response.AddHeader("content-disposition", "filename=foo.pdf");
+            Response.AddHeader("content-disposition", $"filename={format}-Labels.pdf");
 
             var document = new Document();
             document.SetPageSize(new Rectangle(72 * W, 72 * H));

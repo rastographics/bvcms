@@ -36,15 +36,17 @@ namespace CmsWeb.Areas.People.Controllers
                 var name = Util.ActivePerson as string;
                 DbUtil.LogPersonActivity($"New User for: {name}", Util2.CurrentPeopleId, name);
                 ViewBag.username = u.Username;
+                u.MustChangePassword = true;
             }
             ViewBag.sendwelcome = false;
             return View("System/UserEdit", u);
         }
 
         [HttpPost, Authorize(Roles = "Admin")]
-        public ActionResult UserUpdate(int id, string u, string p, bool sendwelcome, string[] role)
+        public ActionResult UserUpdate(int id, string u, string p, bool sendwelcome, bool mustchangepassword, string[] role)
         {
             var user = CurrentDatabase.Users.Single(us => us.UserId == id);
+            user.MustChangePassword = mustchangepassword;
             if (u.HasValue() && user.Username != u)
             {
                 var uu = CurrentDatabase.Users.SingleOrDefault(us => us.Username == u);
@@ -99,7 +101,7 @@ namespace CmsWeb.Areas.People.Controllers
             }
             MembershipService.DisableTwoFactorAuth(user, CurrentDatabase, null);
 
-            return Redirect($"/Person2/{id}#tab-user");
+            return Redirect($"/Person2/{user.PeopleId}#tab-user");
         }
 
         [HttpGet, Authorize(Roles = "Admin")]

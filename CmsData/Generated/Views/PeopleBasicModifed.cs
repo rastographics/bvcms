@@ -7,7 +7,7 @@ namespace CmsData.View
     [Table(Name = "PeopleBasicModifed")]
     public partial class PeopleBasicModifed
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         private int _PeopleId;
 

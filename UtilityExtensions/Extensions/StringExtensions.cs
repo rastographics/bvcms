@@ -332,17 +332,15 @@ namespace UtilityExtensions
             }
         }
 
-        public static string SlugifyString(this string original)
+        public static string SlugifyString(this string original, string separator = "", bool lowerCase = true)
         {
             if (original == null)
                 return string.Empty;
 
             // Replace all non-alphanumeric
             var rgx = new Regex("[^a-zA-Z0-9]");
-            var slug = rgx.Replace(original, "");
-            var lowercaseSlug = slug.ToLower();
-
-            return lowercaseSlug;
+            var slug = rgx.Replace(original, separator);
+            return lowerCase ? slug.ToLower() : slug;
         }
 
         public static string HtmlEncode(this string s)

@@ -76,8 +76,9 @@ namespace CmsWeb.Areas.Reports.Models
                 Response.Write("no data found");
                 return;
             }
+
             Response.ContentType = "application/pdf";
-            Response.AddHeader("content-disposition", "filename=foo.pdf");
+            Response.AddHeader("content-disposition", "filename=RallyRollSheet.pdf");
 
             doc = new Document(PageSize.LETTER.Rotate(), 36, 36, 64, 64);
             var w = PdfWriter.GetInstance(doc, Response.OutputStream);

@@ -9,7 +9,7 @@ namespace CmsData
     [Table(Name = "dbo.ProgDiv")]
     public partial class ProgDiv : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         #region Private Fields
 

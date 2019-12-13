@@ -182,7 +182,7 @@ namespace CmsWeb
                 return;
             }
 
-            if (Context.User != null)
+            if (Context.User != null && Context.User.Identity.IsAuthenticated)
             {
                 var db = CMSDataContext.Create(new HttpContextWrapper(Context));
                 var user = db.CurrentUser;
