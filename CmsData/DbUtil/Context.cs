@@ -815,7 +815,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
             if (!username.HasValue())
             {
                 var auth = HttpContextFactory.Current?.Request?.Headers?.Get("Authorization");
-                if (auth.HasValue())
+                if (auth.HasValue() && auth.StartsWith("Basic"))
                 {
                     auth = auth.Substring(6);
                     var authHeader = Encoding.ASCII.GetString(Convert.FromBase64String(auth));
