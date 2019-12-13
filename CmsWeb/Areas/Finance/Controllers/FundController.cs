@@ -60,6 +60,11 @@ namespace CmsWeb.Areas.Finance.Controllers
                         orderby f.NonTaxDeductible, f.FundPledgeFlag, f.FundStatusId, f.OnlineSort != null ? 1 : 2, f.OnlineSort, f.FundId
                         select f;
                     break;
+                case "ShowList":
+                    m = from f in m
+                        orderby f.ShowList, f.OnlineSort != null ? 1 : 2, f.OnlineSort, f.FundPledgeFlag, f.FundStatusId, f.FundId
+                        select f;
+                    break;
             }
             return View(m);
         }
@@ -161,6 +166,16 @@ namespace CmsWeb.Areas.Finance.Controllers
             fund.FundStatusId = value;
             CurrentDatabase.SubmitChanges();
             return Content(value == 1 ? "Open" : "Closed");
+        }
+
+        [HttpPost]
+        public ContentResult EditShowList(string id, int value)
+        {
+            var iid = id.Substring(2).ToInt();
+            var fund = CurrentDatabase.ContributionFunds.SingleOrDefault(m => m.FundId == iid);
+            fund.ShowList = value;
+            CurrentDatabase.SubmitChanges();
+            return Content(value == 1 ? "Primary" : (value == 2 ? "Closed" : "None"));
         }
 
         public static List<SelectListItem> GetFundStatusList()
