@@ -48,8 +48,8 @@ namespace CmsWeb.Models
         private void Init()
         {
             GetCount = api.Count;
-            Sort = "Date";
-            Direction = "desc";
+            if (Sort == null) Sort = "Date";
+            if (Direction == null) Direction = "desc";
             SearchInfo = api.model;
         }
 
@@ -197,6 +197,16 @@ namespace CmsWeb.Models
                     new CodeValueItem { Id = 1, Value = "Online" },
                     new CodeValueItem { Id = 0, Value = "Not Online" },
                 }, "Id", "Value", SearchInfo.Online.ToString());
+        }
+        public SelectList PushPayOptions()
+        {
+            return new SelectList(
+                new List<CodeValueItem>
+                {
+                    new CodeValueItem { Id = 2, Value = "Both PushPay & Not" },
+                    new CodeValueItem { Id = 1, Value = "PushPay" },
+                    new CodeValueItem { Id = 0, Value = "Not PushPay" },
+                }, "Id", "Value", SearchInfo.PushPay.ToString());
         }
         public IEnumerable<SelectListItem> BundleTypes()
         {

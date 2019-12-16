@@ -1,6 +1,8 @@
 using CmsData;
 using CmsData.Codes;
 using CmsData.Registration;
+using CmsWeb.Constants;
+using CmsWeb.Models;
 using ImageData;
 using System;
 using System.Collections.Generic;
@@ -10,21 +12,32 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.OnlineReg.Models
 {
-    public class ManageSubsModel
+    public class ManageSubsModel : IDbBinder
     {
-        private Organization _masterorg;
-        private Person _Person;
-        private string _summary;
-        private Settings setting;
+        private CMSDataContext _currentDatabase;
+        public CMSDataContext CurrentDatabase
+        {
+            get => _currentDatabase ?? DbUtil.Db;
+            set
+            {
+                _currentDatabase = value;                
+            }
+        }
 
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
         public ManageSubsModel()
         {
+        }
+
+        public ManageSubsModel(CMSDataContext db)
+        {
+            CurrentDatabase = db;
         }
 
         public ManageSubsModel(int pid, int id)
         {
             this.pid = pid;
-            var org = DbUtil.Db.LoadOrganizationById(id);
+            var org = CurrentDatabase.LoadOrganizationById(id);
             if (org.RegistrationTypeId != RegistrationTypeCode.ManageSubscriptions)
             {
                 throw new Exception("must be a ManageSubscriptions RegistrationType");
@@ -33,7 +46,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
             masterorgid = id;
             _masterorg = org;
         }
-
+        private Organization _masterorg;
+        private Person _Person;
+        private string _summary;
+        private Settings setting;
         public int pid { get; set; }
         public int masterorgid { get; set; }
 
@@ -43,7 +59,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             {
                 if (_Person == null)
                 {
-                    _Person = DbUtil.Db.LoadPersonById(pid);
+                    _Person = CurrentDatabase.LoadPersonById(pid);
                 }
 
                 return _Person;
@@ -59,7 +75,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     return _masterorg;
                 }
 
-                _masterorg = DbUtil.Db.LoadOrganizationById(masterorgid);
+                _masterorg = CurrentDatabase.LoadOrganizationById(masterorgid);
                 return _masterorg;
             }
         }
@@ -72,7 +88,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             {
                 if (!_summary.HasValue())
                 {
-                    var q = from i in FetchSubs()
+                    var q = from i in FetchSubs(CurrentDatabase)
                             where i.Checked
                             select i;
 
@@ -105,9 +121,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
             return masterorg.OrganizationName;
         }
 
-        public IEnumerable<OrgSub> FetchSubs()
+        public IEnumerable<OrgSub> FetchSubs(CMSDataContext db)
         {
-            return from o in OnlineRegModel.UserSelectClasses(masterorg)
+            var m = new OnlineRegModel(db); 
+            return from o in m.UserSelectClasses(masterorg)
                    select new OrgSub
                    {
                        OrgId = o.OrganizationId,
@@ -141,10 +158,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
             return qq;
         }
 
-        public void UpdateSubscriptions()
+        public void UpdateSubscriptions(CMSDataContext db)
         {
-            var db = DbUtil.Db;
-            var q = from o in OnlineRegModel.UserSelectClasses(masterorg)
+            var m = new OnlineRegModel(db);
+            var q = from o in m.UserSelectClasses(masterorg)
                     let om = o.OrganizationMembers.SingleOrDefault(mm => mm.PeopleId == pid)
                     where om != null
                     select om;

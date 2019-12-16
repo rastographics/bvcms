@@ -7,7 +7,7 @@ namespace CmsData.View
     [Table(Name = "City")]
     public partial class City
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         private string _CityX;
 

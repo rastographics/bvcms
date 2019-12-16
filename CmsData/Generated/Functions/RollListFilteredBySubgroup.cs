@@ -7,7 +7,7 @@ namespace CmsData.View
     [Table(Name = "RollListFilteredBySubgroups")]
     public partial class RollListFilteredBySubgroup
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         private int? _Section;
 

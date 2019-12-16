@@ -1,8 +1,4 @@
-:: This script depends on Nuget and PSTools being added to the PATH
-:: https://docs.microsoft.com/en-us/sysinternals/downloads/pstools
 setlocal
-REG ADD HKCU\Software\Sysinternals\PsKill /v EulaAccepted /t REG_DWORD /d 1 /f
-REG ADD HKCU\Software\Sysinternals\PsList /v EulaAccepted /t REG_DWORD /d 1 /f
 nuget install Codecov -OutputDirectory packages || exit 1
 nuget install OpenCover -OutputDirectory packages || exit 2
 for /f %%f in ('dir /b packages\opencover.*') do set OpenCover=%~dp0packages\%%f\tools\opencover.console.exe
@@ -16,6 +12,7 @@ echo using %OpenCover%
 echo using %xunit%
 echo using %codecov%
 set target_tests=.\UnitTests\CMSDataTests\bin\Debug\CMSDataTests.dll
+set target_tests=%target_tests% .\UnitTests\ImageDataTests\bin\Debug\ImageDataTests.dll
 set target_tests=%target_tests% .\UnitTests\CMSWebTests\bin\Debug\CMSWebTests.dll
 set target_tests=%target_tests% .\UnitTests\UtilityExtensionsTests\bin\Debug\UtilityExtensionsTests.dll
 set integration_tests=.\IntegrationTests\bin\Debug\IntegrationTests.dll
@@ -34,13 +31,13 @@ del %test_coverage%
 %OpenCover% -register:user -target:"%xunit%" -targetargs:"%integration_tests% -noshadow -teamcity" -filter:%opencover_filters% || exit 9
 
 @echo off
-pskill -t iisexpress.exe
+taskkill /F /IM iisexpress.exe
 :waitforopencover
-pslist -nobanner opencover.console >nul 2>&1
+tasklist /FI "IMAGENAME eq opencover.console.exe" 2>NUL | find /I /N "No tasks">NUL
 IF ERRORLEVEL 1 (
-  goto opencoverexited
-) ELSE (
   goto waitforopencover
+) ELSE (
+  goto opencoverexited
 )
 :opencoverexited
 @echo on

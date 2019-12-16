@@ -110,7 +110,7 @@ namespace CmsData
                     CreatedBy = Util.UserId1,
                     GroupMeetingFlag = false,
                     AttendCreditId = acr ?? 1,
-                    NoAutoAbsents = noautoabsents
+                    NoAutoAbsents = noautoabsents ?? !Db.Setting("AttendanceAutoAbsents")
                 };
                 Db.Meetings.InsertOnSubmit(meeting);
                 Db.SubmitChanges();

@@ -4,6 +4,10 @@
         <label class="control-label">
             @Html.CheckBoxFor(m => m) @(ViewBag.label ?? Html.DisplayNameFor(m => m))
         </label>
+        @if (ViewBag.info != null)
+        {
+            @Html.Raw(ViewBag.info)
+        }
     </div>
     <span class="help-block">@Html.Raw(ViewBag.help)</span>
     @if (ViewBag.ShowHelp != false && ViewData.ModelMetadata.Description.HasValue())

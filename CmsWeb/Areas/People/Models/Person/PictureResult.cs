@@ -165,7 +165,11 @@ namespace CmsWeb.Areas.People.Models
             }
             using (var cms = CMSDataContext.Create(HttpContextFactory.Current))
             {
-                if (portrait)
+                if (shouldBePublic && overrideUser)
+                {
+                    return true;
+                }
+                else if (portrait)
                 {
                     var secured = !overrideUser && cms.Setting("SecureProfilePictures", true);
                     if (secured && !user.Identity.IsAuthenticated)

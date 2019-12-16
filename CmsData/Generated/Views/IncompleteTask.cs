@@ -7,7 +7,7 @@ namespace CmsData.View
     [Table(Name = "IncompleteTasks")]
     public partial class IncompleteTask
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         private DateTime _CreatedOn;
 

@@ -7,7 +7,7 @@ namespace CmsData.View
     [Table(Name = "PaymentProcessDetails")]
     public partial class PaymentProcessDetails
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         private int _ProcessId;
         private string _ProcessName;

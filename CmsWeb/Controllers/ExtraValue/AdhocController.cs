@@ -9,7 +9,7 @@ namespace CmsWeb.Controllers
         [HttpPost, Route("ExtraValue/NewAdhoc/{table}/{location}/{id:int}")]
         public ActionResult NewAdhoc(string table, string location, int id)
         {
-            var m = new NewExtraValueModel(id, table, location);
+            var m = new NewExtraValueModel(CurrentDatabase, id, table, location);
             return View(m);
         }
 
@@ -32,14 +32,14 @@ namespace CmsWeb.Controllers
         [HttpPost, Route("ExtraValue/NewAdhocFromQuery/{id:guid}")]
         public ActionResult NewAdhocFromQuery(Guid id)
         {
-            var m = new NewExtraValueModel(id);
+            var m = new NewExtraValueModel(CurrentDatabase, id);
             return View("NewAdhoc", m);
         }
 
         [HttpPost, Route("ExtraValue/DeleteAdhoc/{table}/{id:int}")]
         public ActionResult DeleteAdhoc(string table, int id, string name)
         {
-            var m = new ExtraValueModel(id, table, "Adhoc");
+            var m = new ExtraValueModel(CurrentDatabase, id, table, "Adhoc");
             m.Delete(name);
             return View("AdHoc", m);
         }
@@ -47,7 +47,7 @@ namespace CmsWeb.Controllers
         [HttpPost, Route("ExtraValue/DeleteFromQuery/{id:guid}")]
         public ActionResult DeleteFromQuery(Guid id)
         {
-            var m = new NewExtraValueModel(id);
+            var m = new NewExtraValueModel(CurrentDatabase, id);
             return View("DeleteFromQuery", m);
         }
 

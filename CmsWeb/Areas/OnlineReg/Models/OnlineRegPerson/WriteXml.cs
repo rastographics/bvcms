@@ -77,6 +77,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
                         if (nochurch)
                             w.Add(pi.Name, nochurch);
                         break;
+                    case "CurrentDatabase":
+                    case "Parent":
+                        break;
                     default:
                         w.Add(pi.Name, pi.GetValue(this, null));
                         break;
