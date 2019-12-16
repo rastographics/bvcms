@@ -1,19 +1,12 @@
-﻿using System;
+﻿using CmsData;
+using CmsData.Codes;
+using CmsWeb.Areas.OnlineReg.Controllers;
+using CmsWeb.Areas.Org.Models;
+using CmsWeb.Models;
+using SharedTestFixtures;
 using System.Collections.Generic;
 using System.Linq;
-using Shouldly;
 using Xunit;
-using CmsWeb.Models;
-using CmsWeb.Areas.Org.Models;
-using UtilityExtensions;
-using CmsData;
-using CmsData.Codes;
-using OfficeOpenXml;
-using System.Reflection;
-using CmsWeb;
-using SharedTestFixtures;
-using CmsWeb.Areas.OnlineReg.Controllers;
-using CMSWebTests.TestUtils;
 using static CmsWeb.Models.MailingController;
 
 namespace CMSWebTests.Areas.Reports.Models.Reports
@@ -26,7 +19,6 @@ namespace CMSWebTests.Areas.Reports.Models.Reports
         public void GetCouplesBothList_Should_Pull_Proper_HoHPeopleID()
         {
             /* Excel export should pull proper Head of Household PeopleID*/
-
             var requestManager = FakeRequestManager.Create();
             var db = requestManager.CurrentDatabase;
             var controller = new OnlineRegController(requestManager);
@@ -37,19 +29,15 @@ namespace CMSWebTests.Areas.Reports.Models.Reports
             var FakeOrg = FakeOrganizationUtils.MakeFakeOrganization(requestManager);
             var oid = FakeOrg.org.OrganizationId;
             m.OrgId = oid;
-            var wife = CreateUser(RandomString(), RandomString());          
+            var wife = CreateUser(RandomString(), RandomString());
 
             //Create family and then Execute GetCouplesBothList to see if the right HeadOfHouseHoldId is retrieved...
             var p = CreateFakeFamily(oid, m, controller);
             var mailingModel = new MailingController(requestManager);
             var ExcelCouplesBoth = mailingModel.GetCouplesBothList(m.QueryId, 500);
 
-            //assert
-
-
             FakeOrganizationUtils.DeleteOrg(FakeOrg.org.OrganizationId);
             RemoveFakePeopleFromDB(ToPeople(ExcelCouplesBoth), db);
-            
         }
 
         private List<Person> ToPeople(List<CouplesBothInfo> couples)
@@ -64,7 +52,7 @@ namespace CMSWebTests.Areas.Reports.Models.Reports
 
         private User CreateFamilyMember(int genderID, int maritalStatusId, int positionInFamilyId, Family f = null)
         {
-            var p = CreateUser(RandomString(), RandomString(), family:f, positionInFamilyId: positionInFamilyId, maritalStatusId: maritalStatusId, genderId: genderID);            
+            var p = CreateUser(RandomString(), RandomString(), family: f, positionInFamilyId: positionInFamilyId, maritalStatusId: maritalStatusId, genderId: genderID);
             db.SubmitChanges();
             return p;
         }
@@ -111,9 +99,9 @@ namespace CMSWebTests.Areas.Reports.Models.Reports
             var families = new List<Family>();
             foreach (var p in peopleList)
             {
-                var f = db.Families.SingleOrDefault(ff => ff.FamilyId == p.FamilyId);                    
+                var f = db.Families.SingleOrDefault(ff => ff.FamilyId == p.FamilyId);
                 db.PurgePerson(p.PeopleId);
-                if(!families.Contains(f)){ families.Add(f); }                
+                if (!families.Contains(f)) { families.Add(f); }
                 db.SubmitChanges();
             }
             foreach (var f in families)

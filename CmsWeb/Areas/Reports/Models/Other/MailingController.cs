@@ -205,18 +205,15 @@ namespace CmsWeb.Models
             IQueryable<Person> q1 = q;
             if (UseMailFlags)
             {
-                q1 = from p in q
-                         // exclude person who has a partner who is already in the list and with different PeopleID.
-                     where !(p.SpouseId != null && q.Any(pp => pp.PeopleId == p.SpouseId && pp.PeopleId == p.Family.HeadOfHouseholdId)
-                        )
+                q1 = from p in q // exclude person who has a partner who is already in the list and with different PeopleID.
+                     where !(p.SpouseId != null && q.Any(pp => pp.PeopleId == p.SpouseId && pp.PeopleId == p.Family.HeadOfHouseholdId))
                      where (p.PrimaryBadAddrFlag ?? 0) == 0
                      where p.DoNotMailFlag == false
                      select p;
             }
             else
             {
-                q1 = from p in q
-                         // exclude person who has a partner who is already in the list and with different PeopleID.
+                q1 = from p in q // exclude person who has a partner who is already in the list and with different PeopleID.
                      where !(p.SpouseId != null && q.Any(pp => pp.PeopleId == p.SpouseId && pp.PeopleId == p.Family.HeadOfHouseholdId))
                      select p;
             }
@@ -359,18 +356,17 @@ namespace CmsWeb.Models
                     PeopleId = PeopleId,
                     FamilyId = FamilyId,
                     FirstName = FirstName,
-                    LastName = LastName,                    
+                    LastName = LastName,
                     PositionInFamilyId = PositionInFamilyId,
-                    EmailAddress = Email                    
+                    EmailAddress = Email
                 };
             }
         }
         public List<CouplesBothInfo> GetCouplesBothList(Guid queryId, int maximumRows)
-        {            
+        {
             var q = CurrentDatabase.PopulateSpecialTag(queryId, DbUtil.TagTypeId_CouplesHelper).People(CurrentDatabase);
             var q1 = EliminateCoupleDoublets(q);
-            var q2 = from p in q1
-                         // get spouse if in the query
+            var q2 = from p in q1 // get spouse if in the query
                      let altaddr = p.Family.FamilyExtras.SingleOrDefault(ee => ee.FamilyId == p.FamilyId && ee.Field == "MailingAddress").Data
                      let altcouple = p.Family.FamilyExtras.FirstOrDefault(ee => ee.FamilyId == p.PeopleId && ee.Field == "CoupleName" && p.SpouseId != null).Data
                      let spouse = q.SingleOrDefault(sp => sp.PeopleId == p.SpouseId)
@@ -565,10 +561,7 @@ namespace CmsWeb.Models
             public string City { get; set; }
             public string State { get; set; }
             public string Zip { get; set; }
-            public string CSZ
-            {
-                get { return Util.FormatCSZ4(City, State, Zip); }
-            }
+            public string CSZ => Util.FormatCSZ4(City, State, Zip);
             public string CellPhone { get; set; }
             public string HomePhone { get; set; }
             public string CoupleName { get; set; }
@@ -595,7 +588,7 @@ namespace CmsWeb.Models
             public string Email { get; set; }
             public string Age { get; set; }
             private int _PhonePref;
-            public int PhonePref { set { _PhonePref = value; } }
+            public int PhonePref { set => _PhonePref = value; }
             private string PhoneFmt(string prefix, PhoneType type, string number)
             {
                 var s = number.FmtFone(type + " ");
@@ -609,10 +602,7 @@ namespace CmsWeb.Models
                 return number.FmtFone(prefix + " ");
             }
             private List<string> _Phones = new List<string>();
-            public List<string> Phones
-            {
-                get { return _Phones; }
-            }
+            public List<string> Phones => _Phones;
             private string _CellPhone;
             public string CellPhone
             {
@@ -624,7 +614,7 @@ namespace CmsWeb.Models
                         _Phones.Add(PhoneFmt("C", PhoneType.Cell, value));
                     }
                 }
-                get { return _CellPhone; }
+                get => _CellPhone;
             }
 
             private string _HomePhone;
@@ -638,7 +628,7 @@ namespace CmsWeb.Models
                         _Phones.Add(PhoneFmt("H", PhoneType.Home, value));
                     }
                 }
-                get { return _HomePhone; }
+                get => _HomePhone;
             }
             private string _WorkPhone;
             public string WorkPhone
@@ -651,7 +641,7 @@ namespace CmsWeb.Models
                         _Phones.Add(PhoneFmt("W", PhoneType.Work, value));
                     }
                 }
-                get { return _WorkPhone; }
+                get => _WorkPhone;
             }
             public string BFTeacher { get; set; }
             public int? BFTeacherId { get; set; }
