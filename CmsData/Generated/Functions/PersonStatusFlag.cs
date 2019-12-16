@@ -7,7 +7,7 @@ namespace CmsData.View
     [Table(Name = "PersonStatusFlags")]
     public partial class PersonStatusFlag
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         private int _PeopleId;
 

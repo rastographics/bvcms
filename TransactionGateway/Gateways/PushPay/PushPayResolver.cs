@@ -175,6 +175,34 @@ namespace TransactionGateway
             }
         }
 
+        public async Task<string> GetOrgFund(string fundName)
+        {
+            bool fundExist = false;
+            
+            if (!string.IsNullOrEmpty(fundName))
+                fundExist = await FundNameExist(fundName);
+            
+            if (fundExist)
+                return fundName.Replace(" ", "%20");
+
+            return string.Empty;
+        }
+
+        private async Task<bool> FundNameExist(string fundName)
+        {
+            bool fundExist = false;
+            var pushpayOrganizations = await _pushpay.GetOrganizations();
+            foreach (var item in pushpayOrganizations)
+            {
+                var key = item.Key;
+                var funds = await _pushpay.GetFundsForOrganization(key);
+                fundExist = funds.Items.Any(f => f.Name == fundName);
+                if (fundExist)
+                    break;
+            }
+            return fundExist;
+        }
+
         public BundleHeader CreateBundle(DateTime CreatedOn, decimal? BundleTotal, decimal? TotalCash, decimal? TotalChecks, string RefId, int? RefIdType)
         {
             // create a touchpoint bundle

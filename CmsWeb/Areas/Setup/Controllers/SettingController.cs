@@ -3,6 +3,7 @@ using CmsWeb.Lifecycle;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web.Mvc;
+using CmsWeb.Areas.Setup.Models;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Setup.Controllers
@@ -25,7 +26,17 @@ namespace CmsWeb.Areas.Setup.Controllers
                 m = m.Where(vv => (vv.System ?? false) == false);
             }
 
-            return View(m);
+            var settingTypes = CurrentDatabase.SettingMetadatas
+                .Where(vv => (vv.Setting.System ?? false) == false)
+                .Where(vv => vv.SettingCategory != null)
+                .GroupBy(x => x.SettingCategory.SettingType)
+                .Select(x => new SettingTypeModel(x))
+                .ToList();
+
+            return View(new SettingModel {
+                GeneralSettings = m.Where(x => x.SettingMetadata == null).ToList(),
+                SettingTypes = settingTypes.ToList()
+            });
         }
 
         [HttpPost]
@@ -38,12 +49,10 @@ namespace CmsWeb.Areas.Setup.Controllers
 
             if (!CurrentDatabase.Settings.Any(s => s.Id == id))
             {
-                var m = new Setting { Id = id };
-                CurrentDatabase.Settings.InsertOnSubmit(m);
-                CurrentDatabase.SubmitChanges();
                 CurrentDatabase.SetSetting(id, null);
+                CurrentDatabase.SubmitChanges();
             }
-            return Redirect($"/Settings/#{id}");
+            return Redirect($"/Settings/?focus={id}#tab-general");
         }
 
         [HttpPost]

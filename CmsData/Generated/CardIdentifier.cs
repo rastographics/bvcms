@@ -9,7 +9,7 @@ namespace CmsData
     [Table(Name = "dbo.CardIdentifiers")]
     public partial class CardIdentifier : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         #region Private Fields
 

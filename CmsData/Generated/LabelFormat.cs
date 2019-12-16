@@ -7,7 +7,7 @@ namespace CmsData
     [Table(Name = "dbo.LabelFormats")]
     public partial class LabelFormat : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         #region Private Fields
 

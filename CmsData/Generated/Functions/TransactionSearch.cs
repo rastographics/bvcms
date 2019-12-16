@@ -7,7 +7,7 @@ namespace CmsData.View
     [Table(Name = "TransactionSearch")]
     public partial class TransactionSearch
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         private int? _Id;
 
