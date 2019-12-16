@@ -219,9 +219,10 @@ namespace TransactionGateway
             return await GET<PaymentList>($"merchant/{merchantKey}/payments?updatedFrom={format(startDate)}&page={page}");
         }
 
-        public async Task<FundList> GetFundsForMerchant(string merchantKey)
+        public async Task<IEnumerable<Fund>> GetFundsForMerchant(string merchantKey)
         {
-            return await GET<FundList>($"merchant/{merchantKey}/funds");
+            var result = await GET<FundList>($"merchant/{merchantKey}/funds");
+            return result.Items;
         }
 
         public async Task<FundList> GetFundsForOrganization(string organizationKey)
