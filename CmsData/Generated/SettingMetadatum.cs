@@ -187,13 +187,13 @@ namespace CmsData
                     if (previousValue != null)
                     {
                         _Setting.Entity = null;
-                        previousValue.SettingMetadatas.Remove(this);
+                        previousValue.SettingMetadata = this;
                     }
 
                     _Setting.Entity = value;
                     if (value != null)
                     {
-                        value.SettingMetadatas.Add(this);
+                        value.SettingMetadata = this;
 
                         _SettingId = value.Id;
                     }
