@@ -74,15 +74,9 @@ namespace CmsWeb.Areas.People.Models
         {
             if (contributions != null && contributions.Count() > 0)
             {
-                var oldestYear = contributions
-                        .OrderBy(x => x.ContributionDate)
-                        .First().ContributionDate.Value.Year;
-                var currentYear = DateTime.Now.Year;
-                while (currentYear >= oldestYear)
-                {
-                    GivingYears.Add(currentYear.ToString());
-                    currentYear--;
-                }
+                var years = contributions.Select(c => c.ContributionDate.Value.Year).Distinct()
+                    .OrderByDescending(c=>c).Select(c=>c.ToString()).ToList();
+                GivingYears.AddRange(years);
             }
         }
 

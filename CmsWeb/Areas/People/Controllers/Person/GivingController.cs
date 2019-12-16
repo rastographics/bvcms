@@ -14,8 +14,12 @@ namespace CmsWeb.Areas.People.Controllers
     {
         [HttpPost]
         public ActionResult Contributions(ContributionsModel m)
-        {
-            m = GetGivingUserPreferences(m);            
+        {            
+            string userYear = m.Year;            
+            m = GetGivingUserPreferences(m);
+            if (userYear != "YearToDate")
+                m.Year = userYear;
+
             return View("Giving/Contributions", m);
         }        
 
