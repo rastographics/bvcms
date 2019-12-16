@@ -186,6 +186,15 @@ namespace CmsWeb.Areas.Finance.Controllers
             return list;
         }
 
+        public static List<SelectListItem> GetFundShowList()
+        {
+            var list = new List<SelectListItem>();
+            list.Add(new SelectListItem { Text = "Primary", Value = "1" });
+            list.Add(new SelectListItem { Text = "Secondary", Value = "2" });
+            list.Add(new SelectListItem { Text = "None", Value = "3" });
+            return list;
+        }
+
         public static List<SelectListItem> GetFundTypeList()
         {
             var list = new List<SelectListItem>();

@@ -526,12 +526,12 @@ namespace CmsWeb.Areas.OnlineReg.Models
             return sb.ToString();
         }
 
-        public SelectListItem[] Funds()
+        public SelectListItem[] PrimaryFunds()
         {
             if (ShouldPullSpecificFund())
                 return ReturnContributionForSetting();
 
-            return FundList(db);
+            return PrimaryFundList(db);
         }
 
         public SelectListItem[] AllFunds()
@@ -542,12 +542,12 @@ namespace CmsWeb.Areas.OnlineReg.Models
             return FullFundList(db);
         }
 
-        public SelectListItem[] SpecialFunds()
+        public SelectListItem[] SecondaryFunds()
         {
             if (ShouldPullSpecificFund())
                 return ReturnContributionForSetting();
 
-            return SpecialFundList(db);
+            return SecondaryFundList(db);
         }
 
         public SelectListItem[] DesignatedDonationFund()
@@ -609,10 +609,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     }).ToArray();
         }
 
-        public static SelectListItem[] FundList(CMSDataContext db)
+        public static SelectListItem[] PrimaryFundList(CMSDataContext db)
         {
             return (from f in GetAllOnlineFunds(db)
-                    where (f.OnlineSort > 0 && f.OnlineSort <= 99)
+                    where f.ShowList == FundShowListCode.Primary 
                     select new SelectListItem
                     {
                         Text = $"{f.FundName}",
@@ -620,10 +620,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     }).ToArray();
         }
 
-        public static SelectListItem[] SpecialFundList(CMSDataContext db)
+        public static SelectListItem[] SecondaryFundList(CMSDataContext db)
         {
             return (from f in GetAllOnlineFunds(db)
-                    where f.OnlineSort > 99
+                    where f.ShowList == FundShowListCode.Secondary
                     select new SelectListItem
                     {
                         Text = $"{f.FundName}",
