@@ -52,8 +52,10 @@ namespace CmsWeb.Areas.Reports.Models
         public override void ExecuteResult(ControllerContext context)
         {
             var Response = context.HttpContext.Response;
+            var title = "Recent Attendee Report";
+            var filename = $"{title} {orgid}".SlugifyString("-", false);
             Response.ContentType = "application/pdf";
-            Response.AddHeader("content-disposition", "filename=foo.pdf");
+            Response.AddHeader("content-disposition", $"filename={filename}.pdf");
 
             dt = Util.Now;
 
@@ -73,8 +75,8 @@ namespace CmsWeb.Areas.Reports.Models
 
             w.PageEvent = new HeadFoot
             {
-                HeaderText = $"Recent Attendee Report: {i.OrganizationName} - {i.LeaderName} ({(i.FirstMeetingDate.HasValue ? "since " + i.FirstMeetingDate.FormatDate() : "no First Meeting Date set")})",
-                FooterText = "Recent Attendee Report"
+                HeaderText = $"{title}: {i.OrganizationName} - {i.LeaderName} ({(i.FirstMeetingDate.HasValue ? "since " + i.FirstMeetingDate.FormatDate() : "no First Meeting Date set")})",
+                FooterText = title
             };
             doc.Open();
 

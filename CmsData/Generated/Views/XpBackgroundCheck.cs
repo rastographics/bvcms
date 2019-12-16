@@ -7,7 +7,7 @@ namespace CmsData.View
     [Table(Name = "XpBackgroundCheck")]
     public partial class XpBackgroundCheck
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         private int _PeopleId;
 

@@ -1,9 +1,3 @@
-/* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church
- * Licensed under the GNU General Public License (GPL v2)
- * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license
- */
 using CmsData;
 using CmsData.Codes;
 using CmsWeb.Models;
@@ -130,10 +124,12 @@ namespace CmsWeb.Areas.Reports.Models
         public override void ExecuteResult(ControllerContext context)
         {
             var Response = context.HttpContext.Response;
-            Response.ContentType = "application/pdf";
-            Response.AddHeader("content-disposition", "filename=foo.pdf");
 
             dt = Util.Now;
+            var header = $"Outreach/Inreach Report: {dt:d}";
+            var filename = header.SlugifyString("-", false);
+            Response.ContentType = "application/pdf";
+            Response.AddHeader("content-disposition", $"filename={filename}.pdf");
 
             doc = new Document(PageSize.LETTER, 36, 36, 36, 36);
             var w = PdfWriter.GetInstance(doc, Response.OutputStream);
@@ -142,7 +138,7 @@ namespace CmsWeb.Areas.Reports.Models
             dc = w.DirectContent;
             ct = new ColumnText(dc);
 
-            pageEvents.StartPageSet($"Outreach/Inreach Report: {dt:d}");
+            pageEvents.StartPageSet(header);
             if (qid == null)
             {
                 doc.Add(new Phrase("no data"));

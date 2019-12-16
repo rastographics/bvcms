@@ -7,7 +7,7 @@ namespace CmsData.View
     [Table(Name = "OnlineRegQA")]
     public partial class OnlineRegQA
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         private int _OrganizationId;
 

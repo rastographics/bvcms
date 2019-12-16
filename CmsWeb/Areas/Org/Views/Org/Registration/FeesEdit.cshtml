@@ -52,6 +52,15 @@
                 @Html.EditorFor(m => m.AccountingCode)
             </div>
         </div>
+        @if (Model.IsPushpay)
+        {
+            <div class="row">
+                <div class="col-sm-4 col-md-4">
+                    @Html.EditorFor(m => m.PushpayFundName)
+                    @Html.HiddenFor(m => m.IsPushpay)
+                </div>
+            </div>
+        }
     </div>
     <h4>Org Fees</h4>
     @Html.EditorFor(m => m.OrgFees)

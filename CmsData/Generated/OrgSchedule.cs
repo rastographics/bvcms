@@ -9,7 +9,7 @@ namespace CmsData
     [Table(Name = "dbo.OrgSchedule")]
     public partial class OrgSchedule : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         #region Private Fields
 

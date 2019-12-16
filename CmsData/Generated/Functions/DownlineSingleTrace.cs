@@ -7,7 +7,7 @@ namespace CmsData.View
     [Table(Name = "DownlineSingleTrace")]
     public partial class DownlineSingleTrace
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         private int? _Generation;
 

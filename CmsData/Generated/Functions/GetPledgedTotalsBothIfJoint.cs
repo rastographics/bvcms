@@ -7,7 +7,7 @@ namespace CmsData.View
     [Table(Name = "GetPledgedTotalsBothIfJoint")]
     public partial class GetPledgedTotalsBothIfJoint
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         private int _FamilyId;
 

@@ -48,7 +48,7 @@ namespace CmsWeb.Areas.Reports.Models
                 return;
             }
             Response.ContentType = "application/pdf";
-            Response.AddHeader("content-disposition", "filename=foo.pdf");
+            Response.AddHeader("content-disposition", "filename=OrgLeaders.pdf");
 
             doc = new Document(PageSize.LETTER, 36, 36, 36, 36);
             var w = PdfWriter.GetInstance(doc, Response.OutputStream);

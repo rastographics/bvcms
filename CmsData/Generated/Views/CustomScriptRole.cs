@@ -7,7 +7,7 @@ namespace CmsData.View
     [Table(Name = "CustomScriptRoles")]
     public partial class CustomScriptRole
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         private string _Name;
 

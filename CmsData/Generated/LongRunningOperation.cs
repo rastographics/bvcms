@@ -7,7 +7,7 @@ namespace CmsData
     [Table(Name = "dbo.LongRunningOperation")]
     public partial class LongRunningOperation : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         #region Private Fields
 
