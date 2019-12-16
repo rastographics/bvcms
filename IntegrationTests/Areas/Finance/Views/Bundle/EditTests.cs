@@ -29,7 +29,8 @@ namespace IntegrationTests.Areas.Finance.Views.Bundle
             Check_If_DateTimePicker_Exists("Bundle_ContributionDate");
 
             Open($"{rootUrl}Person2/{user.PeopleId}");
-            PageSource.ShouldContain("General");
+            WaitForElement(css: ".edit-basic");
+            WaitForElementToDisappear(loadingUI);
 
             Find(css: ".edit-basic").Click();
             Wait(2);
