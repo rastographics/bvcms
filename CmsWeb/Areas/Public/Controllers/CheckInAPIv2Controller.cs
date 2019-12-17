@@ -450,7 +450,7 @@ namespace CmsWeb.Areas.Public.Controllers
 			if( message.device == Message.API_DEVICE_WEB ) {
 				string bundleData = SerializeJSON( bundle );
 
-				CheckInModel checkInModel = new CheckInModel();
+				CheckInModel checkInModel = new CheckInModel(CurrentDatabase);
 				checkInModel.SavePrintJob( message.kiosk, null, bundleData );
 
 				response.setNoError();

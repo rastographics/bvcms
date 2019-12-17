@@ -11,6 +11,8 @@ namespace CmsData
 
         #region Private Fields
 
+        private Guid _PrintJobId;
+
         private string _Id;
 
         private DateTime _Stamp;
@@ -26,6 +28,9 @@ namespace CmsData
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
+
+        partial void OnPrintJobIdChanging(Guid value);
+        partial void OnPrintJobIdChanged();
 
         partial void OnIdChanging(string value);
         partial void OnIdChanged();
@@ -48,7 +53,25 @@ namespace CmsData
 
         #region Columns
 
-        [Column(Name = "Id", UpdateCheck = UpdateCheck.Never, Storage = "_Id", DbType = "nvarchar(50) NOT NULL", IsPrimaryKey = true)]
+        [Column(Name = "PrintJobId", AutoSync = AutoSync.OnInsert, UpdateCheck = UpdateCheck.Never, Storage = "_PrintJobId", DbType = "uniqueidentifier NOT NULL", IsPrimaryKey = true, IsDbGenerated = true)]
+        public Guid PrintJobId
+        {
+            get => _PrintJobId;
+
+            set
+            {
+                if (_PrintJobId != value)
+                {
+                    OnPrintJobIdChanging(value);
+                    SendPropertyChanging();
+                    _PrintJobId = value;
+                    SendPropertyChanged("PrintJobId");
+                    OnPrintJobIdChanged();
+                }
+            }
+        }
+
+        [Column(Name = "Id", UpdateCheck = UpdateCheck.Never, Storage = "_Id", DbType = "nvarchar(50) NOT NULL")]
         public string Id
         {
             get => _Id;
@@ -66,7 +89,7 @@ namespace CmsData
             }
         }
 
-        [Column(Name = "Stamp", UpdateCheck = UpdateCheck.Never, Storage = "_Stamp", DbType = "datetime NOT NULL", IsPrimaryKey = true)]
+        [Column(Name = "Stamp", UpdateCheck = UpdateCheck.Never, Storage = "_Stamp", DbType = "datetime NOT NULL")]
         public DateTime Stamp
         {
             get => _Stamp;
