@@ -79,16 +79,20 @@ namespace CmsData
             return expr;
         }
 
-        internal Expression HasMemberDocs()
+        private Expression HasDocs(bool finance)
         {
             var tf = CodeIds == "1";
             Expression<Func<Person, bool>> pred = p =>
-                    p.MemberDocForms.Any();
+                    p.MemberDocForms.Any(m => m.Finance == finance);
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
             if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;
         }
+
+        internal Expression HasMemberDocs() => HasDocs(finance: false);
+
+        internal Expression HasFinanceDocs() => HasDocs(finance: true);
 
         internal Expression SavedQuery2()
         {
