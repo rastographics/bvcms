@@ -1,9 +1,3 @@
-/* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church
- * Licensed under the GNU General Public License (GPL v2)
- * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license
- */
 using CmsData;
 using CmsData.Codes;
 using CmsWeb.Areas.Search.Models;
@@ -55,7 +49,7 @@ namespace CmsWeb.Areas.Reports.Models
             var Response = context.HttpContext.Response;
 
             Response.ContentType = "application/pdf";
-            Response.AddHeader("content-disposition", "filename=foo.pdf");
+            Response.AddHeader("content-disposition", "filename=RosterList.pdf");
 
             doc = new Document(PageSize.LETTER, 36, 36, 36, 36);
             var w = PdfWriter.GetInstance(doc, Response.OutputStream);

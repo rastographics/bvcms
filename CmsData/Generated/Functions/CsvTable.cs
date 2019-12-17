@@ -7,7 +7,7 @@ namespace CmsData.View
     [Table(Name = "CsvTable")]
     public partial class CsvTable
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         private int _Id;
 

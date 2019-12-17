@@ -50,7 +50,7 @@ namespace CmsWeb.Models
                 var x = new APIWriter(w);
                 x.NoDefaults = true;
                 x.Start("Attendees");
-                var m = new CheckInModel();
+                var m = new CheckInModel(DbUtil.Db);
                 List<CheckinFamilyMember> q;
                 if (CheckInModel.UseOldCheckin())
                 {

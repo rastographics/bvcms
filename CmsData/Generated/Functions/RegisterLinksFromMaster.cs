@@ -7,7 +7,7 @@ namespace CmsData.View
     [Table(Name = "RegisterLinksFromMaster")]
     public partial class RegisterLinksFromMaster
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         private int _OrganizationId;
 
