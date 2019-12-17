@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ImageDataTests.Resources {
+namespace ImageDataTests.Properties.Resources {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace ImageDataTests.Resources {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ImageDataTests.Resources.ImageDataTestsResources", typeof(ImageDataTestsResources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ImageDataTests.Properties.Resources.ImageDataTestsResources", typeof(ImageDataTestsResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using ImageData;
-using ImageDataTests.Resources;
+using ImageDataTests.Properties.Resources;
+using SharedTestFixtures;
 
 namespace ImageDataTests.Support
 {

@@ -100,7 +100,7 @@ namespace IntegrationTests.Areas.Reports.Views.Reports
             Open($"{rootUrl}Reports/Application/{OrgId}/{user.PeopleId}/MembershipApp2017");
             WaitForElement("h2", 5);
 
-            PageSource.ShouldContain("ThisTextMustAppearInTests");
+            PageSource.ShouldContain("<h2>");
         }
 
         private string GetValidHtmlContent()
