@@ -10,45 +10,30 @@ namespace CmsWeb.Areas.People.Models
     {
         public int Id { get; set; }
         public DateTime? DocDate { get; set; }
-        public int? ThumbId { get; set; }
-        public int? LargeId { get; set; }
         public int? Docid { get; set; }
-        public string Uploader { get; set; }
-        public bool? IsDocument { get; set; }
-        public string Name { get; set; }
+        public bool Finance { get; set; }
         public string FormName { get; set; }
+        public bool? IsDocument { get; set; }
+        public int? LargeId { get; set; }
+        public string Name { get; set; }
+        public int? ThumbId { get; set; }
+        public string Uploader { get; set; }
 
-        public string DocUrl
-        {
-            get
-            {
-                if (IsDocument == true)
-                {
-                    return "/Image/" + Docid;
-                }
+        private string DocsRoot => (Finance ? "/FinanceDocs/" : "/MemberDocs/");
+        public string DocUrl => DocsRoot + (IsDocument == true ? Docid : LargeId);
 
-                return "/Image/" + LargeId;
-            }
-        }
-
-        public string ImgUrl
-        {
-            get
-            {
-                if (IsDocument == true)
-                {
-                    return "/Content/images/adobe.png";
-                }
-
-                return "/Image/" + ThumbId;
-            }
-        }
+        public string ImgUrl => IsDocument == true 
+            ? "/Content/images/adobe.png"
+            : DocsRoot + ThumbId;
+        
         public MemberDocModel() { }
-        public static IEnumerable<MemberDocModel> DocForms(int id)
+
+        public static IEnumerable<MemberDocModel> DocForms(CMSDataContext db, int peopleId, bool finance)
         {
-            return from f in DbUtil.Db.MemberDocForms
-                   where f.PeopleId == id
-                   let uploader = DbUtil.Db.People.SingleOrDefault(uu => uu.PeopleId == f.UploaderId)
+            return from f in db.MemberDocForms
+                   where f.PeopleId == peopleId
+                   where f.Finance == finance
+                   let uploader = db.People.SingleOrDefault(uu => uu.PeopleId == f.UploaderId)
                    orderby f.DocDate
                    select new MemberDocModel
                    {
@@ -60,10 +45,12 @@ namespace CmsWeb.Areas.People.Models
                        IsDocument = f.IsDocument,
                        Name = f.Person.Name,
                        FormName = f.Name,
+                       Finance = f.Finance,
                        Uploader = uploader.Name
                    };
         }
-        public static void DeleteDocument(CMSDataContext db, CMSImageDataContext idb, int id, int docid)
+
+        public static MemberDocForm DeleteDocument(CMSDataContext db, CMSImageDataContext idb, int id, int docid)
         {
             var m = db.MemberDocForms.SingleOrDefault(mm => mm.Id == docid && mm.PeopleId == id);
             idb.DeleteOnSubmit(m.SmallId);
@@ -72,6 +59,7 @@ namespace CmsWeb.Areas.People.Models
             db.MemberDocForms.DeleteOnSubmit(m);
             db.SubmitChanges();
             idb.SubmitChanges();
+            return m;
         }
 
         internal static void UpdateName(CMSDataContext db, int pk, string value)
