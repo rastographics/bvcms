@@ -1,10 +1,10 @@
-using System.Collections.Generic;
-using System.Linq;
 using CmsData;
-using UtilityExtensions;
-using System.Text.RegularExpressions;
 using CmsData.Registration;
 using CmsWeb.Areas.OnlineReg.Models;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.OnlineReg.Controllers
 {
@@ -18,7 +18,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             get
             {
                 if (_settings == null)
+                {
                     _settings = HttpContext.Items["RegSettings"] as Dictionary<int, Settings>;
+                }
+
                 return _settings;
             }
         }
@@ -32,20 +35,25 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         private void SetHeaders2(int id)
         {
             var org = CurrentDatabase.LoadOrganizationById(id);
-            var shell = SetAlternativeManagedGivingShell();
-            
+            var shell = GetAlternativeManagedGivingShell(org.OrganizationId);
+
             if (!shell.HasValue() && (settings == null || !settings.ContainsKey(id)) && org != null)
             {
                 var setting = CurrentDatabase.CreateRegistrationSettings(id);
                 shell = CurrentDatabase.ContentOfTypeHtml(setting.ShellBs)?.Body;
             }
             if (!shell.HasValue() && settings != null && settings.ContainsKey(id))
+            {
                 shell = CurrentDatabase.ContentOfTypeHtml(settings[id].ShellBs)?.Body;
+            }
+
             if (!shell.HasValue())
             {
                 shell = CurrentDatabase.ContentOfTypeHtml("ShellDefaultBs")?.Body;
-                if(!shell.HasValue())
+                if (!shell.HasValue())
+                {
                     shell = CurrentDatabase.ContentOfTypeHtml("DefaultShellBs")?.Body;
+                }
             }
 
 
@@ -60,30 +68,34 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 ViewBag.bottom = b;
             }
             else
+            {
                 ViewBag.hasshell = false;
+            }
         }
-        private void SetHeaders(int id)
+        private void SetHeaders(int orgId)
         {
             Settings setting = null;
-            var org = CurrentDatabase.LoadOrganizationById(id);
+            var org = CurrentDatabase.LoadOrganizationById(orgId);
             if (org != null)
             {
-                SetHeaders2(id);
+                SetHeaders2(orgId);
                 return;
             }
 
-            var shell = SetAlternativeManagedGivingShell();
-            if (!shell.HasValue() && (settings == null || !settings.ContainsKey(id)))
+            var shell = GetAlternativeManagedGivingShell(orgId);
+            if (!shell.HasValue() && (settings == null || !settings.ContainsKey(orgId)))
             {
-                setting = CurrentDatabase.CreateRegistrationSettings(id);
+                setting = CurrentDatabase.CreateRegistrationSettings(orgId);
                 shell = DbUtil.Content(CurrentDatabase, setting.Shell, null);
             }
-            if (!shell.HasValue() && settings != null && settings.ContainsKey(id))
+            if (!shell.HasValue() && settings != null && settings.ContainsKey(orgId))
             {
-                shell = DbUtil.Content(CurrentDatabase, settings[id].Shell, null);
+                shell = DbUtil.Content(CurrentDatabase, settings[orgId].Shell, null);
             }
             if (!shell.HasValue())
-                shell = DbUtil.Content(CurrentDatabase, "ShellDiv-" + id, DbUtil.Content(CurrentDatabase, "ShellDefault", ""));
+            {
+                shell = DbUtil.Content(CurrentDatabase, "ShellDiv-" + orgId, DbUtil.Content(CurrentDatabase, "ShellDefault", ""));
+            }
 
             var s = shell;
             if (s.HasValue())
@@ -91,7 +103,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 var re = new Regex(@"(.*<!--FORM START-->\s*).*(<!--FORM END-->.*)", RegexOptions.Singleline);
                 var t = re.Match(s).Groups[1].Value.Replace("<!--FORM CSS-->",
                 ViewExtensions2.jQueryUICss() +
-                "\r\n<link href=\"/Content/styles/onlinereg.css?v=8\" rel=\"stylesheet\" type=\"text/css\" />\r\n"); 
+                "\r\n<link href=\"/Content/styles/onlinereg.css?v=8\" rel=\"stylesheet\" type=\"text/css\" />\r\n");
                 ViewBag.hasshell = true;
                 var b = re.Match(s).Groups[2].Value;
                 ViewBag.bottom = b;
@@ -99,20 +111,20 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             else
             {
                 ViewBag.hasshell = false;
-                ViewBag.header = DbUtil.Content(CurrentDatabase, "OnlineRegHeader-" + id,
+                ViewBag.header = DbUtil.Content(CurrentDatabase, "OnlineRegHeader-" + orgId,
                     DbUtil.Content(CurrentDatabase, "OnlineRegHeader", ""));
-                ViewBag.top = DbUtil.Content(CurrentDatabase, "OnlineRegTop-" + id,
+                ViewBag.top = DbUtil.Content(CurrentDatabase, "OnlineRegTop-" + orgId,
                     DbUtil.Content(CurrentDatabase, "OnlineRegTop", ""));
-                ViewBag.bottom = DbUtil.Content(CurrentDatabase, "OnlineRegBottom-" + id,
+                ViewBag.bottom = DbUtil.Content(CurrentDatabase, "OnlineRegBottom-" + orgId,
                     DbUtil.Content(CurrentDatabase, "OnlineRegBottom", ""));
             }
         }
 
-        private string SetAlternativeManagedGivingShell()
+        private string GetAlternativeManagedGivingShell(int orgId)
         {
             var shell = string.Empty;
             var managedGivingShellSettingKey = ManagedGivingShellSettingKey;
-            var campus = Session["Campus"]?.ToString(); // campus is only set for managed giving flow.
+            var campus = Session[$"Campus-{orgId}"]?.ToString(); // campus is only set for managed giving flow.
             if (!string.IsNullOrWhiteSpace(campus))
             {
                 managedGivingShellSettingKey = $"{managedGivingShellSettingKey}-{campus.ToUpper()}";

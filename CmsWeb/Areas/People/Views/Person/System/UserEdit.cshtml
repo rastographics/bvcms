@@ -27,7 +27,7 @@
                     <label class="control-label" for="u">User Name</label>
                     <div class="controls">
                         <input type="text" id="u" name="u" value="@Model.Username" class="form-control" />
-                        @Html.Editor("sendwelcome", new { label = "Send welcome email?" })
+                        @Html.Editor("sendwelcome", new { label = "Send welcome email" })
                     </div>
                 </div>
             </div>
@@ -36,6 +36,10 @@
                     <label class="control-label" for="p">Password</label>
                     <div class="controls">
                         <input type="password" id="p" name="p" value="" class="form-control" autocomplete="off" readonly onfocus="this.removeAttribute('readonly');" />
+                        @Html.Editor("MustChangePassword", new {
+                            label = "Must change password at next login",
+                            info = $"<a tabindex=\"0\" href=\"#\" data-toggle=\"popover\" data-placement=\"bottom\" data-trigger=\"focus\" data-title=\"Must change password\" data-content=\"Before this user can log into web, mobile, or check-in, they must change their password on the web at {Util.Host}.tpsdb.com.\" data-original-title=\"\" title=\"\"><i class=\"fa fa-info-circle\"></i></a>"
+                        })
                     </div>
                 </div>
             </div>
@@ -200,3 +204,9 @@
         </div>
     }
 }
+<script>
+    $('[data-toggle="popover"]').popover({ html: true });
+    $('[data-toggle="popover"]').click(function (ev) {
+        ev.preventDefault();
+    });
+</script>
