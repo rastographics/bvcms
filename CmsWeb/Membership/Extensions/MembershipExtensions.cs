@@ -14,7 +14,6 @@ namespace CmsWeb.Membership.Extensions
             {
                 mu.UnlockUser();
                 mu.ChangePassword(mu.ResetPassword(), newpassword);
-                user.TempPassword = newpassword;
             }
             CMSMembershipProvider.provider.AdminOverride = false;
         }

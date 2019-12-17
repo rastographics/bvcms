@@ -7,7 +7,7 @@ namespace CmsData
     [Table(Name = "dbo.DeleteMeetingRun")]
     public partial class DeleteMeetingRun : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         #region Private Fields
 

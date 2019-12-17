@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading;
 using Xunit;
@@ -331,6 +332,25 @@ namespace IntegrationTests.Support
         protected IWebElement FindText(string text)
         {
             return driver.FindElements(By.XPath("//*[contains(text(),'" + text + "')]")).FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Finds a tab or window given the criteria specified in the <paramref name="predicate"/>
+        /// </summary>
+        /// <param name="predicate">Selector for the tab or window to switch to</param>
+        protected void SwitchToWindow(Expression<Func<IWebDriver, bool>> predicate)
+        {
+            var exp = predicate.Compile();
+            foreach (var handle in driver.WindowHandles)
+            {
+                driver.SwitchTo().Window(handle);
+                if (exp(driver))
+                {
+                    return;
+                }
+            }
+
+            throw new ArgumentException(string.Format("Unable to find window with condition: '{0}'", predicate.Body));
         }
 
         /// <summary>

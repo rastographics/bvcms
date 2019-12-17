@@ -143,7 +143,7 @@ namespace CmsWeb.Areas.People.Controllers
         {
             var m = new ContactModel(CurrentDatabase, cid);
             m.SetLocationOnContact(ministry, contactType, contactReason);
-            var evmodel = new ExtraValueModel(cid, "Contact", m.Location);
+            var evmodel = new ExtraValueModel(CurrentDatabase, cid, "Contact", m.Location);
             return View("/Views/ExtraValue/Location.cshtml", evmodel);
         }
     }

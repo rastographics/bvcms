@@ -7,7 +7,7 @@ namespace CmsData
     [Table(Name = "lookup.ContactPreference")]
     public partial class ContactPreference : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         #region Private Fields
 

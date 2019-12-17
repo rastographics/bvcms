@@ -7,7 +7,7 @@ namespace CmsData.View
     [Table(Name = "RogueIps")]
     public partial class RogueIp
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         private string _Ip;
 

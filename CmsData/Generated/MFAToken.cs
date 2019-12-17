@@ -8,7 +8,7 @@ namespace CmsData
     [Table(Name = "dbo.MFATokens")]
     public partial class MFAToken : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs(String.Empty);
 
         #region Private Fields
 

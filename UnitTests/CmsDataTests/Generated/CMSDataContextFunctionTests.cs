@@ -78,5 +78,53 @@ namespace CmsDataTests
                 MockContributions.DeleteAllFromBundle(db, bundleHeader);      
             }
         }
+
+        [Fact]
+        public void IsTopGiverTest()
+        {
+            var fromDate = new DateTime(2017, 4, 4);
+            var toDate = new DateTime(2017, 7, 31);
+            using (var db = CMSDataContext.Create(Util.Host))
+            {
+                // Cleaning Contribution garbage from previous tests
+                db.ExecuteCommand("delete from BundleDetail; delete from BundleHeader; delete from Contribution;");
+
+                var family = new Family();
+                db.Families.InsertOnSubmit(family);
+                db.SubmitChanges();
+
+                var person = new Person
+                {
+                    Family = family,
+                    FirstName = "MockPersonFirstName",
+                    LastName = "MockPersonLastName",
+                    EmailAddress = "MockPerson@example.com",
+                    MemberStatusId = MemberStatusCode.Member,
+                    PositionInFamilyId = PositionInFamily.PrimaryAdult,
+                };
+
+                db.People.InsertOnSubmit(person);
+                db.SubmitChanges();
+
+                var bundleHeader = MockContributions.CreateSaveBundle(db);
+                var FirstContribution = MockContributions.CreateSaveContribution(db, bundleHeader, fromDate, 100, peopleId: person.PeopleId);
+                var SecondContribution = MockContributions.CreateSaveContribution(db, bundleHeader, fromDate, 20, peopleId: person.PeopleId);
+
+                var FundIds = $"{FirstContribution.FundId},{SecondContribution.FundId}";
+                var TopGiversResult = db.TopGivers(10, fromDate, toDate, FundIds).ToList();
+
+                if(TopGiversResult.Count > 0)
+                {
+                    var TotalAmmountTopGivers = TopGiversResult[0].Amount;
+                    TotalAmmountTopGivers.ShouldBe(120);
+                }
+                else
+                {
+                    TopGiversResult.ShouldNotBeNull();
+                }
+
+                MockContributions.DeleteAllFromBundle(db, bundleHeader);
+            }
+        }
     }
 }
