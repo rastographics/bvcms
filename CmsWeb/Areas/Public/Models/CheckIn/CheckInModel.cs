@@ -14,11 +14,17 @@ namespace CmsWeb.Models
 {
     public class CheckInModel
     {
-        public CheckInModel() { }
+        public CMSDataContext CurrentDatabase { get; set; }
+
+        public CheckInModel(CMSDataContext db)
+        {
+            CurrentDatabase = db;
+        }
+
         public string GetNextPrintJobs(string kiosks)
         {
             var a = (kiosks ?? "unknown").Replace(" ", "").Split(',');
-            var q = from d in DbUtil.Db.PrintJobs
+            var q = from d in CurrentDatabase.PrintJobs
                     where a.Contains(d.Id)
                     orderby d.Stamp
                     select d;
@@ -29,8 +35,8 @@ namespace CmsWeb.Models
                 var jobs = (XElement)x.Root.FirstNode;
                 jobs.Add(d.Root);
             }
-            DbUtil.Db.PrintJobs.DeleteAllOnSubmit(q);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.PrintJobs.DeleteAllOnSubmit(q);
+            CurrentDatabase.SubmitChanges();
             return x.ToString();
         }
 
@@ -42,8 +48,8 @@ namespace CmsWeb.Models
             }
 
             var d = new PrintJob { Id = kiosk.Replace(" ", ""), Data = xml, JsonData = json, Stamp = DateTime.Now };
-            DbUtil.Db.PrintJobs.InsertOnSubmit(d);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.PrintJobs.InsertOnSubmit(d);
+            CurrentDatabase.SubmitChanges();
         }
 
         public List<CheckinMatch> MatchOld(string id)
@@ -52,7 +58,7 @@ namespace CmsWeb.Models
             var ph = id.PadLeft(10, '0');
             var p7 = ph.Substring(3);
             var ac = ph.Substring(0, 3);
-            var q1 = from f in DbUtil.Db.Families
+            var q1 = from f in CurrentDatabase.Families
                      where f.HeadOfHousehold.DeceasedDate == null
                      where f.HomePhoneLU.StartsWith(p7)
                            || f.People.Any(p => p.CellPhoneLU.StartsWith(p7)
@@ -79,7 +85,7 @@ namespace CmsWeb.Models
 
         public List<CheckinMatch> Find(string id)
         {
-            var q2 = from kc in DbUtil.Db.CardIdentifiers
+            var q2 = from kc in CurrentDatabase.CardIdentifiers
                      where kc.Id == id
                      select new CheckinMatch
                      {
@@ -94,18 +100,18 @@ namespace CmsWeb.Models
                 return matches;
             }
 
-            if (DbUtil.Db.Setting("UseOldCheckinMatch", "false").ToBool())
+            if (CurrentDatabase.Setting("UseOldCheckinMatch", "false").ToBool())
             {
                 return MatchOld(id);
             }
 
-            return DbUtil.Db.CheckinMatch(id).ToList();
+            return CurrentDatabase.CheckinMatch(id).ToList();
         }
 
         public List<CheckinFamilyMember> FamilyMembers(int id, int campus, int thisday)
         {
             DbUtil.LogActivity($"CheckinFamily({id},{campus},{thisday})");
-            var list = (from a in DbUtil.Db.CheckinFamilyMembers(id, campus, thisday).ToList()
+            var list = (from a in CurrentDatabase.CheckinFamilyMembers(id, campus, thisday).ToList()
                         orderby a.Position, a.Position == 10 ? a.Gender : "U", a.Age
                         select a).ToList();
             return list;
@@ -121,8 +127,8 @@ namespace CmsWeb.Models
             var now = Util.Now;
             // get org members first
             var members =
-                from om in DbUtil.Db.OrganizationMembers
-                let meetingHours = DbUtil.Db.GetTodaysMeetingHours(om.OrganizationId, thisday)
+                from om in CurrentDatabase.OrganizationMembers
+                let meetingHours = CurrentDatabase.GetTodaysMeetingHours(om.OrganizationId, thisday)
                 let recreg = om.Person.RecRegs.FirstOrDefault()
                 where om.Organization.CanSelfCheckin.Value
                 where (om.Pending ?? false) == false
@@ -131,7 +137,7 @@ namespace CmsWeb.Models
                 where om.Person.FamilyId == id
                 where om.Person.DeceasedDate == null
                 from meeting in meetingHours
-                let CheckedIn = DbUtil.Db.Attends.FirstOrDefault(aa =>
+                let CheckedIn = CurrentDatabase.Attends.FirstOrDefault(aa =>
                     aa.OrganizationId == om.OrganizationId
                     && aa.PeopleId == om.PeopleId
                     && aa.MeetingDate == meeting.Hour
@@ -189,7 +195,7 @@ namespace CmsWeb.Models
             var today = DateTime.Today;
 
             var visitors =
-                from a in DbUtil.Db.Attends
+                from a in CurrentDatabase.Attends
                 where a.Person.FamilyId == id
                 where a.Person.DeceasedDate == null
                 where a.Meeting.Organization.CanSelfCheckin.Value
@@ -204,10 +210,10 @@ namespace CmsWeb.Models
                 group a by new { a.PeopleId, a.Meeting.OrganizationId }
                 into g
                 let a = g.OrderByDescending(att => att.MeetingDate).First()
-                let meetingHours = DbUtil.Db.GetTodaysMeetingHours(a.Meeting.OrganizationId, thisday)
+                let meetingHours = CurrentDatabase.GetTodaysMeetingHours(a.Meeting.OrganizationId, thisday)
                 let recreg = a.Person.RecRegs.FirstOrDefault()
                 from meeting in meetingHours
-                let CheckedIn = DbUtil.Db.Attends.FirstOrDefault(aa =>
+                let CheckedIn = CurrentDatabase.Attends.FirstOrDefault(aa =>
                     aa.Meeting.OrganizationId == a.Meeting.OrganizationId
                     && aa.PeopleId == a.PeopleId
                     && aa.MeetingDate == meeting.Hour
@@ -262,8 +268,8 @@ namespace CmsWeb.Models
             // now get rest of family
             const string PleaseVisit = "No self check-in meetings available";
             // find a org on campus that allows an older, new visitor to check in to
-            var qv = from o in DbUtil.Db.Organizations
-                     let meetingHours = DbUtil.Db.GetTodaysMeetingHours(o.OrganizationId, thisday)
+            var qv = from o in CurrentDatabase.Organizations
+                     let meetingHours = CurrentDatabase.GetTodaysMeetingHours(o.OrganizationId, thisday)
                      where o.OrganizationStatusId == OrgStatusCode.Active
                      where o.CampusId == campus || o.CampusId == null
                      where o.CanSelfCheckin == true
@@ -282,7 +288,7 @@ namespace CmsWeb.Models
                 VisitorOrgHour = (DateTime?)null
             };
             var otherfamily =
-                from p in DbUtil.Db.People
+                from p in CurrentDatabase.People
                 where p.FamilyId == id
                 where p.DeceasedDate == null
                 where !list.Select(a => a.Id).Contains(p.PeopleId)
@@ -344,7 +350,7 @@ namespace CmsWeb.Models
 
         public void RecordAttend(int PeopleId, int OrgId, bool Present, int thisday)
         {
-            var db = DbUtil.Db;
+            var db = CurrentDatabase;
             var q = from o in db.Organizations
                     where o.OrganizationId == OrgId
                     let p = db.People.Single(pp => pp.PeopleId == PeopleId)
@@ -393,7 +399,7 @@ namespace CmsWeb.Models
 
         public void JoinUnJoinOrg(int PeopleId, int OrgId, bool Member)
         {
-            var db = DbUtil.Db;
+            var db = CurrentDatabase;
             var om = db.OrganizationMembers.SingleOrDefault(m => m.PeopleId == PeopleId && m.OrganizationId == OrgId);
             if (om == null && Member)
             {
@@ -412,7 +418,7 @@ namespace CmsWeb.Models
             {
                 var p = db.LoadPersonById(PeopleId);
                 var what = Member ? "joined" : "dropped";
-                //                db.Email(DbUtil.Db.Util.AdminMail,
+                //                db.Email(CurrentDatabase.Util.AdminMail,
                 //                    db.PeopleFromPidString(org.NotifyIds),
                 //                    $"cms check-in, {what} class on " + db.CmsHost,
                 //                    $"<a href='{Util.ServerLink("/Person2/" + PeopleId)}/Person2/{PeopleId}'>{p.Name}</a> {what} {org.OrganizationName}");
