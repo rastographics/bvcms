@@ -182,7 +182,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 
         [Route("~/Impersonate/{id}")]
         [MyRequireHttps]
-        public ActionResult Impersonate(string id)
+        public ActionResult Impersonate(string id, string returnUrl)
         {
             Guid gid = Guid.Parse(id);
             var link = CurrentDatabase.OneTimeLinks.Where(l =>
@@ -196,7 +196,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                 link.Used = true;
                 CurrentDatabase.SubmitChanges();
                 var userid = link.Querystring;
-                return LoginAs(userid, null);
+                return LoginAs(userid, returnUrl);
             }
 
             return Redirect("/Logon");
