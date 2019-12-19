@@ -24,7 +24,7 @@ namespace IntegrationTests.Areas.People.Views.Person
             Login();
 
             Open($"{rootUrl}Person2/{user.PeopleId}");
-            WaitForElement(".active:nth-child(2) > a", 5);
+            WaitForElement(".active:nth-child(2) > a", 10);
             PageSource.ShouldContain("<a href=\"#giving\" aria-controls=\"giving\" data-toggle=\"tab\">Giving</a>");
 
             SettingUtils.UpdateSetting("HideGivingTabMyDataUsers", "true");
@@ -58,7 +58,7 @@ namespace IntegrationTests.Areas.People.Views.Person
             SettingUtils.UpdateSetting("HideDeceasedFromFamily", "true");
 
             Open($"{rootUrl}Person2/Current");
-            WaitForElement("#family_members", 5);
+            WaitForElement("#family_members", 10);
 
             deceasedMember = Find(css: "#family_members > li.alert-danger");
             deceasedMember.ShouldBe(null);
@@ -75,7 +75,7 @@ namespace IntegrationTests.Areas.People.Views.Person
             Login();
 
             Open($"{rootUrl}Person2/{user.PeopleId}");
-            WaitForElement(".active:nth-child(2) > a", 5);
+            WaitForElement(".active:nth-child(2) > a", 10);
             PageSource.ShouldContain("<a href=\"#giving\" aria-controls=\"giving\" data-toggle=\"tab\">Giving</a>");
 
             Find(text: "Giving").Click();
@@ -99,7 +99,7 @@ namespace IntegrationTests.Areas.People.Views.Person
             Login();
 
             Open($"{rootUrl}Person2/{user.PeopleId}");
-            WaitForElement(".active:nth-child(2) > a", 5);
+            WaitForElement(".active:nth-child(2) > a", 10);
             PageSource.ShouldContain("<a href=\"#giving\" aria-controls=\"giving\" data-toggle=\"tab\">Giving</a>");
 
             Find(text: "Giving").Click();
@@ -125,7 +125,7 @@ namespace IntegrationTests.Areas.People.Views.Person
             var admin = LoginAsAdmin();
 
             Open($"{rootUrl}Person2/{user1.PeopleId}");
-            WaitForElement(".active:nth-child(2) > a", 5);
+            WaitForElement(".active:nth-child(2) > a", 10);
             PageSource.ShouldContain("<a href=\"#giving\" aria-controls=\"giving\" data-toggle=\"tab\">Giving</a>");
 
             Find(text: "Giving").Click();
