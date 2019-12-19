@@ -59,7 +59,7 @@
                                 <tr>
                                     <td style="width: 100px;">@item.FundId</td>
                                     <td style="width: 300px;"><a id="o@(item.FundId)" class="clickEdit" data-pk="o@(item.FundId)">@(item.OnlineSort.HasValue ? item.OnlineSort.ToString() : "")</a></td>
-                                    <td style="width: 200px;"><a id="sl@(item.FundId)" class="clickSelectShowList" data-value="@(item.ShowList)" data-pk="sl@(item.FundId)">@(item.ShowList == 1 ? "Primary" : (item.ShowList == 2 ? "Secundary" : "None"))</a></td>
+                                    <td style="width: 200px;"><a id="sl@(item.FundId)" class="clickSelectShowList" data-value="@(item.ShowList)" data-pk="sl@(item.FundId)">@(item.ShowList == 1 ? "Primary" : (item.ShowList == 2 ? "Secondary" : "None"))</a></td>
                                     @if (item.FundPledgeFlag)
                                     {
                                         <td><a href="/FinanceReports/PledgeFulfillments/@item.FundId">@item.FundName</a></td>

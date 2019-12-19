@@ -175,7 +175,7 @@ namespace CmsWeb.Areas.Finance.Controllers
             var fund = CurrentDatabase.ContributionFunds.SingleOrDefault(m => m.FundId == iid);
             fund.ShowList = value;
             CurrentDatabase.SubmitChanges();
-            return Content(value == 1 ? "Primary" : (value == 2 ? "Closed" : "None"));
+            return Content(value == 1 ? "Primary" : (value == 2 ? "Secondary" : "None"));
         }
 
         public static List<SelectListItem> GetFundStatusList()
