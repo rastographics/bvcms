@@ -113,7 +113,11 @@ namespace CmsWeb.Areas.People.Models
         private IQueryable<Contribution> ApplyYear(IQueryable<Contribution> contributionRecords)
         {
             GivingEndDate = DateTime.Now;
-            switch (Year.Replace(" ", ""))
+            var Year1 = Year;
+            if (!GivingYears.Any(p => p == Year))
+                Year1 = "YearToDate";
+
+            switch (Year1.Replace(" ", ""))
             {
                 case null:
                 case "YearToDate":
@@ -126,8 +130,8 @@ namespace CmsWeb.Areas.People.Models
                     GivingStartDate = GivingStartDate = new DateTime(GivingEndDate.Year - 1, 1, 1);
                     break;
                 default:
-                    GivingStartDate = new DateTime(int.Parse(Year), 1, 1);
-                    GivingEndDate = new DateTime(int.Parse(Year), 12, 31);
+                    GivingStartDate = new DateTime(int.Parse(Year1), 1, 1);
+                    GivingEndDate = new DateTime(int.Parse(Year1), 12, 31);
                     break;
             }
             return contributionRecords.Where(p => p.ContributionDate >= GivingStartDate && p.ContributionDate <= GivingEndDate);

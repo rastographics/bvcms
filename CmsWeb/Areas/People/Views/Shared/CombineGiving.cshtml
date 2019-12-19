@@ -3,13 +3,14 @@
 @model CmsWeb.Areas.People.Models.ContributionsModel
 @{
     var campusId = Model.Person.CampusId;
+    var YearList = Model.GivingYearsList();
     var GivingSummary = Model.GetGivingSummary();
     var givingSumCollapse = Model.givingSumCollapse == true ? "in" : "";
     var collapseArrow = givingSumCollapse == "in" ? "down" : "right";
 }
 <div class="row">
     <div class="col-lg-4 col-md-8 col-sm-12 form-inline">
-        <span>Filter by year </span>@Html.DropDownList("GivingYear", Model.GivingYearsList(), new { @class = "form-control" })
+        <span>Filter by year </span>@Html.DropDownList("GivingYear", YearList, new { @class = "form-control" })
     </div>
 </div>
 <br />
