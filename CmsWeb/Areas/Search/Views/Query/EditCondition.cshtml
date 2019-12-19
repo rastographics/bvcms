@@ -69,6 +69,12 @@
                 @Html.EditorFor(m => m.Quarters, new { label = Model.QuartersLabel })
             </div>
         }
+        @if (Model.FundIdsVisible)
+        {
+            <div class="col-sm-6">
+                @Html.EditorFor(m => m.FundIds)
+            </div>
+        }
         @if (Model.DaysVisible)
         {
             <div class="col-sm-6">

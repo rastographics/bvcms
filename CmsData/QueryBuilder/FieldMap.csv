@@ -113,7 +113,7 @@ RecentRegistrationType,Code,,RegistrationTypes99,,Enrollments,Recent Registratio
 SmallGroup,StringEqualOrStartsWith,,,,Enrollments,In Sub-Group,"Program,Division,Organization","Enter all of part of a Sub-Group name, select a Comparison and select Program/Division/Organization."
 NumberOfMemberships,NullInteger,,,,Enrollments,Number of Enrollments,"Program,Division,Organization,Schedule","Enter a number of Enrollments, select a Comparison and select Program/Division/Organization."
 RecentIncompleteRegistrations,Bit,,,,Enrollments,Recent Incomplete Registrations,"Days,Program,Division,Organization",Select Days to look back and Program/Division/Organization from the list and specify True or False.
-HasBalance,Bit,,,,Enrollments,Has Balance In Org,"Program,Division,Organization",Select True or False for Members with a Balance in the selected Program or Divison or Organization
+HasBalance,Bit,,,,Enrollments,Has Balance In Org,"Program,Division,Organization",Select True or False for Members with a Balance in the selected Program or Division or Organization
 IsMemberOfDirectory,Bit,,,,Enrollments,Is Member Of Directory,"Program,Division,Organization",Select Program/Division/Organization from the list of those in Directory
 WasMemberAsOf,Bit,,,,EnrollmentHistory,Was Member As Of,"Program,Division,Organization,OrgType,StartDate,EndDate","Pick the date range and select Program/Division/ Organization, Org Type."
 OrgMemberJoinedAsOf,Bit,,,,EnrollmentHistory,Org Member Joined As Of,"Program,Division,Organization,OrgType,StartDate,EndDate","Pick the date range and select Program/Division/ Organization, Org Type."
@@ -192,15 +192,14 @@ RecentHasIndContributions,Bit,,,,Contributions,Recent Has Individual Contributio
 HadIndContributions,Bit,,,,Contributions,Had Individual Contributions,"StartDate,EndDate",Individual Had Contributions during Date Range
 RecentHasFailedRecurringGiving,Bit,,,,Contributions,Recent Has Failed Recurring Giving,Days,Individual Had a failed Recurring Gift within the past number of days
 RecentFirstTimeGiver,Bit,,,Fund Id (or blank for all),Contributions,Recent First Time Giver,"Days,Quarters","Enter a number of days to look back, enter a Fund ID (or leave blank for all funds) and specify True or False."
-IsRecentGiver,Bit,,,Fund Id (or blank for all),Contributions,Recent Giver,"Days,Quarters",Enter a number of days to look back and specify True or False.
-IsRecentGiverFunds,Bit,,,FundSet,Contributions,Recent Giver to Funds,"Days,Quarters",Enter a number of days to look back and a FundSet name and specify True or False.
-IsTopGiver,Bit,,,Top number,Contributions,Recent Top Giver,"Days,Quarters","Enter a number of days to look back, enter the top number (ex. 100 for the top 100 givers) and specify True or False."
+IsRecentGiver,Bit,,,Fund Id (or blank for all),Contributions,Recent Giver,"Days,Quarters",Enter a number of days to look back and specify True or False.IsRecentGiverFunds,Bit,,,FundSet,Contributions,Recent Giver to Funds,"Days,Quarters",Enter a number of days to look back and a Fund Set name and specify True or False.
+IsTopGiver,Bit,,,Top number,Contributions,Recent Top Giver,"Days,Quarters,FundIds","Enter a number of days to look back, enter the top number (ex. 100 for the top 100 givers) and specify True or False."
 IsTopPledger,Bit,,,Top number,Contributions,Recent Top Pledger,"Days,Quarters","Enter a number of days to look back (must include the date the pledge was made), enter the top number (ex. 100 for the top 100 pledgers) and specify True or False."
 IsFamilyGiver,Bit,,,Fund Id (or blank for all),Contributions,Is in a Giving Family,"Days,Quarters","Enter a number of days to look back (365 default), enter a Fund ID (or leave blank for all funds) and specify True or False."
-IsFamilyGiverFunds,Bit,,,FundSet,Contributions,Is in a Giving Family toward FundSet,"Days,Quarters","Enter a number of days to look back, a FundSet name, and specify True or False."
+IsFamilyGiverFunds,Bit,,,FundSet,Contributions,Is in a Giving Family toward FundSet,"Days,Quarters","Enter a number of days to look back, a Fund Set name, and specify True or False."
 IsFamilyPledger,Bit,,,Fund Id (or blank for all),Contributions,Is in a Pledging Family,"Days,Quarters","Enter a number of days to look back (365 default), enter a Fund ID (or leave blank for all funds) and specify True or False."
 HasManagedGiving,Bit,,,FundId or Blank,Contributions,Has Managed Giving,Quarters,Specify True or False for those with Managed Giving.
-ManagedGivingCreditCard,Bit,,,,Contributions,Managed Giving With Credit Card,,Specify True or False for those with Managed Giving and uses CreditCard
+ManagedGivingCreditCard,Bit,,,,Contributions,Managed Giving With Credit Card,,Specify True or False for those with Managed Giving and uses Credit Card
 CcExpiration,Bit,,,,Contributions,Credit Card Expire Days,Days,Specify True or False for those with Managed Giving.
 WantsElectronicStatement,Bit,,,,Contributions,Wants Electronic Statement,,Specify True or False for those wanting Electronic Statements
 RecentBundleType,Code,,BundleHeaderTypes,,Contributions,Recent Contributions In BundleType,Days,Must have Finance role for this to work.
@@ -228,17 +227,18 @@ RecentFlagAdded,CodeStr,CodeValue,StatusFlags,,Miscellaneous,Recent Flag Added,D
 HasCurrentTag,Bit,,,,Miscellaneous,Active Tag,,Specify True or False for those who are in your Active Tag.
 HasMyTag,Bit,,,,Miscellaneous,Tagged with,Tags,Select Tag from the list.
 HasMemberDocs,Bit,,,,Miscellaneous,Has Membership Documents,,Specify True or False for those with uploaded Membership Documents.
+HasFinanceDocs,Bit,,,,Miscellaneous,Has Finance Documents,,Specify True or False for those with uploaded Finance Documents.
 EntryPointId,NullCode,,EntryPoints,,Miscellaneous,Entry Point,,Select Entry Point from the list.
 OriginId,NullCode,,Origins,,Miscellaneous,Record Origin,,Select Record Origin from the list.
 InterestPointId,NullCode,,InterestPoints,,Miscellaneous,Interest Point,,Select Interest Point from the list.
 MemberAnyChurch,NullBit,,,,Miscellaneous,Member of Any Church,,Specify True or False for those with this box checked on their Growth tab.
 NotChurchMember,NullBit,,,,Miscellaneous,Not a Church Member,,Specify True or False for those with this box checked on their Growth tab.
 SavedQuery,Bit,,,,Miscellaneous,Saved Searches,SavedQueryIdDesc,Select a Saved Search from the list and specify True or False.
-InSqlList,Bit,,,Sql Script,Miscellaneous,In Sql List,Quarters,Specify the name of a Sql script file to get PeopleIds from
+InSqlList,Bit,,,Sql Script,Miscellaneous,In Sql List,Quarters,Specify the name of a Sal script file to get PeopleIds from
 RecActiveOtherChurch,Bit,,,,Miscellaneous,Reg Other Church,,Specify True or False for those who indicated during an online registration that they attend another church.
 RecInterestedCoaching,Bit,,,,Miscellaneous,Reg Interested Coaching,,Specify True or False for those who indicated during an online registration that they (or their parents) are interested in coaching.
 InOneOfMyOrgs,Bit,,,,Miscellaneous,In one of my organizations,,Specify True or False for those enrolled in organizations in which you are enrolled.
-CheckInVisits,Integer,,,,Miscellaneous,Number of visits,,Enter a number of visits along with a Comparison for guests who used Building Checkin.
+CheckInVisits,Integer,,,,Miscellaneous,Number of visits,,Enter a number of visits along with a Comparison for guests who used Building Check-in.
 MedicalLength,Integer,,,,Miscellaneous,Length of Medical / Allergies Info,,Enter a number of characters and select a Comparison.
 HasFailedEmails,Bit,,,,Miscellaneous,Has Failed Emails,StartDate,Select a StartDate or Leave blank
 FirstPersonSameEmail,EqualBit,,,,Miscellaneous,First Person of Same Email,,Returns only one person of many who have same email

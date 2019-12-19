@@ -45,6 +45,12 @@
             <div class="col-sm-6 col-md-5">
                 @Html.DisplayFor(m => m.OtherFeesAddedToOrgFee, new { FalseValue = "n/a" })
             </div>
+            @if (Model.IsPushpay)
+            {
+                <div class="col-sm-6 col-md-5">
+                    @Html.DisplayFor(m => m.PushpayFundName)
+                </div>
+            }
         </div>
     </div>
     <h4>Org Fees</h4>

@@ -1826,7 +1826,8 @@ namespace CmsData
             [Parameter(DbType = "int")] int? campusid,
             [Parameter(DbType = "bit")] bool? pledges,
             [Parameter(DbType = "bit")] bool? nontaxded,
-            [Parameter(DbType = "bit")] bool? includeUnclosed
+            [Parameter(DbType = "bit")] bool? includeUnclosed,
+            [Parameter(DbType="varchar")] string fundids = null
             )
         {
             return CreateMethodCallQuery<View.Contributions2>(this,
@@ -1836,7 +1837,8 @@ namespace CmsData
                 campusid,
                 pledges,
                 nontaxded,
-                includeUnclosed
+                includeUnclosed,
+                fundids
                 );
         }
 
@@ -6004,13 +6006,15 @@ namespace CmsData
         public ISingleResult<TopGiver> TopGivers(
             [Parameter(Name = "top", DbType = "int")] int? top,
             [Parameter(Name = "sdate", DbType = "datetime")] DateTime? sdate,
-            [Parameter(Name = "edate", DbType = "datetime")] DateTime? edate
+            [Parameter(Name = "edate", DbType = "datetime")] DateTime? edate,
+            [Parameter(DbType = "varchar")] string fundids
             )
         {
             IExecuteResult result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 top,
                 sdate,
-                edate
+                edate,
+                fundids
             );
             return ((ISingleResult<TopGiver>)(result.ReturnValue));
         }

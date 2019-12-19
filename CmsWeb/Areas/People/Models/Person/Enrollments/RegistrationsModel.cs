@@ -2,6 +2,9 @@
 using CmsData.Codes;
 using CmsWeb.Areas.Dialog.Models;
 using CmsWeb.Code;
+using CmsWeb.Constants;
+using CmsWeb.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -10,9 +13,24 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Models
 {
-    public class RegistrationsModel
+    public class RegistrationsModel : IDbBinder
     {
+        private CMSDataContext _currentDatabase;
+        public CMSDataContext CurrentDatabase
+        {
+            get => _currentDatabase ?? DbUtil.Db;
+            set
+            {
+                _currentDatabase = value;                
+            }
+        }
         private Person person;
+
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
+        public RegistrationsModel() { }
+
+        public RegistrationsModel(CMSDataContext db)        
+        { CurrentDatabase = db; }
 
         public RegistrationsModel(int id)
         {
@@ -21,10 +39,6 @@ namespace CmsWeb.Areas.People.Models
             this.CopyPropertiesFrom(rr);
             CustodyIssue = Person.CustodyIssue ?? false;
             OkTransport = Person.OkTransport ?? false;
-        }
-
-        public RegistrationsModel()
-        {
         }
 
         public int? PeopleId { get; set; }
@@ -90,6 +104,7 @@ namespace CmsWeb.Areas.People.Models
 
         [DisplayName("Coaching Interest")]
         public bool Coaching { get; set; }
+        
 
         public void UpdateModel(bool ExcludeComments)
         {
@@ -128,7 +143,7 @@ namespace CmsWeb.Areas.People.Models
 
         public List<OrgMemberModel> FulfillmentList()
         {
-            var OrgMembers = (from mm in DbUtil.Db.OrganizationMembers
+            var OrgMembers = (from mm in CurrentDatabase.OrganizationMembers
                      where mm.PeopleId == PeopleId
                      where (mm.Organization.IsMissionTrip == false || mm.Organization.IsMissionTrip == null) 
                      select new
@@ -141,7 +156,7 @@ namespace CmsWeb.Areas.People.Models
                          mm.Organization.IsMissionTrip,
                          mm.Organization.TripFundingPagesEnable,
                          mm.Organization.TripFundingPagesPublic,
-                         ts = DbUtil.Db.ViewTransactionSummaries.SingleOrDefault(tt => tt.RegId == mm.TranId && tt.PeopleId == PeopleId)
+                         ts = CurrentDatabase.ViewTransactionSummaries.SingleOrDefault(tt => tt.RegId == mm.TranId && tt.PeopleId == PeopleId)
                      }).ToList();
 
             List<OrgMemberModel> ss = OrgMembers.Select(i => new OrgMemberModel
@@ -153,12 +168,12 @@ namespace CmsWeb.Areas.People.Models
                 AmtFee = i.ts?.IndPaid + i.ts?.IndDue,
                 AmtDonation = i.ts?.IndAmt - (i.ts?.IndPaid + i.ts?.IndDue),
                 AmtCoupon = i.ts?.TotCoupon,
-                AmtPaid = i.mm.AmountPaidTransactions(DbUtil.Db),
-                AmtDue = i.mm.AmountDueTransactions(DbUtil.Db),
+                AmtPaid = i.mm.AmountPaidTransactions(CurrentDatabase),
+                AmtDue = i.mm.AmountDueTransactions(CurrentDatabase),
                 OrgName = i.OrganizationName,
                 Organization = i.Organization,
                 OrgMemMemTags = i.OrgMemMemTags.ToList(),
-                Setting = DbUtil.Db.CreateRegistrationSettings(i.Organization.OrganizationId)
+                Setting = CurrentDatabase.CreateRegistrationSettings(i.Organization.OrganizationId)
             }).Where(x => x.AmtPaid < x.AmtFee).ToList();
 
             return ss;
