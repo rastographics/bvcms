@@ -2,6 +2,8 @@
 using CmsWeb.Areas.People.Models;
 using Shouldly;
 using SharedTestFixtures;
+using CmsData;
+using UtilityExtensions;
 
 namespace CMSWebTests.Areas.People.Models.Person.Enrollments
 {
