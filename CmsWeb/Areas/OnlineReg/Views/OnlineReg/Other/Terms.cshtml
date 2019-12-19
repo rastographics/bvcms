@@ -128,10 +128,10 @@
     @Html.Hidden("TransactionID", "zero due")
     @Html.HiddenFor(m => m.TermsSignature)
     <p>
-        Full Name:&nbsp;@Html.TextBox("IAgreeInput")&nbsp;&nbsp;<small class="showform">I agree to the terms and conditions&nbsp;<a href="#" id="IAgreeCancel" style="color:red">(Cancel)</a></small>
+        Full Name:&nbsp;@Html.TextBox("IAgreeInput", string.Empty, new { @class = "form-control", style="width:auto" })&nbsp;&nbsp;<small class="showform">I agree to the terms and conditions&nbsp;<a href="#" id="IAgreeCancel" style="color:red">(Cancel)</a></small>
     </p>
     <p>
-        <input type="button" class="btn" id="IAgreeButton" agreed="false" value="I agree to the terms and conditions">
+        <input type="button" class="btn btn-primary" id="IAgreeButton" agreed="false" value="I agree to the terms and conditions">
     </p>
     @Html.Raw(OnlineRegModel.YouMustAgreeStatement(Model.Orgid))
     <p></p>

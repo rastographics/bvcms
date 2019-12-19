@@ -2,6 +2,7 @@
 using CmsData.Codes;
 using CmsWeb.Areas.Dialog.Models;
 using CmsWeb.Membership;
+using ImageData;
 using System;
 using System.IO;
 using System.Linq;
@@ -18,6 +19,13 @@ namespace SharedTestFixtures
             set => _db = value;
         }
 
+        private CMSImageDataContext _idb;
+        public CMSImageDataContext idb
+        {
+            get => _idb ?? (_idb = CMSImageDataContext.Create(Host));
+            set => _idb = value;
+        }
+
         private string _host;
         public string Host => _host ?? (_host = DatabaseFixture.Host);
 
@@ -25,24 +33,7 @@ namespace SharedTestFixtures
         {
             if(person == null)
             {
-                if (family == null)
-                {
-                    family = new Family();
-                    db.Families.InsertOnSubmit(family);
-                    db.SubmitChanges();
-                }
-                person = new Person
-                {
-                    Family = family,
-                    FirstName = RandomString(),
-                    LastName = RandomString(),
-                    EmailAddress = RandomString() + "@example.com",
-                    MemberStatusId = MemberStatusCode.Member,
-                    PositionInFamilyId = PositionInFamily.PrimaryAdult,
-                };
-
-                db.People.InsertOnSubmit(person);
-                db.SubmitChanges();
+                person = CreatePerson(family);
             }
 
             var createDate = DateTime.Now;
@@ -72,6 +63,30 @@ namespace SharedTestFixtures
                 db.SubmitChanges();
             }
             return user;
+        }
+
+        protected Person CreatePerson(Family family = null)
+        {
+            if (family == null)
+            {
+                family = new Family();
+                db.Families.InsertOnSubmit(family);
+                db.SubmitChanges();
+            }
+            var person = new Person
+            {
+                Family = family,
+                FirstName = RandomString(),
+                LastName = RandomString(),
+                EmailAddress = RandomString() + "@example.com",
+                MemberStatusId = MemberStatusCode.Member,
+                PositionInFamilyId = PositionInFamily.PrimaryAdult,
+            };
+
+            db.People.InsertOnSubmit(person);
+            db.SubmitChanges();
+
+            return person;
         }
 
         protected Organization CreateOrganization(string name = null, int? fromId = null, int? type = null, int? campus = null)

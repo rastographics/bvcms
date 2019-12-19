@@ -84,7 +84,8 @@ namespace CmsWeb.Areas.Reports.ViewModels
         public bool IsSelected { get; set; }
 
         public bool IsStatusFlag => !string.IsNullOrEmpty(Flag);
-        public bool IsExtraValue => !string.IsNullOrEmpty(Field);
+        public bool IsExtraValue => Name.StartsWith("ExtraValue");
+        public bool IsFamilyExtraValue => Name.StartsWith("FamilyExtraValue");
         public bool IsSmallGroup => !string.IsNullOrEmpty(SmallGroup);
         public string UniqueName => IsStatusFlag ? Description : IsExtraValue ? Field : IsSmallGroup ? SmallGroup : Name;
 
