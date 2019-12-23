@@ -4,17 +4,20 @@ IF NOT EXISTS(SELECT 1 FROM sys.columns
 BEGIN
     ALTER TABLE dbo.ContributionFund
     ADD ShowList INT NOT NULL DEFAULT 0
-
-	UPDATE dbo.ContributionFund
-	SET ShowList = 1
-	WHERE OnlineSort < 100
-
-	UPDATE dbo.ContributionFund
-	SET ShowList = 2
-	WHERE OnlineSort > 100
-
-	UPDATE dbo.ContributionFund
-	SET ShowList = 3
-	WHERE OnlineSort IS NULL
 END
 GO
+
+UPDATE dbo.ContributionFund
+SET ShowList = 1
+WHERE OnlineSort < 100
+AND ShowList = 0
+
+UPDATE dbo.ContributionFund
+SET ShowList = 2
+WHERE OnlineSort > 100
+AND ShowList = 0
+
+UPDATE dbo.ContributionFund
+SET ShowList = 3
+WHERE OnlineSort IS NULL
+AND ShowList = 0
