@@ -1181,6 +1181,7 @@
     <Resource Include="Classes\OnlineRegSummaryText\Details2.xml">
       <SubType>Designer</SubType>
     </Resource>
+    <Content Include="Migrations\20191214_alter_ContributionFund_table_to_add_ShowList_column.sql" />
     <Content Include="QueryBuilder\CompareMap.xml">
       <SubType>Designer</SubType>
     </Content>
