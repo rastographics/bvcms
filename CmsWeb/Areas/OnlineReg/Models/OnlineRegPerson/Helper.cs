@@ -601,7 +601,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public static SelectListItem[] FullFundList(CMSDataContext db)
         {
             return (from f in GetAllOnlineFunds(db)
-                    where (f.OnlineSort > 0)
+                    where (f.ShowList != FundShowListCode.None)
                     select new SelectListItem
                     {
                         Text = $"{f.FundName}",
