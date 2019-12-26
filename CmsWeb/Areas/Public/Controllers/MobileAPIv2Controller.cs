@@ -350,7 +350,10 @@ namespace CmsWeb.Areas.Public.Controllers
 
             MobileMessage response = new MobileMessage();
             response.setNoError();
-            response.data = $"{CurrentDatabase.ServerLink($"Logon?ReturnUrl={HttpUtility.UrlEncode($"{message.argString}?{message.getSourceQueryString()}")}&otltoken={ot.Id.ToCode()}")}";
+            var queryString = message.getSourceQueryString();
+            queryString = queryString.HasValue() ? $"?{queryString}" : "";
+            var returnUrl = HttpUtility.UrlEncode($"{message.argString}{queryString}");
+            response.data = $"{CurrentDatabase.ServerLink($"Logon?otltoken={ot.Id.ToCode()}&ReturnUrl={returnUrl}")}";
 
             return response;
         }
