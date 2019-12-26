@@ -2085,7 +2085,7 @@ namespace CmsWeb.Areas.Public.Controllers
             User user = authentication.getUser();
             int year = message.argInt;
 
-            return new ContributionStatementResult
+            return new ContributionStatementResult(CurrentDatabase)
             {
                 PeopleId = user.PeopleId.Value,
                 FromDate = new DateTime(year, 1, 1),
