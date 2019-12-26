@@ -23,6 +23,7 @@ namespace CmsWeb.MobileAPI
         public List<AnnualSummary> summary { get; set; }
         public AnnualGivingDetails details { get; set; }
 
+        public MobileAnnualGivingSummary() { } //for deserializing in tests
         public MobileAnnualGivingSummary(int y)
         {
             title = $"{y}";
@@ -35,7 +36,7 @@ namespace CmsWeb.MobileAPI
             count = contributions.Count.ToString();
             comment = empty ? "No items found" : "";
             total = contributions.Sum(c => c.ContributionAmount ?? 0).ToMoney();
-            summary.AddRange(new[] {
+            summary = new List<AnnualSummary>(new[] {
                 new AnnualSummary(contributions),
                 new AnnualSummary(nontaxitems),
                 new AnnualSummary(pledges),
@@ -47,6 +48,7 @@ namespace CmsWeb.MobileAPI
 
     public class AnnualGivingDetails
     {
+        public AnnualGivingDetails() { } //for deserializing in tests
         public AnnualGivingDetails(params GivingDetails[] givingDetails)
         {
         }
@@ -54,6 +56,7 @@ namespace CmsWeb.MobileAPI
 
     public class GivingDetails : List<GivingDetail>
     {
+        public GivingDetails() { } //for deserializing in tests
         public GivingDetails(List<UnitPledgeSummary> pledges)
         {
             foreach(var pledge in pledges)
@@ -137,6 +140,7 @@ namespace CmsWeb.MobileAPI
         public string total { get; set; }
         public int showAsPledge { get; set; }
 
+        public AnnualSummary() { } //for deserializing in tests
         public AnnualSummary(List<NormalContribution> contributions)
         {
             title = "Contributions";
@@ -150,7 +154,7 @@ namespace CmsWeb.MobileAPI
 
         public AnnualSummary(List<UnitPledgeSummary> pledges)
         {
-            title = "Contributions";
+            title = "Pledges";
             var empty = pledges.Count == 0;
             count = pledges.Count.ToString();
             comment = empty ? "No items found" : "";
@@ -161,7 +165,7 @@ namespace CmsWeb.MobileAPI
 
         public AnnualSummary(List<NonTaxContribution> contributions)
         {
-            title = "Contributions";
+            title = "Non-Tax Deductible";
             var empty = contributions.Count == 0;
             count = contributions.Count.ToString();
             comment = empty ? "No items found" : "";
@@ -172,7 +176,7 @@ namespace CmsWeb.MobileAPI
 
         public AnnualSummary(List<GiftsInKind> contributions)
         {
-            title = "Contributions";
+            title = "Gifts In Kind";
             var empty = contributions.Count == 0;
             count = contributions.Count.ToString();
             comment = empty ? "No items found" : "";

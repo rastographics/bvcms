@@ -904,7 +904,7 @@ namespace CmsWeb.Areas.Public.Controllers
         }
 
         [HttpPost]
-        public ActionResult FetchGivingSummary(string data)
+        public MobileMessage FetchGivingSummary(string data)
         {
             MobileMessage message = MobileMessage.createFromString(data);
 
@@ -920,7 +920,6 @@ namespace CmsWeb.Areas.Public.Controllers
             var peopleId = user.PeopleId.Value;
             var year = message.argInt;
 
-            BaseMessage response = new BaseMessage();
             var q = CurrentDatabase.Contributions.Where(c => c.PeopleId == peopleId);
             var givingYears = q.Select(c => c.ContributionDate.Value.Year).Distinct().OrderByDescending(v => v).ToList();
             if (year == 0)
@@ -944,6 +943,7 @@ namespace CmsWeb.Areas.Public.Controllers
             var nontaxitems = APIContribution.NonTaxItems(CurrentDatabase, ci, FromDate, ToDate, null).ToList();
             summary[$"{year}"].Load(contributions, pledges, giftsinkind, nontaxitems);
 
+            MobileMessage response = new MobileMessage();
             response.data = SerializeJSON(summary, message.version);
             response.setNoError();
             response.count = 1;

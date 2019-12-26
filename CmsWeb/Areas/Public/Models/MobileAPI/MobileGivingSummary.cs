@@ -6,6 +6,7 @@ namespace CmsWeb.MobileAPI
 {
     public class MobileGivingSummary : Dictionary<string, MobileAnnualGivingSummary>
     {
+        public MobileGivingSummary() { } //for deserializing in tests
         public MobileGivingSummary(List<int> years)
         {
             if (years.Count == 0)
