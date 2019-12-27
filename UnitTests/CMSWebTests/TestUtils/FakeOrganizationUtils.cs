@@ -57,10 +57,10 @@ namespace CMSWebTests
             }
             return null;
         }
-        public static OnlineRegModel GetFakeOnlineRegModel(int OrgId)
+        public static OnlineRegModel GetFakeOnlineRegModel(int OrgId, int userPeopleId = 1)
         {
             var m = new OnlineRegModel(HttpContextFactory.Current.Request, CMSDataContext.Create(DatabaseFixture.Host), OrgId, null, null, null, null);
-            m.UserPeopleId = 1;
+            m.UserPeopleId = userPeopleId;
             return m;
         }
 
