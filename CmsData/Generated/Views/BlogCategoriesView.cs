@@ -7,7 +7,7 @@ namespace CmsData.View
     [Table(Name = "BlogCategoriesView")]
     public partial class BlogCategoriesView
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         private string _Category;
 

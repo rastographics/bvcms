@@ -7,7 +7,7 @@ namespace CmsData
     [Table(Name = "lookup.StateLookup")]
     public partial class StateLookup : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         #region Private Fields
 

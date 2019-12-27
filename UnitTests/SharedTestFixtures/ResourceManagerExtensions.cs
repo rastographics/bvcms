@@ -3,9 +3,9 @@ using System.IO;
 using System.Drawing.Imaging;
 using System.Drawing;
 
-namespace ImageDataTests.Resources
+namespace SharedTestFixtures
 {
-    static class ResourceManagerExtensions
+    public static class ResourceManagerExtensions
     {
         public static byte[] GetImageBytes(this ResourceManager rm, string name)
         {
@@ -18,6 +18,12 @@ namespace ImageDataTests.Resources
             }
 
             return bytes;
+        }
+
+        public static Stream GetFileStream(this ResourceManager rm, string name)
+        {
+            var bytes = rm.GetObject(name) as byte[];
+            return new MemoryStream(bytes);
         }
     }
 }
