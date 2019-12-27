@@ -55,7 +55,7 @@ namespace CmsWeb.Areas.Finance.Controllers
             if (model?.FundSet != null) // TODO: seems like a redundant null check, if model was null, it would have errored well before this point
             {
                 var fundset = APIContributionSearchModel.GetCustomStatementsList(CurrentDatabase, model.FundSet.Value).JoinInts(",");
-                queryParameters.Add("@fundids", fundset);
+                queryParameters.Add("@fundids", fundset == "" ? null : fundset);
             }
             else
             {
