@@ -3,10 +3,8 @@ using CmsWeb.Lifecycle;
 using Dapper;
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Net.Http;
 using System.Web.Http;
-using UtilityExtensions;
 
 namespace CmsWeb.Controllers.Api
 {

@@ -14,7 +14,7 @@ using CmsWeb;
 using SharedTestFixtures;
 using CmsWeb.Areas.Search.Models;
 
-namespace CMSWebTests.Areas.Reports.Models.Reports.Export
+namespace CMSWebTests.Areas.Reports.Models.Reports
 {
     [Collection(Collections.Database)]
     public class ExportInvolvementsTests : DatabaseTestBase

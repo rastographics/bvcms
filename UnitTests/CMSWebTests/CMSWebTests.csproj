@@ -119,11 +119,13 @@
       <Link>DatabaseCollection.cs</Link>
     </Compile>
     <Compile Include="Areas\Finance\Models\PostBundleModelTests.cs" />
+    <Compile Include="Areas\Main\Controllers\EmailControllerTests.cs" />
     <Compile Include="Areas\Manage\Models\Involvement\InvolvementTabModelTests.cs" />
     <Compile Include="Areas\Manage\Models\AccountModelTests.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineRegModelTest.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineRegPerson\HelperTests.cs" />
     <Compile Include="Areas\Org\Models\TestOrgGroupsModel.cs" />
+    <Compile Include="Areas\People\Models\Person\Profile\MemberDocModelTests.cs" />
     <Compile Include="Areas\Public\Controllers\CheckInAPIControllerTests.cs" />
     <Compile Include="Areas\Public\Controllers\APIPersonControllerTests.cs" />
     <Compile Include="Areas\Public\Controllers\MobileAPIControllerTests.cs" />
@@ -131,8 +133,10 @@
     <Compile Include="Areas\Manage\Models\VolunteerCommitmentsModelTest.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineReg\OnlineRegModelTests.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineReg\PaymentFormTests.cs" />
+    <Compile Include="Areas\Public\Models\CheckIn\CheckInModelTests.cs" />
     <Compile Include="Areas\Public\Models\SmallGroupFinderModelTests.cs" />
     <Compile Include="Areas\Reports\Models\Reports\Export\ExportInvolvementsTests.cs" />
+    <Compile Include="Areas\Reports\Models\Reports\Other\MailingControllerTests.cs" />
     <Compile Include="Areas\Search\Controllers\QueryControllerTests.cs" />
     <Compile Include="Areas\Search\Models\OrgSearchModelTests.cs" />
     <Compile Include="Areas\Setup\Controllers\DivisionControllerTests.cs" />
@@ -140,6 +144,11 @@
     <Compile Include="Models\ExportPeopleTests.cs" />
     <Compile Include="Controllers\Api\CustomControllerTests.cs" />
     <Compile Include="Models\IDbBinderTests.cs" />
+    <Compile Include="Properties\CMSWebTestsResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CMSWebTestsResources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Support\ControllerTestBase.cs" />
     <Compile Include="TestUtils\FakeOrganizationUtils.cs" />
     <Compile Include="TestUtils\FakeRequestManager.cs" />
@@ -161,6 +170,8 @@
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Properties\Resources\DocFormsTest1.pdf" />
+    <None Include="Properties\Resources\DocFormsTest2.pdf" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\CmsData\CmsData.csproj">
@@ -193,6 +204,12 @@
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\..\packages\xunit.analyzers.0.10.0\analyzers\dotnet\cs\xunit.analyzers.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\CMSWebTestsResources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>CMSWebTestsResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
