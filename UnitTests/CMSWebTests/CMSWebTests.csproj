@@ -119,6 +119,7 @@
       <Link>DatabaseCollection.cs</Link>
     </Compile>
     <Compile Include="Areas\Finance\Models\PostBundleModelTests.cs" />
+    <Compile Include="Areas\Main\Controllers\EmailControllerTests.cs" />
     <Compile Include="Areas\Manage\Models\Involvement\InvolvementTabModelTests.cs" />
     <Compile Include="Areas\Manage\Models\AccountModelTests.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineRegModelTest.cs" />
@@ -135,6 +136,7 @@
     <Compile Include="Areas\Public\Models\CheckIn\CheckInModelTests.cs" />
     <Compile Include="Areas\Public\Models\SmallGroupFinderModelTests.cs" />
     <Compile Include="Areas\Reports\Models\Reports\Export\ExportInvolvementsTests.cs" />
+    <Compile Include="Areas\Reports\Models\Reports\Other\MailingControllerTests.cs" />
     <Compile Include="Areas\Search\Controllers\QueryControllerTests.cs" />
     <Compile Include="Areas\Search\Models\OrgSearchModelTests.cs" />
     <Compile Include="Areas\Setup\Controllers\DivisionControllerTests.cs" />
