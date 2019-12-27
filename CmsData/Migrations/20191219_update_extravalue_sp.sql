@@ -44,4 +44,5 @@ BEGIN
 END
 GO
 
-
+UPDATE PeopleExtra SET UseAllValues = 0 WHERE Field = 'PushPayKey'
+GO

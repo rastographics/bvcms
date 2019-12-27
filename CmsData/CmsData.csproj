@@ -819,8 +819,6 @@
     <Compile Include="Generated\Views\TransactionSummary.cs" />
     <Compile Include="DbUtil\ITableWithExtraValues.cs" />
     <Content Include="App_Readme\Elmah.txt" />
-    <Content Include="Migrations\20191219_update_pushpaykey_evs.sql" />
-    <Content Include="Migrations\20191219_update_extravalue_sp.sql" />
     <Content Include="Migrations\00000000_sql_migrations_table.sql" />
     <Compile Include="Organization\OrgFilter.cs" />
     <Compile Include="Organization\OrgPerson.cs" />
