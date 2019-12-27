@@ -1,5 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using CmsData;
+﻿using CmsData;
 using CmsData.Codes;
 using CmsDataTests.Properties;
 using SharedTestFixtures;
@@ -9,9 +8,8 @@ using Xunit;
 
 namespace CmsDataTests
 {
-    [TestClass()]
     [Collection(Collections.Database)]
-    public class PythonModelTests : IDisposable
+    public class PythonModelTests : DatabaseTestBase
     {
         public PythonModelTests()
         {
@@ -26,7 +24,6 @@ namespace CmsDataTests
         [InlineData("2019-07-25", "7/22/2019 13:30:00", 1, "50", "1080", "Slush Fund", 1)]
         public void AddContributionTest(string date, string cDate, int fundid, string amount, string checkno, string description, int peopleid)
         {
-            var db = CMSDataContext.Create(DatabaseFixture.Host);
             var model = new PythonModel(db);
             var dateValue = DateTime.Parse(date);
             var bundleHeader = model.GetBundleHeader(dateValue, DateTime.Now);
@@ -54,7 +51,6 @@ namespace CmsDataTests
         [InlineData("2019-10-19", "10/17/2019 23:11:00", 1, "60.00", "", "1234567890", "951753", ContributionTypeCode.CheckCash)]
         public void AddContributionDetailTest(string date, string cDate, int fundid, string amount, string checkno, string routing, string account, int cType)
         {
-            var db = CMSDataContext.Create(DatabaseFixture.Host);
             var model = new PythonModel(db);
             var dateValue = DateTime.Parse(date);
             var bundleHeader = model.GetBundleHeader(dateValue, DateTime.Now);
@@ -77,7 +73,6 @@ namespace CmsDataTests
         [Fact]
         public void DocusignApiTest()
         {
-            var db = CMSDataContext.Create(DatabaseFixture.Host);
             var model = new PythonModel(db);
             var result = model.RunScript(Resources.DocusignApiTest);
 
@@ -87,7 +82,6 @@ namespace CmsDataTests
         [Fact]
         public void RenderTemplateTest()
         {
-            var db = CMSDataContext.Create(DatabaseFixture.Host);
             var model = new PythonModel(db);
             model.Data.header = new { DateFrom = "10/17/2019", DateTo = "11/27/2019" };
             model.Data.results = new dynamic[] {
@@ -110,8 +104,9 @@ namespace CmsDataTests
             result.ShouldBe(Resources.RenderTemplateResults);
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
+            base.Dispose();
             MockAppSettings.Remove("PublicKey", "PublicSalt");
         }
     }
