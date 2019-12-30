@@ -182,6 +182,14 @@ namespace CmsWeb.Areas.People.Models
             return withSort;
         }
 
+        private List<GivingSummary> OrderGivingsByOnlineSort()
+        {
+            var withSort = GivingSummary.Where(p => p.FundOnlineSort != null).OrderBy(c => c.FundOnlineSort).ToList();
+            var withoutSort = GivingSummary.Where(p => p.FundOnlineSort == null).OrderBy(c => c.Fund).ToList();
+            withSort.AddRange(withoutSort);
+            return withSort;
+        }
+
         public IEnumerable<SelectListItem> GivingYearsList()
         {
             SetGivingYears(ApplyFilter(GetContributionRecords()));
@@ -196,7 +204,7 @@ namespace CmsWeb.Areas.People.Models
             {
                 AddGivingSummary(contribution, contributionRecords);
             }
-            return GivingSummary;
+            return OrderGivingsByOnlineSort();
         }
 
         private void AddSummaryPledge(Contribution contribution, IQueryable<Contribution> contributionRecords)
@@ -244,7 +252,8 @@ namespace CmsWeb.Areas.People.Models
                 {
                     FundId = contribution.ContributionFund.FundId,
                     Fund = fundName,
-                    AmountContributed = amountContributed
+                    AmountContributed = amountContributed,
+                    FundOnlineSort = contribution.ContributionFund.OnlineSort
                 });
             }
         }
