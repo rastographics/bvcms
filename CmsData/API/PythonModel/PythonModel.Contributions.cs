@@ -45,9 +45,9 @@ namespace CmsData
         }
 
         public BundleDetail AddContributionDetail(DateTime date, int fundid,
-            string amount, string checkno, string routing, string account, int contributionTypeId, int? pid = null)
+            string amount, string checkno, string routing, string account, int contributionTypeId, int? pid = null, string description = null)
         {
-            return Contribution.AddContributionDetail(db, date, fundid, amount, checkno, routing, account, contributionTypeId, pid);
+            return Contribution.AddContributionDetail(db, date, fundid, amount, checkno, routing, account, contributionTypeId, pid, description);
         }
 
         public static BundleDetail NewBundleDetail(CMSDataContext db, DateTime date, int fundid, string amount)

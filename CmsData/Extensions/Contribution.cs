@@ -59,16 +59,18 @@ namespace CmsData
         }
 
         public static BundleDetail AddContributionDetail(CMSDataContext db, DateTime date, int fundid,
-            string amount, string checkno, string routing, string account, int? contributionTypeId = null, int? pid = null)
+            string amount, string checkno, string routing, string account, int? contributionTypeId = null, int? pid = null, string description = null)
         {
             string eac = null;
             var bd = NewBundleDetail(db, date, fundid, amount, contributionTypeId);
             bd.Contribution.CheckNo = checkno;
+
             if (account.HasValue() && !account.Contains("E+"))
             {
                 eac = Util.Encrypt($"{routing}|{account}");                               
                 bd.Contribution.BankAccount = eac;
             }
+
             if (pid == null && eac != null)
             {
                 var q = from kc in db.CardIdentifiers
@@ -76,8 +78,13 @@ namespace CmsData
                         select kc.PeopleId;
                 pid = q.SingleOrDefault();
             }
+
             if (pid > 0)
                 bd.Contribution.PeopleId = pid;
+
+            if (!string.IsNullOrEmpty(description))
+                bd.Contribution.ContributionDesc = description;
+
             return bd;
         }
 
