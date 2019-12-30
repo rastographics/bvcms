@@ -7,20 +7,28 @@ namespace CmsData
 {
     public partial class Contribution
     {
-        public static BundleHeader GetBundleHeader(CMSDataContext db, DateTime date, DateTime now, int? btid = null, DateTime? depositDate = null)
+        public static BundleHeader GetBundleHeader(
+            CMSDataContext db,
+            DateTime date,
+            DateTime now,
+            int? btid = null,
+            DateTime? depositDate = null,
+            decimal? bundleTotal = null,
+            int bundleType = BundleTypeCode.PreprintedEnvelope)
         {
             var opentype = db.Roles.Any(rr => rr.RoleName == "FinanceDataEntry")
                 ? BundleStatusCode.OpenForDataEntry
                 : BundleStatusCode.Open;
             var bh = new BundleHeader
             {
-                BundleHeaderTypeId = BundleTypeCode.PreprintedEnvelope,
+                BundleHeaderTypeId = bundleType,
                 BundleStatusId = opentype,
                 ContributionDate = date,
                 CreatedBy = Util.UserId,
                 CreatedDate = now,
                 FundId = db.Setting("DefaultFundId", "1").ToInt(),
-                DepositDate = depositDate
+                DepositDate = depositDate,
+                BundleTotal = bundleTotal
             };
             db.BundleHeaders.InsertOnSubmit(bh);
             bh.BundleHeaderTypeId = btid ?? BundleTypeCode.ChecksAndCash;
@@ -51,19 +59,22 @@ namespace CmsData
         }
 
         public static BundleDetail AddContributionDetail(CMSDataContext db, DateTime date, int fundid,
-            string amount, string checkno, string routing, string account, int? contributionTypeId = null)
+            string amount, string checkno, string routing, string account, int? contributionTypeId = null, int? pid = null)
         {
+            string eac = null;
             var bd = NewBundleDetail(db, date, fundid, amount, contributionTypeId);
             bd.Contribution.CheckNo = checkno;
-            int? pid = null;
             if (account.HasValue() && !account.Contains("E+"))
             {
-                var eac = Util.Encrypt($"{routing}|{account}");
+                eac = Util.Encrypt($"{routing}|{account}");                               
+                bd.Contribution.BankAccount = eac;
+            }
+            if (pid == null && eac != null)
+            {
                 var q = from kc in db.CardIdentifiers
                         where kc.Id == eac
                         select kc.PeopleId;
                 pid = q.SingleOrDefault();
-                bd.Contribution.BankAccount = eac;
             }
             if (pid > 0)
                 bd.Contribution.PeopleId = pid;
