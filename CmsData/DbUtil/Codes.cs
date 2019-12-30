@@ -122,6 +122,12 @@ namespace CmsData.Codes
         public const int SecondaryAdult = 20;
         public const int Child = 30;
     }
+    public static class GenderCode
+    {
+        public const int Unknown = 0;
+        public const int Male = 1;
+        public const int Female = 2;
+    }
     public static class MemberTypeCode
     {
         public const int Teacher = 160;
