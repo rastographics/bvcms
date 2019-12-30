@@ -17,10 +17,9 @@ namespace CmsData
             DateTime now,
             int? btid = null,
             DateTime? depositDate = null,
-            decimal? bundleTotal = null,
-            int bundleType = BundleTypeCode.PreprintedEnvelope)
+            decimal? bundleTotal = null)
         {
-            return Contribution.GetBundleHeader(db, date, now, btid, depositDate, bundleTotal, bundleType);
+            return Contribution.GetBundleHeader(db, date, now, btid, depositDate, bundleTotal);
         }
 
         public void FinishBundle(BundleHeader bh)

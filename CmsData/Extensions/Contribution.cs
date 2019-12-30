@@ -13,15 +13,14 @@ namespace CmsData
             DateTime now,
             int? btid = null,
             DateTime? depositDate = null,
-            decimal? bundleTotal = null,
-            int bundleType = BundleTypeCode.PreprintedEnvelope)
+            decimal? bundleTotal = null)
         {
             var opentype = db.Roles.Any(rr => rr.RoleName == "FinanceDataEntry")
                 ? BundleStatusCode.OpenForDataEntry
                 : BundleStatusCode.Open;
             var bh = new BundleHeader
             {
-                BundleHeaderTypeId = bundleType,
+                BundleHeaderTypeId = BundleTypeCode.PreprintedEnvelope,
                 BundleStatusId = opentype,
                 ContributionDate = date,
                 CreatedBy = Util.UserId,
