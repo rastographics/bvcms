@@ -6,6 +6,7 @@
  */
 
 using CmsData.API;
+using CmsData.Classes.Barcodes;
 using CmsData.Classes.GoogleCloudMessaging;
 using CmsData.Codes;
 using ImageData;
@@ -103,6 +104,24 @@ namespace CmsData
 
                 return null;
             }
+        }
+
+        public static string QRCode(CMSDataContext db, int PeopleId, int size = 300)
+        {
+            string barcode;
+            var person = db.People.Single(p => p.PeopleId == PeopleId);
+            if (person.BarcodeId.IsNotNull() && DateTime.Now > person.BarcodeExpires)
+            {
+                barcode = person.BarcodeId.ToString();
+            }
+            else
+            {
+                person.BarcodeId = Guid.NewGuid();
+                person.BarcodeExpires = DateTime.Now.AddDays(1);
+                barcode = person.BarcodeId.ToString();
+                db.SubmitChanges();
+            }
+            return Convert.ToBase64String(BarcodeHelper.generateQRCode(barcode, size));
         }
 
         public void SetFamilyFromPersonPage(Family f)
