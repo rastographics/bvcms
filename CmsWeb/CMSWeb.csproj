@@ -1704,6 +1704,7 @@
     <Content Include="Content\touchpoint\lib\select2\css\select2x2.png" />
     <Content Include="Content\touchpoint\lib\select2\js\select2.min.js" />
     <Content Include="Content\touchpoint\lib\twitter-typeahead\js\typeahead.js" />
+    <Content Include="Content\InstallPyScriptProject.py" />
     <Content Include="Content\xml.xsl" />
     <Content Include="Content\images\brokencode.jpg" />
     <Content Include="Content\images\sgfunknown.jpg" />
