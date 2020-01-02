@@ -42,6 +42,7 @@ namespace CmsWeb.Models
 
         public EpplusResult epr;
 
+        public TotalsByFundModel(){ }
         public TotalsByFundModel(CMSDataContext db)
         {
             CurrentDatabase = db;

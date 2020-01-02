@@ -23,6 +23,7 @@ namespace CmsWeb.Models
                 _currentDatabase = value;
             }
         }
+        public ExportPeople() { }
         public ExportPeople(CMSDataContext db)
         {
             CurrentDatabase = db;

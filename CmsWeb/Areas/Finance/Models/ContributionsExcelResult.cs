@@ -31,6 +31,7 @@ namespace CmsWeb.Models
                 _currentDatabase = value;
             }
         }
+        public ContributionsExcelResult() { }
         public ContributionsExcelResult(CMSDataContext db)
         {
             CurrentDatabase = db;
