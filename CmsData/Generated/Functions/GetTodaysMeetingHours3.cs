@@ -7,7 +7,7 @@ namespace CmsData.View
     [Table(Name = "GetTodaysMeetingHours3")]
     public partial class GetTodaysMeetingHours3
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         private DateTime? _Hour;
 

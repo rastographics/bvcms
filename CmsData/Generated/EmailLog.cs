@@ -7,7 +7,7 @@ namespace CmsData
     [Table(Name = "dbo.EmailLog")]
     public partial class EmailLog : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         #region Private Fields
 

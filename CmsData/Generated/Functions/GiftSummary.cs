@@ -7,7 +7,7 @@ namespace CmsData.View
     [Table(Name = "GiftSummary")]
     public partial class GiftSummary
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         private decimal? _Total;
 
