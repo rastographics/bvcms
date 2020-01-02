@@ -28,16 +28,12 @@ namespace CMSWebTests.Models
             using (var db = CMSDataContext.Create(Util.Host))
             {   
                 var bundleList = CreateTestContributionSet(db, Util.Now.Date);
-
                 var _exportPeople = new ExportPeople(db);
-                DateTime exportStartDt = new DateTime(Util.Now.Date.Year, 1, 1);
-                DateTime exportEndDt = new DateTime(Util.Now.Date.Year, 12, 31);
+                DateTime exportStartDt = Util.Now.AddDays(-180);
+                DateTime exportEndDt = Util.Now.AddDays(180);
                 var tableResult = _exportPeople.GetValidContributionDetails(exportStartDt, exportEndDt, campusid, pledges, nontaxdeductible, includeUnclosed, tagid, fundids);
-
-                
                 var rc = tableResult.Where(row => ContributionTypeCode.ReturnedReversedTypes.Contains(row.ContributionTypeId));
-
-                rc.Count().ShouldBeLessThan(1);
+                rc.Count().ShouldBe(0);
 
                 foreach (var b in bundleList)
                 {
@@ -58,9 +54,9 @@ namespace CMSWebTests.Models
             using (var db = CMSDataContext.Create(Util.Host))
             {
                 var bundleList = CreateTestContributionSet(db, Util.Now.Date);
-                var _exportPeople = new ExportPeople(db);
-                DateTime exportStartDt = new DateTime(Util.Now.Date.Year, 1, 1);
-                DateTime exportEndDt = new DateTime(Util.Now.Date.Year, 12, 31);
+                var _exportPeople = new ExportPeople(db);                
+                DateTime exportStartDt = Util.Now.AddDays(-180);
+                DateTime exportEndDt = Util.Now.AddDays(180);
                 DataTable tableResult = _exportPeople.ExcelDonorTotals(exportStartDt,exportEndDt,campusid,pledges,nontaxdeductible,includeUnclosed, tagid, fundids);
                 var dbContributionsQry = db.Contributions
                     .Where(x => !ContributionTypeCode.ReturnedReversedTypes.Contains(x.ContributionTypeId) && !ContributionTypeCode.Pledge.Equals(x.ContributionTypeId))
@@ -106,9 +102,10 @@ namespace CMSWebTests.Models
             using (var db = CMSDataContext.Create(Util.Host))
             {
                 var bundleList = CreateTestContributionSet(db, Util.Now.Date);
-                var _exportPeople = new ExportPeople(db);
-                DateTime exportStartDt = new DateTime(Util.Now.Date.Year, 1, 1);
-                DateTime exportEndDt = new DateTime(Util.Now.Date.Year, 12, 31);
+                var _exportPeople = new ExportPeople(db);                
+                DateTime exportStartDt = Util.Now.AddDays(-180);
+                DateTime exportEndDt = Util.Now.AddDays(180);
+
                 DataTable tableResult = _exportPeople.ExcelDonorFundTotals(exportStartDt, exportEndDt, fundid, campusid, pledges, nontaxdeductible, includeUnclosed, tagid, fundids);
                 var dbContributionsQry = db.Contributions
                     .Where(x => !ContributionTypeCode.ReturnedReversedTypes.Contains(x.ContributionTypeId) && !ContributionTypeCode.Pledge.Equals(x.ContributionTypeId))

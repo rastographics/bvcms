@@ -7,7 +7,7 @@ namespace CmsData.View
     [Table(Name = "SundayDates")]
     public partial class SundayDate
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         private DateTime? _Dt;
 

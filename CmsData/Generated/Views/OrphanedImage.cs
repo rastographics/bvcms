@@ -7,7 +7,7 @@ namespace CmsData.View
     [Table(Name = "OrphanedImages")]
     public partial class OrphanedImage
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         private int _Id;
 

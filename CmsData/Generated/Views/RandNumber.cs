@@ -7,7 +7,7 @@ namespace CmsData.View
     [Table(Name = "RandNumber")]
     public partial class RandNumber
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         private double? _RandNumberX;
 

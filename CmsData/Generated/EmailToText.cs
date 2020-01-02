@@ -7,7 +7,7 @@ namespace CmsData
     [Table(Name = "dbo.EmailToText")]
     public partial class EmailToText : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         #region Private Fields
 

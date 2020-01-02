@@ -9,7 +9,7 @@ namespace CmsData
     [Table(Name = "dbo.MemberDocForm")]
     public partial class MemberDocForm : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         #region Private Fields
 
@@ -20,6 +20,8 @@ namespace CmsData
         private DateTime? _DocDate;
 
         private int? _UploaderId;
+
+        private bool _Finance;
 
         private bool? _IsDocument;
 
@@ -54,6 +56,9 @@ namespace CmsData
 
         partial void OnUploaderIdChanging(int? value);
         partial void OnUploaderIdChanged();
+
+        partial void OnFinanceChanging(bool? value);
+        partial void OnFinanceChanged();
 
         partial void OnIsDocumentChanging(bool? value);
         partial void OnIsDocumentChanged();
@@ -158,6 +163,24 @@ namespace CmsData
                     _UploaderId = value;
                     SendPropertyChanged("UploaderId");
                     OnUploaderIdChanged();
+                }
+            }
+        }
+
+        [Column(Name = "Finance", UpdateCheck = UpdateCheck.Never, Storage = "_Finance", DbType = "bit")]
+        public bool Finance
+        {
+            get => _Finance;
+
+            set
+            {
+                if (_Finance != value)
+                {
+                    OnFinanceChanging(value);
+                    SendPropertyChanging();
+                    _Finance = value;
+                    SendPropertyChanged("Finance");
+                    OnFinanceChanged();
                 }
             }
         }

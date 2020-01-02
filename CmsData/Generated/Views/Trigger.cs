@@ -7,7 +7,7 @@ namespace CmsData.View
     [Table(Name = "Triggers")]
     public partial class Trigger
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         private string _TableName;
 

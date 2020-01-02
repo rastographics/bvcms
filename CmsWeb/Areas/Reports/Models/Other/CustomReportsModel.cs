@@ -370,6 +370,18 @@ namespace CmsWeb.Areas.Reports.Models
                     var sel = cc.Select.Replace("{field}", DblQuotes(field));
                     sb.AppendFormat("\t{0}{1} AS [{2}]\n", comma, sel, DblQuotes(field));
                 }
+                else if (name.StartsWith("FamilyExtraValue") && Regex.IsMatch(name, @"\AFamilyExtraValue(Code|Date|Text|Int|Bit)\z"))
+                {
+                    var cc = mc.SpecialColumns[name];
+                    var field = (string)e.Attribute("field");
+                    if (!field.HasValue())
+                    {
+                        throw new Exception("missing field on column " + cc.Column);
+                    }
+
+                    var sel = cc.Select.Replace("{field}", DblQuotes(field));
+                    sb.AppendFormat("\t{0}{1} AS [{2}]\n", comma, sel, DblQuotes(field));
+                }
                 else
                 {
                     if (!mc.Columns.ContainsKey(name))
@@ -442,6 +454,13 @@ namespace CmsWeb.Areas.Reports.Models
                                   orderby g.Key.Field
                                   select g.Key;
 
+                var familyextravalues = from fe in db.FamilyExtras
+                                        where (fe.UseAllValues ?? false) == false
+                                        group fe by new { fe.Field, fe.Type }
+                                        into fv
+                                        orderby fv.Key.Field
+                                        select fv.Key;
+
                 foreach (var ev in extravalues)
                 {
                     if (!Regex.IsMatch(ev.Type, @"Code|Date|Text|Int|Bit"))
@@ -455,6 +474,18 @@ namespace CmsWeb.Areas.Reports.Models
                     {
                         w.Attr("disabled", "true");
                     }
+
+                    w.End();
+                }
+                foreach (var fe in familyextravalues)
+                {
+                    if (!Regex.IsMatch(fe.Type, @"Code|Date|Text|Int|Bit"))
+                    {
+                        continue;
+                    }
+
+                    w.Start("Column");
+                    w.Attr("field", fe.Field).Attr("name", "FamilyExtraValue" + fe.Type);
 
                     w.End();
                 }
@@ -689,6 +720,11 @@ namespace CmsWeb.Areas.Reports.Models
             {
                 yield return new XAttribute("field", column.Field);
                 yield return new XAttribute("disabled", column.IsDisabled);
+            }
+
+            if (column.IsFamilyExtraValue)
+            {
+                yield return new XAttribute("field", column.Field);
             }
 
             if (column.IsSmallGroup)
