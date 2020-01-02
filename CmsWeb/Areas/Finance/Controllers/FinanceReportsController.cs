@@ -30,7 +30,7 @@ namespace CmsWeb.Areas.Finance.Controllers
         public ActionResult ContributionStatement(int id, DateTime fromDate, DateTime toDate, int typ)
         {
             DbUtil.LogActivity($"Contribution Statement for ({id})");
-            return new ContributionStatementResult
+            return new ContributionStatementResult(CurrentDatabase)
             {
                 PeopleId = id,
                 FromDate = fromDate,
