@@ -32,37 +32,14 @@ namespace CMSWebTests.Models
                 var _exportPeople = new ExportPeople(db);
                 DateTime exportStartDt = new DateTime(Util.Now.Date.Year, 1, 1);
                 DateTime exportEndDt = new DateTime(Util.Now.Date.Year, 12, 31);
-                DataTable tableResult = _exportPeople.DonorDetails(exportStartDt, exportEndDt, fundid, campusid, pledges, nontaxdeductible, includeUnclosed, tagid, fundids);
+                var tableResult = _exportPeople.GetValidContributionDetails(exportStartDt, exportEndDt, campusid, pledges, nontaxdeductible, includeUnclosed, tagid, fundids);
 
-                var dbContributionsQry = db.Contributions
-                    .Where(x => !ContributionTypeCode.ReturnedReversedTypes.Contains(x.ContributionTypeId) && !ContributionTypeCode.Pledge.Equals(x.ContributionTypeId))
-                    .Where(x => ContributionStatusCode.Recorded.Equals(x.ContributionStatusId))
-                    .Where(x => x.ContributionDate >= exportStartDt && x.ContributionDate < exportEndDt)
-                    .Select(x => x);                
-
-                dbContributionsQry = nontaxdeductible.HasValue
-                    ? (nontaxdeductible is true)
-                        ? dbContributionsQry = dbContributionsQry.Where(x => ContributionTypeCode.NonTaxDed.Equals(x.ContributionTypeId)).Select(x => x)
-                        : dbContributionsQry = dbContributionsQry.Where(x => !ContributionTypeCode.NonTaxDed.Equals(x.ContributionTypeId)).Select(x => x)
-                    : dbContributionsQry;
                 
-                if (includeUnclosed is false)
-                {
-                    dbContributionsQry = from c in dbContributionsQry
-                                         join bd in db.BundleDetails on c.ContributionId equals bd.ContributionId
-                                         join bh in db.BundleHeaders on bd.BundleHeaderId equals bh.BundleHeaderId
-                                         where bh.BundleStatusId == 0
-                                         select c;
-                }
+                var rc = tableResult.Where(row => ContributionTypeCode.ReturnedReversedTypes.Contains(row.ContributionTypeId));
 
-                var rc = tableResult.AsEnumerable().Where(row => ContributionTypeCode.ReturnedReversedTypes.Contains(row.Field<int>("ContributionTypeId")));
-                var tableResultTotals = tableResult.AsEnumerable().Sum(row => row.Field<decimal>("Amount"));
-                var totalContributions = dbContributionsQry.Sum(x => x.ContributionAmount) ?? 0;
-
-                totalContributions.ToDouble().ShouldBe(tableResultTotals.ToDouble());
                 rc.Count().ShouldBeLessThan(1);
 
-                foreach(var b in bundleList)
+                foreach (var b in bundleList)
                 {
                     MockContributions.DeleteAllFromBundle(db, b);
                 }
@@ -171,24 +148,24 @@ namespace CMSWebTests.Models
             var b1 = MockContributions.CreateSaveBundle(db);
             bundleList.Add(b1);
             var c1 = MockContributions.CreateSaveContribution(db, b1, dt, 500, peopleId: 1, contributionType: ContributionTypeCode.CheckCash);
-            var c2 = MockContributions.CreateSaveContribution(db, b1, dt, 500, peopleId: 1, contributionType: ContributionTypeCode.GiftInKind);
-            var c3 = MockContributions.CreateSaveContribution(db, b1, dt, 500, peopleId: 1, contributionType: ContributionTypeCode.NonTaxDed);
-            var c4 = MockContributions.CreateSaveContribution(db, b1, dt, 500, peopleId: 1, contributionType: ContributionTypeCode.Online);
-            var c5 = MockContributions.CreateSaveContribution(db, b1, dt, 500, peopleId: 1, contributionType: ContributionTypeCode.Pledge);
-            var c6 = MockContributions.CreateSaveContribution(db, b1, dt, 500, peopleId: 1, contributionType: ContributionTypeCode.ReturnedCheck);
-            var c7 = MockContributions.CreateSaveContribution(db, b1, dt, 500, peopleId: 1, contributionType: ContributionTypeCode.Reversed);
+            //var c2 = MockContributions.CreateSaveContribution(db, b1, dt, 500, peopleId: 1, contributionType: ContributionTypeCode.GiftInKind);
+            var c3 = MockContributions.CreateSaveContribution(db, b1, dt.AddSeconds(1), 500, peopleId: 1, contributionType: ContributionTypeCode.NonTaxDed);
+            var c4 = MockContributions.CreateSaveContribution(db, b1, dt.AddSeconds(2), 500, peopleId: 1, contributionType: ContributionTypeCode.Online);
+            var c5 = MockContributions.CreateSaveContribution(db, b1, dt.AddSeconds(3), 500, peopleId: 1, contributionType: ContributionTypeCode.Pledge);
+            var c6 = MockContributions.CreateSaveContribution(db, b1, dt.AddSeconds(4), 500, peopleId: 1, contributionType: ContributionTypeCode.ReturnedCheck);
+            var c7 = MockContributions.CreateSaveContribution(db, b1, dt.AddSeconds(5), 500, peopleId: 1, contributionType: ContributionTypeCode.Reversed);
             b1.BundleStatusId = BundleStatusCode.Closed;
             db.SubmitChanges();
 
             var b2 = MockContributions.CreateSaveBundle(db);
             bundleList.Add(b2);
-            var b2c1 = MockContributions.CreateSaveContribution(db, b2, dt, 500, peopleId: 1, contributionType: ContributionTypeCode.CheckCash);
-            var b2c2 = MockContributions.CreateSaveContribution(db, b2, dt, 500, peopleId: 1, contributionType: ContributionTypeCode.GiftInKind);
-            var b2c3 = MockContributions.CreateSaveContribution(db, b2, dt, 500, peopleId: 1, contributionType: ContributionTypeCode.NonTaxDed);
-            var b2c4 = MockContributions.CreateSaveContribution(db, b2, dt, 500, peopleId: 1, contributionType: ContributionTypeCode.Online);
-            var b2c5 = MockContributions.CreateSaveContribution(db, b2, dt, 500, peopleId: 1, contributionType: ContributionTypeCode.Pledge);
-            var b2c6 = MockContributions.CreateSaveContribution(db, b2, dt, 500, peopleId: 1, contributionType: ContributionTypeCode.ReturnedCheck);
-            var b2c7 = MockContributions.CreateSaveContribution(db, b2, dt, 500, peopleId: 1, contributionType: ContributionTypeCode.Reversed);
+            var b2c1 = MockContributions.CreateSaveContribution(db, b2, dt.AddSeconds(6), 500, peopleId: 1, contributionType: ContributionTypeCode.CheckCash);
+            //var b2c2 = MockContributions.CreateSaveContribution(db, b2, dt, 500, peopleId: 1, contributionType: ContributionTypeCode.GiftInKind);
+            var b2c3 = MockContributions.CreateSaveContribution(db, b2, dt.AddSeconds(7), 500, peopleId: 1, contributionType: ContributionTypeCode.NonTaxDed);
+            var b2c4 = MockContributions.CreateSaveContribution(db, b2, dt.AddSeconds(8), 500, peopleId: 1, contributionType: ContributionTypeCode.Online);
+            var b2c5 = MockContributions.CreateSaveContribution(db, b2, dt.AddSeconds(9), 500, peopleId: 1, contributionType: ContributionTypeCode.Pledge);
+            var b2c6 = MockContributions.CreateSaveContribution(db, b2, dt.AddSeconds(10), 500, peopleId: 1, contributionType: ContributionTypeCode.ReturnedCheck);
+            var b2c7 = MockContributions.CreateSaveContribution(db, b2, dt.AddSeconds(11), 500, peopleId: 1, contributionType: ContributionTypeCode.Reversed);
             return bundleList;
         }
     }

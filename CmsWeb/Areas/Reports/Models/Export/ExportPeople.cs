@@ -105,6 +105,38 @@ namespace CmsWeb.Models
             return q.Take(maximumRows).ToDataTable();
         }
 
+        public IQueryable<DonorDetail> GetValidContributionDetails(DateTime startdt, DateTime enddt,
+            int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed, int? tagid, string fundids)
+        {
+            var q = from c in CurrentDatabase.GetContributionsDetails(startdt, enddt, campusid, pledges, (nontaxdeductible is null ? null : nontaxdeductible?.ToInt()), includeUnclosed, tagid, fundids)
+                    where !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
+                    select new DonorDetail
+                    {
+                        FamilyId = c.FamilyId,
+                        Date = c.DateX.Value.ToShortDateString(),
+                        GiverId = c.PeopleId,
+                        CreditGiverId = c.CreditGiverId,
+                        HeadName = c.HeadName,
+                        SpouseName = c.SpouseName,                        
+                        Amount = c.Amount ?? 0m,
+                        Pledge = c.PledgeAmount ?? 0m,
+                        CheckNo = c.CheckNo,
+                        ContributionDesc = c.ContributionDesc,
+                        FundId = c.FundId,
+                        FundName = c.FundName,
+                        BundleHeaderId = c.BundleHeaderId ?? 0,
+                        BundleType = c.BundleType,
+                        BundleStatus = c.BundleStatus,
+                        PeopleId = c.PeopleId,
+                        ContributionTypeId = c.ContributionTypeId,
+                        ContributionStatusId = c.ContributionStatusId,
+                        ContributionId = c.ContributionId,
+                        CreditGiverId2 = c.CreditGiverId2,
+                        OpenPledgeFund =c.OpenPledgeFund,
+                        SpouseId = c.SpouseId
+                    };
+            return q;
+        }
         public DataTable DonorDetails(DateTime startdt, DateTime enddt,
             int fundid, int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed, int? tagid, string fundids)
         {
@@ -112,7 +144,7 @@ namespace CmsWeb.Models
 
             if (CurrentDatabase.Setting("UseLabelNameForDonorDetails"))
             {
-                var q = from c in CurrentDatabase.GetContributionsDetails(startdt, enddt, campusid, pledges, nontaxdeductible.ToInt(), includeUnclosed, tagid, fundids)
+                var q = from c in GetValidContributionDetails(startdt, enddt, campusid, pledges, nontaxdeductible, includeUnclosed, tagid, fundids)
                         join p in CurrentDatabase.People on c.CreditGiverId equals p.PeopleId
                         let mainFellowship = CurrentDatabase.Organizations.SingleOrDefault(oo => oo.OrganizationId == p.BibleFellowshipClassId).OrganizationName
                         let head1 = CurrentDatabase.People.Single(hh => hh.PeopleId == p.Family.HeadOfHouseholdId)
@@ -121,7 +153,7 @@ namespace CmsWeb.Models
                         select new
                         {
                             c.FamilyId,
-                            Date = c.DateX.Value.ToShortDateString(),
+                            Date = c.Date,
                             GiverId = c.PeopleId,
                             c.CreditGiverId,
                             c.HeadName,
@@ -129,13 +161,13 @@ namespace CmsWeb.Models
                             MainFellowship = mainFellowship,
                             MemberStatus = p.MemberStatus.Description,
                             p.JoinDate,
-                            Amount = c.Amount ?? 0m,
+                            Amount = c.Amount,
                             Pledge = c.PledgeAmount ?? 0m,
                             c.CheckNo,
                             c.ContributionDesc,
                             c.FundId,
                             c.FundName,
-                            BundleHeaderId = c.BundleHeaderId ?? 0,
+                            BundleHeaderId = c.BundleHeaderId,
                             c.BundleType,
                             c.BundleStatus,
                             Addr = p.PrimaryAddress,
