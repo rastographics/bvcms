@@ -128,7 +128,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         [Route("Excel/{format}/{id:guid}")]
         public ActionResult Excel(Guid id, string format, bool? titles, bool? useMailFlags)
         {
-            var ctl = new MailingController { UseTitles = titles ?? false, UseMailFlags = useMailFlags ?? false };
+            var ctl = new MailingController(RequestManager) { UseTitles = titles ?? false, UseMailFlags = useMailFlags ?? false };
             switch (format)
             {
                 case "Individual":
@@ -173,7 +173,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         [HttpGet]
         public ActionResult Csv(Guid id, string format, bool? sortzip, bool? titles, bool? useMailFlags)
         {
-            var ctl = new MailingController { UseTitles = titles ?? false, UseMailFlags = useMailFlags ?? false };
+            var ctl = new MailingController(RequestManager) { UseTitles = titles ?? false, UseMailFlags = useMailFlags ?? false };
 
             var sort = "Name";
             if (sortzip ?? false)

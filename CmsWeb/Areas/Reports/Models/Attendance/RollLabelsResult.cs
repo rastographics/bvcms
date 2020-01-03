@@ -14,6 +14,7 @@ using iTextSharp.text.pdf;
 using UtilityExtensions;
 using System.Web.Mvc;
 using Rectangle = iTextSharp.text.Rectangle;
+using CmsWeb.Lifecycle;
 
 namespace CmsWeb.Areas.Reports.Models
 {
@@ -37,6 +38,17 @@ namespace CmsWeb.Areas.Reports.Models
         protected PdfContentByte dc;
         private Font font = FontFactory.GetFont(FontFactory.HELVETICA, 10);
         private Font smfont = FontFactory.GetFont(FontFactory.HELVETICA, 8);
+        private IRequestManager _requestManager;
+        public IRequestManager RequestManager
+        {
+            get => _requestManager;
+            set=> _requestManager = value;             
+        }
+
+        public RollLabelsResult(IRequestManager requestManager)
+        {
+            RequestManager = requestManager;
+        }
 
         public override void ExecuteResult(ControllerContext context)
         {
@@ -51,7 +63,7 @@ namespace CmsWeb.Areas.Reports.Models
             document.Open();
             dc = w.DirectContent;
 
-            var ctl = new MailingController {UseTitles = titles, UseMailFlags = useMailFlags};
+            var ctl = new MailingController(RequestManager) {UseTitles = titles, UseMailFlags = useMailFlags};
 
             IEnumerable<MailingController.MailingInfo> q = null;
             switch (format)

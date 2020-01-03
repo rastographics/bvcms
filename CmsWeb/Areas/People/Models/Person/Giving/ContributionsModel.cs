@@ -233,7 +233,7 @@ namespace CmsWeb.Areas.People.Models
             }
 
             var person = db.LoadPersonById(id.Value);
-            var contributions = (from c in db.Contributions2(new DateTime(1900, 1, 1), new DateTime(3000, 12, 31), 0, false, null, true)
+            var contributions = (from c in db.Contributions2(new DateTime(1900, 1, 1), new DateTime(3000, 12, 31), 0, false, null, true, null)
                                  where (c.PeopleId == person.PeopleId || (c.PeopleId == person.SpouseId && (person.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint))
                                  select c).ToList();
             var currentUser = db.CurrentUserPerson;

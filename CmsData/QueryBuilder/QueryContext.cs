@@ -189,6 +189,8 @@ namespace CmsData
             c.Id = q.QueryId; // force these to match
             c.JustLoadedQuery = q;
             c.Description = q.Name;
+
+            SubmitChanges();
             return c;
         }
         public Condition LoadExistingQuery(Guid existingId)

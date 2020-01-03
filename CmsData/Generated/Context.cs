@@ -1827,7 +1827,7 @@ namespace CmsData
             [Parameter(DbType = "bit")] bool? pledges,
             [Parameter(DbType = "bit")] bool? nontaxded,
             [Parameter(DbType = "bit")] bool? includeUnclosed,
-            [Parameter(DbType="varchar")] string fundids = null
+            [Parameter(DbType="varchar")] string fundids
             )
         {
             return CreateMethodCallQuery<View.Contributions2>(this,

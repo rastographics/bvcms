@@ -494,13 +494,21 @@ You can do one of these things:
             return new ReturnResult { close = true, how = "rebindgrids", error = message, from = AddContext };
         }
 
-        private ReturnResult AddContributor(int id, int origin)
+        public ReturnResult AddContributor(int id, int origin)
         {
             var c = CurrentDatabase.Contributions.SingleOrDefault(cc => cc.ContributionId == id);
             if (c != null)
             {
                 var p = PendingList[0];
                 AddPerson(p, PendingList, origin, EntryPointId);
+                
+                var pushpayev = CurrentDatabase.PeopleExtras.SingleOrDefault(ev => ev.PeopleId == c.PeopleId && ev.Field == "PushPayKey");
+                if (pushpayev != null && (c.PeopleId != p.PeopleId))
+                {
+                    // move the pushpay key with the contribution
+                    CurrentDatabase.AddExtraValueDataIfNotExist(p.PeopleId, "PushPayKey", null, null, pushpayev.Data, null, null);
+                    CurrentDatabase.PeopleExtras.DeleteOnSubmit(pushpayev);
+                }
                 c.PeopleId = p.PeopleId;
 
                 if (c.BankAccount.HasValue())
