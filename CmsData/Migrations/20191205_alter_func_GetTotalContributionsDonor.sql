@@ -22,14 +22,16 @@ RETURN
 			COUNT(*) AS [Count], 
 			SUM(Amount) AS Amount, 
 			SUM(PledgeAmount) AS PledgeAmount,
-			ContributionStatusId
+			ContributionStatusId,
+			ContributionTypeId
 		FROM dbo.GetContributionsDetails(@fd, @td, @campusid, ISNULL(@pledges, 0), @nontaxded, @includeUnclosed, @tagid, @fundids)
 		WHERE ContributionTypeId not in (6,7)
 		AND ContributionStatusId not in (1,2)
-		GROUP BY CreditGiverId, CreditGiverId2, HeadName, SpouseName,ContributionStatusId
+		GROUP BY CreditGiverId, CreditGiverId2, HeadName, SpouseName, ContributionStatusId, ContributionTypeId
 	)
 	SELECT 
-		c.ContributionStatusId,		
+		c.ContributionStatusId,	
+		c.ContributionTypeId,
 		c.CreditGiverId, 
 		c.CreditGiverId2,		
 		c.HeadName,
