@@ -169,9 +169,10 @@ namespace CmsWeb.Areas.Manage.Controllers
             {
                 FormsAuthentication.SetAuthCookie(user, false);
                 AccountModel.SetUserInfo(CurrentDatabase, CurrentImageDatabase, user);
-                if (returnUrl.HasValue() && Url.IsLocalUrl(returnUrl))
+                if (returnUrl.HasValue())
                 {
-                    return Redirect(returnUrl);
+                    ViewData["Redirect"] = returnUrl;
+                    return View("Redirect");
                 }
 
                 return Redirect("/");
