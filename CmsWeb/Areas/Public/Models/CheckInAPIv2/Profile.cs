@@ -20,6 +20,7 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
         public bool DisableTimer = false;
         public string BackgroundImageURL = null;
         public int CutoffAge = 18;
+        public string AdminPIN = "54321";
         public string Logout = "12345";
         public bool GuestLabels = false;
         public bool LocationLabels = false;
@@ -44,6 +45,7 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
             DisableTimer = s.DisableTimer;
             BackgroundImageURL = s.BackgroundImageURL;
             CutoffAge = s.CutoffAge;
+            AdminPIN = s.AdminPIN;
             Logout = s.Logout;
             GuestLabels = s.Guest;
             LocationLabels = s.Location;

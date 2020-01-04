@@ -11,9 +11,6 @@
     padding: 0!important;
     margin: 0!important;
 }
-.simple-keyboard {
-    max-width: 400px;
-}
 .simple-keyboard.hg-theme-default {
     background-color: transparent;
     font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
@@ -52,6 +49,15 @@
     max-width: 420px;
     margin: 20px auto 0;
 }
+.landing .simple-keyboard {
+    max-width: 400px;
+}
+.checkin .namesearch {
+    max-width: 800px;
+}
+.namesearch .simple-keyboard {
+    max-width: 800px;
+}
 .checkin .landing input {
     border: 0;
     border-radius: 5px;
@@ -65,6 +71,9 @@
     margin: 20px 5px;
     padding: 5px;
     caret-color: transparent;
+}
+.checkin .namesearch input {
+    max-width: 790px;
 }
 .checkin .landing input:focus {
     outline: none;

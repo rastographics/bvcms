@@ -124,6 +124,20 @@ namespace CmsData
             return Convert.ToBase64String(BarcodeHelper.generateQRCode(barcode, size));
         }
 
+        public static Person PersonForQRCode(CMSDataContext db, Guid QRCode)
+        {
+            var person = db.People.Single(p => p.BarcodeId == QRCode);
+            if (person == null)
+            {
+                throw new Exception("Invalid barcode");
+            }
+            if (DateTime.Now > person.BarcodeExpires)
+            {
+                throw new Exception("This barcode is no longer valid");
+            }
+            return person;
+        }
+
         public void SetFamilyFromPersonPage(Family f)
         {
             family = f;

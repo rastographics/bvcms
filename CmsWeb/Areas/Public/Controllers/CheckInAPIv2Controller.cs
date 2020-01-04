@@ -126,7 +126,7 @@ namespace CmsWeb.Areas.Public.Controllers
 			Message message = Message.createFromString( data );
 			NumberSearch cns = JsonConvert.DeserializeObject<NumberSearch>( message.data );
 
-			DbUtil.LogActivity( "Check-In Number Search: " + cns.search );
+			DbUtil.LogActivity( "Check-In Search: " + cns.search );
 
             Message response = new Message();
             response.setNoError();

@@ -12,6 +12,7 @@ new Vue({
         loading: false,
         keyboard: false,
         reprintLabels: false,
+        adminMode: false,
         idleTimer: false,
         idleStage: 0,
         idleTimeout: 45000,
@@ -27,9 +28,7 @@ new Vue({
             name: '',
             password: ''
         },
-        search: {
-            phone: ''
-        },
+        search: '',
         defaultProfile: {
             'name': 'Default',
             'BackgroundImageURL': null,
@@ -57,7 +56,7 @@ new Vue({
                 $.unblockUI();
             }
         },
-        'search.phone': function (current, previous) {
+        search: function (current, previous) {
             let vm = this;
             if (current.includes('!') && !previous.includes('!')) {
                 setTimeout(vm.find, 200);
@@ -82,7 +81,7 @@ new Vue({
             };
         },
         phoneMask: function () {
-            var len = this.search.phone.replace(/\D/g, '').length;
+            var len = this.search.replace(/\D/g, '').length;
             if (len < 8) {
                 return '?X##############';
             } else if (len < 11) {
@@ -170,29 +169,56 @@ new Vue({
                 return d.getTime() / 1000 / 60;
             }
         },
-        initKeyboard() {
+        initKeyboard(layout = 'numeric') {
             let vm = this;
             setTimeout(function () {
                 vm.keyboard = new Keyboard({
                     onChange: (input) => {
-                        vm.search.phone = input;
+                        vm.search = input;
+                        if (vm.keyboard.options.layoutName === "shift") {
+                            vm.keyboard.setOptions({
+                                layoutName: "default"
+                            });
+                        }
                     },
                     onKeyPress: (button) => {
                         if (button === '{enter}') {
                             vm.find();
+                        } else if (button === '{shift}') {
+                            var currentLayout = vm.keyboard.options.layoutName;
+                            let shiftToggle = currentLayout === "default" ? "shift" : "default";
+                            vm.keyboard.setOptions({
+                                layoutName: shiftToggle
+                            });
                         }
                     },
                     onInit: () => {
                         $(".keyboard-input").focus();
                     },
                     layout: {
-                        default: ["1 2 3", "4 5 6", "7 8 9", "{bksp} 0 {enter}"]
+                        numeric: ["1 2 3", "4 5 6", "7 8 9", "{bksp} 0 {enter}"],
+                        default: [
+                            '` 1 2 3 4 5 6 7 8 9 0 - = {bksp}',
+                            'q w e r t y u i o p [ ] \\',
+                            'a s d f g h j k l ; \' {enter}',
+                            'z x c v b n m , . / {shift}',
+                            '{space}'
+                        ],
+                        shift: [
+                            '~ ! @ # $ % ^ & * ( ) _ + {bksp}',
+                            'Q W E R T Y U I O P { } |',
+                            'A S D F G H J K L : " {enter}',
+                            'Z X C V B N M < > ? {shift}',
+                            '{space}'
+                        ]
                     },
+                    layoutName: layout,
                     display: {
                         '{bksp}': '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" width="38px" viewBox="0 0 512 640" enable-background="new 0 0 512 512" style="margin-top:15px;fill:white;" xml:space="preserve"><path d="M436,136H184.3c-5.3,0-10.4,2.1-14.1,5.9l-108.3,100c-7.8,7.8-7.8,20.5,0,28.3l108.3,100c3.8,3.8,8.8,5.9,14.1,5.9H436  c11,0,20-9,20-20V156C456,145,447,136,436,136z M370.1,301.9c7.8,7.8,5.3,22.9,0,28.3c-3.9,3.9-18.6,9.7-28.3,0L296,284.3  l-45.9,45.9c-9.2,9.2-21.9,6.4-28.3,0c-7.8-7.8-7.8-20.5,0-28.3l45.9-45.9l-45.9-45.9c-7.8-7.8-7.8-20.5,0-28.3s20.5-7.8,28.3,0  l45.9,45.9l45.9-45.9c7.8-7.8,20.5-7.8,28.3,0c7.8,7.8,7.8,20.5,0,28.3L324.3,256L370.1,301.9z"/></svg>',
                         '{enter}': '<i class="fa fa-search"></i>'
                     },
-                    theme: "hg-theme-default hg-layout-numeric numeric-theme",
+                    theme: "hg-theme-default hg-layout-" + layout,
+                    mergeDisplay: true,
                     autoUseTouchEvents: true,       // use touch events on devices and browsers that support it
                     disableButtonHold: true,        // holding button only leads to one press
                     stopMouseDownPropagation: true, // prevent click bubble up on button press
@@ -213,7 +239,7 @@ new Vue({
         },
         handleIdle() {
             let vm = this;
-            if (!['landing','login'].includes(vm.view) || vm.search.phone.length) {
+            if (!['landing','login','namesearch'].includes(vm.view) || vm.search.length) {
                 vm.idleStage++;
                 vm.resetIdleTimer();
                 if (vm.idleStage === 1) {
@@ -246,17 +272,21 @@ new Vue({
         },
         loadView(newView) {
             // cleanup and prep for view swap
-            if (this.view === 'landing') {
+            if (this.view === 'landing' || this.view === 'namesearch') {
                 this.keyboard.destroy();
             }
+            if (this.adminMode && newView === 'landing') {
+                newView = 'namesearch';
+            }
             this.view = newView;
-            if (newView === 'landing') {
-                this.search.phone = '';
+            if (newView === 'landing' || newView === 'namesearch') {
+                var layout = (newView === 'namesearch') ? 'default' : 'numeric';
+                this.search = '';
                 this.members = [];
                 this.families = [];
                 this.attendance = [];
                 this.reprintLabels = false;
-                this.initKeyboard();
+                this.initKeyboard(layout);
                 if (!this.profile || !this.kiosk.name.length) {
                     this.logout();
                     error_swal("Error", "Couldn't retrieve saved profile data. Please try logging in again.");
@@ -353,9 +383,10 @@ new Vue({
             localStorage.removeItem('identity');
             localStorage.removeItem('profile');
             this.cookie('Authorization', "", -1);
-            this.search.phone = '';
+            this.search = '';
             this.identity = false;
             this.profile = false;
+            this.adminMode = false;
             this.profiles = [];
             this.loadView('login');
             this.getProfiles();
@@ -367,16 +398,30 @@ new Vue({
             this.loadView('landing');
             swal.close();
         },
+        leaveAdminMode() {
+            this.adminMode = false;
+            this.loadView('landing');
+        },
         find() {
             let vm = this;
-            var phone = vm.search.phone.replace(/[^\d!]/g, '');
-            // handle special entry
-            if (phone === vm.profile.Logout) {
-                vm.logout();
-                return false;
+            var phone = vm.search.replace(/[^\d!]/g, '');
+
+            if (!vm.adminMode) {
+                // handle special entry
+                if (phone === vm.profile.Logout) {
+                    vm.logout();
+                    return false;
+                }
+                else if (phone === vm.profile.AdminPIN) {
+                    vm.adminMode = true;
+                    vm.loadView('namesearch');
+                    return false;
+                }
             }
-            var isQrCode = phone.includes('!');
-            if (isQrCode && phone === '!0000') {
+
+            // todo: update qr logic
+            var isQrCode = vm.search.includes('!');
+            if (isQrCode && vm.search === '!0000') {
                 vm.loadView('landing');
                 swal({
                     title: "Test Scan",
@@ -386,13 +431,13 @@ new Vue({
                 return false;
             }
 
-            if (!isQrCode && (phone.length < 4 || phone.length > 15)) {
+            if (!vm.adminMode && !isQrCode && (phone.length < 4 || phone.length > 15)) {
                 vm.loadView('landing');
                 warning_swal('No results', 'No families found with that number, please try again.');
                 return false;
             }
             var payload = vm.generatePayload({
-                search: phone,
+                search: vm.adminMode ? vm.search : phone,
                 campus: vm.profile.CampusId,
                 date: vm.searchDay
             });
@@ -417,7 +462,7 @@ new Vue({
                                 vm.loadView('checkin');
                             } else {
                                 vm.loadView('landing');
-                                warning_swal('No results', 'No families found with that number, please try again.');
+                                warning_swal('No results', 'No families found, please try again.');
                             }
                         } else {
                             if (response.data.error === -6) {
@@ -699,7 +744,7 @@ new Vue({
 
         // redirect focus on stray clicks to support barcode scanner
         $('.checkin').click(function () {
-            if (vm.view === 'landing') {
+            if (vm.view === 'landing' || vm.view === 'namesearch') {
                 $(".keyboard-input").focus();
             }
         });
