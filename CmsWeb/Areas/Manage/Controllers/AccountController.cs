@@ -246,7 +246,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             if (m.ReturnUrl.HasValue())
             {
                 var lc = m.ReturnUrl.ToLower();
-                if (lc.StartsWith("/default.aspx") || lc.StartsWith("/login.aspx"))
+                if (lc.Contains("/default.aspx", true) || lc.Contains("/login.aspx", true) || lc.Contains("/Logon", true))
                 {
                     m.ReturnUrl = "/";
                 }

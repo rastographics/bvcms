@@ -162,7 +162,14 @@ namespace CmsWeb.Membership
             {
                 cookie.Domain = null;
             }
-            response.SetCookie(cookie);
+            if (response.Cookies.AllKeys.Contains(name))
+            {
+                response.SetCookie(cookie);
+            }
+            else
+            {
+                response.AppendCookie(cookie);
+            }
         }
     }
 }
