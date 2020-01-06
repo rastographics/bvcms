@@ -169,9 +169,10 @@ namespace CmsWeb.Areas.Manage.Controllers
             {
                 FormsAuthentication.SetAuthCookie(user, false);
                 AccountModel.SetUserInfo(CurrentDatabase, CurrentImageDatabase, user);
-                if (returnUrl.HasValue() && Url.IsLocalUrl(returnUrl))
+                if (returnUrl.HasValue())
                 {
-                    return Redirect(returnUrl);
+                    ViewData["Redirect"] = returnUrl;
+                    return View("Redirect");
                 }
 
                 return Redirect("/");
@@ -182,7 +183,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 
         [Route("~/Impersonate/{id}")]
         [MyRequireHttps]
-        public ActionResult Impersonate(string id)
+        public ActionResult Impersonate(string id, string returnUrl)
         {
             Guid gid = Guid.Parse(id);
             var link = CurrentDatabase.OneTimeLinks.Where(l =>
@@ -196,7 +197,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                 link.Used = true;
                 CurrentDatabase.SubmitChanges();
                 var userid = link.Querystring;
-                return LoginAs(userid, null);
+                return LoginAs(userid, returnUrl);
             }
 
             return Redirect("/Logon");

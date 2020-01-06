@@ -93,6 +93,7 @@ namespace CmsData
         HasFailedEmails,
         HasFamilyExtraField,
         HasFamilyPicture,
+        HasFinanceDocs,
         HasIncompleteTask,
         HasInvalidEmailAddress,
         HasLowerName,

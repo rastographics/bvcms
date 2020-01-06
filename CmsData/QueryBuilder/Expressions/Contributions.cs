@@ -33,7 +33,7 @@ namespace CmsData
             switch (op)
             {
                 case CompareType.Greater:
-                    q = from c in db.Contributions2(dt, now, 0, false, taxnontax, true)
+                    q = from c in db.Contributions2(dt, now, 0, false, taxnontax, true, null)
                         where fund == 0 || c.FundId == fund
                         where c.Amount > 0
                         group c by c.CreditGiverId into g
@@ -41,7 +41,7 @@ namespace CmsData
                         select g.Key ?? 0;
                     break;
                 case CompareType.GreaterEqual:
-                    q = from c in db.Contributions2(dt, now, 0, false, taxnontax, true)
+                    q = from c in db.Contributions2(dt, now, 0, false, taxnontax, true, null)
                         where fund == 0 || c.FundId == fund
                         where c.Amount > 0 || cnt == 0
                         group c by c.CreditGiverId into g
@@ -49,7 +49,7 @@ namespace CmsData
                         select g.Key ?? 0;
                     break;
                 case CompareType.Less:
-                    q = from c in db.Contributions2(dt, now, 0, false, taxnontax, true)
+                    q = from c in db.Contributions2(dt, now, 0, false, taxnontax, true, null)
                         where fund == 0 || c.FundId == fund
                         where c.Amount > 0
                         group c by c.CreditGiverId into g
@@ -57,7 +57,7 @@ namespace CmsData
                         select g.Key ?? 0;
                     break;
                 case CompareType.LessEqual:
-                    q = from c in db.Contributions2(dt, now, 0, false, taxnontax, true)
+                    q = from c in db.Contributions2(dt, now, 0, false, taxnontax, true, null)
                         where fund == 0 || c.FundId == fund
                         where c.Amount > 0
                         group c by c.CreditGiverId into g
@@ -73,7 +73,7 @@ namespace CmsData
                     //    Expression expr0 = System.Linq.Expressions.Expression.Invoke(pred0, parm);
                     //    return expr0;
                     //}
-                    q = from c in db.Contributions2(dt, now, 0, false, taxnontax, true)
+                    q = from c in db.Contributions2(dt, now, 0, false, taxnontax, true, null)
                         where fund == 0 || c.FundId == fund
                         where c.Amount > 0
                         group c by c.CreditGiverId into g
@@ -81,7 +81,7 @@ namespace CmsData
                         select g.Key ?? 0;
                     break;
                 case CompareType.NotEqual:
-                    q = from c in db.Contributions2(dt, now, 0, false, taxnontax, true)
+                    q = from c in db.Contributions2(dt, now, 0, false, taxnontax, true, null)
                         where fund == 0 || c.FundId == fund
                         where c.Amount > 0
                         group c by c.CreditGiverId into g
@@ -180,21 +180,21 @@ namespace CmsData
             switch (op)
             {
                 case CompareType.Greater:
-                    q = from c in db.Contributions2(dt, now, 0, false, taxnontax, true)
+                    q = from c in db.Contributions2(dt, now, 0, false, taxnontax, true, null)
                         where fund == 0 || c.FundId == fund
                         group c by c.CreditGiverId into g
                         where g.Sum(cc => cc.Amount) > amt
                         select g.Key ?? 0;
                     break;
                 case CompareType.GreaterEqual:
-                    q = from c in db.Contributions2(dt, now, 0, false, taxnontax, true)
+                    q = from c in db.Contributions2(dt, now, 0, false, taxnontax, true, null)
                         where fund == 0 || c.FundId == fund
                         group c by c.CreditGiverId into g
                         where g.Sum(cc => cc.Amount) >= amt
                         select g.Key ?? 0;
                     break;
                 case CompareType.Less:
-                    q = from c in db.Contributions2(dt, now, 0, false, taxnontax, true)
+                    q = from c in db.Contributions2(dt, now, 0, false, taxnontax, true, null)
                         where fund == 0 || c.FundId == fund
                         where c.Amount > 0
                         group c by c.CreditGiverId into g
@@ -202,7 +202,7 @@ namespace CmsData
                         select g.Key ?? 0;
                     break;
                 case CompareType.LessEqual:
-                    q = from c in db.Contributions2(dt, now, 0, false, taxnontax, true)
+                    q = from c in db.Contributions2(dt, now, 0, false, taxnontax, true, null)
                         where fund == 0 || c.FundId == fund
                         where c.Amount > 0
                         group c by c.CreditGiverId into g
@@ -217,7 +217,7 @@ namespace CmsData
                     }
                     else
                     {
-                        q = from c in db.Contributions2(dt, now, 0, false, taxnontax, true)
+                        q = from c in db.Contributions2(dt, now, 0, false, taxnontax, true, null)
                             where fund == 0 || c.FundId == fund
                             where c.Amount > 0
                             group c by c.CreditGiverId into g
@@ -227,7 +227,7 @@ namespace CmsData
 
                     break;
                 case CompareType.NotEqual:
-                    q = from c in db.Contributions2(dt, now, 0, false, taxnontax, true)
+                    q = from c in db.Contributions2(dt, now, 0, false, taxnontax, true, null)
                         where fund == 0 || c.FundId == fund
                         where c.Amount > 0
                         group c by c.CreditGiverId into g
@@ -255,21 +255,21 @@ namespace CmsData
             switch (op)
             {
                 case CompareType.GreaterEqual:
-                    q = from c in db.Contributions2(start, end, 0, false, nontaxded, true)
+                    q = from c in db.Contributions2(start, end, 0, false, nontaxded, true, null)
                         where fund == 0 || c.FundId == fund
                         group c by (useCreditor ? c.CreditGiverId : c.PeopleId) into g
                         where g.Sum(cc => cc.Amount) >= amt
                         select g.Key ?? 0;
                     break;
                 case CompareType.Greater:
-                    q = from c in db.Contributions2(start, end, 0, false, nontaxded, true)
+                    q = from c in db.Contributions2(start, end, 0, false, nontaxded, true, null)
                         where fund == 0 || c.FundId == fund
                         group c by (useCreditor ? c.CreditGiverId : c.PeopleId) into g
                         where g.Sum(cc => cc.Amount) > amt
                         select g.Key ?? 0;
                     break;
                 case CompareType.LessEqual:
-                    q = from c in db.Contributions2(start, end, 0, false, nontaxded, true)
+                    q = from c in db.Contributions2(start, end, 0, false, nontaxded, true, null)
                         where fund == 0 || c.FundId == fund
                         where c.Amount > 0
                         group c by (useCreditor ? c.CreditGiverId : c.PeopleId) into g
@@ -277,7 +277,7 @@ namespace CmsData
                         select g.Key ?? 0;
                     break;
                 case CompareType.Less:
-                    q = from c in db.Contributions2(start, end, 0, false, nontaxded, true)
+                    q = from c in db.Contributions2(start, end, 0, false, nontaxded, true, null)
                         where fund == 0 || c.FundId == fund
                         where c.Amount > 0
                         group c by (useCreditor ? c.CreditGiverId : c.PeopleId) into g
@@ -292,7 +292,7 @@ namespace CmsData
                     }
                     else
                     {
-                        q = from c in db.Contributions2(start, end, 0, false, nontaxded, true)
+                        q = from c in db.Contributions2(start, end, 0, false, nontaxded, true, null)
                             where fund == 0 || c.FundId == fund
                             group c by (useCreditor ? c.CreditGiverId : c.PeopleId) into g
                             where g.Sum(cc => cc.Amount) == amt
@@ -301,7 +301,7 @@ namespace CmsData
 
                     break;
                 case CompareType.NotEqual:
-                    q = from c in db.Contributions2(start, end, 0, false, nontaxded, true)
+                    q = from c in db.Contributions2(start, end, 0, false, nontaxded, true, null)
                         where fund == 0 || c.FundId == fund
                         where c.Amount > 0
                         group c by (useCreditor ? c.CreditGiverId : c.PeopleId) into g
@@ -587,7 +587,7 @@ namespace CmsData
             switch (op)
             {
                 case CompareType.Greater:
-                    q = from c in db.Contributions2(dt, now, 0, true, false, true)
+                    q = from c in db.Contributions2(dt, now, 0, true, false, true, null)
                         where fund == 0 || c.FundId == fund
                         where c.PledgeAmount > 0
                         group c by c.CreditGiverId into g
@@ -595,7 +595,7 @@ namespace CmsData
                         select g.Key ?? 0;
                     break;
                 case CompareType.GreaterEqual:
-                    q = from c in db.Contributions2(dt, now, 0, true, false, true)
+                    q = from c in db.Contributions2(dt, now, 0, true, false, true, null)
                         where fund == 0 || c.FundId == fund
                         where c.PledgeAmount > 0
                         group c by c.CreditGiverId into g
@@ -603,7 +603,7 @@ namespace CmsData
                         select g.Key ?? 0;
                     break;
                 case CompareType.Less:
-                    q = from c in db.Contributions2(dt, now, 0, true, false, true)
+                    q = from c in db.Contributions2(dt, now, 0, true, false, true, null)
                         where fund == 0 || c.FundId == fund
                         where c.PledgeAmount > 0
                         group c by c.CreditGiverId into g
@@ -611,7 +611,7 @@ namespace CmsData
                         select g.Key ?? 0;
                     break;
                 case CompareType.LessEqual:
-                    q = from c in db.Contributions2(dt, now, 0, true, false, true)
+                    q = from c in db.Contributions2(dt, now, 0, true, false, true, null)
                         where fund == 0 || c.FundId == fund
                         where c.PledgeAmount > 0
                         group c by c.CreditGiverId into g
@@ -627,7 +627,7 @@ namespace CmsData
                         Expression expr0 = Expression.Invoke(pred0, parm);
                         return expr0;
                     }
-                    q = from c in db.Contributions2(dt, now, 0, true, false, true)
+                    q = from c in db.Contributions2(dt, now, 0, true, false, true, null)
                         where fund == 0 || c.FundId == fund
                         where c.PledgeAmount > 0
                         group c by c.CreditGiverId into g
@@ -635,7 +635,7 @@ namespace CmsData
                         select g.Key ?? 0;
                     break;
                 case CompareType.NotEqual:
-                    q = from c in db.Contributions2(dt, now, 0, true, false, true)
+                    q = from c in db.Contributions2(dt, now, 0, true, false, true, null)
                         where fund == 0 || c.FundId == fund
                         where c.PledgeAmount > 0
                         group c by c.CreditGiverId into g
@@ -666,21 +666,21 @@ namespace CmsData
             switch (op)
             {
                 case CompareType.Greater:
-                    q = from c in db.Contributions2(dt, now, 0, true, false, true)
+                    q = from c in db.Contributions2(dt, now, 0, true, false, true, null)
                         where fund == 0 || c.FundId == fund
                         group c by c.CreditGiverId into g
                         where g.Sum(cc => cc.PledgeAmount) > amt
                         select g.Key ?? 0;
                     break;
                 case CompareType.GreaterEqual:
-                    q = from c in db.Contributions2(dt, now, 0, true, false, true)
+                    q = from c in db.Contributions2(dt, now, 0, true, false, true, null)
                         where fund == 0 || c.FundId == fund
                         group c by c.CreditGiverId into g
                         where g.Sum(cc => cc.PledgeAmount) >= amt
                         select g.Key ?? 0;
                     break;
                 case CompareType.Less:
-                    q = from c in db.Contributions2(dt, now, 0, true, false, true)
+                    q = from c in db.Contributions2(dt, now, 0, true, false, true, null)
                         where fund == 0 || c.FundId == fund
                         where c.Amount > 0
                         group c by c.CreditGiverId into g
@@ -688,7 +688,7 @@ namespace CmsData
                         select g.Key ?? 0;
                     break;
                 case CompareType.LessEqual:
-                    q = from c in db.Contributions2(dt, now, 0, true, false, true)
+                    q = from c in db.Contributions2(dt, now, 0, true, false, true, null)
                         where fund == 0 || c.FundId == fund
                         where c.Amount > 0
                         group c by c.CreditGiverId into g
@@ -696,7 +696,7 @@ namespace CmsData
                         select g.Key ?? 0;
                     break;
                 case CompareType.Equal:
-                    q = from c in db.Contributions2(dt, now, 0, true, false, true)
+                    q = from c in db.Contributions2(dt, now, 0, true, false, true, null)
                         where fund == 0 || c.FundId == fund
                         where c.Amount > 0
                         group c by c.CreditGiverId into g
@@ -704,7 +704,7 @@ namespace CmsData
                         select g.Key ?? 0;
                     break;
                 case CompareType.NotEqual:
-                    q = from c in db.Contributions2(dt, now, 0, true, false, true)
+                    q = from c in db.Contributions2(dt, now, 0, true, false, true, null)
                         where fund == 0 || c.FundId == fund
                         where c.Amount > 0
                         group c by c.CreditGiverId into g
@@ -1000,6 +1000,7 @@ namespace CmsData
         internal Expression IsTopGiver()
         {
             var top = Quarters.ToInt();
+            var fundids = FundIds?.Replace(' ', ',');
             var tf = CodeIds == "1";
             if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
             {
@@ -1007,7 +1008,7 @@ namespace CmsData
             }
 
             var mindt = Util.Now.AddDays(-Days).Date;
-            var r = db.TopGivers(top, mindt, Util.Now).ToList();
+            var r = db.TopGivers(top, mindt, Util.Now, fundids).ToList();
             var topgivers = r.Select(g => g.PeopleId).ToList();
             Expression<Func<Person, bool>> pred = p =>
                 topgivers.Contains(p.PeopleId);
