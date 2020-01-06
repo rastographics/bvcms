@@ -15,6 +15,12 @@
     background-color: transparent;
     font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
 }
+.simple-keyboard.hg-theme-default .hg-button {
+    height: 48px;
+    font-size: 18px;
+    background-color: white;
+    color: #333;
+}
 .simple-keyboard.hg-theme-default.hg-layout-numeric .hg-button {
     height: 75px;
     font-size: 26px;
