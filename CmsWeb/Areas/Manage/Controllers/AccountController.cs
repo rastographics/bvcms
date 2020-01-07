@@ -285,7 +285,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                 AccountModel.FinishLogin(user.Username, Session, CurrentDatabase, CurrentImageDatabase);
             }
 
-            return Redirect("/Auth" + m.ReturnUrlQueryString);
+            return RedirectTo("/Auth" + m.ReturnUrlQueryString);
         }
 
         [MyRequireHttps]
@@ -294,10 +294,11 @@ namespace CmsWeb.Areas.Manage.Controllers
         {
             var userId = Session[MFAUserId] as int?;
             var user = CurrentDatabase.CurrentUser ?? CurrentDatabase.Users
-                .Where(u => u.UserId == userId && u.Username == m.UsernameOrEmail).SingleOrDefault();
+                .Where(u => u.Username == m.UsernameOrEmail || u.EmailAddress == m.UsernameOrEmail || u.Person.EmailAddress2 == m.UsernameOrEmail)
+                .Where(u => u.UserId == userId).SingleOrDefault();
             if (user == null)
             {
-                return Redirect("/");
+                return RedirectTo("/");
             }
 
             if (user.MFAEnabled && !User.Identity.IsAuthenticated)
@@ -336,16 +337,22 @@ namespace CmsWeb.Areas.Manage.Controllers
             {
                 if (!CMSRoleProvider.provider.IsUserInRole(user.Username, "Access"))
                 {
-                    return Redirect("/Person2/" + Util.UserPeopleId);
+                    return RedirectTo("/Person2/" + Util.UserPeopleId);
                 }
             }
 
             if (m.ReturnUrl.HasValue() && Url.IsLocalUrl(m.ReturnUrl))
             {
-                return Redirect(m.ReturnUrl);
+                return RedirectTo(m.ReturnUrl);
             }
 
-            return Redirect("/");
+            return RedirectTo("/");
+        }
+
+        private ActionResult RedirectTo(string url)
+        {
+            ViewData["Redirect"] = url;
+            return View("Redirect");
         }
 
         [MyRequireHttps]
