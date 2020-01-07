@@ -291,8 +291,8 @@
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="form-group">
-                                    <label for="newName" class="control-label">File Name</label>
-                                    <input type="text" id="newName" v-model="newName" class="form-control" />
+                                    <label for="newName-role" class="control-label">File Name</label>
+                                    <input type="text" id="newName-role" v-model="newName" class="form-control" />
                                     <small v-if="notValidName" class="red-empty">"Empty Template" name cannot be used</small>
                                 </div>
                             </div>
@@ -391,6 +391,7 @@
 
             $('#new-modal').on('shown.bs.modal', function () {
                 $("#newName").val('').focus();
+                $("#newName-role").val('').focus();
             });
 
             $("a[newtypewithrole]").click(function (ev) {
@@ -403,6 +404,7 @@
 
             $('#new-modal-role').on('shown.bs.modal', function () {
                 $("#newName").val('').focus();
+                $("#newName-role").val('').focus();
             });
 
             var lastChecked = null;
