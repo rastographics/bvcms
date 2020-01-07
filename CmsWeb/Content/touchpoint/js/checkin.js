@@ -405,23 +405,20 @@ new Vue({
         find() {
             let vm = this;
             var phone = vm.search.replace(/[^\d!]/g, '');
-
-            if (!vm.adminMode) {
-                // handle special entry
-                if (phone === vm.profile.Logout) {
-                    vm.logout();
-                    return false;
-                }
-                else if (phone === vm.profile.AdminPIN) {
-                    vm.adminMode = true;
-                    vm.loadView('namesearch');
-                    return false;
-                }
+            
+            // handle special entry
+            if (phone === vm.profile.Logout) {
+                vm.logout();
+                return false;
+            }
+            else if (phone === vm.profile.AdminPIN) {
+                vm.adminMode = true;
+                vm.loadView('namesearch');
+                return false;
             }
 
-            // todo: update qr logic
-            var isQrCode = vm.search.includes('!');
-            if (isQrCode && vm.search === '!0000') {
+            var isQrCode = vm.search.includes('-');
+            if (vm.search === '!0000') {
                 vm.loadView('landing');
                 swal({
                     title: "Test Scan",
@@ -437,7 +434,7 @@ new Vue({
                 return false;
             }
             var payload = vm.generatePayload({
-                search: vm.adminMode ? vm.search : phone,
+                search: (vm.adminMode || isQrCode) ? vm.search : phone,
                 campus: vm.profile.CampusId,
                 date: vm.searchDay
             });

@@ -114,6 +114,15 @@
     float: left;
     width: calc(100% - 175px);
 }
+.checkin .member-details .dropdown-toggle {
+    top: -3px;
+    padding: 3px 8px;
+    border-radius: 5px;
+}
+.checkin .member-details .dropdown-menu {
+    margin-top: -2px;
+    border-radius: 5px;
+}
 .checkin .member-details .disabled{
     color: #aaa!important;
 }

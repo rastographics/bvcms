@@ -126,7 +126,7 @@ namespace CmsData
 
         public static Person PersonForQRCode(CMSDataContext db, Guid QRCode)
         {
-            var person = db.People.Single(p => p.BarcodeId == QRCode);
+            var person = db.People.SingleOrDefault(p => p.BarcodeId.Equals(QRCode));
             if (person == null)
             {
                 throw new Exception("Invalid barcode");

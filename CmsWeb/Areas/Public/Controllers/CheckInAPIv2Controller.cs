@@ -127,28 +127,48 @@ namespace CmsWeb.Areas.Public.Controllers
 			NumberSearch cns = JsonConvert.DeserializeObject<NumberSearch>( message.data );
 
 			DbUtil.LogActivity( "Check-In Search: " + cns.search );
-
+            
             Message response = new Message();
             response.setNoError();
 
             bool returnPictureUrls = message.device == Message.API_DEVICE_WEB;
+            Guid guid;
 
-            if (cns.search.Contains("!"))
+            // handle scanned qr code
+            if (Guid.TryParse(cns.search, out guid))
             {
-                var list = cns.search.Split('!').Where(s => !string.IsNullOrWhiteSpace(s)).ToList();
-                string id = list.First();
-                var pending = CurrentDatabase.CheckInPendings.Where(p => p.Id == id.ToInt()).SingleOrDefault();
-                if (pending != null)
+                try
                 {
-                    AttendanceBundle bundle = JsonConvert.DeserializeObject<AttendanceBundle>(pending.Data);
-                    List<Family> result = Family.forAttendanceBundle(CurrentDatabase, CurrentImageDatabase, bundle, cns.campus, cns.date, returnPictureUrls);
-                    response.argString = SerializeJSON(bundle, message.version);
-                    response.data = SerializeJSON(result, message.version);
-                    return response;
+                    var person = CmsData.Person.PersonForQRCode(CurrentDatabase, guid);
+                    // first try to find a pending check in for the person scanned
+                    var pending = CurrentDatabase.CheckInPendings.Where(p => p.PeopleId == person.PeopleId).SingleOrDefault();
+                    if (pending == null)
+                    {
+                        // if not, see if there's a pending check in for the family
+                        pending = CurrentDatabase.CheckInPendings.Where(p => p.FamilyId == person.FamilyId).SingleOrDefault();
+                    }
+                    if (pending != null)
+                    {
+                        // found a pending check in, load that data
+                        AttendanceBundle bundle = JsonConvert.DeserializeObject<AttendanceBundle>(pending.Data);
+                        List<Family> result = Family.forAttendanceBundle(CurrentDatabase, CurrentImageDatabase, bundle, cns.campus, cns.date, returnPictureUrls);
+                        response.argString = SerializeJSON(bundle, message.version);
+                        response.data = SerializeJSON(result, message.version);
+                        return response;
+                    }
+                    else
+                    {
+                        // a qr code was scanned without any pending check in, just load the family without attendance data
+                        List<Family> scanned = new List<Family>();
+                        var family = Family.forID(CurrentDatabase, CurrentImageDatabase, person.FamilyId, cns.campus, cns.date, returnPictureUrls);
+                        scanned.Add(family);
+                        response.data = SerializeJSON(scanned, message.version);
+                        return response;
+                    }
                 }
-                else
+                catch (Exception e)
                 {
-                    return Message.createErrorReturn("Invalid barcode.", Message.API_ERROR_PERSON_NOT_FOUND);
+                    return Message.createErrorReturn(e.Message, Message.API_ERROR_PERSON_NOT_FOUND);
                 }
             }
 
@@ -361,22 +381,30 @@ namespace CmsWeb.Areas.Public.Controllers
             
             Message response = new Message();
 			Message message = Message.createFromString( data );
-            
-            var pending = new CheckInPending
-            {
-                Stamp = DateTime.Now,
-                Data = message.data
-            };
 
-            CurrentDatabase.CheckInPendings.InsertOnSubmit(pending);
+            CheckInPending existing = CurrentDatabase.CheckInPendings.Where(c => c.PeopleId == CurrentDatabase.CurrentPeopleId).SingleOrDefault();
+
+            if (existing != null)
+            {
+                existing.Stamp = DateTime.Now;
+                existing.Data = message.data;
+            }
+            else
+            {
+                var pending = new CheckInPending
+                {
+                    Stamp = DateTime.Now,
+                    Data = message.data,
+                    PeopleId = CurrentDatabase.CurrentPeopleId,
+                    FamilyId = CurrentDatabase.CurrentUserPerson.FamilyId
+                };
+                CurrentDatabase.CheckInPendings.InsertOnSubmit(pending);
+            }
             CurrentDatabase.SubmitChanges();
             
             response.setNoError();
             response.count = 1;
-
-            string qrCode = Convert.ToBase64String(BarcodeHelper.generateQRCode("!" + pending.Id, 300));
-
-            response.data = qrCode;
+            
             return response;
         }
 
