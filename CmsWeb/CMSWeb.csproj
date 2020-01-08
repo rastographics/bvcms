@@ -2803,6 +2803,7 @@
     <Content Include="Views\Shared\_LayoutNoHeaderFooter.cshtml" />
     <Content Include="Views\Shared\AdminAlerts.cshtml" />
     <Content Include="Views\Shared\_diagnostics.cshtml" />
+    <Content Include="Views\Shared\Redirect.cshtml" />
     <None Include="Web.staging.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
