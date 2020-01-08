@@ -1,11 +1,6 @@
 ﻿using IntegrationTests.Support;
 using SharedTestFixtures;
 using Shouldly;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace IntegrationTests.Areas.Search.Views.Query
@@ -24,17 +19,17 @@ namespace IntegrationTests.Areas.Search.Views.Query
             MaximizeWindow();
 
             Find(xpath: "//a[contains(text(),'People')]").Click();
-            WaitForElement(".open .col-sm-6:nth-child(1) li:nth-child(5) > a", 5);
+            WaitForElement(".open .col-sm-6:nth-child(1) li:nth-child(5) > a");
             Find(css: ".open .col-sm-6:nth-child(1) li:nth-child(5) > a").Click();
 
-            WaitForElement(".input-group-lg > .searchConditions", 5);
+            WaitForElement(".input-group-lg > .searchConditions");
             var InputSearchCondition = Find(css: ".input-group-lg > .searchConditions");
             InputSearchCondition.Clear();
             InputSearchCondition.SendKeys("IsTop");
 
-            WaitForElement("#IsTopGiver", 5);
+            WaitForElement("#IsTopGiver");
             Find(id: "IsTopGiver").Click();
-            WaitForElement("#FundIds", 5);
+            WaitForElement("#FundIds");
             var FundIds = Find(id: "FundIds");
             FundIds.ShouldNotBeNull();
         }
