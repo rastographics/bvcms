@@ -77,7 +77,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 <table>
     <tr>
         <td style='{{LabelStyle}}'>Total Fee</td>
-        <td style='{{DataStyle}}{{AlignRight}}'>{{Fmt TotPaid 'c'}}</td>
+        <td style='{{DataStyle}}{{AlignRight}}'>{{Fmt TotalFee 'c'}}</td>
     </tr>
     {{#if TotCoupon}}
     <tr>
@@ -85,12 +85,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
         <td style='{{DataStyle}}{{AlignRight}}'>{{Fmt TotCoupon 'c'}}</td>
     </tr>
     {{/if}}
-    {{#if TotCoupon}}
     <tr>
         <td style='{{LabelStyle}}'>Amount Charged</td>
         <td style='{{DataStyle}}{{AlignRight}}'>{{Calc TotPaid TotCoupon}}</td>
     </tr>
-    {{/if}}
     <tr>
         <td style='{{LabelStyle}}'>Balance Due</td>
         <td style='{{DataStyle}}{{AlignRight}}'>{{Fmt TotDue 'c'}}</td>
