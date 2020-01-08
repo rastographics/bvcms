@@ -18,9 +18,7 @@ namespace IntegrationTests.Areas.Search.Views.Query
 
             MaximizeWindow();
 
-            Find(xpath: "//a[contains(text(),'People')]").Click();
-            WaitForElement(".open .col-sm-6:nth-child(1) li:nth-child(5) > a");
-            Find(css: ".open .col-sm-6:nth-child(1) li:nth-child(5) > a").Click();
+            Open($"{rootUrl}NewQuery");
 
             WaitForElement(".input-group-lg > .searchConditions");
             var InputSearchCondition = Find(css: ".input-group-lg > .searchConditions");
