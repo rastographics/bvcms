@@ -181,28 +181,43 @@
                     e.preventDefault();
                 });
 
-                var container = $('#edit-thumbnail').Jcrop('api').container;
-                container.on('cropstart', function() {
-                    $('#save-crop').show();
+                var waitForEl = function (selector, callback) {
+                    if (jQuery(selector).length) {
+                        callback();
+                    } else {
+                        setTimeout(function () {
+                            waitForEl(selector, callback);
+                        }, 100);
+                    }
+                };
+
+                var Jcrop_api = $('#edit-thumbnail').Jcrop('api'); 
+
+                waitForEl(Jcrop_api, function () {
+                    var container = Jcrop_api.container;
+                    container.on('cropstart', function() {
+                        $('#save-crop').show();
+                    });
+
+                    container.on('cropend', function (e, s, c) {
+                        e.preventDefault();
+                        var imgWidth = $('#edit-thumbnail').width();
+                        var imgHeight = $('#edit-thumbnail').height();
+                        var xPos = (c.x / (imgWidth - c.w)) * 100;
+                        var yPos = (c.y / (imgHeight - c.h)) * 100;
+
+                        if (isNaN(xPos)) {
+                            xPos = 0;
+                        }
+                        if (isNaN(yPos)) {
+                            yPos = 0;
+                        }
+                        $('#xPos').val(Math.round(xPos));
+                        $('#yPos').val(Math.round(yPos));
+                        return false;
+                    });                    
                 });
 
-                container.on('cropend', function (e, s, c) {
-                    e.preventDefault();
-                    var imgWidth = $('#edit-thumbnail').width();
-                    var imgHeight = $('#edit-thumbnail').height();
-                    var xPos = (c.x / (imgWidth - c.w)) * 100;
-                    var yPos = (c.y / (imgHeight - c.h)) * 100;
-
-                    if (isNaN(xPos)) {
-                        xPos = 0;
-                    }
-                    if (isNaN(yPos)) {
-                        yPos = 0;
-                    }
-                    $('#xPos').val(Math.round(xPos));
-                    $('#yPos').val(Math.round(yPos));
-                    return false;
-                });
 
                 $('#save-crop').click(function(ev) {
                     ev.preventDefault();

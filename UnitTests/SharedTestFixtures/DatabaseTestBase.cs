@@ -29,7 +29,7 @@ namespace SharedTestFixtures
         private string _host;
         public string Host => _host ?? (_host = DatabaseFixture.Host);
 
-        protected User CreateUser(string username, string password, Family family = null, Person person = null, params string[] roles)
+        protected User CreateUser(string username, string password, Family family = null, Person person = null, int? genderId = null, int? memberStatusId = null, int? positionInFamilyId = null, int? maritalStatusId = null, params string[] roles)
         {
             if(person == null)
             {

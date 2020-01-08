@@ -119,10 +119,12 @@
       <Link>DatabaseCollection.cs</Link>
     </Compile>
     <Compile Include="Areas\Finance\Models\PostBundleModelTests.cs" />
+    <Compile Include="Areas\Main\Controllers\EmailControllerTests.cs" />
     <Compile Include="Areas\Manage\Models\Involvement\InvolvementTabModelTests.cs" />
     <Compile Include="Areas\Manage\Models\AccountModelTests.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineRegModelTest.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineRegPerson\HelperTests.cs" />
+    <Compile Include="Areas\OnlineReg\Models\OnlineRegPerson\OnlineRegPersonModelTests.cs" />
     <Compile Include="Areas\Org\Models\TestOrgGroupsModel.cs" />
     <Compile Include="Areas\People\Models\Person\Profile\MemberDocModelTests.cs" />
     <Compile Include="Areas\Public\Controllers\CheckInAPIControllerTests.cs" />
@@ -135,8 +137,10 @@
     <Compile Include="Areas\Public\Models\CheckIn\CheckInModelTests.cs" />
     <Compile Include="Areas\Public\Models\SmallGroupFinderModelTests.cs" />
     <Compile Include="Areas\Reports\Models\Reports\Export\ExportInvolvementsTests.cs" />
+    <Compile Include="Areas\Reports\Models\Reports\Other\MailingControllerTests.cs" />
     <Compile Include="Areas\Search\Controllers\QueryControllerTests.cs" />
     <Compile Include="Areas\Search\Models\OrgSearchModelTests.cs" />
+    <Compile Include="Areas\Search\Models\SearchAdd\SearchAddModelTests.cs" />
     <Compile Include="Areas\Setup\Controllers\DivisionControllerTests.cs" />
     <Compile Include="Code\PledgesHelperTests.cs" />
     <Compile Include="Models\ExportPeopleTests.cs" />
