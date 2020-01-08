@@ -124,7 +124,10 @@ namespace CmsData.API
 
         public void AddValue(string name, object value)
         {
-            dict[name] = value;
+            if (name.HasValue())
+            {
+                dict[name] = value;
+            }
         }
         public void SetValue(string name, string value)
         {
