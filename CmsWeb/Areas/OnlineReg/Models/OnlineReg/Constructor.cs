@@ -28,6 +28,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 if (_currentDatabase == null)
                 {
                     _currentDatabase = value;
+                    Init();
                 }
             }
         } 
@@ -42,11 +43,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
         }
         
         public OnlineRegModel(CMSDataContext db)
-            :this()
         {            
             CurrentDatabase = db;
         }
 
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
         public OnlineRegModel()
         {
             
