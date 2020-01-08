@@ -104,6 +104,8 @@ namespace CmsWeb.Areas.Finance.Controllers
             return Content(result);
         }
 
+        //TODO: This filename is too predictable and can cause one request to be blocked by another
+        //      Create a more unique filename and add it to the contributionsrun that is creating this file to be downloaded later
         private static string Output(string host)
         {
             var output = Environment.ExpandEnvironmentVariables(ConfigurationManager.AppSettings["SharedFolder"]);

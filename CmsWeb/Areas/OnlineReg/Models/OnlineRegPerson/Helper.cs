@@ -25,7 +25,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 {
                     _settings = HttpContextFactory.Current.Items["RegSettings"] as Dictionary<int, Settings>;
                     if (_settings == null)
+                    {
                         Parent.ParseSettings();
+                    }
                     _settings = HttpContextFactory.Current.Items["RegSettings"] as Dictionary<int, Settings>;
                 }
                 return _settings;
@@ -41,7 +43,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 {
                     _MasterSettings = HttpContextFactory.Current.Items["RegMasterSettings"] as Dictionary<int, Settings>;
                     if (_MasterSettings == null)
+                    {
                         Parent.ParseMasterSettings();
+                    }
                     _MasterSettings = HttpContextFactory.Current.Items["RegMasterSettings"] as Dictionary<int, Settings>;
                 }
                 return _MasterSettings;
