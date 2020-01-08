@@ -248,7 +248,38 @@ namespace CmsWeb.Areas.Public.Controllers
 			return response;
 		}
 
-		[HttpPost]
+        [HttpPost]
+        public ActionResult GetQRCodeForPerson(string data)
+        {
+            // Authenticate first
+            if (!Auth())
+            {
+                return Message.createErrorReturn("Authentication failed, please try again", Message.API_ERROR_INVALID_CREDENTIALS);
+            }
+
+            Message message = Message.createFromString(data);
+            
+            int size = (message.argInt == 0) ? 300 : message.argInt;
+            string QRCode;
+
+            try
+            {
+                QRCode = CmsData.Person.QRCode(CurrentDatabase, message.id, size);
+            }
+            catch (Exception e)
+            {
+                return Message.createErrorReturn(e.Message, Message.API_ERROR_PERSON_NOT_FOUND);
+            }
+            
+            Message response = new Message();
+            response.setNoError();
+            response.count = 1;
+            response.data = QRCode;
+
+            return response;
+        }
+
+        [HttpPost]
 		public ActionResult AddPerson( string data )
 		{
 			if( !Auth() ) {

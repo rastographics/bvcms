@@ -109,7 +109,11 @@ namespace CmsData
         public static string QRCode(CMSDataContext db, int PeopleId, int size = 300)
         {
             string barcode;
-            var person = db.People.Single(p => p.PeopleId == PeopleId);
+            var person = db.People.SingleOrDefault(p => p.PeopleId == PeopleId);
+            if (person == null)
+            {
+                throw new Exception("Person not found");
+            }
             if (person.BarcodeId.IsNotNull() && DateTime.Now > person.BarcodeExpires)
             {
                 barcode = person.BarcodeId.ToString();
