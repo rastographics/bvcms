@@ -579,7 +579,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             return View();
         }
 
-        [MyRequireHttps]
+        [MyRequireHttps, HttpGet]
         [Authorize]
         public ActionResult ChangePassword()
         {
