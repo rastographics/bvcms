@@ -38,7 +38,7 @@ namespace CmsWeb.Areas.Figures.Controllers
         public ActionResult ChartDisplayView(int[] fundIdsArr, int? year)
         {
             var test = new GoogleChartsData();
-            var temp = test.GetFundChartData(fundIdsArr, year).ToList();
+            var temp = test.GetFundChartData(fundIdsArr, year, CurrentDatabase).ToList();
             return View(temp);
         }
 
