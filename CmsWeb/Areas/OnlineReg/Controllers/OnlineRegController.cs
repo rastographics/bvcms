@@ -65,9 +65,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             if (m.ManageGiving())
             {
-                Session["Campus"] = Request.QueryString["campus"];
+                Session[$"Campus-{m.Orgid}"] =
+                    m.Campus = Request.QueryString["campus"];
                 Session["DefaultFunds"] = Request.QueryString["funds"];
-                m.Campus = Session["Campus"]?.ToString();
                 m.DefaultFunds = Session["DefaultFunds"]?.ToString();
             }
 
@@ -125,7 +125,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 ViewData["hasshell"] = true;
                 return View("Auth", new AccountInfo {
                     UsernameOrEmail = ret.User.Username,
-                    ReturnUrl = RouteExistingRegistration(m) ?? $"/OnlineReg/{m.Orgid}"
+                    ReturnUrl = RouteExistingRegistration(m) ?? $"/OnlineReg/{m.Orgid.GetValueOrDefault((int)m.masterorgid)}"
                 });
             }
             else

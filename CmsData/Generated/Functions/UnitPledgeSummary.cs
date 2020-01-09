@@ -15,6 +15,8 @@ namespace CmsData.View
 
         private decimal? _Pledged;
 
+        private DateTime? _PledgeDate;
+
         private string _FundDescription;
 
         public UnitPledgeSummary()
@@ -59,6 +61,20 @@ namespace CmsData.View
                 if (_Pledged != value)
                 {
                     _Pledged = value;
+                }
+            }
+        }
+
+        [Column(Name = "PledgeDate", UpdateCheck = UpdateCheck.Never, Storage = "_PledgeDate", DbType = "datetime")]
+        public DateTime? PledgeDate
+        {
+            get => _PledgeDate;
+
+            set
+            {
+                if (_PledgeDate != value)
+                {
+                    _PledgeDate = value;
                 }
             }
         }

@@ -44,23 +44,26 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         public ActionResult ManageGiving(string id, bool? testing, string campus = "", string funds = "")
         {
             if (!id.HasValue())
+            {
                 return Message("bad link");
+            }
+            var orgId = id;
             ManageGivingModel m = null;
             var td = TempData["PeopleId"];
 
-            SetCampusAndDefaultFunds(campus, funds);
+            SetCampusAndDefaultFunds(campus, funds, orgId.ToInt());
 
             funds = Session["DefaultFunds"]?.ToString();
 
             if (td != null)
             {
-                m = new ManageGivingModel(CurrentDatabase.Host, td.ToInt(), id.ToInt(), funds);
+                m = new ManageGivingModel(CurrentDatabase.Host, td.ToInt(), orgId.ToInt(), funds);
                 if (m.person == null)
                     return Message("person not found");
             }
             else
             {
-                var guid = id.ToGuid();
+                var guid = orgId.ToGuid();
                 if (guid == null)
                     return Content("invalid link");
                 var ot = CurrentDatabase.OneTimeLinks.SingleOrDefault(oo => oo.Id == guid.Value);
@@ -213,11 +216,11 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             return Json(new { Url = Url.Action("ConfirmRecurringGiving") });
         }
 
-        private void SetCampusAndDefaultFunds(string campus, string funds)
+        private void SetCampusAndDefaultFunds(string campus, string funds, int orgId)
         {
             if (!string.IsNullOrWhiteSpace(campus))
             {
-                Session["Campus"] = campus;
+                Session[$"Campus-{orgId}"] = campus;
             }
             if (!string.IsNullOrWhiteSpace(funds))
             {

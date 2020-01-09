@@ -49,14 +49,10 @@ namespace CmsWeb.Areas.Setup.Controllers
 
             if (!CurrentDatabase.Settings.Any(s => s.Id == id))
             {
-                var m = new Setting { Id = id };
-                CurrentDatabase.Settings.InsertOnSubmit(m);
-                var meta = new SettingMetadatum { SettingId = id };
-                CurrentDatabase.SettingMetadatas.InsertOnSubmit(meta);
-                CurrentDatabase.SubmitChanges();
                 CurrentDatabase.SetSetting(id, null);
+                CurrentDatabase.SubmitChanges();
             }
-            return Redirect($"/Settings/#{id}");
+            return Redirect($"/Settings/?focus={id}#tab-general");
         }
 
         [HttpPost]

@@ -1,9 +1,3 @@
-/* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church
- * Licensed under the GNU General Public License (GPL v2)
- * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license
- */
 using Dapper;
 using System;
 using System.Data.SqlClient;
@@ -33,10 +27,7 @@ namespace CmsData
 
         public static bool DatabaseExists(SqlConnection cn, string name)
         {
-            var cmd = new SqlCommand(
-                    "SELECT CAST(CASE WHEN EXISTS(SELECT NULL FROM sys.databases WHERE name = '"
-                    + name + "') THEN 1 ELSE 0 END AS BIT)", cn);
-            return (bool)cmd.ExecuteScalar();
+            return (bool)cn.ExecuteScalar("SELECT CAST(CASE WHEN EXISTS(SELECT 1 FROM sys.databases WHERE name = @name) THEN 1 ELSE 0 END AS BIT)", new { name });
         }
 
         public enum CheckDatabaseResult

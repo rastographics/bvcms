@@ -78,6 +78,7 @@ namespace CmsData.Registration
                         ApplyMaxToOtherFees = e.Element("ApplyMaxToOtherFees").ToBool();
                         ExtraValueFeeName = e.Element("ExtraValueFeeName")?.Value;
                         AccountingCode = e.Element("AccountingCode")?.Value;
+                        PushpayFundName = e.Element("PushpayFundName")?.Value;
                         IncludeOtherFeesWithDeposit = e.Element("IncludeOtherFeesWithDeposit").ToBool();
                         OtherFeesAddedToOrgFee = e.Element("OtherFeesAddedToOrgFee").ToBool();
                         AskDonation = e.Element("AskDonation").ToBool();
@@ -188,6 +189,7 @@ namespace CmsData.Registration
                 .Add("MaximumFee", MaximumFee)
                 .Add("ExtraValueFeeName", ExtraValueFeeName)
                 .Add("AccountingCode", AccountingCode)
+                .Add("PushpayFundName", PushpayFundName)
                 .AddIfTrue("ApplyMaxToOtherFees", ApplyMaxToOtherFees)
                 .AddIfTrue("IncludeOtherFeesWithDeposit", IncludeOtherFeesWithDeposit)
                 .AddIfTrue("OtherFeesAddedToOrgFee", OtherFeesAddedToOrgFee)

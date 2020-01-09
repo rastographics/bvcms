@@ -60,6 +60,7 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\System.Runtime.CompilerServices.Unsafe.4.5.2\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
@@ -100,12 +101,14 @@
     <Compile Include="MockCMSMembershipProvider.cs" />
     <Compile Include="MockCMSRoleProvider.cs" />
     <Compile Include="MockContributions.cs" />
+    <Compile Include="MockGateways.cs" />
     <Compile Include="MockHttpContext.cs" />
     <Compile Include="MockPeople.cs" />
     <Compile Include="MockSettings.cs" />
     <Compile Include="FamilyUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DatabaseTestBase.cs" />
+    <Compile Include="ResourceManagerExtensions.cs" />
     <Compile Include="SpecialContentUtils.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -123,6 +126,10 @@
     <ProjectReference Include="..\..\CmsWeb\CMSWeb.csproj">
       <Project>{FC942D51-94B5-456B-9683-0BA000A1EAF4}</Project>
       <Name>CMSWeb</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ImageData\ImageData.csproj">
+      <Project>{512DA381-E81B-4121-B978-FC850EC88353}</Project>
+      <Name>ImageData</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\UtilityExtensions\UtilityExtensions.csproj">
       <Project>{C504E3D2-5498-451B-BF82-309623706F11}</Project>

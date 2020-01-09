@@ -56,7 +56,7 @@ namespace CmsWeb.Areas.People.Controllers
 
             DbUtil.LogPersonActivity($"Contribution Statement for ({id})", id, p.Name);
 
-            return new ContributionStatementResult
+            return new ContributionStatementResult(CurrentDatabase)
             {
                 PeopleId = id,
                 FromDate = frdt.Value,
@@ -95,7 +95,7 @@ namespace CmsWeb.Areas.People.Controllers
 
             DbUtil.LogPersonActivity($"Contribution Statement for ({id})", id, p.Name);
 
-            return new ContributionStatementResult
+            return new ContributionStatementResult(CurrentDatabase)
             {
                 PeopleId = p.PeopleId,
                 FromDate = fr,

@@ -19,11 +19,12 @@ namespace CmsWeb.Areas.People.Controllers
             var q = from u in CurrentDatabase.Users
                     where u.PeopleId == id
                     select u;
+            ViewBag.PeopleId = id;
             return View("System/Users", q);
         }
 
         [HttpPost, Authorize(Roles = "Admin")]
-        public ActionResult UserEdit(int? id)
+        public ActionResult UserEdit(int? id, int? peopleId)
         {
             User u = null;
             if (id.HasValue)
@@ -32,9 +33,9 @@ namespace CmsWeb.Areas.People.Controllers
             }
             else
             {
-                u = AccountModel.AddUser(Util2.CurrentPeopleId);
+                u = AccountModel.AddUser(peopleId ?? Util2.CurrentPeopleId);
                 var name = Util.ActivePerson as string;
-                DbUtil.LogPersonActivity($"New User for: {name}", Util2.CurrentPeopleId, name);
+                DbUtil.LogPersonActivity($"New User for: {name}", peopleId ?? Util2.CurrentPeopleId, name);
                 ViewBag.username = u.Username;
                 u.MustChangePassword = true;
             }
@@ -46,7 +47,6 @@ namespace CmsWeb.Areas.People.Controllers
         public ActionResult UserUpdate(int id, string u, string p, bool sendwelcome, bool mustchangepassword, string[] role)
         {
             var user = CurrentDatabase.Users.Single(us => us.UserId == id);
-            user.MustChangePassword = mustchangepassword;
             if (u.HasValue() && user.Username != u)
             {
                 var uu = CurrentDatabase.Users.SingleOrDefault(us => us.Username == u);
@@ -63,6 +63,7 @@ namespace CmsWeb.Areas.People.Controllers
                 user.ChangePassword(p);
             }
 
+            user.MustChangePassword = mustchangepassword;
             CurrentDatabase.SubmitChanges();
             if (!user.PeopleId.HasValue)
             {
