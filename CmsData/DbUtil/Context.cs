@@ -797,7 +797,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
                             roleids = u.UserRoles.Select(uu => uu.RoleId).ToArray(),
                             roles = u.UserRoles.Select(uu => uu.Role.RoleName).ToArray(),
                         };
-                var i = q.SingleOrDefault();
+                var i = q.FirstOrDefault();
                 if (i == null)
                 {
                     return;

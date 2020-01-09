@@ -169,9 +169,10 @@ namespace CmsWeb.Areas.Manage.Controllers
             {
                 FormsAuthentication.SetAuthCookie(user, false);
                 AccountModel.SetUserInfo(CurrentDatabase, CurrentImageDatabase, user);
-                if (returnUrl.HasValue() && Url.IsLocalUrl(returnUrl))
+                if (returnUrl.HasValue())
                 {
-                    return Redirect(returnUrl);
+                    ViewData["Redirect"] = returnUrl;
+                    return View("Redirect");
                 }
 
                 return Redirect("/");
@@ -245,7 +246,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             if (m.ReturnUrl.HasValue())
             {
                 var lc = m.ReturnUrl.ToLower();
-                if (lc.StartsWith("/default.aspx") || lc.StartsWith("/login.aspx"))
+                if (lc.Contains("/default.aspx", true) || lc.Contains("/login.aspx", true) || lc.Contains("/Logon", true))
                 {
                     m.ReturnUrl = "/";
                 }
@@ -284,7 +285,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                 AccountModel.FinishLogin(user.Username, Session, CurrentDatabase, CurrentImageDatabase);
             }
 
-            return Redirect("/Auth" + m.ReturnUrlQueryString);
+            return RedirectTo("/Auth" + m.ReturnUrlQueryString);
         }
 
         [MyRequireHttps]
@@ -293,10 +294,11 @@ namespace CmsWeb.Areas.Manage.Controllers
         {
             var userId = Session[MFAUserId] as int?;
             var user = CurrentDatabase.CurrentUser ?? CurrentDatabase.Users
-                .Where(u => u.UserId == userId && u.Username == m.UsernameOrEmail).SingleOrDefault();
+                .Where(u => u.Username == m.UsernameOrEmail || u.EmailAddress == m.UsernameOrEmail || u.Person.EmailAddress2 == m.UsernameOrEmail)
+                .Where(u => u.UserId == userId).SingleOrDefault();
             if (user == null)
             {
-                return Redirect("/");
+                return RedirectTo("/");
             }
 
             if (user.MFAEnabled && !User.Identity.IsAuthenticated)
@@ -335,16 +337,22 @@ namespace CmsWeb.Areas.Manage.Controllers
             {
                 if (!CMSRoleProvider.provider.IsUserInRole(user.Username, "Access"))
                 {
-                    return Redirect("/Person2/" + Util.UserPeopleId);
+                    return RedirectTo("/Person2/" + Util.UserPeopleId);
                 }
             }
 
             if (m.ReturnUrl.HasValue() && Url.IsLocalUrl(m.ReturnUrl))
             {
-                return Redirect(m.ReturnUrl);
+                return RedirectTo(m.ReturnUrl);
             }
 
-            return Redirect("/");
+            return RedirectTo("/");
+        }
+
+        private ActionResult RedirectTo(string url)
+        {
+            ViewData["Redirect"] = url;
+            return View("Redirect");
         }
 
         [MyRequireHttps]
@@ -571,7 +579,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             return View();
         }
 
-        [MyRequireHttps]
+        [MyRequireHttps, HttpGet]
         [Authorize]
         public ActionResult ChangePassword()
         {
