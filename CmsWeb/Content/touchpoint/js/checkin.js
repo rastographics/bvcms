@@ -403,6 +403,7 @@ new Vue({
         reset() {
             // called on session timeout if kiosk has been idle too long
             this.idleStage = 0;
+            this.adminMode = false;
             this.loadView('landing');
             swal.close();
         },
@@ -561,8 +562,8 @@ new Vue({
                         if (response.data.error === 0) {
                             var results = JSON.parse(response.data.data);
                             if (results.length) {
-                                // todo: reload membership data (maybe get it from this endpoint?) and return to results view
-                                console.log('got here');
+                                vm.search = results.replace(/\"/g, "");
+                                vm.find();
                             }
                         } else {
                             if (response.data.error === -6) {
@@ -599,7 +600,6 @@ new Vue({
                     if (late && (start + late < now) && start < now) {
                         disabled = true;
                     }
-                    console.log('group:' + group.id + ' early:' + early + ' late:' + late + ' disabled:' + disabled);
                     var attend = member.id + '.' + group.id + '.' + group.date;
                     vm.$set(vm.attendance, attend, {
                         initial: group.checkedIn ? vm.CHECKEDIN : vm.ABSENT,
@@ -713,6 +713,7 @@ new Vue({
                 return;
             }
             vm.loading = true;
+            vm.adminMode = false;
             var attendances = [];
             var keys = Object.keys(vm.attendance);
             for (var i = 0; i < keys.length; i++) {

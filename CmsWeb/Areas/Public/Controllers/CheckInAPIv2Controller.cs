@@ -568,6 +568,9 @@ namespace CmsWeb.Areas.Public.Controllers
                 CurrentDatabase.SubmitChanges();
             }
 
+            Guid barcode = CmsData.Person.Barcode(CurrentDatabase, membership.peopleID);
+            response.data = SerializeJSON(barcode.ToString(), message.version);
+
             response.setNoError();
             response.count = 1;
 
