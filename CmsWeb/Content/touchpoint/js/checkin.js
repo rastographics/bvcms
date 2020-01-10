@@ -1,4 +1,4 @@
-﻿Vue.use(VueMask.VueMaskPlugin);
+﻿//Vue.use(VueMask.VueMaskPlugin);
 Mousetrap.unbind('/');
 
 var Keyboard = window.SimpleKeyboard.default;
@@ -13,13 +13,19 @@ new Vue({
         keyboard: false,
         reprintLabels: false,
         adminMode: false,
+        editingPerson: false,
         idleTimer: false,
         idleStage: 0,
         idleTimeout: 45000,
         profiles: [],
         families: [],
         members: [],
+        classes: [],
         attendance: [],
+        classData: {
+            member: 0,
+            showAll: 0
+        },
         kiosk: {
             name: '',
             profile: 'default'
@@ -50,7 +56,7 @@ new Vue({
     },
     watch: {
         loading: function (loading) {
-            if (loading) {
+            if (loading && typeof($.block) === "function") {
                 $.block();
             } else {
                 $.unblockUI();
@@ -283,6 +289,7 @@ new Vue({
                 var layout = (newView === 'namesearch') ? 'default' : 'numeric';
                 this.search = '';
                 this.members = [];
+                this.classes = [];
                 this.families = [];
                 this.attendance = [];
                 this.reprintLabels = false;
@@ -388,6 +395,7 @@ new Vue({
             this.profile = false;
             this.adminMode = false;
             this.profiles = [];
+            this.classes = [];
             this.loadView('login');
             this.getProfiles();
             window.location = "/CheckIn";
@@ -485,6 +493,93 @@ new Vue({
         selectFamily(family) {
             this.loadAttendance(family.members);
             this.loadView('checkin');
+        },
+        joinClass(member) {
+            this.classData.member = 1;
+            this.getClasses(member);
+        },
+        visitClass(member) {
+            this.classData.member = 0;
+            this.getClasses(member);
+        },
+        getClasses(member, showAll = 0) {
+            console.log(member);
+            let vm = this;
+            vm.classes = [];
+            vm.editingPerson = member;
+            vm.classData.showAll = showAll;
+
+            var dayID = new Date(vm.searchDay + 'T00:00').getDay();
+            var payload = vm.generatePayload({
+                peopleID: member.id,
+                campusID: vm.profile.CampusId,
+                dayID: dayID,
+                showAll: showAll
+            });
+            vm.loading = true;
+            vm.$http.post('/CheckInApiV2/GroupSearch', payload, vm.apiHeaders).then(
+                response => {
+                    vm.loading = false;
+                    if (response.status === 200) {
+                        if (response.data.error === 0) {
+                            var results = JSON.parse(response.data.data);
+                            if (results.length) {
+                                vm.classes = results;
+                                vm.loadView('classes');
+                            } else {
+                                warning_swal('No results', 'No classes available to join');
+                            }
+                        } else {
+                            if (response.data.error === -6) {
+                                vm.logout();
+                            }
+                            warning_swal('Search Failed', response.data.data);
+                        }
+                    } else {
+                        warning_swal('Warning!', 'Something went wrong, try again later');
+                    }
+                },
+                err => {
+                    console.log(err);
+                    vm.loading = false;
+                    error_swal('Error', 'Something went wrong');
+                }
+            );
+        },
+        updateMembership(member, org, join) {
+            let vm = this;
+            var payload = vm.generatePayload({
+                peopleID: member.id,
+                orgID: org.id,
+                join: join
+            });
+            vm.loading = true;
+            vm.$http.post('/CheckInApiV2/UpdateMembership', payload, vm.apiHeaders).then(
+                response => {
+                    vm.loading = false;
+                    if (response.status === 200) {
+                        if (response.data.error === 0) {
+                            var results = JSON.parse(response.data.data);
+                            if (results.length) {
+                                // todo: reload membership data (maybe get it from this endpoint?) and return to results view
+                                console.log('got here');
+                            }
+                        } else {
+                            if (response.data.error === -6) {
+                                vm.logout();
+                            }
+                            warning_swal('Membership update failed', response.data.data);
+                        }
+                    } else {
+                        warning_swal('Warning!', 'Something went wrong, try again later');
+                    }
+                },
+                err => {
+                    console.log(err);
+                    vm.loading = false;
+                    error_swal('Error', 'Something went wrong');
+                }
+            );
         },
         loadAttendance(members, attendances) {
             let vm = this;
@@ -745,6 +840,9 @@ new Vue({
                 $(".keyboard-input").focus();
             }
         });
+
+        $('.CheckInLoading').hide();
+        $('.checkin').show();
     }
 });
 

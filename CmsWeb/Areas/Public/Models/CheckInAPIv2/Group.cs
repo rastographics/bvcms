@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using CmsData;
 using CmsData.Classes.DataMapper;
+using Dapper;
 
 namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 {
@@ -69,37 +71,16 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 									FROM dbo.Organizations AS org
 											  LEFT JOIN dbo.OrgSchedule AS schedule ON schedule.OrganizationId = org.OrganizationId
 									WHERE schedule.SchedDay = @day
-										AND (org.SuspendCheckin IS NULL OR org.SuspendCheckin = 0)
+										AND (org.SuspendCheckin IS NULL OR org.SuspendCheckin = 0 OR @showAll = 1)
 										AND org.CanSelfCheckin = 1
 										AND (org.ClassFilled IS NULL OR org.ClassFilled = 0)
 										AND ((org.CampusId IS NULL AND org.AllowNonCampusCheckIn = 1) OR org.CampusId = @campus OR @campus = 0)
 										AND org.OrganizationStatusId = 30
-										AND (@birthday IS NULL OR CAST(org.BirthDayStart AS DATE) <= @birthday OR org.BirthDayStart IS NULL)
-										AND (@birthday IS NULL OR CAST(org.BirthDayEnd AS DATE) >= @birthday OR org.BirthDayEnd IS NULL)
+										AND (@birthday IS NULL OR CAST(org.BirthDayStart AS DATE) <= @birthday OR org.BirthDayStart IS NULL OR @showAll = 1)
+										AND (@birthday IS NULL OR CAST(org.BirthDayEnd AS DATE) >= @birthday OR org.BirthDayEnd IS NULL OR @showAll = 1)
 									ORDER BY org.OrganizationName, schedule.SchedTime";
 
-			using( SqlCommand cmd = new SqlCommand( qGroups, db ) ) {
-				SqlParameter personParameter = new SqlParameter( "birthday", birthday );
-				SqlParameter campusParameter = new SqlParameter( "campus", campus );
-				SqlParameter dateParameter = new SqlParameter( "day", day );
-				SqlParameter showAllParameter = new SqlParameter( "showAll", showAll );
-
-				cmd.Parameters.Add( personParameter );
-				cmd.Parameters.Add( campusParameter );
-				cmd.Parameters.Add( dateParameter );
-				cmd.Parameters.Add( showAllParameter );
-
-				SqlDataAdapter adapter = new SqlDataAdapter( cmd );
-				adapter.Fill( table );
-			}
-
-			foreach( DataRow row in table.Rows ) {
-				Group group = new Group();
-				group.populate( row );
-
-				groups.Add( group );
-			}
-
+            groups = db.Query<Group>(qGroups, new { birthday, campus, day, showAll }).ToList();
 			return groups;
 		}
 

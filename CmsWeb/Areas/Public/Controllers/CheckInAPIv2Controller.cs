@@ -529,7 +529,52 @@ namespace CmsWeb.Areas.Public.Controllers
 			return response;
 		}
 
-		public ActionResult PrintJobs( string data )
+        [HttpPost]
+        public ActionResult UpdateMembership(string data)
+        {
+            // Authenticate first
+            if (!Auth())
+            {
+                return Message.createErrorReturn("Authentication failed, please try again", Message.API_ERROR_INVALID_CREDENTIALS);
+            }
+
+            Message message = Message.createFromString(data);
+            Message response = new Message();
+
+            OrgMembership membership = JsonConvert.DeserializeObject<OrgMembership>(message.data);
+
+            OrganizationMember om = CurrentDatabase.OrganizationMembers.SingleOrDefault(m => m.PeopleId == membership.peopleID && m.OrganizationId == membership.orgID);
+
+            if (om == null && membership.join)
+            {
+                om = OrganizationMember.InsertOrgMembers(CurrentDatabase, membership.orgID, membership.peopleID, MemberTypeCode.Member, DateTime.Today);
+            }
+
+            if (om != null && !membership.join)
+            {
+                om.Drop(CurrentDatabase, CurrentImageDatabase, DateTime.Now);
+
+                DbUtil.LogActivity($"Dropped {om.PeopleId} for {om.Organization.OrganizationId} via checkin", peopleid: om.PeopleId, orgid: om.OrganizationId);
+            }
+
+            CurrentDatabase.SubmitChanges();
+
+            // Check Entry Point and replace if Check-In
+            CmsData.Person person = CurrentDatabase.People.FirstOrDefault(p => p.PeopleId == membership.peopleID);
+
+            if (person?.EntryPoint != null && person.EntryPoint.Code == "CHECKIN" && om != null)
+            {
+                person.EntryPoint = om.Organization.EntryPoint;
+                CurrentDatabase.SubmitChanges();
+            }
+
+            response.setNoError();
+            response.count = 1;
+
+            return response;
+        }
+
+        public ActionResult PrintJobs( string data )
 		{
 			if( !Auth() ) {
 				return Message.createErrorReturn( "Authentication failed, please try again", Message.API_ERROR_INVALID_CREDENTIALS );
@@ -579,16 +624,23 @@ namespace CmsWeb.Areas.Public.Controllers
 			if( person == null ) {
 				return Message.createErrorReturn( "Person not found", Message.API_ERROR_PERSON_NOT_FOUND );
 			}
-
 			DbUtil.LogActivity( $"Check-In Group Search: {person.PeopleId}: {person.Name}" );
 
 			List<Group> groups;
 
-			using( SqlConnection db = new SqlConnection( Util.ConnectionString ) ) {
-				groups = Group.forGroupFinder( db, person.BirthDate, search.campusID, search.dayID, search.showAll ? 1 : 0 );
-			}
+            try
+            {
+                using (SqlConnection db = new SqlConnection(Util.ConnectionString))
+                {
+                    groups = Group.forGroupFinder(db, person.BirthDate, search.campusID, search.dayID, search.showAll ? 1 : 0);
+                }
+            }
+            catch (Exception e)
+            {
+                return Message.createErrorReturn(e.Message, Message.API_ERROR_PERSON_NOT_FOUND);
+            }
 
-			Message response = new Message();
+            Message response = new Message();
 			response.setNoError();
 			response.data = SerializeJSON( groups );
 

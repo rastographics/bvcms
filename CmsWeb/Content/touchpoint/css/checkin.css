@@ -6,6 +6,7 @@
 .checkin {
     background-color: #f5f5f5 !important;
     user-select: none;
+    min-height: calc(100vh - 30px);
 }
 #main {
     padding: 0!important;
@@ -84,7 +85,8 @@
 .checkin .landing input:focus {
     outline: none;
 }
-.checkin .families .family h4 {
+.checkin .families .family h4,
+.checkin .classes .class {
     border: 1px solid #e6e6e6;
     background-color: #fff;
     padding: 30px 20px;
