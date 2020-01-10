@@ -326,6 +326,7 @@
     <Compile Include="API\ApiSessionResult.cs" />
     <Compile Include="API\ApiSessionStatus.cs" />
     <Compile Include="API\CreateExcel.cs" />
+    <Compile Include="API\PythonModel\DebugScriptsHelper.cs" />
     <Compile Include="API\PythonModel\PythonModel.Docusign.cs" />
     <Compile Include="API\PythonModel\PythonModel.DynamicData.cs" />
     <Compile Include="API\PythonModel\PythonModel.Deprecated.cs" />
