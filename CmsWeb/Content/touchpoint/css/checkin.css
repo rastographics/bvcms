@@ -85,8 +85,11 @@
 .checkin .landing input:focus {
     outline: none;
 }
-.checkin .families .family h4,
 .checkin .classes .class {
+    margin-bottom: 30px;
+}
+.checkin .families .family h4,
+.checkin .classes .class > div {
     border: 1px solid #e6e6e6;
     background-color: #fff;
     padding: 30px 20px;

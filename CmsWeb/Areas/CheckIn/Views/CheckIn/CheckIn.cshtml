@@ -55,7 +55,6 @@
             <h2 class="text-center">Enter your name</h2>
             <form v-on:submit.prevent="find">
                 <input type="text" name="name" v-model="search" autocomplete="off" class="keyboard-input" />
-                <div class="simple-keyboard"></div>
             </form>
             <div class="action-bar">
                 <div class="content">
@@ -98,9 +97,8 @@
                 <template v-for="org in classes">
                     <div class="col-xs-12 col-md-6 class">
                         <div v-on:click="updateMembership(editingPerson, org, classData.member)">
-                            <p style="font-size: 12px; margin-bottom: 5px;">{{ org.date | formatDate }}</p>
+                            <p style="font-size: 12px; margin-bottom: 5px;">{{ org.date | formatTime }} <span v-if="org.location">- {{ org.location }}</span></p>
                             <h4>{{ org.name }}</h4>
-                            <p v-if="org.location" style="font-size: 12px; margin-bottom: 5px;">{{ org.location }}</p>
                         </div>
                     </div>
                 </template>
@@ -138,7 +136,7 @@
                                         <li><a class="dropdown-item" v-on:click="joinClass(member)">Join class</a></li>
                                     </ul>
                                 </div>
-                                <span class="badge badge-info" v-if="member.age < profile.CutoffAge">{{ member.age }}</span>
+                                <span class="badge badge-info" v-if="member.age > 0 && member.age < profile.CutoffAge">{{ member.age }}</span>
                             </div>
                             <div v-for="group in member.groups" :class="{ 'disabled': attendance[member.id + '.' + group.id + '.' + group.date].disabled === true }">
                                 <div v-on:click="toggleAttendance(member.id, group.id, group.date)" :class="{ 'primary': attendance[member.id + '.' + group.id + '.' + group.date].status == 2, 'active': attendance[member.id + '.' + group.id + '.' + group.date].status == 1, 'check-container': true }">

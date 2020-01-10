@@ -75,6 +75,12 @@ new Vue({
             var date = new Date(dt);
             var time = date.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
             return time + ' - ' + $.datepicker.formatDate("m/d/y", date);
+        },
+        formatTime: function (dt) {
+            if (!dt) return '';
+            var date = new Date(dt);
+            var time = date.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+            return time;
         }
     },
     computed: {
@@ -278,7 +284,7 @@ new Vue({
         },
         loadView(newView) {
             // cleanup and prep for view swap
-            if (this.view === 'landing' || this.view === 'namesearch') {
+            if (this.view === 'landing') {
                 this.keyboard.destroy();
             }
             if (this.adminMode && newView === 'landing') {
@@ -293,7 +299,9 @@ new Vue({
                 this.families = [];
                 this.attendance = [];
                 this.reprintLabels = false;
-                this.initKeyboard(layout);
+                if (newView == 'landing') {
+                    this.initKeyboard(layout);
+                }
                 if (!this.profile || !this.kiosk.name.length) {
                     this.logout();
                     error_swal("Error", "Couldn't retrieve saved profile data. Please try logging in again.");
