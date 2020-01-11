@@ -72,6 +72,18 @@
               @Html.DropDownList("gateway", MultipleGatewayUtils.GatewayGatewayAccountList(), Model.gateway, new { @class = "form-control" })
             </div>
           </div>
+          <div class="col-lg-3 col-md-3 col-sm-6">
+            <div class="form-group">
+              <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Additional Filters" data-content="Searches for items less than or equal to the amount entered. Enter the same amount in both fields to find an exact amount."><i class="fa fa-info-circle"></i></a>&nbsp;
+              <label for="ltamount" class="control-label">Additional Filters</label>
+              <div class="input-group">
+                  <span class="input-group-addon">
+                      <i class="fa fa-list"></i>
+                  </span>
+                  @Html.DropDownList("additional-filters", Model.AdditionalFiltersSelectList(), Model.gateway, new { multiple = "multiple", @class = "form-control" })
+              </div>
+            </div>
+          </div>
           <div class="col-lg-3 col-md-3 col-sm-6 col-md-offset-6">
             <div class="form-group">
               <div class="checkbox">

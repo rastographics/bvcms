@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 using UtilityExtensions;
 
 namespace CmsWeb.Models
@@ -113,6 +114,20 @@ namespace CmsWeb.Models
                         Count = g.Count()
                     };
             return q.FirstOrDefault();
+        }
+
+        public SelectList AdditionalFiltersSelectList()
+        {
+            var list = new List<SelectListItem>
+            {
+                new SelectListItem { Text = "Approved transactions", Value = "0" },
+                new SelectListItem { Text = "Includes additional donation", Value = "1" },
+                new SelectListItem { Text = "Hide coupon", Value = "2" },
+                new SelectListItem { Text = "Test transaction", Value = "3" },
+                new SelectListItem { Text = "Use batch dates", Value = "4" },
+            };
+
+            return new SelectList(list, "Value", "Text");
         }
 
         private IQueryable<TransactionList> FetchTransactions()

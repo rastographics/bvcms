@@ -314,4 +314,8 @@
         return true;
     });
 
+    $('#additional-filters').multiselect({
+        buttonWidth: '100%',
+        numberDisplayed: 1
+    });
 });
