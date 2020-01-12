@@ -145,11 +145,12 @@ new Vue({
                 return false;
             }
         },
-        generatePayload(data) {
+        generatePayload(data, id = 0) {
             var inner = JSON.stringify(data);
             var outer = JSON.stringify({
                 version: 3,
                 device: 3,
+                id: id,
                 kiosk: this.kiosk.name,
                 data: inner
             });
@@ -251,7 +252,7 @@ new Vue({
         },
         handleIdle() {
             let vm = this;
-            if (!['landing','login','namesearch'].includes(vm.view) || vm.search.length) {
+            if (!['landing','login'].includes(vm.view) || vm.search.length) {
                 vm.idleStage++;
                 vm.resetIdleTimer();
                 if (vm.idleStage === 1) {
@@ -350,7 +351,12 @@ new Vue({
                                 var profile = JSON.parse(response.data.data);
                                 profile = {
                                     userName: profile.userName,
-                                    userId: profile.userID
+                                    userId: profile.userID,
+                                    genders: profile.genders,
+                                    maritals: profile.maritals,
+                                    states: profile.states,
+                                    countries: profile.countries,
+                                    campuses: profile.campuses
                                 };
                                 // load profile settings based on dropdown selection, or use the defaults
                                 vm.profiles.forEach((p) => {
@@ -503,6 +509,9 @@ new Vue({
             this.loadAttendance(family.members);
             this.loadView('checkin');
         },
+        editPerson(person) {
+            this.getPerson(person.id);
+        },
         joinClass(member) {
             this.classData.member = 1;
             this.getClasses(member);
@@ -512,7 +521,6 @@ new Vue({
             this.getClasses(member);
         },
         getClasses(member, showAll = 0) {
-            console.log(member);
             let vm = this;
             vm.classes = [];
             vm.editingPerson = member;
@@ -796,6 +804,40 @@ new Vue({
                     error_swal('Error', 'Something went wrong');
                 }
             );
+        },
+        getPerson(id) {
+            let vm = this;
+            vm.editingPerson = false;
+            var payload = vm.generatePayload({}, id);
+            vm.loading = true;
+            vm.$http.post('/CheckInApiV2/GetPerson', payload, vm.apiHeaders).then(
+                response => {
+                    vm.loading = false;
+                    if (response.status === 200) {
+                        if (response.data.error === 0) {
+                            var person = JSON.parse(response.data.data);
+                            vm.editingPerson = person;
+                            console.log(person);
+                            this.loadView('editperson');
+                        } else {
+                            if (response.data.error === -6) {
+                                vm.logout();
+                            }
+                            warning_swal('Search Failed', response.data.data);
+                        }
+                    } else {
+                        warning_swal('Warning!', 'Something went wrong, try again later');
+                    }
+                },
+                err => {
+                    console.log(err);
+                    vm.loading = false;
+                    error_swal('Error', 'Something went wrong');
+                }
+            );
+        },
+        savePerson() {
+            alert('save!');
         },
         scannerTest() {
             // disable the timer for testing
