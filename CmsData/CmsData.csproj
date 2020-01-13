@@ -326,6 +326,7 @@
     <Compile Include="API\ApiSessionResult.cs" />
     <Compile Include="API\ApiSessionStatus.cs" />
     <Compile Include="API\CreateExcel.cs" />
+    <Compile Include="API\PythonModel\DebugScriptsHelper.cs" />
     <Compile Include="API\PythonModel\PythonModel.Docusign.cs" />
     <Compile Include="API\PythonModel\PythonModel.DynamicData.cs" />
     <Compile Include="API\PythonModel\PythonModel.Deprecated.cs" />
@@ -1185,6 +1186,7 @@
     <Resource Include="Classes\OnlineRegSummaryText\Details2.xml">
       <SubType>Designer</SubType>
     </Resource>
+    <Content Include="Migrations\00000000_sql_migrations_table.sql" />
     <Content Include="QueryBuilder\CompareMap.xml">
       <SubType>Designer</SubType>
     </Content>

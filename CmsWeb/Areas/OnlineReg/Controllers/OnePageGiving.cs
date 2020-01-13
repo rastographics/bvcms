@@ -364,8 +364,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 }
             }
             Session["OnlineRegLogin"] = true;
-            
-            return Redirect(returnUrl);
+
+            ViewData["Redirect"] = returnUrl;
+            return View("Redirect");
         }
 
         private bool CheckAddress(PaymentForm pf)
