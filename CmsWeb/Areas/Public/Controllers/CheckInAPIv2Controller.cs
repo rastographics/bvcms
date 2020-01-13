@@ -327,8 +327,9 @@ namespace CmsWeb.Areas.Public.Controllers
 			AddEditPersonResults results = new AddEditPersonResults {
 				familyID = f.FamilyId,
 				peopleID = p.PeopleId,
-				positionID = p.PositionInFamilyId
-			};
+				positionID = p.PositionInFamilyId,
+                barcodeID = CmsData.Person.Barcode(CurrentDatabase, p.PeopleId)
+            };
 
 			Message response = new Message();
 			response.setNoError();
@@ -363,10 +364,11 @@ namespace CmsWeb.Areas.Public.Controllers
 
 			CurrentDatabase.SubmitChanges();
 
-			AddEditPersonResults results = new AddEditPersonResults {
-				familyID = f.FamilyId,
-				peopleID = p.PeopleId,
-				positionID = p.PositionInFamilyId
+            AddEditPersonResults results = new AddEditPersonResults {
+                familyID = f.FamilyId,
+                peopleID = p.PeopleId,
+                positionID = p.PositionInFamilyId,
+                barcodeID = CmsData.Person.Barcode(CurrentDatabase, p.PeopleId)
 			};
 
 			Message response = new Message();

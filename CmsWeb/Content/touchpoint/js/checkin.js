@@ -14,6 +14,7 @@ new Vue({
         reprintLabels: false,
         adminMode: false,
         editingPerson: false,
+        lastSearch: false,
         idleTimer: false,
         idleStage: 0,
         idleTimeout: 45000,
@@ -62,7 +63,7 @@ new Vue({
                 $.unblockUI();
             }
         },
-        search: function (current, previous) {
+        search: function (current) {
             let vm = this;
             if (current.includes('-') && current.length === 32) {
                 setTimeout(vm.find, 200);
@@ -161,7 +162,6 @@ new Vue({
         },
         cookie(name, value, days) {
             var expires;
-
             if (days) {
                 var date = new Date();
                 date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
@@ -300,7 +300,7 @@ new Vue({
                 this.families = [];
                 this.attendance = [];
                 this.reprintLabels = false;
-                if (newView == 'landing') {
+                if (newView === 'landing') {
                     this.initKeyboard(layout);
                 }
                 if (!this.profile || !this.kiosk.name.length) {
@@ -309,29 +309,79 @@ new Vue({
                 }
             }
         },
+        logout() {
+            localStorage.removeItem('identity');
+            localStorage.removeItem('profile');
+            this.cookie('Authorization', "", -1);
+            this.search = '';
+            this.identity = false;
+            this.profile = false;
+            this.adminMode = false;
+            this.profiles = [];
+            this.classes = [];
+            this.loadView('login');
+            this.getProfiles();
+            window.location = "/CheckIn";
+        },
+        reset() {
+            // called on session timeout if kiosk has been idle too long
+            this.idleStage = 0;
+            this.adminMode = false;
+            this.loadView('landing');
+            swal.close();
+        },
+        leaveAdminMode() {
+            this.adminMode = false;
+            this.loadView('landing');
+        },
+        useLastSearch() {
+            this.search = this.lastSearch;
+            this.find();
+        },
+        selectFamily(family) {
+            this.loadAttendance(family.members);
+            this.loadView('checkin');
+        },
+        editPerson(person) {
+            this.editingPerson = person.id;
+            this.getPerson(person.id);
+        },
+        addToFamily() {
+            this.editingPerson = 0;
+            var hoh = this.members[0];
+            this.getPerson(hoh.id);
+        },
+        joinClass(member) {
+            this.classData.member = 1;
+            this.getClasses(member);
+        },
+        visitClass(member) {
+            this.classData.member = 0;
+            this.getClasses(member);
+        },
         getProfiles() {
             let vm = this;
             vm.loading = true;
             vm.$http.get('/CheckInApiV2/GetProfiles')
-            .then(
-                response => {
-                    vm.loading = false;
-                    if (response.status === 200) {
-                        vm.profiles = response.data;
-                        if (vm.profiles.length) {
-                            vm.kiosk.profile = vm.profiles[0].id;
+                .then(
+                    response => {
+                        vm.loading = false;
+                        if (response.status === 200) {
+                            vm.profiles = response.data;
+                            if (vm.profiles.length) {
+                                vm.kiosk.profile = vm.profiles[0].id;
+                            }
                         }
+                        else {
+                            warning_swal('Couldn\'t load profiles', 'Something went wrong, try again later');
+                        }
+                    },
+                    err => {
+                        console.log(err);
+                        vm.loading = false;
+                        error_swal('Error', 'Unable to load profiles.');
                     }
-                    else {
-                        warning_swal('Couldn\'t load profiles', 'Something went wrong, try again later');
-                    }
-                },
-                err => {
-                    console.log(err);
-                    vm.loading = false;
-                    error_swal('Error', 'Unable to load profiles.');
-                }
-            );
+                );
         },
         auth() {
             let vm = this;
@@ -400,35 +450,10 @@ new Vue({
                 warning_swal('Login Failed', 'Email and password are required');
             }
         },
-        logout() {
-            localStorage.removeItem('identity');
-            localStorage.removeItem('profile');
-            this.cookie('Authorization', "", -1);
-            this.search = '';
-            this.identity = false;
-            this.profile = false;
-            this.adminMode = false;
-            this.profiles = [];
-            this.classes = [];
-            this.loadView('login');
-            this.getProfiles();
-            window.location = "/CheckIn";
-        },
-        reset() {
-            // called on session timeout if kiosk has been idle too long
-            this.idleStage = 0;
-            this.adminMode = false;
-            this.loadView('landing');
-            swal.close();
-        },
-        leaveAdminMode() {
-            this.adminMode = false;
-            this.loadView('landing');
-        },
         find() {
             let vm = this;
             var phone = vm.search.replace(/[^\d!]/g, '');
-            
+
             // handle special entry
             if (phone === vm.profile.Logout) {
                 vm.logout();
@@ -469,9 +494,11 @@ new Vue({
                         if (response.data.error === 0) {
                             var results = JSON.parse(response.data.data);
                             if (results.length > 1) {
+                                vm.lastSearch = vm.search;
                                 vm.families = results;
                                 vm.loadView('families');
                             } else if (results.length === 1) {
+                                vm.lastSearch = vm.search;
                                 vm.families = [];
                                 var attendance = null;
                                 if (response.data.argString) {
@@ -505,20 +532,90 @@ new Vue({
                 }
             );
         },
-        selectFamily(family) {
-            this.loadAttendance(family.members);
-            this.loadView('checkin');
+        getPerson(id) {
+            let vm = this;
+            var payload = vm.generatePayload({}, id);
+            vm.loading = true;
+            vm.$http.post('/CheckInApiV2/GetPerson', payload, vm.apiHeaders).then(
+                response => {
+                    vm.loading = false;
+                    if (response.status === 200) {
+                        if (response.data.error === 0) {
+                            var person = JSON.parse(response.data.data);
+                            if (vm.editingPerson !== 0) {
+                                // edit existing
+                                vm.editingPerson = person;
+                            } else {
+                                // add new to family
+                                person.id = 0;
+                                person.firstName = "";
+                                person.goesBy = "";
+                                person.altName = "";
+                                person.genderID = 0;
+                                person.birthday = null;
+                                person.primaryEmail = "";
+                                person.homePhone = "";
+                                person.workPhone = "";
+                                person.mobilePhone = "";
+                                person.maritalStatusID = 0;
+                                person.church = "";
+                                person.allergies = "";
+                                person.emergencyName = "";
+                                person.emergencyPhone = "";
+                                vm.editingPerson = person;
+                            }
+                            this.loadView('editperson');
+                        } else {
+                            if (response.data.error === -6) {
+                                vm.logout();
+                            }
+                            warning_swal('Search Failed', response.data.data);
+                        }
+                    } else {
+                        warning_swal('Warning!', 'Something went wrong, try again later');
+                    }
+                },
+                err => {
+                    console.log(err);
+                    vm.loading = false;
+                    error_swal('Error', 'Something went wrong');
+                }
+            );
         },
-        editPerson(person) {
-            this.getPerson(person.id);
-        },
-        joinClass(member) {
-            this.classData.member = 1;
-            this.getClasses(member);
-        },
-        visitClass(member) {
-            this.classData.member = 0;
-            this.getClasses(member);
+        savePerson() {
+            let vm = this;
+            var endpoint;
+            var payload = vm.generatePayload(vm.editingPerson);
+            if (vm.editingPerson.id) {
+                endpoint = "/CheckInApiV2/EditPerson";
+            } else {
+                endpoint = "/CheckInApiV2/AddPerson";
+            }
+            vm.loading = true;
+            vm.$http.post(endpoint, payload, vm.apiHeaders).then(
+                response => {
+                    vm.loading = false;
+                    if (response.status === 200) {
+                        if (response.data.error === 0) {
+                            var results = JSON.parse(response.data.data);
+                            vm.search = results.barcodeID.replace(/\"/g, "");
+                            vm.find();
+                        } else {
+                            if (response.data.error === -6) {
+                                vm.logout();
+                            }
+                            warning_swal('Save Failed', response.data.data);
+                        }
+                    } else {
+                        warning_swal('Warning!', 'Something went wrong, try again later');
+                    }
+                },
+                err => {
+                    console.log(err);
+                    vm.loading = false;
+                    error_swal('Error', 'Something went wrong');
+                }
+            );
         },
         getClasses(member, showAll = 0) {
             let vm = this;
@@ -804,40 +901,6 @@ new Vue({
                     error_swal('Error', 'Something went wrong');
                 }
             );
-        },
-        getPerson(id) {
-            let vm = this;
-            vm.editingPerson = false;
-            var payload = vm.generatePayload({}, id);
-            vm.loading = true;
-            vm.$http.post('/CheckInApiV2/GetPerson', payload, vm.apiHeaders).then(
-                response => {
-                    vm.loading = false;
-                    if (response.status === 200) {
-                        if (response.data.error === 0) {
-                            var person = JSON.parse(response.data.data);
-                            vm.editingPerson = person;
-                            console.log(person);
-                            this.loadView('editperson');
-                        } else {
-                            if (response.data.error === -6) {
-                                vm.logout();
-                            }
-                            warning_swal('Search Failed', response.data.data);
-                        }
-                    } else {
-                        warning_swal('Warning!', 'Something went wrong, try again later');
-                    }
-                },
-                err => {
-                    console.log(err);
-                    vm.loading = false;
-                    error_swal('Error', 'Something went wrong');
-                }
-            );
-        },
-        savePerson() {
-            alert('save!');
         },
         scannerTest() {
             // disable the timer for testing

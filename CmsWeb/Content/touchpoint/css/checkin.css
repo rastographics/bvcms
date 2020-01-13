@@ -8,6 +8,9 @@
     user-select: none;
     min-height: calc(100vh - 30px);
 }
+.checkin .btn {
+    border-radius: 4px;
+}
 #main {
     padding: 0!important;
     margin: 0!important;
@@ -156,6 +159,9 @@
     max-width: 360px;
     margin: 0 auto;
     padding: 27px;
+}
+.checkin .editperson .form {
+    padding: 0px 22px;
 }
 .checkin .header-bar {
     margin-bottom: 25px;
