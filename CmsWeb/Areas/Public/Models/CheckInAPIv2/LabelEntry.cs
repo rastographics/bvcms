@@ -99,7 +99,8 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 					return string.Format( format, cacheSet.securityCode );
 
 				case LabelField.PERSON_FIRST_NAME:
-					return string.Format( format, person.FirstName );
+                    string firstname = String.IsNullOrEmpty(person.NickName) ? person.FirstName : person.NickName;
+                    return string.Format( format, firstname );
 
 				case LabelField.PERSON_LAST_NAME:
 					return string.Format( format, person.LastName );

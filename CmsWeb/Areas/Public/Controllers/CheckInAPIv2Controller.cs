@@ -603,11 +603,13 @@ namespace CmsWeb.Areas.Public.Controllers
 				List<Label> labelGroup = attendanceBundle.createLabelData( CurrentDatabase );
 
 				labels.Add( labelGroup );
-			}
+                CurrentDatabase.PrintJobs.DeleteOnSubmit(printJob);
+            }
 
 			response.setNoError();
 			response.count = labels.Count;
 			response.data = SerializeJSON( labels );
+            CurrentDatabase.SubmitChanges();
 
 			return response;
 		}
