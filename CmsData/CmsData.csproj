@@ -421,6 +421,7 @@
     <Compile Include="Extensions\OrgPerson.cs" />
     <Compile Include="Extensions\PaymentInfo.cs" />
     <Compile Include="Extensions\RepairTransactionRun.cs" />
+    <Compile Include="Extensions\SettingMetadatum.cs" />
     <Compile Include="Finance\AcceptivaGateway.cs" />
     <Compile Include="Finance\Acceptiva\Core\Helpers\CanadaState.cs" />
     <Compile Include="Finance\Acceptiva\Core\Helpers\ISO3166Country.cs" />
