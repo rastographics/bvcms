@@ -25,7 +25,7 @@
             if (newValue === 'True') {
                 $(".headcount").editable("enable");
             } else {
-                $(".headcount").editable($("#RegularMeetingHeadCount").val());
+                $(".headcount").editable($("#RegularMeetingHeadCount").val() === "true" ? "enable" : "disable");
             }
         }
     });

@@ -398,7 +398,7 @@ pid: {pid}
             List<AskYesNoQuestions.YesNoQuestion> list = null;
             if (RegPerson.YesNoQuestion != null)
             {
-                ((AskYesNoQuestions)currentAsk).list
+                list = ((AskYesNoQuestions)currentAsk).list
                     .Where(a => RegPerson.YesNoQuestion.ContainsKey(a.SmallGroup)).ToList();
             }
             if (list == null || !list.Any())

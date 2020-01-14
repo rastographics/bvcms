@@ -30,8 +30,6 @@ namespace CmsWeb.Controllers
                 }
             }
 
-            //var db = Db;
-
             var smsItem = CurrentDatabase.SMSItems.FirstOrDefault(m => m.Id == Id);
 
             if (smsItem != null)

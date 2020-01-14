@@ -1566,7 +1566,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
         [HttpPost]
         public ActionResult RecordHeadcount(string data)
         {
-            if (CurrentDatabase.Setting("RegularMeetingHeadCount", "true") == "disabled")
+            if (!CurrentDatabase.Setting("RegularMeetingHeadCount", true))
             {
                 return BaseMessage.createErrorReturn("Headcounts for meetings are disabled");
             }
