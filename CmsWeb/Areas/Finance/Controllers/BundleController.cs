@@ -34,6 +34,13 @@ namespace CmsWeb.Areas.Finance.Controllers
             return View(m);
         }
 
+        [Route("~/BundleContribution/{id:int}")]
+        public ActionResult BundleContribution(int id)
+        {
+            var bundleId = CurrentDatabase.BundleDetails.FirstOrDefault(p => p.ContributionId == id).BundleHeaderId;
+            return Redirect($"/Bundle/{bundleId}");
+        }
+
         [HttpPost]
         public ActionResult Results(Models.BundleModel m)
         {

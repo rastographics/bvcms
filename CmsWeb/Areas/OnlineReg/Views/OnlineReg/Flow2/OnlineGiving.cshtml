@@ -2,8 +2,8 @@
 @model CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel
 @{
     var funame = Html.NameFor2(m => m.FundItem);
-    var funds = Model.Funds();
-    var specialFunds = Model.SpecialFunds();
+    var funds = Model.PrimaryFunds();
+    var specialFunds = Model.SecondaryFunds();
     var displaySpecialGivingFunds = specialFunds.Any() && !Model.ShouldPullSpecificFund();
     decimal? tot = 0;
 }
