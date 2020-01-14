@@ -86,6 +86,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Areas\CheckIn\Views\CheckinTimeViewsTests.cs" />
+    <Compile Include="Areas\Finance\Views\Fund\IndexTests.cs" />
     <Compile Include="Areas\General\ScriptControllerTests.cs" />
     <Compile Include="Areas\Figures\Views\Figures\RefineFundViewTests.cs" />
     <Compile Include="Areas\Finance\Views\Bundle\EditTests.cs" />
