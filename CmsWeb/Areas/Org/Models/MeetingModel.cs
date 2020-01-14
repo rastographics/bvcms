@@ -73,9 +73,9 @@ namespace CmsWeb.Areas.Org.Models
             org = i.org;
         }
 
-        public string RegularMeetingHeadCountSetting()
+        public bool RegularMeetingHeadCountSetting()
         {
-            return CurrentDatabase.Setting("RegularMeetingHeadCount", "enable");
+            return CurrentDatabase.Setting("RegularMeetingHeadCount", true);
         }
 
         public List<RollsheetModel.AttendInfo> Attends(bool sorted = false, string highlight = null)

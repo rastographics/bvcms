@@ -220,7 +220,10 @@ namespace CmsWeb.Areas.Main.Controllers
 
             if (content != null)
             {
-                CurrentDatabase.ArchiveContent(draftId);
+                if (CurrentDatabase.Setting("UseEmailDraftVersioning", false))
+                {
+                    CurrentDatabase.ArchiveContent(draftId);
+                }
             }
             else
             {

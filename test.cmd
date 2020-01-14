@@ -6,6 +6,7 @@ for /f %%f in ('dir /b packages\xunit.runner.console.*') do set xunit=%~dp0packa
 for /f %%f in ('dir /b packages\codecov.*') do set codecov=%~dp0packages\%%f\tools\codecov.exe
 for /f %%f in ('dir /b packages\selenium.webdriver.chromedriver.*') do set chromedriverdir=%~dp0packages\%%f\driver\win32\
 set test_coverage=%~dp0test_coverage.xml
+set integ_coverage=%~dp0integ_coverage.xml
 set opencover_filters="+[*]* -[*Tests]* -[xunit.*]*"
 set iisexpress="%ProgramFiles%\IIS Express\iisexpress.exe"
 echo using %OpenCover%
@@ -16,8 +17,8 @@ set target_tests=%target_tests% .\UnitTests\ImageDataTests\bin\Debug\ImageDataTe
 set target_tests=%target_tests% .\UnitTests\CMSWebTests\bin\Debug\CMSWebTests.dll
 set target_tests=%target_tests% .\UnitTests\UtilityExtensionsTests\bin\Debug\UtilityExtensionsTests.dll
 set integration_tests=.\IntegrationTests\bin\Debug\IntegrationTests.dll
-echo quit | sqlcmd -S localhost -q "IF DB_ID('CMS_localhost') IS NOT NULL ALTER DATABASE cms_localhost SET SINGLE_USER WITH ROLLBACK IMMEDIATE;drop database cms_localhost"
-echo quit | sqlcmd -S localhost -q "IF DB_ID('CMSi_localhost') IS NOT NULL ALTER DATABASE cmsi_localhost SET SINGLE_USER WITH ROLLBACK IMMEDIATE;drop database cmsi_localhost"
+echo quit | sqlcmd -S (local) -q "IF DB_ID('CMS_localhost') IS NOT NULL ALTER DATABASE CMS_localhost SET SINGLE_USER WITH ROLLBACK IMMEDIATE;DROP DATABASE CMS_localhost"
+echo quit | sqlcmd -S (local) -q "IF DB_ID('CMSi_localhost') IS NOT NULL ALTER DATABASE CMSi_localhost SET SINGLE_USER WITH ROLLBACK IMMEDIATE;DROP DATABASE CMSi_localhost"
 %OpenCover% -register:user -target:"%xunit%" -targetargs:"%target_tests% -noshadow -teamcity" -filter:%opencover_filters% -output:"%test_coverage%" || exit 7
 IF NOT EXIST %test_coverage% (
   echo File not found: %test_coverage%
@@ -26,8 +27,8 @@ IF NOT EXIST %test_coverage% (
 IF "%CodeCovToken%" NEQ "" %codecov% -f "%test_coverage%" -t "%CodeCovToken%"
 set "IISEXPRESS_HOST=%OpenCover%"
 set placeholder="{0}"
-set "IISEXPRESS_ARGS=-register:user -target:%iisexpress% -targetargs:%placeholder% -filter:%opencover_filters% -output:%test_coverage%"
-del %test_coverage%
+set "IISEXPRESS_ARGS=-register:user -target:%iisexpress% -targetargs:%placeholder% -filter:%opencover_filters% -output:%integ_coverage%"
+del %integ_coverage%
 %OpenCover% -register:user -target:"%xunit%" -targetargs:"%integration_tests% -noshadow -teamcity" -filter:%opencover_filters% || exit 9
 
 @echo off
@@ -42,9 +43,9 @@ IF ERRORLEVEL 1 (
 :opencoverexited
 @echo on
 
-IF NOT EXIST %test_coverage% (
-  echo File not found: %test_coverage%
+IF NOT EXIST %integ_coverage% (
+  echo File not found: %integ_coverage%
   exit 10
 )
-IF "%CodeCovToken%" NEQ "" %codecov% -f "%test_coverage%" -t "%CodeCovToken%"
+IF "%CodeCovToken%" NEQ "" %codecov% -f "%integ_coverage%" -t "%CodeCovToken%"
 endlocal

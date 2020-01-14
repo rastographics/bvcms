@@ -630,6 +630,8 @@
     <Compile Include="Areas\People\Models\Contact\ContactExtraLocationConfig.cs" />
     <Compile Include="Areas\People\Models\Downline\DownlineLevelsModel.cs" />
     <Compile Include="Areas\People\Models\Downline\DownlineSummaryModel.cs" />
+    <Compile Include="Areas\People\Models\Person\Giving\GivingSummary.cs" />
+    <Compile Include="Areas\People\Models\PersonDocumentsModel.cs" />
     <Compile Include="Areas\People\Models\Person\Giving\PledgesSummary.cs" />
     <Compile Include="Areas\People\Models\Task\TaskModel.cs" />
     <Compile Include="Areas\Public\Controllers\CheckInAPIv2Controller.cs" />
@@ -675,8 +677,10 @@
     <Compile Include="Areas\Public\Models\MobileAPIv2\MobileAuthentication.cs" />
     <Compile Include="Areas\Public\Models\MobileAPIv2\MobileQuickSignInUser.cs" />
     <Compile Include="Areas\Public\Models\MobileAPIv2\MobileUserPrivileges.cs" />
+    <Compile Include="Areas\Public\Models\MobileAPI\MobileAnnualGivingSummary.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileGivingEntry.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileGivingHistory.cs" />
+    <Compile Include="Areas\Public\Models\MobileAPI\MobileGivingSummary.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileInvolvement.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobilePersonExtended.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\PostObjects\MobilePostEditField.cs" />
@@ -1703,6 +1707,7 @@
     <Content Include="Content\touchpoint\lib\select2\css\select2x2.png" />
     <Content Include="Content\touchpoint\lib\select2\js\select2.min.js" />
     <Content Include="Content\touchpoint\lib\twitter-typeahead\js\typeahead.js" />
+    <Content Include="Content\InstallPyScriptProject.py" />
     <Content Include="Content\xml.xsl" />
     <Content Include="Content\images\brokencode.jpg" />
     <Content Include="Content\images\sgfunknown.jpg" />
@@ -1869,6 +1874,7 @@
     <Content Include="Areas\CheckIn\Views\CheckIn\CheckIn.cshtml" />
     <Content Include="Areas\CheckIn\Views\Web.config" />
     <Content Include="Areas\CheckIn\Views\CheckinSetup\Index.cshtml" />
+    <Content Include="Areas\People\Views\Shared\CombineGiving.cshtml" />
     <Content Include="Areas\People\Views\Task\_ActionsMenu.cshtml" />
     <Content Include="Areas\Manage\Views\Account\AuthDisabled.cshtml" />
     <None Include="packages.config">
@@ -2800,6 +2806,7 @@
     <Content Include="Views\Shared\_LayoutNoHeaderFooter.cshtml" />
     <Content Include="Views\Shared\AdminAlerts.cshtml" />
     <Content Include="Views\Shared\_diagnostics.cshtml" />
+    <Content Include="Views\Shared\Redirect.cshtml" />
     <None Include="Web.staging.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -287,6 +287,41 @@
         WHERE pe.peopleid = p.peopleid AND field = '{field}'
       )
      </column>
+    <column name="FamilyExtraValueCode">
+        (
+        SELECT strvalue
+        FROM dbo.familyextra fe
+        WHERE fe.familyid = p.familyid AND field = '{field}'
+        )
+    </column>
+    <column name="FamilyExtraValueDate">
+        (
+        SELECT datevalue
+        FROM dbo.familyextra fe
+        WHERE fe.familyid = p.familyid AND field = '{field}'
+        )
+    </column>
+    <column name="FamilyExtraValueText">
+        (
+        SELECT data
+        FROM dbo.familyextra fe
+        WHERE fe.familyid = p.familyid AND field = '{field}'
+        )
+    </column>
+    <column name="FamilyExtraValueInt">
+        (
+        SELECT intvalue
+        FROM dbo.familyextra fe
+        WHERE fe.familyid = p.familyid AND field = '{field}'
+        )
+    </column>
+    <column name="FamilyExtraValueBit">
+        (
+        SELECT bitvalue
+        FROM dbo.familyextra fe
+        WHERE fe.familyid = p.familyid AND field = '{field}'
+        )
+    </column>
     <column name="SmallGroup" context="org">
       dbo.InSmallGroup({orgid}, p.PeopleId, '{smallgroup}')
     </column>

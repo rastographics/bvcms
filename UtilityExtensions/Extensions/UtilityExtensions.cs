@@ -39,11 +39,7 @@ namespace UtilityExtensions
         {
             get
             {
-                if (HttpContextFactory.Current != null)
-                    if (HttpContextFactory.Current.Session != null)
-                        return HttpContextFactory.Current.Session.SessionID;
-                var s = (string)HttpRuntime.Cache["SessionId"] ?? (SessionId = Guid.NewGuid().ToString());
-                return s;
+                return HttpContextFactory.Current?.Session?.SessionID ?? (string)HttpRuntime.Cache["SessionId"] ?? (SessionId = Guid.NewGuid().ToString());                
             }
             set { HttpRuntime.Cache["SessionId"] = value; }
         }

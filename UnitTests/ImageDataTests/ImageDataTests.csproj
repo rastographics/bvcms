@@ -59,12 +59,11 @@
     <Compile Include="ImageTests.cs" />
     <Compile Include="OtherTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Resources\ImageDataTestsResources.Designer.cs">
+    <Compile Include="Properties\Resources\ImageDataTestsResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ImageDataTestsResources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Resources\ResourceManagerExtensions.cs" />
     <Compile Include="Support\ImageDataTestBase.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -139,18 +138,18 @@
     <Analyzer Include="..\..\packages\xunit.analyzers.0.10.0\analyzers\dotnet\cs\xunit.analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\ImageDataTestsResources.resx">
+    <EmbeddedResource Include="Properties\Resources\ImageDataTestsResources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>ImageDataTestsResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\Images\Check1.jpg" />
-    <Content Include="Resources\Images\Check2.jpg" />
-    <Content Include="Resources\Images\CreateNewTinyImageTest.jpg" />
-    <Content Include="Resources\Images\RatioTest.jpg" />
-    <Content Include="Resources\Images\Untitled.jpg" />
-    <Content Include="Resources\Images\UpdateImageFromBitsTest.jpg" />
+    <Content Include="Properties\Resources\Images\Check1.jpg" />
+    <Content Include="Properties\Resources\Images\Check2.jpg" />
+    <Content Include="Properties\Resources\Images\CreateNewTinyImageTest.jpg" />
+    <Content Include="Properties\Resources\Images\RatioTest.jpg" />
+    <Content Include="Properties\Resources\Images\Untitled.jpg" />
+    <Content Include="Properties\Resources\Images\UpdateImageFromBitsTest.jpg" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

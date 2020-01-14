@@ -4,6 +4,7 @@ using CmsWeb.Areas.Finance.Models.Report;
 using CmsWeb.Areas.People.Models;
 using System;
 using System.Linq;
+using System.Net;
 using System.Web.Mvc;
 using UtilityExtensions;
 
@@ -13,9 +14,14 @@ namespace CmsWeb.Areas.People.Controllers
     {
         [HttpPost]
         public ActionResult Contributions(ContributionsModel m)
-        {
+        {            
+            string userYear = m.Year;            
+            m = GetGivingUserPreferences(m);
+            if (userYear != "YearToDate")
+                m.Year = userYear;
+
             return View("Giving/Contributions", m);
-        }
+        }        
 
         [HttpPost]
         public ActionResult Statements(ContributionsModel m)
@@ -56,7 +62,7 @@ namespace CmsWeb.Areas.People.Controllers
 
             DbUtil.LogPersonActivity($"Contribution Statement for ({id})", id, p.Name);
 
-            return new ContributionStatementResult
+            return new ContributionStatementResult(CurrentDatabase)
             {
                 PeopleId = id,
                 FromDate = frdt.Value,
@@ -95,7 +101,7 @@ namespace CmsWeb.Areas.People.Controllers
 
             DbUtil.LogPersonActivity($"Contribution Statement for ({id})", id, p.Name);
 
-            return new ContributionStatementResult
+            return new ContributionStatementResult(CurrentDatabase)
             {
                 PeopleId = p.PeopleId,
                 FromDate = fr,
@@ -163,6 +169,46 @@ namespace CmsWeb.Areas.People.Controllers
         private int getFundId(int contributionId)
         {
             return CurrentDatabase.Contributions.FirstOrDefault(c => c.ContributionId == contributionId).FundId;
+        }
+
+        [HttpPut]
+        public JsonResult SaveGivingUserHistory(string key, string value)
+        {
+            //Seve in Context here
+            Util2.SetSessionObj($"ushgiving-{key}", value);
+            return Json("OK");
+        }
+
+        [HttpGet]
+        private string GetUserHistory(string key)
+        {
+            var value = Util2.GetSessionObj($"ushgiving-{key}");
+            return value == null ? string.Empty : value.ToString();
+        }
+
+        private ContributionsModel GetGivingUserPreferences(ContributionsModel m)
+        {
+            var Year = GetUserHistory("Year");
+            if (!string.IsNullOrEmpty(Year))
+                m.Year = Year;
+
+            var givingsummary = GetUserHistory("givingsummary");
+            if (!string.IsNullOrEmpty(givingsummary))
+                m.givingSumCollapse = givingsummary.ToBool();
+
+            var pledgesummary = GetUserHistory("pledgesummary");
+            if (!string.IsNullOrEmpty(pledgesummary))
+                m.pledgeSumCollapse = pledgesummary.ToBool();
+
+            var givingdetail = GetUserHistory("givingdetail");
+            if (!string.IsNullOrEmpty(givingdetail))
+                m.givingDetCollapse = givingdetail.ToBool();
+
+            var pledgedetail = GetUserHistory("pledgedetail");
+            if (!string.IsNullOrEmpty(pledgedetail))
+                m.pledgeDetCollapse = pledgedetail.ToBool();
+
+            return m;
         }
 
         [HttpPut]

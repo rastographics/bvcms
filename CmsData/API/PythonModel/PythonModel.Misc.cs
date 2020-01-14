@@ -15,6 +15,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Caching;
+using System.Web.Configuration;
 using UtilityExtensions;
 using Method = RestSharp.Method;
 
@@ -72,56 +73,12 @@ namespace CmsData
             }
         }
 
-        public string Content(string name, string keyword = null)
+        public string Content(string name)
         {
+#if DEBUG
+            DebugScriptsHelper.LocateLocalFileInPath(db, name, ".text");
+#endif
             var c = db.Content(name);
-            if (IsDebug && c == null)
-            {
-                var txt = ReadFile(name);
-                if (!txt.HasValue())
-                {
-                    return txt;
-                }
-
-                var nam = Path.GetFileNameWithoutExtension(name);
-                var ext = Path.GetExtension(name);
-                int typ = ContentTypeCode.TypeText;
-                if (name.EndsWith(".text.html"))
-                {
-                    ext = Path.GetExtension(nam);
-                    nam = Path.GetFileNameWithoutExtension(nam);
-                }
-                switch (ext)
-                {
-                    case ".sql":
-                        typ = ContentTypeCode.TypeSqlScript;
-                        break;
-                    case ".text":
-                        typ = ContentTypeCode.TypeText;
-                        break;
-                    case ".html":
-                        typ = ContentTypeCode.TypeHtml;
-                        break;
-                }
-                c = db.Content(nam, typ);
-                if (c == null)
-                {
-                    c = new Content
-                    {
-                        Name = nam,
-                        TypeID = typ
-                    };
-                    db.Contents.InsertOnSubmit(c);
-                }
-                c.Body = txt;
-                if (keyword.HasValue())
-                {
-                    c.SetKeyWords(db, new[] { keyword });
-                }
-
-                db.SubmitChanges();
-            }
-
             return c.Body;
         }
 
@@ -585,6 +542,11 @@ DELETE dbo.Tag WHERE TypeId = 101 AND Name LIKE @namelike
         public void WriteContentText(string name, string text, string keyword = null)
         {
             db.WriteContentText(name, text, keyword);
+        }
+
+        public void WriteContentHtml(string name, string text, string keyword = null)
+        {
+            db.WriteContentHtml(name, text, keyword);
         }
 
         public int TagLastQuery(string defaultcode)
