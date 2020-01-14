@@ -36,7 +36,7 @@ namespace IntegrationTests.Support
         {
             username = RandomString();
             password = RandomString();
-            var person = CreateUser(username, password, roles: new[] { "Access", "Edit", "Admin" });
+            var person = CreateUser(username, password, roles: new[] { "Access", "Edit", "Admin", "Finance" });
             Login();
             return person;
         }
