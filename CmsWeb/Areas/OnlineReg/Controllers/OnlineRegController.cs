@@ -422,7 +422,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 SetHeaders(m);
                 return View("Other/AskDonation", m);
             }
-            TempData["onlineregmodel"] = Util.Serialize(m);
+            Session["onlineregmodel"] = Util.Serialize(m);
             return Redirect("/OnlineReg/CompleteRegistration");
         }
 
@@ -434,7 +434,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             var ed = CurrentDatabase.RegistrationDatas.SingleOrDefault(e => e.Id == id);
             var m = Util.DeSerialize<OnlineRegModel>(ed?.Data);
-            TempData["onlineregmodel"] = Util.Serialize(m);
+            Session["onlineregmodel"] = Util.Serialize(m);
             return Redirect("/OnlineReg/CompleteRegistration");
         }
 #endif
@@ -446,7 +446,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 m.List[0].SpecialTest = SpecialRegModel.ParseResults(Request.Form);
             }
 
-            TempData["onlineregmodel"] = Util.Serialize(m);
+            Session["onlineregmodel"] = Util.Serialize(m);
             return Redirect("/OnlineReg/CompleteRegistration");
         }
 
@@ -454,7 +454,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         public ActionResult CompleteRegistration()
         {
             Response.NoCache();
-            var s = (string)TempData["onlineregmodel"];
+            var s = (string)Session["onlineregmodel"];
+            Session.Remove("onlineregmodel");
             if (s == null)
             {
                 DbUtil.LogActivity("OnlineReg Error PageRefreshNotAllowed");
