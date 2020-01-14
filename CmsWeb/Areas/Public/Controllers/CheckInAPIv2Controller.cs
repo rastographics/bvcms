@@ -592,6 +592,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
 			List<PrintJob> printJobs = (from label in CurrentDatabase.PrintJobs
 												where kiosks.Contains( label.Id )
+                                                where label.JsonData.HasValue()
 												select label).ToList();
 
 			List<List<Label>> labels = new List<List<Label>>();
