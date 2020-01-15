@@ -7,6 +7,7 @@ using Elmah;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.ComponentModel.DataAnnotations;
 using System.Configuration;
 using System.Linq;
 using System.Web;
@@ -21,6 +22,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         private int? timeOut;        
 
         public string source { get; set; }
+        [Display(Name = "Amount To Pay")]
         public decimal? AmtToPay { get; set; }
         public decimal? Donate { get; set; }
         public decimal Amtdue { get; set; }

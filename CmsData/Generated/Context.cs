@@ -1214,6 +1214,8 @@ namespace CmsData
 
         public Table<SecurityCode> SecurityCodes => GetTable<SecurityCode>();
 
+        public Table<SessionValue> SessionValues => GetTable<SessionValue>();
+
         public Table<Setting> Settings => GetTable<Setting>();
 
         public Table<SettingType> SettingTypes => GetTable<SettingType>();
