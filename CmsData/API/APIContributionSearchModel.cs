@@ -41,6 +41,7 @@ namespace CmsData.API
         public int PushPay { get; set; }
         public bool FilterByActiveTag { get; set; }
         public string FundSet { get; set; }
+        public bool IncludePledges { get; set; }
 
         internal string Campus;
         internal string FundName;
@@ -185,6 +186,10 @@ namespace CmsData.API
                                 select c;
             }
 
+            var pledgdes = from c in contributions
+                           where c.ContributionTypeId == ContributionTypeCode.Pledge
+                           select c;
+
             switch (model.TaxNonTax)
             {
                 case "TaxDed":
@@ -207,6 +212,11 @@ namespace CmsData.API
                                     where c.ContributionTypeId == ContributionTypeCode.Pledge
                                     select c;
                     break;
+            }
+
+            if (model.IncludePledges)
+            {
+                contributions = contributions.Concat(pledgdes);
             }
 
             switch (model.Status)

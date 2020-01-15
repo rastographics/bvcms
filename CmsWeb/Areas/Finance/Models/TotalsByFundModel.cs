@@ -29,6 +29,7 @@ namespace CmsWeb.Models
         public bool IncludeBundleType { get; set; }
         public bool NonTaxDeductible { get; set; }
         public bool FilterByActiveTag { get; set; }
+        public bool IncludePledges { get; set; }
         public EpplusResult epr;
 
         public TotalsByFundModel()
@@ -66,6 +67,7 @@ namespace CmsWeb.Models
                     Status = ContributionStatusCode.Recorded,
                     Online = Online,
                     FilterByActiveTag = FilterByActiveTag,
+                    IncludePledges = IncludePledges,
                 }
             };
 
@@ -111,6 +113,7 @@ namespace CmsWeb.Models
                     Online = Online,
                     FilterByActiveTag = FilterByActiveTag,
                     FundSet = FundSet,
+                    IncludePledges = IncludePledges,
                 }
             };
 #if DEBUG2
