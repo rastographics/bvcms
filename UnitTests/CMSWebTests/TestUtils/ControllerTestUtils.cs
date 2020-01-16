@@ -1,4 +1,5 @@
 ﻿using Moq;
+using SharedTestFixtures;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -25,6 +26,7 @@ namespace CMSWebTests
             mock.SetupGet(p => p.HttpContext.Request.ServerVariables).Returns(MockServerVariables());
             mock.SetupGet(p => p.HttpContext.User.Identity.IsAuthenticated).Returns(true);
             mock.SetupGet(m => m.RouteData).Returns(routeData);
+            session.SetupGet(s => s.SessionID).Returns(DatabaseTestBase.RandomString());
             mock.SetupGet(p => p.HttpContext.Session).Returns(session.Object);
 
             var view = new Mock<IView>();
