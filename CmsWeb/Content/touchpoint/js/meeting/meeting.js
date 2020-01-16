@@ -16,16 +16,16 @@
             type: 'post'
         },
         params: function (params) {
-            var data = {};
-            data['id'] = params.pk;
-            data['value'] = params.value;
-            return data;
+            return {
+                id: params.pk,
+                value: params.value
+            };
         },
         success: function (response, newValue) {
-            if (newValue === 'True') {
-                $(".headcount").editable("enable");
+            if (newValue.toLowerCase() === 'true') {
+                $('.headcount').editable('enable');
             } else {
-                $(".headcount").editable($("#RegularMeetingHeadCount").val() === "true" ? "enable" : "disable");
+                $('.headcount').editable($('#RegularMeetingHeadCount').val() === 'true' ? 'enable' : 'disable');
             }
         }
     });
