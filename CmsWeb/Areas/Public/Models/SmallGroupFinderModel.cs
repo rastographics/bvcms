@@ -86,6 +86,8 @@ namespace CmsWeb.Areas.Public.Models
             _shell = DbUtil.Content(DbUtil.Db, _sgf.shell, "");
             _template = DbUtil.Content(DbUtil.Db, _sgf.layout, "");
             _gutter = DbUtil.Content(DbUtil.Db, _sgf.gutter, "");
+
+            UseNewUi = getSetting("UseNewUI")?.value == "true";
         }
 
         public bool hasShell()
@@ -205,6 +207,8 @@ namespace CmsWeb.Areas.Public.Models
         {
             return _sgf.SGFFilters[id];
         }
+
+        public bool UseNewUi { get; set; }
 
         private static readonly List<string> weekdayList = new List<string>()
         {
