@@ -14,7 +14,7 @@ namespace CmsData
         private string _SessionId;
         private string _Name;
         private string _Value;
-        private DateTime _CreatedDate;
+        private DateTime _CreatedDate = DateTime.Now;
 
         #endregion
 
@@ -99,7 +99,7 @@ namespace CmsData
             }
         }
 
-        [Column(Name = "CreatedDate", UpdateCheck = UpdateCheck.Never, Storage = "_CreatedDate", DbType = "datetime", IsDbGenerated = true)]
+        [Column(Name = "CreatedDate", UpdateCheck = UpdateCheck.Never, Storage = "_CreatedDate", DbType = "datetime")]
         public DateTime CreatedDate
         {
             get => _CreatedDate;
