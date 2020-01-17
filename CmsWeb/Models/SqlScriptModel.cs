@@ -4,9 +4,11 @@ using Dapper;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
+using System.Web.Configuration;
 using System.Web.Mvc;
 using UtilityExtensions;
 
@@ -129,7 +131,7 @@ namespace CmsWeb.Models
         public string FetchScript(string name)
         {
 #if DEBUG
-            name = ParseDebuggingName(name);
+            DebugScriptsHelper.LocateLocalFileInPath(Db, name, ".sql");
 #endif
             var script = Db.ContentOfTypeSql(name);
             return script;
@@ -145,28 +147,5 @@ namespace CmsWeb.Models
             }
             return p;
         }
-#if DEBUG
-        public string ParseDebuggingName(string name)
-        {
-            var runfromUrlRe = new Regex(@"([c-e]![\w-]*-)(\w*)\.sql(-kw-([^/]*)){0,1}");
-            if (runfromUrlRe.IsMatch(name))
-            {
-                var match = runfromUrlRe.Match(name);
-                var debuggingName = match.Groups[0].Value;
-                var contentName = match.Groups[2].Value;
-                var runFromPath = match.Groups[1].Value
-                                  .Replace("!", ":\\")
-                                  .Replace("-", "\\")
-                              + contentName + ".sql";
-                var keyword = match.Groups[4].Value;
-                var script = System.IO.File.ReadAllText(runFromPath);
-
-                Db.WriteContentSql(contentName, script, keyword);
-                return contentName;
-            }
-
-            return name;
-        }
-#endif
     }
 }

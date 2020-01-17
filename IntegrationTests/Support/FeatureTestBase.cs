@@ -17,6 +17,9 @@ namespace IntegrationTests.Support
 {
     public abstract class FeatureTestBase : DatabaseTestBase
     {
+        /// <summary>
+        /// http://localhost:80/ including the slash
+        /// </summary>
         protected string rootUrl => Settings.RootUrl;
 
         protected const string loadingUI = "div.blockUI.blockOverlay";

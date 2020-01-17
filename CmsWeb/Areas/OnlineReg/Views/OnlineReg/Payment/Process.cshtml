@@ -38,7 +38,7 @@
             Full Name:&nbsp;@Html.TextBox("IAgreeInput")&nbsp;&nbsp;<small class="showform">I agree to the terms and conditions</small>
         </p>
         <p>
-            <input type="button" class="btn" id="IAgreeButton" agreed="false" value="I agree to the terms and conditions">
+            <input type="button" class="btn btn-primary" id="IAgreeButton" agreed="false" value="I agree to the terms and conditions">
         </p>
         <div id="Terms" title="Terms of Agreement">
             @Html.Raw(OnlineRegModel.YouMustAgreeStatement(Model.OrgId))

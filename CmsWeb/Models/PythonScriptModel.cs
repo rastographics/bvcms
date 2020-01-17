@@ -4,10 +4,15 @@ using Dapper;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
+using System.Web.Configuration;
 using System.Web.Mvc;
+using CmsData.API;
+using ICSharpCode.SharpZipLib.Zip;
 using UtilityExtensions;
 
 namespace CmsWeb.Models
@@ -70,26 +75,14 @@ namespace CmsWeb.Models
                 var file = files[i];
                 if (file == null)
                     continue;
-                var buffer = new byte[file.ContentLength];
-                file.InputStream.Read(buffer, 0, file.ContentLength);
-                System.Text.Encoding enc;
-                string s = null;
-                if (buffer[0] == 0xEF && buffer[1] == 0xBB && buffer[2] == 0xBF)
+                if (file.FileName.EndsWith(".zip"))
                 {
-                    enc = new System.Text.ASCIIEncoding();
-                    s = enc.GetString(buffer, 3, buffer.Length - 3);
-                }
-                else if (buffer[0] == 0xFF && buffer[1] == 0xFE)
-                {
-                    enc = new System.Text.UnicodeEncoding();
-                    s = enc.GetString(buffer, 2, buffer.Length - 2);
+                    UnpackZipIntoDynamicData(a[i], file);
                 }
                 else
                 {
-                    enc = new System.Text.ASCIIEncoding();
-                    s = enc.GetString(buffer);
+                    AddTextFileToDynamicData(a[i], file);
                 }
-                pythonModel.DictionaryAdd(a[i], s);
             }
             foreach (var key in request.Form.AllKeys)
             {
@@ -98,11 +91,72 @@ namespace CmsWeb.Models
             pythonModel.HttpMethod = "post";
         }
 
+        private void AddTextFileToDynamicData(string key, HttpPostedFileBase file)
+        {
+            var buffer = new byte[file.ContentLength];
+            file.InputStream.Read(buffer, 0, file.ContentLength);
+            System.Text.Encoding enc;
+            string s = null;
+            if (buffer[0] == 0xEF && buffer[1] == 0xBB && buffer[2] == 0xBF)
+            {
+                enc = new System.Text.ASCIIEncoding();
+                s = enc.GetString(buffer, 3, buffer.Length - 3);
+            }
+            else if (buffer[0] == 0xFF && buffer[1] == 0xFE)
+            {
+                enc = new System.Text.UnicodeEncoding();
+                s = enc.GetString(buffer, 2, buffer.Length - 2);
+            }
+            else
+            {
+                enc = new System.Text.ASCIIEncoding();
+                s = enc.GetString(buffer);
+            }
+
+            pythonModel.DictionaryAdd(key, s);
+        }
+
+        private void UnpackZipIntoDynamicData(string key, HttpPostedFileBase file)
+        {
+            var dd = new DynamicData();
+            pythonModel.DictionaryAdd(key, dd);
+            // The name of the zip file will be the Special Content keyword filter for all the files
+            dd.AddValue("keyword", Path.GetFileNameWithoutExtension(file.FileName));
+
+            var data = new byte[4096];
+            using (var zs = new ZipInputStream(file.InputStream))
+            {
+                ZipEntry ze;
+                while ((ze = zs.GetNextEntry()) != null)
+                {
+                    if (!ze.IsFile)
+                        continue;
+                    if (ze.Name.Contains("/."))
+                        continue;
+                    if (ze.Name.Contains(@"\\."))
+                        continue;
+                    var sb = new StringBuilder();
+                    var size = zs.Read(data, 0, data.Length);
+                    while (size > 0)
+                    {
+                        sb.Append(Encoding.ASCII.GetString(data, 0, size));
+                        size = zs.Read(data, 0, data.Length);
+                    }
+
+                    var filename = Path.GetFileName(ze.Name);
+                    dd.AddValue(filename, sb.ToString());
+                }
+            }
+        }
+
+#if DEBUG
+        private string runFromPath;
+#endif
         public string FetchScript(string name)
         {
             pythonModel.Data.pyscript = name;
 #if DEBUG
-            name = ParseDebuggingName(name);
+            runFromPath = DebugScriptsHelper.LocateLocalFileInPath(Db, name, ".py");
 #endif
             var script = Db.ContentOfTypePythonScript(name);
             return script;
@@ -125,29 +179,6 @@ namespace CmsWeb.Models
             }
             return script;
         }
-#if DEBUG
-        private string runFromPath;
-        public string ParseDebuggingName(string name)
-        {
-            var runfromUrlRe = new Regex(@"([c-e]![\w-]*-)(\w*)\.py(-kw-([^/]*)){0,1}");
-            if (runfromUrlRe.IsMatch(name))
-            {
-                var match = runfromUrlRe.Match(name);
-                pythonModel.Data.pyscript = match.Groups[0].Value;
-                var contentName = match.Groups[2].Value;
-                runFromPath = match.Groups[1].Value
-                                      .Replace("!", ":\\")
-                                      .Replace("-", "\\")
-                                  + contentName + ".py";
-                var keyword = match.Groups[4].Value;
-                var script = System.IO.File.ReadAllText(runFromPath);
-                Db.WriteContentPython(contentName, script, keyword);
-                return contentName;
-            }
-            return name;
-        }
-#endif
-
         public string RunPythonScript(string script, string p1 = null, string p2 = null)
         {
             if (script.Contains("@BlueToolbarTagId"))

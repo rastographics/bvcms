@@ -224,6 +224,53 @@ namespace CmsWeb.Controllers
                 return Content($@"<div class='alert alert-danger' style='font-family: monospace; white-space: pre;'>{ex.Message}</div></div>");
             }
         }
-    }
 
+        /// <summary>
+        /// InstallPyScriptProject
+        /// 
+        /// This method will allow an Admin to install a Python project
+        /// with many files of different types stored in a zip file.
+        /// 
+        /// The files can be any of the following types:
+        ///   *.view.sql -- installs in the database as a custom view.
+        ///     The files should be numbered with leading digits so as to install in that order.
+        ///     The ordering is important if any view depends on another view.
+        ///     If there are no dependancies, then the leading digits are not necessary.
+        ///     The name of the view will be the name of the file excluding the leading digits and the extensions.
+        ///   *.text.html -- this is an html file stored as a text file (easier to edit that way)
+        ///   *.sql -- A SQL report
+        ///   *.py -- A python script
+        ///   *.json -- stored as text, but can be parsed and used in a view
+        ///   *.html -- stored as html and uses the html editor
+        ///   Install.py -- This is optional and is not stored in the database.
+        ///     It runs once after all files/views are installed and is used when custom initialization is required.
+        /// 
+        /// It is required that all files have unique names when the extension is removed,
+        /// that is, you cannot have MyProjectRunReport.py and MyProjectRunReport.sql.
+        ///
+        /// Also, it is required to prefix every file and view with a unique name.
+        /// This allows the files to be grouped together and not clobber files of the same name during installation.
+        ///
+        /// Any folder heirarchy is ignored.
+        ///
+        /// All files stored in the Special Content (does not include the views),                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      and filter MyProject
+        /// will be given a keyword using the name of the zip file (without the .zip extension)
+        /// This helps to organize and filter the multiple files into separate projects.
+        /// </summary>
+        [HttpGet, Route("~/InstallPyScriptProject")]
+        public ActionResult InstallPyScriptProject()
+        {
+            var m = new PythonScriptModel(CurrentDatabase);
+            var script = m.FetchScript("InstallPyScriptProject");
+            if (!script.HasValue())
+            {
+                script = System.IO.File.ReadAllText(Server.MapPath("/Content/InstallPyScriptProject.py"));
+            }
+            if (!PythonScriptModel.CanRunScript(script))
+            {
+                return Message("Not Authorized to run this script");
+            }
+            return Redirect("/PyScriptForm/InstallPyScriptProject");
+        }
+    }
 }
