@@ -30,7 +30,7 @@ namespace CmsWeb.Areas.Finance.Controllers
         public ActionResult ContributionStatement(int id, DateTime fromDate, DateTime toDate, int typ)
         {
             DbUtil.LogActivity($"Contribution Statement for ({id})");
-            return new ContributionStatementResult
+            return new ContributionStatementResult(CurrentDatabase)
             {
                 PeopleId = id,
                 FromDate = fromDate,
@@ -55,7 +55,7 @@ namespace CmsWeb.Areas.Finance.Controllers
             if (model?.FundSet != null) // TODO: seems like a redundant null check, if model was null, it would have errored well before this point
             {
                 var fundset = APIContributionSearchModel.GetCustomStatementsList(CurrentDatabase, model.FundSet.Value).JoinInts(",");
-                queryParameters.Add("@fundids", fundset);
+                queryParameters.Add("@fundids", fundset == "" ? null : fundset);
             }
             else
             {

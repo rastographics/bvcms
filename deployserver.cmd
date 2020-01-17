@@ -19,19 +19,21 @@ if "%deployusername%" EQU "" echo No deployusername specified && exit 1
 if "%deploypassword%" EQU "" echo No deploypassword specified && exit 1
 if "%buildconfiguration%" EQU "" echo No build configuration specified - using Release && set buildconfiguration=Release
 set buildoutput=%~dp0build\Deploy\%buildconfiguration%\Files
+if "%commandTimeout%" EQU "" set commandTimeout=30000
 
 if NOT "%bringdown%" EQU "" (
-    msdeploy -verb:sync -allowUntrusted -source:runCommand='%bringdown%',waitInterval=30000,waitAttempts=1 -dest:auto,computerName=%dest%/MsDeployAgentService,userName=%deployusername%,password=%deploypassword% || %on_error%
-    timeout 15
+    msdeploy -verb:sync -allowUntrusted -source:runCommand=%bringdown%,waitInterval=%commandTimeout%,waitAttempts=1 -dest:auto,computerName=%dest%/MsDeployAgentService,userName=%deployusername%,password=%deploypassword% || %on_error%
+    timeout 2
 )
 
 msdeploy -verb:sync -allowUntrusted -source:contentPath=%buildoutput% -dest:contentPath=%sitename%,computerName=%dest%/MsDeployAgentService,userName=%deployusername%,password=%deploypassword% || %on_error%
 
 if NOT "%setupscript%" EQU "" (
-    msdeploy -verb:sync -allowUntrusted -source:runCommand=%setupscript% -dest:auto,computerName=%dest%/MsDeployAgentService,userName=%deployusername%,password=%deploypassword% || %on_error%
+    timeout 2
+    msdeploy -verb:sync -allowUntrusted -source:runCommand=%setupscript%,waitInterval=%commandTimeout%,waitAttempts=1 -dest:auto,computerName=%dest%/MsDeployAgentService,userName=%deployusername%,password=%deploypassword% || %on_error%
 )
 
 if NOT "%bringup%" EQU "" (
     timeout 2
-    msdeploy -verb:sync -allowUntrusted -source:runCommand=%bringup% -dest:auto,computerName=%dest%/MsDeployAgentService,userName=%deployusername%,password=%deploypassword% || %on_error%
+    msdeploy -verb:sync -allowUntrusted -source:runCommand=%bringup%,waitInterval=%commandTimeout%,waitAttempts=1 -dest:auto,computerName=%dest%/MsDeployAgentService,userName=%deployusername%,password=%deploypassword% || %on_error%
 )

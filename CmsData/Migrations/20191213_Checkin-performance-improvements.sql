@@ -312,6 +312,7 @@ BEGIN
 	END
 	IF EXISTS(SELECT 1 FROM dbo.Setting s WHERE s.Id='AttendCountUpdatesOffline' and s.Setting = 'true')
 	BEGIN
+		EXEC dbo.UpdateMeetingCounters @MeetingId
 		INSERT INTO dbo.AttendanceStatsUpdate
 		(MeetingId, OrganizationId, PeopleId, OtherMeetings)
 		VALUES (@MeetingId, @orgid, @PeopleId, STUFF((

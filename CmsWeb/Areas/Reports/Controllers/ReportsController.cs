@@ -132,7 +132,7 @@ namespace CmsWeb.Areas.Reports.Controllers
                 return Content("no format");
             }
 
-            return new AveryAddressResult
+            return new AveryAddressResult(RequestManager)
             {
                 id = id.Value,
                 format = format,
@@ -157,14 +157,14 @@ namespace CmsWeb.Areas.Reports.Controllers
                 return Content("no format");
             }
 
-            return new DocXAveryLabels(id.Value)
+            return new DocXAveryLabels(id.Value, RequestManager)
             {
                 Format = format,
                 Titles = titles,
                 Skip = skipNum,
                 SortZip = sortzip,
                 UseMailFlags = useMailFlags,
-                UsePhone = usephone,
+                UsePhone = usephone ?? false,
             };
         }
 
@@ -598,7 +598,7 @@ namespace CmsWeb.Areas.Reports.Controllers
                 return Content("no query");
             }
 
-            return new RollLabelsResult
+            return new RollLabelsResult(RequestManager)
             {
                 qid = id.Value,
                 format = format,

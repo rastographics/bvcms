@@ -86,7 +86,10 @@ namespace CmsWeb.Areas.People.Controllers
             ViewBag.Comments = Util.SafeFormat(m.Person.Comments);
             ViewBag.PeopleId = id.Value;
 
-            ViewBag.HideDeceasedFromFamily = HideDeceasedFromFamily();
+            int personFamilyId = CurrentDatabase.People.Where(x => x.PeopleId == id).Select(x => x.FamilyId).FirstOrDefault();
+            int adminFamilyId = CurrentDatabase.People.Where(x => x.PeopleId == Util.UserPeopleId).Select(x => x.FamilyId).FirstOrDefault();
+
+            ViewBag.HideDeceasedFromFamily = HideDeceasedFromFamily(personFamilyId == adminFamilyId);
 
             Util2.CurrentPeopleId = id.Value;
             Util.ActivePerson = m.Person.Name;
@@ -95,10 +98,10 @@ namespace CmsWeb.Areas.People.Controllers
             return View(m);
         }
 
-        private bool HideDeceasedFromFamily()
+        private bool HideDeceasedFromFamily(bool isAdminFamily)
         {
             var hide = Convert.ToBoolean(CurrentDatabase.GetSetting("HideDeceasedFromFamily", "false"));
-            return Util.IsInRole("Admin") ? false: hide;
+            return Util.IsInRole("Admin") && !isAdminFamily ? false: hide;
         }
 
         [HttpGet, Route("~/Person2/{id:int}/Resources")]
