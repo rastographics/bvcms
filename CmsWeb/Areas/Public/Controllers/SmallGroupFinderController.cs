@@ -42,7 +42,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 return View("MapShell", sgfm);
             }
 
-            if (CurrentDatabase.Setting("SGF-UseEmbeddedMap"))
+            if (check)
             {
                 var template = CurrentDatabase.ContentHtml("ShellDefaultSGF", "<!-- CONTAINER -->");
                 ViewBag.Shell = template;

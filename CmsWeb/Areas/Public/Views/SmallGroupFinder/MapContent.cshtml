@@ -15,6 +15,9 @@
     var markerValue = Model.getSetting("MarkerTextValue")?.value;
     var markerText = Model.getSetting("MarkerText")?.value;
 
+    bool useEmbeddedMap;
+    bool.TryParse(Model.getSetting("UseEmbeddedMap")?.value ?? "false", out useEmbeddedMap);
+
     if (!string.IsNullOrWhiteSpace(showOnlyName) && !string.IsNullOrWhiteSpace(showOnlyValue))
     {
         mapModel.SetShowOnly(showOnlyName, showOnlyValue);
@@ -35,11 +38,14 @@
         var longitude = @longitude;
         var mapZoom = @mapZoom;
     </script>
-    <div class="col-md-6">
-        <div id="map" class="map">
+    @if (useEmbeddedMap)
+    {
+        <div class="col-md-6">
+            <div id="map" class="map">
+            </div>
         </div>
-    </div>
-    <div class="col-md-6">
+    }
+    <div class="@(useEmbeddedMap ? "col-md-6" : "col-md-12")">
         <ul style="overflow: auto; height: 600px">
             @foreach (var i in mapModel.Locations())
             {
