@@ -189,8 +189,8 @@ namespace CmsData.Finance
                     Address = addr,
                     Address2 = addr2,
                     City = city,
-                    State = state,
-                    Country = country,
+                    State = UPSStateCodes.FromStateCountry(state, country, db) ?? state,
+                    Country = ISO3166.Alpha3FromName(country) ?? country,
                     Zip = zip,
                     Email = email,
                     Phone = phone

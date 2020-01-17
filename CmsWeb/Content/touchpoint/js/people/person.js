@@ -438,6 +438,8 @@
                     }
                 } else {
                     var id = "#contributions";
+                    if ($("a[href='" + "#combinedGiving" + "']").length)
+                        id = "#combinedGiving";
                     if ($(id).length < 2) {
                         $("a[href='" + id + "']").click().tab("show");
                         $.cookie('lasttab', id);

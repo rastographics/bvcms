@@ -60,7 +60,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             Orgid = id;
             if (req?.Url != null)
             {
-                URL = req.Url.ToString();
+                URL = db.ServerLink(req.Url.PathAndQuery);
             }
 
             if (CurrentDatabase.Roles.Any(rr => rr.RoleName == "disabled"))

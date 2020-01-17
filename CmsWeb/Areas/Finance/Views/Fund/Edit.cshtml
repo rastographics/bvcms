@@ -8,28 +8,17 @@
 {
     @Html.HiddenFor(m => m.FundId)
     <div class="row">
-        <div class="col-md-9">
+        <div class="col-md-12">
             <div class="box box-responsive">
                 <div class="box-content">
                     <div class="row">
-                        <div class="col-sm-9 col-lg-8">
+                        <div class="col-sm-6 col-lg-6">
                             <div class="form-group">
                                 <label for="FundName" class="control-label">Name</label>
-                                @Html.TextBoxFor(m => m.FundName, new { @class = "form-control input-lg" })
+                                @Html.TextBoxFor(m => m.FundName, new { @class = "form-control" })
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-9 col-lg-8">
-                            <div class="form-group">
-                                <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Description" data-content="This is what is used on Statements and in drop-down menus. Can be the same as the Name."><i class="fa fa-info-circle"></i></a>&nbsp;
-                                <label for="FundDescription" class="control-label">Description</label>
-                                @Html.TextBoxFor(m => m.FundDescription, new { @class = "form-control" })
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-4 col-lg-3">
+                        <div class="col-sm-6 col-lg-6">
                             <div class="form-group">
                                 <label for="FundAccountCode" class="control-label">Account Code</label>
                                 @Html.TextBoxFor(m => m.FundAccountCode, new { @class = "form-control" })
@@ -37,23 +26,34 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-sm-4 col-lg-3">
+                        <div class="col-sm-6 col-lg-6">
+                            <div class="form-group">
+                                <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Description" data-content="This is what is used on Statements and in drop-down menus. Can be the same as the Name."><i class="fa fa-info-circle"></i></a>&nbsp;
+                                <label for="FundDescription" class="control-label">Description</label>
+                                @Html.TextBoxFor(m => m.FundDescription, new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-lg-6">
+                            <div class="form-group">
+                                <label for="ShowList" class="control-label">Show in List</label>
+                                @Html.DropDownList("ShowList", CmsWeb.Areas.Finance.Controllers.FundController.GetFundShowList(), new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4 col-lg-4">
                             <div class="form-group">
                                 <label for="FundIncomeDept" class="control-label">Income Department</label>
                                 @Html.TextBoxFor(m => m.FundIncomeDept, new { @class = "form-control" })
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-4 col-lg-3">
+                        <div class="col-sm-4 col-lg-4">
                             <div class="form-group">
                                 <label for="FundIncomeAccount" class="control-label">Income Account</label>
                                 @Html.TextBoxFor(m => m.FundIncomeAccount, new { @class = "form-control" })
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-4 col-lg-3">
+                        <div class="col-sm-4 col-lg-4">
                             <div class="form-group">
                                 <label for="FundIncomeFund" class="control-label">Income Fund</label>
                                 @Html.TextBoxFor(m => m.FundIncomeFund, new { @class = "form-control" })
@@ -61,23 +61,19 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-sm-4 col-lg-3">
+                        <div class="col-sm-4 col-lg-4">
                             <div class="form-group">
                                 <label for="FundCashDept" class="control-label">Cash Department</label>
                                 @Html.TextBoxFor(m => m.FundCashDept, new { @class = "form-control" })
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-4 col-lg-3">
+                        <div class="col-sm-4 col-lg-4">
                             <div class="form-group">
                                 <label for="FundCashAccount" class="control-label">Cash Account</label>
                                 @Html.TextBoxFor(m => m.FundCashAccount, new { @class = "form-control" })
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-4 col-lg-3">
+                        <div class="col-sm-4 col-lg-4">
                             <div class="form-group">
                                 <label for="FundCashFund" class="control-label">Cash Fund</label>
                                 @Html.TextBoxFor(m => m.FundCashFund, new { @class = "form-control" })
@@ -85,28 +81,18 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-sm-4 col-lg-3">
+                        <div class="col-sm-4 col-lg-4">
                             <div class="form-group">
                                 <label for="FundStatusId" class="control-label">Status</label>
                                 @Html.DropDownList("FundStatusId", CmsWeb.Areas.Finance.Controllers.FundController.GetFundStatusList(), new { @class = "form-control" })
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-4 col-lg-3">
+                        <div class="col-sm-4 col-lg-4">
                             <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Fund Management Role" data-content="You may use this to assign a custom role to this fund. Members of the chosen role will be able to view contribution reports for data associated with this fund. If unspecified, the finance role is required."><i class="fa fa-info-circle"></i></a>&nbsp;
                             <label for="@Html.IdFor(m => m.FundManagerRoleId)" class="control-label">Fund Management Role</label>
                             @Html.DropDownList("FundManagerRoleId", CmsWeb.Areas.Finance.Controllers.FundController.GetRolesList(), new { @class = "form-control" })
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <div class="checkbox">
-                                <label class="control-label">
-                                    @Html.CheckBox("FundPledgeFlag")
-                                    Pledge fund?
-                                </label>
-                            </div>
+                        <div class="col-md-2 col-lg-2">
                             <div class="checkbox">
                                 <label class="control-label">
                                     @Html.CheckBox("NonTaxDeductible")
@@ -114,8 +100,16 @@
                                 </label>
                             </div>
                         </div>
+                        <div class="col-md-2 col-lg-2">
+                            <div class="checkbox">
+                                <label class="control-label">
+                                    @Html.CheckBox("FundPledgeFlag")
+                                    Pledge fund?
+                                </label>
+                            </div>
+                        </div>
                     </div>
-                    <br/>
+                    <br />
                     <a href="/Funds" class="btn btn-default">Cancel</a> <button type="submit" class="btn btn-primary">Save Fund</button>
                 </div>
             </div>
