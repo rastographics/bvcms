@@ -186,10 +186,6 @@ namespace CmsData.API
                                 select c;
             }
 
-            var pledgdes = from c in contributions
-                           where c.ContributionTypeId == ContributionTypeCode.Pledge
-                           select c;
-
             switch (model.TaxNonTax)
             {
                 case "TaxDed":
@@ -214,9 +210,11 @@ namespace CmsData.API
                     break;
             }
 
-            if (model.IncludePledges)
+            if (model.IncludePledges && model.TaxNonTax != "Pledge")
             {
-                contributions = contributions.Concat(pledgdes);
+                contributions = contributions.Concat(from c in contributions
+                                                     where c.ContributionTypeId == ContributionTypeCode.Pledge
+                                                     select c);
             }
 
             switch (model.Status)
