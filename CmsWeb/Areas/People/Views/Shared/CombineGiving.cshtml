@@ -1,0 +1,58 @@
+﻿@using UtilityExtensions
+@using CmsData
+@model CmsWeb.Areas.People.Models.ContributionsModel
+@{
+    var campusId = Model.Person.CampusId;
+    var YearList = Model.GivingYearsList();
+    var GivingSummary = Model.GetGivingSummary();
+    var givingSumCollapse = Model.givingSumCollapse == true ? "in" : "";
+    var collapseArrow = givingSumCollapse == "in" ? "down" : "right";
+}
+<div class="row">
+    <div class="col-lg-4 col-md-8 col-sm-12 form-inline">
+        <span>Filter by year </span>@Html.DropDownList("GivingYear", YearList, new { @class = "form-control" })
+    </div>
+</div>
+<br />
+<div class="row">
+    <h3>
+        <a id="Giving-summary-collapse" data-toggle="collapse" href="#Giving-summary-section" aria-expanded="true" aria-controls="Giving-summary-section"><i class="fa fa-chevron-circle-@collapseArrow"></i></a>&nbsp;Giving Summary
+    </h3>
+</div>
+<br />
+<div class="row collapse @givingSumCollapse" id="Giving-summary-section">
+    <div class="row">
+        <table class="table table-striped">
+            <tr>
+                <th>Fund</th>
+                <th class="text-right">Contributed</th>
+            </tr>
+            @if (GivingSummary != null)
+            {
+                foreach (var p in GivingSummary)
+                {
+                    <tr>
+                        <td>
+                            @p.Fund
+                        </td>
+                        <td class="text-right">@p.AmountContributed.ToString("C")</td>
+                    </tr>
+                }
+            }
+        </table>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('#Giving-summary-section').on('hide.bs.collapse', function () {
+            toggleIcons($('#Giving-summary-collapse i'), false);
+            saveUserHistory('givingsummary', false);
+        });
+
+        $('#Giving-summary-section').on('show.bs.collapse', function () {
+            toggleIcons($('#Giving-summary-collapse i'), true);
+            saveUserHistory('givingsummary', true);
+        });
+    });
+</script>

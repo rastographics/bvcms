@@ -1,12 +1,12 @@
 ﻿using IntegrationTests.Support;
 using SharedTestFixtures;
 using Shouldly;
-using System;
 using Xunit;
 using CMSWebTests;
 using System.Linq;
 using CmsData;
 using UtilityExtensions;
+using OpenQA.Selenium.Support.UI;
 
 namespace IntegrationTests.Areas.People.Views.Person
 {
@@ -24,7 +24,7 @@ namespace IntegrationTests.Areas.People.Views.Person
             Login();
 
             Open($"{rootUrl}Person2/{user.PeopleId}");
-            WaitForElement(".active:nth-child(2) > a", 5);
+            WaitForElement(".active:nth-child(2) > a", 10);
             PageSource.ShouldContain("<a href=\"#giving\" aria-controls=\"giving\" data-toggle=\"tab\">Giving</a>");
 
             SettingUtils.UpdateSetting("HideGivingTabMyDataUsers", "true");
@@ -50,7 +50,7 @@ namespace IntegrationTests.Areas.People.Views.Person
             SettingUtils.UpdateSetting("HideDeceasedFromFamily", "false");
 
             Open($"{rootUrl}Person2/{FamilyMember.PeopleId}");
-            WaitForElement("#family_members", 5);
+            WaitForElement("#family_members", 10);
 
             var deceasedMember = Find(css: "#family_members > li.alert-danger");
             deceasedMember.ShouldNotBe(null);
@@ -58,10 +58,89 @@ namespace IntegrationTests.Areas.People.Views.Person
             SettingUtils.UpdateSetting("HideDeceasedFromFamily", "true");
 
             Open($"{rootUrl}Person2/Current");
-            WaitForElement("#family_members", 5);
+            WaitForElement("#family_members", 10);
 
             deceasedMember = Find(css: "#family_members > li.alert-danger");
             deceasedMember.ShouldBe(null);
+        }
+
+        [Fact, FeatureTest]
+        public void Should_Show_Combine_Giving_Summaries()
+        {
+            SettingUtils.UpdateSetting("CombinedGivingSummary", "true");
+
+            username = RandomString();
+            password = RandomString();
+            var user = CreateUser(username, password);
+            Login();
+
+            Open($"{rootUrl}Person2/{user.PeopleId}");
+            WaitForElement(".active:nth-child(2) > a", 10);
+            PageSource.ShouldContain("<a href=\"#giving\" aria-controls=\"giving\" data-toggle=\"tab\">Giving</a>");
+
+            Find(text: "Giving").Click();
+            WaitForElement("#Pledge-detail-section", 10);
+            WaitForElement("#Giving-detail-section", 10);
+
+            PageSource.ShouldContain("Pledge Summary");
+            PageSource.ShouldContain("Pledge Detail");
+            PageSource.ShouldContain("Giving Summary");
+            PageSource.ShouldContain("Giving Detail");
+        }
+
+        [Fact, FeatureTest]
+        public void Should_Show_Pledge_Giving_Tab()
+        {
+            SettingUtils.UpdateSetting("CombinedGivingSummary", "false");
+
+            username = RandomString();
+            password = RandomString();
+            var user = CreateUser(username, password);
+            Login();
+
+            Open($"{rootUrl}Person2/{user.PeopleId}");
+            WaitForElement(".active:nth-child(2) > a", 10);
+            PageSource.ShouldContain("<a href=\"#giving\" aria-controls=\"giving\" data-toggle=\"tab\">Giving</a>");
+
+            Find(text: "Giving").Click();
+            WaitForElement("#giving", 10);
+
+            PageSource.ShouldContain("Contributions");
+            PageSource.ShouldContain("Pledges");
+        }
+
+        [Fact, FeatureTest]
+        public void Should_Remember_Last_Year_Selected()
+        {
+            SettingUtils.UpdateSetting("CombinedGivingSummary", "false");
+
+            var username1 = RandomString();
+            var password1 = RandomString();
+            var user1 = CreateUser(username1, password1);
+
+            var username2 = RandomString();
+            var password2 = RandomString();
+            var user2 = CreateUser(username2, password2);
+
+            var admin = LoginAsAdmin();
+
+            Open($"{rootUrl}Person2/{user1.PeopleId}");
+            WaitForElement(".active:nth-child(2) > a", 10);
+            PageSource.ShouldContain("<a href=\"#giving\" aria-controls=\"giving\" data-toggle=\"tab\">Giving</a>");
+
+            Find(text: "Giving").Click();
+            WaitForElement("#GivingYear", 10);
+
+            var dropdown = Find(css: "#GivingYear");
+            var selectElement = new SelectElement(dropdown);
+            selectElement.SelectByText("All Years");
+            
+            WaitForElement("#Giving-detail-section", 10);
+
+            Open($"{rootUrl}Person2/{user2.PeopleId}");
+            WaitForElement("#GivingYear", 10);
+
+            PageSource.ShouldContain("<input name=\"Year\" type=\"hidden\" value=\"All Years\">");            
         }
 
         [Fact]

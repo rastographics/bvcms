@@ -195,7 +195,9 @@ namespace CmsWeb
                             Response.Redirect("/AuthSetup");
                         }
                     }
-                    else if (user.MustChangePassword && !Request.Url.PathAndQuery.StartsWith("/Account/ChangePassword"))
+                    else if (user.MustChangePassword &&
+                        !Request.Url.PathAndQuery.StartsWith("/Account/ChangePassword") &&
+                        !Request.Url.PathAndQuery.StartsWith("/Account/SetPassword"))
                     {
                         Response.Redirect("/Account/ChangePassword");
                     }

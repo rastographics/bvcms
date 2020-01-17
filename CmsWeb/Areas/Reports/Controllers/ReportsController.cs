@@ -157,14 +157,14 @@ namespace CmsWeb.Areas.Reports.Controllers
                 return Content("no format");
             }
 
-            return new DocXAveryLabels(id.Value)
+            return new DocXAveryLabels(id.Value, RequestManager)
             {
                 Format = format,
                 Titles = titles,
                 Skip = skipNum,
                 SortZip = sortzip,
                 UseMailFlags = useMailFlags,
-                UsePhone = usephone,
+                UsePhone = usephone ?? false,
             };
         }
 
