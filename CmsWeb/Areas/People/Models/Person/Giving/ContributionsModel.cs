@@ -105,7 +105,6 @@ namespace CmsWeb.Areas.People.Models
                     return contributionRecords.Where(p => p.ContributionTypeId != ContributionTypeCode.Pledge);
                 case "Pledges":
                     isPledges = true;
-                    showNegativePledgeBalances = CurrentDatabase.Setting("ShowNegativePledgeBalances");
                     return contributionRecords.Where(p => p.ContributionTypeId == ContributionTypeCode.Pledge);
                 default:
                     return contributionRecords;
@@ -167,6 +166,7 @@ namespace CmsWeb.Areas.People.Models
 
         public List<PledgesSummary> GetPledgesSummary()
         {
+            showNegativePledgeBalances = CurrentDatabase.Setting("ShowNegativePledgeBalances");
             IQueryable<Contribution> contributionRecords = GetContributionRecords();
             PledgesSummary = new List<PledgesSummary>();
             foreach (Contribution contribution in contributionRecords.Where(p => p.ContributionTypeId == ContributionTypeCode.Pledge).OrderByDescending(c => c.ContributionDate))
