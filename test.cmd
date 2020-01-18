@@ -26,7 +26,7 @@ IF NOT EXIST %test_coverage% (
 )
 IF "%CodeCovToken%" NEQ "" %codecov% -f "%test_coverage%" --flag unittests -t "%CodeCovToken%"
 ::Integration tests
-set "integration_tests=.\IntegrationTests\bin\Debug\IntegrationTests.dll""
+set "integration_tests=.\IntegrationTests\bin\Debug\IntegrationTests.dll"
 set "IISEXPRESS_HOST=%OpenCover%"
 set placeholder="{0}"
 set "IISEXPRESS_ARGS=-register:user -target:%iisexpress% -targetargs:%placeholder% -filter:%opencover_filters% -output:%test_coverage%"
