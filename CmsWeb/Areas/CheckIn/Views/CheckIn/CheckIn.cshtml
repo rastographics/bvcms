@@ -52,7 +52,7 @@
             </div>
         </div>
         <div v-else-if="view == 'namesearch'" class="landing namesearch">
-            <h2 class="text-center">Enter your name</h2>
+            <h2 class="text-center">Enter a name or phone number</h2>
             <form v-on:submit.prevent="find">
                 <input type="text" name="name" v-model="search" autocomplete="off" class="keyboard-input" style="caret-color: auto;" />
             </form>
@@ -100,7 +100,7 @@
                     <div class="col-xs-12 col-md-6 class">
                         <div v-on:click="updateMembership(editingPerson, org, classData.member)">
                             <a style="font-size: 12px; margin-bottom: 5px;">{{ org.date | formatTime }} <span v-if="org.location">- {{ org.location }}</span></a>
-                            <h4>{{ org.name }}</h4>
+                            <h4>{{ org.name }}<span v-if="org.leaderName"> ({{ org.leaderName }})</span></h4>
                         </div>
                     </div>
                 </template>
@@ -113,12 +113,13 @@
                 </div>
             </div>
         </div>
-        <div v-else-if="view == 'editperson'" class="editperson">
+        <div v-else-if="view == 'editperson'" class="editperson results">
             <div class="row header-bar">
                 <div class="col-xs-12 text-center">
                     <h2 style="font-weight:300;">
                         <span v-if="editingPerson.id">Update Person Info</span>
-                        <span v-else>Add Person to Family</span>
+                        <span v-else-if="editingPerson.familyID">Add Person to Family</span>
+                        <span v-else>Add Person</span>
                     </h2>
                 </div>
             </div>
@@ -253,7 +254,7 @@
                             <div class="controls">
                                 <label class="control-label" for="state">State</label>
                                 <select class="form-control" id="state" name="state" v-model="editingPerson.state">
-                                    <option v-for="state in profile.states" :value="state.id">{{ state.name }}</option>
+                                    <option v-for="state in profile.states" :value="state.code">{{ state.name }}</option>
                                 </select>
                             </div>
                         </div>
@@ -289,7 +290,7 @@
         <div v-else-if="view == 'checkin'" class="results">
             <div class="row header-bar">
                 <div class="col-xs-12 text-center">
-                    <h2 style="font-weight:300;">Check in</h2>
+                    <h2 style="font-weight:300;">Check-In</h2>
                 </div>
             </div>
             <form v-on:submit.prevent="updateAttendance">
@@ -301,6 +302,7 @@
                         <div class="member-details">
                             <div class="h4 name">
                                 {{ member.name }} <span v-if="member.altName.length">({{ member.altName }})</span>
+                                <span class="badge badge-info" v-if="member.age > 0 && member.age < profile.CutoffAge">{{ member.age }}</span>
                                 <div class="btn-group" v-if="adminMode">
                                     <button type="button" class="btn btn-sm btn-light dropdown-toggle pull-left" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         edit <span class="caret"></span>
@@ -309,9 +311,10 @@
                                         <li><a class="dropdown-item" v-on:click="editPerson(member)">Edit person</a></li>
                                         <li><a class="dropdown-item" v-on:click="visitClass(member)">Visit class</a></li>
                                         <li><a class="dropdown-item" v-on:click="joinClass(member)">Join class</a></li>
+                                        <li><a class="dropdown-item" v-on:click="showDropOption = member.id">Drop class</a></li>
+                                        <li><a class="dropdown-item" v-on:click="addToFamily">Add to family</a></li>
                                     </ul>
                                 </div>
-                                <span class="badge badge-info" v-if="member.age > 0 && member.age < profile.CutoffAge">{{ member.age }}</span>
                             </div>
                             <div v-for="group in member.groups" :class="{ 'disabled': attendance[member.id + '.' + group.id + '.' + group.date].disabled === true }">
                                 <div v-on:click="toggleAttendance(member.id, group.id, group.date)" :class="{ 'primary': attendance[member.id + '.' + group.id + '.' + group.date].status == 2, 'active': attendance[member.id + '.' + group.id + '.' + group.date].status == 1, 'check-container': true }">
@@ -322,8 +325,8 @@
                                     </div>
                                 </div>
                                 <div v-on:click="toggleAttendance(member.id, group.id, group.date)" class="member-info">
-                                    <p style="font-size: 12px; margin-bottom: 5px;">{{ group.date | formatDate }}</p>
-                                    <p>{{ group.name }}<span v-if="group.leaderName.length">, {{ group.leaderName }}</span></p>
+                                    <p style="font-size: 12px; margin-bottom: 5px;">{{ group.date | formatDate }} <span class="badge badge-success" v-if="group.guest">Guest</span></p>
+                                    <p>{{ group.name }}<span v-if="group.leaderName.length">, {{ group.leaderName }}</span> <a v-if="showDropOption == member.id" v-on:click.prevent="dropClass(member, group)" class="text-danger">Drop class</a></p>
                                 </div>
                                 <span class="clearfix"></span>
                             </div>
@@ -337,7 +340,6 @@
             <div class="action-bar">
                 <div class="content">
                     <button v-on:click="checkAllAttendance" class="btn btn-light pull-left">Check All</button>
-                    <button v-if="adminMode" v-on:click="addToFamily" class="btn btn-light pull-left" style="margin-left:20px;">Add to Family</button>
                     @*<button v-if="profile.Testing" v-on:click="uncheckAllAttendance" class="btn btn-light pull-left" style="margin-left:20px;">Uncheck All</button>*@
 
                     <div style="display:inline-block;position:relative;left: 20px;">

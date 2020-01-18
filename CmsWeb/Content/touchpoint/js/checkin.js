@@ -15,6 +15,7 @@ new Vue({
         adminMode: false,
         editingPerson: false,
         lastSearch: false,
+        showDropOption: false,
         idleTimer: false,
         idleStage: 0,
         idleTimeout: 45000,
@@ -240,6 +241,7 @@ new Vue({
                 });
                 $(".keyboard-input").on("input", function (e) {
                     vm.keyboard.setInput(e.target.value);
+                    e.preventDefault();
                 });
             }, 100);
         },
@@ -285,8 +287,12 @@ new Vue({
         },
         loadView(newView) {
             // cleanup and prep for view swap
+            this.showDropOption = false;
             if (this.view === 'landing') {
                 this.keyboard.destroy();
+            }
+            if (newView === 'checkin' && !this.members.length) {
+                newView = 'landing';
             }
             if (this.adminMode && newView === 'landing') {
                 newView = 'namesearch';
@@ -346,6 +352,35 @@ new Vue({
             this.editingPerson = person.id;
             this.getPerson(person.id);
         },
+        addPerson() {
+            this.editingPerson = {
+                campus: 0,
+                id: 0,
+                familyID: 0,
+                firstName: "",
+                goesBy: "",
+                altName: "",
+                lastName: "",
+                genderID: 0,
+                birthday: null,
+                primaryEmail: "",
+                homePhone: null,
+                workPhone: "",
+                mobilePhone: "",
+                maritalStatusID: 0,
+                address: "",
+                address2: "",
+                city: "",
+                state: "",
+                zipCode: "",
+                country: "",
+                church: null,
+                allergies: "",
+                emergencyName: "",
+                emergencyPhone: ""
+            };
+            this.loadView('editperson');
+        },
         addToFamily() {
             this.editingPerson = 0;
             var hoh = this.members[0];
@@ -358,6 +393,21 @@ new Vue({
         visitClass(member) {
             this.classData.member = 0;
             this.getClasses(member);
+        },
+        dropClass(member, group) {
+            let vm = this;
+            swal({
+                title: "Are you sure?",
+                text: "Do you really want to remove " + member.name + " from " + group.name + "?",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "btn-danger",
+                confirmButtonText: "Yes",
+                closeOnConfirm: true,
+                allowOutsideClick: "true"
+            }, function () {
+                vm.updateMembership(member, group, 0);
+            });
         },
         getProfiles() {
             let vm = this;
@@ -450,8 +500,9 @@ new Vue({
                 warning_swal('Login Failed', 'Email and password are required');
             }
         },
-        find() {
+        find(e, callback) {
             let vm = this;
+            let successCallback = typeof callback === "function" ? callback : $.noop;
             var phone = vm.search.replace(/[^\d!]/g, '');
 
             // handle special entry
@@ -506,10 +557,27 @@ new Vue({
                                     attendance = JSON.parse(response.data.argString).attendances;
                                 }
                                 vm.loadAttendance(results[0].members, attendance);
+                                successCallback();
                                 vm.loadView('checkin');
                             } else {
                                 vm.loadView('landing');
-                                warning_swal('No results', 'No families found, please try again.');
+                                if (vm.adminMode) {
+                                    swal({
+                                        title: "No results",
+                                        text: "No families found",
+                                        type: "warning",
+                                        showCancelButton: true,
+                                        confirmButtonClass: "btn-danger",
+                                        confirmButtonText: "Add Person",
+                                        cancelButtonText: "Search Again",
+                                        closeOnConfirm: true,
+                                        allowOutsideClick: "true"
+                                    }, function () {
+                                        vm.addPerson();
+                                    });
+                                } else {
+                                    warning_swal('No results', 'No families found, please try again.');
+                                }
                             }
                         } else {
                             if (response.data.error === -6) {
@@ -544,6 +612,9 @@ new Vue({
                             var person = JSON.parse(response.data.data);
                             if (vm.editingPerson !== 0) {
                                 // edit existing
+                                if (person.birthday.length > 10) {
+                                    person.birthday = person.birthday.slice(0, 10);
+                                }
                                 vm.editingPerson = person;
                             } else {
                                 // add new to family
@@ -554,7 +625,6 @@ new Vue({
                                 person.genderID = 0;
                                 person.birthday = null;
                                 person.primaryEmail = "";
-                                person.homePhone = "";
                                 person.workPhone = "";
                                 person.mobilePhone = "";
                                 person.maritalStatusID = 0;
@@ -599,7 +669,18 @@ new Vue({
                         if (response.data.error === 0) {
                             var results = JSON.parse(response.data.data);
                             vm.search = results.barcodeID.replace(/\"/g, "");
-                            vm.find();
+                            if (!vm.editingPerson.id) {
+                                // go directly to visit class view after creating a person
+                                vm.find(false, function () {
+                                    vm.members.forEach(function (member) {
+                                        if (member.id === results.peopleID) {
+                                            vm.visitClass(member);
+                                        }
+                                    });
+                                });
+                            } else {
+                                vm.find();
+                            }
                         } else {
                             if (response.data.error === -6) {
                                 vm.logout();
@@ -676,7 +757,15 @@ new Vue({
                             var results = JSON.parse(response.data.data);
                             if (results.length) {
                                 vm.search = results.replace(/\"/g, "");
-                                vm.find();
+                                if (join) {
+                                    vm.find(false, function () {
+                                        // immediately mark for check in after adding to org
+                                        vm.toggleAttendance(member.id, org.id, org.datetime, true);
+                                    });
+                                } else {
+                                    // todo: add visitor to members.groups
+                                    vm.find();
+                                }
                             }
                         } else {
                             if (response.data.error === -6) {
@@ -736,6 +825,7 @@ new Vue({
         },
         toggleAttendance(memberId, groupId, date, quiet = false) {
             let vm = this;
+            if (vm.showDropOption === memberId) return;
             var attend = memberId + '.' + groupId + '.' + date;
             var old = vm.attendance[attend];
             if (old !== undefined) {

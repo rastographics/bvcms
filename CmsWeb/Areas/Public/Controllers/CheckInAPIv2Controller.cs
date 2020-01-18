@@ -554,9 +554,9 @@ namespace CmsWeb.Areas.Public.Controllers
                 DbUtil.LogActivity($"Dropped {om.PeopleId} for {om.Organization.OrganizationId} via checkin", peopleid: om.PeopleId, orgid: om.OrganizationId);
             }
 
-            if (om == null)
+            if (om == null && membership.join)
             {
-                om = OrganizationMember.InsertOrgMembers(CurrentDatabase, membership.orgID, membership.peopleID, membership.join ? MemberTypeCode.Member : MemberTypeCode.Visitor, DateTime.Today);
+                om = OrganizationMember.InsertOrgMembers(CurrentDatabase, membership.orgID, membership.peopleID, MemberTypeCode.Member, DateTime.Today);
             }
 
             CurrentDatabase.SubmitChanges();
@@ -572,7 +572,6 @@ namespace CmsWeb.Areas.Public.Controllers
 
             Guid barcode = CmsData.Person.Barcode(CurrentDatabase, membership.peopleID);
             response.data = SerializeJSON(barcode.ToString(), message.version);
-
             response.setNoError();
             response.count = 1;
 

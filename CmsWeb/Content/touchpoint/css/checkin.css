@@ -155,13 +155,14 @@
     font-weight: 300;
     font-size: 20px;
 }
+.checkin .results .member .dropdown-item {
+    font-size: 18px;
+    font-weight: 300;
+}
 .checkin .panel {
     max-width: 360px;
     margin: 0 auto;
     padding: 27px;
-}
-.checkin .editperson .form {
-    padding: 0px 22px;
 }
 .checkin .header-bar {
     margin-bottom: 25px;
