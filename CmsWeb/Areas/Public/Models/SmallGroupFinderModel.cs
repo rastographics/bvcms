@@ -59,6 +59,15 @@ namespace CmsWeb.Areas.Public.Models
             }
         }
 
+        public string OrgTypes
+        {
+            get
+            {
+                var orgTypes = getSetting("OrgTypes")?.value;
+                return orgTypes == null ? "" : orgTypes;
+            }
+        }
+
         public bool UseShell { get; private set; }
 
         public SmallGroupFinderModel() { }
@@ -226,7 +235,7 @@ namespace CmsWeb.Areas.Public.Models
             var f = getFilter(id);
             var i = new List<FilterItem>();
 
-            var orgTypes = DbUtil.Db.Setting("SGF-OrgTypes", "").Split(',').Select(x => x.Trim()).Where(x => !string.IsNullOrEmpty(x));
+            var orgTypes = OrgTypes.Split(',').Select(x => x.Trim()).Where(x => !string.IsNullOrEmpty(x));
 
             if (f.locked)
             {
@@ -297,7 +306,7 @@ namespace CmsWeb.Areas.Public.Models
                 return new SmallGroupSearchResult { Organizations = new List<Organization>(), IsInitialSearch = true };
             }
 
-            var orgTypes = DbUtil.Db.Setting("SGF-OrgTypes", "").Split(',').Select(x => x.Trim()).Where(x => !string.IsNullOrEmpty(x)).ToList();
+            var orgTypes = OrgTypes.Split(',').Select(x => x.Trim()).Where(x => !string.IsNullOrEmpty(x)).ToList();
 
             IQueryable<Organization> orgs;
             if (!orgTypes.Any())

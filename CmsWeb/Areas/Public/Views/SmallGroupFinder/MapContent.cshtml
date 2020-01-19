@@ -15,6 +15,10 @@
     var markerValue = Model.getSetting("MarkerTextValue")?.value;
     var markerText = Model.getSetting("MarkerText")?.value;
 
+    var extraValueHost = Model.getSetting("ExtraValueHost")?.value;
+    var orgTypes = Model.getSetting("OrgTypes")?.value;
+    var sortBy = Model.getSetting("SortBy")?.value;
+
     bool useEmbeddedMap;
     bool.TryParse(Model.getSetting("UseEmbeddedMap")?.value ?? "false", out useEmbeddedMap);
 
@@ -28,6 +32,21 @@
         !string.IsNullOrWhiteSpace(markerText))
     {
         mapModel.SetMarkerText(markerName, markerValue, markerText);
+    }
+
+    if (!string.IsNullOrWhiteSpace(extraValueHost))
+    {
+        mapModel.SetExtraValue(extraValueHost);
+    }
+
+    if (!string.IsNullOrWhiteSpace(orgTypes))
+    {
+        mapModel.SetOrgTypes(orgTypes);
+    }
+
+    if (!string.IsNullOrWhiteSpace(sortBy))
+    {
+        mapModel.SetSortBy(sortBy);
     }
 }
 
