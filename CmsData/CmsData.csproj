@@ -1182,6 +1182,7 @@
       <SubType>Designer</SubType>
     </Resource>
     <Content Include="Migrations\00000000_sql_migrations_table.sql" />
+    <Content Include="Migrations\20200119_Alter_Func_PledgesSummary.sql" />
     <Content Include="QueryBuilder\CompareMap.xml">
       <SubType>Designer</SubType>
     </Content>
