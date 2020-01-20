@@ -1,42 +1,75 @@
 ﻿@model CmsWeb.Areas.People.Models.PersonModel
-
+@using CmsData
 @{
     var isFinance = User.IsInRole("Finance");
 }
 <ul class="nav nav-pills subnav hidden-sm hidden-xs" data-tabparent="giving">
+@if (Model.ShowCombinedGiving)
+{
+    <li><a href="#combinedGiving" data-toggle="tab" class="ajax combined">Contributions</a></li>
+}
+else
+{
     <li><a href="#contributions" data-toggle="tab" class="ajax">Contributions</a></li>
     <li><a href="#pledges" data-toggle="tab" class="ajax">Pledges</a></li>
-    @if (isFinance)
-    {
-        <li><a href="#financedocs" data-toggle="tab" class="ajax">Documents</a></li>
-    }
-    <li><a href="#statements" data-toggle="tab" class="ajax">Statements</a></li>
+}
+@if (isFinance)
+{
+    <li><a href="#financedocs" data-toggle="tab" class="ajax">Documents</a></li>
+}
+<li><a href="#statements" data-toggle="tab" class="ajax">Statements</a></li>
 </ul>
 <select class="form-control visible-sm-block visible-xs-block nav-select-pills">
     <optgroup>
-        <option value="#contributions">Contributions</option>
-        <option value="#pledges">Pledges</option>
+        @if (Model.ShowCombinedGiving)
+        {
+            <option value="#combinedGiving">Contributions</option>
+        }
+        else
+        {
+            <option value="#contributions">Contributions</option>
+            <option value="#pledges">Pledges</option>
+        }
     </optgroup>
     <optgroup label="_________________________">
         <option value="#statements">Statements</option>
     </optgroup>
 </select>
 <div class="tab-content" style="border: none;">
+@if (Model.ShowCombinedGiving)
+{
+    <div class="tab-pane" id="combinedGiving">
+        <div id="filter1" class="tab-pane" data-link="/Person2/Contributions">
+            @Helper.HiddenId("PeopleId", Util2.CurrentPeopleId)
+            @Helper.HiddenParameter("Filter", "Pledges")
+        </div>
+        <hr />
+        <div id="filter2" class="tab-pane" data-link="/Person2/Contributions">                
+            @Helper.HiddenId("PeopleId", Util2.CurrentPeopleId)
+            @Helper.HiddenParameter("Filter", "CombineGiving")
+            @Helper.HiddenParameter("Year", "YearToDate")
+        </div>
+    </div>
+}
+else
+{
     <div class="tab-pane" id="contributions" data-link="/Person2/Contributions">
-        @Helper.HiddenId("PeopleId", Model.PeopleId)
+        @Helper.HiddenId("PeopleId", Util2.CurrentPeopleId)
         @Helper.HiddenParameter("Filter", "Contributions")
+        @Helper.HiddenParameter("Year", "YearToDate")
     </div>
     <div class="tab-pane" id="pledges" data-link="/Person2/Contributions">
-        @Helper.HiddenId("PeopleId", Model.PeopleId)
+        @Helper.HiddenId("PeopleId", Util2.CurrentPeopleId)
         @Helper.HiddenParameter("Filter", "Pledges")
     </div>
-    @if (isFinance)
-    {
-    <div class="tab-pane" id="financedocs" data-link="/Person2/FinanceDocuments/@Model.PeopleId"></div>
-    }
-    <div class="tab-pane" id="statements" data-link="/Person2/Statements">
-        @Helper.HiddenId("PeopleId", Model.PeopleId)
-    </div>
+}
+@if (isFinance)
+{
+<div class="tab-pane" id="financedocs" data-link="/Person2/FinanceDocuments/@Model.PeopleId"></div>
+}
+<div class="tab-pane" id="statements" data-link="/Person2/Statements">
+    @Helper.HiddenId("PeopleId", Model.PeopleId)
+</div>
 </div>
 <div class="modal fade" id="editPledge-modal">
     <div class="modal-dialog modal-sm">

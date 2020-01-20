@@ -797,7 +797,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
                             roleids = u.UserRoles.Select(uu => uu.RoleId).ToArray(),
                             roles = u.UserRoles.Select(uu => uu.Role.RoleName).ToArray(),
                         };
-                var i = q.SingleOrDefault();
+                var i = q.FirstOrDefault();
                 if (i == null)
                 {
                     return;
@@ -1713,6 +1713,23 @@ This search uses multiple steps which cannot be duplicated in a single query.
                 {
                     Name = name,
                     TypeID = ContentTypeCode.TypeText
+                };
+                Contents.InsertOnSubmit(c);
+            }
+            if(keyword.HasValue())
+                c.SetKeyWords(this, new [] {keyword});
+            c.Body = text;
+            SubmitChanges();
+        }
+        public void WriteContentHtml(string name, string text, string keyword = null)
+        {
+            var c = Content(name, ContentTypeCode.TypeHtml);
+            if (c == null)
+            {
+                c = new Content()
+                {
+                    Name = name,
+                    TypeID = ContentTypeCode.TypeHtml
                 };
                 Contents.InsertOnSubmit(c);
             }
