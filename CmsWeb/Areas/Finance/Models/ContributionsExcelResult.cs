@@ -21,6 +21,7 @@ namespace CmsWeb.Models
         public bool IncludeBundleType { get; set; }
         public bool FilterByActiveTag { get; set; }
         public string FundSet { get; set; }
+        public bool IncludePledges { get; set; }
 
         private CMSDataContext _db;
         public CMSDataContext db
@@ -74,7 +75,7 @@ namespace CmsWeb.Models
                     return _exportPeople.ExcelDonorFundTotals(Dt1, Dt2, fundid, campusid, false, nontaxdeductible, IncUnclosedBundles, tagid, fundIds)                          
                         .ToExcel("DonorFundTotals.xlsx");
                 case "donortotals":
-                    return _exportPeople.ExcelDonorTotals(Dt1, Dt2, campusid, false, nontaxdeductible, IncUnclosedBundles, tagid, fundIds)
+                    return _exportPeople.ExcelDonorTotals(Dt1, Dt2, campusid, false, nontaxdeductible, IncUnclosedBundles, tagid, fundIds, IncludePledges)
                         .ToExcel("DonorTotals.xlsx");
                 case "donordetails":
                     return _exportPeople.DonorDetails(Dt1, Dt2, fundid, campusid, false, nontaxdeductible, IncUnclosedBundles, tagid, fundIds)
