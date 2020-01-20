@@ -26,7 +26,7 @@ IF NOT EXIST %test_coverage% (
   echo File not found: %test_coverage%
   exit 8
 )
-IF "%CodeCovToken%" NEQ "" %codecov% -f "%test_coverage%" --root %root% --pr %PR% --flag unittests -t "%CodeCovToken%"
+IF "%CodeCovToken%" NEQ "" %codecov% -f "%test_coverage%" --root %root% --pr %PR% --name "Unit Tests" --flag unittests -t "%CodeCovToken%"
 ::Integration tests
 set "integration_tests=.\IntegrationTests\bin\Debug\IntegrationTests.dll"
 set "IISEXPRESS_HOST=%OpenCover%"
@@ -50,5 +50,5 @@ IF NOT EXIST %test_coverage% (
   echo File not found: %test_coverage%
   exit 10
 )
-IF "%CodeCovToken%" NEQ "" %codecov% -f "%test_coverage%" --root %root% --pr %PR% --flag integrationtests -t "%CodeCovToken%"
+IF "%CodeCovToken%" NEQ "" %codecov% -f "%test_coverage%" --root %root% --pr %PR% --name "Integration Tests" --flag integrationtests -t "%CodeCovToken%"
 endlocal
