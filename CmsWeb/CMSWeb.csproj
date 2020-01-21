@@ -526,7 +526,6 @@
     <Compile Include="Areas\Finance\Models\BatchImport\VancoImporter.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Areas\Finance\Models\ContributionStatementsExtra.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\BatchImportContributions.cs" />
     <Compile Include="Areas\Finance\Models\ContributionStatementsExtract.cs" />
     <Compile Include="Areas\Finance\Models\CustomStatements.cs" />

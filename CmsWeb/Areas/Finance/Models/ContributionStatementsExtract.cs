@@ -52,11 +52,12 @@ namespace CmsWeb.Areas.Finance.Models.Report
             Db.SubmitChanges();
             if (showCheckNo || showNotes)
             {
-                var c = new ContributionStatementsExtra
+                var c = new ContributionStatements
                 {
                     FromDate = fd,
                     ToDate = td,
                     typ = 3,
+                    NumberOfColumns = 1,
                     ShowCheckNo = showCheckNo,
                     ShowNotes = showNotes
                 };

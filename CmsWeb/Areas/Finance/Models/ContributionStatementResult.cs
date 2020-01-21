@@ -45,7 +45,7 @@ namespace CmsWeb.Areas.Finance.Models.Report
 
             if (showCheckNo || showNotes)
             {
-                var c = new ContributionStatementsExtra
+                var c = new ContributionStatements
                 {
                     FamilyId = FamilyId,
                     FromDate = FromDate,
@@ -53,6 +53,7 @@ namespace CmsWeb.Areas.Finance.Models.Report
                     SpouseId = SpouseId,
                     ToDate = ToDate,
                     typ = typ,
+                    NumberOfColumns = 1,
                     ShowCheckNo = showCheckNo,
                     ShowNotes = showNotes
                 };
