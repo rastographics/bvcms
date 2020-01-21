@@ -28,6 +28,7 @@ IF NOT EXIST %test_coverage% (
 )
 IF "%CodeCovToken%" NEQ "" %codecov% -f "%test_coverage%" --root %root% --pr %PR% --name "UnitTests" --flag unittests -t "%CodeCovToken%"
 ::Integration tests
+del /Q %test_coverage%
 set "integration_tests=.\IntegrationTests\bin\Debug\IntegrationTests.dll"
 set "IISEXPRESS_HOST=%OpenCover%"
 set placeholder="{0}"
