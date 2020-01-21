@@ -547,16 +547,16 @@ namespace CmsWeb.Areas.Public.Controllers
 
             OrganizationMember om = CurrentDatabase.OrganizationMembers.SingleOrDefault(m => m.PeopleId == membership.peopleID && m.OrganizationId == membership.orgID);
 
+            if (om == null && membership.join)
+            {
+                om = OrganizationMember.InsertOrgMembers(CurrentDatabase, membership.orgID, membership.peopleID, MemberTypeCode.Member, DateTime.Today);
+            }
+
             if (om != null && !membership.join)
             {
                 om.Drop(CurrentDatabase, CurrentImageDatabase, DateTime.Now);
 
                 DbUtil.LogActivity($"Dropped {om.PeopleId} for {om.Organization.OrganizationId} via checkin", peopleid: om.PeopleId, orgid: om.OrganizationId);
-            }
-
-            if (om == null && membership.join)
-            {
-                om = OrganizationMember.InsertOrgMembers(CurrentDatabase, membership.orgID, membership.peopleID, MemberTypeCode.Member, DateTime.Today);
             }
 
             CurrentDatabase.SubmitChanges();

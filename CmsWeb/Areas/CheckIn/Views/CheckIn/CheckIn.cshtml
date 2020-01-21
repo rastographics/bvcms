@@ -25,7 +25,7 @@
                 </div>
                 <div class="form-group">
                     <label for="kiosk">Kiosk Name</label>
-                    <input type="text" name="kiosk" class="form-control input-lg" placeholder="KioskName" required="required" v-model="kiosk.name" />
+                    <input type="text" name="kiosk" class="form-control input-lg" placeholder="KioskName" required="required" pattern="[^\s]+" title="Used to identify this kiosk when printing. No spaces." v-model="kiosk.name" />
                 </div>
                 <div class="form-group">
                     <label for="profile">Kiosk Profile</label>
@@ -98,7 +98,7 @@
             <div class="row">
                 <template v-for="org in classes">
                     <div class="col-xs-12 col-md-6 class">
-                        <div v-on:click="updateMembership(editingPerson, org, classData.member)">
+                        <div v-on:click="updateMembership(editingPerson, org, classData.member, true)">
                             <a style="font-size: 12px; margin-bottom: 5px;">{{ org.date | formatTime }} <span v-if="org.location">- {{ org.location }}</span></a>
                             <h4>{{ org.name }}<span v-if="org.leaderName"> ({{ org.leaderName }})</span></h4>
                         </div>
@@ -326,7 +326,7 @@
                                 </div>
                                 <div v-on:click="toggleAttendance(member.id, group.id, group.date)" class="member-info">
                                     <p style="font-size: 12px; margin-bottom: 5px;">{{ group.date | formatDate }} <span class="badge badge-success" v-if="group.guest">Guest</span></p>
-                                    <p>{{ group.name }}<span v-if="group.leaderName.length">, {{ group.leaderName }}</span> <a v-if="showDropOption == member.id" v-on:click.prevent="dropClass(member, group)" class="text-danger">Drop class</a></p>
+                                    <p>{{ group.name }}<span v-if="group.leaderName.length">, {{ group.leaderName }}</span> <a v-if="showDropOption == member.id && !group.guest" v-on:click.prevent="dropClass(member, group)" class="text-danger">Drop class</a></p>
                                 </div>
                                 <span class="clearfix"></span>
                             </div>
@@ -340,7 +340,6 @@
             <div class="action-bar">
                 <div class="content">
                     <button v-on:click="checkAllAttendance" class="btn btn-light pull-left">Check All</button>
-                    @*<button v-if="profile.Testing" v-on:click="uncheckAllAttendance" class="btn btn-light pull-left" style="margin-left:20px;">Uncheck All</button>*@
 
                     <div style="display:inline-block;position:relative;left: 20px;">
                         <i v-on:click="toggleReprintAll" :class="[reprintLabels ? 'fa-check-square-o' : 'fa-square-o', 'fa', 'fa-2x']" style="margin-top:3px;width:30px;"></i><span v-on:click="toggleReprintAll" style="position:relative;top:-5px;">Reprint all labels</span>

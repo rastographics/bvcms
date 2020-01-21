@@ -387,11 +387,11 @@ new Vue({
             this.getPerson(hoh.id);
         },
         joinClass(member) {
-            this.classData.member = 1;
+            this.classData.member = true;
             this.getClasses(member);
         },
         visitClass(member) {
-            this.classData.member = 0;
+            this.classData.member = false;
             this.getClasses(member);
         },
         dropClass(member, group) {
@@ -406,7 +406,7 @@ new Vue({
                 closeOnConfirm: true,
                 allowOutsideClick: "true"
             }, function () {
-                vm.updateMembership(member, group, 0);
+                vm.updateMembership(member, group, true, false);
             });
         },
         getProfiles() {
@@ -500,7 +500,7 @@ new Vue({
                 warning_swal('Login Failed', 'Email and password are required');
             }
         },
-        find(e, callback) {
+        find(callback) {
             let vm = this;
             let successCallback = typeof callback === "function" ? callback : $.noop;
             var phone = vm.search.replace(/[^\d!]/g, '');
@@ -612,7 +612,7 @@ new Vue({
                             var person = JSON.parse(response.data.data);
                             if (vm.editingPerson !== 0) {
                                 // edit existing
-                                if (person.birthday.length > 10) {
+                                if (person.birthday && person.birthday.length > 10) {
                                     person.birthday = person.birthday.slice(0, 10);
                                 }
                                 vm.editingPerson = person;
@@ -671,7 +671,7 @@ new Vue({
                             vm.search = results.barcodeID.replace(/\"/g, "");
                             if (!vm.editingPerson.id) {
                                 // go directly to visit class view after creating a person
-                                vm.find(false, function () {
+                                vm.find(function () {
                                     vm.members.forEach(function (member) {
                                         if (member.id === results.peopleID) {
                                             vm.visitClass(member);
@@ -741,10 +741,30 @@ new Vue({
                 }
             );
         },
-        updateMembership(member, org, join) {
+        addVisitingOrgToState(person, org) {
             let vm = this;
+            vm.members.forEach(function (member) {
+                if (member.id === person.id) {
+                    org.guest = true;
+                    member.groups.push(org);
+                    vm.loadClassData(member, org);
+                    vm.toggleAttendance(person.id, org.id, org.date, true);
+                }
+            });
+            vm.loadView('checkin');
+        },
+        updateMembership(person, org, memberStatus, join) {
+            // memberStatus - true: member, false: visitor
+            // join - true: join, false: drop
+            let vm = this;
+
+            if (join && !memberStatus) {
+                // handling adding guests doesn't require any api call
+                vm.addVisitingOrgToState(person, org);
+                return;
+            }
             var payload = vm.generatePayload({
-                peopleID: member.id,
+                peopleID: person.id,
                 orgID: org.id,
                 join: join
             });
@@ -757,13 +777,12 @@ new Vue({
                             var results = JSON.parse(response.data.data);
                             if (results.length) {
                                 vm.search = results.replace(/\"/g, "");
-                                if (join) {
-                                    vm.find(false, function () {
+                                if (join && memberStatus) {
+                                    vm.find(function () {
                                         // immediately mark for check in after adding to org
-                                        vm.toggleAttendance(member.id, org.id, org.datetime, true);
+                                        vm.toggleAttendance(person.id, org.id, org.date, true);
                                     });
                                 } else {
-                                    // todo: add visitor to members.groups
                                     vm.find();
                                 }
                             }
@@ -784,31 +803,35 @@ new Vue({
                 }
             );
         },
+        loadClassData(member, group) {
+            let vm = this;
+            var disabled = false;
+            var now = vm.timestamp();
+            var start = vm.timestamp(group.date);
+            // use the check in times from the class if present, otherwise fall back to the db default which is attached to the profile
+            var early = group.EarlyCheckin != null ? group.EarlyCheckin : vm.profile.EarlyCheckin;
+            var late = group.LateCheckin != null ? group.LateCheckin : vm.profile.LateCheckin;
+            if (early && (start - early > now) && start > now) {
+                disabled = true;
+            }
+            if (late && (start + late < now) && start < now) {
+                disabled = true;
+            }
+            var attend = member.id + '.' + group.id + '.' + group.date;
+            vm.$set(vm.attendance, attend, {
+                initial: group.checkedIn ? vm.CHECKEDIN : vm.ABSENT,
+                status: group.checkedIn ? vm.CHECKEDIN : vm.ABSENT,
+                disabled: disabled,
+                changed: false
+            });
+        },
         loadAttendance(members, attendances) {
             let vm = this;
             vm.attendance = [];
             vm.members = members;
             members.forEach(function (member) {
                 member.groups.forEach(function (group) {
-                    var disabled = false;
-                    var now = vm.timestamp();
-                    var start = vm.timestamp(group.date);
-                    // use the check in times from the class if present, otherwise fall back to the db default which is attached to the profile
-                    var early = group.EarlyCheckin != null ? group.EarlyCheckin : vm.profile.EarlyCheckin;
-                    var late = group.LateCheckin != null ? group.LateCheckin : vm.profile.LateCheckin;
-                    if (early && (start - early > now) && start > now) {
-                        disabled = true;
-                    }
-                    if (late && (start + late < now) && start < now) {
-                        disabled = true;
-                    }
-                    var attend = member.id + '.' + group.id + '.' + group.date;
-                    vm.$set(vm.attendance, attend, {
-                        initial: group.checkedIn ? vm.CHECKEDIN : vm.ABSENT,
-                        status: group.checkedIn ? vm.CHECKEDIN : vm.ABSENT,
-                        disabled: disabled,
-                        changed: false
-                    });
+                    vm.loadClassData(member, group);
                 });
             });
             if (attendances && attendances.length) {

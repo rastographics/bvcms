@@ -146,6 +146,12 @@
     margin-top: 20px;
     margin-bottom: 15px;
 }
+/* responsive reset */
+@media (min-width:992px) {
+    .checkin .member:nth-child(2n+1) {
+        clear: left;
+    }
+}
 .checkin .results .member:last-of-type,
 .checkin .results .family:last-child {
     margin-bottom: 80px;
