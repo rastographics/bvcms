@@ -326,6 +326,7 @@
     <Compile Include="API\ApiSessionResult.cs" />
     <Compile Include="API\ApiSessionStatus.cs" />
     <Compile Include="API\CreateExcel.cs" />
+    <Compile Include="API\PythonModel\DebugScriptsHelper.cs" />
     <Compile Include="API\PythonModel\PythonModel.Docusign.cs" />
     <Compile Include="API\PythonModel\PythonModel.DynamicData.cs" />
     <Compile Include="API\PythonModel\PythonModel.Deprecated.cs" />
@@ -819,7 +820,6 @@
     <Compile Include="Generated\Views\TransactionSummary.cs" />
     <Compile Include="DbUtil\ITableWithExtraValues.cs" />
     <Content Include="App_Readme\Elmah.txt" />
-    <Content Include="Migrations\00000000_sql_migrations_table.sql" />
     <Compile Include="Organization\OrgFilter.cs" />
     <Compile Include="Organization\OrgPerson.cs" />
     <Compile Include="Organization\OrgSchedule.cs" />
@@ -1182,6 +1182,7 @@
       <SubType>Designer</SubType>
     </Resource>
     <Content Include="Migrations\20191221_Update_OnlineRegSummaryHtml_Remove_Amout_Paid.sql" />
+    <Content Include="Migrations\00000000_sql_migrations_table.sql" />
     <Content Include="QueryBuilder\CompareMap.xml">
       <SubType>Designer</SubType>
     </Content>
