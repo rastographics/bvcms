@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style type="text/css">
+        * {
+            margin: 0;
+            padding: 0;
+            text-indent: 0;
+            font-family: Arial;
+            font-size: 11pt;
+        }
+
+        thead {
+            display: table-header-group;
+        }
+
+        tfoot {
+            display: table-header-group;
+        }
+
+        table,
+        tbody {
+            page-break-inside: auto;
+        }
+
+        tr {
+            page-break-inside: avoid !important;
+        }
+
+        .right {
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+{{header}}
+{{body}}
+{{footer}}
+</body>
+</html>

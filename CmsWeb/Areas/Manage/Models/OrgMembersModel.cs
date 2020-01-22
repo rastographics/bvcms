@@ -1,5 +1,6 @@
 using CmsData;
 using CmsData.Codes;
+using CmsWeb.Properties;
 using MoreLinq;
 using System;
 using System.Collections.Generic;

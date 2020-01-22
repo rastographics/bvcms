@@ -11,6 +11,7 @@ using System.Text;
 using System.Net.Mail;
 using CmsData.Codes;
 using Settings = CmsData.Registration.Settings;
+using CmsWeb.Properties;
 
 namespace CmsWeb.Areas.OnlineReg.Models
 {

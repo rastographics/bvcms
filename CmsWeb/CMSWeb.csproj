@@ -134,11 +134,11 @@
     <Reference Include="IronPython.Wpf, Version=2.7.8.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
       <HintPath>..\packages\IronPython.2.7.8.1\lib\net45\IronPython.Wpf.dll</HintPath>
     </Reference>
-    <Reference Include="itextsharp, Version=5.5.13.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\iTextSharp.5.5.13\lib\itextsharp.dll</HintPath>
+    <Reference Include="itextsharp, Version=5.5.13.1, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\iTextSharp.5.5.13.1\lib\itextsharp.dll</HintPath>
     </Reference>
-    <Reference Include="itextsharp.xmlworker, Version=5.5.13.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\itextsharp.xmlworker.5.5.13\lib\itextsharp.xmlworker.dll</HintPath>
+    <Reference Include="itextsharp.xmlworker, Version=5.5.13.1, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itextsharp.xmlworker.5.5.13.1\lib\itextsharp.xmlworker.dll</HintPath>
     </Reference>
     <Reference Include="jQuery.Validation.Unobtrusive.Native, Version=1.1.5809.17463, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\jQuery.Validation.Unobtrusive.Native.MVC5.1.3.0\lib\net45\jQuery.Validation.Unobtrusive.Native.dll</HintPath>
@@ -358,6 +358,12 @@
     <Reference Include="TidyManaged, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\TidyManaged.1.0.0.0\lib\net20\TidyManaged.dll</HintPath>
     </Reference>
+    <Reference Include="TuesPechkin, Version=2.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\TuesPechkin.2.1.1\lib\net20\TuesPechkin.dll</HintPath>
+    </Reference>
+    <Reference Include="TuesPechkin.Wkhtmltox.AnyCPU, Version=0.12.4.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\TuesPechkin.Wkhtmltox.AnyCPU.0.12.4.1\lib\net20\TuesPechkin.Wkhtmltox.AnyCPU.dll</HintPath>
+    </Reference>
     <Reference Include="Twilio, Version=5.29.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Twilio.5.29.1\lib\net451\Twilio.dll</HintPath>
     </Reference>
@@ -527,13 +533,14 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Areas\Finance\Models\BatchImport\BatchImportContributions.cs" />
-    <Compile Include="Areas\Finance\Models\ContributionStatementsExtract.cs" />
-    <Compile Include="Areas\Finance\Models\CustomStatements.cs" />
+    <Compile Include="Areas\Finance\Models\Statements\ContributionStatementsExtract.cs" />
+    <Compile Include="Areas\Finance\Models\Statements\CustomStatements.cs" />
     <Compile Include="Areas\Finance\Models\DonorTotalsOptions.cs" />
     <Compile Include="Areas\Finance\Models\FundTotalInfo.cs" />
     <Compile Include="Areas\Finance\Models\GLExportResult.cs" />
     <Compile Include="Areas\Finance\Models\DepositsModel.cs" />
     <Compile Include="Areas\Finance\Models\DepositTotalsModel.cs" />
+    <Compile Include="Areas\Finance\Models\StatementSpecification.cs" />
     <Compile Include="Areas\Finance\Models\TotalsByFundRange.cs" />
     <Compile Include="Areas\Finance\Models\TotalsByFundAgeRangeModel.cs" />
     <Compile Include="Areas\Main\Models\Other\CouponResponseModel.cs" />
@@ -1077,14 +1084,14 @@
     <Compile Include="Areas\Search\Models\SearchAdd\SearchAddModel.cs" />
     <Compile Include="Areas\Reports\Models\Attendance\AttendanceDetailModel.cs" />
     <Compile Include="Areas\Reports\Models\Attendance\ChurchAttendance2Model.cs" />
-    <Compile Include="Areas\Finance\Models\ContributionStatements.cs" />
-    <Compile Include="Areas\Finance\Models\ContributionStatementsResult.cs" />
+    <Compile Include="Areas\Finance\Models\Statements\ContributionStatements.cs" />
+    <Compile Include="Areas\Finance\Models\Statements\ContributionStatementsResult.cs" />
     <Compile Include="Areas\Reports\Models\Attendance\RollsheetModel.cs" />
     <Compile Include="Areas\Reports\Models\Attendance\PastAttendeeResult.cs" />
     <Compile Include="Areas\Reports\Models\Attendance\VisitsAbsentsResult.cs" />
     <Compile Include="Areas\Reports\Models\Other\HeadFoot.cs" />
     <Compile Include="Areas\Finance\Models\ContributionModel.cs" />
-    <Compile Include="Areas\Finance\Models\ContributionStatementResult.cs" />
+    <Compile Include="Areas\Finance\Models\Statements\ContributionStatementResult.cs" />
     <Compile Include="Areas\Reports\Models\Attendance\AttendeeResult.cs" />
     <Compile Include="Areas\Reports\Models\Enrollment\ProspectResult.cs" />
     <Compile Include="Areas\Reports\Models\Attendance\RollLabelsResult.cs" />
@@ -1739,6 +1746,7 @@
     <Content Include="gulpfile.js" />
     <Content Include="Content\touchpoint\js\onlinereg\bootstrap-datepicker.js" />
     <Content Include="chart.py" />
+    <Content Include="Properties\Files\ContributionStatementTemplate.html" />
     <Content Include="Views\Shared\Account\_Layout.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\EditCustomReport.cshtml" />
     <Content Include="Areas\Manage\Views\Account\SetPasswordConfirm.cshtml" />
@@ -1881,8 +1889,6 @@
     </None>
     <Content Include="Content\touchpoint\src\less\modals.less" />
     <Content Include="Areas\People\Views\Person\Resources\Index.cshtml" />
-    <None Include="Properties\PublishProfiles\release.pubxml" />
-    <None Include="Properties\PublishProfiles\staging.pubxml" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Scripts\ReadMe.txt" />
     <Content Include="Views\Shared\EditorTemplates\DateAndTime.cshtml" />
@@ -2339,9 +2345,6 @@
     <Content Include="Areas\Dialog\Views\OrgSearchDrop\Index.cshtml" />
     <Content Include="Areas\Dialog\Views\OrgSearchDrop\Process.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\EnterAddress.cshtml" />
-    <None Include="Properties\PublishProfiles\production.pubxml">
-      <SubType>Designer</SubType>
-    </None>
     <Content Include="Areas\Manage\Views\Batch\UpdateStatusFlags.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\EnrollmentControl2.cshtml" />
     <Content Include="Content\bootstrap-modal\css\bootstrap-modal.css" />
@@ -2612,23 +2615,7 @@
     <Compile Include="Areas\Manage\Models\PromoteInfo.cs" />
     <Compile Include="Areas\Manage\Models\PromotionModel.cs" />
     <Compile Include="Areas\Reports\Models\Attendance\AttendanceModel.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\Settings1.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <DependentUpon>Settings.settings</DependentUpon>
-    </Compile>
     <Compile Include="Pushpay\Entities\AccessToken.cs" />
-    <Compile Include="Resource1.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resource1.resx</DependentUpon>
-    </Compile>
-    <EmbeddedResource Include="Resource1.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resource1.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <Content Include="Views\Shared\Menu\ReportsMenuCustom.xml" />
     <Content Include="Views\Shared\Menu\ReportsMenu.xml">
       <SubType>Designer</SubType>
@@ -2994,7 +2981,6 @@
     <Content Include="Content\less\wells.less" />
     <None Include="Content\images\LibraryTemplate.xls" />
     <Content Include="Content\Tutorials\_SearchAdd_Index.cshtml" />
-    <None Include="Properties\DataSources\System.Data.DataSet.datasource" />
     <Content Include="Areas\Manage\Views\Transactions\Index.cshtml">
     </Content>
     <Content Include="Areas\Manage\Views\Transactions\List.cshtml">
@@ -3276,11 +3262,31 @@
     </Content>
     <Content Include="Areas\Manage\Views\Batch\ExtraValuesFromPeopleIds.cshtml">
     </Content>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <None Include="Properties\DataSources\System.Data.DataSet.datasource" />
+    <None Include="Properties\PublishProfiles\production.pubxml" />
+    <None Include="Properties\PublishProfiles\release.pubxml" />
+    <None Include="Properties\PublishProfiles\staging.pubxml" />
     <None Include="Properties\PublishProfiles\test.pubxml" />
+    <Compile Include="Properties\Resource1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resource1.resx</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resource1.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
+      <LastGenOutput>Resource1.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings1.Designer.cs</LastGenOutput>
     </None>
+    <Compile Include="Properties\Settings1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>

@@ -1,17 +1,17 @@
 using CmsData;
 using CmsData.Codes;
-using CmsData.Registration;
 using CmsWeb.Areas.Dialog.Models;
+using CmsWeb.Properties;
 using ImageData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
-using System.Web;
 using System.Xml.Serialization;
 using UtilityExtensions;
 using Person = CmsData.Person;
+using Settings = CmsData.Registration.Settings;
 
 namespace CmsWeb.Areas.OnlineReg.Models
 {

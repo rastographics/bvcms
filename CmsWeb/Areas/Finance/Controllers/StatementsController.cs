@@ -51,7 +51,7 @@ namespace CmsWeb.Areas.Finance.Controllers
                 Processed = 0
             };
             //var db = Db;
-            var cs = Models.Report.ContributionStatements.GetStatementSpecification(CurrentDatabase, customstatement);
+            var cs = ContributionStatementsExtract.GetStatementSpecification(CurrentDatabase, customstatement);
 
             if (!startswith.HasValue())
             {

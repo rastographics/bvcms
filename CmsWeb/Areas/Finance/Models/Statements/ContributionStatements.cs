@@ -1,34 +1,24 @@
 using CmsData;
 using CmsData.API;
 using CmsData.View;
+using CmsWeb.Properties;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using iTextSharp.tool.xml;
 using iTextSharp.tool.xml.pipeline;
 using System;
 using System.Collections.Generic;
+using System.Drawing.Printing;
 using System.IO;
 using System.Linq;
 using System.Web.Mvc;
 using System.Xml.Linq;
-using System.Xml.XPath;
+using TuesPechkin;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Finance.Models.Report
 {
-    public class MyHandler : IElementHandler
-    {
-        public List<IElement> elements = new List<IElement>();
-
-        public void Add(IWritable w)
-        {
-            if (w is WritableElement)
-            {
-                elements.AddRange(((WritableElement)w).Elements());
-            }
-        }
-    }
-    public class ContributionStatements
+    public partial class ContributionStatements
     {
         private PageEvent pageEvents = new PageEvent();
         private string _fundDisplaySetting;
@@ -43,38 +33,63 @@ namespace CmsWeb.Areas.Finance.Models.Report
         public bool ShowCheckNo { get; set; }
         public bool ShowNotes { get; set; }
 
-        public int LastSet()
-        {
-            if (pageEvents.FamilySet.Count == 0)
-            {
-                return 0;
-            }
+        public int LastSet() => (pageEvents.FamilySet.Count == 0)
+            ? 0 : pageEvents.FamilySet.Max(kp => kp.Value);
 
-            var m = pageEvents.FamilySet.Max(kp => kp.Value);
-            return m;
-        }
+        public List<int> Sets() => (pageEvents.FamilySet.Count == 0)
+            ? new List<int>()
+            : pageEvents.FamilySet.Values.Distinct().ToList();
 
-        public List<int> Sets()
-        {
-            if (pageEvents.FamilySet.Count == 0)
-            {
-                return new List<int>();
-            }
 
-            var m = pageEvents.FamilySet.Values.Distinct().ToList();
-            return m;
-        }
-
-        public class StatementSpecification
-        {
-            public string Description { get; set; }
-            public string Header { get; set; }
-            public string Notice { get; set; }
-            public List<int> Funds { get; set; }
-
-        }
 
         public void Run(Stream stream, CMSDataContext db, IEnumerable<ContributorInfo> q, StatementSpecification cs, int set = 0)
+        {
+            if (db.Setting("UseNewStatementsFormat"))
+            {
+                CreatePDF(stream, db, q, cs, set);
+            }
+            else
+            {
+                StandardMethod(stream, db, q, cs, set);
+            }
+        }
+
+        private void CreatePDF(Stream stream, CMSDataContext db, IEnumerable<ContributorInfo> q, StatementSpecification cs, int set)
+        {
+            var html = db.ContentHtml("StatementTemplate", Resource1.ContributionStatementTemplate);
+            var html1 = cs.Header ?? db.ContentHtml("StatementHeader", Resource1.ContributionStatementHeader);
+            var html2 = cs.Notice ?? db.ContentHtml("StatementNotice", Resource1.ContributionStatementNotice);
+
+            var document = new HtmlToPdfDocument
+            {
+                GlobalSettings =
+                {
+                    ProduceOutline = false,
+                    DocumentTitle = cs.Description,
+                    PaperSize = PaperKind.Letter, // Implicit conversion to PechkinPaperSize
+                    Margins =
+                    {
+                        Bottom = 0.5,
+                        Left = 0.5,
+                        Right = 0.5,
+                        Top = 0.5,
+                        Unit = Unit.Inches
+                    }
+                },
+                    Objects = {
+                    new ObjectSettings { HtmlText = html }
+                }
+            };
+            IConverter converter =
+                new StandardConverter(
+                    new PdfToolset(
+                        new WinAnyCPUEmbeddedDeployment(
+                            new TempFolderDeployment())));
+            byte[] bytes = converter.Convert(document);
+            stream.Write(bytes, 0, bytes.Length);
+        }
+
+        public void StandardMethod(Stream stream, CMSDataContext db, IEnumerable<ContributorInfo> q, StatementSpecification cs, int set = 0)
         {
             pageEvents.set = set;
             pageEvents.PeopleId = 0;
@@ -172,7 +187,6 @@ p { font-size: 11px; }
                     }
                 }
 
-                //cell.FixedHeight = 72f * 1.25f;
                 t1.AddCell(cell);
                 t1.AddCell("\n");
 
@@ -196,7 +210,6 @@ p { font-size: 11px; }
                 }
 
                 cell = new PdfPCell(a) { Border = Rectangle.NO_BORDER };
-                //cell.FixedHeight = 72f * 1.0625f;
                 ae.AddCell(cell);
 
                 cell = new PdfPCell(t1a.DefaultCell);
@@ -308,7 +321,6 @@ p { font-size: 11px; }
                         Phrase = ShowCheckNo ? new Phrase("Check No", boldfont) : new Phrase("", boldfont)
                     };
 
-
                     t.AddCell(cell);
 
                     t.AddCell(ShowNotes ? new Phrase("Notes", boldfont) : new Phrase("", boldfont));
@@ -330,13 +342,11 @@ p { font-size: 11px; }
                     t.AddCell(cell);
                     if (NumberOfColumns == 1)
                     {
-
                         cell = new PdfPCell(t.DefaultCell)
                         {
                             HorizontalAlignment = Element.ALIGN_CENTER,
                             Phrase = ShowCheckNo ? new Phrase(c.CheckNo, font) : new Phrase("", font)
                         };
-
 
                         t.AddCell(cell);
 
@@ -376,13 +386,14 @@ p { font-size: 11px; }
 
                 if (pledges.Count > 0)
                 {
-                    t = (NumberOfColumns == 1)
-                        ? new PdfPTable(new[] { 25f, 15f, 15f, 15f, 30f })
-                        : new PdfPTable(new[] { 16f, 12f, 12f });
-                    t.WidthPercentage = 100;
-
+                    t = new PdfPTable((NumberOfColumns == 1)
+                        ? new[] { 25f, 15f, 15f, 15f, 30f }
+                        : new[] { 16f, 12f, 12f })
+                    {
+                        WidthPercentage = 100,
+                        HeaderRows = 2,
+                    };
                     t.DefaultCell.Border = Rectangle.NO_BORDER;
-                    t.HeaderRows = 2;
 
                     cell = new PdfPCell(t.DefaultCell)
                     {
@@ -393,12 +404,14 @@ p { font-size: 11px; }
 
                     t.DefaultCell.Border = Rectangle.BOTTOM_BORDER;
                     t.AddCell(new Phrase("Fund", boldfont));
+
                     cell = new PdfPCell(t.DefaultCell)
                     {
                         HorizontalAlignment = Element.ALIGN_RIGHT,
                         Phrase = new Phrase("Pledge", boldfont)
                     };
                     t.AddCell(cell);
+
                     cell = new PdfPCell(t.DefaultCell)
                     {
                         HorizontalAlignment = Element.ALIGN_RIGHT,
@@ -430,6 +443,7 @@ p { font-size: 11px; }
                             Phrase = new Phrase(c.Given.ToString2("N2"), font)
                         };
                         t.AddCell(cell);
+
                         if (NumberOfColumns == 1)
                         {
                             t.AddCell(new Phrase("", boldfont));
@@ -645,7 +659,6 @@ p { font-size: 11px; }
                         t.AddCell(new Phrase("", boldfont));
                     }
 
-
                     ct.AddElement(t);
                 }
 
@@ -664,13 +677,15 @@ p { font-size: 11px; }
                     }
 
                     status = ct.Go();
-                    ++col;
-                    if (col <= 1)
+                    if (NumberOfColumns == 2)
                     {
-                        continue;
+                        ++col;
+                        if (col <= 1)
+                        {
+                            continue;
+                        }
+                        col = 0;
                     }
-
-                    col = 0;
                     pos = doc.Top;
                     doc.NewPage();
                 }
@@ -710,56 +725,6 @@ p { font-size: 11px; }
             return _fundDisplaySetting.Equals("FundName", StringComparison.OrdinalIgnoreCase) ? defaultSelector() : overridenSelector();
         }
 
-        public static StatementSpecification GetStatementSpecification(CMSDataContext db, string name)
-        {
-            var standardheader = db.ContentHtml("StatementHeader", Resource1.ContributionStatementHeader);
-            var standardnotice = db.ContentHtml("StatementNotice", Resource1.ContributionStatementNotice);
-
-            if (name == null || name == "all")
-            {
-                return new StatementSpecification()
-                {
-                    Description = "All Statements",
-                    Notice = standardnotice,
-                    Header = standardheader,
-                    Funds = null
-                };
-            }
-            var standardsetlabel = db.Setting("StandardFundSetName", "Standard Statements");
-            if (name == standardsetlabel)
-            {
-                var funds = APIContributionSearchModel.GetCustomStatementsList(db, name);
-                return new StatementSpecification()
-                {
-                    Description = standardsetlabel,
-                    Notice = standardnotice,
-                    Header = standardheader,
-                    Funds = funds
-                };
-            }
-            var xd = XDocument.Parse(Util.PickFirst(db.ContentOfTypeText("CustomStatements"), "<CustomStatement/>"));
-            var ele = xd.XPathSelectElement($"//Statement[@description='{name}']");
-            if (ele == null)
-            {
-                return null;
-            }
-
-            var desc = ele.Attribute("description")?.Value;
-            var cs = new StatementSpecification
-            {
-                Description = desc
-            };
-            var headerele = ele.Element("Header");
-            cs.Header = headerele != null
-                ? string.Concat(headerele.Nodes().Select(x => x.ToString()).ToArray())
-                : standardheader;
-            var noticeele = ele.Element("Notice");
-            cs.Notice = noticeele != null
-                ? string.Concat(noticeele.Nodes().Select(x => x.ToString()).ToArray())
-                : standardnotice;
-            cs.Funds = APIContributionSearchModel.GetCustomStatementsList(db, desc);
-            return cs;
-        }
         public static List<string> CustomStatementsList(CMSDataContext db)
         {
             var xd = XDocument.Parse(Util.PickFirst(db.ContentOfTypeText("CustomStatements"), "<CustomStatement/>"));
@@ -778,6 +743,7 @@ p { font-size: 11px; }
             list.Insert(0, standardsetlabel);
             return list;
         }
+
         public static List<string> CustomFundSetList(CMSDataContext db)
         {
             var xd = XDocument.Parse(Util.PickFirst(db.ContentOfTypeText("CustomFundSets"), "<CustomFundSets/>"));
@@ -795,11 +761,13 @@ p { font-size: 11px; }
 
             return list.Count == 0 ? null : list;
         }
+
         public static SelectList CustomStatementsSelectList()
         {
             var cslist = CustomStatementsList(DbUtil.Db);
             return cslist == null ? null : new SelectList(cslist);
         }
+
         public static SelectList CustomFundSetSelectList(CMSDataContext db)
         {
             var cslist = CustomFundSetList(db);
@@ -810,6 +778,19 @@ p { font-size: 11px; }
 
             cslist.Insert(0, "(not specified)");
             return new SelectList(cslist);
+        }
+
+        public class MyHandler : IElementHandler
+        {
+            public List<IElement> elements = new List<IElement>();
+
+            public void Add(IWritable w)
+            {
+                if (w is WritableElement)
+                {
+                    elements.AddRange(((WritableElement)w).Elements());
+                }
+            }
         }
 
         protected class PageEvent : PdfPageEventHelper
@@ -824,6 +805,7 @@ p { font-size: 11px; }
                 public PdfTemplate template;
                 public int n;
             }
+
             private NPages npages;
             private int pg;
             private PdfWriter writer;
@@ -851,6 +833,7 @@ p { font-size: 11px; }
 
                 npages = new NPages(dc);
             }
+
             public void EndPageSet()
             {
                 if (npages == null)
@@ -876,10 +859,12 @@ p { font-size: 11px; }
                 npages.template.EndText();
                 npages = new NPages(dc);
             }
+
             public void StartPageSet()
             {
                 npages.juststartednewset = true;
             }
+
             public override void OnEndPage(PdfWriter writer, Document document)
             {
                 base.OnEndPage(writer, document);
@@ -902,6 +887,7 @@ p { font-size: 11px; }
                 dc.AddTemplate(npages.template, 30 + len, 30);
                 npages.n = pg++;
             }
+
             public override void OnCloseDocument(PdfWriter writer, Document document)
             {
                 base.OnCloseDocument(writer, document);
@@ -910,4 +896,3 @@ p { font-size: 11px; }
         }
     }
 }
-

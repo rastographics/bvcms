@@ -1,5 +1,6 @@
 using CmsData;
 using CmsWeb.Lifecycle;
+using CmsWeb.Properties;
 using System;
 using System.Collections.Generic;
 using System.IO;

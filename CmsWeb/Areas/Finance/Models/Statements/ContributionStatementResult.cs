@@ -41,7 +41,7 @@ namespace CmsWeb.Areas.Finance.Models.Report
             response.ContentType = "application/pdf";
             var filename = $"Statement-{ToDate:d}".SlugifyString("-", false);
             response.AddHeader("content-disposition", $"filename={filename}.pdf");
-            var cs = ContributionStatements.GetStatementSpecification(CurrentDatabase, statementType ?? "all");
+            var cs = ContributionStatementsExtract.GetStatementSpecification(CurrentDatabase, statementType ?? "all");
 
             if (showCheckNo || showNotes)
             {

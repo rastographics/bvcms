@@ -15,10 +15,12 @@ using CmsWeb.Areas.Manage.Controllers;
 using CmsWeb.Areas.Reports.Controllers;
 using CmsWeb.Constants;
 using CmsWeb.Models;
+using CmsWeb.Properties;
 using Dapper;
 using MoreLinq;
 using Newtonsoft.Json;
 using UtilityExtensions;
+using Settings = CmsData.Registration.Settings;
 
 namespace CmsWeb.Areas.Search.Models
 {
