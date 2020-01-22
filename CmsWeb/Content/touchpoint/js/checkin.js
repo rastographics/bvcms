@@ -184,6 +184,8 @@ new Vue({
             }
         },
         initKeyboard(layout = 'numeric') {
+            let isWindows = -1 < navigator.userAgent.indexOf('Windows');
+            let isChromebook = -1 < navigator.userAgent.indexOf('Chrome OS');
             let vm = this;
             setTimeout(function () {
                 vm.keyboard = new Keyboard({
@@ -233,7 +235,7 @@ new Vue({
                     },
                     theme: "hg-theme-default hg-layout-" + layout,
                     mergeDisplay: true,
-                    autoUseTouchEvents: true,       // use touch events on devices and browsers that support it
+                    autoUseTouchEvents: (!isWindows && !isChromebook), // use touch events on devices and browsers that support it
                     disableButtonHold: true,        // holding button only leads to one press
                     stopMouseDownPropagation: true, // prevent click bubble up on button press
                     disableCaretPositioning: true,  // force cursor to the end of the input (mask support)
