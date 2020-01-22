@@ -52,6 +52,8 @@ namespace CmsData
 
         private int _FundManagerRoleId;
 
+        private int _ShowList;
+
         private EntitySet<BundleHeader> _BundleHeaders;
 
         private EntitySet<Contribution> _Contributions;
@@ -125,6 +127,9 @@ namespace CmsData
 
         partial void OnFundManagerRoleIdChanging(int value);
         partial void OnFundManagerRoleIdChanged();
+
+        partial void OnShowListChanging(int value);
+        partial void OnShowListChanged();
 
         #endregion
 
@@ -497,6 +502,24 @@ namespace CmsData
                     _FundManagerRoleId = value;
                     SendPropertyChanged("FundManagerRoleId");
                     OnFundManagerRoleIdChanged();
+                }
+            }
+        }
+
+        [Column(Name = "ShowList", UpdateCheck = UpdateCheck.Never, Storage = "_ShowList", DbType = "int NOT NULL")]
+        public int ShowList
+        {
+            get => _ShowList;
+
+            set
+            {
+                if (_FundManagerRoleId != value)
+                {
+                    OnShowListChanging(value);
+                    SendPropertyChanging();
+                    _ShowList = value;
+                    SendPropertyChanged("ShowList");
+                    OnShowListChanged();
                 }
             }
         }

@@ -44,6 +44,7 @@
                             <tr>
                                 <th style="width: 100px;"><a href="#" class="sortable" data-sortby="FundId">Fund Id</a></th>
                                 <th style="width: 300px;"><a href="#" class="sortable" data-sortby="Sort">Sort</a></th>
+                                <th style="width: 300px;"><a href="#" class="sortable" data-sortby="ShowList">Show List</a></th>
                                 <th><a href="#" class="sortable" data-sortby="Name">Name</a></th>
                                 <th style="width: 200px;"><a href="#" class="sortable" data-sortby="StatusId">Status</a></th>
                                 <th class="text-center"><a href="#" class="sortable" data-sortby="PledgeFlag">Pledge</a></th>
@@ -58,6 +59,7 @@
                                 <tr>
                                     <td style="width: 100px;">@item.FundId</td>
                                     <td style="width: 300px;"><a id="o@(item.FundId)" class="clickEdit" data-pk="o@(item.FundId)">@(item.OnlineSort.HasValue ? item.OnlineSort.ToString() : "")</a></td>
+                                    <td style="width: 200px;"><a id="sl@(item.FundId)" class="clickSelectShowList" data-value="@(item.ShowList)" data-pk="sl@(item.FundId)">@(item.ShowList == 1 ? "Primary" : (item.ShowList == 2 ? "Secondary" : "None"))</a></td>
                                     @if (item.FundPledgeFlag)
                                     {
                                         <td><a href="/FinanceReports/PledgeFulfillments/@item.FundId">@item.FundName</a></td>
@@ -143,6 +145,19 @@
                 type: 'select',
                 url: "/Fund/EditStatus/",
                 source: [{value: 1, text: "Open"}, {value: 2, text: "Closed"}],
+                params: function (params) {
+                    var data = {};
+                    data['id'] = params.pk;
+                    data['value'] = params.value;
+                    return data;
+                }
+            });
+
+            $(".clickSelectShowList").editable({
+                mode: 'inline',
+                type: 'select',
+                url: "/Fund/EditShowList/",
+                source: [{ value: 1, text: "Primary" }, { value: 2, text: "Secondary" }, { value: 3, text: "None" }],
                 params: function (params) {
                     var data = {};
                     data['id'] = params.pk;

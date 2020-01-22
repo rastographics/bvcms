@@ -28,6 +28,7 @@ namespace IntegrationTests.Areas.Search.Views.Query
             WaitForElement("#IsTopGiver");
             Find(id: "IsTopGiver").Click();
             WaitForElement("#FundIds");
+            
             var FundIds = Find(id: "FundIds");
             FundIds.ShouldNotBeNull();
         }
