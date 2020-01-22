@@ -75,7 +75,10 @@ namespace CmsData.Finance
             // Delete paymentinfo instead of update it fix all the database context issues here
             if (paymentInfo != null)
             {
-                db.PaymentInfos.Attach(paymentInfo);
+                if (!db.PaymentInfos.Contains(paymentInfo))
+                {
+                    db.PaymentInfos.Attach(paymentInfo);
+                }
                 db.PaymentInfos.DeleteOnSubmit(paymentInfo);
                 db.SubmitChanges();
             }
