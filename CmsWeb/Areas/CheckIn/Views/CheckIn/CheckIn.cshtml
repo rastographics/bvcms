@@ -51,6 +51,19 @@
                 </div>
             </div>
         </div>
+        <div v-else-if="view == 'admin'" class="landing admin">
+            <h2 class="text-center">Enter your admin PIN</h2>
+            <form v-on:submit.prevent="find">
+                <input type="tel" name="phone" v-model="search" autocomplete="off" class="keyboard-input" />
+                <div class="simple-keyboard"></div>
+            </form>
+            <div class="action-bar">
+                <div class="content">
+                    <button v-on:click="loadView('checkin')" class="btn btn-light pull-left" style="margin-right:20px;">Cancel</button>
+                    <span class="clearfix"></span>
+                </div>
+            </div>
+        </div>
         <div v-else-if="view == 'namesearch'" class="landing namesearch">
             <h2 class="text-center">Enter a name or phone number</h2>
             <form v-on:submit.prevent="find">
@@ -83,6 +96,7 @@
             <div class="action-bar">
                 <div class="content">
                     <button class="btn btn-info pull-right" v-on:click="loadView('landing')">Return</button>
+                    <button v-if="adminMode" v-on:click="addPerson" class="btn btn-light pull-right" style="margin-right:20px;">Add New Person</button>
                     <span class="clearfix"></span>
                 </div>
             </div>
@@ -290,7 +304,7 @@
         <div v-else-if="view == 'checkin'" class="results">
             <div class="row header-bar">
                 <div class="col-xs-12 text-center">
-                    <h2 style="font-weight:300;">Check-In</h2>
+                    <h2 style="font-weight:300;" v-on:click="loadView('admin')">Check-In</h2>
                 </div>
             </div>
             <form v-on:submit.prevent="updateAttendance">

@@ -25,8 +25,11 @@ namespace CmsWeb.Models
 
         public CheckinProfileSettingsModel()
         {
-            CutoffAge = 18;
+            CutoffAge = 13;
             ShowCheckinConfirmation = 5;
+            Location = true;
+            Guest = true;
+            SecurityType = 3;
         }
     }
 }

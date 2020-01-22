@@ -288,31 +288,36 @@ new Vue({
         loadView(newView) {
             // cleanup and prep for view swap
             this.showDropOption = false;
-            if (this.view === 'landing') {
+            if (this.view === 'landing' || this.view === 'admin') {
                 this.keyboard.destroy();
             }
             if (newView === 'checkin' && !this.members.length) {
                 newView = 'landing';
+            }
+            if (this.adminMode && newView === 'admin') {
+                this.adminMode = false;
+                return;
             }
             if (this.adminMode && newView === 'landing') {
                 newView = 'namesearch';
             }
             this.view = newView;
             if (newView === 'landing' || newView === 'namesearch') {
-                var layout = (newView === 'namesearch') ? 'default' : 'numeric';
                 this.search = '';
                 this.members = [];
                 this.classes = [];
                 this.families = [];
                 this.attendance = [];
                 this.reprintLabels = false;
-                if (newView === 'landing') {
-                    this.initKeyboard(layout);
-                }
                 if (!this.profile || !this.kiosk.name.length) {
                     this.logout();
                     error_swal("Error", "Couldn't retrieve saved profile data. Please try logging in again.");
+                    return;
                 }
+            }
+            if (newView === 'landing' || newView === 'admin') {
+                this.search = '';
+                this.initKeyboard('numeric');
             }
         },
         logout() {
@@ -393,6 +398,14 @@ new Vue({
         visitClass(member) {
             this.classData.member = false;
             this.getClasses(member);
+        },
+        tryAdminPin() {
+            if (this.search === this.profile.AdminPIN) {
+                this.adminMode = true;
+            } else {
+                warning_swal('Invalid', 'Invalid PIN.');
+            }
+            this.loadView('checkin');
         },
         dropClass(member, group) {
             let vm = this;
@@ -505,6 +518,10 @@ new Vue({
             let successCallback = typeof callback === "function" ? callback : $.noop;
             var phone = vm.search.replace(/[^\d!]/g, '');
 
+            if (vm.view === 'admin') {
+                vm.tryAdminPin();
+                return;
+            }
             // handle special entry
             if (phone === vm.profile.Logout) {
                 vm.logout();
@@ -550,6 +567,12 @@ new Vue({
                                 vm.loadView('families');
                             } else if (results.length === 1) {
                                 vm.lastSearch = vm.search;
+                                if (vm.adminMode && !isQrCode) {
+                                    // in admin mode, load the families view so we have the option to create a new family
+                                    vm.families = results;
+                                    vm.loadView('families');
+                                    return;
+                                }
                                 vm.families = [];
                                 var attendance = null;
                                 if (response.data.argString) {

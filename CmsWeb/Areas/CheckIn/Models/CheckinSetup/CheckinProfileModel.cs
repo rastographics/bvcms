@@ -29,11 +29,11 @@ namespace CmsWeb.Models
                 DisableJoin = false,
                 DisableTimer = false,
                 BackgroundImageURL = null,
-                CutoffAge = 18,
+                CutoffAge = 13,
                 Logout = "12345",
-                Guest = false,
-                Location = false,
-                SecurityType = 0,
+                Guest = true,
+                Location = true,
+                SecurityType = 3,
                 ShowCheckinConfirmation = 5
             };
 

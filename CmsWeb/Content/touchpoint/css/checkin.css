@@ -152,6 +152,11 @@
         clear: left;
     }
 }
+@media (max-width: 992px) {
+    .checkin .results {
+        margin-bottom: 70px;
+    }
+}
 .checkin .results .member:last-of-type,
 .checkin .results .family:last-child {
     margin-bottom: 80px;
@@ -184,7 +189,7 @@
 .checkin .action-bar .content {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 20px 45px;
+    padding: 20px 50px;
 }
 hr {
     margin-top: 0;
