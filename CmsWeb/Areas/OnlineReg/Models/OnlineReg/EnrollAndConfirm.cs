@@ -457,10 +457,7 @@ Total Fee paid for this registration session: {ts?.TotPaid:C}<br/>
                 details.Append(p.PrepareSummaryText(CurrentDatabase));
             }
 
-            if (Transaction?.Amt > 0)
-            {
-                details.Append(List[0].SummaryTransaction());
-            }
+            details.Append(List[0].SummaryTransaction());
 
             return details.ToString();
         }
