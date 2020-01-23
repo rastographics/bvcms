@@ -1,5 +1,6 @@
 ﻿<% Response.StatusCode = 503; %>
 <%@ Page Language="C#" AutoEventWireup="True" %>
+<%@ Import Namespace="CmsWeb.Properties" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
