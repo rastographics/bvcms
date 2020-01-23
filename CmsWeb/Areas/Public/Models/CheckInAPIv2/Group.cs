@@ -159,7 +159,7 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 			string qVisits = @"SELECT
 										org.OrganizationId AS id,
 										org.OrganizationName AS name,
-										org.LeaderName AS leader,
+										org.LeaderName AS leaderName,
 										org.Location AS location,
 										CAST( 0 AS BIT ) AS member,
                                         CAST( 1 AS BIT ) AS guest,
