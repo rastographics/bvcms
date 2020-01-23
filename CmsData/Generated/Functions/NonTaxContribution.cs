@@ -19,6 +19,8 @@ namespace CmsData.View
 
         private string _ContributionType;
 
+        private string _BundleType;
+
         private string _FundName;
 
         private string _CheckNo;
@@ -99,6 +101,20 @@ namespace CmsData.View
                 if (_ContributionType != value)
                 {
                     _ContributionType = value;
+                }
+            }
+        }
+
+        [Column(Name = "BundleType", Storage = "_BundleType", DbType = "nvarchar(50)")]
+        public string BundleType
+        {
+            get => _BundleType;
+
+            set
+            {
+                if (_BundleType != value)
+                {
+                    _BundleType = value;
                 }
             }
         }

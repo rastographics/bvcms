@@ -1,5 +1,6 @@
 using CmsData;
 using CmsData.API;
+using CmsData.Codes;
 using CmsData.View;
 using CmsWeb.Properties;
 using HandlebarsDotNet;
@@ -57,8 +58,8 @@ namespace CmsWeb.Areas.Finance.Models.Report
 
         private void HtmlToPdfMethod(Stream stream, CMSDataContext db, IEnumerable<ContributorInfo> q, StatementSpecification cs, int set)
         {
-            var html = db.ContentText("StatementTemplate", Resource1.ContributionStatementTemplate);
-            var bodyHtml = db.ContentText("StatementTemplateBody", Resource1.ContributionStatementTemplateBody);
+            var html = db.Content("StatementTemplate", ContentTypeCode.TypeText)?.Body ?? Resource1.ContributionStatementTemplate;
+            var bodyHtml = db.Content("StatementTemplateBody", ContentTypeCode.TypeText)?.Body ?? Resource1.ContributionStatementTemplateBody;
             var header = cs.Header ?? db.ContentHtml("StatementHeader", Resource1.ContributionStatementHeader);
             var notice = cs.Notice ?? db.ContentHtml("StatementNotice", Resource1.ContributionStatementNotice);
             var footer = db.ContentHtml("StatementTemplateFooter", "");
@@ -102,6 +103,9 @@ namespace CmsWeb.Areas.Finance.Models.Report
                 if ((contributions.Count + pledges.Count + giftsinkind.Count + nontaxitems.Count) > 0)
                 {
                     contributor.MailingAddress = string.Join("<br/>", contributor.MailingAddress.SplitLines());
+                    var taxSummary = SumByFund(contributions);
+                    var nontaxSummary = SumByFund(nontaxitems.Select(i => new NormalContribution(i)).ToList());
+
                     var data = new StatementContext
                     {
                         fromDate = FromDate,
@@ -113,10 +117,13 @@ namespace CmsWeb.Areas.Finance.Models.Report
                         footer = footer,
                         contributor = contributor,
                         envelopeNumber = Convert.ToString(Person.GetExtraValue(db, contributor.PeopleId, "EnvelopeNumber")?.IntValue),
-                        contributions = contributions,
+                        contributions = new ListOfNormalContributions(contributions),
                         pledges = pledges,
                         giftsinkind = giftsinkind,
                         nontaxitems = nontaxitems,
+                        taxSummary = taxSummary,
+                        nontaxSummary = nontaxSummary,
+                        totalGiven = taxSummary.Total + nontaxSummary.Total
                     };
                     data.body = db.RenderTemplate(bodyHtml, data);
                     var htmlDocument = db.RenderTemplate(html, data);
@@ -146,6 +153,24 @@ namespace CmsWeb.Areas.Finance.Models.Report
             IConverter converter = GetConverter();
             byte[] bytes = converter.Convert(document);
             stream.Write(bytes, 0, bytes.Length);
+        }
+
+        private static ListOfNormalContributions SumByFund(List<NormalContribution> contributions)
+        {
+            var list = contributions
+                .GroupBy(g => new { g.FundName, g.FundDescription }, (Key, group) => new
+                {
+                    Key,
+                    ContributionAmount = group.Sum(c => c.ContributionAmount),
+
+                })
+                .Select(g => new NormalContribution
+                {
+                    FundName = g.Key.FundName,
+                    FundDescription = g.Key.FundDescription,
+                    ContributionAmount = g.ContributionAmount
+                }).ToList();
+            return new ListOfNormalContributions(list);
         }
 
         private IConverter GetConverter()

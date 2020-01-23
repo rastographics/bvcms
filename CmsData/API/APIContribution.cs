@@ -336,11 +336,17 @@ namespace CmsData.API
 
         public static IEnumerable<UnitPledgeSummary> Pledges(CMSDataContext db, ContributorInfo ci, DateTime toDate, List<int> funds)
         {
+            var showNegatives = db.Setting("ShowNegativePledgeBalances");
             var q = from c in
                 db.UnitPledgeSummary(ci.PeopleId, ci.SpouseID, ci.Joint, toDate, funds.JoinInts(","))
                     orderby c.FundName
                     select c;
-            return q;
+            foreach(var p in q)
+            {
+                decimal balance = (p.Pledged - p.Given) ?? 0;
+                p.Balance = (!showNegatives && balance < 0) ? 0 : balance;
+                yield return p;
+            }
         }
 
         public static IEnumerable<GiftSummary> GiftSummary(CMSDataContext db, ContributorInfo ci, DateTime fromDate, DateTime toDate, List<int> funds)

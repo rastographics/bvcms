@@ -13,6 +13,10 @@ namespace CmsData.View
 
         private decimal? _Given;
 
+        private decimal? _PriorYearsTotal;
+
+        private decimal? _CurrentYearTotal;
+
         private decimal? _Pledged;
 
         private DateTime? _PledgeDate;
@@ -47,6 +51,34 @@ namespace CmsData.View
                 if (_Given != value)
                 {
                     _Given = value;
+                }
+            }
+        }
+
+        [Column(Name = "CurrentYearTotal", Storage = "_CurrentYearTotal", DbType = "Decimal(38,2)")]
+        public decimal? CurrentYearTotal
+        {
+            get => _CurrentYearTotal;
+
+            set
+            {
+                if (_CurrentYearTotal != value)
+                {
+                    _CurrentYearTotal = value;
+                }
+            }
+        }
+
+        [Column(Name = "PriorYearsTotal", Storage = "_PriorYearsTotal", DbType = "Decimal(38,2)")]
+        public decimal? PriorYearsTotal
+        {
+            get => _PriorYearsTotal;
+
+            set
+            {
+                if (_PriorYearsTotal != value)
+                {
+                    _PriorYearsTotal = value;
                 }
             }
         }
@@ -92,5 +124,8 @@ namespace CmsData.View
                 }
             }
         }
+
+        [System.ComponentModel.DataAnnotations.Schema.NotMapped]
+        public decimal Balance { get; set; }
     }
 }

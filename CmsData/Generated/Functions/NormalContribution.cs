@@ -19,6 +19,8 @@ namespace CmsData.View
 
         private string _ContributionType;
 
+        private string _BundleType;
+
         private string _FundName;
 
         private string _CheckNo;
@@ -28,10 +30,26 @@ namespace CmsData.View
         private string _Description;
 
         private string _FundDescription;
-
+        
         public NormalContribution()
         {
         }
+
+        public NormalContribution(NonTaxContribution c)
+        {
+            ContributionId = c.ContributionId;
+            ContributionAmount = c.ContributionAmount;
+            ContributionDate = c.ContributionDate;
+            ContributionTypeId = c.ContributionTypeId;
+            ContributionType = c.ContributionType;
+            FundName = c.FundName;
+            CheckNo = c.CheckNo;
+            Name = c.Name;
+            Description = c.Description;
+            FundDescription = c.FundDescription;
+        }
+
+        public static explicit operator NormalContribution(NonTaxContribution c) => new NormalContribution(c);
 
         [Column(Name = "ContributionId", Storage = "_ContributionId", DbType = "int NOT NULL")]
         public int ContributionId
@@ -99,6 +117,20 @@ namespace CmsData.View
                 if (_ContributionType != value)
                 {
                     _ContributionType = value;
+                }
+            }
+        }
+
+        [Column(Name = "BundleType", Storage = "_BundleType", DbType = "nvarchar(50)")]
+        public string BundleType
+        {
+            get => _BundleType;
+
+            set
+            {
+                if (_BundleType != value)
+                {
+                    _BundleType = value;
                 }
             }
         }

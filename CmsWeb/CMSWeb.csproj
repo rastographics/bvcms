@@ -541,6 +541,7 @@
     <Compile Include="Areas\Finance\Models\DepositsModel.cs" />
     <Compile Include="Areas\Finance\Models\DepositTotalsModel.cs" />
     <Compile Include="Areas\Finance\Models\StatementSpecification.cs" />
+    <Compile Include="Areas\Finance\Models\Statements\ListOfNormalContributions.cs" />
     <Compile Include="Areas\Finance\Models\Statements\StatementContext.cs" />
     <Compile Include="Areas\Finance\Models\TotalsByFundRange.cs" />
     <Compile Include="Areas\Finance\Models\TotalsByFundAgeRangeModel.cs" />
