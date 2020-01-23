@@ -541,6 +541,7 @@
     <Compile Include="Areas\Finance\Models\DepositsModel.cs" />
     <Compile Include="Areas\Finance\Models\DepositTotalsModel.cs" />
     <Compile Include="Areas\Finance\Models\StatementSpecification.cs" />
+    <Compile Include="Areas\Finance\Models\Statements\StatementContext.cs" />
     <Compile Include="Areas\Finance\Models\TotalsByFundRange.cs" />
     <Compile Include="Areas\Finance\Models\TotalsByFundAgeRangeModel.cs" />
     <Compile Include="Areas\Main\Models\Other\CouponResponseModel.cs" />
@@ -1747,6 +1748,7 @@
     <Content Include="Content\touchpoint\js\onlinereg\bootstrap-datepicker.js" />
     <Content Include="chart.py" />
     <Content Include="Properties\Files\ContributionStatementTemplate.html" />
+    <Content Include="Properties\Files\ContributionStatementTemplateBody.html" />
     <Content Include="Views\Shared\Account\_Layout.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\EditCustomReport.cshtml" />
     <Content Include="Areas\Manage\Views\Account\SetPasswordConfirm.cshtml" />

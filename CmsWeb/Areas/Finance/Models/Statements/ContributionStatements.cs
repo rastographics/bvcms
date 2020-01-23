@@ -2,6 +2,7 @@ using CmsData;
 using CmsData.API;
 using CmsData.View;
 using CmsWeb.Properties;
+using HandlebarsDotNet;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using iTextSharp.tool.xml;
@@ -46,7 +47,7 @@ namespace CmsWeb.Areas.Finance.Models.Report
         {
             if (db.Setting("UseNewStatementsFormat"))
             {
-                CreatePDF(stream, db, q, cs, set);
+                HtmlToPdfMethod(stream, db, q, cs, set);
             }
             else
             {
@@ -54,11 +55,16 @@ namespace CmsWeb.Areas.Finance.Models.Report
             }
         }
 
-        private void CreatePDF(Stream stream, CMSDataContext db, IEnumerable<ContributorInfo> q, StatementSpecification cs, int set)
+        private void HtmlToPdfMethod(Stream stream, CMSDataContext db, IEnumerable<ContributorInfo> q, StatementSpecification cs, int set)
         {
-            var html = db.ContentHtml("StatementTemplate", Resource1.ContributionStatementTemplate);
-            var html1 = cs.Header ?? db.ContentHtml("StatementHeader", Resource1.ContributionStatementHeader);
-            var html2 = cs.Notice ?? db.ContentHtml("StatementNotice", Resource1.ContributionStatementNotice);
+            var html = db.ContentText("StatementTemplate", Resource1.ContributionStatementTemplate);
+            var bodyHtml = db.ContentText("StatementTemplateBody", Resource1.ContributionStatementTemplateBody);
+            var header = cs.Header ?? db.ContentHtml("StatementHeader", Resource1.ContributionStatementHeader);
+            var notice = cs.Notice ?? db.ContentHtml("StatementNotice", Resource1.ContributionStatementNotice);
+            var footer = db.ContentHtml("StatementTemplateFooter", "");
+            var runningtotals = db.ContributionsRuns.OrderByDescending(mm => mm.Id).First();
+
+            var toDate = ToDate.Date.AddHours(24).AddSeconds(-1);
 
             var document = new HtmlToPdfDocument
             {
@@ -66,7 +72,7 @@ namespace CmsWeb.Areas.Finance.Models.Report
                 {
                     ProduceOutline = false,
                     DocumentTitle = cs.Description,
-                    PaperSize = PaperKind.Letter, // Implicit conversion to PechkinPaperSize
+                    PaperSize = PaperKind.Letter,
                     Margins =
                     {
                         Bottom = 0.5,
@@ -75,18 +81,85 @@ namespace CmsWeb.Areas.Finance.Models.Report
                         Top = 0.5,
                         Unit = Unit.Inches
                     }
-                },
-                    Objects = {
-                    new ObjectSettings { HtmlText = html }
                 }
             };
-            IConverter converter =
-                new StandardConverter(
-                    new PdfToolset(
-                        new WinAnyCPUEmbeddedDeployment(
-                            new TempFolderDeployment())));
+
+            var contributors = q;
+            var count = 0;
+            runningtotals.Processed = 0;
+            db.SubmitChanges();
+
+            foreach (var contributor in contributors)
+            {
+                count++;
+                var contributions = APIContribution.Contributions(db, contributor, FromDate, toDate, cs.Funds).ToList();
+                var pledges = APIContribution.Pledges(db, contributor, toDate, cs.Funds).ToList();
+                var giftsinkind = APIContribution.GiftsInKind(db, contributor, FromDate, toDate, cs.Funds).ToList();
+                var nontaxitems = db.Setting("DisplayNonTaxOnStatement")
+                    ? APIContribution.NonTaxItems(db, contributor, FromDate, toDate, cs.Funds).ToList()
+                    : new List<NonTaxContribution>();
+
+                if ((contributions.Count + pledges.Count + giftsinkind.Count + nontaxitems.Count) > 0)
+                {
+                    contributor.MailingAddress = string.Join("<br/>", contributor.MailingAddress.SplitLines());
+                    var data = new StatementContext
+                    {
+                        fromDate = FromDate,
+                        toDate = toDate,
+                        header = header,
+                        notice = notice,
+                        now = DateTime.Now,
+                        body = "",
+                        footer = footer,
+                        contributor = contributor,
+                        envelopeNumber = Convert.ToString(Person.GetExtraValue(db, contributor.PeopleId, "EnvelopeNumber")?.IntValue),
+                        contributions = contributions,
+                        pledges = pledges,
+                        giftsinkind = giftsinkind,
+                        nontaxitems = nontaxitems,
+                    };
+                    data.body = db.RenderTemplate(bodyHtml, data);
+                    var htmlDocument = db.RenderTemplate(html, data);
+                    document.Objects.Add(new ObjectSettings { HtmlText = htmlDocument });
+                }
+
+                runningtotals.Processed += 1;
+                runningtotals.CurrSet = set;
+                db.SubmitChanges();
+            }
+
+            if (count == 0)
+            {
+                document.Objects.Add(new ObjectSettings { HtmlText = @"<p>no data</p>
+                    <a href=""https://docs.touchpointsoftware.com/Finance/ContributionStatements.html#troubleshooting"">
+                    See this help document docs.touchpointsoftware.com/Finance/ContributionStatements.html
+                    </a>" });
+            }
+
+            if (set != 0)
+            {
+                runningtotals.Completed = DateTime.Now;
+            }
+
+            db.SubmitChanges();
+
+            IConverter converter = GetConverter();
             byte[] bytes = converter.Convert(document);
             stream.Write(bytes, 0, bytes.Length);
+        }
+
+        private IConverter GetConverter()
+        {
+            IConverter converter = HttpContextFactory.Current.Application["PechkinConverter"] as IConverter;
+            if (converter == null)
+            {
+                converter = new ThreadSafeConverter(
+                    new RemotingToolset<PdfToolset>(
+                        new WinAnyCPUEmbeddedDeployment(
+                            new TempFolderDeployment())));
+                HttpContextFactory.Current.Application["PechkinConverter"] = converter;
+            }
+            return converter;
         }
 
         public void StandardMethod(Stream stream, CMSDataContext db, IEnumerable<ContributorInfo> q, StatementSpecification cs, int set = 0)

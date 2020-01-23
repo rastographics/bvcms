@@ -496,4 +496,7 @@ from dbo.Contribution c
   <data name="ContributionStatementTemplate" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>files\contributionstatementtemplate.html;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
+  <data name="ContributionStatementTemplateBody" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>files\contributionstatementtemplatebody.html;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
 </root>

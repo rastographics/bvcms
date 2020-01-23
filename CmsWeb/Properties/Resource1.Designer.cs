@@ -319,6 +319,24 @@ namespace CmsWeb.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &lt;!DOCTYPE html&gt;
+        ///&lt;html&gt;
+        ///&lt;head&gt;
+        ///    &lt;meta charset=&quot;utf-8&quot; /&gt;
+        ///    &lt;title&gt;&lt;/title&gt;
+        ///&lt;/head&gt;
+        ///&lt;body&gt;
+        ///
+        ///&lt;/body&gt;
+        ///&lt;/html&gt;.
+        /// </summary>
+        public static string ContributionStatementTemplateBody {
+            get {
+                return ResourceManager.GetString("ContributionStatementTemplateBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hi {name},
         ///&lt;p&gt;We noticed you already have an account in our church database.&lt;/p&gt;
         ///&lt;p&gt;You can login at &lt;a href=&quot;{host}&quot;&gt;{host}&lt;/a&gt;. 
@@ -628,7 +646,7 @@ namespace CmsWeb.Properties {
                 return ResourceManager.GetString("RoleSettingDefaults", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Hi {first}
         ///&lt;p&gt;Here is your confirmation for {org}.&lt;/p&gt;
