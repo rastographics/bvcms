@@ -18,7 +18,6 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.Public.ControllersTests
 {
-    [TestClass()]
     [Collection(Collections.Database)]
     public class MobileAPIv2ControllerTests : ControllerTestBase
     {

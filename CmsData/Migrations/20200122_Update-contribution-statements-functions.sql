@@ -15,16 +15,18 @@ RETURN
 		c.ContributionId,
 		c.ContributionAmount,
 		c.ContributionDate,
+		c.ContributionTypeId,
+		ct.Description ContributionType,
 		f.FundName,
 		c.CheckNo,
 		p.[Name],
-		[Description] = c.ContributionDesc,
+		c.ContributionDesc [Description],
 		f.FundDescription
 	FROM dbo.Contribution c
+	JOIN lookup.ContributionType ct ON ct.Id = c.ContributionTypeId
 	JOIN dbo.ContributionFund f ON f.FundId = c.FundId
 	JOIN dbo.People p ON p.PeopleId = c.PeopleId
-	WHERE 1=1
-	AND c.ContributionStatusId = 0 -- Recorded
+	WHERE c.ContributionStatusId = 0 -- Recorded
 	AND c.contributionTypeId IN (10, 20) -- GiftinKind or Stock
 	AND c.ContributionDate >= @fromDate
 	AND CONVERT(DATE, c.ContributionDate) <= @toDate
@@ -50,19 +52,21 @@ RETURN
 		c.ContributionId,
 		c.ContributionAmount,
 		c.ContributionDate,
+        c.ContributionTypeId,
+		ct.Description ContributionType,
 		f.FundName,
 		c.CheckNo,
 		p.[Name],
-		[Description] = c.ContributionDesc,
+		c.ContributionDesc [Description],
 		f.FundDescription
 	FROM dbo.Contribution c
+	JOIN lookup.ContributionType ct ON ct.Id = c.ContributionTypeId
 	JOIN dbo.ContributionFund f ON f.FundId = c.FundId
 	JOIN dbo.People p ON p.PeopleId = c.PeopleId
-	WHERE 1=1
-	AND c.ContributionStatusId = 0 -- Recorded
-	AND c.ContributionTypeId NOT IN (6, 7) -- not returned or reversed
-	AND c.contributionTypeId NOT IN (10, 20) -- not stock or giftinkind
-	AND c.ContributionTypeId <> 8 -- not pledge
+	WHERE c.ContributionStatusId = 0 -- Recorded
+	AND c.ContributionTypeId NOT IN (6, 7, -- not returned or reversed
+	                               10, 20, -- not stock or giftinkind
+	                                    8) -- not pledge
 	AND (f.NonTaxDeductible = 1 OR c.ContributionTypeId = 9)
 	AND c.ContributionDate >= @fromDate
 	AND CONVERT(DATE, c.ContributionDate) <= @toDate
@@ -88,19 +92,21 @@ RETURN
 		c.ContributionId,
 		c.ContributionAmount,
 		c.ContributionDate,
-		f.FundName as FundName,
+        c.ContributionTypeId,
+		ct.Description ContributionType,
+		f.FundName,
 		c.CheckNo,
 		p.[Name],
-		[Description] = c.ContributionDesc,
+		c.ContributionDesc [Description],
 		f.FundDescription
 	FROM dbo.Contribution c
+	JOIN lookup.ContributionType ct ON ct.Id = c.ContributionTypeId
 	JOIN dbo.ContributionFund f ON f.FundId = c.FundId
 	JOIN dbo.People p ON p.PeopleId = c.PeopleId
-	WHERE 1=1
-	AND c.ContributionStatusId = 0 -- Recorded
-	AND c.ContributionTypeId NOT IN (6, 7) -- not returned or reversed
-	AND c.contributionTypeId NOT IN (10, 20) -- not stock or giftinkind
-	AND c.ContributionTypeId NOT IN (8, 9) -- not pledge or nontaxded
+	WHERE c.ContributionStatusId = 0 -- Recorded
+	AND c.ContributionTypeId NOT IN (6, 7, -- not returned or reversed
+								   10, 20, -- not stock or giftinkind
+									 8, 9) -- not pledge or nontaxded
 	AND ISNULL(f.NonTaxDeductible, 0) = 0
 	AND c.ContributionDate >= @fromDate
 	AND CONVERT(DATE, c.ContributionDate) <= @toDate
