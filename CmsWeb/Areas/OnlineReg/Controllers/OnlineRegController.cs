@@ -596,7 +596,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             {
                 m.URL = CurrentDatabase.ServerLink($"/OnlineReg/{id}/Giving/{goerid}");
             }
-            if (Util.UserPeopleId == goerid)
+
+            var currentUserId = Util.UserPeopleId;
+            if (currentUserId != null && currentUserId == goerid)
             {
                 return View("Giving/Goer", m);
             }
