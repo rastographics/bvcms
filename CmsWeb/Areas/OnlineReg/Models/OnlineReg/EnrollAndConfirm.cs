@@ -126,7 +126,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 if(ValidateEmailRecipientRegistrant(p.person.Name, detailSection))
                 {
                     CurrentDatabase.Email(Util.PickFirst(p.person.FromEmail, notifyIds[0].FromEmail), notifyIds, Header,
-                        $@"{messageNotice}{p.person.Name} has registered for {Header}<br/><hr>{detailSection}");
+                        $@"{messageNotice}{p.person.Name} has registered for {Header}<br/>{detailSection}<hr>");
                 }
                 else
                 {
@@ -451,15 +451,13 @@ Total Fee paid for this registration session: {ts?.TotPaid:C}<br/>
         public string GetDetailsSection()
         {
             var details = new StringBuilder();
-            if (Transaction?.Amt > 0)
-            {
-                details.Append(List[0].SummaryTransaction());
-            }
 
             foreach (var p in List)
             {
                 details.Append(p.PrepareSummaryText(CurrentDatabase));
             }
+
+            details.Append(List[0].SummaryTransaction());
 
             return details.ToString();
         }
