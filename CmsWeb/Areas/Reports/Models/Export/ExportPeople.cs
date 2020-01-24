@@ -209,7 +209,7 @@ namespace CmsWeb.Models
 
 
             var nontaxded = includePledges ? 2 : (nontaxdeductible.HasValue ? (nontaxdeductible.Value ? 1 : 0) : (int?)null);
-            var q2 = from r in db.GetTotalContributionsDonor(startdt, enddt, campusid, nontaxded, includeUnclosed, tagid, fundids, null)
+            var q2 = from r in db.GetTotalContributionsDonor(startdt, enddt, campusid, nontaxded, includeUnclosed, tagid, fundids, true)
                      where ContributionStatusCode.Recorded.Equals(r.ContributionStatusId)
                      where !ContributionTypeCode.ReturnedReversedTypes.Contains(r.ContributionTypeId)
                      group r by new
