@@ -16,11 +16,11 @@
     var detailCollapse = "in";
     if (detailName == "Pledge")
     {
-        detailCollapse = Model.pledgeDetCollapse == true ? "in" : "";
+        detailCollapse = Model.pledgeDetCollapse ? "in" : "";
     }
     else
     {
-        detailCollapse = Model.givingDetCollapse == true ? "in" : "";
+        detailCollapse = Model.givingDetCollapse ? "in" : "";
     }
     var collapseArrow = detailCollapse == "in" ? "down" : "right";
     var isFinanceRole = User.IsInRole("Finance");
@@ -157,7 +157,6 @@
         </div>
     </div>
 </form>
-<br />
 @helper FormAction(bool hasOneTimeGiftSetup, bool hasManageGivingSetup, int? campusId, bool sm = false)
 {
     if (hasOneTimeGiftSetup || hasManageGivingSetup)
