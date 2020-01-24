@@ -165,7 +165,7 @@ To set your password, click the link below:&lt;/p&gt;
 &lt;blockquote&gt;&lt;a href="{resetlink}"&gt;New Password&lt;/a&gt;&lt;/blockquote&gt;
 &lt;p&gt;If this is a mistake, please disregard this message, your password will not be changed.&lt;/p&gt;
 &lt;p&gt;Thanks,&lt;br /&gt;
-The BVCMS Team&lt;/p&gt;
+The TouchPoint Team&lt;/p&gt;
 </value>
   </data>
   <data name="AccountModel_ForgotPasswordBadEmail" xml:space="preserve">
@@ -174,7 +174,7 @@ However, we could not find an account associated with this email address.
 You may try a different email address, or contact the church.&lt;/p&gt;
 &lt;p&gt;If this is a mistake, please disregard this message, your password will not be changed.&lt;/p&gt;
 &lt;p&gt;Thanks,&lt;br /&gt;
-The BVCMS Team&lt;/p&gt;
+The TouchPoint Team&lt;/p&gt;
 </value>
   </data>
   <data name="AccountModel_ForgotPasswordReset2" xml:space="preserve">
@@ -183,7 +183,7 @@ To set your password, click your username below:&lt;/p&gt;
 &lt;blockquote&gt;{resetlink}&lt;/blockquote&gt;
 &lt;p&gt;If this is a mistake, please disregard this message, your password will not be changed.&lt;/p&gt;
 &lt;p&gt;Thanks,&lt;br /&gt;
-The BVCMS Team&lt;/p&gt;
+The TouchPoint Team&lt;/p&gt;
 </value>
   </data>
   <data name="AccountModel_NewUserWelcome" xml:space="preserve">
@@ -240,7 +240,7 @@ Thank you&lt;/p&gt;</value>
 &lt;p&gt;Your username is: {username}&lt;/p&gt;
 &lt;p&gt;If you did not request this, please disregard this message.&lt;/p&gt;
 &lt;p&gt;Thanks,&lt;br /&gt;
-The bvCMS Team&lt;/p&gt;
+The TouchPoint Team&lt;/p&gt;
 </value>
   </data>
   <data name="CreateAccount_ExistingUser" xml:space="preserve">
