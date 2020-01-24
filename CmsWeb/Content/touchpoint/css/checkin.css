@@ -59,6 +59,10 @@
     max-width: 420px;
     margin: 20px auto 0;
 }
+.checkin .landing.phone,
+.checkin .landing.admin {
+    margin-top: calc(100vh - 550px) / 2;
+}
 .landing .simple-keyboard {
     max-width: 400px;
 }
@@ -152,15 +156,10 @@
         clear: left;
     }
 }
-@media (max-width: 992px) {
-    .checkin .results {
-        margin-bottom: 70px;
-    }
-}
-.checkin .results .member:last-of-type,
-.checkin .results .family:last-child {
+.checkin .results {
     margin-bottom: 80px;
 }
+
 .checkin .results .member .name {
     margin-top: 0;
     font-weight: 300;
