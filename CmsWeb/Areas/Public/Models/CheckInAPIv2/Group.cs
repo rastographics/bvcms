@@ -49,9 +49,9 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 		{
 			List<Group> groups = new List<Group>();
             groups.AddRange(loadMemberGroups(db.ReadonlyConnection() as SqlConnection, personID, campus, date));
-            groups.AddRange(loadVisitorGroups(db.ReadonlyConnection() as SqlConnection, personID, campus, date));
+            groups.AddRange(loadVisitorGroups(db.ReadonlyConnection() as SqlConnection, personID, campus, date).Where(g => groups.FirstOrDefault(x => x.id == g.id) == null));
 
-			return groups;
+            return groups;
 		}
 
 		public static List<Group> forGroupFinder( SqlConnection db, DateTime? birthday, int campus, int day, int showAll )
