@@ -61,7 +61,7 @@
 }
 .checkin .landing.phone,
 .checkin .landing.admin {
-    margin-top: calc(100vh - 550px) / 2;
+    margin-top: calc((100vh - 550px) / 2);
 }
 .landing .simple-keyboard {
     max-width: 400px;
