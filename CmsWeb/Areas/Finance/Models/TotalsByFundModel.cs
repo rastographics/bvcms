@@ -29,6 +29,7 @@ namespace CmsWeb.Models
         public bool IncludeBundleType { get; set; }
         public bool NonTaxDeductible { get; set; }
         public bool FilterByActiveTag { get; set; }
+        public bool IncludePledges { get; set; }
 
         private CMSDataContext _currentDatabase;
         public CMSDataContext CurrentDatabase

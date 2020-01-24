@@ -3,7 +3,7 @@ ALTER FUNCTION [dbo].[GetTotalContributionsDonor]
 	@fd DATETIME, 
 	@td DATETIME,
 	@campusid INT,
-	@nontaxded BIT,
+	@nontaxded INT,
 	@includeUnclosed BIT,
 	@tagid INT,
 	@fundids VARCHAR(MAX),
