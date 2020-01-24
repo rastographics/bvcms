@@ -185,7 +185,7 @@ new Vue({
         },
         initKeyboard(layout = 'numeric') {
             let isWindows = -1 < navigator.userAgent.indexOf('Windows');
-            let isChromebook = -1 < navigator.userAgent.indexOf('Chrome OS');
+            let isChromebook = -1 < navigator.userAgent.indexOf('CrOS');
             let vm = this;
             setTimeout(function () {
                 vm.keyboard = new Keyboard({
