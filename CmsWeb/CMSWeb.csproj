@@ -543,6 +543,7 @@
     <Compile Include="Areas\Finance\Models\StatementSpecification.cs" />
     <Compile Include="Areas\Finance\Models\Statements\ListOfNormalContributions.cs" />
     <Compile Include="Areas\Finance\Models\Statements\StatementContext.cs" />
+    <Compile Include="Areas\Finance\Models\Statements\StatementOptions.cs" />
     <Compile Include="Areas\Finance\Models\TotalsByFundRange.cs" />
     <Compile Include="Areas\Finance\Models\TotalsByFundAgeRangeModel.cs" />
     <Compile Include="Areas\Main\Models\Other\CouponResponseModel.cs" />

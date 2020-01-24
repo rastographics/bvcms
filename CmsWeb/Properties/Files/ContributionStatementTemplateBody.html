@@ -1,4 +1,9 @@
-﻿<p style="font-weight:bold;margin-bottom: 20pt;">
+﻿<script id="options">
+    {
+        "combinedTaxSummary": true
+    }
+</script>
+<p style="font-weight:bold;margin-bottom: 20pt;">
     Period: {{FmtDate fromDate}} - {{FmtDate toDate}}
 </p>
 {{#ifGT pledges.Count 0}}
@@ -35,9 +40,6 @@
         <tr>
             <th class="header">
                 Tax Deductible Summary by Fund
-                {{#IfGT giftsinkind.Count 0}}
-                *
-                {{/IfGT}}
             </th>
             <th class="header right">Amount</th>
         </tr>
@@ -52,9 +54,6 @@
         <tr>
             <td class="subtotal">
                 Tax Deductible Total
-                {{#IfGT giftsinkind.Count 0}}
-                <i>* Does not include gifts-in-kind</i>
-                {{/IfGT}}
             </td>
             <td class="subtotal right" style="padding-right:10pt">{{FmtMoney taxSummary.Total}}</td>
         </tr>
@@ -162,7 +161,7 @@
         <tr>
             <th class="header" style="width:60pt">Date</th>
             <th class="header">Fund</th>
-            <th class="header"></th>
+            <th class="header" style="width:1pt">Amount</th>
             <th class="header">Type</th>
             <th class="header">Detail</th>
         </tr>
@@ -172,7 +171,7 @@
         <tr>
             <td class="right" style="padding-right:10pt">{{FmtDate ContributionDate}}</td>
             <td>{{FundName}}</td>
-            <td></td>
+            <td class="right" style="padding-right:10pt">{{FmtMoney ContributionAmount}}</td>
             <td>{{BundleType}}</td>
             <td>{{CheckNo}} {{Description}}</td>
         </tr>

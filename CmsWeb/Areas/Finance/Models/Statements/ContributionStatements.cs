@@ -4,10 +4,12 @@ using CmsData.Codes;
 using CmsData.View;
 using CmsWeb.Properties;
 using HandlebarsDotNet;
+using HtmlAgilityPack;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using iTextSharp.tool.xml;
 using iTextSharp.tool.xml.pipeline;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Drawing.Printing;
@@ -64,6 +66,7 @@ namespace CmsWeb.Areas.Finance.Models.Report
             var notice = cs.Notice ?? db.ContentHtml("StatementNotice", Resource1.ContributionStatementNotice);
             var footer = db.ContentHtml("StatementTemplateFooter", "");
             var runningtotals = db.ContributionsRuns.OrderByDescending(mm => mm.Id).First();
+            var options = GetOptions(bodyHtml);
 
             var toDate = ToDate.Date.AddHours(24).AddSeconds(-1);
 
@@ -105,6 +108,10 @@ namespace CmsWeb.Areas.Finance.Models.Report
                     contributor.MailingAddress = string.Join("<br/>", contributor.MailingAddress.SplitLines());
                     var taxSummary = SumByFund(contributions);
                     var nontaxSummary = SumByFund(nontaxitems.Select(i => new NormalContribution(i)).ToList());
+                    if (options.CombinedTaxSummary)
+                    {
+                        taxSummary.Combine(SumByFund(giftsinkind.Select(i => new NormalContribution(i)).ToList()));
+                    }
 
                     var data = new StatementContext
                     {
@@ -153,6 +160,19 @@ namespace CmsWeb.Areas.Finance.Models.Report
             IConverter converter = GetConverter();
             byte[] bytes = converter.Convert(document);
             stream.Write(bytes, 0, bytes.Length);
+        }
+
+        private StatementOptions GetOptions(string html)
+        {
+            var options = new StatementOptions();
+            HtmlDocument doc = new HtmlDocument();
+            doc.LoadHtml(html);
+            var node = doc.DocumentNode.SelectSingleNode("//script[@id=\"options\"]");
+            if (node != null)
+            {
+                options = JsonConvert.DeserializeObject<StatementOptions>(node.InnerText);
+            }
+            return options;
         }
 
         private static ListOfNormalContributions SumByFund(List<NormalContribution> contributions)

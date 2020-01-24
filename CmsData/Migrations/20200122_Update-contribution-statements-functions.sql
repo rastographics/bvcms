@@ -47,8 +47,8 @@ RETURN
 		FROM dbo.Contribution c
 		JOIN funds f ON f.FundId = c.FundId
 		JOIN peopleids p ON p.PeopleId = c.PeopleId
-		WHERE c.ContributionStatusId <> 1 -- not reversed
-		AND c.contributionTypeId = 8 -- Pledge
+		WHERE c.ContributionStatusId = 0 -- Recorded
+		AND c.ContributionTypeId NOT IN (6, 7, 8) -- not returned or reversed or pledge
 		AND YEAR(c.ContributionDate) = YEAR(@toDate)
 		GROUP BY c.FundId
 	),
@@ -60,8 +60,7 @@ RETURN
 		JOIN funds f ON f.FundId = c.FundId
 		JOIN peopleids p ON p.PeopleId = c.PeopleId
 		WHERE c.ContributionStatusId = 0 -- Recorded
-		AND c.ContributionTypeId NOT IN (6, 7) -- not returned or reversed
-		AND c.contributionTypeId NOT IN (8, 10) -- not pledge or giftinkind
+		AND c.ContributionTypeId NOT IN (6, 7, 8) -- not returned or reversed or pledge
 		AND c.ContributionDate <= @toDate
 		GROUP BY c.FundId
 	)

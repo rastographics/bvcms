@@ -42,6 +42,22 @@ namespace CmsData.View
             ContributionDate = c.ContributionDate;
             ContributionTypeId = c.ContributionTypeId;
             ContributionType = c.ContributionType;
+            BundleType = c.BundleType;
+            FundName = c.FundName;
+            CheckNo = c.CheckNo;
+            Name = c.Name;
+            Description = c.Description;
+            FundDescription = c.FundDescription;
+        }
+
+        public NormalContribution(GiftsInKind c)
+        {
+            ContributionId = c.ContributionId;
+            ContributionAmount = c.ContributionAmount;
+            ContributionDate = c.ContributionDate;
+            ContributionTypeId = c.ContributionTypeId;
+            ContributionType = c.ContributionType;
+            BundleType = c.BundleType;
             FundName = c.FundName;
             CheckNo = c.CheckNo;
             Name = c.Name;
