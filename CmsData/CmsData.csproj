@@ -696,6 +696,7 @@
     <Compile Include="Generated\ResourceOrganization.cs" />
     <Compile Include="Generated\ResourceOrganizationType.cs" />
     <Compile Include="Generated\ResourceType.cs" />
+    <Compile Include="Generated\SessionValue.cs" />
     <Compile Include="Generated\SettingCategory.cs" />
     <Compile Include="Generated\SettingMetadatum.cs" />
     <Compile Include="Generated\SettingType.cs" />

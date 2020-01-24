@@ -123,7 +123,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private RouteModel CheckSpecialJavascript()
         {
-            if (org != null && org.RegistrationTypeId == RegistrationTypeCode.SpecialJavascript)
+            if (org?.RegistrationTypeId == RegistrationTypeCode.SpecialJavascript)
             {
                 var p = List[0];
                 if (p.IsNew)

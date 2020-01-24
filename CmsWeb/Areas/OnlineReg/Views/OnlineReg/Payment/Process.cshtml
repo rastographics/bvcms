@@ -48,8 +48,8 @@
     <form class="showform form-horizontal @useRecaptchaClass" id="OnlineRegProcessPayment" action="/OnlineReg/ProcessPayment" method="post">
         @Html.ValidationSummary()
         <div class="form-group" style="font-size: 1.5em;">
-            @Html.LabelFor(m => m.AmtToPay, new { @class = "control-label col-sm-3" })
-            <div class="col-sm-9">
+            @Html.LabelFor(m => m.AmtToPay, new { @class = "control-label col-sm-4" })
+            <div class="col-sm-8">
                 @if (Model.PayBalance)
                 {
                     @Html.EditorFor(m => m.AmtToPay)
