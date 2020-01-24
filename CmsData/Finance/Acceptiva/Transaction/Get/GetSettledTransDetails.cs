@@ -14,7 +14,7 @@ namespace CmsData.Finance.Acceptiva.Transaction.Get
         {
             Data["params[0][filters][0]"] = $"trans_date>{dateStart.ToString("yyyy-MM-dd")}";
             Data["params[0][filters][1]"] = $"trans_date<{dateEnd.ToString("yyyy-MM-dd")}";
-            Data["params[0][filters][1]"] = $"trans_status=52,61,73,74";
+            Data["params[0][filters][2]"] = $"trans_status=52,61,73,74";
         }
 
         public new List<AcceptivaResponse<TransactionResponse>> Execute()
