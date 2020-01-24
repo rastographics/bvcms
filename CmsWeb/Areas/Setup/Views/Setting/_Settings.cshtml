@@ -55,16 +55,16 @@ WriteLiteral(type);
                         @switch (item.DataType)
                         {
                             case (int)SettingDataType.Boolean:
-                                <input class="boolean-toggle" type="checkbox" id="@item.SettingId" name="@item.SettingId" data-toggle="toggle" data-on="True" data-off="False" data-width="100" checked="@(item.Setting?.SettingX?.ToLower() == "true")" )>
+                                <input class="boolean-toggle" type="checkbox" id="@item.SettingId" name="@item.SettingId" data-toggle="toggle" data-on="True" data-off="False" data-width="100" checked="@(item.GetValue()?.ToLower() == "true")" )>
                                 break;
                             case (int)SettingDataType.Date:
                                 <a class="edit-datetime" id="@item.SettingId" data-pk="@(item.SettingId)" data-type="date" data-url="/Setting/Edit">
-                                    @(item.Setting?.SettingX ?? "")
+                                    @(item.GetValue() ?? "")
                                 </a>
                                 break;
                             case (int)SettingDataType.Obscured:
-                                <a id="@item.SettingId" class="clickEdit" data-pk="@(item.SettingId)" data-value="@(item.Setting?.SettingX)">
-                                    @if (!string.IsNullOrEmpty(item.Setting?.SettingX))
+                                <a id="@item.SettingId" class="clickEdit" data-pk="@(item.SettingId)" data-value="@(item.GetValue())">
+                                    @if (!string.IsNullOrEmpty(item.GetValue()))
                                     {
                                         @:•••••••••••••••
                                     }
@@ -72,7 +72,7 @@ WriteLiteral(type);
                                 break;
                             default:
                                 <a id="@item.SettingId" class="clickEdit" data-type="@DatatypeString(item.DataType)" data-pk="@(item.SettingId)">
-                                    @(item.Setting?.SettingX ?? "")
+                                    @(item.GetValue() ?? "")
                                 </a>
                                 break;
                         }
