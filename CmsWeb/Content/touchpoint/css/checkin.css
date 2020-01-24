@@ -6,7 +6,6 @@
 .checkin {
     background-color: #f5f5f5 !important;
     user-select: none;
-    min-height: calc(100vh - 30px);
 }
 .checkin .btn {
     border-radius: 4px;
