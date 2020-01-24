@@ -13,12 +13,12 @@ namespace CmsWeb.Areas.CheckIn.Controllers
         {
         }
 
-        [HttpGet, Route("~/CheckIn")]
-        public ActionResult CheckIn()
+        [HttpGet]
+        public ActionResult Index()
         {
             if (CurrentDatabase.Setting("EnableWebCheckin"))
             {
-                return View("~/Areas/CheckIn/Views/CheckIn/CheckIn.cshtml");
+                return View();
             }
             else
             {
@@ -26,10 +26,10 @@ namespace CmsWeb.Areas.CheckIn.Controllers
             }
         }
 
-        [HttpGet, Route("~/CheckIn/Logout")]
+        [HttpGet]
         public ActionResult Logout()
         {
-            return View("~/Areas/CheckIn/Views/CheckIn/LogOut.cshtml");
+            return View();
         }
     }
 }
