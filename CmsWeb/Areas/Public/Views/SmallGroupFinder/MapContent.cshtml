@@ -15,6 +15,13 @@
     var markerValue = Model.getSetting("MarkerTextValue")?.value;
     var markerText = Model.getSetting("MarkerText")?.value;
 
+    var extraValueHost = Model.getSetting("ExtraValueHost")?.value;
+    var orgTypes = Model.getSetting("OrgTypes")?.value;
+    var sortBy = Model.getSetting("SortBy")?.value;
+
+    bool useEmbeddedMap;
+    bool.TryParse(Model.getSetting("UseEmbeddedMap")?.value ?? "false", out useEmbeddedMap);
+
     if (!string.IsNullOrWhiteSpace(showOnlyName) && !string.IsNullOrWhiteSpace(showOnlyValue))
     {
         mapModel.SetShowOnly(showOnlyName, showOnlyValue);
@@ -26,6 +33,21 @@
     {
         mapModel.SetMarkerText(markerName, markerValue, markerText);
     }
+
+    if (!string.IsNullOrWhiteSpace(extraValueHost))
+    {
+        mapModel.SetExtraValue(extraValueHost);
+    }
+
+    if (!string.IsNullOrWhiteSpace(orgTypes))
+    {
+        mapModel.SetOrgTypes(orgTypes);
+    }
+
+    if (!string.IsNullOrWhiteSpace(sortBy))
+    {
+        mapModel.SetSortBy(sortBy);
+    }
 }
 
 <div class="row map-content">
@@ -35,11 +57,14 @@
         var longitude = @longitude;
         var mapZoom = @mapZoom;
     </script>
-    <div class="col-md-6">
-        <div id="map" class="map">
+    @if (useEmbeddedMap)
+    {
+        <div class="col-md-6">
+            <div id="map" class="map">
+            </div>
         </div>
-    </div>
-    <div class="col-md-6">
+    }
+    <div class="@(useEmbeddedMap ? "col-md-6" : "col-md-12")">
         <ul style="overflow: auto; height: 600px">
             @foreach (var i in mapModel.Locations())
             {
