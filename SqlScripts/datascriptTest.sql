@@ -767,7 +767,7 @@ INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [Text
 </table>
 <p>Please visit <a href="{cmshost}/Display/Page/Welcome">this welcome page</a> for more information</p>
 <p>Thanks,<br />
-The bvCMS Team</p>', '2011-10-18 20:10:48.000', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
+The TouchPoint Team</p>', '2011-10-18 20:10:48.000', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
 INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (60, N'ExistingAccountConfirmation', N'ExistingAccountConfirmation', N'Hi {name},
 <p>We noticed you already have an account in our church database.</p>
 <p>You can login at <a href="{host}">{host}</a>. 
@@ -1580,14 +1580,14 @@ To set your password, click your username below:</p>
 <blockquote>{resetlink}</blockquote>
 <p>If this is a mistake, please disregard this message, your password will not be changed.</p>
 <p>Thanks,<br />
-The BVCMS Team</p>
+The TouchPoint Team</p>
 ', '2013-09-09 23:32:15.190', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
 INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (72, N'ForgotPasswordBadEmail', N'ForgotPasswordBadEmail', N'<p>Someone recently requested a new password for this email address {email}.  
 However, we could not find an account associated with this email address.
 You may try a different email address, or contact the church.</p>
 <p>If this is a mistake, please disregard this message, your password will not be changed.</p>
 <p>Thanks,<br />
-The BVCMS Team</p>
+The TouchPoint Team</p>
 ', NULL, NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
 INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (73, N'NoGivingSetupMessage', N'NoGivingSetupMessage', N'
         <p class="alert alert-block alert-info">Sorry, it appears that your church has not set up online giving through BVCMS.</p>', NULL, NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
