@@ -80,40 +80,13 @@
                   <span class="input-group-addon">
                       <i class="fa fa-list"></i>
                   </span>
-                  @Html.DropDownList("additional-filters", Model.AdditionalFiltersSelectList(), Model.gateway, new { multiple = "multiple", @class = "form-control" })
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-3 col-md-3 col-sm-6 col-md-offset-6">
-            <div class="form-group">
-              <div class="checkbox">
-                <label class="control-label">
-                  @Html.CheckBox("usebatchdates") Use batch dates?
-                </label>
-              </div>
-              <div class="checkbox">
-                <label class="control-label">
-                  @Html.CheckBox("nocoupons") No coupons?
-                </label>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-3 col-md-3 col-sm-6">
-            <div class="form-group">
-              <div class="checkbox">
-                <label class="control-label">
-                  @Html.CheckBox("apprtransactions") Approved transactions only?
-                </label>
-              </div>
-              <div class="checkbox">
-                <label class="control-label">
-                  @Html.CheckBox("testtransactions") Test transactions only?
-                </label>
-              </div>
-              <div class="checkbox">
-                  <label class="control-label">
-                      @Html.CheckBox("includesadditionaldonation") Includes additional donation?
-                  </label>
+                  <select id="additional-filters" name="AdditionalFilters" multiple="multiple">
+                      <option value="apprtransactions">Approved transactions</option>
+                      <option value="includesadditionaldonation">Includes additional donation</option>
+                      <option value="nocoupons">Hide coupon</option>
+                      <option value="testtransactions">Test transaction</option>
+                      <option value="usebatchdates">Use batch dates</option>
+                  </select>
               </div>
             </div>
           </div>

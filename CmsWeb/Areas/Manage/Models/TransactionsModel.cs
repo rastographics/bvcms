@@ -6,8 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Web;
-using System.Web.Mvc;
 using UtilityExtensions;
 
 namespace CmsWeb.Models
@@ -61,6 +59,7 @@ namespace CmsWeb.Models
             {
                 description = desc;
             }
+            AdditionalFilters = new string[] { };
         }
 
         public string description { get; set; }
@@ -71,12 +70,13 @@ namespace CmsWeb.Models
         public DateTime? startdt { get; set; }
         public DateTime? enddt { get; set; }
         public string gateway { get; set; }
-        public bool testtransactions { get; set; }
-        public bool apprtransactions { get; set; }
-        public bool includesadditionaldonation { get; set; }
-        public bool nocoupons { get; set; }
         public string batchref { get; set; }
-        public bool usebatchdates { get; set; }
+        public string[] AdditionalFilters { get; set; }
+        public bool usebatchdates => AdditionalFilters.Contains("usebatchdates");
+        public bool nocoupons => AdditionalFilters.Contains("nocoupons");
+        public bool apprtransactions => AdditionalFilters.Contains("apprtransactions");
+        public bool testtransactions => AdditionalFilters.Contains("testtransactions");
+        public bool includesadditionaldonation => AdditionalFilters.Contains("includesadditionaldonation");
         public PagerModel2 Pager { get; set; }
         public bool finance { get; set; }
         public bool admin { get; set; }
@@ -114,20 +114,6 @@ namespace CmsWeb.Models
                         Count = g.Count()
                     };
             return q.FirstOrDefault();
-        }
-
-        public SelectList AdditionalFiltersSelectList()
-        {
-            var list = new List<SelectListItem>
-            {
-                new SelectListItem { Text = "Approved transactions", Value = "0" },
-                new SelectListItem { Text = "Includes additional donation", Value = "1" },
-                new SelectListItem { Text = "Hide coupon", Value = "2" },
-                new SelectListItem { Text = "Test transaction", Value = "3" },
-                new SelectListItem { Text = "Use batch dates", Value = "4" },
-            };
-
-            return new SelectList(list, "Value", "Text");
         }
 
         private IQueryable<TransactionList> FetchTransactions()
