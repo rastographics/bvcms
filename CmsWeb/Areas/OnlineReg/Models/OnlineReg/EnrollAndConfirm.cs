@@ -122,10 +122,17 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     : "";
 
                 var detailSection = GetDetailsSection();
-
-                CurrentDatabase.Email(Util.PickFirst(p.person.FromEmail, notifyIds[0].FromEmail), notifyIds, Header,
+                if (ValidateEmailRecipientRegistrant(p.person.Name, detailSection))
+                {
+                    CurrentDatabase.Email(Util.PickFirst(p.person.FromEmail, notifyIds[0].FromEmail), notifyIds, Header,
                     $@"{messageNotice}{p.person.Name} has registered for {Header}<br/>{detailSection}<hr>");
-                Log("SentConfirmationsToStaff");
+                    Log("SentConfirmationsToStaff");
+                }
+                else
+                {
+                    CurrentDatabase.LogActivity($"Person ({p.person.Name}) is different from the registrant in the email body. " +
+                        $"The email was not sent.");
+                }
             }
         }
 
@@ -135,8 +142,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
             var htmlDoc = new HtmlDocument();
             htmlDoc.LoadHtml(detailSection);
             IEnumerable<string> childList = from el in htmlDoc.DocumentNode.Descendants("registrant")
-                                            select el.InnerText;
-
+                                            select el.InnerText.Trim();
+            
             return childList.Any(p => p == name);
         }
 
