@@ -43,9 +43,7 @@ namespace CmsWeb.Areas.Finance.Models.Report
         public List<int> Sets() => (pageEvents.FamilySet.Count == 0)
             ? new List<int>()
             : pageEvents.FamilySet.Values.Distinct().ToList();
-
-
-
+        
         public void Run(Stream stream, CMSDataContext db, IEnumerable<ContributorInfo> q, StatementSpecification cs, int set = 0)
         {
             if (db.Setting("UseNewStatementsFormat"))
@@ -99,9 +97,7 @@ namespace CmsWeb.Areas.Finance.Models.Report
                 var contributions = APIContribution.Contributions(db, contributor, FromDate, toDate, cs.Funds).ToList();
                 var pledges = APIContribution.Pledges(db, contributor, toDate, cs.Funds).ToList();
                 var giftsinkind = APIContribution.GiftsInKind(db, contributor, FromDate, toDate, cs.Funds).ToList();
-                var nontaxitems = db.Setting("DisplayNonTaxOnStatement")
-                    ? APIContribution.NonTaxItems(db, contributor, FromDate, toDate, cs.Funds).ToList()
-                    : new List<NonTaxContribution>();
+                var nontaxitems = APIContribution.NonTaxItems(db, contributor, FromDate, toDate, cs.Funds).ToList();
 
                 if ((contributions.Count + pledges.Count + giftsinkind.Count + nontaxitems.Count) > 0)
                 {

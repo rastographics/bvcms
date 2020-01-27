@@ -68,20 +68,33 @@ namespace CmsWeb.Areas.Public.ControllersTests
             CMSMembershipProvider.SetCurrentProvider(membershipProvider);
             CMSRoleProvider.SetCurrentProvider(roleProvider);
             requestManager.CurrentHttpContext.Request.Headers["Authorization"] = BasicAuthenticationString(username, password);
-            var year = DateTime.Now.Year;
+            var Now = DateTime.Now;
+            var year = Now.Year;
             if (contribution > 0)
             {
-                var c = new Contribution()
+                var c = new Contribution
                 {
                     PeopleId = user.PeopleId,
                     ContributionAmount = contribution,
-                    ContributionDate = new DateTime(year, 7, 2),
+                    ContributionDate = Now.Date,
                     ContributionStatusId = ContributionStatusCode.Recorded,
                     ContributionTypeId = ContributionTypeCode.Online,
-                    CreatedDate = DateTime.Now,
+                    CreatedDate = Now,
                     FundId = 1
                 };
                 db.Contributions.InsertOnSubmit(c);
+                var bundle = new BundleHeader
+                {
+                    BundleHeaderTypeId = 2,
+                    BundleStatusId = 0,
+                    ChurchId = 1,
+                    ContributionDate = Now,
+                    CreatedDate = Now,
+                    DepositDate = Now,
+                    ModifiedDate = Now,
+                };
+                db.BundleHeaders.InsertOnSubmit(bundle);
+                db.BundleDetails.InsertOnSubmit(new BundleDetail { Contribution = c, BundleHeader = bundle, CreatedDate = Now });
                 db.SubmitChanges();
             }
             var controller = new MobileAPIv2Controller(requestManager);
