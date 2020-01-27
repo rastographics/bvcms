@@ -123,16 +123,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
                 var detailSection = GetDetailsSection();
 
-                if(ValidateEmailRecipientRegistrant(p.person.Name, detailSection))
-                {
-                    CurrentDatabase.Email(Util.PickFirst(p.person.FromEmail, notifyIds[0].FromEmail), notifyIds, Header,
-                        $@"{messageNotice}{p.person.Name} has registered for {Header}<br/>{detailSection}<hr>");
-                }
-                else
-                {
-                    CurrentDatabase.LogActivity($"Person ({p.person.Name}) is different from the registrant in the email body. " +
-                        $"The email was not sent.");
-                }
+                CurrentDatabase.Email(Util.PickFirst(p.person.FromEmail, notifyIds[0].FromEmail), notifyIds, Header,
+                    $@"{messageNotice}{p.person.Name} has registered for {Header}<br/>{detailSection}<hr>");
+                Log("SentConfirmationsToStaff");
             }
         }
 
