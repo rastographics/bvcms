@@ -202,7 +202,14 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 				case LabelField.GROUP_SUBGROUPS:
 					return group.subgroupName;
 
-				case LabelField.ATTENDANCE_DATE_TIME:
+                case LabelField.GROUP_NAME_AND_TIME:
+                    org = cacheSet.getOrganization(group.groupID);
+                    meeting = cacheSet.getMeeting(group.groupID, group.datetime);
+
+                    string orgName = org == null ? "" : org.OrganizationName;
+                    return string.Format(format, orgName, meeting.MeetingDate);
+
+                case LabelField.ATTENDANCE_DATE_TIME:
 					meeting = cacheSet.getMeeting( group.groupID, group.datetime );
 
 					return string.Format( format, meeting.MeetingDate );
