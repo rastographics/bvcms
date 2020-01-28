@@ -549,8 +549,8 @@
     <Compile Include="Generated\CheckInLabelEntryAlignment.cs" />
     <Compile Include="Generated\CheckInLabelType.cs" />
     <Compile Include="Generated\CheckInPending.cs" />
-    <Compile Include="Generated\CheckinProfiles.cs" />
-    <Compile Include="Generated\CheckinProfileSettings.cs" />
+    <Compile Include="Generated\CheckinProfile.cs" />
+    <Compile Include="Generated\CheckinProfileSetting.cs" />
     <Compile Include="Generated\CheckInSetting.cs" />
     <Compile Include="Generated\ContactExtra.cs" />
     <Compile Include="Generated\ContributionTag.cs" />
@@ -822,6 +822,7 @@
     <Compile Include="Generated\Views\TransactionSummary.cs" />
     <Compile Include="DbUtil\ITableWithExtraValues.cs" />
     <Content Include="App_Readme\Elmah.txt" />
+    <Content Include="Migrations\00000000_sql_migrations_table.sql" />
     <Compile Include="Organization\OrgFilter.cs" />
     <Compile Include="Organization\OrgPerson.cs" />
     <Compile Include="Organization\OrgSchedule.cs" />

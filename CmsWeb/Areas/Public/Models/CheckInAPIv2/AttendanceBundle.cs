@@ -73,6 +73,7 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 		public List<Label> createLabelData( CMSDataContext dataContext )
 		{
 			List<Label> labels = new List<Label>();
+            bool printingForChildren = false;
 
 			using( var db = new SqlConnection( Util.ConnectionString ) ) {
 				AttendanceCacheSet cacheSet = new AttendanceCacheSet {
@@ -85,11 +86,17 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 					nameTagAge = nameTagAge
 				};
 
-				foreach( Attendance attendance in attendances ) {
-					labels.AddRange( attendance.getLabels( cacheSet ) );
-				}
+                foreach (Attendance attendance in attendances)
+                {
+                    labels.AddRange(attendance.getLabels(cacheSet));
+                    CmsData.Person person = cacheSet.getPerson(attendance.peopleID);
+                    if ((person.Age ?? 0) < cacheSet.nameTagAge)
+                    {
+                        printingForChildren = true;
+                    }
+                }
 
-				if( labels.Count > 0 && attendances.Count > 0 && securityLabels == Attendance.SECURITY_LABELS_PER_FAMILY ) {
+                if ( labels.Count > 0 && printingForChildren && securityLabels == Attendance.SECURITY_LABELS_PER_FAMILY ) {
 					labels.AddRange( attendances[0].getSecurityLabel( cacheSet ) );
 				}
 			}

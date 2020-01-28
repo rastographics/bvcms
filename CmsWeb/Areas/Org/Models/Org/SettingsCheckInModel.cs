@@ -111,5 +111,17 @@ Used on Touchscreen Checkin for when a guest needs to choose a class.
 Also used to prevent someone joining an organization during registration if they are outside the birthday range.
 ")]
         public DateTime? BirthDayEnd { get; set; }
+
+        [Display(Name = "Early Checkin",
+            Description = @"
+The number of minutes before meetings start when people can start checking in. Defaults to the global setting if not set.
+")]
+        public int? EarlyCheckin { get; set; }
+        
+        [Display(Name = "Late Checkin",
+            Description = @"
+The number of minutes after a meeting starts when check in will be unavailable. Defaults to the global setting if not set.
+")]
+        public int? LateCheckin { get; set; }
     }
 }
