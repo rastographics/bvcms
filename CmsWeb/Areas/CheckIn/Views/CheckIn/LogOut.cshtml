@@ -13,7 +13,7 @@
     date.setFullYear(2010);
     localStorage.removeItem('identity');
     localStorage.removeItem('profile');
-    document.cookie = encodeURIComponent('Authorization') + "=" + value + "; expires =" + date.toGMTString() + "; path=/";
+    document.cookie = encodeURIComponent('Authorization') + "=; expires =" + date.toGMTString() + "; path=/";
     window.location.href = '/CheckIn';
 </script>
 }

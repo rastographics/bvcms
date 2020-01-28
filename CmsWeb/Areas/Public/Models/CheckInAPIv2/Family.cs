@@ -26,7 +26,7 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 
 		public readonly List<FamilyMember> members = new List<FamilyMember>();
 
-		public static Family forID( CMSDataContext dataContext, CMSImageDataContext imageContext, int familyID, int campus, DateTime date )
+		public static Family forID( CMSDataContext dataContext, CMSImageDataContext imageContext, int familyID, int campus, DateTime date, bool returnPictureUrls = false)
 		{
 			Family family = new Family();
 			DataTable table = new DataTable();
@@ -48,7 +48,7 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 
 			if( table.Rows.Count == 1 ) {
 				family.populate( table.Rows[0] );
-				family.loadMembers( dataContext, imageContext, campus, date, false );
+				family.loadMembers( dataContext, imageContext, campus, date, returnPictureUrls );
 			}
 
 			return family;
