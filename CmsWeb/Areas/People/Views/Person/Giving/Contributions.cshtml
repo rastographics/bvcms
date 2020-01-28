@@ -12,6 +12,17 @@
     var campusId = Model.Person.CampusId;
     var checkImageUserView = true;
     var filter = Model.Filter;
+    var detailName = filter == "Pledges" ? "Pledge" : "Giving";
+    var detailCollapse = "in";
+    if (detailName == "Pledge")
+    {
+        detailCollapse = Model.pledgeDetCollapse ? "in" : "";
+    }
+    else
+    {
+        detailCollapse = Model.givingDetCollapse ? "in" : "";
+    }
+    var collapseArrow = detailCollapse == "in" ? "down" : "right";
     var isFinanceRole = User.IsInRole("Finance");
     var isPledges = Model.isPledges;
     if (DB.Setting("CheckImagesDisabledForUser"))
@@ -20,16 +31,25 @@
     }
 }
 <form class="non-modal ajax">
-    @FormAction(hasOneTimeGiftSetup, hasManageGivingSetup, campusId)
-    @FormAction(hasOneTimeGiftSetup, hasManageGivingSetup, campusId, true)
+    @if (filter != "CombineGiving")
+    {
+        @FormAction(hasOneTimeGiftSetup, hasManageGivingSetup, campusId)
+        @FormAction(hasOneTimeGiftSetup, hasManageGivingSetup, campusId, true)
+    }
     @if (filter == "Pledges")
     {
-        <div class="row">
-            @Html.Partial("PledgesSummary", Model)
-        </div>
+        @Html.Partial("PledgesSummary", Model)
+    }
+    else
+    {
+        @Html.Partial("CombineGiving", Model)
     }
     <div class="row">
-        <div class="col-sm-12">
+        <h3>
+            <a id="@detailName-detail-collapse" data-toggle="collapse" href="#@detailName-detail-section" aria-expanded="true" aria-controls="@detailName-detail-section"><i class="fa fa-chevron-circle-@collapseArrow"></i></a>&nbsp;@detailName Detail
+        </h3>
+        <br />
+        <div class="row collapse @detailCollapse" id="@detailName-detail-section">
             @Html.Partial("PagerTop", Model)
             <div class="table-responsive">
                 <table id="results" class="table table-striped">
@@ -47,6 +67,10 @@
                             {
                                 <th>@Model.SortLinkWFilter("Name", filter)</th>
                             }
+                            @if (isFinanceRole && !Model.isPledges)
+                            {
+                                <th></th>
+                            }
                             @if (isFinanceRole && Model.isPledges)
                             {
                                 <th></th>
@@ -61,15 +85,7 @@
                             <tr>
                                 <td>@c.Date.ToShortDateString()</td>
                                 <td class="text-right amount">
-                                    @*@if (isFinanceRole && c.Type == "Pledge")
-                                        {
-                                            <a class="editpledge" pledgeid="@c.ContributionId" href="">@c.Amount.ToString("N2")</a>
-                                        }
-                                        else
-                                        {*@
                                     @c.Amount.ToString("N2")
-                                    @*}*@
-
                                 </td>
                                 <td><span class="pad-left">@c.Fund</span></td>
                                 @if (!Model.isPledges)
@@ -89,16 +105,23 @@
                                 {
                                     <td>@c.Name</td>
                                 }
-                                @*@if (c.Type == "Pledge" && c.PledgeFund)
-                                    {
-                                        <td class="action">
-                                            <div class="btn-group">
-                                                <a href="/Person2/OneTimeGift/@(campusId??0)?contributionId=@c.ContributionId" target="_blank" class="btn btn-default btn-sm fulfillpledge">
-                                                    <i class="fa fa-check-circle-o"></i> Fulfill pledge
-                                                </a>
-                                            </div>
-                                        </td>
-                                    }*@
+                                @if (isFinanceRole && !Model.isPledges)
+                                {
+                                    <td class="action">
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                                <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                                @if (c.TranId != null)
+                                                {
+                                                    <li><a class="" href='/Transactions/@c.TranId' target="_blank"><i class="fa fa-external-link"></i>&nbsp;Transaction</a></li>
+                                                }
+                                                <li><a class="" href='/BundleContribution/@c.ContributionId' target="_blank"><i class="fa fa-external-link"></i>&nbsp;Bundle</a></li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                }
                                 @if (isFinanceRole && c.Type == "Pledge")
                                 {
                                     <td class="action">
@@ -127,6 +150,7 @@
                         }
                     </tbody>
                 </table>
+                <br />
             </div>@Html.Partial("PagerBottom", Model)
             @Html.Partial("PagerHidden", Model)
             @Html.HiddenFor2(m => m.PeopleId)
@@ -142,11 +166,11 @@
             <div class="visible-xs-block visible-sm-block">
                 @if (hasManageGivingSetup)
                 {
-                <a href="/Person2/ManageGiving" target="_blank" class="btn btn-default btn-block"><i class="fa fa-clock-o"></i> Manage Your Recurring Giving</a>
+                    <a href="/Person2/ManageGiving" target="_blank" class="btn btn-default btn-block"><i class="fa fa-clock-o"></i> Manage Your Recurring Giving</a>
                 }
                 @if (hasOneTimeGiftSetup)
                 {
-                <a href="/Person2/OneTimeGift/@campusId" target="_blank" class="btn btn-default btn-block">Make a One Time Gift</a>
+                    <a href="/Person2/OneTimeGift/@campusId" target="_blank" class="btn btn-default btn-block">Make a One Time Gift</a>
                 }
             </div>
         }
@@ -157,20 +181,41 @@
                     <div class="pull-right">
                         @if (hasManageGivingSetup)
                         {
-                        <a href="/Person2/ManageGiving" target="_blank" class="btn btn-default"><i class="fa fa-clock-o"></i> Manage Your Recurring Giving</a>
+                            <a href="/Person2/ManageGiving" target="_blank" class="btn btn-default"><i class="fa fa-clock-o"></i> Manage Your Recurring Giving</a>
                         }
                         @if (hasOneTimeGiftSetup)
                         {
-                        <a href="/Person2/OneTimeGift/@campusId" target="_blank" class="btn btn-default">Make a One Time Gift</a>
+                            <a href="/Person2/OneTimeGift/@campusId" target="_blank" class="btn btn-default">Make a One Time Gift</a>
                         }
                     </div>
                 </div>
             </div>
         }
-        <br />
     }
 }
 <script>
     unblockPledges();
     blockPledges();
+
+    $(function () {
+        $('#Giving-detail-section').on('hide.bs.collapse', function () {
+            toggleIcons($('#Giving-detail-collapse i'), false);
+            saveUserHistory('givingdetail', false);
+        });
+
+        $('#Giving-detail-section').on('show.bs.collapse', function () {
+            toggleIcons($('#Giving-detail-collapse i'), true);
+            saveUserHistory('givingdetail', true);
+        });
+
+        $('#Pledge-detail-section').on('hide.bs.collapse', function () {
+            toggleIcons($('#Pledge-detail-collapse i'), false);
+            saveUserHistory('pledgedetail', false);
+        });
+
+        $('#Pledge-detail-section').on('show.bs.collapse', function () {
+            toggleIcons($('#Pledge-detail-collapse i'), true);
+            saveUserHistory('pledgedetail', true);
+        });
+    });
 </script>
