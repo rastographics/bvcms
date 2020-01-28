@@ -22,7 +22,7 @@ echo quit | sqlcmd -S (local) -q "IF DB_ID('CMSi_localhost') IS NOT NULL ALTER D
 ::Unit tests
 for %%i IN (%target_tests%) DO cmd /c %OpenCover% -register:user -target:"%xunit%" -targetargs:"%%i -noshadow -teamcity" -filter:%opencover_filters% -output:"%~dp0%%~ni.xml"
 IF "%CodeCovToken%" NEQ "" (
-  for %%i IN (%target_tests%) DO cmd /c %codecov% -f "%~dp0%%~ni.xml" --root %root% --pr %PR% --name "UnitTests" --flag unittests -t "%CodeCovToken%"
+  for %%i IN (%target_tests%) DO cmd /c %codecov% -f "%~dp0%%~ni.xml" --root %root% --pr %PR% --name "%%~ni" --flag unittests -t "%CodeCovToken%"
 )
 del /Q *Tests.xml
 ::Integration tests
