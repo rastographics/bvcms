@@ -76,19 +76,21 @@ namespace CmsWeb.Areas.OnlineReg.Models
             var summary = db.RenderTemplate(@"
 <table>
     <tr>
-        {{#if TotCoupon}}
-            <td style='{{LabelStyle}}'>Amount</br>Charged</td>
-            <td style='{{LabelStyle}}'>Coupon</td>
-        {{/if}}
-        <td style='{{LabelStyle}}'>Total Paid</td>
-        <td style='{{LabelStyle}}'>Total Due</td>
+        <td style='{{LabelStyle}}'>Total Fee</td>
+        <td style='{{DataStyle}}{{AlignRight}}'>{{Fmt TotalFee 'c'}}</td>
+    </tr>
+    {{#if TotCoupon}}
+    <tr>
+        <td style='{{LabelStyle}}'>Coupon Applied</td>
+        <td style='{{DataStyle}}{{AlignRight}}'>{{Fmt TotCoupon 'c'}}</td>
+    </tr>
+    {{/if}}
+    <tr>
+        <td style='{{LabelStyle}}'>Amount Charged</td>
+        <td style='{{DataStyle}}{{AlignRight}}'>{{Calc TotPaid TotCoupon}}</td>
     </tr>
     <tr>
-        {{#if TotCoupon}}
-            <td style='{{DataStyle}}{{AlignRight}}'>{{Calc TotPaid TotCoupon}}</td>
-            <td style='{{DataStyle}}{{AlignRight}}'>{{Fmt TotCoupon 'c'}}</td>
-        {{/if}}
-        <td style='{{DataStyle}}{{AlignRight}}'>{{Fmt TotPaid 'c'}}</td>
+        <td style='{{LabelStyle}}'>Balance Due</td>
         <td style='{{DataStyle}}{{AlignRight}}'>{{Fmt TotDue 'c'}}</td>
     </tr>
 </table>

@@ -14,7 +14,6 @@ namespace CMSWebTests.Areas.Reports.Models.Reports
     [Collection(Collections.Database)]
     public class MailingControllerTests : DatabaseTestBase
     {
-
         [Fact]
         public void GetCouplesBothList_Should_Pull_Proper_HoHPeopleID()
         {
