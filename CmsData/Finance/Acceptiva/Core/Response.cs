@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace CmsData.Finance.Acceptiva.Core
 {
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     internal  class Response
     {
         [JsonProperty(PropertyName = "status")]

@@ -59,6 +59,15 @@ namespace CmsWeb.Areas.Public.Models
             }
         }
 
+        public string OrgTypes
+        {
+            get
+            {
+                var orgTypes = getSetting("OrgTypes")?.value;
+                return orgTypes == null ? "" : orgTypes;
+            }
+        }
+
         public bool UseShell { get; private set; }
 
         public SmallGroupFinderModel() { }
@@ -86,6 +95,8 @@ namespace CmsWeb.Areas.Public.Models
             _shell = DbUtil.Content(DbUtil.Db, _sgf.shell, "");
             _template = DbUtil.Content(DbUtil.Db, _sgf.layout, "");
             _gutter = DbUtil.Content(DbUtil.Db, _sgf.gutter, "");
+
+            UseNewUi = getSetting("UseNewUI")?.value == "true";
         }
 
         public bool hasShell()
@@ -206,6 +217,8 @@ namespace CmsWeb.Areas.Public.Models
             return _sgf.SGFFilters[id];
         }
 
+        public bool UseNewUi { get; set; }
+
         private static readonly List<string> weekdayList = new List<string>()
         {
             "Sunday",
@@ -222,7 +235,7 @@ namespace CmsWeb.Areas.Public.Models
             var f = getFilter(id);
             var i = new List<FilterItem>();
 
-            var orgTypes = DbUtil.Db.Setting("SGF-OrgTypes", "").Split(',').Select(x => x.Trim()).Where(x => !string.IsNullOrEmpty(x));
+            var orgTypes = OrgTypes.Split(',').Select(x => x.Trim()).Where(x => !string.IsNullOrEmpty(x));
 
             if (f.locked)
             {
@@ -293,7 +306,7 @@ namespace CmsWeb.Areas.Public.Models
                 return new SmallGroupSearchResult { Organizations = new List<Organization>(), IsInitialSearch = true };
             }
 
-            var orgTypes = DbUtil.Db.Setting("SGF-OrgTypes", "").Split(',').Select(x => x.Trim()).Where(x => !string.IsNullOrEmpty(x)).ToList();
+            var orgTypes = OrgTypes.Split(',').Select(x => x.Trim()).Where(x => !string.IsNullOrEmpty(x)).ToList();
 
             IQueryable<Organization> orgs;
             if (!orgTypes.Any())

@@ -13,5 +13,6 @@ namespace CmsWeb.Areas.People.Models
         public string Type { get; set; }
         public string Name { get; set; }
         public bool PledgeFund { get; set; }
+        public int? TranId { get; set; }
     }
 }

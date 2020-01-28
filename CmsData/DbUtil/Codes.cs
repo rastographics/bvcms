@@ -285,6 +285,12 @@ namespace CmsData.Codes
         public const int Open = 1;
         public const int Closed = 2;
     }
+    public class FundShowListCode
+    {
+        public const int Primary = 1;
+        public const int Secondary = 2;
+        public const int None = 3;
+    }
     public class GroupSelectCode
     {
         public const string Member = "10";

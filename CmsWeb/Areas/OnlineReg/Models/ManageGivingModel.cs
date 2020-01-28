@@ -203,7 +203,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 FirstDefaultFundName = OnlineRegPersonModel.GetFundName(db, DefaultFundIds.First().ToInt());
             }
 
-            var fundList = OnlineRegPersonModel.FundList(db);
+            var fundList = OnlineRegPersonModel.PrimaryFundList(db);
             FallbackDefaultFundIds.AddRange(fundList.Where(f => !DefaultFundIds.Contains(f.Value)).Select(f => f.Value));
         }
 
