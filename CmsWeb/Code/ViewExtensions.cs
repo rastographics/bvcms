@@ -1037,14 +1037,14 @@ namespace CmsWeb
         public static string Bootstrap3Css()
         {
             return @"
-<link rel=""stylesheet"" href=""//maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"">
+<link rel=""stylesheet"" href=""//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css"">
 <link rel=""stylesheet"" href=""/Content/css/OnlineReg2.css?v=2"">
 <link rel=""stylesheet"" href=""/Content/css/fixups3.css"">
 ";
         }
         public static HtmlString Bootstrap3()
         {
-            return IncludeOnce(@"<script src=""//maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js""></script>");
+            return IncludeOnce(@"<script src=""//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js""></script>");
         }
 
         public static HtmlString BootstrapToggleCss()
@@ -1058,7 +1058,7 @@ namespace CmsWeb
 
         public static HtmlString FontAwesome()
         {
-            return new HtmlString("<link href=\"//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css\" rel=\"stylesheet\">\n");
+            return new HtmlString(@"<link href=""//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"" rel=""stylesheet"">\n");
         }
 
         public static HtmlString CkEditor()
