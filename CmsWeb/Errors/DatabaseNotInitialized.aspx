@@ -41,7 +41,7 @@
             &copy; <%=DateTime.Today.Year %> <%=Resource1.CompanyName %>
         </div>
     </div>
-    <script src='//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js'></script>
-    <%ViewExtensions2.Bootstrap3() %>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <%=ViewExtensions2.Bootstrap3() %>
 </body>
 </html>

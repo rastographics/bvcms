@@ -1,13 +1,5 @@
-/* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church
- * Licensed under the GNU General Public License (GPL v2)
- * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license
- */
-
 using System;
 using System.Collections.Generic;
-using System.Dynamic;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
@@ -15,7 +7,6 @@ using System.Configuration;
 using System.Globalization;
 using System.IO;
 using System.Net;
-using System.Web.Configuration;
 using System.Xml;
 using System.Xml.Serialization;
 
@@ -38,9 +29,8 @@ namespace UtilityExtensions
         {
             get
             {
-                return HttpContextFactory.Current?.Session?.SessionID ?? (string)HttpRuntime.Cache["SessionId"] ?? (SessionId = Guid.NewGuid().ToString());                
+                return HttpContextFactory.Current?.Session?.SessionID ?? Guid.NewGuid().ToString();                
             }
-            set { HttpRuntime.Cache["SessionId"] = value; }
         }
 
         public static bool Auditing
