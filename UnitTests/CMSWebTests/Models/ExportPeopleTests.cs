@@ -57,7 +57,7 @@ namespace CMSWebTests.Models
                 var _exportPeople = new ExportPeople(db);                
                 DateTime exportStartDt = Util.Now.AddDays(-180);
                 DateTime exportEndDt = Util.Now.AddDays(180);
-                DataTable tableResult = _exportPeople.ExcelDonorTotals(exportStartDt,exportEndDt,campusid,pledges,nontaxdeductible,includeUnclosed, tagid, fundids);
+                DataTable tableResult = _exportPeople.ExcelDonorTotals(exportStartDt,exportEndDt,campusid,pledges,nontaxdeductible,includeUnclosed, tagid, fundids, false);
                 var dbContributionsQry = db.Contributions
                     .Where(x => !ContributionTypeCode.ReturnedReversedTypes.Contains(x.ContributionTypeId) && !ContributionTypeCode.Pledge.Equals(x.ContributionTypeId))
                     .Where(x => ContributionStatusCode.Recorded.Equals(x.ContributionStatusId))
