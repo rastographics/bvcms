@@ -7,16 +7,22 @@
     background-color: #f5f5f5 !important;
     user-select: none;
 }
+.checkin .btn {
+    border-radius: 4px;
+}
 #main {
     padding: 0!important;
     margin: 0!important;
 }
-.simple-keyboard {
-    max-width: 400px;
-}
 .simple-keyboard.hg-theme-default {
     background-color: transparent;
     font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+.simple-keyboard.hg-theme-default .hg-button {
+    height: 48px;
+    font-size: 18px;
+    background-color: white;
+    color: #333;
 }
 .simple-keyboard.hg-theme-default.hg-layout-numeric .hg-button {
     height: 75px;
@@ -52,6 +58,19 @@
     max-width: 420px;
     margin: 20px auto 0;
 }
+.checkin .landing.phone,
+.checkin .landing.admin {
+    margin-top: calc((100vh - 550px) / 2);
+}
+.landing .simple-keyboard {
+    max-width: 400px;
+}
+.checkin .namesearch {
+    max-width: 800px;
+}
+.namesearch .simple-keyboard {
+    max-width: 800px;
+}
 .checkin .landing input {
     border: 0;
     border-radius: 5px;
@@ -66,10 +85,17 @@
     padding: 5px;
     caret-color: transparent;
 }
+.checkin .namesearch input {
+    max-width: 790px;
+}
 .checkin .landing input:focus {
     outline: none;
 }
-.checkin .families .family h4 {
+.checkin .classes .class {
+    margin-bottom: 30px;
+}
+.checkin .families .family h4,
+.checkin .classes .class > div {
     border: 1px solid #e6e6e6;
     background-color: #fff;
     padding: 30px 20px;
@@ -99,6 +125,15 @@
     float: left;
     width: calc(100% - 175px);
 }
+.checkin .member-details .dropdown-toggle {
+    top: -3px;
+    padding: 3px 8px;
+    border-radius: 5px;
+}
+.checkin .member-details .dropdown-menu {
+    margin-top: -2px;
+    border-radius: 5px;
+}
 .checkin .member-details .disabled{
     color: #aaa!important;
 }
@@ -114,14 +149,24 @@
     margin-top: 20px;
     margin-bottom: 15px;
 }
-.checkin .results .member:last-of-type,
-.checkin .results .family:last-child {
+/* responsive reset */
+@media (min-width:992px) {
+    .checkin .member:nth-child(2n+1) {
+        clear: left;
+    }
+}
+.checkin .results {
     margin-bottom: 80px;
 }
+
 .checkin .results .member .name {
     margin-top: 0;
     font-weight: 300;
     font-size: 20px;
+}
+.checkin .results .member .dropdown-item {
+    font-size: 18px;
+    font-weight: 300;
 }
 .checkin .panel {
     max-width: 360px;
@@ -142,7 +187,7 @@
 .checkin .action-bar .content {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 20px 45px;
+    padding: 20px 50px;
 }
 hr {
     margin-top: 0;

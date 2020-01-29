@@ -25,9 +25,10 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 		[LabelField( LabelFieldAttribute.CATEGORY_GROUP )] GROUP_NAME = 41,
 		[LabelField( LabelFieldAttribute.CATEGORY_GROUP )] GROUP_LOCATION = 42,
 		[LabelField( LabelFieldAttribute.CATEGORY_GROUP )] GROUP_SUBGROUPS = 43,
-		
-		// Attendance 41-60
-		[LabelField( LabelFieldAttribute.CATEGORY_GROUP )] ATTENDANCE_DATE_TIME = 61,
+        [LabelField(LabelFieldAttribute.CATEGORY_GROUP)] GROUP_NAME_AND_TIME = 44,
+
+        // Attendance 41-60
+        [LabelField( LabelFieldAttribute.CATEGORY_GROUP )] ATTENDANCE_DATE_TIME = 61,
 		[LabelField( LabelFieldAttribute.CATEGORY_GROUP )] ATTENDANCE_PAGER = 62,
 		[LabelField( LabelFieldAttribute.CATEGORY_GROUP )] ATTENDANCE_NOTES = 63,
 	

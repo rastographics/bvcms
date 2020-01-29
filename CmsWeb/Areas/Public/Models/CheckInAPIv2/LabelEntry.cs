@@ -99,7 +99,8 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 					return string.Format( format, cacheSet.securityCode );
 
 				case LabelField.PERSON_FIRST_NAME:
-					return string.Format( format, person.FirstName );
+                    string firstname = person.PreferredName;
+                    return string.Format( format, firstname );
 
 				case LabelField.PERSON_LAST_NAME:
 					return string.Format( format, person.LastName );
@@ -201,7 +202,14 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 				case LabelField.GROUP_SUBGROUPS:
 					return group.subgroupName;
 
-				case LabelField.ATTENDANCE_DATE_TIME:
+                case LabelField.GROUP_NAME_AND_TIME:
+                    org = cacheSet.getOrganization(group.groupID);
+                    meeting = cacheSet.getMeeting(group.groupID, group.datetime);
+
+                    string orgName = org == null ? "" : org.OrganizationName;
+                    return string.Format(format, orgName, meeting.MeetingDate);
+
+                case LabelField.ATTENDANCE_DATE_TIME:
 					meeting = cacheSet.getMeeting( group.groupID, group.datetime );
 
 					return string.Format( format, meeting.MeetingDate );
