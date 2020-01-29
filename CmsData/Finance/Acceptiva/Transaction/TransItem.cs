@@ -2,6 +2,7 @@
 
 namespace CmsData.Finance.Acceptiva.Transaction
 {
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     internal class TransItem
     {
         [JsonProperty(PropertyName = "id")]

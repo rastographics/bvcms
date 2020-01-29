@@ -17,7 +17,7 @@
         } else {
             event.preventDefault();
         }
-    });
+    });    
 
     $("body").on("click", 'button.editpledge', function (ev) {
         ev.preventDefault();
@@ -80,6 +80,51 @@
         editPledge(id, amt);
     });
 });
+
+$(function () {
+    $('body').on('change', 'form.ajax #GivingYear', function (event) {
+        event.preventDefault();
+        var t = $(this);
+        var $form = t.closest("form.ajax");
+        $("input[name='Year']", $form).val($(t).val());
+        saveUserHistory('Year', $(t).val());
+        $.formAjaxClick(t);
+        return false;
+    });
+});
+
+function toggleIcons(ele, expand) {
+    if (expand) {
+        $(ele).removeClass("fa-chevron-circle-right").addClass('fa-chevron-circle-down');
+    } else {
+        $(ele).removeClass("fa-chevron-circle-down").addClass('fa-chevron-circle-right');
+    }
+}
+
+function saveUserHistory(key, value) {    
+    $.ajax({
+        url: 'SaveGivingUserHistory',
+        dataType: "json",
+        type: "PUT",
+        contentType: 'application/json; charset=utf-8',
+        data: JSON.stringify({ key: key, value: value }),
+        async: true,
+        processData: false,
+        cache: false,
+        success: function (data) {
+            if (data == 'OK') {
+                console.log('action saved');
+            } else {
+                $.unblock();
+                swal("Error", data, "error");
+            }
+        },
+        error: function () {
+            $.unblock();
+            swal("Error", "", "error");
+        }
+    });
+}
 
 function editPledge(id, amt) {
     $.ajax({

@@ -26,8 +26,8 @@ namespace IntegrationTests.Areas.OnlineReg
             Open($"{rootUrl}Person2/{user.PeopleId}");
             WaitForPageLoad();
             Find(css: @"a[href=""#giving""]").Click();
+            Wait(1);
             WaitForElementToDisappear(loadingUI);
-            Wait(2);
 
             Find(text: "Make a One Time Gift").Click();
             Wait(3);

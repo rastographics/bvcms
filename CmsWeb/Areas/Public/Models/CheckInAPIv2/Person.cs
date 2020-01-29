@@ -95,15 +95,15 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 			firstName = p.FirstName ?? "";
 			lastName = p.LastName ?? "";
 
-			goesBy = p.NickName;
-			altName = p.AltName;
+			goesBy = p.NickName ?? "";
+			altName = p.AltName ?? "";
 
 			genderID = p.GenderId;
 			maritalStatusID = p.MaritalStatus.Id;
 
 			birthday = p.BirthDate;
 
-			primaryEmail = p.EmailAddress;
+			primaryEmail = p.EmailAddress ?? "";
 			homePhone = p.HomePhone.FmtFone();
 			workPhone = p.WorkPhone.FmtFone();
 			mobilePhone = p.CellPhone.FmtFone();
@@ -118,10 +118,10 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 
 			church = p.OtherPreviousChurch;
 
-			allergies = p.SetRecReg().MedicalDescription;
+			allergies = p.SetRecReg().MedicalDescription ?? "";
 
-			emergencyName = p.SetRecReg().Emcontact;
-			emergencyPhone = p.SetRecReg().Emphone;
+			emergencyName = p.SetRecReg().Emcontact ?? "";
+			emergencyPhone = p.SetRecReg().Emphone ?? "";
 		}
 
 		public void fillFamily( CmsData.Family family )

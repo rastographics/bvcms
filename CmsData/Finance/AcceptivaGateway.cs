@@ -183,8 +183,8 @@ namespace CmsData.Finance
                     Address = addr,
                     Address2 = addr2,
                     City = city,
-                    State = state,
-                    Country = country,
+                    State = UPSStateCodes.FromStateCountry(state, country, db) ?? state,
+                    Country = ISO3166.Alpha3FromName(country) ?? country,
                     Zip = zip,
                     Email = email,
                     Phone = phone
@@ -256,21 +256,24 @@ namespace CmsData.Finance
 
             foreach (var item in transactionsList)
             {
-                batchTransactions.Add(new BatchTransaction
+                if (item.Response.Errors.Count == 0 && int.TryParse(item.Response.Items[0].Id.Replace("Touchpoint#", ""), out int id))
                 {
-                    TransactionId = int.Parse(item.Response.Items[0].Id.Replace("Touchpoint#","")),
-                    Reference = item.Response.TransIdStr,
-                    BatchReference = GetBatchReference(start, end),
-                    TransactionType = GetTransactionType(item.Response.AmtProcessed),
-                    BatchType = GetBatchType(item.Response.PaymentType),
-                    Name = $"{item.Response.PayerFname} {item.Response.PayerLname}",
-                    Amount = item.Response.AmtProcessed,
-                    Approved = true,
-                    Message = item.Response.TransStatusMsg,
-                    TransactionDate = item.Response.TransDatetime,
-                    SettledDate = item.Response.TransDatetime.AddDays(1),
-                    LastDigits = item.Response.AcctLastFour
-                });
+                    batchTransactions.Add(new BatchTransaction
+                    {
+                        TransactionId = int.Parse(item.Response.Items[0].Id.Replace("Touchpoint#", "")),
+                        Reference = item.Response.TransIdStr,
+                        BatchReference = GetBatchReference(start, end),
+                        TransactionType = GetTransactionType(item.Response.AmtProcessed),
+                        BatchType = GetBatchType(item.Response.PaymentType),
+                        Name = $"{item.Response.PayerFname} {item.Response.PayerLname}",
+                        Amount = item.Response.AmtProcessed,
+                        Approved = true,
+                        Message = item.Response.TransStatusMsg,
+                        TransactionDate = item.Response.TransDatetime,
+                        SettledDate = item.Response.TransDatetime.AddDays(1),
+                        LastDigits = item.Response.AcctLastFour
+                    });
+                }
             }
 
             return new BatchResponse(batchTransactions);

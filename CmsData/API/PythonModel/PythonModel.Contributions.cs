@@ -12,9 +12,14 @@ namespace CmsData
 {
     public partial class PythonModel
     {
-        public BundleHeader GetBundleHeader(DateTime date, DateTime now, int? btid = null, DateTime? depositDate = null)
+        public BundleHeader GetBundleHeader(
+            DateTime date,
+            DateTime now,
+            int? btid = null,
+            DateTime? depositDate = null,
+            decimal? bundleTotal = null)
         {
-            return Contribution.GetBundleHeader(db, date, now, btid, depositDate);
+            return Contribution.GetBundleHeader(db, date, now, btid, depositDate, bundleTotal);
         }
 
         public void FinishBundle(BundleHeader bh)
@@ -39,9 +44,9 @@ namespace CmsData
         }
 
         public BundleDetail AddContributionDetail(DateTime date, int fundid,
-            string amount, string checkno, string routing, string account, int contributionTypeId)
+            string amount, string checkno, string routing, string account, int contributionTypeId, int? pid = null, string description = null)
         {
-            return Contribution.AddContributionDetail(db, date, fundid, amount, checkno, routing, account, contributionTypeId);
+            return Contribution.AddContributionDetail(db, date, fundid, amount, checkno, routing, account, contributionTypeId, pid, description);
         }
 
         public static BundleDetail NewBundleDetail(CMSDataContext db, DateTime date, int fundid, string amount)

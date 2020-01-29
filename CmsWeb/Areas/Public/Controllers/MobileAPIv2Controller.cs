@@ -1674,7 +1674,7 @@ namespace CmsWeb.Areas.Public.Controllers
         [HttpPost]
         public ActionResult RecordHeadcount(string data)
         {
-            if (CurrentDatabase.Setting("RegularMeetingHeadCount", "true") == "disabled")
+            if (!CurrentDatabase.Setting("RegularMeetingHeadCount", true))
             {
                 return MobileMessage.createErrorReturn("Headcounts for meetings are disabled");
             }
