@@ -150,86 +150,78 @@ namespace CmsData
 
             return myFinalList;
         }
-
-        public List<LineChartDTO> GetFundChartData(int[] fundIds, int? year)
+        
+        private List<ChartDTO> GetChartContributions(CMSDataContext db, int year, int[] fundIds = null)
         {
-            int CurrentYear = year ?? DateTime.Now.Year;
-            var api = new APIContributionSearchModel(DbUtil.Db);
-
-            List<LineChartDTO> myFinalList = new List<LineChartDTO>();
-
-            var myList = (from c in DbUtil.Db.Contributions
-                          where c.ContributionDate.Value.Year == (CurrentYear)
-                          where c.ContributionTypeId != ContributionTypeCode.Pledge
-                group c by new {c.ContributionDate.Value.Month}
-                into grp
-                select new ChartDTO
-                {
-                    Name = grp.First().ContributionDate.Value.ToString("MMM", CultureInfo.InvariantCulture),
-                    Count = Convert.ToInt32(grp.Sum(t => t.ContributionAmount).Value)
-                }).ToList();
-
-            var myList1=(from ce in DbUtil.Db.Contributions
-                         where ce.ContributionDate.Value.Year == (CurrentYear - 1)
-                         where ce.ContributionTypeId != ContributionTypeCode.Pledge
-                         group ce by new { ce.ContributionDate.Value.Month } into grpc
-                    select new ChartDTO
-                    {
-                        Name = grpc.First().ContributionDate.Value.ToString("MMM", CultureInfo.InvariantCulture),
-                        Count = Convert.ToInt32(grpc.Sum(t => t.ContributionAmount).Value)
-                    }).ToList();
             if (fundIds.IsNotNull())
             {
-                if (!(fundIds.Length == 1 && fundIds[0].Equals(0)))
-                {
-                    myList = (from c in DbUtil.Db.Contributions
-                        where c.ContributionDate.Value.Year == (CurrentYear) &&
-                              fundIds.Contains(c.FundId)
-                        group c by new {c.ContributionDate.Value.Month}
+                return (from c in Contribution.GetContributionsPerYear(db, year, fundIds)
+                 group c by new { c.ContributionDate.Value.Month }
                         into grp
-                        select new ChartDTO
-                        {
-                            Name = grp.First().ContributionDate.Value.ToString("MMM", CultureInfo.InvariantCulture),
-                            Count = Convert.ToInt32(grp.Sum(t => t.ContributionAmount).Value)
-                        }).ToList();
-
-                    myList1 = (from ce in DbUtil.Db.Contributions
-                        where ce.ContributionDate.Value.Year == (CurrentYear - 1) &&
-                              fundIds.Contains(ce.FundId)
-                        group ce by new {ce.ContributionDate.Value.Month}
-                        into grpc
-                        select new ChartDTO
-                        {
-                            Name = grpc.First().ContributionDate.Value.ToString("MMM", CultureInfo.InvariantCulture),
-                            Count = Convert.ToInt32(grpc.Sum(t => t.ContributionAmount).Value)
-                        }).ToList();
-                }
+                 select new ChartDTO
+                 {
+                     Name = grp.First().ContributionDate.Value.ToString("MMM", CultureInfo.InvariantCulture),
+                     Count = Convert.ToInt32(grp.Sum(t => t.ContributionAmount).Value)
+                 }).ToList();
             }
+            else {
+            return (from c in Contribution.GetContributionsPerYear(db, year)
+                    group c by new { c.ContributionDate.Value.Month }
+                 into grp
+                    select new ChartDTO
+                    {
+                        Name = grp.First().ContributionDate.Value.ToString("MMM", CultureInfo.InvariantCulture),
+                        Count = Convert.ToInt32(grp.Sum(t => t.ContributionAmount).Value)
+                    }).ToList();
+            }
+        }
+        private List<LineChartDTO> GetFinalList(int currentYear, List<ChartDTO> myList, List<ChartDTO> myList1)
+        {
+            List<LineChartDTO> myFinalList = new List<LineChartDTO>();
             var myList3 = DateTimeFormatInfo.InvariantInfo.AbbreviatedMonthNames;
 
             var emptytableQuery = (from m in myList3
                                    where m.HasValue()
-                                    select new ChartDTO
-                                    {
-                                        Name = m,
-                                        Count = 0
-                                    });
+                                   select new ChartDTO
+                                   {
+                                       Name = m,
+                                       Count = 0
+                                   });
             myFinalList = (from e in emptytableQuery
                            join t in myList on e.Name equals t.Name into tm
                            join s in myList1 on e.Name equals s.Name into sm
                            from rdj in tm.DefaultIfEmpty()
                            from sdj in sm.DefaultIfEmpty()
-                    select new LineChartDTO()
-                    {
-                        ChartName = "MONTHLY GIVING ANALYSIS",
-                        CurYear = CurrentYear,
-                        PreYear = CurrentYear -1,
-                        Name = e.Name,
-                        Count = rdj == null? null : rdj.Count,
-                        Count2 = sdj == null ? 0 : sdj.Count
-                    }).ToList();
+                           select new LineChartDTO()
+                           {
+                               ChartName = "MONTHLY GIVING ANALYSIS",
+                               CurYear = currentYear,
+                               PreYear = currentYear - 1,
+                               Name = e.Name,
+                               Count = rdj == null ? null : rdj.Count,
+                               Count2 = sdj == null ? 0 : sdj.Count
+                           }).ToList();
 
             return myFinalList;
+        }
+        public List<LineChartDTO> GetFundChartData(int[] fundIds, int? year, CMSDataContext db)
+        {
+            int CurrentYear = year ?? DateTime.Now.Year;
+            var api = new APIContributionSearchModel(db);
+
+            var myList = GetChartContributions(db, CurrentYear);
+            var myList1 = GetChartContributions(db, CurrentYear - 1);
+
+            if (fundIds.IsNotNull())
+            {
+                if (!(fundIds.Length == 1 && fundIds[0].Equals(0)))
+                {
+                    myList = GetChartContributions(db, CurrentYear, fundIds);
+                    myList1 = GetChartContributions(db, CurrentYear - 1, fundIds);
+                }
+            }
+
+            return GetFinalList(CurrentYear, myList, myList1);
         }
     }
 }

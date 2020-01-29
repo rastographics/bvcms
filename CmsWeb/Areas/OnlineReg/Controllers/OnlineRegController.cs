@@ -123,9 +123,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             {
                 Session[AccountController.MFAUserId] = ret.User.UserId;
                 ViewData["hasshell"] = true;
+                var orgId = m.Orgid ?? m.masterorgid;
                 return View("Auth", new AccountInfo {
                     UsernameOrEmail = ret.User.Username,
-                    ReturnUrl = RouteExistingRegistration(m) ?? $"/OnlineReg/{m.Orgid.GetValueOrDefault((int)m.masterorgid)}"
+                    ReturnUrl = RouteExistingRegistration(m) ?? $"/OnlineReg/{orgId}"
                 });
             }
             else
@@ -422,45 +423,54 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 SetHeaders(m);
                 return View("Other/AskDonation", m);
             }
-            TempData["onlineregmodel"] = Util.Serialize(m);
+            SaveOnlineRegModelInSession(m);
             return Redirect("/OnlineReg/CompleteRegistration");
         }
 
-#if DEBUG
-        // For testing only
-        [HttpGet]
-        [Route("~/OnlineReg/CompleteRegistration/{id:int}")]
-        public ActionResult CompleteRegistration(int id)
-        {
-            var ed = CurrentDatabase.RegistrationDatas.SingleOrDefault(e => e.Id == id);
-            var m = Util.DeSerialize<OnlineRegModel>(ed?.Data);
-            TempData["onlineregmodel"] = Util.Serialize(m);
-            return Redirect("/OnlineReg/CompleteRegistration");
-        }
-#endif
         [HttpPost]
         public ActionResult CompleteRegistration(OnlineRegModel m)
         {
-            if (m.org != null && m.org.RegistrationTypeId == RegistrationTypeCode.SpecialJavascript)
+            if (m.org?.RegistrationTypeId == RegistrationTypeCode.SpecialJavascript)
             {
                 m.List[0].SpecialTest = SpecialRegModel.ParseResults(Request.Form);
             }
-
-            TempData["onlineregmodel"] = Util.Serialize(m);
+            SaveOnlineRegModelInSession(m);
             return Redirect("/OnlineReg/CompleteRegistration");
+        }
+
+        private void SaveOnlineRegModelInSession(OnlineRegModel m)
+        {
+            CurrentDatabase.SessionValues.DeleteAllOnSubmit(
+                CurrentDatabase.SessionValues.Where(v => v.SessionId == Session.SessionID && v.Name == "onlineregmodel"));
+            var xml = Util.Serialize(m);
+            if (!xml.HasValue())
+            {
+                throw new Exception("Could not serialize the OnlineReg model");
+            }
+
+            CurrentDatabase.SessionValues.InsertOnSubmit(new SessionValue { SessionId = Session.SessionID, Name = "onlineregmodel", Value = xml });
+            CurrentDatabase.SubmitChanges();
+        }
+
+        private OnlineRegModel ReadOnlineRegModelFromSession()
+        {
+            var s = CurrentDatabase.SessionValues.Where(v => v.SessionId == Session.SessionID && v.Name == "onlineregmodel").FirstOrDefault();
+            if (s?.Value == null)
+            {
+                DbUtil.LogActivity("OnlineReg Error PageRefreshNotAllowed");
+                throw new Exception("Registration cannot be completed after a page refresh.");
+            }
+            var m = Util.DeSerialize<OnlineRegModel>(s.Value);
+            CurrentDatabase.SessionValues.DeleteAllOnSubmit(
+                CurrentDatabase.SessionValues.Where(v => v.SessionId == Session.SessionID && v.Name == "onlineregmodel"));
+            return m;
         }
 
         [HttpGet]
         public ActionResult CompleteRegistration()
         {
             Response.NoCache();
-            var s = (string)TempData["onlineregmodel"];
-            if (s == null)
-            {
-                DbUtil.LogActivity("OnlineReg Error PageRefreshNotAllowed");
-                return Message("Registration cannot be completed after a page refresh.");
-            }
-            var m = Util.DeSerialize<OnlineRegModel>(s);
+            var m = ReadOnlineRegModelFromSession();
             m.CurrentDatabase = CurrentDatabase;
             var msg = m.CheckExpiredOrCompleted();
             if (msg.HasValue())
@@ -595,7 +605,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             {
                 m.URL = CurrentDatabase.ServerLink($"/OnlineReg/{id}/Giving/{goerid}");
             }
-            if (Util.UserPeopleId == goerid)
+
+            var currentUserId = Util.UserPeopleId;
+            if (currentUserId != null && currentUserId == goerid)
             {
                 return View("Giving/Goer", m);
             }

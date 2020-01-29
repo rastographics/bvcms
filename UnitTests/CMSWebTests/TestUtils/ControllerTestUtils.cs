@@ -1,7 +1,9 @@
 ﻿using Moq;
+using SharedTestFixtures;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 
@@ -12,6 +14,7 @@ namespace CMSWebTests
         public static ControllerContext FakeControllerContext(Controller controller, Dictionary<string, string> routeDataValues)
         {
             var mock = new Mock<ControllerContext>();
+            var session = new Mock<HttpSessionStateBase>();
             var routeData = new RouteData();
 
             foreach (var keyValuePair in routeDataValues)
@@ -23,6 +26,8 @@ namespace CMSWebTests
             mock.SetupGet(p => p.HttpContext.Request.ServerVariables).Returns(MockServerVariables());
             mock.SetupGet(p => p.HttpContext.User.Identity.IsAuthenticated).Returns(true);
             mock.SetupGet(m => m.RouteData).Returns(routeData);
+            session.SetupGet(s => s.SessionID).Returns(DatabaseTestBase.RandomString());
+            mock.SetupGet(p => p.HttpContext.Session).Returns(session.Object);
 
             var view = new Mock<IView>();
             var engine = new Mock<IViewEngine>();

@@ -3,6 +3,9 @@ using CmsData;
 using System.Collections.Generic;
 using Shouldly;
 using SharedTestFixtures;
+using CmsWeb.Areas.OnlineReg.Models;
+using System.Linq;
+using CmsData.Codes;
 
 namespace CMSWebTests.Areas.OnlineReg.Models.OnlineRegPerson
 {
@@ -73,6 +76,41 @@ namespace CMSWebTests.Areas.OnlineReg.Models.OnlineRegPerson
                 "</Settings>", OrgId);
 
             return Settings;
+        }
+
+        [Fact]
+        public void Should_Get_PrimaryFundList()
+        {
+            using(var db = CMSDataContext.Create(DatabaseFixture.Host))
+            {
+                var fundList = OnlineRegPersonModel.PrimaryFundList(db);
+                fundList.Length.ShouldBe(2);
+            }
+        }
+
+        [Fact]
+        public void Should_Get_SecondaryFundList()
+        {
+            int fundCount;
+            using (var db = CMSDataContext.Create(DatabaseFixture.Host))
+            {
+                var funds = db.ContributionFunds.Where(c => c.ShowList == FundShowListCode.Primary).ToList();
+                fundCount = funds.Count();
+                foreach (var item in funds)
+                {
+                    item.ShowList = FundShowListCode.Secondary;
+                }
+                db.SubmitChanges();
+
+                var fundList = OnlineRegPersonModel.SecondaryFundList(db);
+                fundList.Length.ShouldBe(fundCount);
+
+                foreach (var item in funds)
+                {
+                    item.ShowList = FundShowListCode.Primary;
+                }
+                db.SubmitChanges();
+            }
         }
     }
 }

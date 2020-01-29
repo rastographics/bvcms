@@ -23,7 +23,6 @@ namespace UtilityExtensions
 {
     public static partial class Util
     {
-        private const string STR_SessionStarting = "SessionStarting";
         private const string STR_Auditing = "Auditing";
         private const string STR_Helpfile = "Helpfile";
         private const string STR_Version = "Version";
@@ -42,20 +41,6 @@ namespace UtilityExtensions
                 return HttpContextFactory.Current?.Session?.SessionID ?? (string)HttpRuntime.Cache["SessionId"] ?? (SessionId = Guid.NewGuid().ToString());                
             }
             set { HttpRuntime.Cache["SessionId"] = value; }
-        }
-
-        public static bool SessionStarting
-        {
-            get
-            {
-                bool tf = false;
-                if (HttpContextFactory.Current != null)
-                    if (HttpContextFactory.Current.Session != null)
-                        if (HttpContextFactory.Current.Session[STR_SessionStarting] != null)
-                            tf = (bool)HttpContextFactory.Current.Session[STR_SessionStarting];
-                return tf;
-            }
-            set { HttpContextFactory.Current.Session[STR_SessionStarting] = value; }
         }
 
         public static bool Auditing

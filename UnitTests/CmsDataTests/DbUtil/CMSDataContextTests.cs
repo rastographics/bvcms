@@ -1,10 +1,9 @@
-using SharedTestFixtures;
 using CmsData;
-using Xunit;
+using SharedTestFixtures;
 using Shouldly;
 using System;
 using System.Linq;
-using System.Globalization;
+using Xunit;
 
 namespace CmsDataTests
 {
@@ -21,6 +20,39 @@ namespace CmsDataTests
     AND CampusId = 2[West Side]";
             var db = CMSDataContext.Create(DatabaseFixture.Host);
             db.PeopleQuery2(query);
+        }
+
+        [Fact]
+        public static void SessionValues_Insert_Fetch_Delete()
+        {
+            using (var db = CMSDataContext.Create(DatabaseFixture.Host))
+            {
+                var sessionId = DatabaseTestBase.RandomString();
+                var name = DatabaseTestBase.RandomString();
+                var value = DatabaseTestBase.RandomString();
+                db.SessionValues.DeleteAllOnSubmit(
+                    db.SessionValues.Where(v => v.SessionId == sessionId && v.Name == name));
+                db.SessionValues.FirstOrDefault(v => v.Name == name && v.SessionId == sessionId).ShouldBeNull();
+                db.SessionValues.InsertOnSubmit(new SessionValue
+                {
+                    SessionId = sessionId,
+                    Name = name,
+                    Value = value
+                });
+                db.SubmitChanges();
+
+                var newdb = db.Copy();
+                var sessionValue = newdb.SessionValues.FirstOrDefault(v => v.Name == name && v.SessionId == sessionId);
+                sessionValue.ShouldNotBeNull();
+                sessionValue.Value.ShouldBe(value);
+
+                newdb.SessionValues.DeleteAllOnSubmit(
+                    newdb.SessionValues.Where(v => v.SessionId == sessionId && v.Name == name));
+                newdb.SubmitChanges();
+
+                sessionValue = newdb.SessionValues.FirstOrDefault(v => v.Name == name && v.SessionId == sessionId);
+                sessionValue.ShouldBeNull();
+            }
         }
 
         [Fact]
@@ -72,7 +104,7 @@ namespace CmsDataTests
             }
         }
 
-        [InlineData("PushPayKey","keyXYZ",null,null,null)]
+        [InlineData("PushPayKey", "keyXYZ", null, null, null)]
         [Theory]
         public void Should_Insert_EV_Only_If_does_not_Exist(string key, string value, string text, int? intvalue, bool? bitvalue)
         {
@@ -91,7 +123,7 @@ namespace CmsDataTests
 
                 db.PeopleExtras.DeleteOnSubmit(extraValue);
                 db.SubmitChanges();
-            }               
+            }
         }
     }
 }

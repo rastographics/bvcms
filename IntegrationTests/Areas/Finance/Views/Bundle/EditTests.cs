@@ -26,15 +26,17 @@ namespace IntegrationTests.Areas.Finance.Views.Bundle
             Login();
 
             Open($"{rootUrl}Bundle/Edit/{new FinanceTestUtils(db).BundleHeader.BundleHeaderId}");
+            Wait(10);
             PageSource.ShouldContain("Contribution Bundle");
             Check_If_DateTimePicker_Exists("Bundle_ContributionDate");
 
             Open($"{rootUrl}Person2/{user.PeopleId}");
+            Wait(10);
             WaitForElement(css: ".edit-basic");
             WaitForElementToDisappear(loadingUI);
 
             Find(css: ".edit-basic").Click();
-            Wait(2);
+            Wait(5);
             ScrollTo(id: "WeddingDate");
             Check_If_DateTimePicker_Exists("WeddingDate");
         }
