@@ -59,15 +59,18 @@ namespace CmsData.Finance
             // Delete paymentinfo instead of update it fix all the database context issues here
             if (paymentInfo != null)
             {
-                if(!db.PaymentInfos.Contains(paymentInfo))
+                if (!db.PaymentInfos.Contains(paymentInfo))
                 {
                     db.PaymentInfos.Attach(paymentInfo);
                 }
                 db.PaymentInfos.DeleteOnSubmit(paymentInfo);
                 db.SubmitChanges();
             }
+            else
+            {
+                paymentInfo = new PaymentInfo() { GatewayAccountId = GatewayAccountId };
+            }
 
-            paymentInfo = new PaymentInfo() { GatewayAccountId = GatewayAccountId };
             person.PaymentInfos.Add(paymentInfo);
 
             if (type == PaymentType.CreditCard)
@@ -467,6 +470,7 @@ namespace CmsData.Finance
                 (paymentInfo.MiddleInitial ?? person.MiddleName).Truncate(1) ?? "",
                 paymentInfo.LastName ?? person.LastName,
                 paymentInfo.Suffix ?? person.SuffixCode,
+                paymentInfo.Zip ?? person.ZipCode,
                 new BillingAddress
                 {
                     Address1 = paymentInfo.Address ?? person.PrimaryAddress,

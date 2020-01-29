@@ -68,8 +68,11 @@ namespace CmsData.Finance
                 db.PaymentInfos.DeleteOnSubmit(paymentInfo);
                 db.SubmitChanges();
             }
+            else
+            {
+                paymentInfo = new PaymentInfo() { GatewayAccountId = GatewayAccountId };
+            }
 
-            paymentInfo = new PaymentInfo() { GatewayAccountId = GatewayAccountId };
             person.PaymentInfos.Add(paymentInfo);
 
             if (type == PaymentType.CreditCard)
