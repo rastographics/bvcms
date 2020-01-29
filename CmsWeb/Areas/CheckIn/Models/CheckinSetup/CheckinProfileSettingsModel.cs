@@ -7,8 +7,6 @@ namespace CmsWeb.Models
     {
         public int CheckinProfileId { get; set; }
         public int? CampusId { get; set; }
-        public int? EarlyCheckin { get; set; }
-        public int? LateCheckin { get; set; }
         public bool Testing { get; set; }
         public int TestDay { get; set; }
         public string AdminPIN { get; set; }
@@ -27,7 +25,11 @@ namespace CmsWeb.Models
 
         public CheckinProfileSettingsModel()
         {
-            CutoffAge = 18;
+            CutoffAge = 13;
+            ShowCheckinConfirmation = 5;
+            Location = true;
+            Guest = true;
+            SecurityType = 3;
         }
     }
 }

@@ -126,29 +126,49 @@ namespace CmsWeb.Areas.Public.Controllers
 			Message message = Message.createFromString( data );
 			NumberSearch cns = JsonConvert.DeserializeObject<NumberSearch>( message.data );
 
-			DbUtil.LogActivity( "Check-In Number Search: " + cns.search );
-
+			DbUtil.LogActivity( "Check-In Search: " + cns.search );
+            
             Message response = new Message();
             response.setNoError();
 
             bool returnPictureUrls = message.device == Message.API_DEVICE_WEB;
+            Guid guid;
 
-            if (cns.search.Contains("!"))
+            // handle scanned qr code
+            if (Guid.TryParse(cns.search, out guid))
             {
-                var list = cns.search.Split('!').Where(s => !string.IsNullOrWhiteSpace(s)).ToList();
-                string id = list.First();
-                var pending = CurrentDatabase.CheckInPendings.Where(p => p.Id == id.ToInt()).SingleOrDefault();
-                if (pending != null)
+                try
                 {
-                    AttendanceBundle bundle = JsonConvert.DeserializeObject<AttendanceBundle>(pending.Data);
-                    List<Family> result = Family.forAttendanceBundle(CurrentDatabase, CurrentImageDatabase, bundle, cns.campus, cns.date, returnPictureUrls);
-                    response.argString = SerializeJSON(bundle, message.version);
-                    response.data = SerializeJSON(result, message.version);
-                    return response;
+                    var person = CmsData.Person.PersonForQRCode(CurrentDatabase, guid);
+                    // first try to find a pending check in for the person scanned
+                    var pending = CurrentDatabase.CheckInPendings.Where(p => p.PeopleId == person.PeopleId).SingleOrDefault();
+                    if (pending == null)
+                    {
+                        // if not, see if there's a pending check in for the family
+                        pending = CurrentDatabase.CheckInPendings.Where(p => p.FamilyId == person.FamilyId).SingleOrDefault();
+                    }
+                    if (pending != null)
+                    {
+                        // found a pending check in, load that data
+                        AttendanceBundle bundle = JsonConvert.DeserializeObject<AttendanceBundle>(pending.Data);
+                        List<Family> result = Family.forAttendanceBundle(CurrentDatabase, CurrentImageDatabase, bundle, cns.campus, cns.date, returnPictureUrls);
+                        response.argString = SerializeJSON(bundle, message.version);
+                        response.data = SerializeJSON(result, message.version);
+                        return response;
+                    }
+                    else
+                    {
+                        // a qr code was scanned without any pending check in, just load the family without attendance data
+                        List<Family> scanned = new List<Family>();
+                        var family = Family.forID(CurrentDatabase, CurrentImageDatabase, person.FamilyId, cns.campus, cns.date, returnPictureUrls);
+                        scanned.Add(family);
+                        response.data = SerializeJSON(scanned, message.version);
+                        return response;
+                    }
                 }
-                else
+                catch (Exception e)
                 {
-                    return Message.createErrorReturn("Invalid barcode.", Message.API_ERROR_PERSON_NOT_FOUND);
+                    return Message.createErrorReturn(e.Message, Message.API_ERROR_PERSON_NOT_FOUND);
                 }
             }
 
@@ -160,12 +180,17 @@ namespace CmsWeb.Areas.Public.Controllers
         
 		[HttpGet]
 		public ActionResult GetProfiles()
-		{
-			List<Profile> profiles = new List<Profile>();
-			List<CheckinProfileSettings> profileSettings = CurrentDatabase.CheckinProfileSettings.ToList();
+        {
+            if (CurrentDatabase.CheckinProfiles.Count() == 0)
+            {
+                CheckinProfilesModel.CreateDefault(CurrentDatabase);
+            }
 
-			foreach( CheckinProfileSettings settings in profileSettings ) {
-				Profile profile = new Profile();
+            List<Profile> profiles = new List<Profile>();
+			List<CheckinProfileSetting> profileSettings = CurrentDatabase.CheckinProfileSettings.ToList();
+
+			foreach( CheckinProfileSetting settings in profileSettings ) {
+				Profile profile = new Profile(CurrentDatabase);
 				profile.populate( settings );
 
 				profiles.Add( profile );
@@ -223,7 +248,38 @@ namespace CmsWeb.Areas.Public.Controllers
 			return response;
 		}
 
-		[HttpPost]
+        [HttpPost]
+        public ActionResult GetQRCodeForPerson(string data)
+        {
+            // Authenticate first
+            if (!Auth())
+            {
+                return Message.createErrorReturn("Authentication failed, please try again", Message.API_ERROR_INVALID_CREDENTIALS);
+            }
+
+            Message message = Message.createFromString(data);
+            
+            int size = (message.argInt == 0) ? 300 : message.argInt;
+            string QRCode;
+
+            try
+            {
+                QRCode = CmsData.Person.QRCode(CurrentDatabase, message.id, size);
+            }
+            catch (Exception e)
+            {
+                return Message.createErrorReturn(e.Message, Message.API_ERROR_PERSON_NOT_FOUND);
+            }
+            
+            Message response = new Message();
+            response.setNoError();
+            response.count = 1;
+            response.data = QRCode;
+
+            return response;
+        }
+
+        [HttpPost]
 		public ActionResult AddPerson( string data )
 		{
 			if( !Auth() ) {
@@ -271,8 +327,9 @@ namespace CmsWeb.Areas.Public.Controllers
 			AddEditPersonResults results = new AddEditPersonResults {
 				familyID = f.FamilyId,
 				peopleID = p.PeopleId,
-				positionID = p.PositionInFamilyId
-			};
+				positionID = p.PositionInFamilyId,
+                barcodeID = CmsData.Person.Barcode(CurrentDatabase, p.PeopleId)
+            };
 
 			Message response = new Message();
 			response.setNoError();
@@ -307,10 +364,11 @@ namespace CmsWeb.Areas.Public.Controllers
 
 			CurrentDatabase.SubmitChanges();
 
-			AddEditPersonResults results = new AddEditPersonResults {
-				familyID = f.FamilyId,
-				peopleID = p.PeopleId,
-				positionID = p.PositionInFamilyId
+            AddEditPersonResults results = new AddEditPersonResults {
+                familyID = f.FamilyId,
+                peopleID = p.PeopleId,
+                positionID = p.PositionInFamilyId,
+                barcodeID = CmsData.Person.Barcode(CurrentDatabase, p.PeopleId)
 			};
 
 			Message response = new Message();
@@ -356,22 +414,30 @@ namespace CmsWeb.Areas.Public.Controllers
             
             Message response = new Message();
 			Message message = Message.createFromString( data );
-            
-            var pending = new CheckInPending
-            {
-                Stamp = DateTime.Now,
-                Data = message.data
-            };
 
-            CurrentDatabase.CheckInPendings.InsertOnSubmit(pending);
+            CheckInPending existing = CurrentDatabase.CheckInPendings.Where(c => c.PeopleId == CurrentDatabase.CurrentPeopleId).SingleOrDefault();
+
+            if (existing != null)
+            {
+                existing.Stamp = DateTime.Now;
+                existing.Data = message.data;
+            }
+            else
+            {
+                var pending = new CheckInPending
+                {
+                    Stamp = DateTime.Now,
+                    Data = message.data,
+                    PeopleId = CurrentDatabase.CurrentPeopleId,
+                    FamilyId = CurrentDatabase.CurrentUserPerson.FamilyId
+                };
+                CurrentDatabase.CheckInPendings.InsertOnSubmit(pending);
+            }
             CurrentDatabase.SubmitChanges();
             
             response.setNoError();
             response.count = 1;
-
-            string qrCode = Convert.ToBase64String(BarcodeHelper.generateQRCode("!" + pending.Id, 300));
-
-            response.data = qrCode;
+            
             return response;
         }
 
@@ -465,7 +531,54 @@ namespace CmsWeb.Areas.Public.Controllers
 			return response;
 		}
 
-		public ActionResult PrintJobs( string data )
+        [HttpPost]
+        public ActionResult UpdateMembership(string data)
+        {
+            // Authenticate first
+            if (!Auth())
+            {
+                return Message.createErrorReturn("Authentication failed, please try again", Message.API_ERROR_INVALID_CREDENTIALS);
+            }
+
+            Message message = Message.createFromString(data);
+            Message response = new Message();
+
+            OrgMembership membership = JsonConvert.DeserializeObject<OrgMembership>(message.data);
+
+            OrganizationMember om = CurrentDatabase.OrganizationMembers.SingleOrDefault(m => m.PeopleId == membership.peopleID && m.OrganizationId == membership.orgID);
+
+            if (om == null && membership.join)
+            {
+                om = OrganizationMember.InsertOrgMembers(CurrentDatabase, membership.orgID, membership.peopleID, MemberTypeCode.Member, DateTime.Today);
+            }
+
+            if (om != null && !membership.join)
+            {
+                om.Drop(CurrentDatabase, CurrentImageDatabase, DateTime.Now);
+
+                DbUtil.LogActivity($"Dropped {om.PeopleId} for {om.Organization.OrganizationId} via checkin", peopleid: om.PeopleId, orgid: om.OrganizationId);
+            }
+
+            CurrentDatabase.SubmitChanges();
+
+            // Check Entry Point and replace if Check-In
+            CmsData.Person person = CurrentDatabase.People.FirstOrDefault(p => p.PeopleId == membership.peopleID);
+
+            if (person?.EntryPoint != null && person.EntryPoint.Code == "CHECKIN" && om != null)
+            {
+                person.EntryPoint = om.Organization.EntryPoint;
+                CurrentDatabase.SubmitChanges();
+            }
+
+            Guid barcode = CmsData.Person.Barcode(CurrentDatabase, membership.peopleID);
+            response.data = SerializeJSON(barcode.ToString(), message.version);
+            response.setNoError();
+            response.count = 1;
+
+            return response;
+        }
+
+        public ActionResult PrintJobs( string data )
 		{
 			if( !Auth() ) {
 				return Message.createErrorReturn( "Authentication failed, please try again", Message.API_ERROR_INVALID_CREDENTIALS );
@@ -478,6 +591,8 @@ namespace CmsWeb.Areas.Public.Controllers
 
 			List<PrintJob> printJobs = (from label in CurrentDatabase.PrintJobs
 												where kiosks.Contains( label.Id )
+                                                where label.JsonData != null
+                                                where label.JsonData != ""
 												select label).ToList();
 
 			List<List<Label>> labels = new List<List<Label>>();
@@ -489,11 +604,13 @@ namespace CmsWeb.Areas.Public.Controllers
 				List<Label> labelGroup = attendanceBundle.createLabelData( CurrentDatabase );
 
 				labels.Add( labelGroup );
-			}
+                CurrentDatabase.PrintJobs.DeleteOnSubmit(printJob);
+            }
 
 			response.setNoError();
 			response.count = labels.Count;
 			response.data = SerializeJSON( labels );
+            CurrentDatabase.SubmitChanges();
 
 			return response;
 		}
@@ -515,16 +632,23 @@ namespace CmsWeb.Areas.Public.Controllers
 			if( person == null ) {
 				return Message.createErrorReturn( "Person not found", Message.API_ERROR_PERSON_NOT_FOUND );
 			}
-
 			DbUtil.LogActivity( $"Check-In Group Search: {person.PeopleId}: {person.Name}" );
 
 			List<Group> groups;
 
-			using( SqlConnection db = new SqlConnection( Util.ConnectionString ) ) {
-				groups = Group.forGroupFinder( db, person.BirthDate, search.campusID, search.dayID, search.showAll ? 1 : 0 );
-			}
+            try
+            {
+                using (SqlConnection db = new SqlConnection(Util.ConnectionString))
+                {
+                    groups = Group.forGroupFinder(db, person.BirthDate, search.campusID, search.dayID, search.showAll ? 1 : 0);
+                }
+            }
+            catch (Exception e)
+            {
+                return Message.createErrorReturn(e.Message, Message.API_ERROR_PERSON_NOT_FOUND);
+            }
 
-			Message response = new Message();
+            Message response = new Message();
 			response.setNoError();
 			response.data = SerializeJSON( groups );
 

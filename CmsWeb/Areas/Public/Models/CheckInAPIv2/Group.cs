@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using CmsData;
 using CmsData.Classes.DataMapper;
+using Dapper;
 
 namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 {
@@ -22,6 +24,9 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 
 		public DateTime? birthdayStart = DateTime.MinValue;
 		public DateTime? birthdayEnd = DateTime.MinValue;
+
+        public int? EarlyCheckin;
+        public int? LateCheckin;
 
 		public bool allowOverlap = false;
 
@@ -43,11 +48,10 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 		public static List<Group> forPersonID(CMSDataContext db, int personID, int campus, DateTime date )
 		{
 			List<Group> groups = new List<Group>();
-
             groups.AddRange(loadMemberGroups(db.ReadonlyConnection() as SqlConnection, personID, campus, date));
-            groups.AddRange(loadVisitorGroups(db.ReadonlyConnection() as SqlConnection, personID, campus, date));
+            groups.AddRange(loadVisitorGroups(db.ReadonlyConnection() as SqlConnection, personID, campus, date).Where(g => groups.FirstOrDefault(x => x.id == g.id) == null));
 
-			return groups;
+            return groups;
 		}
 
 		public static List<Group> forGroupFinder( SqlConnection db, DateTime? birthday, int campus, int day, int showAll )
@@ -59,7 +63,7 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 											 org.OrganizationName AS name,
 											 org.LeaderName AS leaderName,
 											 schedule.Id AS scheduleID,
-											 schedule.SchedTime AS date,
+											 schedule.NextMeetingDate AS date,
 											 org.BirthDayStart,
 											 org.BirthDayEnd,
 											 org.Location,
@@ -67,37 +71,16 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 									FROM dbo.Organizations AS org
 											  LEFT JOIN dbo.OrgSchedule AS schedule ON schedule.OrganizationId = org.OrganizationId
 									WHERE schedule.SchedDay = @day
-										AND (org.SuspendCheckin IS NULL OR org.SuspendCheckin = 0)
+										AND (org.SuspendCheckin IS NULL OR org.SuspendCheckin = 0 OR @showAll = 1)
 										AND org.CanSelfCheckin = 1
 										AND (org.ClassFilled IS NULL OR org.ClassFilled = 0)
 										AND ((org.CampusId IS NULL AND org.AllowNonCampusCheckIn = 1) OR org.CampusId = @campus OR @campus = 0)
 										AND org.OrganizationStatusId = 30
-										AND (@birthday IS NULL OR CAST(org.BirthDayStart AS DATE) <= @birthday OR org.BirthDayStart IS NULL)
-										AND (@birthday IS NULL OR CAST(org.BirthDayEnd AS DATE) >= @birthday OR org.BirthDayEnd IS NULL)
+										AND (@birthday IS NULL OR CAST(org.BirthDayStart AS DATE) <= @birthday OR org.BirthDayStart IS NULL OR @showAll = 1)
+										AND (@birthday IS NULL OR CAST(org.BirthDayEnd AS DATE) >= @birthday OR org.BirthDayEnd IS NULL OR @showAll = 1)
 									ORDER BY org.OrganizationName, schedule.SchedTime";
 
-			using( SqlCommand cmd = new SqlCommand( qGroups, db ) ) {
-				SqlParameter personParameter = new SqlParameter( "birthday", birthday );
-				SqlParameter campusParameter = new SqlParameter( "campus", campus );
-				SqlParameter dateParameter = new SqlParameter( "day", day );
-				SqlParameter showAllParameter = new SqlParameter( "showAll", showAll );
-
-				cmd.Parameters.Add( personParameter );
-				cmd.Parameters.Add( campusParameter );
-				cmd.Parameters.Add( dateParameter );
-				cmd.Parameters.Add( showAllParameter );
-
-				SqlDataAdapter adapter = new SqlDataAdapter( cmd );
-				adapter.Fill( table );
-			}
-
-			foreach( DataRow row in table.Rows ) {
-				Group group = new Group();
-				group.populate( row );
-
-				groups.Add( group );
-			}
-
+            groups = db.Query<Group>(qGroups, new { birthday, campus, day, showAll }).ToList();
 			return groups;
 		}
 
@@ -121,7 +104,9 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 											schedule.Id AS scheduleID,
 											ISNULL( attend.AttendanceFlag, 0 ) AS checkedIn,
 											attend.SubGroupID AS subGroupID,
-											attend.SubGroupName AS subGroupName
+											attend.SubGroupName AS subGroupName,
+                                            org.EarlyCheckin,
+                                            org.LateCheckin
 										FROM dbo.OrganizationMembers AS member
 											LEFT JOIN dbo.Organizations AS org ON org.OrganizationId = member.OrganizationId
 											LEFT JOIN dbo.OrgSchedule AS schedule ON schedule.OrganizationId = org.OrganizationId
@@ -160,7 +145,6 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 			foreach( DataRow row in table.Rows ) {
 				Group group = new Group();
 				group.populate( row );
-
 				groups.Add( group );
 			}
 
@@ -175,15 +159,18 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 			string qVisits = @"SELECT
 										org.OrganizationId AS id,
 										org.OrganizationName AS name,
-										org.LeaderName AS leader,
+										org.LeaderName AS leaderName,
 										org.Location AS location,
 										CAST( 0 AS BIT ) AS member,
+                                        CAST( 1 AS BIT ) AS guest,
 										room.Id AS roomID,
 										room.Name AS roomName,
 										schedule.NextMeetingDate AS date,
 										attend.AttendanceFlag AS checkedIn,
 										attend.SubGroupID AS subGroupID,
-										attend.SubGroupName AS subGroupName
+										attend.SubGroupName AS subGroupName,
+                                        org.EarlyCheckin,
+                                        org.LateCheckin
 									FROM (SELECT org.OrganizationId
 											FROM Attend AS attend
 												INNER JOIN Organizations AS org ON org.OrganizationId = attend.OrganizationId
