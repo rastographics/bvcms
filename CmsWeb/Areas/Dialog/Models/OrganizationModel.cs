@@ -1,6 +1,8 @@
 using CmsData;
 using CmsWeb.Code;
+using CmsWeb.Constants;
 using CmsWeb.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
@@ -35,6 +37,7 @@ namespace CmsWeb.Areas.Dialog.Models
             OrganizationId = org.OrganizationId;
         }
 
+        [Obsolete(Errors.ModelBindingConstructorError, false)]
         public NewOrganizationModel()
         {
         }
