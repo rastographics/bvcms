@@ -50,7 +50,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     (from t in CurrentDatabase.Transactions
                      where t.Amt == amt
                      where t.TransactionDate > DateTime.Now.AddMinutes(-20)
-                     where CurrentDatabase.Contributions.Any(cc => cc.PeopleId == List[0].PeopleId && cc.TranId == t.Id)
+                     where t.First == List[0].FirstName
+                     where t.Last == List[0].LastName
                      select t).FirstOrDefault();
             }
 
@@ -71,7 +72,7 @@ Thank you.
                 return @"
 Our records indicate that you recently submitted a registration in this amount a short while ago.
 As a safeguard against duplicate transactions we recommend that you either wait 20 minutes,
-or modify the amount of this payment by a small amount so that it does not appear as a duplicate. 
+or use a different payment method so that it does not appear as a duplicate. 
 Thank you.
 ";
             }
