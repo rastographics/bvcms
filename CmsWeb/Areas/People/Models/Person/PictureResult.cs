@@ -21,8 +21,10 @@ namespace CmsWeb.Areas.People.Models
         private readonly string mode;
         private readonly bool shouldBePublic;
         private readonly bool preview;
+        private readonly bool memberdoc;
+        private readonly bool financedoc;
 
-        public PictureResult(int id, int? w = null, int? h = null, bool portrait = false, bool tiny = false, bool nodefault = false, string mode = "max", bool shouldBePublic = false, bool preview = false)
+        public PictureResult(int id, int? w = null, int? h = null, bool portrait = false, bool tiny = false, bool nodefault = false, string mode = "max", bool shouldBePublic = false, bool preview = false, bool memberdoc = false, bool financedoc = false)
         {
             this.id = id;
             this.portrait = portrait;
@@ -33,6 +35,8 @@ namespace CmsWeb.Areas.People.Models
             this.mode = mode;
             this.preview = preview;
             this.shouldBePublic = shouldBePublic;
+            this.memberdoc = memberdoc;
+            this.financedoc = financedoc;
         }
 
         public override void ExecuteResult(ControllerContext context)
@@ -96,7 +100,7 @@ namespace CmsWeb.Areas.People.Models
             }
             catch { }
 
-            if (shouldBePublic && image?.IsPublic == false)
+            if (image.IsNull() || (shouldBePublic && image?.IsPublic == false))
             {
                 WritePng(context, NoPic());
             }
@@ -165,7 +169,11 @@ namespace CmsWeb.Areas.People.Models
             }
             using (var cms = CMSDataContext.Create(HttpContextFactory.Current))
             {
-                if (portrait)
+                if (shouldBePublic && overrideUser)
+                {
+                    return true;
+                }
+                else if (portrait)
                 {
                     var secured = !overrideUser && cms.Setting("SecureProfilePictures", true);
                     if (secured && !user.Identity.IsAuthenticated)
@@ -188,10 +196,13 @@ namespace CmsWeb.Areas.People.Models
                     {
                         return cms.Contents.Any(m => m.ThumbID == id);
                     }
-                    if (cms.MemberDocForms.Any(m => m.LargeId == id || m.MediumId == id || m.SmallId == id)
-                        && user.InAnyRole("Membership", "MemberDocs"))
+                    if (memberdoc)
                     {
-                        return true;
+                        return user.InAnyRole("Membership", "MemberDocs");
+                    }
+                    if (financedoc)
+                    {
+                        return user.InAnyRole("Finance", "FinanceAdmin");
                     }
                     if (cms.VolunteerForms.Any(m => m.LargeId == id || m.MediumId == id || m.SmallId == id)
                         && user.InAnyRole("ViewVolunteerApplication", "ApplicationReview"))

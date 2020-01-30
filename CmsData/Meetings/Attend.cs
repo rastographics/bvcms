@@ -138,7 +138,7 @@ namespace CmsData
 		}
 		public static int AddAttend(CMSDataContext Db, int PeopleId, int OrgId, bool Present, DateTime dt)
 		{
-			var meeting = Meeting.FetchOrCreateMeeting(Db, OrgId, dt, noautoabsents: true);
+			var meeting = Meeting.FetchOrCreateMeeting(Db, OrgId, dt, noautoabsents: !Db.Setting("AttendanceAutoAbsents"));
 			var a = new Attend
 			{
 				AttendanceFlag = Present,
@@ -172,7 +172,7 @@ namespace CmsData
 		}
 		public static Attend AddAttend(CMSDataContext Db, int PeopleId, int OrgId, bool Present, int attendtype, int membertype, DateTime dt)
 		{
-			var meeting = Meeting.FetchOrCreateMeeting(Db, OrgId, dt, noautoabsents: true);
+			var meeting = Meeting.FetchOrCreateMeeting(Db, OrgId, dt, noautoabsents: !Db.Setting("AttendanceAutoAbsents"));
 			var a = new Attend
 			{
 				AttendanceFlag = Present,

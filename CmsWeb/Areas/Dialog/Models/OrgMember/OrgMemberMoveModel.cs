@@ -1,6 +1,8 @@
 using CmsData;
 using CmsData.Codes;
+using CmsWeb.Constants;
 using CmsWeb.Models;
+using System;
 using ImageData;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +16,7 @@ namespace CmsWeb.Areas.Dialog.Models
         private int? peopleId;
         private void Populate()
         {
-            var i = (from mm in DbUtil.Db.OrganizationMembers
+            var i = (from mm in CurrentDatabase.OrganizationMembers
                      where mm.OrganizationId == OrgId && mm.PeopleId == PeopleId
                      select new
                      {
@@ -26,8 +28,20 @@ namespace CmsWeb.Areas.Dialog.Models
             OrgName = i.OrganizationName;
         }
 
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
         public OrgMemberMoveModel()
         {
+            Init();
+        }
+
+        public OrgMemberMoveModel(CMSDataContext db) : base(db)
+        {
+            Init();
+        }
+
+        override protected void Init()
+        {
+            base.Init();
             AjaxPager = true;
             pagesize = 10;
             ShowPageSize = false;
@@ -67,8 +81,8 @@ namespace CmsWeb.Areas.Dialog.Models
 
         public override IQueryable<Organization> DefineModelList()
         {
-            return from o in DbUtil.Db.Organizations
-                   let org = DbUtil.Db.Organizations.Single(oo => oo.OrganizationId == OrgId)
+            return from o in CurrentDatabase.Organizations
+                   let org = CurrentDatabase.Organizations.Single(oo => oo.OrganizationId == OrgId)
                    where o.DivOrgs.Any(dd => org.DivOrgs.Any(oo => oo.DivId == dd.DivId))
                    where o.OrganizationId != OrgId
                    where o.OrganizationStatusId == OrgStatusCode.Active

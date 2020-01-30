@@ -117,8 +117,11 @@ namespace CmsWeb.Areas.Dialog.Models
             var RecReg = CurrentDatabase.RecRegs.FirstOrDefault(r => r.PeopleId == PeopleId);
             if (RecReg != null && OrgSettingsHasPassport())
             {
-                PassportNumber = Util.Decrypt(RecReg.PassportNumber);
-                PassportExpires = DateTime.ParseExact(Util.Decrypt(RecReg.PassportExpires), "MM/dd/yyyy", System.Globalization.CultureInfo.InvariantCulture);
+                PassportNumber = RecReg.PassportNumber.IsNotNull() ? Util.Decrypt(RecReg.PassportNumber) : null;
+                if (RecReg.PassportExpires.IsNotNull())
+                {
+                    PassportExpires = DateTime.ParseExact(Util.Decrypt(RecReg.PassportExpires), "MM/dd/yyyy", System.Globalization.CultureInfo.InvariantCulture);
+                }
             }
         }
 
@@ -390,20 +393,24 @@ Checking the Remove From Enrollment History box will erase all enrollment histor
         {
             if (OrgMember == null)
             {
-                OrgMember = CurrentDatabase.OrganizationMembers.Single(mm => mm.OrganizationId == OrgId && mm.PeopleId == PeopleId);
+                OrgMember = CurrentDatabase.OrganizationMembers.SingleOrDefault(mm => mm.OrganizationId == OrgId && mm.PeopleId == PeopleId);
             }
 
-            if (DropDate.HasValue)
+            if (OrgMember != null)
             {
-                OrgMember.Drop(CurrentDatabase, CurrentImageDatabase, DropDate.Value);
-            }
-            else
-            {
-                OrgMember.Drop(CurrentDatabase, CurrentImageDatabase);
+                if (DropDate.HasValue)
+                {
+                    OrgMember.Drop(CurrentDatabase, CurrentImageDatabase, DropDate.Value);
+                }
+                else
+                {
+                    OrgMember.Drop(CurrentDatabase, CurrentImageDatabase);
+                }
+
+                CurrentDatabase.SubmitChanges();
+                DbUtil.LogActivity("OrgMem Drop", OrgId, PeopleId);
             }
 
-            CurrentDatabase.SubmitChanges();
-            DbUtil.LogActivity("OrgMem Drop", OrgId, PeopleId);
             if (RemoveFromEnrollmentHistory)
             {
                 CurrentDatabase.RemoveFromEnrollmentHistory(OrgId.Value, PeopleId.Value);
@@ -459,7 +466,7 @@ Checking the Remove From Enrollment History box will erase all enrollment histor
             return q;
         }
 
-        public IEnumerable<OrgMemberDocuments> MemberDocuments()
+        public IEnumerable<OrgMemberDocument> MemberDocuments()
         {
             return CurrentDatabase.OrgMemberDocuments.Where(o => o.PeopleId == PeopleId && o.OrganizationId == OrgId);
         }

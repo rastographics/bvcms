@@ -2,6 +2,8 @@
 using CmsData.Codes;
 using CmsWeb.Areas.OnlineReg.Models;
 using CmsWeb.Code;
+using CmsWeb.Constants;
+using CmsWeb.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -10,11 +12,38 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Models
 {
-    public class OrgMembersUpdate
+    public class OrgMembersUpdate : IDbBinder
     {
-        public OrgMembersUpdate()
+        private CMSDataContext _currentDatabase;
+
+        public CMSDataContext CurrentDatabase
+        {
+            get => _currentDatabase ?? DbUtil.Db;
+            set
+            {
+                _currentDatabase = value;
+                Init();
+            }
+        }
+
+        private void Init()
         {
             MemberType = new CodeInfo(0, "MemberType");
+        }
+
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
+        public OrgMembersUpdate() { }
+
+        public OrgMembersUpdate(CMSDataContext db)
+        {
+            CurrentDatabase = db;
+        }
+
+        public OrgMembersUpdate(Guid id, string host, CMSDataContext db)
+            : this(db)
+        {
+            Host = host;
+            QueryId = id;
         }
 
         public Guid QueryId
@@ -22,11 +51,10 @@ namespace CmsWeb.Areas.Dialog.Models
             get { return queryId; }
             set
             {
-                // this one does not use LongRunningOp, but it probably should
-                var db = CMSDataContext.Create(Host);
+                // this one does not use LongRunningOp, but it probably should                
                 queryId = value;
-                var filter = db.OrgFilter(queryId);
-                OrgName = db.Organizations.Where(vv => vv.OrganizationId == filter.Id).Select(vv => vv.OrganizationName).Single();
+                var filter = CurrentDatabase.OrgFilter(queryId);
+                OrgName = CurrentDatabase.Organizations.Where(vv => vv.OrganizationId == filter.Id).Select(vv => vv.OrganizationName).Single();
                 if (filter.GroupSelect == GroupSelectCode.Pending)
                 {
                     Pending = true;
@@ -34,16 +62,9 @@ namespace CmsWeb.Areas.Dialog.Models
 
                 showHidden = filter.ShowHidden;
                 OrgId = filter.Id;
-                Count = db.OrgFilterIds(queryId).Count();
+                Count = CurrentDatabase.OrgFilterIds(queryId).Count();
                 GroupSelect = filter.GroupSelect;
             }
-        }
-
-        public OrgMembersUpdate(Guid id, string host)
-            : this()
-        {
-            Host = host;
-            QueryId = id;
         }
 
         public int? Count;
@@ -88,7 +109,7 @@ namespace CmsWeb.Areas.Dialog.Models
         private List<int> Pids(CMSDataContext db) => pids ?? (pids = (from p in db.OrgFilterIds(QueryId)
                                                    select p.PeopleId.Value).ToList());
 
-        public string Host { get; set; }
+        public string Host { get; set; }        
 
         public void Update()
         {
@@ -194,7 +215,7 @@ AND NOT EXISTS(SELECT NULL FROM dbo.OrgMemMemTags WHERE OrgId = {0} AND MemberTa
                 var ts = db.ViewTransactionSummaries.SingleOrDefault(
                         tt => tt.RegId == om.TranId && tt.PeopleId == om.PeopleId);
                 var reason = ts == null ? "Initial Tran" : "Adjustment";
-                var descriptionForPayment = OnlineRegModel.GetDescriptionForPayment(OrgId);
+                var descriptionForPayment = OnlineRegModel.GetDescriptionForPayment(OrgId, db);
                 om.AddTransaction(db, reason, Payment ?? 0, Description, Amount, AdjustFee, descriptionForPayment);
                 db.SubmitChanges();
                 DbUtil.LogActivity("OrgMem " + reason, OrgId, pid);

@@ -1,6 +1,9 @@
 using CmsData;
 using CmsData.Codes;
+using CmsWeb.Areas.Manage.Controllers;
+using CmsWeb.Areas.Manage.Models;
 using CmsWeb.Areas.OnlineReg.Models;
+using CmsWeb.Membership;
 using CmsWeb.Models;
 using Elmah;
 using ImageData;
@@ -62,9 +65,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             if (m.ManageGiving())
             {
-                Session["Campus"] = Request.QueryString["campus"];
+                Session[$"Campus-{m.Orgid}"] =
+                    m.Campus = Request.QueryString["campus"];
                 Session["DefaultFunds"] = Request.QueryString["funds"];
-                m.Campus = Session["Campus"]?.ToString();
                 m.DefaultFunds = Session["DefaultFunds"]?.ToString();
             }
 
@@ -111,10 +114,28 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             fromMethod = "Login";
             var ret = AccountModel.AuthenticateLogon(m.username, m.password, Session, Request, CurrentDatabase, CurrentImageDatabase);
 
-            if (ret is string)
+            if (ret.ErrorMessage.HasValue())
             {
-                ModelState.AddModelError("authentication", ret.ToString());
+                ModelState.AddModelError("authentication", ret.ErrorMessage);
                 return FlowList(m);
+            }
+            else  if (MembershipService.ShouldPromptForTwoFactorAuthentication(ret.User, CurrentDatabase, Request))
+            {
+                Session[AccountController.MFAUserId] = ret.User.UserId;
+                ViewData["hasshell"] = true;
+                return View("Auth", new AccountInfo {
+                    UsernameOrEmail = ret.User.Username,
+                    ReturnUrl = RouteExistingRegistration(m) ?? $"/OnlineReg/{m.Orgid.GetValueOrDefault((int)m.masterorgid)}"
+                });
+            }
+            else
+            {
+                AccountModel.FinishLogin(ret.User.Username, Session, CurrentDatabase, CurrentImageDatabase);
+                if (ret.User.UserId.Equals(Session[AccountController.MFAUserId]))
+                {
+                    MembershipService.SaveTwoFactorAuthenticationToken(CurrentDatabase, Response);
+                    Session.Remove(AccountController.MFAUserId);
+                }
             }
             Session["OnlineRegLogin"] = true;
 
@@ -344,7 +365,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 CurrentDatabase.SubmitChanges();
             }
             int imageId = ImageData.DocumentsData.StoreImageFromDocument(CurrentImageDatabase, file);
-            CurrentDatabase.OrgMemberDocuments.InsertOnSubmit(new OrgMemberDocuments()
+            CurrentDatabase.OrgMemberDocuments.InsertOnSubmit(new OrgMemberDocument()
             {
                 DocumentName = docName,
                 ImageId = imageId,
@@ -371,7 +392,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return FlowList(m);
             }
 
-            m.List.Add(new OnlineRegPersonModel
+            m.List.Add(new OnlineRegPersonModel(CurrentDatabase)
             {
                 orgid = m.Orgid,
                 masterorgid = m.masterorgid,
@@ -440,6 +461,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return Message("Registration cannot be completed after a page refresh.");
             }
             var m = Util.DeSerialize<OnlineRegModel>(s);
+            m.CurrentDatabase = CurrentDatabase;
             var msg = m.CheckExpiredOrCompleted();
             if (msg.HasValue())
             {

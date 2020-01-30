@@ -42,7 +42,8 @@ namespace CmsData.Classes.ProtectMyMinistry
                 Created = DateTime.Now,
                 Updated = DateTime.Now,
                 ReportTypeID = reportTypeId,
-                ReportLabelID = reportLabelId
+                ReportLabelID = reportLabelId,
+                BillingRefId = ""
             };
             db.BackgroundChecks.InsertOnSubmit(bcNew);
             db.SubmitChanges();
@@ -83,6 +84,9 @@ namespace CmsData.Classes.ProtectMyMinistry
                 sPlusCounty = plusCounty,
                 sPlusState = plusState
             };
+
+            // Update PK
+            backgroundCheck.BillingRefId = bundle.sBillingReference;
 
             // Get State (if MVR)
             if (backgroundCheck.ServiceCode == "MVR" && stateId > 0)

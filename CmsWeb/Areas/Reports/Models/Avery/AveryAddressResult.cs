@@ -15,11 +15,24 @@ using System.Web.Mvc;
 using CmsWeb.Models;
 using UtilityExtensions;
 using Paragraph = iTextSharp.text.Paragraph;
+using CmsWeb.Lifecycle;
 
 namespace CmsWeb.Areas.Reports.Models
 {
     public class AveryAddressResult : ActionResult
     {
+        private IRequestManager _requestManager;
+        public IRequestManager RequestManager
+        {
+            get => _requestManager;
+            set => _requestManager = value;
+        }
+
+        public AveryAddressResult(IRequestManager requestManager)
+        {
+            RequestManager = requestManager;
+        }
+
         public Guid id;
         public string format;
         public bool? titles;
@@ -42,7 +55,7 @@ namespace CmsWeb.Areas.Reports.Models
 
         public override void ExecuteResult(ControllerContext context)
         {
-            var ctl = new MailingController { UseTitles = titles ?? false, UseMailFlags = useMailFlags ?? false };
+            var ctl = new MailingController(RequestManager) { UseTitles = titles ?? false, UseMailFlags = useMailFlags ?? false };
             var Response = context.HttpContext.Response;
 
             IEnumerable<MailingController.MailingInfo> q = null;
@@ -77,7 +90,7 @@ namespace CmsWeb.Areas.Reports.Models
                 return;
             }
             Response.ContentType = "application/pdf";
-            Response.AddHeader("content-disposition", "filename=foo.pdf");
+            Response.AddHeader("content-disposition", "filename=AveryAddress.pdf");
 
             var document = new Document(PageSize.LETTER);
             document.SetMargins(50f, 36f, 32f, 36f);

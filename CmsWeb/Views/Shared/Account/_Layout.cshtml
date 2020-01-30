@@ -1,0 +1,48 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="shortcut icon" href="@Url.Content("~/favicon.ico?v=3")">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0">
+    <title>@ViewBag.Title</title>
+    @ViewExtensions2.GoogleFonts()
+    @ViewExtensions2.FontAwesome()
+    @Fingerprint.Css("/Content/touchpoint/css/account.css")
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    @RenderSection("head", false)
+</head>
+<body style="@ViewBag.BodyStyle">
+    @Html.Action("Index", "MobileAppMenu", new { area = "" })
+    <div class="account">
+        <div class="account-header">
+            <a href="/" class="logo">
+                <div class="demo-logo"><img src="@Url.Content("~/Content/touchpoint/img/logo.png")" alt="" class="logo-img"></div>
+            </a>
+            @if (ViewBag.showLogoutButton == true)
+            {
+                <div class="text-right inline">
+                    <a href="/Account/LogOff" class="btn btn-default">
+                        Log out
+                    </a>
+                </div>
+            }
+        </div>
+        @Html.Partial("Notices")
+        @RenderBody()
+        <div id="footer" class="container-fluid hidden-print">
+            <div class="text-center">
+                &copy; @DateTime.Today.Year @(Resource1.CompanyName)
+            </div>
+        </div>
+    </div>
+    @ViewExtensions2.jQuery()
+    @ViewExtensions2.Bootstrap3()
+    @Html.Partial("_diagnostics")
+    @RenderSection("scripts", false)
+</body>
+</html>

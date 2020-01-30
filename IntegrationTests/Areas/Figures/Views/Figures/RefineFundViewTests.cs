@@ -1,19 +1,19 @@
-﻿using IntegrationTests.Support;
+﻿using CmsData;
+using IntegrationTests.Support;
 using SharedTestFixtures;
 using Shouldly;
 using System;
 using System.Collections.Generic;
-using Xunit;
-using CmsData;
-using UtilityExtensions;
 using System.Linq;
+using UtilityExtensions;
+using Xunit;
 
 namespace IntegrationTests.Areas.Figures.Views.Figures
 {
     [Collection(Collections.Webapp)]
     public class RefineFundViewTests : AccountTestBase
     {
-        [Fact]
+        [Fact, FeatureTest]
         public void Should_Change_Years_In_Graph()
         {
             username = RandomString();
@@ -42,6 +42,7 @@ namespace IntegrationTests.Areas.Figures.Views.Figures
             }
 
             Open($"{rootUrl}Figures/Figures/Index");
+            MaximizeWindow();
             WaitForElement("div:nth-child(1) > .btn", 5);
 
             Find(css: "div:nth-child(1) > .btn").Click();
@@ -50,12 +51,9 @@ namespace IntegrationTests.Areas.Figures.Views.Figures
             var YearDropdown = Find(id: "year");
             YearDropdown.SendKeys(YearToTest);
 
-            Find(id: "DrawChart").Click();
-
-            driver.SwitchTo().Alert().Dismiss();
-
-            WaitForElement("#Fund_chart_display svg > g:nth-child(4)", 5);
-            driver.PageSource.ShouldContain(YearToTest);
+            RepeatUntil(() => Find(id: "DrawChart").Click(),
+                condition: () => Find(css: "#Fund_chart_display svg > g:nth-child(5)") != null);
+            PageSource.ShouldContain(YearToTest);
         }
     }
 }

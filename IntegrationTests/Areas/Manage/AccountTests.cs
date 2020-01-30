@@ -56,10 +56,12 @@ namespace IntegrationTests.Areas.Manage
 
             Login();
             var newPassword = RandomString() + "1!";
-            Find(css: profileMenu).Click();
+            RepeatUntil(() => Find(css: profileMenu).Click(),
+                condition: () => (Find(text: "Change Password") != null));
             Find(text: "Change Password").Click();
 
             CurrentUrl.ShouldBe($"{rootUrl}Account/ChangePassword/");
+            Wait(1);
 
             Find(id: "currentPassword").SendKeys(password);
             Find(id: "newPassword").SendKeys(newPassword);
@@ -68,7 +70,8 @@ namespace IntegrationTests.Areas.Manage
 
             PageSource.ShouldContain("Password Changed");
 
-            Find(text: "Return to Home").Click();
+            RepeatUntil(() => Find(text: "Return to Home").Click(),
+                condition: () => Find(css: profileMenu) != null);
 
             Logout();
             Login(withPassword: newPassword);
@@ -95,7 +98,7 @@ namespace IntegrationTests.Areas.Manage
             Find(css: $"a[id=\"{role.RoleId}\"].delete").Click();
             Wait(0.5);
             Find(css: "div.showSweetAlert.visible button.confirm").Click();
-            Wait(1);
+            WaitFor(d => PageSource.Contains("<h2>Deleted!</h2>"));
 
             role = db.Copy().Roles.SingleOrDefault(r => r.RoleName == roleName);
             role.ShouldBeNull();
@@ -119,6 +122,7 @@ namespace IntegrationTests.Areas.Manage
             Find(name: "UsernameOrEmail").SendKeys(username);
             Find(css: "input[type=submit]").Click();
 
+            WaitForPageLoad();
             PageSource.ShouldContain("Password Sent");
 
             db.Refresh(System.Data.Linq.RefreshMode.OverwriteCurrentValues, user);

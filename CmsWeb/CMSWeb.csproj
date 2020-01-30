@@ -73,34 +73,6 @@
     <BaseIntermediateOutputPath>..\build\obj</BaseIntermediateOutputPath>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'test2|AnyCPU'">
-    <OutputPath>bin\</OutputPath>
-    <BaseIntermediateOutputPath>..\build\obj</BaseIntermediateOutputPath>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'test3|AnyCPU'">
-    <OutputPath>bin\</OutputPath>
-    <BaseIntermediateOutputPath>..\build\obj</BaseIntermediateOutputPath>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Impersonate|AnyCPU'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;Impersonate</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'work|AnyCPU'">
-    <OutputPath>bin\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'staging|AnyCPU'">
     <OutputPath>bin\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
@@ -137,6 +109,9 @@
     </Reference>
     <Reference Include="Flurl.Http, Version=0.7.0.0, Culture=neutral, PublicKeyToken=1308302a96879dfb, processorArchitecture=MSIL">
       <HintPath>..\packages\Flurl.Http.Signed.0.7.0\lib\net45\Flurl.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Authenticator, Version=1.2.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\GoogleAuthenticator.1.2.1\lib\net45\Google.Authenticator.dll</HintPath>
     </Reference>
     <Reference Include="Handlebars, Version=1.10.1.0, Culture=neutral, PublicKeyToken=22225d0bf33cd661, processorArchitecture=MSIL">
       <HintPath>..\packages\Handlebars.Net.1.10.1\lib\net452\Handlebars.dll</HintPath>
@@ -390,8 +365,15 @@
     <Reference Include="Xceed.Words.NET, Version=1.2.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
       <HintPath>..\packages\DocX.1.2.1\lib\Xceed.Words.NET.dll</HintPath>
     </Reference>
+    <Reference Include="zxing, Version=0.16.4.0, Culture=neutral, PublicKeyToken=4e88037ac681fe60, processorArchitecture=MSIL">
+      <HintPath>..\packages\ZXing.Net.0.16.4\lib\net461\zxing.dll</HintPath>
+    </Reference>
+    <Reference Include="zxing.presentation, Version=0.16.4.0, Culture=neutral, PublicKeyToken=4e88037ac681fe60, processorArchitecture=MSIL">
+      <HintPath>..\packages\ZXing.Net.0.16.4\lib\net461\zxing.presentation.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Areas\CheckIn\Models\CheckinTimeModel.cs" />
     <Compile Include="App_Start\ApiMessageLoggingHandler.cs" />
     <Compile Include="App_Start\ApiAuthorizeAttribute.cs" />
     <Compile Include="App_Start\DependencyConfig.cs" />
@@ -562,12 +544,14 @@
     <Compile Include="Areas\Manage\Controllers\UploadAddressesController.cs" />
     <Compile Include="Areas\Manage\Controllers\ResourceController.cs" />
     <Compile Include="Areas\Manage\Controllers\UploadExcelIpsController.cs" />
+    <Compile Include="Areas\Manage\Models\AccountInfo.cs" />
     <Compile Include="Areas\Manage\Models\Activity\ActivityInfo.cs" />
     <Compile Include="Areas\Manage\Models\BatchModel\BatchRegMessages.cs" />
     <Compile Include="Areas\Manage\Models\BatchModel\BatchRegOptions.cs" />
     <Compile Include="Areas\Manage\Models\BatchModel\BatchRegSettings.cs" />
     <Compile Include="Areas\Manage\Models\BatchModel\FindTagPeople.cs" />
     <Compile Include="Areas\Manage\Models\BatchModel\UpdateOrgs.cs" />
+    <Compile Include="Areas\Manage\Models\LogonResultModel.cs" />
     <Compile Include="Areas\Manage\Models\Involvement\CustomizeInvolvementModel.cs" />
     <Compile Include="Areas\Manage\Models\Involvement\InvolvementColumn.cs" />
     <Compile Include="Areas\Manage\Models\Involvement\InvolvementTabModel.cs" />
@@ -646,6 +630,8 @@
     <Compile Include="Areas\People\Models\Contact\ContactExtraLocationConfig.cs" />
     <Compile Include="Areas\People\Models\Downline\DownlineLevelsModel.cs" />
     <Compile Include="Areas\People\Models\Downline\DownlineSummaryModel.cs" />
+    <Compile Include="Areas\People\Models\Person\Giving\GivingSummary.cs" />
+    <Compile Include="Areas\People\Models\PersonDocumentsModel.cs" />
     <Compile Include="Areas\People\Models\Person\Giving\PledgesSummary.cs" />
     <Compile Include="Areas\People\Models\Task\TaskModel.cs" />
     <Compile Include="Areas\Public\Controllers\CheckInAPIv2Controller.cs" />
@@ -691,8 +677,10 @@
     <Compile Include="Areas\Public\Models\MobileAPIv2\MobileAuthentication.cs" />
     <Compile Include="Areas\Public\Models\MobileAPIv2\MobileQuickSignInUser.cs" />
     <Compile Include="Areas\Public\Models\MobileAPIv2\MobileUserPrivileges.cs" />
+    <Compile Include="Areas\Public\Models\MobileAPI\MobileAnnualGivingSummary.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileGivingEntry.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileGivingHistory.cs" />
+    <Compile Include="Areas\Public\Models\MobileAPI\MobileGivingSummary.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileInvolvement.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobilePersonExtended.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\PostObjects\MobilePostEditField.cs" />
@@ -839,7 +827,6 @@
     <Compile Include="Areas\Reports\Models\Export\ExtraExcelResult.cs" />
     <Compile Include="Areas\Org\Models\OrgChildrenModel.cs" />
     <Compile Include="Areas\Manage\Controllers\UsersController.cs" />
-    <Compile Include="Areas\CheckIn\Models\CheckinTimeModel.cs" />
     <Compile Include="Areas\Manage\Models\ContentModel.cs" />
     <Compile Include="Areas\Manage\Models\SMSModel.cs" />
     <Compile Include="Areas\Manage\Models\UsersModel.cs" />
@@ -868,6 +855,9 @@
     <Compile Include="Areas\Setup\Models\Pushpay\RecurringManagment.cs" />
     <Compile Include="Areas\Setup\Controllers\GatewayController.cs" />
     <Compile Include="Areas\Setup\Models\GatewayAccountJsonModel.cs" />
+    <Compile Include="Areas\Setup\Models\SettingListModel.cs" />
+    <Compile Include="Areas\Setup\Models\SettingModel.cs" />
+    <Compile Include="Areas\Setup\Models\SettingTypeModel.cs" />
     <Compile Include="Code\BirthdateValidAttribute.cs" />
     <Compile Include="Code\CMSWebViewPage.cs" />
     <Compile Include="Areas\Setup\Controllers\PushpayController.cs" />
@@ -897,6 +887,7 @@
     <Compile Include="Controllers\Api\AuthenticateController.cs" />
     <Compile Include="Controllers\Api\ChAiPeopleController.cs" />
     <Compile Include="Controllers\Api\ChAiGiftsController.cs" />
+    <Compile Include="Controllers\Api\MeetingsController.cs" />
     <Compile Include="Controllers\Api\PostController.cs" />
     <Compile Include="Controllers\Api\CustomController.cs" />
     <Compile Include="Controllers\Api\Lookup\BundleHeaderTypesController.cs" />
@@ -918,12 +909,14 @@
     <Compile Include="Controllers\ScriptController.cs" />
     <Compile Include="Controllers\MobileAppMenuController.cs" />
     <Compile Include="Controllers\WebHookController.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Lifecycle\RequestManager.cs" />
     <Compile Include="Membership\CMSMembershipProvider.cs" />
     <Compile Include="Membership\CMSRoleProvider.cs" />
     <Compile Include="Membership\Extensions\MembershipExtensions.cs" />
     <Compile Include="Membership\MembershipService.cs" />
     <Compile Include="Models\Api\ApiChAiGift.cs" />
+    <Compile Include="Models\Api\ApiMeeting.cs" />
     <Compile Include="Models\Api\ApiOrganization.cs" />
     <Compile Include="Models\Api\ApiLookup.cs" />
     <Compile Include="Models\Api\ApiContribution.cs" />
@@ -932,7 +925,7 @@
     <Compile Include="Models\Api\ApiPerson.cs" />
     <Compile Include="Models\Api\ApiOrganizationMember.cs" />
     <Compile Include="Models\Api\AddContributionModel.cs" />
-    <Compile Include="Models\DbBinder.cs" />
+    <Compile Include="Models\IDbBinder.cs" />
     <Compile Include="Models\DynamicParametersExtensions.cs" />
     <Compile Include="Models\ErrorMessage.cs" />
     <Compile Include="Models\ExtraValue\EntryModel.cs" />
@@ -1138,6 +1131,7 @@
     <Compile Include="Services\ITokenizationService.cs" />
     <Compile Include="Services\LoggingService.cs" />
     <Compile Include="Services\TokenizationService.cs" />
+    <None Include="Areas\CheckIn\Views\CheckIn\LogOut.cshtml" />
     <Content Include="Areas\Dialog\Views\AddToOrgFromTag\Index.cshtml" />
     <Content Include="Areas\Figures\Views\Figures\AttendanceChartDisplayView.cshtml" />
     <Content Include="Areas\Figures\Views\Figures\ChartDisplayView.cshtml" />
@@ -1265,6 +1259,7 @@
     <Content Include="Content\touchpoint\js\edit-custom-report.js" />
     <Content Include="Content\touchpoint\js\export-toolbar.js" />
     <Content Include="Content\touchpoint\js\extra-value.js" />
+    <Content Include="Content\touchpoint\js\figures\figures.js" />
     <Content Include="Content\touchpoint\js\finance\post-bundle.js" />
     <Content Include="Content\touchpoint\js\finance\totals-by-fund.js" />
     <Content Include="Content\touchpoint\js\finance\transactions.js" />
@@ -1712,6 +1707,7 @@
     <Content Include="Content\touchpoint\lib\select2\css\select2x2.png" />
     <Content Include="Content\touchpoint\lib\select2\js\select2.min.js" />
     <Content Include="Content\touchpoint\lib\twitter-typeahead\js\typeahead.js" />
+    <Content Include="Content\InstallPyScriptProject.py" />
     <Content Include="Content\xml.xsl" />
     <Content Include="Content\images\brokencode.jpg" />
     <Content Include="Content\images\sgfunknown.jpg" />
@@ -1744,7 +1740,7 @@
     <Content Include="gulpfile.js" />
     <Content Include="Content\touchpoint\js\onlinereg\bootstrap-datepicker.js" />
     <Content Include="chart.py" />
-    <Content Include="Areas\Manage\Views\Account\_Layout.cshtml" />
+    <Content Include="Views\Shared\Account\_Layout.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\EditCustomReport.cshtml" />
     <Content Include="Areas\Manage\Views\Account\SetPasswordConfirm.cshtml" />
     <Content Include="Lib\constants.py" />
@@ -1861,6 +1857,12 @@
     <Content Include="Content\touchpoint\src\less\snackbar.less" />
     <Content Include="Areas\People\Views\Shared\PledgesSummary.cshtml" />
     <Content Include="libman.json" />
+    <Content Include="Areas\Setup\Views\Setting\_Settings.cshtml" />
+    <Content Include="Areas\Manage\Views\Account\AuthSetup.cshtml" />
+    <Content Include="Areas\Manage\Views\Account\AuthSetupComplete.cshtml" />
+    <Content Include="Views\Shared\Account\TwoFactorPasscode.cshtml" />
+    <Content Include="Views\Shared\Auth.cshtml" />
+    <Content Include="Areas\Manage\Views\Account\AuthDisable.cshtml" />
     <Content Include="Areas\Org\Views\Org\EditorTemplates\AskDocuments.cshtml" />
     <Content Include="Areas\Org\Views\Org\EditorTemplates\OrganizationDocument.cshtml" />
     <Content Include="Areas\Org\Views\Org\DisplayTemplates\AskDocuments.cshtml" />
@@ -1872,11 +1874,15 @@
     <Content Include="Areas\CheckIn\Views\CheckIn\CheckIn.cshtml" />
     <Content Include="Areas\CheckIn\Views\Web.config" />
     <Content Include="Areas\CheckIn\Views\CheckinSetup\Index.cshtml" />
+    <Content Include="Areas\People\Views\Shared\CombineGiving.cshtml" />
+    <Content Include="Areas\People\Views\Task\_ActionsMenu.cshtml" />
+    <Content Include="Areas\Manage\Views\Account\AuthDisabled.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
     <Content Include="Content\touchpoint\src\less\modals.less" />
     <Content Include="Areas\People\Views\Person\Resources\Index.cshtml" />
+    <None Include="Properties\PublishProfiles\release.pubxml" />
     <None Include="Properties\PublishProfiles\staging.pubxml" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Scripts\ReadMe.txt" />
@@ -2319,7 +2325,6 @@
     <Content Include="Areas\Org\Views\Org\DisplayTemplates\NotifyList.cshtml" />
     <Content Include="Areas\Org\Views\Org\Registration\NotifyList.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskSize.cshtml" />
-    <Content Include="Areas\Manage\Views\Account\SetPasswordConfirm.cshtml" />
     <Content Include="Areas\Org\Views\Meeting\AttendanceByGroups.cshtml" />
     <Content Include="Areas\Dialog\Views\OrgMembersUpdate\AddFeeAdjustment.cshtml" />
     <Content Include="Areas\Dialog\Views\OrgMembersUpdate\AddTransaction.cshtml" />
@@ -2794,12 +2799,14 @@
     <Content Include="Views\Shared\PageError.cshtml" />
     <Content Include="Views\Shared\Toolbar\Custom.cshtml" />
     <Content Include="Views\Shared\PageMessage.cshtml" />
-    <Content Include="Areas\Manage\Views\Account\_ShellLayout.cshtml" />
+    <Content Include="Views\Shared\Account\_ShellLayout.cshtml" />
     <Content Include="Views\ExtraValue\Location.cshtml" />
     <Content Include="Views\Script\RunScriptPageBreaks.cshtml" />
     <Content Include="Views\Shared\_LayoutCheckIn.cshtml" />
     <Content Include="Views\Shared\_LayoutNoHeaderFooter.cshtml" />
     <Content Include="Views\Shared\AdminAlerts.cshtml" />
+    <Content Include="Views\Shared\_diagnostics.cshtml" />
+    <Content Include="Views\Shared\Redirect.cshtml" />
     <None Include="Web.staging.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

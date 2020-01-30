@@ -15,7 +15,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
         [HttpPost, Route("~/SearchDivisions/{id:int}")]
         public ActionResult Index(int id)
         {
-            var m = new SearchDivisionsModel(id);
+            var m = new SearchDivisionsModel(CurrentDatabase, id);
             return View(m);
         }
         [HttpPost]

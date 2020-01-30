@@ -1,6 +1,8 @@
 using CmsData;
 using CmsData.View;
+using CmsWeb.Constants;
 using CmsWeb.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UtilityExtensions;
@@ -16,12 +18,25 @@ namespace CmsWeb.Areas.People.Models
         public int? DownlineLevels { get; set; }
         public string Trace { get; set; }
 
-        public DownlineLevelsModel()
-            : base("", "", true)
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
+        public DownlineLevelsModel() : base()
         {
-            UseDbPager = true;
+            Init();
         }
 
+        public DownlineLevelsModel(CMSDataContext db) : base(db)
+        {
+            Init();
+        }
+
+        protected override void Init()
+        {
+            base.Init();
+            Sort = "";
+            Direction = "";
+            AjaxPager = true;
+            UseDbPager = true;
+        }
 
         private string name;
         public string Name

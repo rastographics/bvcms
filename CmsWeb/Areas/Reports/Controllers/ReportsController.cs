@@ -132,7 +132,7 @@ namespace CmsWeb.Areas.Reports.Controllers
                 return Content("no format");
             }
 
-            return new AveryAddressResult
+            return new AveryAddressResult(RequestManager)
             {
                 id = id.Value,
                 format = format,
@@ -157,14 +157,14 @@ namespace CmsWeb.Areas.Reports.Controllers
                 return Content("no format");
             }
 
-            return new DocXAveryLabels(id.Value)
+            return new DocXAveryLabels(id.Value, RequestManager)
             {
                 Format = format,
                 Titles = titles,
                 Skip = skipNum,
                 SortZip = sortzip,
                 UseMailFlags = useMailFlags,
-                UsePhone = usephone,
+                UsePhone = usephone ?? false,
             };
         }
 
@@ -362,9 +362,16 @@ namespace CmsWeb.Areas.Reports.Controllers
         {
             var d1 = dt1.ToDate();
             var d2 = dt2.ToDate();
-            var m = new MeetingsModel { Dt1 = d1, Dt2 = d2, ProgramId = programid, DivisionId = divisionid };
+            var m = new MeetingsModel(CurrentDatabase)
+            {
+                Dt1 = d1,
+                Dt2 = d2,
+                ProgramId = programid,
+                DivisionId = divisionid
+            };
             return View(m);
         }
+
         [HttpPost]
         public ActionResult Meetings(MeetingsModel m)
         {
@@ -591,7 +598,7 @@ namespace CmsWeb.Areas.Reports.Controllers
                 return Content("no query");
             }
 
-            return new RollLabelsResult
+            return new RollLabelsResult(RequestManager)
             {
                 qid = id.Value,
                 format = format,

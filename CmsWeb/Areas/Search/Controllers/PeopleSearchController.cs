@@ -15,7 +15,7 @@ namespace CmsWeb.Areas.Main.Controllers
         [HttpGet, Route("~/PeopleSearch/{name?}")]
         public ActionResult Index(string name)
         {
-            var m = new PeopleSearchModel();
+            var m = new PeopleSearchModel(CurrentDatabase);
             if (name.HasValue())
             {
                 m.m.name = name;

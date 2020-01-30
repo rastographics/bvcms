@@ -17,7 +17,7 @@ namespace CmsWeb.Areas.Finance.Controllers
 
         public ActionResult Index()
         {
-            var m = new BundlesModel();
+            var m = new BundlesModel(CurrentDatabase);
             return View(m);
         }
         [HttpPost]

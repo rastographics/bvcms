@@ -1,10 +1,3 @@
-/* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church
- * Licensed under the GNU General Public License (GPL v2)
- * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license
- */
-
 using CmsData;
 using CmsData.Codes;
 using CmsData.Registration;
@@ -51,8 +44,10 @@ namespace CmsWeb.Areas.Reports.Models
         public override void ExecuteResult(ControllerContext context)
         {
             var Response = context.HttpContext.Response;
+            var header = $"Registration Report: {dt:d}";
+            var filename = header.SlugifyString("-", false);
             Response.ContentType = "application/pdf";
-            Response.AddHeader("content-disposition", "filename=foo.pdf");
+            Response.AddHeader("content-disposition", $"filename={filename}.pdf");
 
             dt = Util.Now;
 
@@ -64,7 +59,7 @@ namespace CmsWeb.Areas.Reports.Models
 
             if (qid != null) // print using a query
             {
-                pageEvents.StartPageSet($"Registration Report: {dt:d}");
+                pageEvents.StartPageSet(header);
                 var q2 = DbUtil.Db.PeopleQuery(qid.Value);
                 if (!oid.HasValue)
                 {
@@ -286,11 +281,13 @@ namespace CmsWeb.Areas.Reports.Models
 
         private static string GetTermsSignature(int peopleId, int organizationId)
         {
-            var regDataId = DbUtil.Db.OrganizationMembers.FirstOrDefault(o => o.PeopleId == peopleId && o.OrganizationId == organizationId).RegistrationDataId;
+            var db = DbUtil.Db;
+            var regDataId = db.OrganizationMembers.FirstOrDefault(o => o.PeopleId == peopleId && o.OrganizationId == organizationId).RegistrationDataId;
             if (regDataId != null)
             {
-                var regData = DbUtil.Db.RegistrationDatas.FirstOrDefault(o => o.Id == regDataId).Data;
+                var regData = db.RegistrationDatas.FirstOrDefault(o => o.Id == regDataId).Data;
                 var m = Util.DeSerialize<OnlineRegModel>(regData);
+                m.CurrentDatabase = db;
                 return m.TermsSignature;
             }
             return null;

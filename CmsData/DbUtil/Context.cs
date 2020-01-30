@@ -1,10 +1,4 @@
-﻿/* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church
- * Licensed under the GNU General Public License (GPL v2)
- * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license
- */
-using CmsData.Codes;
+﻿using CmsData.Codes;
 using CmsData.Finance;
 using System;
 using System.Collections.Generic;
@@ -21,6 +15,7 @@ using System.Text.RegularExpressions;
 using System.Web;
 using Dapper;
 using UtilityExtensions;
+using System.Text;
 
 namespace CmsData
 {
@@ -791,23 +786,47 @@ This search uses multiple steps which cannot be duplicated in a single query.
 
         private void GetCurrentUser()
         {
-            var q = from u in Users
-                    where u.UserId == Util.UserId
-                    select new
-                    {
-                        u,
-                        roleids = u.UserRoles.Select(uu => uu.RoleId).ToArray(),
-                        roles = u.UserRoles.Select(uu => uu.Role.RoleName).ToArray(),
-                    };
-            var i = q.SingleOrDefault();
-            if (i == null)
+            var username = GetUserNameFromHttpContext();
+            if (username.HasValue())
             {
-                return;
-            }
+                var q = from u in Users
+                        where u.UserId == Util.UserId || u.Username == username
+                        select new
+                        {
+                            u,
+                            roleids = u.UserRoles.Select(uu => uu.RoleId).ToArray(),
+                            roles = u.UserRoles.Select(uu => uu.Role.RoleName).ToArray(),
+                        };
+                var i = q.FirstOrDefault();
+                if (i == null)
+                {
+                    return;
+                }
 
-            _roles = i.roles;
-            _roleids = i.roleids;
-            CurrentUser = i.u;
+                _roles = i.roles;
+                _roleids = i.roleids;
+                CurrentUser = i.u;
+            }
+        }
+
+        private string GetUserNameFromHttpContext()
+        {
+            string username = HttpContextFactory.Current?.User?.Identity?.Name;
+            if (!username.HasValue())
+            {
+                var auth = HttpContextFactory.Current?.Request?.Headers?.Get("Authorization");
+                if (auth.HasValue() && auth.StartsWith("Basic"))
+                {
+                    auth = auth.Substring(6);
+                    var authHeader = Encoding.ASCII.GetString(Convert.FromBase64String(auth));
+                    var tokens = authHeader.Split(new[] { ':' }, 2);
+                    if (tokens.Length > 1)
+                    {
+                        username = tokens[0];
+                    }
+                }
+            }
+            return username;
         }
 
         private string[] _roles;
@@ -1702,6 +1721,23 @@ This search uses multiple steps which cannot be duplicated in a single query.
             c.Body = text;
             SubmitChanges();
         }
+        public void WriteContentHtml(string name, string text, string keyword = null)
+        {
+            var c = Content(name, ContentTypeCode.TypeHtml);
+            if (c == null)
+            {
+                c = new Content()
+                {
+                    Name = name,
+                    TypeID = ContentTypeCode.TypeHtml
+                };
+                Contents.InsertOnSubmit(c);
+            }
+            if(keyword.HasValue())
+                c.SetKeyWords(this, new [] {keyword});
+            c.Body = text;
+            SubmitChanges();
+        }
         public void SetNoLock()
         {
             //ExecuteCommand("SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED");
@@ -2021,6 +2057,12 @@ This search uses multiple steps which cannot be duplicated in a single query.
             return (int)(result?.ReturnValue ?? 0);
         }
 
+        public int AddExtraValueDataIfNotExist(int? personId, string key, string value, DateTime? datevalue, string text, int? intvalue, bool? bitvalue)
+        {
+            var evExist = PeopleExtras.Where(x => x.PeopleId == personId && x.Field == key);
+            return (evExist.Count() < 1) ? AddExtraValueData(personId, key, value, datevalue, text, intvalue, bitvalue) : 0;
+        }
+
         /// <summary>
         /// The read-only connection will use an ro-CMS_{host} user if the appsettings contain a setting for readonlypassword
         /// Otherwise, the default connection string is used
@@ -2070,6 +2112,13 @@ This search uses multiple steps which cannot be duplicated in a single query.
             return paymentProcess == PaymentProcessTypes.OneTimeGiving || paymentProcess == PaymentProcessTypes.RecurringGiving ?
                 Setting("DebitCreditLabel-Giving", defaultLabel) :
                 Setting("DebitCreditLabel-Registrations", defaultLabel);
+        }
+
+        [Function(Name = "dbo.UpdateAllSpouseId")]
+        public int UpdateAllSpouseId()
+        {
+            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())));
+            return ((int)(result.ReturnValue));
         }
     }
 }

@@ -8,6 +8,7 @@
 using CmsData;
 using CmsWeb.Areas.OnlineReg.Models;
 using CmsWeb.Code;
+using CmsWeb.Membership;
 using Elmah;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
@@ -30,7 +31,6 @@ using System.Web.Mvc.Html;
 using System.Web.Routing;
 using System.Web.Script.Serialization;
 using UtilityExtensions;
-using static CmsData.DbUtil;
 
 namespace CmsWeb
 {
@@ -51,6 +51,10 @@ namespace CmsWeb
 
     public static class ViewExtensions2
     {
+        public static CMSDataContext CurrentDatabase => DbUtil.Db;
+
+        public static User CurrentUser => CurrentDatabase.CurrentUser;
+
         public static string jqueryGlobalizeCulture
         {
             get
@@ -74,7 +78,7 @@ namespace CmsWeb
             }
         }
 
-        public static string CmsHost => DbUtil.Db.CmsHost;
+        public static string CmsHost => CurrentDatabase.CmsHost;
 
         public static string GridClass => "table table-condensed table-striped notwide grid2 centered";
 
@@ -166,7 +170,7 @@ namespace CmsWeb
         }
 
         public static HtmlString PersonPortrait(this HtmlHelper helper, int PeopleId, int ImgX, int ImgY, string CssClass="img-circle") {
-            Person person = DbUtil.Db.People.Single(p => p.PeopleId == PeopleId);
+            Person person = CurrentDatabase.People.Single(p => p.PeopleId == PeopleId);
             if (person.IsNull())
             {
                 return null;
@@ -995,9 +999,24 @@ namespace CmsWeb
             return null;
         }
 
+        private static HtmlString IncludeOnce(string tag)
+        {
+            if (!HttpContextFactory.Current.Items.Contains(tag))
+            {
+                HttpContextFactory.Current.Items.Add(tag, true);
+                return new HtmlString(tag);
+            }
+            return new HtmlString("");
+        }
+
+        public static HtmlString GoogleCharts()
+        {
+            return IncludeOnce("<script type=\"text/javascript\" src=\"https://www.gstatic.com/charts/loader.js\"></script>");
+        }
+
         public static HtmlString GoogleReCaptcha()
         {
-            return new HtmlString("<script src=\"https://www.google.com/recaptcha/api.js\"></script>");
+            return IncludeOnce("<script src=\"https://www.google.com/recaptcha/api.js\"></script>");
         }
 
         public static HtmlString OldStyles()
@@ -1025,7 +1044,7 @@ namespace CmsWeb
         }
         public static HtmlString Bootstrap3()
         {
-            return new HtmlString(@"<script src=""//maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js""></script>");
+            return IncludeOnce(@"<script src=""//maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js""></script>");
         }
 
         public static HtmlString BootstrapToggleCss()
@@ -1054,7 +1073,7 @@ namespace CmsWeb
 
         public static HtmlString jQueryMobile()
         {
-            return new HtmlString("<script src='//code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js'></script>\n");
+            return IncludeOnce("<script src='//code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js'></script>\n");
         }
 
         public static HtmlString jQueryMobileCss()
@@ -1064,7 +1083,7 @@ namespace CmsWeb
 
         public static HtmlString jQuery()
         {
-            return new HtmlString("<script src='//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js'></script>\n");
+            return IncludeOnce("<script src='//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js'></script>\n");
         }
 
         public static HtmlString jQueryUICss()
@@ -1074,18 +1093,29 @@ namespace CmsWeb
 
         public static HtmlString jQueryUI()
         {
-            return new HtmlString(@"<script src=""//ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js""></script>");
+            return IncludeOnce(@"<script src=""//ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js""></script>");
         }
 
         public static HtmlString jQueryValidation()
         {
-            return new HtmlString(@"<script src=""//cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.min.js""></script>
+            return IncludeOnce(@"<script src=""//cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.min.js""></script>
     <script src=""//cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/additional-methods.min.js""></script>");
+        }
+
+        public static HtmlString Vue()
+        {
+            return IncludeOnce(@"<script src=""//cdn.jsdelivr.net/npm/vue""></script>
+    <script src=""//cdnjs.cloudflare.com/ajax/libs/vue-resource/1.5.1/vue-resource.min.js""></script>");
         }
 
         public static HtmlString Moment()
         {
-            return new HtmlString("<script src=\"//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js\" type=\"text/javascript\"></script>\n");
+            return IncludeOnce("<script src=\"//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js\" type=\"text/javascript\"></script>\n");
+        }
+
+        public static HtmlString Jsapi()
+        {
+            return IncludeOnce(@"<script src=""https://www.google.com/jsapi"" async></script>");
         }
 
         public static HtmlString Humanize()
@@ -1100,7 +1130,7 @@ namespace CmsWeb
 
         public static HtmlString LoDash()
         {
-            return new HtmlString(@"<script src=""//cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.min.js""></script>");
+            return IncludeOnce(@"<script src=""//cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.min.js""></script>");
         }
 
         public static HtmlString Sortable()
@@ -1121,7 +1151,7 @@ namespace CmsWeb
 
         public static bool ShowOrgSettingsHelp(this HtmlHelper helper)
         {
-            return DbUtil.Db.UserPreference("ShowOrgSettingsHelp", "true") == "true";
+            return CurrentDatabase.UserPreference("ShowOrgSettingsHelp", "true") == "true";
         }
 
         public static string TouchPointLayout()
@@ -1136,35 +1166,35 @@ namespace CmsWeb
 
         public static string DbSetting(string name, string def)
         {
-            return DbUtil.Db.Setting(name, def);
+            return CurrentDatabase.Setting(name, def);
         }
 
         public static IEnumerable<Person> PeopleFromPidString(string pids)
         {
-            return from p in DbUtil.Db.PeopleFromPidString(pids)
+            return from p in CurrentDatabase.PeopleFromPidString(pids)
                    select p;
         }
 
         public static List<string> AllRoles()
         {
-            return User.AllRoles(DbUtil.Db).Select(rr => rr.RoleName).ToList();
+            return User.AllRoles(CurrentDatabase).Select(rr => rr.RoleName).ToList();
         }
 
         public static string StatusFlagsAll(int peopleId)
         {
-            return DbUtil.Db.StatusFlagsAll(peopleId);
+            return CurrentDatabase.StatusFlagsAll(peopleId);
         }
 
         public static Content GetContent(int tId)
         {
-            var t = from e in DbUtil.Db.Contents
+            var t = from e in CurrentDatabase.Contents
                     where e.Id == tId
                     select e;
             var c = t.FirstOrDefault();
             return c;
         }
 
-        public static string DatabaseErrorUrl(CheckDatabaseResult ret)
+        public static string DatabaseErrorUrl(DbUtil.CheckDatabaseResult ret)
         {
             switch (ret)
             {
@@ -1305,6 +1335,32 @@ namespace CmsWeb
         public static MvcHtmlString ValidationSummaryBootstrap(this HtmlHelper helper)
         {
             return ValidationSummaryBootstrap(helper, true);
+        }
+
+        public static string HttpsUrl(this HtmlHelper helper, string url)
+        {
+            var uri = new Uri(url);
+            if (uri.Scheme.Equal("http"))
+            {
+                return "https" + url.Substring(4);
+            }
+            else if (!uri.Scheme.HasValue())
+            {
+                return "https://" + url;
+            }
+            return url;
+        }
+
+        public static HtmlString TwoFactorAuthSetupLink()
+        {
+            var value = "";
+            if (MembershipService.IsTwoFactorAuthenticationEnabled(CurrentDatabase))
+            {
+                value = CurrentUser.MFAEnabled
+                    ? @"<li><a href=""/AuthDisable"">Disable 2FA</a></li>"
+                    : @"<li><a href=""/AuthSetup"">Enable 2FA</a></li>";
+            }
+            return new HtmlString(value);
         }
 
         public class HelpMessage

@@ -3,6 +3,7 @@ using CmsWeb.Lifecycle;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web.Mvc;
+using CmsWeb.Areas.Setup.Models;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Setup.Controllers
@@ -25,7 +26,17 @@ namespace CmsWeb.Areas.Setup.Controllers
                 m = m.Where(vv => (vv.System ?? false) == false);
             }
 
-            return View(m);
+            var settingTypes = CurrentDatabase.SettingMetadatas
+                .Where(vv => (vv.Setting.System ?? false) == false)
+                .Where(vv => vv.SettingCategory != null)
+                .GroupBy(x => x.SettingCategory.SettingType)
+                .Select(x => new SettingTypeModel(x))
+                .ToList();
+
+            return View(new SettingModel {
+                GeneralSettings = m.Where(x => x.SettingMetadata == null).ToList(),
+                SettingTypes = settingTypes.ToList()
+            });
         }
 
         [HttpPost]
@@ -38,32 +49,12 @@ namespace CmsWeb.Areas.Setup.Controllers
 
             if (!CurrentDatabase.Settings.Any(s => s.Id == id))
             {
-                var m = new Setting { Id = id };
-                CurrentDatabase.Settings.InsertOnSubmit(m);
-                CurrentDatabase.SubmitChanges();
                 CurrentDatabase.SetSetting(id, null);
+                CurrentDatabase.SubmitChanges();
             }
-            return Redirect($"/Settings/#{id}");
+            return Redirect($"/Settings/?focus={id}#tab-general");
         }
 
-        /// <summary>
-        /// This is for Integration Testing of Settings.
-        /// Prevents having to wait for 60 seconds for the Cache to expire.
-        /// </summary>
-        [HttpGet, Route("~/SetSettingForLocalhost/{name}/{value}")]
-        public ActionResult SetSettingForLocalhost(string name, string value)
-        {
-            if (Util.Host == "localhost")
-            {
-                if (value == "DELETE")
-                    CurrentDatabase.DeleteSetting(name);
-                else
-                    CurrentDatabase.SetSetting(name, value);
-                CurrentDatabase.SubmitChanges();
-                return Content($"{name} {value} done");
-            }
-            return Content("only valid on localhost database");
-        }
         [HttpPost]
         public ContentResult Edit(string pk, string value)
         {

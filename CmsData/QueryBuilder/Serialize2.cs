@@ -114,6 +114,7 @@ namespace CmsData
             w.WriteAttr("OrgType", OrgType);
             w.WriteAttr("Days", Days);
             w.WriteAttr("Quarters", Quarters);
+            w.WriteAttr("FundIds", FundIds);
             w.WriteAttr("Tags", Tags);
             w.WriteAttr("Schedule", Schedule);
             w.WriteAttr("Campus", Campus);
@@ -124,7 +125,9 @@ namespace CmsData
             w.WriteAttr("OrgStatus", OrgStatus);
             w.WriteAttr("OrgType2", OrgType2);
             w.WriteAttr("OrgName", OrgName);
-            if(IsScratchPad) // disabled conditions only work on scratchpad
+            w.WriteAttr("MemberTypes", MemberTypes);
+            w.WriteAttr("AttendTypes", AttendTypes);
+            if (IsScratchPad) // disabled conditions only work on scratchpad
                 w.WriteAttr("DisableOnScratchpad", DisableOnScratchpad);
         }
         public static Condition Import(string text, string name = null, bool newGuids = false, Guid? topguid = null)
@@ -160,6 +163,7 @@ namespace CmsData
                 OrgType = Attribute(r, "OrgType"),
                 Days = Attribute(r, "Days").ToInt(),
                 Quarters = Attribute(r, "Quarters"),
+                FundIds = Attribute(r, "FundIds"),
                 Tags = Attribute(r, "Tags"),
                 Ministry = Attribute(r, "Ministry"),
                 Schedule = Attribute(r, "Schedule"),
@@ -171,6 +175,8 @@ namespace CmsData
                 OrgStatus = Attribute(r, "OrgStatus"),
                 OnlineReg = Attribute(r, "OnlineReg"),
                 OrgType2 = Attribute(r, "OrgType2").ToInt(),
+                MemberTypes = Attribute(r, "MemberTypes"),
+                AttendTypes = Attribute(r, "AttendTypes"),
                 AllConditions = allClauses
             };
             if (p == null)

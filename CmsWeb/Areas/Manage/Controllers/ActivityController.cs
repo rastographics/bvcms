@@ -14,7 +14,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         [HttpGet, Route("~/LastActivity")]
         public ActionResult Index(int? userid, int? peopleid, int? orgid)
         {
-            var m = new ActivityModel
+            var m = new ActivityModel (CurrentDatabase)
             {
                 UserId = userid,
                 PeopleId = peopleid,

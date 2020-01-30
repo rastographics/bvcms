@@ -23,8 +23,7 @@ namespace CMSWebTests
             controller.ControllerContext = ControllerTestUtils.FakeControllerContext(controller, routeDataValues);
 
             var NewOrganizationIndex = controller.Index();
-            var OrgId = ((NewOrganizationModel)((System.Web.Mvc.ViewResultBase)NewOrganizationIndex).Model).OrganizationId;
-
+            var OrgId = ((NewOrganizationModel)((System.Web.Mvc.ViewResultBase)NewOrganizationIndex).Model).OrganizationId;            
             var FakeNewOrganizationModel = new NewOrganizationModel();
             Organization FakeOrganization = null;
             if (Orgconfig.IsNull())
@@ -58,10 +57,10 @@ namespace CMSWebTests
             }
             return null;
         }
-        public static OnlineRegModel GetFakeOnlineRegModel(int OrgId)
+        public static OnlineRegModel GetFakeOnlineRegModel(int OrgId, int userPeopleId = 1)
         {
             var m = new OnlineRegModel(HttpContextFactory.Current.Request, CMSDataContext.Create(DatabaseFixture.Host), OrgId, null, null, null, null);
-            m.UserPeopleId = 1;
+            m.UserPeopleId = userPeopleId;
             return m;
         }
 

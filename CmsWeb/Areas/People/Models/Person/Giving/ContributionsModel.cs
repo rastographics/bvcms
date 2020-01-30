@@ -1,11 +1,13 @@
 ﻿using CmsData;
 using CmsData.Codes;
 using CmsWeb.Code;
+using CmsWeb.Constants;
 using CmsWeb.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Web.Mvc;
 using System.Web.Security;
 using System.Xml.Linq;
 
@@ -19,7 +21,7 @@ namespace CmsWeb.Areas.People.Models
             set
             {
                 peopleid = value;
-                Person = DbUtil.Db.LoadPersonById(peopleid);
+                Person = CurrentDatabase.LoadPersonById(peopleid);
                 ContributionOptions = new CodeInfo(Person.ContributionOptionsId, "ContributionOptions");
                 EnvelopeOptions = new CodeInfo(Person.EnvelopeOptionsId, "EnvelopeOptions");
                 ElectronicStatement = Person.ElectronicStatement ?? false;
@@ -32,20 +34,61 @@ namespace CmsWeb.Areas.People.Models
         public bool ShowTypes;
         public bool isPledges = false;
         public List<PledgesSummary> PledgesSummary { get; set; }
+        public List<GivingSummary> GivingSummary { get; set; }
         [DisplayName("Electronic Only"), TrackChanges]
         public bool ElectronicStatement { get; set; }
         [DisplayName("Statement Option")]
         public CodeInfo ContributionOptions { get; set; }
         [DisplayName("Envelope Option")]
         public CodeInfo EnvelopeOptions { get; set; }
+
+        private List<string> GivingYears = new List<string>() { "Year To Date", "Previous And Current", "All Years" };
+        public DateTime GivingStartDate { get; set; }
+        public DateTime GivingEndDate { get; set; }
+
+        public bool givingSumCollapse = true;
+        public bool givingDetCollapse = true;
+        public bool pledgeSumCollapse = true;
+        public bool pledgeDetCollapse = true;
+
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
         public ContributionsModel()
-            : base("Date", "desc", true)
-        { }
+        {
+            Init();
+        }
+
+        public ContributionsModel(CMSDataContext db) : base(db)
+        {
+            Init();
+        }
+
+        protected override void Init()
+        {
+            base.Init();
+            Sort = "Completed";
+            Direction = "desc";
+            AjaxPager = true;
+        }
+
+        public void SetGivingYears(IQueryable<Contribution> contributions)
+        {
+            if (contributions != null && contributions.Count() > 0)
+            {
+                var years = contributions.Select(c => c.ContributionDate.Value.Year).Distinct()
+                    .OrderByDescending(c=>c).Select(c=>c.ToString()).ToList();
+                GivingYears.AddRange(years);
+            }
+        }
+
         public override IQueryable<Contribution> DefineModelList()
         {
             IQueryable<Contribution> contributionRecords;
             contributionRecords = GetContributionRecords();
             IQueryable<Contribution> filteredRecords = ApplyFilter(contributionRecords);
+            if (Filter != "Pledges")
+            {
+                filteredRecords = ApplyYear(filteredRecords);
+            }
             var items = filteredRecords.ToList();
             ShowNames = filteredRecords.Any(c => c.PeopleId != Person.PeopleId);
             ShowTypes = filteredRecords.Any(c => ContributionTypeCode.SpecialTypes.Contains(c.ContributionTypeId));
@@ -57,6 +100,7 @@ namespace CmsWeb.Areas.People.Models
             switch (Filter)
             {
                 case "Contributions":
+                case "CombineGiving":
                     return contributionRecords.Where(p => p.ContributionTypeId != ContributionTypeCode.Pledge);
                 case "Pledges":
                     isPledges = true;
@@ -66,16 +110,43 @@ namespace CmsWeb.Areas.People.Models
             }
         }
 
+        private IQueryable<Contribution> ApplyYear(IQueryable<Contribution> contributionRecords)
+        {
+            GivingEndDate = DateTime.Now;
+            var Year1 = Year;
+            if (!GivingYears.Any(p => p == Year))
+                Year1 = "YearToDate";
+
+            switch (Year1.Replace(" ", ""))
+            {
+                case null:
+                case "YearToDate":
+                    GivingStartDate = new DateTime(GivingEndDate.Year, 1, 1);
+                    break;
+                case "AllYears":
+                    GivingStartDate = new DateTime(1980, 1, 1);
+                    break;
+                case "PreviousAndCurrent":
+                    GivingStartDate = GivingStartDate = new DateTime(GivingEndDate.Year - 1, 1, 1);
+                    break;
+                default:
+                    GivingStartDate = new DateTime(int.Parse(Year1), 1, 1);
+                    GivingEndDate = new DateTime(int.Parse(Year1), 12, 31);
+                    break;
+            }
+            return contributionRecords.Where(p => p.ContributionDate >= GivingStartDate && p.ContributionDate <= GivingEndDate);
+        }
+
         private IQueryable<Contribution> GetContributionRecords()
         {
-            var currentUser = DbUtil.Db.CurrentUserPerson;
+            var currentUser = CurrentDatabase.CurrentUserPerson;
             var isFinanceUser = Roles.GetRolesForUser().Contains("Finance");
             var isCurrentUser = currentUser.PeopleId == Person.PeopleId;
             var isSpouse = currentUser.PeopleId == Person.SpouseId;
             var isFamilyMember = currentUser.FamilyId == Person.FamilyId;
             if (isCurrentUser || (isSpouse && (Person.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint) || isFamilyMember || isFinanceUser)
             {
-                return from c in DbUtil.Db.Contributions
+                return from c in CurrentDatabase.Contributions
                        where (c.PeopleId == Person.PeopleId || (c.PeopleId == Person.SpouseId && (Person.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint))
                        && c.ContributionStatusId == ContributionStatusCode.Recorded
                        && !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
@@ -83,8 +154,8 @@ namespace CmsWeb.Areas.People.Models
             }
             else
             {
-                return from c in DbUtil.Db.Contributions
-                       join f in DbUtil.Db.ContributionFunds.ScopedByRoleMembership(DbUtil.Db) on c.FundId equals f.FundId
+                return from c in CurrentDatabase.Contributions
+                       join f in CurrentDatabase.ContributionFunds.ScopedByRoleMembership(CurrentDatabase) on c.FundId equals f.FundId
                        where c.PeopleId == Person.PeopleId
                        && c.ContributionStatusId == ContributionStatusCode.Recorded
                        && !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
@@ -96,18 +167,53 @@ namespace CmsWeb.Areas.People.Models
         {
             IQueryable<Contribution> contributionRecords = GetContributionRecords();
             PledgesSummary = new List<PledgesSummary>();
-            foreach (Contribution contribution in contributionRecords.Where(p => p.ContributionTypeId == ContributionTypeCode.Pledge))
+            foreach (Contribution contribution in contributionRecords.Where(p => p.ContributionTypeId == ContributionTypeCode.Pledge).OrderByDescending(c => c.ContributionDate))
             {
                 AddSummaryPledge(contribution, contributionRecords);
             }
-            return PledgesSummary;
+            return OrderPledgesByOnlineSort();
+        }
+
+        private List<PledgesSummary> OrderPledgesByOnlineSort()
+        {
+            var withSort = PledgesSummary.Where(p => p.FundOnlineSort != null).OrderBy(c => c.FundOnlineSort).ToList();
+            var withoutSort = PledgesSummary.Where(p => p.FundOnlineSort == null).OrderBy(c => c.Fund).ToList();
+            withSort.AddRange(withoutSort);
+            return withSort;
+        }
+
+        private List<GivingSummary> OrderGivingsByOnlineSort()
+        {
+            var withSort = GivingSummary.Where(p => p.FundOnlineSort != null).OrderBy(c => c.FundOnlineSort).ToList();
+            var withoutSort = GivingSummary.Where(p => p.FundOnlineSort == null).OrderBy(c => c.Fund).ToList();
+            withSort.AddRange(withoutSort);
+            return withSort;
+        }
+
+        public IEnumerable<SelectListItem> GivingYearsList()
+        {
+            SetGivingYears(ApplyFilter(GetContributionRecords()));
+            return GivingYears.Select(i => new SelectListItem { Text = i, Selected = Year == i });
+        }
+
+        public List<GivingSummary> GetGivingSummary()
+        {
+            IQueryable<Contribution> contributionRecords = ApplyYear(GetContributionRecords());
+            GivingSummary = new List<GivingSummary>();
+            foreach (Contribution contribution in contributionRecords.Where(p => p.ContributionTypeId != ContributionTypeCode.Pledge).OrderByDescending(c => c.ContributionDate))
+            {
+                AddGivingSummary(contribution, contributionRecords);
+            }
+            return OrderGivingsByOnlineSort();
         }
 
         private void AddSummaryPledge(Contribution contribution, IQueryable<Contribution> contributionRecords)
         {
             var fundName = contribution.ContributionFund.FundName;
+            var fundOnlineSort = contribution.ContributionFund.OnlineSort;
             if (!PledgesSummary.Any(p => p.Fund == fundName))
             {
+                var lastPledgeDate = contribution.ContributionDate;
                 decimal amountPledged = contributionRecords.Where(c => c.ContributionTypeId == ContributionTypeCode.Pledge && c.ContributionFund.FundName == fundName)
                                                     .Sum(c => c.ContributionAmount ?? 0);
                 List<Contribution> contributionsThisFund = contributionRecords
@@ -123,7 +229,31 @@ namespace CmsWeb.Areas.People.Models
                     Fund = fundName,
                     AmountPledged = amountPledged,
                     AmountContributed = amountContributed,
-                    Balance = amountPledged - amountContributed < 0 ? 0 : amountPledged - amountContributed
+                    Balance = amountPledged - amountContributed < 0 ? 0 : amountPledged - amountContributed,
+                    LastPledgeDate = contribution.ContributionDate.Value,
+                    FundOnlineSort = contribution.ContributionFund.OnlineSort
+                });
+            }
+        }
+
+        private void AddGivingSummary(Contribution contribution, IQueryable<Contribution> contributionRecords)
+        {
+            var fundName = contribution.ContributionFund.FundName;
+            if (!GivingSummary.Any(p => p.Fund == fundName))
+            {
+                List<Contribution> contributionsThisFund = contributionRecords
+                    .Where(c => c.ContributionTypeId != ContributionTypeCode.Pledge && c.ContributionFund.FundName == fundName).ToList();
+                decimal amountContributed = 0;
+                if (contributionsThisFund.Count != 0)
+                {
+                    amountContributed = contributionsThisFund.Sum(c => c.ContributionAmount ?? 0);
+                }
+                GivingSummary.Add(new GivingSummary()
+                {
+                    FundId = contribution.ContributionFund.FundId,
+                    Fund = fundName,
+                    AmountContributed = amountContributed,
+                    FundOnlineSort = contribution.ContributionFund.OnlineSort
                 });
             }
         }
@@ -181,6 +311,7 @@ namespace CmsWeb.Areas.People.Models
                     return q.OrderByDescending(c => c.ContributionDate);
             }
         }
+
         public override IEnumerable<ContributionInfo> DefineViewList(IQueryable<Contribution> q)
         {
             var q2 = from c in q
@@ -201,30 +332,27 @@ namespace CmsWeb.Areas.People.Models
                                   : c.ContributionDesc == "Recurring Giving"
                                       ? c.ContributionDesc
                                       : "Online",
-                         PledgeFund = c.ContributionFund.FundPledgeFlag
+                         PledgeFund = c.ContributionFund.FundPledgeFlag,
+                         TranId = c.TranId
                      };
             return q2;
         }
-        public static IEnumerable<StatementInfoWithFund> Statements(int? id)
-        {
-            return Statements(id, null);
-        }
 
-        public static IEnumerable<StatementInfoWithFund> Statements(int? id, int[] includedFundIds)
+        public static IEnumerable<StatementInfoWithFund> Statements(CMSDataContext db, int? id, int[] includedFundIds = null)
         {
             if (!id.HasValue)
             {
                 throw new ArgumentException("Missing id");
             }
-            var dbContext = DbUtil.Db;
-            var person = dbContext.LoadPersonById(id.Value);
-            var contributions = (from c in dbContext.Contributions2(new DateTime(1900, 1, 1), new DateTime(3000, 12, 31), 0, false, null, true)
+
+            var person = db.LoadPersonById(id.Value);
+            var contributions = (from c in db.Contributions2(new DateTime(1900, 1, 1), new DateTime(3000, 12, 31), 0, false, null, true, null)
                                  where (c.PeopleId == person.PeopleId || (c.PeopleId == person.SpouseId && (person.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint))
                                  select c).ToList();
-            var currentUser = dbContext.CurrentUserPerson;
+            var currentUser = db.CurrentUserPerson;
             if (currentUser.PeopleId != person.PeopleId)
             {
-                var authorizedFunds = dbContext.ContributionFunds.ScopedByRoleMembership(dbContext);
+                var authorizedFunds = db.ContributionFunds.ScopedByRoleMembership(db);
                 var authorizedContributions = from c in contributions
                                               join f in authorizedFunds on c.FundId equals f.FundId
                                               select c;
@@ -235,7 +363,7 @@ namespace CmsWeb.Areas.People.Models
                 contributions = contributions.Where(c => includedFundIds.Contains(c.FundId)).ToList();
             }
 
-            var shouldGroupByFunds = dbContext.Setting("EnableContributionFundsOnStatementDisplay");
+            var shouldGroupByFunds = db.Setting("EnableContributionFundsOnStatementDisplay");
 
             IEnumerable<StatementInfoWithFund> result;
 
@@ -255,7 +383,7 @@ namespace CmsWeb.Areas.People.Models
                               FundGroupName = string.Empty
                           }).ToList();
 
-                var displayNameHelper = new CustomFundSetDisplayHelper(dbContext);
+                var displayNameHelper = new CustomFundSetDisplayHelper(db);
                 displayNameHelper.ProcessList(result);
 
                 // hack: grouping done in memory since these fundids are stored as XML and not easily accessed in SQL

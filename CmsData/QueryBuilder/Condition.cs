@@ -75,10 +75,13 @@ namespace CmsData
         public bool IsPublic { get; set; }
         public DateTime CreatedOn { get; set; }
         public string Quarters { get; set; }
+        public string FundIds { get; set; }
         public string SavedQuery { get; set; }
         public string SavedQueryIdDesc => SavedQuery;
         public string Tags { get; set; }
         public string PmmLabels => Tags;
+        public string MemberTypes { get; set; }
+        public string AttendTypes { get; set; }
 
         public string Schedule { get; set; }
         public int ScheduleInt => Schedule.GetCsvToken().ToInt();
@@ -554,6 +557,7 @@ namespace CmsData
         {
             Id = Guid.NewGuid();
             Age = from.Age;
+            AttendTypes = from.AttendTypes;
             Order = from.Order;
             CodeIdValue = from.CodeIdValue;
             Comparison = from.Comparison;
@@ -564,9 +568,11 @@ namespace CmsData
             Division = from.Division;
             EndDate = from.EndDate;
             ConditionName = from.ConditionName;
+            MemberTypes = from.MemberTypes;
             Organization = from.Organization;
             Program = from.Program;
             Quarters = from.Quarters;
+            FundIds = from.FundIds;
             SavedQuery = from.SavedQuery;
             Schedule = from.Schedule;
             StartDate = from.StartDate;

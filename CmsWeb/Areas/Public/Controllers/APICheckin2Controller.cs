@@ -69,7 +69,7 @@ namespace CmsWeb.Areas.Public.Controllers
             CurrentDatabase.SetNoLock();
             DbUtil.LogActivity("CheckinFind " + building + " " + id);
 
-            var m = new CheckInModel();
+            var m = new CheckInModel(CurrentDatabase);
             var matches = m.Find(id);
 
             if (!matches.Any())
@@ -440,7 +440,7 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             DbUtil.LogActivity($"checkin {PeopleId}, {OrgId}, {(Present ? "attend0" : "unattend0")}");
-            var m = new CheckInModel();
+            var m = new CheckInModel(CurrentDatabase);
             m.RecordAttend(PeopleId, OrgId, Present, thisday);
             var r = new ContentResult();
             r.Content = "success";
@@ -486,7 +486,7 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             DbUtil.LogActivity($"checkin {PeopleId}, {OrgId}, {(Member ? "join" : "unjoin")}");
-            var m = new CheckInModel();
+            var m = new CheckInModel(CurrentDatabase);
             m.JoinUnJoinOrg(PeopleId, OrgId, Member);
             var r = new ContentResult();
             r.Content = "success";
@@ -699,7 +699,7 @@ namespace CmsWeb.Areas.Public.Controllers
             var reader = new StreamReader(Request.InputStream);
             var job = reader.ReadToEnd();
 
-            var m = new CheckInModel();
+            var m = new CheckInModel(CurrentDatabase);
             m.SavePrintJob(id, job);
             return Content("done");
         }
@@ -711,7 +711,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 return Content("not authorized");
             }
 
-            var m = new CheckInModel();
+            var m = new CheckInModel(CurrentDatabase);
             var b = m.GetNextPrintJobs(id);
             return Content(b, "text/xml");
         }
@@ -723,7 +723,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 return Content("not authorized");
             }
 
-            var m = new CheckInModel();
+            var m = new CheckInModel(CurrentDatabase);
             return Content(CurrentDatabase.Content($"BuildingCheckin-{id}.xml",
                 "<BuildingActivity/>"), "text/xml");
         }

@@ -1,6 +1,8 @@
 using CmsData;
 using CmsData.View;
+using CmsWeb.Constants;
 using CmsWeb.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,21 +13,31 @@ namespace CmsWeb.Areas.Search.Models
         public int? days { get; set; }
         public string oids { get; set; }
 
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
         public IncompleteRegistrations()
-            : this(null, null)
         {
+            Init();
         }
 
-        public IncompleteRegistrations(int id, int? days)
-            : base("Date", "desc", true)
+        protected override void Init()
         {
+            Sort = "Date";
+            Direction = "desc";
+            AjaxPager = true;
+            base.Init();
+        }
+
+        public IncompleteRegistrations(CMSDataContext db, int id, int? days) : base(db)
+        {
+            Init();
             this.oids = id.ToString();
             this.days = days;
             setPageSize();
         }
-        public IncompleteRegistrations(OrgSearchModel orgsearch, int? days)
-            : base("Date", "desc", true)
+
+        public IncompleteRegistrations(CMSDataContext db, OrgSearchModel orgsearch, int? days) : base(db)
         {
+            Init();
             if (orgsearch != null)
             {
                 var q = orgsearch.FetchOrgs();

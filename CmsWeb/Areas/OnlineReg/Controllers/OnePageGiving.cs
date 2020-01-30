@@ -1,11 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Web.Mvc;
 using CmsData;
 using CmsData.Codes;
+using CmsWeb.Areas.Manage.Controllers;
+using CmsWeb.Areas.Manage.Models;
 using CmsWeb.Areas.OnlineReg.Models;
 using CmsWeb.Code;
+using CmsWeb.Membership;
 using CmsWeb.Models;
 using Elmah;
 using UtilityExtensions;
@@ -22,6 +26,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             try
             {
                 var m = new OnlineRegModel(Request, CurrentDatabase, id, testing, null, null, source);
+                if (!m.org.IsOnePageOnlineGiving(CurrentDatabase))
+                {
+                    return Redirect($"/OnlineReg/{id}" + Request.Url.Query);
+                }
 
                 var pid = Util.UserPeopleId;
                 if (pid.HasValue)
@@ -326,21 +334,39 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         public ActionResult OnePageGivingLogin(int id, string username, string password, bool? testing, string source)
         {
             var ret = AccountModel.AuthenticateLogon(username, password, Session, Request, CurrentDatabase, CurrentImageDatabase);
+            var ev = CurrentDatabase.OrganizationExtras.SingleOrDefault(vv => vv.OrganizationId == id && vv.Field == "LoggedInOrgId");
+            var orgId = ev?.IntValue ?? id;
+            var returnUrl = $"/OnePageGiving/{orgId}{(testing == true ? "?testing=true" : "")}";
 
-            if (ret is string)
+            if (ret.ErrorMessage.HasValue())
             {
-                ModelState.AddModelError("loginerror", ret.ToString());
+                ModelState.AddModelError("loginerror", ret.ErrorMessage);
                 var m = new OnlineRegModel(Request, CurrentDatabase, id, testing, null, null, source);
                 SetHeaders(m);
                 return View("OnePageGiving/Login", m);
             }
+            else if (MembershipService.ShouldPromptForTwoFactorAuthentication(ret.User, CurrentDatabase, Request))
+            {
+                Session[AccountController.MFAUserId] = ret.User.UserId;
+                return View("Auth", new AccountInfo
+                {
+                    UsernameOrEmail = ret.User.Username,
+                    ReturnUrl = returnUrl
+                });
+            }
+            else
+            {
+                AccountModel.FinishLogin(ret.User.Username, Session, CurrentDatabase, CurrentImageDatabase);
+                if (ret.User.UserId.Equals(Session[AccountController.MFAUserId]))
+                {
+                    MembershipService.SaveTwoFactorAuthenticationToken(CurrentDatabase, Response);
+                    Session.Remove(AccountController.MFAUserId);
+                }
+            }
             Session["OnlineRegLogin"] = true;
 
-
-            var ev = CurrentDatabase.OrganizationExtras.SingleOrDefault(vv => vv.OrganizationId == id && vv.Field == "LoggedInOrgId");
-            id = ev?.IntValue ?? id;
-            var url = $"/OnePageGiving/{id}{(testing == true ? "?testing=true" : "")}";
-            return Redirect(url);
+            ViewData["Redirect"] = returnUrl;
+            return View("Redirect");
         }
 
         private bool CheckAddress(PaymentForm pf)

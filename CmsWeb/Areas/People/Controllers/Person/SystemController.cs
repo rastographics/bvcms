@@ -1,5 +1,6 @@
 using CmsData;
 using CmsWeb.Areas.People.Models;
+using CmsWeb.Membership;
 using CmsWeb.Membership.Extensions;
 using CmsWeb.Models;
 using System;
@@ -18,11 +19,12 @@ namespace CmsWeb.Areas.People.Controllers
             var q = from u in CurrentDatabase.Users
                     where u.PeopleId == id
                     select u;
+            ViewBag.PeopleId = id;
             return View("System/Users", q);
         }
 
         [HttpPost, Authorize(Roles = "Admin")]
-        public ActionResult UserEdit(int? id)
+        public ActionResult UserEdit(int? id, int? peopleId)
         {
             User u = null;
             if (id.HasValue)
@@ -31,17 +33,18 @@ namespace CmsWeb.Areas.People.Controllers
             }
             else
             {
-                u = AccountModel.AddUser(Util2.CurrentPeopleId);
+                u = AccountModel.AddUser(peopleId ?? Util2.CurrentPeopleId);
                 var name = Util.ActivePerson as string;
-                DbUtil.LogPersonActivity($"New User for: {name}", Util2.CurrentPeopleId, name);
+                DbUtil.LogPersonActivity($"New User for: {name}", peopleId ?? Util2.CurrentPeopleId, name);
                 ViewBag.username = u.Username;
+                u.MustChangePassword = true;
             }
             ViewBag.sendwelcome = false;
             return View("System/UserEdit", u);
         }
 
         [HttpPost, Authorize(Roles = "Admin")]
-        public ActionResult UserUpdate(int id, string u, string p, bool sendwelcome, string[] role)
+        public ActionResult UserUpdate(int id, string u, string p, bool sendwelcome, bool mustchangepassword, string[] role)
         {
             var user = CurrentDatabase.Users.Single(us => us.UserId == id);
             if (u.HasValue() && user.Username != u)
@@ -60,6 +63,7 @@ namespace CmsWeb.Areas.People.Controllers
                 user.ChangePassword(p);
             }
 
+            user.MustChangePassword = mustchangepassword;
             CurrentDatabase.SubmitChanges();
             if (!user.PeopleId.HasValue)
             {
@@ -89,12 +93,25 @@ namespace CmsWeb.Areas.People.Controllers
         }
 
         [HttpGet, Authorize(Roles = "Admin")]
+        public ActionResult Disable2FA(int id)
+        {
+            var user = CurrentDatabase.Users.SingleOrDefault(uu => uu.UserId == id);
+            if (user == null)
+            {
+                return HttpNotFound();
+            }
+            MembershipService.DisableTwoFactorAuth(user, CurrentDatabase, null);
+
+            return Redirect($"/Person2/{user.PeopleId}#tab-user");
+        }
+
+        [HttpGet, Authorize(Roles = "Admin")]
         public ActionResult Impersonate(int id)
         {
             var user = CurrentDatabase.Users.SingleOrDefault(uu => uu.UserId == id);
             if (user == null)
             {
-                return Content("no user");
+                return HttpNotFound();
             }
 
             if (user.Roles.Contains("Finance") && !User.IsInRole("Finance"))

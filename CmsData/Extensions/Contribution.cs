@@ -1,5 +1,6 @@
 ﻿using CmsData.Codes;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using UtilityExtensions;
 
@@ -7,7 +8,13 @@ namespace CmsData
 {
     public partial class Contribution
     {
-        public static BundleHeader GetBundleHeader(CMSDataContext db, DateTime date, DateTime now, int? btid = null)
+        public static BundleHeader GetBundleHeader(
+            CMSDataContext db,
+            DateTime date,
+            DateTime now,
+            int? btid = null,
+            DateTime? depositDate = null,
+            decimal? bundleTotal = null)
         {
             var opentype = db.Roles.Any(rr => rr.RoleName == "FinanceDataEntry")
                 ? BundleStatusCode.OpenForDataEntry
@@ -19,7 +26,9 @@ namespace CmsData
                 ContributionDate = date,
                 CreatedBy = Util.UserId,
                 CreatedDate = now,
-                FundId = db.Setting("DefaultFundId", "1").ToInt()
+                FundId = db.Setting("DefaultFundId", "1").ToInt(),
+                DepositDate = depositDate,
+                BundleTotal = bundleTotal
             };
             db.BundleHeaders.InsertOnSubmit(bh);
             bh.BundleHeaderTypeId = btid ?? BundleTypeCode.ChecksAndCash;
@@ -50,22 +59,32 @@ namespace CmsData
         }
 
         public static BundleDetail AddContributionDetail(CMSDataContext db, DateTime date, int fundid,
-            string amount, string checkno, string routing, string account, int? contributionTypeId = null)
+            string amount, string checkno, string routing, string account, int? contributionTypeId = null, int? pid = null, string description = null)
         {
+            string eac = null;
             var bd = NewBundleDetail(db, date, fundid, amount, contributionTypeId);
             bd.Contribution.CheckNo = checkno;
-            int? pid = null;
+
             if (account.HasValue() && !account.Contains("E+"))
             {
-                var eac = Util.Encrypt($"{routing}|{account}");
+                eac = Util.Encrypt($"{routing}|{account}");                               
+                bd.Contribution.BankAccount = eac;
+            }
+
+            if (pid == null && eac != null)
+            {
                 var q = from kc in db.CardIdentifiers
                         where kc.Id == eac
                         select kc.PeopleId;
                 pid = q.SingleOrDefault();
-                bd.Contribution.BankAccount = eac;
             }
+
             if (pid > 0)
                 bd.Contribution.PeopleId = pid;
+
+            if (!string.IsNullOrEmpty(description))
+                bd.Contribution.ContributionDesc = description;
+
             return bd;
         }
 
@@ -96,6 +115,29 @@ namespace CmsData
                              orderby f.FundId
                              select f.FundId).First();
             return firstfund;
+        }
+
+        public static List<Contribution> GetContributions(CMSDataContext db, int[] fundids = null, bool includeReturnedReversed = false, bool includePledges = false)
+        {
+            var fundFlag = fundids.IsNull();
+            var q = (
+                from c in db.Contributions
+                where (!includeReturnedReversed ? !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId) : 1 == 1)
+                && (!includeReturnedReversed ? c.ContributionStatusId != ContributionStatusCode.Returned : 1 == 1)
+                && (!includeReturnedReversed ? c.ContributionStatusId != ContributionStatusCode.Reversed : 1 == 1)
+                && (!includePledges ? c.ContributionTypeId != ContributionTypeCode.Pledge : 1 == 1)
+
+                select c
+                   );
+            return (fundids.IsNotNull()) ? q.Where(x => fundids.Contains(x.FundId)).ToList() : q.ToList();
+        }
+
+        public static List<Contribution> GetContributionsPerYear(CMSDataContext db, int? year, int[] fundids = null, bool includeReturnedReversed = false, bool includePledges = false)
+        {
+            var yearFlag = year.IsNull();
+            return (from c in Contribution.GetContributions(db, fundids, includeReturnedReversed, includePledges)
+                    where (!yearFlag ? c.ContributionDate.Value.Year == (year) : 1 == 1)
+                    select c).ToList();
         }
     }
 }

@@ -175,7 +175,37 @@ namespace CmsData
                 setting.SettingX = value;
             }
         }
+		
+        public Task SetTaskDetails(int id, string name, string value)
+        {
+            var task = Tasks.Single(c => c.Id == id);
+            var field = task.GetType().GetProperty(name);
 
+            switch (name)
+            {
+                case "Due":
+                    if (string.IsNullOrEmpty(value))
+                    {
+                        field.SetValue(task, null);
+                    }
+                    else
+                    {
+                        field.SetValue(task, DateTime.Parse(value));
+                    }
+                    break;
+                case "StatusId":
+                    field.SetValue(task, int.Parse(value));
+                    break;
+                case "ForceCompleteWContact":
+                    field.SetValue(task, bool.Parse(value));
+                    break;
+                default:
+                    field.SetValue(task, value);
+                    break;
+            }
+            return task;
+        }
+		
         public void DeleteSetting(string name)
         {
             var list = HttpRuntime.Cache[Host + "Setting"] as Dictionary<string, string>;

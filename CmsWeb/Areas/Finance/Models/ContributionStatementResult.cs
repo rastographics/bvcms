@@ -1,20 +1,17 @@
-/* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church 
- * Licensed under the GNU General Public License (GPL v2)
- * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
- */
 using CmsData;
 using CmsData.API;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Finance.Models.Report
 {
     public class ContributionStatementResult : ActionResult
     {
+        private CMSDataContext CurrentDatabase;
+
         public int FamilyId { get; set; }
         public int PeopleId { get; set; }
         public int? SpouseId { get; set; }
@@ -28,21 +25,23 @@ namespace CmsWeb.Areas.Finance.Models.Report
         public DateTime ToDate { get; set; }
         public string statementType { get; set; }
 
-        public ContributionStatementResult()
+        public ContributionStatementResult(CMSDataContext db)
         {
+            CurrentDatabase = db;
             useMinAmt = true;
-            noaddressok = !DbUtil.Db.Setting("RequireAddressOnStatement", true);
+            noaddressok = !CurrentDatabase.Setting("RequireAddressOnStatement", true);
 
-            showCheckNo = DbUtil.Db.Setting("RequireCheckNoOnStatement");
-            showNotes = DbUtil.Db.Setting("RequireNotesOnStatement");
+            showCheckNo = CurrentDatabase.Setting("RequireCheckNoOnStatement");
+            showNotes = CurrentDatabase.Setting("RequireNotesOnStatement");
         }
 
         public override void ExecuteResult(ControllerContext context)
         {
             var response = context.HttpContext.Response;
             response.ContentType = "application/pdf";
-            response.AddHeader("content-disposition", "filename=foo.pdf");
-            var cs = ContributionStatements.GetStatementSpecification(DbUtil.Db, statementType ?? "all");
+            var filename = $"Statement-{ToDate:d}".SlugifyString("-", false);
+            response.AddHeader("content-disposition", $"filename={filename}.pdf");
+            var cs = ContributionStatements.GetStatementSpecification(CurrentDatabase, statementType ?? "all");
 
             if (showCheckNo || showNotes)
             {
@@ -62,17 +61,17 @@ namespace CmsWeb.Areas.Finance.Models.Report
                 switch (typ)
                 {
                     case 1:
-                        q = APIContribution.Contributors(DbUtil.Db, FromDate, ToDate, PeopleId, SpouseId, 0, cs.Funds, noaddressok, useMinAmt, singleStatement: singleStatement);
+                        q = APIContribution.Contributors(CurrentDatabase, FromDate, ToDate, PeopleId, SpouseId, 0, cs.Funds, noaddressok, useMinAmt, singleStatement: singleStatement);
                         break;
                     case 2:
-                        FamilyId = DbUtil.Db.People.Single(p => p.PeopleId == PeopleId).FamilyId;
-                        q = APIContribution.Contributors(DbUtil.Db, FromDate, ToDate, 0, 0, FamilyId, cs.Funds, noaddressok, useMinAmt, singleStatement: singleStatement);
+                        FamilyId = CurrentDatabase.People.Single(p => p.PeopleId == PeopleId).FamilyId;
+                        q = APIContribution.Contributors(CurrentDatabase, FromDate, ToDate, 0, 0, FamilyId, cs.Funds, noaddressok, useMinAmt, singleStatement: singleStatement);
                         break;
                     case 3:
-                        q = APIContribution.Contributors(DbUtil.Db, FromDate, ToDate, 0, 0, 0, cs.Funds, noaddressok, useMinAmt, singleStatement: singleStatement);
+                        q = APIContribution.Contributors(CurrentDatabase, FromDate, ToDate, 0, 0, 0, cs.Funds, noaddressok, useMinAmt, singleStatement: singleStatement);
                         break;
                 }
-                c.Run(response.OutputStream, DbUtil.Db, q, cs);
+                c.Run(response.OutputStream, CurrentDatabase, q, cs);
             }
             else
             {
@@ -90,17 +89,17 @@ namespace CmsWeb.Areas.Finance.Models.Report
                 switch (typ)
                 {
                     case 1:
-                        q = APIContribution.Contributors(DbUtil.Db, FromDate, ToDate, PeopleId, SpouseId, 0, cs.Funds, noaddressok, useMinAmt, singleStatement: singleStatement);
+                        q = APIContribution.Contributors(CurrentDatabase, FromDate, ToDate, PeopleId, SpouseId, 0, cs.Funds, noaddressok, useMinAmt, singleStatement: singleStatement);
                         break;
                     case 2:
-                        FamilyId = DbUtil.Db.People.Single(p => p.PeopleId == PeopleId).FamilyId;
-                        q = APIContribution.Contributors(DbUtil.Db, FromDate, ToDate, 0, 0, FamilyId, cs.Funds, noaddressok, useMinAmt, singleStatement: singleStatement);
+                        FamilyId = CurrentDatabase.People.Single(p => p.PeopleId == PeopleId).FamilyId;
+                        q = APIContribution.Contributors(CurrentDatabase, FromDate, ToDate, 0, 0, FamilyId, cs.Funds, noaddressok, useMinAmt, singleStatement: singleStatement);
                         break;
                     case 3:
-                        q = APIContribution.Contributors(DbUtil.Db, FromDate, ToDate, 0, 0, 0, cs.Funds, noaddressok, useMinAmt, singleStatement: singleStatement);
+                        q = APIContribution.Contributors(CurrentDatabase, FromDate, ToDate, 0, 0, 0, cs.Funds, noaddressok, useMinAmt, singleStatement: singleStatement);
                         break;
                 }
-                c.Run(response.OutputStream, DbUtil.Db, q, cs);
+                c.Run(response.OutputStream, CurrentDatabase, q, cs);
             }
         }
     }

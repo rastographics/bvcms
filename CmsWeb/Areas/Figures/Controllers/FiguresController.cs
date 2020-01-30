@@ -1,4 +1,6 @@
-﻿using CmsData;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using CmsData;
 using CmsWeb.Areas.Figures.Models;
 using CmsWeb.Lifecycle;
 using System;
@@ -9,7 +11,7 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.Figures.Controllers
 {
-    public class FiguresController : CMSBaseController
+    public class FiguresController : CmsStaffController
     {
         public List<ProgModel> Programs;
         public ProgViewModel pvm = new ProgViewModel();
@@ -36,7 +38,7 @@ namespace CmsWeb.Areas.Figures.Controllers
         public ActionResult ChartDisplayView(int[] fundIdsArr, int? year)
         {
             var test = new GoogleChartsData();
-            var temp = test.GetFundChartData(fundIdsArr, year).ToList();
+            var temp = test.GetFundChartData(fundIdsArr, year, CurrentDatabase).ToList();
             return View(temp);
         }
 
@@ -65,6 +67,14 @@ namespace CmsWeb.Areas.Figures.Controllers
 
             ViewBag.Years = Years;
             return View();
+        }
+
+        [HttpGet]
+        [Route("~/Figures/GetPrograms")]
+        public JsonResult GetPrograms()
+        {
+            Progs();
+            return Json(Programs, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult ProgramView()

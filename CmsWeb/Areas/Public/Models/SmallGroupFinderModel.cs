@@ -219,10 +219,10 @@ namespace CmsWeb.Areas.Public.Models
 
         public List<FilterItem> getFilterItems(int id)
         {
-            var orgTypes = DbUtil.Db.Setting("SGF-OrgTypes", "").Split(',').Select(x => x.Trim()).Where(x => !string.IsNullOrEmpty(x));
-
             var f = getFilter(id);
             var i = new List<FilterItem>();
+
+            var orgTypes = DbUtil.Db.Setting("SGF-OrgTypes", "").Split(',').Select(x => x.Trim()).Where(x => !string.IsNullOrEmpty(x));
 
             if (f.locked)
             {
@@ -257,8 +257,11 @@ namespace CmsWeb.Areas.Public.Models
                 }
                 else
                 {
+                    var orgExcludes = f.name == "Group Type" || f.name == "SGF:Type" ? (f.exclude?.Split(',') ?? new string[] { }) : new string[] { };
+
                     i = (from e in DbUtil.Db.OrganizationExtras
                          where e.Organization.DivOrgs.Any(ee => _divList.Contains(ee.DivId)) || orgTypes.Contains(e.Organization.OrganizationType.Description)
+                         where !orgExcludes.Contains(e.StrValue)
                          where e.Field == f.name
                          orderby e.Data ??
                              e.StrValue ??
