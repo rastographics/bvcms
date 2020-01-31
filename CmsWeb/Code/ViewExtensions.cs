@@ -985,7 +985,7 @@ namespace CmsWeb
 
         public static HtmlString GoogleFonts()
         {
-            return new HtmlString("<link href=\"//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,400,600,300,700\" rel=\"stylesheet\">\n");
+            return new HtmlString("<link href=\"//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,400,600,300,700\" rel=\"stylesheet\">");
         }
 
         public static HtmlString GoogleAnalytics()
@@ -1058,12 +1058,12 @@ namespace CmsWeb
 
         public static HtmlString FontAwesome()
         {
-            return new HtmlString(@"<link href=""//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"" rel=""stylesheet"">\n");
+            return new HtmlString(@"<link href=""//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"" rel=""stylesheet"">");
         }
 
         public static HtmlString CkEditor()
         {
-            return new HtmlString("<script src=\"//cdn.ckeditor.com/4.5.11/full/ckeditor.js\" type=\"text/javascript\"></script>\n");
+            return new HtmlString("<script src=\"//cdn.ckeditor.com/4.5.11/full/ckeditor.js\" type=\"text/javascript\"></script>");
         }
 
         public static HtmlString UnlayerEditor()
@@ -1073,22 +1073,22 @@ namespace CmsWeb
 
         public static HtmlString jQueryMobile()
         {
-            return IncludeOnce("<script src='//code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js'></script>\n");
+            return IncludeOnce("<script src='//code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js'></script>");
         }
 
         public static HtmlString jQueryMobileCss()
         {
-            return new HtmlString("<link rel='stylesheet' href='//code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css' />\n");
+            return new HtmlString("<link rel='stylesheet' href='//code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css' />");
         }
 
         public static HtmlString jQuery()
         {
-            return IncludeOnce("<script src='//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js'></script>\n");
+            return IncludeOnce("<script src='//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js'></script>");
         }
 
         public static HtmlString jQueryUICss()
         {
-            return new HtmlString("<link rel=\"stylesheet\" href=\"//ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/themes/smoothness/jquery-ui.css\" />\n");
+            return new HtmlString("<link rel=\"stylesheet\" href=\"//ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/themes/smoothness/jquery-ui.css\" />");
         }
 
         public static HtmlString jQueryUI()
@@ -1110,7 +1110,7 @@ namespace CmsWeb
 
         public static HtmlString Moment()
         {
-            return IncludeOnce("<script src=\"//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js\" type=\"text/javascript\"></script>\n");
+            return IncludeOnce("<script src=\"//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js\" type=\"text/javascript\"></script>");
         }
 
         public static HtmlString Jsapi()
@@ -1120,12 +1120,12 @@ namespace CmsWeb
 
         public static HtmlString Humanize()
         {
-            return new HtmlString("<script src=\"//cdnjs.cloudflare.com/ajax/libs/humanize-plus/1.8.2/humanize.min.js\" type=\"text/javascript\"></script>\n");
+            return new HtmlString("<script src=\"//cdnjs.cloudflare.com/ajax/libs/humanize-plus/1.8.2/humanize.min.js\" type=\"text/javascript\"></script>");
         }
 
         public static HtmlString Velocity()
         {
-            return new HtmlString("<script src=\"//cdnjs.cloudflare.com/ajax/libs/velocity/1.2.3/velocity.min.js\" type=\"text/javascript\"></script>\n");
+            return new HtmlString("<script src=\"//cdnjs.cloudflare.com/ajax/libs/velocity/1.2.3/velocity.min.js\" type=\"text/javascript\"></script>");
         }
 
         public static HtmlString LoDash()

@@ -119,10 +119,12 @@ namespace IntegrationTests.Areas.Manage
             Find(text: "Forgot?").Click();
             CurrentUrl.ShouldBe($"{rootUrl}Account/ForgotPassword");
 
-            Find(name: "UsernameOrEmail").SendKeys(username);
-            Find(css: "input[type=submit]").Click();
+            var input = "[name=UsernameOrEmail]";
+            var button = "input[type=submit]";
 
-            WaitForPageLoad();
+            Find(css: input).SendKeys(username);
+            Find(css: button).Click();
+
             PageSource.ShouldContain("Password Sent");
 
             db.Refresh(System.Data.Linq.RefreshMode.OverwriteCurrentValues, user);
@@ -135,7 +137,7 @@ namespace IntegrationTests.Areas.Manage
 
             Find(id: "newPassword").SendKeys(newPassword);
             Find(id: "confirmPassword").SendKeys(newPassword);
-            Find(css: "input[type=submit]").Click();
+            Find(css: button).Click();
             PageSource.ShouldContain("Password Changed");
 
             Find(text: "Return to Home").Click();
