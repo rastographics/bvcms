@@ -1,10 +1,3 @@
-/* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church
- * Licensed under the GNU General Public License (GPL v2)
- * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license
- */
-
 using CmsData;
 using CmsWeb.Areas.OnlineReg.Models;
 using CmsWeb.Code;
@@ -770,7 +763,7 @@ namespace CmsWeb
             var normal = html.ValidationMessageFor(expression);
             if (normal != null)
             {
-                var newValidator = Regex.Replace(normal.ToHtmlString(), @"<span([^>]*)>([^<]*)</span>", $"<label for=\"{elementId}\" $1>$2</label>", RegexOptions.IgnoreCase);
+                var newValidator = Regex.Replace(normal.ToHtmlString(), @"<span([^>]*)>([^<]*)</span>", $@"<label for=""{elementId}"" $1>$2</label>", RegexOptions.IgnoreCase);
                 if (!string.IsNullOrWhiteSpace(errorClass))
                 {
                     newValidator = newValidator.Replace("field-validation-error", errorClass);
@@ -985,7 +978,7 @@ namespace CmsWeb
 
         public static HtmlString GoogleFonts()
         {
-            return new HtmlString("<link href=\"//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,400,600,300,700\" rel=\"stylesheet\">");
+            return new HtmlString(@"<link href=""//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,400,600,300,700"" rel=""stylesheet"">");
         }
 
         public static HtmlString GoogleAnalytics()
@@ -1011,12 +1004,12 @@ namespace CmsWeb
 
         public static HtmlString GoogleCharts()
         {
-            return IncludeOnce("<script type=\"text/javascript\" src=\"https://www.gstatic.com/charts/loader.js\"></script>");
+            return IncludeOnce(@"<script type=""text/javascript"" src=""https://www.gstatic.com/charts/loader.js""></script>");
         }
 
         public static HtmlString GoogleReCaptcha()
         {
-            return IncludeOnce("<script src=\"https://www.google.com/recaptcha/api.js\"></script>");
+            return IncludeOnce(@"<script src=""https://www.google.com/recaptcha/api.js""></script>");
         }
 
         public static HtmlString OldStyles()
@@ -1063,32 +1056,32 @@ namespace CmsWeb
 
         public static HtmlString CkEditor()
         {
-            return new HtmlString("<script src=\"//cdn.ckeditor.com/4.5.11/full/ckeditor.js\" type=\"text/javascript\"></script>");
+            return new HtmlString(@"<script src=""//cdn.ckeditor.com/4.5.11/full/ckeditor.js"" type=""text/javascript""></script>");
         }
 
         public static HtmlString UnlayerEditor()
         {
-            return new HtmlString("<script src=\"//editor.unlayer.com/embed.js\"></script>");
+            return new HtmlString(@"<script src=""//editor.unlayer.com/embed.js""></script>");
         }
 
         public static HtmlString jQueryMobile()
         {
-            return IncludeOnce("<script src='//code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js'></script>");
+            return IncludeOnce(@"<script src=""//code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js""></script>");
         }
 
         public static HtmlString jQueryMobileCss()
         {
-            return new HtmlString("<link rel='stylesheet' href='//code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css' />");
+            return new HtmlString(@"<link rel=""stylesheet"" href=""//code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css"" />");
         }
 
         public static HtmlString jQuery()
         {
-            return IncludeOnce("<script src='//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js'></script>");
+            return IncludeOnce(@"<script src=""//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js""></script>");
         }
 
         public static HtmlString jQueryUICss()
         {
-            return new HtmlString("<link rel=\"stylesheet\" href=\"//ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/themes/smoothness/jquery-ui.css\" />");
+            return new HtmlString(@"<link rel=""stylesheet"" href=""//ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/themes/smoothness/jquery-ui.css"" />");
         }
 
         public static HtmlString jQueryUI()
@@ -1110,7 +1103,7 @@ namespace CmsWeb
 
         public static HtmlString Moment()
         {
-            return IncludeOnce("<script src=\"//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js\" type=\"text/javascript\"></script>");
+            return IncludeOnce(@"<script src=""//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"" type=""text/javascript""></script>");
         }
 
         public static HtmlString Jsapi()
@@ -1120,12 +1113,12 @@ namespace CmsWeb
 
         public static HtmlString Humanize()
         {
-            return new HtmlString("<script src=\"//cdnjs.cloudflare.com/ajax/libs/humanize-plus/1.8.2/humanize.min.js\" type=\"text/javascript\"></script>");
+            return new HtmlString(@"<script src=""//cdnjs.cloudflare.com/ajax/libs/humanize-plus/1.8.2/humanize.min.js"" type=""text/javascript""></script>");
         }
 
         public static HtmlString Velocity()
         {
-            return new HtmlString("<script src=\"//cdnjs.cloudflare.com/ajax/libs/velocity/1.2.3/velocity.min.js\" type=\"text/javascript\"></script>");
+            return new HtmlString(@"<script src=""//cdnjs.cloudflare.com/ajax/libs/velocity/1.2.3/velocity.min.js"" type=""text/javascript""></script>");
         }
 
         public static HtmlString LoDash()
