@@ -122,10 +122,10 @@ namespace IntegrationTests.Areas.Manage
             var input = "[name=UsernameOrEmail]";
             var button = "input[type=submit]";
 
-            Find(css: input).SendKeys(username);
-            Find(css: button).Click();
-
-            PageSource.ShouldContain("Password Sent");
+            RepeatUntil(() => {
+                Find(css: input).SendKeys(username);
+                Find(css: button).Click();
+            }, () => PageSource.Contains("Password Sent"));
 
             db.Refresh(System.Data.Linq.RefreshMode.OverwriteCurrentValues, user);
             user.ResetPasswordCode.ShouldNotBeNull();
@@ -141,6 +141,7 @@ namespace IntegrationTests.Areas.Manage
             PageSource.ShouldContain("Password Changed");
 
             Find(text: "Return to Home").Click();
+            WaitForPageLoad();
 
             Logout();
             Login(withPassword: newPassword);
