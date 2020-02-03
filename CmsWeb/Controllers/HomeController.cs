@@ -141,7 +141,7 @@ namespace CmsWeb.Controllers
         }
         public ActionResult OnlineRegTypeSearchAdd(bool id)
         {
-            Util2.SetSessionObj("OnlineRegTypeSearchAdd", id ? "false" : "true");
+            Util.SetValueInSession("OnlineRegTypeSearchAdd", id ? "false" : "true");
             CurrentDatabase.SubmitChanges();
             if (Request.UrlReferrer != null)
             {
