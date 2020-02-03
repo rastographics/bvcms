@@ -373,6 +373,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Areas\CheckIn\CheckInAreaRegistration.cs" />
     <Compile Include="Areas\CheckIn\Models\CheckinTimeModel.cs" />
     <Compile Include="App_Start\ApiMessageLoggingHandler.cs" />
     <Compile Include="App_Start\ApiAuthorizeAttribute.cs" />
@@ -642,6 +643,7 @@
     <Compile Include="Areas\Public\Models\CheckInAPIv2\AttendanceGroup.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPIv2\Caching\AttendanceCacheSet.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPIv2\Campus.cs" />
+    <Compile Include="Areas\Public\Models\CheckInAPIv2\OrgMembership.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPIv2\Profile.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPIv2\Country.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPIv2\Gender.cs" />
@@ -1131,7 +1133,7 @@
     <Compile Include="Services\ITokenizationService.cs" />
     <Compile Include="Services\LoggingService.cs" />
     <Compile Include="Services\TokenizationService.cs" />
-    <None Include="Areas\CheckIn\Views\CheckIn\LogOut.cshtml" />
+    <Content Include="Areas\CheckIn\Views\CheckIn\LogOut.cshtml" />
     <Content Include="Areas\Dialog\Views\AddToOrgFromTag\Index.cshtml" />
     <Content Include="Areas\Figures\Views\Figures\AttendanceChartDisplayView.cshtml" />
     <Content Include="Areas\Figures\Views\Figures\ChartDisplayView.cshtml" />
@@ -1871,7 +1873,7 @@
     <Content Include="Areas\Manage\Views\Involvement\Index.cshtml" />
     <Content Include="Areas\Manage\Views\Involvement\_EditTab.cshtml" />
     <Content Include="Areas\Org\Views\Org\Settings\CheckIn.cshtml" />
-    <Content Include="Areas\CheckIn\Views\CheckIn\CheckIn.cshtml" />
+    <Content Include="Areas\CheckIn\Views\CheckIn\Index.cshtml" />
     <Content Include="Areas\CheckIn\Views\Web.config" />
     <Content Include="Areas\CheckIn\Views\CheckinSetup\Index.cshtml" />
     <Content Include="Areas\People\Views\Shared\CombineGiving.cshtml" />

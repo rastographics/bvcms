@@ -65,7 +65,7 @@ namespace CmsWeb {
         ///&lt;p&gt;Your username is: {username}&lt;/p&gt;
         ///&lt;p&gt;If you did not request this, please disregard this message.&lt;/p&gt;
         ///&lt;p&gt;Thanks,&lt;br /&gt;
-        ///The bvCMS Team&lt;/p&gt;
+        ///The TouchPoint Team&lt;/p&gt;
         ///.
         /// </summary>
         public static string AccountController_ForgotUsername {
@@ -80,7 +80,7 @@ namespace CmsWeb {
         ///You may try a different email address, or contact the church.&lt;/p&gt;
         ///&lt;p&gt;If this is a mistake, please disregard this message, your password will not be changed.&lt;/p&gt;
         ///&lt;p&gt;Thanks,&lt;br /&gt;
-        ///The BVCMS Team&lt;/p&gt;
+        ///The TouchPoint Team&lt;/p&gt;
         ///.
         /// </summary>
         public static string AccountModel_ForgotPasswordBadEmail {
@@ -95,7 +95,7 @@ namespace CmsWeb {
         ///&lt;blockquote&gt;&lt;a href=&quot;{resetlink}&quot;&gt;New Password&lt;/a&gt;&lt;/blockquote&gt;
         ///&lt;p&gt;If this is a mistake, please disregard this message, your password will not be changed.&lt;/p&gt;
         ///&lt;p&gt;Thanks,&lt;br /&gt;
-        ///The BVCMS Team&lt;/p&gt;
+        ///The TouchPoint Team&lt;/p&gt;
         ///.
         /// </summary>
         public static string AccountModel_ForgotPasswordReset {
@@ -110,7 +110,7 @@ namespace CmsWeb {
         ///&lt;blockquote&gt;{resetlink}&lt;/blockquote&gt;
         ///&lt;p&gt;If this is a mistake, please disregard this message, your password will not be changed.&lt;/p&gt;
         ///&lt;p&gt;Thanks,&lt;br /&gt;
-        ///The BVCMS Team&lt;/p&gt;
+        ///The TouchPoint Team&lt;/p&gt;
         ///.
         /// </summary>
         public static string AccountModel_ForgotPasswordReset2 {

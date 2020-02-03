@@ -16,17 +16,13 @@
       <table>
         <tr>
           <td style='{{LabelStyle}}'>Registrant Fee</td>
-          {{#if HasDonation}}
-            <td style='{{LabelStyle}}'>Donation</td>
-          {{/if}}
-          <td style='{{LabelStyle}}'>Amount Paid</td>
+          <td align='right' style='{{DataStyle}}'>{{AmtFee}}</td>
         </tr>
         <tr>
-          <td align='right' style='{{DataStyle}}'>{{AmtFee}}</td>
           {{#if HasDonation}}
+            <td style='{{LabelStyle}}'>Donation</td>
             <td align='right' style='{{DataStyle}}'>{{AmtDonation}}</td>
           {{/if}}
-          <td align='right' style='{{DataStyle}}'>{{AmtPaid}}</td>
         </tr>
       </table>
     </td>

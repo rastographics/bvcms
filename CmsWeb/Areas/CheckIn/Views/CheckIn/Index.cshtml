@@ -1,0 +1,378 @@
+﻿@using CmsWeb
+@using UtilityExtensions
+@{
+    Layout = ViewExtensions2.TouchPointLayoutWithoutHeaderFooter();
+    ViewBag.Title = ViewExtensions2.DbSetting("NameOfChurch", Util.Host) + " Check In";
+}
+@section head
+{
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-keyboard@latest/build/css/index.css">
+    @Fingerprint.Css("/Content/touchpoint/css/checkin.css")
+}
+<noscript>You've reached the @ViewExtensions2.DbSetting("NameOfChurch", Util.Host) check in portal. JavaScript is required, please enable JavaScript in your browser settings.</noscript>
+<div class="CheckInLoading">Loading. Please wait...</div>
+<div class="checkin" oncontextmenu="return false" style="display:none;">
+    <div id="CheckInApp" :style="customStyles">
+        <div v-if="view == 'login'" class="login">
+            <h2 class="form-header text-center">@ViewExtensions2.DbSetting("NameOfChurch", Util.Host) Check In</h2>
+            <form v-on:submit.prevent="auth" class="panel panel-default">
+                <div class="form-group">
+                    <label for="username">Sign In As</label>
+                    <input type="text" name="username" class="form-control input-lg" placeholder="username or email" required="required" autocomplete="off" autocapitalize="off" autocorrect="off" v-model="user.name" />
+                </div>
+                <div class="form-group">
+                    <input type="password" name="password" class="form-control input-lg" placeholder="password" required="required" v-model="user.password" />
+                </div>
+                <div class="form-group">
+                    <label for="kiosk">Kiosk Name</label>
+                    <input type="text" name="kiosk" class="form-control input-lg" placeholder="KioskName" required="required" pattern="[^\s]+" title="Used to identify this kiosk when printing. No spaces." v-model="kiosk.name" />
+                </div>
+                <div class="form-group">
+                    <label for="profile">Kiosk Profile</label>
+                    <select class="form-control input-lg" name="profile" id="profile" v-model="kiosk.profile">
+                        <option v-for="profile in profiles" :value="profile.id">{{ profile.name }}</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <input type="submit" value="Sign In" class="btn btn-primary btn-block btn-lg">
+                </div>
+            </form>
+        </div>
+        <div v-else-if="view == 'landing'" class="landing phone">
+            <h2 class="text-center">Enter your phone number</h2>
+            <form v-on:submit.prevent="find">
+                <input type="tel" name="phone" v-model="search" autocomplete="off" class="keyboard-input" />
+                <div class="simple-keyboard"></div>
+            </form>
+            <div v-if="profile.Testing" class="action-bar">
+                <div class="content">
+                    <button v-on:click="scannerTest" class="btn btn-light pull-left" style="margin-right:20px;">Test Scanner</button>
+                    <span class="clearfix"></span>
+                </div>
+            </div>
+        </div>
+        <div v-else-if="view == 'admin'" class="landing admin">
+            <h2 class="text-center">Enter your admin PIN</h2>
+            <form v-on:submit.prevent="find">
+                <input type="tel" name="phone" v-model="search" autocomplete="off" class="keyboard-input" />
+                <div class="simple-keyboard"></div>
+            </form>
+            <div class="action-bar">
+                <div class="content">
+                    <button v-on:click="loadView('checkin')" class="btn btn-light pull-left" style="margin-right:20px;">Cancel</button>
+                    <span class="clearfix"></span>
+                </div>
+            </div>
+        </div>
+        <div v-else-if="view == 'namesearch'" class="landing namesearch">
+            <h2 class="text-center">Enter a name or phone number</h2>
+            <form v-on:submit.prevent="find">
+                <input type="text" name="name" v-model="search" autocomplete="off" class="keyboard-input" style="caret-color: auto;" />
+            </form>
+            <div class="action-bar">
+                <div class="content">
+                    <button v-on:click="find" class="btn btn-success pull-right">Search</button>
+                    <button v-if="lastSearch" v-on:click="useLastSearch" class="btn btn-light pull-right" style="margin-right:20px;">Run Last Search</button>
+                    <button v-on:click="leaveAdminMode" class="btn btn-light pull-right" style="margin-right:20px;">Return</button>
+                    <span class="clearfix"></span>
+                </div>
+            </div>
+        </div>
+        <div v-else-if="view == 'families'" class="families results">
+            <div class="row header-bar">
+                <div class="col-xs-12 text-center">
+                    <h2 style="font-weight:300;">Choose your family</h2>
+                </div>
+            </div>
+            <div class="row">
+                <template v-for="family in families">
+                    <div class="col-xs-12 col-md-6 family">
+                        <h4 v-on:click="selectFamily(family)">
+                            <a>{{ family.name }} Family</a>
+                        </h4>
+                    </div>
+                </template>
+            </div>
+            <div class="action-bar">
+                <div class="content">
+                    <button class="btn btn-info pull-right" v-on:click="loadView('landing')">Return</button>
+                    <button v-if="adminMode" v-on:click="addPerson" class="btn btn-light pull-right" style="margin-right:20px;">Add New Person</button>
+                    <span class="clearfix"></span>
+                </div>
+            </div>
+        </div>
+        <div v-else-if="view == 'classes'" class="classes results">
+            <div class="row header-bar">
+                <div class="col-xs-12 text-center">
+                    <h2 style="font-weight:300;">
+                        Choose a class to {{ classData.member == 1 ? 'join' : 'visit' }}
+                    </h2>
+                </div>
+            </div>
+            <div class="row">
+                <template v-for="org in classes">
+                    <div class="col-xs-12 col-md-6 class">
+                        <div v-on:click="updateMembership(editingPerson, org, classData.member, true)">
+                            <a style="font-size: 12px; margin-bottom: 5px;">{{ org.date | formatTime }} <span v-if="org.location">- {{ org.location }}</span></a>
+                            <h4>{{ org.name }}<span v-if="org.leaderName"> ({{ org.leaderName }})</span></h4>
+                        </div>
+                    </div>
+                </template>
+            </div>
+            <div class="action-bar">
+                <div class="content">
+                    <button class="btn btn-info pull-right" v-on:click="loadView('checkin')">Return</button>
+                    <button v-if="classData.showAll == 0" v-on:click="getClasses(editingPerson, 1)" class="btn btn-light pull-right" style="margin-right:20px;">Show All</button>
+                    <span class="clearfix"></span>
+                </div>
+            </div>
+        </div>
+        <div v-else-if="view == 'editperson'" class="editperson results">
+            <div class="row header-bar">
+                <div class="col-xs-12 text-center">
+                    <h2 style="font-weight:300;">
+                        <span v-if="editingPerson.id">Update Person Info</span>
+                        <span v-else-if="editingPerson.familyID">Add Person to Family</span>
+                        <span v-else>Add Person</span>
+                    </h2>
+                </div>
+            </div>
+            <div class="row">
+                <form class="form" v-on:submit.prevent="savePerson">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label" for="firstName">First Name</label>
+                            <div class="controls">
+                                <input class="form-control" id="firstName" name="firstName" type="text" v-model="editingPerson.firstName" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label" for="lastName">Last Name</label>
+                            <div class="controls">
+                                <input class="form-control" id="lastName" name="lastName" type="text" v-model="editingPerson.lastName" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label" for="goesBy">Goes By</label>
+                            <div class="controls">
+                                <input class="form-control" id="goesBy" name="goesBy" type="text" v-model="editingPerson.goesBy" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <div class="controls">
+                                <label class="control-label" for="genderID">Gender</label>
+                                <select class="form-control" id="genderID" name="genderID" v-model="editingPerson.genderID">
+                                    <option v-for="gender in profile.genders" :value="gender.id">{{ gender.name }}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <div class="controls">
+                                <label class="control-label" for="maritalStatusID">Marital Status</label>
+                                <select class="form-control" id="maritalStatusID" name="maritalStatusID" v-model="editingPerson.maritalStatusID">
+                                    <option v-for="status in profile.maritals" :value="status.id">{{ status.name }}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label" for="birthday">Birthday</label>
+                            <div class="controls">
+                                <input class="form-control" id="birthday" name="birthday" type="date" v-model="editingPerson.birthday" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label" for="allergies">Allergies</label>
+                            <div class="controls">
+                                <input class="form-control" id="allergies" name="allergies" type="text" v-model="editingPerson.allergies" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label" for="primaryEmail">Email</label>
+                            <div class="controls">
+                                <input class="form-control" id="primaryEmail" name="primaryEmail" type="email" v-model="editingPerson.primaryEmail" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label" for="mobilePhone">Cell Phone</label>
+                            <div class="controls">
+                                <input class="form-control" id="mobilePhone" name="mobilePhone" type="tel" v-model="editingPerson.mobilePhone" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label" for="homePhone">Home Phone</label>
+                            <div class="controls">
+                                <input class="form-control" id="homePhone" name="homePhone" type="tel" v-model="editingPerson.homePhone" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label" for="emergencyName">Emergency Contact</label>
+                            <div class="controls">
+                                <input class="form-control" id="emergencyName" name="emergencyName" type="text" v-model="editingPerson.emergencyName" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label" for="emergencyPhone">Emergency Contact Phone</label>
+                            <div class="controls">
+                                <input class="form-control" id="emergencyPhone" name="emergencyPhone" type="tel" v-model="editingPerson.emergencyPhone" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label" for="address">Address</label>
+                            <div class="controls">
+                                <input class="form-control" id="address" name="address" type="text" v-model="editingPerson.address" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label" for="address2">Address 2</label>
+                            <div class="controls">
+                                <input class="form-control" id="address2" name="address2" type="text" v-model="editingPerson.address2" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label" for="city">City</label>
+                            <div class="controls">
+                                <input class="form-control" id="city" name="city" type="text" v-model="editingPerson.city" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <div class="controls">
+                                <label class="control-label" for="state">State</label>
+                                <select class="form-control" id="state" name="state" v-model="editingPerson.state">
+                                    <option v-for="state in profile.states" :value="state.code">{{ state.name }}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label" for="zipCode">Zip</label>
+                            <div class="controls">
+                                <input class="form-control" id="zipCode" name="zipCode" type="text" v-model="editingPerson.zipCode" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <div class="controls">
+                                <label class="control-label" for="country">Country</label>
+                                <select class="form-control" id="country" name="country" v-model="editingPerson.country">
+                                    <option v-for="country in profile.countries" :value="country.id">{{ country.name }}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="action-bar">
+                <div class="content">
+                    <button class="btn btn-success pull-right" v-on:click="savePerson()">Save</button>
+                    <button class="btn btn-light pull-right" v-on:click="loadView('checkin')" style="margin-right:20px;">Cancel</button>
+                    <span class="clearfix"></span>
+                </div>
+            </div>
+        </div>
+        <div v-else-if="view == 'checkin'" class="results">
+            <div class="row header-bar">
+                <div class="col-xs-12 text-center">
+                    <h2 style="font-weight:300;" v-on:click="loadView('admin')">Check-In</h2>
+                </div>
+            </div>
+            <form v-on:submit.prevent="updateAttendance">
+                <div class="row">
+                    <div v-for="member in members" class="member col-xs-12 col-md-6">
+                        <div class="portrait-container">
+                            <div class="member-portrait" :style="portraitStyles(member)"></div>
+                        </div>
+                        <div class="member-details">
+                            <div class="h4 name">
+                                {{ member.name }} <span v-if="member.altName.length">({{ member.altName }})</span>
+                                <span class="badge badge-info" v-if="member.age > 0 && member.age < profile.CutoffAge">{{ member.age }}</span>
+                                <div class="btn-group" v-if="adminMode">
+                                    <button type="button" class="btn btn-sm btn-light dropdown-toggle pull-left" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        edit <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" v-on:click="editPerson(member)">Edit person</a></li>
+                                        <li><a class="dropdown-item" v-on:click="visitClass(member)">Visit class</a></li>
+                                        <li><a class="dropdown-item" v-on:click="joinClass(member)">Join class</a></li>
+                                        <li><a class="dropdown-item" v-on:click="showDropOption = member.id">Drop class</a></li>
+                                        <li><a class="dropdown-item" v-on:click="addToFamily">Add to family</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div v-for="group in member.groups" :class="{ 'disabled': attendance[member.id + '.' + group.id + '.' + group.date].disabled === true }">
+                                <div v-on:click="toggleAttendance(member.id, group.id, group.date)" :class="{ 'primary': attendance[member.id + '.' + group.id + '.' + group.date].status == 2, 'active': attendance[member.id + '.' + group.id + '.' + group.date].status == 1, 'check-container': true }">
+                                    <div>
+                                        <span class="check-label">
+                                            <i class="fa fa-check icon"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div v-on:click="toggleAttendance(member.id, group.id, group.date)" class="member-info">
+                                    <p style="font-size: 12px; margin-bottom: 5px;">{{ group.date | formatDate }} <span class="badge badge-success" v-if="group.guest">Guest</span></p>
+                                    <p>{{ group.name }}<span v-if="group.leaderName.length">, {{ group.leaderName }}</span> <a v-if="showDropOption == member.id && !group.guest" v-on:click.prevent="dropClass(member, group)" class="text-danger">Drop class</a></p>
+                                </div>
+                                <span class="clearfix"></span>
+                            </div>
+                            <div v-if="member.groups.length == 0">
+                                <p>No self check-in available.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="action-bar">
+                <div class="content">
+                    <button v-on:click="checkAllAttendance" class="btn btn-light pull-left">Check All</button>
+
+                    <div style="display:inline-block;position:relative;left: 20px;">
+                        <i v-on:click="toggleReprintAll" :class="[reprintLabels ? 'fa-check-square-o' : 'fa-square-o', 'fa', 'fa-2x']" style="margin-top:3px;width:30px;"></i><span v-on:click="toggleReprintAll" style="position:relative;top:-5px;">Reprint all labels</span>
+                    </div>
+                    <button v-if="attendanceUpdated" v-on:click="updateAttendance" class="btn btn-success pull-right">Check In</button>
+                    <button v-else type="submit" v-on:click="updateAttendance" class="btn btn-info pull-right">Return</button>
+                </div>
+            </div>
+        </div>
+        <div v-else class="loading">
+            <div class="panel panel-default">
+                <p>Loading, please wait...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    @*<script src="https://cdn.jsdelivr.net/npm/v-mask/dist/v-mask.min.js"></script>*@
+    <script src="https://cdn.jsdelivr.net/npm/simple-keyboard@latest/build/index.min.js"></script>
+    @Fingerprint.Script("/Content/touchpoint/js/checkin.js")
+}

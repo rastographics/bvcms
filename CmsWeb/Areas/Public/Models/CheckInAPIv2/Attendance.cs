@@ -131,7 +131,7 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 			foreach( AttendanceGroup group in groups ) {
 				member = cacheSet.getOrganizationMember( group.groupID, peopleID );
 
-				if( member != null ) {
+				if( member == null ) {
 					yield return group;
 				}
 			}
