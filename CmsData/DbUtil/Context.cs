@@ -10,6 +10,7 @@ using System.Data.Linq.Mapping;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Linq;
+using MoreLinq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -2022,6 +2023,47 @@ This search uses multiple steps which cannot be duplicated in a single query.
             // The following will clean out any tags that no longer have a corresponding F99:name in the queries
             ExecuteCommand("dbo.DeleteOldQueryBitTags");
         }
+
+        public void RetrieveBatchData()  // code has mostly been moved over from CmsWeb.Models.TransactionsModel.cs with some cleanup
+        {
+            IGateway[] gateways = {
+                Gateway(false, null, PaymentProcessTypes.OneTimeGiving, false),
+                Gateway(false, null, PaymentProcessTypes.OnlineRegistration, false),
+                Gateway(false, null, PaymentProcessTypes.RecurringGiving, false)
+            };
+
+            var today = DateTime.Now;
+            var yesterday = today.AddDays(-1);
+
+            var transactions
+                = from t in ViewTransactionLists
+                join org in Organizations on t.OrgId equals org.OrganizationId
+                select t;
+
+            foreach (var gateway in gateways.Where(g => g.IsNotNull()).DistinctBy(g => g.Identifier))
+            {
+                if (gateway.IsNull() || !gateway.CanGetSettlementDates)
+                {
+                    return;
+                }
+
+                if (gateway.UseIdsForSettlementDates)
+                {
+                    var tranids = (from t in transactions
+                        where t.TransactionDate >= yesterday
+                        where t.TransactionDate <= today
+                        where t.Settled == null
+                        where t.Moneytran == true
+                        select t.TransactionId).ToList();
+                    gateway.CheckBatchSettlements(tranids);
+                }
+                else
+                {
+                    gateway.CheckBatchSettlements(yesterday, today);
+                }
+            }
+        }
+
         [Function(Name = "dbo.TagRecentStartAttend")]
         public int TagRecentStartAttend(
             [Parameter(DbType = "Int")] int progid,
