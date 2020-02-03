@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
-using System.Threading;
 using UtilityExtensions;
 
 namespace CmsData
@@ -25,55 +24,21 @@ namespace CmsData
 
         private static CMSDataContext Db => CMSDataContext.Create(HttpContextFactory.Current);
 
-        public static object GetSessionObj(string key, object def = null)
-        {
-            if (HttpContextFactory.Current != null && HttpContextFactory.Current.Session != null)
-            {
-                if (HttpContextFactory.Current.Session[key] != null)
-                {
-                    return HttpContextFactory.Current.Session[key];
-                }
-
-                return def;
-            }
-            else
-            {
-                var threadData = Thread.GetData(Thread.GetNamedDataSlot(key));
-                if (threadData != null)
-                {
-                    return threadData;
-                }
-            }
-            return def;
-        }
-
-        public static void SetSessionObj(string key, object value)
-        {
-            if (HttpContextFactory.Current != null && HttpContextFactory.Current.Session != null)
-            {
-                HttpContextFactory.Current.Session[key] = value;
-            }
-            else
-            {
-                Thread.SetData(Thread.GetNamedDataSlot(key), value);
-            }
-        }
-
         public static string CurrentTag
         {
-            get => GetSessionObj(STR_CurrentTag, STR_DefaultTag).ToString();
-            set => SetSessionObj(STR_CurrentTag, value);
+            get => Util.GetFromSession(STR_CurrentTag, STR_DefaultTag).ToString();
+            set => Util.SetValueInSession(STR_CurrentTag, value);
         }
 
         public static int? CurrentOrgId
         {
-            get => GetSessionObj(STR_ActiveOrganizationId) as int?;
-            set => SetSessionObj(STR_ActiveOrganizationId, value);
+            get => Util.GetFromSession(STR_ActiveOrganizationId) as int?;
+            set => Util.SetValueInSession(STR_ActiveOrganizationId, value);
         }
 
         public static int[] CurrentGroups
         {
-            get => (int[])GetSessionObj(STR_ActiveGroupId, new int[] { 0 });
+            get => (int[])Util.GetFromSession(STR_ActiveGroupId, new int[] { 0 });
             set
             {
                 if (value == null)
@@ -81,29 +46,29 @@ namespace CmsData
                     value = new int[] { 0 };
                 }
 
-                SetSessionObj(STR_ActiveGroupId, value);
+                Util.SetValueInSession(STR_ActiveGroupId, value);
             }
         }
 
         public static string CurrentGroupsPrefix
         {
-            get => (string)GetSessionObj(STR_ActiveGroupPrefix, null);
-            set => SetSessionObj(STR_ActiveGroupPrefix, value);
+            get => (string)Util.GetFromSession(STR_ActiveGroupPrefix, null);
+            set => Util.SetValueInSession(STR_ActiveGroupPrefix, value);
         }
 
         public static int CurrentGroupsMode
         {
-            get => (int)GetSessionObj(STR_ActiveGroupMode, 0);
-            set => SetSessionObj(STR_ActiveGroupMode, value);
+            get => (int)Util.GetFromSession(STR_ActiveGroupMode, 0);
+            set => Util.SetValueInSession(STR_ActiveGroupMode, value);
         }
 
         public static int CurrentPeopleId
         {
-            get => GetSessionObj(STR_ActivePersonId, 0).ToInt();
-            set => SetSessionObj(STR_ActivePersonId, value);
+            get => Util.GetFromSession(STR_ActivePersonId, 0).ToInt();
+            set => Util.SetValueInSession(STR_ActivePersonId, value);
         }
 
-        public static string FromMobile => (string)GetSessionObj(STR_FromMobile, null);
+        public static string FromMobile => (string)Util.GetFromSession(STR_FromMobile, null);
 
         public static int? CurrentTagOwnerId
         {
@@ -149,20 +114,20 @@ namespace CmsData
 
         public static bool OrgLeadersOnly
         {
-            get => (bool)GetSessionObj(STR_OrgLeadersOnly, false);
-            set => SetSessionObj(STR_OrgLeadersOnly, value);
+            get => (bool)Util.GetFromSession(STR_OrgLeadersOnly, false);
+            set => Util.SetValueInSession(STR_OrgLeadersOnly, value);
         }
 
         public static bool OrgLeadersOnlyChecked
         {
-            get => (bool)GetSessionObj(STR_OrgLeadersOnlyChecked, false);
-            set => SetSessionObj(STR_OrgLeadersOnlyChecked, value);
+            get => (bool)Util.GetFromSession(STR_OrgLeadersOnlyChecked, false);
+            set => Util.SetValueInSession(STR_OrgLeadersOnlyChecked, value);
         }
 
         public static int VisitLookbackDays
         {
-            get => GetSessionObj(STR_VisitLookbackDays, 180).ToInt();
-            set => SetSessionObj(STR_VisitLookbackDays, value);
+            get => Util.GetFromSession(STR_VisitLookbackDays, 180).ToInt();
+            set => Util.SetValueInSession(STR_VisitLookbackDays, value);
         }
 
         [Serializable]
@@ -176,7 +141,7 @@ namespace CmsData
         {
             get
             {
-                var mru = (List<MostRecentItem>)GetSessionObj(STR_MostRecentOrgs, null);
+                var mru = (List<MostRecentItem>)Util.GetFromSession(STR_MostRecentOrgs, null);
                 if (mru == null)
                 {
                     mru = (from i in Db.MostRecentItems(Util.UserId)
@@ -192,7 +157,7 @@ namespace CmsData
         {
             get
             {
-                var mru = (List<MostRecentItem>)GetSessionObj(STR_MostRecentPeople, null);
+                var mru = (List<MostRecentItem>)Util.GetFromSession(STR_MostRecentPeople, null);
                 if (mru == null)
                 {
                     mru = (from i in Db.MostRecentItems(Util.UserId)
@@ -206,7 +171,7 @@ namespace CmsData
 
         public static bool TargetLinkPeople => Db.UserPreference("TargetLinkPeople", true);
         public static bool TargetLinkOrg => Db.UserPreference("TargetLinkOrg", true);
-        public static bool OnlineRegTypeSearchAdd => GetSessionObj("OnlineRegTypeSearchAdd", false).ToBool();
+        public static bool OnlineRegTypeSearchAdd => Util.GetFromSession("OnlineRegTypeSearchAdd", false).ToBool();
 
         public static string CampusLabel => Db.Setting("CampusLabel", "Campus");
 

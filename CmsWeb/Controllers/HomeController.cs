@@ -187,7 +187,7 @@ namespace CmsWeb.Controllers
         [HttpGet, Route("~/Preferences")]
         public ActionResult UserPreferences()
         {
-            return View(CurrentDatabase.CurrentUser);
+            return View(CurrentDatabase.CurrentUser.Preferences.ToList());
         }
 
         [HttpGet, Route("~/Home/Support2")]
