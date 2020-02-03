@@ -860,7 +860,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
         }
         public Tag OrgLeadersOnlyTag2()
         {
-            return FetchOrCreateTag(Util.SessionId, Util.UserPeopleId ?? Util.UserId1, DbUtil.TagTypeId_OrgLeadersOnly);
+            return FetchOrCreateTag(Util.SessionId, Util.UserPeopleId, DbUtil.TagTypeId_OrgLeadersOnly);
         }
 
         public Tag FetchOrCreateTag(string tagname, int? ownerId, int tagtypeid)

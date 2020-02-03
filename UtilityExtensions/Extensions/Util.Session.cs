@@ -58,7 +58,7 @@ namespace UtilityExtensions
             {
                 value = Thread.GetData(Thread.GetNamedDataSlot(name));
             }
-            return value;
+            return value ?? defaultValue;
         }
 
         private const string STR_ActivePerson = "ActivePerson";
