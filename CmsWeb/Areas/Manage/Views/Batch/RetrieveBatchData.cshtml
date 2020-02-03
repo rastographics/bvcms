@@ -1,0 +1,38 @@
+﻿@{
+    ViewBag.Title = "Retrieve Batch Data";
+    ViewBag.PageHeader = "Retrieve Batch Data";
+    Layout = ViewExtensions2.TouchPointLayout();
+}
+<div class="alert alert-success" style="display: none;">
+    <strong>Success!</strong> <span id="success-message"></span>
+</div>
+<form id="retrieve-batch-data">
+    <div class="alert alert-warning">
+        <h4>Batch Data</h4>
+        <p>
+            Click the button below to retrieve transaction batch data.  This process may take a few moments to complete.
+        </p>
+        <p>
+            <button type="submit" class="btn btn-warning btn-lg" id="update-transactions">Update Transactions</button>
+        </p>
+    </div>
+</form>
+@section scripts{
+    <script type="text/javascript">
+        $(function () {
+            $('#update-transactions').click(function (ev) {
+                ev.preventDefault();
+                var f = $('#retrieve-batch-data');
+                var q = f.serialize();
+                $.block();
+                $.post('/Batch/RetrieveBatchData', q, function (ret) {
+                    $('#success-message').text(ret);
+                    $('div.alert-success').show();
+                    $('#retrieve-batch-data').hide();
+                    $.unblock();
+                });
+                return true;
+            });
+        });
+    </script>
+}
