@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 namespace CmsData.Finance.Acceptiva.Transaction
 {
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     internal class TransactionResponse : Response
     {
         [JsonProperty(PropertyName = "trans_id_str")]

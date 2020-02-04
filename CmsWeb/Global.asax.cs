@@ -48,6 +48,8 @@ namespace CmsWeb
 
         protected void Session_Start(object sender, EventArgs e)
         {
+            //stackoverflow.com/questions/904952
+            string sessionId = Session.SessionID;
             if (ShouldBypassProcessing())
             {
                 return;
@@ -74,7 +76,6 @@ namespace CmsWeb
                 AccountModel.SetUserInfo(db, idb, Util.UserName);
             }
             Util.Version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-            Util.SessionStarting = true;
         }
 
         protected void Application_BeginRequest(object sender, EventArgs e)

@@ -26,8 +26,8 @@ namespace CmsWeb.Areas.CheckIn.Controllers
             _config = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<Campu, CampusModel>();
-                cfg.CreateMap<CheckinProfiles, CheckinProfilesModel>();
-                cfg.CreateMap<CheckinProfileSettings, CheckinProfileSettingsModel>();
+                cfg.CreateMap<CheckinProfile, CheckinProfilesModel>();
+                cfg.CreateMap<CheckinProfileSetting, CheckinProfileSettingsModel>();
             });
         }
 
@@ -41,6 +41,10 @@ namespace CmsWeb.Areas.CheckIn.Controllers
         [Route("~/CheckinSetup/GetCheckinProfiles")]
         public JsonResult GetCheckinProfiles()
         {
+            if (CurrentDatabase.CheckinProfiles.Count() == 0)
+            {
+                CheckinProfilesModel.CreateDefault(CurrentDatabase);
+            }
             var CheckinProfiles = CurrentDatabase.CheckinProfiles.ProjectTo<CheckinProfilesModel>(_config).ToList();
             foreach (var item in CheckinProfiles)
             {
@@ -88,8 +92,8 @@ namespace CmsWeb.Areas.CheckIn.Controllers
         {
             var file = Request.Files.Count == 0 ? null : Request.Files[0];
             var json = JsonConvert.DeserializeObject<CheckinProfilesModel>(Request["jsonD"]);
-            CheckinProfiles checkinProfile = MapCheckinProfile(json);
-            CheckinProfileSettings checkinProfileSettings = MapCheckinProfileSettings(json.CheckinProfileId, json.CheckinProfileSettings, file);
+            CheckinProfile checkinProfile = MapCheckinProfile(json);
+            CheckinProfileSetting checkinProfileSettings = MapCheckinProfileSettings(json.CheckinProfileId, json.CheckinProfileSettings, file);
 
             if (json.CheckinProfileId == 0)
             {
@@ -121,12 +125,12 @@ namespace CmsWeb.Areas.CheckIn.Controllers
             return new HttpStatusCodeResult(HttpStatusCode.OK);
         }
 
-        private CheckinProfiles MapCheckinProfile(CheckinProfilesModel json)
+        private CheckinProfile MapCheckinProfile(CheckinProfilesModel json)
         {
-            CheckinProfiles checkinProfile;
+            CheckinProfile checkinProfile;
             if (json.CheckinProfileId == 0)
             {
-                checkinProfile = new CheckinProfiles();
+                checkinProfile = new CheckinProfile();
             }
             else
             {
@@ -137,12 +141,12 @@ namespace CmsWeb.Areas.CheckIn.Controllers
             return checkinProfile;
         }
 
-        private CheckinProfileSettings MapCheckinProfileSettings(int checkinProfileId, CheckinProfileSettingsModel jsonSettings, HttpPostedFileBase file)
+        private CheckinProfileSetting MapCheckinProfileSettings(int checkinProfileId, CheckinProfileSettingsModel jsonSettings, HttpPostedFileBase file)
         {
-            CheckinProfileSettings checkinProfileSettings;
+            CheckinProfileSetting checkinProfileSettings;
             if (checkinProfileId == 0)
             {
-                checkinProfileSettings = new CheckinProfileSettings();
+                checkinProfileSettings = new CheckinProfileSetting();
             }
             else
             {
@@ -150,16 +154,14 @@ namespace CmsWeb.Areas.CheckIn.Controllers
             }
 
             checkinProfileSettings.CampusId = jsonSettings.CampusId == -1 ? null : jsonSettings.CampusId;
-            checkinProfileSettings.EarlyCheckin = jsonSettings.EarlyCheckin;
-            checkinProfileSettings.LateCheckin = jsonSettings.LateCheckin;
             checkinProfileSettings.Testing = jsonSettings.Testing;
             checkinProfileSettings.TestDay = jsonSettings.TestDay;
-            checkinProfileSettings.AdminPIN = jsonSettings.AdminPIN;
+            checkinProfileSettings.AdminPIN = PinIsValid(jsonSettings.AdminPIN) ? jsonSettings.AdminPIN : "00000";
             checkinProfileSettings.PINTimeout = jsonSettings.PINTimeout;
             checkinProfileSettings.DisableJoin = jsonSettings.DisableJoin;
             checkinProfileSettings.DisableTimer = jsonSettings.DisableTimer;
             checkinProfileSettings.CutoffAge = jsonSettings.CutoffAge;
-            checkinProfileSettings.Logout = LogoutIsValid(jsonSettings.Logout) ? jsonSettings.Logout.PadLeft(5,'0') : "00000";
+            checkinProfileSettings.Logout = PinIsValid(jsonSettings.Logout) ? jsonSettings.Logout : "00000";
             checkinProfileSettings.Guest = jsonSettings.Guest;
             checkinProfileSettings.Location = jsonSettings.Location;
             checkinProfileSettings.SecurityType = jsonSettings.SecurityType;
@@ -176,7 +178,7 @@ namespace CmsWeb.Areas.CheckIn.Controllers
             return checkinProfileSettings;
         }
 
-        private bool LogoutIsValid(string logout)
+        private bool PinIsValid(string logout)
         {
             return logout.All(Char.IsDigit);         
         }

@@ -1,9 +1,13 @@
-﻿@model CmsWeb.Areas.People.Models.PersonModel
+﻿@using CmsData.Classes.RoleChecker
+@model CmsWeb.Areas.People.Models.PersonModel
 <ul class="nav nav-pills subnav hidden-sm hidden-xs" data-tabparent="emails">
-    <li><a href="#receivedemails" data-toggle="tab" class="ajax"><span>Received</span></a></li>
-    @if (User.IsInRole("Access"))
+    @if (!RoleChecker.HasSetting(SettingName.HideEmailDetails, false))
     {
-        <li><a href="#sentemails" data-toggle="tab" class="ajax"><span>Sent</span></a></li>
+        <li><a href="#receivedemails" data-toggle="tab" class="ajax"><span>Received</span></a></li>
+        if (User.IsInRole("Access"))
+        {
+            <li><a href="#sentemails" data-toggle="tab" class="ajax"><span>Sent</span></a></li>
+        }
     }
     <li><a href="#transactional" data-toggle="tab" class="ajax"><span>Transactional</span></a></li>
     @if (User.IsInRole("Access"))

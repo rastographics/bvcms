@@ -2,6 +2,7 @@ using CmsData;
 using CmsData.API;
 using CmsWeb.Areas.Manage.Models;
 using CmsWeb.Membership;
+using Elmah;
 using ImageData;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,6 @@ using System.Net.Mail;
 using System.Text;
 using System.Web;
 using System.Web.Security;
-using System.Web.SessionState;
 using UtilityExtensions;
 
 namespace CmsWeb.Models
@@ -35,19 +35,18 @@ namespace CmsWeb.Models
 
         public string CleanFileName(string fn)
         {
-            fn = fn.Replace(' ', '_');
-            fn = fn.Replace('(', '-');
-            fn = fn.Replace(')', '-');
-            fn = fn.Replace(',', '_');
-            fn = fn.Replace("#", "");
-            fn = fn.Replace("!", "");
-            fn = fn.Replace("$", "");
-            fn = fn.Replace("%", "");
-            fn = fn.Replace("&", "_");
-            fn = fn.Replace("'", "");
-            fn = fn.Replace("+", "-");
-            fn = fn.Replace("=", "-");
-            return fn;
+            return fn.Replace(' ', '_')
+                .Replace('(', '-')
+                .Replace(')', '-')
+                .Replace(',', '_')
+                .Replace("#", "")
+                .Replace("!", "")
+                .Replace("$", "")
+                .Replace("%", "")
+                .Replace("&", "_")
+                .Replace("'", "")
+                .Replace("+", "-")
+                .Replace("=", "-");
         }
 
         public static string GetValidToken(CMSDataContext db, string otltoken)
@@ -151,9 +150,7 @@ namespace CmsWeb.Models
 
             if (userStatus == null)
             {
-                //DbUtil.LogActivity("userStatus==null");
                 return UserValidationResult.Invalid(UserValidationStatus.ImproperHeaderStructure, "Could not authenticate user, Authorization or SessionToken headers likely missing.", null);
-                //throw new Exception("Could not authenticate user, Authorization or SessionToken headers likely missing.");
             }
 
             if (!userStatus.IsValid)
@@ -191,7 +188,6 @@ namespace CmsWeb.Models
             {
                 return UserValidationResult.Invalid(UserValidationStatus.ImproperHeaderStructure, "Could not authenticate user, Authorization or SessionToken headers likely missing.", null);
             }
-            //throw new ArgumentNullException("sessionToken");
 
             var userStatus = AuthenticateMobile(cmsdb, cmsidb, requirePin: true);
 
@@ -221,13 +217,10 @@ namespace CmsWeb.Models
             var sessionToken = HttpContextFactory.Current.Request.Headers["SessionToken"];
             if (string.IsNullOrEmpty(sessionToken))
             {
-                //DbUtil.LogActivity("GetUserViaSession==null");
                 return null;
             }
 
             var result = ApiSessionModel.DetermineApiSessionStatus(db, Guid.Parse(sessionToken), requirePin, HttpContextFactory.Current.Request.Headers["PIN"].ToInt2());
-
-            //DbUtil.LogActivity("GetUserViaSession==" + result.Status.ToString());
 
             switch (result.Status)
             {
@@ -268,11 +261,9 @@ namespace CmsWeb.Models
             {
                 var creds = new NetworkCredential(username, password);
                 UserName2 = creds.UserName;
-                //DbUtil.LogActivity("GetUserViaCreds");
                 return AuthenticateLogon(creds.UserName, creds.Password, HttpContextFactory.Current.Request.Url.OriginalString, CMSDataContext.Create(HttpContextFactory.Current));
             }
 
-            //DbUtil.LogActivity("GetUserViaCreds==null");
             return null;
         }
 
@@ -293,7 +284,7 @@ namespace CmsWeb.Models
             }
             catch(Exception ex)
             {
-                Elmah.ErrorLog.Default.Log(new Elmah.Error(ex));
+                ErrorSignal.FromCurrentContext().Raise(ex);
                 return UserValidationResult.Invalid(UserValidationStatus.BadDatabase, "bad database");
             }
 

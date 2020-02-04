@@ -421,6 +421,7 @@
     <Compile Include="Extensions\OrgPerson.cs" />
     <Compile Include="Extensions\PaymentInfo.cs" />
     <Compile Include="Extensions\RepairTransactionRun.cs" />
+    <Compile Include="Extensions\SettingMetadatum.cs" />
     <Compile Include="Finance\AcceptivaGateway.cs" />
     <Compile Include="Finance\Acceptiva\Core\Helpers\CanadaState.cs" />
     <Compile Include="Finance\Acceptiva\Core\Helpers\ISO3166Country.cs" />
@@ -548,8 +549,8 @@
     <Compile Include="Generated\CheckInLabelEntryAlignment.cs" />
     <Compile Include="Generated\CheckInLabelType.cs" />
     <Compile Include="Generated\CheckInPending.cs" />
-    <Compile Include="Generated\CheckinProfiles.cs" />
-    <Compile Include="Generated\CheckinProfileSettings.cs" />
+    <Compile Include="Generated\CheckinProfile.cs" />
+    <Compile Include="Generated\CheckinProfileSetting.cs" />
     <Compile Include="Generated\CheckInSetting.cs" />
     <Compile Include="Generated\ContactExtra.cs" />
     <Compile Include="Generated\ContributionTag.cs" />
@@ -695,6 +696,7 @@
     <Compile Include="Generated\ResourceOrganization.cs" />
     <Compile Include="Generated\ResourceOrganizationType.cs" />
     <Compile Include="Generated\ResourceType.cs" />
+    <Compile Include="Generated\SessionValue.cs" />
     <Compile Include="Generated\SettingCategory.cs" />
     <Compile Include="Generated\SettingMetadatum.cs" />
     <Compile Include="Generated\SettingType.cs" />
@@ -820,6 +822,7 @@
     <Compile Include="Generated\Views\TransactionSummary.cs" />
     <Compile Include="DbUtil\ITableWithExtraValues.cs" />
     <Content Include="App_Readme\Elmah.txt" />
+    <Content Include="Migrations\00000000_sql_migrations_table.sql" />
     <Compile Include="Organization\OrgFilter.cs" />
     <Compile Include="Organization\OrgPerson.cs" />
     <Compile Include="Organization\OrgSchedule.cs" />
@@ -1181,6 +1184,7 @@
     <Resource Include="Classes\OnlineRegSummaryText\Details2.xml">
       <SubType>Designer</SubType>
     </Resource>
+    <Content Include="Migrations\20191221_Update_OnlineRegSummaryHtml_Remove_Amout_Paid.sql" />
     <Content Include="Migrations\00000000_sql_migrations_table.sql" />
     <Content Include="Migrations\20200119_Alter_Func_PledgesSummary.sql" />
     <Content Include="QueryBuilder\CompareMap.xml">
