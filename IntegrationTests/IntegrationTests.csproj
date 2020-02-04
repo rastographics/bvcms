@@ -128,7 +128,7 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
-    <Content Include="Resources\PyScriptFormTest.py" />
+    <EmbeddedResource Include="Resources\PyScriptFormTest.py" />
     <None Include="app.config" />
     <None Include="packages.config" />
     <None Include="Resources\applicationhost.config">
