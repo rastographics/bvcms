@@ -1,13 +1,11 @@
 ﻿@using System.Collections.Generic
-@using System.Web
-@model User
+@model List<Preference>
 
 @{
-    ViewBag.Title = "User Preferences";
+    ViewBag.Title = 
     ViewBag.PageHeader = "User Preferences";
-    ViewBag.PageSubHeader = $"{Model.Name} ({Model.Username})";
+    ViewBag.PageSubHeader = User.Identity.Name;
     Layout = ViewExtensions2.TouchPointLayout();
-    var d = HttpContextFactory.Current.Session["preferences"] as Dictionary<string, string>;
 }
 
 <div class="row">
@@ -16,7 +14,7 @@
             <div class="box-content">
                 <h2>Database</h2>
                 <dl class="dl-horizontal">
-                    @foreach (var p in Model.Preferences)
+                    @foreach (var p in Model)
                     {
                         <dt>@p.PreferenceX</dt>
                         <dd>@p.ValueX</dd>
@@ -24,10 +22,10 @@
                 </dl>
                 <h2>Session</h2>
                 <dl class="dl-horizontal">
-                    @foreach (var dd in d)
+                    @for (int i = 0; i < Session.Contents.Count; i++)
                     {
-                        <dt>@dd.Key</dt>
-                        <dd>@dd.Value</dd>
+                        <dt>@Session.Keys[i]</dt>
+                        <dd>@Session[i]</dd>
                     }
                 </dl>
             </div>

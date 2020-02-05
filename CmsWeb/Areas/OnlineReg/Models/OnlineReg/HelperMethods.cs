@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
-using System.Web;
 using System.Xml.Serialization;
 using UtilityExtensions;
 using Person = CmsData.Person;
@@ -17,21 +16,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
 {
     public partial class OnlineRegModel
     {
-        //        public static Organization CreateAccountOrg()
-        //        {
-        //            var settings = HttpContextFactory.Current.Items["RegSettings"] as Dictionary<int, Settings>;
-        //            if (settings == null)
-        //            {
-        //                settings = new Dictionary<int, Settings>();
-        //                HttpContextFactory.Current.Items.Add("RegSettings", settings);
-        //            }
-        //            var o = new Organization { OrganizationId = Util.CreateAccountCode, OrganizationName = "My Data" };
-        //            o.RegistrationTypeId = RegistrationTypeCode.CreateAccount;
-        //            if (!settings.ContainsKey(Util.CreateAccountCode))
-        //                settings.Add(Util.CreateAccountCode, ParseSetting("AllowOnlyOne: true", Util.CreateAccountCode));
-        //            return o;
-        //        }
-
         private Dictionary<int, Settings> _settings;
         private Dictionary<int, Settings> _MasterSettings;
 
