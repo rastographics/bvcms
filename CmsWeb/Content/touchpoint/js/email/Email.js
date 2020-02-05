@@ -3,7 +3,6 @@
     $('#Recipients').select2("readonly", true);
 
     $(".Send").click(function () {
-        $.block();
         $('#Body').text(CKEDITOR.instances["Body"].getData());
         var q = $(this).closest('form');
         if ($(this).attr('data-prompt') === 'True') {
@@ -17,7 +16,7 @@
                 confirmButtonText: "Yes, send it!",
                 showLoaderOnConfirm: true,
                 closeOnConfirm: false
-            }, function () { sendEmail(q); });
+            }, function () { console.log(q); });
         } else {
             sendEmail(q);
         }        
