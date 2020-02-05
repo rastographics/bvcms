@@ -237,7 +237,7 @@ namespace CmsWeb.Models
                   tw.WriteLine(s);
 #endif
             var nontaxded = includePledges ? 2 : (nontaxdeductible.HasValue ? (nontaxdeductible.Value ? 1 : 0) : (int?)null);
-            var q2 = from r in CurrentDatabase.GetTotalContributionsDonor(startdt, enddt, campusid, nontaxded, includeUnclosed, tagid, fundids, null)
+            var q2 = from r in CurrentDatabase.GetTotalContributionsDonor(startdt, enddt, campusid, nontaxded, includeUnclosed, tagid, fundids, nontaxded == 2 ? true : (bool?)null)
                      select new
                      {
                          GiverId = r.CreditGiverId,
