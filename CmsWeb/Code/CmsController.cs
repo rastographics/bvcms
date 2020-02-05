@@ -149,13 +149,17 @@ namespace CmsWeb
             {
                 Util2.OrgLeadersOnly = true;
                 CurrentDatabase.SetOrgLeadersOnly();
-
                 filterContext.Result = Redirect($"/Person2/{Util.UserPeopleId}");
             }
             else if (orgleaderonly && Util2.OrgLeadersOnly == false)
             {
                 Util2.OrgLeadersOnly = true;
                 CurrentDatabase.SetOrgLeadersOnly();
+            }
+
+            if (contr == "Home" && act == "Index" && RoleChecker.HasSetting(SettingName.DisableHomePage, false))
+            {
+                filterContext.Result = Redirect($"/Person2/{Util.UserPeopleId}");
             }
 
             base.OnActionExecuting(filterContext);

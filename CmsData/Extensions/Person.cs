@@ -1,11 +1,5 @@
-﻿/* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church
- * Licensed under the GNU General Public License (GPL v2)
- * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license
- */
-
-using CmsData.API;
+﻿using CmsData.API;
+using CmsData.Classes.Barcodes;
 using CmsData.Classes.GoogleCloudMessaging;
 using CmsData.Codes;
 using ImageData;
@@ -103,6 +97,50 @@ namespace CmsData
 
                 return null;
             }
+        }
+
+        public static Guid Barcode(CMSDataContext db, int PeopleId)
+        {
+            Guid barcode;
+            var person = db.People.SingleOrDefault(p => p.PeopleId == PeopleId);
+            if (person == null)
+            {
+                throw new Exception("Person not found");
+            }
+            if (person.BarcodeId.IsNotNull() && DateTime.Now < person.BarcodeExpires)
+            {
+                barcode = person.BarcodeId.Value;
+            }
+            else
+            {
+                person.BarcodeId = Guid.NewGuid();
+                person.BarcodeExpires = DateTime.Now.AddDays(1);
+                barcode = person.BarcodeId.Value;
+                db.SubmitChanges();
+            }
+            return barcode;
+        }
+
+        public static string QRCode(CMSDataContext db, int PeopleId, int size = 300)
+        {
+            Guid guid = Barcode(db, PeopleId);
+            string barcode = guid.ToString();
+
+            return Convert.ToBase64String(BarcodeHelper.generateQRCode(barcode, size));
+        }
+
+        public static Person PersonForQRCode(CMSDataContext db, Guid QRCode)
+        {
+            var person = db.People.SingleOrDefault(p => p.BarcodeId.Equals(QRCode));
+            if (person == null)
+            {
+                throw new Exception("Invalid barcode");
+            }
+            if (DateTime.Now > person.BarcodeExpires)
+            {
+                throw new Exception("This barcode is no longer valid");
+            }
+            return person;
         }
 
         public void SetFamilyFromPersonPage(Family f)
