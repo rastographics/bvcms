@@ -316,6 +316,16 @@
 
     $('#additional-filters').multiselect({
         buttonWidth: '100%',
-        numberDisplayed: 1
+        numberDisplayed: 1,
+        onChange: function (option, checked, select) {
+            localStorage.setItem(option.val(), checked);
+        }
     });
+
+    $('#additional-filters option').each(
+        function (item, option) {
+            if (localStorage.getItem(option.value) === 'true')
+                $('#additional-filters').multiselect('select', option.value);
+        }
+    );
 });
