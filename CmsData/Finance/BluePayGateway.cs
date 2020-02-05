@@ -44,22 +44,11 @@ namespace CmsData.Finance
             var person = db.LoadPersonById(peopleId);
             var paymentInfo = person.PaymentInfo(GatewayAccountId);
 
-            // Delete paymentinfo instead of update it fix all the database context issues here
-            if (paymentInfo != null)
-            {
-                if (!db.PaymentInfos.Contains(paymentInfo))
-                {
-                    db.PaymentInfos.Attach(paymentInfo);
-                }
-                db.PaymentInfos.DeleteOnSubmit(paymentInfo);
-                db.SubmitChanges();
-            }
-            else
+            if (paymentInfo == null)
             {
                 paymentInfo = new PaymentInfo() { GatewayAccountId = GatewayAccountId };
+                person.PaymentInfos.Add(paymentInfo);
             }
-
-            person.PaymentInfos.Add(paymentInfo);
 
             var first = paymentInfo.FirstName ?? person.FirstName;
             var last = paymentInfo.LastName ?? person.LastName;
