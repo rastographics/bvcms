@@ -97,7 +97,10 @@ namespace IntegrationTests.Areas.OnlineReg.Views
             startNewTransaction.ShouldNotBeNull();
 
             var paymentInfo = db.PaymentInfos.SingleOrDefault(x => x.PeopleId == user.PeopleId);
-            paymentInfo.PreferredPaymentType.ShouldBe("B");
+            if(paymentInfo != null)
+            {
+                paymentInfo.PreferredPaymentType.ShouldBe("B");
+            }
         }
 
         private void createOrgWithFee()
