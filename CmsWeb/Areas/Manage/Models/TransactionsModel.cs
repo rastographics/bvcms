@@ -72,11 +72,11 @@ namespace CmsWeb.Models
         public string gateway { get; set; }
         public string batchref { get; set; }
         public string[] AdditionalFilters { get; set; }
-        public bool usebatchdates => AdditionalFilters.Contains("usebatchdates");
-        public bool nocoupons => AdditionalFilters.Contains("nocoupons");
-        public bool apprtransactions => AdditionalFilters.Contains("apprtransactions");
-        public bool testtransactions => AdditionalFilters.Contains("testtransactions");
-        public bool includesadditionaldonation => AdditionalFilters.Contains("includesadditionaldonation");
+        public bool usebatchdates => AdditionalFilters?.Contains("usebatchdates") ?? false;
+        public bool nocoupons => AdditionalFilters?.Contains("nocoupons") ?? false;
+        public bool apprtransactions => AdditionalFilters?.Contains("apprtransactions") ?? false;
+        public bool testtransactions => AdditionalFilters?.Contains("testtransactions") ?? false;
+        public bool includesadditionaldonation => AdditionalFilters?.Contains("includesadditionaldonation") ?? false;
         public PagerModel2 Pager { get; set; }
         public bool finance { get; set; }
         public bool admin { get; set; }
