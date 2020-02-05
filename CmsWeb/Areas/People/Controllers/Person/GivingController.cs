@@ -181,15 +181,14 @@ namespace CmsWeb.Areas.People.Controllers
         public JsonResult SaveGivingUserHistory(string key, string value)
         {
             //Seve in Context here
-            Util2.SetSessionObj($"ushgiving-{key}", value);
+            Util.SetValueInSession($"ushgiving-{key}", value);
             return Json("OK");
         }
 
         [HttpGet]
         private string GetUserHistory(string key)
         {
-            var value = Util2.GetSessionObj($"ushgiving-{key}");
-            return value == null ? string.Empty : value.ToString();
+            return Util.GetFromSession($"ushgiving-{key}", "") as string;
         }
 
         private ContributionsModel GetGivingUserPreferences(ContributionsModel m)

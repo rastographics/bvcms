@@ -119,8 +119,7 @@ namespace CmsWeb.Areas.People.Controllers
                 return Content("cannot impersonate finance");
             }
 
-            Session.Remove("CurrentTag");
-            Session.Remove("preferences");
+            Session.Clear();
             if (!User.IsInRole("Finance"))
             {
                 Session["IsNonFinanceImpersonator"] = "true";
@@ -128,9 +127,9 @@ namespace CmsWeb.Areas.People.Controllers
 
             FormsAuthentication.SetAuthCookie(user.Username, false);
             AccountModel.SetUserInfo(CurrentDatabase, CurrentImageDatabase, user.Username);
-            Util.UserPeopleId = user.PeopleId;
-            Util.UserPreferredName = user.Username;
-            return Redirect("/");
+
+            ViewData["Redirect"] = "/";
+            return View("Redirect");
         }
 
         [HttpPost]
