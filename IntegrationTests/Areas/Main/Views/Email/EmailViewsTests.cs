@@ -40,7 +40,7 @@ namespace IntegrationTests.Areas.Main.Views.Email
 
             Find(css: "#SendEmail > div.visible-xs-block > button").Click();
 
-            Wait(3);
+            Wait(5);
 
             Find(css: "body > div.sweet-alert.showSweetAlert.visible > div.sa-button-container > div > button").Click();
             Wait(5);

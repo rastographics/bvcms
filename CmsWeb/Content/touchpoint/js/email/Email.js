@@ -16,13 +16,14 @@
                 confirmButtonText: "Yes, send it!",
                 showLoaderOnConfirm: true,
                 closeOnConfirm: false
-            }, function () { console.log(q); });
+            }, function () { sendEmail(q); });
         } else {
             sendEmail(q);
         }        
     });
 
     function sendEmail(q) {
+        $.block();
         $.post('/Email/QueueEmails', q.serialize(), function (ret) {
             if (ret && ret.error) {
                 $.unblock();
