@@ -5,6 +5,7 @@ using CmsData.Registration;
 using CmsWeb.Areas.OnlineReg.Models;
 using System;
 using System.Linq;
+using System.Net.Mail;
 using System.Web.Mvc;
 using UtilityExtensions;
 
@@ -270,37 +271,35 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         // ReSharper disable once FunctionComplexityOverflow
         public ActionResult RegisterLink(string id, bool? showfamily, string source)
         {
-            var li = new LinkInfo(registerlinkSTR, landingSTR, id);
+            var li = new LinkInfo(registerlinkSTR, landingSTR, id);            
 
             if (li.error.HasValue())
-            {
                 return Message(li.error);
-            }
 
             try
             {
-                if (!li.pid.HasValue)
-                {
+                if (!li.pid.HasValue)               
                     throw new Exception("missing peopleid");
-                }
 
-                if (!li.oid.HasValue)
-                {
+                if (!li.oid.HasValue)                
                     throw new Exception("missing orgid");
-                }
 
                 var linktype = li.a.Length > 3 ? li.a[3].Split(':') : "".Split(':');
                 int? gsid = null;
                 if (linktype[0].Equal("supportlink"))
-                {
                     gsid = linktype.Length > 1 ? linktype[1].ToInt() : 0;
-                }
+
+                if (li.pid == 0)
+                    return AnonymousRegisterLink(gsid?.ToString(), li.oid.Value);
 
                 var q = (from pp in CurrentDatabase.People
                          where pp.PeopleId == li.pid
                          let org = CurrentDatabase.Organizations.SingleOrDefault(oo => oo.OrganizationId == li.oid)
                          let om = CurrentDatabase.OrganizationMembers.SingleOrDefault(oo => oo.OrganizationId == li.oid && oo.PeopleId == li.pid)
                          select new { p = pp, org, om }).Single();
+
+                if (linktype[0].Equal("supportlink") && q.org.TripFundingPagesEnable && q.org.TripFundingPagesPublic)
+                    return Redirect($"/OnlineReg/{li.oid}/Giving/?gsid={gsid}");
 
                 if (q.org == null && CurrentDatabase.Host == "trialdb")
                 {
@@ -313,39 +312,25 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 }
 
                 if (q.org == null)
-                {
                     throw new Exception("org missing, bad link");
-                }
 
                 if (q.om == null && !gsid.HasValue && q.org.Limit <= q.org.RegLimitCount(CurrentDatabase))
-                {
                     throw new Exception("sorry, maximum limit has been reached");
-                }
 
                 if (q.om == null && (q.org.RegistrationClosed == true || q.org.OrganizationStatusId == OrgStatusCode.Inactive))
-                {
                     throw new Exception("sorry, registration has been closed");
-                }
 
                 DbUtil.LogActivity($"{registerlinkSTR}{landingSTR}", li.oid, li.pid);
 
                 var url = string.IsNullOrWhiteSpace(source)
                     ? $"/OnlineReg/{li.oid}?registertag={id}"
                     : $"/OnlineReg/{li.oid}?registertag={id}&source={source}";
+
                 if (gsid.HasValue)
-                {
                     url += "&gsid=" + gsid;
-                }
 
                 if (showfamily == true)
-                {
-                    url += "&showfamily=true";
-                }
-
-                if (linktype[0].Equal("supportlink") && q.org.TripFundingPagesEnable && q.org.TripFundingPagesPublic)
-                {
-                    url = $"/OnlineReg/{li.oid}/Giving/?gsid={gsid}";
-                }
+                    url += "&showfamily=true";             
 
                 return Redirect(url);
             }
@@ -354,6 +339,19 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 DbUtil.LogActivity($"{registerlinkSTR}{landingSTR}Error: {ex.Message}", li.oid, li.pid);
                 return Message(ex.Message);
             }
+        }
+
+        private ActionResult AnonymousRegisterLink(string gsid, int orgId)
+        {            
+            if (!string.IsNullOrEmpty(gsid))
+                gsid = $"?gsid={gsid}";
+
+            var org = CurrentDatabase.Organizations.SingleOrDefault(o => o.OrganizationId == orgId);
+
+            if (!string.IsNullOrEmpty(gsid) && org.TripFundingPagesEnable && org.TripFundingPagesPublic)            
+                return Redirect($"/OnlineReg/{orgId}/Giving/{gsid}");            
+            else            
+                return Redirect($"/OnlineReg/{orgId}{gsid}");                   
         }
 
         [ValidateInput(false)]
@@ -376,47 +374,67 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             var li = new LinkInfo(sendlinkSTR, landingSTR, id);
             if (li.error.HasValue())
-            {
                 return Message(li.error);
-            }
 
             try
             {
                 if (!li.pid.HasValue)
-                {
                     throw new Exception("missing peopleid");
-                }
 
                 if (!li.oid.HasValue)
-                {
                     throw new Exception("missing orgid");
-                }
 
                 var queueid = li.a[2].ToInt();
                 var linktype = li.a[3]; // for supportlink, this will also have the goerid
-                var q = (from pp in CurrentDatabase.People
-                         where pp.PeopleId == li.pid
-                         let org = CurrentDatabase.LoadOrganizationById(li.oid)
-                         select new { p = pp, org }).Single();
 
-                if (q.org == null && CurrentDatabase.Host == "trialdb")
+                int? gsid = null;
+                if (linktype.Contains("supportlink:"))                
+                    gsid = linktype.Split(':')[1].ToInt();                                    
+
+                Organization oorg = null;
+                Person person = null;
+                string personPreferredName;
+                string personEmailAddress;
+                GoerSupporter gs = null;
+                if (li.pid == 0)
+                {
+                    oorg = CurrentDatabase.Organizations.SingleOrDefault(o => o.OrganizationId == li.oid);
+                    gs = CurrentDatabase.GoerSupporters.SingleOrDefault(s => s.Id == gsid);
+                    personPreferredName = string.Empty;
+                    personEmailAddress = gs.NoDbEmail;
+                }              
+                else
+                {
+                    var q = (from pp in CurrentDatabase.People
+                             where pp.PeopleId == li.pid
+                             let org = CurrentDatabase.LoadOrganizationById(li.oid)
+                             select new { p = pp, org }).Single();
+
+                    oorg = q.org;
+                    person = q.p;
+                    personPreferredName = person.PreferredName;
+                    personEmailAddress = person.EmailAddress;
+                }                
+
+                if (oorg == null && CurrentDatabase.Host == "trialdb")
                 {
                     var oid = li.oid + Util.TrialDbOffset;
-                    q = (from pp in CurrentDatabase.People
+                    var q = (from pp in CurrentDatabase.People
                          where pp.PeopleId == li.pid
                          let org = CurrentDatabase.LoadOrganizationById(oid)
                          select new { p = pp, org }).Single();
+
+                    oorg = q.org;
+                    person = q.p;
+                    personPreferredName = person.PreferredName;
+                    personEmailAddress = person.EmailAddress;
                 }
 
-                if (q.org.RegistrationClosed == true || q.org.OrganizationStatusId == OrgStatusCode.Inactive)
-                {
+                if (oorg.RegistrationClosed == true || oorg.OrganizationStatusId == OrgStatusCode.Inactive)
                     throw new Exception("sorry, registration has been closed");
-                }
 
-                if (q.org.RegistrationTypeId == RegistrationTypeCode.None)
-                {
+                if (oorg.RegistrationTypeId == RegistrationTypeCode.None)
                     throw new Exception("sorry, registration is no longer available");
-                }
 
                 DbUtil.LogActivity($"{sendlinkSTR}{confirmSTR}", li.oid, li.pid);
 
@@ -445,18 +463,25 @@ or contact the church if you need help.</p>
                 }
                 var url = EmailReplacements.RegisterLinkUrl(CurrentDatabase,
                     li.oid.Value, li.pid.Value, queueid, linktype, expires);
-                var subject = c.Title.Replace("{org}", q.org.OrganizationName);
-                var msg = c.Body.Replace("{org}", q.org.OrganizationName)
+                var subject = c.Title.Replace("{org}", oorg.OrganizationName);
+                var msg = c.Body.Replace("{org}", oorg.OrganizationName)
                     .Replace("{time}", expires.ToString("f"))
                     .Replace("{url}", url)
                     .Replace("{action}", action)
                     .Replace("{minutes}", minutes)
                     .Replace("%7Burl%7D", url);
 
-                var NotifyIds = CurrentDatabase.StaffPeopleForOrg(q.org.OrganizationId);
-                CurrentDatabase.Email(NotifyIds[0].FromEmail, q.p, subject, msg); // send confirmation
+                var NotifyIds = CurrentDatabase.StaffPeopleForOrg(oorg.OrganizationId);
 
-                return Message($"Thank you, {q.p.PreferredName}, we just sent an email to {Util.ObscureEmail(q.p.EmailAddress)} with your link...");
+                if (person != null)                
+                    CurrentDatabase.Email(NotifyIds[0].FromEmail, person, subject, msg); // send confirmation                
+                else //send email to no db person
+                {
+                    var from = new MailAddress(NotifyIds[0].EmailAddress ?? NotifyIds[0].EmailAddress2, NotifyIds[0].Name);                    
+                    CurrentDatabase.SendEmail(from, subject, msg, Util.ToMailAddressList(gs.NoDbEmail), gs.Id);
+                }                    
+
+                return Message($"Thank you, {personPreferredName}, we just sent an email to {Util.ObscureEmail(personEmailAddress)} with your link...");
             }
             catch (Exception ex)
             {
