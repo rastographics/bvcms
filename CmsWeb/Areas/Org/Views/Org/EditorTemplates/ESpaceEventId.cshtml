@@ -1,0 +1,72 @@
+﻿@using UtilityExtensions
+@model CmsWeb.Areas.Org.Models.SettingsGeneralModel
+<div class="form-group">
+    <label class="control-label" for="ESpaceEventName">eSpace Event</label>
+    @if (ViewBag.ShowHelp != false && ViewData.ModelMetadata.Description.HasValue())
+    {
+        <div class="alert alert-info">@Html.Markdown(ViewData.ModelMetadata.Description)</div>
+    }
+    <div class="controls @ViewBag.AddClass">
+        <div class="input-group">
+            <span class="form-control" name="ESpaceEventName" style="overflow:hidden;line-height: 1.5em">@Model.ESpaceEventName</span>
+            <div class="input-group-btn dropup">
+                <button id="choose-espace-event"
+                        class="btn btn-default dropdown-toggle"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                        title="Choose eSpace event">
+                    <i class="fa fa-ellipsis-h"></i>
+                </button>
+                <ul id="espace-event-list" class="dropdown-menu dropdown-menu-right search-menu">
+                    <li class="input-group">
+                        <input id="espace-event-searchbox"
+                                class="form-control"
+                                type="text" autocomplete="off" placeholder="Search">
+                        <div class="input-group-btn">
+                            <button id="espace-event-search"
+                                    class="btn btn-default">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        @Html.HiddenFor(m => m.ESpaceEventId)
+        @Html.HiddenFor(m => m.ESpaceEventName)
+        @if (ViewBag.ShowHelp != false && ViewData.ModelMetadata.Description.HasValue())
+        {
+            <div class="alert alert-info">@Html.Markdown(ViewData.ModelMetadata.Description)</div>
+        }
+    </div>
+</div>
+<script>
+    (function () {
+        var $input = $('#espace-event-searchbox'),
+            $button = $('#espace-event-search'),
+            $list = $('#espace-event-list'),
+            timer;
+
+        function search() {
+            var q = $input.val().trim();
+            $button.find('i').addClass('fa-refresh fa-spin').removeClass('fa-search').parent().attr('disabled', true);
+            $.get('/Org/EspaceSearch/', { q: q }, function (result) {
+                $list.find('li:not(.input-group)').remove();
+                $list.append(result);
+                $button.find('i').removeClass('fa-refresh fa-spin').addClass('fa-search').parent().removeAttr('disabled');
+            });
+        }
+        $('#choose-espace-event[aria-expanded="false"]').add($button).click(search);
+        $input.keypress(function () {
+            clearTimeout(timer);
+            timer = setTimeout(search, 200);
+        });
+        $list.on('click', 'a[href]', function (event) {
+            var a = event.currentTarget,
+                id = new URL(a.href).hash.substring(1),
+                name = a.text;
+            $('[name=ESpaceEventId]').val(id);
+            $('span[name=ESpaceEventName]').text(name);
+            $('input[name=ESpaceEventName]').val(name);
+        });
+    })();
+</script>
