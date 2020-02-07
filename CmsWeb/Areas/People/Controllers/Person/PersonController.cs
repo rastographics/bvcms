@@ -105,22 +105,6 @@ namespace CmsWeb.Areas.People.Controllers
             return Util.IsInRole("Admin") && !isAdminFamily ? false: hide;
         }
 
-        [HttpGet, Route("~/Person2/{id:int}/Statements")]
-        [Route("~/Person/Index/{id:int}/Statements")]
-        [Route("~/Person/{id:int}/Statements")]
-        public ActionResult Statements(int id)
-        {
-            if (id == 0 && Util.UserPeopleId.HasValue)
-            {
-                id = Util.UserPeopleId.Value;
-            }
-            else if (!User.InAnyRole("Admin", "Finance"))
-            {
-                return new HttpUnauthorizedResult();
-            }
-            return Redirect($"/Person2/{id}#tab-statements");
-        }
-
         [HttpGet, Route("~/Person2/{id:int}/Resources")]
         [Route("~/Person/Index/{id:int}/Resources")]
         [Route("~/Person/{id:int}/Resources")]
