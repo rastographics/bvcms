@@ -26,26 +26,6 @@ namespace CmsWeb.Controllers
             return new EmptyResult();
         }
 
-        [HttpGet, Route("~/ResetTips")]
-        public ActionResult ResetTips()
-        {
-            CurrentDatabase.ExecuteCommand("DELETE dbo.Preferences WHERE Preference LIKE 'hide-tip-%' AND UserId = {0}",
-                Util.UserId);
-            var d = Session["preferences"] as Dictionary<string, string>;
-            var keys = d.Keys.Where(kk => kk.StartsWith("hide-tip-")).ToList();
-            foreach (var k in keys)
-            {
-                d.Remove(k);
-            }
-
-            if (Request.UrlReferrer != null)
-            {
-                return Redirect(Request.UrlReferrer.ToString());
-            }
-
-            return Redirect("/");
-        }
-
         [HttpGet]
         [Route("~/Person/TinyImage/{id}")]
         [Route("~/Person2/TinyImage/{id}")]

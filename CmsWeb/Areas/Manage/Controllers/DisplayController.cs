@@ -225,8 +225,9 @@ namespace CmsWeb.Areas.Manage.Controllers
 
         public ActionResult ContentDeleteDrafts(string[] draftID)
         {
-            string deleteList = String.Join(",", draftID);
-            CurrentDatabase.ExecuteCommand("DELETE FROM dbo.Content WHERE Id IN(" + deleteList + ")", "");
+            string deleteList = string.Join(",", draftID.Select(d => d.ToInt()));//Prevent potential SQL injection
+            CurrentDatabase.ExecuteCommand($"DELETE FROM dbo.ContentKeywords WHERE Id IN({deleteList})");
+            CurrentDatabase.ExecuteCommand($"DELETE FROM dbo.Content WHERE Id IN({deleteList})", "");
             return Redirect("/Display#tab_savedDrafts");
         }
 
