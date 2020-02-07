@@ -6,6 +6,7 @@
 :: 5 - Administrator account password
 :: Example: deploy Release 192.168.0.15,192.168.0.16 cms administrator adminpassword
 :: Optionally set %on_error% to the command you want to run if a step fails
+:: Optionally set %CMSAutoMigrate% to YES if you want the migrations to run automatically
 @echo off
 setlocal
 set buildconfiguration=%1
@@ -22,6 +23,8 @@ if "%DeployPassword%" EQU "" echo "DEPLOYPASSWORD parameter not set. Exiting..."
 if "%buildconfiguration%" EQU "" echo No build configuration specified - using Release && set buildconfiguration=Release
 set "path=%path%;%ProgramFiles%\IIS\Microsoft Web Deploy V3;%ProgramFiles%\IIS\Microsoft Web Deploy V3"
 set buildoutput=%~dp0build\Deploy\%buildconfiguration%\Files
+
+if "%CMSAutoMigrate%" EQU "YES" call migrate.cmd %migrateprod%
 
 for %%i IN (%webservers%) DO cmd /c deployserver.cmd %%i %site% %DeployUsername% %DeployPassword% %buildconfiguration%
 

@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics.CodeAnalysis;
 
 namespace CmsWeb.Areas.Public.Models.CheckInAPIv2.Results
@@ -8,5 +9,6 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2.Results
 		public int familyID = 0;
 		public int peopleID = 0;
 		public int positionID = 0;
+        public Guid barcodeID = Guid.Empty;
 	}
 }

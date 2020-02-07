@@ -49,6 +49,8 @@ namespace SharedTestFixtures
             MockResponse.SetupGet(ctx => ctx.Output).Returns(new StringWriter(responseBody));
             MockResponse.SetupGet(ctx => ctx.Cache).Returns(cachePolicyBase.Object);
 
+            session.SetupGet(s => s.SessionID).Returns(DatabaseTestBase.RandomString());
+
             SetupGet(ctx => ctx.Request).Returns(MockRequest.Object);
             SetupGet(ctx => ctx.Response).Returns(MockResponse.Object);
             SetupGet(ctx => ctx.Session).Returns(session.Object);
