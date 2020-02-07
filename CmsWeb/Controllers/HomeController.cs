@@ -141,7 +141,7 @@ namespace CmsWeb.Controllers
         }
         public ActionResult OnlineRegTypeSearchAdd(bool id)
         {
-            Util2.SetSessionObj("OnlineRegTypeSearchAdd", id ? "false" : "true");
+            Util.SetValueInSession("OnlineRegTypeSearchAdd", id ? "false" : "true");
             CurrentDatabase.SubmitChanges();
             if (Request.UrlReferrer != null)
             {
@@ -187,7 +187,7 @@ namespace CmsWeb.Controllers
         [HttpGet, Route("~/Preferences")]
         public ActionResult UserPreferences()
         {
-            return View(CurrentDatabase.CurrentUser);
+            return View(CurrentDatabase.CurrentUser.Preferences.ToList());
         }
 
         [HttpGet, Route("~/Home/Support2")]
