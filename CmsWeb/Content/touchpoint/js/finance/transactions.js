@@ -328,4 +328,12 @@
                 $('#additional-filters').multiselect('select', option.value);
         }
     );
+
+    $('#clear').on('click', function () {
+        $('#additional-filters option').each(
+            function (item, option) {
+                localStorage.removeItem(option.value);
+            }
+        );
+    });
 });
