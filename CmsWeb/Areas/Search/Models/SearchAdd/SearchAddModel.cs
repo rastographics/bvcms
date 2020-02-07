@@ -151,6 +151,7 @@ namespace CmsWeb.Areas.Search.Models
         public bool OnlyOne => onlyonetypes.Contains(AddContext.ToLower());
 
         public new bool ShowLimitedSearch => RoleChecker.HasSetting(SettingName.LimitedSearchPerson, false);
+        public bool Fuzzy { get; set; }
 
         public int NewFamilyId { get; set; }
         public int? EntryPointId { get; set; }

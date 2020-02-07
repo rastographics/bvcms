@@ -359,6 +359,9 @@ namespace CmsWeb.Models
             public string line2 { get; set; }
             public string url { get; set; }
             public bool addmargin { get; set; }
+            public string cellphone;
+            public string homephone;
+            public string email;
 
             internal int peopleid;
             internal int? age;
@@ -393,9 +396,10 @@ namespace CmsWeb.Models
             return list;
         }
 
-        public static IEnumerable<SearchInfo22> FastSearch(string text)
+        public static IEnumerable<SearchInfo22> FastSearch(SearchRequest sr)
         {
             string first, last;
+            string text = sr.Query;
             var qp = DbUtil.Db.People.AsQueryable();
             var qo = from o in DbUtil.Db.Organizations
                      where o.OrganizationStatusId == CmsData.Codes.OrgStatusCode.Active
@@ -448,7 +452,7 @@ namespace CmsWeb.Models
                       orderby p.Name2
                       select new SearchInfo22()
                       {
-                          url = "/Person2/" + p.PeopleId,
+                          url = sr.Context == "add" ? "/SearchAdd2/Select/" + p.PeopleId : "/Person2/" + p.PeopleId,
                           line2 = p.PrimaryAddress ?? "",
                           peopleid = p.PeopleId,
                           age = p.Age,
@@ -473,7 +477,7 @@ namespace CmsWeb.Models
                           orderby p.Name2
                           select new SearchInfo22()
                           {
-                              url = "/Person2/" + p.PeopleId,
+                              url = sr.Context == "add" ? "/SearchAdd2/Select/" + p.PeopleId : "/Person2/" + p.PeopleId,
                               line2 = p.PrimaryAddress ?? "",
                               peopleid = p.PeopleId,
                               age = p.Age,
@@ -500,25 +504,31 @@ namespace CmsWeb.Models
                                orderby p.Name2
                                select new SearchInfo22()
                                {
-                                   url = "/Person2/" + p.PeopleId,
+                                   url = sr.Context == "add" ? "/SearchAdd2/Select/" + p.PeopleId : "/Person2/" + p.PeopleId,
                                    line2 = p.PrimaryAddress ?? "",
                                    peopleid = p.PeopleId,
                                    age = p.Age,
                                    name2 = p.Name2,
                                    altname = p.AltName,
-                                   lastname = p.LastName
+                                   lastname = p.LastName,
+                                   cellphone = p.CellPhone,
+                                   homephone = p.HomePhone,
+                                   email = p.EmailAddress
                                }).Take(6).ToList();
                     var rp1 = (from p in qp1
                                orderby p.Name2
                                select new SearchInfo22()
                                {
-                                   url = "/Person2/" + p.PeopleId,
+                                   url = sr.Context == "add" ? "/SearchAdd2/Select/" + p.PeopleId : "/Person2/" + p.PeopleId,
                                    line2 = p.PrimaryAddress ?? "",
                                    peopleid = p.PeopleId,
                                    age = p.Age,
                                    name2 = p.Name2,
                                    altname = p.AltName,
-                                   lastname = p.LastName
+                                   lastname = p.LastName,
+                                   cellphone = p.CellPhone,
+                                   homephone = p.HomePhone,
+                                   email = p.EmailAddress
                                }).Take(6).ToList();
                     rp = rp2.Union(rp1).Take(6);
                 }
