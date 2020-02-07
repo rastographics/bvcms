@@ -44,6 +44,7 @@
         var $input = $('#espace-event-searchbox'),
             $button = $('#espace-event-search'),
             $list = $('#espace-event-list'),
+            listMinWidth = 200,
             timer;
 
         function search() {
@@ -52,10 +53,23 @@
             $.get('/Org/EspaceSearch/', { q: q }, function (result) {
                 $list.find('li:not(.input-group)').remove();
                 $list.append(result);
+                listMinWidth = Math.max(listMinWidth, $list.width());
+                $list.css({ minWidth: listMinWidth + 'px' });
                 $button.find('i').removeClass('fa-refresh fa-spin').addClass('fa-search').parent().removeAttr('disabled');
             });
         }
-        $('#choose-espace-event[aria-expanded="false"]').add($button).click(search);
+        $('#choose-espace-event[aria-expanded="false"]').click(function (event) {
+            event.preventDefault();
+            search();
+            setTimeout(() => {
+                $input.focus().select();
+            }, 200);
+        });
+        $button.click(function (event) {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            search();
+        });
         $input.keypress(function () {
             clearTimeout(timer);
             timer = setTimeout(search, 200);
