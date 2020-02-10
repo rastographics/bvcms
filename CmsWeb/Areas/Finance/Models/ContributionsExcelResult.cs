@@ -82,7 +82,7 @@ namespace CmsWeb.Models
                     return _exportPeople.ExcelDonorFundTotals(Dt1, Dt2, fundid, campusid, false, nontaxdeductible, IncUnclosedBundles, tagid, fundIds)                          
                         .ToExcel("DonorFundTotals.xlsx");
                 case "donortotals":
-                    return _exportPeople.ExcelDonorTotals(Dt1, Dt2, campusid, false, nontaxdeductible, IncUnclosedBundles, tagid, fundIds, IncludePledges)
+                    return _exportPeople.ExcelDonorTotals(Dt1, Dt2, campusid, false, nontaxdeductible, Online, IncUnclosedBundles, tagid, fundIds, IncludePledges)
                         .ToExcel("DonorTotals.xlsx");
                 case "donordetails":
                     return _exportPeople.DonorDetails(Dt1, Dt2, fundid, campusid, false, nontaxdeductible, IncUnclosedBundles, tagid, fundIds)

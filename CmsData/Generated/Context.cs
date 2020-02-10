@@ -2480,6 +2480,7 @@ namespace CmsData
             [Parameter(DbType = "datetime")] DateTime? td,
             [Parameter(DbType = "int")] int? campusid,
             [Parameter(DbType = "int")] int? nontaxded,
+            [Parameter(DbType = "int")] int? online,
             [Parameter(DbType = "bit")] bool? includeUnclosed,
             [Parameter(DbType = "int")] int? tagid,
             [Parameter(DbType = "varchar")] string fundids,

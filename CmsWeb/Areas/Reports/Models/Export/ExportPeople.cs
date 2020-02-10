@@ -225,7 +225,7 @@ namespace CmsWeb.Models
             }
         }
         public DataTable ExcelDonorTotals(DateTime startdt, DateTime enddt,
-            int campusid, bool? pledges, bool? nontaxdeductible, bool includeUnclosed, int? tagid, string fundids, bool includePledges)
+            int campusid, bool? pledges, bool? nontaxdeductible, int? Online, bool includeUnclosed, int? tagid, string fundids, bool includePledges)
         {
 #if DEBUG2
             // for reconciliation by developer
@@ -239,7 +239,7 @@ namespace CmsWeb.Models
             var nontaxded = includePledges ? 2 : (nontaxdeductible.HasValue ? (nontaxdeductible.Value ? 1 : 0) : (int?)null);
             pledges = nontaxded == 2 ? true : (bool?)null;
 
-            var q2 = from r in CurrentDatabase.GetTotalContributionsDonor(startdt, enddt, campusid, nontaxded, includeUnclosed, tagid, fundids, pledges)
+            var q2 = from r in CurrentDatabase.GetTotalContributionsDonor(startdt, enddt, campusid, nontaxded, Online, includeUnclosed, tagid, fundids, pledges)
                      select new
                      {
                          GiverId = r.CreditGiverId,

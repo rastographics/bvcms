@@ -4,6 +4,7 @@ ALTER FUNCTION [dbo].[GetTotalContributionsDonor]
 	@td DATETIME,
 	@campusid INT,
 	@nontaxded INT,
+	@online INT,
 	@includeUnclosed BIT,
 	@tagid INT,
 	@fundids VARCHAR(MAX),
@@ -24,7 +25,7 @@ RETURN
 			SUM(PledgeAmount) AS PledgeAmount,
 			ContributionStatusId,
 			ContributionTypeId
-		FROM dbo.GetContributionsDetails(@fd, @td, @campusid, ISNULL(@pledges, 0), @nontaxded, @includeUnclosed, @tagid, @fundids)
+		FROM dbo.GetContributionsDetails(@fd, @td, @campusid, ISNULL(@pledges, 0), @nontaxded, @online, @includeUnclosed, @tagid, @fundids)
 		GROUP BY CreditGiverId, CreditGiverId2, HeadName, SpouseName,ContributionStatusId, ContributionTypeId
 	),
 	TotalContributionsDonor AS (
