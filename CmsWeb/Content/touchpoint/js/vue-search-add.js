@@ -58,15 +58,16 @@ Vue.component("search-add", {
             });
     },
     methods: {
-        updateResults(results) {
-            this.$emit("display-results", results);
+        updateResults(results, context) {
+            this.$emit("display-results", results, context);
         },
         prefetch() {
+            var self = this;
             $.ajax({
                 type: "GET",
                 url: "/FastSearchPrefetch",
                 success: function (results) {
-                    updateResults($.parseJSON(results));
+                    updateResults($.parseJSON(results), self.context);
                 }
             });
         },
@@ -134,7 +135,7 @@ Vue.component("search-add", {
                         dataType: "json",
                         contentType: "application/json",
                         success: function (results) {
-                            updateResults(results);
+                            updateResults(results, self.context);
                         }
                     });
                 } else {

@@ -18,8 +18,10 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost, Route("SearchAdd2/Dialog/{type}/{typeid?}")]
         public ActionResult Dialog(string type, string typeid, bool displaySkipSearch = true)
         {
-            var m = new SearchAddModel(CurrentDatabase, type, typeid, displaySkipSearch);
-            m.Fuzzy = type == "Fuzzy";
+            var m = new SearchAddModel(CurrentDatabase, type, typeid, displaySkipSearch)
+            {
+                Fuzzy = type == "Fuzzy"
+            };
             return View("SearchPerson", m);
         }
 
