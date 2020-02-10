@@ -31,8 +31,8 @@ namespace CmsData
 
         public string CallScript(string scriptname)
         {
-            var script = db.ContentOfTypePythonScript(scriptname);
             var model = new PythonModel(db, dictionary);
+            var script = model.db.ContentOfTypePythonScript(scriptname);
             model.FromMorningBatch = FromMorningBatch;
             return ExecutePython(script, model);
         }
