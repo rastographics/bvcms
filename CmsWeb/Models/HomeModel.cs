@@ -458,7 +458,10 @@ namespace CmsWeb.Models
                           age = p.Age,
                           name2 = p.Name2,
                           altname = p.AltName,
-                          lastname = p.LastName
+                          lastname = p.LastName,
+                          cellphone = p.CellPhone,
+                          homephone = p.HomePhone,
+                          email = p.EmailAddress
                       }).Take(6);
             }
             else
@@ -483,7 +486,10 @@ namespace CmsWeb.Models
                               age = p.Age,
                               name2 = p.Name2,
                               altname = p.AltName,
-                              lastname = p.LastName
+                              lastname = p.LastName,
+                              cellphone = p.CellPhone,
+                              homephone = p.HomePhone,
+                              email = p.EmailAddress
                           }).Take(6);
                 }
                 else
