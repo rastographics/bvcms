@@ -122,11 +122,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     : "";
 
                 var detailSection = GetDetailsSection();
-
-                if(ValidateEmailRecipientRegistrant(p.person.Name, detailSection))
+                if (ValidateEmailRecipientRegistrant(p.person.Name, detailSection))
                 {
                     CurrentDatabase.Email(Util.PickFirst(p.person.FromEmail, notifyIds[0].FromEmail), notifyIds, Header,
-                        $@"{messageNotice}{p.person.Name} has registered for {Header}<br/>{detailSection}<hr>");
+                    $@"{messageNotice}{p.person.Name} has registered for {Header}<br/>{detailSection}<hr>");
+                    Log("SentConfirmationsToStaff");
                 }
                 else
                 {
@@ -142,8 +142,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
             var htmlDoc = new HtmlDocument();
             htmlDoc.LoadHtml(detailSection);
             IEnumerable<string> childList = from el in htmlDoc.DocumentNode.Descendants("registrant")
-                                            select el.InnerText;
-
+                                            select el.InnerText.Trim();
+            
             return childList.Any(p => p == name);
         }
 

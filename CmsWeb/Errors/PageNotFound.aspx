@@ -3,13 +3,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="shortcut icon" href="/favicon.ico?v=3">
+    <link rel="shortcut icon" href="/favicon.ico?v=4">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, maximum-scale=1.0">
     <title>404</title>
     <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,400,600,300,700" rel="stylesheet">
-    <link href="//netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.css" rel="stylesheet">
+    <%=ViewExtensions2.FontAwesome() %>
     <link href="/Content/touchpoint/css/error.css" rel="stylesheet" />
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -37,6 +37,6 @@
         </div>
     </div>
     <script src='//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js'></script>
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+    <%=ViewExtensions2.Bootstrap3() %>
 </body>
 </html>

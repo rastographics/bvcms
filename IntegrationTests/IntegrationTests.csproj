@@ -93,6 +93,7 @@
     <Compile Include="Areas\General\GeneralTests.cs" />
     <Compile Include="Areas\General\QueryControllerTests.cs" />
     <Compile Include="Areas\Manage\AccountTests.cs" />
+    <Compile Include="Areas\OnlineReg\Models\OnlineReg\EnrollAndConfirmTests.cs" />
     <Compile Include="Areas\Org\Views\Org\Registration\FeesTests.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineRegPerson\EnrollTests.cs" />
     <Compile Include="Areas\OnlineReg\OneTimeGivingTests.cs" />
@@ -127,7 +128,7 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
-    <Content Include="Resources\PyScriptFormTest.py" />
+    <EmbeddedResource Include="Resources\PyScriptFormTest.py" />
     <None Include="app.config" />
     <None Include="packages.config" />
     <None Include="Resources\applicationhost.config">
