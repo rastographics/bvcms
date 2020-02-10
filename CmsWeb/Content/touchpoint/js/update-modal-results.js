@@ -1,5 +1,4 @@
 ﻿function updateResults(results, context) {
-    console.log({ results: results, context: context });
     var list = "<ul class='nav nav-pills nav-stacked'>";
     var appendedPersonHeader = false;
     var appendedOrganizationsHeader = false;
