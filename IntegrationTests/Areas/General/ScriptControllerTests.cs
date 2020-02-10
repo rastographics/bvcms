@@ -52,9 +52,9 @@ namespace IntegrationTests.Areas.Manage
         [Fact, FeatureTest]
         public void PyScriptFormTest()
         {
-            db.WriteContentText("jsondata", @"{'Records':[
-    { 'Id': 1, 'Name': 'John Adams', 'City': 'Boston', 'Work': 'attorney' },
-    { 'Id': 2, 'Name': 'Betsy Ross', 'City': 'Philadelphia', 'Work': 'seamstress' }
+            db.WriteContentText("jsondata", @"{""Records"":[
+    { ""Id"": 1, ""Name"": ""John Adams"", ""City"": ""Boston"", ""Work"": ""attorney"" },
+    { ""Id"": 2, ""Name"": ""Betsy Ross"", ""City"": ""Philadelphia"", ""Work"": ""seamstress"" }
 ]}");
             db.WriteContentPython("record", R.PyScriptFormTest);
             LoginAsAdmin();
@@ -62,7 +62,7 @@ namespace IntegrationTests.Areas.Manage
             PageSource.ShouldContain("Philadelphia");
 
             Find(id: "submitit").Click();
-            WaitForElement("input[name=City]");
+            Wait(3);
             Find(name: "City").Clear();
             Find(name: "City").SendKeys("New York");
             Find(id: "submitit").Click();

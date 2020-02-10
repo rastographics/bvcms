@@ -3,7 +3,6 @@
     $('#Recipients').select2("readonly", true);
 
     $(".Send").click(function () {
-        $.block();
         $('#Body').text(CKEDITOR.instances["Body"].getData());
         var q = $(this).closest('form');
         if ($(this).attr('data-prompt') === 'True') {
@@ -24,6 +23,7 @@
     });
 
     function sendEmail(q) {
+        $.block();
         $.post('/Email/QueueEmails', q.serialize(), function (ret) {
             if (ret && ret.error) {
                 $.unblock();
