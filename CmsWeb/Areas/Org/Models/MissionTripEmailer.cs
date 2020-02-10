@@ -265,7 +265,6 @@ namespace CmsWeb.Areas.Org.Models
                 var link = $@"<a href=""{url}"">Unsubscribe</a>";
                 text = text.Replace("{unsubscribe}", link, true);
                 text = text.Replace("%7Bfromemail%7D", from.Address, true);
-                //var supportlink = db.ServerLink($"/OnlineReg/{OrgId}?gsid={gs.Id}");
                 var supportlink = EmailReplacements.SupportLinkAnonymousReplacement(db, OrgId.ToString(), gs.Id.ToString());
                 text = text.Replace("http://supportlink", supportlink, true);
                 text = text.Replace("https://supportlink", supportlink, true);
