@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Web;
 using System.Web.Mvc;
 using UtilityExtensions;
 
@@ -30,10 +31,22 @@ namespace CmsWeb.Models
         public int marital { get; set; }
         public int gender { get; set; }
 
-        public string nameHelp = ViewExtensions2.Markdown(@"
-Search names using starting letters of *First*`space`*Last* 
-or just Last or *First*`space` for first name match only.
-").ToString();
+        public HtmlString nameHelp = ViewExtensions2.Markdown(@"
+**Full Name Match**
+
+* First and Last name
+* Part of First or Last name
+* Starting letters of First and Last names
+* People ID
+
+**First Name Match**
+
+* First&lt;space&gt;
+
+**Last Name Match**
+
+* &lt;space&gt;Last
+");
     }
 
     public class PeopleSearchModel : PagerModel2
@@ -110,33 +123,35 @@ or just Last or *First*`space` for first name match only.
                 {
                     string first, last;
                     Util.NameSplit(m.name, out first, out last);
-                    if (first.HasValue() || last.HasValue())
+
+                    if (m.name.AllDigits())
                     {
                         people = from p in people
-                                 where p.LastName.StartsWith(last) || p.MaidenName.StartsWith(last) || p.AltName.StartsWith(last)
-                                       || p.LastName.StartsWith(m.name) || p.MaidenName.StartsWith(m.name) // gets Bob St Clair
-                                 where
-                                     p.FirstName.StartsWith(first) || p.NickName.StartsWith(first) || p.MiddleName.StartsWith(first)
-                                     || p.LastName.StartsWith(m.name) || p.MaidenName.StartsWith(m.name) // gets Bob St Clair
-                                 select p;
-                    }
-                    else if (last.AllDigits())
-                    {
-                        people = from p in people
-                                 where p.PeopleId == last.ToInt()
-                                 select p;
-                    }
-                    else if (CurrentDatabase.Setting("UseAltnameContains"))
-                    {
-                        people = from p in people
-                                 where p.LastName.StartsWith(m.name) || p.MaidenName.StartsWith(m.name) || p.AltName.Contains(last)
-                                 select p;
+                            where p.PeopleId == last.ToInt()
+                            select p;
                     }
                     else
                     {
-                        people = from p in people
-                                 where p.LastName.StartsWith(m.name) || p.MaidenName.StartsWith(m.name) || p.AltName.StartsWith(last)
-                                 select p;
+                        if (first.HasValue() || last.HasValue())
+                        {
+                            people = from p in people
+                                where p.LastName.StartsWith(last) || p.MaidenName.StartsWith(last) || p.AltName.StartsWith(last)
+                                where
+                                    p.FirstName.StartsWith(first) || p.NickName.StartsWith(first) || p.MiddleName.StartsWith(first)
+                                select p;
+                        }
+                        else
+                        {
+                            people = DbUtil.Db.Setting("UseAltnameContains")
+                                ? from p in people
+                                where p.LastName.StartsWith(m.name) || p.MaidenName.StartsWith(m.name) || p.AltName.Contains(m.name)
+                                    || p.FirstName.StartsWith(m.name) || p.NickName.StartsWith(m.name) || p.MiddleName.StartsWith(m.name)
+                                  select p
+                                : from p in people
+                                where p.LastName.StartsWith(m.name) || p.MaidenName.StartsWith(m.name) || p.AltName.StartsWith(m.name)
+                                    || p.FirstName.StartsWith(m.name) || p.NickName.StartsWith(m.name) || p.MiddleName.StartsWith(m.name)
+                                  select p;
+                        }
                     }
                 }
             }

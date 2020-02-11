@@ -361,12 +361,20 @@ use the dropdown menu immediately to it's right
 to `Add`, `Drop`, `Update` Members etc.
 ");
         public HtmlString NameFilterHelp => ViewExtensions2.Markdown(@"
-**Match a Name**
+**Full Name Match**
 
-* First and last name or just last name.
-* You can put just the first few letters of each.
-* Put a space after the first name to search first only.
-* PeopleId works too.
+* First and Last name
+* Part of First or Last name
+* Starting letters of First and Last names
+* People ID
+
+**First Name Match**
+
+* First&lt;space&gt;
+
+**Last Name Match**
+
+* &lt;space&gt;Last
 ");
 
         public HtmlString SgFilterHelp => ViewExtensions2.Markdown(@"
