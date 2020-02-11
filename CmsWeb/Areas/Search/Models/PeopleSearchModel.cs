@@ -31,7 +31,7 @@ namespace CmsWeb.Models
         public int marital { get; set; }
         public int gender { get; set; }
 
-        public HtmlString nameHelp = ViewExtensions2.Markdown(@"
+        public string nameHelp = ViewExtensions2.Markdown(@"
 **Full Name Match**
 
 * First and Last name
@@ -46,7 +46,7 @@ namespace CmsWeb.Models
 **Last Name Match**
 
 * &lt;space&gt;Last
-");
+").ToString();
     }
 
     public class PeopleSearchModel : PagerModel2

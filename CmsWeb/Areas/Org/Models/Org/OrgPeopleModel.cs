@@ -360,7 +360,7 @@ When a single group is shown (not combined),
 use the dropdown menu immediately to it's right
 to `Add`, `Drop`, `Update` Members etc.
 ");
-        public HtmlString NameFilterHelp => ViewExtensions2.Markdown(@"
+        public string NameFilterHelp => ViewExtensions2.Markdown(@"
 **Full Name Match**
 
 * First and Last name
@@ -375,7 +375,7 @@ to `Add`, `Drop`, `Update` Members etc.
 **Last Name Match**
 
 * &lt;space&gt;Last
-");
+").ToString();
 
         public HtmlString SgFilterHelp => ViewExtensions2.Markdown(@"
 **Match a sub-group name.**
