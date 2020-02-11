@@ -194,7 +194,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             return View();
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "ManageTransactions,Finance")]
         public ActionResult RetrieveBatchData()
         {
             return View();
