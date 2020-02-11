@@ -110,7 +110,7 @@ or just Last or *First*`space` for first name match only.
                 {
                     string first, last;
                     Util.NameSplit(m.name, out first, out last);
-                    if (first.HasValue())
+                    if (first.HasValue() || last.HasValue())
                     {
                         people = from p in people
                                  where p.LastName.StartsWith(last) || p.MaidenName.StartsWith(last) || p.AltName.StartsWith(last)

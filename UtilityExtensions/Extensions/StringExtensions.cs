@@ -210,9 +210,22 @@ namespace UtilityExtensions
 
         public static void NameSplit(string name, out string first, out string last)
         {
-            if ((name ?? "").Contains(","))
+            if ((name ?? "").Contains(" ") && (name ?? "").ToCharArray()[0] != ' ') // search first name only
             {
-                var a = (name ?? "").Split(',');
+                var a = (name ?? "").Split(' ');
+                first = "";
+                if (a.Length > 1)
+                {
+                    first = a[0].Trim();
+                    last = a[1].Trim();
+                }
+                else
+                    last = a[0].Trim();
+            }
+            else if ((name ?? "").Contains(",") || (name ?? "").ToCharArray()[0] == ' ') // search last name only
+            {
+                var a = (name ?? "").Contains(",") ? (name ?? "").Split(',') : (name ?? "").Split(' ');
+
                 first = "";
                 if (a.Length > 1)
                 {

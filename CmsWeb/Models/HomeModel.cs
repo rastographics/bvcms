@@ -466,7 +466,7 @@ namespace CmsWeb.Models
             }
             else
             {
-                if (first.HasValue())
+                if (first.HasValue() || last.HasValue())
                 {
                     //Util.NameSplit(text, out first, out last) returns both first and last.
                     qp = from p in qp
