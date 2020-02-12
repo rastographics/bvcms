@@ -57,8 +57,9 @@ BVCMS is maintained by TouchPoint Software, Inc.
 
 1. Start SSMS (SQL Server Management Studio) and run the following script to allow installation of CLR extensions.
 
-        sp_configure 'clr strict security', 0
-        GO
+        EXEC sp_configure 'show advanced options', 1
+        RECONFIGURE;
+        EXEC sp_configure 'clr strict security', 0;
         RECONFIGURE;
 
 1. Click the **Play** button in the main toolbar to launch BVCMS.

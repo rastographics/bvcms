@@ -33,6 +33,7 @@ namespace CmsWeb.Areas.People.Models
         public bool ShowNames;
         public bool ShowTypes;
         public bool isPledges = false;
+        public bool showNegativePledgeBalances = false;
         public List<PledgesSummary> PledgesSummary { get; set; }
         public List<GivingSummary> GivingSummary { get; set; }
         [DisplayName("Electronic Only"), TrackChanges]
@@ -165,6 +166,7 @@ namespace CmsWeb.Areas.People.Models
 
         public List<PledgesSummary> GetPledgesSummary()
         {
+            showNegativePledgeBalances = CurrentDatabase.Setting("ShowNegativePledgeBalances");
             IQueryable<Contribution> contributionRecords = GetContributionRecords();
             PledgesSummary = new List<PledgesSummary>();
             foreach (Contribution contribution in contributionRecords.Where(p => p.ContributionTypeId == ContributionTypeCode.Pledge).OrderByDescending(c => c.ContributionDate))
@@ -223,13 +225,18 @@ namespace CmsWeb.Areas.People.Models
                 {
                     amountContributed = contributionsThisFund.Sum(c => c.ContributionAmount ?? 0);
                 }
+                var pledgeBalance = amountPledged - amountContributed;
+                if (pledgeBalance < 0 && !showNegativePledgeBalances)
+                {
+                    pledgeBalance = 0;
+                }
                 PledgesSummary.Add(new PledgesSummary()
                 {
                     FundId = contribution.ContributionFund.FundId,
                     Fund = fundName,
                     AmountPledged = amountPledged,
                     AmountContributed = amountContributed,
-                    Balance = amountPledged - amountContributed < 0 ? 0 : amountPledged - amountContributed,
+                    Balance = pledgeBalance,
                     LastPledgeDate = contribution.ContributionDate.Value,
                     FundOnlineSort = contribution.ContributionFund.OnlineSort
                 });

@@ -16,6 +16,8 @@ namespace CmsData
 
         private string _DisplayName;
 
+        private string _DefaultValue;
+
         private string _Description;
 
         private int? _DataType;
@@ -39,6 +41,9 @@ namespace CmsData
 
         partial void OnDisplayNameChanging(string value);
         partial void OnDisplayNameChanged();
+
+        partial void OnDefaultValueChanging(string value);
+        partial void OnDefaultValueChanged();
 
         partial void OnDescriptionChanging(string value);
         partial void OnDescriptionChanged();
@@ -100,6 +105,24 @@ namespace CmsData
                     _DisplayName = value;
                     SendPropertyChanged("DisplayName");
                     OnDisplayNameChanged();
+                }
+            }
+        }
+
+        [Column(Name = "DefaultValue", UpdateCheck = UpdateCheck.Never, Storage = "_DefaultValue", DbType = "varchar")]
+        public string DefaultValue
+        {
+            get => _DefaultValue;
+
+            set
+            {
+                if (_DefaultValue != value)
+                {
+                    OnDefaultValueChanging(value);
+                    SendPropertyChanging();
+                    _DefaultValue = value;
+                    SendPropertyChanged("DefaultValue");
+                    OnDefaultValueChanged();
                 }
             }
         }

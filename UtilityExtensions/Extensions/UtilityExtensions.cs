@@ -1,21 +1,12 @@
-/* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church
- * Licensed under the GNU General Public License (GPL v2)
- * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license
- */
-
 using System;
 using System.Collections.Generic;
-using System.Dynamic;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Web;
 using System.Configuration;
 using System.Globalization;
 using System.IO;
 using System.Net;
-using System.Web.Configuration;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Web;
 using System.Xml;
 using System.Xml.Serialization;
 
@@ -23,40 +14,15 @@ namespace UtilityExtensions
 {
     public static partial class Util
     {
-        private const string STR_SessionStarting = "SessionStarting";
         private const string STR_Auditing = "Auditing";
         private const string STR_Helpfile = "Helpfile";
         private const string STR_Version = "Version";
         private const string STR_SMTPDEBUG = "SMTPDebug";
         public static int CreateAccountCode = -1952;
 
-        public static string ScratchPad2
-        {
-            get { return "scratchpad"; }
-        }
+        public static string ScratchPad2 => "scratchpad";
 
-        public static string SessionId
-        {
-            get
-            {
-                return HttpContextFactory.Current?.Session?.SessionID ?? (string)HttpRuntime.Cache["SessionId"] ?? (SessionId = Guid.NewGuid().ToString());                
-            }
-            set { HttpRuntime.Cache["SessionId"] = value; }
-        }
-
-        public static bool SessionStarting
-        {
-            get
-            {
-                bool tf = false;
-                if (HttpContextFactory.Current != null)
-                    if (HttpContextFactory.Current.Session != null)
-                        if (HttpContextFactory.Current.Session[STR_SessionStarting] != null)
-                            tf = (bool)HttpContextFactory.Current.Session[STR_SessionStarting];
-                return tf;
-            }
-            set { HttpContextFactory.Current.Session[STR_SessionStarting] = value; }
-        }
+        public static string SessionId => HttpContextFactory.Current?.Session?.SessionID ?? Guid.NewGuid().ToString();
 
         public static bool Auditing
         {
@@ -64,10 +30,15 @@ namespace UtilityExtensions
             {
                 object tf = HttpContextFactory.Current.Items[STR_Auditing];
                 if (tf.IsNotNull())
+                {
                     return (bool)tf;
-                else return true;
+                }
+                else
+                {
+                    return true;
+                }
             }
-            set { HttpContextFactory.Current.Items[STR_Auditing] = value; }
+            set => HttpContextFactory.Current.Items[STR_Auditing] = value;
         }
 
         public static string Helpfile
@@ -76,34 +47,13 @@ namespace UtilityExtensions
             {
                 var tag = "MainPage";
                 if (HttpContextFactory.Current.Session[STR_Helpfile] != null)
+                {
                     tag = HttpContextFactory.Current.Session[STR_Helpfile].ToString();
+                }
+
                 return tag;
             }
-            set { HttpContextFactory.Current.Session[STR_Helpfile] = value; }
-        }
-
-        public static bool IsLocalNetworkRequest
-        {
-            get
-            {
-                if (HttpContextFactory.Current != null)
-                {
-                    if (HttpContextFactory.Current.Request.IsLocal)
-                        return true;
-                    string hostPrefix = HttpContextFactory.Current.Request.UserHostAddress;
-                    string[] ipClass = hostPrefix.Split(new char[] { '.' });
-                    int classA = Convert.ToInt16(ipClass[0]);
-                    int classB = Convert.ToInt16(ipClass[1]);
-                    if (classA == 10 || classA == 127)
-                        return true;
-                    else if (classA == 192 && classB == 168)
-                        return true;
-                    else if (classA == 172 && (classB > 15 && classB < 33))
-                        return true;
-                    return false;
-                }
-                return false;
-            }
+            set => HttpContextFactory.Current.Session[STR_Helpfile] = value;
         }
 
         public static string AppRoot
@@ -112,7 +62,10 @@ namespace UtilityExtensions
             {
                 var approot = Util.ResolveUrl("~");
                 if (approot == "/")
+                {
                     approot = "";
+                }
+
                 return approot;
             }
         }
@@ -123,15 +76,24 @@ namespace UtilityExtensions
             {
                 var version = "?";
                 if (HttpContextFactory.Current != null)
+                {
                     if (HttpContextFactory.Current.Session != null)
+                    {
                         if (HttpContextFactory.Current.Session[STR_Version] != null)
+                        {
                             version = HttpContextFactory.Current.Session[STR_Version].ToString();
+                        }
+                    }
+                }
+
                 return version;
             }
             set
             {
                 if (HttpContextFactory.Current != null)
+                {
                     HttpContextFactory.Current.Session[STR_Version] = value;
+                }
             }
         }
 
@@ -142,16 +104,25 @@ namespace UtilityExtensions
                 var path = ConfigurationManager.AppSettings["RebootDbInProgress"].Replace("%USERPROFILE%",
                     Environment.GetEnvironmentVariable("USERPROFILE"));
                 if (File.Exists(path))
+                {
                     return true;
+                }
+
                 string output = ConfigurationManager.AppSettings["SharedFolder"].Replace("%USERPROFILE%",
                     Environment.GetEnvironmentVariable("USERPROFILE"));
                 if (!Directory.Exists(output))
+                {
                     return false;
+                }
+
                 path = ConfigurationManager.AppSettings["AppOfflineFile"].Replace("%USERPROFILE%",
                     Environment.GetEnvironmentVariable("USERPROFILE"));
                 var exists = File.Exists(path);
                 if (exists)
+                {
                     return true;
+                }
+
                 return File.Exists(HttpContextFactory.Current.Server.MapPath("~/AppOffline.txt"));
             }
         }
@@ -162,7 +133,10 @@ namespace UtilityExtensions
             {
                 var path = ConfigurationManager.AppSettings["SimSunFont"];
                 if (path != null)
+                {
                     path = path.Replace("%USERPROFILE%", Environment.GetEnvironmentVariable("USERPROFILE"));
+                }
+
                 return path;
             }
         }
@@ -174,7 +148,10 @@ namespace UtilityExtensions
                 var path = ConfigurationManager.AppSettings["UrgentTextFile"].Replace("%USERPROFILE%",
                     Environment.GetEnvironmentVariable("USERPROFILE"));
                 if (!path.HasValue())
+                {
                     return HttpContextFactory.Current.Application["UrgentMessage"] as string;
+                }
+
                 string fileContent = HttpRuntime.Cache["UrgentMessage"] as string;
                 if (fileContent == null && File.Exists(path))
                 {
@@ -190,9 +167,14 @@ namespace UtilityExtensions
                 if (!path.HasValue())
                 {
                     if (value.HasValue())
+                    {
                         HttpContextFactory.Current.Application["UrgentMessage"] = value;
+                    }
                     else
+                    {
                         HttpContextFactory.Current.Application.Remove("UrgentMessage");
+                    }
+
                     return;
                 }
                 File.WriteAllText(path, value);
@@ -205,11 +187,17 @@ namespace UtilityExtensions
             {
                 var text = ConfigurationManager.AppSettings["NotamText"];
                 if (text.HasValue())
+                {
                     return text;
+                }
+
                 var path = ConfigurationManager.AppSettings["NotamTextFile"].Replace("%USERPROFILE%",
                     Environment.GetEnvironmentVariable("USERPROFILE"));
                 if (!path.HasValue())
+                {
                     return HttpContextFactory.Current.Application["AdminMessage"] as string;
+                }
+
                 string fileContent = HttpRuntime.Cache["AdminMessage"] as string;
                 if (fileContent == null && File.Exists(path))
                 {
@@ -225,9 +213,14 @@ namespace UtilityExtensions
                 if (!path.HasValue())
                 {
                     if (value.HasValue())
+                    {
                         HttpContextFactory.Current.Application["AdminMessage"] = value;
+                    }
                     else
+                    {
                         HttpContextFactory.Current.Application.Remove("AdminMessage");
+                    }
+
                     return;
                 }
                 File.WriteAllText(path, value);
@@ -243,8 +236,12 @@ namespace UtilityExtensions
                 if (HttpContextFactory.Current != null)
                 {
                     if (HttpContextFactory.Current.Session != null)
+                    {
                         if (HttpContextFactory.Current.Session[STR_SMTPDEBUG] != null)
+                        {
                             deb = (bool)HttpContextFactory.Current.Session[STR_SMTPDEBUG];
+                        }
+                    }
                 }
                 else
                 {
@@ -258,25 +255,26 @@ namespace UtilityExtensions
                 if (HttpContextFactory.Current != null)
                 {
                     if (HttpContextFactory.Current.Session != null)
+                    {
                         HttpContextFactory.Current.Session[STR_SMTPDEBUG] = value;
+                    }
                 }
                 else
+                {
                     Thread.SetData(Thread.GetNamedDataSlot(STR_SMTPDEBUG), value);
+                }
             }
         }
 
-        public static int TrialDbOffset
-        {
-            get
-            {
-                return Host != "trialdb" ? 0 : (ConfigurationManager.AppSettings["TrialDbOffset"] ?? "0").ToInt();
-            }
-        }
+        public static int TrialDbOffset => Host != "trialdb" ? 0 : (ConfigurationManager.AppSettings["TrialDbOffset"] ?? "0").ToInt();
 
         public static T QueryString<T>(this System.Web.HttpRequest req, string param)
         {
             if (req.QueryString[param].HasValue())
+            {
                 return (T)req.QueryString[param].ChangeType(typeof(T));
+            }
+
             return default(T);
         }
 
@@ -289,7 +287,10 @@ namespace UtilityExtensions
         public static void Cookie(string name, string value, int days)
         {
             if (Cookie(name) == value)
+            {
                 return;
+            }
+
             var c = new HttpCookie(name, value);
             c.Expires = DateTime.Now.AddDays(days);
             HttpContextFactory.Current.Response.Cookies.Add(c);
@@ -305,10 +306,16 @@ namespace UtilityExtensions
         {
             var v = (string)HttpContextFactory.Current.Items["tCookie-" + name];
             if (v.HasValue())
+            {
                 return v;
+            }
+
             var c = HttpContextFactory.Current.Request.Cookies[name];
             if (c != null && c.Value.HasValue())
+            {
                 return c.Value;
+            }
+
             return defaultValue;
         }
 
@@ -356,9 +363,15 @@ namespace UtilityExtensions
         public static string ResolveUrl(string originalUrl)
         {
             if (originalUrl == null)
+            {
                 return null;
+            }
+
             if (originalUrl.IndexOf("://") != -1)
+            {
                 return originalUrl;
+            }
+
             return originalUrl.StartsWith("~")
                 ? VirtualPathUtility.ToAbsolute(originalUrl)
                 : originalUrl;
@@ -368,8 +381,13 @@ namespace UtilityExtensions
         public static string PickFirst(params string[] args)
         {
             foreach (var s in args)
+            {
                 if (s.HasValue())
+                {
                     return s;
+                }
+            }
+
             return "";
         }
 
@@ -410,12 +428,17 @@ namespace UtilityExtensions
         public static bool SessionTimedOut()
         {
             if (HttpContextFactory.Current.Session != null)
+            {
                 if (HttpContextFactory.Current.Session.IsNewSession)
                 {
                     string sessionCookie = HttpContextFactory.Current.Request.Headers["Cookie"];
                     if ((sessionCookie != null) && (sessionCookie.IndexOf("ASP.NET_SessionId") >= 0))
+                    {
                         return true;
+                    }
                 }
+            }
+
             return false;
         }
 
@@ -423,29 +446,41 @@ namespace UtilityExtensions
         {
             var context = HttpContextFactory.Current;
             if (context == null)
+            {
                 return null;
+            }
+
             var ipAddress = context.Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
             if (ipAddress.HasValue())
             {
                 var addresses = ipAddress.Split(',');
                 if (addresses.Length != 0)
+                {
                     return addresses[0];
+                }
             }
             return context.Request.ServerVariables["REMOTE_ADDR"];
         }
+
         public static HttpWebResponse GetHttpResponse(this HttpWebRequest request)
         {
             try
             {
-                if(IsDebug())
+                if (IsDebug())
+                {
                     return null;
-                return (HttpWebResponse) request.GetResponse();
+                }
+
+                return (HttpWebResponse)request.GetResponse();
             }
             catch (WebException ex)
             {
                 if (ex.Response == null || ex.Status != WebExceptionStatus.ProtocolError)
+                {
                     return null;
-                return (HttpWebResponse) ex.Response;
+                }
+
+                return (HttpWebResponse)ex.Response;
             }
         }
 

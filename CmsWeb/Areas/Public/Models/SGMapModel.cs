@@ -41,6 +41,10 @@ namespace CmsWeb.Models
 
         private readonly bool _isInitialSearchResult;
 
+        private string extraValueHost;
+        private string orgTypesXml = "";
+        private string sortBy = "SGF:Name";
+
         public void SetShowOnly(string name, string value)
         {
             showOnlyName = name;
@@ -54,10 +58,25 @@ namespace CmsWeb.Models
             markerText = text;
         }
 
+        public void SetExtraValue(string extraValue)
+        {
+            extraValueHost = extraValue;
+        }
+
+        public void SetOrgTypes(string orgTypes)
+        {
+            orgTypesXml = orgTypes;
+        }
+
+        public void SetSortBy(string sort)
+        {
+            sortBy = sort;
+        }
+
         public IEnumerable<SGInfo> SmallGroupInfo()
         {
-            var extraValueForAddress = DbUtil.Db.Setting("SGF-ExtraValueHost", null);
-            var orgTypes = DbUtil.Db.Setting("SGF-OrgTypes", "").Split(',').Select(x => x.Trim()).Where(x => !string.IsNullOrEmpty(x));
+            var extraValueForAddress = extraValueHost;
+            var orgTypes = orgTypesXml.Split(',').Select(x => x.Trim()).Where(x => !string.IsNullOrEmpty(x));
             var orgIdList = _orgList?.Select(x => x.OrganizationId).Distinct() ?? new List<int>();
 
             if (!orgIdList.Any() && !_isInitialSearchResult) return new SGInfo[] {};
@@ -157,7 +176,7 @@ Meeting Time: [SGF:Day] at [SGF:Time]<br />
             }
 
             var loadAllValues = DbUtil.Db.Setting("SGF-LoadAllExtraValues");
-            var sortSettings = DbUtil.Db.Setting("UX-SGFSortBy", "SGF:Name");
+            var sortSettings = sortBy;
             var mapPinTextColor = DbUtil.Db.Setting("UX-MapPinTextColor", "000000");
             
             return (from ql in qlist

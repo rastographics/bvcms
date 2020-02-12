@@ -257,7 +257,7 @@ namespace CmsWeb.Controllers
         /// will be given a keyword using the name of the zip file (without the .zip extension)
         /// This helps to organize and filter the multiple files into separate projects.
         /// </summary>
-        [HttpGet, Route("~/InstallPyScriptProject")]
+        [HttpGet, Route("~/InstallPyScriptProject"), Authorize(Roles="Admin")]
         public ActionResult InstallPyScriptProject()
         {
             var m = new PythonScriptModel(CurrentDatabase);
@@ -265,6 +265,7 @@ namespace CmsWeb.Controllers
             if (!script.HasValue())
             {
                 script = System.IO.File.ReadAllText(Server.MapPath("/Content/InstallPyScriptProject.py"));
+                CurrentDatabase.WriteContentPython("InstallPyScriptProject", script);
             }
             if (!PythonScriptModel.CanRunScript(script))
             {
