@@ -26,7 +26,7 @@ namespace IntegrationTests.Areas.Manage
             Find(text: "Roles").Click();
             CurrentUrl.ShouldBe($"{rootUrl}Roles");
 
-            RepeatUntil(() => Find(css: ".box-tools button[type=submit]").Click(),
+            RepeatUntil(() => Find(css: ".box-tools button[type=submit]")?.Click(),
                 condition: () => Find(id: "RoleName.NEW") != null);
             var newRole = Find(id: "RoleName.NEW");
             ScrollTo(newRole);

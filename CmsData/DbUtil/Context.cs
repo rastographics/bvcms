@@ -10,6 +10,7 @@ using System.Data.Linq.Mapping;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Linq;
+using MoreLinq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -860,7 +861,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
         }
         public Tag OrgLeadersOnlyTag2()
         {
-            return FetchOrCreateTag(Util.SessionId, Util.UserPeopleId ?? Util.UserId1, DbUtil.TagTypeId_OrgLeadersOnly);
+            return FetchOrCreateTag(Util.SessionId, Util.UserPeopleId, DbUtil.TagTypeId_OrgLeadersOnly);
         }
 
         public Tag FetchOrCreateTag(string tagname, int? ownerId, int tagtypeid)
@@ -1110,59 +1111,13 @@ This search uses multiple steps which cannot be duplicated in a single query.
             return s.ret;
         }
 
-        //        public class RollListView
-        //        {
-        //            public int? Section { get; set; }
-        //            public int? PeopleId { get; set; }
-        //            public string Name { get; set; }
-        //            public string Last { get; set; }
-        //            public int? FamilyId { get; set; }
-        //            public string First { get; set; }
-        //            public string Email { get; set; }
-        //            public bool? Attended { get; set; }
-        //            public int? CommitmentId { get; set; }
-        //            public string CurrMemberType { get; set; }
-        //            public string MemberType { get; set; }
-        //            public string AttendType { get; set; }
-        //            public int? OtherAttends { get; set; }
-        //            public bool? CurrMember { get; set; }
-        //        }
-        //
-        //        [Function(Name = "dbo.RollListMeeting")]
-        //        [ResultType(typeof(RollListView))]
-        //        public IMultipleResults RollListMeeting(
-        //            [Parameter(DbType = "Int")] int? mid
-        //            , [Parameter(DbType = "DateTime")] DateTime meetingdt
-        //            , [Parameter(DbType = "Int")] int oid
-        //            , [Parameter(DbType = "Bit")] bool current
-        //            , [Parameter(DbType = "Bit")] bool createmeeting)
-        //        {
-        //            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-        //                mid, meetingdt, oid, current, createmeeting);
-        //            return ((IMultipleResults)(result.ReturnValue));
-        //        }
-        //        public IEnumerable<RollListView> RollList(int? mid ,  DateTime meetingdt ,  int oid ,  bool current ,  bool createmeeting)
-        //        {
-        //            var r = RollListMeeting(mid, meetingdt, oid, current, createmeeting);
-        //            return r.GetResult<RollListView>();
-        //        }
         public bool UserPreference(string pref, bool def = false)
         {
             return UserPreference(pref, "").ToBool();
         }
+
         public string UserPreference(string pref, string defaultValue)
         {
-            var d = HttpContextFactory.Current.Session["preferences"] as Dictionary<string, string>;
-            if (d != null && d.ContainsKey(pref))
-            {
-                return d[pref] ?? defaultValue;
-            }
-
-            if (d == null)
-            {
-                d = new Dictionary<string, string>();
-                HttpContextFactory.Current.Session["preferences"] = d;
-            }
             Preference p = null;
             if (CurrentUser != null)
             {
@@ -1171,10 +1126,8 @@ This search uses multiple steps which cannot be duplicated in a single query.
 
             if (p != null)
             {
-                d[pref] = p.ValueX;
                 return p.ValueX;
             }
-            d[pref] = null;
             return defaultValue;
         }
 
@@ -1183,6 +1136,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
             var value = UserPreference(pref, "");
             SetUserPreference(pref, value == "true" ? "false" : "true");
         }
+
         public void SetUserPreference(string pref, object value)
         {
             if (UserPreference(pref, "") == value.ToString())
@@ -1205,13 +1159,6 @@ This search uses multiple steps which cannot be duplicated in a single query.
                 p = new Preference { UserId = Util.UserId1, PreferenceX = pref, ValueX = value.ToString() };
                 Preferences.InsertOnSubmit(p);
             }
-            var d = HttpContextFactory.Current.Session["preferences"] as Dictionary<string, string>;
-            if (d == null)
-            {
-                d = new Dictionary<string, string>();
-                HttpContextFactory.Current.Session["preferences"] = d;
-            }
-            d[pref] = p.ValueX;
             SubmitChanges();
         }
         public void SetUserPreference(int id, string pref, object value)
@@ -2022,6 +1969,47 @@ This search uses multiple steps which cannot be duplicated in a single query.
             // The following will clean out any tags that no longer have a corresponding F99:name in the queries
             ExecuteCommand("dbo.DeleteOldQueryBitTags");
         }
+
+        public void RetrieveBatchData()  // code has mostly been moved over from CmsWeb.Models.TransactionsModel.cs with some cleanup
+        {
+            IGateway[] gateways = {
+                Gateway(false, null, PaymentProcessTypes.OneTimeGiving, false),
+                Gateway(false, null, PaymentProcessTypes.OnlineRegistration, false),
+                Gateway(false, null, PaymentProcessTypes.RecurringGiving, false)
+            };
+
+            var today = DateTime.Now;
+            var yesterday = today.AddDays(-1);
+
+            var transactions
+                = from t in ViewTransactionLists
+                join org in Organizations on t.OrgId equals org.OrganizationId
+                select t;
+
+            foreach (var gateway in gateways.Where(g => g.IsNotNull()).DistinctBy(g => g.Identifier))
+            {
+                if (gateway.IsNull() || !gateway.CanGetSettlementDates)
+                {
+                    return;
+                }
+
+                if (gateway.UseIdsForSettlementDates)
+                {
+                    var tranids = (from t in transactions
+                        where t.TransactionDate >= yesterday
+                        where t.TransactionDate <= today
+                        where t.Settled == null
+                        where t.Moneytran == true
+                        select t.TransactionId).ToList();
+                    gateway.CheckBatchSettlements(tranids);
+                }
+                else
+                {
+                    gateway.CheckBatchSettlements(yesterday, today);
+                }
+            }
+        }
+
         [Function(Name = "dbo.TagRecentStartAttend")]
         public int TagRecentStartAttend(
             [Parameter(DbType = "Int")] int progid,

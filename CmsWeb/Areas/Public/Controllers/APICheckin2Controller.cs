@@ -408,8 +408,6 @@ namespace CmsWeb.Areas.Public.Controllers
                 return Content("not authorized");
             }
 #endif
-            DbUtil.LogActivity($"checkin {AccountModel.UserName2} authenticated");
-
             var list = (from c in CurrentDatabase.Campus
                         where c.Organizations.Any(o => o.CanSelfCheckin == true)
                         orderby c.Id
@@ -517,7 +515,6 @@ namespace CmsWeb.Areas.Public.Controllers
                 {
                     CheckInTimeX = dt,
                     PeopleId = pid
-                    //KeyCode = KeyCode
                 };
                 CurrentDatabase.CheckInTimes.InsertOnSubmit(ck);
                 CurrentDatabase.SubmitChanges();
@@ -589,8 +586,6 @@ namespace CmsWeb.Areas.Public.Controllers
             {
                 return Content("not authorized");
             }
-            //		    if (!User.IsInRole("Edit") && !User.IsInRole("Checkin"))
-            //				return Content("not authorized");
 
             DbUtil.LogActivity("checkin uploadpic " + id);
             var person = CurrentDatabase.People.Single(pp => pp.PeopleId == id);
