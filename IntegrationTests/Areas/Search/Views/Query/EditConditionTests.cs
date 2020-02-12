@@ -15,9 +15,7 @@ namespace IntegrationTests.Areas.Search.Views.Query
             password = RandomString();
             var user = CreateUser(username, password, roles: new[] { "Access", "Edit", "Admin" });
             Login();
-
-            MaximizeWindow();
-
+            
             Open($"{rootUrl}NewQuery");
 
             WaitForElement(".input-group-lg > .searchConditions");
