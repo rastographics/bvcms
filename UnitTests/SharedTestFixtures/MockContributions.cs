@@ -43,6 +43,19 @@ namespace SharedTestFixtures
                 }
             };
 
+        public static List<PledgesSummary> CustomFilteredPledgesSummary(int fundId, string fundName, decimal contributed, decimal pledged) =>
+            new List<PledgesSummary>
+            {
+                new PledgesSummary
+                {
+                    FundId = fundId,
+                    FundName = fundName,
+                    AmountContributed = contributed,
+                    AmountPledged = pledged,
+                    Balance = pledged - contributed < 0 ? 0 : pledged - contributed
+                }
+            };
+
         public static BundleHeader CreateSaveBundle(CMSDataContext db, DateTime? contributionDate = null)
         {
             var bundleHeader = new BundleHeader
