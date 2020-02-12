@@ -42,7 +42,6 @@ namespace IntegrationTests.Areas.Figures.Views.Figures
             }
 
             Open($"{rootUrl}Figures/Figures/Index");
-            MaximizeWindow();
             WaitForElement("div:nth-child(1) > .btn", 5);
 
             Find(css: "div:nth-child(1) > .btn").Click();
