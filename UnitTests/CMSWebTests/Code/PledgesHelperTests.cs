@@ -30,25 +30,29 @@ namespace CMSWebTests
             actual.Should().BeEquivalentTo(expected);
         }
 
-        [Fact]
-        public void Should_GetFilteredPledgesSummary()
+        [Theory]
+        [InlineData(200,0)]
+        [InlineData(200,100)]
+        public void Should_GetFilteredPledgesSummary(decimal pledged, decimal contributed)
         {
             using (var db = CMSDataContext.Create(DatabaseFixture.Host))
             {
                 var fromDate = new DateTime(2019, 1, 1);
-                var person = MockPeople.CreateSavePerson(db);
+                var fund = MockFunds.CreateSaveFund(db, true);                
                 var bundleHeader = MockContributions.CreateSaveBundle(db);
                 var pledge = MockContributions.CreateSaveContribution(
-                    db, bundleHeader, fromDate, 200, peopleId: person.PeopleId, fundId: 1, contributionType: ContributionTypeCode.Pledge);
-                var firstContribution = MockContributions.CreateSaveContribution(db, bundleHeader, fromDate, 100, peopleId: person.PeopleId, fundId: 1, contributionType: ContributionTypeCode.CheckCash);
-                var secondContribution = MockContributions.CreateSaveContribution(db, bundleHeader, fromDate, 100, peopleId: person.PeopleId, fundId: 2, contributionType: ContributionTypeCode.CheckCash);
-                var setting = MockSettings.CreateSaveSetting(db, "PostContributionPledgeFunds", "1");                
-                var expected = MockContributions.FilteredPledgesSummary();
+                    db, bundleHeader, fromDate, pledged, peopleId: 1, fundId: fund.FundId, contributionType: ContributionTypeCode.Pledge);
+                MockSettings.CreateSaveSetting(db, "PostContributionPledgeFunds", fund.FundId.ToString());
+                var firstContribution = MockContributions.CreateSaveContribution(db, bundleHeader, fromDate, contributed, peopleId: 1, fundId: fund.FundId, contributionType: ContributionTypeCode.CheckCash);
+                var secondContribution = MockContributions.CreateSaveContribution(db, bundleHeader, fromDate, 100, peopleId: 1, fundId: 2, contributionType: ContributionTypeCode.CheckCash);
 
-                var actual = PledgesHelper.GetFilteredPledgesSummary(db, person.PeopleId);
+                var expected = MockContributions.CustomFilteredPledgesSummary(fund.FundId, fund.FundName, contributed, pledged);
+                var actual = PledgesHelper.GetFilteredPledgesSummary(db, 1);
                 actual.Should().BeEquivalentTo(expected);
 
+                MockSettings.CreateSaveSetting(db, "PostContributionPledgeFunds", "1");
                 MockContributions.DeleteAllFromBundle(db, bundleHeader);
+                MockFunds.DeleteFund(db, fund.FundId);
             }         
         }
 
