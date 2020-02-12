@@ -122,8 +122,8 @@ namespace IntegrationTests.Areas.Manage
             var button = "input[type=submit]";
 
             RepeatUntil(() => {
-                Find(css: input).SendKeys(username);
-                Find(css: button).Click();
+                Find(css: input)?.SendKeys(username);
+                Find(css: button)?.Click();
             }, () => PageSource.Contains("Password Sent"));
 
             db.Refresh(System.Data.Linq.RefreshMode.OverwriteCurrentValues, user);
@@ -134,10 +134,11 @@ namespace IntegrationTests.Areas.Manage
             Find(css: "button[type=submit]").Click();
             CurrentUrl.ShouldBe($"{rootUrl}Account/SetPasswordConfirm");
 
-            Find(id: "newPassword").SendKeys(newPassword);
-            Find(id: "confirmPassword").SendKeys(newPassword);
-            Find(css: button).Click();
-            PageSource.ShouldContain("Password Changed");
+            RepeatUntil(() => {
+                Find(id: "newPassword").SendKeys(newPassword);
+                Find(id: "confirmPassword").SendKeys(newPassword);
+                Find(css: button).Click();
+            }, () => PageSource.Contains("Password Changed"));
 
             Find(text: "Return to Home").Click();
             WaitForPageLoad();
