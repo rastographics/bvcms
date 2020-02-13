@@ -1,12 +1,8 @@
 ﻿using CmsData;
-using CmsData.Codes;
 using SharedTestFixtures;
 using Shouldly;
 using System;
-using System.Linq;
-using UtilityExtensions;
 using Xunit;
-
 
 namespace CmsDataTests
 {
@@ -15,16 +11,16 @@ namespace CmsDataTests
         [Fact]
         public void Should_Return_Anonymous_Replacement_Link()
         {
-            //using (var db = CMSDataContext.Create(DatabaseFixture.Host))
-            //{
-            //    var link = EmailReplacements.SupportLinkAnonymousReplacement(db, "1", "1");
-            //    String[] spearator = { "//", "/" };
-            //    var url = link.Split(spearator, StringSplitOptions.RemoveEmptyEntries);
-            //    foreach (var item in url)
-            //    {
-            //        item.ShouldNotBe("");
-            //    }
-            //}
+            using (var db = CMSDataContext.Create(DatabaseFixture.Host))
+            {
+                var link = EmailReplacements.SupportLinkAnonymousReplacement(db, "1", "1");
+                String[] spearator = { "//", "/" };
+                var url = link.Split(spearator, StringSplitOptions.RemoveEmptyEntries);
+                foreach (var item in url)
+                {
+                    item.ShouldNotBe("");
+                }
+            }
         }
     }
 }
