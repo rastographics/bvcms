@@ -1,4 +1,4 @@
-IF NOT EXISTS(select 1 from dbo.SettingCategory where Name = 'eSpace')
+IF NOT EXISTS(select 1 from dbo.SettingCategory where Name = 'eSPACE')
 BEGIN
     DECLARE @Integrations INT = 3, @eSpace INT = 15, @dataBool INT = 1, @dataPassword INT = 4, @dataInt INT = 5;
 
@@ -6,16 +6,16 @@ BEGIN
     
     INSERT INTO dbo.SettingCategory
     (SettingCategoryId, Name, SettingTypeId, DisplayOrder) VALUES
-    (@eSpace, 'eSpace', @Integrations, 5);
+    (@eSpace, 'eSPACE', @Integrations, 5);
 
     SET IDENTITY_INSERT dbo.SettingCategory OFF;
 
     INSERT INTO dbo.SettingMetadata
     (SettingId, Description, DataType, SettingCategoryId) VALUES
-    ('eSpaceEnabled', 'Set this to <i>true</i> to enable eSpace integration features', @dataBool, @eSpace),
-    ('eSpaceUserName', 'The eSpace user name (email) to use for the integration', @dataPassword, @eSpace),
-    ('eSpacePassword', 'The eSpace password to use for the integration', @dataPassword, @eSpace),
-    ('eSpaceDaysToSync', 'The number of days in the future to search for data from eSpace that will be synced (The default is 60 days)', @dataInt, @eSpace)
+    ('eSPACEEnabled', 'Set this to <i>true</i> to enable eSPACE integration features', @dataBool, @eSpace),
+    ('eSPACEUserName', 'The eSPACE user name (email) to use for the integration', @dataPassword, @eSpace),
+    ('eSPACEPassword', 'The eSPACE password to use for the integration', @dataPassword, @eSpace),
+    ('eSPACEDaysToSync', 'The number of days in the future to search for data from eSPACE that will be synced (The default is 60 days)', @dataInt, @eSpace)
 END
 GO
 

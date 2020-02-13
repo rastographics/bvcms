@@ -100,8 +100,11 @@
         $list.on('click', 'a[href]', function (event) {
             var a = event.currentTarget,
                 id = new URL(a.href).hash.substring(1),
-                name = a.text;
+                name = a.text,
+                description = $(a).data("description");
             setEventIdName(id, name);
+            $('#Description').val(description);
+            $('#Description_ro').html(description);
         });
 
         $unlink.on('click', 'button', function(event) {

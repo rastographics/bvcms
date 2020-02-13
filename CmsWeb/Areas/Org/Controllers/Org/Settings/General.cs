@@ -39,7 +39,7 @@ namespace CmsWeb.Areas.Org.Controllers
             {
                 m.Org.LimitToRole = null;
             }
-            DbUtil.LogActivity($"Update SettingsGeneral {m.Org.OrganizationName}");
+            DbUtil.LogActivity($"Update SettingsGeneral {m.Org.OrganizationName}", orgid: m.Id);
             if (ModelState.IsValid)
             {
                 m.Update(User.IsInRole("Admin"));

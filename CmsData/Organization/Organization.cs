@@ -1,7 +1,7 @@
+using CmsData.Codes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using CmsData.Codes;
 using System.Text;
 using System.Text.RegularExpressions;
 using UtilityExtensions;
@@ -13,9 +13,15 @@ namespace CmsData
         public static string FormatOrgName(string name, string leader, string loc)
         {
             if (loc.HasValue())
+            {
                 loc = ", " + loc;
+            }
+
             if (leader.HasValue())
+            {
                 leader = ":" + leader;
+            }
+
             return $"{name}{leader}{loc}";
         }
 
@@ -35,13 +41,20 @@ namespace CmsData
                         orderby d.Division.Name
                         select d.Division.Name;
                 foreach (var name in q)
+                {
                     sb.Append(name + ",");
+                }
+
                 if (sb.Length > 0)
+                {
                     sb.Remove(sb.Length - 1, 1);
+                }
+
                 tagString = sb.ToString();
             }
             return tagString;
         }
+
         public void SetTagString(CMSDataContext db, string value)
         {
             if (!value.HasValue())
@@ -80,6 +93,7 @@ namespace CmsData
             }
             tagString = value;
         }
+
         public bool ToggleTag(CMSDataContext db, int divid)
         {
             var divorg = DivOrgs.SingleOrDefault(d => d.DivId == divid);
@@ -89,16 +103,22 @@ namespace CmsData
                 return true;
             }
             if (DivOrgs.Count == 1)
+            {
                 return true;
+            }
+
             DivOrgs.Remove(divorg);
             db.DivOrgs.DeleteOnSubmit(divorg);
             return false;
         }
+
         public void AddToDiv(CMSDataContext db, int divid)
         {
             var divorg = DivOrgs.SingleOrDefault(d => d.DivId == divid);
             if (divorg == null)
+            {
                 DivOrgs.Add(new DivOrg { DivId = divid });
+            }
         }
 
         public string PurgeOrg(CMSDataContext db)
@@ -113,6 +133,7 @@ namespace CmsData
             }
             return null;
         }
+
         public void CopySettings(CMSDataContext db, int fromid)
         {
             var frorg = db.LoadOrganizationById(fromid);
@@ -120,6 +141,7 @@ namespace CmsData
             CopySettings2(frorg, this);
             db.SubmitChanges();
         }
+
         public static void CopySettings2(Organization frorg, Organization toorg)
         {
             toorg.NotifyIds = frorg.NotifyIds;
@@ -131,7 +153,7 @@ namespace CmsData
             toorg.RegStart = frorg.RegStart;
             toorg.RegEnd = frorg.RegEnd;
             toorg.IsMissionTrip = frorg.IsMissionTrip;
-            toorg.AddToSmallGroupScript = frorg.AddToSmallGroupScript;            
+            toorg.AddToSmallGroupScript = frorg.AddToSmallGroupScript;
             toorg.AllowNonCampusCheckIn = frorg.AllowNonCampusCheckIn;
             toorg.AllowAttendOverlap = frorg.AllowAttendOverlap;
             toorg.CanSelfCheckin = frorg.CanSelfCheckin;
@@ -150,6 +172,7 @@ namespace CmsData
             toorg.RegSetting = frorg.RegSetting;
             toorg.RegSettingXml = frorg.RegSettingXml;
         }
+
         public Organization CloneOrg(CMSDataContext db, int? divisionId)
         {
             var neworg = new Organization
@@ -165,8 +188,12 @@ namespace CmsData
             };
             db.Organizations.InsertOnSubmit(neworg);
             foreach (var div in DivOrgs)
+            {
                 neworg.DivOrgs.Add(new DivOrg { Organization = neworg, DivId = div.DivId });
+            }
+
             foreach (var sc in OrgSchedules)
+            {
                 neworg.OrgSchedules.Add(new OrgSchedule
                 {
                     OrganizationId = OrganizationId,
@@ -175,39 +202,47 @@ namespace CmsData
                     SchedTime = sc.SchedTime,
                     Id = sc.Id
                 });
+            }
 
             CopySettings2(this, neworg);
             db.SubmitChanges();
             return neworg;
         }
+
         public Organization CloneOrg(CMSDataContext db)
         {
             return CloneOrg(db, DivisionId);
         }
+
         public static DateTime? GetDateFromScheduleId(int id)
         {
             int dw = id / 10000 - 1;
             id %= 10000;
             if (dw == 10) // any day
+            {
                 dw = DateTime.Today.DayOfWeek.ToInt();
+            }
+
             if (dw == 0)
+            {
                 dw = 7;
+            }
+
             int hour = id / 100;
             int min = id % 100;
             if (hour > 0)
+            {
                 return new DateTime(1900, 1, dw, hour, min, 0);
+            }
+
             return null;
         }
-        public string DivisionName
-        {
-            get
-            {
-                return Division != null ?
+
+        public string DivisionName => Division != null ?
                     (Division.Program != null ? Division.Program.Name : "no program")
                         + ":" + Division.Name :
                        "<span style='color:red'>need a main division</span>";
-            }
-        }
+
         public static OrgSchedule ParseSchedule(string s)
         {
             var m = Regex.Match(s, @"\A(?<dow>.*)\s(?<time>\d{1,2}:\d{2}\s(A|P)M)", RegexOptions.IgnoreCase);
@@ -215,6 +250,7 @@ namespace CmsData
             var time = m.Groups["time"].Value;
             return ParseSchedule(dow, time);
         }
+
         public static OrgSchedule ParseSchedule(string dow, string time, int i = 1)
         {
             var d = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase)
@@ -230,7 +266,10 @@ namespace CmsData
             };
 
             if (!dow.HasValue())
+            {
                 dow = "sun";
+            }
+
             dow = dow.Truncate(3);
             var re = new Regex(@"(?<h>\d+)(?::?)(?<s>\d{2})?\s*(?<a>(?:A|P)M)?", RegexOptions.IgnoreCase);
             var m = re.Match(time);
@@ -252,6 +291,7 @@ namespace CmsData
             };
             return sc;
         }
+
         public static OrganizationType FetchOrCreateType(CMSDataContext db, string type)
         {
             var t = db.OrganizationTypes.SingleOrDefault(pp => pp.Description == type);
@@ -259,13 +299,17 @@ namespace CmsData
             {
                 var max = 10;
                 if (db.OrganizationTypes.Any())
+                {
                     max = db.OrganizationTypes.Max(mm => mm.Id) + 10;
+                }
+
                 t = new OrganizationType { Description = type, Code = type.Substring(0, 3), Id = max };
                 db.OrganizationTypes.InsertOnSubmit(t);
                 db.SubmitChanges();
             }
             return t;
         }
+
         public static Program FetchOrCreateProgram(CMSDataContext db, string program)
         {
             var p = db.Programs.SingleOrDefault(pp => pp.Name == program);
@@ -277,6 +321,7 @@ namespace CmsData
             }
             return p;
         }
+
         public static Division FetchOrCreateDivision(CMSDataContext db, Program program, string division)
         {
             var d = db.Divisions.SingleOrDefault(pp => pp.Name == division && pp.ProgDivs.Any(pd => pd.ProgId == program.Id));
@@ -291,11 +336,15 @@ namespace CmsData
             {
                 var pd = db.ProgDivs.SingleOrDefault(dd => dd.ProgId == program.Id && dd.DivId == d.Id);
                 if (pd == null)
+                {
                     program.Divisions.Add(d);
+                }
+
                 db.SubmitChanges();
             }
             return d;
         }
+
         public static MemberType FetchOrCreateMemberType(CMSDataContext db, string type)
         {
             var mt = db.MemberTypes.SingleOrDefault(pp => pp.Description == type);
@@ -303,37 +352,39 @@ namespace CmsData
             {
                 var max = db.MemberTypes.Max(mm => mm.Id) + 10;
                 if (max < 1000)
+                {
                     max = 1010;
+                }
+
                 mt = new MemberType { Id = max, Description = type, Code = type.Truncate(20), AttendanceTypeId = AttendTypeCode.Member };
                 db.MemberTypes.InsertOnSubmit(mt);
                 db.SubmitChanges();
             }
             return mt;
         }
+
         public static Organization FetchOrCreateOrganization(CMSDataContext db, int divid, string organization)
         {
             var o = db.LoadOrganizationByName(organization, divid);
             if (o == null)
+            {
                 return CreateOrganization(db, divid, organization);
+            }
+
             return o;
         }
+
         public static Organization FetchOrCreateOrganization(CMSDataContext db, Division division, string organization)
         {
             var o = db.LoadOrganizationByName(organization, division.Id);
             if (o == null)
+            {
                 return CreateOrganization(db, division, organization);
+            }
+
             return o;
         }
-        //public static Organization FetchOrCreateOrganization(CMSDataContext Db, Division division, string organization, string description)
-        //{
-        //    var o = Db.Organizations.SingleOrDefault(oo => oo.Description == description);
-        //    if (o == null)
-        //    {
-        //        o = CreateOrganization(Db, division, organization);
-        //        o.Description = description;
-        //    }
-        //    return o;
-        //}
+
         public static Organization CreateOrganization(CMSDataContext db, Division division, string organization)
         {
             var o = new Organization
@@ -349,6 +400,7 @@ namespace CmsData
             db.SubmitChanges();
             return o;
         }
+
         public static Organization CreateOrganization(CMSDataContext db, int divid, string organization)
         {
             var o = new Organization
@@ -410,6 +462,7 @@ namespace CmsData
             }
             return ev;
         }
+
         public static OrganizationExtra GetExtraValue(CMSDataContext db, int id, string field)
         {
             field = field.Trim();
@@ -446,33 +499,57 @@ namespace CmsData
             oev.Data = value;
             oev.DataType = multiline ? "text" : null;
         }
+
         public void AddToExtraText(string field, string value)
         {
             if (!value.HasValue())
+            {
                 return;
+            }
+
             var ev = GetExtraValue(field);
             ev.DataType = "text";
             if (ev.Data.HasValue())
+            {
                 ev.Data = value + "\n" + ev.Data;
+            }
             else
+            {
                 ev.Data = value;
+            }
         }
 
         public static string GetExtra(CMSDataContext db, int? id, string field)
         {
             var oev = db.OrganizationExtras.SingleOrDefault(oe => oe.OrganizationId == id && oe.Field == field);
             if (oev == null)
+            {
                 return "";
+            }
+
             if (oev.StrValue.HasValue())
+            {
                 return oev.StrValue;
+            }
+
             if (oev.Data.HasValue())
+            {
                 return oev.Data;
+            }
+
             if (oev.DateValue.HasValue)
+            {
                 return oev.DateValue.FormatDate();
+            }
+
             if (oev.IntValue.HasValue)
+            {
                 return oev.IntValue.ToString();
+            }
+
             return oev.BitValue.ToString();
         }
+
         public string GetExtra(CMSDataContext db, string field)
         {
             return GetExtra(db, OrganizationId, field).ToLower();
@@ -481,9 +558,15 @@ namespace CmsData
         public void AddEditExtraCode(string field, string value, string location = null)
         {
             if (!field.HasValue())
+            {
                 return;
+            }
+
             if (!value.HasValue())
+            {
                 return;
+            }
+
             var ev = GetExtraValue(field);
             ev.StrValue = value;
             ev.TransactionTime = DateTime.Now;
@@ -492,7 +575,10 @@ namespace CmsData
         public void AddEditExtraText(string field, string value, DateTime? dt = null)
         {
             if (!value.HasValue())
+            {
                 return;
+            }
+
             var ev = GetExtraValue(field);
             ev.Data = value;
             ev.TransactionTime = dt ?? DateTime.Now;
@@ -501,7 +587,10 @@ namespace CmsData
         public void AddEditExtraDate(string field, DateTime? value)
         {
             if (!value.HasValue)
+            {
                 return;
+            }
+
             var ev = GetExtraValue(field);
             ev.DateValue = value;
             ev.TransactionTime = DateTime.Now;
@@ -517,7 +606,10 @@ namespace CmsData
         public void AddEditExtraBool(string field, bool tf, string name = null, string location = null)
         {
             if (!field.HasValue())
+            {
                 return;
+            }
+
             var ev = GetExtraValue(field);
             ev.BitValue = tf;
             ev.TransactionTime = DateTime.Now;
@@ -558,39 +650,58 @@ namespace CmsData
         public static void AddEditExtraValue(CMSDataContext db, int id, string field, string value)
         {
             if (!value.HasValue())
+            {
                 return;
+            }
+
             var ev = GetExtraValue(db, id, field);
             ev.StrValue = value;
             ev.TransactionTime = DateTime.Now;
         }
+
         public static void AddEditExtraData(CMSDataContext db, int id, string field, string value)
         {
             if (!value.HasValue())
+            {
                 return;
+            }
+
             var ev = GetExtraValue(db, id, field);
             ev.Data = value;
             ev.TransactionTime = DateTime.Now;
         }
+
         public static void AddEditExtraDate(CMSDataContext db, int id, string field, DateTime? value)
         {
             if (!value.HasValue)
+            {
                 return;
+            }
+
             var ev = GetExtraValue(db, id, field);
             ev.DateValue = value;
             ev.TransactionTime = DateTime.Now;
         }
+
         public static void AddEditExtraInt(CMSDataContext db, int id, string field, int? value)
         {
             if (!value.HasValue)
+            {
                 return;
+            }
+
             var ev = GetExtraValue(db, id, field);
             ev.IntValue = value;
             ev.TransactionTime = DateTime.Now;
         }
+
         public static void AddEditExtraBool(CMSDataContext db, int id, string field, bool? value)
         {
             if (!value.HasValue)
+            {
                 return;
+            }
+
             var ev = GetExtraValue(db, id, field);
             ev.BitValue = value;
             ev.TransactionTime = DateTime.Now;
@@ -600,9 +711,13 @@ namespace CmsData
         public int RegLimitCount(CMSDataContext db)
         {
             if (!regLimitCount.HasValue)
+            {
                 regLimitCount = db.OrganizationMemberCount2(OrganizationId) ?? 0;
+            }
+
             return regLimitCount.Value;
         }
+
         public IEnumerable<OrganizationExtra> GetOrganizationExtras()
         {
             return OrganizationExtras.OrderBy(pp => pp.Field);
@@ -612,10 +727,14 @@ namespace CmsData
         {
             RegSettingXml = Util.Serialize(os);
         }
+
         public static void AddMemberTag(CMSDataContext db, int orgId, string name)
         {
             if (!name.HasValue())
+            {
                 return;
+            }
+
             var name2 = name.Trim().Truncate(200);
             var mt = db.MemberTags.SingleOrDefault(t => t.Name == name2 && t.OrgId == orgId);
             if (mt == null)
@@ -630,7 +749,10 @@ namespace CmsData
         public bool IsOnePageOnlineGiving(CMSDataContext db)
         {
             if (RegistrationTypeId != RegistrationTypeCode.OnlineGiving)
+            {
                 return false;
+            }
+
             var settings = Registration.Settings.CreateSettings(RegSettingXml, db, this);
             return !settings.AskDonation;
         }
@@ -639,7 +761,10 @@ namespace CmsData
         {
             sg = sg.Trim();
             if (MemberTags.Any(vv => vv.Name == sg))
+            {
                 return;
+            }
+
             MemberTags.Add(new MemberTag() { Name = sg });
         }
     }

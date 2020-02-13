@@ -18,6 +18,6 @@ else
 {
     foreach (var item in Model)
     {
-        <li><a href="#@item.EventId">@descriptionForEvent(item)</a></li>
+        <li><a href="#@item.EventId" data-description="@item.Description">@descriptionForEvent(item)</a></li>
     }
 }
