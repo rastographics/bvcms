@@ -1190,6 +1190,7 @@
     <Content Include="Migrations\20200113_Alter_ContributionSearch.sql" />
     <Content Include="Migrations\20200206_Alter_GetTotalContributionsDonor.sql" />
     <Content Include="Migrations\20200210_Alter_GetContributionsDetails.sql" />
+    <Content Include="Migrations\20200119_Alter_Func_PledgesSummary.sql" />
     <Content Include="QueryBuilder\CompareMap.xml">
       <SubType>Designer</SubType>
     </Content>
