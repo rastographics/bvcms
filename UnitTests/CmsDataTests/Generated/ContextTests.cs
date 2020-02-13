@@ -9,6 +9,7 @@ using Xunit;
 
 namespace CmsDataTests
 {
+    [Collection(Collections.Database)]
     public class ContextTests
     {
         [Fact]
