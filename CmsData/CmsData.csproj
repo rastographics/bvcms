@@ -823,6 +823,7 @@
     <Compile Include="DbUtil\ITableWithExtraValues.cs" />
     <Content Include="App_Readme\Elmah.txt" />
     <Content Include="Migrations\00000000_sql_migrations_table.sql" />
+    <Content Include="Migrations\20200213_AutoSyncBatchDates-setting.sql" />
     <Compile Include="Organization\OrgFilter.cs" />
     <Compile Include="Organization\OrgPerson.cs" />
     <Compile Include="Organization\OrgSchedule.cs" />
