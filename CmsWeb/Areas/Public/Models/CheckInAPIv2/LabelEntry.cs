@@ -21,10 +21,13 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 		public string font;
 		public int fontSize;
 
+        public bool invert;
+        public int order;
+
 		public Point<decimal> start = new Point<decimal>();
 		public Point<int> align = new Point<int>();
 		public Point<decimal> end = new Point<decimal>();
-		public Point<int> size = new Point<int>();
+		public Point<decimal> size = new Point<decimal>();
 
 		public LabelEntry( AttendanceCacheSet cacheSet, LabelFormatEntry formatEntry, Attendance attendance, AttendanceGroup group = null, int index = 0 )
 		{
@@ -64,6 +67,9 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 
 			size.x = formatEntry.width;
 			size.y = formatEntry.height;
+
+            invert = formatEntry.invert;
+            order = formatEntry.order;
 		}
 
 		public string getField( AttendanceCacheSet cacheSet, LabelField field, string format, Attendance attendance, AttendanceGroup group )
