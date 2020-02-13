@@ -17,5 +17,18 @@ namespace eSpace.Services
 
             return list;
         }
+
+        public IEnumerable<eSpaceOccurrence> Occurrences(long eventId, NameValueCollection filters)
+        {
+            var list = new List<eSpaceOccurrence>();
+
+            filters.Add("eventId", eventId.ToString());
+
+            var request = new RestRequest("event/occurrences", Method.GET, DataFormat.Json);
+
+            ExecuteGet(request, filters, out list);
+
+            return list;
+        }
     }
 }

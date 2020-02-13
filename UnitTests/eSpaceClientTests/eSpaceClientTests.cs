@@ -20,15 +20,34 @@ namespace eSpace.eSpaceClientTests
                 Headers = NetworkFixture.JsonHeaders,
                 ResponseBody = Encoding.Default.GetString(Resources.EventServiceListTestResponse)
             });
-            var client = new eSpaceClient
+            var client = CreateClient();
+            var list = client.Event.List(new NameValueCollection { { "endDate", "2020-01-31" } });
+            list.ShouldNotBeNull();
+            list.Count().ShouldBe(3);
+        }
+
+        [Fact]
+        public void EventServiceOccurrencesTest()
+        {
+            NetworkFixture.MockResponse("/event/occurrences\\?endDate=2020-01-31&eventId=874491", new MockHttpResponse
+            {
+                Headers = NetworkFixture.JsonHeaders,
+                ResponseBody = Encoding.Default.GetString(Resources.EventServiceOccurrencesTestResponse)
+            });
+            var client = CreateClient();
+            var list = client.Event.Occurrences(874491, new NameValueCollection { { "endDate", "2020-01-31" } });
+            list.ShouldNotBeNull();
+            list.Count().ShouldBe(5);
+        }
+
+        private static eSpaceClient CreateClient()
+        {
+            return new eSpaceClient
             {
                 BaseUrl = NetworkFixture.ProxyUrl,
                 Username = "username@example.com",
                 Password = "thisisapassword"
             };
-            var list = client.Event.List(new NameValueCollection { { "endDate", "2020-01-31" } });
-            list.ShouldNotBeNull();
-            list.Count().ShouldBe(3);
         }
     }
 }

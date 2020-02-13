@@ -58,7 +58,9 @@
     <Compile Include="Models\eSpaceCategory.cs" />
     <Compile Include="Models\eSpaceContact.cs" />
     <Compile Include="Models\eSpaceEvent.cs" />
+    <Compile Include="Models\eSpaceItem.cs" />
     <Compile Include="Models\eSpaceLocation.cs" />
+    <Compile Include="Models\eSpaceOccurrence.cs" />
     <Compile Include="Models\eSpacePerson.cs" />
     <Compile Include="Models\eSpaceResponse.cs" />
     <Compile Include="Services\eSpaceEventService.cs" />
