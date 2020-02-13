@@ -58,7 +58,7 @@ new Vue({
     },
     watch: {
         loading: function (loading) {
-            if (loading && typeof($.block) === "function") {
+            if (loading && typeof ($.block) === "function") {
                 $.block();
             } else {
                 $.unblockUI();
@@ -123,17 +123,6 @@ new Vue({
                 'width': '100vw',
                 'height': '100vh'
             };
-        },
-        searchDay: function () {
-            // use today, unless we're in test mode
-            var date = new Date();
-            if (this.profile.Testing) {
-                date.setDate(date.getDate() + ((7 - date.getDay()) % 7 + this.profile.TestDay) % 7);  // sunday = 0
-            }
-            var month = date.getMonth() + 1;
-            var day = date.getDate();
-            date = date.getFullYear() + '-' + (month > 9 ? '' : '0') + month + '-' + (day > 9 ? '' : '0') + day;
-            return date;
         }
     },
     methods: {
@@ -182,6 +171,17 @@ new Vue({
             } else {
                 return d.getTime() / 1000 / 60;
             }
+        },
+        searchDay() {
+            // use today, unless we're in test mode
+            var date = new Date();
+            if (this.profile.Testing) {
+                date.setDate(date.getDate() + ((7 - date.getDay()) % 7 + this.profile.TestDay) % 7);  // sunday = 0
+            }
+            var month = date.getMonth() + 1;
+            var day = date.getDate();
+            date = date.getFullYear() + '-' + (month > 9 ? '' : '0') + month + '-' + (day > 9 ? '' : '0') + day;
+            return date;
         },
         initKeyboard(layout = 'numeric') {
             let isWindows = -1 < navigator.userAgent.indexOf('Windows');
@@ -256,7 +256,7 @@ new Vue({
         },
         handleIdle() {
             let vm = this;
-            if (!['landing','login'].includes(vm.view) || vm.search.length) {
+            if (!['landing', 'login'].includes(vm.view) || vm.search.length) {
                 vm.idleStage++;
                 vm.resetIdleTimer();
                 if (vm.idleStage === 1) {
@@ -554,7 +554,7 @@ new Vue({
             var payload = vm.generatePayload({
                 search: (vm.adminMode || isQrCode) ? vm.search : phone,
                 campus: vm.profile.CampusId,
-                date: vm.searchDay
+                date: vm.searchDay()
             });
             vm.loading = true;
             vm.$http.post('/CheckInApiV2/Search', payload, vm.apiHeaders).then(
@@ -729,7 +729,7 @@ new Vue({
             vm.editingPerson = member;
             vm.classData.showAll = showAll;
 
-            var dayID = new Date(vm.searchDay + 'T00:00').getDay();
+            var dayID = new Date(vm.searchDay() + 'T00:00').getDay();
             var payload = vm.generatePayload({
                 peopleID: member.id,
                 campusID: vm.profile.CampusId,
@@ -984,7 +984,7 @@ new Vue({
                             groups: [group]
                         };
                     }
-                    
+
                 }
             }
             var payload = vm.generatePayload({
@@ -1018,7 +1018,7 @@ new Vue({
                             } else {
                                 vm.loadView('landing');
                             }
-                            
+
                         } else {
                             if (response.data.error === -6) {
                                 vm.logout();
