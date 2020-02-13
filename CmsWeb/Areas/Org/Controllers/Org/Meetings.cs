@@ -1,8 +1,10 @@
-using System;
-using System.Linq;
-using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.Org.Models;
+using eSpace;
+using System;
+using System.Collections.Specialized;
+using System.Linq;
+using System.Web.Mvc;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Org.Controllers
@@ -13,7 +15,7 @@ namespace CmsWeb.Areas.Org.Controllers
         public ActionResult Meetings(MeetingsModel m)
         {
             //var m = new MeetingsModel(id, future ?? false);
-            DbUtil.LogActivity($"Viewing Meetings for {Session["ActiveOrganization"]}");
+            DbUtil.LogActivity($"Viewing Meetings for orgId={m.Id}", orgid: m.Id);
             return PartialView(m);
         }
 
@@ -27,8 +29,38 @@ namespace CmsWeb.Areas.Org.Controllers
                     select m;
             var meeting = q.FirstOrDefault();
             if (meeting != null)
+            {
                 return Redirect("/Meeting/" + meeting.MeetingId);
+            }
+
             return Message("no meeting at " + dt.FormatDateTm());
+        }
+
+        [HttpPost]
+        [Route("ImportMeetings/{id:int}")]
+        public ActionResult ImportMeetings(MeetingsModel m)
+        {
+            eSpaceClient client = new eSpaceClient
+            {
+                Username = CurrentDatabase.Setting("eSpaceUserName", ""),
+                Password = CurrentDatabase.Setting("eSpacePassword", "")
+            };
+            var org = CurrentDatabase.Organizations.Where(o => o.OrganizationId == m.Id).First();
+            if (org.ESpaceEventId.HasValue)
+            {
+                var daysToSync = CurrentDatabase.Setting("eSpaceDaysToSync", "60");
+                DbUtil.LogActivity($"Retrieving meetings for next {daysToSync} days (orgId={m.Id})", orgid: m.Id);
+                var list = client.Event.Occurrences(org.ESpaceEventId.Value, new NameValueCollection
+                {
+                    { "nextDays", daysToSync }
+                });
+                foreach(var occurrence in list)
+                {
+                    Meeting.FetchOrCreateMeeting(CurrentDatabase, m.Id, occurrence.EventStart);
+                }
+                m.Future = true;
+            }
+            return PartialView("Meetings", m);
         }
     }
 }
