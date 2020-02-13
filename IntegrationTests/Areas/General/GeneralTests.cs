@@ -19,8 +19,8 @@ namespace IntegrationTests.Areas.Manage
             Login();
 
             Open($"{rootUrl}Invalid");
-
-            PageSource.ShouldContain("Not Found");
+            
+            PageSource.ShouldMatch("cannot be found|Not Found");
         }
 
         [Fact, FeatureTest]
