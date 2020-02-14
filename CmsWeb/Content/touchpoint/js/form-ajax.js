@@ -161,7 +161,7 @@
         return false;
     });
 
-    $('body').on('click', 'form.ajax a.ajax, .search-add-person', function (event) {
+    $('body').on('click', 'form.ajax a.ajax', function (event) {
         event.preventDefault();
         var t = $(this);
         if (t.data("confirm"))

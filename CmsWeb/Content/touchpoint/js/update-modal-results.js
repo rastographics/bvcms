@@ -27,7 +27,7 @@
                     appendedSavedSearchesHeader = true;
                 }
             }
-            list += "<li class='dropdown-search-result'><a class='search-add-person' href='" + result.url + "'>" + result.line1;
+            list += "<li class='dropdown-search-result'><a class='ajax' href='" + result.url + "'>" + result.line1;
             if (result.line2) {
                 list += "<br/>" + result.line2;
             }
