@@ -22,7 +22,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
         public ActionResult VoteLinkSg(string id, string message, bool? confirm)
         {
-            var li = new LinkInfo(votelinkSTR, landingSTR, id);
+            var li = new LinkInfo(CurrentDatabase, votelinkSTR, landingSTR, id);
             if (li.error.HasValue())
             {
                 return Message(li.error);
@@ -40,7 +40,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [HttpPost]
         public ActionResult VoteLinkSg(string id, string message, bool? confirm, FormCollection formCollection)
         {
-            var li = new LinkInfo(votelinkSTR, confirmSTR, id);
+            var li = new LinkInfo(CurrentDatabase, votelinkSTR, confirmSTR, id);
             if (li.error.HasValue())
             {
                 return Message(li.error);
@@ -161,7 +161,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
         public ActionResult RsvpLinkSg(string id, string message, bool? confirm, bool regrets = false)
         {
-            var li = new LinkInfo(rsvplinkSTR, landingSTR, id, false);
+            var li = new LinkInfo(CurrentDatabase, rsvplinkSTR, landingSTR, id, false);
             if (li.error.HasValue())
             {
                 return Message(li.error);
@@ -179,7 +179,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [HttpPost]
         public ActionResult RsvpLinkSg(string id, string message, bool? confirm, FormCollection formCollection, bool regrets = false)
         {
-            var li = new LinkInfo(rsvplinkSTR, landingSTR, id, false);
+            var li = new LinkInfo(CurrentDatabase, rsvplinkSTR, landingSTR, id, false);
             if (li.error.HasValue())
             {
                 return Message(li.error);
@@ -271,7 +271,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         // ReSharper disable once FunctionComplexityOverflow
         public ActionResult RegisterLink(string id, bool? showfamily, string source)
         {
-            var li = new LinkInfo(registerlinkSTR, landingSTR, id);            
+            var li = new LinkInfo(CurrentDatabase, registerlinkSTR, landingSTR, id);            
 
             if (li.error.HasValue())
                 return Message(li.error);
@@ -357,7 +357,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [ValidateInput(false)]
         public ActionResult SendLink(string id)
         {
-            var li = new LinkInfo(sendlinkSTR, landingSTR, id);
+            var li = new LinkInfo(CurrentDatabase, sendlinkSTR, landingSTR, id);
             if (li.error.HasValue())
             {
                 return Message(li.error);
@@ -372,7 +372,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [ValidateInput(false)]
         public ActionResult SendLink(string id, FormCollection formCollection)
         {
-            var li = new LinkInfo(sendlinkSTR, landingSTR, id);
+            var li = new LinkInfo(CurrentDatabase, sendlinkSTR, landingSTR, id);
             if (li.error.HasValue())
                 return Message(li.error);
 
@@ -530,7 +530,7 @@ or contact the church if you need help.</p>
             internal OneTimeLink ot;
             internal int? pid;
 
-            public LinkInfo(string link, string from, string id, bool hasorg = true)
+            public LinkInfo(CMSDataContext db, string link, string from, string id, bool hasorg = true)
             {
                 this.link = link;
                 this.from = from;
@@ -547,7 +547,7 @@ or contact the church if you need help.</p>
                         throw LinkException("invalid id");
                     }
 
-                    ot = DbUtil.Db.OneTimeLinks.SingleOrDefault(oo => oo.Id == guid.Value);
+                    ot = db.OneTimeLinks.SingleOrDefault(oo => oo.Id == guid.Value);
                     if (ot == null)
                     {
                         throw LinkException("missing link");
@@ -582,7 +582,7 @@ or contact the church if you need help.</p>
         }
         public ActionResult DropFromOrgLink(string id)
         {
-            var li = new LinkInfo("dropfromorg", confirmSTR, id);
+            var li = new LinkInfo(CurrentDatabase, "dropfromorg", confirmSTR, id);
 
             ViewBag.Id = id;
 
@@ -593,7 +593,7 @@ or contact the church if you need help.</p>
         [HttpPost]
         public ActionResult DropFromOrgLink(string id, FormCollection formCollection)
         {
-            var li = new LinkInfo("dropfromorg", confirmSTR, id);
+            var li = new LinkInfo(CurrentDatabase, "dropfromorg", confirmSTR, id);
             if (li.error.HasValue())
             {
                 return Message(li.error);
