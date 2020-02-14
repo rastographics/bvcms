@@ -1274,7 +1274,6 @@
     <Content Include="Content\touchpoint\js\snackbar.js" />
     <Content Include="Content\touchpoint\js\main.js" />
     <Content Include="Content\touchpoint\js\metrozip\metro-zip.js" />
-    <Content Include="Content\touchpoint\js\onlineregister.min.js" />
     <Content Include="Content\touchpoint\js\onlinereg\uploadoc.js" />
     <Content Include="Content\touchpoint\js\people\givingtab.js" />
     <Content Include="Content\touchpoint\js\people\merge.js" />
@@ -1882,6 +1881,7 @@
     <Content Include="Areas\People\Views\Shared\CombineGiving.cshtml" />
     <Content Include="Areas\People\Views\Task\_ActionsMenu.cshtml" />
     <Content Include="Areas\Manage\Views\Account\AuthDisabled.cshtml" />
+    <Content Include="Areas\Manage\Views\Batch\RetrieveBatchData.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
