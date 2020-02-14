@@ -194,6 +194,20 @@ namespace CmsWeb.Areas.Manage.Controllers
             return View();
         }
 
+        [Authorize(Roles = "ManageTransactions,Finance")]
+        public ActionResult RetrieveBatchData()
+        {
+            return View();
+        }
+
+        [Authorize(Roles = "ManageTransactions,Finance")]
+        [HttpPost]
+        public ActionResult RetrieveBatchData(FormCollection formCollection)
+        {
+            CurrentDatabase.RetrieveBatchData();
+            return Content("Transactions retrieved successfully.");
+        }
+
         [Authorize(Roles = "Admin")]
         [HttpPost]
         public ActionResult UpdateStatusFlags(FormCollection formCollection)

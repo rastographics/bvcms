@@ -156,9 +156,12 @@
 }
 @helper AdminList1(bool admin, bool design, bool managetrans, bool edit, bool manageemails, bool finance, bool developer)
 {
-    if (admin)
+    if (admin || finance || managetrans)
     {
         <li class="dropdown-header dropdown-sub-header">Batch Actions</li>
+    }
+    if (admin)
+    {
         @Helper.LiAnchorLink("Find Duplicates", "/Duplicates/Find")
         @Helper.LiAnchorLink("Tag People Ids", "/Batch/TagPeopleIds")
         @Helper.LiAnchorLink("Update Fields from a Tag/Query", "/Batch/UpdateFields")
@@ -174,6 +177,10 @@
                 <a href="/Batch/OtherDeveloperActions">Other Developer Actions</a>
             </li>
         }
+    }
+    if (finance || managetrans)
+    {
+        @Helper.LiAnchorLink("Retrieve Batch Data", "/Batch/RetrieveBatchData")
     }
     if (admin || finance || design)
     {
@@ -244,7 +251,7 @@
         <li class="dropdown-header dropdown-sub-header">Check-In</li>
         if (webCheckinEnabled)
         {
-        @Helper.LiAnchorLink("Check-In Setup", "/CheckinSetup", checkin)
+            @Helper.LiAnchorLink("Check-In Setup", "/CheckinSetup", checkin)
         }
         @Helper.LiAnchorLink("Check-In Activity", "/CheckinTimes/")
         @Helper.LiAnchorLink("Check-In Labels", "/CheckinLabels", admin)
