@@ -45,51 +45,89 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-lg-3 col-md-3 col-sm-6">
-            <div class="form-group">
-              <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Date From" data-content="If you enter only a Date From, you will find transactions for just that date."><i class="fa fa-info-circle"></i></a>&nbsp;
-              <label for="startdt" class="control-label">Date From</label>
-              <div class="input-group date">
-                @Html.TextBox("startdt", Model.startdt.HasValue ? Model.startdt.GetValueOrDefault().ToShortDateString() : "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
-                @Html.Hidden("startdtIso", Model.startdt.HasValue ? Model.startdt.GetValueOrDefault().ToString("yyyy-MM-dd") : "", new { disabled = "disabled" })
-              </div>
+            <div class="col-lg-3 col-md-3 col-sm-6">
+                <div class="form-group">
+                    <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Date From" data-content="If you enter only a Date From, you will find transactions for just that date."><i class="fa fa-info-circle"></i></a>&nbsp;
+                    <label for="startdt" class="control-label">Date From</label>
+                    <div class="input-group date">
+                        @Html.TextBox("startdt", Model.startdt.HasValue ? Model.startdt.GetValueOrDefault().ToShortDateString() : "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                        @Html.Hidden("startdtIso", Model.startdt.HasValue ? Model.startdt.GetValueOrDefault().ToString("yyyy-MM-dd") : "", new { disabled = "disabled" })
+                    </div>
+                </div>
             </div>
-          </div>
-          <div class="col-lg-3 col-md-3 col-sm-6">
-            <div class="form-group">
-              <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Date To" data-content="If you enter only a Date To, you will find all transactions prior to and including that date."><i class="fa fa-info-circle"></i></a>&nbsp;
-              <label for="enddt" class="control-label">Date To</label>
-              <div class="input-group date">
-                @Html.TextBox("enddt", Model.enddt.HasValue ? Model.enddt.GetValueOrDefault().ToShortDateString() : "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
-                @Html.Hidden("enddtIso", Model.enddt.HasValue ? Model.enddt.GetValueOrDefault().ToString("yyyy-MM-dd") : "", new { disabled = "disabled" })
-              </div>
+            <div class="col-lg-3 col-md-3 col-sm-6">
+                <div class="form-group">
+                    <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Date To" data-content="If you enter only a Date To, you will find all transactions prior to and including that date."><i class="fa fa-info-circle"></i></a>&nbsp;
+                    <label for="enddt" class="control-label">Date To</label>
+                    <div class="input-group date">
+                        @Html.TextBox("enddt", Model.enddt.HasValue ? Model.enddt.GetValueOrDefault().ToShortDateString() : "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                        @Html.Hidden("enddtIso", Model.enddt.HasValue ? Model.enddt.GetValueOrDefault().ToString("yyyy-MM-dd") : "", new { disabled = "disabled" })
+                    </div>
+                </div>
             </div>
-          </div>
-          <div class="col-lg-3 col-md-3 col-sm-6">
-            <div class="form-group">
-              <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Gateway" data-content="This is the name of the Gateway for which the transaction was made."><i class="fa fa-info-circle"></i></a>&nbsp;
-              <label for="gateway" class="control-label">Gateway</label>
-              @Html.DropDownList("gateway", MultipleGatewayUtils.GatewayGatewayAccountList(), Model.gateway, new { @class = "form-control" })
+            <div class="col-lg-3 col-md-3 col-sm-6">
+                <div class="form-group">
+                    <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Gateway" data-content="This is the name of the Gateway for which the transaction was made."><i class="fa fa-info-circle"></i></a>&nbsp;
+                    <label for="gateway" class="control-label">Gateway</label>
+                    @Html.DropDownList("gateway", MultipleGatewayUtils.GatewayGatewayAccountList(), Model.gateway, new { @class = "form-control" })
+                </div>
             </div>
-          </div>
-          <div class="col-lg-3 col-md-3 col-sm-6">
-            <div class="form-group">
-              <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Additional Filters"><i class="fa fa-info-circle"></i></a>&nbsp;
-              <label for="ltamount" class="control-label">Additional Filters</label>
-              <div class="input-group">
-                  <span class="input-group-addon">
-                      <i class="fa fa-list"></i>
-                  </span>
-                  <select id="additional-filters" name="AdditionalFilters" multiple="multiple">
-                      <option value="apprtransactions">Approved transactions</option>
-                      <option value="includesadditionaldonation">Includes additional donation</option>
-                      <option value="nocoupons">Hide coupon</option>
-                      <option value="testtransactions">Test transaction</option>
-                      <option value="usebatchdates">Use batch dates</option>
-                  </select>
-              </div>
+            @if (!DbUtil.Db.Setting("ShowSyncBatchDatesOption"))
+            {
+                <div class="col-lg-3 col-md-3 col-sm-6 col-md-offset-6">
+                    <div class="form-group">
+                        <div class="checkbox">
+                            <label class="control-label">
+                                @Html.CheckBox("usebatchdates") Use batch dates?
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <label class="control-label">
+                                @Html.CheckBox("nocoupons") No coupons?
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            }
+            <div class="col-lg-3 col-md-3 col-sm-6">
+                <div class="form-group">
+                    @if (DbUtil.Db.Setting("ShowSyncBatchDatesOption"))
+                    {
+                        <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Additional Filters"><i class="fa fa-info-circle"></i></a>&nbsp;
+                        <label for="ltamount" class="control-label">Additional Filters</label>
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="fa fa-list"></i>
+                            </span>
+                            <select id="additional-filters" name="AdditionalFilters" multiple="multiple">
+                                <option value="apprtransactions">Approved transactions</option>
+                                <option value="includesadditionaldonation">Includes additional donation</option>
+                                <option value="nocoupons">Hide coupon</option>
+                                <option value="testtransactions">Test transaction</option>
+                                <option value="usebatchdates">Use batch dates</option>
+                            </select>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="checkbox">
+                            <label class="control-label">
+                                @Html.CheckBox("apprtransactions") Approved transactions only?
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <label class="control-label">
+                                @Html.CheckBox("testtransactions") Test transactions only?
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <label class="control-label">
+                                @Html.CheckBox("includesadditionaldonation") Includes additional donation?
+                            </label>
+                        </div>
+                    }
+                </div>
             </div>
-          </div>
         </div>
         <div class="row">
           <div class="col-sm-12">
