@@ -106,6 +106,7 @@ namespace IntegrationTests
             FirefoxDriver edgeDriver;
             FirefoxOptions options = new FirefoxOptions();
             options.AcceptInsecureCertificates = true;
+            options.PageLoadStrategy = PageLoadStrategy.Normal;
             edgeDriver = new FirefoxDriver(options);
             return edgeDriver;
         }
@@ -116,6 +117,7 @@ namespace IntegrationTests
             EdgeDriver edgeDriver;
             EdgeOptions options = new EdgeOptions();
             options.AcceptInsecureCertificates = true;
+            options.PageLoadStrategy = PageLoadStrategy.Normal;
             edgeDriver = new EdgeDriver(options);
             return edgeDriver;
         }
@@ -126,7 +128,7 @@ namespace IntegrationTests
             ChromeDriver chromeDriver;
             ChromeOptions options = new ChromeOptions();
             // ChromeDriver is just AWFUL because every version or two it breaks unless you pass cryptic arguments
-            //AGRESSIVE: options.setPageLoadStrategy(PageLoadStrategy.NONE); // https://www.skptricks.com/2018/08/timed-out-receiving-message-from-renderer-selenium.html
+            options.PageLoadStrategy = PageLoadStrategy.Normal; // https://www.skptricks.com/2018/08/timed-out-receiving-message-from-renderer-selenium.html
             options.AddArgument("ignore-certificate-errors");
             options.AddArgument("start-maximized"); // https://stackoverflow.com/a/26283818/1689770
             options.AddArgument("enable-automation"); // https://stackoverflow.com/a/43840128/1689770

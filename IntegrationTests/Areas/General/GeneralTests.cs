@@ -19,7 +19,8 @@ namespace IntegrationTests.Areas.Manage
             Login();
 
             Open($"{rootUrl}Invalid");
-            
+            WaitForPageLoad();
+
             PageSource.ShouldMatch("cannot be found|Not Found");
         }
 
@@ -34,6 +35,7 @@ namespace IntegrationTests.Areas.Manage
             Login();
 
             Open($"{rootUrl}Bundles");
+            WaitForPageLoad();
 
             PageSource.ShouldContain("Sign In");
         }
