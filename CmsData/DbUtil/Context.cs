@@ -1979,7 +1979,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
             };
 
             var today = DateTime.Now;
-            var range = today.AddDays(-DbUtil.Db.Setting("AutoSyncBatchDatesWindow").ToInt());
+            var start = today.AddDays(0 - Setting("AutoSyncBatchDatesWindow").ToInt());
 
             var transactions
                 = from t in ViewTransactionLists
@@ -1996,7 +1996,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
                 if (gateway.UseIdsForSettlementDates)
                 {
                     var tranids = (from t in transactions
-                        where t.TransactionDate >= range
+                        where t.TransactionDate >= start
                         where t.TransactionDate <= today
                         where t.Settled == null
                         where t.Moneytran == true
@@ -2005,7 +2005,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
                 }
                 else
                 {
-                    gateway.CheckBatchSettlements(yesterday, today);
+                    gateway.CheckBatchSettlements(start, today);
                 }
             }
         }
