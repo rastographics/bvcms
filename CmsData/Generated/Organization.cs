@@ -513,7 +513,6 @@ namespace CmsData
         #endregion
         public Organization()
         {
-
             _BFMembers = new EntitySet<Person>(new Action<Person>(attach_BFMembers), new Action<Person>(detach_BFMembers));
 
             _ChildOrgs = new EntitySet<Organization>(new Action<Organization>(attach_ChildOrgs), new Action<Organization>(detach_ChildOrgs));
@@ -568,7 +567,6 @@ namespace CmsData
             OnCreated();
         }
 
-
         #region Columns
 
         [Column(Name = "OrganizationId", UpdateCheck = UpdateCheck.Never, Storage = "_OrganizationId", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
@@ -580,7 +578,6 @@ namespace CmsData
             {
                 if (_OrganizationId != value)
                 {
-
                     OnOrganizationIdChanging(value);
                     SendPropertyChanging();
                     _OrganizationId = value;
@@ -592,7 +589,6 @@ namespace CmsData
 
         }
 
-
         [Column(Name = "CreatedBy", UpdateCheck = UpdateCheck.Never, Storage = "_CreatedBy", DbType = "int NOT NULL")]
         public int CreatedBy
         {
@@ -602,7 +598,6 @@ namespace CmsData
             {
                 if (_CreatedBy != value)
                 {
-
                     OnCreatedByChanging(value);
                     SendPropertyChanging();
                     _CreatedBy = value;
@@ -614,7 +609,6 @@ namespace CmsData
 
         }
 
-
         [Column(Name = "CreatedDate", UpdateCheck = UpdateCheck.Never, Storage = "_CreatedDate", DbType = "datetime NOT NULL")]
         public DateTime CreatedDate
         {
@@ -624,7 +618,6 @@ namespace CmsData
             {
                 if (_CreatedDate != value)
                 {
-
                     OnCreatedDateChanging(value);
                     SendPropertyChanging();
                     _CreatedDate = value;
@@ -636,7 +629,6 @@ namespace CmsData
 
         }
 
-
         [Column(Name = "OrganizationStatusId", UpdateCheck = UpdateCheck.Never, Storage = "_OrganizationStatusId", DbType = "int NOT NULL")]
         [IsForeignKey]
         public int OrganizationStatusId
@@ -647,7 +639,6 @@ namespace CmsData
             {
                 if (_OrganizationStatusId != value)
                 {
-
                     if (_OrganizationStatus.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
@@ -664,7 +655,6 @@ namespace CmsData
 
         }
 
-
         [Column(Name = "DivisionId", UpdateCheck = UpdateCheck.Never, Storage = "_DivisionId", DbType = "int")]
         [IsForeignKey]
         public int? DivisionId
@@ -675,7 +665,6 @@ namespace CmsData
             {
                 if (_DivisionId != value)
                 {
-
                     if (_Division.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
@@ -692,7 +681,6 @@ namespace CmsData
 
         }
 
-
         [Column(Name = "LeaderMemberTypeId", UpdateCheck = UpdateCheck.Never, Storage = "_LeaderMemberTypeId", DbType = "int")]
         public int? LeaderMemberTypeId
         {
@@ -702,7 +690,6 @@ namespace CmsData
             {
                 if (_LeaderMemberTypeId != value)
                 {
-
                     OnLeaderMemberTypeIdChanging(value);
                     SendPropertyChanging();
                     _LeaderMemberTypeId = value;
@@ -714,7 +701,6 @@ namespace CmsData
 
         }
 
-
         [Column(Name = "GradeAgeStart", UpdateCheck = UpdateCheck.Never, Storage = "_GradeAgeStart", DbType = "int")]
         public int? GradeAgeStart
         {
@@ -724,7 +710,6 @@ namespace CmsData
             {
                 if (_GradeAgeStart != value)
                 {
-
                     OnGradeAgeStartChanging(value);
                     SendPropertyChanging();
                     _GradeAgeStart = value;
@@ -736,7 +721,6 @@ namespace CmsData
 
         }
 
-
         [Column(Name = "GradeAgeEnd", UpdateCheck = UpdateCheck.Never, Storage = "_GradeAgeEnd", DbType = "int")]
         public int? GradeAgeEnd
         {
@@ -746,7 +730,6 @@ namespace CmsData
             {
                 if (_GradeAgeEnd != value)
                 {
-
                     OnGradeAgeEndChanging(value);
                     SendPropertyChanging();
                     _GradeAgeEnd = value;
@@ -758,7 +741,6 @@ namespace CmsData
 
         }
 
-
         [Column(Name = "RollSheetVisitorWks", UpdateCheck = UpdateCheck.Never, Storage = "_RollSheetVisitorWks", DbType = "int")]
         public int? RollSheetVisitorWks
         {
@@ -768,18 +750,14 @@ namespace CmsData
             {
                 if (_RollSheetVisitorWks != value)
                 {
-
                     OnRollSheetVisitorWksChanging(value);
                     SendPropertyChanging();
                     _RollSheetVisitorWks = value;
                     SendPropertyChanged("RollSheetVisitorWks");
                     OnRollSheetVisitorWksChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "SecurityTypeId", UpdateCheck = UpdateCheck.Never, Storage = "_SecurityTypeId", DbType = "int NOT NULL")]
         public int SecurityTypeId
@@ -790,18 +768,14 @@ namespace CmsData
             {
                 if (_SecurityTypeId != value)
                 {
-
                     OnSecurityTypeIdChanging(value);
                     SendPropertyChanging();
                     _SecurityTypeId = value;
                     SendPropertyChanged("SecurityTypeId");
                     OnSecurityTypeIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "FirstMeetingDate", UpdateCheck = UpdateCheck.Never, Storage = "_FirstMeetingDate", DbType = "datetime")]
         public DateTime? FirstMeetingDate
@@ -812,18 +786,14 @@ namespace CmsData
             {
                 if (_FirstMeetingDate != value)
                 {
-
                     OnFirstMeetingDateChanging(value);
                     SendPropertyChanging();
                     _FirstMeetingDate = value;
                     SendPropertyChanged("FirstMeetingDate");
                     OnFirstMeetingDateChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "LastMeetingDate", UpdateCheck = UpdateCheck.Never, Storage = "_LastMeetingDate", DbType = "datetime")]
         public DateTime? LastMeetingDate
@@ -834,18 +804,14 @@ namespace CmsData
             {
                 if (_LastMeetingDate != value)
                 {
-
                     OnLastMeetingDateChanging(value);
                     SendPropertyChanging();
                     _LastMeetingDate = value;
                     SendPropertyChanged("LastMeetingDate");
                     OnLastMeetingDateChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "OrganizationClosedDate", UpdateCheck = UpdateCheck.Never, Storage = "_OrganizationClosedDate", DbType = "datetime")]
         public DateTime? OrganizationClosedDate
@@ -856,18 +822,14 @@ namespace CmsData
             {
                 if (_OrganizationClosedDate != value)
                 {
-
                     OnOrganizationClosedDateChanging(value);
                     SendPropertyChanging();
                     _OrganizationClosedDate = value;
                     SendPropertyChanged("OrganizationClosedDate");
                     OnOrganizationClosedDateChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Location", UpdateCheck = UpdateCheck.Never, Storage = "_Location", DbType = "nvarchar(200)")]
         public string Location
@@ -878,18 +840,14 @@ namespace CmsData
             {
                 if (_Location != value)
                 {
-
                     OnLocationChanging(value);
                     SendPropertyChanging();
                     _Location = value;
                     SendPropertyChanged("Location");
                     OnLocationChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "OrganizationName", UpdateCheck = UpdateCheck.Never, Storage = "_OrganizationName", DbType = "nvarchar(100) NOT NULL")]
         public string OrganizationName
@@ -900,18 +858,14 @@ namespace CmsData
             {
                 if (_OrganizationName != value)
                 {
-
                     OnOrganizationNameChanging(value);
                     SendPropertyChanging();
                     _OrganizationName = value;
                     SendPropertyChanged("OrganizationName");
                     OnOrganizationNameChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ModifiedBy", UpdateCheck = UpdateCheck.Never, Storage = "_ModifiedBy", DbType = "int")]
         public int? ModifiedBy
@@ -922,18 +876,14 @@ namespace CmsData
             {
                 if (_ModifiedBy != value)
                 {
-
                     OnModifiedByChanging(value);
                     SendPropertyChanging();
                     _ModifiedBy = value;
                     SendPropertyChanged("ModifiedBy");
                     OnModifiedByChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ModifiedDate", UpdateCheck = UpdateCheck.Never, Storage = "_ModifiedDate", DbType = "datetime")]
         public DateTime? ModifiedDate
@@ -944,18 +894,14 @@ namespace CmsData
             {
                 if (_ModifiedDate != value)
                 {
-
                     OnModifiedDateChanging(value);
                     SendPropertyChanging();
                     _ModifiedDate = value;
                     SendPropertyChanged("ModifiedDate");
                     OnModifiedDateChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "EntryPointId", UpdateCheck = UpdateCheck.Never, Storage = "_EntryPointId", DbType = "int")]
         [IsForeignKey]
@@ -967,23 +913,18 @@ namespace CmsData
             {
                 if (_EntryPointId != value)
                 {
-
                     if (_EntryPoint.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
-
                     OnEntryPointIdChanging(value);
                     SendPropertyChanging();
                     _EntryPointId = value;
                     SendPropertyChanged("EntryPointId");
                     OnEntryPointIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ParentOrgId", UpdateCheck = UpdateCheck.Never, Storage = "_ParentOrgId", DbType = "int")]
         [IsForeignKey]
@@ -995,23 +936,18 @@ namespace CmsData
             {
                 if (_ParentOrgId != value)
                 {
-
                     if (_ParentOrg.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
-
                     OnParentOrgIdChanging(value);
                     SendPropertyChanging();
                     _ParentOrgId = value;
                     SendPropertyChanged("ParentOrgId");
                     OnParentOrgIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "AllowAttendOverlap", UpdateCheck = UpdateCheck.Never, Storage = "_AllowAttendOverlap", DbType = "bit NOT NULL")]
         public bool AllowAttendOverlap
@@ -1022,18 +958,14 @@ namespace CmsData
             {
                 if (_AllowAttendOverlap != value)
                 {
-
                     OnAllowAttendOverlapChanging(value);
                     SendPropertyChanging();
                     _AllowAttendOverlap = value;
                     SendPropertyChanged("AllowAttendOverlap");
                     OnAllowAttendOverlapChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "MemberCount", UpdateCheck = UpdateCheck.Never, Storage = "_MemberCount", DbType = "int")]
         public int? MemberCount
@@ -1044,18 +976,14 @@ namespace CmsData
             {
                 if (_MemberCount != value)
                 {
-
                     OnMemberCountChanging(value);
                     SendPropertyChanging();
                     _MemberCount = value;
                     SendPropertyChanged("MemberCount");
                     OnMemberCountChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "LeaderId", UpdateCheck = UpdateCheck.Never, Storage = "_LeaderId", DbType = "int")]
         public int? LeaderId
@@ -1066,18 +994,14 @@ namespace CmsData
             {
                 if (_LeaderId != value)
                 {
-
                     OnLeaderIdChanging(value);
                     SendPropertyChanging();
                     _LeaderId = value;
                     SendPropertyChanged("LeaderId");
                     OnLeaderIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "LeaderName", UpdateCheck = UpdateCheck.Never, Storage = "_LeaderName", DbType = "nvarchar(50)")]
         public string LeaderName
@@ -1088,18 +1012,14 @@ namespace CmsData
             {
                 if (_LeaderName != value)
                 {
-
                     OnLeaderNameChanging(value);
                     SendPropertyChanging();
                     _LeaderName = value;
                     SendPropertyChanged("LeaderName");
                     OnLeaderNameChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ClassFilled", UpdateCheck = UpdateCheck.Never, Storage = "_ClassFilled", DbType = "bit")]
         public bool? ClassFilled
@@ -1110,18 +1030,14 @@ namespace CmsData
             {
                 if (_ClassFilled != value)
                 {
-
                     OnClassFilledChanging(value);
                     SendPropertyChanging();
                     _ClassFilled = value;
                     SendPropertyChanged("ClassFilled");
                     OnClassFilledChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "OnLineCatalogSort", UpdateCheck = UpdateCheck.Never, Storage = "_OnLineCatalogSort", DbType = "int")]
         public int? OnLineCatalogSort
@@ -1132,18 +1048,14 @@ namespace CmsData
             {
                 if (_OnLineCatalogSort != value)
                 {
-
                     OnOnLineCatalogSortChanging(value);
                     SendPropertyChanging();
                     _OnLineCatalogSort = value;
                     SendPropertyChanged("OnLineCatalogSort");
                     OnOnLineCatalogSortChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "PendingLoc", UpdateCheck = UpdateCheck.Never, Storage = "_PendingLoc", DbType = "nvarchar(40)")]
         public string PendingLoc
@@ -1154,18 +1066,14 @@ namespace CmsData
             {
                 if (_PendingLoc != value)
                 {
-
                     OnPendingLocChanging(value);
                     SendPropertyChanging();
                     _PendingLoc = value;
                     SendPropertyChanged("PendingLoc");
                     OnPendingLocChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "CanSelfCheckin", UpdateCheck = UpdateCheck.Never, Storage = "_CanSelfCheckin", DbType = "bit")]
         public bool? CanSelfCheckin
@@ -1176,18 +1084,14 @@ namespace CmsData
             {
                 if (_CanSelfCheckin != value)
                 {
-
                     OnCanSelfCheckinChanging(value);
                     SendPropertyChanging();
                     _CanSelfCheckin = value;
                     SendPropertyChanged("CanSelfCheckin");
                     OnCanSelfCheckinChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "NumCheckInLabels", UpdateCheck = UpdateCheck.Never, Storage = "_NumCheckInLabels", DbType = "int")]
         public int? NumCheckInLabels
@@ -1198,18 +1102,14 @@ namespace CmsData
             {
                 if (_NumCheckInLabels != value)
                 {
-
                     OnNumCheckInLabelsChanging(value);
                     SendPropertyChanging();
                     _NumCheckInLabels = value;
                     SendPropertyChanged("NumCheckInLabels");
                     OnNumCheckInLabelsChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "CampusId", UpdateCheck = UpdateCheck.Never, Storage = "_CampusId", DbType = "int")]
         [IsForeignKey]
@@ -1221,23 +1121,18 @@ namespace CmsData
             {
                 if (_CampusId != value)
                 {
-
                     if (_Campu.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
-
                     OnCampusIdChanging(value);
                     SendPropertyChanging();
                     _CampusId = value;
                     SendPropertyChanged("CampusId");
                     OnCampusIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "AllowNonCampusCheckIn", UpdateCheck = UpdateCheck.Never, Storage = "_AllowNonCampusCheckIn", DbType = "bit")]
         public bool? AllowNonCampusCheckIn
@@ -1248,18 +1143,14 @@ namespace CmsData
             {
                 if (_AllowNonCampusCheckIn != value)
                 {
-
                     OnAllowNonCampusCheckInChanging(value);
                     SendPropertyChanging();
                     _AllowNonCampusCheckIn = value;
                     SendPropertyChanged("AllowNonCampusCheckIn");
                     OnAllowNonCampusCheckInChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "NumWorkerCheckInLabels", UpdateCheck = UpdateCheck.Never, Storage = "_NumWorkerCheckInLabels", DbType = "int")]
         public int? NumWorkerCheckInLabels
@@ -1270,18 +1161,14 @@ namespace CmsData
             {
                 if (_NumWorkerCheckInLabels != value)
                 {
-
                     OnNumWorkerCheckInLabelsChanging(value);
                     SendPropertyChanging();
                     _NumWorkerCheckInLabels = value;
                     SendPropertyChanged("NumWorkerCheckInLabels");
                     OnNumWorkerCheckInLabelsChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ShowOnlyRegisteredAtCheckIn", UpdateCheck = UpdateCheck.Never, Storage = "_ShowOnlyRegisteredAtCheckIn", DbType = "bit")]
         public bool? ShowOnlyRegisteredAtCheckIn
@@ -1292,18 +1179,14 @@ namespace CmsData
             {
                 if (_ShowOnlyRegisteredAtCheckIn != value)
                 {
-
                     OnShowOnlyRegisteredAtCheckInChanging(value);
                     SendPropertyChanging();
                     _ShowOnlyRegisteredAtCheckIn = value;
                     SendPropertyChanged("ShowOnlyRegisteredAtCheckIn");
                     OnShowOnlyRegisteredAtCheckInChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Limit", UpdateCheck = UpdateCheck.Never, Storage = "_Limit", DbType = "int")]
         public int? Limit
@@ -1314,18 +1197,14 @@ namespace CmsData
             {
                 if (_Limit != value)
                 {
-
                     OnLimitChanging(value);
                     SendPropertyChanging();
                     _Limit = value;
                     SendPropertyChanged("Limit");
                     OnLimitChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "GenderId", UpdateCheck = UpdateCheck.Never, Storage = "_GenderId", DbType = "int")]
         [IsForeignKey]
@@ -1337,23 +1216,18 @@ namespace CmsData
             {
                 if (_GenderId != value)
                 {
-
                     if (_Gender.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
-
                     OnGenderIdChanging(value);
                     SendPropertyChanging();
                     _GenderId = value;
                     SendPropertyChanged("GenderId");
                     OnGenderIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Description", UpdateCheck = UpdateCheck.Never, Storage = "_Description", DbType = "nvarchar")]
         public string Description
@@ -1364,18 +1238,14 @@ namespace CmsData
             {
                 if (_Description != value)
                 {
-
                     OnDescriptionChanging(value);
                     SendPropertyChanging();
                     _Description = value;
                     SendPropertyChanged("Description");
                     OnDescriptionChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "BirthDayStart", UpdateCheck = UpdateCheck.Never, Storage = "_BirthDayStart", DbType = "datetime")]
         public DateTime? BirthDayStart
@@ -1386,18 +1256,14 @@ namespace CmsData
             {
                 if (_BirthDayStart != value)
                 {
-
                     OnBirthDayStartChanging(value);
                     SendPropertyChanging();
                     _BirthDayStart = value;
                     SendPropertyChanged("BirthDayStart");
                     OnBirthDayStartChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "BirthDayEnd", UpdateCheck = UpdateCheck.Never, Storage = "_BirthDayEnd", DbType = "datetime")]
         public DateTime? BirthDayEnd
@@ -1408,18 +1274,14 @@ namespace CmsData
             {
                 if (_BirthDayEnd != value)
                 {
-
                     OnBirthDayEndChanging(value);
                     SendPropertyChanging();
                     _BirthDayEnd = value;
                     SendPropertyChanged("BirthDayEnd");
                     OnBirthDayEndChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "LastDayBeforeExtra", UpdateCheck = UpdateCheck.Never, Storage = "_LastDayBeforeExtra", DbType = "datetime")]
         public DateTime? LastDayBeforeExtra
@@ -1430,18 +1292,14 @@ namespace CmsData
             {
                 if (_LastDayBeforeExtra != value)
                 {
-
                     OnLastDayBeforeExtraChanging(value);
                     SendPropertyChanging();
                     _LastDayBeforeExtra = value;
                     SendPropertyChanged("LastDayBeforeExtra");
                     OnLastDayBeforeExtraChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "RegistrationTypeId", UpdateCheck = UpdateCheck.Never, Storage = "_RegistrationTypeId", DbType = "int")]
         public int? RegistrationTypeId
@@ -1452,18 +1310,14 @@ namespace CmsData
             {
                 if (_RegistrationTypeId != value)
                 {
-
                     OnRegistrationTypeIdChanging(value);
                     SendPropertyChanging();
                     _RegistrationTypeId = value;
                     SendPropertyChanged("RegistrationTypeId");
                     OnRegistrationTypeIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ValidateOrgs", UpdateCheck = UpdateCheck.Never, Storage = "_ValidateOrgs", DbType = "nvarchar(60)")]
         public string ValidateOrgs
@@ -1474,18 +1328,14 @@ namespace CmsData
             {
                 if (_ValidateOrgs != value)
                 {
-
                     OnValidateOrgsChanging(value);
                     SendPropertyChanging();
                     _ValidateOrgs = value;
                     SendPropertyChanged("ValidateOrgs");
                     OnValidateOrgsChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "PhoneNumber", UpdateCheck = UpdateCheck.Never, Storage = "_PhoneNumber", DbType = "nvarchar(25)")]
         public string PhoneNumber
@@ -1496,18 +1346,14 @@ namespace CmsData
             {
                 if (_PhoneNumber != value)
                 {
-
                     OnPhoneNumberChanging(value);
                     SendPropertyChanging();
                     _PhoneNumber = value;
                     SendPropertyChanged("PhoneNumber");
                     OnPhoneNumberChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "RegistrationClosed", UpdateCheck = UpdateCheck.Never, Storage = "_RegistrationClosed", DbType = "bit")]
         public bool? RegistrationClosed
@@ -1518,18 +1364,14 @@ namespace CmsData
             {
                 if (_RegistrationClosed != value)
                 {
-
                     OnRegistrationClosedChanging(value);
                     SendPropertyChanging();
                     _RegistrationClosed = value;
                     SendPropertyChanged("RegistrationClosed");
                     OnRegistrationClosedChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "AllowKioskRegister", UpdateCheck = UpdateCheck.Never, Storage = "_AllowKioskRegister", DbType = "bit")]
         public bool? AllowKioskRegister
@@ -1540,18 +1382,14 @@ namespace CmsData
             {
                 if (_AllowKioskRegister != value)
                 {
-
                     OnAllowKioskRegisterChanging(value);
                     SendPropertyChanging();
                     _AllowKioskRegister = value;
                     SendPropertyChanged("AllowKioskRegister");
                     OnAllowKioskRegisterChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "WorshipGroupCodes", UpdateCheck = UpdateCheck.Never, Storage = "_WorshipGroupCodes", DbType = "nvarchar(100)")]
         public string WorshipGroupCodes
@@ -1562,18 +1400,14 @@ namespace CmsData
             {
                 if (_WorshipGroupCodes != value)
                 {
-
                     OnWorshipGroupCodesChanging(value);
                     SendPropertyChanging();
                     _WorshipGroupCodes = value;
                     SendPropertyChanged("WorshipGroupCodes");
                     OnWorshipGroupCodesChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "IsBibleFellowshipOrg", UpdateCheck = UpdateCheck.Never, Storage = "_IsBibleFellowshipOrg", DbType = "bit")]
         public bool? IsBibleFellowshipOrg
@@ -1584,18 +1418,14 @@ namespace CmsData
             {
                 if (_IsBibleFellowshipOrg != value)
                 {
-
                     OnIsBibleFellowshipOrgChanging(value);
                     SendPropertyChanging();
                     _IsBibleFellowshipOrg = value;
                     SendPropertyChanged("IsBibleFellowshipOrg");
                     OnIsBibleFellowshipOrgChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "NoSecurityLabel", UpdateCheck = UpdateCheck.Never, Storage = "_NoSecurityLabel", DbType = "bit")]
         public bool? NoSecurityLabel
@@ -1606,18 +1436,14 @@ namespace CmsData
             {
                 if (_NoSecurityLabel != value)
                 {
-
                     OnNoSecurityLabelChanging(value);
                     SendPropertyChanging();
                     _NoSecurityLabel = value;
                     SendPropertyChanged("NoSecurityLabel");
                     OnNoSecurityLabelChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "AlwaysSecurityLabel", UpdateCheck = UpdateCheck.Never, Storage = "_AlwaysSecurityLabel", DbType = "bit")]
         public bool? AlwaysSecurityLabel
@@ -1628,18 +1454,14 @@ namespace CmsData
             {
                 if (_AlwaysSecurityLabel != value)
                 {
-
                     OnAlwaysSecurityLabelChanging(value);
                     SendPropertyChanging();
                     _AlwaysSecurityLabel = value;
                     SendPropertyChanged("AlwaysSecurityLabel");
                     OnAlwaysSecurityLabelChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "DaysToIgnoreHistory", UpdateCheck = UpdateCheck.Never, Storage = "_DaysToIgnoreHistory", DbType = "int")]
         public int? DaysToIgnoreHistory
@@ -1650,18 +1472,14 @@ namespace CmsData
             {
                 if (_DaysToIgnoreHistory != value)
                 {
-
                     OnDaysToIgnoreHistoryChanging(value);
                     SendPropertyChanging();
                     _DaysToIgnoreHistory = value;
                     SendPropertyChanged("DaysToIgnoreHistory");
                     OnDaysToIgnoreHistoryChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "NotifyIds", UpdateCheck = UpdateCheck.Never, Storage = "_NotifyIds", DbType = "varchar(50)")]
         public string NotifyIds
@@ -1672,18 +1490,14 @@ namespace CmsData
             {
                 if (_NotifyIds != value)
                 {
-
                     OnNotifyIdsChanging(value);
                     SendPropertyChanging();
                     _NotifyIds = value;
                     SendPropertyChanged("NotifyIds");
                     OnNotifyIdsChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "lat", UpdateCheck = UpdateCheck.Never, Storage = "_Lat", DbType = "float")]
         public double? Lat
@@ -1694,18 +1508,14 @@ namespace CmsData
             {
                 if (_Lat != value)
                 {
-
                     OnLatChanging(value);
                     SendPropertyChanging();
                     _Lat = value;
                     SendPropertyChanged("Lat");
                     OnLatChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "long", UpdateCheck = UpdateCheck.Never, Storage = "_LongX", DbType = "float")]
         public double? LongX
@@ -1716,18 +1526,14 @@ namespace CmsData
             {
                 if (_LongX != value)
                 {
-
                     OnLongXChanging(value);
                     SendPropertyChanging();
                     _LongX = value;
                     SendPropertyChanged("LongX");
                     OnLongXChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "RegSetting", UpdateCheck = UpdateCheck.Never, Storage = "_RegSetting", DbType = "nvarchar")]
         public string RegSetting
@@ -1738,18 +1544,14 @@ namespace CmsData
             {
                 if (_RegSetting != value)
                 {
-
                     OnRegSettingChanging(value);
                     SendPropertyChanging();
                     _RegSetting = value;
                     SendPropertyChanged("RegSetting");
                     OnRegSettingChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "OrgPickList", UpdateCheck = UpdateCheck.Never, Storage = "_OrgPickList", DbType = "varchar")]
         public string OrgPickList
@@ -1760,18 +1562,14 @@ namespace CmsData
             {
                 if (_OrgPickList != value)
                 {
-
                     OnOrgPickListChanging(value);
                     SendPropertyChanging();
                     _OrgPickList = value;
                     SendPropertyChanged("OrgPickList");
                     OnOrgPickListChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "Offsite", UpdateCheck = UpdateCheck.Never, Storage = "_Offsite", DbType = "bit")]
         public bool? Offsite
@@ -1782,18 +1580,14 @@ namespace CmsData
             {
                 if (_Offsite != value)
                 {
-
                     OnOffsiteChanging(value);
                     SendPropertyChanging();
                     _Offsite = value;
                     SendPropertyChanged("Offsite");
                     OnOffsiteChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "RegStart", UpdateCheck = UpdateCheck.Never, Storage = "_RegStart", DbType = "datetime")]
         public DateTime? RegStart
@@ -1804,18 +1598,14 @@ namespace CmsData
             {
                 if (_RegStart != value)
                 {
-
                     OnRegStartChanging(value);
                     SendPropertyChanging();
                     _RegStart = value;
                     SendPropertyChanged("RegStart");
                     OnRegStartChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "RegEnd", UpdateCheck = UpdateCheck.Never, Storage = "_RegEnd", DbType = "datetime")]
         public DateTime? RegEnd
@@ -1826,18 +1616,14 @@ namespace CmsData
             {
                 if (_RegEnd != value)
                 {
-
                     OnRegEndChanging(value);
                     SendPropertyChanging();
                     _RegEnd = value;
                     SendPropertyChanged("RegEnd");
                     OnRegEndChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "LimitToRole", UpdateCheck = UpdateCheck.Never, Storage = "_LimitToRole", DbType = "nvarchar(20)")]
         public string LimitToRole
@@ -1848,18 +1634,14 @@ namespace CmsData
             {
                 if (_LimitToRole != value)
                 {
-
                     OnLimitToRoleChanging(value);
                     SendPropertyChanging();
                     _LimitToRole = value;
                     SendPropertyChanged("LimitToRole");
                     OnLimitToRoleChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "OrganizationTypeId", UpdateCheck = UpdateCheck.Never, Storage = "_OrganizationTypeId", DbType = "int")]
         [IsForeignKey]
@@ -1871,23 +1653,18 @@ namespace CmsData
             {
                 if (_OrganizationTypeId != value)
                 {
-
                     if (_OrganizationType.HasLoadedOrAssignedValue)
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
-
                     OnOrganizationTypeIdChanging(value);
                     SendPropertyChanging();
                     _OrganizationTypeId = value;
                     SendPropertyChanged("OrganizationTypeId");
                     OnOrganizationTypeIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "MemberJoinScript", UpdateCheck = UpdateCheck.Never, Storage = "_MemberJoinScript", DbType = "nvarchar(50)")]
         public string MemberJoinScript
@@ -1898,18 +1675,14 @@ namespace CmsData
             {
                 if (_MemberJoinScript != value)
                 {
-
                     OnMemberJoinScriptChanging(value);
                     SendPropertyChanging();
                     _MemberJoinScript = value;
                     SendPropertyChanged("MemberJoinScript");
                     OnMemberJoinScriptChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "AddToSmallGroupScript", UpdateCheck = UpdateCheck.Never, Storage = "_AddToSmallGroupScript", DbType = "nvarchar(50)")]
         public string AddToSmallGroupScript
@@ -1920,18 +1693,14 @@ namespace CmsData
             {
                 if (_AddToSmallGroupScript != value)
                 {
-
                     OnAddToSmallGroupScriptChanging(value);
                     SendPropertyChanging();
                     _AddToSmallGroupScript = value;
                     SendPropertyChanged("AddToSmallGroupScript");
                     OnAddToSmallGroupScriptChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "RemoveFromSmallGroupScript", UpdateCheck = UpdateCheck.Never, Storage = "_RemoveFromSmallGroupScript", DbType = "nvarchar(50)")]
         public string RemoveFromSmallGroupScript
@@ -1942,18 +1711,14 @@ namespace CmsData
             {
                 if (_RemoveFromSmallGroupScript != value)
                 {
-
                     OnRemoveFromSmallGroupScriptChanging(value);
                     SendPropertyChanging();
                     _RemoveFromSmallGroupScript = value;
                     SendPropertyChanged("RemoveFromSmallGroupScript");
                     OnRemoveFromSmallGroupScriptChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "SuspendCheckin", UpdateCheck = UpdateCheck.Never, Storage = "_SuspendCheckin", DbType = "bit")]
         public bool? SuspendCheckin
@@ -1964,18 +1729,14 @@ namespace CmsData
             {
                 if (_SuspendCheckin != value)
                 {
-
                     OnSuspendCheckinChanging(value);
                     SendPropertyChanging();
                     _SuspendCheckin = value;
                     SendPropertyChanged("SuspendCheckin");
                     OnSuspendCheckinChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "NoAutoAbsents", UpdateCheck = UpdateCheck.Never, Storage = "_NoAutoAbsents", DbType = "bit")]
         public bool? NoAutoAbsents
@@ -1986,18 +1747,14 @@ namespace CmsData
             {
                 if (_NoAutoAbsents != value)
                 {
-
                     OnNoAutoAbsentsChanging(value);
                     SendPropertyChanging();
                     _NoAutoAbsents = value;
                     SendPropertyChanged("NoAutoAbsents");
                     OnNoAutoAbsentsChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "PublishDirectory", UpdateCheck = UpdateCheck.Never, Storage = "_PublishDirectory", DbType = "int")]
         public int? PublishDirectory
@@ -2008,18 +1765,14 @@ namespace CmsData
             {
                 if (_PublishDirectory != value)
                 {
-
                     OnPublishDirectoryChanging(value);
                     SendPropertyChanging();
                     _PublishDirectory = value;
                     SendPropertyChanged("PublishDirectory");
                     OnPublishDirectoryChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ConsecutiveAbsentsThreshold", UpdateCheck = UpdateCheck.Never, Storage = "_ConsecutiveAbsentsThreshold", DbType = "int")]
         public int? ConsecutiveAbsentsThreshold
@@ -2030,18 +1783,14 @@ namespace CmsData
             {
                 if (_ConsecutiveAbsentsThreshold != value)
                 {
-
                     OnConsecutiveAbsentsThresholdChanging(value);
                     SendPropertyChanging();
                     _ConsecutiveAbsentsThreshold = value;
                     SendPropertyChanged("ConsecutiveAbsentsThreshold");
                     OnConsecutiveAbsentsThresholdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "IsRecreationTeam", UpdateCheck = UpdateCheck.Never, Storage = "_IsRecreationTeam", DbType = "bit NOT NULL")]
         public bool IsRecreationTeam
@@ -2052,18 +1801,14 @@ namespace CmsData
             {
                 if (_IsRecreationTeam != value)
                 {
-
                     OnIsRecreationTeamChanging(value);
                     SendPropertyChanging();
                     _IsRecreationTeam = value;
                     SendPropertyChanged("IsRecreationTeam");
                     OnIsRecreationTeamChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "NotWeekly", UpdateCheck = UpdateCheck.Never, Storage = "_NotWeekly", DbType = "bit")]
         public bool? NotWeekly
@@ -2074,18 +1819,14 @@ namespace CmsData
             {
                 if (_NotWeekly != value)
                 {
-
                     OnNotWeeklyChanging(value);
                     SendPropertyChanging();
                     _NotWeekly = value;
                     SendPropertyChanged("NotWeekly");
                     OnNotWeeklyChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "IsMissionTrip", UpdateCheck = UpdateCheck.Never, Storage = "_IsMissionTrip", DbType = "bit")]
         public bool? IsMissionTrip
@@ -2096,18 +1837,14 @@ namespace CmsData
             {
                 if (_IsMissionTrip != value)
                 {
-
                     OnIsMissionTripChanging(value);
                     SendPropertyChanging();
                     _IsMissionTrip = value;
                     SendPropertyChanged("IsMissionTrip");
                     OnIsMissionTripChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "NoCreditCards", UpdateCheck = UpdateCheck.Never, Storage = "_NoCreditCards", DbType = "bit")]
         public bool? NoCreditCards
@@ -2118,18 +1855,14 @@ namespace CmsData
             {
                 if (_NoCreditCards != value)
                 {
-
                     OnNoCreditCardsChanging(value);
                     SendPropertyChanging();
                     _NoCreditCards = value;
                     SendPropertyChanged("NoCreditCards");
                     OnNoCreditCardsChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "GiftNotifyIds", UpdateCheck = UpdateCheck.Never, Storage = "_GiftNotifyIds", DbType = "varchar(50)")]
         public string GiftNotifyIds
@@ -2140,18 +1873,14 @@ namespace CmsData
             {
                 if (_GiftNotifyIds != value)
                 {
-
                     OnGiftNotifyIdsChanging(value);
                     SendPropertyChanging();
                     _GiftNotifyIds = value;
                     SendPropertyChanged("GiftNotifyIds");
                     OnGiftNotifyIdsChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "VisitorDate", UpdateCheck = UpdateCheck.Never, Storage = "_VisitorDate", DbType = "datetime", IsDbGenerated = true)]
         public DateTime? VisitorDate
@@ -2162,18 +1891,14 @@ namespace CmsData
             {
                 if (_VisitorDate != value)
                 {
-
                     OnVisitorDateChanging(value);
                     SendPropertyChanging();
                     _VisitorDate = value;
                     SendPropertyChanged("VisitorDate");
                     OnVisitorDateChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "UseBootstrap", UpdateCheck = UpdateCheck.Never, Storage = "_UseBootstrap", DbType = "bit")]
         public bool? UseBootstrap
@@ -2184,18 +1909,14 @@ namespace CmsData
             {
                 if (_UseBootstrap != value)
                 {
-
                     OnUseBootstrapChanging(value);
                     SendPropertyChanging();
                     _UseBootstrap = value;
                     SendPropertyChanged("UseBootstrap");
                     OnUseBootstrapChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "PublicSortOrder", UpdateCheck = UpdateCheck.Never, Storage = "_PublicSortOrder", DbType = "varchar(15)")]
         public string PublicSortOrder
@@ -2206,18 +1927,14 @@ namespace CmsData
             {
                 if (_PublicSortOrder != value)
                 {
-
                     OnPublicSortOrderChanging(value);
                     SendPropertyChanging();
                     _PublicSortOrder = value;
                     SendPropertyChanged("PublicSortOrder");
                     OnPublicSortOrderChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "UseRegisterLink2", UpdateCheck = UpdateCheck.Never, Storage = "_UseRegisterLink2", DbType = "bit")]
         public bool? UseRegisterLink2
@@ -2228,18 +1945,14 @@ namespace CmsData
             {
                 if (_UseRegisterLink2 != value)
                 {
-
                     OnUseRegisterLink2Changing(value);
                     SendPropertyChanging();
                     _UseRegisterLink2 = value;
                     SendPropertyChanged("UseRegisterLink2");
                     OnUseRegisterLink2Changed();
                 }
-
             }
-
         }
-
 
         [Column(Name = "AppCategory", UpdateCheck = UpdateCheck.Never, Storage = "_AppCategory", DbType = "varchar(15)")]
         public string AppCategory
@@ -2250,18 +1963,14 @@ namespace CmsData
             {
                 if (_AppCategory != value)
                 {
-
                     OnAppCategoryChanging(value);
                     SendPropertyChanging();
                     _AppCategory = value;
                     SendPropertyChanged("AppCategory");
                     OnAppCategoryChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "RegistrationTitle", UpdateCheck = UpdateCheck.Never, Storage = "_RegistrationTitle", DbType = "nvarchar(200)")]
         public string RegistrationTitle
@@ -2272,18 +1981,14 @@ namespace CmsData
             {
                 if (_RegistrationTitle != value)
                 {
-
                     OnRegistrationTitleChanging(value);
                     SendPropertyChanging();
                     _RegistrationTitle = value;
                     SendPropertyChanged("RegistrationTitle");
                     OnRegistrationTitleChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "PrevMemberCount", UpdateCheck = UpdateCheck.Never, Storage = "_PrevMemberCount", DbType = "int")]
         public int? PrevMemberCount
@@ -2294,18 +1999,14 @@ namespace CmsData
             {
                 if (_PrevMemberCount != value)
                 {
-
                     OnPrevMemberCountChanging(value);
                     SendPropertyChanging();
                     _PrevMemberCount = value;
                     SendPropertyChanged("PrevMemberCount");
                     OnPrevMemberCountChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ProspectCount", UpdateCheck = UpdateCheck.Never, Storage = "_ProspectCount", DbType = "int")]
         public int? ProspectCount
@@ -2316,18 +2017,14 @@ namespace CmsData
             {
                 if (_ProspectCount != value)
                 {
-
                     OnProspectCountChanging(value);
                     SendPropertyChanging();
                     _ProspectCount = value;
                     SendPropertyChanged("ProspectCount");
                     OnProspectCountChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "RegSettingXml", UpdateCheck = UpdateCheck.Never, Storage = "_RegSettingXml", DbType = "xml")]
         public string RegSettingXml
@@ -2338,18 +2035,14 @@ namespace CmsData
             {
                 if (_RegSettingXml != value)
                 {
-
                     OnRegSettingXmlChanging(value);
                     SendPropertyChanging();
                     _RegSettingXml = value;
                     SendPropertyChanged("RegSettingXml");
                     OnRegSettingXmlChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "AttendanceBySubGroups", UpdateCheck = UpdateCheck.Never, Storage = "_AttendanceBySubGroups", DbType = "bit")]
         public bool? AttendanceBySubGroups
@@ -2360,18 +2053,14 @@ namespace CmsData
             {
                 if (_AttendanceBySubGroups != value)
                 {
-
                     OnAttendanceBySubGroupsChanging(value);
                     SendPropertyChanging();
                     _AttendanceBySubGroups = value;
                     SendPropertyChanged("AttendanceBySubGroups");
                     OnAttendanceBySubGroupsChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "SendAttendanceLink", UpdateCheck = UpdateCheck.Never, Storage = "_SendAttendanceLink", DbType = "bit NOT NULL")]
         public bool SendAttendanceLink
@@ -2382,18 +2071,14 @@ namespace CmsData
             {
                 if (_SendAttendanceLink != value)
                 {
-
                     OnSendAttendanceLinkChanging(value);
                     SendPropertyChanging();
                     _SendAttendanceLink = value;
                     SendPropertyChanged("SendAttendanceLink");
                     OnSendAttendanceLinkChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "TripFundingPagesEnable", UpdateCheck = UpdateCheck.Never, Storage = "_TripFundingPagesEnable", DbType = "bit NOT NULL")]
         public bool TripFundingPagesEnable
@@ -2404,18 +2089,14 @@ namespace CmsData
             {
                 if (_TripFundingPagesEnable != value)
                 {
-
                     OnTripFundingPagesEnableChanging(value);
                     SendPropertyChanging();
                     _TripFundingPagesEnable = value;
                     SendPropertyChanged("TripFundingPagesEnable");
                     OnTripFundingPagesEnableChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "TripFundingPagesPublic", UpdateCheck = UpdateCheck.Never, Storage = "_TripFundingPagesPublic", DbType = "bit NOT NULL")]
         public bool TripFundingPagesPublic
@@ -2426,18 +2107,14 @@ namespace CmsData
             {
                 if (_TripFundingPagesPublic != value)
                 {
-
                     OnTripFundingPagesPublicChanging(value);
                     SendPropertyChanging();
                     _TripFundingPagesPublic = value;
                     SendPropertyChanged("TripFundingPagesPublic");
                     OnTripFundingPagesPublicChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "TripFundingPagesShowAmounts", UpdateCheck = UpdateCheck.Never, Storage = "_TripFundingPagesShowAmounts", DbType = "bit NOT NULL")]
         public bool TripFundingPagesShowAmounts
@@ -2448,18 +2125,14 @@ namespace CmsData
             {
                 if (_TripFundingPagesShowAmounts != value)
                 {
-
                     OnTripFundingPagesShowAmountsChanging(value);
                     SendPropertyChanging();
                     _TripFundingPagesShowAmounts = value;
                     SendPropertyChanged("TripFundingPagesShowAmounts");
                     OnTripFundingPagesShowAmountsChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "EarlyCheckin", UpdateCheck = UpdateCheck.Never, Storage = "_EarlyCheckin", DbType = "int")]
         public int? EarlyCheckin
@@ -2470,16 +2143,13 @@ namespace CmsData
             {
                 if (_EarlyCheckin != value)
                 {
-
                     OnEarlyCheckinChanging(value);
                     SendPropertyChanging();
                     _EarlyCheckin = value;
                     SendPropertyChanged("EarlyCheckin");
                     OnEarlyCheckinChanged();
                 }
-
             }
-
         }
 
         [Column(Name = "LateCheckin", UpdateCheck = UpdateCheck.Never, Storage = "_LateCheckin", DbType = "int")]
@@ -2497,9 +2167,7 @@ namespace CmsData
                     SendPropertyChanged("LateCheckin");
                     OnLateCheckinChanged();
                 }
-
             }
-
         }
 
         [Column(Name = "ESpaceEventId", UpdateCheck = UpdateCheck.Never, Storage = "_ESpaceEventId", DbType = "bigint")]
@@ -2517,9 +2185,7 @@ namespace CmsData
                     SendPropertyChanged("ESpaceEventId");
                     OnESpaceEventIdChanged();
                 }
-
             }
-
         }
 
         [Column(Name = "ESpaceEventName", UpdateCheck = UpdateCheck.Never, Storage = "_ESpaceEventName", DbType = "nvarchar(200)")]
@@ -2958,8 +2624,7 @@ namespace CmsData
             }
         }
 
-        #endregion
-
+#endregion
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
@@ -3038,7 +2703,6 @@ namespace CmsData
             entity.Organization = null;
         }
 
-
         private void attach_Attends(Attend entity)
         {
             SendPropertyChanging();
@@ -3050,7 +2714,6 @@ namespace CmsData
             SendPropertyChanging();
             entity.Organization = null;
         }
-
 
         private void attach_Coupons(Coupon entity)
         {
@@ -3064,7 +2727,6 @@ namespace CmsData
             entity.Organization = null;
         }
 
-
         private void attach_DivOrgs(DivOrg entity)
         {
             SendPropertyChanging();
@@ -3076,7 +2738,6 @@ namespace CmsData
             SendPropertyChanging();
             entity.Organization = null;
         }
-
 
         private void attach_GoerSenderAmounts(GoerSenderAmount entity)
         {
@@ -3090,7 +2751,6 @@ namespace CmsData
             entity.Organization = null;
         }
 
-
         private void attach_Meetings(Meeting entity)
         {
             SendPropertyChanging();
@@ -3102,7 +2762,6 @@ namespace CmsData
             SendPropertyChanging();
             entity.Organization = null;
         }
-
 
         private void attach_MemberTags(MemberTag entity)
         {
@@ -3116,7 +2775,6 @@ namespace CmsData
             entity.Organization = null;
         }
 
-
         private void attach_OrganizationExtras(OrganizationExtra entity)
         {
             SendPropertyChanging();
@@ -3128,7 +2786,6 @@ namespace CmsData
             SendPropertyChanging();
             entity.Organization = null;
         }
-
 
         private void attach_OrgMemberExtras(OrgMemberExtra entity)
         {
@@ -3142,7 +2799,6 @@ namespace CmsData
             entity.Organization = null;
         }
 
-
         private void attach_OrgSchedules(OrgSchedule entity)
         {
             SendPropertyChanging();
@@ -3154,7 +2810,6 @@ namespace CmsData
             SendPropertyChanging();
             entity.Organization = null;
         }
-
 
         private void attach_PrevOrgMemberExtras(PrevOrgMemberExtra entity)
         {
@@ -3168,7 +2823,6 @@ namespace CmsData
             entity.Organization = null;
         }
 
-
         private void attach_Resources(Resource entity)
         {
             SendPropertyChanging();
@@ -3180,7 +2834,6 @@ namespace CmsData
             SendPropertyChanging();
             entity.Organization = null;
         }
-
 
         private void attach_ResourceOrganizations(ResourceOrganization entity)
         {
@@ -3194,7 +2847,6 @@ namespace CmsData
             entity.Organization = null;
         }
 
-
         private void attach_OrganizationMembers(OrganizationMember entity)
         {
             SendPropertyChanging();
@@ -3206,9 +2858,5 @@ namespace CmsData
             SendPropertyChanging();
             entity.Organization = null;
         }
-
-
     }
-
 }
-

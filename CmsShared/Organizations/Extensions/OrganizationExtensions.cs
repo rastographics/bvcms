@@ -3,7 +3,7 @@ using eSpace;
 using System.Collections.Specialized;
 using System.Linq;
 
-namespace CMSShared.Organizations.Extensions
+namespace CmsShared.Organizations.Extensions
 {
     public static class OrganizationExtensions
     {
