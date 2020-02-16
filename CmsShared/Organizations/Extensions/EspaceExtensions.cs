@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace CmsShared.Organizations.Extensions
 {
-    public static class OrganizationExtensions
+    public static class EspaceExtensions
     {
         public static void SyncWithESpace(this Organization org, CMSDataContext db)
         {
