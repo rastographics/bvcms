@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Web;
 using UtilityExtensions;
 
 namespace CmsWeb.Models
@@ -60,6 +59,7 @@ namespace CmsWeb.Models
             {
                 description = desc;
             }
+            AdditionalFilters = new string[] { };
         }
 
         public string description { get; set; }
@@ -70,12 +70,13 @@ namespace CmsWeb.Models
         public DateTime? startdt { get; set; }
         public DateTime? enddt { get; set; }
         public string gateway { get; set; }
-        public bool testtransactions { get; set; }
-        public bool apprtransactions { get; set; }
-        public bool includesadditionaldonation { get; set; }
-        public bool nocoupons { get; set; }
         public string batchref { get; set; }
-        public bool usebatchdates { get; set; }
+        public string[] AdditionalFilters { get; set; }
+        public bool usebatchdates => AdditionalFilters?.Contains("usebatchdates") ?? false;
+        public bool nocoupons => AdditionalFilters?.Contains("nocoupons") ?? false;
+        public bool apprtransactions => AdditionalFilters?.Contains("apprtransactions") ?? false;
+        public bool testtransactions => AdditionalFilters?.Contains("testtransactions") ?? false;
+        public bool includesadditionaldonation => AdditionalFilters?.Contains("includesadditionaldonation") ?? false;
         public PagerModel2 Pager { get; set; }
         public bool finance { get; set; }
         public bool admin { get; set; }
@@ -180,8 +181,6 @@ namespace CmsWeb.Models
             edt = edt?.AddHours(24);
             if (usebatchdates && startdt.HasValue && edt.HasValue)
             {
-                // Apply an offset to the startdate to get those records that occurred prior to the batch date and haven't been batched at present
-                CheckBatchDates(startdt.Value.AddDays(-7), edt.Value);
                 _transactions = from t in _transactions
                                 where t.Batch >= startdt || startdt == null
                                 where t.Batch <= edt || edt == null
