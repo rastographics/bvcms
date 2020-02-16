@@ -1,5 +1,5 @@
 using CmsData;
-using CmsWeb.Areas.Org.Extensions;
+using CMSShared.Organizations.Extensions;
 using CmsWeb.Areas.Org.Models;
 using System;
 using System.Linq;

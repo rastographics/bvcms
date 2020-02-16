@@ -273,7 +273,8 @@
       <HintPath>..\packages\System.Management.Automation.dll.10.0.10586.0\lib\net40\System.Management.Automation.dll</HintPath>
     </Reference>
     <Reference Include="System.Net" />
-    <Reference Include="System.Net.Http, Version=4.1.1.3, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+    <Reference Include="System.Net.Http, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\System.Net.Http.4.3.4\lib\net46\System.Net.Http.dll</HintPath>
     </Reference>
     <Reference Include="System.Net.Http.Formatting, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -607,7 +608,6 @@
     <Compile Include="Areas\Org\Controllers\OrgChildrenController.cs" />
     <Compile Include="Areas\Org\Controllers\OrgGroupsController.cs" />
     <Compile Include="Areas\Org\Controllers\RegSettingController.cs" />
-    <Compile Include="Areas\Org\Extensions\OrganizationExtensions.cs" />
     <Compile Include="Areas\Org\Models\GroupListItem.cs" />
     <Compile Include="Areas\Org\Models\Org\Contacts\ContactsModel.cs" />
     <Compile Include="Areas\Org\Models\Org\Contacts\ContactsReceivedModel.cs" />
@@ -3348,6 +3348,10 @@
     <ProjectReference Include="..\CmsData\CmsData.csproj">
       <Project>{98aee43c-4226-49e7-bd46-c1a85467eced}</Project>
       <Name>CmsData</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CMSShared\CmsShared.csproj">
+      <Project>{e9d91ea2-2231-4371-bedf-0a0674a52f37}</Project>
+      <Name>CmsShared</Name>
     </ProjectReference>
     <ProjectReference Include="..\eSpaceClient\eSpaceClient.csproj">
       <Project>{6bfadd5b-2077-48d0-b5b3-da4d26fff1f5}</Project>
