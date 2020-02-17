@@ -221,12 +221,12 @@ namespace UtilityExtensions
             first = last = "";
             if (name.IsNullOrEmpty()) return;
             bool swapOrder = name.Contains(","); // e.g "Smith, John" OR "Smith,John"
-            var namesList = name.Replace(",", " ").Split(' '); // replace comma with space if present, (e.g "Smith,John" => "Smith John") and split.
+            var namesList = name.Split(new[] { ' ', ',' }, StringSplitOptions.RemoveEmptyEntries); // replace comma with space if present, (e.g "Smith,John" => "Smith John") and split.
 
             if (namesList.Length > 1) // first and last name are present
             {
-                first = swapOrder ? namesList[1].Trim() : namesList[0].Trim(); // first = "John" whether var is "Smith,John" OR "John Smith"
-                last = swapOrder ? namesList[0].Trim() : namesList[1].Trim(); // last = "Smith" whether var is "Smith,John" OR "John Smith"
+                first = swapOrder ? namesList[1] : namesList[0]; // first = "John" whether var is "Smith,John" OR "John Smith"
+                last = swapOrder ? namesList[0] : namesList[1]; // last = "Smith" whether var is "Smith,John" OR "John Smith"
             }
             else // only one name is present, but there may be spaces.
             {
@@ -234,11 +234,11 @@ namespace UtilityExtensions
                 {
                     if (name.ToCharArray()[0] == ' ') // <space>name; user is searching by lastname only. 
                     {
-                        last = namesList[0].Trim(); // first = ""
+                        last = namesList[0]; // first = ""
                     }
                     else // name<space>; user is searching by firstname only.
                     {
-                        first = namesList[0].Trim(); // last = ""
+                        first = namesList[0]; // last = ""
                     }
                 }
             }
