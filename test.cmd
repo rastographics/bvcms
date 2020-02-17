@@ -13,6 +13,7 @@ echo using %OpenCover%
 echo using %xunit%
 echo using %codecov%
 set "target_tests=.\UnitTests\CMSDataTests\bin\Debug\CMSDataTests.dll"
+set "target_tests=%target_tests%,.\UnitTests\CmsSharedTests\bin\Debug\CmsSharedTests.dll"
 set "target_tests=%target_tests%,.\UnitTests\CMSWebTests\bin\Debug\CMSWebTests.dll"
 set "target_tests=%target_tests%,.\UnitTests\eSpaceClientTests\bin\Debug\eSpaceClientTests.dll"
 set "target_tests=%target_tests%,.\UnitTests\ImageDataTests\bin\Debug\ImageDataTests.dll"

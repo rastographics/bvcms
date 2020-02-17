@@ -28,18 +28,25 @@ namespace CmsShared.Organizations.Extensions
                 foreach (var occurrence in list)
                 {
                     var occurrenceId = occurrence.OccurrenceId.ToString();
-                    var meeting = org.Meetings.Where(m => m.MeetingExtras.Any(e => e.Field == extraValueField && e.Data == occurrenceId)).FirstOrDefault()
-                        ?? Meeting.FetchOrCreateMeeting(db, id, occurrence.EventStart);
+                    var meeting = db.MeetingExtras
+                        .Where(m => m.Meeting.OrganizationId == org.OrganizationId)
+                        .Where(m => m.Field == extraValueField && m.Data == occurrenceId)
+                        .Select(m => m.Meeting).FirstOrDefault();
+                    if (meeting == null)
+                    {
+                        meeting = Meeting.FetchOrCreateMeeting(db, id, occurrence.EventStart);
+                    }
                     meeting.Location = string.Join("\n", occurrence.Items.Where(i => i.ItemType == "Space").Select(i => i.Name));
                     meeting.AddEditExtraText(extraValueField, occurrenceId);
                 }
                 db.SubmitChanges();
 
                 var current = list.Select(o => o.OccurrenceId.ToString());
-                var meetingsToDelete = org.Meetings
-                    .Where(m => m.MeetingDate > DateTime.Now)
-                    .Where(m => m.MeetingExtras.Any(e => e.Field == extraValueField && !string.IsNullOrEmpty(e.Data)))
-                    .Where(m => !current.Contains(m.MeetingExtras.Single(e => e.Field == extraValueField).Data))
+                var meetingsToDelete = db.MeetingExtras
+                    .Where(e => e.Meeting.OrganizationId == org.OrganizationId)
+                    .Where(e => e.Field == extraValueField && (e.Data ?? "").Length > 0)
+                    .Where(e => !current.Contains(e.Data))
+                    .Where(e => e.Meeting.MeetingDate > DateTime.Now)
                     .Select(m => m.MeetingId)
                     .ToList();
                 foreach (var m in meetingsToDelete)
