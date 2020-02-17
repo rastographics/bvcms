@@ -104,8 +104,6 @@ div.signin-with .header a {
 }
 
 .form-inline .upload-doc-options .btn-block {
-    display: block;
-    width: 100%;
     margin-bottom: 5px;
 }
 
@@ -125,10 +123,5 @@ div.signin-with .header a {
     .upload-doc-options {
         float: right;
         margin-top: -18px;
-    }
-
-    .form-inline .upload-doc-options .btn-block {
-        display: inline-block;
-        width: auto;
     }
 }
