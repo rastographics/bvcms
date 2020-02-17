@@ -1,0 +1,51 @@
+﻿@using CmsData;
+@{
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "Web Check-in Labels";
+    ViewBag.PageHeader = "Web Check-in Labels";
+
+    var types = (from t in DbUtil.Db.CheckInLabelTypes
+                 select new
+                 {
+                     id = t.Id,
+                     name = String.Concat(t.Name)
+                 }).ToList();
+    var sizes = new List<int> { 100, 200 };
+
+    var labeloptions = DbUtil.Db.CheckInLabels.ToList();
+}
+<div class="box box-responsive">
+    <div class="box-content">
+        <div class="row">
+            @using (Html.BeginForm("Save", "WebCheckinLabels", FormMethod.Post))
+            {
+                foreach (var size in sizes)
+                {
+                    <div class="col-xs-12 content">
+                        <h3>@(size / 100) inch labels</h3>
+                    </div>
+                    foreach (var type in types)
+                    {
+                        // get options for size and type combo
+                        var options = labeloptions.Where(l => l.TypeID == type.id).Where(l => size >= l.Minimum && size <= l.Maximum);
+                        var active = options.Where(l => l.Active == true).Single().Id;
+                        <div class="col-sm--6 col-md-4">
+                            <div class="content" style="padding: 15px 25px;">
+                                <h4>@type.name</h4>
+                                <div class="input-group">
+                                    @Html.DropDownList("active[]", new SelectList(options, "id", "name", active), new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    <hr />
+                }
+                <div class="col-sm-12 form-inline">
+                    <div class="content input-group">
+                        <button type="submit" class="btn btn-primary">Update Active Labels</button>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

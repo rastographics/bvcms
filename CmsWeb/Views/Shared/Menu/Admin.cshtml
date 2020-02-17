@@ -244,9 +244,13 @@
         <li class="dropdown-header dropdown-sub-header">Check-In</li>
         if (webCheckinEnabled)
         {
-        @Helper.LiAnchorLink("Check-In Setup", "/CheckinSetup", checkin)
+            @Helper.LiAnchorLink("Profiles", "/CheckinSetup", checkin)
         }
-        @Helper.LiAnchorLink("Check-In Activity", "/CheckinTimes/")
-        @Helper.LiAnchorLink("Check-In Labels", "/CheckinLabels", admin)
+        @Helper.LiAnchorLink("Activity", "/CheckinTimes")
+        if (webCheckinEnabled)
+        {
+            @Helper.LiAnchorLink("Labels", "/WebCheckinLabels", admin)
+        }
+        @Helper.LiAnchorLink("Labels (legacy)", "/CheckinLabels", admin)
     }
 }
