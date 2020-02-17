@@ -356,7 +356,19 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
         private void StoreDocument(HttpPostedFileBase file, string docname, int registrantId, int orgId)
         {
-            var person = CurrentDatabase.People.SingleOrDefault(p => p.PeopleId == registrantId);
+            var person = CurrentDatabase.People.SingleOrDefault(p => p.PeopleId == registrantId);\
+            if (person == null)
+            {
+                StoreTemporaryDoc(file, docname, registrantId, orgId);
+            }
+            else
+            {
+                StoreMemberDoc(file, docname, person, registrantId, orgId);
+            }            
+        }
+
+        private void StoreMemberDoc(HttpPostedFileBase file, string docname, Person person, int registrantId, int orgId)
+        {
             var docName = $"{docname}_{person.LastName}_{person.FirstName}_{registrantId}";
             var document = CurrentDatabase.OrgMemberDocuments.SingleOrDefault(o => o.DocumentName == docName & o.PeopleId == registrantId & o.OrganizationId == orgId);
             if (document != null)
@@ -374,6 +386,11 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 OrganizationId = orgId
             });
             CurrentDatabase.SubmitChanges();
+        }
+
+        private void StoreTemporaryDoc(HttpPostedFileBase file, string docname, int registrantId, int orgId)
+        {
+            throw new NotImplementedException();
         }
 
         [HttpPost]
