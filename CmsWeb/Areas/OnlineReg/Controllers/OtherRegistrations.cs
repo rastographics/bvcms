@@ -412,7 +412,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
                     oorg = q.org;
                     person = q.p;
-                    personPreferredName = person.PreferredName;
+                    personPreferredName = $"{person.PreferredName}, ";
                     personEmailAddress = person.EmailAddress;
                 }                
 
@@ -426,7 +426,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
                     oorg = q.org;
                     person = q.p;
-                    personPreferredName = person.PreferredName;
+                    personPreferredName = $"{person.PreferredName}, ";
                     personEmailAddress = person.EmailAddress;
                 }
 
@@ -481,7 +481,7 @@ or contact the church if you need help.</p>
                     CurrentDatabase.SendEmail(from, subject, msg, Util.ToMailAddressList(gs.NoDbEmail), gs.Id);
                 }                    
 
-                return Message($"Thank you, {personPreferredName}, we just sent an email to {Util.ObscureEmail(personEmailAddress)} with your link...");
+                return Message($"Thank you, {personPreferredName}we just sent an email to {Util.ObscureEmail(personEmailAddress)} with your link...");
             }
             catch (Exception ex)
             {

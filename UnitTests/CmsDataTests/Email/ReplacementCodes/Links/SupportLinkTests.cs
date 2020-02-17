@@ -2,6 +2,8 @@
 using SharedTestFixtures;
 using Shouldly;
 using System;
+using System.Linq;
+using UtilityExtensions;
 using Xunit;
 
 namespace CmsDataTests
@@ -15,12 +17,13 @@ namespace CmsDataTests
             using (var db = CMSDataContext.Create(DatabaseFixture.Host))
             {
                 var link = EmailReplacements.SupportLinkAnonymousReplacement(db, "1", "1");
-                String[] spearator = { "//", "/" };
-                var url = link.Split(spearator, StringSplitOptions.RemoveEmptyEntries);
-                foreach (var item in url)
-                {
-                    item.ShouldNotBe("");
-                }
+                String[] separator = { "//", "/" };
+                var url = link.Split(separator, StringSplitOptions.RemoveEmptyEntries);
+                var linkId = url[4];
+                var guid = linkId.ToGuid();
+
+                var ot = db.OneTimeLinks.SingleOrDefault(oo => oo.Id == guid.Value);
+                ot.ShouldNotBeNull();
             }
         }
     }
