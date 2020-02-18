@@ -1184,9 +1184,6 @@
     <Resource Include="Classes\OnlineRegSummaryText\Details2.xml">
       <SubType>Designer</SubType>
     </Resource>
-    <Content Include="Migrations\20191221_Update_OnlineRegSummaryHtml_Remove_Amout_Paid.sql" />
-    <Content Include="Migrations\00000000_sql_migrations_table.sql" />
-    <Content Include="Migrations\20200119_Alter_Func_PledgesSummary.sql" />
     <Content Include="QueryBuilder\CompareMap.xml">
       <SubType>Designer</SubType>
     </Content>
