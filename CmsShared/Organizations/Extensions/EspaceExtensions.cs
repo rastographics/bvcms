@@ -44,7 +44,7 @@ namespace CmsShared.Organizations.Extensions
                 var current = list.Select(o => o.OccurrenceId.ToString());
                 var meetingsToDelete = db.MeetingExtras
                     .Where(e => e.Meeting.OrganizationId == org.OrganizationId)
-                    .Where(e => e.Field == extraValueField && (e.Data ?? "").Length > 0)
+                    .Where(e => e.Field == extraValueField && e.Data.Length > 0)
                     .Where(e => !current.Contains(e.Data))
                     .Where(e => e.Meeting.MeetingDate > DateTime.Now)
                     .Select(m => m.MeetingId)
