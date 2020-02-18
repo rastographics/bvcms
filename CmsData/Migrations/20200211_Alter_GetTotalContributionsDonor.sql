@@ -60,6 +60,7 @@ RETURN
 	)
 	SELECT
 		ContributionStatusId,
+		ContributionTypeId,
 		CreditGiverId,
 		CreditGiverId2,
 		HeadName, 
@@ -83,6 +84,7 @@ RETURN
 	FROM TotalContributionsDonor
 	GROUP BY 
 			ContributionStatusId,
+			ContributionTypeId,
 			CreditGiverId,
 			CreditGiverId2,
 			HeadName, 
