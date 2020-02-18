@@ -179,7 +179,7 @@
             </li>
         }
     }
-    if (finance || managetrans || financeadmin)
+    if ((finance || managetrans || financeadmin) && DbUtil.Db.Setting("ShowSyncBatchDatesOption"))
     {
         @Helper.LiAnchorLink("Retrieve Batch Data", "/Batch/RetrieveBatchData")
     }
