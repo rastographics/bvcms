@@ -91,7 +91,7 @@
             }
             <div class="col-lg-3 col-md-3 col-sm-6">
                 <div class="form-group">
-                    @if (DbUtil.Db.Setting("ShowSyncBatchDatesOption"))
+                    @if (ViewBag.db.Setting("ShowSyncBatchDatesOption"))
                     {
                         <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Additional Filters"><i class="fa fa-info-circle"></i></a>&nbsp;
                         <label for="ltamount" class="control-label">Additional Filters</label>
