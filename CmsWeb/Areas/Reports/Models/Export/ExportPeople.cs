@@ -109,7 +109,7 @@ namespace CmsWeb.Models
         public IQueryable<DonorDetail> GetValidContributionDetails(DateTime startdt, DateTime enddt,
             int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed, int? tagid, string fundids)
         {
-            var q = from c in CurrentDatabase.GetContributionsDetails(startdt, enddt, campusid, pledges, (nontaxdeductible is null ? null : nontaxdeductible?.ToInt()), includeUnclosed, tagid, fundids)
+            var q = from c in CurrentDatabase.GetContributionsDetails(startdt, enddt, campusid, pledges, (nontaxdeductible is null ? null : nontaxdeductible?.ToInt()), null, includeUnclosed, tagid, fundids)
                     where !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
                     select new DonorDetail
                     {
@@ -193,7 +193,7 @@ namespace CmsWeb.Models
             }
             else
             {
-                var q = from c in CurrentDatabase.GetContributionsDetails(startdt, enddt, campusid, pledges, nontaxdeductible.ToInt(), includeUnclosed, tagid, fundids)
+                var q = from c in CurrentDatabase.GetContributionsDetails(startdt, enddt, campusid, pledges, nontaxdeductible.ToInt(), null, includeUnclosed, tagid, fundids)
                         join p in CurrentDatabase.People on c.CreditGiverId equals p.PeopleId
                         let mainFellowship = CurrentDatabase.Organizations.SingleOrDefault(oo => oo.OrganizationId == p.BibleFellowshipClassId).OrganizationName
                         let spouse = CurrentDatabase.People.SingleOrDefault(sp => sp.PeopleId == p.SpouseId)
@@ -227,15 +227,6 @@ namespace CmsWeb.Models
         public DataTable ExcelDonorTotals(DateTime startdt, DateTime enddt,
             int campusid, bool? pledges, bool? nontaxdeductible, int? Online, bool includeUnclosed, int? tagid, string fundids, bool includePledges)
         {
-#if DEBUG2
-            // for reconciliation by developer
-            var v = from c in DbUtil.Db.GetContributionsDetails(startdt, enddt, campusid, pledges, nontaxdeductible, includeUnclosed, tagid, fundids)
-                orderby c.ContributionId
-                select c.ContributionId;
-            using(var tw = new StreamWriter("D:\\exportdonors.txt"))
-               foreach (var s in v)
-                  tw.WriteLine(s);
-#endif
             var nontaxded = includePledges ? 2 : (nontaxdeductible.HasValue ? (nontaxdeductible.Value ? 1 : 0) : (int?)null);
             pledges = nontaxded == 2 ? true : (bool?)null;
 
