@@ -1,3 +1,4 @@
+#Roles=Admin
 import re
 
 def Get():
@@ -44,6 +45,10 @@ def Post(data):
             model.WriteContentPython(key, text, keyword)
             print("%s installed in Python Scripts with Keyword %s" % (key, keyword))
 
+        elif key.endswith(".js"):
+            key = re.search("(.*)\.js", key).group(1)
+            model.WriteContentText(key, text, keyword)
+            print("%s installed in Text Content with Keyword %s" % (key, keyword))
         elif key.endswith(".json"):
             key = re.search("(.*).json", key).group(1)
             model.WriteContentText(key, text, keyword)

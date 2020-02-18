@@ -1,11 +1,6 @@
 ﻿using CmsWeb.Areas.Public.Models;
 using SharedTestFixtures;
 using System;
-using SharedTestFixtures;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 using Shouldly;
 

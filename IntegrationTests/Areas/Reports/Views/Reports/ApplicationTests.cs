@@ -26,7 +26,6 @@ namespace IntegrationTests.Areas.Reports.Views.Reports
         [Fact, FeatureTest]
         public void Application_Export_Should_Pull_HoHPeopleID()
         {
-            driver.Manage().Window.Maximize();
             var requestManager = FakeRequestManager.Create();
             var db = requestManager.CurrentDatabase;
             var controller = new OnlineRegController(requestManager);
@@ -131,7 +130,6 @@ namespace IntegrationTests.Areas.Reports.Views.Reports
         [Fact, FeatureTest]
         public void Application_Report_Should_Have_Answers()
         {
-            driver.Manage().Window.Maximize();
             var requestManager = FakeRequestManager.Create();
 
             var Orgconfig = new Organization()

@@ -1,7 +1,6 @@
 ﻿using IntegrationTests.Support;
 using SharedTestFixtures;
 using Shouldly;
-using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
@@ -119,11 +118,13 @@ namespace IntegrationTests.Areas.Manage
             Find(text: "Forgot?").Click();
             CurrentUrl.ShouldBe($"{rootUrl}Account/ForgotPassword");
 
-            Find(name: "UsernameOrEmail").SendKeys(username);
-            Find(css: "input[type=submit]").Click();
+            var input = "[name=UsernameOrEmail]";
+            var button = "input[type=submit]";
 
-            WaitForPageLoad();
-            PageSource.ShouldContain("Password Sent");
+            RepeatUntil(() => {
+                Find(css: input)?.SendKeys(username);
+                Find(css: button)?.Click();
+            }, () => PageSource.Contains("Password Sent"));
 
             db.Refresh(System.Data.Linq.RefreshMode.OverwriteCurrentValues, user);
             user.ResetPasswordCode.ShouldNotBeNull();
@@ -133,12 +134,14 @@ namespace IntegrationTests.Areas.Manage
             Find(css: "button[type=submit]").Click();
             CurrentUrl.ShouldBe($"{rootUrl}Account/SetPasswordConfirm");
 
-            Find(id: "newPassword").SendKeys(newPassword);
-            Find(id: "confirmPassword").SendKeys(newPassword);
-            Find(css: "input[type=submit]").Click();
-            PageSource.ShouldContain("Password Changed");
+            RepeatUntil(() => {
+                Find(id: "newPassword").SendKeys(newPassword);
+                Find(id: "confirmPassword").SendKeys(newPassword);
+                Find(css: button).Click();
+            }, () => PageSource.Contains("Password Changed"));
 
             Find(text: "Return to Home").Click();
+            WaitForPageLoad();
 
             Logout();
             Login(withPassword: newPassword);
