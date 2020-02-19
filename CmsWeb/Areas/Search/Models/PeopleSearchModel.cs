@@ -127,7 +127,7 @@ namespace CmsWeb.Models
                     if (m.name.AllDigits())
                     {
                         people = from p in people
-                            where p.PeopleId == last.ToInt()
+                            where p.PeopleId == m.name.ToInt()
                             select p;
                     }
                     else
