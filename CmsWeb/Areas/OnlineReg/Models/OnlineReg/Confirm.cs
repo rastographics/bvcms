@@ -2,7 +2,9 @@ using CmsData;
 using CmsData.API;
 using CmsData.Codes;
 using CmsData.Finance;
+using CmsWeb.Code;
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
@@ -68,7 +70,8 @@ or modify the amount of this gift by a small amount so that it does not appear a
 Thank you.
 ";
             }
-             else {
+            else
+            {
                 return @"
 Our records indicate that you recently submitted a registration in this amount a short while ago.
 As a safeguard against duplicate transactions we recommend that you either wait 20 minutes,
@@ -155,6 +158,7 @@ Thank you.
 
             SetTransactionReturn(TransactionReturn);
             EnrollAndConfirm();
+            DocumentsHelper.SaveTemporaryDocuments(CurrentDatabase, List.Where(p => p.IsNew).ToList());
             UseCoupon(Transaction.TransactionId, Transaction.Amt ?? 0);
             return ConfirmEnum.Confirm;
         }
@@ -269,7 +273,7 @@ Thank you.
         }
 
         public static void ConfirmDuePaidTransaction(Transaction ti, string transactionId, bool sendmail, CMSDataContext db)
-        {            
+        {
             var org = db.LoadOrganizationById(ti.OrgId);
             ti.TransactionId = transactionId;
             if (ti.Testing == true && !ti.TransactionId.Contains("(testing)"))

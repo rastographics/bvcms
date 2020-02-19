@@ -4,6 +4,7 @@
         var submitBtn = $(this);
         var registrantId = $(document).find('#registrantId').val();
         var orgId = $(document).find('#orgId').val();
+        var email = $(document).find('#email').val();
         var fileInputBtn = submitBtn.parent().parent().find('input.docInput');
         var isUploaded = submitBtn.parent().parent().find('input.hdnIsUploaded');
         var deleteBtn = submitBtn.parent().parent().find('input.btnDeleteDoc');
@@ -13,7 +14,8 @@
         var formdata = new FormData();
         formdata.append(fileInput.files[0].name, fileInput.files[0]);
         formdata.append('docname', docName);
-        formdata.append('registrantId', registrantId);
+        formdata.append('registrantId', registrantId); 
+        formdata.append('email', email); 
         formdata.append('orgId', orgId);
         $.ajax({
             url: 'UploadDocument',

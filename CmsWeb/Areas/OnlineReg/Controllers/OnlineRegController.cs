@@ -349,27 +349,25 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             Int32.TryParse(Request["registrantId"], out int registrantId);
             Int32.TryParse(Request["orgId"], out int orgId);
             var docname = Request["docname"];
-            StoreDocument(file, docname, registrantId, orgId);
+            var email = Request["email"];
+            StoreDocument(file, docname, registrantId, orgId, email);
             //string tmpFileName = TmpFiles.CreateTmpFile(file);
             return Json(new { file.FileName });
         }
 
-        private void StoreDocument(HttpPostedFileBase file, string docname, int registrantId, int orgId)
+        private void StoreDocument(HttpPostedFileBase file, string docname, int? registrantId, int orgId, string email)
         {
-            var person = CurrentDatabase.People.SingleOrDefault(p => p.PeopleId == registrantId);\
+            var person = CurrentDatabase.People.SingleOrDefault(p => p.PeopleId == registrantId);
+            string docName;
+
             if (person == null)
             {
-                StoreTemporaryDoc(file, docname, registrantId, orgId);
+                docName = $"{docname}_temp_{email}_{orgId}";
+                registrantId = 1;
             }
             else
-            {
-                StoreMemberDoc(file, docname, person, registrantId, orgId);
-            }            
-        }
+                docName = $"{docname}_{person.LastName}_{person.FirstName}_{registrantId}";
 
-        private void StoreMemberDoc(HttpPostedFileBase file, string docname, Person person, int registrantId, int orgId)
-        {
-            var docName = $"{docname}_{person.LastName}_{person.FirstName}_{registrantId}";
             var document = CurrentDatabase.OrgMemberDocuments.SingleOrDefault(o => o.DocumentName == docName & o.PeopleId == registrantId & o.OrganizationId == orgId);
             if (document != null)
             {
@@ -377,7 +375,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 Image.Delete(CurrentImageDatabase, document.ImageId);
                 CurrentDatabase.SubmitChanges();
             }
-            int imageId = ImageData.DocumentsData.StoreImageFromDocument(CurrentImageDatabase, file);
+
+            int imageId = DocumentsData.StoreImageFromDocument(CurrentImageDatabase, file);
             CurrentDatabase.OrgMemberDocuments.InsertOnSubmit(new OrgMemberDocument()
             {
                 DocumentName = docName,
@@ -386,11 +385,6 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 OrganizationId = orgId
             });
             CurrentDatabase.SubmitChanges();
-        }
-
-        private void StoreTemporaryDoc(HttpPostedFileBase file, string docname, int registrantId, int orgId)
-        {
-            throw new NotImplementedException();
         }
 
         [HttpPost]

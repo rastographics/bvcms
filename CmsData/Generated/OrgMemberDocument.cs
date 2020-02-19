@@ -16,7 +16,7 @@ namespace CmsData
         private int _DocumentId;
         private string _DocumentName;
         private int _ImageId;
-        private int _PeopleId;
+        private int? _PeopleId;
         private int _OrganizationId;
 
         private EntityRef<Person> _Person;
@@ -38,7 +38,7 @@ namespace CmsData
         partial void OnImageIdChanging(int value);
         partial void OnImageIdChanged();
 
-        partial void OnPeopleIdChanging(int value);
+        partial void OnPeopleIdChanging(int? value);
         partial void OnPeopleIdChanged();
 
         partial void OnOrganizationIdChanging(int value);
@@ -110,9 +110,9 @@ namespace CmsData
             }
         }
 
-        [Column(Name = "PeopleId", UpdateCheck = UpdateCheck.Never, Storage = "_PeopleId", DbType = "int NOT NULL", IsPrimaryKey = true)]
+        [Column(Name = "PeopleId", UpdateCheck = UpdateCheck.Never, Storage = "_PeopleId", DbType = "int NULL", IsPrimaryKey = true)]
         [IsForeignKey]
-        public int PeopleId
+        public int? PeopleId
         {
             get => _PeopleId;
 
