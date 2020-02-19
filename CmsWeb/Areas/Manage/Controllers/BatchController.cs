@@ -202,9 +202,9 @@ namespace CmsWeb.Areas.Manage.Controllers
 
         [Authorize(Roles = "ManageTransactions,Finance")]
         [HttpPost]
-        public ActionResult RetrieveBatchData(FormCollection formCollection)
+        public ActionResult RetrieveBatchData(string startdt, string enddt)
         {
-            CurrentDatabase.RetrieveBatchData();
+            CurrentDatabase.RetrieveBatchData(startdt, enddt);
             return Content("Transactions retrieved successfully.");
         }
 

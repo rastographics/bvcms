@@ -1970,7 +1970,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
             ExecuteCommand("dbo.DeleteOldQueryBitTags");
         }
 
-        public void RetrieveBatchData()  // code has mostly been moved over from CmsWeb.Models.TransactionsModel.cs with some cleanup
+        public void RetrieveBatchData(string startdt = null, string enddt = null)  // code has mostly been moved over from CmsWeb.Models.TransactionsModel.cs with some cleanup
         {
             IGateway[] gateways = {
                 Gateway(false, null, PaymentProcessTypes.OneTimeGiving, false),
@@ -1978,8 +1978,11 @@ This search uses multiple steps which cannot be duplicated in a single query.
                 Gateway(false, null, PaymentProcessTypes.RecurringGiving, false)
             };
 
-            var today = DateTime.Now;
-            var start = today.AddDays(0 - Setting("AutoSyncBatchDatesWindow").ToInt());
+            DateTime? dateFrom = (startdt != null) ? (DateTime?)DateTime.Parse(startdt) : null;
+            DateTime? dateTo = (enddt != null) ? (DateTime?)DateTime.Parse(enddt) : null;
+
+            var rangeTo = dateTo ?? DateTime.Now;
+            var rangeFrom = dateFrom ?? rangeTo.AddDays(0 - Setting("AutoSyncBatchDatesWindow").ToInt());
 
             var transactions
                 = from t in ViewTransactionLists
@@ -1996,8 +1999,8 @@ This search uses multiple steps which cannot be duplicated in a single query.
                 if (gateway.UseIdsForSettlementDates)
                 {
                     var tranids = (from t in transactions
-                        where t.TransactionDate >= start
-                        where t.TransactionDate <= today
+                        where t.TransactionDate >= rangeFrom
+                        where t.TransactionDate <= rangeTo
                         where t.Settled == null
                         where t.Moneytran == true
                         select t.TransactionId).ToList();
@@ -2005,7 +2008,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
                 }
                 else
                 {
-                    gateway.CheckBatchSettlements(start, today);
+                    gateway.CheckBatchSettlements(rangeFrom, rangeTo);
                 }
             }
         }
