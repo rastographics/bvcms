@@ -231,6 +231,7 @@ namespace CmsWeb.Models
             pledges = nontaxded == 2 ? true : (bool?)null;
 
             var q2 = from r in CurrentDatabase.GetTotalContributionsDonor(startdt, enddt, campusid, nontaxded, Online, includeUnclosed, tagid, fundids, pledges)
+                     where ContributionStatusCode.Recorded.Equals(r.ContributionStatusId)
                      select new
                      {
                          GiverId = r.CreditGiverId,
