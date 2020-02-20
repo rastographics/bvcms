@@ -14,35 +14,60 @@
 
     var labeloptions = DbUtil.Db.CheckInLabels.ToList();
 }
+@section scripts {
+<script>
+    $(function () {
+        form = $('form.activeLabels');
+        form.submit(function (e) {
+            e.preventDefault();
+            $.post("/WebCheckinLabels/Save", form.serializeArray(), function (ret) {
+                if (ret && ret.Status == 'success') {
+                    snackbar('Active labels saved', 'success');
+                } else {
+                    snackbar('Error saving active labels', 'error');
+                }
+            }).fail(function () {
+                snackbar('Error saving active labels', 'error');
+            });
+        })
+    });
+</script>
+}
 <div class="box box-responsive">
     <div class="box-content">
         <div class="row">
-            @using (Html.BeginForm("Save", "WebCheckinLabels", FormMethod.Post))
+            @using (Html.BeginForm("Save", "WebCheckinLabels", FormMethod.Post, new { @class="activeLabels" } ))
             {
                 foreach (var size in sizes)
                 {
                     <div class="col-xs-12 content">
-                        <h3>@(size / 100) inch labels</h3>
+                        <h4>@(size / 100) inch labels</h4>
                     </div>
-                    foreach (var type in types)
-                    {
-                        // get options for size and type combo
-                        var options = labeloptions.Where(l => l.TypeID == type.id).Where(l => size >= l.Minimum && size <= l.Maximum);
-                        var active = options.Where(l => l.Active == true).Single().Id;
-                        <div class="col-sm--6 col-md-4">
-                            <div class="content" style="padding: 15px 25px;">
-                                <h4>@type.name</h4>
-                                <div class="input-group">
-                                    @Html.DropDownList("active[]", new SelectList(options, "id", "name", active), new { @class = "form-control" })
-                                </div>
+                    <div class="col-xs-12">
+                        <div class="well">
+                            <div class="row">
+                                @foreach (var type in types)
+                                {
+                                    // get options for size and type combo
+                                    var options = labeloptions.Where(l => l.TypeID == type.id).Where(l => size >= l.Minimum && size <= l.Maximum);
+                                    var active = options.Where(l => l.Active == true).Single().Id;
+                                    <div class="col-sm-6 col-md-4">
+                                        <div class="content">
+                                            <h5>@type.name</h5>
+                                            <div class="form-group">
+                                                @Html.DropDownList("active[]", new SelectList(options, "id", "name", active), new { @class = "form-control" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
                             </div>
                         </div>
-                    }
-                    <hr />
+                    </div>
                 }
                 <div class="col-sm-12 form-inline">
                     <div class="content input-group">
                         <button type="submit" class="btn btn-primary">Update Active Labels</button>
+                        <a class="btn btn-default" style="margin-left: 20px;" href="https://docs.touchpointsoftware.com/Checkin/StandardCheckinLabels.html" target="_blank"><i class="fa fa-question-circle"></i> Help</a>
                     </div>
                 </div>
             }

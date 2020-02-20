@@ -1,4 +1,5 @@
 ﻿using CmsWeb.Lifecycle;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
@@ -22,18 +23,31 @@ namespace CmsWeb.Areas.CheckIn.Controllers
         [HttpPost]
         public ActionResult Save(List<int> active)
         {
-            var inactiveLabels = CurrentDatabase.CheckInLabels.Where(l => !active.Contains(l.Id)).ToList();
-            foreach (var label in inactiveLabels)
+            try
             {
-                label.Active = false;
-            }
-            var activeLabels = CurrentDatabase.CheckInLabels.Where(l => active.Contains(l.Id)).ToList();
-            foreach (var label in activeLabels)
+                var inactiveLabels = CurrentDatabase.CheckInLabels.Where(l => !active.Contains(l.Id)).ToList();
+                foreach (var label in inactiveLabels)
+                {
+                    label.Active = false;
+                }
+                var activeLabels = CurrentDatabase.CheckInLabels.Where(l => active.Contains(l.Id)).ToList();
+                foreach (var label in activeLabels)
+                {
+                    label.Active = true;
+                }
+                CurrentDatabase.SubmitChanges();
+            } catch (Exception e)
             {
-                label.Active = true;
+                return Json(new
+                {
+                    Status = "error",
+                    Message = e.Message
+                });
             }
-            CurrentDatabase.SubmitChanges();
-            return new RedirectResult("/WebCheckinLabels/");
+            return Json(new
+            {
+                Status = "success"
+            });
         }
     }
 }

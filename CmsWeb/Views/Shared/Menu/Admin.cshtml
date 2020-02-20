@@ -246,11 +246,11 @@
         {
             @Helper.LiAnchorLink("Profiles", "/CheckinSetup", checkin)
         }
-        @Helper.LiAnchorLink("Activity", "/CheckinTimes")
+        @Helper.LiAnchorLink("Building Activity", "/CheckinTimes")
         if (webCheckinEnabled)
         {
-            @Helper.LiAnchorLink("Labels", "/WebCheckinLabels", admin)
+            @Helper.LiAnchorLink("Labels (Web)", "/WebCheckinLabels", admin)
         }
-        @Helper.LiAnchorLink("Labels (legacy)", "/CheckinLabels", admin)
+        @Helper.LiAnchorLink("Labels (Legacy)", "/CheckinLabels", admin)
     }
 }

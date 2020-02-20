@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Web.WebPages;
 using CmsData;
 using CmsWeb.Areas.Public.Models.CheckInAPIv2.Caching;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 {
@@ -127,7 +128,25 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 
 					return string.Format( format, member, guest );
 
-				default:
+                case LabelField.PERSON_FULL_NAME:
+                    return string.Format(format, person.PreferredName, person.LastName);
+
+                case LabelField.PERSON_DOB:
+                    return string.Format(format, person.BirthDate);
+
+                case LabelField.PERSON_EMERGENCY_NAME:
+                    return string.Format(format, person.GetRecReg().Emcontact);
+
+                case LabelField.PERSON_EMERGENCY_PHONE:
+                    return string.Format(format, person.GetRecReg().Emphone);
+                    
+                case LabelField.PERSON_SCHOOL:
+                    return string.Format(format, person.SchoolOther);
+
+                case LabelField.PERSON_GRADE:
+                    return string.Format(format, person.Grade);
+
+                default:
 					return "";
 			}
 		}
@@ -207,6 +226,19 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 
 				case LabelField.GROUP_SUBGROUPS:
 					return group.subgroupName;
+
+                case LabelField.GROUP_LOCATION_AND_SUBGROUP:
+                    org = cacheSet.getOrganization(group.groupID);
+                    List<string> groupItems = new List<string>();
+                    if (org != null && org.Location.HasValue())
+                    {
+                        groupItems.Add(org.Location);
+                    }
+                    if (group.subgroupName.HasValue())
+                    {
+                        groupItems.Add(group.subgroupName);
+                    }
+                    return string.Format( format, string.Join( " - ", groupItems) );
 
                 case LabelField.GROUP_NAME_AND_TIME:
                     org = cacheSet.getOrganization(group.groupID);
