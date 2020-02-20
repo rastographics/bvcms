@@ -1881,6 +1881,7 @@
     <Content Include="Areas\People\Views\Task\_ActionsMenu.cshtml" />
     <Content Include="Areas\Manage\Views\Account\AuthDisabled.cshtml" />
     <Content Include="Areas\CheckIn\Views\WebCheckinLabels\Index.cshtml" />
+    <Content Include="Areas\Manage\Views\Batch\RetrieveBatchData.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
