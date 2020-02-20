@@ -13,8 +13,10 @@ echo using %OpenCover%
 echo using %xunit%
 echo using %codecov%
 set "target_tests=.\UnitTests\CMSDataTests\bin\Debug\CMSDataTests.dll"
-set "target_tests=%target_tests%,.\UnitTests\ImageDataTests\bin\Debug\ImageDataTests.dll"
+set "target_tests=%target_tests%,.\UnitTests\CmsSharedTests\bin\Debug\CmsSharedTests.dll"
 set "target_tests=%target_tests%,.\UnitTests\CMSWebTests\bin\Debug\CMSWebTests.dll"
+set "target_tests=%target_tests%,.\UnitTests\eSpaceClientTests\bin\Debug\eSpaceClientTests.dll"
+set "target_tests=%target_tests%,.\UnitTests\ImageDataTests\bin\Debug\ImageDataTests.dll"
 set "target_tests=%target_tests%,.\UnitTests\UtilityExtensionsTests\bin\Debug\UtilityExtensionsTests.dll"
 ::clean up
 echo quit | sqlcmd -S (local) -q "IF DB_ID('CMS_localhost') IS NOT NULL ALTER DATABASE CMS_localhost SET SINGLE_USER WITH ROLLBACK IMMEDIATE;DROP DATABASE CMS_localhost"
