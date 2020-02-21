@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Web;
-using CmsData;
-using CmsData.Finance;
-using CmsData.View;
 using MoreLinq;
 using UtilityExtensions;
 
@@ -15,6 +10,10 @@ namespace CmsData.Finance
     {
         public static void CheckBatchSettlements(CMSDataContext db, IGateway gateway, DateTime start, DateTime end)
         {
+            if (end - start > TimeSpan.FromDays(31))
+            {
+                start = end.AddDays(-31);
+            }
             var response = gateway.GetBatchDetails(start, end);
 
             // get distinct batches

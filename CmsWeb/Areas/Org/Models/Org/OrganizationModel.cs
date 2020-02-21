@@ -50,7 +50,7 @@ namespace CmsWeb.Areas.Org.Models
             {
                 if (settingsGeneralModel == null && Id.HasValue)
                 {
-                    settingsGeneralModel = new SettingsGeneralModel(Id.Value);
+                    settingsGeneralModel = new SettingsGeneralModel(Db, Id.Value);
                 }
 
                 return settingsGeneralModel;

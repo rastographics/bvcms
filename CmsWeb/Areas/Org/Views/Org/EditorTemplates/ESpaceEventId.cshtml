@@ -1,0 +1,115 @@
+﻿@using UtilityExtensions
+@model CmsWeb.Areas.Org.Models.SettingsGeneralModel
+@{
+    var toggleSearch = Model.ESpaceEventId.HasValue ? "hidden" : "";
+    var toggleUnlink = Model.ESpaceEventId.HasValue ? "" : "hidden";
+}
+<div class="form-group">
+    <label class="control-label" for="ESpaceEventName">eSpace Event</label>
+    @if (ViewBag.ShowHelp != false && ViewData.ModelMetadata.Description.HasValue())
+    {
+        <div class="alert alert-info">@Html.Markdown(ViewData.ModelMetadata.Description)</div>
+    }
+    <div class="controls @ViewBag.AddClass">
+        <div class="input-group">
+            <span class="form-control" name="ESpaceEventName" style="overflow:hidden;line-height: 1.5em">@Model.ESpaceEventName</span>
+            <div id="espace-event-unlink" class="input-group-btn @toggleUnlink">
+                <button class="btn btn-default text-danger" style="border-left: none;color: #a94442 !important;" title="Unlink event">
+                    <i class="fa fa-close"></i>
+                </button>
+            </div>
+            <div id="espace-event-menu" class="input-group-btn dropup @toggleSearch">
+                <button id="choose-espace-event"
+                        class="btn btn-default dropdown-toggle"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                        title="Choose eSpace event">
+                    <i class="fa fa-ellipsis-h"></i>
+                </button>
+                <ul id="espace-event-list" class="dropdown-menu dropdown-menu-right search-menu">
+                    <li class="input-group">
+                        <input id="espace-event-searchbox"
+                               class="form-control"
+                               type="text" autocomplete="off" placeholder="Search">
+                        <div class="input-group-btn">
+                            <button id="espace-event-search"
+                                    class="btn btn-default">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        @Html.HiddenFor(m => m.ESpaceEventId)
+        @Html.HiddenFor(m => m.ESpaceEventName)
+        @if (ViewBag.ShowHelp != false && ViewData.ModelMetadata.Description.HasValue())
+        {
+            <div class="alert alert-info">@Html.Markdown(ViewData.ModelMetadata.Description)</div>
+        }
+    </div>
+</div>
+<script>
+    (function () {
+        var $input = $('#espace-event-searchbox'),
+            $search = $('#espace-event-search'),
+            $menu = $('#espace-event-menu'),
+            $unlink = $('#espace-event-unlink'),
+            $list = $('#espace-event-list'),
+            listMinWidth = 200,
+            timer;
+
+        function search() {
+            var q = $input.val().trim();
+            $search.find('i').addClass('fa-refresh fa-spin').removeClass('fa-search').parent().attr('disabled', true);
+            $.get('/Org/EspaceSearch/', { q: q }, function (result) {
+                $list.find('li:not(.input-group)').remove();
+                $list.append(result);
+                listMinWidth = Math.max(listMinWidth, $list.width());
+                $list.css({ minWidth: listMinWidth + 'px' });
+                $search.find('i').removeClass('fa-refresh fa-spin').addClass('fa-search').parent().removeAttr('disabled');
+            });
+        }
+
+        function setEventIdName(id, name) {
+            $('[name=ESpaceEventId]').val(id);
+            $('input[name=ESpaceEventName]').val(name);
+            $('span[name=ESpaceEventName]').text(name);
+            (id ? $menu : $unlink).addClass('hidden');
+            (id ? $unlink : $menu).removeClass('hidden');
+        }
+
+        $('#choose-espace-event[aria-expanded="false"]').click(function (event) {
+            event.preventDefault();
+            search();
+            setTimeout(() => {
+                $input.focus().select();
+            }, 200);
+        });
+
+        $search.click(function (event) {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            search();
+        });
+
+        $input.keypress(function () {
+            clearTimeout(timer);
+            timer = setTimeout(search, 200);
+        });
+
+        $list.on('click', 'a[href]', function (event) {
+            var a = event.currentTarget,
+                id = new URL(a.href).hash.substring(1),
+                name = a.text,
+                description = $(a).data("description");
+            setEventIdName(id, name);
+            $('#Description').val(description);
+            $('#Description_ro').html(description);
+        });
+
+        $unlink.on('click', 'button', function(event) {
+            event.preventDefault();
+            setEventIdName('', '');
+        })
+    })();
+</script>
