@@ -133,6 +133,10 @@ else
                     $.unblock();
                     URL.revokeObjectURL(url);
                 };
+                request.onerror = function () {
+                    $.unblock();
+                    error_swal('Download failed', 'There was a problem generating the file.  Please contact support to resolve this issue.');
+                };
 
                 request.send();
             });
