@@ -1051,7 +1051,8 @@ namespace CmsWeb
 
         public static HtmlString FontAwesome()
         {
-            return new HtmlString(@"<link href=""//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"" rel=""stylesheet"">");
+            //return new HtmlString(@"<link href=""//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"" rel=""stylesheet"">");
+            return new HtmlString(@"<link href=""//cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/fontawesome.min.css"" rel=""stylesheet"">");
         }
 
         public static HtmlString CkEditor()
