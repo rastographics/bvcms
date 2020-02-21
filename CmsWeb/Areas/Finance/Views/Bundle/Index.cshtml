@@ -117,7 +117,7 @@ else
 
             $('a.remotedeposit').click(function (event) {
                 event.preventDefault();
-                $.block();
+                $.block('Preparing the remote deposit bundle export<h4>Please wait...</h4>');
                 var href = event.target.href;
                 var request = new XMLHttpRequest();
                 request.open("GET", href, true);
