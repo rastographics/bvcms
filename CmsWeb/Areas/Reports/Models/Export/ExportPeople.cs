@@ -237,7 +237,6 @@ namespace CmsWeb.Models
                      group r by new
                      {
                          GiverId = r.CreditGiverId,
-                         r.Count,
                          r.PledgeAmount,
                          r.Email,
                          r.Head_FirstName,
