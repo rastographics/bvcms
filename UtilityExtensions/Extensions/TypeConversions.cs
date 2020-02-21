@@ -394,6 +394,19 @@ namespace UtilityExtensions
             while (reader.Read())
                 yield return projection(reader);
         }
+
+        /// <summary>
+        /// Test that the value provided matches this regular expression string
+        /// </summary>
+        /// <param name="self">A regular expression</param>
+        /// <param name="value">A value to check against the regular expression</param>
+        /// <param name="options">The regular expression matching options</param>
+        /// <returns></returns>
+        public static bool Matches(this string self, string value, RegexOptions options = RegexOptions.None)
+        {
+            Regex regex = new Regex(self, options);
+            return regex.IsMatch(value);
+        }
     }
 }
 

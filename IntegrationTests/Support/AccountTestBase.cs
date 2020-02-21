@@ -43,6 +43,7 @@ namespace IntegrationTests.Support
 
         protected void Logout()
         {
+            WaitForElementToDisappear(loadingUI);
             RepeatUntil(() => Find(css: profileMenu)?.Click(), () => Find(text: "Log Out") != null);
             Find(text: "Log Out").Click();
 

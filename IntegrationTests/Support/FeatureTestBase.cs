@@ -1,6 +1,5 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
-using OpenQA.Selenium.Support.Events;
 using OpenQA.Selenium.Support.UI;
 using SharedTestFixtures;
 using Shouldly;
@@ -25,7 +24,6 @@ namespace IntegrationTests.Support
         protected const string loadingUI = "div.blockUI.blockOverlay";
 
         protected IWebDriver driver;
-        protected EventFiringWebDriver eventDriver;
 
         protected StringBuilder verificationErrors;
 
@@ -60,7 +58,7 @@ namespace IntegrationTests.Support
                 driver = null;
             }
 
-            driver = WebAppFixture.GetChromeDriver(UseSharedDriver);
+            driver = WebAppFixture.GetWebDriver(UseSharedDriver);
             if (UseSharedDriver)
             {
                 ClearCookies();
