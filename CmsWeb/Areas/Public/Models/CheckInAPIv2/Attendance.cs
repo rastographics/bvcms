@@ -2,6 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using CmsData;
+using CmsData.Codes;
 using CmsWeb.Areas.Public.Models.CheckInAPIv2.Caching;
 
 namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
@@ -82,7 +83,26 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 						}
 					}
 				} else {
-					labelTypes.Add( Label.Type.NAME_TAG );
+                    bool needsMemberNameTag = true;
+                    foreach (AttendanceGroup group in groups)
+                    {
+                        Organization org = cacheSet.getOrganization(group.groupID);
+
+                        bool isLeader = cacheSet.dataContext.OrganizationMembers.Any(o => o.PeopleId == person.PeopleId && o.MemberType.AttendanceTypeId == AttendTypeCode.Leader);
+                        if (!isLeader && group.present && needsMemberNameTag)
+                        {
+                            // members get one name tag
+                            labelTypes.Add(Label.Type.NAME_TAG);
+                            needsMemberNameTag = false;
+                        } 
+                        else if (org != null && isLeader && org.NumWorkerCheckInLabels > 0 && group.present)
+                        {
+                            for (int iX = 0; iX < org.NumWorkerCheckInLabels; iX++)
+                            {
+                                labelTypes.Add( Label.Type.NAME_TAG );
+                            }
+                        }
+                    }
 				}
 			}
 
