@@ -49,7 +49,27 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 					data = formatEntry.fieldFormat;
 					break;
 
-				default:
+                case 6:
+                    // populate box data so that it is printed if data is present
+                    // later we remove box entries if they are behind a blank field by querying this data prop
+                    try
+                    {
+                        if (formatEntry.invert && formatEntry.fieldID != 0)
+                        {
+                            data = getField(cacheSet, (LabelField)formatEntry.fieldID, formatEntry.fieldFormat, attendance, group);
+                        }
+                        else
+                        {
+                            data = "print";
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        data = "Format Exception";
+                    }
+
+                    break;
+                default:
 					data = "";
 					break;
 			}
