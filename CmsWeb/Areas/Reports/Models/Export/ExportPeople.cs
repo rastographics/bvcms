@@ -236,7 +236,7 @@ namespace CmsWeb.Models
                      where !ContributionTypeCode.ReturnedReversedTypes.Contains(r.ContributionTypeId)
                      group r by new
                      {
-                         r.CreditGiverId,
+                         GiverId = r.CreditGiverId,
                          r.Count,
                          r.PledgeAmount,
                          r.Email,
@@ -252,9 +252,10 @@ namespace CmsWeb.Models
                          r.St,
                          r.Zip
                      } into rr
+                     orderby rr.Key.GiverId
                      select new
                      {
-                         GiverId = rr.Key.CreditGiverId,
+                         rr.Key.GiverId,
                          Count = rr.Sum(x => x.Count) ?? 0,
                          Amount = rr.Sum(x => x.Amount) ?? 0m,
                          Pledged = rr.Sum(x => x.PledgeAmount) ?? 0m,
