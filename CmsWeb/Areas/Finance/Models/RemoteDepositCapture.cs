@@ -21,6 +21,7 @@ namespace CmsWeb.Areas.Finance.Models
             };
             var request = new RestRequest("api/export", Method.POST);
             request.AddJsonBody(new { Db = Util.Host, Id = bundleId });
+            request.AddHeader("Authorization", $"Bearer {token}");
             var response = client.Execute(request);
             if (response.StatusCode == HttpStatusCode.OK)
             {

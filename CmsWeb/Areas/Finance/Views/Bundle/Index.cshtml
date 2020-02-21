@@ -110,6 +110,32 @@ else
             };
 
             $.SetValidation();
+
+            $('a.remotedeposit').click(function (event) {
+                event.preventDefault();
+                $.block();
+                var href = event.target.href;
+                var request = new XMLHttpRequest();
+                request.open("GET", href, true);
+                request.responseType = "arraybuffer";
+
+                request.onload = function () {
+                    var arrayBuffer = request.response;
+                    var filename = request.getResponseHeader('Content-Disposition').split('filename=')[1];
+                    var blob = new Blob([arrayBuffer], { type: 'application/x-icl' });
+                    var url = URL.createObjectURL(blob);
+                    var a = document.createElement('a');
+                    document.body.appendChild(a);
+                    a.style.display = 'none';
+                    a.href = url;
+                    a.download = filename;
+                    a.click();
+                    $.unblock();
+                    URL.revokeObjectURL(url);
+                };
+
+                request.send();
+            });
         });
     </script>
 }
