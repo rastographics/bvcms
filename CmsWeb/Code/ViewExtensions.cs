@@ -978,7 +978,7 @@ namespace CmsWeb
 
         public static HtmlString GoogleFonts()
         {
-            return new HtmlString(@"<link href=""//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,400,600,300,700"" rel=""stylesheet"">");
+            return new HtmlString(@"<link href=""https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,400,600,300,700"" rel=""stylesheet"">");
         }
 
         public static HtmlString GoogleAnalytics()
@@ -1030,80 +1030,80 @@ namespace CmsWeb
         public static string Bootstrap3Css()
         {
             return @"
-<link rel=""stylesheet"" href=""//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css"">
+<link rel=""stylesheet"" href=""https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css"">
 <link rel=""stylesheet"" href=""/Content/css/OnlineReg2.css?v=2"">
 <link rel=""stylesheet"" href=""/Content/css/fixups3.css"">
 ";
         }
         public static HtmlString Bootstrap3()
         {
-            return IncludeOnce(@"<script src=""//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js""></script>");
+            return IncludeOnce(@"<script src=""https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js""></script>");
         }
 
         public static HtmlString BootstrapToggleCss()
         {
-            return new HtmlString(@"<link rel=""stylesheet"" href=""//gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css"">");
+            return new HtmlString(@"<link rel=""stylesheet"" href=""https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css"">");
         }
         public static HtmlString BootstrapToggle()
         {
-            return new HtmlString(@"<script src=""//gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js""></script>");
+            return new HtmlString(@"<script src=""https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js""></script>");
         }
 
         public static HtmlString FontAwesome()
         {
-            return new HtmlString(@"<link href=""//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"" rel=""stylesheet"">");
+            return new HtmlString(@"<link href=""https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"" rel=""stylesheet"">");
         }
 
         public static HtmlString CkEditor()
         {
-            return new HtmlString(@"<script src=""//cdn.ckeditor.com/4.5.11/full/ckeditor.js"" type=""text/javascript""></script>");
+            return new HtmlString(@"<script src=""https://cdn.ckeditor.com/4.5.11/full/ckeditor.js"" type=""text/javascript""></script>");
         }
 
         public static HtmlString UnlayerEditor()
         {
-            return new HtmlString(@"<script src=""//editor.unlayer.com/embed.js""></script>");
+            return new HtmlString(@"<script src=""https://editor.unlayer.com/embed.js""></script>");
         }
 
         public static HtmlString jQueryMobile()
         {
-            return IncludeOnce(@"<script src=""//code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js""></script>");
+            return IncludeOnce(@"<script src=""https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js""></script>");
         }
 
         public static HtmlString jQueryMobileCss()
         {
-            return new HtmlString(@"<link rel=""stylesheet"" href=""//code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css"" />");
+            return new HtmlString(@"<link rel=""stylesheet"" href=""https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css"" />");
         }
 
         public static HtmlString jQuery()
         {
-            return IncludeOnce(@"<script src=""//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js""></script>");
+            return IncludeOnce(@"<script src=""https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js""></script>");
         }
 
         public static HtmlString jQueryUICss()
         {
-            return new HtmlString(@"<link rel=""stylesheet"" href=""//ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/themes/smoothness/jquery-ui.css"" />");
+            return new HtmlString(@"<link rel=""stylesheet"" href=""https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/themes/smoothness/jquery-ui.css"" />");
         }
 
         public static HtmlString jQueryUI()
         {
-            return IncludeOnce(@"<script src=""//ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js""></script>");
+            return IncludeOnce(@"<script src=""https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js""></script>");
         }
 
         public static HtmlString jQueryValidation()
         {
-            return IncludeOnce(@"<script src=""//cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.min.js""></script>
-    <script src=""//cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/additional-methods.min.js""></script>");
+            return IncludeOnce(@"<script src=""https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.min.js""></script>
+    <script src=""https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/additional-methods.min.js""></script>");
         }
 
         public static HtmlString Vue()
         {
-            return IncludeOnce(@"<script src=""//cdn.jsdelivr.net/npm/vue""></script>
-    <script src=""//cdnjs.cloudflare.com/ajax/libs/vue-resource/1.5.1/vue-resource.min.js""></script>");
+            return IncludeOnce(@"<script src=""https://cdn.jsdelivr.net/npm/vue""></script>
+    <script src=""https://cdnjs.cloudflare.com/ajax/libs/vue-resource/1.5.1/vue-resource.min.js""></script>");
         }
 
         public static HtmlString Moment()
         {
-            return IncludeOnce(@"<script src=""//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"" type=""text/javascript""></script>");
+            return IncludeOnce(@"<script src=""https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"" type=""text/javascript""></script>");
         }
 
         public static HtmlString Jsapi()
@@ -1113,22 +1113,22 @@ namespace CmsWeb
 
         public static HtmlString Humanize()
         {
-            return new HtmlString(@"<script src=""//cdnjs.cloudflare.com/ajax/libs/humanize-plus/1.8.2/humanize.min.js"" type=""text/javascript""></script>");
+            return new HtmlString(@"<script src=""https://cdnjs.cloudflare.com/ajax/libs/humanize-plus/1.8.2/humanize.min.js"" type=""text/javascript""></script>");
         }
 
         public static HtmlString Velocity()
         {
-            return new HtmlString(@"<script src=""//cdnjs.cloudflare.com/ajax/libs/velocity/1.2.3/velocity.min.js"" type=""text/javascript""></script>");
+            return new HtmlString(@"<script src=""https://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.3/velocity.min.js"" type=""text/javascript""></script>");
         }
 
         public static HtmlString LoDash()
         {
-            return IncludeOnce(@"<script src=""//cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.min.js""></script>");
+            return IncludeOnce(@"<script src=""https://cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.min.js""></script>");
         }
 
         public static HtmlString Sortable()
         {
-            return new HtmlString(@"<script src=""//cdn.jsdelivr.net/npm/\@shopify/draggable@1.0.0-beta.8/lib/sortable.js""></script>");
+            return new HtmlString(@"<script src=""https://cdn.jsdelivr.net/npm/\@shopify/draggable@1.0.0-beta.8/lib/sortable.js""></script>");
         }
 
         public static HtmlString Markdown(this HtmlHelper helper, string text)
