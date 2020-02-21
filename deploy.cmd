@@ -21,7 +21,7 @@ if "%site%" EQU "" echo "SITE parameter not set. Exiting..." & goto EOF
 if "%DeployUsername%" EQU "" echo "DEPLOYUSERNAME parameter not set. Exiting..." & goto EOF
 if "%DeployPassword%" EQU "" echo "DEPLOYPASSWORD parameter not set. Exiting..." & goto EOF
 if "%buildconfiguration%" EQU "" echo No build configuration specified - using Release && set buildconfiguration=Release
-set "path=%path%;%ProgramFiles%\IIS\Microsoft Web Deploy V3;%ProgramFiles%\IIS\Microsoft Web Deploy V3"
+set "path=%path%;%ProgramFiles%\IIS\Microsoft Web Deploy V3"
 set buildoutput=%~dp0build\Deploy\%buildconfiguration%\Files
 
 if "%CMSAutoMigrate%" EQU "YES" call migrate.cmd %migrateprod%
