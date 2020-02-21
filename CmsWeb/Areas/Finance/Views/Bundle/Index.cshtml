@@ -136,7 +136,7 @@ else
                     document.body.appendChild(a);
                     a.style.display = 'none';
                     a.href = url;
-                    a.download = filename;
+                    if (filename) { a.download = filename; }
                     a.click();
                     URL.revokeObjectURL(url);
                     $.unblock();

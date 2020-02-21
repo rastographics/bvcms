@@ -42,8 +42,7 @@ namespace CmsWeb.Areas.Finance.Models
                         exception.Data.Add(item.Key, item.Value);
                     }
                 }
-                ErrorSignal.FromCurrentContext().Raise(exception);
-                return new RedirectResult(CmsStaffController.ErrorUrl(error?.Message));
+                throw exception;
             }
         }
     }
