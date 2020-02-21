@@ -233,26 +233,66 @@ namespace CmsWeb.Models
 
             var q2 = from r in CurrentDatabase.GetTotalContributionsDonor(startdt, enddt, campusid, nontaxded, Online, includeUnclosed, tagid, fundids, pledges)
                      where ContributionStatusCode.Recorded.Equals(r.ContributionStatusId)
-                     select new
+                     where !ContributionTypeCode.ReturnedReversedTypes.Contains(r.ContributionTypeId)
+                     group r by new
                      {
-                         GiverId = r.CreditGiverId,
-                         Count = r.Count ?? 0,
-                         Amount = r.Amount ?? 0m,
-                         Pledged = r.PledgeAmount ?? 0m,
+                         r.CreditGiverId,
+                         r.Count,
+                         r.PledgeAmount,
                          r.Email,
-                         FirstName = r.Head_FirstName,
-                         LastName = r.Head_LastName,
-                         Spouse = r.SpouseName ?? "",
-                         MainFellowship = r.MainFellowship ?? "",
-                         MemberStatus = r.MemberStatus ?? "",
+                         r.Head_FirstName,
+                         r.Head_LastName,
+                         r.SpouseName,
+                         r.MainFellowship,
+                         r.MemberStatus,
                          r.JoinDate,
                          r.Addr,
                          r.Addr2,
                          r.City,
                          r.St,
                          r.Zip
+                     } into rr
+                     select new
+                     {
+                         GiverId = rr.Key.CreditGiverId,
+                         Count = rr.Sum(x => x.Count) ?? 0,
+                         Amount = rr.Sum(x => x.Amount) ?? 0m,
+                         Pledged = rr.Sum(x => x.PledgeAmount) ?? 0m,
+                         rr.Key.Email,
+                         FirstName = rr.Key.Head_FirstName,
+                         LastName = rr.Key.Head_LastName,
+                         Spouse = rr.Key.SpouseName ?? "",
+                         MainFellowship = rr.Key.MainFellowship ?? "",
+                         MemberStatus = rr.Key.MemberStatus ?? "",
+                         rr.Key.JoinDate,
+                         rr.Key.Addr,
+                         rr.Key.Addr2,
+                         rr.Key.City,
+                         rr.Key.St,
+                         rr.Key.Zip
                      };
-            return q2.ToDataTable();
+
+            var report = includePledges ? q2.ToDataTable() : (from r in q2
+                                                              select new
+                                                              {
+                                                                  r.GiverId,
+                                                                  r.Count,
+                                                                  r.Amount,
+                                                                  r.Email,
+                                                                  r.FirstName,
+                                                                  r.LastName,
+                                                                  r.Spouse,
+                                                                  r.MainFellowship,
+                                                                  r.MemberStatus,
+                                                                  r.JoinDate,
+                                                                  r.Addr,
+                                                                  r.Addr2,
+                                                                  r.City,
+                                                                  r.St,
+                                                                  r.Zip
+                                                              }).ToDataTable();
+
+            return report;
         }
         public DataTable ExcelDonorFundTotals(DateTime startdt, DateTime enddt,
             int fundid, int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed, int? tagid, string fundids)
