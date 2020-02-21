@@ -33,14 +33,17 @@ namespace CmsWeb.Areas.Finance.Models
             else
             {
                 var error = JsonConvert.DeserializeObject<RemoteDepositCaptureError>(response.Content);
-                var exception = new Exception(error.Message) { Source = service };
-                exception.Data.Add("StackTrace", error.StackTrace);
-                foreach (var item in error.Data)
+                var exception = new Exception(error?.Message) { Source = service };
+                exception.Data.Add("StackTrace", error?.StackTrace);
+                if (error?.Data != null)
                 {
-                    exception.Data.Add(item.Key, item.Value);
+                    foreach (var item in error.Data)
+                    {
+                        exception.Data.Add(item.Key, item.Value);
+                    }
                 }
                 ErrorSignal.FromCurrentContext().Raise(exception);
-                return new RedirectResult(CmsStaffController.ErrorUrl(error.Message));
+                return new RedirectResult(CmsStaffController.ErrorUrl(error?.Message));
             }
         }
     }

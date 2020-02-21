@@ -111,6 +111,10 @@ else
 
             $.SetValidation();
 
+            function downloadFailed() {
+                error_swal('Download failed', 'There was a problem generating the file.  Please contact support to resolve this issue.');
+            }
+
             $('a.remotedeposit').click(function (event) {
                 event.preventDefault();
                 $.block();
@@ -121,8 +125,12 @@ else
 
                 request.onload = function () {
                     var arrayBuffer = request.response;
-                    var filename = request.getResponseHeader('Content-Disposition').split('filename=')[1];
-                    var blob = new Blob([arrayBuffer], { type: 'application/x-icl' });
+                    var contentDisposition = request.getResponseHeader('Content-Disposition');
+                    var contentType = request.getResponseHeader('Content-Type');
+                    if (contentDisposition) {
+                        var filename = contentDisposition.split('filename=')[1];
+                    }
+                    var blob = new Blob([arrayBuffer], { type: contentType });
                     var url = URL.createObjectURL(blob);
                     var a = document.createElement('a');
                     document.body.appendChild(a);
@@ -130,12 +138,12 @@ else
                     a.href = url;
                     a.download = filename;
                     a.click();
-                    $.unblock();
                     URL.revokeObjectURL(url);
+                    $.unblock();
                 };
                 request.onerror = function () {
                     $.unblock();
-                    error_swal('Download failed', 'There was a problem generating the file.  Please contact support to resolve this issue.');
+                    downloadFailed();
                 };
 
                 request.send();
