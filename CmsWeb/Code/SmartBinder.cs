@@ -76,7 +76,7 @@ namespace CmsWeb
             }
 
             /* Create model using base.CreateModel(controllerContext, bindingContext, modelType) only If model does not implement IDBBinder*/
-            var modelConstructorDB = modelType.GetConstructor((new List<Type>() { typeof(CMSDataContext) }).ToArray());
+            var modelConstructorDB = modelType.GetConstructor(new[] { typeof(CMSDataContext) });
             var m = (modelConstructorDB.IsNotNull()) ? (Object)Activator.CreateInstance(modelType, db) : base.CreateModel(controllerContext, bindingContext, modelType);
 
             if (controllerContext.Controller is CMSBaseController c && m is IDbBinder b)

@@ -142,6 +142,7 @@ namespace CmsWeb.Models
             int fundid, int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed, int? tagid, string fundids)
         {
             var UseTitles = !CurrentDatabase.Setting("NoTitlesOnStatements");
+            int? online = null;
 
             if (CurrentDatabase.Setting("UseLabelNameForDonorDetails"))
             {
@@ -193,7 +194,7 @@ namespace CmsWeb.Models
             }
             else
             {
-                var q = from c in CurrentDatabase.GetContributionsDetails(startdt, enddt, campusid, pledges, nontaxdeductible.ToInt(), null, includeUnclosed, tagid, fundids)
+                var q = from c in CurrentDatabase.GetContributionsDetails(startdt, enddt, campusid, pledges, nontaxdeductible.ToInt(), online, includeUnclosed, tagid, fundids)
                         join p in CurrentDatabase.People on c.CreditGiverId equals p.PeopleId
                         let mainFellowship = CurrentDatabase.Organizations.SingleOrDefault(oo => oo.OrganizationId == p.BibleFellowshipClassId).OrganizationName
                         let spouse = CurrentDatabase.People.SingleOrDefault(sp => sp.PeopleId == p.SpouseId)

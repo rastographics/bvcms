@@ -45,8 +45,8 @@ namespace CMSWebTests.Models
         [Theory]
         [InlineData( 0, false, true, true, null, null)]
         [InlineData( 0, false, true, false, null, null)]
-        [InlineData( 0, false, false, true, null, null)] // Ok
-        [InlineData( 0, false, false, false, null, null)] // Ok
+        [InlineData( 0, false, false, true, null, null)]
+        [InlineData( 0, false, false, false, null, null)]
         [InlineData( 0, false, null, true, null, null)]
         [InlineData( 0, false, null, false, null, null)]
         public void ExcelDonorTotals_Should_Not_Bring_Reversed_or_Returned_contributions(int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed, int? tagid, string fundids)
@@ -54,10 +54,12 @@ namespace CMSWebTests.Models
             using (var db = CMSDataContext.Create(Util.Host))
             {
                 var bundleList = CreateTestContributionSet(db, Util.Now.Date);
-                var _exportPeople = new ExportPeople(db);                
+                var _exportPeople = new ExportPeople(db);
+                int? online = null;
+
                 DateTime exportStartDt = Util.Now.AddDays(-180);
                 DateTime exportEndDt = Util.Now.AddDays(180);
-                DataTable tableResult = _exportPeople.ExcelDonorTotals(exportStartDt, exportEndDt, campusid, pledges, nontaxdeductible, null, includeUnclosed, tagid, fundids, false);
+                DataTable tableResult = _exportPeople.ExcelDonorTotals(exportStartDt, exportEndDt, campusid, pledges, nontaxdeductible, online, includeUnclosed, tagid, fundids, false);
                 var dbContributionsQry = db.Contributions
                     .Where(x => !ContributionTypeCode.ReturnedReversedTypes.Contains(x.ContributionTypeId) && !ContributionTypeCode.Pledge.Equals(x.ContributionTypeId))
                     .Where(x => ContributionStatusCode.Recorded.Equals(x.ContributionStatusId))
