@@ -14,7 +14,7 @@ namespace CmsWeb.Code
             foreach (var person in NewPeople)
             {
                 var tempDocuments = db.OrgMemberDocuments.Where(p => p.DocumentName.Contains(person.EmailAddress));
-                var newDocuments = ChangeDocName(db, tempDocuments.ToList(), person.EmailAddress);
+                var newDocuments = ChangeDocName(db, tempDocuments.ToList(), person.PeopleId.Value);
                 db.OrgMemberDocuments.DeleteAllOnSubmit(tempDocuments);
                 db.SubmitChanges();
 
@@ -23,9 +23,9 @@ namespace CmsWeb.Code
             }
         }
 
-        public static List<OrgMemberDocument> ChangeDocName(CMSDataContext db, List<OrgMemberDocument> tempDocuments, string personEmail)
+        public static List<OrgMemberDocument> ChangeDocName(CMSDataContext db, List<OrgMemberDocument> tempDocuments, int peopleId)
         {
-            var person = db.People.SingleOrDefault(p => p.EmailAddress == personEmail);
+            var person = db.People.SingleOrDefault(p => p.PeopleId == peopleId);
             List<OrgMemberDocument> newDocuments = new List<OrgMemberDocument>();
 
             foreach (var item in tempDocuments)
