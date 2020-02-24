@@ -252,7 +252,8 @@ namespace CmsData.Finance
         public BatchResponse GetBatchDetails(DateTime start, DateTime end)
         {
             var GetTransDetails = new GetSettledTransDetails(_isTesting, _apiKey, start, end);
-            var transactionsList = GetTransDetails.Execute();
+            var transactionsList = GetTransDetails.Execute(out double responseTime);
+            db.LogActivity($"GetTransDetails API response time: {responseTime}");
 
             var batchTransactions = new List<BatchTransaction>();
 
