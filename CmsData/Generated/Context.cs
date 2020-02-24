@@ -2290,6 +2290,7 @@ namespace CmsData
             [Parameter(DbType = "int")] int? campusid,
             [Parameter(DbType = "bit")] bool? pledges,
             [Parameter(DbType = "int")] int? nontaxded,
+            [Parameter(DbType = "int")] int? online,
             [Parameter(DbType = "bit")] bool? includeUnclosed,
             [Parameter(DbType = "int")] int? tagid,
             [Parameter(DbType = "varchar")] string fundids
@@ -2302,6 +2303,7 @@ namespace CmsData
                 campusid,
                 pledges,
                 nontaxded,
+                online,
                 includeUnclosed,
                 tagid,
                 fundids
@@ -2480,6 +2482,7 @@ namespace CmsData
             [Parameter(DbType = "datetime")] DateTime? td,
             [Parameter(DbType = "int")] int? campusid,
             [Parameter(DbType = "int")] int? nontaxded,
+            [Parameter(DbType = "int")] int? online,
             [Parameter(DbType = "bit")] bool? includeUnclosed,
             [Parameter(DbType = "int")] int? tagid,
             [Parameter(DbType = "varchar")] string fundids,
@@ -2492,6 +2495,7 @@ namespace CmsData
                 td,
                 campusid,
                 nontaxded,
+                online,
                 includeUnclosed,
                 tagid,
                 fundids,
