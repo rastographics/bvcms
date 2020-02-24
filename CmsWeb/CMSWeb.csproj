@@ -566,6 +566,7 @@
     <Compile Include="Areas\Manage\Models\UserValidationResult.cs" />
     <Compile Include="Areas\Manage\Models\UserValidationStatus.cs" />
     <Compile Include="Areas\MeetingCategory\Controllers\MeetingCategoryController.cs" />
+    <Compile Include="Areas\OnlineReg\Models\LinkInfo.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\OnePageGiving.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\SaveAndContinue.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\Routing.cs" />
