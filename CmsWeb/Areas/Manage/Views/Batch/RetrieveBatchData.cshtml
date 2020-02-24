@@ -20,8 +20,8 @@
                 <div class="form-group batch-date-form-group">
                     <label for="startdt" class="control-label">Date From</label>
                     <div class="input-group date">
-                        @Html.TextBox("startdt", DateTime.Now.AddDays(0 - (DbUtil.Db.Setting("AutoSyncBatchDatesWindow").ToInt() > 0 ? DbUtil.Db.Setting("AutoSyncBatchDatesWindow").ToInt() : 7)).ToString("MM/dd/yyyy"), new { @class = "form-control" })<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                        @Html.Hidden("startdtIso", DateTime.Now.AddDays(0 - (DbUtil.Db.Setting("AutoSyncBatchDatesWindow").ToInt() > 0 ? DbUtil.Db.Setting("AutoSyncBatchDatesWindow").ToInt() : 7)).ToString("yyyy-mm-dd"), new { disabled = "disabled" })
+                        @Html.TextBox("startdt", DateTime.Now.AddDays(0 - ((int)ViewBag.autoSyncWindow > 0 ? (int)ViewBag.autoSyncWindow : 7)).ToString("MM/dd/yyyy"), new { @class = "form-control" })<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                        @Html.Hidden("startdtIso", DateTime.Now.AddDays(0 - ((int)ViewBag.autoSyncWindow > 0 ? (int)ViewBag.autoSyncWindow : 7)).ToString("yyyy-mm-dd"), new { disabled = "disabled" })
                     </div>
                 </div>
             </div>

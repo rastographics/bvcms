@@ -197,6 +197,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         [Authorize(Roles = "ManageTransactions,Finance")]
         public ActionResult RetrieveBatchData()
         {
+            ViewBag.autoSyncWindow = CurrentDatabase.Setting("AutoSyncBatchDatesWindow", "7").ToInt();
             return View();
         }
 
