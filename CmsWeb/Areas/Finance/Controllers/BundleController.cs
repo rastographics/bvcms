@@ -158,7 +158,8 @@ namespace CmsWeb.Areas.Finance.Controllers
         {
             var service = Configuration.Current.RemoteDepositCaptureService;
             var token = Configuration.Current.RemoteDepositCaptureServiceToken;
-            if (service.HasValue() && token.HasValue())
+            var spec = CurrentDatabase.Contents.Any(x => x.Name == "X9Specification" && x.TypeID == ContentTypeCode.TypeText);
+            if (spec && service.HasValue() && token.HasValue())
             {
                 return RemoteDepositCapture.Export(CurrentDatabase, id, service, token);
             }
