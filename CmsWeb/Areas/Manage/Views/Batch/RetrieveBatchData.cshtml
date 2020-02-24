@@ -14,28 +14,27 @@
         <p>
             Enter the date range and press the button to retrieve transaction batch data. This process may take a few moments to complete.
         </p>
+        <br/>
         <div class="row">
-            <div class="col-lg-6 col-md-6">
-                <div class="form-group">
-                    <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Date From" data-content="If you enter only a Date From, you will find transactions for just that date."><i class="fa fa-info-circle"></i></a>&nbsp;
+            <div class="col-md-2">
+                <div class="form-group batch-date-form-group">
                     <label for="startdt" class="control-label">Date From</label>
                     <div class="input-group date">
-                        @Html.TextBox("startdt", DateTime.Now.AddDays(0 - (DbUtil.Db.Setting("AutoSyncBatchDatesWindow").ToInt() > 0 ? DbUtil.Db.Setting("AutoSyncBatchDatesWindow").ToInt() : 7)).ToString("MM/dd/yyyy"), new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                        @Html.TextBox("startdt", DateTime.Now.AddDays(0 - (DbUtil.Db.Setting("AutoSyncBatchDatesWindow").ToInt() > 0 ? DbUtil.Db.Setting("AutoSyncBatchDatesWindow").ToInt() : 7)).ToString("MM/dd/yyyy"), new { @class = "form-control" })<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                         @Html.Hidden("startdtIso", DateTime.Now.AddDays(0 - (DbUtil.Db.Setting("AutoSyncBatchDatesWindow").ToInt() > 0 ? DbUtil.Db.Setting("AutoSyncBatchDatesWindow").ToInt() : 7)).ToString("yyyy-mm-dd"), new { disabled = "disabled" })
                     </div>
                 </div>
             </div>
-            <div class="col-lg-6 col-md-6">
-                <div class="form-group">
-                    <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Date To" data-content="If you enter only a Date To, you will find all transactions prior to and including that date."><i class="fa fa-info-circle"></i></a>&nbsp;
+            <div class="col-md-2">
+                <div class="form-group batch-date-form-group">
                     <label for="enddt" class="control-label">Date To</label>
                     <div class="input-group date">
-                        @Html.TextBox("enddt", DateTime.Now.ToString("MM/dd/yyyy"), new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                        @Html.TextBox("enddt", DateTime.Now.ToString("MM/dd/yyyy"), new { @class = "form-control" })<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                         @Html.Hidden("enddtIso", DateTime.Now.ToString("yyyy-mm-dd"), new { disabled = "disabled" })
                     </div>
                 </div>
             </div>
-            <div class="col-lg-12 col-md-12 col-sm-12">
+            <div class="col-md-12">
                 <p>
                     <button type="submit" class="btn btn-warning btn-lg" id="update-transactions">Retrieve Batch Data</button>
                 </p>
