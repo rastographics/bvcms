@@ -71,11 +71,13 @@ namespace CmsData.Finance
         {
             var person = db.LoadPersonById(peopleId);
             var paymentInfo = person.PaymentInfo(GatewayAccountId);
+
             if (paymentInfo == null)
             {
                 paymentInfo = new PaymentInfo() { GatewayAccountId = GatewayAccountId };
                 person.PaymentInfos.Add(paymentInfo);
             }
+
             //Set values to be ignored in API
             if (string.IsNullOrEmpty(cardNumber) || cardNumber.StartsWith("X"))
             {

@@ -48,9 +48,7 @@ namespace CmsWeb.Areas.Search.Models
         }
 
         [Obsolete(Errors.ModelBindingConstructorError, true)]
-        public OrgSearchModel()
-        {
-        }
+        public OrgSearchModel() { }
 
         public OrgSearchModel(CMSDataContext db)
         {
