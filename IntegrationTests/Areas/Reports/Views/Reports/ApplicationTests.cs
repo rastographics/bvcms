@@ -153,12 +153,6 @@ namespace IntegrationTests.Areas.Reports.Views.Reports
             var user = CreateUser(username, password, roles: new string[] { "Access", "Edit", "Admin", "Membership" });
             Login();
 
-            /*
-                Using WaitForElement() doesn't work in this test
-                WaitForElement() only makes the duration of loading spinner longer
-                and causes a "reference not set to an instance of an object" error in the Find() functions below
-            */
-
             Open($"{rootUrl}Org/{OrgId}#tab-Registrations-tab");
             WaitForElementToDisappear(loadingUI, 30);
 
