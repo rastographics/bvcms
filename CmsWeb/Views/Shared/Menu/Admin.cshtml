@@ -11,6 +11,7 @@
     var manageResources = User.IsInRole("ManageResources") && Db.Setting("Resources-Enabled");
     var design = User.IsInRole("Design");
     var finance = User.IsInRole("Finance") && ((string)Session["testnofinance"]) != "true";
+    var financeadmin = User.IsInRole("FinanceAdmin");
     var financedataentry = User.IsInRole("FinanceDataEntry");
     var financeviewonly = User.IsInRole("FinanceViewOnly");
     var checkin = User.IsInRole("Checkin");
@@ -69,7 +70,7 @@
                 </li>
                 <li class="col-sm-4">
                     <ul>
-                        @AdminList1(admin, design, managetrans, edit, manageemails, financetrue, developer)
+                        @AdminList1(admin, design, managetrans, edit, manageemails, financetrue, developer, financeadmin)
                     </ul>
                 </li>
             </ul>
@@ -106,7 +107,7 @@
                     </li>
                     <li class="col-sm-4">
                         <ul>
-                            @AdminList1(admin, design, managetrans, edit, manageemails, financefalse, developer)
+                            @AdminList1(admin, design, managetrans, edit, manageemails, financefalse, developer, financeadmin)
                         </ul>
                     </li>
                 </ul>
@@ -147,14 +148,14 @@
                 </li>
                 <li class="col-sm-6">
                     <ul>
-                        @AdminList1(admin, design, managetrans, edit, manageemails, financefalse, developer)
+                        @AdminList1(admin, design, managetrans, edit, manageemails, financefalse, developer, financeadmin)
                     </ul>
                 </li>
             </ul>
         }
     </li>
 }
-@helper AdminList1(bool admin, bool design, bool managetrans, bool edit, bool manageemails, bool finance, bool developer)
+@helper AdminList1(bool admin, bool design, bool managetrans, bool edit, bool manageemails, bool finance, bool developer, bool financeadmin)
 {
     if (admin || finance || managetrans)
     {
@@ -178,7 +179,7 @@
             </li>
         }
     }
-    if (finance || managetrans)
+    if ((finance || managetrans || financeadmin) && DbUtil.Db.Setting("ShowSyncBatchDatesOption"))
     {
         @Helper.LiAnchorLink("Retrieve Batch Data", "/Batch/RetrieveBatchData")
     }

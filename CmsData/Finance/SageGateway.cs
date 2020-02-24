@@ -54,7 +54,8 @@ namespace CmsData.Finance
         public void StoreInVault(int peopleId, string type, string cardNumber, string expires, string cardCode, string routing, string account, bool giving)
         {
             var person = db.LoadPersonById(peopleId);
-            var paymentInfo = person.PaymentInfo(GatewayAccountId);
+            PaymentInfo paymentInfo = person.PaymentInfo(GatewayAccountId);
+
             if (paymentInfo == null)
             {
                 paymentInfo = new PaymentInfo() { GatewayAccountId = GatewayAccountId };
@@ -99,6 +100,7 @@ namespace CmsData.Finance
                 paymentInfo.PreferredGivingType = type;
             else
                 paymentInfo.PreferredPaymentType = type;
+
             db.SubmitChanges();
         }
 
@@ -458,6 +460,7 @@ namespace CmsData.Finance
                 (paymentInfo.MiddleInitial ?? person.MiddleName).Truncate(1) ?? "",
                 paymentInfo.LastName ?? person.LastName,
                 paymentInfo.Suffix ?? person.SuffixCode,
+                paymentInfo.Zip ?? person.ZipCode,
                 new BillingAddress
                 {
                     Address1 = paymentInfo.Address ?? person.PrimaryAddress,
