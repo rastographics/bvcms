@@ -43,5 +43,27 @@ namespace CmsData
             return $@"<a href=""{url}"">{inside}</a>";
         }
 
+        public static string SupportLinkAnonymousReplacement(CMSDataContext db, string oid, string gsid)
+        {
+            var list = new Dictionary<string, OneTimeLink>();
+            
+            var qs = $"{oid},0,0,{"supportlink"}:{gsid}";
+
+            OneTimeLink ot;
+            if (list.ContainsKey(qs))
+                ot = list[qs];
+            else
+            {
+                ot = new OneTimeLink
+                {
+                    Id = Guid.NewGuid(),
+                    Querystring = qs
+                };
+                db.OneTimeLinks.InsertOnSubmit(ot);
+                db.SubmitChanges();
+                list.Add(qs, ot);
+            }
+            return db.ServerLink($"/OnlineReg/SendLink/{ot.Id.ToCode()}");            
+        }
     }
 }

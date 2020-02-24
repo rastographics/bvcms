@@ -30,9 +30,8 @@ namespace IntegrationTests.Areas.Main.Views.Email
             Find(css: ".fa-envelope-o").Click();
             Find(xpath: "//a[contains(text(),'Individuals')]").Click();
 
-            Wait(5);
-
-            Find(xpath: "//div[@id='emailTemplates']/div/div/div/div/div/div[2]/a/strong").Click();
+            WaitForElement("a[template] > strong");
+            Find(text: "Empty Template").Click();
 
             WaitForElement("#Subject");
             Find(id: "Subject").Clear();
