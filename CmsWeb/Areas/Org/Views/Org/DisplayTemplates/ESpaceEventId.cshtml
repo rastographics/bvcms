@@ -1,0 +1,8 @@
+﻿@model CmsWeb.Areas.Org.Models.SettingsGeneralModel
+@{
+    var value = Model.ESpaceEventName ?? "(not specified)";
+}
+<dl>
+    <dt>@Html.DisplayNameFor(m => m.ESpaceEventId)</dt>
+    <dd>@value</dd>
+</dl>
