@@ -91,28 +91,34 @@ namespace CmsWeb.Areas.Search.Models
                 string first, last;
                 Util.NameSplit(Name, out first, out last);
 
-                if (first.HasValue())
+                if (Name.AllDigits())
                 {
                     q = from p in q
-                        where (p.LastName.StartsWith(last) || p.MaidenName.StartsWith(last))
-                              && (p.FirstName.StartsWith(first) || p.NickName.StartsWith(first) || p.MiddleName.StartsWith(first))
-                        select p;
-                }
-                else if (last.AllDigits())
-                {
-                    q = from p in q
-                        where p.PeopleId == last.ToInt()
+                        where p.PeopleId == Name.ToInt()
                         select p;
                 }
                 else
                 {
-                    q = CurrentDatabase.Setting("UseAltnameContains")
-                        ? from p in q
-                          where p.LastName.StartsWith(last) || p.MaidenName.StartsWith(last) || p.AltName.Contains(last)
-                          select p
-                        : from p in q
-                          where p.LastName.StartsWith(last) || p.MaidenName.StartsWith(last)
-                          select p;
+                    if (first.HasValue() || last.HasValue())
+                    {
+                        q = from p in q
+                            where p.LastName.StartsWith(last) || p.MaidenName.StartsWith(last) || p.AltName.StartsWith(last)
+                            where
+                                p.FirstName.StartsWith(first) || p.NickName.StartsWith(first) || p.MiddleName.StartsWith(first)
+                            select p;
+                    }
+                    else
+                    {
+                        q = CurrentDatabase.Setting("UseAltnameContains")
+                            ? from p in q
+                            where p.LastName.StartsWith(Name) || p.MaidenName.StartsWith(Name) || p.AltName.Contains(Name)
+                                  || p.FirstName.StartsWith(Name) || p.NickName.StartsWith(Name) || p.MiddleName.StartsWith(Name)
+                            select p
+                            : from p in q
+                            where p.LastName.StartsWith(Name) || p.MaidenName.StartsWith(Name) || p.AltName.StartsWith(Name)
+                                  || p.FirstName.StartsWith(Name) || p.NickName.StartsWith(Name) || p.MiddleName.StartsWith(Name)
+                            select p;
+                    }
                 }
             }
 

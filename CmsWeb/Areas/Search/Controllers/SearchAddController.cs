@@ -18,9 +18,16 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost, Route("SearchAdd2/Dialog/{type}/{typeid?}")]
         public ActionResult Dialog(string type, string typeid, bool displaySkipSearch = true)
         {
-            var m = new SearchAddModel(CurrentDatabase, type, typeid, displaySkipSearch)
+            var m = new SearchAddModel(CurrentDatabase, type, typeid, displaySkipSearch);
+            return View("SearchPerson", m);
+        }
+
+        [HttpPost, Route("SearchAdd2/Fuzzy")]
+        public ActionResult Dialog(bool displaySkipSearch = true)
+        {
+            var m = new SearchAddModel(CurrentDatabase, "Menu", null, displaySkipSearch)
             {
-                Fuzzy = type == "Fuzzy"
+                Fuzzy = true
             };
             return View("SearchPerson", m);
         }
@@ -80,10 +87,9 @@ namespace CmsWeb.Areas.Search.Controllers
             return View(m);
         }
 
-        [HttpPost, Route("SearchAdd2/SearchPerson/{type}")]
-        public ActionResult SearchPerson(string type, SearchAddModel m)
+        [HttpPost, Route("SearchAdd2/SearchPerson")]
+        public ActionResult SearchPerson(SearchAddModel m)
         {
-            m.Fuzzy = type == "Fuzzy";
             ModelState.Clear();
             return View(m);
         }

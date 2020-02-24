@@ -1269,6 +1269,7 @@
     <Content Include="Content\touchpoint\js\form-ajax.js" />
     <Content Include="Content\touchpoint\js\gateway.js" />
     <Content Include="Content\touchpoint\js\checkin.js" />
+    <Content Include="Content\touchpoint\js\update-add-modal-results.js" />
     <Content Include="Content\touchpoint\js\update-modal-results.js" />
     <Content Include="Content\touchpoint\js\vue-search-add.js" />
     <Content Include="Content\touchpoint\js\snackbar.js" />

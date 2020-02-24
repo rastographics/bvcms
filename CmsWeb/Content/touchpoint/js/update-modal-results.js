@@ -27,13 +27,9 @@
                     appendedSavedSearchesHeader = true;
                 }
             }
-            list += "<li class='dropdown-search-result'><a class='ajax' href='" + result.url + "'>" + result.line1;
+            list += "<li class='dropdown-search-result'><a class='search-person' href='" + result.url + "'>" + result.line1;
             if (result.line2) {
                 list += "<br/>" + result.line2;
-            }
-            if (context === "add") {
-                if (result.cellphone != null && result.cellphone !== "") list += "<br/>" + result.cellphone;
-                if (result.email != null && result.email !== "") list += "<br/>" + result.email;
             }
             list += "</a></li>";
         });

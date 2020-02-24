@@ -96,6 +96,7 @@ $(function () {
         $this.data('clicked', true);
         var f = $this.closest("form");
         var q = f.serialize();
+        console.log({fdata: f, event: ev});
         var loc = $this.attr("href");
         $.post(loc, q, function (ret) {
             $('#empty-dialog').modal("hide");
