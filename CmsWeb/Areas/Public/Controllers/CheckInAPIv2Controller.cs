@@ -20,6 +20,7 @@ using Country = CmsWeb.Areas.Public.Models.CheckInAPIv2.Country;
 using Family = CmsWeb.Areas.Public.Models.CheckInAPIv2.Family;
 using Gender = CmsWeb.Areas.Public.Models.CheckInAPIv2.Gender;
 using MaritalStatus = CmsWeb.Areas.Public.Models.CheckInAPIv2.MaritalStatus;
+using CmsWeb.Areas.People.Models;
 
 namespace CmsWeb.Areas.Public.Controllers
 {
@@ -348,18 +349,27 @@ namespace CmsWeb.Areas.Public.Controllers
 			}
 
 			Message message = Message.createFromString( data );
-			Models.CheckInAPIv2.Person person = JsonConvert.DeserializeObject<Models.CheckInAPIv2.Person>( message.data );
-			person.clean();
 
-			CmsData.Person p = CurrentDatabase.LoadPersonById( person.id );
+            Models.CheckInAPIv2.Person person = JsonConvert.DeserializeObject<Models.CheckInAPIv2.Person>(message.data);
+            person.clean();
+
+            CmsData.Person p = CurrentDatabase.LoadPersonById(person.id);
 
 			if( p == null ) {
 				return Message.createErrorReturn( "Person not found", Message.API_ERROR_PERSON_NOT_FOUND );
 			}
 
-			CmsData.Family f = CurrentDatabase.Families.First( fam => fam.FamilyId == p.FamilyId );
+            person.fillPerson(p);
+            BasicPersonInfo m = new BasicPersonInfo() { Id = person.id };
+            p.CopyProperties2(m);
+            m.CellPhone = new CellPhoneInfo()
+            {
+                Number = person.mobilePhone
+            };
+            m.UpdatePerson(CurrentDatabase);
+            DbUtil.LogPersonActivity($"Update Basic Info for: {m.person.Name}", m.Id, m.person.Name);
 
-			person.fillPerson( p );
+            CmsData.Family f = CurrentDatabase.Families.First( fam => fam.FamilyId == p.FamilyId );
 			person.fillFamily( f );
 
 			CurrentDatabase.SubmitChanges();
