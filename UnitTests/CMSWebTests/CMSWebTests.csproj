@@ -141,6 +141,7 @@
     <Compile Include="Areas\OnlineReg\Models\OnlineReg\PaymentFormTests.cs" />
     <Compile Include="Areas\Public\Models\CheckIn\CheckInModelTests.cs" />
     <Compile Include="Areas\Public\Models\SmallGroupFinderModelTests.cs" />
+    <Compile Include="Areas\Reports\Models\Export\ExportPeopleTests.cs" />
     <Compile Include="Areas\Reports\Models\Reports\Export\ExportInvolvementsTests.cs" />
     <Compile Include="Areas\Reports\Models\Reports\Other\MailingControllerTests.cs" />
     <Compile Include="Areas\Search\Controllers\QueryControllerTests.cs" />
@@ -148,7 +149,6 @@
     <Compile Include="Areas\Search\Models\SearchAdd\SearchAddModelTests.cs" />
     <Compile Include="Areas\Setup\Controllers\DivisionControllerTests.cs" />
     <Compile Include="Code\PledgesHelperTests.cs" />
-    <Compile Include="Models\ExportPeopleTests.cs" />
     <Compile Include="Controllers\Api\CustomControllerTests.cs" />
     <Compile Include="Models\IDbBinderTests.cs" />
     <Compile Include="Properties\CMSWebTestsResources.Designer.cs">
