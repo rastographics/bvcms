@@ -43,6 +43,7 @@ namespace CmsData.Finance
         {
             var person = db.LoadPersonById(peopleId);
             var paymentInfo = person.PaymentInfo(GatewayAccountId);
+
             if (paymentInfo == null)
             {
                 paymentInfo = new PaymentInfo() { GatewayAccountId = GatewayAccountId };

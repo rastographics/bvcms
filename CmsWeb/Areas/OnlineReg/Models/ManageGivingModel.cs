@@ -25,9 +25,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
     [Serializable]
     public class ManageGivingModel : IDbBinder
     {
-        public int pid { get; set; }
-        public int orgid { get; set; }
-
         [NonSerialized]
         private CMSDataContext _currentDatabase;
         public CMSDataContext CurrentDatabase
@@ -38,16 +35,12 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 if (_currentDatabase == null)
                 {
                     _currentDatabase = value;
-
-                    HeadingLabel = CurrentDatabase.Setting("ManageGivingHeaderLabel", "Giving Opportunities");
-#if DEBUG2
-            testing = true;
-#endif
-                    NoCreditCardsAllowed = CurrentDatabase.Setting("NoCreditCardGiving", "false").ToBool();
-                    NoEChecksAllowed = CurrentDatabase.Setting("NoEChecksAllowed", "false").ToBool();
                 }
             }
         }
+
+        public int pid { get; set; }
+        public int orgid { get; set; }
 
         public void SetCurrentDatabase(CMSDataContext db)
         {
@@ -92,7 +85,12 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public string Account { get; set; }
         public bool testing { get; set; }
         public decimal total { get; set; }
-        public string HeadingLabel { get; set; }
+        public string HeadingLabel
+        {
+            get => CurrentDatabase.Setting("ManageGivingHeaderLabel", "Giving Opportunities");
+            set { }
+        }
+
         public string FirstName { get; set; }
         public string Middle { get; set; }
         public string LastName { get; set; }
@@ -102,6 +100,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public string City { get; set; }
         public string State { get; set; }
         public string Country { get; set; }
+
+        public bool useNewManageGivingBuilder => CurrentDatabase.Setting("UseNewManageGivingBuilder", true);
+        public string debitcredit => CurrentDatabase.GetDebitCreditLabel(PaymentProcessTypes.RecurringGiving);
+        public string recaptchaSiteKey => CurrentDatabase.Setting("googleReCaptchaSiteKey", ConfigurationManager.AppSettings["googleReCaptchaSiteKey"]);
+        public bool useRecaptcha => CurrentDatabase.Setting("UseRecaptchaForManageGiving") && recaptchaSiteKey.HasValue();
 
         public IEnumerable<SelectListItem> Countries
         {
@@ -142,8 +145,16 @@ namespace CmsWeb.Areas.OnlineReg.Models
         private Settings _setting;
         public Settings Setting => _setting ?? (_setting = CurrentDatabase.CreateRegistrationSettings(orgid));
 
-        public bool NoCreditCardsAllowed { get; set; }
-        public bool NoEChecksAllowed { get; set; }
+        public bool NoCreditCardsAllowed
+        {
+            get => CurrentDatabase.Setting("NoCreditCardGiving", "false").ToBool();
+            set { }
+        }
+        public bool NoEChecksAllowed
+        {
+            get => CurrentDatabase.Setting("NoEChecksAllowed", "false").ToBool();
+            set { }
+        }
 
         public string SpecialGivingFundsHeader => CurrentDatabase.Setting("SpecialGivingFundsHeader", "Special Giving Funds");
 
@@ -471,10 +482,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     TransactionResponse transactionResponse;
                     if (CreditCard.StartsWith("X"))
                     {
-//                        // store payment method in the gateway vault first before doing the auth.
-//                          If it starts with X, we should not be storing it in the vault.
-//                        gateway.StoreInVault(pid, Type, CreditCard, Expires, CVV, Routing, Account, giving: true);
-                        vaultSaved = true; // prevent it from saving later
+                        // if PreferredGivingType is Credi Card should not be updated
+                        vaultSaved = person.PaymentInfo(accountId).PreferredGivingType == "C";
                         transactionResponse = gateway.AuthCreditCardVault(pid, dollarAmt, "Recurring Giving Auth", 0);
                     }
                     else

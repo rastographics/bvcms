@@ -566,6 +566,7 @@
     <Compile Include="Areas\Manage\Models\UserValidationResult.cs" />
     <Compile Include="Areas\Manage\Models\UserValidationStatus.cs" />
     <Compile Include="Areas\MeetingCategory\Controllers\MeetingCategoryController.cs" />
+    <Compile Include="Areas\OnlineReg\Models\LinkInfo.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\OnePageGiving.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\SaveAndContinue.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\Routing.cs" />
@@ -697,6 +698,7 @@
     <Compile Include="Areas\Reports\Models\Directories\DocXDirectoryResult.cs" />
     <Compile Include="Areas\Reports\Models\Directories\FamilyRow.cs" />
     <Compile Include="Areas\Reports\Models\Export\DocXReplacements.cs" />
+    <Compile Include="Areas\Reports\Models\Export\DonorDetail.cs" />
     <Compile Include="Areas\Search\Controllers\TaskSearchController.cs" />
     <Compile Include="Areas\Search\Models\Query\Model\QueryViewModel.cs" />
     <Compile Include="Areas\Search\Models\TaskSearch\TaskSearchInfo.cs" />
@@ -1270,6 +1272,7 @@
     <Content Include="Content\touchpoint\js\form-ajax.js" />
     <Content Include="Content\touchpoint\js\gateway.js" />
     <Content Include="Content\touchpoint\js\checkin.js" />
+    <Content Include="Content\touchpoint\js\sgfilters.js" />
     <Content Include="Content\touchpoint\js\snackbar.js" />
     <Content Include="Content\touchpoint\js\main.js" />
     <Content Include="Content\touchpoint\js\metrozip\metro-zip.js" />
