@@ -200,6 +200,8 @@ namespace CmsData
    		private EntitySet<EnrollmentTransaction> _EnrollmentTransactions;
 		
    		private EntitySet<OrgMemberDocument> _OrgMemberDocuments;
+
+        private EntitySet<OrgTemporaryDocuments> _OrgTemporaryDocuments;
 		
    		private EntitySet<Attend> _Attends;
 		
@@ -519,7 +521,9 @@ namespace CmsData
 			
 			this._EnrollmentTransactions = new EntitySet<EnrollmentTransaction>(new Action< EnrollmentTransaction>(this.attach_EnrollmentTransactions), new Action< EnrollmentTransaction>(this.detach_EnrollmentTransactions)); 
 			
-			this._OrgMemberDocuments = new EntitySet<OrgMemberDocument>(new Action< OrgMemberDocument>(this.attach_OrgMemberDocuments), new Action< OrgMemberDocument>(this.detach_OrgMemberDocuments)); 
+			this._OrgMemberDocuments = new EntitySet<OrgMemberDocument>(new Action< OrgMemberDocument>(this.attach_OrgMemberDocuments), new Action< OrgMemberDocument>(this.detach_OrgMemberDocuments));
+
+            this._OrgTemporaryDocuments = new EntitySet<OrgTemporaryDocuments>(new Action<OrgTemporaryDocuments>(this.attach_OrgTemporaryDocuments), new Action<OrgTemporaryDocuments>(this.detach_OrgTemporaryDocuments)); 
 			
 			this._Attends = new EntitySet<Attend>(new Action< Attend>(this.attach_Attends), new Action< Attend>(this.detach_Attends)); 
 			
@@ -2532,7 +2536,7 @@ namespace CmsData
    		}
 
 		
-   		[Association(Name="FK__OrgMember__Organ__1D2725C1", Storage="_OrgMemberDocuments", OtherKey="OrganizationId")]
+   		[Association(Name= "Org_Member_Documents_ORG_FK", Storage="_OrgMemberDocuments", OtherKey="OrganizationId")]
    		public EntitySet<OrgMemberDocument> OrgMemberDocuments
    		{
    		    get { return this._OrgMemberDocuments; }
@@ -2541,8 +2545,18 @@ namespace CmsData
 
    		}
 
-		
-   		[Association(Name="FK_AttendWithAbsents_TBL_ORGANIZATIONS_TBL", Storage="_Attends", OtherKey="OrganizationId")]
+
+        [Association(Name = "Org_Temporary_Documents_ORG_FK", Storage = "_OrgTemporaryDocuments", OtherKey = "OrganizationId")]
+        public EntitySet<OrgTemporaryDocuments> OrgTemporaryDocuments
+        {
+            get { return this._OrgTemporaryDocuments; }
+
+            set { this._OrgTemporaryDocuments.Assign(value); }
+
+        }
+
+
+        [Association(Name="FK_AttendWithAbsents_TBL_ORGANIZATIONS_TBL", Storage="_Attends", OtherKey="OrganizationId")]
    		public EntitySet<Attend> Attends
    		{
    		    get { return this._Attends; }
@@ -3043,16 +3057,28 @@ namespace CmsData
 		{
 			this.SendPropertyChanging();
 			entity.Organization = this;
-		}
+		}        
 
-		private void detach_OrgMemberDocuments(OrgMemberDocument entity)
+        private void detach_OrgMemberDocuments(OrgMemberDocument entity)
 		{
 			this.SendPropertyChanging();
 			entity.Organization = null;
 		}
 
-		
-		private void attach_Attends(Attend entity)
+        private void attach_OrgTemporaryDocuments(OrgTemporaryDocuments entity)
+        {
+            this.SendPropertyChanging();
+            entity.Organization = this;
+        }
+
+        private void detach_OrgTemporaryDocuments(OrgTemporaryDocuments entity)
+        {
+            this.SendPropertyChanging();
+            entity.Organization = null;
+        }
+
+
+        private void attach_Attends(Attend entity)
 		{
 			this.SendPropertyChanging();
 			entity.Organization = this;
