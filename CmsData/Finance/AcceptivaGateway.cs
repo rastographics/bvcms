@@ -71,11 +71,13 @@ namespace CmsData.Finance
         {
             var person = db.LoadPersonById(peopleId);
             var paymentInfo = person.PaymentInfo(GatewayAccountId);
+
             if (paymentInfo == null)
             {
                 paymentInfo = new PaymentInfo() { GatewayAccountId = GatewayAccountId };
                 person.PaymentInfos.Add(paymentInfo);
             }
+
             //Set values to be ignored in API
             if (string.IsNullOrEmpty(cardNumber) || cardNumber.StartsWith("X"))
             {
@@ -250,7 +252,8 @@ namespace CmsData.Finance
         public BatchResponse GetBatchDetails(DateTime start, DateTime end)
         {
             var GetTransDetails = new GetSettledTransDetails(_isTesting, _apiKey, start, end);
-            var transactionsList = GetTransDetails.Execute();
+            var transactionsList = GetTransDetails.Execute(out double responseTime);
+            db.LogActivity($"GetTransDetails API response time: {responseTime}");
 
             var batchTransactions = new List<BatchTransaction>();
 
