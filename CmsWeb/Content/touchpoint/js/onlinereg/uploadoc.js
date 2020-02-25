@@ -45,10 +45,10 @@
     $(document).on("click", ".btnDeleteDoc", function (e) {
         e.preventDefault();
         var deleteBtn = $(this);
-        var fileInputBtn = deleteBtn.parent().parent().find('input.docInput');
-        var isUploaded = deleteBtn.parent().parent().find('input.hdnIsUploaded');
-        var checkMark = deleteBtn.parent().parent().parent().find('span.checkmark');
-        var submitBtn = deleteBtn.parent().parent().find('input.btnUploadDoc');
+        var fileInputBtn = deleteBtn.closest('.docBlock').find('input.docInput');
+        var isUploaded = deleteBtn.closest('.docBlock').find('input.hdnIsUploaded');
+        var checkMark = deleteBtn.closest('.docBlock').parent().find('span.checkmark');
+        var submitBtn = deleteBtn.closest('.docBlock').find('input.btnUploadDoc');
         var fileInput = fileInputBtn[0];
         checkMark.hide();
         deleteBtn.attr("disabled", true);
