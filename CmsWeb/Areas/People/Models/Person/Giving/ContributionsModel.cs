@@ -128,11 +128,11 @@ namespace CmsWeb.Areas.People.Models
                     GivingStartDate = new DateTime(1980, 1, 1);
                     break;
                 case "PreviousAndCurrent":
-                    GivingStartDate = GivingStartDate = new DateTime(GivingEndDate.Year - 1, 1, 1);
+                    GivingStartDate = new DateTime(GivingEndDate.Year - 1, 1, 1);
                     break;
                 default:
                     GivingStartDate = new DateTime(int.Parse(Year1), 1, 1);
-                    GivingEndDate = new DateTime(int.Parse(Year1), 12, 31);
+                    GivingEndDate = new DateTime(int.Parse(Year1), 12, 31, 23, 59, 59);
                     break;
             }
             return contributionRecords.Where(p => p.ContributionDate >= GivingStartDate && p.ContributionDate <= GivingEndDate);

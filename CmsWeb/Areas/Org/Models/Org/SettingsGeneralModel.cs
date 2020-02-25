@@ -1,5 +1,8 @@
 using CmsData;
 using CmsWeb.Code;
+using CmsWeb.Constants;
+using CmsWeb.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -7,21 +10,53 @@ using System.Web.Mvc;
 
 namespace CmsWeb.Areas.Org.Models
 {
-    public class SettingsGeneralModel
+    public class SettingsGeneralModel : IDbBinder
     {
+        public SettingsGeneralModel(CMSDataContext db, int id)
+        {
+            CurrentDatabase = db;
+            Id = id;
+            this.CopyPropertiesFrom(Org);
+        }
+
+        public SettingsGeneralModel(CMSDataContext db)
+        {
+            CurrentDatabase = db;
+        }
+
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
+        public SettingsGeneralModel() { }
+
+        void Init()
+        {
+            LimitToRole = new CodeInfo("0", new SelectList(Roles(), "Value", "Text"));
+        }
+
+        public CMSDataContext CurrentDatabase
+        {
+            get => _currentDatabase;
+            set
+            {
+                _currentDatabase = value;
+                Init();
+            }
+        }
+
         public Organization Org;
+        private CMSDataContext _currentDatabase;
 
         public int Id
         {
-            get { return Org?.OrganizationId ?? 0; }
+            get => Org?.OrganizationId ?? 0;
             set
             {
                 if (Org == null)
                 {
-                    Org = DbUtil.Db.LoadOrganizationById(value);
+                    Org = CurrentDatabase.LoadOrganizationById(value);
                 }
             }
         }
+
         public void Update(bool userIsAdmin)
         {
             if (LimitToRole == null)
@@ -42,24 +77,13 @@ namespace CmsWeb.Areas.Org.Models
                 exclusions = "LimitToRole";
             }
             this.CopyPropertiesTo(Org, excludefields: exclusions);
-            DbUtil.Db.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
         }
 
-        public SettingsGeneralModel(int id)
-            : this()
-        {
-            Id = id;
-            this.CopyPropertiesFrom(Org);
-        }
-
-        public SettingsGeneralModel()
-        {
-            LimitToRole = new CodeInfo("0", new SelectList(Roles(), "Value", "Text"));
-        }
         public IEnumerable<SelectListItem> Roles()
         {
             var s = LimitToRole?.Value;
-            var list = DbUtil.Db.Roles.OrderBy(r => r.RoleName).ToList().Select(x => new SelectListItem
+            var list = CurrentDatabase.Roles.OrderBy(r => r.RoleName).ToList().Select(x => new SelectListItem
             {
                 Value = x.RoleName,
                 Text = x.RoleName,
@@ -70,6 +94,10 @@ namespace CmsWeb.Areas.Org.Models
             list.Insert(0, new SelectListItem { Value = "0", Text = "(not specified)", Selected = seldefault });
             return list;
         }
+
+        public bool IsESpaceEnabled => CurrentDatabase.Setting("eSpaceEnabled");
+
+        public bool ShowGeneralHelp => CurrentDatabase.UserPreference("ShowGeneralHelp");
 
         [Display(Description = LocationDescription)]
         public string Location { get; set; }
@@ -115,6 +143,11 @@ namespace CmsWeb.Areas.Org.Models
 
         [Display(Name = "Limit Org to Role", Description = LimitToRoleDescription)]
         public CodeInfo LimitToRole { get; set; }
+
+        [Display(Name = "eSpace Event", Description = ESpaceEventDescription)]
+        public long? ESpaceEventId { get; set; }
+
+        public string ESpaceEventName { get; set; }
 
         #region Description
 
@@ -184,6 +217,9 @@ This organization will be visible to only users in this role.
 **Warning**, if no one has this role,
 you will never be able to get back here
 unless you create the role and assign it to somebody.
+";
+        private const string ESpaceEventDescription = @"
+The linked event in eSpace that this organization will be synced with.
 ";
 
         #endregion

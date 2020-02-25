@@ -1,0 +1,89 @@
+{
+    "IsSuccessStatusCode": true,
+    "Message": null,
+    "Data": [
+        {
+            "OccurrenceId": 7392518,
+            "SetUpStart": "2020-02-27T05:45:00",
+            "EventStart": "2020-02-27T06:00:00",
+            "EventEnd": "2020-02-27T07:15:00",
+            "TearDownEnd": "2020-02-27T07:30:00",
+            "IsAllDay": false,
+            "OccurrenceStatus": "Approved",
+            "Items": [
+                {
+                    "ItemId": 189729,
+                    "ItemType": "Space",
+                    "Name": "Conference Room"
+                },
+                {
+                    "ItemId": 189747,
+                    "ItemType": "Resource",
+                    "Name": "Microphone"
+                },
+                {
+                    "ItemId": 189748,
+                    "ItemType": "Resource",
+                    "Name": "Projector"
+                },
+                {
+                    "ItemId": 189749,
+                    "ItemType": "Resource",
+                    "Name": "TV"
+                },
+                {
+                    "ItemId": 189743,
+                    "ItemType": "Resource",
+                    "Name": "Blue Chairs",
+                    "Qty": 100
+                },
+                {
+                    "ItemId": 189745,
+                    "ItemType": "Resource",
+                    "Name": "6 x 9 Table",
+                    "Qty": 10
+                },
+                {
+                    "ItemId": 189751,
+                    "ItemType": "Service",
+                    "Name": "Tech Team"
+                },
+                {
+                    "ItemId": 189750,
+                    "ItemType": "Service",
+                    "Name": "Catering"
+                },
+                {
+                    "ItemId": 189752,
+                    "ItemType": "Service",
+                    "Name": "Housekeeping"
+                },
+                {
+                    "ItemId": 193930,
+                    "ItemType": "Space",
+                    "Name": "E151"
+                }
+            ],
+            "EventName": "Men of Memphis Breakfast",
+            "EventId": 874491,
+            "ScheduleId": 1166458,
+            "EventStatus": "Approved",
+            "PublicCalendarImageUrl": "https://espace.blob.core.windows.net/espaceministry-12985/menofmemphis.jpg",
+            "IsPublic": true,
+            "PublicNotes": "Click the link below to register:",
+            "PublicHtmlNotes": "Click the link below to register:",
+            "Contacts": [
+                {
+                    "Id": 285765,
+                    "FirstName": "Clark",
+                    "LastName": "Kent",
+                    "Email": "clark.kent@example.com",
+                    "Phone": null,
+                    "Company": "Appling",
+                    "ContactId": 19205
+                }
+            ],
+            "IsFinalApproved": true
+        }
+    ]
+}
