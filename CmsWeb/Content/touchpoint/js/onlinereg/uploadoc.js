@@ -7,10 +7,10 @@
         var email = $(document).find('#email').val();
         var lastName = $(document).find('#lastName').val();
         var firstName = $(document).find('#firstName').val();
-        var fileInputBtn = submitBtn.parent().parent().find('input.docInput');
-        var isUploaded = submitBtn.parent().parent().find('input.hdnIsUploaded');
-        var deleteBtn = submitBtn.parent().parent().find('input.btnDeleteDoc');
-        var checkMark = submitBtn.parent().parent().parent().find('span.checkmark');
+        var fileInputBtn = submitBtn.closest('.docBlock').find('input.docInput');
+        var isUploaded = submitBtn.closest('.docBlock').find('input.hdnIsUploaded');
+        var deleteBtn = submitBtn.closest('.docBlock').find('input.btnDeleteDoc');
+        var checkMark = submitBtn.closest('.docBlock').parent().find('span.checkmark');
         var docName = fileInputBtn.attr('docname');
         var fileInput = fileInputBtn[0];
         var formdata = new FormData();
