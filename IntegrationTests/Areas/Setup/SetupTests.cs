@@ -60,7 +60,7 @@ namespace IntegrationTests.Areas.Manage
 
             Find(css: "button[data-target=\"#General\"]").Click();
             Wait(0.5);
-            Find(css: "#HideNavTabs + .toggle-group").Click();
+            Find(css: "#HideNavTabs + .toggle-group").Parent().Click();
 
             WaitForElement(".snackbar.success");
 

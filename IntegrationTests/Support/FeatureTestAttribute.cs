@@ -8,6 +8,7 @@ namespace IntegrationTests.Support
         public override void Before(MethodInfo methodUnderTest)
         {
             FeatureTestBase.Current?.ClearCookies();
+            FeatureTestBase.Current?.MaximizeWindow();
         }
 
         public override void After(MethodInfo methodUnderTest)

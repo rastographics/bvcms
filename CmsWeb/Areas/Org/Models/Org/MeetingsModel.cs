@@ -14,8 +14,23 @@ namespace CmsWeb.Areas.Org.Models
         public int Id { get; set; }
         public bool Future { get; set; }
 
-        public bool ShowCreateNewMeeting => RoleChecker.HasSetting(SettingName.Organization_ShowCreateNewMeeting, true);
-        public bool ShowDeleteMeeting => RoleChecker.HasSetting(SettingName.Organization_ShowDeleteMeeting, true);
+        public bool ShowCreateNewMeeting { get; } = RoleChecker.HasSetting(SettingName.Organization_ShowCreateNewMeeting, true);
+        public bool ShowDeleteMeeting { get; } = RoleChecker.HasSetting(SettingName.Organization_ShowDeleteMeeting, true);
+        public bool ShowESpaceSyncMeetings
+        {
+            get
+            {
+                if (!_ShowESpaceSyncMeetings.HasValue)
+                {
+                    _ShowESpaceSyncMeetings = ShowCreateNewMeeting &&
+                        CurrentDatabase.Setting("eSpaceEnabled") &&
+                        OrgHasEspaceEventId();
+                }
+                return _ShowESpaceSyncMeetings.Value;
+            }
+        }
+
+        private bool? _ShowESpaceSyncMeetings;
 
         [Obsolete(Errors.ModelBindingConstructorError, true)]
         public MeetingsModel()
@@ -27,9 +42,9 @@ namespace CmsWeb.Areas.Org.Models
             
         public override IQueryable<Meeting> DefineModelList()
         {
-            var tzoffset = DbUtil.Db.Setting("TZOffset", "0").ToInt(); // positive to the east, negative to the west
+            var tzoffset = CurrentDatabase.Setting("TZOffset", "0").ToInt(); // positive to the east, negative to the west
             var midnight = Util.Now.Date.AddDays(1).AddHours(tzoffset);
-            var meetings = from m in DbUtil.Db.Meetings
+            var meetings = from m in CurrentDatabase.Meetings
                            where m.OrganizationId == Id
                            select m;
             if (Future)
@@ -87,7 +102,7 @@ namespace CmsWeb.Areas.Org.Models
         {
             var q2 = from m in q
                      let o = m.Organization
-                     let mc = Future && DbUtil.Db.ViewMeetingConflicts.Any(mm =>
+                     let mc = Future && CurrentDatabase.ViewMeetingConflicts.Any(mm =>
                          mm.MeetingDate == m.MeetingDate
                          && (mm.OrgId1 == m.OrganizationId || mm.OrgId2 == m.OrganizationId))
                      select new MeetingInfo
@@ -104,5 +119,7 @@ namespace CmsWeb.Areas.Org.Models
                      };
             return q2;
         }
+
+        private bool OrgHasEspaceEventId() => CurrentDatabase.Organizations.Any(o => o.OrganizationId == Id && o.ESpaceEventId.HasValue);
     }
 }

@@ -20,6 +20,8 @@ namespace IntegrationTests.Support
 
         public static string ApplicationHostConfig => Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, @"..\..\..\.vs\config\applicationhost.config"));
 
+        public static string WebDriverProvider => AppSetting("WebDriverProvider", "Chrome");
+
         private static string AppSetting(string name, string defaultValue = null)
         {
             return ContextSetting(name) ?? ConfigurationManager.AppSettings[name] ?? defaultValue;
