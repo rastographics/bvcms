@@ -2552,7 +2552,6 @@ namespace CmsData
             get { return this._OrgTemporaryDocuments; }
 
             set { this._OrgTemporaryDocuments.Assign(value); }
-
         }
 
 
@@ -3244,10 +3243,6 @@ namespace CmsData
 		{
 			this.SendPropertyChanging();
 			entity.Organization = null;
-		}
-
-		
+		}		
 	}
-
 }
-
