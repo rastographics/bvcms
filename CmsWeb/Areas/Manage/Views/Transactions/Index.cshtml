@@ -72,7 +72,7 @@
                     @Html.DropDownList("gateway", MultipleGatewayUtils.GatewayGatewayAccountList(), Model.gateway, new { @class = "form-control" })
                 </div>
             </div>
-            @if (!ViewBag.db.Setting("ShowSyncBatchDatesOption"))
+            @if (!Model.CurrentDatabase.Setting("ShowSyncBatchDatesOption"))
             {
                 <div class="col-lg-3 col-md-3 col-sm-6 col-md-offset-6">
                     <div class="form-group">
@@ -88,28 +88,8 @@
                         </div>
                     </div>
                 </div>
-            }
-            <div class="col-lg-3 col-md-3 col-sm-6">
-                <div class="form-group">
-                    @if (ViewBag.db.Setting("ShowSyncBatchDatesOption"))
-                    {
-                        <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Additional Filters"><i class="fa fa-info-circle"></i></a>
-                        <label for="ltamount" class="control-label">Additional Filters</label>
-                        <div class="input-group">
-                            <span class="input-group-addon">
-                                <i class="fa fa-list"></i>
-                            </span>
-                            <select id="additional-filters" name="AdditionalFilters" multiple="multiple">
-                                <option value="apprtransactions">Approved transactions</option>
-                                <option value="includesadditionaldonation">Includes additional donation</option>
-                                <option value="nocoupons">Hide coupon</option>
-                                <option value="testtransactions">Test transaction</option>
-                                <option value="usebatchdates">Use batch dates</option>
-                            </select>
-                        </div>
-                    }
-                    else
-                    {
+                <div class="col-lg-3 col-md-3 col-sm-6">
+                    <div class="form-group">
                         <div class="checkbox">
                             <label class="control-label">
                                 @Html.CheckBox("apprtransactions") Approved transactions only?
@@ -125,9 +105,31 @@
                                 @Html.CheckBox("includesadditionaldonation") Includes additional donation?
                             </label>
                         </div>
-                    }
+                    </div>
                 </div>
-            </div>
+            }
+            else
+            {
+                <div class="col-lg-3 col-md-3 col-sm-6">
+                    <div class="form-group">                    
+                            <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Additional Filters"><i class="fa fa-info-circle"></i></a>
+                            <label for="ltamount" class="control-label">Additional Filters</label>
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <i class="fa fa-list"></i>
+                                </span>
+                                <select>
+                                    <option value="apprtransactions">Approved transactions</option>
+                                    <option value="includesadditionaldonation">Includes additional donation</option>
+                                    <option value="nocoupons">Hide coupon</option>
+                                    <option value="testtransactions">Test transaction</option>
+                                    <option value="usebatchdates">Use batch dates</option>
+                                </select>
+                            </div>
+                                        
+                    </div>
+                </div>
+            }
         </div>
         <div class="row">
           <div class="col-sm-12">

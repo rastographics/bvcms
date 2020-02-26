@@ -72,11 +72,43 @@ namespace CmsWeb.Models
         public string gateway { get; set; }
         public string batchref { get; set; }
         public string[] AdditionalFilters { get; set; }
-        public bool usebatchdates => AdditionalFilters?.Contains("usebatchdates") ?? false;
-        public bool nocoupons => AdditionalFilters?.Contains("nocoupons") ?? false;
-        public bool apprtransactions => AdditionalFilters?.Contains("apprtransactions") ?? false;
-        public bool testtransactions => AdditionalFilters?.Contains("testtransactions") ?? false;
-        public bool includesadditionaldonation => AdditionalFilters?.Contains("includesadditionaldonation") ?? false;
+
+        private bool? _usebatchdates;
+        public bool? usebatchdates
+        {//=> (AdditionalFilters?.Contains("usebatchdates")) ?? false;
+            get { return AdditionalFilters?.Contains("usebatchdates") ?? _usebatchdates; }
+            set { _usebatchdates = value; }
+        }
+
+        private bool? _nocoupons;
+        public bool? nocoupons
+        //=> AdditionalFilters?.Contains("nocoupons") ?? false;
+        {
+            get { return AdditionalFilters?.Contains("nocoupons") ?? _nocoupons; }
+            set { _nocoupons = value; }
+        }
+
+        private bool? _apprtransactions;
+        public bool? apprtransactions //=> AdditionalFilters?.Contains("apprtransactions") ??  false;
+        {//=> AdditionalFilters?.Contains("includesadditionaldonation") ?? false;
+            get { return AdditionalFilters?.Contains("apprtransactions") ?? _apprtransactions; }
+            set { _apprtransactions = value; }
+        }
+
+        private bool? _testtransactions;
+        public bool? testtransactions
+        //=> AdditionalFilters?.Contains("testtransactions") ?? false;
+        {//=> AdditionalFilters?.Contains("includesadditionaldonation") ?? false;
+            get { return AdditionalFilters?.Contains("testtransactions") ?? _testtransactions; }
+            set { _testtransactions = value; }
+        }
+
+        private bool? _includesadditionaldonation;
+        public bool? includesadditionaldonation
+        {//=> AdditionalFilters?.Contains("includesadditionaldonation") ?? false;
+            get { return AdditionalFilters?.Contains("includesadditionaldonation") ?? _includesadditionaldonation; }
+            set { _includesadditionaldonation = value; }
+        }
         public PagerModel2 Pager { get; set; }
         public bool finance { get; set; }
         public bool admin { get; set; }
@@ -141,8 +173,8 @@ namespace CmsWeb.Models
                   where t.Amt <= ltamount || ltamount == null
                   where description == null || t.Description.Contains(description)
                   where nameid > 0 || ((t.Testing ?? false) == testtransactions)
-                  where apprtransactions == (t.Moneytran == true) || !apprtransactions
-                  where (nocoupons && !t.TransactionId.Contains("Coupon")) || !nocoupons
+                  where apprtransactions == (t.Moneytran == true) || !(bool)apprtransactions
+                  where ((bool)nocoupons && !t.TransactionId.Contains("Coupon")) || !(bool)nocoupons
                   where (t.Financeonly ?? false) == false || finance
                   select t;
             if (name != null)
@@ -179,8 +211,10 @@ namespace CmsWeb.Models
             }
 
             edt = edt?.AddHours(24);
-            if (usebatchdates && startdt.HasValue && edt.HasValue)
+            if ((usebatchdates == true) && startdt.HasValue && edt.HasValue)
             {
+                // Apply an offset to the startdate to get those records that occurred prior to the batch date and haven't been batched at present
+                CheckBatchDates(startdt.Value.AddDays(-7), edt.Value);
                 _transactions = from t in _transactions
                                 where t.Batch >= startdt || startdt == null
                                 where t.Batch <= edt || edt == null
@@ -195,7 +229,7 @@ namespace CmsWeb.Models
                                 select t;
             }
 
-            if (includesadditionaldonation)
+            if ((includesadditionaldonation ?? false))
             {
                 _transactions = _transactions.Where(t => t.Donate > 0.00m);
             }
@@ -276,11 +310,11 @@ namespace CmsWeb.Models
             if (gateway.UseIdsForSettlementDates)
             {
                 tranids = (from t in _transactions
-                                  where t.TransactionDate >= start
-                                  where t.TransactionDate <= end
-                                  where t.Settled == null
-                                  where t.Moneytran == true
-                                  select t.TransactionId).ToList();
+                           where t.TransactionDate >= start
+                           where t.TransactionDate <= end
+                           where t.Settled == null
+                           where t.Moneytran == true
+                           select t.TransactionId).ToList();
                 gateway.CheckBatchSettlements(tranids);
             }
             else
