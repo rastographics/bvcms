@@ -40,7 +40,7 @@ if (!Model.GroupNeedsMenu(group))
     {
       case GroupSelectCode.Member:
         <ul class="dropdown-menu dropdown-menu-right">
-            <li><a href="/SearchAdd2/Dialog/org/@Model.Id" class="searchadd"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Add Members</a></li>
+            <li><a href="/SearchAdd2/Dialog/Fuzzy/org/@Model.Id" class="searchadd"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Add Members</a></li>
             @if (!Model.OrgLeaderAddDrop)
             {
                 <li><a href="/AddToOrgFromTag/@Model.QueryId" class="longrunop" title="Add Members From Tag"><i class="fa fa-tag"></i>&nbsp;&nbsp;Add from Tag</a></li>
@@ -51,7 +51,7 @@ if (!Model.GroupNeedsMenu(group))
         break;
       case GroupSelectCode.Prospect:
         <ul class="dropdown-menu dropdown-menu-right">
-            <li><a href="/SearchAdd2/Dialog/prospects/@Model.Id" class="searchadd"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Add Prospects</a></li>
+            <li><a href="/SearchAdd2/Dialog/Fuzzy/prospects/@Model.Id" class="searchadd"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Add Prospects</a></li>
             @if (!Model.OrgLeaderAddDrop)
             {
                 <li><a href="/AddToOrgFromTag/@Model.QueryId" title="Add Prospects From Tag" class="longrunop"><i class="fa fa-tag"></i>&nbsp;&nbsp;Add From Tag</a></li>
@@ -67,7 +67,7 @@ if (!Model.GroupNeedsMenu(group))
         break;
       case GroupSelectCode.Inactive:
         <ul class="dropdown-menu dropdown-menu-right">
-            <li><a href="/SearchAdd2/Dialog/inactive/@Model.Id" class="searchadd"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;@(Model.Org.IsMissionTrip == true ? "Add Sender" : "Add Inactive Members")</a></li>
+            <li><a href="/SearchAdd2/Dialog/Fuzzy/inactive/@Model.Id" class="searchadd"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;@(Model.Org.IsMissionTrip == true ? "Add Sender" : "Add Inactive Members")</a></li>
             @if (!Model.OrgLeaderAddDrop)
             {
                 <li><a href="/OrgMembersUpdate/@Model.QueryId" title="Update Inactive Members" class="members-dialog"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Update Inactive</a></li>
@@ -77,7 +77,7 @@ if (!Model.GroupNeedsMenu(group))
         break;
       case GroupSelectCode.Pending:
         <ul class="dropdown-menu dropdown-menu-right">
-            <li><a href="/SearchAdd2/Dialog/pending/@Model.Id" class="searchadd"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Add Pending Members</a></li>
+            <li><a href="/SearchAdd2/Dialog/Fuzzy/pending/@Model.Id" class="searchadd"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Add Pending Members</a></li>
             @if (!Model.OrgLeaderAddDrop)
             {
                 <li><a href="/AddToOrgFromTag/@Model.QueryId" title="Add Pendings From Tag" class="longrunop"><i class="fa fa-tag"></i>&nbsp;&nbsp;Add From Tag</a></li>
