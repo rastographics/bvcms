@@ -18,17 +18,17 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost, Route("SearchAdd2/Dialog/{type}/{typeid?}")]
         public ActionResult Dialog(string type, string typeid, bool displaySkipSearch = true)
         {
-            var m = new SearchAddModel(CurrentDatabase, type, typeid, displaySkipSearch);
-            return View("SearchPerson", m);
-        }
-
-        [HttpPost, Route("SearchAdd2/Fuzzy")]
-        public ActionResult Dialog(bool displaySkipSearch = true)
-        {
-            var m = new SearchAddModel(CurrentDatabase, "Menu", null, displaySkipSearch)
+            var m = new SearchAddModel(CurrentDatabase, type, typeid, displaySkipSearch)
             {
                 Fuzzy = true
             };
+            return View("SearchPerson", m);
+        }
+
+        [HttpPost, Route("SearchAdd2/Advanced")]
+        public ActionResult Dialog(bool displaySkipSearch = true)
+        {
+            var m = new SearchAddModel(CurrentDatabase, "Menu", null, displaySkipSearch);
             return View("SearchPerson", m);
         }
 
