@@ -26,7 +26,6 @@ namespace IntegrationTests.Areas.Reports.Views.Reports
         [Fact, FeatureTest]
         public void Application_Export_Should_Pull_HoHPeopleID()
         {
-            driver.Manage().Window.Maximize();
             var requestManager = FakeRequestManager.Create();
             var db = requestManager.CurrentDatabase;
             var controller = new OnlineRegController(requestManager);
@@ -131,7 +130,6 @@ namespace IntegrationTests.Areas.Reports.Views.Reports
         [Fact, FeatureTest]
         public void Application_Report_Should_Have_Answers()
         {
-            driver.Manage().Window.Maximize();
             var requestManager = FakeRequestManager.Create();
 
             var Orgconfig = new Organization()
@@ -154,12 +152,6 @@ namespace IntegrationTests.Areas.Reports.Views.Reports
             string roleName = "role_" + RandomString();
             var user = CreateUser(username, password, roles: new string[] { "Access", "Edit", "Admin", "Membership" });
             Login();
-
-            /*
-                Using WaitForElement() doesn't work in this test
-                WaitForElement() only makes the duration of loading spinner longer
-                and causes a "reference not set to an instance of an object" error in the Find() functions below
-            */
 
             Open($"{rootUrl}Org/{OrgId}#tab-Registrations-tab");
             WaitForElementToDisappear(loadingUI, 30);

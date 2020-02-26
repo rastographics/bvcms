@@ -143,13 +143,13 @@ namespace CmsData
         partial void UpdateCheckInTime(CheckInTime instance);
         partial void DeleteCheckInTime(CheckInTime instance);
 
-        partial void InsertCheckinProfiles(CheckinProfiles instance);
-        partial void UpdateCheckinProfiles(CheckinProfiles instance);
-        partial void DeleteCheckinProfiles(CheckinProfiles instance);
+        partial void InsertCheckinProfile(CheckinProfile instance);
+        partial void UpdateCheckinProfile(CheckinProfile instance);
+        partial void DeleteCheckinProfile(CheckinProfile instance);
 
-        partial void InsertCheckinProfileSettings(CheckinProfileSettings instance);
-        partial void UpdateCheckinProfileSettings(CheckinProfileSettings instance);
-        partial void DeleteCheckinProfileSettings(CheckinProfileSettings instance);
+        partial void InsertCheckinProfileSetting(CheckinProfileSetting instance);
+        partial void UpdateCheckinProfileSetting(CheckinProfileSetting instance);
+        partial void DeleteCheckinProfileSetting(CheckinProfileSetting instance);
 
         partial void InsertChurchAttReportId(ChurchAttReportId instance);
         partial void UpdateChurchAttReportId(ChurchAttReportId instance);
@@ -940,9 +940,9 @@ namespace CmsData
         
         public Table<CheckInPending> CheckInPendings => GetTable<CheckInPending>();
 
-        public Table<CheckinProfiles> CheckinProfiles => GetTable<CheckinProfiles>();
+        public Table<CheckinProfile> CheckinProfiles => GetTable<CheckinProfile>();
 
-        public Table<CheckinProfileSettings> CheckinProfileSettings => GetTable<CheckinProfileSettings>();
+        public Table<CheckinProfileSetting> CheckinProfileSettings => GetTable<CheckinProfileSetting>();
 
         public Table<ChurchAttReportId> ChurchAttReportIds => GetTable<ChurchAttReportId>();
 
@@ -1131,6 +1131,8 @@ namespace CmsData
         public Table<OrganizationMember> OrganizationMembers => GetTable<OrganizationMember>();
 
         public Table<OrgMemberDocument> OrgMemberDocuments => GetTable<OrgMemberDocument>();
+
+        public Table<OrgTemporaryDocuments> OrgTemporaryDocuments => GetTable<OrgTemporaryDocuments>();
 
         public Table<Organization> Organizations => GetTable<Organization>();
 
@@ -2290,6 +2292,7 @@ namespace CmsData
             [Parameter(DbType = "int")] int? campusid,
             [Parameter(DbType = "bit")] bool? pledges,
             [Parameter(DbType = "int")] int? nontaxded,
+            [Parameter(DbType = "int")] int? online,
             [Parameter(DbType = "bit")] bool? includeUnclosed,
             [Parameter(DbType = "int")] int? tagid,
             [Parameter(DbType = "varchar")] string fundids
@@ -2302,6 +2305,7 @@ namespace CmsData
                 campusid,
                 pledges,
                 nontaxded,
+                online,
                 includeUnclosed,
                 tagid,
                 fundids
@@ -2346,6 +2350,19 @@ namespace CmsData
                 enddt,
                 fundid
                 );
+        }
+
+        [Function(Name = "dbo.FamilyGreetingName", IsComposable = true)]
+        [return: Parameter(DbType = "nvarchar")]
+        public string FamilyGreetingName(
+            [Parameter(DbType = "int")] int type,
+            [Parameter(DbType = "int")] int peopleId)
+        {
+            return (string) ExecuteMethodCall(this,
+                (MethodInfo)MethodInfo.GetCurrentMethod(),
+                type,
+                peopleId
+                ).ReturnValue;
         }
 
         [Function(Name = "dbo.GetPledgedTotalsBothIfJoint", IsComposable = true)]
@@ -2480,6 +2497,7 @@ namespace CmsData
             [Parameter(DbType = "datetime")] DateTime? td,
             [Parameter(DbType = "int")] int? campusid,
             [Parameter(DbType = "int")] int? nontaxded,
+            [Parameter(DbType = "int")] int? online,
             [Parameter(DbType = "bit")] bool? includeUnclosed,
             [Parameter(DbType = "int")] int? tagid,
             [Parameter(DbType = "varchar")] string fundids,
@@ -2492,6 +2510,7 @@ namespace CmsData
                 td,
                 campusid,
                 nontaxded,
+                online,
                 includeUnclosed,
                 tagid,
                 fundids,

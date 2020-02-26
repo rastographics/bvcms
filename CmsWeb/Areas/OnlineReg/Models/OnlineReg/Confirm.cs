@@ -2,7 +2,9 @@ using CmsData;
 using CmsData.API;
 using CmsData.Codes;
 using CmsData.Finance;
+using CmsWeb.Code;
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
@@ -29,30 +31,54 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public string CheckDuplicateGift(decimal? amt)
         {
-            if (!OnlineGiving() || !amt.HasValue)
+            if (!amt.HasValue)
             {
                 return null;
             }
-
-            var previousTransaction =
-                (from t in CurrentDatabase.Transactions
-                 where t.Amt == amt
-                 where t.OrgId == Orgid
-                 where t.TransactionDate > DateTime.Now.AddMinutes(-20)
-                 where CurrentDatabase.Contributions.Any(cc => cc.PeopleId == List[0].PeopleId && cc.TranId == t.Id)
-                 select t).FirstOrDefault();
+            Transaction previousTransaction = null;
+            if (OnlineGiving())
+            {
+                previousTransaction =
+                    (from t in CurrentDatabase.Transactions
+                     where t.Amt == amt
+                     where t.OrgId == Orgid
+                     where t.TransactionDate > DateTime.Now.AddMinutes(-20)
+                     where CurrentDatabase.Contributions.Any(cc => cc.PeopleId == List[0].PeopleId && cc.TranId == t.Id)
+                     select t).FirstOrDefault();
+            }
+            else
+            {
+                previousTransaction =
+                    (from t in CurrentDatabase.Transactions
+                     where t.Amt == amt
+                     where t.TransactionDate > DateTime.Now.AddMinutes(-20)
+                     where t.First == List[0].FirstName
+                     where t.Last == List[0].LastName
+                     select t).FirstOrDefault();
+            }
 
             if (previousTransaction == null)
             {
                 return null;
             }
-
-            return @"
+            if (OnlineGiving())
+            {
+                return @"
 Thank you for your gift! Our records indicate that you recently submitted a gift in this amount a short while ago.
 As a safeguard against duplicate transactions we recommend that you either wait 20 minutes,
 or modify the amount of this gift by a small amount so that it does not appear as a duplicate. 
 Thank you.
 ";
+            }
+            else
+            {
+                return @"
+Our records indicate that you recently submitted a registration in this amount a short while ago.
+As a safeguard against duplicate transactions we recommend that you either wait 20 minutes,
+or use a different payment method so that it does not appear as a duplicate. 
+Thank you.
+";
+            }
         }
 
         public RouteModel FinishRegistration(Transaction ti)
@@ -132,6 +158,7 @@ Thank you.
 
             SetTransactionReturn(TransactionReturn);
             EnrollAndConfirm();
+            DocumentsHelper.SaveTemporaryDocuments(CurrentDatabase, List.Where(p => p.IsNew).ToList(), org.OrganizationId);
             UseCoupon(Transaction.TransactionId, Transaction.Amt ?? 0);
             return ConfirmEnum.Confirm;
         }
@@ -246,7 +273,7 @@ Thank you.
         }
 
         public static void ConfirmDuePaidTransaction(Transaction ti, string transactionId, bool sendmail, CMSDataContext db)
-        {            
+        {
             var org = db.LoadOrganizationById(ti.OrgId);
             ti.TransactionId = transactionId;
             if (ti.Testing == true && !ti.TransactionId.Contains("(testing)"))

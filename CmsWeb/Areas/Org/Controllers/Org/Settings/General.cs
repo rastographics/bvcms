@@ -1,6 +1,11 @@
+using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.Org.Models;
+using eSpace;
+using eSpace.Models;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Org.Controllers
@@ -10,7 +15,7 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost]
         public ActionResult General(int id)
         {
-            var m = new SettingsGeneralModel(id);
+            var m = new SettingsGeneralModel(CurrentDatabase, id);
             return PartialView("Settings/General", m);
         }
 
@@ -18,14 +23,14 @@ namespace CmsWeb.Areas.Org.Controllers
         public ActionResult GeneralHelpToggle(int id)
         {
             CurrentDatabase.ToggleUserPreference("ShowGeneralHelp");
-            var m = new SettingsGeneralModel(id);
+            var m = new SettingsGeneralModel(CurrentDatabase, id);
             return PartialView("Settings/General", m);
         }
 
         [HttpPost]
         public ActionResult GeneralEdit(int id)
         {
-            var m = new SettingsGeneralModel(id);
+            var m = new SettingsGeneralModel(CurrentDatabase, id);
             return PartialView("Settings/GeneralEdit", m);
         }
 
@@ -36,13 +41,38 @@ namespace CmsWeb.Areas.Org.Controllers
             {
                 m.Org.LimitToRole = null;
             }
-            DbUtil.LogActivity($"Update SettingsGeneral {m.Org.OrganizationName}");
+            DbUtil.LogActivity($"Update SettingsGeneral {m.Org.OrganizationName}", orgid: m.Id);
             if (ModelState.IsValid)
             {
                 m.Update(User.IsInRole("Admin"));
                 return View("Settings/General", m);
             }
             return PartialView("Settings/GeneralEdit", m);
+        }
+
+        [HttpGet]
+        [OutputCache(Duration = 60)]
+        public ActionResult EspaceSearch(string q)
+        {
+            var espace = new eSpaceClient
+            {
+                Username = CurrentDatabase.Setting("eSpaceUserName", ""),
+                Password = CurrentDatabase.Setting("eSpacePassword", "")
+            };
+            IEnumerable<eSpaceEvent> list = null;
+            try
+            {
+                list = espace.Event.List(new NameValueCollection {
+                    { "eventName", q },
+                    { "topX", "10" },
+                    { "startDate", DateTime.Now.ToString("d") }
+                });
+            }
+            catch (Exception e)
+            {
+                ViewBag.Error = e.Message;
+            }
+            return PartialView("Other/eSpaceResults", list);
         }
     }
 }

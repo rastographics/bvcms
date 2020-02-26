@@ -26,7 +26,7 @@ namespace IntegrationTests.Areas.Manage
             Find(text: "Roles").Click();
             CurrentUrl.ShouldBe($"{rootUrl}Roles");
 
-            RepeatUntil(() => Find(css: ".box-tools button[type=submit]").Click(),
+            RepeatUntil(() => Find(css: ".box-tools button[type=submit]")?.Click(),
                 condition: () => Find(id: "RoleName.NEW") != null);
             var newRole = Find(id: "RoleName.NEW");
             ScrollTo(newRole);
@@ -60,7 +60,7 @@ namespace IntegrationTests.Areas.Manage
 
             Find(css: "button[data-target=\"#General\"]").Click();
             Wait(0.5);
-            Find(css: "#HideNavTabs + .toggle-group").Click();
+            Find(css: "#HideNavTabs + .toggle-group").Parent().Click();
 
             WaitForElement(".snackbar.success");
 

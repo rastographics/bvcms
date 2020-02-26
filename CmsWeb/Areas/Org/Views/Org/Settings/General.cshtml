@@ -2,7 +2,7 @@
 @model CmsWeb.Areas.Org.Models.SettingsGeneralModel
 @{
     ViewBag.FalseValue = "";
-    var showhelp = DbUtil.Db.UserPreference("ShowGeneralHelp");
+    var showhelp = Model.ShowGeneralHelp;
     ViewBag.ShowHelp = showhelp;
     var mforg = Model.Org.IsBibleFellowshipOrg == true;
     var gradehelp = showhelp || mforg || Model.GradeAgeStart == null ? null : new { help = "See Show Help for how the Grade works only on Main Fellowship orgs" };
@@ -77,6 +77,14 @@
                 @Html.DisplayFor(m => m.IsRecreationTeam, new { FalseValue = "n/a" })
             </div>
         </div>
+        @if (Model.IsESpaceEnabled)
+        {
+        <div class="row">
+            <div class="col-sm-5 col-md-4 col-lg-3">
+                @Html.DisplayFor(m => m, "ESpaceEventId")
+            </div>
+        </div>
+        }
     </div>
     @Html.Hidden("Id", Model.Id)
     @FormAction()

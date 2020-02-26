@@ -17,16 +17,21 @@ namespace CmsWeb.Areas.OnlineReg.Models
     }
 
     public partial class OnlineRegModel : IDbBinder
-    {        
+    {
+        [NonSerialized]
+        private CMSDataContext _currentDatabase;
         public CMSDataContext CurrentDatabase
         {
-            get => _currentDatabase ?? DbUtil.Db;
+            get => _currentDatabase ?? (CurrentDatabase = DbUtil.Db);
             set
             {
-                _currentDatabase = value;
-                Init();
+                if (_currentDatabase == null)
+                {
+                    _currentDatabase = value;
+                    Init();
+                }
             }
-        }
+        } 
 
         private void Init()
         {
@@ -36,14 +41,16 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
             HttpContextFactory.Current.Items["OnlineRegModel"] = this;
         }
-        private CMSDataContext _currentDatabase;
+        
+        public OnlineRegModel(CMSDataContext db)
+        {            
+            CurrentDatabase = db;
+        }
 
         [Obsolete(Errors.ModelBindingConstructorError, true)]
-        public OnlineRegModel() { Init(); }
-
-        public OnlineRegModel(CMSDataContext db)
+        public OnlineRegModel()
         {
-            CurrentDatabase = db;
+            
         }
 
         public OnlineRegModel(HttpRequestBase req, CMSDataContext db, int? id, bool? testing, string email, bool? login, string source)

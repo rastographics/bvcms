@@ -181,6 +181,14 @@ namespace CmsData
 
         private bool _TripFundingPagesShowAmounts;
 
+        private int? _EarlyCheckin;
+
+        private int? _LateCheckin;
+
+        private long? _ESpaceEventId;
+
+        private string _ESpaceEventName;
+
         private EntitySet<Person> _BFMembers;
 
         private EntitySet<Organization> _ChildOrgs;
@@ -188,6 +196,10 @@ namespace CmsData
         private EntitySet<Contact> _contactsHad;
 
         private EntitySet<EnrollmentTransaction> _EnrollmentTransactions;
+
+        private EntitySet<OrgMemberDocument> _OrgMemberDocuments;
+
+        private EntitySet<OrgTemporaryDocuments> _OrgTemporaryDocuments;
 
         private EntitySet<Attend> _Attends;
 
@@ -215,8 +227,6 @@ namespace CmsData
 
         private EntitySet<OrganizationMember> _OrganizationMembers;
 
-        private EntitySet<OrgMemberDocument> _OrgMemberDocuments;
-
         private EntityRef<Organization> _ParentOrg;
 
         private EntityRef<Campu> _Campu;
@@ -234,7 +244,6 @@ namespace CmsData
         #endregion
 
         #region Extensibility Method Definitions
-
         partial void OnLoaded();
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
@@ -491,8 +500,19 @@ namespace CmsData
         partial void OnTripFundingPagesShowAmountsChanging(bool value);
         partial void OnTripFundingPagesShowAmountsChanged();
 
-        #endregion
+        partial void OnEarlyCheckinChanging(int? value);
+        partial void OnEarlyCheckinChanged();
 
+        partial void OnLateCheckinChanging(int? value);
+        partial void OnLateCheckinChanged();
+
+        partial void OnESpaceEventIdChanging(long? value);
+        partial void OnESpaceEventIdChanged();
+
+        partial void OnESpaceEventNameChanging(string value);
+        partial void OnESpaceEventNameChanged();
+
+        #endregion
         public Organization()
         {
             _BFMembers = new EntitySet<Person>(new Action<Person>(attach_BFMembers), new Action<Person>(detach_BFMembers));
@@ -502,6 +522,10 @@ namespace CmsData
             _contactsHad = new EntitySet<Contact>(new Action<Contact>(attach_contactsHad), new Action<Contact>(detach_contactsHad));
 
             _EnrollmentTransactions = new EntitySet<EnrollmentTransaction>(new Action<EnrollmentTransaction>(attach_EnrollmentTransactions), new Action<EnrollmentTransaction>(detach_EnrollmentTransactions));
+
+            _OrgMemberDocuments = new EntitySet<OrgMemberDocument>(new Action<OrgMemberDocument>(attach_OrgMemberDocuments), new Action<OrgMemberDocument>(detach_OrgMemberDocuments));
+
+            _OrgTemporaryDocuments = new EntitySet<OrgTemporaryDocuments>(new Action<OrgTemporaryDocuments>(this.attach_OrgTemporaryDocuments), new Action<OrgTemporaryDocuments>(this.detach_OrgTemporaryDocuments));
 
             _Attends = new EntitySet<Attend>(new Action<Attend>(attach_Attends), new Action<Attend>(detach_Attends));
 
@@ -529,7 +553,6 @@ namespace CmsData
 
             _OrganizationMembers = new EntitySet<OrganizationMember>(new Action<OrganizationMember>(attach_OrganizationMembers), new Action<OrganizationMember>(detach_OrganizationMembers));
 
-            _OrgMemberDocuments = new EntitySet<OrgMemberDocument>(new Action<OrgMemberDocument>(attach_OrgMemberDocuments), new Action<OrgMemberDocument>(detach_OrgMemberDocuments));
 
             _ParentOrg = default(EntityRef<Organization>);
 
@@ -565,7 +588,9 @@ namespace CmsData
                     SendPropertyChanged("OrganizationId");
                     OnOrganizationIdChanged();
                 }
+
             }
+
         }
 
         [Column(Name = "CreatedBy", UpdateCheck = UpdateCheck.Never, Storage = "_CreatedBy", DbType = "int NOT NULL")]
@@ -583,7 +608,9 @@ namespace CmsData
                     SendPropertyChanged("CreatedBy");
                     OnCreatedByChanged();
                 }
+
             }
+
         }
 
         [Column(Name = "CreatedDate", UpdateCheck = UpdateCheck.Never, Storage = "_CreatedDate", DbType = "datetime NOT NULL")]
@@ -601,7 +628,9 @@ namespace CmsData
                     SendPropertyChanged("CreatedDate");
                     OnCreatedDateChanged();
                 }
+
             }
+
         }
 
         [Column(Name = "OrganizationStatusId", UpdateCheck = UpdateCheck.Never, Storage = "_OrganizationStatusId", DbType = "int NOT NULL")]
@@ -625,7 +654,9 @@ namespace CmsData
                     SendPropertyChanged("OrganizationStatusId");
                     OnOrganizationStatusIdChanged();
                 }
+
             }
+
         }
 
         [Column(Name = "DivisionId", UpdateCheck = UpdateCheck.Never, Storage = "_DivisionId", DbType = "int")]
@@ -649,7 +680,9 @@ namespace CmsData
                     SendPropertyChanged("DivisionId");
                     OnDivisionIdChanged();
                 }
+
             }
+
         }
 
         [Column(Name = "LeaderMemberTypeId", UpdateCheck = UpdateCheck.Never, Storage = "_LeaderMemberTypeId", DbType = "int")]
@@ -667,7 +700,9 @@ namespace CmsData
                     SendPropertyChanged("LeaderMemberTypeId");
                     OnLeaderMemberTypeIdChanged();
                 }
+
             }
+
         }
 
         [Column(Name = "GradeAgeStart", UpdateCheck = UpdateCheck.Never, Storage = "_GradeAgeStart", DbType = "int")]
@@ -685,7 +720,9 @@ namespace CmsData
                     SendPropertyChanged("GradeAgeStart");
                     OnGradeAgeStartChanged();
                 }
+
             }
+
         }
 
         [Column(Name = "GradeAgeEnd", UpdateCheck = UpdateCheck.Never, Storage = "_GradeAgeEnd", DbType = "int")]
@@ -703,7 +740,9 @@ namespace CmsData
                     SendPropertyChanged("GradeAgeEnd");
                     OnGradeAgeEndChanged();
                 }
+
             }
+
         }
 
         [Column(Name = "RollSheetVisitorWks", UpdateCheck = UpdateCheck.Never, Storage = "_RollSheetVisitorWks", DbType = "int")]
@@ -882,7 +921,6 @@ namespace CmsData
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
-
                     OnEntryPointIdChanging(value);
                     SendPropertyChanging();
                     _EntryPointId = value;
@@ -906,7 +944,6 @@ namespace CmsData
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
-
                     OnParentOrgIdChanging(value);
                     SendPropertyChanging();
                     _ParentOrgId = value;
@@ -1092,7 +1129,6 @@ namespace CmsData
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
-
                     OnCampusIdChanging(value);
                     SendPropertyChanging();
                     _CampusId = value;
@@ -1188,7 +1224,6 @@ namespace CmsData
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
-
                     OnGenderIdChanging(value);
                     SendPropertyChanging();
                     _GenderId = value;
@@ -1626,7 +1661,6 @@ namespace CmsData
                     {
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
-
                     OnOrganizationTypeIdChanging(value);
                     SendPropertyChanging();
                     _OrganizationTypeId = value;
@@ -2104,170 +2138,252 @@ namespace CmsData
             }
         }
 
+        [Column(Name = "EarlyCheckin", UpdateCheck = UpdateCheck.Never, Storage = "_EarlyCheckin", DbType = "int")]
+        public int? EarlyCheckin
+        {
+            get => _EarlyCheckin;
+
+            set
+            {
+                if (_EarlyCheckin != value)
+                {
+                    OnEarlyCheckinChanging(value);
+                    SendPropertyChanging();
+                    _EarlyCheckin = value;
+                    SendPropertyChanged("EarlyCheckin");
+                    OnEarlyCheckinChanged();
+                }
+            }
+        }
+
+        [Column(Name = "LateCheckin", UpdateCheck = UpdateCheck.Never, Storage = "_LateCheckin", DbType = "int")]
+        public int? LateCheckin
+        {
+            get => _LateCheckin;
+
+            set
+            {
+                if (_LateCheckin != value)
+                {
+                    OnLateCheckinChanging(value);
+                    SendPropertyChanging();
+                    _LateCheckin = value;
+                    SendPropertyChanged("LateCheckin");
+                    OnLateCheckinChanged();
+                }
+            }
+        }
+
+        [Column(Name = "ESpaceEventId", UpdateCheck = UpdateCheck.Never, Storage = "_ESpaceEventId", DbType = "bigint")]
+        public long? ESpaceEventId
+        {
+            get => _ESpaceEventId;
+
+            set
+            {
+                if (_ESpaceEventId != value)
+                {
+                    OnESpaceEventIdChanging(value);
+                    SendPropertyChanging();
+                    _ESpaceEventId = value;
+                    SendPropertyChanged("ESpaceEventId");
+                    OnESpaceEventIdChanged();
+                }
+            }
+        }
+
+        [Column(Name = "ESpaceEventName", UpdateCheck = UpdateCheck.Never, Storage = "_ESpaceEventName", DbType = "nvarchar(200)")]
+        public string ESpaceEventName
+        {
+            get => _ESpaceEventName;
+
+            set
+            {
+                if (_ESpaceEventName != value)
+                {
+                    OnESpaceEventNameChanging(value);
+                    SendPropertyChanging();
+                    _ESpaceEventName = value;
+                    SendPropertyChanged("ESpaceEventName");
+                    OnESpaceEventNameChanged();
+                }
+            }
+        }
+
         #endregion
 
         #region Foreign Key Tables
 
         [Association(Name = "BFMembers__BFClass", Storage = "_BFMembers", OtherKey = "BibleFellowshipClassId")]
         public EntitySet<Person> BFMembers
-           {
-               get => _BFMembers;
+        {
+            get => _BFMembers;
 
             set => _BFMembers.Assign(value);
+        }
 
-           }
 
         [Association(Name = "ChildOrgs__ParentOrg", Storage = "_ChildOrgs", OtherKey = "ParentOrgId")]
         public EntitySet<Organization> ChildOrgs
-           {
-               get => _ChildOrgs;
+        {
+            get => _ChildOrgs;
 
             set => _ChildOrgs.Assign(value);
+        }
 
-           }
 
         [Association(Name = "contactsHad__organization", Storage = "_contactsHad", OtherKey = "OrganizationId")]
         public EntitySet<Contact> contactsHad
-           {
-               get => _contactsHad;
+        {
+            get => _contactsHad;
 
             set => _contactsHad.Assign(value);
+        }
 
-           }
 
         [Association(Name = "ENROLLMENT_TRANSACTION_ORG_FK", Storage = "_EnrollmentTransactions", OtherKey = "OrganizationId")]
         public EntitySet<EnrollmentTransaction> EnrollmentTransactions
-           {
-               get => _EnrollmentTransactions;
+        {
+            get => _EnrollmentTransactions;
 
             set => _EnrollmentTransactions.Assign(value);
+        }
 
-           }
-
-        [Association(Name = "FK_AttendWithAbsents_TBL_ORGANIZATIONS_TBL", Storage = "_Attends", OtherKey = "OrganizationId")]
-        public EntitySet<Attend> Attends
-           {
-               get => _Attends;
-
-            set => _Attends.Assign(value);
-
-           }
-
-        [Association(Name = "FK_Coupons_Organizations", Storage = "_Coupons", OtherKey = "OrgId")]
-        public EntitySet<Coupon> Coupons
-           {
-               get => _Coupons;
-
-            set => _Coupons.Assign(value);
-
-           }
-
-        [Association(Name = "FK_DivOrg_Organizations", Storage = "_DivOrgs", OtherKey = "OrgId")]
-        public EntitySet<DivOrg> DivOrgs
-           {
-               get => _DivOrgs;
-
-            set => _DivOrgs.Assign(value);
-
-           }
-
-        [Association(Name = "FK_GoerSenderAmounts_Organizations", Storage = "_GoerSenderAmounts", OtherKey = "OrgId")]
-        public EntitySet<GoerSenderAmount> GoerSenderAmounts
-           {
-               get => _GoerSenderAmounts;
-
-            set => _GoerSenderAmounts.Assign(value);
-
-           }
-
-        [Association(Name = "FK_MEETINGS_TBL_ORGANIZATIONS_TBL", Storage = "_Meetings", OtherKey = "OrganizationId")]
-        public EntitySet<Meeting> Meetings
-           {
-               get => _Meetings;
-
-            set => _Meetings.Assign(value);
-
-           }
-
-        [Association(Name = "FK_MemberTags_Organizations", Storage = "_MemberTags", OtherKey = "OrgId")]
-        public EntitySet<MemberTag> MemberTags
-           {
-               get => _MemberTags;
-
-            set => _MemberTags.Assign(value);
-
-           }
-
-        [Association(Name = "FK_OrganizationExtra_Organizations", Storage = "_OrganizationExtras", OtherKey = "OrganizationId")]
-        public EntitySet<OrganizationExtra> OrganizationExtras
-           {
-               get => _OrganizationExtras;
-
-            set => _OrganizationExtras.Assign(value);
-
-           }
-
-        [Association(Name = "FK_OrgMemberExtra_Organizations", Storage = "_OrgMemberExtras", OtherKey = "OrganizationId")]
-        public EntitySet<OrgMemberExtra> OrgMemberExtras
-           {
-               get => _OrgMemberExtras;
-
-            set => _OrgMemberExtras.Assign(value);
-
-           }
-
-        [Association(Name = "FK_OrgSchedule_Organizations", Storage = "_OrgSchedules", OtherKey = "OrganizationId")]
-        public EntitySet<OrgSchedule> OrgSchedules
-           {
-               get => _OrgSchedules;
-
-            set => _OrgSchedules.Assign(value);
-
-           }
-
-        [Association(Name = "FK_PrevOrgMemberExtra_Organization", Storage = "_PrevOrgMemberExtras", OtherKey = "OrganizationId")]
-        public EntitySet<PrevOrgMemberExtra> PrevOrgMemberExtras
-           {
-               get => _PrevOrgMemberExtras;
-
-            set => _PrevOrgMemberExtras.Assign(value);
-
-           }
-
-        [Association(Name = "FK_Resource_Organization", Storage = "_Resources", OtherKey = "OrganizationId")]
-        public EntitySet<Resource> Resources
-           {
-               get => _Resources;
-
-            set => _Resources.Assign(value);
-
-           }
-
-        [Association(Name = "FK_ResourceOrganization_Organizations", Storage = "_ResourceOrganizations", OtherKey = "OrganizationId")]
-        public EntitySet<ResourceOrganization> ResourceOrganizations
-           {
-               get => _ResourceOrganizations;
-
-            set => _ResourceOrganizations.Assign(value);
-
-           }
-
-        [Association(Name = "ORGANIZATION_MEMBERS_ORG_FK", Storage = "_OrganizationMembers", OtherKey = "OrganizationId")]
-        public EntitySet<OrganizationMember> OrganizationMembers
-           {
-               get => _OrganizationMembers;
-
-            set => _OrganizationMembers.Assign(value);
-
-           }
 
         [Association(Name = "Org_Member_Documents_ORG_FK", Storage = "_OrgMemberDocuments", OtherKey = "OrganizationId")]
         public EntitySet<OrgMemberDocument> OrgMemberDocuments
         {
-               get => _OrgMemberDocuments;
+            get => _OrgMemberDocuments;
 
             set => _OrgMemberDocuments.Assign(value);
-           }
+        }
+
+
+        [Association(Name = "Org_Temporary_Documents_ORG_FK", Storage = "_OrgTemporaryDocuments", OtherKey = "OrganizationId")]
+        public EntitySet<OrgTemporaryDocuments> OrgTemporaryDocuments
+        {
+            get { return this._OrgTemporaryDocuments; }
+
+            set { this._OrgTemporaryDocuments.Assign(value); }
+        }
+
+
+        [Association(Name = "FK_AttendWithAbsents_TBL_ORGANIZATIONS_TBL", Storage = "_Attends", OtherKey = "OrganizationId")]
+        public EntitySet<Attend> Attends
+        {
+            get => _Attends;
+
+            set => _Attends.Assign(value);
+        }
+
+
+        [Association(Name = "FK_Coupons_Organizations", Storage = "_Coupons", OtherKey = "OrgId")]
+        public EntitySet<Coupon> Coupons
+        {
+            get => _Coupons;
+
+            set => _Coupons.Assign(value);
+        }
+
+
+        [Association(Name = "FK_DivOrg_Organizations", Storage = "_DivOrgs", OtherKey = "OrgId")]
+        public EntitySet<DivOrg> DivOrgs
+        {
+            get => _DivOrgs;
+
+            set => _DivOrgs.Assign(value);
+        }
+
+
+        [Association(Name = "FK_GoerSenderAmounts_Organizations", Storage = "_GoerSenderAmounts", OtherKey = "OrgId")]
+        public EntitySet<GoerSenderAmount> GoerSenderAmounts
+        {
+            get => _GoerSenderAmounts;
+
+            set => _GoerSenderAmounts.Assign(value);
+        }
+
+
+        [Association(Name = "FK_MEETINGS_TBL_ORGANIZATIONS_TBL", Storage = "_Meetings", OtherKey = "OrganizationId")]
+        public EntitySet<Meeting> Meetings
+        {
+            get => _Meetings;
+
+            set => _Meetings.Assign(value);
+        }
+
+
+        [Association(Name = "FK_MemberTags_Organizations", Storage = "_MemberTags", OtherKey = "OrgId")]
+        public EntitySet<MemberTag> MemberTags
+        {
+            get => _MemberTags;
+
+            set => _MemberTags.Assign(value);
+        }
+
+
+        [Association(Name = "FK_OrganizationExtra_Organizations", Storage = "_OrganizationExtras", OtherKey = "OrganizationId")]
+        public EntitySet<OrganizationExtra> OrganizationExtras
+        {
+            get => _OrganizationExtras;
+
+            set => _OrganizationExtras.Assign(value);
+
+        }
+
+
+        [Association(Name = "FK_OrgMemberExtra_Organizations", Storage = "_OrgMemberExtras", OtherKey = "OrganizationId")]
+        public EntitySet<OrgMemberExtra> OrgMemberExtras
+        {
+            get => _OrgMemberExtras;
+
+            set => _OrgMemberExtras.Assign(value);
+        }
+
+
+        [Association(Name = "FK_OrgSchedule_Organizations", Storage = "_OrgSchedules", OtherKey = "OrganizationId")]
+        public EntitySet<OrgSchedule> OrgSchedules
+        {
+            get => _OrgSchedules;
+
+            set => _OrgSchedules.Assign(value);
+        }
+
+
+        [Association(Name = "FK_PrevOrgMemberExtra_Organization", Storage = "_PrevOrgMemberExtras", OtherKey = "OrganizationId")]
+        public EntitySet<PrevOrgMemberExtra> PrevOrgMemberExtras
+        {
+            get => _PrevOrgMemberExtras;
+
+            set => _PrevOrgMemberExtras.Assign(value);
+        }
+
+
+        [Association(Name = "FK_Resource_Organization", Storage = "_Resources", OtherKey = "OrganizationId")]
+        public EntitySet<Resource> Resources
+        {
+            get => _Resources;
+
+            set => _Resources.Assign(value);
+        }
+
+
+        [Association(Name = "FK_ResourceOrganization_Organizations", Storage = "_ResourceOrganizations", OtherKey = "OrganizationId")]
+        public EntitySet<ResourceOrganization> ResourceOrganizations
+        {
+            get => _ResourceOrganizations;
+
+            set => _ResourceOrganizations.Assign(value);
+        }
+
+
+        [Association(Name = "ORGANIZATION_MEMBERS_ORG_FK", Storage = "_OrganizationMembers", OtherKey = "OrganizationId")]
+        public EntitySet<OrganizationMember> OrganizationMembers
+        {
+            get => _OrganizationMembers;
+
+            set => _OrganizationMembers.Assign(value);
+        }
 
         #endregion
 
@@ -2281,8 +2397,7 @@ namespace CmsData
             set
             {
                 Organization previousValue = _ParentOrg.Entity;
-                if (((previousValue != value)
-                            || (_ParentOrg.HasLoadedOrAssignedValue == false)))
+                if (((previousValue != value) || (_ParentOrg.HasLoadedOrAssignedValue == false)))
                 {
                     SendPropertyChanging();
                     if (previousValue != null)
@@ -2297,9 +2412,7 @@ namespace CmsData
                         value.ChildOrgs.Add(this);
 
                         _ParentOrgId = value.OrganizationId;
-
                     }
-
                     else
                     {
                         _ParentOrgId = default(int?);
@@ -2308,7 +2421,9 @@ namespace CmsData
 
                     SendPropertyChanged("ParentOrg");
                 }
+
             }
+
         }
 
         [Association(Name = "FK_Organizations_Campus", Storage = "_Campu", ThisKey = "CampusId", IsForeignKey = true)]
@@ -2319,8 +2434,7 @@ namespace CmsData
             set
             {
                 Campu previousValue = _Campu.Entity;
-                if (((previousValue != value)
-                            || (_Campu.HasLoadedOrAssignedValue == false)))
+                if (((previousValue != value) || (_Campu.HasLoadedOrAssignedValue == false)))
                 {
                     SendPropertyChanging();
                     if (previousValue != null)
@@ -2335,9 +2449,7 @@ namespace CmsData
                         value.Organizations.Add(this);
 
                         _CampusId = value.Id;
-
                     }
-
                     else
                     {
                         _CampusId = default(int?);
@@ -2357,8 +2469,7 @@ namespace CmsData
             set
             {
                 Division previousValue = _Division.Entity;
-                if (((previousValue != value)
-                            || (_Division.HasLoadedOrAssignedValue == false)))
+                if (((previousValue != value) || (_Division.HasLoadedOrAssignedValue == false)))
                 {
                     SendPropertyChanging();
                     if (previousValue != null)
@@ -2373,7 +2484,6 @@ namespace CmsData
                         value.Organizations.Add(this);
 
                         _DivisionId = value.Id;
-
                     }
 
                     else
@@ -2411,13 +2521,10 @@ namespace CmsData
                         value.Organizations.Add(this);
 
                         _GenderId = value.Id;
-
                     }
-
                     else
                     {
                         _GenderId = default(int?);
-
                     }
 
                     SendPropertyChanged("Gender");
@@ -2433,8 +2540,7 @@ namespace CmsData
             set
             {
                 OrganizationType previousValue = _OrganizationType.Entity;
-                if (((previousValue != value)
-                            || (_OrganizationType.HasLoadedOrAssignedValue == false)))
+                if (((previousValue != value) || (_OrganizationType.HasLoadedOrAssignedValue == false)))
                 {
                     SendPropertyChanging();
                     if (previousValue != null)
@@ -2449,19 +2555,17 @@ namespace CmsData
                         value.Organizations.Add(this);
 
                         _OrganizationTypeId = value.Id;
-
                     }
-
                     else
                     {
                         _OrganizationTypeId = default(int?);
-
                     }
 
                     SendPropertyChanged("OrganizationType");
                 }
             }
         }
+
 
         [Association(Name = "FK_ORGANIZATIONS_TBL_EntryPoint", Storage = "_EntryPoint", ThisKey = "EntryPointId", IsForeignKey = true)]
         public EntryPoint EntryPoint
@@ -2487,13 +2591,10 @@ namespace CmsData
                         value.Organizations.Add(this);
 
                         _EntryPointId = value.Id;
-
                     }
-
                     else
                     {
                         _EntryPointId = default(int?);
-
                     }
 
                     SendPropertyChanged("EntryPoint");
@@ -2509,8 +2610,7 @@ namespace CmsData
             set
             {
                 OrganizationStatus previousValue = _OrganizationStatus.Entity;
-                if (((previousValue != value)
-                            || (_OrganizationStatus.HasLoadedOrAssignedValue == false)))
+                if (((previousValue != value) || (_OrganizationStatus.HasLoadedOrAssignedValue == false)))
                 {
                     SendPropertyChanging();
                     if (previousValue != null)
@@ -2527,11 +2627,9 @@ namespace CmsData
                         _OrganizationStatusId = value.Id;
 
                     }
-
                     else
                     {
                         _OrganizationStatusId = default(int);
-
                     }
 
                     SendPropertyChanged("OrganizationStatus");
@@ -2540,7 +2638,6 @@ namespace CmsData
         }
 
         #endregion
-
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
@@ -2551,7 +2648,7 @@ namespace CmsData
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void SendPropertyChanged(string propertyName)
+        protected virtual void SendPropertyChanged(String propertyName)
         {
             if ((PropertyChanged != null))
             {
@@ -2604,6 +2701,30 @@ namespace CmsData
         private void detach_EnrollmentTransactions(EnrollmentTransaction entity)
         {
             SendPropertyChanging();
+            entity.Organization = null;
+        }
+
+        private void attach_OrgMemberDocuments(OrgMemberDocument entity)
+        {
+            SendPropertyChanging();
+            entity.Organization = this;
+        }
+
+        private void detach_OrgMemberDocuments(OrgMemberDocument entity)
+        {
+            SendPropertyChanging();
+            entity.Organization = null;
+        }
+
+        private void attach_OrgTemporaryDocuments(OrgTemporaryDocuments entity)
+        {
+            this.SendPropertyChanging();
+            entity.Organization = this;
+        }
+
+        private void detach_OrgTemporaryDocuments(OrgTemporaryDocuments entity)
+        {
+            this.SendPropertyChanging();
             entity.Organization = null;
         }
 
@@ -2758,18 +2879,6 @@ namespace CmsData
         }
 
         private void detach_OrganizationMembers(OrganizationMember entity)
-        {
-            SendPropertyChanging();
-            entity.Organization = null;
-        }
-
-        private void attach_OrgMemberDocuments(OrgMemberDocument entity)
-        {
-            SendPropertyChanging();
-            entity.Organization = this;
-        }
-
-        private void detach_OrgMemberDocuments(OrgMemberDocument entity)
         {
             SendPropertyChanging();
             entity.Organization = null;

@@ -10,6 +10,7 @@ using System.Data.Linq.Mapping;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Linq;
+using MoreLinq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -91,13 +92,13 @@ namespace CmsData
         }
         public override void SubmitChanges(System.Data.Linq.ConflictMode failureMode)
         {
-            if (this.ObjectTrackingEnabled == true)
+            if (ObjectTrackingEnabled == true)
             {
-                ChangeSet cs = this.GetChangeSet();
+                ChangeSet cs = GetChangeSet();
                 var typesToCheck = new Type[] { typeof(string), typeof(System.Data.Linq.Binary) };//, typeof(DateTime) };
                 var insertsUpdates = (
                     from i in cs.Inserts.Union(cs.Updates)
-                    join m in this.Mapping.GetTables() on i.GetType() equals m.RowType.Type
+                    join m in Mapping.GetTables() on i.GetType() equals m.RowType.Type
                     select new
                     {
                         Entity = i,
@@ -157,7 +158,7 @@ namespace CmsData
         public void ClearCache2()
         {
             const BindingFlags Flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
-            var method = this.GetType().GetMethod("ClearCache", Flags);
+            var method = GetType().GetMethod("ClearCache", Flags);
             method.Invoke(this, null);
         }
 
@@ -206,19 +207,19 @@ namespace CmsData
         }
         public Person LoadPersonById(int id)
         {
-            return this.People.FirstOrDefault(p => p.PeopleId == id);
+            return People.FirstOrDefault(p => p.PeopleId == id);
         }
         public Family LoadFamilyByPersonId(int id)
         {
-            return this.Families.SingleOrDefault(ff => ff.People.Any(mm => mm.PeopleId == id));
+            return Families.SingleOrDefault(ff => ff.People.Any(mm => mm.PeopleId == id));
         }
         public Organization LoadOrganizationById(int? id)
         {
-            return this.Organizations.FirstOrDefault(o => o.OrganizationId == id);
+            return Organizations.FirstOrDefault(o => o.OrganizationId == id);
         }
         public Contact LoadContactById(int? id)
         {
-            return this.Contacts.FirstOrDefault(o => o.ContactId == id);
+            return Contacts.FirstOrDefault(o => o.ContactId == id);
         }
         public OrgFilter OrgFilter(Guid? id)
         {
@@ -246,7 +247,7 @@ namespace CmsData
         }
         public Meeting LoadMeetingById(int? id)
         {
-            return this.Meetings.SingleOrDefault(m => m.MeetingId == id);
+            return Meetings.SingleOrDefault(m => m.MeetingId == id);
         }
         public Organization LoadOrganizationByName(string name)
         {
@@ -258,12 +259,12 @@ namespace CmsData
         }
         public string FetchExtra(int pid, string field)
         {
-            return this.PeopleExtras.OrderByDescending(e => e.TransactionTime)
+            return PeopleExtras.OrderByDescending(e => e.TransactionTime)
                 .First(e => e.Field == field && e.PeopleId == pid).StrValue;
         }
         public DateTime? FetchExtraDate(int pid, string field)
         {
-            return this.PeopleExtras.OrderByDescending(e => e.TransactionTime)
+            return PeopleExtras.OrderByDescending(e => e.TransactionTime)
                 .First(e => e.Field == field && e.PeopleId == pid).DateValue;
         }
 
@@ -860,7 +861,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
         }
         public Tag OrgLeadersOnlyTag2()
         {
-            return FetchOrCreateTag(Util.SessionId, Util.UserPeopleId ?? Util.UserId1, DbUtil.TagTypeId_OrgLeadersOnly);
+            return FetchOrCreateTag(Util.SessionId, Util.UserPeopleId, DbUtil.TagTypeId_OrgLeadersOnly);
         }
 
         public Tag FetchOrCreateTag(string tagname, int? ownerId, int tagtypeid)
@@ -979,19 +980,19 @@ This search uses multiple steps which cannot be duplicated in a single query.
         [Function(Name = "dbo.AddAbsents")]
         public int AddAbsents([Parameter(DbType = "Int")] int? meetid, [Parameter(DbType = "Int")] int? userid)
         {
-            var result = this.ExecuteMethodCall(this, (MethodInfo)(MethodInfo.GetCurrentMethod()), meetid, userid);
+            var result = ExecuteMethodCall(this, (MethodInfo)(MethodInfo.GetCurrentMethod()), meetid, userid);
             return (int)(result.ReturnValue);
         }
         [Function(Name = "dbo.UpdateAttendStr")]
         public int UpdateAttendStr([Parameter(DbType = "Int")] int? orgid, [Parameter(DbType = "Int")] int? pid)
         {
-            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), orgid, pid);
+            var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), orgid, pid);
             return ((int)(result.ReturnValue));
         }
         [Function(Name = "dbo.UpdatePastAttendStr")]
         public int UpdatePastAttendStr([Parameter(DbType = "Int")] int? orgid, [Parameter(DbType = "Int")] int? pid)
         {
-            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), orgid, pid);
+            var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), orgid, pid);
             return ((int)(result.ReturnValue));
         }
         public class TopGiver
@@ -1035,7 +1036,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
         [ResultType(typeof(Meeting))] // BFC Meeting Attended
         public IMultipleResults AttendMeetingInfo(int MeetingId, int PeopleId)
         {
-            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), MeetingId, PeopleId);
+            var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), MeetingId, PeopleId);
             return (IMultipleResults)result.ReturnValue;
         }
         public AttendMeetingInfo1 AttendMeetingInfo0(int MeetingId, int PeopleId)
@@ -1078,7 +1079,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
         [ResultType(typeof(RecordAttendInfo))]
         private IMultipleResults RecordAttend([Parameter(DbType = "Int")] int? meetingId, [Parameter(DbType = "Int")] int? peopleId, [Parameter(DbType = "Bit")] bool? present)
         {
-            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), meetingId, peopleId, present);
+            var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), meetingId, peopleId, present);
             return ((IMultipleResults)(result.ReturnValue));
         }
         [Function(Name = "dbo.RecordAttendance")]
@@ -1091,7 +1092,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
             [Parameter(DbType = "Varchar(50)")] string location,
             [Parameter(DbType = "Int")] int? userId)
         {
-            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), orgId, peopleId, meetingDate, present, location, userId);
+            var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), orgId, peopleId, meetingDate, present, location, userId);
             return ((IMultipleResults)(result.ReturnValue));
         }
 
@@ -1110,59 +1111,13 @@ This search uses multiple steps which cannot be duplicated in a single query.
             return s.ret;
         }
 
-        //        public class RollListView
-        //        {
-        //            public int? Section { get; set; }
-        //            public int? PeopleId { get; set; }
-        //            public string Name { get; set; }
-        //            public string Last { get; set; }
-        //            public int? FamilyId { get; set; }
-        //            public string First { get; set; }
-        //            public string Email { get; set; }
-        //            public bool? Attended { get; set; }
-        //            public int? CommitmentId { get; set; }
-        //            public string CurrMemberType { get; set; }
-        //            public string MemberType { get; set; }
-        //            public string AttendType { get; set; }
-        //            public int? OtherAttends { get; set; }
-        //            public bool? CurrMember { get; set; }
-        //        }
-        //
-        //        [Function(Name = "dbo.RollListMeeting")]
-        //        [ResultType(typeof(RollListView))]
-        //        public IMultipleResults RollListMeeting(
-        //            [Parameter(DbType = "Int")] int? mid
-        //            , [Parameter(DbType = "DateTime")] DateTime meetingdt
-        //            , [Parameter(DbType = "Int")] int oid
-        //            , [Parameter(DbType = "Bit")] bool current
-        //            , [Parameter(DbType = "Bit")] bool createmeeting)
-        //        {
-        //            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-        //                mid, meetingdt, oid, current, createmeeting);
-        //            return ((IMultipleResults)(result.ReturnValue));
-        //        }
-        //        public IEnumerable<RollListView> RollList(int? mid ,  DateTime meetingdt ,  int oid ,  bool current ,  bool createmeeting)
-        //        {
-        //            var r = RollListMeeting(mid, meetingdt, oid, current, createmeeting);
-        //            return r.GetResult<RollListView>();
-        //        }
         public bool UserPreference(string pref, bool def = false)
         {
             return UserPreference(pref, "").ToBool();
         }
+
         public string UserPreference(string pref, string defaultValue)
         {
-            var d = HttpContextFactory.Current.Session["preferences"] as Dictionary<string, string>;
-            if (d != null && d.ContainsKey(pref))
-            {
-                return d[pref] ?? defaultValue;
-            }
-
-            if (d == null)
-            {
-                d = new Dictionary<string, string>();
-                HttpContextFactory.Current.Session["preferences"] = d;
-            }
             Preference p = null;
             if (CurrentUser != null)
             {
@@ -1171,10 +1126,8 @@ This search uses multiple steps which cannot be duplicated in a single query.
 
             if (p != null)
             {
-                d[pref] = p.ValueX;
                 return p.ValueX;
             }
-            d[pref] = null;
             return defaultValue;
         }
 
@@ -1183,6 +1136,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
             var value = UserPreference(pref, "");
             SetUserPreference(pref, value == "true" ? "false" : "true");
         }
+
         public void SetUserPreference(string pref, object value)
         {
             if (UserPreference(pref, "") == value.ToString())
@@ -1205,13 +1159,6 @@ This search uses multiple steps which cannot be duplicated in a single query.
                 p = new Preference { UserId = Util.UserId1, PreferenceX = pref, ValueX = value.ToString() };
                 Preferences.InsertOnSubmit(p);
             }
-            var d = HttpContextFactory.Current.Session["preferences"] as Dictionary<string, string>;
-            if (d == null)
-            {
-                d = new Dictionary<string, string>();
-                HttpContextFactory.Current.Session["preferences"] = d;
-            }
-            d[pref] = p.ValueX;
             SubmitChanges();
         }
         public void SetUserPreference(int id, string pref, object value)
@@ -1238,127 +1185,127 @@ This search uses multiple steps which cannot be duplicated in a single query.
         [Function(Name = "dbo.LinkEnrollmentTransaction")]
         public int LinkEnrollmentTransaction([Parameter(DbType = "Int")] int? tid, [Parameter(DbType = "DateTime")] DateTime? trandt, [Parameter(DbType = "Int")] int? typeid, [Parameter(DbType = "Int")] int? orgid, [Parameter(DbType = "Int")] int? pid)
         {
-            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), tid, trandt, typeid, orgid, pid);
+            var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), tid, trandt, typeid, orgid, pid);
             return ((int)(result.ReturnValue));
         }
         [Function(Name = "dbo.FlagOddTransaction")]
         public int FlagOddTransaction([Parameter(DbType = "Int")] int? pid, [Parameter(DbType = "Int")] int? orgid)
         {
-            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), pid, orgid);
+            var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), pid, orgid);
             return ((int)(result.ReturnValue));
         }
         [Function(Name = "dbo.MergeCampuses")]
         public int MergeCampuses([Parameter(DbType = "Int")] int destCampus, [Parameter(DbType = "Int")] int oldCampus)
         {
-            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), destCampus, oldCampus);
+            var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), destCampus, oldCampus);
             return ((int)(result.ReturnValue));
         }
         [Function(Name = "dbo.PurgePerson")]
         public int PurgePerson([Parameter(DbType = "Int")] int? pid)
         {
-            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), pid);
+            var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), pid);
             return ((int)(result.ReturnValue));
         }
         [Function(Name = "dbo.PurgeOrganization")]
         public int PurgeOrganization([Parameter(DbType = "Int")] int? oid)
         {
-            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), oid);
+            var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), oid);
             return ((int)(result.ReturnValue));
         }
         [Function(Name = "dbo.UpdateMainFellowship")]
         public int UpdateMainFellowship([Parameter(DbType = "Int")] int? orgid)
         {
-            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), orgid);
+            var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), orgid);
             return ((int)(result.ReturnValue));
         }
         [Function(Name = "dbo.UpdateMeetingCounters")]
         public int UpdateMeetingCounters([Parameter(DbType = "Int")] int? mid)
         {
-            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), mid);
+            var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), mid);
             return ((int)(result.ReturnValue));
         }
         [Function(Name = "dbo.DeletePeopleExtras")]
         public int DeletePeopleExtras([Parameter(DbType = "varchar(50)")] string field)
         {
-            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), field);
+            var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), field);
             return ((int)(result.ReturnValue));
         }
         [Function(Name = "dbo.DeleteSpecialTags")]
         public int DeleteSpecialTags([Parameter(DbType = "Int")] int? pid)
         {
-            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), pid);
+            var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), pid);
             return ((int)(result.ReturnValue));
         }
         [Function(Name = "dbo.UpdateResCodes")]
         public int UpdateResCodes()
         {
-            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())));
+            var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())));
             return ((int)(result.ReturnValue));
         }
         [Function(Name = "dbo.PurgeAllPeopleInCampus")]
         public int PurgeAllPeopleInCampus([Parameter(DbType = "Int")] int? cid)
         {
-            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), cid);
+            var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), cid);
             return ((int)(result.ReturnValue));
         }
         [Function(Name = "dbo.PopulateComputedEnrollmentTransactions")]
         public int PopulateComputedEnrollmentTransactions([Parameter(DbType = "Int")] int? orgid)
         {
-            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), orgid);
+            var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), orgid);
             return ((int)(result.ReturnValue));
         }
         [Function(Name = "dbo.RepairTransactions")]
         public int RepairTransactions([Parameter(DbType = "Int")] int? orgid)
         {
-            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), orgid);
+            var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), orgid);
             return ((int)(result.ReturnValue));
         }
         [Function(Name = "dbo.RepairTransactionsOrgs")]
         public int RepairTransactionsOrgs([Parameter(DbType = "Int")] int? orgid)
         {
-            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), orgid);
+            var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), orgid);
             return ((int)(result.ReturnValue));
         }
         [Function(Name = "dbo.UpdateSchoolGrade")]
         public int UpdateSchoolGrade([Parameter(DbType = "Int")] int? pid)
         {
-            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), pid);
+            var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), pid);
             return ((int)(result.ReturnValue));
         }
         [Function(Name = "dbo.UpdateLastActivity")]
         public int UpdateLastActivity([Parameter(DbType = "Int")] int? userid)
         {
-            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), userid);
+            var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), userid);
             return ((int)(result.ReturnValue));
         }
         [Function(Name = "dbo.PurgeUser")]
         public int PurgeUser([Parameter(DbType = "Int")] int? uid)
         {
-            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), uid);
+            var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), uid);
             return ((int)(result.ReturnValue));
         }
         [Function(Name = "dbo.DeleteQBTree")]
         public int DeleteQBTree([Parameter(DbType = "Int")] int? qid)
         {
-            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), qid);
+            var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), qid);
             return ((int)(result.ReturnValue));
         }
         [Function(Name = "dbo.SetMainDivision")]
         public int SetMainDivision([Parameter(DbType = "Int")] int? orgid, [Parameter(DbType = "Int")] int? divid)
         {
-            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), orgid, divid);
+            var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), orgid, divid);
             return ((int)(result.ReturnValue));
         }
         [Function(Name = "dbo.DeleteQueryBitTags")]
         public int DeleteQueryBitTags()
         {
-            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())));
+            var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())));
             return ((int)(result.ReturnValue));
         }
         [Function(Name = "dbo.CreateMeeting")]
         public int CreateMeeting([Parameter(DbType = "Int")] int oid, [Parameter(DbType = "DateTime")] DateTime? mdt)
         {
-            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), oid, mdt);
+            var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), oid, mdt);
             return ((int)(result.ReturnValue));
         }
         [Function(Name = "dbo.CreateZipCodesRange")]
@@ -1367,7 +1314,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
             [Parameter(DbType = "Int")] int endwith,
             [Parameter(DbType = "Int")] int marginalcode)
         {
-            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), startwith, endwith, marginalcode);
+            var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), startwith, endwith, marginalcode);
             return ((int)(result.ReturnValue));
         }
         [Function(Name = "dbo.DeleteZipCodesRange")]
@@ -1375,87 +1322,87 @@ This search uses multiple steps which cannot be duplicated in a single query.
             [Parameter(DbType = "Int")] int startwith,
             [Parameter(DbType = "Int")] int endwith)
         {
-            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), startwith, endwith);
+            var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), startwith, endwith);
             return ((int)(result.ReturnValue));
         }
         [Function(Name = "dbo.InsertDuplicate")]
         public int InsertDuplicate([Parameter(DbType = "Int")] int i1, [Parameter(DbType = "Int")] int i2)
         {
-            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), i1, i2);
+            var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), i1, i2);
             return ((int)(result.ReturnValue));
         }
         [Function(Name = "dbo.NoEmailDupsInTag")]
         public int NoEmailDupsInTag([Parameter(DbType = "Int")] int tagid)
         {
-            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), tagid);
+            var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), tagid);
             return ((int)(result.ReturnValue));
         }
         [Function(Name = "dbo.AttendUpdateN")]
         public int AttendUpdateN([Parameter(DbType = "Int")] int pid, [Parameter(DbType = "Int")] int max)
         {
-            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), pid, max);
+            var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), pid, max);
             return ((int)(result.ReturnValue));
         }
         [Function(Name = "dbo.TrackOpen")]
         public int TrackOpen([Parameter(DbType = "UniqueIdentifier")] Guid guid)
         {
-            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), guid);
+            var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), guid);
             return ((int)(result.ReturnValue));
         }
         [Function(Name = "dbo.TrackClick")]
         public int TrackClick([Parameter(DbType = "VarChar(50)")] string hash,
             [Parameter(DbType = "VarChar(2000)")] ref string link)
         {
-            IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), hash, link);
+            IExecuteResult result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), hash, link);
             link = ((string)(result.GetParameterValue(1)));
             return ((int)(result.ReturnValue));
         }
         [Function(Name = "dbo.SpamReporterRemove")]
         public int SpamReporterRemove([Parameter(DbType = "VARCHAR(100)")] string email)
         {
-            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), email);
+            var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), email);
             return ((int)(result.ReturnValue));
         }
         [Function(Name = "dbo.DropOrgMember")]
         public int DropOrgMember([Parameter(DbType = "Int")] int oid, [Parameter(DbType = "Int")] int pid)
         {
-            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), oid, pid);
+            var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), oid, pid);
             return ((int)(result.ReturnValue));
         }
         [Function(Name = "dbo.FastDrop")]
         public int FastDrop([Parameter(DbType = "Int")] int oid, [Parameter(DbType = "Int")] int pid, [Parameter(DbType = "DateTime")] DateTime dropdate, [Parameter(DbType = "NVARCHAR(150)")] string orgname)
         {
-            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), oid, pid, dropdate, orgname);
+            var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), oid, pid, dropdate, orgname);
             return ((int)(result.ReturnValue));
         }
         [Function(Name = "dbo.RemoveFromEnrollmentHistory")]
         public int RemoveFromEnrollmentHistory([Parameter(DbType = "Int")] int organizationid, [Parameter(DbType = "Int")] int peopleid)
         {
-            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), organizationid, peopleid);
+            var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), organizationid, peopleid);
             return ((int)(result.ReturnValue));
         }
         [Function(Name = "dbo.DeleteEnrollmentTransaction")]
         public int DeleteEnrollmentTransaction([Parameter(DbType = "Int")] int id)
         {
-            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), id);
+            var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), id);
             return ((int)(result.ReturnValue));
         }
         [Function(Name = "dbo.RepairEnrollmentTransaction")]
         public int RepairEnrollmentTransaction([Parameter(DbType = "Int")] int oid, [Parameter(DbType = "Int")] int pid)
         {
-            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), oid, pid);
+            var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), oid, pid);
             return ((int)(result.ReturnValue));
         }
         [Function(Name = "dbo.PopulateTempTag")]
         public int PopulateTempTag([Parameter(DbType = "Int")] int id, [Parameter(DbType = "VARCHAR(MAX)")] string list)
         {
-            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), id, list);
+            var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), id, list);
             return ((int)(result.ReturnValue));
         }
         [Function(Name = "dbo.AddTag1ToTag2")]
         public int AddTag1ToTag2([Parameter(DbType = "Int")] int t1, [Parameter(DbType = "Int")] int t2)
         {
-            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), t1, t2);
+            var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), t1, t2);
             return ((int)(result.ReturnValue));
         }
         [Function(Name = "dbo.UpdateQuestion")]
@@ -1465,7 +1412,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
             [Parameter(DbType = "Int")] int? n,
             [Parameter(DbType = "VARCHAR(1000)")] string answer)
         {
-            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), oid, pid, n, answer);
+            var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), oid, pid, n, answer);
             return ((int)(result.ReturnValue));
         }
         [Function(Name = "dbo.ArchiveContent")]
@@ -2022,6 +1969,50 @@ This search uses multiple steps which cannot be duplicated in a single query.
             // The following will clean out any tags that no longer have a corresponding F99:name in the queries
             ExecuteCommand("dbo.DeleteOldQueryBitTags");
         }
+
+        public void RetrieveBatchData(string startdt = null, string enddt = null)  // code has mostly been moved over from CmsWeb.Models.TransactionsModel.cs with some cleanup
+        {
+            IGateway[] gateways = {
+                Gateway(false, null, PaymentProcessTypes.OneTimeGiving, false),
+                Gateway(false, null, PaymentProcessTypes.OnlineRegistration, false),
+                Gateway(false, null, PaymentProcessTypes.RecurringGiving, false)
+            };
+
+            DateTime? dateFrom = (startdt != null) ? (DateTime?)DateTime.Parse(startdt) : null;
+            DateTime? dateTo = (enddt != null) ? (DateTime?)DateTime.Parse(enddt) : null;
+
+            var rangeTo = dateTo ?? DateTime.Now;
+            var rangeFrom = dateFrom ?? rangeTo.AddDays(0 - Setting("AutoSyncBatchDatesWindow").ToInt());
+
+            var transactions
+                = from t in ViewTransactionLists
+                join org in Organizations on t.OrgId equals org.OrganizationId
+                select t;
+
+            foreach (var gateway in gateways.Where(g => g.IsNotNull()).DistinctBy(g => g.Identifier))
+            {
+                if (gateway.IsNull() || !gateway.CanGetSettlementDates)
+                {
+                    return;
+                }
+
+                if (gateway.UseIdsForSettlementDates)
+                {
+                    var tranids = (from t in transactions
+                        where t.TransactionDate >= rangeFrom
+                        where t.TransactionDate <= rangeTo
+                        where t.Settled == null
+                        where t.Moneytran == true
+                        select t.TransactionId).ToList();
+                    gateway.CheckBatchSettlements(tranids);
+                }
+                else
+                {
+                    gateway.CheckBatchSettlements(rangeFrom, rangeTo);
+                }
+            }
+        }
+
         [Function(Name = "dbo.TagRecentStartAttend")]
         public int TagRecentStartAttend(
             [Parameter(DbType = "Int")] int progid,
@@ -2032,7 +2023,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
             [Parameter(DbType = "Int")] int days,
             [Parameter(DbType = "Int")] int tagid)
         {
-            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+            var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 progid, divid, org, orgtype, days0, days, tagid);
             return ((int)(result.ReturnValue));
         }
@@ -2117,7 +2108,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
         [Function(Name = "dbo.UpdateAllSpouseId")]
         public int UpdateAllSpouseId()
         {
-            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())));
+            var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())));
             return ((int)(result.ReturnValue));
         }
     }

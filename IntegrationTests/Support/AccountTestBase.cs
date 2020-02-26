@@ -43,7 +43,8 @@ namespace IntegrationTests.Support
 
         protected void Logout()
         {
-            RepeatUntil(() => Find(css: profileMenu).Click(), () => Find(text: "Log Out") != null);
+            WaitForElementToDisappear(loadingUI);
+            RepeatUntil(() => Find(css: profileMenu)?.Click(), () => Find(text: "Log Out") != null);
             Find(text: "Log Out").Click();
 
             Assert.Contains("Sign In", PageSource);

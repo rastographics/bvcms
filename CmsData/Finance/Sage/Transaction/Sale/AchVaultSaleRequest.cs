@@ -7,7 +7,7 @@ namespace CmsData.Finance.Sage.Transaction.Sale
     {
         private const string BASE_ADDRESS = "https://gateway.sagepayments.net/web_services/wsVault/wsVaultVirtualCheck.asmx/";
 
-        public AchVaultSaleRequest(string id, string key, string originatorId, Guid vaultGuid, string firstName, string middleInitial, string lastName, string suffix, BillingAddress billingAddress, decimal amount)
+        public AchVaultSaleRequest(string id, string key, string originatorId, Guid vaultGuid, string firstName, string middleInitial, string lastName, string suffix, string zip, BillingAddress billingAddress, decimal amount)
             : base(BASE_ADDRESS, "VIRTUAL_CHECK_PPD_SALE", id, key)
         {
             Data["C_ORIGINATOR_ID"] = originatorId;
@@ -17,11 +17,12 @@ namespace CmsData.Finance.Sage.Transaction.Sale
             Data["C_LAST_NAME"] = lastName;
             Data["C_SUFFIX"] = suffix;
             Data["T_AMT"] = amount.ToString("n2");
+            Data["C_ZIP"] = zip;
             billingAddress.SetBillingAddressData(Data);
         }
 
-        public AchVaultSaleRequest(string id, string key, string originatorId, Guid vaultGuid, string firstName, string middleInitial, string lastName, string suffix, BillingAddress billingAddress, decimal amount, string orderNumber)
-            : this(id, key, originatorId, vaultGuid, firstName, middleInitial, lastName, suffix, billingAddress, amount)
+        public AchVaultSaleRequest(string id, string key, string originatorId, Guid vaultGuid, string firstName, string middleInitial, string lastName, string suffix, string zip, BillingAddress billingAddress, decimal amount, string orderNumber)
+            : this(id, key, originatorId, vaultGuid, firstName, middleInitial, lastName, suffix, zip, billingAddress, amount)
         {
             Data["T_ORDERNUM"] = orderNumber;
         }

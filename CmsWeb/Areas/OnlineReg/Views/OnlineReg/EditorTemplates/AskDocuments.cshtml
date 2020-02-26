@@ -5,7 +5,6 @@
     var ask = (AskDocuments)ViewBag.ask;
     var name = Html.NameFor2(m => m.OrganizationDocument);
 }
-<p>Please, upload the following documents</p>
 @for (var i = 0; i < ask.list.Count; i++)
 {
     var a = ask.list[i];
@@ -13,7 +12,7 @@
     <div class="form-group">
         <div class="col-sm-12">
             <div class="well">
-                <label for="doc" class="control-label">
+                <label for="doc">
                     @a.DocumentName&nbsp;@req&nbsp;&nbsp;<span class="glyphicon glyphicon-check checkmark" style="color:green;display:none"></span>
                 </label>
                 <div class="form-inline docBlock">
@@ -22,11 +21,13 @@
                         <input class="hdnIsUploaded" type="hidden" name="@(name)[@i].Value" value="false" />
                         <input class="docInput" type="file" docname="@a.DocumentName" />
                     </div>
-                    <div class="input-group">
-                        <input type="button" name="Upload" value="Submit Document" class="btn btn-primary btnUploadDoc" />                        
-                    </div>
-                    <div class="input-group">
-                        <input type="button" value="Delete" class="btn btn-danger btnDeleteDoc" disabled />
+                    <div class="upload-doc-options">
+                        <div class="input-group">
+                            <input type="button" name="Upload" value="Submit" class="btn btn-block btn-primary btnUploadDoc" />
+                        </div>
+                        <div class="input-group">
+                            <input type="button" value="Delete" class="btn btn-block btn-danger btnDeleteDoc" disabled />
+                        </div>
                     </div>
                 </div>
             </div>
@@ -34,4 +35,7 @@
     </div>
 }
 <input id="registrantId" type="hidden" value="@Model.PeopleId" />
+<input id="email" type="hidden" value="@Model.EmailAddress" />
+<input id="lastName" type="hidden" value="@Model.LastName" />
+<input id="firstName" type="hidden" value="@Model.FirstName" />
 <input id="orgId" type="hidden" value="@Model.orgid" />

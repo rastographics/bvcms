@@ -57,19 +57,16 @@
         var longitude = @longitude;
         var mapZoom = @mapZoom;
     </script>
-    @if (useEmbeddedMap)
-    {
-        <div class="col-md-6">
-            <div id="map" class="map">
-            </div>
+    <div class="col-md-6 @(useEmbeddedMap ? "show" : "hide")">
+        <div id="map" class="map">
         </div>
-    }
+    </div>
     <div class="@(useEmbeddedMap ? "col-md-6" : "col-md-12")">
         <ul style="overflow: auto; height: 600px">
-            @foreach (var i in mapModel.Locations())
+            @foreach (var i in Model.getGroups().Organizations)
             {
                 var gl = new GroupLookup();
-                gl.populateFromOrg(i.org);
+                gl.populateFromOrg(i);
                 @Html.Raw(Model.replaceAndWrite(gl));
             }
         </ul>
