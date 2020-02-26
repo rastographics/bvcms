@@ -34,7 +34,7 @@ namespace CmsDataTests
                 var FirstContribution = MockContributions.CreateSaveContribution(db, bundleHeader, fromDate, 120, peopleId: 1);
                 var SecondContribution = MockContributions.CreateSaveContribution(db, bundleHeader, fromDate, 500, peopleId: 1, contributionType: ContributionTypeCode.Pledge);
 
-                var results = db.GetTotalContributionsDonor(fromDate, toDate, null, null, true, null, null, true).ToList();
+                var results = db.GetTotalContributionsDonor(fromDate, toDate, null, null, null, true, null, null, true).ToList();
                 var actualContributionsAmount = results.Where(x => x.ContributionTypeId == ContributionTypeCode.CheckCash).Sum(x => x.Amount);
                 var actualPledgesAmount = results.Where(x => x.ContributionTypeId == ContributionTypeCode.Pledge).Sum(x => x.PledgeAmount);
 
@@ -122,6 +122,26 @@ namespace CmsDataTests
                 {
                     TopGiversResult.ShouldNotBeNull();
                 }
+
+                MockContributions.DeleteAllFromBundle(db, bundleHeader);
+            }
+        }
+
+        [Fact]
+        public void GetTotalContributionsDonor2Test()
+        {
+            var fromDate = new DateTime(2016, 4, 4);
+            var toDate = new DateTime(2016, 7, 31);
+
+            using (var db = CMSDataContext.Create(Util.Host))
+            {
+                var bundleHeader = MockContributions.CreateSaveBundle(db);
+                var Contribution = MockContributions.CreateSaveContribution(db, bundleHeader, fromDate, 120, peopleId: 1);
+
+                var TotalContributionsDonor = db.GetTotalContributionsDonor2(fromDate, toDate, null, null, true, null, null).ToList();
+
+                var ammount = TotalContributionsDonor[0].Amount;
+                ammount.ShouldBe(120);
 
                 MockContributions.DeleteAllFromBundle(db, bundleHeader);
             }

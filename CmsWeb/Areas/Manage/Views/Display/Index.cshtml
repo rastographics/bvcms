@@ -244,64 +244,70 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="new-modal">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form action="/Display/ContentCreate/" method="post">
-                <input type="hidden" id="newType" name="newType" value="0" />
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title"></h4>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="newName" class="control-label">File Name</label>
-                        @Html.TextBox("newName", "", new { @class = "form-control" })
+
+<div id="Modal-VueApp">
+    <div class="modal fade" id="new-modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form action="/Display/ContentCreate/" method="post">
+                    <input type="hidden" id="newType" name="newType" value="0" />
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"></h4>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <input type="button" id="cancel" value="Cancel" class="btn btn-default" data-dismiss="modal" />
-                    <input type="submit" id="post" value="Submit" class="btn btn-primary" />
-                </div>
-            </form>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="newName" class="control-label">File Name</label>
+                            <input type="text" id="newName" v-model="newName" name="newName" class="form-control" />
+                            <small v-if="notValidName" class="red-empty">"Empty Template" name cannot be used</small>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="button" id="cancel" value="Cancel" class="btn btn-default" data-dismiss="modal" />
+                        <input type="submit" id="post" value="Submit" v-bind:class="'btn btn-primary ' + (notValidName ? 'disabled' : '')" />
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-</div>
-<div class="modal fade" id="new-modal-role">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form action="/Display/ContentCreate/" method="post">
-                <input type="hidden" id="newType" name="newType" value="0" />
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title"></h4>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label for="newRole" class="control-label">Role</label>
-                                @Html.DropDownList("newRole", new SelectList(ContentModel.fetchRoles(), "RoleId", "RoleName"), new { @class = "form-control" })
+    <div class="modal fade" id="new-modal-role">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form action="/Display/ContentCreate/" method="post">
+                    <input type="hidden" id="newType" name="newType" value="0" />
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"></h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="newRole" class="control-label">Role</label>
+                                    @Html.DropDownList("newRole", new SelectList(ContentModel.fetchRoles(), "RoleId", "RoleName"), new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label for="newName-role" class="control-label">File Name</label>
+                                    <input type="text" id="newName-role" v-model="newName" name="newName" class="form-control" />
+                                    <small v-if="notValidName" class="red-empty">"Empty Template" name cannot be used</small>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <div class="form-group">
-                                <label for="newName" class="control-label">File Name</label>
-                                @Html.TextBox("newName", "", new { @class = "form-control" })
-                            </div>
-                        </div>
+                    <div class="modal-footer">
+                        <input type="button" id="cancel" value="Cancel" class="btn btn-default" data-dismiss="modal" />
+                        <input type="submit" id="post-role" value="Submit" v-bind:class="'btn btn-primary ' + (notValidName ? 'disabled' : '')" />
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <input type="button" id="cancel" value="Cancel" class="btn btn-default" data-dismiss="modal" />
-                    <input type="submit" id="post" value="Submit" class="btn btn-primary" />
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
 </div>
+
 @helper SetHeaderRow(string tab)
 {
     var text = "";
@@ -385,6 +391,7 @@
 
             $('#new-modal').on('shown.bs.modal', function () {
                 $("#newName").val('').focus();
+                $("#newName-role").val('');
             });
 
             $("a[newtypewithrole]").click(function (ev) {
@@ -397,6 +404,7 @@
 
             $('#new-modal-role').on('shown.bs.modal', function () {
                 $("#newName").val('').focus();
+                $("#newName-role").val('');
             });
 
             var lastChecked = null;
@@ -447,6 +455,21 @@
             }
 
             checkChanged();
+        });
+    </script>
+
+    <script type="text/javascript">
+        const ModalApp = new Vue({
+            el: '#Modal-VueApp',
+            data: {
+                newName: '',
+                notValidName: false
+            },
+            watch: {
+                newName: function (val) {
+                    this.notValidName = val.toLowerCase().split(' ').join('') === 'emptytemplate';
+                }
+            }
         });
     </script>
 }

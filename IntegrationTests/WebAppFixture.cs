@@ -1,9 +1,13 @@
 ﻿using IntegrationTests.Support;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Edge;
+using OpenQA.Selenium.Firefox;
 using SharedTestFixtures;
 using System;
 using System.Net;
-using System.Xml;
+using WebDriverManager;
+using WebDriverManager.DriverConfigs.Impl;
 
 namespace IntegrationTests
 {
@@ -11,7 +15,7 @@ namespace IntegrationTests
     {
         private IISExpress cmswebInstance;
 
-        private static ChromeDriver SharedChromeDriver { get; set; }
+        private static IWebDriver SharedWebDriver { get; set; }
 
         public WebAppFixture()
         {
@@ -69,16 +73,62 @@ namespace IntegrationTests
             }
         }
 
-        public static ChromeDriver GetChromeDriver(bool shared)
+        public static IWebDriver GetWebDriver(bool shared)
         {
-            if (shared && SharedChromeDriver != null)
+            if (shared && SharedWebDriver != null)
             {
-                return SharedChromeDriver;
+                return SharedWebDriver;
             }
+            IWebDriver driver;
+            switch (Settings.WebDriverProvider)
+            {
+                case "Edge":
+                    driver = GetEdgeDriver(shared);
+                    break;
+                case "Firefox":
+                    driver = GetFirefoxDriver(shared);
+                    break;
+                default: //"Chrome"
+                    driver = GetChromeDriver(shared);
+                    break;
+            }
+
+            if (shared)
+            {
+                SharedWebDriver = driver;
+            }
+            return driver;
+        }
+
+        private static IWebDriver GetFirefoxDriver(bool shared)
+        {
+            new DriverManager().SetUpDriver(new FirefoxConfig());
+            FirefoxDriver edgeDriver;
+            FirefoxOptions options = new FirefoxOptions();
+            options.AcceptInsecureCertificates = true;
+            options.PageLoadStrategy = PageLoadStrategy.Normal;
+            edgeDriver = new FirefoxDriver(options);
+            return edgeDriver;
+        }
+
+        private static IWebDriver GetEdgeDriver(bool shared)
+        {
+            new DriverManager().SetUpDriver(new EdgeConfig());
+            EdgeDriver edgeDriver;
+            EdgeOptions options = new EdgeOptions();
+            options.AcceptInsecureCertificates = true;
+            options.PageLoadStrategy = PageLoadStrategy.Normal;
+            edgeDriver = new EdgeDriver(options);
+            return edgeDriver;
+        }
+
+        private static IWebDriver GetChromeDriver(bool shared)
+        {
+            new DriverManager().SetUpDriver(new ChromeConfig());
             ChromeDriver chromeDriver;
             ChromeOptions options = new ChromeOptions();
             // ChromeDriver is just AWFUL because every version or two it breaks unless you pass cryptic arguments
-            //AGRESSIVE: options.setPageLoadStrategy(PageLoadStrategy.NONE); // https://www.skptricks.com/2018/08/timed-out-receiving-message-from-renderer-selenium.html
+            options.PageLoadStrategy = PageLoadStrategy.Normal; // https://www.skptricks.com/2018/08/timed-out-receiving-message-from-renderer-selenium.html
             options.AddArgument("ignore-certificate-errors");
             options.AddArgument("start-maximized"); // https://stackoverflow.com/a/26283818/1689770
             options.AddArgument("enable-automation"); // https://stackoverflow.com/a/43840128/1689770
@@ -96,11 +146,6 @@ namespace IntegrationTests
             {
                 chromeDriver = new ChromeDriver(chromedriverDir, options, TimeSpan.FromSeconds(120));
             }
-
-            if (shared)
-            {
-                SharedChromeDriver = chromeDriver;
-            }
             return chromeDriver;
         }
 
@@ -108,8 +153,8 @@ namespace IntegrationTests
         {
             cmswebInstance?.Stop();
             cmswebInstance = null;
-            SharedChromeDriver?.Quit();
-            SharedChromeDriver = null;
+            SharedWebDriver?.Quit();
+            SharedWebDriver = null;
             CleanupWebConfig();
         }
     }

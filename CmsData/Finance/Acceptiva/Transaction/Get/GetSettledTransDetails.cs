@@ -17,9 +17,11 @@ namespace CmsData.Finance.Acceptiva.Transaction.Get
             Data["params[0][filters][2]"] = $"trans_status=52,61,73,74";
         }
 
-        public new List<AcceptivaResponse<TransactionResponse>> Execute()
+        public List<AcceptivaResponse<TransactionResponse>> Execute(out double responseTime)
         {
+            var timeBeforeRequest = DateTime.Now;
             var response = base.Execute();
+            responseTime = DateTime.Now.Subtract(timeBeforeRequest).TotalSeconds;
             return JsonConvert.DeserializeObject<List<AcceptivaResponse<TransactionResponse>>>(response);
         }
     }
