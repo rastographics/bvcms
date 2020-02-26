@@ -1132,6 +1132,8 @@ namespace CmsData
 
         public Table<OrgMemberDocument> OrgMemberDocuments => GetTable<OrgMemberDocument>();
 
+        public Table<OrgTemporaryDocuments> OrgTemporaryDocuments => GetTable<OrgTemporaryDocuments>();
+
         public Table<Organization> Organizations => GetTable<Organization>();
 
         public Table<OrganizationStatus> OrganizationStatuses => GetTable<OrganizationStatus>();
