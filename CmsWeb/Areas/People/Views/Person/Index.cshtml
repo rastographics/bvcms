@@ -18,7 +18,7 @@
         showResourcesTab = Model.PeopleId == Util.UserPeopleId || User.IsInRole("ViewResources");
     }
 
-    var showMinistryTab = !RoleChecker.HasSetting(SettingName.HideMinistryTab, false);
+    var showMinistryTab = Util.IsMyDataUser ? false : !RoleChecker.HasSetting(SettingName.HideMinistryTab, false);
 
 }
 @section head
