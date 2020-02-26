@@ -10,23 +10,23 @@ using System.Linq;
 using UtilityExtensions;
 using Xunit;
 
-namespace CMSWebTests.Models
+namespace CmsWeb.Models.Tests
 {
     [Collection(Collections.Database)]
     public class ExportPeopleTests
     {
-        [Theory]        
-        [InlineData(0, 0, false, true, true, null, null)]
-        [InlineData(0, 0, false, true, false, null, null)]
-        [InlineData(0, 0, false, false, true, null, null)]
-        [InlineData(0, 0, false, false, false, null, null)]
-        [InlineData(0, 0, false, null, true, null, null)]
-        [InlineData(0, 0, false, null, false, null, null)]        
+        [Theory]
+        [InlineData(0, false, true, true, null, null)]
+        [InlineData(0, false, true, false, null, null)]
+        [InlineData(0, false, false, true, null, null)]
+        [InlineData(0, false, false, false, null, null)]
+        [InlineData(0, false, null, true, null, null)]
+        [InlineData(0, false, null, false, null, null)]
         public void DonorDetails_Should_Not_Bring_Reversed_or_Returned_contributions(
-            int fundid, int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed, int? tagid, string fundids)
+            int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed, int? tagid, string fundids)
         {
             using (var db = CMSDataContext.Create(Util.Host))
-            {   
+            {
                 var bundleList = CreateTestContributionSet(db, Util.Now.Date);
                 var _exportPeople = new ExportPeople(db);
                 DateTime exportStartDt = Util.Now.AddDays(-180);
@@ -43,12 +43,12 @@ namespace CMSWebTests.Models
         }
 
         [Theory]
-        [InlineData( 0, false, true, true, null, null)]
-        [InlineData( 0, false, true, false, null, null)]
-        [InlineData( 0, false, false, true, null, null)]
-        [InlineData( 0, false, false, false, null, null)]
-        [InlineData( 0, false, null, true, null, null)]
-        [InlineData( 0, false, null, false, null, null)]
+        [InlineData(0, false, true, true, null, null)]
+        [InlineData(0, false, true, false, null, null)]
+        [InlineData(0, false, false, true, null, null)]
+        [InlineData(0, false, false, false, null, null)]
+        [InlineData(0, false, null, true, null, null)]
+        [InlineData(0, false, null, false, null, null)]
         public void ExcelDonorTotals_Should_Not_Bring_Reversed_or_Returned_contributions(int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed, int? tagid, string fundids)
         {
             using (var db = CMSDataContext.Create(Util.Host))
@@ -80,7 +80,7 @@ namespace CMSWebTests.Models
                                          where bh.BundleStatusId == 0
                                          select c;
                 }
-                
+
                 var tableResultTotals = tableResult.AsEnumerable().Sum(row => row.Field<decimal>("Amount"));
                 var totalContributions = dbContributionsQry.Sum(x => x.ContributionAmount) ?? 0;
 
@@ -98,7 +98,7 @@ namespace CMSWebTests.Models
                     {
                         MockContributions.DeleteAllFromBundle(db, b);
                     }
-                } 
+                }
             }
         }
 
@@ -114,7 +114,7 @@ namespace CMSWebTests.Models
             using (var db = CMSDataContext.Create(Util.Host))
             {
                 var bundleList = CreateTestContributionSet(db, Util.Now.Date);
-                var _exportPeople = new ExportPeople(db);                
+                var _exportPeople = new ExportPeople(db);
                 DateTime exportStartDt = Util.Now.AddDays(-180);
                 DateTime exportEndDt = Util.Now.AddDays(180);
 
@@ -139,7 +139,7 @@ namespace CMSWebTests.Models
                                          where bh.BundleStatusId == 0
                                          select c;
                 }
-                
+
                 var tableResultTotals = tableResult.AsEnumerable().Sum(row => row.Field<decimal>("Amount"));
                 var totalContributions = dbContributionsQry.Sum(x => x.ContributionAmount) ?? 0;
                 totalContributions.ToDouble().ShouldBe(tableResultTotals.ToDouble());
@@ -151,13 +151,48 @@ namespace CMSWebTests.Models
             }
         }
 
+        [Theory]
+        [InlineData("false", "false")]
+        [InlineData("true", "false")]
+        [InlineData("true", "true")]
+        [InlineData("false", "true")]
+        public void DonorDetailsTest(string notitles, string uselabelname)
+        {
+            using (var db = CMSDataContext.Create(Util.Host))
+            {
+                db.SetSetting("NoTitlesOnStatements", notitles);
+                db.SetSetting("UseLabelNameForDonorDetails", uselabelname);
+
+                var bundleList = CreateTestContributionSet(db, Util.Now.Date);
+                var exportPeople = new ExportPeople(db);
+                DateTime startDate = Util.Now.AddDays(-180);
+                DateTime endDate = Util.Now.AddDays(180);
+
+                DataTable tableResult = exportPeople.DonorDetails(startDate, endDate, 0, 0, false, null, true, null, null);
+                var dbContributionsQry = db.Contributions
+                    .Where(x => !ContributionTypeCode.ReturnedReversedTypes.Contains(x.ContributionTypeId) && !ContributionTypeCode.Pledge.Equals(x.ContributionTypeId))
+                    .Where(x => x.ContributionDate >= startDate && x.ContributionDate < endDate)
+                    .Select(x => x);
+
+                var tableResultTotals = tableResult.AsEnumerable().Sum(row => row.Field<decimal>("Amount"));
+                var totalContributions = dbContributionsQry.Sum(x => x.ContributionAmount) ?? 0;
+                totalContributions.ToDouble().ShouldBe(tableResultTotals.ToDouble());
+
+                foreach (var b in bundleList)
+                {
+                    MockContributions.DeleteAllFromBundle(db, b);
+                }
+                db.DeleteSetting("NoTitlesOnStatements");
+                db.DeleteSetting("UseLabelNameForDonorDetails");
+            }
+        }
+
         private List<BundleHeader> CreateTestContributionSet(CMSDataContext db, DateTime dt)
         {
             List<BundleHeader> bundleList = new List<BundleHeader>();
             var b1 = MockContributions.CreateSaveBundle(db);
             bundleList.Add(b1);
             var c1 = MockContributions.CreateSaveContribution(db, b1, dt, 500, peopleId: 1, contributionType: ContributionTypeCode.CheckCash);
-            //var c2 = MockContributions.CreateSaveContribution(db, b1, dt, 500, peopleId: 1, contributionType: ContributionTypeCode.GiftInKind);
             var c3 = MockContributions.CreateSaveContribution(db, b1, dt.AddSeconds(1), 500, peopleId: 1, contributionType: ContributionTypeCode.NonTaxDed);
             var c4 = MockContributions.CreateSaveContribution(db, b1, dt.AddSeconds(2), 500, peopleId: 1, contributionType: ContributionTypeCode.Online);
             var c5 = MockContributions.CreateSaveContribution(db, b1, dt.AddSeconds(3), 500, peopleId: 1, contributionType: ContributionTypeCode.Pledge);
@@ -169,7 +204,6 @@ namespace CMSWebTests.Models
             var b2 = MockContributions.CreateSaveBundle(db);
             bundleList.Add(b2);
             var b2c1 = MockContributions.CreateSaveContribution(db, b2, dt.AddSeconds(6), 500, peopleId: 1, contributionType: ContributionTypeCode.CheckCash);
-            //var b2c2 = MockContributions.CreateSaveContribution(db, b2, dt, 500, peopleId: 1, contributionType: ContributionTypeCode.GiftInKind);
             var b2c3 = MockContributions.CreateSaveContribution(db, b2, dt.AddSeconds(7), 500, peopleId: 1, contributionType: ContributionTypeCode.NonTaxDed);
             var b2c4 = MockContributions.CreateSaveContribution(db, b2, dt.AddSeconds(8), 500, peopleId: 1, contributionType: ContributionTypeCode.Online);
             var b2c5 = MockContributions.CreateSaveContribution(db, b2, dt.AddSeconds(9), 500, peopleId: 1, contributionType: ContributionTypeCode.Pledge);

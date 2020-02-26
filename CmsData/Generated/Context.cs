@@ -2350,6 +2350,19 @@ namespace CmsData
                 );
         }
 
+        [Function(Name = "dbo.FamilyGreetingName", IsComposable = true)]
+        [return: Parameter(DbType = "nvarchar")]
+        public string FamilyGreetingName(
+            [Parameter(DbType = "int")] int type,
+            [Parameter(DbType = "int")] int peopleId)
+        {
+            return (string) ExecuteMethodCall(this,
+                (MethodInfo)MethodInfo.GetCurrentMethod(),
+                type,
+                peopleId
+                ).ReturnValue;
+        }
+
         [Function(Name = "dbo.GetPledgedTotalsBothIfJoint", IsComposable = true)]
         public IQueryable<View.GetPledgedTotalsBothIfJoint> GetPledgedTotalsBothIfJoint(
             [Parameter(DbType = "datetime")] DateTime? startdt,
