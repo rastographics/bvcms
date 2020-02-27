@@ -1132,6 +1132,8 @@ namespace CmsData
 
         public Table<OrgMemberDocument> OrgMemberDocuments => GetTable<OrgMemberDocument>();
 
+        public Table<OrgTemporaryDocuments> OrgTemporaryDocuments => GetTable<OrgTemporaryDocuments>();
+
         public Table<Organization> Organizations => GetTable<Organization>();
 
         public Table<OrganizationStatus> OrganizationStatuses => GetTable<OrganizationStatus>();
@@ -2290,6 +2292,7 @@ namespace CmsData
             [Parameter(DbType = "int")] int? campusid,
             [Parameter(DbType = "bit")] bool? pledges,
             [Parameter(DbType = "int")] int? nontaxded,
+            [Parameter(DbType = "int")] int? online,
             [Parameter(DbType = "bit")] bool? includeUnclosed,
             [Parameter(DbType = "int")] int? tagid,
             [Parameter(DbType = "varchar")] string fundids
@@ -2302,6 +2305,7 @@ namespace CmsData
                 campusid,
                 pledges,
                 nontaxded,
+                online,
                 includeUnclosed,
                 tagid,
                 fundids
@@ -2346,6 +2350,19 @@ namespace CmsData
                 enddt,
                 fundid
                 );
+        }
+
+        [Function(Name = "dbo.FamilyGreetingName", IsComposable = true)]
+        [return: Parameter(DbType = "nvarchar")]
+        public string FamilyGreetingName(
+            [Parameter(DbType = "int")] int type,
+            [Parameter(DbType = "int")] int peopleId)
+        {
+            return (string) ExecuteMethodCall(this,
+                (MethodInfo)MethodInfo.GetCurrentMethod(),
+                type,
+                peopleId
+                ).ReturnValue;
         }
 
         [Function(Name = "dbo.GetPledgedTotalsBothIfJoint", IsComposable = true)]
@@ -2480,6 +2497,7 @@ namespace CmsData
             [Parameter(DbType = "datetime")] DateTime? td,
             [Parameter(DbType = "int")] int? campusid,
             [Parameter(DbType = "int")] int? nontaxded,
+            [Parameter(DbType = "int")] int? online,
             [Parameter(DbType = "bit")] bool? includeUnclosed,
             [Parameter(DbType = "int")] int? tagid,
             [Parameter(DbType = "varchar")] string fundids,
@@ -2492,6 +2510,7 @@ namespace CmsData
                 td,
                 campusid,
                 nontaxded,
+                online,
                 includeUnclosed,
                 tagid,
                 fundids,

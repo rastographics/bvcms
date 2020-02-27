@@ -1,4 +1,6 @@
-﻿@{
+﻿@using CmsData
+@using UtilityExtensions
+@{
     ViewBag.Title = "Retrieve Batch Data";
     ViewBag.PageHeader = "Retrieve Batch Data";
     Layout = ViewExtensions2.TouchPointLayout();
@@ -10,11 +12,34 @@
     <div class="alert alert-warning">
         <h4>Batch Data</h4>
         <p>
-            Click the button below to retrieve transaction batch data.  This process may take a few moments to complete.
+            Enter the date range and press the button to retrieve transaction batch data. This process may take a few moments to complete.
         </p>
-        <p>
-            <button type="submit" class="btn btn-warning btn-lg" id="update-transactions">Update Transactions</button>
-        </p>
+        <br/>
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group batch-date-form-group">
+                    <label for="startdt" class="control-label">Date From</label>
+                    <div class="input-group date">
+                        @Html.TextBox("startdt", DateTime.Now.AddDays(0 - ((int)ViewBag.autoSyncWindow > 0 ? (int)ViewBag.autoSyncWindow : 7)).ToString("MM/dd/yyyy"), new { @class = "form-control" })<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                        @Html.Hidden("startdtIso", DateTime.Now.AddDays(0 - ((int)ViewBag.autoSyncWindow > 0 ? (int)ViewBag.autoSyncWindow : 7)).ToString("yyyy-mm-dd"), new { disabled = "disabled" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group batch-date-form-group">
+                    <label for="enddt" class="control-label">Date To</label>
+                    <div class="input-group date">
+                        @Html.TextBox("enddt", DateTime.Now.ToString("MM/dd/yyyy"), new { @class = "form-control" })<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                        @Html.Hidden("enddtIso", DateTime.Now.ToString("yyyy-mm-dd"), new { disabled = "disabled" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <p>
+                    <button type="submit" class="btn btn-warning btn-lg" id="update-transactions">Retrieve Batch Data</button>
+                </p>
+            </div>
+        </div>
     </div>
 </form>
 @section scripts{
