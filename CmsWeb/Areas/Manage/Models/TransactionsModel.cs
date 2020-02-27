@@ -76,35 +76,35 @@ namespace CmsWeb.Models
         private bool? _usebatchdates;
         public bool? usebatchdates
         {
-            get { return AdditionalFilters?.Contains("usebatchdates") ?? _usebatchdates; }
+            get { return AdditionalFilters?.Contains("usebatchdates") ?? _usebatchdates ?? false; }
             set { _usebatchdates = value; }
         }
 
         private bool? _nocoupons;
-        public bool? nocoupons        
+        public bool? nocoupons
         {
-            get { return AdditionalFilters?.Contains("nocoupons") ?? _nocoupons; }
+            get { return AdditionalFilters?.Contains("nocoupons") ?? _nocoupons ?? false; }
             set { _nocoupons = value; }
         }
 
         private bool? _apprtransactions;
-        public bool? apprtransactions 
+        public bool? apprtransactions
         {
-            get { return AdditionalFilters?.Contains("apprtransactions") ?? _apprtransactions; }
+            get { return AdditionalFilters?.Contains("apprtransactions") ?? _apprtransactions ?? false; }
             set { _apprtransactions = value; }
         }
 
         private bool? _testtransactions;
-        public bool? testtransactions        
+        public bool? testtransactions
         {
-            get { return AdditionalFilters?.Contains("testtransactions") ?? _testtransactions; }
+            get { return AdditionalFilters?.Contains("testtransactions") ?? _testtransactions ?? false; }
             set { _testtransactions = value; }
         }
 
         private bool? _includesadditionaldonation;
         public bool? includesadditionaldonation
         {
-            get { return AdditionalFilters?.Contains("includesadditionaldonation") ?? _includesadditionaldonation; }
+            get { return AdditionalFilters?.Contains("includesadditionaldonation") ?? _includesadditionaldonation ?? false; }
             set { _includesadditionaldonation = value; }
         }
         public PagerModel2 Pager { get; set; }
@@ -208,24 +208,24 @@ namespace CmsWeb.Models
                 edt = startdt;
             }
 
-            edt = edt?.AddHours(24);
-            if ((usebatchdates == true) && startdt.HasValue && edt.HasValue)
-            {
-                // Apply an offset to the startdate to get those records that occurred prior to the batch date and haven't been batched at present
-                CheckBatchDates(startdt.Value.AddDays(-7), edt.Value);
-                _transactions = from t in _transactions
-                                where t.Batch >= startdt || startdt == null
-                                where t.Batch <= edt || edt == null
-                                where t.Moneytran == true
-                                select t;
-            }
-            else
-            {
-                _transactions = from t in _transactions
-                                where t.TransactionDate >= startdt || startdt == null
-                                where t.TransactionDate <= edt || edt == null
-                                select t;
-            }
+            edt = edt?.AddHours(24);            
+                if ((usebatchdates == true) && startdt.HasValue && edt.HasValue)
+                {
+                    // Apply an offset to the startdate to get those records that occurred prior to the batch date and haven't been batched at present
+                    CheckBatchDates(startdt.Value.AddDays(-7), edt.Value);
+                    _transactions = from t in _transactions
+                                    where t.Batch >= startdt || startdt == null
+                                    where t.Batch <= edt || edt == null
+                                    where t.Moneytran == true
+                                    select t;
+                }
+                else
+                {
+                    _transactions = from t in _transactions
+                                    where t.TransactionDate >= startdt || startdt == null
+                                    where t.TransactionDate <= edt || edt == null
+                                    select t;
+                }            
 
             if ((includesadditionaldonation ?? false))
             {
