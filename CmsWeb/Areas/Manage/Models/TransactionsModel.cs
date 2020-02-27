@@ -208,24 +208,24 @@ namespace CmsWeb.Models
                 edt = startdt;
             }
 
-            edt = edt?.AddHours(24);            
-                if ((usebatchdates == true) && startdt.HasValue && edt.HasValue)
-                {
-                    // Apply an offset to the startdate to get those records that occurred prior to the batch date and haven't been batched at present
-                    CheckBatchDates(startdt.Value.AddDays(-7), edt.Value);
-                    _transactions = from t in _transactions
-                                    where t.Batch >= startdt || startdt == null
-                                    where t.Batch <= edt || edt == null
-                                    where t.Moneytran == true
-                                    select t;
-                }
-                else
-                {
-                    _transactions = from t in _transactions
-                                    where t.TransactionDate >= startdt || startdt == null
-                                    where t.TransactionDate <= edt || edt == null
-                                    select t;
-                }            
+            edt = edt?.AddHours(24);
+            if ((usebatchdates == true) && startdt.HasValue && edt.HasValue)
+            {
+                // Apply an offset to the startdate to get those records that occurred prior to the batch date and haven't been batched at present
+                CheckBatchDates(startdt.Value.AddDays(-7), edt.Value);
+                _transactions = from t in _transactions
+                                where t.Batch >= startdt || startdt == null
+                                where t.Batch <= edt || edt == null
+                                where t.Moneytran == true
+                                select t;
+            }
+            else
+            {
+                _transactions = from t in _transactions
+                                where t.TransactionDate >= startdt || startdt == null
+                                where t.TransactionDate <= edt || edt == null
+                                select t;
+            }
 
             if ((includesadditionaldonation ?? false))
             {
