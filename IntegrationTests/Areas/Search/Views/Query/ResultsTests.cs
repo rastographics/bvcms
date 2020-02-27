@@ -35,7 +35,6 @@ namespace IntegrationTests.Areas.Search.Views.Query
             Wait(3);
             Find(id: "tagname").Clear();
             Find(id: "tagname").SendKeys("NewTagShouldBeUpdated");
-
             Find(css: ".modal-footer > .btn-primary").Click();
 
             Wait(10);
