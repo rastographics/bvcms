@@ -20,16 +20,18 @@ namespace IntegrationTests.Areas.Search.Views.Query
 
             Open($"{rootUrl}NewQuery");
 
-            WaitForElement("#QueryConditionSelect .close > span");
+            Wait(10);
             Find(css: "#QueryConditionSelect .close > span").Click();
 
             Find(id: "CancelChange").Click();
             Find(id: "Run").Click();
 
+            WaitForElement(css: ".btn > .fa-cog");
             Find(css: ".btn > .fa-cog").Click();
             Find(xpath: "//a[contains(text(),'Add All')]").Click();
-            Find(id: "empty-dialog").Click();
 
+
+            Wait(3);
             Find(id: "tagname").Clear();
             Find(id: "tagname").SendKeys("NewTagShouldBeUpdated");
 
