@@ -12,6 +12,7 @@ using CmsWeb.Lifecycle;
 using Dapper;
 using Elmah;
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Net;
@@ -339,6 +340,15 @@ namespace CmsWeb.Areas.Search.Controllers
             {
                 return Json(new { error = ex.Message + $". Please report this to {ConfigurationManager.AppSettings["supportemail"]}" });
             }
+        }
+
+        [HttpPost]
+        public JsonResult ToggleCurrentTag()
+        {
+            Dictionary<string, string> json = new Dictionary<string, string>();
+            json.Add("CurrentTag", Util2.CurrentTag);
+
+            return Json(json, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
