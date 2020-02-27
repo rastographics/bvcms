@@ -26,6 +26,7 @@ namespace IntegrationTests.Areas.Search.Views.Query
             Find(id: "CancelChange").Click();
             Find(id: "Run").Click();
 
+            Wait(10);
             WaitForElement(css: ".btn > .fa-cog");
             Find(css: ".btn > .fa-cog").Click();
             Find(xpath: "//a[contains(text(),'Add All')]").Click();
