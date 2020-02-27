@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using CmsData;
@@ -136,5 +137,22 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 				}
 			}
 		}
-	}
+
+        public void populateSubgroups(SqlConnection db, AttendanceCacheSet cacheSet)
+        {
+            foreach ( AttendanceGroup group in groups )
+            {
+                Organization org = cacheSet.getOrganization(group.groupID);
+                if (org != null)
+                {
+                    var subgroups = Subgroup.forGroupID(db, group.groupID, peopleID);
+                    if (subgroups.Count > 0)
+                    {
+                        group.subgroupName = subgroups.First().name;
+                    }
+                }
+            }
+        }
+
+    }
 }

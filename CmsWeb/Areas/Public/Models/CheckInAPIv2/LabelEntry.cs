@@ -158,7 +158,7 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
                     return string.Format(format, person.GetRecReg().Emcontact);
 
                 case LabelField.PERSON_EMERGENCY_PHONE:
-                    return string.Format(format, person.GetRecReg().Emphone);
+                    return string.Format(format, person.GetRecReg().Emphone.FmtFone());
                     
                 case LabelField.PERSON_SCHOOL:
                     return string.Format(format, person.SchoolOther);
