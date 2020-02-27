@@ -26,12 +26,12 @@ if NOT "%bringdown%" EQU "" (
     timeout 2
 )
 
-msdeploy -verb:sync -allowUntrusted -source:contentPath=%buildoutput% -dest:contentPath=%sitename%,computerName=%dest%/MsDeployAgentService,userName=%deployusername%,password=%deploypassword% || %on_error%
-
 if NOT "%setupscript%" EQU "" (
     timeout 2
     msdeploy -verb:sync -allowUntrusted -source:runCommand=%setupscript%,waitInterval=%commandTimeout%,waitAttempts=1 -dest:auto,computerName=%dest%/MsDeployAgentService,userName=%deployusername%,password=%deploypassword% || %on_error%
 )
+
+msdeploy -verb:sync -allowUntrusted -source:contentPath=%buildoutput% -dest:contentPath=%sitename%,computerName=%dest%/MsDeployAgentService,userName=%deployusername%,password=%deploypassword% || %on_error%
 
 if NOT "%bringup%" EQU "" (
     timeout 2
