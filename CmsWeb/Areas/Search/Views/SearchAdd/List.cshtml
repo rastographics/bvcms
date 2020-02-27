@@ -62,7 +62,7 @@
             </div>
             @if (!Model.OnlyOne)
             {
-                <a href="/SearchAdd2/SearchPerson/Menu" class="btn btn-default ajax">Another Search</a> @:or
+                <a href="/SearchAdd2/SearchPerson" class="btn btn-default ajax">Another Search</a> @:or
                 if (Model.CanAdd && !Model.ShowLimitedSearch)
                 {
                     <a href="/SearchAdd2/NewPerson/@Model.PendingList[Model.PendingList.Count - 1].FamilyId" class="btn btn-default ajax">Add to Last Family</a> @:or
