@@ -192,12 +192,13 @@ namespace CmsData.API
                     contributions = model.IncludePledges
                                     ?
                                     (from c in contributions
-                                    where !ContributionTypeCode.NonTaxDed.Equals(c.ContributionTypeId)
-                                    select c).Concat(from c in contributions where c.ContributionTypeId == ContributionTypeCode.Pledge select c)
+                                     where !ContributionTypeCode.NonTaxDed.Equals(c.ContributionTypeId)
+                                     select c).Concat(from c in contributions where c.ContributionTypeId == ContributionTypeCode.Pledge select c)
                                     :
                                     (from c in contributions
-                                    where !ContributionTypeCode.NonTaxDed.Equals(c.ContributionTypeId)
-                                    select c);
+                                     where !ContributionTypeCode.NonTaxDed.Equals(c.ContributionTypeId)
+                                     where !ContributionTypeCode.Pledge.Equals(c.ContributionTypeId)
+                                     select c);
                     break;
                 case "NonTaxDed":
                     contributions = model.IncludePledges
