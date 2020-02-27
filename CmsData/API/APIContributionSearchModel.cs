@@ -192,33 +192,33 @@ namespace CmsData.API
                     contributions = model.IncludePledges
                                     ?
                                     (from c in contributions
-                                    where !ContributionTypeCode.NonTaxDed.Equals(c.ContributionTypeId)
+                                    where !ContributionTypeCode.NonTaxTypes.Contains(c.ContributionTypeId)
                                     select c).Concat(from c in contributions where c.ContributionTypeId == ContributionTypeCode.Pledge select c)
                                     :
                                     (from c in contributions
-                                    where !ContributionTypeCode.NonTaxDed.Equals(c.ContributionTypeId)
+                                    where !ContributionTypeCode.NonTaxTypes.Contains(c.ContributionTypeId)
                                     select c);
                     break;
                 case "NonTaxDed":
                     contributions = model.IncludePledges
                                     ?
                                     (from c in contributions
-                                     where !ContributionTypeCode.NonTaxDed.Equals(c.ContributionTypeId)
+                                     where !ContributionTypeCode.NonTaxTypes.Contains(c.ContributionTypeId)
                                      select c).Concat(from c in contributions where c.ContributionTypeId == ContributionTypeCode.NonTaxDed select c)
                                     :
                                     (from c in contributions
-                                     where !ContributionTypeCode.NonTaxDed.Equals(c.ContributionTypeId)
+                                     where !ContributionTypeCode.NonTaxTypes.Contains(c.ContributionTypeId)
                                      select c);
                     break;
                 case "Both":
                     contributions = model.IncludePledges
                                     ?
                                     (from c in contributions
-                                     where !ContributionTypeCode.NonTaxDed.Equals(c.ContributionTypeId)
+                                     where !ContributionTypeCode.NonTaxTypes.Contains(c.ContributionTypeId)
                                      select c).Concat(from c in contributions where c.ContributionTypeId != ContributionTypeCode.Pledge select c)
                                     :
                                     (from c in contributions
-                                     where !ContributionTypeCode.NonTaxDed.Equals(c.ContributionTypeId)
+                                     where !ContributionTypeCode.NonTaxTypes.Contains(c.ContributionTypeId)
                                      select c);
                     break;
                 case "Pledge":
