@@ -44,8 +44,16 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 
 					foreach( AttendanceGroup group in groups ) {
 						Organization org = cacheSet.getOrganization( group.groupID );
+                        bool isLeader = cacheSet.dataContext.OrganizationMembers.Any(o => o.PeopleId == person.PeopleId && o.MemberType.AttendanceTypeId == AttendTypeCode.Leader);
 
-						if( org != null && org.NumCheckInLabels > 1 && group.present ) {
+                        if (org != null && isLeader && org.NumWorkerCheckInLabels > 0 && group.present)
+                        {
+                            for (int iX = 0; iX < org.NumWorkerCheckInLabels; iX++)
+                            {
+                                labelTypes.Add(Label.Type.NAME_TAG);
+                            }
+                        }
+                        else if ( org != null && org.NumCheckInLabels > 1 && group.present ) {
 							for( int iX = 0; iX < org.NumCheckInLabels - 1; iX++ ) {
 								labelTypes.Add( Label.Type.EXTRA );
 							}
