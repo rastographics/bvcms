@@ -5,7 +5,7 @@
     var toggleUnlink = Model.ESpaceEventId.HasValue ? "" : "hidden";
 }
 <div class="form-group">
-    <label class="control-label" for="ESpaceEventName">eSpace Event</label>
+    <label class="control-label" for="ESpaceEventName">eSPACE Event</label>
     @if (ViewBag.ShowHelp != false && ViewData.ModelMetadata.Description.HasValue())
     {
         <div class="alert alert-info">@Html.Markdown(ViewData.ModelMetadata.Description)</div>
@@ -22,7 +22,7 @@
                 <button id="choose-espace-event"
                         class="btn btn-default dropdown-toggle"
                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                        title="Choose eSpace event">
+                        title="Choose eSPACE event">
                     <i class="fa fa-ellipsis-h"></i>
                 </button>
                 <ul id="espace-event-list" class="dropdown-menu dropdown-menu-right search-menu">

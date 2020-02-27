@@ -153,6 +153,5 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
                 }
             }
         }
-
     }
 }
