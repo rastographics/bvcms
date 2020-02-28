@@ -76,35 +76,35 @@ namespace CmsWeb.Models
         private bool? _usebatchdates;
         public bool? usebatchdates
         {
-            get { return AdditionalFilters?.Contains("usebatchdates") ?? _usebatchdates; }
+            get { return AdditionalFilters?.Contains("usebatchdates") ?? _usebatchdates ?? false; }
             set { _usebatchdates = value; }
         }
 
         private bool? _nocoupons;
-        public bool? nocoupons        
+        public bool? nocoupons
         {
-            get { return AdditionalFilters?.Contains("nocoupons") ?? _nocoupons; }
+            get { return AdditionalFilters?.Contains("nocoupons") ?? _nocoupons ?? false; }
             set { _nocoupons = value; }
         }
 
         private bool? _apprtransactions;
-        public bool? apprtransactions 
+        public bool? apprtransactions
         {
-            get { return AdditionalFilters?.Contains("apprtransactions") ?? _apprtransactions; }
+            get { return AdditionalFilters?.Contains("apprtransactions") ?? _apprtransactions ?? false; }
             set { _apprtransactions = value; }
         }
 
         private bool? _testtransactions;
-        public bool? testtransactions        
+        public bool? testtransactions
         {
-            get { return AdditionalFilters?.Contains("testtransactions") ?? _testtransactions; }
+            get { return AdditionalFilters?.Contains("testtransactions") ?? _testtransactions ?? false; }
             set { _testtransactions = value; }
         }
 
         private bool? _includesadditionaldonation;
         public bool? includesadditionaldonation
         {
-            get { return AdditionalFilters?.Contains("includesadditionaldonation") ?? _includesadditionaldonation; }
+            get { return AdditionalFilters?.Contains("includesadditionaldonation") ?? _includesadditionaldonation ?? false; }
             set { _includesadditionaldonation = value; }
         }
         public PagerModel2 Pager { get; set; }
