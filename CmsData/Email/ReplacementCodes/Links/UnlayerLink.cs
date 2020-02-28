@@ -102,7 +102,7 @@ namespace CmsData
             {
                 case "rsvplink":
                 case "regretslink":
-                    url = db.ServerLink($"/OnlineReg/RsvpLinkSg/{ot.Id.ToCode()}?confirm={confirm}&message={HttpUtility.UrlEncode(message)}");
+                    url = db.ServerLink($"/OnlineReg/RsvpLinkSg/{ot.Id.ToCode()}?confirm={confirm}&message={HttpUtility.UrlEncode(message)}&regrets=true");
                     if (code == "regretslink")
                     {
                         url += "&regrets=true";
