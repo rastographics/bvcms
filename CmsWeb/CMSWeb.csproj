@@ -273,7 +273,8 @@
       <HintPath>..\packages\System.Management.Automation.dll.10.0.10586.0\lib\net40\System.Management.Automation.dll</HintPath>
     </Reference>
     <Reference Include="System.Net" />
-    <Reference Include="System.Net.Http, Version=4.1.1.3, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+    <Reference Include="System.Net.Http, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\System.Net.Http.4.3.4\lib\net46\System.Net.Http.dll</HintPath>
     </Reference>
     <Reference Include="System.Net.Http.Formatting, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -358,8 +359,8 @@
     <Reference Include="TidyManaged, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\TidyManaged.1.0.0.0\lib\net20\TidyManaged.dll</HintPath>
     </Reference>
-    <Reference Include="Twilio, Version=5.29.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Twilio.5.29.1\lib\net451\Twilio.dll</HintPath>
+    <Reference Include="Twilio, Version=5.37.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Twilio.5.37.4\lib\net451\Twilio.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="Xceed.Words.NET, Version=1.2.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
@@ -536,6 +537,8 @@
     <Compile Include="Areas\Finance\Models\GLExportResult.cs" />
     <Compile Include="Areas\Finance\Models\DepositsModel.cs" />
     <Compile Include="Areas\Finance\Models\DepositTotalsModel.cs" />
+    <Compile Include="Areas\Finance\Models\RemoteDepositCapture.cs" />
+    <Compile Include="Areas\Finance\Models\RemoteDepositCaptureError.cs" />
     <Compile Include="Areas\Finance\Models\TotalsByFundRange.cs" />
     <Compile Include="Areas\Finance\Models\TotalsByFundAgeRangeModel.cs" />
     <Compile Include="Areas\Main\Models\Other\CouponResponseModel.cs" />
@@ -565,6 +568,7 @@
     <Compile Include="Areas\Manage\Models\UserValidationResult.cs" />
     <Compile Include="Areas\Manage\Models\UserValidationStatus.cs" />
     <Compile Include="Areas\MeetingCategory\Controllers\MeetingCategoryController.cs" />
+    <Compile Include="Areas\OnlineReg\Models\LinkInfo.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\OnePageGiving.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\SaveAndContinue.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\Routing.cs" />
@@ -696,6 +700,7 @@
     <Compile Include="Areas\Reports\Models\Directories\DocXDirectoryResult.cs" />
     <Compile Include="Areas\Reports\Models\Directories\FamilyRow.cs" />
     <Compile Include="Areas\Reports\Models\Export\DocXReplacements.cs" />
+    <Compile Include="Areas\Reports\Models\Export\DonorDetail.cs" />
     <Compile Include="Areas\Search\Controllers\TaskSearchController.cs" />
     <Compile Include="Areas\Search\Models\Query\Model\QueryViewModel.cs" />
     <Compile Include="Areas\Search\Models\TaskSearch\TaskSearchInfo.cs" />
@@ -868,6 +873,7 @@
     <Compile Include="Code\AuthHelper.cs" />
     <Compile Include="Code\CodeValueList.cs" />
     <Compile Include="Code\Constants.cs" />
+    <Compile Include="Code\DocumentsHelper.cs" />
     <Compile Include="Code\GoogleRecaptcha.cs" />
     <Compile Include="Code\JsonNetResult.cs" />
     <Compile Include="Code\CustomHeader.cs" />
@@ -1268,6 +1274,7 @@
     <Content Include="Content\touchpoint\js\form-ajax.js" />
     <Content Include="Content\touchpoint\js\gateway.js" />
     <Content Include="Content\touchpoint\js\checkin.js" />
+    <Content Include="Content\touchpoint\js\sgfilters.js" />
     <Content Include="Content\touchpoint\js\snackbar.js" />
     <Content Include="Content\touchpoint\js\main.js" />
     <Content Include="Content\touchpoint\js\metrozip\metro-zip.js" />
@@ -1879,6 +1886,10 @@
     <Content Include="Areas\People\Views\Shared\CombineGiving.cshtml" />
     <Content Include="Areas\People\Views\Task\_ActionsMenu.cshtml" />
     <Content Include="Areas\Manage\Views\Account\AuthDisabled.cshtml" />
+    <Content Include="Areas\Org\Views\Org\EditorTemplates\ESpaceEventId.cshtml" />
+    <Content Include="Areas\Org\Views\Org\DisplayTemplates\ESpaceEventId.cshtml" />
+    <Content Include="Areas\Org\Views\Org\Other\eSpaceResults.cshtml" />
+    <Content Include="Areas\Manage\Views\Batch\RetrieveBatchData.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
@@ -3343,6 +3354,14 @@
     <ProjectReference Include="..\CmsData\CmsData.csproj">
       <Project>{98aee43c-4226-49e7-bd46-c1a85467eced}</Project>
       <Name>CmsData</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CMSShared\CmsShared.csproj">
+      <Project>{e9d91ea2-2231-4371-bedf-0a0674a52f37}</Project>
+      <Name>CmsShared</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\eSpaceClient\eSpaceClient.csproj">
+      <Project>{6bfadd5b-2077-48d0-b5b3-da4d26fff1f5}</Project>
+      <Name>eSpaceClient</Name>
     </ProjectReference>
     <ProjectReference Include="..\ImageData\ImageData.csproj">
       <Project>{512DA381-E81B-4121-B978-FC850EC88353}</Project>

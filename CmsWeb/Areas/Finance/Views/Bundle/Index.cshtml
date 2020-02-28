@@ -110,6 +110,44 @@ else
             };
 
             $.SetValidation();
+
+            function downloadFailed() {
+                error_swal('Download failed', 'There was a problem generating the file.  Please contact support to resolve this issue.');
+            }
+
+            $('a.remotedeposit').click(function (event) {
+                event.preventDefault();
+                $.block('Preparing the remote deposit bundle export<h4>Please wait...</h4>');
+                var href = event.target.href;
+                var request = new XMLHttpRequest();
+                request.open("GET", href, true);
+                request.responseType = "arraybuffer";
+
+                request.onload = function () {
+                    var arrayBuffer = request.response;
+                    var contentDisposition = request.getResponseHeader('Content-Disposition');
+                    var contentType = request.getResponseHeader('Content-Type');
+                    if (contentDisposition) {
+                        var filename = contentDisposition.split('filename=')[1];
+                    }
+                    var blob = new Blob([arrayBuffer], { type: contentType });
+                    var url = URL.createObjectURL(blob);
+                    var a = document.createElement('a');
+                    document.body.appendChild(a);
+                    a.style.display = 'none';
+                    a.href = url;
+                    if (filename) { a.download = filename; }
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    $.unblock();
+                };
+                request.onerror = function () {
+                    $.unblock();
+                    downloadFailed();
+                };
+
+                request.send();
+            });
         });
     </script>
 }

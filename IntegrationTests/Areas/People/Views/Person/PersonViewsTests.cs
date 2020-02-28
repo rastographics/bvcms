@@ -130,6 +130,7 @@ namespace IntegrationTests.Areas.People.Views.Person
 
             Find(text: "Giving").Click();
             WaitForElement("#GivingYear", 10);
+            WaitForElementToDisappear(loadingUI);
 
             var dropdown = Find(css: "#GivingYear");
             var selectElement = new SelectElement(dropdown);

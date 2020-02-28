@@ -1,12 +1,16 @@
 ﻿@using CmsWeb
 @using UtilityExtensions
 @model CmsWeb.Areas.Org.Models.MeetingsModel
+@helper Checked(bool value)
+{
+    if (value) { WriteLiteral("checked"); }
+}
 <form class="ajax">
     <div class="row">
-        <div class="col-sm-12">
+        <div class="col-sm-12 text-right">
             <div class="checkbox pull-left">
                 <label class="control-label">
-                    @Html.CheckBox("Future") Show future meetings?
+                    <input id="Future" name="Future" type="checkbox" value="true" @Checked(Model.Future)> Show future meetings
                 </label>
             </div>
             @FormAction()
@@ -57,7 +61,7 @@
             @FormAction(true)
         </div>
     </div>
-    <br/>
+    <br />
 </form>
 @helper FormAction(bool xs = false)
 {
@@ -65,16 +69,23 @@
     {
         if (xs)
         {
-            <br />
-            <div class="visible-xs-block">
+            if (Model.ShowESpaceSyncMeetings)
+            {
+                <div class="h5 visible-xs-block">
+                    <a class="btn btn-primary btn-block ajax" href="/Org/ImportMeetings/@Model.Id"><i class="fa fa-cloud-download"></i> Import From eSpace</a>
+                </div>
+            }
+            <div class="h5 visible-xs-block">
                 <a class="btn btn-success btn-block dialog-options" href="/Dialog/ForNewMeeting/@Model.Id"><i class="fa fa-plus-circle"></i> Create New Meeting</a>
             </div>
         }
         else
         {
-            <div class="pull-right hidden-xs">
-                <a class="btn btn-success dialog-options" href="/Dialog/ForNewMeeting/@Model.Id"><i class="fa fa-plus-circle"></i> Create New Meeting</a>
-            </div>
+            if (Model.ShowESpaceSyncMeetings)
+            {
+                <a class="btn btn-primary ajax hidden-xs" href="/Org/ImportMeetings/@Model.Id"><i class="fa fa-cloud-download"></i> Import From eSpace</a>
+            }
+            <a class="btn btn-success hidden-xs dialog-options" href="/Dialog/ForNewMeeting/@Model.Id"><i class="fa fa-plus-circle"></i> Create New Meeting</a>
         }
     }
 }
