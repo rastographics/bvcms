@@ -209,6 +209,7 @@ namespace CmsData.API
                                     :
                                     (from c in contributions
                                      where ContributionTypeCode.NonTaxDed.Equals(c.ContributionTypeId)
+                                     where !ContributionTypeCode.Pledge.Equals(c.ContributionTypeId)
                                      select c);
                     break;
                 case "Both":
@@ -217,7 +218,8 @@ namespace CmsData.API
                                     (from c in contributions                                     
                                      select c).Concat(from c in contributions where c.ContributionTypeId != ContributionTypeCode.Pledge select c)
                                     :
-                                    (from c in contributions                                     
+                                    (from c in contributions
+                                     where !ContributionTypeCode.Pledge.Equals(c.ContributionTypeId)
                                      select c);
                     break;
                 case "Pledge":
