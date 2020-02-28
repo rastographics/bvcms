@@ -152,7 +152,7 @@ namespace CmsData
             var cb = new SqlConnectionStringBuilder(cs.ConnectionString);
             cb.InitialCatalog = $"CMS_{host}";
             cb.PersistSecurityInfo = true;
-            return cb.ConnectionString;
+            return Util.ParseEnv(cb.ConnectionString);
         }
 
         public void ClearCache2()
