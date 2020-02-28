@@ -158,7 +158,10 @@ Thank you.
 
             SetTransactionReturn(TransactionReturn);
             EnrollAndConfirm();
-            DocumentsHelper.SaveTemporaryDocuments(CurrentDatabase, List.Where(p => p.IsNew).ToList(), org.OrganizationId);
+            if (List.Any() && org != null)
+            {
+                DocumentsHelper.SaveTemporaryDocuments(CurrentDatabase, List.Where(p => p.IsNew).ToList(), org.OrganizationId);
+            }
             UseCoupon(Transaction.TransactionId, Transaction.Amt ?? 0);
             return ConfirmEnum.Confirm;
         }
