@@ -16,16 +16,23 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 		[LabelField( LabelFieldAttribute.CATEGORY_PERSON )] PERSON_ALLERGIES = 4,
 		[LabelField( LabelFieldAttribute.CATEGORY_PERSON )] PERSON_INFO = 5,
 		[LabelField( LabelFieldAttribute.CATEGORY_PERSON )] PERSON_MEMBER_GUEST = 6,
+        [LabelField( LabelFieldAttribute.CATEGORY_PERSON )] PERSON_FULL_NAME = 7,
+        [LabelField( LabelFieldAttribute.CATEGORY_PERSON )] PERSON_DOB = 8,
+        [LabelField( LabelFieldAttribute.CATEGORY_PERSON )] PERSON_EMERGENCY_NAME = 9,
+        [LabelField( LabelFieldAttribute.CATEGORY_PERSON )] PERSON_EMERGENCY_PHONE = 10,
+        [LabelField( LabelFieldAttribute.CATEGORY_PERSON )] PERSON_SCHOOL = 11,
+        [LabelField( LabelFieldAttribute.CATEGORY_PERSON )] PERSON_GRADE = 12,
 
-		// Parents 21-40
-		[LabelField( LabelFieldAttribute.CATEGORY_PARENTS )] PARENTS_NAME = 21,
+        // Parents 21-40
+        [LabelField( LabelFieldAttribute.CATEGORY_PARENTS )] PARENTS_NAME = 21,
 		[LabelField( LabelFieldAttribute.CATEGORY_PARENTS )] PARENTS_PHONE = 22,
 		
 		// Groups (Orgs) 61-80
 		[LabelField( LabelFieldAttribute.CATEGORY_GROUP )] GROUP_NAME = 41,
 		[LabelField( LabelFieldAttribute.CATEGORY_GROUP )] GROUP_LOCATION = 42,
 		[LabelField( LabelFieldAttribute.CATEGORY_GROUP )] GROUP_SUBGROUPS = 43,
-        [LabelField(LabelFieldAttribute.CATEGORY_GROUP)] GROUP_NAME_AND_TIME = 44,
+        [LabelField( LabelFieldAttribute.CATEGORY_GROUP )] GROUP_NAME_AND_TIME = 44,
+        [LabelField( LabelFieldAttribute.CATEGORY_GROUP )] GROUP_LOCATION_AND_SUBGROUP = 45,
 
         // Attendance 41-60
         [LabelField( LabelFieldAttribute.CATEGORY_GROUP )] ATTENDANCE_DATE_TIME = 61,

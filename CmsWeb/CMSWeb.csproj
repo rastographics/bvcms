@@ -375,6 +375,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Areas\CheckIn\CheckInAreaRegistration.cs" />
+    <Compile Include="Areas\CheckIn\Controllers\WebCheckinLabelsController.cs" />
     <Compile Include="Areas\CheckIn\Models\CheckinTimeModel.cs" />
     <Compile Include="App_Start\ApiMessageLoggingHandler.cs" />
     <Compile Include="App_Start\ApiAuthorizeAttribute.cs" />
@@ -537,6 +538,8 @@
     <Compile Include="Areas\Finance\Models\GLExportResult.cs" />
     <Compile Include="Areas\Finance\Models\DepositsModel.cs" />
     <Compile Include="Areas\Finance\Models\DepositTotalsModel.cs" />
+    <Compile Include="Areas\Finance\Models\RemoteDepositCapture.cs" />
+    <Compile Include="Areas\Finance\Models\RemoteDepositCaptureError.cs" />
     <Compile Include="Areas\Finance\Models\TotalsByFundRange.cs" />
     <Compile Include="Areas\Finance\Models\TotalsByFundAgeRangeModel.cs" />
     <Compile Include="Areas\Main\Models\Other\CouponResponseModel.cs" />
@@ -871,6 +874,7 @@
     <Compile Include="Code\AuthHelper.cs" />
     <Compile Include="Code\CodeValueList.cs" />
     <Compile Include="Code\Constants.cs" />
+    <Compile Include="Code\DocumentsHelper.cs" />
     <Compile Include="Code\GoogleRecaptcha.cs" />
     <Compile Include="Code\JsonNetResult.cs" />
     <Compile Include="Code\CustomHeader.cs" />
@@ -1883,6 +1887,7 @@
     <Content Include="Areas\People\Views\Shared\CombineGiving.cshtml" />
     <Content Include="Areas\People\Views\Task\_ActionsMenu.cshtml" />
     <Content Include="Areas\Manage\Views\Account\AuthDisabled.cshtml" />
+    <Content Include="Areas\CheckIn\Views\WebCheckinLabels\Index.cshtml" />
     <Content Include="Areas\Org\Views\Org\EditorTemplates\ESpaceEventId.cshtml" />
     <Content Include="Areas\Org\Views\Org\DisplayTemplates\ESpaceEventId.cshtml" />
     <Content Include="Areas\Org\Views\Org\Other\eSpaceResults.cshtml" />

@@ -3,6 +3,7 @@ using CmsData.Codes;
 using CmsWeb.Areas.Manage.Controllers;
 using CmsWeb.Areas.Manage.Models;
 using CmsWeb.Areas.OnlineReg.Models;
+using CmsWeb.Code;
 using CmsWeb.Membership;
 using CmsWeb.Models;
 using Elmah;
@@ -349,31 +350,21 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             Int32.TryParse(Request["registrantId"], out int registrantId);
             Int32.TryParse(Request["orgId"], out int orgId);
             var docname = Request["docname"];
-            StoreDocument(file, docname, registrantId, orgId);
-            //string tmpFileName = TmpFiles.CreateTmpFile(file);
+            var email = Request["email"];
+            var lastName = Request["lastName"];
+            var firstName = Request["firstName"];
+            StoreDocument(file, docname, registrantId, orgId, email, lastName, firstName);
             return Json(new { file.FileName });
         }
 
-        private void StoreDocument(HttpPostedFileBase file, string docname, int registrantId, int orgId)
+        private void StoreDocument(HttpPostedFileBase file, string docname, int? registrantId, int orgId, string email, string lastName, string firstName)
         {
             var person = CurrentDatabase.People.SingleOrDefault(p => p.PeopleId == registrantId);
-            var docName = $"{docname}_{person.LastName}_{person.FirstName}_{registrantId}";
-            var document = CurrentDatabase.OrgMemberDocuments.SingleOrDefault(o => o.DocumentName == docName & o.PeopleId == registrantId & o.OrganizationId == orgId);
-            if (document != null)
-            {
-                CurrentDatabase.OrgMemberDocuments.DeleteOnSubmit(document);
-                Image.Delete(CurrentImageDatabase, document.ImageId);
-                CurrentDatabase.SubmitChanges();
-            }
-            int imageId = ImageData.DocumentsData.StoreImageFromDocument(CurrentImageDatabase, file);
-            CurrentDatabase.OrgMemberDocuments.InsertOnSubmit(new OrgMemberDocument()
-            {
-                DocumentName = docName,
-                ImageId = imageId,
-                PeopleId = registrantId,
-                OrganizationId = orgId
-            });
-            CurrentDatabase.SubmitChanges();
+
+            if (person == null)
+                DocumentsHelper.CreateTemporaryDocument(CurrentDatabase, CurrentImageDatabase, docname, orgId, email, lastName, firstName, file);
+            else
+                DocumentsHelper.CreateMemberDocument(CurrentDatabase, CurrentImageDatabase, docname, orgId, person, file);
         }
 
         [HttpPost]

@@ -1,4 +1,4 @@
-using CmsData.Infrastructure;
+﻿using CmsData.Infrastructure;
 using System;
 using System.ComponentModel;
 using System.Data.Linq;
@@ -6,21 +6,22 @@ using System.Data.Linq.Mapping;
 
 namespace CmsData
 {
-    [Table(Name = "dbo.OrgMemberDocuments")]
-    public partial class OrgMemberDocument
+    [Table(Name = "dbo.OrgTemporaryDocuments")]
+    public partial class OrgTemporaryDocuments
     {
         private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
         #region Private Fields
 
-        private int _DocumentId;
+        private int _TemporaryDocumentId;
         private string _DocumentName;
+        private string _LastName;
+        private string _FirstName;
+        private string _EmailAddress;
         private int _ImageId;
-        private int? _PeopleId;
         private int _OrganizationId;
         private DateTime _CreatedDate;
 
-        private EntityRef<Person> _Person;
         private EntityRef<Organization> _Organization;
         #endregion
 
@@ -30,17 +31,23 @@ namespace CmsData
         partial void OnValidate(System.Data.Linq.ChangeAction action);
         partial void OnCreated();
 
-        partial void OnDocumentIdChanging(int value);
-        partial void OnDocumentIdChanged();
+        partial void OnTemporaryDocumentIdChanging(int value);
+        partial void OnTemporaryDocumentIdChanged();
 
         partial void OnDocumentNameChanging(string value);
         partial void OnDocumentNameChanged();
 
+        partial void OnLastNameChanging(string value);
+        partial void OnLastNameChanged();
+
+        partial void OnFirstNameChanging(string value);
+        partial void OnFirstNameChanged();
+
+        partial void OnEmailAddressChanging(string value);
+        partial void OnEmailAddressChanged();
+
         partial void OnImageIdChanging(int value);
         partial void OnImageIdChanged();
-
-        partial void OnPeopleIdChanging(int? value);
-        partial void OnPeopleIdChanged();
 
         partial void OnOrganizationIdChanging(int value);
         partial void OnOrganizationIdChanged();
@@ -49,10 +56,8 @@ namespace CmsData
         partial void OnCreatedDateChanged();
         #endregion
 
-        public OrgMemberDocument()
+        public OrgTemporaryDocuments()
         {
-            _Person = default(EntityRef<Person>);
-
             _Organization = default(EntityRef<Organization>);
 
             OnCreated();
@@ -60,20 +65,20 @@ namespace CmsData
 
         #region Columns
 
-        [Column(Name = "DocumentId", UpdateCheck = UpdateCheck.Never, Storage = "_DocumentId", AutoSync = AutoSync.OnInsert, DbType = "int IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
+        [Column(Name = "TemporaryDocumentId", UpdateCheck = UpdateCheck.Never, Storage = "_TemporaryDocumentId", AutoSync = AutoSync.OnInsert, DbType = "int IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
         public int DocumentId
         {
-            get => _DocumentId;
+            get => _TemporaryDocumentId;
 
             set
             {
-                if (_DocumentId != value)
+                if (_TemporaryDocumentId != value)
                 {
-                    OnDocumentIdChanging(value);
+                    OnTemporaryDocumentIdChanging(value);
                     SendPropertyChanging();
-                    _DocumentId = value;
-                    SendPropertyChanged("DocumentId");
-                    OnDocumentIdChanged();
+                    _TemporaryDocumentId = value;
+                    SendPropertyChanged("TemporaryDocumentId");
+                    OnTemporaryDocumentIdChanged();
                 }
             }
         }
@@ -92,6 +97,60 @@ namespace CmsData
                     _DocumentName = value;
                     SendPropertyChanged("DocumentName");
                     OnDocumentNameChanged();
+                }
+            }
+        }
+
+        [Column(Name = "LastName", UpdateCheck = UpdateCheck.Never, Storage = "_LastName", DbType = "nvarchar(100)")]
+        public string LastName
+        {
+            get => _LastName;
+
+            set
+            {
+                if (_LastName != value)
+                {
+                    OnLastNameChanging(value);
+                    SendPropertyChanging();
+                    _LastName = value;
+                    SendPropertyChanged("LastName");
+                    OnLastNameChanged();
+                }
+            }
+        }
+
+        [Column(Name = "FirstName", UpdateCheck = UpdateCheck.Never, Storage = "_FirstName", DbType = "nvarchar(100)")]
+        public string FirstName
+        {
+            get => _FirstName;
+
+            set
+            {
+                if (_FirstName != value)
+                {
+                    OnFirstNameChanging(value);
+                    SendPropertyChanging();
+                    _FirstName = value;
+                    SendPropertyChanged("FirstName");
+                    OnFirstNameChanged();
+                }
+            }
+        }
+
+        [Column(Name = "EmailAddress", UpdateCheck = UpdateCheck.Never, Storage = "_EmailAddress", DbType = "nvarchar(100)")]
+        public string EmailAddress
+        {
+            get => _EmailAddress;
+
+            set
+            {
+                if (_EmailAddress != value)
+                {
+                    OnEmailAddressChanging(value);
+                    SendPropertyChanging();
+                    _EmailAddress = value;
+                    SendPropertyChanged("EmailAddress");
+                    OnEmailAddressChanged();
                 }
             }
         }
@@ -132,30 +191,6 @@ namespace CmsData
             }
         }
 
-        [Column(Name = "PeopleId", UpdateCheck = UpdateCheck.Never, Storage = "_PeopleId", DbType = "int NULL", IsPrimaryKey = true)]
-        [IsForeignKey]
-        public int? PeopleId
-        {
-            get => _PeopleId;
-
-            set
-            {
-                if (_PeopleId != value)
-                {
-                    if (_Person.HasLoadedOrAssignedValue)
-                    {
-                        throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-                    }
-
-                    OnPeopleIdChanging(value);
-                    SendPropertyChanging();
-                    _PeopleId = value;
-                    SendPropertyChanged("PeopleId");
-                    OnPeopleIdChanged();
-                }
-            }
-        }
-
         [Column(Name = "OrganizationId", UpdateCheck = UpdateCheck.Never, Storage = "_OrganizationId", DbType = "int NOT NULL", IsPrimaryKey = true)]
         [IsForeignKey]
         public int OrganizationId
@@ -184,41 +219,7 @@ namespace CmsData
 
         #region Foreign Keys
 
-        [Association(Name = "Org_Member_Documents_PPL_FK", Storage = "_Person", ThisKey = "PeopleId", IsForeignKey = true)]
-        public Person Person
-        {
-            get => _Person.Entity;
-
-            set
-            {
-                Person previousValue = _Person.Entity;
-                if (((previousValue != value)
-                            || (_Person.HasLoadedOrAssignedValue == false)))
-                {
-                    SendPropertyChanging();
-                    if (previousValue != null)
-                    {
-                        _Person.Entity = null;
-                        previousValue.OrgMemberDocuments.Remove(this);
-                    }
-
-                    _Person.Entity = value;
-                    if (value != null)
-                    {
-                        value.OrgMemberDocuments.Add(this);
-                        _PeopleId = value.PeopleId;
-                    }
-                    else
-                    {
-                        _PeopleId = default(int);
-                    }
-
-                    SendPropertyChanged("Person");
-                }
-            }
-        }
-
-        [Association(Name = "Org_Member_Documents_ORG_FK", Storage = "_Organization", ThisKey = "OrganizationId", IsForeignKey = true)]
+        [Association(Name = "Org_Temporary_Documents_ORG_FK", Storage = "_Organization", ThisKey = "OrganizationId", IsForeignKey = true)]
         public Organization Organization
         {
             get => _Organization.Entity;
@@ -233,13 +234,13 @@ namespace CmsData
                     if (previousValue != null)
                     {
                         _Organization.Entity = null;
-                        previousValue.OrgMemberDocuments.Remove(this);
+                        previousValue.OrgTemporaryDocuments.Remove(this);
                     }
 
                     _Organization.Entity = value;
                     if (value != null)
                     {
-                        value.OrgMemberDocuments.Add(this);
+                        value.OrgTemporaryDocuments.Add(this);
                         _OrganizationId = value.OrganizationId;
                     }
                     else
