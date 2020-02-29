@@ -30,46 +30,27 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 			this.name = name;
 		}
 
-		public static List<Subgroup> forGroupID( SqlConnection db, int groupID, int peopleID, int scheduleID, DateTime meetingDate )
+		public static List<Subgroup> forGroupID( SqlConnection db, int groupID, int peopleID )
 		{
 			List<Subgroup> subGroups = new List<Subgroup>();
 			DataTable table = new DataTable();
 
 			const string qSubGroups = @"SELECT
-													MAX(Id) AS id,
-													MAX(Name) AS name,
-													MAX(CAST(CheckInOpen AS TINYINT)) AS 'open',
-													MAX(CheckInCapacity) AS capacity,
-													MAX(lastAttend.MeetingDate) AS previous,
-													MAX(attendCount.Count) AS count
-												FROM dbo.MemberTags AS tags
-													LEFT JOIN (SELECT *
-																	FROM dbo.Attend
-																	WHERE OrganizationId = @groupID
-																		AND PeopleId = @peopleID
-																		AND AttendanceFlag = 1) AS lastAttend ON lastAttend.SubGroupID = tags.Id
-													LEFT JOIN (SELECT COUNT(*) AS Count, MAX(SubGroupID) AS SubGroupID
-																  FROM dbo.Attend
-																  WHERE OrganizationId = @groupID
-																		AND AttendanceFlag = 1
-																		AND MeetingDate = @meetingDate
-																	GROUP BY SubGroupID) AS attendCount ON attendCount.SubGroupID = tags.Id
-												WHERE OrgId = @groupID
-													AND ScheduleId = @scheduleID
-													AND CheckIn = 1
+                                                MAX(Id) AS id,
+												MAX(Name) AS name
+												FROM MemberTags AS tags
+												join OrgMemMemTags as mt on tags.Id = mt.MemberTagId
+												WHERE mt.OrgId = @groupID
+												AND mt.PeopleId = @peopleID
 												GROUP BY Id
 												ORDER BY name";
 
 			using( SqlCommand cmd = new SqlCommand( qSubGroups, db ) ) {
 				SqlParameter groupParameter = new SqlParameter( "groupID", groupID );
 				SqlParameter peopleParameter = new SqlParameter( "peopleID", peopleID );
-				SqlParameter scheduleParameter = new SqlParameter( "scheduleID", scheduleID );
-				SqlParameter dateParameter = new SqlParameter( "meetingDate", meetingDate );
 
 				cmd.Parameters.Add( groupParameter );
 				cmd.Parameters.Add( peopleParameter );
-				cmd.Parameters.Add( scheduleParameter );
-				cmd.Parameters.Add( dateParameter );
 
 				SqlDataAdapter adapter = new SqlDataAdapter( cmd );
 				adapter.Fill( table );
