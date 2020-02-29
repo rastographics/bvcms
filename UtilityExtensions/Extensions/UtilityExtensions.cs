@@ -101,24 +101,20 @@ namespace UtilityExtensions
         {
             get
             {
-                var path = ConfigurationManager.AppSettings["RebootDbInProgress"].Replace("%USERPROFILE%",
-                    Environment.GetEnvironmentVariable("USERPROFILE"));
+                var path = ParseEnv(ConfigurationManager.AppSettings["RebootDbInProgress"]);
                 if (File.Exists(path))
                 {
                     return true;
                 }
 
-                string output = ConfigurationManager.AppSettings["SharedFolder"].Replace("%USERPROFILE%",
-                    Environment.GetEnvironmentVariable("USERPROFILE"));
-                if (!Directory.Exists(output))
+                path = ParseEnv(ConfigurationManager.AppSettings["SharedFolder"]);
+                if (!Directory.Exists(path))
                 {
                     return false;
                 }
 
-                path = ConfigurationManager.AppSettings["AppOfflineFile"].Replace("%USERPROFILE%",
-                    Environment.GetEnvironmentVariable("USERPROFILE"));
-                var exists = File.Exists(path);
-                if (exists)
+                path = ParseEnv(ConfigurationManager.AppSettings["AppOfflineFile"]);
+                if (File.Exists(path))
                 {
                     return true;
                 }
