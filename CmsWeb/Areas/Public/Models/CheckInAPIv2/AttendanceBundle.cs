@@ -89,6 +89,7 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 
                 foreach (Attendance attendance in attendances)
                 {
+                    attendance.populateSubgroups(db, cacheSet);
                     labels.AddRange(attendance.getLabels(cacheSet));
                     CmsData.Person person = cacheSet.getPerson(attendance.peopleID);
                     if (securityLabels == Attendance.SECURITY_LABELS_PER_FAMILY)
