@@ -41,7 +41,8 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 													type.canRepeat AS canRepeat
 												FROM CheckInLabel AS label
 													LEFT JOIN CheckInLabelType AS type ON type.id = label.typeID
-												WHERE @size BETWEEN minimum AND maximum";
+												WHERE @size BETWEEN minimum AND maximum
+                                                AND active = 1";
 
 			using( SqlCommand cmd = new SqlCommand( qFormats, db ) ) {
 				SqlParameter sizeParameter = new SqlParameter( "size", size );
