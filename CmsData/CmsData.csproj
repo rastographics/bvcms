@@ -364,7 +364,7 @@
     <Compile Include="Classes\RoleChecker\RoleChecker.cs" />
     <Compile Include="Classes\style.cs" />
     <Compile Include="DbUtil\DbUtil.CurrentOrg.cs" />
-    <Compile Include="DbUtil\ModelViewModel.cs" />
+    <Compile Include="Classes\ModelViewModel.cs" />
     <Compile Include="Email\ReplacementCodes\Links\UnlayerLink.cs" />
     <Compile Include="Email\ReplacementCodes\Links\DropFromOrgTag.cs" />
     <Compile Include="Email\ReplacementCodes\Replacements\Debug.cs" />
@@ -816,7 +816,7 @@
     <Compile Include="Generated\Views\TransactionBalance.cs" />
     <Compile Include="Generated\Views\TransactionList.cs" />
     <Compile Include="Generated\Views\TransactionSummary.cs" />
-    <Compile Include="DbUtil\ITableWithExtraValues.cs" />
+    <Compile Include="Classes\ITableWithExtraValues.cs" />
     <Content Include="App_Readme\Elmah.txt" />
     <Content Include="Migrations\00000000_sql_migrations_table.sql" />
     <Compile Include="Organization\OrgFilter.cs" />
