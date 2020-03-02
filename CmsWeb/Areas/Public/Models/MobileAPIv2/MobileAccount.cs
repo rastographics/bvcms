@@ -367,7 +367,7 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 
         private void notifyNewUser()
         {
-            AccountModel.SendNewUserEmail(user.Username);
+            AccountModel.SendNewUserEmail(db, user.Username);
         }
 
         private void notifyNewUserWithDeepLink(int device, string instance, string key)

@@ -26,7 +26,7 @@ namespace UtilityExtensions
                 {
                     if (HttpContextFactory.Current?.Request != null)
                     {
-                        return HttpContextFactory.Current.Request.Url.Authority.SplitStr(".:")[0];
+                        return HttpContextFactory.Current.Request.Url.Authority.SplitStr(".:").First();
                     }
                 }
                 catch
@@ -70,8 +70,8 @@ namespace UtilityExtensions
 
         public static string GetConnectionString(string host, int? timeout = null)
         {
-            var a = host.Split('.', ':');
-            return GetConnectionStringForDatabase($"CMS_{a[0]}");
+            var a = host.Split('.', ':').First();
+            return GetConnectionStringForDatabase($"CMS_{a}");
         }
 
         public static string GetConnectionStringForDatabase(string db, int? timeout = null)
