@@ -101,12 +101,6 @@ namespace CmsWeb
 
             Response.Headers?.Remove("Server");
 
-            if (Util.AppOffline)
-            {
-                Response.Redirect("/Errors/AppOffline.htm");
-                return;
-            }
-
             var host = CMSDataContext.GetHost(new HttpContextWrapper(Context));
             var r = DbUtil.CheckDatabaseExists($"CMS_{host}");
             var redirect = ViewExtensions2.DatabaseErrorUrl(r);

@@ -97,32 +97,6 @@ namespace UtilityExtensions
             }
         }
 
-        public static bool AppOffline
-        {
-            get
-            {
-                var path = ParseEnv(ConfigurationManager.AppSettings["RebootDbInProgress"]);
-                if (File.Exists(path))
-                {
-                    return true;
-                }
-
-                path = ParseEnv(ConfigurationManager.AppSettings["SharedFolder"]);
-                if (!Directory.Exists(path))
-                {
-                    return false;
-                }
-
-                path = ParseEnv(ConfigurationManager.AppSettings["AppOfflineFile"]);
-                if (File.Exists(path))
-                {
-                    return true;
-                }
-
-                return File.Exists(HttpContextFactory.Current.Server.MapPath("~/AppOffline.txt"));
-            }
-        }
-
         public static string SimSunFont
         {
             get
