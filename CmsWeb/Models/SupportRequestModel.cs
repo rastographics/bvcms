@@ -1,4 +1,5 @@
 using CmsData;
+using CmsWeb.Constants;
 using Dapper;
 using RestSharp;
 using System;
@@ -13,13 +14,10 @@ using UtilityExtensions;
 
 namespace CmsWeb.Models
 {
-    public class SupportRequestModel
+    public class SupportRequestModel : IDbBinder
     {
-        private readonly CMSDataContext _db;
+        public CMSDataContext CurrentDatabase { get; set; }
         private readonly List<string> _ccAddrs = new List<string>();
-        private readonly ConnectionStringSettings _cs = ConfigurationManager.ConnectionStrings["CmsLogging"];
-        private readonly string _supportInsert = ConfigurationManager.AppSettings["SupportInsert"];
-        private readonly string _supportUpdate = ConfigurationManager.AppSettings["SupportUpdate"];
         private readonly bool _useZenDeskApi = ConfigurationManager.AppSettings["UseZenDeskApi"] == "true";
         private readonly string _mydataRequest = "MyData Request";
         private const string SupportEmail = "support@touchpointsoftware.zendesk.com";
@@ -31,9 +29,13 @@ namespace CmsWeb.Models
         public string Cc { get; set; }
         public string Subj { get; set; }
 
-        public SupportRequestModel()
+
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
+        public SupportRequestModel() { }
+
+        public SupportRequestModel(CMSDataContext db)
         {
-            _db = DbUtil.Db;
+            CurrentDatabase = db;
         }
 
         public static bool CanSupport => Util.IsHosted;
@@ -46,7 +48,7 @@ namespace CmsWeb.Models
                 return;
             }
             var msg = CreateRequest();
-            var smtp = _db.Smtp();
+            var smtp = CurrentDatabase.Smtp();
             smtp.Send(msg);
         }
 
@@ -59,7 +61,7 @@ namespace CmsWeb.Models
                 return;
             }
             var msg = CreateRequest();
-            var smtp = _db.Smtp();
+            var smtp = CurrentDatabase.Smtp();
             smtp.Send(msg);
         }
 
@@ -67,26 +69,7 @@ namespace CmsWeb.Models
         {
             var who = Util.UserFullName + " <" + Util.UserEmail + ">";
             var id = 0;
-            var subject = $"{Urgency} {Subj}: {Util.UserFullName} @ {_db.Host}";
-            if (_cs != null)
-            {
-                var cn = new SqlConnection(_cs.ConnectionString);
-                cn.Open();
-
-                id = cn.Query<int>(_supportInsert, new
-                {
-                    c = DateTime.Now,
-                    w = who,
-                    h = Util.Host,
-                    u = Urgency,
-                    r = Body,
-                    whoid = Util.UserPeopleId
-                }).Single();
-                subject += $" [{id}]";
-
-                cn.Execute(_supportUpdate, new { subject, id });
-                cn.Close();
-            }
+            var subject = $"{Urgency} {Subj}: {Util.UserFullName} @ {CurrentDatabase.Host}";
             const string fromsupport = "Touchpoint Support <mailer@tpsdb.com>";
 
             var sb = new StringBuilder();
@@ -98,7 +81,7 @@ $@"<b>Request ID: {id}</b><br>
 
             if (Subj != _mydataRequest)
             {
-                var roles = (from e in _db.Users
+                var roles = (from e in CurrentDatabase.Users
                              where e.UserId == Util.UserId
                              select string.Join(", ", e.Roles)).SingleOrDefault();
 
@@ -137,25 +120,6 @@ $@"<b>Request ID: {id}</b><br>
             var who = Util.UserFullName + " <" + Util.UserEmail + ">";
             var id = 0;
             var subject = $"{Subj}";
-            if (_cs != null)
-            {
-                var cn = new SqlConnection(_cs.ConnectionString);
-                cn.Open();
-
-                id = cn.Query<int>(_supportInsert, new
-                {
-                    c = DateTime.Now,
-                    w = who,
-                    h = Util.Host,
-                    u = Urgency,
-                    r = Body,
-                    whoid = Util.UserPeopleId
-                }).Single();
-                subject += $" [{id}]";
-
-                cn.Execute(_supportUpdate, new { subject, id });
-                cn.Close();
-            }
             var reqbody = new StringBuilder();
             reqbody.AppendFormat(@"<b>Request ID: {0}</b><br>
                             <b>Request By:</b> {1} ({2})<br>
@@ -164,7 +128,7 @@ $@"<b>Request ID: {id}</b><br>
 
             if (Subj != _mydataRequest)
             {
-                var p = (from e in _db.Users
+                var p = (from e in CurrentDatabase.Users
                          where e.UserId == Util.UserId
                          select new
                          {
