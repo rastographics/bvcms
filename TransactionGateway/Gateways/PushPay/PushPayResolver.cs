@@ -203,22 +203,23 @@ namespace TransactionGateway
             return fundExist;
         }
 
-        public async Task<string> GetMerchantHandle(string merchantName)
+        public async Task<string> GetMerchantHandle(string merchantHandle)
         {
             bool merchantExist = false;
 
-            if (!string.IsNullOrEmpty(merchantName))
-                merchantExist = await MerchantNameExist(merchantName);
+            if (!string.IsNullOrEmpty(merchantHandle))
+                merchantExist = await MerchantNameExist(merchantHandle);
 
             if (merchantExist)
-                return merchantName.Replace(" ", "%20");
+                return merchantHandle;
 
             return string.Empty;
         }
 
-        private Task<bool> MerchantNameExist(string merchantName)
+        private async Task<bool> MerchantNameExist(string merchantHandle)
         {
-            throw new NotImplementedException();
+            var merchants = await _pushpay.SearchMerchants(merchantHandle);
+            return merchants.Any();           
         }
 
         public BundleHeader CreateBundle(DateTime CreatedOn, decimal? BundleTotal, decimal? TotalCash, decimal? TotalChecks, string RefId, int? RefIdType)

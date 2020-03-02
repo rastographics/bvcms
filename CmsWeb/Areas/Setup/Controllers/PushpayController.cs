@@ -54,7 +54,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             _resolver = new PushpayResolver(_pushpay, CurrentDatabase);
 
             _merchantHandle = _pushpayPayment._merchantHandle;
-            _givingLink = $"{Configuration.Current.PushpayGivingLinkBase}/{_merchantHandle}";
+            //_givingLink = $"{Configuration.Current.PushpayGivingLinkBase}/{_merchantHandle}";
         }
 
         /// <summary>
