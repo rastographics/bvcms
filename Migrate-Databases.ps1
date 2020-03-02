@@ -106,7 +106,7 @@ function Write-Log {
     "$message" | Out-File -FilePath $logfile -Append
 }
 
-if ((Get-Item $logfile).length -gt 2mb) {
+if ((Test-Path $logfile) -And (Get-Item $logfile).length -gt 2mb) {
     Remove-Item $logfile
 }
 Write-Log (Get-Date).toString("yyyy-MM-dd HH:mm:ss")
