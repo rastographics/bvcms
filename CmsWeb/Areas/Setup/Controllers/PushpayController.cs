@@ -208,13 +208,15 @@ namespace CmsWeb.Areas.Setup.Controllers
             decimal? Amount = 0;
             string mobile = string.Empty;
             string fundName = string.Empty;
+            string merchantHandle = string.Empty;
             RegistrationDatum datum = CurrentDatabase.RegistrationDatas.SingleOrDefault(d => d.Id == DatumId);
             if (datum != null)
             {
                 m = Util.DeSerialize<OnlineRegModel>(datum.Data);
                 Amount = m.PayAmount() + (m.donation ?? 0);
                 mobile = CurrentDatabase.People.SingleOrDefault(p => p.PeopleId == m.UserPeopleId)?.CellPhone;
-                fundName = await _resolver.GetOrgFund(m.List.FirstOrDefault().setting.PushpayFundName);                
+                fundName = await _resolver.GetOrgFund(m.List.FirstOrDefault().setting.PushpayFundName);
+                merchantHandle = await _resolver.GetMerchantHandle(m.List.FirstOrDefault().setting.PushpayMerchantName);
                 //Needs to redirect in case cupons are enable.
             }
             else
@@ -223,7 +225,7 @@ namespace CmsWeb.Areas.Setup.Controllers
                 CurrentDatabase.LogActivity($"No datum founded with id: {DatumId}");
                 return View("~/Views/Shared/PageError.cshtml");
             }
-            return Redirect($"{_givingLink}?ru={_merchantHandle}&sr=dat_{DatumId}&rcv=false&r=no&up={mobile}&a={Amount}&fnd={fundName}&al=true&fndv=lock");
+            return Redirect($"{_givingLink}?ru={merchantHandle}&sr=dat_{DatumId}&rcv=false&r=no&up={mobile}&a={Amount}&fnd={fundName}&al=true&fndv=lock");
         }        
 
         [Route("~/Pushpay/PayAmtDue/{transactionId:int}/{amtdue:decimal}")]

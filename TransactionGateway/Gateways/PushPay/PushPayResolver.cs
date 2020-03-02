@@ -203,6 +203,24 @@ namespace TransactionGateway
             return fundExist;
         }
 
+        public async Task<string> GetMerchantHandle(string merchantName)
+        {
+            bool merchantExist = false;
+
+            if (!string.IsNullOrEmpty(merchantName))
+                merchantExist = await MerchantNameExist(merchantName);
+
+            if (merchantExist)
+                return merchantName.Replace(" ", "%20");
+
+            return string.Empty;
+        }
+
+        private Task<bool> MerchantNameExist(string merchantName)
+        {
+            throw new NotImplementedException();
+        }
+
         public BundleHeader CreateBundle(DateTime CreatedOn, decimal? BundleTotal, decimal? TotalCash, decimal? TotalChecks, string RefId, int? RefIdType)
         {
             // create a touchpoint bundle

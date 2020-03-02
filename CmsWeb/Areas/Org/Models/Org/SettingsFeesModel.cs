@@ -106,6 +106,9 @@ namespace CmsWeb.Areas.Org.Models
         [Reg, Display(Description = PushpayFundNameDescription)]
         public string PushpayFundName { get; set; }
 
+        [Reg, Display(Description = PushpayMerchantNameDescription)]
+        public string PushpayMerchantName { get; set; }
+
         #region Descriptions
 
         private const string FeeDescription = "The base fee for the registration";
@@ -153,6 +156,9 @@ If it is zero, the payment page will be skipped.";
 
         private const string PushpayFundNameDescription = @"The Fund Name you want to use in Pushpay for this Organization.
 If this field is empty or doesn't exist, Pushpay will take the default fund you have set up";
+
+        private const string PushpayMerchantNameDescription = @"The Pushpay Merchant Name you want to use in Pushpay for this Organization.
+If this field is empty or doesn't exist, Pushpay will take the default merchant you have set up";
 
         #endregion
     }
