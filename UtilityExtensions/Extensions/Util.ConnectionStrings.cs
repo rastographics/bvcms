@@ -65,7 +65,7 @@ namespace UtilityExtensions
 
         public static string ParseEnv(string value)
         {
-            return Environment.ExpandEnvironmentVariables(value);
+            return Environment.ExpandEnvironmentVariables(value ?? "");
         }
 
         public static string GetConnectionString(string host, int? timeout = null)
