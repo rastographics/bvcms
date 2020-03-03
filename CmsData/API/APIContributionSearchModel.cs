@@ -41,6 +41,7 @@ namespace CmsData.API
         public int PushPay { get; set; }
         public bool FilterByActiveTag { get; set; }
         public string FundSet { get; set; }
+        public bool IncludePledges { get; set; }
 
         internal string Campus;
         internal string FundName;
@@ -188,19 +189,38 @@ namespace CmsData.API
             switch (model.TaxNonTax)
             {
                 case "TaxDed":
-                    contributions = from c in contributions
-                                    where !ContributionTypeCode.NonTaxTypes.Contains(c.ContributionTypeId)
-                                    select c;
+                    contributions = model.IncludePledges
+                                    ?
+                                    (from c in contributions
+                                     where !ContributionTypeCode.NonTaxDed.Equals(c.ContributionTypeId)
+                                     select c).Concat(from c in contributions where c.ContributionTypeId == ContributionTypeCode.Pledge select c)
+                                    :
+                                    (from c in contributions
+                                     where !ContributionTypeCode.NonTaxDed.Equals(c.ContributionTypeId)
+                                     where !ContributionTypeCode.Pledge.Equals(c.ContributionTypeId)
+                                     select c);
                     break;
                 case "NonTaxDed":
-                    contributions = from c in contributions
-                                    where c.ContributionTypeId == ContributionTypeCode.NonTaxDed
-                                    select c;
+                    contributions = model.IncludePledges
+                                    ?
+                                    (from c in contributions
+                                     where ContributionTypeCode.NonTaxDed.Equals(c.ContributionTypeId)
+                                     select c).Concat(from c in contributions where c.ContributionTypeId == ContributionTypeCode.NonTaxDed select c)
+                                    :
+                                    (from c in contributions
+                                     where ContributionTypeCode.NonTaxDed.Equals(c.ContributionTypeId)
+                                     where !ContributionTypeCode.Pledge.Equals(c.ContributionTypeId)
+                                     select c);
                     break;
                 case "Both":
-                    contributions = from c in contributions
-                                    where c.ContributionTypeId != ContributionTypeCode.Pledge
-                                    select c;
+                    contributions = model.IncludePledges
+                                    ? 
+                                    (from c in contributions                                     
+                                     select c).Concat(from c in contributions where c.ContributionTypeId != ContributionTypeCode.Pledge select c)
+                                    :
+                                    (from c in contributions
+                                     where !ContributionTypeCode.Pledge.Equals(c.ContributionTypeId)
+                                     select c);
                     break;
                 case "Pledge":
                     contributions = from c in contributions
@@ -208,7 +228,7 @@ namespace CmsData.API
                                     select c;
                     break;
             }
-
+            
             switch (model.Status)
             {
                 case ContributionStatusCode.Recorded:

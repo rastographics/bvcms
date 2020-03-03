@@ -199,29 +199,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
 			return Json( profiles, JsonRequestBehavior.AllowGet );
 		}
-
-		[HttpPost]
-		public ActionResult GetSubgroups( string data )
-		{
-			if( !Auth() ) {
-				return Message.createErrorReturn( "Authentication failed, please try again", Message.API_ERROR_INVALID_CREDENTIALS );
-			}
-
-			Message message = Message.createFromString( data );
-			SubgroupList sgl = JsonConvert.DeserializeObject<SubgroupList>( message.data );
-
-			Message response = new Message();
-			response.setNoError();
-
-			using( SqlConnection db = new SqlConnection( Util.ConnectionString ) ) {
-				List<Subgroup> subgroups = Subgroup.forGroupID( db, sgl.groupID, sgl.peopleID, sgl.scheduleID, sgl.meetingDate );
-
-				response.data = SerializeJSON( subgroups, message.version );
-			}
-
-			return response;
-		}
-
+        
 		[HttpPost]
 		public ActionResult GetPerson( string data )
 		{

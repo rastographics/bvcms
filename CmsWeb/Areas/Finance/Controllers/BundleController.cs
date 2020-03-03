@@ -1,11 +1,12 @@
 ﻿using CmsData.Codes;
+using CmsWeb.Areas.Finance.Models;
+using CmsWeb.Common;
 using CmsWeb.Lifecycle;
 using CmsWeb.Models;
 using Dapper;
 using System.Linq;
 using System.Web.Mvc;
 using UtilityExtensions;
-
 
 namespace CmsWeb.Areas.Finance.Controllers
 {
@@ -150,6 +151,19 @@ namespace CmsWeb.Areas.Finance.Controllers
             var filename = $"Bundle-Export-{id}.xlsx";
 
             return connection.ExecuteReader(query, queryParameters, commandTimeout: 1200).ToExcel(filename, fromSql: true);
+        }
+
+        [HttpGet]
+        public ActionResult RemoteDeposit(int id)
+        {
+            var service = Configuration.Current.RemoteDepositCaptureService;
+            var token = Configuration.Current.RemoteDepositCaptureServiceToken;
+            var spec = CurrentDatabase.Contents.Any(x => x.Name == "X9Specification" && x.TypeID == ContentTypeCode.TypeText);
+            if (spec && service.HasValue() && token.HasValue())
+            {
+                return RemoteDepositCapture.Export(CurrentDatabase, id, service, token);
+            }
+            return RedirectShowError("The remote deposit capture service is not configured");
         }
     }
 }

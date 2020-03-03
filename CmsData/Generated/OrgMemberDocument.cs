@@ -16,8 +16,9 @@ namespace CmsData
         private int _DocumentId;
         private string _DocumentName;
         private int _ImageId;
-        private int _PeopleId;
+        private int? _PeopleId;
         private int _OrganizationId;
+        private DateTime _CreatedDate;
 
         private EntityRef<Person> _Person;
         private EntityRef<Organization> _Organization;
@@ -38,11 +39,14 @@ namespace CmsData
         partial void OnImageIdChanging(int value);
         partial void OnImageIdChanged();
 
-        partial void OnPeopleIdChanging(int value);
+        partial void OnPeopleIdChanging(int? value);
         partial void OnPeopleIdChanged();
 
         partial void OnOrganizationIdChanging(int value);
         partial void OnOrganizationIdChanged();
+
+        partial void OnCreatedDateChanging(DateTime value);
+        partial void OnCreatedDateChanged();
         #endregion
 
         public OrgMemberDocument()
@@ -110,9 +114,27 @@ namespace CmsData
             }
         }
 
-        [Column(Name = "PeopleId", UpdateCheck = UpdateCheck.Never, Storage = "_PeopleId", DbType = "int NOT NULL", IsPrimaryKey = true)]
+        [Column(Name = "CreatedDate", UpdateCheck = UpdateCheck.Never, Storage = "_CreatedDate", DbType = "datetime")]
+        public DateTime CreatedDate
+        {
+            get => _CreatedDate;
+
+            set
+            {
+                if (_CreatedDate != value)
+                {
+                    OnCreatedDateChanging(value);
+                    SendPropertyChanging();
+                    _CreatedDate = value;
+                    SendPropertyChanged("CreatedDate");
+                    OnCreatedDateChanged();
+                }
+            }
+        }
+
+        [Column(Name = "PeopleId", UpdateCheck = UpdateCheck.Never, Storage = "_PeopleId", DbType = "int NULL", IsPrimaryKey = true)]
         [IsForeignKey]
-        public int PeopleId
+        public int? PeopleId
         {
             get => _PeopleId;
 
@@ -152,7 +174,7 @@ namespace CmsData
                     OnOrganizationIdChanging(value);
                     SendPropertyChanging();
                     _OrganizationId = value;
-                    SendPropertyChanged("PeopleId");
+                    SendPropertyChanged("OrganizationId");
                     OnOrganizationIdChanged();
                 }
             }

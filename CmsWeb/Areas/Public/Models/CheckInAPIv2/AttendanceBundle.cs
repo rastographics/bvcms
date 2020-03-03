@@ -74,6 +74,7 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 		{
 			List<Label> labels = new List<Label>();
             bool printingForChildren = false;
+            bool needsSecurityLabel = false;
 
 			using( var db = new SqlConnection( Util.ConnectionString ) ) {
 				AttendanceCacheSet cacheSet = new AttendanceCacheSet {
@@ -88,15 +89,27 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 
                 foreach (Attendance attendance in attendances)
                 {
+                    attendance.populateSubgroups(db, cacheSet);
                     labels.AddRange(attendance.getLabels(cacheSet));
                     CmsData.Person person = cacheSet.getPerson(attendance.peopleID);
-                    if ((person.Age ?? 0) < cacheSet.nameTagAge)
+                    if (securityLabels == Attendance.SECURITY_LABELS_PER_FAMILY)
                     {
-                        printingForChildren = true;
+                        // we only add a security label if we are printing for children in orgs with a security label needed; do those checks now
+                        if ((person.Age ?? 0) < cacheSet.nameTagAge)
+                        {
+                            printingForChildren = true;
+                        }
+                        foreach (AttendanceGroup group in attendance.groups)
+                        {
+                            Organization org = cacheSet.getOrganization(group.groupID);
+                            if (org != null && org.NoSecurityLabel != true && org.NumCheckInLabels > 0 && group.present)
+                            {
+                                needsSecurityLabel = true;
+                            }
+                        }
                     }
                 }
-
-                if ( labels.Count > 0 && printingForChildren && securityLabels == Attendance.SECURITY_LABELS_PER_FAMILY ) {
+                if ( printingForChildren && needsSecurityLabel && labels.Count > 0 ) {
 					labels.AddRange( attendances[0].getSecurityLabel( cacheSet ) );
 				}
 			}

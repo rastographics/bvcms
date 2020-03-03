@@ -1,9 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.Org.Models;
 using eSpace;
+using eSpace.Models;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Org.Controllers
@@ -57,11 +59,19 @@ namespace CmsWeb.Areas.Org.Controllers
                 Username = CurrentDatabase.Setting("eSpaceUserName", ""),
                 Password = CurrentDatabase.Setting("eSpacePassword", "")
             };
-            var list = espace.Event.List(new NameValueCollection {
-                { "eventName", q },
-                { "topX", "10" },
-                { "startDate", DateTime.Now.ToString("d") }
-            });
+            IEnumerable<eSpaceEvent> list = null;
+            try
+            {
+                list = espace.Event.List(new NameValueCollection {
+                    { "eventName", q },
+                    { "topX", "10" },
+                    { "startDate", DateTime.Now.ToString("d") }
+                });
+            }
+            catch (Exception e)
+            {
+                ViewBag.Error = e.Message;
+            }
             return PartialView("Other/eSpaceResults", list);
         }
     }

@@ -98,3 +98,30 @@ div.signin-with .header a {
 .managed-giving-options a {
     text-decoration: underline dashed;
 }
+
+.form-inline .upload-doc-options .input-group {
+    display: block;
+}
+
+.form-inline .upload-doc-options .btn-block {
+    margin-bottom: 5px;
+}
+
+.upload-doc-options {
+    margin-top: 5px;
+}
+
+@media (min-width: 768px) {
+    .form-inline .upload-doc-options .input-group {
+        float: left;
+    }
+
+    .form-inline .upload-doc-options .input-group:not(:last-child) {
+        margin-right: 5px;
+    }
+
+    .upload-doc-options {
+        float: right;
+        margin-top: -18px;
+    }
+}

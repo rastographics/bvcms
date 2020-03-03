@@ -199,6 +199,8 @@ namespace CmsData
 
         private EntitySet<OrgMemberDocument> _OrgMemberDocuments;
 
+        private EntitySet<OrgTemporaryDocuments> _OrgTemporaryDocuments;
+
         private EntitySet<Attend> _Attends;
 
         private EntitySet<Coupon> _Coupons;
@@ -522,6 +524,8 @@ namespace CmsData
             _EnrollmentTransactions = new EntitySet<EnrollmentTransaction>(new Action<EnrollmentTransaction>(attach_EnrollmentTransactions), new Action<EnrollmentTransaction>(detach_EnrollmentTransactions));
 
             _OrgMemberDocuments = new EntitySet<OrgMemberDocument>(new Action<OrgMemberDocument>(attach_OrgMemberDocuments), new Action<OrgMemberDocument>(detach_OrgMemberDocuments));
+
+            _OrgTemporaryDocuments = new EntitySet<OrgTemporaryDocuments>(new Action<OrgTemporaryDocuments>(this.attach_OrgTemporaryDocuments), new Action<OrgTemporaryDocuments>(this.detach_OrgTemporaryDocuments));
 
             _Attends = new EntitySet<Attend>(new Action<Attend>(attach_Attends), new Action<Attend>(detach_Attends));
 
@@ -2246,12 +2250,21 @@ namespace CmsData
         }
 
 
-        [Association(Name = "FK__OrgMember__Organ__1D2725C1", Storage = "_OrgMemberDocuments", OtherKey = "OrganizationId")]
+        [Association(Name = "Org_Member_Documents_ORG_FK", Storage = "_OrgMemberDocuments", OtherKey = "OrganizationId")]
         public EntitySet<OrgMemberDocument> OrgMemberDocuments
         {
             get => _OrgMemberDocuments;
 
             set => _OrgMemberDocuments.Assign(value);
+        }
+
+
+        [Association(Name = "Org_Temporary_Documents_ORG_FK", Storage = "_OrgTemporaryDocuments", OtherKey = "OrganizationId")]
+        public EntitySet<OrgTemporaryDocuments> OrgTemporaryDocuments
+        {
+            get { return this._OrgTemporaryDocuments; }
+
+            set { this._OrgTemporaryDocuments.Assign(value); }
         }
 
 
@@ -2624,7 +2637,7 @@ namespace CmsData
             }
         }
 
-#endregion
+        #endregion
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
@@ -2700,6 +2713,18 @@ namespace CmsData
         private void detach_OrgMemberDocuments(OrgMemberDocument entity)
         {
             SendPropertyChanging();
+            entity.Organization = null;
+        }
+
+        private void attach_OrgTemporaryDocuments(OrgTemporaryDocuments entity)
+        {
+            this.SendPropertyChanging();
+            entity.Organization = this;
+        }
+
+        private void detach_OrgTemporaryDocuments(OrgTemporaryDocuments entity)
+        {
+            this.SendPropertyChanging();
             entity.Organization = null;
         }
 
