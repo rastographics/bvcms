@@ -39,7 +39,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 CreatedAccount = true;
                 var user = MembershipService.CreateUser(CurrentDatabase, person.PeopleId);
                 Log("SendNewUserEmail");
-                AccountModel.SendNewUserEmail(user.Username);
+                AccountModel.SendNewUserEmail(CurrentDatabase, user.Username);
                 return user;
             }
             return null;

@@ -23,8 +23,6 @@ copy /y %source_root%CmsTwilio\bin\%buildconfiguration%\CmsTwilio.exe %source_ro
 copy /y %source_root%RepairOrg\bin\%buildconfiguration%\RepairOrg.exe %source_root%CmsWeb\bin
 
 pushd %source_root%CmsWeb
-call npm install
-call gulp
 msbuild CmsWeb.csproj /p:Platform=AnyCPU;Configuration=%buildconfiguration%;DeployOnBuild=true;PublishProfile=%buildconfiguration% /clp:ErrorsOnly || %on_error%
 popd
 endlocal

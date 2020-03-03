@@ -14,7 +14,7 @@ namespace CmsData
     {
         public static bool DatabaseExists(string name)
         {
-            return DatabaseExists(Util.GetConnectionString2("master", 3), name);
+            return DatabaseExists(Util.GetConnectionStringForDatabase("master", 3), name);
         }
         public static bool DatabaseExists(string mastercs, string name)
         {
@@ -69,7 +69,7 @@ GO
                 }
             }
 
-            using (var cn = new SqlConnection(Util.GetConnectionString2("master", 3)))
+            using (var cn = new SqlConnection(Util.GetConnectionStringForDatabase("master", 3)))
             {
                 CheckDatabaseResult ret;
                 try
@@ -105,10 +105,12 @@ GO
             var server = HttpContextFactory.Current.Server;
             var path = server.MapPath("/");
             var sqlScriptsPath = path + @"..\SqlScripts\";
-            var cs = Util.GetConnectionString2("master");
+            var cs = Util.GetConnectionStringForDatabase("master");
+            var cms = Util.GetConnectionStringForDatabase("CMS_" + host);
+            var cmsi = Util.GetConnectionStringForDatabase("CMSi_" + host);
+            var elmah = Util.GetConnectionStringForDatabase("Elmah");
 
-            var retVal = CreateDatabase(host, sqlScriptsPath, cs, Util.ConnectionStringImage,
-                Util.GetConnectionString2("Elmah"), Util.ConnectionString);
+            var retVal = CreateDatabase(host, sqlScriptsPath, cs, cmsi, elmah, cms);
 
             HttpRuntime.Cache.Remove(host + "-DatabaseExists");
             HttpRuntime.Cache.Remove(host + "-CheckDatabaseResult");

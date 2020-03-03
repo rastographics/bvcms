@@ -129,12 +129,12 @@ namespace CmsWeb.Models
 
             if (checkOrgLeadersOnly && !Util2.OrgLeadersOnlyChecked)
             {
-                CmsData.DbUtil.LogActivity("iphone leadersonly check " + user.Username);
+                DbUtil.LogActivity("iphone leadersonly check " + user.Username);
                 if (!Util2.OrgLeadersOnly && roleProvider.IsUserInRole(user.Username, "OrgLeadersOnly"))
                 {
                     Util2.OrgLeadersOnly = true;
                     cmsdb.SetOrgLeadersOnly();
-                    CmsData.DbUtil.LogActivity("SetOrgLeadersOnly");
+                    DbUtil.LogActivity("SetOrgLeadersOnly");
                 }
                 Util2.OrgLeadersOnlyChecked = true;
             }
@@ -171,7 +171,7 @@ namespace CmsWeb.Models
                 {
                     Util2.OrgLeadersOnly = true;
                     cmsdb.SetOrgLeadersOnly();
-                    CmsData.DbUtil.LogActivity("SetOrgLeadersOnly");
+                    DbUtil.LogActivity("SetOrgLeadersOnly");
                 }
                 Util2.OrgLeadersOnlyChecked = true;
             }
@@ -234,7 +234,7 @@ namespace CmsWeb.Models
                     return UserValidationResult.Invalid(UserValidationStatus.PinInvalid);
             }
 
-            return ValidateUserBeforeLogin(result.User.Username, HttpContextFactory.Current.Request.Url.OriginalString, result.User, userExists: true);
+            return ValidateUserBeforeLogin(db, result.User.Username, HttpContextFactory.Current.Request.Url.OriginalString, result.User, userExists: true);
         }
 
         private static UserValidationResult GetUserViaCredentials()
@@ -332,17 +332,17 @@ namespace CmsWeb.Models
                 failedPasswordCount = Math.Max(failedPasswordCount, u.FailedPasswordAttemptCount);
             }
 
-            return ValidateUserBeforeLogin(userName, url, user, userExists, failedPasswordCount, impersonating);
+            return ValidateUserBeforeLogin(db, userName, url, user, userExists, failedPasswordCount, impersonating);
         }
 
-        private static UserValidationResult ValidateUserBeforeLogin(string userName, string url, User user, bool userExists, int failedPasswordCount = 0, bool impersonating = false)
+        private static UserValidationResult ValidateUserBeforeLogin(CMSDataContext db, string userName, string url, User user, bool userExists, int failedPasswordCount = 0, bool impersonating = false)
         {
             var maxInvalidPasswordAttempts = CMSMembershipProvider.provider.MaxInvalidPasswordAttempts;
             const string DEFAULT_PROBLEM = "There is a problem with your username and password combination. If you are using your email address, it must match the one we have on record. Try again or use one of the links below.";
 
             if (user == null && userExists)
             {
-                CmsData.DbUtil.LogActivity($"failed password #{failedPasswordCount} by {userName}");
+                DbUtil.LogActivity($"failed password #{failedPasswordCount} by {userName}");
 
                 if (failedPasswordCount == maxInvalidPasswordAttempts)
                 {
@@ -355,13 +355,13 @@ namespace CmsWeb.Models
 
             if (user == null)
             {
-                CmsData.DbUtil.LogActivity("attempt to login by non-user " + userName);
+                DbUtil.LogActivity("attempt to login by non-user " + userName);
                 return UserValidationResult.Invalid(UserValidationStatus.NoUserFound, DEFAULT_PROBLEM);
             }
 
             if (user.IsLockedOut)
             {
-                NotifyAdmins($"{userName} locked out #{user.FailedPasswordAttemptCount} on {url}",
+                NotifyAdmins(db, $"{userName} locked out #{user.FailedPasswordAttemptCount} on {url}",
                     $"{userName} tried to login at {Util.Now} but is locked out");
 
                 return UserValidationResult.Invalid(UserValidationStatus.LockedOut,
@@ -370,7 +370,7 @@ namespace CmsWeb.Models
 
             if (!user.IsApproved)
             {
-                NotifyAdmins($"unapproved user {userName} logging in on {url}",
+                NotifyAdmins(db, $"unapproved user {userName} logging in on {url}",
                     $"{userName} tried to login at {Util.Now} but is not approved");
 
                 return UserValidationResult.Invalid(UserValidationStatus.UserNotApproved, DEFAULT_PROBLEM);
@@ -380,7 +380,7 @@ namespace CmsWeb.Models
             {
                 if (user.Roles.Contains("Finance"))
                 {
-                    NotifyAdmins($"cannot impersonate Finance user {userName} on {url}",
+                    NotifyAdmins(db, $"cannot impersonate Finance user {userName} on {url}",
                         $"{userName} tried to login at {Util.Now}");
 
                     return UserValidationResult.Invalid(UserValidationStatus.CannotImpersonateFinanceUser, DEFAULT_PROBLEM);
@@ -424,7 +424,7 @@ namespace CmsWeb.Models
             return null;
         }
 
-        private static void NotifyAdmins(string subject, string message)
+        private static void NotifyAdmins(CMSDataContext db, string subject, string message)
         {
             IEnumerable<Person> notify = null;
             if (Roles.GetAllRoles().Contains("NotifyLogin"))
@@ -436,7 +436,7 @@ namespace CmsWeb.Models
                 notify = CMSRoleProvider.provider.GetRoleUsers("Admin").Select(u => u.Person).Distinct();
             }
 
-            CmsData.DbUtil.Db.EmailRedacted(CmsData.DbUtil.AdminMail, notify, subject, message);
+            db.EmailRedacted(DbUtil.AdminMail, notify, subject, message);
         }
 
         public static User SetUserInfo(CMSDataContext cmsdb, CMSImageDataContext cmsidb, string username, bool deleteSpecialTags = true)
@@ -483,7 +483,7 @@ namespace CmsWeb.Models
             return i.u;
         }
 
-        public static string CheckAccessRole(string name)
+        public static string CheckAccessRole(CMSDataContext db, string name)
         {
             if (!Roles.IsUserInRole(name, "Access") && !Roles.IsUserInRole(name, "OrgMembersOnly"))
             {
@@ -494,25 +494,24 @@ namespace CmsWeb.Models
 
                 if (name.HasValue())
                 {
-                    CmsData.DbUtil.LogActivity($"user {name} loggedin without a role ");
+                    DbUtil.LogActivity($"user {name} loggedin without a role ");
                 }
 
                 FormsAuthentication.SignOut();
                 return "/Errors/AccessDenied.htm";
             }
 
-            if (Roles.IsUserInRole(name, "NoRemoteAccess") && CmsData.DbUtil.CheckRemoteAccessRole)
+            if (Roles.IsUserInRole(name, "NoRemoteAccess") && DbUtil.CheckRemoteAccessRole)
             {
-                NotifyAdmins("NoRemoteAccess", $"{name} tried to login from {Util.Host}");
+                NotifyAdmins(db, "NoRemoteAccess", $"{name} tried to login from {Util.Host}");
                 return "NoRemoteAccess.htm";
             }
 
             return null;
         }
 
-        public static User AddUser(int id)
+        public static User AddUser(CMSDataContext db, int id)
         {
-            var db = CmsData.DbUtil.Db;
             var p = db.People.Single(pe => pe.PeopleId == id);
             CMSMembershipProvider.provider.AdminOverride = true;
             var user = MembershipService.CreateUser(db, id);
@@ -522,9 +521,8 @@ namespace CmsWeb.Models
             return user;
         }
 
-        public static void SendNewUserEmail(string username)
+        public static void SendNewUserEmail(CMSDataContext db, string username)
         {
-            var db = CmsData.DbUtil.Db;
             var user = db.Users.First(u => u.Username == username);
             var body = db.ContentHtml("NewUserWelcome", Resource1.AccountModel_NewUserWelcome);
             body = body.Replace("{first}", user.Person.PreferredName);
@@ -536,15 +534,14 @@ namespace CmsWeb.Models
             var link = db.ServerLink("/Account/SetPassword/" + user.ResetPasswordCode);
             body = body.Replace("{link}", link);
             db.SubmitChanges();
-            db.EmailRedacted(CmsData.DbUtil.AdminMail, user.Person, "New user welcome", body);
+            db.EmailRedacted(DbUtil.AdminMail, user.Person, "New user welcome", body);
         }
 
-        public static void ForgotPassword(string username)
+        public static void ForgotPassword(CMSDataContext db, string username)
         {
             // first find a user with the email address or username
             string msg = null;
             var path = new StringBuilder();
-            var db = CmsData.DbUtil.Db;
 
             username = username.Trim();
             var q = db.Users.Where(uu =>
@@ -583,26 +580,26 @@ namespace CmsWeb.Models
                         msg = msg.Replace("{first}", p.PreferredName);
                         msg = msg.Replace("{email}", username);
                         msg = msg.Replace("{resetlink}", url);
-                        db.SendEmail(Util.FirstAddress(CmsData.DbUtil.AdminMail),
+                        db.SendEmail(Util.FirstAddress(DbUtil.AdminMail),
                             "touchpointsoftware new password link", msg, Util.ToMailAddressList(p.EmailAddress ?? p.EmailAddress2));
                     }
-                    CmsData.DbUtil.LogActivity($"ForgotPassword ('{username}', {path})");
+                    DbUtil.LogActivity($"ForgotPassword ('{username}', {path})");
                     return;
                 }
                 path.Append("p0");
                 if (!Util.ValidEmail(username))
                 {
-                    CmsData.DbUtil.LogActivity($"ForgotPassword ('{username}', {path})");
+                    DbUtil.LogActivity($"ForgotPassword ('{username}', {path})");
                     return;
                 }
                 path.Append("n0");
 
                 msg = db.ContentHtml("ForgotPasswordBadEmail", Resource1.AccountModel_ForgotPasswordBadEmail);
                 msg = msg.Replace("{email}", username);
-                db.SendEmail(Util.FirstAddress(CmsData.DbUtil.AdminMail),
+                db.SendEmail(Util.FirstAddress(DbUtil.AdminMail),
                     "Forgot password request for " + db.Setting("NameOfChurch", "bvcms"),
                     msg, Util.ToMailAddressList(username));
-                CmsData.DbUtil.LogActivity($"ForgotPassword ('{username}', {path})");
+                DbUtil.LogActivity($"ForgotPassword ('{username}', {path})");
                 return;
             }
             path.Append("u+");
@@ -624,9 +621,9 @@ namespace CmsWeb.Models
             msg = db.ContentHtml("ForgotPasswordReset2", Resource1.AccountModel_ForgotPasswordReset2);
             msg = msg.Replace("{email}", username);
             msg = msg.Replace("{resetlink}", sb.ToString());
-            db.SendEmail(Util.FirstAddress(CmsData.DbUtil.AdminMail),
+            db.SendEmail(Util.FirstAddress(DbUtil.AdminMail),
                 "TouchPoint password reset link", msg, addrlist);
-            CmsData.DbUtil.LogActivity($"ForgotPassword ('{username}', {path})");
+            DbUtil.LogActivity($"ForgotPassword ('{username}', {path})");
         }
     }
 }
