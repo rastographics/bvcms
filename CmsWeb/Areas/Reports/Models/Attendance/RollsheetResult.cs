@@ -6,6 +6,7 @@ using iTextSharp.text;
 using iTextSharp.text.pdf;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -22,7 +23,7 @@ namespace CmsWeb.Areas.Reports.Models
         private readonly PageEvent pageEvents = new PageEvent();
         private readonly Font smallfont = FontFactory.GetFont(FontFactory.HELVETICA, 7);
         private PdfPCell box;
-        private Font china;
+        private Font unicodeFont;
         private PdfContentByte dc;
         private Document doc;
         private bool hasRows;
@@ -127,7 +128,7 @@ namespace CmsWeb.Areas.Reports.Models
 
                     foreach (var m in q)
                     {
-                        table.AddCell(AddRow(m.MemberTypeCode, m.Name2, m.PeopleId, m.BirthDate, m.highlight, m.ch ? china ?? font : font));
+                        table.AddCell(AddRow(m.MemberTypeCode, m.Name2, m.PeopleId, m.BirthDate, m.highlight, m.ch ? unicodeFont ?? font : font));
                     }
                 }
                 else if (Filter?.GroupSelect == GroupSelectCode.Member)
@@ -164,7 +165,7 @@ namespace CmsWeb.Areas.Reports.Models
 
                     foreach (var m in q)
                     {
-                        table.AddCell(AddRow(m.MemberTypeCode, m.Name2, m.PeopleId, m.BirthDate, m.highlight, m.ch ? china ?? font : font));
+                        table.AddCell(AddRow(m.MemberTypeCode, m.Name2, m.PeopleId, m.BirthDate, m.highlight, m.ch ? unicodeFont ?? font : font));
                     }
                 }
                 else
@@ -194,7 +195,7 @@ namespace CmsWeb.Areas.Reports.Models
 
                     foreach (var m in q)
                     {
-                        table.AddCell(AddRow(m.MemberTypeCode, m.Name2, m.PeopleId, m.BirthDate, m.highlight, m.ch ? china ?? font : font));
+                        table.AddCell(AddRow(m.MemberTypeCode, m.Name2, m.PeopleId, m.BirthDate, m.highlight, m.ch ? unicodeFont ?? font : font));
                     }
                 }
                 if ((OrgSearchModel != null && NewMeetingInfo.ByGroup == false)
@@ -262,26 +263,26 @@ namespace CmsWeb.Areas.Reports.Models
             doc.Close();
         }
 
-        public Font CreateChineseFont()
+        public Font CreateUnicodeFont()
         {
-            var simsunfont = Util.SimSunFont;
-            if (simsunfont == null)
+            var ufont = ConfigurationManager.AppSettings["UnicodeFont"];
+            if (ufont == null)
             {
                 return null;
             }
 
-            if (simsunfont.StartsWith("~"))
+            if (ufont.StartsWith("~"))
             {
-                simsunfont = HttpContextFactory.Current.Server.MapPath(Util.SimSunFont);
+                ufont = HttpContextFactory.Current.Server.MapPath(ufont);
             }
 
-            if (!File.Exists(simsunfont))
+            if (!File.Exists(ufont))
             {
                 return null;
             }
 
             var baseFont = BaseFont.CreateFont(
-                simsunfont,
+                ufont,
                 BaseFont.IDENTITY_H,
                 BaseFont.EMBEDDED);
             return new Font(baseFont);
@@ -293,7 +294,7 @@ namespace CmsWeb.Areas.Reports.Models
             pageSetStarted = true;
             if (NewMeetingInfo.UseAltNames)
             {
-                china = CreateChineseFont();
+                unicodeFont = CreateUnicodeFont();
             }
 
             pageEvents.StartPageSet(

@@ -26,7 +26,7 @@ namespace UtilityExtensions
                 {
                     if (HttpContextFactory.Current?.Request != null)
                     {
-                        return HttpContextFactory.Current.Request.Url.Authority.SplitStr(".:")[0];
+                        return HttpContextFactory.Current.Request.Url.Authority.SplitStr(".:").First();
                     }
                 }
                 catch
@@ -65,22 +65,19 @@ namespace UtilityExtensions
 
         public static string ParseEnv(string value)
         {
-            return Environment.ExpandEnvironmentVariables(value);
+            return Environment.ExpandEnvironmentVariables(value ?? "");
         }
 
-        public static string GetConnectionString(string host)
+        public static string GetConnectionString(string host, int? timeout = null)
         {
-            var cs = ConnectionStringSettings(host) ?? ConfigurationManager.ConnectionStrings["CMS"];
-            var cb = new SqlConnectionStringBuilder(cs?.ConnectionString ?? "Data Source=(local);Integrated Security=True");
-            var a = host.Split('.', ':');
-            cb.InitialCatalog = $"CMS_{a[0]}";
-            return ParseEnv(cb.ConnectionString);
+            var a = host.Split('.', ':').First();
+            return GetConnectionStringForDatabase($"CMS_{a}");
         }
 
-        public static string GetConnectionString2(string db, int? timeout = null)
+        public static string GetConnectionStringForDatabase(string db, int? timeout = null)
         {
-            var cs = ConnectionStringSettings(db) ?? ConfigurationManager.ConnectionStrings["CMS"];
-            var cb = new SqlConnectionStringBuilder(cs.ConnectionString);
+            var cs = ConnectionStringSettings;
+            var cb = new SqlConnectionStringBuilder(cs.ConnectionString ?? "Data Source=(local);Integrated Security=True");
             if (timeout.HasValue)
             {
                 cb.ConnectTimeout = timeout.Value;
@@ -89,19 +86,7 @@ namespace UtilityExtensions
             return ParseEnv(cb.ConnectionString);
         }
 
-        private static ConnectionStringSettings ConnectionStringSettings(string host)
-        {
-            var h2 = ConfigurationManager.AppSettings["CmsHosted2"];
-            if (h2.HasValue())
-            {
-                var a = h2.Split(',');
-                if (a.Contains(host))
-                {
-                    return ConfigurationManager.ConnectionStrings["CMS2"];
-                }
-            }
-            return ConfigurationManager.ConnectionStrings["CMS"];
-        }
+        private static ConnectionStringSettings ConnectionStringSettings = ConfigurationManager.ConnectionStrings["CMS"];
 
         private const string STR_ConnectionString = "ConnectionString";
         public static string ConnectionString
@@ -119,7 +104,7 @@ namespace UtilityExtensions
                     }
                 }
 
-                var cs = ConnectionStringSettings(Host);
+                var cs = ConnectionStringSettings;
                 var cb = new SqlConnectionStringBuilder(cs.ConnectionString);
                 cb.InitialCatalog = $"CMS_{Host}";
                 return ParseEnv(cb.ConnectionString);
@@ -141,7 +126,7 @@ namespace UtilityExtensions
                 return ConnectionString;
             }
 
-            var cs = ConnectionStringSettings(host ?? Host);
+            var cs = ConnectionStringSettings;
             var cb = new SqlConnectionStringBuilder(cs.ConnectionString);
             cb.InitialCatalog = $"CMS_{host ?? Host}";
             cb.IntegratedSecurity = false;
@@ -153,24 +138,6 @@ namespace UtilityExtensions
         public static string ConnectionStringReadOnly => ReadOnlyConnectionString();
 
         public static string ConnectionStringReadOnlyFinance => ReadOnlyConnectionString(finance: true);
-
-        public static string ConnectionStringImage
-        {
-            get
-            {
-                var cs = ConnectionStringSettings(Host);
-                var cb = new SqlConnectionStringBuilder(cs.ConnectionString);
-                var a = Host.Split('.', ':');
-                cb.InitialCatalog = $"CMSi_{a[0]}";
-                return ParseEnv(cb.ConnectionString);
-            }
-        }
-        public static string GetConnectionString2(string cs, string db)
-        {
-            var connectionStr = new SqlConnectionStringBuilder(cs)
-            { InitialCatalog = db }.ConnectionString;
-            return ParseEnv(connectionStr);
-        }
     }
 }
 
