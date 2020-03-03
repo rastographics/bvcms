@@ -505,7 +505,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                 return View(m);
             }
 
-            AccountModel.ForgotPassword(m.UsernameOrEmail);
+            AccountModel.ForgotPassword(CurrentDatabase, m.UsernameOrEmail);
 
             return RedirectToAction("RequestPassword");
         }

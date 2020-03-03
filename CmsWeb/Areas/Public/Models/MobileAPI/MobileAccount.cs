@@ -33,14 +33,14 @@ namespace CmsWeb.MobileAPI
         public Person NewPerson { get; set; }
         public ResultCode Result { get; set; }
 
-        public MobileAccount()
+        public MobileAccount(CMSDataContext dbContext)
         {
-            db = DbUtil.Db;
+            db = dbContext;
         }
 
-        public static MobileAccount Create(string first, string last, string email, string phone, string dob)
+        public static MobileAccount Create(CMSDataContext dataContext, string first, string last, string email, string phone, string dob)
         {
-            var m = new MobileAccount
+            var m = new MobileAccount(dataContext)
             {
                 First = first,
                 Last = last,
@@ -64,8 +64,8 @@ namespace CmsWeb.MobileAPI
 
         private void FindPersonSendAccountInfo()
         {
-            var foundpeopleids = DbUtil.Db.FindPerson(First, Last, Birthdate, Email, Phone).Select(vv => vv.PeopleId.Value).ToArray();
-            var foundpeople = (from pp in DbUtil.Db.People
+            var foundpeopleids = db.FindPerson(First, Last, Birthdate, Email, Phone).Select(vv => vv.PeopleId.Value).ToArray();
+            var foundpeople = (from pp in db.People
                                where foundpeopleids.Contains(pp.PeopleId)
                                select pp).ToList();
 
@@ -113,40 +113,40 @@ namespace CmsWeb.MobileAPI
 
         private Person CreateNewPerson()
         {
-            var p = Person.Add(DbUtil.Db, null, First, null, Last, Birthdate);
+            var p = Person.Add(db, null, First, null, Last, Birthdate);
             p.PositionInFamilyId = CmsData.Codes.PositionInFamily.PrimaryAdult;
             p.EmailAddress = Email;
             p.HomePhone = Phone;
-            DbUtil.Db.SubmitChanges();
+            db.SubmitChanges();
             return NewPerson = p;
         }
 
         private void CreateNewUserSendNewUserWelcome(Person p)
         {
-            User = MembershipService.CreateUser(DbUtil.Db, p.PeopleId);
-            DbUtil.Db.SubmitChanges();
-            AccountModel.SendNewUserEmail(User.Username);
+            User = MembershipService.CreateUser(db, p.PeopleId);
+            db.SubmitChanges();
+            AccountModel.SendNewUserEmail(db, User.Username);
         }
 
         private Person foundPersonWithDiffEmail;
 
         private void NotifyAboutExistingAccount(Person p)
         {
-            var message = DbUtil.Db.ContentHtml("ExistingUserConfirmation", Resource1.CreateAccount_ExistingUser);
+            var message = db.ContentHtml("ExistingUserConfirmation", Resource1.CreateAccount_ExistingUser);
             message = message
                 .Replace("{name}", p.Name)
-                .Replace("{host}", DbUtil.Db.CmsHost);
-            DbUtil.Db.Email(DbUtil.AdminMail, p, "Account information for " + DbUtil.Db.Host, message);
+                .Replace("{host}", db.CmsHost);
+            db.Email(DbUtil.AdminMail, p, "Account information for " + db.Host, message);
             User = p.Users.OrderByDescending(uu => uu.LastActivityDate).FirstOrDefault()
-                   ?? MembershipService.CreateUser(DbUtil.Db, p.PeopleId);
+                   ?? MembershipService.CreateUser(db, p.PeopleId);
             Result = ResultCode.FoundPersonWithSameEmail;
         }
 
         private void NotifyAboutDuplicateUser(Person p)
         {
-            var message = DbUtil.Db.ContentHtml("NotifyDuplicateUserOnMobile", Resource1.NotifyDuplicateUserOnMobile);
+            var message = db.ContentHtml("NotifyDuplicateUserOnMobile", Resource1.NotifyDuplicateUserOnMobile);
             message = message.Replace("{otheremail}", Email);
-            DbUtil.Db.Email(DbUtil.AdminMail, p, "New User Account on " + DbUtil.Db.Host, message);
+            db.Email(DbUtil.AdminMail, p, "New User Account on " + db.Host, message);
             if (foundPersonWithDiffEmail == null)
             {
                 foundPersonWithDiffEmail = p;

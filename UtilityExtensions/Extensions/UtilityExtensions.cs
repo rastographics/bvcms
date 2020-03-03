@@ -97,52 +97,11 @@ namespace UtilityExtensions
             }
         }
 
-        public static bool AppOffline
-        {
-            get
-            {
-                var path = ParseEnv(ConfigurationManager.AppSettings["RebootDbInProgress"]);
-                if (File.Exists(path))
-                {
-                    return true;
-                }
-
-                path = ParseEnv(ConfigurationManager.AppSettings["SharedFolder"]);
-                if (!Directory.Exists(path))
-                {
-                    return false;
-                }
-
-                path = ParseEnv(ConfigurationManager.AppSettings["AppOfflineFile"]);
-                if (File.Exists(path))
-                {
-                    return true;
-                }
-
-                return File.Exists(HttpContextFactory.Current.Server.MapPath("~/AppOffline.txt"));
-            }
-        }
-
-        public static string SimSunFont
-        {
-            get
-            {
-                var path = ConfigurationManager.AppSettings["SimSunFont"];
-                if (path != null)
-                {
-                    path = path.Replace("%USERPROFILE%", Environment.GetEnvironmentVariable("USERPROFILE"));
-                }
-
-                return path;
-            }
-        }
-
         public static string UrgentMessage
         {
             get
             {
-                var path = ConfigurationManager.AppSettings["UrgentTextFile"].Replace("%USERPROFILE%",
-                    Environment.GetEnvironmentVariable("USERPROFILE"));
+                var path = ParseEnv(ConfigurationManager.AppSettings["UrgentTextFile"]);
                 if (!path.HasValue())
                 {
                     return HttpContextFactory.Current.Application["UrgentMessage"] as string;
@@ -156,10 +115,10 @@ namespace UtilityExtensions
                 }
                 return fileContent;
             }
+
             set
             {
-                var path = ConfigurationManager.AppSettings["UrgentTextFile"].Replace("%USERPROFILE%",
-                    Environment.GetEnvironmentVariable("USERPROFILE"));
+                var path = ParseEnv(ConfigurationManager.AppSettings["UrgentTextFile"]);
                 if (!path.HasValue())
                 {
                     if (value.HasValue())
@@ -177,6 +136,7 @@ namespace UtilityExtensions
                 HttpRuntime.Cache.Insert("UrgentMessage", value, new System.Web.Caching.CacheDependency(path));
             }
         }
+
         public static string AdminMessage
         {
             get
@@ -187,8 +147,7 @@ namespace UtilityExtensions
                     return text;
                 }
 
-                var path = ConfigurationManager.AppSettings["NotamTextFile"].Replace("%USERPROFILE%",
-                    Environment.GetEnvironmentVariable("USERPROFILE"));
+                var path = ParseEnv(ConfigurationManager.AppSettings["NotamTextFile"]);
                 if (!path.HasValue())
                 {
                     return HttpContextFactory.Current.Application["AdminMessage"] as string;
@@ -204,8 +163,7 @@ namespace UtilityExtensions
             }
             set
             {
-                var path = ConfigurationManager.AppSettings["NotamTextFile"].Replace("%USERPROFILE%",
-                    Environment.GetEnvironmentVariable("USERPROFILE"));
+                var path = ParseEnv(ConfigurationManager.AppSettings["NotamTextFile"]);
                 if (!path.HasValue())
                 {
                     if (value.HasValue())
