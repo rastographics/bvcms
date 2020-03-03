@@ -32,6 +32,8 @@ namespace CmsWeb.Models
         private readonly List<Organization> _orgList;
         private readonly int? divid;
 
+        private bool useEmbeddedMap;
+
         private string showOnlyName;
         private string showOnlyValue;
 
@@ -44,6 +46,11 @@ namespace CmsWeb.Models
         private string extraValueHost;
         private string orgTypesXml = "";
         private string sortBy = "SGF:Name";
+
+        public void SetUseEmbeddedMap(bool useEmbeddedMapValue)
+        {
+            useEmbeddedMap = useEmbeddedMapValue;
+        }
 
         public void SetShowOnly(string name, string value)
         {
@@ -81,6 +88,11 @@ namespace CmsWeb.Models
 
             if (!orgIdList.Any() && !_isInitialSearchResult) return new SGInfo[] {};
 
+            // To be shown on the Small Group Finder, organizations/groups must have the following:
+            // 1. A host home (Leader with address)
+            // 2. At least one meeting
+            // -OR-
+            // 1. Extra Value indicating host
             var q = from o in DbUtil.Db.Organizations
                     let host = o.OrganizationMembers.FirstOrDefault(mm => mm.OrgMemMemTags.Any(mt => mt.MemberTag.Name == "HostHome") || mm.PeopleId == o.LeaderId).Person
                     let schedule = o.OrgSchedules.FirstOrDefault().MeetingTime
@@ -140,27 +152,8 @@ namespace CmsWeb.Models
         {
             var qlist = SmallGroupInfo();
 
-            var addlist = new List<GeoCode>();
-
-            foreach (var i in qlist)
-            {
-                i.gc = addlist.SingleOrDefault(g => g.Address == i.addr)
-                    ?? DbUtil.Db.GeoCodes.FirstOrDefault(g => g.Address == i.addr);
-                if (i.gc == null)
-                {
-                    i.gc = GetGeocode(i.addr);
-                    addlist.Add(i.gc);
-                }
-                else if(i.gc.Latitude == 0)
-                {
-                    GeoCode gcMod = GetGeocode(i.addr);
-                    i.gc.Latitude = gcMod.Latitude;
-                    i.gc.Longitude = gcMod.Longitude;
-                }               
-            }            
-            if (addlist.Count > 0)
-                DbUtil.Db.GeoCodes.InsertAllOnSubmit(addlist);
-            DbUtil.Db.SubmitChanges();
+            if(useEmbeddedMap)
+                UpdateGeoCodes(qlist);
 
             var template = DbUtil.Content(DbUtil.Db, "SGF-MapTooltip", "");
             if (string.IsNullOrEmpty(template))
@@ -178,14 +171,14 @@ Meeting Time: [SGF:Day] at [SGF:Time]<br />
             var loadAllValues = DbUtil.Db.Setting("SGF-LoadAllExtraValues");
             var sortSettings = sortBy;
             var mapPinTextColor = DbUtil.Db.Setting("UX-MapPinTextColor", "000000");
-            
+
             return (from ql in qlist
-                where ql.gc.Latitude != 0
-                select new
-                {
-                    model = ql,
-                    dict = GetValuesDictionary(ql.org, loadAllValues)
-                })
+                    where ql.gc.Latitude != 0
+                    select new
+                    {
+                        model = ql,
+                        dict = GetValuesDictionary(ql.org, loadAllValues)
+                    })
                 .OrderBy(x =>
                 {
                     string orderBy;
@@ -202,6 +195,31 @@ Meeting Time: [SGF:Day] at [SGF:Time]<br />
                     image =
                         $"//chart.googleapis.com/chart?chst=d_map_pin_letter&chld={i.model.markertext}|{i.model.color}|{mapPinTextColor}"
                 });
+        }
+
+        private void UpdateGeoCodes(IEnumerable<SGInfo> qlist)
+        {
+            var addlist = new List<GeoCode>();
+
+            foreach (var i in qlist)
+            {
+                i.gc = addlist.SingleOrDefault(g => g.Address == i.addr)
+                    ?? DbUtil.Db.GeoCodes.FirstOrDefault(g => g.Address == i.addr);
+                if (i.gc == null)
+                {
+                    i.gc = GetGeocode(i.addr);
+                    addlist.Add(i.gc);
+                }
+                else if (i.gc.Latitude == 0)
+                {
+                    GeoCode gcMod = GetGeocode(i.addr);
+                    i.gc.Latitude = gcMod.Latitude;
+                    i.gc.Longitude = gcMod.Longitude;
+                }
+            }
+            if (addlist.Count > 0)
+                DbUtil.Db.GeoCodes.InsertAllOnSubmit(addlist);
+            DbUtil.Db.SubmitChanges();
         }
 
         public string BuildMapFromTemplate(string template, Dictionary<string, string> values)
