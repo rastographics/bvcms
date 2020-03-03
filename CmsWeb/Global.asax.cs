@@ -101,12 +101,6 @@ namespace CmsWeb
 
             Response.Headers?.Remove("Server");
 
-            if (Util.AppOffline)
-            {
-                Response.Redirect("/Errors/AppOffline.htm");
-                return;
-            }
-
             var host = CMSDataContext.GetHost(new HttpContextWrapper(Context));
             var r = DbUtil.CheckDatabaseExists($"CMS_{host}");
             var redirect = ViewExtensions2.DatabaseErrorUrl(r);
@@ -168,10 +162,13 @@ namespace CmsWeb
             if (Response.Status.StartsWith("401")
                     && Request.Url.AbsolutePath.EndsWith(".aspx"))
             {
-                var r = AccountModel.CheckAccessRole(User.Identity.Name);
-                if (r.HasValue())
+                using (var db = CMSDataContext.Create(HttpContextFactory.Current))
                 {
-                    Response.Redirect(r);
+                    var r = AccountModel.CheckAccessRole(db, User.Identity.Name);
+                    if (r.HasValue())
+                    {
+                        Response.Redirect(r);
+                    }
                 }
             }
         }
