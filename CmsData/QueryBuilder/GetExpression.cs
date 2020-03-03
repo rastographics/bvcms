@@ -1,10 +1,3 @@
-/* Author: David /Baarroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church 
- * Licensed under the GNU General Public License (GPL v2)
- * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
- */
-
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -239,26 +232,26 @@ namespace CmsData
                 case QueryType.DropCodeId:
                 case QueryType.JoinCodeId:
                     return CompareConstant(ConditionName, isMultiple ? CodeIntIds : (object)CodeIds.ToInt());
+            }
+
+            switch (FieldType)
+            {
+                case FieldType.NullBit:
+                case FieldType.Bit: return CompareConstant(ConditionName, CodeIds == "1");
+                case FieldType.Code: return CompareConstant(ConditionName, isMultiple ? CodeIntIds : (object)CodeIds.ToInt());
+                case FieldType.NullCode: return CompareCodeConstant(ConditionName, isMultiple ? CodeIntIds : (object)CodeIds.ToInt());
+                case FieldType.CodeStr: return CompareConstant(ConditionName, isMultiple ? CodeStrIds : (object)CodeIdValue);
+                case FieldType.String: return CompareStringConstant(ConditionName, TextValue ?? "");
+                case FieldType.Number:
+                case FieldType.NullNumber: return CompareConstant(ConditionName, decimal.Parse(TextValue));
+                case FieldType.Integer:
+                case FieldType.IntegerSimple:
+                case FieldType.NullInteger: return CompareIntConstant(ConditionName, TextValue);
+                case FieldType.Date:
+                case FieldType.DateSimple:
+                    return CompareDateConstant(ConditionName, DateValue);
                 default:
-                    switch (FieldType)
-                    {
-                        case FieldType.NullBit:
-                        case FieldType.Bit: return CompareConstant(ConditionName, CodeIds == "1");
-                        case FieldType.Code: return CompareConstant(ConditionName, isMultiple ? CodeIntIds : (object)CodeIds.ToInt());
-                        case FieldType.NullCode: return CompareCodeConstant(ConditionName, isMultiple ? CodeIntIds : (object)CodeIds.ToInt());
-                        case FieldType.CodeStr: return CompareConstant(ConditionName, isMultiple ? CodeStrIds : (object)CodeIdValue);
-                        case FieldType.String: return CompareStringConstant(ConditionName, TextValue ?? "");
-                        case FieldType.Number:
-                        case FieldType.NullNumber: return CompareConstant(ConditionName, decimal.Parse(TextValue));
-                        case FieldType.Integer:
-                        case FieldType.IntegerSimple:
-                        case FieldType.NullInteger: return CompareIntConstant(ConditionName, TextValue);
-                        case FieldType.Date:
-                        case FieldType.DateSimple:
-                            return CompareDateConstant(ConditionName, DateValue);
-                        default:
-                            throw new ArgumentException();
-                    }
+                    throw new ArgumentException();
             }
         }
     }

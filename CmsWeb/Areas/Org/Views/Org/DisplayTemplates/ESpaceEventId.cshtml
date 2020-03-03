@@ -1,8 +1,18 @@
 ﻿@model CmsWeb.Areas.Org.Models.SettingsGeneralModel
 @{
     var value = Model.ESpaceEventName ?? "(not specified)";
+    var hasValue = Model.ESpaceEventId.HasValue;
 }
 <dl>
     <dt>eSPACE Event</dt>
+    @if (hasValue)
+    {
+    <dd>
+    <a href="https://app.espace.cool/EventDetails?eventId=@(Model.ESpaceEventId)" target="_blank">@value</a>
+    </dd>
+    }
+    else
+    {
     <dd>@value</dd>
+    }
 </dl>
