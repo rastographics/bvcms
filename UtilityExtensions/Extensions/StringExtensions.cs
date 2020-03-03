@@ -219,7 +219,7 @@ namespace UtilityExtensions
         public static void NameSplit(string name, out string first, out string last)
         {
             first = last = "";
-            if (name.IsNullOrEmpty()) return;
+            if (name.IsNullOrEmpty() || string.IsNullOrWhiteSpace(name)) return;
             bool swapOrder = name.Contains(","); // e.g "Smith, John" OR "Smith,John"
             var namesList = name.Split(new[] { ' ', ',' }, StringSplitOptions.RemoveEmptyEntries); // replace comma with space if present, (e.g "Smith,John" => "Smith John") and split.
 
