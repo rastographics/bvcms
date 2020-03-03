@@ -1,8 +1,5 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Web;
 using UtilityExtensions;
 
 namespace CmsData.Codes
@@ -12,6 +9,7 @@ namespace CmsData.Codes
         public const int Family = 10;
         public const int Personal = 30;
     }
+
     public class OriginCode
     {
         public const int Visit = 10;
@@ -20,6 +18,7 @@ namespace CmsData.Codes
         public const int MainMenu = 97;
         public const int NewFamilyMember = 100;
     }
+
     public static class DecisionCode
     {
         public const int Unknown = 0;
@@ -30,6 +29,7 @@ namespace CmsData.Codes
         public const int StatementReqBaptism = 50;
         public const int Cancelled = 60;
     }
+
     public static class ContentTypeCode
     {
         public const int TypeHtml = 0;
@@ -40,6 +40,7 @@ namespace CmsData.Codes
         public const int TypePythonScript = 5;
         public const int TypeUnlayerSavedDraft = 6;
     }
+
     public static class MemberStatusCode
     {
         public const int Member = 10;
@@ -48,6 +49,7 @@ namespace CmsData.Codes
         public const int Previous = 40;
         public const int JustAdded = 50;
     }
+
     public static class NewMemberClassStatusCode
     {
         public const int NotSpecified = 0;
@@ -58,6 +60,7 @@ namespace CmsData.Codes
         public const int ExemptedChild = 50;
         public const int Unknown = 9;
     }
+
     public static class BaptismTypeCode
     {
         public const int NotSpecified = 0;
@@ -67,6 +70,7 @@ namespace CmsData.Codes
         public const int NonMember = 40; // pof, baptism, but not joining
         public const int Required = 50; // statement, not dunked
     }
+
     public static class BaptismStatusCode
     {
         public const int NotSpecified = 0;
@@ -75,6 +79,7 @@ namespace CmsData.Codes
         public const int Completed = 30;
         public const int Canceled = 40;
     }
+
     public static class JoinTypeCode
     {
         public const int Unknown = 0;
@@ -84,6 +89,7 @@ namespace CmsData.Codes
         public const int Statement = 40;
         public const int Letter = 50;
     }
+
     public static class DropTypeCode
     {
         public const int Administrative = 20;
@@ -94,6 +100,7 @@ namespace CmsData.Codes
         public const int NotDropped = 0;
         public const int Deceased = 30;
     }
+
     public static class LetterStatusCode
     {
         public const int Request1 = 10;
@@ -101,12 +108,14 @@ namespace CmsData.Codes
         public const int NonResponse = 30;
         public const int Complete = 40;
     }
+
     public static class StatementOptionCode
     {
         public const int None = 9;
         public const int Individual = 1;
         public const int Joint = 2;
     }
+
     public static class MaritalStatusCode
     {
         public const int Unknown = 0;
@@ -116,18 +125,21 @@ namespace CmsData.Codes
         public const int Divorced = 40;
         public const int Widowed = 50;
     }
+
     public static class PositionInFamily
     {
         public const int PrimaryAdult = 10;
         public const int SecondaryAdult = 20;
         public const int Child = 30;
     }
+
     public static class GenderCode
     {
         public const int Unknown = 0;
         public const int Male = 1;
         public const int Female = 2;
     }
+
     public static class MemberTypeCode
     {
         public const int Teacher = 160;
@@ -147,6 +159,7 @@ namespace CmsData.Codes
             InActive,
         };
     }
+
     public static class ReturnFamilyMemberTypeCode
     {
         public const int PrimaryAdultsOnly = 10;
@@ -159,21 +172,24 @@ namespace CmsData.Codes
         public const int SecondaryOnly = 30;
         public const int AddSecondary = 300;
     }
-    //ReturnPrimaryAdult
+
     public static class OrgStatusCode
     {
         public const int Active = 30;
         public const int Inactive = 40;
     }
+
     public static class AttendTrackLevelCode
     {
         public const int Headcount = 10;
         public const int Individual = 20;
     }
+
     public static class AttendanceClassificationCode
     {
         public const int Normal = 0;
     }
+
     public static class RegistrationTypeCode
     {
         public const int None = 0;
@@ -203,8 +219,10 @@ namespace CmsData.Codes
             yield return new KeyValuePair<int, string>(ChooseVolunteerTimes, "Choose Volunteer Times");
             yield return new KeyValuePair<int, string>(RecordFamilyAttendance, "Record Family Attendance");
             yield return new KeyValuePair<int, string>(SpecialJavascript, "Special Script");
-            if(Util.IsDebug())
+            if (Util.IsDebug())
+            {
                 yield return new KeyValuePair<int, string>(CreateAccount, "Create Account");
+            }
         }
         public static string Lookup(int? id)
         {
@@ -227,7 +245,8 @@ namespace CmsData.Codes
         public const int Group = 90;
         public const int OtherClass = 110;
         public const int Prospect = 190;
-    };
+    }
+
     public class TaskStatusCode
     {
         public const int Active = 10;
@@ -238,20 +257,24 @@ namespace CmsData.Codes
         public const int Redelegated = 60;
         public const int Declined = 70;
     }
+
     public class ContactTypeCode
     {
         public const int Other = 7;
     }
+
     public class ContactReasonCode
     {
         public const int Other = 160;
     }
+
     public class BundleStatusCode
     {
         public const int Closed = 0;
         public const int Open = 1;
         public const int OpenForDataEntry = 2;
     }
+
     public class BundleTypeCode
     {
         public const int ChecksAndCash = 2;
@@ -263,34 +286,40 @@ namespace CmsData.Codes
         public const int GiftsInKind = 30;
         public const int Stock = 32;
     }
+
     public class BundleReferenceIdTypeCode
     {
         public const int PushPayBatch = 1;
         public const int PushPaySettlement = 2;
         public const int PushPayStandaloneTransaction = 3;
     }
+
     public class ContributionStatusCode
     {
         public const int Recorded = 0;
         public const int Reversed = 1;
         public const int Returned = 2;
     }
+
     public class ContributionOriginCode
     {
         public const int Default = 0;
         public const int PushPay = 1;
     }
-    public class FundStatusCode 
+
+    public class FundStatusCode
     {
         public const int Open = 1;
         public const int Closed = 2;
     }
+
     public class FundShowListCode
     {
         public const int Primary = 1;
         public const int Secondary = 2;
         public const int None = 3;
     }
+
     public class GroupSelectCode
     {
         public const string Member = "10";
@@ -300,6 +329,7 @@ namespace CmsData.Codes
         public const string Previous = "50";
         public const string Guest = "60";
     }
+
     public class VolApplicationStatusCode
     {
         public const int Approved = 10;
@@ -307,6 +337,7 @@ namespace CmsData.Codes
         public const int NotApproved = 30;
         public const int Pending = 40;
     }
+
     public class ContributionTypeCode
     {
         public const int CheckCash = 1;
@@ -317,6 +348,7 @@ namespace CmsData.Codes
         public const int NonTaxDed = 9;
         public const int GiftInKind = 10;
         public const int Stock = 20;
+
         public static int[] SpecialTypes =
         {
             ContributionTypeCode.GiftInKind,
@@ -324,17 +356,20 @@ namespace CmsData.Codes
             ContributionTypeCode.Pledge,
             ContributionTypeCode.Stock,
         };
+
         public static int[] NonTaxTypes =
         {
             ContributionTypeCode.NonTaxDed,
             ContributionTypeCode.Pledge
         };
+
         public static int[] ReturnedReversedTypes =
-        { 
-            ContributionTypeCode.ReturnedCheck, 
-            ContributionTypeCode.Reversed 
+        {
+            ContributionTypeCode.ReturnedCheck,
+            ContributionTypeCode.Reversed
         };
     }
+
     public static class AttendCommitmentCode
     {
         public const int Uncommitted = 99;
@@ -359,11 +394,13 @@ namespace CmsData.Codes
             Substitute,
             FindSub
         };
+
         public static string Lookup(int? id)
         {
             var s = GetCodePairs().SingleOrDefault(ii => ii.Key == id);
             return s.Value;
         }
+
         public static int Order(int? id)
         {
             switch (id)

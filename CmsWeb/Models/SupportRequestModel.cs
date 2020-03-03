@@ -1,11 +1,9 @@
 using CmsData;
 using CmsWeb.Constants;
-using Dapper;
 using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Net.Mail;
 using System.Text;
@@ -28,7 +26,6 @@ namespace CmsWeb.Models
         public string LastSearch { get; set; }
         public string Cc { get; set; }
         public string Subj { get; set; }
-
 
         [Obsolete(Errors.ModelBindingConstructorError, true)]
         public SupportRequestModel() { }
