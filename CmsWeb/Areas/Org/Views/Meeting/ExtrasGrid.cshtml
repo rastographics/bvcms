@@ -9,7 +9,15 @@
     @if (isedit)
     {
         <td>
+        @if (c.Field == "eSPACE_ID")
+        {
+            <a id="s-@c.Field.@c.MeetingId" class="@(c.DataType == "text" ? "editarea" : "editline")" data-pk="s-@c.Field.@c.MeetingId"
+               target="_blank" href="https://app.espace.cool/OccurrenceDetails?occurrenceId=@(c.Data)&page=details">@c.Data</a>
+        }
+        else
+        {
             <a id="s-@c.Field.@c.MeetingId" class="@(c.DataType == "text" ? "editarea" : "editline")" data-pk="s-@c.Field.@c.MeetingId">@c.Data</a>
+        }
         </td>
         <td style="width: 50px;">
             <a href="#" class="deleteextra btn btn-danger btn-sm" field="@c.Field"><i class="fa fa-trash"></i> Delete</a>
@@ -17,7 +25,14 @@
     }
     else
     {
-        <td>@c.Data</td>
+        if (c.Field == "eSPACE_ID")
+        {
+            <td><a target="_blank" href="https://app.espace.cool/OccurrenceDetails?occurrenceId=@(c.Data)&page=details">@c.Data</a></td>
+        }
+        else
+        {
+            <td>@c.Data</td>
+        }
         <td></td>
     }
 </tr>
