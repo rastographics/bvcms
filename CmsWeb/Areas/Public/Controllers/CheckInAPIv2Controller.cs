@@ -344,6 +344,19 @@ namespace CmsWeb.Areas.Public.Controllers
             {
                 Number = person.mobilePhone
             };
+            m.Gender = new Code.CodeInfo(p.GenderId, p.Gender.Description);
+            m.MaritalStatus = new Code.CodeInfo(p.MaritalStatusId, p.MaritalStatus.Description);
+            m.EmailAddress = new EmailInfo()
+            {
+                Address = p.EmailAddress,
+                Send = p.SendEmailAddress1.GetValueOrDefault()
+            };
+            m.EmailAddress2 = new EmailInfo()
+            {
+                Address = p.EmailAddress2,
+                Send = p.SendEmailAddress2.GetValueOrDefault()
+            };
+
             m.UpdatePerson(CurrentDatabase);
             DbUtil.LogPersonActivity($"Update Basic Info for: {m.person.Name}", m.Id, m.person.Name);
 
