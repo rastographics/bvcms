@@ -59,7 +59,9 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 				}
 			}
 
-			return label;
+            // remove shaded box entries without data -- this means they are behind a blank field
+            label.entries.RemoveAll(e => e.typeID == 6 && e.data == "");
+            return label;
 		}
 
 		public enum Type

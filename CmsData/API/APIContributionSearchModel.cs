@@ -1,10 +1,3 @@
-/* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church
- * Licensed under the GNU General Public License (GPL v2)
- * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license
- */
-
 using System;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
@@ -192,33 +185,34 @@ namespace CmsData.API
                     contributions = model.IncludePledges
                                     ?
                                     (from c in contributions
-                                    where !ContributionTypeCode.NonTaxTypes.Contains(c.ContributionTypeId)
-                                    select c).Concat(from c in contributions where c.ContributionTypeId == ContributionTypeCode.Pledge select c)
+                                     where !ContributionTypeCode.NonTaxDed.Equals(c.ContributionTypeId)
+                                     select c).Concat(from c in contributions where c.ContributionTypeId == ContributionTypeCode.Pledge select c)
                                     :
                                     (from c in contributions
-                                    where !ContributionTypeCode.NonTaxTypes.Contains(c.ContributionTypeId)
-                                    select c);
+                                     where !ContributionTypeCode.NonTaxDed.Equals(c.ContributionTypeId)
+                                     where !ContributionTypeCode.Pledge.Equals(c.ContributionTypeId)
+                                     select c);
                     break;
                 case "NonTaxDed":
                     contributions = model.IncludePledges
                                     ?
                                     (from c in contributions
-                                     where !ContributionTypeCode.NonTaxTypes.Contains(c.ContributionTypeId)
+                                     where ContributionTypeCode.NonTaxDed.Equals(c.ContributionTypeId)
                                      select c).Concat(from c in contributions where c.ContributionTypeId == ContributionTypeCode.NonTaxDed select c)
                                     :
                                     (from c in contributions
-                                     where !ContributionTypeCode.NonTaxTypes.Contains(c.ContributionTypeId)
+                                     where ContributionTypeCode.NonTaxDed.Equals(c.ContributionTypeId)
+                                     where !ContributionTypeCode.Pledge.Equals(c.ContributionTypeId)
                                      select c);
                     break;
                 case "Both":
                     contributions = model.IncludePledges
-                                    ?
-                                    (from c in contributions
-                                     where !ContributionTypeCode.NonTaxTypes.Contains(c.ContributionTypeId)
+                                    ? 
+                                    (from c in contributions                                     
                                      select c).Concat(from c in contributions where c.ContributionTypeId != ContributionTypeCode.Pledge select c)
                                     :
                                     (from c in contributions
-                                     where !ContributionTypeCode.NonTaxTypes.Contains(c.ContributionTypeId)
+                                     where !ContributionTypeCode.Pledge.Equals(c.ContributionTypeId)
                                      select c);
                     break;
                 case "Pledge":
@@ -227,7 +221,7 @@ namespace CmsData.API
                                     select c;
                     break;
             }
-
+            
             switch (model.Status)
             {
                 case ContributionStatusCode.Recorded:

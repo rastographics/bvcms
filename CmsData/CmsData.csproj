@@ -363,8 +363,8 @@
     <Compile Include="Classes\PeopleUtils.cs" />
     <Compile Include="Classes\RoleChecker\RoleChecker.cs" />
     <Compile Include="Classes\style.cs" />
-    <Compile Include="DbUtil\CurrentOrg.cs" />
-    <Compile Include="DbUtil\ModelViewModel.cs" />
+    <Compile Include="DbUtil\DbUtil.CurrentOrg.cs" />
+    <Compile Include="Classes\ModelViewModel.cs" />
     <Compile Include="Email\ReplacementCodes\Links\UnlayerLink.cs" />
     <Compile Include="Email\ReplacementCodes\Links\DropFromOrgTag.cs" />
     <Compile Include="Email\ReplacementCodes\Replacements\Debug.cs" />
@@ -679,6 +679,7 @@
     <Compile Include="Generated\OrgFilter.cs" />
     <Compile Include="Generated\OrgMemberDocument.cs" />
     <Compile Include="Generated\OrgMemberExtra.cs" />
+    <Compile Include="Generated\OrgTemporaryDocuments.cs" />
     <Compile Include="Generated\PrevOrgMemberExtra.cs" />
     <Compile Include="Generated\PaymentProcess.cs" />
     <Compile Include="Generated\ProcessType.cs" />
@@ -769,7 +770,7 @@
     <Compile Include="Classes\ExtraValues\View.cs" />
     <Compile Include="Classes\ExtraValues\Views.cs" />
     <Compile Include="Classes\SmallGroupFinder\SmallGroupFinder.cs" />
-    <Compile Include="DbUtil\Codes.cs" />
+    <Compile Include="DbUtil\DbUtil.Codes.cs" />
     <Compile Include="Extensions\Contact.cs" />
     <Compile Include="Extensions\ActivityLog.cs" />
     <Compile Include="API\APIFunctions.cs" />
@@ -778,9 +779,9 @@
     <Compile Include="API\APIPerson.cs" />
     <Compile Include="API\APIContribution.cs" />
     <Compile Include="Finance\BundleHeader.cs" />
-    <Compile Include="DbUtil\CheckinFamilyMember.cs" />
+    <Compile Include="DbUtil\DbUtil.CheckinFamilyMember.cs" />
     <Compile Include="API\APIContributionSearchModel.cs" />
-    <Compile Include="DbUtil\CreateDatabase.cs" />
+    <Compile Include="DbUtil\DbUtil.CreateDatabase.cs" />
     <Compile Include="Email\ReplacementCodes\EmailReplacements.cs" />
     <Compile Include="Generated\Functions\AttendanceTypeAsOf.cs" />
     <Compile Include="Generated\Functions\AttendCntHistory.cs" />
@@ -815,7 +816,7 @@
     <Compile Include="Generated\Views\TransactionBalance.cs" />
     <Compile Include="Generated\Views\TransactionList.cs" />
     <Compile Include="Generated\Views\TransactionSummary.cs" />
-    <Compile Include="DbUtil\ITableWithExtraValues.cs" />
+    <Compile Include="Classes\ITableWithExtraValues.cs" />
     <Content Include="App_Readme\Elmah.txt" />
     <Content Include="Migrations\00000000_sql_migrations_table.sql" />
     <Compile Include="Organization\OrgFilter.cs" />
@@ -926,7 +927,7 @@
     <Compile Include="Generated\UploadPeopleRun.cs" />
     <Compile Include="Generated\Views\PickListOrg.cs" />
     <Compile Include="Finance\ManagedGiving.cs" />
-    <Compile Include="DbUtil\Dynamic.cs" />
+    <Compile Include="DbUtil\DbUtil.Dynamic.cs" />
     <Compile Include="Registration\Ask.cs" />
     <Compile Include="Registration\AskDocuments.cs" />
     <Compile Include="Registration\AskText.cs" />
@@ -1010,8 +1011,8 @@
     <Compile Include="Generated\Views\ContributionsView.cs" />
     <Compile Include="Generated\VolunteerCode.cs" />
     <Compile Include="Extensions\RecReg.cs" />
-    <Compile Include="DbUtil\Session.cs" />
-    <Compile Include="DbUtil\Session2.cs" />
+    <Compile Include="DbUtil\DbUtil.Session.cs" />
+    <Compile Include="DbUtil\DbUtil.Session2.cs" />
     <Compile Include="Generated\Campu.cs" />
     <Compile Include="Generated\CardIdentifier.cs" />
     <Compile Include="Generated\CheckInTime.cs" />
@@ -1081,7 +1082,7 @@
     <Compile Include="Organization\OrganizationMember.cs" />
     <Compile Include="Extensions\Task.cs" />
     <Compile Include="Generated\Task.cs" />
-    <Compile Include="DbUtil\DbUtil.cs" />
+    <Compile Include="DbUtil\DbUtil.Db.cs" />
     <Compile Include="Extensions\Family.cs" />
     <Compile Include="Generated\BaptismStatus.cs" />
     <Compile Include="Generated\BaptismType.cs" />
@@ -1120,7 +1121,7 @@
     <Compile Include="Generated\Functions\OrganizationsByPerson.cs" />
     <Compile Include="Generated\Functions\PrevOrganizationsByPerson.cs" />
     <Compile Include="Extensions\Person.cs" />
-    <Compile Include="DbUtil\Context.cs" />
+    <Compile Include="DbUtil\DbUtil.Context.cs" />
     <Compile Include="Generated\AddressType.cs" />
     <Compile Include="Generated\Application.cs" />
     <Compile Include="Generated\ApplicationPrereq.cs" />
@@ -1179,6 +1180,8 @@
     <Resource Include="Classes\OnlineRegSummaryText\Details2.xml">
       <SubType>Designer</SubType>
     </Resource>
+    <Content Include="Migrations\20200224_Add_CreatedDate_OrgMemberDocuments_Column.sql" />
+    <Content Include="Migrations\20200224_Create_OrgTemporaryDocuments_Table.sql" />
     <Content Include="QueryBuilder\CompareMap.xml">
       <SubType>Designer</SubType>
     </Content>

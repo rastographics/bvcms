@@ -1,10 +1,10 @@
-﻿@using CmsData
-@using CmsData.Codes
+﻿@using CmsData.Codes
 @using UtilityExtensions
 @model CmsWeb.Areas.Finance.Models.BundleModel
 @{
     var difference = Model.TotalHeader() - Model.TotalItems();
-    var customreport = DbUtil.Db.Setting("CustomBundleReport", "");
+    var customreport = Model.CustomBundleReport;
+    var remoteDeposit = Model.RemoteDepositEnabled;
 }
 <div class="row">
     <div class="col-sm-12 col-md-12 col-lg-12">
@@ -12,7 +12,7 @@
             <div class="box-title-btn">
                 <div class="box-tools">
                     <a class="btn btn-default" href="/Bundles"><i class="fa fa-arrow-circle-left"></i> Back to List</a>
-                    @RenderToolBar(xs: false)
+                    @RenderToolBar(remoteDeposit, xs: false)
                 </div>
             </div>
             <div class="box-content">
@@ -72,7 +72,7 @@
                     @Html.Partial("Results", Model)
                 </form>
                 <div class="visible-xs-block">
-                    @RenderToolBar(xs: true)
+                    @RenderToolBar(remoteDeposit, xs: true)
                     <hr />
                     <a class="btn btn-default btn-block" href="/Bundles"><i class="fa fa-arrow-circle-left"></i> Back to List</a>
                 </div>
@@ -80,7 +80,8 @@
         </div>
     </div>
 </div>
-@helper RenderToolBar(bool xs)
+<iframe id="iframe-download" name="iframe-download" class="sr-only" frameborder="0"></iframe>
+@helper RenderToolBar(bool remoteDeposit, bool xs)
 {
     var css = xs ? "btn-block" : "";
     <div class="btn-group @css">
@@ -106,6 +107,10 @@
             else
             {
                 <li><a href="/Bundle/Export/@Model.BundleId"><i class="fa fa-file-excel-o"></i>&nbsp;&nbsp;Export to Excel</a></li>
+                if (remoteDeposit)
+                {
+                    <li><a href="/Bundle/RemoteDeposit/@Model.BundleId" target="iframe-download" class="remotedeposit"><i class="fa fa-file-text-o"></i>&nbsp;&nbsp;Export Remote Deposit File</a></li>
+                }
             }
             <li class="divider"></li>
             <li><a href="/Bundles/NewBundle/"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Create New Bundle</a></li>

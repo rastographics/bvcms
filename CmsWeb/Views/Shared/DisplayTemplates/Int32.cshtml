@@ -1,4 +1,8 @@
 ﻿@model int?
+@{
+    var help = ViewData["help"] as string;
+    var viewHelp = !help.IsEmpty();
+}
 <dl>
     <dt>
         @if (ViewBag.label != null)
@@ -11,7 +15,10 @@
         }
     </dt>
     <dd>@ViewData.TemplateInfo.FormattedModelValue
-        <span class="help-block">@Html.Raw(ViewData["help"])</span>
+    @if (viewHelp)
+    {
+        <span class="help-block">@Html.Raw(help)</span>
+    }
   </dd>
 </dl>
 @if (ViewBag.ShowHelp != false && ViewData.ModelMetadata.Description.HasValue())
