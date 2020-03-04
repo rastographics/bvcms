@@ -116,7 +116,7 @@ namespace CmsWeb.Areas.People.Models
             GivingEndDate = DateTime.Now;
             var Year1 = Year;
             if (!GivingYears.Any(p => p == Year))
-                Year1 = "YearToDate";
+                Year1 = CurrentDatabase.Setting("ContributionFilterDefault", "YearToDate");
 
             switch (Year1.Replace(" ", ""))
             {
