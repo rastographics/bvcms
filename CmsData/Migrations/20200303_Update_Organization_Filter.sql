@@ -1,11 +1,4 @@
-﻿USE [CMS_bellevue]
-GO
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-
-ALTER FUNCTION [dbo].[OrgFilterPeople](
+﻿ALTER FUNCTION [dbo].[OrgFilterPeople](
 	 @queryid UNIQUEIDENTIFIER
 	,@ministryinfo BIT
 ) RETURNS TABLE
